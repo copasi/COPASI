@@ -451,12 +451,11 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
             size_t j, jmax = params.size();
 
             for (j = 0; j < jmax; ++j)
-              if (params[j]->getUsage() == CFunctionParameter::PARAMETER)
+              if (params[j]->getUsage() == CFunctionParameter::Role::PARAMETER)
                 if (itReaction->isLocalParameter(j))
                   {
-                    CCopasiParameter * par =
-                      dynamic_cast<CCopasiParameter*>
-                      (CRootContainer::getKeyFactory()->get(itReaction->getParameterMappings()[j][0]));
+                    const CCopasiParameter * par =
+                      dynamic_cast< const CCopasiParameter * >(itReaction->getParameterObjects(j)[0]);
 
                     if (par)
                       ret.push_back(par->getValueReference());

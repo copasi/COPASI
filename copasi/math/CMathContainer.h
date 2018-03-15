@@ -246,13 +246,6 @@ public:
   bool areObjectsConstant(const CObjectInterface::ObjectSet & objects) const;
 
   /**
-   * Notify the math container that the quantity conversion factor in
-   * the corresponding model has changed
-   * @param const CCore::Framework & framework
-   */
-  void quantityConversionChanged(const CCore::Framework & framework);
-
-  /**
    * Retrieve the Quantity to Number conversion factor
    * @return C_FLOAT64 & quantity2NumberFactor
    */

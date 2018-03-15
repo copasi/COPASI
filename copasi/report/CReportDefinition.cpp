@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,7 +40,7 @@
 //
 //////////////////////////////////////////////////
 // static
-CReportDefinition * CReportDefinition::fromData(const CData & data)
+CReportDefinition * CReportDefinition::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CReportDefinition(data.getProperty(CData::OBJECT_NAME).toString(),
                                NO_PARENT);
@@ -51,25 +51,44 @@ CData CReportDefinition::toData() const
 {
   CData Data = CDataObject::toData();
 
-  Data.addProperty(CData::Property::COMMENT, mComment);
-  Data.addProperty(CData::Property::TASK_TYPE, CTaskEnum::TaskName[mTaskType]);
-  Data.addProperty(CData::Property::REPORT_SEPARATOR, mSeparator.getStaticString());
-  Data.addProperty(CData::Property::REPORT_IS_TABLE, mTable);
-  Data.addProperty(CData::Property::REPORT_SHOW_TITLE, mbTitle);
-  Data.addProperty(CData::Property::REPORT_PRECISION, mPrecision);
+  Data.addProperty(CData::NOTES, mComment);
+  Data.addProperty(CData::TASK_TYPE, CTaskEnum::TaskName[mTaskType]);
+  Data.addProperty(CData::REPORT_SEPARATOR, mSeparator.getStaticString());
+  Data.addProperty(CData::REPORT_IS_TABLE, mTable);
+  Data.addProperty(CData::REPORT_SHOW_TITLE, mbTitle);
+  Data.addProperty(CData::REPORT_PRECISION, mPrecision);
 
   return Data;
 }
 
 // virtual
-bool CReportDefinition::applyData(const CData & data)
+bool CReportDefinition::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CDataObject::applyData(data);
+  bool success = CDataObject::applyData(data, changes);
 
   // TODO CRITICAL Implement me!
   fatalError();
 
   return success;
+}
+
+// virtual
+void CReportDefinition::createUndoData(CUndoData & undoData,
+                                       const CUndoData::Type & type,
+                                       const CData & oldData,
+                                       const CCore::Framework & framework) const
+{
+  CDataObject::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return;
 }
 
 CReportDefinition::CReportDefinition(const std::string & name,
@@ -141,8 +160,8 @@ bool CReportDefinition::preCompileTable(const CObjectInterface::ContainerList & 
 }
 
 /**
-*Returns the comments in the report tag
-*/
+ *Returns the comments in the report tag
+ */
 
 const std::string & CReportDefinition::getComment() const
 {
@@ -150,10 +169,10 @@ const std::string & CReportDefinition::getComment() const
 }
 
 /**
-*sets the comments in the report tag
-*/
+ *sets the comments in the report tag
+ */
 
-void 
+void
 CReportDefinition::setComment(const std::string & comment)
 {
   mComment = comment;

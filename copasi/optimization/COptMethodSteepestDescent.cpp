@@ -43,11 +43,10 @@ COptMethodSteepestDescent::COptMethodSteepestDescent(const CDataContainer * pPar
   mpDescent(new FDescentTemplate<COptMethodSteepestDescent>(this, &COptMethodSteepestDescent::descentLine)),
   mCurrentIteration(0)
 {
-  addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 100);
-  addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1e-6);
+  addParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100);
+  addParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1e-6);
 
-  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-
+  addParameter("#LogVerbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 }
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const COptMethodSteepestDescent & src,

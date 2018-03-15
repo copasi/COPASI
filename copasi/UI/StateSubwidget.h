@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,12 +40,12 @@ public:
   virtual bool loadAll(const CSteadyStateTask * pTask);
   void clear();
   virtual void setFramework(int framework);
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
 protected:
   const CSteadyStateTask * mpTask;
   CModel * mpModel;
 
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   void loadMetabolites();
   void loadCompartments();
   void loadReactions();

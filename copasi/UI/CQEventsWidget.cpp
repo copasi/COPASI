@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -55,14 +55,12 @@ CQEventsWidget::CQEventsWidget(QWidget *parent, const char *name)
   mpTblEvents->verticalHeader()->hide();
   mpTblEvents->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
-  connect(mpEventDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpEventDM, SIGNAL(signalNotifyChanges(const CUndoData::ChangeSet &)),
+          this, SLOT(slotNotifyChanges(const CUndoData::ChangeSet &)));
   connect(mpEventDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-  CopasiUI3Window   *pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
-  mpEventDM->setUndoStack(pWindow->getUndoStack());
 }
 
 /*
@@ -122,7 +120,7 @@ void CQEventsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQEventsWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
+bool CQEventsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {
@@ -137,7 +135,7 @@ bool CQEventsWidget::update(ListViews::ObjectType objectType, ListViews::Action 
   return true;
 }
 
-bool CQEventsWidget::leave()
+bool CQEventsWidget::leaveProtected()
 {
   return true;
 }
@@ -219,13 +217,13 @@ void CQEventsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(mpDataModel != NULL);
-  CModel *pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
-  std::string key = pModel->getEvents()[index.row()].getKey();
+  CDataVector < CEvent > * pVector = dynamic_cast< CDataVector < CEvent > * >(mpObject);
 
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  if (pVector != NULL &&
+      index.row() < pVector->size())
+    {
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, pVector->operator [](index.row()).getCN());
+    }
 }
 
 void CQEventsWidget::keyPressEvent(QKeyEvent *ev)

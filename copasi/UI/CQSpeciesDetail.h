@@ -20,10 +20,6 @@
 
 #include "ui_CQSpeciesDetail.h"
 
-#include <copasi/undoFramework/CCopasiUndoCommand.h>
-
-class UndoSpeciesData;
-
 class CMetab;
 class CCompartment;
 class CQScrolledDependenciesWidget;
@@ -41,21 +37,17 @@ public:
   CQSpeciesDetail(QWidget* parent = 0, const char* name = 0);
   virtual ~CQSpeciesDetail();
 
-  virtual bool leave();
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual void setFramework(int framework);
 
   void copy();
-
-  bool changeValue(const std::string& key,
-                   CCopasiUndoCommand::Type type,
-                   const QVariant& newValue,
-                   double iValue = std::numeric_limits<double>::quiet_NaN());
 
   CMetab* getCurrentMetab();
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
+
   virtual bool event(QEvent * pEvent);
 
 protected slots:
@@ -64,7 +56,6 @@ private:
   bool mChanged;
   CMetab * mpMetab;
   const CCompartment * mpCurrentCompartment;
-  std::vector< int > mItemToType;
   double mInitialNumber;
   double mInitialConcentration;
   CQScrolledDependenciesWidget * mpDependencies;
@@ -78,26 +69,20 @@ private slots:
   void slotBtnCopy();
   void slotBtnDelete();
   void slotCompartmentChanged(int compartment);
-  void slotTypeChanged(int type);
+  void slotTypeChanged(const QString & type);
   void slotAddNoiseChanged(bool hasNoise);
   void slotInitialTypeChanged(bool useInitialExpression);
-  void slotNameLostFocus();
   void slotSwitchToReaction(int row, int column);
   void slotInitialValueLostFocus();
 
   //additional functions for UNDO framework
   void deleteSpecies();
-  void addSpecies(UndoSpeciesData *pSData);
   /**
    * creates a new species
    * @return boolean indicating whether a compartment was created
    */
-  bool createNewSpecies();
-  void deleteSpecies(UndoSpeciesData *pSData);
-  void speciesTypeChanged(int type);
-  void speciesTypeChanged(UndoSpeciesData *pSData, int type);
-  void speciesInitialValueLostFocus();
-  void speciesInitialValueLostFocus(UndoSpeciesData *pSData);
+  void createNewSpecies();
+  void speciesTypeChanged(const QString & type);
 };
 
 #endif // CQSpeciesDetail_h

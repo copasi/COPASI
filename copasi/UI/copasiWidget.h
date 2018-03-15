@@ -39,7 +39,10 @@ class ListViews;
 class CDataModel;
 class CQBaseDataModel;
 class CDataObject;
-class QUndoStack;
+
+#include "copasi/core/CCore.h"
+#include "copasi/core/CRegisteredCommonName.h"
+#include "copasi/undo/CUndoStack.h"
 
 class CopasiWidget : public QWidget
 {
@@ -47,32 +50,25 @@ class CopasiWidget : public QWidget
 
 public:
   CopasiWidget(QWidget *parent = 0, const char *name = 0, Qt::WindowFlags = 0);
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &key);
-  virtual bool leave();
 
   /**
    * leaves the widget and enters it again
    */
   virtual void refresh();
 
-  bool enter(const std::string &key);
+  bool enter(const CCommonName & cn);
+  bool update(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  bool leave();
+
   virtual void setFramework(int framework);
   bool getIgnoreUpdates();
   void setIgnoreUpdates(bool v);
   CDataModel *getDataModel() const;
 
-  void setUndoStack(QUndoStack *undoStack);
-  QUndoStack *getUndoStack();
-
-  /**
-   * @return the current key of the widget
-   */
-  const std::string& getKey() const;
-
   /**
    * @return the pointer to the current object
    */
-  const CDataObject* getObject() const;
+  const CDataObject * getObject() const;
 
   /**
    * This method returns the data model from all the overview widgets.
@@ -82,20 +78,25 @@ public:
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
+
   void initContext();
 
-  QUndoStack *mpUndoStack;
-
   ListViews *mpListView;
-  std::string mKey;
   CDataObject *mpObject;
   CDataModel *mpDataModel;
+  ListViews::ObjectType mObjectType;
+  CRegisteredCommonName mObjectCN;
 
   bool mIgnoreUpdates;
   int mFramework;
 
 protected slots:
-  virtual bool protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string &key = "");
+  virtual bool protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn = std::string());
+
+public slots:
+  virtual void slotNotifyChanges(const CUndoData::ChangeSet & changes);
 };
 
 #endif // !defined(COPASI_WIDGET_H)

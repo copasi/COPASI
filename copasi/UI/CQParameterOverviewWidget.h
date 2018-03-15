@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,8 +28,6 @@ public:
   CQParameterOverviewWidget(QWidget* parent = 0, const char* name = 0);
   virtual ~CQParameterOverviewWidget();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-  virtual bool leave();
   virtual void setFramework(int framework);
   /**
   * This method returns the data model from all the overview widgets.
@@ -38,9 +36,12 @@ public:
   virtual CQBaseDataModel* getCqDataModel();
 
 private:
-  virtual bool enterProtected();
   void buildSelectionList();
+
 protected:
+  virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
 
 protected slots:
   virtual void slotBtnRevert();

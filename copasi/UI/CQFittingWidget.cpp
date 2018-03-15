@@ -294,7 +294,7 @@ bool CQFittingWidget::loadTask()
 bool CQFittingWidget::runTask()
 {
   CFitTask * pTask =
-    dynamic_cast< CFitTask * >(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CFitTask * >(mpObject);
 
   if (!pTask) return false;
 
@@ -312,7 +312,7 @@ bool CQFittingWidget::taskFinishedEvent()
   bool result = TaskWidget::taskFinishedEvent();
 
   CFitTask * pTask =
-    dynamic_cast< CFitTask * >(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CFitTask * >(mpObject);
 
   if (!pTask) return false;
 
@@ -320,7 +320,7 @@ bool CQFittingWidget::taskFinishedEvent()
 
   for (size_t i = mnParamterSetsBeforeRun; i < finalCount; ++i)
     {
-      protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pTask->getObjectDataModel()->getModel()->getModelParameterSets()[i].getKey());
+      protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pTask->getObjectDataModel()->getModel()->getModelParameterSets()[i].CDataObject::getCN());
     }
 
   return true;

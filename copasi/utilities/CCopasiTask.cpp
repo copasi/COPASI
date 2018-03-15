@@ -43,7 +43,7 @@
 #include "copasi/core/CRootContainer.h"
 
 // static
-CCopasiTask * CCopasiTask::fromData(const CData & data)
+CCopasiTask * CCopasiTask::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   CCopasiTask * pNew = CTaskFactory::createTask((CTaskEnum::Task)data.getProperty(CData::TASK_TYPE).toUint(), NO_PARENT);
 
@@ -67,7 +67,7 @@ CData CCopasiTask::toData() const
 }
 
 // virtual
-bool CCopasiTask::applyData(const CData & data)
+bool CCopasiTask::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

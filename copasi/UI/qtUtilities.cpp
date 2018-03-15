@@ -41,7 +41,7 @@
 
 bool updateGUI(C_INT32 objectType, C_INT32 action, const std::string & key /*= ""*/)
 {
-  CQCopasiApplication* app = dynamic_cast<CQCopasiApplication*>(qApp->instance());
+  CQCopasiApplication * app = CQCopasiApplication::instance();
 
   if (app == NULL) return false;
 
@@ -58,7 +58,7 @@ bool updateGUI(C_INT32 objectType, C_INT32 action, const std::string & key /*= "
 
 void switchToWidget(size_t id, const std::string & key /*= ""*/)
 {
-  CQCopasiApplication* app = dynamic_cast<CQCopasiApplication*>(qApp->instance());
+  CQCopasiApplication * app = CQCopasiApplication::instance();
 
   if (app == NULL) return;
 
@@ -76,7 +76,7 @@ void switchToWidget(size_t id, const std::string & key /*= ""*/)
 
 void updateCurrentWidget()
 {
-  CQCopasiApplication* app = dynamic_cast<CQCopasiApplication*>(qApp->instance());
+  CQCopasiApplication * app = CQCopasiApplication::instance();
 
   if (app == NULL) return;
 
@@ -101,33 +101,33 @@ QVariant getParameterValue(const CCopasiParameter * pParameter)
 
   switch (pParameter->getType())
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
         return QVariant(pParameter->getValue< C_FLOAT64 >());
         break;
 
-      case CCopasiParameter::INT:
+      case CCopasiParameter::Type::INT:
         return QVariant(pParameter->getValue< C_INT32 >());
         break;
 
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::UINT:
         return QVariant(pParameter->getValue< unsigned C_INT32 >());
         break;
 
-      case CCopasiParameter::BOOL:;
+      case CCopasiParameter::Type::BOOL:;
         return QVariant(pParameter->getValue< bool >());
         break;
 
-      case CCopasiParameter::STRING:
-      case CCopasiParameter::KEY:
-      case CCopasiParameter::FILE:
-      case CCopasiParameter::EXPRESSION:
-      case CCopasiParameter::CN:
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::KEY:
+      case CCopasiParameter::Type::FILE:
+      case CCopasiParameter::Type::EXPRESSION:
+      case CCopasiParameter::Type::CN:
         return QVariant(FROM_UTF8(pParameter->getValue< std::string >()));
         break;
 
-      case CCopasiParameter::GROUP:
-      case CCopasiParameter::INVALID:
+      case CCopasiParameter::Type::GROUP:
+      case CCopasiParameter::Type::INVALID:
         break;
     }
 
@@ -155,8 +155,8 @@ QList< QPair < QVariant, QVariant > > getParameterValidValues(const CCopasiParam
 
   switch (pParameter->getType())
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
       {
         std::vector<std::pair< C_FLOAT64, C_FLOAT64 > >::const_iterator it =
           pParameter->getValidValues< C_FLOAT64 >().begin();
@@ -170,7 +170,7 @@ QList< QPair < QVariant, QVariant > > getParameterValidValues(const CCopasiParam
       }
       break;
 
-      case CCopasiParameter::INT:
+      case CCopasiParameter::Type::INT:
       {
         std::vector< std::pair < C_INT32, C_INT32 > >::const_iterator it = pParameter->getValidValues< C_INT32 >().begin();
         std::vector< std::pair < C_INT32, C_INT32 > >::const_iterator end = pParameter->getValidValues< C_INT32 >().end();
@@ -180,7 +180,7 @@ QList< QPair < QVariant, QVariant > > getParameterValidValues(const CCopasiParam
       }
       break;
 
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::UINT:
       {
         std::vector< std::pair < unsigned C_INT32, unsigned C_INT32 > >::const_iterator it = pParameter->getValidValues< unsigned C_INT32 >().begin();
         std::vector< std::pair < unsigned C_INT32, unsigned C_INT32 > >::const_iterator end = pParameter->getValidValues< unsigned C_INT32 >().end();
@@ -190,7 +190,7 @@ QList< QPair < QVariant, QVariant > > getParameterValidValues(const CCopasiParam
       }
       break;
 
-      case CCopasiParameter::BOOL:;
+      case CCopasiParameter::Type::BOOL:;
         {
           std::vector< std::pair < bool, bool > >::const_iterator it = pParameter->getValidValues< bool >().begin();
           std::vector< std::pair < bool, bool > >::const_iterator end = pParameter->getValidValues< bool >().end();
@@ -200,11 +200,11 @@ QList< QPair < QVariant, QVariant > > getParameterValidValues(const CCopasiParam
         }
         break;
 
-      case CCopasiParameter::STRING:
-      case CCopasiParameter::KEY:
-      case CCopasiParameter::FILE:
-      case CCopasiParameter::EXPRESSION:
-      case CCopasiParameter::CN:
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::KEY:
+      case CCopasiParameter::Type::FILE:
+      case CCopasiParameter::Type::EXPRESSION:
+      case CCopasiParameter::Type::CN:
       {
         std::vector< std::pair < std::string, std::string > >::const_iterator it = pParameter->getValidValues< std::string >().begin();
         std::vector< std::pair < std::string, std::string > >::const_iterator end = pParameter->getValidValues< std::string >().end();
@@ -214,8 +214,8 @@ QList< QPair < QVariant, QVariant > > getParameterValidValues(const CCopasiParam
       }
       break;
 
-      case CCopasiParameter::GROUP:
-      case CCopasiParameter::INVALID:
+      case CCopasiParameter::Type::GROUP:
+      case CCopasiParameter::Type::INVALID:
         break;
     }
 
@@ -229,36 +229,36 @@ bool setParameterValue(CCopasiParameter * pParameter,
 
   switch (pParameter->getType())
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
         return pParameter->setValue< C_FLOAT64 >(value.toDouble());
         break;
 
-      case CCopasiParameter::INT:
+      case CCopasiParameter::Type::INT:
         return pParameter->setValue< C_INT32 >(value.toInt());
         break;
 
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::UINT:
         return pParameter->setValue< unsigned C_INT32 >(value.toUInt());
         break;
 
-      case CCopasiParameter::BOOL:;
+      case CCopasiParameter::Type::BOOL:;
         return pParameter->setValue< bool >(value.toBool());
         break;
 
-      case CCopasiParameter::STRING:
-      case CCopasiParameter::KEY:
-      case CCopasiParameter::FILE:
-      case CCopasiParameter::EXPRESSION:
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::KEY:
+      case CCopasiParameter::Type::FILE:
+      case CCopasiParameter::Type::EXPRESSION:
         return pParameter->setValue< std::string >(TO_UTF8(value.toString()));
         break;
 
-      case CCopasiParameter::CN:
+      case CCopasiParameter::Type::CN:
         return pParameter->setValue< CCommonName >(std::string(TO_UTF8(value.toString())));
         break;
 
-      case CCopasiParameter::GROUP:
-      case CCopasiParameter::INVALID:
+      case CCopasiParameter::Type::GROUP:
+      case CCopasiParameter::Type::INVALID:
         break;
     }
 

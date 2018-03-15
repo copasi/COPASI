@@ -119,20 +119,20 @@ CIssue CMassAction::setInfix(const std::string & infix)
   getVariables().cleanup();
 
   getVariables().add("k1",
-                     CFunctionParameter::FLOAT64,
-                     CFunctionParameter::PARAMETER);
+                     CFunctionParameter::DataType::FLOAT64,
+                     CFunctionParameter::Role::PARAMETER);
   getVariables().add("substrate",
-                     CFunctionParameter::VFLOAT64,
-                     CFunctionParameter::SUBSTRATE);
+                     CFunctionParameter::DataType::VFLOAT64,
+                     CFunctionParameter::Role::SUBSTRATE);
 
   if (isReversible() == TriTrue)
     {
       getVariables().add("k2",
-                         CFunctionParameter::FLOAT64,
-                         CFunctionParameter::PARAMETER);
+                         CFunctionParameter::DataType::FLOAT64,
+                         CFunctionParameter::Role::PARAMETER);
       getVariables().add("product",
-                         CFunctionParameter::VFLOAT64,
-                         CFunctionParameter::PRODUCT);
+                         CFunctionParameter::DataType::VFLOAT64,
+                         CFunctionParameter::Role::PRODUCT);
     }
 
   return mValidity.getFirstWorstIssue();

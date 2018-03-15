@@ -1,12 +1,12 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include <cmath>
 #include <limits>
@@ -90,7 +90,7 @@ void CLNAMethod::initializeParameter()
 {
   /*  CCopasiParameter *pParm;
 
-      assertParameter("Placeholder Factor", CCopasiParameter::UDOUBLE, 1.0e-009);
+      assertParameter("Placeholder Factor", CCopasiParameter::Type::UDOUBLE, 1.0e-009);
 
       if ((pParm = getParameter("LNA.PlaceholderFactor")) != NULL)
       {

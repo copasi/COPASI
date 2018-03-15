@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,7 +25,7 @@
 #include "copasi/core/CDataObjectReference.h"
 
 // static
-CPlotSpecification * CPlotSpecification::fromData(const CData & data)
+CPlotSpecification * CPlotSpecification::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CPlotSpecification(data.getProperty(CData::OBJECT_NAME).toString(),
                                 NO_PARENT,
@@ -44,7 +44,7 @@ CData CPlotSpecification::toData() const
 }
 
 // virtual
-bool CPlotSpecification::applyData(const CData & data)
+bool CPlotSpecification::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 
@@ -63,7 +63,7 @@ CPlotSpecification::CPlotSpecification(const std::string & name,
 {initObjects();}
 
 CPlotSpecification::CPlotSpecification(const CPlotSpecification & src,
-  const CDataContainer * pParent)
+                                       const CDataContainer * pParent)
   : CPlotItem(src, pParent)
   , items(src.getItems(), this)
   , mActive(src.mActive)
@@ -80,16 +80,16 @@ void CPlotSpecification::cleanup()
   this->CPlotItem::cleanup();
 }
 
-const CDataVector<CPlotItem>& 
-CPlotSpecification::getItems() const 
-{ 
-  return items; 
+const CDataVector<CPlotItem>&
+CPlotSpecification::getItems() const
+{
+  return items;
 }
 
-CDataVector<CPlotItem>& 
-CPlotSpecification::getItems() 
-{ 
-  return items; 
+CDataVector<CPlotItem>&
+CPlotSpecification::getItems()
+{
+  return items;
 }
 
 void CPlotSpecification::initObjects()
@@ -111,6 +111,7 @@ bool CPlotSpecification::appliesTo(const CObjectInterface::ContainerList & list)
     return true;  // no task types defined, assume plot applies (consistent with old behavior)
 
   const CCopasiTask* pTask = dynamic_cast<const CCopasiTask*>(list.front());
+
   if (pTask == NULL)
     return true; // no task found to compare again, plot applies
 
@@ -119,7 +120,7 @@ bool CPlotSpecification::appliesTo(const CObjectInterface::ContainerList & list)
 
 std::string CPlotSpecification::getTaskTypes() const
 {
-  std::stringstream str; 
+  std::stringstream str;
 
   if (mTaskTypes.empty())
     return str.str();
@@ -128,9 +129,10 @@ std::string CPlotSpecification::getTaskTypes() const
   str << CTaskEnum::TaskName[*it++];
 
   for (; it != mTaskTypes.end(); ++it)
-  {
-    str << ", " << CTaskEnum::TaskName[*it];
-  }
+    {
+      str << ", " << CTaskEnum::TaskName[*it];
+    }
+
   return str.str();
 }
 
@@ -139,15 +141,18 @@ void CPlotSpecification::setTaskTypes(const std::string & taskTypes)
   mTaskTypes.clear();
   std::istringstream ss(taskTypes);
   std::string token;
-  while (std::getline(ss, token, ',')) {
-    
-    while (token[0] == ' ') // remove leading spaces
-      token.erase(0, 1);
 
-    CTaskEnum::Task taskType = CTaskEnum::TaskName.toEnum(token, CTaskEnum::Task::UnsetTask);
-    if (taskType != CTaskEnum::Task::UnsetTask)
-      mTaskTypes.insert(taskType);
-  }
+  while (std::getline(ss, token, ','))
+    {
+
+      while (token[0] == ' ') // remove leading spaces
+        token.erase(0, 1);
+
+      CTaskEnum::Task taskType = CTaskEnum::TaskName.toEnum(token, CTaskEnum::Task::UnsetTask);
+
+      if (taskType != CTaskEnum::Task::UnsetTask)
+        mTaskTypes.insert(taskType);
+    }
 }
 
 void CPlotSpecification::setTaskTypes(const std::set<CTaskEnum::Task>& taskTypes)

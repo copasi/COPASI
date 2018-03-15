@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -72,7 +72,6 @@ CQMathMatrixWidget::CQMathMatrixWidget(QWidget* parent)
 
 #endif
 
-
   mpJacobianAnn = new CDataArray("Jacobian (complete system)", NULL,
                                  new CMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobian), true);
   mpJacobianAnn->setMode(CDataArray::Mode::Objects);
@@ -94,7 +93,6 @@ CQMathMatrixWidget::CQMathMatrixWidget(QWidget* parent)
   mpRedJacobianAnnotationWidget->setColorCoding(new CColorScaleBiLog());
   mpRedJacobianAnnotationWidget->setColorScalingAutomatic(true);
   mpRedJacobianAnnotationWidget->setLegendEnabled(false);
-
 }
 
 /*
@@ -125,13 +123,11 @@ void CQMathMatrixWidget::loadMatrices()
   tmp = dynamic_cast<const CDataArray *>
         (pModel->getObject(CCommonName("Array=Link matrix(ann)")));
   mpArrayWidget3->setArrayAnnotation(tmp);
-
 }
 
 void CQMathMatrixWidget::updateJacobianAnnotation(const CModel* pModel)
 {
   const CMathContainer& container = pModel->getMathContainer();
-
 
   size_t sizeReduced = container.getState(true).size() - container.getCountFixedEventTargets() - 1;
   mJacobianRed.resize(sizeReduced, sizeReduced);
@@ -183,15 +179,14 @@ void CQMathMatrixWidget::clearArrays()
 
 //*************************************
 
-bool CQMathMatrixWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action
-                                C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CQMathMatrixWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   clearArrays();
   updateJacobianIfTabSelected();
   return true;
 }
 
-bool CQMathMatrixWidget::leave()
+bool CQMathMatrixWidget::leaveProtected()
 {
   return true;
 }
@@ -346,4 +341,3 @@ void CQMathMatrixWidget::calculateJacobian(CMatrix< C_FLOAT64 >& matrix,
   eigenValuesWidget->resizeRowsToContents();
   eigenValuesWidget->setSortingEnabled(true);
 }
-

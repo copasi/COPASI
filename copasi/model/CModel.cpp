@@ -59,16 +59,18 @@
 
 #define MNumMetabolitesReactionDependent (mNumMetabolitesReaction - mNumMetabolitesReactionIndependent)
 
-const char * CModel::ModelTypeNames[] =
-{"deterministic", "stochastic", NULL};
+//static
+const CEnumAnnotation< std::string, CModel::ModelType > CModel::ModelTypeNames(
+{
+  "deterministic",
+  "stochastic"
+});
 
 // static
-CModel * CModel::fromData(const CData & data)
+CModel * CModel::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
-  CModel * pModel = NULL;
-
-  // TODO CRITICAL Implement me!
-  fatalError();
+  CModel * pModel = new CModel(NO_PARENT);
+  pModel->setObjectName(data.getProperty(CData::OBJECT_NAME).toString());
 
   return pModel;
 }
@@ -76,18 +78,32 @@ CModel * CModel::fromData(const CData & data)
 // virtual
 CData CModel::toData() const
 {
-  CData Data;
+  CData Data = CModelEntity::toData();
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::VOLUME_UNIT, mVolumeUnit);
+  Data.addProperty(CData::AREA_UNIT, mAreaUnit);
+  Data.addProperty(CData::LENGTH_UNIT, mLengthUnit);
+  Data.addProperty(CData::TIME_UNIT, mTimeUnit);
+
+  CData QuantityUnitData;
+  QuantityUnitData.addProperty(CData::VALUE, mQuantityUnit);
+  QuantityUnitData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[CCore::Framework::ParticleNumbers]);
+  Data.addProperty(CData::QUANTITY_UNIT, QuantityUnitData);
+
+  Data.addProperty(CData::MODEL_TYPE, ModelTypeNames[this->mType]);
+
+  CData AvogadroData;
+  AvogadroData.addProperty(CData::VALUE, mAvogadro);
+  AvogadroData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[CCore::Framework::ParticleNumbers]);
+  Data.addProperty(CData::AVOGADRO_NUMBER, AvogadroData);
 
   return Data;
 }
 
 // virtual
-bool CModel::applyData(const CData & data)
+bool CModel::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CModelEntity::applyData(data);
+  bool success = CModelEntity::applyData(data, changes);
 
   if (data.isSetProperty(CData::VOLUME_UNIT))
     {
@@ -111,20 +127,62 @@ bool CModel::applyData(const CData & data)
 
   if (data.isSetProperty(CData::QUANTITY_UNIT))
     {
-      success &= setQuantityUnit(data.getProperty(CData::QUANTITY_UNIT).toString(), CCore::Framework::ParticleNumbers);
+      const CData & Data = data.getProperty(CData::QUANTITY_UNIT).toData();
+      success &= setQuantityUnit(Data.getProperty(CData::VALUE).toString(),
+                                 CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
     }
 
   if (data.isSetProperty(CData::MODEL_TYPE))
     {
-      setModelType((ModelType) data.getProperty(CData::MODEL_TYPE).toUint());
+      setModelType(ModelTypeNames.toEnum(data.getProperty(CData::MODEL_TYPE).toString(), ModelType::deterministic));
     }
 
   if (data.isSetProperty(CData::AVOGADRO_NUMBER))
     {
-      setAvogadro(data.getProperty(CData::AVOGADRO_NUMBER).toDouble(), CCore::Framework::ParticleNumbers);
+      const CData & Data = data.getProperty(CData::AVOGADRO_NUMBER).toData();
+      setAvogadro(data.getProperty(CData::VALUE).toDouble(),
+                  CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
     }
 
   return success;
+}
+
+// virtual
+void CModel::createUndoData(CUndoData & undoData,
+                            const CUndoData::Type & type,
+                            const CData & oldData,
+                            const CCore::Framework & framework) const
+{
+  CModelEntity::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::VOLUME_UNIT, oldData.getProperty(CData::VOLUME_UNIT), mVolumeUnit);
+  undoData.addProperty(CData::AREA_UNIT, oldData.getProperty(CData::AREA_UNIT), mAreaUnit);
+  undoData.addProperty(CData::LENGTH_UNIT, oldData.getProperty(CData::LENGTH_UNIT), mLengthUnit);
+  undoData.addProperty(CData::TIME_UNIT, oldData.getProperty(CData::TIME_UNIT), mTimeUnit);
+
+  CData OldQuantityUnitData;
+  OldQuantityUnitData.addProperty(CData::VALUE, oldData.getProperty(CData::QUANTITY_UNIT).toData().getProperty(CData::VALUE));
+  OldQuantityUnitData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+  CData NewQuantityUnitData;
+  NewQuantityUnitData.addProperty(CData::VALUE, mQuantityUnit);
+  NewQuantityUnitData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+
+  undoData.addProperty(CData::QUANTITY_UNIT, OldQuantityUnitData, NewQuantityUnitData);
+  undoData.addProperty(CData::MODEL_TYPE, oldData.getProperty(CData::MODEL_TYPE), ModelTypeNames[this->mType]);
+
+  CData OldAvogadroData;
+  OldAvogadroData.addProperty(CData::VALUE, oldData.getProperty(CData::AVOGADRO_NUMBER).toData().getProperty(CData::VALUE));
+  OldAvogadroData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+  CData NewAvogadroData;
+  NewAvogadroData.addProperty(CData::VALUE, mAvogadro);
+  NewAvogadroData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+
+  undoData.addProperty(CData::AVOGADRO_NUMBER, OldAvogadroData, NewAvogadroData);
 }
 
 CModel::CModel(CDataContainer* pParent):
@@ -136,7 +194,7 @@ CModel::CModel(CDataContainer* pParent):
   mLengthUnit("m"),
   mTimeUnit("s"),
   mQuantityUnit("mmol"),
-  mType(deterministic),
+  mType(CModel::ModelType::deterministic),
   mCompartments("Compartments", this),
   mMetabolites("Metabolites", this),
   mMetabolitesX("Reduced Model Metabolites", this),
@@ -1566,7 +1624,7 @@ CUnit::TimeUnit CModel::getTimeUnitEnum() const
 //****
 
 bool CModel::setQuantityUnit(const std::string & name,
-                             const CCore::Framework & frameWork)
+                             const CCore::Framework & framework)
 {
   mQuantityUnit = name;
 
@@ -1590,7 +1648,7 @@ bool CModel::setQuantityUnit(const std::string & name,
 
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
-  mpMathContainer->quantityConversionChanged(frameWork);
+  updateInitialValues(framework);
 
   return true;
 }
@@ -1654,12 +1712,13 @@ bool CModel::appendDirectDependents(const CDataContainer & container,
                                     CDataObject::DataObjectSet & dependentCompartments,
                                     CDataObject::DataObjectSet & dependentModelValues,
                                     CDataObject::DataObjectSet & dependentEvents,
-                                    CDataObject::DataObjectSet & dependentEventAssignments) const
+                                    CDataObject::DataObjectSet & dependentEventAssignments,
+                                    const bool & onlyStructural) const
 {
   ObjectSet Objects;
   Objects.insert(&container);
 
-  return appendDirectDependents(Objects, dependentReactions, dependentMetabolites, dependentCompartments, dependentModelValues, dependentEvents, dependentEventAssignments);
+  return appendDirectDependents(Objects, dependentReactions, dependentMetabolites, dependentCompartments, dependentModelValues, dependentEvents, dependentEventAssignments, onlyStructural);
 }
 
 bool CModel::appendDirectDependents(const CDataObject::ObjectSet & objects,
@@ -1668,7 +1727,8 @@ bool CModel::appendDirectDependents(const CDataObject::ObjectSet & objects,
                                     CDataObject::DataObjectSet & dependentCompartments,
                                     CDataObject::DataObjectSet & dependentModelValues,
                                     CDataObject::DataObjectSet & dependentEvents,
-                                    CDataObject::DataObjectSet & dependentEventAssignments) const
+                                    CDataObject::DataObjectSet & dependentEventAssignments,
+                                    const bool & onlyStructural) const
 {
   size_t Size = dependentReactions.size() +
                 dependentMetabolites.size() +
@@ -1681,12 +1741,14 @@ bool CModel::appendDirectDependents(const CDataObject::ObjectSet & objects,
 
   mStructuralDependencies.appendDirectDependents(objects, Dependents);
 
-  ObjectSet::const_iterator itObject = objects.begin();
-  ObjectSet::const_iterator endObject = objects.end();
+  if (!onlyStructural)
+    {
+      ObjectSet::const_iterator itObject = objects.begin();
+      ObjectSet::const_iterator endObject = objects.end();
 
-  // Map the descendants to math objects
-  ObjectSet Candidates;
-  DataObjectSet Descendants;
+      // Map the descendants to math objects
+      ObjectSet Candidates;
+      DataObjectSet Descendants;
 
   for (; itObject != endObject; ++itObject)
     {
@@ -1711,17 +1773,18 @@ bool CModel::appendDirectDependents(const CDataObject::ObjectSet & objects,
   std::set< const CDataObject * >::const_iterator it = Descendants.begin();
   std::set< const CDataObject * >::const_iterator end = Descendants.end();
 
-  for (; it != end; ++it)
-    {
-      Candidates.insert(mpMathContainer->getMathObject(*it));
-      Dependents.insert(*it);
+      for (; it != end; ++it)
+        {
+          Candidates.insert(mpMathContainer->getMathObject(*it));
+          Dependents.insert(*it);
+        }
+
+      Candidates.erase(NULL);
+
+      // Retrieve dependent math object
+      mpMathContainer->getInitialDependencies().appendDirectDependents(Candidates, Dependents);
+      mpMathContainer->getTransientDependencies().appendDirectDependents(Candidates, Dependents);
     }
-
-  Candidates.erase(NULL);
-
-  // Retrieve dependent math object
-  mpMathContainer->getInitialDependencies().appendDirectDependents(Candidates, Dependents);
-  mpMathContainer->getTransientDependencies().appendDirectDependents(Candidates, Dependents);
 
   // Map objects to compartments, species, model values, reactions, events, and event assignments
   CObjectInterface::ObjectSet::const_iterator itDependent = Dependents.begin();
@@ -1789,12 +1852,13 @@ bool CModel::appendAllDependents(const CDataContainer & container,
                                  DataObjectSet & dependentCompartments,
                                  DataObjectSet & dependentModelValues,
                                  DataObjectSet & dependentEvents,
-                                 DataObjectSet & dependentEventAssignments) const
+                                 DataObjectSet & dependentEventAssignments,
+                                 const bool & onlyStructural) const
 {
   ObjectSet Objects;
   Objects.insert(&container);
 
-  return appendAllDependents(Objects, dependentReactions, dependentMetabolites, dependentCompartments, dependentModelValues, dependentEvents, dependentEventAssignments);
+  return appendAllDependents(Objects, dependentReactions, dependentMetabolites, dependentCompartments, dependentModelValues, dependentEvents, dependentEventAssignments, onlyStructural);
 }
 
 bool CModel::appendAllDependents(const ObjectSet & objects,
@@ -1803,7 +1867,8 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
                                  DataObjectSet & dependentCompartments,
                                  DataObjectSet & dependentModelValues,
                                  DataObjectSet & dependentEvents,
-                                 DataObjectSet & dependentEventAssignments) const
+                                 DataObjectSet & dependentEventAssignments,
+                                 const bool & onlyStructural) const
 {
   size_t Size = dependentReactions.size() +
                 dependentMetabolites.size() +
@@ -1819,30 +1884,33 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
   ObjectSet::const_iterator itObject = objects.begin();
   ObjectSet::const_iterator endObject = objects.end();
 
-  // Map the descendants to math objects
-  ObjectSet Candidates;
-  DataObjectSet Descendants;
-
-  for (; itObject != endObject; ++itObject)
-    if (dynamic_cast< const CDataContainer * >(*itObject) != NULL)
-      {
-        static_cast< const CDataContainer * >(*itObject)->getDescendants(Descendants);
-      }
-
-  std::set< const CDataObject * >::const_iterator it = Descendants.begin();
-  std::set< const CDataObject * >::const_iterator end = Descendants.end();
-
-  for (; it != end; ++it)
+  if (!onlyStructural)
     {
-      Candidates.insert(mpMathContainer->getMathObject(*it));
-      Dependents.insert(*it);
+      // Map the descendants to math objects
+      ObjectSet Candidates;
+      DataObjectSet Descendants;
+
+      for (; itObject != endObject; ++itObject)
+        if (dynamic_cast< const CDataContainer * >(*itObject) != NULL)
+          {
+            static_cast< const CDataContainer * >(*itObject)->getDescendants(Descendants);
+          }
+
+      std::set< const CDataObject * >::const_iterator it = Descendants.begin();
+      std::set< const CDataObject * >::const_iterator end = Descendants.end();
+
+      for (; it != end; ++it)
+        {
+          Candidates.insert(mpMathContainer->getMathObject(*it));
+          Dependents.insert(*it);
+        }
+
+      Candidates.erase(NULL);
+
+      // Retrieve dependent math object
+      mpMathContainer->getInitialDependencies().appendAllDependents(Candidates, Dependents);
+      mpMathContainer->getTransientDependencies().appendAllDependents(Candidates, Dependents);
     }
-
-  Candidates.erase(NULL);
-
-  // Retrieve dependent math object
-  mpMathContainer->getInitialDependencies().appendAllDependents(Candidates, Dependents);
-  mpMathContainer->getTransientDependencies().appendAllDependents(Candidates, Dependents);
 
   // Map objects to compartments, species, model values, reactions, events, and event assignments
   CObjectInterface::ObjectSet::const_iterator itDependent = Dependents.begin();
@@ -2163,7 +2231,8 @@ CModelValue* CModel::createModelValue(const std::string & name,
   return cmv;
 }
 
-void CModel::removeDependentModelObjects(const CDataObject::ObjectSet & deletedObjects)
+void CModel::removeDependentModelObjects(const CDataObject::ObjectSet & deletedObjects,
+    const bool & onlyStructural)
 {
   DataObjectSet Reactions;
   DataObjectSet Metabolites;
@@ -2172,7 +2241,7 @@ void CModel::removeDependentModelObjects(const CDataObject::ObjectSet & deletedO
   DataObjectSet Events;
   DataObjectSet EventAssignments;
 
-  appendAllDependents(deletedObjects, Reactions, Metabolites, Compartments, Values, Events, EventAssignments);
+  appendAllDependents(deletedObjects, Reactions, Metabolites, Compartments, Values, Events, EventAssignments, onlyStructural);
 
   std::set<const CDataObject*>::const_iterator it, end;
 
@@ -2476,7 +2545,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
             }
 
           CEventAssignment * pNewAssignment =
-            new CEventAssignment(currentObject->getDataObject()->getObjectParent()->getKey());
+            new CEventAssignment(currentObject->getDataObject()->getObjectParent()->getCN());
           std::stringstream assignmentStr; assignmentStr << value;
           pNewAssignment->setExpression(assignmentStr.str());
           pNewAssignment->getExpressionPtr()->compile();
@@ -2610,16 +2679,16 @@ bool CModel::convert2NonReversible()
             if (reac0->isLocalParameter("k1"))
               reac1->setParameterValue("k1", reac0->getParameterValue("k1"));
             else
-              reac1->setParameterMapping("k1", reac0->getParameterMapping("k1")[0]);
+              reac1->setParameterCNs("k1", reac0->getParameterCNs("k1"));
 
-            reac1->setParameterMappingVector("substrate", reac0->getParameterMapping("substrate"));
+            reac1->setParameterCNs("substrate", reac0->getParameterCNs("substrate"));
 
             if (reac0->isLocalParameter("k2"))
               reac2->setParameterValue("k1", reac0->getParameterValue("k2"));
             else
-              reac2->setParameterMapping("k1", reac0->getParameterMapping("k2")[0]);
+              reac2->setParameterCNs("k1", reac0->getParameterCNs("k2"));
 
-            reac2->setParameterMappingVector("substrate", reac0->getParameterMapping("product"));
+            reac2->setParameterCNs("substrate", reac0->getParameterCNs("product"));
 
             // Bug 2143: We need to replace any occurrence of the reaction parameter of the
             // reversible reaction with its replacement in the forward or backwards reaction
@@ -2637,57 +2706,57 @@ bool CModel::convert2NonReversible()
               {
                 const CFunctionParameter * fp = fps[i];
                 assert(fp);
-                assert(fp->getType() == CFunctionParameter::FLOAT64);
+                assert(fp->getType() == CFunctionParameter::DataType::FLOAT64);
 
                 switch (fp->getUsage())
                   {
-                    case CFunctionParameter::SUBSTRATE:
-                      reac1->setParameterMapping(fp->getObjectName(),
-                                                 reac0->getParameterMapping(fp->getObjectName())[0]);
+                    case CFunctionParameter::Role::SUBSTRATE:
+                      reac1->setParameterCNs(fp->getObjectName(),
+                                             reac0->getParameterCNs(fp->getObjectName()));
 
                       // It is possible (see Bug 1830) that the split function may have additional modifier.
                       // This will happen e.g. if the product is referenced in the forward part of the reaction.
-                      if (reac2->setParameterMapping(fp->getObjectName(),
-                                                     reac0->getParameterMapping(fp->getObjectName())[0]))
+                      if (reac2->setParameterCNs(fp->getObjectName(),
+                                                 reac0->getParameterCNs(fp->getObjectName())))
                         {
-                          reac2->addModifier(reac0->getParameterMapping(fp->getObjectName())[0]);
+                          reac2->addModifier(reac0->getParameterObjects(fp->getObjectName())[0]->getKey());
                         }
 
                       break;
 
-                    case CFunctionParameter::PRODUCT:
+                    case CFunctionParameter::Role::PRODUCT:
 
                       // It is possible (see Bug 1830) that the split function may have additional modifier.
                       // This will happen e.g. if the product is referenced in the forward part of the reaction.
-                      if (reac1->setParameterMapping(fp->getObjectName(),
-                                                     reac0->getParameterMapping(fp->getObjectName())[0]))
+                      if (reac1->setParameterCNs(fp->getObjectName(),
+                                                 reac0->getParameterCNs(fp->getObjectName())))
                         {
-                          reac1->addModifier(reac0->getParameterMapping(fp->getObjectName())[0]);
+                          reac1->addModifier(reac0->getParameterObjects(fp->getObjectName())[0]->getKey());
                         }
 
-                      reac2->setParameterMapping(fp->getObjectName(),
-                                                 reac0->getParameterMapping(fp->getObjectName())[0]);
+                      reac2->setParameterCNs(fp->getObjectName(),
+                                             reac0->getParameterCNs(fp->getObjectName()));
                       break;
 
-                    case CFunctionParameter::MODIFIER:
+                    case CFunctionParameter::Role::MODIFIER:
 
-                      if (reac1->setParameterMapping(fp->getObjectName(),
-                                                     reac0->getParameterMapping(fp->getObjectName())[0]))
+                      if (reac1->setParameterCNs(fp->getObjectName(),
+                                                 reac0->getParameterCNs(fp->getObjectName())))
                         {
                           // Add the modifier
-                          reac1->addModifier(reac0->getParameterMapping(fp->getObjectName())[0]);
+                          reac1->addModifier(reac0->getParameterObjects(fp->getObjectName())[0]->getKey());
                         }
 
-                      if (reac2->setParameterMapping(fp->getObjectName(),
-                                                     reac0->getParameterMapping(fp->getObjectName())[0]))
+                      if (reac2->setParameterCNs(fp->getObjectName(),
+                                                 reac0->getParameterCNs(fp->getObjectName())))
                         {
                           // Add the modifier
-                          reac2->addModifier(reac0->getParameterMapping(fp->getObjectName())[0]);
+                          reac2->addModifier(reac0->getParameterObjects(fp->getObjectName())[0]->getKey());
                         }
 
                       break;
 
-                    case CFunctionParameter::PARAMETER:
+                    case CFunctionParameter::Role::PARAMETER:
 
                       if (reac0->isLocalParameter(fp->getObjectName()))
                         {
@@ -2699,10 +2768,10 @@ bool CModel::convert2NonReversible()
                         }
                       else
                         {
-                          reac1->setParameterMapping(fp->getObjectName(),
-                                                     reac0->getParameterMapping(fp->getObjectName())[0]);
-                          reac2->setParameterMapping(fp->getObjectName(),
-                                                     reac0->getParameterMapping(fp->getObjectName())[0]);
+                          reac1->setParameterCNs(fp->getObjectName(),
+                                                 reac0->getParameterCNs(fp->getObjectName()));
+                          reac2->setParameterCNs(fp->getObjectName(),
+                                                 reac0->getParameterCNs(fp->getObjectName()));
                         }
 
                       // Bug 2143: We need to replace any occurrence of the reaction parameter of the
@@ -2722,10 +2791,10 @@ bool CModel::convert2NonReversible()
                       break;
 
                     default:
-                      reac1->setParameterMapping(fp->getObjectName(),
-                                                 reac0->getParameterMapping(fp->getObjectName())[0]);
-                      reac2->setParameterMapping(fp->getObjectName(),
-                                                 reac0->getParameterMapping(fp->getObjectName())[0]);
+                      reac1->setParameterCNs(fp->getObjectName(),
+                                             reac0->getParameterCNs(fp->getObjectName()));
+                      reac2->setParameterCNs(fp->getObjectName(),
+                                             reac0->getParameterCNs(fp->getObjectName()));
                       break;
                   }
               }

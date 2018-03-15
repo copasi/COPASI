@@ -22,10 +22,13 @@
 
 #include "copasi/core/CRootContainer.h"
 #include "commandline/CConfigurationFile.h"
-#include "copasi/undoFramework/CCopasiUndoCommand.h"
+#include "copasi/undo/CUndoStack.h"
 
-//CEntityProvenanceDialog::CEntityProvenanceDialog(QWidget *parent,   QUndoStack *undoStack, QString EntityName, QString PathFile ,  QList<QString> VersionsPathToCurrentModeconst,  QString ProvenanceParentOfCurrentModel, QString VersioningParentOfCurrentModel, const char* name):
-CEntityProvenanceDialog::CEntityProvenanceDialog(QWidget *parent,   QUndoStack *undoStack, QString PathFile ,  QList<QString> VersionsPathToCurrentModeconst, const char* name):
+CEntityProvenanceDialog::CEntityProvenanceDialog(QWidget *parent,
+    CUndoStack *undoStack,
+    QString PathFile,
+    QList<QString> VersionsPathToCurrentModeconst,
+    const char* name):
   CopasiWidget(parent, name)
 {
   setupUi(this);
@@ -1162,33 +1165,30 @@ void CEntityProvenanceDialog::CurrentSessionEdits2ProvenanceTable()
       Author = (GivenName + QString(" ") + FamilyName);
     }
 
-  for (row = 0; row < mpUndoStack->count(); row++)
+  CUndoStack::const_iterator it = mpUndoStack->begin();
+  CUndoStack::const_iterator end = mpUndoStack->end();
+
+  for (; it != end; ++it)
     {
-      const QUndoCommand *cmd = mpUndoStack->command(row);
-      const CCopasiUndoCommand *cCommand = dynamic_cast<const CCopasiUndoCommand*>(cmd);
-      Name = QString(FROM_UTF8(cCommand->getName()));
+      Name = QString(FROM_UTF8((*it)->getObjectCN(true)));
 
       // This part should be replaced by COPASI Object Name
-      // Currenyly Displayed Name is used to fill the Entity Dialog table
+      // Currently Displayed Name is used to fill the Entity Dialog table
       if (Name == mEntityName)
         {
-          Action = QString(FROM_UTF8(cCommand->getAction()));
+          switch ((*it)->getType())
+            {
+              case CUndoData::Type::CHANGE:
+                Action = QString("Update");
+                break;
 
-          if (Action == "Add to list")
-            {
-              Action = QString("Insert");
-            }
-          else if (Action == "Delete set")
-            {
-              Action = QString("Delete");
-            }
-          else if (Action == "Change")
-            {
-              Action = QString("Update");
-            }
-          else
-            {
-              break;
+              case CUndoData::Type::INSERT:
+                Action = QString("Insert");
+                break;
+
+              case CUndoData::Type::REMOVE:
+                Action = QString("Delete");
+                break;
             }
 
           Property = QString(FROM_UTF8(cCommand->getProperty()));

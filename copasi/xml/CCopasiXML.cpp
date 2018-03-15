@@ -126,7 +126,7 @@ bool CCopasiXML::save(std::ostream & os,
              << CVersion::VERSION.getVersion()
              << " (http://www.copasi.org) at "
              << UTCTimeStamp()
-             << " UTC -->"
+             << " -->"
              << std::endl;
 
   *mpOstream << "<?oxygen RNGSchema=\"http://www.copasi.org/static/schema/CopasiML.rng\" type=\"xml\"?>" << std::endl;
@@ -872,8 +872,8 @@ bool CCopasiXML::saveModel()
               if ((jmax = pReaction->getFunctionParameters().size()))
                 {
                   startSaveElement("ListOfCallParameters");
-                  const std::vector< std::vector<std::string> > & rMap =
-                    pReaction->getParameterMappings();
+                  const std::vector< std::vector< const CDataObject * > > & rMap =
+                    pReaction->getParameterObjects();
 
                   for (j = 0; j < jmax; j++)
                     {
@@ -888,7 +888,7 @@ bool CCopasiXML::saveModel()
 
                       for (k = 0, kmax = rMap[j].size(); k < kmax; k++)
                         {
-                          Attr.setValue(0, rMap[j][k]);
+                          Attr.setValue(0, rMap[j][k]->getKey());
                           saveElement("SourceParameter", Attr);
                         }
 
@@ -975,9 +975,12 @@ bool CCopasiXML::saveModel()
 
           if (Assignments.size() > 0)
             {
+              CDataModel * pDataModel = Assignments.getObjectDataModel();
+
               startSaveElement("ListOfAssignments");
 
               CXMLAttributeList Attr;
+              Attr.add("target", "");
               Attr.add("targetKey", "");
 
               CDataVectorN< CEventAssignment >::const_iterator it = Assignments.begin();
@@ -985,7 +988,8 @@ bool CCopasiXML::saveModel()
 
               for (; it != end; ++it)
                 {
-                  Attr.setValue(0, it->getTargetKey());
+                  Attr.setValue(0, it->getTargetCN());
+                  Attr.setValue(1, CObjectInterface::DataObject(pDataModel->getObject(it->getTargetCN()))->getKey());
 
                   startSaveElement("Assignment", Attr);
 
@@ -1150,7 +1154,7 @@ bool CCopasiXML::saveModelParameter(const CModelParameter * pModelParameter)
 {
   // We do not save model parameters which are marked missing to preserve
   // their missing state.
-  if (pModelParameter->getCompareResult() == CModelParameter::Missing)
+  if (pModelParameter->getCompareResult() == CModelParameter::CompareResult::Missing)
     {
       return true;
     }
@@ -1159,8 +1163,8 @@ bool CCopasiXML::saveModelParameter(const CModelParameter * pModelParameter)
 
   CXMLAttributeList Attributes;
 
-  if (pModelParameter->getType() != CModelParameter::Reaction &&
-      pModelParameter->getType() != CModelParameter::Group)
+  if (pModelParameter->getType() != CModelParameter::Type::Reaction &&
+      pModelParameter->getType() != CModelParameter::Type::Group)
     {
       Attributes.add("cn", pModelParameter->getCN());
       Attributes.add("value", pModelParameter->getValue(CCore::Framework::ParticleNumbers));
@@ -2157,7 +2161,7 @@ void CCopasiXML::fixBuild113()
 
           if (Compartments.size() == 1)
             {
-              it->setKineticLawUnitType(CReaction::ConcentrationPerTime);
+              it->setKineticLawUnitType(CReaction::KineticLawUnit::ConcentrationPerTime);
             }
         }
     }

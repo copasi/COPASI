@@ -32,15 +32,15 @@ CQUndoDM::CQUndoDM(QObject *parent, CDataModel * pDataModel, QTableView * pTable
       mpUndoStack = mpDataModel->getUndoStack();
     }
 
-  mIgnoredProperties.insert(CData::PropertyName[CData::Property::OBJECT_PARENT_CN]);
-  mIgnoredProperties.insert(CData::PropertyName[CData::Property::OBJECT_TYPE]);
-  mIgnoredProperties.insert(CData::PropertyName[CData::Property::OBJECT_FLAG]);
-  mIgnoredProperties.insert(CData::PropertyName[CData::Property::OBJECT_INDEX]);
-  mIgnoredProperties.insert(CData::PropertyName[CData::Property::OBJECT_REFERENCES]);
-  mIgnoredProperties.insert(CData::PropertyName[CData::Property::OBJECT_REFERENCE]);
-  mIgnoredProperties.insert(CData::PropertyName[CData::Property::OBJECT_REFERENCE_CN]);
-  mIgnoredProperties.insert(CData::PropertyName[CData::Property::OBJECT_REFERENCE_INDEX]);
-  mIgnoredProperties.insert(CData::PropertyName[CData::Property::OBJECT_POINTER]);
+  mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_PARENT_CN]);
+  mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_TYPE]);
+  mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_FLAG]);
+  mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_INDEX]);
+  mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_REFERENCES]);
+  mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_REFERENCE]);
+  mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_REFERENCE_CN]);
+  mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_REFERENCE_INDEX]);
+  mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_POINTER]);
 
   assert(mpUndoStack != NULL);
 }
@@ -88,7 +88,8 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
   switch (static_cast< ColumnType >(index.column()))
     {
       case ColumnType::Apply:
-        return index.row() <= mpUndoStack->currentIndex() ? QVariant("Undo") : QVariant("Redo");
+        return (index.row() <= mpUndoStack->currentIndex() &&
+                mpUndoStack->currentIndex() != C_INVALID_INDEX) ? QVariant("Undo") : QVariant("Redo");
         break;
 
       case ColumnType::ObjectType:
@@ -178,6 +179,23 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
           }
 
         break;
+
+      case ColumnType::Author:
+        // We need to resolve this for provenance
+      {
+        QVariant Value;
+        Value.setValue(UndoData.getAuthorID());
+        return Value;
+      }
+      break;
+
+      case ColumnType::Time:
+      {
+        QVariant Value;
+        Value.setValue(UndoData.getTime());
+        return Value;
+      }
+      break;
     }
 
   return QVariant();
@@ -246,13 +264,13 @@ bool CQUndoDM::setData(const QModelIndex &index, const QVariant &value, int role
 }
 
 // virtual
-bool CQUndoDM::insertRows(int position, int rows, const QModelIndex & source)
+bool CQUndoDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
   return false;
 }
 
 // virtual
-bool CQUndoDM::removeRows(int position, int rows)
+bool CQUndoDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   return false;
 }

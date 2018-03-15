@@ -143,14 +143,14 @@ int main()
   size_t index = pFunction->getVariableIndex("temp");
   assert(index != C_INVALID_INDEX);
   CFunctionParameter* pParam = variables[index];
-  assert(pParam->getUsage() == CFunctionParameter::VARIABLE);
+  assert(pParam->getUsage() == CFunctionParameter::Role::VARIABLE);
   // This is correct for temp, but substrate should get the usage SUBSTRATE in order
   // for us to use the function with the reaction created above
   // So we need to set the usage for "substrate" manually
   index = pFunction->getVariableIndex("substrate");
   assert(index != C_INVALID_INDEX);
   pParam = variables[index];
-  pParam->setUsage(CFunctionParameter::SUBSTRATE);
+  pParam->setUsage(CFunctionParameter::Role::SUBSTRATE);
 
   // set the rate law for the reaction
   pReaction->setFunction(pFunction);
@@ -159,8 +159,12 @@ int main()
   // COPASI also needs to know what object it has to assocuiate with the individual function parameters
   // In our case we need to tell COPASI that substrate is to be replaced by the substrate of the reaction
   // and temp is to be replaced by the global parameter K
-  pReaction->setParameterMapping("substrate", pS->getKey());
-  pReaction->setParameterMapping("temp", pMV->getKey());
+  std::vector< const CDataObject * > Objects(1, pS);
+  pReaction->setParameterObjects("substrate", Objects);
+  Objects.clear();
+
+  Objects.push_back(pMV);
+  pReaction->setParameterObjects("temp", Objects);
 
   // finally compile the model
   // compile needs to be done before updating all initial values for

@@ -40,12 +40,12 @@ public:
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
   void setListOfLayouts(CListOfLayouts * pListOfLayouts);
 
-  virtual bool insertRows(int position, int rows, const QModelIndex & source);
+  virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 
   virtual bool clear();
 
 protected:
-  virtual bool removeRows(int position, int rows);
+  virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 
 private:
   CListOfLayouts * mpListOfLayouts;

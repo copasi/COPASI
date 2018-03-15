@@ -132,7 +132,10 @@ void CFixLocalReactionParameters::changeModel()
           // If the parameter is actually used in the reaction
           // it is changed to the global quantity.
           if (pReaction->isLocalParameter(pParameter->getObjectName()))
-            pReaction->setParameterMapping(pParameter->getObjectName(), pModelValue->getKey());
+            {
+              std::vector< const CDataObject * > Objects(1, pModelValue);
+              pReaction->setParameterObjects(pParameter->getObjectName(), Objects);
+            }
 
           Message << "  " << pParameter->getObjectName() << " in " << pReaction->getObjectName()
                   << " is replaced by " << pModelValue->getObjectName() << std::endl;

@@ -260,7 +260,7 @@ bool CQTSSAWidget::taskFinishedEvent()
   mpTSSResultSubWidget->discardOldResults();
 
   mpTSSResultSubWidget->displayResult();
-  mpListView->switchToOtherWidget(271, ""); //change to the results window
+  mpListView->switchToOtherWidget(271, std::string()); //change to the results window
 
   return true;
 }

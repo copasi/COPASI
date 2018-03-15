@@ -38,11 +38,11 @@ Worker::Worker(CopasiUI3Window *window, Arguments *args) : mTaskStarted(false)
 
   // connect the finish slot, so it will switch to the correct tab
   connect(mpDataModel, SIGNAL(finished(bool)), this, SLOT(finishedLoading(bool)));
-  connect(mpDataModel, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, std::string)),
-          this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, std::string)));
+  connect(mpDataModel, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CCommonName & cn)),
+          this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName & cn)));
 }
 
-bool Worker::slotNotify(ListViews::ObjectType objectType, ListViews::Action action, std::string key /*= ""*/)
+bool Worker::slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
 
   if (objectType == ListViews::STATE && action == ListViews::CHANGE && mTaskStarted)

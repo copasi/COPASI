@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -50,9 +50,7 @@ void CQSteadyStateResult::init()
   mUpToDate = false;
 }
 
-bool CQSteadyStateResult::update(ListViews::ObjectType objectType,
-                                 ListViews::Action /* action */,
-                                 const std::string & /* key */)
+bool CQSteadyStateResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (objectType != ListViews::STATE)
     mUpToDate = false;
@@ -60,7 +58,7 @@ bool CQSteadyStateResult::update(ListViews::ObjectType objectType,
   return true;
 }
 
-bool CQSteadyStateResult::leave()
+bool CQSteadyStateResult::leaveProtected()
 {
   return true;
 }
@@ -135,6 +133,6 @@ void CQSteadyStateResult::slotUpdateModel()
           mpTask->setUpdateModel(false);
         }
 
-      protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getKey());
+      protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
     }
 }

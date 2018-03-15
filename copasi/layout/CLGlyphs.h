@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,7 +45,7 @@ public:
    * @param const CData & data
    * @return CLMetabGlyph * pDataObject
    */
-  static CLMetabGlyph * fromData(const CData & data);
+  static CLMetabGlyph * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -58,7 +58,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
   CLMetabGlyph(const std::string & name = "MetabGlyph",
                const CDataContainer * pParent = NO_PARENT);
@@ -112,7 +112,7 @@ public:
    * @param const CData & data
    * @return CLCompartmentGlyph * pDataObject
    */
-  static CLCompartmentGlyph * fromData(const CData & data);
+  static CLCompartmentGlyph * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -125,7 +125,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
   CLCompartmentGlyph(const std::string & name = "CompartmentGlyph",
                      const CDataContainer * pParent = NO_PARENT);
@@ -193,7 +193,7 @@ public:
    * @param const CData & data
    * @return CLTextGlyph * pDataObject
    */
-  static CLTextGlyph * fromData(const CData & data);
+  static CLTextGlyph * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -206,7 +206,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
   CLTextGlyph(const std::string & name = "TextGlyph",
               const CDataContainer * pParent = NO_PARENT);

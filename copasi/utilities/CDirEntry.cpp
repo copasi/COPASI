@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,6 +20,7 @@
 #include <algorithm>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 
 #ifdef WIN32
 # include <io.h>
@@ -202,13 +208,21 @@ bool CDirEntry::createDir(const std::string & dir,
 std::string CDirEntry::createTmpName(const std::string & dir,
                                      const std::string & suffix)
 {
+  if (!isDir(dir) || !isWritable(dir))
+    {
+      return "";
+    }
+
   CRandom * pRandom = CRandom::createGenerator();
 
-  std::string RandomName;
+  CLocaleString Path = CLocaleString::fromUtf8(dir);
+  std::string TmpName;
+  int FD = 0;
 
   do
     {
-      RandomName = dir + Separator;
+      TmpName = Path.c_str() + Separator;
+
       unsigned C_INT32 Char;
 
       for (size_t i = 0; i < 8; i++)
@@ -216,18 +230,51 @@ std::string CDirEntry::createTmpName(const std::string & dir,
           Char = pRandom->getRandomU(35);
 
           if (Char < 10)
-            RandomName += '0' + Char;
+            TmpName += '0' + Char;
           else
-            RandomName += 'a' - 10 + Char;
+            TmpName += 'a' - 10 + Char;
         }
 
-      RandomName += suffix;
+      TmpName += suffix;
     }
-  while (exist(RandomName));
+
+#ifdef WIN32
+
+  while ((FD = _creat(TmpName.c_str(), _S_IREAD | _S_IWRITE)) == 0);
+
+  _close(FD);
+#else
+
+  while ((FD = creat(TmpName.c_str(), S_IRWXU)) == 0);
+
+  close(FD);
+#endif
 
   pdelete(pRandom);
 
-  return RandomName;
+  return TmpName;
+}
+
+bool CDirEntry::copy(const std::string & from,
+                     const std::string & to)
+{
+  if (!isFile(from)) return false;
+
+  std::string To = to;
+
+  // Check whether To is a directory and append the
+  // filename of from
+  if (isDir(To))
+    To += Separator + fileName(from);
+
+  if (isDir(To)) return false;
+
+  std::ifstream in(CLocaleString::fromUtf8(from).c_str(), std::ios::in | std::ios::binary);
+  std::ofstream out(CLocaleString::fromUtf8(To).c_str(), std::ios::out | std::ios::binary);
+
+  out << in.rdbuf();
+
+  return out.good();
 }
 
 bool CDirEntry::move(const std::string & from,
@@ -258,8 +305,8 @@ bool CDirEntry::move(const std::string & from,
   if (!success)
     {
       {
-        std::ifstream in(CLocaleString::fromUtf8(from).c_str());
-        std::ofstream out(CLocaleString::fromUtf8(To).c_str());
+        std::ifstream in(CLocaleString::fromUtf8(from).c_str(), std::ios::in | std::ios::binary);
+        std::ofstream out(CLocaleString::fromUtf8(To).c_str(), std::ios::out | std::ios::binary);
 
         out << in.rdbuf();
 
@@ -297,7 +344,7 @@ bool CDirEntry::removeFiles(const std::string & pattern,
 
 #ifdef WIN32
 
-  // We want the same pattern matching behaviour for all platforms.
+  // We want the same pattern matching behavior for all platforms.
   // Therefore, we do not use the MS provided one and list all files instead.
   std::string FilePattern = path + "\\*";
 
@@ -313,22 +360,7 @@ bool CDirEntry::removeFiles(const std::string & pattern,
 
       if (match(Utf8, PatternList))
         {
-          if (Entry.attrib | _A_NORMAL)
-            {
-#ifdef WIN32
-
-              if (_wremove(CLocaleString::fromUtf8(path + Separator + Utf8).c_str()) != 0) success = false;
-
-#else
-
-              if (::remove(CLocaleString::fromUtf8(path + Separator + Utf8).c_str()) != 0) success = false;
-
-#endif
-            }
-          else
-            {
-              if (rmdir(CLocaleString::fromUtf8(path + Separator + Utf8).c_str()) != 0) success = false;
-            }
+          success &= remove(path + Separator + Utf8);
         }
     }
   while (_wfindnext(hList, &Entry) == 0);
@@ -349,16 +381,7 @@ bool CDirEntry::removeFiles(const std::string & pattern,
 
       if (match(Utf8, PatternList))
         {
-          if (isDir(Utf8))
-            {
-              if (rmdir(CLocaleString::fromUtf8(path + Separator + Utf8).c_str()) != 0)
-                success = false;
-            }
-          else
-            {
-              if (::remove(CLocaleString::fromUtf8(path + Separator + Utf8).c_str()) != 0)
-                success = false;
-            }
+          success &= remove(path + Separator + Utf8);
         }
     }
 
@@ -376,7 +399,7 @@ std::vector< std::string > CDirEntry::compilePattern(const std::string & pattern
   std::string::size_type end = 0;
   std::vector< std::string > PatternList;
 
-  while (pos != std::string::npos)
+  while (pos < pattern.length())
     {
       start = pos;
       pos = pattern.find_first_of("*?", pos);
@@ -398,6 +421,9 @@ std::vector< std::string > CDirEntry::compilePattern(const std::string & pattern
 bool CDirEntry::match(const std::string & name,
                       const std::vector< std::string > & patternList)
 {
+  // We ignore . and ..
+  if (name == "." || name == "..") return false;
+
   std::vector< std::string >::const_iterator it = patternList.begin();
   std::vector< std::string >::const_iterator end = patternList.end();
   std::string::size_type at = 0;

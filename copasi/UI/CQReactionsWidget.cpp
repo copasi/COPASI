@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,14 +53,15 @@ CQReactionsWidget::CQReactionsWidget(QWidget *parent, const char *name)
   mpTblReactions->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   setFramework(mFramework);
   // Connect the table widget
-  connect(mpReactionDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpReactionDM, SIGNAL(signalNotifyChanges(const CUndoData::ChangeSet &)),
+          this, SLOT(slotNotifyChanges(const CUndoData::ChangeSet &)));
+  connect(mpReactionDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpReactionDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
   CopasiUI3Window   *pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
-  mpReactionDM->setUndoStack(pWindow->getUndoStack());
 }
 
 /*
@@ -100,7 +101,7 @@ void CQReactionsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQReactionsWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
+bool CQReactionsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {
@@ -115,7 +116,7 @@ bool CQReactionsWidget::update(ListViews::ObjectType objectType, ListViews::Acti
   return true;
 }
 
-bool CQReactionsWidget::leave()
+bool CQReactionsWidget::leaveProtected()
 {
   return true;
 }
@@ -194,16 +195,13 @@ void CQReactionsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(mpDataModel != NULL);
-  CModel *pModel = mpDataModel->getModel();
+  CDataVector < CReaction > * pVector = dynamic_cast< CDataVector < CReaction > * >(mpObject);
 
-  if (pModel == NULL)
-    return;
-
-  std::string key = pModel->getReactions()[index.row()].getKey();
-
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  if (pVector != NULL &&
+      index.row() < pVector->size())
+    {
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, pVector->operator [](index.row()).getCN());
+    }
 }
 
 void CQReactionsWidget::keyPressEvent(QKeyEvent *ev)
@@ -249,6 +247,7 @@ void CQReactionsWidget::slotFilterChanged()
 void CQReactionsWidget::setFramework(int framework)
 {
   CopasiWidget::setFramework(framework);
+  mpReactionDM->setFramework(framework);
 
   switch (mFramework)
     {

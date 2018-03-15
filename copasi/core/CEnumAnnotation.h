@@ -7,6 +7,7 @@
 #define COPASI_CEnumAnnotation
 
 #include <array>
+#include <map>
 
 template < class Type, class Enum > class CEnumAnnotation
   : public std::array< Type, static_cast< size_t >(Enum::__SIZE) >
@@ -17,11 +18,13 @@ public:
    */
   typedef std::array< Type, static_cast< size_t >(Enum::__SIZE) > base;
 
+private:
   /**
    * Default constructor
    */
   CEnumAnnotation():
-    base()
+    base(),
+    mMap()
   {
     base::fill(Type());
   }
@@ -30,16 +33,24 @@ public:
    * Disable the copy constructor
    */
   CEnumAnnotation(const CEnumAnnotation & src):
-    base(src)
+    base(src),
+    mMap(src.mMap)
   {}
 
+public:
   /**
    * Specific constructor from the base class
    * @param const base & src
    */
   CEnumAnnotation(typename std::enable_if < !(std::is_same< Type, const char * >::value || std::is_const< Type >::value), const base & >::type src):
-    base(src)
-  {}
+    base(src),
+    mMap()
+  {
+    for (size_t i = 0; i < static_cast< size_t >(Enum::__SIZE); ++i)
+      {
+        mMap[base::at(i)] = static_cast< Enum >(i);
+      }
+  }
 
   /**
    * Operator []
@@ -68,14 +79,18 @@ public:
    */
   Enum toEnum(const Type & annotation, Enum enumDefault = Enum::__SIZE) const
   {
-    for (size_t i = 0; i < static_cast< size_t >(Enum::__SIZE); ++i)
-      if (annotation == base::at(i))
-        {
-          return static_cast< Enum >(i);
-        }
+    typename std::map< Type, Enum >::const_iterator Found = mMap.find(annotation);
+
+    if (Found != mMap.end())
+      {
+        return Found->second;
+      }
 
     return enumDefault;
   }
+
+private:
+  std::map< Type, Enum > mMap;
 };
 
 #endif // COPASI_CEnumAnnotation

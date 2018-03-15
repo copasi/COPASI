@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -132,7 +132,7 @@ CEvaluationTree::copy(const CEvaluationTree & src)
   return pNew;
 }
 
-CEvaluationTree * CEvaluationTree::fromData(const CData & data)
+CEvaluationTree * CEvaluationTree::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   CEvaluationTree * pNew = create((CEvaluationTree::Type) data.getProperty(CData::EVALUATION_TREE_TYPE).toUint());
 
@@ -156,7 +156,7 @@ CData CEvaluationTree::toData() const
 }
 
 // virtual
-bool CEvaluationTree::applyData(const CData & data)
+bool CEvaluationTree::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

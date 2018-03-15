@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,8 +37,10 @@
 #include "report/CKeyFactory.h"
 #include "copasi/core/CDataObjectReference.h"
 #include "copasi/core/CRootContainer.h"
+#include "copasi/undo/CUndoData.h"
 
-const std::string CCopasiParameter::TypeName[] =
+// static
+const CEnumAnnotation< std::string, CCopasiParameter::Type > CCopasiParameter::TypeName(
 {
   "float",
   "unsigned float",
@@ -50,11 +52,11 @@ const std::string CCopasiParameter::TypeName[] =
   "common name",
   "key",
   "file",
-  "expression",
-  ""
-};
+  "expression"
+});
 
-const char* CCopasiParameter::XMLType[] =
+// static
+const CEnumAnnotation< std::string, CCopasiParameter::Type > CCopasiParameter::XMLType(
 {
   "float",
   "unsignedFloat",
@@ -66,19 +68,19 @@ const char* CCopasiParameter::XMLType[] =
   "cn",
   "key",
   "file",
-  "expression",
-  NULL
-};
+  "expression"
+});
 
 // static
-CCopasiParameter * CCopasiParameter::fromData(const CData & data)
+CCopasiParameter * CCopasiParameter::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   CCopasiParameter * pNew = NULL;
 
-  if (CCopasiParameter::GROUP != (Type) data.getProperty(CData::PARAMETER_TYPE).toUint())
+  CCopasiParameter::Type Type = CCopasiParameter::TypeName.toEnum(data.getProperty(CData::PARAMETER_TYPE).toString());
+
+  if (CCopasiParameter::Type::GROUP != Type)
     {
-      pNew = new CCopasiParameter(data.getProperty(CData::OBJECT_NAME).toString(),
-                                  (CCopasiParameter::Type) data.getProperty(CData::PARAMETER_TYPE).toUint());
+      pNew = new CCopasiParameter(data.getProperty(CData::OBJECT_NAME).toString(), Type);
     }
   else
     {
@@ -93,37 +95,37 @@ CData CCopasiParameter::toData() const
 {
   CData Data = CDataContainer::toData();
 
-  Data.addProperty(CData::PARAMETER_TYPE, (unsigned C_INT32) mType);
+  Data.addProperty(CData::PARAMETER_TYPE, CCopasiParameter::TypeName[mType]);
 
   switch (mType)
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
         Data.addProperty(CData::PARAMETER_VALUE, * static_cast< C_FLOAT64 * >(mpValue));
         break;
 
-      case CCopasiParameter::INT:
+      case CCopasiParameter::Type::INT:
         Data.addProperty(CData::PARAMETER_VALUE, * static_cast< C_INT32 * >(mpValue));
         break;
 
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::UINT:
         Data.addProperty(CData::PARAMETER_VALUE, * static_cast< unsigned C_INT32 * >(mpValue));
         break;
 
-      case CCopasiParameter::BOOL:
+      case CCopasiParameter::Type::BOOL:
         Data.addProperty(CData::PARAMETER_VALUE, * static_cast< bool * >(mpValue));
         break;
 
-      case CCopasiParameter::STRING:
-      case CCopasiParameter::KEY:
-      case CCopasiParameter::FILE:
-      case CCopasiParameter::EXPRESSION:
-      case CCopasiParameter::CN:
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::KEY:
+      case CCopasiParameter::Type::FILE:
+      case CCopasiParameter::Type::EXPRESSION:
+      case CCopasiParameter::Type::CN:
         Data.addProperty(CData::PARAMETER_VALUE, * static_cast< std::string * >(mpValue));
         break;
 
-      case CCopasiParameter::GROUP:
-      case CCopasiParameter::INVALID:
+      case CCopasiParameter::Type::GROUP:
+      case CCopasiParameter::Type::INVALID:
         break;
     }
 
@@ -131,15 +133,15 @@ CData CCopasiParameter::toData() const
 }
 
 // virtual
-bool CCopasiParameter::applyData(const CData & data)
+bool CCopasiParameter::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CDataContainer::applyData(data);
+  bool success = CDataContainer::applyData(data, changes);
 
   Type DataType = mType;
 
   if (data.isSetProperty(CData::PARAMETER_TYPE))
     {
-      DataType = (Type) data.getProperty(CData::PARAMETER_TYPE).toUint();
+      DataType = CCopasiParameter::TypeName.toEnum(data.getProperty(CData::PARAMETER_TYPE).toString());
     }
 
   const CDataValue * pValue = NULL;
@@ -151,11 +153,11 @@ bool CCopasiParameter::applyData(const CData & data)
 
   switch (DataType)
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
 
-        if (mType != DOUBLE &&
-            mType != UDOUBLE)
+        if (mType != CCopasiParameter::Type::DOUBLE &&
+            mType != CCopasiParameter::Type::UDOUBLE)
           {
             deleteValue(mType, mpValue);
             deleteValidValues(mType, mpValidValues);
@@ -174,11 +176,11 @@ bool CCopasiParameter::applyData(const CData & data)
 
         break;
 
-      case CCopasiParameter::INT:
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::INT:
+      case CCopasiParameter::Type::UINT:
 
-        if (mType != INT &&
-            mType != UINT)
+        if (mType != CCopasiParameter::Type::INT &&
+            mType != CCopasiParameter::Type::UINT)
           {
             deleteValue(mType, mpValue);
             deleteValidValues(mType, mpValidValues);
@@ -197,13 +199,13 @@ bool CCopasiParameter::applyData(const CData & data)
 
         break;
 
-      case CCopasiParameter::BOOL:
+      case CCopasiParameter::Type::BOOL:
 
-        if (mType != BOOL)
+        if (mType != CCopasiParameter::Type::BOOL)
           {
             deleteValue(mType, mpValue);
             deleteValidValues(mType, mpValidValues);
-            mType = BOOL;
+            mType = CCopasiParameter::Type::BOOL;
             createValue(NULL);
           }
 
@@ -214,15 +216,15 @@ bool CCopasiParameter::applyData(const CData & data)
 
         break;
 
-      case CCopasiParameter::STRING:
-      case CCopasiParameter::KEY:
-      case CCopasiParameter::FILE:
-      case CCopasiParameter::EXPRESSION:
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::KEY:
+      case CCopasiParameter::Type::FILE:
+      case CCopasiParameter::Type::EXPRESSION:
 
-        if (mType != STRING &&
-            mType != KEY &&
-            mType != FILE &&
-            mType != EXPRESSION)
+        if (mType != CCopasiParameter::Type::STRING &&
+            mType != CCopasiParameter::Type::KEY &&
+            mType != CCopasiParameter::Type::FILE &&
+            mType != CCopasiParameter::Type::EXPRESSION)
           {
             deleteValue(mType, mpValue);
             deleteValidValues(mType, mpValidValues);
@@ -241,13 +243,13 @@ bool CCopasiParameter::applyData(const CData & data)
 
         break;
 
-      case CCopasiParameter::CN:
+      case CCopasiParameter::Type::CN:
 
-        if (mType != CN)
+        if (mType != CCopasiParameter::Type::CN)
           {
             deleteValue(mType, mpValue);
             deleteValidValues(mType, mpValidValues);
-            mType = CN;
+            mType = CCopasiParameter::Type::CN;
             createValue(NULL);
           }
 
@@ -258,23 +260,23 @@ bool CCopasiParameter::applyData(const CData & data)
 
         break;
 
-      case CCopasiParameter::GROUP:
+      case CCopasiParameter::Type::GROUP:
 
-        if (mType != GROUP)
+        if (mType != CCopasiParameter::Type::GROUP)
           {
             deleteValue(mType, mpValue);
-            mType = GROUP;
+            mType = CCopasiParameter::Type::GROUP;
             createValue(NULL);
           }
 
         break;
 
-      case CCopasiParameter::INVALID:
+      case CCopasiParameter::Type::INVALID:
 
-        if (mType != INVALID)
+        if (mType != CCopasiParameter::Type::INVALID)
           {
             deleteValue(mType, mpValue);
-            mType = INVALID;
+            mType = CCopasiParameter::Type::INVALID;
             createValue(NULL);
           }
 
@@ -284,10 +286,60 @@ bool CCopasiParameter::applyData(const CData & data)
   return success;
 }
 
+// virtual
+void CCopasiParameter::createUndoData(CUndoData & undoData,
+                                      const CUndoData::Type & type,
+                                      const CData & oldData,
+                                      const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::PARAMETER_TYPE, oldData.getProperty(CData::PARAMETER_TYPE), CCopasiParameter::TypeName[mType]);
+
+  switch (mType)
+    {
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
+        undoData.addProperty(CData::PARAMETER_VALUE, oldData.getProperty(CData::PARAMETER_VALUE), * static_cast< C_FLOAT64 * >(mpValue));
+        break;
+
+      case CCopasiParameter::Type::INT:
+        undoData.addProperty(CData::PARAMETER_VALUE, oldData.getProperty(CData::PARAMETER_VALUE), * static_cast< C_INT32 * >(mpValue));
+        break;
+
+      case CCopasiParameter::Type::UINT:
+        undoData.addProperty(CData::PARAMETER_VALUE, oldData.getProperty(CData::PARAMETER_VALUE), * static_cast< unsigned C_INT32 * >(mpValue));
+        break;
+
+      case CCopasiParameter::Type::BOOL:
+        undoData.addProperty(CData::PARAMETER_VALUE, oldData.getProperty(CData::PARAMETER_VALUE), * static_cast< bool * >(mpValue));
+        break;
+
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::KEY:
+      case CCopasiParameter::Type::FILE:
+      case CCopasiParameter::Type::EXPRESSION:
+      case CCopasiParameter::Type::CN:
+        undoData.addProperty(CData::PARAMETER_VALUE, oldData.getProperty(CData::PARAMETER_VALUE), * static_cast< std::string * >(mpValue));
+        break;
+
+      case CCopasiParameter::Type::GROUP:
+      case CCopasiParameter::Type::INVALID:
+        break;
+    }
+
+  return;
+}
+
 CCopasiParameter::CCopasiParameter():
   CDataContainer("NoName", NULL, "Parameter"),
   mKey(CRootContainer::getKeyFactory()->add("Parameter", this)),
-  mType(INVALID),
+  mType(CCopasiParameter::Type::INVALID),
   mSize(0),
   mpValue(NULL),
   mpValueReference(NULL),
@@ -316,10 +368,10 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
                                    const CDataContainer * pParent,
                                    const std::string & objectType):
   CDataContainer(name, pParent, objectType,
-                 ((type == DOUBLE || type == UDOUBLE) ? CDataObject::ValueDbl :
-                  ((type == INT || type == UINT) ? CDataObject::ValueInt :
-                   ((type == STRING || type == CN || type == KEY || type == FILE || type == EXPRESSION) ? CDataObject::ValueString :
-                    (type == BOOL) ? CDataObject::ValueBool : CDataObject::Container)))),
+                 ((type == CCopasiParameter::Type::DOUBLE || type == CCopasiParameter::Type::UDOUBLE) ? CDataObject::ValueDbl :
+                  ((type == CCopasiParameter::Type::INT || type == CCopasiParameter::Type::UINT) ? CDataObject::ValueInt :
+                   ((type == CCopasiParameter::Type::STRING || type == CCopasiParameter::Type::CN || type == CCopasiParameter::Type::KEY || type == CCopasiParameter::Type::FILE || type == CCopasiParameter::Type::EXPRESSION) ? CDataObject::ValueString :
+                    (type == CCopasiParameter::Type::BOOL) ? CDataObject::ValueBool : CDataObject::Container)))),
   mKey(CRootContainer::getKeyFactory()->add(objectType, this)),
   mType(type),
   mSize(0),
@@ -353,11 +405,11 @@ CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)
 
   switch (rhs.mType)
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
 
-        if (mType != DOUBLE &&
-            mType != UDOUBLE)
+        if (mType != CCopasiParameter::Type::DOUBLE &&
+            mType != CCopasiParameter::Type::UDOUBLE)
           {
             deleteValue(mType, mpValue);
             deleteValidValues(mType, mpValidValues);
@@ -372,11 +424,11 @@ CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)
         assignValidValues(rhs.mpValidValues);
         break;
 
-      case CCopasiParameter::INT:
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::INT:
+      case CCopasiParameter::Type::UINT:
 
-        if (mType != INT &&
-            mType != UINT)
+        if (mType != CCopasiParameter::Type::INT &&
+            mType != CCopasiParameter::Type::UINT)
           {
             deleteValue(mType, mpValue);
             deleteValidValues(mType, mpValidValues);
@@ -391,28 +443,28 @@ CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)
         assignValidValues(rhs.mpValidValues);
         break;
 
-      case CCopasiParameter::BOOL:
+      case CCopasiParameter::Type::BOOL:
 
-        if (mType != BOOL)
+        if (mType != CCopasiParameter::Type::BOOL)
           {
             deleteValue(mType, mpValue);
             deleteValidValues(mType, mpValidValues);
-            mType = BOOL;
+            mType = CCopasiParameter::Type::BOOL;
           }
 
         assignValue(rhs.mpValue);
         assignValidValues(rhs.mpValidValues);
         break;
 
-      case CCopasiParameter::STRING:
-      case CCopasiParameter::KEY:
-      case CCopasiParameter::FILE:
-      case CCopasiParameter::EXPRESSION:
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::KEY:
+      case CCopasiParameter::Type::FILE:
+      case CCopasiParameter::Type::EXPRESSION:
 
-        if (mType != STRING &&
-            mType != KEY &&
-            mType != FILE &&
-            mType != EXPRESSION)
+        if (mType != CCopasiParameter::Type::STRING &&
+            mType != CCopasiParameter::Type::KEY &&
+            mType != CCopasiParameter::Type::FILE &&
+            mType != CCopasiParameter::Type::EXPRESSION)
           {
             deleteValue(mType, mpValue);
             deleteValidValues(mType, mpValidValues);
@@ -427,25 +479,25 @@ CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)
         assignValidValues(rhs.mpValidValues);
         break;
 
-      case CCopasiParameter::CN:
+      case CCopasiParameter::Type::CN:
 
-        if (mType != CN)
+        if (mType != CCopasiParameter::Type::CN)
           {
             deleteValue(mType, mpValue);
             deleteValidValues(mType, mpValidValues);
-            mType = CN;
+            mType = CCopasiParameter::Type::CN;
           }
 
         assignValue(rhs.mpValue);
         assignValidValues(rhs.mpValidValues);
         break;
 
-      case CCopasiParameter::GROUP:
+      case CCopasiParameter::Type::GROUP:
 
-        if (mType != GROUP)
+        if (mType != CCopasiParameter::Type::GROUP)
           {
             deleteValue(mType, mpValue);
-            mType = GROUP;
+            mType = CCopasiParameter::Type::GROUP;
             createValue(rhs.mpValue);
           }
 
@@ -453,12 +505,12 @@ CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)
 
         break;
 
-      case CCopasiParameter::INVALID:
+      case CCopasiParameter::Type::INVALID:
 
-        if (mType != INVALID)
+        if (mType != CCopasiParameter::Type::INVALID)
           {
             deleteValue(mType, mpValue);
-            mType = INVALID;
+            mType = CCopasiParameter::Type::INVALID;
             createValue(rhs.mpValue);
           }
 
@@ -486,9 +538,9 @@ const CCopasiParameter::Type & CCopasiParameter::getType() const
 
 bool CCopasiParameter::isValidValue(const C_FLOAT64 & value) const
 {
-  if ((mType != CCopasiParameter::DOUBLE &&
-       mType != CCopasiParameter::UDOUBLE) ||
-      (mType == CCopasiParameter::UDOUBLE &&
+  if ((mType != CCopasiParameter::Type::DOUBLE &&
+       mType != CCopasiParameter::Type::UDOUBLE) ||
+      (mType == CCopasiParameter::Type::UDOUBLE &&
        value < 0.0)) return false;
 
   return inValidValues(value);
@@ -496,47 +548,47 @@ bool CCopasiParameter::isValidValue(const C_FLOAT64 & value) const
 
 bool CCopasiParameter::isValidValue(const C_INT32 & value) const
 {
-  if (mType != CCopasiParameter::INT) return false;
+  if (mType != CCopasiParameter::Type::INT) return false;
 
   return inValidValues(value);
 }
 
 bool CCopasiParameter::isValidValue(const unsigned C_INT32 & value) const
 {
-  if (mType != CCopasiParameter::UINT) return false;
+  if (mType != CCopasiParameter::Type::UINT) return false;
 
   return inValidValues(value);
 }
 
 bool CCopasiParameter::isValidValue(const bool & value) const
 {
-  if (mType != CCopasiParameter::BOOL) return false;
+  if (mType != CCopasiParameter::Type::BOOL) return false;
 
   return inValidValues(value);
 }
 
 bool CCopasiParameter::isValidValue(const std::string & value) const
 {
-  if (mType == CCopasiParameter::KEY)
+  if (mType == CCopasiParameter::Type::KEY)
     return CKeyFactory::isValidKey(value);
 
-  if (mType != CCopasiParameter::STRING &&
-      mType != CCopasiParameter::FILE &&
-      mType != CCopasiParameter::EXPRESSION) return false;
+  if (mType != CCopasiParameter::Type::STRING &&
+      mType != CCopasiParameter::Type::FILE &&
+      mType != CCopasiParameter::Type::EXPRESSION) return false;
 
   return inValidValues(value);
 }
 
 bool CCopasiParameter::isValidValue(const CCommonName & /* value */) const
 {
-  if (mType != CCopasiParameter::CN) return false;
+  if (mType != CCopasiParameter::Type::CN) return false;
 
   return true;
 }
 
 bool CCopasiParameter::isValidValue(const CCopasiParameterGroup::elements & /* value */) const
 {
-  if (mType != CCopasiParameter::GROUP) return false;
+  if (mType != CCopasiParameter::Type::GROUP) return false;
 
   return true;
 }
@@ -555,36 +607,36 @@ std::ostream &operator<<(std::ostream &os, const CCopasiParameter & o)
 
   switch (o.mType)
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
         os << * static_cast< C_FLOAT64 * >(o.mpValue);
         break;
 
-      case CCopasiParameter::INT:
+      case CCopasiParameter::Type::INT:
         os << * static_cast< C_INT32 * >(o.mpValue);
         break;
 
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::UINT:
         os << * static_cast< unsigned C_INT32 * >(o.mpValue);
         break;
 
-      case CCopasiParameter::BOOL:
+      case CCopasiParameter::Type::BOOL:
         os << * static_cast< bool * >(o.mpValue);
         break;
 
-      case CCopasiParameter::STRING:
-      case CCopasiParameter::KEY:
-      case CCopasiParameter::FILE:
-      case CCopasiParameter::EXPRESSION:
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::KEY:
+      case CCopasiParameter::Type::FILE:
+      case CCopasiParameter::Type::EXPRESSION:
         os << * static_cast< std::string * >(o.mpValue);
         break;
 
-      case CCopasiParameter::CN:
+      case CCopasiParameter::Type::CN:
         os << * static_cast< CRegisteredCommonName * >(o.mpValue);
         break;
 
-      case CCopasiParameter::GROUP:
-      case CCopasiParameter::INVALID:
+      case CCopasiParameter::Type::GROUP:
+      case CCopasiParameter::Type::INVALID:
         break;
     }
 
@@ -599,40 +651,40 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
 
   switch (lhs.mType)
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
         return compareValues< C_FLOAT64 >(lhs, rhs);
         break;
 
-      case CCopasiParameter::INT:
+      case CCopasiParameter::Type::INT:
         return compareValues< C_INT32 >(lhs, rhs);
         break;
 
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::UINT:
         return compareValues< unsigned C_INT32 >(lhs, rhs);
         break;
 
-      case CCopasiParameter::BOOL:
+      case CCopasiParameter::Type::BOOL:
         return compareValues< bool >(lhs, rhs);
         break;
 
-      case CCopasiParameter::STRING:
-      case CCopasiParameter::KEY:
-      case CCopasiParameter::FILE:
-      case CCopasiParameter::EXPRESSION:
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::KEY:
+      case CCopasiParameter::Type::FILE:
+      case CCopasiParameter::Type::EXPRESSION:
         return compareValues< std::string >(lhs, rhs);
         break;
 
-      case CCopasiParameter::CN:
+      case CCopasiParameter::Type::CN:
         return compareValues< CRegisteredCommonName >(lhs, rhs);
         break;
 
-      case CCopasiParameter::GROUP:
+      case CCopasiParameter::Type::GROUP:
         return *static_cast<const CCopasiParameterGroup *>(&lhs) ==
                *static_cast<const CCopasiParameterGroup *>(&rhs);
         break;
 
-      case CCopasiParameter::INVALID:
+      case CCopasiParameter::Type::INVALID:
       default:
         if (lhs.mSize != rhs.mSize) return false;
 
@@ -671,58 +723,58 @@ void CCopasiParameter::createValue(const void * pValue)
 
   switch (mType)
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
         mpValue = new C_FLOAT64;
         mSize = sizeof(C_FLOAT64);
         mpValueReference = addObjectReference("Value", *static_cast< C_FLOAT64 * >(mpValue), CDataObject::ValueDbl);
         assignValue(pValue);
         break;
 
-      case CCopasiParameter::INT:
+      case CCopasiParameter::Type::INT:
         mpValue = new C_INT32;
         mSize = sizeof(C_INT32);
         mpValueReference = addObjectReference("Value", *static_cast< C_INT32 * >(mpValue), CDataObject::ValueInt);
         assignValue(pValue);
         break;
 
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::UINT:
         mpValue = new unsigned C_INT32;
         mSize = sizeof(unsigned C_INT32);
         mpValueReference = addObjectReference("Value", *static_cast< unsigned C_INT32 * >(mpValue), CDataObject::ValueInt);
         assignValue(pValue);
         break;
 
-      case CCopasiParameter::BOOL:
+      case CCopasiParameter::Type::BOOL:
         mpValue = new bool;
         mSize = sizeof(bool);
         mpValueReference = addObjectReference("Value", *static_cast< bool * >(mpValue), CDataObject::ValueBool);
         assignValue(pValue);
         break;
 
-      case CCopasiParameter::STRING:
-      case CCopasiParameter::KEY:
-      case CCopasiParameter::FILE:
-      case CCopasiParameter::EXPRESSION:
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::KEY:
+      case CCopasiParameter::Type::FILE:
+      case CCopasiParameter::Type::EXPRESSION:
         mpValue = new std::string;
         mSize = sizeof(std::string);
         mpValueReference = addObjectReference("Value", *static_cast< std::string * >(mpValue), CDataObject::ValueString);
         assignValue(pValue);
         break;
 
-      case CCopasiParameter::CN:
+      case CCopasiParameter::Type::CN:
         mpValue = new CRegisteredCommonName;
         mSize = sizeof(CRegisteredCommonName);
         mpValueReference = addObjectReference("Value", *static_cast< CRegisteredCommonName * >(mpValue), CDataObject::ValueString);
         assignValue(pValue);
         break;
 
-      case CCopasiParameter::GROUP:
+      case CCopasiParameter::Type::GROUP:
         mpValue = new CCopasiParameterGroup::elements;
         mSize = sizeof(CCopasiParameterGroup::elements);
         break;
 
-      case CCopasiParameter::INVALID:
+      case CCopasiParameter::Type::INVALID:
         mpValue = NULL;
         mSize = 0;
         break;
@@ -737,42 +789,42 @@ void CCopasiParameter::createValidValues(const void * pValidValues)
 
   switch (mType)
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
         mpValidValues = new std::vector< std::pair< C_FLOAT64, C_FLOAT64 > >;
         assignValidValues(pValidValues);
         break;
 
-      case CCopasiParameter::INT:
+      case CCopasiParameter::Type::INT:
         mpValidValues = new std::vector< std::pair< C_INT32, C_INT32 > >;
         assignValidValues(pValidValues);
         break;
 
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::UINT:
         mpValidValues = new std::vector< std::pair< unsigned C_INT32, unsigned C_INT32 > >;
         assignValidValues(pValidValues);
         break;
 
-      case CCopasiParameter::BOOL:
+      case CCopasiParameter::Type::BOOL:
         mpValidValues = new std::vector< std::pair< bool, bool > >;
         assignValidValues(pValidValues);
         break;
 
-      case CCopasiParameter::STRING:
-      case CCopasiParameter::KEY:
-      case CCopasiParameter::FILE:
-      case CCopasiParameter::EXPRESSION:
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::KEY:
+      case CCopasiParameter::Type::FILE:
+      case CCopasiParameter::Type::EXPRESSION:
         mpValidValues = new std::vector< std::pair< std::string, std::string > >;
         assignValidValues(pValidValues);
         break;
 
-      case CCopasiParameter::CN:
+      case CCopasiParameter::Type::CN:
         mpValidValues = new std::vector< std::pair< CRegisteredCommonName, CRegisteredCommonName > >;
         assignValidValues(pValidValues);
         break;
 
-      case CCopasiParameter::GROUP:
-      case CCopasiParameter::INVALID:
+      case CCopasiParameter::Type::GROUP:
+      case CCopasiParameter::Type::INVALID:
         break;
     }
 }
@@ -785,36 +837,36 @@ void CCopasiParameter::assignValue(const void * pValue)
 
   switch (mType)
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
         *static_cast< C_FLOAT64 * >(mpValue) = *static_cast< const C_FLOAT64 * >(pValue);
         break;
 
-      case CCopasiParameter::INT:
+      case CCopasiParameter::Type::INT:
         *static_cast< C_INT32 * >(mpValue) = *static_cast< const C_INT32 * >(pValue);
         break;
 
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::UINT:
         *static_cast< unsigned C_INT32 * >(mpValue) = *static_cast< const unsigned C_INT32 * >(pValue);
         break;
 
-      case CCopasiParameter::BOOL:
+      case CCopasiParameter::Type::BOOL:
         *static_cast< bool * >(mpValue) = *static_cast< const bool * >(pValue);
         break;
 
-      case CCopasiParameter::STRING:
-      case CCopasiParameter::KEY:
-      case CCopasiParameter::FILE:
-      case CCopasiParameter::EXPRESSION:
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::KEY:
+      case CCopasiParameter::Type::FILE:
+      case CCopasiParameter::Type::EXPRESSION:
         *static_cast< std::string * >(mpValue) = *static_cast< const std::string * >(pValue);
         break;
 
-      case CCopasiParameter::CN:
+      case CCopasiParameter::Type::CN:
         *static_cast< CRegisteredCommonName * >(mpValue) = *static_cast< const CRegisteredCommonName * >(pValue);
         break;
 
-      case CCopasiParameter::GROUP:
-      case CCopasiParameter::INVALID:
+      case CCopasiParameter::Type::GROUP:
+      case CCopasiParameter::Type::INVALID:
         break;
     }
 }
@@ -827,42 +879,42 @@ void CCopasiParameter::assignValidValues(const void * pValidValues)
 
   switch (mType)
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
         *static_cast<std::vector< std::pair< C_FLOAT64, C_FLOAT64 > > * >(mpValidValues) =
           *static_cast< const std::vector< std::pair< C_FLOAT64, C_FLOAT64 > > * >(pValidValues);
         break;
 
-      case CCopasiParameter::INT:
+      case CCopasiParameter::Type::INT:
         *static_cast<std::vector< std::pair< C_INT32, C_INT32 > > * >(mpValidValues) =
           *static_cast< const std::vector< std::pair< C_INT32, C_INT32 > > * >(pValidValues);
         break;
 
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::UINT:
         *static_cast<std::vector< std::pair< unsigned C_INT32, unsigned C_INT32 > > * >(mpValidValues) =
           *static_cast< const std::vector< std::pair< unsigned C_INT32, unsigned C_INT32 > > * >(pValidValues);
         break;
 
-      case CCopasiParameter::BOOL:
+      case CCopasiParameter::Type::BOOL:
         *static_cast<std::vector< std::pair< bool, bool > > * >(mpValidValues) =
           *static_cast< const std::vector< std::pair< bool, bool > > * >(pValidValues);
         break;
 
-      case CCopasiParameter::STRING:
-      case CCopasiParameter::KEY:
-      case CCopasiParameter::FILE:
-      case CCopasiParameter::EXPRESSION:
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::KEY:
+      case CCopasiParameter::Type::FILE:
+      case CCopasiParameter::Type::EXPRESSION:
         *static_cast<std::vector< std::pair< std::string, std::string > > * >(mpValidValues) =
           *static_cast< const std::vector< std::pair< std::string, std::string > > * >(pValidValues);
         break;
 
-      case CCopasiParameter::CN:
+      case CCopasiParameter::Type::CN:
         *static_cast<std::vector< std::pair< CRegisteredCommonName, CRegisteredCommonName > > * >(mpValidValues) =
           *static_cast< const std::vector< std::pair< CRegisteredCommonName, CRegisteredCommonName > > * >(pValidValues);
         break;
 
-      case CCopasiParameter::GROUP:
-      case CCopasiParameter::INVALID:
+      case CCopasiParameter::Type::GROUP:
+      case CCopasiParameter::Type::INVALID:
         break;
     }
 }
@@ -874,39 +926,39 @@ void CCopasiParameter::deleteValue(const Type & type, void *& pValue)
 
   switch (type)
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
         delete static_cast< C_FLOAT64 * >(pValue);
         break;
 
-      case CCopasiParameter::INT:
+      case CCopasiParameter::Type::INT:
         delete static_cast< C_INT32 * >(pValue);
         break;
 
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::UINT:
         delete static_cast< unsigned C_INT32 * >(pValue);
         break;
 
-      case CCopasiParameter::BOOL:
+      case CCopasiParameter::Type::BOOL:
         delete static_cast< bool * >(pValue);
         break;
 
-      case CCopasiParameter::STRING:
-      case CCopasiParameter::KEY:
-      case CCopasiParameter::FILE:
-      case CCopasiParameter::EXPRESSION:
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::KEY:
+      case CCopasiParameter::Type::FILE:
+      case CCopasiParameter::Type::EXPRESSION:
         delete static_cast< std::string * >(pValue);
         break;
 
-      case CCopasiParameter::CN:
+      case CCopasiParameter::Type::CN:
         delete static_cast< CRegisteredCommonName * >(pValue);
         break;
 
-      case CCopasiParameter::GROUP:
+      case CCopasiParameter::Type::GROUP:
         delete static_cast< CCopasiParameterGroup::elements * >(pValue);
         break;
 
-      case CCopasiParameter::INVALID:
+      case CCopasiParameter::Type::INVALID:
         break;
 
       default:
@@ -926,36 +978,36 @@ void CCopasiParameter::deleteValidValues(const Type & type, void *& pValidValues
 
   switch (type)
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
         delete static_cast< std::vector< std::pair < C_FLOAT64, C_FLOAT64 > > * >(pValidValues);
         break;
 
-      case CCopasiParameter::INT:
+      case CCopasiParameter::Type::INT:
         delete static_cast< std::vector< std::pair < C_INT32, C_INT32 > > * >(pValidValues);
         break;
 
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::UINT:
         delete static_cast< std::vector< std::pair < unsigned C_INT32, unsigned C_INT32 > > * >(pValidValues);
         break;
 
-      case CCopasiParameter::BOOL:
+      case CCopasiParameter::Type::BOOL:
         delete static_cast< std::vector< std::pair < bool, bool > > * >(pValidValues);
         break;
 
-      case CCopasiParameter::STRING:
-      case CCopasiParameter::KEY:
-      case CCopasiParameter::FILE:
-      case CCopasiParameter::EXPRESSION:
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::KEY:
+      case CCopasiParameter::Type::FILE:
+      case CCopasiParameter::Type::EXPRESSION:
         delete static_cast< std::vector< std::pair < std::string, std::string > > * >(pValidValues);
         break;
 
-      case CCopasiParameter::CN:
+      case CCopasiParameter::Type::CN:
         delete static_cast< std::vector< std::pair < CRegisteredCommonName, CRegisteredCommonName > > * >(pValidValues);
         break;
 
-      case CCopasiParameter::GROUP:
-      case CCopasiParameter::INVALID:
+      case CCopasiParameter::Type::GROUP:
+      case CCopasiParameter::Type::INVALID:
         break;
 
       default:
@@ -976,7 +1028,7 @@ std::string CCopasiParameter::getObjectDisplayName() const
 
   CDataObject* tmp = this->getObjectAncestor("Reaction");
 
-  if (tmp && getType() != GROUP)
+  if (tmp && getType() != CCopasiParameter::Type::GROUP)
     {
       return tmp->getObjectDisplayName() + "." + getObjectName();
     }
@@ -1004,7 +1056,7 @@ std::string CCopasiParameter::getObjectDisplayName() const
           DisplayName += pGroup->getUniqueParameterName(this);
         }
 
-      if (getType() == GROUP)
+      if (getType() == CCopasiParameter::Type::GROUP)
         {
           DisplayName += "[]";
         }
@@ -1028,10 +1080,10 @@ const CCopasiParameter::UserInterfaceFlag & CCopasiParameter::getUserInterfaceFl
 
 bool CCopasiParameter::isEditable() const
 {
-  return mUserInterfaceFlag.isSet(editable);
+  return mUserInterfaceFlag.isSet(eUserInterfaceFlag::editable);
 }
 
 bool CCopasiParameter::isBasic() const
 {
-  return mUserInterfaceFlag.isSet(basic);
+  return mUserInterfaceFlag.isSet(eUserInterfaceFlag::basic);
 }

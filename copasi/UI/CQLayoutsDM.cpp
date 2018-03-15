@@ -163,15 +163,15 @@ bool CQLayoutsDM::isDefaultRow(const QModelIndex & /* index */) const
   return false;
 }
 
-bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex &source)
+bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
   if (mpListOfLayouts == NULL) return false;
 
-  int Position = source.isValid() ? source.row() : position;
+  int Position = parent.isValid() ? parent.row() : position;
 
   if (Position + rows > (int) mpListOfLayouts->size())  return false;
 
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
+  beginInsertRows(parent, position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
@@ -182,13 +182,13 @@ bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex &source)
   return true;
 }
 
-bool CQLayoutsDM::removeRows(int position, int rows)
+bool CQLayoutsDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   if (rows <= 0) return true;
 
   if (mpListOfLayouts == NULL) return false;
 
-  beginRemoveRows(QModelIndex(), position, position + rows - 1);
+  beginRemoveRows(parent, position, position + rows - 1);
   std::vector< CLayout * > DeletedLayouts;
   DeletedLayouts.resize(rows);
   std::vector< CLayout * >::iterator itDeletedLayout;

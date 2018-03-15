@@ -45,8 +45,8 @@
 CMCAProblem::CMCAProblem(const CDataContainer * pParent):
   CCopasiProblem(CTaskEnum::Task::mca, pParent)
 {
-  //  addParameter("SteadyStateRequested", CCopasiParameter::BOOL, true);
-  addParameter("Steady-State", CCopasiParameter::KEY, std::string(""));
+  //  addParameter("SteadyStateRequested", CCopasiParameter::Type::BOOL, true);
+  addParameter("Steady-State", CCopasiParameter::Type::KEY, std::string(""));
   CONSTRUCTOR_TRACE;
 }
 

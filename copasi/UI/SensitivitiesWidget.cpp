@@ -84,7 +84,7 @@ bool SensitivitiesWidget::saveTask()
   saveCommon();
   saveMethod();
   CSensTask *sensTask =
-    dynamic_cast<CSensTask *>(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast<CSensTask *>(mpObject);
 
   if (sensTask == NULL)
     return false;
@@ -199,7 +199,7 @@ bool SensitivitiesWidget::taskFinishedEvent()
 
   if (pResult) pResult->newResult();
 
-  if (success && isVisible()) mpListView->switchToOtherWidget(341, ""); //change to the results window
+  if (success && isVisible()) mpListView->switchToOtherWidget(341, std::string()); //change to the results window
 
   return success;
 }
@@ -209,7 +209,7 @@ bool SensitivitiesWidget::loadTask()
   loadCommon();
   loadMethod();
   CSensTask *sensTask =
-    dynamic_cast<CSensTask *>(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast<CSensTask *>(mpObject);
   assert(sensTask);
   CSensProblem *problem =
     dynamic_cast<CSensProblem *>(sensTask->getProblem());

@@ -968,11 +968,11 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (this->isStochasticModel(sbmlModel))
     {
-      this->mpCopasiModel->setModelType(CModel::stochastic);
+      this->mpCopasiModel->setModelType(CModel::ModelType::stochastic);
     }
   else
     {
-      this->mpCopasiModel->setModelType(CModel::deterministic);
+      this->mpCopasiModel->setModelType(CModel::ModelType::deterministic);
     }
 
   std::string title = sbmlModel->getName();
@@ -2748,7 +2748,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                 }
             }
 
-          copasiReaction->getParameters().addParameter(id, CCopasiParameter::DOUBLE, value);
+          copasiReaction->getParameters().addParameter(id, CCopasiParameter::Type::DOUBLE, value);
         }
 
       ASTNode* kLawMath = const_cast<ASTNode*>(kLaw->getMath());
@@ -5898,17 +5898,17 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
                         {
                           case CChemEq::SUBSTRATE:
                             // it is a substrate
-                            pFunParam->setUsage(CFunctionParameter::SUBSTRATE);
+                            pFunParam->setUsage(CFunctionParameter::Role::SUBSTRATE);
                             break;
 
                           case CChemEq::PRODUCT:
                             // it is a product
-                            pFunParam->setUsage(CFunctionParameter::PRODUCT);
+                            pFunParam->setUsage(CFunctionParameter::Role::PRODUCT);
                             break;
 
                           case CChemEq::MODIFIER:
                             // it is a modifier
-                            pFunParam->setUsage(CFunctionParameter::MODIFIER);
+                            pFunParam->setUsage(CFunctionParameter::Role::MODIFIER);
                             break;
 
                           default:
@@ -5928,12 +5928,12 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
           else if (dynamic_cast<const CModelValue*>(object))
             {
               // it is a global parameter
-              pFunParam->setUsage(CFunctionParameter::PARAMETER);
+              pFunParam->setUsage(CFunctionParameter::Role::PARAMETER);
             }
           else if (dynamic_cast<const CCompartment*>(object))
             {
               // it is a volume
-              pFunParam->setUsage(CFunctionParameter::VOLUME);
+              pFunParam->setUsage(CFunctionParameter::Role::VOLUME);
             }
           else
             {
@@ -5943,7 +5943,7 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
       else
         {
           // it is a local parameter
-          pFunParam->setUsage(CFunctionParameter::PARAMETER);
+          pFunParam->setUsage(CFunctionParameter::Role::PARAMETER);
         }
 
       pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
@@ -5993,9 +5993,10 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           pObject = pObject->getObjectParent();
         }
 
-      const std::string& objectKey = pObject->getKey();
+      std::vector< const CDataObject * > Objects(1, pObject);
 
-      pCopasiReaction->setParameterMapping("k1", objectKey);
+      pCopasiReaction->setParameterObjects("k1", Objects);
+      Objects.clear();
 
       const CDataVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getSubstrates();
 
@@ -6005,7 +6006,10 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
 
       for (i = 0; i < iMax; ++i)
         for (j = 0, jMax = static_cast<int>(fabs((*metabolites)[i].getMultiplicity())); j < jMax; j++)
-          pCopasiReaction->addParameterMapping("substrate", metabolites->operator[](i).getMetaboliteKey());
+          Objects.push_back(&metabolites->operator[](i));
+
+      pCopasiReaction->setParameterObjects("substrate", Objects);
+      Objects.clear();
 
       if (pCopasiReaction->isReversible())
         {
@@ -6024,9 +6028,10 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
               pObject = pObject->getObjectParent();
             }
 
-          const std::string& objectKey = pObject->getKey();
+          Objects.push_back(pObject);
 
-          pCopasiReaction->setParameterMapping("k2", objectKey);
+          pCopasiReaction->setParameterObjects("k2", Objects);
+          Objects.clear();
 
           const CDataVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getProducts();
 
@@ -6034,7 +6039,10 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
 
           for (i = 0; i < iMax; ++i)
             for (j = 0, jMax = static_cast<int>(fabs(metabolites->operator[](i).getMultiplicity())); j < jMax; j++)
-              pCopasiReaction->addParameterMapping("product", metabolites->operator[](i).getMetaboliteKey());
+              Objects.push_back(&metabolites->operator[](i));
+
+          pCopasiReaction->setParameterObjects("product", Objects);
+          Objects.clear();
         }
     }
   else
@@ -6064,48 +6072,48 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
               pObject = pObject->getObjectParent();
             }
 
-          const std::string& objectKey = pObject->getKey();
-
-          pCopasiReaction->setParameterMapping(i, objectKey);
+          std::vector< const CDataObject * > Objects(1, pObject);
+          pCopasiReaction->setParameterObjects(i, Objects);
+          Objects.clear();
 
           const CChemEq& eqn = pCopasiReaction->getChemEq();
 
           bool reversible = eqn.getReversibility();
 
           // We guess what the role of a variable of newly imported function is:
-          if (Variables[i]->getUsage() == CFunctionParameter::VARIABLE)
+          if (Variables[i]->getUsage() == CFunctionParameter::Role::VARIABLE)
             {
-              CFunctionParameter::Role Role = CFunctionParameter::PARAMETER;
+              CFunctionParameter::Role Role = CFunctionParameter::Role::PARAMETER;
 
               if (pObject->getObjectType() == "Metabolite")
                 {
-                  if (containsKey(eqn.getSubstrates(), objectKey))
-                    Role = CFunctionParameter::SUBSTRATE;
+                  if (containsKey(eqn.getSubstrates(), pObject->getKey()))
+                    Role = CFunctionParameter::Role::SUBSTRATE;
 
-                  if (Role == CFunctionParameter::PARAMETER &&
-                      containsKey(eqn.getProducts(), objectKey))
+                  if (Role == CFunctionParameter::Role::PARAMETER &&
+                      containsKey(eqn.getProducts(), pObject->getKey()))
                     {
                       // Fix for Bug 1882: if not reversible, only mark as product if it does
                       // not appear in the list of modifiers
-                      if (!reversible && containsKey(eqn.getModifiers(), objectKey))
-                        Role =  CFunctionParameter::MODIFIER;
+                      if (!reversible && containsKey(eqn.getModifiers(), pObject->getKey()))
+                        Role =  CFunctionParameter::Role::MODIFIER;
                       else
-                        Role =  CFunctionParameter::PRODUCT;
+                        Role =  CFunctionParameter::Role::PRODUCT;
                     }
 
                   // It is not a substrate and not a product therefore we must have a modifier
-                  if (Role == CFunctionParameter::PARAMETER)
+                  if (Role == CFunctionParameter::Role::PARAMETER)
                     {
-                      Role = CFunctionParameter::MODIFIER;
+                      Role = CFunctionParameter::Role::MODIFIER;
                     }
                 }
               else if (pObject->getObjectType() == "Model")
                 {
-                  Role = CFunctionParameter::TIME;
+                  Role = CFunctionParameter::Role::TIME;
                 }
               else if (pObject->getObjectType() == "Compartment")
                 {
-                  Role = CFunctionParameter::VOLUME;
+                  Role = CFunctionParameter::Role::VOLUME;
                 }
 
               const_cast< CFunctionParameter * >(Variables[i])->setUsage(Role);
@@ -9846,7 +9854,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CDataObject* pCOPASIOb
           std::string sboTerm = pSBMLObject->getSBOTermID();
           // load miriam info
           CMIRIAMInfo info;
-          info.load(annotation->getKey());
+          info.load(dynamic_cast< CDataContainer * >(pCOPASIObject));
 
           // check whether term is already there
           CDataVector <CBiologicalDescription>& descriptons = info.getBiologicalDescriptions();

@@ -150,9 +150,9 @@ bool CQReportDM::setData(const QModelIndex &index, const QVariant &value,
   return true;
 }
 
-bool CQReportDM::insertRows(int position, int rows, const QModelIndex & source)
+bool CQReportDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
+  beginInsertRows(parent, position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
@@ -168,7 +168,7 @@ bool CQReportDM::insertRows(int position, int rows, const QModelIndex & source)
   return true;
 }
 
-bool CQReportDM::removeRows(int position, int rows)
+bool CQReportDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   if (rows <= 0)
     return true;
@@ -181,7 +181,7 @@ bool CQReportDM::removeRows(int position, int rows)
   if (pReportList == NULL)
     return false;
 
-  beginRemoveRows(QModelIndex(), position, position + rows - 1);
+  beginRemoveRows(parent, position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {

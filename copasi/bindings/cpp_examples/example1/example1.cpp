@@ -159,7 +159,7 @@ int main()
       // constant flux has only one function parameter
       assert(pReaction->getFunctionParameters().size() == 1);
       // so there should be only one entry in the parameter mapping as well
-      assert(pReaction->getParameterMappings().size() == 1);
+      assert(pReaction->getParameterCNs().size() == 1);
       CCopasiParameterGroup* pParameterGroup = &pReaction->getParameters();
       assert(pParameterGroup->size() == 1);
       CCopasiParameter* pParameter = pParameterGroup->getParameter(0);
@@ -208,7 +208,7 @@ int main()
 
   assert(pReaction->getFunctionParameters().size() == 2);
   // so there should be two entries in the parameter mapping as well
-  assert(pReaction->getParameterMappings().size() == 2);
+  assert(pReaction->getParameterCNs().size() == 2);
   // mass action is a special case since the parameter mappings for the
   // substrates (and products) are in a vector
 
@@ -231,10 +231,18 @@ int main()
   // of the local one that is created by default
   // The first parameter is the one for the rate constant, so we point it to
   // the key of out model value
-  pReaction->setParameterMapping(0, pModelValue->getKey());
+  std::vector< const CDataObject * > Objects(1, pModelValue);
+  pReaction->setParameterObjects(0, Objects);
+  Objects.clear();
+
   // now we have to set the parameter mapping for the substrates
-  pReaction->addParameterMapping("substrate", pG6P->getKey());
-  pReaction->addParameterMapping("substrate", pADP->getKey());
+  Objects.push_back(pG6P);
+  pReaction->setParameterObjects("substrate", Objects);
+  Objects.clear();
+
+  Objects.push_back(pADP);
+  pReaction->setParameterObjects("substrate", Objects);
+  Objects.clear();
 
   // finally compile the model
   // compile needs to be done before updating all initial values for

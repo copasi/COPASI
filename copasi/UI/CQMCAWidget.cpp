@@ -83,7 +83,7 @@ void CQMCAWidget::slotSteadyStateChecked()
 bool CQMCAWidget::runTask()
 {
   CMCATask * pTask =
-    dynamic_cast< CMCATask * >(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CMCATask * >(mpObject);
 
   if (!pTask) return false;
 
@@ -102,7 +102,7 @@ bool CQMCAWidget::taskFinishedEvent()
   if (pResult) pResult->loadFromBackend();
 
   if (success && pResult)
-    mpListView->switchToOtherWidget(241, ""); //change to the results window
+    mpListView->switchToOtherWidget(241, std::string()); //change to the results window
 
   return success;
 }

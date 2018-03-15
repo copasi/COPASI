@@ -195,7 +195,7 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map< QT
           const CReaction * pReaction = dynamic_cast<const CReaction*>(pObj);
 
           if (pReaction)
-            pChild->setText(1, FROM_UTF8(CChemEqInterface::getChemEqString(const_cast<CModel*>(pModel), *pReaction, false)));
+            pChild->setText(1, FROM_UTF8(CChemEqInterface::getChemEqString(*pReaction, false)));
 
           pChild->setFont(1, tmpFontSmall);
 

@@ -65,12 +65,11 @@ void CCSPMethod::initializeParameter()
 {
   CTSSAMethod::initializeParameter();
 
-  assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) true);//->getValue().pBOOL;
-  assertParameter("Ratio of Modes Separation", CCopasiParameter::UDOUBLE, (C_FLOAT64) 0.9);
-  assertParameter("Maximum Relative Error", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-3);
-  assertParameter("Maximum Absolute Error", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
-  assertParameter("Refinement Iterations Number", CCopasiParameter::UINT, (unsigned C_INT32) 1000);
-
+  assertParameter("Integrate Reduced Model", CCopasiParameter::Type::BOOL, (bool) true);//->getValue().pBOOL;
+  assertParameter("Ratio of Modes Separation", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 0.9);
+  assertParameter("Maximum Relative Error", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-3);
+  assertParameter("Maximum Absolute Error", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-6);
+  assertParameter("Refinement Iterations Number", CCopasiParameter::Type::UINT, (unsigned C_INT32) 1000);
 }
 
 /* multiply submatrix */
@@ -2033,7 +2032,6 @@ bool CCSPMethod::setAnnotationM(size_t step)
 
   M = mVec_SlowModes[step];
 
-
   //3**** fill pRadicalPointerAnn
   //mRadicalPointerTab.resize(mVec_mRadicalPointer[step].numCols(),
   //                          mVec_mRadicalPointer[step].numRows());
@@ -2341,7 +2339,6 @@ void CCSPMethod::setVectorsToNaN()
   for (r = 0; r < reacs_size; r++)
     for (i = 0; i < mDim; i++)
       mVec_mImportanceIndexNormedRow[mCurrentStep][r][i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-
 }
 
 /**
@@ -2419,7 +2416,6 @@ void CCSPMethod::setVectors(int fast)
   //12************
   mVec_mImportanceIndexNormedRow.resize(mCurrentStep + 1);
   mVec_mImportanceIndexNormedRow[mCurrentStep] = mImportanceIndexNormedRow;
-
 }
 
 /**
@@ -2445,7 +2441,6 @@ void CCSPMethod::emptyVectors()
   mVec_mImportanceIndexNormedRow.clear(); //12
   mCurrentTime.clear(); //13
 }
-
 
 void
 CCSPMethod::printResult(std::ostream * ostream) const
@@ -2551,7 +2546,5 @@ CCSPMethod::printResult(std::ostream * ostream) const
         }
 
       os << std::endl;
-
     }
-
 }

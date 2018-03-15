@@ -49,16 +49,16 @@ COptMethodPS::COptMethodPS(const CDataContainer * pParent,
   mStopAfterStalledIterations(0),
   mContinue(true)
 {
-  addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 2000);
-  addParameter("Swarm Size", CCopasiParameter::UINT, (unsigned C_INT32) 50);
-  addParameter("Std. Deviation", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
-  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
-  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
+  addParameter("Swarm Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 50);
+  addParameter("Std. Deviation", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-6);
+  addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937);
+  addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   if (mEnableAdditionalParameters)
-  addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Stop after # Stalled Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
-  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("#LogVerbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -346,7 +346,6 @@ bool COptMethodPS::initialize()
       setValue("Swarm Size", mPopulationSize);
 
       mMethodLog.enterLogItem(COptLogItem(COptLogItem::PS_usrdef_error_swarm_size).with(5));
-
     }
 
   mVariance = getValue< C_FLOAT64 >("Std. Deviation");
@@ -370,7 +369,6 @@ bool COptMethodPS::initialize()
   mNumInformed = mNumInformedMin;
 
   mpPermutation = new CPermutation(mpRandom, mPopulationSize);
-
 
   mMethodLog.enterLogItem(COptLogItem(COptLogItem::PS_info_informants).with(mNumInformedMin).with(mPopulationSize));
 
@@ -494,7 +492,6 @@ C_FLOAT64 COptMethodPS::calcVariableVariance(const size_t & variable) const
     }
 
   return (SecondMoment - FirstMoment * FirstMoment / mPopulationSize) / (mPopulationSize - 1);
-
 }
 
 bool COptMethodPS::optimise()
@@ -603,7 +600,6 @@ bool COptMethodPS::optimise()
           if (oldIndex != mBestIndex)
             Stalled = 0;
         }
-
 
       if (mpCallBack)
         mContinue &= mpCallBack->progressItem(mhGenerations);

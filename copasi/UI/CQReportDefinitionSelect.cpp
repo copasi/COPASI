@@ -73,7 +73,7 @@ void CQReportDefinitionSelect::loadReportDefinitionVector()
       mpReport->setAppend(mpCheckAppend->isChecked());
       mpReport->setConfirmOverwrite(mpCheckConfirmOverwrite->isChecked());
       mpReport->setTarget(TO_UTF8(mpEditTarget->text()));
-      mpListView->getDataModelGUI()->notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
+      mpListView->getDataModelGUI()->notify(ListViews::REPORT, ListViews::CHANGE, std::string()); //notify Table Definition to
 
       if (CQMessageBox::question(NULL, "No Report Template Defined",
                                  "No report definition defined, COPASI has already created a new one for you.\n Do you want to switch to the GUI to edit it?",

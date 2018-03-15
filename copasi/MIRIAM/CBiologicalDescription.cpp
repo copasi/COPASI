@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,10 +27,37 @@
 #include "undo/CData.h"
 
 // static
-CBiologicalDescription * CBiologicalDescription::fromData(const CData & data)
+CBiologicalDescription * CBiologicalDescription::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
-  return new CBiologicalDescription(data.getProperty(CData::OBJECT_NAME).toString(),
-                                    NO_PARENT);
+  CBiologicalDescription * pBilologicalDescription = NULL;
+  CDataContainer * pObjectParent = dynamic_cast< CDataContainer * >(pParent);
+
+  if (pObjectParent != NULL)
+    {
+      CMIRIAMInfo * pMiriamInfo = dynamic_cast< CMIRIAMInfo * >(pObjectParent->getObjectAncestor("CMIRIAMInfo"));
+
+      if (pMiriamInfo != NULL)
+        {
+          pBilologicalDescription = pMiriamInfo->createBiologicalDescription();
+          pObjectParent->remove(pBilologicalDescription);
+        }
+    }
+
+  return pBilologicalDescription;
+}
+
+// virtual
+void CBiologicalDescription::destruct()
+{
+  CMIRIAMInfo * pMiriamInfo = dynamic_cast< CMIRIAMInfo * >(getObjectAncestor("CMIRIAMInfo"));
+
+  if (pMiriamInfo != NULL)
+    {
+      pMiriamInfo->removeBiologicalDescription(this);
+      pMiriamInfo->save();
+    }
+
+  CDataContainer::destruct();
 }
 
 // virtual
@@ -42,13 +69,16 @@ CData CBiologicalDescription::toData() const
   Data.addProperty(CData::MIRIAM_RESOURCE, getResource());
   Data.addProperty(CData::MIRIAM_ID, getId());
 
+  Data.removeProperty(CData::OBJECT_INDEX);
+  Data.addProperty(CData::OBJECT_HASH, Data.hash());
+
   return Data;
 }
 
 // virtual
-bool CBiologicalDescription::applyData(const CData & data)
+bool CBiologicalDescription::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CDataContainer::applyData(data);
+  bool success = CDataContainer::applyData(data, changes);
 
   if (data.isSetProperty(CData::MIRIAM_PREDICATE))
     {
@@ -65,7 +95,38 @@ bool CBiologicalDescription::applyData(const CData & data)
       setId(data.getProperty(CData::MIRIAM_ID).toString());
     }
 
+  CMIRIAMInfo * pMiriamInfo = dynamic_cast< CMIRIAMInfo * >(getObjectAncestor("CMIRIAMInfo"));
+
+  if (pMiriamInfo != NULL)
+    {
+      return pMiriamInfo->save();
+    }
+
   return success;
+}
+
+// virtual
+void CBiologicalDescription::createUndoData(CUndoData & undoData,
+    const CUndoData::Type & type,
+    const CData & oldData,
+    const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::MIRIAM_PREDICATE, oldData.getProperty(CData::MIRIAM_PREDICATE), getPredicate());
+  undoData.addProperty(CData::MIRIAM_RESOURCE, oldData.getProperty(CData::MIRIAM_RESOURCE), getResource());
+  undoData.addProperty(CData::MIRIAM_ID, oldData.getProperty(CData::MIRIAM_ID), getId());
+  undoData.removeProperty(CData::OBJECT_INDEX);
+
+  if (!undoData.empty())
+    {
+      undoData.addProperty(CData::OBJECT_HASH, oldData.getProperty(CData::OBJECT_HASH), toData().getProperty(CData::OBJECT_HASH));
+    }
 }
 
 CBiologicalDescription::CBiologicalDescription(const std::string & objectName,

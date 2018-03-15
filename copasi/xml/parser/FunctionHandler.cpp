@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -301,7 +306,7 @@ bool FunctionHandler::processEnd(const XML_Char * pszName)
       case MathML:
         mInfix = mpData->CharacterData;
 
-      break;
+        break;
 
       case ListOfParameterDescriptions:
         // We need to remove all parameters which have been temporarily added to the list of variables
@@ -313,7 +318,7 @@ bool FunctionHandler::processEnd(const XML_Char * pszName)
             CFunctionParameters & Variables = pFunction->getVariables();
             size_t i = Variables.size() - 1;
 
-            for (; i != C_INVALID_INDEX && Variables[i]->getUsage() == CFunctionParameter::TEMPORARY; i--)
+            for (; i != C_INVALID_INDEX && Variables[i]->getUsage() == CFunctionParameter::Role::TEMPORARY; i--)
               Variables.remove(Variables[i]->getObjectName());
           }
 

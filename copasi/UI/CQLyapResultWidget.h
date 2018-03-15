@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,15 +32,15 @@ public:
   CQLyapResultWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
   ~CQLyapResultWidget();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-  virtual bool leave();
-
 protected slots:
 
   void saveToFile();
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
+
   bool loadFromBackend();
 
 private:

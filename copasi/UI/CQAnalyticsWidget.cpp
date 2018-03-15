@@ -33,7 +33,6 @@
 #include "copasi/core/CRootContainer.h"
 #include "model/CModel.h"
 #include "utilities/CCopasiException.h"
-#include "report/CKeyFactory.h"
 
 #include "analytics/CAnalyticsTask.h"
 #include "analytics/CAnalyticsProblem.h"
@@ -366,7 +365,7 @@ void CQAnalyticsWidget::updateValues()
 }
 
 // virtual
-bool CQAnalyticsWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & /* key */)
+bool CQAnalyticsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {

@@ -1,4 +1,9 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,9 +42,7 @@ CQTimeSeriesWidget::~CQTimeSeriesWidget()
 }
 
 // virtual
-bool CQTimeSeriesWidget::update(ListViews::ObjectType objectType,
-                                ListViews::Action action,
-                                const std::string & /* key */)
+bool CQTimeSeriesWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   // We need to update the task when a new model is loaded.
   switch (objectType)
@@ -67,7 +70,7 @@ bool CQTimeSeriesWidget::update(ListViews::ObjectType objectType,
 }
 
 // virtual
-bool CQTimeSeriesWidget::leave()
+bool CQTimeSeriesWidget::leaveProtected()
 {
   return true;
 }

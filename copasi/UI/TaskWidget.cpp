@@ -146,7 +146,7 @@ void TaskWidget::assistantBtnClicked()
 
   if (pDlg->exec() == QDialog::Accepted)
     {
-      protectedNotify(ListViews::PLOT, ListViews::ADD, "");
+      protectedNotify(ListViews::PLOT, ListViews::ADD, std::string());
     }
 
   if (pDlg)delete pDlg;
@@ -468,7 +468,7 @@ CCopasiTask* TaskWidget::getTask()
 }
 //*********************************************************************
 
-bool TaskWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & C_UNUSED(key))
+bool TaskWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates)
     {
@@ -479,7 +479,7 @@ bool TaskWidget::update(ListViews::ObjectType objectType, ListViews::Action acti
     {
       case ListViews::MODEL:
 
-        if (action == ListViews::ADD &&
+        if (action != ListViews::CHANGE &&
             mpMethodWidget != NULL)
           {
             mpMethodWidget->clearHistory();
@@ -494,7 +494,7 @@ bool TaskWidget::update(ListViews::ObjectType objectType, ListViews::Action acti
   return true;
 }
 
-bool TaskWidget::leave()
+bool TaskWidget::leaveProtected()
 {
   return saveTask();
 }

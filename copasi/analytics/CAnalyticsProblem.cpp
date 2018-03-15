@@ -60,19 +60,19 @@ CAnalyticsProblem::CAnalyticsProblem(const CAnalyticsProblem & src,
 
 void CAnalyticsProblem::initializeParameter()
 {
-  mpFlagLimitCrossings = assertParameter("LimitCrossings", CCopasiParameter::BOOL, false);
-  mpCrossingsLimit = assertParameter("NumCrossingsLimit", CCopasiParameter::UINT, (unsigned C_INT32)0);
-  mpFlagLimitOutTime = assertParameter("LimitOutTime", CCopasiParameter::BOOL, false);
-  mpFlagLimitOutCrossings = assertParameter("LimitOutCrossings", CCopasiParameter::BOOL, false);
-  mpFlagPositiveDirection = assertParameter("PositiveDirection", CCopasiParameter::BOOL, true);
-  mpOutCrossingsLimit = assertParameter("NumOutCrossingsLimit", CCopasiParameter::UINT, (unsigned C_INT32)0);
-  mpFlagLimitConvergence = assertParameter("LimitUntilConvergence", CCopasiParameter::BOOL, false);
-  mpConvergenceTolerance = assertParameter("ConvergenceTolerance", CCopasiParameter::DOUBLE, (C_FLOAT64)1E-6);
-  mpThreshold = assertParameter("Threshold", CCopasiParameter::DOUBLE, (C_FLOAT64)0);
-  mpFlagLimitOutConvergence = assertParameter("DelayOutputUntilConvergence", CCopasiParameter::BOOL, false);
-  mpConvergenceOutTolerance = assertParameter("OutputConvergenceTolerance", CCopasiParameter::DOUBLE, (C_FLOAT64)1E-6);
-  mpTriggerExpression = assertParameter("TriggerExpression", CCopasiParameter::EXPRESSION, std::string(""));
-  mpSingleObjectCN = assertParameter("SingleVariable", CCopasiParameter::CN, CCommonName(""));
+  mpFlagLimitCrossings = assertParameter("LimitCrossings", CCopasiParameter::Type::BOOL, false);
+  mpCrossingsLimit = assertParameter("NumCrossingsLimit", CCopasiParameter::Type::UINT, (unsigned C_INT32)0);
+  mpFlagLimitOutTime = assertParameter("LimitOutTime", CCopasiParameter::Type::BOOL, false);
+  mpFlagLimitOutCrossings = assertParameter("LimitOutCrossings", CCopasiParameter::Type::BOOL, false);
+  mpFlagPositiveDirection = assertParameter("PositiveDirection", CCopasiParameter::Type::BOOL, true);
+  mpOutCrossingsLimit = assertParameter("NumOutCrossingsLimit", CCopasiParameter::Type::UINT, (unsigned C_INT32)0);
+  mpFlagLimitConvergence = assertParameter("LimitUntilConvergence", CCopasiParameter::Type::BOOL, false);
+  mpConvergenceTolerance = assertParameter("ConvergenceTolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)1E-6);
+  mpThreshold = assertParameter("Threshold", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)0);
+  mpFlagLimitOutConvergence = assertParameter("DelayOutputUntilConvergence", CCopasiParameter::Type::BOOL, false);
+  mpConvergenceOutTolerance = assertParameter("OutputConvergenceTolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)1E-6);
+  mpTriggerExpression = assertParameter("TriggerExpression", CCopasiParameter::Type::EXPRESSION, std::string(""));
+  mpSingleObjectCN = assertParameter("SingleVariable", CCopasiParameter::Type::CN, CCommonName(""));
   setOutputEvent(false);
 }
 

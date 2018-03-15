@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -52,7 +57,7 @@ CXMLHandler * ModelParameterSetHandler::processStart(const XML_Char * pszName,
               pModelParameterSet->setObjectName(NewName.str());
             }
 
-          mpData->ModelParameterGroupStack.push(pModelParameterSet);
+          mpData->ModelParameterGroupStack.push(pModelParameterSet->toGroup());
           mpData->mKeyMap.addFix(mKey, pModelParameterSet);
         }
         break;
@@ -93,7 +98,7 @@ bool ModelParameterSetHandler::processEnd(const XML_Char * pszName)
       case MiriamAnnotation:
 
       {
-        CModelParameterSet * pModelParameterSet = static_cast< CModelParameterSet * >(mpData->ModelParameterGroupStack.top());
+        CModelParameterSet * pModelParameterSet = mpData->ModelParameterGroupStack.top()->toSet();
         pModelParameterSet->setMiriamAnnotation(mpData->CharacterData, pModelParameterSet->getKey(), mKey);
       }
 
@@ -102,12 +107,12 @@ bool ModelParameterSetHandler::processEnd(const XML_Char * pszName)
 
       case Comment:
 
-        static_cast< CModelParameterSet * >(mpData->ModelParameterGroupStack.top())->setNotes(mpData->CharacterData);
+        mpData->ModelParameterGroupStack.top()->toSet()->setNotes(mpData->CharacterData);
         mpData->CharacterData = "";
         break;
 
       case ListOfUnsupportedAnnotations:
-        static_cast< CModelParameterSet * >(mpData->ModelParameterGroupStack.top())->getUnsupportedAnnotations() = mpData->mUnsupportedAnnotations;
+        mpData->ModelParameterGroupStack.top()->toSet()->getUnsupportedAnnotations() = mpData->mUnsupportedAnnotations;
         break;
 
       case ModelParameterGroup:

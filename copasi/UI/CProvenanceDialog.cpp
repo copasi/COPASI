@@ -21,10 +21,8 @@
 
 #include "copasi/core/CRootContainer.h"
 #include "commandline/CConfigurationFile.h"
-#include "copasi/undoFramework/CCopasiUndoCommand.h"
 
-//CProvenanceDialog::CProvenanceDialog(QWidget* parent, QUndoStack *undoStack, QString PathFile ,  QList<QString> VersionsPathToCurrentModel,  QString ProvenanceParentOfCurrentModel, QString VersioningParentOfCurrentModel)
-CProvenanceDialog::CProvenanceDialog(QWidget* parent, QUndoStack *undoStack, QString PathFile ,  QList<QString> VersionsPathToCurrentModel)
+CProvenanceDialog::CProvenanceDialog(QWidget* parent, QString PathFile ,  QList<QString> VersionsPathToCurrentModel)
   : QDialog(parent)
 {
   setupUi(this);
@@ -32,7 +30,6 @@ CProvenanceDialog::CProvenanceDialog(QWidget* parent, QUndoStack *undoStack, QSt
   //mVersioningParentOfCurrentModel = VersioningParentOfCurrentModel;
   mVersionsPathToCurrentModel = VersionsPathToCurrentModel;
   mPathFile = PathFile;
-  mpUndoStack = undoStack;
   mNCol = 8; //total number of UNDO History column
   mSelectedIndex = 0;
   mpProvenanceTable = new QStandardItemModel(10000, mNCol, parent);
@@ -80,11 +77,7 @@ CProvenanceDialog::CProvenanceDialog(QWidget* parent, QUndoStack *undoStack, QSt
   //attach Browsing tree to its view
   //mpTreeView = new QTreeView(this);
   ProvXMLFiles2ProvenanceTable();
-
-  if (mpUndoStack != NULL)
-    {
-      CurrentSessionEdits2ProvenanceTable();
-    }
+  CurrentSessionEdits2ProvenanceTable();
 
   mpProvenanceBrowseTree = new QStandardItemModel();
   generateProvenanceBrowsingTree();

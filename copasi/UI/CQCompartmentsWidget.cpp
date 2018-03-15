@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,7 +45,7 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget *parent, const char *name)
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
   //Setting values for Types comboBox
-  mpTypeDelegate = new CQIndexComboDelegate(this, mpCompartmentDM->getTypes());
+  mpTypeDelegate = new CQComboDelegate(this, mpCompartmentDM->getTypes());
   mpTblCompartments->setItemDelegateForColumn(COL_TYPE_COMPARTMENTS, mpTypeDelegate);
 #if QT_VERSION >= 0x050000
   mpTblCompartments->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -55,14 +55,12 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget *parent, const char *name)
   mpTblCompartments->verticalHeader()->hide();
   mpTblCompartments->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
-  connect(mpCompartmentDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpCompartmentDM, SIGNAL(signalNotifyChanges(const CUndoData::ChangeSet &)),
+          this, SLOT(slotNotifyChanges(const CUndoData::ChangeSet &)));
   connect(mpCompartmentDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-  CopasiUI3Window   *pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
-  mpCompartmentDM->setUndoStack(pWindow->getUndoStack());
 }
 
 /*
@@ -123,7 +121,7 @@ void CQCompartmentsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQCompartmentsWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
+bool CQCompartmentsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {
@@ -138,9 +136,16 @@ bool CQCompartmentsWidget::update(ListViews::ObjectType objectType, ListViews::A
   return true;
 }
 
-bool CQCompartmentsWidget::leave()
+bool CQCompartmentsWidget::leaveProtected()
 {
   return true;
+}
+
+// virtual
+void CQCompartmentsWidget::setFramework(int framework)
+{
+  CopasiWidget::setFramework(framework);
+  mpCompartmentDM->setFramework(framework);
 }
 
 CQBaseDataModel * CQCompartmentsWidget::getCqDataModel()
@@ -220,16 +225,13 @@ void CQCompartmentsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(mpDataModel != NULL); // Is this necessary?
-  CModel *pModel = mpDataModel->getModel();
+  CDataVector < CCompartment > * pVector = dynamic_cast< CDataVector < CCompartment > * >(mpObject);
 
-  if (pModel == NULL)
-    return;
-
-  std::string key = pModel->getCompartments()[index.row()].getKey();
-
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  if (pVector != NULL &&
+      index.row() < pVector->size())
+    {
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, pVector->operator [](index.row()).getCN());
+    }
 }
 
 void CQCompartmentsWidget::keyPressEvent(QKeyEvent *ev)

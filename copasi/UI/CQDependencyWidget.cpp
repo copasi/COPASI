@@ -100,7 +100,7 @@ CQDependencyWidget::getDetailsFor(const CDataObject *pObject, std::set< const CD
 
   const CReaction *pReaction = dynamic_cast<const CReaction *>(pObject);
 
-  if (pReaction != NULL) return CChemEqInterface::getChemEqString(mpModel, *pReaction, false);
+  if (pReaction != NULL) return CChemEqInterface::getChemEqString(*pReaction, false);
 
   const CModelEntity *pEntity = dynamic_cast<const CModelEntity *>(pObject);
 

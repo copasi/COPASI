@@ -59,13 +59,13 @@ class CMIRIAMResourceObject;
 class QEvent;
 class QActionGroup;
 class QThread;
-class QUndoStack;
 #ifdef COPASI_Versioning
-class CModelVersion;
+class CModelVersionHierarchy;
 #endif
 
 class CQOptPopulation;
 class CDataModel;
+class CUndoStack;
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
@@ -122,18 +122,11 @@ public:
   void exportSEDMLToString(std::string & SEDML);
 #endif
 
-  //UNDO framework
-  QUndoStack *getUndoStack();
-
-#ifdef COPASI_Versioning
-  CModelVersion * getVersionHierarchy();
-#endif
-
 // COMBINE Archive will take care of file management
   /*
-  #ifdef COPASI_Provenance
+#ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-  #endif
+#endif
   */
 
   CQOptPopulation* getPopulationDisplay();
@@ -266,6 +259,8 @@ protected slots:
 #endif
 
 #ifdef COPASI_UNDO
+  void slotUndo();
+  void slotRedo();
   void slotUndoHistory();
   void slotClearUndoHistory();
 #endif
@@ -401,12 +396,9 @@ private:
   QAction* mpaClearUndoHistory;
 #endif
 
-  QUndoStack *mpUndoStack;
-
 #ifdef COPASI_Versioning
   QAction* mpaCreateVersion;
   QAction* mpaBrowseVersion;
-  CModelVersion*  mpVersionHierarchy;
 //  COMBINE Archive will take care of file management
 //  QString mLastSavedParentOfCurrentModel;
 #endif

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -267,19 +267,19 @@ void CExperiment::initializeParameter()
   CRootContainer::getKeyFactory()->remove(mKey);
   mKey = CRootContainer::getKeyFactory()->add("Experiment", this);
 
-  *assertParameter("Key", CCopasiParameter::KEY, mKey) = mKey;
+  *assertParameter("Key", CCopasiParameter::Type::KEY, mKey) = mKey;
 
-  mpFileName = assertParameter("File Name", CCopasiParameter::FILE, std::string(""));
-  mpFirstRow = assertParameter("First Row", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex);
-  mpLastRow = assertParameter("Last Row", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex);
-  mpTaskType = (CTaskEnum::Task *) assertParameter("Experiment Type", CCopasiParameter::UINT, (unsigned C_INT32) CTaskEnum::Task::UnsetTask);
-  mpNormalizeWeightsPerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true);
+  mpFileName = assertParameter("File Name", CCopasiParameter::Type::FILE, std::string(""));
+  mpFirstRow = assertParameter("First Row", CCopasiParameter::Type::UINT, (unsigned C_INT32) InvalidIndex);
+  mpLastRow = assertParameter("Last Row", CCopasiParameter::Type::UINT, (unsigned C_INT32) InvalidIndex);
+  mpTaskType = (CTaskEnum::Task *) assertParameter("Experiment Type", CCopasiParameter::Type::UINT, (unsigned C_INT32) CTaskEnum::Task::UnsetTask);
+  mpNormalizeWeightsPerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::Type::BOOL, true);
 
-  mpSeparator = assertParameter("Separator", CCopasiParameter::STRING, std::string("\t"));
-  mpWeightMethod = (WeightMethod *) assertParameter("Weight Method", CCopasiParameter::UINT, (unsigned C_INT32) MEAN_SQUARE);
-  mpRowOriented = assertParameter("Data is Row Oriented", CCopasiParameter::BOOL, (bool) true);
-  mpHeaderRow = assertParameter("Row containing Names", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex);
-  mpNumColumns = assertParameter("Number of Columns", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  mpSeparator = assertParameter("Separator", CCopasiParameter::Type::STRING, std::string("\t"));
+  mpWeightMethod = (WeightMethod *) assertParameter("Weight Method", CCopasiParameter::Type::UINT, (unsigned C_INT32) MEAN_SQUARE);
+  mpRowOriented = assertParameter("Data is Row Oriented", CCopasiParameter::Type::BOOL, (bool) true);
+  mpHeaderRow = assertParameter("Row containing Names", CCopasiParameter::Type::UINT, (unsigned C_INT32) InvalidIndex);
+  mpNumColumns = assertParameter("Number of Columns", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   assertGroup("Object Map");
 
@@ -1660,9 +1660,8 @@ size_t CExperiment::getValidValueCount() const
 
 size_t CExperiment::getTotalValueCount() const
 {
-  return getNumDataRows()*mDataDependent.numCols();
+  return getNumDataRows() * mDataDependent.numCols();
 }
-
 
 const CObjectInterface::ObjectSet & CExperiment::getIndependentObjects() const
 {
@@ -1706,7 +1705,7 @@ void CExperiment::fixBuild55()
 
 /* CFittingPoint Implementation */
 // static
-CFittingPoint * CFittingPoint::fromData(const CData & data)
+CFittingPoint * CFittingPoint::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CFittingPoint(data.getProperty(CData::OBJECT_NAME).toString(),
                            NO_PARENT);
@@ -1724,7 +1723,7 @@ CData CFittingPoint::toData() const
 }
 
 // virtual
-bool CFittingPoint::applyData(const CData & data)
+bool CFittingPoint::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

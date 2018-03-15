@@ -945,13 +945,13 @@ bool CODEExporterC::exportSingleFunction(const CFunction *func, std::set<std::st
       std::map< CFunctionParameter::Role, std::string > constName;
       std::map< CFunctionParameter::Role, size_t > tmpIndex;
 
-      constName[CFunctionParameter::SUBSTRATE] = "sub_"; tmpIndex[CFunctionParameter::SUBSTRATE] = 0;
-      constName[CFunctionParameter::PRODUCT] = "prod_"; tmpIndex[CFunctionParameter::PRODUCT] = 0;
-      constName[CFunctionParameter::PARAMETER] = "param_"; tmpIndex[CFunctionParameter::PARAMETER] = 0;
-      constName[CFunctionParameter::MODIFIER] = "modif_"; tmpIndex[CFunctionParameter::MODIFIER] = 0;
-      constName[CFunctionParameter::VOLUME] = "volume_"; tmpIndex[CFunctionParameter::VOLUME] = 0;
-      constName[CFunctionParameter::VARIABLE] = "varb_"; tmpIndex[CFunctionParameter::VARIABLE] = 0;
-      constName[CFunctionParameter::TIME] = "time_"; tmpIndex[CFunctionParameter::VARIABLE] = 0;
+      constName[CFunctionParameter::Role::SUBSTRATE] = "sub_"; tmpIndex[CFunctionParameter::Role::SUBSTRATE] = 0;
+      constName[CFunctionParameter::Role::PRODUCT] = "prod_"; tmpIndex[CFunctionParameter::Role::PRODUCT] = 0;
+      constName[CFunctionParameter::Role::PARAMETER] = "param_"; tmpIndex[CFunctionParameter::Role::PARAMETER] = 0;
+      constName[CFunctionParameter::Role::MODIFIER] = "modif_"; tmpIndex[CFunctionParameter::Role::MODIFIER] = 0;
+      constName[CFunctionParameter::Role::VOLUME] = "volume_"; tmpIndex[CFunctionParameter::Role::VOLUME] = 0;
+      constName[CFunctionParameter::Role::VARIABLE] = "varb_"; tmpIndex[CFunctionParameter::Role::VARIABLE] = 0;
+      constName[CFunctionParameter::Role::TIME] = "time_"; tmpIndex[CFunctionParameter::Role::VARIABLE] = 0;
 
       for (j = 0; j < varbs_size; ++j)
         {
@@ -1037,7 +1037,7 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
     {
       const CFunctionParameters & params = reac->getFunctionParameters();
       size_t k, params_size = params.size();
-      const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
+      const std::vector< std::vector< const CDataObject * > > & ObjectMap = reac->getParameterObjects();
       std::string name;
       equation << NameMap[reac->getFunction()->getKey()] << "(";
 
@@ -1046,9 +1046,9 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
 
           CFunctionParameter::Role role = params[k]->getUsage();
 
-          CDataObject * obj = CRootContainer::getKeyFactory()->get(keyMap[k][0]);
+          const CDataObject * obj = ObjectMap[k][0];
 
-          if (role == CFunctionParameter::TIME)
+          if (role == CFunctionParameter::Role::TIME)
             {
               name = "T";
             }
@@ -1078,8 +1078,8 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
     {
       const CDataVector<CChemEqElement> & substrs = reac->getChemEq().getSubstrates();
       const CDataVector<CChemEqElement> & prods = reac->getChemEq().getProducts();
-      const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
-      CDataObject * obj;
+      const std::vector< std::vector< const CDataObject * > > & ObjectMap = reac->getParameterObjects();
+      const CDataObject * obj;
 
       size_t substrs_size = substrs.size(), prods_size = prods.size();
       size_t k, m, mult;
@@ -1091,19 +1091,19 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
 
       equation << "(";
 
-      obj = CRootContainer::getKeyFactory()->get(keyMap[0][0]);
+      obj = ObjectMap[0][0];
 
       if (!(reac->isLocalParameter(0)))
         {
-          CModelValue* modval;
-          modval = dynamic_cast< CModelValue * >(obj);
+          const CModelValue* modval;
+          modval = dynamic_cast< const CModelValue * >(obj);
 
           equation << NameMap[modval->getKey()];
         }
       else
         {
-          CCopasiParameter* param;
-          param = dynamic_cast< CCopasiParameter * >(obj);
+          const CCopasiParameter* param;
+          param = dynamic_cast< const CCopasiParameter * >(obj);
 
           equation << NameMap[param->getKey()];
         }
@@ -1125,19 +1125,19 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
         {
           equation << " - ";
 
-          obj = CRootContainer::getKeyFactory()->get(keyMap[2][0]);
+          obj = ObjectMap[2][0];
 
           if (!(reac->isLocalParameter(2)))
             {
-              CModelValue* modval;
-              modval = dynamic_cast< CModelValue * >(obj);
+              const CModelValue* modval;
+              modval = dynamic_cast< const CModelValue * >(obj);
 
               equation << NameMap[modval->getKey()];
             }
           else
             {
-              CCopasiParameter* param;
-              param = dynamic_cast< CCopasiParameter * >(obj);
+              const CCopasiParameter* param;
+              param = dynamic_cast< const CCopasiParameter * >(obj);
 
               equation << NameMap[param->getKey()];
             }

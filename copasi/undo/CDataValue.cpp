@@ -20,6 +20,8 @@ CDataValue::CDataValue(const CDataValue & src):
   mpData(NULL)
 {
   assignData(src);
+
+  assert(mType == src.mType);
 }
 
 CDataValue::CDataValue(const C_FLOAT64 & value):
@@ -37,6 +39,13 @@ CDataValue::CDataValue(const C_INT32 & value):
 }
 
 CDataValue::CDataValue(const unsigned C_INT32 & value):
+  mType(CDataValue::INVALID),
+  mpData(NULL)
+{
+  assignData(value);
+}
+
+CDataValue::CDataValue(const size_t & value):
   mType(CDataValue::INVALID),
   mpData(NULL)
 {
@@ -62,6 +71,13 @@ CDataValue::CDataValue(const char * value):
   mpData(NULL)
 {
   assignData(std::string(value));
+}
+
+CDataValue::CDataValue(const CData & value):
+  mType(CDataValue::INVALID),
+  mpData(NULL)
+{
+  assignData(value);
 }
 
 CDataValue::CDataValue(const void * pVoidPointer):
@@ -121,6 +137,13 @@ CDataValue & CDataValue::operator = (const unsigned C_INT32 & value)
   return *this;
 }
 
+CDataValue & CDataValue::operator = (const size_t & value)
+{
+  assignData(value);
+
+  return *this;
+}
+
 CDataValue & CDataValue::operator = (const bool & value)
 {
   assignData(value);
@@ -129,6 +152,13 @@ CDataValue & CDataValue::operator = (const bool & value)
 }
 
 CDataValue & CDataValue::operator = (const std::string & value)
+{
+  assignData(value);
+
+  return *this;
+}
+
+CDataValue & CDataValue::operator = (const CData & value)
 {
   assignData(value);
 
@@ -185,6 +215,16 @@ const unsigned C_INT32 & CDataValue::toUint() const
   return *static_cast< const unsigned C_INT32 * >(mpData);
 }
 
+const size_t & CDataValue::toSizeT() const
+{
+  static const size_t Invalid(std::numeric_limits< size_t >::max());
+
+  if (mType != SIZE_T)
+    return Invalid;
+
+  return *static_cast< const size_t * >(mpData);
+}
+
 const bool & CDataValue::toBool() const
 {
   static const bool Invalid(false);
@@ -203,6 +243,16 @@ const std::string & CDataValue::toString() const
     return Invalid;
 
   return *static_cast< const std::string * >(mpData);
+}
+
+const CData & CDataValue::toData() const
+{
+  static const CData Invalid;
+
+  if (mType != DATA)
+    return Invalid;
+
+  return *static_cast< const CData * >(mpData);
 }
 
 const std::vector< CDataValue > & CDataValue::toDataValues() const
@@ -253,12 +303,20 @@ bool CDataValue::operator == (const CDataValue & rhs) const
         return (toUint() == rhs.toUint());
         break;
 
+      case SIZE_T:
+        return (toSizeT() == rhs.toSizeT());
+        break;
+
       case BOOL:
         return (toBool() == rhs.toBool());
         break;
 
       case STRING:
         return (toString() == rhs.toString());
+        break;
+
+      case DATA:
+        return (toData() == rhs.toData());
         break;
 
       case DATA_VALUES:
@@ -299,12 +357,20 @@ bool CDataValue::operator != (const CDataValue & rhs) const
         return (toUint() != rhs.toUint());
         break;
 
+      case SIZE_T:
+        return (toSizeT() != rhs.toSizeT());
+        break;
+
       case BOOL:
         return (toBool() != rhs.toBool());
         break;
 
       case STRING:
         return (toString() != rhs.toString());
+        break;
+
+      case DATA:
+        return (toData() != rhs.toData());
         break;
 
       case DATA_VALUES:
@@ -349,12 +415,20 @@ void CDataValue::allocateData(const CDataValue::Type & type)
         mpData = new unsigned C_INT32;
         break;
 
+      case SIZE_T:
+        mpData = new size_t;
+        break;
+
       case BOOL:
         mpData = new bool;
         break;
 
       case STRING:
         mpData = new std::string;
+        break;
+
+      case DATA:
+        mpData = new CData;
         break;
 
       case DATA_VALUES:
@@ -395,12 +469,20 @@ void CDataValue::deleteData()
         delete static_cast< unsigned C_INT32 * >(mpData);
         break;
 
+      case SIZE_T:
+        delete static_cast< size_t * >(mpData);
+        break;
+
       case BOOL:
         delete static_cast< bool * >(mpData);
         break;
 
       case STRING:
         delete static_cast< std::string * >(mpData);
+        break;
+
+      case DATA:
+        delete static_cast< CData * >(mpData);
         break;
 
       case DATA_VALUES:
@@ -435,12 +517,24 @@ void CDataValue::assignData(const CDataValue & rhs)
         assignData(*static_cast< unsigned C_INT32 * >(rhs.mpData));
         break;
 
+      case SIZE_T:
+        assignData(*static_cast< size_t * >(rhs.mpData));
+        break;
+
       case BOOL:
         assignData(*static_cast< bool * >(rhs.mpData));
         break;
 
       case STRING:
         assignData(*static_cast< std::string * >(rhs.mpData));
+        break;
+
+      case DATA:
+        assignData(*static_cast< CData * >(rhs.mpData));
+        break;
+
+      case DATA_VALUES:
+        assignData(*static_cast< std::vector< CDataValue > * >(rhs.mpData));
         break;
 
       case DATA_VECTOR:
@@ -477,6 +571,13 @@ void CDataValue::assignData(const unsigned C_INT32 & value)
   *static_cast< unsigned C_INT32 * >(mpData) = value;
 }
 
+void CDataValue::assignData(const size_t & value)
+{
+  allocateData(SIZE_T);
+
+  *static_cast< size_t * >(mpData) = value;
+}
+
 void CDataValue::assignData(const bool & value)
 {
   allocateData(BOOL);
@@ -489,6 +590,13 @@ void CDataValue::assignData(const std::string & value)
   allocateData(STRING);
 
   *static_cast< std::string * >(mpData) = value;
+}
+
+void CDataValue::assignData(const CData & value)
+{
+  allocateData(DATA);
+
+  *static_cast< CData * >(mpData) = value;
 }
 
 void CDataValue::assignData(const std::vector< CDataValue > & value)
@@ -528,6 +636,10 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
         os << o.toUint();
         break;
 
+      case CDataValue::SIZE_T:
+        os << o.toSizeT();
+        break;
+
       case CDataValue::BOOL:
         os << o.toBool();
         break;
@@ -536,13 +648,17 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
         os << o.toString();
         break;
 
+      case CDataValue::DATA:
+        os << std::endl << o.toData();
+        break;
+
       case CDataValue::DATA_VALUES:
       {
         std::vector< CDataValue >::const_iterator it = o.toDataValues().begin();
         std::vector< CDataValue >::const_iterator end = o.toDataValues().end();
 
         for (; it != end; ++it)
-          os << *it << std::endl;
+          os << std::endl << *it;
       }
       break;
 
@@ -552,7 +668,7 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
         std::vector< CData >::const_iterator end = o.toDataVector().end();
 
         for (; it != end; ++it)
-          os << *it << std::endl;
+          os << std::endl << *it;
       }
       break;
 

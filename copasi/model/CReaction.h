@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,6 +29,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include "copasi/model/CAnnotation.h"
 #include "copasi/model/CMetab.h"
@@ -51,21 +52,22 @@ class CFunctionDB;
 class CReaction : public CDataContainer, public CAnnotation
 {
 public:
-  enum KineticLawUnit
+  enum struct KineticLawUnit
   {
     Default,
     AmountPerTime,
-    ConcentrationPerTime
+    ConcentrationPerTime,
+    __SIZE
   };
 
-  static const char * KineticLawUnitTypeName[];
+  static CEnumAnnotation< std::string, KineticLawUnit > KineticLawUnitTypeName;
 
   /**
    * Static method to create a CDataObject based on the provided data
    * @param const CData & data
    * @return CReaction * pDataObject
    */
-  static CReaction * fromData(const CData & data);
+  static CReaction * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -78,7 +80,21 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
+
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param CUndoData & undoData
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
+   */
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
 
   /**
    * Default constructor
@@ -242,11 +258,9 @@ public:
    * set, even if it is not used
    * @param const std::string & parameterName
    * @param const C_FLOAT64 & value
-   * @param const bool & updateStatus (default: true(
    */
   void setParameterValue(const std::string & parameterName,
-                         const C_FLOAT64 & value,
-                         const bool & updateStatus = true);
+                         const C_FLOAT64 & value);
 
   /**
    * Retrieves a parameter value
@@ -258,14 +272,14 @@ public:
    * @param const size_t & index
    * @param const std::string & key
    */
-  void setParameterMapping(const size_t & index, const std::string & key);
+  // void setParameterMapping(const size_t & index, const std::string & key);
 
   /**
    * Add a parameter mapping for the indexed parameter.
    * @param const size_t & index
    * @param const std::string & key
    */
-  void addParameterMapping(const size_t & index, const std::string & key);
+  // void addParameterMapping(const size_t & index, const std::string & key);
 
   /**
    * Sets a parameter mapping for the named parameter.
@@ -273,47 +287,45 @@ public:
    * @param const std::string & key
    * @return bool success
    */
-  bool setParameterMapping(const std::string & parameterName, const std::string & key);
+  // bool setParameterMapping(const std::string & parameterName, const std::string & key);
 
   /**
    * Add a parameter mapping for the named parameter.
    * @param const std::string & parameterName
    * @param const std::string & key
    */
-  void addParameterMapping(const std::string & parameterName, const std::string & key);
+  // void addParameterMapping(const std::string & parameterName, const std::string & key);
 
   /**
    * Set the mapping for the name parameter which must be of type vector
    * @param const std::string & parameterName
    * @param const std::vector<std::string> & keys
    */
-  void setParameterMappingVector(const std::string & parameterName,
-                                 const std::vector<std::string> & keys);
+  // void setParameterMappingVector(const std::string & parameterName,
+  //                                const std::vector<std::string> & keys);
 
   /**
    * Clear the parameter mapping for the named parameter.
    * @param const size_t & index
    */
-  void clearParameterMapping(const std::string & parameterName);
+  // void clearParameterMapping(const std::string & parameterName);
 
   /**
    * Clear the parameter mapping for the indexed parameter.
    * @param const size_t & index
    */
-  void clearParameterMapping(const size_t & index);
+  // void clearParameterMapping(const size_t & index);
 
   /**
    * Retrieve the mappings of kinetic function parameters.
    */
-  const std::vector< std::vector<std::string> > & getParameterMappings() const
-  {return mMetabKeyMap;}
+  // const std::vector< std::vector<std::string> > & getParameterMappings() const;
 
-  std::vector< std::vector<std::string> > & getParameterMappings()
-  {return mMetabKeyMap;}
+  // std::vector< std::vector<std::string> > & getParameterMappings();
 
-  const std::vector<std::string> & getParameterMapping(const size_t & index) const;
+  // const std::vector<std::string> & getParameterMapping(const size_t & index) const;
 
-  const std::vector<std::string> & getParameterMapping(const std::string & parameterName) const;
+  // const std::vector<std::string> & getParameterMapping(const std::string & parameterName) const;
 
   /**
    *  Gets the list of kinetic parameter objects of the reaction/function
@@ -496,6 +508,8 @@ private:
    */
   void calculate();
 
+  CIssue compileFunctionParameters(std::set< const CDataObject * > & Dependencies);
+
 public:
   /**
    *  Retrieves the number of compartments the reaction is acting in.
@@ -589,7 +603,7 @@ private:
   /**
    * Initializes the mMetabNameMap vectors to the right size.
    */
-  void initializeMetaboliteKeyMap();
+  void initializeParameterMapping();
 
   /**
    * Replaces all object nodes in an expression tree by variable nodes.
@@ -661,6 +675,12 @@ public:
   void setScalingCompartmentCN(const std::string & compartmentCN);
 
   /**
+   * Retrieve the CN of the scaling compartment.
+   * @return const CCommonName & scalingCompartmentCN
+   */
+  const CCommonName & getScalingCompartmentCN() const;
+
+  /**
    * Set the compartment used for scaling the kinetic function
    * @param const CCompartment * pCompartment
    */
@@ -671,6 +691,30 @@ public:
    * @return const CCompartment * scalingCompartment
    */
   const CCompartment * getScalingCompartment() const;
+
+  const std::vector< CRegisteredCommonName > & getParameterCNs(const size_t & index) const;
+
+  const std::vector< CRegisteredCommonName > & getParameterCNs(const std::string & name) const;
+
+  const std::vector< std::vector< CRegisteredCommonName > > & getParameterCNs() const;
+
+  bool setParameterCNs(const size_t & index, const std::vector< CCommonName > CNs);
+
+  bool setParameterCNs(const size_t & index, const std::vector< CRegisteredCommonName > CNs);
+
+  bool setParameterCNs(const std::string & name, const std::vector< CCommonName > CNs);
+
+  bool setParameterCNs(const std::string & name, const std::vector< CRegisteredCommonName > CNs);
+
+  const std::vector< const CDataObject * > & getParameterObjects(const size_t & index) const;
+
+  const std::vector< const CDataObject * > & getParameterObjects(const std::string & name) const;
+
+  const std::vector< std::vector< const CDataObject * > > & getParameterObjects() const;
+
+  bool setParameterObjects(const size_t & index, const std::vector< const CDataObject * > objects);
+
+  bool setParameterObjects(const std::string & name, const std::vector< const CDataObject * > objects);
 
   // Attributes
 private:
@@ -734,7 +778,11 @@ private:
    *  This describes the mapping of the species to the function parameters. Here the
    *  keys of the metabolites (as in the chemical equation) are stored.
    */
-  std::vector< std::vector< std::string > > mMetabKeyMap;
+  // std::vector< std::vector< std::string > > mMetabKeyMap;
+
+  std::map< std::string, size_t > mParameterNameToIndex;
+  std::vector< std::vector< CRegisteredCommonName > > mParameterIndexToCNs;
+  std::vector< std::vector< const CDataObject * > > mParameterIndexToObjects;
 
   /**
    *  This is a list of parameter objects.

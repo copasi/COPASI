@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -72,10 +72,11 @@ CQPlotSubwidget::CQPlotSubwidget(QWidget* parent, const char* name, Qt::WindowFl
   mpStack->addWidget(mpSpectogramWidget);
 
   auto it = CTaskEnum::TaskName.begin();
+
   for (; it != CTaskEnum::TaskName.end(); ++it)
-  {
-    mTaskNames << FROM_UTF8(*it);
-  }
+    {
+      mTaskNames << FROM_UTF8(*it);
+    }
 }
 
 CPlotItem *CQPlotSubwidget::updateItem(CPlotItem *item)
@@ -871,7 +872,7 @@ void CQPlotSubwidget::removeCurve()
 void CQPlotSubwidget::commitPlot()
 {
   saveToPlotSpec();
-  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(CRootContainer::getKeyFactory()->get(mKey)));
+  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(mpObject));
 }
 
 //-----------------------------------------------------------------------------
@@ -884,35 +885,36 @@ void CQPlotSubwidget::deletePlot()
   if (!mpDataModel->getModel())
     return;
 
-  CPlotSpecification *pspec = dynamic_cast< CPlotSpecification * >(CRootContainer::getKeyFactory()->get(mKey));
+  CPlotSpecification *pspec = dynamic_cast< CPlotSpecification * >(mpObject);
 
   if (!pspec) return;
 
-  Index =
-    mpDataModel->getPlotDefinitionList()->CDataVector<CPlotSpecification>::getIndex(pspec);
-  mpDataModel->getPlotDefinitionList()->removePlotSpec(mKey);
-  std::string deletedKey = mKey;
+  Index = mpDataModel->getPlotDefinitionList()->CDataVector<CPlotSpecification>::getIndex(pspec);
+  mpDataModel->getPlotDefinitionList()->CDataVector<CPlotSpecification>::remove(Index);
+
+  std::string deletedObjectCN = mObjectCN;
+
   Size = mpDataModel->getPlotDefinitionList()->size();
 
   if (Size > 0)
-    enter(mpDataModel->getPlotDefinitionList()->operator[](std::min(Index, Size - 1)).CCopasiParameter::getKey());
+    enter(mpDataModel->getPlotDefinitionList()->operator[](std::min(Index, Size - 1)).getCN());
   else
-    enter("");
+    enter(std::string());
 
   //ListViews::
-  protectedNotify(ListViews::PLOT, ListViews::DELETE, deletedKey);
+  protectedNotify(ListViews::PLOT, ListViews::DELETE, mObjectCN);
 }
 
 //-----------------------------------------------------------------------------
 
 void CQPlotSubwidget::copyPlot()
 {
-  leave();
+  leaveProtected();
   CDataModel *pDataModel = mpObject->getObjectDataModel();
 
   if (pDataModel == NULL) return;
 
-  CPlotSpecification *pPl = new CPlotSpecification(*dynamic_cast<CPlotSpecification *>(CRootContainer::getKeyFactory()->get(mKey)), NO_PARENT);
+  CPlotSpecification *pPl = new CPlotSpecification(*dynamic_cast<CPlotSpecification *>(mpObject), NO_PARENT);
   std::string baseName = pPl->getObjectName() + "_copy";
   std::string name = baseName;
   int i = 1;
@@ -935,7 +937,7 @@ void CQPlotSubwidget::copyPlot()
 
 void CQPlotSubwidget::addPlot()
 {
-  leave();
+  leaveProtected();
   CDataModel *pDataModel = mpObject->getObjectDataModel();
 
   if (pDataModel == NULL) return;
@@ -962,7 +964,7 @@ void CQPlotSubwidget::addPlot()
 
 void CQPlotSubwidget::resetPlot()
 {
-  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(CRootContainer::getKeyFactory()->get(mKey)));
+  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(mpObject));
 }
 
 #include <QInputDialog>
@@ -973,58 +975,62 @@ void CQPlotSubwidget::selectTaskTypes()
   dlg->setWindowTitle("Select Tasks");
   dlg->setMinimumHeight(400);
   dlg->setSelectionList(mTaskNames);
-  
+
   QStringList currentSelection;
+
   if (!mTaskTypes.empty())
-  {
-    std::istringstream ss(mTaskTypes);
-    std::string token;
-    while (std::getline(ss, token, ',')) {
+    {
+      std::istringstream ss(mTaskTypes);
+      std::string token;
 
-      while (token[0] == ' ') // remove leading spaces
-        token.erase(0, 1);
+      while (std::getline(ss, token, ','))
+        {
 
-      currentSelection << FROM_UTF8(token);
+          while (token[0] == ' ') // remove leading spaces
+            token.erase(0, 1);
+
+          currentSelection << FROM_UTF8(token);
+        }
     }
 
-  }
-
   dlg->setCurrentSelection(currentSelection);
+
   if (dlg->exec() != QDialog::Accepted)
     return;
 
   const QStringList& selection = dlg->getSelection();
-  
-  std::stringstream str; 
+
+  std::stringstream str;
+
   if (!selection.empty())
-  {
-    auto it = selection.begin();
-    str << TO_UTF8(*it++);
-    for (; it != selection.end(); ++it)
     {
-      str << ", ";
-      str << TO_UTF8(*it);
+      auto it = selection.begin();
+      str << TO_UTF8(*it++);
+
+      for (; it != selection.end(); ++it)
+        {
+          str << ", ";
+          str << TO_UTF8(*it);
+        }
     }
-  }
 
   mTaskTypes = str.str();
 
   chkTaskTypes->setChecked(mTaskTypes.empty());
   txtTaskTypes->setText(FROM_UTF8(mTaskTypes));
-
 }
 
 void CQPlotSubwidget::allTaskTypesClicked()
 {
   if (!mTaskTypes.empty())
-  {
-    mTaskTypes.clear();
-    txtTaskTypes->clear();
-  }
+    {
+      mTaskTypes.clear();
+      txtTaskTypes->clear();
+    }
   else
-  {
-    selectTaskTypes();
-  }
+    {
+      selectTaskTypes();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1108,7 +1114,7 @@ bool CQPlotSubwidget::saveToPlotSpec()
   if (pspec->getTitle() != TO_UTF8(titleLineEdit->text()))
     {
       pspec->setTitle(TO_UTF8(titleLineEdit->text()));
-      protectedNotify(ListViews::PLOT, ListViews::RENAME, mKey);
+      protectedNotify(ListViews::PLOT, ListViews::RENAME, mObjectCN);
     }
 
   //active?
@@ -1118,7 +1124,7 @@ bool CQPlotSubwidget::saveToPlotSpec()
   pspec->setLogY(checkLogY->isChecked());
   // task types
   pspec->setTaskTypes(mTaskTypes);
-  
+
   //curves
   CPlotItem *item;
   storeChanges();
@@ -1160,7 +1166,7 @@ bool CQPlotSubwidget::enterProtected()
 
   if (!pspec)
     {
-      mpListView->switchToOtherWidget(42, "");
+      mpListView->switchToOtherWidget(42, std::string());
       return false;
     }
 
@@ -1221,19 +1227,20 @@ void CQPlotSubwidget::itemSelectionChanged()
 
 //-----------------------------------------------------------------------------
 
-bool CQPlotSubwidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &key)
+bool CQPlotSubwidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || isHidden()) return true;
 
   switch (objectType)
     {
-        //TODO: check list:
+      //TODO: check list:
       case ListViews::MODEL:
         switch (action)
           {
             case ListViews::DELETE:
+            case ListViews::ADD:
               mpObject = NULL;
-              mKey = "";
+              mObjectCN.clear();
               return enterProtected();
               break;
 
@@ -1244,13 +1251,13 @@ bool CQPlotSubwidget::update(ListViews::ObjectType objectType, ListViews::Action
         break;
 
       case ListViews::PLOT:
-        if (key == mKey)
+        if (cn == mObjectCN)
           {
             switch (action)
               {
                 case ListViews::DELETE:
                   mpObject = NULL;
-                  mKey = "";
+                  mObjectCN.clear();
                   return enterProtected();
                   break;
 
@@ -1274,7 +1281,7 @@ bool CQPlotSubwidget::update(ListViews::ObjectType objectType, ListViews::Action
 
 //-----------------------------------------------------------------------------
 
-bool CQPlotSubwidget::leave()
+bool CQPlotSubwidget::leaveProtected()
 {
   return saveToPlotSpec();
 }

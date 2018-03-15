@@ -57,8 +57,7 @@ CQLyapWidget::~CQLyapWidget()
 
 bool CQLyapWidget::runTask()
 {
-  CLyapTask * pTask =
-    dynamic_cast< CLyapTask * >(CRootContainer::getKeyFactory()->get(mKey));
+  CLyapTask * pTask = dynamic_cast< CLyapTask * >(mpObject);
 
   if (!pTask) return false;
 
@@ -69,7 +68,7 @@ bool CQLyapWidget::runTask()
 
 bool CQLyapWidget::taskFinishedEvent()
 {
-  mpListView->switchToOtherWidget(261, ""); //change to the results window
+  mpListView->switchToOtherWidget(261, std::string()); //change to the results window
   return true;
 }
 

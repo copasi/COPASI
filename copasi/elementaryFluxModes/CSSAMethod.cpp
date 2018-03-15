@@ -141,7 +141,7 @@ bool CSSAMethod::initialize()
   if (mpCallBack)
     mhSteps =
       mpCallBack->addItem("Current Step",
-                          CCopasiParameter::UINT,
+                          CCopasiParameter::Type::UINT,
                           & mStep,
                           & mMaxStep);
 

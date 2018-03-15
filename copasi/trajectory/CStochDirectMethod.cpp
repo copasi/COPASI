@@ -117,9 +117,9 @@ CStochDirectMethod::~CStochDirectMethod()
 
 void CStochDirectMethod::initializeParameter()
 {
-  assertParameter("Max Internal Steps", CCopasiParameter::INT, (C_INT32) 1000000);
-  assertParameter("Use Random Seed", CCopasiParameter::BOOL, false);
-  assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) 1);
+  assertParameter("Max Internal Steps", CCopasiParameter::Type::INT, (C_INT32) 1000000);
+  assertParameter("Use Random Seed", CCopasiParameter::Type::BOOL, false);
+  assertParameter("Random Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 1);
 
   mpRootValueCalculator = new CBrent::EvalTemplate< CStochDirectMethod >(this, &CStochDirectMethod::rootValue);
 }

@@ -18,7 +18,8 @@
 
 #include "CQBaseDataModel.h"
 
-class UndoEventData;
+class CEvent;
+template < class CType > class CDataVectorN;
 
 #define COL_NAME_EVENTS             1
 #define COL_TRIGGER_EVENTS          2
@@ -32,9 +33,6 @@ class CQEventDM : public CQBaseDataModel
 {
   Q_OBJECT
 
-  friend class EventDataChangeCommand;
-  friend class InsertEventRowsCommand;
-
 public:
   CQEventDM(QObject *parent, CDataModel * pDataModel);
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -46,21 +44,21 @@ public:
   bool setData(const QModelIndex &index, const QVariant &value,
                int role = Qt::EditRole);
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
-
-  //TODO Undo
-  bool eventDataChange(const QModelIndex &index, const QVariant &value);
-  void insertNewEventRow(int position, int rows, const QModelIndex& index, const QVariant& value);
-  void addEventRow(UndoEventData *pEventData);
-  void deleteEventRow(UndoEventData *pEventData);
-  bool removeEventRows(QModelIndexList rows, const QModelIndex&);
-  bool insertEventRows(QList <UndoEventData *>& pGlobalQuatityData);
-  void deleteEventRows(QList <UndoEventData *>& pEventData);
-  bool removeAllEventRows();
   bool clear();
 
+public slots:
+  virtual void resetCache();
+
+private:
+  void insertNewRows(int position, int rows,
+                     int column = COL_NAME_EVENTS,
+                     const QVariant & value = "event");
+
 protected:
-  virtual bool insertRows(int position, int rows, const QModelIndex & source);
-  virtual bool removeRows(int position, int rows);
+  virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+  virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+
+  CDataVectorN< CEvent > * mpEvents;
 };
 
 #endif //CQEventDM_H

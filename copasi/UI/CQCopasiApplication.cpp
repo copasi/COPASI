@@ -41,6 +41,12 @@ bool IsWindows8()
 
 #endif
 
+// static
+CQCopasiApplication * CQCopasiApplication::instance()
+{
+  return dynamic_cast< CQCopasiApplication * >(QCoreApplication::instance());
+}
+
 CQCopasiApplication::CQCopasiApplication(int & argc, char ** argv):
   QApplication(argc, argv),
   mpMainWindow(NULL),

@@ -176,7 +176,7 @@ void StateSubwidget::loadReactions()
       pItem->setData(Qt::DisplayRole, it->getParticleFlux());
       mpTblReactions->setItem(i, 2, pItem);
 
-      mpTblReactions->setItem(i, 3, new QTableWidgetItem(FROM_UTF8(CChemEqInterface::getChemEqString(mpModel, *it, false))));
+      mpTblReactions->setItem(i, 3, new QTableWidgetItem(FROM_UTF8(CChemEqInterface::getChemEqString(*it, false))));
 
       i++;
     }
@@ -452,9 +452,7 @@ void StateSubwidget::setFramework(int framework)
   showUnits();
 }
 
-bool StateSubwidget::update(ListViews::ObjectType objectType,
-                            ListViews::Action action,
-                            const std::string & /* key */)
+bool StateSubwidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   switch (objectType)
     {
@@ -464,6 +462,7 @@ bool StateSubwidget::update(ListViews::ObjectType objectType,
         switch (action)
           {
             case ListViews::ADD:
+            case ListViews::DELETE:
               assert(mpDataModel != NULL);
               mpModel = mpDataModel->getModel();
               clear();

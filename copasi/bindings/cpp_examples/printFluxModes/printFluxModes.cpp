@@ -97,7 +97,7 @@ int main(int argc, char** argv)
 
   // instantiate a reaction interface that will be used to get the
   // reaction scheme from the reactions later on
-  CReactionInterface tmp(pDataModel->getModel());
+  CReactionInterface tmp;
 
   // get hold of re-ordered reactions
   auto& reactions = dynamic_cast<CEFMProblem*>(pTask->getProblem())->getReorderedReactions();
@@ -125,7 +125,7 @@ int main(int argc, char** argv)
           reactionString << curIt->second << " * " << reaction.getObjectName() << ", ";
 
           // initialize reaction interface with reaction key
-          tmp.initFromReaction(reaction.getKey());
+          tmp.init(reaction);
 
           // add reaction scheme to equation string
           equationStream << tmp.getChemEqString() << ", ";

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,7 +39,7 @@
 #include "copasi/undo/CUndoData.h"
 
 // static
-CCompartment * CCompartment::fromData(const CData & data)
+CCompartment * CCompartment::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CCompartment(data.getProperty(CData::OBJECT_NAME).toString(),
                           NO_PARENT);
@@ -50,15 +50,28 @@ CData CCompartment::toData() const
 {
   CData Data = CModelEntity::toData();
 
+  CData InitialValueData;
+  InitialValueData.addProperty(CData::VALUE, mIValue);
+  InitialValueData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[CCore::Framework::ParticleNumbers]);
+  Data.addProperty(CData::INITIAL_VALUE, InitialValueData);
+
   Data.addProperty(CData::SPATIAL_DIMENSION, mDimensionality);
 
   return Data;
 }
 
 // virtual
-bool CCompartment::applyData(const CData & data)
+bool CCompartment::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CModelEntity::applyData(data);
+  bool success = CModelEntity::applyData(data, changes);
+
+  if (data.isSetProperty(CData::INITIAL_VALUE))
+    {
+      const CData & Data = data.getProperty(CData::INITIAL_VALUE).toData();
+      mIValue = Data.getProperty(CData::VALUE).toDouble();
+      mpModel->updateInitialValues(CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
+      changes[mpModel->getCN()] = {CUndoData::Type::CHANGE, "State", mpModel->getObjectName()};
+    }
 
   if (data.isSetProperty(CData::SPATIAL_DIMENSION))
     {
@@ -69,98 +82,27 @@ bool CCompartment::applyData(const CData & data)
 }
 
 // virtual
-void CCompartment::appendDependentData(CUndoData & undoData, const CCore::Framework & framework)
+void CCompartment::createUndoData(CUndoData & undoData,
+                                  const CUndoData::Type & type,
+                                  const CData & oldData,
+                                  const CCore::Framework & framework) const
 {
-  switch (undoData.getType())
+  CModelEntity::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
     {
-      case CUndoData::Type::INSERT:
-        // Nothing to append
-        break;
-
-      case CUndoData::Type::REMOVE:
-        // We need to add all contained species and reactions;
-      {
-        DataObjectSet dependentReactions;
-        DataObjectSet dependentMetabolites;
-        DataObjectSet dependentCompartments;
-        DataObjectSet dependentModelValues;
-        DataObjectSet dependentEvents;
-        DataObjectSet dependentEventAssignments;
-
-        mpModel->appendAllDependents(*this, dependentReactions, dependentMetabolites, dependentCompartments,  dependentModelValues,  dependentEvents,  dependentEventAssignments);
-
-        // Reactions, Metabolites, and Event Assignments may directly depend on the compartment and have to be removed.
-        DataObjectSet::const_iterator it = dependentEventAssignments.begin();
-        DataObjectSet::const_iterator end = dependentEventAssignments.end();
-        std::vector< CUndoData > DependentData;
-
-        for (; it != end; ++it)
-          {
-            DependentData.push_back(CUndoData(CUndoData::Type::REMOVE, *it, undoData.getAuthorID()));
-          }
-
-        undoData.addDependentData(DependentData, true);
-        DependentData.clear();
-
-        it = dependentReactions.begin();
-        end = dependentReactions.end();
-
-        for (; it != end; ++it)
-          {
-            DependentData.push_back(CUndoData(CUndoData::Type::REMOVE, *it, undoData.getAuthorID()));
-          }
-
-        undoData.addDependentData(DependentData, true);
-        DependentData.clear();
-
-        it = dependentMetabolites.begin();
-        end = dependentMetabolites.end();
-
-        for (; it != end; ++it)
-          {
-            DependentData.push_back(CUndoData(CUndoData::Type::REMOVE, *it, undoData.getAuthorID()));
-          }
-
-        undoData.addDependentData(DependentData, true);
-      }
-
-      break;
-
-      case CUndoData::Type::CHANGE:
-
-        if (undoData.isSetProperty(CData::INITIAL_VALUE))
-          {
-            double Factor = undoData.getNewData().getProperty(CData::INITIAL_VALUE).toDouble() / undoData.getOldData().getProperty(CData::INITIAL_VALUE).toDouble();
-
-            CDataVector< CMetab >::const_iterator it = mMetabolites.begin();
-            CDataVector< CMetab >::const_iterator end = mMetabolites.end();
-
-            for (; it != end; ++it)
-              {
-                CUndoData Data(CUndoData::Type::CHANGE, &*it, undoData.getAuthorID());
-
-                switch (framework)
-                  {
-                    case CCore::Framework::Concentration:
-                      // We need to record the old and new initial particle numbers for each species where new := old * factor
-                      Data.addProperty(CData::INITIAL_VALUE, it->getInitialValue(), it->getInitialValue() * Factor);
-                      break;
-
-                    case CCore::Framework::ParticleNumbers:
-                      // We need to record the old and new concentrations for each species where new := old / factor
-                      Data.addProperty(CData::INITIAL_VALUE, it->getInitialConcentration(), it->getInitialConcentration() / Factor);
-                      break;
-
-                    case CCore::Framework::__SIZE:
-                      break;
-                  }
-
-                undoData.addDependentData(Data);
-              }
-          }
-
-        break;
+      return;
     }
+
+  CData OldInitialValueData;
+  OldInitialValueData.addProperty(CData::VALUE, oldData.getProperty(CData::INITIAL_VALUE).toData().getProperty(CData::VALUE));
+  OldInitialValueData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+  CData NewInitialValueData;
+  NewInitialValueData.addProperty(CData::VALUE, mIValue);
+  NewInitialValueData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+
+  undoData.addProperty(CData::INITIAL_VALUE, OldInitialValueData, NewInitialValueData);
+  undoData.addProperty(CData::SPATIAL_DIMENSION, oldData.getProperty(CData::SPATIAL_DIMENSION), mDimensionality);
 
   return;
 }

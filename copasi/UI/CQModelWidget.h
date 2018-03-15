@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,12 +20,9 @@
 
 #include <QWidget>
 #include <QtCore/QVariant>
- #include <QStringListModel>
+#include <QStringListModel>
 
 #include "copasi/UI/ui_CQModelWidget.h"
-
-class QUndoStack;
-#include "copasi/undoFramework/CCopasiUndoCommand.h"
 
 #include <map>
 
@@ -39,11 +36,6 @@ public:
   CQModelWidget(QWidget* parent = 0, const char* name = 0);
   ~CQModelWidget();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-  virtual bool leave();
-
-  bool changeValue(CCopasiUndoCommand::Type type, const QVariant& newValue);
-
 protected slots:
   virtual void slotBtnRevertClicked();
   virtual void slotBtnOKClicked();
@@ -54,6 +46,8 @@ protected slots:
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
 
 private:
   void load();
@@ -61,8 +55,6 @@ private:
 
   // Attributes
   CModel * mpModel;
-
-  QUndoStack *mpUndoStack;
 
   QLineEdit * mpFocusUnit;
 };

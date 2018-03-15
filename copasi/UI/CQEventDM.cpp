@@ -25,18 +25,10 @@
 #include "CQEventDM.h"
 #include "qtUtilities.h"
 
-#include "undoFramework/InsertEventRowsCommand.h"
-#include "undoFramework/RemoveEventRowsCommand.h"
-#include "undoFramework/RemoveAllEventRowsCommand.h"
-#include "undoFramework/EventDataChangeCommand.h"
-#include "undoFramework/UndoEventData.h"
-#include "undoFramework/UndoEventAssignmentData.h"
-
 CQEventDM::CQEventDM(QObject *parent, CDataModel * pDataModel)
   : CQBaseDataModel(parent, pDataModel)
-
-{
-}
+  , mpEvents(NULL)
+{}
 
 int CQEventDM::rowCount(const QModelIndex&) const
 {
@@ -89,20 +81,20 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          CEvent *pEvent = &mpDataModel->getModel()->getEvents()[index.row()];
+          const CEvent & Event = mpDataModel->getModel()->getEvents()[index.row()];
           QString assignmentTarget = "";
           QString assignmentExpression = "";
 
           if (index.column() == COL_ASSIGNTARGET_EVENTS || index.column() == COL_ASSIGNEXPRESSION_EVENTS)
             {
-              CDataVectorN< CEventAssignment >::const_iterator it = pEvent->getAssignments().begin();
-              CDataVectorN< CEventAssignment >::const_iterator begin = pEvent->getAssignments().begin();
-              CDataVectorN< CEventAssignment >::const_iterator end = pEvent->getAssignments().end();
+              CDataVectorN< CEventAssignment >::const_iterator it = Event.getAssignments().begin();
+              CDataVectorN< CEventAssignment >::const_iterator begin = Event.getAssignments().begin();
+              CDataVectorN< CEventAssignment >::const_iterator end = Event.getAssignments().end();
 
               for (; it != end; ++it)
                 {
                   const CModelEntity * pEntity =
-                    dynamic_cast< CModelEntity * >(CRootContainer::getKeyFactory()->get(it->getTargetKey()));
+                    dynamic_cast< const CModelEntity * >(CObjectInterface::DataObject(mpDataModel->getObject(it->getTargetCN())));
 
                   if (pEntity != NULL)
                     {
@@ -129,33 +121,33 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
                 return QVariant(index.row() + 1);
 
               case COL_NAME_EVENTS:
-                return QVariant(FROM_UTF8(pEvent->getObjectName()));
+                return QVariant(FROM_UTF8(Event.getObjectName()));
 
               case COL_TRIGGER_EVENTS:
-                pExpression = pEvent->getTriggerExpressionPtr();
+                pExpression = Event.getTriggerExpressionPtr();
 
                 if (pExpression != NULL)
                   return QVariant(FROM_UTF8(pExpression->getDisplayString()));
                 else
-                  return QVariant(FROM_UTF8(pEvent->getTriggerExpression()));
+                  return QVariant(FROM_UTF8(Event.getTriggerExpression()));
 
               case COL_DELAYED_EVENTS:
               {
-                if (pEvent->getDelayExpression() == "")
+                if (Event.getDelayExpression() == "")
                   return QVariant(QString("No"));
-                else if (pEvent->getDelayAssignment())
+                else if (Event.getDelayAssignment())
                   return QVariant(QString("Assignment"));
                 else
                   return QVariant(QString("Calculation"));
               }
 
               case COL_DELAY_EXPRESSION_EVENTS:
-                pExpression = pEvent->getDelayExpressionPtr();
+                pExpression = Event.getDelayExpressionPtr();
 
                 if (pExpression != NULL)
                   return QVariant(FROM_UTF8(pExpression->getDisplayString()));
                 else
-                  return QVariant(FROM_UTF8(pEvent->getDelayExpression()));
+                  return QVariant(FROM_UTF8(Event.getDelayExpression()));
 
               case COL_ASSIGNTARGET_EVENTS:
                 return QVariant(assignmentTarget);
@@ -218,49 +210,70 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
 
   if (defaultRow)
     {
-      mpUndoStack->push(new InsertEventRowsCommand(rowCount(), 1, this, index, value));
+      insertNewRows(rowCount(), 1, index.column(), value);
     }
   else if (role == Qt::EditRole)
     {
-      mpUndoStack->push(new EventDataChangeCommand(index, value, this));
+      CEvent & Event = mpEvents->operator [](index.row());
+      CData OldData = Event.toData();
+
+      if (index.column() == COL_NAME_EVENTS)
+        Event.setObjectName(TO_UTF8(value.toString()));
+
+      CUndoData UndoData;
+      Event.createUndoData(UndoData, CUndoData::Type::CHANGE, OldData);
+
+      if (!UndoData.empty())
+        {
+          emit signalNotifyChanges(mpDataModel->recordData(UndoData));
+        }
     }
 
   return true;
 }
 
-bool CQEventDM::insertRows(int position, int rows, const QModelIndex&)
+// virtual
+void CQEventDM::resetCache()
 {
-  mpUndoStack->push(new InsertEventRowsCommand(position, rows, this));
+  assert(mpDataModel != NULL);
+
+  mpEvents = dynamic_cast< CDataVectorN < CEvent > * >(&mpDataModel->getModel()->getEvents());
+  assert(mpEvents != NULL);
+}
+
+bool CQEventDM::insertRows(int position, int rows, const QModelIndex & parent)
+{
+  insertNewRows(position, rows);
 
   return true;
 }
 
-bool CQEventDM::removeRows(int position, int rows)
+bool CQEventDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(QModelIndex(), position, position + rows - 1);
+  beginRemoveRows(parent, position, position + rows - 1);
 
-  CModel * pModel = mpDataModel->getModel();
+  std::vector< const CEvent * > ToBeDeleted;
+  ToBeDeleted.resize(rows);
 
-  std::vector< std::string > DeletedKeys;
-  DeletedKeys.resize(rows);
+  std::vector< const CEvent * >::iterator it = ToBeDeleted.begin();
+  std::vector< const CEvent * >::iterator end = ToBeDeleted.end();
 
-  std::vector< std::string >::iterator itDeletedKey;
-  std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
+  CDataVector< CEvent >::const_iterator itRow = mpEvents->begin() + position;
 
-  CDataVector< CEvent >::const_iterator itRow = pModel->getEvents().begin() + position;
-
-  for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
+  for (; it != end; ++it, ++itRow)
     {
-      *itDeletedKey = itRow->getKey();
+      *it = &*itRow;
     }
 
-  for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey)
+  for (it = ToBeDeleted.begin(); it != end; ++it)
     {
-      mpDataModel->getModel()->removeEvent(*itDeletedKey);
-      emit notifyGUI(ListViews::EVENT, ListViews::DELETE, *itDeletedKey);
+      CUndoData UndoData;
+      (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
+
+      emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
   endRemoveRows();
@@ -270,138 +283,26 @@ bool CQEventDM::removeRows(int position, int rows)
 
 bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex& index)
 {
-  removeEventRows(rows, index);
-  return true;
-}
-
-bool CQEventDM::eventDataChange(const QModelIndex &index, const QVariant &value)
-{
-  if (!index.isValid())
-    return false;
-
-  bool defaultRow = isDefaultRow(index);
-
-  if (defaultRow)
-    {
-      if (index.data() != value)
-        insertRow(rowCount(), index);
-      else
-        return false;
-    }
-
-  assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
-
-  if ((int)pModel->getEvents().size() <= index.row())
-    return false;
-
-  switchToWidget(CCopasiUndoCommand::EVENTS);
-
-  CEvent *pEvent = &pModel->getEvents()[index.row()];
-
-  if (index.column() == COL_NAME_EVENTS)
-    pEvent->setObjectName(TO_UTF8(value.toString()));
-
-  if (defaultRow && this->index(index.row(), COL_NAME_EVENTS).data().toString() == "event")
-    pEvent->setObjectName(TO_UTF8(createNewName("event", COL_NAME_EVENTS)));
-
-  emit dataChanged(index, index);
-  emit notifyGUI(ListViews::EVENT, ListViews::CHANGE, pEvent->getKey());
-
-  return true;
-}
-
-void CQEventDM::insertNewEventRow(int position, int rows, const QModelIndex& index, const QVariant& value)
-{
-  assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
-
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
-
-  for (int row = 0; row < rows; ++row)
-    {
-      QString name = createNewName(index.isValid() && index.column() == COL_NAME_EVENTS ? value.toString() : "event", COL_NAME_EVENTS);
-      CEvent *pEvent = pModel->createEvent(TO_UTF8(name));
-      emit notifyGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
-    }
-
-  endInsertRows();
-}
-
-void CQEventDM::deleteEventRow(UndoEventData *pEventData)
-{
-  assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
-
-  size_t index = pModel->getEvents().getIndex(pEventData->getName());
-
-  if (index == C_INVALID_INDEX)
-    return;
-
-  switchToWidget(CCopasiUndoCommand::EVENTS);
-
-  removeRow((int) index);
-}
-
-void CQEventDM::addEventRow(UndoEventData *pEventData)
-{
-  assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
-
-  switchToWidget(CCopasiUndoCommand::EVENTS);
-
-  beginInsertRows(QModelIndex(), 1, 1);
-
-  CDataObject *pEvent = pEventData->restoreObjectIn(pModel);
-
-  if (pEvent == NULL) return;
-
-  std::string key = pEvent->getKey();
-  pEventData->setKey(key);
-
-  emit notifyGUI(ListViews::EVENT, ListViews::ADD, key);
-  endInsertRows();
-}
-
-bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
-{
   if (rows.isEmpty())
     return false;
 
-  assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
-
-  switchToWidget(CCopasiUndoCommand::EVENTS);
-
   //Build the list of pointers to items to be deleted
   //before actually deleting any item.
-  QList <CEvent *> pEvents;
+  QList < CEvent * > Events;
   QModelIndexList::const_iterator i;
 
   for (i = rows.begin(); i != rows.end(); ++i)
-    {
-      if (!isDefaultRow(*i) && &pModel->getEvents()[i->row()])
-        pEvents.append(&pModel->getEvents()[i->row()]);
-    }
+    if (!isDefaultRow(*i) &&
+        &mpEvents->operator[](i->row()) != NULL)
+      {
+        Events.append(&mpEvents->operator[](i->row()));
+      }
 
   QList <CEvent *>::const_iterator j;
 
-  QModelIndexList lst;
-
-  for (j = pEvents.begin(); j != pEvents.end(); ++j)
+  for (j = Events.begin(); j != Events.end(); ++j)
     {
       CEvent * pEvent = *j;
-
-      size_t delRow =
-        pModel->getEvents().CDataVector< CEvent >::getIndex(pEvent);
-
-      if (delRow == C_INVALID_INDEX)
-        continue;
 
       QMessageBox::StandardButton choice =
         CQMessageBox::confirmDelete(NULL, "event",
@@ -410,73 +311,40 @@ bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
 
       if (choice == QMessageBox::Ok)
         {
-          //removeRow((int) delRow);
-          lst.append(index((int)delRow, 0));
+          removeRows(mpEvents->getIndex(pEvent->getObjectName()), 1);
         }
     }
 
-  if (!lst.empty())
-    {
-      mpUndoStack->push(new RemoveEventRowsCommand(lst, this));
-    }
-
   return true;
 }
 
-bool CQEventDM::insertEventRows(QList <UndoEventData *>& pData)
+void CQEventDM::insertNewRows(int position, int rows, int column, const QVariant & value)
 {
-  assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
+  beginInsertRows(QModelIndex(), position, position + rows - 1);
 
-  switchToWidget(CCopasiUndoCommand::EVENTS);
-
-  //reinsert all the events
-  QList <UndoEventData *>::const_iterator i;
-
-  for (i = pData.begin(); i != pData.end(); ++i)
+  for (int row = 0; row < rows; ++row)
     {
-      beginInsertRows(QModelIndex(), 1, 1);
-      UndoEventData * data = *i;
-      CDataObject * pEvent = data->restoreObjectIn(pModel);
+      QString name = createNewName(column == COL_NAME_EVENTS ? value.toString() : "event", COL_NAME_EVENTS);
 
-      if (pEvent == NULL) continue;
+      CEvent * pEvent = mpDataModel->getModel()->createEvent(TO_UTF8(name));
 
-      emit notifyGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
-      endInsertRows();
+      if (pEvent == NULL)
+        continue;
+
+      emit signalNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pEvent)));
     }
 
-  return true;
-}
-
-void CQEventDM::deleteEventRows(QList <UndoEventData *>& pData)
-{
-  assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
-
-  switchToWidget(CCopasiUndoCommand::EVENTS);
-
-  QList <UndoEventData *>::const_iterator j;
-
-  for (j = pData.begin(); j != pData.end(); ++j)
-    {
-      UndoEventData * data = *j;
-      size_t index = pModel->getEvents().getIndex(data->getName());
-
-      if (index == C_INVALID_INDEX) continue;
-
-      removeRow((int) index);
-    }
+  endInsertRows();
 }
 
 bool CQEventDM::clear()
 {
-  mpUndoStack->push(new RemoveAllEventRowsCommand(this, QModelIndex()));
-  return true;
-}
+  QModelIndexList rows;
 
-bool CQEventDM::removeAllEventRows()
-{
-  return removeRows(0, rowCount() - 1);
+  for (int i = 0; i < mpEvents->size(); i++)
+    {
+      rows.append(index(i, 0));
+    }
+
+  return removeRows(rows);
 }

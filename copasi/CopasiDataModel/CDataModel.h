@@ -13,6 +13,7 @@
 #include "copasi/core/CDataContainer.h"
 #include "copasi/output/COutputHandler.h"
 #include "copasi/utilities/CTaskEnum.h"
+#include "copasi/undo/CUndoStack.h"
 
 class CInfo;
 class CModel;
@@ -30,9 +31,9 @@ class CProcessReport;
 class CConfigurationFile;
 class SBMLIncompatibility;
 class CListOfLayouts;
-class CUndoStack;
 class CUndoData;
 class CCopasiTask;
+class CModelVersionHierarchy;
 
 //TODO SEDML
 #ifdef COPASI_SEDML
@@ -131,8 +132,11 @@ private:
      * The name of the referenced SEDML file
      */
     std::string mSEDMLFileName;
+#endif // COPASI_SEDML
 
-#endif
+#ifdef COPASI_Versioning
+    CModelVersionHierarchy * mpModelVersionHierarchy;
+#endif // COPASI_Versioning
   };
 
   // Operations
@@ -142,7 +146,7 @@ public:
    * @param const CData & data
    * @return CDataModel * pDataObject
    */
-  static CDataModel * fromData(const CData & data);
+  static CDataModel * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -155,7 +159,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
   CDataModel(const bool withGUI = false);
 
@@ -337,8 +341,12 @@ public:
 
 #endif
 
-  void applyData(const CUndoData & data);
-  void recordData(const CUndoData & data);
+  CUndoData::ChangeSet applyData(const CUndoData & data);
+  CUndoData::ChangeSet recordData(const CUndoData & data);
+
+#ifdef COPASI_Versioning
+  CModelVersionHierarchy * getModelVersionHierarchy();
+#endif // COPASI_Versioning
 
 protected:
   void pushData();

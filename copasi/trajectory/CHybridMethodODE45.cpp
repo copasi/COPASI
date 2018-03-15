@@ -236,13 +236,13 @@ bool CHybridMethodODE45::isValidProblem(const CCopasiProblem * pProblem)
  */
 void CHybridMethodODE45::initializeParameter()
 {
-  mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 100000);
-  mpRelativeTolerance = assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
-  mpAbsoluteTolerance = assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
-  mpPartitioningStrategy = assertParameter("Partitioning Strategy", CCopasiParameter::STRING, PartitioningStrategy[1]);
+  mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100000);
+  mpRelativeTolerance = assertParameter("Relative Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-006);
+  mpAbsoluteTolerance = assertParameter("Absolute Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-009);
+  mpPartitioningStrategy = assertParameter("Partitioning Strategy", CCopasiParameter::Type::STRING, PartitioningStrategy[1]);
   mpFastReactions = assertGroup("Deterministic Reactions");
-  mpUseRandomSeed = assertParameter("Use Random Seed", CCopasiParameter::BOOL, (bool) USE_RANDOM_SEED);
-  mpRandomSeed = assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) RANDOM_SEED);
+  mpUseRandomSeed = assertParameter("Use Random Seed", CCopasiParameter::Type::BOOL, (bool) USE_RANDOM_SEED);
+  mpRandomSeed = assertParameter("Random Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) RANDOM_SEED);
 
   std::vector< std::pair < std::string, std::string > > ValidValues;
   std::string * pStr = PartitioningStrategy;
@@ -255,7 +255,7 @@ void CHybridMethodODE45::initializeParameter()
 
   getParameter("Partitioning Strategy")->setValidValues(ValidValues);
 
-  CCopasiParameter FastReactionTemplate("Reaction", CCopasiParameter::CN);
+  CCopasiParameter FastReactionTemplate("Reaction", CCopasiParameter::Type::CN);
   std::vector< std::pair < CCommonName, CCommonName > > Reactions;
   Reactions.push_back(std::make_pair(CCommonName("Reactions"), CCommonName("Reactions")));
   FastReactionTemplate.setValidValues(Reactions);

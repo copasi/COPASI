@@ -794,12 +794,12 @@ bool CModelAdd::addReactions(std::string name)
                 {
                   switch (newReac->getFunctionParameters()[j]->getUsage())
                     {
-                      case CFunctionParameter::SUBSTRATE:
-                      case CFunctionParameter::PRODUCT:
-                      case CFunctionParameter::MODIFIER:
+                      case CFunctionParameter::Role::SUBSTRATE:
+                      case CFunctionParameter::Role::PRODUCT:
+                      case CFunctionParameter::Role::MODIFIER:
                         //translate the metab keys
                       {
-                        bool isVector = (newReac->getFunctionParameters()[j]->getType() == CFunctionParameter::VFLOAT64);
+                        bool isVector = (newReac->getFunctionParameters()[j]->getType() == CFunctionParameter::DataType::VFLOAT64);
 
                         //we assume that only SUBSTRATE, PRODUCT, MODIFIER can be vectors
                         if (isVector)
@@ -826,7 +826,7 @@ bool CModelAdd::addReactions(std::string name)
                       }
                       break;
 
-                      case CFunctionParameter::TIME:
+                      case CFunctionParameter::Role::TIME:
                         //just copy the key
                       {
                         mapIt = keyMap.find(sourceReac->getParameterMappings()[j][0]);
@@ -842,7 +842,7 @@ bool CModelAdd::addReactions(std::string name)
                       }
                       break;
 
-                      case CFunctionParameter::VOLUME:
+                      case CFunctionParameter::Role::VOLUME:
 
                         //translate the compartment key if necessary
                         if (sourceReac->getParameterMappings()[j][0] == sourceComp->getKey())
@@ -864,7 +864,7 @@ bool CModelAdd::addReactions(std::string name)
                         //TODO: this needs to be adapted when sets of compartments will be copied
                         break;
 
-                      case CFunctionParameter::PARAMETER:
+                      case CFunctionParameter::Role::PARAMETER:
 
                         if (sourceReac->isLocalParameter(j))
                           newReac->setParameterValue(newReac->getFunctionParameters()[j]->getObjectName(),
@@ -1039,9 +1039,9 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
         {
           switch (reac->getFunctionParameters()[j]->getUsage())
             {
-              case CFunctionParameter::SUBSTRATE:
-              case CFunctionParameter::PRODUCT:
-              case CFunctionParameter::MODIFIER:
+              case CFunctionParameter::Role::SUBSTRATE:
+              case CFunctionParameter::Role::PRODUCT:
+              case CFunctionParameter::Role::MODIFIER:
                 //translate the metab keys
               {
 
@@ -1055,14 +1055,14 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
               }
               break;
 
-              case CFunctionParameter::TIME:
+              case CFunctionParameter::Role::TIME:
                 break;
 
-              case CFunctionParameter::VOLUME:
+              case CFunctionParameter::Role::VOLUME:
                 // ??? TODO : have to ask
                 break;
 
-              case CFunctionParameter::PARAMETER:
+              case CFunctionParameter::Role::PARAMETER:
                 break;
 
               default:

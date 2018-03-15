@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -15,6 +15,162 @@
 #include "CModel.h"
 #include "utilities/CUnitValidator.h"
 #include "math/CMathExpression.h"
+
+void CModelParameterGroup::updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject)
+{
+  const CModelParameter * pParameter = dynamic_cast< const CModelParameter * >(pUndoObject);
+
+  std::vector< CModelParameter * >::iterator itParameter = mModelParameters.begin();
+  std::vector< CModelParameter * >::iterator endParameter = mModelParameters.end();
+  size_t Index = 0;
+
+  for (; itParameter != endParameter; ++itParameter, Index++)
+    if (pParameter == *itParameter)
+      {
+        break;
+      }
+
+  if (Index != index)
+    {
+      if (Index < mModelParameters.size())
+        {
+          mModelParameters.erase(itParameter);
+        }
+
+      mModelParameters.insert(mModelParameters.begin() + std::min(index, mModelParameters.size()), const_cast< CModelParameter * >(pParameter));
+    }
+}
+
+CUndoObjectInterface * CModelParameterGroup::insert(const CData & data)
+{
+  CModelParameter * pParameter = CModelParameter::fromData(data, this);
+
+  if (pParameter != NULL)
+    {
+      size_t Index = data.getProperty(CData::OBJECT_INDEX).toSizeT();
+      mModelParameters.insert(mModelParameters.begin() + std::min(Index, mModelParameters.size()), pParameter);
+      pParameter->setParent(this);
+    }
+
+  return pParameter;
+}
+
+// virtual
+CData CModelParameterGroup::toData() const
+{
+  CData Data(CModelParameter::toData());
+
+  std::vector< CModelParameter * >::const_iterator itParameter = mModelParameters.begin();
+  std::vector< CModelParameter * >::const_iterator endParameter = mModelParameters.end();
+  std::vector< CData > Value;
+
+  for (; itParameter != endParameter; ++itParameter)
+    {
+      Value.push_back((*itParameter)->toData());
+    }
+
+  Data.addProperty(CData::PARAMETER_VALUE, Value);
+
+  return Data;
+}
+
+// virtual
+bool CModelParameterGroup::applyData(const CData & data, CUndoData::ChangeSet & changes)
+{
+  bool success = CModelParameter::applyData(data, changes);
+
+  // This only inserts new parameters modification of existing parameters or their deletion
+  // is handled by accessing them directly.
+  if (data.isSetProperty(CData::PARAMETER_VALUE))
+    {
+      const std::vector< CData > & Value = data.getProperty(CData::PARAMETER_VALUE).toDataVector();
+
+      std::vector< CData >::const_iterator it = Value.begin();
+      std::vector< CData >::const_iterator end = Value.end();
+
+      for (; it != end; ++it)
+        {
+          CModelParameter * pParameter;
+          size_t Index = it->getProperty(CData::OBJECT_INDEX).toSizeT();
+
+          if (Index < size())
+            {
+              pParameter = mModelParameters[Index];
+            }
+
+          if (pParameter == NULL)
+            {
+              pParameter = getModelParameter(CCommonName::fromData(*it));
+            }
+
+          if (pParameter == NULL)
+            {
+              pParameter = dynamic_cast< CModelParameter * >(insert(*it));
+            }
+
+          if (pParameter != NULL)
+            {
+              success &= pParameter->applyData(*it, changes);
+            }
+          else
+            {
+              success = false;
+            }
+        }
+    }
+
+  return success;
+}
+
+// virtual
+void CModelParameterGroup::createUndoData(CUndoData & undoData,
+    const CUndoData::Type & type,
+    const CData & oldData,
+    const CCore::Framework & framework) const
+{
+  CModelParameter::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  const std::vector< CData > & OldParameters = oldData.getProperty(CData::PARAMETER_VALUE).toDataVector();
+  std::vector< CData >::const_iterator itOld = OldParameters.begin();
+  std::vector< CData >::const_iterator endOld = OldParameters.end();
+  const_iterator itNew = mModelParameters.begin();
+  const_iterator endNew = mModelParameters.end();
+
+  std::vector< CData > OldParameterData;
+  std::vector< CData > NewParameterData;
+
+  for (; itOld != endOld && itNew != endNew; ++itOld, ++itNew)
+    {
+      CData ParameterData((*itNew)->toData());
+      CUndoData ParameterUndoData;
+      (*itNew)->createUndoData(ParameterUndoData, CUndoData::Type::CHANGE, *itOld, framework);
+
+      if (!ParameterUndoData.empty())
+        {
+          OldParameterData.push_back(ParameterUndoData.getOldData());
+          NewParameterData.push_back(ParameterUndoData.getNewData());
+        }
+    }
+
+  undoData.addProperty(CData::PARAMETER_VALUE, OldParameterData, NewParameterData);
+
+  for (; itOld != endOld; ++itOld)
+    {
+      undoData.addPreProcessData(CUndoData(CUndoData::Type::REMOVE, *itOld));
+    }
+
+  for (; itNew != endNew; ++itNew)
+    {
+      undoData.addPostProcessData(CUndoData(CUndoData::Type::INSERT, (*itNew)->toData()));
+    }
+
+  return;
+}
 
 CModelParameterGroup::CModelParameterGroup(CModelParameterGroup * pParent, const CModelParameter::Type & type):
   CModelParameter(pParent, type),
@@ -49,7 +205,7 @@ void CModelParameterGroup::assignGroupContent(const CModelParameterGroup & src,
   for (; itSrc != endSrc; ++itSrc)
     {
       if (createMissing ||
-          (*itSrc)->getCompareResult() != Missing)
+          (*itSrc)->getCompareResult() != CompareResult::Missing)
         {
           copy(**itSrc, createMissing);
         }
@@ -68,25 +224,25 @@ CModelParameter * CModelParameterGroup::copy(const CModelParameter & src,
 
   switch (src.getType())
     {
-      case Compartment:
+      case Type::Compartment:
         pCopy = new CModelParameterCompartment(*static_cast< const  CModelParameterCompartment * >(&src), this);
         break;
 
-      case Species:
+      case Type::Species:
         pCopy = new CModelParameterSpecies(*static_cast< const CModelParameterSpecies * >(&src), this);
         break;
 
-      case ReactionParameter:
+      case Type::ReactionParameter:
         pCopy = new CModelParameterReactionParameter(*static_cast< const  CModelParameterReactionParameter * >(&src), this);
         break;
 
-      case Model:
-      case ModelValue:
+      case Type::Model:
+      case Type::ModelValue:
         pCopy = new CModelParameter(src, this);
         break;
 
-      case Reaction:
-      case Group:
+      case Type::Reaction:
+      case Type::Group:
         pCopy = new CModelParameterGroup(*static_cast< const  CModelParameterGroup * >(&src), this, createMissing);
         break;
 
@@ -108,25 +264,25 @@ CModelParameter * CModelParameterGroup::add(const CModelParameter::Type & type)
 
   switch (type)
     {
-      case Compartment:
+      case Type::Compartment:
         pModelParameter = new CModelParameterCompartment(this);
         break;
 
-      case Species:
+      case Type::Species:
         pModelParameter = new CModelParameterSpecies(this);
         break;
 
-      case ReactionParameter:
+      case Type::ReactionParameter:
         pModelParameter = new CModelParameterReactionParameter(this, type);
         break;
 
-      case Model:
-      case ModelValue:
+      case Type::Model:
+      case Type::ModelValue:
         pModelParameter = new CModelParameter(this, type);
         break;
 
-      case Reaction:
-      case Group:
+      case Type::Reaction:
+      case Type::Group:
         pModelParameter = new CModelParameterGroup(this, type);
         break;
 
@@ -142,7 +298,11 @@ CModelParameter * CModelParameterGroup::add(const CModelParameter::Type & type)
 
 void CModelParameterGroup::add(CModelParameter * pModelParameter)
 {
-  mModelParameters.push_back(pModelParameter);
+  if (pModelParameter != NULL)
+    {
+      mModelParameters.push_back(pModelParameter);
+      pModelParameter->setParent(this);
+    }
 }
 
 void CModelParameterGroup::remove(CModelParameter * pModelParameter)
@@ -213,6 +373,13 @@ void CModelParameterGroup::compile()
 
 void CModelParameterGroup::clear()
 {
+  if (mModelParameters.empty())
+    {
+      return;
+    }
+
+  assert(mType != Type::Set);
+
   // Clear existing model parameters.
   iterator it = begin();
   iterator End = end();
@@ -232,17 +399,17 @@ const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelPa
     const bool & createMissing)
 {
   // We can only work on reactions, groups or sets.
-  assert(other.getType() == Reaction ||
-         other.getType() == Group ||
-         other.getType() == Set);
+  assert(other.getType() == Type::Reaction ||
+         other.getType() == Type::Group ||
+         other.getType() == Type::Set);
 
-  if (mCompareResult == Missing ||
-      mCompareResult == Obsolete)
+  if (mCompareResult == CompareResult::Missing ||
+      mCompareResult == CompareResult::Obsolete)
     {
       return mCompareResult;
     }
 
-  mCompareResult = Identical;
+  mCompareResult = CompareResult::Identical;
 
   const CModelParameterGroup * pOther = dynamic_cast< const CModelParameterGroup * >(&other);
 
@@ -265,15 +432,15 @@ const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelPa
 
       if (itOther == Map.end())
         {
-          (*itThis)->setCompareResult(Obsolete);
-          mCompareResult = Modified;
+          (*itThis)->setCompareResult(CompareResult::Obsolete);
+          mCompareResult = CompareResult::Modified;
 
           continue;
         }
 
-      if ((*itThis)->diff(*itOther->second, framework, createMissing) != Identical)
+      if ((*itThis)->diff(*itOther->second, framework, createMissing) != CompareResult::Identical)
         {
-          mCompareResult = Modified;
+          mCompareResult = CompareResult::Modified;
         }
 
       Map.erase(itOther->first);
@@ -290,10 +457,10 @@ const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelPa
 
           if (pMissing != NULL)
             {
-              pMissing->setCompareResult(Missing);
+              pMissing->setCompareResult(CompareResult::Missing);
             }
 
-          mCompareResult = Modified;
+          mCompareResult = CompareResult::Modified;
         }
     }
   else if (Map.size() > 0)
@@ -303,9 +470,9 @@ const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelPa
 
       for (; itMissing != endMissing; ++itMissing)
         {
-          if (itMissing->second->getCompareResult() != CModelParameter::Missing)
+          if (itMissing->second->getCompareResult() != CModelParameter::CompareResult::Missing)
             {
-              mCompareResult = Modified;
+              mCompareResult = CompareResult::Modified;
               break;
             }
         }
@@ -337,16 +504,16 @@ bool CModelParameterGroup::refreshFromModel(const bool & modifyExistence)
 
   if (modifyExistence)
     {
-      if (mCompareResult == CModelParameter::Obsolete)
+      if (mCompareResult == CModelParameter::CompareResult::Obsolete)
         {
           delete this;
 
           return true;
         }
 
-      if (mCompareResult == CModelParameter::Missing)
+      if (mCompareResult == CModelParameter::CompareResult::Missing)
         {
-          mCompareResult = CModelParameter::Identical;
+          mCompareResult = CModelParameter::CompareResult::Identical;
         }
     }
 
@@ -358,7 +525,7 @@ bool CModelParameterGroup::refreshFromModel(const bool & modifyExistence)
   for (; it != End; ++it)
     {
       if (modifyExistence &&
-          (*it)->getCompareResult() == CModelParameter::Obsolete)
+          (*it)->getCompareResult() == CModelParameter::CompareResult::Obsolete)
         {
           ToBeDeleted.push_back(*it);
         }
@@ -392,37 +559,11 @@ CModelParameter * CModelParameterGroup::getModelParameter(const std::string & cn
         {
           pModelParameter = *it;
         }
-      else if ((*it)->getType() == CModelParameter::Reaction ||
-               (*it)->getType() == CModelParameter::Group ||
-               (*it)->getType() == CModelParameter::Set)
+      else if ((*it)->getType() == CModelParameter::Type::Reaction ||
+               (*it)->getType() == CModelParameter::Type::Group ||
+               (*it)->getType() == CModelParameter::Type::Set)
         {
           pModelParameter = static_cast< const CModelParameterGroup * >(*it)->getModelParameter(cn);
-        }
-    }
-
-  return pModelParameter;
-}
-
-CModelParameter * CModelParameterGroup::getModelParameter(const std::string & name,
-    const CModelParameter::Type & type) const
-{
-  CModelParameter * pModelParameter = NULL;
-
-  const_iterator it = begin();
-  const_iterator End = end();
-
-  for (; it != End && pModelParameter == NULL; ++it)
-    {
-      if (type == (*it)->getType() &&
-          name == (*it)->getName())
-        {
-          pModelParameter = *it;
-        }
-      else if ((*it)->getType() == CModelParameter::Reaction ||
-               (*it)->getType() == CModelParameter::Group ||
-               (*it)->getType() == CModelParameter::Set)
-        {
-          pModelParameter = static_cast< const CModelParameterGroup * >(*it)->getModelParameter(name, type);
         }
     }
 
@@ -448,7 +589,7 @@ const CModelParameter * CModelParameterGroup::getChild(const size_t & index) con
 
 const CValidatedUnit & CModelParameterGroup::getObjectUnit(const CModelParameter * pModelParameter) const
 {
-  if (getType() == Reaction &&
+  if (getType() == Type::Reaction &&
       mpObject != NULL)
     {
       const CModel * pModel = getModel();
@@ -479,7 +620,7 @@ const CValidatedUnit & CModelParameterGroup::getObjectUnit(const CModelParameter
               pValueReference = static_cast< const CModelValue * >(Container.getObject(static_cast< const CModelParameterReactionParameter * >(pModelParameter)->getGlobalQuantityCN()))->getValueReference();
             }
 
-          std::map< CObjectInterface *, CValidatedUnit >::const_iterator found = mValidatedUnits.find(pValueReference);
+          std::map< CObjectInterface *, CValidatedUnit >::const_iterator found = mValidatedUnits.find(Container.getMathObject(pValueReference));
 
           if (found == mValidatedUnits.end() &&
               mpObject != NULL)

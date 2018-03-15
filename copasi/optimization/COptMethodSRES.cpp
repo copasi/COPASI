@@ -46,16 +46,16 @@ COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
   mBestValue(std::numeric_limits< C_FLOAT64 >::max())
 
 {
-  addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
-  addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 20);
-  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
-  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-  addParameter("Pf", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.475);  //*****ADDED for SR
+  addParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
+  addParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 20);
+  addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937);
+  addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+  addParameter("Pf", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.475);  //*****ADDED for SR
 
   if (mEnableAdditionalParameters)
-  addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
-  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("#LogVerbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -708,21 +708,21 @@ bool COptMethodSRES::optimise()
                 Continue = creation((size_t)(mPopulationSize * 0.2));
                 Stalled10 = Stalled20 = Stalled40 = Stalled80 = 0;
           }
-          else if (Stalled40 > 40)
+      else if (Stalled40 > 40)
         {
           if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_fittest_not_changed_x_random_generated).iter(mGeneration).with(Stalled80 - 1).with(40);
 
                 Continue = creation((size_t)(mPopulationSize * 0.6));
                 Stalled10 = Stalled20 = Stalled40 = 0;
           }
-          else if (Stalled20 > 20)
+      else if (Stalled20 > 20)
         {
           if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_fittest_not_changed_x_random_generated).iter(mGeneration).with(Stalled80 - 1).with(20);
 
                 Continue = creation((size_t)(mPopulationSize * 0.8));
                 Stalled10 = Stalled20 = 0;
           }
-          else if (Stalled10 > 10)
+      else if (Stalled10 > 10)
         {
           if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_fittest_not_changed_x_random_generated).iter(mGeneration).with(Stalled80 - 1).with(10);
 

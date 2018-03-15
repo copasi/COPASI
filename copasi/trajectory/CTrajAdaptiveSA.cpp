@@ -94,10 +94,10 @@ CTrajAdaptiveSA::~CTrajAdaptiveSA()
 
 void CTrajAdaptiveSA::initializeParameter()
 {
-  assertParameter("Epsilon", CCopasiParameter::DOUBLE, (C_FLOAT64) EPS);
-  assertParameter("Max Internal Steps", CCopasiParameter::INT, (C_INT32) 1000000);
-  assertParameter("Use Random Seed", CCopasiParameter::BOOL, false);
-  assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) 1);
+  assertParameter("Epsilon", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) EPS);
+  assertParameter("Max Internal Steps", CCopasiParameter::Type::INT, (C_INT32) 1000000);
+  assertParameter("Use Random Seed", CCopasiParameter::Type::BOOL, false);
+  assertParameter("Random Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 1);
 }
 
 bool CTrajAdaptiveSA::elevateChildren()

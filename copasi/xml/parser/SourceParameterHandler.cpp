@@ -53,15 +53,15 @@ CXMLHandler * SourceParameterHandler::processStart(const XML_Char * pszName,
           {
             // We need to assure that the parameter name for variables which are not
             // of type vector match.
-            if (mpData->pFunctionVariable->getType() < CFunctionParameter::VINT32)
+            if (mpData->pFunctionVariable->getType() < CFunctionParameter::DataType::VINT32)
               pParameter->setObjectName(mpData->pFunctionVariable->getObjectName());
 
-            mpData->SourceParameterKeys[mpData->pFunctionVariable->getObjectName()].push_back(pParameter->getKey());
+            mpData->SourceParameterObjects[mpData->pFunctionVariable->getObjectName()].push_back(pParameter);
           }
         else if ((pME = dynamic_cast<CModelEntity*>(pObject)))
-          mpData->SourceParameterKeys[mpData->pFunctionVariable->getObjectName()].push_back(pME->getKey());
+          mpData->SourceParameterObjects[mpData->pFunctionVariable->getObjectName()].push_back(pME);
         else
-          mpData->SourceParameterKeys[mpData->pFunctionVariable->getObjectName()].push_back(CFunctionParameterMap::pUnmappedObject->getKey());
+          mpData->SourceParameterObjects[mpData->pFunctionVariable->getObjectName()].push_back(CFunctionParameterMap::pUnmappedObject);
 
         break;
 

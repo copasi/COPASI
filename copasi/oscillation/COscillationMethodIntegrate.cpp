@@ -25,7 +25,7 @@
 COscillationMethodIntegrate::COscillationMethodIntegrate():
   COscillationMethod(CCopasiTask::oscillation, CCopasiMethod::oscillationIntegrate)
 {
-  //  addParameter("Number of Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 100000);
+  //  addParameter("Number of Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100000);
 
   initObjects();
 }

@@ -19,8 +19,10 @@ public:
     DOUBLE = 0,
     INT,
     UINT,
+    SIZE_T,
     BOOL,
     STRING,
+    DATA,
     DATA_VALUES,
     DATA_VECTOR,
     VOID_POINTER,
@@ -35,9 +37,11 @@ public:
   CDataValue(const C_FLOAT64 & value);
   CDataValue(const C_INT32 & value);
   CDataValue(const unsigned C_INT32 & value);
+  CDataValue(const size_t & value);
   CDataValue(const bool & value);
   CDataValue(const std::string & value);
   CDataValue(const char * value);
+  CDataValue(const CData & value);
   CDataValue(const std::vector< CDataValue > & value);
   CDataValue(const std::vector< CData > & value);
   CDataValue(const void * pVoidPointer);
@@ -48,8 +52,10 @@ public:
   CDataValue & operator = (const C_FLOAT64 & value);
   CDataValue & operator = (const C_INT32 & value);
   CDataValue & operator = (const unsigned C_INT32 & value);
+  CDataValue & operator = (const size_t & value);
   CDataValue & operator = (const bool & value);
   CDataValue & operator = (const std::string & value);
+  CDataValue & operator = (const CData & value);
   CDataValue & operator = (const std::vector< CDataValue > & value);
   CDataValue & operator = (const std::vector< CData > & value);
   CDataValue & operator = (const void * pVoidPointer);
@@ -57,8 +63,10 @@ public:
   const C_FLOAT64 & toDouble() const;
   const C_INT32 & toInt() const;
   const unsigned C_INT32 & toUint() const;
+  const size_t & toSizeT() const;
   const bool & toBool() const;
   const std::string & toString() const;
+  const CData & toData() const;
   const std::vector< CDataValue > & toDataValues() const;
   const std::vector< CData > & toDataVector() const;
   const void * toVoidPointer() const;
@@ -77,8 +85,10 @@ private:
   void assignData(const C_FLOAT64 & value);
   void assignData(const C_INT32 & value);
   void assignData(const unsigned C_INT32 & value);
+  void assignData(const size_t & value);
   void assignData(const bool & value);
   void assignData(const std::string & value);
+  void assignData(const CData & value);
   void assignData(const std::vector< CDataValue > & value);
   void assignData(const std::vector< CData > & value);
   void assignData(const void * pVoidPointer);

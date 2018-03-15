@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -13,8 +13,6 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <QUndoStack>
-
 #include "copasi.h"
 #include "CQBaseDataModel.h"
 #include <copasi/utilities/utility.h>
@@ -22,8 +20,8 @@
 
 CQBaseDataModel::CQBaseDataModel(QObject *parent, CDataModel * pDataModel)
   : QAbstractTableModel(parent)
-  , mpUndoStack(NULL)
   , mpDataModel(pDataModel)
+  , mFramework(0)
 {
   if (mpDataModel == NULL)
     {
@@ -84,6 +82,12 @@ bool CQBaseDataModel::isDefaultRow(const QModelIndex& i) const
   return (i.row() == rowCount() - 1);
 }
 
+// virtual
+void CQBaseDataModel::setFramework(int framework)
+{
+  mFramework = framework;
+}
+
 QString CQBaseDataModel::createNewName(const QString name, const int nameCol)
 {
   QString nname = name;
@@ -114,17 +118,17 @@ void CQBaseDataModel::setDataModel(CDataModel * pDataModel)
   resetCache();
 }
 
-void CQBaseDataModel::setUndoStack(QUndoStack* undoStack)
-{
-  mpUndoStack = undoStack;
-}
-
-QUndoStack* CQBaseDataModel::getUndoStack()
-{
-  return mpUndoStack;
-}
-
 CDataModel * CQBaseDataModel::getDataModel() const
 {
   return mpDataModel;
+}
+
+void CQBaseDataModel::beginResetModel()
+{
+  QAbstractTableModel::beginResetModel();
+}
+
+void CQBaseDataModel::endResetModel()
+{
+  QAbstractTableModel::endResetModel();
 }

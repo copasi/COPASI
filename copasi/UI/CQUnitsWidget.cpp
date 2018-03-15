@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,8 +49,8 @@ CQUnitsWidget::CQUnitsWidget(QWidget *parent, const char *name)
   mpTblUnits->sortByColumn(COL_NAME_UNITS, Qt::AscendingOrder);
   setFramework(mFramework);
   // Connect the table widget
-  connect(mpUnitDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpUnitDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpUnitDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -125,7 +125,7 @@ void CQUnitsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQUnitsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
+bool CQUnitsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (!mIgnoreUpdates)
     {
@@ -135,7 +135,7 @@ bool CQUnitsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews
   return true;
 }
 
-bool CQUnitsWidget::leave()
+bool CQUnitsWidget::leaveProtected()
 {
   return true;
 }
@@ -214,17 +214,13 @@ void CQUnitsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(mpDataModel != NULL);
+  CDataVector < CUnitDefinition > * pVector = dynamic_cast< CDataVector < CUnitDefinition > * >(mpObject);
 
-  if (!mpDataModel->getModel())
-    return;
-
-  // How do I deal with this?
-  //  std::string key = pDataModel->getReportDefinitionList()->operator[](index.row())->getKey();
-  std::string key = CRootContainer::getUnitList()->operator[](index.row()).getKey();
-
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  if (pVector != NULL &&
+      index.row() < pVector->size())
+    {
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, pVector->operator [](index.row()).getCN());
+    }
 }
 
 void CQUnitsWidget::keyPressEvent(QKeyEvent *ev)

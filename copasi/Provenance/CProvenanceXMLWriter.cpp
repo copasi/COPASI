@@ -19,11 +19,10 @@
 #include <sbml/xml/XMLErrorLog.h>
 #include "copasi/core/CRootContainer.h"
 #include "commandline/CConfigurationFile.h"
-#include "copasi/undoFramework/CCopasiUndoCommand.h"
 #include <copasi/UI/qtUtilities.h>
+#include "copasi/undo/CUndoStack.h"
 
-//CProvenanceXMLWriter::CProvenanceXMLWriter(QWidget* parent, QUndoStack *undoStack, QString PathFile, QString ProvenanceOrigionFiletype, QString ProvenanceOrigionTime, QString ProvenanceParentOfCurrentModel, QString VersioningParentOfCurrentModel, QList<QString> VersionsPathToCurrentModel):
-CProvenanceXMLWriter::CProvenanceXMLWriter(QWidget* parent, QUndoStack *undoStack, QString PathFile, QString ProvenanceOrigionFiletype, QString ProvenanceOrigionTime, QList<QString> VersionsPathToCurrentModel):
+CProvenanceXMLWriter::CProvenanceXMLWriter(QWidget* parent, CUndoStack *undoStack, QString PathFile, QString ProvenanceOrigionFiletype, QString ProvenanceOrigionTime, QList<QString> VersionsPathToCurrentModel):
   mProvenanceTotalEntityNumber(0)
   , mProvenanceTotalActionNumber(0)
   , mProvenanceTotalAgentNumber(0)
@@ -32,10 +31,10 @@ CProvenanceXMLWriter::CProvenanceXMLWriter(QWidget* parent, QUndoStack *undoStac
   , mProvenanceAuthorNameMap()
   //, mProvenanceParentOfCurrentModel(ProvenanceParentOfCurrentModel)
   //, mVersioningParentOfCurrentModel(VersioningParentOfCurrentModel)
+  , mpUndoStack(undoStack)
   , mVersionsPathToCurrentModel(VersionsPathToCurrentModel)
 {
   mPathFile = PathFile;
-  mpUndoStack = undoStack;
 }
 
 CProvenanceXMLWriter::~CProvenanceXMLWriter()
@@ -339,17 +338,19 @@ void CProvenanceXMLWriter::updateCurrentSessionProvenance()
 
       CConfigurationFile * configFile = CRootContainer::getConfiguration();
       QString Action;
-      int EditNumber = mpUndoStack->count();
+      int EditNumber = mpUndoStack->size();
       //QString EntityInfo[ EditNumber + 1][5];  // Information of each Entity in the model
       //QString EntityNameMap[ EditNumber + 1][2]; //Map name to Entity ID
       //QString ENtityActionMap[ EditNumber + 1][4];
       QString **EntityInfo = new QString * [EditNumber + 1];
 
+      // 0: Id, 1: Model, 2: Type, 3: Name (CN?), 4: Time
       for (i = 0; i < EditNumber + 1; i++)
         {
           EntityInfo[i] = new QString [5];
         }
 
+      // 0: Id, 1: Name (CN?)
       QString **EntityNameMap = new QString * [EditNumber + 1];
 
       for (i = 0; i < EditNumber + 1; i++)
@@ -513,6 +514,9 @@ void CProvenanceXMLWriter::updateCurrentSessionProvenance()
           XMLOutputStream_startElement(stream, "prov:activity");
           XMLOutputStream_writeAttributeChars(stream, "prov:id", (QString("Activity_") + QString::number(i + 1 + mProvenanceTotalActionNumber)).toUtf8());
           XMLOutputStream_writeAttributeChars(stream, "Action",  Action.toUtf8());
+          // Loop through all changed properties
+          // Properties which describe contained entities need to be handled recursively
+          // We also need to look at pre and post process data.
           XMLOutputStream_writeAttributeChars(stream, "Property",  cCommand->getProperty().c_str());
           XMLOutputStream_writeAttributeChars(stream, "New_value",  cCommand->getNewValue().c_str());
           XMLOutputStream_endElement(stream, "prov:activity");
@@ -547,7 +551,7 @@ void CProvenanceXMLWriter::updateCurrentSessionProvenance()
         }
 
       //Prov Agent
-      //First check whether the agent of current session has been reported bofre
+      //First check whether the agent of current session has been reported before
       QMapIterator<QString, QString> ProvenanceAuthorMapIterator(mProvenanceAuthorNameMap);
       bool AuthorHasWrittenBefore = false;
 
@@ -562,15 +566,33 @@ void CProvenanceXMLWriter::updateCurrentSessionProvenance()
             }
         }
 
-      // If reported bofore:
+      // If reported before:
 
-      //If it is a new adgent:
+      //If it is a new agent:
       if (!AuthorHasWrittenBefore)
         {
           AuthorID = QString("Agent_") + QString::number(mProvenanceTotalAgentNumber + 1);
         }
 
       XMLOutputStream_startElement(stream, "prov:agent");
+
+      /*
+       * We should consider using the standard below for
+       * <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+       *    xmlns:vcard="http://www.w3.org/2006/vcard/ns#">
+       *   <vcard:Individual rdf:about="#agentId">
+       *     <vcard:hasName rdf:parseType="Resource">
+       *       <vcard:given-name>%GivenName%</vcard:given-name>
+       *       <vcard:family-name>%FamilyName%</vcard:family-name>
+       *     </vcard:hasName>
+       *     <vcard:hasEmail rdf:resource="mailto:corky@example.com%email%"/>
+       *     <vcard:hasOrganizationName rdf:parseType="Resource">
+       *       <vcard:organization-name>%ORG%</vcard:organization-name>
+       *     </vcard:hasNamehasOrganizationName>
+       *   </vcard:Individual>
+       * </rdf:RDF>
+       */
+
       XMLOutputStream_writeAttributeChars(stream, "prov:id",  AuthorID.toUtf8());
       pParameter = configFile->getParameter("Given Name");
       XMLOutputStream_writeAttributeChars(stream, "GivenName",  pParameter->getValue< std::string >().c_str());
@@ -792,29 +814,32 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
     {
 
       XMLErrorLog log1, log2;
-      XMLInputStream stream(dataFile.toUtf8(), true, "", &log1);
-      XMLInputStream stream2(dataFile2.toUtf8(), true, "", &log2);
+      XMLInputStream in1(dataFile.toUtf8(), true, "", &log1);
+      XMLInputStream in2(dataFile2.toUtf8(), true, "", &log2);
 
-      if ((stream.peek().isStart()) && (stream.peek().getName() == "document") && (stream2.peek().isStart()) && (stream2.peek().getName() == "document"))
+      if ((in1.peek().isStart()) &&
+          (in1.peek().getName() == "document") &&
+          (in2.peek().isStart()) &&
+          (in2.peek().getName() == "document"))
         {
-          XMLToken ProvenanceInformation = stream.next();
-          XMLToken ProvenanceInformation2 = stream2.next();
-          XMLOutputStream_t * stream3 = XMLOutputStream_createFile(dataFile3.toUtf8(), "UTF-8", 1);
+          XMLToken ProvenanceInformation = in1.next();
+          XMLToken ProvenanceInformation2 = in2.next();
+          XMLOutputStream_t * out = XMLOutputStream_createFile(dataFile3.toUtf8(), "UTF-8", 1);
           QSet<QString> ProvenanceEntityList;
           QSet<QString> ProvenanceAuthorList;
 
-          if (stream3 != NULL)
+          if (out != NULL)
             {
-              XMLOutputStream_startElement(stream3, "prov:document");
-              XMLOutputStream_writeAttributeChars(stream3, "xmlns:prov",  "http://www.w3.org/ns/prov#");
-              XMLOutputStream_writeAttributeChars(stream3, "xmlns:xsi",  "http://www.w3.org/2001/XMLSchema-instance");
-              XMLOutputStream_writeAttributeChars(stream3, "xmlns:xsd",  "http://www.w3.org/2001/XMLSchema");
+              XMLOutputStream_startElement(out, "prov:document");
+              XMLOutputStream_writeAttributeChars(out, "xmlns:prov",  "http://www.w3.org/ns/prov#");
+              XMLOutputStream_writeAttributeChars(out, "xmlns:xsi",  "http://www.w3.org/2001/XMLSchema-instance");
+              XMLOutputStream_writeAttributeChars(out, "xmlns:xsd",  "http://www.w3.org/2001/XMLSchema");
 
-              while (stream.isGood())//&&(!FirstXMLFinished)&&(!StateChanged))
+              while (in1.isGood())//&&(!FirstXMLFinished)&&(!StateChanged))
                 {
-                  stream.skipText();
+                  in1.skipText();
                   //grab the next element
-                  XMLToken next = stream.peek();
+                  XMLToken next = in1.peek();
 
                   // if we reached the end table element, we stop
                   if (next.isEndFor(ProvenanceInformation))
@@ -825,77 +850,77 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
 
                   if (next.getName() == "entity")
                     {
-                      XMLToken xmlEntity = stream.next();
+                      XMLToken xmlEntity = in1.next();
                       QString EntityID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
                       QString EntityName = QString::fromStdString(xmlEntity.getAttrValue("Initial_name"));
-                      QString MianType = QString::fromStdString(xmlEntity.getAttrValue("Main_Type"));
+                      QString MainType = QString::fromStdString(xmlEntity.getAttrValue("Main_Type"));
                       QString EntityType = QString::fromStdString(xmlEntity.getAttrValue("Entity_Type"));
 
                       ProvenanceEntityList << EntityID;
 
-                      XMLOutputStream_startElement(stream3, "prov:entity");
-                      XMLOutputStream_writeAttributeChars(stream3, "prov:id",  EntityID.toUtf8());
-                      XMLOutputStream_writeAttributeChars(stream3, "Main_Type",  MianType.toUtf8());
-                      XMLOutputStream_writeAttributeChars(stream3, "Entity_Type",  EntityType.toUtf8());
-                      XMLOutputStream_writeAttributeChars(stream3, "Initial_name",  EntityName.toUtf8());
-                      XMLOutputStream_endElement(stream3, "prov:entity");
+                      XMLOutputStream_startElement(out, "prov:entity");
+                      XMLOutputStream_writeAttributeChars(out, "prov:id",  EntityID.toUtf8());
+                      XMLOutputStream_writeAttributeChars(out, "Main_Type",  MainType.toUtf8());
+                      XMLOutputStream_writeAttributeChars(out, "Entity_Type",  EntityType.toUtf8());
+                      XMLOutputStream_writeAttributeChars(out, "Initial_name",  EntityName.toUtf8());
+                      XMLOutputStream_endElement(out, "prov:entity");
                     }
                   else if (next.getName() == "activity")
                     {
-                      XMLToken xmlEntity = stream.next();
+                      XMLToken xmlEntity = in1.next();
                       QString ActivityID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
                       QString ActivityAction = QString::fromStdString(xmlEntity.getAttrValue("Action"));
                       QString ActivityProperty = QString::fromStdString(xmlEntity.getAttrValue("Property"));
                       QString ActivityNewValue = QString::fromStdString(xmlEntity.getAttrValue("New_value"));
 
-                      XMLOutputStream_startElement(stream3, "prov:activity");
-                      XMLOutputStream_writeAttributeChars(stream3, "prov:id",  ActivityID.toUtf8());
-                      XMLOutputStream_writeAttributeChars(stream3, "Action",  ActivityAction.toUtf8());
-                      XMLOutputStream_writeAttributeChars(stream3, "Property",  ActivityProperty.toUtf8());
-                      XMLOutputStream_writeAttributeChars(stream3, "New_value",  ActivityNewValue.toUtf8());
-                      XMLOutputStream_endElement(stream3, "prov:activity");
+                      XMLOutputStream_startElement(out, "prov:activity");
+                      XMLOutputStream_writeAttributeChars(out, "prov:id",  ActivityID.toUtf8());
+                      XMLOutputStream_writeAttributeChars(out, "Action",  ActivityAction.toUtf8());
+                      XMLOutputStream_writeAttributeChars(out, "Property",  ActivityProperty.toUtf8());
+                      XMLOutputStream_writeAttributeChars(out, "New_value",  ActivityNewValue.toUtf8());
+                      XMLOutputStream_endElement(out, "prov:activity");
                     }
                   else if (next.getName() == "agent")
                     {
                       //  state="agent";
-                      XMLToken xmlEntity = stream.next();
+                      XMLToken xmlEntity = in1.next();
                       QString AgentID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
                       QString AgentName = QString::fromStdString(xmlEntity.getAttrValue("GivenName"));
                       QString AgentFamilyName = QString::fromStdString(xmlEntity.getAttrValue("FamilyName"));
                       QString AgentOrganization = QString::fromStdString(xmlEntity.getAttrValue("Organization"));
                       QString AgentEmail = QString::fromStdString(xmlEntity.getAttrValue("Email"));
                       ProvenanceAuthorList.insert(AgentID);
-                      XMLOutputStream_startElement(stream3, "prov:agent");
-                      XMLOutputStream_writeAttributeChars(stream3, "prov:id",  AgentID.toUtf8());
-                      XMLOutputStream_writeAttributeChars(stream3, "GivenName",  AgentName.toUtf8());
-                      XMLOutputStream_writeAttributeChars(stream3, "FamilyName",  AgentFamilyName.toUtf8());
-                      XMLOutputStream_writeAttributeChars(stream3, "Organization",  AgentOrganization.toUtf8());
-                      XMLOutputStream_writeAttributeChars(stream3, "Email",  AgentEmail.toUtf8());
-                      XMLOutputStream_endElement(stream3, "prov:agent");
+                      XMLOutputStream_startElement(out, "prov:agent");
+                      XMLOutputStream_writeAttributeChars(out, "prov:id",  AgentID.toUtf8());
+                      XMLOutputStream_writeAttributeChars(out, "GivenName",  AgentName.toUtf8());
+                      XMLOutputStream_writeAttributeChars(out, "FamilyName",  AgentFamilyName.toUtf8());
+                      XMLOutputStream_writeAttributeChars(out, "Organization",  AgentOrganization.toUtf8());
+                      XMLOutputStream_writeAttributeChars(out, "Email",  AgentEmail.toUtf8());
+                      XMLOutputStream_endElement(out, "prov:agent");
                     }
 
                   else if (next.getName() == "used")
                     {
 
-                      XMLToken xmlEntity = stream.next();
+                      XMLToken xmlEntity = in1.next();
                       QString ActivityID, EntityID;
 
-                      while (stream.isGood())
+                      while (in1.isGood())
                         {
-                          XMLToken child  = stream.next();
+                          XMLToken child  = in1.next();
 
                           // if we reached the end element of the 'Version' element : add this data as a new version
                           if (child.isEndFor(xmlEntity))
                             {
                               //add here
-                              XMLOutputStream_startElement(stream3, "prov:used");
-                              XMLOutputStream_startElement(stream3, "prov:activity");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",  ActivityID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:activity");
-                              XMLOutputStream_startElement(stream3, "prov:entity");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",  EntityID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:entity");
-                              XMLOutputStream_endElement(stream3, "prov:used");
+                              XMLOutputStream_startElement(out, "prov:used");
+                              XMLOutputStream_startElement(out, "prov:activity");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",  ActivityID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:activity");
+                              XMLOutputStream_startElement(out, "prov:entity");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",  EntityID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:entity");
+                              XMLOutputStream_endElement(out, "prov:used");
                               break;
                             }
 
@@ -905,7 +930,7 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                               if (child.getName() == "activity")
                                 {
 
-                                  ActivityID = QString::fromStdString(child.getAttrValue(0)); // The first attrube is reference to activity ID
+                                  ActivityID = QString::fromStdString(child.getAttrValue(0)); // The first attribute is reference to activity ID
                                 }
 
                               if (child.getName() == "entity")
@@ -918,25 +943,25 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
 
                   else if (next.getName() == "wasAttributedTo")
                     {
-                      XMLToken xmlEntity = stream.next();
+                      XMLToken xmlEntity = in1.next();
                       QString AgentID, EntityID;
 
-                      while (stream.isGood())
+                      while (in1.isGood())
                         {
-                          XMLToken child  = stream.next();
+                          XMLToken child  = in1.next();
 
                           // if we reached the end element of the 'Version' element : add this data as a new version
                           if (child.isEndFor(xmlEntity))
                             {
                               //add here
-                              XMLOutputStream_startElement(stream3, "prov:wasAttributedTo");
-                              XMLOutputStream_startElement(stream3, "prov:entity");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",  EntityID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:entity");
-                              XMLOutputStream_startElement(stream3, "prov:agent");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",  AgentID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:agent");
-                              XMLOutputStream_endElement(stream3, "prov:wasAttributedTo");
+                              XMLOutputStream_startElement(out, "prov:wasAttributedTo");
+                              XMLOutputStream_startElement(out, "prov:entity");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",  EntityID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:entity");
+                              XMLOutputStream_startElement(out, "prov:agent");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",  AgentID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:agent");
+                              XMLOutputStream_endElement(out, "prov:wasAttributedTo");
 
                               break;
                             }
@@ -960,25 +985,25 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
 
                   else if (next.getName() == "wasAssociatedWith")
                     {
-                      XMLToken xmlEntity = stream.next();
+                      XMLToken xmlEntity = in1.next();
                       QString AgentID, ActivityID;
 
-                      while (stream.isGood())
+                      while (in1.isGood())
                         {
-                          XMLToken child  = stream.next();
+                          XMLToken child  = in1.next();
 
                           // if we reached the end element of the 'Version' element : add this data as a new version
                           if (child.isEndFor(xmlEntity))
                             {
                               //add here
-                              XMLOutputStream_startElement(stream3, "prov:wasAssociatedWith");
-                              XMLOutputStream_startElement(stream3, "prov:activity");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",  ActivityID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:activity");
-                              XMLOutputStream_startElement(stream3, "prov:agent");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",  AgentID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:agent");
-                              XMLOutputStream_endElement(stream3, "prov:wasAssociatedWith");
+                              XMLOutputStream_startElement(out, "prov:wasAssociatedWith");
+                              XMLOutputStream_startElement(out, "prov:activity");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",  ActivityID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:activity");
+                              XMLOutputStream_startElement(out, "prov:agent");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",  AgentID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:agent");
+                              XMLOutputStream_endElement(out, "prov:wasAssociatedWith");
 
                               break;
                             }
@@ -1001,40 +1026,40 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                     }
                   else if (next.getName() == "wasGeneratedBy")
                     {
-                      XMLToken xmlEntity = stream.next();
+                      XMLToken xmlEntity = in1.next();
 
                       QString ActivityID, EntityID, Time;
                       bool timeExists = false;
                       bool activityExists = false;
 
-                      while (stream.isGood())
+                      while (in1.isGood())
                         {
-                          XMLToken child  = stream.next();
+                          XMLToken child  = in1.next();
 
                           // if we reached the end element of the 'Version' element : add this data as a new version
                           if (child.isEndFor(xmlEntity))
                             {
                               //add here
-                              XMLOutputStream_startElement(stream3, "prov:wasGeneratedBy");
-                              XMLOutputStream_startElement(stream3, "prov:entity");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",  EntityID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:entity");
+                              XMLOutputStream_startElement(out, "prov:wasGeneratedBy");
+                              XMLOutputStream_startElement(out, "prov:entity");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",  EntityID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:entity");
 
                               if (activityExists)
                                 {
-                                  XMLOutputStream_startElement(stream3, "prov:activity");
-                                  XMLOutputStream_writeChars(stream3, ActivityID.toUtf8());
-                                  XMLOutputStream_endElement(stream3, "prov:activity");
+                                  XMLOutputStream_startElement(out, "prov:activity");
+                                  XMLOutputStream_writeChars(out, ActivityID.toUtf8());
+                                  XMLOutputStream_endElement(out, "prov:activity");
                                 }
 
                               if (timeExists)
                                 {
-                                  XMLOutputStream_startElement(stream3, "prov:time");
-                                  XMLOutputStream_writeChars(stream3, Time.toUtf8());
-                                  XMLOutputStream_endElement(stream3, "prov:time");
+                                  XMLOutputStream_startElement(out, "prov:time");
+                                  XMLOutputStream_writeChars(out, Time.toUtf8());
+                                  XMLOutputStream_endElement(out, "prov:time");
                                 }
 
-                              XMLOutputStream_endElement(stream3, "prov:wasGeneratedBy");
+                              XMLOutputStream_endElement(out, "prov:wasGeneratedBy");
 
                               break;
                             }
@@ -1052,7 +1077,7 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                               if (child.getName() == "time")
                                 {
 
-                                  Time = QString::fromStdString(stream.next().getCharacters());
+                                  Time = QString::fromStdString(in1.next().getCharacters());
                                   timeExists = true;
                                 }
 
@@ -1065,25 +1090,25 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                     }
                   else if (next.getName() == "wasStartedBy")
                     {
-                      XMLToken xmlEntity = stream.next();
+                      XMLToken xmlEntity = in1.next();
                       QString ActivityID, Time;
 
-                      while (stream.isGood())
+                      while (in1.isGood())
                         {
-                          XMLToken child  = stream.next();
+                          XMLToken child  = in1.next();
 
                           // if we reached the end element of the 'Version' element : add this data as a new version
                           if (child.isEndFor(xmlEntity))
                             {
                               //add here
-                              XMLOutputStream_startElement(stream3, "prov:wasStartedBy");
-                              XMLOutputStream_startElement(stream3, "prov:activity");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",   ActivityID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:activity");
-                              XMLOutputStream_startElement(stream3, "prov:time");
-                              XMLOutputStream_writeChars(stream3, Time.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:time");
-                              XMLOutputStream_endElement(stream3, "prov:wasStartedBy");
+                              XMLOutputStream_startElement(out, "prov:wasStartedBy");
+                              XMLOutputStream_startElement(out, "prov:activity");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",   ActivityID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:activity");
+                              XMLOutputStream_startElement(out, "prov:time");
+                              XMLOutputStream_writeChars(out, Time.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:time");
+                              XMLOutputStream_endElement(out, "prov:wasStartedBy");
 
                               break;
                             }
@@ -1094,7 +1119,7 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                               if (child.getName() == "time")
                                 {
 
-                                  Time = QString::fromStdString(stream.next().getCharacters());
+                                  Time = QString::fromStdString(in1.next().getCharacters());
                                 }
 
                               if (child.getName() == "activity")
@@ -1107,12 +1132,12 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                   else if (next.getName() == "wasEndedBy")
                     {
 
-                      XMLToken xmlEntity = stream.next();
+                      XMLToken xmlEntity = in1.next();
                       QString ActivityID, Time;
 
-                      while (stream.isGood())
+                      while (in1.isGood())
                         {
-                          XMLToken child  = stream.next();
+                          XMLToken child  = in1.next();
 
                           // if we reached the end element of the 'Version' element : add this data as a new version
                           if (child.isEndFor(xmlEntity))
@@ -1120,11 +1145,11 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                               //add here
                               XMLOutputStream_startElement(stream3, "prov:wasEndedBy");
                               XMLOutputStream_startElement(stream3, "prov:activity");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",   ActivityID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:activity");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",   ActivityID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:activity");
                               XMLOutputStream_startElement(stream3, "prov:time");
                               XMLOutputStream_writeChars(stream3, Time.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:time");
+                              XMLOutputStream_endElement(out, "prov:time");
                               XMLOutputStream_endElement(stream3, "prov:wasEndedBy");
 
                               break;
@@ -1136,7 +1161,7 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                               if (child.getName() == "time")
                                 {
 
-                                  Time = QString::fromStdString(stream.next().getCharacters());
+                                  Time = QString::fromStdString(in1.next().getCharacters());
                                 }
 
                               if (child.getName() == "activity")
@@ -1154,7 +1179,7 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                 }
 
 //    Analyzing the second Stream
-              while (stream2.isGood())//&&(!SecondXMLFinished)&&(!StateChanged))
+              while (in2.isGood())//&&(!SecondXMLFinished)&&(!StateChanged))
                 {
                   stream2.skipText();
                   //grab the next element
@@ -1169,7 +1194,7 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
 
                   if (next.getName() == "entity")
                     {
-                      XMLToken xmlEntity = stream2.next();
+                      XMLToken xmlEntity = in2.next();
                       QString EntityID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
                       QString EntityName = QString::fromStdString(xmlEntity.getAttrValue("Initial_name"));
                       QString MianType = QString::fromStdString(xmlEntity.getAttrValue("Main_Type"));
@@ -1178,32 +1203,32 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                       //ProvenanceEntityList<<EntityID;
                       if (!ProvenanceEntityList.contains(EntityID))
                         {
-                          XMLOutputStream_startElement(stream3, "prov:entity");
-                          XMLOutputStream_writeAttributeChars(stream3, "prov:id",  EntityID.toUtf8());
-                          XMLOutputStream_writeAttributeChars(stream3, "Main_Type",  MianType.toUtf8());
-                          XMLOutputStream_writeAttributeChars(stream3, "Entity_Type",  EntityType.toUtf8());
-                          XMLOutputStream_writeAttributeChars(stream3, "Initial_name",  EntityName.toUtf8());
-                          XMLOutputStream_endElement(stream3, "prov:entity");
+                          XMLOutputStream_startElement(out, "prov:entity");
+                          XMLOutputStream_writeAttributeChars(out, "prov:id",  EntityID.toUtf8());
+                          XMLOutputStream_writeAttributeChars(out, "Main_Type",  MianType.toUtf8());
+                          XMLOutputStream_writeAttributeChars(out, "Entity_Type",  EntityType.toUtf8());
+                          XMLOutputStream_writeAttributeChars(out, "Initial_name",  EntityName.toUtf8());
+                          XMLOutputStream_endElement(out, "prov:entity");
                         }
                     }
                   else if (next.getName() == "activity")
                     {
-                      XMLToken xmlEntity = stream2.next();
+                      XMLToken xmlEntity = in2.next();
                       QString ActivityID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
                       QString ActivityAction = QString::fromStdString(xmlEntity.getAttrValue("Action"));
                       QString ActivityProperty = QString::fromStdString(xmlEntity.getAttrValue("Property"));
                       QString ActivityNewValue = QString::fromStdString(xmlEntity.getAttrValue("New_value"));
 
-                      XMLOutputStream_startElement(stream3, "prov:activity");
-                      XMLOutputStream_writeAttributeChars(stream3, "prov:id",  ActivityID.toUtf8());
-                      XMLOutputStream_writeAttributeChars(stream3, "Action",  ActivityAction.toUtf8());
-                      XMLOutputStream_writeAttributeChars(stream3, "Property",  ActivityProperty.toUtf8());
-                      XMLOutputStream_writeAttributeChars(stream3, "New_value",  ActivityNewValue.toUtf8());
-                      XMLOutputStream_endElement(stream3, "prov:activity");
+                      XMLOutputStream_startElement(out, "prov:activity");
+                      XMLOutputStream_writeAttributeChars(out, "prov:id",  ActivityID.toUtf8());
+                      XMLOutputStream_writeAttributeChars(out, "Action",  ActivityAction.toUtf8());
+                      XMLOutputStream_writeAttributeChars(out, "Property",  ActivityProperty.toUtf8());
+                      XMLOutputStream_writeAttributeChars(out, "New_value",  ActivityNewValue.toUtf8());
+                      XMLOutputStream_endElement(out, "prov:activity");
                     }
                   else if (next.getName() == "agent")
                     {
-                      XMLToken xmlEntity = stream2.next();
+                      XMLToken xmlEntity = in2.next();
                       QString AgentID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
                       QString AgentName = QString::fromStdString(xmlEntity.getAttrValue("GivenName"));
                       QString AgentFamilyName = QString::fromStdString(xmlEntity.getAttrValue("FamilyName"));
@@ -1213,37 +1238,37 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                       //mProvenanceAuthorNameMap.insert(AgentID, (AgentName + AgentFamilyName));
                       if (!ProvenanceAuthorList.contains(AgentID))
                         {
-                          XMLOutputStream_startElement(stream3, "prov:agent");
-                          XMLOutputStream_writeAttributeChars(stream3, "prov:id",  AgentID.toUtf8());
-                          XMLOutputStream_writeAttributeChars(stream3, "GivenName",  AgentName.toUtf8());
-                          XMLOutputStream_writeAttributeChars(stream3, "FamilyName",  AgentFamilyName.toUtf8());
-                          XMLOutputStream_writeAttributeChars(stream3, "Organization",  AgentOrganization.toUtf8());
-                          XMLOutputStream_writeAttributeChars(stream3, "Email",  AgentEmail.toUtf8());
-                          XMLOutputStream_endElement(stream3, "prov:agent");
+                          XMLOutputStream_startElement(out, "prov:agent");
+                          XMLOutputStream_writeAttributeChars(out, "prov:id",  AgentID.toUtf8());
+                          XMLOutputStream_writeAttributeChars(out, "GivenName",  AgentName.toUtf8());
+                          XMLOutputStream_writeAttributeChars(out, "FamilyName",  AgentFamilyName.toUtf8());
+                          XMLOutputStream_writeAttributeChars(out, "Organization",  AgentOrganization.toUtf8());
+                          XMLOutputStream_writeAttributeChars(out, "Email",  AgentEmail.toUtf8());
+                          XMLOutputStream_endElement(out, "prov:agent");
                         }
                     }
 
                   else if (next.getName() == "used")
                     {
-                      XMLToken xmlEntity = stream2.next();
+                      XMLToken xmlEntity = in2.next();
                       QString ActivityID, EntityID;
 
-                      while (stream2.isGood())
+                      while (in2.isGood())
                         {
-                          XMLToken child  = stream2.next();
+                          XMLToken child  = in2.next();
 
                           // if we reached the end element of the 'Version' element : add this data as a new version
                           if (child.isEndFor(xmlEntity))
                             {
                               //add here
-                              XMLOutputStream_startElement(stream3, "prov:used");
-                              XMLOutputStream_startElement(stream3, "prov:activity");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",  ActivityID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:activity");
-                              XMLOutputStream_startElement(stream3, "prov:entity");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",  EntityID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:entity");
-                              XMLOutputStream_endElement(stream3, "prov:used");
+                              XMLOutputStream_startElement(out, "prov:used");
+                              XMLOutputStream_startElement(out, "prov:activity");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",  ActivityID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:activity");
+                              XMLOutputStream_startElement(out, "prov:entity");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",  EntityID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:entity");
+                              XMLOutputStream_endElement(out, "prov:used");
                               break;
                             }
 
@@ -1266,25 +1291,25 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
 
                   else if (next.getName() == "wasAttributedTo")
                     {
-                      XMLToken xmlEntity = stream2.next();
+                      XMLToken xmlEntity = in2.next();
                       QString AgentID, EntityID;
 
-                      while (stream2.isGood())
+                      while (in2.isGood())
                         {
-                          XMLToken child  = stream2.next();
+                          XMLToken child  = in2.next();
 
                           // if we reached the end element of the 'Version' element : add this data as a new version
                           if (child.isEndFor(xmlEntity))
                             {
                               //add here
-                              XMLOutputStream_startElement(stream3, "prov:wasAttributedTo");
-                              XMLOutputStream_startElement(stream3, "prov:entity");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",  EntityID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:entity");
-                              XMLOutputStream_startElement(stream3, "prov:agent");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",  AgentID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:agent");
-                              XMLOutputStream_endElement(stream3, "prov:wasAttributedTo");
+                              XMLOutputStream_startElement(out, "prov:wasAttributedTo");
+                              XMLOutputStream_startElement(out, "prov:entity");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",  EntityID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:entity");
+                              XMLOutputStream_startElement(out, "prov:agent");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",  AgentID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:agent");
+                              XMLOutputStream_endElement(out, "prov:wasAttributedTo");
 
                               break;
                             }
@@ -1309,25 +1334,25 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                   else if (next.getName() == "wasAssociatedWith")
                     {
 
-                      XMLToken xmlEntity = stream2.next();
+                      XMLToken xmlEntity = in2.next();
                       QString AgentID, ActivityID;
 
-                      while (stream2.isGood())
+                      while (in2.isGood())
                         {
-                          XMLToken child  = stream2.next();
+                          XMLToken child  = in2.next();
 
                           // if we reached the end element of the 'Version' element : add this data as a new version
                           if (child.isEndFor(xmlEntity))
                             {
                               //add here
-                              XMLOutputStream_startElement(stream3, "prov:wasAssociatedWith");
-                              XMLOutputStream_startElement(stream3, "prov:activity");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",  ActivityID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:activity");
-                              XMLOutputStream_startElement(stream3, "prov:agent");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",  AgentID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:agent");
-                              XMLOutputStream_endElement(stream3, "prov:wasAssociatedWith");
+                              XMLOutputStream_startElement(out, "prov:wasAssociatedWith");
+                              XMLOutputStream_startElement(out, "prov:activity");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",  ActivityID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:activity");
+                              XMLOutputStream_startElement(out, "prov:agent");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",  AgentID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:agent");
+                              XMLOutputStream_endElement(out, "prov:wasAssociatedWith");
 
                               break;
                             }
@@ -1350,39 +1375,39 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                     }
                   else if (next.getName() == "wasGeneratedBy")
                     {
-                      XMLToken xmlEntity = stream2.next();
+                      XMLToken xmlEntity = in2.next();
                       QString ActivityID, EntityID, Time;
                       bool timeExists = false;
                       bool activityExists = false;
 
-                      while (stream2.isGood())
+                      while (in2.isGood())
                         {
-                          XMLToken child  = stream2.next();
+                          XMLToken child  = in2.next();
 
                           // if we reached the end element of the 'Version' element : add this data as a new version
                           if (child.isEndFor(xmlEntity))
                             {
                               //add here
-                              XMLOutputStream_startElement(stream3, "prov:wasGeneratedBy");
-                              XMLOutputStream_startElement(stream3, "prov:entity");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",  EntityID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:entity");
+                              XMLOutputStream_startElement(out, "prov:wasGeneratedBy");
+                              XMLOutputStream_startElement(out, "prov:entity");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",  EntityID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:entity");
 
                               if (activityExists)
                                 {
-                                  XMLOutputStream_startElement(stream3, "prov:activity");
-                                  XMLOutputStream_writeChars(stream3, ActivityID.toUtf8());
-                                  XMLOutputStream_endElement(stream3, "prov:activity");
+                                  XMLOutputStream_startElement(out, "prov:activity");
+                                  XMLOutputStream_writeChars(out, ActivityID.toUtf8());
+                                  XMLOutputStream_endElement(out, "prov:activity");
                                 }
 
                               if (timeExists)
                                 {
-                                  XMLOutputStream_startElement(stream3, "prov:time");
-                                  XMLOutputStream_writeChars(stream3, Time.toUtf8());
-                                  XMLOutputStream_endElement(stream3, "prov:time");
+                                  XMLOutputStream_startElement(out, "prov:time");
+                                  XMLOutputStream_writeChars(out, Time.toUtf8());
+                                  XMLOutputStream_endElement(out, "prov:time");
                                 }
 
-                              XMLOutputStream_endElement(stream3, "prov:wasGeneratedBy");
+                              XMLOutputStream_endElement(out, "prov:wasGeneratedBy");
 
                               break;
                             }
@@ -1400,7 +1425,7 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                               if (child.getName() == "time")
                                 {
 
-                                  Time = QString::fromStdString(stream2.next().getCharacters());
+                                  Time = QString::fromStdString(in2.next().getCharacters());
                                   timeExists = true;
                                 }
 
@@ -1413,25 +1438,25 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                     }
                   else if (next.getName() == "wasStartedBy")
                     {
-                      XMLToken xmlEntity = stream2.next();
+                      XMLToken xmlEntity = in2.next();
                       QString ActivityID, Time;
 
-                      while (stream2.isGood())
+                      while (in2.isGood())
                         {
-                          XMLToken child  = stream2.next();
+                          XMLToken child  = in2.next();
 
                           // if we reached the end element of the 'Version' element : add this data as a new version
                           if (child.isEndFor(xmlEntity))
                             {
                               //add here
-                              XMLOutputStream_startElement(stream3, "prov:wasStartedBy");
-                              XMLOutputStream_startElement(stream3, "prov:activity");
-                              XMLOutputStream_writeAttributeChars(stream3, "prov:ref",   ActivityID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:activity");
-                              XMLOutputStream_startElement(stream3, "prov:time");
+                              XMLOutputStream_startElement(out, "prov:wasStartedBy");
+                              XMLOutputStream_startElement(out, "prov:activity");
+                              XMLOutputStream_writeAttributeChars(out, "prov:ref",   ActivityID.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:activity");
+                              XMLOutputStream_startElement(out, "prov:time");
                               XMLOutputStream_writeChars(stream3, Time.toUtf8());
                               XMLOutputStream_endElement(stream3, "prov:time");
-                              XMLOutputStream_endElement(stream3, "prov:wasStartedBy");
+                              XMLOutputStream_endElement(out, "prov:wasStartedBy");
 
                               break;
                             }
@@ -1442,7 +1467,7 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                               if (child.getName() == "time")
                                 {
 
-                                  Time = QString::fromStdString(stream2.next().getCharacters());
+                                  Time = QString::fromStdString(in2.next().getCharacters());
                                 }
 
                               if (child.getName() == "activity")
@@ -1454,25 +1479,25 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                     }
                   else if (next.getName() == "wasEndedBy")
                     {
-                      XMLToken xmlEntity = stream2.next();
+                      XMLToken xmlEntity = in2.next();
                       QString ActivityID, Time;
 
-                      while (stream2.isGood())
+                      while (in2.isGood())
                         {
-                          XMLToken child  = stream2.next();
+                          XMLToken child  = in2.next();
 
                           // if we reached the end element of the 'Version' element : add this data as a new version
                           if (child.isEndFor(xmlEntity))
                             {
                               //add here
-                              XMLOutputStream_startElement(stream3, "prov:wasEndedBy");
-                              XMLOutputStream_startElement(stream3, "prov:activity");
+                              XMLOutputStream_startElement(out, "prov:wasEndedBy");
+                              XMLOutputStream_startElement(out, "prov:activity");
                               XMLOutputStream_writeAttributeChars(stream3, "prov:ref",   ActivityID.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:activity");
-                              XMLOutputStream_startElement(stream3, "prov:time");
-                              XMLOutputStream_writeChars(stream3, Time.toUtf8());
-                              XMLOutputStream_endElement(stream3, "prov:time");
-                              XMLOutputStream_endElement(stream3, "prov:wasEndedBy");
+                              XMLOutputStream_endElement(out, "prov:activity");
+                              XMLOutputStream_startElement(out, "prov:time");
+                              XMLOutputStream_writeChars(out, Time.toUtf8());
+                              XMLOutputStream_endElement(out, "prov:time");
+                              XMLOutputStream_endElement(out, "prov:wasEndedBy");
 
                               break;
                             }
@@ -1483,7 +1508,7 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                               if (child.getName() == "time")
                                 {
 
-                                  Time = QString::fromStdString(stream2.next().getCharacters());
+                                  Time = QString::fromStdString(in2.next().getCharacters());
                                 }
 
                               if (child.getName() == "activity")
@@ -1500,8 +1525,8 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                     }
                 }
 
-              XMLOutputStream_endElement(stream3, "prov:document");
-              XMLOutputStream_free(stream3);
+              XMLOutputStream_endElement(out, "prov:document");
+              XMLOutputStream_free(out);
             }
         }
     }

@@ -67,6 +67,14 @@ if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/resourcesUI/CQIconResource.h)
   endif()
 endif()
 
+if (NOT ${ENABLE_PROVENANCE})
+  list(REMOVE_ITEM SOURCES_UI 
+  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CEntityProvenanceDialog.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CProvenanceDialog.cpp) 
+  list(REMOVE_ITEM HEADERS_UI 
+  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CEntityProvenanceDialog.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CProvenanceDialog.h) 
+endif()
 
 # create source group for IDEs
 source_group(UI FILES ${FORMS_UI} ${HEADERS_UI} ${SOURCES_UI})

@@ -270,9 +270,9 @@ void CFitProblem::initializeParameter()
   mpParmObjectiveExpression = NULL;
   *mpParmMaximize = false;
 
-  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::CN, CCommonName(""));
-  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::CN, CCommonName(""));
-  mpCreateParameterSets = assertParameter("Create Parameter Sets", CCopasiParameter::BOOL, false);
+  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::Type::CN, CCommonName(""));
+  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::Type::CN, CCommonName(""));
+  mpCreateParameterSets = assertParameter("Create Parameter Sets", CCopasiParameter::Type::BOOL, false);
 
   assertGroup("Experiment Set");
 
@@ -294,8 +294,8 @@ bool CFitProblem::elevateChildren()
 
   // Due to a naming conflict the following parameters may have been overwritten during
   // the load of a CopasiML file we replace them with default values if that was the case.
-  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::CN, CCommonName(""));
-  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::CN, CCommonName(""));
+  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::Type::CN, CCommonName(""));
+  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::Type::CN, CCommonName(""));
 
   CDataVectorN< CCopasiTask > * pTasks = NULL;
   CDataModel* pDataModel = getObjectDataModel();

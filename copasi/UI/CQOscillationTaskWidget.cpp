@@ -60,7 +60,7 @@ bool CQOscillationTaskWidget::runTask()
   return true;
 }
 
-bool CQOscillationTaskWidget::update(ListViews::ObjectType /* objectType */, ListViews::Action /* action */, const std::string & /* key */)
+bool CQOscillationTaskWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   return true;
 }

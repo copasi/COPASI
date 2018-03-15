@@ -63,7 +63,7 @@ void CHybridNextReactionRKMethod::initializeParameter()
 {
   CCopasiParameter *pParm;
 
-  assertParameter("Runge Kutta Stepsize", CCopasiParameter::DOUBLE, (C_FLOAT64) RUNGE_KUTTA_STEPSIZE);
+  assertParameter("Runge Kutta Stepsize", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) RUNGE_KUTTA_STEPSIZE);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("HYBRID.MaxSteps")) != NULL)

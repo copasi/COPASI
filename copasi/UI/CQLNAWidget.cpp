@@ -73,8 +73,7 @@ void CQLNAWidget::slotSteadyStateChecked()
 
 bool CQLNAWidget::runTask()
 {
-  CLNATask * pTask =
-    dynamic_cast< CLNATask * >(CRootContainer::getKeyFactory()->get(mKey));
+  CLNATask * pTask = dynamic_cast< CLNATask * >(mpObject);
 
   if (!pTask) return false;
 
@@ -93,7 +92,7 @@ bool CQLNAWidget::taskFinishedEvent()
   if (pResult) pResult->loadFromBackend();
 
   if (success && pResult)
-    mpListView->switchToOtherWidget(351, ""); //change to the results window
+    mpListView->switchToOtherWidget(351, std::string()); //change to the results window
 
   return success;
 }

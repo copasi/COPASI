@@ -161,11 +161,11 @@ COptProblem::~COptProblem()
 
 void COptProblem::initializeParameter()
 {
-  mpParmSubtaskCN = assertParameter("Subtask", CCopasiParameter::CN, CCommonName(""));
-  mpParmObjectiveExpression = assertParameter("ObjectiveExpression", CCopasiParameter::EXPRESSION, std::string(""));
-  mpParmMaximize = assertParameter("Maximize", CCopasiParameter::BOOL, false);
-  mpParmRandomizeStartValues = assertParameter("Randomize Start Values", CCopasiParameter::BOOL, false);
-  mpParmCalculateStatistics = assertParameter("Calculate Statistics", CCopasiParameter::BOOL, true);
+  mpParmSubtaskCN = assertParameter("Subtask", CCopasiParameter::Type::CN, CCommonName(""));
+  mpParmObjectiveExpression = assertParameter("ObjectiveExpression", CCopasiParameter::Type::EXPRESSION, std::string(""));
+  mpParmMaximize = assertParameter("Maximize", CCopasiParameter::Type::BOOL, false);
+  mpParmRandomizeStartValues = assertParameter("Randomize Start Values", CCopasiParameter::Type::BOOL, false);
+  mpParmCalculateStatistics = assertParameter("Calculate Statistics", CCopasiParameter::Type::BOOL, true);
 
   mpGrpItems = assertGroup("OptimizationItemList");
   mpGrpConstraints = assertGroup("OptimizationConstraintList");
@@ -487,7 +487,6 @@ bool COptProblem::restore(const bool & updateModel)
 
   if ((mFailedCounterException + mFailedCounterNaN) * 20 > mCounter) // > 5% failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 8, mFailedCounterException + mFailedCounterNaN, mCounter);
-
 
   if (10 * mFailedConstraintCounter > 8 * (mConstraintCounter - 1)) // > 80 % failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 9, mFailedConstraintCounter, mConstraintCounter - 1);

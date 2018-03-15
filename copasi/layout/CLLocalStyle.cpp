@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,7 +18,7 @@
 #include "copasi/report/CKeyFactory.h"
 
 // static
-CLLocalStyle * CLLocalStyle::fromData(const CData & data)
+CLLocalStyle * CLLocalStyle::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CLLocalStyle(NO_PARENT);
 }
@@ -35,7 +35,7 @@ CData CLLocalStyle::toData() const
 }
 
 // virtual
-bool CLLocalStyle::applyData(const CData & data)
+bool CLLocalStyle::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -94,9 +94,7 @@ void CQMoietiesTaskResult::init()
   mpReducedStoichiometry->setLegendEnabled(true);
 }
 
-bool CQMoietiesTaskResult::update(ListViews::ObjectType objectType,
-                                  ListViews::Action action,
-                                  const std::string & /* key */)
+bool CQMoietiesTaskResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   // :TODO:
   switch (objectType)
@@ -106,6 +104,7 @@ bool CQMoietiesTaskResult::update(ListViews::ObjectType objectType,
         switch (action)
           {
             case ListViews::ADD:
+            case ListViews::DELETE:
               clear();
               break;
 
@@ -133,7 +132,7 @@ void CQMoietiesTaskResult::clear()
   mpReducedStoichiometry->setArrayAnnotation(NULL);
 }
 
-bool CQMoietiesTaskResult::leave()
+bool CQMoietiesTaskResult::leaveProtected()
 {return true;}
 
 bool CQMoietiesTaskResult::enterProtected()

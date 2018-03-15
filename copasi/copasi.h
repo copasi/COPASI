@@ -50,6 +50,8 @@ LIBSEDML_CPP_NAMESPACE_USE
 #include <fstream>
 #include <limits>
 
+#include "copasi/core/CCore.h"
+
 //YH: new defined parameters used by more than one classes
 #define SS_FOUND 1             //steady state found
 #define SS_NOT_FOUND 0         //steady state not found
@@ -70,47 +72,6 @@ LIBSEDML_CPP_NAMESPACE_USE
 using std::isnan;
 #endif
 
-#if (defined SunOS || defined __CYGWIN__ || defined Darwin)
-# define C_INT64 long long int
-# define LLONG_CONST(n) n ## LL
-# define C_INT32 int
-# define C_INT16 short
-# define C_FLOAT64 double
-# define C_FLOAT32 float
-# define abs64 abs
-#else
-#ifdef WIN32
-# ifndef _USE_MATH_DEFINES
-# define _USE_MATH_DEFINES 1
-# endif // _USE_MATH_DEFINES
-# define C_INT64 __int64
-# define LLONG_CONST(n) n ## i64
-# define C_INT32 int
-# define C_INT16 short
-# define C_FLOAT64 double
-# define C_FLOAT32 float
-# define vsnprintf _vsnprintf // they just have a different name for this guy
-# define snprintf  _snprintf  // they just have a different name for this guy
-# define strcasecmp _stricmp  // they just have a different name for this guy
-# define strdup _strdup       // they just have a different name for this guy
-# define isnan _isnan         // they just have a different name for this guy
-# define finite _finite       // they just have a different name for this guy
-#if _MSC_VER < 1600
-# define min _cpp_min         // they just have a different name for this guy
-# define max _cpp_max         // they just have a different name for this guy
-#endif // _MSC_VER
-# define abs64 _abs64
-#else
-# define C_INT64 long long int
-# define LLONG_CONST(n) n ## LL
-# define C_INT32 int
-# define C_INT16 short
-# define C_FLOAT64 double
-# define C_FLOAT32 float
-# define abs64 abs
-#endif
-#endif
-
 #ifdef Darwin
 # ifndef isnan
 #  define isnan(__x) ((__x == __x) != true)
@@ -119,23 +80,6 @@ using std::isnan;
 
 #if (defined __GNUC__ && __GNUC__ < 3)
 # define ios_base ios
-#endif
-
-// for compatibility with default CLAPACK f2c
-#ifdef F2C_INTEGER
-# define C_INT F2C_INTEGER
-#else
-# if ((defined __LP64__) && (!(defined HAVE_CLAPACK_H) || (defined Darwin)))
-#  define C_INT int
-# else
-#  define C_INT long
-# endif
-#endif
-
-#ifdef F2C_LOGICAL
-# define C_LOGICAL F2C_LOGICAL
-#else
-# define C_LOGICAL C_INT
 #endif
 
 enum TriLogic
@@ -238,5 +182,4 @@ extern std::ofstream DebugFile;
 #define C_UNUSED(p)
 #define COPASI_DEPRECATED
 #define NOMINMAX
-#define C_INVALID_INDEX (std::numeric_limits< size_t >::max())
 #endif // COPASI_copasi

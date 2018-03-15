@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,6 +8,7 @@
 
 #include <map>
 
+#include "copasi/core/CCore.h"
 #include "copasi/core/CEnumAnnotation.h"
 #include "copasi/undo/CDataValue.h"
 
@@ -19,14 +20,22 @@ public:
     EXPRESSION = 0,
     INITIAL_EXPRESSION,
     INITIAL_VALUE,
+    INITIAL_INTENSIVE_VALUE,
     SIMULATION_TYPE,
     SPATIAL_DIMENSION,
     ADD_NOISE,
     NOISE_EXPRESSION,
+    CHEMICAL_EQUATION,
+    KINETIC_LAW,
+    KINETIC_LAW_UNIT_TYPE,
+    KINEITC_LAW_VARIABLE_MAPPING,
+    LOCAL_REACTION_PARAMETERS,
+    SCALING_COMPARTMENT,
     OBJECT_NAME,
     OBJECT_PARENT_CN,
     OBJECT_TYPE,
     OBJECT_FLAG,
+    OBJECT_HASH,
     OBJECT_INDEX,
     OBJECT_REFERENCES,
     OBJECT_REFERENCE,
@@ -38,6 +47,8 @@ public:
     PLOT_TYPE,
     PLOT_ITEM_TYPE,
     PARAMETER_TYPE,
+    PARAMETER_ROLE,
+    PARAMETER_USED,
     PARAMETER_VALUE,
     UNIT,
     VOLUME_UNIT,
@@ -49,19 +60,30 @@ public:
     AVOGADRO_NUMBER,
     DIMENSIONALITY,
     ARRAY_ELEMENT_INDEX,
-    COMMENT,
     REPORT_SEPARATOR,
     REPORT_IS_TABLE,
     REPORT_SHOW_TITLE,
     REPORT_PRECISION,
+    NOTES,
     MIRIAM_PREDICATE,
     MIRIAM_RESOURCE,
+    MIRIAM_DESCRIPTION,
     MIRIAM_ID,
     DATE,
     GIVEN_NAME,
     FAMILY_NAME,
     EMAIL,
     ORGANIZATION,
+    FRAMEWORK,
+    VALUE,
+    DELAY_ASSIGNMENT,
+    FIRE_AT_INITIALTIME,
+    PERSISTENT_TRIGGER,
+    TRIGGER_EXPRESSION,
+    DELAY_EXPRESSION,
+    PRIORITY_EXPRESSION,
+    ASSIGNMENTS,
+    VECTOR_CONTENT,
     __SIZE
   };
 
@@ -82,6 +104,8 @@ public:
 
   bool operator == (const CData & rhs) const;
 
+  bool operator != (const CData & rhs) const;
+
   const CDataValue & getProperty(const std::string & name) const;
 
   const CDataValue & getProperty(const Property & property) const;
@@ -89,10 +113,6 @@ public:
   CDataValue & getProperty(const std::string & name);
 
   CDataValue & getProperty(const Property & property);
-
-  bool setProperty(const std::string & name, const CDataValue & value);
-
-  bool setProperty(const Property & property, const CDataValue & value);
 
   bool addProperty(const std::string & name, const CDataValue & value);
 
@@ -109,6 +129,10 @@ public:
   bool isSetProperty(const Property & property) const;
 
   bool empty() const;
+
+  void clear();
+
+  std::string hash() const;
 
   const_iterator begin() const;
 

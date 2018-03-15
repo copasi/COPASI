@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -42,7 +47,7 @@ CXMLHandler * ModelParameterGroupHandler::processStart(const XML_Char * pszName,
 
         CN = mpParser->getAttributeValue("cn", papszAttrs);
         pType = mpParser->getAttributeValue("type", papszAttrs);
-        Type = toEnum(pType, CModelParameter::TypeNames, CModelParameter::Group);
+        Type = CModelParameter::TypeNames.toEnum(pType, CModelParameter::Type::Group);
 
         {
           CModelParameterGroup * pModelParameterGroup = new CModelParameterGroup(mpData->ModelParameterGroupStack.top(), Type);

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -122,7 +122,7 @@ void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units)
 }
 
 // static
-CUnitDefinition * CUnitDefinition::fromData(const CData & data)
+CUnitDefinition * CUnitDefinition::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CUnitDefinition(data.getProperty(CData::OBJECT_NAME).toString(),
                              NO_PARENT);
@@ -136,18 +136,42 @@ CData CUnitDefinition::toData() const
   // TODO CRITICAL Implement me!
   fatalError();
 
+  Data.appendData(CAnnotation::toData());
+
   return Data;
 }
 
 // virtual
-bool CUnitDefinition::applyData(const CData & data)
+bool CUnitDefinition::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 
   // TODO CRITICAL Implement me!
   fatalError();
 
+  success &= CAnnotation::applyData(data, changes);
+
   return success;
+}
+
+void CUnitDefinition::createUndoData(CUndoData & undoData,
+                                     const CUndoData::Type & type,
+                                     const CData & oldData,
+                                     const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  CAnnotation::createUndoData(undoData, type, oldData, framework);
+
+  return;
 }
 
 // constructors

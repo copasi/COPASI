@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -130,7 +135,7 @@ bool CQEFMNetReactionDM::insertRows(int /* position */, int /* rows */, const QM
 }
 
 // virtual
-bool CQEFMNetReactionDM::removeRows(int /* position */, int /* rows */)
+bool CQEFMNetReactionDM::removeRows(int /* position */, int /* rows */, const QModelIndex & /* index */)
 {
   return false;
 }

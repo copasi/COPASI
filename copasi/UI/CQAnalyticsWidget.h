@@ -34,13 +34,13 @@ public:
   virtual ~CQAnalyticsWidget();
 
   virtual bool runTask();
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
 protected:
   void commitInput();
   virtual bool saveTask();
   virtual bool loadTask();
   virtual bool taskFinishedEvent();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
 
 protected slots:
 

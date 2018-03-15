@@ -122,7 +122,7 @@ bool SteadyStateWidget::taskFinishedEvent()
     pResult->loadResult();
 
   if (success && isVisible())
-    mpListView->switchToOtherWidget(211, ""); //change to the results window
+    mpListView->switchToOtherWidget(211, std::string()); //change to the results window
 
   return success;
 }
@@ -133,7 +133,7 @@ bool SteadyStateWidget::loadTask()
   loadMethod();
 
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast<CSteadyStateTask *>(mpObject);
 
   if (mSteadyStateTask == NULL)
     return false;
@@ -171,7 +171,7 @@ bool SteadyStateWidget::saveTask()
   saveMethod();
 
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast<CSteadyStateTask *>(mpObject);
 
   if (mSteadyStateTask == NULL)
     return false;

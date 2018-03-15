@@ -21,7 +21,7 @@
 # Created by Robert Osfield.
 # Modified by Ralph Gauges
 
-message (STATUS "$ENV{COMBINE_DIR}")
+# message (STATUS "$ENV{COMBINE_DIR}")
 
 set(COMBINE_LIBRARY_NAME)
 if (UNIX)

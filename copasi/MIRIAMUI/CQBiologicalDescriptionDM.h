@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,8 +41,8 @@ public:
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
 protected:
-  bool insertRows(int position, int rows, const QModelIndex & source);
-  bool removeRows(int position, int rows);
+  bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+  bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
   CMIRIAMInfo* mpMIRIAMInfo;
 };
 

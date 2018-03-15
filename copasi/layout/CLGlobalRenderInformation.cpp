@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,7 +22,7 @@
 #include "copasi/report/CKeyFactory.h"
 
 // static
-CLGlobalRenderInformation * CLGlobalRenderInformation::fromData(const CData & data)
+CLGlobalRenderInformation * CLGlobalRenderInformation::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CLGlobalRenderInformation(NO_PARENT);
 }
@@ -39,7 +39,7 @@ CData CLGlobalRenderInformation::toData() const
 }
 
 // virtual
-bool CLGlobalRenderInformation::applyData(const CData & data)
+bool CLGlobalRenderInformation::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

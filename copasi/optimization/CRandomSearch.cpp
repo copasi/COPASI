@@ -48,11 +48,11 @@ CRandomSearch::CRandomSearch(const CDataContainer * pParent,
                              const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType)
 {
-  addParameter("Number of Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 100000);
-  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
-  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Number of Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100000);
+  addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937);
+  addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
-  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("#LogVerbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }

@@ -93,8 +93,8 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
       for (j = 0; j < jmax; ++j)
         {
-          if ((reaction->getFunctionParameters()[j]->getUsage() == CFunctionParameter::SUBSTRATE)
-              && reaction->getParameterMappings()[j][0] == tmpkey)
+          if ((reaction->getFunctionParameters()[j]->getUsage() == CFunctionParameter::Role::SUBSTRATE)
+              && reaction->getParameterObjects(j)[0]->getKey() == tmpkey)
             break;
         }
 
@@ -122,8 +122,8 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
           for (j = 0; j < jmax; ++j)
             {
-              if ((reaction->getFunctionParameters()[j]->getUsage() == CFunctionParameter::PRODUCT)
-                  && reaction->getParameterMappings()[j][0] == tmpkey)
+              if ((reaction->getFunctionParameters()[j]->getUsage() == CFunctionParameter::Role::PRODUCT)
+                  && reaction->getParameterObjects(j)[0]->getKey() == tmpkey)
                 break;
             }
 
@@ -150,8 +150,8 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
       for (j = 0; j < jmax; ++j)
         {
-          if ((reaction->getFunctionParameters()[j]->getUsage() == CFunctionParameter::MODIFIER)
-              && reaction->getParameterMappings()[j][0] == tmpkey)
+          if ((reaction->getFunctionParameters()[j]->getUsage() == CFunctionParameter::Role::MODIFIER)
+              && reaction->getParameterObjects(j)[0]->getKey() == tmpkey)
             break;
         }
 
@@ -176,11 +176,11 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
       CFunctionParameter::Role role = reaction->getFunctionParameters()[i]->getUsage();
 
       // substr., product, modifier must be matched to a metab (COPASI bug!)
-      if (role == CFunctionParameter::SUBSTRATE
-          || role == CFunctionParameter::PRODUCT
-          || role == CFunctionParameter::MODIFIER)
+      if (role == CFunctionParameter::Role::SUBSTRATE
+          || role == CFunctionParameter::Role::PRODUCT
+          || role == CFunctionParameter::Role::MODIFIER)
         {
-          if (!dynamic_cast<CMetab*>(CRootContainer::getKeyFactory()->get(reaction->getParameterMappings()[i][0])))
+          if (!dynamic_cast< const CMetab * >(reaction->getParameterObjects(i)[0]))
             {
               //COPASI bug!
               // COPASI bug! Something that is not a metabolite is mapped to a (subs/prod/mod) function parameter.
@@ -190,14 +190,13 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
       switch (role)
         {
-            //substrate must be matched to a substr. of the reaction (COPASI bug?)
-          case CFunctionParameter::SUBSTRATE:
+          //substrate must be matched to a substr. of the reaction (COPASI bug?)
+          case CFunctionParameter::Role::SUBSTRATE:
             jmax = reaction->getChemEq().getSubstrates().size();
 
             for (j = 0; j < jmax; ++j)
               {
-                if (reaction->getParameterMappings()[i][0]
-                    == reaction->getChemEq().getSubstrates()[j].getMetaboliteKey())
+                if (reaction->getParameterObjects(i)[0] == reaction->getChemEq().getSubstrates()[j].getMetabolite())
                   break;
               }
 
@@ -210,14 +209,13 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
             break;
 
-            //Product must be matched to a product of the reaction (COPASI bug?)
-          case CFunctionParameter::PRODUCT:
+          //Product must be matched to a product of the reaction (COPASI bug?)
+          case CFunctionParameter::Role::PRODUCT:
             jmax = reaction->getChemEq().getProducts().size();
 
             for (j = 0; j < jmax; ++j)
               {
-                if (reaction->getParameterMappings()[i][0]
-                    == reaction->getChemEq().getProducts()[j].getMetaboliteKey())
+                if (reaction->getParameterObjects(i)[0] == reaction->getChemEq().getProducts()[j].getMetabolite())
                   break;
               }
 
@@ -230,14 +228,13 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
             break;
 
-            //modifier should be matched to a modifier in the chemeq
-          case CFunctionParameter::MODIFIER:
+          //modifier should be matched to a modifier in the chemeq
+          case CFunctionParameter::Role::MODIFIER:
             jmax = reaction->getChemEq().getModifiers().size();
 
             for (j = 0; j < jmax; ++j)
               {
-                if (reaction->getParameterMappings()[i][0]
-                    == reaction->getChemEq().getModifiers()[j].getMetaboliteKey())
+                if (reaction->getParameterObjects(i)[0] == reaction->getChemEq().getModifiers()[j].getMetabolite())
                   break;
               }
 
@@ -251,15 +248,14 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
             break;
 
-            //parameter must be matched to a local or global parameter (COPASI bug)
-          case CFunctionParameter::PARAMETER:
+          //parameter must be matched to a local or global parameter (COPASI bug)
+          case CFunctionParameter::Role::PARAMETER:
             //first search in local parameters list
             jmax = reaction->getParameters().size();
 
             for (j = 0; j < jmax; ++j)
               {
-                if (reaction->getParameterMappings()[i][0]
-                    == reaction->getParameters().getParameter(j)->getKey())
+                if (reaction->getParameterObjects(i)[0] == reaction->getParameters().getParameter(j))
                   break;
               }
 
@@ -270,8 +266,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
                 for (j = 0; j < jmax; ++j)
                   {
-                    if (reaction->getParameterMappings()[i][0]
-                        == mpModel->getModelValues()[j].getKey())
+                    if (reaction->getParameterObjects(i)[0] == &mpModel->getModelValues()[j])
                       break;
                   }
 
@@ -285,13 +280,12 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
             break;
 
-          case CFunctionParameter::VOLUME:
+          case CFunctionParameter::Role::VOLUME:
             jmax = mpModel->getCompartments().size();
 
             for (j = 0; j < jmax; ++j)
               {
-                if (reaction->getParameterMappings()[i][0]
-                    == mpModel->getCompartments()[j].getKey())
+                if (reaction->getParameterObjects(i)[0] == &mpModel->getCompartments()[j])
                   break;
               }
 
@@ -304,9 +298,9 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
             break;
 
-          case CFunctionParameter::TIME:
+          case CFunctionParameter::Role::TIME:
 
-            if (reaction->getParameterMappings()[i][0] != mpModel->getKey())
+            if (reaction->getParameterObjects(i)[0] != mpModel)
               {
                 //COPASI bug
                 // Internal Copasi bug: TIME parameter not mapped correctly.
@@ -315,8 +309,8 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
             break;
 
-          case CFunctionParameter::VARIABLE:
-          case CFunctionParameter::TEMPORARY:
+          case CFunctionParameter::Role::VARIABLE:
+          case CFunctionParameter::Role::TEMPORARY:
           {
             //COPASI bug
             // Don't know what to do with a VARIABLE parameter here..."

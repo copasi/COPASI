@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -369,7 +369,7 @@ void  DataModelGUI::loadFunctionDB(const std::string & fileName)
   if (pFunctionDB == NULL) return;
 
   if (pFunctionDB->load(fileName))
-    emit notify(ListViews::FUNCTION, ListViews::DELETE, "");
+    emit notify(ListViews::FUNCTION, ListViews::DELETE, std::string());
 }
 
 void DataModelGUI::importSBML(const std::string & fileName)
@@ -660,7 +660,7 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
 
 //************Model-View Architecture*****************************************
 
-bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   // The GUI is inactive whenever a progress bar exist. We wait with updates
   // until then.
@@ -674,9 +674,61 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
       refreshInitialValues();
     }
 
-  emit notifyView(objectType, action, key);
+  emit notifyView(objectType, action, cn);
 
   return true;
+}
+
+void DataModelGUI::notifyChanges(const CUndoData::ChangeSet & changes)
+{
+  // The GUI is inactive whenever a progress bar exist. We wait with updates
+  // until then.
+  if (mpProgressBar == NULL)
+    {
+      CObjectInterface::ContainerList List;
+      List.push_back(mpDataModel);
+
+      // We loop through all the changes and call notify
+      CUndoData::ChangeSet::const_iterator it = changes.begin();
+      CUndoData::ChangeSet::const_iterator end = changes.end();
+
+      ListViews::Action Action = ListViews::Action::CHANGE;
+
+      for (; it != end; ++it)
+        {
+          switch (it->second.type)
+            {
+              case CUndoData::Type::INSERT:
+                Action = ListViews::Action::ADD;
+                break;
+
+              case CUndoData::Type::CHANGE:
+                Action = ListViews::Action::CHANGE;
+                break;
+
+              case CUndoData::Type::REMOVE:
+                Action = ListViews::Action::DELETE;
+                break;
+            }
+
+          ListViews::ObjectType ObjectType = ListViews::DataObjectType.toEnum(it->second.objectType, ListViews::ObjectType::STATE);
+          std::string CN = it->first;
+
+          if (ObjectType == ListViews::ObjectType::STATE)
+            {
+              if (it->second.objectType == "Creator" ||
+                  it->second.objectType == "Reference" ||
+                  it->second.objectType == "BiologicalDescription" ||
+                  it->second.objectType == "Modification")
+                {
+                  ObjectType = ListViews::ObjectType::MIRIAM;
+                  CN = it->first.substr(0, it->first.find(",CMIRIAMInfo="));
+                }
+            }
+
+          notify(ObjectType, Action, CN);
+        }
+    }
 }
 
 void DataModelGUI::registerListView(ListViews * pListView)

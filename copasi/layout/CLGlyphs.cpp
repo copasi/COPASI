@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,7 +34,7 @@
 #include "copasi/undo/CData.h"
 
 // static
-CLMetabGlyph * CLMetabGlyph::fromData(const CData & data)
+CLMetabGlyph * CLMetabGlyph::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CLMetabGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                           NO_PARENT);
@@ -52,7 +52,7 @@ CData CLMetabGlyph::toData() const
 }
 
 // virtual
-bool CLMetabGlyph::applyData(const CData & data)
+bool CLMetabGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 
@@ -135,7 +135,7 @@ void CLMetabGlyph::print(std::ostream * ostream) const
 //********* CLCompartmentGlyph ************************************************
 
 // static
-CLCompartmentGlyph * CLCompartmentGlyph::fromData(const CData & data)
+CLCompartmentGlyph * CLCompartmentGlyph::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CLCompartmentGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                                 NO_PARENT);
@@ -153,7 +153,7 @@ CData CLCompartmentGlyph::toData() const
 }
 
 // virtual
-bool CLCompartmentGlyph::applyData(const CData & data)
+bool CLCompartmentGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 
@@ -236,7 +236,7 @@ void CLCompartmentGlyph::print(std::ostream * ostream) const
 //********** CLTextGlyph ******************************************************
 
 // static
-CLTextGlyph * CLTextGlyph::fromData(const CData & data)
+CLTextGlyph * CLTextGlyph::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CLTextGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                          NO_PARENT);
@@ -254,7 +254,7 @@ CData CLTextGlyph::toData() const
 }
 
 // virtual
-bool CLTextGlyph::applyData(const CData & data)
+bool CLTextGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

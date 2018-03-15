@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,10 +26,37 @@
 #include "copasi/core/CRootContainer.h"
 
 // static
-CModification * CModification::fromData(const CData & data)
+CModification * CModification::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
-  return new CModification(data.getProperty(CData::OBJECT_NAME).toString(),
-                           NO_PARENT);
+  CModification * pModification = NULL;
+  CDataContainer * pObjectParent = dynamic_cast< CDataContainer * >(pParent);
+
+  if (pObjectParent != NULL)
+    {
+      CMIRIAMInfo * pMiriamInfo = dynamic_cast< CMIRIAMInfo * >(pObjectParent->getObjectAncestor("CMIRIAMInfo"));
+
+      if (pMiriamInfo != NULL)
+        {
+          pModification = pMiriamInfo->createModification(data.getProperty(CData::OBJECT_NAME).toString());
+          pObjectParent->remove(pModification);
+        }
+    }
+
+  return pModification;
+}
+
+// virtual
+void CModification::destruct()
+{
+  CMIRIAMInfo * pMiriamInfo = dynamic_cast< CMIRIAMInfo * >(getObjectAncestor("CMIRIAMInfo"));
+
+  if (pMiriamInfo != NULL)
+    {
+      pMiriamInfo->removeModification(this);
+      pMiriamInfo->save();
+    }
+
+  CDataContainer::destruct();
 }
 
 // virtual
@@ -39,20 +66,52 @@ CData CModification::toData() const
 
   Data.addProperty(CData::DATE, getDate());
 
+  Data.removeProperty(CData::OBJECT_INDEX);
+  Data.addProperty(CData::OBJECT_HASH, Data.hash());
+
   return Data;
 }
 
 // virtual
-bool CModification::applyData(const CData & data)
+bool CModification::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CDataContainer::applyData(data);
+  bool success = CDataContainer::applyData(data, changes);
 
   if (data.isSetProperty(CData::DATE))
     {
       setDate(data.getProperty(CData::DATE).toString());
     }
 
+  CMIRIAMInfo * pMiriamInfo = dynamic_cast< CMIRIAMInfo * >(getObjectAncestor("CMIRIAMInfo"));
+
+  if (pMiriamInfo != NULL)
+    {
+      return pMiriamInfo->save();
+    }
+
   return success;
+}
+
+// virtual
+void CModification::createUndoData(CUndoData & undoData,
+                                   const CUndoData::Type & type,
+                                   const CData & oldData,
+                                   const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::DATE, oldData.getProperty(CData::DATE), getDate());
+  undoData.removeProperty(CData::OBJECT_INDEX);
+
+  if (!undoData.empty())
+    {
+      undoData.addProperty(CData::OBJECT_HASH, oldData.getProperty(CData::OBJECT_HASH), toData().getProperty(CData::OBJECT_HASH));
+    }
 }
 
 CModification::CModification(const std::string & objectName,

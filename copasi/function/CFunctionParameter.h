@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,40 +37,38 @@
 class CFunctionParameter : public CDataContainer
 {
 public:
-  /**
-   * A string representation of the data type
-   */
-  static const std::string DataTypeName[];
-
-  enum Role
+  enum struct Role
   {
-    SUBSTRATE = 0,
+    SUBSTRATE,
     PRODUCT,
     MODIFIER,
     PARAMETER,
     VOLUME,
     TIME,
     VARIABLE,
-    TEMPORARY
+    TEMPORARY,
+    __SIZE
   };
 
   /**
    *  The string representation of valid roles of a function parameter
    */
-  static const std::string RoleNameXML[];
-  static const std::string RoleNameDisplay[];
-
-public:
-
-  /*
-  static const std::string & convertDisplayRoleNameToInternal(const std::string & role);
-  */
-  static Role xmlRole2Enum(const std::string & role);
+  static const CEnumAnnotation< std::string, Role > RoleNameXML;
+  static const CEnumAnnotation< std::string, Role > RoleNameDisplay;
 
   /**
    *  Valid data type for a function parameter
    */
-  enum DataType {INT32 = 0, FLOAT64, VINT32, VFLOAT64};
+  enum struct DataType
+  {
+    INT32,
+    FLOAT64,
+    VINT32,
+    VFLOAT64,
+    __SIZE
+  };
+
+  static const CEnumAnnotation< std::string, DataType > DataTypeName;
 
 private:
   /**
@@ -103,7 +101,7 @@ public:
    * @param const CData & data
    * @return CDataObject * CFunctionParameter
    */
-  static CFunctionParameter * fromData(const CData & data);
+  static CFunctionParameter * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -116,7 +114,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
   /**
    * Default constructor

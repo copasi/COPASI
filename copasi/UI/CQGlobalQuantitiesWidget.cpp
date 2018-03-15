@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,7 +45,7 @@ CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget *parent, const char *
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
   //Setting values for Types comboBox
-  mpTypeDelegate = new CQIndexComboDelegate(this, mpGlobalQuantityDM->getTypes());
+  mpTypeDelegate = new CQComboDelegate(this, mpGlobalQuantityDM->getTypes());
   mpTblGlobalQuantities->setItemDelegateForColumn(COL_TYPE_GQ, mpTypeDelegate);
 #if QT_VERSION >= 0x050000
   mpTblGlobalQuantities->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -55,14 +55,12 @@ CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget *parent, const char *
   mpTblGlobalQuantities->verticalHeader()->hide();
   mpTblGlobalQuantities->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
-  connect(mpGlobalQuantityDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpGlobalQuantityDM, SIGNAL(signalNotifyChanges(const CUndoData::ChangeSet &)),
+          this, SLOT(slotNotifyChanges(const CUndoData::ChangeSet &)));
   connect(mpGlobalQuantityDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-  CopasiUI3Window   *pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
-  mpGlobalQuantityDM->setUndoStack(pWindow->getUndoStack());
 }
 
 /*
@@ -123,7 +121,7 @@ void CQGlobalQuantitiesWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQGlobalQuantitiesWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
+bool CQGlobalQuantitiesWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {
@@ -138,7 +136,7 @@ bool CQGlobalQuantitiesWidget::update(ListViews::ObjectType objectType, ListView
   return true;
 }
 
-bool CQGlobalQuantitiesWidget::leave()
+bool CQGlobalQuantitiesWidget::leaveProtected()
 {
   return true;
 }
@@ -221,16 +219,13 @@ void CQGlobalQuantitiesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(mpDataModel != NULL);
-  CModel *pModel = mpDataModel->getModel();
+  CDataVector < CModelValue > * pVector = dynamic_cast< CDataVector < CModelValue > * >(mpObject);
 
-  if (pModel == NULL)
-    return;
-
-  std::string key = pModel->getModelValues()[index.row()].getKey();
-
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  if (pVector != NULL &&
+      index.row() < pVector->size())
+    {
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, pVector->operator [](index.row()).getCN());
+    }
 }
 
 void CQGlobalQuantitiesWidget::keyPressEvent(QKeyEvent *ev)

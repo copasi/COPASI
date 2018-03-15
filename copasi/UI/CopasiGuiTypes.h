@@ -7,12 +7,10 @@
 #define COPASI_GUI_TYPES_H
 
 #include <copasi/UI/AboutDialog.h>
-#include <copasi/UI/CBrowseModelVersionDialog.h>
 #include <copasi/UI/CColorScale.h>
 #include <copasi/UI/CCopasiPlotSelectionDialog.h>
 #include <copasi/UI/CCopasiSelectionDialog.h>
 #include <copasi/UI/CCopasiSelectionWidget.h>
-#include <copasi/UI/CCreateModelVersionDialog.h>
 #include <copasi/UI/CEntityProvenanceDialog.h>
 #include <copasi/UI/ChemEqValidator.h>
 #include <copasi/UI/CLNAResultSubwidget.h>
@@ -138,7 +136,6 @@
 #include <copasi/UI/CQTSSAResultWidget.h>
 #include <copasi/UI/CQTSSATimeScaleWidget.h>
 #include <copasi/UI/CQTSSAWidget.h>
-#include <copasi/UI/CQUndoHistoryDialog.h>
 #include <copasi/UI/CQUnitDetail.h>
 #include <copasi/UI/CQUnitDM.h>
 #include <copasi/UI/CQUnitsWidget.h>

@@ -1,4 +1,9 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,8 +26,6 @@ public:
   CQUnitsWidget(QWidget* parent = 0, const char* name = 0);
   ~CQUnitsWidget();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-  virtual bool leave();
   virtual void setFramework(int framework);
 
 private:
@@ -34,6 +37,8 @@ private:
 protected:
   virtual void keyPressEvent(QKeyEvent* ev);
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
 
 protected slots:
   virtual void slotBtnNewClicked();

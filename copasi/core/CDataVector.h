@@ -39,9 +39,8 @@ template < class CType > class CDataVector:
   protected std::vector< CType * >, public CDataContainer
 {
 public:
-  // typedef typename std::vector< CType * >::value_type value_type;
-  // typedef typename std::vector< CType * >::iterator iterator;
-  // typedef typename std::vector< CType * >::const_iterator const_iterator;
+  typedef CDataObjectMap::type_iterator< CType > name_iterator;
+  typedef CDataObjectMap::const_type_iterator< CType > const_name_iterator;
 
 public:
 #ifndef SWIG
@@ -206,6 +205,188 @@ public:
 
 #endif // SWIG
   // Operations
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const
+  {
+    CData Data;
+    std::vector< CData > Content;
+
+    const_iterator itContent = begin();
+    const_iterator endContent = end();
+
+    for (; itContent != endContent; ++itContent)
+      {
+        Content.push_back(itContent->toData());
+      }
+
+    if (!Content.empty())
+      {
+        Data.addProperty(CData::VECTOR_CONTENT, Content);
+      }
+
+    return Data;
+  }
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes)
+  {
+    bool success = true;
+    const std::vector< CData > & Content = data.getProperty(CData::VECTOR_CONTENT).toDataVector();
+    std::vector< CData >::const_iterator it = Content.begin();
+    std::vector< CData >::const_iterator end = Content.end();
+
+    for (; it != end; ++it)
+      {
+        size_t Index = it->getProperty(CData::OBJECT_INDEX).toSizeT();
+
+        if (Index < size())
+          {
+            success &= operator[](Index).applyData(*it, changes);
+          }
+        else
+          {
+            CType * pNew = dynamic_cast< CType * >(insert(*it));
+
+            if (pNew != NULL)
+              {
+                success &= pNew->applyData(*it, changes);
+              }
+            else
+              {
+                success = false;
+              }
+          }
+      }
+
+    return success;
+  }
+
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param CUndoData & undoData
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
+   */
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const
+  {
+    const std::vector< CData > & OldContent = oldData.getProperty(CData::VECTOR_CONTENT).toDataVector();
+    std::vector< CData >::const_iterator itOld = OldContent.begin();
+    std::vector< CData >::const_iterator endOld = OldContent.end();
+    const_iterator itNew = begin();
+    const_iterator endNew = end();
+
+    for (; itOld != endOld && itNew != endNew; ++itOld, ++itNew)
+      {
+        CUndoData UndoData;
+        itNew->createUndoData(UndoData, CUndoData::Type::CHANGE, *itOld, framework);
+
+        if (!UndoData.empty())
+          {
+            undoData.appendData(UndoData.getOldData(), UndoData.getNewData());
+          }
+      }
+
+    for (; itOld != endOld; ++itOld)
+      {
+        undoData.addPreProcessData(CUndoData(CUndoData::Type::REMOVE, *itOld));
+      }
+
+    for (; itNew != endNew; ++itNew)
+      {
+        undoData.addPostProcessData(CUndoData(CUndoData::Type::INSERT, itNew->toData()));
+      }
+  }
+
+  /**
+   * Create and insert an undo object based on the given data.
+   * This method needs to be re-implemented in container which support INSERT and REMOVE
+   * @param const CData & data
+   * @return CUndoObjectInterface * pUndoObject
+   */
+  virtual CUndoObjectInterface * insert(const CData & data)
+  {
+    CType * pNew = NULL;
+    size_t Index = 0;
+
+    if (data.isSetProperty(CData::OBJECT_POINTER))
+      {
+        // We have a reference and the object already exists;
+        pNew = dynamic_cast< CType * >(reinterpret_cast< CObjectInterface * >(const_cast< void * >(data.getProperty(CData::OBJECT_POINTER).toVoidPointer())));
+        Index = data.getProperty(CData::OBJECT_REFERENCE_INDEX).toSizeT();
+
+        if (pNew != NULL)
+          {
+            // Prevent multiple inserts of the same object
+            if (getIndex(pNew) ==  C_INVALID_INDEX)
+              {
+                std::vector< CType * >::insert(std::vector< CType * >::begin() + std::min(Index, std::vector< CType * >::size()), pNew);
+              }
+            else
+              {
+                updateIndex(Index, pNew);
+              }
+
+            CDataContainer::add(pNew, false);
+          }
+      }
+    else
+      {
+        pNew = CType::fromData(data, this);
+        Index = data.getProperty(CData::OBJECT_INDEX).toSizeT();
+
+        if (pNew != NULL &&
+            pNew->getObjectType() != data.getProperty(CData::OBJECT_TYPE).toString())
+          {
+            delete pNew;
+            pNew = NULL;
+          }
+
+        if (pNew != NULL)
+          {
+            std::vector< CType * >::insert(std::vector< CType * >::begin() + std::min(Index, std::vector< CType * >::size()), pNew);
+            CDataContainer::add(pNew, true);
+          }
+      }
+
+    return pNew;
+  }
+
+  /**
+   * Update the index of a contained object
+   * This method needs to be re-implemented in container which care about the order of contained objects
+   * @param const size_t & index
+   * @param const CUndoObjectInterface * pUndoObject
+   */
+  virtual void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject)
+  {
+    const CType * pObject = dynamic_cast< const CType * >(pUndoObject);
+
+    size_t Index = getIndex(pObject);
+
+    // We only update the index of container objects.
+    if (Index == C_INVALID_INDEX ||
+        Index == index)
+      {
+        return;
+      }
+
+    std::vector< CType * >::erase(std::vector< CType * >::begin() + Index);
+    std::vector< CType * >::insert(std::vector< CType * >::begin() + std::min(index, std::vector< CType * >::size()), const_cast< CType * >(pObject));
+  }
+
 protected:
   CDataVector(const CDataVector < CType > & src);
 
@@ -265,9 +446,7 @@ public:
   }
 
   /**
-   * Assignment operator. The effect of this operator is that both vectors will
-   * share the same objects. However, the parentship of the objects is not affected
-   * This means that the assigned vector must be used with some care.
+   * Assignment operator.
    * @param const CDataVector< CType > & rhs
    * @return CDataVector< CType > & lhs
    */
@@ -275,17 +454,19 @@ public:
   {
     cleanup();
 
-    typename std::vector< CType * >::const_iterator it = rhs.begin();
-    typename std::vector< CType * >::const_iterator end = rhs.end();
+    const_iterator it = rhs.begin();
+    const_iterator end = rhs.end();
 
     for (; it != end; ++it)
-      add(*it, false);
+      add(*it);
 
     return *this;
   }
 
   /**
-   * Assignment operator.
+   * Assignment operator. The effect of this operator is that both vectors will
+   * share the same objects. However, the parentship of the objects is not affected
+   * This means that the assigned vector must be used with some care.
    * @param const std::vector< CType * > & rhs
    * @return CDataVector< CType > & lhs
    */
@@ -300,6 +481,26 @@ public:
       add(*it, false);
 
     return *this;
+  }
+
+  bool operator != (const CDataVector< CType > & rhs)
+  {
+    if (size() != rhs.size())
+      {
+        return true;
+      }
+
+    const_iterator itRhs = rhs.begin();
+    const_iterator endRhs = rhs.end();
+    const_iterator it = begin();
+
+    for (; itRhs != endRhs; ++itRhs, ++it)
+      if (*it != *itRhs)
+        {
+          return true;
+        }
+
+    return false;
   }
 
   /**
@@ -339,6 +540,14 @@ public:
   iterator end()  {return iterator(std::vector< CType * >::end());}
 
   const_iterator end() const  {return const_iterator(std::vector< CType * >::end());}
+
+  name_iterator beginName() {return mObjects.begin();}
+
+  const_name_iterator beginName() const  {return mObjects.begin();}
+
+  name_iterator endName()  {return mObjects.end();}
+
+  const_name_iterator endName() const  {return mObjects.end();}
 
   /**
    *  Cleanup
@@ -524,11 +733,8 @@ public:
       {
         CDataObject * pObject = *(std::vector< CType * >::begin() + Index);
 
-        if (name.getObjectType() == pObject->getObjectType())
-          return pObject; //exact match of type and name
-
-        if (name.getObjectName() == "")
-          return pObject; //cn contains no "="; type cannot be checked
+        if (dynamic_cast< const CType *>(pObject) != NULL)
+          return pObject->getObject(name.getRemainder());
       }
 
     return CDataContainer::getObject(name);
@@ -625,53 +831,17 @@ public:
   virtual size_t getIndex(const CDataObject * pObject) const
   {
     size_t i, imax = size();
-    typename std::vector< CType * >::const_iterator Target = std::vector< CType * >::begin();
+    typename std::vector< CType * >::const_iterator itTarget = std::vector< CType * >::begin();
 
-    for (i = 0; i < imax; i++, Target++)
+    for (i = 0; i < imax; i++, itTarget++)
       {
-        const CDataObject * pTarget = static_cast< const CDataObject * >(*Target);
-
-        if (pTarget == pObject)
+        if (pObject == static_cast< const CDataObject * >(*itTarget))
           {
             return i;
           }
       }
 
-    return C_INVALID_INDEX;
-  }
-
-  virtual CDataObject * insert(const CData & data)
-  {
-    CType * pNew = NULL;
-    size_t Index = 0;
-
-    bool IsReference = data.isSetProperty(CData::OBJECT_POINTER);
-
-    if (IsReference)
-      {
-        pNew = dynamic_cast< CType * >(reinterpret_cast< CObjectInterface * >(const_cast< void * >(data.getProperty(CData::OBJECT_POINTER).toVoidPointer())));
-        Index = data.getProperty(CData::OBJECT_REFERENCE_INDEX).toUint();
-      }
-    else
-      {
-        pNew = CType::fromData(data);
-        Index = data.getProperty(CData::OBJECT_INDEX).toUint();
-
-        if (pNew != NULL &&
-            pNew->getObjectType() != data.getProperty(CData::OBJECT_TYPE).toString())
-          {
-            delete pNew;
-            pNew = NULL;
-          }
-      }
-
-    if (pNew != NULL)
-      {
-        std::vector< CType * >::insert(std::vector< CType * >::begin() + Index, pNew);
-        CDataContainer::add(pNew, !IsReference);
-      }
-
-    return pNew;
+    return CDataContainer::getIndex(pObject);
   }
 
   /**
@@ -764,13 +934,195 @@ public:
 
 template < class CType > class CDataVectorN: public CDataVector < CType >
 {
-public:
-  // typedef typename std::vector< CType * >::value_type value_type;
-  // typedef typename std::vector< CType * >::iterator iterator;
-  // typedef typename std::vector< CType * >::const_iterator const_iterator;
-
   // Operations
 public:
+  typedef CDataObjectMap::type_iterator< CType > name_iterator;
+  typedef CDataObjectMap::const_type_iterator< CType > const_name_iterator;
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const
+  {
+    CData Data;
+    std::vector< CData > Content;
+
+    const_name_iterator itContent = CDataVector< CType >::beginName();
+    const_name_iterator endContent = CDataVector< CType >::endName();
+
+    for (; itContent != endContent; ++itContent)
+      {
+        Content.push_back(itContent->toData());
+      }
+
+    Data.addProperty(CData::VECTOR_CONTENT, Content);
+
+    return Data;
+  }
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes)
+  {
+    bool success = true;
+    bool inserted = false;
+    const std::vector< CData > & Content = data.getProperty(CData::VECTOR_CONTENT).toDataVector();
+    std::vector< CData >::const_iterator it = Content.begin();
+    std::vector< CData >::const_iterator end = Content.end();
+
+    for (; it != end; ++it)
+      {
+        CType * pObject = const_cast< CType * >(dynamic_cast< const CType *>(getObject("[" + CCommonName::escape(it->getProperty(CData::OBJECT_NAME).toString()) + "]")));
+
+        if (pObject == NULL)
+          {
+            pObject = dynamic_cast< CType * >(CDataVector< CType >::insert(*it));
+            inserted &= (pObject != NULL);
+          }
+
+        if (pObject != NULL)
+          {
+            success &= pObject->applyData(*it, changes);
+          }
+        else
+          {
+            success = false;
+          }
+      }
+
+    // If we inserted into the vector it is possible that the order is no longer correct
+    if (inserted)
+      {
+        it = Content.begin();
+
+        for (; it != end; ++it)
+          {
+            size_t Index = getIndex(it->getProperty(CData::OBJECT_NAME).toString());
+
+            if (Index < CDataVector< CType >::size())
+              {
+                success &= operator[](Index).applyData(*it, changes);
+              }
+            else
+              {
+                success = false;
+              }
+          }
+      }
+
+    return success;
+  }
+
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param CUndoData & undoData
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
+   */
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const
+  {
+    const std::vector< CData > & OldContent = oldData.getProperty(CData::VECTOR_CONTENT).toDataVector();
+    std::vector< CData >::const_iterator itOld = OldContent.begin();
+    std::vector< CData >::const_iterator endOld = OldContent.end();
+    const_name_iterator itNew = CDataVector< CType >::beginName();
+    const_name_iterator endNew = CDataVector< CType >::endName();
+
+    std::map< size_t, CData > Deleted;
+    std::map< size_t, CData > Inserted;
+    std::map< size_t, CData > OldData;
+    std::map< size_t, CData > NewData;
+
+    while (itOld != endOld &&
+           itNew != endNew)
+      {
+        const std::string OldName = itOld->getProperty(CData::OBJECT_NAME).toString();
+        const std::string NewName = itNew->getObjectName();
+
+        if (OldName < NewName)
+          {
+            Deleted[itOld->getProperty(CData::OBJECT_INDEX).toSizeT()] = *itOld;
+            ++itOld;
+          }
+        else if (OldName < NewName)
+          {
+            Inserted[CDataVector< CType >::getIndex(*itNew)] = itNew->toData();
+            ++itNew;
+          }
+        else
+          {
+            CUndoData UndoData;
+            itNew->createUndoData(UndoData, CUndoData::Type::CHANGE, *itOld, framework);
+
+            if (!UndoData.empty())
+              {
+                OldData[itOld->getProperty(CData::OBJECT_INDEX).toSizeT()] = UndoData.getOldData();
+                NewData[CDataVector< CType >::getIndex(*itNew)] = UndoData.getNewData();
+              }
+
+            ++itOld;
+            ++itNew;
+          }
+      }
+
+    for (; itOld != endOld; ++itOld)
+      {
+        Deleted[itOld->getProperty(CData::OBJECT_INDEX).toSizeT()] = *itOld;
+      }
+
+    for (; itNew != endNew; ++itNew)
+      {
+        Inserted[CDataVector< CType >::getIndex(*itNew)] = itNew->toData();
+      }
+
+    std::map< size_t, CData >::iterator it = Deleted.begin();
+    std::map< size_t, CData >::iterator end = Deleted.end();
+
+    for (; it != end; ++it)
+      {
+        undoData.addPreProcessData(CUndoData(CUndoData::Type::REMOVE, it->second));
+      }
+
+    it = Inserted.begin();
+    end = Inserted.end();
+
+    for (; it != end; ++it)
+      {
+        undoData.addPostProcessData(CUndoData(CUndoData::Type::INSERT, it->second));
+      }
+
+    std::vector< CData > OldContentData;
+    it = OldData.begin();
+    end = OldData.end();
+
+    for (size_t Index = 0; it != end; ++it, ++Index)
+      {
+        it->second.addProperty(CData::OBJECT_INDEX, Index);
+        OldContentData.push_back(it->second);
+      }
+
+    std::vector< CData > NewContentData;
+    it = NewData.begin();
+    end = NewData.end();
+
+    for (size_t Index = 0; it != end; ++it, ++Index)
+      {
+        it->second.addProperty(CData::OBJECT_INDEX, Index);
+        NewContentData.push_back(it->second);
+      }
+
+    undoData.addProperty(CData::VECTOR_CONTENT, OldContentData, NewContentData);
+  }
+
   /**
    * Default constructor
    * @param const std::string & name (Default: "NoName")
@@ -969,7 +1321,7 @@ public:
         for (; Range.first != Range.second; ++Range.first)
           {
             if (dynamic_cast< CType * >(*Range.first) != NULL)
-              return *Range.first;
+              return (*Range.first)->getObject(name.getRemainder());
           }
       }
 

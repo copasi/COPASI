@@ -574,7 +574,7 @@ protected:
    * , otherwise it is a function call.
    */
   CEvaluationNode* createKineticExpression(CFunction* pFun,
-      const std::vector<std::vector<std::string> >& arguments);
+      const std::vector<std::vector<const CDataObject *> >& arguments);
 
   /**
    * Checks if the given datamodel contains events.
@@ -627,7 +627,7 @@ protected:
    * This method checks if the given event assignment object is SBML
    * compatible.
    */
-  static void isEventAssignmentSBMLCompatible(std::string& key,
+  static void isEventAssignmentSBMLCompatible(const CDataObject * pTarget,
       const CExpression* pExpression,
       const CDataModel& dataModel,
       unsigned int sbmlLevel,
@@ -719,7 +719,7 @@ protected:
    * mass action.
    */
   static CEvaluationNode* createMassActionExpression(
-    const std::vector<std::vector<std::string> >& arguments,
+    const std::vector<std::vector<const CDataObject *> >& arguments,
     bool isReversible);
 
   /**

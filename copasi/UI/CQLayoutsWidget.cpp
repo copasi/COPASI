@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,8 +68,8 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget *parent)
   mpPushButtonDelegate = new CQPushButtonDelegate(CQIconResource::icon(CQIconResource::unknown), QString(), CQPushButtonDelegate::PushButton, this);
   mpTblLayouts->setItemDelegateForColumn(COL_SHOW, mpPushButtonDelegate);
   // Connect the table widget
-  connect(mpLayoutsDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpLayoutsDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpLayoutsDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -84,7 +84,7 @@ CQLayoutsWidget::~CQLayoutsWidget()
 }
 
 // virtual
-bool CQLayoutsWidget::update(ListViews::ObjectType /* objectType */, ListViews::Action /* action */, const std::string & /* key */)
+bool CQLayoutsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (!mIgnoreUpdates)
     {
@@ -95,7 +95,7 @@ bool CQLayoutsWidget::update(ListViews::ObjectType /* objectType */, ListViews::
 }
 
 // virtual
-bool CQLayoutsWidget::leave()
+bool CQLayoutsWidget::leaveProtected()
 {
   return true;
 }

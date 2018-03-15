@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -5,7 +10,7 @@
 
 #ifndef CProvenanceDialog_H
 #define CProvenanceDialog_H
-#include <QUndoStack>
+
 #include <QDialog>
 #include <qtreewidget.h>
 #include <QStandardItemModel>
@@ -21,8 +26,7 @@ class CProvenanceDialog : public QDialog, public Ui::CProvenanceDialog
   Q_OBJECT
 
 public:
-  //explicit CProvenanceDialog(QWidget *parent = 0 ,  QUndoStack * UndoStack = NULL, QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> (),  QString ProvenanceParentOfCurrentModel = "", QString VersioningParentOfCurrentModel = "");
-  explicit CProvenanceDialog(QWidget *parent = 0 ,  QUndoStack * UndoStack = NULL, QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> ());
+  explicit CProvenanceDialog(QWidget *parent = 0, QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> ());
 
   /**
    *  Destroys the object and frees any allocated resources
@@ -37,11 +41,6 @@ private slots:
 private:
 
   Ui::CProvenanceDialog *ui;
-
-  /**
-  *  Pointer to Undo Stack
-  */
-  QUndoStack * mpUndoStack;
 
   /**
   *  Pointer to Provenance data table

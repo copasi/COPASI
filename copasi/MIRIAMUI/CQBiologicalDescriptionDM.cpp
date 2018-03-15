@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -15,14 +15,13 @@
 
 #include "CQBiologicalDescriptionDM.h"
 
-#include "UI/CQMessageBox.h"
-#include "UI/qtUtilities.h"
-
-#include "MIRIAM/CModelMIRIAMInfo.h"
+#include "copasi/UI/CQMessageBox.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/MIRIAM/CModelMIRIAMInfo.h"
 
 CQBiologicalDescriptionDM::CQBiologicalDescriptionDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
   : CQBaseDataModel(parent, NULL)
-
 {
   mpMIRIAMInfo = MIRIAMInfo;
 }
@@ -112,66 +111,97 @@ bool CQBiologicalDescriptionDM::setData(const QModelIndex &index, const QVariant
 {
   if (index.isValid() && role == Qt::EditRole)
     {
+      CUndoData::Type UndoType = CUndoData::Type::CHANGE;
+
       if (isDefaultRow(index))
         {
           if (index.data() != value)
-            insertRow(rowCount(), index);
+            {
+              insertRow(rowCount(), QModelIndex());
+              UndoType = CUndoData::Type::INSERT;
+            }
           else
             return false;
         }
 
+      CBiologicalDescription & BiologicalDescription = mpMIRIAMInfo->getBiologicalDescriptions()[index.row()];
+      CData OldData = BiologicalDescription.toData();
+
       switch (index.column())
         {
           case COL_RELATIONSHIP:
-            mpMIRIAMInfo->getBiologicalDescriptions()[index.row()].setPredicate(TO_UTF8(value.toString()));
+            BiologicalDescription.setPredicate(TO_UTF8(value.toString()));
             break;
 
           case COL_RESOURCE_BD:
-            mpMIRIAMInfo->getBiologicalDescriptions()[index.row()].setResource(TO_UTF8(value.toString()));
+            BiologicalDescription.setResource(TO_UTF8(value.toString()));
             break;
 
           case COL_ID_BD:
-            mpMIRIAMInfo->getBiologicalDescriptions()[index.row()].setId(TO_UTF8(value.toString()));
+            BiologicalDescription.setId(TO_UTF8(value.toString()));
             break;
         }
 
-      emit dataChanged(index, index);
-      emit notifyGUI(ListViews::MIRIAM, ListViews::CHANGE, "");
+      CUndoData UndoData;
+      BiologicalDescription.createUndoData(UndoData, UndoType, OldData);
+
+      if (!UndoData.empty())
+        {
+          emit signalNotifyChanges(mpDataModel->recordData(UndoData));
+        }
+
       return true;
     }
 
   return false;
 }
 
-bool CQBiologicalDescriptionDM::insertRows(int position, int rows, const QModelIndex&)
+bool CQBiologicalDescriptionDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
+  beginInsertRows(parent, position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
-      mpMIRIAMInfo->createBiologicalDescription();
+      CBiologicalDescription * pBiologicalDescription = mpMIRIAMInfo->createBiologicalDescription();
+
+      if (pBiologicalDescription == NULL)
+        continue;
     }
 
   endInsertRows();
-  emit notifyGUI(ListViews::MIRIAM, ListViews::ADD, "");
+
   return true;
 }
 
-bool CQBiologicalDescriptionDM::removeRows(int position, int rows)
+bool CQBiologicalDescriptionDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(QModelIndex(), position, position + rows - 1);
+  beginRemoveRows(parent, position, position + rows - 1);
 
-  for (int row = 0; row < rows; ++row)
+  std::vector< const CBiologicalDescription * > ToBeDeleted;
+  ToBeDeleted.resize(rows);
+
+  std::vector< const CBiologicalDescription * >::iterator it = ToBeDeleted.begin();
+  std::vector< const CBiologicalDescription * >::iterator end = ToBeDeleted.end();
+
+  CDataVector< CBiologicalDescription >::const_iterator itRow = mpMIRIAMInfo->getBiologicalDescriptions().begin() + position;
+
+  for (; it != end; ++it, ++itRow)
     {
-      mpMIRIAMInfo->removeBiologicalDescription(position);
+      *it = &*itRow;
+    }
+
+  for (it = ToBeDeleted.begin(); it != end; ++it)
+    {
+      CUndoData UndoData;
+      (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
+      emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
   endRemoveRows();
 
-  emit notifyGUI(ListViews::MIRIAM, ListViews::DELETE, "");
   return true;
 }
 

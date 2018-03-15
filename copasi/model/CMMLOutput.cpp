@@ -113,7 +113,7 @@ void CMMLOutput::writeRHS(std::ostream & out,
 
   //compartment volume?
   if (pReac->getScalingCompartment() != NULL &&
-      pReac->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
+      pReac->getEffectiveKineticLawUnitType() == CReaction::KineticLawUnit::ConcentrationPerTime)
     {
       std::string compName = pReac->getScalingCompartment()->getObjectName();
       out << SPC(l + 1) << "<msub><mi>V</mi><mi>" << CMathMl::fixName(compName)
@@ -158,13 +158,13 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
       //std::ostringstream number;
       switch (functionParams[i]->getUsage())
         {
-          case CFunctionParameter::SUBSTRATE:
-          case CFunctionParameter::PRODUCT:
-          case CFunctionParameter::MODIFIER:
+          case CFunctionParameter::Role::SUBSTRATE:
+          case CFunctionParameter::Role::PRODUCT:
+          case CFunctionParameter::Role::MODIFIER:
 
-            if (functionParams[i]->getType() == CFunctionParameter::FLOAT64)
+            if (functionParams[i]->getType() == CFunctionParameter::DataType::FLOAT64)
               {
-                CDataObject * pObject = CRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0]);
+                const CDataObject * pObject = pReac->getParameterObjects(i)[0];
 
                 if (pObject != NULL)
                   {
@@ -177,14 +177,14 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
 
                 params[i][0] = "<mi>[" + CMathMl::fixName(name) + "]</mi>";
               }
-            else if (functionParams[i]->getType() == CFunctionParameter::VFLOAT64)
+            else if (functionParams[i]->getType() == CFunctionParameter::DataType::VFLOAT64)
               {
-                jmax = pReac->getParameterMappings()[i].size();
+                jmax = pReac->getParameterObjects(i).size();
                 params[i].resize(jmax);
 
                 for (j = 0; j < jmax; ++j)
                   {
-                    name = CRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][j])->getObjectDisplayName();
+                    name = pReac->getParameterObjects(i)[j]->getObjectDisplayName();
                     //params[i][j] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
                     params[i][j] = "<mi>[" + CMathMl::fixName(name) + "]</mi>";
                   }
@@ -193,8 +193,8 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
 
             break;
 
-          case CFunctionParameter::PARAMETER:
-          case CFunctionParameter::VARIABLE:
+          case CFunctionParameter::Role::PARAMETER:
+          case CFunctionParameter::Role::VARIABLE:
 
             if (pReac->isLocalParameter(i))
               {
@@ -206,7 +206,7 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
                   }
                 else
                   {
-                    name = CRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
+                    name = pReac->getParameterObjects(i)[0]->getObjectName();
                     //params[i][0] = "<mi>" + CMathMl::fixName(name) + "</mi>";
                     params[i][0] = "<msub><mi>" + CMathMl::fixName(name) + "</mi><mi>("
                                    + CMathMl::fixName(pReac->getObjectName()) + ")</mi></msub>";
@@ -214,20 +214,20 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
               }
             else
               {
-                name = CRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
+                name = pReac->getParameterObjects(i)[0]->getObjectName();
                 params[i][0] = "<mi>" + CMathMl::fixName(name) + "</mi>";
                 //params[i][0] = "<mi>ggg</mi>";
               }
 
             break;
 
-          case CFunctionParameter::VOLUME:
-            name = CRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
+          case CFunctionParameter::Role::VOLUME:
+            name = pReac->getParameterObjects(i)[0]->getObjectName();
             params[i][0] = "<msub><mi>V</mi><mi>" + CMathMl::fixName(name)
                            + "</mi></msub>";
             break;
 
-          case CFunctionParameter::TIME:
+          case CFunctionParameter::Role::TIME:
             params[i][0] = "<mi>time</mi>";
             break;
 

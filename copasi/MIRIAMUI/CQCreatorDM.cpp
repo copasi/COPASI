@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,13 +18,13 @@
 
 #include "copasi.h"
 
-#include "UI/qtUtilities.h"
-
-#include "MIRIAM/CModelMIRIAMInfo.h"
+#include "copasi/UI/CQMessageBox.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/MIRIAM/CModelMIRIAMInfo.h"
 
 CQCreatorDM::CQCreatorDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
   : CQBaseDataModel(parent, NULL)
-
 {
   mpMIRIAMInfo = MIRIAMInfo;
 }
@@ -118,71 +118,101 @@ bool CQCreatorDM::setData(const QModelIndex &index, const QVariant &value,
 {
   if (index.isValid() && role == Qt::EditRole)
     {
+      CUndoData::Type UndoType = CUndoData::Type::CHANGE;
+
       if (isDefaultRow(index))
         {
           if (index.data() != value)
-            insertRow(rowCount(), index);
+            {
+              insertRow(rowCount(), QModelIndex());
+              UndoType = CUndoData::Type::INSERT;
+            }
           else
             return false;
         }
 
+      CCreator & Creator = mpMIRIAMInfo->getCreators()[index.row()];
+      CData OldData = Creator.toData();
+
       switch (index.column())
         {
           case COL_FAMILY_NAME:
-            mpMIRIAMInfo->getCreators()[index.row()].setFamilyName(TO_UTF8(value.toString()));
+            Creator.setFamilyName(TO_UTF8(value.toString()));
             break;
 
           case COL_GIVEN_NAME:
-            mpMIRIAMInfo->getCreators()[index.row()].setGivenName(TO_UTF8(value.toString()));
+            Creator.setGivenName(TO_UTF8(value.toString()));
             break;
 
           case COL_EMAIL:
-            mpMIRIAMInfo->getCreators()[index.row()].setEmail(TO_UTF8(value.toString()));
+            Creator.setEmail(TO_UTF8(value.toString()));
             break;
 
           case COL_ORG:
-            mpMIRIAMInfo->getCreators()[index.row()].setORG(TO_UTF8(value.toString()));
+            Creator.setORG(TO_UTF8(value.toString()));
             break;
         }
 
-      //emit dataChanged(index, index);
-      emit notifyGUI(ListViews::MIRIAM, ListViews::CHANGE, "");
+      CUndoData UndoData;
+      Creator.createUndoData(UndoData, UndoType, OldData);
+
+      if (!UndoData.empty())
+        {
+          emit signalNotifyChanges(mpDataModel->recordData(UndoData));
+        }
+
       return true;
     }
 
   return false;
 }
 
-bool CQCreatorDM::insertRows(int position, int rows, const QModelIndex&)
+bool CQCreatorDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
+  beginInsertRows(parent, position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
-      mpMIRIAMInfo->createCreator("");
+      CCreator * pCreator = mpMIRIAMInfo->createCreator("");
+
+      if (pCreator == NULL)
+        continue;
     }
 
   endInsertRows();
 
-  emit notifyGUI(ListViews::MIRIAM, ListViews::ADD, "");
   return true;
 }
 
-bool CQCreatorDM::removeRows(int position, int rows)
+bool CQCreatorDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(QModelIndex(), position, position + rows - 1);
+  beginRemoveRows(parent, position, position + rows - 1);
 
-  for (int row = 0; row < rows; ++row)
+  std::vector< const CCreator * > ToBeDeleted;
+  ToBeDeleted.resize(rows);
+
+  std::vector< const CCreator * >::iterator it = ToBeDeleted.begin();
+  std::vector< const CCreator * >::iterator end = ToBeDeleted.end();
+
+  CDataVector< CCreator >::const_iterator itRow = mpMIRIAMInfo->getCreators().begin() + position;
+
+  for (; it != end; ++it, ++itRow)
     {
-      mpMIRIAMInfo->removeCreator(position);
+      *it = &*itRow;
+    }
+
+  for (it = ToBeDeleted.begin(); it != end; ++it)
+    {
+      CUndoData UndoData;
+      (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
+      emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
   endRemoveRows();
 
-  emit notifyGUI(ListViews::MIRIAM, ListViews::DELETE, "");
   return true;
 }
 

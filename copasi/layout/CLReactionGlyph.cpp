@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -71,7 +71,6 @@ CLGlyphWithCurve::CLGlyphWithCurve(const GraphicalObject & sbml,
       CLCurve copy(*rG->getCurve());
       mCurve = copy;
     }
-
 }
 
 CLGlyphWithCurve & CLGlyphWithCurve::operator= (const CLGlyphWithCurve & rhs)
@@ -124,7 +123,7 @@ void CLGlyphWithCurve::print(std::ostream * ostream) const
 //***************************
 
 // static
-CLReferenceGlyph * CLReferenceGlyph::fromData(const CData & data)
+CLReferenceGlyph * CLReferenceGlyph::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CLReferenceGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                               NO_PARENT);
@@ -142,7 +141,7 @@ CData CLReferenceGlyph::toData() const
 }
 
 // virtual
-bool CLReferenceGlyph::applyData(const CData & data)
+bool CLReferenceGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 
@@ -195,7 +194,6 @@ CLReferenceGlyph::CLReferenceGlyph(const ReferenceGlyph & sbml,
   if (sbml.isSetRole())
     mRole = sbml.getRole();
 }
-
 
 CLReferenceGlyph & CLReferenceGlyph::operator= (const CLReferenceGlyph & rhs)
 {
@@ -330,7 +328,7 @@ const std::string CLMetabReferenceGlyph::XMLRole[] =
 };
 
 // static
-CLMetabReferenceGlyph * CLMetabReferenceGlyph::fromData(const CData & data)
+CLMetabReferenceGlyph * CLMetabReferenceGlyph::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CLMetabReferenceGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                                    NO_PARENT);
@@ -348,7 +346,7 @@ CData CLMetabReferenceGlyph::toData() const
 }
 
 // virtual
-bool CLMetabReferenceGlyph::applyData(const CData & data)
+bool CLMetabReferenceGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 
@@ -541,7 +539,7 @@ void CLMetabReferenceGlyph::print(std::ostream * ostream) const
 //*********** CLGeneralGlyph ****************************************
 
 // static
-CLGeneralGlyph * CLGeneralGlyph::fromData(const CData & data)
+CLGeneralGlyph * CLGeneralGlyph::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CLGeneralGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                             NO_PARENT);
@@ -559,7 +557,7 @@ CData CLGeneralGlyph::toData() const
 }
 
 // virtual
-bool CLGeneralGlyph::applyData(const CData & data)
+bool CLGeneralGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 
@@ -646,7 +644,6 @@ CLGeneralGlyph::CLGeneralGlyph(const GraphicalObject & sbml,
       else
         addSubglyph(new CLGeneralGlyph(*graphical, modelmap, layoutmap));
     }
-
 }
 
 CLGeneralGlyph & CLGeneralGlyph::operator= (const CLGeneralGlyph & rhs)
@@ -847,7 +844,6 @@ void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
       else
         tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
     }
-
 }
 
 std::ostream & operator<<(std::ostream &os, const CLGeneralGlyph & g)
@@ -884,7 +880,7 @@ void CLGeneralGlyph::print(std::ostream * ostream) const
 //*********** CLReactionGlyph ****************************************
 
 // static
-CLReactionGlyph * CLReactionGlyph::fromData(const CData & data)
+CLReactionGlyph * CLReactionGlyph::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CLReactionGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                              NO_PARENT);
@@ -902,7 +898,7 @@ CData CLReactionGlyph::toData() const
 }
 
 // virtual
-bool CLReactionGlyph::applyData(const CData & data)
+bool CLReactionGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

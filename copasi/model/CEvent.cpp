@@ -35,7 +35,7 @@
 #include "MIRIAM/CRDFUtilities.h"
 
 // static
-CEventAssignment * CEventAssignment::fromData(const CData & data)
+CEventAssignment * CEventAssignment::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CEventAssignment(data.getProperty(CData::OBJECT_NAME).toString(),
                               NO_PARENT);
@@ -44,35 +44,59 @@ CEventAssignment * CEventAssignment::fromData(const CData & data)
 // virtual
 CData CEventAssignment::toData() const
 {
-  CData Data;
+  CData Data(CDataContainer::toData());
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::EXPRESSION, getExpression());
 
   return Data;
 }
 
 // virtual
-bool CEventAssignment::applyData(const CData & data)
+bool CEventAssignment::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  if (data.isSetProperty(CData::EXPRESSION))
+    {
+      setExpression(data.getProperty(CData::EXPRESSION).toString());
+    }
 
   return success;
 }
 
+// virtual
+void CEventAssignment::createUndoData(CUndoData & undoData,
+                                      const CUndoData::Type & type,
+                                      const CData & oldData,
+                                      const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::EXPRESSION, oldData.getProperty(CData::EXPRESSION), getExpression());
+}
+
 // The default constructor is intentionally not implemented.
 // CEventAssignment::CEventAssignment() {}
-CEventAssignment::CEventAssignment(const std::string & targetKey,
+CEventAssignment::CEventAssignment(const std::string & targetCN,
                                    const CDataContainer * pParent) :
-  CDataContainer(targetKey, pParent, "EventAssignment"),
+  CDataContainer(targetCN, pParent, "EventAssignment"),
   mKey(CRootContainer::getKeyFactory()->add("EventAssignment", this)),
   mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
   mpTarget(NULL),
   mpExpression(NULL)
 {
+  CDataObject * pObject = CRootContainer::getKeyFactory()->get(targetCN);
+
+  if (pObject != NULL)
+    {
+      setObjectName(pObject->getCN());
+    }
+
   if (mpModel != NULL)
     {
       mpModel->setCompileFlag(true);
@@ -105,6 +129,21 @@ CEventAssignment::~CEventAssignment()
     }
 }
 
+bool CEventAssignment::operator != (const CEventAssignment & rhs) const
+{
+  if (getTargetCN() != rhs.getTargetCN())
+    {
+      return true;
+    }
+
+  if (getExpression() != rhs.getExpression())
+    {
+      return true;
+    }
+
+  return false;
+}
+
 bool CEventAssignment::setObjectParent(const CDataContainer * pParent)
 {
   if (pParent != getObjectParent() &&
@@ -133,8 +172,13 @@ CIssue CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer
 
   mpTarget = NULL;
 
-  CModelEntity * pEntity =
-    dynamic_cast< CModelEntity * >(CRootContainer::getKeyFactory()->get(getObjectName()));
+  const CModelEntity * pEntity = NULL;
+  CDataModel * pDataModel = getObjectDataModel();
+
+  if (pDataModel != NULL)
+    {
+      pEntity = dynamic_cast< const CModelEntity * >(CObjectInterface::DataObject(pDataModel->getObject(getObjectName())));
+    }
 
   // The entity type must not be an ASSIGNMENT
   if (pEntity != NULL &&
@@ -183,18 +227,18 @@ const CDataObject * CEventAssignment::getTargetObject() const
   return mpTarget;
 }
 
-bool CEventAssignment::setTargetKey(const std::string & targetKey)
+bool CEventAssignment::setTargetCN(const std::string & targetCN)
 {
-  if (targetKey != getTargetKey() &&
+  if (targetCN != getObjectName() &&
       mpModel != NULL)
     {
       mpModel->setCompileFlag(true);
     }
 
-  return setObjectName(targetKey);
+  return setObjectName(targetCN);
 }
 
-const std::string & CEventAssignment::getTargetKey() const
+const std::string & CEventAssignment::getTargetCN() const
 {
   return getObjectName();
 }
@@ -272,7 +316,7 @@ CExpression* CEventAssignment::getExpressionPtr()
 
 //****************************************************************
 // static
-CEvent * CEvent::fromData(const CData & data)
+CEvent * CEvent::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CEvent(data.getProperty(CData::OBJECT_NAME).toString(),
                     NO_PARENT);
@@ -281,23 +325,105 @@ CEvent * CEvent::fromData(const CData & data)
 // virtual
 CData CEvent::toData() const
 {
-  CData Data;
+  CData Data(CDataContainer::toData());
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::DELAY_ASSIGNMENT, mDelayAssignment);
+  Data.addProperty(CData::FIRE_AT_INITIALTIME, mFireAtInitialTime);
+  Data.addProperty(CData::PERSISTENT_TRIGGER, mPersistentTrigger);
+  Data.addProperty(CData::TRIGGER_EXPRESSION, getTriggerExpression());
+  Data.addProperty(CData::DELAY_EXPRESSION, getDelayExpression());
+  Data.addProperty(CData::PRIORITY_EXPRESSION, getPriorityExpression());
+  Data.addProperty(CData::ASSIGNMENTS, mAssignments.toData().getProperty(CData::VECTOR_CONTENT));
+
+  Data.appendData(CAnnotation::toData());
 
   return Data;
 }
 
 // virtual
-bool CEvent::applyData(const CData & data)
+bool CEvent::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = true;
+  bool success = CDataContainer::applyData(data, changes);
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  if (data.isSetProperty(CData::DELAY_ASSIGNMENT))
+    {
+      mDelayAssignment = data.getProperty(CData::DELAY_ASSIGNMENT).toBool();
+    }
+
+  if (data.isSetProperty(CData::FIRE_AT_INITIALTIME))
+    {
+      mFireAtInitialTime = data.getProperty(CData::EXPRESSION).toBool();
+    }
+
+  if (data.isSetProperty(CData::PERSISTENT_TRIGGER))
+    {
+      mPersistentTrigger = data.getProperty(CData::PERSISTENT_TRIGGER).toBool();
+    }
+
+  if (data.isSetProperty(CData::TRIGGER_EXPRESSION))
+    {
+      success &= setTriggerExpression(data.getProperty(CData::TRIGGER_EXPRESSION).toString());
+    }
+
+  if (data.isSetProperty(CData::DELAY_EXPRESSION))
+    {
+      success &= setDelayExpression(data.getProperty(CData::DELAY_EXPRESSION).toString());
+    }
+
+  if (data.isSetProperty(CData::PRIORITY_EXPRESSION))
+    {
+      success &= setPriorityExpression(data.getProperty(CData::PRIORITY_EXPRESSION).toString());
+    }
+
+  if (data.isSetProperty(CData::ASSIGNMENTS))
+    {
+      CData Data;
+      Data.addProperty(CData::VECTOR_CONTENT, data.getProperty(CData::ASSIGNMENTS));
+      success &= mAssignments.applyData(Data, changes);
+    }
+
+  success &= CAnnotation::applyData(data, changes);
 
   return success;
+}
+
+// virtual
+void CEvent::createUndoData(CUndoData & undoData,
+                            const CUndoData::Type & type,
+                            const CData & oldData,
+                            const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::DELAY_ASSIGNMENT, oldData.getProperty(CData::DELAY_ASSIGNMENT), mDelayAssignment);
+  undoData.addProperty(CData::FIRE_AT_INITIALTIME, oldData.getProperty(CData::FIRE_AT_INITIALTIME), mFireAtInitialTime);
+  undoData.addProperty(CData::PERSISTENT_TRIGGER, oldData.getProperty(CData::PERSISTENT_TRIGGER), mPersistentTrigger);
+  undoData.addProperty(CData::TRIGGER_EXPRESSION, oldData.getProperty(CData::TRIGGER_EXPRESSION), getTriggerExpression());
+  undoData.addProperty(CData::DELAY_EXPRESSION, oldData.getProperty(CData::DELAY_EXPRESSION), getDelayExpression());
+  undoData.addProperty(CData::PRIORITY_EXPRESSION, oldData.getProperty(CData::PRIORITY_EXPRESSION), getPriorityExpression());
+
+  CData VectorContent;
+  VectorContent.addProperty(CData::VECTOR_CONTENT, oldData.getProperty(CData::ASSIGNMENTS));
+
+  CUndoData Assignments;
+  mAssignments.createUndoData(Assignments, CUndoData::Type::CHANGE, VectorContent, framework);
+
+  undoData.addPreProcessData(Assignments.getPreProcessData());
+  undoData.addPostProcessData(Assignments.getPostProcessData());
+
+  if (Assignments.isChangedProperty(CData::VECTOR_CONTENT))
+    {
+      undoData.addProperty(CData::ASSIGNMENTS, Assignments.getOldData().getProperty(CData::VECTOR_CONTENT), Assignments.getNewData().getProperty(CData::VECTOR_CONTENT));
+    }
+
+  CAnnotation::createUndoData(undoData, type, oldData, framework);
+
+  return;
 }
 
 CEvent::CEvent(const std::string & name,

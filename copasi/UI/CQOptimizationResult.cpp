@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -66,9 +66,7 @@ CQOptimizationResult::~CQOptimizationResult()
 void CQOptimizationResult::init()
 {}
 
-bool CQOptimizationResult::update(ListViews::ObjectType objectType,
-                                  ListViews::Action action,
-                                  const std::string & /* key */)
+bool CQOptimizationResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
 
   if (objectType == ListViews::MODEL && action == ListViews::DELETE)
@@ -77,7 +75,7 @@ bool CQOptimizationResult::update(ListViews::ObjectType objectType,
   return true;
 }
 
-bool CQOptimizationResult::leave()
+bool CQOptimizationResult::leaveProtected()
 {
   // :TODO:
   return true;
@@ -136,7 +134,6 @@ bool CQOptimizationResult::enterProtected()
   return true;
 }
 
-
 void CQOptimizationResult::loadTab(int index)
 {
   if (index != mpTabWidget->indexOf(mpLogPage))
@@ -183,7 +180,6 @@ void CQOptimizationResult::loadLog(const COptMethod * pMethod)
           QTreeWidgetItem* statusDetailItem = new QTreeWidgetItem(item, QStringList() << FROM_UTF8(it->getStatusDetails()));
         }
     }
-
 }
 
 void CQOptimizationResult::slotSave(void)
@@ -221,11 +217,10 @@ void CQOptimizationResult::slotSave(void)
   file << FunctionEvaluations / ExecutionTime << std::endl << std::endl;
 
   // Set up the parameters table
-  file << "Parameters:" << std::endl;  
-  file << TO_UTF8(toTsvString(mpParameters->model(), true, false)) 
+  file << "Parameters:" << std::endl;
+  file << TO_UTF8(toTsvString(mpParameters->model(), true, false))
        << std::endl;
-  
-  
+
   // log
   const COptMethod * pMethod = dynamic_cast<const COptMethod *>(mpTask->getMethod());
 
@@ -250,5 +245,5 @@ void CQOptimizationResult::slotUpdateModel()
   const_cast< COptProblem * >(mpProblem)->restore(true);
 
   // We need to notify the GUI to update all values
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getKey());
+  protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
 }

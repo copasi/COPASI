@@ -137,7 +137,7 @@ bool ScanWidget::loadTask()
   loadCommon();
 
   CScanTask* scanTask =
-    dynamic_cast< CScanTask * >(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CScanTask * >(mpObject);
 
   if (!scanTask) return false;
 
@@ -166,7 +166,7 @@ bool ScanWidget::loadTask()
 
       switch (type)
         {
-            //+++
+          //+++
           case CScanProblem::SCAN_LINEAR:
             tmp1 = new CScanWidgetScan(scrollview);
             tmp1->load(scanProblem->getScanItem(i));
@@ -306,7 +306,7 @@ bool ScanWidget::saveTask()
   saveCommon();
 
   CScanTask* scanTask =
-    dynamic_cast< CScanTask * >(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CScanTask * >(mpObject);
 
   if (!scanTask) return false;
 

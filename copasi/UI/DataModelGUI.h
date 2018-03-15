@@ -38,6 +38,10 @@ class COutputDefinitionVector;
 class COutputHandlerPlot;
 class CDataModel;
 
+#include "copasi/core/CCore.h"
+#include "copasi/core/CCommonName.h"
+#include "copasi/undo/CUndoStack.h"
+
 class DataModelGUI: public QObject
 {
   Q_OBJECT
@@ -131,7 +135,8 @@ public:
   //bool updateMathModel();
   //bool scheduleMathModelUpdate(const bool & update = true);
 
-  bool notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+  bool notify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn = std::string());
+  void notifyChanges(const CUndoData::ChangeSet & changes);
 
   void registerListView(ListViews * pListView);
   void deregisterListView(ListViews * pListView);
@@ -147,7 +152,7 @@ private:
 
 signals:
   void updateCompleteView();
-  void notifyView(ListViews::ObjectType objectType, ListViews::Action action, std::string key = "");
+  void notifyView(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   void finished(bool success);
 
 private:

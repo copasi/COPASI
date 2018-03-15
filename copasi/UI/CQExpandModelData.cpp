@@ -30,7 +30,7 @@ CQExpandModelData::CQExpandModelData(QWidget* parent, CModel* pModel)
   : QDialog(parent)
 {
   setupUi(this);
-  
+
   mpModel = pModel;
 
   mpLineEditSizeX->setValidator(new QIntValidator(1, 10000, this));
@@ -115,7 +115,7 @@ void CQExpandModelData::slotCompartmentActivated(QTreeWidgetItem* pItem, int col
 void CQExpandModelData::slotOK()
 {
   CModelExpansion::SetOfModelElements modelelements;
-  std::set<std::string> metabkeys;
+  std::set< const CDataObject * > Species;
 
   std::map<QTreeWidgetItem*, const CCompartment*>::const_iterator it;
 
@@ -137,7 +137,7 @@ void CQExpandModelData::slotOK()
                   //const CMetab* pMetab = NULL;
 
                   if (itMetab != mItemMetabMap.end())
-                    metabkeys.insert(itMetab->second->getKey());
+                    Species.insert(itMetab->second);
                 }
             }
         }
@@ -151,9 +151,9 @@ void CQExpandModelData::slotOK()
   multy = mpLineEditSizeY->text().toInt();
 
   if (mpRadioButtonLin->isChecked())
-    me.createLinearArray(modelelements, multx, metabkeys);
+    me.createLinearArray(modelelements, multx, Species);
   else if (mpRadioButtonRec->isChecked())
-    me.createRectangularArray(modelelements, multx, multy, metabkeys);
+    me.createRectangularArray(modelelements, multx, multy, Species);
 
   accept();
 

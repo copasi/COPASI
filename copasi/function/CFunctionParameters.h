@@ -43,13 +43,17 @@ private:
    *  @supplierCardinality 0..*
    *  @associates <{CFunctionParameter}>
    */
-  /** @dia:route 0,3; h,15.1888,24.6765,8.71728,7.21973,10.7176 */
-  CDataVectorNS < CFunctionParameter > mParameters;
+  CDataVectorNS< CFunctionParameter > mParameters;
 
 protected:
   CFunctionParameters(const CFunctionParameters & src);
 
 public:
+  typedef CDataVector< CFunctionParameter >::iterator iterator;
+  typedef CDataVector< CFunctionParameter >::const_iterator const_iterator;
+  typedef CDataVectorN< CFunctionParameter >::name_iterator name_iterator;
+  typedef CDataVectorN< CFunctionParameter >::const_name_iterator const_name_iterator;
+
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
@@ -124,6 +128,15 @@ public:
    */
   CFunctionParameter * operator[](const std::string &name);
   const CFunctionParameter * operator[](const std::string &name) const;
+
+  iterator begin();
+  iterator end();
+  const_iterator begin() const;
+  const_iterator end() const;
+  name_iterator begin_name();
+  name_iterator end_name();
+  const_name_iterator begin_name() const;
+  const_name_iterator end_name() const;
 
   /**
    * number of parameters

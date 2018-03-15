@@ -1,21 +1,21 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /*!
  \file CEvent.h
@@ -43,7 +43,7 @@ public:
    * @param const CData & data
    * @return CEventAssignment * pDataObject
    */
-  static CEventAssignment * fromData(const CData & data);
+  static CEventAssignment * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -56,14 +56,28 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
+
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param CUndoData & undoData
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
+   */
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
 
   /**
    * Default constructor
-   * @param const std::string & targetKey (default: "")
+   * @param const std::string & targetCN (default: "")
    * @param "const CDataContainer * pParent (default: NULL)
    */
-  CEventAssignment(const std::string & targetKey = "",
+  CEventAssignment(const std::string & targetCN = "",
                    const CDataContainer * pParent = NO_PARENT);
 
   /**
@@ -78,6 +92,13 @@ public:
    * Destructor
    */
   ~CEventAssignment();
+
+  /**
+   * Comparison operator
+   * @param const CEventAssignment & rhs
+   * @return bool notEqual
+   */
+  bool operator != (const CEventAssignment & rhs) const;
 
   /**
    * Set the object parent
@@ -100,17 +121,17 @@ public:
   const std::string & getKey() const;
 
   /**
-   * Set the key of the target
-   * @param const std::string & targetKey
+   * Set the CN of the target
+   * @param const std::string & targetCN
    * @return bool success;
    */
-  bool setTargetKey(const std::string & targetKey);
+  bool setTargetCN(const std::string & targetCN);
 
   /**
-   * Retrieve the target key
-   * @return const std::string & targetKey
+   * Retrieve the target CN
+   * @return const std::string & targetCN
    */
-  const std::string & getTargetKey() const;
+  const std::string & getTargetCN() const;
 
   /**
    * Retrieve a pointer to the target object.
@@ -190,7 +211,7 @@ public:
    * @param const CData & data
    * @return CEvent * pDataObject
    */
-  static CEvent * fromData(const CData & data);
+  static CEvent * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -203,7 +224,21 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
+
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param CUndoData & undoData
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
+   */
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
 
   /**
    * Default constructor

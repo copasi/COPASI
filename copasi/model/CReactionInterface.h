@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -30,6 +30,8 @@
 
 //class CFunction;
 class CModel;
+class CReaction;
+class CUndoData;
 
 /**
  * This class provides an interface for dealing with reactions.
@@ -49,14 +51,9 @@ class CModel;
 class CReactionInterface
 {
 private:
-  CModel * mpModel;
+  const CReaction * mpReaction;
 
-  std::string emptyString;
-
-  /**
-   * This is the key that identifies the Reaction that is beeing edited
-   */
-  std::string mReactionReferenceKey;
+  mutable const CModel * mpModel;
 
   /**
    * A copy of the chemical equation of the reaction
@@ -70,14 +67,17 @@ private:
   mutable CFunction mMassAction;
 
   /**
-   * A copy of the function parameters
+   * A pointer of the function parameters
    */
-  CFunctionParameters * mpParameters;
+  const CFunctionParameters * mpFunctionParameters;
+
+  CCopasiParameterGroup mLocalParameters;
 
   /**
    * what metabolite for what function parameter
    */
-  std::vector< std::vector< std::string > > mNameMap;
+  std::map< std::string, std::vector< std::string > > mNameMap;
+  std::vector< std::vector< std::string > * > mIndexMap;
 
   /**
    * values of the kinetic parameters
@@ -96,11 +96,8 @@ private:
 
   std::string mScalingCompartment;
 
-private:
-  CReactionInterface();
-
 public:
-  CReactionInterface(CModel * pModel);
+  CReactionInterface();
 
   ~CReactionInterface();
 
@@ -163,12 +160,12 @@ public:
   /**
    * @return the function name
    */
-  const std::string & getFunctionName() const;
+  std::string getFunctionName() const;
 
   /**
   * @return the function description
   */
-  const std::string & getFunctionDescription() const;
+  std::string getFunctionDescription() const;
 
   /**
    * @return the function
@@ -286,30 +283,22 @@ public:
 
   //const std::string & getCompartment(size_t index) const;
 
-  /**
-   * Initializes this object from the reaction with given key
-   * @param key the key of the reaction to initialize from
-   */
-  void initFromReaction(const std::string & key);
-
-  /**
-   * Initializes this object from the reaction with given index
-   * @param index the index of the reaction to initialize from
-   */
-  void initFromReaction(const C_INT32 index);
-
-  /**
-   * Initializes this object from the given reaction
-   * @param rea the reaction to initialize from
-   */
-  void initFromReaction(const CReaction* rea);
+  void init(const CReaction & reaction);
 
   /**
    * writes the information back to a CReaction.
    * createMetabolites() and createOtherObjects() should be called before.
    * @param bool compile (default: true)
    */
-  bool writeBackToReaction(CReaction * rea, bool compile = true);
+  bool writeBackToReaction(CReaction * rea = NULL, bool compile = true);
+
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param const CCore::Framework & framework
+   * @return CUndoData undoData
+   */
+  CUndoData createUndoData(const CCore::Framework & framework) const;
 
   /**
    * create all metabolites that are needed by the reaction but do
@@ -499,11 +488,6 @@ private:
   void updateModifiersInChemEq();
 
   /**
-   * resets the function settings
-   */
-  void clearFunction();
-
-  /**
    * checks if newFunction is an valid function for the reaction.
    * If it is not or if newFunction="" another function is chosen.
    */
@@ -517,10 +501,9 @@ private:
 
   /**
    * Loads mapping and values from the specified reaction
-   * @param rea the reaction
    * @return true if successful, false otherwise
    */
-  bool loadMappingAndValues(const CReaction & rea);
+  bool loadMappingAndValues();
 };
 
 #endif

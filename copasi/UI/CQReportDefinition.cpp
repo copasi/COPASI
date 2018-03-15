@@ -42,7 +42,6 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
 {
   setupUi(this);
 
-  mKey = "";
   mpReportDefinition = NULL;
 
   // We start with the table since this is simpler.
@@ -427,7 +426,7 @@ void CQReportDefinition::btnDeleteReportClicked()
           }
 
         size_t Index = pReportList->getIndex(mpObject);
-        std::string DeletedKey = mpObject->getKey();
+        std::string DeletedObjectCN = mObjectCN;
 
         pReportList->remove(Index);
 
@@ -436,9 +435,9 @@ void CQReportDefinition::btnDeleteReportClicked()
         if (Size > 0)
           enter((*pReportList)[std::min(Index, Size - 1)].getKey());
         else
-          enter("");
+          enter(std::string());
 
-        protectedNotify(ListViews::REPORT, ListViews::DELETE, DeletedKey);
+        protectedNotify(ListViews::REPORT, ListViews::DELETE, DeletedObjectCN);
         break;
       }
 
@@ -464,10 +463,10 @@ void CQReportDefinition::btnNewReportClicked()
       Name += TO_UTF8(QString::number(i));
     }
 
-  std::string key = pRep->getKey();
-  protectedNotify(ListViews::REPORT, ListViews::ADD, key);
-  enter(key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  CCommonName CN = pRep->getCN();
+  protectedNotify(ListViews::REPORT, ListViews::ADD, CN);
+  enter(CN);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, CN);
 }
 
 void CQReportDefinition::btnCopyReportClicked()
@@ -478,7 +477,7 @@ void CQReportDefinition::btnCopyReportClicked()
 
   if (pDataModel == NULL) return;
 
-  CReportDefinition * pRep = new CReportDefinition(*dynamic_cast<CReportDefinition*>(CRootContainer::getKeyFactory()->get(mKey)), NO_PARENT);
+  CReportDefinition * pRep = new CReportDefinition(*dynamic_cast<CReportDefinition*>(mpObject), NO_PARENT);
 
   std::string baseName = pRep->getObjectName() + "_copy";
   std::string name = baseName;
@@ -495,10 +494,10 @@ void CQReportDefinition::btnCopyReportClicked()
 
   pDataModel->getReportDefinitionList()->add(pRep, true);
 
-  std::string key = pRep->getKey();
-  protectedNotify(ListViews::REPORT, ListViews::ADD, key);
-  enter(key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  CCommonName CN = pRep->getCN();
+  protectedNotify(ListViews::REPORT, ListViews::ADD, CN);
+  enter(CN);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, CN);
 }
 
 void CQReportDefinition::btnRevertClicked()
@@ -698,9 +697,7 @@ void CQReportDefinition::setDirty()
   mChanged = true;
 }
 
-bool CQReportDefinition::update(ListViews::ObjectType objectType,
-                                ListViews::Action action,
-                                const std::string & key)
+bool CQReportDefinition::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   // If the model is deleted or a new model is loaded the existing pointer
   // becomes invalid.
@@ -714,14 +711,14 @@ bool CQReportDefinition::update(ListViews::ObjectType objectType,
 
   if (mIgnoreUpdates ||
       objectType != ListViews::REPORT ||
-      key != mKey ||
+      cn != mObjectCN ||
       action == ListViews::DELETE)
     return true;
 
   return load();
 }
 
-bool CQReportDefinition::leave()
+bool CQReportDefinition::leaveProtected()
 {
   //mpBtnCommit->setFocus();
 
@@ -738,13 +735,13 @@ bool CQReportDefinition::enterProtected()
 
   if (!mpReportDefinition)
     {
-      mpListView->switchToOtherWidget(43, "");
+      mpListView->switchToOtherWidget(43, std::string());
       return false;
     }
 
   load();
 
-  mpNotes->enter(mKey);
+  mpNotes->enter(mObjectCN);
 
   return true;
 }
@@ -839,7 +836,7 @@ bool CQReportDefinition::save()
           mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
         }
       else
-        protectedNotify(ListViews::REPORT, ListViews::RENAME, mKey);
+        protectedNotify(ListViews::REPORT, ListViews::RENAME, mObjectCN);
     }
 
   mpReportDefinition->setTaskType((CTaskEnum::Task) mpTaskBox->currentIndex());

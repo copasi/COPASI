@@ -89,12 +89,12 @@ void CHybridMethod::initializeParameter()
 {
   CCopasiParameter *pParm;
 
-  assertParameter("Max Internal Steps", CCopasiParameter::INT, (C_INT32) MAX_STEPS);
-  assertParameter("Lower Limit", CCopasiParameter::DOUBLE, (C_FLOAT64) LOWER_STOCH_LIMIT);
-  assertParameter("Upper Limit", CCopasiParameter::DOUBLE, (C_FLOAT64) UPPER_STOCH_LIMIT);
-  assertParameter("Partitioning Interval", CCopasiParameter::UINT, (unsigned C_INT32) PARTITIONING_INTERVAL);
-  assertParameter("Use Random Seed", CCopasiParameter::BOOL, (bool) USE_RANDOM_SEED);
-  assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) RANDOM_SEED);
+  assertParameter("Max Internal Steps", CCopasiParameter::Type::INT, (C_INT32) MAX_STEPS);
+  assertParameter("Lower Limit", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) LOWER_STOCH_LIMIT);
+  assertParameter("Upper Limit", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) UPPER_STOCH_LIMIT);
+  assertParameter("Partitioning Interval", CCopasiParameter::Type::UINT, (unsigned C_INT32) PARTITIONING_INTERVAL);
+  assertParameter("Use Random Seed", CCopasiParameter::Type::BOOL, (bool) USE_RANDOM_SEED);
+  assertParameter("Random Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) RANDOM_SEED);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("HYBRID.MaxSteps")) != NULL)

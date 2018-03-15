@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,7 +21,7 @@
 class CQSortFilterProxyModel : public QSortFilterProxyModel
 {
 public:
-  CQSortFilterProxyModel();
+  CQSortFilterProxyModel(QObject *parent = 0);
   ~CQSortFilterProxyModel();
   virtual bool lessThan(const QModelIndex& left, const QModelIndex& right) const;
 };

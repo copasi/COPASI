@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,12 +16,13 @@
 #include <QtCore/QDateTime>
 
 #include "CQModifiedDM.h"
-#include "UI/CQMessageBox.h"
 
 #include "copasi.h"
 
-#include "UI/qtUtilities.h"
-#include "MIRIAM/CModelMIRIAMInfo.h"
+#include "copasi/UI/CQMessageBox.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/MIRIAM/CModelMIRIAMInfo.h"
 
 CQModifiedDM::CQModifiedDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
   : CQBaseDataModel(parent, NULL)
@@ -111,60 +112,89 @@ bool CQModifiedDM::setData(const QModelIndex &index, const QVariant &value,
 {
   if (index.isValid() && role == Qt::EditRole)
     {
+      CUndoData::Type UndoType = CUndoData::Type::CHANGE;
+
       if (isDefaultRow(index))
         {
           if (index.data() != value)
-            insertRow(rowCount(), index);
+            {
+              insertRow(rowCount(), QModelIndex());
+              UndoType = CUndoData::Type::INSERT;
+            }
           else
             return false;
         }
 
+      CModification & Modification = mpMIRIAMInfo->getModifications()[index.row()];
+      CData OldData = Modification.toData();
+
       switch (index.column())
         {
           case COL_DATE_MODIFIED:
-            mpMIRIAMInfo->getModifications()[index.row()].setDate(TO_UTF8(value.toDateTime().toString(Qt::ISODate)));
+            Modification.setDate(TO_UTF8(value.toDateTime().toString(Qt::ISODate)));
             break;
         }
 
-      emit dataChanged(index, index);
-      emit notifyGUI(ListViews::MIRIAM, ListViews::CHANGE, "");
+      CUndoData UndoData;
+      Modification.createUndoData(UndoData, UndoType, OldData);
+
+      if (!UndoData.empty())
+        {
+          emit signalNotifyChanges(mpDataModel->recordData(UndoData));
+        }
+
       return true;
     }
 
   return false;
 }
 
-bool CQModifiedDM::insertRows(int position, int rows, const QModelIndex&)
+bool CQModifiedDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
+  beginInsertRows(parent, position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
-      //mpMIRIAMInfo->createModification(TO_UTF8(QDateTime::currentDateTime().toString(Qt::ISODate)));
-      mpMIRIAMInfo->createModification("");
+      CModification * pModification = mpMIRIAMInfo->createModification("");
+
+      if (pModification == NULL)
+        continue;
     }
 
   endInsertRows();
 
-  emit notifyGUI(ListViews::MIRIAM, ListViews::ADD, "");
   return true;
 }
 
-bool CQModifiedDM::removeRows(int position, int rows)
+bool CQModifiedDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(QModelIndex(), position, position + rows - 1);
+  beginRemoveRows(parent, position, position + rows - 1);
 
-  for (int row = 0; row < rows; ++row)
+  std::vector< const CModification * > ToBeDeleted;
+  ToBeDeleted.resize(rows);
+
+  std::vector< const CModification * >::iterator it = ToBeDeleted.begin();
+  std::vector< const CModification * >::iterator end = ToBeDeleted.end();
+
+  CDataVector< CModification >::const_iterator itRow = mpMIRIAMInfo->getModifications().begin() + position;
+
+  for (; it != end; ++it, ++itRow)
     {
-      mpMIRIAMInfo->removeModification(position);
+      *it = &*itRow;
+    }
+
+  for (it = ToBeDeleted.begin(); it != end; ++it)
+    {
+      CUndoData UndoData;
+      (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
+      emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
   endRemoveRows();
 
-  emit notifyGUI(ListViews::MIRIAM, ListViews::DELETE, "");
   return true;
 }
 

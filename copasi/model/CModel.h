@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,12 +53,17 @@ public:
   /**
    * Enum of valid model types.
    */
-  enum ModelType {deterministic = 0, stochastic};
+  enum struct ModelType
+  {
+    deterministic,
+    stochastic,
+    __SIZE
+  };
 
   /**
    * String representation of the valid model types.
    */
-  static const char * ModelTypeNames[];
+  static const CEnumAnnotation< std::string, ModelType > ModelTypeNames;
 
   enum DependencyType {initial = 0, transient, physical};
 
@@ -84,7 +89,7 @@ public:
    * @param const CData & data
    * @return CModel * pDataObject
    */
-  static CModel * fromData(const CData & data);
+  static CModel * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -97,8 +102,21 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param CUndoData & undoData
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
+   */
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
   /**
    *  constructor
    */
@@ -805,6 +823,7 @@ public:
    * @param CDataObject::DataObjectSet & dependentModelValues
    * @param CDataObject::DataObjectSet & dependentEvents
    * @param CDataObject::DataObjectSet & dependentEventAssignments
+   * @param const bool & onlyStructural (default: false)
    * @return bool objectsAppended
    */
   bool appendDirectDependents(const CDataContainer & container,
@@ -813,7 +832,8 @@ public:
                               DataObjectSet & dependentCompartments,
                               DataObjectSet & dependentModelValues,
                               DataObjectSet & dependentEvents,
-                              DataObjectSet & dependentEventAssignments) const;
+                              DataObjectSet & dependentEventAssignments,
+                              const bool & onlyStructural = false) const;
 
   /**
    * Appends pointers to compartments, species, model values, reactions, events, and event assignments
@@ -826,6 +846,7 @@ public:
    * @param CDataObject::DataObjectSet & dependentModelValues
    * @param CDataObject::DataObjectSet & dependentEvents
    * @param CDataObject::DataObjectSet & dependentEventAssignments
+   * @param const bool & onlyStructural (default: false)
    * @return bool objectsAppended
    */
   bool appendDirectDependents(const ObjectSet & objects,
@@ -834,7 +855,8 @@ public:
                               DataObjectSet & dependentCompartments,
                               DataObjectSet & dependentModelValues,
                               DataObjectSet & dependentEvents,
-                              DataObjectSet & dependentEventAssignments) const;
+                              DataObjectSet & dependentEventAssignments,
+                              const bool & onlyStructural = false) const;
 
   /**
    * Appends pointers to compartments, species, model values, reactions, events, and event assignments
@@ -847,6 +869,7 @@ public:
    * @param CDataObject::DataObjectSet & dependentModelValues
    * @param CDataObject::DataObjectSet & dependentEvents
    * @param CDataObject::DataObjectSet & dependentEventAssignments
+   * @param const bool & onlyStructural (default: false)
    * @return bool objectsAppended
    */
   bool appendAllDependents(const CDataContainer & container,
@@ -855,7 +878,8 @@ public:
                            DataObjectSet & dependentCompartments,
                            DataObjectSet & dependentModelValues,
                            DataObjectSet & dependentEvents,
-                           DataObjectSet & dependentEventAssignments) const;
+                           DataObjectSet & dependentEventAssignments,
+                           const bool & onlyStructural = false) const;
 
   /**
    * Appends pointers to compartments, species, model values, reactions, events, and event assignments
@@ -868,6 +892,7 @@ public:
    * @param CDataObject::DataObjectSet & dependentModelValues
    * @param CDataObject::DataObjectSet & dependentEvents
    * @param CDataObject::DataObjectSet & dependentEventAssignments
+   * @param const bool & onlyStructural (default: false)
    * @return bool objectsAppended
    */
   bool appendAllDependents(const ObjectSet & objects,
@@ -876,14 +901,17 @@ public:
                            DataObjectSet & dependentCompartments,
                            DataObjectSet & dependentModelValues,
                            DataObjectSet & dependentEvents,
-                           DataObjectSet & dependentEventAssignments) const;
+                           DataObjectSet & dependentEventAssignments,
+                           const bool & onlyStructural = false) const;
 
 public:
   /**
    * Remove all model objects which depend on the deleted objects
    * @param const CDataObject::ObjectSet & deletedObjects
+   * @param const bool & onlyStructural (default: false)
    */
-  void removeDependentModelObjects(const ObjectSet & deletedObjects);
+  void removeDependentModelObjects(const ObjectSet & deletedObjects,
+                                   const bool & onlyStructural = false);
 
   /**
    * Add a compartment to the model

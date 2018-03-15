@@ -19,8 +19,6 @@
 #include "listviews.h"
 #include "CQBaseDataModel.h"
 
-class UndoSpeciesData;
-class UndoReactionData;
 class CMetab;
 template < class CType > class CDataVector;
 
@@ -61,45 +59,23 @@ public:
   bool setData(const QModelIndex &index, const QVariant &value,
                int role = Qt::EditRole);
   const QStringList& getTypes();
-  void setFlagConc(bool flag);
-  const std::vector< unsigned C_INT32 >& getItemToType();
-  bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
-  //TODO Undo
-  bool specieDataChange(
-    UndoSpeciesData *pUndoSpeciesData,
-    const QVariant &value,
-    int column);
-
-  QList <UndoSpeciesData *> insertNewSpecieRow(int position, int rows, const QModelIndex& index, const QVariant& value);
-
-  void addSpecieRow(UndoSpeciesData *pSpecieData);
-
-  void deleteSpecieRow(UndoSpeciesData *pSpecieData);
-
-  bool removeSpecieRows(QModelIndexList rows, const QModelIndex&);
-
-  bool insertSpecieRows(QList <UndoSpeciesData *>& pReaData);
-
-  void deleteSpecieRows(QList <UndoSpeciesData *>& pReaData);
-
-  bool removeAllSpecieRows();
-
+  bool removeRows(QModelIndexList rows, const QModelIndex & parent = QModelIndex());
   bool clear();
 
-  QModelIndex getIndexFor(const CMetab* pMetab, int column) const;
+private:
+  void insertNewRows(int position, int rows,
+                     int column = COL_NAME_SPECIES,
+                     const QVariant & value = "species");
 
 public slots:
   virtual void resetCache();
 
 protected:
-  bool mFlagConc;
-  QStringList mTypes;
+  virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+  virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 
-  /**
-   * A vector mapping the item index to a model value type
-   */
-  std::vector< unsigned C_INT32 > mItemToType;
+  QStringList mTypes;
 
   /**
    * A pointer to a vector of all metabolites in this model
@@ -108,9 +84,6 @@ protected:
   CDataVector< CMetab > * mpMetabolites;
 
   bool mNotify;
-
-  virtual bool insertRows(int position, int rows, const QModelIndex & source);
-  virtual bool removeRows(int position, int rows);
 
   QStringList mUnits;
 };
