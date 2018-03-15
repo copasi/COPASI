@@ -378,7 +378,7 @@ bool CUndoData::apply(const CDataModel & dataModel, ChangeSet & changes, const b
 {
   bool success = true;
 
-  std::cout << *this << std::endl;
+  // std::cout << *this << std::endl;
 
   switch (mType)
     {

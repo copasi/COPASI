@@ -502,7 +502,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           if ((name.find("max") != std::string::npos  || name.find("min") != std::string::npos) && filter(classes, pObject)) \
             //if ((name.find("Statistics") != std::string::npos) == 1 && filter(classes, pObject))
             {
-              std::cout << name << std::endl;
+              // std::cout << name << std::endl;
               pItem = new QTreeWidgetItem(this->mpResultAnalyticsSubtree, QStringList(FROM_UTF8(name)));
               treeItems[pItem] = pObject;
             }

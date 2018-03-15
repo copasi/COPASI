@@ -139,7 +139,7 @@ void CCopasiParameterGroup::createUndoData(CUndoData & undoData,
       return;
     }
 
-  std::cout << undoData << std::endl;
+  // std::cout << undoData << std::endl;
 
   // We need to remove all old parameter, modify existing parameters, and finally insert new.
   const std::vector< CData > & OldValueData = oldData.getProperty(CData::PARAMETER_VALUE).toDataVector();
