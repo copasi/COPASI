@@ -193,11 +193,7 @@ void CQCompartment::copy()
 
   if (success)
     {
-      cModelExpObj.duplicate(compartmentObjectsToCopy, "_copy", origToCopyMappings);
-
-      protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, std::string());//Refresh all
-      protectedNotify(ListViews::METABOLITE, ListViews::DELETE, std::string()); //Refresh all
-      protectedNotify(ListViews::REACTION, ListViews::DELETE, std::string());   //Refresh all
+      slotNotifyChanges(mpDataModel->recordData(cModelExpObj.duplicate(compartmentObjectsToCopy, "_copy", origToCopyMappings)));
 
       const CDataObject * pObject = origToCopyMappings.getDuplicateFromObject(mpObject);
 

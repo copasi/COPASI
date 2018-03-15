@@ -257,6 +257,7 @@ void ReactionsWidget1::copy()
   CDataVector< CChemEqElement >::const_iterator MetabIt;
 
   const CDataVector< CChemEqElement > & substratesToCopy = reac->getChemEq().getSubstrates();
+  CUndoData UndoData;
 
   for (MetabIt = substratesToCopy.begin(); MetabIt != substratesToCopy.end(); MetabIt++)
     {
@@ -278,7 +279,8 @@ void ReactionsWidget1::copy()
             }
 
           sourceObjects.addMetab(MetabIt->getMetabolite());
-          cModelExpObj.duplicateMetab(MetabIt->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
+
+          cModelExpObj.duplicateMetab(MetabIt->getMetabolite(), "_copy", sourceObjects, origToCopyMapping, UndoData);
         }
     }
 
@@ -302,7 +304,7 @@ void ReactionsWidget1::copy()
             }
 
           sourceObjects.addMetab(MetabIt->getMetabolite());
-          cModelExpObj.duplicateMetab(MetabIt->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
+          cModelExpObj.duplicateMetab(MetabIt->getMetabolite(), "_copy", sourceObjects, origToCopyMapping, UndoData);
         }
     }
 
@@ -326,16 +328,14 @@ void ReactionsWidget1::copy()
             }
 
           sourceObjects.addMetab(MetabIt->getMetabolite());
-          cModelExpObj.duplicateMetab(MetabIt->getMetabolite(), "_copy", sourceObjects, origToCopyMapping);
+          cModelExpObj.duplicateMetab(MetabIt->getMetabolite(), "_copy", sourceObjects, origToCopyMapping, UndoData);
         }
     }
 
   sourceObjects.addReaction(reac);
-  cModelExpObj.duplicateReaction(reac, "_copy", sourceObjects, origToCopyMapping);
+  cModelExpObj.duplicateReaction(reac, "_copy", sourceObjects, origToCopyMapping, UndoData);
 
-  protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, std::string());//Refresh all
-  protectedNotify(ListViews::METABOLITE, ListViews::DELETE, std::string()); //Refresh all
-  protectedNotify(ListViews::REACTION, ListViews::DELETE, std::string());   //Refresh all
+  slotNotifyChanges(mpDataModel->recordData(UndoData));
 
   const CDataObject * pObject = origToCopyMapping.getDuplicateFromObject(mpObject);
 

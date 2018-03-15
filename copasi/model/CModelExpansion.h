@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,6 +35,7 @@ class CExpression;
 class CEvent;
 class CDataObject;
 class CCommonName;
+class CUndoData;
 
 class CModelExpansion
 {
@@ -136,20 +137,44 @@ public:
    * creates one duplicate of the set of elements specified by source.
    * the string index is added to the object names
    */
-  bool duplicate(const SetOfModelElements & source, const std::string & index, ElementsMap & emap);
+  CUndoData duplicate(const SetOfModelElements & source, const std::string & index, ElementsMap & emap);
 
-  void duplicateCompartment(const CCompartment* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap);
-  void duplicateMetab(const CMetab* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap);
-  void duplicateReaction(const CReaction* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap);
-  void duplicateGlobalQuantity(const CModelValue* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap);
-  void duplicateEvent(CEvent* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap);
+  void duplicateCompartment(const CCompartment* source,
+                            const std::string & index,
+                            const SetOfModelElements & sourceSet,
+                            ElementsMap & emap,
+                            CUndoData & undoData);
+  void duplicateMetab(const CMetab* source,
+                      const std::string & index,
+                      const SetOfModelElements & sourceSet,
+                      ElementsMap & emap,
+                      CUndoData & undoData);
+  void duplicateReaction(const CReaction* source,
+                         const std::string & index,
+                         const SetOfModelElements & sourceSet,
+                         ElementsMap & emap,
+                         CUndoData & undoData);
+  void duplicateGlobalQuantity(const CModelValue* source,
+                               const std::string & index,
+                               const SetOfModelElements & sourceSet,
+                               ElementsMap & emap,
+                               CUndoData & undoData);
+  void duplicateEvent(CEvent* source,
+                      const std::string & index,
+                      const SetOfModelElements & sourceSet,
+                      ElementsMap & emap,
+                      CUndoData & undoData);
 
   /**
    * steps through an expression and replaces references to objects with references to their duplicate.
    * (In case an object that should be duplicated according to sourceSet is not yet duplicated
    *  according to emap, the duplication is performed also)
    */
-  void updateExpression(CExpression* exp, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap);
+  void updateExpression(CExpression* exp,
+                        const std::string & index,
+                        const SetOfModelElements & sourceSet,
+                        ElementsMap & emap,
+                        CUndoData & undoData);
 
   /**
    * Check if a given expression contains any of the objects in the sourceSet

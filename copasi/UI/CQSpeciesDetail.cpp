@@ -477,10 +477,10 @@ void CQSpeciesDetail::copy()
         }
 
       sourceObjects.addMetab(mpMetab);
-      cModelExpObj.duplicateMetab(mpMetab, "_copy", sourceObjects, origToCopyMapping);
-      protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, std::string());//Refresh all
-      protectedNotify(ListViews::METABOLITE, ListViews::DELETE, std::string()); //Refresh all
-      protectedNotify(ListViews::REACTION, ListViews::DELETE, std::string());   //Refresh all
+
+      CUndoData UndoData;
+      cModelExpObj.duplicateMetab(mpMetab, "_copy", sourceObjects, origToCopyMapping, UndoData);
+      slotNotifyChanges(mpDataModel->recordData(UndoData));
 
       const CDataObject * pObject = origToCopyMapping.getDuplicateFromObject(mpObject);
 

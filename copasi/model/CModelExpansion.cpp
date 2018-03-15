@@ -22,6 +22,7 @@
 #include "copasi/core/CDataObject.h"
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
+#include "copasi/undo/CUndoData.h"
 
 void CModelExpansion::SetOfModelElements::addCompartment(const CCompartment* x)
 {
@@ -503,49 +504,55 @@ std::set< const CDataObject * > CModelExpansion::copyCompleteModel(const CModel*
   return ret;
 }
 
-bool CModelExpansion::duplicate(const SetOfModelElements & source, const std::string & index, ElementsMap & emap)
+CUndoData CModelExpansion::duplicate(const SetOfModelElements & source, const std::string & index, ElementsMap & emap)
 {
+  CUndoData UndoData;
+
   std::set<const CCompartment*>::const_iterator itComp;
 
   for (itComp = source.mCompartments.begin(); itComp != source.mCompartments.end(); ++itComp)
     {
-      duplicateCompartment(*itComp, index, source, emap);
+      duplicateCompartment(*itComp, index, source, emap, UndoData);
     }
 
   std::set<const CMetab*>::const_iterator itMetab;
 
   for (itMetab = source.mMetabs.begin(); itMetab != source.mMetabs.end(); ++itMetab)
     {
-      duplicateMetab(*itMetab, index, source, emap);
+      duplicateMetab(*itMetab, index, source, emap, UndoData);
     }
 
   std::set<const CReaction*>::const_iterator itReac;
 
   for (itReac = source.mReactions.begin(); itReac != source.mReactions.end(); ++itReac)
     {
-      duplicateReaction(*itReac, index, source, emap);
+      duplicateReaction(*itReac, index, source, emap, UndoData);
     }
 
   std::set<const CModelValue*>::const_iterator itME;
 
   for (itME = source.mGlobalQuantities.begin(); itME != source.mGlobalQuantities.end(); ++itME)
     {
-      duplicateGlobalQuantity(*itME, index, source, emap);
+      duplicateGlobalQuantity(*itME, index, source, emap, UndoData);
     }
 
   std::set<const CEvent*>::const_iterator itEvent;
 
   for (itEvent = source.mEvents.begin(); itEvent != source.mEvents.end(); ++itEvent)
     {
-      duplicateEvent(const_cast<CEvent*>(*itEvent), index, source, emap);
+      duplicateEvent(const_cast<CEvent*>(*itEvent), index, source, emap, UndoData);
       //the event can be changed. Potentially it is not duplicated in its entirety but only some event assignments are duplicated.
     }
 
   // compilation failed on Win32, need return value for boolean
-  return false;
+  return UndoData;
 }
 
-void CModelExpansion::duplicateCompartment(const CCompartment* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
+void CModelExpansion::duplicateCompartment(const CCompartment* source,
+    const std::string & index,
+    const SetOfModelElements & sourceSet,
+    ElementsMap & emap,
+    CUndoData & undoData)
 {
   //if the source object has already been duplicated: do nothing
   if (emap.exists(source))
@@ -575,22 +582,35 @@ void CModelExpansion::duplicateCompartment(const CCompartment* source, const std
 
   //expression (for assignment or ODE)
   newObj->setExpression(source->getExpression());
-  updateExpression(newObj->getExpressionPtr(), index, sourceSet, emap);
+  updateExpression(newObj->getExpressionPtr(), index, sourceSet, emap, undoData);
 
   //initial expression
   newObj->setInitialExpression(source->getInitialExpression());
-  updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap);
+  updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap, undoData);
 
   //noise expression
   newObj->setHasNoise(source->hasNoise());
   newObj->setNoiseExpression(source->getNoiseExpression());
-  updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap);
+  updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap, undoData);
 
   newObj->setNotes(source->getNotes());
   newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
+
+  if (undoData.empty())
+    {
+      undoData = CUndoData(CUndoData::Type::INSERT, newObj);
+    }
+  else
+    {
+      undoData.addPostProcessData(CUndoData(CUndoData::Type::INSERT, newObj));
+    }
 }
 
-void CModelExpansion::duplicateMetab(const CMetab* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
+void CModelExpansion::duplicateMetab(const CMetab* source,
+                                     const std::string & index,
+                                     const SetOfModelElements & sourceSet,
+                                     ElementsMap & emap,
+                                     CUndoData & undoData)
 {
   //if the source object has already been duplicated: do nothing
   if (emap.exists(source))
@@ -614,7 +634,7 @@ void CModelExpansion::duplicateMetab(const CMetab* source, const std::string & i
       //create copy if it does not exist
       if (!emap.exists(sourceParent))
         {
-          duplicateCompartment(sourceParent, index, sourceSet, emap);
+          duplicateCompartment(sourceParent, index, sourceSet, emap, undoData);
         }
 
       parent = dynamic_cast< const CCompartment * >(emap.getDuplicateFromObject(sourceParent));
@@ -643,22 +663,35 @@ void CModelExpansion::duplicateMetab(const CMetab* source, const std::string & i
 
   //expression (for assignment or ODE)
   newObj->setExpression(source->getExpression());
-  updateExpression(newObj->getExpressionPtr(), index, sourceSet, emap);
+  updateExpression(newObj->getExpressionPtr(), index, sourceSet, emap, undoData);
 
   //initial expression
   newObj->setInitialExpression(source->getInitialExpression());
-  updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap);
+  updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap, undoData);
 
   //noise expression
   newObj->setHasNoise(source->hasNoise());
   newObj->setNoiseExpression(source->getNoiseExpression());
-  updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap);
+  updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap, undoData);
 
   newObj->setNotes(source->getNotes());
   newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
+
+  if (undoData.empty())
+    {
+      undoData = CUndoData(CUndoData::Type::INSERT, newObj);
+    }
+  else
+    {
+      undoData.addPostProcessData(CUndoData(CUndoData::Type::INSERT, newObj));
+    }
 }
 
-void CModelExpansion::duplicateReaction(const CReaction* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
+void CModelExpansion::duplicateReaction(const CReaction* source,
+                                        const std::string & index,
+                                        const SetOfModelElements & sourceSet,
+                                        ElementsMap & emap,
+                                        CUndoData & undoData)
 {
   //if the source object has already been duplicated: do nothing
   if (emap.exists(source))
@@ -691,7 +724,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
       if (sourceSet.contains(sourceElement->getMetabolite()))
         {
           if (!emap.exists(sourceElement->getMetabolite()))
-            duplicateMetab(sourceElement->getMetabolite(), index, sourceSet, emap);
+            duplicateMetab(sourceElement->getMetabolite(), index, sourceSet, emap, undoData);
 
           pMetab = dynamic_cast<const CMetab*>(emap.getDuplicateFromObject(sourceElement->getMetabolite()));
         }
@@ -712,7 +745,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
       if (sourceSet.contains(sourceElement->getMetabolite()))
         {
           if (!emap.exists(sourceElement->getMetabolite()))
-            duplicateMetab(sourceElement->getMetabolite(), index, sourceSet, emap);
+            duplicateMetab(sourceElement->getMetabolite(), index, sourceSet, emap, undoData);
 
           pMetab = dynamic_cast<const CMetab*>(emap.getDuplicateFromObject(sourceElement->getMetabolite()));
         }
@@ -733,7 +766,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
       if (sourceSet.contains(sourceElement->getMetabolite()))
         {
           if (!emap.exists(sourceElement->getMetabolite()))
-            duplicateMetab(sourceElement->getMetabolite(), index, sourceSet, emap);
+            duplicateMetab(sourceElement->getMetabolite(), index, sourceSet, emap, undoData);
 
           pMetab = dynamic_cast<const CMetab*>(emap.getDuplicateFromObject(sourceElement->getMetabolite()));
         }
@@ -793,7 +826,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
                 if (!emap.exists(source->getParameterObjects(i)[0]))
                   {
                     const CCompartment* pSource = dynamic_cast<const CCompartment*>(source->getParameterObjects(i)[0]);
-                    duplicateCompartment(pSource, index, sourceSet, emap);
+                    duplicateCompartment(pSource, index, sourceSet, emap, undoData);
                   }
 
                 Objects.push_back(emap.getDuplicateFromObject(source->getParameterObjects(i)[0]));
@@ -824,7 +857,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
                     if (!emap.exists(source->getParameterObjects(i)[0]))
                       {
                         const CModelValue* pSource = dynamic_cast<const CModelValue*>(source->getParameterObjects(i)[0]);
-                        duplicateGlobalQuantity(pSource, index, sourceSet, emap);
+                        duplicateGlobalQuantity(pSource, index, sourceSet, emap, undoData);
                       }
 
                     Objects.push_back(emap.getDuplicateFromObject(source->getParameterObjects(i)[0]));
@@ -847,7 +880,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
   //noise expression
   newObj->setHasNoise(source->hasNoise());
   newObj->setNoiseExpression(source->getNoiseExpression());
-  updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap);
+  updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap, undoData);
 
   newObj->setFast(source->isFast());
 
@@ -859,7 +892,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
       //create copy if it doesn't exist yet
       if (!emap.exists(source->getScalingCompartment()))
         {
-          duplicateCompartment(source->getScalingCompartment(), index, sourceSet, emap);
+          duplicateCompartment(source->getScalingCompartment(), index, sourceSet, emap, undoData);
         }
 
       //use copy
@@ -872,9 +905,22 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
 
   newObj->setNotes(source->getNotes());
   newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
+
+  if (undoData.empty())
+    {
+      undoData = CUndoData(CUndoData::Type::INSERT, newObj);
+    }
+  else
+    {
+      undoData.addPostProcessData(CUndoData(CUndoData::Type::INSERT, newObj));
+    }
 }
 
-void CModelExpansion::duplicateGlobalQuantity(const CModelValue* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
+void CModelExpansion::duplicateGlobalQuantity(const CModelValue* source,
+    const std::string & index,
+    const SetOfModelElements & sourceSet,
+    ElementsMap & emap,
+    CUndoData & undoData)
 {
   //if the source object has already been duplicated: do nothing
   if (emap.exists(source))
@@ -901,28 +947,42 @@ void CModelExpansion::duplicateGlobalQuantity(const CModelValue* source, const s
 
   //expression (for assignment or ODE)
   newObj->setExpression(source->getExpression());
-  updateExpression(newObj->getExpressionPtr(), index, sourceSet, emap);
+  updateExpression(newObj->getExpressionPtr(), index, sourceSet, emap, undoData);
 
   //initial expression
   newObj->setInitialExpression(source->getInitialExpression());
-  updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap);
+  updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap, undoData);
 
   //noise expression
   newObj->setHasNoise(source->hasNoise());
   newObj->setNoiseExpression(source->getNoiseExpression());
-  updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap);
+  updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap, undoData);
 
   newObj->setNotes(source->getNotes());
   newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
+
+  if (undoData.empty())
+    {
+      undoData = CUndoData(CUndoData::Type::INSERT, newObj);
+    }
+  else
+    {
+      undoData.addPostProcessData(CUndoData(CUndoData::Type::INSERT, newObj));
+    }
 }
 
-void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
+void CModelExpansion::duplicateEvent(CEvent* source,
+                                     const std::string & index,
+                                     const SetOfModelElements & sourceSet,
+                                     ElementsMap & emap,
+                                     CUndoData & undoData)
 {
   //if the source object has already been duplicated: do nothing
   if (emap.exists(source))
     return;
 
   CEvent* newObj = NULL;
+  CData OldData;
 
   if (expressionContainsObject(source->getTriggerExpressionPtr(), sourceSet)
       || expressionContainsObject(source->getDelayExpressionPtr(), sourceSet)
@@ -949,12 +1009,12 @@ void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, 
       //now do the trigger
       newObj->setTriggerExpression(source->getTriggerExpression());
       newObj->getTriggerExpressionPtr()->compile(); //I don't know why this is necessary
-      updateExpression(newObj->getTriggerExpressionPtr(), index, sourceSet, emap);
+      updateExpression(newObj->getTriggerExpressionPtr(), index, sourceSet, emap, undoData);
 
       //delay
       newObj->setDelayExpression(source->getDelayExpression());
       newObj->getDelayExpressionPtr()->compile(); //I don't know why this is necessary
-      updateExpression(newObj->getDelayExpressionPtr(), index, sourceSet, emap);
+      updateExpression(newObj->getDelayExpressionPtr(), index, sourceSet, emap, undoData);
 
       newObj->setDelayAssignment(source->getDelayAssignment());
       newObj->setFireAtInitialTime(source->getFireAtInitialTime());
@@ -962,10 +1022,11 @@ void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, 
 
       //priority
       newObj->setPriorityExpression(source->getPriorityExpression());
-      updateExpression(newObj->getPriorityExpressionPtr(), index, sourceSet, emap);
+      updateExpression(newObj->getPriorityExpressionPtr(), index, sourceSet, emap, undoData);
     }
   else
     {
+      OldData = source->toData();
       newObj = source; //no copying necessary
 
       //add duplicated object to the map
@@ -999,15 +1060,48 @@ void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, 
           //now copy the expression
           pNewAssignment->setExpression(pSourceAssignment->getExpression());
           pNewAssignment->getExpressionPtr()->compile();
-          updateExpression(pNewAssignment->getExpressionPtr(), index, sourceSet, emap);
+          updateExpression(pNewAssignment->getExpressionPtr(), index, sourceSet, emap, undoData);
         }
     }
 
   newObj->setNotes(source->getNotes());
   newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
+
+  if (newObj != source)
+    {
+      if (undoData.empty())
+        {
+          undoData = CUndoData(CUndoData::Type::INSERT, newObj);
+        }
+      else
+        {
+          undoData.addPostProcessData(CUndoData(CUndoData::Type::INSERT, newObj));
+        }
+    }
+  else
+    {
+      CUndoData Change;
+      source->createUndoData(Change, CUndoData::Type::CHANGE, OldData);
+
+      if (!Change.empty())
+        {
+          if (undoData.empty())
+            {
+              undoData = Change;
+            }
+          else
+            {
+              undoData.addPostProcessData(Change);
+            }
+        }
+    }
 }
 
-void CModelExpansion::updateExpression(CExpression* exp, const std::string & index, const SetOfModelElements & sourceSet, ElementsMap & emap)
+void CModelExpansion::updateExpression(CExpression* exp,
+                                       const std::string & index,
+                                       const SetOfModelElements & sourceSet,
+                                       ElementsMap & emap,
+                                       CUndoData & undoData)
 {
   if (!exp)
     return;
@@ -1059,16 +1153,16 @@ void CModelExpansion::updateExpression(CExpression* exp, const std::string & ind
               // std::cout << "!!!" << std::endl;
 
               if (dynamic_cast<const CCompartment*>(pObj))
-                duplicateCompartment(dynamic_cast<const CCompartment*>(pObj), index, sourceSet, emap);
+                duplicateCompartment(dynamic_cast<const CCompartment*>(pObj), index, sourceSet, emap, undoData);
 
               if (dynamic_cast<const CMetab*>(pObj))
-                duplicateMetab(dynamic_cast<const CMetab*>(pObj), index, sourceSet, emap);
+                duplicateMetab(dynamic_cast<const CMetab*>(pObj), index, sourceSet, emap, undoData);
 
               if (dynamic_cast<const CModelValue*>(pObj))
-                duplicateGlobalQuantity(dynamic_cast<const CModelValue*>(pObj), index, sourceSet, emap);
+                duplicateGlobalQuantity(dynamic_cast<const CModelValue*>(pObj), index, sourceSet, emap, undoData);
 
               if (dynamic_cast<const CReaction*>(pObj))
-                duplicateReaction(dynamic_cast<const CReaction*>(pObj), index, sourceSet, emap);
+                duplicateReaction(dynamic_cast<const CReaction*>(pObj), index, sourceSet, emap, undoData);
             }
 
           //find the duplicate
