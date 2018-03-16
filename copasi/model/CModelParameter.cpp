@@ -69,9 +69,9 @@ CModelParameter * CModelParameter::fromData(const CData & data, CUndoObjectInter
 {
   CModelParameter * pModelParameter = NULL;
 
-  Type Type = TypeNames.toEnum(data.getProperty(CData::PARAMETER_TYPE).toString(), Type::unknown);
+  Type type = TypeNames.toEnum(data.getProperty(CData::PARAMETER_TYPE).toString(), Type::unknown);
 
-  switch (Type)
+  switch (type)
     {
       case Type::Compartment:
         pModelParameter = new CModelParameterCompartment(NULL);
@@ -82,17 +82,17 @@ CModelParameter * CModelParameter::fromData(const CData & data, CUndoObjectInter
         break;
 
       case Type::ReactionParameter:
-        pModelParameter = new CModelParameterReactionParameter(NULL, Type);
+        pModelParameter = new CModelParameterReactionParameter(NULL, type);
         break;
 
       case Type::Model:
       case Type::ModelValue:
-        pModelParameter = new CModelParameter(NULL, Type);
+        pModelParameter = new CModelParameter(NULL, type);
         break;
 
       case Type::Reaction:
       case Type::Group:
-        pModelParameter = new CModelParameterGroup(NULL, Type);
+        pModelParameter = new CModelParameterGroup(NULL, type);
         break;
 
       case Type::Set:
