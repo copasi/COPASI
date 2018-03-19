@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -63,7 +63,7 @@ CQUndoTester::CQUndoTester(CQCopasiApplication * app,
   mpTabModelValues = qobject_cast<CQTabWidget*>(mpListViews->findTabWidgetFromId(CCopasiUndoCommand::GLOBALQUANTITIES));
   mpTabEvents = qobject_cast<CQTabWidget*>(mpListViews->findTabWidgetFromId(CCopasiUndoCommand::EVENTS));
   mpTabReactions = qobject_cast<CQTabWidget*>(mpListViews->findTabWidgetFromId(CCopasiUndoCommand::REACTIONS));
-  */
+
   mpDetailModel = qobject_cast<CQModelWidget*>(mpTabModel->getTab(0));
   mpDetailComp = qobject_cast<CQCompartment*>(mpTabCompartments->getTab(0));
   mpDetailSpecies = qobject_cast<CQSpeciesDetail*>(mpTabSpecies->getTab(0));
@@ -71,14 +71,12 @@ CQUndoTester::CQUndoTester(CQCopasiApplication * app,
   mpDetailEvent = qobject_cast<CQEventWidget1*>(mpTabEvents->getTab(0));
   mpDetailReaction = qobject_cast<ReactionsWidget1*>(mpTabReactions->getTab(0));
 
-  /*
   mpDmWidgetComp = qobject_cast<CQCompartmentsWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::COMPARTMENTS));
   mpDmWidgetSpecies = qobject_cast<CQSpeciesWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::SPECIES));
   mpDmWidgetModelValues = qobject_cast<CQGlobalQuantitiesWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::GLOBALQUANTITIES));
   mpDmWidgetEvents = qobject_cast<CQEventsWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::EVENTS));
   mpDmWidgetReactions = qobject_cast<CQReactionsWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::REACTIONS));
   mpDmWidgetOverview = qobject_cast<CQParameterOverviewWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::PARAMETER_OVERVIEW));
-  */
 
   mpDmCompartments = dynamic_cast<CQCompartmentDM*>(mpDmWidgetComp->getCqDataModel());
   mpDmSpecies = dynamic_cast<CQSpecieDM*>(mpDmWidgetSpecies->getCqDataModel());
@@ -86,6 +84,7 @@ CQUndoTester::CQUndoTester(CQCopasiApplication * app,
   mpDmEvents = dynamic_cast<CQEventDM*>(mpDmWidgetEvents->getCqDataModel());
   mpDmReactions = dynamic_cast<CQReactionDM*>(mpDmWidgetReactions->getCqDataModel());
   mpDmOverview = dynamic_cast<CQParameterOverviewDM*>(mpDmWidgetOverview->getCqDataModel());
+  */
 }
 
 CQUndoTester::~CQUndoTester()
