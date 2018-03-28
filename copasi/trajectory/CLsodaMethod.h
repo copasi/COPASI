@@ -124,6 +124,11 @@ protected:
    */
   CVector< C_FLOAT64 > mLastRootState;
 
+  /**
+   * The roots found at the last root state
+   */
+  CVector< C_INT > mLastRootsFound;
+
 private:
   /**
    * A vector of absolute tolerances.

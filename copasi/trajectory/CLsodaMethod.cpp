@@ -50,6 +50,7 @@ CLsodaMethod::CLsodaMethod(const CDataContainer * pParent,
   mLsodaStatus(1),
   mLastSuccessState(),
   mLastRootState(),
+  mLastRootsFound(),
   mAtol(),
   mpAtol(NULL),
   mErrorMsg(),
@@ -87,6 +88,7 @@ CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
   mLsodaStatus(src.mLsodaStatus),
   mLastSuccessState(src.mLastSuccessState),
   mLastRootState(src.mLastRootState),
+  mLastRootsFound(src.mLastRootsFound),
   mAtol(src.mAtol),
   mpAtol(NULL),
   mErrorMsg(src.mErrorMsg.str()),
@@ -405,6 +407,11 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
                   mTime = *mpContainerStateTime;
                   mLsodaStatus = 1;
 
+                  if (mLastRootState[mpContainer->getCountFixedEventTargets()] == mTime)
+                    {
+                      mRootsFound = mLastRootsFound;
+                    }
+
                   // Create a mask which hides all roots being constant and zero.
 #ifdef DEBUG_FLOW
                   std::cout << "Creating Root Mask." << std::endl;
@@ -449,6 +456,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
               }
 
             mLastRootState = mContainerState;
+            mLastRootsFound = mRootsFound;
 
           // The break statement is intentionally missing since we
           // have to continue to check the root masking state.
@@ -599,6 +607,7 @@ void CLsodaMethod::start()
     }
 
   mRootsFound.initialize(mNumRoots, new C_INT[mNumRoots]);
+  mRootsFound = 0;
 
   destroyRootMask();
 
@@ -629,6 +638,8 @@ void CLsodaMethod::start()
       mDiscreteRoots.initialize(mpContainer->getRootIsDiscrete());
       mLastRootState.resize(mContainerState.size());
       mLastRootState = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+      mLastRootsFound.resize(mNumRoots);
+      mLastRootsFound = 0;
 
       saveState(mSavedState);
     }

@@ -49,3 +49,5 @@ runTest EventTest27
 runTest EventTest28
 runTest EventTest29
 runTest EventTest30
+runTest EventTest31
+runTest EventTest32
