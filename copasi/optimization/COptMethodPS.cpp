@@ -58,7 +58,7 @@ COptMethodPS::COptMethodPS(const CDataContainer * pParent,
   if (mEnableAdditionalParameters)
   addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
-  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -329,7 +329,7 @@ bool COptMethodPS::initialize()
 
   mGenerations = getValue< unsigned C_INT32 >("Iteration Limit");
   mCurrentGeneration = 0;
-  mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
+  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   if (mpCallBack)
     mhGenerations =
