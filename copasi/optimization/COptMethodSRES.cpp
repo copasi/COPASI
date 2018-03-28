@@ -55,7 +55,7 @@ COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
   if (mEnableAdditionalParameters)
   addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
-  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -510,7 +510,7 @@ bool COptMethodSRES::initialize()
 
   if (!COptPopulationMethod::initialize()) return false;
 
-  mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
+  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
   mCurrentGeneration = 0;

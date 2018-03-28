@@ -65,7 +65,7 @@ COptMethodGA::COptMethodGA(const CDataContainer * pParent,
     addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
   }
 
-  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -431,7 +431,7 @@ bool COptMethodGA::initialize()
 
   mIndividuals.resize(2 * mPopulationSize);
 
-  mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
+  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   mGenerations = (unsigned C_INT32)getValue< unsigned C_INT32 >("Number of Generations");
   mCurrentGeneration = 0;
