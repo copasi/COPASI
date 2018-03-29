@@ -70,7 +70,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
     addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
   }
 
-  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -461,7 +461,7 @@ bool COptMethodLevenbergMarquardt::initialize()
   mModulation = 0.001;
   mIterationLimit = getValue< unsigned C_INT32 >("Iteration Limit");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
-  mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
+  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   if (getParameter("Modulation"))
   mModulation = getValue< C_FLOAT64 >("Modulation");

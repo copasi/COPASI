@@ -52,7 +52,7 @@ CRandomSearch::CRandomSearch(const CDataContainer * pParent,
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
-  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -87,7 +87,7 @@ bool CRandomSearch::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
+  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   mIterations = getValue< unsigned C_INT32 >("Number of Iterations");
   mpRandom = & mpContainer->getRandomGenerator();
