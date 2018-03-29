@@ -408,4 +408,104 @@ CCopasiMessage.size=_COPASI.CCopasiMessage_size
 }
 
 
+%pythoncode
+%{
 
+class _VectorIterator:
+    def __init__(self, vector):
+        #type: (COPASI.MetabVector) -> None
+        self.current = 0
+        self.high = vector.size() - 1
+        self.vector = vector
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return self.next()
+
+    def next(self):
+        if self.current > self.high:
+            raise StopIteration
+        else:
+            self.current += 1
+            return self.vector.get(self.current - 1)
+
+def __add_iterator(self):
+    return _VectorIterator(self)
+
+
+BiologicalDescriptionVector.__iter__ = __add_iterator
+CChemEqElementVector.__iter__ = __add_iterator
+CDataObjectVector.__iter__ = __add_iterator
+CEvaluationTreeVector.__iter__ = __add_iterator
+CEvaluationTreeVectorN.__iter__ = __add_iterator
+CFunctionVector.__iter__ = __add_iterator
+CFunctionVectorN.__iter__ = __add_iterator
+CFunctionVectorNS.__iter__ = __add_iterator
+CLRelAbsVector.__iter__ = __add_iterator
+COutputDefinitionVector.__iter__ = __add_iterator
+CReportDefinitionVector.__iter__ = __add_iterator
+ColorDefinitionVector.__iter__ = __add_iterator
+CompartmentGlyphVector.__iter__ = __add_iterator
+CompartmentVector.__iter__ = __add_iterator
+CompartmentVectorN.__iter__ = __add_iterator
+CompartmentVectorNS.__iter__ = __add_iterator
+CreatorVector.__iter__ = __add_iterator
+DataModelVector.__iter__ = __add_iterator
+EventAssignmentVector.__iter__ = __add_iterator
+EventAssignmentVectorN.__iter__ = __add_iterator
+EventVector.__iter__ = __add_iterator
+EventVectorN.__iter__ = __add_iterator
+FittingPointVector.__iter__ = __add_iterator
+FloatCVector.__iter__ = __add_iterator
+FloatVector.__iter__ = __add_iterator
+FloatVectorCore.__iter__ = __add_iterator
+GeneralGlyphVector.__iter__ = __add_iterator
+GlobalRenderInformationVector.__iter__ = __add_iterator
+GlobalStyleVector.__iter__ = __add_iterator
+GradientBaseVector.__iter__ = __add_iterator
+GradientStopVector.__iter__ = __add_iterator
+GraphicalObjectVector.__iter__ = __add_iterator
+LayoutVector.__iter__ = __add_iterator
+LayoutVectorN.__iter__ = __add_iterator
+LineEndingVector.__iter__ = __add_iterator
+LocalStyleVector.__iter__ = __add_iterator
+MetabGlyphVector.__iter__ = __add_iterator
+MetabReferenceGlyphVector.__iter__ = __add_iterator
+MetabVector.__iter__ = __add_iterator
+MetabVectorN.__iter__ = __add_iterator
+MetabVectorNS.__iter__ = __add_iterator
+MethodSubTypeVector.__iter__ = __add_iterator
+ModelParameterSetVector.__iter__ = __add_iterator
+ModelParameterSetVectorN.__iter__ = __add_iterator
+ModelValueVector.__iter__ = __add_iterator
+ModelValueVectorN.__iter__ = __add_iterator
+ModificationVector.__iter__ = __add_iterator
+MoietyVector.__iter__ = __add_iterator
+ObjectVector.__iter__ = __add_iterator
+ObjectVectorCore.__iter__ = __add_iterator
+OutputDefinitionVector.__iter__ = __add_iterator
+OutputDefinitionVectorN.__iter__ = __add_iterator
+ParameterVector.__iter__ = __add_iterator
+PlotItemVector.__iter__ = __add_iterator
+PlotItemVectorN.__iter__ = __add_iterator
+ReactionGlyphVector.__iter__ = __add_iterator
+ReactionVector.__iter__ = __add_iterator
+ReactionVectorN.__iter__ = __add_iterator
+ReactionVectorNS.__iter__ = __add_iterator
+ReferenceGlyphVector.__iter__ = __add_iterator
+ReferenceVector.__iter__ = __add_iterator
+ReportDefinitionVector.__iter__ = __add_iterator
+ReportDefinitionVectorN.__iter__ = __add_iterator
+ReportItemVector.__iter__ = __add_iterator
+SizeTVector.__iter__ = __add_iterator
+SizeTVectorCore.__iter__ = __add_iterator
+TaskSubTypeVector.__iter__ = __add_iterator
+TaskVector.__iter__ = __add_iterator
+TaskVectorN.__iter__ = __add_iterator
+TextGlyphVector.__iter__ = __add_iterator
+VectorOfStringVectors.__iter__ = __add_iterator
+
+
+%}
