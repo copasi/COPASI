@@ -563,13 +563,29 @@ bool CModel::buildDependencyGraphs()
 {
   mStructuralDependencies.clear();
 
-  // We need to add all species, reactions, and event assignments
+  // We need to add all compartment, species, global quantities, reactions, events, and event assignments
+  CDataVector< CCompartment >::const_iterator itCompartment = mCompartments.begin();
+  CDataVector< CCompartment >::const_iterator endCompartment = mCompartments.end();
+
+  for (; itCompartment != endCompartment; ++itCompartment)
+    {
+      mStructuralDependencies.addObject(&*itCompartment);
+    }
+
   CDataVector< CMetab >::const_iterator itMetab = mMetabolites.begin();
   CDataVector< CMetab >::const_iterator endMetab = mMetabolites.end();
 
   for (; itMetab != endMetab; ++itMetab)
     {
       mStructuralDependencies.addObject(&*itMetab);
+    }
+
+  CDataVector< CModelValue >::const_iterator itModelValue = mValues.begin();
+  CDataVector< CModelValue >::const_iterator endModelValue = mValues.end();
+
+  for (; itModelValue != endModelValue; ++itModelValue)
+    {
+      mStructuralDependencies.addObject(&*itModelValue);
     }
 
   CDataVector< CReaction >::const_iterator itReaction = mSteps.begin();
@@ -585,6 +601,8 @@ bool CModel::buildDependencyGraphs()
 
   for (; itEvent != endEvent; ++itEvent)
     {
+      mStructuralDependencies.addObject(&*itEvent);
+
       CDataVector< CEventAssignment >::const_iterator itAssignment = itEvent->getAssignments().begin();
       CDataVector< CEventAssignment >::const_iterator endAssignment = itEvent->getAssignments().end();
 
