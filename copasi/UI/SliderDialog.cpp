@@ -1044,6 +1044,7 @@ void SliderDialog::updateAllSliders()
 
 void SliderDialog::removeSlider(CopasiSlider* slider)
 {
+  setCurrentSlider(slider);
   removeSlider(mCurrentFolderId);
 }
 
