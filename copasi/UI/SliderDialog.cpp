@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -70,7 +70,7 @@ size_t SliderDialog::numMappings = 14;
 size_t SliderDialog::folderMappings[][2] =
 {
   {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24},
-  {241, 24} , {31, 31}, {32, 32}, {321, 32}, {33, 33},
+  {241, 24}, {31, 31}, {32, 32}, {321, 32}, {33, 33},
   {331, 33}, {35, 35}, {28, 28}, {281, 28}
 };
 
@@ -85,6 +85,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::Wi
   mpCurrSlider(NULL),
   mSliderMap(),
   mTaskMap(),
+  mInitialValueMap(),
   mCurrentFolderId(0),
   mSliderValueChanged(false),
   mSliderPressed(false),
@@ -122,6 +123,8 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::Wi
 
   connect(this->mpRunTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   connect(this->mpNewSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
+  connect(this->mpRestoreButton, SIGNAL(clicked()), this, SLOT(restoreDefaults()));
+
   this->setCurrentFolderId(C_INVALID_INDEX);
   init();
 }
@@ -291,7 +294,21 @@ void SliderDialog::createNewSlider()
   delete pVector;
 }
 
+void SliderDialog::restoreDefaults()
+{
+  std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
+  std::vector<double> tmpVec = mInitialValueMap[mCurrentFolderId];
+  size_t maxcount = v.size();
+  CopasiSlider* pTmpSlider;
 
+  for (int i = 0; i < maxcount; ++i)
+    {
+      pTmpSlider = dynamic_cast<CopasiSlider*>(v[i]);
+      pTmpSlider->setValue(tmpVec[i]);
+    }
+
+  runTask();
+}
 
 void SliderDialog::removeSlider()
 {
@@ -324,7 +341,6 @@ SliderDialog::removeSlider(size_t folderId)
     }
 }
 
-
 void
 SliderDialog::deleteSlider(CopasiSlider* pSlider, size_t folderId)
 {
@@ -334,6 +350,9 @@ SliderDialog::deleteSlider(CopasiSlider* pSlider, size_t folderId)
       std::vector<QWidget*>::iterator it = v->begin();
       std::vector<QWidget*>::iterator end = v->end();
 
+      std::vector<double>* valVec = &mInitialValueMap[mCurrentFolderId];
+      std::vector<double>::iterator itVal = valVec->begin();
+
       while (it != end)
         {
           if (*it == pSlider)
@@ -342,6 +361,7 @@ SliderDialog::deleteSlider(CopasiSlider* pSlider, size_t folderId)
             }
 
           ++it;
+          ++itVal;
         }
 
       if (it == end)
@@ -350,6 +370,7 @@ SliderDialog::deleteSlider(CopasiSlider* pSlider, size_t folderId)
         }
 
       v->erase(it);
+      valVec->erase(itVal);
       mpSliderBox->layout()->removeWidget(pSlider);
       pdelete(pSlider);
       mChanged = true;
@@ -428,6 +449,7 @@ void SliderDialog::clear()
     }
 
   this->mSliderMap.clear();
+  this->mInitialValueMap.clear();
 }
 
 void SliderDialog::init()
@@ -465,10 +487,11 @@ void SliderDialog::addSlider(CSlider* pSlider)
       // for the currently set framework
       this->setCorrectSliderObject(this->mpCurrSlider);
       mSliderMap[mCurrentFolderId].push_back(mpCurrSlider);
+      mInitialValueMap[mCurrentFolderId].push_back(mpCurrSlider->value());
       QBoxLayout* layout = static_cast<QBoxLayout*>(mpSliderBox->layout());
       int childCount = layout->count() - 1;
       layout->insertWidget(childCount, mpCurrSlider);
-      connect(mpCurrSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
+      connect(mpCurrSlider, SIGNAL(valueChanged(double)), this, SLOT(sliderValueChanged()));
       connect(mpCurrSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
       connect(mpCurrSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
       connect(mpCurrSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
@@ -655,7 +678,7 @@ void SliderDialog::createSlidersForFolder(std::vector<QWidget*>& v)
       // make sure the slider points to the correct object
       // for the currently set framework
       this->setCorrectSliderObject(this->mpCurrSlider);
-      connect(mpCurrSlider, SIGNAL(valueChanged(double)), this , SLOT(sliderValueChanged()));
+      connect(mpCurrSlider, SIGNAL(valueChanged(double)), this, SLOT(sliderValueChanged()));
       connect(mpCurrSlider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
       connect(mpCurrSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
       connect(mpCurrSlider, SIGNAL(closeClicked(CopasiSlider*)), this, SLOT(removeSlider(CopasiSlider*)));
@@ -1334,7 +1357,6 @@ SliderDialog::deleteInvalidSliders()
                                 "One or more sliders were invalid and have been deleted!",
                                 QMessageBox::Ok, QMessageBox::NoButton);
     }
-
 }
 
 bool
