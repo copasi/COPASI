@@ -122,17 +122,16 @@
 // static
 CopasiUI3Window *CopasiUI3Window::pMainWindow = NULL;
 
-QMainWindow *getWindowByTitle(const QList< QPointer< QMainWindow > > &list, const QString &title)
+QMainWindow * getWindowForAction(const QMap< QPointer<QMainWindow>, QPointer<QAction> > & map, const QAction * pAction)
 {
-  for (int index = 0; index < list.count(); ++index)
-    {
-      QMainWindow *window = list[index];
+  QMap< QPointer<QMainWindow>, QPointer<QAction> >::const_iterator it = map.begin();
+  QMap< QPointer<QMainWindow>, QPointer<QAction> >::const_iterator end = map.end();
 
-      if (window == NULL) continue;
-
-      if (window ->windowTitle() == title)
-        return window;
-    }
+  for (; it != end; ++it)
+    if (it.value() == pAction)
+      {
+        return it.key();
+      }
 
   return NULL;
 }
@@ -280,7 +279,8 @@ CopasiUI3Window::CopasiUI3Window():
   // set destructive close
   this->setAttribute(Qt::WA_DeleteOnClose);
   // Add this window to the list of windows
-  mWindows.append(this);
+  mWindows.insert(pMainWindow, NULL);
+
 #ifndef Darwin
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
 #endif // not Darwin
@@ -354,12 +354,12 @@ CopasiUI3Window::~CopasiUI3Window()
 #ifdef COPASI_SBW_INTEGRATION
   sbwDisconnect();
 #endif // COPASI_SBW_INTEGRATION
-  QList< QPointer<QMainWindow> >::iterator it = mWindows.begin();
-  QList< QPointer<QMainWindow> >::iterator end = mWindows.end();
+  QMap< QPointer<QMainWindow>, QPointer<QAction> >::iterator it = mWindows.begin();
+  QMap< QPointer<QMainWindow>, QPointer<QAction> >::iterator end = mWindows.end();
 
   for (; it != end; ++it)
     {
-      QPointer<QMainWindow> current = *it;
+      QPointer<QMainWindow> current = it.key();
 
       if (current == NULL)  continue;
 
@@ -2215,7 +2215,7 @@ void CopasiUI3Window::slotExportSBMLToStringFinished(bool success)
     }
 }
 
-const QList< QPointer<QMainWindow> > &CopasiUI3Window::getWindows() const
+const QMap< QPointer<QMainWindow>, QPointer<QAction> > &CopasiUI3Window::getWindows() const
 {
   return mWindows;
 }
@@ -2238,25 +2238,28 @@ void CopasiUI3Window::setPopulationDisplay(CQOptPopulation *display)
 
 void CopasiUI3Window::addWindow(QMainWindow *pWindow)
 {
-  int index = mWindows.indexOf(pWindow);
+  if (mWindows.contains(pWindow))
+    {
+      return;
+    }
 
-  // ensure that window has not been added yet
-  if (index != -1)
-    return;
+  mWindows.insert(pWindow, NULL);
 
-  mWindows.append(pWindow);
   refreshWindowsMenu();
 }
 
 void CopasiUI3Window::removeWindow(QMainWindow *pWindow)
 {
-  int index = mWindows.indexOf(pWindow);
 
-  if (index == -1)
-    return;
+  QMap< QPointer<QMainWindow>, QPointer<QAction> >::iterator found = mWindows.find(pWindow);
 
-  // only delete when there is such a window
-  mWindows.removeAt(index);
+  if (found == mWindows.end())
+    {
+      return;
+    }
+
+  mWindows.erase(found);
+
   refreshWindowsMenu();
 }
 
@@ -2274,8 +2277,11 @@ void CopasiUI3Window::refreshWindowsMenu()
   connect(mpWindowsActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(slotActivateWindowTriggered(QAction *)));
   // Re-initialize items the menus will always have
   mpWindowsMenu->clear();
+
   // COPASI main window
-  QAction *pAction = new QAction(mWindows[0]->windowTitle(), mpWindowsActionGroup);
+
+  QAction *pAction = new QAction(pMainWindow->windowTitle(), mpWindowsActionGroup);
+  mWindows[pMainWindow] = pAction;
   mpWindowsMenu->addAction(pAction);
 
   if (mWindows.count() > 1)
@@ -2286,11 +2292,18 @@ void CopasiUI3Window::refreshWindowsMenu()
     }
 
   // . . . for the secondary windows, also . . .
-  for (int index = 1; index < mWindows.count(); ++index)
-    {
-      QMainWindow *mainWindow = mWindows[index];
+  QMap< QPointer<QMainWindow>, QPointer<QAction> >::iterator it = mWindows.begin();
+  QMap< QPointer<QMainWindow>, QPointer<QAction> >::iterator end = mWindows.end();
 
-      if (mainWindow == NULL) continue;
+  for (; it != end; ++it)
+    {
+      QMainWindow *mainWindow = it.key();
+
+      if (mainWindow == pMainWindow ||
+          mainWindow == NULL)
+        {
+          continue;
+        }
 
       CWindowInterface *window = dynamic_cast<CWindowInterface *>(mainWindow);
       QMenu *menu = window->getWindowMenu();
@@ -2302,20 +2315,31 @@ void CopasiUI3Window::refreshWindowsMenu()
     }
 
   // Add secondary windows to the Window menus
-  for (int index = 1; index < mWindows.count(); ++index)
+  for (it = mWindows.begin(); it != end; ++it)
     {
-      QMainWindow *mActionWindow = mWindows[index];
+      QMainWindow *mActionWindow = it.key();
 
-      if (mActionWindow == NULL) continue;
+      if (mActionWindow == pMainWindow ||
+          mActionWindow == NULL)
+        {
+          continue;
+        }
 
-      pAction = new QAction(mWindows[index]->windowTitle(), mpWindowsActionGroup);
+      pAction = new QAction(mActionWindow->windowTitle(), mpWindowsActionGroup);
+      it.value() = pAction;
       mpWindowsMenu->addAction(pAction);
 
-      for (int index1 = 1; index1 < mWindows.count(); ++index1)
-        {
-          QMainWindow *mainWindow = mWindows[index1];
+      QMap< QPointer<QMainWindow>, QPointer<QAction> >::iterator jt = mWindows.begin();
 
-          if (mainWindow == NULL) continue;
+      for (; jt != end; ++jt)
+        {
+          QMainWindow *mainWindow = it.key();
+
+          if (mainWindow == pMainWindow ||
+              mainWindow == NULL)
+            {
+              continue;
+            }
 
           CWindowInterface *window = dynamic_cast<CWindowInterface *>(mainWindow);
           QMenu *menu = window->getWindowMenu();
@@ -2330,12 +2354,29 @@ void CopasiUI3Window::refreshWindowsMenu()
 void CopasiUI3Window::slotCloseAllWindows()
 {
   // all except main window (index == 0)
-  for (int index = mWindows.count() - 1; index >= 1 ; --index)
-    {
-      QMainWindow *window = mWindows[index];
+  QMap< QPointer<QMainWindow>, QPointer<QAction> >::iterator it = mWindows.begin();
+  QMap< QPointer<QMainWindow>, QPointer<QAction> >::iterator end = mWindows.end();
+  QList< QPointer<QMainWindow> > ToBeClosed;
 
-      if (window != NULL)
-        window->close();
+  for (; it != end; ++it)
+    {
+      QMainWindow *mainWindow = it.key();
+
+      if (mainWindow == pMainWindow ||
+          mainWindow == NULL)
+        {
+          continue;
+        }
+
+      ToBeClosed.append(mainWindow);
+    }
+
+  QList< QPointer<QMainWindow> >::iterator itToBeClosed = ToBeClosed.begin();
+  QList< QPointer<QMainWindow> >::iterator endToBeClosed = ToBeClosed.end();
+
+  for (; itToBeClosed != endToBeClosed; ++itToBeClosed)
+    {
+      (*itToBeClosed)->close();
     }
 
   refreshWindowsMenu();
@@ -2343,7 +2384,7 @@ void CopasiUI3Window::slotCloseAllWindows()
 
 void CopasiUI3Window::slotActivateWindowTriggered(QAction *action)
 {
-  QMainWindow *window  = getWindowByTitle(mWindows, action->text());
+  QMainWindow *window = getWindowForAction(mWindows, action);
 
   if (window != NULL)
     window ->activateWindow();

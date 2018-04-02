@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -131,9 +131,9 @@ public:
 
 // COMBINE Archive will take care of file management
   /*
-  #ifdef COPASI_Provenance
+#ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-  #endif
+#endif
   */
 
   CQOptPopulation* getPopulationDisplay();
@@ -149,7 +149,7 @@ public:
   /**
    * Returns the list of current windows
    */
-  const QList< QPointer<QMainWindow> >& getWindows() const;
+  const QMap< QPointer<QMainWindow>, QPointer<QAction> > & getWindows() const;
 
 signals:
   void signalLoadFile(QString newFile);
@@ -377,7 +377,7 @@ private:
   bool mSliderDialogEnabled;
   bool mMessageShown;
 
-  QList< QPointer<QMainWindow> > mWindows;
+  QMap< QPointer<QMainWindow>, QPointer<QAction> > mWindows;
 
   static CopasiUI3Window * pMainWindow;
 
