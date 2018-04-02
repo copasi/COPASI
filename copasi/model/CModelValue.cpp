@@ -235,6 +235,7 @@ const CModelEntity::Status & CModelEntity::getStatus() const {return mStatus;}
 
 CIssue CModelEntity::compile()
 {
+  mPrerequisits.clear();
   mValidity.clear();
 
   CIssue firstWorstIssue, issue;
@@ -287,6 +288,22 @@ CIssue CModelEntity::compile()
 
       if (issue)
         mIValue = mpInitialExpression->calcValue();
+    }
+
+  // We need to add all called functions to the dependencies
+  if (mpInitialExpression != NULL)
+    {
+      mPrerequisits.insert(mpInitialExpression->getPrerequisites().begin(), mpInitialExpression->getPrerequisites().end());
+    }
+
+  if (mpExpression != NULL)
+    {
+      mPrerequisits.insert(mpExpression->getPrerequisites().begin(), mpExpression->getPrerequisites().end());
+    }
+
+  if (mpNoiseExpression != NULL)
+    {
+      mPrerequisits.insert(mpNoiseExpression->getPrerequisites().begin(), mpNoiseExpression->getPrerequisites().end());
     }
 
   return firstWorstIssue;

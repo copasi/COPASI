@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -41,7 +41,7 @@ COptMethodNelderMead::COptMethodNelderMead(const CDataContainer * pParent,
   addParameter("Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.e-005);
   addParameter("Scale", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 10.0);
 
-  addParameter("#LogVerbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+  addParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -661,7 +661,7 @@ bool COptMethodNelderMead::initialize()
   mIterationLimit = getValue< unsigned C_INT32 >("Iteration Limit");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
   mScale = getValue< C_FLOAT64 >("Scale");
-  mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
+  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   mIteration = 0;
 

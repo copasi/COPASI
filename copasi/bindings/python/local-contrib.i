@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -205,6 +205,8 @@ class AutoProperty(type):
                     desc += ' %s' % self.id
                 if hasattr(self, 'name') and self.name:
                     desc += ' "%s"' % self.name
+                if hasattr(self, 'object_name') and self.object_name:
+                    desc += ' "%s"' % self.object_name
                 return '<' + desc + '>'
                 
             if classdict.get('__repr__', None) in (_swig_repr, None):

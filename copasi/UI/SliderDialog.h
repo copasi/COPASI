@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -158,6 +158,7 @@ protected slots:
   void removeSlider(CopasiSlider* slider);
   void removeSlider(CopasiSlider* slider, size_t folderId);
   void editSlider(CopasiSlider* slider);
+  void restoreDefaults();
   void removeSlider();
   void removeSlider(size_t folderId);
   void deleteSlider(CopasiSlider* pSlider);
@@ -182,6 +183,7 @@ protected:
   CopasiSlider* mpCurrSlider;
   std::map< size_t, std::vector< QWidget* > > mSliderMap;
   std::map < size_t, void(SliderDialog::*)() > mTaskMap;
+  std::map< size_t, std::vector< double > > mInitialValueMap;
   size_t mCurrentFolderId;
   bool mSliderValueChanged;
   bool mSliderPressed;

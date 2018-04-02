@@ -621,13 +621,29 @@ bool CModel::buildDependencyGraphs()
 {
   mStructuralDependencies.clear();
 
-  // We need to add all species, reactions, and event assignments
+  // We need to add all compartment, species, global quantities, reactions, events, and event assignments
+  CDataVector< CCompartment >::const_iterator itCompartment = mCompartments.begin();
+  CDataVector< CCompartment >::const_iterator endCompartment = mCompartments.end();
+
+  for (; itCompartment != endCompartment; ++itCompartment)
+    {
+      mStructuralDependencies.addObject(&*itCompartment);
+    }
+
   CDataVector< CMetab >::const_iterator itMetab = mMetabolites.begin();
   CDataVector< CMetab >::const_iterator endMetab = mMetabolites.end();
 
   for (; itMetab != endMetab; ++itMetab)
     {
       mStructuralDependencies.addObject(&*itMetab);
+    }
+
+  CDataVector< CModelValue >::const_iterator itModelValue = mValues.begin();
+  CDataVector< CModelValue >::const_iterator endModelValue = mValues.end();
+
+  for (; itModelValue != endModelValue; ++itModelValue)
+    {
+      mStructuralDependencies.addObject(&*itModelValue);
     }
 
   CDataVector< CReaction >::const_iterator itReaction = mSteps.begin();
@@ -643,6 +659,8 @@ bool CModel::buildDependencyGraphs()
 
   for (; itEvent != endEvent; ++itEvent)
     {
+      mStructuralDependencies.addObject(&*itEvent);
+
       CDataVector< CEventAssignment >::const_iterator itAssignment = itEvent->getAssignments().begin();
       CDataVector< CEventAssignment >::const_iterator endAssignment = itEvent->getAssignments().end();
 
@@ -1750,28 +1768,28 @@ bool CModel::appendDirectDependents(const CDataObject::ObjectSet & objects,
       ObjectSet Candidates;
       DataObjectSet Descendants;
 
-  for (; itObject != endObject; ++itObject)
-    {
-      if (dynamic_cast< const CDataContainer * >(*itObject) != NULL)
+      for (; itObject != endObject; ++itObject)
         {
-          static_cast< const CDataContainer * >(*itObject)->getDescendants(Descendants);
-        }
-
-      // We need to directly add the event targets since they do not appear in any dependency graph
-      if (dynamic_cast< const CEvent * >(*itObject) != NULL)
-        {
-          CDataVectorN< CEventAssignment >::const_iterator itAssignment = static_cast< const CEvent * >(*itObject)->getAssignments().begin();
-          CDataVectorN< CEventAssignment >::const_iterator endAssignment = static_cast< const CEvent * >(*itObject)->getAssignments().end();
-
-          for (; itAssignment != endAssignment; ++itAssignment)
+          if (dynamic_cast< const CDataContainer * >(*itObject) != NULL)
             {
-              Dependents.insert(itAssignment->getTargetObject());
+              static_cast< const CDataContainer * >(*itObject)->getDescendants(Descendants);
+            }
+
+          // We need to directly add the event targets since they do not appear in any dependency graph
+          if (dynamic_cast< const CEvent * >(*itObject) != NULL)
+            {
+              CDataVectorN< CEventAssignment >::const_iterator itAssignment = static_cast< const CEvent * >(*itObject)->getAssignments().begin();
+              CDataVectorN< CEventAssignment >::const_iterator endAssignment = static_cast< const CEvent * >(*itObject)->getAssignments().end();
+
+              for (; itAssignment != endAssignment; ++itAssignment)
+                {
+                  Dependents.insert(itAssignment->getTargetObject());
+                }
             }
         }
-    }
 
-  std::set< const CDataObject * >::const_iterator it = Descendants.begin();
-  std::set< const CDataObject * >::const_iterator end = Descendants.end();
+      std::set< const CDataObject * >::const_iterator it = Descendants.begin();
+      std::set< const CDataObject * >::const_iterator end = Descendants.end();
 
       for (; it != end; ++it)
         {

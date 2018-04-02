@@ -207,6 +207,7 @@ CIssue CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer
   if (mpExpression != NULL)
     {
       firstWorstIssue &= mpExpression->compile(listOfContainer);
+      mPrerequisits.insert(mpExpression->getPrerequisites().begin(), mpExpression->getPrerequisites().end());
     }
   else
     {
@@ -553,7 +554,7 @@ CIssue CEvent::compile(CObjectInterface::ContainerList listOfContainer)
   if (mpTriggerExpression != NULL)
     {
       firstWorstIssue &= mpTriggerExpression->compile(listOfContainer);
-      mPrerequisits.insert(mpTriggerExpression);
+      mPrerequisits.insert(mpTriggerExpression->getPrerequisites().begin(), mpTriggerExpression->getPrerequisites().end());
     }
   else
     {
@@ -565,14 +566,14 @@ CIssue CEvent::compile(CObjectInterface::ContainerList listOfContainer)
   if (mpDelayExpression != NULL)
     {
       firstWorstIssue &= mpDelayExpression->compile(listOfContainer);
-      mPrerequisits.insert(mpDelayExpression);
+      mPrerequisits.insert(mpDelayExpression->getPrerequisites().begin(), mpDelayExpression->getPrerequisites().end());
     }
 
   // Compile the delay expression
   if (mpPriorityExpression != NULL)
     {
       firstWorstIssue &= mpPriorityExpression->compile(listOfContainer);
-      mPrerequisits.insert(mpPriorityExpression);
+      mPrerequisits.insert(mpPriorityExpression->getPrerequisites().begin(), mpPriorityExpression->getPrerequisites().end());
     }
 
   // Compile the assignments
@@ -588,7 +589,6 @@ CIssue CEvent::compile(CObjectInterface::ContainerList listOfContainer)
   for (; itAssignment != endAssignment; ++itAssignment)
     {
       firstWorstIssue &= itAssignment->compile(listOfContainer);
-      mPrerequisits.insert(itAssignment);
     }
 
   return firstWorstIssue;

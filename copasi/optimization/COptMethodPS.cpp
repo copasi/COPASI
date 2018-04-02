@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -56,9 +56,9 @@ COptMethodPS::COptMethodPS(const CDataContainer * pParent,
   addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   if (mEnableAdditionalParameters)
-  addParameter("Stop after # Stalled Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+    addParameter("Stop after # Stalled Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
-  addParameter("#LogVerbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+  addParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -329,7 +329,7 @@ bool COptMethodPS::initialize()
 
   mGenerations = getValue< unsigned C_INT32 >("Iteration Limit");
   mCurrentGeneration = 0;
-  mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
+  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   if (mpCallBack)
     mhGenerations =
@@ -377,7 +377,7 @@ bool COptMethodPS::initialize()
   mContinue = true;
 
   if (getParameter("Stop after # Stalled Iterations"))
-  mStopAfterStalledIterations = getValue <unsigned C_INT32>("Stop after # Stalled Iterations");
+    mStopAfterStalledIterations = getValue <unsigned C_INT32>("Stop after # Stalled Iterations");
 
   return mContinue;
 }
@@ -574,7 +574,7 @@ bool COptMethodPS::optimise()
   for (; mCurrentGeneration < mGenerations && mContinue; mCurrentGeneration++, Stalled++)
     {
 
-    if (mStopAfterStalledIterations != 0 && Stalled > mStopAfterStalledIterations)
+      if (mStopAfterStalledIterations != 0 && Stalled > mStopAfterStalledIterations)
         break;
 
       Improved = false;

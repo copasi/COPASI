@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,9 +53,9 @@ COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
   addParameter("Pf", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.475);  //*****ADDED for SR
 
   if (mEnableAdditionalParameters)
-  addParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+    addParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
-  addParameter("#LogVerbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+  addParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -510,7 +510,7 @@ bool COptMethodSRES::initialize()
 
   if (!COptPopulationMethod::initialize()) return false;
 
-  mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
+  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
   mCurrentGeneration = 0;
@@ -586,7 +586,7 @@ bool COptMethodSRES::initialize()
     }
 
   if (getParameter("Stop after # Stalled Generations"))
-  mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
+    mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
 
   return true;
 }
@@ -738,8 +738,8 @@ bool COptMethodSRES::optimise()
     {
 #endif // RANDOMIZE
 
-          if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
-            break;
+      if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
+        break;
 
       Continue = replicate();
 

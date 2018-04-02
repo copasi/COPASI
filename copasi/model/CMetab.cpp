@@ -271,6 +271,9 @@ void CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
 
 CIssue CMetab::compile()
 {
+  // This resets the dependencies
+  initCompartment(mpCompartment);
+
   CIssue firstWorstIssue;
 
   // Prepare the compilation
@@ -293,6 +296,7 @@ CIssue CMetab::compile()
       case Status::ASSIGNMENT:
         // Concentration
         firstWorstIssue &= mpExpression->compile(listOfContainer);
+        mPrerequisits.insert(mpExpression->getPrerequisites().begin(), mpExpression->getPrerequisites().end());
 
         // Implicit initial expression
         pdelete(mpInitialExpression);
@@ -330,6 +334,22 @@ CIssue CMetab::compile()
 
   // The initial values
   firstWorstIssue &= compileInitialValueDependencies();
+
+  // We need to add all called functions to the dependencies
+  if (mpInitialExpression != NULL)
+    {
+      mPrerequisits.insert(mpInitialExpression->getPrerequisites().begin(), mpInitialExpression->getPrerequisites().end());
+    }
+
+  if (mpExpression != NULL)
+    {
+      mPrerequisits.insert(mpExpression->getPrerequisites().begin(), mpExpression->getPrerequisites().end());
+    }
+
+  if (mpNoiseExpression != NULL)
+    {
+      mPrerequisits.insert(mpNoiseExpression->getPrerequisites().begin(), mpNoiseExpression->getPrerequisites().end());
+    }
 
   return firstWorstIssue;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -85,18 +85,17 @@ CQMessageBox::CQMessageBox(Icon icon, const QString &title, const QString &text,
   QGridLayout* pLayout = static_cast<QGridLayout *>(layout());
 
   if (pLabel != NULL)
-  {
-    int index = pLayout->indexOf(pLabel);
-    int row, col, rs, cs;
-    pLayout->getItemPosition(index, &row, &col, &rs, &cs);
-    pLayout->addWidget(mpTabWidget, row, col, rs, cs);
-    pLabel->hide();
-  }
+    {
+      int index = pLayout->indexOf(pLabel);
+      int row, col, rs, cs;
+      pLayout->getItemPosition(index, &row, &col, &rs, &cs);
+      pLayout->addWidget(mpTabWidget, row, col, rs, cs);
+      pLabel->hide();
+    }
   else
-  {
-    pLayout->addWidget(mpTabWidget, 0, 1, 1, 1);
-  }
-
+    {
+      pLayout->addWidget(mpTabWidget, 0, 1, 1, 1);
+    }
 }
 
 CQMessageBox::~CQMessageBox()
@@ -195,7 +194,7 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
   if (pFunctionDB != NULL)
     {
       // TODO In case a function is deleted we need to loop through all data models
-      CDataModel* pDataModel = ListViews::dataModel(parent);
+      pDataModel = ListViews::dataModel(parent);
 
       assert(pDataModel != NULL);
     }

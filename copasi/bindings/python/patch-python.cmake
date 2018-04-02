@@ -1,4 +1,4 @@
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -28,3 +28,29 @@ import os.path
 sys.path.append(os.path.dirname(__file__))
 ")
 file(APPEND  "${WRAPPER_FILE}" "${SOURCECODE}")
+
+# add COPASI version to wrapper file
+if (VERSION)
+file(APPEND  "${WRAPPER_FILE}" "\n__version__ = '${VERSION}'\n")
+endif()
+
+
+#now read the file again and create a python 3 version of it. 
+
+file(READ "${WRAPPER_FILE}" SOURCECODE)
+
+foreach(class 
+   CObjectInterface
+   CUnitComponent
+   CUnit
+   COutputInterface
+   CScanItem
+   
+   )
+string(REPLACE 
+  "class ${class}(_object):"
+  "class ${class}(_object, metaclass=AutoProperty):"
+  SOURCECODE ${SOURCECODE}
+)
+endforeach()
+file(WRITE "${BIN_DIRECTORY}/COPASI3.py" "${SOURCECODE}")
