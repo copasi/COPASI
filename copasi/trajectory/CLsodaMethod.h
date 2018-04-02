@@ -41,7 +41,7 @@ public:
 
   // Attributes
 protected:
-  enum RootMasking
+  enum eRootMasking
   {
     NONE = 0,
     ALL,
@@ -56,6 +56,8 @@ private:
     CVector< C_FLOAT64 > DWork;
     CVector< C_INT > IWork;
     CVector< C_INT > RootsFound;
+    CVector< bool > RootMask;
+    eRootMasking RootMasking;
     CTrajectoryMethod::Status Status;
     CInternalSolver::State LsodaState;
   };
@@ -122,12 +124,7 @@ protected:
   /**
    * The last state having a root
    */
-  CVector< C_FLOAT64 > mLastRootState;
-
-  /**
-   * The roots found at the last root state
-   */
-  CVector< C_INT > mLastRootsFound;
+  State mLastRootState;
 
 private:
   /**
@@ -190,7 +187,7 @@ protected:
   /**
    * A Boolean flag indicating whether we should try masking roots
    */
-  RootMasking mRootMasking;
+  eRootMasking mRootMasking;
 
 private:
   /**
@@ -315,12 +312,17 @@ private:
   void createRootMask();
 
   /**
+   * Set the root mask type and update the root mask accordingly
+   */
+  void setRootMaskType(const eRootMasking & maskType);
+
+  /**
    * Peek ahead to detect simultaneous roots.
    */
   CTrajectoryMethod::Status peekAhead();
 
   bool hasStateChanged(const CVectorCore< C_FLOAT64 > & startState) const;
-  void saveState(State & state) const;
+  void saveState(State & state, const CTrajectoryMethod::Status & status) const;
   void resetState(State & state);
 
 protected:

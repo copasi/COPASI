@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -126,6 +126,21 @@ public:
     assert(false);
 
     return *this;
+  }
+
+  bool operator == (const CVectorCore <CType> & rhs) const
+  {
+    if (mpBuffer != rhs.mpBuffer)
+      {
+        if (mSize != rhs.mSize)
+          {
+            return false;
+          }
+
+        return memcmp((void *) mpBuffer, (void *) rhs.mpBuffer, mSize * sizeof(CType)) == 0;
+      }
+
+    return mSize == rhs.mSize;
   }
 
   /**

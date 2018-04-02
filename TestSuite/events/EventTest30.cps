@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.23.172+ (Debug) (http://www.copasi.org) at 2018-02-15 14:59:12 UTC -->
+<!-- generated with COPASI 4.23 (Build 178) (http://www.copasi.org) at 2018-03-30 20:43:02 UTC -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
-<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="23" versionDevel="172" copasiSourcesModified="1">
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="23" versionDevel="178" copasiSourcesModified="0">
   <ListOfFunctions>
     <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" reversible="false">
       <MiriamAnnotation>
@@ -53,110 +53,110 @@ Reaction scheme where the products are created from the reactants and the change
         <ParameterDescription key="FunctionParameter_79" name="product" order="3" role="product"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_40" name="Catalytic activation (irrev)_1" type="UserDefined" reversible="false">
+    <Function key="Function_49" name="Catalytic activation (irrev)_1" type="UserDefined" reversible="false">
       <Expression>
         IKKb_active_phosphorylation_vmax*s14*TNFa_TNFR1_EL/((IKKb_active_phosphorylation_kM+s14)*(IKKb_active_phosphorylation_kA+TNFa_TNFR1_EL))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_264" name="IKKb_active_phosphorylation_kA" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_263" name="IKKb_active_phosphorylation_kM" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_262" name="IKKb_active_phosphorylation_vmax" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_261" name="TNFa_TNFR1_EL" order="3" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_250" name="s14" order="4" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_388" name="IKKb_active_phosphorylation_kA" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_387" name="IKKb_active_phosphorylation_kM" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_386" name="IKKb_active_phosphorylation_vmax" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_385" name="TNFa_TNFR1_EL" order="3" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_384" name="s14" order="4" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_41" name="Henri-Michaelis-Menten (irreversible)_1" type="UserDefined" reversible="false">
+    <Function key="Function_50" name="Henri-Michaelis-Menten (irreversible)_1" type="UserDefined" reversible="false">
       <Expression>
         IkBa_phosphorylation_vmax*IkBa_cytoplasm/(IkBa_phosphorylation_kM+IkBa_cytoplasm)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_269" name="IkBa_cytoplasm" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_268" name="IkBa_phosphorylation_kM" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_267" name="IkBa_phosphorylation_vmax" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_379" name="IkBa_cytoplasm" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_380" name="IkBa_phosphorylation_kM" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_381" name="IkBa_phosphorylation_vmax" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_42" name="Henri-Michaelis-Menten (irreversible)_2" type="UserDefined" reversible="false">
+    <Function key="Function_51" name="Henri-Michaelis-Menten (irreversible)_2" type="UserDefined" reversible="false">
       <Expression>
         IkBa_translation_vmax*IkBa_mRNA_cytoplasm/(IkBa_translation_Km+IkBa_mRNA_cytoplasm)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_270" name="IkBa_mRNA_cytoplasm" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_265" name="IkBa_translation_Km" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_266" name="IkBa_translation_vmax" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_378" name="IkBa_mRNA_cytoplasm" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_383" name="IkBa_translation_Km" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_382" name="IkBa_translation_vmax" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_43" name="Henri-Michaelis-Menten (irreversible)_3" type="UserDefined" reversible="false">
+    <Function key="Function_52" name="Henri-Michaelis-Menten (irreversible)_3" type="UserDefined" reversible="false">
       <Expression>
         JNK_active_phosphorylation_vmax*JNK/(JNK_active_phoshorylation_Km+JNK)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_273" name="JNK" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_272" name="JNK_active_phoshorylation_Km" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_271" name="JNK_active_phosphorylation_vmax" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_375" name="JNK" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_376" name="JNK_active_phoshorylation_Km" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_377" name="JNK_active_phosphorylation_vmax" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_44" name="Henri-Michaelis-Menten (irreversible)_4" type="UserDefined" reversible="false">
+    <Function key="Function_53" name="Henri-Michaelis-Menten (irreversible)_4" type="UserDefined" reversible="false">
       <Expression>
         MSK1_activation_vmax*MSK1/(MSK1_activation_kM+MSK1)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_276" name="MSK1" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_275" name="MSK1_activation_kM" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_274" name="MSK1_activation_vmax" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_372" name="MSK1" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_373" name="MSK1_activation_kM" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_374" name="MSK1_activation_vmax" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_45" name="Henri-Michaelis-Menten (irreversible)_5" type="UserDefined" reversible="false">
+    <Function key="Function_54" name="Henri-Michaelis-Menten (irreversible)_5" type="UserDefined" reversible="false">
       <Expression>
         p38_active_phosphorylation_vmax*p38/(p38_active_phoshorylation_Km+p38)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_279" name="p38" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_278" name="p38_active_phoshorylation_Km" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_277" name="p38_active_phosphorylation_vmax" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_369" name="p38" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_370" name="p38_active_phoshorylation_Km" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_371" name="p38_active_phosphorylation_vmax" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_46" name="Henri-Michaelis-Menten (irreversible)_6" type="UserDefined" reversible="false">
+    <Function key="Function_55" name="Henri-Michaelis-Menten (irreversible)_6" type="UserDefined" reversible="false">
       <Expression>
         p65_P_MSK1_phosphrylation_vmax*s8/(p65_P_MSK1_phosphrylation_kM+s8)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_282" name="p65_P_MSK1_phosphrylation_kM" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_281" name="p65_P_MSK1_phosphrylation_vmax" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_280" name="s8" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_366" name="p65_P_MSK1_phosphrylation_kM" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_367" name="p65_P_MSK1_phosphrylation_vmax" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_368" name="s8" order="2" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_47" name="Henri-Michaelis-Menten (irreversible)_7" type="UserDefined" reversible="false">
+    <Function key="Function_56" name="Henri-Michaelis-Menten (irreversible)_7" type="UserDefined" reversible="false">
       <Expression>
         p65_MSK1_phosphrylation_vmax*p65_nucleus/(p65_MSK1_phosphorylation_kM+p65_nucleus)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_285" name="p65_MSK1_phosphorylation_kM" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_284" name="p65_MSK1_phosphrylation_vmax" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_283" name="p65_nucleus" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_363" name="p65_MSK1_phosphorylation_kM" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_364" name="p65_MSK1_phosphrylation_vmax" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_365" name="p65_nucleus" order="2" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_48" name="activated Transcription [1]_1" type="UserDefined" reversible="false">
+    <Function key="Function_57" name="activated Transcription [1]_1" type="UserDefined" reversible="false">
       <Expression>
         IkBa_transcription_initiation_kbasal+IkBa_transcription_kA2_p65_P*s8+IkBa_transcription_kA_p65*p65_nucleus+IkBa_transcription_kA3_p65_2P*p65_2P
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_288" name="IkBa_transcription_initiation_kbasal" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_287" name="IkBa_transcription_kA2_p65_P" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_286" name="IkBa_transcription_kA3_p65_2P" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_289" name="IkBa_transcription_kA_p65" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_290" name="p65_2P" order="4" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_291" name="p65_nucleus" order="5" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_292" name="s8" order="6" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_360" name="IkBa_transcription_initiation_kbasal" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_361" name="IkBa_transcription_kA2_p65_P" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_362" name="IkBa_transcription_kA3_p65_2P" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_359" name="IkBa_transcription_kA_p65" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_358" name="p65_2P" order="4" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_357" name="p65_nucleus" order="5" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_356" name="s8" order="6" role="modifier"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_49" name="Henri-Michaelis-Menten (irreversible)_8" type="UserDefined" reversible="false">
+    <Function key="Function_58" name="Henri-Michaelis-Menten (irreversible)_8" type="UserDefined" reversible="false">
       <Expression>
         IkBa_p65_phosphorylation_vmax*s19/(IkBa_p65_phosphorylation_kM+s19)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_299" name="IkBa_p65_phosphorylation_kM" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_298" name="IkBa_p65_phosphorylation_vmax" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_297" name="s19" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_349" name="IkBa_p65_phosphorylation_kM" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_350" name="IkBa_p65_phosphorylation_vmax" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_351" name="s19" order="2" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
   </ListOfFunctions>
@@ -176,62 +176,62 @@ Reaction scheme where the products are created from the reactants and the change
 
     </MiriamAnnotation>
     <ListOfCompartments>
-      <Compartment key="Compartment_0" name="EL" simulationType="fixed" dimensionality="3" addNoise="false">
+      <Compartment key="Compartment_3" name="EL" simulationType="fixed" dimensionality="3" addNoise="false">
       </Compartment>
-      <Compartment key="Compartment_1" name="nucleus" simulationType="fixed" dimensionality="3" addNoise="false">
+      <Compartment key="Compartment_4" name="nucleus" simulationType="fixed" dimensionality="3" addNoise="false">
       </Compartment>
-      <Compartment key="Compartment_2" name="cytoplasm" simulationType="fixed" dimensionality="3" addNoise="false">
+      <Compartment key="Compartment_5" name="cytoplasm" simulationType="fixed" dimensionality="3" addNoise="false">
       </Compartment>
     </ListOfCompartments>
     <ListOfMetabolites>
-      <Metabolite key="Metabolite_0" name="LPS" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+      <Metabolite key="Metabolite_41" name="LPS" simulationType="reactions" compartment="Compartment_3" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_1" name="TNFR1" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+      <Metabolite key="Metabolite_45" name="TNFR1" simulationType="reactions" compartment="Compartment_3" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_2" name="TNFa:TNFR1" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+      <Metabolite key="Metabolite_50" name="TNFa:TNFR1" simulationType="reactions" compartment="Compartment_3" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_3" name="TNFa" simulationType="fixed" compartment="Compartment_0" addNoise="false">
+      <Metabolite key="Metabolite_52" name="TNFa" simulationType="fixed" compartment="Compartment_3" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_4" name="IkBa_mRNA" simulationType="reactions" compartment="Compartment_1" addNoise="false">
+      <Metabolite key="Metabolite_49" name="IkBa_mRNA" simulationType="reactions" compartment="Compartment_4" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_5" name="IkBa_pre_mRNA_1" simulationType="reactions" compartment="Compartment_1" addNoise="false">
+      <Metabolite key="Metabolite_47" name="IkBa_pre_mRNA_1" simulationType="reactions" compartment="Compartment_4" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_6" name="IkBa_pre_mRNA_2" simulationType="reactions" compartment="Compartment_1" addNoise="false">
+      <Metabolite key="Metabolite_29" name="IkBa_pre_mRNA_2" simulationType="reactions" compartment="Compartment_4" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_7" name="MSK1" simulationType="reactions" compartment="Compartment_1" addNoise="false">
+      <Metabolite key="Metabolite_30" name="MSK1" simulationType="reactions" compartment="Compartment_4" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_8" name="MSK1_P" simulationType="reactions" compartment="Compartment_1" addNoise="false">
+      <Metabolite key="Metabolite_31" name="MSK1_P" simulationType="reactions" compartment="Compartment_4" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_9" name="p65_2P" simulationType="reactions" compartment="Compartment_1" addNoise="false">
+      <Metabolite key="Metabolite_32" name="p65_2P" simulationType="reactions" compartment="Compartment_4" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_10" name="p65-IkBa" simulationType="reactions" compartment="Compartment_1" addNoise="false">
+      <Metabolite key="Metabolite_33" name="p65-IkBa" simulationType="reactions" compartment="Compartment_4" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_11" name="p65" simulationType="reactions" compartment="Compartment_1" addNoise="false">
+      <Metabolite key="Metabolite_34" name="p65" simulationType="reactions" compartment="Compartment_4" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_12" name="IkBa" simulationType="reactions" compartment="Compartment_1" addNoise="false">
+      <Metabolite key="Metabolite_35" name="IkBa" simulationType="reactions" compartment="Compartment_4" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_13" name="p65_P" simulationType="reactions" compartment="Compartment_1" addNoise="false">
+      <Metabolite key="Metabolite_36" name="p65_P" simulationType="reactions" compartment="Compartment_4" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_14" name="IkBa" simulationType="reactions" compartment="Compartment_2" addNoise="false">
+      <Metabolite key="Metabolite_37" name="IkBa" simulationType="reactions" compartment="Compartment_5" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_15" name="IkBa_mRNA" simulationType="reactions" compartment="Compartment_2" addNoise="false">
+      <Metabolite key="Metabolite_38" name="IkBa_mRNA" simulationType="reactions" compartment="Compartment_5" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_16" name="JNK" simulationType="reactions" compartment="Compartment_2" addNoise="false">
+      <Metabolite key="Metabolite_39" name="JNK" simulationType="reactions" compartment="Compartment_5" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_17" name="JNK_P" simulationType="reactions" compartment="Compartment_2" addNoise="false">
+      <Metabolite key="Metabolite_40" name="JNK_P" simulationType="reactions" compartment="Compartment_5" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_18" name="TNFR1" simulationType="reactions" compartment="Compartment_2" addNoise="false">
+      <Metabolite key="Metabolite_42" name="TNFR1" simulationType="reactions" compartment="Compartment_5" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_19" name="TNFa:TNFR1" simulationType="reactions" compartment="Compartment_2" addNoise="false">
+      <Metabolite key="Metabolite_48" name="TNFa:TNFR1" simulationType="reactions" compartment="Compartment_5" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_20" name="p38" simulationType="reactions" compartment="Compartment_2" addNoise="false">
+      <Metabolite key="Metabolite_51" name="p38" simulationType="reactions" compartment="Compartment_5" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_21" name="p38_P" simulationType="reactions" compartment="Compartment_2" addNoise="false">
+      <Metabolite key="Metabolite_46" name="p38_P" simulationType="reactions" compartment="Compartment_5" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_22" name="p65" simulationType="reactions" compartment="Compartment_2" addNoise="false">
+      <Metabolite key="Metabolite_44" name="p65" simulationType="reactions" compartment="Compartment_5" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_22">
+  <rdf:Description rdf:about="#Metabolite_44">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2018-02-14T14:08:09Z</dcterms:W3CDTF>
@@ -241,327 +241,327 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_23" name="p65_mRNA" simulationType="fixed" compartment="Compartment_2" addNoise="false">
+      <Metabolite key="Metabolite_43" name="p65_mRNA" simulationType="fixed" compartment="Compartment_5" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_24" name="IKKb" simulationType="reactions" compartment="Compartment_2" addNoise="false">
+      <Metabolite key="Metabolite_63" name="IKKb" simulationType="reactions" compartment="Compartment_5" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_25" name="IKKb_p" simulationType="reactions" compartment="Compartment_2" addNoise="false">
+      <Metabolite key="Metabolite_62" name="IKKb_p" simulationType="reactions" compartment="Compartment_5" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_26" name="p65-IkBa" simulationType="reactions" compartment="Compartment_2" addNoise="false">
+      <Metabolite key="Metabolite_61" name="p65-IkBa" simulationType="reactions" compartment="Compartment_5" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_27" name="p65_P" simulationType="reactions" compartment="Compartment_2" addNoise="false">
+      <Metabolite key="Metabolite_60" name="p65_P" simulationType="reactions" compartment="Compartment_5" addNoise="false">
       </Metabolite>
-      <Metabolite key="Metabolite_28" name="IkBa_p" simulationType="reactions" compartment="Compartment_2" addNoise="false">
+      <Metabolite key="Metabolite_59" name="IkBa_p" simulationType="reactions" compartment="Compartment_5" addNoise="false">
       </Metabolite>
     </ListOfMetabolites>
     <ListOfModelValues>
-      <ModelValue key="ModelValue_0" name="IKKb_active_phosphorylation_kA" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_108" name="IKKb_active_phosphorylation_kA" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_1" name="IKKb_active_phosphorylation_kM" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_109" name="IKKb_active_phosphorylation_kM" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_2" name="IKKb_active_phosphorylation_vmax" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_110" name="IKKb_active_phosphorylation_vmax" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_3" name="IKKb_basal_phosphoylation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_111" name="IKKb_basal_phosphoylation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_4" name="IKKb_dephopshorylation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_112" name="IKKb_dephopshorylation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_5" name="IkBa_deg_complex_cyt_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_8" name="IkBa_deg_complex_cyt_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_6" name="IkBa_deg_complex_nuc_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_7" name="IkBa_deg_complex_nuc_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_7" name="IkBa_deg_cyt_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_114" name="IkBa_deg_cyt_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_8" name="IkBa_deg_nuc_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_115" name="IkBa_deg_nuc_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_9" name="IkBa_mRNA_deg_cyt_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_116" name="IkBa_mRNA_deg_cyt_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_10" name="IkBa_mRNA_deg_nuc_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_117" name="IkBa_mRNA_deg_nuc_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_11" name="IkBa_mRNA_transport_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_118" name="IkBa_mRNA_transport_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_12" name="IkBa_nuclear_export_k" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_119" name="IkBa_nuclear_export_k" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[IkBa_nuclear_import_k],Reference=Value>*0.5
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_13" name="IkBa_nuclear_import_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_120" name="IkBa_nuclear_import_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_14" name="IkBa:p65_association_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_121" name="IkBa:p65_association_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_15" name="IkBa:p65_dissociation_k" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_122" name="IkBa:p65_dissociation_k" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[IkBa:p65_association_k],Reference=Value>*0.003
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_16" name="IkBa:p65_nuclear_export_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_123" name="IkBa:p65_nuclear_export_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_17" name="IkBa:p65_nuclear_import_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_124" name="IkBa:p65_nuclear_import_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_18" name="IkBa:p65_phosphorylation_kM" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_125" name="IkBa:p65_phosphorylation_kM" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_19" name="IkBa:p65_phosphorylation_kcat" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_126" name="IkBa:p65_phosphorylation_kcat" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_20" name="IkBa:p65_phosphorylation_vmax" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_127" name="IkBa:p65_phosphorylation_vmax" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[IkBa:p65_phosphorylation_kcat],Reference=Value>*&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IKKb_p],Reference=Concentration>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_21" name="IkBa_p_active_degradation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_128" name="IkBa_p_active_degradation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_22" name="IkBa_phosphorylation_kM" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_129" name="IkBa_phosphorylation_kM" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_23" name="IkBa_phosphorylation_kcat" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_130" name="IkBa_phosphorylation_kcat" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[IkBa:p65_phosphorylation_kcat],Reference=Value>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_24" name="IkBa_phosphorylation_vmax" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_131" name="IkBa_phosphorylation_vmax" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[IkBa_phosphorylation_kcat],Reference=Value>*&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IKKb_p],Reference=Concentration>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_25" name="IkBa_transcription_elongation_kbasal" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_132" name="IkBa_transcription_elongation_kbasal" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_26" name="IkBa_transcription_initiation_kbasal" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_133" name="IkBa_transcription_initiation_kbasal" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_27" name="IkBa_transcription_kA2_p65_P" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_134" name="IkBa_transcription_kA2_p65_P" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_28" name="IkBa_transcription_kA3_p65_2P" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_135" name="IkBa_transcription_kA3_p65_2P" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_29" name="IkBa_transcription_kA_p65" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_136" name="IkBa_transcription_kA_p65" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_30" name="IkBa_translation_Km" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_137" name="IkBa_translation_Km" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_31" name="IkBa_translation_vmax" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_138" name="IkBa_translation_vmax" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_32" name="JNK_active_phoshorylation_Km" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_139" name="JNK_active_phoshorylation_Km" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_33" name="JNK_active_phosphorylation_kcat" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_140" name="JNK_active_phosphorylation_kcat" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_34" name="JNK_active_phosphorylation_vmax" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_141" name="JNK_active_phosphorylation_vmax" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[JNK_active_phosphorylation_kcat],Reference=Value>*&lt;CN=Root,Model=beuke1,Vector=Compartments[EL],Vector=Metabolites[TNFa:TNFR1],Reference=Concentration>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_35" name="JNK_basal_phosphorylation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_142" name="JNK_basal_phosphorylation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_36" name="JNK_dephosphorylation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_143" name="JNK_dephosphorylation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_37" name="LPS_LSEC_degradation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_144" name="LPS_LSEC_degradation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_38" name="LPS_MC_degradation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_145" name="LPS_MC_degradation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_39" name="MSK1_activation_kM" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_146" name="MSK1_activation_kM" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_40" name="MSK1_activation_vmax" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_147" name="MSK1_activation_vmax" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[MSK1_phosphorylation_kcat],Reference=Value>*&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p38_P],Reference=Concentration>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_41" name="MSK1_dephosphorylation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_148" name="MSK1_dephosphorylation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_42" name="MSK1_phosphorylation_kcat" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_149" name="MSK1_phosphorylation_kcat" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_43" name="TNFa_LSEC_transcription_elongation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_150" name="TNFa_LSEC_transcription_elongation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_44" name="TNFa_LSEC_transcription_initiation_kA_LPS" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_151" name="TNFa_LSEC_transcription_initiation_kA_LPS" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_45" name="TNFa_LSEC_transcription_initiation_kbasal" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_152" name="TNFa_LSEC_transcription_initiation_kbasal" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_46" name="TNFa_LSEC_transcription_initiation_vA_LPS" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_153" name="TNFa_LSEC_transcription_initiation_vA_LPS" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_47" name="TNFa_LSEC_translation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_154" name="TNFa_LSEC_translation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_48" name="TNFa_MC_transcription_elongation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_155" name="TNFa_MC_transcription_elongation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_49" name="TNFa_MC_transcription_initiation_kA_LPS" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_156" name="TNFa_MC_transcription_initiation_kA_LPS" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_50" name="TNFa_MC_transcription_initiation_kbasal" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_157" name="TNFa_MC_transcription_initiation_kbasal" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_51" name="TNFa_MC_transcription_initiation_vA_LPS" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_158" name="TNFa_MC_transcription_initiation_vA_LPS" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_52" name="TNFa_MC_translation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_159" name="TNFa_MC_translation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_53" name="TNFa_degradation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_160" name="TNFa_degradation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_54" name="TNFa_mRNA_LSEC_degradation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_161" name="TNFa_mRNA_LSEC_degradation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_55" name="TNFa_mRNA_MC_degradation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_162" name="TNFa_mRNA_MC_degradation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_56" name="k_IkBa" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_163" name="k_IkBa" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_57" name="k_IkBa_P" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_164" name="k_IkBa_P" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_58" name="k_IkBa_mRNA" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_165" name="k_IkBa_mRNA" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_59" name="k_JNK_P" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_166" name="k_JNK_P" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_60" name="k_MSK_P" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_167" name="k_MSK_P" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_61" name="k_TNFR1_outer_membrane2vessicle_shuttle" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_168" name="k_TNFR1_outer_membrane2vessicle_shuttle" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_62" name="k_TNFR1_vessicle2outer_membrane_shuttle" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_169" name="k_TNFR1_vessicle2outer_membrane_shuttle" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_63" name="k_TNFa:TNFR1_association" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_170" name="k_TNFa:TNFR1_association" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_64" name="k_TNFa:TNFR1_dissociation" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_171" name="k_TNFa:TNFR1_dissociation" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[k_TNFa:TNFR1_association],Reference=Value>*1.9e-005
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_65" name="k_TNFa:TNFR1_internalisation" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_172" name="k_TNFa:TNFR1_internalisation" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_66" name="k_TNFa_internal_degradation" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_173" name="k_TNFa_internal_degradation" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_67" name="k_p38_P" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_174" name="k_p38_P" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_68" name="k_p65" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_175" name="k_p65" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_69" name="k_p65_P" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_176" name="k_p65_P" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_70" name="p38_active_phoshorylation_Km" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_177" name="p38_active_phoshorylation_Km" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_71" name="p38_active_phosphorylation_kcat" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_178" name="p38_active_phosphorylation_kcat" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_72" name="p38_active_phosphorylation_vmax" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_179" name="p38_active_phosphorylation_vmax" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[p38_active_phosphorylation_kcat],Reference=Value>*&lt;CN=Root,Model=beuke1,Vector=Compartments[EL],Vector=Metabolites[TNFa:TNFR1],Reference=Concentration>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_73" name="p38_basal_phosphorylation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_180" name="p38_basal_phosphorylation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_74" name="p38_dephosphorylation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_181" name="p38_dephosphorylation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_75" name="p65_2P_dephosphorylation" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_182" name="p65_2P_dephosphorylation" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[p65_P_dephosphorylation_k],Reference=Value>*1
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_76" name="p65_MSK1_phosphorylation_kM" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_183" name="p65_MSK1_phosphorylation_kM" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_77" name="p65_MSK1_phosphrylation_kcat" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_184" name="p65_MSK1_phosphrylation_kcat" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_78" name="p65_MSK1_phosphrylation_vmax" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_185" name="p65_MSK1_phosphrylation_vmax" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[p65_MSK1_phosphrylation_kcat],Reference=Value>*&lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[MSK1_P],Reference=Concentration>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_79" name="p65_P_MSK1_phosphrylation_kM" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_186" name="p65_P_MSK1_phosphrylation_kM" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[p65_MSK1_phosphorylation_kM],Reference=Value>*1
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_80" name="p65_P_MSK1_phosphrylation_kcat" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_187" name="p65_P_MSK1_phosphrylation_kcat" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[p65_MSK1_phosphrylation_kcat],Reference=Value>*1
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_81" name="p65_P_MSK1_phosphrylation_vmax" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_188" name="p65_P_MSK1_phosphrylation_vmax" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[p65_P_MSK1_phosphrylation_kcat],Reference=Value>*&lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[MSK1_P],Reference=Concentration>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_82" name="p65_P_dephosphorylation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_189" name="p65_P_dephosphorylation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_83" name="p65_degradation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_190" name="p65_degradation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_84" name="p65_nuclear_export_k" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_191" name="p65_nuclear_export_k" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[p65_nuclear_import_k],Reference=Value>*0.02
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_85" name="p65_nuclear_import_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_192" name="p65_nuclear_import_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_86" name="p65_translation_k" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_193" name="p65_translation_k" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_87" name="scaled_IkBa" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_194" name="scaled_IkBa" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[k_IkBa],Reference=Value>*&lt;CN=Root,Model=beuke1,Vector=Values[unscaled_IkBa],Reference=Value>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_88" name="scaled_IkBa_P" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_195" name="scaled_IkBa_P" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[k_IkBa_P],Reference=Value>*&lt;CN=Root,Model=beuke1,Vector=Values[unscaled_IkBa_P],Reference=Value>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_89" name="scaled_IkBa_mRNA" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_196" name="scaled_IkBa_mRNA" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[k_IkBa_mRNA],Reference=Value>*&lt;CN=Root,Model=beuke1,Vector=Values[unscaled_IkBa_mRNA],Reference=Value>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_90" name="scaled_JNK_P" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_197" name="scaled_JNK_P" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[k_JNK_P],Reference=Value>*&lt;CN=Root,Model=beuke1,Vector=Values[unscaled_JNK_P],Reference=Value>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_91" name="scaled_MSK_P" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_198" name="scaled_MSK_P" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[k_MSK_P],Reference=Value>*&lt;CN=Root,Model=beuke1,Vector=Values[unscaled_MSK_P],Reference=Value>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_92" name="scaled_p38_P" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_199" name="scaled_p38_P" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[k_p38_P],Reference=Value>*&lt;CN=Root,Model=beuke1,Vector=Values[unscaled_p38_P],Reference=Value>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_93" name="scaled_p65" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_200" name="scaled_p65" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[k_p65],Reference=Value>*&lt;CN=Root,Model=beuke1,Vector=Values[unscaled_p65],Reference=Value>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_94" name="scaled_p65_P" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_201" name="scaled_p65_P" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Values[k_p65_P],Reference=Value>*&lt;CN=Root,Model=beuke1,Vector=Values[unscaled_p65_P],Reference=Value>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_95" name="unscaled_IkBa" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_202" name="unscaled_IkBa" simulationType="assignment" addNoise="false">
         <Expression>
           (&lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[IkBa],Reference=Concentration>+&lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[p65-IkBa],Reference=Concentration>)*&lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Reference=Volume>+(&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IkBa_p],Reference=Concentration>+&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65-IkBa],Reference=Concentration>+&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IkBa],Reference=Concentration>)*&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Reference=Volume>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_96" name="unscaled_IkBa_P" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_203" name="unscaled_IkBa_P" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IkBa_p],Reference=Concentration>*&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Reference=Volume>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_97" name="unscaled_IkBa_mRNA" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_204" name="unscaled_IkBa_mRNA" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IkBa_mRNA],Reference=Concentration>*&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Reference=Volume>+&lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Reference=Volume>*&lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[IkBa_mRNA],Reference=Concentration>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_98" name="unscaled_JNK_P" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_205" name="unscaled_JNK_P" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Reference=Volume>*&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[JNK_P],Reference=Concentration>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_99" name="unscaled_MSK_P" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_206" name="unscaled_MSK_P" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Reference=Volume>*&lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[MSK1_P],Reference=Concentration>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_100" name="unscaled_p38_P" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_207" name="unscaled_p38_P" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Reference=Volume>*&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p38_P],Reference=Concentration>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_101" name="unscaled_p65" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_208" name="unscaled_p65" simulationType="assignment" addNoise="false">
         <Expression>
           (&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65_P],Reference=Concentration>+&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65-IkBa],Reference=Concentration>+&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65],Reference=Concentration>)*&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Reference=Volume>+&lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Reference=Volume>*(&lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[p65_P],Reference=Concentration>+&lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[p65-IkBa],Reference=Concentration>+&lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[p65],Reference=Concentration>+&lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[p65_2P],Reference=Concentration>)
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_102" name="unscaled_p65_P" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_209" name="unscaled_p65_P" simulationType="assignment" addNoise="false">
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Reference=Volume>*&lt;CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[p65_P],Reference=Concentration>+&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Reference=Volume>*&lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65_P],Reference=Concentration>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_103" name="min" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_210" name="min" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_104" name="max" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_211" name="max" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_105" name="amp" simulationType="assignment" addNoise="false">
+      <ModelValue key="ModelValue_212" name="amp" simulationType="assignment" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_105">
+  <rdf:Description rdf:about="#ModelValue_212">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2017-03-30T16:12:21Z</dcterms:W3CDTF>
@@ -574,16 +574,18 @@ Reaction scheme where the products are created from the reactants and the change
           &lt;CN=Root,Model=beuke1,Vector=Values[max],Reference=Value>-&lt;CN=Root,Model=beuke1,Vector=Values[min],Reference=Value>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_106" name="time1" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_213" name="time1" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_107" name="period" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_214" name="period" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_108" name="avg" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_215" name="avg" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_109" name="int" simulationType="ode" addNoise="false">
+      <ModelValue key="ModelValue_216" name="int" simulationType="ode" addNoise="false">
         <MiriamAnnotation>
-<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_109">
+<rdf:RDF
+   xmlns:dcterms="http://purl.org/dc/terms/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#ModelValue_216">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2017-03-31T14:19:51Z</dcterms:W3CDTF>
@@ -591,17 +593,18 @@ Reaction scheme where the products are created from the reactants and the change
     </dcterms:created>
   </rdf:Description>
 </rdf:RDF>
+
         </MiriamAnnotation>
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65],Reference=Concentration>
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_110" name="sign" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_217" name="sign" simulationType="fixed" addNoise="false">
       </ModelValue>
-      <ModelValue key="ModelValue_111" name="counter" simulationType="fixed" addNoise="false">
+      <ModelValue key="ModelValue_218" name="counter" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_111">
+  <rdf:Description rdf:about="#ModelValue_218">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2018-02-14T14:14:10Z</dcterms:W3CDTF>
@@ -613,1136 +616,1136 @@ Reaction scheme where the products are created from the reactants and the change
       </ModelValue>
     </ListOfModelValues>
     <ListOfReactions>
-      <Reaction key="Reaction_0" name="Complex_association_c" reversible="true" fast="false" addNoise="false">
+      <Reaction key="Reaction_49" name="Complex_association_c" reversible="true" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_14" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_22" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_37" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_44" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_26" stoichiometry="1"/>
+          <Product metabolite="Metabolite_61" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5144" name="k1" value="0.0380804"/>
-          <Constant key="Parameter_5146" name="k2" value="0.000114241"/>
+          <Constant key="Parameter_7626" name="k1" value="0.0380804"/>
+          <Constant key="Parameter_7712" name="k2" value="0.000114241"/>
         </ListOfConstants>
         <KineticLaw function="Function_14" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_69">
-              <SourceParameter reference="ModelValue_14"/>
+              <SourceParameter reference="ModelValue_121"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_68">
-              <SourceParameter reference="Metabolite_14"/>
-              <SourceParameter reference="Metabolite_22"/>
+              <SourceParameter reference="Metabolite_37"/>
+              <SourceParameter reference="Metabolite_44"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_78">
-              <SourceParameter reference="ModelValue_15"/>
+              <SourceParameter reference="ModelValue_122"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_26"/>
+              <SourceParameter reference="Metabolite_61"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_1" name="Complex_degradation_IkBa_c" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_50" name="Complex_degradation_IkBa_c" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_26" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_61" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_22" stoichiometry="1"/>
+          <Product metabolite="Metabolite_44" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5147" name="k1" value="1e-05"/>
+          <Constant key="Parameter_7714" name="k1" value="1e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_5"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_26"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_2" name="Complex_degradation_IkBa_n" reversible="false" fast="false" addNoise="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_10" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_11" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_5141" name="k1" value="1e-05"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_6"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_10"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_3" name="Complex_degradation_p65_c" reversible="false" fast="false" addNoise="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_26" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_14" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_5143" name="k1" value="1.59425e-05"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_83"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_26"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_4" name="Complex_degradation_p65_n" reversible="false" fast="false" addNoise="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_10" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_12" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_5142" name="k1" value="1.59425e-05"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_83"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_10"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_5" name="Complex_nuclear_shuttle" reversible="true" fast="false" addNoise="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_10" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_26" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_5145" name="k1" value="0.0001"/>
-          <Constant key="Parameter_5148" name="k2" value="0.002"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_14" unitType="Default">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_69">
-              <SourceParameter reference="ModelValue_16"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_68">
-              <SourceParameter reference="Metabolite_10"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_78">
-              <SourceParameter reference="ModelValue_17"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_26"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_6" name="IKK_phosphorylation" reversible="false" fast="false" addNoise="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_24" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_25" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfModifiers>
-          <Modifier metabolite="Metabolite_2" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_3" stoichiometry="1"/>
-        </ListOfModifiers>
-        <ListOfConstants>
-          <Constant key="Parameter_5139" name="IKKb_active_phosphorylation_kA" value="0.225847"/>
-          <Constant key="Parameter_5137" name="IKKb_active_phosphorylation_kM" value="5.99993"/>
-          <Constant key="Parameter_5136" name="IKKb_active_phosphorylation_vmax" value="214.511"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_40" unitType="ConcentrationPerTime" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_264">
-              <SourceParameter reference="ModelValue_0"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_263">
-              <SourceParameter reference="ModelValue_1"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_262">
-              <SourceParameter reference="ModelValue_2"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_261">
-              <SourceParameter reference="Metabolite_2"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_250">
-              <SourceParameter reference="Metabolite_24"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_7" name="IkBa_degradation_c" reversible="false" fast="false" addNoise="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_14" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfConstants>
-          <Constant key="Parameter_5140" name="k1" value="9.79808e-06"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_7"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_14"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_8" name="IkBa_degradation_n" reversible="false" fast="false" addNoise="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_12" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfConstants>
-          <Constant key="Parameter_5138" name="k1" value="1e-05"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
               <SourceParameter reference="ModelValue_8"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_12"/>
+              <SourceParameter reference="Metabolite_61"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_9" name="IkBa_mRNA_degradation_c" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_51" name="Complex_degradation_IkBa_n" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_15" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_34" stoichiometry="1"/>
+        </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5113" name="k1" value="4.9291e-05"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_9"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_15"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_10" name="IkBa_mRNA_degradation_n" reversible="false" fast="false" addNoise="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_4" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfConstants>
-          <Constant key="Parameter_5111" name="k1" value="5e-05"/>
+          <Constant key="Parameter_7715" name="k1" value="1e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_10"/>
+              <SourceParameter reference="ModelValue_7"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_4"/>
+              <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_11" name="IkBa_mRNA_transport" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_52" name="Complex_degradation_p65_c" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_4" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_61" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_15" stoichiometry="1"/>
+          <Product metabolite="Metabolite_37" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5110" name="k1" value="0.0001"/>
+          <Constant key="Parameter_7709" name="k1" value="1.59425e-05"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_80">
+              <SourceParameter reference="ModelValue_190"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Metabolite_61"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_53" name="Complex_degradation_p65_n" reversible="false" fast="false" addNoise="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_33" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_35" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_7710" name="k1" value="1.59425e-05"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_80">
+              <SourceParameter reference="ModelValue_190"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Metabolite_33"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_54" name="Complex_nuclear_shuttle" reversible="true" fast="false" addNoise="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_33" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_61" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_7713" name="k1" value="0.0001"/>
+          <Constant key="Parameter_7705" name="k2" value="0.002"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_14" unitType="Default">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_69">
+              <SourceParameter reference="ModelValue_123"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_68">
+              <SourceParameter reference="Metabolite_33"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_78">
+              <SourceParameter reference="ModelValue_124"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_79">
+              <SourceParameter reference="Metabolite_61"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_55" name="IKK_phosphorylation" reversible="false" fast="false" addNoise="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_63" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_62" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfModifiers>
+          <Modifier metabolite="Metabolite_50" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_52" stoichiometry="1"/>
+        </ListOfModifiers>
+        <ListOfConstants>
+          <Constant key="Parameter_7704" name="IKKb_active_phosphorylation_kA" value="0.225847"/>
+          <Constant key="Parameter_7711" name="IKKb_active_phosphorylation_kM" value="5.99993"/>
+          <Constant key="Parameter_7707" name="IKKb_active_phosphorylation_vmax" value="214.511"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_49" unitType="ConcentrationPerTime" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_388">
+              <SourceParameter reference="ModelValue_108"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_387">
+              <SourceParameter reference="ModelValue_109"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_386">
+              <SourceParameter reference="ModelValue_110"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_385">
+              <SourceParameter reference="Metabolite_50"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_384">
+              <SourceParameter reference="Metabolite_63"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_56" name="IkBa_degradation_c" reversible="false" fast="false" addNoise="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_37" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfConstants>
+          <Constant key="Parameter_7708" name="k1" value="9.79808e-06"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_80">
+              <SourceParameter reference="ModelValue_114"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Metabolite_37"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_57" name="IkBa_degradation_n" reversible="false" fast="false" addNoise="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_35" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfConstants>
+          <Constant key="Parameter_7706" name="k1" value="1e-05"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_80">
+              <SourceParameter reference="ModelValue_115"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Metabolite_35"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_58" name="IkBa_mRNA_degradation_c" reversible="false" fast="false" addNoise="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_38" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfConstants>
+          <Constant key="Parameter_7702" name="k1" value="4.9291e-05"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_80">
+              <SourceParameter reference="ModelValue_116"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Metabolite_38"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_59" name="IkBa_mRNA_degradation_n" reversible="false" fast="false" addNoise="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_49" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfConstants>
+          <Constant key="Parameter_7700" name="k1" value="5e-05"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_80">
+              <SourceParameter reference="ModelValue_117"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Metabolite_49"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_60" name="IkBa_mRNA_transport" reversible="false" fast="false" addNoise="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_49" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_38" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_7703" name="k1" value="0.0001"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_11"/>
+              <SourceParameter reference="ModelValue_118"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_4"/>
+              <SourceParameter reference="Metabolite_49"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_12" name="IkBa_nuclear_shuttle" reversible="true" fast="false" addNoise="false">
+      <Reaction key="Reaction_61" name="IkBa_nuclear_shuttle" reversible="true" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_14" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_37" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_12" stoichiometry="1"/>
+          <Product metabolite="Metabolite_35" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5114" name="k1" value="0.005"/>
-          <Constant key="Parameter_5112" name="k2" value="0.0025"/>
+          <Constant key="Parameter_7697" name="k1" value="0.005"/>
+          <Constant key="Parameter_7696" name="k2" value="0.0025"/>
         </ListOfConstants>
         <KineticLaw function="Function_14" unitType="Default">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_69">
-              <SourceParameter reference="ModelValue_13"/>
+              <SourceParameter reference="ModelValue_120"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_68">
-              <SourceParameter reference="Metabolite_14"/>
+              <SourceParameter reference="Metabolite_37"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_78">
-              <SourceParameter reference="ModelValue_12"/>
+              <SourceParameter reference="ModelValue_119"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_12"/>
+              <SourceParameter reference="Metabolite_35"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_13" name="IkBa_phosphorylation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_62" name="IkBa_phosphorylation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_14" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_37" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_28" stoichiometry="1"/>
+          <Product metabolite="Metabolite_59" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5116" name="IkBa_phosphorylation_kM" value="0.117842"/>
-          <Constant key="Parameter_5131" name="IkBa_phosphorylation_vmax" value="0.000221972"/>
+          <Constant key="Parameter_7701" name="IkBa_phosphorylation_kM" value="0.117842"/>
+          <Constant key="Parameter_7639" name="IkBa_phosphorylation_vmax" value="0.000221972"/>
         </ListOfConstants>
-        <KineticLaw function="Function_41" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
+        <KineticLaw function="Function_50" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_269">
-              <SourceParameter reference="Metabolite_14"/>
+            <CallParameter functionParameter="FunctionParameter_379">
+              <SourceParameter reference="Metabolite_37"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_268">
-              <SourceParameter reference="ModelValue_22"/>
+            <CallParameter functionParameter="FunctionParameter_380">
+              <SourceParameter reference="ModelValue_129"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_267">
-              <SourceParameter reference="ModelValue_24"/>
+            <CallParameter functionParameter="FunctionParameter_381">
+              <SourceParameter reference="ModelValue_131"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_14" name="IkBa_transcription_elongation_1" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_63" name="IkBa_transcription_elongation_1" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_47" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_6" stoichiometry="1"/>
+          <Product metabolite="Metabolite_29" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5119" name="k1" value="7.9497e-05"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_25"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_5"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_15" name="IkBa_transcription_elongation_2" reversible="false" fast="false" addNoise="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_6" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_4" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_5133" name="k1" value="7.9497e-05"/>
+          <Constant key="Parameter_7698" name="k1" value="7.9497e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_25"/>
+              <SourceParameter reference="ModelValue_132"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_6"/>
+              <SourceParameter reference="Metabolite_47"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_16" name="IkBa_translation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_64" name="IkBa_transcription_elongation_2" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_15" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_29" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_14" stoichiometry="1"/>
-          <Product metabolite="Metabolite_15" stoichiometry="1"/>
+          <Product metabolite="Metabolite_49" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5134" name="IkBa_translation_Km" value="3.69291"/>
-          <Constant key="Parameter_5128" name="IkBa_translation_vmax" value="0.00120941"/>
+          <Constant key="Parameter_7699" name="k1" value="7.9497e-05"/>
         </ListOfConstants>
-        <KineticLaw function="Function_42" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
+        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_270">
-              <SourceParameter reference="Metabolite_15"/>
+            <CallParameter functionParameter="FunctionParameter_80">
+              <SourceParameter reference="ModelValue_132"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_265">
-              <SourceParameter reference="ModelValue_30"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_266">
-              <SourceParameter reference="ModelValue_31"/>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Metabolite_29"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_17" name="JNK_active_phosphorylation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_65" name="IkBa_translation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_16" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_38" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_17" stoichiometry="1"/>
+          <Product metabolite="Metabolite_37" stoichiometry="1"/>
+          <Product metabolite="Metabolite_38" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5115" name="JNK_active_phoshorylation_Km" value="0.00163613"/>
-          <Constant key="Parameter_5123" name="JNK_active_phosphorylation_vmax" value="0"/>
+          <Constant key="Parameter_7649" name="IkBa_translation_Km" value="3.69291"/>
+          <Constant key="Parameter_7692" name="IkBa_translation_vmax" value="0.00120941"/>
         </ListOfConstants>
-        <KineticLaw function="Function_43" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
+        <KineticLaw function="Function_51" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_273">
-              <SourceParameter reference="Metabolite_16"/>
+            <CallParameter functionParameter="FunctionParameter_378">
+              <SourceParameter reference="Metabolite_38"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_272">
-              <SourceParameter reference="ModelValue_32"/>
+            <CallParameter functionParameter="FunctionParameter_383">
+              <SourceParameter reference="ModelValue_137"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_271">
-              <SourceParameter reference="ModelValue_34"/>
+            <CallParameter functionParameter="FunctionParameter_382">
+              <SourceParameter reference="ModelValue_138"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_18" name="JNK_basal_phosphorylation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_66" name="JNK_active_phosphorylation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_16" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_39" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_17" stoichiometry="1"/>
+          <Product metabolite="Metabolite_40" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5130" name="k1" value="2.59046e-05"/>
+          <Constant key="Parameter_7690" name="JNK_active_phoshorylation_Km" value="0.00163613"/>
+          <Constant key="Parameter_7686" name="JNK_active_phosphorylation_vmax" value="0"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_52" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_375">
+              <SourceParameter reference="Metabolite_39"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_376">
+              <SourceParameter reference="ModelValue_139"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_377">
+              <SourceParameter reference="ModelValue_141"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_67" name="JNK_basal_phosphorylation" reversible="false" fast="false" addNoise="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_39" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_40" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_7691" name="k1" value="2.59046e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_35"/>
+              <SourceParameter reference="ModelValue_142"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_16"/>
+              <SourceParameter reference="Metabolite_39"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_19" name="JNK_dephosphorylation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_68" name="JNK_dephosphorylation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_17" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_40" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_16" stoichiometry="1"/>
+          <Product metabolite="Metabolite_39" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5117" name="k1" value="0.000710823"/>
+          <Constant key="Parameter_7687" name="k1" value="0.000710823"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_36"/>
+              <SourceParameter reference="ModelValue_143"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_17"/>
+              <SourceParameter reference="Metabolite_40"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_20" name="LPS_LSEC_degradation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_69" name="LPS_LSEC_degradation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_0" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_41" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5129" name="k1" value="0.000221889"/>
+          <Constant key="Parameter_7682" name="k1" value="0.000221889"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[EL]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_37"/>
+              <SourceParameter reference="ModelValue_144"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_0"/>
+              <SourceParameter reference="Metabolite_41"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_21" name="LPS_MC_degradation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_70" name="LPS_MC_degradation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_0" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_41" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5122" name="k1" value="0.000115242"/>
+          <Constant key="Parameter_7688" name="k1" value="0.000115242"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[EL]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_38"/>
+              <SourceParameter reference="ModelValue_145"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_0"/>
+              <SourceParameter reference="Metabolite_41"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_22" name="MSK1_activation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_71" name="MSK1_activation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_30" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
+          <Product metabolite="Metabolite_31" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5126" name="MSK1_activation_kM" value="0.332175"/>
-          <Constant key="Parameter_5121" name="MSK1_activation_vmax" value="0.000293323"/>
+          <Constant key="Parameter_7693" name="MSK1_activation_kM" value="0.332175"/>
+          <Constant key="Parameter_7654" name="MSK1_activation_vmax" value="0.000293323"/>
         </ListOfConstants>
-        <KineticLaw function="Function_44" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
+        <KineticLaw function="Function_53" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_276">
-              <SourceParameter reference="Metabolite_7"/>
+            <CallParameter functionParameter="FunctionParameter_372">
+              <SourceParameter reference="Metabolite_30"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_275">
-              <SourceParameter reference="ModelValue_39"/>
+            <CallParameter functionParameter="FunctionParameter_373">
+              <SourceParameter reference="ModelValue_146"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_274">
-              <SourceParameter reference="ModelValue_40"/>
+            <CallParameter functionParameter="FunctionParameter_374">
+              <SourceParameter reference="ModelValue_147"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_23" name="MSK1_deactivation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_72" name="MSK1_deactivation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_8" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_31" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_7" stoichiometry="1"/>
+          <Product metabolite="Metabolite_30" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5125" name="k1" value="0.01"/>
+          <Constant key="Parameter_7683" name="k1" value="0.01"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_41"/>
+              <SourceParameter reference="ModelValue_148"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_8"/>
+              <SourceParameter reference="Metabolite_31"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_24" name="TNFR1_shuttle" reversible="true" fast="false" addNoise="false">
+      <Reaction key="Reaction_73" name="TNFR1_shuttle" reversible="true" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_18" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_42" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_1" stoichiometry="1"/>
+          <Product metabolite="Metabolite_45" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5124" name="k1" value="0.0004"/>
-          <Constant key="Parameter_5127" name="k2" value="1.8e-05"/>
+          <Constant key="Parameter_7617" name="k1" value="0.0004"/>
+          <Constant key="Parameter_7620" name="k2" value="1.8e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_14" unitType="Default">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_69">
-              <SourceParameter reference="ModelValue_62"/>
+              <SourceParameter reference="ModelValue_169"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_68">
-              <SourceParameter reference="Metabolite_18"/>
+              <SourceParameter reference="Metabolite_42"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_78">
-              <SourceParameter reference="ModelValue_61"/>
+              <SourceParameter reference="ModelValue_168"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_1"/>
+              <SourceParameter reference="Metabolite_45"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_25" name="TNFa:TNFR1_association" reversible="true" fast="false" addNoise="false">
+      <Reaction key="Reaction_74" name="TNFa:TNFR1_association" reversible="true" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_52" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_45" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_2" stoichiometry="1"/>
+          <Product metabolite="Metabolite_50" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5132" name="k1" value="16.833"/>
-          <Constant key="Parameter_5118" name="k2" value="0.000319827"/>
+          <Constant key="Parameter_7614" name="k1" value="16.833"/>
+          <Constant key="Parameter_7684" name="k2" value="0.000319827"/>
         </ListOfConstants>
         <KineticLaw function="Function_14" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[EL]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_69">
-              <SourceParameter reference="ModelValue_63"/>
+              <SourceParameter reference="ModelValue_170"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_68">
-              <SourceParameter reference="Metabolite_3"/>
-              <SourceParameter reference="Metabolite_1"/>
+              <SourceParameter reference="Metabolite_52"/>
+              <SourceParameter reference="Metabolite_45"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_78">
-              <SourceParameter reference="ModelValue_64"/>
+              <SourceParameter reference="ModelValue_171"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_2"/>
+              <SourceParameter reference="Metabolite_50"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_26" name="TNFa:TNFR1_internalisation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_75" name="TNFa:TNFR1_internalisation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_2" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_50" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_19" stoichiometry="1"/>
+          <Product metabolite="Metabolite_48" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5120" name="k1" value="0.000924"/>
+          <Constant key="Parameter_7689" name="k1" value="0.000924"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_65"/>
+              <SourceParameter reference="ModelValue_172"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_2"/>
+              <SourceParameter reference="Metabolite_50"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_27" name="TNFa degradation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_76" name="TNFa degradation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_52" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5135" name="k1" value="0.000171417"/>
+          <Constant key="Parameter_7619" name="k1" value="0.000171417"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[EL]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_53"/>
+              <SourceParameter reference="ModelValue_160"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_3"/>
+              <SourceParameter reference="Metabolite_52"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_28" name="TNFa_internal_degradation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_77" name="TNFa_internal_degradation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_48" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_18" stoichiometry="1"/>
+          <Product metabolite="Metabolite_42" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5149" name="k1" value="6.14429e-05"/>
+          <Constant key="Parameter_7674" name="k1" value="6.14429e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_66"/>
+              <SourceParameter reference="ModelValue_173"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_19"/>
+              <SourceParameter reference="Metabolite_48"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_29" name="basal_IKKb_phosphorylation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_78" name="basal_IKKb_phosphorylation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_24" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_63" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_25" stoichiometry="1"/>
+          <Product metabolite="Metabolite_62" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5150" name="k1" value="8.60727e-08"/>
+          <Constant key="Parameter_7677" name="k1" value="8.60727e-08"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_3"/>
+              <SourceParameter reference="ModelValue_111"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_24"/>
+              <SourceParameter reference="Metabolite_63"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_30" name="p38_active_phosphorylation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_79" name="p38_active_phosphorylation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_20" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_51" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_21" stoichiometry="1"/>
+          <Product metabolite="Metabolite_46" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5156" name="p38_active_phoshorylation_Km" value="2.56473"/>
-          <Constant key="Parameter_5155" name="p38_active_phosphorylation_vmax" value="0"/>
+          <Constant key="Parameter_7675" name="p38_active_phoshorylation_Km" value="2.56473"/>
+          <Constant key="Parameter_7621" name="p38_active_phosphorylation_vmax" value="0"/>
         </ListOfConstants>
-        <KineticLaw function="Function_45" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
+        <KineticLaw function="Function_54" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_279">
-              <SourceParameter reference="Metabolite_20"/>
+            <CallParameter functionParameter="FunctionParameter_369">
+              <SourceParameter reference="Metabolite_51"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_278">
-              <SourceParameter reference="ModelValue_70"/>
+            <CallParameter functionParameter="FunctionParameter_370">
+              <SourceParameter reference="ModelValue_177"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_277">
-              <SourceParameter reference="ModelValue_72"/>
+            <CallParameter functionParameter="FunctionParameter_371">
+              <SourceParameter reference="ModelValue_179"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_31" name="p38_basal_phosphorylation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_99" name="p38_basal_phosphorylation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_20" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_51" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_21" stoichiometry="1"/>
+          <Product metabolite="Metabolite_46" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5157" name="k1" value="0.00025146"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_73"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_20"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_32" name="p38_dephosphorylation" reversible="false" fast="false" addNoise="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_21" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_20" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_5152" name="k1" value="0.000531555"/>
+          <Constant key="Parameter_7681" name="k1" value="0.00025146"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_74"/>
+              <SourceParameter reference="ModelValue_180"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_21"/>
+              <SourceParameter reference="Metabolite_51"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_33" name="p65_2P_degradation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_98" name="p38_dephosphorylation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_46" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_51" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_7670" name="k1" value="0.000531555"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_80">
+              <SourceParameter reference="ModelValue_181"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Metabolite_46"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_97" name="p65_2P_degradation" reversible="false" fast="false" addNoise="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_32" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5151" name="k1" value="1.59425e-05"/>
+          <Constant key="Parameter_7678" name="k1" value="1.59425e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_83"/>
+              <SourceParameter reference="ModelValue_190"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_9"/>
+              <SourceParameter reference="Metabolite_32"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_34" name="p65_2P_dephosphorylation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_96" name="p65_2P_dephosphorylation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_32" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_11" stoichiometry="1"/>
+          <Product metabolite="Metabolite_34" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5154" name="k1" value="0.000892996"/>
+          <Constant key="Parameter_7680" name="k1" value="0.000892996"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_75"/>
+              <SourceParameter reference="ModelValue_182"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_9"/>
+              <SourceParameter reference="Metabolite_32"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_35" name="p65_P_degradation_c" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_95" name="p65_P_degradation_c" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_27" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_60" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5153" name="k1" value="1.59425e-05"/>
+          <Constant key="Parameter_7685" name="k1" value="1.59425e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_83"/>
+              <SourceParameter reference="ModelValue_190"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_27"/>
+              <SourceParameter reference="Metabolite_60"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_36" name="p65_P_degradation_n" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_94" name="p65_P_degradation_n" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_13" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_36" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5158" name="k1" value="1.59425e-05"/>
+          <Constant key="Parameter_7676" name="k1" value="1.59425e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_83"/>
+              <SourceParameter reference="ModelValue_190"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_13"/>
+              <SourceParameter reference="Metabolite_36"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_37" name="p65_P_dephosphorylation_c" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_93" name="p65_P_dephosphorylation_c" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_13" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_36" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_11" stoichiometry="1"/>
+          <Product metabolite="Metabolite_34" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5162" name="k1" value="0.000892996"/>
+          <Constant key="Parameter_7668" name="k1" value="0.000892996"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_82"/>
+              <SourceParameter reference="ModelValue_189"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_13"/>
+              <SourceParameter reference="Metabolite_36"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_38" name="p65_P_dephosphorylation_n" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_92" name="p65_P_dephosphorylation_n" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_27" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_60" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_22" stoichiometry="1"/>
+          <Product metabolite="Metabolite_44" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5160" name="k1" value="0.000892996"/>
+          <Constant key="Parameter_7679" name="k1" value="0.000892996"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_82"/>
+              <SourceParameter reference="ModelValue_189"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_27"/>
+              <SourceParameter reference="Metabolite_60"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_39" name="p65_P_phosphorylation_MSK1" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_91" name="p65_P_phosphorylation_MSK1" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_13" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_36" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_9" stoichiometry="1"/>
+          <Product metabolite="Metabolite_32" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_8" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_31" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5159" name="p65_P_MSK1_phosphrylation_kM" value="0.843653"/>
-          <Constant key="Parameter_5163" name="p65_P_MSK1_phosphrylation_vmax" value="0.00102741"/>
+          <Constant key="Parameter_7663" name="p65_P_MSK1_phosphrylation_kM" value="0.843653"/>
+          <Constant key="Parameter_7664" name="p65_P_MSK1_phosphrylation_vmax" value="0.00102741"/>
         </ListOfConstants>
-        <KineticLaw function="Function_46" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
+        <KineticLaw function="Function_55" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_282">
-              <SourceParameter reference="ModelValue_79"/>
+            <CallParameter functionParameter="FunctionParameter_366">
+              <SourceParameter reference="ModelValue_186"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_281">
-              <SourceParameter reference="ModelValue_81"/>
+            <CallParameter functionParameter="FunctionParameter_367">
+              <SourceParameter reference="ModelValue_188"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_280">
-              <SourceParameter reference="Metabolite_13"/>
+            <CallParameter functionParameter="FunctionParameter_368">
+              <SourceParameter reference="Metabolite_36"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_40" name="p65_nuclear_shuttle" reversible="true" fast="false" addNoise="false">
+      <Reaction key="Reaction_90" name="p65_nuclear_shuttle" reversible="true" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_22" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_44" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_11" stoichiometry="1"/>
+          <Product metabolite="Metabolite_34" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5161" name="k1" value="0.0005"/>
-          <Constant key="Parameter_5165" name="k2" value="1e-05"/>
+          <Constant key="Parameter_7662" name="k1" value="0.0005"/>
+          <Constant key="Parameter_7671" name="k2" value="1e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_14" unitType="Default">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_69">
-              <SourceParameter reference="ModelValue_85"/>
+              <SourceParameter reference="ModelValue_192"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_68">
-              <SourceParameter reference="Metabolite_22"/>
+              <SourceParameter reference="Metabolite_44"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_78">
-              <SourceParameter reference="ModelValue_84"/>
+              <SourceParameter reference="ModelValue_191"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_11"/>
+              <SourceParameter reference="Metabolite_34"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_41" name="p65_phosphorylation_MSK1" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_89" name="p65_phosphorylation_MSK1" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_11" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_34" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_9" stoichiometry="1"/>
+          <Product metabolite="Metabolite_32" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_8" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_31" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5167" name="p65_MSK1_phosphorylation_kM" value="0.843653"/>
-          <Constant key="Parameter_5168" name="p65_MSK1_phosphrylation_vmax" value="0.00102741"/>
+          <Constant key="Parameter_7672" name="p65_MSK1_phosphorylation_kM" value="0.843653"/>
+          <Constant key="Parameter_7667" name="p65_MSK1_phosphrylation_vmax" value="0.00102741"/>
         </ListOfConstants>
-        <KineticLaw function="Function_47" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
+        <KineticLaw function="Function_56" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_285">
-              <SourceParameter reference="ModelValue_76"/>
+            <CallParameter functionParameter="FunctionParameter_363">
+              <SourceParameter reference="ModelValue_183"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_284">
-              <SourceParameter reference="ModelValue_78"/>
+            <CallParameter functionParameter="FunctionParameter_364">
+              <SourceParameter reference="ModelValue_185"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_283">
-              <SourceParameter reference="Metabolite_11"/>
+            <CallParameter functionParameter="FunctionParameter_365">
+              <SourceParameter reference="Metabolite_34"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_42" name="p65_translation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_88" name="p65_translation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_23" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_43" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_22" stoichiometry="1"/>
-          <Product metabolite="Metabolite_23" stoichiometry="1"/>
+          <Product metabolite="Metabolite_44" stoichiometry="1"/>
+          <Product metabolite="Metabolite_43" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5164" name="k1" value="1.75863e-06"/>
+          <Constant key="Parameter_7673" name="k1" value="1.75863e-06"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_86"/>
+              <SourceParameter reference="ModelValue_193"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_23"/>
+              <SourceParameter reference="Metabolite_43"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_43" name="IkBa_transcription_initiation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_87" name="IkBa_transcription_initiation" reversible="false" fast="false" addNoise="false">
         <ListOfProducts>
-          <Product metabolite="Metabolite_5" stoichiometry="1"/>
+          <Product metabolite="Metabolite_47" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_9" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_11" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_13" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_32" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_34" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_36" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5166" name="IkBa_transcription_initiation_kbasal" value="1e-06"/>
-          <Constant key="Parameter_5171" name="IkBa_transcription_kA2_p65_P" value="0.0001"/>
-          <Constant key="Parameter_5172" name="IkBa_transcription_kA3_p65_2P" value="0.0001"/>
-          <Constant key="Parameter_5173" name="IkBa_transcription_kA_p65" value="0.232624"/>
+          <Constant key="Parameter_7665" name="IkBa_transcription_initiation_kbasal" value="1e-06"/>
+          <Constant key="Parameter_7669" name="IkBa_transcription_kA2_p65_P" value="0.0001"/>
+          <Constant key="Parameter_7666" name="IkBa_transcription_kA3_p65_2P" value="0.0001"/>
+          <Constant key="Parameter_7660" name="IkBa_transcription_kA_p65" value="0.232624"/>
         </ListOfConstants>
-        <KineticLaw function="Function_48" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
+        <KineticLaw function="Function_57" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_288">
-              <SourceParameter reference="ModelValue_26"/>
+            <CallParameter functionParameter="FunctionParameter_360">
+              <SourceParameter reference="ModelValue_133"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_287">
-              <SourceParameter reference="ModelValue_27"/>
+            <CallParameter functionParameter="FunctionParameter_361">
+              <SourceParameter reference="ModelValue_134"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_286">
-              <SourceParameter reference="ModelValue_28"/>
+            <CallParameter functionParameter="FunctionParameter_362">
+              <SourceParameter reference="ModelValue_135"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_289">
-              <SourceParameter reference="ModelValue_29"/>
+            <CallParameter functionParameter="FunctionParameter_359">
+              <SourceParameter reference="ModelValue_136"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_290">
-              <SourceParameter reference="Metabolite_9"/>
+            <CallParameter functionParameter="FunctionParameter_358">
+              <SourceParameter reference="Metabolite_32"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_291">
-              <SourceParameter reference="Metabolite_11"/>
+            <CallParameter functionParameter="FunctionParameter_357">
+              <SourceParameter reference="Metabolite_34"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_292">
-              <SourceParameter reference="Metabolite_13"/>
+            <CallParameter functionParameter="FunctionParameter_356">
+              <SourceParameter reference="Metabolite_36"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_44" name="IkBa_p_active_degradation" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_86" name="IkBa_p_active_degradation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_28" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_59" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5169" name="k1" value="0.00374704"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_21"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_28"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_45" name="Complex_phosphorylation" reversible="false" fast="false" addNoise="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_26" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_28" stoichiometry="1"/>
-          <Product metabolite="Metabolite_27" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_5170" name="IkBa_p65_phosphorylation_kM" value="0.599893"/>
-          <Constant key="Parameter_5174" name="IkBa_p65_phosphorylation_vmax" value="0.000221972"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_49" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_299">
-              <SourceParameter reference="ModelValue_18"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_298">
-              <SourceParameter reference="ModelValue_20"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_297">
-              <SourceParameter reference="Metabolite_26"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_46" name="dephosphorylation IKK" reversible="false" fast="false" addNoise="false">
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_25" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_24" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfConstants>
-          <Constant key="Parameter_5176" name="k1" value="0.00212692"/>
+          <Constant key="Parameter_7658" name="k1" value="0.00374704"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="ModelValue_4"/>
+              <SourceParameter reference="ModelValue_128"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_25"/>
+              <SourceParameter reference="Metabolite_59"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_47" name="Complex_association_n" reversible="true" fast="false" addNoise="false">
+      <Reaction key="Reaction_85" name="Complex_phosphorylation" reversible="false" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_12" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_11" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_61" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_10" stoichiometry="1"/>
+          <Product metabolite="Metabolite_59" stoichiometry="1"/>
+          <Product metabolite="Metabolite_60" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5175" name="k1" value="0.0380804"/>
-          <Constant key="Parameter_5177" name="k2" value="0.000114241"/>
+          <Constant key="Parameter_7659" name="IkBa_p65_phosphorylation_kM" value="0.599893"/>
+          <Constant key="Parameter_7618" name="IkBa_p65_phosphorylation_vmax" value="0.000221972"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_58" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_349">
+              <SourceParameter reference="ModelValue_125"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_350">
+              <SourceParameter reference="ModelValue_127"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_351">
+              <SourceParameter reference="Metabolite_61"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_84" name="dephosphorylation IKK" reversible="false" fast="false" addNoise="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_62" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_63" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_7625" name="k1" value="0.00212692"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_80">
+              <SourceParameter reference="ModelValue_112"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Metabolite_62"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_83" name="Complex_association_n" reversible="true" fast="false" addNoise="false">
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_35" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_34" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_33" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfConstants>
+          <Constant key="Parameter_7661" name="k1" value="0.0380804"/>
+          <Constant key="Parameter_7368" name="k2" value="0.000114241"/>
         </ListOfConstants>
         <KineticLaw function="Function_14" unitType="Default" scalingCompartment="CN=Root,Model=beuke1,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_69">
-              <SourceParameter reference="ModelValue_14"/>
+              <SourceParameter reference="ModelValue_121"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_68">
-              <SourceParameter reference="Metabolite_12"/>
-              <SourceParameter reference="Metabolite_11"/>
+              <SourceParameter reference="Metabolite_35"/>
+              <SourceParameter reference="Metabolite_34"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_78">
-              <SourceParameter reference="ModelValue_15"/>
+              <SourceParameter reference="ModelValue_122"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_10"/>
+              <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_48" name="p65_P_nuclear_shuttle" reversible="true" fast="false" addNoise="false">
+      <Reaction key="Reaction_82" name="p65_P_nuclear_shuttle" reversible="true" fast="false" addNoise="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_27" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_60" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_13" stoichiometry="1"/>
+          <Product metabolite="Metabolite_36" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5178" name="k1" value="0.0005"/>
-          <Constant key="Parameter_5179" name="k2" value="1e-05"/>
+          <Constant key="Parameter_7369" name="k1" value="0.0005"/>
+          <Constant key="Parameter_7315" name="k2" value="1e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_14" unitType="Default">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_69">
-              <SourceParameter reference="ModelValue_85"/>
+              <SourceParameter reference="ModelValue_192"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_68">
-              <SourceParameter reference="Metabolite_27"/>
+              <SourceParameter reference="Metabolite_60"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_78">
-              <SourceParameter reference="ModelValue_84"/>
+              <SourceParameter reference="ModelValue_191"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_13"/>
+              <SourceParameter reference="Metabolite_36"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -1765,27 +1768,29 @@ Reaction scheme where the products are created from the reactants and the change
           &lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65],Reference=Rate> > 0
         </TriggerExpression>
         <ListOfAssignments>
-          <Assignment targetKey="ModelValue_103">
+          <Assignment targetKey="ModelValue_210">
             <Expression>
               &lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65],Reference=Concentration>
             </Expression>
           </Assignment>
-          <Assignment targetKey="ModelValue_110">
+          <Assignment targetKey="ModelValue_217">
             <Expression>
               -&lt;CN=Root,Model=beuke1,Vector=Values[sign],Reference=Value>
             </Expression>
           </Assignment>
-          <Assignment targetKey="ModelValue_111">
+          <Assignment targetKey="ModelValue_218">
             <Expression>
               &lt;CN=Root,Model=beuke1,Vector=Values[counter],Reference=Value>+1
             </Expression>
           </Assignment>
         </ListOfAssignments>
       </Event>
-      <Event key="Event_1" name="max" fireAtInitialTime="0" persistentTrigger="0">
+      <Event key="Event_3" name="max" fireAtInitialTime="0" persistentTrigger="0">
         <MiriamAnnotation>
-<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Event_1">
+<rdf:RDF
+   xmlns:dcterms="http://purl.org/dc/terms/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#Event_3">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2017-03-30T16:14:34Z</dcterms:W3CDTF>
@@ -1793,42 +1798,43 @@ Reaction scheme where the products are created from the reactants and the change
     </dcterms:created>
   </rdf:Description>
 </rdf:RDF>
+
         </MiriamAnnotation>
         <TriggerExpression>
           &lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65],Reference=Rate> &lt; 0
         </TriggerExpression>
         <ListOfAssignments>
-          <Assignment targetKey="ModelValue_104">
+          <Assignment targetKey="ModelValue_211">
             <Expression>
               &lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65],Reference=Concentration>
             </Expression>
           </Assignment>
-          <Assignment targetKey="ModelValue_106">
+          <Assignment targetKey="ModelValue_213">
             <Expression>
               &lt;CN=Root,Model=beuke1,Reference=Time>
             </Expression>
           </Assignment>
-          <Assignment targetKey="ModelValue_107">
+          <Assignment targetKey="ModelValue_214">
             <Expression>
               &lt;CN=Root,Model=beuke1,Reference=Time>-&lt;CN=Root,Model=beuke1,Vector=Values[time1],Reference=Value>
             </Expression>
           </Assignment>
-          <Assignment targetKey="ModelValue_108">
+          <Assignment targetKey="ModelValue_215">
             <Expression>
               &lt;CN=Root,Model=beuke1,Vector=Values[int],Reference=Value>/&lt;CN=Root,Model=beuke1,Vector=Values[period],Reference=Value>
             </Expression>
           </Assignment>
-          <Assignment targetKey="ModelValue_109">
+          <Assignment targetKey="ModelValue_216">
             <Expression>
               0
             </Expression>
           </Assignment>
-          <Assignment targetKey="ModelValue_110">
+          <Assignment targetKey="ModelValue_217">
             <Expression>
               -&lt;CN=Root,Model=beuke1,Vector=Values[sign],Reference=Value>
             </Expression>
           </Assignment>
-          <Assignment targetKey="ModelValue_111">
+          <Assignment targetKey="ModelValue_218">
             <Expression>
               &lt;CN=Root,Model=beuke1,Vector=Values[counter],Reference=Value>+1
             </Expression>
@@ -2445,158 +2451,158 @@ Reaction scheme where the products are created from the reactants and the change
     </ListOfModelParameterSets>
     <StateTemplate>
       <StateTemplateVariable objectReference="Model_0"/>
-      <StateTemplateVariable objectReference="ModelValue_109"/>
-      <StateTemplateVariable objectReference="Metabolite_11"/>
-      <StateTemplateVariable objectReference="Metabolite_14"/>
-      <StateTemplateVariable objectReference="Metabolite_22"/>
-      <StateTemplateVariable objectReference="Metabolite_13"/>
-      <StateTemplateVariable objectReference="Metabolite_26"/>
-      <StateTemplateVariable objectReference="Metabolite_12"/>
-      <StateTemplateVariable objectReference="Metabolite_27"/>
-      <StateTemplateVariable objectReference="Metabolite_4"/>
-      <StateTemplateVariable objectReference="Metabolite_16"/>
-      <StateTemplateVariable objectReference="Metabolite_20"/>
-      <StateTemplateVariable objectReference="Metabolite_24"/>
-      <StateTemplateVariable objectReference="Metabolite_9"/>
-      <StateTemplateVariable objectReference="Metabolite_28"/>
-      <StateTemplateVariable objectReference="Metabolite_1"/>
-      <StateTemplateVariable objectReference="Metabolite_19"/>
-      <StateTemplateVariable objectReference="Metabolite_0"/>
-      <StateTemplateVariable objectReference="Metabolite_5"/>
-      <StateTemplateVariable objectReference="Metabolite_7"/>
-      <StateTemplateVariable objectReference="Metabolite_10"/>
-      <StateTemplateVariable objectReference="Metabolite_15"/>
-      <StateTemplateVariable objectReference="Metabolite_6"/>
-      <StateTemplateVariable objectReference="Metabolite_2"/>
-      <StateTemplateVariable objectReference="Metabolite_25"/>
-      <StateTemplateVariable objectReference="Metabolite_17"/>
-      <StateTemplateVariable objectReference="Metabolite_18"/>
-      <StateTemplateVariable objectReference="Metabolite_8"/>
-      <StateTemplateVariable objectReference="Metabolite_21"/>
-      <StateTemplateVariable objectReference="ModelValue_12"/>
-      <StateTemplateVariable objectReference="ModelValue_15"/>
-      <StateTemplateVariable objectReference="ModelValue_20"/>
-      <StateTemplateVariable objectReference="ModelValue_23"/>
-      <StateTemplateVariable objectReference="ModelValue_24"/>
-      <StateTemplateVariable objectReference="ModelValue_34"/>
-      <StateTemplateVariable objectReference="ModelValue_40"/>
-      <StateTemplateVariable objectReference="ModelValue_64"/>
-      <StateTemplateVariable objectReference="ModelValue_72"/>
-      <StateTemplateVariable objectReference="ModelValue_75"/>
-      <StateTemplateVariable objectReference="ModelValue_78"/>
-      <StateTemplateVariable objectReference="ModelValue_79"/>
-      <StateTemplateVariable objectReference="ModelValue_80"/>
-      <StateTemplateVariable objectReference="ModelValue_81"/>
-      <StateTemplateVariable objectReference="ModelValue_84"/>
-      <StateTemplateVariable objectReference="ModelValue_87"/>
-      <StateTemplateVariable objectReference="ModelValue_88"/>
-      <StateTemplateVariable objectReference="ModelValue_89"/>
-      <StateTemplateVariable objectReference="ModelValue_90"/>
-      <StateTemplateVariable objectReference="ModelValue_91"/>
-      <StateTemplateVariable objectReference="ModelValue_92"/>
-      <StateTemplateVariable objectReference="ModelValue_93"/>
-      <StateTemplateVariable objectReference="ModelValue_94"/>
-      <StateTemplateVariable objectReference="ModelValue_95"/>
-      <StateTemplateVariable objectReference="ModelValue_96"/>
-      <StateTemplateVariable objectReference="ModelValue_97"/>
-      <StateTemplateVariable objectReference="ModelValue_98"/>
-      <StateTemplateVariable objectReference="ModelValue_99"/>
-      <StateTemplateVariable objectReference="ModelValue_100"/>
-      <StateTemplateVariable objectReference="ModelValue_101"/>
-      <StateTemplateVariable objectReference="ModelValue_102"/>
-      <StateTemplateVariable objectReference="ModelValue_105"/>
-      <StateTemplateVariable objectReference="Metabolite_3"/>
-      <StateTemplateVariable objectReference="Metabolite_23"/>
-      <StateTemplateVariable objectReference="Compartment_0"/>
-      <StateTemplateVariable objectReference="Compartment_1"/>
-      <StateTemplateVariable objectReference="Compartment_2"/>
-      <StateTemplateVariable objectReference="ModelValue_0"/>
-      <StateTemplateVariable objectReference="ModelValue_1"/>
-      <StateTemplateVariable objectReference="ModelValue_2"/>
-      <StateTemplateVariable objectReference="ModelValue_3"/>
-      <StateTemplateVariable objectReference="ModelValue_4"/>
-      <StateTemplateVariable objectReference="ModelValue_5"/>
-      <StateTemplateVariable objectReference="ModelValue_6"/>
-      <StateTemplateVariable objectReference="ModelValue_7"/>
-      <StateTemplateVariable objectReference="ModelValue_8"/>
-      <StateTemplateVariable objectReference="ModelValue_9"/>
-      <StateTemplateVariable objectReference="ModelValue_10"/>
-      <StateTemplateVariable objectReference="ModelValue_11"/>
-      <StateTemplateVariable objectReference="ModelValue_13"/>
-      <StateTemplateVariable objectReference="ModelValue_14"/>
-      <StateTemplateVariable objectReference="ModelValue_16"/>
-      <StateTemplateVariable objectReference="ModelValue_17"/>
-      <StateTemplateVariable objectReference="ModelValue_18"/>
-      <StateTemplateVariable objectReference="ModelValue_19"/>
-      <StateTemplateVariable objectReference="ModelValue_21"/>
-      <StateTemplateVariable objectReference="ModelValue_22"/>
-      <StateTemplateVariable objectReference="ModelValue_25"/>
-      <StateTemplateVariable objectReference="ModelValue_26"/>
-      <StateTemplateVariable objectReference="ModelValue_27"/>
-      <StateTemplateVariable objectReference="ModelValue_28"/>
-      <StateTemplateVariable objectReference="ModelValue_29"/>
-      <StateTemplateVariable objectReference="ModelValue_30"/>
-      <StateTemplateVariable objectReference="ModelValue_31"/>
-      <StateTemplateVariable objectReference="ModelValue_32"/>
-      <StateTemplateVariable objectReference="ModelValue_33"/>
-      <StateTemplateVariable objectReference="ModelValue_35"/>
-      <StateTemplateVariable objectReference="ModelValue_36"/>
-      <StateTemplateVariable objectReference="ModelValue_37"/>
-      <StateTemplateVariable objectReference="ModelValue_38"/>
-      <StateTemplateVariable objectReference="ModelValue_39"/>
-      <StateTemplateVariable objectReference="ModelValue_41"/>
-      <StateTemplateVariable objectReference="ModelValue_42"/>
-      <StateTemplateVariable objectReference="ModelValue_43"/>
-      <StateTemplateVariable objectReference="ModelValue_44"/>
-      <StateTemplateVariable objectReference="ModelValue_45"/>
-      <StateTemplateVariable objectReference="ModelValue_46"/>
-      <StateTemplateVariable objectReference="ModelValue_47"/>
-      <StateTemplateVariable objectReference="ModelValue_48"/>
-      <StateTemplateVariable objectReference="ModelValue_49"/>
-      <StateTemplateVariable objectReference="ModelValue_50"/>
-      <StateTemplateVariable objectReference="ModelValue_51"/>
-      <StateTemplateVariable objectReference="ModelValue_52"/>
-      <StateTemplateVariable objectReference="ModelValue_53"/>
-      <StateTemplateVariable objectReference="ModelValue_54"/>
-      <StateTemplateVariable objectReference="ModelValue_55"/>
-      <StateTemplateVariable objectReference="ModelValue_56"/>
-      <StateTemplateVariable objectReference="ModelValue_57"/>
-      <StateTemplateVariable objectReference="ModelValue_58"/>
-      <StateTemplateVariable objectReference="ModelValue_59"/>
-      <StateTemplateVariable objectReference="ModelValue_60"/>
-      <StateTemplateVariable objectReference="ModelValue_61"/>
-      <StateTemplateVariable objectReference="ModelValue_62"/>
-      <StateTemplateVariable objectReference="ModelValue_63"/>
-      <StateTemplateVariable objectReference="ModelValue_65"/>
-      <StateTemplateVariable objectReference="ModelValue_66"/>
-      <StateTemplateVariable objectReference="ModelValue_67"/>
-      <StateTemplateVariable objectReference="ModelValue_68"/>
-      <StateTemplateVariable objectReference="ModelValue_69"/>
-      <StateTemplateVariable objectReference="ModelValue_70"/>
-      <StateTemplateVariable objectReference="ModelValue_71"/>
-      <StateTemplateVariable objectReference="ModelValue_73"/>
-      <StateTemplateVariable objectReference="ModelValue_74"/>
-      <StateTemplateVariable objectReference="ModelValue_76"/>
-      <StateTemplateVariable objectReference="ModelValue_77"/>
-      <StateTemplateVariable objectReference="ModelValue_82"/>
-      <StateTemplateVariable objectReference="ModelValue_83"/>
-      <StateTemplateVariable objectReference="ModelValue_85"/>
-      <StateTemplateVariable objectReference="ModelValue_86"/>
-      <StateTemplateVariable objectReference="ModelValue_103"/>
-      <StateTemplateVariable objectReference="ModelValue_104"/>
-      <StateTemplateVariable objectReference="ModelValue_106"/>
-      <StateTemplateVariable objectReference="ModelValue_107"/>
+      <StateTemplateVariable objectReference="ModelValue_216"/>
+      <StateTemplateVariable objectReference="Metabolite_34"/>
+      <StateTemplateVariable objectReference="Metabolite_37"/>
+      <StateTemplateVariable objectReference="Metabolite_44"/>
+      <StateTemplateVariable objectReference="Metabolite_36"/>
+      <StateTemplateVariable objectReference="Metabolite_61"/>
+      <StateTemplateVariable objectReference="Metabolite_35"/>
+      <StateTemplateVariable objectReference="Metabolite_60"/>
+      <StateTemplateVariable objectReference="Metabolite_49"/>
+      <StateTemplateVariable objectReference="Metabolite_39"/>
+      <StateTemplateVariable objectReference="Metabolite_51"/>
+      <StateTemplateVariable objectReference="Metabolite_63"/>
+      <StateTemplateVariable objectReference="Metabolite_32"/>
+      <StateTemplateVariable objectReference="Metabolite_59"/>
+      <StateTemplateVariable objectReference="Metabolite_45"/>
+      <StateTemplateVariable objectReference="Metabolite_48"/>
+      <StateTemplateVariable objectReference="Metabolite_41"/>
+      <StateTemplateVariable objectReference="Metabolite_47"/>
+      <StateTemplateVariable objectReference="Metabolite_30"/>
+      <StateTemplateVariable objectReference="Metabolite_33"/>
+      <StateTemplateVariable objectReference="Metabolite_38"/>
+      <StateTemplateVariable objectReference="Metabolite_29"/>
+      <StateTemplateVariable objectReference="Metabolite_50"/>
+      <StateTemplateVariable objectReference="Metabolite_40"/>
+      <StateTemplateVariable objectReference="Metabolite_42"/>
+      <StateTemplateVariable objectReference="Metabolite_31"/>
+      <StateTemplateVariable objectReference="Metabolite_46"/>
+      <StateTemplateVariable objectReference="Metabolite_62"/>
+      <StateTemplateVariable objectReference="ModelValue_119"/>
+      <StateTemplateVariable objectReference="ModelValue_122"/>
+      <StateTemplateVariable objectReference="ModelValue_127"/>
+      <StateTemplateVariable objectReference="ModelValue_130"/>
+      <StateTemplateVariable objectReference="ModelValue_131"/>
+      <StateTemplateVariable objectReference="ModelValue_141"/>
+      <StateTemplateVariable objectReference="ModelValue_147"/>
+      <StateTemplateVariable objectReference="ModelValue_171"/>
+      <StateTemplateVariable objectReference="ModelValue_179"/>
+      <StateTemplateVariable objectReference="ModelValue_182"/>
+      <StateTemplateVariable objectReference="ModelValue_185"/>
+      <StateTemplateVariable objectReference="ModelValue_186"/>
+      <StateTemplateVariable objectReference="ModelValue_187"/>
+      <StateTemplateVariable objectReference="ModelValue_188"/>
+      <StateTemplateVariable objectReference="ModelValue_191"/>
+      <StateTemplateVariable objectReference="ModelValue_194"/>
+      <StateTemplateVariable objectReference="ModelValue_195"/>
+      <StateTemplateVariable objectReference="ModelValue_196"/>
+      <StateTemplateVariable objectReference="ModelValue_197"/>
+      <StateTemplateVariable objectReference="ModelValue_198"/>
+      <StateTemplateVariable objectReference="ModelValue_199"/>
+      <StateTemplateVariable objectReference="ModelValue_200"/>
+      <StateTemplateVariable objectReference="ModelValue_201"/>
+      <StateTemplateVariable objectReference="ModelValue_202"/>
+      <StateTemplateVariable objectReference="ModelValue_203"/>
+      <StateTemplateVariable objectReference="ModelValue_204"/>
+      <StateTemplateVariable objectReference="ModelValue_205"/>
+      <StateTemplateVariable objectReference="ModelValue_206"/>
+      <StateTemplateVariable objectReference="ModelValue_207"/>
+      <StateTemplateVariable objectReference="ModelValue_208"/>
+      <StateTemplateVariable objectReference="ModelValue_209"/>
+      <StateTemplateVariable objectReference="ModelValue_212"/>
+      <StateTemplateVariable objectReference="Metabolite_52"/>
+      <StateTemplateVariable objectReference="Metabolite_43"/>
+      <StateTemplateVariable objectReference="Compartment_3"/>
+      <StateTemplateVariable objectReference="Compartment_4"/>
+      <StateTemplateVariable objectReference="Compartment_5"/>
       <StateTemplateVariable objectReference="ModelValue_108"/>
+      <StateTemplateVariable objectReference="ModelValue_109"/>
       <StateTemplateVariable objectReference="ModelValue_110"/>
       <StateTemplateVariable objectReference="ModelValue_111"/>
+      <StateTemplateVariable objectReference="ModelValue_112"/>
+      <StateTemplateVariable objectReference="ModelValue_8"/>
+      <StateTemplateVariable objectReference="ModelValue_7"/>
+      <StateTemplateVariable objectReference="ModelValue_114"/>
+      <StateTemplateVariable objectReference="ModelValue_115"/>
+      <StateTemplateVariable objectReference="ModelValue_116"/>
+      <StateTemplateVariable objectReference="ModelValue_117"/>
+      <StateTemplateVariable objectReference="ModelValue_118"/>
+      <StateTemplateVariable objectReference="ModelValue_120"/>
+      <StateTemplateVariable objectReference="ModelValue_121"/>
+      <StateTemplateVariable objectReference="ModelValue_123"/>
+      <StateTemplateVariable objectReference="ModelValue_124"/>
+      <StateTemplateVariable objectReference="ModelValue_125"/>
+      <StateTemplateVariable objectReference="ModelValue_126"/>
+      <StateTemplateVariable objectReference="ModelValue_128"/>
+      <StateTemplateVariable objectReference="ModelValue_129"/>
+      <StateTemplateVariable objectReference="ModelValue_132"/>
+      <StateTemplateVariable objectReference="ModelValue_133"/>
+      <StateTemplateVariable objectReference="ModelValue_134"/>
+      <StateTemplateVariable objectReference="ModelValue_135"/>
+      <StateTemplateVariable objectReference="ModelValue_136"/>
+      <StateTemplateVariable objectReference="ModelValue_137"/>
+      <StateTemplateVariable objectReference="ModelValue_138"/>
+      <StateTemplateVariable objectReference="ModelValue_139"/>
+      <StateTemplateVariable objectReference="ModelValue_140"/>
+      <StateTemplateVariable objectReference="ModelValue_142"/>
+      <StateTemplateVariable objectReference="ModelValue_143"/>
+      <StateTemplateVariable objectReference="ModelValue_144"/>
+      <StateTemplateVariable objectReference="ModelValue_145"/>
+      <StateTemplateVariable objectReference="ModelValue_146"/>
+      <StateTemplateVariable objectReference="ModelValue_148"/>
+      <StateTemplateVariable objectReference="ModelValue_149"/>
+      <StateTemplateVariable objectReference="ModelValue_150"/>
+      <StateTemplateVariable objectReference="ModelValue_151"/>
+      <StateTemplateVariable objectReference="ModelValue_152"/>
+      <StateTemplateVariable objectReference="ModelValue_153"/>
+      <StateTemplateVariable objectReference="ModelValue_154"/>
+      <StateTemplateVariable objectReference="ModelValue_155"/>
+      <StateTemplateVariable objectReference="ModelValue_156"/>
+      <StateTemplateVariable objectReference="ModelValue_157"/>
+      <StateTemplateVariable objectReference="ModelValue_158"/>
+      <StateTemplateVariable objectReference="ModelValue_159"/>
+      <StateTemplateVariable objectReference="ModelValue_160"/>
+      <StateTemplateVariable objectReference="ModelValue_161"/>
+      <StateTemplateVariable objectReference="ModelValue_162"/>
+      <StateTemplateVariable objectReference="ModelValue_163"/>
+      <StateTemplateVariable objectReference="ModelValue_164"/>
+      <StateTemplateVariable objectReference="ModelValue_165"/>
+      <StateTemplateVariable objectReference="ModelValue_166"/>
+      <StateTemplateVariable objectReference="ModelValue_167"/>
+      <StateTemplateVariable objectReference="ModelValue_168"/>
+      <StateTemplateVariable objectReference="ModelValue_169"/>
+      <StateTemplateVariable objectReference="ModelValue_170"/>
+      <StateTemplateVariable objectReference="ModelValue_172"/>
+      <StateTemplateVariable objectReference="ModelValue_173"/>
+      <StateTemplateVariable objectReference="ModelValue_174"/>
+      <StateTemplateVariable objectReference="ModelValue_175"/>
+      <StateTemplateVariable objectReference="ModelValue_176"/>
+      <StateTemplateVariable objectReference="ModelValue_177"/>
+      <StateTemplateVariable objectReference="ModelValue_178"/>
+      <StateTemplateVariable objectReference="ModelValue_180"/>
+      <StateTemplateVariable objectReference="ModelValue_181"/>
+      <StateTemplateVariable objectReference="ModelValue_183"/>
+      <StateTemplateVariable objectReference="ModelValue_184"/>
+      <StateTemplateVariable objectReference="ModelValue_189"/>
+      <StateTemplateVariable objectReference="ModelValue_190"/>
+      <StateTemplateVariable objectReference="ModelValue_192"/>
+      <StateTemplateVariable objectReference="ModelValue_193"/>
+      <StateTemplateVariable objectReference="ModelValue_210"/>
+      <StateTemplateVariable objectReference="ModelValue_211"/>
+      <StateTemplateVariable objectReference="ModelValue_213"/>
+      <StateTemplateVariable objectReference="ModelValue_214"/>
+      <StateTemplateVariable objectReference="ModelValue_215"/>
+      <StateTemplateVariable objectReference="ModelValue_217"/>
+      <StateTemplateVariable objectReference="ModelValue_218"/>
     </StateTemplate>
     <InitialState type="initialState">
-      0 0 7131.4437299996334 3611387.4722043518 2318.7564433152638 83411.493122878295 348205.76605032221 444478.39400965557 27112.892084477469 16.741821099107149 7553510.5629981197 5314621.6602560114 2348541.369331039 102415.9970892102 505973.20938342536 1915.894621127193 0 7798673.6180500006 926214.74297503615 7212745.4386496814 428562.47568196338 10257237.8075299 926214.74297503615 0 93.928768960989473 275273.76400187978 432.74067697274342 13824.709350325529 2514162.666743997 0.0025000000000000001 0.0001142412732544542 0.00022197169318651728 18.500918641635661 0.00022197169318651728 0 0.0002933226422510503 0.00031982700000000001 0 0.00089299602995035509 0.0010274126244695619 0.84365297237173797 0.035803860144060298 0.0010274126244695619 1.0000000000000001e-05 1.285674999999997 0.49124019999999791 0.3644160000000003 0.68185023999999872 0.65134631200000026 0.82302954400000106 1.6984982995744289e-07 0.55988479999999918 8.8649644985023138e-06 8.4018813742249228e-07 1.7032568987969644e-05 4.5710276111230481e-07 2.2956466042167914e-08 4.1748646153082307e-06 1.6591419781269655e-06 1.8353002812203092e-07 0 917.49835381634625 7828784.3269999996 2.5900000000000002e-06 7.9999999999999996e-07 1.2999999999999999e-05 0.22584699999999999 5.9999253986099763 214.511 8.6072734027274997e-08 0.002126924084237061 1.0000000000000001e-05 1.00000000002221e-05 9.7980800000000006e-06 1.0000000000000001e-05 4.9291e-05 5.0000000000000002e-05 0.0001 0.0050000000000000001 0.038080424418151397 0.000100000000000222 0.0019999999999997802 0.59989342964577941 18.500918641635661 0.00374704364447229 0.117842 7.9497024021163017e-05 9.9999999999999995e-07 0.000100000000000222 0.000100000000000222 0.23262432287335619 3.6929099999999999 0.00120941 0.0016361306255064201 11501.848605491499 2.5904620308721599e-05 0.00071082263811762803 0.000221888641398861 0.000115242287512479 0.332175 0.0099999999999997799 0.00091336958216119905 1.0000000002220399e-06 1.0937545446161601 0 1.22913885610405e-05 2.1819503787823699e-05 1.0000000002220399e-06 0.83406985346583096 0 5.97504797065566e-06 2.1894167810831798e-06 0.000171416922199217 0.58439602675956803 0.050715716095883802 145028.78158363799 584678.80956640502 21395.245793948801 1491678.2351977001 28373108.944711499 1.8e-05 0.00040000000000000002 16.832999999999998 0.00092400000000000002 6.1442899999999994e-05 197139.21763645901 0.102372088824604 3050644.1138216699 2.5647334845410801 549341.56606688304 0.00025145997620859502 0.00053155456244858516 0.84365297237173797 0.035803860144060298 0.00089299602995035509 1.5942540684736069e-05 0.00050000000000000001 1.758629979014617e-06 0 0 0 0 0 9.9999999999999995e-08 0 
+      0 0 7131.4437299996334 3611387.4722043518 2318.7564433152638 83411.493122878295 348205.76605032221 444478.39400965557 27112.892084477469 16.741821099107149 7553510.5629981197 5314621.6602560114 2348541.369331039 102415.9970892102 505973.20938342536 1915.894621127193 0 7798673.6180500006 926214.74297503615 7212745.4386496814 428562.47568196338 10257237.8075299 926214.74297503615 0 275273.76400187978 432.74067697274342 13824.709350325529 2514162.666743997 93.928768960989473 0.0025000000000000001 0.0001142412732544542 0.00022197169318651728 18.500918641635661 0.00022197169318651728 0 0.0002933226422510503 0.00031982700000000001 0 0.00089299602995035509 0.0010274126244695619 0.84365297237173797 0.035803860144060298 0.0010274126244695619 1.0000000000000001e-05 1.285674999999997 0.49124019999999791 0.3644160000000003 0.68185023999999872 0.65134631200000026 0.82302954400000106 1.6984982995744289e-07 0.55988479999999918 8.8649644985023138e-06 8.4018813742249228e-07 1.7032568987969644e-05 4.5710276111230481e-07 2.2956466042167914e-08 4.1748646153082307e-06 1.6591419781269655e-06 1.8353002812203092e-07 0 917.49835381634625 7828784.3269999996 2.5900000000000002e-06 7.9999999999999996e-07 1.2999999999999999e-05 0.22584699999999999 5.9999253986099763 214.511 8.6072734027274997e-08 0.002126924084237061 1.0000000000000001e-05 1.00000000002221e-05 9.7980800000000006e-06 1.0000000000000001e-05 4.9291e-05 5.0000000000000002e-05 0.0001 0.0050000000000000001 0.038080424418151397 0.000100000000000222 0.0019999999999997802 0.59989342964577941 18.500918641635661 0.00374704364447229 0.117842 7.9497024021163017e-05 9.9999999999999995e-07 0.000100000000000222 0.000100000000000222 0.23262432287335619 3.6929099999999999 0.00120941 0.0016361306255064201 11501.848605491499 2.5904620308721599e-05 0.00071082263811762803 0.000221888641398861 0.000115242287512479 0.332175 0.0099999999999997799 0.00091336958216119905 1.0000000002220399e-06 1.0937545446161601 0 1.22913885610405e-05 2.1819503787823699e-05 1.0000000002220399e-06 0.83406985346583096 0 5.97504797065566e-06 2.1894167810831798e-06 0.000171416922199217 0.58439602675956803 0.050715716095883802 145028.78158363799 584678.80956640502 21395.245793948801 1491678.2351977001 28373108.944711499 1.8e-05 0.00040000000000000002 16.832999999999998 0.00092400000000000002 6.1442899999999994e-05 197139.21763645901 0.102372088824604 3050644.1138216699 2.5647334845410801 549341.56606688304 0.00025145997620859502 0.00053155456244858516 0.84365297237173797 0.035803860144060298 0.00089299602995035509 1.5942540684736069e-05 0.00050000000000000001 1.758629979014617e-06 0 0 0 0 0 9.9999999999999995e-08 0 
     </InitialState>
   </Model>
   <ListOfTasks>
     <Task key="Task_12" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
-      <Report reference="Report_8" target="" append="1" confirmOverwrite="1"/>
+      <Report reference="Report_10" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
@@ -2614,15 +2620,15 @@ Reaction scheme where the products are created from the reactants and the change
       </Method>
     </Task>
     <Task key="Task_11" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
-      <Report reference="Report_18" target="EventTest30.1.txt" append="0" confirmOverwrite="0"/>
+      <Report reference="Report_2" target="EventTest30.1.txt" append="0" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
-        <Parameter name="StepNumber" type="unsignedInteger" value="1000"/>
-        <Parameter name="StepSize" type="float" value="1000"/>
+        <Parameter name="StepNumber" type="unsignedInteger" value="200"/>
+        <Parameter name="StepSize" type="float" value="5000"/>
         <Parameter name="Duration" type="float" value="1000000"/>
         <Parameter name="TimeSeriesRequested" type="bool" value="0"/>
-        <Parameter name="OutputStartTime" type="float" value="0"/>
-        <Parameter name="Output Event" type="bool" value="1"/>
+        <Parameter name="OutputStartTime" type="float" value="10000"/>
+        <Parameter name="Output Event" type="bool" value="0"/>
         <Parameter name="Start in Steady State" type="bool" value="0"/>
         <Parameter name="Continue on Simultaneous Events" type="bool" value="1"/>
       </Problem>
@@ -2646,14 +2652,14 @@ Reaction scheme where the products are created from the reactants and the change
       </Method>
     </Task>
     <Task key="Task_9" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
-      <Report reference="Report_7" target="" append="1" confirmOverwrite="1"/>
+      <Report reference="Report_19" target="" append="1" confirmOverwrite="1"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
       </Method>
     </Task>
     <Task key="Task_8" name="Optimization" type="optimization" scheduled="false" updateModel="false">
-      <Report reference="Report_6" target="" append="1" confirmOverwrite="1"/>
+      <Report reference="Report_9" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
         <ParameterText name="ObjectiveExpression" type="expression">
@@ -2707,7 +2713,7 @@ Reaction scheme where the products are created from the reactants and the change
       </Method>
     </Task>
     <Task key="Task_7" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
-      <Report reference="Report_5" target="" append="1" confirmOverwrite="1"/>
+      <Report reference="Report_8" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
@@ -2735,7 +2741,7 @@ Reaction scheme where the products are created from the reactants and the change
       </Method>
     </Task>
     <Task key="Task_6" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_4" target="" append="1" confirmOverwrite="1"/>
+      <Report reference="Report_7" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Steady-State" type="key" value="Task_12"/>
       </Problem>
@@ -2746,7 +2752,7 @@ Reaction scheme where the products are created from the reactants and the change
       </Method>
     </Task>
     <Task key="Task_5" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
-      <Report reference="Report_3" target="" append="1" confirmOverwrite="1"/>
+      <Report reference="Report_6" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -2761,7 +2767,7 @@ Reaction scheme where the products are created from the reactants and the change
       </Method>
     </Task>
     <Task key="Task_4" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_2" target="" append="1" confirmOverwrite="1"/>
+      <Report reference="Report_5" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -2774,7 +2780,7 @@ Reaction scheme where the products are created from the reactants and the change
       </Method>
     </Task>
     <Task key="Task_3" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
-      <Report reference="Report_1" target="" append="1" confirmOverwrite="1"/>
+      <Report reference="Report_4" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
         <ParameterGroup name="TargetFunctions">
@@ -2839,7 +2845,7 @@ Reaction scheme where the products are created from the reactants and the change
       </Method>
     </Task>
     <Task key="Task_13" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
-      <Report reference="Report_0" target="" append="1" confirmOverwrite="1"/>
+      <Report reference="Report_3" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Steady-State" type="key" value="Task_12"/>
       </Problem>
@@ -2848,7 +2854,7 @@ Reaction scheme where the products are created from the reactants and the change
     </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_8" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_10" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -2856,7 +2862,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_7" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+    <Report key="Report_19" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -2864,7 +2870,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_6" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_9" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -2888,7 +2894,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_5" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_8" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -2912,7 +2918,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_4" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_7" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -2924,7 +2930,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_3" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_6" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -2936,7 +2942,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_2" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_5" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -2948,7 +2954,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_1" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
+    <Report key="Report_4" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -2960,7 +2966,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Sensitivities],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_0" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
+    <Report key="Report_3" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -2972,7 +2978,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_18" name="Time, Concentrations, Volumes, and Global Quantity Values" taskType="timeCourse" separator="&#x09;" precision="6">
+    <Report key="Report_2" name="Time, Concentrations, Volumes, and Global Quantity Values" taskType="timeCourse" separator="&#x09;" precision="6">
       <Comment>
         A table of time, variable species concentrations, variable compartment volumes, and variable global quantity values.
       </Comment>
@@ -3139,360 +3145,6 @@ Reaction scheme where the products are created from the reactants and the change
         </PlotItem>
       </ListOfPlotItems>
     </PlotSpecification>
-    <PlotSpecification name="plot_2" type="Plot2D" active="0" taskTypes="">
-      <Parameter name="log X" type="bool" value="0"/>
-      <Parameter name="log Y" type="bool" value="0"/>
-      <ListOfPlotItems>
-        <PlotItem name="[IKKb]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IKKb],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[IKKb_p]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IKKb_p],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[IkBa_mRNA{cytoplasm}]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IkBa_mRNA],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[IkBa_mRNA{nucleus}]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[IkBa_mRNA],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[IkBa_p]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IkBa_p],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[IkBa_pre_mRNA_1]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[IkBa_pre_mRNA_1],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[IkBa_pre_mRNA_2]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[IkBa_pre_mRNA_2],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[IkBa{cytoplasm}]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IkBa],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[IkBa{nucleus}]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[IkBa],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[JNK]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[JNK],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[JNK_P]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[JNK_P],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[LPS]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[EL],Vector=Metabolites[LPS],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[MSK1]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[MSK1],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[MSK1_P]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[MSK1_P],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[TNFR1{EL}]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[EL],Vector=Metabolites[TNFR1],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[TNFR1{cytoplasm}]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[TNFR1],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[TNFa:TNFR1{EL}]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[EL],Vector=Metabolites[TNFa:TNFR1],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[TNFa:TNFR1{cytoplasm}]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[TNFa:TNFR1],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[TNFa]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[EL],Vector=Metabolites[TNFa],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[p38]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p38],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[p38_P]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p38_P],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[p65-IkBa{cytoplasm}]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65-IkBa],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[p65-IkBa{nucleus}]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[p65-IkBa],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[p65_2P]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[p65_2P],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[p65_P{cytoplasm}]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65_P],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[p65_P{nucleus}]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[p65_P],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[p65_mRNA]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65_mRNA],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[p65{cytoplasm}]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[p65{nucleus}]|Time" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[p65],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-      </ListOfPlotItems>
-    </PlotSpecification>
     <PlotSpecification name="plot" type="Plot2D" active="1" taskTypes="">
       <Parameter name="log X" type="bool" value="0"/>
       <Parameter name="log Y" type="bool" value="0"/>
@@ -3535,194 +3187,1004 @@ Reaction scheme where the products are created from the reactants and the change
         </PlotItem>
       </ListOfPlotItems>
     </PlotSpecification>
+    <PlotSpecification name="Concentrations, Volumes, and Global Quantity Values" type="Plot2D" active="0" taskTypes="">
+      <Parameter name="log X" type="bool" value="0"/>
+      <Parameter name="log Y" type="bool" value="0"/>
+      <ListOfPlotItems>
+        <PlotItem name="Values[IkBa:p65_dissociation_k]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[IkBa:p65_dissociation_k],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[IkBa:p65_phosphorylation_vmax]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[IkBa:p65_phosphorylation_vmax],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[IkBa_nuclear_export_k]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[IkBa_nuclear_export_k],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[IkBa_phosphorylation_kcat]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[IkBa_phosphorylation_kcat],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[IkBa_phosphorylation_vmax]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[IkBa_phosphorylation_vmax],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[JNK_active_phosphorylation_vmax]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[JNK_active_phosphorylation_vmax],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[MSK1_activation_vmax]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[MSK1_activation_vmax],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[amp]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[amp],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[avg]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[avg],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[counter]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[counter],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[int]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[int],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[k_TNFa:TNFR1_dissociation]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[k_TNFa:TNFR1_dissociation],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[max]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[max],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[min]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[min],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[p38_active_phosphorylation_vmax]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[p38_active_phosphorylation_vmax],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[p65_2P_dephosphorylation]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[p65_2P_dephosphorylation],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[p65_MSK1_phosphrylation_vmax]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[p65_MSK1_phosphrylation_vmax],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[p65_P_MSK1_phosphrylation_kM]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[p65_P_MSK1_phosphrylation_kM],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[p65_P_MSK1_phosphrylation_kcat]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[p65_P_MSK1_phosphrylation_kcat],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[p65_P_MSK1_phosphrylation_vmax]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[p65_P_MSK1_phosphrylation_vmax],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[p65_nuclear_export_k]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[p65_nuclear_export_k],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[period]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[period],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[scaled_IkBa]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[scaled_IkBa],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[scaled_IkBa_P]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[scaled_IkBa_P],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[scaled_IkBa_mRNA]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[scaled_IkBa_mRNA],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[scaled_JNK_P]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[scaled_JNK_P],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[scaled_MSK_P]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[scaled_MSK_P],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[scaled_p38_P]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[scaled_p38_P],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[scaled_p65]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[scaled_p65],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[scaled_p65_P]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[scaled_p65_P],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[sign]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[sign],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[time1]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[time1],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[unscaled_IkBa]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[unscaled_IkBa],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[unscaled_IkBa_P]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[unscaled_IkBa_P],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[unscaled_IkBa_mRNA]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[unscaled_IkBa_mRNA],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[unscaled_JNK_P]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[unscaled_JNK_P],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[unscaled_MSK_P]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[unscaled_MSK_P],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[unscaled_p38_P]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[unscaled_p38_P],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[unscaled_p65]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[unscaled_p65],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[unscaled_p65_P]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[unscaled_p65_P],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[IKKb]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IKKb],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[IKKb_p]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IKKb_p],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[IkBa_mRNA{cytoplasm}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IkBa_mRNA],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[IkBa_mRNA{nucleus}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[IkBa_mRNA],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[IkBa_p]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IkBa_p],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[IkBa_pre_mRNA_1]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[IkBa_pre_mRNA_1],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[IkBa_pre_mRNA_2]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[IkBa_pre_mRNA_2],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[IkBa{cytoplasm}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[IkBa],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[IkBa{nucleus}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[IkBa],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[JNK]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[JNK],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[JNK_P]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[JNK_P],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[LPS]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[EL],Vector=Metabolites[LPS],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[MSK1]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[MSK1],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[MSK1_P]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[MSK1_P],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[TNFR1{EL}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[EL],Vector=Metabolites[TNFR1],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[TNFR1{cytoplasm}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[TNFR1],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[TNFa:TNFR1{EL}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[EL],Vector=Metabolites[TNFa:TNFR1],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[TNFa:TNFR1{cytoplasm}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[TNFa:TNFR1],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[p38]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p38],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[p38_P]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p38_P],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[p65-IkBa{cytoplasm}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65-IkBa],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[p65-IkBa{nucleus}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[p65-IkBa],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[p65_2P]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[p65_2P],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[p65_P{cytoplasm}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65_P],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[p65_P{nucleus}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[p65_P],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[p65{cytoplasm}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[p65{nucleus}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[nucleus],Vector=Metabolites[p65],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+      </ListOfPlotItems>
+    </PlotSpecification>
   </ListOfPlots>
   <GUI>
   </GUI>
   <SBMLReference file="beuke1.xml">
-    <SBMLMap SBMLid="Complex_association_c" COPASIkey="Reaction_0"/>
-    <SBMLMap SBMLid="Complex_degradation_IkBa_c" COPASIkey="Reaction_1"/>
-    <SBMLMap SBMLid="Complex_degradation_IkBa_n" COPASIkey="Reaction_2"/>
-    <SBMLMap SBMLid="Complex_degradation_p65_c" COPASIkey="Reaction_3"/>
-    <SBMLMap SBMLid="Complex_degradation_p65_n" COPASIkey="Reaction_4"/>
-    <SBMLMap SBMLid="Complex_nuclear_shuttle" COPASIkey="Reaction_5"/>
-    <SBMLMap SBMLid="EL" COPASIkey="Compartment_0"/>
-    <SBMLMap SBMLid="IKK_phosphorylation" COPASIkey="Reaction_6"/>
-    <SBMLMap SBMLid="IKKb_active_phosphorylation_kA" COPASIkey="ModelValue_0"/>
-    <SBMLMap SBMLid="IKKb_active_phosphorylation_kM" COPASIkey="ModelValue_1"/>
-    <SBMLMap SBMLid="IKKb_active_phosphorylation_vmax" COPASIkey="ModelValue_2"/>
-    <SBMLMap SBMLid="IKKb_basal_phosphoylation_k" COPASIkey="ModelValue_3"/>
-    <SBMLMap SBMLid="IKKb_dephopshorylation_k" COPASIkey="ModelValue_4"/>
-    <SBMLMap SBMLid="IkBa_cytoplasm" COPASIkey="Metabolite_14"/>
-    <SBMLMap SBMLid="IkBa_deg_complex_cyt_k" COPASIkey="ModelValue_5"/>
-    <SBMLMap SBMLid="IkBa_deg_complex_nuc_k" COPASIkey="ModelValue_6"/>
-    <SBMLMap SBMLid="IkBa_deg_cyt_k" COPASIkey="ModelValue_7"/>
-    <SBMLMap SBMLid="IkBa_deg_nuc_k" COPASIkey="ModelValue_8"/>
-    <SBMLMap SBMLid="IkBa_degradation_c" COPASIkey="Reaction_7"/>
-    <SBMLMap SBMLid="IkBa_degradation_n" COPASIkey="Reaction_8"/>
-    <SBMLMap SBMLid="IkBa_mRNA_cytoplasm" COPASIkey="Metabolite_15"/>
-    <SBMLMap SBMLid="IkBa_mRNA_deg_cyt_k" COPASIkey="ModelValue_9"/>
-    <SBMLMap SBMLid="IkBa_mRNA_deg_nuc_k" COPASIkey="ModelValue_10"/>
-    <SBMLMap SBMLid="IkBa_mRNA_degradation_c" COPASIkey="Reaction_9"/>
-    <SBMLMap SBMLid="IkBa_mRNA_degradation_n" COPASIkey="Reaction_10"/>
-    <SBMLMap SBMLid="IkBa_mRNA_nucleus" COPASIkey="Metabolite_4"/>
-    <SBMLMap SBMLid="IkBa_mRNA_transport" COPASIkey="Reaction_11"/>
-    <SBMLMap SBMLid="IkBa_mRNA_transport_k" COPASIkey="ModelValue_11"/>
-    <SBMLMap SBMLid="IkBa_nuclear_export_k" COPASIkey="ModelValue_12"/>
-    <SBMLMap SBMLid="IkBa_nuclear_import_k" COPASIkey="ModelValue_13"/>
-    <SBMLMap SBMLid="IkBa_nuclear_shuttle" COPASIkey="Reaction_12"/>
-    <SBMLMap SBMLid="IkBa_p65_association_k" COPASIkey="ModelValue_14"/>
-    <SBMLMap SBMLid="IkBa_p65_dissociation_k" COPASIkey="ModelValue_15"/>
-    <SBMLMap SBMLid="IkBa_p65_nuclear_export_k" COPASIkey="ModelValue_16"/>
-    <SBMLMap SBMLid="IkBa_p65_nuclear_import_k" COPASIkey="ModelValue_17"/>
-    <SBMLMap SBMLid="IkBa_p65_phosphorylation_kM" COPASIkey="ModelValue_18"/>
-    <SBMLMap SBMLid="IkBa_p65_phosphorylation_kcat" COPASIkey="ModelValue_19"/>
-    <SBMLMap SBMLid="IkBa_p65_phosphorylation_vmax" COPASIkey="ModelValue_20"/>
-    <SBMLMap SBMLid="IkBa_p_active_degradation_k" COPASIkey="ModelValue_21"/>
-    <SBMLMap SBMLid="IkBa_phosphorylation" COPASIkey="Reaction_13"/>
-    <SBMLMap SBMLid="IkBa_phosphorylation_kM" COPASIkey="ModelValue_22"/>
-    <SBMLMap SBMLid="IkBa_phosphorylation_kcat" COPASIkey="ModelValue_23"/>
-    <SBMLMap SBMLid="IkBa_phosphorylation_vmax" COPASIkey="ModelValue_24"/>
-    <SBMLMap SBMLid="IkBa_pre_mRNA_1" COPASIkey="Metabolite_5"/>
-    <SBMLMap SBMLid="IkBa_pre_mRNA_2" COPASIkey="Metabolite_6"/>
-    <SBMLMap SBMLid="IkBa_transcription_elongation_1" COPASIkey="Reaction_14"/>
-    <SBMLMap SBMLid="IkBa_transcription_elongation_2" COPASIkey="Reaction_15"/>
-    <SBMLMap SBMLid="IkBa_transcription_elongation_kbasal" COPASIkey="ModelValue_25"/>
-    <SBMLMap SBMLid="IkBa_transcription_initiation_kbasal" COPASIkey="ModelValue_26"/>
-    <SBMLMap SBMLid="IkBa_transcription_kA2_p65_P" COPASIkey="ModelValue_27"/>
-    <SBMLMap SBMLid="IkBa_transcription_kA3_p65_2P" COPASIkey="ModelValue_28"/>
-    <SBMLMap SBMLid="IkBa_transcription_kA_p65" COPASIkey="ModelValue_29"/>
-    <SBMLMap SBMLid="IkBa_translation" COPASIkey="Reaction_16"/>
-    <SBMLMap SBMLid="IkBa_translation_Km" COPASIkey="ModelValue_30"/>
-    <SBMLMap SBMLid="IkBa_translation_vmax" COPASIkey="ModelValue_31"/>
-    <SBMLMap SBMLid="JNK" COPASIkey="Metabolite_16"/>
-    <SBMLMap SBMLid="JNK_P" COPASIkey="Metabolite_17"/>
-    <SBMLMap SBMLid="JNK_active_phoshorylation_Km" COPASIkey="ModelValue_32"/>
-    <SBMLMap SBMLid="JNK_active_phosphorylation" COPASIkey="Reaction_17"/>
-    <SBMLMap SBMLid="JNK_active_phosphorylation_kcat" COPASIkey="ModelValue_33"/>
-    <SBMLMap SBMLid="JNK_active_phosphorylation_vmax" COPASIkey="ModelValue_34"/>
-    <SBMLMap SBMLid="JNK_basal_phosphorylation" COPASIkey="Reaction_18"/>
-    <SBMLMap SBMLid="JNK_basal_phosphorylation_k" COPASIkey="ModelValue_35"/>
-    <SBMLMap SBMLid="JNK_dephosphorylation" COPASIkey="Reaction_19"/>
-    <SBMLMap SBMLid="JNK_dephosphorylation_k" COPASIkey="ModelValue_36"/>
-    <SBMLMap SBMLid="LPS" COPASIkey="Metabolite_0"/>
-    <SBMLMap SBMLid="LPS_LSEC_degradation" COPASIkey="Reaction_20"/>
-    <SBMLMap SBMLid="LPS_LSEC_degradation_k" COPASIkey="ModelValue_37"/>
-    <SBMLMap SBMLid="LPS_MC_degradation" COPASIkey="Reaction_21"/>
-    <SBMLMap SBMLid="LPS_MC_degradation_k" COPASIkey="ModelValue_38"/>
-    <SBMLMap SBMLid="MSK1" COPASIkey="Metabolite_7"/>
-    <SBMLMap SBMLid="MSK1_P" COPASIkey="Metabolite_8"/>
-    <SBMLMap SBMLid="MSK1_activation" COPASIkey="Reaction_22"/>
-    <SBMLMap SBMLid="MSK1_activation_kM" COPASIkey="ModelValue_39"/>
-    <SBMLMap SBMLid="MSK1_activation_vmax" COPASIkey="ModelValue_40"/>
-    <SBMLMap SBMLid="MSK1_deactivation" COPASIkey="Reaction_23"/>
-    <SBMLMap SBMLid="MSK1_dephosphorylation_k" COPASIkey="ModelValue_41"/>
-    <SBMLMap SBMLid="MSK1_phosphorylation_kcat" COPASIkey="ModelValue_42"/>
-    <SBMLMap SBMLid="TNFR1_EL" COPASIkey="Metabolite_1"/>
-    <SBMLMap SBMLid="TNFR1_cytoplasm" COPASIkey="Metabolite_18"/>
-    <SBMLMap SBMLid="TNFR1_shuttle" COPASIkey="Reaction_24"/>
-    <SBMLMap SBMLid="TNFa_LSEC_transcription_elongation_k" COPASIkey="ModelValue_43"/>
-    <SBMLMap SBMLid="TNFa_LSEC_transcription_initiation_kA_LPS" COPASIkey="ModelValue_44"/>
-    <SBMLMap SBMLid="TNFa_LSEC_transcription_initiation_kbasal" COPASIkey="ModelValue_45"/>
-    <SBMLMap SBMLid="TNFa_LSEC_transcription_initiation_vA_LPS" COPASIkey="ModelValue_46"/>
-    <SBMLMap SBMLid="TNFa_LSEC_translation_k" COPASIkey="ModelValue_47"/>
-    <SBMLMap SBMLid="TNFa_MC_transcription_elongation_k" COPASIkey="ModelValue_48"/>
-    <SBMLMap SBMLid="TNFa_MC_transcription_initiation_kA_LPS" COPASIkey="ModelValue_49"/>
-    <SBMLMap SBMLid="TNFa_MC_transcription_initiation_kbasal" COPASIkey="ModelValue_50"/>
-    <SBMLMap SBMLid="TNFa_MC_transcription_initiation_vA_LPS" COPASIkey="ModelValue_51"/>
-    <SBMLMap SBMLid="TNFa_MC_translation_k" COPASIkey="ModelValue_52"/>
-    <SBMLMap SBMLid="TNFa_TNFR1_EL" COPASIkey="Metabolite_2"/>
-    <SBMLMap SBMLid="TNFa_TNFR1_association" COPASIkey="Reaction_25"/>
-    <SBMLMap SBMLid="TNFa_TNFR1_cytoplasm" COPASIkey="Metabolite_19"/>
-    <SBMLMap SBMLid="TNFa_TNFR1_internalisation" COPASIkey="Reaction_26"/>
-    <SBMLMap SBMLid="TNFa_degradation" COPASIkey="Reaction_27"/>
-    <SBMLMap SBMLid="TNFa_degradation_k" COPASIkey="ModelValue_53"/>
-    <SBMLMap SBMLid="TNFa_internal_degradation" COPASIkey="Reaction_28"/>
-    <SBMLMap SBMLid="TNFa_mRNA_LSEC_degradation_k" COPASIkey="ModelValue_54"/>
-    <SBMLMap SBMLid="TNFa_mRNA_MC_degradation_k" COPASIkey="ModelValue_55"/>
-    <SBMLMap SBMLid="basal_IKKb_phosphorylation" COPASIkey="Reaction_29"/>
-    <SBMLMap SBMLid="c1" COPASIkey="Compartment_1"/>
-    <SBMLMap SBMLid="default" COPASIkey="Compartment_2"/>
-    <SBMLMap SBMLid="k_IkBa" COPASIkey="ModelValue_56"/>
-    <SBMLMap SBMLid="k_IkBa_P" COPASIkey="ModelValue_57"/>
-    <SBMLMap SBMLid="k_IkBa_mRNA" COPASIkey="ModelValue_58"/>
-    <SBMLMap SBMLid="k_JNK_P" COPASIkey="ModelValue_59"/>
-    <SBMLMap SBMLid="k_MSK_P" COPASIkey="ModelValue_60"/>
-    <SBMLMap SBMLid="k_TNFR1_outer_membrane2vessicle_shuttle" COPASIkey="ModelValue_61"/>
-    <SBMLMap SBMLid="k_TNFR1_vessicle2outer_membrane_shuttle" COPASIkey="ModelValue_62"/>
-    <SBMLMap SBMLid="k_TNFa_TNFR1_association" COPASIkey="ModelValue_63"/>
-    <SBMLMap SBMLid="k_TNFa_TNFR1_dissociation" COPASIkey="ModelValue_64"/>
-    <SBMLMap SBMLid="k_TNFa_TNFR1_internalisation" COPASIkey="ModelValue_65"/>
-    <SBMLMap SBMLid="k_TNFa_internal_degradation" COPASIkey="ModelValue_66"/>
-    <SBMLMap SBMLid="k_p38_P" COPASIkey="ModelValue_67"/>
-    <SBMLMap SBMLid="k_p65" COPASIkey="ModelValue_68"/>
-    <SBMLMap SBMLid="k_p65_P" COPASIkey="ModelValue_69"/>
-    <SBMLMap SBMLid="p38" COPASIkey="Metabolite_20"/>
-    <SBMLMap SBMLid="p38_P" COPASIkey="Metabolite_21"/>
-    <SBMLMap SBMLid="p38_active_phoshorylation_Km" COPASIkey="ModelValue_70"/>
-    <SBMLMap SBMLid="p38_active_phosphorylation" COPASIkey="Reaction_30"/>
-    <SBMLMap SBMLid="p38_active_phosphorylation_kcat" COPASIkey="ModelValue_71"/>
-    <SBMLMap SBMLid="p38_active_phosphorylation_vmax" COPASIkey="ModelValue_72"/>
-    <SBMLMap SBMLid="p38_basal_phosphorylation" COPASIkey="Reaction_31"/>
-    <SBMLMap SBMLid="p38_basal_phosphorylation_k" COPASIkey="ModelValue_73"/>
-    <SBMLMap SBMLid="p38_dephosphorylation" COPASIkey="Reaction_32"/>
-    <SBMLMap SBMLid="p38_dephosphorylation_k" COPASIkey="ModelValue_74"/>
-    <SBMLMap SBMLid="p65_2P" COPASIkey="Metabolite_9"/>
-    <SBMLMap SBMLid="p65_2P_degradation" COPASIkey="Reaction_33"/>
-    <SBMLMap SBMLid="p65_2P_dephosphorylation" COPASIkey="ModelValue_75"/>
-    <SBMLMap SBMLid="p65_2P_dephosphorylation_0" COPASIkey="Reaction_34"/>
-    <SBMLMap SBMLid="p65_IkBa_nucleus" COPASIkey="Metabolite_10"/>
-    <SBMLMap SBMLid="p65_MSK1_phosphorylation_kM" COPASIkey="ModelValue_76"/>
-    <SBMLMap SBMLid="p65_MSK1_phosphrylation_kcat" COPASIkey="ModelValue_77"/>
-    <SBMLMap SBMLid="p65_MSK1_phosphrylation_vmax" COPASIkey="ModelValue_78"/>
-    <SBMLMap SBMLid="p65_P_MSK1_phosphrylation_kM" COPASIkey="ModelValue_79"/>
-    <SBMLMap SBMLid="p65_P_MSK1_phosphrylation_kcat" COPASIkey="ModelValue_80"/>
-    <SBMLMap SBMLid="p65_P_MSK1_phosphrylation_vmax" COPASIkey="ModelValue_81"/>
-    <SBMLMap SBMLid="p65_P_degradation_c" COPASIkey="Reaction_35"/>
-    <SBMLMap SBMLid="p65_P_degradation_n" COPASIkey="Reaction_36"/>
-    <SBMLMap SBMLid="p65_P_dephosphorylation_c" COPASIkey="Reaction_37"/>
-    <SBMLMap SBMLid="p65_P_dephosphorylation_k" COPASIkey="ModelValue_82"/>
-    <SBMLMap SBMLid="p65_P_dephosphorylation_n" COPASIkey="Reaction_38"/>
-    <SBMLMap SBMLid="p65_P_phosphorylation_MSK1" COPASIkey="Reaction_39"/>
-    <SBMLMap SBMLid="p65_cytoplasm" COPASIkey="Metabolite_22"/>
-    <SBMLMap SBMLid="p65_degradation_k" COPASIkey="ModelValue_83"/>
-    <SBMLMap SBMLid="p65_mRNA" COPASIkey="Metabolite_23"/>
-    <SBMLMap SBMLid="p65_nuclear_export_k" COPASIkey="ModelValue_84"/>
-    <SBMLMap SBMLid="p65_nuclear_import_k" COPASIkey="ModelValue_85"/>
-    <SBMLMap SBMLid="p65_nuclear_shuttle" COPASIkey="Reaction_40"/>
-    <SBMLMap SBMLid="p65_nucleus" COPASIkey="Metabolite_11"/>
-    <SBMLMap SBMLid="p65_phosphorylation_MSK1" COPASIkey="Reaction_41"/>
-    <SBMLMap SBMLid="p65_translation" COPASIkey="Reaction_42"/>
-    <SBMLMap SBMLid="p65_translation_k" COPASIkey="ModelValue_86"/>
-    <SBMLMap SBMLid="re10" COPASIkey="Reaction_43"/>
-    <SBMLMap SBMLid="re14" COPASIkey="Reaction_44"/>
-    <SBMLMap SBMLid="re15" COPASIkey="Reaction_45"/>
-    <SBMLMap SBMLid="re17" COPASIkey="Reaction_46"/>
-    <SBMLMap SBMLid="re19" COPASIkey="Reaction_47"/>
-    <SBMLMap SBMLid="re3" COPASIkey="Reaction_48"/>
-    <SBMLMap SBMLid="s11" COPASIkey="Metabolite_12"/>
-    <SBMLMap SBMLid="s14" COPASIkey="Metabolite_24"/>
-    <SBMLMap SBMLid="s15" COPASIkey="Metabolite_25"/>
-    <SBMLMap SBMLid="s16" COPASIkey="Metabolite_3"/>
-    <SBMLMap SBMLid="s19" COPASIkey="Metabolite_26"/>
-    <SBMLMap SBMLid="s3" COPASIkey="Metabolite_27"/>
-    <SBMLMap SBMLid="s5" COPASIkey="Metabolite_28"/>
-    <SBMLMap SBMLid="s8" COPASIkey="Metabolite_13"/>
-    <SBMLMap SBMLid="scaled_IkBa" COPASIkey="ModelValue_87"/>
-    <SBMLMap SBMLid="scaled_IkBa_P" COPASIkey="ModelValue_88"/>
-    <SBMLMap SBMLid="scaled_IkBa_mRNA" COPASIkey="ModelValue_89"/>
-    <SBMLMap SBMLid="scaled_JNK_P" COPASIkey="ModelValue_90"/>
-    <SBMLMap SBMLid="scaled_MSK_P" COPASIkey="ModelValue_91"/>
-    <SBMLMap SBMLid="scaled_p38_P" COPASIkey="ModelValue_92"/>
-    <SBMLMap SBMLid="scaled_p65" COPASIkey="ModelValue_93"/>
-    <SBMLMap SBMLid="scaled_p65_P" COPASIkey="ModelValue_94"/>
-    <SBMLMap SBMLid="unscaled_IkBa" COPASIkey="ModelValue_95"/>
-    <SBMLMap SBMLid="unscaled_IkBa_P" COPASIkey="ModelValue_96"/>
-    <SBMLMap SBMLid="unscaled_IkBa_mRNA" COPASIkey="ModelValue_97"/>
-    <SBMLMap SBMLid="unscaled_JNK_P" COPASIkey="ModelValue_98"/>
-    <SBMLMap SBMLid="unscaled_MSK_P" COPASIkey="ModelValue_99"/>
-    <SBMLMap SBMLid="unscaled_p38_P" COPASIkey="ModelValue_100"/>
-    <SBMLMap SBMLid="unscaled_p65" COPASIkey="ModelValue_101"/>
-    <SBMLMap SBMLid="unscaled_p65_P" COPASIkey="ModelValue_102"/>
+    <SBMLMap SBMLid="Complex_association_c" COPASIkey="Reaction_49"/>
+    <SBMLMap SBMLid="Complex_degradation_IkBa_c" COPASIkey="Reaction_50"/>
+    <SBMLMap SBMLid="Complex_degradation_IkBa_n" COPASIkey="Reaction_51"/>
+    <SBMLMap SBMLid="Complex_degradation_p65_c" COPASIkey="Reaction_52"/>
+    <SBMLMap SBMLid="Complex_degradation_p65_n" COPASIkey="Reaction_53"/>
+    <SBMLMap SBMLid="Complex_nuclear_shuttle" COPASIkey="Reaction_54"/>
+    <SBMLMap SBMLid="EL" COPASIkey="Compartment_3"/>
+    <SBMLMap SBMLid="IKK_phosphorylation" COPASIkey="Reaction_55"/>
+    <SBMLMap SBMLid="IKKb_active_phosphorylation_kA" COPASIkey="ModelValue_108"/>
+    <SBMLMap SBMLid="IKKb_active_phosphorylation_kM" COPASIkey="ModelValue_109"/>
+    <SBMLMap SBMLid="IKKb_active_phosphorylation_vmax" COPASIkey="ModelValue_110"/>
+    <SBMLMap SBMLid="IKKb_basal_phosphoylation_k" COPASIkey="ModelValue_111"/>
+    <SBMLMap SBMLid="IKKb_dephopshorylation_k" COPASIkey="ModelValue_112"/>
+    <SBMLMap SBMLid="IkBa_cytoplasm" COPASIkey="Metabolite_37"/>
+    <SBMLMap SBMLid="IkBa_deg_complex_cyt_k" COPASIkey="ModelValue_8"/>
+    <SBMLMap SBMLid="IkBa_deg_complex_nuc_k" COPASIkey="ModelValue_7"/>
+    <SBMLMap SBMLid="IkBa_deg_cyt_k" COPASIkey="ModelValue_114"/>
+    <SBMLMap SBMLid="IkBa_deg_nuc_k" COPASIkey="ModelValue_115"/>
+    <SBMLMap SBMLid="IkBa_degradation_c" COPASIkey="Reaction_56"/>
+    <SBMLMap SBMLid="IkBa_degradation_n" COPASIkey="Reaction_57"/>
+    <SBMLMap SBMLid="IkBa_mRNA_cytoplasm" COPASIkey="Metabolite_38"/>
+    <SBMLMap SBMLid="IkBa_mRNA_deg_cyt_k" COPASIkey="ModelValue_116"/>
+    <SBMLMap SBMLid="IkBa_mRNA_deg_nuc_k" COPASIkey="ModelValue_117"/>
+    <SBMLMap SBMLid="IkBa_mRNA_degradation_c" COPASIkey="Reaction_58"/>
+    <SBMLMap SBMLid="IkBa_mRNA_degradation_n" COPASIkey="Reaction_59"/>
+    <SBMLMap SBMLid="IkBa_mRNA_nucleus" COPASIkey="Metabolite_49"/>
+    <SBMLMap SBMLid="IkBa_mRNA_transport" COPASIkey="Reaction_60"/>
+    <SBMLMap SBMLid="IkBa_mRNA_transport_k" COPASIkey="ModelValue_118"/>
+    <SBMLMap SBMLid="IkBa_nuclear_export_k" COPASIkey="ModelValue_119"/>
+    <SBMLMap SBMLid="IkBa_nuclear_import_k" COPASIkey="ModelValue_120"/>
+    <SBMLMap SBMLid="IkBa_nuclear_shuttle" COPASIkey="Reaction_61"/>
+    <SBMLMap SBMLid="IkBa_p65_association_k" COPASIkey="ModelValue_121"/>
+    <SBMLMap SBMLid="IkBa_p65_dissociation_k" COPASIkey="ModelValue_122"/>
+    <SBMLMap SBMLid="IkBa_p65_nuclear_export_k" COPASIkey="ModelValue_123"/>
+    <SBMLMap SBMLid="IkBa_p65_nuclear_import_k" COPASIkey="ModelValue_124"/>
+    <SBMLMap SBMLid="IkBa_p65_phosphorylation_kM" COPASIkey="ModelValue_125"/>
+    <SBMLMap SBMLid="IkBa_p65_phosphorylation_kcat" COPASIkey="ModelValue_126"/>
+    <SBMLMap SBMLid="IkBa_p65_phosphorylation_vmax" COPASIkey="ModelValue_127"/>
+    <SBMLMap SBMLid="IkBa_p_active_degradation_k" COPASIkey="ModelValue_128"/>
+    <SBMLMap SBMLid="IkBa_phosphorylation" COPASIkey="Reaction_62"/>
+    <SBMLMap SBMLid="IkBa_phosphorylation_kM" COPASIkey="ModelValue_129"/>
+    <SBMLMap SBMLid="IkBa_phosphorylation_kcat" COPASIkey="ModelValue_130"/>
+    <SBMLMap SBMLid="IkBa_phosphorylation_vmax" COPASIkey="ModelValue_131"/>
+    <SBMLMap SBMLid="IkBa_pre_mRNA_1" COPASIkey="Metabolite_47"/>
+    <SBMLMap SBMLid="IkBa_pre_mRNA_2" COPASIkey="Metabolite_29"/>
+    <SBMLMap SBMLid="IkBa_transcription_elongation_1" COPASIkey="Reaction_63"/>
+    <SBMLMap SBMLid="IkBa_transcription_elongation_2" COPASIkey="Reaction_64"/>
+    <SBMLMap SBMLid="IkBa_transcription_elongation_kbasal" COPASIkey="ModelValue_132"/>
+    <SBMLMap SBMLid="IkBa_transcription_initiation_kbasal" COPASIkey="ModelValue_133"/>
+    <SBMLMap SBMLid="IkBa_transcription_kA2_p65_P" COPASIkey="ModelValue_134"/>
+    <SBMLMap SBMLid="IkBa_transcription_kA3_p65_2P" COPASIkey="ModelValue_135"/>
+    <SBMLMap SBMLid="IkBa_transcription_kA_p65" COPASIkey="ModelValue_136"/>
+    <SBMLMap SBMLid="IkBa_translation" COPASIkey="Reaction_65"/>
+    <SBMLMap SBMLid="IkBa_translation_Km" COPASIkey="ModelValue_137"/>
+    <SBMLMap SBMLid="IkBa_translation_vmax" COPASIkey="ModelValue_138"/>
+    <SBMLMap SBMLid="JNK" COPASIkey="Metabolite_39"/>
+    <SBMLMap SBMLid="JNK_P" COPASIkey="Metabolite_40"/>
+    <SBMLMap SBMLid="JNK_active_phoshorylation_Km" COPASIkey="ModelValue_139"/>
+    <SBMLMap SBMLid="JNK_active_phosphorylation" COPASIkey="Reaction_66"/>
+    <SBMLMap SBMLid="JNK_active_phosphorylation_kcat" COPASIkey="ModelValue_140"/>
+    <SBMLMap SBMLid="JNK_active_phosphorylation_vmax" COPASIkey="ModelValue_141"/>
+    <SBMLMap SBMLid="JNK_basal_phosphorylation" COPASIkey="Reaction_67"/>
+    <SBMLMap SBMLid="JNK_basal_phosphorylation_k" COPASIkey="ModelValue_142"/>
+    <SBMLMap SBMLid="JNK_dephosphorylation" COPASIkey="Reaction_68"/>
+    <SBMLMap SBMLid="JNK_dephosphorylation_k" COPASIkey="ModelValue_143"/>
+    <SBMLMap SBMLid="LPS" COPASIkey="Metabolite_41"/>
+    <SBMLMap SBMLid="LPS_LSEC_degradation" COPASIkey="Reaction_69"/>
+    <SBMLMap SBMLid="LPS_LSEC_degradation_k" COPASIkey="ModelValue_144"/>
+    <SBMLMap SBMLid="LPS_MC_degradation" COPASIkey="Reaction_70"/>
+    <SBMLMap SBMLid="LPS_MC_degradation_k" COPASIkey="ModelValue_145"/>
+    <SBMLMap SBMLid="MSK1" COPASIkey="Metabolite_30"/>
+    <SBMLMap SBMLid="MSK1_P" COPASIkey="Metabolite_31"/>
+    <SBMLMap SBMLid="MSK1_activation" COPASIkey="Reaction_71"/>
+    <SBMLMap SBMLid="MSK1_activation_kM" COPASIkey="ModelValue_146"/>
+    <SBMLMap SBMLid="MSK1_activation_vmax" COPASIkey="ModelValue_147"/>
+    <SBMLMap SBMLid="MSK1_deactivation" COPASIkey="Reaction_72"/>
+    <SBMLMap SBMLid="MSK1_dephosphorylation_k" COPASIkey="ModelValue_148"/>
+    <SBMLMap SBMLid="MSK1_phosphorylation_kcat" COPASIkey="ModelValue_149"/>
+    <SBMLMap SBMLid="TNFR1_EL" COPASIkey="Metabolite_45"/>
+    <SBMLMap SBMLid="TNFR1_cytoplasm" COPASIkey="Metabolite_42"/>
+    <SBMLMap SBMLid="TNFR1_shuttle" COPASIkey="Reaction_73"/>
+    <SBMLMap SBMLid="TNFa_LSEC_transcription_elongation_k" COPASIkey="ModelValue_150"/>
+    <SBMLMap SBMLid="TNFa_LSEC_transcription_initiation_kA_LPS" COPASIkey="ModelValue_151"/>
+    <SBMLMap SBMLid="TNFa_LSEC_transcription_initiation_kbasal" COPASIkey="ModelValue_152"/>
+    <SBMLMap SBMLid="TNFa_LSEC_transcription_initiation_vA_LPS" COPASIkey="ModelValue_153"/>
+    <SBMLMap SBMLid="TNFa_LSEC_translation_k" COPASIkey="ModelValue_154"/>
+    <SBMLMap SBMLid="TNFa_MC_transcription_elongation_k" COPASIkey="ModelValue_155"/>
+    <SBMLMap SBMLid="TNFa_MC_transcription_initiation_kA_LPS" COPASIkey="ModelValue_156"/>
+    <SBMLMap SBMLid="TNFa_MC_transcription_initiation_kbasal" COPASIkey="ModelValue_157"/>
+    <SBMLMap SBMLid="TNFa_MC_transcription_initiation_vA_LPS" COPASIkey="ModelValue_158"/>
+    <SBMLMap SBMLid="TNFa_MC_translation_k" COPASIkey="ModelValue_159"/>
+    <SBMLMap SBMLid="TNFa_TNFR1_EL" COPASIkey="Metabolite_50"/>
+    <SBMLMap SBMLid="TNFa_TNFR1_association" COPASIkey="Reaction_74"/>
+    <SBMLMap SBMLid="TNFa_TNFR1_cytoplasm" COPASIkey="Metabolite_48"/>
+    <SBMLMap SBMLid="TNFa_TNFR1_internalisation" COPASIkey="Reaction_75"/>
+    <SBMLMap SBMLid="TNFa_degradation" COPASIkey="Reaction_76"/>
+    <SBMLMap SBMLid="TNFa_degradation_k" COPASIkey="ModelValue_160"/>
+    <SBMLMap SBMLid="TNFa_internal_degradation" COPASIkey="Reaction_77"/>
+    <SBMLMap SBMLid="TNFa_mRNA_LSEC_degradation_k" COPASIkey="ModelValue_161"/>
+    <SBMLMap SBMLid="TNFa_mRNA_MC_degradation_k" COPASIkey="ModelValue_162"/>
+    <SBMLMap SBMLid="basal_IKKb_phosphorylation" COPASIkey="Reaction_78"/>
+    <SBMLMap SBMLid="c1" COPASIkey="Compartment_4"/>
+    <SBMLMap SBMLid="default" COPASIkey="Compartment_5"/>
+    <SBMLMap SBMLid="k_IkBa" COPASIkey="ModelValue_163"/>
+    <SBMLMap SBMLid="k_IkBa_P" COPASIkey="ModelValue_164"/>
+    <SBMLMap SBMLid="k_IkBa_mRNA" COPASIkey="ModelValue_165"/>
+    <SBMLMap SBMLid="k_JNK_P" COPASIkey="ModelValue_166"/>
+    <SBMLMap SBMLid="k_MSK_P" COPASIkey="ModelValue_167"/>
+    <SBMLMap SBMLid="k_TNFR1_outer_membrane2vessicle_shuttle" COPASIkey="ModelValue_168"/>
+    <SBMLMap SBMLid="k_TNFR1_vessicle2outer_membrane_shuttle" COPASIkey="ModelValue_169"/>
+    <SBMLMap SBMLid="k_TNFa_TNFR1_association" COPASIkey="ModelValue_170"/>
+    <SBMLMap SBMLid="k_TNFa_TNFR1_dissociation" COPASIkey="ModelValue_171"/>
+    <SBMLMap SBMLid="k_TNFa_TNFR1_internalisation" COPASIkey="ModelValue_172"/>
+    <SBMLMap SBMLid="k_TNFa_internal_degradation" COPASIkey="ModelValue_173"/>
+    <SBMLMap SBMLid="k_p38_P" COPASIkey="ModelValue_174"/>
+    <SBMLMap SBMLid="k_p65" COPASIkey="ModelValue_175"/>
+    <SBMLMap SBMLid="k_p65_P" COPASIkey="ModelValue_176"/>
+    <SBMLMap SBMLid="p38" COPASIkey="Metabolite_51"/>
+    <SBMLMap SBMLid="p38_P" COPASIkey="Metabolite_46"/>
+    <SBMLMap SBMLid="p38_active_phoshorylation_Km" COPASIkey="ModelValue_177"/>
+    <SBMLMap SBMLid="p38_active_phosphorylation" COPASIkey="Reaction_79"/>
+    <SBMLMap SBMLid="p38_active_phosphorylation_kcat" COPASIkey="ModelValue_178"/>
+    <SBMLMap SBMLid="p38_active_phosphorylation_vmax" COPASIkey="ModelValue_179"/>
+    <SBMLMap SBMLid="p38_basal_phosphorylation" COPASIkey="Reaction_99"/>
+    <SBMLMap SBMLid="p38_basal_phosphorylation_k" COPASIkey="ModelValue_180"/>
+    <SBMLMap SBMLid="p38_dephosphorylation" COPASIkey="Reaction_98"/>
+    <SBMLMap SBMLid="p38_dephosphorylation_k" COPASIkey="ModelValue_181"/>
+    <SBMLMap SBMLid="p65_2P" COPASIkey="Metabolite_32"/>
+    <SBMLMap SBMLid="p65_2P_degradation" COPASIkey="Reaction_97"/>
+    <SBMLMap SBMLid="p65_2P_dephosphorylation" COPASIkey="ModelValue_182"/>
+    <SBMLMap SBMLid="p65_2P_dephosphorylation_0" COPASIkey="Reaction_96"/>
+    <SBMLMap SBMLid="p65_IkBa_nucleus" COPASIkey="Metabolite_33"/>
+    <SBMLMap SBMLid="p65_MSK1_phosphorylation_kM" COPASIkey="ModelValue_183"/>
+    <SBMLMap SBMLid="p65_MSK1_phosphrylation_kcat" COPASIkey="ModelValue_184"/>
+    <SBMLMap SBMLid="p65_MSK1_phosphrylation_vmax" COPASIkey="ModelValue_185"/>
+    <SBMLMap SBMLid="p65_P_MSK1_phosphrylation_kM" COPASIkey="ModelValue_186"/>
+    <SBMLMap SBMLid="p65_P_MSK1_phosphrylation_kcat" COPASIkey="ModelValue_187"/>
+    <SBMLMap SBMLid="p65_P_MSK1_phosphrylation_vmax" COPASIkey="ModelValue_188"/>
+    <SBMLMap SBMLid="p65_P_degradation_c" COPASIkey="Reaction_95"/>
+    <SBMLMap SBMLid="p65_P_degradation_n" COPASIkey="Reaction_94"/>
+    <SBMLMap SBMLid="p65_P_dephosphorylation_c" COPASIkey="Reaction_93"/>
+    <SBMLMap SBMLid="p65_P_dephosphorylation_k" COPASIkey="ModelValue_189"/>
+    <SBMLMap SBMLid="p65_P_dephosphorylation_n" COPASIkey="Reaction_92"/>
+    <SBMLMap SBMLid="p65_P_phosphorylation_MSK1" COPASIkey="Reaction_91"/>
+    <SBMLMap SBMLid="p65_cytoplasm" COPASIkey="Metabolite_44"/>
+    <SBMLMap SBMLid="p65_degradation_k" COPASIkey="ModelValue_190"/>
+    <SBMLMap SBMLid="p65_mRNA" COPASIkey="Metabolite_43"/>
+    <SBMLMap SBMLid="p65_nuclear_export_k" COPASIkey="ModelValue_191"/>
+    <SBMLMap SBMLid="p65_nuclear_import_k" COPASIkey="ModelValue_192"/>
+    <SBMLMap SBMLid="p65_nuclear_shuttle" COPASIkey="Reaction_90"/>
+    <SBMLMap SBMLid="p65_nucleus" COPASIkey="Metabolite_34"/>
+    <SBMLMap SBMLid="p65_phosphorylation_MSK1" COPASIkey="Reaction_89"/>
+    <SBMLMap SBMLid="p65_translation" COPASIkey="Reaction_88"/>
+    <SBMLMap SBMLid="p65_translation_k" COPASIkey="ModelValue_193"/>
+    <SBMLMap SBMLid="re10" COPASIkey="Reaction_87"/>
+    <SBMLMap SBMLid="re14" COPASIkey="Reaction_86"/>
+    <SBMLMap SBMLid="re15" COPASIkey="Reaction_85"/>
+    <SBMLMap SBMLid="re17" COPASIkey="Reaction_84"/>
+    <SBMLMap SBMLid="re19" COPASIkey="Reaction_83"/>
+    <SBMLMap SBMLid="re3" COPASIkey="Reaction_82"/>
+    <SBMLMap SBMLid="s11" COPASIkey="Metabolite_35"/>
+    <SBMLMap SBMLid="s14" COPASIkey="Metabolite_63"/>
+    <SBMLMap SBMLid="s15" COPASIkey="Metabolite_62"/>
+    <SBMLMap SBMLid="s16" COPASIkey="Metabolite_52"/>
+    <SBMLMap SBMLid="s19" COPASIkey="Metabolite_61"/>
+    <SBMLMap SBMLid="s3" COPASIkey="Metabolite_60"/>
+    <SBMLMap SBMLid="s5" COPASIkey="Metabolite_59"/>
+    <SBMLMap SBMLid="s8" COPASIkey="Metabolite_36"/>
+    <SBMLMap SBMLid="scaled_IkBa" COPASIkey="ModelValue_194"/>
+    <SBMLMap SBMLid="scaled_IkBa_P" COPASIkey="ModelValue_195"/>
+    <SBMLMap SBMLid="scaled_IkBa_mRNA" COPASIkey="ModelValue_196"/>
+    <SBMLMap SBMLid="scaled_JNK_P" COPASIkey="ModelValue_197"/>
+    <SBMLMap SBMLid="scaled_MSK_P" COPASIkey="ModelValue_198"/>
+    <SBMLMap SBMLid="scaled_p38_P" COPASIkey="ModelValue_199"/>
+    <SBMLMap SBMLid="scaled_p65" COPASIkey="ModelValue_200"/>
+    <SBMLMap SBMLid="scaled_p65_P" COPASIkey="ModelValue_201"/>
+    <SBMLMap SBMLid="unscaled_IkBa" COPASIkey="ModelValue_202"/>
+    <SBMLMap SBMLid="unscaled_IkBa_P" COPASIkey="ModelValue_203"/>
+    <SBMLMap SBMLid="unscaled_IkBa_mRNA" COPASIkey="ModelValue_204"/>
+    <SBMLMap SBMLid="unscaled_JNK_P" COPASIkey="ModelValue_205"/>
+    <SBMLMap SBMLid="unscaled_MSK_P" COPASIkey="ModelValue_206"/>
+    <SBMLMap SBMLid="unscaled_p38_P" COPASIkey="ModelValue_207"/>
+    <SBMLMap SBMLid="unscaled_p65" COPASIkey="ModelValue_208"/>
+    <SBMLMap SBMLid="unscaled_p65_P" COPASIkey="ModelValue_209"/>
   </SBMLReference>
   <ListOfUnitDefinitions>
     <UnitDefinition key="Unit_0" name="meter" symbol="m">
