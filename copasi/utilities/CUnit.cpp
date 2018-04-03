@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -876,50 +876,84 @@ bool CUnit::isUnitType(UnitType type) const
 {
   CBaseUnit::Kind kind = CBaseUnit::undefined;
   int exponent;
+  std::set< CUnitComponent >::const_iterator lastComponent = mComponents.end();
 
   switch (type)
     {
       case time:
         kind = CBaseUnit::second;
         exponent = 1;
+
+        if (mComponents.size() == 2)
+          {
+            lastComponent = ++mComponents.begin();
+          }
+
         break;
 
       case quantity:
         kind = CBaseUnit::item;
         exponent = 1;
+
+        if (mComponents.size() == 2 ||
+            (mComponents.size() == 3 &&
+             mComponents.rbegin()->getKind() == CBaseUnit::avogadro))
+          {
+            lastComponent = ++mComponents.begin();
+          }
+
         break;
 
       case volume:
         kind = CBaseUnit::meter;
         exponent = 3;
+
+        if (mComponents.size() == 2)
+          {
+            lastComponent = ++mComponents.begin();
+          }
+
         break;
 
       case area:
         kind = CBaseUnit::meter;
         exponent = 2;
+
+        if (mComponents.size() == 2)
+          {
+            lastComponent = ++mComponents.begin();
+          }
+
         break;
 
       case length:
         kind = CBaseUnit::meter;
         exponent = 1;
+
+        if (mComponents.size() == 2)
+          {
+            lastComponent = ++mComponents.begin();
+          }
+
         break;
 
       default:
         return false;
     }
 
-  std::set< CUnitComponent >::const_iterator lastComponent = mComponents.end();
-  --lastComponent; // (because end points to one after the last one)
+  // Dimensionless is allowed for all valid types.
+  if (isDimensionless())
+    {
+      return (getExpression() == "1");  // Include dimensionless, but not rad, sr, etc.
+    }
 
-  if (mComponents.size() >= 1 && // has to be one or two components
-      mComponents.size() <= 2 &&
-      ((lastComponent->getKind() == CBaseUnit::dimensionless &&
-        getExpression() == "1") || // Include dimensionless, but not rad, sr, etc.
-       (lastComponent->getKind() == kind &&
-        lastComponent->getExponent() == double(exponent))))
-    return true;
-  else // includes 0 exponents (undefined)
-    return false;
+  if (lastComponent !=  mComponents.end())
+    {
+      return (lastComponent->getKind() == kind &&
+              lastComponent->getExponent() == double(exponent));
+    }
+
+  return false;
 }
 
 // friend
