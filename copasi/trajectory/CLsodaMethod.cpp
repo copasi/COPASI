@@ -422,6 +422,14 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
             }
         }
 
+#ifdef DEBUG_FLOW
+      else
+        {
+          std::cout << "Continuing with root found by peek ahead." << std::endl;
+        }
+
+#endif // DEBUG_FLOW
+
       switch (mLsodaStatus)
         {
           case -33:
@@ -475,11 +483,6 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
             // If mLsodaStatus == 3 we have found a root. This needs to be indicated to
             // the caller as it is not sufficient to rely on the fact that T < TOUT
 
-            // It is sufficient to switch to 2. Eventual state changes due to events
-            // are indicated via the method stateChanged()
-            mLsodaStatus = 2;
-            Status = ROOT;
-
             if (mRootMasking != NONE)
               {
                 setRootMaskType(NONE);
@@ -499,6 +502,11 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
                 std::cout << "Finishing peek ahead." << std::endl;
 #endif // DEBUG_FLOW
               }
+
+            // It is sufficient to switch to 2. Eventual state changes due to events
+            // are indicated via the method stateChanged()
+            mLsodaStatus = 2;
+            Status = ROOT;
 
             saveState(mLastRootState, ROOT);
             break;
@@ -843,6 +851,7 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
 #endif // DEBUG_NUMERICS
 
   C_FLOAT64 MaxPeekAheadTime = std::max(mTargetTime, mTime * (1.0 + 2.0 * *mpRelativeTolerance));
+  mLsodaStatus = 2;
 
   while (mPeekAheadMode)
     {
