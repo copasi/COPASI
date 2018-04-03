@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -42,10 +42,10 @@ COptMethodDE::COptMethodDE(const CDataContainer * pParent,
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   if (mEnableAdditionalParameters)
-  {
-    addParameter("Mutation Variance", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.1);
-    addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-  }
+    {
+      addParameter("Mutation Variance", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.1);
+      addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+    }
 
   addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
@@ -331,35 +331,35 @@ bool COptMethodDE::initialize()
   size_t i;
 
   if (!COptPopulationMethod::initialize())
-  {
-    if (mpCallBack)
-      mpCallBack->finishItem(mhGenerations);
+    {
+      if (mpCallBack)
+        mpCallBack->finishItem(mhGenerations);
 
-    return false;
-  }
+      return false;
+    }
 
   mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
   mCurrentGeneration = 0;
 
-  if (mpCallBack)
+  if (!mpCallBack)
     mhGenerations =
-    mpCallBack->addItem("Current Generation",
-      mCurrentGeneration,
-      &mGenerations);
+      mpCallBack->addItem("Current Generation",
+                          mCurrentGeneration,
+                          &mGenerations);
 
   mCurrentGeneration++;
 
   mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
 
   if (mPopulationSize < 4)
-  {
-    mMethodLog.enterLogItem(COptLogItem(COptLogItem::DE_usrdef_error_pop_size).with(4));
+    {
+      mMethodLog.enterLogItem(COptLogItem(COptLogItem::DE_usrdef_error_pop_size).with(4));
 
-    mPopulationSize = 4;
-    setValue("Population Size", mPopulationSize);
-  }
+      mPopulationSize = 4;
+      setValue("Population Size", mPopulationSize);
+    }
 
   mpPermutation = new CPermutation(mpRandom, mPopulationSize);
 
@@ -375,18 +375,18 @@ bool COptMethodDE::initialize()
   mMutationVarians = 0.1;
 
   if (getParameter("Mutation Variance"))
-  {
-    mMutationVarians = getValue< C_FLOAT64 >("Mutation Variance");
-    
-    if (mMutationVarians < 0.0 || 1.0 < mMutationVarians)
     {
-      mMutationVarians = 0.1;
-      setValue("Mutation Variance", mMutationVarians);
+      mMutationVarians = getValue< C_FLOAT64 >("Mutation Variance");
+
+      if (mMutationVarians < 0.0 || 1.0 < mMutationVarians)
+        {
+          mMutationVarians = 0.1;
+          setValue("Mutation Variance", mMutationVarians);
+        }
     }
-  }
 
   if (getParameter("Stop after # Stalled Generations"))
-  mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
+    mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
 
   return true;
 }
@@ -492,7 +492,6 @@ bool COptMethodDE::optimise()
        mCurrentGeneration <= mGenerations && Continue;
        mCurrentGeneration++, Stalled++)
     {
-
 
       if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
         break;

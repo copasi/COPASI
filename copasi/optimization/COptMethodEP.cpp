@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,8 +47,7 @@ COptMethodEP::COptMethodEP(const CDataContainer * pParent,
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   if (mEnableAdditionalParameters)
-  addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-
+    addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
@@ -183,13 +182,12 @@ bool COptMethodEP::initialize()
 
   if (!COptPopulationMethod::initialize()) return false;
 
-
   mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
   mCurrentGeneration = 0;
 
-  if (mpCallBack)
+  if (!mpCallBack)
     mhGenerations =
       mpCallBack->addItem("Current Generation",
                           mCurrentGeneration,
@@ -203,7 +201,6 @@ bool COptMethodEP::initialize()
                              getValue< unsigned C_INT32 >("Seed"));
 
   mVariableSize = mpOptItem->size();
-
 
   mIndividuals.resize(2 * mPopulationSize);
 
@@ -226,7 +223,7 @@ bool COptMethodEP::initialize()
   tau2 = 1.0 / sqrt(2 * sqrt(double(mVariableSize)));
 
   if (getParameter("Stop after # Stalled Generations"))
-  mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
+    mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
 
   return true;
 }
@@ -317,8 +314,6 @@ bool COptMethodEP::creation()
       // Set the variance for this parameter.
       (*mVariance[0])[i] = fabs(mut) * 0.5;
     }
-
-
 
   if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
 

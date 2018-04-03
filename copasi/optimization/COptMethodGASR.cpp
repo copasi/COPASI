@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -52,10 +52,10 @@ COptMethodGASR::COptMethodGASR(const CDataContainer * pParent,
   addParameter("Pf", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.475);  //*****ADDED for SR
 
   if (mEnableAdditionalParameters)
-  {
-    addParameter("Mutation Variance", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.1);
-    addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-  }
+    {
+      addParameter("Mutation Variance", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.1);
+      addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+    }
 
   addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
@@ -410,7 +410,7 @@ bool COptMethodGASR::initialize()
   mCurrentGeneration = 0;
   mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
 
-  if (mpCallBack)
+  if (!mpCallBack)
     mhGenerations =
       mpCallBack->addItem("Current Generation",
                           mCurrentGeneration,
@@ -450,18 +450,18 @@ bool COptMethodGASR::initialize()
   mMutationVarians = 0.1;
 
   if (getParameter("Mutation Variance"))
-  {
-    mMutationVarians = getValue< C_FLOAT64 >("Mutation Variance");
-
-    if (mMutationVarians < 0.0 || 1.0 < mMutationVarians)
     {
-      mMutationVarians = 0.1;
-      setValue("Mutation Variance", mMutationVarians);
+      mMutationVarians = getValue< C_FLOAT64 >("Mutation Variance");
+
+      if (mMutationVarians < 0.0 || 1.0 < mMutationVarians)
+        {
+          mMutationVarians = 0.1;
+          setValue("Mutation Variance", mMutationVarians);
+        }
     }
-  }
 
   if (getParameter("Stop after # Stalled Generations"))
-  mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
+    mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
 
   return true;
 }
