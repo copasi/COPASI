@@ -21,6 +21,10 @@
 
 
 
+
+
+
+
 #include <cmath>
 
 #include "copasi.h"
@@ -57,8 +61,8 @@ COptMethodGASR::COptMethodGASR(const CDataContainer * pParent,
 
   if (mEnableAdditionalParameters)
     {
-      addParameter("Mutation Variance", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.1);
-      addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+      addParameter("Mutation Variance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.1);
+      addParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
     }
 
   addParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
