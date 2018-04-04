@@ -17,6 +17,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+
+
+
 #include <cmath>
 
 #include "copasi.h"
@@ -47,11 +51,10 @@ COptMethodEP::COptMethodEP(const CDataContainer * pParent,
   addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   if (mEnableAdditionalParameters)
-    addParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+    addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
-  addParameter("#LogVerbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
-  addParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -189,7 +192,7 @@ bool COptMethodEP::initialize()
   mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
   mCurrentGeneration = 0;
 
-  if (mpCallBack)
+  if (!mpCallBack)
     mhGenerations =
       mpCallBack->addItem("Current Generation",
                           mCurrentGeneration,
