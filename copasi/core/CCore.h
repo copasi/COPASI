@@ -1,7 +1,8 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
+
 
 #ifndef COPASI_CCore
 #define COPASI_CCore
@@ -29,8 +30,10 @@
 # define C_INT16 short
 # define C_FLOAT64 double
 # define C_FLOAT32 float
+#if _MSC_VER < 1900
 # define vsnprintf _vsnprintf // they just have a different name for this guy
 # define snprintf  _snprintf  // they just have a different name for this guy
+#endif
 # define strcasecmp _stricmp  // they just have a different name for this guy
 # define strdup _strdup       // they just have a different name for this guy
 # define isnan _isnan         // they just have a different name for this guy

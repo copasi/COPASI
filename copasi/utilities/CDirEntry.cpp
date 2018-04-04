@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,6 +16,10 @@
 // Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+
+
+
 
 #include <algorithm>
 #include <sys/types.h>
@@ -221,7 +225,7 @@ std::string CDirEntry::createTmpName(const std::string & dir,
 
   do
     {
-      TmpName = Path.c_str() + Separator;
+      TmpName = Path.toUtf8() + Separator;
 
       unsigned C_INT32 Char;
 
