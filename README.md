@@ -10,14 +10,14 @@ COPASI carries out several analyses of the network and its dynamics and has
 extensive support for parameter estimation and optimization. COPASI provides 
 means to visualize data in customizable plots, histograms and animations of 
 network diagrams. 
-([list of features](http://www.copasi.org/tiki-index.php?page=FeatureList)). 
+([list of features](http://copasi.org/Support/Features/)). 
 
 Follow us on [Google+](https://plus.google.com/103737270060170895963) or 
 [Twitter](https://twitter.com/COPASI_software). 
 
 ### Download COPASI
 Precompiled versions of COPASI are available for all operating systems on the 
-[COPASI Homepage](http://www.copasi.org/tiki-index.php?page=downloadnoncommercial).
+[COPASI Homepage](http://copasi.org/Download/).
 
 ### Building COPASI
 COPASI's sources are available from our [github repository](https://github.com/copasi/COPASI). 
@@ -54,7 +54,7 @@ directory in a subfolder `copasi`. The path `../COPASI` is the source directory 
 
 There are many more compile options available, options for building the 
 language bindings as well as options to enable some experimental features that
-are not yet available in the stable builds that are [released publicly](http://www.copasi.org/tiki-index.php?page=downloadnoncommercial). To view the complete set of options, start the 
+are not yet available in the stable builds that are [released publicly](http://copasi.org/Download/). To view the complete set of options, start the 
 graphical cmake frontend in the continuing from the above command this would
 be done with:
 
@@ -87,6 +87,6 @@ or our [mailing list](https://groups.google.com/forum/#!forum/copasi-user-forum)
 
 ### License
 The packages available on this page are provided under the 
-[Artistic License 2.0](http://www.copasi.org/tiki-index.php?page=ArtisticLicense), 
+[Artistic License 2.0](http://copasi.org/Download/License/), 
 which is an [OSI](http://www.opensource.org/) approved license. This license 
 allows non-commercial and commercial use free of charge.
