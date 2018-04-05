@@ -3,6 +3,7 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
+
 #ifndef COPASI_CDataVector
 #define COPASI_CDataVector
 
@@ -483,6 +484,7 @@ public:
     return *this;
   }
 
+#ifndef SWIG
   bool operator != (const CDataVector< CType > & rhs)
   {
     if (size() != rhs.size())
@@ -502,6 +504,7 @@ public:
 
     return false;
   }
+#endif
 
   /**
    * This creates a deep copy of the source, i.e., all objects are copied and
