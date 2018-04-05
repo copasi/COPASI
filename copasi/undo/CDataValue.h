@@ -10,11 +10,6 @@
 #include <string>
 #include <vector>
 
-#if !(defined(_MSC_VER) && !defined(_WIN64))
-#define DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
-#endif
-
-
 class CData;
 
 class CDataValue
