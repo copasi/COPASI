@@ -1,0 +1,59 @@
+// Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+
+
+
+
+// config.h
+//
+// This file contains the configuration options for this version of COPASI
+//
+
+
+// basic options
+#cmakedefine WITH_COMBINE_ARCHIVE
+#cmakedefine COPASI_SEDML
+#cmakedefine WITH_MERGEMODEL
+#cmakedefine WITH_SDE_SUPPORT
+#cmakedefine COPASI_NONLIN_DYN_OSCILLATION
+#cmakedefine COPASI_PARAMETERFITTING_RESIDUAL_SCALING
+#cmakedefine COPASI_EXTUNIT
+#cmakedefine USE_SBMLUNIT
+#cmakedefine DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
+
+// debug options
+#cmakedefine COPASI_DEBUG_TRACE
+
+// lapack options
+
+#cmakedefine F2C_INTEGER @F2C_INTEGER@
+#cmakedefine F2C_LOGICAL @F2C_LOGICAL@
+#cmakedefine NO_BLAS_WRAP
+#cmakedefine HAVE_F2C_H
+
+#cmakedefine USE_CLAPACK
+#cmakedefine USE_MKL
+#cmakedefine USE_ACML
+#cmakedefine USE_LAPACK
+
+// iconv options
+
+#cmakedefine COPASI_ICONV_CONST_CHAR
+
+// ui options
+
+#cmakedefine COPASI_Versioning
+#cmakedefine COPASI_Provenance
+#cmakedefine COPASI_SBW_INTEGRATION
+#cmakedefine COPASI_BANDED_GRAPH 1
+#cmakedefine WITH_PE_EVENT_CREATION
+#cmakedefine WITH_ANALYTICS
+#cmakedefine COPASI_UNDO
+#cmakedefine QT5_USE_WEBENGINE
+#cmakedefine QT_USE_TEXTBROWSER
+#cmakedefine HAVE_MML
+
+#cmakedefine QWT_VERSION @QWT_VERSION@
