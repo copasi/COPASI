@@ -565,6 +565,7 @@ bool COptMethodSRES::initialize()
   mValues.resize(childrate * mPopulationSize);
   mValues = std::numeric_limits<C_FLOAT64>::infinity();
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
+  mpOptProblem->setSolution(mBestValue, NULL);
 
   mPhi.resize(childrate * mPopulationSize);
 

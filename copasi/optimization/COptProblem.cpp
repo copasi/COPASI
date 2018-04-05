@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -488,7 +488,6 @@ bool COptProblem::restore(const bool & updateModel)
   if ((mFailedCounterException + mFailedCounterNaN) * 20 > mCounter) // > 5% failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 8, mFailedCounterException + mFailedCounterNaN, mCounter);
 
-
   if (10 * mFailedConstraintCounter > 8 * (mConstraintCounter - 1)) // > 80 % failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 9, mFailedConstraintCounter, mConstraintCounter - 1);
 
@@ -693,7 +692,10 @@ bool COptProblem::setSolution(const C_FLOAT64 & value,
                               const CVector< C_FLOAT64 > & variables)
 {
   mSolutionValue = *mpParmMaximize ? -value : value;
-  mSolutionVariables = variables;
+
+  // The initialization call from SRES and GASR have NULL as variables
+  if (variables.size() != 0)
+    mSolutionVariables = variables;
 
   bool Continue = true;
 

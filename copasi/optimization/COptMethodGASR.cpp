@@ -441,6 +441,8 @@ bool COptMethodGASR::initialize()
 
   mValues.resize(2 * mPopulationSize);
   mValues = std::numeric_limits<double>::infinity();
+  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
+  mpOptProblem->setSolution(mBestValue, NULL);
 
   mpPermutation = new CPermutation(mpRandom, mPopulationSize);
 
