@@ -1,7 +1,8 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
+
 
 #include "copasi.h"
 
@@ -38,12 +39,14 @@ CDataValue::CDataValue(const C_INT32 & value):
   assignData(value);
 }
 
+#ifdef DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
 CDataValue::CDataValue(const unsigned C_INT32 & value):
   mType(CDataValue::INVALID),
   mpData(NULL)
 {
   assignData(value);
 }
+#endif
 
 CDataValue::CDataValue(const size_t & value):
   mType(CDataValue::INVALID),
@@ -130,12 +133,14 @@ CDataValue & CDataValue::operator = (const C_INT32 & value)
   return *this;
 }
 
+#ifdef DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
 CDataValue & CDataValue::operator = (const unsigned C_INT32 & value)
 {
   assignData(value);
 
   return *this;
 }
+#endif
 
 CDataValue & CDataValue::operator = (const size_t & value)
 {
@@ -564,12 +569,14 @@ void CDataValue::assignData(const C_INT32 & value)
   *static_cast< C_INT32 * >(mpData) = value;
 }
 
+#ifdef DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
 void CDataValue::assignData(const unsigned C_INT32 & value)
 {
   allocateData(UINT);
 
   *static_cast< unsigned C_INT32 * >(mpData) = value;
 }
+#endif
 
 void CDataValue::assignData(const size_t & value)
 {

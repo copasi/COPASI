@@ -1,13 +1,19 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
+
 
 #ifndef COPASI_CDataValue
 #define COPASI_CDataValue
 
 #include <string>
 #include <vector>
+
+#if !(defined(_MSC_VER) && !defined(_WIN64))
+#define DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
+#endif
+
 
 class CData;
 
@@ -36,7 +42,9 @@ public:
 
   CDataValue(const C_FLOAT64 & value);
   CDataValue(const C_INT32 & value);
+#ifdef DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
   CDataValue(const unsigned C_INT32 & value);
+#endif
   CDataValue(const size_t & value);
   CDataValue(const bool & value);
   CDataValue(const std::string & value);
@@ -51,7 +59,9 @@ public:
   CDataValue & operator = (const CDataValue & rhs);
   CDataValue & operator = (const C_FLOAT64 & value);
   CDataValue & operator = (const C_INT32 & value);
+#ifdef DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
   CDataValue & operator = (const unsigned C_INT32 & value);
+#endif
   CDataValue & operator = (const size_t & value);
   CDataValue & operator = (const bool & value);
   CDataValue & operator = (const std::string & value);
@@ -84,7 +94,9 @@ private:
   void assignData(const CDataValue & rhs);
   void assignData(const C_FLOAT64 & value);
   void assignData(const C_INT32 & value);
+#ifdef DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
   void assignData(const unsigned C_INT32 & value);
+#endif
   void assignData(const size_t & value);
   void assignData(const bool & value);
   void assignData(const std::string & value);
