@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -12,6 +12,9 @@
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
+
+
+
 
 package org.COPASI.unittests;
 
@@ -198,11 +201,11 @@ public class Test_RunScan extends TestCase
         Vector<CCopasiParameterGroup> scanItems=new Vector<CCopasiParameterGroup>();
         boolean adjustInitialConditions=true;
         CCopasiParameterGroup parameterGroup=new CCopasiParameterGroup("scanItems");
-        parameterGroup.addParameter("Number of steps", CCopasiParameter.UINT);
+        parameterGroup.addParameter("Number of steps", CCopasiParameter.Type_UINT);
         parameterGroup.getParameter("Number of steps").setUIntValue(10);
-        parameterGroup.addParameter("Type", CCopasiParameter.UINT);
+        parameterGroup.addParameter("Type", CCopasiParameter.Type_UINT);
         parameterGroup.getParameter("Type").setUIntValue(CScanProblem.SCAN_REPEAT);
-        parameterGroup.addParameter("Object", CCopasiParameter.CN);
+        parameterGroup.addParameter("Object", CCopasiParameter.Type_CN);
         parameterGroup.getParameter("Object").setStringValue("");
         scanItems.add(parameterGroup);
         CScanTask optTask=runScan(mDataModel,CCopasiTask.timeCourse,scanItems,adjustInitialConditions);

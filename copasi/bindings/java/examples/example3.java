@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -12,6 +12,9 @@
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
+
+
+
 
 
 
@@ -134,7 +137,7 @@ public class example3
 
           CCopasiParameter parameter = method.getParameter("Absolute Tolerance");
           assert parameter != null;
-          assert parameter.getType() == CCopasiParameter.DOUBLE;
+          assert parameter.getType() == CCopasiParameter.Type_DOUBLE;
           parameter.setDblValue(1.0e-12);
 
           boolean result=true;

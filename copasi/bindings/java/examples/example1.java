@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -12,6 +12,9 @@
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
+
+
+
 
 
 
@@ -146,7 +149,7 @@ public class example1
          // make sure the parameter is a local parameter
          assert reaction.isLocalParameter(parameter.getObjectName());
          // now we set the value of the parameter to 0.5
-         assert parameter.getType() == CCopasiParameter.DOUBLE;
+         assert parameter.getType() == CCopasiParameter.Type_DOUBLE;
          parameter.setDblValue(0.5);
          object = parameter.getValueReference();
          assert object != null;
