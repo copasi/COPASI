@@ -431,14 +431,13 @@ if(BUILD_GUI)
   include(tex/CMakeLists.txt)
   include(wizard/CMakeLists.txt)
   include(UI/CMakeLists.txt)
-  
   include(undoUI/CMakeLists.txt)
-  include(versioningUI/CMakeLists.txt)
 
   set(COPASI_UI_DIRECTORIES barChart layoutUI MIRIAMUI plotUI tex UI wizard qlayout undoFramework undoUI)
   
   if(ENABLE_VERSIONING)
     include(versioning/CMakeLists.txt)
+    include(versioningUI/CMakeLists.txt)
     set(COPASI_UI_DIRECTORIES ${COPASI_UI_DIRECTORIES} versioningUI)
   endif()
 
