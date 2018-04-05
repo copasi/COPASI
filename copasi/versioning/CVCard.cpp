@@ -1,7 +1,8 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
+
 
 #include "CVCard.h"
 
@@ -36,11 +37,23 @@ CVCard::CVCard(const CVCard & src)
 CVCard::~CVCard()
 {}
 
+void CVCard::setType(const std::string & type)
+{
+  mType = type;
+}
+
+const std::string & CVCard::getType() const
+{
+  return mType;
+}
+
+
+
 XMLOutputStream & operator << (XMLOutputStream & xml, const CVCard & vcard)
 {
   if (!vcard.isEmpty())
     {
-      xml.startElement(vcard.mType, "dcterms");
+      xml.startElement(vcard.getType(), "dcterms");
       xml.writeAttribute("parseType", "rdf", "Resource");
 
       if (!vcard.getFamilyName().empty() || !vcard.getGivenName().empty())
@@ -79,7 +92,7 @@ XMLOutputStream & operator << (XMLOutputStream & xml, const CVCard & vcard)
           xml.endElement("organization-name", "vCard");
         }
 
-      xml.endElement(vcard.mType, "dcterms");
+      xml.endElement(vcard.getType(), std::string("dcterms"));
     }
 
   return xml;

@@ -1,18 +1,19 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
+
 
 #ifndef COPASI_CVCard
 #define COPASI_CVCard
 
 #include <combine/vcard.h>
-class XMLOutputStream;
+
+#include <sbml/xml/XMLOutputStream.h>
 
 class CVCard : public VCard
 {
 public:
-  friend XMLOutputStream & operator << (XMLOutputStream & xml, const CVCard & vcard);
 
   CVCard(const std::string & type = "");
 

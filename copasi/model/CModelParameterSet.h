@@ -8,6 +8,8 @@
 // of Manchester.
 // All rights reserved.
 
+
+
 #ifndef COPASI_CModelParameterSet
 #define COPASI_CModelParameterSet
 
@@ -19,7 +21,7 @@
 
 class CModel;
 
-class CModelParameterSet: public CDataContainer, public CAnnotation, protected CModelParameterGroup
+class CModelParameterSet: public CDataContainer, public CModelParameterGroup, public CAnnotation
 {
 public:
   /**

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,6 +7,8 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
+
+
 
 #ifndef COPASI_CModelParameterGroup
 #define COPASI_CModelParameterGroup
@@ -188,6 +190,15 @@ public:
    * @return CModelParameter * pModelParameter
    */
   CModelParameter * getModelParameter(const std::string & cn) const;
+
+  /**
+    * Retrieve a pointer to the parameter with the given name and type
+    * @param const std::string & name
+    * @param const CModelParameter::Type & type
+    * @return CModelParameter * pModelParameter
+    */
+  CModelParameter * getModelParameter(const std::string & name,
+                                      const CModelParameter::Type & type) const;
 
   // These methods are only here so that we can use CNodeIterator to traverse the tree.
   virtual size_t getNumChildren() const;

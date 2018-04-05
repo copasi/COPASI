@@ -8,6 +8,8 @@
 // of Manchester.
 // All rights reserved.
 
+
+
 #include <map>
 #include <iostream>
 
@@ -569,6 +571,34 @@ CModelParameter * CModelParameterGroup::getModelParameter(const std::string & cn
 
   return pModelParameter;
 }
+
+
+CModelParameter * CModelParameterGroup::getModelParameter(const std::string & name,
+    const CModelParameter::Type & type) const
+{
+  CModelParameter * pModelParameter = NULL;
+
+  const_iterator it = begin();
+  const_iterator End = end();
+
+  for (; it != End && pModelParameter == NULL; ++it)
+    {
+      if (type == (*it)->getType() &&
+          name == (*it)->getName())
+        {
+          pModelParameter = *it;
+        }
+      else if ((*it)->getType() == CModelParameter::Type::Reaction ||
+               (*it)->getType() == CModelParameter::Type::Group ||
+               (*it)->getType() == CModelParameter::Type::Set)
+        {
+          pModelParameter = static_cast< const CModelParameterGroup * >(*it)->getModelParameter(name, type);
+        }
+    }
+
+  return pModelParameter;
+}
+
 
 // virtual
 size_t CModelParameterGroup::getNumChildren() const
