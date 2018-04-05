@@ -17,6 +17,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+
+
+
 /**
  *  CReaction class.
  *  Derived from Gepasi's cstep.cpp. (C) Pedro Mendes 1995-2000.
@@ -482,25 +486,25 @@ public:
    */
   const bool & hasNoise() const;
 
-  /**
-   * @return the reaction scheme of this reaction
-   */
-  std::string getReactionScheme() const;
-
-  /**
-   * Initializes this reaction from the specified reaction scheme
-   *
-   * @param scheme the new reaction scheme to be used
-   * @param newFunction a candidate function to be used
-   * @param createMetaboliets if true, new metabolites will be created
-   * @param createOther if true, additional elements will be created as well
-   *
-   * @return success / failure
-   */
-  bool setReactionScheme(const std::string& scheme,
-                         const std::string& newFunction = "",
-                         bool createMetabolites = true,
-                         bool createOther = true);
+//  /**
+//   * @return the reaction scheme of this reaction
+//   */
+//  std::string getReactionScheme() const;
+//
+//  /**
+//   * Initializes this reaction from the specified reaction scheme
+//   *
+//   * @param scheme the new reaction scheme to be used
+//   * @param newFunction a candidate function to be used
+//   * @param createMetaboliets if true, new metabolites will be created
+//   * @param createOther if true, additional elements will be created as well
+//   *
+//   * @return success / failure
+//   */
+//  bool setReactionScheme(const std::string& scheme,
+//                         const std::string& newFunction = "",
+//                         bool createMetabolites = true,
+//                         bool createOther = true);
 
 private:
   /**
@@ -698,11 +702,11 @@ public:
 
   const std::vector< std::vector< CRegisteredCommonName > > & getParameterCNs() const;
 
-  bool setParameterCNs(const size_t & index, const std::vector< CCommonName > CNs);
+  //bool setParameterCNs(const size_t & index, const std::vector< CCommonName > CNs);
+
+  //bool setParameterCNs(const std::string & name, const std::vector< CCommonName > CNs);
 
   bool setParameterCNs(const size_t & index, const std::vector< CRegisteredCommonName > CNs);
-
-  bool setParameterCNs(const std::string & name, const std::vector< CCommonName > CNs);
 
   bool setParameterCNs(const std::string & name, const std::vector< CRegisteredCommonName > CNs);
 
