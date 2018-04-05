@@ -40,16 +40,6 @@ if (APPLE)
   set(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} -DDarwin -DF2C_INTEGER=int)
 endif(APPLE)
 
-if (CLAPACK_FOUND)
-  set(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} -DUSE_CLAPACK)
-elseif (USE_MKL)
-  set(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} -DUSE_MKL)
-elseif(USE_ACML)
-  set(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} -DUSE_ACML)
-elseif(LAPACK_FOUND)
-  set(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} -DUSE_LAPACK)
-endif()
-
 file(GLOB SWIG_DEPENDENCIES 
 	${CMAKE_CURRENT_SOURCE_DIR}/*.i 
 	${CMAKE_CURRENT_SOURCE_DIR}/*.h 
@@ -111,6 +101,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../..)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../swig)
 include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(BEFORE ${CMAKE_BINARY_DIR})
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 if (WIN32)

@@ -118,8 +118,8 @@ CHECK_TYPE_SIZE("unsigned int"  CMAKE_SIZEOF_UINT)
 CHECK_TYPE_SIZE("size_t"  CMAKE_SIZEOF_SIZE_T)
 
 if (NOT CMAKE_SIZEOF_SIZE_T EQUAL CMAKE_SIZEOF_UINT)
-set (DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS 1)
-add_definitions(-DDATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS)
+  # will be written in config file
+  set (DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS 1)
 endif()
 
 
@@ -207,9 +207,6 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 if (NOT WIN32)
 option(ENABLE_COPASI_DEBUG_TRACE "Enable COPASI Debug Tracing" ${DEFAULT_DEBUG_TRACING})
-if(ENABLE_COPASI_DEBUG_TRACE)
-  add_definitions(-DCOPASI_DEBUG_TRACE)
-endif(ENABLE_COPASI_DEBUG_TRACE)
 mark_as_advanced(ENABLE_COPASI_DEBUG_TRACE)
 endif()
 
@@ -223,44 +220,16 @@ mark_as_advanced(DISABLE_CORE_OBJECT_LIBRARY)
 # by the current simulation value (instead of 0) this removes the bias when
 # using value scaled experimental data.
 option(ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING "Scale parameter estimation residuals with the simulation value" OFF)
-if (ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING)
-  add_definitions(-DCOPASI_PARAMETERFITTING_RESIDUAL_SCALING)
-endif(ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING)
 
 option(ENABLE_COPASI_BANDED_GRAPH "Enable the banded graph widget" OFF)
-if (ENABLE_COPASI_BANDED_GRAPH)
-  add_definitions(-DCOPASI_BANDED_GRAPH)
-endif(ENABLE_COPASI_BANDED_GRAPH)
-
 option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" OFF)
-if (ENABLE_COPASI_NONLIN_DYN_OSCILLATION)
-  add_definitions(-DCOPASI_NONLIN_DYN_OSCILLATION)
-endif()
-
 option(ENABLE_COPASI_EXTUNIT "Extended Unit Support" ${DEFAULT_EXTUNIT})
-if (ENABLE_COPASI_EXTUNIT)
-  add_definitions(-DCOPASI_EXTUNIT)
-endif(ENABLE_COPASI_EXTUNIT)
-
 option(ENABLE_WITH_MERGEMODEL "Enable Model Merging" ON)
-if (ENABLE_WITH_MERGEMODEL)
-  add_definitions(-DWITH_MERGEMODEL)
-endif(ENABLE_WITH_MERGEMODEL)
-
 option(ENABLE_ANALYTICS "Enable Analytics Task" OFF)
-if (ENABLE_ANALYTICS)
-add_definitions(-DWITH_ANALYTICS)
-endif(ENABLE_ANALYTICS)
-
 option(ENABLE_PE_EVENT_CREATION "Enable Event Creation out of time series data" ON)
-if (ENABLE_PE_EVENT_CREATION)
-  add_definitions(-DWITH_PE_EVENT_CREATION)
-endif(ENABLE_PE_EVENT_CREATION)
 
 option(ENABLE_COMBINE_ARCHIVE "Enable COMBINE Archive support" ON)
 if (ENABLE_COMBINE_ARCHIVE)
-  add_definitions(-DWITH_COMBINE_ARCHIVE)
-
   if (WIN32)
     add_definitions(-DLIBCOMBINE_STATIC=1)
   endif()
@@ -270,10 +239,6 @@ if (ENABLE_COMBINE_ARCHIVE)
 endif(ENABLE_COMBINE_ARCHIVE)
 
 option(ENABLE_SDE_SUPPORT "Enable the support of Stochastic Differential Equations" ON)
-if (ENABLE_SDE_SUPPORT)
-  add_definitions(-DWITH_SDE_SUPPORT)
-endif(ENABLE_SDE_SUPPORT)
-
 option(COPASI_INSTALL_C_API "Enable this option to also install the COPASI C API" OFF)
 
 option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (CopasiUI)." ON)
@@ -299,22 +264,7 @@ if ( NOT CLAPACK_FOUND )
 endif ()
 
 
-IF(DEFINED F2C_INTEGER)
-  add_definitions(-DF2C_INTEGER=${F2C_INTEGER})
-ENDIF()
-
-IF(DEFINED F2C_LOGICAL)
-  add_definitions(-DF2C_LOGICAL=${F2C_LOGICAL})
-ENDIF()
-
 option(CLAPACK_NO_BLASWRAP "If defined the NO_BLASWRAP compile option will be added" OFF)
-if (CLAPACK_NO_BLASWRAP)
-  add_definitions(-DNO_BLAS_WRAP)
-endif(CLAPACK_NO_BLASWRAP)
-
-if(DEFINED F2C_HAVE_H)
-  add_definitions(-DHAVE_F2C_H)
-endif()
 
 include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LAPACK_CFLAGS}")
@@ -357,7 +307,6 @@ endif()
 option (ENABLE_COPASI_SEDML "Enables SEDML support." ON)
 mark_as_advanced(ENABLE_COPASI_SEDML)
 if(ENABLE_COPASI_SEDML)
-  add_definitions(-DCOPASI_SEDML)
   if (WIN32)
   add_definitions(-DLIBSEDML_STATIC)
   endif()
@@ -368,11 +317,6 @@ endif(ENABLE_COPASI_SEDML)
 
 # actually iconv is only needed on BSD like systems
 find_package(ICONV)
-
-if (ICONV_SECOND_ARGUMENT_IS_CONST)
-  add_definitions(-DCOPASI_ICONV_CONST_CHAR)
-endif (ICONV_SECOND_ARGUMENT_IS_CONST)
-
 
 #platform specific defines
 
@@ -527,7 +471,6 @@ if(BUILD_GUI)
 
   if(ENABLE_MML)
     find_package(QtMmlQt4 REQUIRED)
-    add_definitions(-DHAVE_MML)
   endif(ENABLE_MML)
 
   # check for sbw
@@ -535,7 +478,6 @@ if(BUILD_GUI)
   if (ENABLE_SBW_INTEGRATION)
   find_package(SBW REQUIRED)
   include_directories(${SBW_INCLUDE_DIR})
-  add_definitions(-DCOPASI_SBW_INTEGRATION)
 
   # set up definitions for SBW
   if(UNIX)
@@ -587,16 +529,10 @@ endif ()
 
 option (ENABLE_USE_SBMLUNIT "Enables extended unit support." OFF)
 mark_as_advanced(ENABLE_USE_SBMLUNIT)
-if(ENABLE_USE_SBMLUNIT)
-add_definitions(-DUSE_SBMLUNIT)
-endif(ENABLE_USE_SBMLUNIT)
 
 #Option for the COPASI support for SEDML currently being developed by Joseph
 option (ENABLE_COPASI_SEDML "Enables SEDML support." ON)
 mark_as_advanced(ENABLE_COPASI_SEDML)
-if(ENABLE_COPASI_SEDML)
-  add_definitions(-DCOPASI_SEDML)
-endif(ENABLE_COPASI_SEDML)
 
 #Option for the COPASI support for Provenance Framework currently being developed by Peyman
 option (ENABLE_PROVENANCE "Enables Provenance support." OFF)
@@ -606,37 +542,18 @@ mark_as_advanced(ENABLE_PROVENANCE)
 option (ENABLE_VERSIONING "Enables Versioning support." OFF)
 mark_as_advanced(ENABLE_VERSIONING)
 
-option(ENABLE_COMBINE_ARCHIVE "Enable COMBINE Archive support" OFF)
-mark_as_advanced(ENABLE_COMBINE_ARCHIVE)
-
 #Option for the COPASI support for UNDO Framework currently being developed by Joseph
 option (ENABLE_COPASI_UNDO "Enables UNDO support." ON)
 mark_as_advanced(ENABLE_COPASI_UNDO)
 
-if(ENABLE_PROVENANCE)
-  set(ENABLE_VERSIONING ON)
-  add_definitions(-DCOPASI_Provenance)
-endif(ENABLE_PROVENANCE)
-
-if(ENABLE_VERSIONING)
-  set(ENABLE_COMBINE_ARCHIVE ON)
-  add_definitions(-DCOPASI_Versioning)
+if(ENABLE_VERSIONING AND NOT ENABLE_COMBINE_ARCHIVE)
+  set(ENABLE_COMBINE_ARCHIVE ON CACHE BOOL "Enable Combine Archive Support" FORCE)
 endif(ENABLE_VERSIONING)
 
-if (ENABLE_COMBINE_ARCHIVE)
-  add_definitions(-DWITH_COMBINE_ARCHIVE)
 
-  if (WIN32)
-    add_definitions(-DLIBCOMBINE_STATIC=1)
-  endif()
-
-  find_package(LIBCOMBINE REQUIRED)
-  include_directories(BEFORE ${COMBINE_INCLUDE_DIR})
-endif(ENABLE_COMBINE_ARCHIVE)
-
-if(ENABLE_COPASI_UNDO)
-  add_definitions(-DCOPASI_UNDO)
-endif(ENABLE_COPASI_UNDO)
+if(ENABLE_PROVENANCE AND NOT ENABLE_VERSIONING)
+  set(ENABLE_VERSIONING ON CACHE BOOL "Enable Versioning Support" FORCE)
+endif(ENABLE_PROVENANCE)
 
 option (BUILD_SEMANTIC_TESTSUITE "Build the program to run the SBML semantic testsuite." OFF)
 option (BUILD_STEADY_STATE_RUNNER "Build the program to run the comparisons on steady state results." OFF)

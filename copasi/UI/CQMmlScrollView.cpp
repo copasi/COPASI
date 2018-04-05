@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -13,6 +13,9 @@
 // and The University of Manchester.
 // All rights reserved.
 
+
+
+
 /*!
  \file CQMmlScrollView.cpp
  \brief Implementation file of class CQMmlScrollView
@@ -20,14 +23,15 @@
 
 #include <QApplication>
 
+#include "copasi.h"
+#include "qtUtilities.h"
+
 #ifdef HAVE_MML
 # include <qtmmlwidget.h>
 #endif // HAVE_MML
 
 #include "CQMmlScrollView.h"
 
-#include "copasi.h"
-#include "qtUtilities.h"
 
 ///  Constructor
 CQMmlScrollView::CQMmlScrollView(QWidget* parent, const char* /* name */, Qt::WindowFlags /* fl */)

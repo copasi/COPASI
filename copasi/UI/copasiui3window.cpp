@@ -17,11 +17,11 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <sbml/SBMLDocument.h>
 
-#ifdef COPASI_SEDML
-#include <sedml/SedDocument.h>
-#endif
+
+
+
+#include <sbml/SBMLDocument.h>
 
 #include <QMimeData>
 #include <QSettings>
@@ -40,10 +40,6 @@
 #include <vector>
 #include <sstream>
 
-#ifdef COPASI_SBW_INTEGRATION
-#include <stdlib.h>
-#endif // COPASI_SBW_INTEGRATION
-
 #include "AboutDialog.h"
 #include "CopasiFileDialog.h"
 #include "copasiui3window.h"
@@ -60,12 +56,6 @@
 #include "copasiWidget.h"
 #include "TaskWidget.h"
 #include "resourcesUI/CQIconResource.h"
-
-#ifdef COPASI_UNDO
-# include "copasi/undoUI/CQUndoDialog.h"
-# include "copasi/core/CCore.h"
-# include "copasi/undo/CUndoStack.h"
-#endif
 
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
@@ -91,6 +81,24 @@
 #ifdef COPASI_SEDML
 #include "CQSEDMLFileDialog.h"
 #endif
+
+
+#ifdef COPASI_UNDO
+# include "copasi/undoUI/CQUndoDialog.h"
+# include "copasi/core/CCore.h"
+# include "copasi/undo/CUndoStack.h"
+#endif
+
+
+#ifdef COPASI_SBW_INTEGRATION
+#include <stdlib.h>
+#endif // COPASI_SBW_INTEGRATION
+
+#ifdef COPASI_SEDML
+#include <sedml/SedDocument.h>
+#endif
+
+
 
 #include <copasi/UI/CQOptPopulation.h>
 

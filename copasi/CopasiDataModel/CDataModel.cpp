@@ -3,15 +3,10 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
+
 #define USE_LAYOUT 1
 
 #include <sbml/SBMLDocument.h>
-
-#ifdef COPASI_SEDML
-#include <sedml/SedDocument.h>
-#include "sedml/SEDMLImporter.h"
-#include "sedml/CSEDMLExporter.h"
-#endif
 
 #include "copasi.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
@@ -59,6 +54,13 @@
 # include <omex/CaContent.h>
 # include <copasi/utilities/CCopasiMessage.h>
 #endif // WITH_COMBINE_ARCHIVE
+
+#ifdef COPASI_SEDML
+#include <sedml/SedDocument.h>
+#include "sedml/SEDMLImporter.h"
+#include "sedml/CSEDMLExporter.h"
+#endif
+
 
 #ifdef COPASI_Versioning
 # include "copasi/versioning/CModelVersionHierarchy.h"
@@ -2068,7 +2070,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::parameterFitting:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2097,7 +2099,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::lyap:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2114,7 +2116,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::mca:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2131,7 +2133,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::lna:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2148,7 +2150,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::sens:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2165,7 +2167,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::tssAnalysis:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2478,13 +2480,16 @@ void CDataModel::pushData()
          mOldData.pPlotDefinitionList == NULL &&
          mOldData.pListOfLayouts == NULL &&
          mOldData.pGUI == NULL
-#ifdef COPASI_SEDML
-         && mOldData.pCurrentSEDMLDocument == NULL
-#endif
-#ifdef COPASI_Versioning
-         && mOldData.mpModelVersionHierarchy == NULL
-#endif // COPASI_Versioning
         );
+
+#ifdef COPASI_SEDML
+  assert(mOldData.pCurrentSEDMLDocument == NULL);
+#endif
+
+#ifdef COPASI_Versioning
+  assert(mOldData.mpModelVersionHierarchy == NULL);
+#endif // COPASI_Versioning
+
 
   mOldData = mData;
   mData = CContent(mData.mWithGUI);
@@ -2499,10 +2504,12 @@ void CDataModel::popData()
          mOldData.pPlotDefinitionList != NULL &&
          mOldData.pListOfLayouts != NULL &&
          (mOldData.pGUI != NULL || mOldData.mWithGUI == false)
-#ifdef COPASI_Versioning
-         && mOldData.mpModelVersionHierarchy != NULL
-#endif // COPASI_Versioning
         );
+
+#ifdef COPASI_Versioning
+  assert(mOldData.mpModelVersionHierarchy != NULL);
+#endif  // COPASI_Versioning
+
 
   // TODO CRITICAL We need to clean up mData to avoid memory leaks.
 

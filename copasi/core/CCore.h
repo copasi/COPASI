@@ -4,10 +4,13 @@
 // All rights reserved.
 
 
+
 #ifndef COPASI_CCore
 #define COPASI_CCore
 
 #include <limits>
+
+#include <copasi/config.h>
 
 #define C_INVALID_INDEX (std::numeric_limits< size_t >::max())
 

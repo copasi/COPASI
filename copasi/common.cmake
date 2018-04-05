@@ -8,11 +8,14 @@
 # of Manchester. 
 # All rights reserved. 
 
+
+
 if(NOT COPASI_COMMON_INCLUDED)
 set (COPASI_COMMON_INCLUDED ON)
 
 set(UI_LIBS libCOPASIUI )
 
+include_directories(BEFORE ${CMAKE_BINARY_DIR})
 link_directories(${CMAKE_BINARY_DIR}/copasi)
 
 set(SE_LIBS  libCOPASISE-static)

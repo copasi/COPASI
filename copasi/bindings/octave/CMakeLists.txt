@@ -111,6 +111,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../..)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../swig)
 include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(BEFORE ${CMAKE_BINARY_DIR})
+
 include_directories(${OCTAVE_INCLUDE_DIR})
 include_directories(${OCTAVE_INCLUDE_DIR}/octave)
 
