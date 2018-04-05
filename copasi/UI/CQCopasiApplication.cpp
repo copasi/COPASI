@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,6 +8,8 @@
 // of Manchester.
 // All rights reserved.
 
+
+
 #include <QFileOpenEvent>
 #include <QtCore/QString>
 
@@ -15,6 +17,10 @@
 #include "copasiui3window.h"
 #include "listviews.h"
 #include "utilities/CCopasiException.h"
+
+#ifdef COPASI_DEBUG
+#include <iostream>
+#endif
 
 #if (defined(WIN32) && QT_VERSION < 0x050000)
 
