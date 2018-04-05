@@ -1,4 +1,4 @@
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -7,6 +7,8 @@
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
+
+
 
 
 
@@ -58,6 +60,11 @@ set (SWIG_ENUM_FIX_FILES
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CModelEntity.cs"
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CDataArray.cs"
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CCore.cs"
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CModelParameter.cs"
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CFunctionParameter.cs"
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CCopasiParameter.cs"
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CReaction.cs"
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CModel.cs"
      )
 
 

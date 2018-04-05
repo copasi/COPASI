@@ -127,6 +127,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../..)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../swig)
 include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(BEFORE ${CMAKE_BINARY_DIR})
 
 # if additional directories are set be sure to include them
 if (JNI_INCLUDE_DIRS)

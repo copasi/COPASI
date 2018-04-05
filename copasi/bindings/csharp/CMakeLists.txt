@@ -150,6 +150,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../..)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../swig)
 include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(BEFORE ${CMAKE_BINARY_DIR})
+
 add_library(binding_csharp_native_lib SHARED ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp) 
 add_dependencies(binding_csharp_native_lib binding_csharp_swig)
 
@@ -173,7 +175,7 @@ ADD_CUSTOM_COMMAND(
 	ARGS -DCSHARP_EXTRA_ARGS=\"${CSHARP_EXTRA_ARGS}\"
 	     -DCSHARP_COMPILER=\"${CSHARP_COMPILER}\"
 	     -DBIN_DIRECTORY=\"${CMAKE_CURRENT_BINARY_DIR}\"
-	     -DSRC_DIRECTORY=\"${CMAKE_CURRENT_SOURCE_DIR}\"		 
+	     -DSRC_DIRECTORY=\"${CMAKE_CURRENT_SOURCE_DIR}\"
 	     -P "${CMAKE_CURRENT_SOURCE_DIR}/compile-native-files.cmake"
 		 
 	MAIN_DEPENDENCY "${CMAKE_CURRENT_SOURCE_DIR}/../swig/copasi.i"

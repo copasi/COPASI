@@ -1,4 +1,4 @@
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -7,6 +7,8 @@
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
+
+
 
 ###############################################################################
 #
@@ -24,6 +26,11 @@ set (SWIG_ENUM_FIX_FILES
         "${BIN_DIRECTORY}/java-files/org/COPASI/CModelEntity.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CDataArray.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CCore.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CModelParameter.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CFunctionParameter.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CCopasiParameter.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CReaction.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CModel.java"
      )
 
 foreach(broken_file ${SWIG_ENUM_FIX_FILES})
@@ -36,8 +43,9 @@ foreach(broken_file ${SWIG_ENUM_FIX_FILES})
 #  message(STATUS "${OUT} 1: ${CMAKE_MATCH_1} 2: ${CMAKE_MATCH_2} 3: ${CMAKE_MATCH_3}")
 
   string(REGEX REPLACE 
-   "public final static int ([a-zA-Z]*_)([_a-zA-Z0-9]*) = ([a-zA-Z0-9]*) \\+ 1"
+   "public final static int ([a-zA-Z]+_)([_a-zA-Z0-9]*) = ([a-zA-Z0-9]*) \\+ 1"
    "public final static int \\1\\2 = \\1\\3 + 1; // FIXED" 
+
    SOURCECODE "${SOURCECODE}")
   file(WRITE "${broken_file}" "${SOURCECODE}")
   get_filename_component(baseName ${broken_file} NAME)
