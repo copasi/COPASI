@@ -82,7 +82,7 @@ to the `CMakeLists.txt` file of your project. And later link your project agains
 The gist of a complete example [CMakeList.txt](https://gist.github.com/fbergmann/5eb625a23cb17eb8463b8a6365885fd1) is also available.   
 
 ### Feedback
-To submit feedback, or bug reports, please use the [COPASI Tracker](http://www.copasi.org/tracker/), 
+To submit feedback, or bug reports, please use the [COPASI Tracker](http://tracker.copasi.org), 
 or our [mailing list](https://groups.google.com/forum/#!forum/copasi-user-forum). 
 
 ### License
