@@ -3,7 +3,6 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-
 #ifndef COPASI_CDataValue
 #define COPASI_CDataValue
 
@@ -20,7 +19,6 @@ public:
     DOUBLE = 0,
     INT,
     UINT,
-    SIZE_T,
     BOOL,
     STRING,
     DATA,
@@ -37,10 +35,10 @@ public:
 
   CDataValue(const C_FLOAT64 & value);
   CDataValue(const C_INT32 & value);
-#ifdef DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
   CDataValue(const unsigned C_INT32 & value);
-#endif
+#ifdef DATAVALUE_NEEDS_SIZE_T_MEMBERS
   CDataValue(const size_t & value);
+#endif // DATAVALUE_NEEDS_SIZE_T_MEMBERS
   CDataValue(const bool & value);
   CDataValue(const std::string & value);
   CDataValue(const char * value);
@@ -54,10 +52,10 @@ public:
   CDataValue & operator = (const CDataValue & rhs);
   CDataValue & operator = (const C_FLOAT64 & value);
   CDataValue & operator = (const C_INT32 & value);
-#ifdef DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
   CDataValue & operator = (const unsigned C_INT32 & value);
-#endif
+#ifdef DATAVALUE_NEEDS_SIZE_T_MEMBERS
   CDataValue & operator = (const size_t & value);
+#endif // DATAVALUE_NEEDS_SIZE_T_MEMBERS
   CDataValue & operator = (const bool & value);
   CDataValue & operator = (const std::string & value);
   CDataValue & operator = (const CData & value);
@@ -68,7 +66,7 @@ public:
   const C_FLOAT64 & toDouble() const;
   const C_INT32 & toInt() const;
   const unsigned C_INT32 & toUint() const;
-  const size_t & toSizeT() const;
+  size_t toSizeT() const;
   const bool & toBool() const;
   const std::string & toString() const;
   const CData & toData() const;
@@ -89,10 +87,10 @@ private:
   void assignData(const CDataValue & rhs);
   void assignData(const C_FLOAT64 & value);
   void assignData(const C_INT32 & value);
-#ifdef DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
   void assignData(const unsigned C_INT32 & value);
-#endif
+#ifdef DATAVALUE_NEEDS_SIZE_T_MEMBERS
   void assignData(const size_t & value);
+#endif // DATAVALUE_NEEDS_SIZE_T_MEMBERS
   void assignData(const bool & value);
   void assignData(const std::string & value);
   void assignData(const CData & value);

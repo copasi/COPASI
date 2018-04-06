@@ -3,7 +3,6 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-
 #include "copasi.h"
 
 #include "CDataValue.h"
@@ -39,21 +38,21 @@ CDataValue::CDataValue(const C_INT32 & value):
   assignData(value);
 }
 
-#ifdef DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
 CDataValue::CDataValue(const unsigned C_INT32 & value):
   mType(CDataValue::INVALID),
   mpData(NULL)
 {
   assignData(value);
 }
-#endif
 
+#ifdef DATAVALUE_NEEDS_SIZE_T_MEMBERS
 CDataValue::CDataValue(const size_t & value):
   mType(CDataValue::INVALID),
   mpData(NULL)
 {
   assignData(value);
 }
+#endif // DATAVALUE_NEEDS_SIZE_T_MEMBERS
 
 CDataValue::CDataValue(const bool & value):
   mType(CDataValue::INVALID),
@@ -133,21 +132,21 @@ CDataValue & CDataValue::operator = (const C_INT32 & value)
   return *this;
 }
 
-#ifdef DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
 CDataValue & CDataValue::operator = (const unsigned C_INT32 & value)
 {
   assignData(value);
 
   return *this;
 }
-#endif
 
+#ifdef DATAVALUE_NEEDS_SIZE_T_MEMBERS
 CDataValue & CDataValue::operator = (const size_t & value)
 {
   assignData(value);
 
   return *this;
 }
+#endif // DATAVALUE_NEEDS_SIZE_T_MEMBERS
 
 CDataValue & CDataValue::operator = (const bool & value)
 {
@@ -220,14 +219,13 @@ const unsigned C_INT32 & CDataValue::toUint() const
   return *static_cast< const unsigned C_INT32 * >(mpData);
 }
 
-const size_t & CDataValue::toSizeT() const
+size_t CDataValue::toSizeT() const
 {
-  static const size_t Invalid(std::numeric_limits< size_t >::max());
+  if (mType != UINT ||
+      *static_cast< const unsigned C_INT32 * >(mpData) == std::numeric_limits< unsigned C_INT32 >::max())
+    return std::numeric_limits< size_t >::max();
 
-  if (mType != SIZE_T)
-    return Invalid;
-
-  return *static_cast< const size_t * >(mpData);
+  return *static_cast< const unsigned C_INT32 * >(mpData);
 }
 
 const bool & CDataValue::toBool() const
@@ -308,10 +306,6 @@ bool CDataValue::operator == (const CDataValue & rhs) const
         return (toUint() == rhs.toUint());
         break;
 
-      case SIZE_T:
-        return (toSizeT() == rhs.toSizeT());
-        break;
-
       case BOOL:
         return (toBool() == rhs.toBool());
         break;
@@ -360,10 +354,6 @@ bool CDataValue::operator != (const CDataValue & rhs) const
 
       case UINT:
         return (toUint() != rhs.toUint());
-        break;
-
-      case SIZE_T:
-        return (toSizeT() != rhs.toSizeT());
         break;
 
       case BOOL:
@@ -420,10 +410,6 @@ void CDataValue::allocateData(const CDataValue::Type & type)
         mpData = new unsigned C_INT32;
         break;
 
-      case SIZE_T:
-        mpData = new size_t;
-        break;
-
       case BOOL:
         mpData = new bool;
         break;
@@ -474,10 +460,6 @@ void CDataValue::deleteData()
         delete static_cast< unsigned C_INT32 * >(mpData);
         break;
 
-      case SIZE_T:
-        delete static_cast< size_t * >(mpData);
-        break;
-
       case BOOL:
         delete static_cast< bool * >(mpData);
         break;
@@ -520,10 +502,6 @@ void CDataValue::assignData(const CDataValue & rhs)
 
       case UINT:
         assignData(*static_cast< unsigned C_INT32 * >(rhs.mpData));
-        break;
-
-      case SIZE_T:
-        assignData(*static_cast< size_t * >(rhs.mpData));
         break;
 
       case BOOL:
@@ -569,21 +547,20 @@ void CDataValue::assignData(const C_INT32 & value)
   *static_cast< C_INT32 * >(mpData) = value;
 }
 
-#ifdef DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
 void CDataValue::assignData(const unsigned C_INT32 & value)
 {
   allocateData(UINT);
 
   *static_cast< unsigned C_INT32 * >(mpData) = value;
 }
-#endif
 
+#ifdef DATAVALUE_NEEDS_SIZE_T_MEMBERS
 void CDataValue::assignData(const size_t & value)
 {
-  allocateData(SIZE_T);
-
-  *static_cast< size_t * >(mpData) = value;
+  unsigned C_INT32 Value = std::min(value, (size_t) std::numeric_limits< unsigned C_INT32 >::max());
+  assignData(Value);
 }
+#endif // DATAVALUE_NEEDS_SIZE_T_MEMBERS
 
 void CDataValue::assignData(const bool & value)
 {
@@ -641,10 +618,6 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
 
       case CDataValue::UINT:
         os << o.toUint();
-        break;
-
-      case CDataValue::SIZE_T:
-        os << o.toSizeT();
         break;
 
       case CDataValue::BOOL:

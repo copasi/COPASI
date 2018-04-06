@@ -3,16 +3,10 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-
-
-
-
-
 // config.h
 //
 // This file contains the configuration options for this version of COPASI
 //
-
 
 // basic options
 #cmakedefine WITH_COMBINE_ARCHIVE
@@ -23,7 +17,7 @@
 #cmakedefine COPASI_PARAMETERFITTING_RESIDUAL_SCALING
 #cmakedefine COPASI_EXTUNIT
 #cmakedefine USE_SBMLUNIT
-#cmakedefine DATAVALUE_NEEDS_UNSIGNED_INT_MEMBERS
+#cmakedefine DATAVALUE_NEEDS_SIZE_T_MEMBERS
 
 // debug options
 #cmakedefine COPASI_DEBUG_TRACE
