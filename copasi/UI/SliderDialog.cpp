@@ -686,6 +686,7 @@ void SliderDialog::createSlidersForFolder(std::vector<QWidget*>& v)
       mpCurrSlider->installEventFilter(this);
       mpCurrSlider->setHidden(true);
       mSliderMap[mCurrentFolderId].push_back(mpCurrSlider);
+      mInitialValueMap[mCurrentFolderId].push_back(mpCurrSlider->value());
     }
 
   // delete CopasiSliders which have no corresponding CSlider
