@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -56,7 +56,7 @@ COptMethodPS::COptMethodPS(const CDataContainer * pParent,
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   if (mEnableAdditionalParameters)
-  addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+    addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
@@ -346,7 +346,6 @@ bool COptMethodPS::initialize()
       setValue("Swarm Size", mPopulationSize);
 
       mMethodLog.enterLogItem(COptLogItem(COptLogItem::PS_usrdef_error_swarm_size).with(5));
-
     }
 
   mVariance = getValue< C_FLOAT64 >("Std. Deviation");
@@ -364,13 +363,13 @@ bool COptMethodPS::initialize()
 
   mVelocities.resize(mPopulationSize, mVariableSize);
   mBestValues.resize(mPopulationSize);
+  mBestValues = std::numeric_limits<double>::infinity();
   mBestPositions.resize(mPopulationSize, mVariableSize);
 
   mNumInformedMin = std::max<size_t>(mPopulationSize / 10, 5) - 1;
   mNumInformed = mNumInformedMin;
 
   mpPermutation = new CPermutation(mpRandom, mPopulationSize);
-
 
   mMethodLog.enterLogItem(COptLogItem(COptLogItem::PS_info_informants).with(mNumInformedMin).with(mPopulationSize));
 
@@ -379,7 +378,7 @@ bool COptMethodPS::initialize()
   mContinue = true;
 
   if (getParameter("Stop after # Stalled Iterations"))
-  mStopAfterStalledIterations = getValue <unsigned C_INT32>("Stop after # Stalled Iterations");
+    mStopAfterStalledIterations = getValue <unsigned C_INT32>("Stop after # Stalled Iterations");
 
   return mContinue;
 }
@@ -494,7 +493,6 @@ C_FLOAT64 COptMethodPS::calcVariableVariance(const size_t & variable) const
     }
 
   return (SecondMoment - FirstMoment * FirstMoment / mPopulationSize) / (mPopulationSize - 1);
-
 }
 
 bool COptMethodPS::optimise()
@@ -577,7 +575,7 @@ bool COptMethodPS::optimise()
   for (; mCurrentGeneration < mGenerations && mContinue; mCurrentGeneration++, Stalled++)
     {
 
-    if (mStopAfterStalledIterations != 0 && Stalled > mStopAfterStalledIterations)
+      if (mStopAfterStalledIterations != 0 && Stalled > mStopAfterStalledIterations)
         break;
 
       Improved = false;
@@ -603,7 +601,6 @@ bool COptMethodPS::optimise()
           if (oldIndex != mBestIndex)
             Stalled = 0;
         }
-
 
       if (mpCallBack)
         mContinue &= mpCallBack->progressItem(mhGenerations);
