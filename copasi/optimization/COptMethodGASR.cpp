@@ -418,7 +418,7 @@ bool COptMethodGASR::initialize()
 
   mCurrentGeneration++;
 
-  mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
+  mPopulationSize = std::max(getValue< unsigned C_INT32 >("Population Size"), (unsigned C_INT32) 1);
   mPf = getValue< C_FLOAT64 >("Pf");
 
   if (mPf < 0.0 || 1.0 < mPf)
@@ -442,7 +442,6 @@ bool COptMethodGASR::initialize()
   mValues.resize(2 * mPopulationSize);
   mValues = std::numeric_limits<double>::infinity();
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
-  mpOptProblem->setSolution(mBestValue, NULL);
 
   mpPermutation = new CPermutation(mpRandom, mPopulationSize);
 
@@ -510,6 +509,7 @@ bool COptMethodGASR::optimise()
 
   Continue = evaluate(*mIndividuals[0]);
   mValues[0] = mEvaluationValue;
+  mpOptProblem->setSolution(mEvaluationValue, *mIndividuals[0]);
 
   /* Calculate the phi value of the individual for SR*/
   mPhi[0] = phi(0);

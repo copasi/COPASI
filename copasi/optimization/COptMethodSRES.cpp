@@ -523,7 +523,7 @@ bool COptMethodSRES::initialize()
 
   mCurrentGeneration++;
 
-  mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
+  mPopulationSize = std::max(getValue< unsigned C_INT32 >("Population Size"), (unsigned C_INT32) 1);
 
   mPf = getValue< C_FLOAT64 >("Pf");
 
@@ -565,7 +565,6 @@ bool COptMethodSRES::initialize()
   mValues.resize(childrate * mPopulationSize);
   mValues = std::numeric_limits<C_FLOAT64>::infinity();
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
-  mpOptProblem->setSolution(mBestValue, NULL);
 
   mPhi.resize(childrate * mPopulationSize);
 
@@ -669,6 +668,7 @@ bool COptMethodSRES::optimise()
 
   // initialise the population
   Continue = creation(0);
+  mpOptProblem->setSolution(mValues[0], *mIndividuals[0]);
 
   // get the index of the fittest
   BestIndex = fittest();

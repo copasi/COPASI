@@ -195,7 +195,7 @@ bool COptMethodEP::initialize()
 
   mCurrentGeneration++;
 
-  mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
+  mPopulationSize = std::max(getValue< unsigned C_INT32 >("Population Size"), (unsigned C_INT32) 1);
   mpRandom =
     CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
                              getValue< unsigned C_INT32 >("Seed"));

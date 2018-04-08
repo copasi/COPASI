@@ -351,7 +351,7 @@ bool COptMethodDE::initialize()
 
   mCurrentGeneration++;
 
-  mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
+  mPopulationSize = std::max(getValue< unsigned C_INT32 >("Population Size"), (unsigned C_INT32) 1);
 
   if (mPopulationSize < 4)
     {
