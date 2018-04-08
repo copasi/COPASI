@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -71,10 +71,10 @@ CFitProblem::CFitProblem(const CTaskEnum::Task & type,
   mRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mParameterSD(0),
-  mDeltaResidualDeltaParameter(0,0),
+  mDeltaResidualDeltaParameter(0, 0),
   mpDeltaResidualDeltaParameterInterface(NULL),
   mpDeltaResidualDeltaParameterMatrix(NULL),
-  mDeltaResidualDeltaParameterScaled(0,0),
+  mDeltaResidualDeltaParameterScaled(0, 0),
   mpDeltaResidualDeltaParameterScaledInterface(NULL),
   mpDeltaResidualDeltaParameterScaledMatrix(NULL),
   mFisher(0, 0),
@@ -209,7 +209,6 @@ void CFitProblem::initObjects()
   mpDeltaResidualDeltaParameterScaledMatrix->setDimensionDescription(1, "Data Points");
   mpDeltaResidualDeltaParameterScaledMatrix->setMode(CDataArray::Mode::Strings);
 
-  
   mpFisherMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisher);
   mpFisherMatrix = new CDataArray("Fisher Information Matrix", this, mpFisherMatrixInterface, false);
   mpFisherMatrix->setDescription("Fisher Information Matrix");
@@ -571,12 +570,11 @@ bool CFitProblem::initialize()
         fatalError();
 
       pItem->updateBounds(mpOptItems->begin());
+      std::string Annotation = pItem->getObjectDisplayName();
 
       // We cannot directly change the container values as multiple parameters
       // may point to the same value.
       mContainerVariables[j] = const_cast< C_FLOAT64 * >(&pItem->getLocalValue());
-
-      std::string Annotation = pItem->getObjectDisplayName();
 
       imax = pItem->getExperimentCount();
 
@@ -602,8 +600,13 @@ bool CFitProblem::initialize()
               if ((Index = mpExperimentSet->keyToIndex(pItem->getExperiment(i))) == C_INVALID_INDEX)
                 return false;
 
-              mExperimentValues(Index, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
-              ObjectSet[Index].insert(pItem->getObject());
+              const CObjectInterface * object = pItem->getObject();
+
+              if (object != NULL)
+                {
+                  mExperimentValues(Index, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
+                  ObjectSet[Index].insert(pItem->getObject());
+                }
             };
         }
 
@@ -696,8 +699,10 @@ bool CFitProblem::initialize()
 
   for (j = 0; it != end; ++it, j++)
     {
-      pItem = static_cast<CFitItem *>(*it);
-      pItem->updateBounds(mpOptItems->begin());
+      pItem = dynamic_cast<CFitItem *>(*it);
+
+      if (pItem == NULL)
+        fatalError();
 
       imax = pItem->getCrossValidationCount();
 
@@ -705,8 +710,13 @@ bool CFitProblem::initialize()
         {
           for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
             {
-              mCrossValidationValues(i, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
-              ObjectSet[i].insert(pItem->getObject());
+              const CObjectInterface * object = pItem->getObject();
+
+              if (object != NULL)
+                {
+                  mCrossValidationValues(i, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
+                  ObjectSet[i].insert(pItem->getObject());
+                }
             }
         }
       else
@@ -716,8 +726,13 @@ bool CFitProblem::initialize()
               if ((Index = mpCrossValidationSet->keyToIndex(pItem->getCrossValidation(i))) == C_INVALID_INDEX)
                 return false;
 
-              mCrossValidationValues(Index, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
-              ObjectSet[Index].insert(pItem->getObject());
+              const CObjectInterface * object = pItem->getObject();
+
+              if (object != NULL)
+                {
+                  mCrossValidationValues(Index, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
+                  ObjectSet[Index].insert(pItem->getObject());
+                }
             };
         }
     }
@@ -1357,7 +1372,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   mDeltaResidualDeltaParameter = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mDeltaResidualDeltaParameterScaled = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-  
+
   mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mFisherEigenvectors = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mFisherEigenvalues = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1436,61 +1451,60 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           CalculateFIM = false;
         }
 
-
-    
       //prepare the reordering of the jacobian: We want the data sets to be continuous
       //the reordering of the columns of the jacobian does not affect the calculation of the FIM later on
       //At the same time, we generate the annotations for the columns of the jacobian
-    
+
       size_t count = 0;
-    
+
       std::vector<size_t> ExperimentStartInResiduals;
-      for (i=0; i < mpExperimentSet->getExperimentCount(); ++i)
-      {
-        //for each experiment
-        CExperiment * pExperiment = mpExperimentSet->getExperiment(i);
-      
-        //store the start index for this experiment
-        ExperimentStartInResiduals.push_back(count);
-      
-        //experiment name for matrix annotation
-        std::string expName = pExperiment->getObjectName();
-      
-        //loop over dependent data columns
-        for (j=0; j<pExperiment->getDependentObjectsMap().size(); ++j)
+
+      for (i = 0; i < mpExperimentSet->getExperimentCount(); ++i)
         {
-          //find the object for the jth column in the map
-          const CObjectInterface * pIndepObj = NULL;
-          std::map< const CObjectInterface *, size_t >::const_iterator it, itEnd=pExperiment->getDependentObjectsMap().end();
-          for (it=pExperiment->getDependentObjectsMap().begin(); it != itEnd; ++it)
-            if (it->second == j)
-              pIndepObj = it->first;
-        
-          std::string depName = "???";
-          if (pIndepObj)
-            depName = pIndepObj->getObjectDisplayName();
-            
-          //loop over the data rows (for filling the annotation)
-          size_t k;
-          for (k=0; k<pExperiment->getNumDataRows(); ++k)
-          {
-            mpDeltaResidualDeltaParameterMatrix->setAnnotationString(1, k+j*pExperiment->getNumDataRows()+ExperimentStartInResiduals[i], expName+":"+depName);
-            mpDeltaResidualDeltaParameterScaledMatrix->setAnnotationString(1, k+j*pExperiment->getNumDataRows()+ExperimentStartInResiduals[i], expName+":"+depName);
-          }
+          //for each experiment
+          CExperiment * pExperiment = mpExperimentSet->getExperiment(i);
 
-          count += pExperiment->getNumDataRows();
+          //store the start index for this experiment
+          ExperimentStartInResiduals.push_back(count);
+
+          //experiment name for matrix annotation
+          std::string expName = pExperiment->getObjectName();
+
+          //loop over dependent data columns
+          for (j = 0; j < pExperiment->getDependentObjectsMap().size(); ++j)
+            {
+              //find the object for the jth column in the map
+              const CObjectInterface * pIndepObj = NULL;
+              std::map< const CObjectInterface *, size_t >::const_iterator it, itEnd = pExperiment->getDependentObjectsMap().end();
+
+              for (it = pExperiment->getDependentObjectsMap().begin(); it != itEnd; ++it)
+                if (it->second == j)
+                  pIndepObj = it->first;
+
+              std::string depName = "???";
+
+              if (pIndepObj)
+                depName = pIndepObj->getObjectDisplayName();
+
+              //loop over the data rows (for filling the annotation)
+              size_t k;
+
+              for (k = 0; k < pExperiment->getNumDataRows(); ++k)
+                {
+                  mpDeltaResidualDeltaParameterMatrix->setAnnotationString(1, k + j * pExperiment->getNumDataRows() + ExperimentStartInResiduals[i], expName + ":" + depName);
+                  mpDeltaResidualDeltaParameterScaledMatrix->setAnnotationString(1, k + j * pExperiment->getNumDataRows() + ExperimentStartInResiduals[i], expName + ":" + depName);
+                }
+
+              count += pExperiment->getNumDataRows();
+            }
         }
-      }
 
-    
       C_FLOAT64 * pDeltaResidualDeltaParameter = mDeltaResidualDeltaParameter.array();
       C_FLOAT64 * pDeltaResidualDeltaParameterScaled = mDeltaResidualDeltaParameterScaled.array();
 
       C_FLOAT64 Current;
       C_FLOAT64 Delta;
 
-
-    
       // Calculate the gradient
       for (i = 0; i < imax; i++)
         {
@@ -1515,24 +1529,26 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           //C_FLOAT64 * pResidual = mResiduals.array();
 
           if (CalculateFIM)
-          {
-            //create the parameter estimation jacobian
-            size_t exp_index, dep_index, row_index;
-            for (exp_index=0; exp_index < mpExperimentSet->getExperimentCount(); ++exp_index)
             {
-              for (dep_index=0; dep_index < mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(); ++dep_index)
-              {
-                C_FLOAT64 * pSolutionResidual = SolutionResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
-                C_FLOAT64 * pResidual = mResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
+              //create the parameter estimation jacobian
+              size_t exp_index, dep_index, row_index;
 
-                for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
+              for (exp_index = 0; exp_index < mpExperimentSet->getExperimentCount(); ++exp_index)
                 {
-                  *pDeltaResidualDeltaParameter = (*pResidual - *pSolutionResidual) * Delta;
-                  *pDeltaResidualDeltaParameterScaled = *pDeltaResidualDeltaParameter * Current;
+                  for (dep_index = 0; dep_index < mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(); ++dep_index)
+                    {
+                      C_FLOAT64 * pSolutionResidual = SolutionResiduals.array() + ExperimentStartInResiduals[exp_index] + dep_index;
+                      C_FLOAT64 * pResidual = mResiduals.array() + ExperimentStartInResiduals[exp_index] + dep_index;
+
+                      for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual += mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual += mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
+                        {
+                          *pDeltaResidualDeltaParameter = (*pResidual - *pSolutionResidual) * Delta;
+                          *pDeltaResidualDeltaParameterScaled = *pDeltaResidualDeltaParameter * Current;
+                        }
+                    }
                 }
-              }
             }
-          }
+
           // Restore the value
           *mContainerVariables[i] = Current;
         }
