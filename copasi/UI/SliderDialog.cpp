@@ -301,7 +301,7 @@ void SliderDialog::restoreDefaults()
   size_t maxcount = v.size();
   CopasiSlider* pTmpSlider;
 
-  for (int i = 0; i < maxcount; ++i)
+  for (int i = 0; (size_t) i < maxcount; ++i)
     {
       pTmpSlider = dynamic_cast<CopasiSlider*>(v[i]);
       pTmpSlider->setValue(tmpVec[i]);
