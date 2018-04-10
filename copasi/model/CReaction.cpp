@@ -17,6 +17,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+
+
+
 // CReaction
 //
 // Derived from Gepasi's cstep.cpp
@@ -2079,6 +2083,48 @@ const CCompartment * CReaction::getScalingCompartment() const
 {
   return mpScalingCompartment;
 }
+
+
+/**
+* @return the reaction scheme of this reaction
+*/
+std::string
+CReaction::getReactionScheme() const
+{
+  CDataModel* pModel = getObjectDataModel();
+  CReactionInterface reactionInterface;
+  reactionInterface.init(*this);
+  return reactionInterface.getChemEqString();
+}
+
+/**
+* Initializes this reaction from the specified reaction scheme
+*/
+bool
+CReaction::setReactionScheme(const std::string& scheme,
+                             const std::string& newFunction /*= ""*/,
+                             bool createMetabolites /*= true*/,
+                             bool createOther /*= true*/)
+{
+  CDataModel* pModel = getObjectDataModel();
+  CReactionInterface reactionInterface;
+  reactionInterface.init(*this);
+  reactionInterface.setChemEqString(scheme, newFunction);
+
+  if (createMetabolites)
+    reactionInterface.createMetabolites();
+
+  if (createOther)
+    reactionInterface.createOtherObjects();
+
+  bool result = reactionInterface.writeBackToReaction(this);
+
+  if (pModel != NULL && pModel->getModel() != NULL)
+    result &= pModel->getModel()->compileIfNecessary(NULL);
+
+  return result;
+}
+
 
 const std::vector< CRegisteredCommonName > & CReaction::getParameterCNs(const size_t & index) const
 {
