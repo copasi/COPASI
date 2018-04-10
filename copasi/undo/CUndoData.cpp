@@ -3,6 +3,7 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
+
 #include "copasi.h"
 
 #include "copasi/undo/CUndoData.h"
@@ -555,8 +556,8 @@ bool CUndoData::operator < (const CUndoData & rhs) const
     {
       case Type::INSERT:
       {
-        const size_t & Index = mNewData.getProperty(CData::OBJECT_INDEX).toSizeT();
-        const size_t & RhsIndex = rhs.mNewData.getProperty(CData::OBJECT_INDEX).toSizeT();
+        size_t Index = mNewData.getProperty(CData::OBJECT_INDEX).toSizeT();
+        size_t RhsIndex = rhs.mNewData.getProperty(CData::OBJECT_INDEX).toSizeT();
 
         if (Index != RhsIndex) return Index < RhsIndex;
       }
@@ -564,8 +565,8 @@ bool CUndoData::operator < (const CUndoData & rhs) const
 
       case Type::REMOVE:
       {
-        const size_t & Index = mOldData.getProperty(CData::OBJECT_INDEX).toSizeT();
-        const size_t & RhsIndex = rhs.mOldData.getProperty(CData::OBJECT_INDEX).toSizeT();
+        size_t Index = mOldData.getProperty(CData::OBJECT_INDEX).toSizeT();
+        size_t RhsIndex = rhs.mOldData.getProperty(CData::OBJECT_INDEX).toSizeT();
 
         if (Index != RhsIndex) return Index > RhsIndex;
       }
@@ -573,15 +574,15 @@ bool CUndoData::operator < (const CUndoData & rhs) const
 
       case Type::CHANGE:
       {
-        const size_t & Index = mNewData.getProperty(CData::OBJECT_INDEX).toSizeT();
-        const size_t & RhsIndex = rhs.mNewData.getProperty(CData::OBJECT_INDEX).toSizeT();
+        size_t Index = mNewData.getProperty(CData::OBJECT_INDEX).toSizeT();
+        size_t RhsIndex = rhs.mNewData.getProperty(CData::OBJECT_INDEX).toSizeT();
 
         if (Index != RhsIndex) return Index < RhsIndex;
       }
 
       {
-        const size_t & Index = mOldData.getProperty(CData::OBJECT_INDEX).toSizeT();
-        const size_t & RhsIndex = rhs.mOldData.getProperty(CData::OBJECT_INDEX).toSizeT();
+        size_t Index = mOldData.getProperty(CData::OBJECT_INDEX).toSizeT();
+        size_t RhsIndex = rhs.mOldData.getProperty(CData::OBJECT_INDEX).toSizeT();
 
         if (Index != RhsIndex) return Index > RhsIndex;
       }
