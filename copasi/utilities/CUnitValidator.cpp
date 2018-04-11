@@ -243,7 +243,7 @@ bool CUnitValidator::setUnits()
                 if (Index >= mVariableUnits.size())
                   {
                     CValidatedUnit Default;
-                    mVariableUnits.resize(Index, Default);
+                    mVariableUnits.resize(Index + 1, Default);
                   }
 
                 bool Undefined = mVariableUnits[Index] == CBaseUnit::undefined;
