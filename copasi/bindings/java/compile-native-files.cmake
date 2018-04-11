@@ -12,6 +12,8 @@
 
 
 
+
+
 ###############################################################################
 #
 # Description       : CMake build script for native java files
@@ -128,8 +130,7 @@ make_directory(${BIN_DIRECTORY}/gui/org/COPASI/gui/)
 # compile files
 execute_process(
 	COMMAND "${Java_JAVAC_EXECUTABLE}"
-		 -source 1.5
-		 -target 1.5
+		 ${COMPATIBILITY_ARGS}
 		 -cp ${BIN_DIRECTORY}/copasi.jar
 		 -d gui
 		 ${NATIVE_FILES}	
