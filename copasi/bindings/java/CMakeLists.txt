@@ -58,6 +58,11 @@ if (NOT EXISTS "${Java_JAR_EXECUTABLE}")
 	endif()
 endif()
 
+
+set(JAVA_COMPATIBILITY "1.6" CACHE STRING
+  "Specify the source and target compatibility for the libsbml Java bindings. Leave empty to remove the parameter altogether.")
+mark_as_advanced(JAVA_COMPATIBILITY)
+
 ####################################################################
 #
 # ensure that LAPACK variables are there for swig
@@ -167,6 +172,7 @@ add_custom_command(
 		 -DSRC_DIRECTORY=\"${CMAKE_CURRENT_SOURCE_DIR}\"
 		 -DFILE_SEP=\"${FILE_SEP}\"
 		 -DPATH_SEP=${PATH_SEP}
+     -DCOMPATIBILIY=${JAVA_COMPATIBILITY}
 		 -P "${CMAKE_CURRENT_SOURCE_DIR}/compile-native-files.cmake"
 	
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"

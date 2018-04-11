@@ -10,6 +10,8 @@
 
 
 
+
+
 ###############################################################################
 #
 # Description       : CMake build script for native java files
@@ -68,11 +70,16 @@ if (EXISTS ${BIN_DIRECTORY}/copasi.jar)
 	file(REMOVE ${BIN_DIRECTORY}/copasi.jar)	
 endif()
 
+SET (COMPATIBILITY_ARGS)
+if (COMPATIBILIY)
+SET (COMPATIBILITY_ARGS ${COMPATIBILITY_ARGS} -source ${COMPATIBILIY} -target ${COMPATIBILIY})
+endif()
+
+
 # compile files
 execute_process(
 	COMMAND "${Java_JAVAC_EXECUTABLE}"
-		 -source 1.5
-		 -target 1.5
+		 ${COMPATIBILITY_ARGS}
 		 -d java-files
 		 ${NATIVE_FILES}	
 	WORKING_DIRECTORY "${BIN_DIRECTORY}"
