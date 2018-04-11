@@ -25,6 +25,10 @@
 
 
 
+
+
+
+
 /**
  *  CReaction class.
  *  Derived from Gepasi's cstep.cpp. (C) Pedro Mendes 1995-2000.
@@ -710,9 +714,9 @@ public:
 
   //bool setParameterCNs(const std::string & name, const std::vector< CCommonName > CNs);
 
-  bool setParameterCNs(const size_t & index, const std::vector< CRegisteredCommonName > CNs);
+  bool setParameterCNs(const size_t & index, const std::vector< CRegisteredCommonName >& CNs);
 
-  bool setParameterCNs(const std::string & name, const std::vector< CRegisteredCommonName > CNs);
+  bool setParameterCNs(const std::string & name, const std::vector< CRegisteredCommonName> & CNs);
 
   const std::vector< const CDataObject * > & getParameterObjects(const size_t & index) const;
 
@@ -720,9 +724,18 @@ public:
 
   const std::vector< std::vector< const CDataObject * > > & getParameterObjects() const;
 
-  bool setParameterObjects(const size_t & index, const std::vector< const CDataObject * > objects);
+  bool setParameterObjects(const size_t & index, const std::vector< const CDataObject * >& objects);
 
-  bool setParameterObjects(const std::string & name, const std::vector< const CDataObject * > objects);
+  bool setParameterObjects(const std::string & name, const std::vector< const CDataObject * >& objects);
+
+  bool setParameterObject(const size_t & index, const CDataObject * object);
+
+  bool setParameterObject(const std::string & name, const CDataObject * object);
+
+  bool addParameterObject(const size_t & index, const CDataObject * object);
+
+  bool addParameterObject(const std::string & name, const CDataObject * object);
+
 
   // Attributes
 private:

@@ -4,6 +4,7 @@
 // All rights reserved.
 
 
+
 #include "copasi.h"
 
 #include "copasi/undo/CUndoData.h"
@@ -234,7 +235,7 @@ bool CUndoData::removeProperty(const std::string & name)
 {
   bool success = mOldData.removeProperty(name);
   success |= mNewData.removeProperty(name);
-  success &= mChangedProperties.erase(name);
+  success &= mChangedProperties.erase(name) > 0;
 
   return success;
 }

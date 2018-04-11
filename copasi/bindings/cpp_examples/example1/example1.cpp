@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,6 +12,9 @@
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
+
+
+
 
 /**
  * This is an example on how to build models with the COPASI backend API.
@@ -231,18 +234,12 @@ int main()
   // of the local one that is created by default
   // The first parameter is the one for the rate constant, so we point it to
   // the key of out model value
-  std::vector< const CDataObject * > Objects(1, pModelValue);
-  pReaction->setParameterObjects(0, Objects);
-  Objects.clear();
+  pReaction->setParameterObject(0, pModelValue);
 
   // now we have to set the parameter mapping for the substrates
-  Objects.push_back(pG6P);
-  pReaction->setParameterObjects("substrate", Objects);
-  Objects.clear();
-
-  Objects.push_back(pADP);
-  pReaction->setParameterObjects("substrate", Objects);
-  Objects.clear();
+  //pReaction->setParameterObjects("substrate", { pG6P, pADP });
+  pReaction->addParameterObject("substrate", pG6P);
+  pReaction->addParameterObject("substrate", pADP);
 
   // finally compile the model
   // compile needs to be done before updating all initial values for
@@ -257,7 +254,7 @@ int main()
   // we save to a file named example1.cps, we don't want a progress report
   // and we want to overwrite any existing file with the same name
   // Default tasks are automatically generated and will always appear in cps
-  // file unless they are explicitley deleted before saving.
+  // file unless they are explicitly deleted before saving.
   pDataModel->saveModel("example1.cps", NULL, true);
 
   // export the model to an SBML file

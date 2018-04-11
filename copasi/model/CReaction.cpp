@@ -21,6 +21,10 @@
 
 
 
+
+
+
+
 // CReaction
 //
 // Derived from Gepasi's cstep.cpp
@@ -847,8 +851,6 @@ CIssue CReaction::compile()
                    CValidity::Kind(CIssue::eKind::KineticsUndefined) | CIssue::eKind::VariablesMismatch | CIssue::eKind::ObjectNotFound);
 
   std::set< const CDataObject * > Dependencies;
-
-  const CDataObject * pObject;
 
   if (mpFunction)
     {
@@ -2147,7 +2149,7 @@ const std::vector< std::vector< CRegisteredCommonName > > & CReaction::getParame
   return mParameterIndexToCNs;
 }
 
-bool CReaction::setParameterCNs(const size_t & index, const std::vector< CRegisteredCommonName > CNs)
+bool CReaction::setParameterCNs(const size_t & index, const std::vector< CRegisteredCommonName >& CNs)
 {
   if (index < mParameterIndexToCNs.size())
     {
@@ -2178,7 +2180,7 @@ bool CReaction::setParameterCNs(const size_t & index, const std::vector< CRegist
   return false;
 }
 
-bool CReaction::setParameterCNs(const std::string & name, const std::vector< CRegisteredCommonName > CNs)
+bool CReaction::setParameterCNs(const std::string & name, const std::vector< CRegisteredCommonName >& CNs)
 {
   std::map< std::string, size_t >::const_iterator found = mParameterNameToIndex.find(name);
 
@@ -2211,7 +2213,7 @@ const std::vector< std::vector< const CDataObject * > > & CReaction::getParamete
   return mParameterIndexToObjects;
 }
 
-bool CReaction::setParameterObjects(const size_t & index, const std::vector< const CDataObject * > objects)
+bool CReaction::setParameterObjects(const size_t & index, const std::vector< const CDataObject * >& objects)
 {
   if (index < mParameterIndexToObjects.size())
     {
@@ -2248,7 +2250,7 @@ bool CReaction::setParameterObjects(const size_t & index, const std::vector< con
   return false;
 }
 
-bool CReaction::setParameterObjects(const std::string & name, const std::vector< const CDataObject * > objects)
+bool CReaction::setParameterObjects(const std::string & name, const std::vector< const CDataObject * >& objects)
 {
   std::map< std::string, size_t >::const_iterator found = mParameterNameToIndex.find(name);
 
@@ -2258,4 +2260,41 @@ bool CReaction::setParameterObjects(const std::string & name, const std::vector<
     }
 
   return false;
+}
+
+bool CReaction::setParameterObject(const size_t & index, const CDataObject * object)
+{
+  return setParameterObjects(index, { object });
+}
+
+bool CReaction::setParameterObject(const std::string & name, const CDataObject * object)
+{
+  return setParameterObjects(name, { object });
+}
+
+bool CReaction::addParameterObject(const size_t & index, const CDataObject * object)
+{
+  if (object == NULL || index >= mParameterIndexToObjects.size())
+    return false;
+
+  mParameterIndexToObjects[index].push_back(object);
+  mParameterIndexToCNs[index].push_back(object->getCN());
+
+  CModel * pModel = static_cast<CModel *>(getObjectAncestor("Model"));
+
+  if (pModel != NULL)
+    pModel->setCompileFlag(true);
+
+  return true;
+
+}
+
+bool CReaction::addParameterObject(const std::string & name, const CDataObject * object)
+{
+  std::map< std::string, size_t >::const_iterator found = mParameterNameToIndex.find(name);
+
+  if (object == NULL || found == mParameterNameToIndex.end())
+    return false;
+
+  return addParameterObject(found->second, object);
 }

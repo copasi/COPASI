@@ -21,6 +21,9 @@
 
 
 
+
+
+
 /**
  * This is an example on how to create user defined kinetic functions with the COPASI API
  */
@@ -146,8 +149,8 @@ public class example7
      // COPASI also needs to know what object it has to assocuiate with the individual function parameters
      // In our case we need to tell COPASI that substrate is to be replaced by the substrate of the reaction
      // and temp is to be replaced by the global parameter K
-     reaction.setParameterMapping("substrate", S.getKey());
-     reaction.setParameterMapping("temp", MV.getKey());
+     reaction.setParameterObject("substrate", S);
+     reaction.setParameterObject("temp", MV);
      
      // finally compile the model
      // compile needs to be done before updating all initial values for

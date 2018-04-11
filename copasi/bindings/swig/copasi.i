@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -16,6 +16,10 @@
 // Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
+
+
+
+
 
 
 
@@ -120,6 +124,7 @@ size_t INVALID_INDEX();
 %include <copasi/core/CObjectInterface.h>
 %include <copasi/utilities/CValidity.h>
 
+%include "CCommonName.i"
 %include "CObjectLists.i"
 %include "CVector.i"
 %include "CRandom.i"
@@ -127,7 +132,6 @@ size_t INVALID_INDEX();
 %include "messages.i"
 %include "CKeyFactory.i"
 %include "CCopasiException.i"
-%include "CCommonName.i"
 %include "CDataObject.i"
 %include "CDataObjectReference.i"
 %include "CDataContainer.i"

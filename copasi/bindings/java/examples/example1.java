@@ -21,6 +21,9 @@
 
 
 
+
+
+
 /**
  * This is an example on how to build models with the COPASI backend API.
  */
@@ -142,7 +145,7 @@ public class example1
          // constant flux has only one function parameter
          assert reaction.getFunctionParameters().size() == 1;
          // so there should be only one entry in the parameter mapping as well
-         assert reaction.getParameterMappings().size() == 1;
+         assert reaction.getParameterCNs().size() == 1;
          CCopasiParameterGroup parameterGroup = reaction.getParameters();
          assert parameterGroup.size() == 1;
          CCopasiParameter parameter = parameterGroup.getParameter(0);
@@ -191,7 +194,7 @@ public class example1
 
      assert reaction.getFunctionParameters().size() == 2;
      // so there should be two entries in the parameter mapping as well
-     assert reaction.getParameterMappings().size() == 2;
+     assert reaction.getParameterCNs().size() == 2;
      // mass action is a special case since the parameter mappings for the
      // substrates (and products) are in a vector
 
@@ -214,10 +217,10 @@ public class example1
      // of the local one that is created by default
      // The first parameter is the one for the rate constant, so we point it to
      // the key of out model value
-     reaction.setParameterMapping(0, modelValue.getKey());
+     reaction.setParameterObject(0, modelValue);
      // now we have to set the parameter mapping for the substrates
-     reaction.addParameterMapping("substrate", g6p.getKey());
-     reaction.addParameterMapping("substrate", adp.getKey());
+     reaction.addParameterObject("substrate", g6p);
+     reaction.addParameterObject("substrate", adp);
 
      // finally compile the model
      // compile needs to be done before updating all initial values for

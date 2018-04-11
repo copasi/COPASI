@@ -8,6 +8,8 @@
 // of Manchester.
 // All rights reserved.
 
+
+
 #include "copasi/copasi.h"
 
 #include "CModelParameterSet.h"
@@ -276,7 +278,6 @@ void CModelParameterSet::createFromModel()
     }
 
   CModelParameter * pParameter;
-  CModelParameterGroup * pGroup;
 
   pParameter = mpTimes->add(Type::Model);
   pParameter->setCN(mpModel->getCN());
