@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,7 +28,21 @@ CUnitValidator::CUnitValidator(const CMathContainer & math,
   mObjectUnits(),
   mNodeUnits(),
   mApplyIntitialValue(true)
-{}
+{
+  switch (mTree.getType())
+    {
+      case CEvaluationTree::Function:
+      case CEvaluationTree::MassAction:
+      case CEvaluationTree::PreDefined:
+      case CEvaluationTree::UserDefined:
+        mVariableUnits.resize(static_cast< const CFunction *>(&mTree)->getVariables().size());
+        break;
+
+      case CEvaluationTree::Expression:
+      case CEvaluationTree::MathExpression:
+        break;
+    }
+}
 
 CUnitValidator::CUnitValidator(const CUnitValidator &src):
   mMathContainer(src.mMathContainer),
@@ -72,6 +86,12 @@ bool CUnitValidator::validateUnits(const CValidatedUnit & unit,
 
 bool CUnitValidator::validate()
 {
+  if (mVariableUnits.size() != mProvidedVariableUnits.size())
+    {
+      mVariableUnits = std::vector< CValidatedUnit >(mVariableUnits.size(), CValidatedUnit());
+      return false;
+    }
+
   mVariableUnits = mProvidedVariableUnits;
 
   if (mTree.getType() == CEvaluationTree::MassAction)
@@ -243,7 +263,7 @@ bool CUnitValidator::setUnits()
                 if (Index >= mVariableUnits.size())
                   {
                     CValidatedUnit Default;
-                    mVariableUnits.resize(Index + 1, Default);
+                    mVariableUnits.resize(Index, Default);
                   }
 
                 bool Undefined = mVariableUnits[Index] == CBaseUnit::undefined;

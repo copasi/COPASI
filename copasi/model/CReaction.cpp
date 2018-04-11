@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -693,6 +693,26 @@ CIssue CReaction::compile()
               mMap.clearCallParameter(paramName);
               jmax = mMetabKeyMap[i].size();
 
+              if (mpFunction->getType() == CEvaluationTree::MassAction)
+                {
+                  if (i != 1 && i != 3)
+                    {
+                      jmax = 0;
+                    }
+                  else
+                    {
+                      CFunctionParameter::Role Role = i == 1 ? CFunctionParameter::Role::SUBSTRATE : Role = CFunctionParameter::Role::PRODUCT;
+
+                      CChemEqInterface EqInterface(static_cast< CModel * >(getObjectAncestor("Model")));
+                      EqInterface.loadFromChemEq(mChemEq);
+
+                      if (EqInterface.getMolecularity(Role) != jmax)
+                        {
+                          jmax = 0;
+                        }
+                    }
+                }
+
               if (jmax == 0)
                 {
                   Issue = CIssue::Error;
@@ -729,6 +749,8 @@ CIssue CReaction::compile()
 
       if (Issue.isError())
         {
+          Issue = CIssue();
+
           mValidity.remove(CValidity::Severity::All,
                            CValidity::Kind(CIssue::eKind::VariablesMismatch) | CIssue::eKind::ObjectNotFound);
 

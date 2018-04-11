@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -771,7 +771,8 @@ CReactionInterface::copyMapping()
         {
           case CFunctionParameter::SUBSTRATE:
           case CFunctionParameter::PRODUCT:
-            //TODO: check with chemeq
+            if (oldMap[j].size() != mChemEqI.getMolecularity(getUsage(i))) continue;
+
             mNameMap[i] = oldMap[j];
             break;
 
