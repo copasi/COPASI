@@ -86,47 +86,72 @@ void CRegisteredCommonName::sanitizeObjectNames()
       NewCN.clear();
 
       std::string Separator = "";
+      bool ContinueFromElement = false;
 
       while (!OldCN.empty())
         {
-          std::string ObjectType = OldCN.getObjectType();
+          std::string::size_type pos = OldCN.findNext(",");
+          CCommonName Primary(OldCN.substr(0, pos));
 
-          // If the object type is String or Separator we must not sanitize.
-          if (ObjectType == "Separator" ||
-              ObjectType == "String")
+          if (pos != std::string::npos)
             {
-              NewCN += Separator + OldCN.getPrimary();
+              OldCN = OldCN.substr(pos + 1);
             }
           else
             {
-              NewCN += Separator + ObjectType;
-
-              std::string ObjectName = OldCN.getObjectName();
-              CDataObject::sanitizeObjectName(ObjectName);
-
-              if (!ObjectName.empty())
-                {
-                  NewCN += "=" + escape(ObjectName);
-                }
-
-              size_t pos = 0;
-              std::string ElementName = OldCN.getElementName(pos);
-              std::string IndexSeparator = "[";
-
-              while (!ElementName.empty())
-                {
-                  CDataObject::sanitizeObjectName(ElementName);
-                  NewCN += IndexSeparator + escape(ElementName);
-
-                  IndexSeparator = ",";
-                  ElementName = OldCN.getElementName(++pos);
-                }
-
-              if (pos != 0)
-                NewCN += "]";
+              OldCN.clear();
             }
 
-          OldCN = OldCN.getRemainder();
+          while (!Primary.empty())
+            {
+              std::string ObjectType = Primary.getObjectType();
+
+              // If the object type is String or Separator we must not sanitize.
+              if (ObjectType == "Separator" ||
+                  ObjectType == "String")
+                {
+                  NewCN += Separator + Primary;
+                }
+              else
+                {
+                  if (!ContinueFromElement)
+                    {
+                      NewCN += Separator + ObjectType;
+
+                      std::string ObjectName = Primary.getObjectName();
+                      CDataObject::sanitizeObjectName(ObjectName);
+
+                      if (!ObjectName.empty())
+                        {
+                          NewCN += "=" + escape(ObjectName);
+                        }
+                    }
+
+                  size_t pos = 0;
+                  std::string ElementName = Primary.getElementName(pos);
+                  std::string IndexSeparator = "[";
+
+                  while (!ElementName.empty())
+                    {
+                      CDataObject::sanitizeObjectName(ElementName);
+                      NewCN += IndexSeparator + escape(ElementName);
+
+                      IndexSeparator = ",";
+                      ElementName = Primary.getElementName(++pos);
+                    }
+
+                  if (pos != 0)
+                    {
+                      Primary = Primary.getRemainder();
+                      NewCN += "]";
+                    }
+                }
+
+              Primary = Primary.getRemainder();
+              ContinueFromElement = !Primary.empty();
+              Separator.clear();
+            }
+
           Separator = ",";
         }
     }

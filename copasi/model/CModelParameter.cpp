@@ -988,21 +988,7 @@ void CModelParameterSpecies::setCN(const CCommonName & cn)
 
   // Determine the CN for the compartment.
   // "CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A]"
-  CCommonName Tmp = mCN;
-  std::string Separator = "";
-
-  for (; Tmp != ""; Tmp = Tmp.getRemainder())
-    {
-      CCommonName Primary = Tmp.getPrimary();
-      mCompartmentCN += Separator + Primary;
-      Separator = ",";
-
-      if (Primary.getObjectType() == "Vector" &&
-          Primary.getObjectName() == "Compartments")
-        {
-          break;
-        }
-    }
+  mCompartmentCN = mCN.substr(0, mCN.find(",Vector=Metabolites"));
 }
 
 // virtual

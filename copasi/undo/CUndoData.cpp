@@ -3,8 +3,6 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-
-
 #include "copasi.h"
 
 #include "copasi/undo/CUndoData.h"
@@ -471,18 +469,15 @@ std::string CUndoData::getObjectDisplayName() const
 
           case Type::REMOVE:
           case Type::CHANGE:
-            CN = mOldData.getProperty(CData::OBJECT_TYPE).toString();
+            CN = mOldData.getProperty(CData::OBJECT_PARENT_CN).toString();
             break;
         }
 
-      while (!CN.empty() && CN.getObjectType() != "Compartment")
-        {
-          CN = CN.getRemainder();
-        }
+      CN = CN.substr(CN.find("Vector=Compartments"));
 
       if (!CN.empty())
         {
-          DisplayName += "{" + CN.getObjectName() + "}";
+          DisplayName += "{" + CN.getElementName(0) + "}";
         }
     }
 
