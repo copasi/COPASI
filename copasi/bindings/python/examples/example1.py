@@ -132,7 +132,7 @@ def main():
       # constant flux has only one function parameter
       assert reaction.getFunctionParameters().size() == 1
       # so there should be only one entry in the parameter mapping as well
-      assert len(reaction.getParameterMappings()) == 1
+      assert len(reaction.getParameterObjects()) == 1
       parameterGroup = reaction.getParameters()
       assert parameterGroup.size() == 1
       parameter = parameterGroup.getParameter(0)
@@ -177,7 +177,7 @@ def main():
 
   assert reaction.getFunctionParameters().size() == 2
   # so there should be two entries in the parameter mapping as well
-  assert len(reaction.getParameterMappings()) == 2
+  assert len(reaction.getParameterObjects()) == 2
   # mass action is a special case since the parameter mappings for the
   # substrates (and products) are in a vector
 

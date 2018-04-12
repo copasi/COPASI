@@ -38,4 +38,6 @@
 namespace std {
 %template(ReportItemVector) vector<CRegisteredCommonName>;
 %template(VectorOfReportItemVectors) vector< vector<CRegisteredCommonName> >;
+%template(DataObjectVector) vector< const CDataObject * >;
+%template(VectorOfDataObjectVector) vector< vector< const CDataObject * > >;
 }

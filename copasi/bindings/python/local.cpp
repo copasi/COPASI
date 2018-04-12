@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,3 +19,9 @@
 
 #include "copasi/bindings/common/local_common.cpp"
 #include "copasi/bindings/common/downcast_common.cpp"
+
+SWIGRUNTIME PyObject *
+SWIG_Python_NewPointerObj(PyObject *self, const void *ptr, swig_type_info *type, int flags)
+{
+  return SWIG_Python_NewPointerObj(self, const_cast< void * >(ptr), type, flags);
+}

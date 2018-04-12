@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -418,6 +418,12 @@ GetDowncastSwigTypeForCDataObject(CDataObject* object)
     }
 
   return pInfo;
+}
+
+struct swig_type_info*
+GetDowncastSwigTypeForCDataObject(const CDataObject* object)
+{
+  return GetDowncastSwigTypeForCDataObject(const_cast< CDataObject* >(object));
 }
 
 // CObjectInterface
