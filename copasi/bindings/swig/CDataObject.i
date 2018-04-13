@@ -60,8 +60,8 @@ public:
 
 namespace std {
 
-#ifndef SWIGR
+#if !defined(SWIGR) && !defined(SWIGPERL) && !defined(SWIGOCTAVE)
 %template(DataObjectVector) vector< const CDataObject * >;
 %template(VectorOfDataObjectVector) vector< vector< const CDataObject * > >;
-#endif // SWIGR
+#endif // !defined(SWIGR) && !defined(SWIGPERL) && !defined(SWIGOCTAVE)
 }
