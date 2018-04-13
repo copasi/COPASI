@@ -8,6 +8,8 @@
 #include "CDataValue.h"
 #include "CData.h"
 
+#include "copasi/utilities/utility.h"
+
 CDataValue::CDataValue(const Type & type):
   mType(CDataValue::INVALID),
   mpData(NULL)
@@ -617,11 +619,32 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
         break;
 
       case CDataValue::UINT:
-        os << o.toUint();
-        break;
+      {
+        const unsigned C_INT32 & Value = o.toUint();
+
+        if (Value < std::numeric_limits< unsigned C_INT32 >::max())
+          {
+            os << Value;
+          }
+        else
+          {
+            os << -1;
+          }
+      }
+
+      break;
 
       case CDataValue::BOOL:
-        os << o.toBool();
+
+        if (o.toBool())
+          {
+            os << "true";
+          }
+        else
+          {
+            os << "false";
+          }
+
         break;
 
       case CDataValue::STRING:
@@ -662,4 +685,93 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
     }
 
   return os;
+}
+
+std::istream & operator >> (std::istream & is, CDataValue & i)
+{
+  switch (i.mType)
+    {
+      case CDataValue::DOUBLE:
+        is >> *static_cast< C_FLOAT64 * >(i.mpData);
+        break;
+
+      case CDataValue::INT:
+        is >> *static_cast< C_INT32 * >(i.mpData);
+        break;
+
+      case CDataValue::UINT:
+
+        if (is.peek() == '-')
+          {
+            // Advance
+            C_INT32 dummy;
+            is >> dummy;
+
+            *static_cast< unsigned C_INT32 * >(i.mpData) = std::numeric_limits< unsigned C_INT32 >::max();
+          }
+        else
+          {
+            is >> *static_cast< unsigned C_INT32 * >(i.mpData);
+          }
+
+        break;
+
+      case CDataValue::BOOL:
+      {
+        std::string dummy;
+        is >> dummy;
+
+        *static_cast< bool * >(i.mpData) = dummy == "true" ? true : false;
+      }
+      break;
+
+      case CDataValue::STRING:
+        is >> *static_cast< std::string * >(i.mpData);
+        break;
+
+      case CDataValue::DATA:
+        // TODO CRITICAL Implement istream operator for CData!
+        // is >> *static_cast< const CData * >(i.mpData);
+        break;
+
+      case CDataValue::DATA_VALUES:
+      {
+        std::vector< CDataValue >::iterator it = static_cast< std::vector< CDataValue > * >(i.mpData)->begin();
+        std::vector< CDataValue >::iterator end = static_cast< std::vector< CDataValue > * >(i.mpData)->end();
+
+        for (; it != end; ++it)
+          is >> *it;
+      }
+      break;
+
+      case CDataValue::DATA_VECTOR:
+      {
+        std::vector< CData >::iterator it = static_cast< std::vector< CData > * >(i.mpData)->begin();
+        std::vector< CData >::iterator end = static_cast< std::vector< CData > * >(i.mpData)->end();
+
+        // TODO CRITICAL Implement istream operator for CData!
+        // for (; it != end; ++it)
+        // is >> *it;
+      }
+      break;
+
+      case CDataValue::VOID_POINTER:
+      {
+        std::string dummy;
+        is >> dummy;
+
+        i.mpData = stringToPointer(dummy);
+      }
+      break;
+
+      case CDataValue::INVALID:
+      {
+        // Advance past "??? Invalid ???"
+        std::string dummy;
+        is >> dummy >> dummy >> dummy;
+      }
+      break;
+    }
+
+  return is;
 }
