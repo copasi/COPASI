@@ -8,6 +8,7 @@
 
 
 
+
 %{
 
 #include <string>
@@ -39,9 +40,4 @@
 namespace std {
 %template(ReportItemVector) vector<CRegisteredCommonName>;
 %template(VectorOfReportItemVectors) vector< vector<CRegisteredCommonName> >;
-
-#ifndef SWIGR
-%template(DataObjectVector) vector< const CDataObject * >;
-%template(VectorOfDataObjectVector) vector< vector< const CDataObject * > >;
-#endif // SWIGR
 }
