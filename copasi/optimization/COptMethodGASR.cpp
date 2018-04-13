@@ -410,7 +410,7 @@ bool COptMethodGASR::initialize()
   mCurrentGeneration = 0;
   mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
 
-  if (!mpCallBack)
+  if (mpCallBack != NULL)
     mhGenerations =
       mpCallBack->addItem("Current Generation",
                           mCurrentGeneration,

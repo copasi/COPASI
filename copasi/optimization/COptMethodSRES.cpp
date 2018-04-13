@@ -515,7 +515,7 @@ bool COptMethodSRES::initialize()
   mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
   mCurrentGeneration = 0;
 
-  if (!mpCallBack)
+  if (mpCallBack != NULL)
     mhGenerations =
       mpCallBack->addItem("Current Generation",
                           mCurrentGeneration,
