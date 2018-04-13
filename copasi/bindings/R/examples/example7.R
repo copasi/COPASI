@@ -128,8 +128,8 @@ stopifnot(!is.null(reaction$getFunction()))
 # COPASI also needs to know what object it has to assocuiate with the individual function parameters
 # In our case we need to tell COPASI that substrate is to be replaced by the substrate of the reaction
 # and temp is to be replaced by the global parameter K
-invisible(reaction$setParameterMapping("substrate", S$getKey()))
-invisible(reaction$setParameterMapping("temp", MV$getKey()))
+invisible(reaction$setParameterObject("substrate", S))
+invisible(reaction$setParameterObject("temp", MV))
 
 # finally compile the model
 # compile needs to be done before updating all initial values for

@@ -130,7 +130,7 @@ if (!is.null(fun)){
     invisible(reaction$getFunctionParameters())
     stopifnot(reaction$getFunctionParameters()$size() == 1)
     # so there should be only one entry in the parameter mapping as well
-    stopifnot(length(reaction$getParameterMappings()) == 1)
+    stopifnot(length(reaction$getParameterCNs()) == 1)
     parameterGroup <- reaction$getParameters()
     stopifnot(parameterGroup$size() == 1)
     parameter <- parameterGroup$getParameter(0)
