@@ -21,6 +21,10 @@
 
 
 
+
+
+
+
 #include <cmath>
 
 #include "copasi.h"
@@ -49,7 +53,7 @@
 
 //  Default constructor
 CFitProblem::CFitProblem(const CTaskEnum::Task & type,
-                         const CDataContainer * pParent):
+                         const CDataContainer * pParent) :
   COptProblem(type, pParent),
   mpParmSteadyStateCN(NULL),
   mpParmTimeCourseCN(NULL),
@@ -112,7 +116,7 @@ CFitProblem::CFitProblem(const CTaskEnum::Task & type,
 
 // copy constructor
 CFitProblem::CFitProblem(const CFitProblem& src,
-                         const CDataContainer * pParent):
+                         const CDataContainer * pParent) :
   COptProblem(src, pParent),
   mpParmSteadyStateCN(NULL),
   mpParmTimeCourseCN(NULL),
@@ -285,10 +289,14 @@ void CFitProblem::initializeParameter()
 }
 
 void CFitProblem::setCreateParameterSets(const bool & create)
-{*mpCreateParameterSets = create;}
+{
+  *mpCreateParameterSets = create;
+}
 
 const bool & CFitProblem::getCreateParameterSets() const
-{return *mpCreateParameterSets;}
+{
+  return *mpCreateParameterSets;
+}
 
 bool CFitProblem::elevateChildren()
 {
@@ -313,7 +321,7 @@ bool CFitProblem::elevateChildren()
     {
       size_t i, imax = pTasks->size();
 
-      if (!mpParmSteadyStateCN->compare(0, 5 , "Task_") ||
+      if (!mpParmSteadyStateCN->compare(0, 5, "Task_") ||
           *mpParmSteadyStateCN == "")
         for (i = 0; i < imax; i++)
           if (pTasks->operator[](i).getType() == CTaskEnum::Task::steadyState)
@@ -322,7 +330,7 @@ bool CFitProblem::elevateChildren()
               break;
             }
 
-      if (!mpParmTimeCourseCN->compare(0, 5 , "Task_") ||
+      if (!mpParmTimeCourseCN->compare(0, 5, "Task_") ||
           *mpParmTimeCourseCN == "")
         for (i = 0; i < imax; i++)
           if (pTasks->operator[](i).getType() == CTaskEnum::Task::timeCourse)
@@ -342,7 +350,7 @@ bool CFitProblem::elevateChildren()
   std::vector<CCopasiParameter *>::iterator endExp;
 
   for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
-    if ((pGroup = dynamic_cast< CCopasiParameterGroup * >(*itExp)) != NULL &&
+    if ((pGroup = dynamic_cast<CCopasiParameterGroup *>(*itExp)) != NULL &&
         pGroup->getParameter("Key") != NULL)
       ExperimentMap[pGroup->getValue< std::string >("Key")] = (*itExp)->getObjectName();
 
@@ -377,7 +385,7 @@ bool CFitProblem::elevateChildren()
     &getGroup("Validation Set")->CCopasiParameter::getValue< CCopasiParameterGroup::elements >();
 
   for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
-    if ((pGroup = dynamic_cast< CCopasiParameterGroup * >(*itExp)) != NULL &&
+    if ((pGroup = dynamic_cast<CCopasiParameterGroup *>(*itExp)) != NULL &&
         pGroup->getParameter("Key") != NULL)
       CrossValidationMap[pGroup->getValue< std::string >("Key")] = (*itExp)->getObjectName();
 
@@ -442,7 +450,9 @@ bool CFitProblem::elevateChildren()
 }
 
 bool CFitProblem::setCallBack(CProcessReport * pCallBack)
-{return COptProblem::setCallBack(pCallBack);}
+{
+  return COptProblem::setCallBack(pCallBack);
+}
 
 bool CFitProblem::initialize()
 {
@@ -470,7 +480,7 @@ bool CFitProblem::initialize()
   if (mpExperimentSet->hasDataForTaskType(CTaskEnum::Task::steadyState))
     {
       mpSteadyState =
-        dynamic_cast< CSteadyStateTask * >(const_cast< CDataObject * >(CObjectInterface::DataObject(getObjectFromCN(*mpParmSteadyStateCN))));
+        dynamic_cast<CSteadyStateTask *>(const_cast<CDataObject *>(CObjectInterface::DataObject(getObjectFromCN(*mpParmSteadyStateCN))));
 
       if (mpSteadyState == NULL)
         {
@@ -494,7 +504,7 @@ bool CFitProblem::initialize()
   if (mpExperimentSet->hasDataForTaskType(CTaskEnum::Task::timeCourse))
     {
       mpTrajectory =
-        dynamic_cast< CTrajectoryTask * >(const_cast< CDataObject * >(CObjectInterface::DataObject(getObjectFromCN(*mpParmTimeCourseCN))));
+        dynamic_cast<CTrajectoryTask *>(const_cast<CDataObject *>(CObjectInterface::DataObject(getObjectFromCN(*mpParmTimeCourseCN))));
 
       if (mpTrajectory == NULL)
         {
@@ -578,7 +588,7 @@ bool CFitProblem::initialize()
 
       // We cannot directly change the container values as multiple parameters
       // may point to the same value.
-      mContainerVariables[j] = const_cast< C_FLOAT64 * >(&pItem->getLocalValue());
+      mContainerVariables[j] = const_cast<C_FLOAT64 *>(&pItem->getLocalValue());
 
       imax = pItem->getExperimentCount();
 
@@ -608,7 +618,7 @@ bool CFitProblem::initialize()
 
               if (object != NULL)
                 {
-                  mExperimentValues(Index, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
+                  mExperimentValues(Index, j) = (C_FLOAT64 *)pItem->getObject()->getValuePointer();
                   ObjectSet[Index].insert(pItem->getObject());
                 }
             };
@@ -718,7 +728,7 @@ bool CFitProblem::initialize()
 
               if (object != NULL)
                 {
-                  mCrossValidationValues(i, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
+                  mCrossValidationValues(i, j) = (C_FLOAT64 *)pItem->getObject()->getValuePointer();
                   ObjectSet[i].insert(pItem->getObject());
                 }
             }
@@ -734,7 +744,7 @@ bool CFitProblem::initialize()
 
               if (object != NULL)
                 {
-                  mCrossValidationValues(Index, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
+                  mCrossValidationValues(Index, j) = (C_FLOAT64 *)pItem->getObject()->getValuePointer();
                   ObjectSet[Index].insert(pItem->getObject());
                 }
             };
@@ -837,9 +847,9 @@ CFitItem & CFitProblem::addFitItem(const CCommonName & objectCN)
  */
 void CFitProblem::createParameterSet(const std::string & Name)
 {
-  CModel * pModel = const_cast< CModel * >(&mpContainer->getModel())
+  CModel * pModel = const_cast<CModel *>(&mpContainer->getModel())
                     ;
-  std::string origname = "PE: "  + UTCTimeStamp() + " Exp: " + Name;
+  std::string origname = "PE: " + UTCTimeStamp() + " Exp: " + Name;
   std::string name = origname;
   int count = 0;
 
@@ -994,7 +1004,7 @@ bool CFitProblem::calculate()
                         // independent data.
                         pExp->updateModelWithIndependentData(0);
 
-                        static_cast< CTrajectoryProblem * >(mpTrajectory->getProblem())->setStepNumber(1);
+                        static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem())->setStepNumber(1);
                         mpTrajectory->processStart(true);
 
                         C_FLOAT64 NextTime = pExp->getTimeData()[0];
@@ -1179,7 +1189,9 @@ void CFitProblem::createParameterSets()
 }
 
 void CFitProblem::print(std::ostream * ostream) const
-{*ostream << *this;}
+{
+  *ostream << *this;
+}
 
 void CFitProblem::printResult(std::ostream * ostream) const
 {
@@ -1228,7 +1240,7 @@ void CFitProblem::printResult(std::ostream * ostream) const
               if (j) os << ", ";
 
               pExperiment =
-                dynamic_cast< CExperiment * >(CRootContainer::getKeyFactory()->get(pFitItem->getExperiment(j)));
+                dynamic_cast<CExperiment *>(CRootContainer::getKeyFactory()->get(pFitItem->getExperiment(j)));
 
               if (pExperiment)
                 os << pExperiment->getObjectName();
@@ -1332,7 +1344,9 @@ void CFitProblem::updateInitialState()
 }
 
 bool CFitProblem::createObjectiveFunction()
-{return true;}
+{
+  return true;
+}
 
 bool CFitProblem::setResidualsRequired(const bool & required)
 {
@@ -1505,7 +1519,7 @@ void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 
 
   char JOBZ = 'V'; //also compute eigenvectors
   char UPLO = 'U'; //upper triangle
-  C_INT N = (C_INT) fim.numRows();
+  C_INT N = (C_INT)fim.numRows();
   C_INT LDA = std::max< C_INT >(1, N);
   CVector<C_FLOAT64> WORK; //WORK space
   WORK.resize(1);
@@ -1522,7 +1536,7 @@ void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 
          &LWORK,
          &INFO);
 
-  LWORK = (C_INT) WORK[0];
+  LWORK = (C_INT)WORK[0];
   WORK.resize(LWORK);
 
   //now do the real calculation
@@ -1602,7 +1616,7 @@ bool CFitProblem::calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >&
    *
    */
   char U = 'U';
-  C_INT N = (C_INT) fim.numRows();
+  C_INT N = (C_INT)fim.numRows();
   C_INT INFO = 0;
   dpotrf_(&U, &N, corr.array(), &N, &INFO);
 
@@ -1684,7 +1698,7 @@ bool CFitProblem::calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >&
         }
       else if (corr(i, i) < 0.0)
         {
-          tmp = 1.0 / sqrt(- corr(i, i));
+          tmp = 1.0 / sqrt(-corr(i, i));
           sd[i] = mSD / tmp;
         }
       else
@@ -1848,159 +1862,185 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       ExperimentStartInResiduals.push_back(count); //
 
-    }
 
-  C_FLOAT64 * pDeltaResidualDeltaParameter = mDeltaResidualDeltaParameter.array();
-  C_FLOAT64 * pDeltaResidualDeltaParameterScaled = mDeltaResidualDeltaParameterScaled.array();
 
-  C_FLOAT64 Current;
-  C_FLOAT64 Delta;
+      C_FLOAT64 * pDeltaResidualDeltaParameter = mDeltaResidualDeltaParameter.array();
+      C_FLOAT64 * pDeltaResidualDeltaParameterScaled = mDeltaResidualDeltaParameterScaled.array();
 
-  // Calculate the gradient
-  for (i = 0; i < imax; i++)
-    {
-      Current = mSolutionVariables[i];
+      C_FLOAT64 Current;
+      C_FLOAT64 Delta;
 
-      if (fabs(Current) > resolution)
+      // Calculate the gradient
+      for (i = 0; i < imax; i++)
         {
-          *mContainerVariables[i] = Current * (1.0 + factor);
-          Delta = 1.0 / (Current * factor);
-        }
-      else
-        {
-          *mContainerVariables[i] = resolution;
-          Delta = 1.0 / resolution;
-        }
+          Current = mSolutionVariables[i];
 
-      calculate();
-
-      mGradient[i] = (mCalculateValue - mSolutionValue) * Delta;
-
-      //C_FLOAT64 * pSolutionResidual = SolutionResiduals.array();
-      //C_FLOAT64 * pResidual = mResiduals.array();
-
-      if (CalculateFIM)
-        {
-          //create the parameter estimation jacobian
-          size_t exp_index, dep_index, row_index;
-
-          for (exp_index = 0; exp_index < mpExperimentSet->getExperimentCount(); ++exp_index)
+          if (fabs(Current) > resolution)
             {
-              for (dep_index = 0; dep_index < mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(); ++dep_index)
-                {
-                  C_FLOAT64 * pSolutionResidual = SolutionResiduals.array() + ExperimentStartInResiduals[exp_index] + dep_index;
-                  C_FLOAT64 * pResidual = mResiduals.array() + ExperimentStartInResiduals[exp_index] + dep_index;
+              *mContainerVariables[i] = Current * (1.0 + factor);
+              Delta = 1.0 / (Current * factor);
+            }
+          else
+            {
+              *mContainerVariables[i] = resolution;
+              Delta = 1.0 / resolution;
+            }
 
-                  for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual += mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual += mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
+          calculate();
+
+          mGradient[i] = (mCalculateValue - mSolutionValue) * Delta;
+
+          //C_FLOAT64 * pSolutionResidual = SolutionResiduals.array();
+          //C_FLOAT64 * pResidual = mResiduals.array();
+
+          if (CalculateFIM)
+            {
+              //create the parameter estimation jacobian
+              size_t exp_index, dep_index, row_index;
+
+              for (exp_index = 0; exp_index < mpExperimentSet->getExperimentCount(); ++exp_index)
+                {
+                  for (dep_index = 0; dep_index < mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(); ++dep_index)
                     {
-                      *pDeltaResidualDeltaParameter = (*pResidual - *pSolutionResidual) * Delta;
-                      *pDeltaResidualDeltaParameterScaled = *pDeltaResidualDeltaParameter * Current;
+                      C_FLOAT64 * pSolutionResidual = SolutionResiduals.array() + ExperimentStartInResiduals[exp_index] + dep_index;
+                      C_FLOAT64 * pResidual = mResiduals.array() + ExperimentStartInResiduals[exp_index] + dep_index;
+
+                      for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual += mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual += mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
+                        {
+                          *pDeltaResidualDeltaParameter = (*pResidual - *pSolutionResidual) * Delta;
+                          *pDeltaResidualDeltaParameterScaled = *pDeltaResidualDeltaParameter * Current;
+                        }
                     }
                 }
             }
+
+          // Restore the value
+          *mContainerVariables[i] = Current;
         }
 
-      // Restore the value
-      *mContainerVariables[i] = Current;
-    }
+      if (!CalculateFIM)
+        {
+          // Make sure the timer is accurate.
+          mCPUTime.calculateValue();
 
-  if (!CalculateFIM)
-    {
+          CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 13);
+          return false;
+        }
+
+      calcFIM(mDeltaResidualDeltaParameter, mFisher);
+      calcFIM(mDeltaResidualDeltaParameterScaled, mFisherScaled);
+
+      calcEigen(mFisher, mFisherEigenvalues, mFisherEigenvectors);
+      calcEigen(mFisherScaled, mFisherScaledEigenvalues, mFisherScaledEigenvectors);
+
+      if (!calcCov(mFisher, mCorrelation, mParameterSD))
+        {
+          // Make sure the timer is accurate.
+          mCPUTime.calculateValue();
+          return false;
+        }
+
+      //experimental code...
+      /*
+      CMatrix< C_FLOAT64 > tmpFIM, tmpEigenValues, tmpEigenVectors;
+
+      size_t exp_index, dep_index, row_index;
+      for (exp_index=0; exp_index < mpExperimentSet->getExperimentCount(); ++exp_index)
+      {
+        calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, ExperimentStartInResiduals[exp_index], ExperimentStartInResiduals[exp_index+1]);
+        std::cout << tmpFIM << std::endl;
+
+        //for (dep_index=0; dep_index < mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(); ++dep_index)
+        //{
+        //  calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, <#size_t a#>, <#size_t b#>)
+
+        //  C_FLOAT64 * pSolutionResidual = SolutionResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
+        //  C_FLOAT64 * pResidual = mResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
+
+        //  for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
+        //}
+
+      }
+      */
+
+
+      setResidualsRequired(false);
+      mStoreResults = true;
+      // This is necessary so that CExperiment::printResult shows the correct data.
+      calculate();
+
       // Make sure the timer is accurate.
       mCPUTime.calculateValue();
-
-      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 13);
-      return false;
     }
 
-  calcFIM(mDeltaResidualDeltaParameter, mFisher);
-  calcFIM(mDeltaResidualDeltaParameterScaled, mFisherScaled);
-
-  calcEigen(mFisher, mFisherEigenvalues, mFisherEigenvectors);
-  calcEigen(mFisherScaled, mFisherScaledEigenvalues, mFisherScaledEigenvectors);
-
-  if (!calcCov(mFisher, mCorrelation, mParameterSD))
-    {
-      // Make sure the timer is accurate.
-      mCPUTime.calculateValue();
-      return false;
-    }
-
-  //experimental code...
-  /*
-  CMatrix< C_FLOAT64 > tmpFIM, tmpEigenValues, tmpEigenVectors;
-
-  size_t exp_index, dep_index, row_index;
-  for (exp_index=0; exp_index < mpExperimentSet->getExperimentCount(); ++exp_index)
-  {
-    calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, ExperimentStartInResiduals[exp_index], ExperimentStartInResiduals[exp_index+1]);
-    std::cout << tmpFIM << std::endl;
-
-    //for (dep_index=0; dep_index < mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(); ++dep_index)
-    //{
-    //  calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, <#size_t a#>, <#size_t b#>)
-
-    //  C_FLOAT64 * pSolutionResidual = SolutionResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
-    //  C_FLOAT64 * pResidual = mResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
-
-    //  for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
-    //}
-
-  }
-  */
-
-
-  setResidualsRequired(false);
-  mStoreResults = true;
-  // This is necessary so that CExperiment::printResult shows the correct data.
-  calculate();
-
-  // Make sure the timer is accurate.
-  mCPUTime.calculateValue();
-}
-
-mStoreResults = false;
-return true;
+  mStoreResults = false;
+  return true;
 }
 
 const C_FLOAT64 & CFitProblem::getRMS() const
-{return mRMS;}
+{
+  return mRMS;
+}
 
 const C_FLOAT64 & CFitProblem::getStdDeviation() const
-{return mSD;}
+{
+  return mSD;
+}
 
 const CVector< C_FLOAT64 > & CFitProblem::getVariableStdDeviations() const
-{return mParameterSD;}
+{
+  return mParameterSD;
+}
 
 CDataArray & CFitProblem::getParameterEstimationJacobian() const
-{return *mpDeltaResidualDeltaParameterMatrix;}
+{
+  return *mpDeltaResidualDeltaParameterMatrix;
+}
 
 CDataArray & CFitProblem::getScaledParameterEstimationJacobian() const
-{return *mpDeltaResidualDeltaParameterScaledMatrix;}
+{
+  return *mpDeltaResidualDeltaParameterScaledMatrix;
+}
 
 CDataArray & CFitProblem::getFisherInformation() const
-{return *mpFisherMatrix;}
+{
+  return *mpFisherMatrix;
+}
 
 CDataArray & CFitProblem::getFisherInformationEigenvalues() const
-{return *mpFisherEigenvaluesMatrix;}
+{
+  return *mpFisherEigenvaluesMatrix;
+}
 
 CDataArray & CFitProblem::getFisherInformationEigenvectors() const
-{return *mpFisherEigenvectorsMatrix;}
+{
+  return *mpFisherEigenvectorsMatrix;
+}
 
 CDataArray & CFitProblem::getScaledFisherInformation() const
-{return *mpFisherScaledMatrix;}
+{
+  return *mpFisherScaledMatrix;
+}
 
 CDataArray & CFitProblem::getScaledFisherInformationEigenvalues() const
-{return *mpFisherScaledEigenvaluesMatrix;}
+{
+  return *mpFisherScaledEigenvaluesMatrix;
+}
 
 CDataArray & CFitProblem::getScaledFisherInformationEigenvectors() const
-{return *mpFisherScaledEigenvectorsMatrix;}
+{
+  return *mpFisherScaledEigenvectorsMatrix;
+}
 
 CDataArray & CFitProblem::getCorrelations() const
-{return *mpCorrelationMatrix;}
+{
+  return *mpCorrelationMatrix;
+}
 
 const CExperimentSet & CFitProblem::getExperimentSet() const
-{return *mpExperimentSet;}
+{
+  return *mpExperimentSet;
+}
 
 CExperimentSet &
 CFitProblem::getExperimentSet()
@@ -2009,7 +2049,9 @@ CFitProblem::getExperimentSet()
 }
 
 const CCrossValidationSet & CFitProblem::getCrossValidationSet() const
-{return *mpCrossValidationSet;}
+{
+  return *mpCrossValidationSet;
+}
 
 CCrossValidationSet&
 CFitProblem::getCrossValidationSet()
@@ -2029,13 +2071,19 @@ bool CFitProblem::setSolution(const C_FLOAT64 & value,
 }
 
 const C_FLOAT64 & CFitProblem::getCrossValidationSolutionValue() const
-{return mCrossValidationSolutionValue;}
+{
+  return mCrossValidationSolutionValue;
+}
 
 const C_FLOAT64 & CFitProblem::getCrossValidationRMS() const
-{return mCrossValidationRMS;}
+{
+  return mCrossValidationRMS;
+}
 
 const C_FLOAT64 & CFitProblem::getCrossValidationSD() const
-{return mCrossValidationSD;}
+{
+  return mCrossValidationSD;
+}
 
 bool CFitProblem::calculateCrossValidation()
 {
@@ -2182,7 +2230,7 @@ bool CFitProblem::calculateCrossValidation()
                         // value updates as one unit.
                         mpContainer->applyUpdateSequence(mCrossValidationInitialUpdates[i]);
 
-                        static_cast< CTrajectoryProblem * >(mpTrajectory->getProblem())->setStepNumber(1);
+                        static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem())->setStepNumber(1);
                         mpTrajectory->processStart(true);
 
                         C_FLOAT64 NextTime = pExp->getTimeData()[0];
