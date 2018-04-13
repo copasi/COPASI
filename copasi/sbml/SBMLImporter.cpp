@@ -17,6 +17,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+
+
+
 #ifdef WIN32
 # pragma warning (disable: 4786)
 # pragma warning (disable: 4243)
@@ -3510,7 +3514,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_FATAL:
 
-              // treat unknown as fatal
+                // treat unknown as fatal
               default:
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
@@ -6006,7 +6010,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
 
       for (i = 0; i < iMax; ++i)
         for (j = 0, jMax = static_cast<int>(fabs((*metabolites)[i].getMultiplicity())); j < jMax; j++)
-          Objects.push_back(&metabolites->operator[](i));
+          Objects.push_back(metabolites->operator[](i).getMetabolite());
 
       pCopasiReaction->setParameterObjects("substrate", Objects);
       Objects.clear();
@@ -6039,7 +6043,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
 
           for (i = 0; i < iMax; ++i)
             for (j = 0, jMax = static_cast<int>(fabs(metabolites->operator[](i).getMultiplicity())); j < jMax; j++)
-              Objects.push_back(&metabolites->operator[](i));
+              Objects.push_back(metabolites->operator[](i).getMetabolite());
 
           pCopasiReaction->setParameterObjects("product", Objects);
           Objects.clear();
