@@ -17,6 +17,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+
+
+
 #include <cmath>
 
 #include "copasi.h"
@@ -363,6 +367,7 @@ bool COptMethodPS::initialize()
 
   mVelocities.resize(mPopulationSize, mVariableSize);
   mBestValues.resize(mPopulationSize);
+  mBestValues = std::numeric_limits<double>::infinity();
   mBestPositions.resize(mPopulationSize, mVariableSize);
 
   mNumInformedMin = std::max<size_t>(mPopulationSize / 10, 5) - 1;

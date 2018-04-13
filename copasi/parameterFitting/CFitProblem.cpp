@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,6 +16,10 @@
 // Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+
+
+
 
 #include <cmath>
 
@@ -71,10 +75,10 @@ CFitProblem::CFitProblem(const CTaskEnum::Task & type,
   mRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mParameterSD(0),
-  mDeltaResidualDeltaParameter(0,0),
+  mDeltaResidualDeltaParameter(0, 0),
   mpDeltaResidualDeltaParameterInterface(NULL),
   mpDeltaResidualDeltaParameterMatrix(NULL),
-  mDeltaResidualDeltaParameterScaled(0,0),
+  mDeltaResidualDeltaParameterScaled(0, 0),
   mpDeltaResidualDeltaParameterScaledInterface(NULL),
   mpDeltaResidualDeltaParameterScaledMatrix(NULL),
   mFisher(0, 0),
@@ -209,7 +213,6 @@ void CFitProblem::initObjects()
   mpDeltaResidualDeltaParameterScaledMatrix->setDimensionDescription(1, "Data Points");
   mpDeltaResidualDeltaParameterScaledMatrix->setMode(CDataArray::Mode::Strings);
 
-  
   mpFisherMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisher);
   mpFisherMatrix = new CDataArray("Fisher Information Matrix", this, mpFisherMatrixInterface, false);
   mpFisherMatrix->setDescription("Fisher Information Matrix");
@@ -571,12 +574,11 @@ bool CFitProblem::initialize()
         fatalError();
 
       pItem->updateBounds(mpOptItems->begin());
+      std::string Annotation = pItem->getObjectDisplayName();
 
       // We cannot directly change the container values as multiple parameters
       // may point to the same value.
       mContainerVariables[j] = const_cast< C_FLOAT64 * >(&pItem->getLocalValue());
-
-      std::string Annotation = pItem->getObjectDisplayName();
 
       imax = pItem->getExperimentCount();
 
@@ -602,8 +604,13 @@ bool CFitProblem::initialize()
               if ((Index = mpExperimentSet->keyToIndex(pItem->getExperiment(i))) == C_INVALID_INDEX)
                 return false;
 
-              mExperimentValues(Index, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
-              ObjectSet[Index].insert(pItem->getObject());
+              const CObjectInterface * object = pItem->getObject();
+
+              if (object != NULL)
+                {
+                  mExperimentValues(Index, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
+                  ObjectSet[Index].insert(pItem->getObject());
+                }
             };
         }
 
@@ -696,8 +703,10 @@ bool CFitProblem::initialize()
 
   for (j = 0; it != end; ++it, j++)
     {
-      pItem = static_cast<CFitItem *>(*it);
-      pItem->updateBounds(mpOptItems->begin());
+      pItem = dynamic_cast<CFitItem *>(*it);
+
+      if (pItem == NULL)
+        fatalError();
 
       imax = pItem->getCrossValidationCount();
 
@@ -705,8 +714,13 @@ bool CFitProblem::initialize()
         {
           for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
             {
-              mCrossValidationValues(i, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
-              ObjectSet[i].insert(pItem->getObject());
+              const CObjectInterface * object = pItem->getObject();
+
+              if (object != NULL)
+                {
+                  mCrossValidationValues(i, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
+                  ObjectSet[i].insert(pItem->getObject());
+                }
             }
         }
       else
@@ -716,8 +730,13 @@ bool CFitProblem::initialize()
               if ((Index = mpCrossValidationSet->keyToIndex(pItem->getCrossValidation(i))) == C_INVALID_INDEX)
                 return false;
 
-              mCrossValidationValues(Index, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
-              ObjectSet[Index].insert(pItem->getObject());
+              const CObjectInterface * object = pItem->getObject();
+
+              if (object != NULL)
+                {
+                  mCrossValidationValues(Index, j) = (C_FLOAT64 *) pItem->getObject()->getValuePointer();
+                  ObjectSet[Index].insert(pItem->getObject());
+                }
             };
         }
     }
@@ -1341,77 +1360,79 @@ const CVector< C_FLOAT64 > & CFitProblem::getResiduals() const
 
 void CFitProblem::calcFIM(const CMatrix< C_FLOAT64 >& jacobian, CMatrix< C_FLOAT64 >& fim)
 {
-  size_t i,j,l;
+  size_t i, j, l;
   size_t imax = jacobian.numRows();
   size_t jmax = jacobian.numCols();
   fim.resize(imax, imax);
+
   for (i = 0; i < imax; i++)
     for (l = 0; l <= i; l++)
-    {
-      C_FLOAT64 & tmp = fim(i, l);
-      
-      tmp = 0.0;
-      
-      const C_FLOAT64 * pI = jacobian[i];
-      const C_FLOAT64 * pL = jacobian[l];
-      
-      for (j = 0; j < jmax; j++, ++pI, ++pL)
-        tmp += *pI **pL;
-      
-      tmp *= 2.0;
-      
-      // The Fisher matrix is symmetric.
-      if (l != i)
-        fim(l, i) = tmp;
-    }
+      {
+        C_FLOAT64 & tmp = fim(i, l);
+
+        tmp = 0.0;
+
+        const C_FLOAT64 * pI = jacobian[i];
+        const C_FLOAT64 * pL = jacobian[l];
+
+        for (j = 0; j < jmax; j++, ++pI, ++pL)
+          tmp += *pI **pL;
+
+        tmp *= 2.0;
+
+        // The Fisher matrix is symmetric.
+        if (l != i)
+          fim(l, i) = tmp;
+      }
 }
 
 void CFitProblem::calcPartialFIM(const CMatrix< C_FLOAT64 >& jacobian, CMatrix< C_FLOAT64 >& fim, size_t a, size_t b, bool exclude)
 {
-  size_t i,j,l;
+  size_t i, j, l;
   size_t imax = jacobian.numRows();
   //size_t jmax = b-a; //jacobian.numCols();
 
-  if (b<a || b>jacobian.numCols() || a>jacobian.numCols())
+  if (b < a || b > jacobian.numCols() || a > jacobian.numCols())
     return;
 
   fim.resize(imax, imax);
+
   for (i = 0; i < imax; i++)
     for (l = 0; l <= i; l++)
-    {
-      C_FLOAT64 & tmp = fim(i, l);
-      
-      tmp = 0.0;
-      
-      if (exclude) //sum up everything except between a and b-1
       {
-        const C_FLOAT64 * pI = jacobian[i];
-        const C_FLOAT64 * pL = jacobian[l];
-        
-        for (j = 0; j < a; j++, ++pI, ++pL)
-          tmp += *pI **pL;
-        
-        pI = jacobian[i]+b;
-        pL = jacobian[l]+b;
-        
-        for (j = 0; j < jacobian.numCols()-b; j++, ++pI, ++pL)
-          tmp += *pI **pL;
+        C_FLOAT64 & tmp = fim(i, l);
+
+        tmp = 0.0;
+
+        if (exclude) //sum up everything except between a and b-1
+          {
+            const C_FLOAT64 * pI = jacobian[i];
+            const C_FLOAT64 * pL = jacobian[l];
+
+            for (j = 0; j < a; j++, ++pI, ++pL)
+              tmp += *pI **pL;
+
+            pI = jacobian[i] + b;
+            pL = jacobian[l] + b;
+
+            for (j = 0; j < jacobian.numCols() - b; j++, ++pI, ++pL)
+              tmp += *pI **pL;
+          }
+        else //sum up everything between a and b-1
+          {
+            const C_FLOAT64 * pI = jacobian[i] + a;
+            const C_FLOAT64 * pL = jacobian[l] + a;
+
+            for (j = 0; j < b - a; j++, ++pI, ++pL)
+              tmp += *pI **pL;
+          }
+
+        tmp *= 2.0;
+
+        // The Fisher matrix is symmetric.
+        if (l != i)
+          fim(l, i) = tmp;
       }
-      else //sum up everything between a and b-1
-      {
-      const C_FLOAT64 * pI = jacobian[i]+a;
-      const C_FLOAT64 * pL = jacobian[l]+a;
-      
-      for (j = 0; j < b-a; j++, ++pI, ++pL)
-        tmp += *pI **pL;
-      }
-      
-      tmp *= 2.0;
-      
-      // The Fisher matrix is symmetric.
-      if (l != i)
-        fim(l, i) = tmp;
-    }
 }
 
 
@@ -1420,27 +1441,27 @@ void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 
   /* int dsyev_(char *jobz, char *uplo, integer *n, doublereal *a,
    integer *lda, doublereal *w, doublereal *work, integer *lwork,
    integer *info) */
-  
+
   /*  Purpose */
   /*  ======= */
-  
+
   /*  DSYEV computes all eigenvalues and, optionally, eigenvectors of a */
   /*  real symmetric matrix A. */
-  
+
   /*  Arguments */
   /*  ========= */
-  
+
   /*  JOBZ    (input) CHARACTER*1 */
   /*          = 'N':  Compute eigenvalues only; */
   /*          = 'V':  Compute eigenvalues and eigenvectors. */
-  
+
   /*  UPLO    (input) CHARACTER*1 */
   /*          = 'U':  Upper triangle of A is stored; */
   /*          = 'L':  Lower triangle of A is stored. */
-  
+
   /*  N       (input) INTEGER */
   /*          The order of the matrix A.  N >= 0. */
-  
+
   /*  A       (input/output) DOUBLE PRECISION array, dimension (LDA, N) */
   /*          On entry, the symmetric matrix A.  If UPLO = 'U', the */
   /*          leading N-by-N upper triangular part of A contains the */
@@ -1452,36 +1473,36 @@ void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 
   /*          If JOBZ = 'N', then on exit the lower triangle (if UPLO='L') */
   /*          or the upper triangle (if UPLO='U') of A, including the */
   /*          diagonal, is destroyed. */
-  
+
   /*  LDA     (input) INTEGER */
   /*          The leading dimension of the array A.  LDA >= max(1,N). */
-  
+
   /*  W       (output) DOUBLE PRECISION array, dimension (N) */
   /*          If INFO = 0, the eigenvalues in ascending order. */
-  
+
   /*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK)) */
   /*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK. */
-  
+
   /*  LWORK   (input) INTEGER */
   /*          The length of the array WORK.  LWORK >= max(1,3*N-1). */
   /*          For optimal efficiency, LWORK >= (NB+2)*N, */
   /*          where NB is the blocksize for DSYTRD returned by ILAENV. */
-  
+
   /*          If LWORK = -1, then a workspace query is assumed; the routine */
   /*          only calculates the optimal size of the WORK array, returns */
   /*          this value as the first entry of the WORK array, and no error */
   /*          message related to LWORK is issued by XERBLA. */
-  
+
   /*  INFO    (output) INTEGER */
   /*          = 0:  successful exit */
   /*          < 0:  if INFO = -i, the i-th argument had an illegal value */
   /*          > 0:  if INFO = i, the algorithm failed to converge; i */
   /*                off-diagonal elements of an intermediate tridiagonal */
   /*                form did not converge to zero. */
-  
+
   eigenvectors = fim;
   eigenvalues.resize(fim.numRows(), 1);
-  
+
   char JOBZ = 'V'; //also compute eigenvectors
   char UPLO = 'U'; //upper triangle
   C_INT N = (C_INT) fim.numRows();
@@ -1490,7 +1511,7 @@ void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 
   WORK.resize(1);
   C_INT LWORK = -1; //first query the memory need
   C_INT INFO = 0;
-  
+
   dsyev_(&JOBZ,
          &UPLO,
          &N,
@@ -1500,10 +1521,10 @@ void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 
          WORK.array(),
          &LWORK,
          &INFO);
-  
+
   LWORK = (C_INT) WORK[0];
   WORK.resize(LWORK);
-  
+
   //now do the real calculation
   dsyev_(&JOBZ,
          &UPLO,
@@ -1514,168 +1535,169 @@ void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 
          WORK.array(),
          &LWORK,
          &INFO);
-  
+
   if (INFO != 0)
-  {
-    CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 14);
-    
-    eigenvectors = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-    eigenvalues = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-  }
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 14);
+
+      eigenvectors = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      eigenvalues = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+    }
 
 }
 
 bool CFitProblem::calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd)
 {
-     corr = fim;
+  corr = fim;
 
-      // The Fisher Information matrix is a symmetric positive semidefinit matrix.
-      /* int dpotrf_(char *uplo, integer *n, doublereal *a,
-       *             integer *lda, integer *info);
-       *
-       *
-       *  Purpose
-       *  =======
-       *
-       *  DPOTRF computes the Cholesky factorization of a real symmetric
-       *  positive definite matrix A.
-       *
-       *  The factorization has the form
-       *     A = U**T * U, if UPLO = 'U', or
-       *     A = L  * L**T, if UPLO = 'L',
-       *  where U is an upper triangular matrix and L is lower triangular.
-       *
-       *  This is the block version of the algorithm, calling Level 3 BLAS.
-       *
-       *  Arguments
-       *  =========
-       *
-       *  UPLO    (input) CHARACTER*1
-       *          = 'U':  Upper triangle of A is stored;
-       *          = 'L':  Lower triangle of A is stored.
-       *
-       *  N       (input) INTEGER
-       *          The order of the matrix A.  N >= 0.
-       *
-       *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
-       *          On entry, the symmetric matrix A.  If UPLO = 'U', the leading
-       *          N-by-N upper triangular part of A contains the upper
-       *          triangular part of the matrix A, and the strictly lower
-       *          triangular part of A is not referenced.  If UPLO = 'L', the
-       *          leading N-by-N lower triangular part of A contains the lower
-       *          triangular part of the matrix A, and the strictly upper
-       *          triangular part of A is not referenced.
-       *
-       *          On exit, if INFO = 0, the factor U or L from the Cholesky
-       *          factorization A = U**T*U or A = L*L**T.
-       *
-       *  LDA     (input) INTEGER
-       *          The leading dimension of the array A.  LDA >= max(1,N).
-       *
-       *  INFO    (output) INTEGER
-       *          = 0:  successful exit
-       *          < 0:  if INFO = -i, the i-th argument had an illegal value
-       *          > 0:  if INFO = i, the leading minor of order i is not
-       *                positive definite, and the factorization could not be
-       *                completed.
-       *
-       */
-      char U = 'U';
-      C_INT N = (C_INT) fim.numRows();
-      C_INT INFO = 0;
-      dpotrf_(&U, &N, corr.array(), &N, &INFO);
+  // The Fisher Information matrix is a symmetric positive semidefinit matrix.
+  /* int dpotrf_(char *uplo, integer *n, doublereal *a,
+   *             integer *lda, integer *info);
+   *
+   *
+   *  Purpose
+   *  =======
+   *
+   *  DPOTRF computes the Cholesky factorization of a real symmetric
+   *  positive definite matrix A.
+   *
+   *  The factorization has the form
+   *     A = U**T * U, if UPLO = 'U', or
+   *     A = L  * L**T, if UPLO = 'L',
+   *  where U is an upper triangular matrix and L is lower triangular.
+   *
+   *  This is the block version of the algorithm, calling Level 3 BLAS.
+   *
+   *  Arguments
+   *  =========
+   *
+   *  UPLO    (input) CHARACTER*1
+   *          = 'U':  Upper triangle of A is stored;
+   *          = 'L':  Lower triangle of A is stored.
+   *
+   *  N       (input) INTEGER
+   *          The order of the matrix A.  N >= 0.
+   *
+   *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+   *          On entry, the symmetric matrix A.  If UPLO = 'U', the leading
+   *          N-by-N upper triangular part of A contains the upper
+   *          triangular part of the matrix A, and the strictly lower
+   *          triangular part of A is not referenced.  If UPLO = 'L', the
+   *          leading N-by-N lower triangular part of A contains the lower
+   *          triangular part of the matrix A, and the strictly upper
+   *          triangular part of A is not referenced.
+   *
+   *          On exit, if INFO = 0, the factor U or L from the Cholesky
+   *          factorization A = U**T*U or A = L*L**T.
+   *
+   *  LDA     (input) INTEGER
+   *          The leading dimension of the array A.  LDA >= max(1,N).
+   *
+   *  INFO    (output) INTEGER
+   *          = 0:  successful exit
+   *          < 0:  if INFO = -i, the i-th argument had an illegal value
+   *          > 0:  if INFO = i, the leading minor of order i is not
+   *                positive definite, and the factorization could not be
+   *                completed.
+   *
+   */
+  char U = 'U';
+  C_INT N = (C_INT) fim.numRows();
+  C_INT INFO = 0;
+  dpotrf_(&U, &N, corr.array(), &N, &INFO);
 
-      if (INFO)
+  if (INFO)
+    {
+      corr = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      sd = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 12);
+      return false;
+    }
+
+  /* int dpotri_(char *uplo, integer *n, doublereal *a,
+   *             integer *lda, integer *info);
+   *
+   *
+   *  Purpose
+   *  =======
+   *
+   *  DPOTRI computes the inverse of a real symmetric positive definite
+   *  matrix A using the Cholesky factorization A = U**T*U or A = L*L**T
+   *  computed by DPOTRF.
+   *
+   *  Arguments
+   *  =========
+   *
+   *  UPLO    (input) CHARACTER*1
+   *          = 'U':  Upper triangle of A is stored;
+   *          = 'L':  Lower triangle of A is stored.
+   *
+   *  N       (input) INTEGER
+   *          The order of the matrix A.  N >= 0.
+   *
+   *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+   *          On entry, the triangular factor U or L from the Cholesky
+   *          factorization A = U**T*U or A = L*L**T, as computed by
+   *          DPOTRF.
+   *          On exit, the upper or lower triangle of the (symmetric)
+   *          inverse of A, overwriting the input factor U or L.
+   *
+   *  LDA     (input) INTEGER
+   *          The leading dimension of the array A.  LDA >= max(1,N).
+   *
+   *  INFO    (output) INTEGER
+   *          = 0:  successful exit
+   *          < 0:  if INFO = -i, the i-th argument had an illegal value
+   *          > 0:  if INFO = i, the (i,i) element of the factor U or L is
+   *                zero, and the inverse could not be computed.
+   *
+   */
+  dpotri_(&U, &N, corr.array(), &N, &INFO);
+
+  if (INFO)
+    {
+      corr = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      sd = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, INFO);
+      return false;
+    }
+
+  // Assure that the inverse is completed.
+  size_t i, l;
+  size_t imax = fim.numRows();
+
+  for (i = 0; i < imax; i++)
+    for (l = 0; l < i; l++)
+      corr(l, i) = corr(i, l);
+
+  CVector< C_FLOAT64 > S(imax);
+
+  // rescale the lower bound of the covariant matrix to have unit diagonal
+  for (i = 0; i < imax; i++)
+    {
+      C_FLOAT64 & tmp = S[i];
+
+      if (corr(i, i) > 0.0)
         {
-          corr = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-          sd = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-          CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 12);
-          return false;
+          tmp = 1.0 / sqrt(corr(i, i));
+          sd[i] = mSD / tmp;
         }
-
-      /* int dpotri_(char *uplo, integer *n, doublereal *a,
-       *             integer *lda, integer *info);
-       *
-       *
-       *  Purpose
-       *  =======
-       *
-       *  DPOTRI computes the inverse of a real symmetric positive definite
-       *  matrix A using the Cholesky factorization A = U**T*U or A = L*L**T
-       *  computed by DPOTRF.
-       *
-       *  Arguments
-       *  =========
-       *
-       *  UPLO    (input) CHARACTER*1
-       *          = 'U':  Upper triangle of A is stored;
-       *          = 'L':  Lower triangle of A is stored.
-       *
-       *  N       (input) INTEGER
-       *          The order of the matrix A.  N >= 0.
-       *
-       *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
-       *          On entry, the triangular factor U or L from the Cholesky
-       *          factorization A = U**T*U or A = L*L**T, as computed by
-       *          DPOTRF.
-       *          On exit, the upper or lower triangle of the (symmetric)
-       *          inverse of A, overwriting the input factor U or L.
-       *
-       *  LDA     (input) INTEGER
-       *          The leading dimension of the array A.  LDA >= max(1,N).
-       *
-       *  INFO    (output) INTEGER
-       *          = 0:  successful exit
-       *          < 0:  if INFO = -i, the i-th argument had an illegal value
-       *          > 0:  if INFO = i, the (i,i) element of the factor U or L is
-       *                zero, and the inverse could not be computed.
-       *
-       */
-      dpotri_(&U, &N, corr.array(), &N, &INFO);
-
-      if (INFO)
+      else if (corr(i, i) < 0.0)
         {
-          corr = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-          sd = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-          CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, INFO);
-          return false;
+          tmp = 1.0 / sqrt(- corr(i, i));
+          sd[i] = mSD / tmp;
         }
-
-      // Assure that the inverse is completed.
-      size_t i,l;
-      size_t imax = fim.numRows();
-      for (i = 0; i < imax; i++)
-        for (l = 0; l < i; l++)
-          corr(l, i) = corr(i, l);
-
-      CVector< C_FLOAT64 > S(imax);
-
-      // rescale the lower bound of the covariant matrix to have unit diagonal
-      for (i = 0; i < imax; i++)
+      else
         {
-          C_FLOAT64 & tmp = S[i];
-
-          if (corr(i, i) > 0.0)
-            {
-              tmp = 1.0 / sqrt(corr(i, i));
-              sd[i] = mSD / tmp;
-            }
-          else if (corr(i, i) < 0.0)
-            {
-              tmp = 1.0 / sqrt(- corr(i, i));
-              sd[i] = mSD / tmp;
-            }
-          else
-            {
-              sd[i] = mWorstValue;
-              tmp = 1.0;
-              corr(i, i) = 1.0;
-            }
+          sd[i] = mWorstValue;
+          tmp = 1.0;
+          corr(i, i) = 1.0;
         }
+    }
 
-      for (i = 0; i < imax; i++)
-        for (l = 0; l < imax; l++)
-          corr(i, l) *= S[i] * S[l];
+  for (i = 0; i < imax; i++)
+    for (l = 0; l < imax; l++)
+      corr(i, l) *= S[i] * S[l];
 
   return true; //success
 }
@@ -1697,7 +1719,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   mDeltaResidualDeltaParameter = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mDeltaResidualDeltaParameterScaled = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-  
+
   mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mFisherEigenvectors = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mFisherEigenvalues = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1779,156 +1801,166 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       //prepare the reordering of the jacobian: We want the data sets to be continuous
       //the reordering of the columns of the jacobian does not affect the calculation of the FIM later on
       //At the same time, we generate the annotations for the columns of the jacobian
+
       size_t count = 0;
-    
+
       std::vector<size_t> ExperimentStartInResiduals;
-      for (i=0; i < mpExperimentSet->getExperimentCount(); ++i)
-      {
-        //for each experiment
-        CExperiment * pExperiment = mpExperimentSet->getExperiment(i);
-      
-        //store the start index for this experiment
-        ExperimentStartInResiduals.push_back(count);
-      
-        //experiment name for matrix annotation
-        std::string expName = pExperiment->getObjectName();
-      
-        //loop over dependent data columns
-        for (j=0; j<pExperiment->getDependentObjectsMap().size(); ++j)
+
+      for (i = 0; i < mpExperimentSet->getExperimentCount(); ++i)
         {
-          //find the object for the jth column in the map
-          const CObjectInterface * pIndepObj = NULL;
-          std::map< const CObjectInterface *, size_t >::const_iterator it, itEnd=pExperiment->getDependentObjectsMap().end();
-          for (it=pExperiment->getDependentObjectsMap().begin(); it != itEnd; ++it)
-            if (it->second == j)
-              pIndepObj = it->first;
-        
-          std::string depName = "???";
-          if (pIndepObj)
-            depName = pIndepObj->getObjectDisplayName();
-            
-          //loop over the data rows (for filling the annotation)
-          size_t k;
-          for (k=0; k<pExperiment->getNumDataRows(); ++k)
-          {
-            mpDeltaResidualDeltaParameterMatrix->setAnnotationString(1, k+j*pExperiment->getNumDataRows()+ExperimentStartInResiduals[i], expName+":"+depName);
-            mpDeltaResidualDeltaParameterScaledMatrix->setAnnotationString(1, k+j*pExperiment->getNumDataRows()+ExperimentStartInResiduals[i], expName+":"+depName);
-          }
+          //for each experiment
+          CExperiment * pExperiment = mpExperimentSet->getExperiment(i);
 
-          count += pExperiment->getNumDataRows();
-        }
-      }
-      ExperimentStartInResiduals.push_back(count); //
-    
-      C_FLOAT64 * pDeltaResidualDeltaParameter = mDeltaResidualDeltaParameter.array();
-      C_FLOAT64 * pDeltaResidualDeltaParameterScaled = mDeltaResidualDeltaParameterScaled.array();
+          //store the start index for this experiment
+          ExperimentStartInResiduals.push_back(count);
 
-      C_FLOAT64 Current;
-      C_FLOAT64 Delta;
-    
-      // Calculate the gradient
-      for (i = 0; i < imax; i++)
-        {
-          Current = mSolutionVariables[i];
+          //experiment name for matrix annotation
+          std::string expName = pExperiment->getObjectName();
 
-          if (fabs(Current) > resolution)
+          //loop over dependent data columns
+          for (j = 0; j < pExperiment->getDependentObjectsMap().size(); ++j)
             {
-              *mContainerVariables[i] = Current * (1.0 + factor);
-              Delta = 1.0 / (Current * factor);
-            }
-          else
-            {
-              *mContainerVariables[i] = resolution;
-              Delta = 1.0 / resolution;
-            }
+              //find the object for the jth column in the map
+              const CObjectInterface * pIndepObj = NULL;
+              std::map< const CObjectInterface *, size_t >::const_iterator it, itEnd = pExperiment->getDependentObjectsMap().end();
 
-          calculate();
+              for (it = pExperiment->getDependentObjectsMap().begin(); it != itEnd; ++it)
+                if (it->second == j)
+                  pIndepObj = it->first;
 
-          mGradient[i] = (mCalculateValue - mSolutionValue) * Delta;
+              std::string depName = "???";
 
-          //C_FLOAT64 * pSolutionResidual = SolutionResiduals.array();
-          //C_FLOAT64 * pResidual = mResiduals.array();
+              if (pIndepObj)
+                depName = pIndepObj->getObjectDisplayName();
 
-          if (CalculateFIM)
-          {
-            //create the parameter estimation jacobian
-            size_t exp_index, dep_index, row_index;
-            for (exp_index=0; exp_index < mpExperimentSet->getExperimentCount(); ++exp_index)
-            {
-              for (dep_index=0; dep_index < mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(); ++dep_index)
-              {
-                C_FLOAT64 * pSolutionResidual = SolutionResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
-                C_FLOAT64 * pResidual = mResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
+              //loop over the data rows (for filling the annotation)
+              size_t k;
 
-                for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
+              for (k = 0; k < pExperiment->getNumDataRows(); ++k)
                 {
-                  *pDeltaResidualDeltaParameter = (*pResidual - *pSolutionResidual) * Delta;
-                  *pDeltaResidualDeltaParameterScaled = *pDeltaResidualDeltaParameter * Current;
+                  mpDeltaResidualDeltaParameterMatrix->setAnnotationString(1, k + j * pExperiment->getNumDataRows() + ExperimentStartInResiduals[i], expName + ":" + depName);
+                  mpDeltaResidualDeltaParameterScaledMatrix->setAnnotationString(1, k + j * pExperiment->getNumDataRows() + ExperimentStartInResiduals[i], expName + ":" + depName);
                 }
-              }
+
+              count += pExperiment->getNumDataRows();
             }
-          }
-          // Restore the value
-          *mContainerVariables[i] = Current;
         }
 
-      if (!CalculateFIM)
-        {
-          // Make sure the timer is accurate.
-          mCPUTime.calculateValue();
+      ExperimentStartInResiduals.push_back(count); //
 
-          CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 13);
-          return false;
-        }
-
-      calcFIM(mDeltaResidualDeltaParameter, mFisher);
-      calcFIM(mDeltaResidualDeltaParameterScaled, mFisherScaled);
-      
-      calcEigen(mFisher, mFisherEigenvalues, mFisherEigenvectors);
-      calcEigen(mFisherScaled, mFisherScaledEigenvalues, mFisherScaledEigenvectors);
-      
-      if (!calcCov(mFisher, mCorrelation, mParameterSD))
-        {
-          // Make sure the timer is accurate.
-          mCPUTime.calculateValue();
-          return false;
-        }
-    
-      //experimental code...
-      /*
-      CMatrix< C_FLOAT64 > tmpFIM, tmpEigenValues, tmpEigenVectors;
-      
-      size_t exp_index, dep_index, row_index;
-      for (exp_index=0; exp_index < mpExperimentSet->getExperimentCount(); ++exp_index)
-      {
-        calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, ExperimentStartInResiduals[exp_index], ExperimentStartInResiduals[exp_index+1]);
-        std::cout << tmpFIM << std::endl;
-        
-        //for (dep_index=0; dep_index < mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(); ++dep_index)
-        //{
-        //  calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, <#size_t a#>, <#size_t b#>)
-          
-        //  C_FLOAT64 * pSolutionResidual = SolutionResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
-        //  C_FLOAT64 * pResidual = mResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
-          
-        //  for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
-        //}
-        
-      }
-      */
-      
-      
-      setResidualsRequired(false);
-      mStoreResults = true;
-      // This is necessary so that CExperiment::printResult shows the correct data.
-      calculate();
-
-      // Make sure the timer is accurate.
-      mCPUTime.calculateValue();
     }
 
-  mStoreResults = false;
-  return true;
+  C_FLOAT64 * pDeltaResidualDeltaParameter = mDeltaResidualDeltaParameter.array();
+  C_FLOAT64 * pDeltaResidualDeltaParameterScaled = mDeltaResidualDeltaParameterScaled.array();
+
+  C_FLOAT64 Current;
+  C_FLOAT64 Delta;
+
+  // Calculate the gradient
+  for (i = 0; i < imax; i++)
+    {
+      Current = mSolutionVariables[i];
+
+      if (fabs(Current) > resolution)
+        {
+          *mContainerVariables[i] = Current * (1.0 + factor);
+          Delta = 1.0 / (Current * factor);
+        }
+      else
+        {
+          *mContainerVariables[i] = resolution;
+          Delta = 1.0 / resolution;
+        }
+
+      calculate();
+
+      mGradient[i] = (mCalculateValue - mSolutionValue) * Delta;
+
+      //C_FLOAT64 * pSolutionResidual = SolutionResiduals.array();
+      //C_FLOAT64 * pResidual = mResiduals.array();
+
+      if (CalculateFIM)
+        {
+          //create the parameter estimation jacobian
+          size_t exp_index, dep_index, row_index;
+
+          for (exp_index = 0; exp_index < mpExperimentSet->getExperimentCount(); ++exp_index)
+            {
+              for (dep_index = 0; dep_index < mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(); ++dep_index)
+                {
+                  C_FLOAT64 * pSolutionResidual = SolutionResiduals.array() + ExperimentStartInResiduals[exp_index] + dep_index;
+                  C_FLOAT64 * pResidual = mResiduals.array() + ExperimentStartInResiduals[exp_index] + dep_index;
+
+                  for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual += mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual += mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
+                    {
+                      *pDeltaResidualDeltaParameter = (*pResidual - *pSolutionResidual) * Delta;
+                      *pDeltaResidualDeltaParameterScaled = *pDeltaResidualDeltaParameter * Current;
+                    }
+                }
+            }
+        }
+
+      // Restore the value
+      *mContainerVariables[i] = Current;
+    }
+
+  if (!CalculateFIM)
+    {
+      // Make sure the timer is accurate.
+      mCPUTime.calculateValue();
+
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 13);
+      return false;
+    }
+
+  calcFIM(mDeltaResidualDeltaParameter, mFisher);
+  calcFIM(mDeltaResidualDeltaParameterScaled, mFisherScaled);
+
+  calcEigen(mFisher, mFisherEigenvalues, mFisherEigenvectors);
+  calcEigen(mFisherScaled, mFisherScaledEigenvalues, mFisherScaledEigenvectors);
+
+  if (!calcCov(mFisher, mCorrelation, mParameterSD))
+    {
+      // Make sure the timer is accurate.
+      mCPUTime.calculateValue();
+      return false;
+    }
+
+  //experimental code...
+  /*
+  CMatrix< C_FLOAT64 > tmpFIM, tmpEigenValues, tmpEigenVectors;
+
+  size_t exp_index, dep_index, row_index;
+  for (exp_index=0; exp_index < mpExperimentSet->getExperimentCount(); ++exp_index)
+  {
+    calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, ExperimentStartInResiduals[exp_index], ExperimentStartInResiduals[exp_index+1]);
+    std::cout << tmpFIM << std::endl;
+
+    //for (dep_index=0; dep_index < mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(); ++dep_index)
+    //{
+    //  calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, <#size_t a#>, <#size_t b#>)
+
+    //  C_FLOAT64 * pSolutionResidual = SolutionResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
+    //  C_FLOAT64 * pResidual = mResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
+
+    //  for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
+    //}
+
+  }
+  */
+
+
+  setResidualsRequired(false);
+  mStoreResults = true;
+  // This is necessary so that CExperiment::printResult shows the correct data.
+  calculate();
+
+  // Make sure the timer is accurate.
+  mCPUTime.calculateValue();
+}
+
+mStoreResults = false;
+return true;
 }
 
 const C_FLOAT64 & CFitProblem::getRMS() const

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,6 +16,10 @@
 // Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+
+
+
 
 /**
  *  File name: COptProblem.cpp
@@ -692,7 +696,10 @@ bool COptProblem::setSolution(const C_FLOAT64 & value,
                               const CVector< C_FLOAT64 > & variables)
 {
   mSolutionValue = *mpParmMaximize ? -value : value;
-  mSolutionVariables = variables;
+
+  // The initialization call from SRES and GASR have NULL as variables
+  if (variables.size() != 0)
+    mSolutionVariables = variables;
 
   bool Continue = true;
 

@@ -25,6 +25,10 @@
 
 
 
+
+
+
+
 #include <cmath>
 
 #include "copasi.h"
@@ -523,7 +527,7 @@ bool COptMethodSRES::initialize()
   mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
   mCurrentGeneration = 0;
 
-  if (!mpCallBack)
+  if (mpCallBack != NULL)
     mhGenerations =
       mpCallBack->addItem("Current Generation",
                           mCurrentGeneration,
@@ -531,7 +535,7 @@ bool COptMethodSRES::initialize()
 
   mCurrentGeneration++;
 
-  mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
+  mPopulationSize = std::max(getValue< unsigned C_INT32 >("Population Size"), (unsigned C_INT32) 1);
 
   mPf = getValue< C_FLOAT64 >("Pf");
 
@@ -676,6 +680,7 @@ bool COptMethodSRES::optimise()
 
   // initialise the population
   Continue = creation(0);
+  mpOptProblem->setSolution(mValues[0], *mIndividuals[0]);
 
   // get the index of the fittest
   BestIndex = fittest();

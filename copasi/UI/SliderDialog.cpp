@@ -17,6 +17,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+
+
+
 #include <iostream>
 #include <sstream>
 
@@ -301,7 +305,7 @@ void SliderDialog::restoreDefaults()
   size_t maxcount = v.size();
   CopasiSlider* pTmpSlider;
 
-  for (int i = 0; i < maxcount; ++i)
+  for (int i = 0; (size_t) i < maxcount; ++i)
     {
       pTmpSlider = dynamic_cast<CopasiSlider*>(v[i]);
       pTmpSlider->setValue(tmpVec[i]);
@@ -686,6 +690,7 @@ void SliderDialog::createSlidersForFolder(std::vector<QWidget*>& v)
       mpCurrSlider->installEventFilter(this);
       mpCurrSlider->setHidden(true);
       mSliderMap[mCurrentFolderId].push_back(mpCurrSlider);
+      mInitialValueMap[mCurrentFolderId].push_back(mpCurrSlider->value());
     }
 
   // delete CopasiSliders which have no corresponding CSlider

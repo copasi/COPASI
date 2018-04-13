@@ -12,6 +12,8 @@
 
 
 
+
+
 #include <limits>
 #include <string>
 #include <cmath>
@@ -347,7 +349,7 @@ bool COptMethodDE::initialize()
   mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
   mCurrentGeneration = 0;
 
-  if (!mpCallBack)
+  if (mpCallBack != NULL)
     mhGenerations =
       mpCallBack->addItem("Current Generation",
                           mCurrentGeneration,
@@ -355,7 +357,7 @@ bool COptMethodDE::initialize()
 
   mCurrentGeneration++;
 
-  mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
+  mPopulationSize = std::max(getValue< unsigned C_INT32 >("Population Size"), (unsigned C_INT32) 1);
 
   if (mPopulationSize < 4)
     {

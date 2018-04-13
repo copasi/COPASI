@@ -25,6 +25,10 @@
 
 
 
+
+
+
+
 #include <cmath>
 
 #include "copasi.h"
@@ -196,7 +200,7 @@ bool COptMethodEP::initialize()
   mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
   mCurrentGeneration = 0;
 
-  if (!mpCallBack)
+  if (mpCallBack != NULL)
     mhGenerations =
       mpCallBack->addItem("Current Generation",
                           mCurrentGeneration,
@@ -204,7 +208,7 @@ bool COptMethodEP::initialize()
 
   mCurrentGeneration++;
 
-  mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
+  mPopulationSize = std::max(getValue< unsigned C_INT32 >("Population Size"), (unsigned C_INT32) 1);
   mpRandom =
     CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
                              getValue< unsigned C_INT32 >("Seed"));
