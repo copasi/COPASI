@@ -17,6 +17,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+
+
+
 #include "copasi.h"
 
 #include "CConfigurationFile.h"
@@ -206,6 +210,7 @@ void CConfigurationFile::initializeParameter()
   mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::Type::BOOL, false);
   mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::Type::BOOL, true);
   mpEnableAdditionalOptimizationParameters = assertParameter("Enable additional optimization parameters", CCopasiParameter::Type::BOOL, false);
+  mpDisplayPopulations = assertParameter("Display Populations during Optimization", CCopasiParameter::Type::BOOL, false);
   mpPrecision = assertParameter("Double Precision for String Conversion", CCopasiParameter::Type::INT, 10);
 
   mpApplicationFont = assertParameter("Application Font", CCopasiParameter::Type::STRING, std::string(""));
@@ -266,7 +271,7 @@ void CConfigurationFile::initializeParameter()
 
   mpCurrentAuthorOrganization = assertParameter("Organization", CCopasiParameter::Type::STRING, std::string(""));
   mpCurrentAuthorEmail = assertParameter("Email", CCopasiParameter::Type::STRING, std::string("An.other@mailinator.com"));
-  
+
   elevateChildren();
 }
 
