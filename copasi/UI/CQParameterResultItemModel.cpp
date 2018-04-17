@@ -106,7 +106,7 @@ CQParameterResultItemModel::data(const QModelIndex & index, int role) const
       {
         return QBrush(mBackgroundColor);
       }
-
+      break;
     }
     case UpperBound:
     {
@@ -114,6 +114,7 @@ CQParameterResultItemModel::data(const QModelIndex & index, int role) const
       {
         return QBrush(mBackgroundColor);
       }
+      break;
 
     }
     }
