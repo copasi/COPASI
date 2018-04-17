@@ -364,7 +364,12 @@ CopasiUI3Window::~CopasiUI3Window()
       if (current == NULL)  continue;
 
       if (current != this)
+      {
         current->close();
+        // at this point the iterator becomes invalid as close will remove the elements from the window. 
+        it = mWindows.begin();
+        end = mWindows.end();
+      }
     }
 
   pdelete(mpSliders);
