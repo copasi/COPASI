@@ -93,6 +93,7 @@ public:
   typedef std::map< std::string, CDataValue >::const_iterator const_iterator;
 
   friend std::ostream & operator << (std::ostream & os, const CData & o);
+  friend std::istream & operator >> (std::istream & is, const CData & i);
 
   CData();
 

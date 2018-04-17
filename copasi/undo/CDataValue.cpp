@@ -10,6 +10,20 @@
 
 #include "copasi/utilities/utility.h"
 
+// static
+const CEnumAnnotation< std::string, CDataValue::Type > CDataValue::TypeName(
+{
+  "real", // DOUBLE = 0,
+  "integer", // INT,
+  "unsignedInteger", // UINT
+  "Boolean", // BOOL
+  "text", // STRING
+  "dataValues", // DATA_VALUES,
+  "dataVector", // DATA_VECTOR,
+  "pointer", // VOID_POINTER
+  "invalid" // INVALID
+});
+
 CDataValue::CDataValue(const Type & type):
   mType(CDataValue::INVALID),
   mpData(NULL)
@@ -730,8 +744,7 @@ std::istream & operator >> (std::istream & is, CDataValue & i)
         break;
 
       case CDataValue::DATA:
-        // TODO CRITICAL Implement istream operator for CData!
-        // is >> *static_cast< const CData * >(i.mpData);
+        is >> *static_cast< const CData * >(i.mpData);
         break;
 
       case CDataValue::DATA_VALUES:
@@ -749,9 +762,8 @@ std::istream & operator >> (std::istream & is, CDataValue & i)
         std::vector< CData >::iterator it = static_cast< std::vector< CData > * >(i.mpData)->begin();
         std::vector< CData >::iterator end = static_cast< std::vector< CData > * >(i.mpData)->end();
 
-        // TODO CRITICAL Implement istream operator for CData!
-        // for (; it != end; ++it)
-        // is >> *it;
+        for (; it != end; ++it)
+          is >> *it;
       }
       break;
 

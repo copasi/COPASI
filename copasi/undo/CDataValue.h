@@ -25,8 +25,11 @@ public:
     DATA_VALUES,
     DATA_VECTOR,
     VOID_POINTER,
-    INVALID
+    INVALID,
+    __SIZE
   };
+
+  static const CEnumAnnotation< std::string, Type > TypeName;
 
   friend std::ostream & operator << (std::ostream & os, const CDataValue & o);
   friend std::istream & operator >> (std::istream & is, CDataValue & i);

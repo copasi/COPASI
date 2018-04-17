@@ -253,3 +253,9 @@ std::ostream & operator << (std::ostream & os, const CData & o)
 
   return os;
 }
+
+std::istream & operator >> (std::istream & is, const CData & i)
+{
+  // TODO CRITICAL Implement me!
+  return is;
+}
