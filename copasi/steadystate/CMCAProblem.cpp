@@ -47,6 +47,7 @@ CMCAProblem::CMCAProblem(const CDataContainer * pParent):
 {
   //  addParameter("SteadyStateRequested", CCopasiParameter::BOOL, true);
   addParameter("Steady-State", CCopasiParameter::KEY, std::string(""));
+  setSteadyStateRequested(true);
   CONSTRUCTOR_TRACE;
 }
 
@@ -91,8 +92,7 @@ void CMCAProblem::setSteadyStateRequested(const bool & steadyStateRequested)
 {
   CSteadyStateTask * pSubTask = NULL;
   CDataModel* pDataModel = getObjectDataModel();
-  assert(pDataModel != NULL);
-
+  
   if (pDataModel && pDataModel->getTaskList())
     pSubTask = dynamic_cast<CSteadyStateTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));
 
@@ -107,7 +107,9 @@ void CMCAProblem::setSteadyStateRequested(const bool & steadyStateRequested)
  * @return bool steadyStateRequested
  */
 bool CMCAProblem::isSteadyStateRequested() const
-{return (getValue< std::string >("Steady-State") != "");}
+{
+  return (getValue< std::string >("Steady-State") != "");
+}
 
 CSteadyStateTask * CMCAProblem::getSubTask() const
 {
