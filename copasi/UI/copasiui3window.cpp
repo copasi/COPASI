@@ -17,10 +17,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
 #include <sbml/SBMLDocument.h>
 
 #include <QMimeData>
@@ -82,13 +78,11 @@
 #include "CQSEDMLFileDialog.h"
 #endif
 
-
 #ifdef COPASI_UNDO
 # include "copasi/undoUI/CQUndoDialog.h"
 # include "copasi/core/CCore.h"
 # include "copasi/undo/CUndoStack.h"
 #endif
-
 
 #ifdef COPASI_SBW_INTEGRATION
 #include <stdlib.h>
@@ -97,8 +91,6 @@
 #ifdef COPASI_SEDML
 #include <sedml/SedDocument.h>
 #endif
-
-
 
 #include <copasi/UI/CQOptPopulation.h>
 
@@ -378,7 +370,12 @@ CopasiUI3Window::~CopasiUI3Window()
       if (current == NULL)  continue;
 
       if (current != this)
-        current->close();
+        {
+          current->close();
+          // at this point the iterator becomes invalid as close will remove the elements from the window.
+          it = mWindows.begin();
+          end = mWindows.end();
+        }
     }
 
   pdelete(mpSliders);
