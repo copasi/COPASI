@@ -11,6 +11,7 @@
 
 
 
+
 %{
 #include "core/CRegisteredCommonName.h"
 #include "copasi/core/CDataObject.h"
@@ -61,6 +62,8 @@ public:
 namespace std {
 
 #if !defined(SWIGR) && !defined(SWIGPERL) && !defined(SWIGOCTAVE)
+%template(DataObjectSet) set< const CDataObject * >;
+%template(DataObjectMap) map< const CDataObject *, const CDataObject * >;
 %template(DataObjectVector) vector< const CDataObject * >;
 %template(VectorOfDataObjectVector) vector< vector< const CDataObject * > >;
 #endif // !defined(SWIGR) && !defined(SWIGPERL) && !defined(SWIGOCTAVE)

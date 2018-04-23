@@ -13,6 +13,9 @@
 // and The University of Manchester.
 // All rights reserved.
 
+
+
+
 #ifndef CMODELEXPANSION_H
 #define CMODELEXPANSION_H
 
@@ -73,12 +76,16 @@ public:
      */
     void fillComplete(const CModel* pModel);
 
-    //protected:
+#ifdef SWIG
+  protected:
+#endif
+
     std::set<const CCompartment*> mCompartments;
     std::set<const CMetab*> mMetabs;
     std::set<const CReaction*> mReactions;
     std::set<const CModelValue*> mGlobalQuantities;
     std::set<const CEvent*> mEvents;
+
   };
 
   /**

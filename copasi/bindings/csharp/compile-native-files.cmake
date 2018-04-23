@@ -12,6 +12,8 @@
 
 
 
+
+
 ###############################################################################
 #
 # Description       : CMake build script for native C# library
@@ -65,6 +67,7 @@ set (SWIG_ENUM_FIX_FILES
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CCopasiParameter.cs"
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CReaction.cs"
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CModel.cs"
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CUndoData.cs"
      )
 
 
