@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -122,11 +122,16 @@ typedef CExpression DisownedExpression;
 
 %extend CEvent
 {
-  CEventAssignment* createAssignment()
+  CEventAssignment* createAssignment(std::string targetCN = "")
   {
-    CEventAssignment* pAssignment=new CEventAssignment;
-    $self->getAssignments().add(pAssignment,true);
-    return pAssignment;
+    CEventAssignment* pAssignment=new CEventAssignment(targetCN);
+
+    if (!$self->getAssignments().add(pAssignment,true))
+      {
+        delete pAssignment;
+        pAssignment = NULL;
+      }
+     return pAssignment;
   }
 
   // more convenience methods
