@@ -22,7 +22,6 @@
 # Modified by Ralph Gauges
 
 # message (STATUS "$ENV{COMBINE_DIR}")
-
 set(COMBINE_LIBRARY_NAME)
 if (UNIX)
   set(COMBINE_LIBRARY_NAME Combine-static)
@@ -30,87 +29,31 @@ else()
   set(COMBINE_LIBRARY_NAME libCombine-static)
 endif()
 
-find_package(${COMBINE_LIBRARY_NAME} CONFIG REQUIRED
-  CONFIGS ${COMBINE_LIBRARY_NAME}-config.cmake
-          Combine-config.cmake
+
+find_package(combine CONFIG REQUIRED
+  CONFIGS Combine-config.cmake
           Combine-static-config.cmake
           libCombine-config.cmake
           libCombine-static-config.cmake
-  PATHS ${COPASI_DEPENDENCY_DIR}/lib/cmake
-  PATHS $ENV{COMBINE_DIR}/lib/cmake
+  PATHS $ENV{COMBINE_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
+        ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
+        /usr/${CMAKE_INSTALL_LIBDIR}/cmake
+        $ENV{COMBINE_DIR}/lib/cmake
+        ${COPASI_DEPENDENCY_DIR}/lib/cmake
         /usr/lib/cmake
-        /usr/lib64/cmake
   )
 
-set(COMBINE_FOUND "YES")
+set(COMBINE_FOUND ${combine_FOUND})
+
+get_target_property(COMBINE_INCLUDE_DIR ${COMBINE_LIBRARY_NAME} INTERFACE_INCLUDE_DIRECTORIES)
+get_target_property(COMBINE_LIBRARY ${COMBINE_LIBRARY_NAME} IMPORTED_LOCATION_RELEASE)
+
+get_target_property(COMBINE_INTERFACE_LINK_LIBRARIES ${COMBINE_LIBRARY_NAME} INTERFACE_LINK_LIBRARIES)
+if (COMBINE_INTERFACE_LINK_LIBRARIES)
+  set(COMBINE_LIBRARY ${COMBINE_LIBRARY} ${COMBINE_INTERFACE_LINK_LIBRARIES})
+endif (COMBINE_INTERFACE_LINK_LIBRARIES)
+
 include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(COMBINE DEFAULT_MSG COMBINE_LIBRARY_NAME)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(COMBINE REQUIRED COMBINE_INCLUDE_DIR COMBINE_LIBRARY)
 
-mark_as_advanced(COMBINE_INCLUDE_DIR COMBINE_LIBRARY_NAME)
-
-
-#find_path(COMBINE_INCLUDE_DIR combine/combinearchive.h
-#    PATHS $ENV{COMBINE_DIR}/include
-#          $ENV{COMBINE_DIR}
-#          ${COPASI_DEPENDENCY_DIR}/include
-#          ${COPASI_DEPENDENCY_DIR}
-#          ~/Library/Frameworks
-#          /Library/Frameworks
-#          /sw/include        # Fink
-#          /opt/local/include # MacPorts
-#          /opt/csw/include   # Blastwave
-#          /opt/include
-#          /usr/freeware/include
-#    NO_DEFAULT_PATH)
-#
-#if (NOT COMBINE_INCLUDE_DIR)
-#    message(FATAL_ERROR "COMBINE include dir not found not found!")
-#endif (NOT COMBINE_INCLUDE_DIR)
-#
-#if (NOT COMBINE_INCLUDE_DIR)
-#    find_path(COMBINE_INCLUDE_DIR combine/combinearchive.h)
-#endif (NOT COMBINE_INCLUDE_DIR)
-#
-#find_library(COMBINE_LIBRARY 
-#    NAMES Combine-static 
-#          Combine
-#          libCombine-static
-#          libCombine
-#    PATHS $ENV{COMBINE_DIR}/lib
-#          $ENV{COMBINE_DIR}
-#          ${COPASI_DEPENDENCY_DIR}/lib
-#          ${COPASI_DEPENDENCY_DIR}
-#          ~/Library/Frameworks
-#          /Library/Frameworks
-#          /sw/lib        # Fink
-#          /opt/local/lib # MacPorts
-#          /opt/csw/lib   # Blastwave
-#          /opt/lib
-#          /usr/freeware/lib64
-#    NO_DEFAULT_PATH)
-#    
-#if (NOT COMBINE_LIBRARY)
-#    find_library(COMBINE_LIBRARY 
-#        NAMES libCombine-static
-#              libCombine)
-#endif (NOT COMBINE_LIBRARY)
-#
-#
-#
-#if (NOT COMBINE_LIBRARY)
-#    message(FATAL_ERROR "COMBINE library not found!")
-#endif (NOT COMBINE_LIBRARY)
-#
-#set(COMBINE_FOUND "NO")
-#if(COMBINE_LIBRARY)
-#    if   (COMBINE_INCLUDE_DIR)
-#        SET(COMBINE_FOUND "YES")
-#    endif(COMBINE_INCLUDE_DIR)
-#endif(COMBINE_LIBRARY)
-#
-## handle the QUIETLY and REQUIRED arguments and set COMBINE_FOUND to TRUE if 
-## all listed variables are TRUE
-#include(FindPackageHandleStandardArgs)
-#FIND_PACKAGE_HANDLE_STANDARD_ARGS(COMBINE DEFAULT_MSG COMBINE_LIBRARY COMBINE_INCLUDE_DIR)
-#
-#mark_as_advanced(COMBINE_INCLUDE_DIR COMBINE_LIBRARY)
+mark_as_advanced(COMBINE_INCLUDE_DIR COMBINE_LIBRARY)

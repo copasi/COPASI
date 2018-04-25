@@ -96,6 +96,7 @@ include (CheckCCompilerFlag)
 include (CheckCSourceRuns)
 include (CheckSymbolExists)
 include (CheckTypeSize)
+include (GNUInstallDirs)
 
 # preferably link against the static versions
 # as compared to the dynamic ones
@@ -837,7 +838,7 @@ message(STATUS "-----------------------------------------------------------
    libSEDML lib      = ${LIBSEDML_LIBRARY}
    libSEDML include  = ${LIBSEDML_INCLUDE_DIR}
 
-   Combine lib       = ${COMBINE_LIBRARY_NAME}
+   Combine lib       = ${COMBINE_LIBRARY}
    Combine include   = ${COMBINE_INCLUDE_DIR}
 
 
