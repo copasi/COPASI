@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,6 +7,8 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
+
+
 
 #include <QGraphicsItem>
 #include <QtCore/QSharedPointer>
@@ -97,7 +99,7 @@ QColor getColor(const CLColorDefinition* cd)
 
 QColor getColor(const std::string& color, const CLRenderResolver* resolver)
 {
-  if (color == "none")
+  if (color == "none" || color.empty())
     return QColor(Qt::transparent);
 
   if (resolver->getColorDefinition(color) == NULL && resolver->getGradientBase(color) == NULL)
