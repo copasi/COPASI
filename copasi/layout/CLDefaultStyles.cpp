@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,6 +7,8 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
+
+
 
 #include "CLDefaultStyles.h"
 
@@ -29,7 +31,7 @@ CDataVector<CLGlobalRenderInformation>* DEFAULT_STYLES = NULL;
 const char* DEFAULT_STYLES_STRING = \
                                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                                     "<listOfGlobalRenderInformation xmlns=\"http://projects.eml.org/bcb/sbml/render/version1_0_0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
-                                    "<renderInformation id='simple_default' name='Copasi simple style'>\n"
+                                    "<renderInformation id='simple_default' name='Copasi simple style' backgroundColor='#FFFFFFFF'>\n"
                                     "  <listOfColorDefinitions>\n"
                                     "    <colorDefinition id='black' value='#000000' />\n"
                                     "    <colorDefinition id='white' value='#ffffff' />\n"
@@ -162,7 +164,7 @@ const char* DEFAULT_STYLES_STRING = \
                                     "  </listOfStyles>\n"
                                     "</renderInformation>\n"
 
-                                    "<renderInformation id='SBGN_default' name='SBGN Default style'>\n"
+                                    "<renderInformation id='SBGN_default' name='SBGN Default style' backgroundColor='#FFFFFFFF'>\n"
                                     "  <listOfColorDefinitions>\n"
                                     "    <colorDefinition id='black' value='#000000' />\n"
                                     "    <colorDefinition id='white' value='#ffffff' />\n"
