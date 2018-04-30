@@ -270,6 +270,9 @@ option(CLAPACK_NO_BLASWRAP "If defined the NO_BLASWRAP compile option will be ad
 include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LAPACK_CFLAGS}")
 
+find_package(CROSSGUID REQUIRED)
+include_directories(BEFORE ${CROSSGUID_INCLUDE_DIR})
+
 find_package(EXPAT REQUIRED)
 include_directories(BEFORE ${EXPAT_INCLUDE_DIR})
 
@@ -812,6 +815,9 @@ message(STATUS "-----------------------------------------------------------
    Vendor            = ${BLA_VENDOR}
    LAPACK Libs       = ${CLAPACK_LIBRARIES}
    LAPACK LDFLAGS    = ${CLAPACK_LINKER_FLAGS}
+
+   crossguid Libs    = ${CROSSGUID_LIBRARY}
+   cross include     = ${CROSSGUID_INCLUDE_DIR}
 
    Expat Libs        = ${EXPAT_LIBRARY}
    Expat include     = ${EXPAT_INCLUDE_DIR}

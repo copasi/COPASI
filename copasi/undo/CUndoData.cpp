@@ -120,11 +120,13 @@ CUndoData::CUndoData(const Type & type, const CData & data, const size_t & autho
         mOldData.addProperty(CData::OBJECT_PARENT_CN, data.getProperty(CData::OBJECT_PARENT_CN));
         mOldData.addProperty(CData::OBJECT_TYPE, data.getProperty(CData::OBJECT_TYPE));
         mOldData.addProperty(CData::OBJECT_NAME, data.getProperty(CData::OBJECT_NAME));
+        mOldData.addProperty(CData::OBJECT_UUID, data.getProperty(CData::OBJECT_UUID));
         mOldData.addProperty(CData::OBJECT_INDEX, data.getProperty(CData::OBJECT_INDEX));
 
         mNewData.addProperty(CData::OBJECT_PARENT_CN, data.getProperty(CData::OBJECT_PARENT_CN));
         mNewData.addProperty(CData::OBJECT_TYPE, data.getProperty(CData::OBJECT_TYPE));
         mNewData.addProperty(CData::OBJECT_NAME, data.getProperty(CData::OBJECT_NAME));
+        mNewData.addProperty(CData::OBJECT_UUID, data.getProperty(CData::OBJECT_UUID));
         mNewData.addProperty(CData::OBJECT_INDEX, data.getProperty(CData::OBJECT_INDEX));
 
         break;
@@ -210,7 +212,8 @@ bool CUndoData::addProperty(const std::string & name, const CDataValue & oldValu
         else
           {
             // These are required to retrieve the object and must not be removed.
-            if (name != "Object Name" &&
+            if (name != "Object UUID" &&
+                name != "Object Name" &&
                 name != "Object Parent CN" &&
                 name != "Object Type" &&
                 name != "Object Hash" &&

@@ -25,6 +25,7 @@
 
 CDataObject::CDataObject():
   CObjectInterface(),
+  CUndoObjectInterface(),
   mObjectName("No Name"),
   mObjectType("Unknown Type"),
   mpObjectParent(NULL),
@@ -42,6 +43,7 @@ CDataObject::CDataObject(const std::string & name,
                          const std::string & type,
                          const CFlags< CDataObject::Flag > & flag):
   CObjectInterface(),
+  CUndoObjectInterface(),
   mObjectName(),
   mObjectType(type),
   mpObjectParent(const_cast<CDataContainer * >(pParent)),
@@ -76,6 +78,7 @@ CDataObject::CDataObject(const std::string & name,
 CDataObject::CDataObject(const CDataObject & src,
                          const CDataContainer * pParent):
   CObjectInterface(src),
+  CUndoObjectInterface(src),
   mObjectName(src.mObjectName),
   mObjectType(src.mObjectType),
   mpObjectParent(src.mpObjectParent),
@@ -423,10 +426,14 @@ const CDataObject * CDataObject::getValueObject() const
 // static
 CDataObject * CDataObject::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
-  return new CDataObject(data.getProperty(CData::OBJECT_NAME).toString(),
-                         NO_PARENT,
-                         data.getProperty(CData::OBJECT_TYPE).toString(),
-                         CFlags< Flag >(data.getProperty(CData::OBJECT_FLAG).toString()));
+  CDataObject * pDataObject = new CDataObject(data.getProperty(CData::OBJECT_NAME).toString(),
+      NO_PARENT,
+      data.getProperty(CData::OBJECT_TYPE).toString(),
+      CFlags< Flag >(data.getProperty(CData::OBJECT_FLAG).toString()));
+
+  pDataObject->setUuid(data.getProperty(CData::OBJECT_NAME).toString());
+
+  return pDataObject;
 }
 
 // virtual
@@ -440,6 +447,7 @@ CData CDataObject::toData() const
 {
   CData Data;
 
+  Data.addProperty(CData::OBJECT_UUID, getUuid().str());
   Data.addProperty(CData::OBJECT_NAME, mObjectName);
   Data.addProperty(CData::OBJECT_TYPE, mObjectType);
   Data.addProperty(CData::OBJECT_FLAG, mObjectFlag.to_string());
@@ -537,6 +545,7 @@ void CDataObject::createUndoData(CUndoData & undoData, const CUndoData::Type & t
   undoData = CUndoData(CUndoData::Type::CHANGE, this);
 
   undoData.addProperty(CData::OBJECT_NAME, oldData.getProperty(CData::OBJECT_NAME), mObjectName);
+  undoData.addProperty(CData::OBJECT_UUID, oldData.getProperty(CData::OBJECT_UUID), getUuid().str());
   undoData.addProperty(CData::OBJECT_TYPE, oldData.getProperty(CData::OBJECT_TYPE), mObjectType);
   undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), (mpObjectParent != NULL) ? mpObjectParent->getCN() : std::string(""));
   undoData.addProperty(CData::OBJECT_FLAG, oldData.getProperty(CData::OBJECT_FLAG), mObjectFlag.to_string());

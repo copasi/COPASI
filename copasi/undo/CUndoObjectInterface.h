@@ -6,6 +6,8 @@
 #ifndef COPASI_CUndoObjectInterface
 #define COPASI_CUndoObjectInterface
 
+#include <crossguid/guid.hpp>
+
 #include "copasi/undo/CUndoData.h"
 
 class CUndoObjectInterface
@@ -15,6 +17,12 @@ public:
    * Default constructor
    */
   CUndoObjectInterface();
+
+  /**
+   * Copy constructor
+   * @param const CUndoObjectInterface & src
+   */
+  CUndoObjectInterface(const CUndoObjectInterface & src);
 
   /**
    * Destructor
@@ -80,6 +88,40 @@ public:
    * @param const CUndoObjectInterface * pUndoObject
    */
   virtual void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject);
+
+  /**
+   * Retrieve the UUID
+   * @return const xg::Guid & uuid
+   */
+  const xg::Guid & getUuid() const;
+
+  /**
+   * Set the  UUID. This method will fail once the UUID has been set for the object.
+   * @param const xg::Guid & uuid
+   * @return bool success
+   */
+  bool setUuid(const xg::Guid & uuid);
+
+  /**
+   * Set the  UUID. This method will fail once the UUID has been set for the object.
+   * @param const std::string & uuid
+   * @return bool success
+   */
+  bool setUuid(const std::string & uuid);
+
+  /**
+   * If the UUID has not been locked this method generates, sets, and locks the UUID.
+   * Otherwise this method will fail
+   * @return bool success
+   */
+  bool generateUuid();
+
+private:
+  xg::Guid * mpUuid;
+  bool mUuidLocked;
 };
+
+// std::ostream & operator << (std::ostream & os, const uuid_t & o);
+// std::istream & operator >> (std::istream & is, uuid_t & i);
 
 #endif // COPASI_CUndoObjectInterface

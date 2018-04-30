@@ -29,6 +29,7 @@ const CEnumAnnotation< std::string, CData::Property > CData::PropertyName(
   "Kinetic Law Variable Mapping", // KINEITC_LAW_VARIABLE_MAPPING
   "Local Reaction Parameters", // LOCAL_REACTION_PARAMETERS
   "Scaling Compartment", // SCALING_COMPARTMENT
+  "Object UUID", // OBJECT_UUID
   "Object Name", // OBJECT_NAME
   "Object Parent CN", // OBJECT_PARENT_CN
   "Object Type", // OBJECT_TYPE
