@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -100,21 +100,31 @@ public:
       const bool & quoted);
 
   /**
-   * This tries to find the metabolite with the given name. If the name is not unique and
-   * is given without a compartment then the first occurrence of a metabolite with this name
-   * is returned.
-   */
-  static std::string getMetaboliteKey(const CModel* model,
-                                      const std::string & metabolite,
-                                      const std::string & compartment);
-
+    * This tries to find the metabolite with the given name. If the name is not unique and
+    * is given without a compartment then the first occurrence of a metabolite with this name
+    * is returned.
+    */
   static CMetab * getMetabolite(const CModel* model,
                                 const std::string & metabolite,
                                 const std::string & compartment);
 
+  static std::string getMetaboliteKey(const CModel* model,
+                                      const std::string & metabolite,
+                                      const std::string & compartment);
+
   /**
-   * This returns whether the metabolite name is unique.
+   * Create the CN for the named species in the provided compartment.
+   * @param const CModel * pModel
+   * @param const std::string & species
+   * @param const std::string & compartment
    */
+  static std::string getSpeciesCN(const CModel* pModel,
+                                  const std::string & species,
+                                  const std::string & compartment);
+
+  /**
+  * This returns whether the metabolite name is unique.
+  */
   static bool isUnique(const CModel* model, const std::string & name);
 
   /**
