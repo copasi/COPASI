@@ -3,6 +3,7 @@
 # of Connecticut School of Medicine. 
 # All rights reserved. 
 
+
 # Locate library providing crossguid
 # This module defines:
 # CROSSGUID_INCLUDE_DIR, where to find the headers
@@ -24,6 +25,10 @@ set(CROSSGUID_FOUND ${crossguid_FOUND})
 
 get_target_property(CROSSGUID_INCLUDE_DIR crossguid INTERFACE_INCLUDE_DIRECTORIES)
 get_target_property(CROSSGUID_LIBRARY crossguid IMPORTED_LOCATION_RELEASE)
+if (NOT CROSSGUID_LIBRARY)
+get_target_property(CROSSGUID_LIBRARY crossguid IMPORTED_LINK_INTERFACE_LANGUAGES_DEBUG)
+endif()
+
 get_target_property(CROSSGUID_INTERFACE_LINK_LIBRARIES crossguid INTERFACE_LINK_LIBRARIES)
 
 if (CROSSGUID_INTERFACE_LINK_LIBRARIES)
