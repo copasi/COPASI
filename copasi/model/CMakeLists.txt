@@ -39,7 +39,9 @@ if (ENABLE_FLEX_BISON)
   set(COPASI_SOURCES ${COPASI_SOURCES} ${COPASI_SOURCE_DIR}/model/CChemEqParser_yacc.cpp)
   set(COPASI_HEADERS ${COPASI_HEADERS} ${COPASI_SOURCE_DIR}/model/CChemEqParser_yacc.hpp)
   
-  FLEX_TARGET(CChemEqParser model/CChemEqParser.lpp ${COPASI_SOURCE_DIR}/model/CChemEqParser_lex.cpp COMPILE_FLAGS ${FLEX_BINARY})
+  get_filename_component(COPASI_FLEX_SOURCE ${COPASI_SOURCE_DIR}/model/CChemEqParser.lpp ABSOLUTE)
+  get_filename_component(COPASI_FLEX_TARGET ${COPASI_SOURCE_DIR}/model/CChemEqParser_lex.cpp ABSOLUTE)
+  FLEX_TARGET(CChemEqParser ${COPASI_FLEX_SOURCE} ${COPASI_FLEX_TARGET} COMPILE_FLAGS ${FLEX_BINARY})
   set(COPASI_SOURCES ${COPASI_SOURCES} ${COPASI_SOURCE_DIR}/model/CChemEqParser_lex.cpp)
 endif (ENABLE_FLEX_BISON)
 

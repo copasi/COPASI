@@ -37,7 +37,9 @@ if (ENABLE_FLEX_BISON)
   set(COPASI_SOURCES ${COPASI_SOURCES} ${COPASI_SOURCE_DIR}/function/CEvaluationParser_yacc.cpp)
   set(COPASI_HEADERS ${COPASI_HEADERS} ${COPASI_SOURCE_DIR}/function/CEvaluationParser_yacc.hpp)
   
-  FLEX_TARGET(CEvaluationLexer function/CEvaluationLexer.lpp ${COPASI_SOURCE_DIR}/function/CEvaluationLexer_lex.cpp COMPILE_FLAGS ${FLEX_BINARY})
+  get_filename_component(COPASI_FLEX_SOURCE ${COPASI_SOURCE_DIR}/function/CEvaluationLexer.lpp ABSOLUTE)
+  get_filename_component(COPASI_FLEX_TARGET ${COPASI_SOURCE_DIR}/function/CEvaluationLexer_lex.cpp ABSOLUTE)
+  FLEX_TARGET(CEvaluationLexer ${COPASI_FLEX_SOURCE} ${COPASI_FLEX_TARGET} COMPILE_FLAGS ${FLEX_BINARY})
   set(COPASI_SOURCES ${COPASI_SOURCES} ${COPASI_SOURCE_DIR}/function/CEvaluationLexer_lex.cpp)
 endif (ENABLE_FLEX_BISON)
 
