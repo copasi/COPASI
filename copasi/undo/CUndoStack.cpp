@@ -3,7 +3,6 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-
 /*
  * CQUndoCommand.cpp
  *
@@ -63,7 +62,9 @@ CUndoData::ChangeSet CUndoStack::setCurrentIndex(const size_t & index, const boo
   CUndoData::ChangeSet Changes;
 
   // Nothing to do
-  if (index == mCurrent)
+  if (index == mCurrent ||
+      (index >= size() &&
+       index != C_INVALID_INDEX))
     {
       return Changes;
     }
@@ -73,30 +74,27 @@ CUndoData::ChangeSet CUndoStack::setCurrentIndex(const size_t & index, const boo
       index == C_INVALID_INDEX)
     {
       // The first data which can be undone is mCurrent
-      std::vector< CUndoData * >::iterator start(std::vector< CUndoData * >::begin());
-      std::vector< CUndoData * >::iterator it(start + mCurrent);
+      std::vector< CUndoData * >::reverse_iterator it = std::vector< CUndoData * >::rbegin() + (size() - mCurrent - 1);
+      std::vector< CUndoData * >::reverse_iterator end = (index != C_INVALID_INDEX) ? it + (mCurrent - index) : std::vector< CUndoData * >::rend();
 
-      for (size_t i = mCurrent; i != index; --i)
+      for (; it != end; ++it)
         {
           (*it)->undo(*mpDataModel, Changes, execute);
-
-          if (it != start)
-            --it;
-
         }
-
-      mCurrent = index;
     }
   else if (index < size())
     {
       // The first data which can be applied is mCurrent + 1.
       std::vector< CUndoData * >::iterator it = std::vector< CUndoData * >::begin() + (mCurrent + 1);
+      std::vector< CUndoData * >::iterator end = it + (index - mCurrent);
 
-      for (size_t i = mCurrent; i != index; ++i, ++it)
-        (*it)->apply(*mpDataModel, Changes, execute);
-
-      mCurrent = index;
+      for (; it != end; ++it)
+        {
+          (*it)->apply(*mpDataModel, Changes, execute);
+        }
     }
+
+  mCurrent = index;
 
   return Changes;
 }
