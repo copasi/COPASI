@@ -1,7 +1,8 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
+
 
 /*
  * CQUndoCommand.cpp
@@ -72,11 +73,16 @@ CUndoData::ChangeSet CUndoStack::setCurrentIndex(const size_t & index, const boo
       index == C_INVALID_INDEX)
     {
       // The first data which can be undone is mCurrent
-      std::vector< CUndoData * >::iterator it(std::vector< CUndoData * >::begin() + mCurrent);
+      std::vector< CUndoData * >::iterator start(std::vector< CUndoData * >::begin());
+      std::vector< CUndoData * >::iterator it(start + mCurrent);
 
-      for (size_t i = mCurrent; i != index; --i, --it)
+      for (size_t i = mCurrent; i != index; --i)
         {
           (*it)->undo(*mpDataModel, Changes, execute);
+
+          if (it != start)
+            --it;
+
         }
 
       mCurrent = index;
@@ -84,7 +90,7 @@ CUndoData::ChangeSet CUndoStack::setCurrentIndex(const size_t & index, const boo
   else if (index < size())
     {
       // The first data which can be applied is mCurrent + 1.
-      std::vector< CUndoData * >::iterator it = std::vector< CUndoData * >::begin() + mCurrent + 1;
+      std::vector< CUndoData * >::iterator it = std::vector< CUndoData * >::begin() + (mCurrent + 1);
 
       for (size_t i = mCurrent; i != index; ++i, ++it)
         (*it)->apply(*mpDataModel, Changes, execute);
