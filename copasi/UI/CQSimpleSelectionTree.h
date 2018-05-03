@@ -8,6 +8,8 @@
 // of Manchester.
 // All rights reserved.
 
+
+
 #ifndef SimpleSelectionTree_H__
 #define SimpleSelectionTree_H__
 
@@ -52,12 +54,15 @@ public:
   void populateTree(const CModel * pModel, const ObjectClasses & classes);
   void populateTree(const std::vector< const CDataObject * > & objectList);
   void setOutputVector(std::vector< const CDataObject * > * outputVector);
+  bool treeHasSelection();
+  std::vector<const CDataObject * > * getTreeSelection();
 
 private:
   void populateInformation(CDataModel * pDataModel, const ObjectClasses & classes);
 
 public slots:
   virtual void commitClicked();
+  virtual void slotItemDoubleClicked(QTreeWidgetItem * item, int column);
 
 protected:
   QTreeWidgetItem* mpTimeSubtree;
@@ -98,11 +103,9 @@ protected:
   std::map< QTreeWidgetItem *, const CDataObject * > treeItems;
   std::vector< const CDataObject * > * mpOutputVector;
 
-  bool treeHasSelection();
   bool isMetaboliteNameUnique(const std::string & name, const CDataVector<CMetab> & metabolites);
   QTreeWidgetItem * findListViewItem(const CDataObject * object);
   void selectObjects(std::vector< const CDataObject * > * objects);
-  std::vector<const CDataObject * > * getTreeSelection();
   void removeEmptySubTree(QTreeWidgetItem ** ppSubTree);
   void removeAllEmptySubTrees();
 
@@ -110,6 +113,10 @@ protected:
 
 public:
   static bool filter(const ObjectClasses & classes, const CDataObject * pObject);
+
+signals:
+  void selectionCommitted();
+
 };
 
 #endif
