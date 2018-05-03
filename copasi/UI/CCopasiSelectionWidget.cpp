@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,6 +16,10 @@
 // Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+
+
+
 
 #include <iostream>
 
@@ -36,6 +40,7 @@ CCopasiSelectionWidget::CCopasiSelectionWidget(QWidget* parent):
   mExpertMode(false)
 {
   this->mpSimpleTree = new CQSimpleSelectionTree(this);
+  connect(mpSimpleTree, SIGNAL(selectionCommitted()), this, SLOT(commitSelection()));
   this->addWidget(this->mpSimpleTree);
   this->setSingleSelection(false);
   this->setExpertMode(false);
@@ -162,6 +167,12 @@ void CCopasiSelectionWidget::setExpertMode(bool expertMode)
 bool CCopasiSelectionWidget::expertMode() const
 {
   return this->mExpertMode;
+}
+
+void CCopasiSelectionWidget::commitSelection()
+{
+  commit();
+  emit selectionCommitted();
 }
 
 void CCopasiSelectionWidget::commit()

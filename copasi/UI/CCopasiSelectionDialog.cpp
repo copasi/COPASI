@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,6 +16,10 @@
 // Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+
+
+
 
 #include <QPushButton>
 #include <QCheckBox>
@@ -75,6 +79,7 @@ CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * n
   // this->mpButtonBox->addStretch();
 
   connect(box, SIGNAL(accepted()), this, SLOT(okButton_clicked()));
+  connect(mpSelectionWidget, SIGNAL(selectionCommitted()), this, SLOT(okButton_clicked()));
   connect(box, SIGNAL(rejected()), this, SLOT(cancelButton_clicked()));
   connect(this->mpModeCheckBox, SIGNAL(toggled(bool)), this, SLOT(modeButton_toggled(bool)));
 

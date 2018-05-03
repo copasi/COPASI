@@ -8,6 +8,8 @@
 // of Manchester.
 // All rights reserved.
 
+
+
 #include "copasi.h"
 
 #include "CQSimpleSelectionTree.h"
@@ -88,6 +90,8 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget *parent):
   mpCompartmentInitialVolumeSubtree =
     new QTreeWidgetItem(mpCompartmentSubtree, QStringList("Initial Volumes"));
   mpTimeSubtree = new QTreeWidgetItem(this, QStringList("Time"));
+
+  connect(this, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(slotItemDoubleClicked(QTreeWidgetItem *, int)));
 }
 
 /// Destructor
@@ -902,6 +906,13 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
       QTreeWidgetItem * pItem = new QTreeWidgetItem(mpInformationSubtree, QStringList(FROM_UTF8(pObject->getObjectName())));
       treeItems[pItem] = pObject;
     }
+}
+
+void CQSimpleSelectionTree::slotItemDoubleClicked(QTreeWidgetItem * item, int column)
+{
+  if (!treeHasSelection()) item->setSelected(true);
+
+  emit selectionCommitted();
 }
 
 std::vector<const CDataObject * > *CQSimpleSelectionTree::getTreeSelection()
