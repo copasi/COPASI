@@ -17,6 +17,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+
+
+
 #include <QtCore/QString>
 #include <QColor>   //might need to go to the header file
 #include <QCursor>
@@ -275,10 +279,10 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
       QStringList list = contours.split(QRegExp(",| |;"), QString::SkipEmptyParts);
       QwtValueList contourLevels;
 
-      foreach (const QString & level, list)
-        {
-          contourLevels += level.toDouble();
-        }
+      foreach(const QString & level, list)
+      {
+        contourLevels += level.toDouble();
+      }
 
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
@@ -594,6 +598,7 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
   for (i = 0; i < imax; ++i)
     {
       const CPlotItem * pItem = &mpPlotSpecification->getItems()[i];
+      bool isSpectogram = pItem->getType() == CPlotItem::spectogram;
       Activity ItemActivity = pItem->getActivity();
       DataIndex.first = ItemActivity;
 
@@ -629,7 +634,8 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
                   mSaveCurveObjects.push_back(NewX);
                   itX = mSaveCurveObjects.end() - 1;
 
-                  setAxisUnits(xBottom, pObj);
+                  if (!isSpectogram)
+                    setAxisUnits(xBottom, pObj);
                 }
 
               if (pItem->getType() == CPlotItem::histoItem1d)
@@ -638,7 +644,9 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
           else
             {
               itX->push_back(pObj);
-              setAxisUnits(yLeft, pObj);
+
+              if (!isSpectogram)
+                setAxisUnits(yLeft, pObj);
             }
 
           Inserted = ActivityObjects[ItemActivity].insert(pObj);
