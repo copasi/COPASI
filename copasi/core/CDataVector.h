@@ -3,7 +3,6 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-
 #ifndef COPASI_CDataVector
 #define COPASI_CDataVector
 
@@ -300,9 +299,20 @@ public:
           }
       }
 
+    std::vector< CUndoData > PreProcessData;
+
+    // Removal must be done in reverse order
     for (; itOld != endOld; ++itOld)
       {
-        undoData.addPreProcessData(CUndoData(CUndoData::Type::REMOVE, *itOld));
+        PreProcessData.push_back(CUndoData(CUndoData::Type::REMOVE, *itOld));
+      }
+
+    std::vector< CUndoData >::const_reverse_iterator itPre = PreProcessData.rbegin();
+    std::vector< CUndoData >::const_reverse_iterator endPre = PreProcessData.rbegin();
+
+    for (; itPre != endPre; ++itPre)
+      {
+        undoData.addPreProcessData(*itPre);
       }
 
     for (; itNew != endNew; ++itNew)
@@ -337,7 +347,7 @@ public:
               }
             else
               {
-                updateIndex(Index, pNew);
+                updateIndex(Index, dynamic_cast< CDataObject * >(pNew));
               }
 
             CDataContainer::add(pNew, false);
@@ -362,7 +372,7 @@ public:
           }
       }
 
-    return pNew;
+    return dynamic_cast< CDataObject * >(pNew);
   }
 
   /**
@@ -566,7 +576,7 @@ public:
         {
           CDataContainer::remove(*it);
           (*it)->setObjectParent(NULL);
-          delete(*it);
+          delete (*it);
           *it = NULL;
         }
 
@@ -1048,16 +1058,19 @@ public:
     while (itOld != endOld &&
            itNew != endNew)
       {
-        const std::string OldName = itOld->getProperty(CData::OBJECT_NAME).toString();
-        const std::string NewName = itNew->getObjectName();
+        const std::string & OldName = itOld->getProperty(CData::OBJECT_NAME).toString();
+        const std::string & NewName = itNew->getObjectName();
+        std::cout << "Old Name: " << OldName << " New Name: " << NewName << std::endl;
 
         if (OldName < NewName)
           {
+            std::cout << "REMOVE: " << OldName << std::endl;
             Deleted[itOld->getProperty(CData::OBJECT_INDEX).toSizeT()] = *itOld;
             ++itOld;
           }
-        else if (OldName < NewName)
+        else if (OldName > NewName)
           {
+            std::cout << "INSERT: " << NewName << std::endl;
             Inserted[CDataVector< CType >::getIndex(*itNew)] = itNew->toData();
             ++itNew;
           }
@@ -1068,6 +1081,7 @@ public:
 
             if (!UndoData.empty())
               {
+                std::cout << "CHANGE: " << NewName << std::endl;
                 OldData[itOld->getProperty(CData::OBJECT_INDEX).toSizeT()] = UndoData.getOldData();
                 NewData[CDataVector< CType >::getIndex(*itNew)] = UndoData.getNewData();
               }
@@ -1079,24 +1093,27 @@ public:
 
     for (; itOld != endOld; ++itOld)
       {
+        std::cout << "REMOVE: " << itOld->getProperty(CData::OBJECT_NAME).toString() << std::endl;
         Deleted[itOld->getProperty(CData::OBJECT_INDEX).toSizeT()] = *itOld;
       }
 
     for (; itNew != endNew; ++itNew)
       {
+        std::cout << "INSERT: " << itNew->getObjectName() << std::endl;
         Inserted[CDataVector< CType >::getIndex(*itNew)] = itNew->toData();
       }
 
-    std::map< size_t, CData >::iterator it = Deleted.begin();
-    std::map< size_t, CData >::iterator end = Deleted.end();
+    // Removal must be done in reverse order
+    std::map< size_t, CData >::reverse_iterator itReverse = Deleted.rbegin();
+    std::map< size_t, CData >::reverse_iterator endReverse = Deleted.rend();
 
-    for (; it != end; ++it)
+    for (; itReverse != endReverse; ++itReverse)
       {
-        undoData.addPreProcessData(CUndoData(CUndoData::Type::REMOVE, it->second));
+        undoData.addPreProcessData(CUndoData(CUndoData::Type::REMOVE, itReverse->second));
       }
 
-    it = Inserted.begin();
-    end = Inserted.end();
+    std::map< size_t, CData >::iterator it = Inserted.begin();
+    std::map< size_t, CData >::iterator end = Inserted.end();
 
     for (; it != end; ++it)
       {

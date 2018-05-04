@@ -35,7 +35,7 @@ template <class CType> class CDataObjectReference;
 
 //********************************************************************************
 
-class CDataObject: public CObjectInterface, public virtual CUndoObjectInterface
+class CDataObject: public CObjectInterface, public CUndoObjectInterface
 {
 public:
   typedef std::set< const CDataObject * > DataObjectSet;
@@ -72,8 +72,6 @@ protected:
               const CDataContainer * pParent = NO_PARENT,
               const std::string & type = "CN",
               const CFlags< Flag > & flag = CFlags< Flag >::None);
-
-  CDataObject(const CDataObject & src);
 
 public:
   /**
@@ -118,7 +116,7 @@ public:
   static void sanitizeObjectName(std::string & name);
 
   CDataObject(const CDataObject & src,
-              const CDataContainer * pParent);
+              const CDataContainer * pParent = NULL);
 
   virtual ~CDataObject();
 

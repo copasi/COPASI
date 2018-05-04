@@ -25,7 +25,7 @@ class CModel;
 class CReaction;
 class CValidatedUnit;
 
-class CModelParameter : public virtual CUndoObjectInterface
+class CModelParameter : public CUndoObjectInterface
 {
   friend std::ostream &operator<<(std::ostream &os, const CModelParameter & o);
 

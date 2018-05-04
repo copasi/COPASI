@@ -202,7 +202,7 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
           case COL_NAME_REACTIONS:
             if (mpReactions->getIndex(TO_UTF8(value.toString())) == C_INVALID_INDEX)
               {
-                changed &= Data.addProperty(CData::OBJECT_NAME,
+                changed |= Data.addProperty(CData::OBJECT_NAME,
                                             Reaction.getObjectName(),
                                             TO_UTF8(value.toString()));
               }
@@ -210,7 +210,7 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
             break;
 
           case COL_EQUATION:
-            changed &= setEquation(Reaction, value, Data);
+            changed |= setEquation(Reaction, value, Data);
             break;
         }
 

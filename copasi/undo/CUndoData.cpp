@@ -83,7 +83,7 @@ CUndoData::CUndoData(const Type & type, const CDataObject * pObject, const size_
 }
 
 CUndoData::CUndoData(const Type & type, const CData & data, const size_t & authorId):
-  mType(CUndoData::Type::CHANGE),
+  mType(type),
   mOldData(),
   mNewData(),
   mPreProcessData(),
@@ -594,7 +594,7 @@ bool CUndoData::operator < (const CUndoData & rhs) const
 
 bool CUndoData::empty() const
 {
-  return mChangedProperties.empty();
+  return mChangedProperties.empty() && mPreProcessData.empty() && mPostProcessData.empty();
 }
 
 void CUndoData::clear()
@@ -826,7 +826,7 @@ CUndoObjectInterface * CUndoData::getObject(const CDataModel & dataModel, const 
         }
       else if ((pSet = dynamic_cast< CModelParameterSet * >(pParent)) != NULL)
         {
-          pObject = pSet->getModelParameter(data.getProperty(CData::OBJECT_NAME).toString());
+          pObject = pSet->getModelParameter(CCommonName::escape(data.getProperty(CData::OBJECT_NAME).toString()));
         }
       else if (data.isSetProperty(CData::OBJECT_HASH))
         {
@@ -850,7 +850,7 @@ CUndoObjectInterface * CUndoData::getObject(const CDataModel & dataModel, const 
 
       if (pObject == NULL)
         {
-          pObject = dynamic_cast< const CDataObject * >(pParent->getObject(data.getProperty(CData::OBJECT_TYPE).toString() + "=" + data.getProperty(CData::OBJECT_NAME).toString()));
+          pObject = dynamic_cast< const CDataObject * >(pParent->getObject(data.getProperty(CData::OBJECT_TYPE).toString() + "=" + CCommonName::escape(data.getProperty(CData::OBJECT_NAME).toString())));
         }
     }
 
@@ -860,8 +860,26 @@ CUndoObjectInterface * CUndoData::getObject(const CDataModel & dataModel, const 
 std::ostream & operator << (std::ostream & os, const CUndoData & o)
 {
   os << "Type: " << CUndoData::TypeName[o.mType] << std::endl;
+
+  os << "Pre:" << std::endl;
+  std::vector< CUndoData >::const_iterator it = o.mPreProcessData.begin();
+  std::vector< CUndoData >::const_iterator end = o.mPreProcessData.end();
+
+  for (; it != end; ++it)
+    {
+      os << *it << std::endl;
+    }
+
   os << "Old:  " << std::endl << o.mOldData << std::endl;
   os << "New:  " << std::endl << o.mNewData << std::endl;
+  os << "Post:" << std::endl;
+  it = o.mPostProcessData.begin();
+  end = o.mPostProcessData.end();
+
+  for (; it != end; ++it)
+    {
+      os << *it << std::endl;
+    }
 
   return os;
 }

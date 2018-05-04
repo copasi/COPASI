@@ -8,8 +8,6 @@
 // of Manchester.
 // All rights reserved.
 
-
-
 #include "copasi/copasi.h"
 
 #include "CModelParameterSet.h"
@@ -76,7 +74,7 @@ void CModelParameterSet::createUndoData(CUndoData & undoData,
 // virtual
 CUndoObjectInterface * CModelParameterSet::insert(const CData & data)
 {
-  CModelParameter * pParameter = CModelParameter::fromData(data, this);
+  CModelParameter * pParameter = CModelParameter::fromData(data, dynamic_cast< CDataObject * >(this));
 
   switch (CModelParameter::TypeNames.toEnum(data.getProperty(CData::OBJECT_TYPE).toString(), CModelParameter::Type::unknown))
     {
