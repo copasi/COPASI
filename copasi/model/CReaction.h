@@ -17,18 +17,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
-
-
-
-
-
-
-
-
 /**
  *  CReaction class.
  *  Derived from Gepasi's cstep.cpp. (C) Pedro Mendes 1995-2000.
@@ -138,11 +126,6 @@ public:
    * @return std::string units
    */
   virtual std::string getChildObjectUnits(const CDataObject * pObject) const;
-
-  /**
-   * Delete
-   */
-  void cleanup();
 
   /**
    * Overload display name. Special treatment for reaction to
@@ -735,7 +718,6 @@ public:
   bool addParameterObject(const size_t & index, const CDataObject * object);
 
   bool addParameterObject(const std::string & name, const CDataObject * object);
-
 
   // Attributes
 private:

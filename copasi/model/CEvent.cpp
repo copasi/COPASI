@@ -469,6 +469,11 @@ CEvent::CEvent(const CEvent & src,
 
 CEvent::~CEvent()
 {
+  if (mpModel != NULL)
+    {
+      mpModel->setCompileFlag(true);
+    }
+
   CRootContainer::getKeyFactory()->remove(mKey);
   pdelete(mpTriggerExpression);
   pdelete(mpDelayExpression);

@@ -17,14 +17,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
-
-
-
-
 // CReaction
 //
 // Derived from Gepasi's cstep.cpp
@@ -443,9 +435,14 @@ CReaction::CReaction(const CReaction & src,
 
 CReaction::~CReaction()
 {
+  CModel * pModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
+
+  if (pModel != NULL)
+    {
+      pModel->setCompileFlag(true);
+    }
+
   CRootContainer::getKeyFactory()->remove(mKey);
-  cleanup();
-  DESTRUCTOR_TRACE;
 }
 
 // virtual
@@ -469,20 +466,6 @@ std::string CReaction::getChildObjectUnits(const CDataObject * pObject) const
     }
 
   return "?";
-}
-
-void CReaction::cleanup()
-{
-  mChemEq.cleanup();
-  mParameterNameToIndex.clear();
-  mParameterIndexToCNs.clear();
-  mParameterIndexToObjects.clear();
-
-  setFunction(CRootContainer::getUndefinedFunction());
-  mpScalingCompartment = NULL;
-  mScalingCompartmentCN = CRegisteredCommonName("");
-  // TODO: mMap.cleanup();
-  //mParameterDescription.cleanup();
 }
 
 bool CReaction::setObjectParent(const CDataContainer * pParent)
@@ -1924,7 +1907,7 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
 
   if (!pObject)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9 , mParameterIndexToCNs[index][0].c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9, mParameterIndexToCNs[index][0].c_str());
     }
 
   pObjectNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ">");
@@ -2086,10 +2069,9 @@ const CCompartment * CReaction::getScalingCompartment() const
   return mpScalingCompartment;
 }
 
-
 /**
-* @return the reaction scheme of this reaction
-*/
+ * @return the reaction scheme of this reaction
+ */
 std::string
 CReaction::getReactionScheme() const
 {
@@ -2100,8 +2082,8 @@ CReaction::getReactionScheme() const
 }
 
 /**
-* Initializes this reaction from the specified reaction scheme
-*/
+ * Initializes this reaction from the specified reaction scheme
+ */
 bool
 CReaction::setReactionScheme(const std::string& scheme,
                              const std::string& newFunction /*= ""*/,
@@ -2126,7 +2108,6 @@ CReaction::setReactionScheme(const std::string& scheme,
 
   return result;
 }
-
 
 const std::vector< CRegisteredCommonName > & CReaction::getParameterCNs(const size_t & index) const
 {
@@ -2264,12 +2245,12 @@ bool CReaction::setParameterObjects(const std::string & name, const std::vector<
 
 bool CReaction::setParameterObject(const size_t & index, const CDataObject * object)
 {
-  return setParameterObjects(index, { object });
+  return setParameterObjects(index, {object });
 }
 
 bool CReaction::setParameterObject(const std::string & name, const CDataObject * object)
 {
-  return setParameterObjects(name, { object });
+  return setParameterObjects(name, {object });
 }
 
 bool CReaction::addParameterObject(const size_t & index, const CDataObject * object)
@@ -2286,7 +2267,6 @@ bool CReaction::addParameterObject(const size_t & index, const CDataObject * obj
     pModel->setCompileFlag(true);
 
   return true;
-
 }
 
 bool CReaction::addParameterObject(const std::string & name, const CDataObject * object)
