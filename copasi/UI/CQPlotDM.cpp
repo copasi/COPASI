@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,6 +12,9 @@
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
+
+
+
 
 #include <QtCore/QString>
 #include <QtCore/QList>
@@ -198,7 +201,7 @@ bool CQPlotDM::setData(const QModelIndex &index, const QVariant &value,
       if (changed)
         {
           emit dataChanged(index, index);
-          emit notifyGUI(ListViews::PLOT, ListViews::CHANGE, pPS->CCopasiParameter::getKey());
+          emit notifyGUI(ListViews::PLOT, ListViews::CHANGE, pPS->CCopasiParameter::getCN());
         }
     }
   else if (role == Qt::CheckStateRole && index.column() == COL_ACTIVE_PLOTS)
@@ -219,7 +222,7 @@ bool CQPlotDM::insertRows(int position, int rows, const QModelIndex & parent)
       QString Name = this->createNewName(mNewName, COL_NAME_PLOTS);
 
       CPlotSpecification *pPS = mpDataModel->getPlotDefinitionList()->createPlotSpec(TO_UTF8(Name), CPlotItem::plot2d);
-      emit notifyGUI(ListViews::PLOT, ListViews::ADD, pPS->CCopasiParameter::getKey());
+      emit notifyGUI(ListViews::PLOT, ListViews::ADD, pPS->CCopasiParameter::getCN());
     }
 
   endInsertRows();
@@ -240,7 +243,7 @@ bool CQPlotDM::removeRows(int position, int rows, const QModelIndex & parent)
     {
       CPlotSpecification* pPS =
         &mpDataModel->getPlotDefinitionList()->operator[](position);
-      std::string deletedKey = pPS->CCopasiParameter::getKey();
+      std::string deletedKey = pPS->CCopasiParameter::getCN();
       mpDataModel->getPlotDefinitionList()->CDataVector< CPlotSpecification >::remove(position);
       emit notifyGUI(ListViews::PLOT, ListViews::DELETE, deletedKey);
     }

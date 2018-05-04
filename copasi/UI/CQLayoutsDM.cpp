@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,6 +7,8 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
+
+
 
 #include <QtCore/QString>
 
@@ -167,15 +169,16 @@ bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
   if (mpListOfLayouts == NULL) return false;
 
-  int Position = parent.isValid() ? parent.row() : position;
+  bool valid = parent.isValid();
+  int Position = valid ? parent.row() : position;
 
   if (Position + rows > (int) mpListOfLayouts->size())  return false;
 
-  beginInsertRows(parent, position, position + rows - 1);
+  beginInsertRows(QModelIndex(), position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
-      emit notifyGUI(ListViews::LAYOUT, ListViews::ADD, mpListOfLayouts->operator[](Position + row).getKey());
+      emit notifyGUI(ListViews::LAYOUT, ListViews::ADD, mpListOfLayouts->operator[](Position + row).getCN());
     }
 
   endInsertRows();
@@ -202,9 +205,9 @@ bool CQLayoutsDM::removeRows(int position, int rows, const QModelIndex & parent)
 
   for (itDeletedLayout = DeletedLayouts.begin(); itDeletedLayout != endDeletedLayout; ++itDeletedLayout)
     {
-      std::string Key = (*itDeletedLayout)->getKey();
+      std::string cn = (*itDeletedLayout)->getCN();
       pdelete(*itDeletedLayout);
-      emit notifyGUI(ListViews::LAYOUT, ListViews::DELETE, Key);
+      emit notifyGUI(ListViews::LAYOUT, ListViews::DELETE, cn);
     }
 
   endRemoveRows();

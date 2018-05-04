@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,6 +12,9 @@
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
+
+
+
 
 #include <QtCore/QString>
 #include <QtCore/QList>
@@ -212,7 +215,7 @@ bool CQFunctionDM::setData(const QModelIndex &index, const QVariant &value,
         }
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::FUNCTION, ListViews::CHANGE, pFunc->getKey());
+      emit notifyGUI(ListViews::FUNCTION, ListViews::CHANGE, pFunc->getCN());
     }
 
   return true;
@@ -228,7 +231,7 @@ bool CQFunctionDM::insertRows(int position, int rows, const QModelIndex & parent
       QString Name = createNewName(mNewName, COL_NAME_FUNCTIONS);
 
       CRootContainer::getFunctionList()->add(pFunc = new CKinFunction(TO_UTF8(Name)), true);
-      emit notifyGUI(ListViews::FUNCTION, ListViews::ADD, pFunc->getKey());
+      emit notifyGUI(ListViews::FUNCTION, ListViews::ADD, pFunc->getCN());
     }
 
   endInsertRows();
@@ -261,7 +264,7 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex & parent
         }
       else
         {
-          *itDeletedKey = itRow->getKey();
+          *itDeletedKey = itRow->getCN();
         }
     }
 
