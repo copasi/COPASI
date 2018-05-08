@@ -1,7 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
+
+
 
 
 
@@ -55,4 +57,14 @@ public:
     return str.str();
   }
 
+}
+
+namespace std {
+
+#if !defined(SWIGR) && !defined(SWIGPERL) && !defined(SWIGOCTAVE)
+%template(DataObjectSet) set< const CDataObject * >;
+%template(DataObjectMap) map< const CDataObject *, const CDataObject * >;
+%template(DataObjectVector) vector< const CDataObject * >;
+%template(VectorOfDataObjectVector) vector< vector< const CDataObject * > >;
+#endif // !defined(SWIGR) && !defined(SWIGPERL) && !defined(SWIGOCTAVE)
 }

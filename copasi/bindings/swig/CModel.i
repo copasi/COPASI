@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -19,6 +19,10 @@
 
 
 
+
+
+
+
 %{
 
 #include <copasi/utilities/CUnitComponent.h>
@@ -32,6 +36,7 @@
 #include "copasi/math/CMathHistory.h"
 #include "copasi/math/CMathContainer.h"
 #include "model/CModel.h"
+#include <copasi/model/CModelExpansion.h>
 
 %}
 
@@ -391,3 +396,19 @@ typedef std::vector<CDataObject*> ObjectStdVector;
    
    }
 }
+
+
+#if defined(SWIGPYTHON) || defined (SWIGRUBY)
+
+%feature("flatnested", "1");
+
+%rename (CModelExpansion_SetOfModelElements) CModelExpansion::SetOfModelElements;
+%rename (CModelExpansion_ElementsMap) CModelExpansion::ElementsMap;
+#endif
+
+%include <copasi/model/CModelExpansion.h>
+
+#if defined(SWIGPYTHON) || defined (SWIGRUBY)
+
+%feature("flatnested", "0");
+#endif

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -27,8 +27,15 @@
 
 
 
-%module(directors="1") COPASI
 
+
+
+
+
+
+
+
+%module(directors="1") COPASI
 
 %warnfilter(402) CCommonName;
 // cannot do anything about warnings due to multiple inheritance
@@ -105,6 +112,13 @@ size_t INVALID_INDEX();
 
 %include std_string.i
 %include std_vector.i
+%include std_map.i
+
+#if defined(SWIGCSHARP) || defined(SWIGJAVA)
+%include copasi_std_set.i
+#elif defined(SWIGPYTHON) || defined(SWIGRUBY)
+%include std_set.i
+#endif
 
 %ignore CIssue::operator bool;
 %ignore CIssue::kindNames;
@@ -116,6 +130,10 @@ size_t INVALID_INDEX();
 
 %ignore CIssue::eKind;
 %ignore CIssue::eSeverity;
+
+%include <copasi/undo/CData.h>
+%include <copasi/undo/CDataValue.h>
+%include <copasi/undo/CUndoData.h>
 
 %include <copasi/core/CObjectInterface.h>
 %include <copasi/utilities/CValidity.h>

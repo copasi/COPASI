@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -71,7 +71,10 @@ public:
      */
     void fillComplete(const CModel* pModel);
 
-    //protected:
+#ifdef SWIG
+  protected:
+#endif
+
     std::set<const CCompartment*> mCompartments;
     std::set<const CMetab*> mMetabs;
     std::set<const CReaction*> mReactions;
