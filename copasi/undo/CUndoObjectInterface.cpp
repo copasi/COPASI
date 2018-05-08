@@ -4,6 +4,8 @@
 // All rights reserved.
 
 #include "copasi/undo/CUndoObjectInterface.h"
+#include "copasi/core/CDataObject.h"
+#include "copasi/model/CModelParameter.h"
 
 CUndoObjectInterface::CUndoObjectInterface()
   : mpUuid(NULL)
@@ -13,7 +15,27 @@ CUndoObjectInterface::CUndoObjectInterface()
 CUndoObjectInterface::CUndoObjectInterface(const CUndoObjectInterface & src)
   : mpUuid(src.mpUuid != NULL ? new xg::Guid(*src.mpUuid) : NULL)
   , mUuidLocked(false)
-{}
+{
+#ifdef COPASI_DEBUG_TRACE
+
+  if (mpUuid != NULL)
+    {
+      std::cout << "Copied UUID: " << *mpUuid;
+
+      if (dynamic_cast< const CDataObject *>(this))
+        {
+          std::cout << " for CDataObject: " << dynamic_cast< const CDataObject *>(this)->getCN();
+        }
+      else if (dynamic_cast< const CModelParameter *>(this))
+        {
+          std::cout << " for CModelParameter: " << dynamic_cast< const CModelParameter *>(this)->getCN();
+        }
+
+      std::cout << std::endl;
+    }
+
+#endif // COPASI_DEBUG_TRACE
+}
 
 // virtual
 CUndoObjectInterface::~CUndoObjectInterface()
@@ -34,6 +56,22 @@ const xg::Guid & CUndoObjectInterface::getUuid() const
   if (mpUuid == NULL)
     {
       const_cast< CUndoObjectInterface * >(this)->generateUuid();
+    }
+  else if (!mUuidLocked)
+    {
+#ifdef COPASI_DEBUG_TRACE
+      std::cout << "Unlocked UUID: " << *mpUuid;
+
+      if (dynamic_cast< const CDataObject *>(this))
+        {
+          std::cout << " for CDataObject: " << dynamic_cast< const CDataObject *>(this)->getCN() << std::endl;
+        }
+      else if (dynamic_cast< const CModelParameter *>(this))
+        {
+          std::cout << " for CModelParameter: " << dynamic_cast< const CModelParameter *>(this)->getCN() << std::endl;
+        }
+
+#endif // COPASI_DEBUG_TRACE
     }
 
   return *mpUuid;

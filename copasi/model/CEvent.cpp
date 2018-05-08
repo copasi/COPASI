@@ -54,7 +54,7 @@ CData CEventAssignment::toData() const
 // virtual
 bool CEventAssignment::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = true;
+  bool success = CDataContainer::applyData(data, changes);
 
   if (data.isSetProperty(CData::EXPRESSION))
     {

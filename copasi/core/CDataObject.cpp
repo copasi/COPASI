@@ -499,6 +499,11 @@ bool CDataObject::applyData(const CData & data, CUndoData::ChangeSet & changes)
       success &= setObjectName(data.getProperty(CData::OBJECT_NAME).toString());
     }
 
+  if (data.isSetProperty(CData::OBJECT_UUID))
+    {
+      success &= setUuid(data.getProperty(CData::OBJECT_UUID).toString());
+    }
+
   if (mpObjectParent != NULL &&
       data.isSetProperty(CData::OBJECT_INDEX))
     {
