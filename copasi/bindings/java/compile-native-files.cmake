@@ -26,10 +26,7 @@ set (SWIG_ENUM_FIX_FILES
         "${BIN_DIRECTORY}/java-files/org/COPASI/CCore.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CModelParameter.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CFunctionParameter.java"
-        "${BIN_DIRECTORY}/java-files/org/COPASI/CCopasiParameter.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CReaction.java"
-        "${BIN_DIRECTORY}/java-files/org/COPASI/CModel.java"
-        "${BIN_DIRECTORY}/java-files/org/COPASI/CUndoData.java"
      )
 
 foreach(broken_file ${SWIG_ENUM_FIX_FILES})

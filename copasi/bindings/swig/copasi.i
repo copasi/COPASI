@@ -131,10 +131,6 @@ size_t INVALID_INDEX();
 %ignore CIssue::eKind;
 %ignore CIssue::eSeverity;
 
-%include <copasi/undo/CData.h>
-%include <copasi/undo/CDataValue.h>
-%include <copasi/undo/CUndoData.h>
-
 %include <copasi/core/CObjectInterface.h>
 %include <copasi/utilities/CValidity.h>
 
