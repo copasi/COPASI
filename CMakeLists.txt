@@ -847,7 +847,6 @@ message(STATUS "-----------------------------------------------------------
    Combine lib       = ${COMBINE_LIBRARY}
    Combine include   = ${COMBINE_INCLUDE_DIR}
 
-
  Options:
 
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
