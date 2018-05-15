@@ -32,7 +32,7 @@ using namespace QtDataVisualization;
 
 #include <copasi/core/CDataArray.h>
 
-#include <copasi/ui/qtUtilities.h>
+#include <copasi/UI/qtUtilities.h>
 
 using namespace QtDataVisualization;
 
