@@ -3,11 +3,9 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-
 #include  "CQ3DBarsModifier.h"
 
 #ifdef WITH_QT5_VISUALIZATION
-
 
 #include <QtDataVisualization/q3dbars.h>
 #include <QtDataVisualization/qbardataproxy.h>
@@ -20,7 +18,6 @@
 #include <QPropertyAnimation>
 
 using namespace QtDataVisualization;
-
 
 #include <QtDataVisualization/qcategory3daxis.h>
 #include <QtDataVisualization/qvalue3daxis.h>
@@ -35,7 +32,7 @@ using namespace QtDataVisualization;
 
 #include <copasi/core/CDataArray.h>
 
-#include <copasi/ui/qtUtilities.h>
+#include <copasi/UI/qtUtilities.h>
 
 using namespace QtDataVisualization;
 
@@ -126,7 +123,6 @@ CQ3DBarsModifier::CQ3DBarsModifier(Q3DBars *bargraph)
   m_animationCameraTarget.setKeyValueAt(zoomOutFraction,
                                         QVariant::fromValue(QVector3D(0.0f, 0.0f, 0.0f)));
   //! [12]
-
 }
 //! [0]
 
@@ -159,25 +155,21 @@ void CQ3DBarsModifier::loadData(const CDataArray * pData, unsigned int rowIndex,
   QStringList rowHeaders;
   QStringList colheaders;
 
-
   std::vector<std::string> rowdescr = pData->getAnnotationsString(rowIndex);
 
-for (auto it : rowdescr)
+  for (auto it : rowdescr)
     rowHeaders << FROM_UTF8(it);
-
 
   if (!isOneDimensional)
     {
       std::vector<std::string> coldescr = pData->getAnnotationsString(colIndex);
 
-for (auto it : coldescr)
+      for (auto it : coldescr)
         colheaders << FROM_UTF8(it);
     }
 
-
   double maxValue = std::numeric_limits<double>::min();
   double minValue = std::numeric_limits<double>::max();
-
 
   dataSet->reserve(numRows);
 
@@ -207,7 +199,6 @@ for (auto it : coldescr)
 
           // Add data to the row
           (*dataRow)[col].setValue(value);
-
         }
 
       // Add the row to the set
@@ -221,7 +212,6 @@ for (auto it : coldescr)
 
   mRowHeaders = rowHeaders;
   mColHeaders = colheaders;
-
 }
 
 void CQ3DBarsModifier::changeRange(int range)
@@ -458,7 +448,5 @@ void CQ3DBarsModifier::setReflection(bool enabled)
 {
   m_graph->setReflection(enabled);
 }
-
-
 
 #endif
