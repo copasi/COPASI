@@ -17,6 +17,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+
+
+
 #include <cmath>
 
 #define USE_LAYOUT 1
@@ -2616,7 +2620,38 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
               // must be a reference to the model time
               if (pObject->getObjectName() != "Time")
                 {
-                  result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "model", pObjectParent->getObjectName().c_str()));
+
+                  if (pObject->getObjectName() == "Avogadro Constant")
+                    {
+                      if (sbmlLevel < 3) // l3 supports avogadro as csymbol
+                        {
+                          Parameter* param = new Parameter(sbmlLevel, sbmlVersion);
+                          param->initDefaults();
+                          param->setId(CSBMLExporter::createUniqueId(idMap, "Avogadro", false));
+                          param->setAnnotation("<avogadro xmlns='http://copasi.org/constant' />");
+                          param->setName(pObject->getObjectName());
+                          param->setValue(*((double*)pObject->getValuePointer()));
+                          idMap.insert(std::pair<const std::string, const SBase*>(param->getId(), param));
+
+                          (*initialMap)[pObject->getCN()] = param;
+                        }
+                    }
+                  else if (pObject->getObjectName() == "Quantity Conversion Factor")
+                    {
+                      Parameter* param = new Parameter(sbmlLevel, sbmlVersion);
+                      param->initDefaults();
+                      param->setId(CSBMLExporter::createUniqueId(idMap, "QuantityConversionFactor", false));
+                      param->setAnnotation("<quantityConversionFactor xmlns='http://copasi.org/constant' />");
+                      param->setName(pObject->getObjectName());
+                      param->setValue(*((double*)pObject->getValuePointer()));
+                      idMap.insert(std::pair<const std::string, const SBase*>(param->getId(), param));
+
+                      (*initialMap)[pObject->getCN()] = param;
+                    }
+                  else
+                    {
+                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "model", pObjectParent->getObjectName().c_str()));
+                    }
                 }
             }
           else if (typeString == "Parameter")
@@ -3940,10 +3975,13 @@ void addInitialAssignmentsToModel(SBMLDocument* doc
 
       // create an initial assignment for the newly created initial quantity
       // to synchronize it with the original element.
-      InitialAssignment* ia = doc->getModel()->createInitialAssignment();
-      ia->setSymbol(it->second->getId());
-      ia->setMath(SBML_parseFormula(sbmlId.c_str()));
-      ia->setUserData((void*)"1");
+      if (!sbmlId.empty())
+        {
+          InitialAssignment* ia = doc->getModel()->createInitialAssignment();
+          ia->setSymbol(it->second->getId());
+          ia->setMath(SBML_parseFormula(sbmlId.c_str()));
+          ia->setUserData((void*)"1");
+        }
 
       delete param;
     }
@@ -6869,32 +6907,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                   // replace the node by the node times avogadros number
                   if (dataModel.getModel()->getQuantityUnitEnum() != CUnit::number)
                     {
-                      if (this->mpAvogadro == NULL)
-                        {
-                          this->mpAvogadro = const_cast<CModel*>(dataModel.getModel())->createModelValue("quantity to number factor", dataModel.getModel()->getQuantity2NumberFactor());
-                          Parameter* pSBMLAvogadro = this->mpSBMLDocument->getModel()->createParameter();
-                          pSBMLAvogadro->setName("quantity to number factor");
-                          std::string sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, mpAvogadro->getObjectName(), false);
-                          pSBMLAvogadro->setId(sbmlId);
-                          const_cast<CModelValue*>(this->mpAvogadro)->setSBMLId(sbmlId);
-                          this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLAvogadro));
-
-                          if (this->mSBMLLevel != 1)
-                            {
-                              pSBMLAvogadro->setConstant(true);
-                            }
-                          else
-                            {
-                              // Level 1 doesn't know the constant flag and
-                              // libSBML does not drop it automatically
-                              pSBMLAvogadro->setConstant(true);
-                            }
-
-                          pSBMLAvogadro->setValue(dataModel.getModel()->getQuantity2NumberFactor());
-                          this->mHandledSBMLObjects.insert(pSBMLAvogadro);
-                          this->mCOPASI2SBMLMap[this->mpAvogadro] = pSBMLAvogadro;
-                          this->mAvogadroCreated = true;
-                        }
+                      createAvogadroIfNeeded(dataModel);
 
                       pResult = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
                       // copyBranch should be save here since object nodes can't
@@ -7073,6 +7086,36 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
   return pResult;
 }
 
+void CSBMLExporter::createAvogadroIfNeeded(const CDataModel & dataModel)
+{
+  if (this->mpAvogadro != NULL)
+    return;
+
+  this->mpAvogadro = const_cast<CModel*>(dataModel.getModel())->createModelValue("quantity to number factor", dataModel.getModel()->getQuantity2NumberFactor());
+  Parameter* pSBMLAvogadro = this->mpSBMLDocument->getModel()->createParameter();
+  pSBMLAvogadro->setName("quantity to number factor");
+  std::string sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, mpAvogadro->getObjectName(), false);
+  pSBMLAvogadro->setId(sbmlId);
+  const_cast<CModelValue*>(this->mpAvogadro)->setSBMLId(sbmlId);
+  this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLAvogadro));
+
+  if (this->mSBMLLevel != 1)
+    {
+      pSBMLAvogadro->setConstant(true);
+    }
+  else
+    {
+      // Level 1 doesn't know the constant flag and
+      // libSBML does not drop it automatically
+      pSBMLAvogadro->setConstant(true);
+    }
+
+  pSBMLAvogadro->setValue(dataModel.getModel()->getQuantity2NumberFactor());
+  this->mHandledSBMLObjects.insert(pSBMLAvogadro);
+  this->mCOPASI2SBMLMap[this->mpAvogadro] = pSBMLAvogadro;
+  this->mAvogadroCreated = true;
+}
+
 void CSBMLExporter::findAvogadro(const CDataModel& dataModel)
 {
   double factor = dataModel.getModel()->getQuantity2NumberFactor();
@@ -7183,9 +7226,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             break;
 
-          // IS DESCRIBED BY is handled in the references below
-          //case bqbiol_isDescribedBy:
-          //    break;
+            // IS DESCRIBED BY is handled in the references below
+            //case bqbiol_isDescribedBy:
+            //    break;
           case CRDFPredicate::bqbiol_isEncodedBy:
           case CRDFPredicate::copasi_isEncodedBy:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7222,7 +7265,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
 
-          // This qualifier is supported in libsbml 4.1
+            // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7284,9 +7327,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setModelQualifierType(BQM_HAS_INSTANCE);
             break;
 
-          // IS DESCRIBED BY is handled in the references below
-          //case bqmodel_isDescribedBy:
-          //    break;
+            // IS DESCRIBED BY is handled in the references below
+            //case bqmodel_isDescribedBy:
+            //    break;
           default:
             // there are many qualifiers that start e.g. with copasi_ which are
             // not handled

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,6 +16,10 @@
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+
+
+
 
 #ifndef CSBMLExporter_H__
 #define CSBMLExporter_H__
@@ -748,6 +752,8 @@ protected:
    */
   CEvaluationNode* replaceSpeciesReferences(const CEvaluationNode* pOrigNode,
       const CDataModel& dataModel);
+
+  void createAvogadroIfNeeded(const CDataModel & dataModel);
 
   /**
    * Try to find a global parameter that represents avogadros number.
