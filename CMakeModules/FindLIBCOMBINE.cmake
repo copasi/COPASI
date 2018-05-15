@@ -8,6 +8,7 @@
 # of Manchester. 
 # All rights reserved. 
 
+#
 # Locate libCOMBINE
 # This module defines:
 # COMBINE_INCLUDE_DIR, where to find the headers
@@ -46,36 +47,29 @@ if (NOT ${COMBINE_LIBRARY_NAME}_FOUND)
   )
 endif()
 
-if (NOT ${COMBINE_LIBRARY_NAME}_FOUND)
-  message(FATAL_ERROR "not found yet
-
-
-")
-
-endif()
-
-
 if (${COMBINE_LIBRARY_NAME}_FOUND)
 
 get_target_property(COMBINE_INCLUDE_DIR ${COMBINE_LIBRARY_NAME} INTERFACE_INCLUDE_DIRECTORIES)
-get_target_property(COMBINE_LIBRARY ${COMBINE_LIBRARY_NAME} IMPORTED_LOCATION)
+get_target_property(COMBINE_LIBRARY ${COMBINE_LIBRARY_NAME} IMPORTED_LOCATION_RELEASE)
+
 if (NOT COMBINE_LIBRARY)
-get_target_property(COMBINE_LIBRARY ${COMBINE_LIBRARY_NAME} IMPORTED_LOCATION_DEBUG)
+  get_target_property(COMBINE_LIBRARY ${COMBINE_LIBRARY_NAME} IMPORTED_LOCATION_DEBUG)
 endif()
 
 if (NOT COMBINE_LIBRARY)
-set(COMBINE_LIBRARY)
+  set(COMBINE_LIBRARY)
 endif()
 
 get_target_property(COMBINE_INTERFACE_LINK_LIBRARIES ${COMBINE_LIBRARY_NAME} INTERFACE_LINK_LIBRARIES)
+
 if (COMBINE_INTERFACE_LINK_LIBRARIES)
   set(COMBINE_LIBRARY ${COMBINE_LIBRARY} ${COMBINE_INTERFACE_LINK_LIBRARIES})
 endif (COMBINE_INTERFACE_LINK_LIBRARIES)
 
 else()
+  # Fallback if no CONFIG is found
 
-
-find_path(COMBINE_INCLUDE_DIR combine/combinearchive.h
+  find_path(COMBINE_INCLUDE_DIR combine/combinearchive.h
     PATHS $ENV{COMBINE_DIR}/include
           $ENV{COMBINE_DIR}
           ${COPASI_DEPENDENCY_DIR}/include
@@ -89,15 +83,15 @@ find_path(COMBINE_INCLUDE_DIR combine/combinearchive.h
           /usr/freeware/include
     NO_DEFAULT_PATH)
 
-if (NOT COMBINE_INCLUDE_DIR)
+  if (NOT COMBINE_INCLUDE_DIR)
     message(FATAL_ERROR "COMBINE include dir not found not found!")
-endif (NOT COMBINE_INCLUDE_DIR)
+  endif (NOT COMBINE_INCLUDE_DIR)
 
-if (NOT COMBINE_INCLUDE_DIR)
+  if (NOT COMBINE_INCLUDE_DIR)
     find_path(COMBINE_INCLUDE_DIR combine/combinearchive.h)
-endif (NOT COMBINE_INCLUDE_DIR)
+  endif (NOT COMBINE_INCLUDE_DIR)
 
-find_library(COMBINE_LIBRARY 
+  find_library(COMBINE_LIBRARY 
     NAMES ${COMBINE_LIBRARY_NAME}
     PATHS $ENV{COMBINE_DIR}/lib
           $ENV{COMBINE_DIR}
@@ -112,12 +106,10 @@ find_library(COMBINE_LIBRARY
           /usr/freeware/lib64
     NO_DEFAULT_PATH)
     
-if (NOT COMBINE_LIBRARY)
+  if (NOT COMBINE_LIBRARY)
     find_library(COMBINE_LIBRARY 
         NAMES ${COMBINE_LIBRARY_NAME})
-endif (NOT COMBINE_LIBRARY)
-
-
+  endif (NOT COMBINE_LIBRARY)
 endif()
 
 if (NOT COMBINE_LIBRARY)
