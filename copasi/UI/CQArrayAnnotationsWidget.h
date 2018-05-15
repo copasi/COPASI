@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,6 +33,15 @@ class CQBarChart;
 class CQComboDelegate;
 class CQArrayAnnotationsWidgetDM;
 class CQSortFilterProxyModel;
+
+#ifdef WITH_QT5_VISUALIZATION
+
+#include <QtDataVisualization/Q3DBars>
+
+class QWidget;
+class CQ3DBarsModifier;
+
+#endif
 
 /**
  * This Widget displays a CArrayAnnotation (no editing yet)
@@ -79,7 +88,7 @@ public slots:
   void setSortingEnabled(bool b);
 
   /**
-   * Disables the bar chart 
+   * Disables the bar chart
    */
   void disableBarChart();
 
@@ -89,7 +98,7 @@ public slots:
   void disableSlider();
 
   /**
-   * Show / Hide controls 
+   * Show / Hide controls
    * @param b boolean indicating whether the controls should be visible or not
    */
   void setControlsEnabled(bool b);
@@ -105,7 +114,7 @@ public slots:
   void slotRowSelectionChanged(int row);
 
   void slotColumnSelectionChanged(int col);
-  
+
   void slotCurrentSelectionIndexChanged(int row, int index);
 
   void slotContentCellClicked(const QModelIndex & index);
@@ -173,6 +182,14 @@ protected:
 
   CQArrayAnnotationsWidgetDM * mpDataModel;
   CQSortFilterProxyModel * mpProxyModel;
+
+#ifdef WITH_QT5_VISUALIZATION
+
+  QtDataVisualization::Q3DBars *m_graph;
+  CQ3DBarsModifier* m_modifier;
+  QWidget* m_container;
+
+#endif // WITH_QT5_VISUALIZATION
 };
 
 #endif

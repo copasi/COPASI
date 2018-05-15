@@ -457,6 +457,13 @@ if(BUILD_GUI)
       ${SELECT_QT} MATCHES "Any")
     # then narrow down the precise modules we need
     option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit for notes" OFF)
+    option(QT5_USE_DATAVISUALIZATION "Use Qt5DataVisualization instead of the deprecated QwtPlot3D" OFF)
+    
+    set (ADDITIONAL_QT5_MODULES)
+    if (QT5_USE_DATAVISUALIZATION)
+      set (ADDITIONAL_QT5_MODULES ${ADDITIONAL_QT5_MODULES} DataVisualization)
+      add_definitions(-DWITH_QT5_VISUALIZATION)
+    endif()
     
     if (QT_USE_TEXTBROWSER)
       QT_FIND_MODULES( Concurrent
@@ -468,6 +475,7 @@ if(BUILD_GUI)
                        PrintSupport
                        Svg 
                        Xml
+                       ${ADDITIONAL_QT5_MODULES}
       )
     elseif (QT5_USE_WEBENGINE)
       QT_FIND_MODULES( Concurrent
@@ -481,6 +489,7 @@ if(BUILD_GUI)
                        WebEngine
                        WebEngineWidgets
                        Xml
+                       ${ADDITIONAL_QT5_MODULES}
       )
     else()
       QT_FIND_MODULES( Concurrent
@@ -494,6 +503,7 @@ if(BUILD_GUI)
                        WebKit
                        WebKitWidgets
                        Xml
+                       ${ADDITIONAL_QT5_MODULES}
       )
     endif()
     set(QTVERSION 5)
