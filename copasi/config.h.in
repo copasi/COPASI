@@ -3,6 +3,7 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
+
 // config.h
 //
 // This file contains the configuration options for this version of COPASI
@@ -50,5 +51,6 @@
 #cmakedefine QT5_USE_WEBENGINE
 #cmakedefine QT_USE_TEXTBROWSER
 #cmakedefine HAVE_MML
+#cmakedefine WITH_QT5_VISUALIZATION
 
 #cmakedefine QWT_VERSION @QWT_VERSION@

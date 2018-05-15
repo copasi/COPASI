@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,6 +16,10 @@
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+
+
+
 
 #ifdef SunOS
 #include <ieeefp.h>
@@ -41,24 +45,40 @@
 #include <QtCore/QtDebug>
 #endif
 
-CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, bool slider) :
-  QWidget(parent),
-  mWithBarChart(false),
-  mUseSliders(slider),
-  data(NULL),
-  mColors(),
-  mpArray(NULL),
-  mpColorScale(NULL),
-  mAutomaticColorScaling(false),
-  mRowIndex(C_INVALID_INDEX),
-  mColIndex(C_INVALID_INDEX),
-  mSelectedCell(),
-  mBarChartFilled(false),
-  mOneDimensional(false),
-  mComboEntries(),
-  mpComboDelegate(NULL),
-  mpDataModel(NULL),
-  mpProxyModel(NULL)
+
+#ifdef WITH_QT5_VISUALIZATION
+
+#include <QtDataVisualization>
+
+#include "CQ3DBarsModifier.h"
+
+using namespace QtDataVisualization;
+
+#endif // WITH_QT5_VISUALIZATION
+
+CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, bool slider)
+  : QWidget(parent)
+  , mWithBarChart(false)
+  , mUseSliders(slider)
+  , data(NULL)
+  , mColors()
+  , mpArray(NULL)
+  , mpColorScale(NULL)
+  , mAutomaticColorScaling(false)
+  , mRowIndex(C_INVALID_INDEX)
+  , mColIndex(C_INVALID_INDEX)
+  , mSelectedCell()
+  , mBarChartFilled(false)
+  , mOneDimensional(false)
+  , mComboEntries()
+  , mpComboDelegate(NULL)
+  , mpDataModel(NULL)
+  , mpProxyModel(NULL)
+#ifdef WITH_QT5_VISUALIZATION
+  , m_graph(NULL)
+  , m_modifier(NULL)
+  , m_container(NULL)
+#endif
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in constructor -- \n";
@@ -90,6 +110,29 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, bool slider)
       mBarChartFilled = false;
 
       connect(mpButton, SIGNAL(clicked()), this, SLOT(changeContents()));
+
+
+#ifdef WITH_QT5_VISUALIZATION
+
+      m_graph = new Q3DBars();
+
+
+      m_container = QWidget::createWindowContainer(m_graph);
+      mpStack->addWidget(m_container);
+
+      if (m_graph->hasContext())
+        {
+
+          m_modifier = new CQ3DBarsModifier(m_graph);
+
+
+
+        }
+
+
+#endif // WITH_QT5_VISUALIZATION
+
+
     }
 
   mpDataModel = new CQArrayAnnotationsWidgetDM(this);
@@ -111,7 +154,7 @@ CQArrayAnnotationsWidget::~CQArrayAnnotationsWidget()
 #ifdef DEBUG_UI
   qDebug() << "-- in destructor -- \n";
 #endif
-  
+
   pdelete(mpColorScale);
   pdelete(mpProxyModel);
 }
@@ -124,7 +167,7 @@ void CQArrayAnnotationsWidget::setColorCoding(CColorScale * cs)
 
   if (cs && cs->isUsed())
     {
-      cs = NULL; //don´t accept a scaler that is already used
+      cs = NULL; //don't accept a scaler that is already used
     }
 
   if (mpColorScale)
@@ -587,6 +630,18 @@ void CQArrayAnnotationsWidget::switchToBarChart()
 
   if (mWithBarChart)
     {
+
+#ifdef WITH_QT5_VISUALIZATION
+
+      mpStack->setCurrentWidget(m_container);
+
+      m_modifier->loadData(mpArray, 0, 1);
+
+      mpButton->setIcon(CQIconResource::icon(CQIconResource::table));
+      mpButtonReset->hide();
+
+#else
+
       if (!mpPlot3d)
         createBarChart();
 
@@ -599,6 +654,8 @@ void CQArrayAnnotationsWidget::switchToBarChart()
       mpPlot3d->show();
       mpButton->setIcon(CQIconResource::icon(CQIconResource::table));
       mpButtonReset->hide();
+
+#endif // WITH_QT5_VISUALIZATION
     }
 }
 
@@ -715,11 +772,11 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
       int BottomRow = -1;
 
       if (it == end)
-      {
-        // when we don't have entries, we reset the left / top to -1
-        LeftColumn = -1;
-        TopRow = -1;
-      }
+        {
+          // when we don't have entries, we reset the left / top to -1
+          LeftColumn = -1;
+          TopRow = -1;
+        }
 
       for (; it != end; ++it)
         {
@@ -745,7 +802,7 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
 
           return;
         }
-      
+
       if (LeftColumn == RightColumn)
         {
           mpPlot3d->mpSliderColumn->setValue(SliderColumn);
@@ -755,7 +812,7 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
 
           return;
         }
-      
+
       if (TopRow == BottomRow)
         {
           mpPlot3d->mpSliderColumn->setValue(-1);
@@ -998,9 +1055,6 @@ void CQArrayAnnotationsWidget::fillBarChart()
     }
 }
 
-/*!
-    Function to create the 3D bar chart
- */
 void CQArrayAnnotationsWidget::createBarChart()
 {
 #ifdef DEBUG_UI
@@ -1012,8 +1066,9 @@ void CQArrayAnnotationsWidget::createBarChart()
 
   if (mUseSliders) mpPlot3d->setSliderActive(true);
 
-//  mpStack->addWidget(mpPlot3d, 1);
+  //  mpStack->addWidget(mpPlot3d, 1);
   mpStack->addWidget(mpPlot3d);
   mpButton->setIcon(CQIconResource::icon(CQIconResource::bars));
   mBarChartFilled = false;
+
 }
