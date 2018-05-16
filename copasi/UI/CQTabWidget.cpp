@@ -269,7 +269,7 @@ bool CQTabWidget::save()
 
       if (pParent != NULL &&
           pParent->hasFlag(CDataObject::NameVector) &&
-          pParent->getObject("[" + CCommonName::escape(NewName) + "]"))
+          pParent->getObject(mpObject->getObjectType() + "=" + CCommonName::escape(NewName)) == NULL)
         {
           CUndoData Data(CUndoData::Type::CHANGE, mpObject);
           Data.addProperty(CData::OBJECT_NAME, mpObject->getObjectName(), NewName);
