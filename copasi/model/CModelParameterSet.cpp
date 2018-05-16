@@ -330,6 +330,15 @@ void CModelParameterSet::createFromModel()
 
       for (; itParameter != endParameter; ++itParameter)
         {
+          const CFunctionParameter * pFunctionParameter = NULL;
+          itReaction->getParameterIndex((*itParameter)->getObjectName(), &pFunctionParameter);
+
+          if (pFunctionParameter == NULL ||
+              pFunctionParameter->getUsage() != CFunctionParameter::Role::PARAMETER)
+            {
+              continue;
+            }
+
           pParameter = pReaction->add(Type::ReactionParameter);
           pParameter->setCN((*itParameter)->getCN());
 
