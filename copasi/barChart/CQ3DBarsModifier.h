@@ -3,6 +3,7 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
+
 #ifndef CQ_3DBARS_MODIFIER_H
 #define CQ_3DBARS_MODIFIER_H
 
@@ -46,6 +47,7 @@ public:
   void setReflection(bool enabled);
 
 public slots:
+  void actionTriggered(QAction* action);
   void changeRange(int range);
   void changeStyle(int style);
   void changeSelectionMode(int selectionMode);
@@ -56,6 +58,7 @@ public slots:
   void setAxisTitleVisibility(bool enabled);
   void setAxisTitleFixed(bool enabled);
   void zoomToSelectedBar();
+  void toggleGradient();
 
 signals:
   void shadowQualityChanged(int quality);
