@@ -391,7 +391,6 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
   CUndoData UndoData(CUndoData::Type::CHANGE, mpReaction->CDataContainer::toData());
   CData OldData(mpReaction->toData());
 
-  // TODO CRITICAL we need to add the pre-process data since compartments and species may be required for the chemical equation to be valid.
   // We iterate over all non existing species and add their compartment if missing
   std::set< std::pair< std::string, std::string > > NonExisting = mChemEqI.listOfNonExistingMetabNames();
   std::set< std::pair< std::string, std::string > >::const_iterator itSpecies = NonExisting.begin();

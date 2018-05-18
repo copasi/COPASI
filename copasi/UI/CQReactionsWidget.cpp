@@ -108,7 +108,8 @@ bool CQReactionsWidget::updateProtected(ListViews::ObjectType objectType, ListVi
       return true;
     }
 
-  if (objectType == ListViews::MODEL)
+  if (objectType == ListViews::MODEL ||
+      objectType == ListViews::REACTION)
     {
       enterProtected();
     }

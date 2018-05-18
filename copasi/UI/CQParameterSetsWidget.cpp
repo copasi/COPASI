@@ -115,7 +115,6 @@ void CQParameterSetsWidget::slotBtnClearClicked()
 
 bool CQParameterSetsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
-
   if (objectType == ListViews::MODEL &&
       (action == ListViews::DELETE ||
        action == ListViews::ADD))
@@ -127,6 +126,12 @@ bool CQParameterSetsWidget::updateProtected(ListViews::ObjectType objectType, Li
   if (mIgnoreUpdates || !isVisible())
     {
       return true;
+    }
+
+  if (objectType == ListViews::MODEL ||
+      objectType == ListViews::MODELPARAMETERSET)
+    {
+      enterProtected();
     }
 
   return true;

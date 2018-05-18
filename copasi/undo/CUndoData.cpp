@@ -36,7 +36,7 @@ CUndoData::CUndoData():
   time(&mTime);
 }
 
-CUndoData::CUndoData(const Type & type, const CDataObject * pObject, const size_t & authorId):
+CUndoData::CUndoData(const Type & type, const CUndoObjectInterface * pObject, const size_t & authorId):
   mType(type),
   mOldData(),
   mNewData(),
@@ -202,28 +202,40 @@ bool CUndoData::addProperty(const std::string & name, const CDataValue & oldValu
         break;
 
       case Type::CHANGE:
-        if (oldValue != newValue)
+        if (name != "Object UUID" &&
+            name != "Object Name" &&
+            name != "Object Parent CN" &&
+            name != "Object Type" &&
+            name != "Object Hash" &&
+            name != "Object Index")
           {
-            success &= mOldData.addProperty(name, oldValue);
-            success &= mNewData.addProperty(name, newValue);
-            mChangedProperties.insert(name);
-            success = true;
-          }
-        else
-          {
-            // These are required to retrieve the object and must not be removed.
-            if (name != "Object UUID" &&
-                name != "Object Name" &&
-                name != "Object Parent CN" &&
-                name != "Object Type" &&
-                name != "Object Hash" &&
-                name != "Object Index")
+            if (oldValue != newValue)
+              {
+                success &= mOldData.addProperty(name, oldValue);
+                success &= mNewData.addProperty(name, newValue);
+                mChangedProperties.insert(name);
+                success = true;
+              }
+            else
               {
                 mOldData.removeProperty(name);
                 mNewData.removeProperty(name);
+                mChangedProperties.erase(name);
               }
+          }
+        else
+          {
+            success = mOldData.addProperty(name, oldValue);
+            success &= mNewData.addProperty(name, newValue);
 
-            mChangedProperties.erase(name);
+            if (oldValue != newValue)
+              {
+                mChangedProperties.insert(name);
+              }
+            else
+              {
+                mChangedProperties.erase(name);
+              }
           }
 
         break;

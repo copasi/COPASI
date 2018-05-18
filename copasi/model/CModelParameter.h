@@ -412,13 +412,6 @@ public:
   virtual CData toData() const;
 
   /**
-   * Apply the provided data to the object
-   * @param const CData & data
-   * @return bool success
-   */
-  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
-
-  /**
    * Create the undo data which represents the changes recording the
    * differences between the provided oldData and the current data.
    * @param CUndoData & undoData
@@ -505,6 +498,14 @@ private:
 class CModelParameterReactionParameter: public CModelParameter
 {
 public:
+
+  /**
+   * Retrieve the CN of the reaction the parameter belongs to
+   * @param const CCommonName & reactionParameterCN
+   * @return CCommonName reationCN
+   */
+  static CCommonName getReactionCN(const CCommonName & reactionParameterCN);
+
   /**
    * Constructor
    */
@@ -530,12 +531,6 @@ public:
    * @return const CReaction * reaction
    */
   const CReaction * getReaction() const;
-
-  /**
-   * Retrieve the CN of the reaction the parameter belongs to
-   * @return CCommonName reationCN
-   */
-  CCommonName getReactionCN() const;
 
   /**
    * Set the CN of the assigned global quantity. If the CN is empty

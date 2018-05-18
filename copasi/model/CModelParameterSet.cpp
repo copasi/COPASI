@@ -95,9 +95,15 @@ CUndoObjectInterface * CModelParameterSet::insert(const CData & data)
         break;
 
       case CModelParameter::Type::ReactionParameter:
-        // We need assure that the reaction exist
       {
-        CModelParameterGroup * pReaction = static_cast< CModelParameterGroup * >(mpReactions->getModelParameter(static_cast< CModelParameterReactionParameter * >(pParameter)->getReactionCN()));
+        CCommonName ReactionCN = CModelParameterReactionParameter::getReactionCN(data.getProperty(CData::OBJECT_NAME).toString());
+        CModelParameterGroup * pReaction = static_cast< CModelParameterGroup * >(mpReactions->getModelParameter(ReactionCN));
+
+        if (pReaction == NULL)
+          {
+            pReaction = static_cast< CModelParameterGroup * >(mpReactions->add(CModelParameter::Type::Reaction));
+            pReaction->setCN(ReactionCN);
+          }
 
         if (pReaction != NULL)
           {
@@ -452,11 +458,11 @@ void CModelParameterSet::assignSetContent(const CModelParameterSet & src,
     const bool & createMissing)
 {
   // Create the proper structure that fits the parameter overview in the GUI
-  mpTimes->assignGroupContent(*static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Time").getCN())), createMissing);
-  mpCompartments->assignGroupContent(*static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Compartment Sizes").getCN())), createMissing);
-  mpSpecies->assignGroupContent(*static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Species Values").getCN())), createMissing);
-  mpModelValues->assignGroupContent(*static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Global Quantities").getCN())), createMissing);
-  mpReactions->assignGroupContent(*static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Kinetic Parameters").getCN())), createMissing);
+  mpTimes->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Time").getCN())), createMissing);
+  mpCompartments->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Compartment Sizes").getCN())), createMissing);
+  mpSpecies->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Species Values").getCN())), createMissing);
+  mpModelValues->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Global Quantities").getCN())), createMissing);
+  mpReactions->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Kinetic Parameters").getCN())), createMissing);
 
   compile();
 }

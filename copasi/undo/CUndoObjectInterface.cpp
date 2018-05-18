@@ -7,6 +7,8 @@
 #include "copasi/core/CDataObject.h"
 #include "copasi/model/CModelParameter.h"
 
+// Uncomment the line below to enable debug output
+// #define DEBUG_UUID
 CUndoObjectInterface::CUndoObjectInterface()
   : mpUuid(NULL)
   , mUuidLocked(false)
@@ -16,7 +18,7 @@ CUndoObjectInterface::CUndoObjectInterface(const CUndoObjectInterface & src)
   : mpUuid(src.mpUuid != NULL ? new xg::Guid(*src.mpUuid) : NULL)
   , mUuidLocked(false)
 {
-#ifdef COPASI_DEBUG_TRACE
+#ifdef DEBUG_UUID
 
   if (mpUuid != NULL)
     {
@@ -34,7 +36,7 @@ CUndoObjectInterface::CUndoObjectInterface(const CUndoObjectInterface & src)
       std::cout << std::endl;
     }
 
-#endif // COPASI_DEBUG_TRACE
+#endif // DEBUG_UUID
 }
 
 // virtual
@@ -59,7 +61,7 @@ const xg::Guid & CUndoObjectInterface::getUuid() const
     }
   else if (!mUuidLocked)
     {
-#ifdef COPASI_DEBUG_TRACE
+#ifdef DEBUG_UUIDx
       std::cout << "Unlocked UUID: " << *mpUuid;
 
       if (dynamic_cast< const CDataObject *>(this))
@@ -71,7 +73,7 @@ const xg::Guid & CUndoObjectInterface::getUuid() const
           std::cout << " for CModelParameter: " << dynamic_cast< const CModelParameter *>(this)->getCN() << std::endl;
         }
 
-#endif // COPASI_DEBUG_TRACE
+#endif // DEBUG_UUID
     }
 
   return *mpUuid;

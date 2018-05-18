@@ -45,7 +45,7 @@ const CEnumAnnotation< std::string, CModelParameter::Type > CModelParameter::Typ
 // static
 const CEnumAnnotation< std::string, CModelParameter::CompareResult > CModelParameter::CompareResultNames(
 {
-  "Obsolete" ,
+  "Obsolete",
   "Missing",
   "Modified",
   "Conflict",
@@ -69,7 +69,7 @@ CModelParameter * CModelParameter::fromData(const CData & data, CUndoObjectInter
 {
   CModelParameter * pModelParameter = NULL;
 
-  Type type = TypeNames.toEnum(data.getProperty(CData::PARAMETER_TYPE).toString(), Type::unknown);
+  Type type = TypeNames.toEnum(data.getProperty(CData::OBJECT_TYPE).toString(), Type::unknown);
 
   switch (type)
     {
@@ -114,24 +114,35 @@ CData CModelParameter::toData() const
 {
   CData Data;
 
-  CCommonName ParentCN;
-  std::string ObjectType;
-  std::string ObjectName;
+  if (mType != Type::Set)
+    {
+      Data.addProperty(CData::OBJECT_NAME, mCN);
+      Data.addProperty(CData::OBJECT_UUID, getUuid().str());
+      Data.addProperty(CData::OBJECT_PARENT_CN, getSet() != NULL ? getSet()->getCN() : CCommonName());
+      Data.addProperty(CData::OBJECT_TYPE, TypeNames[mType]);
+      Data.addProperty(CData::OBJECT_INDEX, getIndex());
+    }
 
-  mCN.split(ParentCN, ObjectType, ObjectName);
+  switch (mType)
+    {
+      case Type::Model:
+      case Type::Compartment:
+      case Type::Species:
+      case Type::ModelValue:
+      case Type::ReactionParameter:
+      {
+        CData ParameterValue;
+        ParameterValue.addProperty(CData::INITIAL_VALUE, mValue);
 
-  Data.addProperty(CData::OBJECT_NAME, mCN);
-  Data.addProperty(CData::OBJECT_TYPE, TypeNames[mType]);
-  Data.addProperty(CData::OBJECT_PARENT_CN, getSet() != NULL ? getSet()->CDataContainer::getCN() : CCommonName());
-  Data.addProperty(CData::OBJECT_INDEX, getIndex());
-  Data.addProperty(CData::SIMULATION_TYPE, CModelEntity::StatusName[mSimulationType]);
+        Data.addProperty(CData::PARAMETER_VALUE, ParameterValue);
+        Data.addProperty(CData::SIMULATION_TYPE, CModelEntity::StatusName[mSimulationType]);
+        Data.addProperty(CData::INITIAL_EXPRESSION, getInitialExpression());
+      }
+      break;
 
-  CData InitialValueData;
-  InitialValueData.addProperty(CData::VALUE, mValue);
-  InitialValueData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[CCore::Framework::ParticleNumbers]);
-  Data.addProperty(CData::PARAMETER_VALUE, InitialValueData);
-
-  Data.addProperty(CData::INITIAL_EXPRESSION, getInitialExpression());
+      default:
+        break;
+    }
 
   return Data;
 }
@@ -139,9 +150,14 @@ CData CModelParameter::toData() const
 // virtual
 bool CModelParameter::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
+  if (mType == Type::Set)
+    {
+      return true;
+    }
+
   if (data.isSetProperty(CData::OBJECT_NAME))
     {
-      mCN = data.getProperty(CData::OBJECT_NAME).toString();
+      setCN(data.getProperty(CData::OBJECT_NAME).toString());
     }
 
   if (mpParent != NULL &&
@@ -155,10 +171,12 @@ bool CModelParameter::applyData(const CData & data, CUndoData::ChangeSet & chang
       mSimulationType = CModelEntity::StatusName.toEnum(data.getProperty(CData::SIMULATION_TYPE).toString(), CModelEntity::Status::FIXED);
     }
 
-  if (data.isSetProperty(CData::PARAMETER_VALUE))
+  if (data.isSetProperty(CData::PARAMETER_VALUE) &&
+      data.getProperty(CData::PARAMETER_VALUE).getType() == CDataValue::DATA)
     {
       const CData & Data = data.getProperty(CData::PARAMETER_VALUE).toData();
-      setValue(Data.getProperty(CData::VALUE).toDouble(), CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
+      setValue(Data.getProperty(CData::INITIAL_VALUE).toDouble(),
+               CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
     }
 
   if (data.isSetProperty(CData::INITIAL_EXPRESSION))
@@ -166,7 +184,7 @@ bool CModelParameter::applyData(const CData & data, CUndoData::ChangeSet & chang
       setInitialExpression(data.getProperty(CData::INITIAL_EXPRESSION).toString());
     }
 
-  return false;
+  return true;
 }
 
 // virtual
@@ -177,25 +195,52 @@ void CModelParameter::createUndoData(CUndoData & undoData,
 {
   if (type != CUndoData::Type::CHANGE)
     {
+      undoData = CUndoData(type, this);
       return;
     }
 
-  undoData.addProperty(CData::SIMULATION_TYPE, oldData.getProperty(CData::SIMULATION_TYPE), CModelEntity::StatusName[mSimulationType]);
+  if (mType != Type::Set)
+    {
+      std::cout << "Processing: " << oldData.getProperty(CData::OBJECT_NAME).toString() << std::endl;
 
-  CData OldInitialValueData;
-  OldInitialValueData.addProperty(CData::VALUE, oldData.getProperty(CData::PARAMETER_VALUE).toData().getProperty(CData::VALUE));
-  OldInitialValueData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
-  CData NewInitialValueData;
-  NewInitialValueData.addProperty(CData::VALUE, mValue);
-  NewInitialValueData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
-  undoData.addProperty(CData::PARAMETER_VALUE, OldInitialValueData, NewInitialValueData);
+      undoData.addProperty(CData::OBJECT_NAME, oldData.getProperty(CData::OBJECT_NAME), mCN);
+      undoData.addProperty(CData::OBJECT_UUID, oldData.getProperty(CData::OBJECT_UUID), getUuid().str());
+      undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), getSet() != NULL ? getSet()->getCN() : CCommonName());
+      undoData.addProperty(CData::OBJECT_TYPE, oldData.getProperty(CData::OBJECT_TYPE), TypeNames[mType]);
+      undoData.addProperty(CData::OBJECT_INDEX, oldData.getProperty(CData::OBJECT_INDEX), getIndex());
+    }
 
-  undoData.addProperty(CData::INITIAL_EXPRESSION, oldData.getProperty(CData::INITIAL_EXPRESSION), getInitialExpression());
+  switch (mType)
+    {
+      case Type::Model:
+      case Type::Compartment:
+      case Type::Species:
+      case Type::ModelValue:
+      case Type::ReactionParameter:
+      {
+        CData OldParameterValue;
+        OldParameterValue.addProperty(CData::INITIAL_VALUE, oldData.getProperty(CData::PARAMETER_VALUE).toData().getProperty(CData::INITIAL_VALUE));
+        OldParameterValue.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+
+        CData NewParameterValue;
+        NewParameterValue.addProperty(CData::INITIAL_VALUE, mValue);
+        NewParameterValue.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+
+        undoData.addProperty(CData::PARAMETER_VALUE, OldParameterValue, NewParameterValue);
+        undoData.addProperty(CData::SIMULATION_TYPE, oldData.getProperty(CData::SIMULATION_TYPE), CModelEntity::StatusName[mSimulationType]);
+        undoData.addProperty(CData::INITIAL_EXPRESSION, oldData.getProperty(CData::INITIAL_EXPRESSION), getInitialExpression());
+      }
+      break;
+
+      default:
+        break;
+    }
 
   return;
 }
 
 CModelParameter::CModelParameter(CModelParameterGroup * pParent, const CModelParameter::Type & type):
+  CUndoObjectInterface(),
   mpParent(static_cast< CModelParameterGroup * >(pParent)),
   mType(type),
   mCN(),
@@ -208,6 +253,7 @@ CModelParameter::CModelParameter(CModelParameterGroup * pParent, const CModelPar
 {}
 
 CModelParameter::CModelParameter(const CModelParameter & src, CModelParameterGroup * pParent):
+  CUndoObjectInterface(src),
   mpParent(pParent),
   mType(src.mType),
   mCN(src.mCN),
@@ -897,18 +943,11 @@ CData CModelParameterSpecies::toData() const
 {
   CData Data(CModelParameter::toData());
 
-  Data.addProperty(CData::INITIAL_INTENSIVE_VALUE, mConcentration);
+  CData ParameterValue = Data.getProperty(CData::PARAMETER_VALUE).toData();
+  ParameterValue.addProperty(CData::INITIAL_INTENSIVE_VALUE, mConcentration);
+  Data.addProperty(CData::PARAMETER_VALUE, ParameterValue);
 
   return Data;
-}
-
-// virtual
-bool CModelParameterSpecies::applyData(const CData & data, CUndoData::ChangeSet & changes)
-{
-  // TODO CRITICAL Implement me!
-  fatalError();
-
-  return false;
 }
 
 // virtual
@@ -924,7 +963,24 @@ void CModelParameterSpecies::createUndoData(CUndoData & undoData,
       return;
     }
 
-  undoData.addProperty(CData::INITIAL_INTENSIVE_VALUE, oldData.getProperty(CData::INITIAL_INTENSIVE_VALUE), mConcentration);
+  CData OldParameterValue;
+  CData NewParameterValue;
+
+  if (framework == CCore::Framework::Concentration)
+    {
+      OldParameterValue.addProperty(CData::INITIAL_VALUE, oldData.getProperty(CData::PARAMETER_VALUE).toData().getProperty(CData::INITIAL_INTENSIVE_VALUE));
+      NewParameterValue.addProperty(CData::INITIAL_VALUE, mConcentration);
+    }
+  else
+    {
+      OldParameterValue.addProperty(CData::INITIAL_VALUE, oldData.getProperty(CData::PARAMETER_VALUE).toData().getProperty(CData::INITIAL_VALUE));
+      NewParameterValue.addProperty(CData::INITIAL_VALUE, mValue);
+    }
+
+  OldParameterValue.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+  NewParameterValue.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+
+  undoData.addProperty(CData::PARAMETER_VALUE, OldParameterValue, NewParameterValue);
 
   return;
 }
@@ -1114,17 +1170,10 @@ const CReaction * CModelParameterReactionParameter::getReaction() const
   return mpReaction;
 }
 
-CCommonName CModelParameterReactionParameter::getReactionCN() const
+// static
+CCommonName CModelParameterReactionParameter::getReactionCN(const CCommonName & reactionParameterCN)
 {
-  CCommonName ReactionParametersCN;
-  CCommonName ReactionCN;
-  std::string ObjectType;
-  std::string ObjectName;
-
-  mCN.split(ReactionParametersCN, ObjectType, ObjectName);
-  ReactionParametersCN.split(ReactionCN, ObjectType, ObjectName);
-
-  return ReactionCN;
+  return reactionParameterCN.substr(0, reactionParameterCN.find(",ParameterGroup=Parameters"));
 }
 
 void CModelParameterReactionParameter::setGlobalQuantityCN(const std::string & globalQuantityCN)

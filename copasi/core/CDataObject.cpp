@@ -547,8 +547,6 @@ void CDataObject::createUndoData(CUndoData & undoData, const CUndoData::Type & t
       return;
     }
 
-  undoData = CUndoData(CUndoData::Type::CHANGE, oldData);
-
   undoData.addProperty(CData::OBJECT_NAME, oldData.getProperty(CData::OBJECT_NAME), mObjectName);
   undoData.addProperty(CData::OBJECT_UUID, oldData.getProperty(CData::OBJECT_UUID), getUuid().str());
   undoData.addProperty(CData::OBJECT_TYPE, oldData.getProperty(CData::OBJECT_TYPE), mObjectType);

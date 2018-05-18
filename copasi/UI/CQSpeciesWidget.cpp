@@ -135,7 +135,8 @@ bool CQSpeciesWidget::updateProtected(ListViews::ObjectType objectType, ListView
       return true;
     }
 
-  if (objectType == ListViews::MODEL)
+  if (objectType == ListViews::MODEL ||
+      objectType == ListViews::METABOLITE)
     {
       enterProtected();
     }

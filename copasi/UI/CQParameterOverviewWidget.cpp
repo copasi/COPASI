@@ -340,7 +340,7 @@ void CQParameterOverviewWidget::slotBtnDelete()
 
   mpParameterSetDM->setModelParameterSet(NULL);
 
-  slotNotifyChanges(mpDataModel->applyData(CUndoData(CUndoData::Type::REMOVE, mpParameterSet)));
+  slotNotifyChanges(mpDataModel->applyData(CUndoData(CUndoData::Type::REMOVE, mpParameterSet->toData())));
 }
 
 // virtual
@@ -422,7 +422,7 @@ void CQParameterOverviewWidget::slotBtnCopy()
   pNew->setObjectName(Name);
   Sets.add(pNew, true);
 
-  slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pNew)));
+  slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pNew->toData())));
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, pNew->CDataObject::getCN());
 }
@@ -546,7 +546,7 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
       // We are sure that a set with that name does not exist.
       Sets.add(pNew, true);
 
-      slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pNew)));
+      slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pNew->toData())));
     }
   else
     {

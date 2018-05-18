@@ -47,7 +47,7 @@ public:
 
   CUndoData();
 
-  CUndoData(const Type & type, const CDataObject * pObject, const size_t & authorId = C_INVALID_INDEX);
+  CUndoData(const Type & type, const CUndoObjectInterface * pObject, const size_t & authorId = C_INVALID_INDEX);
 
   CUndoData(const Type & type, const CData & data, const size_t & authorId = C_INVALID_INDEX);
 

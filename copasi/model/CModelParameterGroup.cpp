@@ -8,8 +8,6 @@
 // of Manchester.
 // All rights reserved.
 
-
-
 #include <map>
 #include <iostream>
 
@@ -81,9 +79,8 @@ bool CModelParameterGroup::applyData(const CData & data, CUndoData::ChangeSet & 
 {
   bool success = CModelParameter::applyData(data, changes);
 
-  // This only inserts new parameters modification of existing parameters or their deletion
-  // is handled by accessing them directly.
-  if (data.isSetProperty(CData::PARAMETER_VALUE))
+  if (data.isSetProperty(CData::PARAMETER_VALUE) &&
+      data.getProperty(CData::PARAMETER_VALUE).getType() == CDataValue::DATA_VECTOR)
     {
       const std::vector< CData > & Value = data.getProperty(CData::PARAMETER_VALUE).toDataVector();
 
@@ -92,17 +89,12 @@ bool CModelParameterGroup::applyData(const CData & data, CUndoData::ChangeSet & 
 
       for (; it != end; ++it)
         {
-          CModelParameter * pParameter;
-          size_t Index = it->getProperty(CData::OBJECT_INDEX).toSizeT();
+          CModelParameter * pParameter = getModelParameter(it->getProperty(CData::OBJECT_NAME).toString());
 
-          if (Index < size())
+          if (pParameter == NULL &&
+              getSet() != NULL)
             {
-              pParameter = mModelParameters[Index];
-            }
-
-          if (pParameter == NULL)
-            {
-              pParameter = getModelParameter(CCommonName::fromData(*it));
+              pParameter = dynamic_cast< CModelParameter * >(getSet()->insert(*it));
             }
 
           if (pParameter == NULL)
@@ -143,31 +135,56 @@ void CModelParameterGroup::createUndoData(CUndoData & undoData,
   const_iterator itNew = mModelParameters.begin();
   const_iterator endNew = mModelParameters.end();
 
-  std::vector< CData > OldParameterData;
-  std::vector< CData > NewParameterData;
+  std::vector< CData > OldModelParametersData;
+  std::vector< CData > NewModelParametersData;
 
   for (; itOld != endOld && itNew != endNew; ++itOld, ++itNew)
     {
-      CData ParameterData((*itNew)->toData());
       CUndoData ParameterUndoData;
       (*itNew)->createUndoData(ParameterUndoData, CUndoData::Type::CHANGE, *itOld, framework);
 
       if (!ParameterUndoData.empty())
         {
-          OldParameterData.push_back(ParameterUndoData.getOldData());
-          NewParameterData.push_back(ParameterUndoData.getNewData());
+          switch ((*itNew)->getType())
+            {
+              case Type::Model:
+              case Type::Compartment:
+              case Type::Species:
+              case Type::ModelValue:
+              case Type::ReactionParameter:
+              {
+                OldModelParametersData.push_back(ParameterUndoData.getOldData());
+                NewModelParametersData.push_back(ParameterUndoData.getNewData());
+              }
+              break;
+
+              default:
+              {
+                const std::vector< CData > & OldParameterData = ParameterUndoData.getOldData().getProperty(CData::PARAMETER_VALUE).toDataVector();
+                OldModelParametersData.insert(OldModelParametersData.end(), OldParameterData.begin(), OldParameterData.end());
+
+                const std::vector< CData > & NewParameterData = ParameterUndoData.getNewData().getProperty(CData::PARAMETER_VALUE).toDataVector();
+                NewModelParametersData.insert(NewModelParametersData.end(), NewParameterData.begin(), NewParameterData.end());
+              }
+              break;
+            }
+
+          std::cout << "Old PARAMETER_VALUE: " <<  CDataValue(OldModelParametersData) << std::endl;
+          std::cout << "New PARAMETER_VALUE: " <<  CDataValue(NewModelParametersData) << std::endl;
         }
     }
 
-  undoData.addProperty(CData::PARAMETER_VALUE, OldParameterData, NewParameterData);
+  undoData.addProperty(CData::PARAMETER_VALUE, OldModelParametersData, NewModelParametersData);
 
   for (; itOld != endOld; ++itOld)
     {
+      std::cout << "REMOVE: " << itOld->getProperty(CData::OBJECT_NAME).toString() << std::endl;
       undoData.addPreProcessData(CUndoData(CUndoData::Type::REMOVE, *itOld));
     }
 
   for (; itNew != endNew; ++itNew)
     {
+      std::cout << "INSERT: " << itOld->getProperty(CData::OBJECT_NAME).toString() << std::endl;
       undoData.addPostProcessData(CUndoData(CUndoData::Type::INSERT, (*itNew)->toData()));
     }
 
@@ -561,9 +578,7 @@ CModelParameter * CModelParameterGroup::getModelParameter(const std::string & cn
         {
           pModelParameter = *it;
         }
-      else if ((*it)->getType() == CModelParameter::Type::Reaction ||
-               (*it)->getType() == CModelParameter::Type::Group ||
-               (*it)->getType() == CModelParameter::Type::Set)
+      else if (dynamic_cast< const CModelParameterGroup * >(*it) != NULL)
         {
           pModelParameter = static_cast< const CModelParameterGroup * >(*it)->getModelParameter(cn);
         }
@@ -571,7 +586,6 @@ CModelParameter * CModelParameterGroup::getModelParameter(const std::string & cn
 
   return pModelParameter;
 }
-
 
 CModelParameter * CModelParameterGroup::getModelParameter(const std::string & name,
     const CModelParameter::Type & type) const
@@ -588,9 +602,7 @@ CModelParameter * CModelParameterGroup::getModelParameter(const std::string & na
         {
           pModelParameter = *it;
         }
-      else if ((*it)->getType() == CModelParameter::Type::Reaction ||
-               (*it)->getType() == CModelParameter::Type::Group ||
-               (*it)->getType() == CModelParameter::Type::Set)
+      else if (dynamic_cast< const CModelParameterGroup * >(*it) != NULL)
         {
           pModelParameter = static_cast< const CModelParameterGroup * >(*it)->getModelParameter(name, type);
         }
@@ -598,7 +610,6 @@ CModelParameter * CModelParameterGroup::getModelParameter(const std::string & na
 
   return pModelParameter;
 }
-
 
 // virtual
 size_t CModelParameterGroup::getNumChildren() const

@@ -173,7 +173,7 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex & p
       pNew->setObjectName(TO_UTF8(Name));
       mpListOfParameterSets->add(pNew, true);
 
-      emit signalNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pNew)));
+      emit signalNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pNew->toData())));
     }
 
   endInsertRows();
@@ -202,7 +202,7 @@ bool CQParameterSetsDM::removeRows(int position, int rows, const QModelIndex & p
 
   for (itDeleted = ToBeDeleted.begin(); itDeleted != endDeleted; ++itDeleted)
     {
-      emit signalNotifyChanges(mpDataModel->applyData(CUndoData(CUndoData::Type::REMOVE, *itDeleted)));
+      emit signalNotifyChanges(mpDataModel->applyData(CUndoData(CUndoData::Type::REMOVE, (*itDeleted)->toData())));
     }
 
   endRemoveRows();

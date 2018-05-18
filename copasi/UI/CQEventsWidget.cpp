@@ -127,7 +127,8 @@ bool CQEventsWidget::updateProtected(ListViews::ObjectType objectType, ListViews
       return true;
     }
 
-  if (objectType == ListViews::MODEL)
+  if (objectType == ListViews::MODEL ||
+      objectType == ListViews::EVENT)
     {
       enterProtected();
     }
