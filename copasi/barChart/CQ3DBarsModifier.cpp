@@ -4,6 +4,7 @@
 // All rights reserved.
 
 
+
 #include  "CQ3DBarsModifier.h"
 
 #ifdef WITH_QT5_VISUALIZATION
@@ -34,14 +35,15 @@ using namespace QtDataVisualization;
 #include <qmath.h>
 
 #include <copasi/core/CDataArray.h>
+#include <copasi/UI/CQArrayAnnotationsWidget.h>
 
 #include <copasi/UI/qtUtilities.h>
 
 using namespace QtDataVisualization;
 
-//! [0]
-CQ3DBarsModifier::CQ3DBarsModifier(Q3DBars *bargraph)
+CQ3DBarsModifier::CQ3DBarsModifier(CQArrayAnnotationsWidget* widget, Q3DBars *bargraph)
   : m_graph(bargraph),
+    m_inputHandler(NULL),
     m_xRotation(0.0f),
     m_yRotation(0.0f),
     m_fontSize(30),
@@ -49,23 +51,19 @@ CQ3DBarsModifier::CQ3DBarsModifier(Q3DBars *bargraph)
     m_subSegments(3),
     m_minval(-1.0f),
     m_maxval(1.0f),
-    //! [1]
     m_valueAxis(new QValue3DAxis),
     m_rowAxis(new QCategory3DAxis),
     m_colAxis(new QCategory3DAxis),
     m_primarySeries(new QBar3DSeries),
-    //! [1]
     m_barMesh(QAbstract3DSeries::MeshBar),
     m_smooth(false)
 {
-  //! [2]
   m_graph->activeTheme()->setType(Q3DTheme::ThemeArmyBlue);
   m_graph->activeTheme()->setBackgroundEnabled(false);
   m_graph->activeTheme()->setLabelBackgroundEnabled(true);
   m_graph->setShadowQuality(QAbstract3DGraph::ShadowQualityNone);
   m_graph->setMultiSeriesUniform(true);
 
-  //! [3]
   m_valueAxis->setSegmentCount(m_segments);
   m_valueAxis->setSubSegmentCount(m_subSegments);
   m_valueAxis->setRange(m_minval, m_maxval);
@@ -81,9 +79,7 @@ CQ3DBarsModifier::CQ3DBarsModifier(Q3DBars *bargraph)
   m_graph->setValueAxis(m_valueAxis);
   m_graph->setRowAxis(m_rowAxis);
   m_graph->setColumnAxis(m_colAxis);
-  //! [3]
 
-  //! [8]
   m_primarySeries->setItemLabelFormat(QStringLiteral("@rowLabel, @colLabel : @valueLabel"));
   m_primarySeries->setMesh(QAbstract3DSeries::MeshBar);
   m_primarySeries->setMeshSmooth(false);
@@ -95,8 +91,8 @@ CQ3DBarsModifier::CQ3DBarsModifier(Q3DBars *bargraph)
   clearData();
 
   // Set up property animations for zooming to the selected bar
-  //! [12]
   Q3DCamera *camera = m_graph->scene()->activeCamera();
+  camera->setCameraPreset(Q3DCamera::CameraPresetIsometricRight);
   m_defaultAngleX = camera->xRotation();
   m_defaultAngleY = camera->yRotation();
   m_defaultZoom = camera->zoomLevel();
@@ -125,9 +121,12 @@ CQ3DBarsModifier::CQ3DBarsModifier(Q3DBars *bargraph)
   m_animationCameraZoom.setKeyValueAt(zoomOutFraction, QVariant::fromValue(50.0f));
   m_animationCameraTarget.setKeyValueAt(zoomOutFraction,
                                         QVariant::fromValue(QVector3D(0.0f, 0.0f, 0.0f)));
-  //! [12]
+
+  m_inputHandler = new CQCustomInputHandler(m_graph);
+  m_inputHandler->setAxes(m_rowAxis, m_colAxis, m_valueAxis);
+  m_graph->setActiveInputHandler(m_inputHandler);
+  connect(m_inputHandler, SIGNAL(signalShowContextMenu(const QPoint &)), widget, SLOT(slotShowContextMenu(const QPoint&)));
 }
-//! [0]
 
 CQ3DBarsModifier::~CQ3DBarsModifier()
 {
@@ -410,7 +409,6 @@ void CQ3DBarsModifier::changePresetCamera()
   // Restore camera target in case animation has changed it
   m_graph->scene()->activeCamera()->setTarget(QVector3D(0.0f, 0.0f, 0.0f));
 
-  //! [10]
   static int preset = Q3DCamera::CameraPresetFront;
 
   m_graph->scene()->activeCamera()->setCameraPreset((Q3DCamera::CameraPreset)preset);
@@ -418,7 +416,6 @@ void CQ3DBarsModifier::changePresetCamera()
   if (++preset > Q3DCamera::CameraPresetDirectlyBelow)
     preset = Q3DCamera::CameraPresetFrontLow;
 
-  //! [10]
 }
 
 void CQ3DBarsModifier::changeTheme(int theme)
@@ -489,7 +486,6 @@ void CQ3DBarsModifier::setAxisTitleFixed(bool enabled)
   m_rowAxis->setTitleFixed(enabled);
 }
 
-//! [11]
 void CQ3DBarsModifier::zoomToSelectedBar()
 {
   m_animationCameraX.stop();
@@ -515,7 +511,6 @@ void CQ3DBarsModifier::zoomToSelectedBar()
   if (selectedBar != QBar3DSeries::invalidSelectionPosition())
     {
       // Normalize selected bar position within axis range to determine target coordinates
-      //! [13]
       QVector3D endTarget;
       float xMin = m_graph->columnAxis()->min();
       float xRange = m_graph->columnAxis()->max() - xMin;
@@ -523,10 +518,8 @@ void CQ3DBarsModifier::zoomToSelectedBar()
       float zRange = m_graph->rowAxis()->max() - zMin;
       endTarget.setX((selectedBar.y() - xMin) / xRange * 2.0f - 1.0f);
       endTarget.setZ((selectedBar.x() - zMin) / zRange * 2.0f - 1.0f);
-      //! [13]
 
       // Rotate the camera so that it always points approximately to the graph center
-      //! [15]
       qreal endAngleX = 90.0 - qRadiansToDegrees(qAtan(qreal(endTarget.z() / endTarget.x())));
 
       if (endTarget.x() > 0.0f)
@@ -539,14 +532,10 @@ void CQ3DBarsModifier::zoomToSelectedBar()
       if (m_graph->valueAxis()->reversed())
         endAngleY *= -1.0f;
 
-      //! [15]
-
       m_animationCameraX.setEndValue(QVariant::fromValue(float(endAngleX)));
       m_animationCameraY.setEndValue(QVariant::fromValue(endAngleY));
       m_animationCameraZoom.setEndValue(QVariant::fromValue(250));
-      //! [14]
       m_animationCameraTarget.setEndValue(QVariant::fromValue(endTarget));
-      //! [14]
     }
   else
     {
@@ -562,6 +551,7 @@ void CQ3DBarsModifier::zoomToSelectedBar()
   m_animationCameraZoom.start();
   m_animationCameraTarget.start();
 }
+
 void CQ3DBarsModifier::toggleGradient()
 {
   if (m_primarySeries->colorStyle() == Q3DTheme::ColorStyleRangeGradient)
@@ -580,7 +570,6 @@ void CQ3DBarsModifier::toggleGradient()
       m_primarySeries->setColorStyle(Q3DTheme::ColorStyleRangeGradient);
     }
 }
-//! [11]
 
 void CQ3DBarsModifier::changeShadowQuality(int quality)
 {
@@ -589,7 +578,6 @@ void CQ3DBarsModifier::changeShadowQuality(int quality)
   emit shadowQualityChanged(quality);
 }
 
-//! [7]
 void CQ3DBarsModifier::rotateX(int rotation)
 {
   m_xRotation = rotation;
@@ -601,7 +589,6 @@ void CQ3DBarsModifier::rotateY(int rotation)
   m_yRotation = rotation;
   m_graph->scene()->activeCamera()->setCameraPosition(m_xRotation, m_yRotation);
 }
-//! [7]
 
 void CQ3DBarsModifier::setBackgroundEnabled(int enabled)
 {
@@ -619,11 +606,6 @@ void CQ3DBarsModifier::setSmoothBars(int smooth)
   m_primarySeries->setMeshSmooth(m_smooth);
 }
 
-void CQ3DBarsModifier::setSeriesVisibility(int enabled)
-{
-  //m_secondarySeries->setVisible(bool(enabled));
-}
-
 void CQ3DBarsModifier::setReverseValueAxis(int enabled)
 {
   m_graph->valueAxis()->setReversed(enabled);
@@ -632,6 +614,78 @@ void CQ3DBarsModifier::setReverseValueAxis(int enabled)
 void CQ3DBarsModifier::setReflection(bool enabled)
 {
   m_graph->setReflection(enabled);
+}
+
+
+
+CQCustomInputHandler::CQCustomInputHandler(QAbstract3DGraph *graph, QObject *parent)
+  : Q3DInputHandler(parent)
+  , m_graph(graph)
+  , m_axisX(NULL)
+  , m_axisY(NULL)
+  , m_axisZ(NULL)
+  , mState(CQCustomInputHandler::StateNormal)
+{
+
+}
+
+void CQCustomInputHandler::mousePressEvent(QMouseEvent * event, const QPoint & mousePos)
+{
+  mPosDown = mousePos;
+  Q3DInputHandler::mousePressEvent(event, mousePos);
+
+  if (event->button() == Qt::LeftButton &&
+      (qApp->keyboardModifiers() & Qt::ControlModifier) == Qt::ControlModifier)
+    mState = CQCustomInputHandler::StateScrolling;
+}
+
+void CQCustomInputHandler::mouseMoveEvent(QMouseEvent * event, const QPoint & mousePos)
+{
+  if (mState == CQCustomInputHandler::StateScrolling  &&
+      (qApp->keyboardModifiers() & Qt::ControlModifier) == Qt::ControlModifier)
+    {
+      float distanceX = 0.0f;
+      float distanceY = 0.0f;
+      // Get scene orientation from active camera
+      float xRotation = scene()->activeCamera()->xRotation();
+      float yRotation = scene()->activeCamera()->yRotation();
+
+      // Calculate directional drag multipliers based on rotation
+      float xMulX = qCos(qDegreesToRadians(xRotation));
+      float xMulY = qSin(qDegreesToRadians(xRotation));
+      float zMulX = qSin(qDegreesToRadians(xRotation));
+      float zMulY = qCos(qDegreesToRadians(xRotation));
+      float m_speedModifier = 200.0f;
+
+      QPoint move = mousePos - mPosDown;
+      float yMove = (yRotation < 0) ? -move.y() : move.y();
+
+      distanceX = (move.x() * xMulX - yMove * xMulY) / m_speedModifier;
+      distanceY = (move.x() * zMulX + yMove * zMulY) / m_speedModifier;
+
+      QVector3D target = m_graph->scene()->activeCamera()->target();
+
+      m_graph->scene()->activeCamera()->setTarget(target - QVector3D(distanceX, 0.0f, -distanceY));
+
+      mPosDown = mousePos;
+    }
+
+  Q3DInputHandler::mouseMoveEvent(event, mousePos);
+}
+
+void CQCustomInputHandler::mouseReleaseEvent(QMouseEvent * event, const QPoint & mousePos)
+{
+  mState = CQCustomInputHandler::StateNormal;
+
+  if (event->button() == Qt::RightButton)
+    {
+      QPoint diff = mousePos - mPosDown;
+
+      if (diff.manhattanLength() < 5)
+        emit signalShowContextMenu(mousePos);
+    }
+
+  Q3DInputHandler::mouseReleaseEvent(event, mousePos);
 }
 
 #endif
