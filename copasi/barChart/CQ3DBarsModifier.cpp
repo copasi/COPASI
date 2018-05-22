@@ -5,6 +5,7 @@
 
 
 
+
 #include  "CQ3DBarsModifier.h"
 
 #ifdef WITH_QT5_VISUALIZATION
@@ -126,6 +127,8 @@ CQ3DBarsModifier::CQ3DBarsModifier(CQArrayAnnotationsWidget* widget, Q3DBars *ba
   m_inputHandler->setAxes(m_rowAxis, m_colAxis, m_valueAxis);
   m_graph->setActiveInputHandler(m_inputHandler);
   connect(m_inputHandler, SIGNAL(signalShowContextMenu(const QPoint &)), widget, SLOT(slotShowContextMenu(const QPoint&)));
+  connect(m_inputHandler, SIGNAL(signalBarDoubleClicked(int, int)), widget, SLOT(selectTableCell(int, int)));
+
 }
 
 CQ3DBarsModifier::~CQ3DBarsModifier()
@@ -486,6 +489,16 @@ void CQ3DBarsModifier::setAxisTitleFixed(bool enabled)
   m_rowAxis->setTitleFixed(enabled);
 }
 
+void CQ3DBarsModifier::selectBar(int row, int col)
+{
+  if (row == -1 || col == -1) return;
+
+  m_graph->clearSelection();
+  emit m_graph->selectedSeriesChanged(m_primarySeries);
+  m_primarySeries->setSelectedBar(QPoint(row, col));
+  emit m_primarySeries->selectedBarChanged(QPoint(row, col));
+}
+
 void CQ3DBarsModifier::zoomToSelectedBar()
 {
   m_animationCameraX.stop();
@@ -627,6 +640,20 @@ CQCustomInputHandler::CQCustomInputHandler(QAbstract3DGraph *graph, QObject *par
   , mState(CQCustomInputHandler::StateNormal)
 {
 
+}
+
+void CQCustomInputHandler::mouseDoubleClickEvent(QMouseEvent * event)
+{
+  auto* barGraph = qobject_cast<Q3DBars*>(m_graph);
+
+  if (!barGraph) return;
+
+  auto* series = barGraph->selectedSeries();
+
+  if (!series) return;
+
+  auto point = series->selectedBar();
+  emit signalBarDoubleClicked(point.rx(), point.ry());
 }
 
 void CQCustomInputHandler::mousePressEvent(QMouseEvent * event, const QPoint & mousePos)
