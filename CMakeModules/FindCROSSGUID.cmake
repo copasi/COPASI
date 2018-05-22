@@ -5,6 +5,7 @@
 
 
 
+
 # Locate library providing crossguid
 # This module defines:
 # CROSSGUID_INCLUDE_DIR, where to find the headers
@@ -44,7 +45,7 @@ if (NOT CROSSGUID_FOUND)
   endif (NOT CROSSGUID_INCLUDE_DIR)
 
   find_library(CROSSGUID_LIBRARY 
-    NAMES crossguid
+    NAMES crossguid crossguid-dgb
     PATHS $ENV{CROSSGUID_DIR}/lib
           $ENV{CROSSGUID_DIR}
           ${COPASI_DEPENDENCY_DIR}/lib
