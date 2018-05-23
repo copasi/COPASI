@@ -200,6 +200,7 @@ CModel::CModel(CDataContainer* pParent):
   mMetabolitesX("Reduced Model Metabolites", this),
   mSteps("Reactions", this),
   mEvents("Events", this),
+  mReactionsPerSpecies(),
   mParticleFluxes(),
   mValues("Values", this),
   mParameterSet("Initial State", this),
@@ -723,6 +724,7 @@ void CModel::buildStoi()
   unsigned C_INT32 i, numCols;
 
   initializeMetabolites();
+  mReactionsPerSpecies.resize(mNumMetabolitesReaction);
 
   size_t numRows;
   numRows = mNumMetabolitesReaction;
@@ -749,8 +751,9 @@ void CModel::buildStoi()
 
   CDataVector< CReaction >::iterator itStep = mSteps.begin();
   CDataVector< CMetab >::const_iterator itMetab;
+  size_t reactionNum = 0, speciesNum = 0;
 
-  for (; pCol < pColEnd; ++pCol, ++itStep)
+  for (; pCol < pColEnd; ++pCol, ++itStep, ++reactionNum)
     {
       if (mpCompileHandler && !mpCompileHandler->progressItem(hProcess)) return;
 
@@ -770,13 +773,15 @@ void CModel::buildStoi()
       for (; itBalance != endBalance; ++itBalance)
         {
           const std::string & key = itBalance->getMetaboliteKey();
+          speciesNum = 0;
 
           for (pRow = pCol, itMetab = CDataVector< CMetab >::const_iterator(mMetabolitesX.begin()) + mNumMetabolitesODE;
                pRow < pRowEnd;
-               pRow += numCols, ++itMetab)
+               pRow += numCols, ++itMetab, ++speciesNum)
             if (itMetab->getKey() == key)
               {
                 *pRow = itBalance->getMultiplicity();
+                mReactionsPerSpecies[speciesNum].push_back(reactionNum);
                 break;
               }
         }
@@ -1112,6 +1117,37 @@ void CModel::initializeMetabolites()
 }
 
 //**********************************************************************
+std::vector< size_t > CModel::getReactionsPerSpecies(const CMetab * pSpecies)
+{
+  std::vector< size_t > reactionList;
+  CDataVectorN< CMetab >::const_iterator itMetab = getMetabolites().begin();
+
+  for (size_t i = 0 ; i != getMetabolites().size(); ++i, ++itMetab)
+    {
+      if (itMetab == pSpecies)
+        {
+          reactionList = mReactionsPerSpecies[i];
+        }
+    }
+
+  return reactionList;
+}
+
+const std::vector < size_t > CModel::getReactionsPerSpecies(const CMetab * pSpecies) const
+{
+  std::vector< size_t > reactionList;
+  CDataVectorN< CMetab >::const_iterator itMetab = getMetabolites().begin();
+
+  for (size_t i = 0 ; i != getMetabolites().size(); ++i, ++itMetab)
+    {
+      if (itMetab == pSpecies)
+        {
+          reactionList = mReactionsPerSpecies[i];
+        }
+    }
+
+  return reactionList;
+}
 
 CDataVectorNS < CReaction > & CModel::getReactions()
 {return mSteps;}
@@ -2603,7 +2639,7 @@ bool CModel::convert2NonReversible()
   for (i = 0; i < imax; ++i)
     if (steps[i].isReversible())
       {
-        std::vector< std::pair< const CDataObject * , const CDataObject * > > ParameterMap;
+        std::vector< std::pair< const CDataObject *, const CDataObject * > > ParameterMap;
 
         reac0 = &steps[i];
         rn1 = reac0->getObjectName() + " (forward)";
@@ -2989,7 +3025,7 @@ void CModel::initObjects()
 
   addMatrixReference("Stoichiometry", mStoi, CDataObject::ValueDbl);
   addMatrixReference("Reduced Model Stoichiometry", mRedStoi, CDataObject::ValueDbl);
-  addMatrixReference("Link Matrix"   , mLView, CDataObject::ValueDbl);
+  addMatrixReference("Link Matrix", mLView, CDataObject::ValueDbl);
 
   mpStoiAnnotation = new CDataArray("Stoichiometry(ann)", this, new CMatrixInterface<CMatrix<C_FLOAT64> >(&mStoi), true);
   mpStoiAnnotation->setDescription("Stoichiometry Matrix");

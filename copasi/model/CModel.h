@@ -326,6 +326,18 @@ public:
   //********** Reactions *****************************
 
   /**
+   * Return the vector of reaction indices for a species
+   * @return std::vector <size_t> mReactionsPerSpecies
+   */
+  std::vector < size_t > getReactionsPerSpecies(const CMetab *);
+
+  /**
+   * Return the vector of reaction indices for a species
+   * @return const std::vector <size_t> mReactionsPerSpecies
+   */
+  const std::vector < size_t > getReactionsPerSpecies(const CMetab *) const;
+
+  /**
    * Return the vector of reactions
    * @return CDataVectorNS <CReaction> & reactions
    */
@@ -1250,6 +1262,11 @@ private:
    * Vector of parameter sets
    */
   CDataVectorN< CModelParameterSet > mParameterSets;
+
+  /**
+   * Vector of species that contains associated reactions
+   */
+  std::vector < std::vector < size_t > > mReactionsPerSpecies;
 
   /**
    * The key of the currently active parameter set.

@@ -1536,10 +1536,12 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
         bool First = true;
 
         CDataVectorN< CReaction >::const_iterator it = container.getModel().getReactions().begin();
-        CDataVectorN< CReaction >::const_iterator end = container.getModel().getReactions().end();
+        CDataVectorN< CReaction >::const_iterator itBeg = it;
+        std::vector< size_t > reactionList = container.getModel().getReactionsPerSpecies(pSpecies);
 
-        for (; it != end; ++it)
+        for (size_t i = 0; i != reactionList.size(); ++i)
           {
+            it = itBeg + reactionList[i];
             const CDataVector< CChemEqElement > &Balances =
               it->getChemEq().getBalances();
             CDataVector< CChemEqElement >::const_iterator itChem = Balances.begin();
@@ -1847,12 +1849,14 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
   bool First = true;
 
   CDataVectorN< CReaction >::const_iterator it = container.getModel().getReactions().begin();
-  CDataVectorN< CReaction >::const_iterator end = container.getModel().getReactions().end();
+  CDataVectorN< CReaction >::const_iterator itBeg = it;
 
   std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > RateCalculationVector;
+  std::vector< size_t > reactionList = container.getModel().getReactionsPerSpecies(pSpecies);
 
-  for (; it != end; ++it)
+  for (size_t i = 0; i != reactionList.size(); ++i)
     {
+      it = itBeg + reactionList[i];
       const CDataVector< CChemEqElement > &Balances =
         it->getChemEq().getBalances();
       CDataVector< CChemEqElement >::const_iterator itChem = Balances.begin();
@@ -2034,12 +2038,15 @@ bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies
   bool First = true;
 
   CDataVectorN< CReaction >::const_iterator it = container.getModel().getReactions().begin();
-  CDataVectorN< CReaction >::const_iterator end = container.getModel().getReactions().end();
+  CDataVectorN< CReaction >::const_iterator itBeg = it;
 
+  std::vector< size_t > reactionList = container.getModel().getReactionsPerSpecies(pSpecies);
   std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > RateCalculationVector;
 
-  for (; it != end; ++it)
+  for (size_t i = 0; i != reactionList.size(); ++i)
     {
+      it = itBeg + reactionList[i];
+
       if (!it->hasNoise()) continue;
 
       const CDataVector< CChemEqElement > &Balances =
