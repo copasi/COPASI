@@ -6,6 +6,7 @@
 
 
 
+
 #include  "CQ3DBarsModifier.h"
 
 #ifdef WITH_QT5_VISUALIZATION
@@ -493,8 +494,6 @@ void CQ3DBarsModifier::selectBar(int row, int col)
 {
   if (row == -1 || col == -1) return;
 
-  m_graph->clearSelection();
-  emit m_graph->selectedSeriesChanged(m_primarySeries);
   m_primarySeries->setSelectedBar(QPoint(row, col));
   emit m_primarySeries->selectedBarChanged(QPoint(row, col));
 }
