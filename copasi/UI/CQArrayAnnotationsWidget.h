@@ -39,6 +39,7 @@ class CQSortFilterProxyModel;
 #include <QtDataVisualization/Q3DBars>
 
 class QWidget;
+class QMenu;
 class CQ3DBarsModifier;
 
 #endif
@@ -188,6 +189,10 @@ protected:
   QtDataVisualization::Q3DBars *m_graph;
   CQ3DBarsModifier* m_modifier;
   QWidget* m_container;
+  QMenu* m_contextMenu;
+
+public slots:
+  void slotShowContextMenu(const QPoint &);
 
 #endif // WITH_QT5_VISUALIZATION
 };

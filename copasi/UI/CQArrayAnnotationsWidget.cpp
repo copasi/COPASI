@@ -44,6 +44,7 @@
 #ifdef WITH_QT5_VISUALIZATION
 
 #include <QtDataVisualization>
+#include <QMenu>
 
 #include "CQ3DBarsModifier.h"
 
@@ -73,6 +74,7 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, bool slider)
   , m_graph(NULL)
   , m_modifier(NULL)
   , m_container(NULL)
+  , m_contextMenu(NULL)
 #endif
 {
 #ifdef DEBUG_UI
@@ -115,8 +117,70 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, bool slider)
 
       if (m_graph->hasContext())
         {
-
           m_modifier = new CQ3DBarsModifier(m_graph);
+
+          m_contextMenu = new QMenu(this);
+
+          QMenu* menu = new QMenu("Theme", m_contextMenu);
+          menu->addAction(new QAction("Qt", menu));
+          menu->addAction(new QAction("Primary Colors", menu));
+          menu->addAction(new QAction("Digia", menu));
+          menu->addAction(new QAction("Stone Moss", menu));
+          menu->addAction(new QAction("Army Blue", menu));
+          menu->addAction(new QAction("Retro", menu));
+          menu->addAction(new QAction("Ebony", menu));
+          menu->addAction(new QAction("Isabelle", menu));
+          m_contextMenu->addMenu(menu); // theme
+
+          menu = new QMenu("Selection Mode", m_contextMenu);
+          menu->addAction(new QAction("None", menu));
+          menu->addAction(new QAction("Bar", menu));
+          menu->addAction(new QAction("Row", menu));
+          menu->addAction(new QAction("Bar and Row", menu));
+          menu->addAction(new QAction("Column", menu));
+          menu->addAction(new QAction("Bar and Column", menu));
+          menu->addAction(new QAction("Row and Column", menu));
+          menu->addAction(new QAction("Bar, Row and Column", menu));
+          menu->addAction(new QAction("Slice into Row", menu));
+          menu->addAction(new QAction("Slice into Row and Item", menu));
+          menu->addAction(new QAction("Slice into Column", menu));
+          menu->addAction(new QAction("Slice into Column and Item", menu));
+          m_contextMenu->addMenu(menu); // selection mode
+
+          menu = new QMenu("Style", m_contextMenu);
+          menu->addAction(new QAction("Bar", menu));
+          menu->addAction(new QAction("Pyramid", menu));
+          menu->addAction(new QAction("Cone", menu));
+          menu->addAction(new QAction("Cylinder", menu));
+          menu->addAction(new QAction("Bevel bar", menu));
+          menu->addAction(new QAction("Sphere", menu));
+          m_contextMenu->addMenu(menu); // style
+
+          menu = new QMenu("Shadow", m_contextMenu);
+          menu->addAction(new QAction("None", menu));
+          menu->addAction(new QAction("Low", menu));
+          menu->addAction(new QAction("Medium", menu));
+          menu->addAction(new QAction("High", menu));
+          menu->addAction(new QAction("Low Soft", menu));
+          menu->addAction(new QAction("Medium Soft", menu));
+          menu->addAction(new QAction("High Soft", menu));
+          m_contextMenu->addMenu(menu); // style
+
+          m_contextMenu->addSeparator();
+
+          m_contextMenu->addAction(new QAction("Change label style"));
+          m_contextMenu->addAction(new QAction("Smooth bars"));
+          m_contextMenu->addAction(new QAction("Change camera preset"));
+          m_contextMenu->addAction(new QAction("Zoom to selected bar"));
+          m_contextMenu->addAction(new QAction("Show background"));
+          m_contextMenu->addAction(new QAction("Show grid"));
+          m_contextMenu->addAction(new QAction("Show reflections"));
+          m_contextMenu->addAction(new QAction("Show Gradients"));
+
+          connect(m_contextMenu, SIGNAL(triggered(QAction*)), m_modifier, SLOT(actionTriggered(QAction*)));
+
+          setContextMenuPolicy(Qt::CustomContextMenu);
+          connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotShowContextMenu(const QPoint &)));
         }
 
 #endif // WITH_QT5_VISUALIZATION
@@ -645,6 +709,16 @@ void CQArrayAnnotationsWidget::switchToBarChart()
 #endif // WITH_QT5_VISUALIZATION
     }
 }
+
+#ifdef WITH_QT5_VISUALIZATION
+
+void CQArrayAnnotationsWidget::slotShowContextMenu(const QPoint &pos)
+{
+  if (mpStack->currentWidget() == m_container)
+    m_contextMenu->popup(mapToGlobal(pos));
+}
+
+#endif // WITH_QT5_VISUALIZATION
 
 void CQArrayAnnotationsWidget::disableBarChart()
 {

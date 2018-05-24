@@ -11,6 +11,8 @@
 #include <QtDataVisualization/qbardataproxy.h>
 #include <QtDataVisualization/qabstract3dseries.h>
 
+#include <QMenu>
+#include <QAction>
 #include <QFont>
 #include <QDebug>
 #include <QStringList>
@@ -214,6 +216,168 @@ void CQ3DBarsModifier::loadData(const CDataArray * pData, unsigned int rowIndex,
   mColHeaders = colheaders;
 }
 
+void CQ3DBarsModifier::actionTriggered(QAction* action)
+{
+  if (action == NULL) return;
+
+  QString option = action->text();
+  QMenu *menu = qobject_cast<QMenu*> (action->parent());
+
+  if (menu == NULL)
+    {
+      if (option == "Change label style")
+        {
+          changeLabelBackground();
+        }
+      else if (option == "Smooth bars")
+        {
+          setSmoothBars(!m_primarySeries->isMeshSmooth());
+        }
+      else if (option == "Change camera preset")
+        {
+          changePresetCamera();
+        }
+      else if (option == "Zoom to selected bar")
+        {
+          zoomToSelectedBar();
+        }
+      else if (option == "Show background")
+        {
+          setBackgroundEnabled(!m_graph->activeTheme()->isBackgroundEnabled());
+        }
+      else if (option == "Show grid")
+        {
+          setGridEnabled(!m_graph->activeTheme()->isGridEnabled());
+        }
+      else if (option == "Show reflections")
+        {
+          setReflection(!m_graph->isReflection());
+        }
+      else if (option == "Show Gradients")
+        {
+          toggleGradient();
+        }
+
+      return;
+    }
+
+  QString title = menu->title();
+
+  if (title == "Theme")
+    {
+      changeTheme(menu->actions().indexOf(action));
+    }
+  else if (title == "Selection Mode")
+    {
+      if (option == "None")
+        {
+          m_graph->setSelectionMode(QAbstract3DGraph::SelectionNone);
+        }
+      else if (option == "Bar")
+        {
+          m_graph->setSelectionMode(QAbstract3DGraph::SelectionItem);
+        }
+      else if (option == "Row")
+        {
+          m_graph->setSelectionMode(QAbstract3DGraph::SelectionRow);
+        }
+      else if (option == "Bar and Row")
+        {
+          m_graph->setSelectionMode(QAbstract3DGraph::SelectionItemAndRow);
+        }
+      else if (option == "Column")
+        {
+          m_graph->setSelectionMode(QAbstract3DGraph::SelectionColumn);
+        }
+      else if (option == "Bar and Column")
+        {
+          m_graph->setSelectionMode(QAbstract3DGraph::SelectionItemAndColumn);
+        }
+      else if (option == "Row and Column")
+        {
+          m_graph->setSelectionMode(QAbstract3DGraph::SelectionRowAndColumn);
+        }
+      else if (option == "Bar, Row and Column")
+        {
+          m_graph->setSelectionMode(QAbstract3DGraph::SelectionItemRowAndColumn);
+        }
+      else if (option == "Slice into Row")
+        {
+          m_graph->setSelectionMode(QAbstract3DGraph::SelectionSlice | QAbstract3DGraph::SelectionRow);
+        }
+      else if (option == "Slice into Row and Item")
+        {
+          m_graph->setSelectionMode(QAbstract3DGraph::SelectionSlice | QAbstract3DGraph::SelectionItemAndRow);
+        }
+      else if (option == "Slice into Column")
+        {
+          m_graph->setSelectionMode(QAbstract3DGraph::SelectionSlice | QAbstract3DGraph::SelectionColumn);
+        }
+      else if (option == "Slice into Column and Item")
+        {
+          m_graph->setSelectionMode(QAbstract3DGraph::SelectionSlice | QAbstract3DGraph::SelectionItemAndColumn);
+        }
+    }
+  else if (title == "Style")
+    {
+      if (option == "Bar")
+        {
+          m_primarySeries->setMesh(QAbstract3DSeries::MeshBar);
+        }
+      else if (option == "Pyramid")
+        {
+          m_primarySeries->setMesh(QAbstract3DSeries::MeshPyramid);
+        }
+      else if (option == "Cone")
+        {
+          m_primarySeries->setMesh(QAbstract3DSeries::MeshCone);
+        }
+      else if (option == "Cylinder")
+        {
+          m_primarySeries->setMesh(QAbstract3DSeries::MeshCylinder);
+        }
+      else if (option == "Bevel bar")
+        {
+          m_primarySeries->setMesh(QAbstract3DSeries::MeshBevelBar);
+        }
+      else if (option == "Sphere")
+        {
+          m_primarySeries->setMesh(QAbstract3DSeries::MeshSphere);
+        }
+    }
+  else if (title == "Shadow")
+    {
+      if (option == "None")
+        {
+          m_graph->setShadowQuality(QAbstract3DGraph::ShadowQualityNone);
+        }
+      else if (option == "Low")
+        {
+          m_graph->setShadowQuality(QAbstract3DGraph::ShadowQualityLow);
+        }
+      else if (option == "Medium")
+        {
+          m_graph->setShadowQuality(QAbstract3DGraph::ShadowQualityMedium);
+        }
+      else if (option == "High")
+        {
+          m_graph->setShadowQuality(QAbstract3DGraph::ShadowQualityHigh);
+        }
+      else if (option == "Low Soft")
+        {
+          m_graph->setShadowQuality(QAbstract3DGraph::ShadowQualitySoftLow);
+        }
+      else if (option == "Medium Soft")
+        {
+          m_graph->setShadowQuality(QAbstract3DGraph::ShadowQualitySoftMedium);
+        }
+      else if (option == "High Soft")
+        {
+          m_graph->setShadowQuality(QAbstract3DGraph::ShadowQualitySoftHigh);
+        }
+    }
+}
+
 void CQ3DBarsModifier::changeRange(int range)
 {
   if (range >= mRowHeaders.count())
@@ -394,6 +558,24 @@ void CQ3DBarsModifier::zoomToSelectedBar()
   m_animationCameraY.start();
   m_animationCameraZoom.start();
   m_animationCameraTarget.start();
+}
+void CQ3DBarsModifier::toggleGradient()
+{
+  if (m_primarySeries->colorStyle() == Q3DTheme::ColorStyleRangeGradient)
+    {
+      m_primarySeries->setColorStyle(Q3DTheme::ColorStyleUniform);
+    }
+  else
+    {
+      QLinearGradient gr;
+      gr.setColorAt(0.0, Qt::darkGreen);
+      gr.setColorAt(0.5, Qt::yellow);
+      gr.setColorAt(0.8, Qt::red);
+      gr.setColorAt(1.0, Qt::darkRed);
+
+      m_primarySeries->setBaseGradient(gr);
+      m_primarySeries->setColorStyle(Q3DTheme::ColorStyleRangeGradient);
+    }
 }
 //! [11]
 
