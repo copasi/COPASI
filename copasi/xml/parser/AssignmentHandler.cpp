@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,6 +7,8 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
+
+
 
 #include "copasi.h"
 
@@ -36,6 +38,7 @@ CXMLHandler * AssignmentHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
   const char * Key;
+  const char * TargetCStr;
   std::string Target;
 
   const CModelEntity* pME = NULL;
@@ -44,7 +47,10 @@ CXMLHandler * AssignmentHandler::processStart(const XML_Char * pszName,
     {
       case Assignment:
         mpData->pEventAssignment = NULL;
-        Target = mpParser->getAttributeValue("target", papszAttrs, false);
+        TargetCStr = mpParser->getAttributeValue("target", papszAttrs, false);
+
+        if (TargetCStr != NULL)
+          Target = TargetCStr;
 
         if (Target.empty())
           {
