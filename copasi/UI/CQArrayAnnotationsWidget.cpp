@@ -117,7 +117,7 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, bool slider)
 
       if (m_graph->hasContext())
         {
-          m_modifier = new CQ3DBarsModifier(m_graph);
+          m_modifier = new CQ3DBarsModifier(this, m_graph);
 
           m_contextMenu = new QMenu(this);
 
@@ -542,8 +542,7 @@ void CQArrayAnnotationsWidget::fillTableN(size_t rowIndex, size_t colIndex,
   mpContentTableView->resizeRowsToContents();
   mpContentTableView->resizeColumnsToContents();
 
-//  if (mpStack->id(mpStack->visibleWidget()) == 1)
-  if (mpStack->currentIndex() == 1)
+  if (mpStack->currentIndex() != 0)
     fillBarChart();
 }
 
@@ -583,7 +582,7 @@ void CQArrayAnnotationsWidget::fillTable1(size_t rowIndex,
   mpContentTableView->resizeRowsToContents();
   mpContentTableView->resizeColumnsToContents();
 
-  if (mpStack->currentIndex() == 1)
+  if (mpStack->currentIndex() != 0)
     fillBarChart();
 }
 
@@ -609,7 +608,6 @@ void CQArrayAnnotationsWidget::changeContents()
   qDebug() << "-- in changeContents -- \n";
 #endif
 
-//  if (mpStack->id(mpStack->visibleWidget()) == 0)
   if (mpStack->currentIndex() == 0)
     switchToBarChart();
   else
@@ -630,8 +628,7 @@ void CQArrayAnnotationsWidget::enableBarChart(bool enable)
         }
       else
         {
-//          if (mpStack->id(mpStack->visibleWidget()) == 1)
-          if (mpStack->currentIndex() == 1)
+          if (mpStack->currentIndex() != 0)
             switchToTable();
 
           //mpStack->raiseWidget(0);
@@ -715,7 +712,14 @@ void CQArrayAnnotationsWidget::switchToBarChart()
 void CQArrayAnnotationsWidget::slotShowContextMenu(const QPoint &pos)
 {
   if (mpStack->currentWidget() == m_container)
-    m_contextMenu->popup(mapToGlobal(pos));
+    {
+      QWidget* pSender = qobject_cast<QWidget*>(sender());
+
+      if (pSender != NULL)
+        m_contextMenu->popup(mapToGlobal(pos));
+      else
+        m_contextMenu->popup(m_container->mapToGlobal(pos));
+    }
 }
 
 #endif // WITH_QT5_VISUALIZATION
@@ -968,12 +972,18 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (!mWithBarChart)
     return;
 
+  if (!mpArray) return;
+
+#ifdef WITH_QT5_VISUALIZATION
+
+  m_modifier->loadData(mpArray, mRowIndex, mColIndex);
+
+#else
+
   if (!mpPlot3d)
     createBarChart();
 
-//  mBarChartFilled = true;
-
-  if (!mpArray) return;
+  //  mBarChartFilled = true;
 
   mBarChartFilled = true;
 
@@ -1114,6 +1124,8 @@ void CQArrayAnnotationsWidget::fillBarChart()
       mBarChartFilled = false;
       return;
     }
+
+#endif
 }
 
 void CQArrayAnnotationsWidget::createBarChart()
