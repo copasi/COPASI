@@ -338,21 +338,6 @@ bool COptMethodDE::initialize()
       return false;
     }
 
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
-
-  mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
-  mCurrentGeneration = 0;
-
-  if (mpCallBack != NULL)
-    mhGenerations =
-      mpCallBack->addItem("Current Generation",
-                          mCurrentGeneration,
-                          &mGenerations);
-
-  mCurrentGeneration++;
-
-  mPopulationSize = std::max(getValue< unsigned C_INT32 >("Population Size"), (unsigned C_INT32) 1);
-
   if (mPopulationSize < 4)
     {
       mMethodLog.enterLogItem(COptLogItem(COptLogItem::DE_usrdef_error_pop_size).with(4));

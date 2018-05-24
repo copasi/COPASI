@@ -182,24 +182,6 @@ bool COptMethodEP::initialize()
 
   if (!COptPopulationMethod::initialize()) return false;
 
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
-
-  mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
-  mCurrentGeneration = 0;
-
-  if (mpCallBack != NULL)
-    mhGenerations =
-      mpCallBack->addItem("Current Generation",
-                          mCurrentGeneration,
-                          & mGenerations);
-
-  mCurrentGeneration++;
-
-  mPopulationSize = std::max(getValue< unsigned C_INT32 >("Population Size"), (unsigned C_INT32) 1);
-  mpRandom =
-    CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                             getValue< unsigned C_INT32 >("Seed"));
-
   mVariableSize = mpOptItem->size();
 
   mIndividuals.resize(2 * mPopulationSize);

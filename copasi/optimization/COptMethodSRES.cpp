@@ -510,21 +510,6 @@ bool COptMethodSRES::initialize()
 
   if (!COptPopulationMethod::initialize()) return false;
 
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
-
-  mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
-  mCurrentGeneration = 0;
-
-  if (mpCallBack != NULL)
-    mhGenerations =
-      mpCallBack->addItem("Current Generation",
-                          mCurrentGeneration,
-                          & mGenerations);
-
-  mCurrentGeneration++;
-
-  mPopulationSize = std::max(getValue< unsigned C_INT32 >("Population Size"), (unsigned C_INT32) 1);
-
   mPf = getValue< C_FLOAT64 >("Pf");
 
   if (mPf < 0.0 || 1.0 < mPf)
