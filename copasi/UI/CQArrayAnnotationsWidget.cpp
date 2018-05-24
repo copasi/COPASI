@@ -705,7 +705,7 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
       int row = mpPlot3d->mpSliderRow->value() / mpPlot3d->scaleFactor();
       int col = mpPlot3d->mpSliderColumn->value() / mpPlot3d->scaleFactor();
 
-      selectTableCell(col, row);
+      selectTableCell(row, col);
     }
 
 #endif
@@ -757,19 +757,6 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
 
   if (mWithBarChart && m_graph)
     {
-      m_graph->clearSelection();
-
-      QModelIndexList SelectedIndexes = mpContentTableView->selectionModel()->selectedIndexes();
-
-      for (auto index : SelectedIndexes)
-        {
-          if (index.isValid())
-            {
-              m_modifier->selectBar(index.row(), index.column());
-              m_modifier->zoomToSelectedBar();
-              return;
-            }
-        }
 
       auto current = mpContentTableView->currentIndex();
 
@@ -785,33 +772,28 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
 
   if (mWithBarChart && mpPlot3d && mpPlot3d->isSliderActive())
     {
-      QModelIndexList SelectedIndexes = mpContentTableView->selectionModel()->selectedIndexes();
 
-      QModelIndexList::const_iterator it = SelectedIndexes.begin();
-      QModelIndexList::const_iterator end = SelectedIndexes.end();
+      auto it = mpContentTableView->currentIndex();
 
       int LeftColumn = std::numeric_limits< int >::max();
       int RightColumn = -1;
       int TopRow = std::numeric_limits< int >::max();
       int BottomRow = -1;
 
-      if (it == end)
+      if (!it.isValid())
         {
           // when we don't have entries, we reset the left / top to -1
           LeftColumn = -1;
           TopRow = -1;
         }
 
-      for (; it != end; ++it)
-        {
-          if (it->column() < LeftColumn) LeftColumn = it->column();
+      if (it.column() < LeftColumn) LeftColumn = it.column();
 
-          if (it->column() > RightColumn) RightColumn = it->column();
+      if (it.column() > RightColumn) RightColumn = it.column();
 
-          if (it->row() < TopRow) TopRow = it->row();
+      if (it.row() < TopRow) TopRow = it.row();
 
-          if (it->row() > BottomRow) BottomRow = it->row();
-        }
+      if (it.row() > BottomRow) BottomRow = it.row();
 
       int SliderColumn = LeftColumn * mpPlot3d->scaleFactor();
       int SliderRow = TopRow * mpPlot3d->scaleFactor();
