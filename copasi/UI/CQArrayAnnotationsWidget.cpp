@@ -33,8 +33,6 @@
 
 #include <iostream>
 
-#include "barChart/qwt3dPlot.h"
-
 #include "resourcesUI/CQIconResource.h"  //icons for bars and table toggle button
 
 #ifdef DEBUG_UI
@@ -49,6 +47,10 @@
 #include "CQ3DBarsModifier.h"
 
 using namespace QtDataVisualization;
+
+#else
+
+#include "barChart/qwt3dPlot.h"
 
 #endif // WITH_QT5_VISUALIZATION
 
@@ -75,6 +77,8 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, bool slider)
   , m_modifier(NULL)
   , m_container(NULL)
   , m_contextMenu(NULL)
+#else
+  , mpPlot3d(NULL)
 #endif
 {
 #ifdef DEBUG_UI
@@ -96,95 +100,7 @@ CQArrayAnnotationsWidget::CQArrayAnnotationsWidget(QWidget* parent, bool slider)
   mBarChartFilled = false;
   //  mBarChartFilled = true;
 
-  // if the 3D bar chart is activated, it needs a button to switch between table and bar chart
-  if (mWithBarChart)
-    {
-      if (mUseSliders)
-        {
-          mpPlot3d->setSliderActive(true);
-        }
-
-      mBarChartFilled = false;
-
-      connect(mpButton, SIGNAL(clicked()), this, SLOT(changeContents()));
-
-#ifdef WITH_QT5_VISUALIZATION
-
-      m_graph = new Q3DBars();
-
-      m_container = QWidget::createWindowContainer(m_graph);
-      mpStack->addWidget(m_container);
-
-      if (m_graph->hasContext())
-        {
-          m_modifier = new CQ3DBarsModifier(this, m_graph);
-
-          m_contextMenu = new QMenu(this);
-
-          QMenu* menu = new QMenu("Theme", m_contextMenu);
-          menu->addAction(new QAction("Qt", menu));
-          menu->addAction(new QAction("Primary Colors", menu));
-          menu->addAction(new QAction("Digia", menu));
-          menu->addAction(new QAction("Stone Moss", menu));
-          menu->addAction(new QAction("Army Blue", menu));
-          menu->addAction(new QAction("Retro", menu));
-          menu->addAction(new QAction("Ebony", menu));
-          menu->addAction(new QAction("Isabelle", menu));
-          m_contextMenu->addMenu(menu); // theme
-
-          menu = new QMenu("Selection Mode", m_contextMenu);
-          menu->addAction(new QAction("None", menu));
-          menu->addAction(new QAction("Bar", menu));
-          menu->addAction(new QAction("Row", menu));
-          menu->addAction(new QAction("Bar and Row", menu));
-          menu->addAction(new QAction("Column", menu));
-          menu->addAction(new QAction("Bar and Column", menu));
-          menu->addAction(new QAction("Row and Column", menu));
-          menu->addAction(new QAction("Bar, Row and Column", menu));
-          menu->addAction(new QAction("Slice into Row", menu));
-          menu->addAction(new QAction("Slice into Row and Item", menu));
-          menu->addAction(new QAction("Slice into Column", menu));
-          menu->addAction(new QAction("Slice into Column and Item", menu));
-          m_contextMenu->addMenu(menu); // selection mode
-
-          menu = new QMenu("Style", m_contextMenu);
-          menu->addAction(new QAction("Bar", menu));
-          menu->addAction(new QAction("Pyramid", menu));
-          menu->addAction(new QAction("Cone", menu));
-          menu->addAction(new QAction("Cylinder", menu));
-          menu->addAction(new QAction("Bevel bar", menu));
-          menu->addAction(new QAction("Sphere", menu));
-          m_contextMenu->addMenu(menu); // style
-
-          menu = new QMenu("Shadow", m_contextMenu);
-          menu->addAction(new QAction("None", menu));
-          menu->addAction(new QAction("Low", menu));
-          menu->addAction(new QAction("Medium", menu));
-          menu->addAction(new QAction("High", menu));
-          menu->addAction(new QAction("Low Soft", menu));
-          menu->addAction(new QAction("Medium Soft", menu));
-          menu->addAction(new QAction("High Soft", menu));
-          m_contextMenu->addMenu(menu); // style
-
-          m_contextMenu->addSeparator();
-
-          m_contextMenu->addAction(new QAction("Change label style"));
-          m_contextMenu->addAction(new QAction("Smooth bars"));
-          m_contextMenu->addAction(new QAction("Change camera preset"));
-          m_contextMenu->addAction(new QAction("Zoom to selected bar"));
-          m_contextMenu->addAction(new QAction("Show background"));
-          m_contextMenu->addAction(new QAction("Show grid"));
-          m_contextMenu->addAction(new QAction("Show reflections"));
-          m_contextMenu->addAction(new QAction("Show Gradients"));
-
-          connect(m_contextMenu, SIGNAL(triggered(QAction*)), m_modifier, SLOT(actionTriggered(QAction*)));
-
-          setContextMenuPolicy(Qt::CustomContextMenu);
-          connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotShowContextMenu(const QPoint &)));
-        }
-
-#endif // WITH_QT5_VISUALIZATION
-    }
+  connect(mpButton, SIGNAL(clicked()), this, SLOT(changeContents()));
 
   mpDataModel = new CQArrayAnnotationsWidgetDM(this);
   mpProxyModel = new CQSortFilterProxyModel();
@@ -397,10 +313,18 @@ void CQArrayAnnotationsWidget::clearWidget()
 
   if (mWithBarChart && mBarChartFilled)
     {
+#ifdef WITH_QT5_VISUALIZATION
+
+      if (m_container)
+        m_modifier->clearData();
+
+#else
+
       if (mpPlot3d)
         mpPlot3d->emptyPlot();
 
       mBarChartFilled = false;
+#endif
     }
 }
 
@@ -681,13 +605,14 @@ void CQArrayAnnotationsWidget::switchToBarChart()
 
 #ifdef WITH_QT5_VISUALIZATION
 
+      if (!m_container)
+        createBarChart();
+
+      fillBarChart();
+
       mpStack->setCurrentWidget(m_container);
 
-      m_modifier->loadData(mpArray, 0, 1);
-
-      mpButton->setIcon(CQIconResource::icon(CQIconResource::table));
-      mpButtonReset->hide();
-
+      setFocusOnBars();
 #else
 
       if (!mpPlot3d)
@@ -700,10 +625,11 @@ void CQArrayAnnotationsWidget::switchToBarChart()
 
       mpStack->setCurrentWidget(mpPlot3d);
       mpPlot3d->show();
-      mpButton->setIcon(CQIconResource::icon(CQIconResource::table));
-      mpButtonReset->hide();
 
 #endif // WITH_QT5_VISUALIZATION
+
+      mpButton->setIcon(CQIconResource::icon(CQIconResource::table));
+      mpButtonReset->hide();
     }
 }
 
@@ -740,10 +666,14 @@ void CQArrayAnnotationsWidget::disableSlider()
   qDebug() << "-- in disableSlider -- \n";
 #endif
 
+#ifndef WITH_QT5_VISUALIZATION
+
   if (mpPlot3d && mpPlot3d->isSliderActive())
     {
       mpPlot3d->setSliderActive(false);
     }
+
+#endif
 }
 
 /*!
@@ -756,67 +686,66 @@ void CQArrayAnnotationsWidget::setControlsEnabled(bool b)
 
 void CQArrayAnnotationsWidget::setFocusOnTable()
 {
-#ifdef DEBUG_UI
-  qDebug() << "-- in setFocusOnTable -- \n";
+  if (!mWithBarChart) return;
 
-  qDebug() << "boolean mWithBarChart = " << mWithBarChart;
-  qDebug() << "boolean mpPlot3d = " << mpPlot3d;
-  qDebug() << "boolean mpPlot3d->sliderActive() = " << mpPlot3d->sliderActive();
-#endif
+#ifdef WITH_QT5_VISUALIZATION
 
-  if (mWithBarChart && mpPlot3d && mpPlot3d->isSliderActive())
+  auto* series = m_graph->selectedSeries();
+
+  if (series)
     {
-      int col = mpPlot3d->mpSliderColumn->value() / mpPlot3d->scaleFactor();
+      QPoint bar = series->selectedBar();
+      selectTableCell(bar.rx(), bar.ry());
+    }
+
+#else
+
+  if (mpPlot3d && mpPlot3d->isSliderActive())
+    {
       int row = mpPlot3d->mpSliderRow->value() / mpPlot3d->scaleFactor();
+      int col = mpPlot3d->mpSliderColumn->value() / mpPlot3d->scaleFactor();
 
-#ifdef DEBUG_UI
-      qDebug() << "col = " << col << " - row = " << row;
+      selectTableCell(col, row);
+    }
+
 #endif
+}
 
-      mpContentTableView->clearSelection();
+void CQArrayAnnotationsWidget::selectTableCell(int row, int col)
+{
 
-      if (col < mpDataModel->columnCount())
+  if (mpStack->currentIndex() != 0)
+    mpStack->setCurrentIndex(0);
+
+  mpContentTableView->clearSelection();
+
+  if (col < mpDataModel->columnCount())
+    {
+      if (row < mpDataModel->rowCount())
         {
-          if (row < mpDataModel->rowCount())
-            {
-              QModelIndex Index = mpProxyModel->mapFromSource(mpDataModel->index(row, col));
-              mpContentTableView->setCurrentIndex(Index);
-              mpContentTableView->scrollTo(Index);
-              mpContentTableView->setFocus();
-            }
-          else
-            {
-              mpContentTableView->selectColumn(col);
-              mpContentTableView->setFocus();
-            }
+          QModelIndex Index = mpProxyModel->mapFromSource(mpDataModel->index(row, col));
+          mpContentTableView->setCurrentIndex(Index);
+          mpContentTableView->scrollTo(Index);
+          mpContentTableView->setFocus();
         }
       else
         {
-          if (row < mpDataModel->rowCount())
-            {
-              mpContentTableView->selectRow(row);
-              mpContentTableView->setFocus();
-            }
-          else
-            {
-              mpContentTableView->scrollTo(QModelIndex());
-            }
+          mpContentTableView->selectColumn(col);
+          mpContentTableView->setFocus();
         }
-
-#ifdef DEBUG_UI
-      qDebug() << "label at col = " << mpContentTable->horizontalHeader()->label(col);
-#endif
-      /*
-          if (mpContentTable->horizontalHeader()->label(col).isEmpty())
-            mpContentTable->horizontalHeader()->setLabel(col, FROM_UTF8((mpArray->getAnnotationsString(1))[col]).replace("; {", "\n{"));
-      */
     }
-
-//  mpContentTable->horizontalHeader()->repaint();
-//  mpContentTable->update();
-#ifdef DEBUG_UI
-  qDebug() << "at the end of setFocusOnTable";
-#endif
+  else
+    {
+      if (row < mpDataModel->rowCount())
+        {
+          mpContentTableView->selectRow(row);
+          mpContentTableView->setFocus();
+        }
+      else
+        {
+          mpContentTableView->scrollTo(QModelIndex());
+        }
+    }
 }
 
 /*!
@@ -824,6 +753,36 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
  */
 void CQArrayAnnotationsWidget::setFocusOnBars()
 {
+#ifdef WITH_QT5_VISUALIZATION
+
+  if (mWithBarChart && m_graph)
+    {
+      m_graph->clearSelection();
+
+      QModelIndexList SelectedIndexes = mpContentTableView->selectionModel()->selectedIndexes();
+
+      for (auto index : SelectedIndexes)
+        {
+          if (index.isValid())
+            {
+              m_modifier->selectBar(index.row(), index.column());
+              m_modifier->zoomToSelectedBar();
+              return;
+            }
+        }
+
+      auto current = mpContentTableView->currentIndex();
+
+      if (current.isValid())
+        {
+          m_modifier->selectBar(current.row(), current.column());
+          m_modifier->zoomToSelectedBar();
+          return;
+        }
+    }
+
+#else
+
   if (mWithBarChart && mpPlot3d && mpPlot3d->isSliderActive())
     {
       QModelIndexList SelectedIndexes = mpContentTableView->selectionModel()->selectedIndexes();
@@ -894,7 +853,7 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
       mpPlot3d->setSlider();
     }
 
-  return;
+#endif
 }
 
 void CQArrayAnnotationsWidget::slotContentCellClicked(const QModelIndex & index)
@@ -928,7 +887,7 @@ void CQArrayAnnotationsWidget::slotContentDoubleClicked(const QModelIndex & inde
 {
   slotContentCellClicked(index);
 
-  if (mpPlot3d && mpPlot3d->isSliderActive())
+  if (mWithBarChart)
     switchToBarChart();
 }
 
@@ -1130,17 +1089,95 @@ void CQArrayAnnotationsWidget::fillBarChart()
 
 void CQArrayAnnotationsWidget::createBarChart()
 {
-#ifdef DEBUG_UI
-  qDebug() << "-- in createBarChart -- \n";
-#endif
+  if (!mWithBarChart) return;
 
+#ifdef WITH_QT5_VISUALIZATION
+
+  m_graph = new Q3DBars();
+
+  m_container = QWidget::createWindowContainer(m_graph);
+  mpStack->addWidget(m_container);
+
+  if (m_graph->hasContext())
+    {
+      m_modifier = new CQ3DBarsModifier(this, m_graph);
+
+      m_contextMenu = new QMenu(this);
+
+      QMenu* menu = new QMenu("Theme", m_contextMenu);
+      menu->addAction(new QAction("Qt", menu));
+      menu->addAction(new QAction("Primary Colors", menu));
+      menu->addAction(new QAction("Digia", menu));
+      menu->addAction(new QAction("Stone Moss", menu));
+      menu->addAction(new QAction("Army Blue", menu));
+      menu->addAction(new QAction("Retro", menu));
+      menu->addAction(new QAction("Ebony", menu));
+      menu->addAction(new QAction("Isabelle", menu));
+      m_contextMenu->addMenu(menu); // theme
+
+      menu = new QMenu("Selection Mode", m_contextMenu);
+      menu->addAction(new QAction("None", menu));
+      menu->addAction(new QAction("Bar", menu));
+      menu->addAction(new QAction("Row", menu));
+      menu->addAction(new QAction("Bar and Row", menu));
+      menu->addAction(new QAction("Column", menu));
+      menu->addAction(new QAction("Bar and Column", menu));
+      menu->addAction(new QAction("Row and Column", menu));
+      menu->addAction(new QAction("Bar, Row and Column", menu));
+      menu->addAction(new QAction("Slice into Row", menu));
+      menu->addAction(new QAction("Slice into Row and Item", menu));
+      menu->addAction(new QAction("Slice into Column", menu));
+      menu->addAction(new QAction("Slice into Column and Item", menu));
+      m_contextMenu->addMenu(menu); // selection mode
+
+      menu = new QMenu("Style", m_contextMenu);
+      menu->addAction(new QAction("Bar", menu));
+      menu->addAction(new QAction("Pyramid", menu));
+      menu->addAction(new QAction("Cone", menu));
+      menu->addAction(new QAction("Cylinder", menu));
+      menu->addAction(new QAction("Bevel bar", menu));
+      menu->addAction(new QAction("Sphere", menu));
+      m_contextMenu->addMenu(menu); // style
+
+      menu = new QMenu("Shadow", m_contextMenu);
+      menu->addAction(new QAction("None", menu));
+      menu->addAction(new QAction("Low", menu));
+      menu->addAction(new QAction("Medium", menu));
+      menu->addAction(new QAction("High", menu));
+      menu->addAction(new QAction("Low Soft", menu));
+      menu->addAction(new QAction("Medium Soft", menu));
+      menu->addAction(new QAction("High Soft", menu));
+      m_contextMenu->addMenu(menu); // style
+
+      m_contextMenu->addSeparator();
+
+      m_contextMenu->addAction(new QAction("Change label style"));
+      m_contextMenu->addAction(new QAction("Smooth bars"));
+      m_contextMenu->addAction(new QAction("Change camera preset"));
+      m_contextMenu->addAction(new QAction("Zoom to selected bar"));
+      m_contextMenu->addAction(new QAction("Show background"));
+      m_contextMenu->addAction(new QAction("Show grid"));
+      m_contextMenu->addAction(new QAction("Show reflections"));
+      m_contextMenu->addAction(new QAction("Show Gradients"));
+
+      connect(m_contextMenu, SIGNAL(triggered(QAction*)), m_modifier, SLOT(actionTriggered(QAction*)));
+
+      setContextMenuPolicy(Qt::CustomContextMenu);
+      connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotShowContextMenu(const QPoint &)));
+    }
+
+#else
   mpPlot3d = new CQBarChart();
   mpPlot3d->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
-  if (mUseSliders) mpPlot3d->setSliderActive(true);
+  if (mUseSliders)
+    {
+      mpPlot3d->setSliderActive(true);
+    }
 
-  //  mpStack->addWidget(mpPlot3d, 1);
   mpStack->addWidget(mpPlot3d);
-  mpButton->setIcon(CQIconResource::icon(CQIconResource::bars));
+
   mBarChartFilled = false;
+
+#endif // WITH_QT5_VISUALIZATION
 }

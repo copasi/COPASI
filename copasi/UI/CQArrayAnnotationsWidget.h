@@ -42,6 +42,10 @@ class QWidget;
 class QMenu;
 class CQ3DBarsModifier;
 
+#else
+
+class CQBarChart;
+
 #endif
 
 /**
@@ -105,6 +109,8 @@ public slots:
   void setControlsEnabled(bool b);
 
   void setFocusOnTable();
+
+  void selectTableCell(int row, int col);
 
   void setFocusOnBars();
 
@@ -193,6 +199,10 @@ protected:
 
 public slots:
   void slotShowContextMenu(const QPoint &);
+
+#else
+
+  CQBarChart* mpPlot3d;
 
 #endif // WITH_QT5_VISUALIZATION
 };

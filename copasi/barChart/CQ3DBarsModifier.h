@@ -55,6 +55,7 @@ public slots:
   void changeLabelRotation(int rotation);
   void setAxisTitleVisibility(bool enabled);
   void setAxisTitleFixed(bool enabled);
+  void selectBar(int row, int col);
   void zoomToSelectedBar();
   void toggleGradient();
 
@@ -117,12 +118,14 @@ public:
     m_axisZ = axisZ;
   }
 
+  virtual void mouseDoubleClickEvent(QMouseEvent *event);
   virtual void mousePressEvent(QMouseEvent *event, const QPoint &mousePos);
   virtual void mouseMoveEvent(QMouseEvent *event, const QPoint &mousePos);
   virtual void mouseReleaseEvent(QMouseEvent *event, const QPoint &mousePos);
 
 signals:
   void signalShowContextMenu(const QPoint &);
+  void signalBarDoubleClicked(int row, int col);
 
 protected:
   QAbstract3DGraph* m_graph;

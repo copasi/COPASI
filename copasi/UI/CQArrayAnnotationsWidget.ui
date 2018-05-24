@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+<comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
  <comment> All rights reserved. </comment>
  <class>CQArrayAnnotationsWidget</class>
  <widget class="QWidget" name="CQArrayAnnotationsWidget">
@@ -168,26 +178,10 @@
       <number>0</number>
      </property>
      <widget class="QTableView" name="mpContentTableView"/>
-     <widget class="CQBarChart" name="mpPlot3d">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-     </widget>
     </widget>
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>CQBarChart</class>
-   <extends>QWidget</extends>
-   <header>copasi/barChart/qwt3dPlot.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="../resourcesUI/copasi.qrc"/>
  </resources>
