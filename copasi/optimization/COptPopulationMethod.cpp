@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,6 +7,8 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
+
+
 
 #include "copasi/copasi.h"
 
@@ -70,6 +72,8 @@ COptPopulationMethod::initialize()
   mCurrentGeneration = 0;
   mGenerations = 0;
 
+  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
+
   if (getParameter("Number of Generations") != NULL)
     mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
 
@@ -82,7 +86,7 @@ COptPopulationMethod::initialize()
                             &mGenerations);
     }
 
-  mCurrentGeneration++;
+  ++mCurrentGeneration;
 
   if (getParameter("Population Size") != NULL)
     mPopulationSize = getValue< unsigned C_INT32 >("Population Size");

@@ -29,6 +29,10 @@
 
 
 
+
+
+
+
 #include <cmath>
 
 #include "copasi.h"
@@ -417,20 +421,6 @@ bool COptMethodGASR::initialize()
 
   if (!COptPopulationMethod::initialize()) return false;
 
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
-
-  mCurrentGeneration = 0;
-  mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
-
-  if (mpCallBack != NULL)
-    mhGenerations =
-      mpCallBack->addItem("Current Generation",
-                          mCurrentGeneration,
-                          & mGenerations);
-
-  mCurrentGeneration++;
-
-  mPopulationSize = std::max(getValue< unsigned C_INT32 >("Population Size"), (unsigned C_INT32) 1);
   mPf = getValue< C_FLOAT64 >("Pf");
 
   if (mPf < 0.0 || 1.0 < mPf)
