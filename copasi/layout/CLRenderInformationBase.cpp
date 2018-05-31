@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,6 +7,8 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
+
+
 
 #define USE_LAYOUT 1
 #define USE_RENDER 1
@@ -117,6 +119,12 @@ CLRenderInformationBase::CLRenderInformationBase(const RenderInformationBase& so
   for (i = 0; i < iMax; ++i)
     {
       pLE = source.getLineEnding((unsigned int) i);
+#if LIBSBML_VERSION  > 51600
+
+      if (!pLE->isSetBoundingBox())
+        const_cast<LineEnding*>(pLE)->createBoundingBox();
+
+#endif
       pLLE = new CLLineEnding(*pLE);
       this->mListOfLineEndings.add(pLLE, true);
       //lineEndingIdToKeyMap.insert(std::pair<std::string,std::string>(pLE->getId(),pLLE->getKey()));
