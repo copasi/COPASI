@@ -837,6 +837,10 @@ message(STATUS "-----------------------------------------------------------
    libSBML lib       = ${LIBSBML_LIBRARY}
    libSBML include   = ${LIBSBML_INCLUDE_DIR}
 
+   Qt lib            = ${QT_LIBRARIES}
+   Qt include        = ${QT_INCLUDE_DIRS}
+   Qt version        = ${QT_VERSION}
+      
    QWT lib           = ${QWT_LIBRARY}
    QWT include       = ${QWT_INCLUDE_DIR}
    QWT version       = ${QWT_VERSION_STRING} (0x${QWT_VERSION_NUMERIC})
