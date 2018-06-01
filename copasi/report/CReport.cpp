@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -86,13 +86,10 @@ void CReport::cleanup()
   close();
 }
 
-CReportDefinition* CReport::getReportDefinition()
-{return mpReportDef;}
-
 const CReportDefinition* CReport::getReportDefinition() const
 {return mpReportDef;}
 
-void CReport::setReportDefinition(CReportDefinition* reportDef)
+void CReport::setReportDefinition(const CReportDefinition* reportDef)
 {mpReportDef = reportDef;}
 
 const std::string & CReport::getTarget() const
@@ -317,7 +314,7 @@ bool CReport::compile(CObjectInterface::ContainerList listOfContainer)
   if (!mpReportDef) return false;
 
   if (mpReportDef->isTable())
-    if (!mpReportDef->preCompileTable(listOfContainer)) success = false;
+    if (!const_cast< CReportDefinition * >(mpReportDef)->preCompileTable(listOfContainer)) success = false;
 
   generateObjectsFromName(listOfContainer, mHeaderObjectList, mpHeader,
                           mpReportDef->getHeaderAddr());

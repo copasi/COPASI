@@ -61,7 +61,7 @@ const xg::Guid & CUndoObjectInterface::getUuid() const
     }
   else if (!mUuidLocked)
     {
-#ifdef DEBUG_UUIDx
+#ifdef DEBUG_UUID
       std::cout << "Unlocked UUID: " << *mpUuid;
 
       if (dynamic_cast< const CDataObject *>(this))

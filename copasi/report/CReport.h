@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -65,7 +65,7 @@ private:
   std::ostream * mpOstream;
   bool mStreamOwner;
 
-  CReportDefinition *mpReportDef;
+  const CReportDefinition *mpReportDef;
   std::string mTarget;
   bool mAppend;
   bool mConfirmOverwrite;
@@ -134,7 +134,6 @@ public:
   /**
    * returns the reference of the Report Tag
    */
-  CReportDefinition* getReportDefinition();
 
   /**
    * returns the reference of the Report Tag
@@ -158,8 +157,9 @@ public:
 
   /**
    * sets the reference to the report
+   * @param const CReportDefinition *reportDef
    */
-  void setReportDefinition(CReportDefinition *reportDef);
+  void setReportDefinition(const CReportDefinition *reportDef);
 
   /**
    * returns the target of the Report Tag

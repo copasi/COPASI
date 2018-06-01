@@ -41,11 +41,12 @@
 #include "core/CDataTimer.h"
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
+#include "copasi/report/CReportDefinition.h"
 
 // static
 CCopasiTask * CCopasiTask::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
-  CCopasiTask * pNew = CTaskFactory::createTask((CTaskEnum::Task)data.getProperty(CData::TASK_TYPE).toUint(), NO_PARENT);
+  CCopasiTask * pNew = CTaskFactory::createTask(CTaskEnum::TaskName.toEnum(data.getProperty(CData::TASK_TYPE).toString()), NO_PARENT);
 
   if (pNew != NULL)
     {
@@ -58,10 +59,18 @@ CCopasiTask * CCopasiTask::fromData(const CData & data, CUndoObjectInterface * p
 // virtual
 CData CCopasiTask::toData() const
 {
-  CData Data;
+  CData Data = CDataContainer::toData();
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::TASK_TYPE, CTaskEnum::TaskName[mType]);
+  Data.addProperty(CData::TASK_SCHEDULED, mScheduled);
+  Data.addProperty(CData::TASK_UPDATE_MODEL, mUpdateModel);
+  Data.addProperty(CData::TASK_REPORT, mReport.getReportDefinition() != NULL ? mReport.getReportDefinition()->getCN() : CCommonName());
+  Data.addProperty(CData::TASK_REPORT_TARGET, mReport.getTarget());
+  Data.addProperty(CData::TASK_REPORT_APPEND, mReport.append());
+  Data.addProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE, mReport.confirmOverwrite());
+  Data.addProperty(CData::PROBLEM, mpProblem != NULL ? mpProblem->toData() : CData());
+  Data.addProperty(CData::METHOD_TYPE, CTaskEnum::MethodName[mpMethod != NULL ? mpMethod->getSubType()  : CTaskEnum::Method::UnsetMethod]);
+  Data.addProperty(CData::METHOD, mpMethod != NULL ? mpMethod->toData() : CData());
 
   return Data;
 }
@@ -69,12 +78,112 @@ CData CCopasiTask::toData() const
 // virtual
 bool CCopasiTask::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = true;
+  bool success = CDataContainer::applyData(data, changes);
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  // The task type must not be changed
+  if (data.isSetProperty(CData::TASK_TYPE) &&
+      data.getProperty(CData::TASK_TYPE).toString() != CTaskEnum::TaskName[mType])
+    {
+      fatalError();
+    }
+
+  if (data.isSetProperty(CData::TASK_SCHEDULED))
+    {
+      mScheduled =  data.getProperty(CData::TASK_SCHEDULED).toBool();
+    }
+
+  if (data.isSetProperty(CData::TASK_UPDATE_MODEL))
+    {
+      mUpdateModel = data.getProperty(CData::TASK_UPDATE_MODEL).toBool();
+    }
+
+  if (data.isSetProperty(CData::TASK_REPORT))
+    {
+      const CReportDefinition * pReportDefinition = dynamic_cast< const CReportDefinition * >(getObjectFromCN(data.getProperty(CData::TASK_REPORT).toString()));
+      mReport.setReportDefinition(pReportDefinition);
+    }
+
+  if (data.isSetProperty(CData::TASK_REPORT_TARGET))
+    {
+      mReport.setTarget(data.getProperty(CData::TASK_REPORT_TARGET).toString());
+    }
+
+  if (data.isSetProperty(CData::TASK_REPORT_APPEND))
+    {
+      mReport.setAppend(data.getProperty(CData::TASK_REPORT_APPEND).toBool());
+    }
+
+  if (data.isSetProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE))
+    {
+      mReport.setConfirmOverwrite(data.getProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE).toBool());
+    }
+
+  if (data.isSetProperty(CData::PROBLEM) && mpProblem != NULL)
+    {
+      mpProblem->applyData(data.getProperty(CData::PROBLEM).toData(), changes);
+    }
+
+  if (data.isSetProperty(CData::METHOD_TYPE) &&
+      (mpMethod == NULL ||
+       data.getProperty(CData::METHOD_TYPE).toString() != CTaskEnum::MethodName[mpMethod->getSubType()]))
+    {
+      setMethodType(CTaskEnum::MethodName.toEnum(data.getProperty(CData::METHOD_TYPE).toString()));
+    }
+
+  if (data.isSetProperty(CData::METHOD))
+    {
+      mpMethod->applyData(data.getProperty(CData::PROBLEM).toData(), changes);
+    }
 
   return success;
+}
+
+// virtual
+void CCopasiTask::createUndoData(CUndoData & undoData,
+                                 const CUndoData::Type & type,
+                                 const CData & oldData,
+                                 const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::TASK_TYPE, oldData.getProperty(CData::TASK_TYPE), CTaskEnum::TaskName[mType]);
+  undoData.addProperty(CData::TASK_SCHEDULED, oldData.getProperty(CData::TASK_SCHEDULED), mScheduled);
+  undoData.addProperty(CData::TASK_UPDATE_MODEL, oldData.getProperty(CData::TASK_UPDATE_MODEL), mUpdateModel);
+  undoData.addProperty(CData::TASK_REPORT, oldData.getProperty(CData::TASK_REPORT), mReport.getReportDefinition() != NULL ? mReport.getReportDefinition()->getCN() : CCommonName());
+  undoData.addProperty(CData::TASK_REPORT_TARGET, oldData.getProperty(CData::TASK_REPORT_TARGET), mReport.getTarget());
+  undoData.addProperty(CData::TASK_REPORT_APPEND, oldData.getProperty(CData::TASK_REPORT_APPEND), mReport.append());
+  undoData.addProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE, oldData.getProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE), mReport.confirmOverwrite());
+
+  if (mpProblem != NULL)
+    {
+      CUndoData UndoData;
+      mpProblem->createUndoData(UndoData, type, oldData.getProperty(CData::PROBLEM).toData(), framework);
+      undoData.addProperty(CData::PROBLEM, UndoData.getOldData(), UndoData.getNewData());
+    }
+  else
+    {
+      undoData.addProperty(CData::PROBLEM, oldData.getProperty(CData::PROBLEM), CData());
+    }
+
+  undoData.addProperty(CData::METHOD_TYPE, oldData.getProperty(CData::METHOD_TYPE), CTaskEnum::MethodName[mpMethod != NULL ? mpMethod->getSubType() : CTaskEnum::Method::UnsetMethod]);
+
+  if (mpMethod != NULL)
+    {
+      CUndoData UndoData;
+      mpMethod->createUndoData(UndoData, type, oldData.getProperty(CData::METHOD).toData(), framework);
+      undoData.addProperty(CData::METHOD, UndoData.getOldData(), UndoData.getNewData());
+    }
+  else
+    {
+      undoData.addProperty(CData::METHOD, oldData.getProperty(CData::METHOD), CData());
+    }
+
+  return;
 }
 
 bool CCopasiTask::isValidMethod(const CTaskEnum::Method & method,
@@ -360,14 +469,12 @@ const CCopasiProblem * CCopasiTask::getProblem() const {return mpProblem;}
 // virtual
 bool CCopasiTask::setMethodType(const CTaskEnum::Method & type)
 {
-  CTaskEnum::Method Type = (CTaskEnum::Method) type;
+  if (!isValidMethod(type, getValidMethods())) return false;
 
-  if (!isValidMethod(Type, getValidMethods())) return false;
-
-  if (mpMethod->getSubType() == Type) return true;
+  if (mpMethod->getSubType() == type) return true;
 
   pdelete(mpMethod);
-  mpMethod = createMethod(Type);
+  mpMethod = createMethod(type);
 
   signalMethodChanged();
 

@@ -43,6 +43,15 @@ const CEnumAnnotation< std::string, CData::Property > CData::PropertyName(
   "Object Pointer", // OBJECT_POINTER
   "Evaluation Tree Type", // EVALUATION_TREE_TYPE
   "Task Type", // TASK_TYPE
+  "Task Scheduled", // TASK_SCHEDULED
+  "Task Update Model", // TASK_UPDATE_MODEL
+  "Task Report", // TASK_REPORT
+  "Task Report Target", // TASK_REPORT_TARGET
+  "Task Report Append", // TASK_REPORT_APPEND
+  "Task Report Confirm Overwrite", // TASK_REPORT_CONFIRM_OVERWRITE
+  "Problem", // PROBLEM
+  "Method", // METHOD
+  "Method Type", // METHOD_TYPE
   "Plot Type", // PLOT_TYPE
   "Plot Item Type", // PLOT_ITEM_TYPE
   "Parameter Type", // PARAMETER_TYPE
