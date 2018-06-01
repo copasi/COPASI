@@ -185,5 +185,38 @@
  <resources>
   <include location="../resourcesUI/copasi.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>mpComboRows</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>CQArrayAnnotationsWidget</receiver>
+   <slot>slotRowSelectionChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>128</x>
+     <y>23</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>166</x>
+     <y>113</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpComboColumns</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>CQArrayAnnotationsWidget</receiver>
+   <slot>slotColumnSelectionChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>128</x>
+     <y>55</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>166</x>
+     <y>113</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
