@@ -18,6 +18,7 @@
 // All rights reserved.
 
 #include <QtCore/QDir>
+#include <QButtonGroup>
 
 #include "wizard.h"
 #include "UI/CQMessageBox.h"
