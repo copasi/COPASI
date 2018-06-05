@@ -3960,13 +3960,13 @@ bool CMathContainer::removeAnalysisObject(CMath::Entity< CMathObject > & mathObj
   return true;
 }
 
-CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
+CMathEvent * CMathContainer::addAnalysisEvent(const CEvent * pDataEvent)
 {
   sSize Size = mSize;
   sSize OldSize = mSize;
 
   CMathEvent Event;
-  CMathEvent::allocate(Event, &dataEvent, *this);
+  CMathEvent::allocate(Event, pDataEvent, *this);
 
   Size.nEvents++;
   Size.nEventRoots += Event.getTrigger().getRoots().size();
@@ -3974,10 +3974,11 @@ CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
 
   resize(Size);
   finishResize();
+  map();
 
   // The new event is the last in the list
   CMathEvent * pEvent = mEvents.array() + OldSize.nEvents;
-  CMathEvent::allocate(*pEvent, &dataEvent, *this);
+  CMathEvent::allocate(*pEvent, pDataEvent, *this);
 
   CMath::sPointers p;
   initializePointers(p);
@@ -4001,7 +4002,7 @@ CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
   p.pEventAssignmentsObject += OldSize.nAssignment;
 
   pEvent->initialize(p);
-  pEvent->compile(&dataEvent, *this);
+  pEvent->compile(pDataEvent, *this);
 
   // Add the objects created for the event to the dependency graphs.
   initializePointers(p);

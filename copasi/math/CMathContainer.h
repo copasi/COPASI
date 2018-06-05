@@ -796,11 +796,11 @@ public:
   bool removeAnalysisObject(CMath::Entity< CMathObject > & mathObjects);
 
   /**
-   * Add an event to the container
-   * @param const CEvent & dataEvent
+   * Add an event to the container. The dataEvent must remain in memory while in the math container.
+   * @param const CEvent * pDataEvent
    * @return const CMathEvent * pMathEvent
    */
-  CMathEvent * addAnalysisEvent(const CEvent & dataEvent);
+  CMathEvent * addAnalysisEvent(const CEvent * pDataEvent);
 
   /**
    * Remove the event from the container
