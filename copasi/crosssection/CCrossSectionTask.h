@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -169,9 +169,14 @@ private:
   C_FLOAT64 mProgressFactor;
 
   /**
-   * Pointer to the event representing the cut plane
+   * Pointer to the data event representing the cut plane
    */
-  CMathEvent * mpEvent;
+  CEvent * mpDataEvent;
+
+  /**
+   * Pointer to the math event representing the cut plane
+   */
+  CMathEvent * mpMathEvent;
 
   /**
    * A pointer to the callback register with the event.
