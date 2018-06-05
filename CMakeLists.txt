@@ -457,7 +457,7 @@ if(BUILD_GUI)
       ${SELECT_QT} MATCHES "Any")
     # then narrow down the precise modules we need
     option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit for notes" OFF)
-    option(QT5_USE_DATAVISUALIZATION "Use Qt5DataVisualization instead of the deprecated QwtPlot3D" OFF)
+    option(QT5_USE_DATAVISUALIZATION "Use Qt5DataVisualization instead of the deprecated QwtPlot3D" ON)
     
     set (ADDITIONAL_QT5_MODULES)
     if (QT5_USE_DATAVISUALIZATION)
