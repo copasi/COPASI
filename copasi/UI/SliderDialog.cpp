@@ -17,10 +17,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
 #include <iostream>
 #include <sstream>
 
@@ -850,7 +846,7 @@ void SliderDialog::runTimeCourse()
     {
       CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
-      mpParentWindow->getMainWidget()->getTrajectoryWidget()->enter(pDataModel->getTaskList()->operator[]("Time-Course").getKey());
+      mpParentWindow->getMainWidget()->getTrajectoryWidget()->enter(pDataModel->getTaskList()->operator[]("Time-Course").getCN());
       mpParentWindow->getMainWidget()->getTrajectoryWidget()->runTask();
     }
 }
@@ -869,7 +865,7 @@ void SliderDialog::runScanTask()
     {
       CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
-      mpParentWindow->getMainWidget()->getScanWidget()->enter(pDataModel->getTaskList()->operator[]("Scan").getKey());
+      mpParentWindow->getMainWidget()->getScanWidget()->enter(pDataModel->getTaskList()->operator[]("Scan").getCN());
       mpParentWindow->getMainWidget()->getScanWidget()->runTask();
     }
 }
@@ -880,7 +876,7 @@ void SliderDialog::runMCATask()
     {
       CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
-      mpParentWindow->getMainWidget()->getMCAWidget()->enter(pDataModel->getTaskList()->operator[]("Metabolic Control Analysis").getKey());
+      mpParentWindow->getMainWidget()->getMCAWidget()->enter(pDataModel->getTaskList()->operator[]("Metabolic Control Analysis").getCN());
       mpParentWindow->getMainWidget()->getMCAWidget()->runTask();
     }
 }
@@ -891,7 +887,7 @@ void SliderDialog::runLNATask()
     {
       CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
-      mpParentWindow->getMainWidget()->getLNAWidget()->enter(pDataModel->getTaskList()->operator[]("Linear Noise Approximation").getKey());
+      mpParentWindow->getMainWidget()->getLNAWidget()->enter(pDataModel->getTaskList()->operator[]("Linear Noise Approximation").getCN());
       mpParentWindow->getMainWidget()->getLNAWidget()->runTask();
     }
 }
@@ -902,7 +898,7 @@ void SliderDialog::runParameterEstimationTask()
     {
       CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
-      mpParentWindow->getMainWidget()->getFittingWidget()->enter(pDataModel->getTaskList()->operator[]("Parameter Estimation").getKey());
+      mpParentWindow->getMainWidget()->getFittingWidget()->enter(pDataModel->getTaskList()->operator[]("Parameter Estimation").getCN());
       mpParentWindow->getMainWidget()->getFittingWidget()->runTask();
     }
 }
@@ -913,7 +909,7 @@ void SliderDialog::runCrossSectionTask()
     {
       CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
-      mpParentWindow->getMainWidget()->getCrossSectionWidget()->enter(pDataModel->getTaskList()->operator[]("Cross Section").getKey());
+      mpParentWindow->getMainWidget()->getCrossSectionWidget()->enter(pDataModel->getTaskList()->operator[]("Cross Section").getCN());
       mpParentWindow->getMainWidget()->getCrossSectionWidget()->runTask();
     }
 }
@@ -924,7 +920,7 @@ void SliderDialog::runOptimizationTask()
     {
       CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
-      mpParentWindow->getMainWidget()->getOptimizationWidget()->enter(pDataModel->getTaskList()->operator[]("Optimization").getKey());
+      mpParentWindow->getMainWidget()->getOptimizationWidget()->enter(pDataModel->getTaskList()->operator[]("Optimization").getCN());
       mpParentWindow->getMainWidget()->getOptimizationWidget()->runTask();
     }
 }
