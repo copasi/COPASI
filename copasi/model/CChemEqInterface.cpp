@@ -524,7 +524,7 @@ std::string CChemEqInterface::toDataValue() const
       endSpecies = mModifierNames.end();
       itCompartment = mModifierCompartments.begin();
 
-      for (; itSpecies != endSpecies; ++itSpecies, ++itCompartment, ++itMultiplier)
+      for (; itSpecies != endSpecies; ++itSpecies, ++itCompartment)
         {
           DataValue << Separator << CMetabNameInterface::createUniqueDisplayName(*itSpecies, *itCompartment, true);
           Separator = " ";
