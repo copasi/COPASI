@@ -291,11 +291,19 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
   CDataModel* dataModel = mpPlotSpecification->getObjectDataModel();
   assert(dataModel != NULL);
 
-  setAxisTitle(xBottom, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[0]))->getObjectDisplayName()));
-  enableAxis(xBottom);
+  auto* object = dataModel->getObject((plotItem->getChannels()[0]));
+  if (object != NULL)
+  {
+	  setAxisTitle(xBottom, FROM_UTF8(object->getObjectDisplayName()));
+	  enableAxis(xBottom);
+  }
 
-  setAxisTitle(yLeft, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[1]))->getObjectDisplayName()));
-  enableAxis(yLeft);
+  object = dataModel->getObject((plotItem->getChannels()[1]));
+  if (object)
+  {
+	  setAxisTitle(yLeft, FROM_UTF8(object->getObjectDisplayName()));
+	  enableAxis(yLeft);
+  }
 
 #if QWT_VERSION > 0x060000
   setAxisScaleEngine(xTop,
@@ -305,7 +313,11 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
                      logZ ? (QwtScaleEngine *)new QwtLog10ScaleEngine() : (QwtScaleEngine *)new QwtLinearScaleEngine());
 #endif
 
-  setAxisTitle(xTop, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[2]))->getObjectDisplayName()));
+  object = dataModel->getObject((plotItem->getChannels()[2]));
+  if (object)
+  {
+	  setAxisTitle(xTop, FROM_UTF8(object->getObjectDisplayName()));
+  }
 
   QwtScaleWidget *topAxis = axisWidget(QwtPlot::xTop);
   topAxis->setColorBarEnabled(true);

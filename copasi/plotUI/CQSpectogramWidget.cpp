@@ -105,7 +105,7 @@ CQSpectogramWidget::LoadFromCurveSpec(const CPlotItem * pCurve)
     {
       mpObjectZ = dynamic_cast<const CDataObject*>(pDataModel->getObject(pCurve->getChannels()[2]));
 
-      if ((mpObjectZ->getObjectDisplayName() == "(CN)Root") && mpObjectY)
+      if ((mpObjectZ == NULL || mpObjectZ->getObjectDisplayName() == "(CN)Root") && mpObjectY)
         mpObjectZ = mpObjectY;  // as long as we haven't a second Y-axis chooser, this has to suffice.
     }
 
