@@ -17,10 +17,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
 #include <QtCore/QString>
 #include <QColor>   //might need to go to the header file
 #include <QCursor>
@@ -279,10 +275,10 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
       QStringList list = contours.split(QRegExp(",| |;"), QString::SkipEmptyParts);
       QwtValueList contourLevels;
 
-      foreach(const QString & level, list)
-      {
-        contourLevels += level.toDouble();
-      }
+      foreach (const QString & level, list)
+        {
+          contourLevels += level.toDouble();
+        }
 
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
@@ -291,19 +287,25 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
   CDataModel* dataModel = mpPlotSpecification->getObjectDataModel();
   assert(dataModel != NULL);
 
-  auto* object = dataModel->getObject((plotItem->getChannels()[0]));
-  if (object != NULL)
-  {
-	  setAxisTitle(xBottom, FROM_UTF8(object->getObjectDisplayName()));
-	  enableAxis(xBottom);
-  }
+  const CObjectInterface * pObj = dataModel->getObject((plotItem->getChannels()[0]));
 
-  object = dataModel->getObject((plotItem->getChannels()[1]));
-  if (object)
-  {
-	  setAxisTitle(yLeft, FROM_UTF8(object->getObjectDisplayName()));
-	  enableAxis(yLeft);
-  }
+  if (pObj == NULL)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, plotItem->getChannels()[0].c_str());
+    }
+
+  setAxisTitle(xBottom, FROM_UTF8(pObj != NULL ? pObj->getObjectDisplayName() : "Not found"));
+  enableAxis(xBottom);
+
+  pObj = dataModel->getObject((plotItem->getChannels()[1]));
+
+  if (pObj == NULL)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, plotItem->getChannels()[1].c_str());
+    }
+
+  setAxisTitle(yLeft, FROM_UTF8(pObj != NULL ? pObj->getObjectDisplayName() : "Not found"));
+  enableAxis(yLeft);
 
 #if QWT_VERSION > 0x060000
   setAxisScaleEngine(xTop,
@@ -313,11 +315,14 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
                      logZ ? (QwtScaleEngine *)new QwtLog10ScaleEngine() : (QwtScaleEngine *)new QwtLinearScaleEngine());
 #endif
 
-  object = dataModel->getObject((plotItem->getChannels()[2]));
-  if (object)
-  {
-	  setAxisTitle(xTop, FROM_UTF8(object->getObjectDisplayName()));
-  }
+  pObj = dataModel->getObject((plotItem->getChannels()[2]));
+
+  if (pObj == NULL)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, plotItem->getChannels()[2].c_str());
+    }
+
+  setAxisTitle(xTop, FROM_UTF8(pObj != NULL ? pObj->getObjectDisplayName() : "Not found"));
 
   QwtScaleWidget *topAxis = axisWidget(QwtPlot::xTop);
   topAxis->setColorBarEnabled(true);
