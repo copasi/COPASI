@@ -724,7 +724,8 @@ void CModel::buildStoi()
   unsigned C_INT32 i, numCols;
 
   initializeMetabolites();
-  mReactionsPerSpecies.resize(mNumMetabolitesReaction);
+
+  mReactionsPerSpecies.clear();
 
   size_t numRows;
   numRows = mNumMetabolitesReaction;
@@ -781,7 +782,7 @@ void CModel::buildStoi()
             if (itMetab->getKey() == key)
               {
                 *pRow = itBalance->getMultiplicity();
-                mReactionsPerSpecies[speciesNum].push_back(reactionNum);
+                mReactionsPerSpecies[&*itMetab].insert(std::make_pair(&*itStep, *pRow));
                 break;
               }
         }
@@ -1116,37 +1117,18 @@ void CModel::initializeMetabolites()
   // mMetabolitesX = mMetabolites;
 }
 
-//**********************************************************************
-std::vector< size_t > CModel::getReactionsPerSpecies(const CMetab * pSpecies)
+const std::set< std::pair< const CReaction *, C_FLOAT64 > > & CModel::getReactionsPerSpecies(const CMetab * pSpecies) const
 {
-  std::vector< size_t > reactionList;
-  CDataVectorN< CMetab >::const_iterator itMetab = getMetabolites().begin();
+  static std::set< std::pair< const CReaction *, C_FLOAT64 > > EmptySet;
 
-  for (size_t i = 0 ; i != getMetabolites().size(); ++i, ++itMetab)
+  std::map < const CMetab *, std::set< std::pair< const CReaction *, C_FLOAT64 > > >::const_iterator found = mReactionsPerSpecies.find(pSpecies);
+
+  if (found != mReactionsPerSpecies.end())
     {
-      if (itMetab == pSpecies)
-        {
-          reactionList = mReactionsPerSpecies[i];
-        }
+      return found->second;
     }
 
-  return reactionList;
-}
-
-const std::vector < size_t > CModel::getReactionsPerSpecies(const CMetab * pSpecies) const
-{
-  std::vector< size_t > reactionList;
-  CDataVectorN< CMetab >::const_iterator itMetab = getMetabolites().begin();
-
-  for (size_t i = 0 ; i != getMetabolites().size(); ++i, ++itMetab)
-    {
-      if (itMetab == pSpecies)
-        {
-          reactionList = mReactionsPerSpecies[i];
-        }
-    }
-
-  return reactionList;
+  return EmptySet;
 }
 
 CDataVectorNS < CReaction > & CModel::getReactions()

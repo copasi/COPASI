@@ -1532,76 +1532,62 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
         NegativeFlux.imbue(std::locale::classic());
         NegativeFlux.precision(std::numeric_limits<double>::digits10 + 2);
 
-        std::string Key = pSpecies->getKey();
         bool First = true;
+        const std::set< std::pair< const CReaction *, C_FLOAT64 > > & Stoicheometry = container.getModel().getReactionsPerSpecies(pSpecies);
 
-        CDataVectorN< CReaction >::const_iterator it = container.getModel().getReactions().begin();
-        CDataVectorN< CReaction >::const_iterator itBeg = it;
-        std::vector< size_t > reactionList = container.getModel().getReactionsPerSpecies(pSpecies);
+        std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoicheometry.begin();
+        std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator endStoi = Stoicheometry.end();
 
-        for (size_t i = 0; i != reactionList.size(); ++i)
+        for (; itStoi != endStoi; ++itStoi)
           {
-            it = itBeg + reactionList[i];
-            const CDataVector< CChemEqElement > &Balances =
-              it->getChemEq().getBalances();
-            CDataVector< CChemEqElement >::const_iterator itChem = Balances.begin();
-            CDataVector< CChemEqElement >::const_iterator endChem = Balances.end();
+            const C_FLOAT64 & Multiplicity = itStoi->second;
 
-            for (; itChem != endChem; ++itChem)
-              if (itChem->getMetaboliteKey() == Key)
-                break;
-
-            if (itChem != endChem)
+            if (!First)
               {
-                const C_FLOAT64 & Multiplicity = itChem->getMultiplicity();
-
-                if (!First)
-                  {
-                    PositiveFlux << "+";
-                    NegativeFlux << "+";
-                  }
-
-                PositiveFlux << "max(";
-                NegativeFlux << "min(";
-
-                if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
-                  {
-                    PositiveFlux << "infinity*";
-                    NegativeFlux << "infinity*";
-                  }
-                else if (Multiplicity == -std::numeric_limits< C_FLOAT64 >::infinity())
-                  {
-                    PositiveFlux << "-infinity*";
-                    NegativeFlux << "-infinity*";
-                  }
-                // Remove multiplying with -1.0
-                else if (-1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
-                         Multiplicity < -1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
-                  {
-                    PositiveFlux << "-";
-                    NegativeFlux << "-";
-                  }
-                // Remove multiplying with 1.0
-                else if (1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
-                         Multiplicity < 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
-                  {
-                    // PositiveFlux << "+";
-                    // NegativeFlux << "+";
-                  }
-                else
-                  {
-                    PositiveFlux << Multiplicity << "*";
-                    NegativeFlux << Multiplicity << "*";
-                  }
-
-                PositiveFlux << pointerToString(container.getMathObject(it->getParticleFluxReference())->getValuePointer());
-                NegativeFlux << pointerToString(container.getMathObject(it->getParticleFluxReference())->getValuePointer());
-
-                PositiveFlux << ",0)";
-                NegativeFlux << ",0)";
-
-                First = false;
+                PositiveFlux << "+";
+                NegativeFlux << "+";
               }
+
+            PositiveFlux << "max(";
+            NegativeFlux << "min(";
+
+            if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
+              {
+                PositiveFlux << "infinity*";
+                NegativeFlux << "infinity*";
+              }
+            else if (Multiplicity == -std::numeric_limits< C_FLOAT64 >::infinity())
+              {
+                PositiveFlux << "-infinity*";
+                NegativeFlux << "-infinity*";
+              }
+            // Remove multiplying with -1.0
+            else if (-1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
+                     Multiplicity < -1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+              {
+                PositiveFlux << "-";
+                NegativeFlux << "-";
+              }
+            // Remove multiplying with 1.0
+            else if (1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
+                     Multiplicity < 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+              {
+                // PositiveFlux << "+";
+                // NegativeFlux << "+";
+              }
+            else
+              {
+                PositiveFlux << Multiplicity << "*";
+                NegativeFlux << Multiplicity << "*";
+              }
+
+            PositiveFlux << pointerToString(container.getMathObject(itStoi->first->getParticleFluxReference())->getValuePointer());
+            NegativeFlux << pointerToString(container.getMathObject(itStoi->first->getParticleFluxReference())->getValuePointer());
+
+            PositiveFlux << ",0)";
+            NegativeFlux << ",0)";
+
+            First = false;
           }
 
         if (!First)
@@ -1845,89 +1831,74 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
   Infix.imbue(std::locale::classic());
   Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
-  std::string Key = pSpecies->getKey();
   bool First = true;
-
-  CDataVectorN< CReaction >::const_iterator it = container.getModel().getReactions().begin();
-  CDataVectorN< CReaction >::const_iterator itBeg = it;
-
   std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > RateCalculationVector;
-  std::vector< size_t > reactionList = container.getModel().getReactionsPerSpecies(pSpecies);
+  const std::set< std::pair< const CReaction *, C_FLOAT64 > > & Stoicheometry = container.getModel().getReactionsPerSpecies(pSpecies);
 
-  for (size_t i = 0; i != reactionList.size(); ++i)
+  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoicheometry.begin();
+  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator endStoi = Stoicheometry.end();
+
+  for (; itStoi != endStoi; ++itStoi)
     {
-      it = itBeg + reactionList[i];
-      const CDataVector< CChemEqElement > &Balances =
-        it->getChemEq().getBalances();
-      CDataVector< CChemEqElement >::const_iterator itChem = Balances.begin();
-      CDataVector< CChemEqElement >::const_iterator endChem = Balances.end();
+      const C_FLOAT64 & Multiplicity = itStoi->second;
 
-      for (; itChem != endChem; ++itChem)
-        if (itChem->getMetaboliteKey() == Key)
-          break;
-
-      if (itChem != endChem)
+      if (First || Multiplicity < 0.0)
         {
-          const C_FLOAT64 & Multiplicity = itChem->getMultiplicity();
-
-          if (First || Multiplicity < 0.0)
+          if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
             {
-              if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
-                {
-                  Infix << "infinity*";
-                }
-              else if (Multiplicity == -std::numeric_limits< C_FLOAT64 >::infinity())
-                {
-                  Infix << "-infinity*";
-                }
-              // Remove multiplying with -1.0
-              else if (-1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
-                       Multiplicity < -1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
-                {
-                  Infix << "-";
-                }
-              // Remove multiplying with 1.0
-              else if (1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
-                       Multiplicity < 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
-                {
-                  // Infix << "+";
-                }
-              else
-                {
-                  Infix << Multiplicity << "*";
-                }
+              Infix << "infinity*";
+            }
+          else if (Multiplicity == -std::numeric_limits< C_FLOAT64 >::infinity())
+            {
+              Infix << "-infinity*";
+            }
+          // Remove multiplying with -1.0
+          else if (-1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
+                   Multiplicity < -1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+            {
+              Infix << "-";
+            }
+          // Remove multiplying with 1.0
+          else if (1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
+                   Multiplicity < 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+            {
+              // Infix << "+";
             }
           else
             {
-              if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
-                {
-                  Infix << "+infinity*";
-                }
-              // Remove multiplying with 1.0
-              else if (1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
-                       Multiplicity < 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
-                {
-                  Infix << "+";
-                }
-              else
-                {
-                  Infix << "+" << Multiplicity << "*";
-                }
+              Infix << Multiplicity << "*";
             }
-
-          First = false;
-
-          Infix << pointerToString(container.getMathObject(it->getParticleFluxReference())->getValuePointer());
-
-          const C_FLOAT64 * pRate = static_cast< const C_FLOAT64 * >(container.getMathObject(it->getParticleFluxReference())->getValuePointer());
-
-          if (mIsInitialValue)
-            {
-              pRate = container.getInitialValuePointer(pRate);
-            }
-
-          RateCalculationVector.push_back(std::make_pair(Multiplicity, pRate));
         }
+      else
+        {
+          if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
+            {
+              Infix << "+infinity*";
+            }
+          // Remove multiplying with 1.0
+          else if (1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
+                   Multiplicity < 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+            {
+              Infix << "+";
+            }
+          else
+            {
+              Infix << "+" << Multiplicity << "*";
+            }
+        }
+
+      First = false;
+
+      Infix << pointerToString(container.getMathObject(itStoi->first->getParticleFluxReference())->getValuePointer());
+
+      const C_FLOAT64 * pRate = static_cast< const C_FLOAT64 * >(container.getMathObject(itStoi->first->getParticleFluxReference())->getValuePointer());
+
+      if (mIsInitialValue)
+        {
+          pRate = container.getInitialValuePointer(pRate);
+        }
+
+      RateCalculationVector.push_back(std::make_pair(Multiplicity, pRate));
     }
 
   if (mpExpression == NULL)
@@ -2034,75 +2005,57 @@ bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies
   Infix.imbue(std::locale::classic());
   Infix.precision(16);
 
-  std::string Key = pSpecies->getKey();
   bool First = true;
-
-  CDataVectorN< CReaction >::const_iterator it = container.getModel().getReactions().begin();
-  CDataVectorN< CReaction >::const_iterator itBeg = it;
-
-  std::vector< size_t > reactionList = container.getModel().getReactionsPerSpecies(pSpecies);
   std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > RateCalculationVector;
+  const std::set< std::pair< const CReaction *, C_FLOAT64 > > & Stoicheometry = container.getModel().getReactionsPerSpecies(pSpecies);
 
-  for (size_t i = 0; i != reactionList.size(); ++i)
+  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoicheometry.begin();
+  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator endStoi = Stoicheometry.end();
+
+  for (; itStoi != endStoi; ++itStoi)
     {
-      it = itBeg + reactionList[i];
+      const C_FLOAT64 & Multiplicity = itStoi->second;
 
-      if (!it->hasNoise()) continue;
-
-      const CDataVector< CChemEqElement > &Balances =
-        it->getChemEq().getBalances();
-      CDataVector< CChemEqElement >::const_iterator itChem = Balances.begin();
-      CDataVector< CChemEqElement >::const_iterator endChem = Balances.end();
-
-      for (; itChem != endChem; ++itChem)
-        if (itChem->getMetaboliteKey() == Key)
-          break;
-
-      if (itChem != endChem)
+      if (First || Multiplicity < 0.0)
         {
-          const C_FLOAT64 & Multiplicity = itChem->getMultiplicity();
-
-          if (First || Multiplicity < 0.0)
+          if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
             {
-              if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
-                {
-                  Infix << "infinity";
-                }
-              else if (Multiplicity == -std::numeric_limits< C_FLOAT64 >::infinity())
-                {
-                  Infix << "-infinity";
-                }
-              else
-                {
-                  Infix << Multiplicity;
-                }
+              Infix << "infinity";
+            }
+          else if (Multiplicity == -std::numeric_limits< C_FLOAT64 >::infinity())
+            {
+              Infix << "-infinity";
             }
           else
             {
-              if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
-                {
-                  Infix << "+infinity";
-                }
-              else
-                {
-                  Infix << "+" << Multiplicity;
-                }
+              Infix << Multiplicity;
             }
-
-          First = false;
-
-          Infix << "*";
-          Infix << pointerToString(container.getMathObject(it->getParticleNoiseReference())->getValuePointer());
-
-          const C_FLOAT64 * pNoise = static_cast< const C_FLOAT64 * >(container.getMathObject(it->getParticleNoiseReference())->getValuePointer());
-
-          if (mIsInitialValue)
-            {
-              pNoise = container.getInitialValuePointer(pNoise);
-            }
-
-          RateCalculationVector.push_back(std::make_pair(Multiplicity, pNoise));
         }
+      else
+        {
+          if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
+            {
+              Infix << "+infinity";
+            }
+          else
+            {
+              Infix << "+" << Multiplicity;
+            }
+        }
+
+      First = false;
+
+      Infix << "*";
+      Infix << pointerToString(container.getMathObject(itStoi->first->getParticleNoiseReference())->getValuePointer());
+
+      const C_FLOAT64 * pNoise = static_cast< const C_FLOAT64 * >(container.getMathObject(itStoi->first->getParticleNoiseReference())->getValuePointer());
+
+      if (mIsInitialValue)
+        {
+          pNoise = container.getInitialValuePointer(pNoise);
+        }
+
+      RateCalculationVector.push_back(std::make_pair(Multiplicity, pNoise));
     }
 
   if (!First)

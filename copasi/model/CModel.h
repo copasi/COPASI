@@ -327,15 +327,9 @@ public:
 
   /**
    * Return the vector of reaction indices for a species
-   * @return std::vector <size_t> mReactionsPerSpecies
-   */
-  std::vector < size_t > getReactionsPerSpecies(const CMetab *);
-
-  /**
-   * Return the vector of reaction indices for a species
    * @return const std::vector <size_t> mReactionsPerSpecies
    */
-  const std::vector < size_t > getReactionsPerSpecies(const CMetab *) const;
+  const std::set< std::pair< const CReaction *, C_FLOAT64 > > & getReactionsPerSpecies(const CMetab *) const;
 
   /**
    * Return the vector of reactions
@@ -1266,7 +1260,7 @@ private:
   /**
    * Vector of species that contains associated reactions
    */
-  std::vector < std::vector < size_t > > mReactionsPerSpecies;
+  std::map < const CMetab *, std::set< std::pair< const CReaction *, C_FLOAT64 > > > mReactionsPerSpecies;
 
   /**
    * The key of the currently active parameter set.
