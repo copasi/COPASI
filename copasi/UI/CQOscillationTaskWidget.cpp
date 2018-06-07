@@ -60,11 +60,6 @@ bool CQOscillationTaskWidget::runTask()
   return true;
 }
 
-bool CQOscillationTaskWidget::update(ListViews::ObjectType /* objectType */, ListViews::Action /* action */, const std::string & /* key */)
-{
-  return true;
-}
-
 /*
  * Function to save actual changes of the Task
  */
