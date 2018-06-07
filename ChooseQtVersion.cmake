@@ -40,6 +40,12 @@ macro(QT_FIND_MODULES)
   list(REMOVE_DUPLICATES _modules_qt4)
   list(REMOVE_DUPLICATES _modules_qt5)
 
+  set (CMAKE_PREFIX_PATH_TMP ${CMAKE_PREFIX_PATH})
+
+  if (DEFINED ENV{QTDIR})
+    set (CMAKE_PREFIX_PATH $ENV{QTDIR})
+  endif ()
+
   # Find Qt libraries
   if (${SELECT_QT} MATCHES "Qt5" OR
       ${SELECT_QT} MATCHES "Any")
@@ -51,6 +57,8 @@ macro(QT_FIND_MODULES)
       ${SELECT_QT} MATCHES "Any")
     find_package(Qt4 ${QT_FIND_MODE} COMPONENTS ${_modules_qt4})
   endif()
+
+  set (CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH_TMP})
 
   if (NOT (Qt5_FOUND OR Qt4_FOUND OR QT4_FOUND))
     message(FATAL_ERROR " Qt not found")
@@ -74,6 +82,9 @@ macro(QT_FIND_MODULES)
     set(QT_VERSION ${Qt4_VERSION})
     set(QT_INCLUDE_DIRS ${QT_INCLUDES})
   endif (Qt4_FOUND OR QT4_FOUND)
+
+  message (STATUS "${QT_INCLUDE_DIRS}")
+
 endmacro(QT_FIND_MODULES)
 
 macro(QT_USE_MODULES _target) 
