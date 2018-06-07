@@ -60,11 +60,6 @@ bool CQOscillationTaskWidget::runTask()
   return true;
 }
 
-bool CQOscillationTaskWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
-{
-  return true;
-}
-
 /*
  * Function to save actual changes of the Task
  */
