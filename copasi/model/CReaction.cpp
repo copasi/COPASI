@@ -1558,11 +1558,11 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
     }
 
   // add to function database
-  if (!pFunctionDB->add(pTmpFunction, true))
-  {
-	  CCopasiMessage(CCopasiMessage::ERROR_FILTERED, "Couldn't add expression for '%s' to the function database.", pTmpFunction->getObjectName().c_str());
-  }
-
+  if (pTmpFunction != NULL &&
+      !pFunctionDB->add(pTmpFunction, true))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR_FILTERED, "Couldn't add expression for '%s' to the function database.", pTmpFunction->getObjectName().c_str());
+    }
 
   return pTmpFunction;
 }
