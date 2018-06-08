@@ -59,7 +59,7 @@ Source: {#MyStageDir}\bin\32\qt.conf; DestDir: {app}\bin; Check: IsWin32();
 ; Source: {#MyStageDir}\bin\32\libmmd.dll; DestDir: {app}\bin; Check: IsWin32(); 
 ; Source: {#MyStageDir}\bin\32\svml_dispmd.dll; DestDir: {app}\bin; Check: IsWin32(); 
 Source: {#MyStageDir}\bin\32\Qt5Core.dll; DestDir: {app}\bin; Check: IsWin32();
-Source: {#MyStageDir}\bin\32\Qt5DataVisualization.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\32\Qt5DataVisualization.dll; DestDir: {app}\bin; Check: IsWin32();
 Source: {#MyStageDir}\bin\32\Qt5Gui.dll; DestDir: {app}\bin; Check: IsWin32();
 Source: {#MyStageDir}\bin\32\Qt5Network.dll; DestDir: {app}\bin; Check: IsWin32();
 Source: {#MyStageDir}\bin\32\Qt5OpenGL.dll; DestDir: {app}\bin; Check: IsWin32();
