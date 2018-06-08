@@ -1473,7 +1473,6 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
       pTmpFunction->setRoot(pFunctionTree);
       pTmpFunction->setReversible(this->isReversible() ? TriTrue : TriFalse);
 
-      pFunctionDB->add(pTmpFunction, true);
       // add the variables
       // and do the mapping
       std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> >::iterator it = replacementMap.begin();
@@ -1557,6 +1556,13 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
 
       pTmpFunction->setObjectName(functionName + appendix);
     }
+
+  // add to function database
+  if (!pFunctionDB->add(pTmpFunction, true))
+  {
+	  CCopasiMessage(CCopasiMessage::ERROR_FILTERED, "Couldn't add expression for '%s' to the function database.", pTmpFunction->getObjectName().c_str());
+  }
+
 
   return pTmpFunction;
 }
