@@ -66,7 +66,7 @@ CXMLHandler * AssignmentHandler::processStart(const XML_Char * pszName,
         if (!Target.empty() &&
             mpData->pEvent->getAssignments().getIndex(Target) == C_INVALID_INDEX)
           {
-            mpData->pEventAssignment = new CEventAssignment(pME->getKey());
+            mpData->pEventAssignment = new CEventAssignment(Target);
             mpData->pEvent->getAssignments().add(mpData->pEventAssignment, true);
           }
 
