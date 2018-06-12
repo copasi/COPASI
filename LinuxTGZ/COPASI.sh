@@ -104,7 +104,7 @@ chmod 644 share/copasi/lib/libQt*
 echo
 popd
 
-echo tar -cvzf ${PACKAGE_NAME}.tar.gz ${PACKAGE_NAME}
-tar -czvf ${PACKAGE_NAME}.tar.gz ${PACKAGE_NAME}
+echo tar -chvzf ${PACKAGE_NAME}.tar.gz ${PACKAGE_NAME}
+tar -chzvf ${PACKAGE_NAME}.tar.gz ${PACKAGE_NAME}
 
 popd
