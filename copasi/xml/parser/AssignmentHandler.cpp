@@ -54,7 +54,14 @@ CXMLHandler * AssignmentHandler::processStart(const XML_Char * pszName,
           {
             Key = mpParser->getAttributeValue("targetKey", papszAttrs);
             pME = dynamic_cast<const CModelEntity *>(mpData->mKeyMap.get(Key));
+          }
+        else
+          {
+            pME = dynamic_cast<const CModelEntity *>(mpData->pModel->getObjectFromCN(Target));
+          }
 
+        if (pME != NULL)
+          {
             mpData->pEventAssignment = new CEventAssignment(pME->getKey());
             mpData->pEvent->getAssignments().add(mpData->pEventAssignment, true);
           }
