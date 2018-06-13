@@ -620,6 +620,18 @@ bool CModel::buildDependencyGraphs()
   return true;
 }
 
+void CModel::functionDefinitionChanged(const CFunction * pFunction)
+{
+  CObjectInterface::ObjectSet ChangedObjects;
+  ChangedObjects.insert(pFunction);
+  CObjectInterface::ObjectSet DependentObjects;
+
+  if (mStructuralDependencies.appendDirectDependents(ChangedObjects, DependentObjects))
+    {
+      setCompileFlag(true);
+    }
+}
+
 void CModel::setCompileFlag(bool flag)
 {
   mCompileIsNecessary = flag;
@@ -2534,7 +2546,7 @@ bool CModel::convert2NonReversible()
   for (i = 0; i < imax; ++i)
     if (steps[i].isReversible())
       {
-        std::vector< std::pair< const CDataObject * , const CDataObject * > > ParameterMap;
+        std::vector< std::pair< const CDataObject *, const CDataObject * > > ParameterMap;
 
         reac0 = &steps[i];
         rn1 = reac0->getObjectName() + " (forward)";
@@ -2920,7 +2932,7 @@ void CModel::initObjects()
 
   addMatrixReference("Stoichiometry", mStoi, CDataObject::ValueDbl);
   addMatrixReference("Reduced Model Stoichiometry", mRedStoi, CDataObject::ValueDbl);
-  addMatrixReference("Link Matrix"   , mLView, CDataObject::ValueDbl);
+  addMatrixReference("Link Matrix", mLView, CDataObject::ValueDbl);
 
   mpStoiAnnotation = new CDataArray("Stoichiometry(ann)", this, new CMatrixInterface<CMatrix<C_FLOAT64> >(&mStoi), true);
   mpStoiAnnotation->setDescription("Stoichiometry Matrix");

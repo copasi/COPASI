@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -212,6 +212,21 @@ CDataModel * CRootContainer::addDatamodel()
 CFunction * CRootContainer::getUndefinedFunction()
 {
   return pRootContainer->mpUndefined;
+}
+
+// static
+void CRootContainer::functionDefinitionChanged(const CFunction * pFunction)
+{
+  if (pRootContainer->mpDataModelList == NULL) return;
+
+  CDataVector< CDataModel >::iterator it = pRootContainer->mpDataModelList->begin();
+  CDataVector< CDataModel >::iterator end = pRootContainer->mpDataModelList->end();
+
+  for (; it != end; ++it)
+    if (it->getModel() != NULL)
+      {
+        it->getModel()->functionDefinitionChanged(pFunction);
+      }
 }
 
 //static

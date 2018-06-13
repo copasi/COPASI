@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,6 +46,7 @@ class CProcessReport;
 class CDataArray;
 class CMathModel;
 class CExperiment;
+class CFunction;
 
 class CModel : public CModelEntity
 {
@@ -153,6 +154,11 @@ public:
    *  after finishing adding metabolites to compartments.
    */
   void initializeMetabolites();
+
+  /**
+   * Trigger a model compile in the case the function is used in the model
+   */
+  void functionDefinitionChanged(const CFunction * pFunction);
 
   /**
    *  This must be called whenever something is changed in the model
