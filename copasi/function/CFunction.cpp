@@ -140,6 +140,11 @@ const std::string& CFunction::getSBMLId() const
 
 CIssue CFunction::setInfix(const std::string & infix)
 {
+  if (infix != mInfix)
+    {
+      CRootContainer::functionDefinitionChanged(this);
+    }
+
   CIssue firstWorstIssue, issue;
   issue = CEvaluationTree::setInfix(infix);
 

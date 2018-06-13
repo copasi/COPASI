@@ -679,6 +679,18 @@ bool CModel::buildDependencyGraphs()
   return true;
 }
 
+void CModel::functionDefinitionChanged(const CFunction * pFunction)
+{
+  CObjectInterface::ObjectSet ChangedObjects;
+  ChangedObjects.insert(pFunction);
+  CObjectInterface::ObjectSet DependentObjects;
+
+  if (mStructuralDependencies.appendDirectDependents(ChangedObjects, DependentObjects))
+    {
+      setCompileFlag(true);
+    }
+}
+
 void CModel::setCompileFlag(bool flag)
 {
   mCompileIsNecessary = flag;

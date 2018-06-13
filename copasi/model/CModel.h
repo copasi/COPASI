@@ -46,6 +46,7 @@ class CProcessReport;
 class CDataArray;
 class CMathModel;
 class CExperiment;
+class CFunction;
 
 class CModel : public CModelEntity
 {
@@ -171,6 +172,11 @@ public:
    *  after finishing adding metabolites to compartments.
    */
   void initializeMetabolites();
+
+  /**
+   * Trigger a model compile in the case the function is used in the model
+   */
+  void functionDefinitionChanged(const CFunction * pFunction);
 
   /**
    *  This must be called whenever something is changed in the model
