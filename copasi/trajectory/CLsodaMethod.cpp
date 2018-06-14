@@ -505,7 +505,11 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
 
             // It is sufficient to switch to 2. Eventual state changes due to events
             // are indicated via the method stateChanged()
-            mLsodaStatus = 2;
+            if (mLsodaStatus == 3)
+              {
+                mLsodaStatus = 2;
+              }
+
             Status = ROOT;
 
             saveState(mLastRootState, ROOT);
@@ -669,7 +673,7 @@ void CLsodaMethod::start()
 void CLsodaMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
-void CLsodaMethod::evalF(const C_FLOAT64 * t , const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
+void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
 {
   *mpContainerStateTime = *t;
 
@@ -973,7 +977,14 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
           break;
 
           case FAILURE:
-            PeekAheadStatus = FAILURE;
+            // We pretend that we we did not fail
+            // Since continuation fails we attempt restart
+            resetState(StartState);
+            mLsodaStatus = 1;
+            mRootCounter = 0;
+
+            // Invalidate the saved state
+            mSavedState.Status = FAILURE;
             mPeekAheadMode = false;
             break;
         }
