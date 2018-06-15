@@ -636,9 +636,10 @@ void CReaction::setParameterValue(const std::string & parameterName,
   if (!mpFunction) fatalError();
 
   CCopasiParameter * pParameter = mParameters.getParameter(parameterName);
-
+  
   if (pParameter == NULL) return;
-
+  pParameter->setValue(value);
+  
   std::map< std::string, size_t >::iterator found = mParameterNameToIndex.find(parameterName);
 
   if (found == mParameterNameToIndex.end()) return;
