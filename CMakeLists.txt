@@ -126,8 +126,6 @@ endif()
 
 CHECK_TYPE_SIZE("void*"  CMAKE_SIZEOF_VOID_P)
 
-set(CMAKE_INSTALL_LIBDIR lib CACHE PATH "Full path to the library output directory")
-mark_as_advanced(CMAKE_INSTALL_LIBDIR)
 
 set(COPASI_BUILD_TYPE "native")
 if (CMAKE_SIZEOF_VOID_P EQUAL 4)
