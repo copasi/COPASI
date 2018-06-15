@@ -98,7 +98,7 @@ include (CheckSymbolExists)
 include (CheckTypeSize)
 
 if (${CMAKE_VERSION} VERSION_GREATER 2.8.4)
-	include(GNUIn0stallDirs)
+	include(GNUInstallDirs)
 else ()
 	set (CMAKE_INSTALL_LIBDIR "lib")
 	set (CMAKE_INSTALL_INCLUDEDIR "include")
