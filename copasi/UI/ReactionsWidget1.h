@@ -80,11 +80,6 @@ protected:
   void FillWidgetFromRI();
 
   CReactionInterface * mpRi;
-
-  //additional functions for UNDO framework
-  void deleteReaction();
-  void addReaction(std::string & reaObjectName, CReactionInterface *pRi);
-  void createNewReaction();
 };
 
 #endif // REACTIONSWIDGET1_H

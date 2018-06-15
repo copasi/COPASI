@@ -350,7 +350,26 @@ void ReactionsWidget1::copy()
 // Just added 5/18/04
 void ReactionsWidget1::slotBtnDelete()
 {
-  // mpUndoStack->push(new DeleteReactionCommand(this));
+  CReaction * pReaction = dynamic_cast< CReaction * >(mpObject);
+
+  if (pReaction == NULL) return;
+
+  CModel * pModel = dynamic_cast< CModel * >(pReaction->getObjectAncestor("Model"));
+
+  if (pModel == NULL) return;
+
+  QMessageBox::StandardButton choice =
+    CQMessageBox::confirmDelete(this, "reaction",
+                                FROM_UTF8(pReaction->getObjectName()),
+                                pReaction);
+
+  if (choice == QMessageBox::Ok)
+    {
+      CUndoData UndoData;
+      pReaction->createUndoData(UndoData, CUndoData::Type::REMOVE);
+
+      slotNotifyChanges(mpDataModel->applyData(UndoData));
+    }
 }
 
 void ReactionsWidget1::FillWidgetFromRI()
@@ -718,262 +737,3 @@ void ReactionsWidget1::setFramework(int framework)
         break;
     }
 }
-
-//Undo methods
-void ReactionsWidget1::createNewReaction()
-{
-  assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
-
-  std::string name = "reaction_1";
-  size_t i = 1;
-
-  while (!pModel->createReaction(name))
-    {
-      i++;
-      name = "reaction_";
-      name += TO_UTF8(QString::number(i));
-    }
-
-  CCommonName CN = pModel->getReactions()[name].getCN();
-  protectedNotify(ListViews::REACTION, ListViews::ADD, CN);
-
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, CN);
-}
-
-void ReactionsWidget1::deleteReaction()
-{
-  assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
-
-  CReaction * pReaction =
-    dynamic_cast< CReaction * >(mpObject);
-
-  if (pReaction == NULL) return;
-
-  QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(this, "reaction",
-                                FROM_UTF8(pReaction->getObjectName()),
-                                pReaction);
-
-  switch (choice)
-    {
-      case QMessageBox::Ok:                                                     // Yes or Enter
-      {
-        pModel->removeReaction(pReaction);
-
-        mpRi->setFunctionWithEmptyMapping("");
-
-        protectedNotify(ListViews::REACTION, ListViews::DELETE, mObjectCN);
-        protectedNotify(ListViews::REACTION, ListViews::DELETE, std::string());//Refresh all as there may be dependencies.
-        // mpListView->switchToOtherWidget(CCopasiUndoCommand::REACTIONS, "");
-        break;
-      }
-
-      default:                                                     // No or Escape
-        break;
-    }
-}
-
-void ReactionsWidget1::addReaction(std::string & reaObjectName, CReactionInterface *pRi)
-{
-  assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
-
-  CReaction *pRea = pModel->createReaction(reaObjectName);
-  CCommonName CN = pRea->getCN();
-  protectedNotify(ListViews::REACTION, ListViews::ADD, CN);
-  pRi->writeBackToReaction(pRea);
-
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, CN);
-}
-
-#ifdef XXXX
-void ReactionsWidget1::deleteReaction(UndoReactionData *pReactionData)
-{
-  assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
-
-  std::string key = pReactionData->getKey();
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-  pModel->removeReaction(key);
-
-  if (mpRi != NULL) mpRi->setFunctionWithEmptyMapping("");
-
-  protectedNotify(ListViews::REACTION, ListViews::DELETE, key);
-  protectedNotify(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-
-  switchToWidget(CCopasiUndoCommand::REACTIONS);
-}
-
-bool ReactionsWidget1::changeReaction(
-  const std::string &key,
-  CCopasiUndoCommand::Type type,
-  const QVariant &newValue,
-  const QVariant &newSecondValue,
-  ReactionChangeCommand* command)
-{
-  if (!mIgnoreUpdates)
-    {
-      mKey = key;
-      mpObject = CRootContainer::getKeyFactory()->get(key);
-      loadFromReaction(dynamic_cast<CReaction*>(mpObject));
-
-      mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-    }
-
-  CReaction* pReaction = dynamic_cast<CReaction*>(mpObject);
-
-  if (pReaction == NULL)
-    return false;
-
-  switch (type)
-    {
-      case CCopasiUndoCommand::REACTION_SCHEME_CHANGE:
-      {
-
-        // remove old, no longer referred to objects
-        std::vector<std::string> previouslyCreatedObjects =
-          command->getCreatedObjects();
-
-        bool deletedObjects = false;
-
-        if (!previouslyCreatedObjects.empty())
-          {
-
-            mpRi->clearChemEquation();
-            pReaction->cleanup();
-            pReaction->compile();
-
-            deletedObjects = ReactionChangeCommand::removeCreatedObjects(previouslyCreatedObjects, false);
-          }
-
-        // set new
-        mpRi->setChemEqString(
-          TO_UTF8(newValue.toString()),
-          TO_UTF8(newSecondValue.toString()));
-
-        // create new objects
-        std::vector<std::string> createdObjects;
-        bool createdMetabs = mpRi->createMetabolites(createdObjects);
-
-        bool notifyNeeded = mpRi->createOtherObjects(createdObjects)
-                            || createdMetabs
-                            || deletedObjects;
-
-        command->setCreatedObjects(createdObjects);
-
-        mpRi->writeBackToReaction(pReaction);
-
-        if (notifyNeeded)
-          {
-            bool oldNotify = mIgnoreUpdates;
-            mIgnoreUpdates = false;
-            protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
-            mIgnoreUpdates = oldNotify;
-          }
-
-        break;
-      }
-
-      case CCopasiUndoCommand::REACTION_FAST_CHANGE:
-        pReaction->setFast(newValue.toBool());
-        break;
-
-      case CCopasiUndoCommand::REACTION_REVERSIBLE_CHANGE:
-        mpRi->setReversibility(
-          newValue.toBool(),
-          TO_UTF8(newSecondValue.toString()));
-        mpRi->writeBackToReaction(pReaction);
-        break;
-
-      case CCopasiUndoCommand::REACTION_FUNCTION_CHANGE:
-        mpRi->setFunctionAndDoMapping(TO_UTF8(newValue.toString()));
-        mpRi->writeBackToReaction(pReaction);
-        break;
-
-      case CCopasiUndoCommand::REACTION_UNIT_CHANGE:
-        mpRi->setKineticLawUnitType(toEnum(newValue.toByteArray().data(), CReaction::KineticLawUnitTypeName, CReaction::Default));
-        mpRi->writeBackToReaction(pReaction);
-        break;
-
-      case CCopasiUndoCommand::REACTION_SCALING_COMPARTMENT_CHANGE:
-        mpRi->setScalingCompartment(TO_UTF8(newValue.toString()));
-        mpRi->writeBackToReaction(pReaction);
-        break;
-
-      case CCopasiUndoCommand::REACTION_LOCAL_PARAMETER_VALUE_CHANGE:
-        mpRi->setLocalValue(newSecondValue.toInt(), newValue.toDouble());
-        mpRi->writeBackToReaction(pReaction);
-        break;
-
-      case CCopasiUndoCommand::REACTION_MAPPING_PARAMETER_CHANGE:
-      {
-        QList<QVariant> list = newSecondValue.toList();
-        mpRi->setMapping(list.at(0).toInt(), TO_UTF8(newValue.toString()));
-
-        if (newValue.toString() == "unknown")
-          {
-            mpRi->setLocal(list.at(0).toInt());
-            mpRi->setLocalValue(list.at(0).toInt(), list.at(1).toDouble());
-          }
-
-        mpRi->writeBackToReaction(pReaction);
-        break;
-      }
-
-      case CCopasiUndoCommand::REACTION_MAPPING_VOLUME_CHANGE:
-
-//    mpRi->setMapping(newSecondValue.toInt(), TO_UTF8(newValue.toString()));
-//    mpRi->writeBackToReaction(pReaction);
-//    break;
-      case CCopasiUndoCommand::REACTION_MAPPING_SPECIES_CHANGE:
-        mpRi->setMapping(newSecondValue.toInt(), TO_UTF8(newValue.toString()));
-        mpRi->writeBackToReaction(pReaction);
-        break;
-
-      case CCopasiUndoCommand::REACTION_ADD_NOISE_CHANGE:
-        mpRi->setHasNoise(newValue.toBool());
-        pReaction->setHasNoise(newValue.toBool());
-        break;
-
-      case CCopasiUndoCommand::REACTION_NOISE_EXPRESSION_CHANGE:
-        mpRi->setNoiseExpression(TO_UTF8(newValue.toString()));
-        pReaction->setNoiseExpression(TO_UTF8(newValue.toString()));
-        break;
-
-      default:
-        break;
-    }
-
-  if (mIgnoreUpdates) return true;
-
-  assert(mpDataModel != NULL);
-  mpDataModel->changed();
-  protectedNotify(ListViews::REACTION, ListViews::CHANGE, mKey);
-
-  FillWidgetFromRI();
-
-  return true;
-}
-
-void ReactionsWidget1::addReaction(UndoReactionData *pData)
-{
-  assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
-
-  CDataObject *pReaction = pData->restoreObjectIn(pModel);
-
-  if (pReaction == NULL)
-    return;
-
-  protectedNotify(ListViews::REACTION, ListViews::ADD, pReaction->getKey());
-
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, pReaction->getKey());
-}
-#endif
