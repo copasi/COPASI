@@ -703,6 +703,10 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
 
 #ifdef WITH_QT5_VISUALIZATION
 
+
+  if (!m_graph)
+    return;
+
   auto* series = m_graph->selectedSeries();
 
   if (series)
