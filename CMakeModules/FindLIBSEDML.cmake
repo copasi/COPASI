@@ -1,4 +1,4 @@
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -24,7 +24,7 @@
 find_path(LIBSEDML_INCLUDE_DIR sedml/SedBase.h
     PATHS $ENV{LIBSEDML_DIR}/include
           $ENV{LIBSEDML_DIR}
-	  ${COPASI_DEPENDENCY_DIR}/include
+           ${COPASI_DEPENDENCY_DIR}/include
           ${COPASI_DEPENDENCY_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
@@ -46,6 +46,7 @@ find_library(LIBSEDML_LIBRARY
           libsedml
     PATHS $ENV{LIBSEDML_DIR}/lib
           $ENV{LIBSEDML_DIR}
+          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
           ${COPASI_DEPENDENCY_DIR}/lib
           ${COPASI_DEPENDENCY_DIR}
           ~/Library/Frameworks
@@ -70,6 +71,7 @@ find_library(LIBNUML_LIBRARY
           libnuml
     PATHS $ENV{LIBSEDML_DIR}/lib
           $ENV{LIBSEDML_DIR}
+          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
           ${COPASI_DEPENDENCY_DIR}/lib
           ${COPASI_DEPENDENCY_DIR}
           ~/Library/Frameworks

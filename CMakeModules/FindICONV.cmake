@@ -1,3 +1,13 @@
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 # Try to find iconv, which is used on systems other than 
 # OS X and WIN32.
 #
@@ -19,17 +29,18 @@ ENDIF (ICONV_INCLUDE_DIR AND ICONV_LIBRARIES)
 
 FIND_PATH(ICONV_INCLUDE_DIR iconv.h
          PATHS
-		 /usr/include
-		 /usr/local/include
+         /usr/include
+         /usr/local/include
          /opt/local/include
          ${COPASI_DEPENDENCY_DIR}/include
 )
 
 FIND_LIBRARY(ICONV_LIBRARIES NAMES iconv libiconv
          PATHS
-		 /usr/lib
-		 /usr/local/lib
+         /usr/lib
+         /usr/local/lib
          /opt/local/lib
+         ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
          ${COPASI_DEPENDENCY_DIR}/lib
 )
  

@@ -95,6 +95,7 @@ else()
     NAMES ${COMBINE_LIBRARY_NAME}
     PATHS $ENV{COMBINE_DIR}/lib
           $ENV{COMBINE_DIR}
+          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
           ${COPASI_DEPENDENCY_DIR}/lib
           ${COPASI_DEPENDENCY_DIR}
           ~/Library/Frameworks
