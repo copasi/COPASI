@@ -62,6 +62,7 @@ private:
   CModelParameterSet * mpParameterSet;
 
   CModelParameterSet * mpParameterSetCopy;
+  bool mOwnCopy;
 
   CQParameterOverviewDM * mpParameterSetDM;
 

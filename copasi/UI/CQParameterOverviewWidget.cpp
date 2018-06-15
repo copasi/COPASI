@@ -32,6 +32,7 @@ CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char
   CopasiWidget(parent, name),
   mpParameterSet(NULL),
   mpParameterSetCopy(NULL),
+  mOwnCopy(false),
   mpParameterSetDM(NULL),
   mpParameterSetSortDM(NULL),
   mGlobalQuantities()
@@ -75,6 +76,24 @@ CQParameterOverviewWidget::~CQParameterOverviewWidget()
 // virtual
 bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
+
+      if (objectType == ListViews::MODEL && action == ListViews::DELETE)
+        {
+          mObjectCN.clear();
+          mpObject = NULL;
+
+          mpParameterSetDM->setModelParameterSet(NULL);
+
+          if (mpParameterSet != mpParameterSetCopy)
+            {
+              if (mOwnCopy)
+              pdelete(mpParameterSetCopy);
+        mOwnCopy = false;
+            }
+          mpParameterSetCopy = NULL;
+          mpParameterSet = NULL;
+        }
+
   if (!mIgnoreUpdates)
     {
       if (mpParameterSetCopy != NULL &&
@@ -117,21 +136,6 @@ bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType
 
   if (mIgnoreUpdates || !isVisible())
     {
-      if (objectType == ListViews::MODEL && action == ListViews::DELETE)
-        {
-          mObjectCN.clear();
-          mpObject = NULL;
-
-          mpParameterSetDM->setModelParameterSet(NULL);
-
-          if (mpParameterSet != mpParameterSetCopy)
-            {
-              pdelete(mpParameterSetCopy);
-            }
-
-          mpParameterSet = NULL;
-        }
-
       return true;
     }
 
@@ -248,7 +252,9 @@ bool CQParameterOverviewWidget::enterProtected()
   if (mpParameterSet == NULL)
     {
       mpParameterSetDM->setModelParameterSet(NULL);
-      pdelete(pOldParameterSet);
+      if (mOwnCopy)
+	    pdelete(pOldParameterSet);
+	  mOwnCopy = false;
 
       return false;
     }
@@ -258,22 +264,27 @@ bool CQParameterOverviewWidget::enterProtected()
 
   mGlobalQuantities.clear();
 
+  bool didOwnCopy = mOwnCopy;
+
   if (mpParameterSet->isActive())
     {
       mpParameterSetCopy = mpParameterSet;
+	  mOwnCopy = false;
       mpTreeView->header()->hideSection(1);
     }
   else
     {
       mpParameterSetCopy = new CModelParameterSet(*mpParameterSet, mpDataModel, false);
       mpParameterSetCopy->compareWithModel(static_cast< CCore::Framework >(mFramework));
+	  mOwnCopy = true;
       mpHeaderWidget->hide();
     }
 
   buildSelectionList();
 
   mpParameterSetDM->setModelParameterSet(mpParameterSetCopy);
-  pdelete(pOldParameterSet);
+  if (didOwnCopy)
+    pdelete(pOldParameterSet);
 
   mpTreeView->expandAll();
 
