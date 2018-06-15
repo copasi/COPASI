@@ -96,7 +96,18 @@ include (CheckCCompilerFlag)
 include (CheckCSourceRuns)
 include (CheckSymbolExists)
 include (CheckTypeSize)
-include (GNUInstallDirs)
+
+if (${CMAKE_VERSION} VERSION_GREATER 2.8.4)
+	include(GNUIn0stallDirs)
+else ()
+	set (CMAKE_INSTALL_LIBDIR "lib")
+	set (CMAKE_INSTALL_INCLUDEDIR "include")
+	set (CMAKE_INSTALL_BINDIR "bin")
+	set (CMAKE_INSTALL_DATADIR "share")
+	set (CMAKE_INSTALL_FULL_LIBDIR "${CMAKE_INSTALL_PREFIX}/lib")
+	set (CMAKE_INSTALL_FULL_INCLUDEDIR "${CMAKE_INSTALL_PREFIX}/include")
+endif ()
+
 
 # preferably link against the static versions
 # as compared to the dynamic ones
@@ -123,9 +134,6 @@ if (NOT CMAKE_SIZEOF_SIZE_T EQUAL CMAKE_SIZEOF_UINT)
   set (DATAVALUE_NEEDS_SIZE_T_MEMBERS 1)
 endif()
 
-
-set(CMAKE_INSTALL_LIBDIR lib CACHE PATH "Full path to the library output directory")
-mark_as_advanced(CMAKE_INSTALL_LIBDIR)
 
 set(COPASI_BUILD_TYPE "native")
 if (CMAKE_SIZEOF_VOID_P EQUAL 4)
