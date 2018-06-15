@@ -36,7 +36,7 @@ if (NOT R_INCLUDE_DIRS)
     find_path(R_INCLUDE_DIRS
         NAMES R.h
         PATHS /usr/include /usr/local/include /usr/share/R/include
-              /usr/include/R /usr/local/include/R
+              /usr/include/R /usr/local/include/R /usr/local/${CMAKE_INSTALL_LIBDIR}/R/include/
               /Library/Frameworks/R.framework/Versions/Current/Resources/include
               $ENV{ProgramFiles}/R/R-3.1.0/include
               $ENV{ProgramW6432}/R/R-3.1.0/include
@@ -65,6 +65,7 @@ if (NOT R_LIB)
   find_library(R_LIB
       NAMES Rlib.lib R
       PATHS /usr/${LIB_DIR} /usr/local/${LIB_DIR} 
+          /usr/${CMAKE_INSTALL_LIBDIR} /usr/local/${CMAKE_INSTALL_LIBDIR} /usr/${CMAKE_INSTALL_LIBDIR}/R/lib
           /usr/lib /usr/local/lib /usr/lib/R/lib
           $ENV{ProgramFiles}/R/R-3.1.0/bin${R_SUFFIX}
           $ENV{ProgramW6432}/R/R-3.1.0/bin${R_SUFFIX}
@@ -96,9 +97,9 @@ if (NOT R_INTERPRETER)
           $ENV{ProgramW6432}/R/R-2.15.2/bin
           $ENV{ProgramFiles}/R/R-2.15.1/bin
           $ENV{ProgramW6432}/R/R-2.15.1/bin
-          /Library/Frameworks/R.framework/Versions/Current/Resources/bin/
           /usr/local/bin
           /usr/bin
+          /Library/Frameworks/R.framework/Versions/Current/Resources/bin/
         DOC "The file name of the R interpreter."
         )
 endif()
