@@ -1,4 +1,9 @@
-# Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -48,6 +53,8 @@ if (NOT (EXPAT_INCLUDE_DIR AND EXPAT_LIBRARIES) OR NOT EXPAT_FOUND)
 	    PATHS $ENV{EXPAT_DIR}/lib
 	          $ENV{EXPAT_DIR}/lib-dbg
 	          $ENV{EXPAT_DIR}
+              ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
+              ${COPASI_DEPENDENCY_DIR}
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/lib        # Fink

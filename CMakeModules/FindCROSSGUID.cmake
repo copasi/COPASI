@@ -48,6 +48,7 @@ if (NOT CROSSGUID_FOUND)
     NAMES crossguid crossguid-dgb
     PATHS $ENV{CROSSGUID_DIR}/lib
           $ENV{CROSSGUID_DIR}
+          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
           ${COPASI_DEPENDENCY_DIR}/lib
           ${COPASI_DEPENDENCY_DIR}
           ~/Library/Frameworks
