@@ -37,7 +37,8 @@ CopasiWidget::CopasiWidget(QWidget *parent, const char *name, Qt::WindowFlags f)
     mObjectType(ListViews::RESULT),
     mObjectCN(),
     mIgnoreUpdates(false),
-    mFramework(0)
+    mFramework(0),
+    mOldCN()
 {
   setObjectName(name);
   initContext();
@@ -52,7 +53,10 @@ bool CopasiWidget::update(ListViews::ObjectType objectType, ListViews::Action ac
   // This will check the current data model and the root container for the object;
   mpObject = const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, mObjectCN)));
 
-  return updateProtected(objectType, action, cn);
+  bool success = updateProtected(objectType, action, cn != mOldCN ? cn : mObjectCN);
+  mOldCN = mObjectCN;
+
+  return success;
 }
 
 bool CopasiWidget::leave()
@@ -65,7 +69,10 @@ bool CopasiWidget::leave()
 
   if (mpObject != NULL)
     {
-      return leaveProtected();
+      bool success = leaveProtected();
+      mOldCN = mObjectCN;
+
+      return success;
     }
 
   return true;
@@ -94,6 +101,7 @@ bool CopasiWidget::enter(const CCommonName & cn)
     }
 
   mObjectCN = cn;
+  mOldCN = cn;
 
   CObjectInterface::ContainerList List;
   List.push_back(mpDataModel);

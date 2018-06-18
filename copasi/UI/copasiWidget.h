@@ -92,6 +92,9 @@ protected:
   bool mIgnoreUpdates;
   int mFramework;
 
+private:
+  CCommonName mOldCN;
+
 protected slots:
   virtual bool protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn = std::string());
 

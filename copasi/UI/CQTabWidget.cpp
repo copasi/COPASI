@@ -146,42 +146,18 @@ bool CQTabWidget::updateProtected(ListViews::ObjectType objectType, ListViews::A
 
   if (cn == mObjectCN)
     {
-      std::vector< CopasiWidget * >::iterator it = mPages.begin();
-      std::vector< CopasiWidget * >::iterator end = mPages.end();
-
       if (objectType == mObjectType)
         {
           switch (action)
             {
               case ListViews::RENAME:
-                enterProtected();
-                break;
-
               case ListViews::CHANGE:
-                for (; it != end; ++it)
-                  (*it)->update(objectType, action, cn);
-
+                load();
                 break;
 
               case ListViews::DELETE:
                 mpObject = NULL;
                 mObjectCN.clear();
-                break;
-
-              default:
-                break;
-            }
-        }
-      else if (objectType == ListViews::ObjectType::MIRIAM)
-        {
-          switch (action)
-            {
-              case ListViews::ADD:
-              case ListViews::CHANGE:
-              case ListViews::DELETE:
-                for (; it != end; ++it)
-                  (*it)->update(objectType, action, cn);
-
                 break;
 
               default:

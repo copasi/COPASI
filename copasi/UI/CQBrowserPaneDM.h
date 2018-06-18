@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -107,9 +107,9 @@ public:
 
   const CCommonName & getCNFromIndex(const QModelIndex & index) const;
 
-  void remove(const CCommonName & cn);
+  void remove(CNode * pNode);
 
-  void rename(const CCommonName & cn, const QString & displayRole);
+  void rename(CNode * pNode, const QString & displayRole);
 
   void add(const size_t & id,
            const CCommonName & cn,
@@ -129,9 +129,18 @@ private slots:
   void slotRefreshValidityFilters();
 
 private:
-  QModelIndex index(CNode * pNode) const;
-
   static CNode * nodeFromIndex(const QModelIndex & index);
+
+  CNode * createNode(const size_t & id,
+                     const CCommonName & cn,
+                     const QString & displayRole,
+                     CNode * pParent);
+
+  void updateNode(CNode * pNode, const CCommonName & CN);
+
+  void destroyNode(CNode * pNode);
+
+  QModelIndex index(CNode * pNode) const;
 
   // bool isNodeFromTree(const void * pNode) const;
 
@@ -155,6 +164,9 @@ private:
 
   CValidity::Severity mSeverityFilter;
   CValidity::Kind mKindFilter;
+
+  std::map< std::string, CNode * > mCN2Node;
+  std::map< size_t, CNode * > mId2Node;
 };
 
 #endif // COPASI_CQBrowserPaneDM

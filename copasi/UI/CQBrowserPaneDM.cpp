@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,8 +40,10 @@ CQBrowserPaneDM::CQBrowserPaneDM(QObject * pParent):
   mpGuiDM(NULL),
   mEmitDataChanged(true),
   mFlags(CQBrowserPaneDM::Model | CQBrowserPaneDM::Tasks | CQBrowserPaneDM::Output | CQBrowserPaneDM::FunctionDB | CQBrowserPaneDM::Units),
-  mSeverityFilter(), // All flags should be off,
-  mKindFilter()      // with default constructor
+  mSeverityFilter(),
+  mKindFilter(),
+  mCN2Node(),
+  mId2Node()
 {
   createStaticDM();
 
@@ -191,7 +193,8 @@ bool CQBrowserPaneDM::removeRows(int row, int count, const QModelIndex & parent)
     {
       CNode * pTmp = pNode;
       pNode = static_cast< CNode * >(pNode->getSibling());
-      delete pTmp;
+
+      destroyNode(pTmp);
     }
 
   endRemoveRows();
@@ -201,15 +204,11 @@ bool CQBrowserPaneDM::removeRows(int row, int count, const QModelIndex & parent)
 
 CQBrowserPaneDM::CNode * CQBrowserPaneDM::findNodeFromId(const size_t & id) const
 {
-  CCopasiTree< CNode >::iterator it = mpRoot;
-  CCopasiTree< CNode >::iterator end;
+  std::map< size_t, CNode * >::const_iterator found = mId2Node.find(id);
 
-  for (; it != end; ++it)
+  if (found != mId2Node.end())
     {
-      if (it->getData().mId == id)
-        {
-          return &*it;
-        }
+      return found->second;
     }
 
   return NULL;
@@ -217,6 +216,13 @@ CQBrowserPaneDM::CNode * CQBrowserPaneDM::findNodeFromId(const size_t & id) cons
 
 CQBrowserPaneDM::CNode * CQBrowserPaneDM::findNodeFromCN(const CCommonName & cn) const
 {
+  std::map< std::string, CNode * >::const_iterator found = mCN2Node.find(cn);
+
+  if (found != mCN2Node.end())
+    {
+      return found->second;
+    }
+
   CCopasiTree< CNode >::iterator it = mpRoot;
   CCopasiTree< CNode >::iterator end;
 
@@ -250,10 +256,8 @@ const CCommonName & CQBrowserPaneDM::getCNFromIndex(const QModelIndex & index) c
   return pNode->getCN();
 }
 
-void CQBrowserPaneDM::remove(const CCommonName & cn)
+void CQBrowserPaneDM::remove(CNode * pNode)
 {
-  CNode * pNode = findNodeFromCN(cn);
-
   if (pNode == NULL || pNode->getParent() == NULL)
     {
       return;
@@ -264,12 +268,8 @@ void CQBrowserPaneDM::remove(const CCommonName & cn)
   removeRows(pNode->getRow(), 1, Parent);
 }
 
-void CQBrowserPaneDM::rename(const CCommonName & cn, const QString & displayRole)
+void CQBrowserPaneDM::rename(CNode * pNode, const QString & displayRole)
 {
-  CNode * pNode = findNodeFromCN(cn);
-
-  if (pNode == NULL) return;
-
   if (pNode->getDisplayRole() != displayRole)
     {
       pNode->setDisplayRole(displayRole);
@@ -299,7 +299,7 @@ void CQBrowserPaneDM::add(const size_t & id,
     }
 
   beginInsertRows(index(pParent), row, row);
-  CNode * pNode = new CNode(id, cn, displayRole, pParent);
+  CNode * pNode = createNode(id, cn, displayRole, pParent);
   endInsertRows();
 
   if (mEmitDataChanged)
@@ -345,7 +345,7 @@ void CQBrowserPaneDM::setGuiDM(const DataModelGUI * pDataModel)
 
 void CQBrowserPaneDM::load()
 {
-  findNodeFromId(1)->setCN(mpCopasiDM->getModel()->getCN());
+  updateNode(findNodeFromId(1), mpCopasiDM->getModel()->getCN());
 
   load(111); // Compartment
   load(112); // Species
@@ -356,33 +356,33 @@ void CQBrowserPaneDM::load()
   // Still setting CNs in here, rather than setObject(), for now because they may still be needed
   // where CNs are in use (e.g. listviews slotFolderChanged()
 
-  findNodeFromId(118)->setCN(mpCopasiDM->getModel()->getActiveModelParameterSet().CDataObject::getCN()); // Parameter Set
+  updateNode(findNodeFromId(118), mpCopasiDM->getModel()->getActiveModelParameterSet().CDataObject::getCN()); // Parameter Set
   load(119); // Model Parameter Sets
 
-  findNodeFromId(21)->setCN(mpCopasiDM->getTaskList()->operator[]("Steady-State").getCN());
-  findNodeFromId(221)->setCN(mpCopasiDM->getTaskList()->operator[]("Elementary Flux Modes").getCN());
-  findNodeFromId(222)->setCN(mpCopasiDM->getTaskList()->operator[]("Moieties").getCN());
-  findNodeFromId(2221)->setCN(mpCopasiDM->getTaskList()->operator[]("Moieties").getCN());
-  findNodeFromId(23)->setCN(mpCopasiDM->getTaskList()->operator[]("Time-Course").getCN());
-  findNodeFromId(24)->setCN(mpCopasiDM->getTaskList()->operator[]("Metabolic Control Analysis").getCN());
-  findNodeFromId(27)->setCN(mpCopasiDM->getTaskList()->operator[]("Time Scale Separation Analysis").getCN());
-  findNodeFromId(26)->setCN(mpCopasiDM->getTaskList()->operator[]("Lyapunov Exponents").getCN());
-  findNodeFromId(28)->setCN(mpCopasiDM->getTaskList()->operator[]("Cross Section").getCN());
+  updateNode(findNodeFromId(21), mpCopasiDM->getTaskList()->operator[]("Steady-State").getCN());
+  updateNode(findNodeFromId(221), mpCopasiDM->getTaskList()->operator[]("Elementary Flux Modes").getCN());
+  updateNode(findNodeFromId(222), mpCopasiDM->getTaskList()->operator[]("Moieties").getCN());
+  updateNode(findNodeFromId(2221), mpCopasiDM->getTaskList()->operator[]("Moieties").getCN());
+  updateNode(findNodeFromId(23), mpCopasiDM->getTaskList()->operator[]("Time-Course").getCN());
+  updateNode(findNodeFromId(24), mpCopasiDM->getTaskList()->operator[]("Metabolic Control Analysis").getCN());
+  updateNode(findNodeFromId(27), mpCopasiDM->getTaskList()->operator[]("Time Scale Separation Analysis").getCN());
+  updateNode(findNodeFromId(26), mpCopasiDM->getTaskList()->operator[]("Lyapunov Exponents").getCN());
+  updateNode(findNodeFromId(28), mpCopasiDM->getTaskList()->operator[]("Cross Section").getCN());
 
 #ifdef WITH_ANALYTICS
-  findNodeFromId(29)->setCN(mpCopasiDM->getTaskList()->operator[]("Analytics").getCN());
+  updateNode(findNodeFromId(29), mpCopasiDM->getTaskList()->operator[]("Analytics").getCN());
 #endif // WITH_ANALYTICS
 
-  findNodeFromId(31)->setCN(mpCopasiDM->getTaskList()->operator[]("Scan").getCN());
-  findNodeFromId(32)->setCN(mpCopasiDM->getTaskList()->operator[]("Optimization").getCN());
-  findNodeFromId(33)->setCN(mpCopasiDM->getTaskList()->operator[]("Parameter Estimation").getCN());
-  findNodeFromId(34)->setCN(mpCopasiDM->getTaskList()->operator[]("Sensitivities").getCN());
-  findNodeFromId(35)->setCN(mpCopasiDM->getTaskList()->operator[]("Linear Noise Approximation").getCN());
+  updateNode(findNodeFromId(31), mpCopasiDM->getTaskList()->operator[]("Scan").getCN());
+  updateNode(findNodeFromId(32), mpCopasiDM->getTaskList()->operator[]("Optimization").getCN());
+  updateNode(findNodeFromId(33), mpCopasiDM->getTaskList()->operator[]("Parameter Estimation").getCN());
+  updateNode(findNodeFromId(34), mpCopasiDM->getTaskList()->operator[]("Sensitivities").getCN());
+  updateNode(findNodeFromId(35), mpCopasiDM->getTaskList()->operator[]("Linear Noise Approximation").getCN());
 
-  findNodeFromId(42)->setCN(mpCopasiDM->getPlotDefinitionList()->getCN());
+  updateNode(findNodeFromId(42), mpCopasiDM->getPlotDefinitionList()->getCN());
   load(42); // Plot Specifications
 
-  findNodeFromId(43)->setCN(mpCopasiDM->getReportDefinitionList()->getCN());
+  updateNode(findNodeFromId(43), mpCopasiDM->getReportDefinitionList()->getCN());
   load(43); // Report Specifications
 
   load(5); // Functions
@@ -448,7 +448,8 @@ void CQBrowserPaneDM::load(const size_t & id)
 
   // We need to compare the existing nodes with the COPASI data model objects.
   CNode * pParent = findNodeFromId(id);
-  pParent->setCN(pVector->getCN());
+  updateNode(pParent, pVector->getCN());
+
   CCopasiNode< CQBrowserPaneDM::SData > * pChildData = pParent->CCopasiNode< CQBrowserPaneDM::SData >::getChild();
   CDataVector< CDataObject >::const_iterator it = pVector->begin();
   CDataVector< CDataObject >::const_iterator end = pVector->end();
@@ -458,8 +459,7 @@ void CQBrowserPaneDM::load(const size_t & id)
   for (; pChildData != NULL && it != end; pChildData = pChildData->getSibling(), ++it)
     {
       CNode * pChild = static_cast< CNode *>(pChildData);
-
-      pChild->setCN(it->getCN()); //Some things may currently still use key (e.g. listviews slotFolderChanged)
+      updateNode(pChild, it->getCN()); //Some things may currently still use key (e.g. listviews slotFolderChanged)
 
       QString DisplayRole;
 
@@ -518,7 +518,7 @@ void CQBrowserPaneDM::load(const size_t & id)
               DisplayRole = FROM_UTF8(it->getObjectName());
             }
 
-          new CNode(C_INVALID_INDEX, it->getCN(), DisplayRole, pParent);
+          createNode(C_INVALID_INDEX, it->getCN(), DisplayRole, pParent);
         }
 
       endInsertRows();
@@ -545,8 +545,18 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
   CObjectInterface::ContainerList List;
   List.push_back(mpCopasiDM);
 
+  // The CN might point to the old name (before rename or move). The new CN can be retrieved from the corresponding node
+  CNode * pNode = findNodeFromCN(cn);
+  std::string NewCN = pNode != NULL ? pNode->getCN() : cn;
+
+  if (cn != NewCN)
+    {
+      mCN2Node.erase(cn);
+      mCN2Node[NewCN] = pNode;
+    }
+
   // This will check the current data model and the root container for the object;
-  const CDataObject * pObject = const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, cn)));
+  const CDataObject * pObject = const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, NewCN)));
 
   if (pObject == NULL &&
       action != ListViews::DELETE)
@@ -593,7 +603,7 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
             case ListViews::LAYOUT:
             case ListViews::MODELPARAMETERSET:
             case ListViews::UNIT:
-              rename(cn, DisplayRole);
+              rename(pNode, DisplayRole);
               break;
 
             default:
@@ -618,7 +628,7 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
             case ListViews::LAYOUT:
             case ListViews::MODELPARAMETERSET:
             case ListViews::UNIT:
-              remove(cn);
+              remove(pNode);
               break;
 
             default:
@@ -729,6 +739,7 @@ QModelIndex CQBrowserPaneDM::index(CQBrowserPaneDM::CNode * pNode) const
   return index(pNode->getRow(), 0, Parent);
 }
 
+// static
 CQBrowserPaneDM::CNode * CQBrowserPaneDM::nodeFromIndex(const QModelIndex & index)
 {
   if (!index.isValid()) return NULL;
@@ -745,9 +756,67 @@ CQBrowserPaneDM::CNode * CQBrowserPaneDM::nodeFromIndex(const QModelIndex & inde
   return static_cast< CNode * >(Tmp.internalPointer());
 }
 
+CQBrowserPaneDM::CNode * CQBrowserPaneDM::createNode(const size_t & id,
+    const CCommonName & cn,
+    const QString & displayRole,
+    CNode * pParent)
+{
+  CNode * pNode = new CNode(id, cn, displayRole, pParent);
+
+  if (!cn.empty())
+    {
+      mCN2Node[cn] = pNode;
+    }
+
+  if (id != C_INVALID_INDEX)
+    {
+      mId2Node[id] = pNode;
+    }
+
+  return pNode;
+}
+
+void CQBrowserPaneDM::updateNode(CNode * pNode, const CCommonName & CN)
+{
+  if (pNode != NULL &&
+      pNode->getCN() != CN)
+    {
+      mCN2Node.erase(pNode->getCN());
+      mCN2Node[CN] = pNode;
+      pNode->setCN(CN);
+    }
+}
+
+void CQBrowserPaneDM::destroyNode(CNode * pNode)
+{
+  if (!pNode->getCN().empty())
+    {
+      std::map< std::string, CNode * >::iterator found = mCN2Node.find(pNode->getCN());
+
+      if (found != mCN2Node.end() &&
+          found->second == pNode)
+        {
+          mCN2Node.erase(found);
+        }
+    }
+
+  if (pNode->getId() != C_INVALID_INDEX)
+    {
+      std::map< size_t, CNode * >::iterator found = mId2Node.find(pNode->getId());
+
+      if (found != mId2Node.end() &&
+          found->second == pNode)
+        {
+          mId2Node.erase(found);
+        }
+    }
+
+  delete pNode;
+}
+
 void CQBrowserPaneDM::createStaticDM()
 {
-  mpRoot = new CNode(0, std::string(), "COPASI", NULL);
+  mpRoot = createNode(0, std::string(), "COPASI", NULL);
 
   std::stringstream in;
   in.str(DataModeltxt);
@@ -813,7 +882,7 @@ void CQBrowserPaneDM::createStaticDM()
 
       if (pParent != NULL)
         {
-          new CNode(myId, std::string(), str, pParent);
+          createNode(myId, std::string(), str, pParent);
         }
     }
 }
@@ -825,7 +894,6 @@ void CQBrowserPaneDM::clear()
   for (const size_t * pNodeIndex = NodeIndex; *pNodeIndex != C_INVALID_INDEX; ++pNodeIndex)
     {
       CNode * pNode = findNodeFromId(*pNodeIndex);
-
       removeRows(0, pNode->getNumChildren(), index(pNode));
     }
 }
