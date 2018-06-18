@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,9 +34,6 @@ COptMethodTruncatedNewton::COptMethodTruncatedNewton(const CDataContainer * pPar
   mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun)),
   mpCTruncatedNewton(new CTruncatedNewton())
 {
-
-  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-
   initObjects();
 }
 
@@ -256,8 +253,6 @@ bool COptMethodTruncatedNewton::initialize()
   cleanup();
 
   if (!COptMethod::initialize()) return false;
-
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   mVariableSize = (C_INT) mpOptItem->size();
   mCurrent.resize(mVariableSize);

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,9 +45,6 @@ COptMethodSteepestDescent::COptMethodSteepestDescent(const CDataContainer * pPar
 {
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 100);
   addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1e-6);
-
-  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-
 }
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const COptMethodSteepestDescent & src,
@@ -226,8 +223,6 @@ bool COptMethodSteepestDescent::initialize()
   cleanup();
 
   if (!COptMethod::initialize()) return false;
-
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   mIterations = getValue< unsigned C_INT32 >("Iteration Limit");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");

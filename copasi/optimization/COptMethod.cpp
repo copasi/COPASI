@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -44,9 +44,12 @@ COptMethod::COptMethod(const CDataContainer * pParent,
   mpParentTask(NULL),
   mContainerVariables(),
   mpOptItem(NULL),
-  mpOptContraints(NULL), 
+  mpOptContraints(NULL),
+  mLogVerbosity(0),
+  mMethodLog(),
   mEnableAdditionalParameters(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters())
 {
+  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 }
 
 COptMethod::COptMethod(const COptMethod & src,
@@ -57,6 +60,8 @@ COptMethod::COptMethod(const COptMethod & src,
   mContainerVariables(),
   mpOptItem(src.mpOptItem),
   mpOptContraints(src.mpOptContraints),
+  mLogVerbosity(src.mLogVerbosity),
+  mMethodLog(src.mMethodLog),
   mEnableAdditionalParameters(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters())
 {
   mContainerVariables.initialize(src.mContainerVariables);
@@ -101,6 +106,7 @@ bool COptMethod::initialize()
     mpReport = NULL;*/
 
   //new log
+  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
   mMethodLog = COptLog();
 
   return true;

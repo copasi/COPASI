@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -52,8 +52,6 @@ CRandomSearch::CRandomSearch(const CDataContainer * pParent,
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
-  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-
   initObjects();
 }
 
@@ -86,8 +84,6 @@ bool CRandomSearch::initialize()
   cleanup();
 
   if (!COptMethod::initialize()) return false;
-
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   mIterations = getValue< unsigned C_INT32 >("Number of Iterations");
   mpRandom = & mpContainer->getRandomGenerator();

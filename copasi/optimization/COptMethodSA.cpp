@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,8 +47,6 @@ COptMethodSA::COptMethodSA(const CDataContainer * pParent,
   addParameter("Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.e-006);
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-
-  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -330,7 +328,7 @@ bool COptMethodSA::initialize()
   mTemperature = getValue< C_FLOAT64 >("Start Temperature");
   mCoolingFactor = getValue< C_FLOAT64 >("Cooling Factor");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
+
   mpRandom =
     CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
                              getValue< unsigned C_INT32 >("Seed"));

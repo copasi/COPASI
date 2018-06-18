@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -43,8 +43,6 @@ COptMethodHookeJeeves::COptMethodHookeJeeves(const CDataContainer * pParent,
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
   addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-005);
   addParameter("Rho", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.2);
-
-  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -250,8 +248,6 @@ bool COptMethodHookeJeeves::initialize()
   cleanup();
 
   if (!COptMethod::initialize()) return false;
-
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   mIterationLimit = getValue< unsigned C_INT32 >("Iteration Limit");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");

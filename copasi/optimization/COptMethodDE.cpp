@@ -47,8 +47,6 @@ COptMethodDE::COptMethodDE(const CDataContainer * pParent,
       addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
     }
 
-  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-
   initObjects();
 }
 

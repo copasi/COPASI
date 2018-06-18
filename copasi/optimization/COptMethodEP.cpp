@@ -49,8 +49,6 @@ COptMethodEP::COptMethodEP(const CDataContainer * pParent,
   if (mEnableAdditionalParameters)
     addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
-  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-
   initObjects();
 }
 
