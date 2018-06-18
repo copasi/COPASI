@@ -45,8 +45,6 @@ COptMethodSteepestDescent::COptMethodSteepestDescent(const CDataContainer * pPar
 {
   addParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100);
   addParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1e-6);
-
-  addParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 }
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const COptMethodSteepestDescent & src,
@@ -225,8 +223,6 @@ bool COptMethodSteepestDescent::initialize()
   cleanup();
 
   if (!COptMethod::initialize()) return false;
-
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   mIterations = getValue< unsigned C_INT32 >("Iteration Limit");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");

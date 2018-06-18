@@ -41,8 +41,6 @@ COptMethodNelderMead::COptMethodNelderMead(const CDataContainer * pParent,
   addParameter("Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.e-005);
   addParameter("Scale", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 10.0);
 
-  addParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
-
   initObjects();
 }
 
@@ -661,7 +659,6 @@ bool COptMethodNelderMead::initialize()
   mIterationLimit = getValue< unsigned C_INT32 >("Iteration Limit");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
   mScale = getValue< C_FLOAT64 >("Scale");
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   mIteration = 0;
 

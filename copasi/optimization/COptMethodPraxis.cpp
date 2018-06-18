@@ -36,8 +36,6 @@ COptMethodPraxis::COptMethodPraxis(const CDataContainer * pParent,
 {
   addParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-005);
 
-  addParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
-
   initObjects();
 }
 
@@ -142,8 +140,6 @@ bool COptMethodPraxis::initialize()
   cleanup();
 
   if (!COptMethod::initialize()) return false;
-
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
   mIteration = 0;

@@ -44,8 +44,6 @@ COptMethodHookeJeeves::COptMethodHookeJeeves(const CDataContainer * pParent,
   addParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-005);
   addParameter("Rho", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.2);
 
-  addParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
-
   initObjects();
 }
 
@@ -250,8 +248,6 @@ bool COptMethodHookeJeeves::initialize()
   cleanup();
 
   if (!COptMethod::initialize()) return false;
-
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   mIterationLimit = getValue< unsigned C_INT32 >("Iteration Limit");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");

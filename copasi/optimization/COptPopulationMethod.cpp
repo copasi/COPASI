@@ -8,8 +8,6 @@
 // of Manchester.
 // All rights reserved.
 
-
-
 #include "copasi/copasi.h"
 
 #include "optimization/COptPopulationMethod.h"
@@ -71,8 +69,6 @@ COptPopulationMethod::initialize()
 
   mCurrentGeneration = 0;
   mGenerations = 0;
-
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   if (getParameter("Number of Generations") != NULL)
     mGenerations = getValue< unsigned C_INT32 >("Number of Generations");

@@ -17,22 +17,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include <cmath>
 
 #include "copasi.h"
@@ -70,8 +54,6 @@ COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
 
   if (mEnableAdditionalParameters)
     addParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
-
-  addParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -710,21 +692,21 @@ bool COptMethodSRES::optimise()
                 Continue = creation((size_t)(mPopulationSize * 0.2));
                 Stalled10 = Stalled20 = Stalled40 = Stalled80 = 0;
           }
-          else if (Stalled40 > 40)
+      else if (Stalled40 > 40)
         {
           if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_fittest_not_changed_x_random_generated).iter(mGeneration).with(Stalled80 - 1).with(40);
 
                 Continue = creation((size_t)(mPopulationSize * 0.6));
                 Stalled10 = Stalled20 = Stalled40 = 0;
           }
-          else if (Stalled20 > 20)
+      else if (Stalled20 > 20)
         {
           if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_fittest_not_changed_x_random_generated).iter(mGeneration).with(Stalled80 - 1).with(20);
 
                 Continue = creation((size_t)(mPopulationSize * 0.8));
                 Stalled10 = Stalled20 = 0;
           }
-          else if (Stalled10 > 10)
+      else if (Stalled10 > 10)
         {
           if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_fittest_not_changed_x_random_generated).iter(mGeneration).with(Stalled80 - 1).with(10);
 
@@ -740,8 +722,8 @@ bool COptMethodSRES::optimise()
     {
 #endif // RANDOMIZE
 
-          if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
-            break;
+      if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
+        break;
 
       Continue = replicate();
 

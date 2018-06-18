@@ -17,22 +17,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include <cmath>
 
 #include "copasi.h"
@@ -64,9 +48,6 @@ COptMethodEP::COptMethodEP(const CDataContainer * pParent,
 
   if (mEnableAdditionalParameters)
     addParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
-
-
-  addParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
