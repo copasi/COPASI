@@ -45,6 +45,7 @@ void CUndoStack::clear()
     }
 
   std::vector< CUndoData * >::clear();
+  mCurrent = C_INVALID_INDEX;
 }
 
 const CUndoData & CUndoStack::operator [](const size_t & index) const
