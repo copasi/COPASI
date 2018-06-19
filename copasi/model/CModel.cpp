@@ -1835,6 +1835,16 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
                                  DataObjectSet & dependentEvents,
                                  DataObjectSet & dependentEventAssignments) const
 {
+  const CReaction * pIgnoreReaction = NULL;
+
+  if (objects.size() == 1 &&
+      dynamic_cast< const CCopasiParameter * >(*objects.begin()))
+    {
+      pIgnoreReaction = dynamic_cast< const CReaction * >(static_cast<  const CCopasiParameter * >(*objects.begin())->getObjectAncestor("Reaction"));
+    }
+
+  dependentReactions.erase(pIgnoreReaction);
+
   size_t Size = dependentReactions.size() +
                 dependentMetabolites.size() +
                 dependentCompartments.size() +
@@ -1931,6 +1941,8 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
           dependentEvents.insert(pContainer);
         }
     }
+
+  dependentReactions.erase(pIgnoreReaction);
 
   return Size < dependentReactions.size() +
          dependentMetabolites.size() +
