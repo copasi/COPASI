@@ -104,6 +104,7 @@ CData CModel::toData() const
 bool CModel::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = CModelEntity::applyData(data, changes);
+  bool compileModel = false;
 
   if (data.isSetProperty(CData::VOLUME_UNIT))
     {
@@ -135,6 +136,7 @@ bool CModel::applyData(const CData & data, CUndoData::ChangeSet & changes)
   if (data.isSetProperty(CData::MODEL_TYPE))
     {
       setModelType(ModelTypeNames.toEnum(data.getProperty(CData::MODEL_TYPE).toString(), ModelType::deterministic));
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::AVOGADRO_NUMBER))
@@ -142,6 +144,12 @@ bool CModel::applyData(const CData & data, CUndoData::ChangeSet & changes)
       const CData & Data = data.getProperty(CData::AVOGADRO_NUMBER).toData();
       setAvogadro(data.getProperty(CData::VALUE).toDouble(),
                   CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
+      compileModel = true;
+    }
+
+  if (compileModel)
+    {
+      compileModel = true;
     }
 
   return success;

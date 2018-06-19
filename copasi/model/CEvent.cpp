@@ -55,10 +55,22 @@ CData CEventAssignment::toData() const
 bool CEventAssignment::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = CDataContainer::applyData(data, changes);
+  bool compileModel = false;
 
   if (data.isSetProperty(CData::EXPRESSION))
     {
       setExpression(data.getProperty(CData::EXPRESSION).toString());
+      compileModel = true;
+    }
+
+  if (compileModel)
+    {
+      CModel * pModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
+
+      if (pModel != NULL)
+        {
+          pModel->setCompileFlag(true);
+        }
     }
 
   return success;
@@ -345,25 +357,30 @@ CData CEvent::toData() const
 bool CEvent::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = CDataContainer::applyData(data, changes);
+  bool compileModel = false;
 
   if (data.isSetProperty(CData::DELAY_ASSIGNMENT))
     {
       mDelayAssignment = data.getProperty(CData::DELAY_ASSIGNMENT).toBool();
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::FIRE_AT_INITIALTIME))
     {
       mFireAtInitialTime = data.getProperty(CData::EXPRESSION).toBool();
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::PERSISTENT_TRIGGER))
     {
       mPersistentTrigger = data.getProperty(CData::PERSISTENT_TRIGGER).toBool();
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::TRIGGER_EXPRESSION))
     {
       success &= setTriggerExpression(data.getProperty(CData::TRIGGER_EXPRESSION).toString());
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::DELAY_EXPRESSION))
@@ -374,6 +391,7 @@ bool CEvent::applyData(const CData & data, CUndoData::ChangeSet & changes)
   if (data.isSetProperty(CData::PRIORITY_EXPRESSION))
     {
       success &= setPriorityExpression(data.getProperty(CData::PRIORITY_EXPRESSION).toString());
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::ASSIGNMENTS))
@@ -381,9 +399,20 @@ bool CEvent::applyData(const CData & data, CUndoData::ChangeSet & changes)
       CData Data;
       Data.addProperty(CData::VECTOR_CONTENT, data.getProperty(CData::ASSIGNMENTS));
       success &= mAssignments.applyData(Data, changes);
+      compileModel = true;
     }
 
   success &= CAnnotation::applyData(data, changes);
+
+  if (compileModel)
+    {
+      CModel * pModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
+
+      if (pModel != NULL)
+        {
+          pModel->setCompileFlag(true);
+        }
+    }
 
   return success;
 }

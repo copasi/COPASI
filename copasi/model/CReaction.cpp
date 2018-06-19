@@ -137,6 +137,7 @@ CData CReaction::toData() const
 bool CReaction::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool Success = CDataContainer::applyData(data, changes);
+  bool compileModel = false;
 
   if (data.isSetProperty(CData::CHEMICAL_EQUATION))
     {
@@ -144,12 +145,14 @@ bool CReaction::applyData(const CData & data, CUndoData::ChangeSet & changes)
       EqInterface.init(mChemEq);
       Success &= EqInterface.fromDataValue(data.getProperty(CData::CHEMICAL_EQUATION).toString());
       EqInterface.writeToChemEq();
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::KINETIC_LAW))
     {
       // This will also create and remove local reaction parameters and mappings
       setFunction(data.getProperty(CData::KINETIC_LAW).toString());
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::LOCAL_REACTION_PARAMETERS))
@@ -168,6 +171,8 @@ bool CReaction::applyData(const CData & data, CUndoData::ChangeSet & changes)
               pParameter->applyData(*it, changes);
             }
         }
+
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::KINEITC_LAW_VARIABLE_MAPPING))
@@ -193,6 +198,8 @@ bool CReaction::applyData(const CData & data, CUndoData::ChangeSet & changes)
 
           Success &= setParameterCNs(Name, CNs);
         }
+
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::KINETIC_LAW_UNIT_TYPE))
@@ -203,19 +210,32 @@ bool CReaction::applyData(const CData & data, CUndoData::ChangeSet & changes)
   if (data.isSetProperty(CData::SCALING_COMPARTMENT))
     {
       setScalingCompartmentCN(data.getProperty(CData::SCALING_COMPARTMENT).toString());
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::ADD_NOISE))
     {
       mHasNoise = data.getProperty(CData::ADD_NOISE).toBool();
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::NOISE_EXPRESSION))
     {
       setNoiseExpression(data.getProperty(CData::NOISE_EXPRESSION).toString());
+      compileModel = true;
     }
 
   Success &= CAnnotation::applyData(data, changes);
+
+  if (compileModel)
+    {
+      CModel * pModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
+
+      if (pModel != NULL)
+        {
+          pModel->setCompileFlag(true);
+        }
+    }
 
   return Success;
 }
@@ -636,10 +656,11 @@ void CReaction::setParameterValue(const std::string & parameterName,
   if (!mpFunction) fatalError();
 
   CCopasiParameter * pParameter = mParameters.getParameter(parameterName);
-  
+
   if (pParameter == NULL) return;
+
   pParameter->setValue(value);
-  
+
   std::map< std::string, size_t >::iterator found = mParameterNameToIndex.find(parameterName);
 
   if (found == mParameterNameToIndex.end()) return;

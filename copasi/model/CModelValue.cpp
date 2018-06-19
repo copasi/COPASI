@@ -89,10 +89,12 @@ CData CModelEntity::toData() const
 bool CModelEntity::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = CDataContainer::applyData(data, changes);
+  bool compileModel = false;
 
   if (data.isSetProperty(CData::SIMULATION_TYPE))
     {
       setStatus(StatusName.toEnum(data.getProperty(CData::SIMULATION_TYPE).toString()));
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::INITIAL_VALUE))
@@ -103,24 +105,34 @@ bool CModelEntity::applyData(const CData & data, CUndoData::ChangeSet & changes)
   if (data.isSetProperty(CData::INITIAL_EXPRESSION))
     {
       success &= setInitialExpression(data.getProperty(CData::INITIAL_EXPRESSION).toString());
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::EXPRESSION))
     {
       success &= setExpression(data.getProperty(CData::EXPRESSION).toString());
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::ADD_NOISE))
     {
       setHasNoise(data.getProperty(CData::ADD_NOISE).toBool());
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::NOISE_EXPRESSION))
     {
       success &= setNoiseExpression(data.getProperty(CData::NOISE_EXPRESSION).toString());
+      compileModel = true;
     }
 
   success &= CAnnotation::applyData(data, changes);
+
+  if (compileModel &&
+      mpModel != NULL)
+    {
+      mpModel->setCompileFlag(true);
+    }
 
   return success;
 }
