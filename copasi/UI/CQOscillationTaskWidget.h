@@ -32,8 +32,8 @@ public:
   virtual bool runTask();
 
 protected:
-  virtual bool saveTask();
-  virtual bool loadTask();
+  virtual bool saveTaskProtected();
+  virtual bool loadTaskProtected();
 
 protected slots:
 

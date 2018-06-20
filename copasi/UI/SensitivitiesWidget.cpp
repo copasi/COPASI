@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -79,7 +79,7 @@ void SensitivitiesWidget::init()
   initCombos();
 }
 
-bool SensitivitiesWidget::saveTask()
+bool SensitivitiesWidget::saveTaskProtected()
 {
   saveCommon();
   saveMethod();
@@ -204,7 +204,7 @@ bool SensitivitiesWidget::taskFinishedEvent()
   return success;
 }
 
-bool SensitivitiesWidget::loadTask()
+bool SensitivitiesWidget::loadTaskProtected()
 {
   loadCommon();
   loadMethod();

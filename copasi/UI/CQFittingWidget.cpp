@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -67,7 +67,7 @@ CQFittingWidget::~CQFittingWidget()
   // no need to delete child widgets, Qt does it all for us
 }
 
-bool CQFittingWidget::saveTask()
+bool CQFittingWidget::saveTaskProtected()
 {
   CFitTask * pTask =
     dynamic_cast< CFitTask * >(mpTask);
@@ -226,7 +226,7 @@ bool CQFittingWidget::saveTask()
   return true;
 }
 
-bool CQFittingWidget::loadTask()
+bool CQFittingWidget::loadTaskProtected()
 {
   CFitTask * pTask =
     dynamic_cast< CFitTask * >(mpTask);

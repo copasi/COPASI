@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,8 +40,8 @@ protected slots:
   virtual void taskJacobianToggled();
 
 protected:
-  virtual bool loadTask();
-  virtual bool saveTask();
+  virtual bool loadTaskProtected();
+  virtual bool saveTaskProtected();
   virtual bool taskFinishedEvent();
 
 private:

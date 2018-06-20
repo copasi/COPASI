@@ -468,6 +468,33 @@ CCopasiTask* TaskWidget::getTask()
 }
 //*********************************************************************
 
+bool TaskWidget::loadTask()
+{
+  return loadTaskProtected();
+}
+
+bool TaskWidget::saveTask()
+{
+  bool success = true;
+
+  if (mpTask != NULL)
+    {
+      CData OldData(mpTask->toData());
+
+      success = saveTaskProtected();
+
+      CUndoData UndoData;
+      mpTask->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
+
+      if (!UndoData.empty())
+        {
+          slotNotifyChanges(mpDataModel->recordData(UndoData));
+        }
+    }
+
+  return success;
+}
+
 bool TaskWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates)

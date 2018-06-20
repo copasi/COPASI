@@ -140,7 +140,7 @@ bool CQAnalyticsWidget::runTask()
 /*
  * Function to save actual changes of the Task
  */
-bool CQAnalyticsWidget::saveTask()
+bool CQAnalyticsWidget::saveTaskProtected()
 {
   // check the existence of Task
   CAnalyticsTask * pTask =
@@ -204,7 +204,7 @@ bool CQAnalyticsWidget::taskFinishedEvent()
 /*
  * Function to load saved values of the Task
  */
-bool CQAnalyticsWidget::loadTask()
+bool CQAnalyticsWidget::loadTaskProtected()
 {
   // load Task
   CAnalyticsTask * pTask =

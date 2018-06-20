@@ -462,7 +462,7 @@ void CQModelValue::save()
       CUndoData UndoData;
       mpModelValue->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
 
-      slotNotifyChanges(mpDataModel->applyData(UndoData));
+      slotNotifyChanges(mpDataModel->recordData(UndoData));
       load();
     }
 

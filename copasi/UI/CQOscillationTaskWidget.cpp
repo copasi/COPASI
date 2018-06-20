@@ -63,7 +63,7 @@ bool CQOscillationTaskWidget::runTask()
 /*
  * Function to save actual changes of the Task
  */
-bool CQOscillationTaskWidget::saveTask()
+bool CQOscillationTaskWidget::saveTaskProtected()
 {
   /*
     // check the existence of Task
@@ -98,7 +98,7 @@ bool CQOscillationTaskWidget::saveTask()
 /*
  * Function to load saved values of the Task
  */
-bool CQOscillationTaskWidget::loadTask()
+bool CQOscillationTaskWidget::loadTaskProtected()
 {
   /*
     // load Task

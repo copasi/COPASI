@@ -81,13 +81,15 @@ public slots:
   void slotFinishThread();
 
 protected:
+  bool loadTask();
+  bool saveTask();
+
   virtual bool enterProtected();
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   virtual bool leaveProtected();
 
-  virtual bool loadTask() = 0;
-
-  virtual bool saveTask() = 0;
+  virtual bool loadTaskProtected() = 0;
+  virtual bool saveTaskProtected() = 0;
 
   CCopasiMethod * createMethod(const CTaskEnum::Method & type);
 

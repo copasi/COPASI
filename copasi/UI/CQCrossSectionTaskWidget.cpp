@@ -165,7 +165,7 @@ bool CQCrossSectionTaskWidget::runTask()
 /*
  * Function to save actual changes of the Task
  */
-bool CQCrossSectionTaskWidget::saveTask()
+bool CQCrossSectionTaskWidget::saveTaskProtected()
 {
   // check the existence of Task
   CCrossSectionTask * pTask =
@@ -239,7 +239,7 @@ bool CQCrossSectionTaskWidget::taskFinishedEvent()
 /*
  * Function to load saved values of the Task
  */
-bool CQCrossSectionTaskWidget::loadTask()
+bool CQCrossSectionTaskWidget::loadTaskProtected()
 {
   // load Task
   CCrossSectionTask * pTask =

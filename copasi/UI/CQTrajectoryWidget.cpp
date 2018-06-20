@@ -182,7 +182,7 @@ void CQTrajectoryWidget::slotAutomaticIntervals(bool checked)
   mpEditIntervalSize->setEnabled(!checked);
 }
 
-bool CQTrajectoryWidget::saveTask()
+bool CQTrajectoryWidget::saveTaskProtected()
 {
   CTrajectoryTask * pTask =
     dynamic_cast< CTrajectoryTask * >(mpTask);
@@ -283,7 +283,7 @@ bool CQTrajectoryWidget::saveTask()
   return true;
 }
 
-bool CQTrajectoryWidget::loadTask()
+bool CQTrajectoryWidget::loadTaskProtected()
 {
   CTrajectoryTask * pTask =
     dynamic_cast< CTrajectoryTask * >(mpTask);
