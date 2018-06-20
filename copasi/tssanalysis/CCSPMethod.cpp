@@ -240,6 +240,8 @@ void CCSPMethod::sminverse(C_INT & n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT
 
   dgesv_(&N, &N, TMP.array(), &N, ipiv, B.array(), &N, &info);
 
+  delete[](ipiv);
+
   if (info != 0)
     {
       return;
@@ -323,7 +325,6 @@ void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 >
   C_FLOAT64 tmp;
 
   k = 0;
-  i = 0;
 
   if (eigen[0] == 0.) return;
 
@@ -410,7 +411,7 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
   CMatrix< C_FLOAT64 > B0;
   CMatrix< C_FLOAT64 > J;
 
-  g.resize(N);
+  g.resize(N); //SS ???
   y.resize(N);
 
   A0.resize(N, N);
@@ -1392,6 +1393,9 @@ void CCSPMethod::CSPradicalPointer(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & 
           tmp += Qm(i, i);
         }
 
+//SS bis hier nur Diagonale von Qm benutzt
+//SS tmp nicht benutzt?
+
       /* use stoichiometric vectors to build the fast reaction pointer */
 
       /**
@@ -1417,6 +1421,8 @@ void CCSPMethod::CSPradicalPointer(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & 
           mFastReactionPointer(r, m) = Pmr;
         }
     }
+
+//SS TMP wird nicht mehr benutzt?
 
   /* the Fast Reaction Pointer normed by column */
 
