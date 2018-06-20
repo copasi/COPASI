@@ -86,11 +86,20 @@ COptPopulationMethod::initialize()
 
   if (getParameter("Population Size") != NULL)
     mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
-  else mPopulationSize = 0;
+  else
+    mPopulationSize = 0;
+
+  pdelete(mpRandom);
 
   if (getParameter("Random Number Generator") != NULL && getParameter("Seed") != NULL)
-    mpRandom = CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                                        getValue< unsigned C_INT32 >("Seed"));
+    {
+      mpRandom = CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
+                                          getValue< unsigned C_INT32 >("Seed"));
+    }
+  else
+    {
+      mpRandom = CRandom::createGenerator();
+    }
 
   mVariableSize = mpOptItem->size();
 

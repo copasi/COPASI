@@ -36,8 +36,8 @@ COptMethodCoranaWalk::COptMethodCoranaWalk(const CDataContainer * pParent,
 {
   addParameter("Temperature", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
   addParameter("Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 100);
-  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
-  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }

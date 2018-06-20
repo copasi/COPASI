@@ -45,8 +45,8 @@ COptMethodSA::COptMethodSA(const CDataContainer * pParent,
   addParameter("Start Temperature", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
   addParameter("Cooling Factor", CCopasiParameter::UDOUBLE, (C_FLOAT64) 0.85);
   addParameter("Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.e-006);
-  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
-  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
@@ -329,9 +329,17 @@ bool COptMethodSA::initialize()
   mCoolingFactor = getValue< C_FLOAT64 >("Cooling Factor");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
 
-  mpRandom =
-    CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                             getValue< unsigned C_INT32 >("Seed"));
+  pdelete(mpRandom);
+
+  if (getParameter("Random Number Generator") != NULL && getParameter("Seed") != NULL)
+    {
+      mpRandom = CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
+                                          getValue< unsigned C_INT32 >("Seed"));
+    }
+  else
+    {
+      mpRandom = CRandom::createGenerator();
+    }
 
   if (mpCallBack)
     mhTemperature =

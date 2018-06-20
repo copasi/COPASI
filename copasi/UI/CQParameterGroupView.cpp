@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,31 +8,47 @@
 // of Manchester.
 // All rights reserved.
 
-#include "CQParameterGroupView.h"
-#include "CQComboDelegate.h"
-#include "CQPushButtonDelegate.h"
-#include "CCopasiSelectionDialog.h"
-#include "resourcesUI/CQIconResource.h"
+#include <QSortFilterProxyModel>
 
-#include "copasi.h"
-#include "qtUtilities.h"
+#include "copasi/UI/CQParameterGroupView.h"
+#include "copasi/UI/CQComboDelegate.h"
+#include "copasi/UI/CQPushButtonDelegate.h"
+#include "copasi/UI/CCopasiSelectionDialog.h"
+#include "copasi/resourcesUI/CQIconResource.h"
+#include "copasi/UI/copasiui3window.h"
 
-#include "utilities/CCopasiParameterGroup.h"
+#include "copasi/copasi.h"
+#include "copasi/UI/qtUtilities.h"
 
-#include "CopasiDataModel/CDataModel.h"
-#include "CQParameterGroupDM.h"
-#include "model/CObjectLists.h"
-#include "utilities/utility.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
+
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/UI/CQParameterGroupDM.h"
+#include "copasi/model/CObjectLists.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 CQParameterGroupView::CQParameterGroupView(QWidget* parent):
   QTreeView(parent),
   mpParameterGroupDM(NULL),
+  mpSortFilterDM(NULL),
   mpComboBoxDelegate(NULL),
   mpPushButtonDelegate(NULL)
 {
   // create a new QListview to be displayed on the screen..and set its property
   mpParameterGroupDM = new CQParameterGroupDM(this);
-  this->setModel(mpParameterGroupDM);
+
+  mpSortFilterDM = new QSortFilterProxyModel(this);
+  mpSortFilterDM->setFilterKeyColumn(0);
+  mpSortFilterDM->setFilterRole(Qt::UserRole);
+  mpSortFilterDM->setFilterRegExp(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters() ? "" : "basic");
+  mpSortFilterDM->setSourceModel(mpParameterGroupDM);
+  mpSortFilterDM->setSortRole(Qt::UserRole);
+  mpSortFilterDM->sort(0, Qt::DescendingOrder);
+
+  setSortingEnabled(true);
+  setModel(mpSortFilterDM);
 
   mpComboBoxDelegate = new CQComboDelegate(this);
   mpPushButtonDelegate = new CQPushButtonDelegate(CQIconResource::icon(CQIconResource::copasi), QString(),
@@ -42,6 +58,7 @@ CQParameterGroupView::CQParameterGroupView(QWidget* parent):
   connect(mpParameterGroupDM, SIGNAL(signalCreatePushButton(const QModelIndex &)), this, SLOT(slotCreatePushButton(const QModelIndex &)));
   connect(mpParameterGroupDM, SIGNAL(signalCloseEditor(const QModelIndex &)), this, SLOT(slotCloseEditor(const QModelIndex &)));
   connect(mpPushButtonDelegate, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotPushButtonClicked(const QModelIndex &)));
+  connect(dynamic_cast<CopasiUI3Window *>(CopasiUI3Window::getMainWindow()), SIGNAL(signalPreferenceUpdated()), this, SLOT(slotPreferenceUpdated()));
 }
 
 CQParameterGroupView::~CQParameterGroupView()
@@ -71,6 +88,11 @@ void CQParameterGroupView::popGroup(CCopasiParameterGroup * pGroup)
 void CQParameterGroupView::clearGroups()
 {
   mpParameterGroupDM->clearGroups();
+}
+
+void CQParameterGroupView::slotPreferenceUpdated()
+{
+  mpSortFilterDM->setFilterRegExp(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters() ? "" : "basic");
 }
 
 void CQParameterGroupView::slotCreateComboBox(const QModelIndex & index)

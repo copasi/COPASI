@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -88,7 +88,7 @@ public:
    * @param const CDataContainer * pParent (default: NULL)
    */
   CCopasiParameterGroup(const CCopasiParameterGroup & src,
-                        const CDataContainer * pParent);
+                        const CDataContainer * pParent = NULL);
 
   /**
    * Specific constructor
@@ -141,6 +141,7 @@ public:
   /**
    * Add a parameter
    * @param const CCopasiParameter & parameter
+   * @param const CCopasiParameter::UserInterfaceFlag & flag (default: CCopasiParameter::UserInterfaceFlag::All)
    * @return bool success
    */
   bool addParameter(const CCopasiParameter & parameter);
@@ -149,22 +150,26 @@ public:
    * Add a parameter to the group
    * @param const std::string & name
    * @param const CCopasiParameter::Type type
+   * @param const CCopasiParameter::UserInterfaceFlag & flag (default: CCopasiParameter::UserInterfaceFlag::All)
    * @return bool success
    */
   bool addParameter(const std::string & name,
-                    const CCopasiParameter::Type type);
+                    const CCopasiParameter::Type type,
+                    const CCopasiParameter::UserInterfaceFlag & flag = CCopasiParameter::UserInterfaceFlag::All);
 
   /**
    * Add a parameter to the group
    * @param const std::string & name
    * @param const CCopasiParameter::Type type
    * @param const CType & value
+   * @param const CCopasiParameter::UserInterfaceFlag & flag (default: CCopasiParameter::UserInterfaceFlag::All)
    * @return bool success
    */
   template < class CType >
   bool addParameter(const std::string & name,
                     const CCopasiParameter::Type type,
-                    const CType & value)
+                    const CType & value,
+                    const CCopasiParameter::UserInterfaceFlag & flag = CCopasiParameter::UserInterfaceFlag::All)
   {
     CCopasiParameter * pParameter;
 
@@ -190,7 +195,7 @@ public:
       }
     else
       {
-        pParameter = new CCopasiParameter(name, type);
+        pParameter = new CCopasiParameter(name, type, NULL);
 
         if (!pParameter->isValidValue(value))
           {
@@ -201,6 +206,7 @@ public:
         pParameter->setValue(value);
       }
 
+    pParameter->setUserInterfaceFlag(flag);
     addParameter(pParameter);
 
     return true;
