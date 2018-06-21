@@ -79,8 +79,6 @@ protected:
    */
   CCopasiParameterGroup();
 
-  CCopasiParameterGroup(const CCopasiParameterGroup & src);
-
 public:
   /**
    * Copy constructor
