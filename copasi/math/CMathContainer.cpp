@@ -1451,8 +1451,6 @@ void CMathContainer::compile()
   createDependencyGraphs();
   createUpdateSequences();
 
-  updateInitialValues(CCore::Framework::ParticleNumbers);
-
   CMathReaction * pReaction = mReactions.array();
   CDataVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
   CDataVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
@@ -1461,6 +1459,8 @@ void CMathContainer::compile()
     {
       pReaction->initialize(itReaction, *this);
     }
+
+  updateInitialValues(CCore::Framework::ParticleNumbers);
 
   // TODO We may have unused event triggers and roots due to optimization
   // in the discontinuities.
