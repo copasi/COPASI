@@ -539,7 +539,7 @@ analyseMmodes:
     TAUM(0, 0) = 1. / ALA(0, 0);
 
 #if 1
-  modesAmplitude(N, M, g, B, F);
+  modesAmplitude(N, g, B, F);
 
 #ifdef CSPDEBUG
 
@@ -687,7 +687,7 @@ cspiteration:
         if (iter < mIter)
           {
 
-            modesAmplitude(N, M, g, B1, F);
+            modesAmplitude(N, g, B1, F);
 //#ifdef  CSPDEBUG
 #if 0
 
