@@ -52,11 +52,9 @@ COptMethodPS::COptMethodPS(const CDataContainer * pParent,
   addParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
   addParameter("Swarm Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 50);
   addParameter("Std. Deviation", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-6);
-  addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937);
-  addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
-
-  if (mEnableAdditionalParameters)
-    addParameter("Stop after # Stalled Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+  addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  addParameter("Stop after # Stalled Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }

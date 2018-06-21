@@ -63,12 +63,8 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
 {
   addParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
   addParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006);
-
-  if (mEnableAdditionalParameters)
-    {
-      addParameter("Modulation", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006);
-      addParameter("Stop after # Stalled Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
-    }
+  addParameter("Modulation", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006, eUserInterfaceFlag::editable);
+  addParameter("Stop after # Stalled Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
@@ -104,9 +100,6 @@ COptMethodLevenbergMarquardt::~COptMethodLevenbergMarquardt()
 void COptMethodLevenbergMarquardt::initObjects()
 {
   addObjectReference("Current Iteration", mIteration, CDataObject::ValueInt);
-
-  if (!mEnableAdditionalParameters)
-    removeParameter("Modulation");
 }
 
 bool COptMethodLevenbergMarquardt::optimise()

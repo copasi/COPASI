@@ -557,7 +557,8 @@ CCopasiParameterGroup::const_name_iterator CCopasiParameterGroup::endName() cons
 }
 
 bool CCopasiParameterGroup::addParameter(const std::string & name,
-    const CCopasiParameter::Type type)
+    const CCopasiParameter::Type type,
+    const CCopasiParameter::UserInterfaceFlag & flag)
 {
   CCopasiParameter * pParameter;
 
@@ -566,6 +567,7 @@ bool CCopasiParameterGroup::addParameter(const std::string & name,
   else
     pParameter = new CCopasiParameter(name, type);
 
+  pParameter->setUserInterfaceFlag(flag);
   addParameter(pParameter);
 
   return true;

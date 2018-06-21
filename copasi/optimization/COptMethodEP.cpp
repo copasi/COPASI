@@ -43,11 +43,9 @@ COptMethodEP::COptMethodEP(const CDataContainer * pParent,
 {
   addParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
   addParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 20);
-  addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937);
-  addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
-
-  if (mEnableAdditionalParameters)
-    addParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+  addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  addParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }

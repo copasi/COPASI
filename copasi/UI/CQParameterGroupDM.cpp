@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,19 +51,29 @@ QVariant CQParameterGroupDM::data(const QModelIndex & index, int role) const
 
   if (pNode == NULL) return QVariant();
 
-  switch (index.column())
+  switch (role)
     {
-      case COL_NAME:
-        return nameData(pNode, role);
+      case Qt::UserRole:
+        if (index.column() == COL_NAME)
+          return QString(pNode->getUserInterfaceFlag() & CCopasiParameter::eUserInterfaceFlag::basic ? "basic" : "advanced");
+
         break;
 
-      case COL_VALUE:
-        return valueData(pNode, role);
-        break;
+      default:
+        switch (index.column())
+          {
+            case COL_NAME:
+              return nameData(pNode, role);
+              break;
 
-      case COL_TYPE:
-        return typeData(pNode, role);
-        break;
+            case COL_VALUE:
+              return valueData(pNode, role);
+              break;
+
+            case COL_TYPE:
+              return typeData(pNode, role);
+              break;
+          }
     }
 
   return QVariant();

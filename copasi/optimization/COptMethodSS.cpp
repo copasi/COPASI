@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,15 +47,9 @@ COptMethodSS::COptMethodSS(const CDataContainer * pParent,
   mpLocalMinimizer(NULL)
 {
   addParameter("Number of Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
-// we no longer give the user choice of rng, we use the mersenne twister!
-// but in DEBUG versions we should still have access to it
-
-  if (mEnableAdditionalParameters)
-  {
-    addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937);
-    addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
-    addParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
-  }
+  addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  addParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
@@ -83,11 +77,6 @@ COptMethodSS::~COptMethodSS()
 // virtual
 bool COptMethodSS::elevateChildren()
 {
-  if (!mEnableAdditionalParameters)
-  {
-    removeParameter("Random Number Generator");
-    removeParameter("Seed");
-  }
   return true;
 }
 
@@ -123,18 +112,7 @@ bool COptMethodSS::initialize()
 
   mCurrentGeneration++;
 
-  if (mEnableAdditionalParameters)
-  {
-    mpRandom =
-      CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-        getValue< unsigned C_INT32 >("Seed"));
-  }
-  else
-  {
-    // Use the default random number generator which is the Mersenne Twister
-    pdelete(mpRandom);
-    mpRandom = CRandom::createGenerator();
-  }
+  pdelete(mpRandom);
 
   mCloseValue = 0.001;
 

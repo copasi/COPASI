@@ -46,10 +46,9 @@ COptMethod::COptMethod(const CDataContainer * pParent,
   mpOptItem(NULL),
   mpOptContraints(NULL),
   mLogVerbosity(0),
-  mMethodLog(),
-  mEnableAdditionalParameters(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters())
+  mMethodLog()
 {
-  addParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+  addParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 }
 
 COptMethod::COptMethod(const COptMethod & src,
@@ -61,8 +60,7 @@ COptMethod::COptMethod(const COptMethod & src,
   mpOptItem(src.mpOptItem),
   mpOptContraints(src.mpOptContraints),
   mLogVerbosity(src.mLogVerbosity),
-  mMethodLog(src.mMethodLog),
-  mEnableAdditionalParameters(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters())
+  mMethodLog(src.mMethodLog)
 {
   mContainerVariables.initialize(src.mContainerVariables);
 }

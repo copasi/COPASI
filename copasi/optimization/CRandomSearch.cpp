@@ -49,8 +49,8 @@ CRandomSearch::CRandomSearch(const CDataContainer * pParent,
   COptMethod(pParent, methodType, taskType)
 {
   addParameter("Number of Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100000);
-  addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937);
-  addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+  addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
@@ -86,8 +86,18 @@ bool CRandomSearch::initialize()
   if (!COptMethod::initialize()) return false;
 
   mIterations = getValue< unsigned C_INT32 >("Number of Iterations");
-  mpRandom = & mpContainer->getRandomGenerator();
-  mpRandom->initialize(getValue< unsigned C_INT32 >("Seed"));
+
+  pdelete(mpRandom);
+
+  if (getParameter("Random Number Generator") != NULL && getParameter("Seed") != NULL)
+    {
+      mpRandom = CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
+                                          getValue< unsigned C_INT32 >("Seed"));
+    }
+  else
+    {
+      mpRandom = CRandom::createGenerator();
+    }
 
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 

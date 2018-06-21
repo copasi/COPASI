@@ -48,12 +48,10 @@ COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
 {
   addParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
   addParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 20);
-  addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937);
-  addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+  addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
   addParameter("Pf", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.475);  //*****ADDED for SR
-
-  if (mEnableAdditionalParameters)
-    addParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+  addParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
