@@ -76,16 +76,13 @@ void CCSPMethod::initializeParameter()
 void CCSPMethod::smmult(CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & C, C_INT & n1, C_INT & n2, C_INT & n3)
 {
   C_INT i, j, k;
-
   for (i = 0; i < n1 ; i++)
     for (j = 0; j < n3; j++)
       {
         C(i, j) = 0.;
-
         for (k = 0; k < n2; k++)
           C(i, j) += A(i, k) * B(k, j);
       }
-
   return;
 }
 
@@ -347,29 +344,16 @@ void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 >
         {
           tmp = eigen[i + 1 ] / eigen[i];
 
-#ifdef CSPDEBUG
-
-          std::cout << "tsc[" << i << "]/tsc[" << i + 1 << "] " << tmp << std::endl;
-          std::cout << "mEps " << mEps << std::endl;
-#endif
-
           if (tmp > 0 && tmp < mEps)
             {
               k++;
-
-#ifdef CSPDEBUG
-              std::cout << "k " << k << std::endl;
-#endif
-
               if (i)
                 if (eigen[i] == eigen[i - 1]) k++;
             }
           else
             {
               if (tmp < 0) info = 1;
-
               //if (tmp >= mEps) k++;
-
               break;
             }
         }
@@ -392,15 +376,8 @@ void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 >
 
 void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B)
 {
-
   C_INT reacs_size = (C_INT) mpContainer->getReactions().size();
   emptyOutputData(N, N, reacs_size);
-
-#ifdef CSPDEBUG
-  std::cout << " *********************  New time step **********************" << std::endl;
-  std::cout << " mTime " << *mpContainerStateTime << std::endl;
-
-#endif
 
   CVector< C_FLOAT64 > g(mG.size());
   memcpy(g.array(), mG.array(), mG.size() * sizeof(C_FLOAT64));
@@ -431,11 +408,6 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
     }
 
   J = mJacobian;
-
-#ifdef CSPDEBUG
-  std::cout << "current Jacobian " << std::endl;
-  std::cout << J << std::endl;
-#endif
 
   CMatrix<C_FLOAT64> ALA;
   CMatrix<C_FLOAT64> F;
@@ -475,20 +447,16 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
   /* trial basis vectors */
 
   /* use the matrix of Schur vectors */
-
   A0 = mQ;
   B0 = 0;
 
   A = A0;
   B = B0;
 
-  //perturbateA(N, A0, 0.99); // TEST
-
   smnorm(N, A0, B0, N);
   sminverse(N, A0, B0);
 
   /* ordered real parts of Eigen values */
-
   CVector<C_FLOAT64> eigen;
   CVector<C_FLOAT64> tsc;
 
@@ -498,33 +466,23 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
   for (i = 0; i < N; i++)
     {
       eigen[i] = mR(i, i);
-
       tsc[i] = 1. / eigen[i];
     }
 
 #ifdef CSPDEBUG
   std::cout << "CSP iteration:  " << std::endl;
   std::cout << "Eigen values ordered by increasing " << std::endl;
-
   for (i = 0; i < N; i++)
     std::cout << "eigen[" << i << "]  " << eigen[i] << std::endl;
 
-#endif
-
-#ifdef CSPDEBUG
   std::cout << "time scales :  " << std::endl;
-
   for (i = 0; i < N; i++)
     std::cout << fabs(tsc[i]) << std::endl;
-
 #endif
 
   /* find the number of candidate to fast   */
-
   info = 0;
-
   //findTimeScaleSeparation(N, M, eigen, info);
-
   findCandidatesNumber(N, M, eigen, info);
 
 #ifdef CSPDEBUG
@@ -554,21 +512,14 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
 
   if (M == 0)
     {
-
       /* After time scales separation : */
       /* no candidates to  fast modes */
-
       CCopasiMessage(CCopasiMessage::WARNING,
                      MCTSSAMethod + 12, *mpContainerStateTime);
-
       return;
     }
 
 analyseMmodes:
-
-#ifdef CSPDEBUG
-  std::cout << " ************************************** Number of candidates to fast " << M << " ************************" << std::endl;
-#endif
 
   iter = 0;
 
@@ -581,49 +532,10 @@ analyseMmodes:
   CMatrix<C_FLOAT64> TMP;
   TMP.resize(N, N);
 
-#if 0
-  CMatrix<C_FLOAT64> DBDT;
-
-  DBDT.resize(N, N);
-
-  DBDT = 0.;
-
-  if (mTStep)
-    for (i = 0; i < N; i++)
-      for (j = 0; j < N; j++)
-        {
-          DBDT(i, j) = (B(i, j) - mB(i, j)) / deltaT;
-        }
-
-#ifdef CSPDEBUG
-  std::cout << "time derivatives of B " << std::endl;
-  std::cout << DBDT << std::endl;
-#endif
-#endif
 
   smmult(B, J, TMP, N, N, N);
-
-#if 0
-  /* TEST: time derivatives are present  */
-
-  if (mTStep)
-    for (i = 0; i < N; i++)
-      for (j = 0; j < N; j++)
-        {
-          TMP(i, j) += DBDT(i, j);
-        }
-
-#endif
-
   smmult(TMP, A, ALA, N, N, N);
 
-#ifdef CSPDEBUG
-  std::cout << "B*J*A should converge to block-diagonal for an ideal basis:" << std::endl;
-  std::cout << ALA << std::endl;
-
-  std::cout << "considered time resolution of the solution  " << std::endl;
-  std::cout << fabs(tsc[M]) << std::endl;   // to check this
-#endif
 
   CMatrix<C_FLOAT64> TAUM;
   CMatrix<C_FLOAT64> ALAM;
@@ -633,7 +545,6 @@ analyseMmodes:
 
   TAUM = 0;
   ALAM = 0;
-
   for (i = 0; i < M; i++)
     for (j = 0; j < M; j++)
       ALAM(i, j) = ALA(i, j);
@@ -698,41 +609,8 @@ cspiteration:
 
   ALA = 0;
   TMP = 0;
-
   smmult(B1, J, TMP, N, N, N);
-
-#if 0
-  DBDT = 0.;
-
-  if (mTStep)
-    for (i = 0; i < N; i++)
-      for (j = 0; j < N; j++)
-        {
-          DBDT(i, j) = (B1(i, j) - mB(i, j)) / deltaT;
-        }
-
-#ifdef CSPDEBUG
-  std::cout << "time derivatives of B " << std::endl;
-  std::cout << DBDT << std::endl;
-#endif
-
-  /* TEST: time derivatives are present  */
-
-  if (mTStep)
-    for (i = 0; i < N; i++)
-      for (j = 0; j < N; j++)
-        {
-          TMP(i, j) += DBDT(i, j);
-        }
-
-#endif
-
   smmult(TMP, A1, ALA, N, N, N);
-
-#ifdef CSPDEBUG
-  std::cout << "B1*J*A1 :   " << std::endl;
-  std::cout << ALA << std::endl;
-#endif
 
   C_INT result;
   result = isBlockDiagonal(N, M, ALA, 1.e-8);
@@ -767,7 +645,6 @@ cspiteration:
             * It is assumed that forward and reverse reactions are counted as distinct
             *
             **/
-
             CSPParticipationIndex(N, M, tsc[M], B1); //NEW
 
             /**
@@ -927,52 +804,8 @@ C_INT CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A
 {
   C_INT i, j, imax, jmax, imaxl, jmaxl;
   C_FLOAT64 max = -1., maxl = -1.;
-#ifdef CSPDEBUG
-  std::cout << "blocks of ALA : " << std::endl;
 
-  std::cout << "upper - left : " << std::endl;
-
-  for (i = 0; i < M; i++)
-    {
-      for (j = 0 ; j < M; j++)
-        std::cout << ALA(i, j) << "  ";
-
-      std::cout << std::endl;
-    }
-
-  std::cout << "upper - right : " << std::endl;
-
-  for (i = 0; i < M; i++)
-    {
-      for (j = M ; j < N; j++)
-        std::cout << ALA(i, j) << "  ";
-
-      std::cout << std::endl;
-    }
-
-  std::cout << "low - left : " << std::endl;
-
-  for (i = M; i < N; i++)
-    {
-      for (j = 0 ; j < M; j++)
-        std::cout << ALA(i, j) << "  ";
-
-      std::cout << std::endl;
-    }
-
-  std::cout << "low - right : " << std::endl;
-
-  for (i = M; i < N; i++)
-    {
-      for (j = M ; j < N; j++)
-        std::cout << ALA(i, j) << "  ";
-
-      std::cout << std::endl;
-    }
-
-#endif
   /* step #1: upper-right block */
-
   for (i = 0; i < M; i++)
     for (j = M ; j < N; j++)
       if (fabs(ALA(i, j)) > max)
@@ -983,7 +816,6 @@ C_INT CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A
 
 #if 1
   /* step #2: lower-left block */
-
   for (i = M; i < N; i++)
     for (j = 0 ; j < M; j++)
       if (fabs(ALA(i, j)) > maxl)
@@ -992,28 +824,15 @@ C_INT CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A
           imaxl = i ; jmaxl = j;
         }
 
-#ifdef CSPDEBUG
-  std::cout << "norm C of the lower-left block of ALA is ALA(" << imaxl << "," << jmaxl << ") = " << maxl << std::endl;
-  std::cout << "the low-left block : " << maxl << std::endl;
-#endif
 
 #endif
 
-#ifdef CSPDEBUG
-  std::cout << "the norm C of the upper-right block of ALA is ALA(" << imax << "," << jmax << ") = " << max << std::endl;
-  std::cout << "the upper-right block : " << max << std::endl;
-#endif
 
   C_INT result;
-
   result = 1;
 
   if (fabs(max) >= std::numeric_limits< C_FLOAT64 >::max() || fabs(maxl) >= std::numeric_limits< C_FLOAT64 >::max() || max < 0 || maxl < 0)
     {
-#ifdef CSPDEBUG
-      std::cout <<  " iterations  crucially  disconverged  " << std::endl;
-#endif
-
       result =  -1;
     }
   else if (max <= SMALL) result = 0;
@@ -1024,8 +843,6 @@ void CCSPMethod::emptyOutputData(C_INT & N, C_INT & M, C_INT & R)
 {
 
   C_INT i, m, r;
-  //const CDataVector< CReaction > & reacs = Model.getReactions();
-
   for (m = 0; m < M; m++)
     for (i = 0; i < N; i++)
       {
@@ -1632,23 +1449,17 @@ void CCSPMethod::CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLO
 /* compute  amplitudes of fast and slow modes */
 void CCSPMethod::modesAmplitude(C_INT & N, C_INT & /* M */, CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F)
 {
-
   C_INT i, j;
-
   /* evaluate amplitudes */
-
   for (i = 0; i < N; i++)
     {
       F(i, 0) = 0.;
-
       for (j = 0; j < N; j++)
-
         for (j = 0; j < N; j++)
           {
             F(i, 0) += B(i, j) * g[j];
           }
     }
-
   return;
 }
 
@@ -1688,7 +1499,6 @@ void CCSPMethod::yCorrection(C_INT & N, C_INT & M, CVector< C_FLOAT64 > & y, CMa
  **/
 void CCSPMethod::basisRefinement(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, CMatrix< C_FLOAT64 > & TAU, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & A0, CMatrix< C_FLOAT64 > & B0)
 {
-
   C_INT i, j, n, m;
 
   CMatrix<C_FLOAT64> P;
@@ -1748,7 +1558,6 @@ void CCSPMethod::basisRefinement(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & AL
 #endif
 
   //smnorm(N, A0, B0, N);
-
   return;
 }
 
@@ -1757,30 +1566,19 @@ bool CCSPMethod::modesAreExhausted(C_INT & N, C_INT & M, C_FLOAT64 & tauM, C_FLO
 {
   C_INT i, j;
   C_FLOAT64 tmp;
-
   bool exhausted = true;
 
   modesAmplitude(N, M, g, B, F);
 
-#ifdef CSPDEBUG
-  std::cout << "  |A(i,m) * F(m,0) * tsc[M - 1]| , mYerror[i] " << std::endl;
-#endif
 
   for (j = 0; j < M; j++)
     {
-
       for (i = 0; i < N; i++)
         {
           tmp = fabs(A(i, j) * F(j, 0) * tauM);
-
-#ifdef CSPDEBUG
-          std::cout << A(i, j) << " * " << F(j, 0) << " * " << tauM << " = " << tmp << "        " << mYerror[i] << std::endl;
-#endif
-
           if (tmp >= mYerror[i]) exhausted = false;
         }
     }
-
   return exhausted;
 }
 
