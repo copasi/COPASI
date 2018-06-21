@@ -1887,8 +1887,7 @@ bool CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile, i
   //exporter.setExportHandler(pExportHandler);
 //  const std::string& SBMLFileName = "";
 
-  std::string sbmlDocument = "";
-  sbmlDocument = this->exportSBMLToString(pExportHandler, 2, 3);
+  std::string sbmlDocument = exportSBMLToString(pExportHandler, 3, 1);
 
   // std::cout<<sbmlDocument<<std::endl; //for debuging
   if (sbmlDocument == "")
