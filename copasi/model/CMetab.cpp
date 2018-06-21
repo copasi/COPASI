@@ -250,10 +250,13 @@ void CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
 
 CIssue CMetab::compile()
 {
+  mPrerequisits.clear();
+  mValidity.clear();
+
+  CIssue firstWorstIssue, issue;
+
   // This resets the dependencies
   initCompartment(mpCompartment);
-
-  CIssue firstWorstIssue;
 
   // Prepare the compilation
   CObjectInterface::ContainerList listOfContainer;
@@ -273,15 +276,28 @@ CIssue CMetab::compile()
         break;
 
       case Status::ASSIGNMENT:
-        // Concentration
-        firstWorstIssue &= mpExpression->compile(listOfContainer);
-        mPrerequisits.insert(mpExpression->getPrerequisites().begin(), mpExpression->getPrerequisites().end());
 
-        // Implicit initial expression
         pdelete(mpInitialExpression);
-        pDataModel = getObjectDataModel();
-        mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
-        mpInitialExpression->setObjectName("InitialExpression");
+
+        if (getExpression().empty())
+          {
+            issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ExpressionEmpty);
+            mValidity.add(issue);
+            firstWorstIssue &= issue;
+          }
+
+        if (mpExpression != NULL)
+          {
+            issue = mpExpression->compile(listOfContainer);
+            mValidity.add(issue);
+            firstWorstIssue &= issue;
+
+            pDataModel = getObjectDataModel();
+            assert(pDataModel != NULL);
+            mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
+            mpInitialExpression->setObjectName("InitialExpression");
+            add(mpInitialExpression, true);
+          }
 
         // Fixed values
         mRate = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -291,15 +307,38 @@ CIssue CMetab::compile()
         break;
 
       case Status::ODE:
+
         // Concentration
 
-        // Rate (particle number rate)
-        firstWorstIssue &= mpExpression->compile(listOfContainer);
-
-        if (mpNoiseExpression != NULL)
+        if (getExpression().empty())
           {
-            // Noise (particle number rate)
-            firstWorstIssue &= mpNoiseExpression->compile(listOfContainer);
+            issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ExpressionEmpty);
+            mValidity.add(issue);
+            firstWorstIssue &= issue;
+          }
+
+        if (mpExpression != NULL)
+          {
+            issue = mpExpression->compile(listOfContainer);
+            mValidity.add(issue);
+            firstWorstIssue &= issue;
+          }
+
+        if (mHasNoise)
+          {
+            if (getNoiseExpression().empty())
+              {
+                issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ExpressionEmpty);
+                mValidity.add(issue);
+                firstWorstIssue &= issue;
+              }
+
+            if (mpNoiseExpression != NULL)
+              {
+                issue = mpNoiseExpression->compile(listOfContainer);
+                mValidity.add(issue);
+                firstWorstIssue &= issue;
+              }
           }
 
         break;
@@ -311,8 +350,26 @@ CIssue CMetab::compile()
         break;
     }
 
-  // The initial values
-  firstWorstIssue &= compileInitialValueDependencies();
+  // Here we handle initial expressions for all types.
+  if (mpInitialExpression != NULL &&
+      mpInitialExpression->getInfix() != "")
+    {
+      issue = mpInitialExpression->compile(listOfContainer);
+      mValidity.add(issue);
+      firstWorstIssue &= issue;
+
+      // If we have a valid initial expression, we update the initial value.
+      // In case the expression is constant this suffices other are updated lated again.
+      issue = mpInitialExpression->getValidity().getFirstWorstIssue();
+      mValidity.add(issue);
+      firstWorstIssue &= issue;
+
+      if (issue)
+        {
+          mIConc = mpInitialExpression->calcValue();
+          mIValue = CMetab::convertToNumber(mIConc, *mpCompartment, *mpModel);
+        }
+    }
 
   // We need to add all called functions to the dependencies
   if (mpInitialExpression != NULL)
@@ -331,27 +388,6 @@ CIssue CMetab::compile()
     }
 
   return firstWorstIssue;
-}
-
-CIssue CMetab::compileInitialValueDependencies()
-{
-  CIssue issue; //Default: Success
-
-  CObjectInterface::ContainerList listOfContainer;
-  listOfContainer.push_back(getObjectAncestor("Model"));
-
-  // If we have an assignment or a valid initial expression we must update both
-  if (getStatus() == Status::ASSIGNMENT ||
-      (mpInitialExpression != NULL &&
-       mpInitialExpression->getInfix() != ""))
-    {
-      // Initial concentration
-      issue &= mpInitialExpression->compile(listOfContainer);
-
-      return issue;
-    }
-
-  return issue;
 }
 
 void CMetab::compileIsInitialValueChangeAllowed()
