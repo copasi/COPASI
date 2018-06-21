@@ -276,7 +276,7 @@ CIssue CEvaluationTree::parse()
 
   // Clear all mValidity flags which might be set here.
   mValidity.remove(CValidity::Severity::All,
-                   CValidity::Kind(CIssue::eKind::ExpressionInvalid) | CIssue::eKind::ExpressionEmpty | CIssue::eKind::HasCircularDependency);
+                   CValidity::Kind(CIssue::eKind::ExpressionInvalid) | CIssue::eKind::HasCircularDependency);
 
   if (mType == MassAction)
     {
@@ -293,8 +293,6 @@ CIssue CEvaluationTree::parse()
       mValue = *mpRootValue;
       mpNodeList->push_back(mpRootNode);
 
-      lastIssue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ExpressionEmpty);
-      mValidity.add(lastIssue);
       return lastIssue;
     }
 
@@ -390,7 +388,6 @@ CIssue CEvaluationTree::compileNodes()
   // Clear all mValidity flags, except those only set via setInfix
   mValidity.remove(CValidity::Severity::All,
                    ~(CValidity::Kind(CIssue::eKind::ExpressionInvalid) |
-                     CIssue::eKind::ExpressionEmpty |
                      CIssue::eKind::HasCircularDependency |
                      CIssue::eKind::ExpressionDataTypeInvalid));
 
@@ -584,14 +581,7 @@ CIssue CEvaluationTree::updateTree()
   // Clear any infix-determined flags, assuming
   // buildInfix does the right things.
   mValidity.remove(CValidity::Severity::All,
-                   CValidity::Kind(CIssue::eKind::ExpressionInvalid) | CIssue::eKind::ExpressionEmpty | CIssue::eKind::HasCircularDependency);
-
-  if (mInfix == "")
-    {
-      issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ExpressionEmpty);
-      mValidity.add(issue);
-      return issue;
-    }
+                   CValidity::Kind(CIssue::eKind::ExpressionInvalid) | CIssue::eKind::HasCircularDependency);
 
   return issue;
 }

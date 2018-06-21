@@ -231,12 +231,6 @@ public:
   virtual CIssue compile();
 
   /**
-   * Compile the initial particle number and initial concentration dependencies.
-   * @return CIssue issue
-   */
-  CIssue compileInitialValueDependencies();
-
-  /**
    * Determine whether changing the initial concentration is allowed
    */
   void compileIsInitialValueChangeAllowed();

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -118,7 +118,6 @@ CIssue CExpression::compile(CObjectInterface::ContainerList listOfContainer)
   // Reset all compile related issues
   mValidity.remove(CValidity::Severity::All,
                    (CValidity::Kind(CIssue::eKind::ExpressionInvalid) |
-                    CIssue::eKind::ExpressionEmpty |
                     CIssue::eKind::HasCircularDependency |
                     CIssue::eKind::ExpressionDataTypeInvalid));
 

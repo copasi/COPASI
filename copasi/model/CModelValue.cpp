@@ -259,25 +259,62 @@ CIssue CModelEntity::compile()
   switch (mStatus)
     {
       case Status::ASSIGNMENT:
-        issue = mpExpression->compile(listOfContainer);
-        firstWorstIssue &= issue;
 
         pdelete(mpInitialExpression);
-        pDataModel = getObjectDataModel();
-        assert(pDataModel != NULL);
-        mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
-        mpInitialExpression->setObjectName("InitialExpression");
-        add(mpInitialExpression, true);
+
+        if (getExpression().empty())
+          {
+            issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ExpressionEmpty);
+            mValidity.add(issue);
+            firstWorstIssue &= issue;
+          }
+
+        if (mpExpression != NULL)
+          {
+            issue = mpExpression->compile(listOfContainer);
+            mValidity.add(issue);
+            firstWorstIssue &= issue;
+
+            pDataModel = getObjectDataModel();
+            assert(pDataModel != NULL);
+            mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
+            mpInitialExpression->setObjectName("InitialExpression");
+            add(mpInitialExpression, true);
+          }
+
         break;
 
       case Status::ODE:
-        issue = mpExpression->compile(listOfContainer);
-        firstWorstIssue &= issue;
 
-        if (mHasNoise && mpNoiseExpression != NULL)
+        if (getExpression().empty())
           {
-            issue = mpNoiseExpression->compile(listOfContainer);
+            issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ExpressionEmpty);
+            mValidity.add(issue);
             firstWorstIssue &= issue;
+          }
+
+        if (mpExpression != NULL)
+          {
+            issue = mpExpression->compile(listOfContainer);
+            mValidity.add(issue);
+            firstWorstIssue &= issue;
+          }
+
+        if (mHasNoise)
+          {
+            if (getNoiseExpression().empty())
+              {
+                issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ExpressionEmpty);
+                mValidity.add(issue);
+                firstWorstIssue &= issue;
+              }
+
+            if (mpNoiseExpression != NULL)
+              {
+                issue = mpNoiseExpression->compile(listOfContainer);
+                mValidity.add(issue);
+                firstWorstIssue &= issue;
+              }
           }
 
         break;
@@ -291,11 +328,13 @@ CIssue CModelEntity::compile()
       mpInitialExpression->getInfix() != "")
     {
       issue = mpInitialExpression->compile(listOfContainer);
+      mValidity.add(issue);
       firstWorstIssue &= issue;
 
       // If we have a valid initial expression, we update the initial value.
       // In case the expression is constant this suffices other are updated lated again.
       issue = mpInitialExpression->getValidity().getFirstWorstIssue();
+      mValidity.add(issue);
       firstWorstIssue &= issue;
 
       if (issue)
