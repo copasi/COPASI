@@ -368,16 +368,12 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
 
   CVector< C_FLOAT64 > y = mY;
 
-  CMatrix< C_FLOAT64 > A0;
-  CMatrix< C_FLOAT64 > B0;
-  CMatrix< C_FLOAT64 > J;
+  CMatrix< C_FLOAT64 > A0(N, N);
+  CMatrix< C_FLOAT64 > B0(N, N);
+  CMatrix< C_FLOAT64 > J(N, N);
 
   g.resize(N); //SS ???
   y.resize(N);
-
-  A0.resize(N, N);
-  B0.resize(N, N);
-  J.resize(N, N);
 
   C_INT i, j;
   C_FLOAT64 * pSpeciesValue = mY.array();
@@ -393,20 +389,14 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
 
   J = mJacobian;
 
-  CMatrix<C_FLOAT64> ALA;
-  CMatrix<C_FLOAT64> F;
-
-  ALA.resize(N, N);
-  F.resize(N, 1);
+  CMatrix<C_FLOAT64> ALA(N, N);
+  CMatrix<C_FLOAT64> F(N, 1);
 
   /* csp iterations */
   C_INT iter = 0;
 
-  CMatrix<C_FLOAT64> QF;
-  CMatrix<C_FLOAT64> QSL;
-
-  QF.resize(N, N);
-  QSL.resize(N, N);
+  CMatrix<C_FLOAT64> QF(N, N);
+  CMatrix<C_FLOAT64> QSL(N, N);
 
   mJacobian_initial.resize(N, N);
   mQ.resize(N, N);
@@ -510,23 +500,14 @@ analyseMmodes:
   A = A0;
   B = B0;
 
-  /*   */
-  /* ALA = B*J*A  */
-
-  CMatrix<C_FLOAT64> TMP;
-  TMP.resize(N, N);
-
-
+  // ALA = B*J*A
+  CMatrix<C_FLOAT64> TMP(N, N);
+  //TMP.resize(N, N);
   smmult(B, J, TMP, N, N, N);
   smmult(TMP, A, ALA, N, N, N);
 
-
-  CMatrix<C_FLOAT64> TAUM;
-  CMatrix<C_FLOAT64> ALAM;
-
-  ALAM.resize(M, M);
-  TAUM.resize(M, M);
-
+  CMatrix<C_FLOAT64> TAUM(M, M);
+  CMatrix<C_FLOAT64> ALAM(M, M);
   TAUM = 0;
   ALAM = 0;
   for (i = 0; i < M; i++)
@@ -581,11 +562,8 @@ cspiteration:
   std::cout << "*********************************** CSP refinement iteration " << iter << "*******************************" << std::endl;
 #endif
 
-  CMatrix<C_FLOAT64> A1;
-  CMatrix<C_FLOAT64> B1;
-
-  A1.resize(N, N);
-  B1.resize(N, N);
+  CMatrix<C_FLOAT64> A1(N, N);
+  CMatrix<C_FLOAT64> B1(N, N);
 
   basisRefinement(N, M, ALA, TAUM, A, B, A1, B1);
 
@@ -1488,11 +1466,8 @@ void CCSPMethod::basisRefinement(C_INT N, C_INT M,
 {
   C_INT i, j, n, m;
 
-  CMatrix<C_FLOAT64> P;
-  CMatrix<C_FLOAT64> Q;
-
-  P.resize(N, N);
-  Q.resize(N, N);
+  CMatrix<C_FLOAT64> P(N, N);
+  CMatrix<C_FLOAT64> Q(N, N);
 
   P = 0.;
   Q = 0.;
