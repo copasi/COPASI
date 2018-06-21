@@ -73,7 +73,7 @@ void CCSPMethod::initializeParameter()
 }
 
 /* multiply submatrix */
-void CCSPMethod::smmult(CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & C, C_INT & n1, C_INT & n2, C_INT & n3)
+void CCSPMethod::smmult(const CMatrix< C_FLOAT64 > & A, const CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & C, C_INT n1, C_INT n2, C_INT n3)
 {
   C_INT i, j, k;
   for (i = 0; i < n1 ; i++)
@@ -87,7 +87,7 @@ void CCSPMethod::smmult(CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMat
 }
 
 /* subtract submatrix */
-void CCSPMethod::smsubst(CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & C, C_INT & n1, C_INT & n2)
+void CCSPMethod::smsubst(const CMatrix< C_FLOAT64 > & A, const CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & C, C_INT n1, C_INT n2)
 {
   C_INT i, j;
 
@@ -99,7 +99,7 @@ void CCSPMethod::smsubst(CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMa
 }
 
 /* add submatrix */
-void CCSPMethod::smadd(CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & C, C_INT & n1, C_INT & n2)
+void CCSPMethod::smadd(const CMatrix< C_FLOAT64 > & A, const CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & C, C_INT n1, C_INT n2)
 {
   C_INT i, j;
 
@@ -111,7 +111,7 @@ void CCSPMethod::smadd(CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatr
 }
 
 /* normalize submatrix */
-void CCSPMethod::smnorm(C_INT & n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, C_INT & n1)
+void CCSPMethod::smnorm(C_INT n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, C_INT n1)
 {
   C_INT i, j;
   C_FLOAT64 c, d;
@@ -137,21 +137,9 @@ void CCSPMethod::smnorm(C_INT & n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 
   return;
 }
 
-/* perturbate basis */
-void CCSPMethod::perturbateA(C_INT & n, CMatrix< C_FLOAT64 > & A, C_FLOAT64 delta)
+
+void CCSPMethod::sminverse(C_INT n, const CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B)
 {
-  C_INT i, j;
-
-  for (j = 0; j < n ; j++)
-    for (i = 0; i < n ; i++)
-      A(i, j) = A(i, j) * delta;
-
-  return;
-}
-
-void CCSPMethod::sminverse(C_INT & n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B)
-{
-
   /*       int dgesv_(integer *n, integer *nrhs, doublereal *a, integer
    * *lda, integer *ipiv, doublereal *b, integer *ldb, integer *info)
    *
@@ -219,23 +207,19 @@ void CCSPMethod::sminverse(C_INT & n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT
   C_INT * ipiv;
   ipiv = new C_INT [n];
 
-  C_INT N = n;
-
-  CMatrix<C_FLOAT64> TMP;
-  TMP.resize(N, N);
+  CMatrix<C_FLOAT64> TMP(n, n);
 
   TMP = A;
 
   C_INT i, j;
-
-  for (i = 0; i < N; i++)
-    for (j = 0; j < N; j++)
+  for (i = 0; i < n; i++)
+    for (j = 0; j < n; j++)
       B(i, j) = 0.;
 
-  for (i = 0; i < N; i++)
+  for (i = 0; i < n; i++)
     B(i, i) = 1.;
 
-  dgesv_(&N, &N, TMP.array(), &N, ipiv, B.array(), &N, &info);
+  dgesv_(&n, &n, TMP.array(), &n, ipiv, B.array(), &n, &info);
 
   delete[](ipiv);
 
@@ -839,9 +823,9 @@ C_INT CCSPMethod::isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & A
 
   return result;
 }
-void CCSPMethod::emptyOutputData(C_INT & N, C_INT & M, C_INT & R)
-{
 
+void CCSPMethod::emptyOutputData(C_INT N, C_INT M, C_INT R)
+{
   C_INT i, m, r;
   for (m = 0; m < M; m++)
     for (i = 0; i < N; i++)
@@ -1447,7 +1431,7 @@ void CCSPMethod::CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLO
 }
 
 /* compute  amplitudes of fast and slow modes */
-void CCSPMethod::modesAmplitude(C_INT & N, C_INT & /* M */, CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F)
+void CCSPMethod::modesAmplitude(C_INT N, const CVector< C_FLOAT64 > & g, const CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F)
 {
   C_INT i, j;
   /* evaluate amplitudes */
@@ -1497,7 +1481,10 @@ void CCSPMethod::yCorrection(C_INT & N, C_INT & M, CVector< C_FLOAT64 > & y, CMa
 /* Refinement Procedure :
  * Lamm, Combustion Science and Technology, 1993.
  **/
-void CCSPMethod::basisRefinement(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, CMatrix< C_FLOAT64 > & TAU, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & A0, CMatrix< C_FLOAT64 > & B0)
+void CCSPMethod::basisRefinement(C_INT N, C_INT M,
+                                 const CMatrix< C_FLOAT64 > & ALA, const CMatrix< C_FLOAT64 > & TAU,
+                                 CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B,
+                                 CMatrix< C_FLOAT64 > & A0, CMatrix< C_FLOAT64 > & B0)
 {
   C_INT i, j, n, m;
 
@@ -1562,14 +1549,14 @@ void CCSPMethod::basisRefinement(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & AL
 }
 
 /* "true" if each  of the analyzed M  modes is exhausted */
-bool CCSPMethod::modesAreExhausted(C_INT & N, C_INT & M, C_FLOAT64 & tauM, C_FLOAT64 & /* tauM1 */ , CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F)
+bool CCSPMethod::modesAreExhausted(C_INT N, C_INT M, C_FLOAT64 & tauM, C_FLOAT64 & /* tauM1 */ , CVector< C_FLOAT64 > & g,
+                                   const CMatrix< C_FLOAT64 > & A, const CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F)
 {
   C_INT i, j;
   C_FLOAT64 tmp;
   bool exhausted = true;
 
-  modesAmplitude(N, M, g, B, F);
-
+  modesAmplitude(N, g, B, F);
 
   for (j = 0; j < M; j++)
     {
