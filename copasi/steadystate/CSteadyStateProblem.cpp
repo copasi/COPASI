@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -75,7 +75,7 @@ bool CSteadyStateProblem::initialize()
  * Set whether the jacobian is requested.
  * @param bool * jacobianRequested
  */
-void CSteadyStateProblem::setJacobianRequested(bool & jacobianRequested)
+void CSteadyStateProblem::setJacobianRequested(const bool & jacobianRequested)
 {setValue("JacobianRequested", jacobianRequested);}
 
 /**
@@ -108,7 +108,7 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
 {
   if (configBuffer.getVersion() < "4.0")
     {
-      configBuffer.getVariable("RepStabilityAnalysis", "bool" ,
+      configBuffer.getVariable("RepStabilityAnalysis", "bool",
                                &getValue< bool >("StabilityAnalysisRequested"),
                                CReadConfig::LOOP);
       setValue("JacobianRequested", getValue< bool >("StabilityAnalysisRequested"));
