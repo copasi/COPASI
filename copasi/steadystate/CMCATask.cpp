@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,20 +24,21 @@
  * problem and a method. Additionally calls to the reporting
  * methods are done when initialized.
  *
- * Created for Copasi by Ralph Gauges 2004
+ * Created for COPASI by Ralph Gauges 2004
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "CMCATask.h"
-#include "CMCAProblem.h"
-#include "CMCAMethod.h"
-#include "CSteadyStateTask.h"
+#include "copasi/steadystate/CMCATask.h"
+#include "copasi/steadystate/CMCAProblem.h"
+#include "copasi/steadystate/CMCAMethod.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/steadystate/CSteadyStateProblem.h"
 
-#include "CopasiDataModel/CDataModel.h"
-#include "report/CKeyFactory.h"
-#include "report/CReport.h"
-#include "math/CMathContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/report/CReport.h"
+#include "copasi/math/CMathContainer.h"
 
 #define XXXX_Reporting
 
@@ -136,7 +137,14 @@ bool CMCATask::process(const bool & useInitialValues)
   if (pSubTask)
     {
       pSubTask->setCallBack(mpCallBack);
+
+      // We need to assure that the Jacobian is calculated!
+      CSteadyStateProblem * pSteadyStateProblem = static_cast< CSteadyStateProblem * >(pSubTask->getProblem());
+      bool jacobianRequested = pSteadyStateProblem->isJacobianRequested();
+
+      pSteadyStateProblem->setJacobianRequested(true);
       success &= pSubTask->process(useInitialValues);
+      pSteadyStateProblem->setJacobianRequested(jacobianRequested);
 
       if (!success && useInitialValues)
         {

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -420,9 +420,9 @@ bool CLinkMatrix::rightMultiply(const C_FLOAT64 & alpha,
   C_INT N = (C_INT) p.numRows();
   C_INT K = (C_INT) numRows();
 
-  C_INT LDA = (C_INT) numCols();
-  C_INT LDB = (C_INT) m.numCols();
-  C_INT LDC = (C_INT) p.numCols();
+  C_INT LDA = (C_INT) std::max< size_t >(1, numCols());
+  C_INT LDB = (C_INT) std::max< size_t >(1, m.numCols());
+  C_INT LDC = (C_INT) std::max< size_t >(1, p.numCols());
 
   // p := m1
 
@@ -471,9 +471,9 @@ bool CLinkMatrix::leftMultiply(const CMatrix< C_FLOAT64> & m,
   C_INT N = (C_INT) getNumDependent();
   C_INT K = (C_INT) numCols();
 
-  C_INT LDA = (C_INT) m.numCols();
-  C_INT LDB = (C_INT) numCols();
-  C_INT LDC = (C_INT) p.numCols();
+  C_INT LDA = (C_INT) std::max< size_t >(1, m.numCols());
+  C_INT LDB = (C_INT) std::max< size_t >(1, numCols());
+  C_INT LDC = (C_INT) std::max< size_t >(1, p.numCols());
 
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Zero = 0.0;
