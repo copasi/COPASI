@@ -898,6 +898,14 @@ CIssue CReaction::compile()
       mPrerequisits.insert(it->getMetabolite());
     }
 
+  it = mChemEq.getModifiers().begin();
+  end = mChemEq.getModifiers().end();
+
+  for (; it != end; ++it)
+    {
+      mPrerequisits.insert(it->getMetabolite());
+    }
+
   setScalingFactor();
 
   if (mHasNoise && mpNoiseExpression != NULL)
