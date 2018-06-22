@@ -249,10 +249,8 @@ void CCopasiParameterGroup::createUndoData(CUndoData & undoData,
           std::map< size_t, const CData * >::const_iterator itToBeRemoved = ToBeRemoved.begin();
           std::map< size_t, const CData * >::const_iterator endToBeRemoved = ToBeRemoved.end();
 
-          for (; itToBeRemoved != endToBeRemoved && CurrentIndex < itToBeRemoved->first; ++itToBeRemoved)
-            {
-              CorrectedIndex--;
-            }
+          for (; itToBeRemoved != endToBeRemoved && CurrentIndex > itToBeRemoved->first; ++itToBeRemoved)
+            CorrectedIndex--;
 
           OldValues[CorrectedIndex] = *itChanged->first;
           OldValues[CorrectedIndex].addProperty(CData::OBJECT_INDEX, CorrectedIndex);
@@ -260,10 +258,8 @@ void CCopasiParameterGroup::createUndoData(CUndoData & undoData,
           CurrentIndex = getIndex(itChanged->second);
           CorrectedIndex = CurrentIndex;
 
-          for (itToBeAdded = ToBeAdded.begin(); itToBeAdded != endToBeAdded && CurrentIndex < itToBeAdded->first; ++itToBeAdded)
-            {
-              CorrectedIndex--;
-            }
+          for (itToBeAdded = ToBeAdded.begin(); itToBeAdded != endToBeAdded && CurrentIndex > itToBeAdded->first; ++itToBeAdded)
+            CorrectedIndex--;
 
           NewValues[CorrectedIndex] = itChanged->second->toData();
           NewValues[CorrectedIndex].addProperty(CData::OBJECT_INDEX, CorrectedIndex);
