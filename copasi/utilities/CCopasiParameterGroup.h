@@ -211,6 +211,12 @@ public:
       }
 
     pParameter->setUserInterfaceFlag(flag);
+
+    if (!(flag & CCopasiParameter::eUserInterfaceFlag::basic))
+      {
+        pParameter->setDefault(value);
+      }
+
     addParameter(pParameter);
 
     return true;

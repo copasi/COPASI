@@ -81,7 +81,10 @@ public:
    */
   static const CEnumAnnotation< std::string, Type > XMLType;
 
+  static void allocateValue(const Type & type, void *& pValue);
+  static void assignValue(const Type & type, void *& pValue, const void * pNewValue);
   static void deleteValue(const Type & type, void *& pValue);
+  static void allocateValidValues(const Type & type, void *& pValidValues);
   static void deleteValidValues(const Type & type, void *& pValidValues);
 
 protected:
@@ -98,11 +101,6 @@ private:
 
 protected:
   /**
-   *  The size allocated for the value of the parameter.
-   */
-  size_t mSize;
-
-  /**
    *  A pointer to the value of the parameter.
    */
   void * mpValue;
@@ -116,6 +114,8 @@ protected:
    * A pointer to the valid values;
    */
   void * mpValidValues;
+
+  void * mpDefault;
 
   // Operations
   CCopasiParameter(const CCopasiParameter & src);
@@ -236,6 +236,33 @@ public:
   }
 
   /**
+   * Set the value of the parameter
+   * @param const const CType & defaultValue
+   * @return bool isValidValue
+   */
+  template <class CType> bool setDefault(const CType & defaultValue)
+  {
+    if (!isValidValue(defaultValue)) return false;
+
+    assignDefault(&defaultValue);
+    return true;
+  }
+
+  /**
+   * Set the value of the parameter when the origin is a parameter group.
+   * This function is currently not implemented and creates a fatalError
+   * when called.
+   * @param const CCopasiParameter::parameterGroup& defaultValue
+   * @return bool false
+   */
+  bool setDefault(const std::vector< CCopasiParameter * > & defaultValue);
+
+  template < class CType > const CType & getDefault() const
+  {
+    return * static_cast< const CType * >(mpDefault);
+  }
+
+  /**
    * Retrieve the object which represents the value of the parameter
    * @return CDataObject * pValueReference
    */
@@ -319,13 +346,7 @@ public:
   {
     if (!isValidValue(CType())) return false;
 
-    if (mpValidValues == NULL)
-      {
-        mpValidValues = new std::vector< std::pair < CType, CType > >;
-      }
-
-    *static_cast< std::vector< std::pair < CType, CType > > * >(mpValidValues) = validValues;
-
+    assignValidValues(&validValues);
     return true;
   }
 
@@ -399,18 +420,20 @@ public:
 
   bool isBasic() const;
 
+  bool isDefault() const;
+
 private:
   /**
    * Create or copy the value
    * @param const void * pValue
    */
-  void createValue(const void * pValue);
-
-  void createValidValues(const void * pValidValues);
+  void createValue();
 
   void assignValue(const void * pValue);
 
   void assignValidValues(const void * pValidValues);
+
+  void assignDefault(const void * pDefault);
 
   template < class CType > bool inValidValues(const CType & value) const
   {
