@@ -41,10 +41,10 @@ CQParameterGroupView::CQParameterGroupView(QWidget* parent):
 
   mpSortFilterDM = new QSortFilterProxyModel(this);
   mpSortFilterDM->setFilterKeyColumn(0);
-  mpSortFilterDM->setFilterRole(Qt::UserRole);
+  mpSortFilterDM->setFilterRole(Qt::UserRole + 1);
   mpSortFilterDM->setFilterRegExp(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters() ? "" : "basic");
   mpSortFilterDM->setSourceModel(mpParameterGroupDM);
-  mpSortFilterDM->setSortRole(Qt::UserRole);
+  mpSortFilterDM->setSortRole(Qt::UserRole + 2);
   mpSortFilterDM->sort(0, Qt::DescendingOrder);
 
   setSortingEnabled(true);

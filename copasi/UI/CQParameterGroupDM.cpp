@@ -53,9 +53,15 @@ QVariant CQParameterGroupDM::data(const QModelIndex & index, int role) const
 
   switch (role)
     {
-      case Qt::UserRole:
+      case Qt::UserRole + 1:
         if (index.column() == COL_NAME)
-          return QString(pNode->getUserInterfaceFlag() & CCopasiParameter::eUserInterfaceFlag::basic ? "basic" : "advanced");
+          return QString(pNode->isBasic() || !pNode->isDefault() ? "basic" : "advanced");
+
+        break;
+
+      case Qt::UserRole + 2:
+        if (index.column() == COL_NAME)
+          return QString(pNode->isBasic() ? "basic" : "advanced");
 
         break;
 
