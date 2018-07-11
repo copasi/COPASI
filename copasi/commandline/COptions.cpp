@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -243,6 +243,9 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("ImportCombineArchive", Options.ImportCombineArchive);
   setValue("ExportCombineArchive", Options.ExportCombineArchive);
 #endif
+
+  setValue("ConvertToIrreversible", Options.ConvertToIrreversible);
+
 
   delete pPreParser;
 

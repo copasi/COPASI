@@ -1,7 +1,7 @@
 <!--
     This file demostrates how to specify options to clo++
 -->
-<!-- Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and University of -->
 <!-- of Connecticut School of Medicine. -->
 <!-- All rights reserved. -->
@@ -333,6 +333,18 @@
      <range min="0"/>
      <comment>
        The maximal time CopasiSE may run in seconds.
+     </comment>
+   </option>
+   <option id="ConvertToIrreversible"
+           type="flag"
+           mandatory="no"
+           strict="yes"
+           location="both"
+           default="false"
+           hidden="no">
+     <name>convert-to-irreversible</name>
+     <comment>
+       Converts reversible reactions to irreversible ones before running Task.
      </comment>
    </option>
  </options>

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,6 +33,7 @@
 
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
+#include "copasi/model/CModel.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/CCopasiTask.h"
@@ -181,6 +182,9 @@ int main(int argc, char *argv[])
       // Check whether we just have to validate
       COptions::getValue("Validate", Validate);
 
+      bool ConvertToIrreversible;
+      COptions::getValue("ConvertToIrreversible", ConvertToIrreversible);
+
       const COptions::nonOptionType & Files = COptions::getNonOptions();
 
       bool importSBML = COptions::isSet("ImportSBML") && !COptions::compareValue("ImportSBML", std::string(""));
@@ -258,6 +262,11 @@ int main(int argc, char *argv[])
               goto finish;
             }
 
+          if (ConvertToIrreversible)
+            {
+              pDataModel->getModel()->convert2NonReversible();
+            }
+
           retcode = exportCurrentModel();
 
           if (retcode != NO_EXPORT_REQUESTED)
@@ -308,6 +317,11 @@ int main(int argc, char *argv[])
                 {
                   retcode |= validate();
                   continue;
+                }
+
+              if (ConvertToIrreversible)
+                {
+                  pDataModel->getModel()->convert2NonReversible();
                 }
 
               retcode = exportCurrentModel();
