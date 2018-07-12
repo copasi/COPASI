@@ -270,6 +270,7 @@ int main(int argc, char *argv[])
           if (ConvertToIrreversible)
             {
               pDataModel->getModel()->convert2NonReversible();
+              pDataModel->getModel()->compileIfNecessary(NULL);
             }
 
           retcode = exportCurrentModel();
@@ -327,6 +328,7 @@ int main(int argc, char *argv[])
               if (ConvertToIrreversible)
                 {
                   pDataModel->getModel()->convert2NonReversible();
+                  pDataModel->getModel()->compileIfNecessary(NULL);
                 }
 
               retcode = exportCurrentModel();
