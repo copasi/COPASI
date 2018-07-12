@@ -245,6 +245,8 @@ void COptions::init(C_INT argc, char *argv[])
 #endif
 
   setValue("ConvertToIrreversible", Options.ConvertToIrreversible);
+  setValue("ScheduledTask", Options.ScheduledTask);
+  setValue("ReportFile", Options.ReportFile);
 
 
   delete pPreParser;
