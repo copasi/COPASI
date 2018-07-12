@@ -65,6 +65,9 @@ const char const_usage[] =
   "  --maxTime seconds             The maximal time CopasiSE may run in\n"
   "                                seconds.\n"
   "  --nologo                      Surpresses the startup message.\n"
+  "  --report-file file            Override report file name to be used except\n"
+  "                                for the one defined in the scheduled task.\n"
+  "  --scheduled-task taskName     Override the task marked as executable.\n"
   "  --validate                    Only validate the given input file (COPASI,\n"
   "                                Gepasi, or SBML) without performing any\n"
   "                                calculations.\n"
@@ -251,11 +254,17 @@ void copasi::COptionParser::finalize(void)
           case option_NoLogo:
             throw option_error("missing value for 'nologo' option");
 
+          case option_ReportFile:
+            throw option_error("missing value for 'report-file' option");
+
           case option_SBMLSchema:
             throw option_error("missing value for 'SBMLSchema' option");
 
           case option_Save:
             throw option_error("missing value for 'save' option");
+
+          case option_ScheduledTask:
+            throw option_error("missing value for 'scheduled-task' option");
 
           case option_Tmp:
             throw option_error("missing value for 'tmp' option");
@@ -688,6 +697,20 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
       options_.NoLogo = !options_.NoLogo;
       return;
     }
+  else if (strcmp(option, "report-file") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'report-file' option is only allowed on the command line");
+
+      if (locations_.ReportFile)
+        {
+          throw option_error("the 'report-file' option is only allowed once");
+        }
+
+      openum_ = option_ReportFile;
+      locations_.ReportFile = position;
+      state_ = state_value;
+      return;
+    }
   else if (strcmp(option, "save") == 0)
     {
       source = source; // kill compiler unused variable warning
@@ -699,6 +722,20 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
 
       openum_ = option_Save;
       locations_.Save = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "scheduled-task") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'scheduled-task' option is only allowed on the command line");
+
+      if (locations_.ScheduledTask)
+        {
+          throw option_error("the 'scheduled-task' option is only allowed once");
+        }
+
+      openum_ = option_ScheduledTask;
+      locations_.ScheduledTask = position;
       state_ = state_value;
       return;
     }
@@ -865,6 +902,12 @@ void copasi::COptionParser::parse_value(const char *value)
       case option_NoLogo:
         break;
 
+      case option_ReportFile:
+      {
+        options_.ReportFile = value;
+      }
+      break;
+
       case option_SBMLSchema:
       {
         SBMLSchema_enum evalue;
@@ -918,6 +961,12 @@ void copasi::COptionParser::parse_value(const char *value)
       case option_Save:
       {
         options_.Save = value;
+      }
+      break;
+
+      case option_ScheduledTask:
+      {
+        options_.ScheduledTask = value;
       }
       break;
 
@@ -1001,8 +1050,14 @@ const char* expand_long_name(const std::string &name)
   if (name_size <= 6 && name.compare("nologo") == 0)
     matches.push_back("nologo");
 
+  if (name_size <= 11 && name.compare("report-file") == 0)
+    matches.push_back("report-file");
+
   if (name_size <= 4 && name.compare("save") == 0)
     matches.push_back("save");
+
+  if (name_size <= 14 && name.compare("scheduled-task") == 0)
+    matches.push_back("scheduled-task");
 
   if (name_size <= 3 && name.compare("tmp") == 0)
     matches.push_back("tmp");

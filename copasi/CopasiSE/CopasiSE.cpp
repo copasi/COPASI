@@ -65,6 +65,8 @@ int saveCurrentModel();
 
 CDataModel* pDataModel = NULL;
 bool Validate = false;
+std::string ReportFileName;
+std::string ScheduledTask;
 
 int main(int argc, char *argv[])
 {
@@ -123,6 +125,9 @@ int main(int argc, char *argv[])
 
   bool License;
   COptions::getValue("License", License);
+
+  COptions::getValue("ReportFile", ReportFileName);
+  COptions::getValue("ScheduledTask", ScheduledTask);
 
   if (License)
     {
@@ -401,28 +406,54 @@ int runScheduledTasks(CProcessReport * pProcessReport)
   CDataVectorN< CCopasiTask > & TaskList = *pDataModel->getTaskList();
   size_t i, imax = TaskList.size();
 
-  for (i = 0; i < imax; i++)
-    if (TaskList[i].isScheduled())
+  if (!ScheduledTask.empty())
+    {
+      if (!TaskList.getIndex(ScheduledTask) == C_INVALID_INDEX)
+        {
+          std::cerr << "No task '" << ScheduledTask << "' to be marked executable"
+                    << std::endl << std::endl;
+          return 1;
+        }
+
+      // mark all other potential tasks as not scheduled
+for (CCopasiTask & task : TaskList)
+        {
+          task.setScheduled(false);
+        }
+
+      CCopasiTask& toBeScheduled = TaskList[ScheduledTask];
+      toBeScheduled.setScheduled(true);
+    }
+
+
+for (CCopasiTask & task : TaskList)
+    if (task.isScheduled())
       {
-        TaskList[i].setCallBack(pProcessReport);
+        task.setCallBack(pProcessReport);
 
         bool success = true;
 
+        if (!ReportFileName.empty())
+          {
+            task.getReport().setTarget(ReportFileName);
+          }
+
+
         try
           {
-            success = TaskList[i].initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
+            success = task.initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
 
             // We need to check whether the result is saved in any form.
             // If not we need to stop right here to avoid wasting time.
             if (CCopasiMessage::checkForMessage(MCCopasiTask + 5) &&
-                (!TaskList[i].isUpdateModel() ||
+                (!task.isUpdateModel() ||
                  COptions::compareValue("Save", std::string(""))))
               {
                 success = false;
               }
 
             if (success)
-              success &= TaskList[i].process(true);
+              success &= task.process(true);
           }
 
         catch (...)
@@ -430,12 +461,12 @@ int runScheduledTasks(CProcessReport * pProcessReport)
             success = false;
           }
 
-        TaskList[i].restore();
+        task.restore();
 
         if (!success)
           {
             std::cerr << "File: " << pDataModel->getFileName() << std::endl;
-            std::cerr << "Task: " << TaskList[i].getObjectName() << std::endl;
+            std::cerr << "Task: " << task.getObjectName() << std::endl;
             std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
 
             retcode = 1;
@@ -446,7 +477,7 @@ int runScheduledTasks(CProcessReport * pProcessReport)
             pProcessReport->finish();
           }
 
-        TaskList[i].setCallBack(NULL);
+        task.setCallBack(NULL);
         pDataModel->finish();
       }
 

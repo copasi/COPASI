@@ -347,5 +347,26 @@
        Converts reversible reactions to irreversible ones before running Task.
      </comment>
    </option>
+   <option id="ReportFile"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           argname="file"
+           hidden="no">
+    <name>report-file</name>
+    <comment>Override report file name to be used except for the one defined in
+             the scheduled task.</comment>
+   </option>
+   <option id="ScheduledTask"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           argname="taskName"
+           hidden="no">
+    <name>scheduled-task</name>
+    <comment>Override the task marked as executable.</comment>
+   </option>
  </options>
 </cloxx>

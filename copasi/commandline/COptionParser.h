@@ -98,8 +98,10 @@ struct options
   bool     License;
   int     MaxTime;
   bool     NoLogo;
+  std::string     ReportFile;
   SBMLSchema_enum     SBMLSchema;
   std::string     Save;
+  std::string     ScheduledTask;
   std::string     Tmp;
   bool     Validate;
   bool     Verbose;
@@ -129,8 +131,10 @@ struct option_locations
   size_type License;
   size_type MaxTime;
   size_type NoLogo;
+  size_type ReportFile;
   size_type SBMLSchema;
   size_type Save;
+  size_type ScheduledTask;
   size_type Tmp;
   size_type Validate;
   size_type Verbose;
@@ -229,7 +233,9 @@ private:
     option_ExportC,
     option_ExportXPPAUT,
     option_MaxTime,
-    option_ConvertToIrreversible
+    option_ConvertToIrreversible,
+    option_ReportFile,
+    option_ScheduledTask
   } openum_;
 
   enum parser_state {state_option, state_value, state_consume } state_;
