@@ -336,6 +336,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
           // We reset short before we reach the internal step limit.
 #ifdef DEBUG_FLOW
           std::cout << "mTime = " << mTime << ", EndTime = " << EndTime << ", mTask = " << mTask << ", mLsodaStatus = " << mLsodaStatus << ", mRootCounter = " << mRootCounter << std::endl;
+          std::cout << "mRootsFound = " << mRootsFound << std::endl;
           std::cout << "mDWork = " << mDWork << std::endl;
           std::cout << "mIWork = " << mIWork << std::endl;
 #endif // DEBUG_FLOW
@@ -434,47 +435,37 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
         {
           case -33:
 
-            switch (mRootMasking)
+            // Reset the integrator to the state before the failed integration.
+
+            mContainerState = mLastSuccessState;
+            mTime = *mpContainerStateTime;
+            mpContainer->updateSimulatedValues(*mpReducedModel);
+
+            mLsodaStatus = 1;
+
+            if (mLastRootState.ContainerState[mpContainer->getCountFixedEventTargets()] == mTime)
               {
-                case NONE:
-                case DISCRETE:
-                  // Reset the integrator to the state before the failed integration.
+                mRootsFound = mLastRootState.RootsFound;
+              }
 
-                  mContainerState = mLastSuccessState;
-                  mTime = *mpContainerStateTime;
-                  mpContainer->updateSimulatedValues(*mpReducedModel);
-
-                  mLsodaStatus = 1;
-
-                  if (mLastRootState.ContainerState[mpContainer->getCountFixedEventTargets()] == mTime)
-                    {
-                      mRootsFound = mLastRootState.RootsFound;
-                    }
-
-                  // Create a mask which hides all roots being constant and zero.
+            // Create a mask which hides all roots being constant and zero.
 #ifdef DEBUG_FLOW
-                  std::cout << "Creating Root Mask." << std::endl;
+            std::cout << "Creating Root Mask." << std::endl;
 #endif // DEBUG_FLOW
 
-                  {
-                    CVector< bool > CurrentMask = mRootMask;
-                    setRootMaskType(ALL);
+            {
+              CVector< bool > CurrentMask = mRootMask;
+              setRootMaskType(ALL);
 
-                    if (CurrentMask == mRootMask)
-                      {
-                        Status = FAILURE;
-                      }
-                    else
-                      {
-                        return step(deltaT);
-                      }
-                  }
-
-                  break;
-
-                case ALL:
-                  break;
-              }
+              if (CurrentMask == mRootMask)
+                {
+                  Status = FAILURE;
+                }
+              else
+                {
+                  return step(deltaT);
+                }
+            }
 
             break;
 
