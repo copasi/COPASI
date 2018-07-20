@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,6 +26,8 @@ class CMathEvent
 public:
   class CAssignment
   {
+    friend std::ostream &operator<<(std::ostream &os, const CAssignment & o);
+
   public:
     /**
      * Default constructor
@@ -85,6 +87,8 @@ public:
   public:
     class CRootProcessor
     {
+      friend std::ostream &operator<<(std::ostream &os, const CRootProcessor & o);
+
     public:
       /**
        * Default constructor
@@ -183,6 +187,8 @@ public:
       C_FLOAT64 * mpRootValue;
       C_FLOAT64 * mpRootStateValue;
     };
+
+    friend std::ostream &operator<<(std::ostream &os, const CTrigger & o);
 
     /**
      * Default constructor
@@ -312,6 +318,8 @@ public:
     CVector< CRootProcessor > mRoots;
     std::string mInfix;
   };
+
+  friend std::ostream &operator<<(std::ostream &os, const CMathEvent & o);
 
   /**
    * Default constructor
