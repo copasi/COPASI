@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -56,6 +56,15 @@ bool CMathEventQueue::CKey::operator < (const CMathEventQueue::CKey & rhs) const
     return mCascadingLevel > rhs.mCascadingLevel;
 
   return mEquality < rhs.mEquality;
+}
+
+std::ostream &operator<<(std::ostream &os, const CMathEventQueue::CKey & o)
+{
+  os << "exec time " << o.mExecutionTime
+     << ", cascading lvl " << o.mCascadingLevel
+     << ", " << (o.mEquality ? "equality, " : "inequality");
+
+  return os;
 }
 
 //*********************************************************
@@ -154,6 +163,39 @@ CMathEvent * CMathEventQueue::CAction::getEvent() const {return mpEvent;}
 const CMathEventQueue::CAction::Type & CMathEventQueue::CAction::getType() const {return mType;}
 
 const C_FLOAT64 & CMathEventQueue::CAction::getPriority() const {return *mpPriority;}
+
+std::ostream &operator<<(std::ostream &os, const CMathEventQueue::CAction & o)
+{
+  CMathEvent * pEvent = o.getEvent();
+
+  os << "pEvent: 0x" << pEvent << ", Action: ";
+
+  switch (o.getType())
+    {
+      case CMathEventQueue::CAction::Calculation:
+
+        if (pEvent->delayAssignment())
+          {
+            os << "Calculation";
+          }
+        else
+          {
+            os << "Calculation & Assignment";
+          }
+
+        break;
+
+      case CMathEventQueue::CAction::Assignment:
+        os << "Assignment";
+        break;
+
+      case CMathEventQueue::CAction::Callback:
+        os << "Callback";
+        break;
+    }
+
+  return os;
+}
 
 //*********************************************************
 
@@ -398,18 +440,18 @@ CMathEventQueue::iterator CMathEventQueue::getAction()
 
   switch (PriorityActions.size())
     {
-        // No prioritized actions
+      // No prioritized actions
       case 0:
         // We arbitrarily pick the first
         return PendingActions.first;
         break;
 
-        // One action has the highest priority
+      // One action has the highest priority
       case 1:
         return PriorityActions[0];
         break;
 
-        // Pick one randomly
+      // Pick one randomly
       default:
         return PriorityActions[mpContainer->getRandomGenerator().getRandomU(PriorityActions.size() - 1)];
         break;
@@ -546,41 +588,9 @@ std::ostream &operator<<(std::ostream &os, const CMathEventQueue & o)
 
   for (it = o.mActions.begin(); it != o.mActions.end(); ++it)
     {
-      os << "exec time " << it->first.mExecutionTime
-         << ", cascading lvl " << it->first.mCascadingLevel
-         << ", " << (it->first.mEquality ? "equality, " : "inequality");
-
+      os << it->first << std::endl;
+      os << it->second << std::endl;
       os << std::endl;
-
-      CMathEvent * pEvent = it->second.getEvent();
-
-      os << "pEvent: 0x" << pEvent << ", Action: ";
-
-      switch (it->second.getType())
-        {
-          case CMathEventQueue::CAction::Calculation:
-
-            if (pEvent->delayAssignment())
-              {
-                os << "Calculation";
-              }
-            else
-              {
-                os << "Calculation & Assignment";
-              }
-
-            break;
-
-          case CMathEventQueue::CAction::Assignment:
-            os << "Assignment";
-            break;
-
-          case CMathEventQueue::CAction::Callback:
-            os << "Callback";
-            break;
-        }
-
-      os << std::endl << std::endl;
     }
 
   return os;

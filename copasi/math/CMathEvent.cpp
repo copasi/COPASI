@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,6 +35,9 @@ namespace std
 extern bool isnan(double d);
 }
 #endif
+
+// Uncomment this line below to get numeric debug print out.
+// #define DEBUG_OUTPUT 1
 
 CMathEvent::CAssignment::CAssignment():
   mpTarget(NULL),
@@ -1332,6 +1335,8 @@ bool CMathEvent::compile(const CEvent * pDataEvent,
   success &= PriorityExpression.compile(ListOfContainer);
   success &= mpPriority->setExpression(PriorityExpression, container);
 
+  mDisabled = false;
+
   return success;
 }
 
@@ -1344,7 +1349,7 @@ bool CMathEvent::compile(CMathContainer & container)
 
   mType = CEvent::Discontinuity;
   mFireAtInitialTime = false;
-  mTriggerIsPersistent = false;
+  mTriggerIsPersistent = true;
   mDelayExecution = false;
 
   // Compile Trigger
@@ -1386,6 +1391,8 @@ bool CMathEvent::compile(CMathContainer & container)
   success &= PriorityExpression.setInfix("");
   success &= PriorityExpression.compile(ListOfContainer);
   success &= mpPriority->setExpression(PriorityExpression, container);
+
+  mDisabled = false;
 
   return success;
 }
@@ -1513,14 +1520,28 @@ void CMathEvent::addPendingAction(const CMathEventQueue::iterator & pendingActio
 {
   if (!mTriggerIsPersistent)
     {
-      assert(mpPendingAction == NULL);
+#ifdef DEBUG_OUTPUT
+      std::cout << *this << std::endl;
+      std::cout << "Add:    " << pendingAction->first << ": " << pendingAction->second << std::endl;
+#endif //DEBUG_OUTOUT
 
+      assert(mpPendingAction == NULL);
       mpPendingAction = new std::pair< CMathEventQueue::CKey, CMathEventQueue::CAction >(pendingAction->first, pendingAction->second);
     }
 }
 
 void CMathEvent::removePendingAction()
 {
+#ifdef DEBUG_OUTPUT
+
+  if (mpPendingAction != NULL)
+    {
+      std::cout << *this << std::endl;
+      std::cout << "Remove: " << mpPendingAction->first << ": " << mpPendingAction->second << std::endl;
+    }
+
+#endif //DEBUG_OUTOUT
+
   pdelete(mpPendingAction);
 }
 
@@ -1663,6 +1684,9 @@ void CMathEvent::executeCallback(void * pCaller)
 void CMathEvent::setDisabled(const bool & disabled)
 {
   mDisabled = disabled;
+#ifdef DEBUG_OUTPUT
+  std::cout << "Event disabled: " << *this << std::endl;
+#endif //DEBUG_OUTOUT
 }
 
 /**
@@ -1672,4 +1696,16 @@ void CMathEvent::setDisabled(const bool & disabled)
 const bool & CMathEvent::isDisabled() const
 {
   return mDisabled;
+}
+
+std::ostream &operator<<(std::ostream &os, const CMathEvent & o)
+{
+  os << "pEvent: " << &o
+     << ", Type: " << o.mType
+     << ", FireAtInitialTime: " << o. mFireAtInitialTime
+     << ", TriggerIsPersistent: " << o. mTriggerIsPersistent
+     << ", DelayExecution: " << o. mDelayExecution
+     << ", Disabled: " << o. mDisabled;
+
+  return os;
 }

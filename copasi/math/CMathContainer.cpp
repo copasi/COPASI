@@ -1759,6 +1759,10 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
   CEvaluationNode * pNode = pSrc->copyNode(children);
   std::string DiscontinuityInfix = pNode->buildInfix();
 
+#ifdef DEBUG_OUTPUT
+  std::cout << "DiscontinuityInfix: " << DiscontinuityInfix << std::endl;
+#endif //DEBUG_OUTOUT
+
   // Check whether we have the discontinuous node already created. This can happen if the
   // discontinuity was part of an expression for a variable in a function call.
   std::map< std::string, CMathObject * >::iterator itObject = mDiscontinuityInfix2Object.find(DiscontinuityInfix);
@@ -1767,6 +1771,10 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
     {
       // No need to copy we have already on object
       CMathObject * pDiscontinuity = itObject->second;
+
+#ifdef DEBUG_OUTPUT
+      std::cout << "Existing Object found: " << *pDiscontinuity << std::endl;
+#endif //DEBUG_OUTOUT
 
       // We need to advance both creation pointer to assure that we have the correct allocation
       // Mark the discontinuity objects as unused
@@ -1821,10 +1829,16 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
 
       // Map the trigger infix to the event.
       mTriggerInfix2Event[TriggerInfix] = pEvent;
+#ifdef DEBUG_OUTPUT
+      std::cout << "Created new Event: " << *pEvent << std::endl;
+#endif //DEBUG_OUTOUT
     }
   else
     {
       pEvent = itEvent->second;
+#ifdef DEBUG_OUTPUT
+      std::cout << "Existing Event found: " << *pEvent << std::endl;
+#endif //DEBUG_OUTOUT
     }
 
   // Add the current discontinuity as an assignment.
@@ -2194,6 +2208,9 @@ bool CMathContainer::compileEvents()
   for (; itEvent != endEvent; ++pItEvent, ++itEvent)
     {
       success &= pItEvent->compile(itEvent, *this);
+#ifdef DEBUG_OUTPUT
+      std::cout << "Data Event:  " << *pItEvent << std::endl;
+#endif //DEBUG_OUTOUT
     }
 
   itEvent = mDiscontinuityEvents.begin();
@@ -2202,6 +2219,9 @@ bool CMathContainer::compileEvents()
   for (; itEvent != endEvent; ++pItEvent, ++itEvent)
     {
       success &= pItEvent->compile(*this);
+#ifdef DEBUG_OUTPUT
+      std::cout << "Disc. Event: " << *pItEvent << std::endl;
+#endif //DEBUG_OUTOUT
     }
 
   // Events representing discontinuities.
