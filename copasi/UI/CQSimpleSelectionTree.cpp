@@ -527,18 +527,39 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           const CDataContainer::objectMap *pObjects = & task->getObjects();
           CDataContainer::objectMap::const_iterator its = pObjects->begin();
           CDataArray *ann;
+          CEigen* pEigen;
 
           for (; its != pObjects->end(); ++its)
             {
               ann = dynamic_cast<CDataArray *>(*its);
-
-              if (!ann) continue;
-
-              if (!ann->isEmpty() && filter(classes, ann))
+              //if (!ann) continue;
+              if (ann && !ann->isEmpty() && filter(classes, ann))
                 {
                   pItem = new QTreeWidgetItem(this->mpResultSteadyStateSubtree, QStringList(FROM_UTF8(ann->getObjectName())));
                   treeItems[pItem] = ann;
                 }
+            
+              pEigen = dynamic_cast<CEigen*>(*its); //not the most straight forward way, testing all children
+              if (pEigen && (classes & (Results | AnyObject)) && pEigen->getObjectName() == "Eigenvalues of reduced system Jacobian")
+                {
+                  //add a subtree for all the functions calculated from the reduced jacobian eigenvectors
+                  QTreeWidgetItem* pSubtree  = new QTreeWidgetItem(this->mpResultSteadyStateSubtree, QStringList("Properties of reduced model jacobian Eigenvalues"));
+
+                  //loop over children of CEigen object
+                  const CDataContainer::objectMap *pO = & pEigen->getObjects();
+                  CDataContainer::objectMap::const_iterator itss = pO->begin();
+                  for (; itss != pO->end(); ++itss)
+                    {
+                      if (filter(NumericValues, *itss)) // for now from this specific subtree we only add numeric values.
+                        {
+                          if ((*itss)->getObjectName(). substr(0,6) == "Vector" )
+                            continue;
+                          pItem = new QTreeWidgetItem(pSubtree, QStringList(FROM_UTF8((*itss)->getObjectName())));
+                          treeItems[pItem] = *itss;
+                        }
+                    }
+                }
+            
             }
         }
     }
@@ -1208,7 +1229,7 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses &classes, const CDataObje
         return true;
     }
 
-  // Descendants of CReaction need to be check more thoroughly
+  // Descendants of CReaction need to be checked more thoroughly
   const CReaction *pReaction =
     dynamic_cast< const CReaction * >(pCheckedObject->getObjectAncestor("Reaction"));
 
