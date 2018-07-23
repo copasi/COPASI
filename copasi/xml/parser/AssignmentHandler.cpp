@@ -57,7 +57,17 @@ CXMLHandler * AssignmentHandler::processStart(const XML_Char * pszName,
           }
         else
           {
-            pME = dynamic_cast<const CModelEntity *>(mpData->pModel->getObjectFromCN(Target));
+            std::string ModelCN = mpData->pModel->getCN();
+
+            if (Target.find(ModelCN) == 0 &&
+                Target.length() > ModelCN.length())
+              {
+                pME = dynamic_cast<const CModelEntity *>(mpData->pModel->getObject(Target.substr(ModelCN.length() + 1)));
+              }
+            else
+              {
+                pME = dynamic_cast<const CModelEntity *>(mpData->pModel->getObjectFromCN(Target));
+              }
           }
 
         if (pME != NULL)
