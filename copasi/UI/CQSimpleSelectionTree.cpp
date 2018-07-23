@@ -912,6 +912,7 @@ void CQSimpleSelectionTree::slotItemDoubleClicked(QTreeWidgetItem * item, int co
 {
   if (!treeHasSelection()) item->setSelected(true);
 
+  if (item->childCount() == 0)
   emit selectionCommitted();
 }
 
