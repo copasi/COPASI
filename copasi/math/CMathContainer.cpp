@@ -3753,7 +3753,7 @@ C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) con
 
   const C_FLOAT64 * pInitialValue = pValue;
 
-  if (mExtensiveValues.array() <= pValue && pValue < mEventDelays.array())
+  if (mExtensiveValues.array() <= pValue && pValue < mExtensiveNoise.array())
     {
       pInitialValue = mInitialExtensiveValues.array() + (pValue - mExtensiveValues.array());
     }
@@ -3763,7 +3763,10 @@ C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) con
 
 CMathObject * CMathContainer::getInitialValueObject(const CMathObject * pObject) const
 {
-  return getMathObject(getInitialValuePointer(&pObject->getValue()));
+  if (pObject != NULL)
+    return getMathObject(getInitialValuePointer(&pObject->getValue()));
+
+  return NULL;
 }
 
 CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Entity< CDataObject > & entity,

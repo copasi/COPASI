@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -110,6 +110,14 @@ public:
    */
   bool updateCalculatedState(const CCore::SimulationContextFlag & context,
                              const CObjectInterface::ObjectSet & changedObjects);
+
+  /**
+   * Update the state of all dependents (and dependents thereof) to changed,
+   * @param const CCore::SimulationContextFlag & context
+   * @return bool success
+   */
+  bool updateIgnoredState(const CCore::SimulationContextFlag & context,
+                          const CObjectInterface::ObjectSet & changedObjects);
 
   /**
    * Build the sequence of objects which need to be updated to calculate the object value.

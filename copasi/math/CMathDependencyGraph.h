@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -116,7 +116,8 @@ public:
    * @return bool objectsAppendee
    */
   bool appendAllDependents(const CObjectInterface::ObjectSet & changedObjects,
-                           CObjectInterface::ObjectSet & dependentObjects) const;
+                           CObjectInterface::ObjectSet & dependentObjects,
+                           const CObjectInterface::ObjectSet & ignoredObjects = CObjectInterface::ObjectSet()) const;
 
   /**
    * Relocate the objects in the nodes of the graph.

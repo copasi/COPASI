@@ -501,16 +501,6 @@ CIssue CModel::compile()
 
   if (mpCompileHandler) mpCompileHandler->finishItem(hCompileStep);
 
-  {
-    CDataVector< CMetab >::iterator itSpecies = mMetabolitesX.begin();
-    CDataVector< CMetab >::iterator endSpecies = mMetabolitesX.end();
-
-    for (; itSpecies != endSpecies; ++itSpecies)
-      {
-        itSpecies->compileIsInitialValueChangeAllowed();
-      }
-  }
-
   //update annotations
   updateMatrixAnnotations();
 
@@ -536,6 +526,16 @@ CIssue CModel::compile()
   mpMathContainer->pushInitialState();
 
   mIsAutonomous = mpMathContainer->isAutonomous();
+
+  {
+    CDataVector< CMetab >::iterator itSpecies = mMetabolitesX.begin();
+    CDataVector< CMetab >::iterator endSpecies = mMetabolitesX.end();
+
+    for (; itSpecies != endSpecies; ++itSpecies)
+      {
+        itSpecies->compileIsInitialValueChangeAllowed();
+      }
+  }
 
   // CMathContainer CopyModel(MathModel);
 
@@ -1874,15 +1874,46 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
 
   for (; it != end; ++it)
     {
-      Candidates.insert(mpMathContainer->getMathObject(*it));
+      // We are missing initial values associated with the object that only exist in the math container
+      CMathObject * pMathObject = mpMathContainer->getMathObject(*it);
+      CMathObject * pInitialMathObject = mpMathContainer->getInitialValueObject(pMathObject);
+
+      Candidates.insert(pMathObject);
+
+      if (pInitialMathObject != pMathObject)
+        {
+          Candidates.insert(pInitialMathObject);
+        }
+
       Dependents.insert(*it);
     }
 
   Candidates.erase(NULL);
 
+  // Rates for species determined by reactions are ignored as they are automatically fixed
+  ObjectSet Ignored;
+  CDataVector< CMetab >::const_iterator itMetab = mMetabolites.begin();
+  CDataVector< CMetab >::const_iterator endMetab = mMetabolites.end();
+
+  for (; itMetab != endMetab; ++itMetab)
+    if (itMetab->getStatus() == CModelEntity::Status::REACTIONS)
+      {
+        CMathObject * pMathObject = mpMathContainer->getMathObject(itMetab->getRateReference());
+        CMathObject * pInitialMathObject = mpMathContainer->getInitialValueObject(pMathObject);
+
+        Ignored.insert(pMathObject);
+
+        if (pInitialMathObject != pMathObject)
+          {
+            Ignored.insert(pInitialMathObject);
+          }
+      }
+
+  Ignored.erase(NULL);
+
   // Retrieve dependent math object
-  mpMathContainer->getInitialDependencies().appendAllDependents(Candidates, Dependents);
-  mpMathContainer->getTransientDependencies().appendAllDependents(Candidates, Dependents);
+  mpMathContainer->getInitialDependencies().appendAllDependents(Candidates, Dependents, Ignored);
+  mpMathContainer->getTransientDependencies().appendAllDependents(Candidates, Dependents, Ignored);
 
   // Map objects to compartments, species, model values, reactions, events, and event assignments
   CObjectInterface::ObjectSet::const_iterator itDependent = Dependents.begin();
