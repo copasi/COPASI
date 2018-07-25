@@ -1926,6 +1926,46 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
                                  DataObjectSet & dependentEventAssignments,
                                  const bool & onlyStructural) const
 {
+  const CReaction * pIgnoreReaction = NULL;
+  ObjectSet Ignored;
+
+  if (objects.size() == 1)
+    {
+      if (dynamic_cast< const CCopasiParameter * >(*objects.begin()))
+        {
+          pIgnoreReaction = dynamic_cast< const CReaction * >(static_cast<  const CCopasiParameter * >(*objects.begin())->getObjectAncestor("Reaction"));
+        }
+      else if (dynamic_cast< const CReaction * >(*objects.begin()))
+        {
+          const CChemEq & Equation = static_cast< const CReaction * >(*objects.begin())->getChemEq();
+          CDataVector < CChemEqElement >::const_iterator it = Equation.getBalances().begin();
+          CDataVector < CChemEqElement >::const_iterator end = Equation.getBalances().end();
+
+          for (; it != end; ++it)
+            {
+              const CMetab * pMetab = it->getMetabolite();
+
+              if (pMetab != NULL &&
+                  pMetab->getStatus() == CModelEntity::Status::REACTIONS)
+                {
+                  CMathObject * pMathObject = mpMathContainer->getMathObject(pMetab->getRateReference());
+                  CMathObject * pInitialMathObject = mpMathContainer->getInitialValueObject(pMathObject);
+
+                  Ignored.insert(pMathObject);
+
+                  if (pInitialMathObject != pMathObject)
+                    {
+                      Ignored.insert(pInitialMathObject);
+                    }
+
+                  Ignored.insert(mpMathContainer->getMathObject(pMetab->getTransitionTimeReference()));
+                }
+            }
+        }
+    }
+
+  dependentReactions.erase(pIgnoreReaction);
+
   size_t Size = dependentReactions.size() +
                 dependentMetabolites.size() +
                 dependentCompartments.size() +
@@ -1937,14 +1977,13 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
 
   mStructuralDependencies.appendAllDependents(objects, Dependents);
 
-  ObjectSet::const_iterator itObject = objects.begin();
-  ObjectSet::const_iterator endObject = objects.end();
-
   if (!onlyStructural)
     {
       // Map the descendants to math objects
       ObjectSet Candidates;
       DataObjectSet Descendants;
+      ObjectSet::const_iterator itObject = objects.begin();
+      ObjectSet::const_iterator endObject = objects.end();
 
       for (; itObject != endObject; ++itObject)
         if (dynamic_cast< const CDataContainer * >(*itObject) != NULL)
@@ -1972,26 +2011,6 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
         }
 
       Candidates.erase(NULL);
-
-      // Rates for species determined by reactions are ignored as they are automatically fixed
-      ObjectSet Ignored;
-      CDataVector< CMetab >::const_iterator itMetab = mMetabolites.begin();
-      CDataVector< CMetab >::const_iterator endMetab = mMetabolites.end();
-
-      for (; itMetab != endMetab; ++itMetab)
-        if (itMetab->getStatus() == CModelEntity::Status::REACTIONS)
-          {
-            CMathObject * pMathObject = mpMathContainer->getMathObject(itMetab->getRateReference());
-            CMathObject * pInitialMathObject = mpMathContainer->getInitialValueObject(pMathObject);
-
-            Ignored.insert(pMathObject);
-
-            if (pInitialMathObject != pMathObject)
-              {
-                Ignored.insert(pInitialMathObject);
-              }
-          }
-
       Ignored.erase(NULL);
 
       // Retrieve dependent math object
