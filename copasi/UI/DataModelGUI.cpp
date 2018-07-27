@@ -190,6 +190,7 @@ void DataModelGUI::addModelRun()
     {
       CModelExpansion expand(pModel);
       mpDataModel->mLastAddedObjects = expand.copyCompleteModel(pMergeModel);
+      CCopasiMessage::clearDeque();
     }
 
   if (pMergeModel)
