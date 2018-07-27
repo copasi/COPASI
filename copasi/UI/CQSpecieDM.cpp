@@ -403,10 +403,8 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
 }
 
 // virtual
-void CQSpecieDM::resetCache()
+void CQSpecieDM::resetCacheProtected()
 {
-  assert(mpDataModel != NULL);
-
   mpMetabolites = dynamic_cast< CDataVector < CMetab > * >(&mpDataModel->getModel()->getMetabolites());
   assert(mpMetabolites != NULL);
 

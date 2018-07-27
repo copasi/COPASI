@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -50,9 +50,10 @@ public:
   CDataModel * getDataModel() const;
 
 public slots:
-  virtual void resetCache();
+  void resetCache();
 
 protected:
+  virtual void resetCacheProtected();
   virtual bool insertRows(int position, int rows, const QModelIndex & source) = 0;
   virtual bool removeRows(int position, int rows) = 0;
 

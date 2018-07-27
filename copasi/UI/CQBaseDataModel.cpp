@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -70,6 +70,16 @@ bool CQBaseDataModel::clear()
 
 // virtual
 void CQBaseDataModel::resetCache()
+{
+  assert(mpDataModel != NULL);
+
+  beginResetModel();
+  resetCacheProtected();
+  endResetModel();
+}
+
+// virtual
+void CQBaseDataModel::resetCacheProtected()
 {}
 
 bool CQBaseDataModel::isDefaultRow(const QModelIndex& i) const
@@ -110,8 +120,12 @@ QString CQBaseDataModel::createNewName(const QString name, const int nameCol)
 
 void CQBaseDataModel::setDataModel(CDataModel * pDataModel)
 {
+  beginResetModel();
+
   mpDataModel = pDataModel;
   resetCache();
+
+  endResetModel();
 }
 
 void CQBaseDataModel::setUndoStack(QUndoStack* undoStack)
