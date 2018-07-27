@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -233,10 +233,8 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
 }
 
 // virtual
-void CQEventDM::resetCache()
+void CQEventDM::resetCacheProtected()
 {
-  assert(mpDataModel != NULL);
-
   mpEvents = dynamic_cast< CDataVectorN < CEvent > * >(&mpDataModel->getModel()->getEvents());
   assert(mpEvents != NULL);
 }

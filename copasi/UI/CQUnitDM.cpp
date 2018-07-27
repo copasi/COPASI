@@ -8,8 +8,6 @@
 // of Manchester.
 // All rights reserved.
 
-
-
 #include <QtCore/QString>
 #include <QtCore/QList>
 
@@ -314,7 +312,7 @@ bool CQUnitDM::removeRows(QModelIndexList rows, const QModelIndex&)
 }
 
 // virtual
-void CQUnitDM::resetCache()
+void CQUnitDM::resetCacheProtected()
 {
   mUnitCache.clear();// data() will add to the unit cache, as needed
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -55,15 +55,13 @@ public:
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
   bool clear();
 
-public slots:
-  virtual void resetCache();
-
 private:
   void insertNewRows(int position, int rows,
                      int column = COL_NAME_GQ,
                      const QVariant & value = "quantity");
 
 protected:
+  virtual void resetCacheProtected();
   virtual bool insertRows(int position, int rows, const QModelIndex & parent = QModelIndex());
   virtual bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex());
 

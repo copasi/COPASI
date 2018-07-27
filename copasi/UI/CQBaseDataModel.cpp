@@ -68,6 +68,16 @@ bool CQBaseDataModel::clear()
 
 // virtual
 void CQBaseDataModel::resetCache()
+{
+  assert(mpDataModel != NULL);
+
+  beginResetModel();
+  resetCacheProtected();
+  endResetModel();
+}
+
+// virtual
+void CQBaseDataModel::resetCacheProtected()
 {}
 
 bool CQBaseDataModel::isDefaultRow(const QModelIndex& i) const
@@ -114,8 +124,12 @@ QString CQBaseDataModel::createNewName(const QString name, const int nameCol)
 
 void CQBaseDataModel::setDataModel(CDataModel * pDataModel)
 {
+  beginResetModel();
+
   mpDataModel = pDataModel;
   resetCache();
+
+  endResetModel();
 }
 
 CDataModel * CQBaseDataModel::getDataModel() const

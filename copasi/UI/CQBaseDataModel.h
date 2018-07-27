@@ -52,9 +52,10 @@ public:
   void endResetModel();
 
 public slots:
-  virtual void resetCache();
+  void resetCache();
 
 protected:
+  virtual void resetCacheProtected();
   virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex()) = 0;
   virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) = 0;
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,8 +47,8 @@ class CQCompartmentDM : public CQBaseDataModel
 public:
   CQCompartmentDM(QObject *parent = 0);
   const QStringList& getTypes();
-  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
-  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
   virtual Qt::ItemFlags flags(const QModelIndex &index) const;
   virtual QVariant data(const QModelIndex &index, int role) const;
   virtual QVariant headerData(int section, Qt::Orientation orientation,
@@ -63,10 +63,8 @@ private:
                      int column = COL_NAME_COMPARTMENTS,
                      const QVariant & value = "compartment");
 
-public slots:
-  virtual void resetCache();
-
 protected:
+  virtual void resetCacheProtected();
   virtual bool insertRows(int position, int rows, const QModelIndex & parent = QModelIndex());
   virtual bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex());
 

@@ -62,8 +62,8 @@ public:
   virtual bool insertRows(int position, int rows, const QModelIndex & source);
   virtual bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex());
 
-public slots:
-  virtual void resetCache();
+protected:
+  virtual void resetCacheProtected();
 
 signals:
   void signalOpenEditor(const QModelIndex &) const;

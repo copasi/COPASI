@@ -246,10 +246,8 @@ bool CQReactionDM::setEquation(const CReaction & reaction, const QVariant & valu
 }
 
 // virtual
-void CQReactionDM::resetCache()
+void CQReactionDM::resetCacheProtected()
 {
-  assert(mpDataModel != NULL);
-
   mpReactions = dynamic_cast< CDataVectorNS < CReaction > * >(&mpDataModel->getModel()->getReactions());
   assert(mpReactions != NULL);
 }

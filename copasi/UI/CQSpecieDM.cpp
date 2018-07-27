@@ -162,7 +162,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
                 switch (mFramework)
                   {
                     case 0:
-                  return QVariant(convertToQString(1.0));
+                      return QVariant(convertToQString(1.0));
                       break;
 
                     case 1:
@@ -430,10 +430,8 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
 }
 
 // virtual
-void CQSpecieDM::resetCache()
+void CQSpecieDM::resetCacheProtected()
 {
-  assert(mpDataModel != NULL);
-
   mpMetabolites = dynamic_cast< CDataVector < CMetab > * >(&mpDataModel->getModel()->getMetabolites());
   assert(mpMetabolites != NULL);
 

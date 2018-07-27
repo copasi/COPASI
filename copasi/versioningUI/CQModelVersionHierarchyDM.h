@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -38,8 +38,8 @@ public:
   virtual Qt::ItemFlags flags(const QModelIndex &index) const;
   virtual bool setData(const QModelIndex &index, const QVariant &value,
                        int role = Qt::EditRole);
-  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
-  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
   void setModelVersionHierarchy(CModelVersionHierarchy * pModelVersionHierarchy);
 

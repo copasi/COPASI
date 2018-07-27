@@ -300,10 +300,8 @@ bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value
 }
 
 // virtual
-void CQGlobalQuantityDM::resetCache()
+void CQGlobalQuantityDM::resetCacheProtected()
 {
-  assert(mpDataModel != NULL);
-
   mpGlobalQuantities = dynamic_cast< CDataVectorN < CModelValue > * >(&mpDataModel->getModel()->getModelValues());
   assert(mpGlobalQuantities != NULL);
 

@@ -606,7 +606,7 @@ bool CQParameterOverviewDM::removeRows(int /*position*/, int /*rows*/, const QMo
 }
 
 // virtual
-void CQParameterOverviewDM::resetCache()
+void CQParameterOverviewDM::resetCacheProtected()
 {
   mUnitCache.clear();
 }

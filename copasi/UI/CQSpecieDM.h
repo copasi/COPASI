@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -50,8 +50,8 @@ class CQSpecieDM : public CQBaseDataModel
 
 public:
   CQSpecieDM(QObject *parent = 0);
-  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
-  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
   Qt::ItemFlags flags(const QModelIndex &index) const;
   QVariant data(const QModelIndex &index, int role) const;
   QVariant headerData(int section, Qt::Orientation orientation,
@@ -68,10 +68,8 @@ private:
                      int column = COL_NAME_SPECIES,
                      const QVariant & value = "species");
 
-public slots:
-  virtual void resetCache();
-
 protected:
+  virtual void resetCacheProtected();
   virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
   virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 
