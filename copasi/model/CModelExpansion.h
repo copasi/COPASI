@@ -57,6 +57,7 @@ public:
     void addReaction(const CReaction* x);
     void addGlobalQuantity(const CModelValue* x);
     void addEvent(const CEvent* x);
+    void setModel(const CModel* x);
 
     bool addObject(const CDataObject* x);
 
@@ -79,7 +80,7 @@ public:
 #ifdef SWIG
   protected:
 #endif
-
+    const CModel* mpModel{NULL};
     std::set<const CCompartment*> mCompartments;
     std::set<const CMetab*> mMetabs;
     std::set<const CReaction*> mReactions;
