@@ -48,6 +48,11 @@ void CModelExpansion::SetOfModelElements::addEvent(const CEvent* x)
   mEvents.insert(x);
 }
 
+void CModelExpansion::SetOfModelElements::setModel(const CModel* x)
+{
+  mpModel = x;
+}
+
 bool CModelExpansion::SetOfModelElements::addObject(const CDataObject* x)
 {
   if (dynamic_cast<const CCompartment*>(x))
@@ -80,11 +85,20 @@ bool CModelExpansion::SetOfModelElements::addObject(const CDataObject* x)
       return true;
     }
 
+  if (dynamic_cast<const CModel*>(x))
+  {
+    setModel(dynamic_cast<const CModel*>(x));
+    return true;
+  }
+
   return false;
 }
 
 bool CModelExpansion::SetOfModelElements::contains(const CDataObject* x) const
 {
+  if (mpModel == x)
+    return true;
+  
   if (mCompartments.find(static_cast<const CCompartment*>(x)) != mCompartments.end())
     return true;
 
@@ -100,6 +114,7 @@ bool CModelExpansion::SetOfModelElements::contains(const CDataObject* x) const
   if (mEvents.find(static_cast<const CEvent*>(x)) != mEvents.end())
     return true;
 
+  
   return false;
 }
 
@@ -152,6 +167,14 @@ void CModelExpansion::SetOfModelElements::fillDependencies(const CModel* pModel)
       Descendants.insert(*itQuant);
       (*itQuant)->getDescendants(Descendants);
     }
+  
+  //for the model
+  if (mpModel)
+    {
+      Descendants.insert(mpModel);
+      mpModel->getDescendants(Descendants);
+    }
+
 
   CDataObject::ObjectSet CombinedSet(Descendants.begin(), Descendants.end());
 
@@ -195,7 +218,8 @@ void CModelExpansion::SetOfModelElements::fillComplete(const CModel* pModel)
     return;
 
   size_t i;
-
+  setModel(pModel);
+  
   for (i = 0; i < pModel->getCompartments().size(); ++i)
     addCompartment(&pModel->getCompartments()[i]);
 
@@ -490,6 +514,7 @@ std::set< const CDataObject * > CModelExpansion::copyCompleteModel(const CModel*
   SetOfModelElements sourceElements;
   sourceElements.fillComplete(pSourceModel);
   ElementsMap map;
+  map.add(pSourceModel, mpModel);
   duplicate(sourceElements, "[merge]", map);
   mpModel->compileIfNecessary(NULL);
 
@@ -1001,8 +1026,14 @@ void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, 
           pNewAssignment->getExpressionPtr()->compile();
           updateExpression(pNewAssignment->getExpressionPtr(), index, sourceSet, emap);
         }
+      
     }
 
+  for (i = 0; i < newObj->getAssignments().size(); ++i)
+  {
+    updateExpression(newObj->getAssignments()[i].getExpressionPtr(), index, sourceSet, emap);
+  }
+  
   newObj->setNotes(source->getNotes());
   newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
 }
@@ -1231,7 +1262,9 @@ void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
       CCompartment* oldComp = const_cast<CCompartment*>(pX->getCompartment());
       CCompartment* newComp = const_cast<CCompartment*>(dynamic_cast<const CCompartment*>(emap.getDuplicatePtr(pX->getCompartment())));
       bool success = false;
-
+      bool wasEnabled = CRegisteredCommonName::isEnabled();
+      CRegisteredCommonName::setEnabled(true);
+      auto oldCN = pX->getCN();
       do
         {
           success = newComp->addMetabolite(pX);
@@ -1239,6 +1272,8 @@ void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
           if (success)
             {
               oldComp->getMetabolites().remove(pX->getObjectName());
+              auto newCN = pX->getCN();
+              CRegisteredCommonName::handle(oldCN, newCN);
               mpModel->setCompileFlag();
               mpModel->initializeMetabolites();
             }
@@ -1250,6 +1285,7 @@ void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
             }
         }
       while (!success);
+      CRegisteredCommonName::setEnabled(wasEnabled);
     }
 }
 
