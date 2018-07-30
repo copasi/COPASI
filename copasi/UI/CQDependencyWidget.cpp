@@ -12,6 +12,7 @@
 #include <copasi/function/CExpression.h>
 
 #include <copasi/UI/qtUtilities.h>
+#include <copasi/UI/copasiui3window.h>
 
 CQDependencyWidget::CQDependencyWidget(QWidget *parent, const char *name, Qt::WindowFlags f)
   : CopasiWidget(parent, name, f)
@@ -78,7 +79,7 @@ void CQDependencyWidget::updateFromDependencies(std::set< const CDataObject * > 
     {
       const CDataObject *pObject = *it;
       QTableWidgetItem *item = new QTableWidgetItem(FROM_UTF8(pObject->getObjectName()) + ":");
-      item->setData(Qt::UserRole, FROM_UTF8(pObject->getKey()));
+      item->setData(Qt::UserRole, FROM_UTF8(pObject->getCN()));
       mpTable->setItem(i, 0, item);
       mpTable->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(getDetailsFor(pObject, elements))));
     }
@@ -206,11 +207,15 @@ CQDependencyWidget::getNumDependencies() const
 void
 CQDependencyWidget::rowDoubleClicked(int row, int)
 {
-  std::string key = TO_UTF8(mpTable->item(row, 0)->data(Qt::UserRole).toString());
+  std::string cn = TO_UTF8(mpTable->item(row, 0)->data(Qt::UserRole).toString());
 
-  if (key.empty()) return;
+  if (cn.empty()) return;
 
-  if (mpListView == NULL) return;
+  if (mpListView == NULL)
+    {
+      CopasiUI3Window::getMainWindow()->getMainWidget()->switchToOtherWidget(C_INVALID_INDEX, cn);
+      return;
+    }
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, cn);
 }
