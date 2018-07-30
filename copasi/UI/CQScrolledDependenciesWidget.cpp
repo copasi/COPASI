@@ -22,7 +22,7 @@ QSize CQScrolledDependenciesWidget::minimumSizeHint() const
   return mpLabel->minimumSizeHint();
 }
 
-void CQScrolledDependenciesWidget::loadFrom(CDataObject * pObject)
+void CQScrolledDependenciesWidget::loadFrom(const CDataObject * pObject)
 {
   mpDependencies->loadFrom(pObject);
 

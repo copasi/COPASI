@@ -51,7 +51,7 @@ public:
    *
    * @param pObject the object whose dependencies to display
    */
-  void loadFrom(CDataObject *pObject);
+  void loadFrom(const CDataObject *pObject);
 
   void setResizeTableToRows(bool resizeTable);
 

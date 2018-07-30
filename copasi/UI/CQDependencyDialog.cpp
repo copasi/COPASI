@@ -66,17 +66,15 @@ void CQDependencyDialog::setParentWindow(CopasiUI3Window *pPW)
 
 void CQDependencyDialog::loadFrom(const std::string &key)
 {
-  CDataObject* pObject = CRootContainer::getKeyFactory()->get(key);
+  const CDataObject * pObject = CRootContainer::getKeyFactory()->get(key);
 
-  auto* dmList = CRootContainer::getDatamodelList();
+  CDataVector< CDataModel > * dmList = CRootContainer::getDatamodelList();
 
   if (pObject == NULL && !dmList->empty())
     {
-      auto& dm = dmList->operator[](dmList->size() - 1);
+      CDataModel & dm = dmList->operator[](dmList->size() - 1);
       // might be a cn
-      pObject = const_cast<CDataObject*>
-                (dynamic_cast<const CDataObject*>
-                 (dm.getObjectFromCN(key)));
+      pObject = CObjectInterface::DataObject(dm.getObjectFromCN(key));
 
       if (pObject == NULL)
         return;
