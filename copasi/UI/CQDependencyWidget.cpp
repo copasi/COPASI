@@ -12,6 +12,7 @@
 #include <copasi/function/CExpression.h>
 
 #include <copasi/UI/qtUtilities.h>
+#include <copasi/UI/copasiui3window.h>
 
 CQDependencyWidget::CQDependencyWidget(QWidget *parent, const char *name, Qt::WindowFlags f)
   : CopasiWidget(parent, name, f)
@@ -210,7 +211,13 @@ CQDependencyWidget::rowDoubleClicked(int row, int)
 
   if (key.empty()) return;
 
-  if (mpListView == NULL) return;
+  if (mpListView == NULL)
+    {
+      mpListView = CopasiUI3Window::getMainWindow()->getMainWidget();
+    }
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  if (mpListView != NULL)
+    {
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+    }
 }
