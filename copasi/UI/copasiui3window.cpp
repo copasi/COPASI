@@ -871,9 +871,9 @@ void CopasiUI3Window::newDoc()
   //#ifdef COPASI_Versioning
   //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
   //#endif
+  mpListView->switchToOtherWidget(0, std::string());
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
                          mpDataModel->getModel()->getCN());
-  mpListView->switchToOtherWidget(0, std::string());
 
   // delete the old sliders
   if (this->mpSliders) this->mpSliders->reset();

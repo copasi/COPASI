@@ -276,9 +276,12 @@ CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)
   if (this == &rhs) return *this;
 
   if (getObjectName() != rhs.getObjectName())
-    setObjectName(rhs.getObjectName());
+    {
+      setObjectName(rhs.getObjectName());
+      mUserInterfaceFlag = rhs.mUserInterfaceFlag;
+      assignDefault(rhs.mpDefault);
+    }
 
-  mUserInterfaceFlag = rhs.mUserInterfaceFlag;
   mValidity = rhs.mValidity;
 
   if (mType != rhs.mType)
@@ -291,7 +294,6 @@ CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)
     }
 
   assignValue(rhs.mpValue);
-  assignDefault(rhs.mpDefault);
   assignValidValues(rhs.mpValidValues);
 
   if (mType == CCopasiParameter::Type::GROUP)
