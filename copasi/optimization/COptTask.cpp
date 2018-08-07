@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,6 +49,7 @@ const CTaskEnum::Method COptTask::ValidMethods[]  =
   CTaskEnum::Method::GeneticAlgorithmSR,
   CTaskEnum::Method::HookeJeeves,
   CTaskEnum::Method::LevenbergMarquardt,
+  CTaskEnum::Method::NL2SOL,
   CTaskEnum::Method::NelderMead,
   CTaskEnum::Method::ParticleSwarm,
   CTaskEnum::Method::Praxis,
