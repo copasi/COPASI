@@ -112,8 +112,6 @@ bool COptMethodSS::initialize()
 
   mCurrentGeneration++;
 
-  pdelete(mpRandom);
-
   mCloseValue = 0.001;
 
   // frequency of local optimiser; this is hardcoded as 20 per Jose Egea,

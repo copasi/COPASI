@@ -129,7 +129,7 @@ protected:
   /**
    * a pointer to the random number generator.
    */
-  CRandom * mpRandom;
+  CRandom * mpRandom{NULL};
 };
 
 #endif // COPASI_COptPopulationMethod_H
