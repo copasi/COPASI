@@ -21,8 +21,7 @@ class FNL2SOL
 public:
   virtual ~FNL2SOL() {};
 
-  virtual C_INT operator()(integer * C_UNUSED(n), integer * C_UNUSED(n), doublereal * C_UNUSED(value), integer * C_UNUSED(n),
-                           doublereal * C_UNUSED(value1), integer * C_UNUSED(n), doublereal * C_UNUSED(value2), U_fp)
+  virtual C_INT operator()(integer * C_UNUSED(n), integer * C_UNUSED(n), doublereal * C_UNUSED(value), integer * C_UNUSED(n), doublereal * C_UNUSED(value1), integer * C_UNUSED(n), doublereal * C_UNUSED(value2), U_fp)
   {return std::numeric_limits<C_INT>::quiet_NaN();}
 };
 

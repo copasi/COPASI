@@ -4778,7 +4778,9 @@ L20:
 
   m = iv[64];
   io___206.ciunit = pu;
-  s_wsfe(&io___206);
+
+  // remove printing calls
+  /* s_wsfe(&io___206);
   do_fio(&c__1, (char *)&iv[31], (ftnlen)sizeof(integer));
   do_fio(&c__1, (char *)&nf, (ftnlen)sizeof(integer));
   do_fio(&c__1, (char *)&v[10], (ftnlen)sizeof(doublereal));
@@ -4789,11 +4791,13 @@ L20:
   do_fio(&c__1, model2 + (m - 1 << 2), 4L);
   do_fio(&c__1, (char *)&v[5], (ftnlen)sizeof(doublereal));
   e_wsfe();
+   */
   goto L120;
 
 L50:
   io___207.ciunit = pu;
-  s_wsfe(&io___207);
+  // remove printing calls
+  /* s_wsfe(&io___207);
   do_fio(&c__1, (char *)&iv[31], (ftnlen)sizeof(integer));
   do_fio(&c__1, (char *)&nf, (ftnlen)sizeof(integer));
   do_fio(&c__1, (char *)&v[10], (ftnlen)sizeof(doublereal));
@@ -4802,6 +4806,7 @@ L50:
   do_fio(&c__1, (char *)&v[17], (ftnlen)sizeof(doublereal));
   do_fio(&c__1, (char *)&v[5], (ftnlen)sizeof(doublereal));
   e_wsfe();
+   */
   goto L120;
 
   /*     ***  PRINT LONG SUMMARY LINE  *** */
@@ -4837,7 +4842,8 @@ L60:
 
   m = iv[64];
   io___211.ciunit = pu;
-  s_wsfe(&io___211);
+  // remove printing calls
+  /* s_wsfe(&io___211);
   do_fio(&c__1, (char *)&iv[31], (ftnlen)sizeof(integer));
   do_fio(&c__1, (char *)&nf, (ftnlen)sizeof(integer));
   do_fio(&c__1, (char *)&v[10], (ftnlen)sizeof(doublereal));
@@ -4850,11 +4856,13 @@ L60:
   do_fio(&c__1, (char *)&v[2], (ftnlen)sizeof(doublereal));
   do_fio(&c__1, (char *)&nreldf, (ftnlen)sizeof(doublereal));
   e_wsfe();
+  */
   goto L120;
 
 L90:
   io___212.ciunit = pu;
-  s_wsfe(&io___212);
+  // remove printing calls
+  /* s_wsfe(&io___212);
   do_fio(&c__1, (char *)&iv[31], (ftnlen)sizeof(integer));
   do_fio(&c__1, (char *)&nf, (ftnlen)sizeof(integer));
   do_fio(&c__1, (char *)&v[10], (ftnlen)sizeof(doublereal));
@@ -4865,6 +4873,7 @@ L90:
   do_fio(&c__1, (char *)&v[2], (ftnlen)sizeof(doublereal));
   do_fio(&c__1, (char *)&nreldf, (ftnlen)sizeof(doublereal));
   e_wsfe();
+  */
 
 L120:
 
@@ -4999,9 +5008,11 @@ L350:
 
 L370:
   io___226.ciunit = pu;
-  s_wsfe(&io___226);
+  // remove printing calls
+  /* s_wsfe(&io___226);
   do_fio(&c__1, (char *)&iv[1], (ftnlen)sizeof(integer));
   e_wsfe();
+  */
   goto L999;
 
   /*  ***  INITIAL CALL ON DITSUM  *** */
@@ -5011,7 +5022,8 @@ L390:
   if (iv[24] != 0)
     {
       io___227.ciunit = pu;
-      s_wsfe(&io___227);
+      // remove printing calls
+      /* s_wsfe(&io___227);
       i__1 = *p;
 
       for (i__ = 1; i__ <= i__1; ++i__)
@@ -5022,6 +5034,7 @@ L390:
         }
 
       e_wsfe();
+      */
     }
 
   /*     *** THE FOLLOWING ARE TO AVOID UNDEFINED VARIABLES WHEN THE */
@@ -5076,19 +5089,23 @@ L390:
   if (alg == 1)
     {
       io___232.ciunit = pu;
-      s_wsfe(&io___232);
+      // remove printing calls
+      /* s_wsfe(&io___232);
       do_fio(&c__1, (char *)&iv[6], (ftnlen)sizeof(integer));
       do_fio(&c__1, (char *)&v[10], (ftnlen)sizeof(doublereal));
       e_wsfe();
+      */
     }
 
   if (alg == 2)
     {
       io___233.ciunit = pu;
-      s_wsfe(&io___233);
+      // remove printing calls
+      /* s_wsfe(&io___233);
       do_fio(&c__1, (char *)&iv[6], (ftnlen)sizeof(integer));
       do_fio(&c__1, (char *)&v[10], (ftnlen)sizeof(doublereal));
       e_wsfe();
+      */
     }
 
   goto L999;
@@ -5120,6 +5137,8 @@ L440:
   nf = iv[6] - iv[52];
   ng = iv[30] - iv[53];
   io___235.ciunit = pu;
+  // remove printing calls
+  /*
   s_wsfe(&io___235);
   do_fio(&c__1, (char *)&v[10], (ftnlen)sizeof(doublereal));
   do_fio(&c__1, (char *)&v[17], (ftnlen)sizeof(doublereal));
@@ -5128,6 +5147,7 @@ L440:
   do_fio(&c__1, (char *)&preldf, (ftnlen)sizeof(doublereal));
   do_fio(&c__1, (char *)&nreldf, (ftnlen)sizeof(doublereal));
   e_wsfe();
+  */
 
 L460:
 
@@ -5152,12 +5172,15 @@ L460:
     {
       /* L480: */
       io___237.ciunit = pu;
+      // remove printing calls
+      /*
       s_wsfe(&io___237);
       do_fio(&c__1, (char *)&i__, (ftnlen)sizeof(integer));
       do_fio(&c__1, (char *)&x[i__], (ftnlen)sizeof(doublereal));
       do_fio(&c__1, (char *)&d__[i__], (ftnlen)sizeof(doublereal));
       do_fio(&c__1, (char *)&g[i__], (ftnlen)sizeof(doublereal));
       e_wsfe();
+      */
     }
 
   goto L999;
@@ -7307,11 +7330,14 @@ L60:
     }
 
   io___390.ciunit = pu;
+  // remove printing calls
+  /*
   s_wsfe(&io___390);
   do_fio(&c__1, varnm + (alg1 - 1), 1L);
   do_fio(&c__1, (char *)&iv[38], (ftnlen)sizeof(integer));
   do_fio(&c__1, (char *) & (*n), (ftnlen)sizeof(integer));
   e_wsfe();
+  */
   goto L999;
 
 L80:
@@ -7326,9 +7352,12 @@ L80:
   if (pu != 0)
     {
       io___391.ciunit = pu;
+      // remove printing calls
+      /*
       s_wsfe(&io___391);
       do_fio(&c__1, (char *)&iv1, (ftnlen)sizeof(integer));
       e_wsfe();
+      */
     }
 
   goto L999;
@@ -7393,6 +7422,8 @@ L120:
       if (pu != 0)
         {
           io___398.ciunit = pu;
+          // remove printing calls
+          /*
           s_wsfe(&io___398);
           do_fio(&c__1, vn + ((i__ << 1) - 2 << 2), 4L);
           do_fio(&c__1, vn + ((i__ << 1) - 1 << 2), 4L);
@@ -7401,6 +7432,7 @@ L120:
           do_fio(&c__1, (char *)&vm[i__ - 1], (ftnlen)sizeof(doublereal));
           do_fio(&c__1, (char *)&vx[i__ - 1], (ftnlen)sizeof(doublereal));
           e_wsfe();
+          */
         }
 
 L140:
@@ -7429,9 +7461,12 @@ L140:
 
   io___399.ciunit = pu;
   s_wsfe(&io___399);
+  // remove printing calls
+  /*
   do_fio(&c__1, (char *)&iv[50], (ftnlen)sizeof(integer));
   do_fio(&c__1, (char *)&ndfalt, (ftnlen)sizeof(integer));
   e_wsfe();
+  */
   goto L999;
 L170:
 
@@ -7454,10 +7489,13 @@ L170:
       if (pu != 0)
         {
           io___400.ciunit = pu;
+          // remove printing calls
+          /*
           s_wsfe(&io___400);
           do_fio(&c__1, (char *)&i__, (ftnlen)sizeof(integer));
           do_fio(&c__1, (char *)&d__[i__], (ftnlen)sizeof(doublereal));
           e_wsfe();
+          */
         }
 
 L190:
@@ -7488,10 +7526,13 @@ L210:
 
   m = 1;
   io___401.ciunit = pu;
+  // remove printing calls
+  /*
   s_wsfe(&io___401);
   do_fio(&c__1, sh + (alg1 - 1), 1L);
   do_fio(&c__1, (char *)&iv[25], (ftnlen)sizeof(integer));
   e_wsfe();
+   */
 L230:
 
   if (iv[16] == iv[54])
@@ -7502,9 +7543,12 @@ L230:
   if (m == 0)
     {
       io___402.ciunit = pu;
+      // remove printing calls
+      /*
       s_wsfe(&io___402);
       do_fio(&c__3, which, 4L);
       e_wsfe();
+       */
     }
 
   m = 1;
@@ -7537,12 +7581,15 @@ L250:
 
       m = 1;
       io___406.ciunit = pu;
+      // remove printing calls
+      /*
       s_wsfe(&io___406);
       do_fio(&c__1, vn + ((i__ << 1) - 2 << 2), 4L);
       do_fio(&c__1, vn + ((i__ << 1) - 1 << 2), 4L);
       do_fio(&c__1, (char *)&k, (ftnlen)sizeof(integer));
       do_fio(&c__1, (char *)&v[k], (ftnlen)sizeof(doublereal));
       e_wsfe();
+       */
 L280:
       ++k;
       ++l;
@@ -7571,9 +7618,12 @@ L300:
 
   io___408.ciunit = pu;
   s_wsfe(&io___408);
+  // remove printing calls
+  /*
   do_fio(&c__1, (char *) & (*liv), (ftnlen)sizeof(integer));
   do_fio(&c__1, (char *)&miv2, (ftnlen)sizeof(integer));
   e_wsfe();
+   */
 
   if (*liv < miv1)
     {
@@ -7593,10 +7643,13 @@ L320:
   if (pu != 0)
     {
       io___409.ciunit = pu;
+      // remove printing calls
+      /*
       s_wsfe(&io___409);
       do_fio(&c__1, (char *) & (*lv), (ftnlen)sizeof(integer));
       do_fio(&c__1, (char *)&iv[45], (ftnlen)sizeof(integer));
       e_wsfe();
+       */
     }
 
   goto L999;
@@ -7607,9 +7660,12 @@ L340:
   if (pu != 0)
     {
       io___410.ciunit = pu;
+      // remove printing calls
+      /*
       s_wsfe(&io___410);
       do_fio(&c__1, (char *) & (*alg), (ftnlen)sizeof(integer));
       e_wsfe();
+       */
     }
 
   goto L999;
@@ -7618,10 +7674,13 @@ L360:
   if (pu != 0)
     {
       io___411.ciunit = pu;
+      // remove printing calls
+      /*
       s_wsfe(&io___411);
       do_fio(&c__1, (char *) & (*liv), (ftnlen)sizeof(integer));
       do_fio(&c__1, (char *)&miv1, (ftnlen)sizeof(integer));
       e_wsfe();
+       */
     }
 
   if (44 <= *liv)
