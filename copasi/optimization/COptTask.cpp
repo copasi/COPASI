@@ -49,7 +49,6 @@ const CTaskEnum::Method COptTask::ValidMethods[]  =
   CTaskEnum::Method::GeneticAlgorithmSR,
   CTaskEnum::Method::HookeJeeves,
   CTaskEnum::Method::LevenbergMarquardt,
-  CTaskEnum::Method::NL2SOL,
   CTaskEnum::Method::NelderMead,
   CTaskEnum::Method::ParticleSwarm,
   CTaskEnum::Method::Praxis,

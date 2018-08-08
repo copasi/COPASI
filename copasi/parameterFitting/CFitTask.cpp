@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,6 +31,31 @@
 #include "optimization/COptMethod.h"
 
 #include "utilities/CCopasiMethod.h"
+
+const CTaskEnum::Method CFitTask::ValidMethods[]  =
+{
+  CTaskEnum::Method::Statistics,
+#ifdef COPASI_DEBUG
+  CTaskEnum::Method::CoranaWalk,
+#endif // COPASI_DEBUG
+  CTaskEnum::Method::DifferentialEvolution,
+  CTaskEnum::Method::SRES,
+  CTaskEnum::Method::EvolutionaryProgram,
+  CTaskEnum::Method::GeneticAlgorithm,
+  CTaskEnum::Method::GeneticAlgorithmSR,
+  CTaskEnum::Method::HookeJeeves,
+  CTaskEnum::Method::LevenbergMarquardt,
+  CTaskEnum::Method::NL2SOL,
+  CTaskEnum::Method::NelderMead,
+  CTaskEnum::Method::ParticleSwarm,
+  CTaskEnum::Method::Praxis,
+  CTaskEnum::Method::RandomSearch,
+  CTaskEnum::Method::ScatterSearch,
+  CTaskEnum::Method::SimulatedAnnealing,
+  CTaskEnum::Method::SteepestDescent,
+  CTaskEnum::Method::TruncatedNewton,
+  CTaskEnum::Method::UnsetMethod
+};
 
 CFitTask::CFitTask(const CDataContainer * pParent,
                    const CTaskEnum::Task & type):
@@ -118,4 +143,9 @@ void CFitTask::fixBuild55()
   pFitProblem->fixBuild55();
 
   return;
+}
+
+const CTaskEnum::Method * CFitTask::getValidMethods() const
+{
+  return CFitTask::ValidMethods;
 }
