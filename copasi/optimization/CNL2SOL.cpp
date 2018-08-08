@@ -5200,7 +5200,7 @@ int divset_(integer *alg, integer *iv, integer *liv, integer
 int CNL2SOL::divset_N(integer *alg, integer *iv, integer *liv, integer
                       *lv, doublereal *v)
 {
-  divset_(alg, &iv[1], liv, lv, &v[1]);
+  return divset_(alg, &iv[1], liv, lv, &v[1]);
 }
 
 int divset_(integer *alg, integer *iv, integer *liv, integer
@@ -10314,7 +10314,7 @@ integer i1mach_(integer *i)
 
       case 8:  return 31;    /* digits of integer base -- may need changing */
 
-      case 9:  return LONG_MAX;
+      case 9:  return std::numeric_limits< integer >::max();
 
       case 10: return FLT_RADIX;
 

@@ -31,8 +31,21 @@
 
 COptMethodCoranaWalk::COptMethodCoranaWalk(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
-    const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType)
+    const CTaskEnum::Task & taskType)
+  : COptMethod(pParent, methodType, taskType)
+  , mTemperature(1.0)
+  , mhIterations(C_INVALID_INDEX)
+  , mIterations(100)
+  , mCurrentIteration(0)
+  , mpRandom(NULL)
+  , mVariableSize(0)
+  , mBestValue(std::numeric_limits< C_FLOAT64 >::infinity())
+  , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mContinue(true)
+  , mCurrent()
+  , mCurrentValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mStep()
+  , mAccepted()
 {
   addParameter("Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100);
   addParameter("Temperature", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0);
@@ -43,8 +56,21 @@ COptMethodCoranaWalk::COptMethodCoranaWalk(const CDataContainer * pParent,
 }
 
 COptMethodCoranaWalk::COptMethodCoranaWalk(const COptMethodCoranaWalk & src,
-    const CDataContainer * pParent):
-  COptMethod(src, pParent)
+    const CDataContainer * pParent)
+  : COptMethod(src, pParent)
+  , mTemperature(src.mTemperature)
+  , mhIterations(C_INVALID_INDEX)
+  , mIterations(src.mIterations)
+  , mCurrentIteration(src.mCurrentIteration)
+  , mpRandom(NULL)
+  , mVariableSize(src.mVariableSize)
+  , mBestValue(src.mBestValue)
+  , mEvaluationValue(src.mEvaluationValue)
+  , mContinue(src.mContinue)
+  , mCurrent(src.mCurrent)
+  , mCurrentValue(src.mCurrentValue)
+  , mStep(src.mStep)
+  , mAccepted(src.mAccepted)
 {initObjects();}
 
 COptMethodCoranaWalk::~COptMethodCoranaWalk()

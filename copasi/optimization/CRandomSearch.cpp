@@ -45,8 +45,15 @@ email                : rluktuke@vt.edu
 
 CRandomSearch::CRandomSearch(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
-                             const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType)
+                             const CTaskEnum::Task & taskType)
+  : COptMethod(pParent, methodType, taskType)
+  , mIterations(100000)
+  , mCurrentIteration(0)
+  , mIndividual()
+  , mValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mpRandom(NULL)
+  , mVariableSize(0)
+  , mBestValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
 {
   addParameter("Number of Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100000);
   addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
@@ -56,8 +63,15 @@ CRandomSearch::CRandomSearch(const CDataContainer * pParent,
 }
 
 CRandomSearch::CRandomSearch(const CRandomSearch & src,
-                             const CDataContainer * pParent):
-  COptMethod(src, pParent)
+                             const CDataContainer * pParent)
+  : COptMethod(src, pParent)
+  , mIterations(src.mIterations)
+  , mCurrentIteration(src.mCurrentIteration)
+  , mIndividual(src.mIndividual)
+  , mValue(src.mValue)
+  , mpRandom(NULL)
+  , mVariableSize(src.mVariableSize)
+  , mBestValue(src.mBestValue)
 {initObjects();}
 
 /**

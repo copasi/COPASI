@@ -39,8 +39,21 @@
 
 COptMethodSA::COptMethodSA(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
-                           const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType)
+                           const CTaskEnum::Task & taskType)
+  : COptMethod(pParent, methodType, taskType)
+  , mTemperature(1.0)
+  , mhTemperature(C_INVALID_INDEX)
+  , mCoolingFactor(0.85)
+  , mTolerance(1.e-006)
+  , mpRandom(NULL)
+  , mVariableSize(0)
+  , mBestValue(std::numeric_limits< C_FLOAT64 >::infinity())
+  , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mContinue(true)
+  , mCurrent()
+  , mCurrentValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mStep(0)
+  , mAccepted()
 {
   addParameter("Start Temperature", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0);
   addParameter("Cooling Factor", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 0.85);
@@ -52,9 +65,24 @@ COptMethodSA::COptMethodSA(const CDataContainer * pParent,
 }
 
 COptMethodSA::COptMethodSA(const COptMethodSA & src,
-                           const CDataContainer * pParent):
-  COptMethod(src, pParent)
-{initObjects();}
+                           const CDataContainer * pParent)
+  : COptMethod(src, pParent)
+  , mTemperature(src.mTemperature)
+  , mhTemperature(C_INVALID_INDEX)
+  , mCoolingFactor(src.mCoolingFactor)
+  , mTolerance(src.mTolerance)
+  , mpRandom(NULL)
+  , mVariableSize(src.mVariableSize)
+  , mBestValue(src.mBestValue)
+  , mEvaluationValue(src.mEvaluationValue)
+  , mContinue(src.mContinue)
+  , mCurrent(src.mCurrent)
+  , mCurrentValue(src.mCurrentValue)
+  , mStep(src.mStep)
+  , mAccepted(src.mAccepted)
+{
+  initObjects();
+}
 
 COptMethodSA::~COptMethodSA()
 {cleanup();}
