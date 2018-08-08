@@ -159,8 +159,8 @@ private:
   /**
    * Evaluation function for the residuals
    */
-  int calcr(integer *n, integer *p, doublereal *x, integer *nf, doublereal *resid,
-            integer *uiparm, doublereal *urparm, U_fp ufparm);
+  C_INT calcr(integer *n, integer *p, doublereal *x, integer *nf, doublereal *resid,
+              integer *uiparm, doublereal *urparm, U_fp ufparm);
 
   /**
    * Evaluate the objective function

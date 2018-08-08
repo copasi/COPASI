@@ -21,8 +21,8 @@ COptMethodNL2SOL::COptMethodNL2SOL(const CDataContainer * pParent,
   mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
   mVariableSize(0),
   nResiduals(0),
-  mCurrent(NULL),
-  mBest(NULL),
+  mCurrent(),
+  mBest(),
   bounds(NULL),
   v(NULL),
   iv(NULL),
@@ -41,8 +41,8 @@ COptMethodNL2SOL::COptMethodNL2SOL(const COptMethodNL2SOL & src,
   mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
   mVariableSize(0),
   nResiduals(0),
-  mCurrent(NULL),
-  mBest(NULL),
+  mCurrent(),
+  mBest(),
   bounds(NULL),
   v(NULL),
   iv(NULL),
@@ -227,8 +227,8 @@ unsigned C_INT32 COptMethodNL2SOL::getMaxLogVerbosity() const
   return 1;
 }
 
-int COptMethodNL2SOL::calcr(integer *n, integer *p, doublereal *x, integer *nf, doublereal *resid,
-                            integer *uiparm, doublereal *urparm, U_fp ufparm)
+C_INT COptMethodNL2SOL::calcr(integer *n, integer *p, doublereal *x, integer *nf, doublereal *resid,
+                              integer *uiparm, doublereal *urparm, U_fp ufparm)
 {
   int i;
 
