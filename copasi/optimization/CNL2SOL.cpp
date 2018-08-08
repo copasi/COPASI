@@ -3,6 +3,8 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
+#include <cfloat>
+#include <climits>
 #include "copasi.h"
 #include "CNL2SOL.h"
 
