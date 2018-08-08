@@ -514,6 +514,14 @@ bool TaskWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Ac
 
         break;
 
+      case ListViews::TASK:
+        if (cn == mObjectCN)
+          {
+            loadTaskProtected();
+          }
+
+        break;
+
       default:
         break;
     }

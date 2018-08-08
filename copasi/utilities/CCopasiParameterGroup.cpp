@@ -238,34 +238,56 @@ void CCopasiParameterGroup::createUndoData(CUndoData & undoData,
       std::vector< std::pair< const CData *, const CCopasiParameter * > >::const_iterator itChanged = ChangedParameter.begin();
       std::vector< std::pair< const CData *, const CCopasiParameter * > >::const_iterator endChanged = ChangedParameter.end();
 
-      std::vector< CData > OldValues(ChangedParameter.size());
-      std::vector< CData > NewValues(ChangedParameter.size());
+      std::map< size_t, CData > OldValues;
+      std::map< size_t, CData > NewValues;
 
       for (; itChanged != endChanged; ++itChanged)
         {
+
           size_t CurrentIndex = itChanged->first->getProperty(CData::OBJECT_INDEX).toSizeT();
-          size_t CorrectedIndex = CurrentIndex;
+          size_t OldCorrectedIndex = CurrentIndex;
 
           std::map< size_t, const CData * >::const_iterator itToBeRemoved = ToBeRemoved.begin();
           std::map< size_t, const CData * >::const_iterator endToBeRemoved = ToBeRemoved.end();
 
           for (; itToBeRemoved != endToBeRemoved && CurrentIndex > itToBeRemoved->first; ++itToBeRemoved)
-            CorrectedIndex--;
-
-          OldValues[CorrectedIndex] = *itChanged->first;
-          OldValues[CorrectedIndex].addProperty(CData::OBJECT_INDEX, CorrectedIndex);
+            OldCorrectedIndex--;
 
           CurrentIndex = getIndex(itChanged->second);
-          CorrectedIndex = CurrentIndex;
+          size_t NewCorrectedIndex = CurrentIndex;
 
           for (itToBeAdded = ToBeAdded.begin(); itToBeAdded != endToBeAdded && CurrentIndex > itToBeAdded->first; ++itToBeAdded)
-            CorrectedIndex--;
+            NewCorrectedIndex--;
 
-          NewValues[CorrectedIndex] = itChanged->second->toData();
-          NewValues[CorrectedIndex].addProperty(CData::OBJECT_INDEX, CorrectedIndex);
+          CUndoData UndoData;
+          itChanged->second->createUndoData(UndoData, CUndoData::Type::CHANGE, * itChanged->first, framework);
+          UndoData.addProperty(CData::OBJECT_INDEX, OldCorrectedIndex, NewCorrectedIndex);
+
+          if (UndoData.empty()) continue;
+
+          OldValues[OldCorrectedIndex] = UndoData.getOldData();
+          NewValues[NewCorrectedIndex] = UndoData.getNewData();
         }
 
-      undoData.addProperty(CData::PARAMETER_VALUE, OldValues, NewValues);
+      std::map< size_t, CData >::const_iterator itChangedValue = OldValues.begin();
+      std::map< size_t, CData >::const_iterator endChangedValue = OldValues.end();
+      std::vector< CData > OldValuesVector;
+
+      for (; itChangedValue != endChangedValue; ++itChangedValue)
+        {
+          OldValuesVector.push_back(itChangedValue->second);
+        }
+
+      itChangedValue = NewValues.begin();
+      endChangedValue = NewValues.end();
+      std::vector< CData > NewValuesVector;
+
+      for (; itChangedValue != endChangedValue; ++itChangedValue)
+        {
+          NewValuesVector.push_back(itChangedValue->second);
+        }
+
+      undoData.addProperty(CData::PARAMETER_VALUE, OldValuesVector, NewValuesVector);
     }
 
   return;

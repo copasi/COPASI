@@ -156,7 +156,7 @@ bool CCopasiParameter::applyData(const CData & data, CUndoData::ChangeSet & chan
 
   if (data.isSetProperty(CData::PARAMETER_VALUE))
     {
-      assignValue(&data.getProperty(CData::PARAMETER_VALUE));
+      assignValue(data.getProperty(CData::PARAMETER_VALUE).raw());
     }
 
   return success;

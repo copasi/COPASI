@@ -299,6 +299,11 @@ const void * CDataValue::toVoidPointer() const
   return (mType != VOID_POINTER) ? NULL : mpData;
 }
 
+const void * CDataValue::raw() const
+{
+  return mpData;
+}
+
 const CDataValue::Type & CDataValue::getType() const
 {
   return mType;
@@ -347,7 +352,7 @@ bool CDataValue::operator == (const CDataValue & rhs) const
         break;
 
       case INVALID:
-        return false;
+        return (raw() == rhs.raw());
         break;
     }
 
@@ -397,7 +402,7 @@ bool CDataValue::operator != (const CDataValue & rhs) const
         break;
 
       case INVALID:
-        return true;
+        return (raw() != rhs.raw());
         break;
     }
 

@@ -77,6 +77,7 @@ public:
   const std::vector< CDataValue > & toDataValues() const;
   const std::vector< CData > & toDataVector() const;
   const void * toVoidPointer() const;
+  const void * raw() const;
 
   const Type & getType() const;
 

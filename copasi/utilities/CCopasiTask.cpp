@@ -132,7 +132,7 @@ bool CCopasiTask::applyData(const CData & data, CUndoData::ChangeSet & changes)
 
   if (data.isSetProperty(CData::METHOD))
     {
-      mpMethod->applyData(data.getProperty(CData::PROBLEM).toData(), changes);
+      mpMethod->applyData(data.getProperty(CData::METHOD).toData(), changes);
     }
 
   return success;
