@@ -266,7 +266,7 @@ L50:
 
       xk = x[k];
       /* Computing MAX */
-      d__1 = abs(xk), d__2 = one / v[dk];
+      d__1 = fabs(xk), d__2 = one / v[dk];
       h__ = v[43] * fmax(d__1, d__2);
       h0 = h__;
       ++dk;
@@ -315,7 +315,7 @@ L70:
       h__ = t * h__;
       xk1 = xk + h__;
 
-      if ((d__1 = h__ / h0, abs(d__1)) >= hlim)
+      if ((d__1 = h__ / h0, fabs(d__1)) >= hlim)
         {
           goto L70;
         }
@@ -940,7 +940,7 @@ L240:
       iv[9] = 3;
     }
 
-  if (abs(v[10]) < v[31])
+  if (fabs(v[10]) < v[31])
     {
       iv[29] = 10;
     }
@@ -950,8 +950,8 @@ L240:
       goto L999;
     }
 
-  emax = v[32] * abs(v[13]);
-  emaxs = v[37] * abs(v[13]);
+  emax = v[32] * fabs(v[13]);
+  emaxs = v[37] * fabs(v[13]);
 
   if (v[7] <= emaxs && (v[2] > v[36] || v[5] == 0.))
     {
@@ -1063,7 +1063,7 @@ L270:
 
 L280:
   v[4] = v[14];
-  v[2] = abs(v[18]);
+  v[2] = fabs(v[18]);
   iv[29] = iv[13];
 
   if (v[18] <= 0.)
@@ -1076,7 +1076,7 @@ L280:
   iv[9] = 3;
 L290:
 
-  if (-v[6] <= v[37] * abs(v[13]))
+  if (-v[6] <= v[37] * fabs(v[13]))
     {
       iv[29] = 11;
     }
@@ -1213,7 +1213,7 @@ doublereal dd7tpr_(integer *p, doublereal *x, doublereal *y)
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* Computing MAX */
-      d__3 = (d__1 = x[i__], abs(d__1)), d__4 = (d__2 = y[i__], abs(d__2));
+      d__3 = (d__1 = x[i__], fabs(d__1)), d__4 = (d__2 = y[i__], fabs(d__2));
       t = fmax(d__3, d__4);
 
       if (t > 1.)
@@ -1228,7 +1228,7 @@ doublereal dd7tpr_(integer *p, doublereal *x, doublereal *y)
 
       t = x[i__] / sqteta * y[i__];
 
-      if (abs(t) < sqteta)
+      if (fabs(t) < sqteta)
         {
           goto L20;
         }
@@ -1309,7 +1309,7 @@ int dd7upd_(doublereal *d__, doublereal *dr, integer *iv,
     }
 
   jcn1 = iv[66];
-  jcn0 = abs(jcn1) - 1;
+  jcn0 = fabs(jcn1) - 1;
 
   if (jcn1 < 0)
     {
@@ -1331,7 +1331,7 @@ L10:
         {
           /* L20: */
           /* Computing MAX */
-          d__2 = t, d__3 = (d__1 = dr[k + i__ * dr_dim1], abs(d__1));
+          d__2 = t, d__3 = (d__1 = dr[k + i__ * dr_dim1], fabs(d__1));
           t = fmax(d__2, d__3);
         }
 
@@ -1508,11 +1508,11 @@ L20:
   /*     ***  HANDLE OVERSIZE V(DELTA)  *** */
 
   /* Computing MAX */
-  d__2 = 1. / d__[m], d__3 = (d__1 = x[m], abs(d__1));
+  d__2 = 1. / d__[m], d__3 = (d__1 = x[m], fabs(d__1));
   del0 = v[44] * fmax(d__2, d__3);
   del *= .5;
 
-  if ((d__1 = del / del0, abs(d__1)) <= .1)
+  if ((d__1 = del / del0, fabs(d__1)) <= .1)
     {
       goto L140;
     }
@@ -1592,7 +1592,7 @@ L80:
   /*  ***  CHOOSE NEXT FINITE-DIFFERENCE STEP, RETURN TO GET G THERE  *** */
 
   /* Computing MAX */
-  d__2 = 1. / d__[m], d__3 = (d__1 = x[m], abs(d__1));
+  d__2 = 1. / d__[m], d__3 = (d__1 = x[m], fabs(d__1));
   del = v[44] * fmax(d__2, d__3);
   xm = x[m];
 
@@ -1805,7 +1805,7 @@ L250:
 L260:
   xm = v[51];
   /* Computing MAX */
-  d__1 = 1. / d__[m], d__2 = abs(xm);
+  d__1 = 1. / d__[m], d__2 = fabs(xm);
   del = v[42] * fmax(d__1, d__2);
   xm1 = xm + del;
   offsid = FALSE_;
@@ -2654,7 +2654,7 @@ L270:
             x01]);
   /*        *** H IS STORED IN THE END OF W AND HAS JUST BEEN OVERWRITTEN, */
   /*        *** SO WE MARK IT INVALID... */
-  iv[56] = -abs(h1);
+  iv[56] = -fabs(h1);
   /*        *** EVEN IF H WERE STORED ELSEWHERE, IT WOULD BE NECESSARY TO */
   /*        *** MARK INVALID THE INFORMATION DG7QTS MAY HAVE STORED IN V... */
   iv[33] = -1;
@@ -2876,7 +2876,7 @@ L420:
       sttsst = -sttsst;
     }
 
-  if ((d__1 = e + sttsst, abs(d__1)) * v[45] >= abs(e))
+  if ((d__1 = e + sttsst, fabs(d__1)) * v[45] >= fabs(e))
     {
       goto L430;
     }
@@ -3046,8 +3046,8 @@ L540:
   s1 = iv[62];
   ds7lvm_(ps, &v[temp1], &v[s1], &v[step1]);
 
-  t1 = (d__1 = dd7tpr_(ps, &v[step1], &v[temp1]), abs(d__1));
-  t = (d__1 = dd7tpr_(ps, &v[step1], &y[1]), abs(d__1));
+  t1 = (d__1 = dd7tpr_(ps, &v[step1], &v[temp1]), fabs(d__1));
+  t = (d__1 = dd7tpr_(ps, &v[step1], &y[1]), fabs(d__1));
   v[55] = 1.;
 
   if (t < t1)
@@ -3675,7 +3675,7 @@ int dg7qts_(doublereal *d__, doublereal *dig, doublereal *
 
   for (i__ = 1; i__ <= i__1; ++i__)
     {
-      t = (d__1 = dihdi[i__], abs(d__1));
+      t = (d__1 = dihdi[i__], fabs(d__1));
 
       if (t1 < t)
         {
@@ -3779,7 +3779,7 @@ L70:
       for (j = 1; j <= i__2; ++j)
         {
           ++k;
-          t = (d__1 = dihdi[k], abs(d__1));
+          t = (d__1 = dihdi[k], fabs(d__1));
           wi += t;
           w[j] += t;
           /* L80: */
@@ -3835,7 +3835,7 @@ L120:
           goto L130;
         }
 
-      aki = (d__1 = dihdi[k1], abs(d__1));
+      aki = (d__1 = dihdi[k1], fabs(d__1));
       si = w[i__];
       j = diag0 + i__;
       t1 = (akk - w[j] + si - aki) * .5;
@@ -3915,7 +3915,7 @@ L170:
           goto L180;
         }
 
-      aki = (d__1 = dihdi[k1], abs(d__1));
+      aki = (d__1 = dihdi[k1], fabs(d__1));
       si = w[i__];
       j = diag0 + i__;
       t1 = (w[j] + si - aki - akk) * .5;
@@ -3945,7 +3945,7 @@ L190:
 
   /*     ***  ALPHAK = CURRENT VALUE OF ALPHA (SEE ALG. NOTES ABOVE).  WE */
   /*     ***  USE MORE*S SCHEME FOR INITIALIZING IT. */
-  alphak = abs(v[5]) * v[9] / rad;
+  alphak = fabs(v[5]) * v[9] / rad;
   /* Computing MIN */
   d__1 = uk, d__2 = fmax(alphak, lk);
   alphak = fmin(d__1, d__2);
@@ -4131,7 +4131,7 @@ L270:
     }
 
   v[4] = -gtsta;
-  v[7] = (abs(alphak) * dst * dst + gtsta) * .5;
+  v[7] = (fabs(alphak) * dst * dst + gtsta) * .5;
   goto L410;
 
   /*  ***  RESTART WITH NEW RADIUS  *** */
@@ -4175,7 +4175,7 @@ L310:
     }
 
   dst = w[dstsav];
-  alphak = abs(v[5]);
+  alphak = fabs(v[5]);
   phi = dst - rad;
   t = v[1] / rad;
   uk = t - w[emin];
@@ -4490,7 +4490,7 @@ doublereal dh2rfg_(doublereal *a, doublereal *b, doublereal *x, doublereal *y,
   ret_val = *a;
   goto L999;
 L10:
-  t = abs(*a) + abs(*b);
+  t = fabs(*a) + fabs(*b);
   a1 = *a / t;
   b1 = *b / t;
   /* Computing 2nd power */
@@ -4725,7 +4725,7 @@ int ditsum_(doublereal *d__, doublereal *g, integer *iv,
 
   ++iv[39];
 
-  if (iv[39] < abs(ol))
+  if (iv[39] < fabs(ol))
     {
       goto L999;
     }
@@ -4736,7 +4736,7 @@ L10:
   reldf = 0.;
   preldf = 0.;
   /* Computing MAX */
-  d__1 = abs(v[13]), d__2 = abs(v[10]);
+  d__1 = fabs(v[13]), d__2 = fabs(v[10]);
   oldf = fmax(d__1, d__2);
 
   if (oldf <= 0.)
@@ -5121,7 +5121,7 @@ L430:
     }
 
   /* Computing MAX */
-  d__1 = abs(v[13]), d__2 = abs(v[10]);
+  d__1 = fabs(v[13]), d__2 = fabs(v[10]);
   oldf = fmax(d__1, d__2);
   preldf = 0.;
   nreldf = 0.;
@@ -5908,7 +5908,7 @@ L10:
 
   if (*ierr != 0)
     {
-      k = abs(*ierr) - 1;
+      k = fabs(*ierr) - 1;
     }
 
   v[6] = dd7tpr_(&k, &qtr[1], &qtr[1]) * .5;
@@ -6006,7 +6006,7 @@ L90:
   /*     ***  ALPHAK WILL BE USED AS THE CURRENT MARQUARDT PARAMETER.  WE */
   /*     ***  USE MORE*S SCHEME FOR INITIALIZING IT. */
 
-  alphak = abs(v[5]) * v[9] / rad;
+  alphak = fabs(v[5]) * v[9] / rad;
   /* Computing MIN */
   d__1 = uk, d__2 = fmax(alphak, lk);
   alphak = fmin(d__1, d__2);
@@ -6056,7 +6056,7 @@ L110:
       j1 = ipivot[i__];
       adi = sqrtak * d__[j1];
 
-      if (adi >= abs(wl))
+      if (adi >= fabs(wl))
         {
           goto L150;
         }
@@ -6158,7 +6158,7 @@ L170:
 
 L190:
 
-          if (abs(si) > abs(wl))
+          if (fabs(si) > fabs(wl))
             {
               goto L220;
             }
@@ -6348,7 +6348,7 @@ L370:
       goto L20;
     }
 
-  alphak = abs(v[5]);
+  alphak = fabs(v[5]);
   dst = w[dstsav];
   phi = dst - rad;
   t = v[1] / rad;
@@ -6794,8 +6794,8 @@ doublereal dl7svn_(integer *p, doublereal *l, doublereal *x, doublereal *y)
       b = ((real) ix / 9973. + 1.) * .5;
       xplus = b - x[j];
       xminus = -b - x[j];
-      splus = abs(xplus);
-      sminus = abs(xminus);
+      splus = fabs(xplus);
+      sminus = fabs(xminus);
       jm1 = j - 1;
       j0 = j * jm1 / 2;
       jj = j0 + j;
@@ -6812,8 +6812,8 @@ doublereal dl7svn_(integer *p, doublereal *l, doublereal *x, doublereal *y)
       for (i__ = 1; i__ <= i__2; ++i__)
         {
           ji = j0 + i__;
-          splus += (d__1 = x[i__] + l[ji] * xplus, abs(d__1));
-          sminus += (d__1 = x[i__] + l[ji] * xminus, abs(d__1));
+          splus += (d__1 = x[i__] + l[ji] * xplus, fabs(d__1));
+          sminus += (d__1 = x[i__] + l[ji] * xminus, fabs(d__1));
           /* L20: */
         }
 
@@ -7794,7 +7794,7 @@ int dq7apl_(integer *nn, integer *n, integer *p, doublereal *
 
   if (*ierr != 0)
     {
-      k = abs(*ierr) - 1;
+      k = fabs(*ierr) - 1;
     }
 
   if (k == 0)
@@ -7902,7 +7902,7 @@ L10:
 
       if (nk <= 1)
         {
-          t = (d__1 = w[k + i__ * w_dim1], abs(d__1));
+          t = (d__1 = w[k + i__ * w_dim1], fabs(d__1));
         }
 
       if (nk > 1)
@@ -8032,7 +8032,7 @@ L80:
       goto L180;
 
 L100:
-      ari = abs(ri);
+      ari = fabs(ri);
 
       if (ari > t)
         {
@@ -8438,14 +8438,14 @@ doublereal drldst_(integer *p, doublereal *d__, doublereal *x, doublereal *x0)
 
   for (i__ = 1; i__ <= i__1; ++i__)
     {
-      t = (d__1 = d__[i__] * (x[i__] - x0[i__]), abs(d__1));
+      t = (d__1 = d__[i__] * (x[i__] - x0[i__]), fabs(d__1));
 
       if (emax < t)
         {
           emax = t;
         }
 
-      t = d__[i__] * ((d__1 = x[i__], abs(d__1)) + (d__2 = x0[i__], abs(
+      t = d__[i__] * ((d__1 = x[i__], fabs(d__1)) + (d__2 = x0[i__], fabs(
                         d__2)));
 
       if (xmax < t)
@@ -9199,7 +9199,7 @@ int ds7bqn_(doublereal *b, doublereal *d__, doublereal *dst,
       w[i__] = -step[i__] * td[i__];
     }
 
-  alpha = abs(v[5]);
+  alpha = fabs(v[5]);
   v[7] = zero;
   gts = -v[4];
 
@@ -9317,7 +9317,7 @@ L80:
   /*     ***  PERMUTE L, ETC. IF NECESSARY  *** */
 
   p1m1 = *p1 - 1;
-  j = abs(k);
+  j = fabs(k);
 
   if (j == *p1)
     {
@@ -9357,7 +9357,7 @@ L110:
 
   for (i__ = 1; i__ <= i__1; ++i__)
     {
-      j = (i__2 = ipiv[i__], abs(i__2));
+      j = (i__2 = ipiv[i__], fabs(i__2));
       step[j] = dst[i__] / d__[j];
       /* L120: */
     }
@@ -9388,7 +9388,7 @@ L110:
       ipiv[i__] = j;
 L130:
       /* Computing MAX */
-      d__3 = (d__1 = x[j], abs(d__1)), d__4 = (d__2 = x0[j], abs(d__2));
+      d__3 = (d__1 = x[j], fabs(d__1)), d__4 = (d__2 = x0[j], fabs(d__2));
       t *= fmax(d__3, d__4);
       step[j] += t;
       /* L140: */
@@ -9517,7 +9517,7 @@ int ds7ipr_(integer *p, integer *ip, doublereal *h__)
           goto L90;
         }
 
-      ip[i__] = abs(j);
+      ip[i__] = fabs(j);
 
       if (j < 0)
         {
@@ -9680,7 +9680,7 @@ int ds7lup_(doublereal *a, doublereal *cosmin, integer *p,
   if (denmin != 0.)
     {
       /* Computing MIN */
-      d__2 = 1., d__3 = (d__1 = sdotwm / denmin, abs(d__1));
+      d__2 = 1., d__3 = (d__1 = sdotwm / denmin, fabs(d__1));
       *wscale = fmin(d__2, d__3);
     }
 
@@ -9895,7 +9895,7 @@ L10:
   goto L999;
 
 L30:
-  scale = (d__1 = x[i__], abs(d__1));
+  scale = (d__1 = x[i__], fabs(d__1));
 
   if (i__ < *p)
     {
@@ -9921,7 +9921,7 @@ L40:
 
   for (i__ = j; i__ <= i__1; ++i__)
     {
-      xi = (d__1 = x[i__], abs(d__1));
+      xi = (d__1 = x[i__], fabs(d__1));
 
       if (xi > scale)
         {
