@@ -5200,7 +5200,7 @@ int divset_(integer *alg, integer *iv, integer *liv, integer
 int CNL2SOL::divset_N(integer *alg, integer *iv, integer *liv, integer
                       *lv, doublereal *v)
 {
-  return divset_(alg, &iv[1], liv, lv, &v[1]);
+  return divset_(alg, iv, liv, lv, v);
 }
 
 int divset_(integer *alg, integer *iv, integer *liv, integer

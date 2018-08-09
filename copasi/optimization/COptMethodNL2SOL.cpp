@@ -121,17 +121,17 @@ bool COptMethodNL2SOL::optimise()
   try
     {
       // load all default values
-      iv[1] = 0;
+      iv[0] = 0;
       dummy = 1;
       mpCNL2SOL->divset_N(&dummy, iv, &liv, &lv, v);
 
       // set the maximal number of iterations
       // TO DO: iv[17] = funcEvaluations // Comment code review (08/07/2018): number of maximum function evaluations (default =200)
-      iv[18] = mIterations;
+      iv[17] = mIterations;
       //v[33] = 1e-16; // Comment code review (08/07/2018): leaving the default
       // set memory
-      iv[1] = 12;
-      iv[21] = 0; // Comment code review (08/07/2018): Supressing the ouput
+      iv[0] = 12;
+      iv[20] = 0; // Comment code review (08/07/2018): Supressing the ouput
 
       mpCNL2SOL->dn2fb_(&nResiduals, &mVariableSize, mCurrent.array(), bounds, fCalcr,
                         iv, &liv, &lv, v, uiparam, urparam, (U_fp) fCalcr);
