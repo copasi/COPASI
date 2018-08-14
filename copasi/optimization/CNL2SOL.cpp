@@ -1309,7 +1309,7 @@ int dd7upd_(doublereal *d__, doublereal *dr, integer *iv,
     }
 
   jcn1 = iv[66];
-  jcn0 = fabs(jcn1) - 1;
+  jcn0 = abs(jcn1) - 1;
 
   if (jcn1 < 0)
     {
@@ -2654,7 +2654,7 @@ L270:
             x01]);
   /*        *** H IS STORED IN THE END OF W AND HAS JUST BEEN OVERWRITTEN, */
   /*        *** SO WE MARK IT INVALID... */
-  iv[56] = -fabs(h1);
+  iv[56] = -abs(h1);
   /*        *** EVEN IF H WERE STORED ELSEWHERE, IT WOULD BE NECESSARY TO */
   /*        *** MARK INVALID THE INFORMATION DG7QTS MAY HAVE STORED IN V... */
   iv[33] = -1;
@@ -4725,7 +4725,7 @@ int ditsum_(doublereal *d__, doublereal *g, integer *iv,
 
   ++iv[39];
 
-  if (iv[39] < fabs(ol))
+  if (iv[39] < abs(ol))
     {
       goto L999;
     }
@@ -5908,7 +5908,7 @@ L10:
 
   if (*ierr != 0)
     {
-      k = fabs(*ierr) - 1;
+      k = abs(*ierr) - 1;
     }
 
   v[6] = dd7tpr_(&k, &qtr[1], &qtr[1]) * .5;
@@ -7794,7 +7794,7 @@ int dq7apl_(integer *nn, integer *n, integer *p, doublereal *
 
   if (*ierr != 0)
     {
-      k = fabs(*ierr) - 1;
+      k = abs(*ierr) - 1;
     }
 
   if (k == 0)
@@ -9317,7 +9317,7 @@ L80:
   /*     ***  PERMUTE L, ETC. IF NECESSARY  *** */
 
   p1m1 = *p1 - 1;
-  j = fabs(k);
+  j = abs(k);
 
   if (j == *p1)
     {
@@ -9357,7 +9357,7 @@ L110:
 
   for (i__ = 1; i__ <= i__1; ++i__)
     {
-      j = (i__2 = ipiv[i__], fabs(i__2));
+      j = (i__2 = ipiv[i__], abs(i__2));
       step[j] = dst[i__] / d__[j];
       /* L120: */
     }
@@ -9517,7 +9517,7 @@ int ds7ipr_(integer *p, integer *ip, doublereal *h__)
           goto L90;
         }
 
-      ip[i__] = fabs(j);
+      ip[i__] = abs(j);
 
       if (j < 0)
         {
