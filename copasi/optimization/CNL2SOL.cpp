@@ -6594,9 +6594,9 @@ L50:
   dv7dfl_(&alg1, &i__1, &v[k + 1]);
   iv[54] = 2 - alg1;
   iv[38] = *n;
-  s_copy(which, dflt, 4L, 4L);
-  s_copy(which + 4, dflt + 4, 4L, 4L);
-  s_copy(which + 8, dflt + 8, 4L, 4L);
+  s_copy(which, dflt, (ftnlen)4, (ftnlen)4);
+  s_copy(which + 4, dflt + 4, (ftnlen)4, (ftnlen)4);
+  s_copy(which + 8, dflt + 8, (ftnlen)4, (ftnlen)4);
   goto L110;
 L60:
 
@@ -6621,9 +6621,9 @@ L80:
   goto L999;
 
 L100:
-  s_copy(which, cngd, 4L, 4L);
-  s_copy(which + 4, cngd + 4, 4L, 4L);
-  s_copy(which + 8, cngd + 8, 4L, 4L);
+  s_copy(which, cngd, (ftnlen)4, (ftnlen)4);
+  s_copy(which + 4, cngd + 4, (ftnlen)4, (ftnlen)4);
+  s_copy(which + 8, cngd + 8, (ftnlen)4, (ftnlen)4);
 
 L110:
 
