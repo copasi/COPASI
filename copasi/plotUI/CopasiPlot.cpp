@@ -287,10 +287,24 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
   CDataModel* dataModel = mpPlotSpecification->getObjectDataModel();
   assert(dataModel != NULL);
 
-  setAxisTitle(xBottom, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[0]))->getObjectDisplayName()));
+  const CObjectInterface * pObj = dataModel->getObject((plotItem->getChannels()[0]));
+
+  if (pObj == NULL)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, plotItem->getChannels()[0].c_str());
+    }
+
+  setAxisTitle(xBottom, FROM_UTF8(pObj != NULL ? pObj->getObjectDisplayName() : "Not found"));
   enableAxis(xBottom);
 
-  setAxisTitle(yLeft, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[1]))->getObjectDisplayName()));
+  pObj = dataModel->getObject((plotItem->getChannels()[1]));
+
+  if (pObj == NULL)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, plotItem->getChannels()[1].c_str());
+    }
+
+  setAxisTitle(yLeft, FROM_UTF8(pObj != NULL ? pObj->getObjectDisplayName() : "Not found"));
   enableAxis(yLeft);
 
 #if QWT_VERSION > 0x060000
@@ -301,7 +315,14 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
                      logZ ? (QwtScaleEngine *)new QwtLog10ScaleEngine() : (QwtScaleEngine *)new QwtLinearScaleEngine());
 #endif
 
-  setAxisTitle(xTop, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[2]))->getObjectDisplayName()));
+  pObj = dataModel->getObject((plotItem->getChannels()[2]));
+
+  if (pObj == NULL)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, plotItem->getChannels()[2].c_str());
+    }
+
+  setAxisTitle(xTop, FROM_UTF8(pObj != NULL ? pObj->getObjectDisplayName() : "Not found"));
 
   QwtScaleWidget *topAxis = axisWidget(QwtPlot::xTop);
   topAxis->setColorBarEnabled(true);
@@ -594,6 +615,7 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
   for (i = 0; i < imax; ++i)
     {
       const CPlotItem * pItem = &mpPlotSpecification->getItems()[i];
+      bool isSpectogram = pItem->getType() == CPlotItem::spectogram;
       Activity ItemActivity = pItem->getActivity();
       DataIndex.first = ItemActivity;
 
@@ -629,7 +651,8 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
                   mSaveCurveObjects.push_back(NewX);
                   itX = mSaveCurveObjects.end() - 1;
 
-                  setAxisUnits(xBottom, pObj);
+                  if (!isSpectogram)
+                    setAxisUnits(xBottom, pObj);
                 }
 
               if (pItem->getType() == CPlotItem::histoItem1d)
@@ -638,7 +661,9 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
           else
             {
               itX->push_back(pObj);
-              setAxisUnits(yLeft, pObj);
+
+              if (!isSpectogram)
+                setAxisUnits(yLeft, pObj);
             }
 
           Inserted = ActivityObjects[ItemActivity].insert(pObj);

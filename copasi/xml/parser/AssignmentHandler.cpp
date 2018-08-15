@@ -1,3 +1,8 @@
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -31,17 +36,41 @@ CXMLHandler * AssignmentHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
   const char * Key;
+  const char * TargetCStr;
+  std::string Target;
+
   const CModelEntity* pME = NULL;
 
   switch (mCurrentElement.first)
     {
       case Assignment:
         mpData->pEventAssignment = NULL;
-        Key = mpParser->getAttributeValue("targetKey", papszAttrs);
-        pME = dynamic_cast<const CModelEntity *>(mpData->mKeyMap.get(Key));
+        TargetCStr = mpParser->getAttributeValue("target", papszAttrs, false);
 
-        if (pME != NULL &&
-            mpData->pEvent->getAssignments().getIndex(pME->getKey()) == C_INVALID_INDEX)
+        if (TargetCStr != NULL)
+          Target = TargetCStr;
+
+        if (Target.empty())
+          {
+            Key = mpParser->getAttributeValue("targetKey", papszAttrs);
+            pME = dynamic_cast<const CModelEntity *>(mpData->mKeyMap.get(Key));
+          }
+        else
+          {
+            std::string ModelCN = mpData->pModel->getCN();
+
+            if (Target.find(ModelCN) == 0 &&
+                Target.length() > ModelCN.length())
+              {
+                pME = dynamic_cast<const CModelEntity *>(mpData->pModel->getObject(Target.substr(ModelCN.length() + 1)));
+              }
+            else
+              {
+                pME = dynamic_cast<const CModelEntity *>(mpData->pModel->getObjectFromCN(Target));
+              }
+          }
+
+        if (pME != NULL)
           {
             mpData->pEventAssignment = new CEventAssignment(pME->getKey());
             mpData->pEvent->getAssignments().add(mpData->pEventAssignment, true);

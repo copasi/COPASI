@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -143,7 +143,6 @@ public:
    * resets the currently set callback by calling setHandler(NULL)
    */
   virtual void clearCallBack();
-
 
   /**
    * This utility functions adds a new step to the progress dialog (if present)
@@ -748,6 +747,8 @@ protected:
    */
   CEvaluationNode* replaceSpeciesReferences(const CEvaluationNode* pOrigNode,
       const CDataModel& dataModel);
+
+  void createAvogadroIfNeeded(const CDataModel & dataModel);
 
   /**
    * Try to find a global parameter that represents avogadros number.

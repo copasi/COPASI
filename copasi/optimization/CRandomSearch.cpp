@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,10 +49,8 @@ CRandomSearch::CRandomSearch(const CDataContainer * pParent,
   COptMethod(pParent, methodType, taskType)
 {
   addParameter("Number of Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 100000);
-  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
-  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-
-  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
@@ -87,11 +85,19 @@ bool CRandomSearch::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
-
   mIterations = getValue< unsigned C_INT32 >("Number of Iterations");
-  mpRandom = & mpContainer->getRandomGenerator();
-  mpRandom->initialize(getValue< unsigned C_INT32 >("Seed"));
+
+  pdelete(mpRandom);
+
+  if (getParameter("Random Number Generator") != NULL && getParameter("Seed") != NULL)
+    {
+      mpRandom = CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
+                                          getValue< unsigned C_INT32 >("Seed"));
+    }
+  else
+    {
+      mpRandom = CRandom::createGenerator();
+    }
 
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,8 +39,8 @@
 #include "copasi/core/CDataObjectReference.h"
 
 COptMethodGA::COptMethodGA(const CDataContainer * pParent,
-  const CTaskEnum::Method & methodType,
-  const CTaskEnum::Task & taskType) :
+                           const CTaskEnum::Method & methodType,
+                           const CTaskEnum::Task & taskType) :
   COptPopulationMethod(pParent, methodType, taskType),
   mCrossOverFalse(0),
   mCrossOver(0),
@@ -56,16 +56,10 @@ COptMethodGA::COptMethodGA(const CDataContainer * pParent,
 {
   addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
   addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 20);
-  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
-  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-
-  if (mEnableAdditionalParameters)
-  {
-    addParameter("Mutation Variance", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.1);
-    addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-  }
-
-  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  addParameter("Mutation Variance", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.1, eUserInterfaceFlag::editable);
+  addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
@@ -431,8 +425,6 @@ bool COptMethodGA::initialize()
 
   mIndividuals.resize(2 * mPopulationSize);
 
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
-
   mGenerations = (unsigned C_INT32)getValue< unsigned C_INT32 >("Number of Generations");
   mCurrentGeneration = 0;
 
@@ -455,18 +447,18 @@ bool COptMethodGA::initialize()
   mMutationVarians = 0.1;
 
   if (getParameter("Mutation Variance"))
-  {
-    mMutationVarians = getValue< C_FLOAT64 >("Mutation Variance");
-
-    if (mMutationVarians < 0.0 || 1.0 < mMutationVarians)
     {
-      mMutationVarians = 0.1;
-      setValue("Mutation Variance", mMutationVarians);
+      mMutationVarians = getValue< C_FLOAT64 >("Mutation Variance");
+
+      if (mMutationVarians < 0.0 || 1.0 < mMutationVarians)
+        {
+          mMutationVarians = 0.1;
+          setValue("Mutation Variance", mMutationVarians);
+        }
     }
-  }
 
   if (getParameter("Stop after # Stalled Generations"))
-  mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
+    mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
 
   return true;
 }

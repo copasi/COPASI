@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -101,15 +101,7 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(pRea->getObjectName())));
 
               case COL_EQUATION:
-
-                if (mNewEquation.isEmpty())
-                  {
-                    return QVariant(QString(FROM_UTF8(CChemEqInterface::getChemEqString(mpDataModel->getModel(), *pRea, false))));
-                  }
-                else
-                  {
-                    return QVariant(mNewEquation);
-                  }
+                return QVariant(QString(FROM_UTF8(CChemEqInterface::getChemEqString(mpDataModel->getModel(), *pRea, false))));
 
               case COL_RATE_LAW:
 
@@ -262,9 +254,6 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QVariant &value)
       switch (choice)
         {
           case QMessageBox::Ok:
-
-            pModel->removeLocalReactionParameter((*itParameter)->getKey());
-
             break;
 
           default:
@@ -272,6 +261,11 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QVariant &value)
             return;
             break;
         }
+    }
+
+  for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
+    {
+      pModel->removeLocalReactionParameter((*itParameter)->getKey());
     }
 
   // We need to check whether the current reaction still exists, since it is possible that

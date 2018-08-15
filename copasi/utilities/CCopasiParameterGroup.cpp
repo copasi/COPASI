@@ -550,7 +550,8 @@ CCopasiParameterGroup::index_iterator CCopasiParameterGroup::endIndex() const
 {return static_cast< elements * >(mpValue)->end();}
 
 bool CCopasiParameterGroup::addParameter(const std::string & name,
-    const CCopasiParameter::Type type)
+    const CCopasiParameter::Type type,
+    const CCopasiParameter::UserInterfaceFlag & flag)
 {
   CCopasiParameter * pParameter;
 
@@ -559,6 +560,7 @@ bool CCopasiParameterGroup::addParameter(const std::string & name,
   else
     pParameter = new CCopasiParameter(name, type);
 
+  pParameter->setUserInterfaceFlag(flag);
   addParameter(pParameter);
 
   return true;

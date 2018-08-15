@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,7 +46,8 @@ CCrossSectionTask::CCrossSectionTask(const CDataContainer * pParent,
   mProgressMax(1),
   mProgressValue(0),
   mProgressFactor(1),
-  mpEvent(NULL),
+  mpDataEvent(NULL),
+  mpMathEvent(NULL),
   mpEventCallback(NULL),
   mState(CCrossSectionTask::TRANSIENT),
   mStatesRing(),
@@ -78,7 +79,8 @@ CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
   mProgressMax(1),
   mProgressValue(0),
   mProgressFactor(1),
-  mpEvent(NULL),
+  mpDataEvent(NULL),
+  mpMathEvent(NULL),
   mpEventCallback(NULL),
   mState(CCrossSectionTask::TRANSIENT),
   mStatesRing(),
@@ -144,25 +146,23 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
 
 void CCrossSectionTask::createEvent()
 {
-  if (mpEvent != NULL) return;
+  if (mpMathEvent != NULL) return;
 
   if (!mpCrossSectionProblem->getSingleObjectCN().empty())
     {
-      CEvent Event("__cutplane", &mpContainer->getModel());
-      Event.setType(CEvent::Callback);
-      Event.setPersistentTrigger(true);
-      Event.setDelayAssignment(false);
+      mpDataEvent = new CEvent("__cutplane", &mpContainer->getModel());
+      mpDataEvent->setType(CEvent::Callback);
+      mpDataEvent->setPersistentTrigger(true);
+      mpDataEvent->setDelayAssignment(false);
 
       std::stringstream expression;
       expression << "<" << mpCrossSectionProblem->getSingleObjectCN() << "> "
                  << (mpCrossSectionProblem->isPositiveDirection() ? std::string(" > ") : std::string(" < "))
                  << mpCrossSectionProblem->getThreshold();
 
-      Event.setTriggerExpression(expression.str());
-
-      Event.compile(CObjectInterface::ContainerList());
-
-      mpEvent = mpContainer->addAnalysisEvent(Event);
+      mpDataEvent->setTriggerExpression(expression.str());
+      mpDataEvent->compile(CObjectInterface::ContainerList());
+      mpMathEvent = mpContainer->addAnalysisEvent(mpDataEvent);
     }
 
   setEventCallback(true);
@@ -173,10 +173,12 @@ void CCrossSectionTask::removeEvent()
   // reset call back of the cut plane event
   setEventCallback(false);
 
-  if (mpEvent != NULL)
+  if (mpMathEvent != NULL)
     {
-      if (!mpContainer->removeAnalysisEvent(mpEvent)) fatalError();
+      mpContainer->removeAnalysisEvent(mpMathEvent);
     }
+
+  pdelete(mpDataEvent)
 }
 
 bool CCrossSectionTask::process(const bool & useInitialValues)
@@ -314,15 +316,15 @@ void CCrossSectionTask::setEventCallback(const bool & set)
       mpEventCallback = new CCallback< CCrossSectionTask >(this, &CCrossSectionTask::eventCallBack);
     }
 
-  if (mpEvent != NULL)
+  if (mpMathEvent != NULL)
     {
       if (set)
         {
-          mpEvent->setCallback(mpEventCallback);
+          mpMathEvent->setCallback(mpEventCallback);
         }
       else
         {
-          mpEvent->setCallback(NULL);
+          mpMathEvent->setCallback(NULL);
         }
     }
 }

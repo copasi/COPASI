@@ -69,7 +69,7 @@ void CMathDependencyGraph::clear()
 
   for (; it != end; ++it)
     {
-      delete(it->second);
+      delete (it->second);
     }
 
   mObjects2Nodes.clear();
@@ -406,7 +406,8 @@ bool CMathDependencyGraph::appendDirectDependents(const CObjectInterface::Object
 }
 
 bool CMathDependencyGraph::appendAllDependents(const CObjectInterface::ObjectSet & changedObjects,
-    CObjectInterface::ObjectSet & dependentObjects) const
+    CObjectInterface::ObjectSet & dependentObjects,
+    const CObjectInterface::ObjectSet & ignoredObjects) const
 {
   bool success = true;
 
@@ -447,6 +448,40 @@ bool CMathDependencyGraph::appendAllDependents(const CObjectInterface::ObjectSet
       if (found != notFound)
         {
           success &= found->second->updateDependentState(CCore::SimulationContext::Default, changedObjects);
+        }
+    }
+
+  // Mark all nodes which are ignored and thus break dependencies.
+  it = ignoredObjects.begin();
+  end = ignoredObjects.end();
+
+#ifdef DEBUG_OUTPUT
+  std::cout << "Ignored:" << std::endl;
+#endif // DEBUG_OUTPUT
+
+  // Mark all nodes which are requested and its prerequisites.
+  for (; it != end && success; ++it)
+    {
+#ifdef DEBUG_OUTPUT
+
+      // Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
+      // and link matrices, i.e., we have data objects which may change
+      if ((*it)->getDataObject() != *it)
+        {
+          std::cout << *static_cast< const CMathObject * >(*it) << std::endl;
+        }
+      else
+        {
+          std::cout << *static_cast< const CDataObject * >(*it) << std::endl;
+        }
+
+#endif // DEBUG_OUTPUT
+
+      found = mObjects2Nodes.find(*it);
+
+      if (found != notFound)
+        {
+          success &= found->second->updateIgnoredState(CCore::SimulationContext::Default, changedObjects);
         }
     }
 
@@ -650,7 +685,7 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
   CDataObject * pEvent = pDataObject->getObjectAncestor("Event");
 
   if (pEvent != NULL && pEvent != pDataObject->getObjectParent())
-    return pEvent->getObjectName() + "::Assignment::" + pDataObject->getObjectName();
+    return pEvent->getObjectName() + "::Assignment::" + pDataObject->getObjectParent()->getObjectName();
 
   return pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName();
 }

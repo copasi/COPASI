@@ -501,16 +501,6 @@ CIssue CModel::compile()
 
   if (mpCompileHandler) mpCompileHandler->finishItem(hCompileStep);
 
-  {
-    CDataVector< CMetab >::iterator itSpecies = mMetabolitesX.begin();
-    CDataVector< CMetab >::iterator endSpecies = mMetabolitesX.end();
-
-    for (; itSpecies != endSpecies; ++itSpecies)
-      {
-        itSpecies->compileIsInitialValueChangeAllowed();
-      }
-  }
-
   //update annotations
   updateMatrixAnnotations();
 
@@ -536,6 +526,16 @@ CIssue CModel::compile()
   mpMathContainer->pushInitialState();
 
   mIsAutonomous = mpMathContainer->isAutonomous();
+
+  {
+    CDataVector< CMetab >::iterator itSpecies = mMetabolitesX.begin();
+    CDataVector< CMetab >::iterator endSpecies = mMetabolitesX.end();
+
+    for (; itSpecies != endSpecies; ++itSpecies)
+      {
+        itSpecies->compileIsInitialValueChangeAllowed();
+      }
+  }
 
   // CMathContainer CopyModel(MathModel);
 
@@ -618,6 +618,18 @@ bool CModel::buildDependencyGraphs()
 #endif // COPASI_DEBUG_TRACE
 
   return true;
+}
+
+void CModel::functionDefinitionChanged(const CFunction * pFunction)
+{
+  CObjectInterface::ObjectSet ChangedObjects;
+  ChangedObjects.insert(pFunction);
+  CObjectInterface::ObjectSet DependentObjects;
+
+  if (mStructuralDependencies.appendDirectDependents(ChangedObjects, DependentObjects))
+    {
+      setCompileFlag(true);
+    }
 }
 
 void CModel::setCompileFlag(bool flag)
@@ -1823,6 +1835,46 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
                                  DataObjectSet & dependentEvents,
                                  DataObjectSet & dependentEventAssignments) const
 {
+  const CReaction * pIgnoreReaction = NULL;
+  ObjectSet Ignored;
+
+  if (objects.size() == 1)
+    {
+      if (dynamic_cast< const CCopasiParameter * >(*objects.begin()))
+        {
+          pIgnoreReaction = dynamic_cast< const CReaction * >(static_cast<  const CCopasiParameter * >(*objects.begin())->getObjectAncestor("Reaction"));
+        }
+      else if (dynamic_cast< const CReaction * >(*objects.begin()))
+        {
+          const CChemEq & Equation = static_cast< const CReaction * >(*objects.begin())->getChemEq();
+          CDataVector < CChemEqElement >::const_iterator it = Equation.getBalances().begin();
+          CDataVector < CChemEqElement >::const_iterator end = Equation.getBalances().end();
+
+          for (; it != end; ++it)
+            {
+              const CMetab * pMetab = it->getMetabolite();
+
+              if (pMetab != NULL &&
+                  pMetab->getStatus() == CModelEntity::Status::REACTIONS)
+                {
+                  CMathObject * pMathObject = mpMathContainer->getMathObject(pMetab->getRateReference());
+                  CMathObject * pInitialMathObject = mpMathContainer->getInitialValueObject(pMathObject);
+
+                  Ignored.insert(pMathObject);
+
+                  if (pInitialMathObject != pMathObject)
+                    {
+                      Ignored.insert(pInitialMathObject);
+                    }
+
+                  Ignored.insert(mpMathContainer->getMathObject(pMetab->getTransitionTimeReference()));
+                }
+            }
+        }
+    }
+
+  dependentReactions.erase(pIgnoreReaction);
+
   size_t Size = dependentReactions.size() +
                 dependentMetabolites.size() +
                 dependentCompartments.size() +
@@ -1852,15 +1904,26 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
 
   for (; it != end; ++it)
     {
-      Candidates.insert(mpMathContainer->getMathObject(*it));
+      // We are missing initial values associated with the object that only exist in the math container
+      CMathObject * pMathObject = mpMathContainer->getMathObject(*it);
+      CMathObject * pInitialMathObject = mpMathContainer->getInitialValueObject(pMathObject);
+
+      Candidates.insert(pMathObject);
+
+      if (pInitialMathObject != pMathObject)
+        {
+          Candidates.insert(pInitialMathObject);
+        }
+
       Dependents.insert(*it);
     }
 
   Candidates.erase(NULL);
+  Ignored.erase(NULL);
 
   // Retrieve dependent math object
-  mpMathContainer->getInitialDependencies().appendAllDependents(Candidates, Dependents);
-  mpMathContainer->getTransientDependencies().appendAllDependents(Candidates, Dependents);
+  mpMathContainer->getInitialDependencies().appendAllDependents(Candidates, Dependents, Ignored);
+  mpMathContainer->getTransientDependencies().appendAllDependents(Candidates, Dependents, Ignored);
 
   // Map objects to compartments, species, model values, reactions, events, and event assignments
   CObjectInterface::ObjectSet::const_iterator itDependent = Dependents.begin();
@@ -1919,6 +1982,8 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
           dependentEvents.insert(pContainer);
         }
     }
+
+  dependentReactions.erase(pIgnoreReaction);
 
   return Size < dependentReactions.size() +
          dependentMetabolites.size() +
@@ -2534,7 +2599,7 @@ bool CModel::convert2NonReversible()
   for (i = 0; i < imax; ++i)
     if (steps[i].isReversible())
       {
-        std::vector< std::pair< const CDataObject * , const CDataObject * > > ParameterMap;
+        std::vector< std::pair< const CDataObject *, const CDataObject * > > ParameterMap;
 
         reac0 = &steps[i];
         rn1 = reac0->getObjectName() + " (forward)";
@@ -2920,7 +2985,7 @@ void CModel::initObjects()
 
   addMatrixReference("Stoichiometry", mStoi, CDataObject::ValueDbl);
   addMatrixReference("Reduced Model Stoichiometry", mRedStoi, CDataObject::ValueDbl);
-  addMatrixReference("Link Matrix"   , mLView, CDataObject::ValueDbl);
+  addMatrixReference("Link Matrix", mLView, CDataObject::ValueDbl);
 
   mpStoiAnnotation = new CDataArray("Stoichiometry(ann)", this, new CMatrixInterface<CMatrix<C_FLOAT64> >(&mStoi), true);
   mpStoiAnnotation->setDescription("Stoichiometry Matrix");

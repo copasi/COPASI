@@ -325,10 +325,8 @@ bool CQCompartmentDM::setData(const QModelIndex &index, const QVariant &value,
 }
 
 // virtual
-void CQCompartmentDM::resetCache()
+void CQCompartmentDM::resetCacheProtected()
 {
-  assert(mpDataModel != NULL);
-
   mpCompartments = dynamic_cast< CDataVectorNS < CCompartment > * >(&mpDataModel->getModel()->getCompartments());
   assert(mpCompartments != NULL);
 

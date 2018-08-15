@@ -1456,8 +1456,6 @@ void CMathContainer::compile()
   createDependencyGraphs();
   createUpdateSequences();
 
-  updateInitialValues(CCore::Framework::ParticleNumbers);
-
   CMathReaction * pReaction = mReactions.array();
   CDataVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
   CDataVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
@@ -1466,6 +1464,8 @@ void CMathContainer::compile()
     {
       pReaction->initialize(itReaction, *this);
     }
+
+  updateInitialValues(CCore::Framework::ParticleNumbers);
 
   // TODO We may have unused event triggers and roots due to optimization
   // in the discontinuities.
@@ -1759,6 +1759,10 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
   CEvaluationNode * pNode = pSrc->copyNode(children);
   std::string DiscontinuityInfix = pNode->buildInfix();
 
+#ifdef DEBUG_OUTPUT
+  std::cout << "DiscontinuityInfix: " << DiscontinuityInfix << std::endl;
+#endif //DEBUG_OUTOUT
+
   // Check whether we have the discontinuous node already created. This can happen if the
   // discontinuity was part of an expression for a variable in a function call.
   std::map< std::string, CMathObject * >::iterator itObject = mDiscontinuityInfix2Object.find(DiscontinuityInfix);
@@ -1767,6 +1771,10 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
     {
       // No need to copy we have already on object
       CMathObject * pDiscontinuity = itObject->second;
+
+#ifdef DEBUG_OUTPUT
+      std::cout << "Existing Object found: " << *pDiscontinuity << std::endl;
+#endif //DEBUG_OUTOUT
 
       // We need to advance both creation pointer to assure that we have the correct allocation
       // Mark the discontinuity objects as unused
@@ -1821,10 +1829,16 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
 
       // Map the trigger infix to the event.
       mTriggerInfix2Event[TriggerInfix] = pEvent;
+#ifdef DEBUG_OUTPUT
+      std::cout << "Created new Event: " << *pEvent << std::endl;
+#endif //DEBUG_OUTOUT
     }
   else
     {
       pEvent = itEvent->second;
+#ifdef DEBUG_OUTPUT
+      std::cout << "Existing Event found: " << *pEvent << std::endl;
+#endif //DEBUG_OUTOUT
     }
 
   // Add the current discontinuity as an assignment.
@@ -2194,6 +2208,9 @@ bool CMathContainer::compileEvents()
   for (; itEvent != endEvent; ++pItEvent, ++itEvent)
     {
       success &= pItEvent->compile(itEvent, *this);
+#ifdef DEBUG_OUTPUT
+      std::cout << "Data Event:  " << *pItEvent << std::endl;
+#endif //DEBUG_OUTOUT
     }
 
   itEvent = mDiscontinuityEvents.begin();
@@ -2202,6 +2219,9 @@ bool CMathContainer::compileEvents()
   for (; itEvent != endEvent; ++pItEvent, ++itEvent)
     {
       success &= pItEvent->compile(*this);
+#ifdef DEBUG_OUTPUT
+      std::cout << "Disc. Event: " << *pItEvent << std::endl;
+#endif //DEBUG_OUTOUT
     }
 
   // Events representing discontinuities.
@@ -3733,7 +3753,7 @@ C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) con
 
   const C_FLOAT64 * pInitialValue = pValue;
 
-  if (mExtensiveValues.array() <= pValue && pValue < mEventDelays.array())
+  if (mExtensiveValues.array() <= pValue && pValue < mExtensiveNoise.array())
     {
       pInitialValue = mInitialExtensiveValues.array() + (pValue - mExtensiveValues.array());
     }
@@ -3743,7 +3763,10 @@ C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) con
 
 CMathObject * CMathContainer::getInitialValueObject(const CMathObject * pObject) const
 {
-  return getMathObject(getInitialValuePointer(&pObject->getValue()));
+  if (pObject != NULL)
+    return getMathObject(getInitialValuePointer(&pObject->getValue()));
+
+  return NULL;
 }
 
 CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Entity< CDataObject > & entity,
@@ -3965,13 +3988,13 @@ bool CMathContainer::removeAnalysisObject(CMath::Entity< CMathObject > & mathObj
   return true;
 }
 
-CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
+CMathEvent * CMathContainer::addAnalysisEvent(const CEvent * pDataEvent)
 {
   sSize Size = mSize;
   sSize OldSize = mSize;
 
   CMathEvent Event;
-  CMathEvent::allocate(Event, &dataEvent, *this);
+  CMathEvent::allocate(Event, pDataEvent, *this);
 
   Size.nEvents++;
   Size.nEventRoots += Event.getTrigger().getRoots().size();
@@ -3979,10 +4002,11 @@ CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
 
   resize(Size);
   finishResize();
+  map();
 
   // The new event is the last in the list
   CMathEvent * pEvent = mEvents.array() + OldSize.nEvents;
-  CMathEvent::allocate(*pEvent, &dataEvent, *this);
+  CMathEvent::allocate(*pEvent, pDataEvent, *this);
 
   CMath::sPointers p;
   initializePointers(p);
@@ -4006,7 +4030,7 @@ CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
   p.pEventAssignmentsObject += OldSize.nAssignment;
 
   pEvent->initialize(p);
-  pEvent->compile(&dataEvent, *this);
+  pEvent->compile(pDataEvent, *this);
 
   // Add the objects created for the event to the dependency graphs.
   initializePointers(p);

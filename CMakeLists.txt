@@ -97,6 +97,18 @@ include (CheckCSourceRuns)
 include (CheckSymbolExists)
 include (CheckTypeSize)
 
+if (${CMAKE_VERSION} VERSION_GREATER 2.8.4)
+	include(GNUInstallDirs)
+else ()
+	set (CMAKE_INSTALL_LIBDIR "lib")
+	set (CMAKE_INSTALL_INCLUDEDIR "include")
+	set (CMAKE_INSTALL_BINDIR "bin")
+	set (CMAKE_INSTALL_DATADIR "share")
+	set (CMAKE_INSTALL_FULL_LIBDIR "${CMAKE_INSTALL_PREFIX}/lib")
+	set (CMAKE_INSTALL_FULL_INCLUDEDIR "${CMAKE_INSTALL_PREFIX}/include")
+endif ()
+
+
 # preferably link against the static versions
 # as compared to the dynamic ones
 
@@ -114,8 +126,6 @@ endif()
 
 CHECK_TYPE_SIZE("void*"  CMAKE_SIZEOF_VOID_P)
 
-set(CMAKE_INSTALL_LIBDIR lib CACHE PATH "Full path to the library output directory")
-mark_as_advanced(CMAKE_INSTALL_LIBDIR)
 
 set(COPASI_BUILD_TYPE "native")
 if (CMAKE_SIZEOF_VOID_P EQUAL 4)
@@ -456,6 +466,13 @@ if(BUILD_GUI)
       ${SELECT_QT} MATCHES "Any")
     # then narrow down the precise modules we need
     option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit for notes" OFF)
+    option(QT5_USE_DATAVISUALIZATION "Use Qt5DataVisualization instead of the deprecated QwtPlot3D" ON)
+    
+    set (ADDITIONAL_QT5_MODULES)
+    if (QT5_USE_DATAVISUALIZATION)
+      set (ADDITIONAL_QT5_MODULES ${ADDITIONAL_QT5_MODULES} DataVisualization)
+      add_definitions(-DWITH_QT5_VISUALIZATION)
+    endif()
     
     if (QT_USE_TEXTBROWSER)
       QT_FIND_MODULES( Concurrent
@@ -467,6 +484,7 @@ if(BUILD_GUI)
                        PrintSupport
                        Svg 
                        Xml
+                       ${ADDITIONAL_QT5_MODULES}
       )
     elseif (QT5_USE_WEBENGINE)
       QT_FIND_MODULES( Concurrent
@@ -480,6 +498,7 @@ if(BUILD_GUI)
                        WebEngine
                        WebEngineWidgets
                        Xml
+                       ${ADDITIONAL_QT5_MODULES}
       )
     else()
       QT_FIND_MODULES( Concurrent
@@ -493,6 +512,7 @@ if(BUILD_GUI)
                        WebKit
                        WebKitWidgets
                        Xml
+                       ${ADDITIONAL_QT5_MODULES}
       )
     endif()
     set(QTVERSION 5)
@@ -880,6 +900,10 @@ message(STATUS "-----------------------------------------------------------
    libSBML lib       = ${LIBSBML_LIBRARY}
    libSBML include   = ${LIBSBML_INCLUDE_DIR}
 
+   Qt lib            = ${QT_LIBRARIES}
+   Qt include        = ${QT_INCLUDE_DIRS}
+   Qt version        = ${QT_VERSION}
+      
    QWT lib           = ${QWT_LIBRARY}
    QWT include       = ${QWT_INCLUDE_DIR}
    QWT version       = ${QWT_VERSION_STRING} (0x${QWT_VERSION_NUMERIC})
@@ -896,6 +920,8 @@ message(STATUS "-----------------------------------------------------------
    libSEDML lib       = ${LIBSEDML_LIBRARY}
    libSEDML include   = ${LIBSEDML_INCLUDE_DIR}
 
+   Combine lib       = ${COMBINE_LIBRARY}
+   Combine include   = ${COMBINE_INCLUDE_DIR}
 
  Options:
 

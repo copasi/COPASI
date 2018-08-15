@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,8 +27,8 @@ class CQUnitDM : public CQBaseDataModel
 
 public:
   CQUnitDM(QObject *parent, CDataModel * pDataModel);
-  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
-  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
   Qt::ItemFlags flags(const QModelIndex &index) const;
   QVariant data(const QModelIndex &index, int role) const;
   QVariant headerData(int section, Qt::Orientation orientation,
@@ -37,11 +37,10 @@ public:
                int role = Qt::EditRole);
 
 public slots:
-  virtual void resetCache();
-
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
 protected:
+  virtual void resetCacheProtected();
   bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
   bool removeRows(int position, int rows);
 

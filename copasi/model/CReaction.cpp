@@ -817,6 +817,14 @@ CIssue CReaction::compile()
       mPrerequisits.insert(it->getMetabolite());
     }
 
+  it = mChemEq.getModifiers().begin();
+  end = mChemEq.getModifiers().end();
+
+  for (; it != end; ++it)
+    {
+      mPrerequisits.insert(it->getMetabolite());
+    }
+
   setScalingFactor();
 
   if (mHasNoise && mpNoiseExpression != NULL)
@@ -1473,7 +1481,6 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
       pTmpFunction->setRoot(pFunctionTree);
       pTmpFunction->setReversible(this->isReversible() ? TriTrue : TriFalse);
 
-      pFunctionDB->add(pTmpFunction, true);
       // add the variables
       // and do the mapping
       std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> >::iterator it = replacementMap.begin();
@@ -1556,6 +1563,13 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
         }
 
       pTmpFunction->setObjectName(functionName + appendix);
+    }
+
+  // add to function database
+  if (pTmpFunction != NULL &&
+      !pFunctionDB->add(pTmpFunction, true))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR_FILTERED, "Couldn't add expression for '%s' to the function database.", pTmpFunction->getObjectName().c_str());
     }
 
   return pTmpFunction;

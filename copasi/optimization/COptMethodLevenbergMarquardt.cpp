@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,8 +37,8 @@
 #define LAMBDA_MAX 1e80
 
 COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer * pParent,
-  const CTaskEnum::Method & methodType,
-  const CTaskEnum::Task & taskType) :
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType) :
   COptMethod(pParent, methodType, taskType),
   mIterationLimit(2000),
   mTolerance(1.e-006),
@@ -63,14 +63,8 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
 {
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 2000);
   addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006);
-
-  if (mEnableAdditionalParameters)
-  {
-    addParameter("Modulation", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006);
-    addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-  }
-
-  addParameter("Log Verbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Modulation", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006, eUserInterfaceFlag::editable);
+  addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
@@ -106,9 +100,6 @@ COptMethodLevenbergMarquardt::~COptMethodLevenbergMarquardt()
 void COptMethodLevenbergMarquardt::initObjects()
 {
   addObjectReference("Current Iteration", mIteration, CDataObject::ValueInt);
-
-  if(!mEnableAdditionalParameters)
-  removeParameter("Modulation");
 }
 
 bool COptMethodLevenbergMarquardt::optimise()
@@ -461,10 +452,9 @@ bool COptMethodLevenbergMarquardt::initialize()
   mModulation = 0.001;
   mIterationLimit = getValue< unsigned C_INT32 >("Iteration Limit");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
-  mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
 
   if (getParameter("Modulation"))
-  mModulation = getValue< C_FLOAT64 >("Modulation");
+    mModulation = getValue< C_FLOAT64 >("Modulation");
 
   mIteration = 0;
 
@@ -499,7 +489,7 @@ bool COptMethodLevenbergMarquardt::initialize()
     mHaveResiduals = false;
 
   if (getParameter("Stop after # Stalled Iterations"))
-  mStopAfterStalledIterations = getValue <unsigned C_INT32>("Stop after # Stalled Iterations");
+    mStopAfterStalledIterations = getValue <unsigned C_INT32>("Stop after # Stalled Iterations");
 
   return true;
 }

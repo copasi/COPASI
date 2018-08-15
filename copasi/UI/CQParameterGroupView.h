@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,6 +19,7 @@ class CQComboDelegate;
 class CQPushButtonDelegate;
 class CCopasiParameter;
 class CCopasiParameterGroup;
+class QSortFilterProxyModel;
 
 class CQParameterGroupView: public QTreeView
 {
@@ -35,7 +36,8 @@ public:
   void popGroup(CCopasiParameterGroup * pGroup);
   void clearGroups();
 
-protected slots:
+public slots:
+  void slotPreferenceUpdated();
 
 protected slots:
   void slotCreateComboBox(const QModelIndex & index);
@@ -48,6 +50,8 @@ protected:
 
 protected:
   CQParameterGroupDM * mpParameterGroupDM;
+  QSortFilterProxyModel * mpSortFilterDM;
+
   CQComboDelegate * mpComboBoxDelegate;
   CQPushButtonDelegate * mpPushButtonDelegate;
 };

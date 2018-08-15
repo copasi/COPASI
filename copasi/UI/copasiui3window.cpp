@@ -2338,7 +2338,7 @@ void CopasiUI3Window::refreshWindowsMenu()
 
       for (; jt != end; ++jt)
         {
-          QMainWindow *mainWindow = it.key();
+          QMainWindow *mainWindow = jt.key();
 
           if (mainWindow == pMainWindow ||
               mainWindow == NULL)

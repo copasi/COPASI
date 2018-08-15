@@ -1,4 +1,4 @@
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -24,6 +24,9 @@ set (SWIG_ENUM_FIX_FILES
         "${BIN_DIRECTORY}/java-files/org/COPASI/CModelEntity.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CDataArray.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CCore.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CModelParameter.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CFunctionParameter.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CReaction.java"
      )
 
 foreach(broken_file ${SWIG_ENUM_FIX_FILES})

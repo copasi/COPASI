@@ -1,4 +1,4 @@
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -37,6 +37,7 @@ if (NOT ${LIBSBML_LIBRARY_NAME}_FOUND)
           /opt/lib/cmake
           /opt/local/lib/cmake
           /sw/lib/cmake
+          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
   )
 endif()
 
@@ -82,6 +83,7 @@ find_library(LIBSBML_LIBRARY
     PATHS $ENV{LIBSBML_DIR}/lib
           $ENV{LIBSBML_DIR}
           ${COPASI_DEPENDENCY_DIR}
+          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
           ${COPASI_DEPENDENCY_DIR}/lib
           ~/Library/Frameworks
           /Library/Frameworks

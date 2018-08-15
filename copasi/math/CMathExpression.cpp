@@ -323,11 +323,11 @@ CEvaluationNode * CMathExpression::createNodeFromValue(const C_FLOAT64 * pDataVa
 CEvaluationNode * CMathExpression::createMassActionPart(const C_FLOAT64 * pK,
     const CCallParameters< C_FLOAT64 > * pSpecies)
 {
+  if (pSpecies->size() == 0)
+    return new CEvaluationNodeConstant(CEvaluationNode::SubType::NaN, "NAN");
+
   CEvaluationNode * pPart = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
   pPart->addChild(createNodeFromValue(pK));
-
-  if (pSpecies->size() == 0)
-    return pPart;
 
   CEvaluationNode * pNode = pPart;
   CCallParameters< C_FLOAT64 >::const_iterator itSpecies = pSpecies->begin();

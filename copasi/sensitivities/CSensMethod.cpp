@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -512,10 +512,8 @@ bool CSensMethod::initialize(CSensProblem* problem)
     {
       //the subtask should not change the initial state of the model
       mStoreSubtasktUpdateFlag = mpSubTask->isUpdateModel();
-      mpSubTask->setUpdateModel(false);
 
       mpSubTask->setMathContainer(mpContainer);
-
       mpSubTask->setCallBack(NULL);
       success &= mpSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
     }
@@ -699,6 +697,9 @@ bool CSensMethod::restore(const bool & /* updateModel */)
 
   if (mpSubTask != NULL)
     {
+      //the subtask should not change the initial state of the model
+      mpSubTask->setUpdateModel(false);
+
       success &= mpSubTask->restore();
 
       //restore the update model flag
@@ -733,6 +734,7 @@ bool CSensMethod::process()
   if (mpSubTask)
     {
       mpSubTask->setCallBack(mpCallBack);
+      mpSubTask->setUpdateModel(false);
     }
 
   if (mpCallBack)
@@ -755,6 +757,12 @@ bool CSensMethod::process()
 
   if (mFailedCounter * 20 > mCounter) // > 5% failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 8, mFailedCounter, mCounter);
+
+  if (mpSubTask)
+    {
+      mpSubTask->setCallBack(NULL);
+      mpSubTask->setUpdateModel(mStoreSubtasktUpdateFlag);
+    }
 
   return true;
 }

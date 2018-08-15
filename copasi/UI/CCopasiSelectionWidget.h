@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,6 +16,10 @@
 // Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+
+
+
 
 #ifndef CCopasiSelectionWidget_H__
 #define CCopasiSelectionWidget_H__
@@ -48,7 +52,14 @@ public:
   bool expertMode() const;
   void commit();
 
+public slots:
+  void commitSelection();
+
+signals:
+  void selectionCommitted();
+
 protected:
+
   CQSimpleSelectionTree* mpSimpleTree;
   ObjectBrowserWidget* mpObjectBrowser;
   std::vector< const CDataObject * > * mpOutputVector;

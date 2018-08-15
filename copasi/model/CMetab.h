@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -217,12 +217,6 @@ public:
    * @return CIssue firstWorstIssue
    */
   virtual CIssue compile();
-
-  /**
-   * Compile the initial particle number and initial concentration dependencies.
-   * @return CIssue issue
-   */
-  CIssue compileInitialValueDependencies();
 
   /**
    * Determine whether changing the initial concentration is allowed

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,7 +28,7 @@ class CMathEventQueue
 public:
   class CKey
   {
-    friend std::ostream &operator<<(std::ostream &os, const CMathEventQueue & o);
+    friend std::ostream &operator<<(std::ostream &os, const CKey & o);
 
     // Operations
   public:
@@ -96,6 +96,8 @@ public:
 
   class CAction
   {
+    friend std::ostream &operator<<(std::ostream &os, const CAction & o);
+
   public:
     /**
      * Possible action item types

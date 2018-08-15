@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -52,6 +52,7 @@ public:
     void addReaction(const CReaction* x);
     void addGlobalQuantity(const CModelValue* x);
     void addEvent(const CEvent* x);
+    void setModel(const CModel* x);
 
     bool addObject(const CDataObject* x);
 
@@ -71,7 +72,10 @@ public:
      */
     void fillComplete(const CModel* pModel);
 
-    //protected:
+#ifdef SWIG
+  protected:
+#endif
+    const CModel* mpModel{NULL};
     std::set<const CCompartment*> mCompartments;
     std::set<const CMetab*> mMetabs;
     std::set<const CReaction*> mReactions;

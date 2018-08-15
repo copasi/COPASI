@@ -1,9 +1,9 @@
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
 
-cmake_minimum_required(VERSION 2.8.9)
+cmake_minimum_required(VERSION 3.1.0)
 
 set(SELECT_QT "Any" CACHE STRING "The prefered Qt version one of: Qt5, Qt4 or Any" )
 if (DEFINED SELECT_QT)
@@ -40,10 +40,17 @@ macro(QT_FIND_MODULES)
   list(REMOVE_DUPLICATES _modules_qt4)
   list(REMOVE_DUPLICATES _modules_qt5)
 
+  set (CMAKE_PREFIX_PATH_TMP ${CMAKE_PREFIX_PATH})
+
+  if (DEFINED ENV{QTDIR})
+    set (CMAKE_PREFIX_PATH $ENV{QTDIR})
+  endif ()
+
   # Find Qt libraries
   if (${SELECT_QT} MATCHES "Qt5" OR
       ${SELECT_QT} MATCHES "Any")
     find_package(Qt5 ${QT_FIND_MODE} COMPONENTS ${_modules_qt5})
+    
   endif()
 
   if (${SELECT_QT} MATCHES "Qt4" OR
@@ -51,17 +58,33 @@ macro(QT_FIND_MODULES)
     find_package(Qt4 ${QT_FIND_MODE} COMPONENTS ${_modules_qt4})
   endif()
 
+  set (CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH_TMP})
+
   if (NOT (Qt5_FOUND OR Qt4_FOUND OR QT4_FOUND))
     message(FATAL_ERROR " Qt not found")
   endif (NOT (Qt5_FOUND OR Qt4_FOUND OR QT4_FOUND))
 
   if (Qt5_FOUND)
     message(STATUS "Using Qt5")
+    set(QT_VERSION ${Qt5_VERSION})
+    
+    foreach(_m ${_modules_qt5})
+      set(QT_INCLUDE_DIRS ${QT_INCLUDE_DIRS} ${Qt5${_m}_INCLUDE_DIRS})
+      set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5${_m}_LIBRARIES})
+    endforeach(_m ${_modules_qt5})
+    
+    list(REMOVE_DUPLICATES QT_INCLUDE_DIRS)
   endif (Qt5_FOUND)
 
   if (Qt4_FOUND OR QT4_FOUND)
     message(STATUS "Using Qt4")
+    include(${QT_USE_FILE}) 
+    set(QT_VERSION ${Qt4_VERSION})
+    set(QT_INCLUDE_DIRS ${QT_INCLUDES})
   endif (Qt4_FOUND OR QT4_FOUND)
+
+  message (STATUS "${QT_INCLUDE_DIRS}")
+
 endmacro(QT_FIND_MODULES)
 
 macro(QT_USE_MODULES _target) 
@@ -71,7 +94,7 @@ macro(QT_USE_MODULES _target)
   set_target_properties(${_target} PROPERTIES AUTOMOC TRUE)
 
   if (Qt5_FOUND) 
-    qt5_use_modules(${_target} ${_modules_qt5}) 
+    target_link_libraries(${_target} ${QT_LIBRARIES}) 
   else (Qt5_FOUND)
     if (Qt4_FOUND OR QT4_FOUND)
       include(${QT_USE_FILE}) 
@@ -83,7 +106,7 @@ endmacro(QT_USE_MODULES)
 
 macro(QT_BIND_TO_TARGET _target)
   if (Qt5_FOUND)
-    qt5_use_modules(${_target} ${_modules_qt5})
+    target_link_libraries(${_target} ${QT_LIBRARIES}) 
   else (Qt5_FOUND)
     if (Qt4_FOUND OR QT4_FOUND)
       include(${QT_USE_FILE})

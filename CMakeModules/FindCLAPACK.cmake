@@ -41,9 +41,18 @@ set(LAPACK_FIND_QUIETLY TRUE)
 set(BLA_STATIC TRUE)
 set(LAPACK_STATIC TRUE)
 
-find_library( GFORTRAN_LIBRARY
-              NAMES gfortran
-              PATHS ENV LD_LIBRARY_PATH )
+if (LINUX AND NOT APPLE AND NOT DEFINED ENV{MKLROOT})
+  set(TMP ${CMAKE_FIND_LIBRARY_SUFFIXES})
+  set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} .so.3)
+  find_library( GFORTRAN_LIBRARY
+                NAMES gfortran
+                PATHS ENV LD_LIBRARY_PATH )
+  set(CMAKE_FIND_LIBRARY_SUFFIXES ${TMP})
+
+  if (GFORTRAN_LIBRARY)
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} .so.3gf)
+  endif () 
+endif ()
 
 set(BLA_VENDOR "Apple")
 find_package(LAPACK)
@@ -86,9 +95,9 @@ if (NOT LAPACK_FOUND)
 
     if (UNIX)
       if (COPASI_BUILD_TYPE EQUAL "32bit")
-        set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/ia32/libmkl_intel.a $ENV{MKLROOT}/lib/ia32/libmkl_core.a $ENV{MKLROOT}/lib/ia32/libmkl_sequential.a -Wl,--end-group")
+        set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/ia32/libmkl_intel.a $ENV{MKLROOT}/lib/ia32/libmkl_core.a $ENV{MKLROOT}/lib/ia32/libmkl_sequential.a -Wl,--end-group -lpthread -lm -ldl")
       elseif (COPASI_BUILD_TYPE EQUAL "64bit")
-        set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/intel64/libmkl_intel_lp64.a $ENV{MKLROOT}/lib/intel64/libmkl_core.a $ENV{MKLROOT}/lib/intel64/libmkl_sequential.a -Wl,--end-group")
+        set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/intel64/libmkl_intel_lp64.a $ENV{MKLROOT}/lib/intel64/libmkl_core.a $ENV{MKLROOT}/lib/intel64/libmkl_sequential.a -Wl,--end-group -lpthread -lm -ldl")
       endif ()
     else ()
       if (COPASI_BUILD_TYPE EQUAL "32bit")

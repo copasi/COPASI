@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -435,7 +435,7 @@ void ReactionsWidget1::copy()
 // Just added 5/18/04
 void ReactionsWidget1::slotBtnDelete()
 {
-  mpUndoStack->push(new DeleteReactionCommand(this));
+  deleteReaction();
 }
 
 void ReactionsWidget1::FillWidgetFromRI()
@@ -911,13 +911,7 @@ void ReactionsWidget1::deleteReaction()
     {
       case QMessageBox::Ok:                                                     // Yes or Enter
       {
-        pModel->removeReaction(mKey);
-
-        mpRi->setFunctionWithEmptyMapping("");
-
-        protectedNotify(ListViews::REACTION, ListViews::DELETE, mKey);
-        protectedNotify(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-        mpListView->switchToOtherWidget(CCopasiUndoCommand::REACTIONS, "");
+        mpUndoStack->push(new DeleteReactionCommand(this));
         break;
       }
 
@@ -1008,23 +1002,22 @@ bool ReactionsWidget1::changeReaction(
         // create new objects
         std::vector<std::string> createdObjects;
         bool createdMetabs = mpRi->createMetabolites(createdObjects);
-        
-        bool notifyNeeded = mpRi->createOtherObjects(createdObjects) 
-          || createdMetabs
-          || deletedObjects;
-        
+
+        bool notifyNeeded = mpRi->createOtherObjects(createdObjects)
+                            || createdMetabs
+                            || deletedObjects;
+
         command->setCreatedObjects(createdObjects);
 
         mpRi->writeBackToReaction(pReaction);
 
         if (notifyNeeded)
-        {
-          bool oldNotify = mIgnoreUpdates;
-          mIgnoreUpdates = false;
-          protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
-          mIgnoreUpdates = oldNotify;
-        }
-
+          {
+            bool oldNotify = mIgnoreUpdates;
+            mIgnoreUpdates = false;
+            protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
+            mIgnoreUpdates = oldNotify;
+          }
 
         break;
       }

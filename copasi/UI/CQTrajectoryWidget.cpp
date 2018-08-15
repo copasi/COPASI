@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -402,7 +402,7 @@ void CQTrajectoryWidget::updateIntervals()
 
   mpEditIntegrationInterval->setText(convertToQString(InitialTime) +
                                      " to " +
-    convertToQString(InitialTime + Duration));
+                                     convertToQString(InitialTime + Duration));
 
   if (Duration > 0.0)
     {
@@ -414,13 +414,13 @@ void CQTrajectoryWidget::updateIntervals()
           OutputStartTime = InitialTime + (ceil((OutputStartTime - InitialTime) / StepSize)) * StepSize;
           mpEditOutputInterval->setText(convertToQString(OutputStartTime) +
                                         " to " +
-            convertToQString(InitialTime + Duration));
+                                        convertToQString(InitialTime + Duration));
         }
       else
         {
           mpEditOutputInterval->setText(convertToQString(InitialTime) +
                                         " to " +
-            convertToQString(InitialTime + Duration));
+                                        convertToQString(InitialTime + Duration));
         }
     }
   else
@@ -433,18 +433,20 @@ void CQTrajectoryWidget::updateIntervals()
           OutputStartTime = InitialTime + (ceil((OutputStartTime - InitialTime) / StepSize)) * StepSize;
           mpEditOutputInterval->setText(convertToQString(OutputStartTime) +
                                         " to " +
-            convertToQString(InitialTime + Duration));
+                                        convertToQString(InitialTime + Duration));
         }
       else
         mpEditOutputInterval->setText(convertToQString(InitialTime) +
                                       " to " +
-          convertToQString(InitialTime + Duration));
+                                      convertToQString(InitialTime + Duration));
     }
 }
 
 // virtual
-bool CQTrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & /* key */)
+bool CQTrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
+  TaskWidget::update(objectType, action, key);
+
   if (mIgnoreUpdates || !isVisible())
     {
       return true;

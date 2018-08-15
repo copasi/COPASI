@@ -1,16 +1,6 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
 // All rights reserved.
 
 #ifndef CQParameterResultItemModel_H
@@ -39,7 +29,7 @@ class CQParameterResultItemModel : public QAbstractTableModel
     LowerBound,
     StartValue,
     Value,
-    UpperBound,    
+    UpperBound,
     CoeffOfVariation,
     Gradient,
     StdDeviation
@@ -67,15 +57,13 @@ public:
 
   virtual ~CQParameterResultItemModel();
 
-  virtual int rowCount(const QModelIndex &) const;
+  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-  virtual int columnCount(const QModelIndex &) const;
+  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
   virtual QVariant data(const QModelIndex &index, int role) const;
 
   virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-
 };
-
 
 #endif // CQParameterResultItemModel

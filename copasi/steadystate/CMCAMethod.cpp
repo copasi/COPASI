@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -325,10 +325,10 @@ bool CMCAMethod::calculateUnscaledConcentrationCC()
   C_INT N = (C_INT) aux2.numRows();
   C_INT K = (C_INT) mReducedStoichiometry.numCols();
   C_FLOAT64 Alpha = 1.0;
-  C_INT LDA = (C_INT) aux1.numCols();
-  C_INT LDB = (C_INT) mReducedStoichiometry.numCols();
+  C_INT LDA = (C_INT) std::max< size_t >(1, aux1.numCols());
+  C_INT LDB = (C_INT) std::max< size_t >(1, mReducedStoichiometry.numCols());
   C_FLOAT64 Beta = 0.0;
-  C_INT LDC = (C_INT) aux2.numCols();
+  C_INT LDC = (C_INT) std::max< size_t >(1, aux2.numCols());
 
   dgemm_(&TRANSA, &TRANSB, &M, &N, &K, &Alpha, aux1.array(), &LDA,
          mReducedStoichiometry.array(), &LDB, &Beta, aux2.array(), &LDC);
@@ -363,10 +363,10 @@ bool CMCAMethod::calculateUnscaledConcentrationCC()
   N = (C_INT) aux1.numRows();
   K = (C_INT) aux2.numCols();
   Alpha = -1.0;
-  LDA = (C_INT) mReducedStoichiometry.numCols();
-  LDB = (C_INT) aux2.numCols();
+  LDA = (C_INT) std::max< size_t >(1, mReducedStoichiometry.numCols());
+  LDB = (C_INT) std::max< size_t >(1, aux2.numCols());
   Beta = 0.0;
-  LDC = (C_INT) aux1.numCols();
+  LDC = (C_INT) std::max< size_t >(1, aux1.numCols());
 
   // DGEMM (TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC)
   // C := alpha A B + beta C
@@ -404,9 +404,9 @@ bool CMCAMethod::calculateUnscaledFluxCC(const bool & status)
       C_INT N = (C_INT) mUnscaledFluxCC.numRows();
       C_INT K = (C_INT) mUnscaledElasticities.numCols();
 
-      C_INT LDA = (C_INT) mUnscaledConcCC.numCols();
-      C_INT LDB = (C_INT) mUnscaledElasticities.numCols();
-      C_INT LDC = (C_INT) mUnscaledFluxCC.numCols();
+      C_INT LDA = (C_INT) std::max< size_t >(1, mUnscaledConcCC.numCols());
+      C_INT LDB = (C_INT) std::max< size_t >(1, mUnscaledElasticities.numCols());
+      C_INT LDC = (C_INT) std::max< size_t >(1, mUnscaledFluxCC.numCols());
 
       Alpha = 1.0;
       Beta = 1.0;

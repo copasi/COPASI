@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -219,6 +219,60 @@ bool CMathDependencyNode::updateCalculatedState(const CCore::SimulationContextFl
     }
 
   return itNode.state() == CMathDependencyNodeIterator::End;
+}
+
+bool CMathDependencyNode::updateIgnoredState(const CCore::SimulationContextFlag & context,
+    const CObjectInterface::ObjectSet & changedObjects)
+{
+  if (isChanged())
+    {
+      setChanged(false);
+
+      CMathDependencyNodeIterator itNode(this, CMathDependencyNodeIterator::Dependents);
+      itNode.setProcessingModes(CMathDependencyNodeIterator::Before);
+
+      while (itNode.next())
+        {
+          // If we have a recursive dependency we need make sure that this is due to
+          // an intensive/extensive value pair
+          if (itNode.state() == CMathDependencyNodeIterator::Recursive)
+            {
+              if (itNode.parent()->getObject()->isPrerequisiteForContext(itNode->getObject(), context, changedObjects))
+                {
+                  return false;
+                }
+
+              continue;
+            }
+
+          // The node itself is not modified.
+          if (*itNode == this)
+            {
+              continue;
+            }
+
+          bool PrerequisiteChanged = false;
+          std::vector< CMathDependencyNode * >::const_iterator it = itNode->getPrerequisites().begin();
+          std::vector< CMathDependencyNode * >::const_iterator end = itNode->getPrerequisites().end();
+
+          for (; it != end; ++it)
+            if ((*it)->isChanged() &&
+                itNode->getObject()->isPrerequisiteForContext((*it)->getObject(), context, changedObjects))
+              {
+                PrerequisiteChanged = true;
+                break;
+              }
+
+          if (!PrerequisiteChanged)
+            {
+              itNode->updateIgnoredState(context, changedObjects);
+            }
+        }
+
+      return itNode.state() == CMathDependencyNodeIterator::End;
+    }
+
+  return true;
 }
 
 bool CMathDependencyNode::buildUpdateSequence(const CCore::SimulationContextFlag & context,

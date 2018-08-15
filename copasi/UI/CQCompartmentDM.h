@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,8 +51,8 @@ public:
   CQCompartmentDM(QObject *parent = 0);
   const QStringList& getTypes();
   const std::vector< unsigned C_INT32 >& getItemToType();
-  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
-  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
   virtual Qt::ItemFlags flags(const QModelIndex &index) const;
   virtual QVariant data(const QModelIndex &index, int role) const;
   virtual QVariant headerData(int section, Qt::Orientation orientation,
@@ -78,9 +78,8 @@ public:
   bool clear();
 
 public slots:
-  virtual void resetCache();
-
 protected:
+  virtual void resetCacheProtected();
   QStringList mTypes;
   /**
     * A vector mapping the item index to a model value type

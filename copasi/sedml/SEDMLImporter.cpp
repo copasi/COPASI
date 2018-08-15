@@ -288,8 +288,7 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
                 def = new CReportDefinition(SEDMLUtils::getNextId(name + " ", ++count));
               }
 
-            def->setComment("Import from SED-ML");
-
+			def->setComment("Import from SED-ML");
             def->setIsTable(false);
             def->setSeparator(", ");
 
@@ -761,12 +760,11 @@ SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
 
   for (; it != mReportMap.end(); ++it)
     {
-      mpDataModel->getReportDefinitionList()->add(it->first, true);
-      CReport& report = mpDataModel->getTaskList()->operator[](it->second).getReport();
-      report.setReportDefinition(it->first);
-      report.setTarget(it->second + ".txt");
-      report.setConfirmOverwrite(false);
-      report.setAppend(false);
+      CReport* report = &mpDataModel->getTaskList()->operator[](it->second).getReport();
+      report->setReportDefinition(it->first);
+      report->setTarget(it->second + ".txt");
+      report->setConfirmOverwrite(false);
+      report->setAppend(false);
     }
 }
 
