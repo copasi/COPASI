@@ -9561,7 +9561,7 @@ int i7shft_(integer *n, integer *k, integer *x)
   integer i__1;
 
   /* Local variables */
-  static integer i__, t, nm1;
+  static integer i__, t, k1, ii, nm1;
 
   /*  ***  SHIFT X(K),...,X(N) LEFT CIRCULARLY ONE POSITION  *** */
 
