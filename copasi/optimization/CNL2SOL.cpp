@@ -879,6 +879,11 @@ L190:
       goto L210;
     }
 
+  if (iv[9] == 3) 
+    {
+      goto L210;
+    }
+    
   /*        ***  WE DID NOT.  TRY A LONGER STEP UNLESS THIS WAS A NEWTON */
   /*        ***  STEP. */
 
