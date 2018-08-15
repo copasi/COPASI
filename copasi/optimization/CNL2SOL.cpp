@@ -9509,7 +9509,10 @@ integer i7mdcn_(integer *k)
   /*          (NOTE -- K = 2, 3 ARE USED ONLY BY TEST PROGRAMS.) */
 
   /*  +++  PORT VERSION FOLLOWS... */
-  ret_val = i1mach_(&mdperm[*k - 1]);
+  /* old version
+  /* ret_val = i1mach_(&mdperm[*k - 1]); */
+  /* new version */
+  ret_val = i1mach_(&mdperm[(0 + (0 + (*k - 1 << 2))) / 4]);
   /*  +++  END OF PORT VERSION  +++ */
 
   /*  +++  NON-PORT VERSION FOLLOWS... */
