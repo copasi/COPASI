@@ -7512,8 +7512,7 @@ int dr7tvm_(integer *n, integer *p, doublereal *y,
 
   /* Function Body */
   /* Computing MIN */
-  i__1 = *n - 1;
-  pl = std::min(i__1, *p);
+  pl = std::min(*n, *p);
   pp1 = pl + 1;
   i__1 = pl;
 
