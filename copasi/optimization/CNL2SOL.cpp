@@ -4,7 +4,7 @@
 // All rights reserved.
 
 // This includes code automatically translated with F2C
-// It uses fmin fmax (from <cmath>) for floating point numbers 
+// It uses fmin fmax (from <cmath>) for floating point numbers
 // min and max is used for integers. Please don't change this!
 
 #include <cfloat>
@@ -725,31 +725,43 @@ L80:
       goto L110;
     }
 
-    if (iv[10] < iv[11]) {
-	goodx = FALSE_;
-    } else if (nfc < iv[7] + iv[11] + 2) {
-	goodx = FALSE_;
-    } else if (iv[12] != 0) {
-	goodx = FALSE_;
+  if (iv[10] < iv[11])
+    {
+      goodx = FALSE_;
     }
-    iv[9] = 3;
-    v[10] = v[12];
-    v[7] = v[15];
-    v[4] = v[14];
-    if (iv[12] == 0) {
-	rfac1 = v[2] / v[18];
+  else if (nfc < iv[7] + iv[11] + 2)
+    {
+      goodx = FALSE_;
     }
-    v[2] = v[18];
-    if (goodx) {
+  else if (iv[12] != 0)
+    {
+      goodx = FALSE_;
+    }
 
-/*     ***  ACCEPT PREVIOUS SLIGHTLY REDUCING STEP *** */
+  iv[9] = 3;
+  v[10] = v[12];
+  v[7] = v[15];
+  v[4] = v[14];
 
-	v[11] = v[13] - v[10];
-	iv[29] = 4;
-	v[16] = rfac1;
-	goto L999;
+  if (iv[12] == 0)
+    {
+      rfac1 = v[2] / v[18];
     }
-    nfc = iv[7];
+
+  v[2] = v[18];
+
+  if (goodx)
+    {
+
+      /*     ***  ACCEPT PREVIOUS SLIGHTLY REDUCING STEP *** */
+
+      v[11] = v[13] - v[10];
+      iv[29] = 4;
+      v[16] = rfac1;
+      goto L999;
+    }
+
+  nfc = iv[7];
 
 L110:
   v[11] = v[13] - v[10];
@@ -879,11 +891,11 @@ L190:
       goto L210;
     }
 
-  if (iv[9] == 3) 
+  if (iv[9] == 3)
     {
       goto L210;
     }
-    
+
   /*        ***  WE DID NOT.  TRY A LONGER STEP UNLESS THIS WAS A NEWTON */
   /*        ***  STEP. */
 
@@ -920,7 +932,7 @@ L200:
   v[12] = v[10];
   iv[32] = iv[5];
 
-  if (iv[9] != 1)
+  if (iv[9] == 0)
     {
       iv[9] = 2;
     }
@@ -4531,7 +4543,6 @@ L999:
   return ret_val;
   /*  ***  LAST LINE OF DH2RFG FOLLOWS  *** */
 } /* dh2rfg_ */
-
 
 int divset_(integer *alg, integer *iv, integer *liv, integer
             *lv, doublereal *v);
