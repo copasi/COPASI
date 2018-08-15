@@ -725,19 +725,31 @@ L80:
       goto L110;
     }
 
-  iv[9] = 1;
-  v[10] = v[12];
-  v[7] = v[15];
-  v[4] = v[14];
-
-  if (iv[12] == 0)
-    {
-      rfac1 = v[2] / v[18];
+    if (iv[10] < iv[11]) {
+	goodx = FALSE_;
+    } else if (nfc < iv[7] + iv[11] + 2) {
+	goodx = FALSE_;
+    } else if (iv[12] != 0) {
+	goodx = FALSE_;
     }
+    iv[9] = 3;
+    v[10] = v[12];
+    v[7] = v[15];
+    v[4] = v[14];
+    if (iv[12] == 0) {
+	rfac1 = v[2] / v[18];
+    }
+    v[2] = v[18];
+    if (goodx) {
 
-  v[2] = v[18];
-  nfc = iv[7];
-  goodx = FALSE_;
+/*     ***  ACCEPT PREVIOUS SLIGHTLY REDUCING STEP *** */
+
+	v[11] = v[13] - v[10];
+	iv[29] = 4;
+	v[16] = rfac1;
+	goto L999;
+    }
+    nfc = iv[7];
 
 L110:
   v[11] = v[13] - v[10];
