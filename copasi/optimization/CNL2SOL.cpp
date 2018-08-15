@@ -7965,7 +7965,8 @@ L70:
   dv7cpy_(n, &rd[1], &r__[1]);
 L80:
   dq7apl_(nd, n, p, &dr[dr_offset], &rd[1], &c__0);
-  dr7tvm_(nd, p, &v[y1], &v[rd1], &dr[dr_offset], &rd[1]);
+  i__1 = std::min(*n, *p);
+  dr7tvm_(nd, &i__1, &v[y1], &v[rd1], &dr[dr_offset], &rd[1]);
   iv[67] = 0;
   goto L110;
 
@@ -9432,7 +9433,7 @@ integer i1mach_(integer *i)
 
       case 5:  return 32;    /* bits per integer -- may need changing */
 
-      case 6:  return 1;    /* Fortran 77 value: 1 character */
+      case 6:  return sizeof(int);    /* Fortran 77 value: 1 character */
 
       /*    per character storage unit */
       case 7:  return 2;    /* base for integers -- may need changing */
