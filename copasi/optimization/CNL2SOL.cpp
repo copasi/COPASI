@@ -1975,8 +1975,6 @@ int dg7itb_(doublereal *b, doublereal *d__, doublereal *g,
                             doublereal *);
   static logical havqtr;
   static integer stpmod;
-  extern int ditsum_(doublereal *, doublereal *, integer *,
-                     integer *, integer *, integer *, doublereal *, doublereal *);
   static integer td1, tg1, lstgst, pp1, rstrst;
   static doublereal sttsst;
   static integer ipi, ipn, dig1, wlm1, qtr1;
@@ -2516,8 +2514,6 @@ L170:
 
   /*  ***  PRINT ITERATION SUMMARY, CHECK ITERATION LIMIT  *** */
 
-L180:
-  /*    ditsum_(&d__[1], &g[1], &iv[1], liv, lv, p, &v[1], &x[1]);*/
 L190:
   k = iv[31];
 
@@ -3099,7 +3095,7 @@ L560:
   ds7lup_(&v[s1], &v[47], ps, &v[55], &v[step1], &v[temp1], &v[temp2], &v[
             g01], &v[56], &y[1]);
   iv[1] = 2;
-  goto L180;
+  goto L190;
 
   /* . . . . . . . . . . . . . .  MISC. DETAILS  . . . . . . . . . . . . . . */
 
@@ -4519,685 +4515,6 @@ L999:
   /*  ***  LAST LINE OF DH2RFG FOLLOWS  *** */
 } /* dh2rfg_ */
 
-int ditsum_(doublereal *d__, doublereal *g, integer *iv,
-            integer *liv, integer *lv, integer *p, doublereal *v, doublereal *x)
-{
-  /* Initialized data */
-
-  //static char model1[4*6] = "    " "    " "    " "    " "  G " "  S ";
-  //static char model2[4*6] = " G  " " S  " "G-S " "S-G " "-S-G" "-G-S";
-
-  static char model1[4 * 6] = "";
-  static char model2[4 * 6] = "";
-
-  /* Format strings */
-  static char fmt_30[] = "(/\002   IT   NF\002,6x,\002F\002,7x,\002RELD"
-                         "F\002,3x,\002PRELDF\002,3x,\002RELDX\002,2x,\002MODEL  STPPAR"
-                         "\002)";
-  static char fmt_40[] = "(/\002    IT   NF\002,7x,\002F\002,8x,\002RELD"
-                         "F\002,4x,\002PRELDF\002,4x,\002RELDX\002,3x,\002STPPAR\002)";
-  static char fmt_100[] = "(i6,i5,d10.3,2d9.2,d8.1,a3,a4,2d8.1,d9.2)";
-  static char fmt_110[] = "(i6,i5,d11.3,2d10.2,3d9.1,d10.2)";
-  static char fmt_70[] = "(/\002    IT   NF\002,6x,\002F\002,7x,\002RELD"
-                         "F\002,3x,\002PRELDF\002,3x,\002RELDX\002,2x,\002MODEL  STPPAR"
-                         "\002,2x,\002D*STEP\002,2x,\002NPRELDF\002)";
-  static char fmt_80[] = "(/\002    IT   NF\002,7x,\002F\002,8x,\002RELD"
-                         "F\002,4x,\002PRELDF\002,4x,\002RELDX\002,3x,\002STPPAR\002,3x"
-                         ",\002D*STEP\002,3x,\002NPRELDF\002)";
-  static char fmt_140[] = "(/\002 ***** X-CONVERGENCE *****\002)";
-  static char fmt_160[] = "(/\002 ***** RELATIVE FUNCTION CONVERGENCE **"
-                          "***\002)";
-  static char fmt_180[] = "(/\002 ***** X- AND RELATIVE FUNCTION CONVERGEN"
-                          "CE *****\002)";
-  static char fmt_200[] = "(/\002 ***** ABSOLUTE FUNCTION CONVERGENCE **"
-                          "***\002)";
-  static char fmt_220[] = "(/\002 ***** SINGULAR CONVERGENCE *****\002)";
-  static char fmt_240[] = "(/\002 ***** FALSE CONVERGENCE *****\002)";
-  static char fmt_260[] = "(/\002 ***** FUNCTION EVALUATION LIMIT *****"
-                          "\002)";
-  static char fmt_280[] = "(/\002 ***** ITERATION LIMIT *****\002)";
-  static char fmt_300[] = "(/\002 ***** STOPX *****\002)";
-  static char fmt_320[] = "(/\002 ***** INITIAL F(X) CANNOT BE COMPUTED **"
-                          "***\002)";
-  static char fmt_340[] = "(/\002 ***** BAD PARAMETERS TO ASSESS *****\002)"
-                          ;
-  static char fmt_360[] = "(/\002 ***** GRADIENT COULD NOT BE COMPUTED ***"
-                          "**\002)";
-  static char fmt_380[] = "(/\002 ***** IV(1) =\002,i5,\002 *****\002)";
-  static char fmt_400[] = "(/\002     I     INITIAL X(I)\002,8x,\002D(I"
-                          ")\002//(1x,i5,d17.6,d14.3))";
-  static char fmt_410[] = "(/\002     0\002,i5,d10.3)";
-  static char fmt_420[] = "(/\002     0\002,i5,d11.3)";
-  static char fmt_450[] = "(/\002 FUNCTION\002,d17.6,\002   RELDX\002,d17."
-                          "3/\002 FUNC. EVALS\002,i8,9x,\002GRAD. EVALS\002,i8/\002 PRELD"
-                          "F\002,d16.3,6x,\002NPRELDF\002,d15.3)";
-  static char fmt_470[] = "(/\002     I      FINAL X(I)\002,8x,\002D(I)"
-                          "\002,10x,\002G(I)\002/)";
-  static char fmt_490[] = "(1x,i5,d16.6,2d14.3)";
-  static char fmt_510[] = "(/\002 INCONSISTENT DIMENSIONS\002)";
-
-  /* System generated locals */
-  integer i__1;
-  doublereal d__1, d__2;
-
-  /* Builtin functions */
-  integer s_wsfe(cilist *), e_wsfe(void), do_fio(integer *, char *, ftnlen);
-
-  /* Local variables */
-  static doublereal oldf;
-  static integer i__, m;
-  static doublereal reldf;
-  static integer nf, ng, ol, pu;
-  static doublereal nreldf, preldf;
-  static integer iv1, alg;
-
-  /* Fortran I/O blocks */
-  static cilist io___203 = {0, 0, 0, fmt_30, 0 };
-  static cilist io___204 = {0, 0, 0, fmt_40, 0 };
-  static cilist io___206 = {0, 0, 0, fmt_100, 0 };
-  static cilist io___207 = {0, 0, 0, fmt_110, 0 };
-  static cilist io___208 = {0, 0, 0, fmt_70, 0 };
-  static cilist io___209 = {0, 0, 0, fmt_80, 0 };
-  static cilist io___211 = {0, 0, 0, fmt_100, 0 };
-  static cilist io___212 = {0, 0, 0, fmt_110, 0 };
-  static cilist io___214 = {0, 0, 0, fmt_140, 0 };
-  static cilist io___215 = {0, 0, 0, fmt_160, 0 };
-  static cilist io___216 = {0, 0, 0, fmt_180, 0 };
-  static cilist io___217 = {0, 0, 0, fmt_200, 0 };
-  static cilist io___218 = {0, 0, 0, fmt_220, 0 };
-  static cilist io___219 = {0, 0, 0, fmt_240, 0 };
-  static cilist io___220 = {0, 0, 0, fmt_260, 0 };
-  static cilist io___221 = {0, 0, 0, fmt_280, 0 };
-  static cilist io___222 = {0, 0, 0, fmt_300, 0 };
-  static cilist io___223 = {0, 0, 0, fmt_320, 0 };
-  static cilist io___224 = {0, 0, 0, fmt_340, 0 };
-  static cilist io___225 = {0, 0, 0, fmt_360, 0 };
-  static cilist io___226 = {0, 0, 0, fmt_380, 0 };
-  static cilist io___227 = {0, 0, 0, fmt_400, 0 };
-  static cilist io___228 = {0, 0, 0, fmt_30, 0 };
-  static cilist io___229 = {0, 0, 0, fmt_40, 0 };
-  static cilist io___230 = {0, 0, 0, fmt_70, 0 };
-  static cilist io___231 = {0, 0, 0, fmt_80, 0 };
-  static cilist io___232 = {0, 0, 0, fmt_410, 0 };
-  static cilist io___233 = {0, 0, 0, fmt_420, 0 };
-  static cilist io___235 = {0, 0, 0, fmt_450, 0 };
-  static cilist io___236 = {0, 0, 0, fmt_470, 0 };
-  static cilist io___237 = {0, 0, 0, fmt_490, 0 };
-  static cilist io___238 = {0, 0, 0, fmt_510, 0 };
-
-  /*  ***  PRINT ITERATION SUMMARY FOR ***SOL (VERSION 2.3)  *** */
-
-  /*  ***  PARAMETER DECLARATIONS  *** */
-
-  /* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
-  /*  ***  LOCAL VARIABLES  *** */
-
-  /* /6S */
-  /*     REAL MODEL1(6), MODEL2(6) */
-  /* /7S */
-  /* / */
-
-  /*  ***  NO EXTERNAL FUNCTIONS OR SUBROUTINES  *** */
-
-  /*  ***  SUBSCRIPTS FOR IV AND V  *** */
-
-  /*  ***  IV SUBSCRIPT VALUES  *** */
-
-  /* /6 */
-  /*     DATA ALGSAV/51/, NEEDHD/36/, NFCALL/6/, NFCOV/52/, NGCALL/30/, */
-  /*    1     NGCOV/53/, NITER/31/, OUTLEV/19/, PRNTIT/39/, PRUNIT/21/, */
-  /*    2     SOLPRT/22/, STATPR/23/, SUSED/64/, X0PRT/24/ */
-  /* /7 */
-  /* / */
-
-  /*  ***  V SUBSCRIPT VALUES  *** */
-
-  /* /6 */
-  /*     DATA DSTNRM/2/, F/10/, F0/13/, FDIF/11/, NREDUC/6/, PREDUC/7/, */
-  /*    1     RELDX/17/, STPPAR/5/ */
-  /* /7 */
-  /* / */
-
-  /* /6 */
-  /*     DATA ZERO/0.D+0/ */
-  /* /7 */
-  /* / */
-  /* /6S */
-  /*     DATA MODEL1(1)/4H    /, MODEL1(2)/4H    /, MODEL1(3)/4H    /, */
-  /*    1     MODEL1(4)/4H    /, MODEL1(5)/4H  G /, MODEL1(6)/4H  S /, */
-  /*    2     MODEL2(1)/4H G  /, MODEL2(2)/4H S  /, MODEL2(3)/4HG-S /, */
-  /*    3     MODEL2(4)/4HS-G /, MODEL2(5)/4H-S-G/, MODEL2(6)/4H-G-S/ */
-  /* /7S */
-  /* Parameter adjustments */
-  --iv;
-  --v;
-  --x;
-  --g;
-  --d__;
-
-  /* Function Body */
-  /* / */
-
-  /* -------------------------------  BODY  -------------------------------- */
-
-  pu = iv[21];
-
-  if (pu == 0)
-    {
-      goto L999;
-    }
-
-  iv1 = iv[1];
-
-  if (iv1 > 62)
-    {
-      iv1 += -51;
-    }
-
-  ol = iv[19];
-  alg = (iv[51] - 1) % 2 + 1;
-
-  if (iv1 < 2 || iv1 > 15)
-    {
-      goto L370;
-    }
-
-  if (iv1 >= 12)
-    {
-      goto L120;
-    }
-
-  if (iv1 == 2 && iv[31] == 0)
-    {
-      goto L390;
-    }
-
-  if (ol == 0)
-    {
-      goto L120;
-    }
-
-  if (iv1 >= 10 && iv[39] == 0)
-    {
-      goto L120;
-    }
-
-  if (iv1 > 2)
-    {
-      goto L10;
-    }
-
-  ++iv[39];
-
-  if (iv[39] < abs(ol))
-    {
-      goto L999;
-    }
-
-L10:
-  nf = iv[6] - abs(iv[52]);
-  iv[39] = 0;
-  reldf = 0.;
-  preldf = 0.;
-  /* Computing MAX */
-  d__1 = fabs(v[13]), d__2 = fabs(v[10]);
-  oldf = fmax(d__1, d__2);
-
-  if (oldf <= 0.)
-    {
-      goto L20;
-    }
-
-  reldf = v[11] / oldf;
-  preldf = v[7] / oldf;
-L20:
-
-  if (ol > 0)
-    {
-      goto L60;
-    }
-
-  /*        ***  PRINT SHORT SUMMARY LINE  *** */
-
-  if (iv[36] == 1 && alg == 1)
-    {
-      io___203.ciunit = pu;
-      s_wsfe(&io___203);
-      e_wsfe();
-    }
-
-  if (iv[36] == 1 && alg == 2)
-    {
-      io___204.ciunit = pu;
-      s_wsfe(&io___204);
-      e_wsfe();
-    }
-
-  iv[36] = 0;
-
-  if (alg == 2)
-    {
-      goto L50;
-    }
-
-  m = iv[64];
-  io___206.ciunit = pu;
-
-  // remove printing calls
-  /* s_wsfe(&io___206);
-  do_fio(&c__1, (char *)&iv[31], (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&nf, (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&v[10], (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&reldf, (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&preldf, (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&v[17], (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, model1 + (m - 1 << 2), 4L);
-  do_fio(&c__1, model2 + (m - 1 << 2), 4L);
-  do_fio(&c__1, (char *)&v[5], (ftnlen)sizeof(doublereal));
-  e_wsfe();
-   */
-  goto L120;
-
-L50:
-  io___207.ciunit = pu;
-  // remove printing calls
-  /* s_wsfe(&io___207);
-  do_fio(&c__1, (char *)&iv[31], (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&nf, (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&v[10], (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&reldf, (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&preldf, (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&v[17], (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&v[5], (ftnlen)sizeof(doublereal));
-  e_wsfe();
-   */
-  goto L120;
-
-  /*     ***  PRINT LONG SUMMARY LINE  *** */
-
-L60:
-
-  if (iv[36] == 1 && alg == 1)
-    {
-      io___208.ciunit = pu;
-      s_wsfe(&io___208);
-      e_wsfe();
-    }
-
-  if (iv[36] == 1 && alg == 2)
-    {
-      io___209.ciunit = pu;
-      s_wsfe(&io___209);
-      e_wsfe();
-    }
-
-  iv[36] = 0;
-  nreldf = 0.;
-
-  if (oldf > 0.)
-    {
-      nreldf = v[6] / oldf;
-    }
-
-  if (alg == 2)
-    {
-      goto L90;
-    }
-
-  m = iv[64];
-  io___211.ciunit = pu;
-  // remove printing calls
-  /* s_wsfe(&io___211);
-  do_fio(&c__1, (char *)&iv[31], (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&nf, (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&v[10], (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&reldf, (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&preldf, (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&v[17], (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, model1 + (m - 1 << 2), 4L);
-  do_fio(&c__1, model2 + (m - 1 << 2), 4L);
-  do_fio(&c__1, (char *)&v[5], (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&v[2], (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&nreldf, (ftnlen)sizeof(doublereal));
-  e_wsfe();
-  */
-  goto L120;
-
-L90:
-  io___212.ciunit = pu;
-  // remove printing calls
-  /* s_wsfe(&io___212);
-  do_fio(&c__1, (char *)&iv[31], (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&nf, (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&v[10], (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&reldf, (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&preldf, (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&v[17], (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&v[5], (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&v[2], (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&nreldf, (ftnlen)sizeof(doublereal));
-  e_wsfe();
-  */
-
-L120:
-
-  if (iv1 <= 2)
-    {
-      goto L999;
-    }
-
-  i__ = iv[23];
-
-  if (i__ == -1)
-    {
-      goto L460;
-    }
-
-  if (i__ + iv1 < 0)
-    {
-      goto L460;
-    }
-
-  switch (iv1)
-    {
-      case 1:  goto L999;
-
-      case 2:  goto L999;
-
-      case 3:  goto L130;
-
-      case 4:  goto L150;
-
-      case 5:  goto L170;
-
-      case 6:  goto L190;
-
-      case 7:  goto L210;
-
-      case 8:  goto L230;
-
-      case 9:  goto L250;
-
-      case 10:  goto L270;
-
-      case 11:  goto L290;
-
-      case 12:  goto L310;
-
-      case 13:  goto L330;
-
-      case 14:  goto L350;
-
-      case 15:  goto L500;
-    }
-
-L130:
-  io___214.ciunit = pu;
-  s_wsfe(&io___214);
-  e_wsfe();
-  goto L430;
-
-L150:
-  io___215.ciunit = pu;
-  s_wsfe(&io___215);
-  e_wsfe();
-  goto L430;
-
-L170:
-  io___216.ciunit = pu;
-  s_wsfe(&io___216);
-  e_wsfe();
-  goto L430;
-
-L190:
-  io___217.ciunit = pu;
-  s_wsfe(&io___217);
-  e_wsfe();
-  goto L430;
-
-L210:
-  io___218.ciunit = pu;
-  s_wsfe(&io___218);
-  e_wsfe();
-  goto L430;
-
-L230:
-  io___219.ciunit = pu;
-  s_wsfe(&io___219);
-  e_wsfe();
-  goto L430;
-
-L250:
-  io___220.ciunit = pu;
-  s_wsfe(&io___220);
-  e_wsfe();
-  goto L430;
-
-L270:
-  io___221.ciunit = pu;
-  s_wsfe(&io___221);
-  e_wsfe();
-  goto L430;
-
-L290:
-  io___222.ciunit = pu;
-  s_wsfe(&io___222);
-  e_wsfe();
-  goto L430;
-
-L310:
-  io___223.ciunit = pu;
-  s_wsfe(&io___223);
-  e_wsfe();
-
-  goto L390;
-
-L330:
-  io___224.ciunit = pu;
-  s_wsfe(&io___224);
-  e_wsfe();
-  goto L999;
-
-L350:
-  io___225.ciunit = pu;
-  s_wsfe(&io___225);
-  e_wsfe();
-
-  if (iv[31] > 0)
-    {
-      goto L460;
-    }
-
-  goto L390;
-
-L370:
-  io___226.ciunit = pu;
-  // remove printing calls
-  /* s_wsfe(&io___226);
-  do_fio(&c__1, (char *)&iv[1], (ftnlen)sizeof(integer));
-  e_wsfe();
-  */
-  goto L999;
-
-  /*  ***  INITIAL CALL ON DITSUM  *** */
-
-L390:
-
-  if (iv[24] != 0)
-    {
-      io___227.ciunit = pu;
-      // remove printing calls
-      /* s_wsfe(&io___227);
-      i__1 = *p;
-
-      for (i__ = 1; i__ <= i__1; ++i__)
-        {
-          do_fio(&c__1, (char *)&i__, (ftnlen)sizeof(integer));
-          do_fio(&c__1, (char *)&x[i__], (ftnlen)sizeof(doublereal));
-          do_fio(&c__1, (char *)&d__[i__], (ftnlen)sizeof(doublereal));
-        }
-
-      e_wsfe();
-      */
-    }
-
-  /*     *** THE FOLLOWING ARE TO AVOID UNDEFINED VARIABLES WHEN THE */
-  /*     *** FUNCTION EVALUATION LIMIT IS 1... */
-  v[2] = 0.;
-  v[11] = 0.;
-  v[6] = 0.;
-  v[7] = 0.;
-  v[17] = 0.;
-
-  if (iv1 >= 12)
-    {
-      goto L999;
-    }
-
-  iv[36] = 0;
-  iv[39] = 0;
-
-  if (ol == 0)
-    {
-      goto L999;
-    }
-
-  if (ol < 0 && alg == 1)
-    {
-      io___228.ciunit = pu;
-      s_wsfe(&io___228);
-      e_wsfe();
-    }
-
-  if (ol < 0 && alg == 2)
-    {
-      io___229.ciunit = pu;
-      s_wsfe(&io___229);
-      e_wsfe();
-    }
-
-  if (ol > 0 && alg == 1)
-    {
-      io___230.ciunit = pu;
-      s_wsfe(&io___230);
-      e_wsfe();
-    }
-
-  if (ol > 0 && alg == 2)
-    {
-      io___231.ciunit = pu;
-      s_wsfe(&io___231);
-      e_wsfe();
-    }
-
-  if (alg == 1)
-    {
-      io___232.ciunit = pu;
-      // remove printing calls
-      /* s_wsfe(&io___232);
-      do_fio(&c__1, (char *)&iv[6], (ftnlen)sizeof(integer));
-      do_fio(&c__1, (char *)&v[10], (ftnlen)sizeof(doublereal));
-      e_wsfe();
-      */
-    }
-
-  if (alg == 2)
-    {
-      io___233.ciunit = pu;
-      // remove printing calls
-      /* s_wsfe(&io___233);
-      do_fio(&c__1, (char *)&iv[6], (ftnlen)sizeof(integer));
-      do_fio(&c__1, (char *)&v[10], (ftnlen)sizeof(doublereal));
-      e_wsfe();
-      */
-    }
-
-  goto L999;
-
-  /*  ***  PRINT VARIOUS INFORMATION REQUESTED ON SOLUTION  *** */
-
-L430:
-  iv[36] = 1;
-
-  if (iv[23] <= 0)
-    {
-      goto L460;
-    }
-
-  /* Computing MAX */
-  d__1 = fabs(v[13]), d__2 = fabs(v[10]);
-  oldf = fmax(d__1, d__2);
-  preldf = 0.;
-  nreldf = 0.;
-
-  if (oldf <= 0.)
-    {
-      goto L440;
-    }
-
-  preldf = v[7] / oldf;
-  nreldf = v[6] / oldf;
-L440:
-  nf = iv[6] - iv[52];
-  ng = iv[30] - iv[53];
-  io___235.ciunit = pu;
-  // remove printing calls
-  /*
-  s_wsfe(&io___235);
-  do_fio(&c__1, (char *)&v[10], (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&v[17], (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&nf, (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&ng, (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&preldf, (ftnlen)sizeof(doublereal));
-  do_fio(&c__1, (char *)&nreldf, (ftnlen)sizeof(doublereal));
-  e_wsfe();
-  */
-
-L460:
-
-  if (iv[22] == 0)
-    {
-      goto L999;
-    }
-
-  iv[36] = 1;
-
-  if (iv[51] > 2)
-    {
-      goto L999;
-    }
-
-  io___236.ciunit = pu;
-  s_wsfe(&io___236);
-  e_wsfe();
-  i__1 = *p;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      /* L480: */
-      io___237.ciunit = pu;
-      // remove printing calls
-      /*
-      s_wsfe(&io___237);
-      do_fio(&c__1, (char *)&i__, (ftnlen)sizeof(integer));
-      do_fio(&c__1, (char *)&x[i__], (ftnlen)sizeof(doublereal));
-      do_fio(&c__1, (char *)&d__[i__], (ftnlen)sizeof(doublereal));
-      do_fio(&c__1, (char *)&g[i__], (ftnlen)sizeof(doublereal));
-      e_wsfe();
-      */
-    }
-
-  goto L999;
-
-L500:
-  io___238.ciunit = pu;
-  s_wsfe(&io___238);
-  e_wsfe();
-L999:
-  return 0;
-  /*  ***  LAST CARD OF DITSUM FOLLOWS  *** */
-} /* ditsum_ */
 
 int divset_(integer *alg, integer *iv, integer *liv, integer
             *lv, doublereal *v);
@@ -5641,7 +4958,7 @@ L40:
       ipiv1[i__] = i__;
     }
 
-  k0 = max(0, k);
+  k0 = std::max((integer) 0, k);
   dl7mst_(&td[1], &tg[1], ierr, &ipiv1[1], &k, &p1, &step[step_dim1 * 3 + 1]
           , &rmat[1], &step[step_offset], &v[1], &wlm[1]);
   dv7vmp_(&p1, &tg[1], &tg[1], &td[1], &c_n1);
@@ -7030,40 +6347,10 @@ int dparck_(integer *alg, doublereal *d__, integer *iv,
   static integer ndflt[4] = {32, 25, 32, 25 };
   static integer miniv[4] = {82, 59, 103, 103 };
 
-  /* Format strings */
-  static char fmt_10[] = "(/\002 THE FIRST PARAMETER TO DIVSET SHOULD B"
-                         "E\002,i3,\002 RATHER THAN\002,i3)";
-  static char fmt_40[] = "(/\002 /// BAD\002,a1,\002 =\002,i5)";
-  static char fmt_70[] = "(/\002 /// \002,1a1,\002 CHANGED FROM \002,i5"
-                         ",\002 TO \002,i5)";
-  static char fmt_90[] = "(/\002 ///  IV(1) =\002,i5,\002 SHOULD BE BETWEE"
-                         "N 0 AND 14.\002)";
-  static char fmt_130[] = "(/\002 ///  \002,2a4,\002.. V(\002,i2,\002) "
-                          "=\002,d11.3,\002 SHOULD\002,\002 BE BETWEEN\002,d11.3,\002 AN"
-                          "D\002,d11.3)";
-  static char fmt_160[] = "(/\002 IV(NVDFLT) =\002,i5,\002 RATHER THAN "
-                          "\002,i5)";
-  static char fmt_180[] = "(/\002 ///  D(\002,i3,\002) =\002,d11.3,\002 SH"
-                          "OULD BE POSITIVE\002)";
-  static char fmt_220[] = "(/\002 NONDEFAULT VALUES....\002/\002 INIT\002,"
-                          "a1,\002..... IV(25) =\002,i3)";
-  static char fmt_260[] = "(/\002 \002,3a4,\002ALUES....\002/)";
-  static char fmt_240[] = "(\002 DTYPE..... IV(16) =\002,i3)";
-  static char fmt_270[] = "(1x,2a4,\002.. V(\002,i2,\002) =\002,d15.7)";
-  static char fmt_310[] = "(/\002 /// LIV =\002,i5,\002 MUST BE AT LEAS"
-                          "T\002,i5)";
-  static char fmt_330[] = "(/\002 /// LV =\002,i5,\002 MUST BE AT LEAST"
-                          "\002,i5)";
-  static char fmt_350[] = "(/\002 /// ALG =\002,i5,\002 MUST BE 1 2, 3, OR"
-                          " 4\002)";
-  static char fmt_370[] = "(/\002 /// LIV =\002,i5,\002 MUST BE AT LEAS"
-                          "T\002,i5,\002 TO COMPUTE TRUE MIN. LIV AND MIN. LV\002)";
-
   /* System generated locals */
   integer i__1, i__2;
 
   /* Builtin functions */
-  integer s_wsfe(cilist *), do_fio(integer *, char *, ftnlen), e_wsfe(void);
   int s_copy(char *, char *, ftnlen, ftnlen);
 
   /* Local variables */
@@ -7078,24 +6365,6 @@ int dparck_(integer *alg, doublereal *d__, integer *iv,
   extern int divset_(integer *, integer *, integer *,
                      integer *, doublereal *);
   static integer iv1, alg1, miv1, miv2;
-
-  /* Fortran I/O blocks */
-  static cilist io___382 = {0, 0, 0, fmt_10, 0 };
-  static cilist io___387 = {0, 0, 0, fmt_40, 0 };
-  static cilist io___390 = {0, 0, 0, fmt_70, 0 };
-  static cilist io___391 = {0, 0, 0, fmt_90, 0 };
-  static cilist io___398 = {0, 0, 0, fmt_130, 0 };
-  static cilist io___399 = {0, 0, 0, fmt_160, 0 };
-  static cilist io___400 = {0, 0, 0, fmt_180, 0 };
-  static cilist io___401 = {0, 0, 0, fmt_220, 0 };
-  static cilist io___402 = {0, 0, 0, fmt_260, 0 };
-  static cilist io___403 = {0, 0, 0, fmt_240, 0 };
-  static cilist io___405 = {0, 0, 0, fmt_260, 0 };
-  static cilist io___406 = {0, 0, 0, fmt_270, 0 };
-  static cilist io___408 = {0, 0, 0, fmt_310, 0 };
-  static cilist io___409 = {0, 0, 0, fmt_330, 0 };
-  static cilist io___410 = {0, 0, 0, fmt_350, 0 };
-  static cilist io___411 = {0, 0, 0, fmt_370, 0 };
 
   /*  ***  CHECK ***SOL (VERSION 2.3) PARAMETERS, PRINT CHANGED VALUES  *** */
   /*  ***  ALG = 1 FOR REGRESSION, ALG = 2 FOR GENERAL UNCONSTRAINED OPT. */
@@ -7194,15 +6463,6 @@ int dparck_(integer *alg, doublereal *d__, integer *iv,
       goto L20;
     }
 
-  if (pu != 0)
-    {
-      /*    io___382.ciunit = pu; OUTPUT
-       s_wsfe(&io___382);
-       do_fio(&c__1, (char *)&(*alg), (ftnlen)sizeof(integer));
-       do_fio(&c__1, (char *)&iv[51], (ftnlen)sizeof(integer));
-       e_wsfe();*/
-    }
-
   iv[1] = 67;
   goto L999;
 L20:
@@ -7237,12 +6497,12 @@ L20:
     {
       /* Computing MAX */
       i__1 = miv1, i__2 = iv[58] - 1;
-      miv1 = max(i__1, i__2);
+      miv1 = std::max(i__1, i__2);
     }
 
   if (3 <= *liv)
     {
-      miv2 = miv1 + max(iv[3], 0);
+      miv2 = miv1 + std::max(iv[3], (integer) 0);
     }
 
   if (44 <= *liv)
@@ -7256,7 +6516,7 @@ L20:
     }
 
   iv[3] = 0;
-  iv[45] = max(iv[4], 0) + iv[42] - 1;
+  iv[45] = std::max(iv[4], (integer) 0) + iv[42] - 1;
   iv[4] = 0;
 
   if (*liv < miv2)
@@ -7283,16 +6543,6 @@ L30:
 
   iv[1] = 81;
 
-  if (pu == 0)
-    {
-      goto L999;
-    }
-
-  /*    io___387.ciunit = pu;
-   s_wsfe(&io___387);
-   do_fio(&c__1, varnm + (alg1 - 1), 1L);
-   do_fio(&c__1, (char *)&(*n), (ftnlen)sizeof(integer));
-   e_wsfe();*/
   goto L999;
 L50:
 
@@ -7329,20 +6579,6 @@ L60:
 
   iv[1] = 17;
 
-  if (pu == 0)
-    {
-      goto L999;
-    }
-
-  io___390.ciunit = pu;
-  // remove printing calls
-  /*
-  s_wsfe(&io___390);
-  do_fio(&c__1, varnm + (alg1 - 1), 1L);
-  do_fio(&c__1, (char *)&iv[38], (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *) & (*n), (ftnlen)sizeof(integer));
-  e_wsfe();
-  */
   goto L999;
 
 L80:
@@ -7353,17 +6589,6 @@ L80:
     }
 
   iv[1] = 80;
-
-  if (pu != 0)
-    {
-      io___391.ciunit = pu;
-      // remove printing calls
-      /*
-      s_wsfe(&io___391);
-      do_fio(&c__1, (char *)&iv1, (ftnlen)sizeof(integer));
-      e_wsfe();
-      */
-    }
 
   goto L999;
 
@@ -7424,22 +6649,6 @@ L120:
 
       m = k;
 
-      if (pu != 0)
-        {
-          io___398.ciunit = pu;
-          // remove printing calls
-          /*
-          s_wsfe(&io___398);
-          do_fio(&c__1, vn + ((i__ << 1) - 2 << 2), 4L);
-          do_fio(&c__1, vn + ((i__ << 1) - 1 << 2), 4L);
-          do_fio(&c__1, (char *)&k, (ftnlen)sizeof(integer));
-          do_fio(&c__1, (char *)&vk, (ftnlen)sizeof(doublereal));
-          do_fio(&c__1, (char *)&vm[i__ - 1], (ftnlen)sizeof(doublereal));
-          do_fio(&c__1, (char *)&vx[i__ - 1], (ftnlen)sizeof(doublereal));
-          e_wsfe();
-          */
-        }
-
 L140:
       ++k;
       ++i__;
@@ -7459,19 +6668,6 @@ L140:
 
   iv[1] = 51;
 
-  if (pu == 0)
-    {
-      goto L999;
-    }
-
-  io___399.ciunit = pu;
-  s_wsfe(&io___399);
-  // remove printing calls
-  /*
-  do_fio(&c__1, (char *)&iv[50], (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&ndfalt, (ftnlen)sizeof(integer));
-  e_wsfe();
-  */
   goto L999;
 L170:
 
@@ -7490,18 +6686,6 @@ L170:
         }
 
       m = 18;
-
-      if (pu != 0)
-        {
-          io___400.ciunit = pu;
-          // remove printing calls
-          /*
-          s_wsfe(&io___400);
-          do_fio(&c__1, (char *)&i__, (ftnlen)sizeof(integer));
-          do_fio(&c__1, (char *)&d__[i__], (ftnlen)sizeof(doublereal));
-          e_wsfe();
-          */
-        }
 
 L190:
       ;
@@ -7530,14 +6714,6 @@ L210:
     }
 
   m = 1;
-  io___401.ciunit = pu;
-  // remove printing calls
-  /*
-  s_wsfe(&io___401);
-  do_fio(&c__1, sh + (alg1 - 1), 1L);
-  do_fio(&c__1, (char *)&iv[25], (ftnlen)sizeof(integer));
-  e_wsfe();
-   */
 L230:
 
   if (iv[16] == iv[54])
@@ -7545,22 +6721,7 @@ L230:
       goto L250;
     }
 
-  if (m == 0)
-    {
-      io___402.ciunit = pu;
-      // remove printing calls
-      /*
-      s_wsfe(&io___402);
-      do_fio(&c__3, which, 4L);
-      e_wsfe();
-       */
-    }
-
   m = 1;
-  io___403.ciunit = pu;
-  s_wsfe(&io___403);
-  do_fio(&c__1, (char *)&iv[16], (ftnlen)sizeof(integer));
-  e_wsfe();
 L250:
   i__ = 1;
   j = jlim[alg1 - 1];
@@ -7576,25 +6737,7 @@ L250:
           goto L280;
         }
 
-      if (m == 0)
-        {
-          io___405.ciunit = pu;
-          s_wsfe(&io___405);
-          do_fio(&c__3, which, 4L);
-          e_wsfe();
-        }
-
       m = 1;
-      io___406.ciunit = pu;
-      // remove printing calls
-      /*
-      s_wsfe(&io___406);
-      do_fio(&c__1, vn + ((i__ << 1) - 2 << 2), 4L);
-      do_fio(&c__1, vn + ((i__ << 1) - 1 << 2), 4L);
-      do_fio(&c__1, (char *)&k, (ftnlen)sizeof(integer));
-      do_fio(&c__1, (char *)&v[k], (ftnlen)sizeof(doublereal));
-      e_wsfe();
-       */
 L280:
       ++k;
       ++l;
@@ -7621,15 +6764,6 @@ L300:
       goto L999;
     }
 
-  io___408.ciunit = pu;
-  s_wsfe(&io___408);
-  // remove printing calls
-  /*
-  do_fio(&c__1, (char *) & (*liv), (ftnlen)sizeof(integer));
-  do_fio(&c__1, (char *)&miv2, (ftnlen)sizeof(integer));
-  e_wsfe();
-   */
-
   if (*liv < miv1)
     {
       goto L999;
@@ -7645,48 +6779,13 @@ L300:
 L320:
   iv[1] = 16;
 
-  if (pu != 0)
-    {
-      io___409.ciunit = pu;
-      // remove printing calls
-      /*
-      s_wsfe(&io___409);
-      do_fio(&c__1, (char *) & (*lv), (ftnlen)sizeof(integer));
-      do_fio(&c__1, (char *)&iv[45], (ftnlen)sizeof(integer));
-      e_wsfe();
-       */
-    }
-
   goto L999;
 
 L340:
   iv[1] = 67;
 
-  if (pu != 0)
-    {
-      io___410.ciunit = pu;
-      // remove printing calls
-      /*
-      s_wsfe(&io___410);
-      do_fio(&c__1, (char *) & (*alg), (ftnlen)sizeof(integer));
-      e_wsfe();
-       */
-    }
-
   goto L999;
 L360:
-
-  if (pu != 0)
-    {
-      io___411.ciunit = pu;
-      // remove printing calls
-      /*
-      s_wsfe(&io___411);
-      do_fio(&c__1, (char *) & (*liv), (ftnlen)sizeof(integer));
-      do_fio(&c__1, (char *)&miv1, (ftnlen)sizeof(integer));
-      e_wsfe();
-       */
-    }
 
   if (44 <= *liv)
     {
@@ -8386,7 +7485,7 @@ int dr7tvm_(integer *n, integer *p, doublereal *y,
   /* Function Body */
   /* Computing MIN */
   i__1 = *n - 1;
-  pl = min(i__1, *p);
+  pl = std::min(i__1, *p);
   pp1 = pl + 1;
   i__1 = pl;
 
@@ -8505,9 +7604,7 @@ int drn2gb_(doublereal *b, doublereal *d__, doublereal *dr,
                      doublereal *, doublereal *, doublereal *);
   static integer lh, nn, yi, ivmode;
   extern int divset_(integer *, integer *, integer *,
-                     integer *, doublereal *), ditsum_(doublereal *, doublereal *,
-                         integer *, integer *, integer *, integer *, doublereal *,
-                         doublereal *);
+                     integer *, doublereal *);
   static integer rd1, iv1, qtr1;
 
   /*  ***  REVISED ITERATION DRIVER FOR NL2SOL WITH SIMPLE BOUNDS  *** */
@@ -8667,7 +7764,7 @@ L10:
 
   if (iv1 > 16)
     {
-      goto L270;
+      goto L999;
     }
 
   if (iv1 < 12)
@@ -8687,8 +7784,7 @@ L10:
 
   iv[4] += *p * (*p + 15) / 2;
 L20:
-  dg7itb_(&b[3], &d__[1], &x[1], &iv[1], liv, lv, p, p, &v[1], &x[1], &x[1])
-  ;
+  dg7itb_(&b[3], &d__[1], &x[1], &iv[1], liv, lv, p, p, &v[1], &x[1], &x[1]);
 
   if (iv[1] != 14)
     {
@@ -8744,8 +7840,7 @@ L30:
 
   g1 = iv[28];
   y1 = g1 + *p;
-  dg7itb_(&b[3], &d__[1], &v[g1], &iv[1], liv, lv, p, p, &v[1], &x[1], &v[
-            y1]);
+  dg7itb_(&b[3], &d__[1], &v[g1], &iv[1], liv, lv, p, p, &v[1], &x[1], &v[y1]);
 
   if (iv[1] != 1)
     {
@@ -9064,7 +8159,7 @@ L210:
 
 L220:
   iv[1] = 66;
-  goto L270;
+  goto L999;
 
   /*  ***  RECORD EXTRA EVALUATIONS FOR FINITE-DIFFERENCE HESSIAN  *** */
 
@@ -9093,8 +8188,6 @@ L250:
 
 L260:
   g1 = iv[28];
-L270:
-  /*    ditsum_(&d__[1], &v[g1], &iv[1], liv, lv, p, &v[1], &x[1]); */
 
 L999:
   return 0;
@@ -10529,33 +9622,4 @@ int s_copy(char *a, char *b, ftnlen la, ftnlen lb)
     }
 
   return 1;
-}
-
-integer e_wsfe(void)
-{
-  /*int n = en_fio();
-  f__fmtbuf = NULL;
-  if (!n && fflush(f__cf))
-      err(f__elist->cierr, errno, "write end");
-  return n;
-   */
-  return 0;
-}
-
-integer do_fio(int*, char*, long)
-{
-  return 0;
-}
-
-integer do_fio(ftnint *number, char *ptr, ftnlen len)
-{
-  /*if(f__sequential)
-      return(do_us(number,ptr,len));
-  else    return(do_ud(number,ptr,len));*/
-  return 0;
-}
-
-integer s_wsfe(cilist *)
-{
-  return 0;
 }
