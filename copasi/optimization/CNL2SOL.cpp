@@ -9569,6 +9569,11 @@ int i7shft_(integer *n, integer *k, integer *x)
   --x;
 
   /* Function Body */
+  if (*k < 0)
+    {
+      goto L20;
+    }
+
   if (*k >= *n)
     {
       goto L999;
@@ -9585,6 +9590,29 @@ int i7shft_(integer *n, integer *k, integer *x)
     }
 
   x[*n] = t;
+  goto L999;
+
+L20:
+  k1 = -(*k);
+
+  if (k1 >= *n)
+    {
+      goto L999;
+    }
+
+  t = x[*n];
+  nm1 = *n - k1;
+  i__1 = nm1;
+
+  for (ii = 1; ii <= i__1; ++ii)
+    {
+      i__ = *n - ii;
+      x[i__ + 1] = x[i__];
+      /* L30: */
+    }
+
+  x[k1] = t;
+
 L999:
   return 0;
 } /* i7shft_ */
