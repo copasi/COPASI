@@ -3,8 +3,13 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
+// This includes code automatically translated with F2C
+// It uses fmin fmax (from <cmath>) for floating point numbers 
+// min and max is used for integers. Please don't change this!
+
 #include <cfloat>
 #include <climits>
+#include <cmath>
 #include "copasi.h"
 #include "CNL2SOL.h"
 
@@ -5636,7 +5641,7 @@ L40:
       ipiv1[i__] = i__;
     }
 
-  k0 = fmax(0, k);
+  k0 = max(0, k);
   dl7mst_(&td[1], &tg[1], ierr, &ipiv1[1], &k, &p1, &step[step_dim1 * 3 + 1]
           , &rmat[1], &step[step_offset], &v[1], &wlm[1]);
   dv7vmp_(&p1, &tg[1], &tg[1], &td[1], &c_n1);
@@ -7232,12 +7237,12 @@ L20:
     {
       /* Computing MAX */
       i__1 = miv1, i__2 = iv[58] - 1;
-      miv1 = fmax(i__1, i__2);
+      miv1 = max(i__1, i__2);
     }
 
   if (3 <= *liv)
     {
-      miv2 = miv1 + fmax(iv[3], 0);
+      miv2 = miv1 + max(iv[3], 0);
     }
 
   if (44 <= *liv)
@@ -7251,7 +7256,7 @@ L20:
     }
 
   iv[3] = 0;
-  iv[45] = fmax(iv[4], 0) + iv[42] - 1;
+  iv[45] = max(iv[4], 0) + iv[42] - 1;
   iv[4] = 0;
 
   if (*liv < miv2)
@@ -8381,7 +8386,7 @@ int dr7tvm_(integer *n, integer *p, doublereal *y,
   /* Function Body */
   /* Computing MIN */
   i__1 = *n - 1;
-  pl = fmin(i__1, *p);
+  pl = min(i__1, *p);
   pp1 = pl + 1;
   i__1 = pl;
 
