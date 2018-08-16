@@ -1430,8 +1430,8 @@ int df7dhb_(doublereal *b, doublereal *d__, doublereal *g,
   static integer kind, mm1o2, pp1o2, stpi, stpm, newm1, i__, k, l, m;
   static doublereal t;
   static integer gsave1;
-  extern int dv7scp_(integer *, doublereal *, doublereal *)
-  , dv7cpy_(integer *, doublereal *, doublereal *);
+  extern int dv7scp_(integer *, doublereal *, doublereal *),
+         dv7cpy_(integer *, doublereal *, doublereal *);
   static doublereal xm;
   static logical offsid;
   static integer mm1;
@@ -2680,8 +2680,8 @@ L270:
   wlm1 = w1 + *p;
   dl7msb_(&b[3], &d__[1], &g[1], &iv[75], &iv[ipiv0], &iv[ipiv1], &iv[ipiv2]
           , &iv[34], &v[lmat1], lv, p, &iv[48], &iv[41], &v[qtr1], &v[rmat1]
-          , &v[step1], &v[td1], &v[tg1], &v[1], &v[w1], &v[wlm1], &x[1], &v[
-            x01]);
+          , &v[step1], &v[td1], &v[tg1], &v[1], &v[w1], &v[wlm1], &x[1],
+          &v[x01]);
   /*        *** H IS STORED IN THE END OF W AND HAS JUST BEEN OVERWRITTEN, */
   /*        *** SO WE MARK IT INVALID... */
   iv[56] = -abs(h1);
@@ -2722,10 +2722,12 @@ L280:
   rmat1 = iv[78];
   dl7sqr_(&p1, &v[h1], &v[rmat1]);
   goto L300;
+
 L290:
   i__1 = *p * (*p + 1) / 2;
   dv7cpy_(&i__1, &v[h1], &v[j]);
   ds7ipr_(p, &iv[ipi], &v[h1]);
+
 L300:
 
   if (iv[5] == 1)
@@ -2739,6 +2741,7 @@ L300:
   dv7cpy_(&i__1, &v[lmat1], &v[s1]);
   ds7ipr_(p, &iv[ipi], &v[lmat1]);
   dv2axy_(&p1len, &v[h1], &c_b173, &v[lmat1], &v[h1]);
+
 L310:
   dv7cpy_(p, &v[td1], &d__[1]);
   dv7ipr_(p, &iv[ipi], &v[td1]);
@@ -2750,8 +2753,8 @@ L310:
 L320:
   lmat1 = iv[42];
   dg7qsb_(&b[3], &d__[1], &v[h1], &g[1], &iv[ipi], &iv[ipiv1], &iv[ipiv2], &
-          iv[33], &v[lmat1], lv, p, &iv[48], &p1, &v[step1], &v[td1], &v[
-            tg1], &v[1], &v[w1], &x[1], &v[x01]);
+          iv[33], &v[lmat1], lv, p, &iv[48], &p1, &v[step1], &v[td1],
+          &v[tg1], &v[1], &v[w1], &x[1], &v[x01]);
 
   if (iv[34] > 0)
     {
@@ -2820,6 +2823,7 @@ L350:
 
 L360:
   rstrst = 3;
+
 L370:
   x01 = iv[43];
   v[17] = drldst_(p, &d__[1], &x[1], &v[x01]);
@@ -2842,9 +2846,11 @@ L370:
 L380:
   dv7cpy_(p, &x[1], &v[x01]);
   goto L410;
+
 L390:
   dv7cpy_(p, &v[lstgst], &v[step1]);
   goto L410;
+
 L400:
   dv7cpy_(p, &v[step1], &v[lstgst]);
   dv2axy_(p, &x[1], &c_b173, &v[step1], &v[x01]);
@@ -2990,6 +2996,7 @@ L470:
 
   ds7lvm_(p, &v[temp1], &v[hc1], &v[step1]);
   goto L490;
+
 L480:
   rmat1 = iv[78];
   ipiv0 = iv[76];
@@ -3121,8 +3128,8 @@ L560:
 
   /*  ***  UPDATE S  *** */
 
-  ds7lup_(&v[s1], &v[47], ps, &v[55], &v[step1], &v[temp1], &v[temp2], &v[
-            g01], &v[56], &y[1]);
+  ds7lup_(&v[s1], &v[47], ps, &v[55], &v[step1], &v[temp1], &v[temp2],
+          &v[g01], &v[56], &y[1]);
   iv[1] = 2;
   goto L190;
 
@@ -3179,6 +3186,7 @@ L580:
 
 L590:
   iv[9] = 0;
+
 L600:
   df7dhb_(&b[3], &d__[1], &g[1], &i__, &iv[1], liv, lv, p, &v[1], &x[1]);
 
@@ -3226,6 +3234,7 @@ L640:
   i__1 = *p * (*p + 1) / 2;
   dv7cpy_(&i__1, &v[h1], &v[hc1]);
   goto L660;
+
 L650:
   rmat1 = iv[78];
   dl7sqr_(p, &v[h1], &v[rmat1]);
@@ -3315,15 +3324,15 @@ int dg7qsb_(doublereal *b, doublereal *d__, doublereal *
                      doublereal *, doublereal *, doublereal *, doublereal *,
                      doublereal *, doublereal *, doublereal *);
   extern doublereal dd7tpr_(integer *, doublereal *, doublereal *);
-  extern int dv7scp_(integer *, doublereal *, doublereal *)
-  , ds7ipr_(integer *, integer *, doublereal *), dg7qts_(doublereal
-      *, doublereal *, doublereal *, integer *, doublereal *, integer *,
-      doublereal *, doublereal *, doublereal *), dv7ipr_(integer *,
-          integer *, doublereal *), dv7cpy_(integer *, doublereal *,
-              doublereal *);
+  extern int dv7scp_(integer *, doublereal *, doublereal *),
+         ds7ipr_(integer *, integer *, doublereal *), dg7qts_(doublereal *,
+             doublereal *, doublereal *, integer *, doublereal *,
+             integer *, doublereal *, doublereal *, doublereal *),
+         dv7ipr_(integer *, integer *, doublereal *),
+         dv7cpy_(integer *, doublereal *, doublereal *),
+         dv7vmp_(integer *, doublereal *, doublereal *,
+                 doublereal *, integer *);
   static integer kb, p10;
-  extern int dv7vmp_(integer *, doublereal *, doublereal *,
-                     doublereal *, integer *);
   static integer ns;
   static doublereal ds0, rad;
 
@@ -3373,6 +3382,7 @@ int dg7qsb_(doublereal *b, doublereal *d__, doublereal *
   nred = v[6];
   ds0 = v[3];
   goto L20;
+
 L10:
   *p0 = 0;
   *ka = -1;
@@ -3406,12 +3416,13 @@ L30:
   dv7ipr_(p, &ipiv[1], &td[1]);
   dv7vmp_(p, &tg[1], &g[1], &d__[1], &c_n1);
   dv7ipr_(p, &ipiv[1], &tg[1]);
+
 L40:
   k = kinit;
   kinit = -1;
   v[8] = rad - v[2];
-  dg7qts_(&td[1], &tg[1], &dihdi[1], &k, &l[1], &p1, &step[step_offset], &v[
-            1], &w[1]);
+  dg7qts_(&td[1], &tg[1], &dihdi[1], &k, &l[1], &p1, &step[step_offset],
+          &v[1], &w[1]);
   *p0 = p1;
 
   if (*ka >= 0)
@@ -3427,8 +3438,8 @@ L50:
   v[8] = rad;
   p10 = p1;
   ds7bqn_(&b[3], &d__[1], &step[(step_dim1 << 1) + 1], &ipiv[1], &ipiv1[1],
-          &ipiv2[1], &kb, &l[1], lv, &ns, p, &p1, &step[step_offset], &td[1]
-          , &tg[1], &v[1], &w[1], &x[1], &x0[1]);
+          &ipiv2[1], &kb, &l[1], lv, &ns, p, &p1, &step[step_offset], &td[1],
+          &tg[1], &v[1], &w[1], &x[1], &x0[1]);
 
   if (ns > 0)
     {
@@ -3488,10 +3499,9 @@ int dg7qts_(doublereal *d__, doublereal *dig, doublereal *
   extern doublereal dr7mdc_(integer *);
   extern int dl7ivm_(integer *, doublereal *, doublereal *,
                      doublereal *);
-  extern doublereal dd7tpr_(integer *, doublereal *, doublereal *), dv2nrm_(
-    integer *, doublereal *);
-  extern int dl7itv_(integer *, doublereal *, doublereal *,
-                     doublereal *);
+  extern doublereal dd7tpr_(integer *, doublereal *, doublereal *),
+         dv2nrm_(integer *, doublereal *);
+  extern int dl7itv_(integer *, doublereal *, doublereal *, doublereal *);
   extern doublereal dl7svn_(integer *, doublereal *, doublereal *,
                             doublereal *);
   extern int dl7srt_(integer *, integer *, doublereal *,
@@ -3883,6 +3893,7 @@ L120:
 
 L130:
       inc = i__;
+
 L140:
       k1 += inc;
       /* L150: */
@@ -3963,6 +3974,7 @@ L170:
 
 L180:
       inc = i__;
+
 L190:
       k1 += inc;
       /* L200: */
@@ -4519,6 +4531,7 @@ doublereal dh2rfg_(doublereal *a, doublereal *b, doublereal *x, doublereal *y,
   *z__ = zero;
   ret_val = *a;
   goto L999;
+
 L10:
   t = fabs(*a) + fabs(*b);
   a1 = *a / t;
@@ -4539,6 +4552,7 @@ L10:
   *x = a1 / c__;
   *y = b1 / c__;
   ret_val = t * c__;
+
 L999:
   return ret_val;
   /*  ***  LAST LINE OF DH2RFG FOLLOWS  *** */
@@ -4547,14 +4561,14 @@ L999:
 int divset_(integer *alg, integer *iv, integer *liv, integer
             *lv, doublereal *v);
 
-int CNL2SOL::divset_N(integer *alg, integer *iv, integer *liv, integer
-                      *lv, doublereal *v)
+int CNL2SOL::divset_N(integer *alg, integer *iv, integer *liv,
+                      integer *lv, doublereal *v)
 {
   return divset_(alg, iv, liv, lv, v);
 }
 
-int divset_(integer *alg, integer *iv, integer *liv, integer
-            *lv, doublereal *v)
+int divset_(integer *alg, integer *iv, integer *liv,
+            integer *lv, doublereal *v)
 {
   /* Initialized data */
 
@@ -4823,6 +4837,7 @@ int dl7ivm_(integer *n, doublereal *x, doublereal *l,
     }
 
   goto L999;
+
 L20:
   j = k * (k + 1) / 2;
   x[k] = y[k] / l[j];
@@ -4868,24 +4883,24 @@ int dl7msb_(doublereal *b, doublereal *d__, doublereal *g,
   static doublereal nred, pred;
   static integer i__, j, k, l, kinit, k0, p1;
   extern int dd7mlp_(integer *, doublereal *, doublereal *,
-                     doublereal *, integer *), ds7bqn_(doublereal *, doublereal *,
-                         doublereal *, integer *, integer *, integer *, integer *,
-                         doublereal *, integer *, integer *, integer *, integer *,
-                         doublereal *, doublereal *, doublereal *, doublereal *,
-                         doublereal *, doublereal *, doublereal *);
+                     doublereal *, integer *),
+                                ds7bqn_(doublereal *, doublereal *, doublereal *, integer *,
+                                        integer *, integer *, integer *, doublereal *,
+                                        integer *, integer *, integer *, integer *,
+                                        doublereal *, doublereal *, doublereal *, doublereal *,
+                                        doublereal *, doublereal *, doublereal *);
   extern doublereal dd7tpr_(integer *, doublereal *, doublereal *);
-  extern int dv7scp_(integer *, doublereal *, doublereal *)
-  , dq7rsh_(integer *, integer *, logical *, doublereal *,
-            doublereal *, doublereal *), dl7mst_(doublereal *, doublereal *,
-                integer *, integer *, integer *, integer *, doublereal *,
-                doublereal *, doublereal *, doublereal *, doublereal *), dv7ipr_(
-                  integer *, integer *, doublereal *), dl7tvm_(integer *,
-                      doublereal *, doublereal *, doublereal *), dv2axy_(integer *,
-                          doublereal *, doublereal *, doublereal *, doublereal *), dv7cpy_(
-                            integer *, doublereal *, doublereal *);
+  extern int dv7scp_(integer *, doublereal *, doublereal *),
+         dq7rsh_(integer *, integer *, logical *, doublereal *,
+                 doublereal *, doublereal *), dl7mst_(doublereal *, doublereal *,
+                     integer *, integer *, integer *, integer *, doublereal *,
+                     doublereal *, doublereal *, doublereal *, doublereal *),
+         dv7ipr_(integer *, integer *, doublereal *),
+         dl7tvm_(integer *, doublereal *, doublereal *, doublereal *),
+         dv2axy_(integer *, doublereal *, doublereal *, doublereal *, doublereal *),
+         dv7cpy_(integer *, doublereal *, doublereal *),
+         dv7vmp_(integer *, doublereal *, doublereal *, doublereal *, integer *);
   static integer kb, p10, p11;
-  extern int dv7vmp_(integer *, doublereal *, doublereal *,
-                     doublereal *, integer *);
   static integer ns;
   static doublereal ds0, rad;
 
@@ -4973,6 +4988,7 @@ L30:
   dv7vmp_(p, &tg[1], &g[1], &d__[1], &c_n1);
   dv7ipr_(p, &ipiv[1], &tg[1]);
   p10 = p1;
+
 L40:
   k = kinit;
   kinit = -1;
@@ -5016,8 +5032,8 @@ L60:
     }
 
   ds7bqn_(&b[3], &d__[1], &step[(step_dim1 << 1) + 1], &ipiv[1], &ipiv1[1],
-          &ipiv2[1], &kb, &lmat[1], lv, &ns, p, &p1, &step[step_offset], &
-          td[1], &tg[1], &v[1], &w[1], &x[1], &x0[1]);
+          &ipiv2[1], &kb, &lmat[1], lv, &ns, p, &p1, &step[step_offset],
+          &td[1], &tg[1], &v[1], &w[1], &x[1], &x0[1]);
   pred += v[7];
 
   if (ns == 0)
@@ -5072,8 +5088,8 @@ L90:
 } /* dl7msb_ */
 
 int dl7mst_(doublereal *d__, doublereal *g, integer *ierr,
-            integer *ipivot, integer *ka, integer *p, doublereal *qtr, doublereal
-            *r__, doublereal *step, doublereal *v, doublereal *w)
+            integer *ipivot, integer *ka, integer *p, doublereal *qtr,
+            doublereal *r__, doublereal *step, doublereal *v, doublereal *w)
 {
   /* Initialized data */
 
@@ -5097,12 +5113,10 @@ int dl7mst_(doublereal *d__, doublereal *g, integer *ierr,
   static doublereal d1, d2;
   static integer i1, j1;
   extern doublereal dr7mdc_(integer *);
-  extern int dl7ivm_(integer *, doublereal *, doublereal *,
-                     doublereal *);
-  extern doublereal dd7tpr_(integer *, doublereal *, doublereal *), dv2nrm_(
-    integer *, doublereal *);
-  extern int dl7itv_(integer *, doublereal *, doublereal *,
-                     doublereal *);
+  extern int dl7ivm_(integer *, doublereal *, doublereal *, doublereal *);
+  extern doublereal dd7tpr_(integer *, doublereal *, doublereal *),
+         dv2nrm_(integer *, doublereal *);
+  extern int dl7itv_(integer *, doublereal *, doublereal *, doublereal *);
   extern doublereal dl7svn_(integer *, doublereal *, doublereal *,
                             doublereal *);
   extern int dv7cpy_(integer *, doublereal *, doublereal *)
@@ -5654,6 +5668,7 @@ L300:
     }
 
   goto L320;
+
 L310:
 
   if (phi < 0.)
@@ -5780,11 +5795,13 @@ L410:
 
 L430:
   v[5] = alphak;
+
 L440:
   /* Computing MIN */
   d__1 = dd7tpr_(p, &step[1], &g[1]);
   v[4] = fmin(d__1, 0.);
   v[7] = (alphak * dst * dst - v[4]) * .5;
+
 L450:
   v[2] = dst;
   w[dstsav] = dst;
@@ -5989,8 +6006,8 @@ doublereal dl7svn_(integer *p, doublereal *l, doublereal *x, doublereal *y)
   static doublereal t;
   static integer j0;
   static doublereal splus, xplus;
-  extern doublereal dd7tpr_(integer *, doublereal *, doublereal *), dv2nrm_(
-    integer *, doublereal *);
+  extern doublereal dd7tpr_(integer *, doublereal *, doublereal *),
+         dv2nrm_(integer *, doublereal *);
   extern int dv2axy_(integer *, doublereal *, doublereal *,
                      doublereal *, doublereal *);
   static integer ii, ji, jj, ix, jm1, pm1;
@@ -6222,6 +6239,7 @@ L60:
 
 L110:
   ret_val = 0.;
+
 L999:
   return ret_val;
   /*  ***  LAST CARD OF DL7SVN FOLLOWS  *** */
@@ -6278,8 +6296,7 @@ int dl7tvm_(integer *n, doublereal *x, doublereal *l,
   /*  ***  LAST CARD OF DL7TVM FOLLOWS  *** */
 } /* dl7tvm_ */
 
-int dl7vml_(integer *n, doublereal *x, doublereal *l,
-            doublereal *y)
+int dl7vml_(integer *n, doublereal *x, doublereal *l, doublereal *y)
 {
   /* System generated locals */
   integer i__1, i__2;
@@ -6341,14 +6358,6 @@ int dparck_(integer *alg, doublereal *d__, integer *iv,
   static doublereal machep = -1.;
   static doublereal tiny = 1.;
   static doublereal zero = 0.;
-  /*static char vn[4*2*34] = "EPSL" "ON.." "PHMN" "FC.." "PHMX" "FC.." "DECF"
-  "AC.." "INCF" "AC.." "RDFC" "MN.." "RDFC" "MX.." "TUNE" "R1.."
-  "TUNE" "R2.." "TUNE" "R3.." "TUNE" "R4.." "TUNE" "R5.." "AFCT"
-  "OL.." "RFCT" "OL.." "XCTO" "L..." "XFTO" "L..." "LMAX" "0..."
-  "LMAX" "S..." "SCTO" "L..." "DINI" "T..." "DTIN" "IT.." "D0IN"
-  "IT.." "DFAC" "...." "DLTF" "DC.." "DLTF" "DJ.." "DELT" "A0.."
-  "FUZZ" "...." "RLIM" "IT.." "COSM" "IN.." "HUBE" "RC.." "RSPT"
-  "OL.." "SIGM" "IN.." "ETA0" "...." "BIAS" "....";*/
   static char vn[4 * 2 * 34] = "";
 
   static doublereal vm[34] = {.001, -.99, .001, .01, 1.2, .01, 1.2, 0., 0., .001,
@@ -6493,6 +6502,7 @@ int dparck_(integer *alg, doublereal *d__, integer *iv,
 
   iv[1] = 67;
   goto L999;
+
 L20:
 
   if (*alg < 1 || *alg > 4)
@@ -6572,6 +6582,7 @@ L30:
   iv[1] = 81;
 
   goto L999;
+
 L50:
 
   if (iv1 != 14)
@@ -6598,6 +6609,7 @@ L50:
   s_copy(which + 4, dflt + 4, (ftnlen)4, (ftnlen)4);
   s_copy(which + 8, dflt + 8, (ftnlen)4, (ftnlen)4);
   goto L110;
+
 L60:
 
   if (*n == iv[38])
@@ -6658,6 +6670,7 @@ L110:
   vm[28] = machep;
   vx[29] = big;
   vm[32] = machep;
+
 L120:
   m = 0;
   i__ = 1;
@@ -6697,6 +6710,7 @@ L140:
   iv[1] = 51;
 
   goto L999;
+
 L170:
 
   if ((iv[16] > 0 || v[38] > zero) && iv1 == 12)
@@ -6766,6 +6780,7 @@ L250:
         }
 
       m = 1;
+
 L280:
       ++k;
       ++l;
@@ -6813,6 +6828,7 @@ L340:
   iv[1] = 67;
 
   goto L999;
+
 L360:
 
   if (44 <= *liv)
@@ -6830,8 +6846,8 @@ L999:
   /*  ***  LAST LINE OF DPARCK FOLLOWS  *** */
 } /* dparck_ */
 
-int dq7apl_(integer *nn, integer *n, integer *p, doublereal *
-            j, doublereal *r__, integer *ierr)
+int dq7apl_(integer *nn, integer *n, integer *p, doublereal * j,
+            doublereal *r__, integer *ierr)
 {
   /* System generated locals */
   integer j_dim1, j_offset, i__1;
@@ -6949,8 +6965,8 @@ L999:
   /*  ***  LAST LINE OF DQ7APL FOLLOWS  *** */
 } /* dq7apl_ */
 
-int dq7rad_(integer *n, integer *nn, integer *p, doublereal *
-            qtr, logical *qtrset, doublereal *rmat, doublereal *w, doublereal *y)
+int dq7rad_(integer *n, integer *nn, integer *p, doublereal *qtr,
+            logical *qtrset, doublereal *rmat, doublereal *w, doublereal *y)
 {
   /* Initialized data */
 
@@ -6974,8 +6990,8 @@ int dq7rad_(integer *n, integer *nn, integer *p, doublereal *
   extern doublereal dr7mdc_(integer *);
   extern int dv7scl_(integer *, doublereal *, doublereal *,
                      doublereal *);
-  extern doublereal dd7tpr_(integer *, doublereal *, doublereal *), dv2nrm_(
-    integer *, doublereal *);
+  extern doublereal dd7tpr_(integer *, doublereal *, doublereal *),
+         dv2nrm_(integer *, doublereal *);
   extern int dv2axy_(integer *, doublereal *, doublereal *,
                      doublereal *, doublereal *);
   static integer ii, ij, nk;
@@ -7076,6 +7092,7 @@ L10:
 
       w[k + i__ * w_dim1] = zero;
       goto L999;
+
 L30:
       wi = w[k + i__ * w_dim1];
 
@@ -7086,6 +7103,7 @@ L30:
 
       bigrt = dr7mdc_(&c__5);
       tinyrt = dr7mdc_(&c__2);
+
 L40:
 
       if (t <= tinyrt)
@@ -7106,6 +7124,7 @@ L40:
       wi += t;
       s = sqrt(t * wi);
       goto L70;
+
 L50:
       s = sqrt(t);
 
@@ -7117,10 +7136,12 @@ L50:
       wi += t;
       s *= sqrt(wi);
       goto L70;
+
 L60:
       t = -t;
       wi += t;
       s *= sqrt(-wi);
+
 L70:
       w[k + i__ * w_dim1] = wi;
       d__1 = one / s;
@@ -7135,6 +7156,7 @@ L70:
       d__1 = -dd7tpr_(&nk, &y[k], &w[k + i__ * w_dim1]);
       dv2axy_(&nk, &y[k], &d__1, &w[k + i__ * w_dim1], &y[k]);
       qtr[i__] = y[k];
+
 L80:
 
       if (ip1 > *p)
@@ -7175,10 +7197,12 @@ L100:
       d__1 = ari / t;
       t *= sqrt(one + d__1 * d__1);
       goto L120;
+
 L110:
       /* Computing 2nd power */
       d__1 = t / ari;
       t = ari * sqrt(one + d__1 * d__1);
+
 L120:
 
       if (ri < zero)
@@ -7206,6 +7230,7 @@ L120:
       qri = qtr[i__];
       t = s * (qri + dd7tpr_(&nk, &y[k], &w[k + i__ * w_dim1]));
       qtr[i__] = qri + t;
+
 L130:
 
       if (ip1 > *p)
@@ -7246,6 +7271,7 @@ L150:
       qri = qtr[i__];
       t = s * (qri + y[k] * wi);
       qtr[i__] = qri + t;
+
 L160:
 
       if (ip1 > *p)
@@ -7355,6 +7381,7 @@ int dq7rsh_(integer *k, integer *p, logical *havqtr,
       x = zero;
       z__ = zero;
       goto L40;
+
 L10:
       r__[k1] = dh2rfg_(&a, &b, &x, &y, &z__);
 
@@ -7434,8 +7461,8 @@ doublereal dr7mdc_(integer *k)
   big = d1mach_(&c__2);
   eta = d1mach_(&c__1);
   machep = d1mach_(&c__4);
-L1:
 
+L1:
   /* -------------------------------  BODY  -------------------------------- */
 
   switch (*k)
@@ -7614,15 +7641,15 @@ int drn2gb_(doublereal *b, doublereal *d__, doublereal *dr,
   static integer g1, y1;
   extern int dg7itb_(doublereal *, doublereal *,
                      doublereal *, integer *, integer *, integer *, integer *, integer
-                     *, doublereal *, doublereal *, doublereal *), dq7rad_(integer *,
-                         integer *, integer *, doublereal *, logical *, doublereal *,
-                         doublereal *, doublereal *), dd7upd_(doublereal *, doublereal *,
-                             integer *, integer *, integer *, integer *, integer *, integer *,
-                             integer *, integer *, doublereal *), dq7apl_(integer *, integer *,
-                                 integer *, doublereal *, doublereal *, integer *);
+                     *, doublereal *, doublereal *, doublereal *),
+                     dq7rad_(integer *, integer *, integer *, doublereal *, logical *,
+                             doublereal *, doublereal *, doublereal *),
+                     dd7upd_(doublereal *, doublereal *, integer *, integer *, integer *,
+                             integer *, integer *, integer *, integer *, integer *, doublereal *),
+                     dq7apl_(integer *, integer *, integer *, doublereal *, doublereal *, integer *);
   extern doublereal dd7tpr_(integer *, doublereal *, doublereal *);
-  extern int dl7vml_(integer *, doublereal *, doublereal *,
-                     doublereal *), dv7scp_(integer *, doublereal *, doublereal *);
+  extern int dl7vml_(integer *, doublereal *, doublereal *, doublereal *),
+         dv7scp_(integer *, doublereal *, doublereal *);
   extern doublereal dv2nrm_(integer *, doublereal *);
   extern int dv7cpy_(integer *, doublereal *, doublereal *)
   ;
@@ -7810,6 +7837,7 @@ L10:
     }
 
   iv[4] += *p * (*p + 15) / 2;
+
 L20:
   dg7itb_(&b[3], &d__[1], &x[1], &iv[1], liv, lv, p, p, &v[1], &x[1], &x[1]);
 
@@ -7961,8 +7989,10 @@ L60:
 
   dv7cpy_(n, &r__[1], &rd[1]);
   goto L80;
+
 L70:
   dv7cpy_(n, &rd[1], &r__[1]);
+
 L80:
   dq7apl_(nd, n, p, &dr[dr_offset], &rd[1], &c__0);
   i__1 = std::min(*n, *p);
@@ -7980,6 +8010,7 @@ L90:
 
 L100:
   dv7scp_(p, &v[y1], &c_b78);
+
 L110:
   dv7scp_(&lh, &v[rmat1], &c_b78);
   goto L240;
@@ -8201,6 +8232,7 @@ L230:
 
 L240:
   *n2 = 0;
+
 L250:
   *n1 = *n2 + 1;
   *n2 += *nd;
@@ -8253,12 +8285,13 @@ int ds7bqn_(doublereal *b, doublereal *d__, doublereal *dst,
   extern int i7shft_(integer *, integer *, integer *),
          dv7scp_(integer *, doublereal *, doublereal *);
   extern doublereal dv2nrm_(integer *, doublereal *);
-  extern int dl7itv_(integer *, doublereal *, doublereal *,
-                     doublereal *), dq7rsh_(integer *, integer *, logical *,
-                         doublereal *, doublereal *, doublereal *), dv7ipr_(integer *,
-                             integer *, doublereal *), dv7cpy_(integer *, doublereal *,
-                                 doublereal *), dv2axy_(integer *, doublereal *, doublereal *,
-                                     doublereal *, doublereal *);
+  extern int dl7itv_(integer *, doublereal *, doublereal *, doublereal *),
+         dq7rsh_(integer *, integer *, logical *, doublereal *,
+                 doublereal *, doublereal *),
+         dv7ipr_(integer *, integer *, doublereal *),
+         dv7cpy_(integer *, doublereal *, doublereal *),
+         dv2axy_(integer *, doublereal *, doublereal *, doublereal *,
+                 doublereal *);
   static doublereal dx, ti, xi, dstmin, dstmax;
   static integer p1m1;
   static doublereal gts, dst0, dst1;
@@ -8364,9 +8397,11 @@ L30:
       ti = (x[j] - b[(j << 1) + 2]) / dx;
       k = i__;
       goto L50;
+
 L40:
       ti = (x[j] - b[(j << 1) + 1]) / dx;
       k = -i__;
+
 L50:
 
       if (t <= ti)
@@ -8457,6 +8492,7 @@ L80:
   i7shft_(p1, &j, &ipiv1[1]);
   dv7shf_(p1, &j, &tg[1]);
   dv7shf_(p1, &j, &dst[1]);
+
 L100:
 
   if (k < 0)
@@ -8512,6 +8548,7 @@ L110:
       t = -t;
       j = -j;
       ipiv[i__] = j;
+
 L130:
       /* Computing MAX */
       d__3 = (d__1 = x[j], fabs(d__1)), d__4 = (d__2 = x0[j], fabs(d__2));
@@ -8651,6 +8688,7 @@ int ds7ipr_(integer *p, integer *ip, doublereal *h__)
         }
 
       k = i__;
+
 L10:
       j1 = j;
       k1 = k;
@@ -8662,6 +8700,7 @@ L10:
 
       j1 = k;
       k1 = j;
+
 L20:
       kmj = k1 - j1;
       l = j1 - 1;
@@ -8764,8 +8803,8 @@ int ds7lup_(doublereal *a, doublereal *cosmin, integer *p,
   /* Local variables */
   static integer i__, j, k;
   static doublereal t;
-  extern doublereal dd7tpr_(integer *, doublereal *, doublereal *), dv2nrm_(
-    integer *, doublereal *);
+  extern doublereal dd7tpr_(integer *, doublereal *, doublereal *),
+         dv2nrm_(integer *, doublereal *);
   extern int ds7lvm_(integer *, doublereal *, doublereal *,
                      doublereal *);
   static doublereal ui, wi, denmin, sdotwm;
@@ -9004,6 +9043,7 @@ doublereal dv2nrm_(integer *p, doublereal *x)
 
   ret_val = 0.;
   goto L999;
+
 L10:
   i__1 = *p;
 
@@ -9030,6 +9070,7 @@ L30:
 
   ret_val = scale;
   goto L999;
+
 L40:
   t = 1.;
 
@@ -9062,6 +9103,7 @@ L40:
         }
 
       goto L60;
+
 L50:
       r__ = scale / xi;
 
@@ -9072,11 +9114,13 @@ L50:
 
       t = t * r__ * r__ + 1.;
       scale = xi;
+
 L60:
       ;
     }
 
   ret_val = scale * sqrt(t);
+
 L999:
   return ret_val;
   /*  ***  LAST LINE OF DV2NRM FOLLOWS  *** */
@@ -9259,9 +9303,11 @@ int dv7ipr_(integer *n, integer *ip, doublereal *x)
 
       ip[i__] = -j;
       goto L30;
+
 L10:
       t = x[i__];
       k = i__;
+
 L20:
       x[k] = x[j];
       k = j;
@@ -9274,6 +9320,7 @@ L20:
         }
 
       x[k] = t;
+
 L30:
       ;
     }
