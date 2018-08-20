@@ -9903,7 +9903,8 @@ int i7shft_(integer *n, integer *k, integer *x)
   /* Local variables */
   static integer i__, t, k1, ii, nm1;
 
-  /*  ***  SHIFT X(K),...,X(N) LEFT CIRCULARLY ONE POSITION  *** */
+  /*  ***  SHIFT X(K),...,X(N) LEFT CIRCULARLY ONE POSITION IF K .GT. 0. */
+  /*  ***  SHIFT X(-K),...,X(N) RIGHT CIRCULARLY ONE POSITION IF K .LT. 0. */
 
   /* Parameter adjustments */
   --x;
