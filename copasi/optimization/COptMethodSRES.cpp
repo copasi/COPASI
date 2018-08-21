@@ -645,7 +645,7 @@ bool COptMethodSRES::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Evolutionary.Strategy.SRES"));
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Evolutionary_Strategy_SRES/"));
 
   // initialise the population
   Continue = creation(0);
