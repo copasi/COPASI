@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -13,7 +13,6 @@
 
 #include "COptLogItem.h"
 #include "utilities/utility.h"
-
 
 const std::string COptLogItem::MsgIDHeader[] =
 {
@@ -103,7 +102,7 @@ const std::string COptLogItem::MsgIDHeader[] =
 const std::string COptLogItem::MsgIDSubtext[] =
 {
   //Std_start
-  "For more information about this method see: http://www.copasi.org/tiki-index.php?page=%s%",
+  "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/%s%",
   //STD_start_nodoc
   "",
   //STD_early_stop
