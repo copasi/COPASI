@@ -483,7 +483,7 @@ bool COptMethodGA::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Genetic.Algorithm"));
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Genetic_Algorithm/"));
 
   // Counters to determine whether the optimization process has stalled
   // They count the number of generations without advances.
