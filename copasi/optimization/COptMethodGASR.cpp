@@ -466,7 +466,7 @@ bool COptMethodGASR::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Genetic.Algorithm.SR"));
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Genetic_Algorithm_SR/"));
 
   // Counters to determine whether the optimization process has stalled
   // They count the number of generations without advances.
