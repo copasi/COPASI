@@ -62,7 +62,7 @@ bool COptMethodPraxis::optimise()
 {
   if (!initialize()) return false;
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Praxis"));
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Praxis/"));
 
   C_INT i;
   C_INT prin = 0;
