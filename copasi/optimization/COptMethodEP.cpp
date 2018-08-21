@@ -76,7 +76,7 @@ bool COptMethodEP::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Evolutionary.Programming"));
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Evolutionary_Programming/"));
 
   bool Continue = true;
 
