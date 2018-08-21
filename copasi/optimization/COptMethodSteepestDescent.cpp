@@ -72,7 +72,7 @@ bool COptMethodSteepestDescent::optimise()
 {
   if (!initialize()) return false;
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Steepest.Descent"));
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Steepest_Descent/"));
 
   size_t i, k;
   C_FLOAT64 tmp, x0, alpha, mn, mx, fmn, fmx;
