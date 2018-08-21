@@ -133,13 +133,6 @@ bool COptMethodTruncatedNewton::optimise()
         {
           mpCTruncatedNewton->tnbc_(&ierror, &mVariableSize, mCurrent.array(), &fest, mGradient.array(), dwork.array(), &lw, mpTruncatedNewton, low.array(), up.array(), iPivot.array());
 
-          printf("ierror=%d\nf()=%.4lf\n", ierror, fest);
-
-          for (int counter = 0; counter < mVariableSize; counter++)
-            printf("p[%02d]=%.4lf ", counter, mCurrent[counter]);
-
-          printf("\n");
-
           mEvaluationValue = fest;
         }
 
