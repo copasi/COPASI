@@ -133,7 +133,7 @@ bool CRandomSearch::optimise()
 
   if (!initialize()) return false;
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Random.Search"));
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Random_Search/"));
 
   unsigned C_INT32 j;
 
