@@ -502,7 +502,7 @@ bool COptMethodPS::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Particle.Swarm"));
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Particle_Swarm/"));
 
   C_FLOAT64 * pIndividual = mIndividuals[0]->array();
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
