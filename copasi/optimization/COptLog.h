@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,9 +22,9 @@ protected:
 private:
 
   /**
-   * A vector of all log items
+   * A vector of all log entries
    */
-  std::vector< COptLogItem > mLogItems;
+  std::vector< COptLogEntry > mLogEntries;
 
   // Operations
 private:
@@ -46,7 +46,7 @@ public:
    * Enter a log message
    * @param COptLogItem item
    */
-  void enterLogItem(COptLogItem item);
+  void enterLogEntry(COptLogEntry entry);
 
   /**
    * Get the log element count
