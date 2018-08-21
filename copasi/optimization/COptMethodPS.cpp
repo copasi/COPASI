@@ -583,7 +583,7 @@ bool COptMethodPS::optimise()
         {
           buildInformants();
 
-          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::PS_no_particle_improved, dumpStatus()).iter(mCurrentGeneration).with(mNumInformed));
+          if (mLogVerbosity > 0) mMethodLog.enterLogItem(COptLogItem(COptLogItem::PS_no_particle_improved, dumpStatus()).iter(mCurrentGeneration).with(mNumInformed));
         }
       else
         {
@@ -621,7 +621,7 @@ unsigned C_INT32 COptMethodPS::getMaxLogVerbosity() const
 
 std::string COptMethodPS::dumpStatus() const
 {
-  if (mLogVerbosity >= 2)
+  if (mLogVerbosity > 1)
     {
       std::stringstream status;
 
