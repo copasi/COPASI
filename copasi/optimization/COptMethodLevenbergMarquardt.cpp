@@ -112,7 +112,7 @@ bool COptMethodLevenbergMarquardt::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Levenberg.Marquardt"));
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Levenberg_-_Marquardt/"));
 
   C_INT dim, starts, info, nrhs;
   C_INT one = 1;
