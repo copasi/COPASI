@@ -459,6 +459,10 @@ C_FLOAT64 COptMethodPS::calcFValVariance() const
       if (*pValue == std::numeric_limits<C_FLOAT64>::infinity())
         return false;
 
+      //WARNING:This function returns C_FLOAT64, but above we have return false; !!!!!
+      // should we return 0.0 instead? (yes, false is often represeted with 0, but it
+      // does not have to!)
+
       Delta = *pValue - Mean;
       Mean += Delta / ++N;
       // This uses the new mean, i.e., not Delta * Delta
@@ -480,6 +484,7 @@ C_FLOAT64 COptMethodPS::calcVariableVariance(const size_t & variable) const
   std::vector<CVector< C_FLOAT64 > *>::const_iterator pIndividual = mIndividuals.begin();
   std::vector<CVector< C_FLOAT64 > *>::const_iterator pIndividualEnd = mIndividuals.end();
 
+  // WARNING: parameter values can be infinity, this needs to deal with that (as above)
   for (; pIndividual != pIndividualEnd; ++pIndividual)
     {
       pValue = (*pIndividual)->array() + variable;
