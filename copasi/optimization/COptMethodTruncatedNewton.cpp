@@ -60,7 +60,7 @@ bool COptMethodTruncatedNewton::optimise()
 {
   if (!initialize()) return false;
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Truncated.Newton"));
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Truncated_Newton/"));
 
   C_FLOAT64 fest;
   C_INT lw, ierror = 0;
@@ -131,12 +131,19 @@ bool COptMethodTruncatedNewton::optimise()
       // minimise
       try
         {
-          mpCTruncatedNewton->tnbc_(&ierror, &mVariableSize, mCurrent.array(), &fest, mGradient.array(), dwork.array(),
-                                    &lw, mpTruncatedNewton, low.array(), up.array(), iPivot.array());
+          mpCTruncatedNewton->tnbc_(&ierror, &mVariableSize, mCurrent.array(), &fest, mGradient.array(), dwork.array(), &lw, mpTruncatedNewton, low.array(), up.array(), iPivot.array());
+
+          printf("ierror=%d\nf()=%.4lf\n", ierror, fest);
+
+          for (int counter = 0; counter < mVariableSize; counter++)
+            printf("p[%02d]=%.4lf ", counter, mCurrent[counter]);
+
+          printf("\n");
+
           mEvaluationValue = fest;
         }
 
-      // This signals that the user opted to interupt
+      // This signals that the user opted to interrupt
       catch (bool)
         {
           break;
