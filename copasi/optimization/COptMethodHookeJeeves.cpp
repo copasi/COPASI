@@ -69,7 +69,7 @@ bool COptMethodHookeJeeves::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Hooke.Jeeves"));
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Hooke___Jeeves/"));
 
   C_FLOAT64 newf, steplength, tmp;
   bool Keep;
