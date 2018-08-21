@@ -102,7 +102,7 @@ bool COptMethodSA::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Simulated.Annealing"));
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Simulated_Annealing/"));
 
   size_t i, j, k, m;
 
