@@ -64,7 +64,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
   addParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
   addParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006);
   addParameter("Modulation", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006, eUserInterfaceFlag::editable);
-  addParameter("Stop after # Stalled Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  addParameter("Stop after # stalled iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
@@ -488,8 +488,8 @@ bool COptMethodLevenbergMarquardt::initialize()
   else
     mHaveResiduals = false;
 
-  if (getParameter("Stop after # Stalled Iterations"))
-    mStopAfterStalledIterations = getValue <unsigned C_INT32>("Stop after # Stalled Iterations");
+  if (getParameter("Stop after # stalled iterations"))
+    mStopAfterStalledIterations = getValue <unsigned C_INT32>("Stop after # stalled iterations");
 
   return true;
 }
