@@ -185,7 +185,7 @@ bool COptMethodNelderMead::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Nelder.Mead"));
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Nelder_-_Mead/"));
 
   // set tolerances for local minima test to zero
   C_FLOAT64 abstol, reltol;
