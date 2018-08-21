@@ -395,7 +395,7 @@ bool COptMethodLevenbergMarquardt::optimise()
             }
           else
             {
-              if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_inc_lambda).iter(mIteration));
+              if (mLogVerbosity > 0) mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_inc_lambda).iter(mIteration));
 
               // increase lambda
               LM_lambda *= nu * 2;
