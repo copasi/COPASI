@@ -60,7 +60,13 @@ bool COptMethodTruncatedNewton::optimise()
 {
   if (!initialize()) return false;
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Truncated_Newton/"));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Algorithm started",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Truncated_Newton/"
+      )
+    );
 
   C_FLOAT64 fest;
   C_INT lw, ierror = 0;
@@ -111,7 +117,8 @@ bool COptMethodTruncatedNewton::optimise()
       *mContainerVariables[i] = (mCurrent[i]);
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   // Report the first value as the current best
   mBestValue = evaluate();
@@ -240,10 +247,16 @@ bool COptMethodTruncatedNewton::optimise()
 
 #endif // XXXX
 
-      if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::TN_next_repeat).with(repeat));
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(
+          COptLogEntry(
+            "Solution parameters outside of the boundaries. Repeating calculations from current border position ("
+            + std::to_string(repeat) + ")")
+        );
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(COptLogEntry("Algorithm finished."));
 
   return true;
 }
