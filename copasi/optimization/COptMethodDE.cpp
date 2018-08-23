@@ -486,15 +486,17 @@ bool COptMethodDE::optimise()
       if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
         break;
 
-      if (Stalled > 10)
+      if (Stalled > 50)
         {
           if (mLogVerbosity > 0)
             mMethodLog.enterLogEntry(
               COptLogEntry(
                 "Generation " + std::to_string(mCurrentGeneration) +
-                ": Fittest individual has not changed for the last " + std::to_string(Stalled + 1) +
-                "generations: 40% of individuals randomized."
+                ": Fittest individual has not changed in the last " + std::to_string(Stalled + 1) +
+                " generations. 40% of individuals randomized."
               ));
+
+          Stalled = 0;
 
           Continue &= creation((size_t) 0.4 * mPopulationSize, (size_t) 0.8 * mPopulationSize);
         }
