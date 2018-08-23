@@ -46,8 +46,7 @@ public:
   /**
    * Constructor.
    */
-  COptLogEntry(std::string &header, std::string &subtext = "", std::string &status = "");
-
+  COptLogEntry(const std::string &header, const std::string &subtext = "", const std::string &status = "");
   /**
    * Destructor
    */
