@@ -66,7 +66,13 @@ bool COptMethodNL2SOL::optimise()
 {
   if (!initialize()) return false;
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.NL2SOL"));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Algorithm started",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/NL2SOL/"
+      )
+    );
 
   integer j, repeat, dummy;
   integer uiparam[1];
@@ -103,7 +109,8 @@ bool COptMethodNL2SOL::optimise()
       *mContainerVariables[j] = (mCurrent[j]);
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   calcr(&nResiduals, &mVariableSize, mCurrent.array(), &dummy, NULL, &dummy, &mBestValue, (U_fp) fCalcr);
   mBest = mCurrent;
@@ -141,7 +148,8 @@ bool COptMethodNL2SOL::optimise()
       fatalError();
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish));
+  if (mLogVerbosity > 0) mMethodLog.enterLogEntry(COptLogEntry("Algorithm finished."));
+
   return true;
 }
 
