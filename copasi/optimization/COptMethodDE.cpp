@@ -8,6 +8,8 @@
 // of Manchester.
 // All rights reserved.
 
+// originally implemented by Michalina Kaszuba, 2012, University of Manchester
+
 #include <limits>
 #include <string>
 #include <cmath>
@@ -334,7 +336,8 @@ bool COptMethodDE::initialize()
 
   if (mPopulationSize < 4)
     {
-      mMethodLog.enterLogItem(COptLogItem(COptLogItem::DE_usrdef_error_pop_size).with(4));
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(COptLogEntry("User defined Population Size too small. Reset to minimum (4)."));
 
       mPopulationSize = 4;
       setValue("Population Size", mPopulationSize);
@@ -388,7 +391,13 @@ bool COptMethodDE::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start_nodoc));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Algorithm started.",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Differential_Evolution/"
+      )
+    );
 
   size_t i;
 
@@ -422,7 +431,8 @@ bool COptMethodDE::optimise()
       *mContainerVariables[i] = mut;
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   Continue &= evaluate(*mIndividuals[0]);
   mValues[0] = mEvaluationValue;
@@ -455,7 +465,8 @@ bool COptMethodDE::optimise()
 
   if (!Continue)
     {
-      mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_early_stop));
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user after initial population creation."));
 
       if (mpCallBack)
         mpCallBack->finishItem(mhGenerations);
@@ -477,7 +488,13 @@ bool COptMethodDE::optimise()
 
       if (Stalled > 10)
         {
-          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::DE_fittest_not_changed_x_random_generated).iter(mCurrentGeneration).with(Stalled - 1).with(40));
+          if (mLogVerbosity > 0)
+            mMethodLog.enterLogEntry(
+              COptLogEntry(
+                "Generation " + std::to_string(mCurrentGeneration) +
+                ": Fittest individual has not changed for the last " + std::to_string(Stalled + 1) +
+                "generations: 40% of individuals randomized."
+              ));
 
           Continue &= creation((size_t) 0.4 * mPopulationSize, (size_t) 0.8 * mPopulationSize);
         }
@@ -490,8 +507,7 @@ bool COptMethodDE::optimise()
       // get the index of the fittest
       mBestIndex = fittest();
 
-      if (mBestIndex != C_INVALID_INDEX &&
-          mValues[mBestIndex] < mBestValue)
+      if ((mBestIndex != C_INVALID_INDEX) && (mValues[mBestIndex] < mBestValue))
         {
           Stalled = 0;
           mBestValue = mValues[mBestIndex];
@@ -510,7 +526,11 @@ bool COptMethodDE::optimise()
       mpParentTask->output(COutputInterface::MONITORING);
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_gener).iter(mCurrentGeneration - 1).with(mGenerations));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm finished.",
+                   "Terminated after " + std::to_string(mCurrentGeneration - 1) + " of " +
+                   std::to_string(mGenerations) + " generations."));
 
   if (mpCallBack)
     mpCallBack->finishItem(mhGenerations);
