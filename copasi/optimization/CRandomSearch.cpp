@@ -131,14 +131,20 @@ bool CRandomSearch::optimise()
 {
   bool Continue = true;
 
-  if (!initialize()) return false;
-
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Random_Search/"));
-
   unsigned C_INT32 j;
 
   // current value is the initial guess
   bool pointInParameterDomain = true;
+
+  if (!initialize()) return false;
+
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Algorithm started.",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Random_Search/"
+      )
+    );
 
   for (j = 0; j < mVariableSize; j++)
     {
@@ -166,7 +172,8 @@ bool CRandomSearch::optimise()
       *mContainerVariables[j] = (mut);
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   Continue = evaluate(mIndividual);
   mBestValue = mValue;
@@ -235,7 +242,10 @@ bool CRandomSearch::optimise()
         }
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_iter).iter(mCurrentIteration).with(mIterations));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm finished.",
+                   "Terminated after " + std::to_string(mCurrentIteration) + " of " + std::to_string(mIterations) + " iterations."));
 
   return true;
 }
