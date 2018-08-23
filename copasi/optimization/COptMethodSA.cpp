@@ -21,6 +21,7 @@
 // nelmea.cpp :
 
 #include <cmath>
+#include <sstream>
 
 #include "copasi.h"
 
@@ -110,10 +111,8 @@ bool COptMethodSA::optimise()
       )
     );
 
-  size_t i, j, k, m;
-
-  size_t h, a;
-  C_FLOAT64 xc, p, c, nt, New;
+  size_t i, j, k, m, h, a, nt;
+  C_FLOAT64 xc, p, c, New;
   C_FLOAT64 fk[STORED];
   bool ready;
 
@@ -170,12 +169,12 @@ bool COptMethodSA::optimise()
   mAccepted = 0;
 
   // set the number of steps at one single temperature
-  nt = (C_FLOAT64)(5 * mVariableSize);
+  nt = (5 * mVariableSize);
 
   if (nt < 100) nt = 100;
 
   if (mLogVerbosity > 0)
-    mMethodLog.enterLogEntry(COptLogEntry(std::to_string(nt) + " Steps at per temperature cycle."));
+    mMethodLog.enterLogEntry(COptLogEntry(std::to_string(nt * NS * mVariableSize) + " Steps per temperature cycle."));
 
   // no temperature reductions yet
   k = 0;
@@ -298,12 +297,16 @@ bool COptMethodSA::optimise()
           else
             {
               if (mLogVerbosity > 0)
-                mMethodLog.enterLogEntry(
-                  COptLogEntry(
-                    "At temperature cycle " + std::to_string(k) +
-                    " the objective function value improved less than tolerance since last " +
-                    std::to_string(STORED) + " cycles.",
-                    "Temperature = " + std::to_string(mTemperature) + "."));
+                {
+                  std::ostringstream auxStream;
+                  auxStream << mTemperature;
+                  mMethodLog.enterLogEntry(
+                    COptLogEntry(
+                      "At temperature cycle " + std::to_string(k) +
+                      " the objective function value improved less than tolerance since last " +
+                      std::to_string(STORED) + " cycles.",
+                      "Temperature = " + auxStream.str() + "."));
+                }
 
               if (fabs(mCurrentValue - mBestValue) > mTolerance)
                 ready = false;
@@ -324,11 +327,15 @@ bool COptMethodSA::optimise()
       else
         {
           if (mLogVerbosity > 0)
-            mMethodLog.enterLogEntry(
-              COptLogEntry(
-                "At temperature cycle " + std::to_string(k) +
-                " the objective function value improved from optimum less than tolerance. Terminating.",
-                "Temperature = " + std::to_string(mTemperature) + "."));
+            {
+              std::ostringstream auxStream;
+              auxStream << mTemperature;
+              mMethodLog.enterLogEntry(
+                COptLogEntry(
+                  "At temperature cycle " + std::to_string(k) +
+                  " the objective function value improved from optimum less than tolerance. Terminating.",
+                  "Temperature = " + auxStream.str() + "."));
+            }
         }
 
       // update the temperature
@@ -340,11 +347,15 @@ bool COptMethodSA::optimise()
   while (!ready && mContinue);
 
   if (mLogVerbosity > 0)
-    mMethodLog.enterLogEntry(
-      COptLogEntry("Algorithm finished.",
-                   "Final Temperature was " + std::to_string(mTemperature) +
-                   " after " + std::to_string(k) + "temperature cycles."
-                  ));
+    {
+      std::ostringstream auxStream;
+      auxStream << mTemperature;
+      mMethodLog.enterLogEntry(
+        COptLogEntry("Algorithm finished.",
+                     "Final Temperature was " + auxStream.str() +
+                     " after " + std::to_string(k) + " temperature cycles."
+                    ));
+    }
 
   if (mpCallBack)
     mpCallBack->finishItem(mhTemperature);
