@@ -62,7 +62,13 @@ bool COptMethodPraxis::optimise()
 {
   if (!initialize()) return false;
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Praxis/"));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Algorithm started.",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Praxis/"
+      )
+    );
 
   C_INT i;
   C_INT prin = 0;
@@ -97,7 +103,8 @@ bool COptMethodPraxis::optimise()
       *mContainerVariables[i] = (mCurrent[i]);
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   // Report the first value as the current best
   mBestValue = evaluate();
@@ -130,7 +137,8 @@ bool COptMethodPraxis::optimise()
   catch (bool)
     {}
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(COptLogEntry("Algorithm finished."));
 
   return true;
 }
