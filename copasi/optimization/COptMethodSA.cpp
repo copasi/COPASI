@@ -102,7 +102,13 @@ bool COptMethodSA::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Simulated_Annealing/"));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Algorithm started",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Simulated_Annealing/"
+      )
+    );
 
   size_t i, j, k, m;
 
@@ -142,7 +148,8 @@ bool COptMethodSA::optimise()
       mStep[i] = std::max(fabs(mCurrent[i]), 1.0);
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   mCurrentValue = evaluate();
 
@@ -167,7 +174,8 @@ bool COptMethodSA::optimise()
 
   if (nt < 100) nt = 100;
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::SA_steps_per_temp).with(nt));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(COptLogEntry(std::to_string(nt) + " Steps at per temperature cycle."));
 
   // no temperature reductions yet
   k = 0;
@@ -289,7 +297,13 @@ bool COptMethodSA::optimise()
           // check the termination criterion of not much larger than last optimal
           else
             {
-              if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SA_fval_progress_lower_than_tol).iter(k).with(STORED).with(mTemperature));
+              if (mLogVerbosity > 0)
+                mMethodLog.enterLogEntry(
+                  COptLogEntry(
+                    "At temperature cycle " + std::to_string(k) +
+                    " the objective function value improved less than tolerance since last " +
+                    std::to_string(STORED) + " cycles.",
+                    "Temperature = " + std::to_string(mTemperature) + "."));
 
               if (fabs(mCurrentValue - mBestValue) > mTolerance)
                 ready = false;
@@ -308,7 +322,14 @@ bool COptMethodSA::optimise()
           mCurrentValue = mBestValue;
         }
       else
-        mMethodLog.enterLogItem(COptLogItem(COptLogItem::SA_fval_tol_termination).iter(k).with(mTemperature));
+        {
+          if (mLogVerbosity > 0)
+            mMethodLog.enterLogEntry(
+              COptLogEntry(
+                "At temperature cycle " + std::to_string(k) +
+                " the objective function value improved from optimum less than tolerance. Terminating.",
+                "Temperature = " + std::to_string(mTemperature) + "."));
+        }
 
       // update the temperature
       mTemperature *= mCoolingFactor;
@@ -318,7 +339,12 @@ bool COptMethodSA::optimise()
     }
   while (!ready && mContinue);
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_temp_info).iter(k).with(mTemperature));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm finished.",
+                   "Final Temperature was " + std::to_string(mTemperature) +
+                   " after " + std::to_string(k) + "temperature cycles."
+                  ));
 
   if (mpCallBack)
     mpCallBack->finishItem(mhTemperature);
