@@ -69,7 +69,13 @@ bool COptMethodHookeJeeves::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Hooke___Jeeves/"));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Algorithm started",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Hooke___Jeeves/"
+      )
+    );
 
   C_FLOAT64 newf, steplength, tmp;
   bool Keep;
@@ -107,7 +113,8 @@ bool COptMethodHookeJeeves::optimise()
       *mContainerVariables[i] = mut;
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   mContinue &= evaluate();
 
@@ -118,7 +125,8 @@ bool COptMethodHookeJeeves::optimise()
 
   if (!mContinue)
     {
-      mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_early_stop));
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user."));
 
       if (mpCallBack)
         mpCallBack->finishItem(mhIteration);
@@ -227,9 +235,18 @@ bool COptMethodHookeJeeves::optimise()
         }
     }
 
-  if (steplength <= mTolerance) mMethodLog.enterLogItem(COptLogItem(COptLogItem::HJ_steplength_lower_than_tol).iter(mIteration));
+  if (mLogVerbosity > 0)
+    {
+      if (steplength < mTolerance)
+        mMethodLog.enterLogEntry(
+          COptLogEntry(
+            "Iteration " + std::to_string(mIteration) + ": Step length lower than tolerance. Terminating."));
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_iter).iter(mIteration).with(mIterationLimit));
+      mMethodLog.enterLogEntry(
+        COptLogEntry("Algorithm finished.",
+                     "Terminated after " + std::to_string(mIteration) + " of " +
+                     std::to_string(mIterationLimit) + " iterations."));
+    }
 
   if (mpCallBack)
     mpCallBack->finishItem(mhIteration);
