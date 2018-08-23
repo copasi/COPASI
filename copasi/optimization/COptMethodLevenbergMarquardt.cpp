@@ -454,7 +454,7 @@ bool COptMethodLevenbergMarquardt::optimise()
       if (mParameterOutOfBounds > 0)
         mMethodLog.enterLogEntry(
           COptLogEntry("Algorithm reached the edge of the parameter domain " + std::to_string(mParameterOutOfBounds)
-                       + "times."));
+                       + " times."));
 
       mMethodLog.enterLogEntry(
         COptLogEntry("Algorithm finished.",
