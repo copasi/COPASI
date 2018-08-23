@@ -492,6 +492,7 @@ void CQExperimentData::slotExperimentDelete()
 
   // We need to correct mpCheckFrom and mpCheckTo since the removal of the experiment
   // may have changed their status.
+  disconnect(mpCheckToAll, SIGNAL(toggled(bool)), this, SLOT(slotCheckToAll(bool)));
   disconnect(mpCheckTo, SIGNAL(toggled(bool)), this, SLOT(slotCheckTo(bool)));
   disconnect(mpCheckFrom, SIGNAL(toggled(bool)), this, SLOT(slotCheckFrom(bool)));
 
@@ -511,6 +512,7 @@ void CQExperimentData::slotExperimentDelete()
 
   connect(mpCheckFrom, SIGNAL(toggled(bool)), this, SLOT(slotCheckFrom(bool)));
   connect(mpCheckTo, SIGNAL(toggled(bool)), this, SLOT(slotCheckTo(bool)));
+  connect(mpCheckToAll, SIGNAL(toggled(bool)), this, SLOT(slotCheckToAll(bool)));
 }
 
 void CQExperimentData::slotFileAdd()
@@ -929,6 +931,7 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
 {
 
   // Temporarily disconnect signals
+  mpCheckToAll->blockSignals(true);
   mpCheckTo->blockSignals(true);
   mpCheckFrom->blockSignals(true);
   mpBtnSteadystate->blockSignals(true);
@@ -949,6 +952,7 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
       mpCheckNormalizeWeightsPerExperiment->setChecked(true);
       mpCheckFrom->setChecked(false);
       mpCheckTo->setChecked(false);
+      mpCheckToAll->setChecked(false);
       mpBoxWeightMethod->setCurrentIndex(CExperiment::SD);
     }
   else
@@ -1022,6 +1026,7 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
   mpValidatorHeader->saved();
 
   // Reconnect signals
+  mpCheckToAll->blockSignals(false);
   mpCheckTo->blockSignals(false);
   mpCheckFrom->blockSignals(false);
   mpBtnSteadystate->blockSignals(false);
@@ -1694,6 +1699,26 @@ void CQExperimentData::slotCheckTo(bool checked)
       mOldWeightMethod = pNext->getWeightMethod();
       saveExperiment(mpExperimentSetCopy->getExperiment(Next), false);
       mOldWeightMethod = OldWeightMethod;
+    }
+}
+
+void CQExperimentData::slotCheckToAll(bool checked)
+{
+  mpCheckToAll->setFocus();
+
+  if (!checked || !mpExperiment) return;
+
+  size_t Next =
+    mpExperimentSetCopy->keyToIndex(mpExperiment->CCopasiParameter::getKey()) + 1;
+
+  while (Next < mpExperimentSetCopy->getExperimentCount())
+    {
+      CExperiment * pNext = mpExperimentSetCopy->getExperiment(Next);
+      unsigned C_INT32 OldWeightMethod = mOldWeightMethod;
+      mOldWeightMethod = pNext->getWeightMethod();
+      saveExperiment(mpExperimentSetCopy->getExperiment(Next), false);
+      mOldWeightMethod = OldWeightMethod;
+      Next++;
     }
 }
 
