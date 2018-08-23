@@ -9,14 +9,14 @@
 #include <vector>
 #include <string>
 
-#include "COptLogItem.h"
+#include "COptLogEntry.h"
 
 class COptLog
 {
   // Attributes
 public:
-  std::vector< COptLogItem >::const_iterator begin() const;
-  std::vector< COptLogItem >::const_iterator end() const;
+  std::vector< COptLogEntry >::const_iterator begin() const;
+  std::vector< COptLogEntry >::const_iterator end() const;
 protected:
 
 private:
@@ -44,7 +44,7 @@ public:
 
   /**
    * Enter a log message
-   * @param COptLogItem item
+   * @param COptLogEntry entry
    */
   void enterLogEntry(COptLogEntry entry);
 
