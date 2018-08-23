@@ -72,7 +72,13 @@ bool COptMethodSteepestDescent::optimise()
 {
   if (!initialize()) return false;
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Steepest_Descent/"));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Algorithm started.",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Steepest_Descent/"
+      )
+    );
 
   size_t i, k;
   C_FLOAT64 tmp, x0, alpha, mn, mx, fmn, fmx;
@@ -106,7 +112,8 @@ bool COptMethodSteepestDescent::optimise()
       *mContainerVariables[i] = mIndividual[i];
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   fmx = mBestValue = evaluate();
 
@@ -207,7 +214,10 @@ bool COptMethodSteepestDescent::optimise()
         }
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_iter).iter(mCurrentIteration).with(mIterations));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm finished.",
+                   "Terminated after " + std::to_string(mCurrentIteration) + " of " + std::to_string(mIterations) + " iterations."));
 
   return true;
 }
