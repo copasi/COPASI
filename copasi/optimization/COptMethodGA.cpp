@@ -483,7 +483,13 @@ bool COptMethodGA::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("Genetic_Algorithm/"));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Algorithm started.",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Genetic_Algorithm/"
+      )
+    );
 
   // Counters to determine whether the optimization process has stalled
   // They count the number of generations without advances.
@@ -522,7 +528,8 @@ bool COptMethodGA::optimise()
       *mContainerVariables[i] = mut;
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   Continue &= evaluate(*mIndividuals[0]);
   mValues[0] = mEvaluationValue;
@@ -561,7 +568,8 @@ bool COptMethodGA::optimise()
   // test if the user wants to stop, and do so if needed
   if (!Continue)
     {
-      mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_early_stop));
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user after initial population creation."));
 
       if (mpCallBack)
         mpCallBack->finishItem(mhGenerations);
@@ -582,7 +590,13 @@ bool COptMethodGA::optimise()
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
         {
-          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::GA_fittest_not_changed_x_random_generated).iter(mCurrentGeneration).with(Stalled50 - 1).with(50));
+          if (mLogVerbosity > 0)
+            mMethodLog.enterLogEntry(
+              COptLogEntry(
+                "Generation " + std::to_string(mCurrentGeneration) +
+                "generations: Fittest individual has not changed for the last " + std::to_string(Stalled50 - 1) +
+                ". 50% of individuals randomized."
+              ));
 
           Continue &= creation((size_t)(mPopulationSize / 2),
                                mPopulationSize);
@@ -590,7 +604,13 @@ bool COptMethodGA::optimise()
         }
       else if (Stalled > 30 && Stalled30 > 30)
         {
-          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::GA_fittest_not_changed_x_random_generated).iter(mCurrentGeneration).with(Stalled50 - 1).with(30));
+          if (mLogVerbosity > 0)
+            mMethodLog.enterLogEntry(
+              COptLogEntry(
+                "Generation " + std::to_string(mCurrentGeneration) +
+                "generations: Fittest individual has not changed for the last " + std::to_string(Stalled50 - 1) +
+                ". 30% of individuals randomized."
+              ));
 
           Continue &= creation((size_t)(mPopulationSize * 0.7),
                                mPopulationSize);
@@ -598,7 +618,13 @@ bool COptMethodGA::optimise()
         }
       else if (Stalled > 10 && Stalled10 > 10)
         {
-          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::GA_fittest_not_changed_x_random_generated).iter(mCurrentGeneration).with(Stalled50 - 1).with(10));
+          if (mLogVerbosity > 0)
+            mMethodLog.enterLogEntry(
+              COptLogEntry(
+                "Generation " + std::to_string(mCurrentGeneration) +
+                "generations: Fittest individual has not changed for the last " + std::to_string(Stalled50 - 1) +
+                ". 10% of individuals randomized."
+              ));
 
           Continue &= creation((size_t)(mPopulationSize * 0.9),
                                mPopulationSize);
@@ -638,7 +664,11 @@ bool COptMethodGA::optimise()
 #endif
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_gener).iter(mCurrentGeneration - 1).with(mGenerations));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm finished.",
+                   "Terminated after " + std::to_string(mCurrentGeneration - 1) + " of " +
+                   std::to_string(mGenerations) + " generations."));
 
   if (mpCallBack)
     mpCallBack->finishItem(mhGenerations);
