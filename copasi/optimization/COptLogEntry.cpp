@@ -15,7 +15,7 @@
 #include "utilities/utility.h"
 
 // Constructor
-COptLogEntry::COptLogEntry(std::string &header, std::string &subtext = "", std::string &status = ""):
+COptLogEntry::COptLogEntry(const std::string &header, const std::string &subtext, const std::string &status):
   MsgSubtext(subtext),
   StatusDump(status)
 {
