@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -370,7 +375,7 @@ CTruncatedNewton::~CTruncatedNewton()
       maxit = 1;
     }
 
-  msglvl = 0;
+  msglvl = 1;
   maxfun = *n * 150;
   eta = .25;
   stepmx = 10.;
@@ -621,17 +626,18 @@ L20:
   nftotl += numf;
   gtg = ddot_(n, &g[1], &c__1, &g[1], &c__1);
 
+  //remove the printing
+
   if (*msglvl >= 1)
     {
-      //remove the printing
-      /*
-         s_wsfe(&io___81);
-         do_fio(&c__1, (char *)&niter, (ftnlen)sizeof(C_INT));
-         do_fio(&c__1, (char *)&nftotl, (ftnlen)sizeof(C_INT));
-         do_fio(&c__1, (char *)&nlincg, (ftnlen)sizeof(C_INT));
-         do_fio(&c__1, (char *)&fnew, (ftnlen)sizeof(C_FLOAT64));
-         do_fio(&c__1, (char *)&gtg, (ftnlen)sizeof(C_FLOAT64));
-         e_wsfe();*/
+      printf("%d, %d, %d, %0.6le, %0.6le\n", niter, nftotl, nlincg, fnew, gtg);
+      /*    s_wsfe(&io___81);
+          do_fio(&c__1, (char *)&niter, (ftnlen)sizeof(C_INT));
+          do_fio(&c__1, (char *)&nftotl, (ftnlen)sizeof(C_INT));
+          do_fio(&c__1, (char *)&nlincg, (ftnlen)sizeof(C_INT));
+          do_fio(&c__1, (char *)&fnew, (ftnlen)sizeof(C_FLOAT64));
+          do_fio(&c__1, (char *)&gtg, (ftnlen)sizeof(C_FLOAT64));
+          e_wsfe();*/
     }
 
   if (nwhy < 0)
@@ -981,10 +987,15 @@ L10:
   ztime_(n, &g[1], &ipivot[1]);
   gtg = ddot_(n, &g[1], &c__1, &g[1], &c__1);
 
-  if (*msglvl >= 1)
+  if (*msglvl > 1)
     {
+      // print current details
       monit_(n, &x[1], &fnew, &g[1], &niter, &nftotl, &nfeval, &lreset, &
              ipivot[1]);
+//    printf("ierror=%d\nf()=%.4lf\n", ierror, fest );
+//    for(int counter=0; counter<mVariableSize; counter++)
+//      printf("p[%02d]=%.4lf ", counter, mCurrent[counter] );
+//    printf("\n");
     }
 
   /* CHECK IF THE INITIAL POINT IS A LOCAL MINIMUM. */
@@ -1042,7 +1053,7 @@ L20:
 
   pe = pnorm + epsmch;
 
-  /* COMPUTE THE fabsOLUTE AND RELATIVE TOLERANCES FOR THE LINEAR SEARCH */
+  /* COMPUTE THE ABSOLUTE AND RELATIVE TOLERANCES FOR THE LINEAR SEARCH */
 
   reltol = rteps * (xnorm + one) / pe;
   fabstol = -epsmch * ftest / (oldgtp - epsmch);
@@ -1080,10 +1091,11 @@ L30:
 
   if (*msglvl >= 3)
     {
-      /*  s_wsfe(&io___144);
-        do_fio(&c__1, (char *)&alpha, (ftnlen)sizeof(C_FLOAT64));
-        do_fio(&c__1, (char *)&pnorm, (ftnlen)sizeof(C_FLOAT64));
-        e_wsfe();*/
+      printf("alpha=%.6le, pnorm=%.6le\n", alpha, pnorm);
+      /*        s_wsfe(&io___144);
+              do_fio(&c__1, (char *)&alpha, (ftnlen)sizeof(C_FLOAT64));
+              do_fio(&c__1, (char *)&pnorm, (ftnlen)sizeof(C_FLOAT64));
+              e_wsfe();*/
     }
 
   fold = fnew;
@@ -1312,18 +1324,12 @@ L160:
   return 0;
 } /* lmqnbc_ */
 
-/* Subroutine */ int monit_(C_INT *n, C_FLOAT64 *x, C_FLOAT64 * /* f */,
-                            C_FLOAT64 *g, C_INT * /* niter */, C_INT * /* nftotl */, C_INT * /* nfeval */,
-                            C_INT * /* ireset */, C_INT *ipivot)
+/* Subroutine */ int monit_(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *  f,
+                            C_FLOAT64 *g, C_INT * niter, C_INT * nftotl, C_INT * nfeval,
+                            C_INT * ireset, C_INT *ipivot)
 {
-  /* Format strings */
-  //  char fmt_800[] = "(\002 \002,i4,1x,i4,1x,i4,1x,1pd22.15,2x,1pd15." "8)";
-
   /* System generated locals */
   C_INT i__1;
-
-  /* Builtin functions */
-  //C_INT s_wsfe(cilist *), do_fio(C_INT *, char *, ftnlen), e_wsfe(void);
 
   /* Local variables */
   C_INT i__;
@@ -1352,14 +1358,9 @@ L10:
       ;
     }
 
-  //remove the printing
-  /* s_wsfe(&io___154);
-   do_fio(&c__1, (char *)&(*niter), (ftnlen)sizeof(C_INT));
-   do_fio(&c__1, (char *)&(*nftotl), (ftnlen)sizeof(C_INT));
-   do_fio(&c__1, (char *)&(*nfeval), (ftnlen)sizeof(C_INT));
-   do_fio(&c__1, (char *)&(*f), (ftnlen)sizeof(C_FLOAT64));
-   do_fio(&c__1, (char *)&gtg, (ftnlen)sizeof(C_FLOAT64));
-   e_wsfe();*/
+  /* we're using printf here but should be pushing into COptLog */
+  printf("niter=%ld, nftotl=%ld, nfeval=%ld, f=%0.6e, gtg=%0.6e\n", *niter, *nftotl, *nfeval, *f, gtg);
+
   return 0;
 } /* monit_ */
 
@@ -2886,6 +2887,7 @@ int CTruncatedNewton::getptc_(C_FLOAT64 *big, C_FLOAT64 * /* small */, C_FLOAT64
   switch (*ientry)
     {
       case 1: goto L10;
+
       case 2: goto L20;
     }
 
@@ -3479,5 +3481,5 @@ L40:
 
 C_FLOAT64 pow_dd(C_FLOAT64 *ap, C_FLOAT64 *bp)
 {
-  return(pow(*ap, *bp));
+  return (pow(*ap, *bp));
 }
