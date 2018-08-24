@@ -23,9 +23,11 @@
  */
 
 #include <cmath>
+#include <sstream>
 
 #include "copasi.h"
 #include "CTruncatedNewton.h"
+#include "COptLog.h"
 
 #include "lapack/blaswrap.h"
 #include "lapack/lapackwrap.h"
@@ -66,7 +68,7 @@ int chkucp_(C_INT *, C_INT *, C_INT *,
             C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
             C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
 int monit_(C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-           C_INT *, C_INT *, C_INT *, C_INT *, C_INT *);
+           C_INT *, C_INT *, C_INT *, C_INT *, C_INT *, COptLog *);
 int crash_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_INT *);
 int dxpy_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_INT *);
 int modz_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
@@ -253,7 +255,7 @@ CTruncatedNewton::~CTruncatedNewton()
 
 /* Subroutine */ int CTruncatedNewton::tnbc_(C_INT *ierror, C_INT *n, C_FLOAT64 *x,
     C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton * sfun,
-    C_FLOAT64 *low, C_FLOAT64 *up, C_INT *ipivot)
+    C_FLOAT64 *low, C_FLOAT64 *up, C_INT *ipivot, C_INT *logverbosity, COptLog *log)
 {
   /* Format strings */
   /*  char fmt_800[] = "(//,\002 ERROR CODE =\002,i3)";
@@ -273,7 +275,8 @@ CTruncatedNewton::~CTruncatedNewton()
   C_FLOAT64 xtol;
   C_INT i__, maxit;
   C_FLOAT64 accrcy;
-  C_INT maxfun, msglvl;
+  C_INT maxfun;
+  C_INT msglvl;
   C_FLOAT64 stepmx, eta;
 
   /* Fortran I/O blocks */
@@ -375,7 +378,8 @@ CTruncatedNewton::~CTruncatedNewton()
       maxit = 1;
     }
 
-  msglvl = 1;
+//  msglvl = 1;
+  msglvl = *logverbosity;
   maxfun = *n * 150;
   eta = .25;
   stepmx = 10.;
@@ -385,8 +389,8 @@ CTruncatedNewton::~CTruncatedNewton()
   /* MINIMIZE FUNCTION */
 
   CTruncatedNewton::lmqnbc_(ierror, n, &x[1], f, &g[1], &w[1], lw, sfun, &low[1], &up[1]
-                            , &ipivot[1], &msglvl, &maxit, &maxfun, &eta, &stepmx, &accrcy, &
-                            xtol);
+                            , &ipivot[1], &msglvl, &maxit, &maxfun, &eta, &stepmx, &accrcy,
+                            &xtol, log);
 
   /* PRINT RESULTS */
 
@@ -819,7 +823,7 @@ L120:
     C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton *sfun,
     C_FLOAT64 *low, C_FLOAT64 *up, C_INT *ipivot, C_INT *msglvl,
     C_INT *maxit, C_INT *maxfun, C_FLOAT64 *eta, C_FLOAT64 *stepmx,
-    C_FLOAT64 *accrcy, C_FLOAT64 *xtol)
+    C_FLOAT64 *accrcy, C_FLOAT64 *xtol, COptLog *log)
 {
   /* Format strings */
   //remove
@@ -990,8 +994,7 @@ L10:
   if (*msglvl > 1)
     {
       // print current details
-      monit_(n, &x[1], &fnew, &g[1], &niter, &nftotl, &nfeval, &lreset, &
-             ipivot[1]);
+      monit_(n, &x[1], &fnew, &g[1], &niter, &nftotl, &nfeval, &lreset, &ipivot[1], log);
 //    printf("ierror=%d\nf()=%.4lf\n", ierror, fest );
 //    for(int counter=0; counter<mVariableSize; counter++)
 //      printf("p[%02d]=%.4lf ", counter, mCurrent[counter] );
@@ -1107,8 +1110,7 @@ L30:
   /* ############################ */
   if (*msglvl >= 1)
     {
-      monit_(n, &x[1], &fnew, &g[1], &niter, &nftotl, &nfeval, &lreset, &
-             ipivot[1]);
+//      monit_(n, &x[1], &fnew, &g[1], &niter, &nftotl, &nfeval, &lreset, &ipivot[1]);
     }
 
   if (nwhy < 0)
@@ -1313,8 +1315,7 @@ L150:
 
   if (*msglvl >= 1)
     {
-      monit_(n, &x[1], f, &g[1], &niter, &nftotl, &nfeval, &ireset, &ipivot[
-               1]);
+//      monit_(n, &x[1], f, &g[1], &niter, &nftotl, &nfeval, &ireset, &ipivot[1]);
     }
 
   /* SET IFAIL */
@@ -1326,7 +1327,7 @@ L160:
 
 /* Subroutine */ int monit_(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *  f,
                             C_FLOAT64 *g, C_INT * niter, C_INT * nftotl, C_INT * nfeval,
-                            C_INT * ireset, C_INT *ipivot)
+                            C_INT * ireset, C_INT *ipivot, COptLog *log)
 {
   /* System generated locals */
   C_INT i__1;
@@ -1359,7 +1360,10 @@ L10:
     }
 
   /* we're using printf here but should be pushing into COptLog */
-  printf("niter=%ld, nftotl=%ld, nfeval=%ld, f=%0.6e, gtg=%0.6e\n", *niter, *nftotl, *nfeval, *f, gtg);
+  std::ostringstream auxStream;
+  auxStream << "niter=" << *niter << ", nftotl=" << *nftotl << ", nfeval=" << *nfeval
+            << ", f=" << *f << ", gtg=" << gtg;
+  log->enterLogEntry(COptLogEntry(auxStream.str()));
 
   return 0;
 } /* monit_ */
