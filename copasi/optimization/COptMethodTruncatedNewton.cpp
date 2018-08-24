@@ -63,7 +63,7 @@ bool COptMethodTruncatedNewton::optimise()
   if (mLogVerbosity > 0)
     mMethodLog.enterLogEntry(
       COptLogEntry(
-        "Algorithm started",
+        "Truncated Newton algorithm started",
         "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Truncated_Newton/"
       )
     );
@@ -127,6 +127,10 @@ bool COptMethodTruncatedNewton::optimise()
 
   repeat = 0;
 
+  //tnbc_ wants a signed int for loglevel...
+  C_INT msglvl;
+  msglvl = (int) mLogVerbosity;
+
   while (repeat < 10 && mContinue)
     {
       repeat++;
@@ -138,7 +142,19 @@ bool COptMethodTruncatedNewton::optimise()
       // minimise
       try
         {
-          mpCTruncatedNewton->tnbc_(&ierror, &mVariableSize, mCurrent.array(), &fest, mGradient.array(), dwork.array(), &lw, mpTruncatedNewton, low.array(), up.array(), iPivot.array());
+          mpCTruncatedNewton->tnbc_(&ierror,
+                                    &mVariableSize,
+                                    mCurrent.array(),
+                                    &fest,
+                                    mGradient.array(),
+                                    dwork.array(),
+                                    &lw,
+                                    mpTruncatedNewton,
+                                    low.array(),
+                                    up.array(),
+                                    iPivot.array(),
+                                    &msglvl,
+                                    &mMethodLog);
 
           mEvaluationValue = fest;
         }
