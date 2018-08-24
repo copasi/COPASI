@@ -81,7 +81,6 @@ void CLNAProblem::setSteadyStateRequested(const bool & steadyStateRequested)
 {
   CSteadyStateTask * pSubTask = NULL;
   CDataModel* pDataModel = getObjectDataModel();
-  assert(pDataModel != NULL);
 
   if (pDataModel && pDataModel->getTaskList())
     pSubTask = dynamic_cast<CSteadyStateTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));
