@@ -1,7 +1,7 @@
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
 
 #define USE_LAYOUT 1
@@ -2182,6 +2182,22 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("String=\n"));
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"));
         break;
+
+	  case CTaskEnum::Task::moieties:
+		  pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
+		  pReport->setTaskType(taskType);
+		  pReport->setComment("Automatically generated report.");
+		  pReport->setIsTable(false);
+		  pReport->setTitle(false);
+		  pReport->setSeparator("\t");
+
+		  // Header
+		  pReport->getHeaderAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Moieties],Object=Description"));
+
+		  // Footer
+		  pReport->getFooterAddr()->push_back(CCommonName("String=\n"));
+		  pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Moieties],Object=Result"));
+		  break;
 
       default:
         return pReport;
