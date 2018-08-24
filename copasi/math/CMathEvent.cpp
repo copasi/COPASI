@@ -416,6 +416,8 @@ bool CMathEvent::CTrigger::isTrue() const
 
 void CMathEvent::CTrigger::initialize(CMath::sPointers & pointers)
 {
+  mInfix.clear();
+
   // Initialize trigger object.
   mpTrigger = pointers.pEventTriggersObject;
   *pointers.pEventTriggers = 1.0;
