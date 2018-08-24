@@ -492,7 +492,7 @@ bool COptMethodDE::optimise()
             mMethodLog.enterLogEntry(
               COptLogEntry(
                 "Generation " + std::to_string(mCurrentGeneration) +
-                ": Fittest individual has not changed in the last " + std::to_string(Stalled + 1) +
+                ": Fittest individual has not changed in the last " + std::to_string(Stalled - 1) +
                 " generations. 40% of individuals randomized."
               ));
 
