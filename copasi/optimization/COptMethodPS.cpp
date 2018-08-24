@@ -505,14 +505,6 @@ bool COptMethodPS::optimise()
 {
   size_t i;
 
-  if (mLogVerbosity > 0)
-    mMethodLog.enterLogEntry(
-      COptLogEntry(
-        "Particle Swarm algorithm started",
-        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Particle_Swarm/"
-      )
-    );
-
   if (!initialize())
     {
       if (mpCallBack)
@@ -527,6 +519,14 @@ bool COptMethodPS::optimise()
   C_FLOAT64 * pBestPosition = mBestPositions[0];
   std::vector< COptItem * >::const_iterator itOptItem = mpOptItem->begin();
   C_FLOAT64 ** ppContainerVariable = mContainerVariables.array();
+
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Particle Swarm algorithm started",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Particle_Swarm/"
+      )
+    );
 
   // initialise the population
   // first individual is the initial guess
