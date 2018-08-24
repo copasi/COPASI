@@ -594,8 +594,8 @@ bool COptMethodGA::optimise()
             mMethodLog.enterLogEntry(
               COptLogEntry(
                 "Generation " + std::to_string(mCurrentGeneration) +
-                "generations: Fittest individual has not changed for the last " + std::to_string(Stalled50 - 1) +
-                ". 50% of individuals randomized."
+                ": Fittest individual has not changed for the last " + std::to_string(Stalled50 - 1) +
+                " generations. 50% of individuals randomized."
               ));
 
           Continue &= creation((size_t)(mPopulationSize / 2),
@@ -608,8 +608,8 @@ bool COptMethodGA::optimise()
             mMethodLog.enterLogEntry(
               COptLogEntry(
                 "Generation " + std::to_string(mCurrentGeneration) +
-                "generations: Fittest individual has not changed for the last " + std::to_string(Stalled30 - 1) +
-                ". 30% of individuals randomized."
+                ": Fittest individual has not changed for the last " + std::to_string(Stalled30 - 1) +
+                " generations. 30% of individuals randomized."
               ));
 
           Continue &= creation((size_t)(mPopulationSize * 0.7),
