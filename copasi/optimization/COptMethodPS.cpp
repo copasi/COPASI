@@ -505,6 +505,14 @@ bool COptMethodPS::optimise()
 {
   size_t i;
 
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Particle Swarm algorithm started",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Particle_Swarm/"
+      )
+    );
+
   if (!initialize())
     {
       if (mpCallBack)
@@ -512,14 +520,6 @@ bool COptMethodPS::optimise()
 
       return false;
     }
-
-  if (mLogVerbosity > 0)
-    mMethodLog.enterLogEntry(
-      COptLogEntry(
-        "Algorithm started",
-        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Particle_Swarm/"
-      )
-    );
 
   C_FLOAT64 * pIndividual = mIndividuals[0]->array();
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
@@ -601,7 +601,7 @@ bool COptMethodPS::optimise()
         {
           buildInformants();
 
-          if (mLogVerbosity > 0)
+          if (mLogVerbosity > 1)
             mMethodLog.enterLogEntry(
               COptLogEntry(
                 "Iteration " + std::to_string(mCurrentGeneration) +
@@ -613,7 +613,7 @@ bool COptMethodPS::optimise()
         {
           if (reachedStdDeviation())
             {
-              if (mLogVerbosity > 0)
+              if (mLogVerbosity > 1)
                 mMethodLog.enterLogEntry(
                   COptLogEntry(
                     "Iteration " + std::to_string(mCurrentGeneration) +
