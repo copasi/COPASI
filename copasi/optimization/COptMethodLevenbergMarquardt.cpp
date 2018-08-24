@@ -115,7 +115,7 @@ bool COptMethodLevenbergMarquardt::optimise()
   if (mLogVerbosity > 0)
     mMethodLog.enterLogEntry(
       COptLogEntry(
-        "Algorithm started",
+        "Levenberg-Marquardt algorithm started",
         "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Levenberg_-_Marquardt/"
       )
     );
@@ -232,7 +232,7 @@ bool COptMethodLevenbergMarquardt::optimise()
       // if Hessian is positive definite solve Hess * h = -grad
       if (info == 0)
         {
-          if (mLogVerbosity > 0)
+          if (mLogVerbosity > 2)
             mMethodLog.enterLogEntry(
               COptLogEntry(
                 "Iteration " + std::to_string(mIteration) + ": Hessian matrix is positive definite. Calculating gradient."
@@ -247,12 +247,12 @@ bool COptMethodLevenbergMarquardt::optimise()
         }
       else
         {
-          if (mLogVerbosity > 0)
+          if (mLogVerbosity > 1)
             mMethodLog.enterLogEntry(
               COptLogEntry(
                 "Iteration " + std::to_string(mIteration) +
                 ": Hessian matrix is not positive definite because the leading minor of order " +
-                std::to_string(info) + " is not positive definite."
+                std::to_string(info) + " is not positive definite. Reducing step size."
               ));
 
           // We are in a concave region. Thus the current step is an over estimation.
@@ -283,12 +283,28 @@ bool COptMethodLevenbergMarquardt::optimise()
             {
               case - 1:
                 mCurrent[i] = *OptItem.getLowerBoundValue() + std::numeric_limits< C_FLOAT64 >::epsilon();
+
+                if (mLogVerbosity > 2)
+                  mMethodLog.enterLogEntry(
+                    COptLogEntry(
+                      "Iteration " + std::to_string(mIteration) +
+                      ": parameter #" + std::to_string(i) + " hit the lower bound."
+                    ));
+
                 pointInParameterDomain = false;
                 break;
 
               case 1:
                 mCurrent[i] = *OptItem.getUpperBoundValue() - std::numeric_limits< C_FLOAT64 >::epsilon();
                 pointInParameterDomain = false;
+
+                if (mLogVerbosity > 2)
+                  mMethodLog.enterLogEntry(
+                    COptLogEntry(
+                      "Iteration " + std::to_string(mIteration) +
+                      ": parameter #" + std::to_string(i) + " hit the upper bound."
+                    ));
+
                 break;
 
               case 0:
@@ -381,11 +397,11 @@ bool COptMethodLevenbergMarquardt::optimise()
             {
               if (starts < 3)
                 {
-                  if (mLogVerbosity > 0)
+                  if (mLogVerbosity > 1)
                     mMethodLog.enterLogEntry(
                       COptLogEntry(
                         "Iteration " + std::to_string(mIteration) +
-                        ": Objective function value and parameter change lower than tolerance(" +
+                        ": Objective function value and parameter change lower than tolerance (" +
                         std::to_string(starts) + "/3). Resetting lambda."
                       ));
 
@@ -395,11 +411,11 @@ bool COptMethodLevenbergMarquardt::optimise()
                 }
               else
                 {
-                  if (mLogVerbosity > 0)
+                  if (mLogVerbosity > 1)
                     mMethodLog.enterLogEntry(
                       COptLogEntry(
                         "Iteration " + std::to_string(mIteration) +
-                        ": Objective function value and parameter change lower than tolerance(3/3). Terminating."
+                        ": Objective function value and parameter change lower than tolerance (3/3). Terminating."
                       ));
 
                   // signal the end
@@ -418,7 +434,7 @@ bool COptMethodLevenbergMarquardt::optimise()
           // if lambda too high terminate
           if (LM_lambda > LAMBDA_MAX)
             {
-              if (mLogVerbosity > 0)
+              if (mLogVerbosity > 1)
                 mMethodLog.enterLogEntry(
                   COptLogEntry(
                     "Iteration " + std::to_string(mIteration) +
@@ -429,19 +445,23 @@ bool COptMethodLevenbergMarquardt::optimise()
             }
           else
             {
-              if (mLogVerbosity > 0)
-                mMethodLog.enterLogEntry(
-                  COptLogEntry(
-                    "Iteration " + std::to_string(mIteration) +
-                    ": Restarting iteration with increased lambda."
-                  ));
-
               // increase lambda
               LM_lambda *= nu * 2;
               // don't recalculate the Hessian
               calc_hess = false;
               // correct the number of iterations
               mIteration--;
+
+              if (mLogVerbosity > 1)
+                {
+                  std::ostringstream auxStream;
+                  auxStream << LM_lambda;
+                  mMethodLog.enterLogEntry(
+                    COptLogEntry(
+                      "Iteration " + std::to_string(mIteration) +
+                      ": Restarting iteration with increased lambda.",
+                      "Lambda = " + auxStream.str()));
+                }
             }
         }
 
@@ -449,18 +469,16 @@ bool COptMethodLevenbergMarquardt::optimise()
         mContinue &= mpCallBack->progressItem(mhIteration);
     }
 
-  if (mLogVerbosity > 0)
-    {
-      if (mParameterOutOfBounds > 0)
-        mMethodLog.enterLogEntry(
-          COptLogEntry("Algorithm reached the edge of the parameter domain " + std::to_string(mParameterOutOfBounds)
-                       + " times."));
+  if ((mLogVerbosity > 1) && (mParameterOutOfBounds > 0))
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm reached the edge of the parameter domain " +
+                   std::to_string(mParameterOutOfBounds) + " times."));
 
-      mMethodLog.enterLogEntry(
-        COptLogEntry("Algorithm finished.",
-                     "Terminated after " + std::to_string(mIteration) + " of " + std::to_string(mIterationLimit) + " iterations."
-                    ));
-    }
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm finished.",
+                   "Terminated after " + std::to_string(mIteration) + " of " + std::to_string(mIterationLimit) + " iterations."
+                  ));
 
   if (mpCallBack)
     mpCallBack->finishItem(mhIteration);
