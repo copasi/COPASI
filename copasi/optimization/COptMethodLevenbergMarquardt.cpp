@@ -288,7 +288,7 @@ bool COptMethodLevenbergMarquardt::optimise()
                   mMethodLog.enterLogEntry(
                     COptLogEntry(
                       "Iteration " + std::to_string(mIteration) +
-                      ": parameter #" + std::to_string(i) + " hit the lower bound."
+                      ": parameter #" + std::to_string(i) + " below the lower bound."
                     ));
 
                 pointInParameterDomain = false;
@@ -302,7 +302,7 @@ bool COptMethodLevenbergMarquardt::optimise()
                   mMethodLog.enterLogEntry(
                     COptLogEntry(
                       "Iteration " + std::to_string(mIteration) +
-                      ": parameter #" + std::to_string(i) + " hit the upper bound."
+                      ": parameter #" + std::to_string(i) + " above the upper bound."
                     ));
 
                 break;
