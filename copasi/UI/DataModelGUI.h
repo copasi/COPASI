@@ -71,12 +71,10 @@ public:
   void exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
   void importCellDesigner();
 
-#ifdef WITH_COMBINE_ARCHIVE
   void openCombineArchive(const std::string & fileName);
   void exportCombineArchive(const std::string & fileName, bool overwriteFile = false);
   void openCombineArchiveRun();
   void exportCombineArchiveRun();
-#endif
 
   // SEDML
   void exportSEDML(const std::string & fileName, bool overwriteFile , int sedmlLevel, int sedmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
@@ -105,11 +103,9 @@ public slots:
   void importSBMLFromStringFinished();
   void exportSBMLToStringFinished();
   void exportMathModelFinished();
-#ifdef WITH_COMBINE_ARCHIVE
   void importCombineFinished();
   void exportCombineFinished();
 
-#endif
 #ifdef WITH_MERGEMODEL
   void addModelFinished();
 #endif

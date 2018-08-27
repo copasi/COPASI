@@ -237,10 +237,8 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("ImportSEDML", Options.ImportSEDML);
   setValue("ExportSEDML", Options.ExportSEDML);
 
-#ifdef WITH_COMBINE_ARCHIVE
   setValue("ImportCombineArchive", Options.ImportCombineArchive);
   setValue("ExportCombineArchive", Options.ExportCombineArchive);
-#endif
 
   setValue("ConvertToIrreversible", Options.ConvertToIrreversible);
   setValue("ScheduledTask", Options.ScheduledTask);

@@ -237,15 +237,12 @@ option(ENABLE_WITH_MERGEMODEL "Enable Model Merging" ON)
 option(ENABLE_ANALYTICS "Enable Analytics Task" OFF)
 option(ENABLE_PE_EVENT_CREATION "Enable Event Creation out of time series data" ON)
 
-option(ENABLE_COMBINE_ARCHIVE "Enable COMBINE Archive support" ON)
-if (ENABLE_COMBINE_ARCHIVE)
-  if (WIN32)
-    add_definitions(-DLIBCOMBINE_STATIC=1)
-  endif()
+if (WIN32)
+  add_definitions(-DLIBCOMBINE_STATIC=1)
+endif()
 
-  find_package(LIBCOMBINE REQUIRED)
-  include_directories(BEFORE ${COMBINE_INCLUDE_DIR})
-endif(ENABLE_COMBINE_ARCHIVE)
+find_package(LIBCOMBINE REQUIRED)
+include_directories(BEFORE ${COMBINE_INCLUDE_DIR})
 
 option(ENABLE_SDE_SUPPORT "Enable the support of Stochastic Differential Equations" ON)
 option(COPASI_INSTALL_C_API "Enable this option to also install the COPASI C API" OFF)
@@ -557,10 +554,6 @@ mark_as_advanced(ENABLE_VERSIONING)
 option (ENABLE_COPASI_UNDO "Enables UNDO support." ON)
 mark_as_advanced(ENABLE_COPASI_UNDO)
 
-if(ENABLE_VERSIONING AND NOT ENABLE_COMBINE_ARCHIVE)
-  set(ENABLE_COMBINE_ARCHIVE ON CACHE BOOL "Enable Combine Archive Support" FORCE)
-endif(ENABLE_VERSIONING AND NOT ENABLE_COMBINE_ARCHIVE)
-
 
 if(ENABLE_PROVENANCE AND NOT ENABLE_VERSIONING)
   set(ENABLE_VERSIONING ON CACHE BOOL "Enable Versioning Support" FORCE)
@@ -865,7 +858,7 @@ message(STATUS "-----------------------------------------------------------
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}
    SEDML support            = ON
-   Combine Archive support  = ${ENABLE_COMBINE_ARCHIVE}
+   Combine Archive support  = ON
    SDE support              = ${ENABLE_SDE_SUPPORT}
    GPROF support            = ${ENABLE_GPROF}
    UNDO framework           = ${ENABLE_COPASI_UNDO}

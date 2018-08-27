@@ -47,13 +47,11 @@
 #include "layout/CLayoutInitializer.h"
 #include "copasi/core/CRootContainer.h"
 
-#ifdef WITH_COMBINE_ARCHIVE
 # include <combine/combinearchive.h>
 # include <combine/knownformats.h>
 # include <combine/util.h>
 # include <omex/CaContent.h>
 # include <copasi/utilities/CCopasiMessage.h>
-#endif // WITH_COMBINE_ARCHIVE
 
 #include <sedml/SedDocument.h>
 #include "sedml/SEDMLImporter.h"
@@ -154,8 +152,6 @@ CDataModel::~CDataModel()
 
   pdelete(pOldMetabolites);
 
-#ifdef WITH_COMBINE_ARCHIVE
-
   std::vector<std::string>::iterator it = mTempFolders.begin();
 
   for (; it != mTempFolders.end(); ++it)
@@ -165,7 +161,6 @@ CDataModel::~CDataModel()
 
   mTempFolders.clear();
 
-#endif
 }
 
 bool CDataModel::loadModel(std::istream & in,
@@ -398,7 +393,6 @@ bool CDataModel::loadModel(const std::string & fileName,
   return true;
 }
 
-#ifdef WITH_COMBINE_ARCHIVE
 void CDataModel::copyExperimentalDataTo(const std::string& path)
 {
   CFitProblem* problem = dynamic_cast<CFitProblem*>((*getTaskList())[static_cast< size_t >(CTaskEnum::Task::parameterFitting)].getProblem());
@@ -489,7 +483,6 @@ void CDataModel::copyExperimentalDataTo(const std::string& path)
       }
   }
 }
-#endif // WITH_COMBINE_ARCHIVE
 
 bool
 CDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessReport,
@@ -541,15 +534,11 @@ CDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessRepo
       return false;
     }
 
-#ifdef WITH_COMBINE_ARCHIVE
-
   if (mNeedToSaveExperimentalData)
     {
       copyExperimentalDataTo(CDirEntry::dirName(FileName));
       mNeedToSaveExperimentalData = false;
     }
-
-#endif // WITH_COMBINE_ARCHIVE
 
   CCopasiXML XML;
 
@@ -1243,7 +1232,6 @@ bool CDataModel::exportMathModel(const std::string & fileName, CProcessReport* p
   return pExporter->exportToStream(this, os);
 }
 
-#ifdef WITH_COMBINE_ARCHIVE
 
 void
 CDataModel::addCopasiFileToArchive(CombineArchive *archive,
@@ -1562,8 +1550,6 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
   return result;
 }
-
-#endif
 
 // SEDML
 bool CDataModel::importSEDMLFromString(const std::string& sedmlDocumentText,

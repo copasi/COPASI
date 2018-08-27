@@ -899,7 +899,6 @@ void DataModelGUI::importCellDesigner()
     }
 }
 
-#ifdef WITH_COMBINE_ARCHIVE
 
 void DataModelGUI::openCombineArchive(const std::string & fileName)
 {
@@ -980,8 +979,6 @@ void DataModelGUI::exportCombineFinished()
 
   threadFinished();
 }
-
-#endif
 
 
 void DataModelGUI::importSEDMLFromString(const std::string & sedmlDocumentText)
