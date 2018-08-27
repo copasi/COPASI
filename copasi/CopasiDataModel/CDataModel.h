@@ -42,9 +42,7 @@ class SedDocument;
 LIBSEDML_CPP_NAMESPACE_END
 class CPlotItem;
 
-#ifdef WITH_COMBINE_ARCHIVE
 class CombineArchive;
-#endif // WITH_COMBINE_ARCHIVE
 
 // :TODO: remove
 class CMetabOld;
@@ -216,7 +214,6 @@ public:
    */
   const CDataObject *findObjectByDisplayName(const std::string& displayString) const;
 
-#ifdef WITH_COMBINE_ARCHIVE
   /**
    * Moves the experimental data referenced in the model to the specified
    * path and update the referenced filenames to match it. Should the folder
@@ -250,8 +247,6 @@ public:
 
   bool openCombineArchive(const std::string& fileName, CProcessReport* pProgressReport = NULL,
                           const bool & deleteOldData = true);
-
-#endif
 
   void deleteOldData();
 

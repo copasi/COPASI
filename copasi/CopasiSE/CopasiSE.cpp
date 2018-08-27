@@ -231,7 +231,6 @@ int main(int argc, char *argv[])
                 }
             }
 
-#ifdef WITH_COMBINE_ARCHIVE
           else if (importCA)
             {
               // Import the SED-ML File
@@ -247,8 +246,6 @@ int main(int argc, char *argv[])
                   goto finish;
                 }
             }
-
-#endif // WITH_COMBINE_ARCHIVE
 
           else
             {
@@ -565,8 +562,6 @@ int exportCurrentModel()
         }
     }
 
-#ifdef WITH_COMBINE_ARCHIVE
-
   // Check whether exporting to Combine Archive is requested.
   if (!COptions::compareValue("ExportCombineArchive", std::string("")))
     {
@@ -586,8 +581,6 @@ int exportCurrentModel()
           retcode = 1;
         }
     }
-
-#endif //WITH_COMBINE_ARCHIVE
 
   return NO_EXPORT_REQUESTED;
 }

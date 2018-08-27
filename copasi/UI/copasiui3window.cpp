@@ -209,10 +209,8 @@ CopasiUI3Window::CopasiUI3Window():
   mpaCloseAllWindows(NULL),
   mpaShowDebugInfo(NULL),
 
-#ifdef WITH_COMBINE_ARCHIVE
   mpaImportCombine(NULL),
   mpaExportCombine(NULL),
-#endif
 
 #ifdef WITH_MERGEMODEL
   mpaAddModel(NULL),
@@ -432,12 +430,12 @@ void CopasiUI3Window::createActions()
   connect(mpaCheckModel, SIGNAL(triggered()), this, SLOT(slotCheckModel()));
   mpaUpdateMIRIAM = new QAction(CQIconResource::icon(CQIconResource::miriam), "Update MIRIAM", this);
   connect(mpaUpdateMIRIAM, SIGNAL(triggered()), this, SLOT(slotUpdateMIRIAM()));
-#ifdef WITH_COMBINE_ARCHIVE
+
   mpaImportCombine = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "&Import Combine Archive", this);
   connect(mpaImportCombine, SIGNAL(triggered()), this, SLOT(slotImportCombine()));
   mpaExportCombine = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export Combine Archive", this);
   connect(mpaExportCombine, SIGNAL(triggered()), this, SLOT(slotExportCombine()));
-#endif
+
 #ifdef COPASI_Provenance
   mpaProvenance = new QAction("Provenance", this);
   connect(mpaProvenance, SIGNAL(activated()), this, SLOT(slotProvenance()));
@@ -620,11 +618,10 @@ void CopasiUI3Window::createMenuBar()
   pFileMenu->addAction(mpaImportSBML);
   pFileMenu->addAction(mpaExportSBML);
   pFileMenu->addAction(mpaExportODE);
-#ifdef WITH_COMBINE_ARCHIVE
+
   pFileMenu->addSeparator();
   pFileMenu->addAction(mpaImportCombine);
   pFileMenu->addAction(mpaExportCombine);
-#endif
 
   pFileMenu->addSeparator();
   mpMenuSEDMLSupport = pFileMenu->addMenu("SED-ML Support");
@@ -3319,8 +3316,6 @@ void CopasiUI3Window::slotOpenRecentSEDMLFile(QAction *pAction)
 }
 
 
-#ifdef WITH_COMBINE_ARCHIVE
-
 void CopasiUI3Window::slotImportCombine(QString file)
 {
   disconnect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotImportCombine(QString)));
@@ -3528,8 +3523,6 @@ void CopasiUI3Window::slotExportCombineFinished(bool success)
       mNewFile = "";
     }
 }
-
-#endif
 
 #ifdef COPASI_UNDO
 void CopasiUI3Window::slotClearUndoHistory()
