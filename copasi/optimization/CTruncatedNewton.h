@@ -109,7 +109,9 @@ public:
           C_FLOAT64 *,
           C_FLOAT64 *,
           C_INT *,
-          FTruncatedNewton *);
+          FTruncatedNewton *,
+          C_INT *,
+          COptLog *);
 
   int getptc_(C_FLOAT64 *, C_FLOAT64 *,
               C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
@@ -162,7 +164,7 @@ public:
   int lmqn_(C_INT *, C_INT *, C_FLOAT64 *,
             C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, FTruncatedNewton *,
             C_INT *, C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *,
-            C_FLOAT64 *, C_FLOAT64 *);
+            C_FLOAT64 *, C_FLOAT64 *, COptLog *);
 
 private:
   subscr_ * mpsubscr_;
