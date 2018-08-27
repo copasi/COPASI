@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,7 +23,13 @@ public:
   enum ButtonType {PushButton, ToolButton};
 
   CQPushButtonDelegate(const ButtonType & buttonType, QObject *parent = 0);
-  CQPushButtonDelegate(const QIcon & icon, const QString & text, const ButtonType & buttonType, QObject *parent = 0);
+
+  CQPushButtonDelegate(const QIcon & icon,
+                       const QString & text,
+                       const ButtonType & buttonType,
+                       QObject *parent = 0,
+                       const QString& tooltip = "");
+
   virtual ~CQPushButtonDelegate();
 
   virtual QWidget *createEditor(QWidget * parent,
@@ -50,6 +56,7 @@ signals:
 private:
   mutable QIcon mIcon;
   mutable QString mText;
+  mutable QString mTooltip;
   ButtonType mButtonType;
 
   mutable QMap< QAbstractButton * , QModelIndex > mEditorToIndex;

@@ -69,17 +69,26 @@ void CQMoietiesTaskResult::init()
   mpMoieties->setColumnCount(5);
 
   QTableWidgetItem * pItem = new QTableWidgetItem("Dependent Species");
+  pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
   mpMoieties->setHorizontalHeaderItem(COL_SPECIES, pItem);
+
   pItem = new QTableWidgetItem("Total Particle Number");
+  pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
   mpMoieties->setHorizontalHeaderItem(COL_NUMBER, pItem);
+
   pItem = new QTableWidgetItem("Total Amount");
+  pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
   mpMoieties->setHorizontalHeaderItem(COL_AMOUNT, pItem);
+
   pItem = new QTableWidgetItem("");
   mpMoieties->setHorizontalHeaderItem(COL_BTN, pItem);
+
   pItem = new QTableWidgetItem("Expression");
+  pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
   mpMoieties->setHorizontalHeaderItem(COL_EQUATION, pItem);
 
-  CQPushButtonDelegate * pDelegate = new CQPushButtonDelegate(CQIconResource::icon(CQIconResource::tool), "",  CQPushButtonDelegate::ToolButton, this);
+  CQPushButtonDelegate * pDelegate = new CQPushButtonDelegate(CQIconResource::icon(CQIconResource::tool), "",  CQPushButtonDelegate::ToolButton,
+      this, "When pressed the selected total amount will be created as global quantity.");
   mpMoieties->setItemDelegateForColumn(COL_BTN, pDelegate);
 
   connect(pDelegate, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotCreateGlobalQuantity(const QModelIndex &)));
@@ -92,6 +101,8 @@ void CQMoietiesTaskResult::init()
 
   // Initialize the stoichiometry tab
   mpReducedStoichiometry->setLegendEnabled(true);
+
+  setFramework((int)CCore::Framework::Concentration);
 }
 
 bool CQMoietiesTaskResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
@@ -171,14 +182,17 @@ void CQMoietiesTaskResult::load()
       for (; it != end; ++it, i++)
         {
           pItem = new QTableWidgetItem(FROM_UTF8(it->getObjectName()));
+          pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
           mpMoieties->setItem(i, COL_SPECIES, pItem);;
 
           pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
           pItem->setData(Qt::DisplayRole, it->getNumber());
           mpMoieties->setItem(i, COL_NUMBER, pItem);
 
           it.constCast()->refreshAmount();
           pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
           pItem->setData(Qt::DisplayRole, it->getAmount());
           mpMoieties->setItem(i, COL_AMOUNT, pItem);
 
@@ -191,6 +205,7 @@ void CQMoietiesTaskResult::load()
           mpMoieties->openPersistentEditor(pItem);
 
           pItem = new QTableWidgetItem(FROM_UTF8(it->getDescription(pModel)));
+          pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
           mpMoieties->setItem(i, COL_EQUATION, pItem);
         }
     }
@@ -274,14 +289,25 @@ void CQMoietiesTaskResult::slotCreateGlobalQuantity(const QModelIndex & index)
 
   const CMoiety * pMoiety = &Moieties[row];
 
-  CModelValue * pMV = pModel->createModelValue("Moiety[" + pMoiety->getObjectName() + "].TotalAmount");
+  CModelValue * pMV = pModel->createModelValue("Moiety[" + pMoiety->getObjectName() + "].TotalParticleAmount");
 
   int i = 0;
 
   while (pMV == NULL)
-    pMV = pModel->createModelValue("Moiety[" + pMoiety->getObjectName() + "].TotalAmount_" + TO_UTF8(QString::number(++i)));
+    pMV = pModel->createModelValue("Moiety[" + pMoiety->getObjectName() + "].TotalParticleAmount_" + TO_UTF8(QString::number(++i)));
 
   pMV->setInitialExpression(pMoiety->getExpression());
+
+  pMV = pModel->createModelValue("Moiety[" + pMoiety->getObjectName() + "].TotalAmount");
+
+  i = 0;
+
+  while (pMV == NULL)
+    pMV = pModel->createModelValue("Moiety[" + pMoiety->getObjectName() + "].TotalAmount_" + TO_UTF8(QString::number(++i)));
+
+  pMV->setInitialExpression("(" + pMoiety->getExpression() + ")/<" +
+                            pModel->getObject(CCommonName("Reference=Quantity Conversion Factor"))->getCN() + ">");
+
   protectedNotify(ListViews::MODELVALUE, ListViews::ADD);
 }
 
