@@ -32,6 +32,7 @@
 #include "lapack/blaswrap.h"
 #include "lapack/lapackwrap.h"
 
+C_FLOAT64 mchpr1_(void);
 C_FLOAT64 step1_(C_FLOAT64 *fnew, C_FLOAT64 *fm, C_FLOAT64 *gtp,
                  C_FLOAT64 *smax);
 int lsout_(C_INT *, C_INT *, C_FLOAT64 *,
@@ -48,7 +49,6 @@ int mslv_(C_FLOAT64 *, C_FLOAT64 *, C_INT *,
           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, C_INT *);
-C_FLOAT64 mchpr1_(void);
 int negvec_(C_INT *, C_FLOAT64 *);
 int ztime_(C_INT *, C_FLOAT64 *, C_INT *);
 int ndia3_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
@@ -61,7 +61,6 @@ int cnvtst_(C_INT *, C_FLOAT64 *,
             C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
             C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
             C_FLOAT64 *, C_INT *, C_INT *, C_FLOAT64 *);
-
 int chkucp_(C_INT *, C_INT *, C_INT *,
             C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
             C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
@@ -74,8 +73,6 @@ int dxpy_(C_INT *, C_FLOAT64 *, C_INT *, C_FLOAT64 *, C_INT *);
 int modz_(C_INT *, C_FLOAT64 *, C_FLOAT64 *,
           C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
           C_FLOAT64 *);
-
-C_FLOAT64 mchpr1_(void);
 
 #define subscr_1 (mpsubscr_->_1)
 #define subscr_2 (mpsubscr_->_2)
@@ -110,7 +107,7 @@ CTruncatedNewton::~CTruncatedNewton()
 /*                FAIRFAX, VA 22030 */
 /* ****************************************************************** */
 /* Subroutine */ int CTruncatedNewton::tn_(C_INT *ierror, C_INT *n, C_FLOAT64 *x,
-    C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton *sfun)
+    C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton *sfun, C_INT *logverbosity, COptLog *log)
 {
   /* Format strings */
   /* static char fmt_800[] = "(//,\002 ERROR CODE =\002,i3)";
@@ -212,7 +209,7 @@ CTruncatedNewton::~CTruncatedNewton()
       maxit = 1;
     }
 
-  msglvl = 0;
+  msglvl = *logverbosity;
   maxfun = *n * 150;
   eta = .25;
   stepmx = 10.;
@@ -222,7 +219,7 @@ CTruncatedNewton::~CTruncatedNewton()
   /* MINIMIZE THE FUNCTION */
 
   CTruncatedNewton::lmqn_(ierror, n, &x[1], f, &g[1], &w[1], lw, sfun, &msglvl, &maxit,
-                          &maxfun, &eta, &stepmx, &accrcy, &xtol);
+                          &maxfun, &eta, &stepmx, &accrcy, &xtol, log);
 
   /* PRINT THE RESULTS */
   //remove the printing
@@ -434,7 +431,7 @@ CTruncatedNewton::~CTruncatedNewton()
 /* Subroutine */ int CTruncatedNewton::lmqn_(C_INT *ifail, C_INT *n, C_FLOAT64 *x,
     C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton * sfun,
     C_INT *msglvl, C_INT *maxit, C_INT *maxfun, C_FLOAT64 *eta,
-    C_FLOAT64 *stepmx, C_FLOAT64 *accrcy, C_FLOAT64 *xtol)
+    C_FLOAT64 *stepmx, C_FLOAT64 *accrcy, C_FLOAT64 *xtol, COptLog *log)
 {
   /* Format strings */
   /*  char fmt_800[] = "(//\002 NIT   NF   CG\002,9x,\002F\002,21x,\002"
@@ -621,9 +618,9 @@ L20:
 
   /* PERFORM THE LINEAR SEARCH */
 
-  CTruncatedNewton::linder_(n, sfun, &small, &epsmch, &reltol, &fabstol, &tnytol, eta, &
-                            zero, &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1]
-                            , &numf, &nwhy, &w[1], lw);
+  CTruncatedNewton::linder_(n, sfun, &small, &epsmch, &reltol, &fabstol, &tnytol, eta, &zero,
+                            &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1],
+                            &numf, &nwhy, &w[1], lw);
 
   fold = fnew;
   ++niter;
@@ -632,16 +629,12 @@ L20:
 
   //remove the printing
 
-  if (*msglvl >= 1)
+  if (*msglvl > 0)
     {
-      printf("%d, %d, %d, %0.6le, %0.6le\n", niter, nftotl, nlincg, fnew, gtg);
-      /*    s_wsfe(&io___81);
-          do_fio(&c__1, (char *)&niter, (ftnlen)sizeof(C_INT));
-          do_fio(&c__1, (char *)&nftotl, (ftnlen)sizeof(C_INT));
-          do_fio(&c__1, (char *)&nlincg, (ftnlen)sizeof(C_INT));
-          do_fio(&c__1, (char *)&fnew, (ftnlen)sizeof(C_FLOAT64));
-          do_fio(&c__1, (char *)&gtg, (ftnlen)sizeof(C_FLOAT64));
-          e_wsfe();*/
+      std::ostringstream auxStream;
+      auxStream << "niter=" << niter << ", nftotl=" << nftotl << ", nlincg=" << nlincg
+                << ", fnew" << fnew << ", gtg=" << gtg;
+      log->enterLogEntry(COptLogEntry(auxStream.str()));
     }
 
   if (nwhy < 0)
@@ -832,8 +825,6 @@ L120:
                           "LGORITHM\002)";
    char fmt_810[] = "(//\002  NIT   NF   CG\002,9x,\002F\002,21x,"
                           "\002GTG\002,//)";
-   char fmt_820[] = "(\002        LINESEARCH RESULTS:  ALPHA,PNOR"
-                          "M\002,2(1pd12.4))";
    char fmt_830[] = "(\002 UPD1 IS TRUE - TRIVIAL PRECONDITIONING"
                           "\002)";
    char fmt_840[] = "(\002 NEWCON IS TRUE - CONSTRAINT ADDED IN LINE"
@@ -995,10 +986,6 @@ L10:
     {
       // print current details
       monit_(n, &x[1], &fnew, &g[1], &niter, &nftotl, &nfeval, &lreset, &ipivot[1], log);
-//    printf("ierror=%d\nf()=%.4lf\n", ierror, fest );
-//    for(int counter=0; counter<mVariableSize; counter++)
-//      printf("p[%02d]=%.4lf ", counter, mCurrent[counter] );
-//    printf("\n");
     }
 
   /* CHECK IF THE INITIAL POINT IS A LOCAL MINIMUM. */
@@ -1065,8 +1052,7 @@ L20:
   /* THE LINEAR SEARCH */
 
   tnytol = epsmch * (xnorm + one) / pe;
-  stpmax_(stepmx, &pe, &spe, n, &x[1], &w[subscr_1.lpk], &ipivot[1], &low[1]
-          , &up[1]);
+  stpmax_(stepmx, &pe, &spe, n, &x[1], &w[subscr_1.lpk], &ipivot[1], &low[1], &up[1]);
 
   /* SET THE INITIAL STEP LENGTH. */
 
@@ -1086,19 +1072,16 @@ L20:
 
   newcon = TRUE_;
   nwhy = 0;
-  modz_(n, &x[1], &w[subscr_1.lpk], &ipivot[1], &epsmch, &low[1], &up[1], &
-        flast, &fnew);
+  modz_(n, &x[1], &w[subscr_1.lpk], &ipivot[1], &epsmch, &low[1], &up[1], &flast, &fnew);
   flast = fnew;
 
 L30:
 
-  if (*msglvl >= 3)
+  if (*msglvl > 2)
     {
-      printf("alpha=%.6le, pnorm=%.6le\n", alpha, pnorm);
-      /*        s_wsfe(&io___144);
-              do_fio(&c__1, (char *)&alpha, (ftnlen)sizeof(C_FLOAT64));
-              do_fio(&c__1, (char *)&pnorm, (ftnlen)sizeof(C_FLOAT64));
-              e_wsfe();*/
+      std::ostringstream auxStream;
+      auxStream << "Line search results: alpha=" << alpha << ", pnorm=" << pnorm;
+      log->enterLogEntry(COptLogEntry(auxStream.str()));
     }
 
   fold = fnew;
@@ -1108,9 +1091,10 @@ L30:
   /* IF REQUIRED, PRINT THE DETAILS OF THIS ITERATION */
 
   /* ############################ */
-  if (*msglvl >= 1)
+  if (*msglvl > 0)
     {
-//      monit_(n, &x[1], &fnew, &g[1], &niter, &nftotl, &nfeval, &lreset, &ipivot[1]);
+      // print current details
+      monit_(n, &x[1], &fnew, &g[1], &niter, &nftotl, &nfeval, &lreset, &ipivot[1], log);
     }
 
   if (nwhy < 0)
@@ -1247,18 +1231,14 @@ L80:
 
 L90:
 
-  if (upd1 && *msglvl >= 3)
+  if (upd1 && *msglvl > 2)
     {
-      /*
-      s_wsfe(&io___150);
-      e_wsfe();*/
+      log->enterLogEntry(COptLogEntry("UPD1 is true: trivial preconditioning"));
     }
 
-  if (newcon && *msglvl >= 3)
+  if (newcon && *msglvl > 2)
     {
-      /*
-         s_wsfe(&io___151);
-         e_wsfe();*/
+      log->enterLogEntry(COptLogEntry("NEWCON is true: constraint added in line search"));
     }
 
   modet = *msglvl - 3;
@@ -1315,7 +1295,8 @@ L150:
 
   if (*msglvl >= 1)
     {
-//      monit_(n, &x[1], f, &g[1], &niter, &nftotl, &nfeval, &ireset, &ipivot[1]);
+      // print current details
+      monit_(n, &x[1], &fnew, &g[1], &niter, &nftotl, &nfeval, &lreset, &ipivot[1], log);
     }
 
   /* SET IFAIL */
@@ -1359,7 +1340,7 @@ L10:
       ;
     }
 
-  /* we're using printf here but should be pushing into COptLog */
+  // error messages now go to the COptLog object *log
   std::ostringstream auxStream;
   auxStream << "niter=" << *niter << ", nftotl=" << *nftotl << ", nfeval=" << *nfeval
             << ", f=" << *f << ", gtg=" << gtg;
