@@ -15,6 +15,15 @@
 #include "utilities/utility.h"
 
 // Constructor
+
+COptLogEntry::COptLogEntry()
+  : MsgHeader()
+  , MsgSubtext()
+  , StatusDump()
+{
+
+}
+
 COptLogEntry::COptLogEntry(const std::string &header, const std::string &subtext, const std::string &status):
   MsgSubtext(subtext),
   StatusDump(status)
