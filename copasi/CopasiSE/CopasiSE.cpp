@@ -215,7 +215,6 @@ int main(int argc, char *argv[])
                 }
             }
 
-#ifdef COPASI_SEDML
           else if (importSEDML)
             {
               // Import the SED-ML File
@@ -231,8 +230,6 @@ int main(int argc, char *argv[])
                   goto finish;
                 }
             }
-
-#endif //COPASI_SEDML
 
 #ifdef WITH_COMBINE_ARCHIVE
           else if (importCA)
@@ -552,8 +549,6 @@ int exportCurrentModel()
       return retcode;
     }
 
-#ifdef COPASI_SEDML
-
   // Check whether exporting to SEDML is requested.
   if (!COptions::compareValue("ExportSEDML", std::string("")))
     {
@@ -569,8 +564,6 @@ int exportCurrentModel()
           retcode = 1;
         }
     }
-
-#endif //COPASI_SEDML
 
 #ifdef WITH_COMBINE_ARCHIVE
 

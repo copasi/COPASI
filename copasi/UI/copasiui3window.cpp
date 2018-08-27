@@ -74,9 +74,7 @@
 #endif
 #include <UI/CWindowInterface.h>
 
-#ifdef COPASI_SEDML
 #include "CQSEDMLFileDialog.h"
-#endif
 
 #ifdef COPASI_UNDO
 # include "copasi/undoUI/CQUndoDialog.h"
@@ -88,9 +86,7 @@
 #include <stdlib.h>
 #endif // COPASI_SBW_INTEGRATION
 
-#ifdef COPASI_SEDML
 #include <sedml/SedDocument.h>
-#endif
 
 #include <copasi/UI/CQOptPopulation.h>
 
@@ -257,12 +253,10 @@ CopasiUI3Window::CopasiUI3Window():
   , mSBWIgnoreShutdownEvent(true)
 #endif // COPASI_SBW_INTEGRATION
 
-#ifdef COPASI_SEDML
   , mpMenuSEDMLSupport(NULL)
   , mpMenuRecentSEDMLFiles(NULL)
   , mRecentSEDMLFilesActionMap()
   , mpRecentSEDMLFilesActionGroup(NULL)
-#endif //COPASI_SEDML support
 
 #ifdef COPASI_UNDO
   , mpaUndo(NULL)
@@ -305,10 +299,8 @@ CopasiUI3Window::CopasiUI3Window():
   mpaSaveAs->setEnabled(false);
   mpaExportSBML->setEnabled(false);
   mpaExportODE->setEnabled(false);
-  //TODO SEDML
-#ifdef COPASI_SEDML
   mpaExportSEDML->setEnabled(false);
-#endif
+
   mpDataModel = CRootContainer::addDatamodel();
   mpDataModelGUI = new DataModelGUI(this, mpDataModel);
   mpListView = new ListViews(this, mpDataModelGUI, mpDataModel);
@@ -460,8 +452,7 @@ void CopasiUI3Window::createActions()
   connect(mpaExpandModel, SIGNAL(triggered()), this, SLOT(slotExpandModel()));
   mpaFontSelectionDialog = new QAction("Select the Application Font", this);
   connect(mpaFontSelectionDialog, SIGNAL(triggered()), this, SLOT(slotFontSelection()));
-  //TODO SEDML
-#ifdef COPASI_SEDML
+
   mpaOpenSEDMLFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "S&ED-ML Files...", this);
   connect(mpaOpenSEDMLFiles, SIGNAL(triggered()), this, SLOT(slotFileExamplesSEDMLFiles()));
   // mpaOpenSEDMLFiles->setShortcut(Qt::CTRL + Qt::Key_3);
@@ -471,7 +462,7 @@ void CopasiUI3Window::createActions()
   mpaExportSEDML = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export SED-ML...", this);
   connect(mpaExportSEDML, SIGNAL(triggered()), this, SLOT(slotExportSEDML()));
   // mpaExportSEDML->setShortcut(Qt::CTRL + Qt::Key_Z);
-#endif
+
   //     QAction* mpaObjectBrowser;
 #ifdef WITH_MERGEMODEL
   mpaAddModel = new QAction(CQIconResource::icon(CQIconResource::fileAdd), "&Add to model...", this);
@@ -617,9 +608,8 @@ void CopasiUI3Window::createMenuBar()
   mpMenuExamples = pFileMenu->addMenu("Examples");
   mpMenuExamples->addAction(mpaOpenCopasiFiles);
   mpMenuExamples->addAction(mpaOpenSBMLFiles);
-#ifdef COPASI_SEDML
   mpMenuExamples->addAction(mpaOpenSEDMLFiles);
-#endif
+
   pFileMenu->addAction(mpaSave);
   pFileMenu->addAction(mpaSaveAs);
 #ifdef WITH_MERGEMODEL
@@ -635,15 +625,14 @@ void CopasiUI3Window::createMenuBar()
   pFileMenu->addAction(mpaImportCombine);
   pFileMenu->addAction(mpaExportCombine);
 #endif
-  //TODO SEDML
-#ifdef COPASI_SEDML
+
   pFileMenu->addSeparator();
   mpMenuSEDMLSupport = pFileMenu->addMenu("SED-ML Support");
   mpMenuSEDMLSupport->addAction(mpaImportSEDML);
   mpMenuSEDMLSupport->addAction(mpaExportSEDML);
   mpMenuRecentSEDMLFiles = mpMenuSEDMLSupport->addMenu("Recent SED-ML Files");
   refreshRecentSEDMLFileMenu();
-#endif
+
   pFileMenu->addSeparator();
   pFileMenu->addAction(mpaFunctionDBLoad);
   pFileMenu->addAction(mpaFunctionDBSave);
@@ -887,9 +876,8 @@ void CopasiUI3Window::newDoc()
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
   mpaExportODE->setEnabled(true);
-#ifdef COPASI_SEDML
   mpaExportSEDML->setEnabled(true);
-#endif
+
   updateTitle();
   mpListView->switchToOtherWidget(1, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
@@ -921,7 +909,6 @@ void CopasiUI3Window::openInitialDocument(const QString &file)
       slotImportSBML(FROM_UTF8(ImportSBML));
     }
 
-#ifdef COPASI_SEDML
   else if (!COptions::compareValue("ImportSEDML", std::string("")))
     {
       // Import the SEDML File
@@ -930,7 +917,6 @@ void CopasiUI3Window::openInitialDocument(const QString &file)
       slotImportSEDML(FROM_UTF8(ImportSEDML));
     }
 
-#endif
   else if (COptions::getNonOptions().size())
     {
       // Look at commandline
@@ -1052,8 +1038,6 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
       return;
     }
 
-#ifdef COPASI_SEDML
-
   if (msg.getNumber() == 6303 &&
       (msg.getText().find("'sedML'") != std::string::npos || msg.getText().find(":sedML'") != std::string::npos))
     {
@@ -1071,7 +1055,6 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
       return;
     }
 
-#endif
 
   if (!success)
     {
@@ -1116,9 +1099,8 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
   mpaExportODE->setEnabled(true);
-#ifdef COPASI_SEDML
   mpaExportSEDML->setEnabled(true);
-#endif
+
   updateTitle();
   mpListView->switchToOtherWidget(1, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
@@ -1219,9 +1201,8 @@ void CopasiUI3Window::slotAddFileOpenFinished(bool success)
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
   mpaExportODE->setEnabled(true);
-#ifdef COPASI_SEDML
   mpaExportSEDML->setEnabled(true);
-#endif
+
   refreshRecentFileMenu();
   mNewFile = "";
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
@@ -2973,6 +2954,32 @@ bool isProbablySBML(QString &fileName)
   return false;
 }
 
+
+/**
+ * Utility function for guessing whether the file might
+ * be an SEDML file. If so it should contain an SEDML tag in the
+ * first couple of lines.
+ */
+bool isProbablySEDML(QString &fileName)
+{
+  QFile file(fileName);
+
+  if (!file.open(QIODevice::ReadOnly))
+    return false;
+
+  for (int i = 0; i < 5; ++i)
+    {
+      QByteArray array = file.readLine();
+
+      if (QString(array).contains("<sedML"))
+        return true;
+    }
+
+  file.close();
+  return false;
+}
+
+
 void CopasiUI3Window::dropEvent(QDropEvent *event)
 {
   QList<QUrl> urls = event->mimeData()->urls();
@@ -2988,11 +2995,9 @@ void CopasiUI3Window::dropEvent(QDropEvent *event)
   if (isProbablySBML(fileName))
     slotImportSBML(fileName);
 
-#ifdef COPASI_SEDML
-  else if (isProbablySBML(fileName))
+  else if (isProbablySEDML(fileName))
     slotImportSEDML(fileName);
 
-#endif
   else
     slotFileOpen(fileName);
 }
@@ -3015,33 +3020,6 @@ void CopasiUI3Window::disableSliders(bool disable)
       this->mpSliders->setEnabled(this->mSliderDialogEnabled);
       this->mpSliders->updateAllSliders();
     }
-}
-
-//TODO SEDML
-#ifdef COPASI_SEDML
-
-/**
- * Utility function for guessing whether the file might
- * be an SEDML file. If soit should contain an SEDML tag in the
- * first couple of lines.
- */
-bool isProabablySEDML(QString &fileName)
-{
-  QFile file(fileName);
-
-  if (!file.open(QIODevice::ReadOnly))
-    return false;
-
-  for (int i = 0; i < 5; ++i)
-    {
-      QByteArray array = file.readLine();
-
-      if (QString(array).contains("<sedML"))
-        return true;
-    }
-
-  file.close();
-  return false;
 }
 
 void CopasiUI3Window::slotFileExamplesSEDMLFiles(QString file)
@@ -3340,7 +3318,6 @@ void CopasiUI3Window::slotOpenRecentSEDMLFile(QAction *pAction)
   slotImportSEDML(FROM_UTF8(FileName));
 }
 
-#endif
 
 #ifdef WITH_COMBINE_ARCHIVE
 

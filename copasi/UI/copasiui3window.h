@@ -116,8 +116,7 @@ public:
 
   void exportSBMLToString(std::string & SBML);
 
-  //TODO SEDML
-#ifdef COPASI_SEDML
+  // SEDML
   /**
   * This is used to import an SEDML file from a std::string in the GUI
   * it does all the necessary GUI stuff like asking to save the old
@@ -126,7 +125,7 @@ public:
   //void importSEDMLFromString(const std::string & sedmlDocumentText);
 
   void exportSEDMLToString(std::string & SEDML);
-#endif
+
 
 // COMBINE Archive will take care of file management
   /*
@@ -245,8 +244,7 @@ protected slots:
    */
   void slotShowObjectBrowserDialog(bool flag);
 
-  //TODO SEDML
-#ifdef COPASI_SEDML
+  // SEDML
   void slotFileExamplesSEDMLFiles(QString file = QString::null);
   void slotImportSEDML(QString file = QString::null);
   void slotImportSEDMLFinished(bool success);
@@ -255,7 +253,6 @@ protected slots:
   void slotExportSEDMLFinished(bool success);
   void slotExportSEDMLToStringFinished(bool success);
   void slotOpenRecentSEDMLFile(QAction * pAction);
-#endif
 
 #ifdef WITH_COMBINE_ARCHIVE
   void slotImportCombine(QString file = QString::null);
@@ -382,8 +379,7 @@ private:
 
   static CopasiUI3Window * pMainWindow;
 
-  //TODO SEDML
-#ifdef COPASI_SEDML
+  // SEDML
   QMenu * mpMenuSEDMLSupport;
   QAction* mpaImportSEDML;
   QAction* mpaExportSEDML;
@@ -392,7 +388,6 @@ private:
   QMap< QAction *, int > mRecentSEDMLFilesActionMap;
   QActionGroup * mpRecentSEDMLFilesActionGroup;
   void refreshRecentSEDMLFileMenu();
-#endif
 
   //TODO UNDO Framework
 #ifdef COPASI_UNDO

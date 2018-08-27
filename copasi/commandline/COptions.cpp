@@ -234,10 +234,8 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("ExportBerkeleyMadonna", Options.ExportBerkeleyMadonna);
   setValue("MaxTime", Options.MaxTime);
 
-#ifdef COPASI_SEDML
   setValue("ImportSEDML", Options.ImportSEDML);
   setValue("ExportSEDML", Options.ExportSEDML);
-#endif
 
 #ifdef WITH_COMBINE_ARCHIVE
   setValue("ImportCombineArchive", Options.ImportCombineArchive);

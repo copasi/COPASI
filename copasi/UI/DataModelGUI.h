@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -78,8 +78,7 @@ public:
   void exportCombineArchiveRun();
 #endif
 
-  //TODO SEDML
-#ifdef COPASI_SEDML
+  // SEDML
   void exportSEDML(const std::string & fileName, bool overwriteFile , int sedmlLevel, int sedmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
   void exportSEDMLToString(std::string & sedmlDocumentText);
   void importSEDML(const std::string & fileName);
@@ -89,7 +88,6 @@ public:
   void exportSEDMLRun();
   void importSEDMLFromStringRun();
   void exportSEDMLToStringRun();
-#endif
 
   void loadModelRun();
   void saveModelRun();
@@ -118,13 +116,11 @@ public slots:
   void miriamDownloadFinished(QNetworkReply*);
   void miriamDownloadProgress(qint64 received, qint64 total);
 
-  //TODO SEDML
-#ifdef COPASI_SEDML
+  //SEDML
   void importSEDMLFinished();
   void exportSEDMLFinished();
   void importSEDMLFromStringFinished();
   void exportSEDMLToStringFinished();
-#endif
 
 public:
   bool updateMIRIAM(CMIRIAMResources & miriamResources);
@@ -178,15 +174,13 @@ private:
   unsigned int mDownloadedTotalBytes;
   size_t mUpdateItem;
 
-  //TODO SEDML
-#ifdef COPASI_SEDML
+  //SEDML
   std::string mSEDMLImportString;
   std::string * mpSEDMLExportString;
   int mSEDMLLevel;
   int mSEDMLVersion;
   bool mSEDMLExportIncomplete;
   bool mSEDMLExportCOPASIMIRIAM;
-#endif
 };
 
 #endif

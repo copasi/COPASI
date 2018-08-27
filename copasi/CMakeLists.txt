@@ -96,10 +96,8 @@ include(utilities/CMakeLists.txt)
 include(xml/CMakeLists.txt)
 
 
-if(ENABLE_COPASI_SEDML)
-  include(sedml/CMakeLists.txt)
-  include_directories(${LIBSEDML_INCLUDE_DIR})
-endif()
+include(sedml/CMakeLists.txt)
+include_directories(${LIBSEDML_INCLUDE_DIR})
 
 
 if(ENABLE_VERSIONING)
@@ -164,11 +162,6 @@ endif(EXTRA_MOC_OPTIONS)
     set(WITH_COMBINE_ARCHIVE 1)
     set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DWITH_COMBINE_ARCHIVE=1)
   endif(ENABLE_COMBINE_ARCHIVE)
-  
-  if (ENABLE_COPASI_SEDML)
-    set(COPASI_SEDML 1)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_SEDML=1)
-  endif(ENABLE_COPASI_SEDML)
   
   if (QT5_USE_DATAVISUALIZATION)
     set(WITH_QT5_VISUALIZATION 1)
@@ -308,11 +301,9 @@ add_library (libCOPASISE-static STATIC $<TARGET_OBJECTS:libCOPASISE-core>)
 endif()
 set_target_properties (libCOPASISE-static PROPERTIES OUTPUT_NAME "COPASISE")
 
-if(ENABLE_COPASI_SEDML)
-  target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY})
-  if (${LIBNUML_LIBRARY})
-  target_link_libraries(libCOPASISE-static ${LIBNUML_LIBRARY})
-  endif()
+target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY})
+if (${LIBNUML_LIBRARY})
+target_link_libraries(libCOPASISE-static ${LIBNUML_LIBRARY})
 endif()
 
 target_link_libraries(libCOPASISE-static ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${EXPAT_LIBRARY} ${CLAPACK_LIBRARIES})
@@ -373,9 +364,7 @@ if(ENABLE_LIBCOPASISE_SHARED)
 
   set_target_properties (libCOPASISE-shared PROPERTIES OUTPUT_NAME "COPASISE")
 
-  if(ENABLE_COPASI_SEDML)
-    target_link_libraries(libCOPASISE-shared ${LIBSEDML_LIBRARY})
-  endif()
+  target_link_libraries(libCOPASISE-shared ${LIBSEDML_LIBRARY})
 
   target_link_libraries(libCOPASISE-shared ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${CLAPACK_LIBRARIES})
   
@@ -571,9 +560,7 @@ if(BUILD_GUI)
   include_directories(${QT_QTXML_INCLUDE_DIR})
   include_directories(${QT_QTSVG_INCLUDE_DIR})
 
-  if(ENABLE_COPASI_SEDML)
-    include_directories(${LIBSEDML_INCLUDE_DIR})
-  endif()
+  include_directories(${LIBSEDML_INCLUDE_DIR})
 
   add_library(libCOPASIUI STATIC ${COPASI_UI_SOURCES} ${COPASI_UI_HEADERS} ${HEADERS_UI_FORMS} ${COPASI_RCC_SOURCES} ${HEADERS_UI_MOC})
   QT_BIND_TO_TARGET(libCOPASIUI)

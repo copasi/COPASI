@@ -314,18 +314,12 @@ endforeach()
 endif()
 
 
-# TODO find libsedml, version
-# Option for the COPASI support for SEDML
-option (ENABLE_COPASI_SEDML "Enables SEDML support." ON)
-mark_as_advanced(ENABLE_COPASI_SEDML)
-if(ENABLE_COPASI_SEDML)
-  if (WIN32)
-  add_definitions(-DLIBSEDML_STATIC)
-  endif()
+if (WIN32)
+add_definitions(-DLIBSEDML_STATIC)
+endif()
 
-  find_package(LIBSEDML REQUIRED)
-  include_directories(BEFORE ${LIBSEDML_INCLUDE_DIR})
-endif(ENABLE_COPASI_SEDML)
+find_package(LIBSEDML REQUIRED)
+include_directories(BEFORE ${LIBSEDML_INCLUDE_DIR})
 
 # actually iconv is only needed on BSD like systems
 find_package(ICONV)
@@ -550,10 +544,6 @@ endif ()
 
 option (ENABLE_USE_SBMLUNIT "Enables extended unit support." OFF)
 mark_as_advanced(ENABLE_USE_SBMLUNIT)
-
-#Option for the COPASI support for SEDML currently being developed by Joseph
-option (ENABLE_COPASI_SEDML "Enables SEDML support." ON)
-mark_as_advanced(ENABLE_COPASI_SEDML)
 
 #Option for the COPASI support for Provenance Framework currently being developed by Peyman
 option (ENABLE_PROVENANCE "Enables Provenance support." OFF)
@@ -874,7 +864,7 @@ message(STATUS "-----------------------------------------------------------
    SBW integration          = ${ENABLE_SBW_INTEGRATION}
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}
-   SEDML support            = ${ENABLE_COPASI_SEDML}
+   SEDML support            = ON
    Combine Archive support  = ${ENABLE_COMBINE_ARCHIVE}
    SDE support              = ${ENABLE_SDE_SUPPORT}
    GPROF support            = ${ENABLE_GPROF}

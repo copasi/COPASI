@@ -1,7 +1,7 @@
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
 
 #define USE_LAYOUT 1
@@ -55,11 +55,9 @@
 # include <copasi/utilities/CCopasiMessage.h>
 #endif // WITH_COMBINE_ARCHIVE
 
-#ifdef COPASI_SEDML
 #include <sedml/SedDocument.h>
 #include "sedml/SEDMLImporter.h"
 #include "sedml/CSEDMLExporter.h"
-#endif
 
 
 #ifdef COPASI_Versioning
@@ -1567,8 +1565,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
 #endif
 
-//TODO SEDML
-#ifdef COPASI_SEDML
+// SEDML
 bool CDataModel::importSEDMLFromString(const std::string& sedmlDocumentText,
                                        CProcessReport* pImportHandler,
                                        const bool & deleteOldData)
@@ -1899,7 +1896,6 @@ bool CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile, i
 
   return true;
 }
-#endif
 
 void CDataModel::deleteOldData()
 {
@@ -1912,9 +1908,7 @@ void CDataModel::deleteOldData()
   pdelete(mOldData.pCurrentSBMLDocument);
   pdelete(mOldData.mpUndoStack);
 
-#ifdef COPASI_SEDML
   pdelete(mOldData.pCurrentSEDMLDocument);
-#endif
 
 #ifdef COPASI_Versioning
   pdelete(mOldData.mpModelVersionHierarchy);
@@ -2183,21 +2177,21 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"));
         break;
 
-	  case CTaskEnum::Task::moieties:
-		  pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
-		  pReport->setTaskType(taskType);
-		  pReport->setComment("Automatically generated report.");
-		  pReport->setIsTable(false);
-		  pReport->setTitle(false);
-		  pReport->setSeparator("\t");
+      case CTaskEnum::Task::moieties:
+        pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
+        pReport->setTaskType(taskType);
+        pReport->setComment("Automatically generated report.");
+        pReport->setIsTable(false);
+        pReport->setTitle(false);
+        pReport->setSeparator("\t");
 
-		  // Header
-		  pReport->getHeaderAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Moieties],Object=Description"));
+        // Header
+        pReport->getHeaderAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Moieties],Object=Description"));
 
-		  // Footer
-		  pReport->getFooterAddr()->push_back(CCommonName("String=\n"));
-		  pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Moieties],Object=Result"));
-		  break;
+        // Footer
+        pReport->getFooterAddr()->push_back(CCommonName("String=\n"));
+        pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Moieties],Object=Result"));
+        break;
 
       default:
         return pReport;
@@ -2400,11 +2394,10 @@ CDataModel::CContent::CContent(const bool & withGUI):
   mSBMLFileName(""),
   mCopasi2SBMLMap(),
   mReferenceDir("")
-#ifdef COPASI_SEDML
   , pCurrentSEDMLDocument(NULL)
   , mCopasi2SEDMLMap()
   , mSEDMLFileName("")
-#endif
+
 #ifdef COPASI_Versioning
   , mpModelVersionHierarchy(NULL)
 #endif // COPASI_Versioning
@@ -2427,11 +2420,10 @@ CDataModel::CContent::CContent(const CContent & src):
   mSBMLFileName(src.mSBMLFileName),
   mCopasi2SBMLMap(src.mCopasi2SBMLMap),
   mReferenceDir(src.mReferenceDir)
-#ifdef COPASI_SEDML
   , pCurrentSEDMLDocument(src.pCurrentSEDMLDocument)
   , mCopasi2SEDMLMap(src.mCopasi2SEDMLMap)
   , mSEDMLFileName(src.mSEDMLFileName)
-#endif
+
 #ifdef COPASI_Versioning
   , mpModelVersionHierarchy(src.mpModelVersionHierarchy)
 #endif // COPASI_Versioning
@@ -2461,11 +2453,9 @@ CDataModel::CContent & CDataModel::CContent::operator = (const CContent & rhs)
       mReferenceDir = rhs.mReferenceDir;
       mCopasi2SBMLMap = rhs.mCopasi2SBMLMap;
 
-#ifdef COPASI_SEDML
       pCurrentSEDMLDocument = rhs.pCurrentSEDMLDocument;
       mCopasi2SEDMLMap = rhs.mCopasi2SEDMLMap;
       mSEDMLFileName = rhs.mSEDMLFileName;
-#endif
 
 #ifdef COPASI_Versioning
       mpModelVersionHierarchy = rhs.mpModelVersionHierarchy;
@@ -2497,9 +2487,7 @@ void CDataModel::pushData()
          mOldData.pGUI == NULL
         );
 
-#ifdef COPASI_SEDML
   assert(mOldData.pCurrentSEDMLDocument == NULL);
-#endif
 
 #ifdef COPASI_Versioning
   assert(mOldData.mpModelVersionHierarchy == NULL);
@@ -2645,12 +2633,8 @@ void CDataModel::commonAfterLoad(CProcessReport* pProcessReport,
   if (mOldData.mpUndoStack == mData.mpUndoStack)
     mOldData.mpUndoStack = NULL;
 
-#ifdef COPASI_SEDML
-
   if (mOldData.pCurrentSEDMLDocument == mData.pCurrentSEDMLDocument)
     mOldData.pCurrentSEDMLDocument = NULL;
-
-#endif
 
   if (mData.pModel->isCompileNecessary() &&
       mData.pModel->compileIfNecessary(pProcessReport))

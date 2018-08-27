@@ -107,15 +107,12 @@ DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel):
   mDownloadedBytes(0),
   mDownloadedTotalBytes(0),
   mUpdateItem(C_INVALID_INDEX)
-
-#ifdef COPASI_SEDML
   , mSEDMLImportString()
   , mpSEDMLExportString(NULL)
   , mSEDMLLevel(1)
   , mSEDMLVersion(1)
   , mSEDMLExportIncomplete(true)
   , mSEDMLExportCOPASIMIRIAM(true)
-#endif
 
 {
   mpOutputHandlerPlot = new COutputHandlerPlot();
@@ -985,8 +982,8 @@ void DataModelGUI::exportCombineFinished()
 }
 
 #endif
-//TODO SEDML
-#ifdef COPASI_SEDML
+
+
 void DataModelGUI::importSEDMLFromString(const std::string & sedmlDocumentText)
 {
   mpProgressBar = CProgressBar::create();
@@ -1143,4 +1140,4 @@ void DataModelGUI::exportSEDMLRun()
       mSuccess = false;
     }
 }
-#endif //COPASI_SEDML
+

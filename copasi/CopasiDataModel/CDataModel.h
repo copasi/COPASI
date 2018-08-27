@@ -35,14 +35,12 @@ class CUndoData;
 class CCopasiTask;
 class CModelVersionHierarchy;
 
-//TODO SEDML
-#ifdef COPASI_SEDML
+// SEDML
 LIBSEDML_CPP_NAMESPACE_BEGIN
 class SedBase;
 class SedDocument;
 LIBSEDML_CPP_NAMESPACE_END
 class CPlotItem;
-#endif
 
 #ifdef WITH_COMBINE_ARCHIVE
 class CombineArchive;
@@ -117,8 +115,7 @@ private:
     // an imported SBML file or from a loaded cps file.
     std::string mReferenceDir;
 
-    //TODO SEDML
-#ifdef COPASI_SEDML
+    // SEDML
     SedDocument* pCurrentSEDMLDocument;
 
     /**
@@ -132,7 +129,6 @@ private:
      * The name of the referenced SEDML file
      */
     std::string mSEDMLFileName;
-#endif // COPASI_SEDML
 
 #ifdef COPASI_Versioning
     CModelVersionHierarchy * mpModelVersionHierarchy;
@@ -303,8 +299,7 @@ public:
 public:
   const std::string& getReferenceDirectory() const;
 
-  //TODO SEDML by JO Dada
-#ifdef COPASI_SEDML
+  // SEDML
   bool importSEDMLFromString(const std::string & sedmlDocumentText,
                              CProcessReport* pImportHandler = NULL,
                              const bool & deleteOldData = true);
@@ -338,8 +333,6 @@ public:
   const std::string & getSEDMLFileName() const;
 
   std::map<CDataObject*, SedBase*>& getCopasi2SEDMLMap();
-
-#endif
 
   CUndoData::ChangeSet applyData(const CUndoData & data);
   CUndoData::ChangeSet recordData(const CUndoData & data);
