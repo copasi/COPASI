@@ -334,42 +334,48 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *f, C_FL
         {
           *mContainerVariables[i] = (x[i] * 1.001);
           g[i] = (evaluate() - *f) / (x[i] * 0.001);
+          else
+            {
+              // why use 1e-7? shouldn't this be epsilon, or something like that?
+              *mContainerVariables[i] = (1e-7);
+              g[i] = (evaluate() - *f) / 1e-7;
+
+              if (mLogVerbosity > 2)
+                {
+                  std::ostringstream auxStream;
+                  auxStream << "Calculating gradient for zero valued parameter " << i << ", using 1e-7, results in " << g[i] << ".";
+                  mMethodLog.enterLogEntry(COptLogEntry(auxStream.str()));
+                }
+            }
+
+          *mContainerVariables[i] = (x[i]);
         }
 
-      else
-        {
-          *mContainerVariables[i] = (1e-7);
-          g[i] = (evaluate() - *f) / 1e-7;
-        }
+      if (!mContinue)
+        throw bool(mContinue);
 
-      *mContainerVariables[i] = (x[i]);
+      return 0;
     }
 
-  if (!mContinue)
-    throw bool(mContinue);
+  const C_FLOAT64 & COptMethodTruncatedNewton::evaluate()
+  {
+    // We do not need to check whether the parametric constraints are fulfilled
+    // since the parameters are created within the bounds.
+    mContinue = mpOptProblem->calculate();
+    mEvaluationValue = mpOptProblem->getCalculateValue();
 
-  return 0;
-}
+    // when we leave the either the parameter or functional domain
+    // we penalize the objective value by forcing it to be larger
+    // than the best value recorded so far.
+    if (mEvaluationValue < mBestValue &&
+        (!mpOptProblem->checkParametricConstraints() ||
+         !mpOptProblem->checkFunctionalConstraints()))
+      mEvaluationValue = mBestValue + mBestValue - mEvaluationValue;
 
-const C_FLOAT64 & COptMethodTruncatedNewton::evaluate()
-{
-  // We do not need to check whether the parametric constraints are fulfilled
-  // since the parameters are created within the bounds.
-  mContinue = mpOptProblem->calculate();
-  mEvaluationValue = mpOptProblem->getCalculateValue();
+    return mEvaluationValue;
+  }
 
-  // when we leave the either the parameter or functional domain
-  // we penalize the objective value by forcing it to be larger
-  // than the best value recorded so far.
-  if (mEvaluationValue < mBestValue &&
-      (!mpOptProblem->checkParametricConstraints() ||
-       !mpOptProblem->checkFunctionalConstraints()))
-    mEvaluationValue = mBestValue + mBestValue - mEvaluationValue;
-
-  return mEvaluationValue;
-}
-
-unsigned C_INT32 COptMethodTruncatedNewton::getMaxLogVerbosity() const
-{
-  return 1;
-}
+  unsigned C_INT32 COptMethodTruncatedNewton::getMaxLogVerbosity() const
+  {
+    return 1;
+  }
