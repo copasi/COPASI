@@ -76,11 +76,9 @@
 
 #include "CQSEDMLFileDialog.h"
 
-#ifdef COPASI_UNDO
 # include "copasi/undoUI/CQUndoDialog.h"
 # include "copasi/core/CCore.h"
 # include "copasi/undo/CUndoStack.h"
-#endif
 
 #ifdef COPASI_SBW_INTEGRATION
 #include <stdlib.h>
@@ -254,12 +252,10 @@ CopasiUI3Window::CopasiUI3Window():
   , mRecentSEDMLFilesActionMap()
   , mpRecentSEDMLFilesActionGroup(NULL)
 
-#ifdef COPASI_UNDO
   , mpaUndo(NULL)
   , mpaRedo(NULL)
   , mpaUndoHistory(NULL)
   , mpaClearUndoHistory(NULL)
-#endif
 
 #ifdef COPASI_Versioning
   , mpaCreateVersion(NULL)
@@ -476,8 +472,8 @@ void CopasiUI3Window::createActions()
   connect(mpaFunctionDBLoad, SIGNAL(triggered()), this, SLOT(slotFunctionDBLoad()));
   mpaFunctionDBSave =  new QAction(CQIconResource::icon(CQIconResource::fileSaveas), "Save Function DB...", this);
   connect(mpaFunctionDBSave, SIGNAL(triggered()), this, SLOT(slotFunctionDBSave()));
-  //TODO UNDO framework
-#ifdef COPASI_UNDO
+
+  // UNDO framework
   mpaUndo = new QAction("Undo", this);
   mpaUndo->setShortcut(QKeySequence::Undo);
   connect(mpaUndo, SIGNAL(triggered()), this, SLOT(slotUndo()));
@@ -488,7 +484,7 @@ void CopasiUI3Window::createActions()
   connect(mpaUndoHistory, SIGNAL(triggered()), this, SLOT(slotUndoHistory()));
   mpaClearUndoHistory = new QAction("&Clear Undo History", this);
   connect(mpaClearUndoHistory, SIGNAL(triggered()), this, SLOT(slotClearUndoHistory()));
-#endif
+
 #ifdef COPASI_Versioning
   mpaCreateVersion = new QAction("Create", this);
   connect(mpaCreateVersion, SIGNAL(triggered()), this, SLOT(slotCreateVersion()));
@@ -641,14 +637,13 @@ void CopasiUI3Window::createMenuBar()
   //********** edit menu ************
   QMenu *pEditMenu = menuBar()->addMenu("&Edit");
   pEditMenu->addAction(mpaCopy);
-#ifdef COPASI_UNDO
   pEditMenu->addSeparator();
   pEditMenu->addAction(mpaUndo);
   pEditMenu->addAction(mpaRedo);
   pEditMenu->addAction(mpaUndoHistory);
   pEditMenu->addSeparator();
   pEditMenu->addAction(mpaClearUndoHistory);
-#endif
+
   //********** Version menu ************
 #ifdef COPASI_Versioning
   QMenu *pVersionMenu = menuBar()->addMenu("&Version");
@@ -3514,7 +3509,6 @@ void CopasiUI3Window::slotExportCombineFinished(bool success)
     }
 }
 
-#ifdef COPASI_UNDO
 void CopasiUI3Window::slotClearUndoHistory()
 {
   CUndoStack * pUndoStack = mpDataModel->getUndoStack();
@@ -3552,7 +3546,6 @@ void CopasiUI3Window::slotUndoHistory()
 
   delete pDialog;
 }
-#endif
 
 #ifdef COPASI_Versioning
 void CopasiUI3Window::slotCreateVersion() //Slot Version Create

@@ -547,10 +547,6 @@ mark_as_advanced(ENABLE_PROVENANCE)
 option (ENABLE_VERSIONING "Enables Versioning support." OFF)
 mark_as_advanced(ENABLE_VERSIONING)
 
-#Option for the COPASI support for UNDO Framework currently being developed by Joseph
-option (ENABLE_COPASI_UNDO "Enables UNDO support." ON)
-mark_as_advanced(ENABLE_COPASI_UNDO)
-
 
 if(ENABLE_PROVENANCE AND NOT ENABLE_VERSIONING)
   set(ENABLE_VERSIONING ON CACHE BOOL "Enable Versioning Support" FORCE)
@@ -858,7 +854,7 @@ message(STATUS "-----------------------------------------------------------
    Combine Archive support  = ON
    SDE support              = ON
    GPROF support            = ${ENABLE_GPROF}
-   UNDO framework           = ${ENABLE_COPASI_UNDO}
+   UNDO framework           = ON
    Versioning framework     = ${ENABLE_VERSIONING}
    Provenance framework     = ${ENABLE_PROVENANCE}
    Analytics Task           = ${ENABLE_ANALYTICS}

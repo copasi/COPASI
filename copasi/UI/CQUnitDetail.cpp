@@ -33,10 +33,8 @@ CQUnitDetail::CQUnitDetail(QWidget* parent, const char* name)
 
   init();
 
-//#ifdef COPASI_UNDO
 //  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
 //  setUndoStack(pWindow->getUndoStack());
-//#endif
 }
 
 /*
@@ -452,7 +450,6 @@ void CQUnitDetail::save()
 //}
 
 //Undo methods
-#ifdef COPASI_UNDO
 
 //void CQUnitDetail::createNewGlobalQuantity()
 //{
@@ -717,4 +714,3 @@ void CQUnitDetail::save()
 //{
 //  ; //TODO
 //}
-#endif

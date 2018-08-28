@@ -256,12 +256,10 @@ protected slots:
   void slotExportCombine(QString str = QString::null);
   void slotExportCombineFinished(bool success);
 
-#ifdef COPASI_UNDO
   void slotUndo();
   void slotRedo();
   void slotUndoHistory();
   void slotClearUndoHistory();
-#endif
 
 #ifdef COPASI_Versioning
   void slotBrowseVersion();
@@ -381,13 +379,11 @@ private:
   QActionGroup * mpRecentSEDMLFilesActionGroup;
   void refreshRecentSEDMLFileMenu();
 
-  //TODO UNDO Framework
-#ifdef COPASI_UNDO
+  // UNDO Framework
   QAction* mpaUndo;
   QAction* mpaRedo;
   QAction* mpaUndoHistory;
   QAction* mpaClearUndoHistory;
-#endif
 
 #ifdef COPASI_Versioning
   QAction* mpaCreateVersion;

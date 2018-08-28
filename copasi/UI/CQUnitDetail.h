@@ -11,9 +11,7 @@
 #ifndef CQUNITDETAIL_H
 #define CQUNITDETAIL_H
 
-#ifdef COPASI_UNDO
 class UndoGlobalQuantityData;
-#endif
 
 #include "copasi/utilities/CUnitDefinition.h"
 #include "UI/CQValidatorUnit.h"
@@ -28,11 +26,9 @@ class CQUnitDetail : public CopasiWidget, public Ui::CQUnitDetail
 {
   Q_OBJECT
 
-#ifdef COPASI_UNDO
 //  friend class DeleteGlobalQuantityCommand;
 //  friend class CreateNewGlobalQuantityCommand;
 //  friend class GlobalQuantityTypeChangeCommand;
-#endif
 
 public:
   CQUnitDetail(QWidget* parent = 0, const char* name = 0);
@@ -66,13 +62,11 @@ private slots:
 //  void slotInitialTypeChanged(bool useInitialAssignment);
 
 //  //additional functions for UNDO framework
-//#ifdef COPASI_UNDO
 //  void deleteGlobalQuantity();
 //  void addGlobalQuantity(UndoGlobalQuantityData *pSData);
 //  void createNewGlobalQuantity();
 //  void deleteGlobalQuantity(UndoGlobalQuantityData *pSData);
 //  void globalQuantityTypeChanged(int type);
-//#endif
 };
 
 #endif // CQUNITDETAIL_H
