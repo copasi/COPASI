@@ -601,7 +601,7 @@ L20:
 
   pe = pnorm + epsmch;
 
-  /* COMPUTE THE fabsOLUTE AND RELATIVE TOLERANCES FOR THE LINEAR SEARCH */
+  /* COMPUTE THE ABSOLUTE AND RELATIVE TOLERANCES FOR THE LINEAR SEARCH */
 
   reltol = rteps * (xnorm + one) / pe;
   fabstol = -epsmch * ftest / (oldgtp - epsmch);
@@ -618,6 +618,9 @@ L20:
 
   /* PERFORM THE LINEAR SEARCH */
 
+  // set numf to zero as it was not initialized
+  numf = 0;
+
   CTruncatedNewton::linder_(n, sfun, &small, &epsmch, &reltol, &fabstol, &tnytol, eta, &zero,
                             &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1],
                             &numf, &nwhy, &w[1], lw);
@@ -626,8 +629,6 @@ L20:
   ++niter;
   nftotl += numf;
   gtg = ddot_(n, &g[1], &c__1, &g[1], &c__1);
-
-  //remove the printing
 
   if (*msglvl > 0)
     {
@@ -909,14 +910,20 @@ L120:
 
   /* Function Body */
   crash_(n, &x[1], &ipivot[1], &low[1], &up[1], &ier);
-  /*if (ier != 0) {
-  s_wsfe(&io___88);
-  e_wsfe();
-  }
-  if (ier != 0) {
-  return 0;
-  }
-  if (*msglvl >= 1) {
+
+  if (ier != 0 && (*msglvl > 0))
+    {
+      log->enterLogEntry(COptLogEntry("There is no feasible point; terminating algorithm."));
+    }
+
+  if (ier != 0)
+    {
+      return 0;
+    }
+
+  /* if (*msglvl > 1) {
+   char fmt_810[] = "(//\002  NIT   NF   CG\002,9x,\002F\002,21x,"
+                          "\002GTG\002,//)";
   s_wsfe(&io___89);
   e_wsfe();
   } */
@@ -1024,11 +1031,11 @@ L10:
   /* COMPUTE THE NEW SEARCH DIRECTION */
 
   modet = *msglvl - 3;
-  CTruncatedNewton::modlnp_(&modet, &w[subscr_1.lpk], &w[subscr_1.lgv], &w[subscr_1.lz1], &w[
-                              subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1], &g[
-                              1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval, &
-                            nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun, &
-                            c_true, &ipivot[1], accrcy, &gtpnew, &gnorm, &xnorm);
+  CTruncatedNewton::modlnp_(&modet, &w[subscr_1.lpk], &w[subscr_1.lgv], &w[subscr_1.lz1],
+                            &w[subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1],
+                            &g[1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval,
+                            &nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun,
+                            &c_true, &ipivot[1], accrcy, &gtpnew, &gnorm, &xnorm);
 L20:
 
   /* added manually by Pedro Mendes 12/2/1998 */
@@ -1060,9 +1067,13 @@ L20:
 
   /* PERFORM THE LINEAR SEARCH */
 
-  CTruncatedNewton::linder_(n, sfun, &small, &epsmch, &reltol, &fabstol, &tnytol, eta, &
-                            zero, &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1]
-                            , &numf, &nwhy, &w[1], lw);
+  // set numf to zero as it was not initialized
+  numf = 0;
+
+  CTruncatedNewton::linder_(n, sfun, &small, &epsmch, &reltol, &fabstol, &tnytol, eta, &zero,
+                            &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1],
+                            &numf, &nwhy, &w[1], lw);
+
   newcon = FALSE_;
 
   if ((d__1 = alpha - spe, fabs(d__1)) > epsmch * 10.)
@@ -1090,7 +1101,6 @@ L30:
 
   /* IF REQUIRED, PRINT THE DETAILS OF THIS ITERATION */
 
-  /* ############################ */
   if (*msglvl > 0)
     {
       // print current details
@@ -1242,11 +1252,11 @@ L90:
     }
 
   modet = *msglvl - 3;
-  CTruncatedNewton::modlnp_(&modet, &w[subscr_1.lpk], &w[subscr_1.lgv], &w[subscr_1.lz1], &w[
-                              subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1], &g[
-                              1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval, &
-                            nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun, &
-                            c_true, &ipivot[1], accrcy, &gtpnew, &gnorm, &xnorm);
+  CTruncatedNewton::modlnp_(&modet, &w[subscr_1.lpk], &w[subscr_1.lgv], &w[subscr_1.lz1],
+                            &w[subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1],
+                            &g[1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval,
+                            &nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun,
+                            &c_true, &ipivot[1], accrcy, &gtpnew, &gnorm, &xnorm);
 
   if (newcon)
     {
@@ -1293,7 +1303,7 @@ L140:
 L150:
   *f = oldf;
 
-  if (*msglvl >= 1)
+  if (*msglvl > 0)
     {
       // print current details
       monit_(n, &x[1], &fnew, &g[1], &niter, &nftotl, &nfeval, &lreset, &ipivot[1], log);
