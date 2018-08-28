@@ -210,9 +210,8 @@ protected slots:
   void slotPreferences();
   void slotPreferencesAccepted();
   void slotConvertToIrreversible();
-#ifdef WITH_PE_EVENT_CREATION
   void slotCreateEventsForTimeseries();
-#endif
+
   void listViewsFolderChanged(const QModelIndex & index);
   void slotOpenRecentFile(QAction * pAction);
   void slotOpenRecentSBMLFile(QAction * pAction);

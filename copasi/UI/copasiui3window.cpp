@@ -676,9 +676,7 @@ void CopasiUI3Window::createMenuBar()
 
   mpTools->addAction(mpaCheckModel);
   mpTools->addAction("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
-#ifdef WITH_PE_EVENT_CREATION
   mpTools->addAction("&Create Events For Timeseries Experiment", this, SLOT(slotCreateEventsForTimeseries()));
-#endif
   mpTools->addAction(mpaParameterEstimationResult);
 #ifdef COPASI_SBW_INTEGRATION
   // create and populate SBW menu
@@ -1780,7 +1778,6 @@ void CopasiUI3Window::slotExportMathModelFinished(bool success)
       CCopasiMessage::clearDeque();
     }
 }
-#ifdef WITH_PE_EVENT_CREATION
 void CopasiUI3Window::slotCreateEventsForTimeseries()
 {
   if (mpDataModel == NULL) return;
@@ -1817,7 +1814,6 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
   mpDataModel->changed();
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
 }
-#endif
 
 void CopasiUI3Window::slotConvertToIrreversible()
 {

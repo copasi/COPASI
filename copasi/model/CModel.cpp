@@ -2469,8 +2469,6 @@ bool CModel::removeEvent(const CEvent * pEvent,
   return true;
 }
 
-#ifdef WITH_PE_EVENT_CREATION
-
 #include <copasi/parameterFitting/CExperiment.h>
 #include <copasi/parameterFitting/CExperimentSet.h>
 #include <copasi/parameterFitting/CExperimentObjectMap.h>
@@ -2509,7 +2507,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-#pragma region   //find_experiment
+  #pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2559,7 +2557,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-#pragma endregion //find_experiment
+  #pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::Task::timeCourse)
     {
@@ -2661,7 +2659,6 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 
   return true;
 }
-#endif
 
 //*****************************************************************
 
@@ -3262,7 +3259,7 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
                 TreesWithDiscontinuities.push_back((*ppEntity)->getNoiseExpressionPtr());
               }
 
-          // Intentionally no break statement!
+            // Intentionally no break statement!
 
           case Status::ASSIGNMENT:
 

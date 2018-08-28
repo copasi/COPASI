@@ -234,7 +234,6 @@ option(ENABLE_COPASI_BANDED_GRAPH "Enable the banded graph widget" OFF)
 option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" OFF)
 option(ENABLE_COPASI_EXTUNIT "Extended Unit Support" ${DEFAULT_EXTUNIT})
 option(ENABLE_ANALYTICS "Enable Analytics Task" OFF)
-option(ENABLE_PE_EVENT_CREATION "Enable Event Creation out of time series data" ON)
 
 if (WIN32)
   add_definitions(-DLIBCOMBINE_STATIC=1)

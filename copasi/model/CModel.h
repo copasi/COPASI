@@ -152,12 +152,10 @@ public:
   */
   bool convert2NonReversible();
 
-#ifdef WITH_PE_EVENT_CREATION
   /**
    * Creates events for all elements of an parameter estimation  time course experiment
    */
   bool createEventsForTimeseries(CExperiment* experiment = NULL);
-#endif
 
   /**
    *  Loads an object with data coming from a CReadConfig object.
