@@ -10,10 +10,6 @@
 //
 
 // basic options
-#cmakedefine WITH_COMBINE_ARCHIVE
-#cmakedefine COPASI_SEDML
-#cmakedefine WITH_MERGEMODEL
-#cmakedefine WITH_SDE_SUPPORT
 #cmakedefine COPASI_NONLIN_DYN_OSCILLATION
 #cmakedefine COPASI_PARAMETERFITTING_RESIDUAL_SCALING
 #cmakedefine COPASI_EXTUNIT
@@ -45,9 +41,7 @@
 #cmakedefine COPASI_Provenance
 #cmakedefine COPASI_SBW_INTEGRATION
 #cmakedefine COPASI_BANDED_GRAPH 1
-#cmakedefine WITH_PE_EVENT_CREATION
 #cmakedefine WITH_ANALYTICS
-#cmakedefine COPASI_UNDO
 #cmakedefine QT5_USE_WEBENGINE
 #cmakedefine QT_USE_TEXTBROWSER
 #cmakedefine HAVE_MML

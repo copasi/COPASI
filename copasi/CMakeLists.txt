@@ -244,6 +244,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DI
 # we only replace the config.h if changes were made, otherwise we would trigger
 # rebuilds after every configuration change
 copy_if_different_and_remove(${CMAKE_CURRENT_BINARY_DIR}/config.h.tmp ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+set(COPASI_HEADERS ${COPASI_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 
 
