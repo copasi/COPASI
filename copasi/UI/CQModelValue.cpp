@@ -163,13 +163,8 @@ void CQModelValue::slotTypeChanged(const QString & type)
         // update the expression widget
         mpExpressionEMW->updateWidget();
 
-#ifdef WITH_SDE_SUPPORT
         mpBoxAddNoise->show();
         slotAddNoiseChanged(mpBoxAddNoise->isChecked());
-#else
-        mpBoxAddNoise->hide();
-        slotAddNoiseChanged(false);
-#endif
 
         break;
 

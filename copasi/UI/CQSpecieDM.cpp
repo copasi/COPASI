@@ -264,8 +264,6 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
                   return QVariant(QString(""));
               }
 
-#ifdef WITH_SDE_SUPPORT
-
               case COL_NEXPRESSION_SPECIES:
               {
                 const CExpression * pExpression = Species.getNoiseExpressionPtr();
@@ -276,7 +274,6 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
                   return QVariant(QString(""));
               }
 
-#endif
             }
         }
     }
@@ -346,11 +343,8 @@ QVariant CQSpecieDM::headerData(int section, Qt::Orientation orientation,
             else
               return QVariant("Expression\n" + ValueUnit + " or " + RateUnit);
 
-#ifdef WITH_SDE_SUPPORT
-
           case COL_NEXPRESSION_SPECIES:
             return QVariant("Noise Expression");
-#endif
 
           default:
             return QVariant();

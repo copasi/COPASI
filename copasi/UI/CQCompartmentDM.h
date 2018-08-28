@@ -33,12 +33,8 @@ template < class CType > class CDataVectorNS;
 #define COL_RATE_COMPARTMENTS         6
 #define COL_IEXPRESSION_COMPARTMENTS  7
 #define COL_EXPRESSION_COMPARTMENTS   8
-#ifdef WITH_SDE_SUPPORT
-# define COL_NEXPRESSION_COMPARTMENTS  9
-# define TOTAL_COLS_COMPARTMENTS       10
-#else
-# define TOTAL_COLS_COMPARTMENTS       9
-#endif
+#define COL_NEXPRESSION_COMPARTMENTS  9
+#define TOTAL_COLS_COMPARTMENTS       10
 
 class CQCompartmentDM : public CQBaseDataModel
 {

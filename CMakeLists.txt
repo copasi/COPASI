@@ -243,7 +243,6 @@ endif()
 find_package(LIBCOMBINE REQUIRED)
 include_directories(BEFORE ${COMBINE_INCLUDE_DIR})
 
-option(ENABLE_SDE_SUPPORT "Enable the support of Stochastic Differential Equations" ON)
 option(COPASI_INSTALL_C_API "Enable this option to also install the COPASI C API" OFF)
 
 option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (CopasiUI)." ON)
@@ -858,7 +857,7 @@ message(STATUS "-----------------------------------------------------------
    Model Merging            = ON
    SEDML support            = ON
    Combine Archive support  = ON
-   SDE support              = ${ENABLE_SDE_SUPPORT}
+   SDE support              = ON
    GPROF support            = ${ENABLE_GPROF}
    UNDO framework           = ${ENABLE_COPASI_UNDO}
    Versioning framework     = ${ENABLE_VERSIONING}

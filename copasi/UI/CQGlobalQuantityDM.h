@@ -29,12 +29,8 @@ template < class CType > class CDataVectorN;
 #define COL_RATE_GQ         6
 #define COL_IEXPRESSION_GQ  7
 #define COL_EXPRESSION_GQ   8
-#ifdef WITH_SDE_SUPPORT
-# define COL_NEXPRESSION_GQ  9
-# define TOTAL_COLS_GQ      10
-#else
-# define TOTAL_COLS_GQ       9
-#endif
+#define COL_NEXPRESSION_GQ  9
+#define TOTAL_COLS_GQ      10
 
 class CQGlobalQuantityDM : public CQBaseDataModel
 {

@@ -743,13 +743,9 @@ void CQSpeciesDetail::speciesTypeChanged(const QString & type)
         mpBoxUseInitialExpression->setEnabled(true);
         slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
         mpExpressionEMW->updateWidget();
-#ifdef WITH_SDE_SUPPORT
+
         mpBoxAddNoise->show();
         slotAddNoiseChanged(mpBoxAddNoise->isChecked());
-#else
-        mpBoxAddNoise->hide();
-        slotAddNoiseChanged(false);
-#endif
         break;
 
       case CModelEntity::Status::REACTIONS:

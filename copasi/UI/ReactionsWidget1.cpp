@@ -76,9 +76,6 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::Windo
   mpBtnEditFunction->setIcon(CQIconResource::icon(CQIconResource::edit));
   mpBtnAddFunction->setIcon(CQIconResource::icon(CQIconResource::editAdd));
 
-#ifndef WITH_SDE_SUPPORT
-  mpBoxAddNoise->hide();
-#endif
 }
 
 ReactionsWidget1::~ReactionsWidget1()
@@ -449,11 +446,7 @@ void ReactionsWidget1::FillWidgetFromRI()
   mpNoiseExpressionWidget->updateWidget();
   mpBoxAddNoise->setChecked(mpRi->hasNoise());
 
-#ifdef WITH_SDE_SUPPORT
   slotAddNoiseChanged(mpRi->hasNoise());
-#else
-  slotAddNoiseChanged(false);
-#endif
 
   mpDefaultUnit->setChecked(mpRi->getKineticLawUnitType() == CReaction::KineticLawUnit::Default);
   mpConcentrationUnit->setChecked(mpRi->getEffectiveKineticLawUnitType() == CReaction::KineticLawUnit::ConcentrationPerTime);

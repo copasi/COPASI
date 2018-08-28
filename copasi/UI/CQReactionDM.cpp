@@ -110,12 +110,10 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
                 return QVariant(Reaction.getParticleFlux());
                 break;
 
-#ifdef WITH_SDE_SUPPORT
-
               case COL_NOISE_EXPRESSION:
                 return QVariant(QString(FROM_UTF8(Reaction.getNoiseExpression())));
                 break;
-#endif
+
             }
         }
     }
@@ -167,11 +165,8 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
             return QVariant("Number Flux" + FrequencyUnits);
           }
 
-#ifdef WITH_SDE_SUPPORT
-
           case COL_NOISE_EXPRESSION:
             return QVariant("Noise Expression");
-#endif
 
           default:
             return QVariant();

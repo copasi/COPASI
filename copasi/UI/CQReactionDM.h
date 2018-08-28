@@ -26,12 +26,8 @@
 #define COL_RATE_LAW         3
 #define COL_FLUX             4
 #define COL_PARTICLE_FLUX    5
-#ifdef WITH_SDE_SUPPORT
-# define COL_NOISE_EXPRESSION 6
-# define TOTAL_COLS_REACTIONS 7
-#else
-# define TOTAL_COLS_REACTIONS 6
-#endif
+#define COL_NOISE_EXPRESSION 6
+#define TOTAL_COLS_REACTIONS 7
 
 class CReactionInterface;
 class CReaction;
