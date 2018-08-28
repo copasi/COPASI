@@ -233,7 +233,6 @@ option(ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING "Scale parameter estimati
 option(ENABLE_COPASI_BANDED_GRAPH "Enable the banded graph widget" OFF)
 option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" OFF)
 option(ENABLE_COPASI_EXTUNIT "Extended Unit Support" ${DEFAULT_EXTUNIT})
-option(ENABLE_WITH_MERGEMODEL "Enable Model Merging" ON)
 option(ENABLE_ANALYTICS "Enable Analytics Task" OFF)
 option(ENABLE_PE_EVENT_CREATION "Enable Event Creation out of time series data" ON)
 
@@ -856,7 +855,7 @@ message(STATUS "-----------------------------------------------------------
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
    SBW integration          = ${ENABLE_SBW_INTEGRATION}
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
-   Model Merging            = ${ENABLE_WITH_MERGEMODEL}
+   Model Merging            = ON
    SEDML support            = ON
    Combine Archive support  = ON
    SDE support              = ${ENABLE_SDE_SUPPORT}

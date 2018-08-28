@@ -144,7 +144,6 @@ void DataModelGUI::linkDataModelToGUI()
 //*****************************************************************
 
 //*****************************************************************
-#ifdef WITH_MERGEMODEL
 
 void DataModelGUI::addModel(const std::string & fileName)
 {
@@ -209,8 +208,6 @@ void DataModelGUI::addModelFinished()
 
   threadFinished();
 }
-
-#endif
 
 bool DataModelGUI::createModel()
 {

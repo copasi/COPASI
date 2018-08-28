@@ -56,10 +56,8 @@ public:
   void loadModel(const std::string & fileName);
   void saveModel(const std::string & fileName, bool overwriteFile = false);
 
-#ifdef WITH_MERGEMODEL
   void addModel(const std::string & fileName);
   void addModelRun();
-#endif
 
   void saveFunctionDB(const std::string & fileName);
   void loadFunctionDB(const std::string & fileName);
@@ -106,9 +104,8 @@ public slots:
   void importCombineFinished();
   void exportCombineFinished();
 
-#ifdef WITH_MERGEMODEL
   void addModelFinished();
-#endif
+
   void miriamDownloadFinished(QNetworkReply*);
   void miriamDownloadProgress(qint64 received, qint64 total);
 

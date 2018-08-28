@@ -229,11 +229,9 @@ protected slots:
   void slotCloseAllWindows();
   void slotActivateWindowTriggered(QAction* action);
 
-#ifdef WITH_MERGEMODEL
   void slotAddFileOpen(QString file = QString::null);
   void slotAddFileOpenFinished(bool success);
   void slotMergeModels();
-#endif
 
   // SBW: handle the custom events
   void customEvent(QEvent *);
@@ -333,10 +331,9 @@ private:
   QAction* mpaImportCombine;
   QAction* mpaExportCombine;
 
-#ifdef WITH_MERGEMODEL
   QAction* mpaAddModel;
   QAction* mpaMergeModels;
-#endif
+
   SliderDialog* mpSliders;
   CQDependencyDialog* mpDependencies;
   ObjectBrowserDialog * mpObjectBrowser;

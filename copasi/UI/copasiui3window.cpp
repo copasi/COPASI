@@ -69,9 +69,9 @@
 #include "model/CModelExpansion.h"
 #include "copasi/UI/CQCheckModelWindow.h"
 #include <copasi/UI/CQBrowserPane.h>
-#ifdef WITH_MERGEMODEL
+
 #include "model/CModelExpansion.h"
-#endif
+
 #include <UI/CWindowInterface.h>
 
 #include "CQSEDMLFileDialog.h"
@@ -212,10 +212,8 @@ CopasiUI3Window::CopasiUI3Window():
   mpaImportCombine(NULL),
   mpaExportCombine(NULL),
 
-#ifdef WITH_MERGEMODEL
   mpaAddModel(NULL),
   mpaMergeModels(NULL),
-#endif
 
   mpSliders(NULL),
   mpDependencies(NULL),
@@ -462,14 +460,14 @@ void CopasiUI3Window::createActions()
   // mpaExportSEDML->setShortcut(Qt::CTRL + Qt::Key_Z);
 
   //     QAction* mpaObjectBrowser;
-#ifdef WITH_MERGEMODEL
+
   mpaAddModel = new QAction(CQIconResource::icon(CQIconResource::fileAdd), "&Add to model...", this);
   mpaAddModel->setShortcut(Qt::SHIFT + Qt::CTRL + Qt::Key_A);
   connect(mpaAddModel, SIGNAL(triggered()), this, SLOT(slotAddFileOpen()));
   mpaMergeModels = new QAction("&Merge added model...", this);
   mpaMergeModels->setShortcut(Qt::SHIFT + Qt::CTRL + Qt::Key_M);
   connect(mpaMergeModels, SIGNAL(triggered()), this, SLOT(slotMergeModels()));
-#endif
+
   mpaCloseAllWindows = new QAction("Close all windows below:", this);
   connect(mpaCloseAllWindows, SIGNAL(triggered()), this, SLOT(slotCloseAllWindows()));
   mpaShowDebugInfo = new QAction("Display Debug Information", this);
@@ -583,10 +581,10 @@ QToolBar *CopasiUI3Window::createToolBar()
 #ifdef COPASI_Provenance
   tb->addAction(mpaProvenance);
 #endif
-#ifdef WITH_MERGEMODEL
+
   tb->addAction(mpaAddModel);
   //tb->addAction(mpaMergeModels);
-#endif
+
   tb->addSeparator();
   mpBoxSelectFramework = new QComboBox(tb);
   QStringList items;
@@ -610,10 +608,10 @@ void CopasiUI3Window::createMenuBar()
 
   pFileMenu->addAction(mpaSave);
   pFileMenu->addAction(mpaSaveAs);
-#ifdef WITH_MERGEMODEL
+
   pFileMenu->addAction(mpaAddModel);
   //pFileMenu->addAction(mpaMergeModels);
-#endif
+
   pFileMenu->addSeparator();
   pFileMenu->addAction(mpaImportSBML);
   pFileMenu->addAction(mpaExportSBML);
@@ -664,9 +662,9 @@ void CopasiUI3Window::createMenuBar()
   mpTools->addAction(mpaSliders);
   mpTools->addAction(mpaDependencies);
   mpTools->addAction(mpaCapture);
-#ifdef WITH_MERGEMODEL
+
   mpTools->addAction(mpaMergeModels);
-#endif
+
   mpTools->addSeparator();
   mpTools->addAction(mpaExpandModel);
 
@@ -1126,7 +1124,6 @@ void CopasiUI3Window::slotFileExamplesSBMLFiles(QString file)
   slotImportSBML(file);
 }
 
-#ifdef WITH_MERGEMODEL
 void CopasiUI3Window::slotAddFileOpen(QString file)
 {
   disconnect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotFileOpen(QString)));
@@ -1205,7 +1202,6 @@ void CopasiUI3Window::slotAddFileOpenFinished(bool success)
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
 }
 
-#endif
 
 void CopasiUI3Window::slotFileSave()
 {
@@ -2519,7 +2515,6 @@ void CopasiUI3Window::slotExpandModel()
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
 }
 
-#ifdef WITH_MERGEMODEL
 
 #include "UI/CQMergingData.h"
 
@@ -2532,7 +2527,6 @@ void CopasiUI3Window::slotMergeModels()
   widget->exec();
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
 }
-#endif
 
 #ifdef COPASI_SBW_INTEGRATION
 // Create 2 custom events, one containing the filename to an SBML document to be loaded
