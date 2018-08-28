@@ -568,7 +568,7 @@ L20:
 
   CTruncatedNewton::linder_(n, sfun, &small, &epsmch, &reltol, &fabstol, &tnytol, eta, &zero,
                             &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1],
-                            &numf, &nwhy, &w[1], lw);
+                            &numf, &nwhy, &w[1], lw, msglvl, log);
 
   fold = fnew;
   ++niter;
@@ -824,8 +824,6 @@ L120:
   C_FLOAT64 gsk, spe;
   C_INT isk, iyk;
   C_INT upd1;
-  // counter for number of main iterations
-  C_INT mainiter = 0;
 
   /* Fortran I/O blocks */
   /*
@@ -954,7 +952,7 @@ L10:
 
   if (gtg < epsmch * 1e-4 * ftest * ftest)
     {
-      // nothing to do this is a local minimum (??)
+      // nothing to do, this is a local minimum (why?)
       goto L130;
     }
 
@@ -992,10 +990,8 @@ L10:
                             &c_true, &ipivot[1], accrcy, &gtpnew, &gnorm, &xnorm);
 L20:
 
-  mainiter++;
-
   if (*msglvl > 2)
-    log->enterLogEntry(COptLogEntry("main loop iteration " + std::to_string(mainiter)));
+    log->enterLogEntry(COptLogEntry("main loop iteration " + std::to_string(niter)));
 
   /* added manually by Pedro Mendes 12/2/1998 */
   // if(callback != 0/*NULL*/) callback(fnew);
@@ -1031,7 +1027,7 @@ L20:
 
   CTruncatedNewton::linder_(n, sfun, &small, &epsmch, &reltol, &fabstol, &tnytol, eta, &zero,
                             &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1],
-                            &numf, &nwhy, &w[1], lw);
+                            &numf, &nwhy, &w[1], lw, msglvl, log);
 
   if (*msglvl > 2)
     {
@@ -2031,26 +2027,12 @@ L10:
   return 0;
 } /* negvec_ */
 
-/* Subroutine */ int lsout_(C_INT * /* iloc */, C_INT * /* itest */, C_FLOAT64 *xmin,
-                            C_FLOAT64 * /* fmin */, C_FLOAT64 * /* gmin */, C_FLOAT64 *xw, C_FLOAT64 * /* fw */,
-                            C_FLOAT64 * /* gw */, C_FLOAT64 *u, C_FLOAT64 *a, C_FLOAT64 *b,
-                            C_FLOAT64 * /* tol */, C_FLOAT64 * /* eps */, C_FLOAT64 *scxbd, C_FLOAT64 *
-                            /* xlamda */)
+/* Subroutine */ int lsout_(C_INT *iloc, C_INT *itest, C_FLOAT64 *xmin,
+                            C_FLOAT64 *fmin, C_FLOAT64 *gmin, C_FLOAT64 *xw, C_FLOAT64 *fw,
+                            C_FLOAT64 *gw, C_FLOAT64 *u, C_FLOAT64 *a, C_FLOAT64 *b,
+                            C_FLOAT64 *tol, C_FLOAT64 *eps, C_FLOAT64 *scxbd,
+                            C_FLOAT64 *xlamda, COptLog *log)
 {
-  /* Format strings */
-  /*  char fmt_800[] = "(///\002 OUTPUT FROM LINEAR SEARCH\002)";
-    char fmt_810[] = "(\002  TOL AND EPS\002/2d25.14)";
-    char fmt_820[] = "(\002  CURRENT UPPER AND LOWER BOUNDS\002/2d25."
-                           "14)";
-    char fmt_830[] = "(\002  STRICT UPPER BOUND\002/d25.14)";
-    char fmt_840[] = "(\002  XW, FW, GW\002/3d25.14)";
-    char fmt_850[] = "(\002  XMIN, FMIN, GMIN\002/3d25.14)";
-    char fmt_860[] = "(\002  NEW ESTIMATE\002/2d25.14)";
-    char fmt_870[] = "(\002  ILOC AND ITEST\002/2i3)"; */
-
-  /* Builtin functions */
-  // C_INT s_wsfe(cilist *), e_wsfe(void), do_fio(C_INT *, char *, ftnlen);
-
   /* Local variables */
   C_FLOAT64 ybnd, ya, yb, yu, yw;
 
@@ -2061,37 +2043,17 @@ L10:
   yb = *b + *xmin;
   yw = *xw + *xmin;
   ybnd = *scxbd + *xmin;
-  //remove the printing
-  /*  s_wsfe(&io___199);
-  e_wsfe();
-  s_wsfe(&io___200);
-  do_fio(&c__1, (char *)&(*tol), (ftnlen)sizeof(C_FLOAT64));
-  do_fio(&c__1, (char *)&(*eps), (ftnlen)sizeof(C_FLOAT64));
-  e_wsfe();
-  s_wsfe(&io___201);
-  do_fio(&c__1, (char *)&ya, (ftnlen)sizeof(C_FLOAT64));
-  do_fio(&c__1, (char *)&yb, (ftnlen)sizeof(C_FLOAT64));
-  e_wsfe();
-  s_wsfe(&io___202);
-  do_fio(&c__1, (char *)&ybnd, (ftnlen)sizeof(C_FLOAT64));
-  e_wsfe();
-  s_wsfe(&io___203);
-  do_fio(&c__1, (char *)&yw, (ftnlen)sizeof(C_FLOAT64));
-  do_fio(&c__1, (char *)&(*fw), (ftnlen)sizeof(C_FLOAT64));
-  do_fio(&c__1, (char *)&(*gw), (ftnlen)sizeof(C_FLOAT64));
-  e_wsfe();
-  s_wsfe(&io___204);
-  do_fio(&c__1, (char *)&(*xmin), (ftnlen)sizeof(C_FLOAT64));
-  do_fio(&c__1, (char *)&(*fmin), (ftnlen)sizeof(C_FLOAT64));
-  do_fio(&c__1, (char *)&(*gmin), (ftnlen)sizeof(C_FLOAT64));
-  e_wsfe();
-  s_wsfe(&io___205);
-  do_fio(&c__1, (char *)&yu, (ftnlen)sizeof(C_FLOAT64));
-  e_wsfe();
-  s_wsfe(&io___206);
-  do_fio(&c__1, (char *)&(*iloc), (ftnlen)sizeof(C_INT));
-  do_fio(&c__1, (char *)&(*itest), (ftnlen)sizeof(C_INT));
-  e_wsfe(); */
+
+  std::ostringstream auxStream;
+  auxStream << "tol=" << *tol << ", eps=" << *eps <<
+            "\nlower bound=" << ya << ", upper bound=" << yb <<
+            "\nstrict upper bound=" << ybnd <<
+            "\nxw=" << yw << ", fw=" << *fw << ", gw=" << *gw <<
+            "\nxmin=" << *xmin << ", fmin=" << *fmin << ", gmin=" << *gmin <<
+            "\nnew estimate=" << yu <<
+            "\niloc=" << *iloc << ", itest=" << *itest;
+  log->enterLogEntry(COptLogEntry("Output from linear search", "", auxStream.str()));
+
   return 0;
 } /* lsout_ */
 
@@ -2646,7 +2608,7 @@ L110:
     C_FLOAT64 *tnytol, C_FLOAT64 *eta, C_FLOAT64 * /* sftbnd */, C_FLOAT64 *
     xbnd, C_FLOAT64 *p, C_FLOAT64 *gtp, C_FLOAT64 *x, C_FLOAT64 *f,
     C_FLOAT64 *alpha, C_FLOAT64 *g, C_INT *nftotl, C_INT *iflag,
-    C_FLOAT64 *w, C_INT * /* lw */)
+    C_FLOAT64 *w, C_INT * /* lw */, C_INT *lsprnt, COptLog *log)
 {
   /* System generated locals */
   C_INT i__1;
@@ -2659,7 +2621,7 @@ L110:
   C_FLOAT64 u;
   C_INT itcnt;
   C_FLOAT64 b1;
-  C_INT itest, nprnt;
+  C_INT itest;
   C_FLOAT64 gtest1, gtest2;
   C_INT lg;
   C_FLOAT64 fu, gu, fw, gw;
@@ -2669,7 +2631,7 @@ L110:
   C_FLOAT64 fpresn;
   C_INT ientry;
   C_FLOAT64 rtsmll;
-  C_INT lsprnt;
+//  C_INT lsprnt, nprnt;
   C_FLOAT64 big, tol, rmu;
 
   /*      ALLOCATE THE ADDRESSES FOR LOCAL WORKSPACE */
@@ -2683,8 +2645,8 @@ L110:
   /* Function Body */
   lx = 1;
   lg = lx + *n;
-  lsprnt = 0;
-  nprnt = 10000;
+//  lsprnt = 0;
+//  nprnt = 10000;
   rtsmll = sqrt(*small);
   big = 1. / *small;
   itcnt = 0;
@@ -2709,22 +2671,23 @@ L10:
   ++itcnt;
   *iflag = 1;
 
-  if (itcnt > 20)
+  if (itcnt > 120)
     {
+      // we stop at 20 iterations (why?)
       goto L50;
     }
 
   *iflag = 0;
   CTruncatedNewton::getptc_(&big, small, &rtsmll, reltol, fabstol, tnytol, &fpresn, eta, &rmu,
-                            xbnd, &u, &fu, &gu, &xmin, &fmin, &gmin, &xw, &fw, &gw, &a, &b, &
-                            oldf, &b1, &scxbnd, &e, &step, &factor, &braktd, &gtest1, &gtest2,
+                            xbnd, &u, &fu, &gu, &xmin, &fmin, &gmin, &xw, &fw, &gw, &a, &b,
+                            &oldf, &b1, &scxbnd, &e, &step, &factor, &braktd, &gtest1, &gtest2,
                             &tol, &ientry, &itest);
 
   /* LSOUT */
-  if (lsprnt >= nprnt)
+  if (*lsprnt > 2)
     {
       lsout_(&ientry, &itest, &xmin, &fmin, &gmin, &xw, &fw, &gw, &u, &a, &
-             b, &tol, reltol, &scxbnd, xbnd);
+             b, &tol, reltol, &scxbnd, xbnd, log);
     }
 
   /*      IF ITEST=1, THE ALGORITHM REQUIRES THE FUNCTION VALUE TO BE */
