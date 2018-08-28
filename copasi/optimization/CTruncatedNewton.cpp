@@ -669,6 +669,9 @@ L40:
 
   if (nftotl > *maxfun)
     {
+      if (*msglvl > 1)
+        log->enterLogEntry(COptLogEntry("Exceeded maximal number of function evaluations (" + std::to_string(*maxfun) + ")."));
+
       goto L110;
     }
 
