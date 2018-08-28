@@ -151,6 +151,9 @@ bool COptMethodTruncatedNewton::optimise()
                                 &mMethodLog);
       mEvaluationValue = fest;
 
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(COptLogEntry("tnbc_() return value = " + std::to_string(ierror)));
+
       // Is the corrected value better than solution?
       if (mEvaluationValue < mBestValue)
         {
