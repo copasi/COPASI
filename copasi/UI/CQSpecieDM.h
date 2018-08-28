@@ -34,12 +34,8 @@ template < class CType > class CDataVector;
 #define COL_NRATE                10
 #define COL_IEXPRESSION_SPECIES  11
 #define COL_EXPRESSION_SPECIES   12
-#ifdef WITH_SDE_SUPPORT
-# define COL_NEXPRESSION_SPECIES 13
-# define TOTAL_COLS_SPECIES      14
-#else
-# define TOTAL_COLS_SPECIES      13
-#endif
+#define COL_NEXPRESSION_SPECIES  13
+#define TOTAL_COLS_SPECIES       14
 
 class CQSpecieDM : public CQBaseDataModel
 {
