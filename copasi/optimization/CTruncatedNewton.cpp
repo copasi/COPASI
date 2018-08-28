@@ -254,18 +254,8 @@ CTruncatedNewton::~CTruncatedNewton()
     C_FLOAT64 *f, C_FLOAT64 *g, C_FLOAT64 *w, C_INT *lw, FTruncatedNewton * sfun,
     C_FLOAT64 *low, C_FLOAT64 *up, C_INT *ipivot, C_INT *logverbosity, COptLog *log)
 {
-  /* Format strings */
-  /*  char fmt_800[] = "(//,\002 ERROR CODE =\002,i3)";
-    char fmt_810[] = "(//,\002 OPTIMAL FUNCTION VALUE = \002,1pd22.15)"
-  ;
-    char fmt_820[] = "(10x,\002CURRENT SOLUTION IS (AT MOST 10 COMPON"
-                           "ENTS)\002,/,14x,\002I\002,11x,\002X(I)\002)";
-    char fmt_830[] = "(10x,i5,2x,1pd22.15)";*/
-
   /* System generated locals */
   C_INT i__1;
-
-  //  C_INT s_wsfe(cilist *), do_fio(C_INT *, char *, ftnlen), e_wsfe(void);
 
   /* Local variables */
   C_INT nmax;
@@ -275,14 +265,6 @@ CTruncatedNewton::~CTruncatedNewton()
   C_INT maxfun;
   C_INT msglvl;
   C_FLOAT64 stepmx, eta;
-
-  /* Fortran I/O blocks */
-  //remove
-  /*
-   cilist io___21 = {0, 6, 0, fmt_800, 0 };
-   cilist io___22 = {0, 6, 0, fmt_810, 0 };
-   cilist io___23 = {0, 6, 0, fmt_820, 0 };
-   cilist io___25 = {0, 6, 0, fmt_830, 0 };*/
 
   /* THIS ROUTINE SOLVES THE OPTIMIZATION PROBLEM */
 
@@ -375,11 +357,10 @@ CTruncatedNewton::~CTruncatedNewton()
       maxit = 1;
     }
 
-//  msglvl = 1;
   msglvl = *logverbosity;
   maxfun = *n * 150;
-  eta = .25;
-  stepmx = 10.;
+  eta = .1;
+  stepmx = 100.;
   accrcy = mchpr1_() * 100.;
   xtol = sqrt(accrcy);
 
@@ -389,42 +370,6 @@ CTruncatedNewton::~CTruncatedNewton()
                             , &ipivot[1], &msglvl, &maxit, &maxfun, &eta, &stepmx, &accrcy,
                             &xtol, log);
 
-  /* PRINT RESULTS */
-
-  if (*ierror != 0)
-    {
-      // s_wsfe(&io___21);
-      //  do_fio(&c__1, (char *)&(*ierror), (ftnlen)sizeof(C_INT));
-      // e_wsfe();
-    }
-
-  //    s_wsfe(&io___22);
-  //    do_fio(&c__1, (char *)&(*f), (ftnlen)sizeof(C_FLOAT64));
-  //   e_wsfe();
-  if (msglvl < 1)
-    {
-      return 0;
-    }
-
-  //   s_wsfe(&io___23);
-  //    e_wsfe();
-  nmax = 10;
-
-  if (*n < nmax)
-    {
-      nmax = *n;
-    }
-
-  //   s_wsfe(&io___25);
-  i__1 = nmax;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      // do_fio(&c__1, (char *)&i__, (ftnlen)sizeof(C_INT));
-      // do_fio(&c__1, (char *)&x[i__], (ftnlen)sizeof(C_FLOAT64));
-    }
-
-  //   e_wsfe();
   return 0;
 }  /* tnbc_ */
 
@@ -839,10 +784,6 @@ L120:
   C_INT i__1;
   C_FLOAT64 d__1;
 
-  /* Builtin functions */
-  // C_INT s_wsfe(cilist *), e_wsfe(void);
-  // C_INT do_fio(C_INT *, char *, ftnlen);
-
   /* Local variables */
   C_FLOAT64 fold, oldf;
   C_FLOAT64 fnew;
@@ -883,6 +824,8 @@ L120:
   C_FLOAT64 gsk, spe;
   C_INT isk, iyk;
   C_INT upd1;
+  // counter for number of main iterations
+  C_INT mainiter = 0;
 
   /* Fortran I/O blocks */
   /*
@@ -914,13 +857,11 @@ L120:
   /* Function Body */
   crash_(n, &x[1], &ipivot[1], &low[1], &up[1], &ier);
 
-  if (ier != 0 && (*msglvl > 0))
-    {
-      log->enterLogEntry(COptLogEntry("There is no feasible point; terminating algorithm."));
-    }
-
   if (ier != 0)
     {
+      if (*msglvl > 0)
+        log->enterLogEntry(COptLogEntry("There is no feasible point; terminating algorithm."));
+
       return 0;
     }
 
@@ -951,17 +892,26 @@ L120:
 
   /* CHECK PARAMETERS AND SET CONSTANTS */
 
-  chkucp_(&subscr_1.lwtest, maxfun, &nwhy, n, &alpha, &epsmch, eta, &peps, &
-          rteps, &rtol, &rtolsq, stepmx, &ftest, xtol, &xnorm, &x[1], lw, &
-          small, &tiny, accrcy);
+  chkucp_(&subscr_1.lwtest, maxfun, &nwhy, n, &alpha, &epsmch, eta, &peps,
+          &rteps, &rtol, &rtolsq, stepmx, &ftest, xtol, &xnorm, &x[1], lw,
+          &small, &tiny, accrcy);
 
   if (nwhy < 0)
     {
+      // parameters not properly set, exit
       goto L160;
     }
 
   CTruncatedNewton::setucr_(&small, &nftotl, &niter, n, f, &fnew, &fm, &gtg, &oldf,
                             sfun, &g[1], &x[1]);
+
+  if (*msglvl > 2)
+    {
+      std::ostringstream auxStream;
+      auxStream << "setucr_() results: f=" << f << ", fnew=" << fnew << ", oldf=" << oldf;
+      log->enterLogEntry(COptLogEntry(auxStream.str()));
+    }
+
   fold = fnew;
   flast = fnew;
 
@@ -1004,6 +954,7 @@ L10:
 
   if (gtg < epsmch * 1e-4 * ftest * ftest)
     {
+      // nothing to do this is a local minimum (??)
       goto L130;
     }
 
@@ -1041,6 +992,11 @@ L10:
                             &c_true, &ipivot[1], accrcy, &gtpnew, &gnorm, &xnorm);
 L20:
 
+  mainiter++;
+
+  if (*msglvl > 2)
+    log->enterLogEntry(COptLogEntry("main loop iteration " + std::to_string(mainiter)));
+
   /* added manually by Pedro Mendes 12/2/1998 */
   // if(callback != 0/*NULL*/) callback(fnew);
 
@@ -1077,6 +1033,13 @@ L20:
                             &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1],
                             &numf, &nwhy, &w[1], lw);
 
+  if (*msglvl > 2)
+    {
+      std::ostringstream auxStream;
+      auxStream << "Line search results: alpha=" << alpha << ", pnorm=" << pnorm;
+      log->enterLogEntry(COptLogEntry(auxStream.str()));
+    }
+
   newcon = FALSE_;
 
   if ((d__1 = alpha - spe, fabs(d__1)) > epsmch * 10.)
@@ -1090,14 +1053,6 @@ L20:
   flast = fnew;
 
 L30:
-
-  if (*msglvl > 2)
-    {
-      std::ostringstream auxStream;
-      auxStream << "Line search results: alpha=" << alpha << ", pnorm=" << pnorm;
-      log->enterLogEntry(COptLogEntry(auxStream.str()));
-    }
-
   fold = fnew;
   ++niter;
   nftotl += numf;
@@ -1185,6 +1140,7 @@ L60:
 
   if (conv)
     {
+      // convergence, exit
       goto L130;
     }
 
@@ -2715,9 +2671,6 @@ L110:
   C_FLOAT64 rtsmll;
   C_INT lsprnt;
   C_FLOAT64 big, tol, rmu;
-
-  /*      THE FOLLOWING STANDARD FUNCTIONS AND SYSTEM FUNCTIONS ARE */
-  /*      CALLED WITHIN LINDER */
 
   /*      ALLOCATE THE ADDRESSES FOR LOCAL WORKSPACE */
 
