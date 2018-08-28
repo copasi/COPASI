@@ -157,7 +157,7 @@ bool COptMethodTruncatedNewton::optimise()
       // Is the corrected value better than solution?
       if (mEvaluationValue < mBestValue)
         {
-          // We found a new best value lets report it.
+          // We found a new bestAlgorithm finished. value lets report it.
           // and store that value
           mBest = mCurrent;
           mBestValue = mEvaluationValue;
