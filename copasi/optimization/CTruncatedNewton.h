@@ -127,7 +127,8 @@ public:
               C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
               C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
               C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *,
-              C_FLOAT64 *, C_INT *, C_INT *, C_FLOAT64 *, C_INT *);
+              C_FLOAT64 *, C_INT *, C_INT *, C_FLOAT64 *, C_INT *,
+              C_INT *, COptLog *);
 
   int gtims_(C_FLOAT64 *v, C_FLOAT64 *gv, C_INT *n,
              C_FLOAT64 *x, C_FLOAT64 *g, C_FLOAT64 *w, C_INT * /* lw */, FTruncatedNewton *sfun,
@@ -154,7 +155,7 @@ public:
               C_INT *, C_INT *, C_INT *, C_INT *, C_INT *, C_INT *,
               C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *,
               FTruncatedNewton *, C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *,
-              C_FLOAT64 *, C_FLOAT64 *);
+              C_FLOAT64 *, C_FLOAT64 *, COptLog *);
 
   int lmqnbc_(C_INT *, C_INT *, C_FLOAT64 *,
               C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_INT *, FTruncatedNewton *,
