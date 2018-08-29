@@ -535,7 +535,7 @@ CTruncatedNewton::~CTruncatedNewton()
                               subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1], &g[
                               1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval, &
                             nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun, &
-                            c_false, &ipivot, accrcy, &gtpnew, &gnorm, &xnorm);
+                            c_false, &ipivot, accrcy, &gtpnew, &gnorm, &xnorm, log);
 L20:
   dcopy_(n, &g[1], &c__1, &w[subscr_1.loldg], &c__1);
   pnorm = dnrm2_(n, &w[subscr_1.lpk], &c__1);
@@ -712,7 +712,7 @@ L70:
                               subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1], &g[
                               1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval, &
                             nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun, &
-                            c_false, &ipivot, accrcy, &gtpnew, &gnorm, &xnorm);
+                            c_false, &ipivot, accrcy, &gtpnew, &gnorm, &xnorm, log);
 
   if (lreset)
     {
@@ -906,7 +906,7 @@ L120:
   if (*msglvl > 2)
     {
       std::ostringstream auxStream;
-      auxStream << "setucr_() results: f=" << f << ", fnew=" << fnew << ", oldf=" << oldf;
+      auxStream << "setucr_() results: f=" << *f << ", fnew=" << fnew << ", oldf=" << oldf;
       log->enterLogEntry(COptLogEntry(auxStream.str()));
     }
 
@@ -987,7 +987,7 @@ L10:
                             &w[subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1],
                             &g[1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval,
                             &nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun,
-                            &c_true, &ipivot[1], accrcy, &gtpnew, &gnorm, &xnorm);
+                            &c_true, &ipivot[1], accrcy, &gtpnew, &gnorm, &xnorm, log);
 L20:
 
   if (*msglvl > 2)
@@ -1211,7 +1211,7 @@ L90:
                             &w[subscr_1.lv], &w[subscr_1.ldiagb], &w[subscr_1.lemat], &x[1],
                             &g[1], &w[subscr_1.lzk], n, &w[1], lw, &niter, maxit, &nfeval,
                             &nmodif, &nlincg, &upd1, &yksk, &gsk, &yrsr, &lreset, sfun,
-                            &c_true, &ipivot[1], accrcy, &gtpnew, &gnorm, &xnorm);
+                            &c_true, &ipivot[1], accrcy, &gtpnew, &gnorm, &xnorm, log);
 
   if (newcon)
     {
@@ -1621,29 +1621,11 @@ L15:
     C_INT * /* nmodif */, C_INT *nlincg, C_INT *upd1, C_FLOAT64 *yksk,
     C_FLOAT64 *gsk, C_FLOAT64 *yrsr, C_INT *lreset, FTruncatedNewton *sfun,
     C_INT *bounds, C_INT *ipivot, C_FLOAT64 *accrcy, C_FLOAT64 *gtp,
-    C_FLOAT64 *gnorm, C_FLOAT64 *xnorm)
+    C_FLOAT64 *gnorm, C_FLOAT64 *xnorm, COptLog *log)
 {
-  /* Format strings */
-  //remove the format
-  /*  char fmt_800[] = "(\002 \002,//,\002 ENTERING MODLNP\002)";
-    char fmt_810[] = "(\002 \002,//,\002 ### ITERATION \002,i2,\002 #"
-                           "##\002)";
-    char fmt_820[] = "(\002 ALPHA\002,1pd16.8)";
-    char fmt_830[] = "(\002 G(T)Z POSITIVE AT ITERATION \002,i2,\002 "
-                           "- TRUNCATING METHOD\002,/)";
-    char fmt_840[] = "(\002 \002,10x,\002HESSIAN NOT POSITIVE-DEFIN"
-                           "ITE\002)";
-    char fmt_850[] = "(\002 \002,/,8x,\002MODLAN TRUNCATED AFTER \002"
-                           ",i3,\002 ITERATIONS\002,\002  RNORM = \002,1pd14.6)";
-    char fmt_860[] = "(\002 PRECONDITIONING NOT POSITIVE-DEFINITE\002)"
-  ;*/
-
   /* System generated locals */
   C_INT i__1, i__2;
   C_FLOAT64 d__1;
-
-  /* Builtin functions */
-  //  C_INT s_wsfe(cilist *), e_wsfe(void), do_fio(C_INT *, char *, ftnlen);
 
   /* Local variables */
   C_FLOAT64 beta = 0.0;
@@ -1693,15 +1675,11 @@ L15:
 
   /* Function Body */
   if (*modet > 0)
-    {
-      //remove
-      /*
-         s_wsfe(&io___167);
-         e_wsfe();*/
-    }
+    log->enterLogEntry(COptLogEntry("Entering modlnp_()"));
 
   if (*maxit == 0)
     {
+      // nothing to do
       return 0;
     }
 
@@ -1712,8 +1690,7 @@ L15:
 
   /* INITIALIZATION FOR PRECONDITIONED CONJUGATE-GRADIENT ALGORITHM */
 
-  CTruncatedNewton::initpc_(&diagb[1], &emat[1], n, &w[1], lw, modet, upd1, yksk, gsk, yrsr,
-                            lreset);
+  CTruncatedNewton::initpc_(&diagb[1], &emat[1], n, &w[1], lw, modet, upd1, yksk, gsk, yrsr, lreset);
   i__1 = *n;
 
   for (i__ = 1; i__ <= i__1; ++i__)
@@ -1735,12 +1712,7 @@ L15:
       ++(*nlincg);
 
       if (*modet > 1)
-        {
-          /*
-             s_wsfe(&io___174);
-             do_fio(&c__1, (char *)&k, (ftnlen)sizeof(C_INT));
-             e_wsfe();*/
-        }
+        log->enterLogEntry(COptLogEntry("modlnp_() iteration " + std::to_string(k)));
 
       /* CG ITERATION TO SOLVE SYSTEM OF EQUATIONS */
 
@@ -1811,10 +1783,9 @@ L15:
 
       if (*modet >= 1)
         {
-          /*
-             s_wsfe(&io___181);
-             do_fio(&c__1, (char *)&alpha, (ftnlen)sizeof(C_FLOAT64));
-             e_wsfe();*/
+          std::ostringstream auxStream;
+          auxStream << "alpha=" << alpha;
+          log->enterLogEntry(COptLogEntry(auxStream.str()));
         }
 
       /* COMPUTE CURRENT SOLUTION AND RELATED VECTORS */
@@ -1863,12 +1834,7 @@ L15:
 L40:
 
   if (*modet >= -1)
-    {
-      /*
-         s_wsfe(&io___185);
-         do_fio(&c__1, (char *)&k, (ftnlen)sizeof(C_INT));
-         e_wsfe();*/
-    }
+    log->enterLogEntry(COptLogEntry("g(t)z positive at iteration " + std::to_string(k) + ". Truncating method"));
 
   d__1 = -alpha;
   daxpy_(n, &d__1, &v[1], &c__1, &zsol[1], &c__1);
@@ -1877,11 +1843,7 @@ L40:
 L50:
 
   if (*modet > -2)
-    {
-      /*
-         s_wsfe(&io___186);
-         e_wsfe();*/
-    }
+    log->enterLogEntry(COptLogEntry("Hessian not positive-definite"));
 
   /* L60: */
   if (k > 1)
@@ -1889,8 +1851,7 @@ L50:
       goto L70;
     }
 
-  CTruncatedNewton::msolve_(&g[1], &zsol[1], n, &w[1], lw, upd1, yksk, gsk, yrsr, lreset, &
-                            first);
+  CTruncatedNewton::msolve_(&g[1], &zsol[1], n, &w[1], lw, upd1, yksk, gsk, yrsr, lreset, &first);
   negvec_(n, &zsol[1]);
 
   if (*bounds)
@@ -1903,22 +1864,18 @@ L70:
 
   if (*modet >= -1)
     {
-      /*
-         s_wsfe(&io___187);
-         do_fio(&c__1, (char *)&k, (ftnlen)sizeof(C_INT));
-         do_fio(&c__1, (char *)&rnorm, (ftnlen)sizeof(C_FLOAT64));
-         e_wsfe();*/
+      std::ostringstream auxStream;
+      auxStream << "modlan_() truncated after " << k << " iterations; rnorm=" << rhsnrm;
+      log->enterLogEntry(COptLogEntry(auxStream.str()));
+      /* they were writing rnorm here, but it is never used!
+         do_fio(&c__1, (char *)&rnorm, (ftnlen)sizeof(C_FLOAT64));*/
     }
 
   goto L90;
 L80:
 
   if (*modet >= -1)
-    {
-      /*
-         s_wsfe(&io___189);
-         e_wsfe();*/
-    }
+    log->enterLogEntry(COptLogEntry("Preconditioning not positive-definite"));
 
   if (k > 1)
     {
@@ -1939,6 +1896,18 @@ L80:
   /* STORE (OR RESTORE) DIAGONAL PRECONDITIONING */
 
 L90:
+
+  if (*modet >= -1)
+    {
+      C_INT oit;
+      std::ostringstream auxStream;
+
+      for (oit = 0; oit < *n; oit++)
+        auxStream << "x[" << oit << "]=" << zsol[oit] << " ";
+
+      log->enterLogEntry(COptLogEntry("search direction: ", "", auxStream.str()));
+    }
+
   dcopy_(n, &emat[1], &c__1, &diagb[1], &c__1);
   return 0;
 } /* modlnp_ */
