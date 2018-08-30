@@ -272,7 +272,7 @@ bool COptMethodLevenbergMarquardt::optimise()
           for (oit = 0; oit < dim; oit++)
             auxStream << "x[" << oit << "]=" << mStep[oit] << " ";
 
-          log->enterLogEntry(COptLogEntry("search direction: ", "", auxStream.str()));
+          mMethodLog.enterLogEntry(COptLogEntry("search direction: ", "", auxStream.str()));
         }
 
 //REVIEW:START
