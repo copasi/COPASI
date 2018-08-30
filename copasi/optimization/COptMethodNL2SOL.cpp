@@ -16,16 +16,16 @@ COptMethodNL2SOL::COptMethodNL2SOL(const CDataContainer * pParent,
                                    const CTaskEnum::Method & methodType,
                                    const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType),
+  v(NULL),
+  iv(NULL),
   mIterations(150),
-  mContinue(true),
-  mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
   mVariableSize(0),
+  bounds(NULL),
   nResiduals(0),
   mCurrent(),
   mBest(),
-  bounds(NULL),
-  v(NULL),
-  iv(NULL),
+  mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
+  mContinue(true),
   fCalcr(new FNL2SOLTemplate<COptMethodNL2SOL>(this, &COptMethodNL2SOL::calcr)),
   mpCNL2SOL(new CNL2SOL())
 {
@@ -36,16 +36,16 @@ COptMethodNL2SOL::COptMethodNL2SOL(const CDataContainer * pParent,
 COptMethodNL2SOL::COptMethodNL2SOL(const COptMethodNL2SOL & src,
                                    const CDataContainer * pParent):
   COptMethod(src, pParent),
+  v(NULL),
+  iv(NULL),
   mIterations(150),
-  mContinue(true),
-  mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
   mVariableSize(0),
+  bounds(NULL),
   nResiduals(0),
   mCurrent(),
   mBest(),
-  bounds(NULL),
-  v(NULL),
-  iv(NULL),
+  mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
+  mContinue(true),
   fCalcr(new FNL2SOLTemplate<COptMethodNL2SOL>(this, &COptMethodNL2SOL::calcr)),
   mpCNL2SOL(new CNL2SOL())
 {initObjects();}
@@ -74,7 +74,7 @@ bool COptMethodNL2SOL::optimise()
       )
     );
 
-  integer j, repeat, dummy;
+  integer j, dummy;
   integer uiparam[1];
   doublereal urparam[1];
 
