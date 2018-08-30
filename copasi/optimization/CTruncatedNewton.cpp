@@ -767,19 +767,6 @@ L120:
     C_INT *maxit, C_INT *maxfun, C_FLOAT64 *eta, C_FLOAT64 *stepmx,
     C_FLOAT64 *accrcy, C_FLOAT64 *xtol, COptLog *log)
 {
-  /* Format strings */
-  //remove
-  /*
-   char fmt_800[] = "(\002 THERE IS NO FEASIBLE POINT; TERMINATING A"
-                          "LGORITHM\002)";
-   char fmt_810[] = "(//\002  NIT   NF   CG\002,9x,\002F\002,21x,"
-                          "\002GTG\002,//)";
-   char fmt_830[] = "(\002 UPD1 IS TRUE - TRIVIAL PRECONDITIONING"
-                          "\002)";
-   char fmt_840[] = "(\002 NEWCON IS TRUE - CONSTRAINT ADDED IN LINE"
-                        "SEARCH\002)";
-  */
-
   /* System generated locals */
   C_INT i__1;
   C_FLOAT64 d__1;
@@ -825,22 +812,12 @@ L120:
   C_INT isk, iyk;
   C_INT upd1;
 
-  /* Fortran I/O blocks */
-  /*
-   cilist io___88 = {0, 6, 0, fmt_800, 0 };
-   cilist io___89 = {0, 6, 0, fmt_810, 0 };
-   cilist io___144 = {0, 6, 0, fmt_820, 0 };
-   cilist io___150 = {0, 6, 0, fmt_830, 0 };
-   cilist io___151 = {0, 6, 0, fmt_840, 0 }; */
-
   /* THIS ROUTINE IS A BOUNDS-CONSTRAINED TRUNCATED-NEWTON METHOD. */
   /* THE TRUNCATED-NEWTON METHOD IS PRECONDITIONED BY A LIMITED-MEMORY */
   /* QUASI-NEWTON METHOD (THIS PRECONDITIONING STRATEGY IS DEVELOPED */
   /* IN THIS ROUTINE) WITH A FURTHER DIAGONAL SCALING (SEE ROUTINE NDIA3).
   */
   /* FOR FURTHER DETAILS ON THE PARAMETERS, SEE ROUTINE TNBC. */
-
-  /* THE FOLLOWING STANDARD FUNCTIONS AND SYSTEM FUNCTIONS ARE USED */
 
   /* CHECK THAT INITIAL X IS FEASIBLE AND THAT THE BOUNDS ARE CONSISTENT */
 
@@ -1049,6 +1026,18 @@ L20:
   flast = fnew;
 
 L30:
+  /* we need to check to alpha not being exactly zero as this will later result in NaNs */
+  /* Test added by Pedro Mendes */
+
+  if (alpha < tnytol)
+    {
+      if (*msglvl > 3)
+        log->enterLogEntry(COptLogEntry("Detected alpha close to zero on exit of linder_() but nwhy!=3"));
+
+      nwhy = 3;
+//    goto L30;
+    }
+
   fold = fnew;
   ++niter;
   nftotl += numf;
@@ -2574,8 +2563,8 @@ L110:
 
 /* Subroutine */ int CTruncatedNewton::linder_(C_INT *n, FTruncatedNewton *sfun, C_FLOAT64 *small,
     C_FLOAT64 *epsmch, C_FLOAT64 *reltol, C_FLOAT64 *fabstol,
-    C_FLOAT64 *tnytol, C_FLOAT64 *eta, C_FLOAT64 * /* sftbnd */, C_FLOAT64 *
-    xbnd, C_FLOAT64 *p, C_FLOAT64 *gtp, C_FLOAT64 *x, C_FLOAT64 *f,
+    C_FLOAT64 *tnytol, C_FLOAT64 *eta, C_FLOAT64 * /* sftbnd */, C_FLOAT64 *xbnd,
+    C_FLOAT64 *p, C_FLOAT64 *gtp, C_FLOAT64 *x, C_FLOAT64 *f,
     C_FLOAT64 *alpha, C_FLOAT64 *g, C_INT *nftotl, C_INT *iflag,
     C_FLOAT64 *w, C_INT * /* lw */, C_INT *lsprnt, COptLog *log)
 {
@@ -2640,10 +2629,13 @@ L10:
   ++itcnt;
   *iflag = 1;
 
-  if (itcnt > 120)
+  if (itcnt > 20)
     {
-      // we stop at 20 iterations (why?)
-      goto L50;
+      // we stop at 20 iterations
+      if (itest == 1)
+        itest = 0;
+
+      goto L30;
     }
 
   *iflag = 0;
@@ -2653,10 +2645,10 @@ L10:
                             &tol, &ientry, &itest);
 
   /* LSOUT */
-  if (*lsprnt > 2)
+  if (*lsprnt > 3)
     {
-      lsout_(&ientry, &itest, &xmin, &fmin, &gmin, &xw, &fw, &gw, &u, &a, &
-             b, &tol, reltol, &scxbnd, xbnd, log);
+      lsout_(&ientry, &itest, &xmin, &fmin, &gmin, &xw, &fw, &gw, &u, &a, &b,
+             &tol, reltol, &scxbnd, xbnd, log);
     }
 
   /*      IF ITEST=1, THE ALGORITHM REQUIRES THE FUNCTION VALUE TO BE */
@@ -2714,7 +2706,6 @@ L30:
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       x[i__] += *alpha * p[i__];
-      /* L40: */
     }
 
 L50:
@@ -2722,15 +2713,15 @@ L50:
 } /* linder_ */
 
 /* Subroutine */
-int CTruncatedNewton::getptc_(C_FLOAT64 *big, C_FLOAT64 * /* small */, C_FLOAT64 *
-                              rtsmll, C_FLOAT64 *reltol, C_FLOAT64 *fabstol, C_FLOAT64 *tnytol,
-                              C_FLOAT64 *fpresn, C_FLOAT64 *eta, C_FLOAT64 *rmu, C_FLOAT64 *
-                              xbnd, C_FLOAT64 *u, C_FLOAT64 *fu, C_FLOAT64 *gu, C_FLOAT64 *xmin,
+int CTruncatedNewton::getptc_(C_FLOAT64 *big, C_FLOAT64 * /* small */, C_FLOAT64 *rtsmll,
+                              C_FLOAT64 *reltol, C_FLOAT64 *fabstol, C_FLOAT64 *tnytol,
+                              C_FLOAT64 *fpresn, C_FLOAT64 *eta, C_FLOAT64 *rmu, C_FLOAT64 *xbnd,
+                              C_FLOAT64 *u, C_FLOAT64 *fu, C_FLOAT64 *gu, C_FLOAT64 *xmin,
                               C_FLOAT64 *fmin, C_FLOAT64 *gmin, C_FLOAT64 *xw, C_FLOAT64 *fw,
                               C_FLOAT64 *gw, C_FLOAT64 *a, C_FLOAT64 *b, C_FLOAT64 *oldf,
                               C_FLOAT64 *b1, C_FLOAT64 *scxbnd, C_FLOAT64 *e, C_FLOAT64 *step,
-                              C_FLOAT64 *factor, C_INT *braktd, C_FLOAT64 *gtest1, C_FLOAT64 *
-                              gtest2, C_FLOAT64 *tol, C_INT *ientry, C_INT *itest)
+                              C_FLOAT64 *factor, C_INT *braktd, C_FLOAT64 *gtest1,
+                              C_FLOAT64 *gtest2, C_FLOAT64 *tol, C_INT *ientry, C_INT *itest)
 {
   /* System generated locals */
   C_FLOAT64 d__1, d__2;
@@ -2752,9 +2743,6 @@ int CTruncatedNewton::getptc_(C_FLOAT64 *big, C_FLOAT64 * /* small */, C_FLOAT64
   /* THE VALUE OF THE C_INT PARAMETERS IENTRY DETERMINES THE PATH TAKEN */
   /* THROUGH THE CODE. */
   /* ************************************************************ */
-
-  /* THE FOLLOWING STANDARD FUNCTIONS AND SYSTEM FUNCTIONS ARE CALLED */
-  /* WITHIN GETPTC */
 
   zero = 0.;
   point1 = .1;
