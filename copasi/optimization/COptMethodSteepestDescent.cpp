@@ -18,6 +18,7 @@
 // All rights reserved.
 
 #include "copasi.h"
+#include <sstream>
 
 #include "COptMethodSteepestDescent.h"
 #include "COptProblem.h"
@@ -75,7 +76,7 @@ bool COptMethodSteepestDescent::optimise()
   if (mLogVerbosity > 0)
     mMethodLog.enterLogEntry(
       COptLogEntry(
-        "Algorithm started.",
+        "Steepest Descent algorithm started.",
         "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Steepest_Descent/"
       )
     );
@@ -158,6 +159,17 @@ bool COptMethodSteepestDescent::optimise()
               if (tmp < x0) x0 = tmp;
             }
           else mGradient[i] = 0.0;
+        }
+
+      if (mLogVerbosity > 2)
+        {
+          C_INT oit;
+          std::ostringstream auxStream;
+
+          for (oit = 0; oit < mVariableSize; oit++)
+            auxStream << "x[" << oit << "]=" << mGradient[oit] << " ";
+
+          mMethodLog.enterLogEntry(COptLogEntry("search direction: ", "", auxStream.str()));
         }
 
       if (x0 < mTolerance) x0 = mTolerance;
