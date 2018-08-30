@@ -21,8 +21,9 @@
 // levmarq.cpp : Restricted step Newton method (Marquardt iteration)
 
 #include <cmath>
-#include "copasi.h"
+#include <sstream>
 
+#include "copasi.h"
 #include "COptMethodLevenbergMarquardt.h"
 #include "COptProblem.h"
 #include "COptItem.h"
@@ -261,6 +262,17 @@ bool COptMethodLevenbergMarquardt::optimise()
             {
               mStep[i] /= LM_lambda;
             }
+        }
+
+      if (mLogVerbosity > 2)
+        {
+          C_INT oit;
+          std::ostringstream auxStream;
+
+          for (oit = 0; oit < dim; oit++)
+            auxStream << "x[" << oit << "]=" << mStep[oit] << " ";
+
+          log->enterLogEntry(COptLogEntry("search direction: ", "", auxStream.str()));
         }
 
 //REVIEW:START
