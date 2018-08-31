@@ -1006,7 +1006,6 @@ L30:
         log->enterLogEntry(COptLogEntry("Detected alpha close to zero on exit of linder_() but nwhy!=3"));
 
       nwhy = 3;
-//    goto L30;
     }
 
   fold = fnew;
