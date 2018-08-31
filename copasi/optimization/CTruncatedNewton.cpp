@@ -1287,7 +1287,7 @@ L10:
           << ", f=" << *f << ", gtg=" << gtg;
   string2 << "position: ";
 
-  for (C_INT oit = 0; oit < *n; oit++)
+  for (C_INT oit = 1; oit <= *n; oit++)
     string2 << "x[" << oit << "]=" << x[oit] << " ";
 
   // write it out to the log entry
@@ -1763,7 +1763,7 @@ L15:
 
       alpha = rz / vgv;
 
-      if (*modet >= 1)
+      if (*modet > 0)
         {
           std::ostringstream auxStream;
           auxStream << "alpha=" << alpha;
@@ -1815,7 +1815,7 @@ L15:
 
 L40:
 
-  if (*modet >= -1)
+  if (*modet > -2)
     log->enterLogEntry(COptLogEntry("g(t)z positive at iteration " + std::to_string(k) + ". Truncating method"));
 
   d__1 = -alpha;
@@ -1879,12 +1879,12 @@ L80:
 
 L90:
 
-  if (*modet >= -1)
+  if (*modet >= -2)
     {
       C_INT oit;
       std::ostringstream auxStream;
 
-      for (oit = 0; oit < *n; oit++)
+      for (oit = 1; oit <= *n; oit++)
         auxStream << "x[" << oit << "]=" << zsol[oit] << " ";
 
       log->enterLogEntry(COptLogEntry("search direction: ", "", auxStream.str()));
