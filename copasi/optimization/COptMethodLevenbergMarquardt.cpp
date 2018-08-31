@@ -379,6 +379,20 @@ bool COptMethodLevenbergMarquardt::optimise()
       // calculate the objective function value
       evaluate();
 
+      if (mLogVerbosity > 1)
+        {
+          C_INT oit;
+          std::ostringstream string1, string2;
+
+          string1 << "niter=" << mIteration << ", f=" << mEvaluationValue << ", fbest=" << mBestValue;
+          string2 << "position: ";
+
+          for (oit = 0; oit < dim; oit++)
+            string2 << "x[" << oit << "]=" << mCurrent[oit] << " ";
+
+          mMethodLog.enterLogEntry(COptLogEntry(string1.str(), "", string2.str()));
+        }
+
       // set the convergence check amplitudes
       // convx has the relative change in objective function value
       convx = (mBestValue - mEvaluationValue) / mBestValue;
