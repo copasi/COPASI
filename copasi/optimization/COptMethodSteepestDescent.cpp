@@ -190,7 +190,8 @@ bool COptMethodSteepestDescent::optimise()
           // take one step in that direction
           fmx = descentLine(alpha);
 
-          fmx = evaluate();
+          // no need for this, it is done in descentLine()
+          // fmx = evaluate();
 
           // if this was an upward step find the minimum
           if (fmx > fmn)
@@ -213,6 +214,20 @@ bool COptMethodSteepestDescent::optimise()
 
       for (i = 0; i < mVariableSize; i++)
         mIndividual[i] = *(*mpOptItem)[i]->getObjectValue();
+
+      if (mLogVerbosity > 1)
+        {
+          C_INT oit;
+          std::ostringstream string1, string2;
+
+          string1 << "niter=" << mCurrentIteration << ", f=" << fmx << ", fbest=" << mBestValue;
+          string2 << "position: ";
+
+          for (oit = 0; oit < mVariableSize; oit++)
+            string2 << "x[" << oit << "]=" << mIndividual[oit] << " ";
+
+          mMethodLog.enterLogEntry(COptLogEntry(string1.str(), "", string2.str()));
+        }
 
       if (fmx < mBestValue)
         {
