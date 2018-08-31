@@ -378,17 +378,8 @@ CTruncatedNewton::~CTruncatedNewton()
     C_INT *msglvl, C_INT *maxit, C_INT *maxfun, C_FLOAT64 *eta,
     C_FLOAT64 *stepmx, C_FLOAT64 *accrcy, C_FLOAT64 *xtol, COptLog *log)
 {
-  /* Format strings */
-  /*  char fmt_800[] = "(//\002 NIT   NF   CG\002,9x,\002F\002,21x,\002"
-                           "GTG\002,//)";
-    char fmt_810[] = "(\002 \002,i3,1x,i4,1x,i4,1x,1pd22.15,2x,1pd15."
-                           "8)"; */
-
   /* System generated locals */
   C_INT i__1;
-
-  /* Builtin functions */
-  // C_INT s_wsfe(cilist *), e_wsfe(void), do_fio(C_INT *, char *, ftnlen);
 
   /* Local variables */
   C_FLOAT64 fold, oldf;
@@ -425,13 +416,6 @@ CTruncatedNewton::~CTruncatedNewton()
   C_FLOAT64 gsk, spe;
   C_INT isk, iyk;
   C_INT upd1;
-
-  /* Fortran I/O blocks */
-  //remove the blocks
-  /*  cilist io___27 = {0, 6, 0, fmt_800, 0 };
-    cilist io___56 = {0, 6, 0, fmt_810, 0 };
-    cilist io___81 = {0, 6, 0, fmt_810, 0 };
-   */
 
   /* THIS ROUTINE IS A TRUNCATED-NEWTON METHOD. */
   /* THE TRUNCATED-NEWTON METHOD IS PRECONDITIONED BY A LIMITED-MEMORY */
@@ -575,7 +559,7 @@ L20:
   nftotl += numf;
   gtg = ddot_(n, &g[1], &c__1, &g[1], &c__1);
 
-  if (*msglvl > 0)
+  if (*msglvl > 1)
     {
       std::ostringstream auxStream;
       auxStream << "niter=" << niter << ", nftotl=" << nftotl << ", nlincg=" << nlincg
@@ -614,7 +598,7 @@ L40:
 
   if (nftotl > *maxfun)
     {
-      if (*msglvl > 1)
+      if (*msglvl > 0)
         log->enterLogEntry(COptLogEntry("Exceeded maximal number of function evaluations (" + std::to_string(*maxfun) + ")."));
 
       goto L110;
