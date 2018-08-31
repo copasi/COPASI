@@ -840,13 +840,6 @@ L120:
       return 0;
     }
 
-  /* if (*msglvl > 1) {
-   char fmt_810[] = "(//\002  NIT   NF   CG\002,9x,\002F\002,21x,"
-                          "\002GTG\002,//)";
-  s_wsfe(&io___89);
-  e_wsfe();
-  } */
-
   /* INITIALIZE VARIABLES */
 
   setpar_(n);
@@ -877,15 +870,9 @@ L120:
       goto L160;
     }
 
+  // first function evaluation at the starting point
   CTruncatedNewton::setucr_(&small, &nftotl, &niter, n, f, &fnew, &fm, &gtg, &oldf,
                             sfun, &g[1], &x[1]);
-
-  if (*msglvl > 2)
-    {
-      std::ostringstream auxStream;
-      auxStream << "setucr_() results: f=" << *f << ", fnew=" << fnew << ", oldf=" << oldf;
-      log->enterLogEntry(COptLogEntry(auxStream.str()));
-    }
 
   fold = fnew;
   flast = fnew;
@@ -968,7 +955,7 @@ L10:
 L20:
 
   if (*msglvl > 2)
-    log->enterLogEntry(COptLogEntry("main loop iteration " + std::to_string(niter)));
+    log->enterLogEntry(COptLogEntry("Entering main loop iteration " + std::to_string(niter + 1)));
 
   /* added manually by Pedro Mendes 12/2/1998 */
   // if(callback != 0/*NULL*/) callback(fnew);
@@ -1029,9 +1016,9 @@ L30:
   /* we need to check to alpha not being exactly zero as this will later result in NaNs */
   /* Test added by Pedro Mendes */
 
-  if (alpha < tnytol)
+  if (alpha < epsmch)
     {
-      if (*msglvl > 3)
+      if (*msglvl > 2)
         log->enterLogEntry(COptLogEntry("Detected alpha close to zero on exit of linder_() but nwhy!=3"));
 
       nwhy = 3;
@@ -1044,7 +1031,7 @@ L30:
 
   /* IF REQUIRED, PRINT THE DETAILS OF THIS ITERATION */
 
-  if (*msglvl > 0)
+  if (*msglvl > 1)
     {
       // print current details
       monit_(n, &x[1], &fnew, &g[1], &niter, &nftotl, &nfeval, &lreset, &ipivot[1], log);
@@ -1247,7 +1234,7 @@ L140:
 L150:
   *f = oldf;
 
-  if (*msglvl > 0)
+  if (*msglvl > 1)
     {
       // print current details
       monit_(n, &x[1], &fnew, &g[1], &niter, &nftotl, &nfeval, &lreset, &ipivot[1], log);
@@ -1294,11 +1281,17 @@ L10:
       ;
     }
 
-  // error messages now go to the COptLog object *log
-  std::ostringstream auxStream;
-  auxStream << "niter=" << *niter << ", nftotl=" << *nftotl << ", nfeval=" << *nfeval
-            << ", f=" << *f << ", gtg=" << gtg;
-  log->enterLogEntry(COptLogEntry(auxStream.str()));
+  // we use stringstream objects to format the strings
+  std::ostringstream string1, string2;
+  string1 << "niter=" << *niter << ", nftotl=" << *nftotl << ", nfeval=" << *nfeval
+          << ", f=" << *f << ", gtg=" << gtg;
+  string2 << "position: ";
+
+  for (C_INT oit = 0; oit < *n; oit++)
+    string2 << "x[" << oit << "]=" << x[oit] << " ";
+
+  // write it out to the log entry
+  log->enterLogEntry(COptLogEntry(string1.str(), "", string2.str()));
 
   return 0;
 } /* monit_ */
@@ -1854,7 +1847,7 @@ L70:
   if (*modet >= -1)
     {
       std::ostringstream auxStream;
-      auxStream << "modlan_() truncated after " << k << " iterations; rnorm=" << rhsnrm;
+      auxStream << "modlan_() truncated after " << k << " iterations.";
       log->enterLogEntry(COptLogEntry(auxStream.str()));
       /* they were writing rnorm here, but it is never used!
          do_fio(&c__1, (char *)&rnorm, (ftnlen)sizeof(C_FLOAT64));*/
@@ -2629,7 +2622,7 @@ L10:
   ++itcnt;
   *iflag = 1;
 
-  if (itcnt > 20)
+  if (itcnt > 25)
     {
       // we stop at 20 iterations
       if (itest == 1)
