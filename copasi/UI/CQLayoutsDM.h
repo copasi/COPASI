@@ -28,6 +28,7 @@ public:
   CQLayoutsDM(QObject *parent = 0);
   virtual ~CQLayoutsDM();
 
+  virtual void resetCacheProtected();
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
   virtual Qt::ItemFlags flags(const QModelIndex &index) const;

@@ -36,6 +36,12 @@ int CQLayoutsDM::rowCount(const QModelIndex & /* parent */) const
   return (int) mpListOfLayouts->size();
 }
 
+// virtual
+void CQLayoutsDM::resetCacheProtected()
+{
+  mpListOfLayouts = mpDataModel->getListOfLayouts();
+}
+
 bool CQLayoutsDM::clear()
 {
   return removeRows(0, rowCount());
