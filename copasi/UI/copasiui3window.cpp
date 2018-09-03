@@ -997,6 +997,30 @@ void CopasiUI3Window::slotFileOpen(QString file)
     }
 }
 
+bool isArchive(const QString& fileName)
+{
+  bool result = false;
+  std::ifstream in;
+  in.open(fileName.toStdString().c_str(), std::ifstream::in);
+
+  char buffer[5];
+  in.read(buffer, 4);
+  buffer[4] = '\x00';
+
+  if (in.good())
+    {
+      result = result ||
+               (buffer[0] == 'P' && buffer[1] == 'K' && buffer[2] == '\x03' && buffer[3] == '\x04');
+      result = result ||
+               (buffer[0] == 'P' && buffer[1] == 'K' && buffer[2] == '\x05' && buffer[3] == '\x06');
+      result = result ||
+               (buffer[0] == 'P' && buffer[1] == 'K' && buffer[2] == '\x07' && buffer[3] == '\x08');
+    }
+
+  in.close();
+  return result;
+}
+
 void CopasiUI3Window::slotFileOpenFinished(bool success)
 {
 #ifdef COPASI_Provenance
@@ -1036,6 +1060,20 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
         {
           emit slotImportSEDML(mNewFile);
+          return;
+        }
+
+      newDoc();
+      return;
+    }
+
+  if (msg.getNumber() == 6313 && isArchive(mNewFile))
+    {
+      // this might be a combine archive, lets ask to import it
+      if (CQMessageBox::question(this, QString("Import Combine Archive?"), QString("You tried to open a COMBINE archive, would you like to import it?"),
+                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
+        {
+          emit slotImportCombine(mNewFile);
           return;
         }
 
