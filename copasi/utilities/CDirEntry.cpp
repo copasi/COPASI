@@ -192,7 +192,7 @@ bool CDirEntry::createDir(const std::string & dir,
 {
   std::string Dir;
 
-  if (parent != "") Dir = parent + Separator;
+  if (!parent.empty()) Dir = parent + Separator;
 
   Dir += dir;
 
@@ -200,7 +200,8 @@ bool CDirEntry::createDir(const std::string & dir,
   if (isDir(Dir) && isWritable(Dir)) return true;
 
   // Check whether the parent directory exists and is writable.
-  if (!isDir(parent) || !isWritable(parent)) return false;
+  if (!parent.empty() && (!isDir(parent) || !isWritable(parent)))
+    return false;
 
 #ifdef WIN32
   return (mkdir(CLocaleString::fromUtf8(Dir).c_str()) == 0);

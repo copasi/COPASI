@@ -1436,7 +1436,16 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
   std::string destinationDir;
   COptions::getValue("Tmp", destinationDir);
   destinationDir = CDirEntry::createTmpName(destinationDir, "");
-  CDirEntry::createDir(destinationDir);
+
+  // apparently this creates the file too?
+  if (CDirEntry::exist(destinationDir))
+    CDirEntry::remove(destinationDir);
+
+  if (!CDirEntry::createDir(destinationDir))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "Failed to create temporary directory.");
+      return false;
+    }
 
   archive.extractTo(destinationDir);
   mTempFolders.push_back(destinationDir);
