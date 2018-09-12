@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -288,7 +288,7 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
                 def = new CReportDefinition(SEDMLUtils::getNextId(name + " ", ++count));
               }
 
-			def->setComment("Import from SED-ML");
+            def->setComment("Import from SED-ML");
             def->setIsTable(false);
             def->setSeparator(", ");
 
@@ -568,7 +568,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
           case LIBSEDML_SEV_FATAL:
 
-          // treat unknown as fatal
+            // treat unknown as fatal
           default:
 
             if (pSEDMLError->getErrorId() == 10804)
@@ -938,6 +938,15 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
             {
               CCopasiMessage(CCopasiMessage::WARNING, "Could not apply change for target: '%s'", target.c_str());
             }
+          else
+            {
+              valueChanged = true;
+            }
+        }
+
+      if (valueChanged)
+        {
+          set.updateModel();
         }
     }
 
