@@ -39,6 +39,17 @@ bool CQParameterSetsDM::clear()
   return removeRows(0, rowCount());
 }
 
+void CQParameterSetsDM::resetCacheProtected()
+{
+  if (mpDataModel == NULL || mpDataModel->getModel() == NULL)
+    {
+      mpListOfParameterSets = NULL;
+      return;
+    }
+
+  mpListOfParameterSets = &mpDataModel->getModel()->getModelParameterSets();
+}
+
 int CQParameterSetsDM::columnCount(const QModelIndex & /* parent */) const
 {
   return TOTAL_COLS_PARAMETERSET;

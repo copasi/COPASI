@@ -43,7 +43,7 @@ public:
   virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 
   virtual bool clear();
-
+  virtual void resetCacheProtected();
 protected:
   virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 
