@@ -2349,7 +2349,11 @@ void CopasiUI3Window::slotActivateWindowTriggered(QAction *action)
   QMainWindow *window = getWindowForAction(mWindows, action);
 
   if (window != NULL)
+  {
+    window ->setWindowState( (windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+    window ->raise(); // necessary for macOS
     window ->activateWindow();
+  }
 }
 
 void CopasiUI3Window::setMessageShown(const bool &shown)
