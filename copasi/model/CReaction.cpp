@@ -698,6 +698,9 @@ CCopasiParameterGroup & CReaction::getParameters()
 
 bool CReaction::isLocalParameter(const size_t & index) const
 {
+  if (index == C_INVALID_INDEX)
+    return false;
+
   const std::vector< const CDataObject * > & Objects = mParameterIndexToObjects[index];
 
   if (Objects.size() == 1)

@@ -630,6 +630,8 @@ const CModelParameter * CModelParameterGroup::getChild(const size_t & index) con
 
 const CValidatedUnit & CModelParameterGroup::getObjectUnit(const CModelParameter * pModelParameter) const
 {
+  static const CValidatedUnit Default;
+
   if (getType() == Type::Reaction &&
       mpObject != NULL)
     {
@@ -651,14 +653,20 @@ const CValidatedUnit & CModelParameterGroup::getObjectUnit(const CModelParameter
             }
 
           CObjectInterface * pValueReference = NULL;
+          size_t index = pReaction->getParameterIndex(pModelParameter->getName());
 
-          if (pReaction->isLocalParameter(pReaction->getParameterIndex(pModelParameter->getName())))
+          if (pReaction->isLocalParameter(index))
             {
               pValueReference = static_cast< CCopasiParameter * >(pModelParameter->getObject())->getValueReference();
             }
           else
             {
-              pValueReference = static_cast< const CModelValue * >(Container.getObject(static_cast< const CModelParameterReactionParameter * >(pModelParameter)->getGlobalQuantityCN()))->getValueReference();
+              const CModelValue* pMV = dynamic_cast<const CModelValue *>(Container.getObject(static_cast<const CModelParameterReactionParameter *>(pModelParameter)->getGlobalQuantityCN()));
+
+              if (!pMV)
+                return Default;
+
+              pValueReference = pMV->getValueReference();
             }
 
           std::map< CObjectInterface *, CValidatedUnit >::const_iterator found = mValidatedUnits.find(Container.getMathObject(pValueReference));
@@ -682,6 +690,5 @@ const CValidatedUnit & CModelParameterGroup::getObjectUnit(const CModelParameter
         }
     }
 
-  static const CValidatedUnit Default;
   return Default;
 }
