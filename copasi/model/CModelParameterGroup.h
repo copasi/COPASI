@@ -106,7 +106,7 @@ public:
    * Note, the parent of the parameter is not updated
    * @param CModelParameter * pModelParameter
    */
-  void add(CModelParameter * pModelParameter);
+  virtual void add(CModelParameter * pModelParameter);
 
   /**
    * Remove the given parameter from the group.

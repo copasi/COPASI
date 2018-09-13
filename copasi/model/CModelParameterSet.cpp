@@ -233,6 +233,52 @@ void CModelParameterSet::init()
 {
 }
 
+void CModelParameterSet::add(CModelParameter * pModelParameter)
+{
+
+  CModelParameterGroup::add(pModelParameter);
+
+  if (pModelParameter->getType() != CModelParameter::Type::Group)
+    return;
+
+  auto& cn = pModelParameter->getCN();
+
+  if (cn == CDataString("Initial Time").getCN())
+    {
+      CModelParameterGroup::remove(mpTimes);
+      mpTimes = static_cast<CModelParameterGroup *>(pModelParameter);
+      return;
+    }
+
+  if (cn == CDataString("Initial Compartment Sizes").getCN())
+    {
+      CModelParameterGroup::remove(mpCompartments);
+      mpCompartments = static_cast<CModelParameterGroup *>(pModelParameter);
+      return;
+    }
+
+  if (cn == CDataString("Initial Species Values").getCN())
+    {
+      CModelParameterGroup::remove(mpSpecies);
+      mpSpecies = static_cast<CModelParameterGroup *>(pModelParameter);
+      return;
+    }
+
+  if (cn == CDataString("Initial Global Quantities").getCN())
+    {
+      CModelParameterGroup::remove(mpModelValues);
+      mpModelValues = static_cast<CModelParameterGroup *>(pModelParameter);
+      return;
+    }
+
+  if (cn == CDataString("Kinetic Parameters").getCN())
+    {
+      CModelParameterGroup::remove(mpReactions);
+      mpReactions = static_cast<CModelParameterGroup *>(pModelParameter);
+      return;
+    }
+}
+
 // virtual
 const std::string & CModelParameterSet::getKey() const
 {

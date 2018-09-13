@@ -117,6 +117,13 @@ public:
   virtual const CModelParameterSet * toSet() const;
 
   /**
+   * Add the given parameter to the group.
+   * Note, the parent of the parameter is not updated
+   * @param CModelParameter * pModelParameter
+   */
+  virtual void add(CModelParameter * pModelParameter);
+
+  /**
    * Retrieve the unique key of the set.
    * @return const std::string & key
    */
