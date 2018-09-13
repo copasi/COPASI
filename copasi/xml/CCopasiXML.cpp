@@ -173,6 +173,67 @@ bool CCopasiXML::save(std::ostream & os,
   return success;
 }
 
+bool CCopasiXML::saveModelParameterSets(std::ostream & os, const std::string & relativeTo)
+{
+  mPWD = relativeTo;
+
+  os.imbue(std::locale::classic());
+  os.precision(std::numeric_limits<double>::digits10 + 2);
+
+  mpOstream = &os;
+  bool success = true;
+
+  *mpOstream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+             << std::endl;
+
+  *mpOstream << "<!-- generated with COPASI "
+             << CVersion::VERSION.getVersion()
+             << " (http://www.copasi.org) at "
+             << UTCTimeStamp()
+             << " -->"
+             << std::endl;
+
+  *mpOstream << "<?oxygen RNGSchema=\"http://www.copasi.org/static/schema/CopasiML.rng\" type=\"xml\"?>" << std::endl;
+
+  CXMLAttributeList Attributes;
+  Attributes.add("xmlns", "http://www.copasi.org/static/schema");
+  Attributes.add("versionMajor", CVersion::VERSION.getVersionMajor());
+  Attributes.add("versionMinor", CVersion::VERSION.getVersionMinor());
+  Attributes.add("versionDevel", CVersion::VERSION.getVersionDevel());
+  Attributes.add("copasiSourcesModified", CVersion::VERSION.isSourceModified());
+
+  startSaveElement("COPASI", Attributes);
+
+  if (haveModel())
+    {
+      CXMLAttributeList Attributes;
+      Attributes.add("key", mpModel->getKey());
+      Attributes.add("name", mpModel->getObjectName());
+      Attributes.add("simulationType", CModelEntity::XMLStatus[mpModel->getStatus()]);
+      Attributes.add("timeUnit", mpModel->getTimeUnitName());
+      Attributes.add("volumeUnit", mpModel->getVolumeUnitName());
+      Attributes.add("areaUnit", mpModel->getAreaUnitName());
+      Attributes.add("lengthUnit", mpModel->getLengthUnitName());
+      Attributes.add("quantityUnit", mpModel->getQuantityUnitName());
+      Attributes.add("type", CModel::ModelTypeNames[mpModel->getModelType()]);
+      Attributes.add("avogadroConstant", mpModel->getAvogadro());
+
+      // This is now optional
+      // Attributes.add("stateVariable",
+      //                mpModel->getStateTemplate().getKey(mpModel->getKey()));
+
+      startSaveElement("Model", Attributes);
+      saveModelParameterSets();
+      endSaveElement("Model");
+    }
+
+
+
+  endSaveElement("COPASI");
+
+  return success;
+}
+
 bool CCopasiXML::load(std::istream & is,
                       const std::string & relativeTo)
 {
@@ -1013,8 +1074,55 @@ bool CCopasiXML::saveModel()
     }
 
   // Save the model parameter sets
+  saveModelParameterSets();
+
+  // The State an state Template is only save for backwards compatibility
+  startSaveElement("StateTemplate");
+
   Attributes.erase();
-  const CModelParameterSet * pSet = & mpModel->getActiveModelParameterSet();
+  // This is now optional.
+  // Attributes.add("key", "");
+  Attributes.add("objectReference", "");
+  std::pair< std::string, std::string > Variable;
+
+  const CModelEntity *const* ppEntity = mpModel->getStateTemplate().getEntities().array();
+  const CModelEntity *const* ppEntityEnd = ppEntity + mpModel->getStateTemplate().size();
+
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    {
+      Attributes.setValue(0, (*ppEntity)->getKey());
+
+      saveElement("StateTemplateVariable", Attributes);
+    }
+
+  endSaveElement("StateTemplate");
+
+  Attributes.erase();
+  Attributes.add("type", "initialState");
+  startSaveElement("InitialState", Attributes);
+  *mpOstream << mIndent;
+  ppEntity = mpModel->getStateTemplate().getEntities().array();
+
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    {
+      *mpOstream << (DBL)(*ppEntity)->getInitialValue() << " ";
+    }
+
+  *mpOstream << std::endl;
+
+  endSaveElement("InitialState");
+
+  endSaveElement("Model");
+
+  return success;
+}
+
+void CCopasiXML::saveModelParameterSets()
+{
+  CXMLAttributeList Attributes;
+  size_t imax = 0, i = 0;
+  Attributes.erase();
+  const CModelParameterSet * pSet = &mpModel->getActiveModelParameterSet();
   Attributes.add("activeSet", pSet->getKey());
 
   startSaveElement("ListOfModelParameterSets", Attributes);
@@ -1023,7 +1131,7 @@ bool CCopasiXML::saveModel()
   Attributes.add("key", "");
   Attributes.add("name", "");
 
-  pSet = & mpModel->getActiveModelParameterSet();
+  pSet = &mpModel->getActiveModelParameterSet();
 
   Attributes.setValue(0, pSet->getKey());
   Attributes.setValue(1, pSet->getObjectName());
@@ -1067,46 +1175,6 @@ bool CCopasiXML::saveModel()
     }
 
   endSaveElement("ListOfModelParameterSets");
-
-  // The State an state Template is only save for backwards compatibility
-  startSaveElement("StateTemplate");
-
-  Attributes.erase();
-  // This is now optional.
-  // Attributes.add("key", "");
-  Attributes.add("objectReference", "");
-  std::pair< std::string, std::string > Variable;
-
-  const CModelEntity *const* ppEntity = mpModel->getStateTemplate().getEntities().array();
-  const CModelEntity *const* ppEntityEnd = ppEntity + mpModel->getStateTemplate().size();
-
-  for (; ppEntity != ppEntityEnd; ++ppEntity)
-    {
-      Attributes.setValue(0, (*ppEntity)->getKey());
-
-      saveElement("StateTemplateVariable", Attributes);
-    }
-
-  endSaveElement("StateTemplate");
-
-  Attributes.erase();
-  Attributes.add("type", "initialState");
-  startSaveElement("InitialState", Attributes);
-  *mpOstream << mIndent;
-  ppEntity = mpModel->getStateTemplate().getEntities().array();
-
-  for (; ppEntity != ppEntityEnd; ++ppEntity)
-    {
-      *mpOstream << (DBL)(*ppEntity)->getInitialValue() << " ";
-    }
-
-  *mpOstream << std::endl;
-
-  endSaveElement("InitialState");
-
-  endSaveElement("Model");
-
-  return success;
 }
 
 bool CCopasiXML::saveAnnotation(const CAnnotation * pAnnotation)

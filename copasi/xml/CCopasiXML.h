@@ -102,6 +102,15 @@ public:
                     const std::string & relativeTo);
 
   /**
+   * Save information to a given ostream.
+   * @param std::ostream & os
+   * @param const std::string & relativeTo
+   * @return bool success
+   */
+  virtual bool saveModelParameterSets(std::ostream & os,
+                                      const std::string & relativeTo);
+
+  /**
    * Load information from a given istream.
    * @param std::istream & is
    * @param const std::string & pwd
@@ -304,6 +313,11 @@ private:
    * @return bool success
    */
   bool saveModel();
+
+  /**
+   * Save the model parameter sets to stream
+   */
+  void saveModelParameterSets();
 
   /**
    * Save a model parameter

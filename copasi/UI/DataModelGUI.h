@@ -62,6 +62,10 @@ public:
   void saveFunctionDB(const std::string & fileName);
   void loadFunctionDB(const std::string & fileName);
 
+  void saveModelParameterSets(const std::string & fileName);
+  void loadModelParameterSets(const std::string & fileName);
+
+
   void importSBML(const std::string & fileName);
   void exportSBML(const std::string & fileName, bool overwriteFile , int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
   void importSBMLFromString(const std::string & sbmlDocumentText);

@@ -187,6 +187,8 @@ CopasiUI3Window::CopasiUI3Window():
   mpaSaveAs(NULL),
   mpaFunctionDBSave(NULL),
   mpaFunctionDBLoad(NULL),
+  mpaParameterSetsSave(NULL),
+  mpaParameterSetsLoad(NULL),
   mpaImportSBML(NULL),
   mpaExportSBML(NULL),
   mpaExportODE(NULL),
@@ -472,6 +474,10 @@ void CopasiUI3Window::createActions()
   connect(mpaFunctionDBLoad, SIGNAL(triggered()), this, SLOT(slotFunctionDBLoad()));
   mpaFunctionDBSave =  new QAction(CQIconResource::icon(CQIconResource::fileSaveas), "Save Function DB...", this);
   connect(mpaFunctionDBSave, SIGNAL(triggered()), this, SLOT(slotFunctionDBSave()));
+  mpaParameterSetsLoad = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "Load Parameter Sets...", this);
+  connect(mpaParameterSetsLoad, SIGNAL(triggered()), this, SLOT(slotParameterSetsLoad()));
+  mpaParameterSetsSave = new QAction(CQIconResource::icon(CQIconResource::fileSaveas), "Save ParameterSets...", this);
+  connect(mpaParameterSetsSave, SIGNAL(triggered()), this, SLOT(slotParameterSetsSave()));
 
   // UNDO framework
   mpaUndo = new QAction("Undo", this);
@@ -562,6 +568,60 @@ void CopasiUI3Window::slotFunctionDBLoad(QString dbFile)
     }
 }
 
+void
+CopasiUI3Window::slotParameterSetsSave(QString dbFile)
+{
+  if (mCommitRequired)
+    {
+      mpDataModelGUI->commit();
+    }
+
+  if (dbFile.isEmpty())
+    {
+      C_INT32 Answer = QMessageBox::No;
+
+      while (Answer == QMessageBox::No)
+        {
+          dbFile =
+            CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                                              "untitled.cpmp", "COPASI Parameter Sets (*.cpmp)",
+                                              "Choose a file");
+
+          if (dbFile.isEmpty()) return;
+
+          // Checks whether the file exists
+          Answer = checkSelection(dbFile);
+
+          if (Answer == QMessageBox::Cancel) return;
+        }
+    }
+
+  mpDataModelGUI->saveModelParameterSets(TO_UTF8(dbFile));
+}
+
+void
+CopasiUI3Window::slotParameterSetsLoad(QString dbFile)
+{
+  if (mCommitRequired)
+    {
+      mpDataModelGUI->commit();
+    }
+
+  if (dbFile.isEmpty())
+    {
+      dbFile =
+        CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
+                                          QString::null, "COPASI Parameter Sets (*.cpmp)",
+                                          "Choose a file");
+    }
+
+  if (!dbFile.isEmpty())
+    {
+      mpDataModelGUI->loadModelParameterSets(TO_UTF8(dbFile));
+    }
+}
+
+
 QToolBar *CopasiUI3Window::createToolBar()
 {
   QToolBar *tb = addToolBar("MainToolBar");
@@ -627,6 +687,9 @@ void CopasiUI3Window::createMenuBar()
   pFileMenu->addSeparator();
   pFileMenu->addAction(mpaFunctionDBLoad);
   pFileMenu->addAction(mpaFunctionDBSave);
+  pFileMenu->addSeparator();
+  pFileMenu->addAction(mpaParameterSetsLoad);
+  pFileMenu->addAction(mpaParameterSetsSave);
   pFileMenu->addSeparator();
   mpMenuRecentFiles = pFileMenu->addMenu("Recent Files");
   refreshRecentFileMenu();
@@ -2349,11 +2412,11 @@ void CopasiUI3Window::slotActivateWindowTriggered(QAction *action)
   QMainWindow *window = getWindowForAction(mWindows, action);
 
   if (window != NULL)
-  {
-    window ->setWindowState( (windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
-    window ->raise(); // necessary for macOS
-    window ->activateWindow();
-  }
+    {
+      window ->setWindowState((windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+      window ->raise(); // necessary for macOS
+      window ->activateWindow();
+    }
 }
 
 void CopasiUI3Window::setMessageShown(const bool &shown)

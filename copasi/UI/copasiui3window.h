@@ -191,6 +191,8 @@ protected slots:
   void slotFileSaveFinished(bool success);
   void slotFunctionDBSave(QString str = QString::null);
   void slotFunctionDBLoad(QString str = QString::null);
+  void slotParameterSetsSave(QString str = QString::null);
+  void slotParameterSetsLoad(QString str = QString::null);
   void newDoc();
   void slotFilePrint();
   void slotImportSBML(QString file = QString::null);
@@ -304,6 +306,8 @@ private:
   QAction* mpaSaveAs;
   QAction* mpaFunctionDBSave;
   QAction* mpaFunctionDBLoad;
+  QAction* mpaParameterSetsSave;
+  QAction* mpaParameterSetsLoad;
   QAction* mpaImportSBML;
   QAction* mpaExportSBML;
   QAction* mpaExportODE;

@@ -393,6 +393,64 @@ bool CDataModel::loadModel(const std::string & fileName,
   return true;
 }
 
+bool CDataModel::loadModelParameterSets(const std::string & fileName,
+                                        CProcessReport* pProcessReport)
+{
+  bool wasParameterSetLoaded = false;
+  bool loaded = false;
+
+  try
+    {
+      loaded = CRootContainer::addDatamodel()->loadModel(fileName, pProcessReport, false);
+    }
+  catch (...)
+    {
+    }
+
+  auto numDatamodels = CRootContainer::getDatamodelList()->size();
+
+  if (numDatamodels == 0)
+    return false;
+
+  auto* parameterSetModel = loaded ?
+                            ((*CRootContainer::getDatamodelList())[numDatamodels - 1]).getModel() :
+                            NULL;
+
+  if (!parameterSetModel)
+    return false;
+
+  auto* pModel = getModel();
+
+  if (!pModel)
+    return false;
+
+  auto& thisSet = pModel->getModelParameterSets();
+
+  auto& loadedSet = parameterSetModel->getModelParameterSets();
+
+for (auto & set : loadedSet)
+    {
+      auto* clonedSet = new CModelParameterSet(set, pModel, true);
+      thisSet.add(clonedSet, true);
+      wasParameterSetLoaded = true;
+    }
+
+  CRootContainer::removeDatamodel(numDatamodels - 1);
+
+  return wasParameterSetLoaded;
+}
+
+bool CDataModel::saveModelParameterSets(const std::string & fileName)
+{
+  CCopasiXML XML;
+  XML.setModel(getModel());
+  std::ofstream os(CLocaleString::fromUtf8(fileName).c_str());
+
+  if (os.fail()) return false;
+
+  return XML.saveModelParameterSets(os, fileName);
+}
+
 void CDataModel::copyExperimentalDataTo(const std::string& path)
 {
   CFitProblem* problem = dynamic_cast<CFitProblem*>((*getTaskList())[static_cast< size_t >(CTaskEnum::Task::parameterFitting)].getProblem());

@@ -176,6 +176,11 @@ public:
                  CProcessReport* pProcessReport,
                  const bool & deleteOldData = true);
 
+  bool loadModelParameterSets(const std::string & fileName,
+                              CProcessReport* pProcessReport = NULL);
+
+  bool saveModelParameterSets(const std::string & fileName);
+
   bool saveModel(const std::string & fileName,
                  CProcessReport* pProcessReport,
                  bool overwriteFile = false,

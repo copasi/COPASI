@@ -367,6 +367,19 @@ void  DataModelGUI::loadFunctionDB(const std::string & fileName)
     emit notify(ListViews::FUNCTION, ListViews::DELETE, std::string());
 }
 
+void DataModelGUI::saveModelParameterSets(const std::string & fileName)
+{
+  mpDataModel->saveModelParameterSets(fileName);
+}
+
+void DataModelGUI::loadModelParameterSets(const std::string & fileName)
+{
+  if (mpDataModel->loadModelParameterSets(fileName, mpProgressBar))
+    {
+      emit notify(ListViews::MODELPARAMETERSET, ListViews::ADD, std::string());
+    }
+}
+
 void DataModelGUI::importSBML(const std::string & fileName)
 {
   mpProgressBar = CProgressBar::create();
