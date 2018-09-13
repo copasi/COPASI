@@ -57,6 +57,7 @@
 #include "sedml/SEDMLImporter.h"
 #include "sedml/CSEDMLExporter.h"
 
+#include "model/CModelExpansion.h"
 
 #ifdef COPASI_Versioning
 # include "copasi/versioning/CModelVersionHierarchy.h"
@@ -391,6 +392,43 @@ bool CDataModel::loadModel(const std::string & fileName,
     }
 
   return true;
+}
+
+bool CDataModel::addModel(const std::string & fileName, CProcessReport * pProcessReport)
+{
+  bool result = false;
+
+  try
+    {
+      result = CRootContainer::addDatamodel()->loadModel(fileName, pProcessReport, false);
+    }
+  catch (...)
+    {
+    }
+
+  C_INT32 numDatamodels = CRootContainer::getDatamodelList()->size();
+  CModel *pModel = NULL;
+  CModel *pMergeModel = NULL;
+
+  if (numDatamodels >= 2 && result) //after loading the model to be merged there should be at least 2 datamodels...
+    {
+      //the base model is assumed to be the first one
+      pModel = getModel();
+      //the model to be merged is the last one
+      pMergeModel = (*CRootContainer::getDatamodelList())[numDatamodels - 1].getModel();
+    }
+
+  if (result && pModel && pMergeModel)
+    {
+      CModelExpansion expand(pModel);
+      mLastAddedObjects = expand.copyCompleteModel(pMergeModel);
+      CCopasiMessage::clearDeque();
+    }
+
+  if (pMergeModel)
+    CRootContainer::removeDatamodel(numDatamodels - 1);
+
+  return result;
 }
 
 bool CDataModel::loadModelParameterSets(const std::string & fileName,

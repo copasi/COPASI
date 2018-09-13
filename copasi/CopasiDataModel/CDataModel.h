@@ -176,6 +176,19 @@ public:
                  CProcessReport* pProcessReport,
                  const bool & deleteOldData = true);
 
+  /**
+   * Loads the model contained in the specified file and adds it to the
+   * current one
+   *
+   * @param fileName the copasi file to add to this model
+   * @param pProcessReport optional progress handler
+   *
+   * @return true, if a model was successfully added, false otherwise
+   */
+  bool addModel(const std::string & fileName,
+                CProcessReport* pProcessReport = NULL);
+
+
   bool loadModelParameterSets(const std::string & fileName,
                               CProcessReport* pProcessReport = NULL);
 

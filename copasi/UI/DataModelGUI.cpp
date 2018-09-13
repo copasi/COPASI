@@ -54,7 +54,6 @@
 #include "utilities/CCopasiTree.h"
 
 //#include "model/CModelMerging.h"
-#include "model/CModelExpansion.h"
 
 #define USE_LAYOUT 1
 #define USE_RENDER 1
@@ -159,38 +158,7 @@ void DataModelGUI::addModel(const std::string & fileName)
 
 void DataModelGUI::addModelRun()
 {
-  try
-    {
-      assert(CRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = CRootContainer::addDatamodel()->loadModel(mFileName, mpProgressBar, false);
-    }
-
-  catch (...)
-    {
-      mSuccess = false;
-    }
-
-  C_INT32 numDatamodels = CRootContainer::getDatamodelList()->size();
-  CModel *pModel = NULL;
-  CModel *pMergeModel = NULL;
-
-  if (numDatamodels >= 2 && mSuccess) //after loading the model to be merged there should be at least 2 datamodels...
-    {
-      //the base model is assumed to be the first one
-      pModel = mpDataModel->getModel();
-      //the model to be merged is the last one
-      pMergeModel = (*CRootContainer::getDatamodelList())[numDatamodels - 1].getModel();
-    }
-
-  if (mSuccess && pModel && pMergeModel)
-    {
-      CModelExpansion expand(pModel);
-      mpDataModel->mLastAddedObjects = expand.copyCompleteModel(pMergeModel);
-      CCopasiMessage::clearDeque();
-    }
-
-  if (pMergeModel)
-    CRootContainer::removeDatamodel(numDatamodels - 1);
+  mSuccess = mpDataModel->addModel(mFileName, mpProgressBar);
 }
 
 void DataModelGUI::addModelFinished()
