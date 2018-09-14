@@ -657,7 +657,12 @@ const CValidatedUnit & CModelParameterGroup::getObjectUnit(const CModelParameter
 
           if (pReaction->isLocalParameter(index))
             {
-              pValueReference = static_cast< CCopasiParameter * >(pModelParameter->getObject())->getValueReference();
+              CCopasiParameter *pParam = dynamic_cast<CCopasiParameter *>(pModelParameter->getObject());
+
+              if (!pParam)
+                return Default;
+
+              pValueReference = pParam->getValueReference();
             }
           else
             {
