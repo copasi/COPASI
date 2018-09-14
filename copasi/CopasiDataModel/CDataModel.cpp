@@ -58,6 +58,7 @@
 #include "sedml/CSEDMLExporter.h"
 
 #include "model/CModelExpansion.h"
+#include "model/CModelParameter.h"
 
 #ifdef COPASI_Versioning
 # include "copasi/versioning/CModelVersionHierarchy.h"
@@ -463,12 +464,20 @@ bool CDataModel::loadModelParameterSets(const std::string & fileName,
     return false;
 
   auto& thisSet = pModel->getModelParameterSets();
+  auto& thisModelsCn = pModel->getCN();
 
   auto& loadedSet = parameterSetModel->getModelParameterSets();
+  auto& loadedModelCn = parameterSetModel->getCN();
 
 for (auto & set : loadedSet)
     {
+for (auto * current : dynamic_cast<CModelParameterGroup&>(set))
+        {
+          replaceCnInGroup(current, loadedModelCn, thisModelsCn);
+        }
+
       auto* clonedSet = new CModelParameterSet(set, pModel, true);
+
       thisSet.add(clonedSet, true);
       wasParameterSetLoaded = true;
     }
@@ -476,6 +485,36 @@ for (auto & set : loadedSet)
   CRootContainer::removeDatamodel(numDatamodels - 1);
 
   return wasParameterSetLoaded;
+}
+
+
+void CDataModel::replaceCnInGroup(CModelParameter* pParam,
+                                  const std::string &oldCN, const std::string& newCN)
+{
+  CModelParameterGroup* group = dynamic_cast<CModelParameterGroup*>(pParam);
+
+  if (!group)
+    return;
+
+for (auto * element : *group)
+    {
+      CModelParameterGroup* inside = dynamic_cast<CModelParameterGroup*>(element);
+
+      if (inside)
+        {
+          replaceCnInGroup(inside, oldCN, newCN);
+        }
+
+      std::string cn = element->getCN();
+      auto start = cn.find(oldCN);
+
+      if (start == std::string::npos)
+        continue;
+
+      cn.replace(start, oldCN.length(), newCN);
+
+      element->setCN(CCommonName(cn));
+    }
 }
 
 bool CDataModel::saveModelParameterSets(const std::string & fileName)

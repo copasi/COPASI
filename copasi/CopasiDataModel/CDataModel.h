@@ -17,6 +17,7 @@
 
 class CInfo;
 class CModel;
+class CModelParameter;
 class CReportDefinition;
 class CReportDefinitionVector;
 class COutputDefinitionVector;
@@ -359,6 +360,10 @@ protected:
   void popData();
   void commonAfterLoad(CProcessReport* pProcessReport,
                        const bool & deleteOldData);
+
+  void replaceCnInGroup(CModelParameter* pParam,
+                        const std::string &oldCn, const std::string& newCN);
+
 
   // Attributes
 protected:
