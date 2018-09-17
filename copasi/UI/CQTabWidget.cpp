@@ -63,7 +63,7 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
         mpBtnNew->setText("Apply");
         mpBtnNew->setToolTip("Apply the current parameters to the model.");
 
-      // The break statement is intentionally missing
+        // The break statement is intentionally missing
 
       default:
         CQNotes* pNotes = new CQNotes(mpTabWidget);
@@ -244,7 +244,7 @@ bool CQTabWidget::save()
       CDataContainer * pParent = mpObject->getObjectParent();
 
       if (pParent != NULL &&
-          pParent->hasFlag(CDataObject::NameVector) &&
+          (mObjectType == ListViews::MODEL || pParent->hasFlag(CDataObject::NameVector)) &&
           pParent->getObject(mpObject->getObjectType() + "=" + CCommonName::escape(NewName)) == NULL)
         {
           CUndoData Data(CUndoData::Type::CHANGE, mpObject);
