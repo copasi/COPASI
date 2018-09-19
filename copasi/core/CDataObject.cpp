@@ -234,9 +234,9 @@ bool CDataObject::setObjectName(const std::string & name)
 
   if (Name == mObjectName) return true;
 
-  if (mpObjectParent &&
+  if (mpObjectParent != NULL &&
       mpObjectParent->hasFlag(NameVector) &&
-      mpObjectParent->getObject("[" + CCommonName::escape(Name) + "]"))
+      mpObjectParent->getObject("[" + CCommonName::escape(Name) + "]") != NULL)
     return false;
 
   std::string OldName = mObjectName;

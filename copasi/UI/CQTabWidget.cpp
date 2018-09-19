@@ -63,7 +63,7 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
         mpBtnNew->setText("Apply");
         mpBtnNew->setToolTip("Apply the current parameters to the model.");
 
-        // The break statement is intentionally missing
+      // The break statement is intentionally missing
 
       default:
         CQNotes* pNotes = new CQNotes(mpTabWidget);
@@ -244,14 +244,8 @@ bool CQTabWidget::save()
       CDataContainer * pParent = mpObject->getObjectParent();
 
       if (pParent != NULL &&
-          (mObjectType == ListViews::MODEL || pParent->hasFlag(CDataObject::NameVector)) &&
-          pParent->getObject(mpObject->getObjectType() + "=" + CCommonName::escape(NewName)) == NULL)
-        {
-          CUndoData Data(CUndoData::Type::CHANGE, mpObject);
-          Data.addProperty(CData::OBJECT_NAME, mpObject->getObjectName(), NewName);
-          slotNotifyChanges(mpDataModel->applyData(Data));
-        }
-      else
+          pParent->hasFlag(CDataObject::NameVector) &&
+          pParent->getObject("[" + CCommonName::escape(NewName) + "]") != NULL)
         {
           QString msg;
           msg = "Unable to rename " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]).toLower() + " '" + FROM_UTF8(mpObject->getObjectName()) + "'\n"
@@ -264,6 +258,12 @@ bool CQTabWidget::save()
 
           mpEditName->setText(FROM_UTF8(mpObject->getObjectName()));
           success = false;
+        }
+      else
+        {
+          CUndoData Data(CUndoData::Type::CHANGE, mpObject);
+          Data.addProperty(CData::OBJECT_NAME, mpObject->getObjectName(), NewName);
+          slotNotifyChanges(mpDataModel->applyData(Data));
         }
     }
 
