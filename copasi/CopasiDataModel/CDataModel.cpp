@@ -3,7 +3,6 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-
 #define USE_LAYOUT 1
 
 #include <sbml/SBMLDocument.h>
@@ -121,6 +120,7 @@ CDataModel::CDataModel(const std::string & name,
   COutputHandler(),
   mData(withGUI),
   mOldData(withGUI),
+  mpInfo(NULL),
   mTempFolders(),
   mNeedToSaveExperimentalData(false),
   pOldMetabolites(new CDataVectorS < CMetabOld >)
@@ -136,6 +136,7 @@ CDataModel::CDataModel(const CDataModel & src,
   COutputHandler(src),
   mData(src.mData),
   mOldData(src.mOldData),
+  mpInfo(NULL),
   mTempFolders(),
   mNeedToSaveExperimentalData(false),
   pOldMetabolites((src.pOldMetabolites != NULL) ? new CDataVectorS < CMetabOld >(*src.pOldMetabolites, NO_PARENT) : NULL)
@@ -162,7 +163,6 @@ CDataModel::~CDataModel()
     }
 
   mTempFolders.clear();
-
 }
 
 bool CDataModel::loadModel(std::istream & in,
@@ -446,37 +446,37 @@ bool CDataModel::loadModelParameterSets(const std::string & fileName,
     {
     }
 
-  auto numDatamodels = CRootContainer::getDatamodelList()->size();
+  size_t numDatamodels = CRootContainer::getDatamodelList()->size();
 
   if (numDatamodels == 0)
     return false;
 
-  auto* parameterSetModel = loaded ?
-                            ((*CRootContainer::getDatamodelList())[numDatamodels - 1]).getModel() :
-                            NULL;
+  CModel * parameterSetModel = loaded ?
+                               ((*CRootContainer::getDatamodelList())[numDatamodels - 1]).getModel() :
+                               NULL;
 
   if (!parameterSetModel)
     return false;
 
-  auto* pModel = getModel();
+  CModel * pModel = getModel();
 
   if (!pModel)
     return false;
 
-  auto& thisSet = pModel->getModelParameterSets();
-  auto& thisModelsCn = pModel->getCN();
+  CDataVectorN< CModelParameterSet > & thisSet = pModel->getModelParameterSets();
+  CCommonName thisModelsCn = pModel->getCN();
 
-  auto& loadedSet = parameterSetModel->getModelParameterSets();
-  auto& loadedModelCn = parameterSetModel->getCN();
+  CDataVectorN< CModelParameterSet > & loadedSet = parameterSetModel->getModelParameterSets();
+  CCommonName loadedModelCn = parameterSetModel->getCN();
 
-for (auto & set : loadedSet)
+  for (CModelParameterSet & set : loadedSet)
     {
-for (auto * current : dynamic_cast<CModelParameterGroup&>(set))
+      for (CModelParameter * current : dynamic_cast< CModelParameterGroup & >(set))
         {
           replaceCnInGroup(current, loadedModelCn, thisModelsCn);
         }
 
-      auto* clonedSet = new CModelParameterSet(set, pModel, true);
+      CModelParameterSet * clonedSet = new CModelParameterSet(set, pModel, true);
 
       thisSet.add(clonedSet, true);
       wasParameterSetLoaded = true;
@@ -487,7 +487,6 @@ for (auto * current : dynamic_cast<CModelParameterGroup&>(set))
   return wasParameterSetLoaded;
 }
 
-
 void CDataModel::replaceCnInGroup(CModelParameter* pParam,
                                   const std::string &oldCN, const std::string& newCN)
 {
@@ -496,7 +495,7 @@ void CDataModel::replaceCnInGroup(CModelParameter* pParam,
   if (!group)
     return;
 
-for (auto * element : *group)
+  for (CModelParameter * element : *group)
     {
       CModelParameterGroup* inside = dynamic_cast<CModelParameterGroup*>(element);
 
@@ -506,7 +505,7 @@ for (auto * element : *group)
         }
 
       std::string cn = element->getCN();
-      auto start = cn.find(oldCN);
+      std::string::size_type start = cn.find(oldCN);
 
       if (start == std::string::npos)
         continue;
@@ -1367,7 +1366,6 @@ bool CDataModel::exportMathModel(const std::string & fileName, CProcessReport* p
   return pExporter->exportToStream(this, os);
 }
 
-
 void
 CDataModel::addCopasiFileToArchive(CombineArchive *archive,
                                    const std::string& targetName /*= "./copasi/model.cps"*/,
@@ -2193,7 +2191,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::parameterFitting:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2222,7 +2220,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::lyap:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2239,7 +2237,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::mca:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2256,7 +2254,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::lna:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2273,7 +2271,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::sens:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2290,7 +2288,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::tssAnalysis:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2623,7 +2621,6 @@ void CDataModel::pushData()
   assert(mOldData.mpModelVersionHierarchy == NULL);
 #endif // COPASI_Versioning
 
-
   mOldData = mData;
   mData = CContent(mData.mWithGUI);
 }
@@ -2642,7 +2639,6 @@ void CDataModel::popData()
 #ifdef COPASI_Versioning
   assert(mOldData.mpModelVersionHierarchy != NULL);
 #endif  // COPASI_Versioning
-
 
   // TODO CRITICAL We need to clean up mData to avoid memory leaks.
 
