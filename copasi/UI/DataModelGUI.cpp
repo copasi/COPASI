@@ -528,7 +528,7 @@ void DataModelGUI::miriamDownloadFinished(QNetworkReply* reply)
 
   CMIRIAMResources & miriamResources = *mpMiriamResources;
 
-  if (reply != NULL && reply->error() == QNetworkReply::NoError)
+  if (reply != NULL && reply->error() == QNetworkReply::NoError && reply->bytesAvailable() > 0)
     {
       std::string filename;
       COptions::getValue("ConfigDir", filename);
@@ -548,6 +548,8 @@ void DataModelGUI::miriamDownloadFinished(QNetworkReply* reply)
     }
   else
     {
+      QString errorString = reply->errorString();
+      CCopasiMessage(CCopasiMessage::ERROR, TO_UTF8_UNTRIMMED(errorString));
       success = false;
     }
 
@@ -603,7 +605,7 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
           QString temp = QInputDialog::getText(
                            (QWidget*)((CQCopasiApplication*)qApp)->getMainWindow(),
                            QString("Enter proxy password"),
-                           QString("You specified a proxy username, but no pasword, please enter the proxy password"),
+                           QString("You specified a proxy username, but no password, please enter the proxy password"),
                            QLineEdit::Password,
                            QString(""),
                            &flag
@@ -625,7 +627,7 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
   connect(manager, SIGNAL(finished(QNetworkReply*)),
           this, SLOT(miriamDownloadFinished(QNetworkReply*)));
 
-  QNetworkReply* reply = manager->get(QNetworkRequest(QUrl("http://www.ebi.ac.uk/miriam/main/export/xml/")));
+  QNetworkReply* reply = manager->get(QNetworkRequest(QUrl("https://www.ebi.ac.uk/miriam/main/export/xml/")));
   connect(reply, SIGNAL(downloadProgress(qint64, qint64)),
           this, SLOT(miriamDownloadProgress(qint64, qint64)));
 
