@@ -71,6 +71,8 @@ Source: {#MyStageDir}\bin\32\d3dcompiler_47.dll; DestDir: {app}\bin; Check: IsWi
 Source: {#MyStageDir}\bin\32\libEGL.dll; DestDir: {app}\bin; Check: IsWin32();
 Source: {#MyStageDir}\bin\32\libGLESV2.dll; DestDir: {app}\bin; Check: IsWin32();
 Source: {#MyStageDir}\bin\32\opengl32sw.dll; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\libeay32.dll; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\ssleay32.dll; DestDir: {app}\bin; Check: IsWin32();
 Source: {#MyStageDir}\bin\32\bearer\qgenericbearer.dll; DestDir: {app}\bin\bearer; Check: IsWin32();
 Source: {#MyStageDir}\bin\32\iconengines\qsvgicon.dll; DestDir: {app}\bin\iconengines; Check: IsWin32();
 Source: {#MyStageDir}\bin\32\imageformats\qgif.dll; DestDir: {app}\bin\imageformats; Check: IsWin32();
@@ -106,6 +108,8 @@ Source: {#MyStageDir}\bin\64\d3dcompiler_47.dll; DestDir: {app}\bin; Check: IsWi
 Source: {#MyStageDir}\bin\64\libEGL.dll; DestDir: {app}\bin; Check: IsWin64();
 Source: {#MyStageDir}\bin\64\libGLESV2.dll; DestDir: {app}\bin; Check: IsWin64();
 Source: {#MyStageDir}\bin\64\opengl32sw.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\libeay32.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\ssleay32.dll; DestDir: {app}\bin; Check: IsWin64();
 Source: {#MyStageDir}\bin\64\bearer\qgenericbearer.dll; DestDir: {app}\bin\bearer; Check: IsWin64();
 Source: {#MyStageDir}\bin\64\iconengines\qsvgicon.dll; DestDir: {app}\bin\iconengines; Check: IsWin64();
 Source: {#MyStageDir}\bin\64\imageformats\qgif.dll; DestDir: {app}\bin\imageformats; Check: IsWin64();
