@@ -1,4 +1,4 @@
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,9 +49,6 @@ public:
 
   std::vector<CDataObject*> getVariablesPointerList(CDataModel* pDataModel);
 
-  int getOrder() const;
-  void setOrder(int order);
-
   //size_t dimensionality() const;
 
   bool operator==(const CSensItem & rhs) const;
@@ -62,7 +59,6 @@ public:
 private:
   CCommonName mSingleObjectCN;
   CObjectLists::ListType mListType;
-  int mOrder;
 };
 
 //****************************************************************
@@ -131,7 +127,6 @@ public:
 
   size_t getNumberOfVariables() const;
   CSensItem getVariables(size_t index) const;
-  CSensItem getVariablesByOrder(size_t index) const;
 
   void addVariables(const CSensItem & item);
 
@@ -161,8 +156,8 @@ public:
 
   /**
    * This is the output method for any result of a problem. The default implementation
-   * provided with CCopasiProblem. Does only print "Not implemented." To override this
-   * default behavior one needs to re implement the virtual printResult function.
+   * provided with CCopasiProblem. Does only print "Not implemented." To overide this
+   * default behaviour one needs to reimplement the virtual printResult function.
    * @param std::ostream * ostream
    */
   virtual void printResult(std::ostream * ostream) const;
@@ -192,9 +187,9 @@ private:
   /**
    *  create the copasi parameters corresponding to the members of a CSensItem
    */
-  static void createParametersInGroup(CCopasiParameterGroup *pg, C_INT32 order = -1);
+  static void createParametersInGroup(CCopasiParameterGroup *pg);
 
-  static void copySensItemToParameterGroup(const CSensItem * si, CCopasiParameterGroup *pg, C_INT32 order = -1);
+  static void copySensItemToParameterGroup(const CSensItem * si, CCopasiParameterGroup *pg);
 
   static void copyParameterGroupToSensItem(const CCopasiParameterGroup *pg, CSensItem * si);
 

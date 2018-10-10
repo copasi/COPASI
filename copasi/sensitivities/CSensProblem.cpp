@@ -1,4 +1,4 @@
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,7 +27,6 @@
 CSensItem::CSensItem()
   : mSingleObjectCN(),
     mListType(CObjectLists::SINGLE_OBJECT)
-    , mOrder(-1)
 {}
 
 bool CSensItem::isSingleObject() const
@@ -115,16 +114,6 @@ std::vector<CDataObject*> CSensItem::getVariablesPointerList(CDataModel* pDataMo
   return ret;
 }
 
-int CSensItem::getOrder() const
-{
-  return mOrder;
-}
-
-void CSensItem::setOrder(int order)
-{
-  mOrder = order;
-}
-
 // size_t CSensItem::dimensionality() const
 // {
 //}
@@ -156,51 +145,36 @@ const char * CSensProblem::XMLSubTask[] =
 };
 
 //static
-void CSensProblem::createParametersInGroup(CCopasiParameterGroup *pg, C_INT32 order)
+void CSensProblem::createParametersInGroup(CCopasiParameterGroup *pg)
 {
   if (!pg) return;
 
   pg->assertParameter("SingleObject", CCopasiParameter::Type::CN, CCommonName(""));
   pg->assertParameter("ObjectListType", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
-  pg->assertParameter("Order", CCopasiParameter::Type::INT, (C_INT32) order);
 }
 
 //static
-void CSensProblem::copySensItemToParameterGroup(const CSensItem * si, CCopasiParameterGroup *pg, C_INT32 order)
+void CSensProblem::copySensItemToParameterGroup(const CSensItem * si, CCopasiParameterGroup *pg)
 {
   CCommonName cn("");
 
-  if (!pg) return;
-
-  if (!si) return;
+  if (!pg) return; if (!si) return;
 
   if (si->isSingleObject())
     cn = si->getSingleObjectCN();
 
   pg->setValue("SingleObject", cn);
   pg->setValue("ObjectListType", (unsigned C_INT32)si->getListType());
-
-  if (pg->getParameter("Order") == NULL)
-    return;
-
-  if (si->getOrder() != -1)
-    pg->setValue("Order", (C_INT32)si->getOrder());
-
-  if (order != -1)
-    pg->setValue("Order", (C_INT32)order);
 }
 
 //static
 void CSensProblem::copyParameterGroupToSensItem(const CCopasiParameterGroup *pg, CSensItem * si)
 {
 
-  if (!pg) return;
+  if (!pg) return; if (!si) return;
 
-  if (!si) return;
-
-  const CCommonName * pCN = pg->getParameter("SingleObject") == NULL ? NULL : &pg->getValue< CCommonName >("SingleObject");
-  const CObjectLists::ListType* pLT = pg->getParameter("ObjectListType") == NULL ? NULL : &pg->getValue< CObjectLists::ListType >("ObjectListType");
-  const int* pOrder =  pg->getParameter("Order") == NULL ? NULL :  &pg->getValue< C_INT32 >("Order");
+  const CCommonName * pCN = &pg->getValue< CCommonName >("SingleObject");
+  const CObjectLists::ListType* pLT = &pg->getValue< CObjectLists::ListType >("ObjectListType");
 
   CCommonName cn("");
 
@@ -210,15 +184,10 @@ void CSensProblem::copyParameterGroupToSensItem(const CCopasiParameterGroup *pg,
 
   if (pLT) lt = *pLT;
 
-  int order = -1;
-
-  if (pOrder) order = *pOrder;
-
   //  if (cn != "")
   si->setSingleObjectCN(cn);
   //  else
   si->setListType(lt);
-  si->setOrder(order);
 }
 
 /**
@@ -244,21 +213,10 @@ CSensProblem::CSensProblem(const CDataContainer * pParent):
   setTargetFunctions(item);
 
   item.setListType(CObjectLists::ALL_PARAMETER_VALUES);
-  item.setOrder(0);
   addVariables(item);
 
   item.setListType(CObjectLists::EMPTY_LIST);
-  item.setOrder(1);
   addVariables(item);
-
-  // test
-  auto cause1 = getVariablesByOrder(0);
-  assert(cause1.getListType() == CObjectLists::ALL_PARAMETER_VALUES);
-
-  auto cause2 = getVariablesByOrder(1);
-  assert(cause2.getListType() == CObjectLists::EMPTY_LIST);
-
-
 }
 
 /**
@@ -361,49 +319,16 @@ CSensItem CSensProblem::getVariables(size_t index) const
   return ret;
 }
 
-CSensItem CSensProblem::getVariablesByOrder(size_t index) const
-{
-  CSensItem ret;
-  CCopasiParameterGroup* tmp = NULL;
-
-  for (auto it = mpVariablesGroup->beginIndex(); it != mpVariablesGroup->endIndex(); ++it)
-    {
-      tmp = dynamic_cast<CCopasiParameterGroup*>(*it);
-
-      if (tmp == NULL)
-        continue;
-
-      auto* param = tmp->getParameter("Order");
-
-      if (param == NULL)
-        continue;
-
-      if (param->getValue<C_INT32>() == index)
-        {
-          copyParameterGroupToSensItem(tmp, &ret);
-          return ret;
-        }
-    }
-
-  // fall back
-  return getVariables(index);
-}
-
 void CSensProblem::addVariables(const CSensItem & item)
 {
   //create parameter group corresponding to sens item
-  int numVariables = (int)getNumberOfVariables();
   CCopasiParameterGroup* tmp;
   mpVariablesGroup->addGroup("Variables");
-  tmp = (CCopasiParameterGroup*)(mpVariablesGroup->getParameter(numVariables));
+  tmp = (CCopasiParameterGroup*)(mpVariablesGroup->getParameter(getNumberOfVariables() - 1));
 
   createParametersInGroup(tmp);
 
-  if (tmp != NULL && item.getOrder() == -1)
-    tmp->setValue<C_INT32>("Order", numVariables);
-
   copySensItemToParameterGroup(&item, tmp);
-
 }
 
 bool CSensProblem::removeVariables()
@@ -430,7 +355,7 @@ bool CSensProblem::changeVariables(size_t index, const CSensItem & item)
     {
       CCopasiParameterGroup * tmp =
         (CCopasiParameterGroup *)(mpVariablesGroup->getParameter(index));
-      copySensItemToParameterGroup(&item, tmp, index);
+      copySensItemToParameterGroup(&item, tmp);
     }
 
   return true;
