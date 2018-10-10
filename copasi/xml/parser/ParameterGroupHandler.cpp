@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -154,6 +154,21 @@ bool ParameterGroupHandler::processEnd(const XML_Char * pszName)
         }
       else
         {
+
+
+          if (
+            mpData->pCurrentTask != NULL &&
+            mpData->pCurrentTask->getType() == CTaskEnum::Task::sens &&
+            mpData->pCurrentParameter->getObjectName() == "Variables")
+            {
+              auto* current = dynamic_cast<CCopasiParameterGroup*>(mpData->pCurrentParameter);
+
+              if (current != NULL)
+                {
+                  current->assertParameter("Order", CCopasiParameter::Type::INT, (C_INT32)mParameterGroupStack.top()->size());
+                }
+            }
+
           mParameterGroupStack.top()->addParameter(mpData->pCurrentParameter);
           mpData->pCurrentParameter = NULL;
         }

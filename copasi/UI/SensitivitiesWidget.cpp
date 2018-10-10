@@ -239,7 +239,7 @@ bool SensitivitiesWidget::loadTaskProtected()
   //variables 1
   if (problem->getNumberOfVariables() > 0)
     {
-      tmp = problem->getVariables(0);
+      tmp = problem->getVariablesByOrder(0);
 
       if (tmp.isSingleObject())
         {
@@ -261,7 +261,7 @@ bool SensitivitiesWidget::loadTaskProtected()
   //variables 2
   if (problem->getNumberOfVariables() > 1)
     {
-      tmp = problem->getVariables(1);
+      tmp = problem->getVariablesByOrder(1);
 
       if (tmp.isSingleObject())
         {
