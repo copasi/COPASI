@@ -25,6 +25,7 @@
 #include "tssanalysis/CTSSATask.h"
 #include "moieties/CMoietiesTask.h"
 #include "crosssection/CCrossSectionTask.h"
+#include "timesens/CTimeSensTask.h"
 
 #ifdef WITH_ANALYTICS
 # include "analytics/CAnalyticsTask.h"
@@ -95,6 +96,11 @@ CCopasiTask * CTaskFactory::createTask(const CTaskEnum::Task & type, const CData
         pTask = new CAnalyticsTask(pParent);
         break;
 #endif // WITH_ANALYTICS
+
+      case CTaskEnum::Task::timeSens:
+        pTask = new CTimeSensTask(pParent);
+        break;
+
 
       default:
         break;

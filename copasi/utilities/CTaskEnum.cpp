@@ -26,6 +26,7 @@ const CEnumAnnotation< std::string, CTaskEnum::Task > CTaskEnum::TaskName(
   "Cross Section",
   "Linear Noise Approximation",
   "Analytics",
+  "Time-Course Sensitivities",
   "not specified"
 });
 
@@ -45,6 +46,7 @@ const CEnumAnnotation< std::string, CTaskEnum::Task > CTaskEnum::TaskXML(
   "crosssection",
   "linearNoiseApproximation",
   "analytics",
+  "timeSensitivities",
   "unset"
 });
 
@@ -99,7 +101,8 @@ const CEnumAnnotation< std::string, CTaskEnum::Method > CTaskEnum::MethodName(
   "Householder Reduction",
   "Cross Section Finder",
   "Linear Noise Approximation",
-  "Analytics Finder"
+  "Analytics Finder",
+  "LSODA Sensitivities"
 });
 
 const CEnumAnnotation< std::string, CTaskEnum::Method > CTaskEnum::MethodXML(
@@ -153,5 +156,6 @@ const CEnumAnnotation< std::string, CTaskEnum::Method > CTaskEnum::MethodXML(
   "Householder",
   "crossSectionMethod",
   "LinearNoiseApproximation",
-  "analyticsMethod"
+  "analyticsMethod",
+  "Sensitivities(LSODA)"
 });

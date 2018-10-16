@@ -81,6 +81,7 @@
 #include "tssanalysis/CCSPMethod.h"
 #include "tssanalysis/CILDMMethod.h"
 #include "tssanalysis/CILDMModifiedMethod.h"
+#include "timesens/CTimeSensLsodaMethod.h"
 // #include "tssanalysis/CTSSAMethod.h"
 
 //static
@@ -271,7 +272,11 @@ CCopasiMethod * CCopasiMethod::createMethod(const CDataContainer * pParent,
       case CTaskEnum::Method::linearNoiseApproximation:
         pMethod = new CLNAMethod(pParent, methodType, taskType);
         break;
-    }
+      
+      case CTaskEnum::Method::timeSensLsoda:
+        pMethod = new CTimeSensLsodaMethod(pParent, methodType, taskType);
+        break;
+   }
 
   return pMethod;
 }

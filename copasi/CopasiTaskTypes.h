@@ -87,4 +87,9 @@
 #include <copasi/tssanalysis/CTSSAProblem.h>
 #include <copasi/tssanalysis/CTSSAMethod.h>
 
+#include <copasi/timesens/CTimeSensTask.h>
+#include <copasi/timesens/CTimeSensProblem.h>
+#include <copasi/timesens/CTimeSensMethod.h>
+
+
 #endif // COPASI_TASK_TYPES_H

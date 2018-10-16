@@ -37,6 +37,7 @@ public:
     crosssection,
     lna,
     analytics,
+    timeSens,
     UnsetTask,
     __SIZE
   };
@@ -107,6 +108,7 @@ public:
     crossSectionMethod,
     linearNoiseApproximation,
     analyticsMethod,
+    timeSensLsoda,
     __SIZE
   };
 
