@@ -36,6 +36,27 @@
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 
+
+//this constructor is only used by derived classes to provide a different task type
+CTrajectoryProblem::CTrajectoryProblem(const CTaskEnum::Task & type,
+                 const CDataContainer * pParent):
+  CCopasiProblem(type, pParent),
+  mpAutomaticStepSize(NULL),
+  mpDuration(NULL),
+  mpStepSize(NULL),
+  mpStepNumber(NULL),
+  mpTimeSeriesRequested(NULL),
+  mpOutputStartTime(NULL),
+  mpOutputEvent(NULL),
+  mpStartInSteadyState(NULL),
+  mStepNumberSetLast(true)
+{
+  initializeParameter();
+  initObjects();
+  CONSTRUCTOR_TRACE;
+}
+
+
 /**
  *  Default constructor.
  */

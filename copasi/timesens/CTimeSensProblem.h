@@ -28,10 +28,9 @@
 
 #include <string>
 
-#include "utilities/CCopasiProblem.h"
-#include "utilities/CReadConfig.h"
+#include "trajectory/CTrajectoryProblem.h"
 
-class CTimeSensProblem : public CCopasiProblem
+class CTimeSensProblem : public CTrajectoryProblem
 {
 protected:
   CTimeSensProblem(const CTimeSensProblem & src);
@@ -64,92 +63,6 @@ public:
    * @return bool success
    */
   virtual bool elevateChildren();
-
-  /**
-   * Set the number of time steps the time sensitivities method should integrate.
-   * @param "const unsigned C_INT32 &" stepNumber
-   * @parem bool success
-   */
-  void setStepNumber(const unsigned C_INT32 & stepNumber);
-
-  /**
-   * Retrieve the number of time steps the time sensitivities method should integrate.
-   * @return "const unsigned C_INT32 &" stepNumber
-   */
-  const unsigned C_INT32 & getStepNumber() const;
-
-  /**
-   * Set the size a integration step the time sensitivities method should do.
-   * @param "const C_FLOAT64 &" stepSize
-   */
-  void setStepSize(const C_FLOAT64 & stepSize);
-
-  /**
-   * Retrieve the size a integration step the time sensitivities method should do.
-   * @return const bool & automaticStepSize
-   */
-  const bool & getAutomaticStepSize() const;
-
-  /**
-   * Set the size a integration step the time sensitivities method should do.
-   * @param const bool & automaticStepSize
-   */
-  void setAutomaticStepSize(const bool & automaticStepSize);
-
-  /**
-   * Retrieve the size a integration step the time sensitivities method should do.
-   * @return "const C_FLOAT64 &" stepSize
-   */
-  const C_FLOAT64 & getStepSize() const;
-
-  /**
-   * Set the end time.
-   * @param "const C_FLOAT64 &" duration
-   * @parem bool success
-   */
-  void setDuration(const C_FLOAT64 & duration);
-
-  /**
-   * Retrieve the end time.
-   * @return "const C_FLOAT64 &" duration
-   */
-  const C_FLOAT64 & getDuration() const;
-
-  /**
-   * Set the end time.
-   * @param "const C_FLOAT64 &" endTime
-   */
-  void setOutputStartTime(const C_FLOAT64 & endTime);
-
-  /**
-   * Retrieve the end time.
-   * @return "const C_FLOAT64 &" endTime
-   */
-  const C_FLOAT64 & getOutputStartTime() const;
-
-  /**
-   *.
-   */
-  void setTimeSeriesRequested(bool flag);
-
-  /**
-   *
-   */
-  bool timeSeriesRequested() const;
-
-  /**
-   * Set whether to output events in addition to the normal steps
-   * @param const bool & outputEvent
-   */
-  void setOutputEvent(const bool & outputEvent);
-
-  /**
-   * Retrieve whether to do additional output for events.
-   */
-  const bool & getOutputEvent() const;
-
-  void setStartInSteadyState(bool flag);
-  bool getStartInSteadyState() const;
 
 private:
   /**

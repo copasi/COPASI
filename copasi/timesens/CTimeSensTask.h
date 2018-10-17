@@ -31,7 +31,6 @@
 
 //#include "timesens/CTimeSensMethod.h"
 #include "utilities/CCopasiTask.h"
-#include "utilities/CReadConfig.h"
 #include "trajectory/CTimeSeries.h"
 
 class CTimeSensProblem;

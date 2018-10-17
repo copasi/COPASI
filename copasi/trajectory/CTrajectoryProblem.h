@@ -38,6 +38,14 @@ class CTrajectoryProblem : public CCopasiProblem
 protected:
   CTrajectoryProblem(const CTrajectoryProblem & src);
 
+  /**
+   * Specific constructor
+   *  can be used to specify a different task type.
+   *  only to be used by derived classes
+   */
+  CTrajectoryProblem(const CTaskEnum::Task & type,
+                 const CDataContainer * pParent);
+
 public:
   // Operations
 
