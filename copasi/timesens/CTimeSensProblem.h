@@ -151,14 +151,6 @@ public:
   void setStartInSteadyState(bool flag);
   bool getStartInSteadyState() const;
 
-  /**
-   * Load a trajectory problem
-   * @param "CReadConfig &" configBuffer
-   * @param "CReadConfig::Mode mode (Default: CReadConfig::NEXT)
-   */
-  void load(CReadConfig & configBuffer,
-            CReadConfig::Mode mode = CReadConfig::NEXT);
-
 private:
   /**
    * Initialize the method parameter

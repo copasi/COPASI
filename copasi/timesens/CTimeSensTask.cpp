@@ -131,23 +131,6 @@ CTimeSensTask::~CTimeSensTask()
 void CTimeSensTask::cleanup()
 {}
 
-void CTimeSensTask::load(CReadConfig & configBuffer)
-{
-  configBuffer.getVariable("Dynamics", "bool", &mScheduled,
-                           CReadConfig::LOOP);
-
-  pdelete(mpProblem);
-  mpProblem = new CTimeSensProblem(this);
-  ((CTimeSensProblem *) mpProblem)->load(configBuffer);
-
-  pdelete(mpMethod);
-  mpMethod = createMethod(CTaskEnum::Method::timeSensLsoda);
-
-  mUpdateMoieties = static_cast< CTimeSensMethod * >(mpMethod)->integrateReducedModel();
-
-  ((CTimeSensMethod *)mpMethod)->setProblem((CTimeSensProblem *) mpProblem);
-}
-
 bool CTimeSensTask::initialize(const OutputFlag & of,
                                  COutputHandler * pOutputHandler,
                                  std::ostream * pOstream)

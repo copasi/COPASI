@@ -122,13 +122,6 @@ public:
 #endif
 
   /**
-   * Loads parameters for this solver with data coming from a
-   * CReadConfig object. (CReadConfig object reads an input stream)
-   * @param configbuffer reference to a CReadConfig object.
-   */
-  void load(CReadConfig & configBuffer);
-
-  /**
    * gets a reference to the time series
    * @return time series
    */

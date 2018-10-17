@@ -202,25 +202,6 @@ void CTimeSensProblem::setOutputEvent(const bool & outputEvent)
 const bool & CTimeSensProblem::getOutputEvent() const
 {return *mpOutputEvent;}
 
-/**
- * Load a trajectory problem
- * @param "CReadConfig &" configBuffer
- */
-void CTimeSensProblem::load(CReadConfig & configBuffer,
-                              CReadConfig::Mode C_UNUSED(mode))
-{
-  if (configBuffer.getVersion() < "4.0")
-    {
-      configBuffer.getVariable("EndTime", "C_FLOAT64",
-                               mpDuration,
-                               CReadConfig::LOOP);
-      configBuffer.getVariable("Points", "C_INT32",
-                               mpStepNumber);
-      mStepNumberSetLast = true;
-
-      sync();
-    }
-}
 
 /**
  * This function synchronizes step size and number
