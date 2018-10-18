@@ -539,6 +539,10 @@ endif ()
 option (ENABLE_USE_SBMLUNIT "Enables extended unit support." OFF)
 mark_as_advanced(ENABLE_USE_SBMLUNIT)
 
+option (ENABLE_TIME_SENS "Enables Time Sensitivities task in UI." OFF)
+mark_as_advanced(ENABLE_TIME_SENS)
+
+
 #Option for the COPASI support for Provenance Framework currently being developed by Peyman
 option (ENABLE_PROVENANCE "Enables Provenance support." OFF)
 mark_as_advanced(ENABLE_PROVENANCE)

@@ -42,6 +42,7 @@
 #cmakedefine COPASI_SBW_INTEGRATION
 #cmakedefine COPASI_BANDED_GRAPH 1
 #cmakedefine WITH_ANALYTICS
+#cmakedefine WITH_TIME_SENS
 #cmakedefine QT5_USE_WEBENGINE
 #cmakedefine QT_USE_TEXTBROWSER
 #cmakedefine HAVE_MML

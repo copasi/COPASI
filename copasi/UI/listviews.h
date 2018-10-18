@@ -81,6 +81,10 @@ class CQCrossSectionTaskWidget;
 class CQAnalyticsWidget;
 #endif // WITH_ANALYTICS
 
+#ifdef WITH_TIME_SENS
+class CQTimeSensWidget;
+#endif //WITH_TIME_SENS
+
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 class CQOscillationTaskWidget;
 #endif
@@ -200,6 +204,10 @@ public:
   CQAnalyticsWidget* getAnalyticsWidget();
 #endif // WITH_ANALYTICS
 
+#ifdef WITH_TIME_SENS
+  CQTimeSensWidget* getTimeSensWidget();
+#endif // WITH_TIME_SENS
+
 signals:
   void signalFolderChanged(const QModelIndex & index);
   void signalResetCache();
@@ -290,6 +298,13 @@ private:
   CQAnalyticsWidget *analyticsWidget;
   CQTimeSeriesWidget *analyticsResultWidget;
 #endif // WITH_ANALYTICS
+
+#ifdef WITH_TIME_SENS
+  CQTimeSensWidget *timeSensWidget;
+  CQTimeSeriesWidget *timeSensResultWidget;
+#endif // WITH_TIME_SENS
+
+
 
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   CQOscillationTaskWidget *oscillationTaskWidget;

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -112,6 +112,10 @@
 #ifdef WITH_ANALYTICS
 # include "CQAnalyticsWidget.h"
 #endif // WITH_ANALYTICS
+
+#ifdef WITH_TIME_SENS
+# include "CQTimeSensWidget.h"
+#endif // WITH_TIME_SENS
 
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 #include "CQOscillationTaskWidget.h"
@@ -270,6 +274,10 @@ ListViews::ListViews(QWidget *parent,
   analyticsWidget(NULL),
   analyticsResultWidget(NULL),
 #endif // WITH_ANALYTICS
+#ifdef WITH_TIME_SENS
+  timeSensWidget(NULL),
+  timeSensResultWidget(NULL),
+#endif // WITH_TIME_SENS
 
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   oscillationTaskWidget(NULL),
@@ -668,6 +676,22 @@ void ListViews::ConstructNodeWidgets()
 
 #endif // WITH_ANALYTICS
 
+#ifdef WITH_TIME_SENS
+
+  if (!timeSensResultWidget)
+    {
+      timeSensResultWidget = new CQTimeSeriesWidget(this);
+      mpStackedWidget->addWidget(timeSensResultWidget);
+    }
+
+  if (!timeSensWidget)
+    {
+      timeSensWidget = new CQTimeSensWidget(this);
+      mpStackedWidget->addWidget(timeSensWidget);
+    }
+
+#endif // WITH_TIME_SENS
+
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 
   if (!oscillationTaskWidget)
@@ -914,6 +938,18 @@ CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
         break;
 #endif // WITH_ANALYTICS
 
+#ifdef WITH_TIME_SENS
+
+      case 37:
+        return timeSensWidget;
+        break;
+
+      case 371:
+        return timeSensResultWidget;
+        break;
+#endif // WITH_TIME_SENS
+
+
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 
       case 36:
@@ -1066,10 +1102,10 @@ size_t ListViews::getCurrentItemId()
 
 bool ListViews::slotNotify(ObjectType objectType, Action action, const CCommonName & cn)
 {
-  if (objectType != MODEL 
-      && objectType != STATE 
-      //&&  action != ADD 
-    )
+  if (objectType != MODEL
+      && objectType != STATE
+      //&&  action != ADD
+     )
     {
       assert(mpDataModel != NULL);
       mpDataModel->changed();
@@ -1221,3 +1257,10 @@ CQCrossSectionTaskWidget* ListViews::getCrossSectionWidget()
 {
   return crossSectionTaskWidget;
 }
+
+#ifdef WITH_TIME_SENS
+CQTimeSensWidget* ListViews::getTimeSensWidget()
+{
+  return timeSensWidget;
+}
+#endif // WITH_TIME_SENS

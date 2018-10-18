@@ -373,6 +373,11 @@ void CQBrowserPaneDM::load()
   updateNode(findNodeFromId(29), mpCopasiDM->getTaskList()->operator[]("Analytics").getCN());
 #endif // WITH_ANALYTICS
 
+#ifdef WITH_TIME_SENS
+  updateNode(findNodeFromId(37), mpCopasiDM->getTaskList()->operator[]("Time-Course Sensitivities").getCN());
+#endif // WITH_TIME_SENS
+
+
   updateNode(findNodeFromId(31), mpCopasiDM->getTaskList()->operator[]("Scan").getCN());
   updateNode(findNodeFromId(32), mpCopasiDM->getTaskList()->operator[]("Optimization").getCN());
   updateNode(findNodeFromId(33), mpCopasiDM->getTaskList()->operator[]("Parameter Estimation").getCN());

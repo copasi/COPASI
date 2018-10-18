@@ -149,6 +149,11 @@ endif(EXTRA_MOC_OPTIONS)
 ###############################################################################
 # convert options for config file
 
+  if(ENABLE_TIME_SENS)
+    set(WITH_TIME_SENS 1)
+    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DWITH_TIME_SENS=1)
+  endif(ENABLE_TIME_SENS)
+
   if(ENABLE_VERSIONING)
     set(COPASI_Versioning 1)
     set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_Versioning=1)

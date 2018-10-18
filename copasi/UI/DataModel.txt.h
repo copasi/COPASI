@@ -1,3 +1,8 @@
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -54,6 +59,10 @@ static char DataModeltxt[] =
   "2:29:Analytics\n"
   "29:291:Result\n"
 #endif // WITH_ANALYTICS
+#ifdef WITH_TIME_SENS
+  "2:37:Time-Course Sensitivities\n"
+  "37:371:Result\n"
+#endif // WITH_TIME_SENS
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   "2:36:Oscillation\n"
 #endif
