@@ -36,6 +36,9 @@ public slots:
   void slotOutputDelay(bool checked);
   void slotAutomaticIntervals(bool checked);
 
+  void slotAddParameter();
+  void slotRemoveParameter();
+
 protected:
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   virtual bool saveTaskProtected();

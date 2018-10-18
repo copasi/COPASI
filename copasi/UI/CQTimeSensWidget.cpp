@@ -25,6 +25,9 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
+#include "CCopasiSelectionDialog.h"
+#include "copasi/resourcesUI/CQIconResource.h"
+
 /*
  *  Constructs a CQTimeSensWidget which is a child of 'parent', with the
  *  name 'name'.'
@@ -33,6 +36,9 @@ CQTimeSensWidget::CQTimeSensWidget(QWidget* parent, const char* name)
   : TaskWidget(parent, name)
 {
   setupUi(this);
+
+  mpCmdAdd->setIcon(CQIconResource::icon(CQIconResource::editAdd));
+  mpCmdRemove->setIcon(CQIconResource::icon(CQIconResource::editDelete));
 
   init();
 }
@@ -475,3 +481,31 @@ void CQTimeSensWidget::showUnits()
   mpLblIntegrationInterval->setText("Integration Interval" + TimeUnits);
   mpLblOutputInterval->setText("Output Interval" + TimeUnits);
 }
+
+
+void CQTimeSensWidget::slotAddParameter()
+{
+  std::vector< const CDataObject * > selection =
+    CCopasiSelectionDialog::getObjectVector(this, CQSimpleSelectionTree::Parameters);
+
+for (const CDataObject * item : selection)
+    {
+      if (mpListParameters->findItems(FROM_UTF8(item->getObjectDisplayName()), Qt::MatchExactly).empty())
+        mpListParameters->addItem(FROM_UTF8(item->getObjectDisplayName()));
+    }
+
+}
+
+void CQTimeSensWidget::slotRemoveParameter()
+{
+  QModelIndexList items = mpListParameters->selectionModel()->selectedIndexes();
+  QModelIndexList::reverse_iterator it = items.rbegin();
+  QModelIndexList::reverse_iterator end = items.rend();
+
+  for (; it != end; ++it)
+    {
+      QListWidgetItem* item = mpListParameters->takeItem(it->row());
+      pdelete(item);
+    }
+}
+
