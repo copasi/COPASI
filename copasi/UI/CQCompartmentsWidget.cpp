@@ -129,6 +129,7 @@ bool CQCompartmentsWidget::updateProtected(ListViews::ObjectType objectType, Lis
     }
 
   if (objectType == ListViews::MODEL ||
+      objectType == ListViews::STATE ||
       objectType == ListViews::COMPARTMENT)
     {
       enterProtected();
