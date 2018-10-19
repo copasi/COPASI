@@ -129,6 +129,7 @@ bool CQGlobalQuantitiesWidget::updateProtected(ListViews::ObjectType objectType,
     }
 
   if (objectType == ListViews::MODEL ||
+      objectType == ListViews::STATE ||
       objectType == ListViews::MODELVALUE)
     {
       enterProtected();
