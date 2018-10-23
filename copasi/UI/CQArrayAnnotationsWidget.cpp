@@ -201,7 +201,7 @@ void CQArrayAnnotationsWidget::setArrayAnnotation(const CDataArray * pArray)
 
   // No practical use in allowing
   // axes swap when 2 or 1 . . .
-  if (Items.size() < 2)
+  if (Items.size() < 3)
     {
       mpComboRows->setEnabled(false);
       mpComboColumns->setEnabled(false);
