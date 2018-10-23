@@ -523,16 +523,8 @@ void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
 
 void ReactionsWidget1::slotGotoFunction()
 {
-  CReaction * pReaction =
-    dynamic_cast< CReaction * >(mpObject);
-
-  if (pReaction == NULL) return;
-
-  const CFunction * pFunc = pReaction->getFunction();
-
-  if (pFunc == NULL) return;
-
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, pFunc->getCN());
+  if (mpRi == NULL) return;
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, mpRi->getFunction().getCN());
 }
 
 void ReactionsWidget1::slotNewFunction()
