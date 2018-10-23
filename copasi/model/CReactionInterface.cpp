@@ -215,7 +215,12 @@ bool CReactionInterface::loadMappingAndValues()
               case CFunctionParameter::Role::SUBSTRATE:
               case CFunctionParameter::Role::PRODUCT:
               case CFunctionParameter::Role::MODIFIER:
-                metabName = CMetabNameInterface::getDisplayName(mpModel, *dynamic_cast< const CMetab * >(it->at(0)), true);
+                pObj = dynamic_cast<const CMetab *>(it->at(0));
+
+                if (!pObj)
+                  break;
+
+                metabName = CMetabNameInterface::getDisplayName(mpModel, *dynamic_cast<const CMetab *>(pObj), true);
                 // assert(metabName != emptyString);
                 SubList[0] = metabName;
                 //TODO: check if the metabolite is in the chemical equation with the correct rule
@@ -223,13 +228,19 @@ bool CReactionInterface::loadMappingAndValues()
 
               case CFunctionParameter::Role::VOLUME:
                 pObj = dynamic_cast<const CCompartment*>(it->at(0));
-                assert(pObj);
+
+                if (!pObj)
+                  break;
+
                 SubList[0] = pObj->getObjectName();
                 break;
 
               case CFunctionParameter::Role::TIME:
                 pObj = dynamic_cast<const CModel*>(it->at(0));
-                assert(pObj);
+
+                if (!pObj)
+                  break;
+
                 SubList[0] = pObj->getObjectName();
                 break;
 
