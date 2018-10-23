@@ -719,7 +719,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
                 itItem++;
               }
           }
-        
+          /*
         //cross validation
         const CCrossValidationSet & ValidationSet = pFitProblem->getCrossValidationSet();
         imax = ValidationSet.getExperimentCount();
@@ -826,7 +826,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
               }
           }
           
-          
+          */
           
         return pPlotSpecification;
       }

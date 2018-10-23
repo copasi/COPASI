@@ -31,7 +31,7 @@
 #include "function/CExpression.h"
 
 //activate display of test of symbolic derivatives
-#define _DERIV_TEST_
+//#define _DERIV_TEST_
 
 /**
  *  Constructs a CQMathMatrixWidget which is a child of 'parent', with the

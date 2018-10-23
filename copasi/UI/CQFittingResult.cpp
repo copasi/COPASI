@@ -445,7 +445,7 @@ bool CQFittingResult::enterProtected()
 	  loadTab(mpTabWidget->currentIndex());
 
   //preliminary testing code
-  tcs = new CColorScaleBiLog();
+  /*tcs = new CColorScaleBiLog();
   CQArrayAnnotationsWidget * pJacobianMatrix = new CQArrayAnnotationsWidget(NULL, false);
   pJacobianMatrix->setColorCoding(tcs);
   pJacobianMatrix->setColorScalingAutomatic(true);
@@ -457,7 +457,7 @@ bool CQFittingResult::enterProtected()
   pScaledJacobianMatrix->setColorCoding(tcs);
   pScaledJacobianMatrix->setColorScalingAutomatic(true);
   pScaledJacobianMatrix->setArrayAnnotation(&mpProblem->getScaledParameterEstimationJacobian());
-  pScaledJacobianMatrix->show();
+  pScaledJacobianMatrix->show();*/
 
   return true;
 }
