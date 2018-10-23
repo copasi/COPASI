@@ -834,7 +834,11 @@ CReactionInterface::connectFromScratch(CFunctionParameter::Role role)
 
       for (i = 1; i < imax; ++i)
         {
-          Type = mpFunctionParameters->getParameterByUsage(role, pos)->getType();
+          pFunctionParameter = mpFunctionParameters->getParameterByUsage(role, pos);
+
+          if (pFunctionParameter == NULL) fatalError();
+
+          Type = pFunctionParameter->getType();
 
           if (Type != CFunctionParameter::DataType::FLOAT64) fatalError();
 
