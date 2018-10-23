@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and University of </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -263,7 +263,7 @@ Expression</string>
       </size>
      </property>
      <property name="toolTip">
-      <string>add target</string>
+      <string>Creates a new rate law for this reaction</string>
      </property>
      <property name="text">
       <string/>
@@ -461,8 +461,8 @@ Expression</string>
    <slot>slotCheckBoxClicked()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>191</x>
-     <y>41</y>
+     <x>170</x>
+     <y>53</y>
     </hint>
     <hint type="destinationlabel">
      <x>284</x>
@@ -509,8 +509,8 @@ Expression</string>
    <slot>slotAmountUnitChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>344</x>
-     <y>110</y>
+     <x>221</x>
+     <y>120</y>
     </hint>
     <hint type="destinationlabel">
      <x>229</x>
@@ -525,8 +525,8 @@ Expression</string>
    <slot>slotAddNoiseChanged(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>329</x>
-     <y>333</y>
+     <x>559</x>
+     <y>91</y>
     </hint>
     <hint type="destinationlabel">
      <x>260</x>
@@ -541,8 +541,8 @@ Expression</string>
    <slot>slotGotoFunction()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>329</x>
-     <y>333</y>
+     <x>452</x>
+     <y>95</y>
     </hint>
     <hint type="destinationlabel">
      <x>260</x>
@@ -578,6 +578,22 @@ Expression</string>
     </hint>
     <hint type="destinationlabel">
      <x>262</x>
+     <y>139</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnAddFunction</sender>
+   <signal>clicked()</signal>
+   <receiver>ReactionsWidget1</receiver>
+   <slot>slotNewFunction()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>470</x>
+     <y>83</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>284</x>
      <y>139</y>
     </hint>
    </hints>

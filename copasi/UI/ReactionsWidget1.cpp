@@ -532,14 +532,14 @@ void ReactionsWidget1::slotGotoFunction()
 
   if (pFunc == NULL) return;
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, pFunc->getKey());
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, pFunc->getCN());
 }
 
 void ReactionsWidget1::slotNewFunction()
 {
   // FunctionWidget1 * fw = new FunctionWidget1(NULL);
   // fw->show();
-  // TODO: we could think about calling the function widget as a dialogue here...
+  // TODO: we could think about calling the function widget as a dialog here...
 
   std::string name = std::string("Rate Law for ") + mpObject->getObjectName();
   std::string nname = name;
