@@ -597,8 +597,20 @@ std::pair< std::string, std::string > CChemEqInterface::displayNameToNamePair(CF
 
 void CChemEqInterface::addModifier(const std::string & name)
 {
-  std::pair< std::string, std::string > Modifier =
-    CMetabNameInterface::splitDisplayName(name);
+  std::pair< std::string, std::string > Modifier = CMetabNameInterface::splitDisplayName(name);
+  std::string quotedName = quote(name);
+
+  if (Modifier.second.empty())
+    {
+      const CMetab* metab = CMetabNameInterface::getMetabolite(mpModel, Modifier.first, Modifier.second);
+
+      if (metab != NULL && metab->getCompartment() != NULL)
+        {
+          Modifier.second = metab->getCompartment()->getObjectName();
+          quotedName = CMetabNameInterface::getDisplayName(mpModel, Modifier.first, Modifier.second, true);
+        }
+    }
+
 
   //is the name already in the list
   std::vector< std::string >::const_iterator it, itEnd = mModifierNames.end();
@@ -613,7 +625,7 @@ void CChemEqInterface::addModifier(const std::string & name)
       mModifierNames.push_back(Modifier.first);
       mModifierMult.push_back(1.0);
       mModifierCompartments.push_back(Modifier.second);
-      mModifierDisplayNames.push_back(quote(name));
+      mModifierDisplayNames.push_back(quotedName);
     }
 }
 
