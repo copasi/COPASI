@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and University of </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -180,7 +180,7 @@
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
+       <verstretch>5</verstretch>
       </sizepolicy>
      </property>
      <property name="currentIndex">
@@ -203,12 +203,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>CQExpressionMmlStackedWidget</class>
-   <extends>QStackedWidget</extends>
-   <header>copasi/UI/CQExpressionMmlStackedWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>TaskWidget</class>
    <extends>QWidget</extends>
    <header>copasi/UI/TaskWidget.h</header>
@@ -218,6 +212,12 @@
    <class>CQFittingItemWidget</class>
    <extends>QWidget</extends>
    <header>copasi/UI/CQFittingItemWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CQExpressionMmlStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>copasi/UI/CQExpressionMmlStackedWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
