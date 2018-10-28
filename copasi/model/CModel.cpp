@@ -208,8 +208,8 @@ CModel::CModel(CDataContainer* pParent):
   mMetabolitesX("Reduced Model Metabolites", this),
   mSteps("Reactions", this),
   mEvents("Events", this),
-  mReactionsPerSpecies(),
   mParticleFluxes(),
+  mReactionsPerSpecies(),
   mValues("Values", this),
   mParameterSet("Initial State", this),
   mParameterSets("ParameterSets", this),
@@ -2507,7 +2507,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-  #pragma region   //find_experiment
+#pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2557,7 +2557,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-  #pragma endregion //find_experiment
+#pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::Task::timeCourse)
     {
@@ -3259,7 +3259,7 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
                 TreesWithDiscontinuities.push_back((*ppEntity)->getNoiseExpressionPtr());
               }
 
-            // Intentionally no break statement!
+          // Intentionally no break statement!
 
           case Status::ASSIGNMENT:
 
