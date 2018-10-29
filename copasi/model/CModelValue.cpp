@@ -383,7 +383,7 @@ CIssue CModelEntity::setExpression(const std::string & expression)
   mValidity.remove(CValidity::Severity::All,
                    CValidity::Kind(CIssue::eKind::SettingFixedExpression));
 
-  if (isFixed())
+  if (isFixed() && !expression.empty())
     {
       issue = CIssue(CIssue::eSeverity::Error,
                      CIssue::eKind::SettingFixedExpression);

@@ -113,7 +113,6 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
               case COL_NOISE_EXPRESSION:
                 return QVariant(QString(FROM_UTF8(Reaction.getNoiseExpression())));
                 break;
-
             }
         }
     }
@@ -189,7 +188,7 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
   else if (role == Qt::EditRole)
     {
       CReaction & Reaction = mpReactions->operator [](index.row());
-      CUndoData Data(CUndoData::Type::CHANGE, &Reaction);
+      CUndoData Data(CUndoData::Type::CHANGE, Reaction.toData());
       bool changed = false;
 
       switch (index.column())

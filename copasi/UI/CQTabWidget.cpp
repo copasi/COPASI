@@ -261,7 +261,7 @@ bool CQTabWidget::save()
         }
       else
         {
-          CUndoData Data(CUndoData::Type::CHANGE, mpObject);
+          CUndoData Data(CUndoData::Type::CHANGE, mpObject->toData());
           Data.addProperty(CData::OBJECT_NAME, mpObject->getObjectName(), NewName);
           slotNotifyChanges(mpDataModel->applyData(Data));
         }

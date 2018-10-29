@@ -230,7 +230,7 @@ mark_as_advanced(DISABLE_CORE_OBJECT_LIBRARY)
 # using value scaled experimental data.
 option(ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING "Scale parameter estimation residuals with the simulation value" OFF)
 
-option(ENABLE_COPASI_BANDED_GRAPH "Enable the banded graph widget" OFF)
+option(ENABLE_COPASI_BANDED_GRAPH "Enable the banded graph widget" ON)
 option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" OFF)
 option(ENABLE_COPASI_EXTUNIT "Extended Unit Support" ${DEFAULT_EXTUNIT})
 option(ENABLE_ANALYTICS "Enable Analytics Task" OFF)

@@ -644,6 +644,8 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
   // until then.
   if (mpProgressBar != NULL) return false;
 
+  emit notifyView(objectType, action, cn);
+
   // update all initial value
   if (action != ListViews::RENAME && // not needed after rename
       !(action == ListViews::ADD && objectType == ListViews::MODEL) // not needed when model was loaded
@@ -651,8 +653,6 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
     {
       refreshInitialValues();
     }
-
-  emit notifyView(objectType, action, cn);
 
   return true;
 }
@@ -810,7 +810,7 @@ void DataModelGUI::importCellDesigner()
                         importCD = true;
 
                       // ask the user if the CellDesigner annotation should be imported
-                      if (importCD || CQMessageBox::question(NULL, "CellDesigner import", "A CellDesigner diagram was found in this file.\nDo you want to import the diagram?" , QMessageBox::Yes | QMessageBox::No , QMessageBox::No) == QMessageBox::Yes)
+                      if (importCD || CQMessageBox::question(NULL, "CellDesigner import", "A CellDesigner diagram was found in this file.\nDo you want to import the diagram?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
                         {
                           // do the import
                           CCellDesignerImporter cd_importer(pSBMLDocument);
@@ -878,7 +878,6 @@ void DataModelGUI::importCellDesigner()
         }
     }
 }
-
 
 void DataModelGUI::openCombineArchive(const std::string & fileName)
 {
@@ -959,7 +958,6 @@ void DataModelGUI::exportCombineFinished()
 
   threadFinished();
 }
-
 
 void DataModelGUI::importSEDMLFromString(const std::string & sedmlDocumentText)
 {
@@ -1117,4 +1115,3 @@ void DataModelGUI::exportSEDMLRun()
       mSuccess = false;
     }
 }
-

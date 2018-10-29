@@ -404,9 +404,52 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
         }
 
       // The names are equal it suffices to use the assignment operator of the parameter
-      *pLHS = *pRHS;
-      ++itLHS;
-      ++itRHS;
+      // Issue 2693 since order of parameters with the same name may matter we need to be careful
+      // when assigning the parameters here.
+
+      std::map< size_t,  CCopasiParameter * > NamesLeft;
+
+      do
+        {
+          NamesLeft.insert(std::make_pair(getIndex(pLHS), pLHS));
+          ++itLHS;
+          pLHS = dynamic_cast< CCopasiParameter * >(*itLHS);
+        }
+      while (itLHS != endLHS && NameLHS == pLHS->getObjectName());
+
+      std::map< size_t,  CCopasiParameter * > NamesRight;
+
+      do
+        {
+          NamesRight.insert(std::make_pair(rhs.getIndex(pRHS), pRHS));
+          ++itRHS;
+          pRHS = dynamic_cast< CCopasiParameter * >(*itRHS);
+        }
+      while (itRHS != endRHS && NameRHS == pRHS->getObjectName());
+
+      std::map< size_t,  CCopasiParameter * >::iterator itNamesLeft = NamesLeft.begin();
+      std::map< size_t,  CCopasiParameter * >::iterator endNamesLeft = NamesLeft.end();
+      std::map< size_t,  CCopasiParameter * >::iterator itNamesRight = NamesRight.begin();
+      std::map< size_t,  CCopasiParameter * >::iterator endNamesRight = NamesRight.end();
+
+      while (itNamesLeft != endNamesLeft && itNamesRight != endNamesRight)
+        {
+          *itNamesLeft->second = *itNamesRight->second;
+          ++itNamesLeft;
+          ++itNamesRight;
+        }
+
+      while (itNamesRight != endNamesRight)
+        {
+          ToBeAdded.insert(*itNamesRight);
+          ++itNamesRight;
+        }
+
+      while (itNamesLeft != endNamesLeft)
+        {
+          ToBeRemoved.push_back(itNamesLeft->second);
+          ++itNamesLeft;
+        }
     }
 
   // All remaining parameters of the LHS need to be removed

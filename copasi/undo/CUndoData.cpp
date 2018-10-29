@@ -211,8 +211,8 @@ bool CUndoData::addProperty(const std::string & name, const CDataValue & oldValu
           {
             if (oldValue != newValue)
               {
-                success &= mOldData.addProperty(name, oldValue);
-                success &= mNewData.addProperty(name, newValue);
+                mOldData.addProperty(name, oldValue);
+                mNewData.addProperty(name, newValue);
                 mChangedProperties.insert(name);
                 success = true;
               }
@@ -225,12 +225,13 @@ bool CUndoData::addProperty(const std::string & name, const CDataValue & oldValu
           }
         else
           {
-            success = mOldData.addProperty(name, oldValue);
-            success &= mNewData.addProperty(name, newValue);
+            mOldData.addProperty(name, oldValue);
+            mNewData.addProperty(name, newValue);
 
             if (oldValue != newValue)
               {
                 mChangedProperties.insert(name);
+                success = true;
               }
             else
               {

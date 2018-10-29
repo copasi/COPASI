@@ -361,6 +361,7 @@ void CQFittingWidget::init()
 
   mpMethodWidget->setValidMethods(CFitTask::ValidMethods);
   mpMethodWidget->showMethodParameters(true);
+  mpMethodWidget->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
   verticalLayout->addWidget(mpMethodWidget);
 
   verticalLayout->addWidget(mpBtnWidget);

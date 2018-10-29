@@ -112,8 +112,8 @@ CMathEventQueue::CAction::CAction(const CVector< C_FLOAT64 > & values,
                                   CMathEvent * pEvent,
                                   CMathEventQueue * pProcessQueue) :
   mType(CMathEventQueue::CAction::Assignment),
-  mpPriority(NULL),
   mValues(values),
+  mpPriority(NULL),
   mpEvent(pEvent),
   mpProcessQueue(pProcessQueue)
 {

@@ -217,6 +217,7 @@ void CQOptimizationWidget::init()
 
   mpMethodWidget->setValidMethods(COptTask::ValidMethods);
   mpMethodWidget->showMethodParameters(true);
+  mpMethodWidget->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
   verticalLayout->addWidget(mpMethodWidget);
 
   verticalLayout->addWidget(mpBtnWidget);
