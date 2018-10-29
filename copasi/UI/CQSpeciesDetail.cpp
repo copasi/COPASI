@@ -294,7 +294,7 @@ void CQSpeciesDetail::save()
     {
       if (mpCurrentCompartment->getMetabolites().getIndex(mpMetab->getObjectName()) == C_INVALID_INDEX)
         {
-          mpMetab->setObjectParent(&mpCurrentCompartment->getMetabolites());
+          mpMetab->setCompartment(mpCurrentCompartment->getObjectName());
           mChanged = true;
         }
       else

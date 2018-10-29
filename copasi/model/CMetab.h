@@ -225,6 +225,13 @@ public:
   virtual bool setObjectParent(const CDataContainer * pParent);
 
   /**
+   * moves the species to the compartment with the given name,
+   * removes it from the old compartment (if there was one),
+   * and updates references to the species if needed
+   */
+  bool setCompartment(const std::string& compName);
+
+  /**
    * Compile the model value.
    * @return CIssue firstWorstIssue
    */

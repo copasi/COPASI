@@ -253,6 +253,39 @@ bool CMetab::setObjectParent(const CDataContainer * pParent)
   return true;
 }
 
+bool CMetab::setCompartment(const std::string& compName)
+{
+  //move the metab to the new compartment
+  CCompartment* oldComp = const_cast<CCompartment*>(getCompartment());
+
+  if (!oldComp) return false;
+
+  CCompartment* newComp = &mpModel->getCompartments()[compName];
+
+  if (!newComp) return false;
+
+  bool success = false;
+  bool wasEnabled = CRegisteredCommonName::isEnabled();
+  CRegisteredCommonName::setEnabled(true);
+  auto oldCN = getCN();
+
+  success = newComp->addMetabolite(this);
+
+  if (success)
+    {
+      oldComp->getMetabolites().remove(getObjectName());
+      auto newCN = getCN();
+      CRegisteredCommonName::handle(oldCN, newCN);
+      mpModel->setCompileFlag();
+      mpModel->initializeMetabolites();
+    }
+
+  CRegisteredCommonName::setEnabled(wasEnabled);
+  return success;
+}
+
+
+
 // ***** set quantities ********
 
 void CMetab::setConcentration(const C_FLOAT64 concentration)

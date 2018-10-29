@@ -391,7 +391,8 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
 
             if (Compartment.getMetabolites().getIndex(Species.getObjectName()) == C_INVALID_INDEX)
               {
-                Species.setObjectParent(&Compartment.getMetabolites());
+                //Species.setObjectParent(&Compartment.getMetabolites());
+                Species.setCompartment(TO_UTF8(value.toString()));
               }
           }
           break;
