@@ -318,17 +318,28 @@ bool CDataObject::setObjectParent(const CDataContainer * pParent)
   if (pParent == mpObjectParent)
     return true;
 
+  CCommonName OldCN;
+
   if (mpObjectParent != NULL &&
       pParent != NULL)
     {
+      if (CRegisteredCommonName::isEnabled())
+        {
+          OldCN = getCN();
+        }
+
       mpObjectParent->remove(this);
     }
 
   removeReference(mpObjectParent);
-
   mpObjectParent = const_cast<CDataContainer *>(pParent);
-
   addReference(mpObjectParent);
+
+  if (CRegisteredCommonName::isEnabled() &&
+      !OldCN.empty())
+    {
+      CRegisteredCommonName::handle(OldCN, getCN());
+    }
 
   return true;
 }

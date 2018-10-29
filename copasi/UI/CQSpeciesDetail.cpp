@@ -294,7 +294,7 @@ void CQSpeciesDetail::save()
     {
       if (mpCurrentCompartment->getMetabolites().getIndex(mpMetab->getObjectName()) == C_INVALID_INDEX)
         {
-          mpMetab->setCompartment(mpCurrentCompartment->getObjectName());
+          const_cast< CCompartment * >(mpCurrentCompartment)->getMetabolites().add(mpMetab, true);
           mChanged = true;
         }
       else
@@ -375,7 +375,7 @@ void CQSpeciesDetail::save()
       CUndoData UndoData;
       mpMetab->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
 
-      slotNotifyChanges(mpDataModel->applyData(UndoData));
+      slotNotifyChanges(mpDataModel->recordData(UndoData));
       load();
     }
 }
