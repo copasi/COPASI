@@ -423,7 +423,7 @@ void CQNotes::save()
       plainText = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + plainText + "</body>";
     }
 
-  CUndoData Data(CUndoData::Type::CHANGE, mpObject);
+  CUndoData Data(CUndoData::Type::CHANGE, mpObject->toData());
   Data.addProperty(CData::Property::NOTES, notes, plainText);
   slotNotifyChanges(mpDataModel->applyData(Data));
 }
