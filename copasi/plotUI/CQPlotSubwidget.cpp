@@ -59,11 +59,9 @@ CQPlotSubwidget::CQPlotSubwidget(QWidget* parent, const char* name, Qt::WindowFl
   mpHistoWidget = new HistoWidget(this);
   mpStack->addWidget(mpHistoWidget);
 #ifdef COPASI_BANDED_GRAPH
-  // this should be implemented in the CQPlotSubwidget.ui file
-  // as the button will be appended behind the 'delete' button:
-  QToolButton *buttonBandedGraph = new QToolButton(this);
+  QPushButton *buttonBandedGraph = new QPushButton(this);
   buttonBandedGraph->setText("New Banded Graph");
-  layoutCurves->addWidget(buttonBandedGraph);
+  layoutCurves->insertWidget(5, buttonBandedGraph);
   connect(buttonBandedGraph, SIGNAL(clicked()), this, SLOT(addBandedGraphSlot()));
   mpBandedGraphWidget = new BandedGraphWidget(this);
   mpStack->addWidget(mpBandedGraphWidget);
@@ -1233,7 +1231,7 @@ bool CQPlotSubwidget::updateProtected(ListViews::ObjectType objectType, ListView
 
   switch (objectType)
     {
-      //TODO: check list:
+        //TODO: check list:
       case ListViews::MODEL:
         switch (action)
           {

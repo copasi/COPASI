@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,6 +17,7 @@
 #include "copasi.h"
 
 #include "copasi/core/CRootContainer.h"
+#include "copasi/model/CModel.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "plot/CPlotItem.h"
 #include "resourcesUI/CQIconResource.h"
@@ -87,7 +88,7 @@ BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * pCurve)
 
   mpEditTitle->setText(FROM_UTF8(pCurve->getTitle()));
 
-  CDataModel* pDataModel = pCurve->getObjectDataModel();
+  const CDataModel* pDataModel = mpModel->getObjectDataModel();
   assert(pDataModel != NULL);
 
   mpObjectX = mpObjectYone = mpObjectYtwo = NULL;
@@ -206,18 +207,19 @@ BandedGraphWidget::buttonPressedX()
       mpEditX->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
 
       if (mpObjectYone)
-      {
-        if (mpObjectYtwo && (mpObjectYtwo != mpObjectYone))
-          mpEditTitle->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()
-                                         + "/"
-                                         + mpObjectYtwo->getObjectDisplayName()
-                                         + "|"
-                                         + mpObjectX->getObjectDisplayName()));
-        else
+        {
+          if (mpObjectYtwo && (mpObjectYtwo != mpObjectYone))
             mpEditTitle->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()
-                                         + "|"
-                                         + mpObjectX->getObjectDisplayName()));
-      }
+                                           + "/"
+                                           + mpObjectYtwo->getObjectDisplayName()
+                                           + "|"
+                                           + mpObjectX->getObjectDisplayName()));
+          else
+            mpEditTitle->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()
+                                           + "|"
+                                           + mpObjectX->getObjectDisplayName()));
+        }
+
       //TODO update tab title
     }
   else
@@ -238,18 +240,19 @@ BandedGraphWidget::buttonPressedYone()
       mpEditYone->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()));
 
       if (mpObjectX)
-      {
-        if (mpObjectYtwo && (mpObjectYtwo != mpObjectYone))
-          mpEditTitle->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()
-                                         + "/"
-                                         + mpObjectYtwo->getObjectDisplayName()
-                                         + "|"
-                                         + mpObjectX->getObjectDisplayName()));
-        else
-          mpEditTitle->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()
-                                         + "|"
-                                         + mpObjectX->getObjectDisplayName()));
-      }
+        {
+          if (mpObjectYtwo && (mpObjectYtwo != mpObjectYone))
+            mpEditTitle->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()
+                                           + "/"
+                                           + mpObjectYtwo->getObjectDisplayName()
+                                           + "|"
+                                           + mpObjectX->getObjectDisplayName()));
+          else
+            mpEditTitle->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()
+                                           + "|"
+                                           + mpObjectX->getObjectDisplayName()));
+        }
+
       //TODO update tab title
     }
   else
@@ -270,18 +273,19 @@ BandedGraphWidget::buttonPressedYtwo()
       mpEditYtwo->setText(FROM_UTF8(mpObjectYtwo->getObjectDisplayName()));
 
       if (mpObjectX)
-      {
-        if (mpObjectYone && (mpObjectYone != mpObjectYtwo))
-          mpEditTitle->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()
-                                         + "/"
-                                         + mpObjectYtwo->getObjectDisplayName()
-                                         + "|"
-                                         + mpObjectX->getObjectDisplayName()));
-        else
-          mpEditTitle->setText(FROM_UTF8(mpObjectYtwo->getObjectDisplayName()
-                                         + "|"
-                                         + mpObjectX->getObjectDisplayName()));
-      }
+        {
+          if (mpObjectYone && (mpObjectYone != mpObjectYtwo))
+            mpEditTitle->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()
+                                           + "/"
+                                           + mpObjectYtwo->getObjectDisplayName()
+                                           + "|"
+                                           + mpObjectX->getObjectDisplayName()));
+          else
+            mpEditTitle->setText(FROM_UTF8(mpObjectYtwo->getObjectDisplayName()
+                                           + "|"
+                                           + mpObjectX->getObjectDisplayName()));
+        }
+
       //TODO update tab title
     }
   else
