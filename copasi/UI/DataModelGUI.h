@@ -54,6 +54,7 @@ public:
 
   bool createModel();
   void loadModel(const std::string & fileName);
+  void downloadFileFromUrl(const std::string& url, const std::string& destination);
   void saveModel(const std::string & fileName, bool overwriteFile = false);
 
   void addModel(const std::string & fileName);
@@ -64,7 +65,6 @@ public:
 
   void saveModelParameterSets(const std::string & fileName);
   void loadModelParameterSets(const std::string & fileName);
-
 
   void importSBML(const std::string & fileName);
   void exportSBML(const std::string & fileName, bool overwriteFile , int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
@@ -97,6 +97,8 @@ public:
   void exportSBMLToStringRun();
   void exportMathModelRun();
 
+  const std::string& getFileName() const;
+
 public slots:
   void loadModelFinished();
   void saveModelFinished();
@@ -111,6 +113,7 @@ public slots:
   void addModelFinished();
 
   void miriamDownloadFinished(QNetworkReply*);
+  void downloadFinished(QNetworkReply*);
   void miriamDownloadProgress(qint64 received, qint64 total);
 
   //SEDML
@@ -138,6 +141,15 @@ public:
   void setFramework(int framework);
   void updateMIRIAMResourceContents();
   void commit();
+
+  /**
+   * if this flag is set, the next loaded / imported file will not be
+   * stored in the recent file list (will reset after one load / import)
+   */
+  void setIgnoreNextFile(bool ignore);
+  void addRecentCopasiFile(const std::string& file);
+  void addRecentSBMLFile(const std::string& file);
+  void addRecentSEDMLFile(const std::string& file);
 
 protected:
 private:
@@ -178,6 +190,8 @@ private:
   int mSEDMLVersion;
   bool mSEDMLExportIncomplete;
   bool mSEDMLExportCOPASIMIRIAM;
+
+  bool mIgnoreNextFile;
 };
 
 #endif

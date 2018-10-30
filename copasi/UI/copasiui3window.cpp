@@ -22,6 +22,7 @@
 #include <QMimeData>
 #include <QSettings>
 #include <QClipboard>
+#include <QInputDialog>
 
 #include <QtCore/QEvent>
 #include <QMenuBar>
@@ -183,6 +184,7 @@ CopasiUI3Window::CopasiUI3Window():
   mpaOpen(NULL),
   mpaOpenCopasiFiles(NULL),
   mpaOpenSBMLFiles(NULL),
+  mpaOpenFromUrl(NULL),
   mpaSave(NULL),
   mpaSaveAs(NULL),
   mpaFunctionDBSave(NULL),
@@ -387,6 +389,8 @@ void CopasiUI3Window::createActions()
   mpaOpenSBMLFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "S&BML Files...", this);
   connect(mpaOpenSBMLFiles, SIGNAL(triggered()), this, SLOT(slotFileExamplesSBMLFiles()));
   // mpaOpenSBMLFiles->setShortcut(Qt::CTRL + Qt::Key_2);
+  mpaOpenFromUrl = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "Open from &Url...", this);
+  connect(mpaOpenFromUrl, SIGNAL(triggered()), this, SLOT(slotFileOpenFromUrl()));
   mpaSave = new QAction(CQIconResource::icon(CQIconResource::fileSave), "&Save", this);
   connect(mpaSave, SIGNAL(triggered()), this, SLOT(slotFileSave()));
   mpaSave->setShortcut(Qt::CTRL + Qt::Key_S);
@@ -657,6 +661,7 @@ void CopasiUI3Window::createMenuBar()
   QMenu *pFileMenu = menuBar()->addMenu("&File");
   pFileMenu->addAction(mpaNew);
   pFileMenu->addAction(mpaOpen);
+  pFileMenu->addAction(mpaOpenFromUrl);
   mpMenuExamples = pFileMenu->addMenu("Examples");
   mpMenuExamples->addAction(mpaOpenCopasiFiles);
   mpMenuExamples->addAction(mpaOpenSBMLFiles);
@@ -1059,7 +1064,6 @@ void CopasiUI3Window::slotFileOpen(QString file)
       mpDataModelGUI->loadModel(TO_UTF8(newFile));
     }
 }
-
 bool isArchive(const QString& fileName)
 {
   bool result = false;
@@ -2178,7 +2182,12 @@ void CopasiUI3Window::refreshRecentFileMenu()
 
   for (; it != end; ++it, ++Index)
     {
-      pAction = new QAction(FROM_UTF8((*it)->getValue< std::string >()), mpRecentFilesActionGroup);
+      std::string recentFile = (*it)->getValue< std::string >();
+
+      if (!CDirEntry::exist(recentFile))
+        continue;
+
+      pAction = new QAction(FROM_UTF8(recentFile), mpRecentFilesActionGroup);
       mpMenuRecentFiles->addAction(pAction);
       mRecentFilesActionMap[pAction] = Index;
     }
@@ -2207,7 +2216,12 @@ void CopasiUI3Window::refreshRecentSBMLFileMenu()
 
   for (; it != end; ++it, ++Index)
     {
-      pAction = new QAction(FROM_UTF8((*it)->getValue< std::string >()), mpRecentSBMLFilesActionGroup);
+      std::string recentFile = (*it)->getValue< std::string >();
+
+      if (!CDirEntry::exist(recentFile))
+        continue;
+
+      pAction = new QAction(FROM_UTF8(recentFile), mpRecentSBMLFilesActionGroup);
       mpMenuRecentSBMLFiles->addAction(pAction);
       mRecentSBMLFilesActionMap[pAction] = Index;
     }
@@ -3029,11 +3043,12 @@ bool isProbablySBML(QString &fileName)
   if (!file.open(QIODevice::ReadOnly))
     return false;
 
-  for (int i = 0; i < 5; ++i)
+  for (int i = 0; i < 10; ++i)
     {
       QByteArray array = file.readLine();
+      QString current(array);
 
-      if (QString(array).contains("<sbml"))
+      if (current.contains("<sbml") || current.contains(":sbml>"))
         return true;
     }
 
@@ -3651,6 +3666,68 @@ void CopasiUI3Window::slotUndoHistory()
 
   delete pDialog;
 }
+
+
+void CopasiUI3Window::slotFileOpenFromUrl(QString url)
+{
+  // ensure we have url
+  if (url.isNull())
+    {
+
+      url = QInputDialog::getText(
+              this,
+              QString("Enter URL to open"),
+              QString("Please specify a URL to open (can be any supported format)"),
+              QLineEdit::Normal,
+              QString("http://www.ebi.ac.uk/biomodels-main/download?mid=BIOMD0000000001")
+
+            );
+
+      if (url.isNull())
+        return;
+    }
+
+  // create temp filename
+  std::string TmpFileName;
+  COptions::getValue("Tmp", TmpFileName);
+  TmpFileName = CDirEntry::createTmpName(TmpFileName, ".tmp");
+
+  // open url
+  connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFromUrlFinished(bool)));
+  mpDataModelGUI->downloadFileFromUrl(TO_UTF8(url), TmpFileName);
+
+}
+
+void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
+{
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFromUrlFinished(bool)));
+
+  if (success)
+    {
+      QString tempFileName = FROM_UTF8(mpDataModelGUI->getFileName());
+
+      if (isArchive(tempFileName))
+        {
+          mpDataModelGUI->setIgnoreNextFile(true);
+          slotImportCombine(tempFileName);
+        }
+      else if (isProbablySBML(tempFileName))
+        {
+          mpDataModelGUI->setIgnoreNextFile(true);
+          slotImportSBML(tempFileName);
+        }
+      else
+        {
+          mpDataModelGUI->setIgnoreNextFile(true);
+          slotFileOpen(tempFileName);
+        }
+
+      mSaveAsRequired = true;
+
+    }
+}
+
+
 
 #ifdef COPASI_Versioning
 void CopasiUI3Window::slotCreateVersion() //Slot Version Create
