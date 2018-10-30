@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and University of </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -26,7 +26,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout" name="mpGridLayout">
+    <layout class="QGridLayout" name="mpGridLayout" columnstretch="0,1,1">
      <item row="0" column="0">
       <widget class="QLabel" name="mpLblVariable">
        <property name="minimumSize">
@@ -140,7 +140,7 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="0" colspan="2">
+     <item row="2" column="0" colspan="3">
       <widget class="QLabel" name="label_4">
        <property name="minimumSize">
         <size>
@@ -246,7 +246,7 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0" colspan="2">
+     <item row="6" column="0" colspan="3">
       <widget class="QLabel" name="mpLblLT">
        <property name="minimumSize">
         <size>
