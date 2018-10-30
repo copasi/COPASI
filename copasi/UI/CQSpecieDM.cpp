@@ -273,7 +273,6 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
                 else
                   return QVariant(QString(""));
               }
-
             }
         }
     }
@@ -391,7 +390,23 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
 
             if (Compartment.getMetabolites().getIndex(Species.getObjectName()) == C_INVALID_INDEX)
               {
-                Species.setObjectParent(&Compartment.getMetabolites());
+                Compartment.getMetabolites().add(&Species, true);
+
+                switch (static_cast< CCore::Framework >(mFramework))
+                  {
+                    case CCore::Framework::Concentration:
+                      // Preserve Concentration
+                      Species.setInitialValue(CMetab::convertToNumber(Species.getInitialConcentration(), Compartment));
+                      break;
+
+                    case CCore::Framework::ParticleNumbers:
+                      // Preserve Particle Numbers
+                      Species.setInitialConcentration(CMetab::convertToConcentration(Species.getInitialValue(), Compartment));
+                      break;
+
+                    case CCore::Framework::__SIZE:
+                      break;
+                  }
               }
           }
           break;
@@ -412,7 +427,7 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
         }
 
       CUndoData UndoData;
-      Species.createUndoData(UndoData, CUndoData::Type::CHANGE, OldData);
+      Species.createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
 
       if (!UndoData.empty())
         {

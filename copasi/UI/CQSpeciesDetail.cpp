@@ -155,9 +155,9 @@ void CQSpeciesDetail::setFramework(int framework)
   QString ConcentrationUnits = "[" + FROM_UTF8(CUnit::prettyPrint(concUnitStdStr)) + "]";
   QString ConcentrationRateUnits = "[" + FROM_UTF8(CUnit::prettyPrint("(" + concUnitStdStr + ")/(" + pModel->getTimeUnit() + ")")) + "]";
 
-  switch (mFramework)
+  switch (static_cast <CCore::Framework >(mFramework))
     {
-      case 0:
+      case CCore::Framework::Concentration:
         mpLblInitialValue->setText("Initial Concentration\n" + ConcentrationUnits);
         mpLblInitialExpression->setText("Initial Expression\n" + ConcentrationUnits);
 
@@ -175,7 +175,7 @@ void CQSpeciesDetail::setFramework(int framework)
         mpEditRate->setText(convertToQString(mpMetab->getConcentrationRate()));
         break;
 
-      case 1:
+      case CCore::Framework::ParticleNumbers:
         mpLblInitialValue->setText("Initial Number " + ParticleNumberUnits);
         mpLblInitialExpression->setText("Initial Expression " + ConcentrationUnits);
 
@@ -190,6 +190,9 @@ void CQSpeciesDetail::setFramework(int framework)
         mpEditInitialValue->setReadOnly(!mpMetab->isInitialValueChangeAllowed((CCore::Framework) mFramework));
         mpEditCurrentValue->setText(convertToQString(mpMetab->getValue()));
         mpEditRate->setText(convertToQString(mpMetab->getRate()));
+        break;
+
+      case CCore::Framework::__SIZE:
         break;
     }
 }
@@ -294,7 +297,7 @@ void CQSpeciesDetail::save()
     {
       if (mpCurrentCompartment->getMetabolites().getIndex(mpMetab->getObjectName()) == C_INVALID_INDEX)
         {
-          mpMetab->setObjectParent(&mpCurrentCompartment->getMetabolites());
+          const_cast< CCompartment * >(mpCurrentCompartment)->getMetabolites().add(mpMetab, true);
           mChanged = true;
         }
       else
@@ -375,7 +378,7 @@ void CQSpeciesDetail::save()
       CUndoData UndoData;
       mpMetab->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
 
-      slotNotifyChanges(mpDataModel->applyData(UndoData));
+      slotNotifyChanges(mpDataModel->recordData(UndoData));
       load();
     }
 }
@@ -521,17 +524,22 @@ void CQSpeciesDetail::slotCompartmentChanged(int compartment)
   if (pNewCompartment == mpCurrentCompartment ||
       pNewCompartment == NULL) return;
 
-  switch (mFramework)
+  switch (static_cast< CCore::Framework >(mFramework))
     {
-      case 0:
-        mInitialNumber = mInitialConcentration * pNewCompartment->getInitialValue();
+      case CCore::Framework::Concentration:
+        mInitialNumber = CMetab::convertToNumber(mInitialConcentration, *pNewCompartment);
         break;
 
-      case 1:
-        mInitialConcentration = mInitialNumber / pNewCompartment->getInitialValue();
+      case CCore::Framework::ParticleNumbers:
+        mInitialConcentration = CMetab::convertToConcentration(mInitialNumber, *pNewCompartment);
+        break;
+
+      case CCore::Framework::__SIZE:
+        break;
     }
 
   mpCurrentCompartment = pNewCompartment;
+
   // Update the units and values accordingly
   setFramework(mFramework);
 }
@@ -583,24 +591,25 @@ void CQSpeciesDetail::slotInitialValueLostFocus()
   if (pModel == NULL)
     return;
 
-  switch (mFramework)
+  switch (static_cast< CCore::Framework >(mFramework))
     {
-      case 0:
+      case CCore::Framework::Concentration:
         if (QString::number(mInitialConcentration, 'g', 10) == mpEditInitialValue->text())
           return;
 
         mInitialConcentration = mpEditInitialValue->text().toDouble();
-        mInitialNumber = CMetab::convertToNumber(mInitialConcentration,
-                         *mpCurrentCompartment);
+        mInitialNumber = CMetab::convertToNumber(mInitialConcentration, *mpCurrentCompartment);
         break;
 
-      case 1:
+      case CCore::Framework::ParticleNumbers:
         if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialValue->text())
           return;
 
         mInitialNumber = mpEditInitialValue->text().toDouble();
-        mInitialConcentration = CMetab::convertToConcentration(mInitialNumber,
-                                *mpCurrentCompartment);
+        mInitialConcentration = CMetab::convertToConcentration(mInitialNumber, *mpCurrentCompartment);
+        break;
+
+      case CCore::Framework::__SIZE:
         break;
     }
 }
