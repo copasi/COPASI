@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -71,6 +71,14 @@ public:
     // Suppress "Value"
     if (getObjectParent() && getObjectName() == "Value")
       return getObjectParent()->getObjectDisplayName();
+
+    // Suppress "DisplayName"
+    if (getObjectName() == "DisplayName" && mpReference)
+      {
+        std::stringstream str;
+        str << "'" << *mpReference << "'";
+        return str.str();
+      }
 
     // Special treatment of species children
     if (getObjectParent() && getObjectParent()->getObjectType() == "Metabolite")
