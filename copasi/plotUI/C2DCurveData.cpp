@@ -1,4 +1,9 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -148,13 +153,7 @@ QwtDoubleRect C2DCurveData::boundingRect() const
     return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
 
   // We need to avoid very small data ranges (absolute and relative)
-  C_FLOAT64 minRange = fabs(mMinX + mMaxX) * 5.e-5 + std::numeric_limits< C_FLOAT64 >::min() * 100.0;
-
-  if (mMaxX - mMinX < minRange)
-    {
-      mMinX = mMinX - minRange * 0.5;
-      mMaxX = mMaxX + minRange * 0.5;
-    }
+  C_FLOAT64 minRange;
 
   minRange = fabs(mMinY + mMaxY) * 5e-5 + std::numeric_limits< C_FLOAT64 >::min() * 100.0;
 
@@ -163,6 +162,18 @@ QwtDoubleRect C2DCurveData::boundingRect() const
       mMinY = mMinY - minRange * 0.5;
       mMaxY = mMaxY + minRange * 0.5;
     }
+
+  if (mMinX == 0 && mMaxX == 0)
+    return QwtDoubleRect(0.1, mMinY, -0.2, mMaxY - mMinY); // invalid X
+
+  minRange = fabs(mMinX + mMaxX) * 5.e-5 + std::numeric_limits< C_FLOAT64 >::min() * 100.0;
+
+  if (mMaxX - mMinX < minRange)
+    {
+      mMinX = mMinX - minRange * 0.5;
+      mMaxX = mMaxX + minRange * 0.5;
+    }
+
 
   return QwtDoubleRect(mMinX, mMinY, mMaxX - mMinX, mMaxY - mMinY);
 }
