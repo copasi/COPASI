@@ -1460,6 +1460,10 @@ void CModelExpansion::replaceInReaction(CReaction* pX, const ElementsMap & emap)
                   {
                     Objects.push_back(pObject);
                   }
+                else
+                  {
+                    Objects.push_back(pX->getParameterObjects(i)[k]);
+                  }
               }
 
             pX->setParameterObjects(i, Objects);
