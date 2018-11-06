@@ -38,7 +38,6 @@ CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char
   mGlobalQuantities()
 {
   setupUi(this);
-  mpBtnWidget->hide();
 
   // create a new QListview to be displayed on the screen..and set its property
   mpParameterSetDM = new CQParameterOverviewDM(this);
@@ -77,22 +76,24 @@ CQParameterOverviewWidget::~CQParameterOverviewWidget()
 bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
 
-      if (objectType == ListViews::MODEL && action == ListViews::DELETE)
+  if (objectType == ListViews::MODEL && action == ListViews::DELETE)
+    {
+      mObjectCN.clear();
+      mpObject = NULL;
+
+      mpParameterSetDM->setModelParameterSet(NULL);
+
+      if (mpParameterSet != mpParameterSetCopy)
         {
-          mObjectCN.clear();
-          mpObject = NULL;
+          if (mOwnCopy)
+            pdelete(mpParameterSetCopy);
 
-          mpParameterSetDM->setModelParameterSet(NULL);
-
-          if (mpParameterSet != mpParameterSetCopy)
-            {
-              if (mOwnCopy)
-              pdelete(mpParameterSetCopy);
-        mOwnCopy = false;
-            }
-          mpParameterSetCopy = NULL;
-          mpParameterSet = NULL;
+          mOwnCopy = false;
         }
+
+      mpParameterSetCopy = NULL;
+      mpParameterSet = NULL;
+    }
 
   if (!mIgnoreUpdates)
     {
@@ -252,9 +253,11 @@ bool CQParameterOverviewWidget::enterProtected()
   if (mpParameterSet == NULL)
     {
       mpParameterSetDM->setModelParameterSet(NULL);
+
       if (mOwnCopy)
-	    pdelete(pOldParameterSet);
-	  mOwnCopy = false;
+        pdelete(pOldParameterSet);
+
+      mOwnCopy = false;
 
       return false;
     }
@@ -269,20 +272,21 @@ bool CQParameterOverviewWidget::enterProtected()
   if (mpParameterSet->isActive())
     {
       mpParameterSetCopy = mpParameterSet;
-	  mOwnCopy = false;
+      mOwnCopy = false;
       mpTreeView->header()->hideSection(1);
     }
   else
     {
       mpParameterSetCopy = new CModelParameterSet(*mpParameterSet, mpDataModel, false);
       mpParameterSetCopy->compareWithModel(static_cast< CCore::Framework >(mFramework));
-	  mOwnCopy = true;
+      mOwnCopy = true;
       mpHeaderWidget->hide();
     }
 
   buildSelectionList();
 
   mpParameterSetDM->setModelParameterSet(mpParameterSetCopy);
+
   if (didOwnCopy)
     pdelete(pOldParameterSet);
 

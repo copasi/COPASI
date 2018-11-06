@@ -181,9 +181,11 @@ public slots:
   void openInitialDocument(const QString & file);
 
   void slotFileOpen(QString file = QString::null);
+  void slotFileOpenFromUrl(QString url = QString::null);
 
 protected slots:
   void slotFileOpenFinished(bool success);
+  void slotFileOpenFromUrlFinished(bool success);
   void slotFileExamplesCopasiFiles(QString file = QString::null);
   void slotFileExamplesSBMLFiles(QString file = QString::null);
   void slotFileSave();
@@ -302,6 +304,7 @@ private:
   QAction* mpaOpen;
   QAction* mpaOpenCopasiFiles;
   QAction* mpaOpenSBMLFiles;
+  QAction* mpaOpenFromUrl;
   QAction* mpaSave;
   QAction* mpaSaveAs;
   QAction* mpaFunctionDBSave;

@@ -166,7 +166,7 @@ bool ScanWidget::loadTaskProtected()
 
       switch (type)
         {
-          //+++
+            //+++
           case CScanProblem::SCAN_LINEAR:
             tmp1 = new CScanWidgetScan(scrollview);
             tmp1->load(scanProblem->getScanItem(i));
@@ -387,6 +387,22 @@ bool ScanWidget::saveTaskProtected()
 
       mChanged = false;
     }
+
+  return true;
+}
+
+bool ScanWidget::taskFinishedEvent()
+{
+  if (!mpTask) return false;
+
+  CScanProblem* pProblem = dynamic_cast<CScanProblem*>(mpTask->getProblem());
+
+  if (!pProblem) return false;
+
+  if (pProblem->getSubtask() != CTaskEnum::Task::parameterFitting)
+    return false;
+
+  protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD);
 
   return true;
 }

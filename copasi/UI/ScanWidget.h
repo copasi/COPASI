@@ -47,6 +47,8 @@ protected:
 
   virtual bool saveTaskProtected();
 
+  virtual bool taskFinishedEvent();
+
   //dummy, should not be used in this widget
   virtual CCopasiMethod * createMethod(const CTaskEnum::Method & /*type*/);
 

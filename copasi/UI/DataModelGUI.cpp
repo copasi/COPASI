@@ -166,9 +166,7 @@ void DataModelGUI::addModelFinished()
   if (mSuccess)
     {
       //notify(ListViews::MODEL, ListViews::CHANGE, "");
-
-      CRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
-      CRootContainer::getConfiguration()->save();
+      addRecentCopasiFile(mFileName);
       //linkDataModelToGUI();
     }
 
@@ -201,6 +199,59 @@ void DataModelGUI::loadModel(const std::string & fileName)
   mpThread->start();
 }
 
+void DataModelGUI::downloadFileFromUrl(const std::string & url, const std::string& destination)
+{
+
+  mSuccess = true;
+
+  QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+
+  QString server = FROM_UTF8(CRootContainer::getConfiguration()->getProxyServer());
+
+  // if we have a proxy server use it
+  if (!server.isEmpty())
+    {
+      int port = CRootContainer::getConfiguration()->getProxyPort();
+      QString user = FROM_UTF8(CRootContainer::getConfiguration()->getProxyUser());
+      QString pass = FROM_UTF8(CRootContainer::getConfiguration()->getProxyPassword());
+
+      // if we have a username, but no password stored (which would be in clear text), then
+      // ask for password.
+      if (!user.isEmpty() && pass.isEmpty())
+        {
+          bool flag = false;
+          QString temp = QInputDialog::getText(
+                           (QWidget*)((CQCopasiApplication*)qApp)->getMainWindow(),
+                           QString("Enter proxy password"),
+                           QString("You specified a proxy username, but no password, please enter the proxy password"),
+                           QLineEdit::Password,
+                           QString(""),
+                           &flag
+                         );
+
+          if (flag)
+            pass = temp;
+        }
+
+      manager->setProxy(QNetworkProxy(QNetworkProxy::HttpProxy, server, port, user, pass));
+    }
+
+  // start progress dialog
+  mpProgressBar = CProgressBar::create();
+  mpProgressBar->setName("Download file...");
+  mDownloadedBytes = 0; mDownloadedTotalBytes = 100;
+  mUpdateItem = ((CProcessReport*)mpProgressBar)->addItem("Download file", mDownloadedBytes, &mDownloadedTotalBytes);
+  mFileName = destination;
+
+  connect(manager, SIGNAL(finished(QNetworkReply*)),
+          this, SLOT(downloadFinished(QNetworkReply*)));
+
+  QNetworkReply* reply = manager->get(QNetworkRequest(QUrl(FROM_UTF8(url))));
+  connect(reply, SIGNAL(downloadProgress(qint64, qint64)),
+          this, SLOT(miriamDownloadProgress(qint64, qint64)));
+
+}
+
 void DataModelGUI::loadModelRun()
 {
   try
@@ -219,8 +270,7 @@ void DataModelGUI::loadModelFinished()
 {
   if (mSuccess)
     {
-      CRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
-      CRootContainer::getConfiguration()->save();
+      addRecentCopasiFile(mFileName);
 
       mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
       linkDataModelToGUI();
@@ -262,8 +312,7 @@ void DataModelGUI::saveModelFinished()
 {
   if (mSuccess)
     {
-      CRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
-      CRootContainer::getConfiguration()->save();
+      addRecentCopasiFile(mFileName);
     }
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(saveModelFinished()));
@@ -378,8 +427,7 @@ void DataModelGUI::importSBMLFinished()
   if (mSuccess)
     {
       this->importCellDesigner();
-      CRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
-      CRootContainer::getConfiguration()->save();
+      addRecentSBMLFile(mFileName);
 
       mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
       linkDataModelToGUI();
@@ -476,8 +524,7 @@ void DataModelGUI::exportSBMLFinished()
 {
   if (mSuccess)
     {
-      CRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
-      CRootContainer::getConfiguration()->save();
+      addRecentSBMLFile(mFileName);
     }
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
@@ -513,6 +560,11 @@ void DataModelGUI::exportMathModelRun()
     }
 }
 
+const std::string & DataModelGUI::getFileName() const
+{
+  return mFileName;
+}
+
 void DataModelGUI::exportMathModelFinished()
 {
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportMathModelFinished()));
@@ -525,6 +577,7 @@ void DataModelGUI::miriamDownloadFinished(QNetworkReply* reply)
   bool success = true;
   mDownloadedBytes = 100;
   mpProgressBar->progressItem(mUpdateItem);
+  mpProgressBar->finishItem(mUpdateItem);
 
   CMIRIAMResources & miriamResources = *mpMiriamResources;
 
@@ -559,6 +612,35 @@ void DataModelGUI::miriamDownloadFinished(QNetworkReply* reply)
 
   // notify UI to pick up
   emit finished(success);
+}
+
+void DataModelGUI::downloadFinished(QNetworkReply *reply)
+{
+  mSuccess = false;
+  mDownloadedBytes = 100;
+  mpProgressBar->progressItem(mUpdateItem);
+
+  if (reply != NULL && reply->error() == QNetworkReply::NoError && reply->bytesAvailable() > 0)
+    {
+      QFile downloadedFile(mFileName.c_str());
+
+      if (downloadedFile.open(QFile::WriteOnly))
+        {
+          downloadedFile.write(reply->readAll());
+          downloadedFile.flush();
+          downloadedFile.close();
+          mSuccess = true;
+        }
+    }
+  else
+    {
+      QString errorString = reply->errorString();
+      CCopasiMessage(CCopasiMessage::ERROR, TO_UTF8_UNTRIMMED(errorString));
+    }
+
+  reply->deleteLater();
+
+  threadFinished();
 }
 
 void DataModelGUI::miriamDownloadProgress(qint64 received, qint64 total)
@@ -764,6 +846,47 @@ void DataModelGUI::commit()
     {
       (*it)->commit();
     }
+}
+
+void DataModelGUI::setIgnoreNextFile(bool ignore)
+{
+  mIgnoreNextFile = ignore;
+}
+
+void DataModelGUI::addRecentCopasiFile(const std::string & file)
+{
+  if (mIgnoreNextFile)
+    {
+      mIgnoreNextFile = false;
+      return;
+    }
+
+  CRootContainer::getConfiguration()->getRecentFiles().addFile(file);
+  CRootContainer::getConfiguration()->save();
+}
+
+void DataModelGUI::addRecentSBMLFile(const std::string & file)
+{
+  if (mIgnoreNextFile)
+    {
+      mIgnoreNextFile = false;
+      return;
+    }
+
+  CRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(file);
+  CRootContainer::getConfiguration()->save();
+}
+
+void DataModelGUI::addRecentSEDMLFile(const std::string & file)
+{
+  if (mIgnoreNextFile)
+    {
+      mIgnoreNextFile = false;
+      return;
+    }
+
+  CRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(file);
+  CRootContainer::getConfiguration()->save();
 }
 
 /**
@@ -1028,8 +1151,7 @@ void DataModelGUI::importSEDMLFinished()
 {
   if (mSuccess)
     {
-      CRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
-      CRootContainer::getConfiguration()->save();
+      addRecentSEDMLFile(mFileName);
       mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
       linkDataModelToGUI();
     }
@@ -1060,8 +1182,7 @@ void DataModelGUI::exportSEDMLFinished()
 {
   if (mSuccess)
     {
-      CRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
-      CRootContainer::getConfiguration()->save();
+      addRecentSEDMLFile(mFileName);
     }
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSEDMLFinished()));

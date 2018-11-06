@@ -22,6 +22,7 @@
 #include "copasi/core/CDataContainer.h"
 #include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/undo/CData.h"
+#include <copasi/utilities/utility.h>
 
 CDataObject::CDataObject():
   CObjectInterface(),
@@ -234,9 +235,14 @@ bool CDataObject::setObjectName(const std::string & name)
 
   if (Name == mObjectName) return true;
 
+  std::string escapedName = CCommonName::escape(Name);
+
+  if (isNumber(name))
+    escapedName = "\"" + escapedName + "\"";
+
   if (mpObjectParent != NULL &&
       mpObjectParent->hasFlag(NameVector) &&
-      mpObjectParent->getObject("[" + CCommonName::escape(Name) + "]") != NULL)
+      mpObjectParent->getObject("[" + escapedName + "]") != NULL)
     return false;
 
   std::string OldName = mObjectName;

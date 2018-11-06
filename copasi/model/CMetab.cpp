@@ -243,12 +243,20 @@ bool CMetab::setObjectParent(const CDataContainer * pParent)
 
   Status CurrentStatus = getStatus();
 
+  //we need to save the expression since it will be deleted by the type change
+  auto tmpexp = getExpression();
+
+  //TODO what it the reason for this forced type change?
   if (CurrentStatus != Status::FIXED)
     setStatus(Status::FIXED);
   else
     setStatus(Status::REACTIONS);
 
   setStatus(CurrentStatus);
+  
+  //restore the expression
+  if (pParent)
+    setExpression(tmpexp);
 
   return true;
 }
