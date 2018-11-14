@@ -975,7 +975,7 @@ void CSBMLExporter::createAreaUnit(const CDataModel& dataModel)
         }
     }
 
-// if we write an SBML L3 document, we have to explicitely set the units on the model
+// if we write an SBML L3 document, we have to explicitly set the units on the model
   if (this->mSBMLLevel > 2)
     {
       pSBMLModel->setAreaUnits(uDef.getId());
@@ -1067,36 +1067,24 @@ void CSBMLExporter::createCompartment(const CCompartment& compartment)
 
   if (status == CModelEntity::Status::ASSIGNMENT)
     {
-      if (compartment.getDimensionality() != 0)
-        {
-          this->mAssignmentVector.push_back(&compartment);
-          pSBMLCompartment->setConstant(false);
-          removeInitialAssignment(pSBMLCompartment->getId());
-        }
-      else
-        {
-          fatalError();
-        }
+
+      this->mAssignmentVector.push_back(&compartment);
+      pSBMLCompartment->setConstant(false);
+      removeInitialAssignment(pSBMLCompartment->getId());
+
     }
   else if (status == CModelEntity::Status::ODE)
     {
-      if (compartment.getDimensionality() != 0)
-        {
-          this->mODEVector.push_back(&compartment);
-          pSBMLCompartment->setConstant(false);
+      this->mODEVector.push_back(&compartment);
+      pSBMLCompartment->setConstant(false);
 
-          if (!compartment.getInitialExpression().empty())
-            {
-              this->mInitialAssignmentVector.push_back(&compartment);
-            }
-          else
-            {
-              removeInitialAssignment(pSBMLCompartment->getId());
-            }
+      if (!compartment.getInitialExpression().empty())
+        {
+          this->mInitialAssignmentVector.push_back(&compartment);
         }
       else
         {
-          fatalError();
+          removeInitialAssignment(pSBMLCompartment->getId());
         }
     }
   else
@@ -1119,14 +1107,7 @@ void CSBMLExporter::createCompartment(const CCompartment& compartment)
       // fill initial assignment set
       if (!compartment.getInitialExpression().empty())
         {
-          if (compartment.getDimensionality() != 0)
-            {
-              this->mInitialAssignmentVector.push_back(&compartment);
-            }
-          else
-            {
-              fatalError();
-            }
+          this->mInitialAssignmentVector.push_back(&compartment);
         }
       else
         {
@@ -1853,16 +1834,13 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CDa
             {
               const CCompartment* pCompartment = pMetab->getCompartment();
 
-              if (pCompartment->getDimensionality() != 0)
-                {
-                  CEvaluationNode* pNode = CSBMLExporter::multiplyByObject(pOrigNode, pCompartment->getInitialValueReference());
-                  assert(pNode != NULL);
+              CEvaluationNode* pNode = CSBMLExporter::multiplyByObject(pOrigNode, pCompartment->getInitialValueReference());
+              assert(pNode != NULL);
 
-                  if (pNode != NULL)
-                    {
-                      delete pOrigNode;
-                      pOrigNode = pNode;
-                    }
+              if (pNode != NULL)
+                {
+                  delete pOrigNode;
+                  pOrigNode = pNode;
                 }
             }
         }
@@ -2151,16 +2129,13 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CDataModel& data
             {
               const CCompartment* pCompartment = pMetab->getCompartment();
 
-              if (pCompartment->getDimensionality() != 0)
-                {
-                  CEvaluationNode* pNode = CSBMLExporter::multiplyByObject(pOrigNode, pCompartment->getValueReference());
-                  assert(pNode != NULL);
+              CEvaluationNode* pNode = CSBMLExporter::multiplyByObject(pOrigNode, pCompartment->getValueReference());
+              assert(pNode != NULL);
 
-                  if (pNode != NULL)
-                    {
-                      delete pOrigNode;
-                      pOrigNode = pNode;
-                    }
+              if (pNode != NULL)
+                {
+                  delete pOrigNode;
+                  pOrigNode = pNode;
                 }
             }
         }
@@ -5248,16 +5223,13 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
                 {
                   const CCompartment* pCompartment = pMetab->getCompartment();
 
-                  if (pCompartment->getDimensionality() != 0)
-                    {
-                      CEvaluationNode* pNode = CSBMLExporter::multiplyByObject(pOrigNode, pCompartment->getValueReference());
-                      assert(pNode != NULL);
+                  CEvaluationNode* pNode = CSBMLExporter::multiplyByObject(pOrigNode, pCompartment->getValueReference());
+                  assert(pNode != NULL);
 
-                      if (pNode != NULL)
-                        {
-                          delete pOrigNode;
-                          pOrigNode = pNode;
-                        }
+                  if (pNode != NULL)
+                    {
+                      delete pOrigNode;
+                      pOrigNode = pNode;
                     }
                 }
             }
@@ -5450,38 +5422,35 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CDataMode
           const CCompartment* compartment = reaction.getScalingCompartment() != NULL ? reaction.getScalingCompartment() :
                                             (!reaction.getChemEq().getSubstrates().empty()) ? (reaction.getChemEq().getSubstrates()[0].getMetabolite()->getCompartment()) : (reaction.getChemEq().getProducts()[0].getMetabolite()->getCompartment());
 
-          if (compartment->getDimensionality() != 0)
+          // check if the importer has added a division by the volume
+          // if so remove it instead of multiplying again
+          ASTNode* pTNode = CSBMLExporter::isDividedByVolume(pNode, compartment->getSBMLId());
+
+          if (pTNode)
             {
-              // check if the importer has added a division by the volume
-              // if so remove it instead of multiplying again
-              ASTNode* pTNode = CSBMLExporter::isDividedByVolume(pNode, compartment->getSBMLId());
-
-              if (pTNode)
+              if (pTNode->getNumChildren() == 0)
                 {
-                  if (pTNode->getNumChildren() == 0)
-                    {
-                      fatalError();
-                    }
-
-                  if (pTNode->getNumChildren() == 1)
-                    {
-                      ASTNode* pTmp = static_cast<ConverterASTNode*>(pTNode)->removeChild(0);
-                      delete pTNode;
-                      pTNode = pTmp;
-                    }
-
-                  delete pNode;
-                  pNode = pTNode;
+                  fatalError();
                 }
-              else
+
+              if (pTNode->getNumChildren() == 1)
                 {
-                  pTNode = new ASTNode(AST_TIMES);
-                  ASTNode* pVNode = new ASTNode(AST_NAME);
-                  pVNode->setName(compartment->getSBMLId().c_str());
-                  pTNode->addChild(pVNode);
-                  pTNode->addChild(pNode);
-                  pNode = pTNode;
+                  ASTNode* pTmp = static_cast<ConverterASTNode*>(pTNode)->removeChild(0);
+                  delete pTNode;
+                  pTNode = pTmp;
                 }
+
+              delete pNode;
+              pNode = pTNode;
+            }
+          else
+            {
+              pTNode = new ASTNode(AST_TIMES);
+              ASTNode* pVNode = new ASTNode(AST_NAME);
+              pVNode->setName(compartment->getSBMLId().c_str());
+              pTNode->addChild(pVNode);
+              pTNode->addChild(pNode);
+              pNode = pTNode;
             }
         }
 
@@ -6926,22 +6895,19 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                       // multiply by the volume as well
                       const CCompartment* pCompartment = pMetab->getCompartment();
 
-                      if (pCompartment->getDimensionality() != 0)
+                      CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
+                      pTmpNode->addChild(pResult);
+
+                      if (pObject->getObjectName() == "InitialParticleNumber")
                         {
-                          CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
-                          pTmpNode->addChild(pResult);
-
-                          if (pObject->getObjectName() == "InitialParticleNumber")
-                            {
-                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
-                            }
-                          else
-                            {
-                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
-                            }
-
-                          pResult = pTmpNode;
+                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
                         }
+                      else
+                        {
+                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
+                        }
+
+                      pResult = pTmpNode;
                     }
                 }
               else
