@@ -253,7 +253,7 @@ const CObjectInterface * CDataContainer::getObject(const CCommonName & cn) const
         return new CDataString(Name, this);
       else if (Type == "Separator")
         return new CCopasiReportSeparator(Name, this);
-      else if (getObjectName() == "Root")
+      else if (getObjectName() == "Root" && Type == "Vector")
         return CRootContainer::getRoot()->getObject(cn);
       else
         return NULL;
