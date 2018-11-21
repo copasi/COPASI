@@ -92,6 +92,8 @@ const CEnumAnnotation< std::string, CData::Property > CData::PropertyName(
   "Priority Expression", // PRIORITY_EXPRESSION
   "Assignments", // ASSIGNMENTS
   "Vector Content" // VECTOR_CONTENT
+  "Unit symbol", // UNIT_SYMBOL
+  "Unit expression", // UNIT_EXPRESSION
 });
 
 CData::CData():
