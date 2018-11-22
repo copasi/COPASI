@@ -6204,7 +6204,10 @@ ConverterASTNode* SBMLImporter::isMultipliedByVolume(const ASTNode* node, const 
             {
               found = true;
             }
-          else if ((!found) && (child->getType() == AST_TIMES || child->getType() == AST_DIVIDE))
+          else if ((!found) &&
+                   ((child->getType() == AST_TIMES || child->getType() == AST_DIVIDE)
+                    && ((node->getType() == AST_DIVIDE && i == 0) || node->getType() == AST_TIMES)))
+            //else if ((!found) && (child->getType() == AST_TIMES || child->getType() == AST_DIVIDE))
             {
               ASTNode* pSubResult = this->isMultipliedByVolume(child, compartmentSBMLId);
 
@@ -6233,19 +6236,14 @@ ConverterASTNode* SBMLImporter::isMultipliedByVolume(const ASTNode* node, const 
             }
           else
             {
-              // bail in case of hOSU
-              if (child->getType() == AST_NAME &&  !mSubstanceOnlySpecies.empty())
+
+              if (node->getType() == AST_DIVIDE && i > 0)
                 {
-                  std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
-                  std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
-
-                  while (it != endIt)
-                    {
-                      if (it->first->getId() == child->getName()) return NULL;
-
-                      it++;
-                    }
+                  found = false;
+                  // do not cancel volume in the denominator
+                  break;
                 }
+
 
               pTmpResultNode->addChild(new ConverterASTNode(*child));
             }
