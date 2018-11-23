@@ -93,7 +93,12 @@ private:
   /**
    * Pointer to the array with left hand side values of the math container.
    */
-  C_FLOAT64 * mpY;
+  //C_FLOAT64 * mpY;
+
+  /**
+   * the vector that contains the extended system
+   */
+  CVector< C_FLOAT64 > mVariables;
 
   /**
    * Pointer to the array with right hand side values of the math container.
@@ -135,7 +140,7 @@ private:
   /**
    * A pointer to the absolute tolerances excluding fixed event targets.
    */
-  C_FLOAT64 * mpAtol;
+  //C_FLOAT64 * mpAtol;
 
   /**
    * Stream to capture LSODA error messages

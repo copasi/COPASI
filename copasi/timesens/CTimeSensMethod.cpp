@@ -52,7 +52,8 @@ CTimeSensMethod::CTimeSensMethod(const CDataContainer * pParent,
   mpTask(NULL),
   mpProblem(NULL),
   mRootsFound(0),
-  mpReducedModel(&ReducedModel)
+  mpReducedModel(&ReducedModel),
+  mSystemSize(0)
 {
   mpTask = const_cast< CTimeSensTask * >(dynamic_cast< const CTimeSensTask * >(getObjectParent()));
 }
@@ -69,7 +70,8 @@ CTimeSensMethod::CTimeSensMethod(const CTimeSensMethod & src,
   mpTask(NULL),
   mpProblem(NULL),
   mRootsFound(0),
-  mpReducedModel(&ReducedModel)
+  mpReducedModel(&ReducedModel),
+  mSystemSize(0)
 {
   mpTask = const_cast< CTimeSensTask * >(dynamic_cast< const CTimeSensTask * >(getObjectParent()));
 }

@@ -34,6 +34,8 @@
 #include "copasi/utilities/CCopasiMethod.h"
 #include "copasi/core/CVector.h"
 #include "copasi/math/CMathEnum.h"
+#include "copasi/core/CMatrix.h"
+
 
 class CTimeSensTask;
 class CTimeSensProblem;
@@ -175,10 +177,23 @@ protected:
   const bool * mpReducedModel;
 
   /**
-   * Default value whether indicating whether to integrate the reduced model
+   * Default value indicating whether to integrate the reduced model
    * initialized to false.
    */
   static const bool ReducedModel;
+  
+  /**
+   *  Number of variables in the model
+   */
+  size_t mSystemSize;
+
+  /**
+   *  Number of parameters for the sensitivities to calculate
+   */
+  unsigned C_INT32 mNumParameters;
+
+  CMatrix<C_FLOAT64> mJacobian;
+
 };
 
 #endif // COPASI_CTimeSensMethod

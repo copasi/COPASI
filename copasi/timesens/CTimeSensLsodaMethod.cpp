@@ -47,7 +47,7 @@ CTimeSensLsodaMethod::CTimeSensLsodaMethod(const CDataContainer * pParent,
   mpMaxInternalSteps(NULL),
   mpMaxInternalStepSize(NULL),
   mData(),
-  mpY(NULL),
+  //mpY(NULL),
   mpYdot(NULL),
   mNumRoots(0),
   mTime(),
@@ -55,7 +55,7 @@ CTimeSensLsodaMethod::CTimeSensLsodaMethod(const CDataContainer * pParent,
   mLastSuccessState(),
   mLastRootState(),
   mAtol(),
-  mpAtol(NULL),
+  //mpAtol(NULL),
   mErrorMsg(),
   mLSODA(),
   mLSODAR(),
@@ -84,7 +84,7 @@ CTimeSensLsodaMethod::CTimeSensLsodaMethod(const CTimeSensLsodaMethod & src,
   mpMaxInternalSteps(NULL),
   mpMaxInternalStepSize(NULL),
   mData(src.mData),
-  mpY(NULL),
+  //mpY(NULL),
   mpYdot(NULL),
   mNumRoots(src.mNumRoots),
   mTime(src.mTime),
@@ -92,7 +92,7 @@ CTimeSensLsodaMethod::CTimeSensLsodaMethod(const CTimeSensLsodaMethod & src,
   mLastSuccessState(src.mLastSuccessState),
   mLastRootState(src.mLastRootState),
   mAtol(src.mAtol),
-  mpAtol(NULL),
+  //mpAtol(NULL),
   mErrorMsg(src.mErrorMsg.str()),
   mLSODA(),
   mLSODAR(),
@@ -123,89 +123,11 @@ CTimeSensLsodaMethod::~CTimeSensLsodaMethod()
 
 void CTimeSensLsodaMethod::initializeParameter()
 {
-  CCopasiParameter *pParm;
-
   mpReducedModel = assertParameter("Integrate Reduced Model", CCopasiParameter::Type::BOOL, (bool) false);
   mpRelativeTolerance = assertParameter("Relative Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-6);
   mpAbsoluteTolerance = assertParameter("Absolute Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-12);
   mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::Type::UINT, (unsigned C_INT32) 10000);
   mpMaxInternalStepSize = assertParameter("Max Internal Step Size", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 0.0);
-
-  // Check whether we have a method with the old parameter names
-  if ((pParm = getParameter("LSODA.RelativeTolerance")) != NULL)
-    {
-      *mpRelativeTolerance = pParm->getValue< C_FLOAT64 >();
-      removeParameter("LSODA.RelativeTolerance");
-
-      if ((pParm = getParameter("LSODA.AbsoluteTolerance")) != NULL)
-        {
-          *mpAbsoluteTolerance = pParm->getValue< C_FLOAT64 >();
-          removeParameter("LSODA.AbsoluteTolerance");
-        }
-
-      if ((pParm = getParameter("LSODA.AdamsMaxOrder")) != NULL)
-        {
-          removeParameter("LSODA.AdamsMaxOrder");
-        }
-
-      if ((pParm = getParameter("LSODA.BDFMaxOrder")) != NULL)
-        {
-          removeParameter("LSODA.BDFMaxOrder");
-        }
-
-      if ((pParm = getParameter("LSODA.MaxStepsInternal")) != NULL)
-        {
-          *mpMaxInternalSteps = pParm->getValue< unsigned C_INT32 >();
-          removeParameter("LSODA.MaxStepsInternal");
-        }
-    }
-
-  // Check whether we have a method with "Use Default Absolute Tolerance"
-  if ((pParm = getParameter("Use Default Absolute Tolerance")) != NULL)
-    {
-      C_FLOAT64 NewValue;
-
-      if (pParm->getValue< bool >())
-        {
-          // The default
-          NewValue = 1.e-12;
-        }
-      else
-        {
-          C_FLOAT64 OldValue = *mpAbsoluteTolerance;
-          CDataModel* pDataModel = getObjectDataModel();
-          assert(pDataModel != NULL);
-          CModel * pModel = pDataModel->getModel();
-
-          if (pModel == NULL)
-            // The default
-            NewValue = 1.e-12;
-          else
-            {
-              const CDataVectorNS< CCompartment > & Compartment = pModel->getCompartments();
-              size_t i, imax;
-              C_FLOAT64 Volume = std::numeric_limits< C_FLOAT64 >::max();
-
-              for (i = 0, imax = Compartment.size(); i < imax; i++)
-                if (Compartment[i].getValue() < Volume)
-                  Volume = Compartment[i].getValue();
-
-              if (Volume == std::numeric_limits< C_FLOAT64 >::max())
-                // The default
-                NewValue = 1.e-12;
-              else
-                // Invert the scaling as best as we can
-                NewValue = OldValue / (Volume * pModel->getQuantity2NumberFactor());
-            }
-        }
-
-      *mpAbsoluteTolerance = NewValue;
-      removeParameter("Use Default Absolute Tolerance");
-    }
-
-  // These parameters are no longer supported.
-  removeParameter("Adams Max Order");
-  removeParameter("BDF Max Order");
 }
 
 bool CTimeSensLsodaMethod::elevateChildren()
@@ -253,6 +175,7 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
 {
   if (mData.dim == 1 && mNumRoots == 0) //just do nothing if there are no variables except time
     {
+      //TODO
       mTime += deltaT;
       *mpContainerStateTime = mTime;
 
@@ -315,12 +238,12 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
         {
           mLSODAR(&EvalF, //  1. evaluate F
                   &mData.dim, //  2. number of variables
-                  mpY, //  3. the array of current concentrations
+                  mVariables.array(), //  3. the array of current concentrations
                   &mTime, //  4. the current time
                   &EndTime, //  5. the final time
                   &ITOL, //  6. error control
                   mpRelativeTolerance, //  7. relative tolerance array
-                  mpAtol, //  8. absolute tolerance array
+                  mAtol.array(), //  8. absolute tolerance array
                   &mTask, //  9. output by overshoot & interpolation
                   &mLsodaStatus, // 10. the state control variable
                   &one, // 11. further options (one)
@@ -333,6 +256,8 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
                   &EvalR, // 18. evaluate constraint functions
                   &mNumRoots, // 19. number of constraint functions g(i)
                   mRootsFound.array()); // 20. integer array of length NG for output of root information
+
+          memcpy(mpContainerStateTime + 1, mVariables.array(), mSystemSize * sizeof(C_FLOAT64));
 
           // There exist situations where LSODAR reports status = 3, which are actually status = -33
           // Obviously the trivial case is where LSODAR did not advance at all, i.e, the start time
@@ -357,23 +282,6 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
                   mRootCounter = 0;
                 }
 
-#ifdef XXXX
-              else if (mRootCounter == 0 &&
-                       fabs(mTime - StartTime) < 50.0 * (fabs(mTime) + fabs(StartTime)) * std::numeric_limits< C_FLOAT64 >::epsilon())
-                {
-                  if (!std::isnan(mLastRootState.ContainerState[0]))
-                    {
-                      std::cout << "Attempt to fix edge case:" << std::endl;
-                      resetState(mLastRootState);
-
-                      mLastRootState.Status = ROOT;
-                      mLsodaStatus = 1;
-
-                      return step(EndTime - mTime);
-                    }
-                }
-
-#endif // XXXX
             }
 
           // Try without over shooting.
@@ -535,12 +443,12 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
     {
       mLSODA(&EvalF, //  1. evaluate F
              &mData.dim, //  2. number of variables
-             mpY, //  3. the array of current concentrations
+             mVariables.array(), //  3. the array of current concentrations
              &mTime, //  4. the current time
              &EndTime, //  5. the final time
              &ITOL, //  6. error control
              mpRelativeTolerance, //  7. relative tolerance array
-             mpAtol, //  8. absolute tolerance array
+             mAtol.array(), //  8. absolute tolerance array
              &mTask, //  9. output by overshoot & interpolation
              &mLsodaStatus, // 10. the state control variable
              &one, // 11. further options (one)
@@ -550,6 +458,8 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
              &ISize, // 15. the int work array size
              EvalJ, // 16. evaluate J (not given)
              &mJType);        // 17. the type of jacobian calculate (2)
+
+      memcpy(mpContainerStateTime + 1, mVariables.array(), mSystemSize * sizeof(C_FLOAT64));
 
       if (mLsodaStatus <= 0 ||
           !mpContainer->isStateValid())
@@ -625,13 +535,37 @@ void CTimeSensLsodaMethod::start()
 
   destroyRootMask();
 
-  mAtol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
+
+  //init size of the system
+  mSystemSize = mContainerState.size() - mpContainer->getCountFixedEventTargets() - 1;
+  mNumParameters = 0; //TODO
+  mData.dim = (C_INT)(mSystemSize * (1 + mNumParameters));
+  
+  //initialize the vector on which lsoda will work
+  mVariables.resize(mData.dim);
+  memcpy(mVariables.array(), mpContainerStateTime + 1, mSystemSize * sizeof(C_FLOAT64));
+  //TODO: initialize sensitivities
+
+  //reserve space for jacobian
+  mJacobian.resize(mSystemSize, mSystemSize);
 
   // We ignore fixed event targets and start with the time
-  mData.dim = (C_INT)(mContainerState.size() - mpContainer->getCountFixedEventTargets());
-  mpY = mpContainerStateTime;
-  mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getCountFixedEventTargets();
-  mpAtol = mAtol.array() + mpContainer->getCountFixedEventTargets();
+  //mData.dim = (C_INT)(mContainerState.size() - mpContainer->getCountFixedEventTargets());
+  //mpY = mpContainerStateTime;
+  //mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getCountFixedEventTargets();
+  mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getCountFixedEventTargets() + 1;
+
+  //init absolute tolerances for the extended ODE
+  CVector< C_FLOAT64 > tmpAtol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
+  mAtol.resize(mData.dim);
+  size_t i;
+  for (i = 0; i < mSystemSize; ++i)
+    mAtol[i] = tmpAtol[i]+ mpContainer->getCountFixedEventTargets(); //TODO shift? + mpContainer->getCountFixedEventTargets()
+  for (i = mSystemSize; i < mData.dim; ++i)
+    mAtol[i] = 1e-12;
+
+  //mAtol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
+  //mpAtol = mAtol.array() + mpContainer->getCountFixedEventTargets();
 
   /* Configure lsoda(r) */
   mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9) + 3 * mNumRoots);
@@ -668,17 +602,46 @@ void CTimeSensLsodaMethod::start()
 void CTimeSensLsodaMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
-void CTimeSensLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
+void CTimeSensLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
-  *mpContainerStateTime = *t;
-
-  mpContainer->updateSimulatedValues(*mpReducedModel);
-  memcpy(ydot, mpYdot, mData.dim * sizeof(C_FLOAT64));
-
+/*
 #ifdef DEBUG_NUMERICS
   std::cout << "State:     " << mpContainer->getState(false) << std::endl;
   std::cout << "Rate:      " << mpContainer->getRate(false) << std::endl;
 #endif // DEBUG_NUMERICS
+*/
+  assert(y == mVariables.array());
+
+  //update the container and calculate the RHS of the system
+  *mpContainerStateTime = *t;
+  memcpy(mpContainerStateTime + 1, mVariables.array(), mSystemSize * sizeof(C_FLOAT64)); //TODO shift?
+  mpContainer->updateSimulatedValues(*mpReducedModel);
+  memcpy(ydot, mpYdot, mSystemSize * sizeof(C_FLOAT64));
+
+  //calculate the RHS of the extended system
+  mpContainer->calculateJacobian(mJacobian, 1e-6, *mpReducedModel);
+
+  C_FLOAT64 *dbl1;
+  const C_FLOAT64 *dbl2, *dbl3, *dbl1end, *dbl3end;
+  dbl1 = ydot + mSystemSize;
+  size_t i;
+  for (i = 1; i <= mNumParameters; ++i)
+    {
+      //dbl1 += mSystemSize;
+      dbl1end = dbl1 + mSystemSize;
+      dbl2 = mJacobian.array();
+
+      for (; dbl1 != dbl1end; ++dbl1)
+        {
+          *dbl1 = 0.0;
+
+          dbl3 = y + i * mSystemSize;
+          dbl3end = dbl3 + mSystemSize;
+
+          for (; dbl3 != dbl3end; ++dbl3, ++dbl2)
+            *dbl1 += *dbl2 **dbl3;
+        }
+    }
 
   return;
 }
