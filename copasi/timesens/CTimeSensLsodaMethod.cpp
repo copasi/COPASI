@@ -257,8 +257,8 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
                   &mNumRoots, // 19. number of constraint functions g(i)
                   mRootsFound.array()); // 20. integer array of length NG for output of root information
 
-          memcpy(mpContainerStateTime + 1, mVariables.array(), mSystemSize * sizeof(C_FLOAT64));
-
+          memcpy(mpContainerStateTime, mVariables.array(), (mSystemSize+1) * sizeof(C_FLOAT64));
+          
           // There exist situations where LSODAR reports status = 3, which are actually status = -33
           // Obviously the trivial case is where LSODAR did not advance at all, i.e, the start time
           // equals the current time. It may also happen that a very small steps has been taken.
@@ -459,7 +459,7 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
              EvalJ, // 16. evaluate J (not given)
              &mJType);        // 17. the type of jacobian calculate (2)
 
-      memcpy(mpContainerStateTime + 1, mVariables.array(), mSystemSize * sizeof(C_FLOAT64));
+      memcpy(mpContainerStateTime, mVariables.array(), (mSystemSize+1) * sizeof(C_FLOAT64));
 
       if (mLsodaStatus <= 0 ||
           !mpContainer->isStateValid())
@@ -539,11 +539,11 @@ void CTimeSensLsodaMethod::start()
   //init size of the system
   mSystemSize = mContainerState.size() - mpContainer->getCountFixedEventTargets() - 1;
   mNumParameters = 0; //TODO
-  mData.dim = (C_INT)(mSystemSize * (1 + mNumParameters));
+  mData.dim = (C_INT)(1+mSystemSize * (1 + mNumParameters)); //including time
   
   //initialize the vector on which lsoda will work
   mVariables.resize(mData.dim);
-  memcpy(mVariables.array(), mpContainerStateTime + 1, mSystemSize * sizeof(C_FLOAT64));
+  memcpy(mVariables.array(), mpContainerStateTime, (mSystemSize+1) * sizeof(C_FLOAT64));
   //TODO: initialize sensitivities
 
   //reserve space for jacobian
@@ -553,15 +553,15 @@ void CTimeSensLsodaMethod::start()
   //mData.dim = (C_INT)(mContainerState.size() - mpContainer->getCountFixedEventTargets());
   //mpY = mpContainerStateTime;
   //mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getCountFixedEventTargets();
-  mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getCountFixedEventTargets() + 1;
+  mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getCountFixedEventTargets() ;
 
   //init absolute tolerances for the extended ODE
   CVector< C_FLOAT64 > tmpAtol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
   mAtol.resize(mData.dim);
   size_t i;
-  for (i = 0; i < mSystemSize; ++i)
-    mAtol[i] = tmpAtol[i]+ mpContainer->getCountFixedEventTargets(); //TODO shift? + mpContainer->getCountFixedEventTargets()
-  for (i = mSystemSize; i < mData.dim; ++i)
+  for (i = 0; i < mSystemSize+1; ++i)
+    mAtol[i] = tmpAtol[i+ mpContainer->getCountFixedEventTargets()]; //TODO shift? + mpContainer->getCountFixedEventTargets()
+  for (i = mSystemSize+1; i < mData.dim; ++i)
     mAtol[i] = 1e-12;
 
   //mAtol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
@@ -613,10 +613,10 @@ void CTimeSensLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLO
   assert(y == mVariables.array());
 
   //update the container and calculate the RHS of the system
-  *mpContainerStateTime = *t;
-  memcpy(mpContainerStateTime + 1, mVariables.array(), mSystemSize * sizeof(C_FLOAT64)); //TODO shift?
+  *mpContainerStateTime = *t; //redundant?
+  memcpy(mpContainerStateTime, mVariables.array(), (mSystemSize+1) * sizeof(C_FLOAT64)); //TODO shift?
   mpContainer->updateSimulatedValues(*mpReducedModel);
-  memcpy(ydot, mpYdot, mSystemSize * sizeof(C_FLOAT64));
+  memcpy(ydot, mpYdot, (mSystemSize+1) * sizeof(C_FLOAT64));
 
   //calculate the RHS of the extended system
   mpContainer->calculateJacobian(mJacobian, 1e-6, *mpReducedModel);
