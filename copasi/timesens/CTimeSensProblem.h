@@ -1,20 +1,6 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /**
@@ -51,7 +37,7 @@ public:
    * @paramconst CDataContainer * pParent (default: NULL)
    */
   CTimeSensProblem(const CTimeSensProblem & src,
-                     const CDataContainer * pParent);
+                   const CDataContainer * pParent);
 
   /**
    *  Destructor.
@@ -66,6 +52,16 @@ public:
   virtual bool elevateChildren();
 
   size_t getNumParameters();
+
+  void addParameterCN(const CCommonName& cn);
+
+  CCommonName getParameterCN(size_t index);
+
+  void removeParameterCN(size_t index);
+
+  void removeParameterCN(const CCommonName& cn);
+
+  void clearParameterCNs();
 
   CArray & getResult();
   const CArray & getResult() const;
@@ -136,13 +132,15 @@ protected:
    *  Indicate whether the step number or step size was set last.
    */
   bool mStepNumberSetLast;
-  
+
   /**
    *  This holds the result
    */
   CArray mResult;
 
   CDataArray * mpResultAnnotation;
+
+  CCopasiParameterGroup * mpParametersGroup;
 
 };
 

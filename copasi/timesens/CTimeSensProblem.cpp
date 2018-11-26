@@ -1,20 +1,6 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /**
@@ -39,7 +25,8 @@
  *  Default constructor.
  */
 CTimeSensProblem::CTimeSensProblem(const CDataContainer * pParent):
-  CTrajectoryProblem(CTaskEnum::Task::timeSens, pParent)
+  CTrajectoryProblem(CTaskEnum::Task::timeSens, pParent),
+  mpParametersGroup(NULL)
 {
   initializeParameter();
   initObjects();
@@ -51,8 +38,9 @@ CTimeSensProblem::CTimeSensProblem(const CDataContainer * pParent):
  *  @param "const CTimeSensProblem &" src
  */
 CTimeSensProblem::CTimeSensProblem(const CTimeSensProblem & src,
-                                       const CDataContainer * pParent):
-  CTrajectoryProblem(src, pParent)
+                                   const CDataContainer * pParent):
+  CTrajectoryProblem(src, pParent),
+  mpParametersGroup(NULL)
 {
   initializeParameter();
   initObjects();
@@ -67,6 +55,7 @@ CTimeSensProblem::~CTimeSensProblem()
 
 void CTimeSensProblem::initializeParameter()
 {
+  mpParametersGroup = assertGroup("ListOfParameters");
 }
 
 void CTimeSensProblem::initObjects()
@@ -80,6 +69,61 @@ void CTimeSensProblem::initObjects()
 bool CTimeSensProblem::elevateChildren()
 {
   return CTrajectoryProblem::elevateChildren();
+}
+
+CCommonName CTimeSensProblem::getParameterCN(size_t index)
+{
+  if (mpParametersGroup == NULL)
+    return CCommonName();
+
+  size_t numParameters = getNumParameters();
+
+  if (index >= numParameters)
+    return CCommonName();
+
+  CCopasiParameter* current = mpParametersGroup->getParameter(index);
+
+  if (current == NULL)
+    return CCommonName();
+
+  return current->getValue<std::string>();
+}
+
+void CTimeSensProblem::removeParameterCN(size_t index)
+{
+  if (mpParametersGroup == NULL)
+    return;
+
+  size_t numParameters = getNumParameters();
+
+  if (index >= numParameters) return;
+
+  mpParametersGroup->removeParameter(index);
+}
+
+void CTimeSensProblem::removeParameterCN(const CCommonName & cn)
+{
+  if (mpParametersGroup == NULL)
+    return;
+
+  size_t numParameters = getNumParameters();
+
+  for (size_t i = numParameters - 1; i >= 0 ; --i)
+    {
+      CCommonName currentCn = getParameterCN(i);
+      CCopasiParameter* current = mpParametersGroup->getParameter(i);
+
+      if (current->getValue<std::string>() == cn)
+        mpParametersGroup->removeParameter(i);
+    }
+}
+
+void CTimeSensProblem::clearParameterCNs()
+{
+  if (mpParametersGroup == NULL)
+    return;
+
+  mpParametersGroup->clear();
 }
 
 CArray & CTimeSensProblem::getResult()
@@ -97,8 +141,26 @@ CDataArray * CTimeSensProblem::getResultAnnotated()
   return mpResultAnnotation;
 }
 
+const CDataArray * CTimeSensProblem::getResultAnnotated() const
+{
+  return mpResultAnnotation;
+}
+
+
+
 size_t CTimeSensProblem::getNumParameters()
 {
-  return 1;
+  if (mpParametersGroup == NULL)
+    return 0;
+
+  return mpParametersGroup->size();
+}
+
+void CTimeSensProblem::addParameterCN(const CCommonName & cn)
+{
+  if (mpParametersGroup == NULL)
+    return;
+
+  mpParametersGroup->addParameter("ParameterCN", CCopasiParameter::Type::CN, cn);
 }
 

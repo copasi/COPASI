@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -41,6 +41,8 @@ ParameterGroupHandler::ParameterGroupHandler(CXMLParser & parser, CXMLParserData
   mNonUniqueParameters["Affected Cross Validation Experiments"].insert("Experiment Key");
 
   mNonUniqueParameters["ListOfVariables"].insert("Variables");
+
+  mNonUniqueParameters["ListOfParameters"].insert("ParameterCN");
 }
 
 // virtual

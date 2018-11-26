@@ -269,6 +269,13 @@ bool CQTimeSensWidget::saveTaskProtected()
       mChanged = true;
     }
 
+  timeSensProblem->clearParameterCNs();
+
+  for (size_t i = 0; i < mpTimeSensProblem->getNumParameters(); ++i)
+    {
+      timeSensProblem->addParameterCN(mpTimeSensProblem->getParameterCN(i));
+    }
+
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
   mpValidatorIntervals->saved();
@@ -331,6 +338,22 @@ bool CQTimeSensWidget::loadTaskProtected()
   mpValidatorIntervalSize->saved();
   mpValidatorIntervals->saved();
   mpValidatorDelay->saved();
+
+  mpListParameters->clear();
+
+  for (size_t i = 0; i < timeSensProblem->getNumParameters(); ++i)
+    {
+      const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObjectFromCN(timeSensProblem->getParameterCN(i)));
+
+      if (!pObject) continue;
+
+      QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
+      pItem->setData(Qt::UserRole, FROM_UTF8(pObject->getCN()));
+      mpListParameters->addItem(pItem);
+
+    }
+
+
   return true;
 }
 
@@ -485,19 +508,32 @@ void CQTimeSensWidget::showUnits()
 
 void CQTimeSensWidget::slotAddParameter()
 {
+  if (mpTimeSensProblem == NULL)
+    return;
+
   std::vector< const CDataObject * > selection =
     CCopasiSelectionDialog::getObjectVector(this, CQSimpleSelectionTree::Parameters);
 
 for (const CDataObject * item : selection)
     {
-      if (mpListParameters->findItems(FROM_UTF8(item->getObjectDisplayName()), Qt::MatchExactly).empty())
-        mpListParameters->addItem(FROM_UTF8(item->getObjectDisplayName()));
+      if (!mpListParameters->findItems(FROM_UTF8(item->getObjectDisplayName()), Qt::MatchExactly).empty())
+        continue;
+
+      QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(item->getObjectDisplayName()));
+      pItem->setData(Qt::UserRole, FROM_UTF8(item->getCN()));
+      mpListParameters->addItem(pItem);
+
+      mpTimeSensProblem->addParameterCN(item->getCN());
+
     }
 
 }
 
 void CQTimeSensWidget::slotRemoveParameter()
 {
+  if (mpTimeSensProblem == NULL)
+    return;
+
   QModelIndexList items = mpListParameters->selectionModel()->selectedIndexes();
   QModelIndexList::reverse_iterator it = items.rbegin();
   QModelIndexList::reverse_iterator end = items.rend();
@@ -505,6 +541,11 @@ void CQTimeSensWidget::slotRemoveParameter()
   for (; it != end; ++it)
     {
       QListWidgetItem* item = mpListParameters->takeItem(it->row());
+
+      std::string cn = TO_UTF8(item->data(Qt::UserRole).toString());
+
+      mpTimeSensProblem->removeParameterCN(cn);
+
       pdelete(item);
     }
 }
