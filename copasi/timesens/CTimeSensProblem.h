@@ -29,6 +29,7 @@
 #include <string>
 
 #include "trajectory/CTrajectoryProblem.h"
+#include "copasi/core/CDataArray.h"
 
 class CTimeSensProblem : public CTrajectoryProblem
 {
@@ -63,6 +64,14 @@ public:
    * @return bool success
    */
   virtual bool elevateChildren();
+
+  size_t getNumParameters();
+
+  CArray & getResult();
+  const CArray & getResult() const;
+  CDataArray * getResultAnnotated();
+  const CDataArray * getResultAnnotated() const;
+
 
 private:
   /**
@@ -127,6 +136,14 @@ protected:
    *  Indicate whether the step number or step size was set last.
    */
   bool mStepNumberSetLast;
+  
+  /**
+   *  This holds the result
+   */
+  CArray mResult;
+
+  CDataArray * mpResultAnnotation;
+
 };
 
 #endif // COPASI_CTimeSensProblem

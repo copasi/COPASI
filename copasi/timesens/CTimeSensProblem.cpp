@@ -71,6 +71,9 @@ void CTimeSensProblem::initializeParameter()
 
 void CTimeSensProblem::initObjects()
 {
+  mpResultAnnotation = new CDataArray("Sensitivities array", this, &mResult, false);
+  mpResultAnnotation->setDescription("");
+  mpResultAnnotation->setMode(CDataArray::Mode::Objects);
 }
 
 //virtual
@@ -78,3 +81,24 @@ bool CTimeSensProblem::elevateChildren()
 {
   return CTrajectoryProblem::elevateChildren();
 }
+
+CArray & CTimeSensProblem::getResult()
+{
+  return mResult;
+}
+
+const CArray & CTimeSensProblem::getResult() const
+{
+  return mResult;
+}
+
+CDataArray * CTimeSensProblem::getResultAnnotated()
+{
+  return mpResultAnnotation;
+}
+
+size_t CTimeSensProblem::getNumParameters()
+{
+  return 1;
+}
+

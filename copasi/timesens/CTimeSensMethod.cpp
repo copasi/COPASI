@@ -137,8 +137,9 @@ CTimeSensMethod::Status CTimeSensMethod::step(const double & /* deltaT */,
 
 void CTimeSensMethod::start()
 {
-  mContainerState.initialize(mpContainer->getState(*mpReducedModel));
-  mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
+  initResult(); //initializes the container and resizes state and result data structures
+  //mContainerState.initialize(mpContainer->getState(*mpReducedModel));
+  //mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
 
   return;
 }
@@ -168,4 +169,51 @@ const CVectorCore< C_INT > & CTimeSensMethod::getRoots() const
 const bool & CTimeSensMethod::integrateReducedModel() const
 {
   return *mpReducedModel;
+}
+
+void CTimeSensMethod::initResult()
+{
+  //****** initialize result annotations ****************
+
+  //determine dimensions of result
+  mContainerState.initialize(mpContainer->getState(*mpReducedModel));
+  mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
+
+  mSystemSize = mContainerState.size() - mpContainer->getCountFixedEventTargets() - 1;
+  mNumParameters = mpProblem->getNumParameters();
+  //mData.dim = (C_INT)(1+mSystemSize * (1 + mNumParameters)); //including time
+
+  
+  CArray::index_type s;
+  s.push_back(mSystemSize);
+  s.push_back(mNumParameters);
+
+  //resize result & annotations
+  mpProblem->getResult().resize(s);
+  mpProblem->getResultAnnotated()->resize();
+  mpProblem->getResultAnnotated()->setDimensionDescription(0, "Variables");
+  mpProblem->getResultAnnotated()->setDimensionDescription(1, "Parameters");
+  size_t dim = 0;
+  size_t j;
+
+  // annotations
+  /*if (mTargetValuePointers.size() > 1)
+    {
+      std::ostringstream tmp;
+      tmp << "Target functions, " << mpProblem->getTargetFunctions().getListTypeDisplayName();
+      mpProblem->getResultAnnotated()->setDimensionDescription(dim, tmp.str());
+      mpProblem->getScaledResultAnnotated()->setDimensionDescription(dim, tmp.str());
+
+      std::vector< CDataObject * > DataObjects = mpProblem->getTargetFunctions().getVariablesPointerList(pDataModel);
+      std::vector< CDataObject * >::const_iterator itDataObject = DataObjects.begin();
+
+      for (j = 0; j < mTargetValuePointers.size(); ++j, ++itDataObject)
+        {
+          mpProblem->getResultAnnotated()->setAnnotation(dim, j, *itDataObject);
+          mpProblem->getScaledResultAnnotated()->setAnnotation(dim, j, *itDataObject);
+        }
+
+      ++dim;
+    }*/
+
 }

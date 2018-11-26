@@ -126,6 +126,9 @@ public:
    */
   const CTimeSeries & getTimeSeries() const;
 
+  virtual bool updateMatrices();
+
+
 protected:
   /**
    * Signal that the math container has changed

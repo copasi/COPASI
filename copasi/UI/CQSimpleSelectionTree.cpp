@@ -31,6 +31,7 @@
 #include "steadystate/CMCAMethod.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "sensitivities/CSensProblem.h"
+#include "timesens/CTimeSensProblem.h"
 #include "tssanalysis/CCSPMethod.h"
 #include "tssanalysis/CTSSATask.h"
 
@@ -51,6 +52,7 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget *parent):
   mpResultAnalyticsSubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Analytics"));
 #endif // WITH_ANALYTICS
   mpResultSensitivitySubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Sensitivity"));
+  mpResultTimeSensitivitySubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Time-Course Sensitivity"));
   mpResultMCASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Metabolic Control Analysis"));
   mpResultTSSASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Time Scale Separation Analysis"));
   mpResultLNASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Linear Noise Approximation"));
@@ -595,6 +597,35 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
     }
   catch (...)
     {}
+
+  // Time-Course Sensitivities
+  task = dynamic_cast<CCopasiTask *>(&pDataModel->getTaskList()->operator[]("Time-Course Sensitivities"));
+
+  try
+    {
+      if (task && task->updateMatrices())
+        {
+          //for sensitivities the result is in the problem
+          CTimeSensProblem *sens = dynamic_cast<CTimeSensProblem *>(task->getProblem());
+          const CDataContainer::objectMap *pObjects = & sens->getObjects();
+          CDataContainer::objectMap::const_iterator its = pObjects->begin();
+          CDataArray *ann;
+
+          for (; its != pObjects->end(); ++its)
+            {
+              ann = dynamic_cast<CDataArray *>(*its);
+              if (!ann) continue;
+              if (!ann->isEmpty() && filter(classes, ann))
+                {
+                  pItem = new QTreeWidgetItem(this->mpResultTimeSensitivitySubtree, QStringList(FROM_UTF8(ann->getObjectName())));
+                  treeItems[pItem] = (CDataObject *) ann;
+                }
+            }
+        }
+    }
+  catch (...)
+    {}
+
 
   // LNA
   task = dynamic_cast<CCopasiTask *>(&pDataModel->getTaskList()->operator[]("Linear Noise Approximation"));

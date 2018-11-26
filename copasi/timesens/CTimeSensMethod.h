@@ -117,6 +117,11 @@ public:
   virtual void start();
 
   /**
+   * This initializes the Matrix for the results
+   */
+  virtual void initResult();
+
+  /**
    * Retrieve the roots.
    * @return const CVectorCore< C_INT > & roots
    */

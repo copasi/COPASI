@@ -537,8 +537,8 @@ void CTimeSensLsodaMethod::start()
 
 
   //init size of the system
-  mSystemSize = mContainerState.size() - mpContainer->getCountFixedEventTargets() - 1;
-  mNumParameters = 0; //TODO
+  //mSystemSize = mContainerState.size() - mpContainer->getCountFixedEventTargets() - 1;
+  //mNumParameters = 0; //TODO
   mData.dim = (C_INT)(1+mSystemSize * (1 + mNumParameters)); //including time
   
   //initialize the vector on which lsoda will work

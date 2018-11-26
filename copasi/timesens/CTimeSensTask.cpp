@@ -549,3 +549,13 @@ void CTimeSensTask::signalMethodChanged()
 
 const CTimeSeries & CTimeSensTask::getTimeSeries() const
 {return mTimeSeries;}
+
+
+bool CTimeSensTask::updateMatrices()
+{
+  CTimeSensMethod* tmpMethod = dynamic_cast<CTimeSensMethod*>(mpMethod);
+  if (tmpMethod)
+    tmpMethod->initResult();
+  return true;
+}
+
