@@ -537,35 +537,27 @@ void CTimeSensLsodaMethod::start()
 
 
   //init size of the system
-  //mSystemSize = mContainerState.size() - mpContainer->getCountFixedEventTargets() - 1;
-  //mNumParameters = 0; //TODO
   mData.dim = (C_INT)(1+mSystemSize * (1 + mNumParameters)); //including time
   
   //initialize the vector on which lsoda will work
   mVariables.resize(mData.dim);
   memcpy(mVariables.array(), mpContainerStateTime, (mSystemSize+1) * sizeof(C_FLOAT64));
-  //TODO: initialize sensitivities
+  size_t i;
+  for (i=mSystemSize+1; i<mData.dim; ++i)
+    mVariables[i]=0.0;
 
   //reserve space for jacobian
   mJacobian.resize(mSystemSize, mSystemSize);
 
-  // We ignore fixed event targets and start with the time
-  //mData.dim = (C_INT)(mContainerState.size() - mpContainer->getCountFixedEventTargets());
-  //mpY = mpContainerStateTime;
-  //mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getCountFixedEventTargets();
   mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getCountFixedEventTargets() ;
 
   //init absolute tolerances for the extended ODE
   CVector< C_FLOAT64 > tmpAtol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
   mAtol.resize(mData.dim);
-  size_t i;
   for (i = 0; i < mSystemSize+1; ++i)
     mAtol[i] = tmpAtol[i+ mpContainer->getCountFixedEventTargets()]; //TODO shift? + mpContainer->getCountFixedEventTargets()
   for (i = mSystemSize+1; i < mData.dim; ++i)
     mAtol[i] = 1e-12;
-
-  //mAtol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
-  //mpAtol = mAtol.array() + mpContainer->getCountFixedEventTargets();
 
   /* Configure lsoda(r) */
   mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9) + 3 * mNumRoots);
@@ -623,7 +615,7 @@ void CTimeSensLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLO
 
   C_FLOAT64 *dbl1;
   const C_FLOAT64 *dbl2, *dbl3, *dbl1end, *dbl3end;
-  dbl1 = ydot + mSystemSize;
+  dbl1 = ydot + mSystemSize + 1;
   size_t i;
   for (i = 1; i <= mNumParameters; ++i)
     {
@@ -635,7 +627,7 @@ void CTimeSensLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLO
         {
           *dbl1 = 0.0;
 
-          dbl3 = y + i * mSystemSize;
+          dbl3 = y + 1 + i * mSystemSize;
           dbl3end = dbl3 + mSystemSize;
 
           for (; dbl3 != dbl3end; ++dbl3, ++dbl2)

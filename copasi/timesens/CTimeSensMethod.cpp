@@ -197,23 +197,18 @@ void CTimeSensMethod::initResult()
   size_t j;
 
   // annotations
-  /*if (mTargetValuePointers.size() > 1)
-    {
-      std::ostringstream tmp;
-      tmp << "Target functions, " << mpProblem->getTargetFunctions().getListTypeDisplayName();
-      mpProblem->getResultAnnotated()->setDimensionDescription(dim, tmp.str());
-      mpProblem->getScaledResultAnnotated()->setDimensionDescription(dim, tmp.str());
-
-      std::vector< CDataObject * > DataObjects = mpProblem->getTargetFunctions().getVariablesPointerList(pDataModel);
-      std::vector< CDataObject * >::const_iterator itDataObject = DataObjects.begin();
-
-      for (j = 0; j < mTargetValuePointers.size(); ++j, ++itDataObject)
-        {
-          mpProblem->getResultAnnotated()->setAnnotation(dim, j, *itDataObject);
-          mpProblem->getScaledResultAnnotated()->setAnnotation(dim, j, *itDataObject);
-        }
-
-      ++dim;
-    }*/
+      //std::vector< CDataObject * > DataObjects = mpProblem->getTargetFunctions().getVariablesPointerList(pDataModel);
+      //std::vector< CDataObject * >::const_iterator itDataObject = DataObjects.begin();
+  size_t i;
+  for (i = 0; i < mSystemSize; ++i)
+  {
+    CMathObject* mo = mpContainer->getMathObject(mpContainerStateTime+i+1);
+    mpProblem->getResultAnnotated()->setAnnotation(0, i,mo->getDataObject() );
+  }
+  for (i = 0; i < mNumParameters; ++i)
+  {
+    const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(i)));
+    mpProblem->getResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
+  }
 
 }

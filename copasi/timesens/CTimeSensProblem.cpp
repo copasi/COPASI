@@ -61,7 +61,7 @@ void CTimeSensProblem::initializeParameter()
 void CTimeSensProblem::initObjects()
 {
   mpResultAnnotation = new CDataArray("Sensitivities array", this, &mResult, false);
-  mpResultAnnotation->setDescription("");
+  mpResultAnnotation->setDescription("Time-Course Sensitivities");
   mpResultAnnotation->setMode(CDataArray::Mode::Objects);
 }
 
