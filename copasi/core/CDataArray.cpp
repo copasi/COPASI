@@ -267,7 +267,8 @@ const CObjectInterface * CDataArray::getObject(const CCommonName & cn) const
     }
 
   if (pObject)
-    return pObject->getObject(cn.getRemainder());
+    return pObject;
+  //return pObject->getObject(cn.getRemainder());
   else
     return NULL;
 }
