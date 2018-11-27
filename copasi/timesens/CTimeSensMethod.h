@@ -146,6 +146,11 @@ protected:
   virtual void signalMathContainerChanged();
 
   void output(const bool & useMoieties);
+  
+  /**
+   * This calculates the derivatives of the initial state with respect to the requested parameters
+   */
+  void calculateInitialStateSensitivities(CMatrix<C_FLOAT64>& s);
 
   // Attributes
 protected:

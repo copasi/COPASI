@@ -541,7 +541,13 @@ void CTimeSensLsodaMethod::start()
   
   //initialize the vector on which lsoda will work
   mVariables.resize(mData.dim);
+  //initial state of the system
   memcpy(mVariables.array(), mpContainerStateTime, (mSystemSize+1) * sizeof(C_FLOAT64));
+  //initial state of the sensitivities
+  //the sensitivities are initialized with the derivatives of the initial assignments wrt the parameters
+  CMatrix<C_FLOAT64> initSens;
+  calculateInitialStateSensitivities(initSens);
+  std::cout << initSens;
   size_t i;
   for (i=mSystemSize+1; i<mData.dim; ++i)
     mVariables[i]=0.0;

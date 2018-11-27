@@ -212,3 +212,157 @@ void CTimeSensMethod::initResult()
   }
 
 }
+
+void CTimeSensMethod::calculateInitialStateSensitivities(CMatrix<C_FLOAT64>& s)
+{
+  //size_t Dim = getState(reduced).size() - mSize.nFixedEventTargets - mSize.nTime;
+  s.resize(mSystemSize, mNumParameters);
+
+  C_FLOAT64 DerivationFactor = 1e-5;
+  //std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
+
+  //C_FLOAT64 * pState = mState.array() + mpContainer->getCountFixedEventTargets() + 1;
+  
+  //we need the vector of parameters here
+  //the problem provides us with the CNs, we need to prepare a means to change the parameter in the math container
+  CVector< C_FLOAT64* > parameters ;
+  parameters.resize(mNumParameters);
+  size_t Col;
+  for (Col = 0; Col<mNumParameters; ++Col)
+  {
+    const CMathObject* pMo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(Col)));
+    //const CMathObject*  pMo = mpContainer->getMathObject(mpProblem->getParameterCN(Col)); //I do not know why this does not work...
+    //const CMathObject * pMo = mpContainer->getMathObject(object*);
+
+    if (pMo != NULL)
+            {
+              parameters[Col] = (C_FLOAT64 *) pMo->getValuePointer();
+              //Changed.insert(pValueObject);
+            }
+          else
+            {
+              parameters[Col] = NULL;
+            }
+  }
+
+  //and now the initial state
+  CVectorCore< C_FLOAT64 > containerInitialState;
+  containerInitialState.initialize(mpContainer->getInitialState());
+  //CVector< C_FLOAT64 > initialState;
+  const C_FLOAT64 * pInitialState = containerInitialState.array() + mpContainer->getCountFixedEventTargets() + 1;
+
+
+  C_FLOAT64 Store;
+  C_FLOAT64 X1;
+  C_FLOAT64 X2;
+  C_FLOAT64 InvDelta;
+
+  CVector< C_FLOAT64 > Y1(mSystemSize);
+  CVector< C_FLOAT64 > Y2(mSystemSize);
+
+  C_FLOAT64 * pY1;
+  C_FLOAT64 * pY2;
+
+  //C_FLOAT64 * pX = parameters.array();
+  //C_FLOAT64 * pXEnd = pX + mNumParameters;
+
+  C_FLOAT64 * pS;
+  C_FLOAT64 * pSEnd = s.array() + mSystemSize * mNumParameters;
+
+  for (Col = 0;  Col < mNumParameters; ++Col)
+    {
+      Store = *parameters[Col];
+
+      // We only need to make sure that we do not have an underflow problem
+      if (fabs(Store) < DerivationFactor)
+        {
+          X1 = 0.0;
+
+          if (Store < 0.0)
+            X2 = -2.0 * DerivationFactor;
+          else
+            X2 = 2.0 * DerivationFactor;;
+        }
+      else
+        {
+          X1 = Store * (1.0 + DerivationFactor);
+          X2 = Store * (1.0 - DerivationFactor);
+        }
+
+      InvDelta = 1.0 / (X2 - X1);
+
+      *parameters[Col] = X1;
+      mpContainer->updateInitialValues(CCore::Framework::Concentration); //ParticleNumbers
+      memcpy(Y1.array(), pInitialState, mSystemSize * sizeof(C_FLOAT64));
+
+      *parameters[Col] = X2;
+      mpContainer->updateInitialValues(CCore::Framework::Concentration);
+      memcpy(Y2.array(), pInitialState, mSystemSize * sizeof(C_FLOAT64));
+
+      *parameters[Col] = Store;
+
+      pS = s.array() + Col;
+      pY1 = Y1.array();
+      pY2 = Y2.array();
+
+      for (; pS < pSEnd; pS += mSystemSize, ++pY1, ++pY2)
+        *pS = (*pY2 - *pY1) * InvDelta;
+    }
+
+    mpContainer->updateInitialValues(CCore::Framework::Concentration);
+  
+
+}
+
+/*
+
+
+{
+  //size_t Dim = getState(reduced).size() - mSize.nFixedEventTargets - 1;
+  s.resize(mSystemSize, mNumParameters);
+  s = 0;
+
+  // The required values are the initial values
+  CMathObject * pObject = mpContainer->getMathObject(mpContainer->getInitialState().array() + mpContainer->getCountFixedEventTargets() + 1 );
+  CMathObject * pObjectEnd = pObject + mSystemSize;
+
+  ObjectSet Requested;
+
+  for (; pObject != pObjectEnd; ++ pObject)
+    {
+      Requested.insert(pObject);
+    }
+
+  // Reset the pointer so that we have the appropriate boundaries for later
+  pObject = pObjectEnd - mSystemSize;
+
+  // For each of the variables we check whether a the rate objects needs to be calculated
+  // which indicates that it is dependent.
+  CMathObject * pVariable = mpContainer->getMathObject(mpContainer->getInitialState().array() + mpContainer->getCountFixedEventTargets() + 1);
+  CMathObject * pVariableEnd = pVariable + mSystemSize;
+  size_t col = 0;
+
+  for (; pVariable != pVariableEnd; ++pVariable, ++col)
+    {
+      CCore::CUpdateSequence Sequence;
+      ObjectSet Changed;
+
+      Changed.insert(pVariable);
+
+      mTransientDependencies.getUpdateSequence(Sequence, reduced ? CCore::SimulationContext::UseMoieties : CCore::SimulationContext::Default, Changed, Requested);
+
+      CCore::CUpdateSequence::const_iterator it = Sequence.begin();
+      CCore::CUpdateSequence::const_iterator end = Sequence.end();
+
+      for (; it != end; ++it)
+        if (pRateObject <= *it && *it < pRateObjectEnd)
+          {
+            // it points to a rate object, i.e., it is dependent.
+            jacobianDependencies[static_cast< CMathObject * >(*it) - pRateObject][col] = 1;
+          }
+    }
+
+  return;
+
+
+}*/
