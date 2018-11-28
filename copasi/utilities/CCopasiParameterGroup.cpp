@@ -44,7 +44,7 @@ CCopasiParameterGroup::CCopasiParameterGroup():
 CCopasiParameterGroup::CCopasiParameterGroup(const CCopasiParameterGroup & src,
     const CDataContainer * pParent):
   CCopasiParameter(src, pParent),
-  mpElementTemplates(src.mpElementTemplates != NULL ? new CCopasiParameterGroup(*src.mpElementTemplates, this) : NULL)
+  mpElementTemplates(NULL)
 {
   operator=(src);
 }
@@ -57,7 +57,9 @@ CCopasiParameterGroup::CCopasiParameterGroup(const std::string & name,
 {}
 
 CCopasiParameterGroup::~CCopasiParameterGroup()
-{}
+{
+  pdelete(mpElementTemplates);
+}
 
 // virtual
 CData CCopasiParameterGroup::toData() const
@@ -498,6 +500,12 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
       pElements->insert(pElements->begin() + std::min(itToBeAdded->first, pElements->size()), pParameter);
     }
 
+  // add element template
+  pdelete(mpElementTemplates);
+
+  if (rhs.mpElementTemplates != NULL)
+    mpElementTemplates = new CCopasiParameterGroup(*rhs.mpElementTemplates, NO_PARENT);
+
   return *this;
 }
 
@@ -569,7 +577,7 @@ CCopasiParameterGroup & CCopasiParameterGroup::getElementTemplates()
 {
   if (mpElementTemplates == NULL)
     {
-      mpElementTemplates = new CCopasiParameterGroup("Element Templates", this);
+      mpElementTemplates = new CCopasiParameterGroup("Element Templates", NO_PARENT);
     }
 
   return *mpElementTemplates;
