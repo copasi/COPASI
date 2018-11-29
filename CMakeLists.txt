@@ -780,6 +780,12 @@ endif()
 
 endif (BUILD_HYB_TESTS)
 
+option(BUILD_CATCH_TESTS "Compile catch 2 unit tests." OFF)
+if (BUILD_CATCH_TESTS)
+  if (EXISTS ${CMAKE_SOURCE_DIR}/catch-unit-tests)
+  add_subdirectory(catch-unit-tests)
+  endif()
+endif(BUILD_CATCH_TESTS)
 
 # also install additional files and examples
 file(GLOB_RECURSE WIZARD_HELP_FILES "${PROJECT_SOURCE_DIR}/copasi/wizard/help_html" copasi/wizard/help_html/*.html)

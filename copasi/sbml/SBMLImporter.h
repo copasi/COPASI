@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -132,7 +132,7 @@ protected:
   bool mAvogadroSet;
   std::map<std::string, std::string> mKnownCustomUserDefinedFunctions;
   std::map<std::string, std::string> mKnownInitalValues;
-  
+
   // this map is used for storing the parameters that are used as factors that have to be applied to the multiplicities
   // of the chemical equation elements
   const CModelValue* mpModelConversionFactor;
@@ -518,10 +518,13 @@ protected:
   void setCorrectUsage(CReaction* pCopasiReaction, const CEvaluationNodeCall* pCallNode);
 
   /**
-   * Checks if a given tree is multiplied by a compartment identifier.
-   * If so, a copy of the tree is returned in which the multiplication has been removed.
+   * Checks if a compartment size node occurs multiplicatively in the tree.
+   * If so, it is removed from the tree.
+   * If it returns false, the tree was not changed
    */
-  ConverterASTNode* isMultipliedByVolume(const ASTNode* node, const std::string& compartmentSBMLId);
+  bool divideByVolume(ASTNode* node, const std::string& compartmentSBMLId);
+
+
 
   CEvaluationNode* variables2objects(const CEvaluationNode* pOrigNode,
                                      const std::map<std::string, std::string>& replacementMap);

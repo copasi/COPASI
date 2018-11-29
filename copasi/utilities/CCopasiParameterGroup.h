@@ -579,7 +579,7 @@ public:
   virtual void setUserInterfaceFlag(const UserInterfaceFlag & flag);
 
 private:
-  CCopasiParameterGroup *mpElementTemplates;
+  CCopasiParameterGroup *mpElementTemplates { NULL };
 };
 
 // :TODO: This should be a member function but Visual C++ 6.0

@@ -381,6 +381,10 @@ void CQUnitDetail::save()
 {
   if (mpUnitDefinition == NULL) return;
 
+
+  mChanged = false;
+  CData OldData(mpUnitDefinition->toData());
+
   // set unit symbol
   if (mpUnitDefinition->getSymbol() != TO_UTF8(mpEditSymbol->text()))
     {
@@ -409,9 +413,12 @@ void CQUnitDetail::save()
 
   if (mChanged)
     {
-      assert(mpDataModel != NULL);
-      mpDataModel->changed();
-      protectedNotify(ListViews::UNIT, ListViews::CHANGE, mObjectCN);
+
+      CUndoData UndoData;
+      mpUnitDefinition->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast<CCore::Framework>(mFramework));
+
+      slotNotifyChanges(mpDataModel->recordData(UndoData));
+      load();
     }
 
   mChanged = false;

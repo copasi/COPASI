@@ -1085,6 +1085,18 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         return NULL;
     }
 
+
+  // set the hasOnlySubstanceUnits flag on all species with zero compartment spatial dimension
+  std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
+  std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
+
+  while (it != endIt)
+    {
+      it->first->setHasOnlySubstanceUnits(true);
+      ++it;
+    }
+
+
   /* Create all species */
   num = sbmlModel->getNumSpecies();
 
@@ -1536,15 +1548,20 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 100);
     }
 
-  // unset the hasOnlySubstanceUnits flag on all such species
-  std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
-  std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
+
+
+  // unset the hasOnlySubstanceUnits flag on all species that had it set
+  it = this->mSubstanceOnlySpecies.begin();
+  endIt = this->mSubstanceOnlySpecies.end();
 
   while (it != endIt)
     {
       it->first->setHasOnlySubstanceUnits(false);
       ++it;
     }
+
+
+
 
   // Before we set anything we compile the model.
   if (createProgressStepOrStop(13,
@@ -2442,6 +2459,9 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
         }
 
+      hasOnlySubstanceUnitPresent = hasOnlySubstanceUnitPresent ||
+                                    (compartment != NULL && compartment->getDimensionality() == 0);
+
       copasiReaction->addSubstrate(pos->second->getKey(), stoi);
 
       // we need to store the id of the species reference if it is set because SBML Level 3 allows
@@ -2569,6 +2589,9 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
         }
 
+      hasOnlySubstanceUnitPresent = hasOnlySubstanceUnitPresent ||
+                                    (compartment != NULL && compartment->getDimensionality() == 0);
+
       copasiReaction->addProduct(pos->second->getKey(), stoi);
 
       // we need to store the id of the species reference if it is set because SBML Level 3 allows
@@ -2665,6 +2688,10 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
               singleCompartment = false;
             }
         }
+
+      hasOnlySubstanceUnitPresent = hasOnlySubstanceUnitPresent ||
+                                    (compartment != NULL && compartment->getDimensionality() == 0);
+
 
       // we need to store the id of the species reference if it is set because SBML Level 3 allows
       // references to species references and if we want to support his, we need the id to import
@@ -2813,50 +2840,34 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
               if (compartment != NULL)
                 {
-                  // only divide if it is not a 0-dimensional compartment
-                  if (compartment->getDimensionality() != 0)
+                  // check if the division by volume can be done symbollically in the tree.
+                  bool wasRemoved = this->divideByVolume(node, compartment->getSBMLId());
+
+                  // if not, we have to do it manually
+                  if (!wasRemoved)
                     {
-                      // check if the root node is a multiplication node and it's first child
-                      // is a compartment node, if so, drop those two and make the second child
-                      // new new root node
-                      ConverterASTNode* tmpNode1 = this->isMultipliedByVolume(node, compartment->getSBMLId());
+                      ConverterASTNode* tmpNode1 = new ConverterASTNode();
+                      tmpNode1->setType(AST_DIVIDE);
+                      tmpNode1->addChild(node);
+                      ConverterASTNode* tmpNode2 = new ConverterASTNode();
+                      tmpNode2->setType(AST_NAME);
+                      tmpNode2->setName(compartment->getSBMLId().c_str());
+                      tmpNode1->addChild(tmpNode2);
+                      node = tmpNode1;
+                      std::map<const CDataObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(compartment);
+                      assert(pos != copasi2sbmlmap.end());
+                      Compartment* pSBMLCompartment = dynamic_cast<Compartment*>(pos->second);
+                      assert(pSBMLCompartment != NULL);
 
-                      if (tmpNode1 != NULL)
+                      if (!hasOnlySubstanceUnitPresent && ((this->mLevel == 1 && pSBMLCompartment->isSetVolume()) || (this->mLevel >= 2 && pSBMLCompartment->isSetSize())) && pSBMLCompartment->getSize() == 1.0)
                         {
-                          delete node;
-                          node = tmpNode1;
+                          // we have to check if all species used in the reaction
+                          // have the hasOnlySubstance flag set
 
-                          if (node->getType() == AST_DIVIDE && node->getNumChildren() != 2)
+                          if (node->getChild(0)->getType() == AST_FUNCTION && (!this->containsVolume(node->getChild(0), compartment->getSBMLId())))
                             {
-                              delete tmpNode1;
-                              fatalError();
-                            }
-                        }
-                      else
-                        {
-                          tmpNode1 = new ConverterASTNode();
-                          tmpNode1->setType(AST_DIVIDE);
-                          tmpNode1->addChild(node);
-                          ConverterASTNode* tmpNode2 = new ConverterASTNode();
-                          tmpNode2->setType(AST_NAME);
-                          tmpNode2->setName(compartment->getSBMLId().c_str());
-                          tmpNode1->addChild(tmpNode2);
-                          node = tmpNode1;
-                          std::map<const CDataObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(compartment);
-                          assert(pos != copasi2sbmlmap.end());
-                          Compartment* pSBMLCompartment = dynamic_cast<Compartment*>(pos->second);
-                          assert(pSBMLCompartment != NULL);
-
-                          if (!hasOnlySubstanceUnitPresent && ((this->mLevel == 1 && pSBMLCompartment->isSetVolume()) || (this->mLevel >= 2 && pSBMLCompartment->isSetSize())) && pSBMLCompartment->getSize() == 1.0)
-                            {
-                              // we have to check if all species used in the reaction
-                              // have the hasOnlySubstance flag set
-
-                              if (node->getChild(0)->getType() == AST_FUNCTION && (!this->containsVolume(node->getChild(0), compartment->getSBMLId())))
-                                {
-                                  // add the id of the reaction to the set so that we can create an error message later.
-                                  this->mDivisionByCompartmentReactions.insert(sbmlReaction->getId());
-                                }
+                              // add the id of the reaction to the set so that we can create an error message later.
+                              this->mDivisionByCompartmentReactions.insert(sbmlReaction->getId());
                             }
                         }
                     }
@@ -6163,82 +6174,92 @@ bool SBMLImporter::isSimpleFunctionCall(const CEvaluationNode* pRootNode)
   return result;
 }
 
-ConverterASTNode* SBMLImporter::isMultipliedByVolume(const ASTNode* node, const std::string& compartmentSBMLId)
+
+bool SBMLImporter::divideByVolume(ASTNode* node, const std::string& compartmentSBMLId)
 {
-  ConverterASTNode* result = NULL;
+  ASTNode* nodeIt = node;
+  bool finished = false;
+  bool found = false;
+  std::vector<ASTNode*> nodeStack;
+  std::vector<int> intStack;
 
-  if (node->getType() == AST_TIMES || node->getType() == AST_DIVIDE)
+  do
     {
-      ConverterASTNode* pTmpResultNode = new ConverterASTNode(node->getType());
-      unsigned int i, iMax = node->getNumChildren();
-      bool found = false;
 
-      for (i = 0; i < iMax; ++i)
+      //check for compartment hit
+      if (nodeIt->getType() == AST_NAME && nodeIt->getName() == compartmentSBMLId)
         {
-          const ASTNode* child = node->getChild(i);
-
-          if (node->getType() == AST_TIMES && child->getType() == AST_NAME && child->getName() == compartmentSBMLId)
-            {
-              found = true;
-            }
-          else if ((!found) && (child->getType() == AST_TIMES || child->getType() == AST_DIVIDE))
-            {
-              ASTNode* pSubResult = this->isMultipliedByVolume(child, compartmentSBMLId);
-
-              if (pSubResult)
-                {
-                  found = true;
-
-                  if (pSubResult->getNumChildren() > 1)
-                    {
-                      pTmpResultNode->addChild(pSubResult);
-                    }
-                  else if (pSubResult->getNumChildren() == 1)
-                    {
-                      pTmpResultNode->addChild(static_cast<ASTNode*>(static_cast<ConverterASTNode*>(pSubResult)->removeChild(0)));
-                      delete pSubResult;
-                    }
-                  else
-                    {
-                      delete pSubResult;
-                    }
-                }
-              else
-                {
-                  pTmpResultNode->addChild(new ConverterASTNode(*child));
-                }
-            }
-          else
-            {
-              // bail in case of hOSU
-              if (child->getType() == AST_NAME &&  !mSubstanceOnlySpecies.empty())
-                {
-                  std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
-                  std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
-
-                  while (it != endIt)
-                    {
-                      if (it->first->getId() == child->getName()) return NULL;
-
-                      it++;
-                    }
-                }
-
-              pTmpResultNode->addChild(new ConverterASTNode(*child));
-            }
+          found = true;
+          break;
         }
 
-      if (found)
+      //now iterate...
+      if ((nodeIt->getType() == AST_TIMES || nodeIt->getType() == AST_DIVIDE) && nodeIt->getNumChildren() > 0)
         {
-          result = pTmpResultNode;
+          //go down in the tree
+          nodeStack.push_back(nodeIt);
+          intStack.push_back(0);
+          nodeIt = nodeIt->getChild(0);
         }
       else
         {
-          delete pTmpResultNode;
+          while (nodeStack.size())
+            {
+              nodeIt = nodeStack[nodeStack.size() - 1];
+
+              if (nodeIt->getType() == AST_TIMES && nodeIt->getNumChildren() > intStack[intStack.size() - 1] + 1)
+                {
+                  //go to sibling
+                  nodeIt = nodeIt->getChild(intStack[intStack.size() - 1] + 1);
+                  intStack[intStack.size() - 1]++;
+                  break;
+                }
+              else
+                {
+                  //go up in tree
+                  nodeStack.pop_back();
+                  intStack.pop_back();
+                }
+            }
+
+          //if we reach the top again we are done (it means we could not go to a sibling)
+          if (nodeStack.size() == 0)
+            finished = true;
         }
+
+    }
+  while (!finished);
+
+  if (!found)
+    return false;
+
+  //now we know the location of the node that needs to be removed.
+
+  // for now, ignore the case of the root node
+  if (nodeStack.size() == 0)
+    return false;
+
+  //that means a parent should exist.
+  ASTNode* parentNode = nodeStack[nodeStack.size() - 1];
+
+
+  //the case where the parent is TIMES and has at least 2 children: just remove the node
+  //  (accepting that it may result in a multiplication with one child)
+  if (parentNode->getType() == AST_TIMES && parentNode->getNumChildren() > 1)
+    {
+      parentNode->removeChild(intStack[intStack.size() - 1]);
+      return true;
     }
 
-  return result;
+  //TODO: cases that could be implemented:
+  //
+  // - TIMES nodes with only one child can be removed
+  // - TIMES nodes that had only one child before should be removed (although technically correct?)
+  // - Volume node in nominator of DIVIDE node can be replaced by "1"
+  // - (Volume node at top level can be replaced by "1", this cannot be implemented within this method)
+
+  return false;
+
 }
 
 CEvaluationNode* SBMLImporter::variables2objects(const CEvaluationNode* pOrigNode, const std::map<std::string, std::string>& replacementMap)
@@ -6985,7 +7006,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, const CModelEntity
       const CCompartment* pCompartment = static_cast<CMetab*>(pModelEntity)->getCompartment();
       assert(pCompartment != NULL);
 
-      if (pSBMLSpecies->getHasOnlySubstanceUnits() == true && pCompartment->getDimensionality() != 0)
+      if (pSBMLSpecies->getHasOnlySubstanceUnits() == true || pCompartment->getDimensionality() == 0)
         {
 
           CEvaluationNode* pOrigNode = pExpression->getRoot();
@@ -9295,7 +9316,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<const CD
                           const CCompartment* pCompartment = pMetab->getCompartment();
                           assert(pCompartment != NULL);
 
-                          if (pSBMLSpecies->getHasOnlySubstanceUnits() == true && pCompartment->getDimensionality() != 0)
+                          if (pSBMLSpecies->getHasOnlySubstanceUnits() == true || pCompartment->getDimensionality() == 0)
                             {
                               CEvaluationNode* pOrigNode = pExpression->getRoot();
                               assert(pOrigNode != NULL);
@@ -9590,7 +9611,7 @@ void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pASTNo
                       ++it;
                     }
 
-                  if (it != endit && it->second->getSpatialDimensions() != 0 && pChild2->getName() == it->second->getId())
+                  if (it != endit && pChild2->getName() == it->second->getId())
                     {
                       // delete the children
                       itNode->removeChild(1);
@@ -9619,7 +9640,7 @@ void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pASTNo
               ++it;
             }
 
-          if (it != endit && it->second->getSpatialDimensions() != 0)
+          if (it != endit)
             {
               ConverterASTNode* pChild1 = new ConverterASTNode();
               pChild1->setType(AST_NAME);
@@ -10332,22 +10353,21 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
               assert(pMetab != NULL);
               const CCompartment* pCompartment = pMetab->getCompartment();
 
-              if (pCompartment->getDimensionality() != 0)
-                {
-                  CEvaluationNode* pOrigNode = pExpression->getRoot();
-                  assert(pOrigNode != NULL);
-                  CEvaluationNode* pNode = SBMLImporter::divideByObject(pOrigNode, pCompartment->getValueReference());
-                  assert(pNode != NULL);
 
-                  if (pNode != NULL)
-                    {
-                      pExpression->setRoot(pNode);
-                    }
-                  else
-                    {
-                      fatalError();
-                    }
+              CEvaluationNode* pOrigNode = pExpression->getRoot();
+              assert(pOrigNode != NULL);
+              CEvaluationNode* pNode = SBMLImporter::divideByObject(pOrigNode, pCompartment->getValueReference());
+              assert(pNode != NULL);
+
+              if (pNode != NULL)
+                {
+                  pExpression->setRoot(pNode);
                 }
+              else
+                {
+                  fatalError();
+                }
+
             }
 
           pAssignment = new CEventAssignment(pObject->getKey(), pCOPASIEvent);

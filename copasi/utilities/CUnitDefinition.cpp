@@ -131,10 +131,10 @@ CUnitDefinition * CUnitDefinition::fromData(const CData & data, CUndoObjectInter
 // virtual
 CData CUnitDefinition::toData() const
 {
-  CData Data;
+  CData Data = CDataContainer::toData();
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::UNIT_SYMBOL, mSymbol);
+  Data.addProperty(CData::UNIT_EXPRESSION, getExpression());
 
   Data.appendData(CAnnotation::toData());
 
@@ -144,10 +144,17 @@ CData CUnitDefinition::toData() const
 // virtual
 bool CUnitDefinition::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = true;
+  bool success = CDataContainer::applyData(data, changes);
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  if (data.isSetProperty(CData::UNIT_SYMBOL))
+    {
+      mSymbol = data.getProperty(CData::UNIT_SYMBOL).toString();
+    }
+
+  if (data.isSetProperty(CData::UNIT_EXPRESSION))
+    {
+      setExpression(data.getProperty(CData::UNIT_EXPRESSION).toString());
+    }
 
   success &= CAnnotation::applyData(data, changes);
 
@@ -166,8 +173,8 @@ void CUnitDefinition::createUndoData(CUndoData & undoData,
       return;
     }
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  undoData.addProperty(CData::UNIT_SYMBOL, oldData.getProperty(CData::UNIT_SYMBOL), mSymbol);
+  undoData.addProperty(CData::UNIT_EXPRESSION, oldData.getProperty(CData::UNIT_EXPRESSION), getExpression());
 
   CAnnotation::createUndoData(undoData, type, oldData, framework);
 
