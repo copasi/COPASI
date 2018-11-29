@@ -330,6 +330,11 @@ private:
   void saveState(State & state, const CTimeSensMethod::Status & status) const;
   void resetState(State & state);
 
+  /**
+   * copies the sensitivity values from the state vector to the (annotated) result matrix
+   */
+  void copySensitivitiesToResultMatrix();
+
 protected:
   /**
    * Destroy the mask which hides all roots being constant and zero.

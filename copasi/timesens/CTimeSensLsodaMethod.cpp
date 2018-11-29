@@ -258,7 +258,8 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
                   mRootsFound.array()); // 20. integer array of length NG for output of root information
 
           memcpy(mpContainerStateTime, mVariables.array(), (mSystemSize+1) * sizeof(C_FLOAT64));
-          
+          copySensitivitiesToResultMatrix(); //TODO we do this now after each integration step, probably only necessary before output...
+  
           // There exist situations where LSODAR reports status = 3, which are actually status = -33
           // Obviously the trivial case is where LSODAR did not advance at all, i.e, the start time
           // equals the current time. It may also happen that a very small steps has been taken.
@@ -460,6 +461,7 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
              &mJType);        // 17. the type of jacobian calculate (2)
 
       memcpy(mpContainerStateTime, mVariables.array(), (mSystemSize+1) * sizeof(C_FLOAT64));
+      copySensitivitiesToResultMatrix(); //TODO we do this now after each integration step, probably only necessary before output...
 
       if (mLsodaStatus <= 0 ||
           !mpContainer->isStateValid())
@@ -548,9 +550,15 @@ void CTimeSensLsodaMethod::start()
   CMatrix<C_FLOAT64> initSens;
   calculateInitialStateSensitivities(initSens);
   std::cout << initSens;
-  size_t i;
-  for (i=mSystemSize+1; i<mData.dim; ++i)
-    mVariables[i]=0.0;
+  size_t i,j;
+  for (i=0; i<mSystemSize; ++i)
+    for (j=0; j<mNumParameters; ++j)
+    {
+      mVariables[i + (j+1)*mSystemSize + 1] = (initSens[i][j]);
+    }
+  copySensitivitiesToResultMatrix();
+  //for (i=mSystemSize+1; i<mData.dim; ++i)
+  //  mVariables[i]=0.0;
 
   //reserve space for jacobian
   mJacobian.resize(mSystemSize, mSystemSize);
@@ -1005,4 +1013,19 @@ void CTimeSensLsodaMethod::resetState(CTimeSensLsodaMethod::State & state)
   mRootMasking = state.RootMasking;
 
   mLSODAR.resetState(state.LsodaState);
+}
+
+void CTimeSensLsodaMethod::copySensitivitiesToResultMatrix()
+{
+  //TODO for now this is a quite inefficient implementation
+  size_t i,j;
+  CArray::index_type index;
+  index.resize(2);
+  for (i=0; i<mSystemSize; ++i)
+    for (j=0; j<mNumParameters; ++j)
+    {
+      //mVariables[i + (j+1)*mSystemSize + 1] = (initSens[i][j]);
+      index[0]=i; index[1]=j;
+      mpProblem->getResult()[index] =  mVariables[i + (j+1)*mSystemSize + 1];
+    }
 }
