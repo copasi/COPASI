@@ -213,16 +213,13 @@ void CTimeSensMethod::initResult()
 
 }
 
-void CTimeSensMethod::calculateInitialStateSensitivities(CMatrix<C_FLOAT64>& s)
+void CTimeSensMethod::calculate_dInitialState_dPar(CMatrix<C_FLOAT64>& s)
 {
-  //size_t Dim = getState(reduced).size() - mSize.nFixedEventTargets - mSize.nTime;
   s.resize(mSystemSize, mNumParameters);
 
   C_FLOAT64 DerivationFactor = 1e-5;
   //std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
 
-  //C_FLOAT64 * pState = mState.array() + mpContainer->getCountFixedEventTargets() + 1;
-  
   //we need the vector of parameters here
   //the problem provides us with the CNs, we need to prepare a means to change the parameter in the math container
   CVector< C_FLOAT64* > parameters ;
@@ -263,9 +260,6 @@ void CTimeSensMethod::calculateInitialStateSensitivities(CMatrix<C_FLOAT64>& s)
   C_FLOAT64 * pY1;
   C_FLOAT64 * pY2;
 
-  //C_FLOAT64 * pX = parameters.array();
-  //C_FLOAT64 * pXEnd = pX + mNumParameters;
-
   C_FLOAT64 * pS;
   C_FLOAT64 * pSEnd = s.array() + mSystemSize * mNumParameters;
 
@@ -305,10 +299,102 @@ void CTimeSensMethod::calculateInitialStateSensitivities(CMatrix<C_FLOAT64>& s)
       pY1 = Y1.array();
       pY2 = Y2.array();
 
-      for (; pS < pSEnd; pS += mSystemSize, ++pY1, ++pY2)
+      for (; pS < pSEnd; pS += mNumParameters, ++pY1, ++pY2)
         *pS = (*pY2 - *pY1) * InvDelta;
     }
 
     mpContainer->updateInitialValues(CCore::Framework::ParticleNumbers);
   }
 
+void CTimeSensMethod::calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced)
+{
+  s.resize(mSystemSize, mNumParameters);
+
+  C_FLOAT64 DerivationFactor = 1e-5;
+
+  //we need the vector of parameters here
+  //the problem provides us with the CNs, we need to prepare a means to change the parameter in the math container
+  CVector< C_FLOAT64* > parameters ;
+  parameters.resize(mNumParameters);
+  size_t Col;
+  for (Col = 0; Col<mNumParameters; ++Col)
+  {
+    const CMathObject* pMo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(Col)));
+    //const CMathObject*  pMo = mpContainer->getMathObject(mpProblem->getParameterCN(Col)); //I do not know why this does not work...
+    //const CMathObject * pMo = mpContainer->getMathObject(object*);
+
+    if (pMo != NULL)
+            {
+              parameters[Col] = (C_FLOAT64 *) pMo->getValuePointer();
+              //Changed.insert(pValueObject);
+            }
+          else
+            {
+              parameters[Col] = NULL;
+            }
+  }
+
+  //and now the RHS
+  //const C_FLOAT64 * pRate = mRate.array() + mSize.nFixedEventTargets + mSize.nTime;
+  const C_FLOAT64 * pRate = mpContainer->getRate(reduced).array() + mpContainer->getCountFixedEventTargets() + 1;
+  //TODO: check: The mathcontainer::calculateJacobian() method uses the non-reduced rate vector always. Is this correct?
+
+  C_FLOAT64 Store;
+  C_FLOAT64 X1;
+  C_FLOAT64 X2;
+  C_FLOAT64 InvDelta;
+
+  CVector< C_FLOAT64 > Y1(mSystemSize);
+  CVector< C_FLOAT64 > Y2(mSystemSize);
+
+  C_FLOAT64 * pY1;
+  C_FLOAT64 * pY2;
+
+  //C_FLOAT64 * pX = pState;
+  //C_FLOAT64 * pXEnd = pX + Dim;
+
+  C_FLOAT64 * pS;
+  C_FLOAT64 * pSEnd = s.array() + mSystemSize * mNumParameters;
+
+  for (Col = 0;  Col < mNumParameters; ++Col)
+    {
+      Store = *parameters[Col];
+
+      // We only need to make sure that we do not have an underflow problem
+      if (fabs(Store) < DerivationFactor)
+        {
+          X1 = 0.0;
+
+          if (Store < 0.0)
+            X2 = -2.0 * DerivationFactor;
+          else
+            X2 = 2.0 * DerivationFactor;;
+        }
+      else
+        {
+          X1 = Store * (1.0 + DerivationFactor);
+          X2 = Store * (1.0 - DerivationFactor);
+        }
+
+      InvDelta = 1.0 / (X2 - X1);
+
+      *parameters[Col] = X1;
+      mpContainer->updateSimulatedValues(reduced);
+      memcpy(Y1.array(), pRate, mSystemSize * sizeof(C_FLOAT64));
+
+      *parameters[Col] = X2;
+      mpContainer->updateSimulatedValues(reduced);
+      memcpy(Y2.array(), pRate, mSystemSize * sizeof(C_FLOAT64));
+
+      *parameters[Col] = Store;
+
+      pS = s.array() + Col;
+      pY1 = Y1.array();
+      pY2 = Y2.array();
+
+      for (; pS < pSEnd; pS += mNumParameters, ++pY1, ++pY2)
+        *pS = (*pY2 - *pY1) * InvDelta;
+    }
+
+  mpContainer->updateSimulatedValues(reduced);
+}

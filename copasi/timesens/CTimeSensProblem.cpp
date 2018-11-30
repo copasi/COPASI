@@ -108,12 +108,11 @@ void CTimeSensProblem::removeParameterCN(const CCommonName & cn)
 
   size_t numParameters = getNumParameters();
 
-  for (size_t i = numParameters - 1; i >= 0 ; --i)
+  for (int i = numParameters - 1; i >= 0 ; --i)
     {
       CCommonName currentCn = getParameterCN(i);
       CCopasiParameter* current = mpParametersGroup->getParameter(i);
-
-      if (current->getValue<std::string>() == cn)
+      if (current && current->getValue<std::string>() == cn)
         mpParametersGroup->removeParameter(i);
     }
 }

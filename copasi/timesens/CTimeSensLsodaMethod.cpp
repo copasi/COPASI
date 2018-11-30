@@ -548,8 +548,8 @@ void CTimeSensLsodaMethod::start()
   //initial state of the sensitivities
   //the sensitivities are initialized with the derivatives of the initial assignments wrt the parameters
   CMatrix<C_FLOAT64> initSens;
-  calculateInitialStateSensitivities(initSens);
-  std::cout << initSens;
+  calculate_dInitialState_dPar(initSens);
+  //std::cout << initSens;
   size_t i,j;
   for (i=0; i<mSystemSize; ++i)
     for (j=0; j<mNumParameters; ++j)
@@ -557,11 +557,10 @@ void CTimeSensLsodaMethod::start()
       mVariables[i + (j+1)*mSystemSize + 1] = (initSens[i][j]);
     }
   copySensitivitiesToResultMatrix();
-  //for (i=mSystemSize+1; i<mData.dim; ++i)
-  //  mVariables[i]=0.0;
 
-  //reserve space for jacobian
+  //reserve space for jacobian, etc.
   mJacobian.resize(mSystemSize, mSystemSize);
+  mdRate_dPar.resize(mSystemSize, mNumParameters);
 
   mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getCountFixedEventTargets() ;
 
@@ -626,20 +625,23 @@ void CTimeSensLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLO
 
   //calculate the RHS of the extended system
   mpContainer->calculateJacobian(mJacobian, 1e-6, *mpReducedModel);
+  calculate_dRate_dPar(mdRate_dPar, *mpReducedModel);
+  //std::cout << mdRate_dPar;
 
   C_FLOAT64 *dbl1;
-  const C_FLOAT64 *dbl2, *dbl3, *dbl1end, *dbl3end;
+  const C_FLOAT64 *dbl2, *dbl3, *dbl1end, *dbl3end, *dbl_dRdP;
   dbl1 = ydot + mSystemSize + 1;
   size_t i;
   for (i = 1; i <= mNumParameters; ++i)
     {
-      //dbl1 += mSystemSize;
       dbl1end = dbl1 + mSystemSize;
       dbl2 = mJacobian.array();
 
-      for (; dbl1 != dbl1end; ++dbl1)
+      dbl_dRdP = mdRate_dPar[0]+i-1;
+
+      for (; dbl1 != dbl1end; ++dbl1, dbl_dRdP+=mNumParameters)
         {
-          *dbl1 = 0.0;
+          *dbl1 = *dbl_dRdP; // 0.0;
 
           dbl3 = y + 1 + i * mSystemSize;
           dbl3end = dbl3 + mSystemSize;

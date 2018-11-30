@@ -150,7 +150,12 @@ protected:
   /**
    * This calculates the derivatives of the initial state with respect to the requested parameters
    */
-  void calculateInitialStateSensitivities(CMatrix<C_FLOAT64>& s);
+  void calculate_dInitialState_dPar(CMatrix<C_FLOAT64>& s);
+
+  /**
+   * This calculates the derivatives of the RHS with respect to the requested parameters
+   */
+  void calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced);
 
   // Attributes
 protected:
@@ -203,6 +208,7 @@ protected:
   unsigned C_INT32 mNumParameters;
 
   CMatrix<C_FLOAT64> mJacobian;
+  CMatrix<C_FLOAT64> mdRate_dPar;
 
 };
 
