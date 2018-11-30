@@ -543,6 +543,7 @@ void CTimeSensLsodaMethod::start()
   
   //initialize the vector on which lsoda will work
   mVariables.resize(mData.dim);
+  
   //initial state of the system
   memcpy(mVariables.array(), mpContainerStateTime, (mSystemSize+1) * sizeof(C_FLOAT64));
   //initial state of the sensitivities

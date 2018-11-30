@@ -138,9 +138,8 @@ CTimeSensMethod::Status CTimeSensMethod::step(const double & /* deltaT */,
 void CTimeSensMethod::start()
 {
   initResult(); //initializes the container and resizes state and result data structures
-  //mContainerState.initialize(mpContainer->getState(*mpReducedModel));
-  //mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
-
+  initializeDerivativesCalculations();
+ 
   return;
 }
 
@@ -218,34 +217,10 @@ void CTimeSensMethod::calculate_dInitialState_dPar(CMatrix<C_FLOAT64>& s)
   s.resize(mSystemSize, mNumParameters);
 
   C_FLOAT64 DerivationFactor = 1e-5;
-  //std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
 
-  //we need the vector of parameters here
-  //the problem provides us with the CNs, we need to prepare a means to change the parameter in the math container
-  CVector< C_FLOAT64* > parameters ;
-  parameters.resize(mNumParameters);
-  size_t Col;
-  for (Col = 0; Col<mNumParameters; ++Col)
-  {
-    const CMathObject* pMo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(Col)));
-    //const CMathObject*  pMo = mpContainer->getMathObject(mpProblem->getParameterCN(Col)); //I do not know why this does not work...
-    //const CMathObject * pMo = mpContainer->getMathObject(object*);
-
-    if (pMo != NULL)
-            {
-              parameters[Col] = (C_FLOAT64 *) pMo->getValuePointer();
-              //Changed.insert(pValueObject);
-            }
-          else
-            {
-              parameters[Col] = NULL;
-            }
-  }
-
-  //and now the initial state
+  //access to the initial state
   CVectorCore< C_FLOAT64 > containerInitialState;
   containerInitialState.initialize(mpContainer->getInitialState());
-  //std::cout << containerInitialState << std::endl;
   const C_FLOAT64 * pInitialState = containerInitialState.array() + mpContainer->getCountFixed() + mpContainer->getCountFixedEventTargets() + 1;
   //check: is this the correct way to get the first entry of the initial state?
 
@@ -262,10 +237,11 @@ void CTimeSensMethod::calculate_dInitialState_dPar(CMatrix<C_FLOAT64>& s)
 
   C_FLOAT64 * pS;
   C_FLOAT64 * pSEnd = s.array() + mSystemSize * mNumParameters;
-
+  
+  size_t Col;
   for (Col = 0;  Col < mNumParameters; ++Col)
     {
-      Store = *parameters[Col];
+      Store = *mParameterValuePointers[Col];
 
       // We only need to make sure that we do not have an underflow problem
       if (fabs(Store) < DerivationFactor)
@@ -285,15 +261,15 @@ void CTimeSensMethod::calculate_dInitialState_dPar(CMatrix<C_FLOAT64>& s)
 
       InvDelta = 1.0 / (X2 - X1);
 
-      *parameters[Col] = X1;
+      *mParameterValuePointers[Col] = X1;
       mpContainer->updateInitialValues(CCore::Framework::ParticleNumbers); //ParticleNumbers  Concentration
       memcpy(Y1.array(), pInitialState, mSystemSize * sizeof(C_FLOAT64));
 
-      *parameters[Col] = X2;
+      *mParameterValuePointers[Col] = X2;
       mpContainer->updateInitialValues(CCore::Framework::ParticleNumbers);
       memcpy(Y2.array(), pInitialState, mSystemSize * sizeof(C_FLOAT64));
 
-      *parameters[Col] = Store;
+      *mParameterValuePointers[Col] = Store;
 
       pS = s.array() + Col;
       pY1 = Y1.array();
@@ -312,30 +288,7 @@ void CTimeSensMethod::calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced)
 
   C_FLOAT64 DerivationFactor = 1e-5;
 
-  //we need the vector of parameters here
-  //the problem provides us with the CNs, we need to prepare a means to change the parameter in the math container
-  CVector< C_FLOAT64* > parameters ;
-  parameters.resize(mNumParameters);
-  size_t Col;
-  for (Col = 0; Col<mNumParameters; ++Col)
-  {
-    const CMathObject* pMo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(Col)));
-    //const CMathObject*  pMo = mpContainer->getMathObject(mpProblem->getParameterCN(Col)); //I do not know why this does not work...
-    //const CMathObject * pMo = mpContainer->getMathObject(object*);
-
-    if (pMo != NULL)
-            {
-              parameters[Col] = (C_FLOAT64 *) pMo->getValuePointer();
-              //Changed.insert(pValueObject);
-            }
-          else
-            {
-              parameters[Col] = NULL;
-            }
-  }
-
-  //and now the RHS
-  //const C_FLOAT64 * pRate = mRate.array() + mSize.nFixedEventTargets + mSize.nTime;
+  //access to the RHS
   const C_FLOAT64 * pRate = mpContainer->getRate(reduced).array() + mpContainer->getCountFixedEventTargets() + 1;
   //TODO: check: The mathcontainer::calculateJacobian() method uses the non-reduced rate vector always. Is this correct?
 
@@ -350,15 +303,13 @@ void CTimeSensMethod::calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced)
   C_FLOAT64 * pY1;
   C_FLOAT64 * pY2;
 
-  //C_FLOAT64 * pX = pState;
-  //C_FLOAT64 * pXEnd = pX + Dim;
-
   C_FLOAT64 * pS;
   C_FLOAT64 * pSEnd = s.array() + mSystemSize * mNumParameters;
 
+  size_t Col;
   for (Col = 0;  Col < mNumParameters; ++Col)
     {
-      Store = *parameters[Col];
+      Store = *mParameterValuePointers[Col];
 
       // We only need to make sure that we do not have an underflow problem
       if (fabs(Store) < DerivationFactor)
@@ -378,15 +329,15 @@ void CTimeSensMethod::calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced)
 
       InvDelta = 1.0 / (X2 - X1);
 
-      *parameters[Col] = X1;
+      *mParameterValuePointers[Col] = X1;
       mpContainer->updateSimulatedValues(reduced);
       memcpy(Y1.array(), pRate, mSystemSize * sizeof(C_FLOAT64));
 
-      *parameters[Col] = X2;
+      *mParameterValuePointers[Col] = X2;
       mpContainer->updateSimulatedValues(reduced);
       memcpy(Y2.array(), pRate, mSystemSize * sizeof(C_FLOAT64));
 
-      *parameters[Col] = Store;
+      *mParameterValuePointers[Col] = Store;
 
       pS = s.array() + Col;
       pY1 = Y1.array();
@@ -397,4 +348,35 @@ void CTimeSensMethod::calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced)
     }
 
   mpContainer->updateSimulatedValues(reduced);
+  
+  //TODO: updateSimulatedValues() apparently only updates expressions that depend on the state
+  //variables of the system. It seems we need to create special update sequences that consider also
+  //changes in the spezified parameters.
+}
+
+void CTimeSensMethod::initializeDerivativesCalculations()
+{
+  //we need the vector of parameters
+  //the problem provides us with the CNs, we need to prepare a means to change the parameter in the math container
+  mParameterValuePointers.resize(mNumParameters);
+  size_t Col;
+  for (Col = 0; Col<mNumParameters; ++Col)
+  {
+    const CMathObject* pMo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(Col)));
+    //const CMathObject*  pMo = mpContainer->getMathObject(mpProblem->getParameterCN(Col)); //I do not know why this does not work...
+    //const CMathObject * pMo = mpContainer->getMathObject(object*);
+
+    if (pMo != NULL)
+            {
+              mParameterValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
+              //Changed.insert(pValueObject);
+            }
+          else
+            {
+              mParameterValuePointers[Col] = NULL;
+            }
+  }
+
+  //TODO: create update lists for the various numerical derivatives calculations
+
 }
