@@ -138,7 +138,7 @@ CTimeSensMethod::Status CTimeSensMethod::step(const double & /* deltaT */,
 void CTimeSensMethod::start()
 {
   initResult(); //initializes the container and resizes state and result data structures
-  initializeDerivativesCalculations();
+  initializeDerivativesCalculations(*mpReducedModel);
  
   return;
 }
@@ -330,11 +330,13 @@ void CTimeSensMethod::calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced)
       InvDelta = 1.0 / (X2 - X1);
 
       *mParameterValuePointers[Col] = X1;
-      mpContainer->updateSimulatedValues(reduced);
+      mpContainer->applyUpdateSequence(mSeq1);
+      //mpContainer->updateSimulatedValues(reduced);
       memcpy(Y1.array(), pRate, mSystemSize * sizeof(C_FLOAT64));
 
       *mParameterValuePointers[Col] = X2;
-      mpContainer->updateSimulatedValues(reduced);
+      mpContainer->applyUpdateSequence(mSeq1);
+      //mpContainer->updateSimulatedValues(reduced);
       memcpy(Y2.array(), pRate, mSystemSize * sizeof(C_FLOAT64));
 
       *mParameterValuePointers[Col] = Store;
@@ -347,18 +349,17 @@ void CTimeSensMethod::calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced)
         *pS = (*pY2 - *pY1) * InvDelta;
     }
 
-  mpContainer->updateSimulatedValues(reduced);
-  
-  //TODO: updateSimulatedValues() apparently only updates expressions that depend on the state
-  //variables of the system. It seems we need to create special update sequences that consider also
-  //changes in the spezified parameters.
+  mpContainer->applyUpdateSequence(mSeq1);
+  //mpContainer->updateSimulatedValues(reduced);
 }
 
-void CTimeSensMethod::initializeDerivativesCalculations()
+void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
 {
   //we need the vector of parameters
   //the problem provides us with the CNs, we need to prepare a means to change the parameter in the math container
   mParameterValuePointers.resize(mNumParameters);
+
+  CObjectInterface::ObjectSet Changed;
   size_t Col;
   for (Col = 0; Col<mNumParameters; ++Col)
   {
@@ -369,7 +370,7 @@ void CTimeSensMethod::initializeDerivativesCalculations()
     if (pMo != NULL)
             {
               mParameterValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
-              //Changed.insert(pValueObject);
+              Changed.insert(pMo);
             }
           else
             {
@@ -377,6 +378,12 @@ void CTimeSensMethod::initializeDerivativesCalculations()
             }
   }
 
-  //TODO: create update lists for the various numerical derivatives calculations
+  //generate an update sequence for calculate_dRate_dPar().
+  //it should update the rates (RHS) after changes in the specified parameters
+  mpContainer->getTransientDependencies().getUpdateSequence(mSeq1, CCore::SimulationContext::Default,
+          Changed, mpContainer->getSimulationUpToDateObjects() );
+  //TODO: this seems to work, but I have no idea if it is the correct and most efficient way to do it.
+  //Also it may be more efficient if we create one update list for each parameter, and not a joint list for all
 
+  //TODO: create update lists for the various other numerical derivatives calculations
 }

@@ -151,7 +151,7 @@ protected:
    * Initialize everything that is needed for the various derivatives,
    * e.g. lists of value pointers, update sequences, etc.
    */
-  void initializeDerivativesCalculations();
+  void initializeDerivativesCalculations(bool reduced);
   
   /**
    * This calculates the derivatives of the initial state with respect to the requested parameters
@@ -220,6 +220,9 @@ protected:
    * pointers to the values of the parameters
    */
   CVector< C_FLOAT64* > mParameterValuePointers;
+  
+  CCore::CUpdateSequence mSeq1;
+  
 };
 
 #endif // COPASI_CTimeSensMethod
