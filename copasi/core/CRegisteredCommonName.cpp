@@ -20,19 +20,19 @@ std::set<CRegisteredCommonName*> CRegisteredCommonName::mSet;
 // static
 bool CRegisteredCommonName::mEnabled(true);;
 
-CRegisteredCommonName::CRegisteredCommonName():
+CRegisteredCommonName::CRegisteredCommonName() :
   CCommonName()
 {
   mSet.insert(this);
 }
 
-CRegisteredCommonName::CRegisteredCommonName(const std::string & name):
+CRegisteredCommonName::CRegisteredCommonName(const std::string & name) :
   CCommonName(name)
 {
   mSet.insert(this);
 }
 
-CRegisteredCommonName::CRegisteredCommonName(const CRegisteredCommonName & src):
+CRegisteredCommonName::CRegisteredCommonName(const CRegisteredCommonName & src) :
   CCommonName(src)
 {
   mSet.insert(this);
@@ -136,7 +136,15 @@ void CRegisteredCommonName::sanitizeObjectNames()
                       CDataObject::sanitizeObjectName(ElementName);
                       NewCN += IndexSeparator + escape(ElementName);
 
-                      IndexSeparator = ",";
+                      if (ObjectType != "Array")
+                        {
+                          IndexSeparator = ",";
+                        }
+                      else
+                        {
+                          IndexSeparator = "][";
+                        }
+
                       ElementName = Primary.getElementName(++pos);
                     }
 
