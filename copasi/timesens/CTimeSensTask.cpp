@@ -1,20 +1,6 @@
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /**
@@ -68,7 +54,7 @@ const CTaskEnum::Method CTimeSensTask::ValidMethods[] =
 };
 
 CTimeSensTask::CTimeSensTask(const CDataContainer * pParent,
-                                 const CTaskEnum::Task & type):
+                             const CTaskEnum::Task & type):
   CCopasiTask(pParent, type),
   mTimeSeriesRequested(true),
   mTimeSeries(),
@@ -93,7 +79,7 @@ CTimeSensTask::CTimeSensTask(const CDataContainer * pParent,
 }
 
 CTimeSensTask::CTimeSensTask(const CTimeSensTask & src,
-                                 const CDataContainer * pParent):
+                             const CDataContainer * pParent):
   CCopasiTask(src, pParent),
   mTimeSeriesRequested(src.mTimeSeriesRequested),
   mTimeSeries(),
@@ -132,8 +118,8 @@ void CTimeSensTask::cleanup()
 {}
 
 bool CTimeSensTask::initialize(const OutputFlag & of,
-                                 COutputHandler * pOutputHandler,
-                                 std::ostream * pOstream)
+                               COutputHandler * pOutputHandler,
+                               std::ostream * pOstream)
 {
   assert(mpProblem && mpMethod);
 
@@ -176,6 +162,8 @@ bool CTimeSensTask::initialize(const OutputFlag & of,
       if (mpSteadyState != NULL)
         mpSteadyState->initialize(of, NULL, NULL);
     }
+
+  success &= updateMatrices();
 
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
@@ -554,8 +542,10 @@ const CTimeSeries & CTimeSensTask::getTimeSeries() const
 bool CTimeSensTask::updateMatrices()
 {
   CTimeSensMethod* tmpMethod = dynamic_cast<CTimeSensMethod*>(mpMethod);
+
   if (tmpMethod)
     tmpMethod->initResult();
+
   return true;
 }
 

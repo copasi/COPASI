@@ -26,6 +26,7 @@
  */
 CTimeSensProblem::CTimeSensProblem(const CDataContainer * pParent):
   CTrajectoryProblem(CTaskEnum::Task::timeSens, pParent),
+  mpResultAnnotation(NULL),
   mpParametersGroup(NULL)
 {
   initializeParameter();
@@ -40,6 +41,7 @@ CTimeSensProblem::CTimeSensProblem(const CDataContainer * pParent):
 CTimeSensProblem::CTimeSensProblem(const CTimeSensProblem & src,
                                    const CDataContainer * pParent):
   CTrajectoryProblem(src, pParent),
+  mpResultAnnotation(NULL),
   mpParametersGroup(NULL)
 {
   initializeParameter();
@@ -120,6 +122,7 @@ void CTimeSensProblem::removeParameterCN(const CCommonName & cn)
     {
       CCommonName currentCn = getParameterCN(i);
       CCopasiParameter* current = mpParametersGroup->getParameter(i);
+
       if (current && current->getValue<std::string>() == cn)
         mpParametersGroup->removeParameter(i);
     }
