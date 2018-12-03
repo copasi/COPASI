@@ -38,18 +38,18 @@ TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
     REQUIRE(dm->loadModel(getTestFile("test-data/brusselator.cps"), NULL) == true);
 
     REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Reference=InitialVolume"));
-    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Reference=Rate")) ;
-    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Reference=Volume")) ;
-    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=InitialParticleNumber")) ;
-    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=ParticleNumber")) ;
-    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=ParticleNumberRate")) ;
-    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=Rate")) ;
-    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=Concentration")) ;
-    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=InitialConcentration")) ;
-    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Array=Stoichiometry(ann)[0][0]")) ;
-    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Array=Stoichiometry(ann)[X][(R1)]")) ;
-    REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[0][0]")) ;
-    REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[\\[X\\]][(R1).k1]")) ;
+    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Reference=Rate"));
+    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Reference=Volume"));
+    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=InitialParticleNumber"));
+    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=ParticleNumber"));
+    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=ParticleNumberRate"));
+    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=Rate"));
+    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=Concentration"));
+    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=InitialConcentration"));
+    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Array=Stoichiometry(ann)[0][0]"));
+    REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Array=Stoichiometry(ann)[X][(R1)]"));
+    REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[0][0]"));
+    REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[\\[X\\]][(R1).k1]"));
 
   }
 
@@ -76,6 +76,12 @@ TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
     auto* obj = (double*)ref->getValuePointer();
     auto cn = ref->getCN();
     REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[A.ParticleNumber][(reaction).k1]"));
+
+    auto registeredCN = CRegisteredCommonName(cn);
+    registeredCN.sanitizeObjectNames();
+    REQUIRE(cn == registeredCN);
+
+
 
   }
 
