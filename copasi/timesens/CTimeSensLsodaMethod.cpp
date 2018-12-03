@@ -1029,6 +1029,6 @@ void CTimeSensLsodaMethod::copySensitivitiesToResultMatrix()
     {
       //mVariables[i + (j+1)*mSystemSize + 1] = (initSens[i][j]);
       index[0]=i; index[1]=j;
-      mpProblem->getResult()[index] =  mVariables[i + (j+1)*mSystemSize + 1];
+      mpProblem->getStateResult()[index] =  mVariables[i + (j+1)*mSystemSize + 1];
     }
 }

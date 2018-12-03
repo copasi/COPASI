@@ -56,13 +56,19 @@ CTimeSensProblem::~CTimeSensProblem()
 void CTimeSensProblem::initializeParameter()
 {
   mpParametersGroup = assertGroup("ListOfParameters");
+  mpTargetsGroup = assertGroup("ListOfTargets");
 }
 
 void CTimeSensProblem::initObjects()
 {
-  mpResultAnnotation = new CDataArray("Sensitivities array", this, &mResult, false);
-  mpResultAnnotation->setDescription("Time-Course Sensitivities");
-  mpResultAnnotation->setMode(CDataArray::Mode::Objects);
+  mpStateResultAnnotation = new CDataArray("State Sensitivities array", this, &mStateResult, false);
+  mpStateResultAnnotation->setDescription("Time-Course Sensitivities of state variables");
+  mpStateResultAnnotation->setMode(CDataArray::Mode::Objects);
+
+  mpTargetsResultAnnotation = new CDataArray("Target Sensitivities array", this, &mTargetsResult, false);
+  mpTargetsResultAnnotation->setDescription("Time-Course Sensitivities target objects");
+  mpTargetsResultAnnotation->setMode(CDataArray::Mode::Objects);
+
 }
 
 //virtual
@@ -70,6 +76,8 @@ bool CTimeSensProblem::elevateChildren()
 {
   return CTrajectoryProblem::elevateChildren();
 }
+
+//**********************************
 
 CCommonName CTimeSensProblem::getParameterCN(size_t index)
 {
@@ -117,36 +125,6 @@ void CTimeSensProblem::removeParameterCN(const CCommonName & cn)
     }
 }
 
-void CTimeSensProblem::clearParameterCNs()
-{
-  if (mpParametersGroup == NULL)
-    return;
-
-  mpParametersGroup->clear();
-}
-
-CArray & CTimeSensProblem::getResult()
-{
-  return mResult;
-}
-
-const CArray & CTimeSensProblem::getResult() const
-{
-  return mResult;
-}
-
-CDataArray * CTimeSensProblem::getResultAnnotated()
-{
-  return mpResultAnnotation;
-}
-
-const CDataArray * CTimeSensProblem::getResultAnnotated() const
-{
-  return mpResultAnnotation;
-}
-
-
-
 size_t CTimeSensProblem::getNumParameters()
 {
   if (mpParametersGroup == NULL)
@@ -162,4 +140,129 @@ void CTimeSensProblem::addParameterCN(const CCommonName & cn)
 
   mpParametersGroup->addParameter("ParameterCN", CCopasiParameter::Type::CN, cn);
 }
+
+
+void CTimeSensProblem::clearParameterCNs()
+{
+  if (mpParametersGroup == NULL)
+    return;
+
+  mpParametersGroup->clear();
+}
+
+//***********************************
+
+CCommonName CTimeSensProblem::getTargetCN(size_t index)
+{
+  if (mpTargetsGroup == NULL)
+    return CCommonName();
+
+  size_t numTargets = getNumTargets();
+
+  if (index >= numTargets)
+    return CCommonName();
+
+  CCopasiParameter* current = mpTargetsGroup->getParameter(index);
+
+  if (current == NULL)
+    return CCommonName();
+
+  return current->getValue<std::string>();
+}
+
+void CTimeSensProblem::removeTargetCN(size_t index)
+{
+  if (mpTargetsGroup == NULL)
+    return;
+
+  size_t numTargets = getNumTargets();
+
+  if (index >= numTargets) return;
+
+  mpTargetsGroup->removeParameter(index);
+}
+
+void CTimeSensProblem::removeTargetCN(const CCommonName & cn)
+{
+  if (mpTargetsGroup == NULL)
+    return;
+
+  size_t numTargets = getNumTargets();
+
+  for (int i = numTargets - 1; i >= 0 ; --i)
+    {
+      CCommonName currentCn = getTargetCN(i);
+      CCopasiParameter* current = mpTargetsGroup->getParameter(i);
+      if (current && current->getValue<std::string>() == cn)
+        mpTargetsGroup->removeParameter(i);
+    }
+}
+
+size_t CTimeSensProblem::getNumTargets()
+{
+  if (mpTargetsGroup == NULL)
+    return 0;
+
+  return mpTargetsGroup->size();
+}
+
+void CTimeSensProblem::addTargetCN(const CCommonName & cn)
+{
+  if (mpTargetsGroup == NULL)
+    return;
+
+  mpTargetsGroup->addParameter("TargetCN", CCopasiParameter::Type::CN, cn);
+}
+
+
+void CTimeSensProblem::clearTargetCNs()
+{
+  if (mpTargetsGroup == NULL)
+    return;
+
+  mpTargetsGroup->clear();
+}
+
+//***********************************
+
+CArray & CTimeSensProblem::getStateResult()
+{
+  return mStateResult;
+}
+
+const CArray & CTimeSensProblem::getStateResult() const
+{
+  return mStateResult;
+}
+
+CDataArray * CTimeSensProblem::getStateResultAnnotated()
+{
+  return mpStateResultAnnotation;
+}
+
+const CDataArray * CTimeSensProblem::getStateResultAnnotated() const
+{
+  return mpStateResultAnnotation;
+}
+
+CArray & CTimeSensProblem::getTargetsResult()
+{
+  return mTargetsResult;
+}
+
+const CArray & CTimeSensProblem::getTargetsResult() const
+{
+  return mTargetsResult;
+}
+
+CDataArray * CTimeSensProblem::getTargetsResultAnnotated()
+{
+  return mpTargetsResultAnnotation;
+}
+
+const CDataArray * CTimeSensProblem::getTargetsResultAnnotated() const
+{
+  return mpTargetsResultAnnotation;
+}
+
 

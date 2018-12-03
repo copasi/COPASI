@@ -51,6 +51,8 @@ public:
    */
   virtual bool elevateChildren();
 
+  // handling the parameters for which sensitivities are to be calculated:
+  
   size_t getNumParameters();
 
   void addParameterCN(const CCommonName& cn);
@@ -63,11 +65,37 @@ public:
 
   void clearParameterCNs();
 
-  CArray & getResult();
-  const CArray & getResult() const;
-  CDataArray * getResultAnnotated();
-  const CDataArray * getResultAnnotated() const;
+  // handling the target objects for which sensitivities are requested.
+  // note that sensitivities of the state variables are always calculated,
+  // those specified here are additional
 
+  size_t getNumTargets();
+
+  void addTargetCN(const CCommonName& cn);
+
+  CCommonName getTargetCN(size_t index);
+
+  void removeTargetCN(size_t index);
+
+  void removeTargetCN(const CCommonName& cn);
+
+  void clearTargetCNs();
+
+  // the results.
+
+  //first the sensitivities of the state variables (particle numbers, etc.):
+
+  CArray & getStateResult();
+  const CArray & getStateResult() const;
+  CDataArray * getStateResultAnnotated();
+  const CDataArray * getStateResultAnnotated() const;
+
+  //now the sensitivities of the explicitely requested targets:
+
+  CArray & getTargetsResult();
+  const CArray & getTargetsResult() const;
+  CDataArray * getTargetsResultAnnotated();
+  const CDataArray * getTargetsResultAnnotated() const;
 
 private:
   /**
@@ -134,13 +162,22 @@ protected:
   bool mStepNumberSetLast;
 
   /**
-   *  This holds the result
+   *  These hold the results
    */
-  CArray mResult;
+  CArray mStateResult;
 
-  CDataArray * mpResultAnnotation;
+  CDataArray * mpStateResultAnnotation;
 
+  CArray mTargetsResult;
+
+  CDataArray * mpTargetsResultAnnotation;
+
+
+  //the parameters for the sensitivities
   CCopasiParameterGroup * mpParametersGroup;
+
+  //the targets for the sensitivities
+  CCopasiParameterGroup * mpTargetsGroup;
 
 };
 

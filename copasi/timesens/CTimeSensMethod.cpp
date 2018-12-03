@@ -182,33 +182,49 @@ void CTimeSensMethod::initResult()
   mNumParameters = mpProblem->getNumParameters();
   //mData.dim = (C_INT)(1+mSystemSize * (1 + mNumParameters)); //including time
 
-  
+  //resize result & annotations
   CArray::index_type s;
   s.push_back(mSystemSize);
   s.push_back(mNumParameters);
 
-  //resize result & annotations
-  mpProblem->getResult().resize(s);
-  mpProblem->getResultAnnotated()->resize();
-  mpProblem->getResultAnnotated()->setDimensionDescription(0, "Variables");
-  mpProblem->getResultAnnotated()->setDimensionDescription(1, "Parameters");
-  size_t dim = 0;
-  size_t j;
+  mpProblem->getStateResult().resize(s);
+  mpProblem->getStateResultAnnotated()->resize();
+  mpProblem->getStateResultAnnotated()->setDimensionDescription(0, "Variables");
+  mpProblem->getStateResultAnnotated()->setDimensionDescription(1, "Parameters");
 
-  // annotations
-      //std::vector< CDataObject * > DataObjects = mpProblem->getTargetFunctions().getVariablesPointerList(pDataModel);
-      //std::vector< CDataObject * >::const_iterator itDataObject = DataObjects.begin();
   size_t i;
   for (i = 0; i < mSystemSize; ++i)
   {
     CMathObject* mo = mpContainer->getMathObject(mpContainerStateTime+i+1);
-    mpProblem->getResultAnnotated()->setAnnotation(0, i,mo->getDataObject() );
+    mpProblem->getStateResultAnnotated()->setAnnotation(0, i,mo->getDataObject() );
   }
   for (i = 0; i < mNumParameters; ++i)
   {
     const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(i)));
-    mpProblem->getResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
+    mpProblem->getStateResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
   }
+
+  s.clear();
+  s.push_back(mpProblem->getNumTargets());
+  s.push_back(mNumParameters);
+
+  mpProblem->getTargetsResult().resize(s);
+  mpProblem->getTargetsResultAnnotated()->resize();
+  mpProblem->getTargetsResultAnnotated()->setDimensionDescription(0, "Targets");
+  mpProblem->getTargetsResultAnnotated()->setDimensionDescription(1, "Parameters");
+
+  for (i = 0; i < mpProblem->getNumTargets(); ++i)
+  {
+    const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getTargetCN(i)));
+    mpProblem->getTargetsResultAnnotated()->setAnnotation(0, i, mo->getDataObject() );
+  }
+  for (i = 0; i < mNumParameters; ++i)
+  {
+    const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(i)));
+    mpProblem->getTargetsResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
+  }
+
+
 
 }
 
