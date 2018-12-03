@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,6 +28,19 @@ CSensItem::CSensItem()
   : mSingleObjectCN(),
     mListType(CObjectLists::SINGLE_OBJECT)
 {}
+
+CSensItem::CSensItem(const std::string & cn)
+  : mSingleObjectCN(cn)
+  , mListType(CObjectLists::SINGLE_OBJECT)
+{
+}
+
+CSensItem::CSensItem(CObjectLists::ListType type)
+  : mSingleObjectCN()
+  , mListType(type)
+
+{
+}
 
 bool CSensItem::isSingleObject() const
 {
