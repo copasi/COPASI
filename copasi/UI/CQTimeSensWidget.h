@@ -38,6 +38,8 @@ public slots:
 
   void slotAddParameter();
   void slotRemoveParameter();
+  void slotAddTarget();
+  void slotRemoveTarget();
 
 protected:
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);

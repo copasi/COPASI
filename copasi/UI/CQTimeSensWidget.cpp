@@ -39,6 +39,8 @@ CQTimeSensWidget::CQTimeSensWidget(QWidget* parent, const char* name)
 
   mpCmdAdd->setIcon(CQIconResource::icon(CQIconResource::editAdd));
   mpCmdRemove->setIcon(CQIconResource::icon(CQIconResource::editDelete));
+  mpCmdAddTarget->setIcon(CQIconResource::icon(CQIconResource::editAdd));
+  mpCmdRemoveTarget->setIcon(CQIconResource::icon(CQIconResource::editDelete));
 
   init();
 }
@@ -276,6 +278,13 @@ bool CQTimeSensWidget::saveTaskProtected()
       timeSensProblem->addParameterCN(mpTimeSensProblem->getParameterCN(i));
     }
 
+  timeSensProblem->clearTargetCNs();
+
+  for (size_t i = 0; i < mpTimeSensProblem->getNumTargets(); ++i)
+    {
+      timeSensProblem->addTargetCN(mpTimeSensProblem->getTargetCN(i));
+    }
+
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
   mpValidatorIntervals->saved();
@@ -339,6 +348,7 @@ bool CQTimeSensWidget::loadTaskProtected()
   mpValidatorIntervals->saved();
   mpValidatorDelay->saved();
 
+  // load parameters
   mpListParameters->clear();
 
   for (size_t i = 0; i < timeSensProblem->getNumParameters(); ++i)
@@ -353,6 +363,20 @@ bool CQTimeSensWidget::loadTaskProtected()
 
     }
 
+  // load targets
+  mpListTargets->clear();
+
+  for (size_t i = 0; i < timeSensProblem->getNumTargets(); ++i)
+    {
+      const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObjectFromCN(timeSensProblem->getTargetCN(i)));
+
+      if (!pObject) continue;
+
+      QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
+      pItem->setData(Qt::UserRole, FROM_UTF8(pObject->getCN()));
+      mpListTargets->addItem(pItem);
+
+    }
 
   return true;
 }
@@ -548,5 +572,52 @@ void CQTimeSensWidget::slotRemoveParameter()
 
       pdelete(item);
     }
+}
+
+void CQTimeSensWidget::slotAddTarget()
+{
+  if (mpTimeSensProblem == NULL)
+    return;
+
+  std::vector< const CDataObject * > selection =
+    CCopasiSelectionDialog::getObjectVector(this,
+        (CQSimpleSelectionTree::ObservedValues | CQSimpleSelectionTree::EventTarget)
+        //& (~CQSimpleSelectionTree::Results)
+                                           );
+
+for (const CDataObject * item : selection)
+    {
+      if (!mpListTargets->findItems(FROM_UTF8(item->getObjectDisplayName()), Qt::MatchExactly).empty())
+        continue;
+
+      QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(item->getObjectDisplayName()));
+      pItem->setData(Qt::UserRole, FROM_UTF8(item->getCN()));
+      mpListTargets->addItem(pItem);
+
+      mpTimeSensProblem->addTargetCN(item->getCN());
+
+    }
+}
+
+void CQTimeSensWidget::slotRemoveTarget()
+{
+  if (mpTimeSensProblem == NULL)
+    return;
+
+  QModelIndexList items = mpListTargets->selectionModel()->selectedIndexes();
+  QModelIndexList::reverse_iterator it = items.rbegin();
+  QModelIndexList::reverse_iterator end = items.rend();
+
+  for (; it != end; ++it)
+    {
+      QListWidgetItem* item = mpListTargets->takeItem(it->row());
+
+      std::string cn = TO_UTF8(item->data(Qt::UserRole).toString());
+
+      mpTimeSensProblem->removeTargetCN(cn);
+
+      pdelete(item);
+    }
+
 }
 
