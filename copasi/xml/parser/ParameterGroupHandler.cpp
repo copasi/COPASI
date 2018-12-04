@@ -43,6 +43,7 @@ ParameterGroupHandler::ParameterGroupHandler(CXMLParser & parser, CXMLParserData
   mNonUniqueParameters["ListOfVariables"].insert("Variables");
 
   mNonUniqueParameters["ListOfParameters"].insert("ParameterCN");
+  mNonUniqueParameters["ListOfTargets"].insert("TargetCN");
 }
 
 // virtual
