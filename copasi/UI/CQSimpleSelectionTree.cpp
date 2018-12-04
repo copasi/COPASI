@@ -534,14 +534,16 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           for (; its != pObjects->end(); ++its)
             {
               ann = dynamic_cast<CDataArray *>(*its);
+
               //if (!ann) continue;
               if (ann && !ann->isEmpty() && filter(classes, ann))
                 {
                   pItem = new QTreeWidgetItem(this->mpResultSteadyStateSubtree, QStringList(FROM_UTF8(ann->getObjectName())));
                   treeItems[pItem] = ann;
                 }
-            
+
               pEigen = dynamic_cast<CEigen*>(*its); //not the most straight forward way, testing all children
+
               if (pEigen && (classes & (Results | AnyObject)) && pEigen->getObjectName() == "Eigenvalues of reduced system Jacobian")
                 {
                   //add a subtree for all the functions calculated from the reduced jacobian eigenvectors
@@ -550,18 +552,20 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
                   //loop over children of CEigen object
                   const CDataContainer::objectMap *pO = & pEigen->getObjects();
                   CDataContainer::objectMap::const_iterator itss = pO->begin();
+
                   for (; itss != pO->end(); ++itss)
                     {
                       if (filter(NumericValues, *itss)) // for now from this specific subtree we only add numeric values.
                         {
-                          if ((*itss)->getObjectName(). substr(0,6) == "Vector" )
+                          if ((*itss)->getObjectName(). substr(0, 6) == "Vector")
                             continue;
+
                           pItem = new QTreeWidgetItem(pSubtree, QStringList(FROM_UTF8((*itss)->getObjectName())));
                           treeItems[pItem] = *itss;
                         }
                     }
                 }
-            
+
             }
         }
     }
@@ -614,7 +618,9 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           for (; its != pObjects->end(); ++its)
             {
               ann = dynamic_cast<CDataArray *>(*its);
+
               if (!ann) continue;
+
               if (!ann->isEmpty() && filter(classes, ann))
                 {
                   pItem = new QTreeWidgetItem(this->mpResultTimeSensitivitySubtree, QStringList(FROM_UTF8(ann->getObjectName())));
@@ -965,7 +971,7 @@ void CQSimpleSelectionTree::slotItemDoubleClicked(QTreeWidgetItem * item, int co
   if (!treeHasSelection()) item->setSelected(true);
 
   if (item->childCount() == 0)
-  emit selectionCommitted();
+    emit selectionCommitted();
 }
 
 std::vector<const CDataObject * > *CQSimpleSelectionTree::getTreeSelection()
@@ -1332,6 +1338,7 @@ void CQSimpleSelectionTree::removeAllEmptySubTrees()
   removeEmptySubTree(&mpResultTSSASubtree);
   removeEmptySubTree(&mpResultLNASubtree);
   removeEmptySubTree(&mpResultSensitivitySubtree);
+  removeEmptySubTree(&mpResultTimeSensitivitySubtree);
   removeEmptySubTree(&mpResultSteadyStateSubtree);
 #ifdef WITH_ANALYTICS
   removeEmptySubTree(&mpResultAnalyticsSubtree);
