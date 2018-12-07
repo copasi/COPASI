@@ -17,6 +17,7 @@
 
 #if SWIGCSHARP
 
+%csmethodmodifiers  CModelParameterSet::add  "public new"
 %csmethodmodifiers  CModelParameterSet::compile  "public new"
 %csmethodmodifiers  CModelParameterSet::getName  "public new"
 %csmethodmodifiers  CModelParameterSet::getIndex  "public new"
