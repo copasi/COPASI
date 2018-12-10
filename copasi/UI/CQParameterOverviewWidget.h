@@ -29,6 +29,16 @@ public:
   virtual ~CQParameterOverviewWidget();
 
   virtual void setFramework(int framework);
+
+  /**
+   * Allows showing / hiding the button group at the bottom of the overview
+   * widget
+   *
+   * @param isVisible boolean, indicating whether the button group should
+   *                   be visible (true), or not.
+   */
+  void setBtnGroupVisible(bool isVisible);
+
   /**
   * This method returns the data model from all the overview widgets.
   * @return data model of this widget (or NULL if it does not have one)

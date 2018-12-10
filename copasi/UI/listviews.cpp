@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -486,7 +486,9 @@ void ListViews::ConstructNodeWidgets()
 
   if (!mpParameterSetWidget)
     {
-      mpParameterSetWidget = new CQTabWidget(ListViews::MODELPARAMETERSET, new CQParameterOverviewWidget(this), this);
+      CQParameterOverviewWidget* overviewWidget = new CQParameterOverviewWidget(this);
+      overviewWidget->setBtnGroupVisible(false);
+      mpParameterSetWidget = new CQTabWidget(ListViews::MODELPARAMETERSET, overviewWidget, this);
       mpStackedWidget->addWidget(mpParameterSetWidget);
     }
 
@@ -1066,10 +1068,10 @@ size_t ListViews::getCurrentItemId()
 
 bool ListViews::slotNotify(ObjectType objectType, Action action, const CCommonName & cn)
 {
-  if (objectType != MODEL 
-      && objectType != STATE 
-      //&&  action != ADD 
-    )
+  if (objectType != MODEL
+      && objectType != STATE
+      //&&  action != ADD
+     )
     {
       assert(mpDataModel != NULL);
       mpDataModel->changed();
