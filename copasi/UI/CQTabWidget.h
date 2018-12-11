@@ -49,6 +49,16 @@ public:
    */
   CopasiWidget *getTab(int index);
 
+  /**
+   * @return the header layout
+   */
+  QHBoxLayout* getHeaderLayout();
+
+  /**
+   * @return the button layout
+   */
+  QHBoxLayout* getButtonLayout();
+
 protected:
   virtual bool enterProtected();
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);

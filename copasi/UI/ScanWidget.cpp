@@ -134,6 +134,11 @@ bool ScanWidget::runTask()
 
 bool ScanWidget::loadTaskProtected()
 {
+  if (mIsLoading)
+    return true; // currently loading
+
+  mIsLoading = true;
+
   loadCommon();
 
   CScanTask* scanTask =
@@ -196,6 +201,8 @@ bool ScanWidget::loadTaskProtected()
   scrollview->addWidget(tmpT, false); //false: no control buttons (up/down/del)
 
   mChanged = false;
+
+  mIsLoading = false;
 
   return true;
 }
@@ -303,6 +310,9 @@ bool ScanWidget::slotAddItem()
 
 bool ScanWidget::saveTaskProtected()
 {
+  if (mIsLoading)
+    return true; // currently loading the widget list cannot be trusted
+
   saveCommon();
 
   CScanTask* scanTask =

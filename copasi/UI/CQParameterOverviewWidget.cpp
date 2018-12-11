@@ -191,6 +191,11 @@ bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType
   return true;
 }
 
+void CQParameterOverviewWidget::setBtnGroupVisible(bool isVisible)
+{
+  mpBtnWidget->setVisible(isVisible);
+}
+
 CQBaseDataModel * CQParameterOverviewWidget::getCqDataModel()
 {
   return mpParameterSetDM;

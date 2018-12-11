@@ -494,7 +494,14 @@ void ListViews::ConstructNodeWidgets()
 
   if (!mpParameterSetWidget)
     {
-      mpParameterSetWidget = new CQTabWidget(ListViews::MODELPARAMETERSET, new CQParameterOverviewWidget(this), this);
+      CQParameterOverviewWidget* overviewWidget = new CQParameterOverviewWidget(this);
+      overviewWidget->setBtnGroupVisible(false);
+      mpParameterSetWidget = new CQTabWidget(ListViews::MODELPARAMETERSET, overviewWidget, this);
+
+      QPushButton* btn = new QPushButton("Save to File");
+      connect(btn, SIGNAL(pressed()), overviewWidget, SLOT(slotBtnSaveToFile()));
+      mpParameterSetWidget->getHeaderLayout()->addWidget(btn);
+
       mpStackedWidget->addWidget(mpParameterSetWidget);
     }
 

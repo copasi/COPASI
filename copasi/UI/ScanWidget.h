@@ -59,6 +59,8 @@ protected:
 
   QGridLayout* ScanWidgetLayout;
 
+  bool mIsLoading { false };
+
 protected slots:
   bool slotAddItem();
 };

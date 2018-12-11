@@ -1982,8 +1982,16 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
 
       if (pVarNode->getType() != AST_NAME)
         {
-          delete pFun;
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 12, pSBMLFunction->getId().c_str());
+          // while this is wrong, there is no reason to reject the model, we will catch it later
+          std::string functionname = pSBMLFunction->getName().empty() ?
+                                     pSBMLFunction->getId() : pSBMLFunction->getName();
+          CCopasiMessage::Type type = pVarNode->getName() != NULL ? CCopasiMessage::ERROR :
+                                      CCopasiMessage::EXCEPTION;
+
+          if (type == CCopasiMessage::EXCEPTION)
+            delete pFun;
+
+          CCopasiMessage(type, MCSBML + 12, functionname.c_str());
         }
 
       pFun->addVariable(pVarNode->getName());
