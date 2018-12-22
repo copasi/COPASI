@@ -162,6 +162,16 @@ protected:
    * This calculates the derivatives of the RHS with respect to the requested parameters
    */
   void calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced);
+  
+  /**
+   * This calculates the derivatives of the assignments with respect to the state variables
+   */
+  void calculate_dAssignments_dState(CMatrix<C_FLOAT64>& s, bool reduced);
+  
+  /**
+   * This calculates the derivatives of the assignments with respect to the requested parameters
+   */
+  void calculate_dAssignments_dPar(CMatrix<C_FLOAT64>& s);
 
   // Attributes
 protected:
@@ -212,17 +222,29 @@ protected:
    *  Number of parameters for the sensitivities to calculate
    */
   unsigned C_INT32 mNumParameters;
+  
+  /// Number of assignment targets for which sensitivities are calculated
+  size_t mNumAssTargets;
 
   CMatrix<C_FLOAT64> mJacobian;
   CMatrix<C_FLOAT64> mdRate_dPar;
+  CMatrix<C_FLOAT64> mAssignmentJacobian;
+  CMatrix<C_FLOAT64> mdAssignment_dPar;
 
   /**
    * pointers to the values of the parameters
    */
   CVector< C_FLOAT64* > mParameterValuePointers;
-  
+
+  /**
+   * pointers to the values of the assignment targets
+   */
+  CVector< C_FLOAT64* > mAssTargetValuePointers;
+
   CCore::CUpdateSequence mSeq1;
-  
+  CCore::CUpdateSequence mSeq2;
+  CCore::CUpdateSequence mSeq3;
+
 };
 
 #endif // COPASI_CTimeSensMethod

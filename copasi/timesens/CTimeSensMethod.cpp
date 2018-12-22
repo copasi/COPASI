@@ -180,6 +180,7 @@ void CTimeSensMethod::initResult()
 
   mSystemSize = mContainerState.size() - mpContainer->getCountFixedEventTargets() - 1;
   mNumParameters = mpProblem->getNumParameters();
+  mNumAssTargets = mpProblem->getNumTargets();
   //mData.dim = (C_INT)(1+mSystemSize * (1 + mNumParameters)); //including time
 
   //resize result & annotations
@@ -369,6 +370,147 @@ void CTimeSensMethod::calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced)
   //mpContainer->updateSimulatedValues(reduced);
 }
 
+void CTimeSensMethod::calculate_dAssignments_dState(CMatrix<C_FLOAT64>& s, bool reduced)
+{
+  s.resize(mNumAssTargets, mSystemSize);
+
+  C_FLOAT64 DerivationFactor = 1e-5;
+
+  //access to the state variables
+  C_FLOAT64 * pState = const_cast<C_FLOAT64*>(mpContainer->getState(reduced).array()) + mpContainer->getCountFixedEventTargets() + 1;
+
+  C_FLOAT64 Store;
+  C_FLOAT64 X1;
+  C_FLOAT64 X2;
+  C_FLOAT64 InvDelta;
+
+  CVector< C_FLOAT64 > Y1(mNumAssTargets);
+  CVector< C_FLOAT64 > Y2(mNumAssTargets);
+
+  C_FLOAT64 * pY1;
+  C_FLOAT64 * pY2;
+
+  C_FLOAT64 * pX = pState;
+  //C_FLOAT64 * pXEnd = pX + Dim;
+
+  C_FLOAT64 * pS;
+  C_FLOAT64 * pSEnd = s.array() + mNumAssTargets * mSystemSize;
+
+  size_t Col;
+  for (Col = 0;  Col < mSystemSize; ++Col, ++pX)
+    {
+      Store = *pX;
+
+      // We only need to make sure that we do not have an underflow problem
+      if (fabs(Store) < DerivationFactor)
+        {
+          X1 = 0.0;
+
+          if (Store < 0.0)
+            X2 = -2.0 * DerivationFactor;
+          else
+            X2 = 2.0 * DerivationFactor;;
+        }
+      else
+        {
+          X1 = Store * (1.0 + DerivationFactor);
+          X2 = Store * (1.0 - DerivationFactor);
+        }
+
+      InvDelta = 1.0 / (X2 - X1);
+
+      *pX = X1;
+      mpContainer->applyUpdateSequence(mSeq3);
+      size_t i;
+      for (i=0; i<mNumAssTargets; ++i)
+        Y1[i]=*mAssTargetValuePointers[i];
+
+      *pX = X2;
+      mpContainer->applyUpdateSequence(mSeq3);
+      for (i=0; i<mNumAssTargets; ++i)
+        Y2[i]=*mAssTargetValuePointers[i];
+
+      *pX = Store;
+
+      pS = s.array() + Col;
+      pY1 = Y1.array();
+      pY2 = Y2.array();
+
+      for (; pS < pSEnd; pS += mSystemSize, ++pY1, ++pY2)
+        *pS = (*pY2 - *pY1) * InvDelta;
+    }
+
+  mpContainer->applyUpdateSequence(mSeq3);
+}
+
+void CTimeSensMethod::calculate_dAssignments_dPar(CMatrix<C_FLOAT64>& s)
+{
+  s.resize(mNumAssTargets, mNumParameters);
+
+  C_FLOAT64 DerivationFactor = 1e-5;
+
+  C_FLOAT64 Store;
+  C_FLOAT64 X1;
+  C_FLOAT64 X2;
+  C_FLOAT64 InvDelta;
+
+  CVector< C_FLOAT64 > Y1(mNumAssTargets);
+  CVector< C_FLOAT64 > Y2(mNumAssTargets);
+
+  C_FLOAT64 * pY1;
+  C_FLOAT64 * pY2;
+
+  C_FLOAT64 * pS;
+  C_FLOAT64 * pSEnd = s.array() + mNumAssTargets * mNumParameters;
+
+  size_t Col;
+  for (Col = 0;  Col < mNumParameters; ++Col)
+    {
+      Store = *mParameterValuePointers[Col];
+
+      // We only need to make sure that we do not have an underflow problem
+      if (fabs(Store) < DerivationFactor)
+        {
+          X1 = 0.0;
+
+          if (Store < 0.0)
+            X2 = -2.0 * DerivationFactor;
+          else
+            X2 = 2.0 * DerivationFactor;;
+        }
+      else
+        {
+          X1 = Store * (1.0 + DerivationFactor);
+          X2 = Store * (1.0 - DerivationFactor);
+        }
+
+      InvDelta = 1.0 / (X2 - X1);
+
+      *mParameterValuePointers[Col] = X1;
+      mpContainer->applyUpdateSequence(mSeq2);
+      size_t i;
+      for (i=0; i<mNumAssTargets; ++i)
+        Y1[i]=*mAssTargetValuePointers[i];
+
+      *mParameterValuePointers[Col] = X2;
+      mpContainer->applyUpdateSequence(mSeq2);
+      for (i=0; i<mNumAssTargets; ++i)
+        Y2[i]=*mAssTargetValuePointers[i];
+
+      *mParameterValuePointers[Col] = Store;
+
+      pS = s.array() + Col;
+      pY1 = Y1.array();
+      pY2 = Y2.array();
+
+      for (; pS < pSEnd; pS += mNumParameters, ++pY1, ++pY2)
+        *pS = (*pY2 - *pY1) * InvDelta;
+    }
+
+  mpContainer->applyUpdateSequence(mSeq2);
+}
+
+
 void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
 {
   //we need the vector of parameters
@@ -397,9 +539,46 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
   //generate an update sequence for calculate_dRate_dPar().
   //it should update the rates (RHS) after changes in the specified parameters
   mpContainer->getTransientDependencies().getUpdateSequence(mSeq1, CCore::SimulationContext::Default,
-          Changed, mpContainer->getSimulationUpToDateObjects() );
+          Changed, //the parameters
+          mpContainer->getSimulationUpToDateObjects() ); 
   //TODO: this seems to work, but I have no idea if it is the correct and most efficient way to do it.
   //Also it may be more efficient if we create one update list for each parameter, and not a joint list for all
 
+
+  //we need a vector of Pointers to access the values of the assignment targets for which we calculate sensitivities
+  mAssTargetValuePointers.resize(mNumAssTargets);
+  CObjectInterface::ObjectSet assTargets;
+  for (Col = 0; Col<mNumAssTargets; ++Col)
+  {
+    const CMathObject* pMo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getTargetCN(Col)));
+    //const CMathObject*  pMo = mpContainer->getMathObject(mpProblem->getParameterCN(Col)); //I do not know why this does not work...
+    //const CMathObject * pMo = mpContainer->getMathObject(object*);
+
+    if (pMo != NULL)
+            {
+              mAssTargetValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
+              assTargets.insert(pMo);
+            }
+          else
+            {
+              mAssTargetValuePointers[Col] = NULL;
+            }
+  }
+
+  //generate an update sequence for calculate_dAssignments_dPar().
+  //it should update the assignment targets after changes in the specified parameters
+  mpContainer->getTransientDependencies().getUpdateSequence(mSeq2,
+      CCore::SimulationContext::Default,
+      Changed,  //the requested parameters
+      assTargets); //the assignment targets
+
+  //generate an update sequence for calculate_dAssignments_dState().
+  //it should update the assignment targets after changes in the state variables
+  mpContainer->getTransientDependencies().getUpdateSequence(mSeq3,
+      CCore::SimulationContext::Default,
+      mpContainer->getStateObjects(reduced),  //the state variables
+      assTargets); //the assignment targets
+
   //TODO: create update lists for the various other numerical derivatives calculations
+ 
 }

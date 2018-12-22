@@ -1031,4 +1031,25 @@ void CTimeSensLsodaMethod::copySensitivitiesToResultMatrix()
       index[0]=i; index[1]=j;
       mpProblem->getStateResult()[index] =  mVariables[i + (j+1)*mSystemSize + 1];
     }
+  
+  //TODO calculate sensitivities for assignments
+  calculate_dAssignments_dPar(mdAssignment_dPar);
+  std::cout << mdAssignment_dPar;
+  calculate_dAssignments_dState(mAssignmentJacobian, *mpReducedModel);
+  std::cout << mAssignmentJacobian;
+
+  C_FLOAT64 tmp;
+  size_t k;
+  for (i=0; i<mpProblem->getNumTargets(); ++i)
+    for (j=0; j<mNumParameters; ++j)
+    {
+      tmp = 0.0;
+      for (k=0; k<mSystemSize; ++k)
+        tmp += mAssignmentJacobian[i][k] * mVariables[k + (j+1)*mSystemSize + 1];
+      index[0]=i; index[1]=j;
+      mpProblem->getTargetsResult()[index] = tmp; 
+    }
+
+  
+  
 }
