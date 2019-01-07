@@ -1,4 +1,4 @@
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2019 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -489,7 +489,7 @@ void CQSpeciesDetail::copy()
 
       if (pObject != NULL)
         {
-          mpListView->switchToOtherWidget(C_INVALID_INDEX, pObject->getKey());
+          mpListView->switchToOtherWidget(C_INVALID_INDEX, pObject->getCN());
         }
     }
 
@@ -645,7 +645,7 @@ void CQSpeciesDetail::slotSwitchToReaction(int row, int /* column */)
       s2 = pReaction->getObjectName();
 
       if (s1 == s2)
-        mpListView->switchToOtherWidget(C_INVALID_INDEX, pReaction->getKey());
+        mpListView->switchToOtherWidget(C_INVALID_INDEX, pReaction->getCN());
     }
 }
 
@@ -699,7 +699,7 @@ void CQSpeciesDetail::createNewSpecies()
 
   slotNotifyChanges(mpDataModel->recordData(Data));
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mpMetab->getKey());
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, mpMetab->getCN());
 }
 
 void CQSpeciesDetail::deleteSpecies()

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2019 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -149,7 +149,7 @@ void CQReportDefinitionSelect::slotEdit()
   CReportDefinitionVector* pReportDefinitionVector = pDataModel->getReportDefinitionList();
   C_INT32 row;
   row = mpComboDefinition->currentIndex();
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, pReportDefinitionVector->operator[](row).getKey());
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, pReportDefinitionVector->operator[](row).getCN());
   accept(); // if shown then close
   mShow = false; // if not shown then close
 }

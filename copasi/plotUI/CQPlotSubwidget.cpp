@@ -1,4 +1,4 @@
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2019 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -770,7 +770,7 @@ void CQPlotSubwidget::deletePlot()
     enter(std::string());
 
   //ListViews::
-  protectedNotify(ListViews::PLOT, ListViews::DELETE, mObjectCN);
+  protectedNotify(ListViews::PLOT, ListViews::DELETE, deletedObjectCN);
 }
 
 //-----------------------------------------------------------------------------
@@ -795,10 +795,10 @@ void CQPlotSubwidget::copyPlot()
 
   pPl->setObjectName(name);
   pDataModel->getPlotDefinitionList()->add(pPl, true);
-  std::string key = pPl->CCopasiParameter::getKey();
-  protectedNotify(ListViews::PLOT, ListViews::ADD, key);
-  enter(key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  std::string cn = pPl->CCopasiParameter::getCN();
+  protectedNotify(ListViews::PLOT, ListViews::ADD, cn);
+  enter(cn);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, cn);
 }
 
 //-----------------------------------------------------------------------------
@@ -822,10 +822,10 @@ void CQPlotSubwidget::addPlot()
       name += TO_UTF8(QString::number(i));
     }
 
-  std::string key = pPl->CCopasiParameter::getKey();
-  protectedNotify(ListViews::PLOT, ListViews::ADD, key);
-  enter(key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  std::string cn = pPl->CCopasiParameter::getCN();
+  protectedNotify(ListViews::PLOT, ListViews::ADD, cn);
+  enter(cn);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, cn);
 }
 
 //-----------------------------------------------------------------------------

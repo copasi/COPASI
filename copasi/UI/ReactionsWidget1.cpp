@@ -1,4 +1,4 @@
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2019 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -338,7 +338,7 @@ void ReactionsWidget1::copy()
 
   if (pObject != NULL)
     {
-      mpListView->switchToOtherWidget(C_INVALID_INDEX, pObject->getKey());
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, pObject->getCN());
     }
 
   pdelete(pDialog);
@@ -524,6 +524,7 @@ void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
 void ReactionsWidget1::slotGotoFunction()
 {
   if (mpRi == NULL) return;
+
   mpListView->switchToOtherWidget(C_INVALID_INDEX, mpRi->getFunction().getCN());
 }
 
