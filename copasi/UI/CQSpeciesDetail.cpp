@@ -690,6 +690,8 @@ void CQSpeciesDetail::createNewSpecies()
         break;
     }
 
+  std::string cn = mpMetab->getCN();
+
   CUndoData Data(CUndoData::Type::INSERT, mpMetab);
 
   if (pComp != NULL)
@@ -699,7 +701,7 @@ void CQSpeciesDetail::createNewSpecies()
 
   slotNotifyChanges(mpDataModel->recordData(Data));
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mpMetab->getCN());
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, cn);
 }
 
 void CQSpeciesDetail::deleteSpecies()
