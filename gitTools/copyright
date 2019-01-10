@@ -115,7 +115,7 @@ function printCopyright(FirstCommit, LastCommit)
       } else {
         LastCommit = 2009
       }
-    } else {
+    } else if (LastCommit <= 2018) {
       if (LastCommit == 2017 || FirstCommit == LastCommit) {
         printf "'$CommentStart' Copyright (C) %d by Pedro Mendes, Virginia Tech Intellectual '$CommentEnd'\n", LastCommit
       } else if (FirstCommit < 2017) {
@@ -133,6 +133,25 @@ function printCopyright(FirstCommit, LastCommit)
         break
       } else {
         LastCommit = 2016
+      }
+    } else {
+      if (LastCommit == 2019 || FirstCommit == LastCommit) {
+        printf "'$CommentStart' Copyright (C) %d by Pedro Mendes, Rector and Visitors of the '$CommentEnd'\n", LastCommit
+      } else if (FirstCommit < 2019) {
+        printf "'$CommentStart' Copyright (C) 2019 - %d by Pedro Mendes, Rector and Visitors of the '$CommentEnd'\n", LastCommit
+      } else {
+        printf "'$CommentStart' Copyright (C) %d - %d by Pedro Mendes, Rector and Visitors of the '$CommentEnd'\n", FirstCommit, LastCommit
+      }
+
+      printf "'$CommentStart' University of Virginia, University of Heidelberg, and University '$CommentEnd'\n"
+      printf "'$CommentStart' of Connecticut School of Medicine. '$CommentEnd'\n"
+      printf "'$CommentStart' All rights reserved. '$CommentEnd'\n"
+      printf "\n"
+
+      if (FirstCommit >= 2019) {
+        break
+      } else {
+        LastCommit = 2018
       }
     }
   }
