@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -115,7 +120,7 @@ void CQParameterSetsWidget::slotBtnClearClicked()
 
 bool CQParameterSetsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
-  if (objectType == ListViews::MODEL &&
+  if (objectType == ListViews::ObjectType::MODEL &&
       (action == ListViews::DELETE ||
        action == ListViews::ADD))
     {
@@ -128,8 +133,8 @@ bool CQParameterSetsWidget::updateProtected(ListViews::ObjectType objectType, Li
       return true;
     }
 
-  if (objectType == ListViews::MODEL ||
-      objectType == ListViews::MODELPARAMETERSET)
+  if (objectType == ListViews::ObjectType::MODEL ||
+      objectType == ListViews::ObjectType::MODELPARAMETERSET)
     {
       enterProtected();
     }
@@ -235,7 +240,7 @@ void CQParameterSetsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
   if (pVector != NULL &&
       index.row() < pVector->size())
     {
-      mpListView->switchToOtherWidget(C_INVALID_INDEX, pVector->operator [](index.row()).getCN());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::ParameterSetDetail, pVector->operator [](index.row()).getCN());
     }
 }
 

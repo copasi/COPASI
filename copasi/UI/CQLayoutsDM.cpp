@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -7,8 +12,6 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
-
-
 
 #include <QtCore/QString>
 
@@ -184,7 +187,7 @@ bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex & parent)
 
   for (int row = 0; row < rows; ++row)
     {
-      emit notifyGUI(ListViews::LAYOUT, ListViews::ADD, mpListOfLayouts->operator[](Position + row).getCN());
+      emit notifyGUI(ListViews::ObjectType::LAYOUT, ListViews::ADD, mpListOfLayouts->operator[](Position + row).getCN());
     }
 
   endInsertRows();
@@ -213,7 +216,7 @@ bool CQLayoutsDM::removeRows(int position, int rows, const QModelIndex & parent)
     {
       std::string cn = (*itDeletedLayout)->getCN();
       pdelete(*itDeletedLayout);
-      emit notifyGUI(ListViews::LAYOUT, ListViews::DELETE, cn);
+      emit notifyGUI(ListViews::ObjectType::LAYOUT, ListViews::DELETE, cn);
     }
 
   endRemoveRows();

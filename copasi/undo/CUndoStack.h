@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,9 +41,8 @@ public:
 
   const_iterator begin() const;
   const_iterator end() const;
-  const_iterator current() const;
 
-  CUndoData::ChangeSet getChangeSet(const size_t & index) const;
+  const CUndoData & getLastExecutedData() const;
 
   bool canUndo() const;
   bool canRedo() const;
@@ -54,6 +58,8 @@ private:
    * data with lower index can be undone.
    */
   size_t mCurrent;
+
+  size_t mLastExecuted;
 };
 
 #endif // COPASI_CQUndoCommand

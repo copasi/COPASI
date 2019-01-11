@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -881,7 +886,7 @@ void CQUndoTester::deleteCompartment()
 
   if (mpCompartment == NULL) return;
 
-  mpListViews->switchToOtherWidget(C_INVALID_INDEX, mpCompartment->getKey());
+  mpListViews->switchToOtherWidget(ListViews::WidgetType::CompartmentDetail, mpCompartment->getKey());
   // delete compartment
   mpUndoStack->push(
     new DeleteCompartmentCommand(mpDetailComp)
@@ -898,7 +903,7 @@ void CQUndoTester::deleteEvent()
   if (mpEvent == NULL)
     return;
 
-  mpListViews->switchToOtherWidget(C_INVALID_INDEX, mpEvent->getKey());
+  mpListViews->switchToOtherWidget(ListViews::WidgetType::EventDetail, mpEvent->getKey());
   // delete event
   mpUndoStack->push(
     new DeleteEventCommand(mpDetailEvent)
@@ -915,7 +920,7 @@ void CQUndoTester::deleteModelValue()
   if (mpModelValue == NULL)
     return;
 
-  mpListViews->switchToOtherWidget(C_INVALID_INDEX, mpModelValue->getKey());
+  mpListViews->switchToOtherWidget(ListViews::WidgetType::GlobalQuantityDetail, mpModelValue->getKey());
   // delete model value
   mpUndoStack->push(
     new DeleteGlobalQuantityCommand(mpDetailMV)
@@ -931,7 +936,7 @@ void CQUndoTester::deleteReaction()
   if (mpReaction == NULL)
     return;
 
-  mpListViews->switchToOtherWidget(C_INVALID_INDEX, mpReaction->getKey());
+  mpListViews->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, mpReaction->getKey());
   // delete reaction
   mpUndoStack->push(
     new DeleteReactionCommand(mpDetailReaction)
@@ -948,7 +953,7 @@ void CQUndoTester::deleteSpecies()
   if (mpSpecies == NULL)
     return;
 
-  mpListViews->switchToOtherWidget(C_INVALID_INDEX, mpSpecies->getKey());
+  mpListViews->switchToOtherWidget(ListViews::WidgetType::SpeciesDetail, mpSpecies->getKey());
   // delete species
   mpUndoStack->push(
     new DeleteSpeciesCommand(mpDetailSpecies)

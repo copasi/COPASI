@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -144,6 +149,8 @@ CModelParameterSet::CModelParameterSet(const std::string & name,
   mpModelValues(NULL),
   mpReactions(NULL)
 {
+  initMiriamAnnotation(mKey);
+
   // Create the proper structure that fits the parameter overview in the GUI
   mpTimes = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
   mpTimes->setCN(CDataString("Initial Time").getCN());
@@ -177,6 +184,8 @@ CModelParameterSet::CModelParameterSet(const CModelParameterSet & src,
   mpModelValues(NULL),
   mpReactions(NULL)
 {
+  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
+
   // Create the proper structure that fits the parameter overview in the GUI
   mpTimes = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Time").getCN()));
   mpCompartments = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Compartment Sizes").getCN()));

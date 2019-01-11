@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -231,7 +236,7 @@ bool CQNotes::updateProtected(ListViews::ObjectType objectType, ListViews::Actio
 
       case ListViews::DELETE:
 
-        if (cn == mObjectCN || objectType == ListViews::MODEL)
+        if (cn == mObjectCN || objectType == ListViews::ObjectType::MODEL)
           {
             mpObject = NULL;
             mObjectCN.clear();
@@ -243,7 +248,7 @@ bool CQNotes::updateProtected(ListViews::ObjectType objectType, ListViews::Actio
         break;
     }
 
-  if (objectType == ListViews::MODEL &&
+  if (objectType == ListViews::ObjectType::MODEL &&
       action == ListViews::DELETE)
     {
       mEditMode = false;
@@ -423,9 +428,11 @@ void CQNotes::save()
       plainText = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + plainText + "</body>";
     }
 
-  CUndoData Data(CUndoData::Type::CHANGE, mpObject->toData());
-  Data.addProperty(CData::Property::NOTES, notes, plainText);
-  slotNotifyChanges(mpDataModel->applyData(Data));
+  CUndoData UndoData(CUndoData::Type::CHANGE, mpObject->toData());
+  UndoData.addProperty(CData::Property::NOTES, notes, plainText);
+  ListViews::addUndoMetaData(this, UndoData);
+
+  slotNotifyChanges(mpDataModel->applyData(UndoData));
 }
 
 void CQNotes::slotOpenUrl(const QUrl & url)
@@ -437,43 +444,4 @@ void CQNotes::slotOpenUrl(const QUrl & url)
 
   QDesktopServices::openUrl(url);
   return;
-}
-
-void CQNotes::changeNotes(const std::string & key, const std::string & notes)
-{
-  /*
-  if (mpListView->getCurrentItemKey() != mKey || key != mKey)
-    {
-      mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-    }
-
-  mKey = key;
-  load();
-
-  CAnnotation * pAnnotation = CAnnotation::castObject(mpObject);
-  CReportDefinition * pReportDefinition = static_cast< CReportDefinition * >(mpObject);
-
-  if (pAnnotation != NULL)
-    {
-      pAnnotation->setNotes(notes);
-    }
-  else if (pReportDefinition != NULL)
-    {
-      pReportDefinition->setComment(notes);
-    }
-
-  mChanged = true;
-
-  if (mIgnoreUpdates)
-    return;
-
-  if (mpDataModel != NULL)
-    {
-      mpDataModel->changed();
-    }
-
-  protectedNotify(ListViews::MODEL, ListViews::CHANGE, mKey);
-
-  mChanged = false;
-  */
 }

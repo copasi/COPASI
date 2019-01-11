@@ -1,21 +1,26 @@
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /*
  *  CQFittingResult.cpp
@@ -87,7 +92,7 @@ void CQFittingResult::init()
 
 bool CQFittingResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
-  if (objectType == ListViews::MODEL && action == ListViews::DELETE)
+  if (objectType == ListViews::ObjectType::MODEL && action == ListViews::DELETE)
     {
       // need to clear annotated matrices, as otherwise they will hold pointers to non-existing things.
       mpCorrelations->setArrayAnnotation(NULL);
@@ -441,8 +446,9 @@ bool CQFittingResult::enterProtected()
   mpCrossValidationValues->setSortingEnabled(true);
 
   mpLogTree->clear();
+
   if (mpTabWidget->currentWidget() == mpLogPage)
-	  loadTab(mpTabWidget->currentIndex());
+    loadTab(mpTabWidget->currentIndex());
 
   //preliminary testing code
   /*tcs = new CColorScaleBiLog();
@@ -550,5 +556,5 @@ void CQFittingResult::slotUpdateModel()
   const_cast< CFitProblem * >(mpProblem)->restore(true);
 
   // We need to notify the GUI to update all values
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
+  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
 }

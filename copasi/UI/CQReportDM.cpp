@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -12,9 +17,6 @@
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
-
-
-
 
 #include <QtCore/QString>
 #include <QtCore/QList>
@@ -147,7 +149,7 @@ bool CQReportDM::setData(const QModelIndex &index, const QVariant &value,
         pRepDef->setObjectName(TO_UTF8(value.toString()));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::REPORT, ListViews::CHANGE, pRepDef->getCN());
+      emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::CHANGE, pRepDef->getCN());
     }
 
   return true;
@@ -161,7 +163,7 @@ bool CQReportDM::insertRows(int position, int rows, const QModelIndex & parent)
     {
       QString Name = createNewName(mNewName, COL_NAME_REPORTS);
       CReportDefinition *pRepDef = mpDataModel->getReportDefinitionList()->createReportDefinition(TO_UTF8(Name), "");
-      emit notifyGUI(ListViews::REPORT, ListViews::ADD, pRepDef->getCN());
+      emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::ADD, pRepDef->getCN());
     }
 
   endInsertRows();
@@ -211,7 +213,7 @@ bool CQReportDM::removeRows(int position, int rows, const QModelIndex & parent)
 
       std::string deletedKey = pReport->getCN();
       pReportList->remove(pReport);
-      emit notifyGUI(ListViews::REPORT, ListViews::DELETE, deletedKey);
+      emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::DELETE, deletedKey);
     }
 
   endRemoveRows();

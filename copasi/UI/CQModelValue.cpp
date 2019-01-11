@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -84,9 +89,12 @@ void CQModelValue::slotBtnNew()
       name += TO_UTF8(QString::number(i));
     }
 
-  slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, mpModelValue)));
+  CUndoData UndoData(CUndoData::Type::INSERT, mpModelValue);
+  ListViews::addUndoMetaData(this, UndoData);
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mpModelValue->getCN());
+  slotNotifyChanges(mpDataModel->recordData(UndoData));
+
+  mpListView->switchToOtherWidget(ListViews::WidgetType::GlobalQuantityDetail, mpModelValue->getCN());
 }
 
 void CQModelValue::slotBtnCopy()
@@ -107,6 +115,7 @@ void CQModelValue::slotBtnDelete()
     {
       CUndoData UndoData;
       mpModelValue->createUndoData(UndoData, CUndoData::Type::REMOVE);
+      ListViews::addUndoMetaData(this, UndoData);
 
       slotNotifyChanges(mpDataModel->applyData(UndoData));
     }
@@ -216,7 +225,7 @@ bool CQModelValue::updateProtected(ListViews::ObjectType objectType, ListViews::
 {
   switch (objectType)
     {
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
 
         // For a new model we need to remove references to no longer existing modelvalue
         if (action != ListViews::CHANGE)
@@ -228,7 +237,7 @@ bool CQModelValue::updateProtected(ListViews::ObjectType objectType, ListViews::
 
         break;
 
-      case ListViews::MODELVALUE:
+      case ListViews::ObjectType::MODELVALUE:
 
         // If the currently displayed modelvalue is deleted we need to remove its references.
         if (action == ListViews::DELETE && mObjectCN == cn)
@@ -240,7 +249,7 @@ bool CQModelValue::updateProtected(ListViews::ObjectType objectType, ListViews::
 
         break;
 
-      case ListViews::STATE:
+      case ListViews::ObjectType::STATE:
         break;
 
       default:
@@ -293,7 +302,7 @@ bool CQModelValue::enterProtected()
 
   if (!mpModelValue)
     {
-      mpListView->switchToOtherWidget(115, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::GlobalQuantities, std::string());
       return false;
     }
 
@@ -456,6 +465,7 @@ void CQModelValue::save()
     {
       CUndoData UndoData;
       mpModelValue->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
+      ListViews::addUndoMetaData(this, UndoData);
 
       slotNotifyChanges(mpDataModel->recordData(UndoData));
       load();

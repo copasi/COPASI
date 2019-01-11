@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -52,7 +57,7 @@ void CQSteadyStateResult::init()
 
 bool CQSteadyStateResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
-  if (objectType != ListViews::STATE)
+  if (objectType != ListViews::ObjectType::STATE)
     mUpToDate = false;
 
   return true;
@@ -133,6 +138,6 @@ void CQSteadyStateResult::slotUpdateModel()
           mpTask->setUpdateModel(false);
         }
 
-      protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
+      protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
     }
 }

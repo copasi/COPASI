@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -31,6 +36,7 @@
 #include "copasi/model/CModel.h"
 #include "copasi/function/CFunctionDB.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/MIRIAM/CModelMIRIAMInfo.h"
 
 const CObjectInterface::ContainerList CDataContainer::EmptyList;
 
@@ -212,7 +218,7 @@ CDataContainer::~CDataContainer()
           {
             (*it)->setObjectParent(NULL);
 
-            if (*it != NULL) delete(*it);
+            if (*it != NULL) delete (*it);
           }
         else
           {
@@ -241,6 +247,15 @@ const CObjectInterface * CDataContainer::getObject(const CCommonName & cn) const
 
   if (getObjectName() == Name && getObjectType() == Type)
     return getObject(cn.getRemainder());
+
+  if (Name == "CMIRIAMInfoObject" &&
+      Type == "CMIRIAMInfo" &&
+      CAnnotation::castObject(this) != NULL)
+    {
+      // Create a MIRIAM Info if needed.
+      const CMIRIAMInfo * pInfo = CAnnotation::allocateMiriamInfo(const_cast< CDataContainer * >(this));
+      return pInfo->getObject(cn.getRemainder());
+    }
 
   //check if the first part of the cn matches one of the children (by name and type)
   objectMap::range range = mObjects.equal_range(Name);

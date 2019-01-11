@@ -1,4 +1,9 @@
-// Copyright (C) 2017 - 2019 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -75,7 +80,6 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::Windo
 
   mpBtnEditFunction->setIcon(CQIconResource::icon(CQIconResource::edit));
   mpBtnAddFunction->setIcon(CQIconResource::icon(CQIconResource::editAdd));
-
 }
 
 ReactionsWidget1::~ReactionsWidget1()
@@ -127,11 +131,13 @@ bool ReactionsWidget1::saveToReaction()
       mpRi->setNoiseExpression(mpNoiseExpressionWidget->mpExpressionWidget->getExpression());
     }
 
-  CUndoData Data(mpRi->createUndoData((CCore::Framework) mFramework));
+  CUndoData UndoData(mpRi->createUndoData((CCore::Framework) mFramework));
 
-  if (!Data.empty())
+  if (!UndoData.empty())
     {
-      slotNotifyChanges(mpDataModel->applyData(Data));
+      ListViews::addUndoMetaData(this, UndoData);
+      slotNotifyChanges(mpDataModel->applyData(UndoData));
+
       CReaction * pReaction = dynamic_cast< CReaction * >(mpObject);
 
       if (pReaction != NULL) loadFromReaction(pReaction);
@@ -197,9 +203,12 @@ void ReactionsWidget1::slotBtnNew()
       name += TO_UTF8(QString::number(i));
     }
 
-  slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pReaction)));
+  CUndoData UndoData(CUndoData::Type::INSERT, pReaction);
+  ListViews::addUndoMetaData(this, UndoData);
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, pReaction->getCN());
+  slotNotifyChanges(mpDataModel->recordData(UndoData));
+
+  mpListView->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, pReaction->getCN());
 }
 
 void ReactionsWidget1::slotBtnCopy()
@@ -331,14 +340,16 @@ void ReactionsWidget1::copy()
 
   sourceObjects.addReaction(reac);
   cModelExpObj.duplicateReaction(reac, "_copy", sourceObjects, origToCopyMapping, UndoData);
+  const CDataObject * pObject = origToCopyMapping.getDuplicateFromObject(mpObject);
+
+  ListViews::addUndoMetaData(this, UndoData);
+  UndoData.addMetaDataProperty("CN", pObject->getCN());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
 
-  const CDataObject * pObject = origToCopyMapping.getDuplicateFromObject(mpObject);
-
   if (pObject != NULL)
     {
-      mpListView->switchToOtherWidget(C_INVALID_INDEX, pObject->getCN());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, pObject->getCN());
     }
 
   pdelete(pDialog);
@@ -364,6 +375,7 @@ void ReactionsWidget1::slotBtnDelete()
     {
       CUndoData UndoData;
       pReaction->createUndoData(UndoData, CUndoData::Type::REMOVE);
+      ListViews::addUndoMetaData(this, UndoData);
 
       slotNotifyChanges(mpDataModel->applyData(UndoData));
     }
@@ -525,7 +537,7 @@ void ReactionsWidget1::slotGotoFunction()
 {
   if (mpRi == NULL) return;
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mpRi->getFunction().getCN());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::FunctionDetail, mpRi->getFunction().getCN());
 }
 
 void ReactionsWidget1::slotNewFunction()
@@ -549,9 +561,9 @@ void ReactionsWidget1::slotNewFunction()
     }
 
   CRootContainer::getFunctionList()->add(pFunc = new CKinFunction(nname), true);
-  protectedNotify(ListViews::FUNCTION, ListViews::ADD, pFunc->getCN());
+  protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::ADD, pFunc->getCN());
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, pFunc->getCN());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::FunctionDetail, pFunc->getCN());
 }
 
 void ReactionsWidget1::slotAddNoiseChanged(bool hasNoise)
@@ -631,7 +643,7 @@ bool ReactionsWidget1::updateProtected(ListViews::ObjectType objectType, ListVie
 
   switch (objectType)
     {
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
 
         // For a new model we need to remove references to no longer existing reaction
         if (action != ListViews::CHANGE)
@@ -643,7 +655,7 @@ bool ReactionsWidget1::updateProtected(ListViews::ObjectType objectType, ListVie
 
         break;
 
-      case ListViews::REACTION:
+      case ListViews::ObjectType::REACTION:
 
         // If the currently displayed reaction is deleted we need to remove its references.
         if (action == ListViews::DELETE && mObjectCN == cn)
@@ -655,9 +667,9 @@ bool ReactionsWidget1::updateProtected(ListViews::ObjectType objectType, ListVie
 
         break;
 
-      case ListViews::STATE:
-      case ListViews::METABOLITE:
-      case ListViews::COMPARTMENT:
+      case ListViews::ObjectType::STATE:
+      case ListViews::ObjectType::METABOLITE:
+      case ListViews::ObjectType::COMPARTMENT:
         break;
 
       default:
@@ -685,7 +697,7 @@ bool ReactionsWidget1::enterProtected()
   if (reac)
     return loadFromReaction(reac);
 
-  mpListView->switchToOtherWidget(114, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Reactions, std::string());
   return false;
 }
 

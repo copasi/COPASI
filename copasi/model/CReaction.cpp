@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -404,6 +409,7 @@ CReaction::CReaction(const std::string & name,
   mpScalingCompartment(NULL)
 {
   mKey = CRootContainer::getKeyFactory()->add(getObjectType(), this);
+  initMiriamAnnotation(mKey);
 
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -440,6 +446,7 @@ CReaction::CReaction(const CReaction & src,
   mpScalingCompartment(NULL)
 {
   mKey = CRootContainer::getKeyFactory()->add(getObjectType(), this);
+  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
 
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -449,7 +456,6 @@ CReaction::CReaction(const CReaction & src,
       //compileParameters();
     }
 
-  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
   setScalingCompartmentCN(src.mScalingCompartmentCN);
 }
 

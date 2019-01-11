@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -70,7 +75,7 @@ bool CQEFMWidget::taskFinishedEvent()
   // We need to load the result here as this is the only place where
   // we know that it is correct.
   CQEFMResultWidget * pResult =
-    dynamic_cast< CQEFMResultWidget * >(CopasiWidget::mpListView->findWidgetFromId(2211));
+    dynamic_cast< CQEFMResultWidget * >(CopasiWidget::mpListView->findWidgetFromId(ListViews::WidgetType::ElementaryModesResult));
 
   if (pResult == NULL)
     return false;
@@ -78,7 +83,7 @@ bool CQEFMWidget::taskFinishedEvent()
   success &= pResult->loadResult(mpTask);
 
   if (success && isVisible())
-    CopasiWidget::mpListView->switchToOtherWidget(2211, std::string()); //change to the results window
+    CopasiWidget::mpListView->switchToOtherWidget(ListViews::WidgetType::ElementaryModesResult, std::string()); //change to the results window
 
   return success;
 }

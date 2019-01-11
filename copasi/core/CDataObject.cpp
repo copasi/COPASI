@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -327,7 +332,7 @@ bool CDataObject::setObjectParent(const CDataContainer * pParent)
   CCommonName OldCN;
 
   if (mpObjectParent != NULL &&
-      pParent != NULL)
+      pParent != NULL) // we only remove if we have a new parent otherwise we may have a memory leak.
     {
       if (CRegisteredCommonName::isEnabled())
         {

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -308,7 +313,7 @@ CopasiUI3Window::CopasiUI3Window():
   mpDataModelGUI->registerListView(mpListView);
   mpListView->show();
   this->setCentralWidget(mpListView);
-  size_t id = mpListView->getCurrentItemId();
+  ListViews::WidgetType id = mpListView->getCurrentItemId();
 
   QSettings settings(FROM_UTF8(COptions::getConfigDir() + "/" + "ui_settings.ini"), QSettings::IniFormat, this);
 
@@ -316,7 +321,7 @@ CopasiUI3Window::CopasiUI3Window():
 
   resize(mainWindowSize);
   show();
-  mpListView->switchToOtherWidget(0, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
   // Assure that the changed flag is still false;
   assert(mpDataModel != NULL);
   mpDataModel->changed(false);
@@ -324,7 +329,7 @@ CopasiUI3Window::CopasiUI3Window():
   mpAutoSaveTimer->start(AutoSaveInterval); // every 10 minutes
   // TODO CRITICAL We need to disable autosave to avoid race conditions.
   // connect(mpAutoSaveTimer, SIGNAL(timeout()), this, SLOT(autoSave()));
-  // mpDataModelGUI->notify(ListViews::FUNCTION, ListViews::ADD, "");
+  // mpDataModelGUI->notify(ListViews::ObjectType::FUNCTION, ListViews::ADD, "");
   //create sliders window
   mpSliders = new SliderDialog(mpListView);
   mpSliders->setParentWindow(this);
@@ -625,7 +630,6 @@ CopasiUI3Window::slotParameterSetsLoad(QString dbFile)
     }
 }
 
-
 QToolBar *CopasiUI3Window::createToolBar()
 {
   QToolBar *tb = addToolBar("MainToolBar");
@@ -916,8 +920,8 @@ void CopasiUI3Window::newDoc()
   //#ifdef COPASI_Versioning
   //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
   //#endif
-  mpListView->switchToOtherWidget(0, std::string());
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
+  mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
                          mpDataModel->getModel()->getCN());
 
   // delete the old sliders
@@ -925,7 +929,7 @@ void CopasiUI3Window::newDoc()
 
   mpDataModelGUI->createModel();
   this->mpSliders->setChanged(false);
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD, mpDataModel->getModel()->getCN());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, mpDataModel->getModel()->getCN());
   //if (!mbObject_browser_open)
   //mpFileMenu->setItemEnabled(nobject_browser, true);
   mpaSave->setEnabled(true);
@@ -935,7 +939,7 @@ void CopasiUI3Window::newDoc()
   mpaExportSEDML->setEnabled(true);
 
   updateTitle();
-  mpListView->switchToOtherWidget(1, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
 
   if (widget != NULL)
@@ -1050,10 +1054,10 @@ void CopasiUI3Window::slotFileOpen(QString file)
       //#ifdef COPASI_Versioning
       //mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
       //#endif
-      mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
+      mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
                              mpDataModel->getModel()->getCN());
       mpListView->clearCurrentWidget();
-      mpListView->switchToOtherWidget(0, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
 
       if (this->mpSliders) this->mpSliders->reset();
 
@@ -1148,7 +1152,6 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
       return;
     }
 
-
   if (!success)
     {
       QString Message = "Error while loading file " + mNewFile + QString("!\n\n");
@@ -1186,7 +1189,7 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
       mSaveAsRequired = true;
     }
 
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD,
                          mpDataModel->getModel()->getCN());
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
@@ -1195,7 +1198,7 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
   mpaExportSEDML->setEnabled(true);
 
   updateTitle();
-  mpListView->switchToOtherWidget(1, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
 
   if (widget != NULL)
@@ -1297,9 +1300,8 @@ void CopasiUI3Window::slotAddFileOpenFinished(bool success)
 
   refreshRecentFileMenu();
   mNewFile = "";
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, std::string());
 }
-
 
 void CopasiUI3Window::slotFileSave()
 {
@@ -1582,9 +1584,9 @@ void CopasiUI3Window::importSBMLFromString(const std::string &sbmlDocumentText)
       //#ifdef COPASI_Versioning
       //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
       //#endif
-      mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
+      mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
                              mpDataModel->getModel()->getCN());
-      mpListView->switchToOtherWidget(0, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
       setCursor(Qt::WaitCursor);
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFromStringFinished(bool)));
       mpDataModelGUI->importSBMLFromString(sbmlDocumentText);
@@ -1621,13 +1623,13 @@ void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
       this->checkPendingMessages();
     }
 
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD,
                          mpDataModel->getModel()->getCN());
   //if (!bobject_browser_open)
   //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
   //       msave_button->setEnabled(true);
   //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
-  mpListView->switchToOtherWidget(1, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
 
   if (widget != NULL)
@@ -1697,9 +1699,9 @@ void CopasiUI3Window::slotImportSBML(QString file)
       //#ifdef COPASI_Versioning
       //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
       //#endif
-      mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
+      mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
                              mpDataModel->getModel()->getCN());
-      mpListView->switchToOtherWidget(0, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
 
       if (this->mpSliders) this->mpSliders->reset();
 
@@ -1733,13 +1735,13 @@ void CopasiUI3Window::slotImportSBMLFinished(bool success)
     // We check in all case for warnings. This will help also for unsuccessful imports
     this->checkPendingMessages();
 
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD,
                          mpDataModel->getModel()->getCN());
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
   mpaExportODE->setEnabled(true);
-  mpListView->switchToOtherWidget(1, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
 
   if (widget != NULL)
@@ -1887,7 +1889,7 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
   if (pModel == NULL) return;
 
   mpDataModelGUI->commit();
-  mpListView->switchToOtherWidget(116, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Events, std::string());
   CCopasiMessage::clearDeque();
 
   if (!pModel->createEventsForTimeseries())
@@ -1912,7 +1914,7 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
     }
 
   mpDataModel->changed();
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, std::string());
 }
 
 void CopasiUI3Window::slotConvertToIrreversible()
@@ -1923,7 +1925,7 @@ void CopasiUI3Window::slotConvertToIrreversible()
   if (!pModel) return;
 
   mpDataModelGUI->commit();
-  mpListView->switchToOtherWidget(114, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Reactions, std::string());
   CCopasiMessage::clearDeque();
 
   if (!pModel->convert2NonReversible())
@@ -1937,7 +1939,7 @@ void CopasiUI3Window::slotConvertToIrreversible()
     }
 
   mpDataModel->changed();
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, std::string());
 }
 
 void CopasiUI3Window::slotShowSliders(bool flag)
@@ -2027,7 +2029,7 @@ DataModelGUI *CopasiUI3Window::getDataModel()
 
 void CopasiUI3Window::listViewsFolderChanged(const QModelIndex &)
 {
-  size_t id = mpListView->getCurrentItemId();
+  ListViews::WidgetType id = mpListView->getCurrentItemId();
   this->mpSliders->setCurrentFolderId(id);
 
   if (mpDependencies->isVisible())
@@ -2483,7 +2485,7 @@ void CopasiUI3Window::slotUpdateMIRIAMFinished(bool success)
     }
 
   CCopasiMessage::clearDeque();
-  mpListView->switchToOtherWidget(0, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
   setCursor(oldCursor);
 }
 
@@ -2514,7 +2516,7 @@ void CopasiUI3Window::slotApplyInitialState()
     {
       pModel->compileIfNecessary(NULL);
       pModel->applyInitialValues();
-      mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, pModel->getCN());
+      mpDataModelGUI->notify(ListViews::ObjectType::STATE, ListViews::CHANGE, pModel->getCN());
     }
 }
 
@@ -2528,7 +2530,7 @@ void CopasiUI3Window::slotUpdateInitialState()
     {
       pModel->compileIfNecessary(NULL);
       pModel->stateToIntialState();
-      mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, mpDataModel->getModel()->getCN());
+      mpDataModelGUI->notify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpDataModel->getModel()->getCN());
     }
 }
 
@@ -2622,20 +2624,19 @@ void CopasiUI3Window::slotExpandModel()
 {
   CQExpandModelData *widget = new CQExpandModelData(this, mpDataModel->getModel());
   widget->exec();
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, std::string());
 }
-
 
 #include "UI/CQMergingData.h"
 
 void CopasiUI3Window::slotMergeModels()
 {
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, std::string());
   assert(mpDataModel != NULL);
   CModel *pModel = mpDataModel->getModel();
   CQMergingData *widget = new CQMergingData(NULL, pModel, 0);
   widget->exec();
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, std::string());
 }
 
 #ifdef COPASI_SBW_INTEGRATION
@@ -3056,7 +3057,6 @@ bool isProbablySBML(QString &fileName)
   return false;
 }
 
-
 /**
  * Utility function for guessing whether the file might
  * be an SEDML file. If so it should contain an SEDML tag in the
@@ -3080,7 +3080,6 @@ bool isProbablySEDML(QString &fileName)
   file.close();
   return false;
 }
-
 
 void CopasiUI3Window::dropEvent(QDropEvent *event)
 {
@@ -3159,13 +3158,13 @@ void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
       this->checkPendingMessages();
     }
 
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD,
                          mpDataModel->getModel()->getCN());
   //if (!bobject_browser_open)
   //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
   //       msave_button->setEnabled(true);
   //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
-  mpListView->switchToOtherWidget(1, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
 
   if (widget != NULL)
@@ -3198,13 +3197,13 @@ void CopasiUI3Window::slotImportSEDMLFinished(bool success)
     // We check in all case for warnings. This will help also for unsuccessful imports
     this->checkPendingMessages();
 
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD,
                          mpDataModel->getModel()->getCN());
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
   mpaExportSEDML->setEnabled(true);
   //  mpaExportODE->setEnabled(true);
-  mpListView->switchToOtherWidget(1, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
 
   if (widget != NULL)
@@ -3275,9 +3274,9 @@ void CopasiUI3Window::slotImportSEDML(QString file)
       //#ifdef COPASI_Versioning
       //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
       //#endif
-      mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
+      mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
                              mpDataModel->getModel()->getCN());
-      mpListView->switchToOtherWidget(0, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
 
       if (this->mpSliders) this->mpSliders->reset();
 
@@ -3420,7 +3419,6 @@ void CopasiUI3Window::slotOpenRecentSEDMLFile(QAction *pAction)
   slotImportSEDML(FROM_UTF8(FileName));
 }
 
-
 void CopasiUI3Window::slotImportCombine(QString file)
 {
   disconnect(this, SIGNAL(signalLoadFile(QString)), this, SLOT(slotImportCombine(QString)));
@@ -3481,9 +3479,9 @@ void CopasiUI3Window::slotImportCombine(QString file)
       //#ifdef COPASI_Versioning
       //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
       //#endif
-      mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
+      mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
                              mpDataModel->getModel()->getCN());
-      mpListView->switchToOtherWidget(0, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
 
       if (this->mpSliders) this->mpSliders->reset();
 
@@ -3516,13 +3514,13 @@ void CopasiUI3Window::slotImportCombineFinished(bool success)
     // We check in all case for warnings. This will help also for unsuccessful imports
     this->checkPendingMessages();
 
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD,
                          mpDataModel->getModel()->getCN());
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
   mpaExportODE->setEnabled(true);
-  mpListView->switchToOtherWidget(1, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
 
   if (widget != NULL)
@@ -3667,7 +3665,6 @@ void CopasiUI3Window::slotUndoHistory()
   delete pDialog;
 }
 
-
 void CopasiUI3Window::slotFileOpenFromUrl(QString url)
 {
   // ensure we have url
@@ -3695,7 +3692,6 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
   // open url
   connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFromUrlFinished(bool)));
   mpDataModelGUI->downloadFileFromUrl(TO_UTF8(url), TmpFileName);
-
 }
 
 void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
@@ -3723,11 +3719,8 @@ void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
         }
 
       mSaveAsRequired = true;
-
     }
 }
-
-
 
 #ifdef COPASI_Versioning
 void CopasiUI3Window::slotCreateVersion() //Slot Version Create

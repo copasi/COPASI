@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -112,7 +117,7 @@ DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel):
   , mSEDMLVersion(1)
   , mSEDMLExportIncomplete(true)
   , mSEDMLExportCOPASIMIRIAM(true)
-
+  , mIgnoreNextFile(false)
 {
   mpOutputHandlerPlot = new COutputHandlerPlot();
   mpDataModel->addInterface(mpOutputHandlerPlot);
@@ -165,7 +170,7 @@ void DataModelGUI::addModelFinished()
 {
   if (mSuccess)
     {
-      //notify(ListViews::MODEL, ListViews::CHANGE, "");
+      //notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, "");
       addRecentCopasiFile(mFileName);
       //linkDataModelToGUI();
     }
@@ -249,7 +254,6 @@ void DataModelGUI::downloadFileFromUrl(const std::string & url, const std::strin
   QNetworkReply* reply = manager->get(QNetworkRequest(QUrl(FROM_UTF8(url))));
   connect(reply, SIGNAL(downloadProgress(qint64, qint64)),
           this, SLOT(miriamDownloadProgress(qint64, qint64)));
-
 }
 
 void DataModelGUI::loadModelRun()
@@ -381,7 +385,7 @@ void  DataModelGUI::loadFunctionDB(const std::string & fileName)
   if (pFunctionDB == NULL) return;
 
   if (pFunctionDB->load(fileName))
-    emit notify(ListViews::FUNCTION, ListViews::DELETE, std::string());
+    emit notify(ListViews::ObjectType::FUNCTION, ListViews::DELETE, std::string());
 }
 
 void DataModelGUI::saveModelParameterSets(const std::string & fileName)
@@ -393,7 +397,7 @@ void DataModelGUI::loadModelParameterSets(const std::string & fileName)
 {
   if (mpDataModel->loadModelParameterSets(fileName, mpProgressBar))
     {
-      emit notify(ListViews::MODELPARAMETERSET, ListViews::ADD, std::string());
+      emit notify(ListViews::ObjectType::MODELPARAMETERSET, ListViews::ADD, std::string());
     }
 }
 
@@ -730,7 +734,7 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
 
   // update all initial value
   if (action != ListViews::RENAME && // not needed after rename
-      !(action == ListViews::ADD && objectType == ListViews::MODEL) // not needed when model was loaded
+      !(action == ListViews::ADD && objectType == ListViews::ObjectType::MODEL) // not needed when model was loaded
      )
     {
       refreshInitialValues();
@@ -774,7 +778,11 @@ void DataModelGUI::notifyChanges(const CUndoData::ChangeSet & changes)
           ListViews::ObjectType ObjectType = ListViews::DataObjectType.toEnum(it->second.objectType, ListViews::ObjectType::STATE);
           std::string CN = it->first;
 
-          if (ObjectType == ListViews::ObjectType::STATE)
+          if (ObjectType == ListViews::ObjectType::MIRIAM)
+            {
+              CN = it->first.substr(0, it->first.find(",CMIRIAMInfo=CMIRIAMInfoObject"));
+            }
+          else if (ObjectType == ListViews::ObjectType::STATE)
             {
               if (it->second.objectType == "Creator" ||
                   it->second.objectType == "Reference" ||
@@ -782,12 +790,18 @@ void DataModelGUI::notifyChanges(const CUndoData::ChangeSet & changes)
                   it->second.objectType == "Modification")
                 {
                   ObjectType = ListViews::ObjectType::MIRIAM;
-                  CN = it->first.substr(0, it->first.find(",CMIRIAMInfo="));
+                  CN = it->first.substr(0, it->first.find(",CMIRIAMInfo=CMIRIAMInfoObject"));
                 }
             }
 
           notify(ObjectType, Action, CN);
         }
+
+      const CUndoData & UndoData = mpDataModel->getUndoStack()->getLastExecutedData();
+      ListViews::WidgetType Id = ListViews::WidgetName.toEnum(UndoData.getMetaDataProperty("WidgetName").toString(), ListViews::WidgetType::NotFound);
+      std::string CN = UndoData.getMetaDataProperty("CN").toString();
+
+      emit this->signalSwitchWidget(Id, CN);
     }
 }
 

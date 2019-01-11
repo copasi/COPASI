@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -53,17 +58,17 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
 
   switch (mObjectType)
     {
-      case  ListViews::MODEL:
+      case  ListViews::ObjectType::MODEL:
         mpBtnNew->hide();
         mpBtnCopy->hide();
         mpBtnDelete->hide();
         break;
 
-      case ListViews::MODELPARAMETERSET:
+      case ListViews::ObjectType::MODELPARAMETERSET:
         mpBtnNew->setText("Apply");
         mpBtnNew->setToolTip("Apply the current parameters to the model.");
 
-        // The break statement is intentionally missing
+      // The break statement is intentionally missing
 
       default:
         CQNotes* pNotes = new CQNotes(mpTabWidget);
@@ -190,7 +195,7 @@ void CQTabWidget::load()
     {
       mpEditName->setText(FROM_UTF8(mpObject->getObjectName()));
 
-      if (mObjectType == ListViews::FUNCTION)
+      if (mObjectType == ListViews::ObjectType::FUNCTION)
         {
           bool readOnly = static_cast< const CFunction * >(mpObject)->isReadOnly();
 
@@ -199,7 +204,7 @@ void CQTabWidget::load()
           mpBtnRevert->setEnabled(!readOnly);
           mpBtnDelete->setEnabled(!readOnly);
         }
-      else if (mObjectType == ListViews::UNIT)
+      else if (mObjectType == ListViews::ObjectType::UNIT)
         {
           bool readOnly = static_cast< const CUnitDefinition * >(mpObject)->isReadOnly();
 
@@ -211,11 +216,11 @@ void CQTabWidget::load()
 
 #ifdef COPASI_Provenance
 
-      if (mObjectType == ListViews::METABOLITE ||
-          mObjectType == ListViews::COMPARTMENT ||
-          mObjectType == ListViews::REACTION ||
-          mObjectType == ListViews::EVENT ||
-          mObjectType == ListViews::MODELVALUE)
+      if (mObjectType == ListViews::ObjectType::METABOLITE ||
+          mObjectType == ListViews::ObjectType::COMPARTMENT ||
+          mObjectType == ListViews::ObjectType::REACTION ||
+          mObjectType == ListViews::ObjectType::EVENT ||
+          mObjectType == ListViews::ObjectType::MODELVALUE)
         {
           CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window *>(CopasiUI3Window::getMainWindow());
 
@@ -271,9 +276,11 @@ bool CQTabWidget::save()
         }
       else
         {
-          CUndoData Data(CUndoData::Type::CHANGE, mpObject->toData());
-          Data.addProperty(CData::OBJECT_NAME, mpObject->getObjectName(), NewName);
-          slotNotifyChanges(mpDataModel->applyData(Data));
+          CUndoData UndoData(CUndoData::Type::CHANGE, mpObject->toData());
+          UndoData.addProperty(CData::OBJECT_NAME, mpObject->getObjectName(), NewName);
+          ListViews::addUndoMetaData(this, UndoData);
+
+          slotNotifyChanges(mpDataModel->applyData(UndoData));
         }
     }
 

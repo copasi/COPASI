@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -102,9 +107,11 @@ void CQCompartment::slotBtnNew()
       name += TO_UTF8(QString::number(i));
     }
 
-  slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, mpCompartment)));
+  CUndoData UndoData(CUndoData::Type::INSERT, mpCompartment);
+  ListViews::addUndoMetaData(this, UndoData);
+  slotNotifyChanges(mpDataModel->recordData(UndoData));
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mpCompartment->getCN());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::CompartmentDetail, mpCompartment->getCN());
 }
 
 void CQCompartment::slotBtnCopy() {}
@@ -193,13 +200,17 @@ void CQCompartment::copy()
 
   if (success)
     {
-      slotNotifyChanges(mpDataModel->recordData(cModelExpObj.duplicate(compartmentObjectsToCopy, "_copy", origToCopyMappings)));
-
+      CUndoData UndoData(cModelExpObj.duplicate(compartmentObjectsToCopy, "_copy", origToCopyMappings));
       const CDataObject * pObject = origToCopyMappings.getDuplicateFromObject(mpObject);
+
+      ListViews::addUndoMetaData(this, UndoData);
+      UndoData.addMetaDataProperty("CN", pObject->getCN());
+
+      slotNotifyChanges(mpDataModel->recordData(UndoData));
 
       if (pObject != NULL)
         {
-          mpListView->switchToOtherWidget(C_INVALID_INDEX, pObject->getCN());
+          mpListView->switchToOtherWidget(ListViews::WidgetType::CompartmentDetail, pObject->getCN());
         }
     }
 }
@@ -217,6 +228,7 @@ void CQCompartment::slotBtnDelete()
     {
       CUndoData UndoData;
       mpCompartment->createUndoData(UndoData, CUndoData::Type::REMOVE);
+      ListViews::addUndoMetaData(this, UndoData);
 
       slotNotifyChanges(mpDataModel->applyData(UndoData));
     }
@@ -359,7 +371,7 @@ bool CQCompartment::updateProtected(ListViews::ObjectType objectType, ListViews:
 
   switch (objectType)
     {
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
 
         // For a new or deleted model we need to remove references to no longer existing compartment
         if (action != ListViews::CHANGE)
@@ -371,7 +383,7 @@ bool CQCompartment::updateProtected(ListViews::ObjectType objectType, ListViews:
 
         break;
 
-      case ListViews::COMPARTMENT:
+      case ListViews::ObjectType::COMPARTMENT:
 
         // If the currently displayed compartment is deleted we need to remove its references.
         if (action == ListViews::DELETE && mObjectCN == cn)
@@ -383,8 +395,8 @@ bool CQCompartment::updateProtected(ListViews::ObjectType objectType, ListViews:
 
         break;
 
-      case ListViews::STATE:
-      case ListViews::METABOLITE:
+      case ListViews::ObjectType::STATE:
+      case ListViews::ObjectType::METABOLITE:
         break;
 
       default:
@@ -528,6 +540,7 @@ void CQCompartment::save()
     {
       CUndoData UndoData;
       mpCompartment->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
+      ListViews::addUndoMetaData(this, UndoData);
 
       slotNotifyChanges(mpDataModel->applyData(UndoData));
       load();
@@ -557,7 +570,7 @@ void CQCompartment::slotMetaboliteTableCurrentChanged(int row, int col)
         s2 = (*it)->getObjectName();
 
         if (s1 == s2)
-          mpListView->switchToOtherWidget(C_INVALID_INDEX, (*it)->getCN());
+          mpListView->switchToOtherWidget(ListViews::WidgetType::SpeciesDetail, (*it)->getCN());
       }
 }
 

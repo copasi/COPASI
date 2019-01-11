@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -146,7 +151,7 @@ void TaskWidget::assistantBtnClicked()
 
   if (pDlg->exec() == QDialog::Accepted)
     {
-      protectedNotify(ListViews::PLOT, ListViews::ADD, std::string());
+      protectedNotify(ListViews::ObjectType::PLOT, ListViews::ADD, std::string());
     }
 
   if (pDlg)delete pDlg;
@@ -336,7 +341,7 @@ bool TaskWidget::commonAfterRunTask()
   mpDataModel->finish();
 
   CMathContainer * pContainer = mpTask->getMathContainer();
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, pContainer->getModel().getKey());
+  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, pContainer->getModel().getKey());
 
   unsetCursor();
   CopasiUI3Window::getMainWindow()->suspendAutoSave(false);
@@ -488,6 +493,7 @@ bool TaskWidget::saveTask()
 
       if (!UndoData.empty())
         {
+          ListViews::addUndoMetaData(this, UndoData);
           slotNotifyChanges(mpDataModel->recordData(UndoData));
         }
     }
@@ -504,7 +510,7 @@ bool TaskWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Ac
 
   switch (objectType)
     {
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
 
         if (action != ListViews::CHANGE &&
             mpMethodWidget != NULL)
@@ -514,7 +520,7 @@ bool TaskWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Ac
 
         break;
 
-      case ListViews::TASK:
+      case ListViews::ObjectType::TASK:
         if (cn == mObjectCN)
           {
             loadTaskProtected();

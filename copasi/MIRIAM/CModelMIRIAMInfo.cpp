@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -96,7 +101,11 @@ CMIRIAMInfo::CMIRIAMInfo() :
 {}
 
 CMIRIAMInfo::~CMIRIAMInfo()
-{pdelete(mpRDFGraph);}
+{
+  CAnnotation::freeMiriamInfo(mpObject);
+
+  pdelete(mpRDFGraph);
+}
 
 CRDFGraph * CMIRIAMInfo::getRDFGraph()
 {return mpRDFGraph;}
@@ -464,21 +473,8 @@ void CMIRIAMInfo::load(CDataContainer * pObject)
 {
   pdelete(mpRDFGraph);
 
-  if (mpObject != pObject)
-    {
-      if (mpObject != NULL &&
-          CDataObject::mReferences.find(mpObject) != CDataObject::mReferences.end())
-        {
-          mpObject->remove(this);
-        }
-
-      mpObject = pObject;
-
-      if (mpObject != NULL)
-        {
-          mpObject->add(this, false);
-        }
-    }
+  pObject->add(this, true);
+  mpObject = getObjectParent();
 
   mpAnnotation = CAnnotation::castObject(mpObject);
 
@@ -540,11 +536,4 @@ const std::string & CMIRIAMInfo::getKey() const
     }
 
   return CDataContainer::getKey();
-}
-
-// virtual
-CCommonName CMIRIAMInfo::getCN() const
-{
-  CCommonName CN(mpObject != NULL ? mpObject->getCN() + "," : CCommonName(""));
-  return CN + CDataContainer::getCN();
 }

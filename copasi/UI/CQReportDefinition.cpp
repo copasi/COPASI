@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -437,7 +442,7 @@ void CQReportDefinition::btnDeleteReportClicked()
         else
           enter(std::string());
 
-        protectedNotify(ListViews::REPORT, ListViews::DELETE, DeletedObjectCN);
+        protectedNotify(ListViews::ObjectType::REPORT, ListViews::DELETE, DeletedObjectCN);
         break;
       }
 
@@ -464,9 +469,9 @@ void CQReportDefinition::btnNewReportClicked()
     }
 
   CCommonName CN = pRep->getCN();
-  protectedNotify(ListViews::REPORT, ListViews::ADD, CN);
+  protectedNotify(ListViews::ObjectType::REPORT, ListViews::ADD, CN);
   enter(CN);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, CN);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::ReportTemplateDetail, CN);
 }
 
 void CQReportDefinition::btnCopyReportClicked()
@@ -495,9 +500,9 @@ void CQReportDefinition::btnCopyReportClicked()
   pDataModel->getReportDefinitionList()->add(pRep, true);
 
   CCommonName CN = pRep->getCN();
-  protectedNotify(ListViews::REPORT, ListViews::ADD, CN);
+  protectedNotify(ListViews::ObjectType::REPORT, ListViews::ADD, CN);
   enter(CN);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, CN);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::ReportTemplateDetail, CN);
 }
 
 void CQReportDefinition::btnRevertClicked()
@@ -701,7 +706,7 @@ bool CQReportDefinition::updateProtected(ListViews::ObjectType objectType, ListV
 {
   // If the model is deleted or a new model is loaded the existing pointer
   // becomes invalid.
-  if (objectType == ListViews::MODEL &&
+  if (objectType == ListViews::ObjectType::MODEL &&
       (action == ListViews::DELETE ||
        action == ListViews::ADD))
     {
@@ -710,7 +715,7 @@ bool CQReportDefinition::updateProtected(ListViews::ObjectType objectType, ListV
     }
 
   if (mIgnoreUpdates ||
-      objectType != ListViews::REPORT ||
+      objectType != ListViews::ObjectType::REPORT ||
       cn != mObjectCN ||
       action == ListViews::DELETE)
     return true;
@@ -735,7 +740,7 @@ bool CQReportDefinition::enterProtected()
 
   if (!mpReportDefinition)
     {
-      mpListView->switchToOtherWidget(43, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::ReportTemplates, std::string());
       return false;
     }
 
@@ -836,7 +841,7 @@ bool CQReportDefinition::save()
           mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
         }
       else
-        protectedNotify(ListViews::REPORT, ListViews::RENAME, mObjectCN);
+        protectedNotify(ListViews::ObjectType::REPORT, ListViews::RENAME, mObjectCN);
     }
 
   mpReportDefinition->setTaskType((CTaskEnum::Task) mpTaskBox->currentIndex());

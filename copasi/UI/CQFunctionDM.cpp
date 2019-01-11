@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -12,9 +17,6 @@
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
-
-
-
 
 #include <QtCore/QString>
 #include <QtCore/QList>
@@ -215,7 +217,7 @@ bool CQFunctionDM::setData(const QModelIndex &index, const QVariant &value,
         }
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::FUNCTION, ListViews::CHANGE, pFunc->getCN());
+      emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::CHANGE, pFunc->getCN());
     }
 
   return true;
@@ -231,7 +233,7 @@ bool CQFunctionDM::insertRows(int position, int rows, const QModelIndex & parent
       QString Name = createNewName(mNewName, COL_NAME_FUNCTIONS);
 
       CRootContainer::getFunctionList()->add(pFunc = new CKinFunction(TO_UTF8(Name)), true);
-      emit notifyGUI(ListViews::FUNCTION, ListViews::ADD, pFunc->getCN());
+      emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::ADD, pFunc->getCN());
     }
 
   endInsertRows();
@@ -275,8 +277,8 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex & parent
       if (*itDeletedKey != "")
         {
           CRootContainer::getFunctionList()->removeFunction(*itDeletedKey);
-          emit notifyGUI(ListViews::FUNCTION, ListViews::DELETE, *itDeletedKey);
-          emit notifyGUI(ListViews::FUNCTION, ListViews::DELETE, std::string()); //Refresh all as there may be dependencies.
+          emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, *itDeletedKey);
+          emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, std::string()); //Refresh all as there may be dependencies.
         }
     }
 

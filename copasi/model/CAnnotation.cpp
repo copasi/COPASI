@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,24 +22,28 @@
 
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CAnnotation.h"
 
-#include "MIRIAM/CRDFUtilities.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CVersion.h"
-#include "report/CKeyFactory.h"
-#include "model/CModelValue.h"
-#include "model/CReaction.h"
-#include "model/CEvent.h"
-#include "model/CModelParameterSet.h"
-#include "function/CFunction.h"
-#include "utilities/CUnitDefinition.h"
+#include "copasi/MIRIAM/CRDFUtilities.h"
+#include "copasi/MIRIAM/CModelMIRIAMInfo.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CVersion.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CEvent.h"
+#include "copasi/model/CModelParameterSet.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/utilities/CUnitDefinition.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/undo/CUndoData.h"
 
-#include "xml/parser/CXMLParser.h"
+#include "copasi/xml/parser/CXMLParser.h"
+
+// static
+std::map< CDataContainer *, CMIRIAMInfo * > CAnnotation::Container2Info;
 
 // static
 CAnnotation * CAnnotation::castObject(CDataObject * pObject)
@@ -98,6 +107,26 @@ const CAnnotation * CAnnotation::castObject(const CDataObject * pObject)
   return NULL;
 }
 
+// static
+CMIRIAMInfo * CAnnotation::allocateMiriamInfo(CDataContainer * pParent)
+{
+  std::map< CDataContainer *, CMIRIAMInfo * >::iterator found = Container2Info.find(pParent);
+
+  if (found == Container2Info.end())
+    {
+      found = Container2Info.insert(std::make_pair(pParent, new CMIRIAMInfo())).first;
+      found->second->load(found->first);
+    }
+
+  return found->second;
+}
+
+// static
+void CAnnotation::freeMiriamInfo(CDataContainer * pParent)
+{
+  Container2Info.erase(pParent);
+}
+
 CData CAnnotation::toData() const
 {
   CData Data;
@@ -157,12 +186,29 @@ const std::string & CAnnotation::getKey() const
   return mKey;
 }
 
+void CAnnotation::initMiriamAnnotation(const std::string & newId)
+{
+  mXMLId = newId;
+  mMiriamAnnotation =
+    "<rdf:RDF\n"
+    "xmlns:dcterms=\"http://purl.org/dc/terms/\"\n"
+    "xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n"
+    "<rdf:Description rdf:about=\"#" + newId + "\">\n"
+    "<dcterms:created>\n"
+    "<rdf:Description>\n"
+    "<dcterms:W3CDTF>" + UTCTimeStamp() + "</dcterms:W3CDTF>\n"
+    "</rdf:Description>\n"
+    "</dcterms:created>\n"
+    "</rdf:Description>\n"
+    "</rdf:RDF>";
+}
+
 void CAnnotation::setMiriamAnnotation(const std::string & miriamAnnotation,
                                       const std::string & newId,
                                       const std::string & oldId)
 {
-  mMiriamAnnotation = miriamAnnotation;
   mXMLId = newId;
+  mMiriamAnnotation = miriamAnnotation;
   CRDFUtilities::fixLocalFileAboutReference(mMiriamAnnotation, newId, oldId);
 }
 
@@ -284,22 +330,20 @@ bool CAnnotation::addUnsupportedAnnotation(const std::string & name, const std::
 
   // We need to check whether we have valid XML.
   if (!isValidXML(xml))
-  {
-    CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 5, name.c_str());
-    return false;
-  }
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 5, name.c_str());
+      return false;
+    }
 
-  // if we already have an entry, we add it ... 
+  // if we already have an entry, we add it ...
   if (mUnsupportedAnnotations.find(name) != mUnsupportedAnnotations.end())
     {
       mUnsupportedAnnotations[name] += xml;
     }
   else
-  {
-    mUnsupportedAnnotations[name] = xml;
-  }
-
-
+    {
+      mUnsupportedAnnotations[name] = xml;
+    }
 
   return true;
 }
