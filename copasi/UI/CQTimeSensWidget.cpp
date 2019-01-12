@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -360,7 +365,6 @@ bool CQTimeSensWidget::loadTaskProtected()
       QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
       pItem->setData(Qt::UserRole, FROM_UTF8(pObject->getCN()));
       mpListParameters->addItem(pItem);
-
     }
 
   // load targets
@@ -375,7 +379,6 @@ bool CQTimeSensWidget::loadTaskProtected()
       QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
       pItem->setData(Qt::UserRole, FROM_UTF8(pObject->getCN()));
       mpListTargets->addItem(pItem);
-
     }
 
   return true;
@@ -400,7 +403,7 @@ bool CQTimeSensWidget::taskFinishedEvent()
   // We need to load the result here as this is the only place where
   // we know that it is correct.
   CQTimeSeriesWidget * pResult =
-    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(371));
+    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(ListViews::WidgetType::TimeScaleSeparationAnalysisResult));
 
   if (pResult == NULL)
     return false;
@@ -494,7 +497,7 @@ bool CQTimeSensWidget::updateProtected(ListViews::ObjectType objectType, ListVie
 
   switch (objectType)
     {
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
 
         if (action == ListViews::CHANGE)
           {
@@ -529,7 +532,6 @@ void CQTimeSensWidget::showUnits()
   mpLblOutputInterval->setText("Output Interval" + TimeUnits);
 }
 
-
 void CQTimeSensWidget::slotAddParameter()
 {
   if (mpTimeSensProblem == NULL)
@@ -538,7 +540,7 @@ void CQTimeSensWidget::slotAddParameter()
   std::vector< const CDataObject * > selection =
     CCopasiSelectionDialog::getObjectVector(this, CQSimpleSelectionTree::Parameters);
 
-for (const CDataObject * item : selection)
+  for (const CDataObject * item : selection)
     {
       if (!mpListParameters->findItems(FROM_UTF8(item->getObjectDisplayName()), Qt::MatchExactly).empty())
         continue;
@@ -548,9 +550,7 @@ for (const CDataObject * item : selection)
       mpListParameters->addItem(pItem);
 
       mpTimeSensProblem->addParameterCN(item->getCN());
-
     }
-
 }
 
 void CQTimeSensWidget::slotRemoveParameter()
@@ -585,7 +585,7 @@ void CQTimeSensWidget::slotAddTarget()
         //& (~CQSimpleSelectionTree::Results)
                                            );
 
-for (const CDataObject * item : selection)
+  for (const CDataObject * item : selection)
     {
       if (!mpListTargets->findItems(FROM_UTF8(item->getObjectDisplayName()), Qt::MatchExactly).empty())
         continue;
@@ -595,7 +595,6 @@ for (const CDataObject * item : selection)
       mpListTargets->addItem(pItem);
 
       mpTimeSensProblem->addTargetCN(item->getCN());
-
     }
 }
 
@@ -618,6 +617,4 @@ void CQTimeSensWidget::slotRemoveTarget()
 
       pdelete(item);
     }
-
 }
-

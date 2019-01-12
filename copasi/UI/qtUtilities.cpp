@@ -1,4 +1,9 @@
-// Copyright (C) 2017 - 2019 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -54,45 +59,6 @@ bool updateGUI(C_INT32 objectType, C_INT32 action, const std::string & key /*= "
   if (dm == NULL) return false;
 
   return dm->notify((ListViews::ObjectType)objectType, (ListViews::Action)action, key);
-}
-
-void switchToWidget(size_t id, const std::string & cn /*= ""*/)
-{
-  CQCopasiApplication * app = CQCopasiApplication::instance();
-
-  if (app == NULL) return;
-
-  CopasiUI3Window* win = app->getMainWindow();
-
-  if (win == NULL) return;
-
-  ListViews *lv = win->getMainWidget();
-
-  if (lv == NULL) return;
-
-  if (lv->getCurrentItemId() != id || (id == C_INVALID_INDEX && !cn.empty()))
-    lv->switchToOtherWidget(id, cn);
-}
-
-void updateCurrentWidget()
-{
-  CQCopasiApplication * app = CQCopasiApplication::instance();
-
-  if (app == NULL) return;
-
-  CopasiUI3Window* win = app->getMainWindow();
-
-  if (win == NULL) return;
-
-  ListViews *lv = win->getMainWidget();
-
-  if (lv == NULL) return;
-
-  CopasiWidget* currentWidget = lv->getCurrentWidget();
-
-  if (currentWidget == NULL) return;
-
-  currentWidget->refresh();
 }
 
 QVariant getParameterValue(const CCopasiParameter * pParameter)

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -18,9 +23,11 @@
 #include "copasi/utilities/CCopasiNode.h"
 #include "copasi/utilities/CValidity.h"
 #include "copasi/core/CRegisteredCommonName.h"
+#include "copasi/core/CEnumAnnotation.h"
 
 class DataModelGUI;
 class CDataModel;
+class CDataObject;
 
 class CQBrowserPaneDM : public QAbstractItemModel
 {
@@ -30,7 +37,7 @@ public:
   class SData
   {
   public:
-    size_t mId;
+    ListViews::WidgetType mId;
 
     CRegisteredCommonName mCN;
 
@@ -45,14 +52,14 @@ public:
   public:
     friend std::ostream & operator<<(std::ostream & os, const CNode & d);
 
-    CNode(const size_t & id,
+    CNode(const ListViews::WidgetType & id,
           const CCommonName & cn,
           const QString & displayRole,
           CNode * pParent);
 
     ~CNode();
 
-    const size_t & getId() const;
+    const ListViews::WidgetType & getId() const;
 
     void setDisplayRole(const QString & displayRole);
 
@@ -95,15 +102,15 @@ public:
 
   virtual bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
 
-  QModelIndex index(const size_t & id, const CCommonName & cn) const;
+  QModelIndex index(const ListViews::WidgetType & id, const CCommonName & cn) const;
 
   // virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
-  CNode * findNodeFromId(const size_t & id) const;
+  CNode * findNodeFromId(const ListViews::WidgetType & id) const;
 
   CNode * findNodeFromCN(const CCommonName & cn) const;
 
-  size_t getIdFromIndex(const QModelIndex & index) const;
+  ListViews::WidgetType getIdFromIndex(const QModelIndex & index) const;
 
   const CCommonName & getCNFromIndex(const QModelIndex & index) const;
 
@@ -111,10 +118,10 @@ public:
 
   void rename(CNode * pNode, const QString & displayRole);
 
-  void add(const size_t & id,
+  void add(const ListViews::WidgetType & id,
            const CCommonName & cn,
            const QString & displayRole,
-           const size_t & parentId = C_INVALID_INDEX);
+           const ListViews::WidgetType & parentId);
 
   void setCopasiDM(const CDataModel * pDataModel);
 
@@ -122,7 +129,7 @@ public:
 
   void load();
 
-  void load(const size_t & id);
+  void load(const ListViews::WidgetType & id);
 
 private slots:
   bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
@@ -131,7 +138,7 @@ private slots:
 private:
   static CNode * nodeFromIndex(const QModelIndex & index);
 
-  CNode * createNode(const size_t & id,
+  CNode * createNode(const ListViews::WidgetType & id,
                      const CCommonName & cn,
                      const QString & displayRole,
                      CNode * pParent);
@@ -166,7 +173,7 @@ private:
   CValidity::Kind mKindFilter;
 
   std::map< std::string, CNode * > mCN2Node;
-  std::map< size_t, CNode * > mId2Node;
+  std::map< ListViews::WidgetType, CNode * > mId2Node;
 };
 
 #endif // COPASI_CQBrowserPaneDM

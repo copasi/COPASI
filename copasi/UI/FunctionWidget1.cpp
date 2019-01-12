@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -614,7 +619,7 @@ bool FunctionWidget1::saveToFunction()
     {
       copyFunctionContentsToFunction(mpFunction, func);
 
-      protectedNotify(ListViews::FUNCTION, ListViews::CHANGE, mObjectCN);
+      protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::CHANGE, mObjectCN);
 
       if (mpDataModel != NULL)
         {
@@ -735,9 +740,9 @@ void FunctionWidget1::slotBtnNew()
   CRootContainer::getFunctionList()->add(pFunc = new CKinFunction(name), true);
 
   CCommonName CN = pFunc->getCN();
-  protectedNotify(ListViews::FUNCTION, ListViews::ADD, CN);
+  protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::ADD, CN);
   // enter(key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, CN);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::FunctionDetail, CN);
 }
 
 void FunctionWidget1::slotBtnCopy()
@@ -770,8 +775,8 @@ void FunctionWidget1::slotBtnDelete()
       {
         CRootContainer::getFunctionList()->loadedFunctions().remove(mpObject->getObjectName());
 
-        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, mObjectCN);
-        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, std::string());//Refresh all as there may be dependencies.
+        protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::DELETE, mObjectCN);
+        protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::DELETE, std::string());//Refresh all as there may be dependencies.
         break;
       }
 
@@ -795,11 +800,11 @@ bool FunctionWidget1::updateProtected(ListViews::ObjectType objectType, ListView
 
   switch (objectType)
     {
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
         loadFromFunction(dynamic_cast< CFunction * >(mpObject));
         break;
 
-      case ListViews::FUNCTION:
+      case ListViews::ObjectType::FUNCTION:
 
         if (cn == mObjectCN)
           {
@@ -1044,6 +1049,6 @@ bool FunctionWidget1::enterProtected()
   if (func)
     return loadFromFunction(func);
 
-  mpListView->switchToOtherWidget(5, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Functions, std::string());
   return false;
 }

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -97,6 +102,18 @@ public:
 
   bool undo(const CDataModel & dataModel, ChangeSet & changes, const bool & execute) const;
 
+  bool addMetaDataProperty(const std::string & property, const CDataValue & value);
+
+  bool appendMetaData(const CData & data);
+
+  bool removeMetaDataProperty(const std::string & property);
+
+  bool isSetMetaDataProperty(const std::string & property) const;
+
+  const CDataValue & getMetaDataProperty(const std::string & property) const;
+
+  const CData & getMetaData() const;
+
   const std::time_t & getTime() const;
 
   std::tm * getLocalTime() const;
@@ -154,6 +171,8 @@ private:
   size_t mAuthorID;
 
   std::set< std::string > mChangedProperties;
+
+  CData mMetaData;
 };
 
 #endif // COPASI_CUndoData

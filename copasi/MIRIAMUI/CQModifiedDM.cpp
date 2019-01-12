@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -24,17 +29,26 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/MIRIAM/CModelMIRIAMInfo.h"
 
-CQModifiedDM::CQModifiedDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
+CQModifiedDM::CQModifiedDM(QObject *parent)
   : CQBaseDataModel(parent, NULL)
+  , mpMIRIAMInfo(NULL)
+{}
 
+void CQModifiedDM::setMIRIAMInfo(CMIRIAMInfo * pMiriamInfo)
 {
-  mpMIRIAMInfo = MIRIAMInfo;
+  beginResetModel();
+  mpMIRIAMInfo = pMiriamInfo;
+  endResetModel();
 }
 
 int CQModifiedDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (int) mpMIRIAMInfo->getModifications().size() + 1;
+  if (mpMIRIAMInfo != NULL)
+    return (int) mpMIRIAMInfo->getModifications().size() + 1;
+
+  return 0;
 }
+
 int CQModifiedDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
   return TOTAL_COLS_MODIFIEDS;
@@ -140,6 +154,7 @@ bool CQModifiedDM::setData(const QModelIndex &index, const QVariant &value,
 
       if (!UndoData.empty())
         {
+          ListViews::addUndoMetaData(this, UndoData);
           emit signalNotifyChanges(mpDataModel->recordData(UndoData));
         }
 
@@ -190,6 +205,8 @@ bool CQModifiedDM::removeRows(int position, int rows, const QModelIndex & parent
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
+
+      ListViews::addUndoMetaData(this, UndoData);
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 

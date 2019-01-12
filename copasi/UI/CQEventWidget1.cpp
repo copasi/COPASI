@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -81,6 +86,7 @@ void CQEventWidget1::slotBtnDelete()
     {
       CUndoData UndoData;
       mpEvent->createUndoData(UndoData, CUndoData::Type::REMOVE);
+      ListViews::addUndoMetaData(this, UndoData);
 
       slotNotifyChanges(mpDataModel->applyData(UndoData));
     }
@@ -103,9 +109,12 @@ void CQEventWidget1::slotBtnNew()
       name += TO_UTF8(QString::number(i));
     }
 
-  slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, mpEvent)));
+  CUndoData UndoData(CUndoData::Type::INSERT, mpEvent);
+  ListViews::addUndoMetaData(this, UndoData);
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mpEvent->getCN());
+  slotNotifyChanges(mpDataModel->recordData(UndoData));
+
+  mpListView->switchToOtherWidget(ListViews::WidgetType::EventDetail, mpEvent->getCN());
 }
 
 void CQEventWidget1::slotBtnCopy()
@@ -340,6 +349,7 @@ void CQEventWidget1::saveToEvent()
     {
       CUndoData UndoData;
       mpEvent->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
+      ListViews::addUndoMetaData(this, UndoData);
 
       slotNotifyChanges(mpDataModel->recordData(UndoData));
       loadFromEvent();
@@ -354,7 +364,7 @@ bool CQEventWidget1::updateProtected(ListViews::ObjectType objectType, ListViews
 
   switch (objectType)
     {
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
 
         // For a new model we need to remove references to no longer existing metabolites
         if (action != ListViews::CHANGE)
@@ -366,7 +376,7 @@ bool CQEventWidget1::updateProtected(ListViews::ObjectType objectType, ListViews
 
         break;
 
-      case ListViews::EVENT:
+      case ListViews::ObjectType::EVENT:
 
         // If the currently displayed metabolite is deleted we need to remove its references.
         if (action == ListViews::DELETE && mObjectCN == cn)
@@ -378,7 +388,7 @@ bool CQEventWidget1::updateProtected(ListViews::ObjectType objectType, ListViews
 
         break;
 
-      case ListViews::STATE:
+      case ListViews::ObjectType::STATE:
         break;
 
       default:
@@ -422,7 +432,7 @@ bool CQEventWidget1::enterProtected()
 
   if (!success)
     {
-      mpListView->switchToOtherWidget(116, std::string()); //TODO
+      mpListView->switchToOtherWidget(ListViews::WidgetType::Events, std::string()); //TODO
     }
 
   return success;

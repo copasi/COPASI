@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -179,7 +184,6 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
                 else
                   return QVariant();
               }
-
             }
         }
     }
@@ -286,6 +290,7 @@ bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value
 
       if (!UndoData.empty())
         {
+          ListViews::addUndoMetaData(this, UndoData);
           emit signalNotifyChanges(mpDataModel->recordData(UndoData));
         }
     }
@@ -334,6 +339,7 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex & 
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
 
+      ListViews::addUndoMetaData(this, UndoData);
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
@@ -402,7 +408,9 @@ void CQGlobalQuantityDM::insertNewRows(int position, int rows, int column, const
           pModelValue->setInitialValue(value.toDouble());
         }
 
-      emit signalNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pModelValue)));
+      CUndoData UndoData(CUndoData::Type::INSERT, pModelValue);
+      ListViews::addUndoMetaData(this, UndoData);
+      emit signalNotifyChanges(mpDataModel->recordData(UndoData));
     }
 
   endInsertRows();

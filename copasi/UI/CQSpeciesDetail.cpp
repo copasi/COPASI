@@ -1,4 +1,9 @@
-// Copyright (C) 2017 - 2019 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -100,7 +105,7 @@ bool CQSpeciesDetail::updateProtected(ListViews::ObjectType objectType, ListView
 {
   switch (objectType)
     {
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
 
         // For a new model we need to remove references to no longer existing metabolites
         if (action != ListViews::CHANGE)
@@ -112,7 +117,7 @@ bool CQSpeciesDetail::updateProtected(ListViews::ObjectType objectType, ListView
 
         break;
 
-      case ListViews::METABOLITE:
+      case ListViews::ObjectType::METABOLITE:
 
         // If the currently displayed metabolite is deleted we need to remove its references.
         if (action == ListViews::DELETE && mObjectCN == cn)
@@ -124,8 +129,8 @@ bool CQSpeciesDetail::updateProtected(ListViews::ObjectType objectType, ListView
 
         break;
 
-      case ListViews::STATE:
-      case ListViews::COMPARTMENT:
+      case ListViews::ObjectType::STATE:
+      case ListViews::ObjectType::COMPARTMENT:
         break;
 
       default:
@@ -203,7 +208,7 @@ bool CQSpeciesDetail::enterProtected()
 
   if (!mpMetab)
     {
-      mpListView->switchToOtherWidget(112, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::Species, std::string());
       return false;
     }
 
@@ -377,6 +382,7 @@ void CQSpeciesDetail::save()
     {
       CUndoData UndoData;
       mpMetab->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
+      ListViews::addUndoMetaData(this, UndoData);
 
       slotNotifyChanges(mpDataModel->recordData(UndoData));
       load();
@@ -483,13 +489,16 @@ void CQSpeciesDetail::copy()
 
       CUndoData UndoData;
       cModelExpObj.duplicateMetab(mpMetab, "_copy", sourceObjects, origToCopyMapping, UndoData);
-      slotNotifyChanges(mpDataModel->recordData(UndoData));
-
       const CDataObject * pObject = origToCopyMapping.getDuplicateFromObject(mpObject);
+
+      ListViews::addUndoMetaData(this, UndoData);
+      UndoData.addMetaDataProperty("CN", pObject->getCN());
+
+      slotNotifyChanges(mpDataModel->recordData(UndoData));
 
       if (pObject != NULL)
         {
-          mpListView->switchToOtherWidget(C_INVALID_INDEX, pObject->getCN());
+          mpListView->switchToOtherWidget(ListViews::WidgetType::SpeciesDetail, pObject->getCN());
         }
     }
 
@@ -645,7 +654,7 @@ void CQSpeciesDetail::slotSwitchToReaction(int row, int /* column */)
       s2 = pReaction->getObjectName();
 
       if (s1 == s2)
-        mpListView->switchToOtherWidget(C_INVALID_INDEX, pReaction->getCN());
+        mpListView->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, pReaction->getCN());
     }
 }
 
@@ -666,7 +675,11 @@ void CQSpeciesDetail::createNewSpecies()
     {
       // We need to create a compartment
       pComp = pModel->createCompartment("compartment");
-      slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pComp)));
+
+      CUndoData UndoData(CUndoData::Type::INSERT, pComp);
+      ListViews::addUndoMetaData(this, UndoData);
+
+      slotNotifyChanges(mpDataModel->recordData(UndoData));
     }
 
   std::string name = "species";
@@ -692,16 +705,18 @@ void CQSpeciesDetail::createNewSpecies()
 
   std::string cn = mpMetab->getCN();
 
-  CUndoData Data(CUndoData::Type::INSERT, mpMetab);
+  CUndoData UndoData(CUndoData::Type::INSERT, mpMetab);
 
   if (pComp != NULL)
     {
-      Data.addPreProcessData(CUndoData(CUndoData::Type::INSERT, pComp));
+      UndoData.addPreProcessData(CUndoData(CUndoData::Type::INSERT, pComp));
     }
 
-  slotNotifyChanges(mpDataModel->recordData(Data));
+  ListViews::addUndoMetaData(this, UndoData);
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, cn);
+  slotNotifyChanges(mpDataModel->recordData(UndoData));
+
+  mpListView->switchToOtherWidget(ListViews::WidgetType::SpeciesDetail, cn);
 }
 
 void CQSpeciesDetail::deleteSpecies()
@@ -721,6 +736,7 @@ void CQSpeciesDetail::deleteSpecies()
     {
       CUndoData UndoData;
       mpMetab->createUndoData(UndoData, CUndoData::Type::REMOVE);
+      ListViews::addUndoMetaData(this, UndoData);
 
       slotNotifyChanges(mpDataModel->applyData(UndoData));
     }

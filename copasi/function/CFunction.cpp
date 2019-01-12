@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -101,6 +106,7 @@ CFunction::CFunction(const std::string & name,
   mReversible(TriUnspecified)
 {
   mKey = CRootContainer::getKeyFactory()->add("Function", this);
+  initMiriamAnnotation(mKey);
 }
 
 CFunction::CFunction(const CFunction & src,
@@ -113,8 +119,8 @@ CFunction::CFunction(const CFunction & src,
   mReversible(src.mReversible)
 {
   mKey = CRootContainer::getKeyFactory()->add("Function", this);
-
   setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
+
   compile();
 }
 

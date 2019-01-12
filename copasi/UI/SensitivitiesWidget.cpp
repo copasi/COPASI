@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -195,11 +200,11 @@ bool SensitivitiesWidget::taskFinishedEvent()
   bool success = true;
   //setup the result widget
   CQSensResultWidget *pResult =
-    dynamic_cast<CQSensResultWidget *>(mpListView->findWidgetFromId(341));
+    dynamic_cast<CQSensResultWidget *>(mpListView->findWidgetFromId(ListViews::WidgetType::SensitivitiesResult));
 
   if (pResult) pResult->newResult();
 
-  if (success && isVisible()) mpListView->switchToOtherWidget(341, std::string()); //change to the results window
+  if (success && isVisible()) mpListView->switchToOtherWidget(ListViews::WidgetType::SensitivitiesResult, std::string()); //change to the results window
 
   return success;
 }

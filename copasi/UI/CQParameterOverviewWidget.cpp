@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -76,7 +81,7 @@ CQParameterOverviewWidget::~CQParameterOverviewWidget()
 bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
 
-  if (objectType == ListViews::MODEL && action == ListViews::DELETE)
+  if (objectType == ListViews::ObjectType::MODEL && action == ListViews::DELETE)
     {
       mObjectCN.clear();
       mpObject = NULL;
@@ -99,16 +104,16 @@ bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType
     {
       if (mpParameterSetCopy != NULL &&
           mpParameterSetCopy->isActive() &&
-          (objectType == ListViews::REACTION ||
+          (objectType == ListViews::ObjectType::REACTION ||
            ((action == ListViews::ADD ||
              action == ListViews::DELETE) &&
-            (objectType == ListViews::COMPARTMENT ||
-             objectType == ListViews::METABOLITE ||
-             objectType == ListViews::MODELVALUE))))
+            (objectType == ListViews::ObjectType::COMPARTMENT ||
+             objectType == ListViews::ObjectType::METABOLITE ||
+             objectType == ListViews::ObjectType::MODELVALUE))))
         {
           mpParameterSetDM->beginResetModel();
 
-          if (objectType == ListViews::MODELVALUE)
+          if (objectType == ListViews::ObjectType::MODELVALUE)
             {
               buildSelectionList();
             }
@@ -122,7 +127,7 @@ bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType
               mpTreeView->resizeColumnToContents(i);
             }
         }
-      else if (objectType == ListViews::MODELVALUE &&
+      else if (objectType == ListViews::ObjectType::MODELVALUE &&
                action == ListViews::CHANGE)
         {
           mpParameterSetDM->resetCache();
@@ -142,11 +147,11 @@ bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType
 
   switch (objectType)
     {
-      case ListViews::STATE:
+      case ListViews::ObjectType::STATE:
         enterProtected();
         break;
 
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
 
         if (action == ListViews::ADD ||
             action == ListViews::DELETE)
@@ -159,8 +164,8 @@ bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType
 
         break;
 
-      case ListViews::PARAMETEROVERVIEW:
-      case ListViews::MODELPARAMETERSET:
+      case ListViews::ObjectType::PARAMETEROVERVIEW:
+      case ListViews::ObjectType::MODELPARAMETERSET:
 
         if (mObjectCN == cn)
           {
@@ -219,10 +224,11 @@ bool CQParameterOverviewWidget::leaveProtected()
       CData OldData = mpParameterSet->toData();
       mpParameterSet->assignSetContent(*mpParameterSetCopy, false);
 
-      CUndoData Data;
-      mpParameterSet->createUndoData(Data, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
+      CUndoData UndoData;
+      mpParameterSet->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
+      ListViews::addUndoMetaData(this, UndoData);
 
-      slotNotifyChanges(mpDataModel->recordData(Data));
+      slotNotifyChanges(mpDataModel->recordData(UndoData));
     }
 
   return true;
@@ -360,7 +366,10 @@ void CQParameterOverviewWidget::slotBtnDelete()
 
   mpParameterSetDM->setModelParameterSet(NULL);
 
-  slotNotifyChanges(mpDataModel->applyData(CUndoData(CUndoData::Type::REMOVE, mpParameterSet->toData())));
+  CUndoData UndoData(CUndoData::Type::REMOVE, mpParameterSet->toData());
+  ListViews::addUndoMetaData(this, UndoData);
+
+  slotNotifyChanges(mpDataModel->applyData(UndoData));
 }
 
 // virtual
@@ -404,7 +413,7 @@ void CQParameterOverviewWidget::slotBtnNew()
   mpParameterSet->updateModel();
 
   // Notify the GUI that the model state has changed.
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, pModel->getCN());
+  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, pModel->getCN());
 
   enterProtected();
 }
@@ -442,9 +451,12 @@ void CQParameterOverviewWidget::slotBtnCopy()
   pNew->setObjectName(Name);
   Sets.add(pNew, true);
 
-  slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pNew->toData())));
+  CUndoData UndoData(CUndoData::Type::INSERT, pNew->toData());
+  ListViews::addUndoMetaData(this, UndoData);
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, pNew->CDataObject::getCN());
+  slotNotifyChanges(mpDataModel->recordData(UndoData));
+
+  mpListView->switchToOtherWidget(ListViews::WidgetType::ParameterSetDetail, pNew->CDataObject::getCN());
 }
 
 // virtual
@@ -566,7 +578,10 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
       // We are sure that a set with that name does not exist.
       Sets.add(pNew, true);
 
-      slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pNew->toData())));
+      CUndoData UndoData(CUndoData::Type::INSERT, pNew->toData());
+      ListViews::addUndoMetaData(this, UndoData);
+
+      slotNotifyChanges(mpDataModel->recordData(UndoData));
     }
   else
     {
@@ -578,10 +593,11 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
           CData OldData = pExisting->toData();
           pExisting->assignSetContent(pModel->getActiveModelParameterSet(), false);
 
-          CUndoData Data;
-          pExisting->createUndoData(Data, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
+          CUndoData UndoData;
+          pExisting->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
+          ListViews::addUndoMetaData(this, UndoData);
 
-          slotNotifyChanges(mpDataModel->recordData(Data));
+          slotNotifyChanges(mpDataModel->recordData(UndoData));
         }
     }
 }

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -213,9 +218,9 @@ CQDependencyWidget::rowDoubleClicked(int row, int)
 
   if (mpListView == NULL)
     {
-      CopasiUI3Window::getMainWindow()->getMainWidget()->switchToOtherWidget(C_INVALID_INDEX, cn);
+      CopasiUI3Window::getMainWindow()->getMainWidget()->switchToOtherWidget(ListViews::WidgetType::NotFound, cn);
       return;
     }
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, cn);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::NotFound, cn);
 }

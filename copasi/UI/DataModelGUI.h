@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -67,7 +72,7 @@ public:
   void loadModelParameterSets(const std::string & fileName);
 
   void importSBML(const std::string & fileName);
-  void exportSBML(const std::string & fileName, bool overwriteFile , int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
+  void exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
   void importSBMLFromString(const std::string & sbmlDocumentText);
   void exportSBMLToString(std::string & sbmlDocumentText);
   void exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
@@ -79,7 +84,7 @@ public:
   void exportCombineArchiveRun();
 
   // SEDML
-  void exportSEDML(const std::string & fileName, bool overwriteFile , int sedmlLevel, int sedmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
+  void exportSEDML(const std::string & fileName, bool overwriteFile, int sedmlLevel, int sedmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
   void exportSEDMLToString(std::string & sedmlDocumentText);
   void importSEDML(const std::string & fileName);
   void importSEDMLFromString(const std::string & sedmlDocumentText);
@@ -158,6 +163,7 @@ private:
 signals:
   void updateCompleteView();
   void notifyView(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  void signalSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn);
   void finished(bool success);
 
 private:

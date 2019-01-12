@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -471,6 +476,7 @@ CEvent::CEvent(const std::string & name,
   mType(Assignment)
 {
   mKey = (CRootContainer::getKeyFactory()->add(getObjectType(), this));
+  initMiriamAnnotation(mKey);
 
   initObjects();
 }
@@ -490,10 +496,9 @@ CEvent::CEvent(const CEvent & src,
   mType(src.mType)
 {
   mKey = (CRootContainer::getKeyFactory()->add(getObjectType(), this));
+  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
 
   initObjects();
-
-  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
 }
 
 CEvent::~CEvent()

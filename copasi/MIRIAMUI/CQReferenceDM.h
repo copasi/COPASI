@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -30,7 +35,8 @@ class CQReferenceDM : public CQBaseDataModel
   Q_OBJECT
 
 public:
-  CQReferenceDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent = 0);
+  CQReferenceDM(QObject *parent = 0);
+  void setMIRIAMInfo(CMIRIAMInfo * pMiriamInfo);
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
   QVariant data(const QModelIndex &index, int role) const;

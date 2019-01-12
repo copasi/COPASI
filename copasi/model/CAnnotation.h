@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,16 +22,35 @@
 #include "copasi/undo/CUndoData.h"
 
 class CDataObject;
+class CMIRIAMInfo;
+class CDataContainer;
 
 class CAnnotation
 {
 public:
   typedef std::map< std::string, std::string > UnsupportedAnnotation;
 
+private:
+  static std::map< CDataContainer *, CMIRIAMInfo * > Container2Info;
+
   // Operations
 public:
   static CAnnotation * castObject(CDataObject * pObject);
   static const CAnnotation * castObject(const CDataObject * pObject);
+
+  /**
+   * Allocat a MIRIAM Info object for the given CDataContainer * pParent.
+   * The ownership is with the parent
+   * @param CDataContainer * pParent
+   * @return CMIRIAMInfo * pMiriamInfo
+   */
+  static CMIRIAMInfo * allocateMiriamInfo(CDataContainer * pParent);
+
+  /**
+   * Free if possible an existing MIRIAM Info object for the given CDataContainer * pParent.
+   * @return CMIRIAMInfo * pMiriamInfo
+   */
+  static void freeMiriamInfo(CDataContainer * pParent);
 
   /**
    * Retrieve the data describing the annotation
@@ -76,6 +100,8 @@ public:
    * @return std::string key
    */
   virtual const std::string & getKey() const;
+
+  void initMiriamAnnotation(const std::string & newId);
 
   /**
    * Set the RDF/XML representation of the MIRIAM annotation

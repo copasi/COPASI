@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -543,6 +548,7 @@ bool CQParameterOverviewDM::setData(const QModelIndex & index, const QVariant &v
                 pNode->setValue(value.toDouble(), static_cast<CCore::Framework>(mFramework));
                 CUndoData UndoData;
                 pObject->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast<CCore::Framework>(mFramework));
+                ListViews::addUndoMetaData(this, UndoData);
                 emit signalNotifyChanges(pObject->getObjectDataModel()->recordData(UndoData));
 
                 success = true;
@@ -576,6 +582,7 @@ bool CQParameterOverviewDM::setData(const QModelIndex & index, const QVariant &v
                 pNode->setValue(value.toDouble(), static_cast<CCore::Framework>(mFramework));
                 CUndoData UndoData;
                 pReaction->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast<CCore::Framework>(mFramework));
+                ListViews::addUndoMetaData(this, UndoData);
                 emit signalNotifyChanges(pObject->getObjectDataModel()->recordData(UndoData));
 
                 success = true;

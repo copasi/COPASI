@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -20,13 +25,15 @@
 CUndoStack::CUndoStack():
   std::vector< CUndoData * >(),
   mpDataModel(NULL),
-  mCurrent(C_INVALID_INDEX)
+  mCurrent(C_INVALID_INDEX),
+  mLastExecuted(C_INVALID_INDEX)
 {}
 
 CUndoStack::CUndoStack(const CDataModel & dataModel):
   std::vector< CUndoData * >(),
   mpDataModel(const_cast< CDataModel * >(&dataModel)),
-  mCurrent(C_INVALID_INDEX)
+  mCurrent(C_INVALID_INDEX),
+  mLastExecuted(C_INVALID_INDEX)
 {}
 
 CUndoStack::~CUndoStack()
@@ -46,16 +53,12 @@ void CUndoStack::clear()
 
   std::vector< CUndoData * >::clear();
   mCurrent = C_INVALID_INDEX;
+  mLastExecuted = C_INVALID_INDEX;
 }
 
 const CUndoData & CUndoStack::operator [](const size_t & index) const
 {
   return *std::vector< CUndoData * >::operator[](index);
-}
-
-CUndoData::ChangeSet CUndoStack::getChangeSet(const size_t & index) const
-{
-  return const_cast< CUndoStack * >(this)->setCurrentIndex(false);
 }
 
 CUndoData::ChangeSet CUndoStack::setCurrentIndex(const size_t & index, const bool & execute)
@@ -82,6 +85,8 @@ CUndoData::ChangeSet CUndoStack::setCurrentIndex(const size_t & index, const boo
         {
           (*it)->undo(*mpDataModel, Changes, execute);
         }
+
+      mLastExecuted = index + 1;
     }
   else if (index < size())
     {
@@ -93,6 +98,8 @@ CUndoData::ChangeSet CUndoStack::setCurrentIndex(const size_t & index, const boo
         {
           (*it)->apply(*mpDataModel, Changes, execute);
         }
+
+      mLastExecuted = index;
     }
 
   mCurrent = index;
@@ -118,6 +125,16 @@ CUndoStack::const_iterator CUndoStack::begin() const
 CUndoStack::const_iterator CUndoStack::end() const
 {
   return std::vector< CUndoData * >::end();
+}
+
+const CUndoData & CUndoStack::getLastExecutedData() const
+{
+  static CUndoData Invalid;
+
+  if (mLastExecuted >= size())
+    return Invalid;
+
+  return operator[](mLastExecuted);
 }
 
 CUndoData::ChangeSet CUndoStack::record(const CUndoData & data, const bool & execute)

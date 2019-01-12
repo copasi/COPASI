@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -17,10 +22,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
 /****************************************************************************
  **  $ CopasiUI/listviews.h                Modified on : 8th March, 2002
  **  $ Author  : Ankur Gupta
@@ -34,8 +35,6 @@
 #include <QStackedWidget>
 
 #include "copasi.h"
-
-#include <copasi/core/CEnumAnnotation.h>
 
 class CQTabWidget;
 class CQBrowserPane;
@@ -114,6 +113,7 @@ class CQLayoutsWidget;
 
 class CQPlotSubwidget;
 class CDataModel;
+class CUndoData;
 
 #include "copasi/core/CRegisteredCommonName.h"
 
@@ -126,9 +126,9 @@ class ListViews : public QSplitter
   friend class CopasiUI3Window;
 
 public:
-  static const std::string ObjectTypeName[];
   static ListViews * ancestor(QObject * qObject);
   static CDataModel * dataModel(QObject * qObject);
+  static void addUndoMetaData(QObject * qObject, CUndoData & undoData);
 
   ListViews(QWidget * parent, DataModelGUI * pDataModelGUI, CDataModel * pDataModel);
   virtual ~ListViews();
@@ -138,7 +138,7 @@ public:
 #endif
   // CHANGE does not include RENAME
   enum Action {CHANGE = 0, ADD, DELETE, RENAME};
-  enum ObjectType
+  enum struct ObjectType
   {
     METABOLITE
     , COMPARTMENT
@@ -161,7 +161,80 @@ public:
     , __SIZE
   };
 
+  static const CEnumAnnotation< std::string, ObjectType > ObjectTypeName;
   static const CEnumAnnotation< std::string, ObjectType > DataObjectType;
+
+  enum struct WidgetType
+  {
+    NotFound
+    , COPASI
+    , Model
+    , Biochemical
+    , Compartments
+    , CompartmentDetail
+    , Species
+    , SpeciesDetail
+    , Reactions
+    , ReactionDetail
+    , GlobalQuantities
+    , GlobalQuantityDetail
+    , Events
+    , EventDetail
+    , ParameterOverview
+    , ParameterSets
+    , ParameterSetDetail
+    , Mathematical
+    , DifferentialEquations
+    , Matrices
+    , UpdateOrder
+    , Diagrams
+    , Tasks
+    , SteadyState
+    , SteadyStateResult
+    , StoichiometricAnalysis
+    , ElementaryModes
+    , ElementaryModesResult
+    , MassConservation
+    , MassConservationResult
+    , TimeCourse
+    , TimeCourseResult
+    , MetabolicControlAnalysis
+    , MetabolicControlAnalysisResult
+    , LyapunovExponents
+    , LyapunovExponentsResult
+    , TimeScaleSeparationAnalysis
+    , TimeScaleSeparationAnalysisResult
+    , TimeCourseSensitivities
+    , TimeCourseSensitivitiesResult
+    , CrossSection
+    , CrossSectionResult
+    , Analytics
+    , AnalyticsResult
+    , Oscillation
+    , ParameterScan
+    , Optimization
+    , OptimizationResult
+    , ParameterEstimation
+    , ParameterEstimationResult
+    , Sensitivities
+    , SensitivitiesResult
+    , LinearNoiseApproximation
+    , LinearNoiseApproximationResult
+    , OutputSpecifications
+    , Plots
+    , PlotDetail
+    , ReportTemplates
+    , ReportTemplateDetail
+    , Functions
+    , FunctionDetail
+    , Units
+    , UnitDetail
+    , __SIZE
+  };
+
+  static const CEnumAnnotation< std::string, WidgetType > WidgetName;
+
+  static const CEnumAnnotation< size_t, WidgetType > WidgetId;
 
   DataModelGUI * getDataModelGUI();
   CDataModel * getDataModel();
@@ -173,11 +246,11 @@ public:
   void updateMIRIAMResourceContents();
   void commit();
 
-  void switchToOtherWidget(const size_t & id, const CCommonName & cn);
+  void switchToOtherWidget(const WidgetType & id, const CCommonName & cn);
 
-  size_t getCurrentItemId();
-  CopasiWidget* findWidgetFromId(const size_t & id) const;
-  CopasiWidget* findTabWidgetFromId(size_t id) const;
+  WidgetType getCurrentItemId();
+  CopasiWidget* findWidgetFromId(const WidgetType & id) const;
+  CopasiWidget* findTabWidgetFromId(const WidgetType & id) const;
 
   // return current widget - added 02.07.08
   CopasiWidget* getCurrentWidget();
@@ -223,6 +296,7 @@ public slots:
 private slots:
   bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   void slotSort(const QModelIndex & index1, const QModelIndex & index2);
+  void slotSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn);
 
 private:
   bool updateCurrentWidget(ObjectType objectType, Action action, const CCommonName & cn);
@@ -303,8 +377,6 @@ private:
   CQTimeSensWidget *timeSensWidget;
   CQTimeSeriesWidget *timeSensResultWidget;
 #endif // WITH_TIME_SENS
-
-
 
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   CQOscillationTaskWidget *oscillationTaskWidget;

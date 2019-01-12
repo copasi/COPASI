@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -188,7 +193,7 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
   else if (role == Qt::EditRole)
     {
       CReaction & Reaction = mpReactions->operator [](index.row());
-      CUndoData Data(CUndoData::Type::CHANGE, Reaction.toData());
+      CUndoData UndoData(CUndoData::Type::CHANGE, Reaction.toData());
       bool changed = false;
 
       switch (index.column())
@@ -196,21 +201,22 @@ bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
           case COL_NAME_REACTIONS:
             if (mpReactions->getIndex(TO_UTF8(value.toString())) == C_INVALID_INDEX)
               {
-                changed |= Data.addProperty(CData::OBJECT_NAME,
-                                            Reaction.getObjectName(),
-                                            TO_UTF8(value.toString()));
+                changed |= UndoData.addProperty(CData::OBJECT_NAME,
+                                                Reaction.getObjectName(),
+                                                TO_UTF8(value.toString()));
               }
 
             break;
 
           case COL_EQUATION:
-            changed |= setEquation(Reaction, value, Data);
+            changed |= setEquation(Reaction, value, UndoData);
             break;
         }
 
       if (changed)
         {
-          emit signalNotifyChanges(mpDataModel->applyData(Data));
+          ListViews::addUndoMetaData(this, UndoData);
+          emit signalNotifyChanges(mpDataModel->applyData(UndoData));
         }
     }
 
@@ -278,6 +284,7 @@ bool CQReactionDM::removeRows(int position, int rows, const QModelIndex & parent
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
 
+      ListViews::addUndoMetaData(this, UndoData);
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
@@ -337,7 +344,7 @@ void CQReactionDM::insertNewRows(int position, int rows, int column, const QVari
 
       if (pRea == NULL) continue;
 
-      CUndoData InsertData(CUndoData::Type::INSERT, pRea);
+      CUndoData UndoData(CUndoData::Type::INSERT, pRea);
 
       if (column == COL_EQUATION)
         {
@@ -345,16 +352,17 @@ void CQReactionDM::insertNewRows(int position, int rows, int column, const QVari
 
           if (setEquation(*pRea, value, EquationChangeData))
             {
-              InsertData.appendData(EquationChangeData.getNewData());
+              UndoData.appendData(EquationChangeData.getNewData());
 
-              InsertData.addPreProcessData(EquationChangeData.getPreProcessData());
-              InsertData.addPostProcessData(EquationChangeData.getPostProcessData());
+              UndoData.addPreProcessData(EquationChangeData.getPreProcessData());
+              UndoData.addPostProcessData(EquationChangeData.getPostProcessData());
             }
         }
 
       delete pRea;
 
-      emit signalNotifyChanges(mpDataModel->applyData(InsertData));
+      ListViews::addUndoMetaData(this, UndoData);
+      emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
   endInsertRows();

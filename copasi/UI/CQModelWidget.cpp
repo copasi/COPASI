@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -288,6 +293,8 @@ void CQModelWidget::save()
     {
       CUndoData UndoData;
       mpModel->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
+      ListViews::addUndoMetaData(this, UndoData);
+
       slotNotifyChanges(mpDataModel->recordData(UndoData));
       load();
     }
@@ -312,7 +319,7 @@ bool CQModelWidget::updateProtected(ListViews::ObjectType objectType, ListViews:
 
   switch (objectType)
     {
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
         enter(cn);
         break;
 
@@ -362,6 +369,8 @@ void CQModelWidget::slotUpdateAvogadro()
 
         CUndoData UndoData;
         mpModel->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(pDialog->getSelection()));
+        ListViews::addUndoMetaData(this, UndoData);
+
         slotNotifyChanges(mpDataModel->recordData(UndoData));
 
         load();

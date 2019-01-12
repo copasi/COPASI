@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -31,7 +36,8 @@ CUndoData::CUndoData():
   mPostProcessData(),
   mTime(),
   mAuthorID(C_INVALID_INDEX),
-  mChangedProperties()
+  mChangedProperties(),
+  mMetaData()
 {
   time(&mTime);
 }
@@ -44,7 +50,8 @@ CUndoData::CUndoData(const Type & type, const CUndoObjectInterface * pObject, co
   mPostProcessData(),
   mTime(),
   mAuthorID(authorId),
-  mChangedProperties()
+  mChangedProperties(),
+  mMetaData()
 {
   assert(pObject != NULL);
 
@@ -90,7 +97,8 @@ CUndoData::CUndoData(const Type & type, const CData & data, const size_t & autho
   mPostProcessData(),
   mTime(),
   mAuthorID(C_INVALID_INDEX),
-  mChangedProperties()
+  mChangedProperties(),
+  mMetaData()
 {
   time(&mTime);
 
@@ -141,7 +149,8 @@ CUndoData::CUndoData(const CUndoData & src):
   mPostProcessData(src.mPostProcessData),
   mTime(src.mTime),
   mAuthorID(src.mAuthorID),
-  mChangedProperties(src.mChangedProperties)
+  mChangedProperties(src.mChangedProperties),
+  mMetaData(src.mMetaData)
 {}
 
 CUndoData::~CUndoData()
@@ -434,6 +443,36 @@ bool CUndoData::undo(const CDataModel & dataModel, ChangeSet & changes, const bo
     }
 
   return success;
+}
+
+bool CUndoData::addMetaDataProperty(const std::string & property, const CDataValue & value)
+{
+  return mMetaData.addProperty(property, value);
+}
+
+bool CUndoData::appendMetaData(const CData & data)
+{
+  return mMetaData.appendData(data);
+}
+
+bool CUndoData::removeMetaDataProperty(const std::string & property)
+{
+  return mMetaData.removeProperty(property);
+}
+
+bool CUndoData::isSetMetaDataProperty(const std::string & property) const
+{
+  return mMetaData.isSetProperty(property);
+}
+
+const CDataValue & CUndoData::getMetaDataProperty(const std::string & property) const
+{
+  return mMetaData.getProperty(property);
+}
+
+const CData & CUndoData::getMetaData() const
+{
+  return mMetaData;
 }
 
 const std::time_t & CUndoData::getTime() const

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -59,10 +64,6 @@ static char DataModeltxt[] =
   "2:29:Analytics\n"
   "29:291:Result\n"
 #endif // WITH_ANALYTICS
-#ifdef WITH_TIME_SENS
-  "2:37:Time-Course Sensitivities\n"
-  "37:371:Result\n"
-#endif // WITH_TIME_SENS
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   "2:36:Oscillation\n"
 #endif
@@ -76,6 +77,10 @@ static char DataModeltxt[] =
   "34:341:Result\n"
   "2:35:Linear Noise Approximation\n"
   "35:351:Result\n"
+#ifdef WITH_TIME_SENS
+  "2:37:Time-Course Sensitivities\n"
+  "37:371:Result\n"
+#endif // WITH_TIME_SENS
   "0:4:Output Specifications\n"
   "4:42:Plots\n"
   "4:43:Report Templates\n"

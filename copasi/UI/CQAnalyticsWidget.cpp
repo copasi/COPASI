@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -98,7 +103,7 @@ void CQAnalyticsWidget::init()
   mpTxtOutTime->setValidator(mpValidatorOutTime);
 
   CQTimeSeriesWidget * pResult =
-    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(291));
+    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(ListViews::WidgetType::AnalyticsResult));
 
   if (pResult != NULL)
     pResult->setTitle("<h2>Analytics Result</h2>");
@@ -191,7 +196,7 @@ bool CQAnalyticsWidget::taskFinishedEvent()
   // We need to load the result here as this is the only place where
   // we know that it is correct.
   CQTimeSeriesWidget * pResult =
-    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(291));
+    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(ListViews::WidgetType::AnalyticsResult));
 
   if (pResult == NULL)
     return false;
@@ -376,7 +381,7 @@ bool CQAnalyticsWidget::updateProtected(ListViews::ObjectType objectType, ListVi
 
   switch (objectType)
     {
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
 
         if (action == ListViews::CHANGE)
           {

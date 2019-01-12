@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -203,7 +208,7 @@ bool CQUnitDM::setData(const QModelIndex &index, const QVariant &value,
         pUnitDef->setObjectName(TO_UTF8(createNewName("unit", COL_SYMBOL_UNITS)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::UNIT, ListViews::CHANGE, pUnitDef->getCN());
+      emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::CHANGE, pUnitDef->getCN());
     }
 
   return true;
@@ -217,7 +222,7 @@ bool CQUnitDM::insertRows(int position, int rows, const QModelIndex & parent)
     {
       CUnitDefinition *pUnitDef;
       CRootContainer::getUnitList()->add(pUnitDef = new CUnitDefinition(TO_UTF8(createNewName("unit", COL_NAME_UNITS)), CRootContainer::getUnitList()), true);
-      emit notifyGUI(ListViews::UNIT, ListViews::ADD, pUnitDef->getCN());
+      emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::ADD, pUnitDef->getCN());
     }
 
   endInsertRows();
@@ -255,7 +260,7 @@ bool CQUnitDM::removeRows(int position, int rows, const QModelIndex & parent)
 
           if (pUnitDef != NULL) delete pUnitDef;
 
-          emit notifyGUI(ListViews::UNIT, ListViews::DELETE, *itDeletedKey);
+          emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::DELETE, *itDeletedKey);
         }
     }
 

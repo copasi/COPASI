@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -171,7 +176,7 @@ bool ScanWidget::loadTaskProtected()
 
       switch (type)
         {
-            //+++
+          //+++
           case CScanProblem::SCAN_LINEAR:
             tmp1 = new CScanWidgetScan(scrollview);
             tmp1->load(scanProblem->getScanItem(i));
@@ -412,7 +417,7 @@ bool ScanWidget::taskFinishedEvent()
   if (pProblem->getSubtask() != CTaskEnum::Task::parameterFitting)
     return false;
 
-  protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD);
+  protectedNotify(ListViews::ObjectType::MODELPARAMETERSET, ListViews::ADD);
 
   return true;
 }

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -191,6 +196,9 @@ CUnitDefinition::CUnitDefinition(const std::string & name,
   mSymbol("symbol"),
   mReadOnly(false)
 {
+  mKey = CRootContainer::getKeyFactory()->add("Unit", this);
+  initMiriamAnnotation(mKey);
+
   setup();
 }
 
@@ -203,6 +211,9 @@ CUnitDefinition::CUnitDefinition(const CUnitDefinition &src,
   mSymbol(src.mSymbol),
   mReadOnly(src.mReadOnly && src.getObjectParent() != pParent)
 {
+  mKey = CRootContainer::getKeyFactory()->add("Unit", this);
+  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
+
   setup();
 }
 

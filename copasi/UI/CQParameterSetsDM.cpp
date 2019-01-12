@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -184,7 +189,9 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex & p
       pNew->setObjectName(TO_UTF8(Name));
       mpListOfParameterSets->add(pNew, true);
 
-      emit signalNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pNew->toData())));
+      CUndoData UndoData(CUndoData::Type::INSERT, pNew->toData());
+      ListViews::addUndoMetaData(this, UndoData);
+      emit signalNotifyChanges(mpDataModel->recordData(UndoData));
     }
 
   endInsertRows();
@@ -213,7 +220,9 @@ bool CQParameterSetsDM::removeRows(int position, int rows, const QModelIndex & p
 
   for (itDeleted = ToBeDeleted.begin(); itDeleted != endDeleted; ++itDeleted)
     {
-      emit signalNotifyChanges(mpDataModel->applyData(CUndoData(CUndoData::Type::REMOVE, (*itDeleted)->toData())));
+      CUndoData UndoData(CUndoData::Type::REMOVE, (*itDeleted)->toData());
+      ListViews::addUndoMetaData(this, UndoData);
+      emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
   endRemoveRows();

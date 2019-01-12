@@ -1,4 +1,9 @@
-// Copyright (C) 2017 - 2019 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -371,7 +376,6 @@ void CQPlotSubwidget::addCurveTab(const std::string &title,
   addPlotItem(item);
 }
 
-
 void chooseAxisFromSelection(
   std::vector<const CDataObject *> &vector1,
   std::vector<const CDataObject *> &vector2,
@@ -626,7 +630,6 @@ void CQPlotSubwidget::addBandedGraph()
       return;
     }
 
-
   std::vector<CCommonName> objects1, objects2;
   std::map<std::string, std::string> mapCNToDisplayName;
   size_t i;
@@ -770,7 +773,7 @@ void CQPlotSubwidget::deletePlot()
     enter(std::string());
 
   //ListViews::
-  protectedNotify(ListViews::PLOT, ListViews::DELETE, deletedObjectCN);
+  protectedNotify(ListViews::ObjectType::PLOT, ListViews::DELETE, deletedObjectCN);
 }
 
 //-----------------------------------------------------------------------------
@@ -796,9 +799,9 @@ void CQPlotSubwidget::copyPlot()
   pPl->setObjectName(name);
   pDataModel->getPlotDefinitionList()->add(pPl, true);
   std::string cn = pPl->CCopasiParameter::getCN();
-  protectedNotify(ListViews::PLOT, ListViews::ADD, cn);
+  protectedNotify(ListViews::ObjectType::PLOT, ListViews::ADD, cn);
   enter(cn);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, cn);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::PlotDetail, cn);
 }
 
 //-----------------------------------------------------------------------------
@@ -823,9 +826,9 @@ void CQPlotSubwidget::addPlot()
     }
 
   std::string cn = pPl->CCopasiParameter::getCN();
-  protectedNotify(ListViews::PLOT, ListViews::ADD, cn);
+  protectedNotify(ListViews::ObjectType::PLOT, ListViews::ADD, cn);
   enter(cn);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, cn);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::PlotDetail, cn);
 }
 
 //-----------------------------------------------------------------------------
@@ -982,7 +985,7 @@ bool CQPlotSubwidget::saveToPlotSpec()
   if (pspec->getTitle() != TO_UTF8(titleLineEdit->text()))
     {
       pspec->setTitle(TO_UTF8(titleLineEdit->text()));
-      protectedNotify(ListViews::PLOT, ListViews::RENAME, mObjectCN);
+      protectedNotify(ListViews::ObjectType::PLOT, ListViews::RENAME, mObjectCN);
     }
 
   //active?
@@ -1034,7 +1037,7 @@ bool CQPlotSubwidget::enterProtected()
 
   if (!pspec)
     {
-      mpListView->switchToOtherWidget(42, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::Plots, std::string());
       return false;
     }
 
@@ -1101,8 +1104,8 @@ bool CQPlotSubwidget::updateProtected(ListViews::ObjectType objectType, ListView
 
   switch (objectType)
     {
-        //TODO: check list:
-      case ListViews::MODEL:
+      //TODO: check list:
+      case ListViews::ObjectType::MODEL:
         switch (action)
           {
             case ListViews::DELETE:
@@ -1118,7 +1121,7 @@ bool CQPlotSubwidget::updateProtected(ListViews::ObjectType objectType, ListView
 
         break;
 
-      case ListViews::PLOT:
+      case ListViews::ObjectType::PLOT:
         if (cn == mObjectCN)
           {
             switch (action)

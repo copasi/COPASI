@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -12,9 +17,6 @@
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
-
-
-
 
 #include <QtCore/QString>
 #include <QtCore/QList>
@@ -201,7 +203,7 @@ bool CQPlotDM::setData(const QModelIndex &index, const QVariant &value,
       if (changed)
         {
           emit dataChanged(index, index);
-          emit notifyGUI(ListViews::PLOT, ListViews::CHANGE, pPS->CCopasiParameter::getCN());
+          emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::CHANGE, pPS->CCopasiParameter::getCN());
         }
     }
   else if (role == Qt::CheckStateRole && index.column() == COL_ACTIVE_PLOTS)
@@ -222,7 +224,7 @@ bool CQPlotDM::insertRows(int position, int rows, const QModelIndex & parent)
       QString Name = this->createNewName(mNewName, COL_NAME_PLOTS);
 
       CPlotSpecification *pPS = mpDataModel->getPlotDefinitionList()->createPlotSpec(TO_UTF8(Name), CPlotItem::plot2d);
-      emit notifyGUI(ListViews::PLOT, ListViews::ADD, pPS->CCopasiParameter::getCN());
+      emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::ADD, pPS->CCopasiParameter::getCN());
     }
 
   endInsertRows();
@@ -245,7 +247,7 @@ bool CQPlotDM::removeRows(int position, int rows, const QModelIndex & parent)
         &mpDataModel->getPlotDefinitionList()->operator[](position);
       std::string deletedKey = pPS->CCopasiParameter::getCN();
       mpDataModel->getPlotDefinitionList()->CDataVector< CPlotSpecification >::remove(position);
-      emit notifyGUI(ListViews::PLOT, ListViews::DELETE, deletedKey);
+      emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::DELETE, deletedKey);
     }
 
   endRemoveRows();

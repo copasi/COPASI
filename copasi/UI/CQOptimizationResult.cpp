@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -69,7 +74,7 @@ void CQOptimizationResult::init()
 bool CQOptimizationResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
 
-  if (objectType == ListViews::MODEL && action == ListViews::DELETE)
+  if (objectType == ListViews::ObjectType::MODEL && action == ListViews::DELETE)
     mpParameters->setModel(NULL);
 
   return true;
@@ -245,5 +250,5 @@ void CQOptimizationResult::slotUpdateModel()
   const_cast< COptProblem * >(mpProblem)->restore(true);
 
   // We need to notify the GUI to update all values
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
+  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
 }
