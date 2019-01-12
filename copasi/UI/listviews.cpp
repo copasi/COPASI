@@ -213,7 +213,6 @@ const CEnumAnnotation< std::string, ListViews::WidgetType > ListViews::WidgetNam
   , "Cross Section Result"
   , "Analytics"
   , "Analytics Result"
-  , "Oscillation"
   , "Parameter Scan"
   , "Optimization"
   , "Optimization Result"
@@ -223,6 +222,7 @@ const CEnumAnnotation< std::string, ListViews::WidgetType > ListViews::WidgetNam
   , "Sensitivities Result"
   , "Linear Noise Approximation"
   , "Linear Noise Approximation Result"
+  , "Oscillation"
   , "Output Specifications"
   , "Plots"
   , "Plot Detail"
@@ -232,72 +232,6 @@ const CEnumAnnotation< std::string, ListViews::WidgetType > ListViews::WidgetNam
   , "Function Detail"
   , "Units"
   , "Unit Detail"
-});
-
-// static
-const CEnumAnnotation< size_t, ListViews::WidgetType > ListViews::WidgetId(
-{
-  C_INVALID_INDEX // NotFound
-  , 0 // COPASI
-  , 1 // Model
-  , 11 // Biochemical
-  , 111 // Compartments
-  , C_INVALID_INDEX // CompartmentDetail
-  , 112 // Species
-  , C_INVALID_INDEX // SpeciesDetail
-  , 114 // Reactions
-  , C_INVALID_INDEX // ReactionDetail
-  , 115 // GlobalQuantities
-  , C_INVALID_INDEX // GlobalQuantityDetail
-  , 116 // Events
-  , C_INVALID_INDEX // EventDetail
-  , 118 // ParameterOverview
-  , 119  // ParameterSets
-  , C_INVALID_INDEX // ParameterSetDetail
-  , 12 // Mathematical
-  , 126 // DifferentialEquations
-  , 127 // Matrices
-  , 128 // UpdateOrder
-  , 13 // Diagrams
-  , 2 // Tasks
-  , 21 // SteadyState
-  , 211 // SteadyStateResult
-  , 22  // StoichiometricAnalysis
-  , 221 // ElementaryModes
-  , 2211 // ElementaryModesResult
-  , 222 // MassConservation
-  , 2221 // MassConservationResult
-  , 23 // TimeCourse
-  , 231 // TimeCourseResult
-  , 24 // MetabolicControlAnalysis
-  , 241 // MetabolicControlAnalysisResult
-  , 26 // LyapunovExponents
-  , 261 // LyapunovExponentsResult
-  , 27 // TimeScaleSeparationAnalysis
-  , 271 // TimeScaleSeparationAnalysisResult
-  , 28 // CrossSection
-  , 281 // CrossSectionResult
-  , 29 // Analytics
-  , 291 // AnalyticsResult
-  , 36 // Oscillation
-  , 31 // ParameterScan
-  , 32 // Optimization
-  , 321 // OptimizationResult
-  , 33 // ParameterEstimation
-  , 331 // ParameterEstimationResult
-  , 34 // Sensitivities
-  , 341 // SensitivitiesResult
-  , 35 // LinearNoiseApproximation
-  , 351 // LinearNoiseApproximationResult
-  , 4 // OutputSpecifications
-  , 42 // Plots
-  , C_INVALID_INDEX // PlotDetail
-  , 43 // ReportTemplates
-  , C_INVALID_INDEX // ReportTemplateDetail
-  , 5 // Functions
-  , C_INVALID_INDEX // FunctionDetail
-  , 6 // Units
-  , C_INVALID_INDEX // UnitDetail
 });
 
 // static
@@ -502,8 +436,8 @@ void ListViews::resetCache()
   connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
           this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
 
-  connect(mpDataModelGUI, SIGNAL(signalSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn)),
-          this, SLOT(slotSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn)));
+  connect(mpDataModelGUI, SIGNAL(signalSwitchWidget(ListViews::WidgetType, const CCommonName &)),
+          this, SLOT(slotSwitchWidget(ListViews::WidgetType, const CCommonName &)));
 }
 
 /***********ListViews::ConstructNodeWidgets()---------------------------->
@@ -1286,6 +1220,7 @@ bool ListViews::slotNotify(ObjectType objectType, Action action, const CCommonNa
   if (!updateCurrentWidget(objectType, action, cn)) success = false;
 
   notifyChildWidgets(objectType, action, cn);
+  emit signalNotify(objectType, action, cn);
 
   return success;
 }

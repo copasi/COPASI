@@ -319,9 +319,15 @@ bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews
       cn == mObjectCN)
     {
       if (action != ListViews::DELETE || objectType == ListViews::ObjectType::MIRIAM)
-        return enterProtected();
+        {
+          return enterProtected();
+        }
       else
-        return leaveProtected();
+        {
+          // We can no longer trust that the info still exists
+          mpMIRIAMInfo = NULL;
+          return leaveProtected();
+        }
     }
 
   if (mIgnoreUpdates || !isVisible())

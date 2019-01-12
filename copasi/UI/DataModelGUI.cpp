@@ -27,7 +27,6 @@
 #include "copasi.h"
 
 #include "DataModelGUI.h"
-#include "DataModel.txt.h"
 #include "CQThread.h"
 #include "qtUtilities.h"
 #include "CProgressBar.h"

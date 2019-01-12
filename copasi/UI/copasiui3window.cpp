@@ -939,7 +939,7 @@ void CopasiUI3Window::newDoc()
   mpaExportSEDML->setEnabled(true);
 
   updateTitle();
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
 
   if (widget != NULL)

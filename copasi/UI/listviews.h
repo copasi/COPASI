@@ -204,7 +204,6 @@ public:
     , CrossSectionResult
     , Analytics
     , AnalyticsResult
-    , Oscillation
     , ParameterScan
     , Optimization
     , OptimizationResult
@@ -214,6 +213,7 @@ public:
     , SensitivitiesResult
     , LinearNoiseApproximation
     , LinearNoiseApproximationResult
+    , Oscillation
     , OutputSpecifications
     , Plots
     , PlotDetail
@@ -227,8 +227,6 @@ public:
   };
 
   static const CEnumAnnotation< std::string, WidgetType > WidgetName;
-
-  static const CEnumAnnotation< size_t, WidgetType > WidgetId;
 
   DataModelGUI * getDataModelGUI();
   CDataModel * getDataModel();
@@ -273,6 +271,7 @@ public:
 
 signals:
   void signalFolderChanged(const QModelIndex & index);
+  void signalNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   void signalResetCache();
 
 private:

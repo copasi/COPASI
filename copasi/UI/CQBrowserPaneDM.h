@@ -33,6 +33,16 @@ class CQBrowserPaneDM : public QAbstractItemModel
 {
   Q_OBJECT
 
+private:
+  struct sNodeInfo
+  {
+    ListViews::WidgetType parent;
+    ListViews::WidgetType node;
+    std::string title;
+  };
+
+  static const sNodeInfo TreeInfo[];
+
 public:
   class SData
   {
@@ -42,6 +52,8 @@ public:
     CRegisteredCommonName mCN;
 
     QString mDisplayRole;
+
+    size_t mSortOrder;
   };
 
   class CNode : public CCopasiNode< SData >
@@ -55,6 +67,7 @@ public:
     CNode(const ListViews::WidgetType & id,
           const CCommonName & cn,
           const QString & displayRole,
+          const size_t & sortOrder,
           CNode * pParent);
 
     ~CNode();
@@ -131,7 +144,7 @@ public:
 
   void load(const ListViews::WidgetType & id);
 
-private slots:
+public slots:
   bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   void slotRefreshValidityFilters();
 
