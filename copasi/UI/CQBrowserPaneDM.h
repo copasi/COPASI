@@ -154,6 +154,7 @@ private:
   CNode * createNode(const ListViews::WidgetType & id,
                      const CCommonName & cn,
                      const QString & displayRole,
+                     const size_t & sortOrder,
                      CNode * pParent);
 
   void updateNode(CNode * pNode, const CCommonName & CN);

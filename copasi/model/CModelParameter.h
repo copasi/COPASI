@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -298,14 +303,6 @@ public:
   // These methods are only here so that we can use CNodeIterator to traverse the tree.
   virtual size_t getNumChildren() const;
   virtual const CModelParameter * getChild(const size_t & index) const;
-
-protected:
-  /**
-   * Determine the parameter name based on the CN of the corresponding object
-   * @param const CCommonName & cn
-   * @return std::string name
-   */
-  static std::string nameFromCN(const CCommonName & cn);
 
 protected:
   /**

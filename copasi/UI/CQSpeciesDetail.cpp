@@ -492,7 +492,8 @@ void CQSpeciesDetail::copy()
       const CDataObject * pObject = origToCopyMapping.getDuplicateFromObject(mpObject);
 
       ListViews::addUndoMetaData(this, UndoData);
-      UndoData.addMetaDataProperty("CN", pObject->getCN());
+      UndoData.addMetaDataProperty("Widget Object CN (after)", pObject->getCN());
+      UndoData.addMetaDataProperty("Widget Object Name (after)", pObject->getObjectName() + "{" + CCommonName::compartmentNameFromCN(pObject->getCN()) + "}");
 
       slotNotifyChanges(mpDataModel->recordData(UndoData));
 
@@ -675,11 +676,6 @@ void CQSpeciesDetail::createNewSpecies()
     {
       // We need to create a compartment
       pComp = pModel->createCompartment("compartment");
-
-      CUndoData UndoData(CUndoData::Type::INSERT, pComp);
-      ListViews::addUndoMetaData(this, UndoData);
-
-      slotNotifyChanges(mpDataModel->recordData(UndoData));
     }
 
   std::string name = "species";
@@ -713,6 +709,8 @@ void CQSpeciesDetail::createNewSpecies()
     }
 
   ListViews::addUndoMetaData(this, UndoData);
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpMetab->getCN());
+  UndoData.addMetaDataProperty("Widget Object Name (after)", mpMetab->getObjectName() + "{" + CCommonName::compartmentNameFromCN(mpMetab->getCN()) + "}");
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
 

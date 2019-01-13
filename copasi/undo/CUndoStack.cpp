@@ -127,14 +127,12 @@ CUndoStack::const_iterator CUndoStack::end() const
   return std::vector< CUndoData * >::end();
 }
 
-const CUndoData & CUndoStack::getLastExecutedData() const
+std::pair< const CUndoData *, bool > CUndoStack::getLastExecution() const
 {
-  static CUndoData Invalid;
-
   if (mLastExecuted >= size())
-    return Invalid;
+    return std::make_pair((CUndoData *) NULL, false);
 
-  return operator[](mLastExecuted);
+  return std::make_pair(&operator[](mLastExecuted), mLastExecuted == mCurrent);
 }
 
 CUndoData::ChangeSet CUndoStack::record(const CUndoData & data, const bool & execute)

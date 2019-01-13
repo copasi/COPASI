@@ -746,6 +746,8 @@ void DataModelGUI::notifyChanges(const CUndoData::ChangeSet & changes)
 {
   // The GUI is inactive whenever a progress bar exist. We wait with updates
   // until then.
+  std::string CN;
+
   if (mpProgressBar == NULL)
     {
       CObjectInterface::ContainerList List;
@@ -775,7 +777,7 @@ void DataModelGUI::notifyChanges(const CUndoData::ChangeSet & changes)
             }
 
           ListViews::ObjectType ObjectType = ListViews::DataObjectType.toEnum(it->second.objectType, ListViews::ObjectType::STATE);
-          std::string CN = it->first;
+          CN = it->first;
 
           if (ObjectType == ListViews::ObjectType::MIRIAM)
             {
@@ -796,11 +798,26 @@ void DataModelGUI::notifyChanges(const CUndoData::ChangeSet & changes)
           notify(ObjectType, Action, CN);
         }
 
-      const CUndoData & UndoData = mpDataModel->getUndoStack()->getLastExecutedData();
-      ListViews::WidgetType Id = ListViews::WidgetName.toEnum(UndoData.getMetaDataProperty("WidgetName").toString(), ListViews::WidgetType::NotFound);
-      std::string CN = UndoData.getMetaDataProperty("CN").toString();
+      std::pair< const CUndoData *, bool > LastExecution = mpDataModel->getUndoStack()->getLastExecution();
 
-      emit this->signalSwitchWidget(Id, CN);
+      if (LastExecution.first != NULL)
+        {
+          const CData & MetaData = LastExecution.first->getMetaData();
+
+          ListViews::WidgetType Id = ListViews::WidgetName.toEnum(MetaData.getProperty("Widget Type").toString(), ListViews::WidgetType::NotFound);
+          int TabIndex = MetaData.isSetProperty("Widget Tab") ? MetaData.getProperty("Widget Tab").toInt() : -1;
+
+          if (LastExecution.second) // redo
+            {
+              CN = MetaData.getProperty("Widget Object CN (after)").toString();
+            }
+          else // undo
+            {
+              CN = MetaData.getProperty("Widget Object CN (before)").toString();
+            }
+
+          emit this->signalSwitchWidget(Id, CN, TabIndex);
+        }
     }
 }
 

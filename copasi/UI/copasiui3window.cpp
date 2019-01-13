@@ -939,11 +939,7 @@ void CopasiUI3Window::newDoc()
   mpaExportSEDML->setEnabled(true);
 
   updateTitle();
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN());
-  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
-
-  if (widget != NULL)
-    widget->selectTab(0);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN(), 0);
 
   mSaveAsRequired = true;
   mCommitRequired = true;
@@ -1198,11 +1194,7 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
   mpaExportSEDML->setEnabled(true);
 
   updateTitle();
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, std::string());
-  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
-
-  if (widget != NULL)
-    widget->selectTab(0);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN(), 0);
 
   refreshRecentFileMenu();
   mNewFile = "";
@@ -1629,11 +1621,7 @@ void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
   //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
   //       msave_button->setEnabled(true);
   //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, std::string());
-  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
-
-  if (widget != NULL)
-    widget->selectTab(0);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN(), 0);
 
   updateTitle();
   mSaveAsRequired = true;
@@ -1741,11 +1729,7 @@ void CopasiUI3Window::slotImportSBMLFinished(bool success)
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
   mpaExportODE->setEnabled(true);
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, std::string());
-  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
-
-  if (widget != NULL)
-    widget->selectTab(0);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN(), 0);
 
   refreshRecentSBMLFileMenu();
   updateTitle();
@@ -2017,8 +2001,8 @@ void CopasiUI3Window::slotShowDependencies(bool flag)
     {
       addWindow(this->mpDependencies);
 
-      if (mpDependencies->getCurrentKey() != mpListView->getCurrentItemKey())
-        mpDependencies->loadFrom(mpListView->getCurrentItemKey());
+      if (mpDependencies->getCurrentKey() != mpListView->getCurrentItemRegisteredCN())
+        mpDependencies->loadFrom(mpListView->getCurrentItemRegisteredCN());
     }
   else
     removeWindow(this->mpDependencies);
@@ -2033,7 +2017,7 @@ void CopasiUI3Window::listViewsFolderChanged(const QModelIndex &)
   this->mpSliders->setCurrentFolderId(id);
 
   if (mpDependencies->isVisible())
-    mpDependencies->loadFrom(mpListView->getCurrentItemKey());
+    mpDependencies->loadFrom(mpListView->getCurrentItemRegisteredCN());
 
   refreshWindowsMenu();
 }
@@ -3164,11 +3148,7 @@ void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
   //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
   //       msave_button->setEnabled(true);
   //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, std::string());
-  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
-
-  if (widget != NULL)
-    widget->selectTab(0);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN(), 0);
 
   updateTitle();
   mSaveAsRequired = true;
@@ -3203,11 +3183,7 @@ void CopasiUI3Window::slotImportSEDMLFinished(bool success)
   mpaSaveAs->setEnabled(true);
   mpaExportSEDML->setEnabled(true);
   //  mpaExportODE->setEnabled(true);
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, std::string());
-  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
-
-  if (widget != NULL)
-    widget->selectTab(0);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN(), 0);
 
   refreshRecentSEDMLFileMenu();
   updateTitle();
@@ -3520,11 +3496,7 @@ void CopasiUI3Window::slotImportCombineFinished(bool success)
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
   mpaExportODE->setEnabled(true);
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, std::string());
-  CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
-
-  if (widget != NULL)
-    widget->selectTab(0);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN(), 0);
 
   refreshRecentSBMLFileMenu();
   updateTitle();

@@ -268,8 +268,28 @@ void ListViews::addUndoMetaData(QObject * qObject, CUndoData & undoData)
 
   if (pListView != NULL)
     {
-      undoData.addMetaDataProperty("WidgetName", ListViews::WidgetName[pListView->getCurrentItemId()]);
-      undoData.addMetaDataProperty("CN", pListView->getCurrentWidget()->getObject()->getCN());
+      undoData.addMetaDataProperty("Widget Type", ListViews::WidgetName[pListView->getCurrentItemId()]);
+
+      CQTabWidget *pTabWidget = dynamic_cast<CQTabWidget *>(pListView->getCurrentWidget());
+
+      if (pTabWidget != NULL)
+        {
+          undoData.addMetaDataProperty("Widget Tab", pTabWidget->getSelectedTab());
+        }
+
+      undoData.addMetaDataProperty("Widget Object CN (before)", pListView->getCurrentItemCN());
+      undoData.addMetaDataProperty("Widget Object CN (after)", pListView->getCurrentItemRegisteredCN());
+
+      if (pListView->getCurrentItemId() != WidgetType::SpeciesDetail)
+        {
+          undoData.addMetaDataProperty("Widget Object Name (before)", CCommonName::nameFromCN(pListView->getCurrentItemCN()));
+          undoData.addMetaDataProperty("Widget Object Name (after)", CCommonName::nameFromCN(pListView->getCurrentItemRegisteredCN()));
+        }
+      else
+        {
+          undoData.addMetaDataProperty("Widget Object Name (before)", CCommonName::nameFromCN(pListView->getCurrentItemCN()) + "{" + CCommonName::compartmentNameFromCN(pListView->getCurrentItemCN()) + "}");
+          undoData.addMetaDataProperty("Widget Object Name (after)", CCommonName::nameFromCN(pListView->getCurrentItemRegisteredCN()) + "{" + CCommonName::compartmentNameFromCN(pListView->getCurrentItemRegisteredCN()) + "}");
+        }
     }
 }
 
@@ -299,6 +319,7 @@ ListViews::ListViews(QWidget *parent,
   mpMathModel(NULL),
   mpCurrentWidget(NULL),
   mCurrentItemCN(),
+  mCurrentItemRegisteredCN(),
   mpCMCAResultWidget(NULL),
   mpCQMCAWidget(NULL),
   mpCQLNAWidget(NULL),
@@ -398,6 +419,7 @@ ListViews::ListViews(QWidget *parent,
 
   mpCurrentWidget = defaultWidget; // keeps track of the mpCurrentWidget in use
   mCurrentItemCN.clear();
+  mCurrentItemRegisteredCN.clear();
   mpStackedWidget->setCurrentWidget(defaultWidget);
 
   QList<int> Sizes = sizes();
@@ -410,8 +432,8 @@ ListViews::ListViews(QWidget *parent,
   // establishes the communication between the mpTreeView clicked and the routine called....
   connect(mpTreeDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(slotSort(const QModelIndex &, const QModelIndex &)));
-  connect(mpDataModelGUI, SIGNAL(signalSwitchWidget(ListViews::WidgetType, const CCommonName &)),
-          this, SLOT(slotSwitchWidget(ListViews::WidgetType, const CCommonName &)));
+  connect(mpDataModelGUI, SIGNAL(signalSwitchWidget(ListViews::WidgetType, const CCommonName &, int)),
+          this, SLOT(slotSwitchWidget(ListViews::WidgetType, const CCommonName &, int)));
 }
 
 ListViews::~ListViews()
@@ -435,9 +457,6 @@ void ListViews::resetCache()
 
   connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
           this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
-
-  connect(mpDataModelGUI, SIGNAL(signalSwitchWidget(ListViews::WidgetType, const CCommonName &)),
-          this, SLOT(slotSwitchWidget(ListViews::WidgetType, const CCommonName &)));
 }
 
 /***********ListViews::ConstructNodeWidgets()---------------------------->
@@ -1129,8 +1148,12 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
   const CCommonName & itemCN = mpTreeDM->getCNFromIndex(index);
 
-  if (newWidget == mpCurrentWidget)
-    if (itemCN == mCurrentItemCN) return; //do nothing
+  if (newWidget == mpCurrentWidget &&
+      itemCN == mCurrentItemRegisteredCN)
+    {
+      mCurrentItemCN = mCurrentItemRegisteredCN;
+      return; //do nothing
+    }
 
   // leave old widget
   if (mpCurrentWidget)
@@ -1157,6 +1180,7 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
     {newWidget = defaultWidget;}
 
   mCurrentItemCN = itemCN;
+  mCurrentItemRegisteredCN = itemCN;
 
   // we emit the signal after the old widget has saved
   // the changes
@@ -1168,16 +1192,26 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
   mpTreeView->scrollTo(index);
 }
 
-void ListViews::switchToOtherWidget(const ListViews::WidgetType & id, const CCommonName & cn)
+void ListViews::switchToOtherWidget(const ListViews::WidgetType & id, const CCommonName & cn, const int & tabIndex)
 {
   // do not switch if we are there already
-  if (!cn.empty() && cn == mCurrentItemCN)
-    return;
+  if (!cn.empty() &&
+      cn == mCurrentItemRegisteredCN)
+    {
+      mCurrentItemCN = mCurrentItemRegisteredCN;
+      return;
+    }
 
   QModelIndex Index = mpTreeDM->index(id, cn);
   QModelIndex SortIndex = mpTreeSortDM->mapFromSource(Index);
 
   mpTreeView->setCurrentIndex(SortIndex);
+
+  CQTabWidget *pTabWidget = dynamic_cast<CQTabWidget *>(mpCurrentWidget);
+
+  if (pTabWidget != NULL &&
+      tabIndex != -1)
+    pTabWidget->selectTab(tabIndex);
 }
 
 //********** some methods to store and restore the state of the listview ****
@@ -1230,9 +1264,9 @@ void ListViews::slotSort(const QModelIndex & /* index1 */, const QModelIndex & /
   mpTreeView->sortByColumn(0, Qt::AscendingOrder);
 }
 
-void ListViews::slotSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn)
+void ListViews::slotSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn, int tabIndex)
 {
-  switchToOtherWidget(widgetType, cn);
+  switchToOtherWidget(widgetType, cn, tabIndex);
 }
 
 bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const CCommonName & cn)
@@ -1253,9 +1287,14 @@ void ListViews::clearCurrentWidget()
   mpCurrentWidget = NULL;
 }
 
-const std::string& ListViews::getCurrentItemKey() const
+const CCommonName & ListViews::getCurrentItemCN() const
 {
   return mCurrentItemCN;
+}
+
+const CCommonName & ListViews::getCurrentItemRegisteredCN() const
+{
+  return mCurrentItemRegisteredCN;
 }
 
 void ListViews::commit()

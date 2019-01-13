@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,6 +24,36 @@
 #include "copasi/undo/CData.h"
 
 using std::string;
+
+// static
+std::string CCommonName::nameFromCN(const CCommonName & cn)
+{
+  CCommonName ParentCN;
+  std::string ObjectType;
+  std::string ObjectName;
+
+  cn.split(ParentCN, ObjectType, ObjectName);
+
+  return ObjectName;
+}
+
+// static
+std::string CCommonName::compartmentNameFromCN(const CCommonName & cn)
+{
+  CCommonName CN(cn);
+  CCommonName ParentCN;
+  std::string ObjectType;
+  std::string ObjectName;
+
+  do
+    {
+      CN.split(ParentCN, ObjectType, ObjectName);
+      CN = ParentCN;
+    }
+  while (!CN.empty() && ObjectType != "Compartment");
+
+  return ObjectName;
+}
 
 CCommonName::CCommonName():
   string()
@@ -133,15 +168,54 @@ void CCommonName::split(CCommonName & parentCN, std::string & objectType, std::s
     }
 
   objectName = Primary.getElementName(0);
+  objectType = Primary.getObjectType();
 
   if (objectName.empty())
     {
-      objectType = Primary.getObjectType();
       objectName = Primary.getObjectName();
     }
+  // We may have a vector and based on it's name we can determine the type
+  else if (Primary.getObjectType() == "Vector")
+    {
+      // Vector:                    ObjectType:
+      // Compartments               Compartment
+      // Metabolites                Metabolite
+      // Reduced Model Metabolites  Metabolite
+      // Reactions                  Reaction
+      // Events                     Event
+      // Values                     ModelValue
+      // ParameterSets              ModelParameterSet
+      // Moieties                   Moiety
+      // ListOflayouts              Layout
+      // TaskList                   Task
+      // ReportDefinitions          ReportDefinition
+      // OutputDefinitions          PlotItem
+      // Functions                  Function
+      // ModelList                  CN
+      // Units list                 Unit
+      if (objectType == "Compartments") objectType = "Compartment";
+      else if (objectType == "Metabolites") objectType = "Metabolite";
+      else if (objectType == "Reduced Model Metabolites") objectType = "Metabolite";
+      else if (objectType == "Reactions") objectType = "Reaction";
+      else if (objectType == "Events") objectType = "Event";
+      else if (objectType == "Values") objectType = "ModelValue";
+      else if (objectType == "ParameterSets") objectType = "ModelParameterSet";
+      else if (objectType == "Moieties") objectType = "Moiety";
+      else if (objectType == "ListOflayouts") objectType = "Layout";
+      else if (objectType == "TaskList") objectType = "Task";
+      else if (objectType == "ReportDefinitions") objectType = "ReportDefinition";
+      else if (objectType == "OutputDefinitions") objectType = "PlotItem";
+      else if (objectType == "Functions") objectType = "Function";
+      else if (objectType == "ModelList") objectType = "CN";
+      else if (objectType == "Units list") objectType = "Unit";
+      else objectType.clear();
+
+      parentCN += "," + escape(Primary.getObjectType()) + "=" + escape(Primary.getObjectName());
+    }
+  // We have an array
   else
     {
-      objectType.clear();
+      objectType.clear(); // We don't know
       parentCN += "," + escape(Primary.getObjectType()) + "=" + escape(Primary.getObjectName());
     }
 

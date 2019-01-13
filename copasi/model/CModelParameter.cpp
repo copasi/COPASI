@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -51,18 +56,6 @@ const CEnumAnnotation< std::string, CModelParameter::CompareResult > CModelParam
   "Conflict",
   "Identical"
 });
-
-// static
-std::string CModelParameter::nameFromCN(const CCommonName & cn)
-{
-  CCommonName ParentCN;
-  std::string ObjectType;
-  std::string ObjectName;
-
-  cn.split(ParentCN, ObjectType, ObjectName);
-
-  return ObjectName;
-}
 
 // static
 CModelParameter * CModelParameter::fromData(const CData & data, CUndoObjectInterface * pParent)
@@ -587,7 +580,7 @@ std::string CModelParameter::getName() const
       return mpObject->getObjectName();
     }
 
-  return nameFromCN(mCN);
+  return CCommonName::nameFromCN(mCN);
 }
 
 void CModelParameter::compile()
@@ -1018,7 +1011,7 @@ std::string CModelParameterSpecies::getName() const
       return CMetabNameInterface::getDisplayName(pModel, *static_cast< CMetab * >(mpObject), false);
     }
 
-  return nameFromCN(mCN) + '{' + nameFromCN(mCompartmentCN) + '}';
+  return CCommonName::nameFromCN(mCN) + '{' + CCommonName::nameFromCN(mCompartmentCN) + '}';
 }
 
 // virtual

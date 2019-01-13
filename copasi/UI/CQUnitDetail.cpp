@@ -90,15 +90,23 @@ void CQUnitDetail::slotBtnCopy()
       name += TO_UTF8(QString::number(i));
     }
 
+  CData ToCopy = mpObject->toData();
+  ToCopy.addProperty(CData::Property::OBJECT_NAME, name);
+  ToCopy.removeProperty(CData::Property::OBJECT_INDEX);
+  ToCopy.removeProperty(CData::OBJECT_UUID);
+  ToCopy.removeProperty(CData::OBJECT_REFERENCES);
+
   CUnitDefinition * pUnitDef = new CUnitDefinition(name, unitList);
-
-  pUnitDef->setExpression(mpUnitDefinition->getExpression());
-
   unitList->add(pUnitDef, true);
+  CUndoData::ChangeSet Changes;
+  pUnitDef->applyData(ToCopy, Changes);
 
-  CCommonName CN = pUnitDef->getCN();
-  protectedNotify(ListViews::ObjectType::UNIT, ListViews::ADD, CN);
-  mpListView->switchToOtherWidget(ListViews::WidgetType::UnitDetail, CN);
+  CUndoData UndoData(CUndoData::Type::INSERT, pUnitDef);
+  ListViews::addUndoMetaData(this, UndoData);
+  UndoData.addMetaDataProperty("Widget Object CN (after)", pUnitDef->getCN());
+  UndoData.addMetaDataProperty("Widget Object Name (after)", pUnitDef->getObjectName());
+
+  slotNotifyChanges(mpDataModel->recordData(UndoData));
 }
 
 //! Slot for being activated whenever Delete button is clicked
@@ -146,8 +154,11 @@ void CQUnitDetail::slotBtnDelete()
 
       if (ret == QMessageBox::Yes)
         {
-          delete pUnitDef;
-          protectedNotify(ListViews::ObjectType::UNIT, ListViews::DELETE, mObjectCN);
+          CUndoData UndoData;
+          pUnitDef->createUndoData(UndoData, CUndoData::Type::REMOVE);
+          ListViews::addUndoMetaData(this, UndoData);
+
+          slotNotifyChanges(mpDataModel->applyData(UndoData));
         }
     }
 
