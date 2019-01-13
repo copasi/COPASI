@@ -75,8 +75,6 @@ CQModelValue::~CQModelValue()
 /// Slot to create a new quantity; activated whenever the New button is clicked
 void CQModelValue::slotBtnNew()
 {
-  leaveProtected();
-
   std::string name = "quantity";
   int i = 1;
 
@@ -91,15 +89,41 @@ void CQModelValue::slotBtnNew()
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpModelValue);
   ListViews::addUndoMetaData(this, UndoData);
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getCN());
+  UndoData.addMetaDataProperty("Widget Object Name (after)", mpModelValue->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
-
-  mpListView->switchToOtherWidget(ListViews::WidgetType::GlobalQuantityDetail, mpModelValue->getCN());
 }
 
 void CQModelValue::slotBtnCopy()
 {
-  mObjectCNToCopy = mObjectCN;
+  std::string name = "quantity";
+  int i = 1;
+
+  assert(mpDataModel != NULL);
+
+  while (!(mpModelValue = mpDataModel->getModel()->createModelValue(name)))
+    {
+      i++;
+      name = "quantity_";
+      name += TO_UTF8(QString::number(i));
+    }
+
+  CData ToCopy = mpObject->toData();
+  ToCopy.addProperty(CData::Property::OBJECT_NAME, name);
+  ToCopy.removeProperty(CData::Property::OBJECT_INDEX);
+  ToCopy.removeProperty(CData::OBJECT_UUID);
+  ToCopy.removeProperty(CData::OBJECT_REFERENCES);
+
+  CUndoData::ChangeSet Changes;
+  mpModelValue->applyData(ToCopy, Changes);
+
+  CUndoData UndoData(CUndoData::Type::INSERT, mpModelValue);
+  ListViews::addUndoMetaData(this, UndoData);
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getCN());
+  UndoData.addMetaDataProperty("Widget Object Name (after)", mpModelValue->getObjectName());
+
+  slotNotifyChanges(mpDataModel->recordData(UndoData));
 }
 
 void CQModelValue::slotBtnDelete()

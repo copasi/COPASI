@@ -210,7 +210,6 @@ public:
     , CrossSectionResult
     , Analytics
     , AnalyticsResult
-    , Oscillation
     , ParameterScan
     , Optimization
     , OptimizationResult
@@ -220,6 +219,7 @@ public:
     , SensitivitiesResult
     , LinearNoiseApproximation
     , LinearNoiseApproximationResult
+    , Oscillation
     , OutputSpecifications
     , Plots
     , PlotDetail
@@ -234,8 +234,6 @@ public:
 
   static const CEnumAnnotation< std::string, WidgetType > WidgetName;
 
-  static const CEnumAnnotation< size_t, WidgetType > WidgetId;
-
   DataModelGUI * getDataModelGUI();
   CDataModel * getDataModel();
 
@@ -246,7 +244,7 @@ public:
   void updateMIRIAMResourceContents();
   void commit();
 
-  void switchToOtherWidget(const WidgetType & id, const CCommonName & cn);
+  void switchToOtherWidget(const WidgetType & id, const CCommonName & cn, const int & tabIndex = -1);
 
   WidgetType getCurrentItemId();
   CopasiWidget* findWidgetFromId(const WidgetType & id) const;
@@ -260,7 +258,8 @@ public:
    */
   void clearCurrentWidget();
 
-  const std::string& getCurrentItemKey() const;
+  const CCommonName & getCurrentItemCN() const;
+  const CCommonName & getCurrentItemRegisteredCN() const;
 
   //TODO these are convenience methods used by SliderDialog. They should be
   //replaced by something more generic.
@@ -283,6 +282,7 @@ public:
 
 signals:
   void signalFolderChanged(const QModelIndex & index);
+  void signalNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   void signalResetCache();
 
 private:
@@ -296,7 +296,7 @@ public slots:
 private slots:
   bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   void slotSort(const QModelIndex & index1, const QModelIndex & index2);
-  void slotSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn);
+  void slotSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn, int tabIndex);
 
 private:
   bool updateCurrentWidget(ObjectType objectType, Action action, const CCommonName & cn);
@@ -312,7 +312,8 @@ private:
   QSortFilterProxyModel * mpTreeSortDM;
   CMathModel *mpMathModel;
   CopasiWidget* mpCurrentWidget;
-  CRegisteredCommonName mCurrentItemCN;
+  CCommonName mCurrentItemCN;
+  CRegisteredCommonName mCurrentItemRegisteredCN;
 
   //the widgets
   CQBrowserPane *mpTreeView;

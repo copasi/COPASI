@@ -27,6 +27,7 @@
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "function/CFunction.h"
+#include "copasi/model/CMetab.h"
 #include "UI/CQCompartment.h"
 #include "UI/CQSpeciesDetail.h"
 #include "UI/ReactionsWidget1.h"
@@ -189,6 +190,11 @@ void CQTabWidget::selectTab(int index) const
   mpTabWidget->setCurrentIndex(index);
 }
 
+int CQTabWidget::getSelectedTab() const
+{
+  return mpTabWidget->currentIndex();
+}
+
 void CQTabWidget::load()
 {
   if (mpObject != NULL)
@@ -279,6 +285,12 @@ bool CQTabWidget::save()
           CUndoData UndoData(CUndoData::Type::CHANGE, mpObject->toData());
           UndoData.addProperty(CData::OBJECT_NAME, mpObject->getObjectName(), NewName);
           ListViews::addUndoMetaData(this, UndoData);
+          UndoData.addMetaDataProperty("Widget Object CN (after)", mpObject->getCN());
+
+          if (dynamic_cast< CMetab * >(mpObject))
+            UndoData.addMetaDataProperty("Widget Object Name (after)", mpObject->getObjectName() + "{" + CCommonName::compartmentNameFromCN(mpObject->getCN()) + "}");
+          else
+            UndoData.addMetaDataProperty("Widget Object Name (after)", mpObject->getObjectName());
 
           slotNotifyChanges(mpDataModel->applyData(UndoData));
         }
@@ -333,7 +345,7 @@ void CQTabWidget::slotBtnCopy()
 
   mIgnoreLeave = true;
 
-  // CQCompartments and CQSpecies have copy options, use CModelExpansion, and do their own switching.
+  // CQCompartments, CQSpeciesDetail, and ReactionsWidget1 have copy options, use CModelExpansion, and do their own switching.
   if (QString(mPages[0]->metaObject()->className()) == "CQCompartment")
     {
       CQCompartment * pQCompartment = dynamic_cast< CQCompartment * >(mPages[0]);
@@ -349,11 +361,13 @@ void CQTabWidget::slotBtnCopy()
       ReactionsWidget1 * pReactionsWidget1 = dynamic_cast< ReactionsWidget1 * >(mPages[0]);
       pReactionsWidget1->copy();
     }
-  else if (QString(mPages[0]->metaObject()->className()) == "CQUnitDetail")
+  else if (QString(mPages[0]->metaObject()->className()) == "CQUnitDetail" ||
+           QString(mPages[0]->metaObject()->className()) == "CQModelValue" ||
+           QString(mPages[0]->metaObject()->className()) == "CQEventWidget1")
     {
       emit copyClicked();
     }
-  else
+  else // Old Style Copy
     {
       emit copyClicked();
       emit newClicked();

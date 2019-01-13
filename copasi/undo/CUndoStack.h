@@ -42,7 +42,11 @@ public:
   const_iterator begin() const;
   const_iterator end() const;
 
-  const CUndoData & getLastExecutedData() const;
+  /**
+   * Retrieve the last executed data and indicated whether it was a redo
+   * @return std::pair< const CUndoData &, bool > lastExecutedData
+   */
+  std::pair< const CUndoData *, bool > getLastExecution() const;
 
   bool canUndo() const;
   bool canRedo() const;

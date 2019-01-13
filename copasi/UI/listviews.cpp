@@ -217,7 +217,6 @@ const CEnumAnnotation< std::string, ListViews::WidgetType > ListViews::WidgetNam
   , "Cross Section Result"
   , "Analytics"
   , "Analytics Result"
-  , "Oscillation"
   , "Parameter Scan"
   , "Optimization"
   , "Optimization Result"
@@ -227,6 +226,7 @@ const CEnumAnnotation< std::string, ListViews::WidgetType > ListViews::WidgetNam
   , "Sensitivities Result"
   , "Linear Noise Approximation"
   , "Linear Noise Approximation Result"
+  , "Oscillation"
   , "Time Course Sensitivities"
   , "Time Course Sensitivities Result"
   , "Output Specifications"
@@ -238,74 +238,6 @@ const CEnumAnnotation< std::string, ListViews::WidgetType > ListViews::WidgetNam
   , "Function Detail"
   , "Units"
   , "Unit Detail"
-});
-
-// static
-const CEnumAnnotation< size_t, ListViews::WidgetType > ListViews::WidgetId(
-{
-  C_INVALID_INDEX // NotFound
-  , 0 // COPASI
-  , 1 // Model
-  , 11 // Biochemical
-  , 111 // Compartments
-  , C_INVALID_INDEX // CompartmentDetail
-  , 112 // Species
-  , C_INVALID_INDEX // SpeciesDetail
-  , 114 // Reactions
-  , C_INVALID_INDEX // ReactionDetail
-  , 115 // GlobalQuantities
-  , C_INVALID_INDEX // GlobalQuantityDetail
-  , 116 // Events
-  , C_INVALID_INDEX // EventDetail
-  , 118 // ParameterOverview
-  , 119  // ParameterSets
-  , C_INVALID_INDEX // ParameterSetDetail
-  , 12 // Mathematical
-  , 126 // DifferentialEquations
-  , 127 // Matrices
-  , 128 // UpdateOrder
-  , 13 // Diagrams
-  , 2 // Tasks
-  , 21 // SteadyState
-  , 211 // SteadyStateResult
-  , 22  // StoichiometricAnalysis
-  , 221 // ElementaryModes
-  , 2211 // ElementaryModesResult
-  , 222 // MassConservation
-  , 2221 // MassConservationResult
-  , 23 // TimeCourse
-  , 231 // TimeCourseResult
-  , 24 // MetabolicControlAnalysis
-  , 241 // MetabolicControlAnalysisResult
-  , 26 // LyapunovExponents
-  , 261 // LyapunovExponentsResult
-  , 27 // TimeScaleSeparationAnalysis
-  , 271 // TimeScaleSeparationAnalysisResult
-  , 28 // CrossSection
-  , 281 // CrossSectionResult
-  , 29 // Analytics
-  , 291 // AnalyticsResult
-  , 36 // Oscillation
-  , 31 // ParameterScan
-  , 32 // Optimization
-  , 321 // OptimizationResult
-  , 33 // ParameterEstimation
-  , 331 // ParameterEstimationResult
-  , 34 // Sensitivities
-  , 341 // SensitivitiesResult
-  , 35 // LinearNoiseApproximation
-  , 351 // LinearNoiseApproximationResult
-  , 37 // TimeCourseSensitivities
-  , 371 // TimeCourseSensitivitiesResult
-  , 4 // OutputSpecifications
-  , 42 // Plots
-  , C_INVALID_INDEX // PlotDetail
-  , 43 // ReportTemplates
-  , C_INVALID_INDEX // ReportTemplateDetail
-  , 5 // Functions
-  , C_INVALID_INDEX // FunctionDetail
-  , 6 // Units
-  , C_INVALID_INDEX // UnitDetail
 });
 
 // static
@@ -342,8 +274,28 @@ void ListViews::addUndoMetaData(QObject * qObject, CUndoData & undoData)
 
   if (pListView != NULL)
     {
-      undoData.addMetaDataProperty("WidgetName", ListViews::WidgetName[pListView->getCurrentItemId()]);
-      undoData.addMetaDataProperty("CN", pListView->getCurrentWidget()->getObject()->getCN());
+      undoData.addMetaDataProperty("Widget Type", ListViews::WidgetName[pListView->getCurrentItemId()]);
+
+      CQTabWidget *pTabWidget = dynamic_cast<CQTabWidget *>(pListView->getCurrentWidget());
+
+      if (pTabWidget != NULL)
+        {
+          undoData.addMetaDataProperty("Widget Tab", pTabWidget->getSelectedTab());
+        }
+
+      undoData.addMetaDataProperty("Widget Object CN (before)", pListView->getCurrentItemCN());
+      undoData.addMetaDataProperty("Widget Object CN (after)", pListView->getCurrentItemRegisteredCN());
+
+      if (pListView->getCurrentItemId() != WidgetType::SpeciesDetail)
+        {
+          undoData.addMetaDataProperty("Widget Object Name (before)", CCommonName::nameFromCN(pListView->getCurrentItemCN()));
+          undoData.addMetaDataProperty("Widget Object Name (after)", CCommonName::nameFromCN(pListView->getCurrentItemRegisteredCN()));
+        }
+      else
+        {
+          undoData.addMetaDataProperty("Widget Object Name (before)", CCommonName::nameFromCN(pListView->getCurrentItemCN()) + "{" + CCommonName::compartmentNameFromCN(pListView->getCurrentItemCN()) + "}");
+          undoData.addMetaDataProperty("Widget Object Name (after)", CCommonName::nameFromCN(pListView->getCurrentItemRegisteredCN()) + "{" + CCommonName::compartmentNameFromCN(pListView->getCurrentItemRegisteredCN()) + "}");
+        }
     }
 }
 
@@ -373,6 +325,7 @@ ListViews::ListViews(QWidget *parent,
   mpMathModel(NULL),
   mpCurrentWidget(NULL),
   mCurrentItemCN(),
+  mCurrentItemRegisteredCN(),
   mpCMCAResultWidget(NULL),
   mpCQMCAWidget(NULL),
   mpCQLNAWidget(NULL),
@@ -476,6 +429,7 @@ ListViews::ListViews(QWidget *parent,
 
   mpCurrentWidget = defaultWidget; // keeps track of the mpCurrentWidget in use
   mCurrentItemCN.clear();
+  mCurrentItemRegisteredCN.clear();
   mpStackedWidget->setCurrentWidget(defaultWidget);
 
   QList<int> Sizes = sizes();
@@ -488,8 +442,8 @@ ListViews::ListViews(QWidget *parent,
   // establishes the communication between the mpTreeView clicked and the routine called....
   connect(mpTreeDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(slotSort(const QModelIndex &, const QModelIndex &)));
-  connect(mpDataModelGUI, SIGNAL(signalSwitchWidget(ListViews::WidgetType, const CCommonName &)),
-          this, SLOT(slotSwitchWidget(ListViews::WidgetType, const CCommonName &)));
+  connect(mpDataModelGUI, SIGNAL(signalSwitchWidget(ListViews::WidgetType, const CCommonName &, int)),
+          this, SLOT(slotSwitchWidget(ListViews::WidgetType, const CCommonName &, int)));
 }
 
 ListViews::~ListViews()
@@ -513,9 +467,6 @@ void ListViews::resetCache()
 
   connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
           this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
-
-  connect(mpDataModelGUI, SIGNAL(signalSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn)),
-          this, SLOT(slotSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn)));
 }
 
 /***********ListViews::ConstructNodeWidgets()---------------------------->
@@ -1234,8 +1185,12 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
   const CCommonName & itemCN = mpTreeDM->getCNFromIndex(index);
 
-  if (newWidget == mpCurrentWidget)
-    if (itemCN == mCurrentItemCN) return; //do nothing
+  if (newWidget == mpCurrentWidget &&
+      itemCN == mCurrentItemRegisteredCN)
+    {
+      mCurrentItemCN = mCurrentItemRegisteredCN;
+      return; //do nothing
+    }
 
   // leave old widget
   if (mpCurrentWidget)
@@ -1262,6 +1217,7 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
     {newWidget = defaultWidget;}
 
   mCurrentItemCN = itemCN;
+  mCurrentItemRegisteredCN = itemCN;
 
   // we emit the signal after the old widget has saved
   // the changes
@@ -1273,16 +1229,26 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
   mpTreeView->scrollTo(index);
 }
 
-void ListViews::switchToOtherWidget(const ListViews::WidgetType & id, const CCommonName & cn)
+void ListViews::switchToOtherWidget(const ListViews::WidgetType & id, const CCommonName & cn, const int & tabIndex)
 {
   // do not switch if we are there already
-  if (!cn.empty() && cn == mCurrentItemCN)
-    return;
+  if (!cn.empty() &&
+      cn == mCurrentItemRegisteredCN)
+    {
+      mCurrentItemCN = mCurrentItemRegisteredCN;
+      return;
+    }
 
   QModelIndex Index = mpTreeDM->index(id, cn);
   QModelIndex SortIndex = mpTreeSortDM->mapFromSource(Index);
 
   mpTreeView->setCurrentIndex(SortIndex);
+
+  CQTabWidget *pTabWidget = dynamic_cast<CQTabWidget *>(mpCurrentWidget);
+
+  if (pTabWidget != NULL &&
+      tabIndex != -1)
+    pTabWidget->selectTab(tabIndex);
 }
 
 //********** some methods to store and restore the state of the listview ****
@@ -1325,6 +1291,7 @@ bool ListViews::slotNotify(ObjectType objectType, Action action, const CCommonNa
   if (!updateCurrentWidget(objectType, action, cn)) success = false;
 
   notifyChildWidgets(objectType, action, cn);
+  emit signalNotify(objectType, action, cn);
 
   return success;
 }
@@ -1334,9 +1301,9 @@ void ListViews::slotSort(const QModelIndex & /* index1 */, const QModelIndex & /
   mpTreeView->sortByColumn(0, Qt::AscendingOrder);
 }
 
-void ListViews::slotSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn)
+void ListViews::slotSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn, int tabIndex)
 {
-  switchToOtherWidget(widgetType, cn);
+  switchToOtherWidget(widgetType, cn, tabIndex);
 }
 
 bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const CCommonName & cn)
@@ -1357,9 +1324,14 @@ void ListViews::clearCurrentWidget()
   mpCurrentWidget = NULL;
 }
 
-const std::string& ListViews::getCurrentItemKey() const
+const CCommonName & ListViews::getCurrentItemCN() const
 {
   return mCurrentItemCN;
+}
+
+const CCommonName & ListViews::getCurrentItemRegisteredCN() const
+{
+  return mCurrentItemRegisteredCN;
 }
 
 void ListViews::commit()

@@ -109,6 +109,9 @@ void CQCompartment::slotBtnNew()
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpCompartment);
   ListViews::addUndoMetaData(this, UndoData);
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpCompartment->getCN());
+  UndoData.addMetaDataProperty("Widget Object Name (after)", mpCompartment->getObjectName());
+
   slotNotifyChanges(mpDataModel->recordData(UndoData));
 
   mpListView->switchToOtherWidget(ListViews::WidgetType::CompartmentDetail, mpCompartment->getCN());
@@ -204,7 +207,8 @@ void CQCompartment::copy()
       const CDataObject * pObject = origToCopyMappings.getDuplicateFromObject(mpObject);
 
       ListViews::addUndoMetaData(this, UndoData);
-      UndoData.addMetaDataProperty("CN", pObject->getCN());
+      UndoData.addMetaDataProperty("Widget Object CN (after)", pObject->getCN());
+      UndoData.addMetaDataProperty("Widget Object Name (after)", pObject->getObjectName());
 
       slotNotifyChanges(mpDataModel->recordData(UndoData));
 

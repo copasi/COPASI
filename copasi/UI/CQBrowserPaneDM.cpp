@@ -18,7 +18,6 @@
 #include "copasi.h"
 
 #include "CQBrowserPaneDM.h"
-#include "DataModel.txt.h"
 #include "qtUtilities.h"
 #include "DataModelGUI.h"
 #include <QMessageBox>
@@ -38,6 +37,73 @@
 #include "resourcesUI/CQIconResource.h"
 #include "UI/copasiui3window.h"
 
+// static
+const CQBrowserPaneDM::sNodeInfo CQBrowserPaneDM::TreeInfo[] =
+{
+  {ListViews::WidgetType::COPASI, ListViews::WidgetType::Model, "Model"},
+  {ListViews::WidgetType::Model, ListViews::WidgetType::Biochemical, "Biochemical"},
+  {ListViews::WidgetType::Biochemical, ListViews::WidgetType::Compartments, "Compartments"},
+  {ListViews::WidgetType::Biochemical, ListViews::WidgetType::Species, "Species"},
+  {ListViews::WidgetType::Biochemical, ListViews::WidgetType::Reactions, "Reactions"},
+  {ListViews::WidgetType::Biochemical, ListViews::WidgetType::GlobalQuantities, "Global Quantities"},
+  {ListViews::WidgetType::Biochemical, ListViews::WidgetType::Events, "Events"},
+  {ListViews::WidgetType::Biochemical, ListViews::WidgetType::ParameterOverview, "Parameter Overview"},
+  {ListViews::WidgetType::Biochemical, ListViews::WidgetType::ParameterSets, "Parameter Sets"},
+  {ListViews::WidgetType::Model, ListViews::WidgetType::Mathematical, "Mathematical"},
+#ifdef HAVE_MML
+#endif // HAVE_MML
+  {ListViews::WidgetType::Mathematical, ListViews::WidgetType::DifferentialEquations, "Differential Equations"},
+  {ListViews::WidgetType::Mathematical, ListViews::WidgetType::Matrices, "Matrices"},
+#ifdef COPASI_DEBUG
+  {ListViews::WidgetType::Mathematical, ListViews::WidgetType::UpdateOrder, "Update Order"},
+  {ListViews::WidgetType::Model, ListViews::WidgetType::Diagrams, "Diagrams"},
+#endif // COPASI_DEBUG
+  {ListViews::WidgetType::COPASI, ListViews::WidgetType::Tasks, "Tasks"},
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::SteadyState, "Steady-State"},
+  {ListViews::WidgetType::SteadyState, ListViews::WidgetType::SteadyStateResult, "Result"},
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::StoichiometricAnalysis, "Stoichiometric Analysis"},
+  {ListViews::WidgetType::StoichiometricAnalysis, ListViews::WidgetType::ElementaryModes, "Elementary Modes"},
+  {ListViews::WidgetType::ElementaryModes, ListViews::WidgetType::ElementaryModesResult, "Result"},
+  {ListViews::WidgetType::StoichiometricAnalysis, ListViews::WidgetType::MassConservation, "Mass Conservation"},
+  {ListViews::WidgetType::MassConservation, ListViews::WidgetType::MassConservationResult, "Result"},
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::TimeCourse, "Time Course"},
+  {ListViews::WidgetType::TimeCourse, ListViews::WidgetType::TimeCourseResult, "Result"},
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::MetabolicControlAnalysis, "Metabolic Control Analysis"},
+  {ListViews::WidgetType::MetabolicControlAnalysis, ListViews::WidgetType::MetabolicControlAnalysisResult, "Result"},
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::LyapunovExponents, "Lyapunov Exponents"},
+  {ListViews::WidgetType::LyapunovExponents, ListViews::WidgetType::LyapunovExponentsResult, "Result"},
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::TimeScaleSeparationAnalysis, "Time Scale Separation Analysis"},
+  {ListViews::WidgetType::TimeScaleSeparationAnalysis, ListViews::WidgetType::TimeScaleSeparationAnalysisResult, "Result"},
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::CrossSection, "Cross Section"},
+  {ListViews::WidgetType::CrossSection, ListViews::WidgetType::CrossSectionResult, "Result"},
+#ifdef WITH_ANALYTICS
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::Analytics, "Analytics"},
+  {ListViews::WidgetType::Analytics, ListViews::WidgetType::AnalyticsResult, "Result"},
+#endif // WITH_ANALYTICS
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::ParameterScan, "Parameter Scan"},
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::Optimization, "Optimization"},
+  {ListViews::WidgetType::Optimization, ListViews::WidgetType::OptimizationResult, "Result"},
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::ParameterEstimation, "Parameter Estimation"},
+  {ListViews::WidgetType::ParameterEstimation, ListViews::WidgetType::ParameterEstimationResult, "Result"},
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::Sensitivities, "Sensitivities"},
+  {ListViews::WidgetType::Sensitivities, ListViews::WidgetType::SensitivitiesResult, "Result"},
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::LinearNoiseApproximation, "Linear Noise Approximation"},
+  {ListViews::WidgetType::LinearNoiseApproximation, ListViews::WidgetType::LinearNoiseApproximationResult, "Result"},
+#ifdef COPASI_NONLIN_DYN_OSCILLATION
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::Oscillation, "Oscillation "},
+#endif
+#ifdef WITH_TIME_SENS
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::TimeCourseSensitivities, "Time Course Sensitivities"},
+  {ListViews::WidgetType::TimeCourseSensitivities, ListViews::WidgetType::TimeCourseSensitivitiesResult, "Result"},
+#endif // WITH_TIME_SENS
+  {ListViews::WidgetType::COPASI, ListViews::WidgetType::OutputSpecifications, "Output Specifications"},
+  {ListViews::WidgetType::OutputSpecifications, ListViews::WidgetType::Plots, "Plots"},
+  {ListViews::WidgetType::OutputSpecifications, ListViews::WidgetType::ReportTemplates, "Report Templates"},
+  {ListViews::WidgetType::COPASI, ListViews::WidgetType::Functions, "Functions"},
+  {ListViews::WidgetType::COPASI, ListViews::WidgetType::Units, "Units"},
+  {ListViews::WidgetType::NotFound, ListViews::WidgetType::NotFound, ""}
+};
+
 CQBrowserPaneDM::CQBrowserPaneDM(QObject * pParent):
   QAbstractItemModel(pParent),
   mpRoot(NULL),
@@ -52,7 +118,22 @@ CQBrowserPaneDM::CQBrowserPaneDM(QObject * pParent):
 {
   createStaticDM();
 
+  ListViews * pListView = NULL;
+
+  while (pParent != NULL &&
+         (pListView = dynamic_cast< ListViews * >(pParent)) == NULL)
+    {
+      pParent = pParent->parent();
+    }
+
+  if (pListView)
+    {
+      connect(pListView, SIGNAL(signalNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
+              this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
+    }
+
   connect(dynamic_cast<CopasiUI3Window *>(CopasiUI3Window::getMainWindow()), SIGNAL(signalPreferenceUpdated()), this, SLOT(slotRefreshValidityFilters()));
+
   slotRefreshValidityFilters();
 }
 
@@ -320,7 +401,7 @@ void CQBrowserPaneDM::add(const ListViews::WidgetType & id,
     }
 
   beginInsertRows(index(pParent), row, row);
-  CNode * pNode = createNode(id, cn, displayRole, pParent);
+  CNode * pNode = createNode(id, cn, displayRole, 0, pParent);
   endInsertRows();
 
   if (mEmitDataChanged)
@@ -349,6 +430,7 @@ void CQBrowserPaneDM::setCopasiDM(const CDataModel * pDataModel)
 
 void CQBrowserPaneDM::setGuiDM(const DataModelGUI * pDataModel)
 {
+  /*
   if (mpGuiDM)
     {
       disconnect(mpGuiDM, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
@@ -362,6 +444,7 @@ void CQBrowserPaneDM::setGuiDM(const DataModelGUI * pDataModel)
       connect(mpGuiDM, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
               this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
     }
+  */
 }
 
 void CQBrowserPaneDM::load()
@@ -552,7 +635,7 @@ void CQBrowserPaneDM::load(const ListViews::WidgetType & id)
               DisplayRole = FROM_UTF8(it->getObjectName());
             }
 
-          createNode(ChildId, it->getCN(), DisplayRole, pParent);
+          createNode(ChildId, it->getCN(), DisplayRole, 0, pParent);
         }
 
       endInsertRows();
@@ -568,6 +651,11 @@ void CQBrowserPaneDM::load(const ListViews::WidgetType & id)
 
 bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
+  if (mpCopasiDM == NULL)
+    {
+      return false;
+    }
+
   if (cn == "")
     {
       // Load is only reporting actual changes.
@@ -793,9 +881,10 @@ CQBrowserPaneDM::CNode * CQBrowserPaneDM::nodeFromIndex(const QModelIndex & inde
 CQBrowserPaneDM::CNode * CQBrowserPaneDM::createNode(const ListViews::WidgetType & id,
     const CCommonName & cn,
     const QString & displayRole,
+    const size_t & sortOrder,
     CNode * pParent)
 {
-  CNode * pNode = new CNode(id, cn, displayRole, pParent);
+  CNode * pNode = new CNode(id, cn, displayRole, sortOrder, pParent);
 
   if (!cn.empty())
     {
@@ -844,43 +933,16 @@ void CQBrowserPaneDM::destroyNode(CNode * pNode)
 
 void CQBrowserPaneDM::createStaticDM()
 {
-  mpRoot = createNode(ListViews::WidgetType::COPASI, std::string(), "COPASI", NULL);
+  size_t SortKey = 0;
+  mpRoot = createNode(ListViews::WidgetType::COPASI, std::string(), "COPASI", SortKey++, NULL);
 
-  std::stringstream in;
-  in.str(DataModeltxt);
-
-  std::string str1;
-  std::string delimiter("\x0a\x0d");
-  char c;
-
-  while (!in.eof())
+  for (const sNodeInfo * pNodeInfo = TreeInfo; pNodeInfo->parent != ListViews::WidgetType::NotFound; ++pNodeInfo)
     {
-      str1 = "";
-
-      while (!in.fail())
-        {
-          in.get(c);
-
-          if (delimiter.find(c) != std::string::npos) break;
-
-          str1 += c;
-        }
-
-      if (str1 == "") break;
-
-      QString data(FROM_UTF8(str1));
-
-      int first = data.indexOf(':');
-      int second = data.indexOf(':', first + 1);
-      ListViews::WidgetType ParentId = ListViews::WidgetId.toEnum(data.mid(0, first).toUInt());
-      ListViews::WidgetType MyId = ListViews::WidgetId.toEnum(data.mid(first + 1, second - first - 1).toUInt());
-      QString str = data.mid(second + 1, data.length() - second - 1);
-
       CNode * pParent = NULL;
 
-      if (ParentId == ListViews::WidgetType::COPASI)
+      if (pNodeInfo->parent == ListViews::WidgetType::COPASI)
         {
-          switch (MyId)
+          switch (pNodeInfo->node)
             {
               case ListViews::WidgetType::Model:
                 pParent = (mFlags & Model) ? mpRoot : NULL;
@@ -905,12 +967,12 @@ void CQBrowserPaneDM::createStaticDM()
         }
       else
         {
-          pParent = this->findNodeFromId(ParentId);
+          pParent = this->findNodeFromId(pNodeInfo->parent);
         }
 
       if (pParent != NULL)
         {
-          createNode(MyId, std::string(), str, pParent);
+          createNode(pNodeInfo->node, std::string(), FROM_UTF8(pNodeInfo->title), SortKey++, pParent);
         }
     }
 }
@@ -1007,12 +1069,14 @@ CQBrowserPaneDM::CNode::CNode():
 CQBrowserPaneDM::CNode::CNode(const ListViews::WidgetType & id,
                               const CCommonName & cn,
                               const QString & displayRole,
+                              const size_t & sortOrder,
                               CNode * pParent):
   CCopasiNode< CQBrowserPaneDM::SData >(pParent)
 {
   mData.mId = id;
   mData.mCN = cn;
   mData.mDisplayRole = displayRole;
+  mData.mSortOrder = sortOrder;
 
   if (pParent != NULL)
     {
@@ -1040,6 +1104,8 @@ const QString & CQBrowserPaneDM::CNode::getDisplayRole() const
 
 QString CQBrowserPaneDM::CNode::getSortRole() const
 {
+  QString tmp("%1");
+
   switch (mData.mId)
     {
       case ListViews::WidgetType::FunctionDetail:
@@ -1056,7 +1122,7 @@ QString CQBrowserPaneDM::CNode::getSortRole() const
         break;
 
       default:
-        return QString::number(ListViews::WidgetId[mData.mId]);
+        return QString("%1").arg(mData.mSortOrder, 4, 10, QChar('0'));
         break;
     }
 
@@ -1110,8 +1176,8 @@ std::ostream & operator<<(std::ostream &os, const CQBrowserPaneDM::CNode & n)
   //os << "   mChemicalEquation:          " << d.getChemicalEquation() << std::endl;
   //os << "   mChemicalEquationConverted: " << d.getChemicalEquationConverted() << std::endl;
 
-  os << "   mId:          " << ListViews::WidgetId[n.mData.mId] << std::endl;
-  os << "   mCN:         " << n.mData.mCN << std::endl;
+  os << "   mId:          " << (size_t) n.mData.mId << std::endl;
+  os << "   mCN:          " << n.mData.mCN << std::endl;
   os << "   mDisplayRole: " << TO_UTF8(n.mData.mDisplayRole) << std::endl;
   return os;
 }

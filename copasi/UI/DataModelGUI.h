@@ -163,7 +163,7 @@ private:
 signals:
   void updateCompleteView();
   void notifyView(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
-  void signalSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn);
+  void signalSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn, int tabIndex);
   void finished(bool success);
 
 private:

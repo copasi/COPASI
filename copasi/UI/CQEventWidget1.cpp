@@ -95,8 +95,6 @@ void CQEventWidget1::slotBtnDelete()
 /// Slot to create a new event; activated whenever the New button is clicked
 void CQEventWidget1::slotBtnNew()
 {
-  leaveProtected();
-
   std::string name = "event";
   int i = 1;
 
@@ -111,15 +109,41 @@ void CQEventWidget1::slotBtnNew()
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpEvent);
   ListViews::addUndoMetaData(this, UndoData);
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpEvent->getCN());
+  UndoData.addMetaDataProperty("Widget Object Name (after)", mpEvent->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
-
-  mpListView->switchToOtherWidget(ListViews::WidgetType::EventDetail, mpEvent->getCN());
 }
 
 void CQEventWidget1::slotBtnCopy()
 {
-  mObjectCNToCopy = mObjectCN;
+  std::string name = "event";
+  int i = 1;
+
+  assert(mpDataModel != NULL);
+
+  while (!(mpEvent = mpDataModel->getModel()->createEvent(name)))
+    {
+      i++;
+      name = "event";
+      name += TO_UTF8(QString::number(i));
+    }
+
+  CData ToCopy = mpObject->toData();
+  ToCopy.addProperty(CData::Property::OBJECT_NAME, name);
+  ToCopy.removeProperty(CData::Property::OBJECT_INDEX);
+  ToCopy.removeProperty(CData::OBJECT_UUID);
+  ToCopy.removeProperty(CData::OBJECT_REFERENCES);
+
+  CUndoData::ChangeSet Changes;
+  mpEvent->applyData(ToCopy, Changes);
+
+  CUndoData UndoData(CUndoData::Type::INSERT, mpEvent);
+  ListViews::addUndoMetaData(this, UndoData);
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpEvent->getCN());
+  UndoData.addMetaDataProperty("Widget Object Name (after)", mpEvent->getObjectName());
+
+  slotNotifyChanges(mpDataModel->recordData(UndoData));
 }
 
 /*! */
