@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,7 +45,9 @@ CQUndoDM::CQUndoDM(QObject *parent, CDataModel * pDataModel, QTableView * pTable
   mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_REFERENCE]);
   mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_REFERENCE_CN]);
   mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_REFERENCE_INDEX]);
-  mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_POINTER]);
+  mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_HASH]);
+  mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_UUID]);
+  mIgnoredProperties.insert(CData::PropertyName[CData::NOTES]);
 
   assert(mpUndoStack != NULL);
 }
@@ -114,13 +121,32 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
         std::stringstream  Result;
         bool first = true;
 
+        const CData & Data = (UndoData.getType() != CUndoData::Type::REMOVE) ? UndoData.getNewData() : UndoData.getOldData();
+
         for (; it != end; ++it)
           {
-            if (!first)
-              Result << std::endl;
+            const CDataValue & Property = Data.getProperty(*it);
 
-            Result << *it;
-            first = false;
+            switch (Property.getType())
+              {
+                case CDataValue::Type::DOUBLE:
+                case CDataValue::Type::INT:
+                case CDataValue::Type::UINT:
+                case CDataValue::Type::BOOL:
+                case CDataValue::Type::STRING:
+                  if (!first) Result << std::endl;
+
+                  Result << *it;
+                  first = false;
+                  break;
+
+                case CDataValue::Type::DATA:
+                case CDataValue::Type::DATA_VALUES:
+                case CDataValue::Type::DATA_VECTOR:
+                case CDataValue::Type::VOID_POINTER:
+                case CDataValue::Type::INVALID:
+                  break;
+              }
           }
 
         return QVariant(FROM_UTF8(Result.str()));
@@ -143,10 +169,28 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
 
             for (; it != end; ++it)
               {
-                if (!first) Result << std::endl;
+                const CDataValue & Property = Data.getProperty(*it);
 
-                Result << Data.getProperty(*it);
-                first = false;
+                switch (Property.getType())
+                  {
+                    case CDataValue::Type::DOUBLE:
+                    case CDataValue::Type::INT:
+                    case CDataValue::Type::UINT:
+                    case CDataValue::Type::BOOL:
+                    case CDataValue::Type::STRING:
+                      if (!first) Result << std::endl;
+
+                      Result << Property;
+                      first = false;
+                      break;
+
+                    case CDataValue::Type::DATA:
+                    case CDataValue::Type::DATA_VALUES:
+                    case CDataValue::Type::DATA_VECTOR:
+                    case CDataValue::Type::VOID_POINTER:
+                    case CDataValue::Type::INVALID:
+                      break;
+                  }
               }
 
             return QVariant(FROM_UTF8(Result.str()));
@@ -169,10 +213,28 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
 
             for (; it != end; ++it)
               {
-                if (!first) Result << std::endl;
+                const CDataValue & Property = Data.getProperty(*it);
 
-                Result << Data.getProperty(*it);
-                first = false;
+                switch (Property.getType())
+                  {
+                    case CDataValue::Type::DOUBLE:
+                    case CDataValue::Type::INT:
+                    case CDataValue::Type::UINT:
+                    case CDataValue::Type::BOOL:
+                    case CDataValue::Type::STRING:
+                      if (!first) Result << std::endl;
+
+                      Result << Property;
+                      first = false;
+                      break;
+
+                    case CDataValue::Type::DATA:
+                    case CDataValue::Type::DATA_VALUES:
+                    case CDataValue::Type::DATA_VECTOR:
+                    case CDataValue::Type::VOID_POINTER:
+                    case CDataValue::Type::INVALID:
+                      break;
+                  }
               }
 
             return QVariant(FROM_UTF8(Result.str()));
@@ -180,22 +242,24 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
 
         break;
 
-      case ColumnType::Author:
+        /*
+        case ColumnType::Author:
         // We need to resolve this for provenance
-      {
+        {
         QVariant Value;
         Value.setValue(UndoData.getAuthorID());
         return Value;
-      }
-      break;
+        }
+        break;
 
-      case ColumnType::Time:
-      {
+        case ColumnType::Time:
+        {
         QVariant Value;
         Value.setValue(UndoData.getTime());
         return Value;
-      }
-      break;
+        }
+        break;
+        */
     }
 
   return QVariant();
