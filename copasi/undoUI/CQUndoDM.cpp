@@ -45,6 +45,7 @@ CQUndoDM::CQUndoDM(QObject *parent, CDataModel * pDataModel, QTableView * pTable
   mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_REFERENCE]);
   mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_REFERENCE_CN]);
   mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_REFERENCE_INDEX]);
+  mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_POINTER]);
   mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_HASH]);
   mIgnoredProperties.insert(CData::PropertyName[CData::OBJECT_UUID]);
   mIgnoredProperties.insert(CData::PropertyName[CData::NOTES]);
@@ -91,6 +92,7 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
       static_cast< int >(ColumnType::__SIZE) <= index.column()) return QVariant();
 
   const CUndoData & UndoData = mpUndoStack->operator [](index.row());
+  const CData & MetaData = UndoData.getMetaData();
 
   switch (static_cast< ColumnType >(index.column()))
     {
@@ -100,11 +102,16 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
         break;
 
       case ColumnType::ObjectType:
-        return QVariant(FROM_UTF8(UndoData.getObjectType()));
+        return QVariant(FROM_UTF8(MetaData.getProperty("Widget Type").toString()));
         break;
 
       case ColumnType::ObjectName:
-        return QVariant(FROM_UTF8(UndoData.getObjectDisplayName()));
+        if ((index.row() <= mpUndoStack->currentIndex() &&
+             mpUndoStack->currentIndex() != C_INVALID_INDEX))
+          return QVariant(FROM_UTF8(MetaData.getProperty("Widget Object Name (after)").toString()));
+        else
+          return QVariant(FROM_UTF8(MetaData.getProperty("Widget Object Name (before)").toString()));
+
         break;
 
       case ColumnType::Action:
@@ -123,6 +130,15 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
 
         const CData & Data = (UndoData.getType() != CUndoData::Type::REMOVE) ? UndoData.getNewData() : UndoData.getOldData();
 
+        std::string Prefix = Data.getProperty(CData::Property::OBJECT_TYPE).toString() + ": ";
+
+        if (Prefix == "BiologicalDescription: ")
+          Prefix = "Description: ";
+        else if (Prefix != "Creator: " &&
+                 Prefix != "Modification: " &&
+                 Prefix != "Reference: ")
+          Prefix.clear();
+
         for (; it != end; ++it)
           {
             const CDataValue & Property = Data.getProperty(*it);
@@ -136,7 +152,7 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
                 case CDataValue::Type::STRING:
                   if (!first) Result << std::endl;
 
-                  Result << *it;
+                  Result << Prefix << *it;
                   first = false;
                   break;
 
