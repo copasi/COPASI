@@ -64,6 +64,7 @@ bool bl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 const CTaskEnum::Method CTrajectoryTask::ValidMethods[] =
 {
   CTaskEnum::Method::deterministic,
+  CTaskEnum::Method::RADAU5,
   CTaskEnum::Method::stochastic,
   CTaskEnum::Method::directMethod,
   CTaskEnum::Method::tauLeap,

@@ -69,6 +69,7 @@
 // #include "trajectory/CExpRKMethod.h"
 #include "trajectory/CHybridMethodODE45.h"
 #include "trajectory/CLsodaMethod.h"
+#include "trajectory/CRadau5Method.h"
 #include "trajectory/CStochDirectMethod.h"
 // #include "trajectory/CStochMethod.h"
 #include "trajectory/CHybridNextReactionRKMethod.h"
@@ -176,7 +177,11 @@ CCopasiMethod * CCopasiMethod::createMethod(const CDataContainer * pParent,
       case CTaskEnum::Method::deterministic:
         pMethod = new CLsodaMethod(pParent, methodType, taskType);
         break;
-
+            
+      case CTaskEnum::Method::RADAU5:
+        pMethod = new CRadau5Method(pParent, methodType, taskType);
+        break;
+            
       case CTaskEnum::Method::directMethod:
         pMethod = new CStochDirectMethod(pParent, methodType, taskType);
         break;
