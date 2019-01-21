@@ -244,7 +244,12 @@ protected:
   CCore::CUpdateSequence mSeq1;
   CCore::CUpdateSequence mSeq2;
   CCore::CUpdateSequence mSeq3;
-
+  
+  ///some methods for doing debug output
+  static void printObjectSet(const CObjectInterface::ObjectSet & os);
+  static void printUpdateSeq(const CCore::CUpdateSequence & us);
+  
+  
 };
 
 #endif // COPASI_CTimeSensMethod
