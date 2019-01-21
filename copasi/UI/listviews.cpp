@@ -1076,11 +1076,11 @@ CopasiWidget* ListViews::findWidgetFromId(const ListViews::WidgetType & id) cons
 
 #ifdef WITH_TIME_SENS
 
-      case 37:
+      case ListViews::WidgetType::TimeCourseSensitivities:
         return timeSensWidget;
         break;
 
-      case 371:
+      case ListViews::WidgetType::TimeCourseSensitivitiesResult:
         return timeSensResultWidget;
         break;
 #endif // WITH_TIME_SENS

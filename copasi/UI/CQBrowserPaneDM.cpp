@@ -478,7 +478,7 @@ void CQBrowserPaneDM::load()
 #endif // WITH_ANALYTICS
 
 #ifdef WITH_TIME_SENS
-  updateNode(findNodeFromId(37), mpCopasiDM->getTaskList()->operator[]("Time-Course Sensitivities").getCN());
+  updateNode(findNodeFromId(ListViews::WidgetType::TimeCourseSensitivities), mpCopasiDM->getTaskList()->operator[]("Time-Course Sensitivities").getCN());
 #endif // WITH_TIME_SENS
 
   updateNode(findNodeFromId(ListViews::WidgetType::ParameterScan), mpCopasiDM->getTaskList()->operator[]("Scan").getCN());
