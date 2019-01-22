@@ -246,8 +246,8 @@ protected:
   CCore::CUpdateSequence mSeq3;
   
   ///some methods for doing debug output
-  static void printObjectSet(const CObjectInterface::ObjectSet & os);
-  static void printUpdateSeq(const CCore::CUpdateSequence & us);
+  static void printObjectSet(const std::string & s, const CObjectInterface::ObjectSet & os);
+  static void printUpdateSeq(const std::string & s, const CCore::CUpdateSequence & us);
   
   
 };

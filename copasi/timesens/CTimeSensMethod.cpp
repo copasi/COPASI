@@ -521,12 +521,15 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
   size_t Col;
   for (Col = 0; Col<mNumParameters; ++Col)
   {
+  
     const CMathObject* pMo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(Col)));
     //const CMathObject*  pMo = mpContainer->getMathObject(mpProblem->getParameterCN(Col)); //I do not know why this does not work...
     //const CMathObject * pMo = mpContainer->getMathObject(object*);
 
     if (pMo != NULL)
             {
+              //if (pMo->isInitialValue() && pMo->)
+              pMo = mpContainer->getMathObject ( pMo->getDataObject()->getObjectParent()->getValueObject());
               mParameterValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
               Changed.insert(pMo);
             }
@@ -536,7 +539,7 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
             }
   }
 
-  printObjectSet(Changed); //debug
+  printObjectSet("Parameters", Changed); //debug
   
   //generate an update sequence for calculate_dRate_dPar().
   //it should update the rates (RHS) after changes in the specified parameters
@@ -546,7 +549,8 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
   //TODO: this seems to work, but I have no idea if it is the correct and most efficient way to do it.
   //Also it may be more efficient if we create one update list for each parameter, and not a joint list for all
 
-  printUpdateSeq(mSeq1); //debug
+  printObjectSet("Simulation objects", mpContainer->getSimulationUpToDateObjects());
+  printUpdateSeq("seq1", mSeq1); //debug
   
   //we need a vector of Pointers to access the values of the assignment targets for which we calculate sensitivities
   mAssTargetValuePointers.resize(mNumAssTargets);
@@ -568,7 +572,7 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
             }
   }
 
-  printObjectSet(assTargets); //debug
+  printObjectSet("targets",assTargets); //debug
   
   //generate an update sequence for calculate_dAssignments_dPar().
   //it should update the assignment targets after changes in the specified parameters
@@ -577,7 +581,7 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
       Changed,  //the requested parameters
       assTargets); //the assignment targets
 
-  printUpdateSeq(mSeq2); //debug
+  printUpdateSeq("seq2",mSeq2); //debug
 
   
   //generate an update sequence for calculate_dAssignments_dState().
@@ -587,7 +591,7 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
       mpContainer->getStateObjects(reduced),  //the state variables
       assTargets); //the assignment targets
 
-  printUpdateSeq(mSeq3); //debug
+  printUpdateSeq("seq3",mSeq3); //debug
 
   
   //TODO: create update lists for the various other numerical derivatives calculations
@@ -596,17 +600,19 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
 
 
 //static
-void CTimeSensMethod::printObjectSet(const CObjectInterface::ObjectSet & os)
+void CTimeSensMethod::printObjectSet(const std::string & s, const CObjectInterface::ObjectSet & os)
 {
+  std::cout << "object set: " << s << std::endl;
   CObjectInterface::ObjectSet::const_iterator it;
   for (it = os.begin(); it != os.end(); ++it)
-    std::cout << (*it)->getObjectDisplayName() << std::endl;
-    
+    std::cout << " - " << (*it)->getObjectDisplayName() << std::endl;
+  std::cout << std::endl;
 }
 
 //static
-void CTimeSensMethod::printUpdateSeq(const CCore::CUpdateSequence & us)
+void CTimeSensMethod::printUpdateSeq(const std::string & s, const CCore::CUpdateSequence & us)
 {
+  std::cout << "update seq: " << s << std::endl;
   CMathUpdateSequence::const_iterator it = us.begin();
   CMathUpdateSequence::const_iterator end = us.end();
   
@@ -616,22 +622,18 @@ void CTimeSensMethod::printUpdateSeq(const CCore::CUpdateSequence & us)
     const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(*it);
     
     if (pDataObject == NULL && pMathObject == NULL)
-      std::cout << "NULL" ;
+      std::cout << " - "<< "NULL" ;
     
     if (pDataObject != NULL)
     {
-      std::cout << pDataObject->getObjectParent()->getObjectDisplayName() << " : " << pDataObject->getObjectDisplayName();
-      //pTable->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(pDataObject->getObjectParent()->getObjectDisplayName())));
-      //pTable->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(pDataObject->getObjectDisplayName())));
+      std::cout << " - "<< /* pDataObject->getObjectParent()->getObjectDisplayName() << " : " << */ pDataObject->getObjectDisplayName();
     }
     else if (pMathObject != NULL)
     {
-      std::cout << "Mathobject:  " << pMathObject->getObjectDisplayName();
-      //pTable->setItem(i, 0, new QTableWidgetItem("Math Container"));
-      //pTable->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(pMathObject->getObjectDisplayName())));
+      std::cout << " - "<< "Mathobject:  " << pMathObject->getObjectDisplayName();
     }
     std::cout << std::endl;
-    
+    std::cout << std::endl;
   }
 
 }
