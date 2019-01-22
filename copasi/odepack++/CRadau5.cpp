@@ -1090,13 +1090,13 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
     d__1 = *xend - *x;
     posneg = d_sign(&c_b103, &d__1);
     /* Computing MIN */
-    d__2 = abs(*hmax), d__3 = (d__1 = *xend - *x, abs(d__1));
+    d__2 = fabs(*hmax), d__3 = (d__1 = *xend - *x, fabs(d__1));
     hmaxn = fmin(d__2,d__3);
-    if (abs(*h__) <= *uround * 10.) {
+    if (fabs(*h__) <= *uround * 10.) {
         *h__ = 1e-6;
     }
     /* Computing MIN */
-    d__1 = abs(*h__);
+    d__1 = fabs(*h__);
     *h__ = fmin(d__1,hmaxn);
     *h__ = d_sign(h__, &posneg);
     hold = *h__;
@@ -1140,12 +1140,12 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
     if (*itol == 0) {
         i__1 = *n;
         for (i__ = 1; i__ <= i__1; ++i__) {
-            scal[i__] = atol[1] + rtol[1] * (d__1 = y[i__], abs(d__1));
+            scal[i__] = atol[1] + rtol[1] * (d__1 = y[i__], fabs(d__1));
         }
     } else {
         i__1 = *n;
         for (i__ = 1; i__ <= i__1; ++i__) {
-            scal[i__] = atol[i__] + rtol[i__] * (d__1 = y[i__], abs(d__1));
+            scal[i__] = atol[i__] + rtol[i__] * (d__1 = y[i__], fabs(d__1));
         }
     }
     hhfac = *h__;
@@ -1171,7 +1171,7 @@ L10:
                 L12:
                     f1[j] = y[j];
                     /* Computing MAX */
-                    d__2 = 1e-5, d__3 = (d__1 = y[j], abs(d__1));
+                    d__2 = 1e-5, d__3 = (d__1 = y[j], fabs(d__1));
                     f2[j] = sqrt(*uround * fmax(d__2,d__3));
                     y[j] += f2[j];
                     j += md;
@@ -1209,7 +1209,7 @@ L10:
             for (i__ = 1; i__ <= i__1; ++i__) {
                 ysafe = y[i__];
                 /* Computing MAX */
-                d__1 = 1e-5, d__2 = abs(ysafe);
+                d__1 = 1e-5, d__2 = fabs(ysafe);
                 delt = sqrt(*uround * fmax(d__1,d__2));
                 y[i__] = ysafe + delt;
                 (*fcn)(n, x, &y[1], &cont[1], &rpar[1], &ipar[1]);
@@ -1250,7 +1250,7 @@ L30:
     if (*nstep > *nmax) {
         goto L178;
     }
-    if (abs(*h__) * .1 <= abs(*x) * *uround) {
+    if (fabs(*h__) * .1 <= fabs(*x) * *uround) {
         goto L177;
     }
     if (index2) {
@@ -1308,7 +1308,7 @@ L30:
     newt = 0;
     d__1 = fmax(faccon,*uround);
     faccon = pow_dd(&d__1, &c_b113);
-    theta = abs(*thet);
+    theta = fabs(*thet);
 L40:
     if (newt >= *nit) {
         goto L78;
@@ -1463,12 +1463,12 @@ L40:
         if (*itol == 0) {
             i__1 = *n;
             for (i__ = 1; i__ <= i__1; ++i__) {
-                scal[i__] = atol[1] + rtol[1] * (d__1 = y[i__], abs(d__1));
+                scal[i__] = atol[1] + rtol[1] * (d__1 = y[i__], fabs(d__1));
             }
         } else {
             i__1 = *n;
             for (i__ = 1; i__ <= i__1; ++i__) {
-                scal[i__] = atol[i__] + rtol[i__] * (d__1 = y[i__], abs(d__1))
+                scal[i__] = atol[i__] + rtol[i__] * (d__1 = y[i__], fabs(d__1))
                 ;
             }
         }
@@ -1496,13 +1496,13 @@ L40:
         (*fcn)(n, x, &y[1], &y0[1], &rpar[1], &ipar[1]);
         ++(*nfcn);
         /* Computing MIN */
-        d__1 = abs(hnew);
+        d__1 = fabs(hnew);
         hnew = posneg * fmin(d__1,hmaxn);
         hopt = hnew;
         hopt = fmin(*h__,hnew);
         if (reject) {
             /* Computing MIN */
-            d__1 = abs(hnew), d__2 = abs(*h__);
+            d__1 = fabs(hnew), d__2 = fabs(*h__);
             hnew = posneg * fmin(d__1,d__2);
         }
         reject = FALSE_;
