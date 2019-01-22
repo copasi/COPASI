@@ -234,7 +234,12 @@ protected:
   /**
    * pointers to the values of the parameters
    */
-  CVector< C_FLOAT64* > mParameterValuePointers;
+  
+  /// the pointers to the values of the objects as provided by the problem (generally initial values)
+  CVector< C_FLOAT64* > mParameterInitialValuePointers;
+  
+  /// the pointers as used during the simulation, initial values of fixed quantities are replaced by their transient counterparts.
+  CVector< C_FLOAT64* > mParameterTransientValuePointers;
 
   /**
    * pointers to the values of the assignment targets

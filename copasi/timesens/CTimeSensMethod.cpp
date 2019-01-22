@@ -258,7 +258,7 @@ void CTimeSensMethod::calculate_dInitialState_dPar(CMatrix<C_FLOAT64>& s)
   size_t Col;
   for (Col = 0;  Col < mNumParameters; ++Col)
     {
-      Store = *mParameterValuePointers[Col];
+      Store = *mParameterInitialValuePointers[Col];
 
       // We only need to make sure that we do not have an underflow problem
       if (fabs(Store) < DerivationFactor)
@@ -278,15 +278,15 @@ void CTimeSensMethod::calculate_dInitialState_dPar(CMatrix<C_FLOAT64>& s)
 
       InvDelta = 1.0 / (X2 - X1);
 
-      *mParameterValuePointers[Col] = X1;
+      *mParameterInitialValuePointers[Col] = X1;
       mpContainer->updateInitialValues(CCore::Framework::ParticleNumbers); //ParticleNumbers  Concentration
       memcpy(Y1.array(), pInitialState, mSystemSize * sizeof(C_FLOAT64));
 
-      *mParameterValuePointers[Col] = X2;
+      *mParameterInitialValuePointers[Col] = X2;
       mpContainer->updateInitialValues(CCore::Framework::ParticleNumbers);
       memcpy(Y2.array(), pInitialState, mSystemSize * sizeof(C_FLOAT64));
 
-      *mParameterValuePointers[Col] = Store;
+      *mParameterInitialValuePointers[Col] = Store;
 
       pS = s.array() + Col;
       pY1 = Y1.array();
@@ -326,7 +326,7 @@ void CTimeSensMethod::calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced)
   size_t Col;
   for (Col = 0;  Col < mNumParameters; ++Col)
     {
-      Store = *mParameterValuePointers[Col];
+      Store = *mParameterTransientValuePointers[Col];
 
       // We only need to make sure that we do not have an underflow problem
       if (fabs(Store) < DerivationFactor)
@@ -346,17 +346,17 @@ void CTimeSensMethod::calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced)
 
       InvDelta = 1.0 / (X2 - X1);
 
-      *mParameterValuePointers[Col] = X1;
+      *mParameterTransientValuePointers[Col] = X1;
       mpContainer->applyUpdateSequence(mSeq1);
       //mpContainer->updateSimulatedValues(reduced);
       memcpy(Y1.array(), pRate, mSystemSize * sizeof(C_FLOAT64));
 
-      *mParameterValuePointers[Col] = X2;
+      *mParameterTransientValuePointers[Col] = X2;
       mpContainer->applyUpdateSequence(mSeq1);
       //mpContainer->updateSimulatedValues(reduced);
       memcpy(Y2.array(), pRate, mSystemSize * sizeof(C_FLOAT64));
 
-      *mParameterValuePointers[Col] = Store;
+      *mParameterTransientValuePointers[Col] = Store;
 
       pS = s.array() + Col;
       pY1 = Y1.array();
@@ -466,7 +466,7 @@ void CTimeSensMethod::calculate_dAssignments_dPar(CMatrix<C_FLOAT64>& s)
   size_t Col;
   for (Col = 0;  Col < mNumParameters; ++Col)
     {
-      Store = *mParameterValuePointers[Col];
+      Store = *mParameterTransientValuePointers[Col];
 
       // We only need to make sure that we do not have an underflow problem
       if (fabs(Store) < DerivationFactor)
@@ -486,18 +486,18 @@ void CTimeSensMethod::calculate_dAssignments_dPar(CMatrix<C_FLOAT64>& s)
 
       InvDelta = 1.0 / (X2 - X1);
 
-      *mParameterValuePointers[Col] = X1;
+      *mParameterTransientValuePointers[Col] = X1;
       mpContainer->applyUpdateSequence(mSeq2);
       size_t i;
       for (i=0; i<mNumAssTargets; ++i)
         Y1[i]=*mAssTargetValuePointers[i];
 
-      *mParameterValuePointers[Col] = X2;
+      *mParameterTransientValuePointers[Col] = X2;
       mpContainer->applyUpdateSequence(mSeq2);
       for (i=0; i<mNumAssTargets; ++i)
         Y2[i]=*mAssTargetValuePointers[i];
 
-      *mParameterValuePointers[Col] = Store;
+      *mParameterTransientValuePointers[Col] = Store;
 
       pS = s.array() + Col;
       pY1 = Y1.array();
@@ -515,7 +515,8 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
 {
   //we need the vector of parameters
   //the problem provides us with the CNs, we need to prepare a means to change the parameter in the math container
-  mParameterValuePointers.resize(mNumParameters);
+  mParameterInitialValuePointers.resize(mNumParameters);
+  mParameterTransientValuePointers.resize(mNumParameters);
 
   CObjectInterface::ObjectSet Changed;
   size_t Col;
@@ -528,14 +529,16 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
 
     if (pMo != NULL)
             {
+              mParameterInitialValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
               //if (pMo->isInitialValue() && pMo->)
               pMo = mpContainer->getMathObject ( pMo->getDataObject()->getObjectParent()->getValueObject());
-              mParameterValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
+              mParameterTransientValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
               Changed.insert(pMo);
             }
           else
             {
-              mParameterValuePointers[Col] = NULL;
+              mParameterInitialValuePointers[Col] = NULL;
+              mParameterTransientValuePointers[Col] = NULL;
             }
   }
 
