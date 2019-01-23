@@ -524,16 +524,24 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
   {
   
     const CMathObject* pMo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(Col)));
+    const CMathObject* pMo2;
     //const CMathObject*  pMo = mpContainer->getMathObject(mpProblem->getParameterCN(Col)); //I do not know why this does not work...
     //const CMathObject * pMo = mpContainer->getMathObject(object*);
 
     if (pMo != NULL)
             {
               mParameterInitialValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
-              //if (pMo->isInitialValue() && pMo->)
-              pMo = mpContainer->getMathObject ( pMo->getDataObject()->getObjectParent()->getValueObject());
               mParameterTransientValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
-              Changed.insert(pMo);
+              pMo2 = mpContainer->getMathObject ( pMo->getDataObject()->getObjectParent()->getValueObject());
+              if (pMo2->getSimulationType()==CMath::SimulationType::Fixed)
+              {
+                mParameterTransientValuePointers[Col] = (C_FLOAT64 *) pMo2->getValuePointer();
+                Changed.insert(pMo2);
+              }
+              else
+              {
+                Changed.insert(pMo);
+              }
             }
           else
             {
