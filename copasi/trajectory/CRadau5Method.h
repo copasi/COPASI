@@ -1,20 +1,6 @@
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef COPASI_CRadau5Method
@@ -126,35 +112,35 @@ protected:
    */
   State mLastRootState;
 
-    
+
   /* step size*/
   double H;
-    
+
   /* scalar tolerances */
-  int ITOL;
-    
+  integer ITOL;
+
   /* Jacobian flags */
-  int IJAC;
-  int MLJAC;
-  int MUJAC;
-    
+  integer IJAC;
+  integer MLJAC;
+  integer MUJAC;
+
   /* differential equation is in explicit form*/
-  int IMAS;
-  int MLMAS;
-  int MUMAS;
-    
+  integer IMAS;
+  integer MLMAS;
+  integer MUMAS;
+
   /* Output flag */
-  int IOUT=0;
-    
+  integer IOUT = 0;
+
   /* length of work arrays */
-  int LWORK;
-  int LIWORK;
-    
+  integer LWORK;
+  integer LIWORK;
+
   /* optional parameters-- not used yet*/
   double rpar;
   integer idid;
   integer ipar;
-    
+
   /* dummy function -- to pass for mass and EvalJ*/
   U_fp fcn;
 
@@ -251,8 +237,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
   CRadau5Method(const CDataContainer * pParent,
-               const CTaskEnum::Method & methodType = CTaskEnum::Method::RADAU5,
-               const CTaskEnum::Task & taskType = CTaskEnum::Task::timeCourse);
+                const CTaskEnum::Method & methodType = CTaskEnum::Method::RADAU5,
+                const CTaskEnum::Task & taskType = CTaskEnum::Task::timeCourse);
 
   /**
    * Copy constructor.
@@ -260,7 +246,7 @@ public:
    * @param const CDataContainer * pParent (default: NULL)
    */
   CRadau5Method(const CRadau5Method & src,
-               const CDataContainer * pParent);
+                const CDataContainer * pParent);
 
   /**
    *  Destructor.

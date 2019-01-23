@@ -1,20 +1,6 @@
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 
@@ -36,8 +22,8 @@
 // #define DEBUG_FLOW 1
 
 CRadau5Method::CRadau5Method(const CDataContainer * pParent,
-                           const CTaskEnum::Method & methodType,
-                           const CTaskEnum::Task & taskType):
+                             const CTaskEnum::Method & methodType,
+                             const CTaskEnum::Task & taskType):
   CTrajectoryMethod(pParent, methodType, taskType),
   mpRelativeTolerance(NULL),
   mpAbsoluteTolerance(NULL),
@@ -73,7 +59,7 @@ CRadau5Method::CRadau5Method(const CDataContainer * pParent,
 }
 
 CRadau5Method::CRadau5Method(const CRadau5Method & src,
-                           const CDataContainer * pParent):
+                             const CDataContainer * pParent):
   CTrajectoryMethod(src, pParent),
   mpRelativeTolerance(NULL),
   mpAbsoluteTolerance(NULL),
@@ -118,14 +104,14 @@ CRadau5Method::~CRadau5Method()
 
 void CRadau5Method::initializeParameter()
 {
-  CCopasiParameter *pParm;
+  //CCopasiParameter *pParm;
 
   mpReducedModel = assertParameter("Integrate Reduced Model", CCopasiParameter::Type::BOOL, (bool) false);
   mpRelativeTolerance = assertParameter("Relative Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-6);
   mpAbsoluteTolerance = assertParameter("Absolute Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-12);
   mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::Type::UINT, (unsigned C_INT32) 10000);
   mpInitialStepSize = assertParameter("Initial Step Size", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-3);
-    
+
 }
 
 bool CRadau5Method::elevateChildren()
@@ -170,11 +156,12 @@ void CRadau5Method::stateChange(const CMath::StateChange & change)
 
 
 /* solout function to interupt after successfull computation for automatic step size */
-void solout(integer *nr,double *xold,double *x,double *y,double *cont,integer *lrc,integer *n, double *rpar,integer *ipar,
+void solout(integer *nr, double *xold, double *x, double *y, double *cont, integer *lrc, integer *n, double *rpar, integer *ipar,
             integer *irtrn)
 {
-  if (*xold != *x ){
-       *irtrn = -1;
+  if (*xold != *x)
+    {
+      *irtrn = -1;
     }
 }
 
@@ -193,25 +180,25 @@ CTrajectoryMethod::Status CRadau5Method::step(const double & deltaT,
   C_FLOAT64 StartTime = mTime;
   C_FLOAT64 EndTime = mTime + deltaT;
 
-    /*
+  /*
   if (mTargetTime != EndTime)
-    {
-      // We have a new end time and reset the root counter.
-      mTargetTime = EndTime;
-      mRootCounter = 0;
-    }
+  {
+    // We have a new end time and reset the root counter.
+    mTargetTime = EndTime;
+    mRootCounter = 0;
+  }
   else
-    {
-      // We are called with the same end time which means a root has previously been
-      // found. We increase the root counter and check whether the limit is reached.
-      mRootCounter++;
+  {
+    // We are called with the same end time which means a root has previously been
+    // found. We increase the root counter and check whether the limit is reached.
+    mRootCounter++;
 
-      if (mRootCounter > *mpMaxInternalSteps)
-        {
-          return FAILURE;
-        }
-    }
-*/
+    if (mRootCounter > *mpMaxInternalSteps)
+      {
+        return FAILURE;
+      }
+  }
+  */
 
   // The return status of the integrator.
   Status Status = NORMAL;
@@ -234,19 +221,19 @@ CTrajectoryMethod::Status CRadau5Method::step(const double & deltaT,
             }
         }
 
-     
+
     }
   else
-  {
+    {
       mRADAU(&mData.dim, &EvalF, &mTime, mpY, &EndTime, &H,
-            mpRelativeTolerance, mpAtol, &ITOL,
-            (U_fp) EvalJ, &IJAC, &MLJAC, &MUJAC,
-            (U_fp) fcn, &IMAS, &MLMAS, &MUMAS,
-            (U_fp) solout, &IOUT,
-            mDWork.array(), &LWORK, mIWork.array(), &LIWORK,
-            &rpar, &ipar, &idid);
+             mpRelativeTolerance, mpAtol, &ITOL,
+             (U_fp) EvalJ, &IJAC, &MLJAC, &MUJAC,
+             (U_fp) fcn, &IMAS, &MLMAS, &MUMAS,
+             (U_fp) solout, &IOUT,
+             mDWork.array(), &LWORK, mIWork.array(), &LIWORK,
+             &rpar, &ipar, &idid);
 
-        if (!mpContainer->isStateValid())
+      if (!mpContainer->isStateValid())
         {
           if (!final || mTask == 4 || mTask == 5)
             {
@@ -343,50 +330,51 @@ void CRadau5Method::start()
       mRADAU.setOstream(mErrorMsg);
     }
 
-  H= *mpInitialStepSize;
+  H = *mpInitialStepSize;
 
-  IOUT= mTask == 5 ? 1 : 0 ;
+  IOUT = mTask == 5 ? 1 : 0 ;
 
   /* optional parameters */
-  rpar=0;
-  ipar=0;
+  rpar = 0;
+  ipar = 0;
 
   /* assuming scalar tolerances, for vector tolerances ITOL=1 */
-  ITOL=0;
+  ITOL = 0;
 
   /* RADAU5 computes jacobian internally */
-  IJAC=0;
-  MLJAC=mData.dim;
-  MUJAC=0;
+  IJAC = 0;
+  MLJAC = mData.dim;
+  MUJAC = 0;
 
   /* Mass matrix routine is identity */
-  IMAS=0;
-  MLMAS=0;
-  MUMAS=0;
+  IMAS = 0;
+  MLMAS = 0;
+  MUMAS = 0;
 
   /* computing the size of the working arrays */
   int ljac, lmas, le;
 
-  if (MLJAC==mData.dim){  /* full jacobian */
-      ljac=mData.dim;
-      le=mData.dim;
-  }
-  else {          /* banded case */
-      ljac=MLJAC+MUJAC+1;
-      le=2*MLJAC+MUJAC+1;
-  }
+  if (MLJAC == mData.dim) /* full jacobian */
+    {
+      ljac = mData.dim;
+      le = mData.dim;
+    }
+  else            /* banded case */
+    {
+      ljac = MLJAC + MUJAC + 1;
+      le = 2 * MLJAC + MUJAC + 1;
+    }
 
-  if (IMAS==0)    /* no mass */
-      lmas=0;
-  else
-      if (MLMAS==mData.dim)/* full mass */
-          lmas=mData.dim;
-      else        /*banded mass */
-          lmas=MLMAS+MUMAS+1;
+  if (IMAS == 0)  /* no mass */
+    lmas = 0;
+  else if (MLMAS == mData.dim) /* full mass */
+    lmas = mData.dim;
+  else        /*banded mass */
+    lmas = MLMAS + MUMAS + 1;
 
   /* allocation of workspace */
-  LWORK = mData.dim*(ljac+lmas+3*le+12)+20;
-  LIWORK = 3*mData.dim+20;
+  LWORK = mData.dim * (ljac + lmas + 3 * le + 12) + 20;
+  LIWORK = 3 * mData.dim + 20;
 
   mDWork.resize(LWORK);
   mDWork = 0.0;
@@ -398,7 +386,7 @@ void CRadau5Method::start()
 
 void CRadau5Method::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
-    static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);
+  static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);
 }
 
 void CRadau5Method::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
@@ -417,11 +405,11 @@ void CRadau5Method::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOA
 }
 
 void CRadau5Method::EvalR(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
-                         const C_INT * nr, C_FLOAT64 * r)
+                          const C_INT * nr, C_FLOAT64 * r)
 {static_cast<Data *>((void *) n)->pMethod->evalR(t, y, nr, r);}
 
 void CRadau5Method::evalR(const C_FLOAT64 * t, const C_FLOAT64 *  /* y */,
-                         const C_INT *  nr, C_FLOAT64 * r)
+                          const C_INT *  nr, C_FLOAT64 * r)
 {
   *mpContainerStateTime = *t;
   mpContainer->updateRootValues(*mpReducedModel);
@@ -446,12 +434,12 @@ void CRadau5Method::evalR(const C_FLOAT64 * t, const C_FLOAT64 *  /* y */,
 
 // static
 void CRadau5Method::EvalJ(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
-                         const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
+                          const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
 {static_cast<Data *>((void *) n)->pMethod->evalJ(t, y, ml, mu, pd, nRowPD);}
 
 // virtual
 void CRadau5Method::evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
-                         const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
+                          const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
 {
   // TODO Implement me.
 }
