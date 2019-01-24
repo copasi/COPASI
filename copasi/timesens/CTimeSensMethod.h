@@ -241,6 +241,7 @@ protected:
   /// the pointers as used during the simulation, initial values of fixed quantities are replaced by their transient counterparts.
   CVector< C_FLOAT64* > mParameterTransientValuePointers;
 
+  CVector<bool> mParameterIsInitialConcentration;
   /**
    * pointers to the values of the assignment targets
    */

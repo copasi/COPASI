@@ -255,6 +255,8 @@ void CTimeSensMethod::calculate_dInitialState_dPar(CMatrix<C_FLOAT64>& s)
   C_FLOAT64 * pS;
   C_FLOAT64 * pSEnd = s.array() + mSystemSize * mNumParameters;
   
+  CCore::Framework tmpFramework;
+  
   size_t Col;
   for (Col = 0;  Col < mNumParameters; ++Col)
     {
@@ -278,12 +280,14 @@ void CTimeSensMethod::calculate_dInitialState_dPar(CMatrix<C_FLOAT64>& s)
 
       InvDelta = 1.0 / (X2 - X1);
 
+      tmpFramework = mParameterIsInitialConcentration[Col] ? CCore::Framework::Concentration : CCore::Framework::ParticleNumbers;
+      
       *mParameterInitialValuePointers[Col] = X1;
-      mpContainer->updateInitialValues(CCore::Framework::ParticleNumbers); //ParticleNumbers  Concentration
+      mpContainer->updateInitialValues(tmpFramework); //ParticleNumbers  Concentration
       memcpy(Y1.array(), pInitialState, mSystemSize * sizeof(C_FLOAT64));
 
       *mParameterInitialValuePointers[Col] = X2;
-      mpContainer->updateInitialValues(CCore::Framework::ParticleNumbers);
+      mpContainer->updateInitialValues(tmpFramework);
       memcpy(Y2.array(), pInitialState, mSystemSize * sizeof(C_FLOAT64));
 
       *mParameterInitialValuePointers[Col] = Store;
@@ -296,7 +300,7 @@ void CTimeSensMethod::calculate_dInitialState_dPar(CMatrix<C_FLOAT64>& s)
         *pS = (*pY2 - *pY1) * InvDelta;
     }
 
-    mpContainer->updateInitialValues(CCore::Framework::ParticleNumbers);
+    mpContainer->updateInitialValues(tmpFramework);
   }
 
 void CTimeSensMethod::calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced)
@@ -517,6 +521,7 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
   //the problem provides us with the CNs, we need to prepare a means to change the parameter in the math container
   mParameterInitialValuePointers.resize(mNumParameters);
   mParameterTransientValuePointers.resize(mNumParameters);
+  mParameterIsInitialConcentration.resize(mNumParameters);
 
   CObjectInterface::ObjectSet Changed;
   size_t Col;
@@ -530,6 +535,7 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
 
     if (pMo != NULL)
             {
+              mParameterIsInitialConcentration[Col] = pMo->isIntensiveProperty();
               mParameterInitialValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
               mParameterTransientValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
               pMo2 = mpContainer->getMathObject ( pMo->getDataObject()->getObjectParent()->getValueObject());
@@ -644,7 +650,7 @@ void CTimeSensMethod::printUpdateSeq(const std::string & s, const CCore::CUpdate
       std::cout << " - "<< "Mathobject:  " << pMathObject->getObjectDisplayName();
     }
     std::cout << std::endl;
-    std::cout << std::endl;
   }
+  std::cout << std::endl;
 
 }
