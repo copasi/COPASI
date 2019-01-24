@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -37,9 +42,9 @@ COptMethodNelderMead::COptMethodNelderMead(const CDataContainer * pParent,
     const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType)
 {
-  addParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
-  addParameter("Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.e-005);
-  addParameter("Scale", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 10.0);
+  assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
+  assertParameter("Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.e-005);
+  assertParameter("Scale", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 10.0);
 
   initObjects();
 }

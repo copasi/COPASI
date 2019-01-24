@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -246,7 +251,8 @@ QModelIndex CQParameterGroupDM::parent(const QModelIndex & index) const
 // virtual
 int CQParameterGroupDM::rowCount(const QModelIndex & parent) const
 {
-  CCopasiParameter::UserInterfaceFlag Flag(mAdvanced ? CCopasiParameter::UserInterfaceFlag::All : CCopasiParameter::eUserInterfaceFlag::basic);
+  CCopasiParameter::UserInterfaceFlag Exclude(CCopasiParameter::eUserInterfaceFlag::unsupported);
+  CCopasiParameter::UserInterfaceFlag Require(mAdvanced ? CCopasiParameter::UserInterfaceFlag::None : CCopasiParameter::eUserInterfaceFlag::basic);
 
   if (!parent.isValid())
     {
@@ -257,7 +263,7 @@ int CQParameterGroupDM::rowCount(const QModelIndex & parent) const
 
       for (; it != end; ++it)
         {
-          size += (int)(*it)->size(Flag);
+          size += (int)(*it)->size(Require, Exclude);
         }
 
       return size;
@@ -268,7 +274,7 @@ int CQParameterGroupDM::rowCount(const QModelIndex & parent) const
   switch (pParent->getType())
     {
       case CCopasiParameter::Type::GROUP:
-        return (int) static_cast< CCopasiParameterGroup * >(pParent)->size(Flag);
+        return (int) static_cast< CCopasiParameterGroup * >(pParent)->size(Require, Exclude);
         break;
 
       default:
@@ -427,7 +433,8 @@ int CQParameterGroupDM::getRow(const CCopasiParameter * pNode) const
           CCopasiParameterGroup::index_iterator end = pParent->endIndex();
 
           for (; it != end; ++it)
-            if (mAdvanced || (*it)->isBasic())
+            if (!(*it)->isUnsupported() &&
+                (mAdvanced || (*it)->isBasic()))
               {
                 if (*it == pNode) return i;
 
@@ -443,7 +450,8 @@ int CQParameterGroupDM::getRow(const CCopasiParameter * pNode) const
       CCopasiParameterGroup::index_iterator end = pParent->endIndex();
 
       for (; it != end; ++it, ++i)
-        if (mAdvanced || (*it)->isBasic())
+        if (!(*it)->isUnsupported() &&
+            (mAdvanced || (*it)->isBasic()))
           {
             if (*it == pNode) return i;
 

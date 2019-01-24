@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,7 +30,7 @@
 COscillationMethodIntegrate::COscillationMethodIntegrate():
   COscillationMethod(CCopasiTask::oscillation, CCopasiMethod::oscillationIntegrate)
 {
-  //  addParameter("Number of Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100000);
+  //  assertParameter("Number of Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100000);
 
   initObjects();
 }

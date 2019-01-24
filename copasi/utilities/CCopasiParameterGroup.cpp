@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -648,16 +653,23 @@ bool CCopasiParameterGroup::addGroup(const std::string & name)
   return true;
 }
 
-CCopasiParameterGroup * CCopasiParameterGroup::assertGroup(const std::string & name)
+CCopasiParameterGroup * CCopasiParameterGroup::assertGroup(const std::string & name,
+    const CCopasiParameter::UserInterfaceFlag & flag)
 {
   CCopasiParameterGroup * pGrp = getGroup(name);
 
-  if (pGrp) return pGrp;
+  if (pGrp == NULL)
+    {
+      removeParameter(name);
 
-  removeParameter(name);
+      addGroup(name);
+      pGrp = getGroup(name);
+      pGrp->setUserInterfaceFlag(flag);
+    }
 
-  addGroup(name);
-  return getGroup(name);
+  pGrp->setUserInterfaceFlag(pGrp->getUserInterfaceFlag() & ~UserInterfaceFlag(eUserInterfaceFlag::unsupported));
+
+  return pGrp;
 }
 
 bool CCopasiParameterGroup::removeParameter(const std::string & name)
@@ -834,9 +846,11 @@ bool CCopasiParameterGroup::swap(index_iterator & from,
   return true;
 }
 
-size_t CCopasiParameterGroup::size(const CCopasiParameter::UserInterfaceFlag & flag) const
+size_t CCopasiParameterGroup::size(const UserInterfaceFlag & require,
+                                   const UserInterfaceFlag & exclude) const
 {
-  if (flag == CCopasiParameter::UserInterfaceFlag::All)
+  if (require == UserInterfaceFlag::None &&
+      exclude == UserInterfaceFlag::None)
     {
       return static_cast< elements * >(mpValue)->size();
     }
@@ -847,8 +861,13 @@ size_t CCopasiParameterGroup::size(const CCopasiParameter::UserInterfaceFlag & f
   size_t size = 0;
 
   for (; it != end; ++it)
-    if (flag & (*it)->getUserInterfaceFlag())
-      ++size;
+    {
+      const UserInterfaceFlag & Flag = (*it)->getUserInterfaceFlag();
+
+      if ((require == UserInterfaceFlag::None || (Flag & require)) &&
+          (exclude == UserInterfaceFlag::None || !(Flag & exclude)))
+        ++size;
+    }
 
   return size;
 }

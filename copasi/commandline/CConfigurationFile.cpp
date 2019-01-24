@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -16,10 +21,6 @@
 // Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-
-
-
 
 #include "copasi.h"
 
@@ -63,7 +64,7 @@ void CRecentFiles::initializeParameter()
   mpMaxFiles =
     assertParameter("MaxFiles", CCopasiParameter::Type::UINT, (unsigned C_INT32) 5);
   mpRecentFiles = assertGroup("Recent Files");
-  mpRecentFiles->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::eUserInterfaceFlag::basic));
+  mpRecentFiles->setUserInterfaceFlag(mpRecentFiles->getUserInterfaceFlag() & ~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::eUserInterfaceFlag::basic));
 }
 
 void CRecentFiles::addFile(const std::string & file)
@@ -214,9 +215,12 @@ void CConfigurationFile::initializeParameter()
   mpPrecision = assertParameter("Double Precision for String Conversion", CCopasiParameter::Type::INT, 10);
 
   mpApplicationFont = assertParameter("Application Font", CCopasiParameter::Type::STRING, std::string(""));
-  getParameter("Application Font")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::eUserInterfaceFlag::editable));
 
-  assertGroup("MIRIAM Resources")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::eUserInterfaceFlag::basic));
+  CCopasiParameter* pParm = getParameter("Application Font");
+  pParm->setUserInterfaceFlag(pParm->getUserInterfaceFlag() & ~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::eUserInterfaceFlag::editable));
+
+  pParm = assertGroup("MIRIAM Resources");
+  pParm->setUserInterfaceFlag(pParm->getUserInterfaceFlag() & ~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::eUserInterfaceFlag::basic));
 
   mpDisplayIssueSeverity = assertGroup("Display Issue Severity");
   mpDisplayIssueKinds = assertGroup("Display Issue Kinds");
@@ -252,7 +256,8 @@ void CConfigurationFile::initializeParameter()
     }
 
   mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::Type::STRING, std::string(""));
-  getParameter("Working Directory")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::eUserInterfaceFlag::editable));
+  pParm = getParameter("Working Directory");
+  pParm->setUserInterfaceFlag(pParm->getUserInterfaceFlag() & ~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::eUserInterfaceFlag::editable));
 
   mpProxyServer = assertParameter("Proxy Server", CCopasiParameter::Type::STRING, std::string(""));
   mpProxyPort = assertParameter("Proxy Port", CCopasiParameter::Type::INT, 0);

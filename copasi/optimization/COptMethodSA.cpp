@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -56,11 +61,11 @@ COptMethodSA::COptMethodSA(const CDataContainer * pParent,
   , mStep(0)
   , mAccepted()
 {
-  addParameter("Start Temperature", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0);
-  addParameter("Cooling Factor", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 0.85);
-  addParameter("Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.e-006);
-  addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
-  addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Start Temperature", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0);
+  assertParameter("Cooling Factor", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 0.85);
+  assertParameter("Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.e-006);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
