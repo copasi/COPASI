@@ -143,6 +143,8 @@ const MESSAGES Messages[] =
   {MCTrajectoryMethod + 26, "CTrajectoryMethod (26): A tau-Leap step encountered numerical problems.\nPlease check whether some particle numbers are large."},
   {MCTrajectoryMethod + 27, "CTrajectoryMethod (27): Numerical problem: a propensity is NaN."},
   {MCTrajectoryMethod + 28, "CTrajectoryMethod (28): The model contains an ODE rule.\nStochastic simulation is not possible."},
+  {MCTrajectoryMethod + 29, "CTrajectoryMethod (29): NMAX limit reached during Radau5 integration."},
+  {MCTrajectoryMethod + 30, "CTrajectoryMethod (30): Step size became too small during Radau5 integration."},
 
   // XML Package
   {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},

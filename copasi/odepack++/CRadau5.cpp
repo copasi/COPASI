@@ -44,7 +44,7 @@ struct {
 /* Table of constant values */
 
 static integer c__9 = 9;
-//static integer c__1 = 1;
+static integer c__1 = 1;
 static integer c__5 = 5;
 static integer c__3 = 3;
 static doublereal c_b54 = .5;
@@ -56,7 +56,7 @@ static doublereal c_b113 = .8;
 static doublereal c_b115 = .25;
 
 
-CRadau5::CRadau5()
+CRadau5::CRadau5():CInternalSolver()
 {
 
 }
@@ -1239,8 +1239,7 @@ L20:
         goto L78;
     }
     decomc_(n, &fjac[fjac_offset], ldjac, &fmas[fmas_offset], ldmas, mlmas,
-            mumas, m1, m2, nm1, &alphn, &betan, &e2r[e2r_offset], &e2i[
-                                                                       e2i_offset], lde1, &ip2[1], &ier, ijob);
+            mumas, m1, m2, nm1, &alphn, &betan, &e2r[e2r_offset], &e2i[e2i_offset], lde1, &ip2[1], &ier, ijob);
     if (ier != 0) {
         goto L78;
     }

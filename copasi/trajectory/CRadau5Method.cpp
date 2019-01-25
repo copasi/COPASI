@@ -233,6 +233,20 @@ CTrajectoryMethod::Status CRadau5Method::step(const double & deltaT,
              mDWork.array(), &LWORK, mIWork.array(), &LIWORK,
              &rpar, &ipar, &idid);
 
+      if (idid < 1)
+        {
+          if (idid == -2)
+            {
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 29);
+            }
+          else if (idid == -3)
+            {
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 30);
+            }
+          Status = FAILURE;
+          return Status;
+      }
+
       if (!mpContainer->isStateValid())
         {
           if (!final || mTask == 4 || mTask == 5)
