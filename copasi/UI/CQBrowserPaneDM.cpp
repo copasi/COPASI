@@ -40,6 +40,7 @@
 // static
 const CQBrowserPaneDM::sNodeInfo CQBrowserPaneDM::TreeInfo[] =
 {
+  // ParentWidget, Widget, WidgtName
   {ListViews::WidgetType::COPASI, ListViews::WidgetType::Model, "Model"},
   {ListViews::WidgetType::Model, ListViews::WidgetType::Biochemical, "Biochemical"},
   {ListViews::WidgetType::Biochemical, ListViews::WidgetType::Compartments, "Compartments"},
@@ -51,13 +52,13 @@ const CQBrowserPaneDM::sNodeInfo CQBrowserPaneDM::TreeInfo[] =
   {ListViews::WidgetType::Biochemical, ListViews::WidgetType::ParameterSets, "Parameter Sets"},
   {ListViews::WidgetType::Model, ListViews::WidgetType::Mathematical, "Mathematical"},
 #ifdef HAVE_MML
-#endif // HAVE_MML
   {ListViews::WidgetType::Mathematical, ListViews::WidgetType::DifferentialEquations, "Differential Equations"},
+#endif // HAVE_MML
   {ListViews::WidgetType::Mathematical, ListViews::WidgetType::Matrices, "Matrices"},
 #ifdef COPASI_DEBUG
   {ListViews::WidgetType::Mathematical, ListViews::WidgetType::UpdateOrder, "Update Order"},
-  {ListViews::WidgetType::Model, ListViews::WidgetType::Diagrams, "Diagrams"},
 #endif // COPASI_DEBUG
+  {ListViews::WidgetType::Model, ListViews::WidgetType::Diagrams, "Diagrams"},
   {ListViews::WidgetType::COPASI, ListViews::WidgetType::Tasks, "Tasks"},
   {ListViews::WidgetType::Tasks, ListViews::WidgetType::SteadyState, "Steady-State"},
   {ListViews::WidgetType::SteadyState, ListViews::WidgetType::SteadyStateResult, "Result"},
