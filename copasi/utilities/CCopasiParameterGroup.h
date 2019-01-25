@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -145,7 +150,6 @@ public:
   /**
    * Add a parameter
    * @param const CCopasiParameter & parameter
-   * @param const CCopasiParameter::UserInterfaceFlag & flag (default: CCopasiParameter::UserInterfaceFlag::All)
    * @return bool success
    */
   bool addParameter(const CCopasiParameter & parameter);
@@ -154,7 +158,7 @@ public:
    * Add a parameter to the group
    * @param const std::string & name
    * @param const CCopasiParameter::Type type
-   * @param const CCopasiParameter::UserInterfaceFlag & flag (default: CCopasiParameter::UserInterfaceFlag::All)
+   * @param const CCopasiParameter::UserInterfaceFlag & flag (default: CCopasiParameter::UserInterfaceFlag::All))
    * @return bool success
    */
   bool addParameter(const std::string & name,
@@ -228,22 +232,29 @@ public:
    * @param const std::string & name
    * @param const CCopasiParameter::Type type
    * @param const CType & Value
+   * @param const CCopasiParameter::UserInterfaceFlag & flag (default: CCopasiParameter::UserInterfaceFlag::All)
    * @return CCopasiParameter * pParameter
    */
   template < class CType >
   CType * assertParameter(const std::string & name,
                           const CCopasiParameter::Type type,
-                          const CType & defaultValue)
+                          const CType & defaultValue,
+                          const CCopasiParameter::UserInterfaceFlag & flag = CCopasiParameter::UserInterfaceFlag::All)
   {
     CCopasiParameter * pParm = getParameter(name);
 
-    if (pParm && pParm->getType() == type) return &pParm->getValue< CType >();
+    if (pParm == NULL || pParm->getType() != type)
+      {
+        if (pParm) removeParameter(name);
 
-    if (pParm) removeParameter(name);
+        addParameter(name, type, defaultValue);
+        pParm = getParameter(name);
+        pParm->setUserInterfaceFlag(flag);
+      }
 
-    addParameter(name, type, defaultValue);
+    pParm->setUserInterfaceFlag(pParm->getUserInterfaceFlag() & ~UserInterfaceFlag(eUserInterfaceFlag::unsupported));
 
-    return &getParameter(name)->getValue< CType >();
+    return &pParm->getValue< CType >();
   }
 
   /**
@@ -264,9 +275,11 @@ public:
    * Assert that a group with the given name is present.
    * If not the group is created as empty group.
    * @param const std::string & name
+   * @param const CCopasiParameter::UserInterfaceFlag & flag (default: CCopasiParameter::UserInterfaceFlag::All)
    * @return CCopasiParameterGroup * pGroup
    */
-  CCopasiParameterGroup * assertGroup(const std::string & name);
+  CCopasiParameterGroup * assertGroup(const std::string & name,
+                                      const CCopasiParameter::UserInterfaceFlag & flag = CCopasiParameter::UserInterfaceFlag::All);
 
   /**
    * Remove a parameter or subgroup from the group
@@ -501,7 +514,8 @@ public:
    * The size of the parameter group
    * @ return size_t size
    */
-  size_t size(const UserInterfaceFlag & flag = UserInterfaceFlag::All) const;
+  size_t size(const UserInterfaceFlag & require = UserInterfaceFlag::None,
+              const UserInterfaceFlag & exclude = UserInterfaceFlag::None) const;
 
   /**
    * Clear all parameters and subgroups
@@ -579,7 +593,7 @@ public:
   virtual void setUserInterfaceFlag(const UserInterfaceFlag & flag);
 
 private:
-  CCopasiParameterGroup *mpElementTemplates { NULL };
+  CCopasiParameterGroup *mpElementTemplates {NULL };
 };
 
 // :TODO: This should be a member function but Visual C++ 6.0
@@ -629,13 +643,16 @@ ElevateTo * elevate(CCopasiParameter * pParm)
           return NULL;
         }
 
+      CCopasiParameter::UserInterfaceFlag Flag = pFrom->getUserInterfaceFlag();
       pTo = new ElevateTo(*pFrom, NO_PARENT);
 
       // We do not want the parameter to be removed from the group which would happen during deletion.
       // To prevent this we remove it manually from the parent class.
       pGrp->CCopasiParameter::remove(pParm);
       delete pParm;
+
       pGrp->CCopasiParameter::add(pTo, true);
+      pTo->CCopasiParameter::setUserInterfaceFlag(Flag);
 
       *it = pTo;
     }

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -62,10 +67,10 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
   mHaveResiduals(false),
   mResidualJacobianT()
 {
-  addParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
-  addParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006);
-  addParameter("Modulation", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006, eUserInterfaceFlag::editable);
-  addParameter("Stop after # stalled iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
+  assertParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006);
+  assertParameter("Modulation", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006, eUserInterfaceFlag::editable);
+  assertParameter("Stop after # stalled iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }

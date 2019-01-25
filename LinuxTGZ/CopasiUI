@@ -17,7 +17,11 @@ QT_MISSING=$(ldd "${LDD_OPTION}" "${CopasiUI}" 2>&1 | grep -q '\(undefined symbo
 
 if [ _${QT_MISSING} = _true ]; then
   LD_LIBRARY_PATH="${LIBDIR}:${LD_LIBRARY_PATH}"
-  export LD_LIBRARY_PATH
+  QT_QPA_PLATFORM_PLUGIN_PATH="${LIBDIR}/plugins"
+  LIBGL_ALWAYS_SOFTWARE=1
+  QT_OPENGL=software
+  QT_QPA_PLATFORM=xcb
+  export LD_LIBRARY_PATH QT_QPA_PLATFORM_PLUGIN_PATH LIBGL_ALWAYS_SOFTWARE QT_OPENGL QT_QPA_PLATFORM
 fi
 
 "${CopasiUI}" "$@"

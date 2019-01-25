@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -29,7 +34,7 @@ COptMethodNL2SOL::COptMethodNL2SOL(const CDataContainer * pParent,
   fCalcr(new FNL2SOLTemplate<COptMethodNL2SOL>(this, &COptMethodNL2SOL::calcr)),
   mpCNL2SOL(new CNL2SOL())
 {
-  addParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
+  assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
   initObjects();
 }
 

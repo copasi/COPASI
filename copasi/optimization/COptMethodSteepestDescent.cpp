@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -44,8 +49,8 @@ COptMethodSteepestDescent::COptMethodSteepestDescent(const CDataContainer * pPar
   mpDescent(new FDescentTemplate<COptMethodSteepestDescent>(this, &COptMethodSteepestDescent::descentLine)),
   mCurrentIteration(0)
 {
-  addParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100);
-  addParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1e-6);
+  assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100);
+  assertParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1e-6);
 }
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const COptMethodSteepestDescent & src,

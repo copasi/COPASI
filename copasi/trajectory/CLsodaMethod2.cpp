@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -99,7 +104,7 @@ void CLsodaMethod2::initializeParameter()
   mpReducedModel = assertParameter("Integrate Reduced Model", CCopasiParameter::Type::BOOL, (bool) false);
   mpRelativeTolerance = assertParameter("Relative Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-6);
   mpAbsoluteTolerance = assertParameter("Absolute Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-12);
-  mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::Type::UINT, (unsigned C_INT32) 10000);
+  mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100000);
   mpMaxInternalStepSize = assertParameter("Max Internal Step Size", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 0.0);
 }
 
@@ -289,7 +294,7 @@ void CLsodaMethod2::start()
 void CLsodaMethod2::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
-void CLsodaMethod2::evalF(const C_FLOAT64 * t , const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
+void CLsodaMethod2::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
 {
   *mpContainerStateTime = *t;
 

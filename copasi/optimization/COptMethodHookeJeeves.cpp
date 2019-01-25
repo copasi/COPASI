@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -40,9 +45,9 @@ COptMethodHookeJeeves::COptMethodHookeJeeves(const CDataContainer * pParent,
     const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType)
 {
-  addParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 50);
-  addParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-005);
-  addParameter("Rho", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.2);
+  assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 50);
+  assertParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-005);
+  assertParameter("Rho", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.2);
 
   initObjects();
 }

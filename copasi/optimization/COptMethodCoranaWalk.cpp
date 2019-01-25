@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -47,10 +52,10 @@ COptMethodCoranaWalk::COptMethodCoranaWalk(const CDataContainer * pParent,
   , mStep()
   , mAccepted()
 {
-  addParameter("Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100);
-  addParameter("Temperature", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0);
-  addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
-  addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100);
+  assertParameter("Temperature", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }

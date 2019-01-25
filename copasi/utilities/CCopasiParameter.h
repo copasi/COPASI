@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -65,6 +70,7 @@ public:
   {
     editable,
     basic,
+    unsupported,
     __SIZE
   };
 
@@ -189,6 +195,8 @@ public:
    * Destructor
    */
   virtual ~CCopasiParameter();
+
+  virtual bool setObjectParent(const CDataContainer * pParent);
 
   /**
    * Assignment operator
@@ -419,6 +427,8 @@ public:
   bool isEditable() const;
 
   bool isBasic() const;
+
+  bool isUnsupported() const;
 
   bool isDefault() const;
 

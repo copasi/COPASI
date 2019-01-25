@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -268,6 +273,21 @@ CCopasiParameter::~CCopasiParameter()
   deleteValue(mType, mpValue);
   deleteValue(mType, mpDefault);
   deleteValidValues(mType, mpValidValues);
+}
+
+// virtual
+bool CCopasiParameter::setObjectParent(const CDataContainer * pParent)
+{
+  if (pParent != NULL &&
+      dynamic_cast< const CCopasiParameter * >(pParent) != NULL)
+    {
+      if (static_cast< const CCopasiParameter * >(pParent)->isUnsupported())
+        mUserInterfaceFlag |= eUserInterfaceFlag::unsupported;
+      else
+        mUserInterfaceFlag &= ~UserInterfaceFlag(eUserInterfaceFlag::unsupported);
+    }
+
+  return CDataContainer::setObjectParent(pParent);
 }
 
 CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)
@@ -934,6 +954,11 @@ bool CCopasiParameter::isEditable() const
 bool CCopasiParameter::isBasic() const
 {
   return mUserInterfaceFlag.isSet(eUserInterfaceFlag::basic);
+}
+
+bool CCopasiParameter::isUnsupported() const
+{
+  return mUserInterfaceFlag.isSet(eUserInterfaceFlag::unsupported);
 }
 
 bool CCopasiParameter::isDefault() const
