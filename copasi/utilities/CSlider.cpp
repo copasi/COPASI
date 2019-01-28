@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -76,7 +81,7 @@ CSlider::CSlider(const std::string & name,
   mTickNumber(1000),
   mTickFactor(100),
   mSync(true),
-  mScaling(CSlider::linear),
+  mScaling(CSlider::logarithmic),
   mCN(),
   mInitialRefreshes()
 {}
@@ -198,8 +203,8 @@ void CSlider::resetRange()
   if (this->mSliderType != Undefined)
     {
       C_FLOAT64 value = this->getSliderValue();
-      this->mMinValue = value / 2.0;
-      this->mMaxValue = value == 0 ? 1.0 :  value * 2.0;
+      this->mMinValue = value / 10.0;
+      this->mMaxValue = value == 0 ? 1.0 :  value * 10.0;
     }
 }
 
