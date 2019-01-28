@@ -539,7 +539,7 @@ endif ()
 option (ENABLE_USE_SBMLUNIT "Enables extended unit support." OFF)
 mark_as_advanced(ENABLE_USE_SBMLUNIT)
 
-option (ENABLE_TIME_SENS "Enables Time Sensitivities task in UI." OFF)
+option (ENABLE_TIME_SENS "Enables Time Sensitivities task in UI." ON)
 mark_as_advanced(ENABLE_TIME_SENS)
 
 
@@ -868,6 +868,7 @@ message(STATUS "-----------------------------------------------------------
    Versioning framework     = ${ENABLE_VERSIONING}
    Provenance framework     = ${ENABLE_PROVENANCE}
    Analytics Task           = ${ENABLE_ANALYTICS}
+   Time Sensitivities task  = ${ENABLE_TIME_SENS}
    Additional Defines       = ${DirDefs}
 
   Language Bindings:
