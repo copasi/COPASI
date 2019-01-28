@@ -197,12 +197,14 @@ void CTimeSensMethod::initResult()
   for (i = 0; i < mSystemSize; ++i)
   {
     CMathObject* mo = mpContainer->getMathObject(mpContainerStateTime+i+1);
-    mpProblem->getStateResultAnnotated()->setAnnotation(0, i,mo->getDataObject() );
+    if (mo)
+      mpProblem->getStateResultAnnotated()->setAnnotation(0, i,mo->getDataObject() );
   }
   for (i = 0; i < mNumParameters; ++i)
   {
     const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(i)));
-    mpProblem->getStateResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
+    if (mo)
+      mpProblem->getStateResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
   }
 
   s.clear();
@@ -217,12 +219,14 @@ void CTimeSensMethod::initResult()
   for (i = 0; i < mpProblem->getNumTargets(); ++i)
   {
     const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getTargetCN(i)));
+    if (mo)
     mpProblem->getTargetsResultAnnotated()->setAnnotation(0, i, mo->getDataObject() );
   }
   for (i = 0; i < mNumParameters; ++i)
   {
     const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(i)));
-    mpProblem->getTargetsResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
+    if (mo)
+      mpProblem->getTargetsResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
   }
 
 
@@ -652,5 +656,4 @@ void CTimeSensMethod::printUpdateSeq(const std::string & s, const CCore::CUpdate
     std::cout << std::endl;
   }
   std::cout << std::endl;
-
 }
