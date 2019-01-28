@@ -356,29 +356,61 @@ bool CQTimeSensWidget::loadTaskProtected()
   // load parameters
   mpListParameters->clear();
 
+  std::vector<std::string> toBeRemoved;
+
   for (size_t i = 0; i < timeSensProblem->getNumParameters(); ++i)
     {
-      const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObjectFromCN(timeSensProblem->getParameterCN(i)));
+      std::string cn = timeSensProblem->getParameterCN(i);
+      const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObjectFromCN(cn));
 
-      if (!pObject) continue;
+      if (!pObject)
+        {
+          toBeRemoved.push_back(cn);
+          continue;
+        }
 
       QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
       pItem->setData(Qt::UserRole, FROM_UTF8(pObject->getCN()));
       mpListParameters->addItem(pItem);
     }
 
+  if (!toBeRemoved.empty())
+    {
+for (std::string cn : toBeRemoved)
+        {
+          timeSensProblem->removeParameterCN(cn);
+          mpTimeSensProblem->removeParameterCN(cn);
+        }
+    }
+
+
   // load targets
   mpListTargets->clear();
+  toBeRemoved.clear();
 
   for (size_t i = 0; i < timeSensProblem->getNumTargets(); ++i)
     {
-      const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObjectFromCN(timeSensProblem->getTargetCN(i)));
+      std::string cn = timeSensProblem->getParameterCN(i);
+      const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObjectFromCN(cn));
 
-      if (!pObject) continue;
+      if (!pObject)
+        {
+          toBeRemoved.push_back(cn);
+          continue;
+        }
 
       QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
       pItem->setData(Qt::UserRole, FROM_UTF8(pObject->getCN()));
       mpListTargets->addItem(pItem);
+    }
+
+  if (!toBeRemoved.empty())
+    {
+for (std::string cn : toBeRemoved)
+        {
+          timeSensProblem->removeTargetCN(cn);
+          mpTimeSensProblem->removeTargetCN(cn);
+        }
     }
 
   return true;
@@ -540,7 +572,7 @@ void CQTimeSensWidget::slotAddParameter()
   std::vector< const CDataObject * > selection =
     CCopasiSelectionDialog::getObjectVector(this, CQSimpleSelectionTree::Parameters);
 
-  for (const CDataObject * item : selection)
+for (const CDataObject * item : selection)
     {
       if (!mpListParameters->findItems(FROM_UTF8(item->getObjectDisplayName()), Qt::MatchExactly).empty())
         continue;
@@ -585,7 +617,7 @@ void CQTimeSensWidget::slotAddTarget()
         //& (~CQSimpleSelectionTree::Results)
                                            );
 
-  for (const CDataObject * item : selection)
+for (const CDataObject * item : selection)
     {
       if (!mpListTargets->findItems(FROM_UTF8(item->getObjectDisplayName()), Qt::MatchExactly).empty())
         continue;
