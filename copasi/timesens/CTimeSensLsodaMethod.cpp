@@ -1034,7 +1034,9 @@ void CTimeSensLsodaMethod::copySensitivitiesToResultMatrix()
       //mVariables[i + (j+1)*mSystemSize + 1] = (initSens[i][j]);
       index[0]=i; index[1]=j;
       mpProblem->getStateResult()[index] =  mVariables[i + (j+1)*mSystemSize + 1];
-      mpProblem->getScaledStateResult()[index] =  mVariables[i + (j+1)*mSystemSize + 1]; //TODO scaling
+      mpProblem->getScaledStateResult()[index] =  mVariables[i + (j+1)*mSystemSize + 1]
+                 * *mParameterTransientValuePointers[j]
+                 / *(mpContainerStateTime+1+i);
 
     }
   
@@ -1054,7 +1056,9 @@ void CTimeSensLsodaMethod::copySensitivitiesToResultMatrix()
         tmp += mAssignmentJacobian[i][k] * mVariables[k + (j+1)*mSystemSize + 1];
       index[0]=i; index[1]=j;
       mpProblem->getTargetsResult()[index] = tmp; 
-      mpProblem->getScaledTargetsResult()[index] = tmp; //TODO scaling
+      mpProblem->getScaledTargetsResult()[index] = tmp
+                * *mParameterTransientValuePointers[j]
+                / *mAssTargetValuePointers[i]; 
     }
   
 }
