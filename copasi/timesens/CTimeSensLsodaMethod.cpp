@@ -1051,7 +1051,7 @@ void CTimeSensLsodaMethod::copySensitivitiesToResultMatrix()
   for (i=0; i<mpProblem->getNumTargets(); ++i)
     for (j=0; j<mNumParameters; ++j)
     {
-      tmp = 0.0;
+      tmp = mdAssignment_dPar[i][j];
       for (k=0; k<mSystemSize; ++k)
         tmp += mAssignmentJacobian[i][k] * mVariables[k + (j+1)*mSystemSize + 1];
       index[0]=i; index[1]=j;
