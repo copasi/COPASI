@@ -97,6 +97,17 @@ public:
   CDataArray * getTargetsResultAnnotated();
   const CDataArray * getTargetsResultAnnotated() const;
 
+  //now the same, but scaled
+  CArray & getScaledStateResult();
+  const CArray & getScaledStateResult() const;
+  CDataArray * getScaledStateResultAnnotated();
+  const CDataArray * getScaledStateResultAnnotated() const;
+
+  CArray & getScaledTargetsResult();
+  const CArray & getScaledTargetsResult() const;
+  CDataArray * getScaledTargetsResultAnnotated();
+  const CDataArray * getScaledTargetsResultAnnotated() const;
+
 private:
   /**
    * Initialize the method parameter
@@ -165,13 +176,14 @@ protected:
    *  These hold the results
    */
   CArray mStateResult;
-
   CDataArray * mpStateResultAnnotation;
-
   CArray mTargetsResult;
-
   CDataArray * mpTargetsResultAnnotation;
 
+  CArray mScaledStateResult;
+  CDataArray * mpScaledStateResultAnnotation;
+  CArray mScaledTargetsResult;
+  CDataArray * mpScaledTargetsResultAnnotation;
 
   //the parameters for the sensitivities
   CCopasiParameterGroup * mpParametersGroup;

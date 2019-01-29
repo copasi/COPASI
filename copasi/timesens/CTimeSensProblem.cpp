@@ -28,6 +28,8 @@ CTimeSensProblem::CTimeSensProblem(const CDataContainer * pParent):
   CTrajectoryProblem(CTaskEnum::Task::timeSens, pParent),
   mpStateResultAnnotation(NULL),
   mpTargetsResultAnnotation(NULL),
+  mpScaledStateResultAnnotation(NULL),
+  mpScaledTargetsResultAnnotation(NULL),
   mpParametersGroup(NULL)
 {
   initializeParameter();
@@ -44,6 +46,8 @@ CTimeSensProblem::CTimeSensProblem(const CTimeSensProblem & src,
   CTrajectoryProblem(src, pParent),
   mpStateResultAnnotation(NULL),
   mpTargetsResultAnnotation(NULL),
+  mpScaledStateResultAnnotation(NULL),
+  mpScaledTargetsResultAnnotation(NULL),
   mpParametersGroup(NULL)
 {
   initializeParameter();
@@ -73,6 +77,13 @@ void CTimeSensProblem::initObjects()
   mpTargetsResultAnnotation->setDescription("Time-Course Sensitivities target objects");
   mpTargetsResultAnnotation->setMode(CDataArray::Mode::Objects);
 
+  mpScaledStateResultAnnotation = new CDataArray("Scaled State Sensitivities array", this, &mScaledStateResult, false);
+  mpScaledStateResultAnnotation->setDescription("Time-Course Sensitivities of state variables");
+  mpScaledStateResultAnnotation->setMode(CDataArray::Mode::Objects);
+
+  mpScaledTargetsResultAnnotation = new CDataArray("Scaled Target Sensitivities array", this, &mScaledTargetsResult, false);
+  mpScaledTargetsResultAnnotation->setDescription("Time-Course Sensitivities target objects");
+  mpScaledTargetsResultAnnotation->setMode(CDataArray::Mode::Objects);
 }
 
 //virtual
@@ -271,4 +282,43 @@ const CDataArray * CTimeSensProblem::getTargetsResultAnnotated() const
   return mpTargetsResultAnnotation;
 }
 
+CArray & CTimeSensProblem::getScaledStateResult()
+{
+  return mScaledStateResult;
+}
+
+const CArray & CTimeSensProblem::getScaledStateResult() const
+{
+  return mScaledStateResult;
+}
+
+CDataArray * CTimeSensProblem::getScaledStateResultAnnotated()
+{
+  return mpScaledStateResultAnnotation;
+}
+
+const CDataArray * CTimeSensProblem::getScaledStateResultAnnotated() const
+{
+  return mpScaledStateResultAnnotation;
+}
+
+CArray & CTimeSensProblem::getScaledTargetsResult()
+{
+  return mScaledTargetsResult;
+}
+
+const CArray & CTimeSensProblem::getScaledTargetsResult() const
+{
+  return mScaledTargetsResult;
+}
+
+CDataArray * CTimeSensProblem::getScaledTargetsResultAnnotated()
+{
+  return mpScaledTargetsResultAnnotation;
+}
+
+const CDataArray * CTimeSensProblem::getScaledTargetsResultAnnotated() const
+{
+  return mpScaledTargetsResultAnnotation;
+}
 
