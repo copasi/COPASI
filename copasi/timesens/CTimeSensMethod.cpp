@@ -193,18 +193,29 @@ void CTimeSensMethod::initResult()
   mpProblem->getStateResultAnnotated()->setDimensionDescription(0, "Variables");
   mpProblem->getStateResultAnnotated()->setDimensionDescription(1, "Parameters");
 
+  mpProblem->getScaledStateResult().resize(s);
+  mpProblem->getScaledStateResultAnnotated()->resize();
+  mpProblem->getScaledStateResultAnnotated()->setDimensionDescription(0, "Variables");
+  mpProblem->getScaledStateResultAnnotated()->setDimensionDescription(1, "Parameters");
+
   size_t i;
   for (i = 0; i < mSystemSize; ++i)
   {
     CMathObject* mo = mpContainer->getMathObject(mpContainerStateTime+i+1);
     if (mo)
+    {
       mpProblem->getStateResultAnnotated()->setAnnotation(0, i,mo->getDataObject() );
+      mpProblem->getScaledStateResultAnnotated()->setAnnotation(0, i,mo->getDataObject() );
+    }
   }
   for (i = 0; i < mNumParameters; ++i)
   {
     const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(i)));
     if (mo)
+    {
       mpProblem->getStateResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
+      mpProblem->getScaledStateResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
+    }
   }
 
   s.clear();
@@ -216,21 +227,29 @@ void CTimeSensMethod::initResult()
   mpProblem->getTargetsResultAnnotated()->setDimensionDescription(0, "Targets");
   mpProblem->getTargetsResultAnnotated()->setDimensionDescription(1, "Parameters");
 
+  mpProblem->getScaledTargetsResult().resize(s);
+  mpProblem->getScaledTargetsResultAnnotated()->resize();
+  mpProblem->getScaledTargetsResultAnnotated()->setDimensionDescription(0, "Targets");
+  mpProblem->getScaledTargetsResultAnnotated()->setDimensionDescription(1, "Parameters");
+
   for (i = 0; i < mpProblem->getNumTargets(); ++i)
   {
     const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getTargetCN(i)));
     if (mo)
-    mpProblem->getTargetsResultAnnotated()->setAnnotation(0, i, mo->getDataObject() );
+    {
+      mpProblem->getTargetsResultAnnotated()->setAnnotation(0, i, mo->getDataObject() );
+      mpProblem->getScaledTargetsResultAnnotated()->setAnnotation(0, i, mo->getDataObject() );
+    }
   }
   for (i = 0; i < mNumParameters; ++i)
   {
     const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(i)));
     if (mo)
+    {
       mpProblem->getTargetsResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
+      mpProblem->getScaledTargetsResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
+    }
   }
-
-
-
 }
 
 void CTimeSensMethod::calculate_dInitialState_dPar(CMatrix<C_FLOAT64>& s)
