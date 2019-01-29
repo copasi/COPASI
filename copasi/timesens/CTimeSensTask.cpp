@@ -549,3 +549,10 @@ bool CTimeSensTask::updateMatrices()
   return true;
 }
 
+//virtual
+void CTimeSensTask::output(const COutputInterface::Activity & activity)
+  {
+    if (mpTimeSensMethod)
+      mpTimeSensMethod->copySensitivitiesToResultMatrix();
+    CCopasiTask::output(activity);
+  }

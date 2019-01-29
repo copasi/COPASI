@@ -299,6 +299,12 @@ public:
   virtual void evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
                      const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD);
 
+  /**
+   * copies the sensitivity values from the state vector to the (annotated) result matrix
+   */
+  virtual void copySensitivitiesToResultMatrix();
+
+
 private:
   /**
    * Initialize the method parameter
@@ -330,10 +336,6 @@ private:
   void saveState(State & state, const CTimeSensMethod::Status & status) const;
   void resetState(State & state);
 
-  /**
-   * copies the sensitivity values from the state vector to the (annotated) result matrix
-   */
-  void copySensitivitiesToResultMatrix();
 
 protected:
   /**

@@ -139,6 +139,11 @@ public:
    */
   const bool & integrateReducedModel() const;
 
+  /**
+   * This updates the result matrices from the internal calculations. To be called before output.
+   */
+  virtual void copySensitivitiesToResultMatrix() = 0;
+
 protected:
   /**
    * Signal that the math container has changed

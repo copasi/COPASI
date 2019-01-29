@@ -128,6 +128,12 @@ public:
 
   virtual bool updateMatrices();
 
+  /**
+   * Perform an output event for the current activity
+   * @param const Activity & activity
+   */
+  virtual void output(const COutputInterface::Activity & activity);
+
 
 protected:
   /**
