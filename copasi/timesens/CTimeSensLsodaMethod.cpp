@@ -167,6 +167,10 @@ void CTimeSensLsodaMethod::stateChange(const CMath::StateChange & change)
 
       mpContainer->updateSimulatedValues(*mpReducedModel);
       setRootMaskType(NONE);
+    
+      //the event has changed variables in the math container, so the state for the integrator needs to be updated
+      memcpy(mVariables.array(), mpContainerStateTime, (mSystemSize+1) * sizeof(C_FLOAT64)); //TODO shift?
+
     }
 }
 
