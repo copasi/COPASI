@@ -262,7 +262,7 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
                   mRootsFound.array()); // 20. integer array of length NG for output of root information
 
           memcpy(mpContainerStateTime, mVariables.array(), (mSystemSize+1) * sizeof(C_FLOAT64));
-          copySensitivitiesToResultMatrix(); //TODO we do this now after each integration step, probably only necessary before output...
+          //copySensitivitiesToResultMatrix(); //TODO we do this now after each integration step, probably only necessary before output...
   
           // There exist situations where LSODAR reports status = 3, which are actually status = -33
           // Obviously the trivial case is where LSODAR did not advance at all, i.e, the start time
@@ -465,7 +465,7 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
              &mJType);        // 17. the type of jacobian calculate (2)
 
       memcpy(mpContainerStateTime, mVariables.array(), (mSystemSize+1) * sizeof(C_FLOAT64));
-      copySensitivitiesToResultMatrix(); //TODO we do this now after each integration step, probably only necessary before output...
+      //copySensitivitiesToResultMatrix(); //TODO we do this now after each integration step, probably only necessary before output...
 
       if (mLsodaStatus <= 0 ||
           !mpContainer->isStateValid())
@@ -1040,7 +1040,7 @@ void CTimeSensLsodaMethod::copySensitivitiesToResultMatrix()
 
     }
   
-  //TODO calculate sensitivities for assignments
+  //calculate sensitivities for assignments
   calculate_dAssignments_dPar(mdAssignment_dPar);
   std::cout << mdAssignment_dPar;
   calculate_dAssignments_dState(mAssignmentJacobian, *mpReducedModel);
