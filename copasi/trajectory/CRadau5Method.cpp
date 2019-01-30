@@ -226,12 +226,11 @@ CTrajectoryMethod::Status CRadau5Method::step(const double & deltaT,
   else
     {
       mRADAU(&mData.dim, &EvalF, &mTime, mpY, &EndTime, &H,
-             mpRelativeTolerance, mpAtol, &ITOL,
+             mpRelativeTolerance, mpAbsoluteTolerance, &ITOL,
              (U_fp) EvalJ, &IJAC, &MLJAC, &MUJAC,
              (U_fp) fcn, &IMAS, &MLMAS, &MUMAS,
-             (U_fp) solout, &IOUT,
-             mDWork.array(), &LWORK, mIWork.array(), &LIWORK,
-             &rpar, &ipar, &idid);
+             (U_fp) solout, &IOUT, mDWork.array(), &LWORK,
+             mIWork.array(), &LIWORK, &rpar, &ipar, &idid);
 
       if (idid < 1)
         {
@@ -363,7 +362,6 @@ void CRadau5Method::start()
   /* Mass matrix routine is identity */
   IMAS = 0;
   MLMAS = 0;
-  MUMAS = 0;
 
   /* computing the size of the working arrays */
   int ljac, lmas, le;

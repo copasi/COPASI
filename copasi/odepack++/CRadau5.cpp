@@ -11,9 +11,6 @@
  */
 #include <cmath>
 
-#include <algorithm>
-#include <string>
-
 #include "copasi.h"
 
 #include "CRadau5.h"
@@ -1406,10 +1403,10 @@ L40:
         goto L40;
     }
     /* --- ERROR ESTIMATION */
-    estrad_(n, &fjac[fjac_offset], ldjac, mljac, mujac, &fmas[fmas_offset],
-            ldmas, mlmas, mumas, h__, &dd1, &dd2, &dd3, (S_fp)fcn, nfcn, &y0[1], &y[1], ijob, x, m1, m2, nm1, &e1[e1_offset], lde1, &z1[1], &
-            z2[1], &z3[1], &cont[1], &f1[1], &f2[1], &ip1[1], &iphes[1], &
-            scal[1], &err, &first, &reject, &fac1, &rpar[1], &ipar[1]);
+    estrad_(n, &fjac[fjac_offset], ldjac, mljac, mujac, &fmas[fmas_offset],ldmas, mlmas, mumas,
+            h__, &dd1, &dd2, &dd3, (S_fp)fcn, nfcn, &y0[1], &y[1], ijob, x, m1, m2, nm1, &e1[e1_offset],
+            lde1, &z1[1], &z2[1], &z3[1], &cont[1], &f1[1], &f2[1], &ip1[1], &iphes[1], &scal[1], &err,
+            &first, &reject, &fac1, &rpar[1], &ipar[1]);
     /* --- COMPUTATION OF HNEW */
     /* --- WE REQUIRE .2<=HNEW/H<=8. */
     /* Computing MIN */
