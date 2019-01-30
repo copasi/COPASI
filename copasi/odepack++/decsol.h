@@ -9,19 +9,17 @@
 #ifndef decsol_h
 #define decsol_h
 
-
-
 #include <cmath>
 #include "copasi.h"
 #include "lapack/lapackwrap.h"
 
-//template<class T>
-//inline const T& max(const T& a, const T& b)
-//{ return a > b ? a : b; }
-//
-//template<class T>
-//inline const T& min(const T& a, const T& b)
-//{ return a < b ? a : b; }
+template<class T>
+inline const T& max(const T& a, const T& b)
+{ return a > b ? a : b; }
+
+template<class T>
+inline const T& min(const T& a, const T& b)
+{ return a < b ? a : b; }
 
 // Matrix Triangularization by Gaussian Elimination
 int dec_(integer n, double **A, int *ip);
