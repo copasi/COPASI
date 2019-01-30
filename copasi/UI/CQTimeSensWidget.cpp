@@ -390,7 +390,7 @@ for (std::string cn : toBeRemoved)
 
   for (size_t i = 0; i < timeSensProblem->getNumTargets(); ++i)
     {
-      std::string cn = timeSensProblem->getParameterCN(i);
+      std::string cn = timeSensProblem->getTargetCN(i);
       const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObjectFromCN(cn));
 
       if (!pObject)
