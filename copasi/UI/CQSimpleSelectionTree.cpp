@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -532,14 +537,16 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           for (; its != pObjects->end(); ++its)
             {
               ann = dynamic_cast<CDataArray *>(*its);
+
               //if (!ann) continue;
               if (ann && !ann->isEmpty() && filter(classes, ann))
                 {
                   pItem = new QTreeWidgetItem(this->mpResultSteadyStateSubtree, QStringList(FROM_UTF8(ann->getObjectName())));
                   treeItems[pItem] = ann;
                 }
-            
+
               pEigen = dynamic_cast<CEigen*>(*its); //not the most straight forward way, testing all children
+
               if (pEigen && (classes & (Results | AnyObject)) && pEigen->getObjectName() == "Eigenvalues of reduced system Jacobian")
                 {
                   //add a subtree for all the functions calculated from the reduced jacobian eigenvectors
@@ -548,18 +555,20 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
                   //loop over children of CEigen object
                   const CDataContainer::objectMap *pO = & pEigen->getObjects();
                   CDataContainer::objectMap::const_iterator itss = pO->begin();
+
                   for (; itss != pO->end(); ++itss)
                     {
                       if (filter(NumericValues, *itss)) // for now from this specific subtree we only add numeric values.
                         {
-                          if ((*itss)->getObjectName(). substr(0,6) == "Vector" )
+                          if ((*itss)->getObjectName(). substr(0, 6) == "Vector")
                             continue;
+
                           pItem = new QTreeWidgetItem(pSubtree, QStringList(FROM_UTF8((*itss)->getObjectName())));
                           treeItems[pItem] = *itss;
                         }
                     }
                 }
-            
+
             }
         }
     }
@@ -868,7 +877,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
     <Object cn="CN=Root,CN=Information,String=User Given Name"/>
     <Object cn="CN=Root,CN=Information,String=User Organization"/>
     <Object cn="CN=Root,CN=Information,String=COPASI Version"/>
-    <Object cn="CN=Root,CN=Information,Timer=Current Date/Dime"/>
+    <Object cn="CN=Root,CN=Information,Timer=Current Date/Time"/>
     <Object cn="CN=Root,CN=Information,String=File Name"/>
   */
 
@@ -912,7 +921,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Timer=Current Date/Dime")));
+  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Timer=Current Date/Time")));
 
   if (filter(classes, pObject))
     {
@@ -934,7 +943,7 @@ void CQSimpleSelectionTree::slotItemDoubleClicked(QTreeWidgetItem * item, int co
   if (!treeHasSelection()) item->setSelected(true);
 
   if (item->childCount() == 0)
-  emit selectionCommitted();
+    emit selectionCommitted();
 }
 
 std::vector<const CDataObject * > *CQSimpleSelectionTree::getTreeSelection()
