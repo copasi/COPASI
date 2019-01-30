@@ -575,7 +575,7 @@ void CTimeSensLsodaMethod::start()
   for (i = 0; i < mSystemSize+1; ++i)
     mAtol[i] = tmpAtol[i+ mpContainer->getCountFixedEventTargets()]; //TODO shift? + mpContainer->getCountFixedEventTargets()
   for (i = mSystemSize+1; i < mData.dim; ++i)
-    mAtol[i] = 1e-12;
+    mAtol[i] = mAtol[i-mSystemSize];// 1e-12;
 
   /* Configure lsoda(r) */
   mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9) + 3 * mNumRoots);
