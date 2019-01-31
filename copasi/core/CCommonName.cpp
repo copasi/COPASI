@@ -61,7 +61,15 @@ CCommonName::CCommonName():
 
 CCommonName::CCommonName(const std::string & name):
   string(name)
-{}
+{
+  if (name ==
+      "CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Simulation Counter")
+    assign("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations");
+
+  if (name == "CN=Root,CN=Information,Timer=Current Date/Dime")
+    assign("CN=Root,CN=Information,Timer=Current Date/Time");
+
+}
 
 CCommonName::CCommonName(const CCommonName & src):
   string(src)
