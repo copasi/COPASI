@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -102,7 +107,7 @@ CData CDataModel::toData() const
 }
 
 // virtual
-bool CDataModel::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CDataModel::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = true;
 
@@ -2823,7 +2828,7 @@ void CDataModel::commonAfterLoad(CProcessReport* pProcessReport,
     }
 }
 
-CUndoData::ChangeSet CDataModel::applyData(const CUndoData & data)
+CUndoData::CChangeSet CDataModel::applyData(const CUndoData & data)
 {
   if (mData.mpUndoStack != NULL &&
       !data.empty())
@@ -2832,10 +2837,10 @@ CUndoData::ChangeSet CDataModel::applyData(const CUndoData & data)
       return mData.mpUndoStack->record(data, true);
     }
 
-  return CUndoData::ChangeSet();
+  return CUndoData::CChangeSet();
 }
 
-CUndoData::ChangeSet CDataModel::recordData(const CUndoData & data)
+CUndoData::CChangeSet CDataModel::recordData(const CUndoData & data)
 {
   if (mData.mpUndoStack != NULL &&
       !data.empty())
@@ -2843,7 +2848,7 @@ CUndoData::ChangeSet CDataModel::recordData(const CUndoData & data)
       return mData.mpUndoStack->record(data, false);
     }
 
-  return CUndoData::ChangeSet();
+  return CUndoData::CChangeSet();
 }
 
 const CDataObject *CDataModel::findObjectByDisplayName(const std::string& displayString) const

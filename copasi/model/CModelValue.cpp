@@ -91,7 +91,7 @@ CData CModelEntity::toData() const
 }
 
 // virtual
-bool CModelEntity::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CModelEntity::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = CDataContainer::applyData(data, changes);
   bool compileModel = false;
@@ -927,7 +927,7 @@ CData CModelValue::toData() const
 }
 
 // virtual
-bool CModelValue::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CModelValue::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = CModelEntity::applyData(data, changes);
 

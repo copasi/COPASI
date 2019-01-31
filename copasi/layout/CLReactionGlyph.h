@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -113,7 +118,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
 
   CLReferenceGlyph(const std::string & name = "ReferenceGlyph",
                    const CDataContainer * pParent = NO_PARENT);
@@ -241,7 +246,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
 
   CLMetabReferenceGlyph(const std::string & name = "MetabReferenceGlyph",
                         const CDataContainer * pParent = NO_PARENT);
@@ -328,7 +333,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
 
   CLGeneralGlyph(const std::string & name = "GeneralGlyph",
                  const CDataContainer * pParent = NO_PARENT);
@@ -422,7 +427,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
 
   CLReactionGlyph(const std::string & name = "ReactionGlyph",
                   const CDataContainer * pParent = NO_PARENT);

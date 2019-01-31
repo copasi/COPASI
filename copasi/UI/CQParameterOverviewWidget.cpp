@@ -64,8 +64,8 @@ CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char
   mpComboDelegate = new CQComboDelegate(this);
   mpTreeView->setItemDelegateForColumn(5, mpComboDelegate);
 
-  connect(mpParameterSetDM, SIGNAL(signalNotifyChanges(const CUndoData::ChangeSet &)),
-          this, SLOT(slotNotifyChanges(const CUndoData::ChangeSet &)));
+  connect(mpParameterSetDM, SIGNAL(signalNotifyChanges(const CUndoData::CChangeSet &)),
+          this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
   connect(mpParameterSetDM, SIGNAL(signalOpenEditor(const QModelIndex &)),
           this, SLOT(slotOpenEditor(const QModelIndex &)));
   connect(mpParameterSetDM, SIGNAL(signalCloseEditor(const QModelIndex &)),

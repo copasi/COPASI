@@ -60,8 +60,8 @@ CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget *parent, const char *
   mpTblGlobalQuantities->verticalHeader()->hide();
   mpTblGlobalQuantities->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
-  connect(mpGlobalQuantityDM, SIGNAL(signalNotifyChanges(const CUndoData::ChangeSet &)),
-          this, SLOT(slotNotifyChanges(const CUndoData::ChangeSet &)));
+  connect(mpGlobalQuantityDM, SIGNAL(signalNotifyChanges(const CUndoData::CChangeSet &)),
+          this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
   connect(mpGlobalQuantityDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),

@@ -61,9 +61,9 @@ const CUndoData & CUndoStack::operator [](const size_t & index) const
   return *std::vector< CUndoData * >::operator[](index);
 }
 
-CUndoData::ChangeSet CUndoStack::setCurrentIndex(const size_t & index, const bool & execute)
+CUndoData::CChangeSet CUndoStack::setCurrentIndex(const size_t & index, const bool & execute)
 {
-  CUndoData::ChangeSet Changes;
+  CUndoData::CChangeSet Changes;
 
   // Nothing to do
   if (index == mCurrent ||
@@ -135,7 +135,7 @@ std::pair< const CUndoData *, bool > CUndoStack::getLastExecution() const
   return std::make_pair(&operator[](mLastExecuted), mLastExecuted == mCurrent);
 }
 
-CUndoData::ChangeSet CUndoStack::record(const CUndoData & data, const bool & execute)
+CUndoData::CChangeSet CUndoStack::record(const CUndoData & data, const bool & execute)
 {
   // Remove all not applied data, i.e., all data which we can redo
   while (canRedo())
@@ -162,22 +162,22 @@ bool CUndoStack::canRedo() const
   return mCurrent + 1 < size();
 }
 
-CUndoData::ChangeSet CUndoStack::undo()
+CUndoData::CChangeSet CUndoStack::undo()
 {
   if (canUndo())
     {
       return setCurrentIndex(mCurrent - 1, true);
     }
 
-  return CUndoData::ChangeSet();
+  return CUndoData::CChangeSet();
 }
 
-CUndoData::ChangeSet CUndoStack::redo()
+CUndoData::CChangeSet CUndoStack::redo()
 {
   if (canRedo())
     {
       return setCurrentIndex(mCurrent + 1, true);
     }
 
-  return CUndoData::ChangeSet();
+  return CUndoData::CChangeSet();
 }

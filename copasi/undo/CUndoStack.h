@@ -35,9 +35,9 @@ public:
   size_t size() const;
   const CUndoData & operator [](const size_t & index) const;
 
-  CUndoData::ChangeSet setCurrentIndex(const size_t & index, const bool & execute = true);
+  CUndoData::CChangeSet setCurrentIndex(const size_t & index, const bool & execute = true);
   size_t currentIndex() const;
-  CUndoData::ChangeSet record(const CUndoData & data, const bool & execute);
+  CUndoData::CChangeSet record(const CUndoData & data, const bool & execute);
 
   const_iterator begin() const;
   const_iterator end() const;
@@ -51,8 +51,8 @@ public:
   bool canUndo() const;
   bool canRedo() const;
 
-  CUndoData::ChangeSet undo();
-  CUndoData::ChangeSet redo();
+  CUndoData::CChangeSet undo();
+  CUndoData::CChangeSet redo();
 
 private:
   CDataModel * mpDataModel;

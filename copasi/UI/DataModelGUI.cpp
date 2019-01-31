@@ -742,7 +742,7 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
   return true;
 }
 
-void DataModelGUI::notifyChanges(const CUndoData::ChangeSet & changes)
+void DataModelGUI::notifyChanges(const CUndoData::CChangeSet & changes)
 {
   // The GUI is inactive whenever a progress bar exist. We wait with updates
   // until then.
@@ -754,8 +754,8 @@ void DataModelGUI::notifyChanges(const CUndoData::ChangeSet & changes)
       List.push_back(mpDataModel);
 
       // We loop through all the changes and call notify
-      CUndoData::ChangeSet::const_iterator it = changes.begin();
-      CUndoData::ChangeSet::const_iterator end = changes.end();
+      CUndoData::CChangeSet::const_iterator it = changes.begin();
+      CUndoData::CChangeSet::const_iterator end = changes.end();
 
       ListViews::Action Action = ListViews::Action::CHANGE;
 

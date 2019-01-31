@@ -141,7 +141,7 @@ CData CModelParameter::toData() const
 }
 
 // virtual
-bool CModelParameter::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CModelParameter::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   if (mType == Type::Set)
     {

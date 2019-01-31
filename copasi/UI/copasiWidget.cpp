@@ -152,7 +152,7 @@ bool CopasiWidget::protectedNotify(ListViews::ObjectType objectType, ListViews::
 }
 
 // virtual
-void CopasiWidget::slotNotifyChanges(const CUndoData::ChangeSet & changes)
+void CopasiWidget::slotNotifyChanges(const CUndoData::CChangeSet & changes)
 {
   if (!mIgnoreUpdates)
     {

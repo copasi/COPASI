@@ -138,7 +138,7 @@ CData CCopasiParameter::toData() const
 }
 
 // virtual
-bool CCopasiParameter::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CCopasiParameter::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = CDataContainer::applyData(data, changes);
 

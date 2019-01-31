@@ -137,7 +137,7 @@ public:
   //bool scheduleMathModelUpdate(const bool & update = true);
 
   bool notify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn = std::string());
-  void notifyChanges(const CUndoData::ChangeSet & changes);
+  void notifyChanges(const CUndoData::CChangeSet & changes);
 
   void registerListView(ListViews * pListView);
   void deregisterListView(ListViews * pListView);

@@ -28,6 +28,109 @@ const CEnumAnnotation< std::string, CUndoData::Type > CUndoData::TypeName(
   "Remove"
 });
 
+CUndoData::CChangeSet::CChangeSet() :
+  std::vector< ChangeInfo >(),
+  mMap()
+{}
+
+CUndoData::CChangeSet::CChangeSet(const CUndoData::CChangeSet & src) :
+  std::vector< ChangeInfo >(src),
+  mMap(src.mMap)
+{}
+
+CUndoData::CChangeSet::~CChangeSet()
+{}
+
+void CUndoData::CChangeSet::add(const CUndoData::ChangeInfo & info)
+{
+  CCommonName ParentCN;
+  std::string ObjectType;
+  std::string ObjectName;
+
+  CCommonName(info.objectCN).split(ParentCN, ObjectType, ObjectName);
+
+  std::map< std::string, size_t >::iterator found = mMap.find(info.objectCN);
+
+  if (found != mMap.end())
+    {
+      ChangeInfo & Info = operator[](found->second);
+
+      // Handle renamed objects
+      if (ObjectName != info.objectName)
+        {
+          std::map< std::string, size_t >::iterator toBeErased = found;
+          found = mMap.insert(std::make_pair(CCommonName::construct(ParentCN, ObjectType, info.objectName), found->second)).first;
+          mMap.erase(toBeErased);
+        }
+
+      switch (Info.type)
+        {
+          case Type::INSERT:
+
+            if (info.type == Type::REMOVE)
+              {
+                erase(begin() + found->second);
+                mMap.erase(found);
+              }
+            else
+              {
+                // We need to use the new CN and name
+                Info.objectCN = CCommonName::construct(ParentCN, ObjectType, info.objectName);
+                Info.objectName = info.objectName;
+              }
+
+            break;
+
+          case Type::REMOVE:
+
+            if (info.type == Type::INSERT)
+              {
+                erase(begin() + found->second);
+                mMap.erase(found);
+              }
+
+            break;
+
+          case Type::CHANGE:
+            if (info.type == Type::REMOVE)
+              {
+                Info.type = info.type;
+              }
+            else
+              {
+                Info.objectName = info.objectName;
+              }
+
+            break;
+        }
+    }
+  else
+    {
+      mMap.insert(std::make_pair(CCommonName::construct(ParentCN, ObjectType, info.objectName), size()));
+      push_back(info);
+    }
+}
+
+CUndoData::CChangeSet::const_iterator CUndoData::CChangeSet::begin() const
+{
+  return std::vector< ChangeInfo >::begin();
+}
+
+CUndoData::CChangeSet::const_iterator CUndoData::CChangeSet::end() const
+{
+  return std::vector< ChangeInfo >::end();
+}
+
+void CUndoData::CChangeSet::clear()
+{
+  std::vector< ChangeInfo >::clear();
+}
+
+bool CUndoData::CChangeSet::empty() const
+{
+  return std::vector< ChangeInfo >::empty();
+}
+
 CUndoData::CUndoData():
   mType(CUndoData::Type::CHANGE),
   mOldData(),
@@ -399,7 +502,7 @@ bool CUndoData::isChangedProperty(const std::string & name) const
   return mChangedProperties.find(name) != mChangedProperties.end();
 }
 
-bool CUndoData::apply(const CDataModel & dataModel, ChangeSet & changes, const bool & execute) const
+bool CUndoData::apply(const CDataModel & dataModel, CUndoData::CChangeSet & changes, const bool & execute) const
 {
   bool success = true;
 
@@ -423,7 +526,7 @@ bool CUndoData::apply(const CDataModel & dataModel, ChangeSet & changes, const b
   return success;
 }
 
-bool CUndoData::undo(const CDataModel & dataModel, ChangeSet & changes, const bool & execute) const
+bool CUndoData::undo(const CDataModel & dataModel, CUndoData::CChangeSet & changes, const bool & execute) const
 {
   bool success = true;
 
@@ -660,7 +763,7 @@ void CUndoData::clear()
 }
 
 // static
-bool CUndoData::insert(const CDataModel & dataModel, const bool & apply, ChangeSet & changes, const bool & execute) const
+bool CUndoData::insert(const CDataModel & dataModel, const bool & apply, CUndoData::CChangeSet & changes, const bool & execute) const
 {
   const CData & Data = getData(apply);
 
@@ -691,7 +794,7 @@ bool CUndoData::insert(const CDataModel & dataModel, const bool & apply, ChangeS
       success &= pObject->applyData(Data, changes);
     }
 
-  changes.push_back({getObjectCN(apply), CUndoData::Type::INSERT, Data.getProperty(CData::OBJECT_TYPE).toString(), Data.getProperty(CData::OBJECT_NAME).toString()});
+  changes.add({getObjectCN(apply), CUndoData::Type::INSERT, Data.getProperty(CData::OBJECT_TYPE).toString(), Data.getProperty(CData::OBJECT_NAME).toString()});
 
   success &= executePostProcessData(dataModel, apply, changes, execute);
 
@@ -699,7 +802,7 @@ bool CUndoData::insert(const CDataModel & dataModel, const bool & apply, ChangeS
 }
 
 // static
-bool CUndoData::remove(const CDataModel & dataModel, const bool & apply, ChangeSet & changes, const bool & execute) const
+bool CUndoData::remove(const CDataModel & dataModel, const bool & apply, CUndoData::CChangeSet & changes, const bool & execute) const
 {
   const CData & Data = getData(apply);
 
@@ -710,7 +813,7 @@ bool CUndoData::remove(const CDataModel & dataModel, const bool & apply, ChangeS
 
   bool success = executePreProcessData(dataModel, apply, changes, execute);
 
-  changes.push_back({getObjectCN(apply), CUndoData::Type::REMOVE, Data.getProperty(CData::OBJECT_TYPE).toString(), Data.getProperty(CData::OBJECT_NAME).toString()});
+  changes.add({getObjectCN(apply), CUndoData::Type::REMOVE, Data.getProperty(CData::OBJECT_TYPE).toString(), Data.getProperty(CData::OBJECT_NAME).toString()});
 
   if (execute)
     {
@@ -723,7 +826,7 @@ bool CUndoData::remove(const CDataModel & dataModel, const bool & apply, ChangeS
 }
 
 // static
-bool CUndoData::change(const CDataModel & dataModel, const bool & apply, ChangeSet & changes, const bool & execute) const
+bool CUndoData::change(const CDataModel & dataModel, const bool & apply, CUndoData::CChangeSet & changes, const bool & execute) const
 {
   const CData & OldData = getData(!apply);
   const CData & NewData = getData(apply);
@@ -759,13 +862,13 @@ bool CUndoData::change(const CDataModel & dataModel, const bool & apply, ChangeS
       success &= pObject->applyData(NewData, changes);
     }
 
-  changes.push_back({CCommonName::fromData(OldData), CUndoData::Type::CHANGE, NewData.getProperty(CData::OBJECT_TYPE).toString(), NewData.getProperty(CData::OBJECT_NAME).toString()});
+  changes.add({CCommonName::fromData(OldData), CUndoData::Type::CHANGE, NewData.getProperty(CData::OBJECT_TYPE).toString(), NewData.getProperty(CData::OBJECT_NAME).toString()});
   success &= executePostProcessData(dataModel, apply, changes, execute);
 
   return success;
 }
 
-bool CUndoData::executePreProcessData(const CDataModel & dataModel, const bool & apply, ChangeSet & changes, const bool & execute) const
+bool CUndoData::executePreProcessData(const CDataModel & dataModel, const bool & apply, CUndoData::CChangeSet & changes, const bool & execute) const
 {
   bool success = true;
 
@@ -795,7 +898,7 @@ bool CUndoData::executePreProcessData(const CDataModel & dataModel, const bool &
   return success;
 }
 
-bool CUndoData::executePostProcessData(const CDataModel & dataModel, const bool & apply, ChangeSet & changes, const bool & execute) const
+bool CUndoData::executePostProcessData(const CDataModel & dataModel, const bool & apply, CUndoData::CChangeSet & changes, const bool & execute) const
 {
   bool success = true;
 

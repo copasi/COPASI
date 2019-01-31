@@ -60,8 +60,8 @@ CQEventsWidget::CQEventsWidget(QWidget *parent, const char *name)
   mpTblEvents->verticalHeader()->hide();
   mpTblEvents->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
-  connect(mpEventDM, SIGNAL(signalNotifyChanges(const CUndoData::ChangeSet &)),
-          this, SLOT(slotNotifyChanges(const CUndoData::ChangeSet &)));
+  connect(mpEventDM, SIGNAL(signalNotifyChanges(const CUndoData::CChangeSet &)),
+          this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
   connect(mpEventDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),

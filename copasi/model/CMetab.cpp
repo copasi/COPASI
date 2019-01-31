@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -64,7 +69,7 @@ CData CMetab::toData() const
 }
 
 // virtual
-bool CMetab::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CMetab::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = CModelEntity::applyData(data, changes);
 
@@ -253,7 +258,7 @@ bool CMetab::setObjectParent(const CDataContainer * pParent)
     setStatus(Status::REACTIONS);
 
   setStatus(CurrentStatus);
-  
+
   //restore the expression
   if (pParent)
     setExpression(tmpexp);
@@ -291,8 +296,6 @@ bool CMetab::setCompartment(const std::string& compName)
   CRegisteredCommonName::setEnabled(wasEnabled);
   return success;
 }
-
-
 
 // ***** set quantities ********
 
@@ -677,7 +680,7 @@ CData CMetabOld::toData() const
 }
 
 // virtual
-bool CMetabOld::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CMetabOld::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = true;
 

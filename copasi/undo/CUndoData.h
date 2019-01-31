@@ -43,7 +43,30 @@ public:
     std::string objectName;
   };
 
-  typedef std::vector< ChangeInfo > ChangeSet;
+  class CChangeSet : private std::vector< ChangeInfo >
+  {
+  public:
+    typedef std::vector< ChangeInfo >::const_iterator const_iterator;
+
+    CChangeSet();
+
+    CChangeSet(const CChangeSet & src);
+
+    ~CChangeSet();
+
+    void add(const ChangeInfo & info);
+
+    const_iterator begin() const;
+
+    const_iterator end() const;
+
+    void clear();
+
+    bool empty() const;
+
+  private:
+    std::map< std::string, size_t > mMap;
+  };
 
   static const CEnumAnnotation< std::string, Type > TypeName;
 
@@ -99,9 +122,9 @@ public:
 
   bool isChangedProperty(const CData::Property & property) const;
 
-  bool apply(const CDataModel & dataModel, ChangeSet & changes, const bool & execute) const;
+  bool apply(const CDataModel & dataModel, CChangeSet & changes, const bool & execute) const;
 
-  bool undo(const CDataModel & dataModel, ChangeSet & changes, const bool & execute) const;
+  bool undo(const CDataModel & dataModel, CChangeSet & changes, const bool & execute) const;
 
   bool addMetaDataProperty(const std::string & property, const CDataValue & value);
 
@@ -146,12 +169,12 @@ private:
 
   bool isChangedProperty(const std::string & name) const;
 
-  bool insert(const CDataModel & dataModel, const bool & apply, ChangeSet & changes, const bool & execute) const;
-  bool remove(const CDataModel & dataModel, const bool & apply, ChangeSet & changes, const bool & execute) const;
-  bool change(const CDataModel & dataModel, const bool & apply, ChangeSet & changes, const bool & execute) const;
+  bool insert(const CDataModel & dataModel, const bool & apply, CChangeSet & changes, const bool & execute) const;
+  bool remove(const CDataModel & dataModel, const bool & apply, CChangeSet & changes, const bool & execute) const;
+  bool change(const CDataModel & dataModel, const bool & apply, CChangeSet & changes, const bool & execute) const;
 
-  bool executePreProcessData(const CDataModel & dataModel, const bool & apply, ChangeSet & changes, const bool & execute) const;
-  bool executePostProcessData(const CDataModel & dataModel, const bool & apply, ChangeSet & changes, const bool & execute) const;
+  bool executePreProcessData(const CDataModel & dataModel, const bool & apply, CChangeSet & changes, const bool & execute) const;
+  bool executePostProcessData(const CDataModel & dataModel, const bool & apply, CChangeSet & changes, const bool & execute) const;
 
   const CData & getData(const bool & apply) const;
 

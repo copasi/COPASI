@@ -153,7 +153,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
 
   /**
    * Create the undo data which represents the changes recording the

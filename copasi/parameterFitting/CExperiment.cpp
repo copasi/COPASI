@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -416,7 +421,7 @@ void CExperiment::updateFittedPointValuesFromExtendedTimeSeries(const size_t & i
     {
       it->setValues(mExtendedTimeSeries[index * (mDataDependent.numCols() + 1)],
                     std::numeric_limits<C_FLOAT64>::quiet_NaN(),
-                    mExtendedTimeSeries[index * (mDataDependent.numCols() + 1) + i] ,
+                    mExtendedTimeSeries[index * (mDataDependent.numCols() + 1) + i],
                     std::numeric_limits<C_FLOAT64>::quiet_NaN());
     }
 }
@@ -1723,7 +1728,7 @@ CData CFittingPoint::toData() const
 }
 
 // virtual
-bool CFittingPoint::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CFittingPoint::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = true;
 

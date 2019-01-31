@@ -147,7 +147,7 @@ CData CUnitDefinition::toData() const
 }
 
 // virtual
-bool CUnitDefinition::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CUnitDefinition::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = CDataContainer::applyData(data, changes);
 

@@ -75,6 +75,8 @@ public:
 
   static std::string fromData(const CData & data);
 
+  static std::string construct(const CCommonName & parent, const std::string & objectType, const std::string & objectName);
+
   std::string::size_type findNext(const std::string & toFind,
                                   const std::string::size_type & pos = 0) const;
 

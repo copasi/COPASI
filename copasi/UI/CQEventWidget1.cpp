@@ -135,7 +135,7 @@ void CQEventWidget1::slotBtnCopy()
   ToCopy.removeProperty(CData::OBJECT_UUID);
   ToCopy.removeProperty(CData::OBJECT_REFERENCES);
 
-  CUndoData::ChangeSet Changes;
+  CUndoData::CChangeSet Changes;
   mpEvent->applyData(ToCopy, Changes);
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpEvent);

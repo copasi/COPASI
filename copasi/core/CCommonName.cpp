@@ -68,7 +68,6 @@ CCommonName::CCommonName(const std::string & name):
 
   if (name == "CN=Root,CN=Information,Timer=Current Date/Dime")
     assign("CN=Root,CN=Information,Timer=Current Date/Time");
-
 }
 
 CCommonName::CCommonName(const CCommonName & src):
@@ -263,10 +262,9 @@ std::string CCommonName::unescape(const std::string & name)
 }
 
 // static
-std::string CCommonName::fromData(const CData & data)
+std::string CCommonName::construct(const CCommonName & parent, const std::string & objectType, const std::string & objectName)
 {
-  CCommonName CN = data.getProperty(CData::OBJECT_PARENT_CN).toString();
-  std::string ObjectType = data.getProperty(CData::OBJECT_TYPE).toString();
+  CCommonName CN(parent);
 
   CCommonName ParentParentCN;
   std::string ParentObjectName;
@@ -275,16 +273,26 @@ std::string CCommonName::fromData(const CData & data)
   CN.split(ParentParentCN, ParentObjectType, ParentObjectName);
 
   if (ParentObjectType == "Vector" ||
-      ObjectType.empty())
+      objectType.empty())
     {
-      CN += "[" + CCommonName::escape(data.getProperty(CData::OBJECT_NAME).toString()) + "]";
+      CN += "[" + CCommonName::escape(objectName) + "]";
     }
   else
     {
-      CN += "," + CCommonName::escape(ObjectType) + "=" + CCommonName::escape(data.getProperty(CData::OBJECT_NAME).toString());
+      CN += "," + CCommonName::escape(objectType) + "=" + CCommonName::escape(objectName);
     }
 
   return CN;
+}
+
+// static
+std::string CCommonName::fromData(const CData & data)
+{
+  CCommonName Parent = data.getProperty(CData::OBJECT_PARENT_CN).toString();
+  std::string ObjectType = data.getProperty(CData::OBJECT_TYPE).toString();
+  std::string ObjectName = data.getProperty(CData::OBJECT_NAME).toString();
+
+  return construct(Parent, ObjectType, ObjectName);
 }
 
 std::string::size_type

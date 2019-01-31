@@ -57,7 +57,7 @@ CData CSlider::toData() const
 }
 
 // virtual
-bool CSlider::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CSlider::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = true;
 
