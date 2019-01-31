@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -70,7 +75,7 @@ bool CCompartment::applyData(const CData & data, CUndoData::ChangeSet & changes)
       const CData & Data = data.getProperty(CData::INITIAL_VALUE).toData();
       mIValue = Data.getProperty(CData::VALUE).toDouble();
       mpModel->updateInitialValues(CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
-      changes[mpModel->getCN()] = {CUndoData::Type::CHANGE, "State", mpModel->getObjectName()};
+      changes.push_back({mpModel->getCN(), CUndoData::Type::CHANGE, "State", mpModel->getObjectName()});
     }
 
   if (data.isSetProperty(CData::SPATIAL_DIMENSION))

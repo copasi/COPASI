@@ -282,17 +282,19 @@ bool CQTabWidget::save()
         }
       else
         {
-          CUndoData UndoData(CUndoData::Type::CHANGE, mpObject->toData());
-          UndoData.addProperty(CData::OBJECT_NAME, mpObject->getObjectName(), NewName);
+          CData OldData(mpObject->toData());
+          mpObject->setObjectName(NewName);
+
+          CUndoData UndoData;
+          mpObject->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast<CCore::Framework>(mFramework));
           ListViews::addUndoMetaData(this, UndoData);
-          UndoData.addMetaDataProperty("Widget Object CN (after)", mpObject->getCN());
 
           if (dynamic_cast< CMetab * >(mpObject))
             UndoData.addMetaDataProperty("Widget Object Name (after)", mpObject->getObjectName() + "{" + CCommonName::compartmentNameFromCN(mpObject->getCN()) + "}");
           else
             UndoData.addMetaDataProperty("Widget Object Name (after)", mpObject->getObjectName());
 
-          slotNotifyChanges(mpDataModel->applyData(UndoData));
+          slotNotifyChanges(mpDataModel->recordData(UndoData));
         }
     }
 

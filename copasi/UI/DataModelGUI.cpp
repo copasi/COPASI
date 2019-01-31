@@ -761,7 +761,7 @@ void DataModelGUI::notifyChanges(const CUndoData::ChangeSet & changes)
 
       for (; it != end; ++it)
         {
-          switch (it->second.type)
+          switch (it->type)
             {
               case CUndoData::Type::INSERT:
                 Action = ListViews::Action::ADD;
@@ -776,22 +776,22 @@ void DataModelGUI::notifyChanges(const CUndoData::ChangeSet & changes)
                 break;
             }
 
-          ListViews::ObjectType ObjectType = ListViews::DataObjectType.toEnum(it->second.objectType, ListViews::ObjectType::STATE);
-          CN = it->first;
+          ListViews::ObjectType ObjectType = ListViews::DataObjectType.toEnum(it->objectType, ListViews::ObjectType::STATE);
+          CN = it->objectCN;
 
           if (ObjectType == ListViews::ObjectType::MIRIAM)
             {
-              CN = it->first.substr(0, it->first.find(",CMIRIAMInfo=CMIRIAMInfoObject"));
+              CN = it->objectCN.substr(0, it->objectCN.find(",CMIRIAMInfo=CMIRIAMInfoObject"));
             }
           else if (ObjectType == ListViews::ObjectType::STATE)
             {
-              if (it->second.objectType == "Creator" ||
-                  it->second.objectType == "Reference" ||
-                  it->second.objectType == "BiologicalDescription" ||
-                  it->second.objectType == "Modification")
+              if (it->objectType == "Creator" ||
+                  it->objectType == "Reference" ||
+                  it->objectType == "BiologicalDescription" ||
+                  it->objectType == "Modification")
                 {
                   ObjectType = ListViews::ObjectType::MIRIAM;
-                  CN = it->first.substr(0, it->first.find(",CMIRIAMInfo=CMIRIAMInfoObject"));
+                  CN = it->objectCN.substr(0, it->objectCN.find(",CMIRIAMInfo=CMIRIAMInfoObject"));
                 }
             }
 

@@ -691,7 +691,7 @@ bool CUndoData::insert(const CDataModel & dataModel, const bool & apply, ChangeS
       success &= pObject->applyData(Data, changes);
     }
 
-  changes[getObjectCN(apply)] = {CUndoData::Type::INSERT, Data.getProperty(CData::OBJECT_TYPE).toString(), Data.getProperty(CData::OBJECT_NAME).toString()};
+  changes.push_back({getObjectCN(apply), CUndoData::Type::INSERT, Data.getProperty(CData::OBJECT_TYPE).toString(), Data.getProperty(CData::OBJECT_NAME).toString()});
 
   success &= executePostProcessData(dataModel, apply, changes, execute);
 
@@ -710,7 +710,7 @@ bool CUndoData::remove(const CDataModel & dataModel, const bool & apply, ChangeS
 
   bool success = executePreProcessData(dataModel, apply, changes, execute);
 
-  changes[getObjectCN(apply)] = {CUndoData::Type::REMOVE, Data.getProperty(CData::OBJECT_TYPE).toString(), Data.getProperty(CData::OBJECT_NAME).toString()};
+  changes.push_back({getObjectCN(apply), CUndoData::Type::REMOVE, Data.getProperty(CData::OBJECT_TYPE).toString(), Data.getProperty(CData::OBJECT_NAME).toString()});
 
   if (execute)
     {
@@ -759,7 +759,7 @@ bool CUndoData::change(const CDataModel & dataModel, const bool & apply, ChangeS
       success &= pObject->applyData(NewData, changes);
     }
 
-  changes[getObjectCN(apply)] = {CUndoData::Type::CHANGE, NewData.getProperty(CData::OBJECT_TYPE).toString(), NewData.getProperty(CData::OBJECT_NAME).toString()};
+  changes.push_back({CCommonName::fromData(OldData), CUndoData::Type::CHANGE, NewData.getProperty(CData::OBJECT_TYPE).toString(), NewData.getProperty(CData::OBJECT_NAME).toString()});
   success &= executePostProcessData(dataModel, apply, changes, execute);
 
   return success;

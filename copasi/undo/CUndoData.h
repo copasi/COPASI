@@ -37,12 +37,13 @@ public:
 
   struct ChangeInfo
   {
+    std::string objectCN;
     Type type;
     std::string objectType;
     std::string objectName;
   };
 
-  typedef std::map< std::string, ChangeInfo > ChangeSet;
+  typedef std::vector< ChangeInfo > ChangeSet;
 
   static const CEnumAnnotation< std::string, Type > TypeName;
 
