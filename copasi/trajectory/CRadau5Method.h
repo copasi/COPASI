@@ -154,6 +154,11 @@ private:
    * A pointer to the absolute tolerances excluding fixed event targets.
    */
   C_FLOAT64 * mpAtol;
+    
+  /**
+   * A pointer to the relative tolerances excluding fixed event targets.
+   */
+  CVector< C_FLOAT64 > mRtol;
 
   /**
    * Stream to capture LSODA error messages

@@ -226,7 +226,7 @@ CTrajectoryMethod::Status CRadau5Method::step(const double & deltaT,
   else
     {
       mRADAU(&mData.dim, &EvalF, &mTime, mpY, &EndTime, &H,
-             mpRelativeTolerance, mpAbsoluteTolerance, &ITOL,
+             mRtol.array(), mpAtol, &ITOL,
              (U_fp) EvalJ, &IJAC, &MLJAC, &MUJAC,
              (U_fp) fcn, &IMAS, &MLMAS, &MUMAS,
              (U_fp) solout, &IOUT, mDWork.array(), &LWORK,
@@ -326,6 +326,9 @@ void CRadau5Method::start()
   mpY = mpContainerStateTime;
   mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getCountFixedEventTargets();
   mpAtol = mAtol.array() + mpContainer->getCountFixedEventTargets();
+    
+  mRtol.resize(mData.dim);
+  mRtol = *mpRelativeTolerance;
 
   if (mNumRoots > 0)
     {
@@ -351,8 +354,8 @@ void CRadau5Method::start()
   rpar = 0;
   ipar = 0;
 
-  /* assuming scalar tolerances, for vector tolerances ITOL=1 */
-  ITOL = 0;
+  /* For vector tolerances ITOL=1 */
+  ITOL = 1;
 
   /* RADAU5 computes jacobian internally */
   IJAC = 0;
