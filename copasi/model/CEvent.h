@@ -190,6 +190,11 @@ private:
   CModel * mpModel;
 
   /**
+   * target object CN
+   */
+  CRegisteredCommonName mTargetCN;
+
+  /**
    * The target object
    */
   const CDataObject * mpTarget;
