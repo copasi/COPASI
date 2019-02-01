@@ -118,8 +118,8 @@ CQMiriamWidget::CQMiriamWidget(QWidget *parent, const char *name)
       (*it)->verticalHeader()->hide();
       (*it)->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
 
-      connect((*itDM), SIGNAL(signalNotifyChanges(const CUndoData::ChangeSet &)),
-              this, SLOT(slotNotifyChanges(const CUndoData::ChangeSet &)));
+      connect((*itDM), SIGNAL(signalNotifyChanges(const CUndoData::CChangeSet &)),
+              this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
       connect((*itDM), SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
               this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
       connect((*itDM), SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
@@ -142,7 +142,7 @@ CQMiriamWidget::~CQMiriamWidget()
 }
 
 // virtual
-void CQMiriamWidget::slotNotifyChanges(const CUndoData::ChangeSet & changes)
+void CQMiriamWidget::slotNotifyChanges(const CUndoData::CChangeSet & changes)
 {
   if (changes.empty())
     {

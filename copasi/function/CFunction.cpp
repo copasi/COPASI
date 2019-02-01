@@ -62,7 +62,7 @@ CData CFunction::toData() const
 }
 
 // virtual
-bool CFunction::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CFunction::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = true;
 

@@ -56,7 +56,7 @@ CData CDataContainer::toData() const
 }
 
 // virtual
-bool CDataContainer::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CDataContainer::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   return CDataObject::applyData(data, changes);
 }

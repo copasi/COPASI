@@ -136,7 +136,7 @@ CData CAnnotation::toData() const
   return Data;
 }
 
-bool CAnnotation::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CAnnotation::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   if (data.isSetProperty(CData::Property::NOTES))
     {

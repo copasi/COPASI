@@ -58,8 +58,8 @@ CQReactionsWidget::CQReactionsWidget(QWidget *parent, const char *name)
   mpTblReactions->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   setFramework(mFramework);
   // Connect the table widget
-  connect(mpReactionDM, SIGNAL(signalNotifyChanges(const CUndoData::ChangeSet &)),
-          this, SLOT(slotNotifyChanges(const CUndoData::ChangeSet &)));
+  connect(mpReactionDM, SIGNAL(signalNotifyChanges(const CUndoData::CChangeSet &)),
+          this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
   connect(mpReactionDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpReactionDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),

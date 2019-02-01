@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -905,7 +910,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
     <Object cn="CN=Root,CN=Information,String=User Given Name"/>
     <Object cn="CN=Root,CN=Information,String=User Organization"/>
     <Object cn="CN=Root,CN=Information,String=COPASI Version"/>
-    <Object cn="CN=Root,CN=Information,Timer=Current Date/Dime"/>
+    <Object cn="CN=Root,CN=Information,Timer=Current Date/Time"/>
     <Object cn="CN=Root,CN=Information,String=File Name"/>
   */
 
@@ -949,7 +954,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Timer=Current Date/Dime")));
+  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Timer=Current Date/Time")));
 
   if (filter(classes, pObject))
     {

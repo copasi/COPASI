@@ -139,7 +139,7 @@ CData CReaction::toData() const
 }
 
 // virtual
-bool CReaction::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CReaction::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool Success = CDataContainer::applyData(data, changes);
   bool compileModel = false;

@@ -60,8 +60,8 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget *parent, const char *name)
   mpTblCompartments->verticalHeader()->hide();
   mpTblCompartments->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
-  connect(mpCompartmentDM, SIGNAL(signalNotifyChanges(const CUndoData::ChangeSet &)),
-          this, SLOT(slotNotifyChanges(const CUndoData::ChangeSet &)));
+  connect(mpCompartmentDM, SIGNAL(signalNotifyChanges(const CUndoData::CChangeSet &)),
+          this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
   connect(mpCompartmentDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),

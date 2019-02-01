@@ -98,7 +98,7 @@ void CQUnitDetail::slotBtnCopy()
 
   CUnitDefinition * pUnitDef = new CUnitDefinition(name, unitList);
   unitList->add(pUnitDef, true);
-  CUndoData::ChangeSet Changes;
+  CUndoData::CChangeSet Changes;
   pUnitDef->applyData(ToCopy, Changes);
 
   CUndoData UndoData(CUndoData::Type::INSERT, pUnitDef);

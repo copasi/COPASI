@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -52,7 +57,7 @@ CData CLMetabGlyph::toData() const
 }
 
 // virtual
-bool CLMetabGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CLMetabGlyph::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = true;
 
@@ -153,7 +158,7 @@ CData CLCompartmentGlyph::toData() const
 }
 
 // virtual
-bool CLCompartmentGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CLCompartmentGlyph::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = true;
 
@@ -254,7 +259,7 @@ CData CLTextGlyph::toData() const
 }
 
 // virtual
-bool CLTextGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CLTextGlyph::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = true;
 

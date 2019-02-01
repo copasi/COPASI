@@ -86,7 +86,7 @@ CData CCopasiParameterGroup::toData() const
 }
 
 // virtual
-bool CCopasiParameterGroup::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CCopasiParameterGroup::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = CCopasiParameter::applyData(data, changes);
 

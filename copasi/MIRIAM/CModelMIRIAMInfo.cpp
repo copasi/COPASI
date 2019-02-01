@@ -56,7 +56,7 @@ CData CMIRIAMInfo::toData() const
 }
 
 // virtual
-bool CMIRIAMInfo::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CMIRIAMInfo::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = CDataContainer::applyData(data, changes);
 

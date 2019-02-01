@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -39,7 +44,7 @@ CData CLGradientBase::toData() const
 }
 
 // virtual
-bool CLGradientBase::applyData(const CData & data, CUndoData::ChangeSet & changes)
+bool CLGradientBase::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = true;
 

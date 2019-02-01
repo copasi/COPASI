@@ -115,7 +115,7 @@ void CQModelValue::slotBtnCopy()
   ToCopy.removeProperty(CData::OBJECT_UUID);
   ToCopy.removeProperty(CData::OBJECT_REFERENCES);
 
-  CUndoData::ChangeSet Changes;
+  CUndoData::CChangeSet Changes;
   mpModelValue->applyData(ToCopy, Changes);
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpModelValue);

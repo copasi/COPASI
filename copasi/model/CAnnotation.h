@@ -63,7 +63,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  bool applyData(const CData & data, CUndoData::ChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes);
 
   /**
    * Create the undo data which represents the changes recording the

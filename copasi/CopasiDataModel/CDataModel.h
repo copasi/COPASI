@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -154,7 +159,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
 
   CDataModel(const bool withGUI = false);
 
@@ -188,7 +193,6 @@ public:
    */
   bool addModel(const std::string & fileName,
                 CProcessReport* pProcessReport = NULL);
-
 
   bool loadModelParameterSets(const std::string & fileName,
                               CProcessReport* pProcessReport = NULL);
@@ -348,8 +352,8 @@ public:
 
   std::map<CDataObject*, SedBase*>& getCopasi2SEDMLMap();
 
-  CUndoData::ChangeSet applyData(const CUndoData & data);
-  CUndoData::ChangeSet recordData(const CUndoData & data);
+  CUndoData::CChangeSet applyData(const CUndoData & data);
+  CUndoData::CChangeSet recordData(const CUndoData & data);
 
 #ifdef COPASI_Versioning
   CModelVersionHierarchy * getModelVersionHierarchy();
@@ -363,7 +367,6 @@ protected:
 
   void replaceCnInGroup(CModelParameter* pParam,
                         const std::string &oldCn, const std::string& newCN);
-
 
   // Attributes
 protected:

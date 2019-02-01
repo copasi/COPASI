@@ -37,7 +37,7 @@ CQUndoDialog::CQUndoDialog(CDataModel * pDataModel, QWidget *parent, Qt::WindowF
 CQUndoDialog::~CQUndoDialog()
 {}
 
-const CUndoData::ChangeSet & CQUndoDialog::getChangeSet() const
+const CUndoData::CChangeSet & CQUndoDialog::getChangeSet() const
 {
   return mChangeSet;
 }

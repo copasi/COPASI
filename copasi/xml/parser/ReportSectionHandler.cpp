@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -81,12 +86,7 @@ bool ReportSectionHandler::processEnd(const XML_Char * pszName)
         break;
 
       case Object:
-        if (mpData->CharacterData ==
-            "CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Simulation Counter")
-          mpSectionContent->push_back(CCommonName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations"));
-        else
-          mpSectionContent->push_back(CCommonName(mpData->CharacterData));
-
+        mpSectionContent->push_back(CCommonName(mpData->CharacterData));
         break;
 
       default:
