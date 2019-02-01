@@ -758,6 +758,8 @@ void DataModelGUI::notifyChanges(const CUndoData::CChangeSet & changes)
       CUndoData::CChangeSet::const_iterator end = changes.end();
 
       ListViews::Action Action = ListViews::Action::CHANGE;
+      std::string CN;
+      std::string MappedCN;
 
       for (; it != end; ++it)
         {
@@ -765,23 +767,26 @@ void DataModelGUI::notifyChanges(const CUndoData::CChangeSet & changes)
             {
               case CUndoData::Type::INSERT:
                 Action = ListViews::Action::ADD;
+                CN = it->objectAfter;
                 break;
 
               case CUndoData::Type::CHANGE:
                 Action = ListViews::Action::CHANGE;
+                CN = it->objectBefore;
                 break;
 
               case CUndoData::Type::REMOVE:
                 Action = ListViews::Action::DELETE;
+                CN = it->objectBefore;
                 break;
             }
 
           ListViews::ObjectType ObjectType = ListViews::DataObjectType.toEnum(it->objectType, ListViews::ObjectType::STATE);
-          CN = it->objectCN;
+          MappedCN = CN;
 
           if (ObjectType == ListViews::ObjectType::MIRIAM)
             {
-              CN = it->objectCN.substr(0, it->objectCN.find(",CMIRIAMInfo=CMIRIAMInfoObject"));
+              MappedCN = CN.substr(0, CN.find(",CMIRIAMInfo=CMIRIAMInfoObject"));
             }
           else if (ObjectType == ListViews::ObjectType::STATE)
             {
@@ -791,11 +796,11 @@ void DataModelGUI::notifyChanges(const CUndoData::CChangeSet & changes)
                   it->objectType == "Modification")
                 {
                   ObjectType = ListViews::ObjectType::MIRIAM;
-                  CN = it->objectCN.substr(0, it->objectCN.find(",CMIRIAMInfo=CMIRIAMInfoObject"));
+                  MappedCN = CN.substr(0, CN.find(",CMIRIAMInfo=CMIRIAMInfoObject"));
                 }
             }
 
-          notify(ObjectType, Action, CN);
+          notify(ObjectType, Action, MappedCN);
         }
 
       std::pair< const CUndoData *, bool > LastExecution = mpDataModel->getUndoStack()->getLastExecution();
