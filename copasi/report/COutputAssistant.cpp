@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,6 +44,8 @@
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
 #include "scan/CScanProblem.h"
+
+#include <core/CDataArray.h>
 
 //******* COutputAssistant **********************************
 
@@ -393,6 +400,43 @@ bool COutputAssistant::initialize()
   tmp.second.mSecondaryTask = CTaskEnum::Task::optimization;
   mMap.insert(tmp);
 
+#ifdef WITH_TIME_SENS
+
+  // 61 time sensitivities: time vs scaled state sensitivities
+  tmp.first = 61;
+  tmp.second.name = "Time Course Sensitivities time vs. scaled state sensitivities";
+  tmp.second.description = "A plot of time vs. scaled state sensitivities.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CTaskEnum::Task::timeSens;
+  mMap.insert(tmp);
+
+  // 62 time sensitivities: time vs scaled target sensitivities
+  tmp.first = 62;
+  tmp.second.name = "Time Course Sensitivities time vs. scaled target sensitivities";
+  tmp.second.description = "A plot of time vs. scaled target sensitivities.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CTaskEnum::Task::timeSens;
+  mMap.insert(tmp);
+
+  // 63 time sensitivities: time vs state sensitivities
+  tmp.first = 63;
+  tmp.second.name = "Time Course Sensitivities time vs. state sensitivities";
+  tmp.second.description = "A plot of time vs. state sensitivities.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CTaskEnum::Task::timeSens;
+  mMap.insert(tmp);
+
+  // 64 time sensitivities: time vs target sensitivities
+  tmp.first = 64;
+  tmp.second.name = "Time Course Sensitivities time vs. target sensitivities";
+  tmp.second.description = "A plot of time vs. target sensitivities.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CTaskEnum::Task::timeSens;
+  mMap.insert(tmp);
+
+#endif
+
+
   // *****************************************************************
 
   //now the reports
@@ -719,115 +763,116 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
                 itItem++;
               }
           }
-          /*
+
+        /*
         //cross validation
         const CCrossValidationSet & ValidationSet = pFitProblem->getCrossValidationSet();
         imax = ValidationSet.getExperimentCount();
-        
+
         //std::vector< std::string > ChannelX;
         //std::vector< std::string > Names;
         //std::vector< unsigned C_INT32 > LineTypes;
         //std::vector< unsigned C_INT32 > SymbolSubTypes;
         //std::vector< unsigned C_INT32 > LineSubTypes;
         //std::vector< std::string > Colors;
-        
+
         colorcounter = 0;
-        
+
         for (i = 0; i < imax; i++)
-          {
-            const CExperiment * pExperiment = ValidationSet.getExperiment(i);
-            const CDataVector< CFittingPoint > & FittingPoints = pExperiment->getFittingPoints();
-            
-            CDataVector< CFittingPoint >::const_iterator it = FittingPoints.begin();
-            CDataVector< CFittingPoint >::const_iterator end = FittingPoints.end();
-            
-            if (it == end) continue;
-            
-            data2 =
-              static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Independent Value")));
-              
-            for (; it != end; ++it)
-              {
-                std::string Name = it->getModelObjectCN();
-                const CDataObject * pObject =
-                  dynamic_cast< const CDataObject * >(pDataModel->getObject(Name));
-                  
-                if (pObject != NULL)
-                  Name = pObject->getObjectDisplayName();
-                  
-                Name = pExperiment->getObjectName() + "," + Name;
-                
-                //1
-                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Measured Value"))));
-                ChannelX.push_back(data2->getCN());
-                Names.push_back(Name + "(Measured Value)");
-                LineTypes.push_back(3); //symbols & lines
-                SymbolSubTypes.push_back(1); //fat cross
-                LineSubTypes.push_back(1); //dotted
-                Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
-                
-                //2
-                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Fitted Value"))));
-                ChannelX.push_back(data2->getCN());
-                Names.push_back(Name + "(Fitted Value)");
-                
-                if (pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse)
-                  {
-                    LineTypes.push_back(0); //curve
-                    SymbolSubTypes.push_back(0); //default, this value is not used
-                  }
-                else
-                  {
-                    LineTypes.push_back(2); //symbols
-                    SymbolSubTypes.push_back(1); //TODO
-                  }
-                  
-                LineSubTypes.push_back(0); //default, solid
-                Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
-                
-                //3
-                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Weighted Error"))));
-                ChannelX.push_back(data2->getCN());
-                Names.push_back(Name + "(Weighted Error)");
-                LineTypes.push_back(2); //symbols
-                SymbolSubTypes.push_back(2); //circles
-                LineSubTypes.push_back(0); //default, this value is not used
-                Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
-                
-                ++colorcounter;
-              }
-          }
-          
+        {
+          const CExperiment * pExperiment = ValidationSet.getExperiment(i);
+          const CDataVector< CFittingPoint > & FittingPoints = pExperiment->getFittingPoints();
+
+          CDataVector< CFittingPoint >::const_iterator it = FittingPoints.begin();
+          CDataVector< CFittingPoint >::const_iterator end = FittingPoints.end();
+
+          if (it == end) continue;
+
+          data2 =
+            static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Independent Value")));
+
+          for (; it != end; ++it)
+            {
+              std::string Name = it->getModelObjectCN();
+              const CDataObject * pObject =
+                dynamic_cast< const CDataObject * >(pDataModel->getObject(Name));
+
+              if (pObject != NULL)
+                Name = pObject->getObjectDisplayName();
+
+              Name = pExperiment->getObjectName() + "," + Name;
+
+              //1
+              data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Measured Value"))));
+              ChannelX.push_back(data2->getCN());
+              Names.push_back(Name + "(Measured Value)");
+              LineTypes.push_back(3); //symbols & lines
+              SymbolSubTypes.push_back(1); //fat cross
+              LineSubTypes.push_back(1); //dotted
+              Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
+
+              //2
+              data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Fitted Value"))));
+              ChannelX.push_back(data2->getCN());
+              Names.push_back(Name + "(Fitted Value)");
+
+              if (pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse)
+                {
+                  LineTypes.push_back(0); //curve
+                  SymbolSubTypes.push_back(0); //default, this value is not used
+                }
+              else
+                {
+                  LineTypes.push_back(2); //symbols
+                  SymbolSubTypes.push_back(1); //TODO
+                }
+
+              LineSubTypes.push_back(0); //default, solid
+              Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
+
+              //3
+              data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Weighted Error"))));
+              ChannelX.push_back(data2->getCN());
+              Names.push_back(Name + "(Weighted Error)");
+              LineTypes.push_back(2); //symbols
+              SymbolSubTypes.push_back(2); //circles
+              LineSubTypes.push_back(0); //default, this value is not used
+              Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
+
+              ++colorcounter;
+            }
+        }
+
         pPlotSpecification =
-          createPlot(getItemName(id), data2, false, data1, false, getItem(id).mTaskType, pDataModel);
-          
+        createPlot(getItemName(id), data2, false, data1, false, getItem(id).mTaskType, pDataModel);
+
         if (pPlotSpecification != NULL)
-          {
-            CDataVector< CPlotItem > & Items = pPlotSpecification->getItems();
-            CDataVector< CPlotItem >::iterator itItem = Items.begin();
-            CDataVector< CPlotItem >::iterator endItem = Items.end();
-            std::vector< std::string >::const_iterator itChannelX = ChannelX.begin();
-            std::vector< std::string >::const_iterator itName = Names.begin();
-            std::vector< unsigned C_INT32 >::const_iterator itLineType = LineTypes.begin();
-            std::vector< unsigned C_INT32 >::const_iterator itSymbolSubType = SymbolSubTypes.begin();
-            std::vector< unsigned C_INT32 >::const_iterator itLineSubType = LineSubTypes.begin();
-            std::vector<std::string>::const_iterator itColor = Colors.begin();
-            
-            while (itItem != endItem)
-              {
-                itItem->getChannels()[0] = CPlotDataChannelSpec(*itChannelX++);
-                itItem->setTitle(*itName++);
-                itItem->setActivity(COutputInterface::AFTER);
-                itItem->setValue("Line type", *itLineType++);
-                itItem->setValue("Symbol subtype", *itSymbolSubType++);
-                itItem->setValue("Line subtype", *itLineSubType++);
-                itItem->setValue("Color", *itColor++);
-                itItem++;
-              }
-          }
-          
-          */
-          
+        {
+          CDataVector< CPlotItem > & Items = pPlotSpecification->getItems();
+          CDataVector< CPlotItem >::iterator itItem = Items.begin();
+          CDataVector< CPlotItem >::iterator endItem = Items.end();
+          std::vector< std::string >::const_iterator itChannelX = ChannelX.begin();
+          std::vector< std::string >::const_iterator itName = Names.begin();
+          std::vector< unsigned C_INT32 >::const_iterator itLineType = LineTypes.begin();
+          std::vector< unsigned C_INT32 >::const_iterator itSymbolSubType = SymbolSubTypes.begin();
+          std::vector< unsigned C_INT32 >::const_iterator itLineSubType = LineSubTypes.begin();
+          std::vector<std::string>::const_iterator itColor = Colors.begin();
+
+          while (itItem != endItem)
+            {
+              itItem->getChannels()[0] = CPlotDataChannelSpec(*itChannelX++);
+              itItem->setTitle(*itName++);
+              itItem->setActivity(COutputInterface::AFTER);
+              itItem->setValue("Line type", *itLineType++);
+              itItem->setValue("Symbol subtype", *itSymbolSubType++);
+              itItem->setValue("Line subtype", *itLineSubType++);
+              itItem->setValue("Color", *itColor++);
+              itItem++;
+            }
+        }
+
+        */
+
         return pPlotSpecification;
       }
       break;
@@ -1285,6 +1330,85 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
         data1.push_back(static_cast< const CDataObject * >(pOptProblem->getObject(CCommonName("Reference=Best Value"))));
       }
       break;
+
+#ifdef WITH_TIME_SENS
+
+      case 61: // time sensitivities: time vs scaled state sensitivities
+      {
+        CCopasiTask * pTask = &pDataModel->getTaskList()->operator[]("Time-Course Sensitivities");
+
+        if (pTask == NULL) break;
+
+        pTask->updateMatrices();
+
+        CCopasiProblem * pProblem = pTask->getProblem();
+
+        if (pProblem == NULL) break;
+
+        const CDataArray* pArray = dynamic_cast<const CDataArray*>(pProblem->getObject(CCommonName("Array=Scaled State Sensitivities array")));
+        add2DDataArrayToVector(data1, pArray);
+
+        break;
+      }
+
+      case 62: // time sensitivities: time vs scaled target sensitivities
+      {
+        CCopasiTask * pTask = &pDataModel->getTaskList()->operator[]("Time-Course Sensitivities");
+
+        if (pTask == NULL) break;
+
+        pTask->updateMatrices();
+
+
+        CCopasiProblem * pProblem = pTask->getProblem();
+
+        if (pProblem == NULL) break;
+
+        const CDataArray* pArray = dynamic_cast<const CDataArray*>(pProblem->getObject(CCommonName("Array=Scaled Target Sensitivities array")));
+        add2DDataArrayToVector(data1, pArray);
+
+        break;
+      }
+
+      case 63: // time sensitivities: time vs state sensitivities
+      {
+        CCopasiTask * pTask = &pDataModel->getTaskList()->operator[]("Time-Course Sensitivities");
+
+        if (pTask == NULL) break;
+
+        pTask->updateMatrices();
+
+
+        CCopasiProblem * pProblem = pTask->getProblem();
+
+        if (pProblem == NULL) break;
+
+        const CDataArray* pArray = dynamic_cast<const CDataArray*>(pProblem->getObject(CCommonName("Array=State Sensitivities array")));
+
+        add2DDataArrayToVector(data1, pArray);
+        break;
+      }
+
+      case 64:// time sensitivities: time vs target sensitivities
+      {
+        CCopasiTask * pTask = &pDataModel->getTaskList()->operator[]("Time-Course Sensitivities");
+
+        if (pTask == NULL) break;
+
+        pTask->updateMatrices();
+
+
+        CCopasiProblem * pProblem = pTask->getProblem();
+
+        if (pProblem == NULL) break;
+
+        const CDataArray* pArray = dynamic_cast<const CDataArray*>(pProblem->getObject(CCommonName("Array=Target Sensitivities array")));
+        add2DDataArrayToVector(data1, pArray);
+
+        break;
+      }
+
+#endif
     }
 
   if (isReport)
@@ -1403,17 +1527,18 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
 
   // Set the task type for specific ones
   switch (taskType)
-  {
-  case CTaskEnum::Task::parameterFitting:
-  case CTaskEnum::Task::optimization:
-  case CTaskEnum::Task::scan:
-    pPl->addTaskType(taskType);
-    break;
-  default:
-    // not narrowing others by default, as for example time course plots would 
-    // could also be interesting for scan, TSS, cross section and the like
-    break;
-  }
+    {
+      case CTaskEnum::Task::parameterFitting:
+      case CTaskEnum::Task::optimization:
+      case CTaskEnum::Task::scan:
+        pPl->addTaskType(taskType);
+        break;
+
+      default:
+        // not narrowing others by default, as for example time course plots would
+        // could also be interesting for scan, TSS, cross section and the like
+        break;
+    }
 
   //create curves
 
@@ -1487,4 +1612,21 @@ CReportDefinition* COutputAssistant::createTable(const std::string & name,
     }
 
   return pReport;
+}
+
+void COutputAssistant::add2DDataArrayToVector(std::vector<const CDataObject *> &pVector, const CDataArray* pArray)
+{
+  if (pArray == NULL)
+    return;
+
+  if (pArray->dimensionality() != 2) //2d matrix
+    return;
+
+  size_t nrows = pArray->size()[0];
+  size_t ncols = pArray->size()[1];
+
+  for (size_t i = 0; i < nrows; ++i)
+    for (size_t j = 0; j < ncols; ++j)
+      pVector.push_back(static_cast<const CDataObject *>(pArray->addElementReference(i, j)));
+
 }
