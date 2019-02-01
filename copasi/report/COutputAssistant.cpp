@@ -616,6 +616,44 @@ bool COutputAssistant::initialize()
   tmp.second.mSecondaryTask = CTaskEnum::Task::optimization;
   mMap.insert(tmp);
 
+
+
+#ifdef WITH_TIME_SENS
+
+  // 61 time sensitivities: time vs scaled state sensitivities
+  tmp.first = 1061;
+  tmp.second.name = "Time Course Sensitivities time vs. scaled state sensitivities";
+  tmp.second.description = "A report of time vs. scaled state sensitivities.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CTaskEnum::Task::timeSens;
+  mMap.insert(tmp);
+
+  // 62 time sensitivities: time vs scaled target sensitivities
+  tmp.first = 1062;
+  tmp.second.name = "Time Course Sensitivities time vs. scaled target sensitivities";
+  tmp.second.description = "A report of time vs. scaled target sensitivities.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CTaskEnum::Task::timeSens;
+  mMap.insert(tmp);
+
+  // 63 time sensitivities: time vs state sensitivities
+  tmp.first = 1063;
+  tmp.second.name = "Time Course Sensitivities time vs. state sensitivities";
+  tmp.second.description = "A report of time vs. state sensitivities.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CTaskEnum::Task::timeSens;
+  mMap.insert(tmp);
+
+  // 64 time sensitivities: time vs target sensitivities
+  tmp.first = 1064;
+  tmp.second.name = "Time Course Sensitivities time vs. target sensitivities";
+  tmp.second.description = "A report of time vs. target sensitivities.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CTaskEnum::Task::timeSens;
+  mMap.insert(tmp);
+
+#endif
+
   tmp.first = 1999;
   tmp.second.name = "Create New";
   tmp.second.description = "A table with nothing in it.";
