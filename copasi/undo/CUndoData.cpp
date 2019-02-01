@@ -53,14 +53,15 @@ void CUndoData::CChangeSet::add(const CUndoData::ChangeInfo & info)
 
   if (found != mMap.end())
     {
-      ChangeInfo & Info = operator[](found->second);
+      size_t Index = found->second;
+      ChangeInfo & Info = operator[](Index);
 
       // Handle renamed objects
       if (ObjectName != info.objectName)
         {
-          std::map< std::string, size_t >::iterator toBeErased = found;
-          found = mMap.insert(std::make_pair(CCommonName::construct(ParentCN, ObjectType, info.objectName), found->second)).first;
-          mMap.erase(toBeErased);
+          // Update the mapping to use the new CN
+          mMap[CCommonName::construct(ParentCN, ObjectType, info.objectName)] = Index;
+          mMap.erase(info.objectCN);
         }
 
       switch (Info.type)
@@ -69,8 +70,7 @@ void CUndoData::CChangeSet::add(const CUndoData::ChangeInfo & info)
 
             if (info.type == Type::REMOVE)
               {
-                erase(begin() + found->second);
-                mMap.erase(found);
+                remove(Index);
               }
             else
               {
@@ -85,8 +85,7 @@ void CUndoData::CChangeSet::add(const CUndoData::ChangeInfo & info)
 
             if (info.type == Type::INSERT)
               {
-                erase(begin() + found->second);
-                mMap.erase(found);
+                remove(Index);
               }
 
             break;
@@ -94,7 +93,15 @@ void CUndoData::CChangeSet::add(const CUndoData::ChangeInfo & info)
           case Type::CHANGE:
             if (info.type == Type::REMOVE)
               {
+                // Change the type to REMOVE
                 Info.type = info.type;
+
+                // Create change at the current position
+                mMap[CCommonName::construct(ParentCN, ObjectType, info.objectName)] = size();
+                push_back(Info);
+
+                // Remove the old
+                remove(Index);
               }
             else
               {
@@ -106,6 +113,7 @@ void CUndoData::CChangeSet::add(const CUndoData::ChangeInfo & info)
     }
   else
     {
+      // We always use the new CN
       mMap.insert(std::make_pair(CCommonName::construct(ParentCN, ObjectType, info.objectName), size()));
       push_back(info);
     }
@@ -129,6 +137,32 @@ void CUndoData::CChangeSet::clear()
 bool CUndoData::CChangeSet::empty() const
 {
   return std::vector< ChangeInfo >::empty();
+}
+
+void CUndoData::CChangeSet::remove(const size_t & index)
+{
+  if (index >= size()) return;
+
+  erase(begin() + index);
+
+  std::map< std::string, size_t >::iterator toBeErased = mMap.end();
+  std::map< std::string, size_t >::iterator it = mMap.begin();
+  std::map< std::string, size_t >::iterator end = mMap.end();
+
+  for (; it != end; ++it)
+    if (it->second > index)
+      {
+        --it->second;
+      }
+    else if (it->second == index)
+      {
+        toBeErased = it;
+      }
+
+  if (toBeErased != mMap.end())
+    {
+      mMap.erase(it);
+    }
 }
 
 CUndoData::CUndoData():

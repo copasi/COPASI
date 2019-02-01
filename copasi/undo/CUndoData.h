@@ -65,6 +65,8 @@ public:
     bool empty() const;
 
   private:
+    void remove(const size_t & index);
+
     std::map< std::string, size_t > mMap;
   };
 
