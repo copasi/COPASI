@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -1063,17 +1068,18 @@ void CModelExpansion::duplicateEvent(CEvent* source,
     {
       const CEventAssignment* pSourceAssignment = &source->getAssignments()[i];
 
-      //const CModelEntity * pSourceTarget = dynamic_cast<const CModelEntity * >(CRootContainer::getKeyFactory()->get(pSourceAssignment->getTargetKey()));
-      if (sourceSet.contains(pSourceAssignment->getTargetCN()))
+      const CModelEntity * pSourceTarget = dynamic_cast<const CModelEntity *>(CObjectInterface::DataObject(source->getObjectDataModel() ->getObject(pSourceAssignment->getTargetCN())));
+
+      if (sourceSet.contains(pSourceTarget->getKey()))
         {
           //we assume that the duplicate of the target object already exists.
           //this should be true since events are duplicated last.
-          if (!emap.exists(pSourceAssignment->getTargetCN()))
+          if (!emap.exists(pSourceTarget->getKey()))
             continue;
 
           //create duplicate of assignment (this can be either in the original event or in the
           //duplicate of an event)
-          CEventAssignment * pNewAssignment = new CEventAssignment(emap.getDuplicateFromObject(pSourceAssignment->getTargetObject())->getKey());
+          CEventAssignment * pNewAssignment = new CEventAssignment(emap.getDuplicateFromObject(pSourceTarget)->getKey());
           newObj->getAssignments().add(pNewAssignment, true);
 
           //we do an assumption:
