@@ -1569,6 +1569,9 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
       case CTaskEnum::Task::parameterFitting:
       case CTaskEnum::Task::optimization:
       case CTaskEnum::Task::scan:
+#ifdef WITH_TIME_SENS
+      case CTaskEnum::Task::timeSens:
+#endif
         pPl->addTaskType(taskType);
         break;
 
