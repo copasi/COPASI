@@ -75,7 +75,7 @@ bool CCompartment::applyData(const CData & data, CUndoData::CChangeSet & changes
       const CData & Data = data.getProperty(CData::INITIAL_VALUE).toData();
       mIValue = Data.getProperty(CData::VALUE).toDouble();
       mpModel->updateInitialValues(CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
-      changes.add({mpModel->getCN(), CUndoData::Type::CHANGE, "State", mpModel->getObjectName()});
+      changes.add({CUndoData::Type::CHANGE, "State", mpModel->getCN(), mpModel->getCN()});
     }
 
   if (data.isSetProperty(CData::SPATIAL_DIMENSION))

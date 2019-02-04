@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -496,7 +501,7 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
               {
                 NewParameters.addParameter(ParameterName, CCopasiParameter::Type::DOUBLE, mValues[i]);
                 NewParameterSet.insert(std::make_pair(ParameterName, NewParameters.getParameter(ParameterName)->toData()));
-                ParameterSource.push_back(mpReaction->getParameters().getCN() + ",Parameter=" + CCommonName::escape(mIndexMap[i]->at(0)));
+                ParameterSource.push_back(mpReaction->getParameters().getCN() + ",Parameter=" + CCommonName::escape(ParameterName));
               }
             else
               {
@@ -556,7 +561,7 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
               {
                 NewParameters.addParameter(ParameterName, CCopasiParameter::Type::DOUBLE, mValues[i]);
                 NewParameterSet.insert(std::make_pair(ParameterName, NewParameters.getParameter(ParameterName)->toData()));
-                ParameterSource.push_back(mpReaction->getParameters().getCN() + ",Parameter=" + CCommonName::escape(mIndexMap[i]->at(0)));
+                ParameterSource.push_back(mpReaction->getParameters().getCN() + ",Parameter=" + CCommonName::escape(ParameterName));
               }
             else
               {

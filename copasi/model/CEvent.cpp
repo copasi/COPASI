@@ -52,6 +52,7 @@ CData CEventAssignment::toData() const
   CData Data(CDataContainer::toData());
 
   Data.addProperty(CData::EXPRESSION, getExpression());
+  Data.addProperty(CData::OBJECT_REFERENCE_CN, getTargetCN());
 
   return Data;
 }
@@ -65,6 +66,12 @@ bool CEventAssignment::applyData(const CData & data, CUndoData::CChangeSet & cha
   if (data.isSetProperty(CData::EXPRESSION))
     {
       setExpression(data.getProperty(CData::EXPRESSION).toString());
+      compileModel = true;
+    }
+
+  if (data.isSetProperty(CData::OBJECT_REFERENCE_CN))
+    {
+      setTargetCN(data.getProperty(CData::OBJECT_REFERENCE_CN).toString());
       compileModel = true;
     }
 
@@ -95,23 +102,29 @@ void CEventAssignment::createUndoData(CUndoData & undoData,
     }
 
   undoData.addProperty(CData::EXPRESSION, oldData.getProperty(CData::EXPRESSION), getExpression());
+  undoData.addProperty(CData::OBJECT_REFERENCE_CN, oldData.getProperty(CData::OBJECT_REFERENCE_CN), getTargetCN());
 }
 
 // The default constructor is intentionally not implemented.
 // CEventAssignment::CEventAssignment() {}
+
+
 CEventAssignment::CEventAssignment(const std::string & targetCN,
                                    const CDataContainer * pParent) :
   CDataContainer(targetCN, pParent, "EventAssignment"),
   mKey(CRootContainer::getKeyFactory()->add("EventAssignment", this)),
   mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
+  mTargetCN(targetCN),
   mpTarget(NULL),
   mpExpression(NULL)
 {
+  //fall back, in case the constructor is called with a key instead of a CN
   CDataObject * pObject = CRootContainer::getKeyFactory()->get(targetCN);
 
   if (pObject != NULL)
     {
       setObjectName(pObject->getCN());
+      mTargetCN = pObject->getCN();
     }
 
   if (mpModel != NULL)
@@ -125,6 +138,7 @@ CEventAssignment::CEventAssignment(const CEventAssignment & src,
   CDataContainer(src, pParent),
   mKey(CRootContainer::getKeyFactory()->add("EventAssignment", this)),
   mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
+  mTargetCN(src.mTargetCN),
   mpTarget(src.mpTarget),
   mpExpression(NULL)
 {
@@ -194,7 +208,7 @@ CIssue CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer
 
   if (pDataModel != NULL)
     {
-      pEntity = dynamic_cast< const CModelEntity * >(CObjectInterface::DataObject(pDataModel->getObject(getObjectName())));
+      pEntity = dynamic_cast< const CModelEntity * >(CObjectInterface::DataObject(pDataModel->getObject(getTargetCN())));
     }
 
   // The entity type must not be an ASSIGNMENT
@@ -247,18 +261,21 @@ const CDataObject * CEventAssignment::getTargetObject() const
 
 bool CEventAssignment::setTargetCN(const std::string & targetCN)
 {
-  if (targetCN != getObjectName() &&
+  if (targetCN != getTargetCN() &&
       mpModel != NULL)
     {
       mpModel->setCompileFlag(true);
     }
 
+  mTargetCN = targetCN;
   return setObjectName(targetCN);
 }
 
 const std::string & CEventAssignment::getTargetCN() const
 {
-  return getObjectName();
+  //if (mTargetCN != getObjectName())
+  //  setObjectName(mTargetCN);
+  return mTargetCN;
 }
 
 bool CEventAssignment::setExpression(const std::string & expression)

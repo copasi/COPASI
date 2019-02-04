@@ -195,8 +195,13 @@ void CQEventWidget1::slotAddTarget()
 
   if (pME == NULL) return;
 
+  QString displayName(FROM_UTF8(pME->getObjectDisplayName()));
+
+  if (!mpLBTarget->findItems(displayName, Qt::MatchExactly).isEmpty())
+    return;
+
   mAssignments.add(new CEventAssignment(pME->getCN()), true);
-  mpLBTarget->addItem(FROM_UTF8(pME->getObjectDisplayName()));
+  mpLBTarget->addItem(displayName);
 
   mpLBTarget->setCurrentRow((int)(mAssignments.size() - 1));
 }

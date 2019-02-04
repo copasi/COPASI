@@ -43,25 +43,24 @@ CUndoData::CChangeSet::~CChangeSet()
 
 void CUndoData::CChangeSet::add(const CUndoData::ChangeInfo & info)
 {
-  CCommonName ParentCN;
-  std::string ObjectType;
-  std::string ObjectName;
+  CCommonName NewParentCN;
+  std::string NewObjectType;
+  std::string NewObjectName;
 
-  CCommonName(info.objectCN).split(ParentCN, ObjectType, ObjectName);
-
-  std::map< std::string, size_t >::iterator found = mMap.find(info.objectCN);
+  std::map< std::string, size_t >::iterator found = mMap.find(info.objectBefore);
 
   if (found != mMap.end())
     {
       size_t Index = found->second;
       ChangeInfo & Info = operator[](Index);
 
-      // Handle renamed objects
-      if (ObjectName != info.objectName)
+      // Handle renamed objects or moved objects
+      if (info.type == Type::CHANGE &&
+          info.objectBefore != info.objectAfter)
         {
           // Update the mapping to use the new CN
-          mMap[CCommonName::construct(ParentCN, ObjectType, info.objectName)] = Index;
-          mMap.erase(info.objectCN);
+          mMap[info.objectAfter] = Index;
+          mMap.erase(info.objectBefore);
         }
 
       switch (Info.type)
@@ -75,8 +74,8 @@ void CUndoData::CChangeSet::add(const CUndoData::ChangeInfo & info)
             else
               {
                 // We need to use the new CN and name
-                Info.objectCN = CCommonName::construct(ParentCN, ObjectType, info.objectName);
-                Info.objectName = info.objectName;
+                Info.objectBefore = info.objectAfter;
+                Info.objectAfter = info.objectAfter;
               }
 
             break;
@@ -97,7 +96,7 @@ void CUndoData::CChangeSet::add(const CUndoData::ChangeInfo & info)
                 Info.type = info.type;
 
                 // Create change at the current position
-                mMap[CCommonName::construct(ParentCN, ObjectType, info.objectName)] = size();
+                mMap[info.objectBefore] = size();
                 push_back(Info);
 
                 // Remove the old
@@ -105,7 +104,7 @@ void CUndoData::CChangeSet::add(const CUndoData::ChangeInfo & info)
               }
             else
               {
-                Info.objectName = info.objectName;
+                Info.objectAfter = info.objectAfter;
               }
 
             break;
@@ -114,7 +113,7 @@ void CUndoData::CChangeSet::add(const CUndoData::ChangeInfo & info)
   else
     {
       // We always use the new CN
-      mMap.insert(std::make_pair(CCommonName::construct(ParentCN, ObjectType, info.objectName), size()));
+      mMap.insert(std::make_pair(info.type != Type::REMOVE ? info.objectAfter : info.objectBefore, size()));
       push_back(info);
     }
 }
@@ -828,7 +827,7 @@ bool CUndoData::insert(const CDataModel & dataModel, const bool & apply, CUndoDa
       success &= pObject->applyData(Data, changes);
     }
 
-  changes.add({getObjectCN(apply), CUndoData::Type::INSERT, Data.getProperty(CData::OBJECT_TYPE).toString(), Data.getProperty(CData::OBJECT_NAME).toString()});
+  changes.add({CUndoData::Type::INSERT, Data.getProperty(CData::OBJECT_TYPE).toString(), "", CCommonName::fromData(Data)});
 
   success &= executePostProcessData(dataModel, apply, changes, execute);
 
@@ -847,7 +846,7 @@ bool CUndoData::remove(const CDataModel & dataModel, const bool & apply, CUndoDa
 
   bool success = executePreProcessData(dataModel, apply, changes, execute);
 
-  changes.add({getObjectCN(apply), CUndoData::Type::REMOVE, Data.getProperty(CData::OBJECT_TYPE).toString(), Data.getProperty(CData::OBJECT_NAME).toString()});
+  changes.add({CUndoData::Type::REMOVE, Data.getProperty(CData::OBJECT_TYPE).toString(), CCommonName::fromData(Data), ""});
 
   if (execute)
     {
@@ -896,7 +895,7 @@ bool CUndoData::change(const CDataModel & dataModel, const bool & apply, CUndoDa
       success &= pObject->applyData(NewData, changes);
     }
 
-  changes.add({CCommonName::fromData(OldData), CUndoData::Type::CHANGE, NewData.getProperty(CData::OBJECT_TYPE).toString(), NewData.getProperty(CData::OBJECT_NAME).toString()});
+  changes.add({CUndoData::Type::CHANGE, NewData.getProperty(CData::OBJECT_TYPE).toString(), CCommonName::fromData(OldData), CCommonName::fromData(NewData)});
   success &= executePostProcessData(dataModel, apply, changes, execute);
 
   return success;

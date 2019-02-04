@@ -37,10 +37,10 @@ public:
 
   struct ChangeInfo
   {
-    std::string objectCN;
     Type type;
     std::string objectType;
-    std::string objectName;
+    std::string objectBefore;
+    std::string objectAfter;
   };
 
   class CChangeSet : private std::vector< ChangeInfo >
