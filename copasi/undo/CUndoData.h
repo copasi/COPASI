@@ -58,7 +58,11 @@ public:
 
     const_iterator begin() const;
 
+    iterator begin();
+
     const_iterator end() const;
+
+    iterator end();
 
     void clear();
 

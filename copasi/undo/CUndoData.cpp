@@ -128,6 +128,17 @@ CUndoData::CChangeSet::const_iterator CUndoData::CChangeSet::end() const
   return std::vector< ChangeInfo >::end();
 }
 
+CUndoData::CChangeSet::iterator CUndoData::CChangeSet::begin()
+{
+  return std::vector< ChangeInfo >::begin();
+}
+
+CUndoData::CChangeSet::iterator CUndoData::CChangeSet::end()
+{
+  return std::vector< ChangeInfo >::end();
+}
+
+
 void CUndoData::CChangeSet::clear()
 {
   std::vector< ChangeInfo >::clear();
@@ -827,7 +838,7 @@ bool CUndoData::insert(const CDataModel & dataModel, const bool & apply, CUndoDa
       success &= pObject->applyData(Data, changes);
     }
 
-  changes.add({CUndoData::Type::INSERT, Data.getProperty(CData::OBJECT_TYPE).toString(), "", CCommonName::fromData(Data)});
+  changes.add( {CUndoData::Type::INSERT, Data.getProperty(CData::OBJECT_TYPE).toString(), "", CCommonName::fromData(Data)});
 
   success &= executePostProcessData(dataModel, apply, changes, execute);
 
@@ -846,7 +857,7 @@ bool CUndoData::remove(const CDataModel & dataModel, const bool & apply, CUndoDa
 
   bool success = executePreProcessData(dataModel, apply, changes, execute);
 
-  changes.add({CUndoData::Type::REMOVE, Data.getProperty(CData::OBJECT_TYPE).toString(), CCommonName::fromData(Data), ""});
+  changes.add( {CUndoData::Type::REMOVE, Data.getProperty(CData::OBJECT_TYPE).toString(), CCommonName::fromData(Data), ""});
 
   if (execute)
     {
@@ -895,7 +906,7 @@ bool CUndoData::change(const CDataModel & dataModel, const bool & apply, CUndoDa
       success &= pObject->applyData(NewData, changes);
     }
 
-  changes.add({CUndoData::Type::CHANGE, NewData.getProperty(CData::OBJECT_TYPE).toString(), CCommonName::fromData(OldData), CCommonName::fromData(NewData)});
+  changes.add( {CUndoData::Type::CHANGE, NewData.getProperty(CData::OBJECT_TYPE).toString(), CCommonName::fromData(OldData), CCommonName::fromData(NewData)});
   success &= executePostProcessData(dataModel, apply, changes, execute);
 
   return success;
