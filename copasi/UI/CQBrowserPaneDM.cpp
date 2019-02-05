@@ -660,8 +660,14 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
   CObjectInterface::ContainerList List;
   List.push_back(mpCopasiDM);
 
-  // The CN might point to the old name (before rename or move). The new CN can be retrieved from the corresponding node
-  CNode * pNode = findNodeFromCN(cn);
+  CNode * pNode = NULL;
+
+  if (action != ListViews::ADD)
+    {
+      // The CN might point to the old name (before rename or move). The new CN can be retrieved from the corresponding node
+      pNode = findNodeFromCN(cn);
+    }
+
   std::string NewCN = pNode != NULL ? pNode->getCN() : cn;
 
   if (cn != NewCN)

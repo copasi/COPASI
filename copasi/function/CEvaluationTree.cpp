@@ -152,10 +152,10 @@ CEvaluationTree * CEvaluationTree::fromData(const CData & data, CUndoObjectInter
 // virtual
 CData CEvaluationTree::toData() const
 {
-  CData Data;
+  CData Data = CDataContainer::toData();
 
   // TODO CRITICAL Implement me!
-  fatalError();
+  // fatalError();
 
   return Data;
 }
@@ -163,10 +163,10 @@ CData CEvaluationTree::toData() const
 // virtual
 bool CEvaluationTree::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
-  bool success = true;
+  bool success = CDataContainer::applyData(data, changes);
 
   // TODO CRITICAL Implement me!
-  fatalError();
+  // fatalError();
 
   return success;
 }
