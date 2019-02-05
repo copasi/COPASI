@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -2712,22 +2717,12 @@ void CMathContainer::createUpdateSimulationValuesSequence()
 
   // Determine whether the model is autonomous, i.e., no simulation required value depends on time.
   // We need to additionally add the event assignments to the simulation required values as they may time dependent
-  CObjectInterface::ObjectSet TimeDependentValues = mSimulationRequiredValues;
-  TimeDependentValues.insert(RootRequiredValues.begin(), RootRequiredValues.end());
-
-  pObject = getMathObject(mEventAssignments.array());
-  pObjectEnd = pObject + mEventAssignments.size();
-
-  for (; pObject != pObjectEnd; ++pObject)
-    {
-      TimeDependentValues.insert(pObject);
-    }
-
+  CObjectInterface::ObjectSet TimeDependentValues;
   CObjectInterface::ObjectSet TimeObject;
   TimeObject.insert(getMathObject(mState.array() + mSize.nFixedEventTargets));
-  CCore::CUpdateSequence TimeChange;
-  mTransientDependencies.getUpdateSequence(TimeChange, CCore::SimulationContext::Default, TimeObject, TimeDependentValues);
-  mIsAutonomous = TimeChange.empty();
+
+  mTransientDependencies.appendAllDependents(TimeObject, TimeDependentValues);
+  mIsAutonomous = TimeDependentValues.empty();
 
   // Build the update sequence used to calculate the priorities in the event process queue.
   CObjectInterface::ObjectSet PriorityRequiredValues;
