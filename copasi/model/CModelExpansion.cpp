@@ -1091,6 +1091,22 @@ void CModelExpansion::duplicateEvent(CEvent* source,
           pNewAssignment->getExpressionPtr()->compile();
           updateExpression(pNewAssignment->getExpressionPtr(), index, sourceSet, emap, undoData);
         }
+      else
+        {
+          //the assignment target is not duplicated. That means that if the event was duplicated
+          //we need to copy the assignment, but not duplicate it.
+          //If the event was not duplicated, we do nothing
+          if (source != newObj)
+            {
+              //create duplicate of assignment
+              CEventAssignment * pNewAssignment = new CEventAssignment(pSourceTarget->getCN());
+              newObj->getAssignments().add(pNewAssignment, true);
+              //now copy the expression
+              pNewAssignment->setExpression(pSourceAssignment->getExpression());
+              pNewAssignment->getExpressionPtr()->compile();
+              updateExpression(pNewAssignment->getExpressionPtr(), index, sourceSet, emap, undoData);
+            }
+        }
     }
 
   for (i = 0; i < newObj->getAssignments().size(); ++i)
