@@ -21,6 +21,9 @@
 #include "utilities/CUnitValidator.h"
 #include "math/CMathExpression.h"
 
+// Uncoment the line below to debug undo processing
+// #define DEBUG_UNDO 1
+
 void CModelParameterGroup::updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject)
 {
   const CModelParameter * pParameter = dynamic_cast< const CModelParameter * >(pUndoObject);
@@ -174,8 +177,10 @@ void CModelParameterGroup::createUndoData(CUndoData & undoData,
               break;
             }
 
+#ifdef DEBUG_UNDO
           std::cout << "Old PARAMETER_VALUE: " <<  CDataValue(OldModelParametersData) << std::endl;
           std::cout << "New PARAMETER_VALUE: " <<  CDataValue(NewModelParametersData) << std::endl;
+#endif // DEBUG_UNDO
         }
     }
 
@@ -183,13 +188,19 @@ void CModelParameterGroup::createUndoData(CUndoData & undoData,
 
   for (; itOld != endOld; ++itOld)
     {
+#ifdef DEBUG_UNDO
       std::cout << "REMOVE: " << itOld->getProperty(CData::OBJECT_NAME).toString() << std::endl;
+#endif // DEBUG_UNDO
+
       undoData.addPreProcessData(CUndoData(CUndoData::Type::REMOVE, *itOld));
     }
 
   for (; itNew != endNew; ++itNew)
     {
+#ifdef DEBUG_UNDO
       std::cout << "INSERT: " << itOld->getProperty(CData::OBJECT_NAME).toString() << std::endl;
+#endif // DEBUG_UNDO
+
       undoData.addPostProcessData(CUndoData(CUndoData::Type::INSERT, (*itNew)->toData()));
     }
 

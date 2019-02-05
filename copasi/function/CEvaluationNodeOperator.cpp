@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1787,8 +1792,8 @@ CValidatedUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container
 
 // virtual
 CValidatedUnit CEvaluationNodeOperator::setUnit(const CMathContainer & container,
-    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
-    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+    const std::map < CEvaluationNode *, CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode *, CValidatedUnit > & targetUnits) const
 {
   CValidatedUnit Result(CEvaluationNode::setUnit(container, currentUnits, targetUnits));
 
@@ -1803,33 +1808,42 @@ CValidatedUnit CEvaluationNodeOperator::setUnit(const CMathContainer & container
             Exponent = M_E;
           }
 
-        CValidatedUnit Unit(Result.exponentiate(1.0 / Exponent));
-
-        std::set< CUnitComponent >::const_iterator  it = Unit.getComponents().begin();
-        std::set< CUnitComponent >::const_iterator end = Unit.getComponents().end();
-
-        for (; it != end; it++)
+        // Bug 2750 We need to deal with an exponent of zero
+        if (fabs(Exponent) < 100.0 * std::numeric_limits< C_FLOAT64 >::min())
           {
-            // Test if each component's exponent
-            // is an integer. (don't want fractional exponents) by . . .
-            if (!(remainder((*it).getExponent(), 1.0) <= 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
-              {
-                Unit.setConflict(true);
-
-                break;
-              }
+            targetUnits[mpLeftNode] = CValidatedUnit(CUnit(), false);
+            targetUnits[mpRightNode] = CValidatedUnit(CBaseUnit::dimensionless, false);
           }
+        else
+          {
+            CValidatedUnit Unit(Result.exponentiate(1.0 / Exponent));
 
-        targetUnits[mpLeftNode] = Unit;
-        targetUnits[mpRightNode] = CValidatedUnit(CBaseUnit::dimensionless, false);
+            std::set< CUnitComponent >::const_iterator  it = Unit.getComponents().begin();
+            std::set< CUnitComponent >::const_iterator end = Unit.getComponents().end();
+
+            for (; it != end; it++)
+              {
+                // Test if each component's exponent
+                // is an integer. (don't want fractional exponents) by . . .
+                if (!(remainder((*it).getExponent(), 1.0) <= 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
+                  {
+                    Unit.setConflict(true);
+
+                    break;
+                  }
+              }
+
+            targetUnits[mpLeftNode] = Unit;
+            targetUnits[mpRightNode] = CValidatedUnit(CBaseUnit::dimensionless, false);
+          }
       }
 
       break;
 
       case SubType::MULTIPLY:
       {
-        std::map < CEvaluationNode * , CValidatedUnit >::const_iterator itLeft = currentUnits.find(mpLeftNode);
-        std::map < CEvaluationNode * , CValidatedUnit >::const_iterator itRight = currentUnits.find(mpRightNode);
+        std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itLeft = currentUnits.find(mpLeftNode);
+        std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itRight = currentUnits.find(mpRightNode);
 
         if (itLeft->second.isUndefined() ||
             mpLeftNode->getChild() != NULL)
@@ -1858,8 +1872,8 @@ CValidatedUnit CEvaluationNodeOperator::setUnit(const CMathContainer & container
       case SubType::DIVIDE:
       case SubType::MODULUS:
       {
-        std::map < CEvaluationNode * , CValidatedUnit >::const_iterator itLeft = currentUnits.find(mpLeftNode);
-        std::map < CEvaluationNode * , CValidatedUnit >::const_iterator itRight = currentUnits.find(mpRightNode);
+        std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itLeft = currentUnits.find(mpLeftNode);
+        std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itRight = currentUnits.find(mpRightNode);
 
         if (itLeft->second.isUndefined() ||
             mpLeftNode->getChild() != NULL)
