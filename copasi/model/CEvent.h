@@ -81,6 +81,8 @@ public:
    * Default constructor
    * @param const std::string & targetCN (default: "")
    * @param "const CDataContainer * pParent (default: NULL)
+   *
+   *  Even though this constuctor usually expects the CN of a target, it will also work with a key
    */
   CEventAssignment(const std::string & targetCN = "",
                    const CDataContainer * pParent = NO_PARENT);
