@@ -1016,6 +1016,16 @@ void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const CCore::Fram
 {
   CModel * pModel = getModel();
 
+  if (mpCompartment == NULL)
+    {
+      mpCompartment = static_cast< CModelParameterCompartment * >(getSet()->toGroup()->getModelParameter(mCompartmentCN));
+
+      if (mpCompartment != NULL)
+        {
+          mpCompartment->addSpecies(this);
+        }
+    }
+
   if (framework == CCore::Framework::Concentration)
     {
       mConcentration = value;
