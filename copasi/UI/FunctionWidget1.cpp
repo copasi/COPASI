@@ -490,7 +490,7 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
       desc.insert(l, 1, '\n');
     }
 
-  mReadOnly = mpFunction->isReadOnly();
+  mReadOnly = mpFunction->isReadOnly() && !flagChanged;
 
   RadioButton1->setEnabled(!mReadOnly);
   RadioButton2->setEnabled(!mReadOnly);
