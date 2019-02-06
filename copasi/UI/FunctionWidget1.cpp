@@ -1039,7 +1039,8 @@ bool FunctionWidget1::enterProtected()
 
   if (mObjectCNToCopy != "")
     {
-      func = dynamic_cast<CFunction*>(CRootContainer::getKeyFactory()->get(mObjectCNToCopy));
+      //func = dynamic_cast<CFunction*>(CRootContainer::getKeyFactory()->get(mObjectCNToCopy));
+      func = const_cast<CFunction*>(dynamic_cast<const CFunction*>(CRootContainer::getRoot()->getObject(mObjectCNToCopy)));
     }
   else
     {
