@@ -13,6 +13,8 @@
 // of Manchester.
 // All rights reserved.
 
+#include <cmath>
+
 #include "copasi.h"
 #include "copasi/utilities/CUnitComponent.h"
 
