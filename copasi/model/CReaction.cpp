@@ -155,8 +155,38 @@ bool CReaction::applyData(const CData & data, CUndoData::CChangeSet & changes)
 
   if (data.isSetProperty(CData::KINETIC_LAW))
     {
+      // Bug 2696: We need to apply existing mapping here as we are only informed about the changes in the new data
+      CData OldData(toData());
+
       // This will also create and remove local reaction parameters and mappings
       setFunction(data.getProperty(CData::KINETIC_LAW).toString());
+
+      // Note, this does not remove unused parameter mappings. However these are cleared when setting the function above.
+      const std::vector< CData > & ParameterMapping = OldData.getProperty(CData::KINEITC_LAW_VARIABLE_MAPPING).toDataVector();
+
+      std::vector< CData >::const_iterator itMapping = ParameterMapping.begin();
+      std::vector< CData >::const_iterator endMapping = ParameterMapping.end();
+
+      for (; itMapping != endMapping; ++itMapping)
+        {
+          const std::string & Name = itMapping->getProperty(CData::OBJECT_NAME).toString();
+
+          // We only copy the mapping for existing parameters
+          if (mParameterNameToIndex.find(Name) == mParameterNameToIndex.end()) continue;
+
+          const std::vector< CDataValue > & ParameterSource = itMapping->getProperty(CData::PARAMETER_VALUE).toDataValues();
+          std::vector< CDataValue >::const_iterator it = ParameterSource.begin();
+          std::vector< CDataValue >::const_iterator end = ParameterSource.end();
+          std::vector< CRegisteredCommonName > CNs;
+
+          for (; it != end; ++it)
+            {
+              CNs.push_back(it->toString());
+            }
+
+          Success &= setParameterCNs(Name, CNs);
+        }
+
       compileModel = true;
     }
 
