@@ -1254,7 +1254,7 @@ void CReaction::initObjects()
 
 std::string CReaction::getDefaultNoiseExpression() const
 {
-  return "sign(<" + mpFluxReference->getCN() + ">)*sqrt(abs(<" + mpFluxReference->getCN() + ">))";
+  return "sign(<" + mpParticleFluxReference->getCN() + ">)*sqrt(abs(<" + mpParticleFluxReference->getCN() + ">))";
 }
 
 bool CReaction::setNoiseExpression(const std::string & expression)

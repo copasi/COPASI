@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -178,6 +183,11 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
   C_FLOAT64 * pRightRoot = mRootsRight.begin();
   const C_INT * pMask = mRootMask.begin();
 
+  // std::cout.precision(16);
+  // std::cout << "timeLeft = " << timeLeft << ", timeRight = " << timeRight << std::endl;
+  // std::cout << "mTimeLeft = " << mTimeLeft << ", mTimeRight = " << mTimeRight << std::endl;
+  // std::cout << "mRootsLeft = " << mRootsLeft << ", mRootsRight = " << mRootsRight << std::endl;
+
   for (; pLeftRoot != pLeftRootEnd; ++pLeftRoot, ++pRightRoot, ++pMask)
     if (!(*pMask & mRootMasking) &&
         (*pLeftRoot **pRightRoot < 0 || *pRightRoot == 0)) break;
@@ -276,6 +286,8 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
 
 void CRootFinder::restart()
 {
+  // std::cout << "<-- restart root finder -->" << std::endl;
+
   mTimeLeft = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
   mTimeRight = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }

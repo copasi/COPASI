@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -129,7 +134,8 @@ CStochasticRungeKuttaRI5::CStochasticRungeKuttaRI5(const CDataContainer * pParen
   mRoots(),
   mRootCounter(0),
   mRootMask(),
-  mRootMasking(CRootFinder::NONE)
+  mRootMasking(CRootFinder::NONE),
+  mpPhysicalCorrectnessRootFound(NULL)
 {
   mpRootValueCalculator = new CRootFinder::EvalTemplate< CStochasticRungeKuttaRI5 >(this, & CStochasticRungeKuttaRI5::evalRoot);
   initializeParameter();
@@ -183,7 +189,8 @@ CStochasticRungeKuttaRI5::CStochasticRungeKuttaRI5(const CStochasticRungeKuttaRI
   mRoots(),
   mRootCounter(src.mRootCounter),
   mRootMask(src.mRootMask),
-  mRootMasking(src.mRootMasking)
+  mRootMasking(src.mRootMasking),
+  mpPhysicalCorrectnessRootFound(src.mpPhysicalCorrectnessRootFound)
 {
   initializeParameter();
 
@@ -244,8 +251,6 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::step(const double & deltaT,
   while (mTime < mTargetTime && Result == NORMAL)
     {
       Result = internalStep();
-
-      mInternalSteps++;
 
       if (mInternalSteps > *mpMaxInternalSteps &&
           *mpInternalStepSize * mInternalSteps > *mpMaxInternalSteps * mTargetDelta)
@@ -390,6 +395,8 @@ void CStochasticRungeKuttaRI5::start()
   mRoots.initialize(mRootFinder.getRootValues());
   // We ignore the first root which checks for physical correctness as this is treated with only internally.
   mRootsFound.initialize(mNumRoots, const_cast< C_INT * >(mRootFinder.getToggledRoots().begin() + 1));
+
+  mpPhysicalCorrectnessRootFound = const_cast< C_INT * >(mRootFinder.getToggledRoots().begin());
 }
 
 void CStochasticRungeKuttaRI5::evalRate(C_FLOAT64 * pRates)
@@ -401,15 +408,7 @@ void CStochasticRungeKuttaRI5::evalRate(C_FLOAT64 * pRates)
 void CStochasticRungeKuttaRI5::evalNoise(C_FLOAT64 * pNoise,
     const size_t & noiseDimension)
 {
-  C_FLOAT64 ** ppNoiseValue = mNoiseInputValues.begin();
-  C_FLOAT64 ** ppNoiseValueEnd = mNoiseInputValues.end();
-
-  for (; ppNoiseValue != ppNoiseValueEnd; ++ppNoiseValue)
-    {
-      **ppNoiseValue = 0.0;
-    }
-
-  mContainerNoise = 0.0;
+  mpContainer->resetNoise();
   mpContainer->applyUpdateSequence(mNoiseUpdateSequences[noiseDimension]);
 
   memcpy(pNoise, mContainerNoise.begin(), mNumVariables * sizeof(C_FLOAT64));
@@ -435,7 +434,11 @@ void CStochasticRungeKuttaRI5::evalRoot(const double & time, CVectorCore< C_FLOA
 
 void CStochasticRungeKuttaRI5::generateRandomNumbers()
 {
+  mInternalSteps++;
+
   if (mNumNoise == 0) return;
+
+  // std::cout << "<-- generate random numbers -->" << std::endl;
 
   // We always need to recalculate if we generate new random numbers.
   mLastCalculatedTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -453,11 +456,11 @@ void CStochasticRungeKuttaRI5::generateRandomNumbers()
   for (; pRandom != pRandomEnd; ++pRandom)
     *pRandom = randomITilde();
 
-  C_FLOAT64 * pRandomMatrix = mRandomIMatrix.array();
+  pRandom = mRandomIMatrix.array();
 
   for (size_t k = 0; k < mNumNoise; ++k)
     {
-      for (size_t l = 0; l < mNumNoise; ++l)
+      for (size_t l = 0; l < mNumNoise; ++l, ++pRandom)
         {
           if (k < l)
             {
@@ -777,53 +780,52 @@ void CStochasticRungeKuttaRI5::calculateStateVariables(const double & time)
   C_FLOAT64 * pY = mContainerVariables.begin();
   C_FLOAT64 * pYEnd = mContainerVariables.end();
   C_FLOAT64 * pLeft = mH10.begin();
-  C_FLOAT64 * pA0 = mA[0];
-  C_FLOAT64 * pA1 = mA[1];
-  C_FLOAT64 * pA2 = mA[2];
-  C_FLOAT64 * pB0 = mB[0].array();
-  C_FLOAT64 * pB1 = mB[1].array();
-  C_FLOAT64 * pB2 = mB[2].array();
-  C_FLOAT64 * pBB0 = mBB[0].array();
-  C_FLOAT64 * pBB1 = mBB[1].array();
-  C_FLOAT64 * pBB2 = mBB[2].array();
+  C_FLOAT64 * pA1 = mA[0];
+  C_FLOAT64 * pA2 = mA[1];
+  C_FLOAT64 * pA3 = mA[2];
+  C_FLOAT64 * pB1 = mB[0].array();
+  C_FLOAT64 * pB2 = mB[1].array();
+  C_FLOAT64 * pB3 = mB[2].array();
+  C_FLOAT64 * pBB1 = mBB[0].array();
+  C_FLOAT64 * pBB2 = mBB[1].array();
+  C_FLOAT64 * pBB3 = mBB[2].array();
 
   for (; pY != pYEnd;
        ++pY, ++pLeft,
-       ++pA0, ++pA1, ++pA2,
-       ++pB0, ++pB1, ++pB2,
-       ++pBB0, ++pBB1, ++pBB2)
+       ++pA1, ++pA2, ++pA3,
+       ++pB1, ++pB2, ++pB3, ++pBB1, ++pBB2, ++pBB3)
     {
       *pY = *pLeft;
-      *pY += mStepSize * (alpha1 **pA0 + alpha2 **pA1 + alpha3 **pA2);
+      *pY += mStepSize * (alpha1 * *pA1 + alpha2 * *pA2 + alpha3 * *pA3);
 
       C_FLOAT64 * pIHat = mRandomIHat.begin();
       C_FLOAT64 * pIHatEnd = mRandomIHat.end();
       C_FLOAT64 * pIMatrix = mRandomIMatrix.array();
-
-      C_FLOAT64 * pB0k = pB0;
-      C_FLOAT64 * pB1k = pB1;
-      C_FLOAT64 * pB2k = pB2;
-      C_FLOAT64 * pBB0k = pBB0;
-      C_FLOAT64 * pBB1k = pBB1;
-      C_FLOAT64 * pBB2k = pBB2;
+      C_FLOAT64 * pB1m = pB1;
+      C_FLOAT64 * pB2m = pB2;
+      C_FLOAT64 * pB3m = pB3;
+      C_FLOAT64 * pBB1m = pBB1;
+      C_FLOAT64 * pBB2m = pBB2;
+      C_FLOAT64 * pBB3m = pBB3;
 
       for (; pIHat != pIHatEnd;
            ++pIHat, pIMatrix += mNumNoise + 1,
-           pB0k += mNumNoise, pB1k += mNumNoise, pB2k += mNumNoise,
-           pBB0k += mNumNoise, pBB1k += mNumNoise, pBB2k += mNumNoise)
+           pB1m += mNumVariables, pB2m += mNumVariables, pB3m += mNumVariables,
+           pBB1m += mNumVariables, pBB2m += mNumVariables, pBB3m += mNumVariables)
         {
-          *pY += mSqrtStepSize *
-                 ((beta11 **pIHat + beta21 **pIMatrix) **pB0k +
-                  (beta12 **pIHat + beta22 **pIMatrix) **pB1k +
-                  (beta13 **pIHat + beta23 **pIMatrix) **pB2k +
-                  (beta31 **pIHat + beta41) **pBB0k +
-                  (beta32 **pIHat + beta42) **pBB1k +
-                  (beta33 **pIHat + beta43) **pBB2k);
+          *pY += mSqrtStepSize * (
+                   *pIHat * (beta11 * *pB1m + beta12 * *pB2m + beta13 * *pB3m) +
+                   *pIMatrix * (beta21 * *pB1m + beta22 * *pB2m + beta23 * *pB3m) +
+                   *pIHat * (beta31 * *pBB1m + beta32 * *pBB2m + beta33 * *pBB3m) +
+                   (beta41 * *pBB1m + beta42 * *pBB2m + beta43 * *pBB3m));
         }
     }
 
   mLastCalculatedVariables = mContainerVariables;
   *mpContainerStateTime = time;
+
+  // std::cout.precision(16);
+  // std::cout <<  time << ": " << calculateSmallestPhysicalValue() << ", " << mContainerVariables << std::endl;
 }
 
 CTrajectoryMethod::Status CStochasticRungeKuttaRI5::internalStep()
@@ -848,44 +850,60 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::internalStep()
                 break;
 
               case CRootFinder::RootFound:
-              {
-                calculateStateVariables(mRootFinder.getRootTime());
-                *mpContainerStateTime = mRootFinder.getRootTime();
 
-                // It is possible that the root for physical correctness is found.
-                // If this is the only root we can continue with the integration otherwise
-                // we have found a possible trigger for an event.
-                C_INT * pRootFound = mRootsFound.begin();
-                C_INT * pRootFoundEnd = mRootsFound.end();
+                // Check whether we have to deal with physical correctness
+                if (*mpPhysicalCorrectnessRootFound == static_cast< C_INT >(CMath::RootToggleType::NoToggle))
+                  {
+                    Result = ROOT;
+                    Step = false;
+                  }
+                else
+                  {
+                    *mpPhysicalCorrectnessRootFound = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
 
-                for (; pRootFound != pRootFoundEnd; ++pRootFound)
-                  if (*pRootFound != static_cast< C_INT >(CMath::RootToggleType::NoToggle))
-                    {
-                      Result = ROOT;
-                      break;
-                    }
+                    C_FLOAT64 RootTime = mRootFinder.getRootTime();
+                    calculateStateVariables(RootTime);
+                    bool BackTracked = false;
+
+                    // Assure physical correctness by back tracking
+                    while (calculateSmallestPhysicalValue() < 0)
+                      {
+                        RootTime = std::max(mTime, RootTime * (1.0 - *mpRootRelativeTolerance * 0.1));
+                        calculateStateVariables(RootTime);
+                        BackTracked = true;
+                      }
+
+                    if (!BackTracked)
+                      {
+                        C_INT * pRootFound = mRootsFound.begin();
+                        C_INT * pRootFoundEnd = mRootsFound.end();
+
+                        for (; pRootFound != pRootFoundEnd; ++pRootFound)
+                          if (*pRootFound != static_cast< C_INT >(CMath::RootToggleType::NoToggle))
+                            {
+                              Result = ROOT;
+                              Step = false;
+                              break;
+                            }
+                      }
+
+                    if (Step)
+                      {
+                        mRootFinder.restart();
+                        generateRandomNumbers();
+                      }
+                  }
 
                 // We should peek ahead to check for roots which are triggered simultaneously
-              }
 
-              Step = false;
-              break;
+                break;
 
               case CRootFinder::NotAdvanced:
               {
                 // It is possible that the root for physical correctness is found.
                 // If this is the only root we can continue with the integration otherwise
                 // we have to attempt root masking.
-                C_INT * pRootFound = mRootsFound.begin();
-                C_INT * pRootFoundEnd = mRootsFound.end();
-
-                for (; pRootFound != pRootFoundEnd; ++pRootFound)
-                  if (*pRootFound != static_cast< C_INT >(CMath::RootToggleType::NoToggle))
-                    {
-                      break;
-                    }
-
-                if (pRootFound != pRootFoundEnd)
+                if (*mpPhysicalCorrectnessRootFound == static_cast< C_INT >(CMath::RootToggleType::NoToggle))
                   {
                     if (mRootMasking == CRootFinder::ALL)
                       fatalError();
@@ -894,7 +912,10 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::internalStep()
                   }
                 else
                   {
-                    return Result;
+                    // We did not advance due to physical correctnes, role the dice again
+                    *mpPhysicalCorrectnessRootFound = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
+                    mRootFinder.restart();
+                    generateRandomNumbers();
                   }
               }
               break;

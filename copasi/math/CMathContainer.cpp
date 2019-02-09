@@ -818,6 +818,11 @@ const CVectorCore< C_FLOAT64 > & CMathContainer::getNoise(const bool & reduced) 
   return mExtensiveNoise;
 }
 
+void CMathContainer::resetNoise()
+{
+  memset(mExtensiveNoise.array(), 0, sizeof(C_FLOAT64) * (mExtensiveNoise.size() + mIntensiveNoise.size() + mReactionNoise.size() + mReactionParticleNoise.size()));
+}
+
 const CVectorCore< C_FLOAT64 > & CMathContainer::getTotalMasses() const
 {
   return mTotalMasses;
@@ -1554,7 +1559,7 @@ size_t CMathContainer::getCountNoise() const
   return mNoiseInputObjects.size();
 }
 
-void CMathContainer::hasNoiseInputObject(const CMathObject * pObject)
+void CMathContainer::addNoiseInputObject(const CMathObject * pObject)
 {
   mNoiseInputObjects.insert(pObject);
 }
@@ -2184,6 +2189,8 @@ void CMathContainer::initializeEvents(CMath::sPointers & p)
 bool CMathContainer::compileObjects()
 {
   bool success = true;
+
+  mNoiseInputObjects.clear();
 
   CMathObject *pObject = mObjects.array();
   CMathObject *pObjectEnd = pObject + mObjects.size();
@@ -3515,10 +3522,10 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
                               CMath::ValueType::Rate, EntityType, SimulationType, false, false,
                               (*it)->getRateReference());
 
-      // Intensive Noise
-      if (SimulationType == CMath::SimulationType::ODE ||
-          SimulationType == CMath::SimulationType::Independent ||
-          SimulationType == CMath::SimulationType::Dependent)
+      // Extensive Noise
+      if (simulationType == CMath::SimulationType::ODE ||
+          simulationType == CMath::SimulationType::Independent ||
+          simulationType == CMath::SimulationType::Dependent)
         {
           map((*it)->getNoiseReference(), p.pExtensiveNoiseObject);
           CMathObject::initialize(p.pExtensiveNoiseObject++, p.pExtensiveNoise++,
@@ -3573,9 +3580,9 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
                                   pSpecies->getConcentrationRateReference());
 
           // Intensive Noise
-          if (SimulationType == CMath::SimulationType::ODE ||
-              SimulationType == CMath::SimulationType::Independent ||
-              SimulationType == CMath::SimulationType::Dependent)
+          if (simulationType == CMath::SimulationType::ODE ||
+              simulationType == CMath::SimulationType::Independent ||
+              simulationType == CMath::SimulationType::Dependent)
             {
               map(pSpecies->getIntensiveNoiseReference(), p.pIntensiveNoiseObject);
               CMathObject::initialize(p.pIntensiveNoiseObject++, p.pIntensiveNoise++,
