@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -8383,7 +8388,17 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // another global substance unit since this would change the units for
       // the kinetic laws
       UnitDefinition* pUdef = getSBMLUnitDefinitionForId(lastUnit, pSBMLModel);
-      const UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId("substance", pSBMLModel);
+      const UnitDefinition* pUdef2 = NULL;
+
+      if (pSBMLModel->getLevel() > 2 && pSBMLModel->isSetSubstanceUnits())
+        {
+          pUdef2 = getSBMLUnitDefinitionForId(pSBMLModel->getSubstanceUnits(), pSBMLModel);
+        }
+      else
+        {
+          pUdef2 = getSBMLUnitDefinitionForId("substance", pSBMLModel);
+        }
+
       assert(pUdef2 != NULL);
       assert(pUdef != NULL);
 
