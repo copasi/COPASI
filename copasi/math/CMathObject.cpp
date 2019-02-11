@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -1151,7 +1156,7 @@ bool CMathObject::compileNoise(CMathContainer & container)
                     success &= createConvertedExpression(pEntity->getNoiseExpressionPtr(), container);
                   }
 
-                container.hasNoiseInputObject(this);
+                container.addNoiseInputObject(this);
                 compileExpression();
               }
 
@@ -1201,19 +1206,13 @@ bool CMathObject::compileReactionParticleNoise(CMathContainer & container)
 
   const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
 
-  // We need to check whether this reaction is a single compartment reaction and scale
-  // it if true.
-  //   mParticleNoise = *mUnitScalingFactor * mNoise;
-  //   mUnitScalingFactor = & pModel->getQuantity2NumberFactor();
-
   if (pReaction->hasNoise())
     {
-      std::string Infix = pointerToString(mpQuantity2NumberValue);
-      Infix += "*" + pointerToString(container.getMathObject(pReaction->getNoiseReference())->getValuePointer());
+      mpExpression = new CMathExpression(*pReaction->getNoiseExpressionPtr(),
+                                         container,
+                                         !mIsInitialValue);
 
-      mpExpression = new CMathExpression("ReactionParticleNoiseExpression", container);
-      success &= mpExpression->setInfix(Infix);
-      success &= mpExpression->compile();
+      container.addNoiseInputObject(this);
     }
 
   compileExpression();
@@ -1236,30 +1235,22 @@ bool CMathObject::compileReactionNoise(CMathContainer & container)
 
   if (pReaction->hasNoise())
     {
-      // We need to check whether this reaction is a single compartment reaction and scale it if true.
-      //   mFlux = *mScalingFactor * mpFunction->calcValue(mMap.getPointers());
-      //   mScalingFactor = compartment volume or 1
+      std::string Infix = pointerToString(container.getMathObject(pReaction->getParticleNoiseReference())->getValuePointer());
+      Infix += "/" + pointerToString(mpQuantity2NumberValue);
 
-      mpExpression = new CMathExpression(*pReaction->getNoiseExpressionPtr(),
-                                         container,
-                                         !mIsInitialValue);
-
+      // We need to check whether this reaction is a single compartment reaction and scale
+      // it if true.
+      //   mParticleNoise = *mUnitScalingFactor * mNoise;
+      //   mUnitScalingFactor = & pModel->getQuantity2NumberFactor();
       if (pReaction->getScalingCompartment() != NULL &&
           pReaction->getEffectiveKineticLawUnitType() == CReaction::KineticLawUnit::ConcentrationPerTime)
         {
-          CExpression Tmp(mpExpression->getObjectName(), &container);
-
-          std::string Infix = pointerToString(mpCompartmentValue);
-          Infix += "*(" + mpExpression->getInfix() + ")";
-
-          success &= Tmp.setInfix(Infix);
-          success &= Tmp.compile();
-
-          pdelete(mpExpression);
-          mpExpression = new CMathExpression(Tmp, container, false);
+          Infix += "/" + pointerToString(mpCompartmentValue);
         }
 
-      container.hasNoiseInputObject(this);
+      mpExpression = new CMathExpression("ReactionNoiseExpression", container);
+      success &= mpExpression->setInfix(Infix);
+      success &= mpExpression->compile();
     }
 
   compileExpression();
@@ -2014,6 +2005,8 @@ bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies
 
   for (; itStoi != endStoi; ++itStoi)
     {
+      if (!itStoi->first->hasNoise()) continue;
+
       const C_FLOAT64 & Multiplicity = itStoi->second;
 
       if (First || Multiplicity < 0.0)

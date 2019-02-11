@@ -51,10 +51,10 @@ CFunction * CFunction::fromData(const CData & data, CUndoObjectInterface * pPare
 // virtual
 CData CFunction::toData() const
 {
-  CData Data;
+  CData Data = CEvaluationTree::toData();
 
   // TODO CRITICAL Implement me!
-  fatalError();
+  // fatalError();
 
   Data.appendData(CAnnotation::toData());
 
@@ -64,10 +64,10 @@ CData CFunction::toData() const
 // virtual
 bool CFunction::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
-  bool success = true;
+  bool success = CEvaluationTree::applyData(data, changes);
 
   // TODO CRITICAL Implement me!
-  fatalError();
+  // fatalError();
 
   success &= CAnnotation::applyData(data, changes);
 
@@ -88,7 +88,7 @@ void CFunction::createUndoData(CUndoData & undoData,
     }
 
   // TODO CRITICAL Implement me!
-  fatalError();
+  // fatalError();
 
   CAnnotation::createUndoData(undoData, type, oldData, framework);
 

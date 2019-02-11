@@ -490,7 +490,7 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
       desc.insert(l, 1, '\n');
     }
 
-  mReadOnly = mpFunction->isReadOnly();
+  mReadOnly = mpFunction->isReadOnly() && !flagChanged;
 
   RadioButton1->setEnabled(!mReadOnly);
   RadioButton2->setEnabled(!mReadOnly);
@@ -1039,7 +1039,8 @@ bool FunctionWidget1::enterProtected()
 
   if (mObjectCNToCopy != "")
     {
-      func = dynamic_cast<CFunction*>(CRootContainer::getKeyFactory()->get(mObjectCNToCopy));
+      //func = dynamic_cast<CFunction*>(CRootContainer::getKeyFactory()->get(mObjectCNToCopy));
+      func = const_cast<CFunction*>(dynamic_cast<const CFunction*>(CRootContainer::getRoot()->getObject(mObjectCNToCopy)));
     }
   else
     {

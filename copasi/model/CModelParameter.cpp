@@ -519,7 +519,6 @@ bool CModelParameter::isReadOnly() const
   if (mType == Type::Reaction ||
       mType == Type::Group ||
       mType == Type::Set ||
-      (mType == Type::Model && getModel()->isAutonomous()) ||
       (mIsInitialExpressionValid && getInitialExpression() != ""))
     {
       return true;
@@ -675,20 +674,6 @@ bool CModelParameter::updateModel()
       switch (mType)
         {
           case Type::Model:
-          {
-            CModel * pModel = static_cast< CModel * >(mpObject);
-
-            if (!pModel->isAutonomous())
-              {
-                pModel->setInitialValue(mValue);
-              }
-            else
-              {
-                pModel->setInitialValue(0.0);
-              }
-          }
-          break;
-
           case Type::Compartment:
           case Type::Species:
           case Type::ModelValue:
@@ -783,20 +768,6 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
       switch (mType)
         {
           case Type::Model:
-          {
-            CModel * pModel = static_cast< CModel * >(mpObject);
-
-            if (!pModel->isAutonomous())
-              {
-                Value = pModel->getInitialValue();
-              }
-            else
-              {
-                Value = 0.0;
-              }
-          }
-          break;
-
           case Type::Compartment:
           case Type::Species:
           case Type::ModelValue:
@@ -1044,6 +1015,16 @@ void CModelParameterSpecies::setCN(const CCommonName & cn)
 void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const CCore::Framework & framework)
 {
   CModel * pModel = getModel();
+
+  if (mpCompartment == NULL)
+    {
+      mpCompartment = static_cast< CModelParameterCompartment * >(getSet()->toGroup()->getModelParameter(mCompartmentCN));
+
+      if (mpCompartment != NULL)
+        {
+          mpCompartment->addSpecies(this);
+        }
+    }
 
   if (framework == CCore::Framework::Concentration)
     {

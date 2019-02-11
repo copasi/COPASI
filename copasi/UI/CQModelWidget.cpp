@@ -220,7 +220,6 @@ void CQModelWidget::load()
 
 #endif
 
-  mpEditInitialTime->setReadOnly(mpModel->isAutonomous());
   mpEditInitialTime->setText(convertToQString(mpModel->getInitialTime()));
   mpEditCurrentTime->setText(convertToQString(mpModel->getTime()));
 

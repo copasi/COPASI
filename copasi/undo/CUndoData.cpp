@@ -15,6 +15,7 @@
 #include "copasi/core/CDataContainer.h"
 #include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CDataVector.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CMetab.h"
 #include "copasi/model/CModelParameterSet.h"
@@ -137,7 +138,6 @@ CUndoData::CChangeSet::iterator CUndoData::CChangeSet::end()
 {
   return std::vector< ChangeInfo >::end();
 }
-
 
 void CUndoData::CChangeSet::clear()
 {
@@ -838,7 +838,7 @@ bool CUndoData::insert(const CDataModel & dataModel, const bool & apply, CUndoDa
       success &= pObject->applyData(Data, changes);
     }
 
-  changes.add( {CUndoData::Type::INSERT, Data.getProperty(CData::OBJECT_TYPE).toString(), "", CCommonName::fromData(Data)});
+  changes.add({CUndoData::Type::INSERT, Data.getProperty(CData::OBJECT_TYPE).toString(), "", CCommonName::fromData(Data)});
 
   success &= executePostProcessData(dataModel, apply, changes, execute);
 
@@ -857,7 +857,7 @@ bool CUndoData::remove(const CDataModel & dataModel, const bool & apply, CUndoDa
 
   bool success = executePreProcessData(dataModel, apply, changes, execute);
 
-  changes.add( {CUndoData::Type::REMOVE, Data.getProperty(CData::OBJECT_TYPE).toString(), CCommonName::fromData(Data), ""});
+  changes.add({CUndoData::Type::REMOVE, Data.getProperty(CData::OBJECT_TYPE).toString(), CCommonName::fromData(Data), ""});
 
   if (execute)
     {
@@ -906,7 +906,7 @@ bool CUndoData::change(const CDataModel & dataModel, const bool & apply, CUndoDa
       success &= pObject->applyData(NewData, changes);
     }
 
-  changes.add( {CUndoData::Type::CHANGE, NewData.getProperty(CData::OBJECT_TYPE).toString(), CCommonName::fromData(OldData), CCommonName::fromData(NewData)});
+  changes.add({CUndoData::Type::CHANGE, NewData.getProperty(CData::OBJECT_TYPE).toString(), CCommonName::fromData(OldData), CCommonName::fromData(NewData)});
   success &= executePostProcessData(dataModel, apply, changes, execute);
 
   return success;
@@ -1001,7 +1001,14 @@ CDataContainer * CUndoData::getParent(const CDataModel & dataModel, const CData 
   const CDataContainer * pParent = NULL;
 
   if (!data.empty())
-    pParent = dynamic_cast< const CDataContainer * >(dataModel.getObject(data.getProperty(CData::OBJECT_PARENT_CN).toString()));
+    {
+      pParent = dynamic_cast< const CDataContainer * >(dataModel.getObject(data.getProperty(CData::OBJECT_PARENT_CN).toString()));
+
+      if (pParent == NULL)
+        {
+          pParent = dynamic_cast< const CDataContainer * >(CRootContainer::getRoot()->getObject(data.getProperty(CData::OBJECT_PARENT_CN).toString()));
+        }
+    }
 
   return const_cast< CDataContainer * >(pParent);
 }

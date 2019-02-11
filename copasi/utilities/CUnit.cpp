@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -7,8 +12,6 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
-
-
 
 #include <math.h>
 #include <string.h>
@@ -266,6 +269,18 @@ bool CUnit::isUndefined() const
   return mComponents.empty();
 }
 
+bool CUnit::isValid() const
+{
+  std::set< CUnitComponent >::const_iterator it = mComponents.begin();
+  std::set< CUnitComponent >::const_iterator end = mComponents.end();
+
+  for (; it != end; ++it)
+    if (!it->isValid())
+      return false;
+
+  return true;
+}
+
 void CUnit::addComponent(const CUnitComponent & component)
 {
   if (mpDimensionless == NULL)
@@ -332,6 +347,15 @@ const std::set< CUnitComponent > & CUnit::getComponents() const
 
 CUnit CUnit::exponentiate(double exp) const
 {
+  if (fabs(exp) < 100.0 * std::numeric_limits< C_FLOAT64 >::min())
+    {
+      return CUnit(CBaseUnit::dimensionless);
+    }
+  else if (exp == std::numeric_limits< C_FLOAT64 >::infinity())
+    {
+      return CUnit();
+    }
+
   CUnit Unit(*this);
 
   std::set< CUnitComponent >::const_iterator it = Unit.getComponents().begin();
@@ -497,6 +521,12 @@ std::pair< C_INT32, C_INT32 > CUnit::removeSymbolFromUnit(const CUnit & symbol, 
 {
   std::pair< C_INT32, C_INT32 > Result = std::make_pair(0, 0);
 
+  if (!symbol.isValid() ||
+      !unit.isValid())
+    {
+      return Result;
+    }
+
   while (true)
     {
       CUnit Tmp = unit * symbol;
@@ -510,6 +540,13 @@ std::pair< C_INT32, C_INT32 > CUnit::removeSymbolFromUnit(const CUnit & symbol, 
 
       while (itOld != endOld && itNew != endNew)
         {
+          if (isnan(itOld->getExponent()) ||
+              isnan(itOld->getMultiplier()) ||
+              isnan(itOld->getScale()))
+            {
+              return Result;
+            }
+
           if (itNew->getKind() > itOld->getKind())
             {
               improvement += (int)fabs(itOld->getExponent());
@@ -751,9 +788,16 @@ std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
 
 void CUnit::buildExpression()
 {
+  if (!isValid())
+    {
+      mExpression = "?";
+      return;
+    }
+
   std::vector< SymbolComponent > Components = getSymbolComponents();
 
-  if (Components.empty())
+  if (Components.empty() ||
+      !isValid())
     {
       mExpression = "?";
       return;

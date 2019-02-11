@@ -13,8 +13,6 @@
 // of Manchester.
 // All rights reserved.
 
-
-
 #include "copasi.h"
 
 #include "CQSimpleSelectionTree.h"
@@ -570,7 +568,6 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
                         }
                     }
                 }
-
             }
         }
     }
@@ -1211,7 +1208,6 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses &classes, const CDataObje
 
       if ((classes & InitialTime) &&
           Status == CModelEntity::Status::TIME &&
-          !static_cast<const CModel *>(pEntity)->isAutonomous() &&
           ObjectName == "Initial Time")
         return true;
 
