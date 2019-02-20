@@ -1,4 +1,14 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -108,11 +118,15 @@ QwtDoubleRect CHistoCurveData::boundingRect() const
 
   double InvIncrement = 1.0 / mIncrement;
 
+  size_t count = 0;
+
   for (; xIt != end; ++xIt)
     {
       //just ignore breaks. Later we perhaps want to start a new histogram...
       if (isnan(*xIt)) //NaN
         continue;
+
+      count++;
 
       if (-std::numeric_limits< C_FLOAT64 >::infinity() < *xIt &&
           *xIt < std::numeric_limits< C_FLOAT64 >::infinity())
@@ -144,15 +158,13 @@ QwtDoubleRect CHistoCurveData::boundingRect() const
   mMinX = mMaxX = *pX++;
   mMinY = mMaxY = *pY++;
 
-  C_FLOAT64 tmpFactor = 1.0 / (mSize * mIncrement);
   std::map<C_INT32, C_INT32>::const_iterator it = mMap.begin();
   std::map<C_INT32, C_INT32>::const_iterator itEnd = mMap.end();
 
   for (; it != itEnd; ++it, ++pX, ++pY)
     {
-      //TODO use pointer increments instead of [...]
       *pX = it->first * mIncrement;
-      *pY = (double)it->second * 100.0 / (double)mSize;
+      *pY = (double)it->second * 100.0 / (double)count;
 
       if (*pX < mMinX)
         mMinX = *pX;
