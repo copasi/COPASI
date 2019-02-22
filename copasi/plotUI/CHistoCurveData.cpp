@@ -25,6 +25,7 @@ CHistoCurveData::CHistoCurveData():
   mSize(0),
   mMaxSize(0),
   mLastRectangle(0),
+  mCount(0),
   mMinX(std::numeric_limits<double>::quiet_NaN()),
   mMaxX(std::numeric_limits<double>::quiet_NaN()),
   mMinY(std::numeric_limits<double>::quiet_NaN()),
@@ -47,6 +48,7 @@ CHistoCurveData::CHistoCurveData(const CVector< C_FLOAT64 > & x,
   mSize(size),
   mMaxSize(x.size()),
   mLastRectangle(0),
+  mCount(0),
   mMinX(std::numeric_limits<double>::quiet_NaN()),
   mMaxX(std::numeric_limits<double>::quiet_NaN()),
   mMinY(std::numeric_limits<double>::quiet_NaN()),
@@ -118,15 +120,13 @@ QwtDoubleRect CHistoCurveData::boundingRect() const
 
   double InvIncrement = 1.0 / mIncrement;
 
-  size_t count = 0;
-
   for (; xIt != end; ++xIt)
     {
       //just ignore breaks. Later we perhaps want to start a new histogram...
       if (isnan(*xIt)) //NaN
         continue;
 
-      count++;
+      ++mCount;
 
       if (-std::numeric_limits< C_FLOAT64 >::infinity() < *xIt &&
           *xIt < std::numeric_limits< C_FLOAT64 >::infinity())
@@ -164,7 +164,7 @@ QwtDoubleRect CHistoCurveData::boundingRect() const
   for (; it != itEnd; ++it, ++pX, ++pY)
     {
       *pX = it->first * mIncrement;
-      *pY = (double)it->second * 100.0 / (double)count;
+      *pY = (double)it->second * 100.0 / (double)mCount;
 
       if (*pX < mMinX)
         mMinX = *pX;
@@ -203,6 +203,7 @@ CHistoCurveData & CHistoCurveData::operator = (const CHistoCurveData & rhs)
   mMaxSize = rhs.mMaxSize;
 
   mLastRectangle = rhs.mLastRectangle;
+  mCount = rhs.mCount;
   mMinX = rhs.mMinX;
   mMaxX = rhs.mMaxX;
   mMinY = rhs.mMinY;
