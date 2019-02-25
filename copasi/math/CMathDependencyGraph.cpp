@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -69,7 +74,7 @@ void CMathDependencyGraph::clear()
 
   for (; it != end; ++it)
     {
-      delete (it->second);
+      delete(it->second);
     }
 
   mObjects2Nodes.clear();
@@ -223,6 +228,12 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
       std::cout << *it << std::endl;
 #endif // DEBUG_OUTPUT
 
+      if (*it == NULL)
+        {
+          success = false; // we should not have NULL elements here
+          break;
+        }
+
       // We may have data objects which are ignored as they cannot be calculated
       if ((*it)->getDataObject() == *it)
         {
@@ -297,7 +308,7 @@ finish:
     {
       UpdateSequence.clear();
 
-      if (it != end)
+      if (it != end && *it != NULL)
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCMathModel + 3, (*it)->getCN().c_str());
         }
