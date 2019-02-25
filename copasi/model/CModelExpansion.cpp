@@ -582,6 +582,10 @@ void CModelExpansion::duplicateCompartment(const CCompartment* source,
     ElementsMap & emap,
     CUndoData & undoData)
 {
+  // if there is no source, nothing to do
+  if (source == NULL)
+    return;
+
   //if the source object has already been duplicated: do nothing
   if (emap.exists(source))
     return;
@@ -640,6 +644,11 @@ void CModelExpansion::duplicateMetab(const CMetab* source,
                                      ElementsMap & emap,
                                      CUndoData & undoData)
 {
+
+  // if there is no source, nothing to do
+  if (source == NULL)
+    return;
+
   //if the source object has already been duplicated: do nothing
   if (emap.exists(source))
     return;
@@ -721,6 +730,10 @@ void CModelExpansion::duplicateReaction(const CReaction* source,
                                         ElementsMap & emap,
                                         CUndoData & undoData)
 {
+  // if there is no source, nothing to do
+  if (source == NULL)
+    return;
+
   //if the source object has already been duplicated: do nothing
   if (emap.exists(source))
     return;
@@ -950,6 +963,11 @@ void CModelExpansion::duplicateGlobalQuantity(const CModelValue* source,
     ElementsMap & emap,
     CUndoData & undoData)
 {
+
+  // if there is no source, nothing to do
+  if (source == NULL)
+    return;
+
   //if the source object has already been duplicated: do nothing
   if (emap.exists(source))
     return;
@@ -1005,6 +1023,11 @@ void CModelExpansion::duplicateEvent(CEvent* source,
                                      ElementsMap & emap,
                                      CUndoData & undoData)
 {
+
+  // if there is no source, nothing to do
+  if (source == NULL)
+    return;
+
   //if the source object has already been duplicated: do nothing
   if (emap.exists(source))
     return;
@@ -1269,6 +1292,9 @@ void CModelExpansion::createDiffusionReaction(const std::string & name,
     const CDataObject * pSubstrate, const CDataObject * pProduct,
     const CDataObject * pParameter)
 {
+  if (!mpModel || !pSubstrate || !pProduct)
+    return;
+
   //try creating the object until we find a name that is not yet used
   CReaction* newObj;
   std::ostringstream name_;
@@ -1372,6 +1398,9 @@ void CModelExpansion::replaceInCompartment(CCompartment* pX, const ElementsMap &
 
 void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
 {
+  if (!pX)
+    return;
+
   replaceInModelEntity(pX, emap);
 
   //is the metab in a compartment that needs to be replaced?
@@ -1412,6 +1441,9 @@ void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
 
 void CModelExpansion::replaceInReaction(CReaction* pX, const ElementsMap & emap)
 {
+  if (!pX)
+    return;
+
   //replace in the chemical equation
   size_t i;
 
@@ -1503,6 +1535,9 @@ void CModelExpansion::replaceInReaction(CReaction* pX, const ElementsMap & emap)
 
 void CModelExpansion::replaceInModelEntity(CModelEntity* pX, const ElementsMap & emap)
 {
+  if (!pX)
+    return;
+
   //expression (for assignment or ODE)
   replaceInExpression(pX->getExpressionPtr(), emap);
 
@@ -1515,6 +1550,9 @@ void CModelExpansion::replaceInModelEntity(CModelEntity* pX, const ElementsMap &
 
 void CModelExpansion::replaceInEvent(CEvent* pX, const ElementsMap & emap)
 {
+  if (!pX)
+    return;
+
   replaceInExpression(pX->getTriggerExpressionPtr(), emap);
   replaceInExpression(pX->getDelayExpressionPtr(), emap);
 
