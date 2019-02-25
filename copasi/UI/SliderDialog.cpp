@@ -438,7 +438,16 @@ void SliderDialog::editSlider()
   delete pVector;
 
   if (needRun)
-    runTask();
+    {
+      if (mpAutoRunCheckBox->isChecked())
+        {
+          runTask();
+        }
+      else
+        {
+          updateAllSliders();
+        }
+    }
 
 }
 
