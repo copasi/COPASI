@@ -5,7 +5,7 @@
 
 #ifndef CQ_DOUBLE_VALIDATOR_H
 
-#include <QValidator.h>
+#include <QValidator>
 #include <QString>
 
 class QObject;
