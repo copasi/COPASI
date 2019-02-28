@@ -159,10 +159,11 @@ void CRadau5Method::stateChange(const CMath::StateChange & change)
 void solout(integer *nr, double *xold, double *x, double *y, double *cont, integer *lrc, integer *n, double *rpar, integer *ipar,
             integer *irtrn)
 {
-  if (*xold != *x)
-    {
-      *irtrn = -1;
-    }
+  if ( *(x+1) != *rpar)
+  {
+    *irtrn = (*x != *xold) ? -1 : 1;
+    *rpar = *(x+1);
+  }
 }
 
 

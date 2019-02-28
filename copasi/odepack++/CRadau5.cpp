@@ -19,9 +19,11 @@
 #include "common.h"
 
 
-#define pow_dd(__x, __y) pow(*__x, *__y)
+//#define pow_dd(__x, __y) pow(*__x, *__y)
+double d_sign(doublereal * a, doublereal * b);
+static doublereal pow_dd(doublereal *ap, doublereal *bp);
+static double pow_di(doublereal *ap, integer *bp);
 
-doublereal d_sign(doublereal * a, doublereal * b);
 
 /* Common Block Declarations */
 
@@ -79,7 +81,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
     /* Builtin functions */
 //    integer s_wsle(cilist *), do_lio(integer *, integer *, char *, ftnlen),
 //    e_wsle(void);
-    //doublereal pow_dd(doublereal *, doublereal *);
+    double pow_dd(doublereal *, doublereal *);
     
     /* Local variables */
     static integer i__, m1, m2, nm1, nit, iee1, ief1, lde1, ief2, ief3, iey0,
@@ -681,8 +683,8 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
         /* Computing MAX */
         /* Computing MIN */
         d__3 = .03, d__4 = pow_dd(&tolst, &c_b54);
-        d__1 = uround * 10 / tolst, d__2 = fmin(d__3,d__4);
-        fnewt = fmax(d__1,d__2);
+        d__1 = uround * 10 / tolst, d__2 = min(d__3,d__4);
+        fnewt = max(d__1,d__2);
     } else {
         fnewt = work[4];
         if (fnewt <= uround / tolst) {
@@ -788,7 +790,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
             }
         }
     }
-    ldmas2 = fmax(1,ldmas);
+    ldmas2 = max(1,ldmas);
     /* ------ HESSENBERG OPTION ONLY FOR EXPLICIT EQU. WITH FULL JACOBIAN */
     if ((implct || jband) && ijob == 7) {
 //        s_wsle(&io___52);
@@ -908,12 +910,11 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
     doublereal d__1, d__2, d__3, d__4;
     
     /* Builtin functions */
-    //doublereal sqrt(doublereal), pow_dd(doublereal *, doublereal *), pow_di(doublereal *, integer *);;
-    //extern doublereal d_sign(doublereal *, doublereal *);
+    double sqrt(doublereal), pow_dd(doublereal *, doublereal *), d_sign(doublereal *, doublereal *), pow_di(doublereal *, integer *);
     
-    integer s_wsfe(cilist *), do_fio(integer *, char *, ftnlen), e_wsfe(void),
-    s_wsle(cilist *), do_lio(integer *, integer *, char *, ftnlen),
-    e_wsle(void);
+//    integer s_wsfe(cilist *), do_fio(integer *, char *, ftnlen), e_wsfe(void),
+//    s_wsle(cilist *), do_lio(integer *, integer *, char *, ftnlen),
+//    e_wsle(void);
     
     /* Local variables */
     static integer i__, j, k, l;
@@ -1087,14 +1088,14 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
     d__1 = *xend - *x;
     posneg = d_sign(&c_b103, &d__1);
     /* Computing MIN */
-    d__2 = fabs(*hmax), d__3 = (d__1 = *xend - *x, fabs(d__1));
-    hmaxn = fmin(d__2,d__3);
-    if (fabs(*h__) <= *uround * 10.) {
+    d__2 = abs(*hmax), d__3 = (d__1 = *xend - *x, abs(d__1));
+    hmaxn = min(d__2,d__3);
+    if (abs(*h__) <= *uround * 10.) {
         *h__ = 1e-6;
     }
     /* Computing MIN */
-    d__1 = fabs(*h__);
-    *h__ = fmin(d__1,hmaxn);
+    d__1 = abs(*h__);
+    *h__ = min(d__1,hmaxn);
     *h__ = d_sign(h__, &posneg);
     hold = *h__;
     reject = FALSE_;
@@ -1137,12 +1138,12 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
     if (*itol == 0) {
         i__1 = *n;
         for (i__ = 1; i__ <= i__1; ++i__) {
-            scal[i__] = atol[1] + rtol[1] * (d__1 = y[i__], fabs(d__1));
+            scal[i__] = atol[1] + rtol[1] * (d__1 = y[i__], abs(d__1));
         }
     } else {
         i__1 = *n;
         for (i__ = 1; i__ <= i__1; ++i__) {
-            scal[i__] = atol[i__] + rtol[i__] * (d__1 = y[i__], fabs(d__1));
+            scal[i__] = atol[i__] + rtol[i__] * (d__1 = y[i__], abs(d__1));
         }
     }
     hhfac = *h__;
@@ -1159,7 +1160,7 @@ L10:
         if (*banded) {
             /* --- JACOBIAN IS BANDED */
             mujacp = *mujac + 1;
-            md = fmin(linal_1.mbjac,*m2);
+            md = min(linal_1.mbjac,*m2);
             i__1 = *m1 / *m2 + 1;
             for (mm = 1; mm <= i__1; ++mm) {
                 i__2 = md;
@@ -1168,8 +1169,8 @@ L10:
                 L12:
                     f1[j] = y[j];
                     /* Computing MAX */
-                    d__2 = 1e-5, d__3 = (d__1 = y[j], fabs(d__1));
-                    f2[j] = sqrt(*uround * fmax(d__2,d__3));
+                    d__2 = 1e-5, d__3 = (d__1 = y[j], abs(d__1));
+                    f2[j] = sqrt(*uround * max(d__2,d__3));
                     y[j] += f2[j];
                     j += md;
                     if (j <= mm * *m2) {
@@ -1180,11 +1181,11 @@ L10:
                     j1 = k;
                     /* Computing MAX */
                     i__3 = 1, i__4 = j1 - *mujac;
-                    lbeg = fmax(i__3,i__4) + *m1;
+                    lbeg = max(i__3,i__4) + *m1;
                 L14:
                     /* Computing MIN */
                     i__3 = *m2, i__4 = j1 + *mljac;
-                    lend = fmin(i__3,i__4) + *m1;
+                    lend = min(i__3,i__4) + *m1;
                     y[j] = f1[j];
                     mujacj = mujacp - j1 - *m1;
                     i__3 = lend;
@@ -1206,8 +1207,8 @@ L10:
             for (i__ = 1; i__ <= i__1; ++i__) {
                 ysafe = y[i__];
                 /* Computing MAX */
-                d__1 = 1e-5, d__2 = fabs(ysafe);
-                delt = sqrt(*uround * fmax(d__1,d__2));
+                d__1 = 1e-5, d__2 = abs(ysafe);
+                delt = sqrt(*uround * max(d__1,d__2));
                 y[i__] = ysafe + delt;
                 (*fcn)(n, x, &y[1], &cont[1], &rpar[1], &ipar[1]);
                 i__2 = *n;
@@ -1246,7 +1247,7 @@ L30:
     if (*nstep > *nmax) {
         goto L178;
     }
-    if (fabs(*h__) * .1 <= fabs(*x) * *uround) {
+    if (abs(*h__) * .1 <= abs(*x) * *uround) {
         goto L177;
     }
     if (index2) {
@@ -1302,9 +1303,9 @@ L30:
     /*  LOOP FOR THE SIMPLIFIED NEWTON ITERATION */
     /* *** *** *** *** *** *** *** */
     newt = 0;
-    d__1 = fmax(faccon,*uround);
+    d__1 = max(faccon,*uround);
     faccon = pow_dd(&d__1, &c_b113);
-    theta = fabs(*thet);
+    theta = abs(*thet);
 L40:
     if (newt >= *nit) {
         goto L78;
@@ -1367,11 +1368,11 @@ L40:
         if (theta < .99) {
             faccon = theta / (1. - theta);
             i__1 = *nit - 1 - newt;
-            dyth = faccon * dyno * pow(theta, i__1) / *fnewt;
+            dyth = faccon * dyno * pow_di(&theta,&i__1) / *fnewt;
             if (dyth >= 1.) {
                 /* Computing MAX */
-                d__1 = 1e-4, d__2 = fmin(20.,dyth);
-                qnewt = fmax(d__1,d__2);
+                d__1 = 1e-4, d__2 = min(20.,dyth);
+                qnewt = max(d__1,d__2);
                 d__1 = -1. / (*nit + 4. - 1 - newt);
                 hhfac = pow_dd(&qnewt, &d__1) * .8;
                 *h__ = hhfac * *h__;
@@ -1386,7 +1387,7 @@ L40:
             goto L78;
         }
     }
-    dynold = fmax(dyno,*uround);
+    dynold = max(dyno,*uround);
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
         f1i = f1[i__] + z1[i__];
@@ -1411,12 +1412,12 @@ L40:
     /* --- WE REQUIRE .2<=HNEW/H<=8. */
     /* Computing MIN */
     d__1 = *safe, d__2 = cfac / (newt + (*nit << 1));
-    fac = fmin(d__1,d__2);
+    fac = min(d__1,d__2);
     /* Computing MAX */
     /* Computing MIN */
     d__3 = *facl, d__4 = pow_dd(&err, &c_b115) / fac;
-    d__1 = *facr, d__2 = fmin(d__3,d__4);
-    quot = fmax(d__1,d__2);
+    d__1 = *facr, d__2 = min(d__3,d__4);
+    quot = max(d__1,d__2);
     hnew = *h__ / quot;
     /* *** *** *** *** *** *** *** */
     /*  IS THE ERROR SMALL ENOUGH ? */
@@ -1433,13 +1434,13 @@ L40:
                 d__1 = d__2 * d__2 / erracc;
                 facgus = hacc / *h__ * pow_dd(&d__1, &c_b115) / *safe;
                 /* Computing MAX */
-                d__1 = *facr, d__2 = fmin(*facl,facgus);
-                facgus = fmax(d__1,d__2);
-                quot = fmax(quot,facgus);
+                d__1 = *facr, d__2 = min(*facl,facgus);
+                facgus = max(d__1,d__2);
+                quot = max(quot,facgus);
                 hnew = *h__ / quot;
             }
             hacc = *h__;
-            erracc = fmax(.01,err);
+            erracc = max(.01,err);
         }
         xold = *x;
         hold = *h__;
@@ -1459,12 +1460,12 @@ L40:
         if (*itol == 0) {
             i__1 = *n;
             for (i__ = 1; i__ <= i__1; ++i__) {
-                scal[i__] = atol[1] + rtol[1] * (d__1 = y[i__], fabs(d__1));
+                scal[i__] = atol[1] + rtol[1] * (d__1 = y[i__], abs(d__1));
             }
         } else {
             i__1 = *n;
             for (i__ = 1; i__ <= i__1; ++i__) {
-                scal[i__] = atol[i__] + rtol[i__] * (d__1 = y[i__], fabs(d__1))
+                scal[i__] = atol[i__] + rtol[i__] * (d__1 = y[i__], abs(d__1))
                 ;
             }
         }
@@ -1492,14 +1493,14 @@ L40:
         (*fcn)(n, x, &y[1], &y0[1], &rpar[1], &ipar[1]);
         ++(*nfcn);
         /* Computing MIN */
-        d__1 = fabs(hnew);
-        hnew = posneg * fmin(d__1,hmaxn);
+        d__1 = abs(hnew);
+        hnew = posneg * min(d__1,hmaxn);
         hopt = hnew;
-        hopt = fmin(*h__,hnew);
+        hopt = min(*h__,hnew);
         if (reject) {
             /* Computing MIN */
-            d__1 = fabs(hnew), d__2 = fabs(*h__);
-            hnew = posneg * fmin(d__1,d__2);
+            d__1 = abs(hnew), d__2 = abs(*h__);
+            hnew = posneg * min(d__1,d__2);
         }
         reject = FALSE_;
         if ((*x + hnew / *quot1 - *xend) * posneg >= 0.) {
@@ -1624,9 +1625,45 @@ doublereal contr5_(integer *i__, doublereal *x, doublereal *cont, integer *lrc)
     return ret_val;
 } /* contr5_ */
 
-doublereal d_sign( doublereal * a, doublereal * b)
+
+double d_sign(doublereal *a, doublereal *b)
 {
-    doublereal x;
-    x = (*a >= 0 ? *a : -(*a));
-    return (*b >= 0 ? x : -x);
+    double x;
+    x = (*a >= 0 ? *a : - *a);
+    return( *b >= 0 ? x : -x);
+}
+
+static doublereal pow_dd(doublereal *ap, doublereal *bp)
+{
+    return (pow(*ap, *bp));
+}
+
+double pow_di(doublereal *ap, integer *bp)
+{
+    double pow, x;
+    integer n;
+    unsigned long u;
+    
+    pow = 1;
+    x = *ap;
+    n = *bp;
+    
+    if(n != 0)
+    {
+        if(n < 0)
+        {
+            n = -n;
+            x = 1/x;
+        }
+        for(u = n; ; )
+        {
+            if(u & 01)
+                pow *= x;
+            if(u >>= 1)
+                x *= x;
+            else
+                break;
+        }
+    }
+    return(pow);
 }

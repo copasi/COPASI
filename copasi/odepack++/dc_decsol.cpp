@@ -2241,7 +2241,7 @@ L77:
     }
 /* Computing MAX */
     d__1 = sqrt(*err / *n);
-    *err = fmax(d__1,1e-10);
+    *err = max(d__1,1e-10);
 
     if (*err < 1.) {
 	return 0;
@@ -2373,7 +2373,7 @@ L88:
 	}
 /* Computing MAX */
 	d__1 = sqrt(*err / *n);
-	*err = fmax(d__1,1e-10);
+	*err = max(d__1,1e-10);
     }
     return 0;
 /* ----------------------------------------------------------- */
@@ -2812,7 +2812,7 @@ L77:
     }
 /* Computing MAX */
     d__1 = sqrt(*err / *n);
-    *err = fmax(d__1,1e-10);
+    *err = max(d__1,1e-10);
 
     if (*err < 1.) {
 	return 0;
@@ -2944,7 +2944,7 @@ L88:
 	}
 /* Computing MAX */
 	d__1 = sqrt(*err / *n);
-	*err = fmax(d__1,1e-10);
+	*err = max(d__1,1e-10);
     }
     return 0;
 
