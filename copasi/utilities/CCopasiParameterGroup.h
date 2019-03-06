@@ -651,6 +651,8 @@ ElevateTo * elevate(CCopasiParameter * pParm)
       pGrp->CCopasiParameter::remove(pParm);
       delete pParm;
 
+      *it = NULL;
+
       pGrp->CCopasiParameter::add(pTo, true);
       pTo->CCopasiParameter::setUserInterfaceFlag(Flag);
 
