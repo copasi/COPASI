@@ -641,7 +641,6 @@ void ReactionsWidget1::slotCompartmentSelectionChanged(const QString & compartme
 
 bool ReactionsWidget1::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
-
   switch (objectType)
     {
       case ListViews::ObjectType::MODEL:

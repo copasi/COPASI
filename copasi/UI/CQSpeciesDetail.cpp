@@ -103,6 +103,8 @@ bool CQSpeciesDetail::leaveProtected()
 
 bool CQSpeciesDetail::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
+  mpMetab = dynamic_cast< CMetab * >(mpObject);
+
   switch (objectType)
     {
       case ListViews::ObjectType::MODEL:

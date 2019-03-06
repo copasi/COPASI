@@ -792,7 +792,6 @@ void FunctionWidget1::slotBtnDelete()
 //! Function to update the COPASI widgets
 bool FunctionWidget1::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
-
   if (mIgnoreUpdates || !isVisible())
     {
       return true;

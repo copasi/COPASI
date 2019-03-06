@@ -390,6 +390,7 @@ void CQEventWidget1::saveToEvent()
 /*! The slot to update the active event widget */
 bool CQEventWidget1::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
+  mpEvent = dynamic_cast< CEvent * >(mpObject);
 
   switch (objectType)
     {

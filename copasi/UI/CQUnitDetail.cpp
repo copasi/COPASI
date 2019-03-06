@@ -165,88 +165,8 @@ void CQUnitDetail::slotBtnDelete()
   return;
 }
 
-/*!
-    If the simulation type is changed then COPASI will automatically adjust its appearance,
-    especially correlating to the Expression Widget and its buttons.
- */
-//void CQUnitDetail::slotTypeChanged(int type)
-//{
-//  switch ((CModelEntity::Status) mItemToType[type])
-//    {
-//      case CModelEntity::Status::FIXED:
-//        // hide label, widget, and all buttons
-//        mpLblExpression->hide();
-//        mpExpressionEMW->hide();
-
-//        // enable the option of use Initial Expression
-//        mpBoxUseInitialExpression->setEnabled(true);
-//        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
-
-//        // we don't need to update the expression widget as it is already hidden
-
-//        break;
-
-//      case CModelEntity::Status::ASSIGNMENT:
-//        // show label, widget, and correct buttons
-//        mpLblExpression->show();   // show the label
-//        mpExpressionEMW->show();  // show the widget
-
-//        // disable the option of use Initial Expression
-//        mpBoxUseInitialExpression->setEnabled(false);
-//        slotInitialTypeChanged(false);
-
-//        // update the expression widget
-//        mpExpressionEMW->updateWidget();
-
-//        break;
-
-//      case CModelEntity::Status::ODE:
-//        // show label, widget, and correct buttons
-//        mpLblExpression->show();   // show the label
-//        mpExpressionEMW->show();  // show the widget
-
-//        // enable the option of use Initial Expression
-//        mpBoxUseInitialExpression->setEnabled(true);
-//        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
-
-//        // update the expression widget
-//        mpExpressionEMW->updateWidget();
-
-//        break;
-
-//      default:
-//        break;
-//}
-//}
-
-///*!
-//    This function is used in case of not FIXED type
-// */
-//void CQUnitDetail::slotExpressionValid(bool valid)
-//{
-//  mExpressionValid = valid;
-//}
-
-//void CQUnitDetail::slotInitialExpressionValid(bool valid)
-//{
-//  mInitialExpressionValid = valid;
-//}
-
 void CQUnitDetail::init()
 {
-//  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::FIXED]));
-//  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ASSIGNMENT]));
-//  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ODE]));
-
-//  mItemToType.push_back(CModelEntity::Status::FIXED);
-//  mItemToType.push_back(CModelEntity::Status::ASSIGNMENT);
-//  mItemToType.push_back(CModelEntity::Status::ODE);
-
-//  mExpressionValid = false;
-//  mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
-
-//  mInitialExpressionValid = false;
-//  mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
   mpExpressionValidator = new CQValidatorUnit(mpEditExpression);
   mpEditExpression->setValidator(mpExpressionValidator);
 }
@@ -258,39 +178,7 @@ void CQUnitDetail::destroy()
 
 bool CQUnitDetail::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
-//  switch (objectType)
-//    {
-//      case ListViews::ObjectType::MODEL:
-
-//        // For a new model we need to remove references to no longer existing metabolites
-//        if (action == ListViews::ADD)
-//          {
-//            mKey = "";
-//            mpObject = NULL;
-//            mpUnitDefinition = NULL;
-//}
-
-//        break;
-
-//      case ListViews::ObjectType::MODELVALUE:
-
-//        // If the currently displayed metabolite is deleted we need to remove its references.
-//        if (action == ListViews::DELETE && mKey == key)
-//          {
-//            mKey = "";
-//            mpObject = NULL;
-//            mpUnitDefinition = NULL;
-//}
-
-//        break;
-
-//      case ListViews::ObjectType::STATE:
-//        break;
-
-//      default:
-//        return true;
-//        break;
-//}
+  mpUnitDefinition = dynamic_cast< CUnitDefinition * >(mpObject);
 
   if (isVisible() && !mIgnoreUpdates)
     load();
@@ -300,18 +188,6 @@ bool CQUnitDetail::updateProtected(ListViews::ObjectType objectType, ListViews::
 
 bool CQUnitDetail::leaveProtected()
 {
-//  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::FIXED)
-//    {
-//      // -- Expression --
-//      mpExpressionEMW->updateWidget();
-//}
-
-//  if (mpBoxUseInitialExpression->isChecked())
-//    {
-//      // -- Initial Expression --
-//      mpInitialExpressionEMW->updateWidget();
-//}
-
   save();
 
   return true;
@@ -358,34 +234,6 @@ void CQUnitDetail::load()
       mpEditExpression->setEnabled(true);
       mpEditSymbol->setEnabled(true);
     }
-
-//  // Expression
-//  mpExpressionEMW->mpExpressionWidget->setExpression(mpModelValue->getExpression());
-
-//  // Update Expression Widget
-//  mpExpressionEMW->updateWidget();
-
-//  // Initial Expression
-//  mpInitialExpressionEMW->mpExpressionWidget->setExpression(mpModelValue->getInitialExpression());
-
-//  // Update Initial Expression Widget
-//  mpInitialExpressionEMW->updateWidget();
-
-//  // Type dependent display of values
-////  slotTypeChanged(mpComboBoxType->currentIndex());
-
-//  // Use Initial Expression
-//  if (mpModelValue->getStatus() == CModelEntity::Status::ASSIGNMENT ||
-//      mpModelValue->getInitialExpression() == "")
-//    {
-//      mpBoxUseInitialExpression->setChecked(false);
-//      //      slotInitialTypeChanged(false);
-//}
-//  else
-//    {
-//      mpBoxUseInitialExpression->setChecked(true);
-//      //      slotInitialTypeChanged(true);
-//}
 
   mChanged = false;
 }
