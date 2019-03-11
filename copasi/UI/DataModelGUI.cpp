@@ -729,8 +729,6 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
   // until then.
   if (mpProgressBar != NULL) return false;
 
-  emit notifyView(objectType, action, cn);
-
   // update all initial value
   if (action != ListViews::RENAME && // not needed after rename
       !(action == ListViews::ADD && objectType == ListViews::ObjectType::MODEL) // not needed when model was loaded
@@ -738,6 +736,8 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
     {
       refreshInitialValues();
     }
+
+  emit notifyView(objectType, action, cn);
 
   return true;
 }

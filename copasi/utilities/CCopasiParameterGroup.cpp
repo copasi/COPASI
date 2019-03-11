@@ -948,7 +948,8 @@ std::string CCopasiParameterGroup::getUniqueParameterName(const CCopasiParameter
 
   for (; it != end; ++it)
     {
-      if ((*it)->getObjectName() == Name)
+      if (*it != NULL &&
+          (*it)->getObjectName() == Name)
         {
           counter++;
 

@@ -1218,15 +1218,14 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
   mCurrentItemCN = itemCN;
   mCurrentItemRegisteredCN = itemCN;
-
-  // we emit the signal after the old widget has saved
-  // the changes
-  emit signalFolderChanged(index);
-
   mpCurrentWidget = newWidget;
   mpStackedWidget->setCurrentWidget(mpCurrentWidget);
 
   mpTreeView->scrollTo(index);
+
+  // we emit the signal after the old widget has saved
+  // the changes
+  emit signalFolderChanged(index);
 }
 
 void ListViews::switchToOtherWidget(const ListViews::WidgetType & id, const CCommonName & cn, const int & tabIndex)

@@ -372,6 +372,7 @@ bool CQCompartment::leaveProtected()
 
 bool CQCompartment::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
+  mpCompartment = dynamic_cast< CCompartment * >(mpObject);
 
   switch (objectType)
     {

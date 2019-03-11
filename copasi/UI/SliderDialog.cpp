@@ -417,10 +417,15 @@ void SliderDialog::editSlider()
 
   pSettingsDialog->setSlider(mpCurrSlider->getCSlider());
 
+  bool needRun = false;
+
   if (pSettingsDialog->exec() == QDialog::Accepted)
     {
       addSlider(pSettingsDialog->getSlider());
       mpCurrSlider->updateSliderData();
+
+      needRun = pSettingsDialog->needRun();
+
       /*
       if ((!mpCurrSlider->isEnabled()) && mpCurrSlider->getCSlider()->compile())
         {
@@ -431,6 +436,18 @@ void SliderDialog::editSlider()
 
   delete pSettingsDialog;
   delete pVector;
+
+  if (needRun)
+    {
+      if (mpAutoRunCheckBox->isChecked())
+        {
+          runTask();
+        }
+      else
+        {
+          updateAllSliders();
+        }
+    }
 }
 
 SliderDialog::~SliderDialog()
@@ -586,9 +603,16 @@ void SliderDialog::setCurrentFolderId(ListViews::WidgetType id)
   mCurrentFolderId = id;
 
   // Set appropriate window title
-  QString thisWindowTitle = FROM_UTF8(std::string(ListViews::WidgetName[id] + " Sliders"));
+  if (id == ListViews::WidgetType::NotFound)
+    {
+      setWindowTitle("No Task selected");
+    }
+  else
+    {
+      QString thisWindowTitle = FROM_UTF8(std::string(ListViews::WidgetName[id] + " Sliders"));
 
-  setWindowTitle(thisWindowTitle);
+      setWindowTitle(thisWindowTitle);
+    }
 
   fillSliderBox();
 }

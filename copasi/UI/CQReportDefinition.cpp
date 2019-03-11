@@ -704,6 +704,8 @@ void CQReportDefinition::setDirty()
 
 bool CQReportDefinition::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
+  mpReportDefinition = dynamic_cast< CReportDefinition * >(mpObject);
+
   // If the model is deleted or a new model is loaded the existing pointer
   // becomes invalid.
   if (objectType == ListViews::ObjectType::MODEL &&

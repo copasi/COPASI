@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,6 +52,7 @@ public:
   virtual void setModel(CModel * model);
   virtual void disableObjectChoosing(bool disableChoosing);
   virtual void updateSlider();
+  bool needRun();
 
 signals:
   void sliderChanged(CSlider* slider);
@@ -58,6 +64,7 @@ protected:
   double mMaxValue;
   double mMinValue;
   double mValue;
+  double mLoadedValue;
   double mOriginalValue;
   unsigned int mMinorMajorFactor;
   unsigned int mNumMinorTicks;

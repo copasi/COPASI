@@ -59,6 +59,7 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget *parent):
   mpResultMCASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Metabolic Control Analysis"));
   mpResultTSSASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Time Scale Separation Analysis"));
   mpResultLNASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Linear Noise Approximation"));
+  mpResultLyapunovSubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Lyapunov Exponents"));
   mpModelMatrixSubtree = new QTreeWidgetItem(this, QStringList("Matrices"));
   mpModelQuantitySubtree = new QTreeWidgetItem(this, QStringList("Global Quantities"));
   mpModelQuantityRateSubtree =
@@ -634,7 +635,6 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
   catch (...)
     {}
 
-
   // LNA
   task = dynamic_cast<CCopasiTask *>(&pDataModel->getTaskList()->operator[]("Linear Noise Approximation"));
 
@@ -657,6 +657,26 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
                   pItem = new QTreeWidgetItem(this->mpResultLNASubtree, QStringList(FROM_UTF8(ann->getObjectName())));
                   treeItems[pItem] = (CDataObject *) ann;
                 }
+            }
+        }
+    }
+  catch (...)
+    {}
+
+  // Lyapunov Exponents
+  task = dynamic_cast<CCopasiTask *>(&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
+
+  try
+    {
+      if (task && task->updateMatrices())
+        {
+          for (int i = 0; i < 4; ++i)
+            {
+              std::ostringstream sss;
+              sss << "Exponent " << i + 1;
+
+              pItem = new QTreeWidgetItem(this->mpResultLyapunovSubtree, QStringList(FROM_UTF8(sss.str())));
+              treeItems[pItem] = (CDataObject *) task->getObject("Reference=" + sss.str());
             }
         }
     }
@@ -1338,6 +1358,7 @@ void CQSimpleSelectionTree::removeAllEmptySubTrees()
   removeEmptySubTree(&mpResultMCASubtree);
   removeEmptySubTree(&mpResultTSSASubtree);
   removeEmptySubTree(&mpResultLNASubtree);
+  removeEmptySubTree(&mpResultLyapunovSubtree);
   removeEmptySubTree(&mpResultSensitivitySubtree);
   removeEmptySubTree(&mpResultTimeSensitivitySubtree);
   removeEmptySubTree(&mpResultSteadyStateSubtree);

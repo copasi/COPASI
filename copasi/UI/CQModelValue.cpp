@@ -247,6 +247,8 @@ void CQModelValue::destroy()
 
 bool CQModelValue::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
+  mpModelValue = dynamic_cast< CModelValue * >(mpObject);
+
   switch (objectType)
     {
       case ListViews::ObjectType::MODEL:

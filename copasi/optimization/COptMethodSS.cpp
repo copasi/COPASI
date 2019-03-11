@@ -947,7 +947,7 @@ bool COptMethodSS::combination(void)
             {
               for (k = 0; k < (C_INT32)mVariableSize; ++k)
                 {
-                  dd = (xpr[i] - (*mChild[i])[k]) * lambda;
+                  dd = (xpr[k] - (*mChild[i])[k]) * lambda;
                   xnew[k] = (*mChild[i])[k] + dd * mpRandom->getRandomCC();
                   // get the bounds of this parameter
                   COptItem & OptItem = *(*mpOptItem)[k];

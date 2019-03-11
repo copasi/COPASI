@@ -315,6 +315,9 @@ void CQMiriamWidget::slotBtnClearClicked()
 
 bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
+  // Assure that the pointer is still valid;
+  mpAnnotation = CAnnotation::castObject(mpObject);
+
   if (!mIgnoreUpdates &&
       cn == mObjectCN)
     {
@@ -328,14 +331,6 @@ bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews
           mpMIRIAMInfo = NULL;
           return leaveProtected();
         }
-    }
-
-  if (mIgnoreUpdates || !isVisible())
-    {
-      // Assure that the pointer is still valid;
-      mpAnnotation = CAnnotation::castObject(mpObject);
-
-      return true;
     }
 
   return true;

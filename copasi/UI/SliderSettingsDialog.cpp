@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,6 +33,7 @@
 #include "qtUtilities.h"
 #include "CCopasiSelectionDialog.h"
 #include "CQMessageBox.h"
+#include "CQDoubleValidator.h"
 
 #include "copasi/resourcesUI/CQIconResource.h"
 
@@ -42,6 +48,7 @@ SliderSettingsDialog::SliderSettingsDialog(QWidget* pParent) :
   mMaxValue(),
   mMinValue(),
   mValue(),
+  mLoadedValue(),
   mOriginalValue(),
   mMinorMajorFactor(),
   mNumMinorTicks(),
@@ -114,6 +121,7 @@ void SliderSettingsDialog::updateInputFieldsValues()
   if (mpSlider)
     {
       mValue = mpSlider->getSliderValue();
+      mLoadedValue = mValue;
       mpObjectValueEdit->setText(convertToQString(mValue));
 
       mOriginalValue = mpSlider->getOriginalValue();
@@ -241,8 +249,8 @@ void SliderSettingsDialog::minValueChanged()
   double value = mpMinValueEdit->text().toDouble();
 
   if ((value > mOriginalValue) &&
-      (CQMessageBox::question(this, "Default value out of range.",
-                              "The minimum value you set is larger than the default value of the slider. The new default will be set to the minimum. Do you want to procceed?",
+      (CQMessageBox::question(this, "Current value out of range.",
+                              "The minimum value you set is larger than the current value of the slider. The current value will be set to the minimum. Do you want to proceed?",
                               QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel) != QMessageBox::Ok)
      )
     {
@@ -271,9 +279,9 @@ void SliderSettingsDialog::minValueChanged()
 
       if (mMinValue <= 0.0 && mpLogCheckBox->isChecked())
         {
-          CQMessageBox::information(this, "Incorrect min value",
-                                    "For logarithmic sliders, the minimum value may not be 0.0 or negative. Please set the minimum value to some (possibly very small) positive number first.",
-                                    QMessageBox::Ok, QMessageBox::Ok);
+          //CQMessageBox::information(this, "Incorrect min value",
+          //                          "For logarithmic sliders, the minimum value may not be 0.0 or negative. Please set the minimum value to some (possibly very small) positive number first.",
+          //                          QMessageBox::Ok, QMessageBox::Ok);
           mpLogCheckBox->setChecked(false);
           mScaling = CSlider::linear;
         }
@@ -284,14 +292,14 @@ void SliderSettingsDialog::minValueChanged()
 
 void SliderSettingsDialog::maxValueChanged()
 {
-  // check if it is larget then the current value
+  // check if it is larger then the current value
   // else set it to the current value
   double value = mpMaxValueEdit->text().toDouble();
 
   if (value < mOriginalValue)
     {
-      if (CQMessageBox::question(this, "Default value out of range.",
-                                 "The maximum value you set is smaller than the default value of the slider. The new default will be set to the maximum. Do you want to procceed?",
+      if (CQMessageBox::question(this, "Current value out of range.",
+                                 "The maximum value you set is smaller than the current value of the slider. The current value will be set to the maximum. Do you want to proceed?",
                                  QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel) != QMessageBox::Ok)
         {
           mpMaxValueEdit->setText(convertToQString(mMaxValue));
@@ -359,11 +367,11 @@ void SliderSettingsDialog::init()
   mpExtendedOptionsButton->setText("Advanced >>");
   hideOptionsControls();
   this->setFixedSize(minimumSizeHint());
-  mpObjectValueEdit->setValidator(new QDoubleValidator(this));
-  mpOriginalValueEdit->setValidator(new QDoubleValidator(this));
-  mpMinValueEdit->setValidator(new QDoubleValidator(this));
-  mpMaxValueEdit->setValidator(new QDoubleValidator(this));
-  mpMinorTickSizeEdit->setValidator(new QDoubleValidator(this));
+  mpObjectValueEdit->setValidator(new CQDoubleValidator(this));
+  mpOriginalValueEdit->setValidator(new CQDoubleValidator(this));
+  mpMinValueEdit->setValidator(new CQDoubleValidator(this));
+  mpMaxValueEdit->setValidator(new CQDoubleValidator(this));
+  mpMinorTickSizeEdit->setValidator(new CQDoubleValidator(this));
   QIntValidator* v = new QIntValidator(this);
   v->setBottom(0);
   mpNumMinorTicksEdit->setValidator(v);
@@ -490,6 +498,11 @@ void SliderSettingsDialog::updateSlider()
     }
 }
 
+bool SliderSettingsDialog::needRun()
+{
+  return mValue != mLoadedValue;
+}
+
 void SliderSettingsDialog::extendedOptionsClicked()
 {
   if (mpExtendedOptionsButton->text() == "Advanced >>")
@@ -518,9 +531,9 @@ void SliderSettingsDialog::logCheckBoxToggled(bool on)
       // check if the minValue is 0.0 or negative if so, issue an error message and uncheck the checkbox again
       if (mMinValue <= 0.0)
         {
-          CQMessageBox::information(this, "Incorrect min value",
-                                    "For logarithmic sliders, the minimum value may not be 0.0 or negative. Please set the minimum value to some (possibly very small) positive number first.",
-                                    QMessageBox::Ok, QMessageBox::Ok);
+          //CQMessageBox::information(this, "Incorrect min value",
+          //                          "For logarithmic sliders, the minimum value may not be 0.0 or negative. Please set the minimum value to some (possibly very small) positive number first.",
+          //                          QMessageBox::Ok, QMessageBox::Ok);
           mpLogCheckBox->setChecked(false);
           mScaling = CSlider::linear;
         }
