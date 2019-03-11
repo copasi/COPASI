@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -513,21 +518,28 @@ CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT,
       mRootCounter = 0;
     }
 
+  size_t counter = 0;
+
   while (mRootCounter < *mpMaxInternalSteps &&
          fabs(time - endTime) > 100.0 * (fabs(endTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min()))
     {
       time = doSingleStep(endTime);
+      ++counter;
 
       if (mEventProcessing)
         {
           mLastSuccessState = mContainerState;
           mRootCounter++;
+          counter = 0;
 
           return ROOT;
         }
       else if (mRKMethodStatus != CRungeKutta::ERROR)
         {
           if (mpProblem->getAutomaticStepSize()) break;
+
+          if (counter >= *mpMaxInternalSteps)
+            return FAILURE;
 
           continue;
         }
