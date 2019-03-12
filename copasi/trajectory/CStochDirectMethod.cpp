@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -361,7 +366,7 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 startTime, const C_FLOAT64 
           // Interpolate to find the first root
           C_FLOAT64 RootTime;
           C_FLOAT64 RootValue;
-          CBrent::findRoot(startTime, mNextReactionTime, mpRootValueCalculator, &RootTime, &RootValue, 1e-9 * startTime);
+          CBrent::findRoot(startTime, mNextReactionTime, mpRootValueCalculator, &RootTime, &RootValue, 1e-9);
 
           if (RootTime > endTime)
             {
