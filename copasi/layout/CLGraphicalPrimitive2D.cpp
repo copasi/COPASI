@@ -1,12 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalPrimitive2D.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:51 $
-// End CVS Header
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,7 +21,7 @@
  * Constructor.
  */
 CLGraphicalPrimitive2D::CLGraphicalPrimitive2D()
-    : CLGraphicalPrimitive1D(),
+  : CLGraphicalPrimitive1D(),
     mFillRule(CLGraphicalPrimitive2D::UNSET),
     mFill("")
 {}
@@ -28,20 +30,23 @@ CLGraphicalPrimitive2D::CLGraphicalPrimitive2D()
  * Constructor to generate object from the corresponding SBML object.
  */
 CLGraphicalPrimitive2D::CLGraphicalPrimitive2D(const GraphicalPrimitive2D& source):
-    CLGraphicalPrimitive1D(source),
-    mFill(source.getFillColor())
+  CLGraphicalPrimitive1D(source),
+  mFill(source.getFillColor())
 {
   switch (source.getFillRule())
     {
       case GraphicalPrimitive2D::UNSET:
         this->setFillRule(CLGraphicalPrimitive2D::UNSET);
         break;
+
       case GraphicalPrimitive2D::NONZERO:
         this->setFillRule(CLGraphicalPrimitive2D::NONZERO);
         break;
+
       case GraphicalPrimitive2D::EVENODD:
         this->setFillRule(CLGraphicalPrimitive2D::EVENODD);
         break;
+
       case GraphicalPrimitive2D::INHERIT:
         this->setFillRule(CLGraphicalPrimitive2D::INHERIT);
         break;
@@ -103,19 +108,24 @@ bool CLGraphicalPrimitive2D::isSetFillRule() const
 void CLGraphicalPrimitive2D::addSBMLAttributes(GraphicalPrimitive2D* pPrimitive) const
 {
   this->CLGraphicalPrimitive1D::addSBMLAttributes(pPrimitive);
-  pPrimitive->setFillColor(this->mFill);
+
+  if (!mFill.empty())
+    pPrimitive->setFillColor(this->mFill);
 
   switch (this->mFillRule)
     {
       case CLGraphicalPrimitive2D::UNSET:
         pPrimitive->setFillRule(GraphicalPrimitive2D::UNSET);
         break;
+
       case CLGraphicalPrimitive2D::NONZERO:
         pPrimitive->setFillRule(GraphicalPrimitive2D::NONZERO);
         break;
+
       case CLGraphicalPrimitive2D::EVENODD:
         pPrimitive->setFillRule(GraphicalPrimitive2D::EVENODD);
         break;
+
       case CLGraphicalPrimitive2D::INHERIT:
         pPrimitive->setFillRule(GraphicalPrimitive2D::INHERIT);
         break;
