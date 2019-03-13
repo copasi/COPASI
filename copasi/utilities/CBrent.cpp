@@ -68,7 +68,7 @@ bool CBrent::findRoot(double a,            // Left border
   while ((fabs(b - a) > vTol || fabs(fb - fa) > fTol) &&
          fb != 0.0 &&
          fs != 0.0 &&
-         fabs(b - a) > fabs(b + a) * 50.0 * std::numeric_limits< double >::epsilon())
+         fabs(b - a) > (fabs(b) + fabs(a)) * 50.0 * std::numeric_limits< double >::epsilon())
     {
       if (fa != fc && fb != fc)
         {
