@@ -202,7 +202,7 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
       C_FLOAT64 RootValue;
 
       // Find the "exact" location of the left most root.
-      if (!CBrent::findRoot(mTimeLeft, mTimeRight, mpBrentRootValueCalculator, &RootTime, &RootValue, mRelativeTolerance * fabs(mTimeRight)))
+      if (!CBrent::findRoot(mTimeLeft, mTimeRight, mpBrentRootValueCalculator, &RootTime, &RootValue, mRelativeTolerance))
         {
           mToggledRootsCurrent = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
           mToggledRootsLeft = static_cast< C_INT >(CMath::RootToggleType::NoToggle);

@@ -971,15 +971,8 @@ CMathReaction * CHybridMethodODE45::getReactionToFire()
   C_FLOAT64 * pAmu = mAmuVariables.array();
   C_FLOAT64 * pAmuEnd = pAmu + mAmuVariables.size();
 
-  C_FLOAT64 A0 = 0.0;
-
-  for (; pAmu != pAmuEnd; ++pAmu)
-    {
-      A0 += *pAmu;
-    }
-
   //get the threshold
-  A0 *= mpRandomGenerator->getRandomOO();
+  C_FLOAT64 A0 = mA0 * mpRandomGenerator->getRandomOO();
 
   //get the reaction index
   CMathReaction ** ppSlowReaction = mSlowReactions.array();

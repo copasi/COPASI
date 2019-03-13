@@ -1,12 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGraphicalPrimitive1D.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:51 $
-// End CVS Header
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,9 +24,9 @@
  * Constructor.
  */
 CLGraphicalPrimitive1D::CLGraphicalPrimitive1D():
-    CLTransformation2D(),
-    mStroke(""),
-    mStrokeWidth(std::numeric_limits<double>::quiet_NaN())
+  CLTransformation2D(),
+  mStroke(""),
+  mStrokeWidth(std::numeric_limits<double>::quiet_NaN())
 {
 }
 
@@ -32,10 +34,10 @@ CLGraphicalPrimitive1D::CLGraphicalPrimitive1D():
  * Constructor to generate object from the corresponding SBML object.
  */
 CLGraphicalPrimitive1D::CLGraphicalPrimitive1D(const GraphicalPrimitive1D& source):
-    CLTransformation2D(source),
-    mStroke(source.getStroke()),
-    mStrokeWidth(source.getStrokeWidth()),
-    mStrokeDashArray(source.getDashArray())
+  CLTransformation2D(source),
+  mStroke(source.getStroke()),
+  mStrokeWidth(source.getStrokeWidth()),
+  mStrokeDashArray(source.getDashArray())
 {
 }
 
@@ -189,7 +191,12 @@ void CLGraphicalPrimitive1D::parseDashArray(const std::string& s)
 void CLGraphicalPrimitive1D::addSBMLAttributes(GraphicalPrimitive1D* pPrimitive) const
 {
   this->CLTransformation2D::addSBMLAttributes(pPrimitive);
-  pPrimitive->setStroke(this->mStroke);
-  pPrimitive->setStrokeWidth(this->mStrokeWidth);
+
+  if (!mStroke.empty())
+    pPrimitive->setStroke(this->mStroke);
+
+  if (mStrokeWidth == mStrokeWidth)
+    pPrimitive->setStrokeWidth(this->mStrokeWidth);
+
   pPrimitive->setDashArray(this->mStrokeDashArray);
 }

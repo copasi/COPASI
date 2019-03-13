@@ -1,4 +1,14 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -30,6 +40,9 @@ bool CBrent::findRoot(double a,            // Left border
   double fa = (*pF)(a);
   double fb = (*pF)(b);
 
+  double fTol = (fabs(fa) + fabs(fb)) * 0.5 * tol;
+  double vTol = (fabs(a) + fabs(b)) * 0.5 * tol;
+
   if (fa * fb > 0)
     return false;
 
@@ -52,7 +65,10 @@ bool CBrent::findRoot(double a,            // Left border
 
   bool mflag = true;
 
-  while (fabs(b - a) > tol && fb != 0.0 && fs != 0.0)
+  while ((fabs(b - a) > vTol || fabs(fb - fa) > fTol) &&
+         fb != 0.0 &&
+         fs != 0.0 &&
+         fabs(b - a) > (fabs(b) + fabs(a)) * 50.0 * std::numeric_limits< double >::epsilon())
     {
       if (fa != fc && fb != fc)
         {

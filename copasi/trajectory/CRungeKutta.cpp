@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -836,7 +841,7 @@ void CRungeKutta::checkRoots()
               std::cout << "new Y: " << CVectorCore< C_FLOAT64 >(*mpDim, mYRight) << std::endl;
 #endif // DEBUG_OUTPUT
 
-              if (!CBrent::findRoot(LeftTime, RightTime, mpRootValueCalculator, &RootTime, &RootValue, mRelTol * fabs(RightTime)))
+              if (!CBrent::findRoot(LeftTime, RightTime, mpRootValueCalculator, &RootTime, &RootValue, mRelTol))
                 {
                   fatalError();
                 }
