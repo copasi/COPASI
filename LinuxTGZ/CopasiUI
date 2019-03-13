@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 COPASIDIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
 export COPASIDIR
@@ -21,6 +21,7 @@ if [ _${QT_MISSING} = _true ]; then
   LIBGL_ALWAYS_SOFTWARE=1
   QT_OPENGL=software
   QT_QPA_PLATFORM=xcb
+  QT_XKB_CONFIG_ROOT=${QT_XKB_CONFIG_ROOT}:/usr/share/X11/xkb
   export LD_LIBRARY_PATH QT_QPA_PLATFORM_PLUGIN_PATH LIBGL_ALWAYS_SOFTWARE QT_OPENGL QT_QPA_PLATFORM
 fi
 
