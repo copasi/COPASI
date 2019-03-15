@@ -35,8 +35,8 @@ foreach(file
     COMMAND "${Java_JAVAC_EXECUTABLE}"
     ARGS -cp ".${FILE_SEP}\"${CURRENT_JAR}\"${FILE_SEP}${CMAKE_CURRENT_SOURCE_DIR}"
        ${CURRENT_FILE}
-       -source 1.5
-       -target 1.5
+       -source ${JAVA_COMPATIBILITY}
+       -target ${JAVA_COMPATIBILITY}
        -d ${CMAKE_CURRENT_BINARY_DIR}
     MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${file}.java
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"

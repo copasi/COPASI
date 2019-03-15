@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,28 +20,27 @@ COptLog::COptLog()
 COptLog::~COptLog()
 {}
 
-void COptLog::enterLogItem(COptLogItem item)
+void COptLog::enterLogEntry(COptLogEntry entry)
 {
-  mLogItems.push_back(item);
+  mLogEntries.push_back(entry);
 }
 
 size_t COptLog::getElementCount() const
 {
-  return mLogItems.size();
+  return mLogEntries.size();
 }
 
-std::vector< COptLogItem >::const_iterator
+std::vector< COptLogEntry >::const_iterator
 COptLog::begin() const
 {
-  return mLogItems.begin();
+  return mLogEntries.begin();
 }
 
-std::vector< COptLogItem >::const_iterator
+std::vector< COptLogEntry >::const_iterator
 COptLog::end() const
 {
-  return mLogItems.end();
+  return mLogEntries.end();
 }
-
 
 std::string COptLog::getPlainLog() const
 {
@@ -49,7 +48,7 @@ std::string COptLog::getPlainLog() const
   std::string currSubtext;
   std::string currStatusDetails;
 
-  for (std::vector<COptLogItem>::const_iterator item = mLogItems.begin(); item != mLogItems.end(); ++item)
+  for (std::vector<COptLogEntry>::const_iterator item = mLogEntries.begin(); item != mLogEntries.end(); ++item)
     {
       log.append(item->getHeader() + "\n");
 
@@ -80,7 +79,7 @@ std::string COptLog::getRichLog() const
   std::string currStatusDetails;
   bool currHasContent; //if an item has no content, the div has to be closed without any linebreaks in between. Otherwise Webkit detects the linebreak as content.
 
-  for (std::vector<COptLogItem>::const_iterator item = mLogItems.begin(); item != mLogItems.end(); ++item)
+  for (std::vector<COptLogEntry>::const_iterator item = mLogEntries.begin(); item != mLogEntries.end(); ++item)
     {
       currHasContent = false;
 

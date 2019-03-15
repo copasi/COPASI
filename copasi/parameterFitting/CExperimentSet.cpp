@@ -545,8 +545,8 @@ const unsigned C_INT32 & CCrossValidationSet::getThreshold() const
 
 void CCrossValidationSet::initializeParameter()
 {
-  mpWeight = assertParameter("Weight", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
-  mpThreshold = assertParameter("Threshold", CCopasiParameter::UINT, (unsigned C_INT32) 5);
+  mpWeight = assertParameter("Weight", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0);
+  mpThreshold = assertParameter("Threshold", CCopasiParameter::Type::UINT, (unsigned C_INT32) 5);
 
   elevateChildren();
 }

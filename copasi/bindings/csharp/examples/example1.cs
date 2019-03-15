@@ -120,14 +120,14 @@ class example1
          // constant flux has only one function parameter
          Debug.Assert(reaction.getFunctionParameters().size() == 1);
          // so there should be only one entry in the parameter mapping as well
-         Debug.Assert(reaction.getParameterMappings().Count == 1);
+         Debug.Assert(reaction.getParameterCNs().Count == 1);
          CCopasiParameterGroup parameterGroup = reaction.getParameters();
          Debug.Assert(parameterGroup.size() == 1);
          CCopasiParameter parameter = parameterGroup.getParameter(0);
          // make sure the parameter is a local parameter
          Debug.Assert(reaction.isLocalParameter(parameter.getObjectName()));
          // now we set the value of the parameter to 0.5
-         Debug.Assert(parameter.getType() == CCopasiParameter.DOUBLE);
+         Debug.Assert(parameter.getType() == CCopasiParameter.Type_DOUBLE);
          parameter.setDblValue(0.5);
          obj = parameter.getValueReference();
          Debug.Assert(obj != null);
@@ -169,7 +169,7 @@ class example1
 
      Debug.Assert(reaction.getFunctionParameters().size() == 2);
      // so there should be two entries in the parameter mapping as well
-     Debug.Assert(reaction.getParameterMappings().Count == 2);
+     Debug.Assert(reaction.getParameterCNs().Count == 2);
      // mass action is a special case since the parameter mappings for the
      // substrates (and products) are in a vector
 
@@ -192,10 +192,10 @@ class example1
      // of the local one that is created by default
      // The first parameter is the one for the rate constant, so we point it to
      // the key of out model value
-     reaction.setParameterMapping(0, modelValue.getKey());
+     reaction.setParameterObject(0, modelValue);
      // now we have to set the parameter mapping for the substrates
-     reaction.addParameterMapping("substrate", g6p.getKey());
-     reaction.addParameterMapping("substrate", adp.getKey());
+     reaction.addParameterObject("substrate", g6p);
+     reaction.addParameterObject("substrate", adp);
 
      // finally compile the model
      // compile needs to be done before updating all initial values for

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,8 +62,7 @@ CQLyapWidget::~CQLyapWidget()
 
 bool CQLyapWidget::runTask()
 {
-  CLyapTask * pTask =
-    dynamic_cast< CLyapTask * >(CRootContainer::getKeyFactory()->get(mKey));
+  CLyapTask * pTask = dynamic_cast< CLyapTask * >(mpObject);
 
   if (!pTask) return false;
 
@@ -69,11 +73,11 @@ bool CQLyapWidget::runTask()
 
 bool CQLyapWidget::taskFinishedEvent()
 {
-  mpListView->switchToOtherWidget(261, ""); //change to the results window
+  mpListView->switchToOtherWidget(ListViews::WidgetType::LyapunovExponentsResult, std::string()); //change to the results window
   return true;
 }
 
-bool CQLyapWidget::loadTask()
+bool CQLyapWidget::loadTaskProtected()
 {
   CLyapTask * pTask = dynamic_cast< CLyapTask * >(mpTask);
 
@@ -104,7 +108,7 @@ bool CQLyapWidget::loadTask()
   return true;
 }
 
-bool CQLyapWidget::saveTask()
+bool CQLyapWidget::saveTaskProtected()
 {
   CLyapTask * pTask = dynamic_cast< CLyapTask * >(mpTask);
 

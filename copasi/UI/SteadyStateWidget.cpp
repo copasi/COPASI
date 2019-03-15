@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -116,24 +121,24 @@ bool SteadyStateWidget::taskFinishedEvent()
     }
 
   CQSteadyStateResult *pResult =
-    dynamic_cast< CQSteadyStateResult * >(mpListView->findWidgetFromId(211));
+    dynamic_cast< CQSteadyStateResult * >(mpListView->findWidgetFromId(ListViews::WidgetType::SteadyStateResult));
 
   if (pResult)
     pResult->loadResult();
 
   if (success && isVisible())
-    mpListView->switchToOtherWidget(211, ""); //change to the results window
+    mpListView->switchToOtherWidget(ListViews::WidgetType::SteadyStateResult, std::string()); //change to the results window
 
   return success;
 }
 
-bool SteadyStateWidget::loadTask()
+bool SteadyStateWidget::loadTaskProtected()
 {
   loadCommon();
   loadMethod();
 
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast<CSteadyStateTask *>(mpObject);
 
   if (mSteadyStateTask == NULL)
     return false;
@@ -165,13 +170,13 @@ bool SteadyStateWidget::loadTask()
   return true;
 }
 
-bool SteadyStateWidget::saveTask()
+bool SteadyStateWidget::saveTaskProtected()
 {
   saveCommon();
   saveMethod();
 
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast<CSteadyStateTask *>(mpObject);
 
   if (mSteadyStateTask == NULL)
     return false;

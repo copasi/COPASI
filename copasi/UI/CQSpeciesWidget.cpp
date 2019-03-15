@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,7 +56,7 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget *parent, const char *name)
   mpCompartmentDelegate = new CQComboDelegate(this, mCompartments);
   mpTblSpecies->setItemDelegateForColumn(COL_COMPARTMENT, mpCompartmentDelegate);
   //Setting values for Types comboBox
-  mpTypeDelegate = new CQIndexComboDelegate(this, mpSpecieDM->getTypes(), false);
+  mpTypeDelegate = new CQComboDelegate(this, mpSpecieDM->getTypes(), false);
   mpTblSpecies->setItemDelegateForColumn(COL_TYPE_SPECIES, mpTypeDelegate);
 #if QT_VERSION >= 0x050000
   mpTblSpecies->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -61,14 +66,12 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget *parent, const char *name)
   mpTblSpecies->verticalHeader()->hide();
   mpTblSpecies->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
-  connect(mpSpecieDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpSpecieDM, SIGNAL(signalNotifyChanges(const CUndoData::CChangeSet &)),
+          this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
   connect(mpSpecieDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-  CopasiUI3Window   *pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
-  mpSpecieDM->setUndoStack(pWindow->getUndoStack());
 }
 
 /*
@@ -130,14 +133,16 @@ void CQSpeciesWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQSpeciesWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
+bool CQSpeciesWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {
       return true;
     }
 
-  if (objectType == ListViews::MODEL)
+  if (objectType == ListViews::ObjectType::MODEL ||
+      objectType == ListViews::ObjectType::STATE ||
+      objectType == ListViews::ObjectType::METABOLITE)
     {
       enterProtected();
     }
@@ -145,7 +150,7 @@ bool CQSpeciesWidget::update(ListViews::ObjectType objectType, ListViews::Action
   return true;
 }
 
-bool CQSpeciesWidget::leave()
+bool CQSpeciesWidget::leaveProtected()
 {
   return true;
 }
@@ -227,16 +232,13 @@ void CQSpeciesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(mpDataModel != NULL);
-  CModel *pModel = mpDataModel->getModel();
+  CDataVector < CMetab > * pVector = dynamic_cast< CDataVector < CMetab > * >(mpObject);
 
-  if (pModel == NULL)
-    return;
-
-  std::string key = pModel->getMetabolites()[index.row()].getKey();
-
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  if (pVector != NULL &&
+      index.row() < pVector->size())
+    {
+      mpListView->switchToOtherWidget(ListViews::WidgetType::SpeciesDetail, pVector->operator [](index.row()).getCN());
+    }
 }
 
 void CQSpeciesWidget::keyPressEvent(QKeyEvent *ev)
@@ -282,6 +284,7 @@ void CQSpeciesWidget::slotFilterChanged()
 void CQSpeciesWidget::setFramework(int framework)
 {
   CopasiWidget::setFramework(framework);
+  mpSpecieDM->setFramework(framework);
 
   switch (mFramework)
     {
@@ -292,7 +295,6 @@ void CQSpeciesWidget::setFramework(int framework)
         mpTblSpecies->hideColumn(COL_INUMBER);
         mpTblSpecies->hideColumn(COL_NUMBER);
         mpTblSpecies->hideColumn(COL_NRATE);
-        mpSpecieDM->setFlagConc(true);
         break;
 
       case 1:
@@ -302,7 +304,6 @@ void CQSpeciesWidget::setFramework(int framework)
         mpTblSpecies->showColumn(COL_INUMBER);
         mpTblSpecies->showColumn(COL_NUMBER);
         mpTblSpecies->showColumn(COL_NRATE);
-        mpSpecieDM->setFlagConc(false);
         break;
     }
 }

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -149,7 +154,7 @@ void CQTSSAWidget::slotIntervals()
   mpValidatorIntervalSize->revalidate();
 }
 
-bool CQTSSAWidget::saveTask()
+bool CQTSSAWidget::saveTaskProtected()
 {
   CTSSATask * pTask =
     dynamic_cast< CTSSATask * >(mpTask);
@@ -189,7 +194,7 @@ bool CQTSSAWidget::saveTask()
   return true;
 }
 
-bool CQTSSAWidget::loadTask()
+bool CQTSSAWidget::loadTaskProtected()
 {
   CTSSATask * pTask =
     dynamic_cast< CTSSATask * >(mpTask);
@@ -245,7 +250,7 @@ bool CQTSSAWidget::taskFinishedEvent()
   // We need to load the result here as this is the only place where
   // we know that it is correct.
   CQTSSAResultWidget * pResult =
-    dynamic_cast< CQTSSAResultWidget * >(mpListView->findWidgetFromId(271));
+    dynamic_cast< CQTSSAResultWidget * >(mpListView->findWidgetFromId(ListViews::WidgetType::TimeScaleSeparationAnalysisResult));
 
   if (pResult == NULL)
     {
@@ -260,7 +265,7 @@ bool CQTSSAWidget::taskFinishedEvent()
   mpTSSResultSubWidget->discardOldResults();
 
   mpTSSResultSubWidget->displayResult();
-  mpListView->switchToOtherWidget(271, ""); //change to the results window
+  mpListView->switchToOtherWidget(ListViews::WidgetType::TimeScaleSeparationAnalysisResult, std::string()); //change to the results window
 
   return true;
 }

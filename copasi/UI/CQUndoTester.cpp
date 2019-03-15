@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -9,16 +14,15 @@
 
 #include <copasi/CopasiTypes.h>
 #include <copasi/commandline/COptions.h>
-#include <copasi/undoFramework/CopasiUndoCommandTypes.h>
 #include <copasi/UI/CopasiGuiTypes.h>
+#include "copasi/UI/CQCopasiApplication.h"
 
-CQUndoTester::CQUndoTester(QApplication* app,
-                           ListViews* pListViews,
-                           QUndoStack* pUndoStack)
+CQUndoTester::CQUndoTester(CQCopasiApplication * app,
+                           ListViews* pListViews)
   : QObject(app)
   , mpApp(app)
   , mpListViews(pListViews)
-  , mpUndoStack(pUndoStack)
+  , mpUndoStack(NULL)
   , mpTabModel(NULL)
   , mpTabSpecies(NULL)
   , mpTabCompartments(NULL)
@@ -50,8 +54,14 @@ CQUndoTester::CQUndoTester(QApplication* app,
   , mpReaction(NULL)
 {
   if (mpListViews == NULL)
-    mpListViews = qobject_cast<CQCopasiApplication*>(mpApp)->getMainWindow()->getMainWidget();
+    mpListViews = mpApp->getMainWindow()->getMainWidget();
 
+  if (mpListViews != NULL)
+    mpUndoStack = mpListViews->getDataModel()->getUndoStack();
+
+  assert(mpUndoStack != NULL);
+
+  /*
   mpTabModel = qobject_cast<CQTabWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::MODEL));
   mpTabSpecies = qobject_cast<CQTabWidget*>(mpListViews->findTabWidgetFromId(CCopasiUndoCommand::SPECIES));
   mpTabCompartments = qobject_cast<CQTabWidget*>(mpListViews->findTabWidgetFromId(CCopasiUndoCommand::COMPARTMENTS));
@@ -79,6 +89,7 @@ CQUndoTester::CQUndoTester(QApplication* app,
   mpDmEvents = dynamic_cast<CQEventDM*>(mpDmWidgetEvents->getCqDataModel());
   mpDmReactions = dynamic_cast<CQReactionDM*>(mpDmWidgetReactions->getCqDataModel());
   mpDmOverview = dynamic_cast<CQParameterOverviewDM*>(mpDmWidgetOverview->getCqDataModel());
+  */
 }
 
 CQUndoTester::~CQUndoTester()
@@ -151,6 +162,7 @@ void CQUndoTester::testModelDetail()
 {
   CModel* pModel = (*CRootContainer::getDatamodelList())[0].getModel();
 
+#ifdef XXXX
   mpUndoStack->push(
     new EntityRenameCommand(
       pModel,
@@ -202,14 +214,16 @@ void CQUndoTester::testModelDetail()
   // change stochastic interpretation
   mpUndoStack->push(
     new ModelChangeCommand(CCopasiUndoCommand::MODEL_STOCHASTIC_CORRECTION_CHANGE,
-                           pModel->getModelType() == CModel::deterministic,
-                           pModel->getModelType() != CModel::deterministic,
+                           pModel->getModelType() == CModel::ModelType::deterministic,
+                           pModel->getModelType() != CModel::ModelType::deterministic,
                            mpDetailModel)
   );
+#endif // XXXX
 }
 
 void CQUndoTester::testCompartmentDetail()
 {
+#ifdef XXXX
   createCompartment();
 
   // rename
@@ -265,10 +279,12 @@ void CQUndoTester::testCompartmentDetail()
   );
 
   deleteCompartment();
+#endif
 }
 
 void CQUndoTester::testSpeciesDetail()
 {
+#ifdef XXXX
   createSpecies();
 
   // rename species
@@ -335,12 +351,15 @@ void CQUndoTester::testSpeciesDetail()
   );
 
   deleteSpecies();
+
+#endif
 }
 
 void CQUndoTester::testModelValueDetail()
 {
   createModelValue();
 
+#ifdef XXXX
   // rename
   mpUndoStack->push(
     new EntityRenameCommand(
@@ -394,12 +413,14 @@ void CQUndoTester::testModelValueDetail()
   );
 
   deleteModelValue();
+#endif // XXXX
 }
 
 void CQUndoTester::testEventDetail()
 {
   createEvent();
 
+#ifdef XXXX
   // rename event
   mpUndoStack->push(
     new EntityRenameCommand(
@@ -497,9 +518,10 @@ void CQUndoTester::testEventDetail()
                       mpEvent,
                       mpDetailEvent,
                       mpEvent->getAssignments()[0].getExpression(),  // expression
-                      mpEvent->getAssignments()[0].getTargetKey()   // key
+                      mpEvent->getAssignments()[0].getTargetCN()   // key
                     ));
 
+#endif // XXXX
   deleteCompartment();
 
   deleteEvent();
@@ -507,6 +529,7 @@ void CQUndoTester::testEventDetail()
 
 void CQUndoTester::testReactionDetail()
 {
+#ifdef XXXX
   createReaction();
 
   // rename
@@ -550,10 +573,13 @@ void CQUndoTester::testReactionDetail()
                     ));
 
   deleteReaction();
+
+#endif // XXXX
 }
 
 void CQUndoTester::testCompartmentDM(int repetitions)
 {
+#ifdef XXXX
   // add by name
   int currentRow = mpDmCompartments->rowCount();
   mpUndoStack->push(new InsertCompartmentRowsCommand(
@@ -586,10 +612,12 @@ void CQUndoTester::testCompartmentDM(int repetitions)
   //  lst.append(mpDmCompartments->index(i + 1, COL_NAME_COMPARTMENTS));
   //}
   //mpUndoStack->push(new RemoveCompartmentRowsCommand(lst, mpDmCompartments));
+#endif
 }
 
 void CQUndoTester::testSpeciesDM(int repetitions)
 {
+#ifdef XXXX
   // add by name
   int currentRow = mpDmSpecies->rowCount();
   mpUndoStack->push(new InsertSpecieRowsCommand(
@@ -614,10 +642,13 @@ void CQUndoTester::testSpeciesDM(int repetitions)
       lst.append(mpDmSpecies->index(currentRow, COL_NAME_SPECIES));
       mpUndoStack->push(new RemoveSpecieRowsCommand(lst, mpDmSpecies));
     }
+
+#endif
 }
 
 void CQUndoTester::testModelValueDM(int repetitions)
 {
+#ifdef XXXX
   // add by name
   int currentRow = mpDmModelValues->rowCount();
   mpUndoStack->push(new InsertGlobalQuantityRowsCommand(
@@ -642,10 +673,13 @@ void CQUndoTester::testModelValueDM(int repetitions)
       lst.append(mpDmModelValues->index(currentRow, COL_NAME_GQ));
       mpUndoStack->push(new RemoveGlobalQuantityRowsCommand(lst, mpDmModelValues));
     }
+
+#endif
 }
 
 void CQUndoTester::testEventDM(int repetitions)
 {
+#ifdef XXXX
   // add by name
   int currentRow = mpDmEvents->rowCount();
   mpUndoStack->push(new InsertEventRowsCommand(
@@ -672,11 +706,13 @@ void CQUndoTester::testEventDM(int repetitions)
       lst.append(mpDmEvents->index(currentRow, COL_NAME_EVENTS));
       mpUndoStack->push(new RemoveEventRowsCommand(lst, mpDmEvents));
     }
-}
 
+#endif // XXXX
+}
 
 void CQUndoTester::testOverviewWidget()
 {
+#ifdef XXXX
   // create 8 reactions
   testReactionDM(7);
 
@@ -723,12 +759,12 @@ void CQUndoTester::testOverviewWidget()
         );
       }
   }
-
+#endif // XXXX
 }
-
 
 void CQUndoTester::testReactionDM(int repetitions)
 {
+#ifdef XXXX
   // add by name
   CModel * pModel = mpDmWidgetReactions->getDataModel()->getModel();
   int numReactions = pModel->getReactions().size();
@@ -791,113 +827,140 @@ void CQUndoTester::testReactionDM(int repetitions)
         //mpUndoStack->push(new RemoveReactionRowsCommand(lst, mpDmReactions));
       }
     }
+
+#endif // XXXX
 }
 
 void CQUndoTester::createCompartment()
 {
+#ifdef XXXX
   // add compartment
   mpUndoStack->push(new CreateNewCompartmentCommand(mpDetailComp));
   mpCompartment = dynamic_cast<CCompartment*>(const_cast<CDataObject*>(mpDetailComp->getObject()));
+#endif
 }
 
 void CQUndoTester::createEvent()
 {
+#ifdef XXXX
   // add event
   mpUndoStack->push(
     new CreateNewEventCommand(mpDetailEvent)
   );
   mpEvent = dynamic_cast<CEvent*>(const_cast<CDataObject*>(mpDetailEvent->getObject()));
+#endif
 }
 
 void CQUndoTester::createModelValue()
 {
+#ifdef XXXX
   // add model value
   mpUndoStack->push(new CreateNewGlobalQuantityCommand(mpDetailMV));
   mpModelValue = dynamic_cast<CModelValue*>(const_cast<CDataObject*>(mpDetailMV->getObject()));
+#endif
 }
 
 void CQUndoTester::createReaction()
 {
+#ifdef XXXX
   // add reaction
   mpUndoStack->push(new CreateNewReactionCommand(mpDetailReaction));
   mpReaction = dynamic_cast<CReaction*>(const_cast<CDataObject*>(mpDetailReaction->getObject()));
+#endif
 }
 
 void CQUndoTester::createSpecies()
 {
+#ifdef XXXX
   // add species
   mpUndoStack->push(
     new CreateNewSpeciesCommand(mpDetailSpecies)
   );
   mpSpecies = mpDetailSpecies->getCurrentMetab();
+#endif
 }
 
 void CQUndoTester::deleteCompartment()
 {
+#ifdef XXXX
+
   if (mpCompartment == NULL) return;
 
-  mpListViews->switchToOtherWidget(C_INVALID_INDEX, mpCompartment->getKey());
+  mpListViews->switchToOtherWidget(ListViews::WidgetType::CompartmentDetail, mpCompartment->getKey());
   // delete compartment
   mpUndoStack->push(
     new DeleteCompartmentCommand(mpDetailComp)
   );
 
   mpCompartment = NULL;
+#endif
 }
 
 void CQUndoTester::deleteEvent()
 {
+#ifdef XXXX
+
   if (mpEvent == NULL)
     return;
 
-  mpListViews->switchToOtherWidget(C_INVALID_INDEX, mpEvent->getKey());
+  mpListViews->switchToOtherWidget(ListViews::WidgetType::EventDetail, mpEvent->getKey());
   // delete event
   mpUndoStack->push(
     new DeleteEventCommand(mpDetailEvent)
   );
 
   mpEvent = NULL;
+#endif
 }
 
 void CQUndoTester::deleteModelValue()
 {
+#ifdef XXXX
+
   if (mpModelValue == NULL)
     return;
 
-  mpListViews->switchToOtherWidget(C_INVALID_INDEX, mpModelValue->getKey());
+  mpListViews->switchToOtherWidget(ListViews::WidgetType::GlobalQuantityDetail, mpModelValue->getKey());
   // delete model value
   mpUndoStack->push(
     new DeleteGlobalQuantityCommand(mpDetailMV)
   );
   mpModelValue = NULL;
+#endif
 }
 
 void CQUndoTester::deleteReaction()
 {
+#ifdef XXXX
+
   if (mpReaction == NULL)
     return;
 
-  mpListViews->switchToOtherWidget(C_INVALID_INDEX, mpReaction->getKey());
+  mpListViews->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, mpReaction->getKey());
   // delete reaction
   mpUndoStack->push(
     new DeleteReactionCommand(mpDetailReaction)
   );
 
   mpReaction = NULL;
+#endif
 }
 
 void CQUndoTester::deleteSpecies()
 {
+#ifdef XXXX
+
   if (mpSpecies == NULL)
     return;
 
-  mpListViews->switchToOtherWidget(C_INVALID_INDEX, mpSpecies->getKey());
+  mpListViews->switchToOtherWidget(ListViews::WidgetType::SpeciesDetail, mpSpecies->getKey());
   // delete species
   mpUndoStack->push(
     new DeleteSpeciesCommand(mpDetailSpecies)
   );
 
   mpSpecies = NULL;
+#endif
 }
 
 void CQUndoTester::focusChange(QWidget *old, QWidget *now)

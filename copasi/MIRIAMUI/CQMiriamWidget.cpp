@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,10 +33,10 @@
 
 #include "MIRIAM/CModelMIRIAMInfo.h"
 #include "function/CFunction.h"
-#include "report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
-#include <copasi/CopasiDataModel/CDataModel.h>
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "commandline/CConfigurationFile.h"
+#include "copasi/UI/DataModelGUI.h"
 
 /*
  *  Constructs a CQMiriamWidget which is a child of 'parent', with the
@@ -39,23 +44,24 @@
  */
 CQMiriamWidget::CQMiriamWidget(QWidget *parent, const char *name)
   : CopasiWidget(parent, name),
-    mKeyToCopy(""),
+    mObjectCNToCopy(""),
+    mpAnnotation(NULL),
     mMessage(""),
     mMessageType(-1)
 {
   setupUi(this);
   // Create the MIRIAM Info
-  mpMIRIAMInfo = new CMIRIAMInfo();
+  mpMIRIAMInfo = NULL;
   //Create Data Models for the 4 tables
-  mpCreatorDM = new CQCreatorDM(mpMIRIAMInfo, this);
-  mpReferenceDM = new CQReferenceDM(mpMIRIAMInfo, this);
-  mpBiologicalDescriptionDM = new CQBiologicalDescriptionDM(mpMIRIAMInfo, this);
-  mpModifiedDM = new CQModifiedDM(mpMIRIAMInfo, this);
+  mpCreatorDM = new CQCreatorDM(this);
+  mpReferenceDM = new CQReferenceDM(this);
+  mpBiologicalDescriptionDM = new CQBiologicalDescriptionDM(this);
+  mpModifiedDM = new CQModifiedDM(this);
   //Create Proxy Data Models for the 4 tables
-  mpCreatorPDM = new CQSortFilterProxyModel();
-  mpReferencePDM = new CQSortFilterProxyModel();
-  mpBiologicalDescriptionPDM = new CQSortFilterProxyModel();
-  mpModifiedPDM = new CQSortFilterProxyModel();
+  mpCreatorPDM = new CQSortFilterProxyModel(this);
+  mpReferencePDM = new CQSortFilterProxyModel(this);
+  mpBiologicalDescriptionPDM = new CQSortFilterProxyModel(this);
+  mpModifiedPDM = new CQSortFilterProxyModel(this);
   //Create Required Delegates
   mpResourceDelegate1 = new CQComboDelegate(this, mReferences, false);
   mpTblReferences->setItemDelegateForColumn(COL_RESOURCE_REFERENCE, mpResourceDelegate1);
@@ -101,6 +107,9 @@ CQMiriamWidget::CQMiriamWidget(QWidget *parent, const char *name)
       //Set Proxy Data Model properties
       (*itPDM)->setDynamicSortFilter(true);
       (*itPDM)->setSortCaseSensitivity(Qt::CaseInsensitive);
+      (*itPDM)->setSourceModel(*itDM);
+      (*it)->setModel(*itPDM);
+
 #if QT_VERSION >= 0x050000
       (*it)->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
@@ -108,8 +117,11 @@ CQMiriamWidget::CQMiriamWidget(QWidget *parent, const char *name)
 #endif
       (*it)->verticalHeader()->hide();
       (*it)->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
-      connect((*itDM), SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-              this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+
+      connect((*itDM), SIGNAL(signalNotifyChanges(const CUndoData::CChangeSet &)),
+              this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
+      connect((*itDM), SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
+              this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
       connect((*itDM), SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
               this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
     }
@@ -127,10 +139,20 @@ CQMiriamWidget::~CQMiriamWidget()
 {
   // no need to delete child widgets or objects, Qt does it all for us
   pdelete(mpMIRIAMInfo);
-  pdelete(mpCreatorPDM);
-  pdelete(mpReferencePDM);
-  pdelete(mpBiologicalDescriptionPDM);
-  pdelete(mpModifiedPDM);
+}
+
+// virtual
+void CQMiriamWidget::slotNotifyChanges(const CUndoData::CChangeSet & changes)
+{
+  if (changes.empty())
+    {
+      return;
+    }
+
+  mIgnoreUpdates = true;
+  mpMIRIAMInfo->save();
+  mpListView->getDataModelGUI()->notifyChanges(changes);
+  mIgnoreUpdates = false;
 }
 
 void CQMiriamWidget::slotBtnDeleteClicked()
@@ -291,95 +313,103 @@ void CQMiriamWidget::slotBtnClearClicked()
     }
 }
 
-bool CQMiriamWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string &key)
+bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
-  if (mIgnoreUpdates || !isVisible())
+  // Assure that the pointer is still valid;
+  mpAnnotation = CAnnotation::castObject(mpObject);
+
+  if (!mIgnoreUpdates &&
+      cn == mObjectCN)
     {
-      return true;
+      if (action != ListViews::DELETE || objectType == ListViews::ObjectType::MIRIAM)
+        {
+          return enterProtected();
+        }
+      else
+        {
+          // We can no longer trust that the info still exists
+          mpMIRIAMInfo = NULL;
+          return leaveProtected();
+        }
     }
 
-  if (objectType != ListViews::MIRIAM)
-    return true;
-
-  if (key == "" || key != mpMIRIAMInfo->getKey())
-    return true;
-
-  bool success = true;
-  mpMIRIAMInfo->load(key);
-
-  if (mpMIRIAMInfo->getCreatedDT() != "")
-    mpDTCreated->setDateTime(QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getCreatedDT()), Qt::ISODate));
-
-  return success;
+  return true;
 }
 
 void CQMiriamWidget::slotCreatedDTChanged(QDateTime newDT)
 {
-  //Now update.
-  // Created at
-  std::string DT = "";
-
-  if (newDT.isValid())
+  if (isVisible() &&
+      newDT.isValid())
     {
-      DT = TO_UTF8(newDT.toString(Qt::ISODate));
-      DT += "Z";
+
+      std::string DT = TO_UTF8(newDT.toUTC().toString(Qt::ISODate));
 
       if (DT != mpMIRIAMInfo->getCreatedDT())
         {
+          CData OldData = mpMIRIAMInfo->toData();
+
           mpMIRIAMInfo->setCreatedDT(DT);
+
+          CUndoData UndoData;
+          mpMIRIAMInfo->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData);
+          ListViews::addUndoMetaData(this, UndoData);
+
+          slotNotifyChanges(mpDataModel->recordData(UndoData));
         }
     }
 }
 
 bool CQMiriamWidget::enterProtected()
 {
-  if (mKey == "")
-    return false;
+  if (mpObject == NULL) return false;
+
+  mpAnnotation = CAnnotation::castObject(mpObject);
+
+  if (mpAnnotation == NULL) return false;
 
   CCopasiMessage::clearDeque();
 
-  if (mKeyToCopy != "")
+  if (mObjectCNToCopy != "")
     {
-      CAnnotation *pAnnotation = CAnnotation::castObject(dynamic_cast<CDataObject *>(CRootContainer::getKeyFactory()->get(mKeyToCopy)));
+      CObjectInterface::ContainerList List;
+      List.push_back(mpDataModel);
+
+      // This will check the current data model and the root container for the object;
+      const CDataObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, mObjectCNToCopy));
+      const CAnnotation *pAnnotation = CAnnotation::castObject(pObject);
 
       if (pAnnotation != NULL)
         {
           std::string pMiriamAnnotation = pAnnotation->getMiriamAnnotation();
-          pAnnotation = CAnnotation::castObject(mpObject);
-          pAnnotation->setMiriamAnnotation(pMiriamAnnotation, mKey, mKeyToCopy);
+          mpAnnotation->setMiriamAnnotation(pMiriamAnnotation, mpObject->getKey(), pObject->getKey());
+          mpMIRIAMInfo = CAnnotation::allocateMiriamInfo(dynamic_cast< CDataContainer * >(mpObject));
+
+          // TODO Update Creation Date and Author
         }
 
-      mKeyToCopy = "";
+      mObjectCNToCopy.clear();
     }
 
-  mpMIRIAMInfo->load(mKey);
+  mpMIRIAMInfo = CAnnotation::allocateMiriamInfo(dynamic_cast< CDataContainer * >(mpObject));
+
+  mpCreatorDM->setMIRIAMInfo(mpMIRIAMInfo);
+  mpReferenceDM->setMIRIAMInfo(mpMIRIAMInfo);
+  mpBiologicalDescriptionDM->setMIRIAMInfo(mpMIRIAMInfo);
+  mpModifiedDM->setMIRIAMInfo(mpMIRIAMInfo);
+
   //Set Models for the 4 TableViews
   std::vector<CQTableView *>::const_iterator it = mWidgets.begin();
   std::vector<CQTableView *>::const_iterator end = mWidgets.end();
-  std::vector<CQBaseDataModel *>::const_iterator itDM = mDMs.begin();
-  std::vector<CQBaseDataModel *>::const_iterator endDM = mDMs.end();
-  std::vector<CQSortFilterProxyModel *>::const_iterator itPDM = mProxyDMs.begin();
-  std::vector<CQSortFilterProxyModel *>::const_iterator endPDM = mProxyDMs.end();
 
-  for (; it != end && itDM != endDM && itPDM != endPDM; it++, itDM++, itPDM++)
-    {
-      (*itPDM)->setSourceModel(*itDM);
-      (*it)->setModel(NULL);
-      (*it)->setModel(*itPDM);
-      (*it)->resizeColumnsToContents();
-    }
+  for (; it != end; it++)
+    (*it)->resizeColumnsToContents();
 
   QDateTime DTCreated;
 
   if (mpMIRIAMInfo->getCreatedDT() != "")
-    DTCreated = QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getCreatedDT()), Qt::ISODate);
+    DTCreated = QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getCreatedDT()), Qt::ISODate).toLocalTime();
 
-  if (DTCreated.isValid())
-    mpDTCreated->setDateTime(DTCreated);
-  else
-    {
-      mpDTCreated->setDateTime(QDateTime::currentDateTime());
-    }
+  mpDTCreated->setDateTime(DTCreated);
 
   if (CCopasiMessage::size() > 0)
     {
@@ -397,9 +427,20 @@ bool CQMiriamWidget::enterProtected()
   return true;
 }
 
-bool CQMiriamWidget::leave()
+bool CQMiriamWidget::leaveProtected()
 {
-  mpMIRIAMInfo->save();
+  if (mpMIRIAMInfo != NULL)
+    {
+      mpMIRIAMInfo->save();
+      delete mpMIRIAMInfo;
+      mpMIRIAMInfo = NULL;
+    }
+
+  mpCreatorDM->setMIRIAMInfo(mpMIRIAMInfo);
+  mpReferenceDM->setMIRIAMInfo(mpMIRIAMInfo);
+  mpBiologicalDescriptionDM->setMIRIAMInfo(mpMIRIAMInfo);
+  mpModifiedDM->setMIRIAMInfo(mpMIRIAMInfo);
+
   return true;
 }
 
@@ -552,5 +593,5 @@ void CQMiriamWidget::slotCopyEvent()
 
 void CQMiriamWidget::slotBtnCopy()
 {
-  mKeyToCopy = mKey;
+  mObjectCNToCopy = mObjectCN;
 }

@@ -17,6 +17,18 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+
+
+
+
+
+
+
+
+
+
+
 #ifndef CQARRAYANN_H
 #define CQARRAYANN_H
 
@@ -205,6 +217,8 @@ public slots:
   CQBarChart* mpPlot3d;
 
 #endif // WITH_QT5_VISUALIZATION
+
+
 };
 
 #endif

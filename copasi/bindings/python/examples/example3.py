@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -13,6 +13,9 @@
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
 # All rights reserved. 
+
+
+
 
 
 
@@ -92,7 +95,7 @@ def main(args):
 
   parameter = method.getParameter("Absolute Tolerance")
   assert parameter is not None
-  assert parameter.getType() == CCopasiParameter.UDOUBLE
+  assert parameter.getType() == CCopasiParameter.Type_UDOUBLE
   parameter.setValue(1.0e-12)
 
   try:

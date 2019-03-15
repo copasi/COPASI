@@ -108,7 +108,7 @@ param = variables.getParameter(index);
 % So we need to set the usage for "substrate" manually
 index = fun.getVariableIndex("substrate");
 param = variables.getParameter(index);
-param.setUsage(CFunctionParameter_SUBSTRATE);
+param.setUsage(CFunctionParameter_Role_SUBSTRATE);
 
 % set the rate law for the reaction
 reaction.setFunction(fun);
@@ -117,8 +117,8 @@ reaction.setFunction(fun);
 % COPASI also needs to know what object it has to assocuiate with the individual function parameters
 % In our case we need to tell COPASI that substrate is to be replaced by the substrate of the reaction
 % and temp is to be replaced by the global parameter K
-reaction.setParameterMapping("substrate", S.getKey());
-reaction.setParameterMapping("temp", MV.getKey());
+reaction.setParameterObject("substrate", S);
+reaction.setParameterObject("temp", MV);
 
 % finally compile the model
 % compile needs to be done before updating all initial values for

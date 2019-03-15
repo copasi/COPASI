@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -145,17 +150,17 @@ void WizardDialog::textBrowser_anchorClicked(const QUrl & url)
   if (name == "Model Settings")
     {
       if (pMainWindow)
-        pMainWindow->getMainWidget()->switchToOtherWidget(1, "");
+        pMainWindow->getMainWidget()->switchToOtherWidget(ListViews::WidgetType::Model, std::string());
     }
   else if (name == "Reaction Overview")
     {
       if (pMainWindow)
-        pMainWindow->getMainWidget()->switchToOtherWidget(114, "");
+        pMainWindow->getMainWidget()->switchToOtherWidget(ListViews::WidgetType::Reactions, std::string());
     }
   else if (name == "Report Definition")
     {
       if (pMainWindow)
-        pMainWindow->getMainWidget()->switchToOtherWidget(43, "");
+        pMainWindow->getMainWidget()->switchToOtherWidget(ListViews::WidgetType::ReportTemplates, std::string());
     }
   else if (name == "Step 1")
     {
@@ -165,12 +170,12 @@ void WizardDialog::textBrowser_anchorClicked(const QUrl & url)
   else if (name == "Time Course")
     {
       if (pMainWindow)
-        pMainWindow->getMainWidget()->switchToOtherWidget(23, "");
+        pMainWindow->getMainWidget()->switchToOtherWidget(ListViews::WidgetType::TimeCourse, std::string());
     }
   else if (name == "Plot Definition Overview")
     {
       if (pMainWindow)
-        pMainWindow->getMainWidget()->switchToOtherWidget(42, "");
+        pMainWindow->getMainWidget()->switchToOtherWidget(ListViews::WidgetType::Plots, std::string());
     }
   else
     {

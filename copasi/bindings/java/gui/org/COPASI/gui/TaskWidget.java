@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -16,6 +16,10 @@
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
+
+
+
+
 
 //  © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // , Inc. and EML Research, gGmbH.
@@ -379,39 +383,39 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 				  this.mParameterTable.setValueAt(parameterName,i,0);
 				  switch(p.getType())
 				  {
-				    case CCopasiParameter.BOOL:
+				    case CCopasiParameter.Type_BOOL:
 					    Boolean b=new Boolean(p.getBoolValue());
 					    this.mParameterTable.setValueAt(b,i,1);
 					    break;
-				    case CCopasiParameter.CN:
+				    case CCopasiParameter.Type_CN:
 					    String cn=new String(p.getCNValue().getString());
 					    this.mParameterTable.setValueAt(cn,i,1);
 				  	  break;
-				    case CCopasiParameter.KEY:
+				    case CCopasiParameter.Type_KEY:
 			  		  String key=new String(p.getCNValue().getString());
 		  			  this.mParameterTable.setValueAt(key,i,1);
 	  				  break;
-	  			  case CCopasiParameter.STRING:
+	  			  case CCopasiParameter.Type_STRING:
   					  String s=new String(p.getStringValue());
   					  this.mParameterTable.setValueAt(s,i,1);
   					  break;
-  				  case CCopasiParameter.FILE:
+  				  case CCopasiParameter.Type_FILE:
   					  String f=new String(p.getFileValue());
   					  this.mParameterTable.setValueAt(f,i,1);
   					  break;
-  				  case CCopasiParameter.DOUBLE:
+  				  case CCopasiParameter.Type_DOUBLE:
   					  Double d=new Double(p.getDblValue());
   					  this.mParameterTable.setValueAt(d,i,1);
   					  break;
-  				  case CCopasiParameter.UDOUBLE:
+  				  case CCopasiParameter.Type_UDOUBLE:
   					  Double ud=new Double(p.getUDblValue());
   					  this.mParameterTable.setValueAt(ud,i,1);
   					  break;
-  				  case CCopasiParameter.INT:
+  				  case CCopasiParameter.Type_INT:
   					  Long in=new Long(p.getIntValue());
   					  this.mParameterTable.setValueAt(in,i,1);
   					  break;
-  				  case CCopasiParameter.UINT:
+  				  case CCopasiParameter.Type_UINT:
   					  Long uin=new Long(p.getUIntValue());
   					  this.mParameterTable.setValueAt(uin,i,1);
   					  break;
@@ -615,7 +619,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 		
       switch(p.getType())
 	  	{
-		    case CCopasiParameter.BOOL:
+		    case CCopasiParameter.Type_BOOL:
 		  	  String s=value.toLowerCase();
 		  	  if(s.equals("true") || s.equals("yes") || s.equals("1"))
 	  		  {
@@ -630,20 +634,20 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
   				  this.mMethodWidget.mParameterTable.setValueAt(new Boolean(p.getBoolValue()).toString(),row,column);
   			  }
   			  break;
-  		  case CCopasiParameter.CN:
+  		  case CCopasiParameter.Type_CN:
   			  CRegisteredCommonName on=new CRegisteredCommonName(value);
   			  p.setCNValue(on);
   			  break;
-  		  case CCopasiParameter.KEY:
+  		  case CCopasiParameter.Type_KEY:
   			  p.setKeyValue(value);
   			  break;
-   		  case CCopasiParameter.STRING:
+   		  case CCopasiParameter.Type_STRING:
 	  		  p.setStringValue(value);
   			  break;
-  		  case CCopasiParameter.FILE:
+  		  case CCopasiParameter.Type_FILE:
   			  p.setFileValue(value);
   			  break;
-  		  case CCopasiParameter.DOUBLE:
+  		  case CCopasiParameter.Type_DOUBLE:
   			  try
   			  {
   			    Double d=new Double(value);
@@ -654,7 +658,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
     				this.mMethodWidget.mParameterTable.setValueAt(p.getDblValue(), row, column);  
   			  }
 	  		  break;
-	  	  case CCopasiParameter.UDOUBLE:
+	  	  case CCopasiParameter.Type_UDOUBLE:
 	  		  try
 	  		  {
 	  		    Double d=new Double(value);
@@ -672,7 +676,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	    			this.mMethodWidget.mParameterTable.setValueAt(p.getDblValue(), row, column); 
 	  		  }
 			    break;
-	  	  case CCopasiParameter.INT:
+	  	  case CCopasiParameter.Type_INT:
 	  		  try
 	  		  {
 	  		    Integer i=new Integer(value);
@@ -683,7 +687,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	    			this.mMethodWidget.mParameterTable.setValueAt(p.getIntValue(), row, column);  
 	  		  }
 	  		  break;
-		    case CCopasiParameter.UINT:
+		    case CCopasiParameter.Type_UINT:
 		  	  try
 		  	  {
 		 		    Integer ui=new Integer(value);

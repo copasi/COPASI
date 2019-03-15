@@ -26,17 +26,12 @@
 #define COL_RATE_LAW         3
 #define COL_FLUX             4
 #define COL_PARTICLE_FLUX    5
-#ifdef WITH_SDE_SUPPORT
-# define COL_NOISE_EXPRESSION 6
-# define TOTAL_COLS_REACTIONS 7
-#else
-# define TOTAL_COLS_REACTIONS 6
-#endif
+#define COL_NOISE_EXPRESSION 6
+#define TOTAL_COLS_REACTIONS 7
 
 class CReactionInterface;
-class UndoReactionData;
-class InsertReactionRowsCommand;
 class CReaction;
+template < class CType > class CDataVectorNS;
 
 class CQReactionDM : public CQBaseDataModel
 {
@@ -54,36 +49,26 @@ public:
                       int role = Qt::DisplayRole) const;
   bool setData(const QModelIndex &index, const QVariant &value,
                int role = Qt::EditRole);
-  bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
-  //TODO Undo
-  bool reactionDataChange(const std::string & key,
-                          const QVariant &value,
-                          int role,
-                          QString &funcName,
-                          std::vector<std::string>& createdObjects);
-
-  void insertNewReactionRow(InsertReactionRowsCommand* command);
-  void addReactionRow(CReaction *pReaction);
-  void addReactionRow(UndoReactionData* pData);
-  void deleteReactionRow(CReaction *pReaction);
-  void deleteReactionRow(UndoReactionData* pData);
   bool updateReactionWithFunctionName(CReaction *pRea, QString &funcName);
-  bool removeReactionRows(QModelIndexList rows, const QModelIndex&);
-  bool insertReactionRows(QList <UndoReactionData *>& pReaData);
-  void deleteReactionRows(QList <UndoReactionData *>& pReaData);
-  bool removeAllReactionRows();
+
+  bool removeRows(QModelIndexList rows, const QModelIndex & parent = QModelIndex());
   bool clear();
 
+private:
+  void insertNewRows(int position, int rows,
+                     int column = COL_NAME_REACTIONS,
+                     const QVariant & value = "reaction");
+
 protected:
-  virtual bool insertRows(int position, int rows, const QModelIndex & source);
-  virtual bool removeRows(int position, int rows);
+  virtual void resetCacheProtected();
+  virtual bool insertRows(int position, int rows, const QModelIndex & parent = QModelIndex());
+  virtual bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex());
 
 private:
-  void setEquation(const CReaction *pRea, const QVariant &value);
+  bool setEquation(const CReaction & reaction, const QVariant & value, CUndoData & data);
 
-  QString mNewEquation;
-  std::vector<std::string> mCreatedKeys;
+  CDataVectorNS< CReaction > * mpReactions;
 };
 
 #endif //CQReactionDM_H

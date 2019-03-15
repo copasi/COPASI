@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,6 +21,7 @@ CQPushButtonDelegate::CQPushButtonDelegate(const ButtonType & buttonType,
   QStyledItemDelegate(parent),
   mIcon(),
   mText(),
+  mTooltip(),
   mButtonType(buttonType),
   mEditorToIndex()
 {}
@@ -28,10 +29,12 @@ CQPushButtonDelegate::CQPushButtonDelegate(const ButtonType & buttonType,
 CQPushButtonDelegate::CQPushButtonDelegate(const QIcon & icon,
     const QString & text,
     const ButtonType & buttonType,
-    QObject *parent):
+    QObject *parent,
+    const QString& tooltip):
   QStyledItemDelegate(parent),
   mIcon(icon),
   mText(text),
+  mTooltip(tooltip),
   mButtonType(buttonType),
   mEditorToIndex()
 {}
@@ -66,10 +69,12 @@ QWidget * CQPushButtonDelegate::createEditor(QWidget * parent,
     {
       case PushButton:
         pEditor = new QPushButton(mIcon, mText, parent);
+        pEditor->setToolTip(mTooltip);
         break;
 
       case ToolButton:
         pEditor = new QToolButton(parent);
+        pEditor->setToolTip(mTooltip);
 
         if (mIcon.isNull())
           {

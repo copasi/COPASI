@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -34,23 +39,20 @@
 #include "copasi/function/CExpression.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/math/CMathContainer.h"
+#include "copasi/undo/CUndoData.h"
 
 #define METAB_MOIETY 7
 
 //static
-C_FLOAT64 CMetab::convertToNumber(const C_FLOAT64 & concentration,
-                                  const CCompartment & compartment,
-                                  const CModel & model)
-{return concentration * compartment.getInitialValue() * model.getQuantity2NumberFactor();}
+C_FLOAT64 CMetab::convertToNumber(const C_FLOAT64 & concentration, const CCompartment & compartment)
+{return concentration * compartment.getInitialValue() * compartment.getModel()->getQuantity2NumberFactor();}
 
 //static
-C_FLOAT64 CMetab::convertToConcentration(const C_FLOAT64 & number,
-    const CCompartment & compartment,
-    const CModel & model)
-{return number / compartment.getInitialValue() * model.getNumber2QuantityFactor();}
+C_FLOAT64 CMetab::convertToConcentration(const C_FLOAT64 & number, const CCompartment & compartment)
+{return number / compartment.getInitialValue() * compartment.getModel()->getNumber2QuantityFactor();}
 
 // static
-CMetab * CMetab::fromData(const CData & data)
+CMetab * CMetab::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CMetab(data.getProperty(CData::OBJECT_NAME).toString(),
                     NO_PARENT);
@@ -59,23 +61,47 @@ CMetab * CMetab::fromData(const CData & data)
 // virtual
 CData CMetab::toData() const
 {
-  CData Data;
+  CData Data = CModelEntity::toData();
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::INITIAL_INTENSIVE_VALUE, mIConc);
 
   return Data;
 }
 
 // virtual
-bool CMetab::applyData(const CData & data)
+bool CMetab::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
-  bool success = true;
+  bool success = CModelEntity::applyData(data, changes);
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  if (data.isSetProperty(CData::INITIAL_INTENSIVE_VALUE))
+    {
+      mIConc = data.getProperty(CData::INITIAL_INTENSIVE_VALUE).toDouble();
+    }
 
   return success;
+}
+
+// virtual
+void CMetab::createUndoData(CUndoData & undoData,
+                            const CUndoData::Type & type,
+                            const CData & oldData,
+                            const CCore::Framework & framework) const
+{
+  CModelEntity::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::INITIAL_INTENSIVE_VALUE, oldData.getProperty(CData::INITIAL_INTENSIVE_VALUE), mIConc);
+
+  if (undoData.isChangedProperty(CData::OBJECT_PARENT_CN))
+    {
+      // TODO CRITICAL All reactions may change from single to multiple compartment
+    }
+
+  return;
 }
 
 CMetab::CMetab(const std::string & name,
@@ -138,7 +164,7 @@ CMetab &CMetab::operator=(const CMetabOld & RHS)
 
   // We need to set the initial particle number since that is the expected for the initial state
   C_FLOAT64 InitialParticleNumber =
-    CMetab::convertToNumber(RHS.mIConc, *mpCompartment, *mpModel);
+    CMetab::convertToNumber(RHS.mIConc, *mpCompartment);
   setInitialValue(InitialParticleNumber);
 
   mRate = 0.0;
@@ -222,6 +248,10 @@ bool CMetab::setObjectParent(const CDataContainer * pParent)
 
   Status CurrentStatus = getStatus();
 
+  //we need to save the expression since it will be deleted by the type change
+  auto tmpexp = getExpression();
+
+  //TODO what it the reason for this forced type change?
   if (CurrentStatus != Status::FIXED)
     setStatus(Status::FIXED);
   else
@@ -229,7 +259,42 @@ bool CMetab::setObjectParent(const CDataContainer * pParent)
 
   setStatus(CurrentStatus);
 
+  //restore the expression
+  if (pParent)
+    setExpression(tmpexp);
+
   return true;
+}
+
+bool CMetab::setCompartment(const std::string& compName)
+{
+  //move the metab to the new compartment
+  CCompartment* oldComp = const_cast<CCompartment*>(getCompartment());
+
+  if (!oldComp) return false;
+
+  CCompartment* newComp = &mpModel->getCompartments()[compName];
+
+  if (!newComp) return false;
+
+  bool success = false;
+  bool wasEnabled = CRegisteredCommonName::isEnabled();
+  CRegisteredCommonName::setEnabled(true);
+  auto oldCN = getCN();
+
+  success = newComp->addMetabolite(this);
+
+  if (success)
+    {
+      oldComp->getMetabolites().remove(getObjectName());
+      auto newCN = getCN();
+      CRegisteredCommonName::handle(oldCN, newCN);
+      mpModel->setCompileFlag();
+      mpModel->initializeMetabolites();
+    }
+
+  CRegisteredCommonName::setEnabled(wasEnabled);
+  return success;
 }
 
 // ***** set quantities ********
@@ -367,7 +432,7 @@ CIssue CMetab::compile()
       if (issue)
         {
           mIConc = mpInitialExpression->calcValue();
-          mIValue = CMetab::convertToNumber(mIConc, *mpCompartment, *mpModel);
+          mIValue = CMetab::convertToNumber(mIConc, *mpCompartment);
         }
     }
 
@@ -597,7 +662,7 @@ const CMoiety * CMetab::getMoiety() const
 //******************* CMetabOld ***************************************************
 
 // static
-CMetabOld * CMetabOld::fromData(const CData & data)
+CMetabOld * CMetabOld::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CMetabOld(data.getProperty(CData::OBJECT_NAME).toString(),
                        NO_PARENT);
@@ -615,7 +680,7 @@ CData CMetabOld::toData() const
 }
 
 // virtual
-bool CMetabOld::applyData(const CData & data)
+bool CMetabOld::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = true;
 

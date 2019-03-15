@@ -10,6 +10,10 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
+#include <copasi/core/CRootContainer.h>
+#include <copasi/core/CDataVector.h>
+#include <copasi/CopasiDataModel/CDataModel.h>
+
 CQDependencyDialog::CQDependencyDialog(QWidget *parent, const char *name, bool modal, Qt::WindowFlags fl)
   : CWindowInterface(parent, fl)
   , mpParentWindow(NULL)
@@ -62,9 +66,19 @@ void CQDependencyDialog::setParentWindow(CopasiUI3Window *pPW)
 
 void CQDependencyDialog::loadFrom(const std::string &key)
 {
-  CDataObject* pObject = CRootContainer::getKeyFactory()->get(key);
+  const CDataObject * pObject = CRootContainer::getKeyFactory()->get(key);
 
-  if (pObject == NULL) return;
+  CDataVector< CDataModel > * dmList = CRootContainer::getDatamodelList();
+
+  if (pObject == NULL && !dmList->empty())
+    {
+      CDataModel & dm = dmList->operator[](dmList->size() - 1);
+      // might be a cn
+      pObject = CObjectInterface::DataObject(dm.getObjectFromCN(key));
+
+      if (pObject == NULL)
+        return;
+    }
 
   mpLabel->setText(QString("Dependencies for %1: %2")
                    .arg(FROM_UTF8(pObject->getObjectType()))

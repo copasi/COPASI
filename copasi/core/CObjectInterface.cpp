@@ -34,6 +34,8 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
   std::string Type = Primary.getObjectType();
 
   // Check that we have a fully qualified CN
+  // Note, CN=Root may point to the root container or a data model;
+
   if (objName.getPrimary() != "CN=Root" &&
       Type != "Separator" &&
       Type != "String")
@@ -86,15 +88,18 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
         pObject = (*it)->getObject(objName.substr(pos + ContainerName.length() + 1));
     }
 
-  // if still not found search the function database in the root container
-  if (pObject == NULL)
-    pObject = CRootContainer::getFunctionList()->getObject(objName);
-
-  // last resort check the whole data model if we know it.
-  // We need make sure that we do not  have infinite recursion
-  if (pObject == NULL && pDataModel != NULL && CheckDataModel)
+  // if not found check the data model if we have one and have not yet done so
+  if (pObject == NULL &&
+      pDataModel != NULL &&
+      CheckDataModel)
     {
-      pObject = pDataModel->getObjectFromCN(objName);
+      pObject = pDataModel->getObject(objName);
+    }
+
+  // if still not found search the root container
+  if (pObject == NULL)
+    {
+      pObject = CRootContainer::getRoot()->getObject(objName);
     }
 
   return const_cast< CObjectInterface * >(pObject);

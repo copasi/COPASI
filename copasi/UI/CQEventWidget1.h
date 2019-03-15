@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,9 +19,6 @@
 
 #ifndef CQEVENTWIDGET1_H
 #define CQEVENTWIDGET1_H
-
-class UndoEventData;
-#include <copasi/undoFramework/CCopasiUndoCommand.h>
 
 #include <QtCore/QVariant>
 
@@ -45,9 +42,6 @@ public:
   CQEventWidget1(QWidget* parent = 0, const char* name = 0);
   ~CQEventWidget1();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-  virtual bool leave();
-
   /**
    * finds the delay type index for the given event:
    *
@@ -58,14 +52,17 @@ public:
    * @param event the event to look at
    * @return the delay type index
    */
-  static int getDelayTypeIndex(CEvent* event);
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
 
 protected slots:
 
 private:
+  int getDelayTypeIndex();
+
   bool mExpressionTriggerValid;
   bool mExpressionDelayValid;
   bool mExpressionEAValid;
@@ -74,13 +71,13 @@ private:
   CEvent *mpEvent;
   std::string mAssignmentKey;
   size_t mCurrentTarget;
-  CDataVector< CEventAssignment > mAssignments;
+  CDataVectorN< CEventAssignment > mAssignments;
 
   void init();
   bool loadFromEvent();
   void saveToEvent();
   void showDelayExpression(bool display);
-  std::string mKeyToCopy;
+  CCommonName mObjectCNToCopy;
 
 private slots:
   void slotBtnNew();
@@ -91,18 +88,6 @@ private slots:
   void slotSelectObject();
   void slotActualizeAssignmentExpression(int index);
   void slotChooseDelay(int choice);
-
-  //additional functions for UNDO framework
-  void deleteEvent();
-  void addEvent(UndoEventData *pSData);
-  void createNewEvent();
-  void deleteEvent(UndoEventData *pSData);
-
-public:
-  bool changeValue(const std::string& key,
-                   CCopasiUndoCommand::Type type,
-                   const QVariant& newValue,
-                   const std::string& expression = "");
 };
 
 #endif // CQEVENTWIDGET1_H

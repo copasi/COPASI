@@ -3,6 +3,10 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
+
+
+
+
 #include  "CQ3DBarsModifier.h"
 
 #ifdef WITH_QT5_VISUALIZATION
@@ -125,6 +129,7 @@ CQ3DBarsModifier::CQ3DBarsModifier(CQArrayAnnotationsWidget* widget, Q3DBars *ba
   m_graph->setActiveInputHandler(m_inputHandler);
   connect(m_inputHandler, SIGNAL(signalShowContextMenu(const QPoint &)), widget, SLOT(slotShowContextMenu(const QPoint&)));
   connect(m_inputHandler, SIGNAL(signalBarDoubleClicked(int, int)), widget, SLOT(selectTableCell(int, int)));
+
 }
 
 CQ3DBarsModifier::~CQ3DBarsModifier()
@@ -158,14 +163,14 @@ void CQ3DBarsModifier::loadData(const CDataArray * pData, unsigned int rowIndex,
 
   std::vector<std::string> rowdescr = pData->getAnnotationsString(rowIndex);
 
-  for (auto it : rowdescr)
+for (auto it : rowdescr)
     rowHeaders << FROM_UTF8(it);
 
   if (!isOneDimensional)
     {
       std::vector<std::string> coldescr = pData->getAnnotationsString(colIndex);
 
-      for (auto it : coldescr)
+for (auto it : coldescr)
         colheaders << FROM_UTF8(it);
     }
 
@@ -343,6 +348,7 @@ void CQ3DBarsModifier::actionTriggered(QAction* action)
         {
           m_primarySeries->setMesh(QAbstract3DSeries::MeshSphere);
         }
+
     }
   else if (title == "Shadow")
     {
@@ -375,6 +381,7 @@ void CQ3DBarsModifier::actionTriggered(QAction* action)
           m_graph->setShadowQuality(QAbstract3DGraph::ShadowQualitySoftHigh);
         }
     }
+
 }
 
 void CQ3DBarsModifier::changeRange(int range)
@@ -412,6 +419,7 @@ void CQ3DBarsModifier::changePresetCamera()
 
   if (++preset > Q3DCamera::CameraPresetDirectlyBelow)
     preset = Q3DCamera::CameraPresetFrontLow;
+
 }
 
 void CQ3DBarsModifier::changeTheme(int theme)
@@ -620,6 +628,8 @@ void CQ3DBarsModifier::setReflection(bool enabled)
   m_graph->setReflection(enabled);
 }
 
+
+
 CQCustomInputHandler::CQCustomInputHandler(QAbstract3DGraph *graph, QObject *parent)
   : Q3DInputHandler(parent)
   , m_graph(graph)
@@ -628,6 +638,7 @@ CQCustomInputHandler::CQCustomInputHandler(QAbstract3DGraph *graph, QObject *par
   , m_axisZ(NULL)
   , mState(CQCustomInputHandler::StateNormal)
 {
+
 }
 
 void CQCustomInputHandler::mouseDoubleClickEvent(QMouseEvent * event)

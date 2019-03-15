@@ -126,13 +126,13 @@ CQSpectogramWidget::LoadFromCurveSpec(const CPlotItem * pCurve)
 
   CPlotItem* pItem = const_cast<CPlotItem*>(pCurve);
 
-  mpLogZ->setChecked(*pItem->assertParameter("logZ", CCopasiParameter::BOOL, false));
-  mpBilinear->setChecked(*pItem->assertParameter("bilinear", CCopasiParameter::BOOL, true));
-  std::string *contours = pItem->assertParameter("contours", CCopasiParameter::STRING, std::string(""));
+  mpLogZ->setChecked(*pItem->assertParameter("logZ", CCopasiParameter::Type::BOOL, false));
+  mpBilinear->setChecked(*pItem->assertParameter("bilinear", CCopasiParameter::Type::BOOL, true));
+  std::string *contours = pItem->assertParameter("contours", CCopasiParameter::Type::STRING, std::string(""));
   mpContours->setText(FROM_UTF8(*contours));
-  std::string *maxZ = pItem->assertParameter("maxZ", CCopasiParameter::STRING, std::string(""));
+  std::string *maxZ = pItem->assertParameter("maxZ", CCopasiParameter::Type::STRING, std::string(""));
   mpMaxZ->setText(FROM_UTF8(*maxZ));
-  std::string *colorMap = pItem->assertParameter("colorMap", CCopasiParameter::STRING, std::string("Default"));
+  std::string *colorMap = pItem->assertParameter("colorMap", CCopasiParameter::Type::STRING, std::string("Default"));
   mpColorMap->setCurrentIndex(mpColorMap->findText(FROM_UTF8(*colorMap)));
 
   mpCheckBefore->setChecked(pCurve->getActivity() & COutputInterface::BEFORE);
@@ -187,19 +187,19 @@ CQSpectogramWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original
       if (thingsChanged || original->getChannels()[2] != zName)
         thingsChanged = true;
 
-      if (thingsChanged || *curve->assertParameter("contours", CCopasiParameter::STRING, std::string("")) != TO_UTF8(mpContours->text()))
+      if (thingsChanged || *curve->assertParameter("contours", CCopasiParameter::Type::STRING, std::string("")) != TO_UTF8(mpContours->text()))
         thingsChanged = true;
 
-      if (thingsChanged || *curve->assertParameter("maxZ", CCopasiParameter::STRING, std::string("")) != TO_UTF8(mpMaxZ->text()))
+      if (thingsChanged || *curve->assertParameter("maxZ", CCopasiParameter::Type::STRING, std::string("")) != TO_UTF8(mpMaxZ->text()))
         thingsChanged = true;
 
-      if (thingsChanged || *curve->assertParameter("colorMap", CCopasiParameter::STRING, std::string("")) != TO_UTF8(mpColorMap->currentText()))
+      if (thingsChanged || *curve->assertParameter("colorMap", CCopasiParameter::Type::STRING, std::string("")) != TO_UTF8(mpColorMap->currentText()))
         thingsChanged = true;
 
-      if (thingsChanged || *curve->assertParameter("logZ", CCopasiParameter::BOOL, false) != mpLogZ->isChecked())
+      if (thingsChanged || *curve->assertParameter("logZ", CCopasiParameter::Type::BOOL, false) != mpLogZ->isChecked())
         thingsChanged = true;
 
-      if (thingsChanged || *curve->assertParameter("bilinear", CCopasiParameter::BOOL, true) != mpBilinear->isChecked())
+      if (thingsChanged || *curve->assertParameter("bilinear", CCopasiParameter::Type::BOOL, true) != mpBilinear->isChecked())
         thingsChanged = true;
     }
   else thingsChanged = true;
@@ -218,11 +218,11 @@ CQSpectogramWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original
 
   curve->setActivity((COutputInterface::Activity) Activity);
 
-  bool* pLogZ = curve->assertParameter("logZ", CCopasiParameter::BOOL, false);
-  bool* pBilinear = curve->assertParameter("bilinear", CCopasiParameter::BOOL, true);
-  std::string* pContours = curve->assertParameter("contours", CCopasiParameter::STRING, std::string(""));
-  std::string* pMaxZ = curve->assertParameter("maxZ", CCopasiParameter::STRING, std::string(""));
-  std::string* pColorMap = curve->assertParameter("colorMap", CCopasiParameter::STRING, std::string("Default"));
+  bool* pLogZ = curve->assertParameter("logZ", CCopasiParameter::Type::BOOL, false);
+  bool* pBilinear = curve->assertParameter("bilinear", CCopasiParameter::Type::BOOL, true);
+  std::string* pContours = curve->assertParameter("contours", CCopasiParameter::Type::STRING, std::string(""));
+  std::string* pMaxZ = curve->assertParameter("maxZ", CCopasiParameter::Type::STRING, std::string(""));
+  std::string* pColorMap = curve->assertParameter("colorMap", CCopasiParameter::Type::STRING, std::string("Default"));
 
   *pLogZ = mpLogZ->isChecked();
   *pBilinear = mpBilinear->isChecked();

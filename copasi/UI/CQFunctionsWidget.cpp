@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,8 +56,8 @@ CQFunctionsWidget::CQFunctionsWidget(QWidget *parent, const char *name)
   mpTblFunctions->verticalHeader()->hide();
   mpTblFunctions->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
-  connect(mpFunctionDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpFunctionDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpFunctionDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -128,7 +133,7 @@ void CQFunctionsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQFunctionsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
+bool CQFunctionsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (!mIgnoreUpdates && isVisible())
     {
@@ -138,7 +143,7 @@ bool CQFunctionsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListV
   return true;
 }
 
-bool CQFunctionsWidget::leave()
+bool CQFunctionsWidget::leaveProtected()
 {
   return true;
 }
@@ -151,6 +156,7 @@ bool CQFunctionsWidget::enterProtected()
                  this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
     }
 
+  mpFunctionDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpFunctionDM);
   //Set Model for the TableView
   mpTblFunctions->setModel(NULL);
@@ -215,10 +221,13 @@ void CQFunctionsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  std::string key = CRootContainer::getFunctionList()->loadedFunctions()[index.row()].getKey();
+  CDataVector < CFunction > * pVector = dynamic_cast< CDataVector < CFunction > * >(mpObject);
 
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  if (pVector != NULL &&
+      index.row() < pVector->size())
+    {
+      mpListView->switchToOtherWidget(ListViews::WidgetType::FunctionDetail, pVector->operator [](index.row()).getCN());
+    }
 }
 
 void CQFunctionsWidget::keyPressEvent(QKeyEvent *ev)

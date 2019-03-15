@@ -67,7 +67,7 @@ void CILDMMethod::initializeParameter()
   addObjectReference("Number of slow variables", mSlow, CDataObject::ValueInt);
   addMatrixReference("Contribution of Species to Slow Space", mVslow, CDataObject::ValueDbl);
 
-  assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-4);
+  assertParameter("Deuflhard Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-4);
 
   //mDim = mpState->getNumIndependent();
 }
@@ -1276,7 +1276,6 @@ void CILDMMethod::createAnnotationsM()
 void
 CILDMMethod::initializeOutput()
 {
-
 }
 /**
  * Set the every CArrayAnnotation for the requested step.

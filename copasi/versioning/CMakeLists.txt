@@ -32,5 +32,5 @@ source_group(versioning FILES ${SOURCES_Versioning} ${HEADERS_Versioning})
 
 
 # add files to COPASI UI sources
-set(COPASI_UI_SOURCES ${COPASI_UI_SOURCES} ${SOURCES_Versioning})
-set(COPASI_UI_HEADERS ${COPASI_UI_HEADERS} ${HEADERS_Versioning})
+set(COPASI_SOURCES ${COPASI_SOURCES} ${SOURCES_Versioning})
+set(COPASI_HEADERS ${COPASI_HEADERS} ${HEADERS_Versioning})

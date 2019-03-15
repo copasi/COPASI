@@ -17,6 +17,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+
+
+
 #ifndef COPASI_UI3_WINDOW_H
 #define COPASI_UI3_WINDOW_H
 
@@ -26,6 +30,8 @@
 #include <QtCore/QModelIndex>
 #include <QtCore/QMap>
 #include <QtCore/QPointer>
+
+#include <copasi/config.h>
 
 #ifdef COPASI_SBW_INTEGRATION
 # include <QApplication>
@@ -59,13 +65,13 @@ class CMIRIAMResourceObject;
 class QEvent;
 class QActionGroup;
 class QThread;
-class QUndoStack;
 #ifdef COPASI_Versioning
-class CModelVersion;
+class CModelVersionHierarchy;
 #endif
 
 class CQOptPopulation;
 class CDataModel;
+class CUndoStack;
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
@@ -110,8 +116,7 @@ public:
 
   void exportSBMLToString(std::string & SBML);
 
-  //TODO SEDML
-#ifdef COPASI_SEDML
+  // SEDML
   /**
   * This is used to import an SEDML file from a std::string in the GUI
   * it does all the necessary GUI stuff like asking to save the old
@@ -120,20 +125,13 @@ public:
   //void importSEDMLFromString(const std::string & sedmlDocumentText);
 
   void exportSEDMLToString(std::string & SEDML);
-#endif
 
-  //UNDO framework
-  QUndoStack *getUndoStack();
-
-#ifdef COPASI_Versioning
-  CModelVersion * getVersionHierarchy();
-#endif
 
 // COMBINE Archive will take care of file management
   /*
-#ifdef COPASI_Provenance
+  #ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-#endif
+  #endif
   */
 
   CQOptPopulation* getPopulationDisplay();
@@ -183,9 +181,11 @@ public slots:
   void openInitialDocument(const QString & file);
 
   void slotFileOpen(QString file = QString::null);
+  void slotFileOpenFromUrl(QString url = QString::null);
 
 protected slots:
   void slotFileOpenFinished(bool success);
+  void slotFileOpenFromUrlFinished(bool success);
   void slotFileExamplesCopasiFiles(QString file = QString::null);
   void slotFileExamplesSBMLFiles(QString file = QString::null);
   void slotFileSave();
@@ -193,6 +193,8 @@ protected slots:
   void slotFileSaveFinished(bool success);
   void slotFunctionDBSave(QString str = QString::null);
   void slotFunctionDBLoad(QString str = QString::null);
+  void slotParameterSetsSave(QString str = QString::null);
+  void slotParameterSetsLoad(QString str = QString::null);
   void newDoc();
   void slotFilePrint();
   void slotImportSBML(QString file = QString::null);
@@ -212,9 +214,8 @@ protected slots:
   void slotPreferences();
   void slotPreferencesAccepted();
   void slotConvertToIrreversible();
-#ifdef WITH_PE_EVENT_CREATION
   void slotCreateEventsForTimeseries();
-#endif
+
   void listViewsFolderChanged(const QModelIndex & index);
   void slotOpenRecentFile(QAction * pAction);
   void slotOpenRecentSBMLFile(QAction * pAction);
@@ -231,11 +232,9 @@ protected slots:
   void slotCloseAllWindows();
   void slotActivateWindowTriggered(QAction* action);
 
-#ifdef WITH_MERGEMODEL
   void slotAddFileOpen(QString file = QString::null);
   void slotAddFileOpenFinished(bool success);
   void slotMergeModels();
-#endif
 
   // SBW: handle the custom events
   void customEvent(QEvent *);
@@ -246,8 +245,7 @@ protected slots:
    */
   void slotShowObjectBrowserDialog(bool flag);
 
-  //TODO SEDML
-#ifdef COPASI_SEDML
+  // SEDML
   void slotFileExamplesSEDMLFiles(QString file = QString::null);
   void slotImportSEDML(QString file = QString::null);
   void slotImportSEDMLFinished(bool success);
@@ -256,19 +254,16 @@ protected slots:
   void slotExportSEDMLFinished(bool success);
   void slotExportSEDMLToStringFinished(bool success);
   void slotOpenRecentSEDMLFile(QAction * pAction);
-#endif
 
-#ifdef WITH_COMBINE_ARCHIVE
   void slotImportCombine(QString file = QString::null);
   void slotImportCombineFinished(bool success);
   void slotExportCombine(QString str = QString::null);
   void slotExportCombineFinished(bool success);
-#endif
 
-#ifdef COPASI_UNDO
+  void slotUndo();
+  void slotRedo();
   void slotUndoHistory();
   void slotClearUndoHistory();
-#endif
 
 #ifdef COPASI_Versioning
   void slotBrowseVersion();
@@ -309,10 +304,13 @@ private:
   QAction* mpaOpen;
   QAction* mpaOpenCopasiFiles;
   QAction* mpaOpenSBMLFiles;
+  QAction* mpaOpenFromUrl;
   QAction* mpaSave;
   QAction* mpaSaveAs;
   QAction* mpaFunctionDBSave;
   QAction* mpaFunctionDBLoad;
+  QAction* mpaParameterSetsSave;
+  QAction* mpaParameterSetsLoad;
   QAction* mpaImportSBML;
   QAction* mpaExportSBML;
   QAction* mpaExportODE;
@@ -334,15 +332,12 @@ private:
   QAction* mpaCloseAllWindows;
   QAction* mpaShowDebugInfo;
 
-#ifdef WITH_COMBINE_ARCHIVE
   QAction* mpaImportCombine;
   QAction* mpaExportCombine;
-#endif
 
-#ifdef WITH_MERGEMODEL
   QAction* mpaAddModel;
   QAction* mpaMergeModels;
-#endif
+
   SliderDialog* mpSliders;
   CQDependencyDialog* mpDependencies;
   ObjectBrowserDialog * mpObjectBrowser;
@@ -381,8 +376,7 @@ private:
 
   static CopasiUI3Window * pMainWindow;
 
-  //TODO SEDML
-#ifdef COPASI_SEDML
+  // SEDML
   QMenu * mpMenuSEDMLSupport;
   QAction* mpaImportSEDML;
   QAction* mpaExportSEDML;
@@ -391,22 +385,16 @@ private:
   QMap< QAction *, int > mRecentSEDMLFilesActionMap;
   QActionGroup * mpRecentSEDMLFilesActionGroup;
   void refreshRecentSEDMLFileMenu();
-#endif
 
-  //TODO UNDO Framework
-#ifdef COPASI_UNDO
+  // UNDO Framework
   QAction* mpaUndo;
   QAction* mpaRedo;
   QAction* mpaUndoHistory;
   QAction* mpaClearUndoHistory;
-#endif
-
-  QUndoStack *mpUndoStack;
 
 #ifdef COPASI_Versioning
   QAction* mpaCreateVersion;
   QAction* mpaBrowseVersion;
-  CModelVersion*  mpVersionHierarchy;
 //  COMBINE Archive will take care of file management
 //  QString mLastSavedParentOfCurrentModel;
 #endif

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -144,21 +149,21 @@ bool CQReportDM::setData(const QModelIndex &index, const QVariant &value,
         pRepDef->setObjectName(TO_UTF8(value.toString()));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::REPORT, ListViews::CHANGE, pRepDef->getKey());
+      emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::CHANGE, pRepDef->getCN());
     }
 
   return true;
 }
 
-bool CQReportDM::insertRows(int position, int rows, const QModelIndex & source)
+bool CQReportDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
+  beginInsertRows(parent, position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
       QString Name = createNewName(mNewName, COL_NAME_REPORTS);
       CReportDefinition *pRepDef = mpDataModel->getReportDefinitionList()->createReportDefinition(TO_UTF8(Name), "");
-      emit notifyGUI(ListViews::REPORT, ListViews::ADD, pRepDef->getKey());
+      emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::ADD, pRepDef->getCN());
     }
 
   endInsertRows();
@@ -168,7 +173,7 @@ bool CQReportDM::insertRows(int position, int rows, const QModelIndex & source)
   return true;
 }
 
-bool CQReportDM::removeRows(int position, int rows)
+bool CQReportDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   if (rows <= 0)
     return true;
@@ -181,7 +186,7 @@ bool CQReportDM::removeRows(int position, int rows)
   if (pReportList == NULL)
     return false;
 
-  beginRemoveRows(QModelIndex(), position, position + rows - 1);
+  beginRemoveRows(parent, position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
@@ -206,9 +211,9 @@ bool CQReportDM::removeRows(int position, int rows)
             }
         }
 
-      std::string deletedKey = pReport->getKey();
+      std::string deletedKey = pReport->getCN();
       pReportList->remove(pReport);
-      emit notifyGUI(ListViews::REPORT, ListViews::DELETE, deletedKey);
+      emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::DELETE, deletedKey);
     }
 
   endRemoveRows();

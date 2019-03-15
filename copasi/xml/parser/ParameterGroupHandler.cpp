@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -41,6 +46,8 @@ ParameterGroupHandler::ParameterGroupHandler(CXMLParser & parser, CXMLParserData
   mNonUniqueParameters["Affected Cross Validation Experiments"].insert("Experiment Key");
 
   mNonUniqueParameters["ListOfVariables"].insert("Variables");
+
+  mNonUniqueParameters["Deterministic Reactions"].insert("Reaction");
 }
 
 // virtual
@@ -140,7 +147,7 @@ bool ParameterGroupHandler::processEnd(const XML_Char * pszName)
           if (mpData->UnmappedKeyParameters.size() > 0 &&
               mpData->UnmappedKeyParameters[mpData->UnmappedKeyParameters.size() - 1] == mpData->pCurrentParameter->getKey())
             {
-              if (OriginalType == CCopasiParameter::KEY)
+              if (OriginalType == CCopasiParameter::Type::KEY)
                 {
                   mpData->UnmappedKeyParameters[mpData->UnmappedKeyParameters.size() - 1] = pParameter->getKey();
                 }

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -20,7 +25,9 @@
 
 #include "copasi/UI/listviews.h"
 
-class QUndoStack;
+#include "copasi/core/CCore.h"
+#include "copasi/undo/CUndoStack.h"
+
 class CDataModel;
 
 #define COL_ROW_NUMBER   0
@@ -41,27 +48,28 @@ public:
   bool removeRow(int position);
   virtual bool clear();
   virtual bool isDefaultRow(const QModelIndex& i) const;
-
+  virtual void setFramework(int framework);
   QString createNewName(const QString name, const int nameCol);
 
   void setDataModel(CDataModel * pDataModel);
-  void setUndoStack(QUndoStack* undoStack);
-  QUndoStack* getUndoStack();
   CDataModel * getDataModel() const;
+  void beginResetModel();
+  void endResetModel();
 
 public slots:
   void resetCache();
 
 protected:
   virtual void resetCacheProtected();
-  virtual bool insertRows(int position, int rows, const QModelIndex & source) = 0;
-  virtual bool removeRows(int position, int rows) = 0;
+  virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex()) = 0;
+  virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) = 0;
 
-  QUndoStack *mpUndoStack;
   CDataModel * mpDataModel;
+  int mFramework;
 
 signals:
-  void notifyGUI(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+  void notifyGUI(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  void signalNotifyChanges(const CUndoData::CChangeSet & changes);
 };
 
 #endif //CQBaseDataModel_H

@@ -75,11 +75,11 @@ bool CLyapProblem::elevateChildren()
 void CLyapProblem::initializeParameter()
 {
   mpExponentNumber =
-    assertParameter("ExponentNumber", CCopasiParameter::UINT, (unsigned C_INT32) 3);
+    assertParameter("ExponentNumber", CCopasiParameter::Type::UINT, (unsigned C_INT32) 3);
   mpDivergenceRequested =
-    assertParameter("DivergenceRequested", CCopasiParameter::BOOL, (bool) true);
+    assertParameter("DivergenceRequested", CCopasiParameter::Type::BOOL, (bool) true);
   mpTransientTime =
-    assertParameter("TransientTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0);
+    assertParameter("TransientTime", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.0);
 
   elevateChildren();
 }

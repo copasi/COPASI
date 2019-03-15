@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,19 +52,6 @@ class QAbstractItemModel;
  * @return success
  */
 bool updateGUI(C_INT32 objectType, C_INT32 action, const std::string & key = "");
-
-/**
- * switches to the given widget
- *
- * @param id the id of the widget
- * @param key the key of the object to switch to
- */
-void switchToWidget(size_t id, const std::string & key = "");
-
-/**
- * leaves and enters the current widget
- */
-void updateCurrentWidget();
 
 /**
  * Retrieve a parameter from a parameter group and convert it to a QString.
@@ -207,7 +199,7 @@ QString toTsvString(QAbstractItemView* pWidget, bool writeColumnHeaders = true, 
  */
 QString toTsvString(QAbstractItemModel* pModel, bool writeColumnHeaders = true, bool writeRowHeaders = true);
 
-/** 
+/**
  * converts the given number to a qstring with the precision setup in the
  * preferences
  */

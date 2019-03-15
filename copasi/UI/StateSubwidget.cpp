@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -176,7 +181,7 @@ void StateSubwidget::loadReactions()
       pItem->setData(Qt::DisplayRole, it->getParticleFlux());
       mpTblReactions->setItem(i, 2, pItem);
 
-      mpTblReactions->setItem(i, 3, new QTableWidgetItem(FROM_UTF8(CChemEqInterface::getChemEqString(mpModel, *it, false))));
+      mpTblReactions->setItem(i, 3, new QTableWidgetItem(FROM_UTF8(CChemEqInterface::getChemEqString(*it, false))));
 
       i++;
     }
@@ -452,18 +457,17 @@ void StateSubwidget::setFramework(int framework)
   showUnits();
 }
 
-bool StateSubwidget::update(ListViews::ObjectType objectType,
-                            ListViews::Action action,
-                            const std::string & /* key */)
+bool StateSubwidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   switch (objectType)
     {
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
 
         // For a new model we need to remove references to no longer existing metabolites
         switch (action)
           {
             case ListViews::ADD:
+            case ListViews::DELETE:
               assert(mpDataModel != NULL);
               mpModel = mpDataModel->getModel();
               clear();

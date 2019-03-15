@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -21,6 +26,7 @@
 // nelmea.cpp :
 
 #include <cmath>
+#include <sstream>
 
 #include "copasi.h"
 
@@ -39,22 +45,50 @@
 
 COptMethodSA::COptMethodSA(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
-                           const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType)
+                           const CTaskEnum::Task & taskType)
+  : COptMethod(pParent, methodType, taskType)
+  , mTemperature(1.0)
+  , mhTemperature(C_INVALID_INDEX)
+  , mCoolingFactor(0.85)
+  , mTolerance(1.e-006)
+  , mpRandom(NULL)
+  , mVariableSize(0)
+  , mBestValue(std::numeric_limits< C_FLOAT64 >::infinity())
+  , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mContinue(true)
+  , mCurrent()
+  , mCurrentValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mStep(0)
+  , mAccepted()
 {
-  addParameter("Start Temperature", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
-  addParameter("Cooling Factor", CCopasiParameter::UDOUBLE, (C_FLOAT64) 0.85);
-  addParameter("Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.e-006);
-  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
-  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Start Temperature", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0);
+  assertParameter("Cooling Factor", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 0.85);
+  assertParameter("Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.e-006);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
 
 COptMethodSA::COptMethodSA(const COptMethodSA & src,
-                           const CDataContainer * pParent):
-  COptMethod(src, pParent)
-{initObjects();}
+                           const CDataContainer * pParent)
+  : COptMethod(src, pParent)
+  , mTemperature(src.mTemperature)
+  , mhTemperature(C_INVALID_INDEX)
+  , mCoolingFactor(src.mCoolingFactor)
+  , mTolerance(src.mTolerance)
+  , mpRandom(NULL)
+  , mVariableSize(src.mVariableSize)
+  , mBestValue(src.mBestValue)
+  , mEvaluationValue(src.mEvaluationValue)
+  , mContinue(src.mContinue)
+  , mCurrent(src.mCurrent)
+  , mCurrentValue(src.mCurrentValue)
+  , mStep(src.mStep)
+  , mAccepted(src.mAccepted)
+{
+  initObjects();
+}
 
 COptMethodSA::~COptMethodSA()
 {cleanup();}
@@ -74,12 +108,16 @@ bool COptMethodSA::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Simulated.Annealing"));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Algorithm started",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Simulated_Annealing/"
+      )
+    );
 
-  size_t i, j, k, m;
-
-  size_t h, a;
-  C_FLOAT64 xc, p, c, nt, New;
+  size_t i, j, k, m, h, a, nt;
+  C_FLOAT64 xc, p, c, New;
   C_FLOAT64 fk[STORED];
   bool ready;
 
@@ -114,7 +152,8 @@ bool COptMethodSA::optimise()
       mStep[i] = std::max(fabs(mCurrent[i]), 1.0);
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   mCurrentValue = evaluate();
 
@@ -135,11 +174,12 @@ bool COptMethodSA::optimise()
   mAccepted = 0;
 
   // set the number of steps at one single temperature
-  nt = (C_FLOAT64)(5 * mVariableSize);
+  nt = (5 * mVariableSize);
 
   if (nt < 100) nt = 100;
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::SA_steps_per_temp).with(nt));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(COptLogEntry(std::to_string(nt * NS * mVariableSize) + " Steps per temperature cycle."));
 
   // no temperature reductions yet
   k = 0;
@@ -261,7 +301,17 @@ bool COptMethodSA::optimise()
           // check the termination criterion of not much larger than last optimal
           else
             {
-              if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SA_fval_progress_lower_than_tol).iter(k).with(STORED).with(mTemperature));
+              if (mLogVerbosity > 0)
+                {
+                  std::ostringstream auxStream;
+                  auxStream << mTemperature;
+                  mMethodLog.enterLogEntry(
+                    COptLogEntry(
+                      "At temperature cycle " + std::to_string(k) +
+                      " the objective function value improved less than tolerance since last " +
+                      std::to_string(STORED) + " cycles.",
+                      "Temperature = " + auxStream.str() + "."));
+                }
 
               if (fabs(mCurrentValue - mBestValue) > mTolerance)
                 ready = false;
@@ -280,7 +330,18 @@ bool COptMethodSA::optimise()
           mCurrentValue = mBestValue;
         }
       else
-        mMethodLog.enterLogItem(COptLogItem(COptLogItem::SA_fval_tol_termination).iter(k).with(mTemperature));
+        {
+          if (mLogVerbosity > 0)
+            {
+              std::ostringstream auxStream;
+              auxStream << mTemperature;
+              mMethodLog.enterLogEntry(
+                COptLogEntry(
+                  "At temperature cycle " + std::to_string(k) +
+                  " the objective function value improved from optimum less than tolerance. Terminating.",
+                  "Temperature = " + auxStream.str() + "."));
+            }
+        }
 
       // update the temperature
       mTemperature *= mCoolingFactor;
@@ -290,7 +351,16 @@ bool COptMethodSA::optimise()
     }
   while (!ready && mContinue);
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_temp_info).iter(k).with(mTemperature));
+  if (mLogVerbosity > 0)
+    {
+      std::ostringstream auxStream;
+      auxStream << mTemperature;
+      mMethodLog.enterLogEntry(
+        COptLogEntry("Algorithm finished.",
+                     "Final Temperature was " + auxStream.str() +
+                     " after " + std::to_string(k) + " temperature cycles."
+                    ));
+    }
 
   if (mpCallBack)
     mpCallBack->finishItem(mhTemperature);

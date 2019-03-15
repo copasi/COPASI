@@ -45,8 +45,8 @@ public:
   virtual bool isDefaultRow(const QModelIndex& i) const;
 
 protected:
-  virtual bool insertRows(int position, int rows, const QModelIndex & source);
-  virtual bool removeRows(int position, int rows);
+  virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+  virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 
 private:
   const CEFMTask * mpTask;

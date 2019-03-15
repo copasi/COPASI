@@ -1,22 +1,19 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiNode.h,v $
-   $Revision: 1.24 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2012/05/15 15:57:31 $
-   End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,6 +26,8 @@
 
 #ifndef COPASI_CCopasiNode
 #define COPASI_CCopasiNode
+
+#include <cstddef>
 
 /**
  * The class CCopasiNode is the interface used by the template class
@@ -71,10 +70,10 @@ public:
    * @param CCopasiNode< Data > * pParent (default: NULL)
    */
   CCopasiNode(CCopasiNode< Data > * pParent = NULL):
-      mpParent(pParent),
-      mpChild(NULL),
-      mpSibling(NULL),
-      mData()
+    mpParent(pParent),
+    mpChild(NULL),
+    mpSibling(NULL),
+    mData()
   {}
 
   /**
@@ -82,10 +81,10 @@ public:
    * @param const CCopasiNode< Data > & src
    */
   CCopasiNode(const CCopasiNode< Data > & src):
-      mpParent(src.mpParent),
-      mpChild(src.mpChild),
-      mpSibling(src.mpSibling),
-      mData(src.mData)
+    mpParent(src.mpParent),
+    mpChild(src.mpChild),
+    mpSibling(src.mpSibling),
+    mData(src.mData)
   {}
 
   /**
@@ -94,10 +93,10 @@ public:
    * @param CCopasiNode< Data > * pParent (default: NULL)
    */
   CCopasiNode(const Data & data, CCopasiNode< Data > * pParent = NULL):
-      mpParent(pParent),
-      mpChild(NULL),
-      mpSibling(NULL),
-      mData(data)
+    mpParent(pParent),
+    mpChild(NULL),
+    mpSibling(NULL),
+    mData(data)
   {}
 
   /**
@@ -116,6 +115,15 @@ public:
    * @return Data data
    */
   virtual const Data & getData() const
+  {
+    return mData;
+  }
+
+  /**
+   * Retrieve the data of the Node.
+   * @return Data data
+   */
+  virtual Data & getData()
   {
     return mData;
   }
@@ -450,7 +458,6 @@ protected:
     mpSibling = pSibling;
     return true;
   }
-
 };
 
 #endif // COPASI_CCopasiNode

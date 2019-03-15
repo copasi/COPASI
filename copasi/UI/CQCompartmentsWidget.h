@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,20 +32,22 @@ public:
   CQCompartmentsWidget(QWidget* parent = 0, const char* name = 0);
   virtual ~CQCompartmentsWidget();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-  virtual bool leave();
+  virtual void setFramework(int framework);
 
   virtual CQBaseDataModel* getCqDataModel();
 
 private:
   CQCompartmentDM* mpCompartmentDM;
   CQSortFilterProxyModel *mpProxyModel;
-  CQIndexComboDelegate* mpTypeDelegate;
+  CQComboDelegate* mpTypeDelegate;
   void deleteSelectedCompartments();
   void updateDeleteBtns();
-  virtual bool enterProtected();
 
 protected:
+  virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
+
   virtual void keyPressEvent(QKeyEvent* ev);
 
 protected slots:
@@ -58,7 +60,6 @@ protected slots:
   virtual void dataChanged(const QModelIndex& topLeft,
                            const QModelIndex& bottomRight);
   virtual void slotFilterChanged();
-
 };
 
 #endif // CQCompartmentsWidget_h

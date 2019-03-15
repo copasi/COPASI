@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -33,7 +38,6 @@
 #include "copasi/core/CRootContainer.h"
 #include "model/CModel.h"
 #include "utilities/CCopasiException.h"
-#include "report/CKeyFactory.h"
 
 #include "crosssection/CCrossSectionTask.h"
 #include "crosssection/CCrossSectionProblem.h"
@@ -115,7 +119,7 @@ void CQCrossSectionTaskWidget::init()
   mpTxtOutConvergence->setValidator(mpValidatorOutTolerance);
 
   CQTimeSeriesWidget * pResult =
-    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(281));
+    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(ListViews::WidgetType::CrossSectionResult));
 
   if (pResult != NULL)
     pResult->setTitle("<h2>Cross Section Result</h2>");
@@ -166,7 +170,7 @@ bool CQCrossSectionTaskWidget::runTask()
 /*
  * Function to save actual changes of the Task
  */
-bool CQCrossSectionTaskWidget::saveTask()
+bool CQCrossSectionTaskWidget::saveTaskProtected()
 {
   // check the existence of Task
   CCrossSectionTask * pTask =
@@ -227,7 +231,7 @@ bool CQCrossSectionTaskWidget::taskFinishedEvent()
   // We need to load the result here as this is the only place where
   // we know that it is correct.
   CQTimeSeriesWidget * pResult =
-    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(281));
+    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(ListViews::WidgetType::CrossSectionResult));
 
   if (pResult == NULL)
     return false;
@@ -240,7 +244,7 @@ bool CQCrossSectionTaskWidget::taskFinishedEvent()
 /*
  * Function to load saved values of the Task
  */
-bool CQCrossSectionTaskWidget::loadTask()
+bool CQCrossSectionTaskWidget::loadTaskProtected()
 {
   // load Task
   CCrossSectionTask * pTask =
@@ -536,9 +540,9 @@ void CQCrossSectionTaskWidget::updateValues()
 }
 
 // virtual
-bool CQCrossSectionTaskWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool CQCrossSectionTaskWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
-  TaskWidget::update(objectType, action, key);
+  TaskWidget::updateProtected(objectType, action, cn);
 
   if (mIgnoreUpdates || !isVisible())
     {
@@ -547,7 +551,7 @@ bool CQCrossSectionTaskWidget::update(ListViews::ObjectType objectType, ListView
 
   switch (objectType)
     {
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
 
         if (action == ListViews::CHANGE)
           {

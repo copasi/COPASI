@@ -23,7 +23,6 @@
 #
 ###############################################################################
 
-if (ENABLE_COPASI_SEDML)
 cmake_minimum_required (VERSION 2.6)
 
 if(POLICY CMP0048)
@@ -41,4 +40,3 @@ include(../../../CMakeConsoleApp.cmake)
 add_executable(runSedML ${SOURCES} ${HEADERS})
 add_dependencies(runSedML ${SE_DEPENDENCIES}) 
 target_link_libraries(runSedML ${SE_LIBS} ${SE_EXTERNAL_LIBS})
-endif()

@@ -31,7 +31,7 @@ CXMLParserData::CXMLParserData():
   pReaction(NULL),
   pEvent(NULL),
   pEventAssignment(NULL),
-  SourceParameterKeys(),
+  SourceParameterObjects(),
   mKeyMap(),
   StateVariableList(),
   pTaskList(NULL),

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -40,9 +45,9 @@ COptMethodHookeJeeves::COptMethodHookeJeeves(const CDataContainer * pParent,
     const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType)
 {
-  addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
-  addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-005);
-  addParameter("Rho", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.2);
+  assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 50);
+  assertParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-005);
+  assertParameter("Rho", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.2);
 
   initObjects();
 }
@@ -69,7 +74,13 @@ bool COptMethodHookeJeeves::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Hooke.Jeeves"));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Algorithm started",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Hooke___Jeeves/"
+      )
+    );
 
   C_FLOAT64 newf, steplength, tmp;
   bool Keep;
@@ -107,7 +118,8 @@ bool COptMethodHookeJeeves::optimise()
       *mContainerVariables[i] = mut;
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   mContinue &= evaluate();
 
@@ -118,7 +130,8 @@ bool COptMethodHookeJeeves::optimise()
 
   if (!mContinue)
     {
-      mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_early_stop));
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user."));
 
       if (mpCallBack)
         mpCallBack->finishItem(mhIteration);
@@ -227,9 +240,18 @@ bool COptMethodHookeJeeves::optimise()
         }
     }
 
-  if (steplength <= mTolerance) mMethodLog.enterLogItem(COptLogItem(COptLogItem::HJ_steplength_lower_than_tol).iter(mIteration));
+  if (mLogVerbosity > 0)
+    {
+      if (steplength < mTolerance)
+        mMethodLog.enterLogEntry(
+          COptLogEntry(
+            "Iteration " + std::to_string(mIteration) + ": Step length lower than tolerance. Terminating."));
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_iter).iter(mIteration).with(mIterationLimit));
+      mMethodLog.enterLogEntry(
+        COptLogEntry("Algorithm finished.",
+                     "Terminated after " + std::to_string(mIteration) + " of " +
+                     std::to_string(mIterationLimit) + " iterations."));
+    }
 
   if (mpCallBack)
     mpCallBack->finishItem(mhIteration);

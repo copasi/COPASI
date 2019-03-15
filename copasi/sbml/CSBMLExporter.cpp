@@ -17,6 +17,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+
+
+
 #include <cmath>
 
 #define USE_LAYOUT 1
@@ -971,7 +975,7 @@ void CSBMLExporter::createAreaUnit(const CDataModel& dataModel)
         }
     }
 
-// if we write an SBML L3 document, we have to explicitely set the units on the model
+// if we write an SBML L3 document, we have to explicitly set the units on the model
   if (this->mSBMLLevel > 2)
     {
       pSBMLModel->setAreaUnits(uDef.getId());
@@ -1063,36 +1067,24 @@ void CSBMLExporter::createCompartment(const CCompartment& compartment)
 
   if (status == CModelEntity::Status::ASSIGNMENT)
     {
-      if (compartment.getDimensionality() != 0)
-        {
-          this->mAssignmentVector.push_back(&compartment);
-          pSBMLCompartment->setConstant(false);
-          removeInitialAssignment(pSBMLCompartment->getId());
-        }
-      else
-        {
-          fatalError();
-        }
+
+      this->mAssignmentVector.push_back(&compartment);
+      pSBMLCompartment->setConstant(false);
+      removeInitialAssignment(pSBMLCompartment->getId());
+
     }
   else if (status == CModelEntity::Status::ODE)
     {
-      if (compartment.getDimensionality() != 0)
-        {
-          this->mODEVector.push_back(&compartment);
-          pSBMLCompartment->setConstant(false);
+      this->mODEVector.push_back(&compartment);
+      pSBMLCompartment->setConstant(false);
 
-          if (!compartment.getInitialExpression().empty())
-            {
-              this->mInitialAssignmentVector.push_back(&compartment);
-            }
-          else
-            {
-              removeInitialAssignment(pSBMLCompartment->getId());
-            }
+      if (!compartment.getInitialExpression().empty())
+        {
+          this->mInitialAssignmentVector.push_back(&compartment);
         }
       else
         {
-          fatalError();
+          removeInitialAssignment(pSBMLCompartment->getId());
         }
     }
   else
@@ -1115,14 +1107,7 @@ void CSBMLExporter::createCompartment(const CCompartment& compartment)
       // fill initial assignment set
       if (!compartment.getInitialExpression().empty())
         {
-          if (compartment.getDimensionality() != 0)
-            {
-              this->mInitialAssignmentVector.push_back(&compartment);
-            }
-          else
-            {
-              fatalError();
-            }
+          this->mInitialAssignmentVector.push_back(&compartment);
         }
       else
         {
@@ -1849,16 +1834,13 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CDa
             {
               const CCompartment* pCompartment = pMetab->getCompartment();
 
-              if (pCompartment->getDimensionality() != 0)
-                {
-                  CEvaluationNode* pNode = CSBMLExporter::multiplyByObject(pOrigNode, pCompartment->getInitialValueReference());
-                  assert(pNode != NULL);
+              CEvaluationNode* pNode = CSBMLExporter::multiplyByObject(pOrigNode, pCompartment->getInitialValueReference());
+              assert(pNode != NULL);
 
-                  if (pNode != NULL)
-                    {
-                      delete pOrigNode;
-                      pOrigNode = pNode;
-                    }
+              if (pNode != NULL)
+                {
+                  delete pOrigNode;
+                  pOrigNode = pNode;
                 }
             }
         }
@@ -2147,16 +2129,13 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CDataModel& data
             {
               const CCompartment* pCompartment = pMetab->getCompartment();
 
-              if (pCompartment->getDimensionality() != 0)
-                {
-                  CEvaluationNode* pNode = CSBMLExporter::multiplyByObject(pOrigNode, pCompartment->getValueReference());
-                  assert(pNode != NULL);
+              CEvaluationNode* pNode = CSBMLExporter::multiplyByObject(pOrigNode, pCompartment->getValueReference());
+              assert(pNode != NULL);
 
-                  if (pNode != NULL)
-                    {
-                      delete pOrigNode;
-                      pOrigNode = pNode;
-                    }
+              if (pNode != NULL)
+                {
+                  delete pOrigNode;
+                  pOrigNode = pNode;
                 }
             }
         }
@@ -5060,13 +5039,9 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
 
   for (; itAssignment != endAssignment; ++itAssignment)
     {
-      //    ii) for each assignment, check if there already is an old assignment
-      //        for this variable
-      std::string key = itAssignment->getTargetKey();
-
       //        now we have to get the object for the key, check if the object is a
       //        compartment, species or global parameter,
-      const CDataObject* pObject = CRootContainer::getKeyFactory()->get(key);
+      const CDataObject* pObject = CObjectInterface::DataObject(event.getObjectDataModel()->getObject(itAssignment->getTargetCN()));
       std::string objectType = pObject->getObjectType();
 
       if (objectType == "Reference")
@@ -5248,16 +5223,13 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
                 {
                   const CCompartment* pCompartment = pMetab->getCompartment();
 
-                  if (pCompartment->getDimensionality() != 0)
-                    {
-                      CEvaluationNode* pNode = CSBMLExporter::multiplyByObject(pOrigNode, pCompartment->getValueReference());
-                      assert(pNode != NULL);
+                  CEvaluationNode* pNode = CSBMLExporter::multiplyByObject(pOrigNode, pCompartment->getValueReference());
+                  assert(pNode != NULL);
 
-                      if (pNode != NULL)
-                        {
-                          delete pOrigNode;
-                          pOrigNode = pNode;
-                        }
+                  if (pNode != NULL)
+                    {
+                      delete pOrigNode;
+                      pOrigNode = pNode;
                     }
                 }
             }
@@ -5360,21 +5332,21 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CDataMode
       // if the reaction calls a general function, all call parameters have a usage of VARIABLE
       // So local parameters will also have a usage of VARIABLE instead of PARAMETER
 
-      if (pPara->getUsage() == CFunctionParameter::PARAMETER ||
+      if (pPara->getUsage() == CFunctionParameter::Role::PARAMETER ||
           (reaction.getFunction() != NULL &&
            reaction.getFunction()->isReversible() == TriUnspecified &&
-           pPara->getUsage() == CFunctionParameter::VARIABLE))
+           pPara->getUsage() == CFunctionParameter::Role::VARIABLE))
         {
           // only create a parameter if it is a local parameter,
           // and if it is not in the replacement map
           // otherwise the parameter already has been created
           if (reaction.isLocalParameter(i))
             {
-              std::vector<std::string> v = reaction.getParameterMapping(pPara->getObjectName());
+              std::vector< const CDataObject * > v = reaction.getParameterObjects(pPara->getObjectName());
               assert(v.size() == 1);
-              CDataObject* pTmpObject = CRootContainer::getKeyFactory()->get(v[0]);
+              const CDataObject * pTmpObject = v[0];
               assert(pTmpObject != NULL);
-              CCopasiParameter* pLocalParameter = dynamic_cast<CCopasiParameter*>(pTmpObject);
+              const CCopasiParameter * pLocalParameter = dynamic_cast< const CCopasiParameter * >(pTmpObject);
               assert(pLocalParameter != NULL);
 
               if (this->mParameterReplacementMap.find(pLocalParameter->getCN()) == this->mParameterReplacementMap.end())
@@ -5420,7 +5392,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CDataMode
   // it is a reference to an amount or a reference to a concentration.
   // Other factors that influence this replacement are if the model
   // contains variable volumes or if the quantity units are set to CUnit::number
-  CEvaluationNode* pExpression = CSBMLExporter::createKineticExpression(const_cast<CFunction*>(reaction.getFunction()), reaction.getParameterMappings());
+  CEvaluationNode* pExpression = CSBMLExporter::createKineticExpression(const_cast<CFunction*>(reaction.getFunction()), reaction.getParameterObjects());
 
   if (pExpression == NULL)
     {
@@ -5445,43 +5417,40 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CDataMode
       delete pOrigNode;
       assert(pNode != NULL);
 
-      if (reaction.getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
+      if (reaction.getEffectiveKineticLawUnitType() == CReaction::KineticLawUnit::ConcentrationPerTime)
         {
           const CCompartment* compartment = reaction.getScalingCompartment() != NULL ? reaction.getScalingCompartment() :
                                             (!reaction.getChemEq().getSubstrates().empty()) ? (reaction.getChemEq().getSubstrates()[0].getMetabolite()->getCompartment()) : (reaction.getChemEq().getProducts()[0].getMetabolite()->getCompartment());
 
-          if (compartment->getDimensionality() != 0)
+          // check if the importer has added a division by the volume
+          // if so remove it instead of multiplying again
+          ASTNode* pTNode = CSBMLExporter::isDividedByVolume(pNode, compartment->getSBMLId());
+
+          if (pTNode)
             {
-              // check if the importer has added a division by the volume
-              // if so remove it instead of multiplying again
-              ASTNode* pTNode = CSBMLExporter::isDividedByVolume(pNode, compartment->getSBMLId());
-
-              if (pTNode)
+              if (pTNode->getNumChildren() == 0)
                 {
-                  if (pTNode->getNumChildren() == 0)
-                    {
-                      fatalError();
-                    }
-
-                  if (pTNode->getNumChildren() == 1)
-                    {
-                      ASTNode* pTmp = static_cast<ConverterASTNode*>(pTNode)->removeChild(0);
-                      delete pTNode;
-                      pTNode = pTmp;
-                    }
-
-                  delete pNode;
-                  pNode = pTNode;
+                  fatalError();
                 }
-              else
+
+              if (pTNode->getNumChildren() == 1)
                 {
-                  pTNode = new ASTNode(AST_TIMES);
-                  ASTNode* pVNode = new ASTNode(AST_NAME);
-                  pVNode->setName(compartment->getSBMLId().c_str());
-                  pTNode->addChild(pVNode);
-                  pTNode->addChild(pNode);
-                  pNode = pTNode;
+                  ASTNode* pTmp = static_cast<ConverterASTNode*>(pTNode)->removeChild(0);
+                  delete pTNode;
+                  pTNode = pTmp;
                 }
+
+              delete pNode;
+              pNode = pTNode;
+            }
+          else
+            {
+              pTNode = new ASTNode(AST_TIMES);
+              ASTNode* pVNode = new ASTNode(AST_NAME);
+              pVNode->setName(compartment->getSBMLId().c_str());
+              pTNode->addChild(pVNode);
+              pTNode->addChild(pNode);
+              pNode = pTNode;
             }
         }
 
@@ -5556,7 +5525,7 @@ ASTNode* CSBMLExporter::isDividedByVolume(const ASTNode* pRootNode, const std::s
   return pResult;
 }
 
-CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const std::vector<std::vector<std::string> >& arguments)
+CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const std::vector<std::vector<const CDataObject *> >& arguments)
 {
   if (!pFun || pFun->getVariables().size() != arguments.size()) fatalError();
 
@@ -5577,7 +5546,7 @@ CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const s
         {
           if (arguments[i].size() != 1) fatalError(); // we can't have arrays here.
 
-          const CDataObject* pObject = CRootContainer::getKeyFactory()->get(arguments[i][0]);
+          const CDataObject* pObject = arguments[i][0];
 
           if (!pObject) fatalError();
 
@@ -6674,18 +6643,18 @@ void CSBMLExporter::removeUnusedObjects()
     }
 }
 
-CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std::vector<std::string> >& arguments, bool isReversible)
+CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std::vector<const CDataObject *> >& arguments, bool isReversible)
 {
   assert((isReversible && arguments.size() == 4) || arguments.size() == 2);
   assert(arguments[0].size() == 1 && arguments[1].size() > 0);
   // create a multiplication of all items in arguments[1] and multiply that
   // with item arguments[0][0]
-  std::set<std::string> finishedElements;
+  std::set<const CDataObject *> finishedElements;
   std::vector<CEvaluationNode*> multiplicants;
-  const CDataObject* pObject = CRootContainer::getKeyFactory()->get(arguments[0][0]);
+  const CDataObject* pObject = arguments[0][0];
   assert(pObject != NULL);
   multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ",Reference=Value>"));
-  std::vector<std::string>::const_iterator it = arguments[1].begin(), endit = arguments[1].end();
+  std::vector<const CDataObject *>::const_iterator it = arguments[1].begin(), endit = arguments[1].end();
 
   while (it != endit)
     {
@@ -6701,7 +6670,7 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
 #endif  // __SUNPRO_CC
           assert(num != 0);
           finishedElements.insert(*it);
-          pObject = CRootContainer::getKeyFactory()->get(*it);
+          pObject = *it;
           assert(pObject != NULL);
 
           if (num == 1)
@@ -6748,7 +6717,7 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
 
   if (isReversible)
     {
-      std::vector<std::vector<std::string> > tmpV;
+      std::vector<std::vector<const CDataObject *> > tmpV;
       tmpV.push_back(arguments[2]);
       tmpV.push_back(arguments[3]);
       pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MINUS, "-");
@@ -6926,22 +6895,19 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                       // multiply by the volume as well
                       const CCompartment* pCompartment = pMetab->getCompartment();
 
-                      if (pCompartment->getDimensionality() != 0)
+                      CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
+                      pTmpNode->addChild(pResult);
+
+                      if (pObject->getObjectName() == "InitialParticleNumber")
                         {
-                          CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
-                          pTmpNode->addChild(pResult);
-
-                          if (pObject->getObjectName() == "InitialParticleNumber")
-                            {
-                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
-                            }
-                          else
-                            {
-                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
-                            }
-
-                          pResult = pTmpNode;
+                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
                         }
+                      else
+                        {
+                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
+                        }
+
+                      pResult = pTmpNode;
                     }
                 }
               else
@@ -7148,39 +7114,14 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
 
   if (pCOPASIObject == NULL || pSBMLObject == NULL) return false;
 
-  const CModelEntity* pModelEntity = dynamic_cast<const CModelEntity*>(pCOPASIObject);
-  const CModel* pModel = dynamic_cast<const CModel*>(pCOPASIObject);
-  const CFunction* pFunction = dynamic_cast<const CFunction*>(pCOPASIObject);
-  const CReaction* pReaction = dynamic_cast<const CReaction*>(pCOPASIObject);
-  const CEvent* pEvent = dynamic_cast<const CEvent*>(pCOPASIObject);
-  CMIRIAMInfo miriamInfo;
-  std::string miriamAnnotationString;
+  const CAnnotation * pAnnotation = CAnnotation::castObject(pCOPASIObject);
 
-  if (pModelEntity != NULL)
-    {
-      miriamInfo.load(pModelEntity->getKey());
-      miriamAnnotationString = pModelEntity->getMiriamAnnotation();
-    }
-  else if (pReaction != NULL)
-    {
-      miriamInfo.load(pReaction->getKey());
-      miriamAnnotationString = pReaction->getMiriamAnnotation();
-    }
-  else if (pFunction != NULL)
-    {
-      miriamInfo.load(pFunction->getKey());
-      miriamAnnotationString = pFunction->getMiriamAnnotation();
-    }
-  else if (pEvent != NULL)
-    {
-      miriamInfo.load(pEvent->getKey());
-      miriamAnnotationString = pEvent->getMiriamAnnotation();
-    }
-  else
-    {
-      // we should never end up here
-      fatalError();
-    }
+  if (pAnnotation == NULL) return false;
+
+  CMIRIAMInfo miriamInfo;
+  miriamInfo.load(dynamic_cast< CDataContainer * >(const_cast< CDataObject * >(pCOPASIObject)));
+
+  std::string miriamAnnotationString = pAnnotation->getMiriamAnnotation();
 
   // first we clear the old CVTerms on the object
   pSBMLObject->unsetCVTerms();
@@ -7251,9 +7192,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             break;
 
-          // IS DESCRIBED BY is handled in the references below
-          //case bqbiol_isDescribedBy:
-          //    break;
+            // IS DESCRIBED BY is handled in the references below
+            //case bqbiol_isDescribedBy:
+            //    break;
           case CRDFPredicate::bqbiol_isEncodedBy:
           case CRDFPredicate::copasi_isEncodedBy:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7290,7 +7231,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
 
-          // This qualifier is supported in libsbml 4.1
+            // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7352,9 +7293,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setModelQualifierType(BQM_HAS_INSTANCE);
             break;
 
-          // IS DESCRIBED BY is handled in the references below
-          //case bqmodel_isDescribedBy:
-          //    break;
+            // IS DESCRIBED BY is handled in the references below
+            //case bqmodel_isDescribedBy:
+            //    break;
           default:
             // there are many qualifiers that start e.g. with copasi_ which are
             // not handled
@@ -7480,6 +7421,8 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
   //
   // if it is the model, we have to set the model history
   // in addition to the normal CVTerms
+  const CModel* pModel = dynamic_cast<const CModel*>(pCOPASIObject);
+
   if ((pModel != NULL && this->mSBMLLevel < 3)
       // actually this preprocessor directive is not really necessary, but better safe then sorry
       || this->mSBMLLevel > 2
@@ -8057,41 +8000,41 @@ void CSBMLExporter::isEventSBMLCompatible(
       CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
     }
 
-  std::set<std::string> objectKeys;
-  std::set<std::string> nonUniqueObjectKeys;
+  std::set<std::string> objectCNs;
+  std::set<std::string> nonUniqueObjectCNs;
 
   CDataVectorN< CEventAssignment >::const_iterator itAssignment = pEvent->getAssignments().begin();
   CDataVectorN< CEventAssignment >::const_iterator endAssignment = pEvent->getAssignments().end();
 
   for (; itAssignment != endAssignment; ++itAssignment)
     {
-      std::string key = itAssignment->getTargetKey();
+      std::string CN = itAssignment->getTargetCN();
+      const CDataObject * pObject = CObjectInterface::DataObject(dataModel.getObject(CN));
 
-      if (objectKeys.find(key) == objectKeys.end())
+      if (objectCNs.find(CN) == objectCNs.end())
         {
-          objectKeys.insert(key);
+          objectCNs.insert(CN);
         }
       else
         {
           // This should never happen since I assume that COPASI will have
           // the same restriction as SBML with respect to unique assignments
           // within an event
-          if (nonUniqueObjectKeys.find(key) == nonUniqueObjectKeys.end())
+          if (nonUniqueObjectCNs.find(CN) == nonUniqueObjectCNs.end())
             {
-              nonUniqueObjectKeys.insert(key);
-              const CDataObject* pObject = CRootContainer::getKeyFactory()->get(key);
+              nonUniqueObjectCNs.insert(CN);
               assert(pObject != NULL);
               CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event called \"" + pEvent->getObjectName() + "\" has several assignments to the same object called \"" + pObject->getObjectName() + "\".").c_str());
             }
         }
 
-      CSBMLExporter::isEventAssignmentSBMLCompatible(key, itAssignment->getExpressionPtr(),
+      CSBMLExporter::isEventAssignmentSBMLCompatible(pObject, itAssignment->getExpressionPtr(),
           dataModel, sbmlLevel, sbmlVersion, pEvent->getObjectName(), result, idMap);
     }
 }
 
 void CSBMLExporter::isEventAssignmentSBMLCompatible(
-  std::string& key,
+  const CDataObject * pTarget,
   const CExpression* pExpression,
   const CDataModel& dataModel,
   unsigned int sbmlLevel,
@@ -8100,10 +8043,8 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(
   std::vector<SBMLIncompatibility>& result,
   std::map<std::string, const SBase*>& idMap)
 {
-  // check if the key points to a compartment, species or global value
-  const CDataObject* pObject = CRootContainer::getKeyFactory()->get(key);
-  assert(pObject != NULL);
-  const CModelEntity* pME = dynamic_cast<const CModelEntity*>(pObject);
+  assert(pTarget != NULL);
+  const CModelEntity* pME = dynamic_cast<const CModelEntity*>(pTarget);
 
   if (pME == NULL)
     {
@@ -8118,7 +8059,7 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(
         {
           // create an error message since the object is not a
           // compartment, species or model value
-          result.push_back(SBMLIncompatibility(9, pObject->getObjectName().c_str(), std::string("event called \"" + eventName + "\"").c_str()));
+          result.push_back(SBMLIncompatibility(9, pTarget->getObjectName().c_str(), std::string("event called \"" + eventName + "\"").c_str()));
         }
       else
         {
@@ -8129,7 +8070,7 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(
               // constant
               // This is a raw message since I do expect COPASI to have the same
               // restriction as SBML, so this should never happen
-              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event assignment to constant object named \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\".").c_str());
+              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event assignment to constant object named \"" + pTarget->getObjectName() + "\" in event named \"" + eventName + "\".").c_str());
             }
           // make sure there is no assignment rule for the variable
           else if (pME->getStatus() == CModelEntity::Status::ASSIGNMENT)
@@ -8138,7 +8079,7 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(
               // determined by an assignment
               // This is a raw message since I do expect COPASI to have the same
               // restriction as SBML, so this should never happen
-              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event assignment to object called \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\", which is determined by an assignment rule.").c_str());
+              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event assignment to object called \"" + pTarget->getObjectName() + "\" in event named \"" + eventName + "\", which is determined by an assignment rule.").c_str());
             }
 
           // check if the expression only references allowed model entities
@@ -8146,14 +8087,14 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(
             {
 
               std::set<std::string> usedFunctionNames;
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("assignment expression for variable named \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\""));
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("assignment expression for variable named \"" + pTarget->getObjectName() + "\" in event named \"" + eventName + "\"").c_str());
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
           else
             {
               // This is a raw message since I do expect COPASI to always have
               // an assignment expression
-              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. No expression set for event assignment to object called \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\".").c_str());
+              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. No expression set for event assignment to object called \"" + pTarget->getObjectName() + "\" in event named \"" + eventName + "\".").c_str());
             }
         }
     }
@@ -8440,7 +8381,7 @@ bool CSBMLExporter::hasVolumeAssignment(const CDataModel& dataModel)
 
   CDataVectorN<CEvent>::const_iterator eit = dataModel.getModel()->getEvents().begin(), eendit = dataModel.getModel()->getEvents().end();
 
-  std::string key;
+  std::string CN;
   const CDataObject* pObject = NULL;
   std::string objectType;
 
@@ -8451,11 +8392,11 @@ bool CSBMLExporter::hasVolumeAssignment(const CDataModel& dataModel)
 
       while (itAssignment != endAssignment && result == false)
         {
-          key = itAssignment->getTargetKey();
+          CN = itAssignment->getTargetCN();
 
           //        now we have to get the object for the key, check if the object is a
           //        compartment, species or global parameter,
-          pObject = CRootContainer::getKeyFactory()->get(key);
+          pObject = CObjectInterface::DataObject(dataModel.getObject(CN));
           assert(pObject != NULL);
           objectType = pObject->getObjectType();
 

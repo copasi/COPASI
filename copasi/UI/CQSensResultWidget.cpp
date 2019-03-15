@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -117,8 +117,7 @@ void CQSensResultWidget::clearArrays()
 
 //*************************************
 
-bool CQSensResultWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action
-                                C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CQSensResultWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   /*  if (this->isShown())
       return loadFromBackend();
@@ -127,7 +126,7 @@ bool CQSensResultWidget::update(ListViews::ObjectType C_UNUSED(objectType), List
   return true;
 }
 
-bool CQSensResultWidget::leave()
+bool CQSensResultWidget::leaveProtected()
 {
   return true;
 }

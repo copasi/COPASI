@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -212,15 +217,15 @@ bool CQFunctionDM::setData(const QModelIndex &index, const QVariant &value,
         }
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::FUNCTION, ListViews::CHANGE, pFunc->getKey());
+      emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::CHANGE, pFunc->getCN());
     }
 
   return true;
 }
 
-bool CQFunctionDM::insertRows(int position, int rows, const QModelIndex&)
+bool CQFunctionDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
+  beginInsertRows(parent, position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
@@ -228,7 +233,7 @@ bool CQFunctionDM::insertRows(int position, int rows, const QModelIndex&)
       QString Name = createNewName(mNewName, COL_NAME_FUNCTIONS);
 
       CRootContainer::getFunctionList()->add(pFunc = new CKinFunction(TO_UTF8(Name)), true);
-      emit notifyGUI(ListViews::FUNCTION, ListViews::ADD, pFunc->getKey());
+      emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::ADD, pFunc->getCN());
     }
 
   endInsertRows();
@@ -238,7 +243,7 @@ bool CQFunctionDM::insertRows(int position, int rows, const QModelIndex&)
   return true;
 }
 
-bool CQFunctionDM::removeRows(int position, int rows)
+bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   if (rows <= 0)
     return true;
@@ -261,19 +266,19 @@ bool CQFunctionDM::removeRows(int position, int rows)
         }
       else
         {
-          *itDeletedKey = itRow->getKey();
+          *itDeletedKey = itRow->getCN();
         }
     }
 
-  beginRemoveRows(QModelIndex(), position, position + row - 1);
+  beginRemoveRows(parent, position, position + row - 1);
 
   for (itDeletedKey = DeletedKeys.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++row)
     {
       if (*itDeletedKey != "")
         {
           CRootContainer::getFunctionList()->removeFunction(*itDeletedKey);
-          emit notifyGUI(ListViews::FUNCTION, ListViews::DELETE, *itDeletedKey);
-          emit notifyGUI(ListViews::FUNCTION, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
+          emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, *itDeletedKey);
+          emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, std::string()); //Refresh all as there may be dependencies.
         }
     }
 

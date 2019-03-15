@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -246,13 +251,6 @@ public:
   bool areObjectsConstant(const CObjectInterface::ObjectSet & objects) const;
 
   /**
-   * Notify the math container that the quantity conversion factor in
-   * the corresponding model has changed
-   * @param const CCore::Framework & framework
-   */
-  void quantityConversionChanged(const CCore::Framework & framework);
-
-  /**
    * Retrieve the Quantity to Number conversion factor
    * @return C_FLOAT64 & quantity2NumberFactor
    */
@@ -308,6 +306,11 @@ public:
    * @return const CVectorCore< C_FLOAT64 > & noise
    */
   const CVectorCore< C_FLOAT64 > & getNoise(const bool & reduced) const;
+
+  /**
+   * Reset all niose values to zero
+   */
+  void resetNoise();
 
   /**
    * Retrieve the total masses of the moieties.
@@ -637,7 +640,7 @@ public:
    * Add a noise input object
    * @param const CMathObject * pObject
    */
-  void hasNoiseInputObject(const CMathObject * pObject);
+  void addNoiseInputObject(const CMathObject * pObject);
 
   /**
    * ARetrieve the set of noise input objects

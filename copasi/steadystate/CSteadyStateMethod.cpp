@@ -81,10 +81,10 @@ void CSteadyStateMethod::initializeParameter()
 {
   CCopasiParameter *pParm;
 
-  mpSSResolution = assertParameter("Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
+  mpSSResolution = assertParameter("Resolution", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-009);
   mpDerivationResolution = mpSSResolution;
 
-  mpDerivationFactor = assertParameter("Derivation Factor", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-003);
+  mpDerivationFactor = assertParameter("Derivation Factor", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-003);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("Newton.DerivationFactor")) != NULL)

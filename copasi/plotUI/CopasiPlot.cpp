@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -193,7 +198,7 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
   QPen pen; pen.setWidthF(0.5);
   pSpectogram->setDefaultContourPen(pen);
 
-  std::string colorMap = *const_cast< CPlotItem * >(plotItem)->assertParameter("colorMap", CCopasiParameter::STRING, std::string("Default"));
+  std::string colorMap = *const_cast< CPlotItem * >(plotItem)->assertParameter("colorMap", CCopasiParameter::Type::STRING, std::string("Default"));
 
 #if QWT_VERSION > 0x060000
   pSpectogram->setRenderThreadCount(0);
@@ -254,7 +259,7 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
 
 #endif
 
-  QString contours = FROM_UTF8(* const_cast< CPlotItem * >(plotItem)->assertParameter("contours", CCopasiParameter::STRING, std::string("")));
+  QString contours = FROM_UTF8(* const_cast< CPlotItem * >(plotItem)->assertParameter("contours", CCopasiParameter::Type::STRING, std::string("")));
 
   int levels = contours.toInt(&flag);
 
@@ -275,10 +280,10 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
       QStringList list = contours.split(QRegExp(",| |;"), QString::SkipEmptyParts);
       QwtValueList contourLevels;
 
-      foreach (const QString & level, list)
-        {
-          contourLevels += level.toDouble();
-        }
+      foreach(const QString & level, list)
+      {
+        contourLevels += level.toDouble();
+      }
 
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
@@ -1311,7 +1316,7 @@ bool CopasiPlot::saveData(const std::string & filename)
   C2DPlotCurve ** itCurves = mCurves.array();
   C2DPlotCurve ** endCurves = itCurves + mCurves.size();
 
-  for (; itCurves != endCurves; ++itCurves)
+  for (; (itCurves != endCurves) && (HistogramIndex < mSaveHistogramObjects.size()); ++itCurves, ++HistogramIndex)
     {
       if (*itCurves == NULL) continue;
 

@@ -1,21 +1,21 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CCopasiXMLInterface class.
@@ -391,56 +391,56 @@ bool CCopasiXMLInterface::saveParameter(const CCopasiParameter & parameter)
 
   switch (parameter.getType())
     {
-      case CCopasiParameter::DOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
         Attributes.add("value", parameter.getValue< C_FLOAT64 >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
         break;
 
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
         Attributes.add("value", parameter.getValue< C_FLOAT64 >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
         break;
 
-      case CCopasiParameter::INT:
+      case CCopasiParameter::Type::INT:
         Attributes.add("value", parameter.getValue< C_INT32 >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
         break;
 
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::UINT:
         Attributes.add("value", parameter.getValue< unsigned C_INT32 >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
         break;
 
-      case CCopasiParameter::BOOL:
+      case CCopasiParameter::Type::BOOL:
         Attributes.add("value", parameter.getValue< bool >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
         break;
 
-      case CCopasiParameter::STRING:
+      case CCopasiParameter::Type::STRING:
         Attributes.add("value", parameter.getValue< std::string >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
         break;
 
-      case CCopasiParameter::KEY:
+      case CCopasiParameter::Type::KEY:
         Attributes.add("value", parameter.getValue< std::string >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
         break;
 
-      case CCopasiParameter::FILE:
+      case CCopasiParameter::Type::FILE:
         File = parameter.getValue< std::string >();
 
         if (!CDirEntry::isRelativePath(File) &&
@@ -453,14 +453,14 @@ bool CCopasiXMLInterface::saveParameter(const CCopasiParameter & parameter)
 
         break;
 
-      case CCopasiParameter::CN:
+      case CCopasiParameter::Type::CN:
         Attributes.add("value", parameter.getValue< CCommonName >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 
         break;
 
-      case CCopasiParameter::EXPRESSION:
+      case CCopasiParameter::Type::EXPRESSION:
 
         if (!startSaveElement("ParameterText", Attributes)) success = false;
 
@@ -470,7 +470,7 @@ bool CCopasiXMLInterface::saveParameter(const CCopasiParameter & parameter)
 
         break;
 
-      case CCopasiParameter::GROUP:
+      case CCopasiParameter::Type::GROUP:
         Attributes.skip(1);
 
         if (!startSaveElement("ParameterGroup", Attributes)) success = false;
@@ -481,7 +481,7 @@ bool CCopasiXMLInterface::saveParameter(const CCopasiParameter & parameter)
 
         break;
 
-      case CCopasiParameter::INVALID:
+      case CCopasiParameter::Type::INVALID:
       default:
         success = false;
         break;

@@ -1,5 +1,6 @@
-<ui version="4.0" >
-<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and University of </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -18,14 +19,10 @@
 <comment> Properties, Inc. and EML Research, gGmbH. </comment>
 <comment> All rights reserved. </comment>
 
-
-
-
-
  <comment> All rights reserved. </comment>
  <class>CQFittingWidget</class>
- <widget class="TaskWidget" name="CQFittingWidget" >
-  <property name="geometry" >
+ <widget class="TaskWidget" name="CQFittingWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -33,21 +30,21 @@
     <height>207</height>
    </rect>
   </property>
-  <property name="caption" stdset="0" >
+  <property name="caption" stdset="0">
    <string>Fitting</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" >
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <spacer name="mpSpacer" >
-       <property name="orientation" >
+      <spacer name="mpSpacer">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeType" >
+       <property name="sizeType">
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>13</width>
          <height>17</height>
@@ -56,15 +53,15 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="mpBtnExperiment" >
-       <property name="text" >
+      <widget class="QPushButton" name="mpBtnExperiment">
+       <property name="text">
         <string>Experimental Data</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="mpBtnCrossValidation" >
-       <property name="text" >
+      <widget class="QPushButton" name="mpBtnCrossValidation">
+       <property name="text">
         <string>Validation Data</string>
        </property>
       </widget>
@@ -72,24 +69,24 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2" >
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QCheckBox" name="mpCheckRandomize" >
-       <property name="text" >
+      <widget class="QCheckBox" name="mpCheckRandomize">
+       <property name="text">
         <string>Randomize Start Values</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="mpCreateParameterSets" >
-       <property name="text" >
+      <widget class="QCheckBox" name="mpCreateParameterSets">
+       <property name="text">
         <string>Create Parameter Sets</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="mpCheckStatistics" >
-       <property name="text" >
+      <widget class="QCheckBox" name="mpCheckStatistics">
+       <property name="text">
         <string>Calculate Statistics</string>
        </property>
       </widget>
@@ -97,17 +94,23 @@
     </layout>
    </item>
    <item>
-    <widget class="QTabWidget" name="mpTabWidget" >
-     <property name="currentIndex" >
+    <widget class="QTabWidget" name="mpTabWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>10</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="CQFittingItemWidget" name="mpParameters" >
-      <attribute name="title" >
+     <widget class="CQFittingItemWidget" name="mpParameters">
+      <attribute name="title">
        <string>Parameters (0)</string>
       </attribute>
      </widget>
-     <widget class="CQFittingItemWidget" name="mpConstraints" >
-      <attribute name="title" >
+     <widget class="CQFittingItemWidget" name="mpConstraints">
+      <attribute name="title">
        <string>Constraints (0)</string>
       </attribute>
      </widget>
@@ -115,7 +118,7 @@
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
    <class>TaskWidget</class>
@@ -143,11 +146,11 @@
    <receiver>CQFittingWidget</receiver>
    <slot>slotExperimentData()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -159,11 +162,11 @@
    <receiver>CQFittingWidget</receiver>
    <slot>slotPageIndexChange(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -175,11 +178,11 @@
    <receiver>CQFittingWidget</receiver>
    <slot>slotCrossValidationData()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>

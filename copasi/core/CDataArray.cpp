@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -23,7 +28,7 @@ CDataArray::CDataArray(const std::string & name,
                        const CDataContainer * pParent,
                        CArrayInterface * array,
                        const bool & adopt)
-  : CDataContainer(name, pParent, "Array" , CDataObject::Array),
+  : CDataContainer(name, pParent, "Array", CDataObject::Array),
     mpArray(array),
     mDestructArray(adopt),
     mDefaultMode(Mode::Objects)
@@ -267,7 +272,7 @@ const CObjectInterface * CDataArray::getObject(const CCommonName & cn) const
     }
 
   if (pObject)
-    return pObject->getObject(cn.getRemainder());
+    return pObject->getObject(cn.getRemainder().getRemainder());
   else
     return NULL;
 }

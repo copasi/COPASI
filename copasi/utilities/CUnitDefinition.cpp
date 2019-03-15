@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -122,7 +127,7 @@ void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units)
 }
 
 // static
-CUnitDefinition * CUnitDefinition::fromData(const CData & data)
+CUnitDefinition * CUnitDefinition::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CUnitDefinition(data.getProperty(CData::OBJECT_NAME).toString(),
                              NO_PARENT);
@@ -131,23 +136,54 @@ CUnitDefinition * CUnitDefinition::fromData(const CData & data)
 // virtual
 CData CUnitDefinition::toData() const
 {
-  CData Data;
+  CData Data = CDataContainer::toData();
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::UNIT_SYMBOL, mSymbol);
+  Data.addProperty(CData::UNIT_EXPRESSION, getExpression());
+
+  Data.appendData(CAnnotation::toData());
 
   return Data;
 }
 
 // virtual
-bool CUnitDefinition::applyData(const CData & data)
+bool CUnitDefinition::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
-  bool success = true;
+  bool success = CDataContainer::applyData(data, changes);
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  if (data.isSetProperty(CData::UNIT_SYMBOL))
+    {
+      mSymbol = data.getProperty(CData::UNIT_SYMBOL).toString();
+    }
+
+  if (data.isSetProperty(CData::UNIT_EXPRESSION))
+    {
+      setExpression(data.getProperty(CData::UNIT_EXPRESSION).toString());
+    }
+
+  success &= CAnnotation::applyData(data, changes);
 
   return success;
+}
+
+void CUnitDefinition::createUndoData(CUndoData & undoData,
+                                     const CUndoData::Type & type,
+                                     const CData & oldData,
+                                     const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::UNIT_SYMBOL, oldData.getProperty(CData::UNIT_SYMBOL), mSymbol);
+  undoData.addProperty(CData::UNIT_EXPRESSION, oldData.getProperty(CData::UNIT_EXPRESSION), getExpression());
+
+  CAnnotation::createUndoData(undoData, type, oldData, framework);
+
+  return;
 }
 
 // constructors
@@ -160,6 +196,9 @@ CUnitDefinition::CUnitDefinition(const std::string & name,
   mSymbol("symbol"),
   mReadOnly(false)
 {
+  mKey = CRootContainer::getKeyFactory()->add("Unit", this);
+  initMiriamAnnotation(mKey);
+
   setup();
 }
 
@@ -172,6 +211,9 @@ CUnitDefinition::CUnitDefinition(const CUnitDefinition &src,
   mSymbol(src.mSymbol),
   mReadOnly(src.mReadOnly && src.getObjectParent() != pParent)
 {
+  mKey = CRootContainer::getKeyFactory()->add("Unit", this);
+  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
+
   setup();
 }
 

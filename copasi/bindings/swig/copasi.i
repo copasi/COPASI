@@ -131,9 +131,14 @@ size_t INVALID_INDEX();
 %ignore CIssue::eKind;
 %ignore CIssue::eSeverity;
 
+%include <copasi/undo/CData.h>
+%include <copasi/undo/CDataValue.h>
+%include <copasi/undo/CUndoData.h>
+
 %include <copasi/core/CObjectInterface.h>
 %include <copasi/utilities/CValidity.h>
 
+%include "CCommonName.i"
 %include "CObjectLists.i"
 %include "CVector.i"
 %include "CRandom.i"
@@ -141,7 +146,6 @@ size_t INVALID_INDEX();
 %include "messages.i"
 %include "CKeyFactory.i"
 %include "CCopasiException.i"
-%include "CCommonName.i"
 %include "CDataObject.i"
 %include "CDataObjectReference.i"
 %include "CDataContainer.i"

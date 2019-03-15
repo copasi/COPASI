@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -412,8 +417,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   CDataContainer(src, NULL),
   mpModel(src.mpModel),
   mpAvogadro(src.mpAvogadro),
-  mRandom(src.mRandom, this),
   mpQuantity2NumberFactor(src.mpQuantity2NumberFactor),
+  mRandom(src.mRandom, this),
   mpProcessQueue(new CMathEventQueue(*this)),
   mpRandomGenerator(CRandom::createGenerator()),
   mValues(),
@@ -703,11 +708,6 @@ bool CMathContainer::areObjectsConstant(const CObjectInterface::ObjectSet & obje
   return UpdateSequence.empty();
 }
 
-void CMathContainer::quantityConversionChanged(const CCore::Framework & framework)
-{
-  updateInitialValues(framework);
-}
-
 const C_FLOAT64 & CMathContainer::getQuantity2NumberFactor() const
 {
   return *(const C_FLOAT64 *)mpQuantity2NumberFactor->getValuePointer();
@@ -816,6 +816,11 @@ const CVectorCore< C_FLOAT64 > & CMathContainer::getNoise(const bool & reduced) 
     return mNoiseReduced;
 
   return mExtensiveNoise;
+}
+
+void CMathContainer::resetNoise()
+{
+  memset(mExtensiveNoise.array(), 0, sizeof(C_FLOAT64) * (mExtensiveNoise.size() + mIntensiveNoise.size() + mReactionNoise.size() + mReactionParticleNoise.size()));
 }
 
 const CVectorCore< C_FLOAT64 > & CMathContainer::getTotalMasses() const
@@ -1554,7 +1559,7 @@ size_t CMathContainer::getCountNoise() const
   return mNoiseInputObjects.size();
 }
 
-void CMathContainer::hasNoiseInputObject(const CMathObject * pObject)
+void CMathContainer::addNoiseInputObject(const CMathObject * pObject)
 {
   mNoiseInputObjects.insert(pObject);
 }
@@ -2185,6 +2190,8 @@ bool CMathContainer::compileObjects()
 {
   bool success = true;
 
+  mNoiseInputObjects.clear();
+
   CMathObject *pObject = mObjects.array();
   CMathObject *pObjectEnd = pObject + mObjects.size();
 
@@ -2717,22 +2724,12 @@ void CMathContainer::createUpdateSimulationValuesSequence()
 
   // Determine whether the model is autonomous, i.e., no simulation required value depends on time.
   // We need to additionally add the event assignments to the simulation required values as they may time dependent
-  CObjectInterface::ObjectSet TimeDependentValues = mSimulationRequiredValues;
-  TimeDependentValues.insert(RootRequiredValues.begin(), RootRequiredValues.end());
-
-  pObject = getMathObject(mEventAssignments.array());
-  pObjectEnd = pObject + mEventAssignments.size();
-
-  for (; pObject != pObjectEnd; ++pObject)
-    {
-      TimeDependentValues.insert(pObject);
-    }
-
+  CObjectInterface::ObjectSet TimeDependentValues;
   CObjectInterface::ObjectSet TimeObject;
   TimeObject.insert(getMathObject(mState.array() + mSize.nFixedEventTargets));
-  CCore::CUpdateSequence TimeChange;
-  mTransientDependencies.getUpdateSequence(TimeChange, CCore::SimulationContext::Default, TimeObject, TimeDependentValues);
-  mIsAutonomous = TimeChange.empty();
+
+  mTransientDependencies.appendAllDependents(TimeObject, TimeDependentValues);
+  mIsAutonomous = TimeDependentValues.empty();
 
   // Build the update sequence used to calculate the priorities in the event process queue.
   CObjectInterface::ObjectSet PriorityRequiredValues;
@@ -3525,10 +3522,10 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
                               CMath::ValueType::Rate, EntityType, SimulationType, false, false,
                               (*it)->getRateReference());
 
-      // Intensive Noise
-      if (SimulationType == CMath::SimulationType::ODE ||
-          SimulationType == CMath::SimulationType::Independent ||
-          SimulationType == CMath::SimulationType::Dependent)
+      // Extensive Noise
+      if (simulationType == CMath::SimulationType::ODE ||
+          simulationType == CMath::SimulationType::Independent ||
+          simulationType == CMath::SimulationType::Dependent)
         {
           map((*it)->getNoiseReference(), p.pExtensiveNoiseObject);
           CMathObject::initialize(p.pExtensiveNoiseObject++, p.pExtensiveNoise++,
@@ -3583,9 +3580,9 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
                                   pSpecies->getConcentrationRateReference());
 
           // Intensive Noise
-          if (SimulationType == CMath::SimulationType::ODE ||
-              SimulationType == CMath::SimulationType::Independent ||
-              SimulationType == CMath::SimulationType::Dependent)
+          if (simulationType == CMath::SimulationType::ODE ||
+              simulationType == CMath::SimulationType::Independent ||
+              simulationType == CMath::SimulationType::Dependent)
             {
               map(pSpecies->getIntensiveNoiseReference(), p.pIntensiveNoiseObject);
               CMathObject::initialize(p.pIntensiveNoiseObject++, p.pIntensiveNoise++,

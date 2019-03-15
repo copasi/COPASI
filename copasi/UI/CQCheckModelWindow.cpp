@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -79,6 +79,8 @@ CQCheckModelWindow::CQCheckModelWindow(CopasiUI3Window * pMainWindow)
 #endif // not Darwin
 
   mpSelection = new QComboBox(this);
+  mpSelection->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
+  mpSelection->setSizePolicy(QSizePolicy::Policy::MinimumExpanding, QSizePolicy::Policy::Fixed);
   connect(mpSelection, SIGNAL(currentIndexChanged(int)), this, SLOT(displayResult()));
 
   QPushButton* pButton = new QPushButton("Find &Next", this);
@@ -91,10 +93,12 @@ CQCheckModelWindow::CQCheckModelWindow(CopasiUI3Window * pMainWindow)
   pLayout1->setSpacing(3);
   pFrame1->setLayout(pLayout1);
   QLabel* pLabel1 = new QLabel(tr("Reaction:"));
+  pLabel1->setSizePolicy(QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Fixed);
   pLayout1->addWidget(pLabel1);
   pLayout1->addWidget(mpSelection);
 
   mpFindBox = new QLineEdit(this);
+  mpFindBox->setSizePolicy(QSizePolicy::Policy::MinimumExpanding, QSizePolicy::Policy::Fixed);
   connect(mpFindBox, SIGNAL(textChanged(QString)), this, SLOT(findText(QString)));
 
   QFrame* pFrame2 = new QFrame(this);

@@ -9,8 +9,7 @@
 #include <QObject>
 
 class ListViews;
-class QUndoStack;
-class QApplication;
+class CQCopasiApplication;
 
 class CQTabWidget;
 
@@ -41,12 +40,13 @@ class CModelValue;
 class CEvent;
 class CEventAssignment;
 class CReaction;
+class CUndoStack;
 
 class CQUndoTester : public QObject
 {
   Q_OBJECT
 public:
-  CQUndoTester(QApplication* app, ListViews* pListViews, QUndoStack* pUndoStack);
+  CQUndoTester(CQCopasiApplication * app, ListViews* pListViews);
 
   virtual ~CQUndoTester();
 
@@ -147,9 +147,9 @@ public slots:
   void focusChange(QWidget * old, QWidget * now);
 
 private:
-  QApplication* mpApp;
+  CQCopasiApplication * mpApp;
   ListViews* mpListViews;
-  QUndoStack* mpUndoStack;
+  CUndoStack * mpUndoStack;
 
   // tab widgets
   CQTabWidget* mpTabModel;

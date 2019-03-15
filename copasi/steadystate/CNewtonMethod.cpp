@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -69,15 +74,15 @@ void CNewtonMethod::initializeParameter()
 {
   CCopasiParameter *pParm;
 
-  assertParameter("Use Newton", CCopasiParameter::BOOL, true);
-  assertParameter("Use Integration", CCopasiParameter::BOOL, true);
-  assertParameter("Use Back Integration", CCopasiParameter::BOOL, false);
-  assertParameter("Accept Negative Concentrations", CCopasiParameter::BOOL, false);
-  assertParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
-  assertParameter("Maximum duration for forward integration", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e9);
-  assertParameter("Maximum duration for backward integration", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e6);
-  //assertParameter("Force additional Newton step", CCopasiParameter::BOOL, true);
-  //assertParameter("Keep Protocol", CCopasiParameter::BOOL, true);
+  assertParameter("Use Newton", CCopasiParameter::Type::BOOL, true);
+  assertParameter("Use Integration", CCopasiParameter::Type::BOOL, true);
+  assertParameter("Use Back Integration", CCopasiParameter::Type::BOOL, false);
+  assertParameter("Accept Negative Concentrations", CCopasiParameter::Type::BOOL, false);
+  assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 50);
+  assertParameter("Maximum duration for forward integration", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1e9);
+  assertParameter("Maximum duration for backward integration", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1e6);
+  //assertParameter("Force additional Newton step", CCopasiParameter::Type::BOOL, true);
+  //assertParameter("Keep Protocol", CCopasiParameter::Type::BOOL, true);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("Newton.UseNewton")) != NULL)
@@ -196,7 +201,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
   C_FLOAT64 maxDuration = forward ? mMaxDurationForward : -mMaxDurationBackward;
   //minimum duration is either hardcoded or equal to maximum duration, whichever is smaller.
   C_FLOAT64 minDuration = forward ? (mMaxDurationForward < 1e-1 ? mMaxDurationForward : 1e-1)
-                          : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
+                            : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
 
   //progress bar
   size_t hProcess;

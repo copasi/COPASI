@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,6 +29,7 @@
 #include "function/CFunctionParameters.h"
 #include "function/CCallParameters.h"
 #include "copasi/core/CDataVector.h"
+#include "copasi/model/CAnnotation.h"
 
 /*!
     \brief The class for handling a chemical kinetic function
@@ -44,7 +50,7 @@ public:
    * @param const CData & data
    * @return CFunction * pDataObject
    */
-  static CFunction * fromData(const CData & data);
+  static CFunction * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -57,8 +63,21 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
 
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param CUndoData & undoData
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
+   */
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
@@ -172,8 +191,8 @@ public:
    * @return bool success
    */
   bool addVariable(const std::string & name,
-                   CFunctionParameter::Role usage = CFunctionParameter::VARIABLE,
-                   const CFunctionParameter::DataType & type = CFunctionParameter::FLOAT64);
+                   CFunctionParameter::Role usage = CFunctionParameter::Role::VARIABLE,
+                   const CFunctionParameter::DataType & type = CFunctionParameter::DataType::FLOAT64);
 
   /**
    * Function to load an object with data coming from a CReadConfig object.

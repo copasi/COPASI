@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -72,7 +77,6 @@ CQMathMatrixWidget::CQMathMatrixWidget(QWidget* parent)
 
 #endif
 
-
   mpJacobianAnn = new CDataArray("Jacobian (complete system)", NULL,
                                  new CMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobian), true);
   mpJacobianAnn->setMode(CDataArray::Mode::Objects);
@@ -94,7 +98,6 @@ CQMathMatrixWidget::CQMathMatrixWidget(QWidget* parent)
   mpRedJacobianAnnotationWidget->setColorCoding(new CColorScaleBiLog());
   mpRedJacobianAnnotationWidget->setColorScalingAutomatic(true);
   mpRedJacobianAnnotationWidget->setLegendEnabled(false);
-
 }
 
 /*
@@ -125,18 +128,23 @@ void CQMathMatrixWidget::loadMatrices()
   tmp = dynamic_cast<const CDataArray *>
         (pModel->getObject(CCommonName("Array=Link matrix(ann)")));
   mpArrayWidget3->setArrayAnnotation(tmp);
-
 }
 
 void CQMathMatrixWidget::updateJacobianAnnotation(const CModel* pModel)
 {
   const CMathContainer& container = pModel->getMathContainer();
+  size_t containerStateSize = container.getState(true).size();
+  size_t containerFixedEventTargets = container.getCountFixedEventTargets();
 
+  if (containerStateSize == 0)
+    {
+      return; //
+    }
 
-  size_t sizeReduced = container.getState(true).size() - container.getCountFixedEventTargets() - 1;
+  size_t sizeReduced = containerStateSize - containerFixedEventTargets - 1;
   mJacobianRed.resize(sizeReduced, sizeReduced);
   mJacobianRed = std::numeric_limits<double>::quiet_NaN();
-  size_t size = container.getState(false).size() - container.getCountFixedEventTargets() - 1;
+  size_t size = container.getState(false).size() - containerFixedEventTargets - 1;
   mJacobian.resize(size, size);
   mJacobian = std::numeric_limits<double>::quiet_NaN();
 
@@ -183,15 +191,14 @@ void CQMathMatrixWidget::clearArrays()
 
 //*************************************
 
-bool CQMathMatrixWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action
-                                C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CQMathMatrixWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   clearArrays();
   updateJacobianIfTabSelected();
   return true;
 }
 
-bool CQMathMatrixWidget::leave()
+bool CQMathMatrixWidget::leaveProtected()
 {
   return true;
 }
@@ -199,7 +206,6 @@ bool CQMathMatrixWidget::leave()
 bool CQMathMatrixWidget::enterProtected()
 {
   loadMatrices();
-
   return true;
 }
 
@@ -294,19 +300,35 @@ void CQMathMatrixWidget::updateJacobianIfTabSelected()
   if (pModel == NULL)
     return;
 
-  updateJacobianAnnotation(pModel);
+  if (!mpTabWidgetJac->isVisible() && !mpTabWidgetJacRed->isVisible())
+    return;
 
-  CMathContainer& container = pModel->getMathContainer();
-
-  if (mpTabWidget->currentWidget() == mpTabWidgetJac)
+  try
     {
-      calculateJacobian(mJacobian, &container, tableEigenValues, false, 1e-6);
-      mpJacobianAnnotationWidget->setArrayAnnotation(mpJacobianAnn);
+      // need to compile at this point otherwise elements might not be valid anymore
+      pModel->compileIfNecessary(NULL);
+
+      updateJacobianAnnotation(pModel);
+
+      CMathContainer& container = pModel->getMathContainer();
+
+      if (mpTabWidget->currentWidget() == mpTabWidgetJac)
+        {
+          calculateJacobian(mJacobian, &container, tableEigenValues, false, 1e-6);
+          mpJacobianAnnotationWidget->setArrayAnnotation(mpJacobianAnn);
+        }
+      else if (mpTabWidget->currentWidget() == mpTabWidgetJacRed)
+        {
+          calculateJacobian(mJacobianRed, &container, tableEigenValuesRed, true, 1e-6);
+          mpRedJacobianAnnotationWidget->setArrayAnnotation(mpJacobianAnnRed);
+        }
+
     }
-  else if (mpTabWidget->currentWidget() == mpTabWidgetJacRed)
+  catch (...)
     {
-      calculateJacobian(mJacobianRed, &container, tableEigenValuesRed, true, 1e-6);
-      mpRedJacobianAnnotationWidget->setArrayAnnotation(mpJacobianAnnRed);
+      // jacobian couldn't be calculated
+      mpJacobianAnnotationWidget->setArrayAnnotation(NULL);
+      mpRedJacobianAnnotationWidget->setArrayAnnotation(NULL);
     }
 }
 
@@ -346,4 +368,3 @@ void CQMathMatrixWidget::calculateJacobian(CMatrix< C_FLOAT64 >& matrix,
   eigenValuesWidget->resizeRowsToContents();
   eigenValuesWidget->setSortingEnabled(true);
 }
-

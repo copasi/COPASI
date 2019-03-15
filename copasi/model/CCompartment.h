@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -52,7 +57,7 @@ public:
    * @param const CData & data
    * @return CCompartment * pDataObject
    */
-  static CCompartment * fromData(const CData & data);
+  static CCompartment * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -65,14 +70,21 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
 
   /**
-   * Append all required dependent undo data
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
    * @param CUndoData & undoData
-   * @param const CCore::Framework & framework
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
    */
-  virtual void appendDependentData(CUndoData & undoData, const CCore::Framework & framework);
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
 
   /**
    * Default constructor.

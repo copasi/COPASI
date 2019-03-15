@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -31,20 +36,46 @@
 
 COptMethodCoranaWalk::COptMethodCoranaWalk(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
-    const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType)
+    const CTaskEnum::Task & taskType)
+  : COptMethod(pParent, methodType, taskType)
+  , mTemperature(1.0)
+  , mhIterations(C_INVALID_INDEX)
+  , mIterations(100)
+  , mCurrentIteration(0)
+  , mpRandom(NULL)
+  , mVariableSize(0)
+  , mBestValue(std::numeric_limits< C_FLOAT64 >::infinity())
+  , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mContinue(true)
+  , mCurrent()
+  , mCurrentValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mStep()
+  , mAccepted()
 {
-  addParameter("Temperature", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
-  addParameter("Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 100);
-  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
-  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100);
+  assertParameter("Temperature", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
 
 COptMethodCoranaWalk::COptMethodCoranaWalk(const COptMethodCoranaWalk & src,
-    const CDataContainer * pParent):
-  COptMethod(src, pParent)
+    const CDataContainer * pParent)
+  : COptMethod(src, pParent)
+  , mTemperature(src.mTemperature)
+  , mhIterations(C_INVALID_INDEX)
+  , mIterations(src.mIterations)
+  , mCurrentIteration(src.mCurrentIteration)
+  , mpRandom(NULL)
+  , mVariableSize(src.mVariableSize)
+  , mBestValue(src.mBestValue)
+  , mEvaluationValue(src.mEvaluationValue)
+  , mContinue(src.mContinue)
+  , mCurrent(src.mCurrent)
+  , mCurrentValue(src.mCurrentValue)
+  , mStep(src.mStep)
+  , mAccepted(src.mAccepted)
 {initObjects();}
 
 COptMethodCoranaWalk::~COptMethodCoranaWalk()
@@ -65,7 +96,8 @@ bool COptMethodCoranaWalk::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start_nodoc));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(COptLogEntry("Algorithm started."));
 
   size_t i, j;
 
@@ -85,7 +117,8 @@ bool COptMethodCoranaWalk::optimise()
   else
     minstep = 100 * std::numeric_limits< C_FLOAT64 >::epsilon();
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::CW_min_step_size).with(minstep));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(COptLogEntry("Minimal step size is " + std::to_string(minstep) + "."));
 
   // initial point is first guess but we have to make sure that we
   // are within the parameter domain
@@ -118,7 +151,8 @@ bool COptMethodCoranaWalk::optimise()
       mStep[i] = std::max(fabs(mCurrent[i]), minstep);
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   // find the objective function value at the start
   mCurrentValue = evaluate();
@@ -253,7 +287,11 @@ bool COptMethodCoranaWalk::optimise()
     }
   while (processing && mContinue);
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_iter).iter(mCurrentIteration).with(mIterations));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm finished.",
+                   "Terminated after " + std::to_string(mCurrentIteration) + " of " +
+                   std::to_string(mIterations) + " iterations."));
 
   if (mpCallBack)
     mpCallBack->finishItem(mhIterations);

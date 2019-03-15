@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -44,6 +44,7 @@ void CMoietiesProblem::printResult(std::ostream * pOstream) const
   // Print all Moieties
   *pOstream << "Dependent Species" << "\t";
   *pOstream << "Total Amount" << "\t";
+  *pOstream << "Total Particle Amount" << "\t";
   *pOstream << "Expression" << std::endl;
 
   CDataVector< CMoiety >::const_iterator it = Model.getMoieties().begin();
@@ -52,6 +53,7 @@ void CMoietiesProblem::printResult(std::ostream * pOstream) const
   for (; it != end; ++it)
     {
       *pOstream << it->getObjectName() << "\t";
+      *pOstream << it->getAmount() << "\t";
       *pOstream << it->getNumber() << "\t";
       *pOstream << it->getDescription(&Model) << std::endl;
     }

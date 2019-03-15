@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,6 +21,10 @@
 // Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+
+
+
 
 #ifdef WIN32
 # pragma warning (disable: 4786)
@@ -968,11 +977,11 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (this->isStochasticModel(sbmlModel))
     {
-      this->mpCopasiModel->setModelType(CModel::stochastic);
+      this->mpCopasiModel->setModelType(CModel::ModelType::stochastic);
     }
   else
     {
-      this->mpCopasiModel->setModelType(CModel::deterministic);
+      this->mpCopasiModel->setModelType(CModel::ModelType::deterministic);
     }
 
   std::string title = sbmlModel->getName();
@@ -1080,6 +1089,18 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (reportCurrentProgressOrStop())
         return NULL;
     }
+
+
+  // set the hasOnlySubstanceUnits flag on all species with zero compartment spatial dimension
+  std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
+  std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
+
+  while (it != endIt)
+    {
+      it->first->setHasOnlySubstanceUnits(true);
+      ++it;
+    }
+
 
   /* Create all species */
   num = sbmlModel->getNumSpecies();
@@ -1532,15 +1553,20 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 100);
     }
 
-  // unset the hasOnlySubstanceUnits flag on all such species
-  std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
-  std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
+
+
+  // unset the hasOnlySubstanceUnits flag on all species that had it set
+  it = this->mSubstanceOnlySpecies.begin();
+  endIt = this->mSubstanceOnlySpecies.end();
 
   while (it != endIt)
     {
       it->first->setHasOnlySubstanceUnits(false);
       ++it;
     }
+
+
+
 
   // Before we set anything we compile the model.
   if (createProgressStepOrStop(13,
@@ -1961,8 +1987,16 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
 
       if (pVarNode->getType() != AST_NAME)
         {
-          delete pFun;
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 12, pSBMLFunction->getId().c_str());
+          // while this is wrong, there is no reason to reject the model, we will catch it later
+          std::string functionname = pSBMLFunction->getName().empty() ?
+                                     pSBMLFunction->getId() : pSBMLFunction->getName();
+          CCopasiMessage::Type type = pVarNode->getName() != NULL ? CCopasiMessage::ERROR :
+                                      CCopasiMessage::EXCEPTION;
+
+          if (type == CCopasiMessage::EXCEPTION)
+            delete pFun;
+
+          CCopasiMessage(type, MCSBML + 12, functionname.c_str());
         }
 
       pFun->addVariable(pVarNode->getName());
@@ -2438,6 +2472,9 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
         }
 
+      hasOnlySubstanceUnitPresent = hasOnlySubstanceUnitPresent ||
+                                    (compartment != NULL && compartment->getDimensionality() == 0);
+
       copasiReaction->addSubstrate(pos->second->getKey(), stoi);
 
       // we need to store the id of the species reference if it is set because SBML Level 3 allows
@@ -2565,6 +2602,9 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
         }
 
+      hasOnlySubstanceUnitPresent = hasOnlySubstanceUnitPresent ||
+                                    (compartment != NULL && compartment->getDimensionality() == 0);
+
       copasiReaction->addProduct(pos->second->getKey(), stoi);
 
       // we need to store the id of the species reference if it is set because SBML Level 3 allows
@@ -2662,6 +2702,10 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
         }
 
+      hasOnlySubstanceUnitPresent = hasOnlySubstanceUnitPresent ||
+                                    (compartment != NULL && compartment->getDimensionality() == 0);
+
+
       // we need to store the id of the species reference if it is set because SBML Level 3 allows
       // references to species references and if we want to support his, we need the id to import
       // expressions that reference a species reference
@@ -2748,7 +2792,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                 }
             }
 
-          copasiReaction->getParameters().addParameter(id, CCopasiParameter::DOUBLE, value);
+          copasiReaction->getParameters().addParameter(id, CCopasiParameter::Type::DOUBLE, value);
         }
 
       ASTNode* kLawMath = const_cast<ASTNode*>(kLaw->getMath());
@@ -2809,50 +2853,34 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
               if (compartment != NULL)
                 {
-                  // only divide if it is not a 0-dimensional compartment
-                  if (compartment->getDimensionality() != 0)
+                  // check if the division by volume can be done symbollically in the tree.
+                  bool wasRemoved = this->divideByVolume(node, compartment->getSBMLId());
+
+                  // if not, we have to do it manually
+                  if (!wasRemoved)
                     {
-                      // check if the root node is a multiplication node and it's first child
-                      // is a compartment node, if so, drop those two and make the second child
-                      // new new root node
-                      ConverterASTNode* tmpNode1 = this->isMultipliedByVolume(node, compartment->getSBMLId());
+                      ConverterASTNode* tmpNode1 = new ConverterASTNode();
+                      tmpNode1->setType(AST_DIVIDE);
+                      tmpNode1->addChild(node);
+                      ConverterASTNode* tmpNode2 = new ConverterASTNode();
+                      tmpNode2->setType(AST_NAME);
+                      tmpNode2->setName(compartment->getSBMLId().c_str());
+                      tmpNode1->addChild(tmpNode2);
+                      node = tmpNode1;
+                      std::map<const CDataObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(compartment);
+                      assert(pos != copasi2sbmlmap.end());
+                      Compartment* pSBMLCompartment = dynamic_cast<Compartment*>(pos->second);
+                      assert(pSBMLCompartment != NULL);
 
-                      if (tmpNode1 != NULL)
+                      if (!hasOnlySubstanceUnitPresent && ((this->mLevel == 1 && pSBMLCompartment->isSetVolume()) || (this->mLevel >= 2 && pSBMLCompartment->isSetSize())) && pSBMLCompartment->getSize() == 1.0)
                         {
-                          delete node;
-                          node = tmpNode1;
+                          // we have to check if all species used in the reaction
+                          // have the hasOnlySubstance flag set
 
-                          if (node->getType() == AST_DIVIDE && node->getNumChildren() != 2)
+                          if (node->getChild(0)->getType() == AST_FUNCTION && (!this->containsVolume(node->getChild(0), compartment->getSBMLId())))
                             {
-                              delete tmpNode1;
-                              fatalError();
-                            }
-                        }
-                      else
-                        {
-                          tmpNode1 = new ConverterASTNode();
-                          tmpNode1->setType(AST_DIVIDE);
-                          tmpNode1->addChild(node);
-                          ConverterASTNode* tmpNode2 = new ConverterASTNode();
-                          tmpNode2->setType(AST_NAME);
-                          tmpNode2->setName(compartment->getSBMLId().c_str());
-                          tmpNode1->addChild(tmpNode2);
-                          node = tmpNode1;
-                          std::map<const CDataObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(compartment);
-                          assert(pos != copasi2sbmlmap.end());
-                          Compartment* pSBMLCompartment = dynamic_cast<Compartment*>(pos->second);
-                          assert(pSBMLCompartment != NULL);
-
-                          if (!hasOnlySubstanceUnitPresent && ((this->mLevel == 1 && pSBMLCompartment->isSetVolume()) || (this->mLevel >= 2 && pSBMLCompartment->isSetSize())) && pSBMLCompartment->getSize() == 1.0)
-                            {
-                              // we have to check if all species used in the reaction
-                              // have the hasOnlySubstance flag set
-
-                              if (node->getChild(0)->getType() == AST_FUNCTION && (!this->containsVolume(node->getChild(0), compartment->getSBMLId())))
-                                {
-                                  // add the id of the reaction to the set so that we can create an error message later.
-                                  this->mDivisionByCompartmentReactions.insert(sbmlReaction->getId());
-                                }
+                              // add the id of the reaction to the set so that we can create an error message later.
+                              this->mDivisionByCompartmentReactions.insert(sbmlReaction->getId());
                             }
                         }
                     }
@@ -3677,8 +3705,8 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
       mCurrentStepCounter = 0;
       mCurrentStepTotal = 1;
       mCurrentStepHandle = mpProgressHandler->addItem("Reading SBML file...",
-        mCurrentStepCounter,
-        &mCurrentStepTotal);
+                           mCurrentStepCounter,
+                           &mCurrentStepTotal);
     }
 
   SBMLDocument* sbmlDoc = reader->readSBMLFromString(sbmlDocumentText);
@@ -5064,6 +5092,7 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
                           id1 = id2;
                           break;
                         }
+
                       if (id2 == (*avoIt)->getId())
                         {
                           pAvogadro = pChild2;
@@ -5897,17 +5926,17 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
                         {
                           case CChemEq::SUBSTRATE:
                             // it is a substrate
-                            pFunParam->setUsage(CFunctionParameter::SUBSTRATE);
+                            pFunParam->setUsage(CFunctionParameter::Role::SUBSTRATE);
                             break;
 
                           case CChemEq::PRODUCT:
                             // it is a product
-                            pFunParam->setUsage(CFunctionParameter::PRODUCT);
+                            pFunParam->setUsage(CFunctionParameter::Role::PRODUCT);
                             break;
 
                           case CChemEq::MODIFIER:
                             // it is a modifier
-                            pFunParam->setUsage(CFunctionParameter::MODIFIER);
+                            pFunParam->setUsage(CFunctionParameter::Role::MODIFIER);
                             break;
 
                           default:
@@ -5927,12 +5956,12 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
           else if (dynamic_cast<const CModelValue*>(object))
             {
               // it is a global parameter
-              pFunParam->setUsage(CFunctionParameter::PARAMETER);
+              pFunParam->setUsage(CFunctionParameter::Role::PARAMETER);
             }
           else if (dynamic_cast<const CCompartment*>(object))
             {
               // it is a volume
-              pFunParam->setUsage(CFunctionParameter::VOLUME);
+              pFunParam->setUsage(CFunctionParameter::Role::VOLUME);
             }
           else
             {
@@ -5942,7 +5971,7 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
       else
         {
           // it is a local parameter
-          pFunParam->setUsage(CFunctionParameter::PARAMETER);
+          pFunParam->setUsage(CFunctionParameter::Role::PARAMETER);
         }
 
       pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
@@ -5992,9 +6021,10 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           pObject = pObject->getObjectParent();
         }
 
-      const std::string& objectKey = pObject->getKey();
+      std::vector< const CDataObject * > Objects(1, pObject);
 
-      pCopasiReaction->setParameterMapping("k1", objectKey);
+      pCopasiReaction->setParameterObjects("k1", Objects);
+      Objects.clear();
 
       const CDataVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getSubstrates();
 
@@ -6004,7 +6034,10 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
 
       for (i = 0; i < iMax; ++i)
         for (j = 0, jMax = static_cast<int>(fabs((*metabolites)[i].getMultiplicity())); j < jMax; j++)
-          pCopasiReaction->addParameterMapping("substrate", metabolites->operator[](i).getMetaboliteKey());
+          Objects.push_back(metabolites->operator[](i).getMetabolite());
+
+      pCopasiReaction->setParameterObjects("substrate", Objects);
+      Objects.clear();
 
       if (pCopasiReaction->isReversible())
         {
@@ -6023,9 +6056,10 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
               pObject = pObject->getObjectParent();
             }
 
-          const std::string& objectKey = pObject->getKey();
+          Objects.push_back(pObject);
 
-          pCopasiReaction->setParameterMapping("k2", objectKey);
+          pCopasiReaction->setParameterObjects("k2", Objects);
+          Objects.clear();
 
           const CDataVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getProducts();
 
@@ -6033,7 +6067,10 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
 
           for (i = 0; i < iMax; ++i)
             for (j = 0, jMax = static_cast<int>(fabs(metabolites->operator[](i).getMultiplicity())); j < jMax; j++)
-              pCopasiReaction->addParameterMapping("product", metabolites->operator[](i).getMetaboliteKey());
+              Objects.push_back(metabolites->operator[](i).getMetabolite());
+
+          pCopasiReaction->setParameterObjects("product", Objects);
+          Objects.clear();
         }
     }
   else
@@ -6063,48 +6100,48 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
               pObject = pObject->getObjectParent();
             }
 
-          const std::string& objectKey = pObject->getKey();
-
-          pCopasiReaction->setParameterMapping(i, objectKey);
+          std::vector< const CDataObject * > Objects(1, pObject);
+          pCopasiReaction->setParameterObjects(i, Objects);
+          Objects.clear();
 
           const CChemEq& eqn = pCopasiReaction->getChemEq();
 
           bool reversible = eqn.getReversibility();
 
           // We guess what the role of a variable of newly imported function is:
-          if (Variables[i]->getUsage() == CFunctionParameter::VARIABLE)
+          if (Variables[i]->getUsage() == CFunctionParameter::Role::VARIABLE)
             {
-              CFunctionParameter::Role Role = CFunctionParameter::PARAMETER;
+              CFunctionParameter::Role Role = CFunctionParameter::Role::PARAMETER;
 
               if (pObject->getObjectType() == "Metabolite")
                 {
-                  if (containsKey(eqn.getSubstrates(), objectKey))
-                    Role = CFunctionParameter::SUBSTRATE;
+                  if (containsKey(eqn.getSubstrates(), pObject->getKey()))
+                    Role = CFunctionParameter::Role::SUBSTRATE;
 
-                  if (Role == CFunctionParameter::PARAMETER &&
-                      containsKey(eqn.getProducts(), objectKey))
+                  if (Role == CFunctionParameter::Role::PARAMETER &&
+                      containsKey(eqn.getProducts(), pObject->getKey()))
                     {
                       // Fix for Bug 1882: if not reversible, only mark as product if it does
                       // not appear in the list of modifiers
-                      if (!reversible && containsKey(eqn.getModifiers(), objectKey))
-                        Role =  CFunctionParameter::MODIFIER;
+                      if (!reversible && containsKey(eqn.getModifiers(), pObject->getKey()))
+                        Role =  CFunctionParameter::Role::MODIFIER;
                       else
-                        Role =  CFunctionParameter::PRODUCT;
+                        Role =  CFunctionParameter::Role::PRODUCT;
                     }
 
                   // It is not a substrate and not a product therefore we must have a modifier
-                  if (Role == CFunctionParameter::PARAMETER)
+                  if (Role == CFunctionParameter::Role::PARAMETER)
                     {
-                      Role = CFunctionParameter::MODIFIER;
+                      Role = CFunctionParameter::Role::MODIFIER;
                     }
                 }
               else if (pObject->getObjectType() == "Model")
                 {
-                  Role = CFunctionParameter::TIME;
+                  Role = CFunctionParameter::Role::TIME;
                 }
               else if (pObject->getObjectType() == "Compartment")
                 {
-                  Role = CFunctionParameter::VOLUME;
+                  Role = CFunctionParameter::Role::VOLUME;
                 }
 
               const_cast< CFunctionParameter * >(Variables[i])->setUsage(Role);
@@ -6150,82 +6187,92 @@ bool SBMLImporter::isSimpleFunctionCall(const CEvaluationNode* pRootNode)
   return result;
 }
 
-ConverterASTNode* SBMLImporter::isMultipliedByVolume(const ASTNode* node, const std::string& compartmentSBMLId)
+
+bool SBMLImporter::divideByVolume(ASTNode* node, const std::string& compartmentSBMLId)
 {
-  ConverterASTNode* result = NULL;
+  ASTNode* nodeIt = node;
+  bool finished = false;
+  bool found = false;
+  std::vector<ASTNode*> nodeStack;
+  std::vector<int> intStack;
 
-  if (node->getType() == AST_TIMES || node->getType() == AST_DIVIDE)
+  do
     {
-      ConverterASTNode* pTmpResultNode = new ConverterASTNode(node->getType());
-      unsigned int i, iMax = node->getNumChildren();
-      bool found = false;
 
-      for (i = 0; i < iMax; ++i)
+      //check for compartment hit
+      if (nodeIt->getType() == AST_NAME && nodeIt->getName() == compartmentSBMLId)
         {
-          const ASTNode* child = node->getChild(i);
-
-          if (node->getType() == AST_TIMES && child->getType() == AST_NAME && child->getName() == compartmentSBMLId)
-            {
-              found = true;
-            }
-          else if ((!found) && (child->getType() == AST_TIMES || child->getType() == AST_DIVIDE))
-            {
-              ASTNode* pSubResult = this->isMultipliedByVolume(child, compartmentSBMLId);
-
-              if (pSubResult)
-                {
-                  found = true;
-
-                  if (pSubResult->getNumChildren() > 1)
-                    {
-                      pTmpResultNode->addChild(pSubResult);
-                    }
-                  else if (pSubResult->getNumChildren() == 1)
-                    {
-                      pTmpResultNode->addChild(static_cast<ASTNode*>(static_cast<ConverterASTNode*>(pSubResult)->removeChild(0)));
-                      delete pSubResult;
-                    }
-                  else
-                    {
-                      delete pSubResult;
-                    }
-                }
-              else
-                {
-                  pTmpResultNode->addChild(new ConverterASTNode(*child));
-                }
-            }
-          else
-            {
-              // bail in case of hOSU
-              if (child->getType() == AST_NAME &&  !mSubstanceOnlySpecies.empty())
-                {
-                  std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
-                  std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
-
-                  while (it != endIt)
-                    {
-                      if (it->first->getId() == child->getName()) return NULL;
-
-                      it++;
-                    }
-                }
-
-              pTmpResultNode->addChild(new ConverterASTNode(*child));
-            }
+          found = true;
+          break;
         }
 
-      if (found)
+      //now iterate...
+      if ((nodeIt->getType() == AST_TIMES || nodeIt->getType() == AST_DIVIDE) && nodeIt->getNumChildren() > 0)
         {
-          result = pTmpResultNode;
+          //go down in the tree
+          nodeStack.push_back(nodeIt);
+          intStack.push_back(0);
+          nodeIt = nodeIt->getChild(0);
         }
       else
         {
-          delete pTmpResultNode;
+          while (nodeStack.size())
+            {
+              nodeIt = nodeStack[nodeStack.size() - 1];
+
+              if (nodeIt->getType() == AST_TIMES && nodeIt->getNumChildren() > intStack[intStack.size() - 1] + 1)
+                {
+                  //go to sibling
+                  nodeIt = nodeIt->getChild(intStack[intStack.size() - 1] + 1);
+                  intStack[intStack.size() - 1]++;
+                  break;
+                }
+              else
+                {
+                  //go up in tree
+                  nodeStack.pop_back();
+                  intStack.pop_back();
+                }
+            }
+
+          //if we reach the top again we are done (it means we could not go to a sibling)
+          if (nodeStack.size() == 0)
+            finished = true;
         }
+
+    }
+  while (!finished);
+
+  if (!found)
+    return false;
+
+  //now we know the location of the node that needs to be removed.
+
+  // for now, ignore the case of the root node
+  if (nodeStack.size() == 0)
+    return false;
+
+  //that means a parent should exist.
+  ASTNode* parentNode = nodeStack[nodeStack.size() - 1];
+
+
+  //the case where the parent is TIMES and has at least 2 children: just remove the node
+  //  (accepting that it may result in a multiplication with one child)
+  if (parentNode->getType() == AST_TIMES && parentNode->getNumChildren() > 1)
+    {
+      parentNode->removeChild(intStack[intStack.size() - 1]);
+      return true;
     }
 
-  return result;
+  //TODO: cases that could be implemented:
+  //
+  // - TIMES nodes with only one child can be removed
+  // - TIMES nodes that had only one child before should be removed (although technically correct?)
+  // - Volume node in nominator of DIVIDE node can be replaced by "1"
+  // - (Volume node at top level can be replaced by "1", this cannot be implemented within this method)
+
+  return false;
+
 }
 
 CEvaluationNode* SBMLImporter::variables2objects(const CEvaluationNode* pOrigNode, const std::map<std::string, std::string>& replacementMap)
@@ -6972,7 +7019,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, const CModelEntity
       const CCompartment* pCompartment = static_cast<CMetab*>(pModelEntity)->getCompartment();
       assert(pCompartment != NULL);
 
-      if (pSBMLSpecies->getHasOnlySubstanceUnits() == true && pCompartment->getDimensionality() != 0)
+      if (pSBMLSpecies->getHasOnlySubstanceUnits() == true || pCompartment->getDimensionality() == 0)
         {
 
           CEvaluationNode* pOrigNode = pExpression->getRoot();
@@ -8341,7 +8388,17 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // another global substance unit since this would change the units for
       // the kinetic laws
       UnitDefinition* pUdef = getSBMLUnitDefinitionForId(lastUnit, pSBMLModel);
-      const UnitDefinition* pUdef2 = getSBMLUnitDefinitionForId("substance", pSBMLModel);
+      const UnitDefinition* pUdef2 = NULL;
+
+      if (pSBMLModel->getLevel() > 2 && pSBMLModel->isSetSubstanceUnits())
+        {
+          pUdef2 = getSBMLUnitDefinitionForId(pSBMLModel->getSubstanceUnits(), pSBMLModel);
+        }
+      else
+        {
+          pUdef2 = getSBMLUnitDefinitionForId("substance", pSBMLModel);
+        }
+
       assert(pUdef2 != NULL);
       assert(pUdef != NULL);
 
@@ -9282,7 +9339,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<const CD
                           const CCompartment* pCompartment = pMetab->getCompartment();
                           assert(pCompartment != NULL);
 
-                          if (pSBMLSpecies->getHasOnlySubstanceUnits() == true && pCompartment->getDimensionality() != 0)
+                          if (pSBMLSpecies->getHasOnlySubstanceUnits() == true || pCompartment->getDimensionality() == 0)
                             {
                               CEvaluationNode* pOrigNode = pExpression->getRoot();
                               assert(pOrigNode != NULL);
@@ -9577,7 +9634,7 @@ void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pASTNo
                       ++it;
                     }
 
-                  if (it != endit && it->second->getSpatialDimensions() != 0 && pChild2->getName() == it->second->getId())
+                  if (it != endit && pChild2->getName() == it->second->getId())
                     {
                       // delete the children
                       itNode->removeChild(1);
@@ -9606,7 +9663,7 @@ void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pASTNo
               ++it;
             }
 
-          if (it != endit && it->second->getSpatialDimensions() != 0)
+          if (it != endit)
             {
               ConverterASTNode* pChild1 = new ConverterASTNode();
               pChild1->setType(AST_NAME);
@@ -9650,6 +9707,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CDataObject* pCOPASIOb
               pMIRIAMNode = &pAnnotation->getChild(i);
               break;
             }
+
           // maybe import the COPASI MIRIAM annotation
           if (pAnnotation->getChild(i).getURI() == "http://www.copasi.org/static/sbml" && this->mImportCOPASIMIRIAM == true)
             {
@@ -9844,7 +9902,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CDataObject* pCOPASIOb
           std::string sboTerm = pSBMLObject->getSBOTermID();
           // load miriam info
           CMIRIAMInfo info;
-          info.load(annotation->getKey());
+          info.load(dynamic_cast< CDataContainer * >(pCOPASIObject));
 
           // check whether term is already there
           CDataVector <CBiologicalDescription>& descriptons = info.getBiologicalDescriptions();
@@ -10318,22 +10376,21 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
               assert(pMetab != NULL);
               const CCompartment* pCompartment = pMetab->getCompartment();
 
-              if (pCompartment->getDimensionality() != 0)
-                {
-                  CEvaluationNode* pOrigNode = pExpression->getRoot();
-                  assert(pOrigNode != NULL);
-                  CEvaluationNode* pNode = SBMLImporter::divideByObject(pOrigNode, pCompartment->getValueReference());
-                  assert(pNode != NULL);
 
-                  if (pNode != NULL)
-                    {
-                      pExpression->setRoot(pNode);
-                    }
-                  else
-                    {
-                      fatalError();
-                    }
+              CEvaluationNode* pOrigNode = pExpression->getRoot();
+              assert(pOrigNode != NULL);
+              CEvaluationNode* pNode = SBMLImporter::divideByObject(pOrigNode, pCompartment->getValueReference());
+              assert(pNode != NULL);
+
+              if (pNode != NULL)
+                {
+                  pExpression->setRoot(pNode);
                 }
+              else
+                {
+                  fatalError();
+                }
+
             }
 
           pAssignment = new CEventAssignment(pObject->getKey(), pCOPASIEvent);

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -36,7 +41,8 @@ class CCompartment;
 class CChemEqInterface
 {
 private:
-  CModel * mpModel;
+  const CChemEq * mpChemEq;
+  mutable CModel * mpModel;
 
   std::vector< std::string > mSubstrateNames;
   std::vector< std::string > mProductNames;
@@ -56,26 +62,31 @@ private:
 
   bool mReversibility;
 
-private:
+public:
   CChemEqInterface();
 
-public:
-  CChemEqInterface(const CModel * pModel);
-
   ~CChemEqInterface();
+
+  bool init(const CChemEq & ce);
 
   std::string getChemEqString(bool expanded) const;
 
   bool setChemEqString(const std::string & ces);
 
-  bool loadFromChemEq(const CChemEq & ce);
+  bool writeToChemEq(CChemEq * pChemEq = NULL) const;
 
-  bool writeToChemEq(CChemEq & ce) const;
+  std::string toDataValue() const;
+  bool fromDataValue(const std::string & dataValue);
 
   const std::vector<C_FLOAT64> & getListOfMultiplicities(CFunctionParameter::Role role) const;
 
+  const std::vector<std::string> & getListOfSpecies(CFunctionParameter::Role role) const;
+
+  const std::vector<std::string> & getListOfCompartments(CFunctionParameter::Role role) const;
+
   const std::vector<std::string> & getListOfDisplayNames(CFunctionParameter::Role role) const;
 
+  std::pair< std::string, std::string > displayNameToNamePair(CFunctionParameter::Role role, const std::string displayName) const;
   /**
    * add a modifier to the chemical equation. It is only added if it is not already in there.
    */
@@ -126,8 +137,8 @@ public:
   bool createNonExistingMetabs(std::vector<std::string> &createdKeys);
 
   //convenience methods:
-  static std::string getChemEqString(const CModel * model, const CReaction & rea, bool expanded);
-  static void setChemEqFromString(CModel * model, CReaction & rea, const std::string & ces);
+  static std::string getChemEqString(const CReaction & rea, bool expanded);
+  static bool setChemEqFromString(CReaction & rea, const std::string & ces);
 
   static bool isValidEq(const std::string & eq);
 

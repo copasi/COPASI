@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -198,7 +203,7 @@ bool CQPlotDM::setData(const QModelIndex &index, const QVariant &value,
       if (changed)
         {
           emit dataChanged(index, index);
-          emit notifyGUI(ListViews::PLOT, ListViews::CHANGE, pPS->CCopasiParameter::getKey());
+          emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::CHANGE, pPS->CCopasiParameter::getCN());
         }
     }
   else if (role == Qt::CheckStateRole && index.column() == COL_ACTIVE_PLOTS)
@@ -210,16 +215,16 @@ bool CQPlotDM::setData(const QModelIndex &index, const QVariant &value,
   return true;
 }
 
-bool CQPlotDM::insertRows(int position, int rows, const QModelIndex & source)
+bool CQPlotDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
+  beginInsertRows(parent, position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
       QString Name = this->createNewName(mNewName, COL_NAME_PLOTS);
 
       CPlotSpecification *pPS = mpDataModel->getPlotDefinitionList()->createPlotSpec(TO_UTF8(Name), CPlotItem::plot2d);
-      emit notifyGUI(ListViews::PLOT, ListViews::ADD, pPS->CCopasiParameter::getKey());
+      emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::ADD, pPS->CCopasiParameter::getCN());
     }
 
   endInsertRows();
@@ -229,20 +234,20 @@ bool CQPlotDM::insertRows(int position, int rows, const QModelIndex & source)
   return true;
 }
 
-bool CQPlotDM::removeRows(int position, int rows)
+bool CQPlotDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(QModelIndex(), position, position + rows - 1);
+  beginRemoveRows(parent, position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
       CPlotSpecification* pPS =
         &mpDataModel->getPlotDefinitionList()->operator[](position);
-      std::string deletedKey = pPS->CCopasiParameter::getKey();
+      std::string deletedKey = pPS->CCopasiParameter::getCN();
       mpDataModel->getPlotDefinitionList()->CDataVector< CPlotSpecification >::remove(position);
-      emit notifyGUI(ListViews::PLOT, ListViews::DELETE, deletedKey);
+      emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::DELETE, deletedKey);
     }
 
   endRemoveRows();

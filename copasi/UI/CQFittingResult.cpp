@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -85,11 +90,9 @@ void CQFittingResult::init()
   mpFisherInformationScaledEigenvectors->setLegendEnabled(false);
 }
 
-bool CQFittingResult::update(ListViews::ObjectType objectType,
-                             ListViews::Action action,
-                             const std::string & /* key */)
+bool CQFittingResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
-  if (objectType == ListViews::MODEL && action == ListViews::DELETE)
+  if (objectType == ListViews::ObjectType::MODEL && action == ListViews::DELETE)
     {
       // need to clear annotated matrices, as otherwise they will hold pointers to non-existing things.
       mpCorrelations->setArrayAnnotation(NULL);
@@ -106,7 +109,7 @@ bool CQFittingResult::update(ListViews::ObjectType objectType,
   return true;
 }
 
-bool CQFittingResult::leave()
+bool CQFittingResult::leaveProtected()
 {
   // :TODO:
   return true;
@@ -444,6 +447,9 @@ bool CQFittingResult::enterProtected()
 
   mpLogTree->clear();
 
+  if (mpTabWidget->currentWidget() == mpLogPage)
+    loadTab(mpTabWidget->currentIndex());
+
   //preliminary testing code
   /*tcs = new CColorScaleBiLog();
   CQArrayAnnotationsWidget * pJacobianMatrix = new CQArrayAnnotationsWidget(NULL, false);
@@ -550,5 +556,5 @@ void CQFittingResult::slotUpdateModel()
   const_cast< CFitProblem * >(mpProblem)->restore(true);
 
   // We need to notify the GUI to update all values
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getKey());
+  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
 }

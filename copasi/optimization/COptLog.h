@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -9,22 +9,22 @@
 #include <vector>
 #include <string>
 
-#include "COptLogItem.h"
+#include "COptLogEntry.h"
 
 class COptLog
 {
   // Attributes
 public:
-  std::vector< COptLogItem >::const_iterator begin() const;
-  std::vector< COptLogItem >::const_iterator end() const;
+  std::vector< COptLogEntry >::const_iterator begin() const;
+  std::vector< COptLogEntry >::const_iterator end() const;
 protected:
 
 private:
 
   /**
-   * A vector of all log items
+   * A vector of all log entries
    */
-  std::vector< COptLogItem > mLogItems;
+  std::vector< COptLogEntry > mLogEntries;
 
   // Operations
 private:
@@ -44,9 +44,9 @@ public:
 
   /**
    * Enter a log message
-   * @param COptLogItem item
+   * @param COptLogEntry entry
    */
-  void enterLogItem(COptLogItem item);
+  void enterLogEntry(COptLogEntry entry);
 
   /**
    * Get the log element count

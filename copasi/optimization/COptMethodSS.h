@@ -284,12 +284,12 @@ private:
   /**
    * a pointer to an opt problem used for local minimization
    */
-  COptProblem * mpOptProblemLocal;
+  COptProblem * mpOptProblemLocal{NULL};
 
   /**
    * a pointer to an opt method used for local minimization
    */
-  COptMethod * mpLocalMinimizer;
+  COptMethod * mpLocalMinimizer{NULL};
 };
 
 #endif  // COPASI_COptMethodSS

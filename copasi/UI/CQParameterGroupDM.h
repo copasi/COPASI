@@ -25,8 +25,6 @@
 class CCopasiParameterGroup;
 class CCopasiParameter;
 
-class QUndoStack;
-
 class CQParameterGroupDM : public QAbstractItemModel
 {
   Q_OBJECT

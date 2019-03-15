@@ -41,8 +41,8 @@ public slots:
 
 protected:
   virtual void resetCacheProtected();
-  bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
-  bool removeRows(int position, int rows);
+  bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+  bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 
   // cache the pretty-printed unit strings
   mutable QMap< const CUnitDefinition *, QVariant > mUnitCache;

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,20 +26,6 @@
 #include "copasi/utilities/CUnitDefinitionDB.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
-////UNDO framework classes
-//#ifdef COPASI_UNDO
-//#include "model/CReactionInterface.h"
-//#include "undoFramework/DeleteGlobalQuantityCommand.h"
-//#include "undoFramework/CreateNewGlobalQuantityCommand.h"
-////#include "undoFramework/GlobalQuantityTypeChangeCommand.h"
-//#include "undoFramework/UndoGlobalQuantityData.h"
-//#include "undoFramework/UndoReactionData.h"
-//#include "undoFramework/UndoEventData.h"
-//#include "undoFramework/UndoSpecieData.h"
-//#include "undoFramework/UndoEventAssignmentData.h"
-//#include "copasiui3window.h"
-//#endif
-
 /*
  *  Constructs a CQUnitDetail which is a child of 'parent', with the
  *  name 'name'.'
@@ -47,10 +38,8 @@ CQUnitDetail::CQUnitDetail(QWidget* parent, const char* name)
 
   init();
 
-//#ifdef COPASI_UNDO
 //  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
 //  setUndoStack(pWindow->getUndoStack());
-//#endif
 }
 
 /*
@@ -80,10 +69,10 @@ void CQUnitDetail::slotBtnNew()
 
   unitList->add(pUnitDef = new CUnitDefinition(name, unitList), true);
 
-  std::string key = pUnitDef->getKey();
-  protectedNotify(ListViews::UNIT, ListViews::ADD, key);
+  CCommonName CN = pUnitDef->getCN();
+  protectedNotify(ListViews::ObjectType::UNIT, ListViews::ADD, CN);
 // enter(key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::UnitDetail, CN);
 }
 
 void CQUnitDetail::slotBtnCopy()
@@ -101,15 +90,23 @@ void CQUnitDetail::slotBtnCopy()
       name += TO_UTF8(QString::number(i));
     }
 
+  CData ToCopy = mpObject->toData();
+  ToCopy.addProperty(CData::Property::OBJECT_NAME, name);
+  ToCopy.removeProperty(CData::Property::OBJECT_INDEX);
+  ToCopy.removeProperty(CData::OBJECT_UUID);
+  ToCopy.removeProperty(CData::OBJECT_REFERENCES);
+
   CUnitDefinition * pUnitDef = new CUnitDefinition(name, unitList);
-
-  pUnitDef->setExpression(mpUnitDefinition->getExpression());
-
   unitList->add(pUnitDef, true);
+  CUndoData::CChangeSet Changes;
+  pUnitDef->applyData(ToCopy, Changes);
 
-  std::string key = pUnitDef->getKey();
-  protectedNotify(ListViews::UNIT, ListViews::ADD, key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  CUndoData UndoData(CUndoData::Type::INSERT, pUnitDef);
+  ListViews::addUndoMetaData(this, UndoData);
+  UndoData.addMetaDataProperty("Widget Object CN (after)", pUnitDef->getCN());
+  UndoData.addMetaDataProperty("Widget Object Name (after)", pUnitDef->getObjectName());
+
+  slotNotifyChanges(mpDataModel->recordData(UndoData));
 }
 
 //! Slot for being activated whenever Delete button is clicked
@@ -126,7 +123,7 @@ void CQUnitDetail::slotBtnDelete()
   if (pUnitDefs == NULL)
     return;
 
-  CUnitDefinition * pUnitDef = dynamic_cast<CUnitDefinition *>(CRootContainer::getKeyFactory()->get(mKey));
+  CUnitDefinition * pUnitDef = dynamic_cast<CUnitDefinition *>(mpObject);
 
   if (pUnitDef == NULL)
     return;
@@ -157,96 +154,19 @@ void CQUnitDetail::slotBtnDelete()
 
       if (ret == QMessageBox::Yes)
         {
-          delete pUnitDef;
-          protectedNotify(ListViews::UNIT, ListViews::DELETE, mKey);
+          CUndoData UndoData;
+          pUnitDef->createUndoData(UndoData, CUndoData::Type::REMOVE);
+          ListViews::addUndoMetaData(this, UndoData);
+
+          slotNotifyChanges(mpDataModel->applyData(UndoData));
         }
     }
 
   return;
 }
 
-/*!
-    If the simulation type is changed then COPASI will automatically adjust its appearance,
-    especially correlating to the Expression Widget and its buttons.
- */
-//void CQUnitDetail::slotTypeChanged(int type)
-//{
-//  switch ((CModelEntity::Status) mItemToType[type])
-//    {
-//      case CModelEntity::Status::FIXED:
-//        // hide label, widget, and all buttons
-//        mpLblExpression->hide();
-//        mpExpressionEMW->hide();
-
-//        // enable the option of use Initial Expression
-//        mpBoxUseInitialExpression->setEnabled(true);
-//        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
-
-//        // we don't need to update the expression widget as it is already hidden
-
-//        break;
-
-//      case CModelEntity::Status::ASSIGNMENT:
-//        // show label, widget, and correct buttons
-//        mpLblExpression->show();   // show the label
-//        mpExpressionEMW->show();  // show the widget
-
-//        // disable the option of use Initial Expression
-//        mpBoxUseInitialExpression->setEnabled(false);
-//        slotInitialTypeChanged(false);
-
-//        // update the expression widget
-//        mpExpressionEMW->updateWidget();
-
-//        break;
-
-//      case CModelEntity::Status::ODE:
-//        // show label, widget, and correct buttons
-//        mpLblExpression->show();   // show the label
-//        mpExpressionEMW->show();  // show the widget
-
-//        // enable the option of use Initial Expression
-//        mpBoxUseInitialExpression->setEnabled(true);
-//        slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
-
-//        // update the expression widget
-//        mpExpressionEMW->updateWidget();
-
-//        break;
-
-//      default:
-//        break;
-//}
-//}
-
-///*!
-//    This function is used in case of not FIXED type
-// */
-//void CQUnitDetail::slotExpressionValid(bool valid)
-//{
-//  mExpressionValid = valid;
-//}
-
-//void CQUnitDetail::slotInitialExpressionValid(bool valid)
-//{
-//  mInitialExpressionValid = valid;
-//}
-
 void CQUnitDetail::init()
 {
-//  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::FIXED]));
-//  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ASSIGNMENT]));
-//  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ODE]));
-
-//  mItemToType.push_back(CModelEntity::Status::FIXED);
-//  mItemToType.push_back(CModelEntity::Status::ASSIGNMENT);
-//  mItemToType.push_back(CModelEntity::Status::ODE);
-
-//  mExpressionValid = false;
-//  mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
-
-//  mInitialExpressionValid = false;
-//  mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
   mpExpressionValidator = new CQValidatorUnit(mpEditExpression);
   mpEditExpression->setValidator(mpExpressionValidator);
 }
@@ -256,43 +176,9 @@ void CQUnitDetail::destroy()
   delete mpExpressionValidator;
 }
 
-bool CQUnitDetail::update(ListViews::ObjectType  objectType,
-                          ListViews::Action action,
-                          const std::string & key)
+bool CQUnitDetail::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
-//  switch (objectType)
-//    {
-//      case ListViews::MODEL:
-
-//        // For a new model we need to remove references to no longer existing metabolites
-//        if (action == ListViews::ADD)
-//          {
-//            mKey = "";
-//            mpObject = NULL;
-//            mpUnitDefinition = NULL;
-//}
-
-//        break;
-
-//      case ListViews::MODELVALUE:
-
-//        // If the currently displayed metabolite is deleted we need to remove its references.
-//        if (action == ListViews::DELETE && mKey == key)
-//          {
-//            mKey = "";
-//            mpObject = NULL;
-//            mpUnitDefinition = NULL;
-//}
-
-//        break;
-
-//      case ListViews::STATE:
-//        break;
-
-//      default:
-//        return true;
-//        break;
-//}
+  mpUnitDefinition = dynamic_cast< CUnitDefinition * >(mpObject);
 
   if (isVisible() && !mIgnoreUpdates)
     load();
@@ -300,20 +186,8 @@ bool CQUnitDetail::update(ListViews::ObjectType  objectType,
   return true;
 }
 
-bool CQUnitDetail::leave()
+bool CQUnitDetail::leaveProtected()
 {
-//  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::FIXED)
-//    {
-//      // -- Expression --
-//      mpExpressionEMW->updateWidget();
-//}
-
-//  if (mpBoxUseInitialExpression->isChecked())
-//    {
-//      // -- Initial Expression --
-//      mpInitialExpressionEMW->updateWidget();
-//}
-
   save();
 
   return true;
@@ -327,7 +201,7 @@ bool CQUnitDetail::enterProtected()
 
   if (!mpUnitDefinition)
     {
-      mpListView->switchToOtherWidget(6, "");
+      mpListView->switchToOtherWidget(ListViews::WidgetType::Units, std::string());
       return false;
     }
 
@@ -361,34 +235,6 @@ void CQUnitDetail::load()
       mpEditSymbol->setEnabled(true);
     }
 
-//  // Expression
-//  mpExpressionEMW->mpExpressionWidget->setExpression(mpModelValue->getExpression());
-
-//  // Update Expression Widget
-//  mpExpressionEMW->updateWidget();
-
-//  // Initial Expression
-//  mpInitialExpressionEMW->mpExpressionWidget->setExpression(mpModelValue->getInitialExpression());
-
-//  // Update Initial Expression Widget
-//  mpInitialExpressionEMW->updateWidget();
-
-//  // Type dependent display of values
-////  slotTypeChanged(mpComboBoxType->currentIndex());
-
-//  // Use Initial Expression
-//  if (mpModelValue->getStatus() == CModelEntity::Status::ASSIGNMENT ||
-//      mpModelValue->getInitialExpression() == "")
-//    {
-//      mpBoxUseInitialExpression->setChecked(false);
-//      //      slotInitialTypeChanged(false);
-//}
-//  else
-//    {
-//      mpBoxUseInitialExpression->setChecked(true);
-//      //      slotInitialTypeChanged(true);
-//}
-
   mChanged = false;
 }
 
@@ -398,6 +244,9 @@ void CQUnitDetail::load()
 void CQUnitDetail::save()
 {
   if (mpUnitDefinition == NULL) return;
+
+  mChanged = false;
+  CData OldData(mpUnitDefinition->toData());
 
   // set unit symbol
   if (mpUnitDefinition->getSymbol() != TO_UTF8(mpEditSymbol->text()))
@@ -427,310 +276,14 @@ void CQUnitDetail::save()
 
   if (mChanged)
     {
-      assert(mpDataModel != NULL);
-      mpDataModel->changed();
-      protectedNotify(ListViews::UNIT, ListViews::CHANGE, mKey);
+
+      CUndoData UndoData;
+      mpUnitDefinition->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast<CCore::Framework>(mFramework));
+      ListViews::addUndoMetaData(this, UndoData);
+
+      slotNotifyChanges(mpDataModel->recordData(UndoData));
+      load();
     }
 
   mChanged = false;
 }
-
-/*!
-    If the initial expression is chosen to be used by checking the mpBoxUseInitialExpression check box being represented by
-    the boolean parameter useInitialAssignment (true if checked; false otherwise), COPASI will show the Initial Expression
-    Widget with its correct push buttons. Otherwise, the widget and its buttons will be hidden.
- */
-//void CQUnitDetail::slotInitialTypeChanged(bool useInitialAssignment)
-//{
-//  if (useInitialAssignment)  // use Initial Expression (ie. the mpBoxUseInitialExpression is checked)
-//    {
-//      // show label, widget, and the correct buttons
-//      mpLblInitialExpression->show();  // show the label
-//      mpInitialExpressionEMW->show(); // show the widget
-
-//      // enable the option of use Initial Value
-//      mpEditInitialValue->setEnabled(false);
-
-//      // update the Initial Expression Widget
-//      mpInitialExpressionEMW->updateWidget();
-//}
-//  else  // mpBoxUseInitialExpression is not checked
-//    {
-//      // hide label, widget, and all buttons
-//      mpLblInitialExpression->hide();
-//      mpInitialExpressionEMW->hide();
-
-//      // enable the option of use Initial Value
-//      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::ASSIGNMENT);
-
-//      // we don't need to update the Initial Expression Widget
-//}
-//}
-
-//Undo methods
-#ifdef COPASI_UNDO
-
-//void CQUnitDetail::createNewGlobalQuantity()
-//{
-//  // save the current setting values
-//  leave();
-
-//  // standard name
-//  std::string name = "quantity_1";
-
-//  // if the standard name already exists then creating the new event will fail
-//  // thus, a growing index will automatically be added to the standard name
-//  int i = 1;
-//  assert(CRootContainer::getDatamodelList()->size() > 0);
-
-//  while (!(mpModelValue = mpDataModel->getModel()->createModelValue(name)))
-//    {
-//      i++;
-//      name = "quantity_";
-//      name += TO_UTF8(QString::number(i));
-//}
-
-//  std::string key = mpModelValue->getKey();
-//  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);
-//  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-//}
-
-//void CQUnitDetail::deleteGlobalQuantity()
-//{
-
-//  assert(mpDataModel != NULL);
-//  CModel * mpModel = pDataModel->getModel();
-
-//  if (pModel == NULL)
-//    return;
-
-//  if (mpModelValue == NULL)
-//    return;
-
-//  QMessageBox::StandardButton choice =
-//    CQMessageBox::confirmDelete(this, "quantity",
-//                                FROM_UTF8(mpModelValue->getObjectName()),
-//                                mpModelValue->getDeletedObjects());
-
-//  switch (choice)
-//    {
-//      case QMessageBox::Ok:
-//      {
-//        pDataModel->getModel()->removeModelValue(mKey);
-//        mpModelValue = NULL;
-
-//#undef DELETE
-//        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, mKey);
-//        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-//        break;
-//}
-
-//      default:
-//        break;
-//}
-
-//  mpListView->switchToOtherWidget(115, "");
-//}
-
-//void CQUnitDetail::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityData)
-//{
-
-//  assert(mpDataModel != NULL);
-
-//  CModel * pModel = mpDataModel->getModel();
-//  assert(pModel != NULL);
-
-//  CModelValue * pGQ = pModel->getModelValues()[pGlobalQuantityData->getName()];
-//  std::string key = pGQ->getKey();
-//  pModel->removeModelValue(key);
-//  mpModelValue = NULL;
-
-//#undef DELETE
-//  protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, key);
-//  protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-
-//  mpListView->switchToOtherWidget(115, "");
-//}
-
-//void CQUnitDetail::addGlobalQuantity(UndoGlobalQuantityData *pSData)
-//{
-//  assert(mpDataModel != NULL);
-
-//  CModel * pModel = mpDataModel->getModel();
-//  assert(pModel != NULL);
-
-//  //reinsert the Global Quantity
-//  /*  CModelValue *pGlobalQuantity =  pModel->createModelValue(pSData->getName(), pSData->getInitialValue());
-//    pGlobalQuantity->setStatus(pSData->getStatus());
-//    std::string key = pGlobalQuantity->getKey();
-//    protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);  */
-
-//  CModelValue *pGlobalQuantity =  pModel->createModelValue(pSData->getName());
-//  pGlobalQuantity->setStatus(pSData->getStatus());
-
-//  if (pSData->getStatus() != CModelEntity::Status::ASSIGNMENT)
-//    {
-//      pGlobalQuantity->setInitialValue(pSData->getInitialValue());
-//}
-
-//  // set the expression
-//  if (pSData->getStatus() != CModelEntity::Status::FIXED)
-//    {
-//      pGlobalQuantity->setExpression(pSData->getExpression());
-//      pGlobalQuantity->getExpressionPtr()->compile();
-//}
-
-//  // set initial expression
-//  if (pSData->getStatus() != CModelEntity::Status::ASSIGNMENT)
-//    {
-//      pGlobalQuantity->setInitialExpression(pSData->getInitialExpression());
-//      pGlobalQuantity->getInitialExpressionPtr()->compile();
-//}
-
-//  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
-
-//  //restore the reactions the Global Quantity dependent on
-//  //restore the reactions
-//  QList <UndoGlobalQuantityData *>::const_iterator k;
-
-//  //reinsert all the species
-//  QList <UndoSpecieData *> *pSpecieData = pSData->getSpecieDependencyObjects();
-
-//  if (!pSpecieData->empty())
-//    {
-//      QList <UndoSpecieData *>::const_iterator i;
-
-//      for (i = pSpecieData->begin(); i != pSpecieData->end(); ++i)
-//        {
-//          UndoSpecieData * sData = *i;
-
-//          //need to make sure species doesn't exist in the model already
-//          CMetab *pSpecie =  pModel->createMetabolite(sData->getName(), sData->getCompartment(), sData->getIConc(), sData->getStatus());
-
-//          if (pSpecie)
-//            {
-
-//              if (sData->getStatus() != CModelEntity::Status::ASSIGNMENT)
-//                {
-//                  pSpecie->setInitialConcentration(sData->getIConc());
-//}
-
-//              if (sData->getStatus() == CModelEntity::Status::ODE || sData->getStatus() == CModelEntity::Status::ASSIGNMENT)
-//                {
-//                  pSpecie->setExpression(sData->getExpression());
-//                  pSpecie->getExpressionPtr()->compile();
-//}
-
-//              // set initial expression
-//              if (sData->getStatus() != CModelEntity::Status::ASSIGNMENT)
-//                {
-//                  pSpecie->setInitialExpression(sData->getInitialExpression());
-//                  pSpecie->getInitialExpressionPtr()->compile();
-//}
-
-//              protectedNotify(ListViews::METABOLITE, ListViews::ADD, pSpecie->getKey());
-//}
-//}
-//}
-
-//  QList <UndoReactionData *> *reactionData = pSData->getReactionDependencyObjects();
-
-//  QList <UndoReactionData *>::const_iterator j;
-
-//  for (j = reactionData->begin(); j != reactionData->end(); ++j)
-//    {
-
-//      UndoReactionData * rData = *j;
-
-//      //need to make sure reaction doesn't exist in the model already
-//      if (pModel->getReactions().getIndex(rData->getName()) == C_INVALID_INDEX)
-//        {
-//          CReaction *pRea =  pModel->createReaction(rData->getName());
-//          rData->getRi()->createMetabolites();
-//          rData->getRi()->createOtherObjects();
-//          rData->getRi()->writeBackToReaction(pRea);
-//          protectedNotify(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-//}
-//}
-
-//  //reinsert the dependency events
-//  QList <UndoEventData *> *pEventData = pSData->getEventDependencyObjects();
-
-//  if (!pEventData->empty())
-//    {
-//      QList <UndoEventData *>::const_iterator ev;
-
-//      for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
-//        {
-//          UndoEventData * eData = *ev;
-
-//          if (pModel->getEvents().getIndex(eData->getName()) == C_INVALID_INDEX)
-//            {
-//              CEvent *pEvent =  pModel->createEvent(eData->getName());
-
-//              if (pEvent)
-//                {
-//                  std::string key = pEvent->getKey();
-//                  //set the expressions
-//                  pEvent->setTriggerExpression(eData->getTriggerExpression());
-//                  pEvent->setDelayExpression(eData->getDelayExpression());
-//                  pEvent->setPriorityExpression(eData->getPriorityExpression());
-
-//                  QList <UndoEventAssignmentData *> *assignmentData = eData->getEventAssignmentData();
-//                  QList <UndoEventAssignmentData *>::const_iterator i;
-
-//                  for (i = assignmentData->begin(); i != assignmentData->end(); ++i)
-//                    {
-//                      UndoEventAssignmentData * assignData = *i;
-
-//                      CDataObject * pObject = NULL;
-//                      bool speciesExist = false;
-//                      size_t ci;
-
-//                      for (ci = 0; ci < pModel->getCompartments().size(); ci++)
-//                        {
-//                          CCompartment * pCompartment = pModel->getCompartments()[ci];
-
-//                          if (pCompartment->getMetabolites().getIndex(assignData->getName()) != C_INVALID_INDEX)
-//                            speciesExist = true;
-//}
-
-//                      if (speciesExist)
-//                        {
-//                          size_t index = pModel->findMetabByName(assignData->getName());
-//                          pObject =  pModel->getMetabolites()[index];
-//}
-//                      else if (pModel->getModelValues().getIndex(assignData->getName()) != C_INVALID_INDEX)
-//                        {
-//                          pObject = pModel->getModelValues()[assignData->getName()];
-//}
-//                      else if (pModel->getReactions().getIndex(assignData->getName()) != C_INVALID_INDEX)
-//                        {
-//                          pObject = pModel->getReactions()[assignData->getName()];
-//}
-
-//                      const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
-
-//                      CEventAssignment *eventAssign = new CEventAssignment(pObject->getKey(), pEvent->getObjectParent());
-
-//                      eventAssign->setExpression(assignData->getExpression());
-
-//                      eventAssign->getExpressionPtr()->compile();
-
-//                      pEvent->getAssignments().add(eventAssign);
-//}
-
-//                  protectedNotify(ListViews::EVENT, ListViews::ADD, key);
-//}
-//}
-//}
-//}
-
-//  mpListView->switchToOtherWidget(C_INVALID_INDEX, pGlobalQuantity->getKey());
-//}
-
-//void CQUnitDetail::globalQuantityTypeChanged(int type)
-//{
-//  ; //TODO
-//}
-#endif

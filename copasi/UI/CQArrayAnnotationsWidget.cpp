@@ -17,6 +17,14 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+
+
+
+
+
+
+
 #ifdef SunOS
 #include <ieeefp.h>
 #else
@@ -38,6 +46,7 @@
 #ifdef DEBUG_UI
 #include <QtCore/QtDebug>
 #endif
+
 
 #ifdef WITH_QT5_VISUALIZATION
 
@@ -630,10 +639,13 @@ void CQArrayAnnotationsWidget::switchToBarChart()
 
       mpButton->setIcon(CQIconResource::icon(CQIconResource::table));
       mpButtonReset->hide();
+
     }
 }
 
+
 #ifdef WITH_QT5_VISUALIZATION
+
 
 void CQArrayAnnotationsWidget::slotShowContextMenu(const QPoint &pos)
 {
@@ -647,6 +659,7 @@ void CQArrayAnnotationsWidget::slotShowContextMenu(const QPoint &pos)
         m_contextMenu->popup(m_container->mapToGlobal(pos));
     }
 }
+
 
 #endif // WITH_QT5_VISUALIZATION
 
@@ -710,9 +723,12 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
       int col = mpPlot3d->mpSliderColumn->value() / mpPlot3d->scaleFactor();
 
       selectTableCell(row, col);
+
     }
 
 #endif
+
+
 }
 
 void CQArrayAnnotationsWidget::selectTableCell(int row, int col)
@@ -770,6 +786,7 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
           m_modifier->zoomToSelectedBar();
           return;
         }
+
     }
 
 #else
@@ -840,6 +857,7 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
     }
 
 #endif
+
 }
 
 void CQArrayAnnotationsWidget::slotContentCellClicked(const QModelIndex & index)
@@ -917,11 +935,14 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (!mWithBarChart)
     return;
 
+
   if (!mpArray) return;
 
 #ifdef WITH_QT5_VISUALIZATION
 
+
   m_modifier->loadData(mpArray, mRowIndex, mColIndex);
+
 
 #else
 
@@ -929,6 +950,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
     createBarChart();
 
   //  mBarChartFilled = true;
+
 
   mBarChartFilled = true;
 
@@ -1071,6 +1093,8 @@ void CQArrayAnnotationsWidget::fillBarChart()
     }
 
 #endif
+
+
 }
 
 void CQArrayAnnotationsWidget::createBarChart()
@@ -1165,5 +1189,7 @@ void CQArrayAnnotationsWidget::createBarChart()
 
   mBarChartFilled = false;
 
+
 #endif // WITH_QT5_VISUALIZATION
+
 }

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,7 +40,8 @@
 CLNAProblem::CLNAProblem(const CDataContainer * pParent):
   CCopasiProblem(CTaskEnum::Task::lna, pParent)
 {
-  addParameter("Steady-State", CCopasiParameter::KEY, std::string(""));
+  assertParameter("Steady-State", CCopasiParameter::Type::KEY, std::string(""));
+  setSteadyStateRequested(true);
   CONSTRUCTOR_TRACE;
 }
 
@@ -64,7 +70,7 @@ void CLNAProblem::load(CReadConfig & configBuffer,
   if (configBuffer.getVersion() < "4.0")
     {
       bool SteadyStateRequested;
-      configBuffer.getVariable("RepxSteadyStateAnalysis", "bool" ,
+      configBuffer.getVariable("RepxSteadyStateAnalysis", "bool",
                                &SteadyStateRequested,
                                CReadConfig::LOOP);
 
@@ -80,7 +86,6 @@ void CLNAProblem::setSteadyStateRequested(const bool & steadyStateRequested)
 {
   CSteadyStateTask * pSubTask = NULL;
   CDataModel* pDataModel = getObjectDataModel();
-  assert(pDataModel != NULL);
 
   if (pDataModel && pDataModel->getTaskList())
     pSubTask = dynamic_cast<CSteadyStateTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));

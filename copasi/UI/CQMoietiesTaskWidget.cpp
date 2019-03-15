@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -74,12 +79,12 @@ bool CQMoietiesTaskWidget::taskFinishedEvent()
   bool success = true;
 
   if (success && isVisible())
-    mpListView->switchToOtherWidget(2221, ""); //change to the results window
+    mpListView->switchToOtherWidget(ListViews::WidgetType::MassConservationResult, std::string()); //change to the results window
 
   return success;
 }
 
-bool CQMoietiesTaskWidget::saveTask()
+bool CQMoietiesTaskWidget::saveTaskProtected()
 {
   if (dynamic_cast< CMoietiesTask * >(mpTask) == NULL)
     return false;
@@ -89,7 +94,7 @@ bool CQMoietiesTaskWidget::saveTask()
   return true;
 }
 
-bool CQMoietiesTaskWidget::loadTask()
+bool CQMoietiesTaskWidget::loadTaskProtected()
 {
   if (dynamic_cast< CMoietiesTask * >(mpTask) == NULL)
     return false;

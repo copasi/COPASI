@@ -96,10 +96,158 @@ include(utilities/CMakeLists.txt)
 include(xml/CMakeLists.txt)
 
 
-if(ENABLE_COPASI_SEDML)
 include(sedml/CMakeLists.txt)
 include_directories(${LIBSEDML_INCLUDE_DIR})
+
+
+if(ENABLE_VERSIONING)
+  include(versioning/CMakeLists.txt)
+endif(ENABLE_VERSIONING)
+
+
+
+###############################################################################
+#
+# utility macro for copying files only if they have changed, for this it is
+# assumed that the source file is always created. Then the macro is called.
+# If the target file will only be overwritten if it does not yet exist, or
+# its content is different. At the end the source file will be removed.
+#
+macro(copy_if_different_and_remove source target)
+# message(
+# "
+# copy_if_different_and_remove called with:
+#     source = ${source}
+#     target = ${target}
+# "
+# )
+file(READ ${source} CONTENT)
+
+if (EXISTS ${target})
+    # message("target exists")
+    file(READ ${target} CURRENT_CONTENT)
+    string(COMPARE EQUAL ${CURRENT_CONTENT} ${CONTENT} IS_SAME)
+    if (NOT ${IS_SAME})
+        #message("content is different")
+        file(WRITE ${target} ${CONTENT})
+    endif()
+else()
+    #message("target does not exist")
+    file(WRITE ${target} ${CONTENT})
 endif()
+endmacro()
+
+
+set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS})
+
+if (EXTRA_MOC_OPTIONS)
+  set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} ${EXTRA_MOC_OPTIONS})
+endif(EXTRA_MOC_OPTIONS)
+
+
+###############################################################################
+# convert options for config file
+
+  if(ENABLE_VERSIONING)
+    set(COPASI_Versioning 1)
+    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_Versioning=1)
+  endif(ENABLE_VERSIONING)
+
+  if(ENABLE_PROVENANCE)
+    set(COPASI_Provenance 1)
+    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_Provenance=1)
+  endif(ENABLE_PROVENANCE)
+
+  if (QT5_USE_DATAVISUALIZATION)
+    set(WITH_QT5_VISUALIZATION 1)
+    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DWITH_QT5_VISUALIZATION=1)
+  endif(QT5_USE_DATAVISUALIZATION)
+  
+  if (ENABLE_SBW_INTEGRATION)
+    set(COPASI_SBW_INTEGRATION 1)
+    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_SBW_INTEGRATION=1)
+  endif(ENABLE_SBW_INTEGRATION)
+
+  if (ENABLE_COPASI_BANDED_GRAPH)
+    set(COPASI_BANDED_GRAPH 1)
+    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_BANDED_GRAPH=1)
+  endif(ENABLE_COPASI_BANDED_GRAPH)
+
+  if (ENABLE_COPASI_NONLIN_DYN_OSCILLATION)
+    set(COPASI_NONLIN_DYN_OSCILLATION 1)
+    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_NONLIN_DYN_OSCILLATION=1)
+  endif(ENABLE_COPASI_NONLIN_DYN_OSCILLATION)
+
+  if (QT5_USE_WEBENGINE)
+    set(QT5_USE_WEBENGINE 1)
+    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DQT5_USE_WEBENGINE=1)
+  endif(QT5_USE_WEBENGINE)
+
+  if (QT_USE_TEXTBROWSER)
+    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DQT_USE_TEXTBROWSER=1)    
+  endif()
+  
+  if (ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING)
+    set(COPASI_PARAMETERFITTING_RESIDUAL_SCALING 1)
+  endif(ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING)
+
+  if (ENABLE_COPASI_EXTUNIT)
+    set(COPASI_EXTUNIT 1)
+  endif(ENABLE_COPASI_EXTUNIT)
+
+  if (CLAPACK_NO_BLASWRAP)
+    set(NO_BLAS_WRAP 1)
+  endif(CLAPACK_NO_BLASWRAP)
+
+  if(DEFINED F2C_HAVE_H)
+    set(HAVE_F2C_H 1)
+  endif()
+  
+  if (ICONV_SECOND_ARGUMENT_IS_CONST)
+    set(COPASI_ICONV_CONST_CHAR 1)
+  endif (ICONV_SECOND_ARGUMENT_IS_CONST)
+
+
+  if(ENABLE_MML)
+    set(HAVE_MML 1)
+  endif(ENABLE_MML)
+
+  if(ENABLE_USE_SBMLUNIT)
+    set(USE_SBMLUNIT 1)
+  endif(ENABLE_USE_SBMLUNIT)
+
+  
+  if(ENABLE_COPASI_DEBUG_TRACE)
+    set(COPASI_DEBUG_TRACE 1)
+  endif(ENABLE_COPASI_DEBUG_TRACE)
+
+  set(QWT_VERSION 0x0${QWT_VERSION_NUMERIC})
+  set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DQWT_VERSION=0x0${QWT_VERSION_NUMERIC})
+
+  if (CLAPACK_FOUND)
+    set(USE_CLAPACK 1)
+  elseif (USE_MKL)
+    set(USE_MKL 1)
+  elseif(USE_ACML)
+    set(USE_ACML 1)
+  elseif(LAPACK_FOUND)
+    set(USE_LAPACK 1)
+  endif()
+
+
+  
+
+###############################################################################
+# write configuration options to headers
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h.tmp @ONLY)
+# we only replace the config.h if changes were made, otherwise we would trigger
+# rebuilds after every configuration change
+copy_if_different_and_remove(${CMAKE_CURRENT_BINARY_DIR}/config.h.tmp ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+set(COPASI_HEADERS ${COPASI_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
+
+
 
 
 include_directories(
@@ -129,11 +277,9 @@ add_library (libCOPASISE-static STATIC $<TARGET_OBJECTS:libCOPASISE-core>)
 endif()
 set_target_properties (libCOPASISE-static PROPERTIES OUTPUT_NAME "COPASISE")
 
-if(ENABLE_COPASI_SEDML)
-  target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY})
-  if (${LIBNUML_LIBRARY})
-  target_link_libraries(libCOPASISE-static ${LIBNUML_LIBRARY})
-  endif()
+target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY})
+if (${LIBNUML_LIBRARY})
+target_link_libraries(libCOPASISE-static ${LIBNUML_LIBRARY})
 endif()
 
 target_link_libraries(libCOPASISE-static ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${EXPAT_LIBRARY} ${CLAPACK_LIBRARIES})
@@ -151,6 +297,8 @@ if (${CMAKE_VERSION} VERSION_GREATER "2.8.11")
 endif()
 
 if (COPASI_INSTALL_C_API)
+    # install config 
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/copasi)
     # install headers
     foreach (file ${COPASI_HEADERS})
       get_filename_component(dir ${file} DIRECTORY)
@@ -192,9 +340,7 @@ if(ENABLE_LIBCOPASISE_SHARED)
 
   set_target_properties (libCOPASISE-shared PROPERTIES OUTPUT_NAME "COPASISE")
 
-  if(ENABLE_COPASI_SEDML)
-    target_link_libraries(libCOPASISE-shared ${LIBSEDML_LIBRARY})
-  endif()
+  target_link_libraries(libCOPASISE-shared ${LIBSEDML_LIBRARY})
 
   target_link_libraries(libCOPASISE-shared ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${CLAPACK_LIBRARIES})
   
@@ -240,18 +386,6 @@ foreach (N ${})
 set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} -I${PROJECT_SOURCE_DIR}/copasi/${N})
 endforeach (N)
 
-if(BUILD_CXX_EXAMPLES OR ENABLE_CSHARP OR ENABLE_JAVA OR ENABLE_PYTHON OR ENABLE_OCTAVE OR ENABLE_PERL OR ENABLE_R)
-  add_subdirectory(bindings)
-endif (BUILD_CXX_EXAMPLES OR ENABLE_CSHARP OR ENABLE_JAVA OR ENABLE_PYTHON OR ENABLE_OCTAVE OR ENABLE_PERL OR ENABLE_R)
-
-option(BUILD_SE "Build the commandline executable for COPASI (CopasiSE)." ON)
-mark_as_advanced(BUILD_SE)
-
-if(BUILD_SE)
-  add_subdirectory(CopasiSE)
-  add_dependencies(CopasiSE libCOPASISE-static ${SE_DEPENDENCIES})
-endif(BUILD_SE)
-
 
 if(BUILD_GUI)
   set(COPASI_RCC_SOURCES)
@@ -267,79 +401,24 @@ if(BUILD_GUI)
   include(tex/CMakeLists.txt)
   include(wizard/CMakeLists.txt)
   include(UI/CMakeLists.txt)
-  include(undoFramework/CMakeLists.txt)
   include(undoUI/CMakeLists.txt)
 
-  set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS})
-
+  set(COPASI_UI_DIRECTORIES barChart layoutUI MIRIAMUI plotUI tex UI wizard qlayout undoFramework undoUI)
+  
   if(ENABLE_VERSIONING)
     include(versioning/CMakeLists.txt)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_Versioning=1)
+    include(versioningUI/CMakeLists.txt)
+    set(COPASI_UI_DIRECTORIES ${COPASI_UI_DIRECTORIES} versioningUI)
   endif()
 
   if(ENABLE_PROVENANCE)
     include(Provenance/CMakeLists.txt)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_Provenance=1)
   endif()
-
-  if (ENABLE_COMBINE_ARCHIVE)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DWITH_COMBINE_ARCHIVE=1)
-  endif(ENABLE_COMBINE_ARCHIVE)
-  
-  if (ENABLE_COPASI_SEDML)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_SEDML=1)
-  endif(ENABLE_COPASI_SEDML)
-  
-  if (ENABLE_SBW_INTEGRATION)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_SBW_INTEGRATION=1)
-  endif(ENABLE_SBW_INTEGRATION)
-
-  if (ENABLE_WITH_MERGEMODEL)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DWITH_MERGEMODEL=1)
-  endif(ENABLE_WITH_MERGEMODEL)
-
-  if (ENABLE_COPASI_BANDED_GRAPH)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_BANDED_GRAPH=1)
-  endif(ENABLE_COPASI_BANDED_GRAPH)
-
-  if (ENABLE_COPASI_NONLIN_DYN_OSCILLATION)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_NONLIN_DYN_OSCILLATION=1)
-  endif()
-
-  if (ENABLE_PE_EVENT_CREATION)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DWITH_PE_EVENT_CREATION=1)
-  endif()
-
-  if (ENABLE_COPASI_UNDO)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_UNDO=1)
-  endif(ENABLE_COPASI_UNDO)
-
-  if (QT5_USE_WEBENGINE)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DQT5_USE_WEBENGINE=1)
-    add_definitions(-DQT5_USE_WEBENGINE=1)
-  endif()
-
-  if (QT_USE_TEXTBROWSER)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DQT_USE_TEXTBROWSER=1)
-    add_definitions(-DQT_USE_TEXTBROWSER=1)
-  endif()
-
-if (ENABLE_SDE_SUPPORT)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DWITH_SDE_SUPPORT=1)
-endif(ENABLE_SDE_SUPPORT)
-
 
   if (ENABLE_SBW_INTEGRATION)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_SBW_INTEGRATION=1)
     include_directories(${SBW_INCLUDE_DIR})
-    add_definitions(-DCOPASI_SBW_INTEGRATION)
   endif(ENABLE_SBW_INTEGRATION)
 
-  set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DQWT_VERSION=0x${QWT_VERSION_NUMERIC})
-
-  if (EXTRA_MOC_OPTIONS)
-    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} ${EXTRA_MOC_OPTIONS})
-  endif(EXTRA_MOC_OPTIONS)
 
   #if (COPASI_UI_MOC_OPTIONS)
   #  message(STATUS "Mocing with options: ${COPASI_UI_MOC_OPTIONS}")
@@ -404,7 +483,7 @@ endif(ENABLE_SDE_SUPPORT)
     
   ENDMACRO (COPASI_QT4_WRAP_UI)
 
-  foreach (dir barChart layoutUI MIRIAMUI plotUI tex UI wizard qlayout undoFramework undoUI)
+  foreach (dir ${COPASI_UI_DIRECTORIES})
     string(TOUPPER ${dir} suffix)
     #message(STATUS "Mocing files for subdir: ${dir}")
     set(TEMP_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -p${dir})
@@ -457,9 +536,7 @@ endif(ENABLE_SDE_SUPPORT)
   include_directories(${QT_QTXML_INCLUDE_DIR})
   include_directories(${QT_QTSVG_INCLUDE_DIR})
 
-  if(ENABLE_COPASI_SEDML)
-    include_directories(${LIBSEDML_INCLUDE_DIR})
-  endif()
+  include_directories(${LIBSEDML_INCLUDE_DIR})
 
   add_library(libCOPASIUI STATIC ${COPASI_UI_SOURCES} ${COPASI_UI_HEADERS} ${HEADERS_UI_FORMS} ${COPASI_RCC_SOURCES} ${HEADERS_UI_MOC})
   QT_BIND_TO_TARGET(libCOPASIUI)
@@ -475,13 +552,6 @@ endif(ENABLE_SDE_SUPPORT)
 
   set(UI_LIBS libCOPASIUI)
   set(UI_DEPENDENCIES libCOPASIUI)
-
-  #the mml widget is only build if the HAVE_MML variable is set
-  if(HAVE_MML)
-    add_subdirectory(mml)
-    set(UI_LIBS ${UI_LIBS} mml)
-    set(UI_DEPENDENCIES ${UI_DEPENDENCIES} mml)
-  endif (HAVE_MML)
 
   if (COPASI_INSTALL_C_API)
     install(TARGETS libCOPASIUI EXPORT libcopasiui-config
@@ -504,19 +574,7 @@ endif(ENABLE_SDE_SUPPORT)
     install (FILES
       ${CMAKE_CURRENT_BINARY_DIR}/libcopasiui-config-version.cmake
       DESTINATION lib/cmake)
-  endif(COPASI_INSTALL_C_API)
 
-  add_subdirectory(CopasiUI)
-  add_dependencies(CopasiUI ${SE_DEPENDENCIES} libCOPASIUI ${UI_DEPENDENCIES})
-
-  option(BUILD_VIEWCURRENT "Build the viewer for optimization / fitting tasks (ViewCurrent)." OFF)
-  mark_as_advanced(BUILD_VIEWCURRENT)
-
-  if(BUILD_VIEWCURRENT)
-    add_subdirectory(ViewCurrentUI)
-  endif(BUILD_VIEWCURRENT)
-
-  if (COPASI_INSTALL_C_API)
     # install headers
     foreach (file ${COPASI_UI_HEADERS})
       get_filename_component(dir ${file} DIRECTORY)
@@ -526,9 +584,36 @@ endif(ENABLE_SDE_SUPPORT)
   endif(COPASI_INSTALL_C_API)
 endif(BUILD_GUI)
 
+
+if(BUILD_CXX_EXAMPLES OR ENABLE_CSHARP OR ENABLE_JAVA OR ENABLE_PYTHON OR ENABLE_OCTAVE OR ENABLE_PERL OR ENABLE_R)
+  add_subdirectory(bindings)
+endif (BUILD_CXX_EXAMPLES OR ENABLE_CSHARP OR ENABLE_JAVA OR ENABLE_PYTHON OR ENABLE_OCTAVE OR ENABLE_PERL OR ENABLE_R)
+
+option(BUILD_SE "Build the commandline executable for COPASI (CopasiSE)." ON)
+mark_as_advanced(BUILD_SE)
+
+if(BUILD_SE)
+  add_subdirectory(CopasiSE)
+  add_dependencies(CopasiSE libCOPASISE-static ${SE_DEPENDENCIES})
+endif(BUILD_SE)
+
+if(BUILD_GUI)
+  add_subdirectory(CopasiUI)
+  add_dependencies(CopasiUI ${SE_DEPENDENCIES} libCOPASIUI ${UI_DEPENDENCIES})
+
+  option(BUILD_VIEWCURRENT "Build the viewer for optimization / fitting tasks (ViewCurrent)." OFF)
+  mark_as_advanced(BUILD_VIEWCURRENT)
+
+  if(BUILD_VIEWCURRENT)
+    add_subdirectory(ViewCurrentUI)
+  endif(BUILD_VIEWCURRENT)
+endif(BUILD_GUI)
+
 option(BUILD_COPASISBW "Build the CopasiML to SBML L3V1 tanslator for SBW." OFF)
 mark_as_advanced(BUILD_COPASISBW)
 
 if(BUILD_COPASISBW AND SBW_FOUND)
   add_subdirectory(CopasiSBW)
 endif(BUILD_COPASISBW AND SBW_FOUND)
+
+

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -28,7 +33,8 @@ class CQModifiedDM : public CQBaseDataModel
   Q_OBJECT
 
 public:
-  CQModifiedDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent = 0);
+  CQModifiedDM(QObject *parent = 0);
+  void setMIRIAMInfo(CMIRIAMInfo * pMiriamInfo);
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
   QVariant data(const QModelIndex &index, int role) const;
@@ -39,8 +45,8 @@ public:
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
 protected:
-  virtual bool insertRows(int position, int rows, const QModelIndex & source);
-  virtual bool removeRows(int position, int rows);
+  virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+  virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
   CMIRIAMInfo* mpMIRIAMInfo;
 };
 

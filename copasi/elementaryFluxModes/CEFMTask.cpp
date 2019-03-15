@@ -201,7 +201,7 @@ std::string CEFMTask::getReactionEquation(const std::map< size_t, C_FLOAT64 >::c
     }
   else
 #endif //COPASI_SSA
-    return CChemEqInterface::getChemEqString(&mpContainer->getModel(), *pReaction, false);
+    return CChemEqInterface::getChemEqString(*pReaction, false);
 }
 
 std::pair< C_FLOAT64, C_FLOAT64 > CEFMTask::getSpeciesChanges(const CFluxMode & fluxMode,

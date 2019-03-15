@@ -78,7 +78,7 @@ void test000066::test_import_reaction_with_constant_flux()
   const CCopasiParameter* pParameter = pReaction->getParameters().getParameter(0);
   CPPUNIT_ASSERT(pReaction->isLocalParameter(0) == true);
   CPPUNIT_ASSERT(pParameter != NULL);
-  CPPUNIT_ASSERT(pParameter->getType() == CCopasiParameter::DOUBLE);
+  CPPUNIT_ASSERT(pParameter->getType() == CCopasiParameter::Type::DOUBLE);
   CPPUNIT_ASSERT(fabs(((*(pParameter->getValue().pDOUBLE)) - 0.015) / 0.015) < 1e-12);
   CPPUNIT_ASSERT(pParameter->getObjectName() == "v");
   const CFunction* pFunction = pReaction->getFunction();
@@ -114,7 +114,7 @@ void test000066::test_import_reaction_with_constant_flux_function()
   const CCopasiParameter* pParameter = pReaction->getParameters().getParameter(0);
   CPPUNIT_ASSERT(pReaction->isLocalParameter(0) == true);
   CPPUNIT_ASSERT(pParameter != NULL);
-  CPPUNIT_ASSERT(pParameter->getType() == CCopasiParameter::DOUBLE);
+  CPPUNIT_ASSERT(pParameter->getType() == CCopasiParameter::Type::DOUBLE);
   CPPUNIT_ASSERT(fabs(((*pParameter->getValue().pDOUBLE) - 0.015) / 0.015) < 1e-12);
   CPPUNIT_ASSERT(pParameter->getObjectName() == "v");
   const CFunction* pFunction = pReaction->getFunction();
@@ -442,7 +442,7 @@ void test000066::test_import_reaction_with_constant_flux_reversible()
   const CCopasiParameter* pParameter = pReaction->getParameters().getParameter(0);
   CPPUNIT_ASSERT(pReaction->isLocalParameter(0) == true);
   CPPUNIT_ASSERT(pParameter != NULL);
-  CPPUNIT_ASSERT(pParameter->getType() == CCopasiParameter::DOUBLE);
+  CPPUNIT_ASSERT(pParameter->getType() == CCopasiParameter::Type::DOUBLE);
   CPPUNIT_ASSERT(fabs(((*(pParameter->getValue().pDOUBLE)) - 0.015) / 0.015) < 1e-12);
   CPPUNIT_ASSERT(pParameter->getObjectName() == "v");
   const CFunction* pFunction = pReaction->getFunction();
@@ -478,7 +478,7 @@ void test000066::test_import_reaction_with_constant_flux_reversible_function()
   const CCopasiParameter* pParameter = pReaction->getParameters().getParameter(0);
   CPPUNIT_ASSERT(pReaction->isLocalParameter(0) == true);
   CPPUNIT_ASSERT(pParameter != NULL);
-  CPPUNIT_ASSERT(pParameter->getType() == CCopasiParameter::DOUBLE);
+  CPPUNIT_ASSERT(pParameter->getType() == CCopasiParameter::Type::DOUBLE);
   CPPUNIT_ASSERT(fabs(((*pParameter->getValue().pDOUBLE) - 0.015) / 0.015) < 1e-12);
   CPPUNIT_ASSERT(pParameter->getObjectName() == "v");
   const CFunction* pFunction = pReaction->getFunction();

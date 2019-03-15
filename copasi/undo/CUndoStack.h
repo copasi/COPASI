@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,8 +12,10 @@
 #define COPASI_CUndoStack
 
 #include <vector>
+#include <map>
 
-class CUndoData;
+#include <copasi/undo/CUndoData.h>
+
 class CDataModel;
 
 class CUndoStack : private std::vector< CUndoData * >
@@ -24,15 +31,28 @@ public:
 
   ~CUndoStack();
 
-  const CUndoData & operator [](const size_t & index) const;
-  size_t setCurrent(const size_t & index);
+  void clear();
   size_t size() const;
+  const CUndoData & operator [](const size_t & index) const;
+
+  CUndoData::CChangeSet setCurrentIndex(const size_t & index, const bool & execute = true);
   size_t currentIndex() const;
-  size_t record(const CUndoData & data);
+  CUndoData::CChangeSet record(const CUndoData & data, const bool & execute);
 
   const_iterator begin() const;
   const_iterator end() const;
-  const_iterator current() const;
+
+  /**
+   * Retrieve the last executed data and indicated whether it was a redo
+   * @return std::pair< const CUndoData &, bool > lastExecutedData
+   */
+  std::pair< const CUndoData *, bool > getLastExecution() const;
+
+  bool canUndo() const;
+  bool canRedo() const;
+
+  CUndoData::CChangeSet undo();
+  CUndoData::CChangeSet redo();
 
 private:
   CDataModel * mpDataModel;
@@ -42,6 +62,8 @@ private:
    * data with lower index can be undone.
    */
   size_t mCurrent;
+
+  size_t mLastExecuted;
 };
 
 #endif // COPASI_CQUndoCommand

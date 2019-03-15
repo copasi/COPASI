@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -182,7 +187,6 @@ void CTSSAMethod::start()
   mConcentration2Number =  Model.getQuantity2NumberFactor() * Model.getCompartments()[0].getInitialValue();
 
   mpLsodaMethod->setMathContainer(mpContainer);
-
 }
 
 void CTSSAMethod::initializeOutput()
@@ -295,7 +299,7 @@ void CTSSAMethod::initializeParameter()
       mpLsodaMethod->setValue("Integrate Reduced Model", true);
       mpLsodaMethod->setValue("Relative Tolerance", (C_FLOAT64) 1.0e-6);
       mpLsodaMethod->setValue("Absolute Tolerance", (C_FLOAT64) 1.0e-12);
-      mpLsodaMethod->setValue("Max Internal Steps", (unsigned C_INT32) 10000);
+      mpLsodaMethod->setValue("Max Internal Steps", (unsigned C_INT32) 100000);
     }
 
   return;

@@ -182,10 +182,10 @@ modelValue.setExpression("1.0 / 4.0 + 2.0");
 % of the local one that is created by default
 % The first parameter is the one for the rate constant, so we point it to
 % the key of out model value
-reaction.setParameterMapping(0, modelValue.getKey());
+reaction.setParameterObject(0, modelValue);
 % now we have to set the parameter mapping for the substrates
-reaction.addParameterMapping("substrate", g6p.getKey());
-reaction.addParameterMapping("substrate", adp.getKey());
+reaction.addParameterObject("substrate", g6p);
+reaction.addParameterObject("substrate", adp);
 
 % finally compile the model
 % compile needs to be done before updating all initial values for

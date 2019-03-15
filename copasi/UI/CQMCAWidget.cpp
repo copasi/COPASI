@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -83,7 +88,7 @@ void CQMCAWidget::slotSteadyStateChecked()
 bool CQMCAWidget::runTask()
 {
   CMCATask * pTask =
-    dynamic_cast< CMCATask * >(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CMCATask * >(mpObject);
 
   if (!pTask) return false;
 
@@ -97,17 +102,17 @@ bool CQMCAWidget::runTask()
 bool CQMCAWidget::taskFinishedEvent()
 {
   bool success = true;
-  CMCAResultWidget *pResult = dynamic_cast< CMCAResultWidget * >(mpListView->findWidgetFromId(241));
+  CMCAResultWidget *pResult = dynamic_cast< CMCAResultWidget * >(mpListView->findWidgetFromId(ListViews::WidgetType::MetabolicControlAnalysisResult));
 
   if (pResult) pResult->loadFromBackend();
 
   if (success && pResult)
-    mpListView->switchToOtherWidget(241, ""); //change to the results window
+    mpListView->switchToOtherWidget(ListViews::WidgetType::MetabolicControlAnalysisResult, std::string()); //change to the results window
 
   return success;
 }
 
-bool CQMCAWidget::loadTask()
+bool CQMCAWidget::loadTaskProtected()
 {
   CMCATask * pTask = dynamic_cast< CMCATask * >(mpTask);
 
@@ -140,7 +145,7 @@ bool CQMCAWidget::loadTask()
   return true;
 }
 
-bool CQMCAWidget::saveTask()
+bool CQMCAWidget::saveTaskProtected()
 {
   CMCATask * pTask = dynamic_cast< CMCATask * >(mpTask);
 

@@ -80,11 +80,11 @@ CTSSAProblem::~CTSSAProblem()
 
 void CTSSAProblem::initializeParameter()
 {
-  mpStepNumber = assertParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 100);
-  mpStepSize = assertParameter("StepSize", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.01);
-  mpDuration = assertParameter("Duration", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
-  mpTimeSeriesRequested = assertParameter("TimeSeriesRequested", CCopasiParameter::BOOL, (bool) true);
-  mpOutputStartTime = assertParameter("OutputStartTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0);
+  mpStepNumber = assertParameter("StepNumber", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100);
+  mpStepSize = assertParameter("StepSize", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.01);
+  mpDuration = assertParameter("Duration", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.0);
+  mpTimeSeriesRequested = assertParameter("TimeSeriesRequested", CCopasiParameter::Type::BOOL, (bool) true);
+  mpOutputStartTime = assertParameter("OutputStartTime", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.0);
 }
 
 bool CTSSAProblem::elevateChildren()

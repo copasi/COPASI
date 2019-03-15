@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,7 +40,6 @@
 #include "function/CFunction.h"
 #include "function/CFunctionDB.h"
 #include "function/CKinFunction.h"
-#include "report/CKeyFactory.h"
 #include "utilities/CUnitValidator.h"
 
 #include "CopasiFileDialog.h"
@@ -57,7 +61,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, Qt::WindowFl
   isValid(false),
   mIgnoreFcnDescriptionChange(false),
   mpFunction(NULL),
-  mKeyToCopy("")
+  mObjectCNToCopy("")
 {
   setupUi(this);
 
@@ -109,10 +113,10 @@ bool FunctionWidget1::loadParameterTable()
   // list of usages for combobox
   QStringList Usages;
 
-  for (i = 0; CFunctionParameter::RoleNameDisplay[i] != ""; i++)
+  for (i = 0; i < CFunctionParameter::RoleNameDisplay.size(); i++)
     {
       if (dynamic_cast<CKinFunction *>(mpFunction) &&
-          CFunctionParameter::VARIABLE == (CFunctionParameter::Role) i) continue;
+          CFunctionParameter::Role::VARIABLE == (CFunctionParameter::Role) i) continue;
 
       Usages += (FROM_UTF8(CFunctionParameter::RoleNameDisplay[i]));
     }
@@ -120,7 +124,7 @@ bool FunctionWidget1::loadParameterTable()
   //create list of data types (for combobox)
   QStringList functionType;
 
-  for (i = 0; CFunctionParameter::DataTypeName[i] != ""; i++)
+  for (i = 0; i < CFunctionParameter::DataTypeName.size(); i++)
     functionType += (FROM_UTF8(CFunctionParameter::DataTypeName[i]));
 
   //find parameter units
@@ -140,9 +144,9 @@ bool FunctionWidget1::loadParameterTable()
     {
       switch (params[i]->getUsage())
         {
-          case CFunctionParameter::SUBSTRATE:
-          case CFunctionParameter::PRODUCT:
-          case CFunctionParameter::MODIFIER:
+          case CFunctionParameter::Role::SUBSTRATE:
+          case CFunctionParameter::Role::PRODUCT:
+          case CFunctionParameter::Role::MODIFIER:
             // These depend on the dimensions of the compartment
             Variables[0].push_back(Quantity * Volume.exponentiate(-1.0)); // This is just to compare the results
             Variables[1].push_back(Quantity * Length.exponentiate(-1.0));
@@ -150,16 +154,16 @@ bool FunctionWidget1::loadParameterTable()
             Variables[3].push_back(Quantity * Volume.exponentiate(-1.0));
             break;
 
-          case CFunctionParameter::PARAMETER:
-          case CFunctionParameter::VARIABLE:
-          case CFunctionParameter::TEMPORARY:
+          case CFunctionParameter::Role::PARAMETER:
+          case CFunctionParameter::Role::VARIABLE:
+          case CFunctionParameter::Role::TEMPORARY:
             Variables[0].push_back(CUnit());
             Variables[1].push_back(CUnit());
             Variables[2].push_back(CUnit());
             Variables[3].push_back(CUnit());
             break;
 
-          case CFunctionParameter::VOLUME:
+          case CFunctionParameter::Role::VOLUME:
             // These depend on the dimensions of the compartment
             Variables[0].push_back(CUnit());
             Variables[1].push_back(Length);
@@ -167,7 +171,7 @@ bool FunctionWidget1::loadParameterTable()
             Variables[3].push_back(Volume);
             break;
 
-          case CFunctionParameter::TIME:
+          case CFunctionParameter::Role::TIME:
             Variables[0].push_back(Time);
             Variables[1].push_back(Time);
             Variables[2].push_back(Time);
@@ -208,10 +212,10 @@ bool FunctionWidget1::loadParameterTable()
     {
       usage = params[j]->getUsage();
 
-      if (usage == CFunctionParameter::VARIABLE &&
+      if (usage == CFunctionParameter::Role::VARIABLE &&
           dynamic_cast<CKinFunction *>(mpFunction))
         {
-          usage = CFunctionParameter::PARAMETER;
+          usage = CFunctionParameter::Role::PARAMETER;
           params[j]->setUsage(usage);
         }
 
@@ -219,31 +223,31 @@ bool FunctionWidget1::loadParameterTable()
 
       switch (usage)
         {
-          case CFunctionParameter::SUBSTRATE:
+          case CFunctionParameter::Role::SUBSTRATE:
             color = subsColor;
             break;
 
-          case CFunctionParameter::PRODUCT:
+          case CFunctionParameter::Role::PRODUCT:
             color = prodColor;
             break;
 
-          case CFunctionParameter::MODIFIER:
+          case CFunctionParameter::Role::MODIFIER:
             color = modiColor;
             break;
 
-          case CFunctionParameter::PARAMETER:
+          case CFunctionParameter::Role::PARAMETER:
             color = paraColor;
             break;
 
-          case CFunctionParameter::VOLUME:
+          case CFunctionParameter::Role::VOLUME:
             color = volColor;
             break;
 
-          case CFunctionParameter::TIME:
+          case CFunctionParameter::Role::TIME:
             color = timeColor;
             break;
 
-          case CFunctionParameter::VARIABLE:
+          case CFunctionParameter::Role::VARIABLE:
             color = QColor(250, 250, 250);
             break;
 
@@ -345,7 +349,7 @@ bool FunctionWidget1::loadUsageTable()
   //substrates
   if (checkSubstrates)
     {
-      if (mpFunction->getVariables().isVector(CFunctionParameter::SUBSTRATE))
+      if (mpFunction->getVariables().isVector(CFunctionParameter::Role::SUBSTRATE))
         {
           stringlist.push_back("At least one substrate");
         }
@@ -354,17 +358,17 @@ bool FunctionWidget1::loadUsageTable()
         {
           std::stringstream ss;
 
-          if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) == 0)
+          if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::Role::SUBSTRATE) == 0)
             {
               ss << "No substrate";
             }
           else
             {
               ss << "Exactly "
-                 << mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE)
+                 << mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::Role::SUBSTRATE)
                  << " substrate";
 
-              if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) > 1)
+              if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::Role::SUBSTRATE) > 1)
                 ss << "s"; //plural
             }
 
@@ -375,7 +379,7 @@ bool FunctionWidget1::loadUsageTable()
   //products
   if (checkProducts)
     {
-      if (mpFunction->getVariables().isVector(CFunctionParameter::PRODUCT))
+      if (mpFunction->getVariables().isVector(CFunctionParameter::Role::PRODUCT))
         {
           stringlist.push_back("At least one product");
         }
@@ -383,7 +387,7 @@ bool FunctionWidget1::loadUsageTable()
         {
           std::stringstream ss;
 
-          if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) == 0 &&
+          if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::Role::PRODUCT) == 0 &&
               mpFunction->getObjectName() != "Constant flux (reversible)")
             {
               ss << "No product";
@@ -391,10 +395,10 @@ bool FunctionWidget1::loadUsageTable()
           else
             {
               ss << "Exactly "
-                 << mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::PRODUCT)
+                 << mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::Role::PRODUCT)
                  << " product";
 
-              if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) > 1)
+              if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::Role::PRODUCT) > 1)
                 ss << "s"; //plural
             }
 
@@ -451,8 +455,8 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
       pdelete(mpFunction);
       mpFunction = dynamic_cast<CFunction *>(CEvaluationTree::copy(*func));
 
-      flagChanged = !mKeyToCopy.empty();
-      mKeyToCopy = "";
+      flagChanged = !mObjectCNToCopy.empty();
+      mObjectCNToCopy.clear();
     }
 
   if (mpFunction == NULL)
@@ -486,7 +490,7 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
       desc.insert(l, 1, '\n');
     }
 
-  mReadOnly = mpFunction->isReadOnly();
+  mReadOnly = mpFunction->isReadOnly() && !flagChanged;
 
   RadioButton1->setEnabled(!mReadOnly);
   RadioButton2->setEnabled(!mReadOnly);
@@ -576,7 +580,7 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
 
 bool FunctionWidget1::functionParametersChanged()
 {
-  CFunction* func = dynamic_cast<CFunction*>(CRootContainer::getKeyFactory()->get(mKey));
+  CFunction* func = dynamic_cast<CFunction*>(mpObject);
 
   if (!func) return false;
 
@@ -585,7 +589,7 @@ bool FunctionWidget1::functionParametersChanged()
 
 bool FunctionWidget1::saveToFunction()
 {
-  CFunction* func = dynamic_cast<CFunction*>(CRootContainer::getKeyFactory()->get(mKey));
+  CFunction* func = dynamic_cast<CFunction*>(mpObject);
 
   if (!func) return false;
 
@@ -615,7 +619,7 @@ bool FunctionWidget1::saveToFunction()
     {
       copyFunctionContentsToFunction(mpFunction, func);
 
-      protectedNotify(ListViews::FUNCTION, ListViews::CHANGE, mKey);
+      protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::CHANGE, mObjectCN);
 
       if (mpDataModel != NULL)
         {
@@ -735,15 +739,15 @@ void FunctionWidget1::slotBtnNew()
 
   CRootContainer::getFunctionList()->add(pFunc = new CKinFunction(name), true);
 
-  std::string key = pFunc->getKey();
-  protectedNotify(ListViews::FUNCTION, ListViews::ADD, key);
+  CCommonName CN = pFunc->getCN();
+  protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::ADD, CN);
   // enter(key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::FunctionDetail, CN);
 }
 
 void FunctionWidget1::slotBtnCopy()
 {
-  mKeyToCopy = mKey;
+  mObjectCNToCopy = mObjectCN;
 }
 
 //! Slot for being activated whenever Delete button is clicked
@@ -754,7 +758,7 @@ void FunctionWidget1::slotBtnDelete()
   if (pFunctionDB == NULL)
     return;
 
-  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CRootContainer::getKeyFactory()->get(mKey));
+  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(mpObject);
 
   if (pFunction == NULL)
     return;
@@ -769,10 +773,10 @@ void FunctionWidget1::slotBtnDelete()
     {
       case QMessageBox::Ok:                                                    // Yes or Enter
       {
-        CRootContainer::getFunctionList()->removeFunction(mKey);
+        CRootContainer::getFunctionList()->loadedFunctions().remove(mpObject->getObjectName());
 
-        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, mKey);
-        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+        protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::DELETE, mObjectCN);
+        protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::DELETE, std::string());//Refresh all as there may be dependencies.
         break;
       }
 
@@ -786,9 +790,8 @@ void FunctionWidget1::slotBtnDelete()
 //************************  standard interface to COPASI widgets ******************
 
 //! Function to update the COPASI widgets
-bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool FunctionWidget1::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
-
   if (mIgnoreUpdates || !isVisible())
     {
       return true;
@@ -796,22 +799,23 @@ bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action
 
   switch (objectType)
     {
-      case ListViews::MODEL:
-        loadFromFunction(dynamic_cast< CFunction * >(CRootContainer::getKeyFactory()->get(mKey)));
+      case ListViews::ObjectType::MODEL:
+        loadFromFunction(dynamic_cast< CFunction * >(mpObject));
         break;
 
-      case ListViews::FUNCTION:
+      case ListViews::ObjectType::FUNCTION:
 
-        if (key == mKey)
+        if (cn == mObjectCN)
           {
             switch (action)
               {
                 case ListViews::CHANGE:
-                  loadFromFunction(dynamic_cast< CFunction * >(CRootContainer::getKeyFactory()->get(mKey)));
+                  loadFromFunction(dynamic_cast< CFunction * >(mpObject));
                   break;
 
                 case ListViews::DELETE:
-                  mKey = "";
+                  mObjectCN.clear();
+                  mpObject = NULL;
                   break;
 
                 default:
@@ -828,7 +832,7 @@ bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action
   return true;
 }
 
-bool FunctionWidget1::leave()
+bool FunctionWidget1::leaveProtected()
 {
   assert(mpDataModel != NULL);
   CModel * pModel = mpDataModel->getModel();
@@ -842,7 +846,7 @@ bool FunctionWidget1::leave()
   if (pFunctionDB == NULL)
     return true;
 
-  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CRootContainer::getKeyFactory()->get(mKey));
+  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(mpObject);
 
   if (pFunction == NULL)
     return true;
@@ -1032,9 +1036,10 @@ bool FunctionWidget1::enterProtected()
 {
   CFunction * func = NULL;
 
-  if (mKeyToCopy != "")
+  if (mObjectCNToCopy != "")
     {
-      func = dynamic_cast<CFunction*>(CRootContainer::getKeyFactory()->get(mKeyToCopy));
+      //func = dynamic_cast<CFunction*>(CRootContainer::getKeyFactory()->get(mObjectCNToCopy));
+      func = const_cast<CFunction*>(dynamic_cast<const CFunction*>(CRootContainer::getRoot()->getObject(mObjectCNToCopy)));
     }
   else
     {
@@ -1044,6 +1049,6 @@ bool FunctionWidget1::enterProtected()
   if (func)
     return loadFromFunction(func);
 
-  mpListView->switchToOtherWidget(5, "");
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Functions, std::string());
   return false;
 }

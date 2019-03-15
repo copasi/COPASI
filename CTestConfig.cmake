@@ -11,10 +11,10 @@
 ##   ENABLE_TESTING()
 ##   INCLUDE(CTest)
 
-set(CTEST_PROJECT_NAME "COPASI 4.20")
+set(CTEST_PROJECT_NAME "COPASI develop")
 set(CTEST_NIGHTLY_START_TIME "01:00:00 UTC")
 
 set(CTEST_DROP_METHOD "http")
 set(CTEST_DROP_SITE "cdash-copasi.bioquant.uni-heidelberg.de")
-set(CTEST_DROP_LOCATION "/CDash/submit.php?project=COPASI+4.20")
+set(CTEST_DROP_LOCATION "/CDash/submit.php?project=COPASI+develop")
 set(CTEST_DROP_SITE_CDASH TRUE)

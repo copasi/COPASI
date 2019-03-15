@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,13 +13,13 @@
 #include "CArrayElementReference.h"
 
 // static
-CArrayElementReference * CArrayElementReference::fromData(const CData & data)
+CArrayElementReference * CArrayElementReference::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   std::vector< std::string > Index;
 
-  if (data.isSetProperty(CData::Property::ARRAY_ELEMENT_INDEX))
+  if (data.isSetProperty(CData::ARRAY_ELEMENT_INDEX))
     {
-      const std::vector< CDataValue > & DataIndex = data.getProperty(CData::Property::ARRAY_ELEMENT_INDEX).toDataValues();
+      const std::vector< CDataValue > & DataIndex = data.getProperty(CData::ARRAY_ELEMENT_INDEX).toDataValues();
       Index.resize(DataIndex.size());
 
       std::vector< CDataValue >::const_iterator it = DataIndex.begin();
@@ -35,19 +40,19 @@ CData CArrayElementReference::toData() const
 {
   CData Data = CDataObject::toData();
 
-  Data.addProperty(CData::Property::ARRAY_ELEMENT_INDEX, std::vector< CDataValue >(mIndex.begin(), mIndex.end()));
+  Data.addProperty(CData::ARRAY_ELEMENT_INDEX, std::vector< CDataValue >(mIndex.begin(), mIndex.end()));
 
   return Data;
 }
 
 // virtual
-bool CArrayElementReference::applyData(const CData & data)
+bool CArrayElementReference::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
-  bool success = CDataObject::applyData(data);
+  bool success = CDataObject::applyData(data, changes);
 
-  if (data.isSetProperty(CData::Property::ARRAY_ELEMENT_INDEX))
+  if (data.isSetProperty(CData::ARRAY_ELEMENT_INDEX))
     {
-      const std::vector< CDataValue > & Index = data.getProperty(CData::Property::ARRAY_ELEMENT_INDEX).toDataValues();
+      const std::vector< CDataValue > & Index = data.getProperty(CData::ARRAY_ELEMENT_INDEX).toDataValues();
       mIndex.resize(Index.size());
 
       std::vector< CDataValue >::const_iterator it = Index.begin();

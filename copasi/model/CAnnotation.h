@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -14,17 +19,65 @@
 #include <string>
 #include <map>
 
+#include "copasi/undo/CUndoData.h"
+
 class CDataObject;
+class CMIRIAMInfo;
+class CDataContainer;
 
 class CAnnotation
 {
 public:
   typedef std::map< std::string, std::string > UnsupportedAnnotation;
 
+private:
+  static std::map< CDataContainer *, CMIRIAMInfo * > Container2Info;
+
   // Operations
 public:
   static CAnnotation * castObject(CDataObject * pObject);
   static const CAnnotation * castObject(const CDataObject * pObject);
+
+  /**
+   * Allocat a MIRIAM Info object for the given CDataContainer * pParent.
+   * The ownership is with the parent
+   * @param CDataContainer * pParent
+   * @return CMIRIAMInfo * pMiriamInfo
+   */
+  static CMIRIAMInfo * allocateMiriamInfo(CDataContainer * pParent);
+
+  /**
+   * Free if possible an existing MIRIAM Info object for the given CDataContainer * pParent.
+   * @return CMIRIAMInfo * pMiriamInfo
+   */
+  static void freeMiriamInfo(CDataContainer * pParent);
+
+  /**
+   * Retrieve the data describing the annotation
+   * @return CData data
+   */
+  CData toData() const;
+
+  /**
+   * Apply the provided data to the annotation
+   * @param const CData & data
+   * @return bool success
+   */
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param CUndoData & undoData
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
+   */
+  void createUndoData(CUndoData & undoData,
+                      const CUndoData::Type & type,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
 
   /**
    * Default constructor
@@ -47,6 +100,8 @@ public:
    * @return std::string key
    */
   virtual const std::string & getKey() const;
+
+  void initMiriamAnnotation(const std::string & newId);
 
   /**
    * Set the RDF/XML representation of the MIRIAM annotation

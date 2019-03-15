@@ -117,7 +117,7 @@ private:
   /**
    * a pointer to the randomnumber generator.
    */
-  CRandom * mpRandom;
+  CRandom * mpRandom{NULL};
 
   /**
    * number of parameters

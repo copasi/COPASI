@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -58,6 +58,7 @@
 #include "optimization/COptMethodStatistics.h"
 #include "optimization/COptMethodSteepestDescent.h"
 #include "optimization/COptMethodTruncatedNewton.h"
+#include "optimization/COptMethodNL2SOL.h"
 #include "optimization/CRandomSearch.h"
 // #include "oscillation/COscillationMethod.h"
 #include "scan/CScanMethod.h"
@@ -137,6 +138,10 @@ CCopasiMethod * CCopasiMethod::createMethod(const CDataContainer * pParent,
 
       case CTaskEnum::Method::LevenbergMarquardt:
         pMethod = new COptMethodLevenbergMarquardt(pParent, methodType, taskType);
+        break;
+
+      case CTaskEnum::Method::NL2SOL:
+        pMethod = new COptMethodNL2SOL(pParent, methodType, taskType);
         break;
 
       case CTaskEnum::Method::NelderMead:

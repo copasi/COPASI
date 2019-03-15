@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,6 +33,7 @@
 
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
+#include "copasi/model/CModel.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/CCopasiTask.h"
@@ -64,6 +65,8 @@ int saveCurrentModel();
 
 CDataModel* pDataModel = NULL;
 bool Validate = false;
+std::string ReportFileName;
+std::string ScheduledTask;
 
 int main(int argc, char *argv[])
 {
@@ -123,6 +126,9 @@ int main(int argc, char *argv[])
   bool License;
   COptions::getValue("License", License);
 
+  COptions::getValue("ReportFile", ReportFileName);
+  COptions::getValue("ScheduledTask", ScheduledTask);
+
   if (License)
     {
       std::cout << CRootContainer::getLicenseTxt() << std::endl;
@@ -181,6 +187,9 @@ int main(int argc, char *argv[])
       // Check whether we just have to validate
       COptions::getValue("Validate", Validate);
 
+      bool ConvertToIrreversible;
+      COptions::getValue("ConvertToIrreversible", ConvertToIrreversible);
+
       const COptions::nonOptionType & Files = COptions::getNonOptions();
 
       bool importSBML = COptions::isSet("ImportSBML") && !COptions::compareValue("ImportSBML", std::string(""));
@@ -206,7 +215,6 @@ int main(int argc, char *argv[])
                 }
             }
 
-#ifdef COPASI_SEDML
           else if (importSEDML)
             {
               // Import the SED-ML File
@@ -223,9 +231,6 @@ int main(int argc, char *argv[])
                 }
             }
 
-#endif //COPASI_SEDML
-
-#ifdef WITH_COMBINE_ARCHIVE
           else if (importCA)
             {
               // Import the SED-ML File
@@ -242,8 +247,6 @@ int main(int argc, char *argv[])
                 }
             }
 
-#endif // WITH_COMBINE_ARCHIVE
-
           else
             {
               std::cerr << "Unsupported Import operation" << std::endl;
@@ -256,6 +259,12 @@ int main(int argc, char *argv[])
             {
               retcode = validate();
               goto finish;
+            }
+
+          if (ConvertToIrreversible)
+            {
+              pDataModel->getModel()->convert2NonReversible();
+              pDataModel->getModel()->compileIfNecessary(NULL);
             }
 
           retcode = exportCurrentModel();
@@ -308,6 +317,12 @@ int main(int argc, char *argv[])
                 {
                   retcode |= validate();
                   continue;
+                }
+
+              if (ConvertToIrreversible)
+                {
+                  pDataModel->getModel()->convert2NonReversible();
+                  pDataModel->getModel()->compileIfNecessary(NULL);
                 }
 
               retcode = exportCurrentModel();
@@ -387,28 +402,54 @@ int runScheduledTasks(CProcessReport * pProcessReport)
   CDataVectorN< CCopasiTask > & TaskList = *pDataModel->getTaskList();
   size_t i, imax = TaskList.size();
 
-  for (i = 0; i < imax; i++)
-    if (TaskList[i].isScheduled())
+  if (!ScheduledTask.empty())
+    {
+      if (!TaskList.getIndex(ScheduledTask) == C_INVALID_INDEX)
+        {
+          std::cerr << "No task '" << ScheduledTask << "' to be marked executable"
+                    << std::endl << std::endl;
+          return 1;
+        }
+
+      // mark all other potential tasks as not scheduled
+for (CCopasiTask & task : TaskList)
+        {
+          task.setScheduled(false);
+        }
+
+      CCopasiTask& toBeScheduled = TaskList[ScheduledTask];
+      toBeScheduled.setScheduled(true);
+    }
+
+
+for (CCopasiTask & task : TaskList)
+    if (task.isScheduled())
       {
-        TaskList[i].setCallBack(pProcessReport);
+        task.setCallBack(pProcessReport);
 
         bool success = true;
 
+        if (!ReportFileName.empty())
+          {
+            task.getReport().setTarget(ReportFileName);
+          }
+
+
         try
           {
-            success = TaskList[i].initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
+            success = task.initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
 
             // We need to check whether the result is saved in any form.
             // If not we need to stop right here to avoid wasting time.
             if (CCopasiMessage::checkForMessage(MCCopasiTask + 5) &&
-                (!TaskList[i].isUpdateModel() ||
+                (!task.isUpdateModel() ||
                  COptions::compareValue("Save", std::string(""))))
               {
                 success = false;
               }
 
             if (success)
-              success &= TaskList[i].process(true);
+              success &= task.process(true);
           }
 
         catch (...)
@@ -416,12 +457,12 @@ int runScheduledTasks(CProcessReport * pProcessReport)
             success = false;
           }
 
-        TaskList[i].restore();
+        task.restore();
 
         if (!success)
           {
             std::cerr << "File: " << pDataModel->getFileName() << std::endl;
-            std::cerr << "Task: " << TaskList[i].getObjectName() << std::endl;
+            std::cerr << "Task: " << task.getObjectName() << std::endl;
             std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
 
             retcode = 1;
@@ -432,7 +473,7 @@ int runScheduledTasks(CProcessReport * pProcessReport)
             pProcessReport->finish();
           }
 
-        TaskList[i].setCallBack(NULL);
+        task.setCallBack(NULL);
         pDataModel->finish();
       }
 
@@ -505,8 +546,6 @@ int exportCurrentModel()
       return retcode;
     }
 
-#ifdef COPASI_SEDML
-
   // Check whether exporting to SEDML is requested.
   if (!COptions::compareValue("ExportSEDML", std::string("")))
     {
@@ -522,10 +561,6 @@ int exportCurrentModel()
           retcode = 1;
         }
     }
-
-#endif //COPASI_SEDML
-
-#ifdef WITH_COMBINE_ARCHIVE
 
   // Check whether exporting to Combine Archive is requested.
   if (!COptions::compareValue("ExportCombineArchive", std::string("")))
@@ -546,8 +581,6 @@ int exportCurrentModel()
           retcode = 1;
         }
     }
-
-#endif //WITH_COMBINE_ARCHIVE
 
   return NO_EXPORT_REQUESTED;
 }

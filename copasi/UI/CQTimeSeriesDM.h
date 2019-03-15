@@ -41,8 +41,8 @@ public:
   void setFramework(int framework);
 
 protected:
-  virtual bool insertRows(int position, int rows, const QModelIndex & source);
-  virtual bool removeRows(int position, int rows);
+  virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+  virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 
 private:
   const CTimeSeries * mpTimeSeries;

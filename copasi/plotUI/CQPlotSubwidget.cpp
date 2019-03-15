@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -59,11 +64,9 @@ CQPlotSubwidget::CQPlotSubwidget(QWidget* parent, const char* name, Qt::WindowFl
   mpHistoWidget = new HistoWidget(this);
   mpStack->addWidget(mpHistoWidget);
 #ifdef COPASI_BANDED_GRAPH
-  // this should be implemented in the CQPlotSubwidget.ui file
-  // as the button will be appended behind the 'delete' button:
-  QToolButton *buttonBandedGraph = new QToolButton(this);
+  QPushButton *buttonBandedGraph = new QPushButton(this);
   buttonBandedGraph->setText("New Banded Graph");
-  layoutCurves->addWidget(buttonBandedGraph);
+  layoutCurves->insertWidget(5, buttonBandedGraph);
   connect(buttonBandedGraph, SIGNAL(clicked()), this, SLOT(addBandedGraphSlot()));
   mpBandedGraphWidget = new BandedGraphWidget(this);
   mpStack->addWidget(mpBandedGraphWidget);
@@ -72,10 +75,11 @@ CQPlotSubwidget::CQPlotSubwidget(QWidget* parent, const char* name, Qt::WindowFl
   mpStack->addWidget(mpSpectogramWidget);
 
   auto it = CTaskEnum::TaskName.begin();
+
   for (; it != CTaskEnum::TaskName.end(); ++it)
-  {
-    mTaskNames << FROM_UTF8(*it);
-  }
+    {
+      mTaskNames << FROM_UTF8(*it);
+    }
 }
 
 CPlotItem *CQPlotSubwidget::updateItem(CPlotItem *item)
@@ -372,6 +376,99 @@ void CQPlotSubwidget::addCurveTab(const std::string &title,
   addPlotItem(item);
 }
 
+void chooseAxisFromSelection(
+  std::vector<const CDataObject *> &vector1,
+  std::vector<const CDataObject *> &vector2,
+  std::vector<CCommonName> &objects1,
+  std::vector<CCommonName> &objects2, std::map<std::string, std::string> &mapCNToDisplayName)
+{
+  size_t i;
+  std::vector<CCommonName>::const_iterator sit;
+  const CDataArray *pArray;
+  // 1. enable user to choose either a cell, an entire row/column, or even the objects themselves, if they are arrays.
+  // 2. translate to CNs and remove duplicates
+  // x-axis is set for single cell selection
+  std::string cn;
+
+  for (i = 0; i < vector1.size(); i++)
+    {
+      if (vector1[i])  // the object is not empty
+        {
+          // is it an array annotation?
+          if ((pArray = dynamic_cast<const CDataArray *>(vector1[i])))
+            {
+              // second argument is true as only single cell here is allowed. In this case we
+              //can assume that the size of the return vector is 1.
+              const CDataObject *pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true, "X axis: ")[0];
+
+              if (!pObject) continue;
+
+              cn = pObject->getCN();
+              mapCNToDisplayName[cn] = pObject->getObjectDisplayName();
+            }
+          else
+            {
+              cn = vector1[i]->getCN();
+              mapCNToDisplayName[cn] = vector1[i]->getObjectDisplayName();
+            }
+
+          // check whether cn is already on objects1
+          for (sit = objects1.begin(); sit != objects1.end(); ++sit)
+            {
+              if (*sit == cn) break;
+            }
+
+          // if not exist, input cn into objects1
+          if (sit == objects1.end())
+            {
+              objects1.push_back(cn);
+            }
+        }
+    }
+
+  for (i = 0; i < vector2.size(); i++)
+    {
+      if (vector2[i])
+        {
+          // is it an array annotation?
+          if ((pArray = dynamic_cast<const CDataArray *>(vector2[i])))
+            {
+              // second argument is set false for multi selection
+              std::vector<const CDataObject *> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
+              std::vector<const CDataObject *>::const_iterator it;
+
+              for (it = vvv.begin(); it != vvv.end(); ++it)
+                {
+                  if (!*it) continue;
+
+                  cn = (*it)->getCN();
+
+                  //check if the CN already is in the list, if not add it.
+                  for (sit = objects2.begin(); sit != objects2.end(); ++sit)
+                    if (*sit == cn) break;
+
+                  mapCNToDisplayName[cn] = (*it)->getObjectDisplayName();
+
+                  if (sit == objects2.end())
+                    objects2.push_back(cn);
+                }
+            }
+          else
+            {
+              cn = vector2[i]->getCN();
+              mapCNToDisplayName[cn] = vector2[i]->getObjectDisplayName();
+
+              //check if the CN already is in the list, if not add it.
+              for (sit = objects2.begin(); sit != objects2.end(); ++sit)
+                if (*sit == cn) break;
+
+              if (sit == objects2.end())
+                objects2.push_back(cn);
+            }
+        }
+    }
+}
+
 void CQPlotSubwidget::addCurve2D()
 {
   CCopasiPlotSelectionDialog *pBrowser = new CCopasiPlotSelectionDialog();
@@ -393,92 +490,17 @@ void CQPlotSubwidget::addCurve2D()
     }
 
   std::vector<CCommonName> objects1, objects2;
+  std::map<std::string, std::string> mapCNToDisplayName;
   size_t i;
-  std::vector<CCommonName>::const_iterator sit;
-  const CDataArray *pArray;
-  // 1. enable user to choose either a cell, an entire row/column, or even the objects themselves, if they are arrays.
-  // 2. translate to CNs and remove duplicates
-  // x-axis is set for single cell selection
-  std::string cn;
-
-  for (i = 0; i < vector1.size(); i++)
-    {
-      if (vector1[i])  // the object is not empty
-        {
-          // is it an array annotation?
-          if ((pArray = dynamic_cast< const CDataArray * >(vector1[i])))
-            {
-              // second argument is true as only single cell here is allowed. In this case we
-              //can assume that the size of the return vector is 1.
-              const CDataObject *pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true, "X axis: ")[0];
-
-              if (!pObject) continue;
-
-              cn = pObject->getCN();
-            }
-          else
-            cn = vector1[i]->getCN();
-
-          // check whether cn is already on objects1
-          for (sit = objects1.begin(); sit != objects1.end(); ++sit)
-            {
-              if (*sit == cn) break;
-            }
-
-          // if not exist, input cn into objects1
-          if (sit == objects1.end())
-            {
-              objects1.push_back(cn);
-            }
-        }
-    }
-
-  for (i = 0; i < vector2.size(); i++)
-    {
-      if (vector2[i])
-        {
-          // is it an array annotation?
-          if ((pArray = dynamic_cast< const CDataArray * >(vector2[i])))
-            {
-              // second argument is set false for multi selection
-              std::vector<const CDataObject *> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
-              std::vector<const CDataObject *>::const_iterator it;
-
-              for (it = vvv.begin(); it != vvv.end(); ++it)
-                {
-                  if (!*it) continue;
-
-                  cn = (*it)->getCN();
-
-                  //check if the CN already is in the list, if not add it.
-                  for (sit = objects2.begin(); sit != objects2.end(); ++sit)
-                    if (*sit == cn) break;
-
-                  if (sit == objects2.end())
-                    objects2.push_back(cn);
-                }
-            }
-          else
-            {
-              cn = vector2[i]->getCN();
-
-              //check if the CN already is in the list, if not add it.
-              for (sit = objects2.begin(); sit != objects2.end(); ++sit)
-                if (*sit == cn) break;
-
-              if (sit == objects2.end())
-                objects2.push_back(cn);
-            }
-        }
-    }
+  chooseAxisFromSelection(vector1, vector2, objects1, objects2, mapCNToDisplayName);
 
   if (objects1.size() == 1)
     {
       for (i = 0; i < objects2.size(); ++i)
         {
-          addCurveTab(mpDataModel->getObjectFromCN(objects2[i])->getObjectDisplayName()
+          addCurveTab(mapCNToDisplayName[objects2[i]]
                       + "|"
-                      + mpDataModel->getObjectFromCN(objects1[0])->getObjectDisplayName(),
+                      + mapCNToDisplayName[objects1[0]],
                       objects1[0], objects2[i]);
         }
     }
@@ -486,9 +508,9 @@ void CQPlotSubwidget::addCurve2D()
     {
       for (i = 0; i < objects1.size(); ++i)
         {
-          addCurveTab(mpDataModel->getObjectFromCN(objects2[0])->getObjectDisplayName()
+          addCurveTab(mapCNToDisplayName[objects2[0]]
                       + "|"
-                      + mpDataModel->getObjectFromCN(objects1[i])->getObjectDisplayName(),
+                      + mapCNToDisplayName[objects1[i]],
                       objects1[i], objects2[0]);
         }
     }
@@ -503,9 +525,9 @@ void CQPlotSubwidget::addCurve2D()
 
       for (i = 0; i < imax; ++i)
         {
-          addCurveTab(mpDataModel->getObjectFromCN(objects2[i])->getObjectDisplayName()
+          addCurveTab(mapCNToDisplayName[objects2[i]]
                       + "|"
-                      + mpDataModel->getObjectFromCN(objects1[i])->getObjectDisplayName(),
+                      + mapCNToDisplayName[objects1[i]],
                       objects1[i], objects2[i]);
         }
     }
@@ -532,92 +554,17 @@ void CQPlotSubwidget::addSpectrum()
     }
 
   std::vector<CCommonName> objects1, objects2;
+  std::map<std::string, std::string> mapCNToDisplayName;
   size_t i;
-  std::vector<CCommonName>::const_iterator sit;
-  const CDataArray *pArray;
-  // 1. enable user to choose either a cell, an entire row/column, or even the objects themselves, if they are arrays.
-  // 2. translate to CNs and remove duplicates
-  // x-axis is set for single cell selection
-  std::string cn;
-
-  for (i = 0; i < vector1.size(); i++)
-    {
-      if (vector1[i])  // the object is not empty
-        {
-          // is it an array annotation?
-          if ((pArray = dynamic_cast< const CDataArray * >(vector1[i])))
-            {
-              // second argument is true as only single cell here is allowed. In this case we
-              //can assume that the size of the return vector is 1.
-              const CDataObject *pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true, "X axis: ")[0];
-
-              if (!pObject) continue;
-
-              cn = pObject->getCN();
-            }
-          else
-            cn = vector1[i]->getCN();
-
-          // check whether cn is already on objects1
-          for (sit = objects1.begin(); sit != objects1.end(); ++sit)
-            {
-              if (*sit == cn) break;
-            }
-
-          // if not exist, input cn into objects1
-          if (sit == objects1.end())
-            {
-              objects1.push_back(cn);
-            }
-        }
-    }
-
-  for (i = 0; i < vector2.size(); i++)
-    {
-      if (vector2[i])
-        {
-          // is it an array annotation?
-          if ((pArray = dynamic_cast< const CDataArray * >(vector2[i])))
-            {
-              // second argument is set false for multi selection
-              std::vector<const CDataObject *> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
-              std::vector<const CDataObject *>::const_iterator it;
-
-              for (it = vvv.begin(); it != vvv.end(); ++it)
-                {
-                  if (!*it) continue;
-
-                  cn = (*it)->getCN();
-
-                  //check if the CN already is in the list, if not add it.
-                  for (sit = objects2.begin(); sit != objects2.end(); ++sit)
-                    if (*sit == cn) break;
-
-                  if (sit == objects2.end())
-                    objects2.push_back(cn);
-                }
-            }
-          else
-            {
-              cn = vector2[i]->getCN();
-
-              //check if the CN already is in the list, if not add it.
-              for (sit = objects2.begin(); sit != objects2.end(); ++sit)
-                if (*sit == cn) break;
-
-              if (sit == objects2.end())
-                objects2.push_back(cn);
-            }
-        }
-    }
+  chooseAxisFromSelection(vector1, vector2, objects1, objects2, mapCNToDisplayName);
 
   if (objects1.size() == 1)
     {
       for (i = 0; i < objects2.size(); ++i)
         {
-          addSpectrumTab(mpDataModel->getObject(objects2[i])->getObjectDisplayName()
+          addSpectrumTab(mapCNToDisplayName[objects2[i]]
                          + "|"
-                         + mpDataModel->getObject(objects1[0])->getObjectDisplayName(),
+                         + mapCNToDisplayName[objects1[0]],
                          objects1[0], objects2[i]);
         }
     }
@@ -625,9 +572,9 @@ void CQPlotSubwidget::addSpectrum()
     {
       for (i = 0; i < objects1.size(); ++i)
         {
-          addSpectrumTab(mpDataModel->getObject(objects2[0])->getObjectDisplayName()
+          addSpectrumTab(mapCNToDisplayName[objects2[0]]
                          + "|"
-                         + mpDataModel->getObject(objects1[i])->getObjectDisplayName(),
+                         + mapCNToDisplayName[objects1[i]],
                          objects1[i], objects2[0]);
         }
     }
@@ -642,9 +589,9 @@ void CQPlotSubwidget::addSpectrum()
 
       for (i = 0; i < imax; ++i)
         {
-          addSpectrumTab(mpDataModel->getObject(objects2[i])->getObjectDisplayName()
+          addSpectrumTab(mapCNToDisplayName[objects2[i]]
                          + "|"
-                         + mpDataModel->getObject(objects1[i])->getObjectDisplayName(),
+                         + mapCNToDisplayName[objects1[i]],
                          objects1[i], objects2[i]);
         }
     }
@@ -684,92 +631,17 @@ void CQPlotSubwidget::addBandedGraph()
     }
 
   std::vector<CCommonName> objects1, objects2;
+  std::map<std::string, std::string> mapCNToDisplayName;
   size_t i;
-  std::vector<CCommonName>::const_iterator sit;
-  const CDataArray *pArray;
-  // 1. enable user to choose either a cell, an entire row/column, or even the objects themselves, if they are arrays.
-  // 2. translate to CNs and remove duplicates
-  // x-axis is set for single cell selection
-  std::string cn;
-
-  for (i = 0; i < vector1.size(); i++)
-    {
-      if (vector1[i])  // the object is not empty
-        {
-          // is it an array annotation?
-          if ((pArray = dynamic_cast< const CDataArray * >(vector1[i])))
-            {
-              // second argument is true as only single cell here is allowed. In this case we
-              //can assume that the size of the return vector is 1.
-              const CDataObject *pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true, "X axis: ")[0];
-
-              if (!pObject) continue;
-
-              cn = pObject->getCN();
-            }
-          else
-            cn = vector1[i]->getCN();
-
-          // check whether cn is already on objects1
-          for (sit = objects1.begin(); sit != objects1.end(); ++sit)
-            {
-              if (*sit == cn) break;
-            }
-
-          // if not exist, input cn into objects1
-          if (sit == objects1.end())
-            {
-              objects1.push_back(cn);
-            }
-        }
-    }
-
-  for (i = 0; i < vector2.size(); i++)
-    {
-      if (vector2[i])
-        {
-          // is it an array annotation?
-          if ((pArray = dynamic_cast< const CDataArray * >(vector2[i])))
-            {
-              // second argument is set false for multi selection
-              std::vector<const CDataObject *> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
-              std::vector<const CDataObject *>::const_iterator it;
-
-              for (it = vvv.begin(); it != vvv.end(); ++it)
-                {
-                  if (!*it) continue;
-
-                  cn = (*it)->getCN();
-
-                  //check if the CN already is in the list, if not add it.
-                  for (sit = objects2.begin(); sit != objects2.end(); ++sit)
-                    if (*sit == cn) break;
-
-                  if (sit == objects2.end())
-                    objects2.push_back(cn);
-                }
-            }
-          else
-            {
-              cn = vector2[i]->getCN();
-
-              //check if the CN already is in the list, if not add it.
-              for (sit = objects2.begin(); sit != objects2.end(); ++sit)
-                if (*sit == cn) break;
-
-              if (sit == objects2.end())
-                objects2.push_back(cn);
-            }
-        }
-    }
+  chooseAxisFromSelection(vector1, vector2, objects1, objects2, mapCNToDisplayName);
 
   if (objects1.size() == 1)
     {
       for (i = 0; i < objects2.size(); ++i)
         {
-          addBandedGraphTab(mpDataModel->getObject(objects2[i])->getObjectDisplayName()
+          addBandedGraphTab(mapCNToDisplayName[objects2[i]]
                             + "|"
-                            + mpDataModel->getObject(objects1[0])->getObjectDisplayName(),
+                            + mapCNToDisplayName[objects1[0]],
                             objects1[0], objects2[i]);
         }
     }
@@ -777,9 +649,9 @@ void CQPlotSubwidget::addBandedGraph()
     {
       for (i = 0; i < objects1.size(); ++i)
         {
-          addBandedGraphTab(mpDataModel->getObject(objects2[0])->getObjectDisplayName()
+          addBandedGraphTab(mapCNToDisplayName[objects2[0]]
                             + "|"
-                            + mpDataModel->getObject(objects1[i])->getObjectDisplayName(),
+                            + mapCNToDisplayName[objects1[i]],
                             objects1[i], objects2[0]);
         }
     }
@@ -794,9 +666,9 @@ void CQPlotSubwidget::addBandedGraph()
 
       for (i = 0; i < imax; ++i)
         {
-          addBandedGraphTab(mpDataModel->getObject(objects2[i])->getObjectDisplayName()
+          addBandedGraphTab(mapCNToDisplayName[objects2[i]]
                             + "|"
-                            + mpDataModel->getObject(objects1[i])->getObjectDisplayName(),
+                            + mapCNToDisplayName[objects1[i]],
                             objects1[i], objects2[i]);
         }
     }
@@ -871,7 +743,7 @@ void CQPlotSubwidget::removeCurve()
 void CQPlotSubwidget::commitPlot()
 {
   saveToPlotSpec();
-  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(CRootContainer::getKeyFactory()->get(mKey)));
+  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(mpObject));
 }
 
 //-----------------------------------------------------------------------------
@@ -884,35 +756,36 @@ void CQPlotSubwidget::deletePlot()
   if (!mpDataModel->getModel())
     return;
 
-  CPlotSpecification *pspec = dynamic_cast< CPlotSpecification * >(CRootContainer::getKeyFactory()->get(mKey));
+  CPlotSpecification *pspec = dynamic_cast< CPlotSpecification * >(mpObject);
 
   if (!pspec) return;
 
-  Index =
-    mpDataModel->getPlotDefinitionList()->CDataVector<CPlotSpecification>::getIndex(pspec);
-  mpDataModel->getPlotDefinitionList()->removePlotSpec(mKey);
-  std::string deletedKey = mKey;
+  Index = mpDataModel->getPlotDefinitionList()->CDataVector<CPlotSpecification>::getIndex(pspec);
+  mpDataModel->getPlotDefinitionList()->CDataVector<CPlotSpecification>::remove(Index);
+
+  std::string deletedObjectCN = mObjectCN;
+
   Size = mpDataModel->getPlotDefinitionList()->size();
 
   if (Size > 0)
-    enter(mpDataModel->getPlotDefinitionList()->operator[](std::min(Index, Size - 1)).CCopasiParameter::getKey());
+    enter(mpDataModel->getPlotDefinitionList()->operator[](std::min(Index, Size - 1)).getCN());
   else
-    enter("");
+    enter(std::string());
 
   //ListViews::
-  protectedNotify(ListViews::PLOT, ListViews::DELETE, deletedKey);
+  protectedNotify(ListViews::ObjectType::PLOT, ListViews::DELETE, deletedObjectCN);
 }
 
 //-----------------------------------------------------------------------------
 
 void CQPlotSubwidget::copyPlot()
 {
-  leave();
+  leaveProtected();
   CDataModel *pDataModel = mpObject->getObjectDataModel();
 
   if (pDataModel == NULL) return;
 
-  CPlotSpecification *pPl = new CPlotSpecification(*dynamic_cast<CPlotSpecification *>(CRootContainer::getKeyFactory()->get(mKey)), NO_PARENT);
+  CPlotSpecification *pPl = new CPlotSpecification(*dynamic_cast<CPlotSpecification *>(mpObject), NO_PARENT);
   std::string baseName = pPl->getObjectName() + "_copy";
   std::string name = baseName;
   int i = 1;
@@ -925,17 +798,17 @@ void CQPlotSubwidget::copyPlot()
 
   pPl->setObjectName(name);
   pDataModel->getPlotDefinitionList()->add(pPl, true);
-  std::string key = pPl->CCopasiParameter::getKey();
-  protectedNotify(ListViews::PLOT, ListViews::ADD, key);
-  enter(key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  std::string cn = pPl->CCopasiParameter::getCN();
+  protectedNotify(ListViews::ObjectType::PLOT, ListViews::ADD, cn);
+  enter(cn);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::PlotDetail, cn);
 }
 
 //-----------------------------------------------------------------------------
 
 void CQPlotSubwidget::addPlot()
 {
-  leave();
+  leaveProtected();
   CDataModel *pDataModel = mpObject->getObjectDataModel();
 
   if (pDataModel == NULL) return;
@@ -952,17 +825,17 @@ void CQPlotSubwidget::addPlot()
       name += TO_UTF8(QString::number(i));
     }
 
-  std::string key = pPl->CCopasiParameter::getKey();
-  protectedNotify(ListViews::PLOT, ListViews::ADD, key);
-  enter(key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  std::string cn = pPl->CCopasiParameter::getCN();
+  protectedNotify(ListViews::ObjectType::PLOT, ListViews::ADD, cn);
+  enter(cn);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::PlotDetail, cn);
 }
 
 //-----------------------------------------------------------------------------
 
 void CQPlotSubwidget::resetPlot()
 {
-  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(CRootContainer::getKeyFactory()->get(mKey)));
+  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(mpObject));
 }
 
 #include <QInputDialog>
@@ -973,58 +846,62 @@ void CQPlotSubwidget::selectTaskTypes()
   dlg->setWindowTitle("Select Tasks");
   dlg->setMinimumHeight(400);
   dlg->setSelectionList(mTaskNames);
-  
+
   QStringList currentSelection;
+
   if (!mTaskTypes.empty())
-  {
-    std::istringstream ss(mTaskTypes);
-    std::string token;
-    while (std::getline(ss, token, ',')) {
+    {
+      std::istringstream ss(mTaskTypes);
+      std::string token;
 
-      while (token[0] == ' ') // remove leading spaces
-        token.erase(0, 1);
+      while (std::getline(ss, token, ','))
+        {
 
-      currentSelection << FROM_UTF8(token);
+          while (token[0] == ' ') // remove leading spaces
+            token.erase(0, 1);
+
+          currentSelection << FROM_UTF8(token);
+        }
     }
 
-  }
-
   dlg->setCurrentSelection(currentSelection);
+
   if (dlg->exec() != QDialog::Accepted)
     return;
 
   const QStringList& selection = dlg->getSelection();
-  
-  std::stringstream str; 
+
+  std::stringstream str;
+
   if (!selection.empty())
-  {
-    auto it = selection.begin();
-    str << TO_UTF8(*it++);
-    for (; it != selection.end(); ++it)
     {
-      str << ", ";
-      str << TO_UTF8(*it);
+      auto it = selection.begin();
+      str << TO_UTF8(*it++);
+
+      for (; it != selection.end(); ++it)
+        {
+          str << ", ";
+          str << TO_UTF8(*it);
+        }
     }
-  }
 
   mTaskTypes = str.str();
 
   chkTaskTypes->setChecked(mTaskTypes.empty());
   txtTaskTypes->setText(FROM_UTF8(mTaskTypes));
-
 }
 
 void CQPlotSubwidget::allTaskTypesClicked()
 {
   if (!mTaskTypes.empty())
-  {
-    mTaskTypes.clear();
-    txtTaskTypes->clear();
-  }
+    {
+      mTaskTypes.clear();
+      txtTaskTypes->clear();
+    }
   else
-  {
-    selectTaskTypes();
-  }
+    {
+      selectTaskTypes();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1108,7 +985,7 @@ bool CQPlotSubwidget::saveToPlotSpec()
   if (pspec->getTitle() != TO_UTF8(titleLineEdit->text()))
     {
       pspec->setTitle(TO_UTF8(titleLineEdit->text()));
-      protectedNotify(ListViews::PLOT, ListViews::RENAME, mKey);
+      protectedNotify(ListViews::ObjectType::PLOT, ListViews::RENAME, mObjectCN);
     }
 
   //active?
@@ -1118,7 +995,7 @@ bool CQPlotSubwidget::saveToPlotSpec()
   pspec->setLogY(checkLogY->isChecked());
   // task types
   pspec->setTaskTypes(mTaskTypes);
-  
+
   //curves
   CPlotItem *item;
   storeChanges();
@@ -1160,7 +1037,7 @@ bool CQPlotSubwidget::enterProtected()
 
   if (!pspec)
     {
-      mpListView->switchToOtherWidget(42, "");
+      mpListView->switchToOtherWidget(ListViews::WidgetType::Plots, std::string());
       return false;
     }
 
@@ -1221,19 +1098,20 @@ void CQPlotSubwidget::itemSelectionChanged()
 
 //-----------------------------------------------------------------------------
 
-bool CQPlotSubwidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &key)
+bool CQPlotSubwidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || isHidden()) return true;
 
   switch (objectType)
     {
-        //TODO: check list:
-      case ListViews::MODEL:
+      //TODO: check list:
+      case ListViews::ObjectType::MODEL:
         switch (action)
           {
             case ListViews::DELETE:
+            case ListViews::ADD:
               mpObject = NULL;
-              mKey = "";
+              mObjectCN.clear();
               return enterProtected();
               break;
 
@@ -1243,14 +1121,14 @@ bool CQPlotSubwidget::update(ListViews::ObjectType objectType, ListViews::Action
 
         break;
 
-      case ListViews::PLOT:
-        if (key == mKey)
+      case ListViews::ObjectType::PLOT:
+        if (cn == mObjectCN)
           {
             switch (action)
               {
                 case ListViews::DELETE:
                   mpObject = NULL;
-                  mKey = "";
+                  mObjectCN.clear();
                   return enterProtected();
                   break;
 
@@ -1274,7 +1152,7 @@ bool CQPlotSubwidget::update(ListViews::ObjectType objectType, ListViews::Action
 
 //-----------------------------------------------------------------------------
 
-bool CQPlotSubwidget::leave()
+bool CQPlotSubwidget::leaveProtected()
 {
   return saveToPlotSpec();
 }

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -18,6 +23,7 @@
 // All rights reserved.
 
 #include "copasi.h"
+#include <sstream>
 
 #include "COptMethodSteepestDescent.h"
 #include "COptProblem.h"
@@ -43,8 +49,8 @@ COptMethodSteepestDescent::COptMethodSteepestDescent(const CDataContainer * pPar
   mpDescent(new FDescentTemplate<COptMethodSteepestDescent>(this, &COptMethodSteepestDescent::descentLine)),
   mCurrentIteration(0)
 {
-  addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 100);
-  addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1e-6);
+  assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100);
+  assertParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1e-6);
 }
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const COptMethodSteepestDescent & src,
@@ -72,7 +78,13 @@ bool COptMethodSteepestDescent::optimise()
 {
   if (!initialize()) return false;
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Steepest.Descent"));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Steepest Descent algorithm started.",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Steepest_Descent/"
+      )
+    );
 
   size_t i, k;
   C_FLOAT64 tmp, x0, alpha, mn, mx, fmn, fmx;
@@ -106,7 +118,8 @@ bool COptMethodSteepestDescent::optimise()
       *mContainerVariables[i] = mIndividual[i];
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   fmx = mBestValue = evaluate();
 
@@ -153,6 +166,17 @@ bool COptMethodSteepestDescent::optimise()
           else mGradient[i] = 0.0;
         }
 
+      if (mLogVerbosity > 2)
+        {
+          C_INT oit;
+          std::ostringstream auxStream;
+
+          for (oit = 0; oit < mVariableSize; oit++)
+            auxStream << "x[" << oit << "]=" << mGradient[oit] << " ";
+
+          mMethodLog.enterLogEntry(COptLogEntry("search direction: ", "", auxStream.str()));
+        }
+
       if (x0 < mTolerance) x0 = mTolerance;
 
       // we will move at a rate of 1/10 this size
@@ -171,7 +195,8 @@ bool COptMethodSteepestDescent::optimise()
           // take one step in that direction
           fmx = descentLine(alpha);
 
-          fmx = evaluate();
+          // no need for this, it is done in descentLine()
+          // fmx = evaluate();
 
           // if this was an upward step find the minimum
           if (fmx > fmn)
@@ -195,6 +220,20 @@ bool COptMethodSteepestDescent::optimise()
       for (i = 0; i < mVariableSize; i++)
         mIndividual[i] = *(*mpOptItem)[i]->getObjectValue();
 
+      if (mLogVerbosity > 1)
+        {
+          C_INT oit;
+          std::ostringstream string1, string2;
+
+          string1 << "niter=" << mCurrentIteration << ", f=" << fmx << ", fbest=" << mBestValue;
+          string2 << "position: ";
+
+          for (oit = 0; oit < mVariableSize; oit++)
+            string2 << "x[" << oit << "]=" << mIndividual[oit] << " ";
+
+          mMethodLog.enterLogEntry(COptLogEntry(string1.str(), "", string2.str()));
+        }
+
       if (fmx < mBestValue)
         {
           mBestValue = fmx;
@@ -207,7 +246,10 @@ bool COptMethodSteepestDescent::optimise()
         }
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_iter).iter(mCurrentIteration).with(mIterations));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm finished.",
+                   "Terminated after " + std::to_string(mCurrentIteration) + " of " + std::to_string(mIterations) + " iterations."));
 
   return true;
 }

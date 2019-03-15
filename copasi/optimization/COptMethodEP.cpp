@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -41,11 +46,11 @@ COptMethodEP::COptMethodEP(const CDataContainer * pParent,
   mStopAfterStalledGenerations(0),
   mVariance(0)
 {
-  addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
-  addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 20);
-  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
-  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
-  addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
+  assertParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 20);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
@@ -76,7 +81,13 @@ bool COptMethodEP::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Evolutionary.Programming"));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Algorithm started.",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Evolutionary_Programming/"
+      )
+    );
 
   bool Continue = true;
 
@@ -98,7 +109,8 @@ bool COptMethodEP::optimise()
 
   if (!Continue)
     {
-      mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_early_stop));
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user after initial population creation."));
 
       if (mpCallBack)
         mpCallBack->finishItem(mhGenerations);
@@ -147,7 +159,11 @@ bool COptMethodEP::optimise()
       mpParentTask->output(COutputInterface::MONITORING);
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_gener).iter(mCurrentGeneration - 1).with(mGenerations));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm finished.",
+                   "Terminated after " + std::to_string(mCurrentGeneration - 1) + " of " +
+                   std::to_string(mGenerations) + " generations."));
 
   if (mpCallBack)
     mpCallBack->finishItem(mhGenerations);
@@ -293,7 +309,8 @@ bool COptMethodEP::creation()
       (*mVariance[0])[i] = fabs(mut) * 0.5;
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   Continue = evaluate(*mIndividuals[0]);
   mValues[0] = mEvaluationValue;

@@ -99,6 +99,46 @@ CFunctionParameter * CFunctionParameters::operator[](const std::string &name)
 const CFunctionParameter * CFunctionParameters::operator[](const std::string &name) const
 {return &mParameters[name];}
 
+CFunctionParameters::iterator CFunctionParameters::begin()
+{
+  return mParameters.begin();
+}
+
+CFunctionParameters::iterator CFunctionParameters::end()
+{
+  return mParameters.end();
+}
+
+CFunctionParameters::const_iterator CFunctionParameters::begin() const
+{
+  return mParameters.begin();
+}
+
+CFunctionParameters::const_iterator CFunctionParameters::end() const
+{
+  return mParameters.end();
+}
+
+CFunctionParameters::name_iterator CFunctionParameters::begin_name()
+{
+  return mParameters.beginName();
+}
+
+CFunctionParameters::name_iterator CFunctionParameters::end_name()
+{
+  return mParameters.endName();
+}
+
+CFunctionParameters::const_name_iterator CFunctionParameters::begin_name() const
+{
+  return mParameters.beginName();
+}
+
+CFunctionParameters::const_name_iterator CFunctionParameters::end_name() const
+{
+  return mParameters.endName();
+}
+
 size_t CFunctionParameters::size() const {return mParameters.size();}
 
 void CFunctionParameters::swap(const size_t & from, const size_t & to)
@@ -171,7 +211,7 @@ bool CFunctionParameters::isVector(CFunctionParameter::Role role) const
 
   for (i = 0; i < imax; i++)
     if (mParameters[i].getUsage() == role)
-      return mParameters[i].getType() >= CFunctionParameter::VINT32;
+      return mParameters[i].getType() >= CFunctionParameter::DataType::VINT32;
 
   //this assumes that if a parameter is not a vector then there
   //will not be a vector parameter with the same role.
@@ -196,8 +236,8 @@ bool CFunctionParameters::operator==(const CFunctionParameters & rhs) const
       rhsRole = rhs.mParameters[i].getUsage();
 
       // We do not destinguish between PARAMETER and VARIABLE
-      if ((lhsRole == CFunctionParameter::PARAMETER || lhsRole == CFunctionParameter::VARIABLE) &&
-          (rhsRole == CFunctionParameter::PARAMETER || rhsRole == CFunctionParameter::VARIABLE))
+      if ((lhsRole == CFunctionParameter::Role::PARAMETER || lhsRole == CFunctionParameter::Role::VARIABLE) &&
+          (rhsRole == CFunctionParameter::Role::PARAMETER || rhsRole == CFunctionParameter::Role::VARIABLE))
         continue;
 
       if (lhsRole != rhsRole) return false;

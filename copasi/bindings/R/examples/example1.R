@@ -130,7 +130,7 @@ if (!is.null(fun)){
     invisible(reaction$getFunctionParameters())
     stopifnot(reaction$getFunctionParameters()$size() == 1)
     # so there should be only one entry in the parameter mapping as well
-    stopifnot(length(reaction$getParameterMappings()) == 1)
+    stopifnot(length(reaction$getParameterCNs()) == 1)
     parameterGroup <- reaction$getParameters()
     stopifnot(parameterGroup$size() == 1)
     parameter <- parameterGroup$getParameter(0)
@@ -203,10 +203,10 @@ invisible(modelValue$setExpression("1.0 / 4.0 + 2.0"))
 # of the local one that is created by default
 # The first parameter is the one for the rate constant, so we point it to
 # the key of out model value
-invisible(reaction$setParameterMapping(0, modelValue$getKey()))
+invisible(reaction$setParameterObject(0, modelValue))
 # now we have to set the parameter mapping for the substrates
-invisible(reaction$addParameterMapping("substrate", g6p$getKey()))
-invisible(reaction$addParameterMapping("substrate", adp$getKey()))
+invisible(reaction$addParameterObject("substrate", g6p))
+invisible(reaction$addParameterObject("substrate", adp))
 
 # finally compile the model
 # compile needs to be done before updating all initial values for

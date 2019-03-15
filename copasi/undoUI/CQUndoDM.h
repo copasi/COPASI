@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -28,6 +33,8 @@ public:
     Property,
     NewValue,
     OldValue,
+//    Author,
+//    Time,
     __SIZE
   };
 
@@ -50,9 +57,9 @@ public:
                        int role = Qt::EditRole);
 
 protected:
-  virtual bool insertRows(int position, int rows, const QModelIndex & source);
+  virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 
-  virtual bool removeRows(int position, int rows);
+  virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 
   QVariant displayData(const QModelIndex &index) const;
 

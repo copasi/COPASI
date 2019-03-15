@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -38,6 +43,10 @@ class COutputDefinitionVector;
 class COutputHandlerPlot;
 class CDataModel;
 
+#include "copasi/core/CCore.h"
+#include "copasi/core/CCommonName.h"
+#include "copasi/undo/CUndoStack.h"
+
 class DataModelGUI: public QObject
 {
   Q_OBJECT
@@ -50,33 +59,32 @@ public:
 
   bool createModel();
   void loadModel(const std::string & fileName);
+  void downloadFileFromUrl(const std::string& url, const std::string& destination);
   void saveModel(const std::string & fileName, bool overwriteFile = false);
 
-#ifdef WITH_MERGEMODEL
   void addModel(const std::string & fileName);
   void addModelRun();
-#endif
 
   void saveFunctionDB(const std::string & fileName);
   void loadFunctionDB(const std::string & fileName);
 
+  void saveModelParameterSets(const std::string & fileName);
+  void loadModelParameterSets(const std::string & fileName);
+
   void importSBML(const std::string & fileName);
-  void exportSBML(const std::string & fileName, bool overwriteFile , int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
+  void exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
   void importSBMLFromString(const std::string & sbmlDocumentText);
   void exportSBMLToString(std::string & sbmlDocumentText);
   void exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
   void importCellDesigner();
 
-#ifdef WITH_COMBINE_ARCHIVE
   void openCombineArchive(const std::string & fileName);
   void exportCombineArchive(const std::string & fileName, bool overwriteFile = false);
   void openCombineArchiveRun();
   void exportCombineArchiveRun();
-#endif
 
-  //TODO SEDML
-#ifdef COPASI_SEDML
-  void exportSEDML(const std::string & fileName, bool overwriteFile , int sedmlLevel, int sedmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
+  // SEDML
+  void exportSEDML(const std::string & fileName, bool overwriteFile, int sedmlLevel, int sedmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
   void exportSEDMLToString(std::string & sedmlDocumentText);
   void importSEDML(const std::string & fileName);
   void importSEDMLFromString(const std::string & sedmlDocumentText);
@@ -85,7 +93,6 @@ public:
   void exportSEDMLRun();
   void importSEDMLFromStringRun();
   void exportSEDMLToStringRun();
-#endif
 
   void loadModelRun();
   void saveModelRun();
@@ -95,6 +102,8 @@ public:
   void exportSBMLToStringRun();
   void exportMathModelRun();
 
+  const std::string& getFileName() const;
+
 public slots:
   void loadModelFinished();
   void saveModelFinished();
@@ -103,24 +112,20 @@ public slots:
   void importSBMLFromStringFinished();
   void exportSBMLToStringFinished();
   void exportMathModelFinished();
-#ifdef WITH_COMBINE_ARCHIVE
   void importCombineFinished();
   void exportCombineFinished();
 
-#endif
-#ifdef WITH_MERGEMODEL
   void addModelFinished();
-#endif
+
   void miriamDownloadFinished(QNetworkReply*);
+  void downloadFinished(QNetworkReply*);
   void miriamDownloadProgress(qint64 received, qint64 total);
 
-  //TODO SEDML
-#ifdef COPASI_SEDML
+  //SEDML
   void importSEDMLFinished();
   void exportSEDMLFinished();
   void importSEDMLFromStringFinished();
   void exportSEDMLToStringFinished();
-#endif
 
 public:
   bool updateMIRIAM(CMIRIAMResources & miriamResources);
@@ -131,7 +136,8 @@ public:
   //bool updateMathModel();
   //bool scheduleMathModelUpdate(const bool & update = true);
 
-  bool notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+  bool notify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn = std::string());
+  void notifyChanges(const CUndoData::CChangeSet & changes);
 
   void registerListView(ListViews * pListView);
   void deregisterListView(ListViews * pListView);
@@ -141,13 +147,23 @@ public:
   void updateMIRIAMResourceContents();
   void commit();
 
+  /**
+   * if this flag is set, the next loaded / imported file will not be
+   * stored in the recent file list (will reset after one load / import)
+   */
+  void setIgnoreNextFile(bool ignore);
+  void addRecentCopasiFile(const std::string& file);
+  void addRecentSBMLFile(const std::string& file);
+  void addRecentSEDMLFile(const std::string& file);
+
 protected:
 private:
   void threadFinished();
 
 signals:
   void updateCompleteView();
-  void notifyView(ListViews::ObjectType objectType, ListViews::Action action, std::string key = "");
+  void notifyView(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  void signalSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn, int tabIndex);
   void finished(bool success);
 
 private:
@@ -173,15 +189,15 @@ private:
   unsigned int mDownloadedTotalBytes;
   size_t mUpdateItem;
 
-  //TODO SEDML
-#ifdef COPASI_SEDML
+  //SEDML
   std::string mSEDMLImportString;
   std::string * mpSEDMLExportString;
   int mSEDMLLevel;
   int mSEDMLVersion;
   bool mSEDMLExportIncomplete;
   bool mSEDMLExportCOPASIMIRIAM;
-#endif
+
+  bool mIgnoreNextFile;
 };
 
 #endif

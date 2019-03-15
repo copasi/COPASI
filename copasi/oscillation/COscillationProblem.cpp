@@ -52,7 +52,7 @@ COscillationProblem::~COscillationProblem()
 void COscillationProblem::initializeParameter()
 {
   //  mpParmMaximize =
-  //    assertParameter("Maximize", CCopasiParameter::BOOL, false)-> getValue().pBOOL;
+  //    assertParameter("Maximize", CCopasiParameter::Type::BOOL, false)-> getValue().pBOOL;
 
   //  mpGrpItems = assertGroup("OptimizationItemList");
 

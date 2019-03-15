@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -73,8 +78,7 @@ void CQLNAWidget::slotSteadyStateChecked()
 
 bool CQLNAWidget::runTask()
 {
-  CLNATask * pTask =
-    dynamic_cast< CLNATask * >(CRootContainer::getKeyFactory()->get(mKey));
+  CLNATask * pTask = dynamic_cast< CLNATask * >(mpObject);
 
   if (!pTask) return false;
 
@@ -88,17 +92,17 @@ bool CQLNAWidget::runTask()
 bool CQLNAWidget::taskFinishedEvent()
 {
   bool success = true;
-  CLNAResultWidget *pResult = dynamic_cast< CLNAResultWidget * >(mpListView->findWidgetFromId(351));
+  CLNAResultWidget *pResult = dynamic_cast< CLNAResultWidget * >(mpListView->findWidgetFromId(ListViews::WidgetType::LinearNoiseApproximationResult));
 
   if (pResult) pResult->loadFromBackend();
 
   if (success && pResult)
-    mpListView->switchToOtherWidget(351, ""); //change to the results window
+    mpListView->switchToOtherWidget(ListViews::WidgetType::LinearNoiseApproximationResult, std::string()); //change to the results window
 
   return success;
 }
 
-bool CQLNAWidget::loadTask()
+bool CQLNAWidget::loadTaskProtected()
 {
   CLNATask * pTask = dynamic_cast< CLNATask * >(mpTask);
 
@@ -130,7 +134,7 @@ bool CQLNAWidget::loadTask()
   return true;
 }
 
-bool CQLNAWidget::saveTask()
+bool CQLNAWidget::saveTaskProtected()
 {
   CLNATask * pTask = dynamic_cast< CLNATask * >(mpTask);
 

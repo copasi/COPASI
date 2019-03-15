@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,12 +42,8 @@ public:
               QWidget * parent = 0, Qt::WindowFlags f = 0);
   virtual ~CQTabWidget();
 
-  virtual bool leave();
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-
   void selectTab(int index) const;
-
-  bool renameEntity(const std::string& key, const std::string& newName);
+  int getSelectedTab() const;
 
   /**
    * @return the number of tabs
@@ -54,8 +55,20 @@ public:
    */
   CopasiWidget *getTab(int index);
 
+  /**
+   * @return the header layout
+   */
+  QHBoxLayout* getHeaderLayout();
+
+  /**
+   * @return the button layout
+   */
+  QHBoxLayout* getButtonLayout();
+
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
 
   void load();
 

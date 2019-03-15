@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and University of -->
+<!-- of Connecticut School of Medicine. -->
+<!-- All rights reserved. -->
+
+<grammar 
+    xmlns="http://relaxng.org/ns/structure/1.0"
+    xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+    <start>
+        <element name="COPASIVersioningHierarcy">
+            <attribute name="versionMajor">
+                <data type="integer"/>
+            </attribute>
+            <attribute name="versionMinor">
+                <data type="integer"/>
+            </attribute>
+            <attribute name="versionDevel">
+                <data type="integer"/>
+            </attribute>
+            <attribute name="copasiSourcesModified">
+                <data type="boolean"/>
+            </attribute>
+            <element name="listOfVersions">
+                <ref name="listOfVersions.datatype"/>
+            </element>
+            <element name="currentVersion">
+                <data type="string"/>
+            </element>
+        </element>
+    </start>
+ 
+    <define name="listOfVersions.datatype">
+        <zeroOrMore>
+            <ref name="version.datatype"/>
+        </zeroOrMore>
+    </define>
+    
+    <define name="version.datatype">
+        <element name="version">
+            <attribute name="name">
+                <data type="string"/>
+            </attribute>
+            <attribute name="derivedFrom">
+                <data type="string"/>
+            </attribute>
+            <ref name="rdf.datatype"/>
+            
+        </element>
+    </define>
+    
+    <define name="other.datatype">
+        <mixed>
+            <zeroOrMore>
+                <element>
+                    <anyName/>
+                    <zeroOrMore>
+                        <attribute>
+                            <anyName/>
+                            <text/>
+                        </attribute>
+                    </zeroOrMore>
+                    <ref name="other.datatype"></ref>
+                </element>
+            </zeroOrMore>
+        </mixed>
+    </define>
+    
+    <define name="xhtml.datatype">
+        <zeroOrMore>
+            <element>
+                <nsName ns="http://www.w3.org/1999/xhtml"/>
+                <zeroOrMore>
+                    <attribute>
+                        <anyName/>
+                        <text/>
+                    </attribute>
+                </zeroOrMore>
+                <ref name="other.datatype"/>
+            </element>
+        </zeroOrMore>
+    </define>
+    
+    <define name="rdf.datatype">
+        <grammar>
+            <include href="http://www.copasi.org/static/schema/rdfxml.rng" ns="http://relaxng.org/ns/structure/1.0"/>
+        </grammar>
+    </define>
+    
+    <!--
+  <define name="rdf.datatype">
+    <element>
+      <nsName ns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+      <zeroOrMore>
+        <attribute>
+          <anyName/>
+          <text/>
+        </attribute>
+      </zeroOrMore>
+      <ref name="rdfContent.datatype"/>
+    </element>
+  </define>
+  
+  <define name="rdfContent.datatype">
+    <mixed>
+      <zeroOrMore>
+        <element>
+          <anyName/>
+          <zeroOrMore>
+            <attribute>
+              <anyName/>
+              <text/>
+            </attribute>
+          </zeroOrMore>
+        <ref name="rdfContent.datatype"/>
+        </element>
+      </zeroOrMore>
+    </mixed>
+  </define>
+-->
+    
+</grammar>

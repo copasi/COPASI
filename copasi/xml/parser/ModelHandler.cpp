@@ -71,8 +71,8 @@ CXMLHandler * ModelHandler::processStart(const XML_Char * pszName,
 
         quantityUnit = mpParser->getAttributeValue("quantityUnit", papszAttrs);
 
-        ModelType = toEnum(mpParser->getAttributeValue("type", papszAttrs, "deterministic"),
-                           CModel::ModelTypeNames, CModel::deterministic);
+        ModelType = CModel::ModelTypeNames.toEnum(mpParser->getAttributeValue("type", papszAttrs, "deterministic"),
+                    CModel::ModelType::deterministic);
 
         {
           const char * tmp = mpParser->getAttributeValue("avogadroConstant", papszAttrs, false);

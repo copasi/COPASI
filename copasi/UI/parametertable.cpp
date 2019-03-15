@@ -86,7 +86,7 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
   std::vector<std::string>::const_iterator sourceIt, sourceItEnd;
   std::vector<std::string>::const_iterator searchIt, searchItEnd;
 
-  lll = ri.getListOfMetabs(CFunctionParameter::SUBSTRATE);
+  lll = ri.getListOfMetabs(CFunctionParameter::Role::SUBSTRATE);
   sourceItEnd = lll.end();
 
   for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
@@ -102,7 +102,7 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
         ret.push_back(Source);
     }
 
-  lll = ri.getListOfMetabs(CFunctionParameter::PRODUCT);
+  lll = ri.getListOfMetabs(CFunctionParameter::Role::PRODUCT);
   sourceItEnd = lll.end();
 
   for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
@@ -118,7 +118,7 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
         ret.push_back(Source);
     }
 
-  lll = ri.getListOfMetabs(CFunctionParameter::MODIFIER);
+  lll = ri.getListOfMetabs(CFunctionParameter::Role::MODIFIER);
   sourceItEnd = lll.end();
 
   for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
@@ -194,9 +194,9 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
     {
       switch (ri.getUsage(i))
         {
-          case CFunctionParameter::SUBSTRATE:
-          case CFunctionParameter::PRODUCT:
-          case CFunctionParameter::MODIFIER:
+          case CFunctionParameter::Role::SUBSTRATE:
+          case CFunctionParameter::Role::PRODUCT:
+          case CFunctionParameter::Role::MODIFIER:
 
             if (ri.isVector(i))
               {
@@ -217,11 +217,11 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
 
             break;
 
-          case CFunctionParameter::PARAMETER:
-          case CFunctionParameter::VARIABLE:
-          case CFunctionParameter::TEMPORARY:
-          case CFunctionParameter::VOLUME:
-          case CFunctionParameter::TIME:
+          case CFunctionParameter::Role::PARAMETER:
+          case CFunctionParameter::Role::VARIABLE:
+          case CFunctionParameter::Role::TEMPORARY:
+          case CFunctionParameter::Role::VOLUME:
+          case CFunctionParameter::Role::TIME:
             Variables.push_back(ri.getUnit(i));
             break;
         }
@@ -247,13 +247,13 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
   std::vector<std::string>::const_iterator it;
 
   mSubstrates.clear();
-  usage = CFunctionParameter::SUBSTRATE;
+  usage = CFunctionParameter::Role::SUBSTRATE;
 
   for (it = ri.getListOfMetabs(usage).begin(); it != ri.getListOfMetabs(usage).end(); ++it)
     mSubstrates += FROM_UTF8(CMetabNameInterface::unQuote(*it));
 
   mProducts.clear();
-  usage = CFunctionParameter::PRODUCT;
+  usage = CFunctionParameter::Role::PRODUCT;
 
   for (it = ri.getListOfMetabs(usage).begin(); it != ri.getListOfMetabs(usage).end(); ++it)
     mProducts += FROM_UTF8(CMetabNameInterface::unQuote(*it));
@@ -296,31 +296,31 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
 
       switch (usage)
         {
-          case CFunctionParameter::SUBSTRATE:
+          case CFunctionParameter::Role::SUBSTRATE:
             color = subsColor;
             break;
 
-          case CFunctionParameter::PRODUCT:
+          case CFunctionParameter::Role::PRODUCT:
             color = prodColor;
             break;
 
-          case CFunctionParameter::MODIFIER:
+          case CFunctionParameter::Role::MODIFIER:
             color = modiColor;
             break;
 
-          case CFunctionParameter::PARAMETER:
+          case CFunctionParameter::Role::PARAMETER:
             color = paraColor;
             break;
 
-          case CFunctionParameter::VOLUME:
+          case CFunctionParameter::Role::VOLUME:
             color = volColor;
             break;
 
-          case CFunctionParameter::TIME:
+          case CFunctionParameter::Role::TIME:
             color = timeColor;
             break;
 
-          case CFunctionParameter::VARIABLE:
+          case CFunctionParameter::Role::VARIABLE:
             color = QColor(255, 20, 20);
             break;
 
@@ -334,11 +334,11 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
       pItem = new QTableWidgetItem(qUsage);
       pItem->setBackground(color);
 
-      if (usage == CFunctionParameter::SUBSTRATE)
+      if (usage == CFunctionParameter::Role::SUBSTRATE)
         pItem->setIcon(CQIconResource::icon(CQIconResource::reactionSubstrate));
-      else if (usage == CFunctionParameter::PRODUCT)
+      else if (usage == CFunctionParameter::Role::PRODUCT)
         pItem->setIcon(CQIconResource::icon(CQIconResource::reactionProduct));
-      else if (usage == CFunctionParameter::MODIFIER)
+      else if (usage == CFunctionParameter::Role::MODIFIER)
         pItem->setIcon(CQIconResource::icon(CQIconResource::reactionModifier));
 
       pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
@@ -348,9 +348,9 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
       pItem = new QTableWidgetItem(FROM_UTF8(ri.getParameterName(i)));
       pItem->setBackground(color);
 
-      if ((usage != CFunctionParameter::PARAMETER)
-          && (usage != CFunctionParameter::VOLUME)
-          && (usage != CFunctionParameter::TIME))
+      if ((usage != CFunctionParameter::Role::PARAMETER)
+          && (usage != CFunctionParameter::Role::VOLUME)
+          && (usage != CFunctionParameter::Role::TIME))
         {
           if (locked)
             pItem->setIcon(CQIconResource::icon(CQIconResource::locked));
@@ -367,7 +367,7 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
           const CValidatedUnit & Unit = Validator.getVariableUnits()[rowCounter];
           pItem = new QTableWidgetItem(FROM_UTF8(" " + Unit.getExpression()));
 
-          if (Unit.conflict() && usage == CFunctionParameter::PARAMETER)
+          if (Unit.conflict() && usage == CFunctionParameter::Role::PARAMETER)
             {
               CValidity Validity;
               Validity.add(CIssue(CIssue::eSeverity::Warning, CIssue::eKind::UnitConflict));
@@ -396,9 +396,9 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
       setItem((int) rowCounter, 2, pItem);
 
       // if line is for a metabolite Parameter . . .
-      if ((usage == CFunctionParameter::SUBSTRATE)
-          || (usage == CFunctionParameter::PRODUCT)
-          || (usage == CFunctionParameter::MODIFIER))
+      if ((usage == CFunctionParameter::Role::SUBSTRATE)
+          || (usage == CFunctionParameter::Role::PRODUCT)
+          || (usage == CFunctionParameter::Role::MODIFIER))
         {
 
           metabNames = &(ri.getMappings(i));
@@ -411,9 +411,9 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
             }
           else
             {
-              if (usage == CFunctionParameter::SUBSTRATE)
+              if (usage == CFunctionParameter::Role::SUBSTRATE)
                 mpComboDelegate->setItems(rowCounter, mSubstrates);
-              else if (usage == CFunctionParameter::PRODUCT)
+              else if (usage == CFunctionParameter::Role::PRODUCT)
                 mpComboDelegate->setItems(rowCounter, mProducts);
               else   // must be MODIFIER
                 {
@@ -460,7 +460,7 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
             }
         }
       // if line is for a kinetic parameter . . .
-      else if (usage == CFunctionParameter::PARAMETER)
+      else if (usage == CFunctionParameter::Role::PARAMETER)
         {
           mpComboDelegate->setItems(rowCounter, mGlobalParameters);
 
@@ -490,14 +490,12 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
             }
           else
             {
-              const std::vector<std::string> &mapping = pReaction->getParameterMapping(i);
+              const std::vector< const CDataObject * > &mapping = pReaction->getParameterObjects(i);
 
               if (mapping.size() > 0)
                 {
-                  std::string Key = mapping[0];
-
                   const CModelValue * pParamObject =
-                    dynamic_cast<const CModelValue *>(CRootContainer::getKeyFactory()->get(Key));
+                    dynamic_cast<const CModelValue *>(mapping[0]);
 
                   if (pParamObject != NULL &&
                       pParamObject->getStatus() == CModelEntity::Status::FIXED)
@@ -510,14 +508,14 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
         }
 
       // if line is for a volume . . .
-      else if (usage == CFunctionParameter::VOLUME)
+      else if (usage == CFunctionParameter::Role::VOLUME)
         {
           mpComboDelegate->setItems(rowCounter, mVolumes);
           pItem->setText(FROM_UTF8(ri.getMapping(i)));
           //openPersistentEditor(pItem);
         }
       // if line is for time . . .
-      else if (usage == CFunctionParameter::TIME)
+      else if (usage == CFunctionParameter::Role::TIME)
         {
           pItem->setText("");
         }

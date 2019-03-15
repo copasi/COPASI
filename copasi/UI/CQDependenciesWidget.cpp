@@ -30,13 +30,13 @@ CQDependenciesWidget::CQDependenciesWidget(QWidget *parent, const char* name, Qt
 CQDependenciesWidget::~CQDependenciesWidget()
 {}
 
-std::set< const CDataObject * > getDependentObjects(CDataObject *pObject)
+std::set< const CDataObject * > getDependentObjects(const CDataObject *pObject)
 {
   std::set< const CDataObject * > result;
 
   if (pObject == NULL) return result;
 
-  CModelEntity* pEntity = dynamic_cast<CModelEntity*>(pObject);
+  const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(pObject);
 
   if (pEntity != NULL)
     {
@@ -44,7 +44,7 @@ std::set< const CDataObject * > getDependentObjects(CDataObject *pObject)
     }
   else
     {
-      CReaction* pReaction = dynamic_cast<CReaction*>(pObject);
+      const CReaction * pReaction = dynamic_cast< const CReaction * >(pObject);
 
       if (pReaction != NULL)
         {
@@ -52,7 +52,7 @@ std::set< const CDataObject * > getDependentObjects(CDataObject *pObject)
         }
       else
         {
-          CEvaluationTree* pFunction = dynamic_cast<CEvaluationTree*>(pObject);
+          const CEvaluationTree * pFunction = dynamic_cast< const CEvaluationTree * >(pObject);
 
           if (pFunction != NULL)
             {
@@ -64,7 +64,7 @@ std::set< const CDataObject * > getDependentObjects(CDataObject *pObject)
   return result;
 }
 
-void CQDependenciesWidget::loadFrom(CDataObject * pObject)
+void CQDependenciesWidget::loadFrom(const CDataObject * pObject)
 {
   if (mpDataModel == NULL)
     initContext();
@@ -80,7 +80,7 @@ void CQDependenciesWidget::loadFrom(CDataObject * pObject)
   CDataObject::DataObjectSet dependentEvents;
   CDataObject::DataObjectSet dependentEventAssignments;
 
-  pModel->appendDirectDependents(*static_cast< CDataContainer * >(pObject),
+  pModel->appendDirectDependents(*static_cast< const CDataContainer * >(pObject),
                                  dependentReactions,
                                  dependentMetabolites,
                                  dependentCompartments,

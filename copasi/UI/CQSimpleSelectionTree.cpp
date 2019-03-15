@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -7,8 +12,6 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
-
-
 
 #include "copasi.h"
 
@@ -54,6 +57,7 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget *parent):
   mpResultMCASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Metabolic Control Analysis"));
   mpResultTSSASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Time Scale Separation Analysis"));
   mpResultLNASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Linear Noise Approximation"));
+  mpResultLyapunovSubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Lyapunov Exponents"));
   mpModelMatrixSubtree = new QTreeWidgetItem(this, QStringList("Matrices"));
   mpModelQuantitySubtree = new QTreeWidgetItem(this, QStringList("Global Quantities"));
   mpModelQuantityRateSubtree =
@@ -506,7 +510,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           if ((name.find("max") != std::string::npos  || name.find("min") != std::string::npos) && filter(classes, pObject)) \
             //if ((name.find("Statistics") != std::string::npos) == 1 && filter(classes, pObject))
             {
-              std::cout << name << std::endl;
+              // std::cout << name << std::endl;
               pItem = new QTreeWidgetItem(this->mpResultAnalyticsSubtree, QStringList(FROM_UTF8(name)));
               treeItems[pItem] = pObject;
             }
@@ -527,17 +531,41 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           const CDataContainer::objectMap *pObjects = & task->getObjects();
           CDataContainer::objectMap::const_iterator its = pObjects->begin();
           CDataArray *ann;
+          CEigen* pEigen;
 
           for (; its != pObjects->end(); ++its)
             {
               ann = dynamic_cast<CDataArray *>(*its);
 
-              if (!ann) continue;
-
-              if (!ann->isEmpty() && filter(classes, ann))
+              //if (!ann) continue;
+              if (ann && !ann->isEmpty() && filter(classes, ann))
                 {
                   pItem = new QTreeWidgetItem(this->mpResultSteadyStateSubtree, QStringList(FROM_UTF8(ann->getObjectName())));
                   treeItems[pItem] = ann;
+                }
+
+              pEigen = dynamic_cast<CEigen*>(*its); //not the most straight forward way, testing all children
+
+              if (pEigen && (classes & (Results | AnyObject)) && pEigen->getObjectName() == "Eigenvalues of reduced system Jacobian")
+                {
+                  //add a subtree for all the functions calculated from the reduced jacobian eigenvectors
+                  QTreeWidgetItem* pSubtree  = new QTreeWidgetItem(this->mpResultSteadyStateSubtree, QStringList("Properties of reduced model jacobian Eigenvalues"));
+
+                  //loop over children of CEigen object
+                  const CDataContainer::objectMap *pO = & pEigen->getObjects();
+                  CDataContainer::objectMap::const_iterator itss = pO->begin();
+
+                  for (; itss != pO->end(); ++itss)
+                    {
+                      if (filter(NumericValues, *itss)) // for now from this specific subtree we only add numeric values.
+                        {
+                          if ((*itss)->getObjectName(). substr(0, 6) == "Vector")
+                            continue;
+
+                          pItem = new QTreeWidgetItem(pSubtree, QStringList(FROM_UTF8((*itss)->getObjectName())));
+                          treeItems[pItem] = *itss;
+                        }
+                    }
                 }
             }
         }
@@ -597,6 +625,26 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
                   pItem = new QTreeWidgetItem(this->mpResultLNASubtree, QStringList(FROM_UTF8(ann->getObjectName())));
                   treeItems[pItem] = (CDataObject *) ann;
                 }
+            }
+        }
+    }
+  catch (...)
+    {}
+
+  // Lyapunov Exponents
+  task = dynamic_cast<CCopasiTask *>(&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
+
+  try
+    {
+      if (task && task->updateMatrices())
+        {
+          for (int i = 0; i < 4; ++i)
+            {
+              std::ostringstream sss;
+              sss << "Exponent " << i + 1;
+
+              pItem = new QTreeWidgetItem(this->mpResultLyapunovSubtree, QStringList(FROM_UTF8(sss.str())));
+              treeItems[pItem] = (CDataObject *) task->getObject("Reference=" + sss.str());
             }
         }
     }
@@ -847,7 +895,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
     <Object cn="CN=Root,CN=Information,String=User Given Name"/>
     <Object cn="CN=Root,CN=Information,String=User Organization"/>
     <Object cn="CN=Root,CN=Information,String=COPASI Version"/>
-    <Object cn="CN=Root,CN=Information,Timer=Current Date/Dime"/>
+    <Object cn="CN=Root,CN=Information,Timer=Current Date/Time"/>
     <Object cn="CN=Root,CN=Information,String=File Name"/>
   */
 
@@ -891,7 +939,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Timer=Current Date/Dime")));
+  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Timer=Current Date/Time")));
 
   if (filter(classes, pObject))
     {
@@ -913,7 +961,7 @@ void CQSimpleSelectionTree::slotItemDoubleClicked(QTreeWidgetItem * item, int co
   if (!treeHasSelection()) item->setSelected(true);
 
   if (item->childCount() == 0)
-  emit selectionCommitted();
+    emit selectionCommitted();
 }
 
 std::vector<const CDataObject * > *CQSimpleSelectionTree::getTreeSelection()
@@ -1148,7 +1196,6 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses &classes, const CDataObje
 
       if ((classes & InitialTime) &&
           Status == CModelEntity::Status::TIME &&
-          !static_cast<const CModel *>(pEntity)->isAutonomous() &&
           ObjectName == "Initial Time")
         return true;
 
@@ -1209,7 +1256,7 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses &classes, const CDataObje
         return true;
     }
 
-  // Descendants of CReaction need to be check more thoroughly
+  // Descendants of CReaction need to be checked more thoroughly
   const CReaction *pReaction =
     dynamic_cast< const CReaction * >(pCheckedObject->getObjectAncestor("Reaction"));
 
@@ -1279,6 +1326,7 @@ void CQSimpleSelectionTree::removeAllEmptySubTrees()
   removeEmptySubTree(&mpResultMCASubtree);
   removeEmptySubTree(&mpResultTSSASubtree);
   removeEmptySubTree(&mpResultLNASubtree);
+  removeEmptySubTree(&mpResultLyapunovSubtree);
   removeEmptySubTree(&mpResultSensitivitySubtree);
   removeEmptySubTree(&mpResultSteadyStateSubtree);
 #ifdef WITH_ANALYTICS

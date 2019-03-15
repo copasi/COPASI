@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -74,9 +74,7 @@ const CTaskEnum::Method CTrajectoryTask::ValidMethods[] =
 #ifdef COPASI_DEBUG
   CTaskEnum::Method::DsaLsodar,
 #endif // COPASI_DEBUG
-#ifdef WITH_SDE_SUPPORT
   CTaskEnum::Method::stochasticRunkeKuttaRI5,
-#endif // WITH_SDE_SUPPORT
   CTaskEnum::Method::UnsetMethod
 };
 

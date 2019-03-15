@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,6 +32,9 @@
 
 class CFitTask : public COptTask
 {
+public:
+  static const CTaskEnum::Method ValidMethods[];
+
   //Attributes
 
 private:
@@ -41,6 +44,7 @@ private:
   CFitTask();
 
 public:
+
   /**
    * Specific constructor
    * @param const CDataContainer * pParent
@@ -99,5 +103,13 @@ public:
    * parameter fitting task
    */
   void fixBuild55();
+
+#ifndef SWIG
+  /**
+   * Retrieve the list of valid methods
+   * @return const CTaskEnum::Method * pValidMethods
+   */
+  virtual const CTaskEnum::Method * getValidMethods() const;
+#endif
 };
 #endif // COPASI_CFitTask

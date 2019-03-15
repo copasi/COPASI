@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,7 +27,6 @@
 #include "copasi.h"
 
 #include "DataModelGUI.h"
-#include "DataModel.txt.h"
 #include "CQThread.h"
 #include "qtUtilities.h"
 #include "CProgressBar.h"
@@ -54,7 +58,6 @@
 #include "utilities/CCopasiTree.h"
 
 //#include "model/CModelMerging.h"
-#include "model/CModelExpansion.h"
 
 #define USE_LAYOUT 1
 #define USE_RENDER 1
@@ -107,16 +110,13 @@ DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel):
   mDownloadedBytes(0),
   mDownloadedTotalBytes(0),
   mUpdateItem(C_INVALID_INDEX)
-
-#ifdef COPASI_SEDML
   , mSEDMLImportString()
   , mpSEDMLExportString(NULL)
   , mSEDMLLevel(1)
   , mSEDMLVersion(1)
   , mSEDMLExportIncomplete(true)
   , mSEDMLExportCOPASIMIRIAM(true)
-#endif
-
+  , mIgnoreNextFile(false)
 {
   mpOutputHandlerPlot = new COutputHandlerPlot();
   mpDataModel->addInterface(mpOutputHandlerPlot);
@@ -147,7 +147,6 @@ void DataModelGUI::linkDataModelToGUI()
 //*****************************************************************
 
 //*****************************************************************
-#ifdef WITH_MERGEMODEL
 
 void DataModelGUI::addModel(const std::string & fileName)
 {
@@ -163,48 +162,15 @@ void DataModelGUI::addModel(const std::string & fileName)
 
 void DataModelGUI::addModelRun()
 {
-  try
-    {
-      assert(CRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = CRootContainer::addDatamodel()->loadModel(mFileName, mpProgressBar, false);
-    }
-
-  catch (...)
-    {
-      mSuccess = false;
-    }
-
-  C_INT32 numDatamodels = CRootContainer::getDatamodelList()->size();
-  CModel *pModel = NULL;
-  CModel *pMergeModel = NULL;
-
-  if (numDatamodels >= 2 && mSuccess) //after loading the model to be merged there should be at least 2 datamodels...
-    {
-      //the base model is assumed to be the first one
-      pModel = mpDataModel->getModel();
-      //the model to be merged is the last one
-      pMergeModel = (*CRootContainer::getDatamodelList())[numDatamodels - 1].getModel();
-    }
-
-  if (mSuccess && pModel && pMergeModel)
-    {
-      CModelExpansion expand(pModel);
-      mpDataModel->mLastAddedObjects = expand.copyCompleteModel(pMergeModel);
-      CCopasiMessage::clearDeque();
-    }
-
-  if (pMergeModel)
-    CRootContainer::removeDatamodel(numDatamodels - 1);
+  mSuccess = mpDataModel->addModel(mFileName, mpProgressBar);
 }
 
 void DataModelGUI::addModelFinished()
 {
   if (mSuccess)
     {
-      //notify(ListViews::MODEL, ListViews::CHANGE, "");
-
-      CRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
-      CRootContainer::getConfiguration()->save();
+      //notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, "");
+      addRecentCopasiFile(mFileName);
       //linkDataModelToGUI();
     }
 
@@ -212,8 +178,6 @@ void DataModelGUI::addModelFinished()
 
   threadFinished();
 }
-
-#endif
 
 bool DataModelGUI::createModel()
 {
@@ -239,6 +203,58 @@ void DataModelGUI::loadModel(const std::string & fileName)
   mpThread->start();
 }
 
+void DataModelGUI::downloadFileFromUrl(const std::string & url, const std::string& destination)
+{
+
+  mSuccess = true;
+
+  QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+
+  QString server = FROM_UTF8(CRootContainer::getConfiguration()->getProxyServer());
+
+  // if we have a proxy server use it
+  if (!server.isEmpty())
+    {
+      int port = CRootContainer::getConfiguration()->getProxyPort();
+      QString user = FROM_UTF8(CRootContainer::getConfiguration()->getProxyUser());
+      QString pass = FROM_UTF8(CRootContainer::getConfiguration()->getProxyPassword());
+
+      // if we have a username, but no password stored (which would be in clear text), then
+      // ask for password.
+      if (!user.isEmpty() && pass.isEmpty())
+        {
+          bool flag = false;
+          QString temp = QInputDialog::getText(
+                           (QWidget*)((CQCopasiApplication*)qApp)->getMainWindow(),
+                           QString("Enter proxy password"),
+                           QString("You specified a proxy username, but no password, please enter the proxy password"),
+                           QLineEdit::Password,
+                           QString(""),
+                           &flag
+                         );
+
+          if (flag)
+            pass = temp;
+        }
+
+      manager->setProxy(QNetworkProxy(QNetworkProxy::HttpProxy, server, port, user, pass));
+    }
+
+  // start progress dialog
+  mpProgressBar = CProgressBar::create();
+  mpProgressBar->setName("Download file...");
+  mDownloadedBytes = 0; mDownloadedTotalBytes = 100;
+  mUpdateItem = ((CProcessReport*)mpProgressBar)->addItem("Download file", mDownloadedBytes, &mDownloadedTotalBytes);
+  mFileName = destination;
+
+  connect(manager, SIGNAL(finished(QNetworkReply*)),
+          this, SLOT(downloadFinished(QNetworkReply*)));
+
+  QNetworkReply* reply = manager->get(QNetworkRequest(QUrl(FROM_UTF8(url))));
+  connect(reply, SIGNAL(downloadProgress(qint64, qint64)),
+          this, SLOT(miriamDownloadProgress(qint64, qint64)));
+}
+
 void DataModelGUI::loadModelRun()
 {
   try
@@ -257,8 +273,7 @@ void DataModelGUI::loadModelFinished()
 {
   if (mSuccess)
     {
-      CRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
-      CRootContainer::getConfiguration()->save();
+      addRecentCopasiFile(mFileName);
 
       mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
       linkDataModelToGUI();
@@ -300,8 +315,7 @@ void DataModelGUI::saveModelFinished()
 {
   if (mSuccess)
     {
-      CRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
-      CRootContainer::getConfiguration()->save();
+      addRecentCopasiFile(mFileName);
     }
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(saveModelFinished()));
@@ -370,7 +384,20 @@ void  DataModelGUI::loadFunctionDB(const std::string & fileName)
   if (pFunctionDB == NULL) return;
 
   if (pFunctionDB->load(fileName))
-    emit notify(ListViews::FUNCTION, ListViews::DELETE, "");
+    emit notify(ListViews::ObjectType::FUNCTION, ListViews::DELETE, std::string());
+}
+
+void DataModelGUI::saveModelParameterSets(const std::string & fileName)
+{
+  mpDataModel->saveModelParameterSets(fileName);
+}
+
+void DataModelGUI::loadModelParameterSets(const std::string & fileName)
+{
+  if (mpDataModel->loadModelParameterSets(fileName, mpProgressBar))
+    {
+      emit notify(ListViews::ObjectType::MODELPARAMETERSET, ListViews::ADD, std::string());
+    }
 }
 
 void DataModelGUI::importSBML(const std::string & fileName)
@@ -403,8 +430,7 @@ void DataModelGUI::importSBMLFinished()
   if (mSuccess)
     {
       this->importCellDesigner();
-      CRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
-      CRootContainer::getConfiguration()->save();
+      addRecentSBMLFile(mFileName);
 
       mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
       linkDataModelToGUI();
@@ -501,8 +527,7 @@ void DataModelGUI::exportSBMLFinished()
 {
   if (mSuccess)
     {
-      CRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
-      CRootContainer::getConfiguration()->save();
+      addRecentSBMLFile(mFileName);
     }
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
@@ -538,6 +563,11 @@ void DataModelGUI::exportMathModelRun()
     }
 }
 
+const std::string & DataModelGUI::getFileName() const
+{
+  return mFileName;
+}
+
 void DataModelGUI::exportMathModelFinished()
 {
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportMathModelFinished()));
@@ -550,10 +580,11 @@ void DataModelGUI::miriamDownloadFinished(QNetworkReply* reply)
   bool success = true;
   mDownloadedBytes = 100;
   mpProgressBar->progressItem(mUpdateItem);
+  mpProgressBar->finishItem(mUpdateItem);
 
   CMIRIAMResources & miriamResources = *mpMiriamResources;
 
-  if (reply != NULL && reply->error() == QNetworkReply::NoError)
+  if (reply != NULL && reply->error() == QNetworkReply::NoError && reply->bytesAvailable() > 0)
     {
       std::string filename;
       COptions::getValue("ConfigDir", filename);
@@ -573,6 +604,8 @@ void DataModelGUI::miriamDownloadFinished(QNetworkReply* reply)
     }
   else
     {
+      QString errorString = reply->errorString();
+      CCopasiMessage(CCopasiMessage::ERROR, TO_UTF8_UNTRIMMED(errorString));
       success = false;
     }
 
@@ -582,6 +615,35 @@ void DataModelGUI::miriamDownloadFinished(QNetworkReply* reply)
 
   // notify UI to pick up
   emit finished(success);
+}
+
+void DataModelGUI::downloadFinished(QNetworkReply *reply)
+{
+  mSuccess = false;
+  mDownloadedBytes = 100;
+  mpProgressBar->progressItem(mUpdateItem);
+
+  if (reply != NULL && reply->error() == QNetworkReply::NoError && reply->bytesAvailable() > 0)
+    {
+      QFile downloadedFile(mFileName.c_str());
+
+      if (downloadedFile.open(QFile::WriteOnly))
+        {
+          downloadedFile.write(reply->readAll());
+          downloadedFile.flush();
+          downloadedFile.close();
+          mSuccess = true;
+        }
+    }
+  else
+    {
+      QString errorString = reply->errorString();
+      CCopasiMessage(CCopasiMessage::ERROR, TO_UTF8_UNTRIMMED(errorString));
+    }
+
+  reply->deleteLater();
+
+  threadFinished();
 }
 
 void DataModelGUI::miriamDownloadProgress(qint64 received, qint64 total)
@@ -628,7 +690,7 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
           QString temp = QInputDialog::getText(
                            (QWidget*)((CQCopasiApplication*)qApp)->getMainWindow(),
                            QString("Enter proxy password"),
-                           QString("You specified a proxy username, but no pasword, please enter the proxy password"),
+                           QString("You specified a proxy username, but no password, please enter the proxy password"),
                            QLineEdit::Password,
                            QString(""),
                            &flag
@@ -650,7 +712,7 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
   connect(manager, SIGNAL(finished(QNetworkReply*)),
           this, SLOT(miriamDownloadFinished(QNetworkReply*)));
 
-  QNetworkReply* reply = manager->get(QNetworkRequest(QUrl("http://www.ebi.ac.uk/miriam/main/export/xml/")));
+  QNetworkReply* reply = manager->get(QNetworkRequest(QUrl("https://www.ebi.ac.uk/miriam/main/export/xml/")));
   connect(reply, SIGNAL(downloadProgress(qint64, qint64)),
           this, SLOT(miriamDownloadProgress(qint64, qint64)));
 
@@ -661,7 +723,7 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
 
 //************Model-View Architecture*****************************************
 
-bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   // The GUI is inactive whenever a progress bar exist. We wait with updates
   // until then.
@@ -669,15 +731,99 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
 
   // update all initial value
   if (action != ListViews::RENAME && // not needed after rename
-      !(action == ListViews::ADD && objectType == ListViews::MODEL) // not needed when model was loaded
+      !(action == ListViews::ADD && objectType == ListViews::ObjectType::MODEL) // not needed when model was loaded
      )
     {
       refreshInitialValues();
     }
 
-  emit notifyView(objectType, action, key);
+  emit notifyView(objectType, action, cn);
 
   return true;
+}
+
+void DataModelGUI::notifyChanges(const CUndoData::CChangeSet & changes)
+{
+  // The GUI is inactive whenever a progress bar exist. We wait with updates
+  // until then.
+  std::string CN;
+
+  if (mpProgressBar == NULL)
+    {
+      CObjectInterface::ContainerList List;
+      List.push_back(mpDataModel);
+
+      // We loop through all the changes and call notify
+      CUndoData::CChangeSet::const_iterator it = changes.begin();
+      CUndoData::CChangeSet::const_iterator end = changes.end();
+
+      ListViews::Action Action = ListViews::Action::CHANGE;
+      std::string CN;
+      std::string MappedCN;
+
+      for (; it != end; ++it)
+        {
+          switch (it->type)
+            {
+              case CUndoData::Type::INSERT:
+                Action = ListViews::Action::ADD;
+                CN = it->objectAfter;
+                break;
+
+              case CUndoData::Type::CHANGE:
+                Action = ListViews::Action::CHANGE;
+                CN = it->objectBefore;
+                break;
+
+              case CUndoData::Type::REMOVE:
+                Action = ListViews::Action::DELETE;
+                CN = it->objectBefore;
+                break;
+            }
+
+          ListViews::ObjectType ObjectType = ListViews::DataObjectType.toEnum(it->objectType, ListViews::ObjectType::STATE);
+          MappedCN = CN;
+
+          if (ObjectType == ListViews::ObjectType::MIRIAM)
+            {
+              MappedCN = CN.substr(0, CN.find(",CMIRIAMInfo=CMIRIAMInfoObject"));
+            }
+          else if (ObjectType == ListViews::ObjectType::STATE)
+            {
+              if (it->objectType == "Creator" ||
+                  it->objectType == "Reference" ||
+                  it->objectType == "BiologicalDescription" ||
+                  it->objectType == "Modification")
+                {
+                  ObjectType = ListViews::ObjectType::MIRIAM;
+                  MappedCN = CN.substr(0, CN.find(",CMIRIAMInfo=CMIRIAMInfoObject"));
+                }
+            }
+
+          notify(ObjectType, Action, MappedCN);
+        }
+
+      std::pair< const CUndoData *, bool > LastExecution = mpDataModel->getUndoStack()->getLastExecution();
+
+      if (LastExecution.first != NULL)
+        {
+          const CData & MetaData = LastExecution.first->getMetaData();
+
+          ListViews::WidgetType Id = ListViews::WidgetName.toEnum(MetaData.getProperty("Widget Type").toString(), ListViews::WidgetType::NotFound);
+          int TabIndex = MetaData.isSetProperty("Widget Tab") ? MetaData.getProperty("Widget Tab").toInt() : -1;
+
+          if (LastExecution.second) // redo
+            {
+              CN = MetaData.getProperty("Widget Object CN (after)").toString();
+            }
+          else // undo
+            {
+              CN = MetaData.getProperty("Widget Object CN (before)").toString();
+            }
+
+          emit this->signalSwitchWidget(Id, CN, TabIndex);
+        }
+    }
 }
 
 void DataModelGUI::registerListView(ListViews * pListView)
@@ -737,6 +883,47 @@ void DataModelGUI::commit()
     }
 }
 
+void DataModelGUI::setIgnoreNextFile(bool ignore)
+{
+  mIgnoreNextFile = ignore;
+}
+
+void DataModelGUI::addRecentCopasiFile(const std::string & file)
+{
+  if (mIgnoreNextFile)
+    {
+      mIgnoreNextFile = false;
+      return;
+    }
+
+  CRootContainer::getConfiguration()->getRecentFiles().addFile(file);
+  CRootContainer::getConfiguration()->save();
+}
+
+void DataModelGUI::addRecentSBMLFile(const std::string & file)
+{
+  if (mIgnoreNextFile)
+    {
+      mIgnoreNextFile = false;
+      return;
+    }
+
+  CRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(file);
+  CRootContainer::getConfiguration()->save();
+}
+
+void DataModelGUI::addRecentSEDMLFile(const std::string & file)
+{
+  if (mIgnoreNextFile)
+    {
+      mIgnoreNextFile = false;
+      return;
+    }
+
+  CRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(file);
+  CRootContainer::getConfiguration()->save();
+}
+
 /**
  * This method tries to import CellDesigner annotations.
  */
@@ -781,7 +968,7 @@ void DataModelGUI::importCellDesigner()
                         importCD = true;
 
                       // ask the user if the CellDesigner annotation should be imported
-                      if (importCD || CQMessageBox::question(NULL, "CellDesigner import", "A CellDesigner diagram was found in this file.\nDo you want to import the diagram?" , QMessageBox::Yes | QMessageBox::No , QMessageBox::No) == QMessageBox::Yes)
+                      if (importCD || CQMessageBox::question(NULL, "CellDesigner import", "A CellDesigner diagram was found in this file.\nDo you want to import the diagram?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
                         {
                           // do the import
                           CCellDesignerImporter cd_importer(pSBMLDocument);
@@ -849,8 +1036,6 @@ void DataModelGUI::importCellDesigner()
         }
     }
 }
-
-#ifdef WITH_COMBINE_ARCHIVE
 
 void DataModelGUI::openCombineArchive(const std::string & fileName)
 {
@@ -932,9 +1117,6 @@ void DataModelGUI::exportCombineFinished()
   threadFinished();
 }
 
-#endif
-//TODO SEDML
-#ifdef COPASI_SEDML
 void DataModelGUI::importSEDMLFromString(const std::string & sedmlDocumentText)
 {
   mpProgressBar = CProgressBar::create();
@@ -1004,8 +1186,7 @@ void DataModelGUI::importSEDMLFinished()
 {
   if (mSuccess)
     {
-      CRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
-      CRootContainer::getConfiguration()->save();
+      addRecentSEDMLFile(mFileName);
       mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
       linkDataModelToGUI();
     }
@@ -1036,8 +1217,7 @@ void DataModelGUI::exportSEDMLFinished()
 {
   if (mSuccess)
     {
-      CRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
-      CRootContainer::getConfiguration()->save();
+      addRecentSEDMLFile(mFileName);
     }
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSEDMLFinished()));
@@ -1091,4 +1271,3 @@ void DataModelGUI::exportSEDMLRun()
       mSuccess = false;
     }
 }
-#endif //COPASI_SEDML

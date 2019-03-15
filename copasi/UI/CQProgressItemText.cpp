@@ -64,20 +64,20 @@ bool CQProgressItemText::reset()
 {
   switch (mpItem->getType())
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
         mpSetValue = & CQProgressItemText::setValueFromDOUBLE;
         break;
 
-      case CCopasiParameter::INT:
+      case CCopasiParameter::Type::INT:
         mpSetValue = & CQProgressItemText::setValueFromINT;
         break;
 
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::UINT:
         mpSetValue = & CQProgressItemText::setValueFromUINT;
         break;
 
-      case CCopasiParameter::STRING:
+      case CCopasiParameter::Type::STRING:
         mpSetValue = & CQProgressItemText::setValueFromSTRING;
         break;
 

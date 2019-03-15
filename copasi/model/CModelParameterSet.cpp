@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,10 +26,16 @@
 #include "copasi/utilities/CValidatedUnit.h"
 
 // static
-CModelParameterSet * CModelParameterSet::fromData(const CData & data)
+CModelParameterSet * CModelParameterSet::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CModelParameterSet(data.getProperty(CData::OBJECT_NAME).toString(),
                                 NO_PARENT);
+}
+
+// virtual
+void CModelParameterSet::destruct()
+{
+  delete this;
 }
 
 // virtual
@@ -32,31 +43,130 @@ CData CModelParameterSet::toData() const
 {
   CData Data;
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  // This works since the appended data overwrites the existing, i.e., we have the required object information
+  Data.appendData(CModelParameterGroup::toData());
+  Data.appendData(CAnnotation::toData());
+  Data.appendData(CDataContainer::toData());
 
   return Data;
 }
 
 // virtual
-bool CModelParameterSet::applyData(const CData & data)
+bool CModelParameterSet::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = true;
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  success &= CDataContainer::applyData(data, changes);
+  success &= CAnnotation::applyData(data, changes);
+  success &= CModelParameterGroup::applyData(data, changes);
 
   return success;
+}
+
+void CModelParameterSet::createUndoData(CUndoData & undoData,
+                                        const CUndoData::Type & type,
+                                        const CData & oldData,
+                                        const CCore::Framework & framework) const
+{
+  // This works since the appended data overwrites the existing, i.e., we have the required object information
+  CModelParameterGroup::createUndoData(undoData, type, oldData, framework);
+  CAnnotation::createUndoData(undoData, type, oldData, framework);
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  return;
+}
+
+// virtual
+CUndoObjectInterface * CModelParameterSet::insert(const CData & data)
+{
+  CModelParameter * pParameter = CModelParameter::fromData(data, dynamic_cast< CDataObject * >(this));
+
+  switch (CModelParameter::TypeNames.toEnum(data.getProperty(CData::OBJECT_TYPE).toString(), CModelParameter::Type::unknown))
+    {
+      case CModelParameter::Type::Model:
+        mpTimes->add(pParameter);
+        break;
+
+      case CModelParameter::Type::Compartment:
+        mpCompartments->add(pParameter);
+        break;
+
+      case CModelParameter::Type::Species:
+        mpSpecies->add(pParameter);
+        break;
+
+      case CModelParameter::Type::ModelValue:
+        mpModelValues->add(pParameter);
+        break;
+
+      case CModelParameter::Type::ReactionParameter:
+      {
+        CCommonName ReactionCN = CModelParameterReactionParameter::getReactionCN(data.getProperty(CData::OBJECT_NAME).toString());
+        CModelParameterGroup * pReaction = static_cast< CModelParameterGroup * >(mpReactions->getModelParameter(ReactionCN));
+
+        if (pReaction == NULL)
+          {
+            pReaction = static_cast< CModelParameterGroup * >(mpReactions->add(CModelParameter::Type::Reaction));
+            pReaction->setCN(ReactionCN);
+          }
+
+        if (pReaction != NULL)
+          {
+            pReaction->add(pParameter);
+          }
+      }
+      break;
+
+      case CModelParameter::Type::Reaction:
+        mpReactions->add(pParameter);
+        break;
+
+      case CModelParameter::Type::Group:
+      case CModelParameter::Type::Set:
+      case CModelParameter::Type::unknown:
+        break;
+    }
+
+  return pParameter;
+}
+
+// virtual
+void CModelParameterSet::updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject)
+{
+  CDataContainer::updateIndex(index, pUndoObject);
 }
 
 CModelParameterSet::CModelParameterSet(const std::string & name,
                                        const CDataContainer * pParent):
   CDataContainer(name, pParent, "ModelParameterSet"),
-  CModelParameterGroup(NULL, CModelParameter::Set),
   CAnnotation(),
+  CModelParameterGroup(NULL, CModelParameter::Type::Set),
   mKey(CRootContainer::getKeyFactory()->add("ModelParameterSet", this)),
-  mpModel(NULL)
+  mpModel(NULL),
+  mpTimes(NULL),
+  mpCompartments(NULL),
+  mpSpecies(NULL),
+  mpModelValues(NULL),
+  mpReactions(NULL)
 {
+  initMiriamAnnotation(mKey);
+
+  // Create the proper structure that fits the parameter overview in the GUI
+  mpTimes = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
+  mpTimes->setCN(CDataString("Initial Time").getCN());
+
+  mpCompartments = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
+  mpCompartments->setCN(CDataString("Initial Compartment Sizes").getCN());
+
+  mpSpecies = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
+  mpSpecies->setCN(CDataString("Initial Species Values").getCN());
+
+  mpModelValues = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
+  mpModelValues->setCN(CDataString("Initial Global Quantities").getCN());
+
+  mpReactions = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
+  mpReactions->setCN(CDataString("Kinetic Parameters").getCN());
+
   setObjectParent(pParent);
 }
 
@@ -64,11 +174,25 @@ CModelParameterSet::CModelParameterSet(const CModelParameterSet & src,
                                        const CDataContainer * pParent,
                                        const bool & createMissing):
   CDataContainer(src, pParent),
-  CModelParameterGroup(src, NULL, createMissing),
   CAnnotation(src),
+  CModelParameterGroup(src, NULL, createMissing),
   mKey(CRootContainer::getKeyFactory()->add("ModelParameterSet", this)),
-  mpModel(NULL)
+  mpModel(NULL),
+  mpTimes(NULL),
+  mpCompartments(NULL),
+  mpSpecies(NULL),
+  mpModelValues(NULL),
+  mpReactions(NULL)
 {
+  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
+
+  // Create the proper structure that fits the parameter overview in the GUI
+  mpTimes = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Time").getCN()));
+  mpCompartments = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Compartment Sizes").getCN()));
+  mpSpecies = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Species Values").getCN()));
+  mpModelValues = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Global Quantities").getCN()));
+  mpReactions = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Kinetic Parameters").getCN()));
+
   setObjectParent(pParent);
 
   if (mpModel == NULL)
@@ -82,7 +206,86 @@ CModelParameterSet::CModelParameterSet(const CModelParameterSet & src,
 // virtual
 CModelParameterSet::~CModelParameterSet()
 {
+  mType = Type::Group;
   CRootContainer::getKeyFactory()->remove(mKey);
+}
+
+// virtual
+CCommonName CModelParameterSet::getCN() const
+{
+  return CDataContainer::getCN();
+}
+
+CModelParameterGroup * CModelParameterSet::toGroup()
+{
+  return this;
+};
+
+const CModelParameterGroup * CModelParameterSet::toGroup() const
+{
+  return this;
+};
+
+// virtual
+CModelParameterSet * CModelParameterSet::toSet()
+{
+  return this;
+};
+
+// virtual
+const CModelParameterSet * CModelParameterSet::toSet() const
+{
+  return this;
+};
+
+void CModelParameterSet::init()
+{
+}
+
+void CModelParameterSet::add(CModelParameter * pModelParameter)
+{
+
+  CModelParameterGroup::add(pModelParameter);
+
+  if (pModelParameter->getType() != CModelParameter::Type::Group)
+    return;
+
+  auto& cn = pModelParameter->getCN();
+
+  if (cn == CDataString("Initial Time").getCN())
+    {
+      CModelParameterGroup::remove(mpTimes);
+      mpTimes = static_cast<CModelParameterGroup *>(pModelParameter);
+      return;
+    }
+
+  if (cn == CDataString("Initial Compartment Sizes").getCN())
+    {
+      CModelParameterGroup::remove(mpCompartments);
+      mpCompartments = static_cast<CModelParameterGroup *>(pModelParameter);
+      return;
+    }
+
+  if (cn == CDataString("Initial Species Values").getCN())
+    {
+      CModelParameterGroup::remove(mpSpecies);
+      mpSpecies = static_cast<CModelParameterGroup *>(pModelParameter);
+      return;
+    }
+
+  if (cn == CDataString("Initial Global Quantities").getCN())
+    {
+      CModelParameterGroup::remove(mpModelValues);
+      mpModelValues = static_cast<CModelParameterGroup *>(pModelParameter);
+      return;
+    }
+
+  if (cn == CDataString("Kinetic Parameters").getCN())
+    {
+      CModelParameterGroup::remove(mpReactions);
+      mpReactions = static_cast<CModelParameterGroup *>(pModelParameter);
+      return;
+    }
 }
 
 // virtual
@@ -102,6 +305,17 @@ bool CModelParameterSet::setObjectParent(const CDataContainer * pParent)
 }
 
 // virtual
+size_t CModelParameterSet::getIndex() const
+{
+  if (getObjectParent() != NULL)
+    {
+      return getObjectParent()->getIndex(this);
+    }
+
+  return C_INVALID_INDEX;
+}
+
+// virtual
 CModel * CModelParameterSet::getModel() const
 {
   assert(mpModel != NULL);
@@ -111,7 +325,11 @@ CModel * CModelParameterSet::getModel() const
 
 void CModelParameterSet::createFromModel()
 {
-  clear();
+  mpTimes->clear();
+  mpCompartments->clear();
+  mpSpecies->clear();
+  mpModelValues->clear();
+  mpReactions->clear();
 
   if (mpModel == NULL)
     {
@@ -119,70 +337,53 @@ void CModelParameterSet::createFromModel()
     }
 
   CModelParameter * pParameter;
-  CModelParameterGroup * pGroup;
 
-  // Create the proper structure that fits the parameter overview in the GUI
-  pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
-  pGroup->setCN(CDataString("Initial Time").getCN());
-
-  pParameter = pGroup->add(Model);
+  pParameter = mpTimes->add(Type::Model);
   pParameter->setCN(mpModel->getCN());
   pParameter->setValue(mpModel->getInitialTime(), CCore::Framework::ParticleNumbers);
-
-  pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
-  pGroup->setCN(CDataString("Initial Compartment Sizes").getCN());
 
   CDataVector< CCompartment >::const_iterator itCompartment = mpModel->getCompartments().begin();
   CDataVector< CCompartment >::const_iterator endCompartment = mpModel->getCompartments().end();
 
   for (; itCompartment != endCompartment; ++itCompartment)
     {
-      pParameter = pGroup->add(Compartment);
+      pParameter = mpCompartments->add(Type::Compartment);
       pParameter->setCN(itCompartment->getCN());
       pParameter->setSimulationType(itCompartment->getStatus());
       pParameter->setValue(itCompartment->getInitialValue(), CCore::Framework::ParticleNumbers);
       pParameter->setInitialExpression(itCompartment->getInitialExpression());
     }
 
-  pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
-  pGroup->setCN(CDataString("Initial Species Values").getCN());
-
   CDataVector< CMetab >::const_iterator itSpecies = mpModel->getMetabolites().begin();
   CDataVector< CMetab >::const_iterator endSpecies = mpModel->getMetabolites().end();
 
   for (; itSpecies != endSpecies; ++itSpecies)
     {
-      pParameter = pGroup->add(Species);
+      pParameter = mpSpecies->add(Type::Species);
       pParameter->setCN(itSpecies->getCN());
       pParameter->setSimulationType(itSpecies->getStatus());
       pParameter->setValue(itSpecies->getInitialValue(), CCore::Framework::ParticleNumbers);
       pParameter->setInitialExpression(itSpecies->getInitialExpression());
     }
 
-  pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
-  pGroup->setCN(CDataString("Initial Global Quantities").getCN());
-
   CDataVector< CModelValue >::const_iterator itModelValue = mpModel->getModelValues().begin();
   CDataVector< CModelValue >::const_iterator endModelValue = mpModel->getModelValues().end();
 
   for (; itModelValue != endModelValue; ++itModelValue)
     {
-      pParameter = pGroup->add(ModelValue);
+      pParameter = mpModelValues->add(Type::ModelValue);
       pParameter->setCN(itModelValue->getCN());
       pParameter->setSimulationType(itModelValue->getStatus());
       pParameter->setValue(itModelValue->getInitialValue(), CCore::Framework::ParticleNumbers);
       pParameter->setInitialExpression(itModelValue->getInitialExpression());
     }
 
-  pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
-  pGroup->setCN(CDataString("Kinetic Parameters").getCN());
-
   CDataVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
   CDataVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
 
   for (; itReaction != endReaction; ++itReaction)
     {
-      CModelParameterGroup * pReaction = static_cast< CModelParameterGroup *>(pGroup->add(Reaction));
+      CModelParameterGroup * pReaction = static_cast< CModelParameterGroup *>(mpReactions->add(Type::Reaction));
       pReaction->setCN(itReaction->getCN());
 
       CCopasiParameterGroup::index_iterator itParameter = itReaction->getParameters().beginIndex();
@@ -190,7 +391,16 @@ void CModelParameterSet::createFromModel()
 
       for (; itParameter != endParameter; ++itParameter)
         {
-          pParameter = pReaction->add(ReactionParameter);
+          const CFunctionParameter * pFunctionParameter = NULL;
+          itReaction->getParameterIndex((*itParameter)->getObjectName(), &pFunctionParameter);
+
+          if (pFunctionParameter == NULL ||
+              pFunctionParameter->getUsage() != CFunctionParameter::Role::PARAMETER)
+            {
+              continue;
+            }
+
+          pParameter = pReaction->add(Type::ReactionParameter);
           pParameter->setCN((*itParameter)->getCN());
 
           // Check whether this refers to a global quantity.
@@ -202,11 +412,11 @@ void CModelParameterSet::createFromModel()
           else
             {
               pParameter->setSimulationType(CModelEntity::Status::ASSIGNMENT);
-              const std::vector<std::string> ModelValue = itReaction->getParameterMapping((*itParameter)->getObjectName());
+              const std::vector< const CDataObject * > & ModelValue = itReaction->getParameterObjects((*itParameter)->getObjectName());
 
               if (ModelValue.size() != 1) fatalError();
 
-              const CModelValue * pModelValue = static_cast< CModelValue * >(CRootContainer::getKeyFactory()->get(ModelValue[0]));
+              const CModelValue * pModelValue = dynamic_cast< const CModelValue * >(ModelValue[0]);
 
               if (pModelValue == NULL) fatalError();
 
@@ -229,7 +439,7 @@ bool CModelParameterSet::compareWithModel(const CCore::Framework & framework)
   CModelParameterSet Tmp("Current", mpModel);
   Tmp.createFromModel();
 
-  return (diff(Tmp, framework, true) == CModelParameter::Identical);
+  return (diff(Tmp, framework, true) == CModelParameter::CompareResult::Identical);
 }
 
 // virtual
@@ -255,6 +465,40 @@ bool CModelParameterSet::updateModel()
   return success;
 }
 
+// virtual
+void CModelParameterSet::compile()
+{
+  CModelParameterGroup::compile();
+}
+
+const CModelParameter::CompareResult & CModelParameterSet::diff(const CModelParameterSet & other,
+    const CCore::Framework & framework,
+    const bool & createMissing)
+{
+  return CModelParameterGroup::diff(other, framework, createMissing);
+}
+
+const CModelParameter * CModelParameterSet::getModelParameter(const std::string & cn) const
+{
+  return CModelParameterGroup::getModelParameter(cn);
+}
+
+CModelParameterGroup::const_iterator CModelParameterSet::begin() const
+{
+  return CModelParameterGroup::begin();
+}
+
+CModelParameterGroup::const_iterator CModelParameterSet::end() const
+{
+  return CModelParameterGroup::end();
+}
+
+// virtual
+bool CModelParameterSet::refreshFromModel(const bool & modifyExistence)
+{
+  return CModelParameterGroup::refreshFromModel(modifyExistence);
+}
+
 bool CModelParameterSet::isActive() const
 {
   if (mpModel == NULL)
@@ -268,7 +512,13 @@ bool CModelParameterSet::isActive() const
 void CModelParameterSet::assignSetContent(const CModelParameterSet & src,
     const bool & createMissing)
 {
-  assignGroupContent(src, createMissing);
+  // Create the proper structure that fits the parameter overview in the GUI
+  mpTimes->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Time").getCN())), createMissing);
+  mpCompartments->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Compartment Sizes").getCN())), createMissing);
+  mpSpecies->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Species Values").getCN())), createMissing);
+  mpModelValues->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Global Quantities").getCN())), createMissing);
+  mpReactions->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Kinetic Parameters").getCN())), createMissing);
+
   compile();
 }
 
@@ -301,8 +551,8 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
                   os << separator;
                 }
 
-              if (itNode->getType() != Group &&
-                  itNode->getType() != Set)
+              if (itNode->getType() != Type::Group &&
+                  itNode->getType() != Type::Set)
                 {
                   os << itNode->getValue(framework) << " " << itNode->getUnit(framework).getExpression();
                 }
@@ -319,8 +569,8 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
         {
           if (*itNode != NULL)
             {
-              if (itNode->getType() != Group &&
-                  itNode->getType() != Set)
+              if (itNode->getType() != Type::Group &&
+                  itNode->getType() != Type::Set)
                 {
                   os << itNode->getName() << " " << itNode->getUnit(framework).getExpression() << separator;
                 }
@@ -336,8 +586,8 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
         {
           if (*itNode != NULL)
             {
-              if (itNode->getType() != Group &&
-                  itNode->getType() != Set)
+              if (itNode->getType() != Type::Group &&
+                  itNode->getType() != Type::Set)
                 {
                   os << itNode->getValue(framework) << separator;
                 }

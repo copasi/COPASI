@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -60,7 +65,7 @@ const CEnumAnnotation< std::string, CModelEntity::Status > CModelEntity::XMLStat
 });
 
 // static
-CModelEntity * CModelEntity::fromData(const CData & data)
+CModelEntity * CModelEntity::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   // It is not possible to create a CModelEntity from data.
   // Only derived classes are allowed!
@@ -73,24 +78,28 @@ CData CModelEntity::toData() const
 {
   CData Data = CDataContainer::toData();
 
-  Data.addProperty(CData::SIMULATION_TYPE, (unsigned C_INT32) mStatus);
+  Data.addProperty(CData::SIMULATION_TYPE, StatusName[mStatus]);
   Data.addProperty(CData::INITIAL_VALUE, mIValue);
   Data.addProperty(CData::INITIAL_EXPRESSION, getInitialExpression());
   Data.addProperty(CData::EXPRESSION, getExpression());
   Data.addProperty(CData::ADD_NOISE, mHasNoise);
   Data.addProperty(CData::NOISE_EXPRESSION, getNoiseExpression());
 
+  Data.appendData(CAnnotation::toData());
+
   return Data;
 }
 
 // virtual
-bool CModelEntity::applyData(const CData & data)
+bool CModelEntity::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
-  bool success = CDataContainer::applyData(data);
+  bool success = CDataContainer::applyData(data, changes);
+  bool compileModel = false;
 
   if (data.isSetProperty(CData::SIMULATION_TYPE))
     {
-      setStatus((Status) data.getProperty(CData::SIMULATION_TYPE).toUint());
+      setStatus(StatusName.toEnum(data.getProperty(CData::SIMULATION_TYPE).toString()));
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::INITIAL_VALUE))
@@ -101,24 +110,61 @@ bool CModelEntity::applyData(const CData & data)
   if (data.isSetProperty(CData::INITIAL_EXPRESSION))
     {
       success &= setInitialExpression(data.getProperty(CData::INITIAL_EXPRESSION).toString());
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::EXPRESSION))
     {
       success &= setExpression(data.getProperty(CData::EXPRESSION).toString());
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::ADD_NOISE))
     {
       setHasNoise(data.getProperty(CData::ADD_NOISE).toBool());
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::NOISE_EXPRESSION))
     {
       success &= setNoiseExpression(data.getProperty(CData::NOISE_EXPRESSION).toString());
+      compileModel = true;
     }
 
-  return false;
+  success &= CAnnotation::applyData(data, changes);
+
+  if (compileModel &&
+      mpModel != NULL)
+    {
+      mpModel->setCompileFlag(true);
+    }
+
+  return success;
+}
+
+// virtual
+void CModelEntity::createUndoData(CUndoData & undoData,
+                                  const CUndoData::Type & type,
+                                  const CData & oldData,
+                                  const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::SIMULATION_TYPE, oldData.getProperty(CData::SIMULATION_TYPE), StatusName[mStatus]);
+  undoData.addProperty(CData::INITIAL_VALUE, oldData.getProperty(CData::INITIAL_VALUE), mIValue);
+  undoData.addProperty(CData::INITIAL_EXPRESSION, oldData.getProperty(CData::INITIAL_EXPRESSION), getInitialExpression());
+  undoData.addProperty(CData::EXPRESSION, oldData.getProperty(CData::EXPRESSION), getExpression());
+  undoData.addProperty(CData::ADD_NOISE, oldData.getProperty(CData::ADD_NOISE), mHasNoise);
+  undoData.addProperty(CData::NOISE_EXPRESSION, oldData.getProperty(CData::NOISE_EXPRESSION), getNoiseExpression());
+
+  CAnnotation::createUndoData(undoData, type, oldData, framework);
+
+  return;
 }
 
 // the "variable" keyword is used for compatibility reasons. It actually means "this metab is part
@@ -144,6 +190,7 @@ CModelEntity::CModelEntity(const std::string & name,
   mUnitExpression("")
 {
   mKey = CRootContainer::getKeyFactory()->add(getObjectType(), this);
+  initMiriamAnnotation(mKey);
 
   initObjects();
 
@@ -168,11 +215,11 @@ CModelEntity::CModelEntity(const CModelEntity & src,
   mUnitExpression(src.mUnitExpression)
 {
   mKey = CRootContainer::getKeyFactory()->add(getObjectType(), this);
+  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
 
   initObjects();
 
   setStatus(src.mStatus);
-  setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
 }
 
 CModelEntity::~CModelEntity()
@@ -342,7 +389,7 @@ CIssue CModelEntity::setExpression(const std::string & expression)
   mValidity.remove(CValidity::Severity::All,
                    CValidity::Kind(CIssue::eKind::SettingFixedExpression));
 
-  if (isFixed())
+  if (isFixed() && !expression.empty())
     {
       issue = CIssue(CIssue::eSeverity::Error,
                      CIssue::eKind::SettingFixedExpression);
@@ -863,7 +910,7 @@ const bool & CModelEntity::isUsed() const
 //********************************************************************+
 
 // static
-CModelValue * CModelValue::fromData(const CData & data)
+CModelValue * CModelValue::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CModelValue(data.getProperty(CData::OBJECT_NAME).toString(),
                          NO_PARENT);
@@ -880,16 +927,34 @@ CData CModelValue::toData() const
 }
 
 // virtual
-bool CModelValue::applyData(const CData & data)
+bool CModelValue::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
-  bool success = CModelEntity::applyData(data);
+  bool success = CModelEntity::applyData(data, changes);
 
   if (data.isSetProperty(CData::UNIT))
     {
-      success &= this->setUnitExpression(data.getProperty(CData::UNIT).toString());
+      success &= setUnitExpression(data.getProperty(CData::UNIT).toString());
     }
 
   return success;
+}
+
+// virtual
+void CModelValue::createUndoData(CUndoData & undoData,
+                                 const CUndoData::Type & type,
+                                 const CData & oldData,
+                                 const CCore::Framework & framework) const
+{
+  CModelEntity::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::UNIT, oldData.getProperty(CData::UNIT), mUnitExpression);
+
+  return;
 }
 
 CModelValue::CModelValue(const std::string & name,

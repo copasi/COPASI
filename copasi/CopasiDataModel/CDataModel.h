@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -13,9 +18,11 @@
 #include "copasi/core/CDataContainer.h"
 #include "copasi/output/COutputHandler.h"
 #include "copasi/utilities/CTaskEnum.h"
+#include "copasi/undo/CUndoStack.h"
 
 class CInfo;
 class CModel;
+class CModelParameter;
 class CReportDefinition;
 class CReportDefinitionVector;
 class COutputDefinitionVector;
@@ -30,22 +37,18 @@ class CProcessReport;
 class CConfigurationFile;
 class SBMLIncompatibility;
 class CListOfLayouts;
-class CUndoStack;
 class CUndoData;
 class CCopasiTask;
+class CModelVersionHierarchy;
 
-//TODO SEDML
-#ifdef COPASI_SEDML
+// SEDML
 LIBSEDML_CPP_NAMESPACE_BEGIN
 class SedBase;
 class SedDocument;
 LIBSEDML_CPP_NAMESPACE_END
 class CPlotItem;
-#endif
 
-#ifdef WITH_COMBINE_ARCHIVE
 class CombineArchive;
-#endif // WITH_COMBINE_ARCHIVE
 
 // :TODO: remove
 class CMetabOld;
@@ -116,8 +119,7 @@ private:
     // an imported SBML file or from a loaded cps file.
     std::string mReferenceDir;
 
-    //TODO SEDML
-#ifdef COPASI_SEDML
+    // SEDML
     SedDocument* pCurrentSEDMLDocument;
 
     /**
@@ -132,7 +134,9 @@ private:
      */
     std::string mSEDMLFileName;
 
-#endif
+#ifdef COPASI_Versioning
+    CModelVersionHierarchy * mpModelVersionHierarchy;
+#endif // COPASI_Versioning
   };
 
   // Operations
@@ -142,7 +146,7 @@ public:
    * @param const CData & data
    * @return CDataModel * pDataObject
    */
-  static CDataModel * fromData(const CData & data);
+  static CDataModel * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -155,7 +159,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
 
   CDataModel(const bool withGUI = false);
 
@@ -177,6 +181,23 @@ public:
   bool loadModel(const std::string & fileName,
                  CProcessReport* pProcessReport,
                  const bool & deleteOldData = true);
+
+  /**
+   * Loads the model contained in the specified file and adds it to the
+   * current one
+   *
+   * @param fileName the copasi file to add to this model
+   * @param pProcessReport optional progress handler
+   *
+   * @return true, if a model was successfully added, false otherwise
+   */
+  bool addModel(const std::string & fileName,
+                CProcessReport* pProcessReport = NULL);
+
+  bool loadModelParameterSets(const std::string & fileName,
+                              CProcessReport* pProcessReport = NULL);
+
+  bool saveModelParameterSets(const std::string & fileName);
 
   bool saveModel(const std::string & fileName,
                  CProcessReport* pProcessReport,
@@ -216,7 +237,6 @@ public:
    */
   const CDataObject *findObjectByDisplayName(const std::string& displayString) const;
 
-#ifdef WITH_COMBINE_ARCHIVE
   /**
    * Moves the experimental data referenced in the model to the specified
    * path and update the referenced filenames to match it. Should the folder
@@ -250,8 +270,6 @@ public:
 
   bool openCombineArchive(const std::string& fileName, CProcessReport* pProgressReport = NULL,
                           const bool & deleteOldData = true);
-
-#endif
 
   void deleteOldData();
 
@@ -299,8 +317,7 @@ public:
 public:
   const std::string& getReferenceDirectory() const;
 
-  //TODO SEDML by JO Dada
-#ifdef COPASI_SEDML
+  // SEDML
   bool importSEDMLFromString(const std::string & sedmlDocumentText,
                              CProcessReport* pImportHandler = NULL,
                              const bool & deleteOldData = true);
@@ -335,16 +352,21 @@ public:
 
   std::map<CDataObject*, SedBase*>& getCopasi2SEDMLMap();
 
-#endif
+  CUndoData::CChangeSet applyData(const CUndoData & data);
+  CUndoData::CChangeSet recordData(const CUndoData & data);
 
-  void applyData(const CUndoData & data);
-  void recordData(const CUndoData & data);
+#ifdef COPASI_Versioning
+  CModelVersionHierarchy * getModelVersionHierarchy();
+#endif // COPASI_Versioning
 
 protected:
   void pushData();
   void popData();
   void commonAfterLoad(CProcessReport* pProcessReport,
                        const bool & deleteOldData);
+
+  void replaceCnInGroup(CModelParameter* pParam,
+                        const std::string &oldCn, const std::string& newCN);
 
   // Attributes
 protected:

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -182,7 +187,7 @@ void CQTrajectoryWidget::slotAutomaticIntervals(bool checked)
   mpEditIntervalSize->setEnabled(!checked);
 }
 
-bool CQTrajectoryWidget::saveTask()
+bool CQTrajectoryWidget::saveTaskProtected()
 {
   CTrajectoryTask * pTask =
     dynamic_cast< CTrajectoryTask * >(mpTask);
@@ -283,7 +288,7 @@ bool CQTrajectoryWidget::saveTask()
   return true;
 }
 
-bool CQTrajectoryWidget::loadTask()
+bool CQTrajectoryWidget::loadTaskProtected()
 {
   CTrajectoryTask * pTask =
     dynamic_cast< CTrajectoryTask * >(mpTask);
@@ -360,7 +365,7 @@ bool CQTrajectoryWidget::taskFinishedEvent()
   // We need to load the result here as this is the only place where
   // we know that it is correct.
   CQTimeSeriesWidget * pResult =
-    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(231));
+    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(ListViews::WidgetType::TimeCourseResult));
 
   if (pResult == NULL)
     return false;
@@ -443,9 +448,9 @@ void CQTrajectoryWidget::updateIntervals()
 }
 
 // virtual
-bool CQTrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool CQTrajectoryWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
-  TaskWidget::update(objectType, action, key);
+  TaskWidget::updateProtected(objectType, action, cn);
 
   if (mIgnoreUpdates || !isVisible())
     {
@@ -454,7 +459,7 @@ bool CQTrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Act
 
   switch (objectType)
     {
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
 
         if (action == ListViews::CHANGE)
           {

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -6,12 +11,6 @@
 #define USE_LAYOUT 1
 
 #include <sbml/SBMLDocument.h>
-
-#ifdef COPASI_SEDML
-#include <sedml/SedDocument.h>
-#include "sedml/SEDMLImporter.h"
-#include "sedml/CSEDMLExporter.h"
-#endif
 
 #include "copasi.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
@@ -44,7 +43,6 @@
 #include "copasi/core/CDataVector.h"
 #include "utilities/CDirEntry.h"
 #include "xml/CCopasiXML.h"
-#include "undo/CUndoStack.h"
 #include "undo/CUndoData.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
@@ -53,13 +51,22 @@
 #include "layout/CLayoutInitializer.h"
 #include "copasi/core/CRootContainer.h"
 
-#ifdef WITH_COMBINE_ARCHIVE
 # include <combine/combinearchive.h>
 # include <combine/knownformats.h>
 # include <combine/util.h>
 # include <omex/CaContent.h>
 # include <copasi/utilities/CCopasiMessage.h>
-#endif // WITH_COMBINE_ARCHIVE
+
+#include <sedml/SedDocument.h>
+#include "sedml/SEDMLImporter.h"
+#include "sedml/CSEDMLExporter.h"
+
+#include "model/CModelExpansion.h"
+#include "model/CModelParameter.h"
+
+#ifdef COPASI_Versioning
+# include "copasi/versioning/CModelVersionHierarchy.h"
+#endif // COPASI_Versioning
 
 #include <copasi/parameterFitting/CFitProblem.h>
 #include <copasi/parameterFitting/CExperimentSet.h>
@@ -82,7 +89,7 @@ CDataModel::CDataModel(const bool withGUI):
 }
 
 // static
-CDataModel * CDataModel::fromData(const CData & data)
+CDataModel * CDataModel::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CDataModel(data.getProperty(CData::OBJECT_NAME).toString(),
                         NO_PARENT);
@@ -100,7 +107,7 @@ CData CDataModel::toData() const
 }
 
 // virtual
-bool CDataModel::applyData(const CData & data)
+bool CDataModel::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = true;
 
@@ -118,6 +125,7 @@ CDataModel::CDataModel(const std::string & name,
   COutputHandler(),
   mData(withGUI),
   mOldData(withGUI),
+  mpInfo(NULL),
   mTempFolders(),
   mNeedToSaveExperimentalData(false),
   pOldMetabolites(new CDataVectorS < CMetabOld >)
@@ -133,6 +141,7 @@ CDataModel::CDataModel(const CDataModel & src,
   COutputHandler(src),
   mData(src.mData),
   mOldData(src.mOldData),
+  mpInfo(NULL),
   mTempFolders(),
   mNeedToSaveExperimentalData(false),
   pOldMetabolites((src.pOldMetabolites != NULL) ? new CDataVectorS < CMetabOld >(*src.pOldMetabolites, NO_PARENT) : NULL)
@@ -151,8 +160,6 @@ CDataModel::~CDataModel()
 
   pdelete(pOldMetabolites);
 
-#ifdef WITH_COMBINE_ARCHIVE
-
   std::vector<std::string>::iterator it = mTempFolders.begin();
 
   for (; it != mTempFolders.end(); ++it)
@@ -161,8 +168,6 @@ CDataModel::~CDataModel()
     }
 
   mTempFolders.clear();
-
-#endif
 }
 
 bool CDataModel::loadModel(std::istream & in,
@@ -395,7 +400,138 @@ bool CDataModel::loadModel(const std::string & fileName,
   return true;
 }
 
-#ifdef WITH_COMBINE_ARCHIVE
+bool CDataModel::addModel(const std::string & fileName, CProcessReport * pProcessReport)
+{
+  bool result = false;
+
+  try
+    {
+      result = CRootContainer::addDatamodel()->loadModel(fileName, pProcessReport, false);
+    }
+  catch (...)
+    {
+    }
+
+  C_INT32 numDatamodels = CRootContainer::getDatamodelList()->size();
+  CModel *pModel = NULL;
+  CModel *pMergeModel = NULL;
+
+  if (numDatamodels >= 2 && result) //after loading the model to be merged there should be at least 2 datamodels...
+    {
+      //the base model is assumed to be the first one
+      pModel = getModel();
+      //the model to be merged is the last one
+      pMergeModel = (*CRootContainer::getDatamodelList())[numDatamodels - 1].getModel();
+    }
+
+  if (result && pModel && pMergeModel)
+    {
+      CModelExpansion expand(pModel);
+      mLastAddedObjects = expand.copyCompleteModel(pMergeModel);
+      CCopasiMessage::clearDeque();
+    }
+
+  if (pMergeModel)
+    CRootContainer::removeDatamodel(numDatamodels - 1);
+
+  return result;
+}
+
+bool CDataModel::loadModelParameterSets(const std::string & fileName,
+                                        CProcessReport* pProcessReport)
+{
+  bool wasParameterSetLoaded = false;
+  bool loaded = false;
+
+  try
+    {
+      loaded = CRootContainer::addDatamodel()->loadModel(fileName, pProcessReport, false);
+    }
+  catch (...)
+    {
+    }
+
+  size_t numDatamodels = CRootContainer::getDatamodelList()->size();
+
+  if (numDatamodels == 0)
+    return false;
+
+  CModel * parameterSetModel = loaded ?
+                               ((*CRootContainer::getDatamodelList())[numDatamodels - 1]).getModel() :
+                               NULL;
+
+  if (!parameterSetModel)
+    return false;
+
+  CModel * pModel = getModel();
+
+  if (!pModel)
+    return false;
+
+  CDataVectorN< CModelParameterSet > & thisSet = pModel->getModelParameterSets();
+  CCommonName thisModelsCn = pModel->getCN();
+
+  CDataVectorN< CModelParameterSet > & loadedSet = parameterSetModel->getModelParameterSets();
+  CCommonName loadedModelCn = parameterSetModel->getCN();
+
+  for (CModelParameterSet & set : loadedSet)
+    {
+      for (CModelParameter * current : dynamic_cast< CModelParameterGroup & >(set))
+        {
+          replaceCnInGroup(current, loadedModelCn, thisModelsCn);
+        }
+
+      CModelParameterSet * clonedSet = new CModelParameterSet(set, pModel, true);
+
+      thisSet.add(clonedSet, true);
+      wasParameterSetLoaded = true;
+    }
+
+  CRootContainer::removeDatamodel(numDatamodels - 1);
+
+  return wasParameterSetLoaded;
+}
+
+void CDataModel::replaceCnInGroup(CModelParameter* pParam,
+                                  const std::string &oldCN, const std::string& newCN)
+{
+  CModelParameterGroup* group = dynamic_cast<CModelParameterGroup*>(pParam);
+
+  if (!group)
+    return;
+
+  for (CModelParameter * element : *group)
+    {
+      CModelParameterGroup* inside = dynamic_cast<CModelParameterGroup*>(element);
+
+      if (inside)
+        {
+          replaceCnInGroup(inside, oldCN, newCN);
+        }
+
+      std::string cn = element->getCN();
+      std::string::size_type start = cn.find(oldCN);
+
+      if (start == std::string::npos)
+        continue;
+
+      cn.replace(start, oldCN.length(), newCN);
+
+      element->setCN(CCommonName(cn));
+    }
+}
+
+bool CDataModel::saveModelParameterSets(const std::string & fileName)
+{
+  CCopasiXML XML;
+  XML.setModel(getModel());
+  std::ofstream os(CLocaleString::fromUtf8(fileName).c_str());
+
+  if (os.fail()) return false;
+
+  return XML.saveModelParameterSets(os, fileName);
+}
+
 void CDataModel::copyExperimentalDataTo(const std::string& path)
 {
   CFitProblem* problem = dynamic_cast<CFitProblem*>((*getTaskList())[static_cast< size_t >(CTaskEnum::Task::parameterFitting)].getProblem());
@@ -486,7 +622,6 @@ void CDataModel::copyExperimentalDataTo(const std::string& path)
       }
   }
 }
-#endif // WITH_COMBINE_ARCHIVE
 
 bool
 CDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessReport,
@@ -538,15 +673,11 @@ CDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessRepo
       return false;
     }
 
-#ifdef WITH_COMBINE_ARCHIVE
-
   if (mNeedToSaveExperimentalData)
     {
       copyExperimentalDataTo(CDirEntry::dirName(FileName));
       mNeedToSaveExperimentalData = false;
     }
-
-#endif // WITH_COMBINE_ARCHIVE
 
   CCopasiXML XML;
 
@@ -604,6 +735,7 @@ CDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessRepo
     {
       changed(false);
       mData.mSaveFileName = CDirEntry::normalize(FileName);
+      mData.mReferenceDir = CDirEntry::dirName(mData.mSaveFileName);
     }
 
   return true;
@@ -1239,8 +1371,6 @@ bool CDataModel::exportMathModel(const std::string & fileName, CProcessReport* p
   return pExporter->exportToStream(this, os);
 }
 
-#ifdef WITH_COMBINE_ARCHIVE
-
 void
 CDataModel::addCopasiFileToArchive(CombineArchive *archive,
                                    const std::string& targetName /*= "./copasi/model.cps"*/,
@@ -1444,7 +1574,16 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
   std::string destinationDir;
   COptions::getValue("Tmp", destinationDir);
   destinationDir = CDirEntry::createTmpName(destinationDir, "");
-  CDirEntry::createDir(destinationDir);
+
+  // apparently this creates the file too?
+  if (CDirEntry::exist(destinationDir))
+    CDirEntry::remove(destinationDir);
+
+  if (!CDirEntry::createDir(destinationDir))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "Failed to create temporary directory.");
+      return false;
+    }
 
   archive.extractTo(destinationDir);
   mTempFolders.push_back(destinationDir);
@@ -1559,10 +1698,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
   return result;
 }
 
-#endif
-
-//TODO SEDML
-#ifdef COPASI_SEDML
+// SEDML
 bool CDataModel::importSEDMLFromString(const std::string& sedmlDocumentText,
                                        CProcessReport* pImportHandler,
                                        const bool & deleteOldData)
@@ -1893,7 +2029,6 @@ bool CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile, i
 
   return true;
 }
-#endif
 
 void CDataModel::deleteOldData()
 {
@@ -1906,9 +2041,11 @@ void CDataModel::deleteOldData()
   pdelete(mOldData.pCurrentSBMLDocument);
   pdelete(mOldData.mpUndoStack);
 
-#ifdef COPASI_SEDML
   pdelete(mOldData.pCurrentSEDMLDocument);
-#endif
+
+#ifdef COPASI_Versioning
+  pdelete(mOldData.mpModelVersionHierarchy);
+#endif // COPASI_Versioning
 }
 
 const CModel * CDataModel::getModel() const
@@ -2173,6 +2310,22 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"));
         break;
 
+      case CTaskEnum::Task::moieties:
+        pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
+        pReport->setTaskType(taskType);
+        pReport->setComment("Automatically generated report.");
+        pReport->setIsTable(false);
+        pReport->setTitle(false);
+        pReport->setSeparator("\t");
+
+        // Header
+        pReport->getHeaderAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Moieties],Object=Description"));
+
+        // Footer
+        pReport->getFooterAddr()->push_back(CCommonName("String=\n"));
+        pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Moieties],Object=Result"));
+        break;
+
       default:
         return pReport;
     }
@@ -2314,6 +2467,13 @@ std::map<const CDataObject*, SBase*>& CDataModel::getCopasi2SBMLMap()
   return mData.mCopasi2SBMLMap;
 }
 
+#ifdef COPASI_Versioning
+CModelVersionHierarchy * CDataModel::getModelVersionHierarchy()
+{
+  return mData.mpModelVersionHierarchy;
+}
+#endif // COPASI_Versioning
+
 void CDataModel::removeSBMLIdFromFunctions()
 {
   CFunctionDB* pFunDB = CRootContainer::getFunctionList();
@@ -2367,11 +2527,13 @@ CDataModel::CContent::CContent(const bool & withGUI):
   mSBMLFileName(""),
   mCopasi2SBMLMap(),
   mReferenceDir("")
-#ifdef COPASI_SEDML
   , pCurrentSEDMLDocument(NULL)
   , mCopasi2SEDMLMap()
   , mSEDMLFileName("")
-#endif
+
+#ifdef COPASI_Versioning
+  , mpModelVersionHierarchy(NULL)
+#endif // COPASI_Versioning
 {}
 
 CDataModel::CContent::CContent(const CContent & src):
@@ -2391,11 +2553,13 @@ CDataModel::CContent::CContent(const CContent & src):
   mSBMLFileName(src.mSBMLFileName),
   mCopasi2SBMLMap(src.mCopasi2SBMLMap),
   mReferenceDir(src.mReferenceDir)
-#ifdef COPASI_SEDML
   , pCurrentSEDMLDocument(src.pCurrentSEDMLDocument)
   , mCopasi2SEDMLMap(src.mCopasi2SEDMLMap)
   , mSEDMLFileName(src.mSEDMLFileName)
-#endif
+
+#ifdef COPASI_Versioning
+  , mpModelVersionHierarchy(src.mpModelVersionHierarchy)
+#endif // COPASI_Versioning
 {}
 
 CDataModel::CContent::~CContent()
@@ -2422,11 +2586,13 @@ CDataModel::CContent & CDataModel::CContent::operator = (const CContent & rhs)
       mReferenceDir = rhs.mReferenceDir;
       mCopasi2SBMLMap = rhs.mCopasi2SBMLMap;
 
-#ifdef COPASI_SEDML
       pCurrentSEDMLDocument = rhs.pCurrentSEDMLDocument;
       mCopasi2SEDMLMap = rhs.mCopasi2SEDMLMap;
       mSEDMLFileName = rhs.mSEDMLFileName;
-#endif
+
+#ifdef COPASI_Versioning
+      mpModelVersionHierarchy = rhs.mpModelVersionHierarchy;
+#endif // COPASI_Versioning
     }
 
   return *this;
@@ -2445,19 +2611,20 @@ bool CDataModel::CContent::isValid() const
 
 void CDataModel::pushData()
 {
-  bool condition = true;
-#ifdef COPASI_SEDML
-  condition = mOldData.pCurrentSEDMLDocument == NULL;
-#endif
   // make sure the old data has been deleted.
   assert(mOldData.pModel == NULL &&
          mOldData.pTaskList == NULL &&
          mOldData.pReportDefinitionList == NULL &&
          mOldData.pPlotDefinitionList == NULL &&
          mOldData.pListOfLayouts == NULL &&
-         mOldData.pGUI == NULL &&
-         condition
+         mOldData.pGUI == NULL
         );
+
+  assert(mOldData.pCurrentSEDMLDocument == NULL);
+
+#ifdef COPASI_Versioning
+  assert(mOldData.mpModelVersionHierarchy == NULL);
+#endif // COPASI_Versioning
 
   mOldData = mData;
   mData = CContent(mData.mWithGUI);
@@ -2471,7 +2638,12 @@ void CDataModel::popData()
          mOldData.pReportDefinitionList != NULL &&
          mOldData.pPlotDefinitionList != NULL &&
          mOldData.pListOfLayouts != NULL &&
-         (mOldData.pGUI != NULL || mOldData.mWithGUI == false));
+         (mOldData.pGUI != NULL || mOldData.mWithGUI == false)
+        );
+
+#ifdef COPASI_Versioning
+  assert(mOldData.mpModelVersionHierarchy != NULL);
+#endif  // COPASI_Versioning
 
   // TODO CRITICAL We need to clean up mData to avoid memory leaks.
 
@@ -2518,6 +2690,15 @@ void CDataModel::commonAfterLoad(CProcessReport* pProcessReport,
     }
 
   mpInfo->update();
+
+#ifdef COPASI_Versioning
+
+  if (mData.mpModelVersionHierarchy == NULL)
+    {
+      mData.mpModelVersionHierarchy = new CModelVersionHierarchy(*this);
+    }
+
+#endif // COPASI_Versioning
 
   // We have at least one task of every type
   addDefaultTasks();
@@ -2583,12 +2764,8 @@ void CDataModel::commonAfterLoad(CProcessReport* pProcessReport,
   if (mOldData.mpUndoStack == mData.mpUndoStack)
     mOldData.mpUndoStack = NULL;
 
-#ifdef COPASI_SEDML
-
   if (mOldData.pCurrentSEDMLDocument == mData.pCurrentSEDMLDocument)
     mOldData.pCurrentSEDMLDocument = NULL;
-
-#endif
 
   if (mData.pModel->isCompileNecessary() &&
       mData.pModel->compileIfNecessary(pProcessReport))
@@ -2651,20 +2828,27 @@ void CDataModel::commonAfterLoad(CProcessReport* pProcessReport,
     }
 }
 
-void CDataModel::applyData(const CUndoData & data)
+CUndoData::CChangeSet CDataModel::applyData(const CUndoData & data)
 {
-  // TODO CRITICAL Fix me!
-  // To avoid interaction with the existing undo we avoid applying any changes
-  // data.apply(*this);
-  recordData(data);
+  if (mData.mpUndoStack != NULL &&
+      !data.empty())
+    {
+      changed();
+      return mData.mpUndoStack->record(data, true);
+    }
+
+  return CUndoData::CChangeSet();
 }
 
-void CDataModel::recordData(const CUndoData & data)
+CUndoData::CChangeSet CDataModel::recordData(const CUndoData & data)
 {
-  if (mData.mpUndoStack != NULL)
+  if (mData.mpUndoStack != NULL &&
+      !data.empty())
     {
-      mData.mpUndoStack->record(data);
+      return mData.mpUndoStack->record(data, false);
     }
+
+  return CUndoData::CChangeSet();
 }
 
 const CDataObject *CDataModel::findObjectByDisplayName(const std::string& displayString) const

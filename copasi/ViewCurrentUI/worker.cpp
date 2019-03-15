@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -38,14 +43,14 @@ Worker::Worker(CopasiUI3Window *window, Arguments *args) : mTaskStarted(false)
 
   // connect the finish slot, so it will switch to the correct tab
   connect(mpDataModel, SIGNAL(finished(bool)), this, SLOT(finishedLoading(bool)));
-  connect(mpDataModel, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, std::string)),
-          this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, std::string)));
+  connect(mpDataModel, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CCommonName & cn)),
+          this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName & cn)));
 }
 
-bool Worker::slotNotify(ListViews::ObjectType objectType, ListViews::Action action, std::string key /*= ""*/)
+bool Worker::slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
 
-  if (objectType == ListViews::STATE && action == ListViews::CHANGE && mTaskStarted)
+  if (objectType == ListViews::ObjectType::STATE && action == ListViews::CHANGE && mTaskStarted)
     {
       mTaskStarted = false;
 

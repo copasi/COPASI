@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,8 +58,8 @@ CQPlotsWidget::CQPlotsWidget(QWidget *parent, const char *name)
   mpTblPlots->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   setFramework(mFramework);
   // Connect the table widget
-  connect(mpPlotDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpPlotDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpPlotDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -152,7 +157,7 @@ void CQPlotsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQPlotsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
+bool CQPlotsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (!mIgnoreUpdates && isVisible())
     {
@@ -162,7 +167,7 @@ bool CQPlotsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews
   return true;
 }
 
-bool CQPlotsWidget::leave()
+bool CQPlotsWidget::leaveProtected()
 {
   return true;
 }
@@ -175,6 +180,7 @@ bool CQPlotsWidget::enterProtected()
                  this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
     }
 
+  mpPlotDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpPlotDM);
   //Set Model for the TableView
   mpTblPlots->setModel(NULL);
@@ -241,16 +247,13 @@ void CQPlotsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(mpDataModel != NULL);
+  CDataVector < CPlotSpecification > * pVector = dynamic_cast< CDataVector < CPlotSpecification > * >(mpObject);
 
-  if (mpDataModel->getModel() == NULL)
-    return;
-
-  CPlotSpecification *pPS = static_cast<CPlotSpecification *>(&mpDataModel->getPlotDefinitionList()->operator[](index.row()));
-  const std::string key = static_cast<CCopasiParameter *>(pPS)->getKey();
-
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  if (pVector != NULL &&
+      index.row() < pVector->size())
+    {
+      mpListView->switchToOtherWidget(ListViews::WidgetType::PlotDetail, pVector->operator [](index.row()).getCN());
+    }
 }
 
 void CQPlotsWidget::keyPressEvent(QKeyEvent *ev)

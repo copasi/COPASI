@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -38,36 +43,19 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
-//UNDO framework classes
-#include "copasi/model/CReactionInterface.h"
-#include "copasi/undoFramework/DeleteGlobalQuantityCommand.h"
-#include "copasi/undoFramework/CreateNewGlobalQuantityCommand.h"
-//#include "undoFramework/GlobalQuantityTypeChangeCommand.h"
-#include "copasi/undoFramework/UndoGlobalQuantityData.h"
-#include "copasi/undoFramework/UndoReactionData.h"
-#include "copasi/undoFramework/UndoEventData.h"
-#include "copasi/undoFramework/UndoSpeciesData.h"
-#include "copasi/undoFramework/UndoEventAssignmentData.h"
-
-#include "copasi/undoFramework/GlobalQuantityChangeCommand.h"
-
 /*
  *  Constructs a CQModelValue which is a child of 'parent', with the
  *  name 'name'.'
  */
 CQModelValue::CQModelValue(QWidget* parent, const char* name)
   : CopasiWidget(parent, name),
-    mKeyToCopy(""),
+    mObjectCNToCopy(""),
     mpModelValue(NULL),
     mpDependencies(NULL)
 {
   setupUi(this);
 
   init();
-
-  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
-  setUndoStack(pWindow->getUndoStack());
-  mpLblType->setMinimumWidth(90);
 
   mpDependencies = new CQScrolledDependenciesWidget(this);
   mpDependencies->setVisibleDependencies(REACTION | EVENT | SPECIES | PARAMETERS | COMPARTMENT);
@@ -87,26 +75,83 @@ CQModelValue::~CQModelValue()
 /// Slot to create a new quantity; activated whenever the New button is clicked
 void CQModelValue::slotBtnNew()
 {
-  mpUndoStack->push(new CreateNewGlobalQuantityCommand(this));
+  std::string name = "quantity";
+  int i = 1;
+
+  assert(mpDataModel != NULL);
+
+  while (!(mpModelValue = mpDataModel->getModel()->createModelValue(name)))
+    {
+      i++;
+      name = "quantity_";
+      name += TO_UTF8(QString::number(i));
+    }
+
+  CUndoData UndoData(CUndoData::Type::INSERT, mpModelValue);
+  ListViews::addUndoMetaData(this, UndoData);
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getCN());
+  UndoData.addMetaDataProperty("Widget Object Name (after)", mpModelValue->getObjectName());
+
+  slotNotifyChanges(mpDataModel->recordData(UndoData));
 }
 
 void CQModelValue::slotBtnCopy()
 {
-  mKeyToCopy = mKey;
+  std::string name = "quantity";
+  int i = 1;
+
+  assert(mpDataModel != NULL);
+
+  while (!(mpModelValue = mpDataModel->getModel()->createModelValue(name)))
+    {
+      i++;
+      name = "quantity_";
+      name += TO_UTF8(QString::number(i));
+    }
+
+  CData ToCopy = mpObject->toData();
+  ToCopy.addProperty(CData::Property::OBJECT_NAME, name);
+  ToCopy.removeProperty(CData::Property::OBJECT_INDEX);
+  ToCopy.removeProperty(CData::OBJECT_UUID);
+  ToCopy.removeProperty(CData::OBJECT_REFERENCES);
+
+  CUndoData::CChangeSet Changes;
+  mpModelValue->applyData(ToCopy, Changes);
+
+  CUndoData UndoData(CUndoData::Type::INSERT, mpModelValue);
+  ListViews::addUndoMetaData(this, UndoData);
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getCN());
+  UndoData.addMetaDataProperty("Widget Object Name (after)", mpModelValue->getObjectName());
+
+  slotNotifyChanges(mpDataModel->recordData(UndoData));
 }
 
 void CQModelValue::slotBtnDelete()
 {
-  deleteGlobalQuantity();
+  if (mpModelValue == NULL) return;
+
+  QMessageBox::StandardButton choice =
+    CQMessageBox::confirmDelete(this, "quantity",
+                                FROM_UTF8(mpModelValue->getObjectName()),
+                                mpModelValue);
+
+  if (choice == QMessageBox::Ok)
+    {
+      CUndoData UndoData;
+      mpModelValue->createUndoData(UndoData, CUndoData::Type::REMOVE);
+      ListViews::addUndoMetaData(this, UndoData);
+
+      slotNotifyChanges(mpDataModel->applyData(UndoData));
+    }
 }
 
 /*!
     If the simulation type is changed then COPASI will automatically adjust its appearance,
     especially correlating to the Expression Widget and its buttons.
  */
-void CQModelValue::slotTypeChanged(int type)
+void CQModelValue::slotTypeChanged(const QString & type)
 {
-  switch ((CModelEntity::Status) mItemToType[type])
+  switch (CModelEntity::StatusName.toEnum(TO_UTF8(type), CModelEntity::Status::FIXED))
     {
       case CModelEntity::Status::FIXED:
         // hide label, widget, and all buttons
@@ -151,13 +196,8 @@ void CQModelValue::slotTypeChanged(int type)
         // update the expression widget
         mpExpressionEMW->updateWidget();
 
-#ifdef WITH_SDE_SUPPORT
         mpBoxAddNoise->show();
         slotAddNoiseChanged(mpBoxAddNoise->isChecked());
-#else
-        mpBoxAddNoise->hide();
-        slotAddNoiseChanged(false);
-#endif
 
         break;
 
@@ -189,13 +229,11 @@ void CQModelValue::slotAddNoiseChanged(bool hasNoise)
 
 void CQModelValue::init()
 {
+  mpComboBoxType->blockSignals(true);
   mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::FIXED]));
   mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ASSIGNMENT]));
   mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ODE]));
-
-  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::FIXED));
-  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::ASSIGNMENT));
-  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::ODE));
+  mpComboBoxType->blockSignals(false);
 
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
   mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
@@ -207,37 +245,37 @@ void CQModelValue::init()
 void CQModelValue::destroy()
 {}
 
-bool CQModelValue::update(ListViews::ObjectType  objectType,
-                          ListViews::Action action,
-                          const std::string & key)
+bool CQModelValue::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
+  mpModelValue = dynamic_cast< CModelValue * >(mpObject);
+
   switch (objectType)
     {
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
 
         // For a new model we need to remove references to no longer existing modelvalue
-        if (action == ListViews::ADD)
+        if (action != ListViews::CHANGE)
           {
-            mKey = "";
+            mObjectCN.clear();
             mpObject = NULL;
             mpModelValue = NULL;
           }
 
         break;
 
-      case ListViews::MODELVALUE:
+      case ListViews::ObjectType::MODELVALUE:
 
         // If the currently displayed modelvalue is deleted we need to remove its references.
-        if (action == ListViews::DELETE && mKey == key)
+        if (action == ListViews::DELETE && mObjectCN == cn)
           {
-            mKey = "";
+            mObjectCN.clear();
             mpObject = NULL;
             mpModelValue = NULL;
           }
 
         break;
 
-      case ListViews::STATE:
+      case ListViews::ObjectType::STATE:
         break;
 
       default:
@@ -251,9 +289,9 @@ bool CQModelValue::update(ListViews::ObjectType  objectType,
   return true;
 }
 
-bool CQModelValue::leave()
+bool CQModelValue::leaveProtected()
 {
-  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::FIXED)
+  if (TO_UTF8(mpComboBoxType->currentText()) != CModelEntity::StatusName[CModelEntity::Status::FIXED])
     {
       // -- Expression --
       mpExpressionEMW->updateWidget();
@@ -274,10 +312,14 @@ bool CQModelValue::enterProtected()
 {
   mpModelValue = NULL;
 
-  if (mKeyToCopy != "")
+  if (mObjectCNToCopy != "")
     {
-      mpModelValue = dynamic_cast<CModelValue *>(CRootContainer::getKeyFactory()->get(mKeyToCopy));
-      mKeyToCopy = "";
+      CObjectInterface::ContainerList List;
+      List.push_back(mpDataModel);
+
+      // This will check the current data model and the root container for the object;
+      mpModelValue = dynamic_cast<CModelValue *>(const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, mObjectCNToCopy))));
+      mObjectCNToCopy.clear();
     }
   else
     {
@@ -286,7 +328,7 @@ bool CQModelValue::enterProtected()
 
   if (!mpModelValue)
     {
-      mpListView->switchToOtherWidget(115, "");
+      mpListView->switchToOtherWidget(ListViews::WidgetType::GlobalQuantities, std::string());
       return false;
     }
 
@@ -352,7 +394,7 @@ void CQModelValue::load()
   mpBoxAddNoise->setChecked(mpModelValue->hasNoise());
 
   // Type dependent display of values
-  slotTypeChanged(mpComboBoxType->currentIndex());
+  slotTypeChanged(mpComboBoxType->currentText());
 
   // Use Initial Expression
   if (mpModelValue->getStatus() == CModelEntity::Status::ASSIGNMENT ||
@@ -381,21 +423,12 @@ void CQModelValue::save()
 
   mIgnoreUpdates = true;
 
+  CData OldData(mpModelValue->toData());
+
   // set status
-  if (mpModelValue->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
+  if (CModelEntity::StatusName[mpModelValue->getStatus()] != TO_UTF8(mpComboBoxType->currentText()))
     {
-      QString currentTypeName = FROM_UTF8(CModelEntity::StatusName[(int)mpModelValue->getStatus()]);
-      QString newTypeName = FROM_UTF8(CModelEntity::StatusName[(int)mItemToType[mpComboBoxType->currentIndex()]]);
-
-      mpUndoStack->push(new GlobalQuantityChangeCommand(
-                          CCopasiUndoCommand::GLOBALQUANTITY_SIMULATION_TYPE_CHANGE,
-                          currentTypeName,
-                          newTypeName,
-                          mpModelValue,
-                          this,
-                          mpModelValue->getInitialValue()
-                        ));
-
+      mpModelValue->setStatus(CModelEntity::StatusName.toEnum(TO_UTF8(mpComboBoxType->currentText()), CModelEntity::Status::FIXED));
       mChanged = true;
     }
 
@@ -403,56 +436,30 @@ void CQModelValue::save()
   if (convertToQString(mpModelValue->getInitialValue()) != mpEditInitialValue->text() &&
       mpModelValue->getStatus() != CModelEntity::Status::ASSIGNMENT)
     {
-      mpUndoStack->push(new GlobalQuantityChangeCommand(
-                          CCopasiUndoCommand::GLOBALQUANTITY_INITIAL_VALUE_CHANGE,
-                          mpModelValue->getInitialValue(),
-                          mpEditInitialValue->text().toDouble(),
-                          mpModelValue,
-                          this
-                        ));
+      mpModelValue->setInitialValue(mpEditInitialValue->text().toDouble());
       mChanged = true;
     }
 
   // set expression
   if (mpModelValue->getExpression() != mpExpressionEMW->mpExpressionWidget->getExpression())
     {
-      mpUndoStack->push(new GlobalQuantityChangeCommand(
-                          CCopasiUndoCommand::GLOBALQUANTITY_EXPRESSION_CHANGE,
-                          FROM_UTF8(mpModelValue->getExpression()),
-                          FROM_UTF8(mpExpressionEMW->mpExpressionWidget->getExpression()),
-                          mpModelValue,
-                          this
-                        ));
+      mpModelValue->setExpression(mpExpressionEMW->mpExpressionWidget->getExpression());
       mChanged = true;
     }
 
   // set initial expression
-  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::ASSIGNMENT)
+  if (mpModelValue->getStatus() != CModelEntity::Status::ASSIGNMENT)
     {
       if (mpBoxUseInitialExpression->isChecked() &&
           mpModelValue->getInitialExpression() != mpInitialExpressionEMW->mpExpressionWidget->getExpression())
         {
-          mpUndoStack->push(new GlobalQuantityChangeCommand(
-                              CCopasiUndoCommand::GLOBALQUANTITY_INITIAL_EXPRESSION_CHANGE,
-                              FROM_UTF8(mpModelValue->getInitialExpression()),
-                              FROM_UTF8(mpInitialExpressionEMW->mpExpressionWidget->getExpression()),
-                              mpModelValue,
-                              this,
-                              mpModelValue->getInitialValue()
-                            ));
+          mpModelValue->setInitialExpression(mpInitialExpressionEMW->mpExpressionWidget->getExpression());
           mChanged = true;
         }
       else if (!mpBoxUseInitialExpression->isChecked() &&
                mpModelValue->getInitialExpression() != "")
         {
-          mpUndoStack->push(new GlobalQuantityChangeCommand(
-                              CCopasiUndoCommand::GLOBALQUANTITY_INITIAL_EXPRESSION_CHANGE,
-                              FROM_UTF8(mpModelValue->getInitialExpression()),
-                              QString(""),
-                              mpModelValue,
-                              this,
-                              mpModelValue->getInitialValue()
-                            ));
+          mpModelValue->setInitialExpression("");
           mChanged = true;
         }
     }
@@ -460,41 +467,21 @@ void CQModelValue::save()
   // Add Noise
   if (mpModelValue->hasNoise() != mpBoxAddNoise->isChecked())
     {
-      mpUndoStack->push(new GlobalQuantityChangeCommand(
-                          CCopasiUndoCommand::GLOBALQUANTITY_ADD_NOISE_CHANGE,
-                          mpModelValue->hasNoise(),
-                          mpBoxAddNoise->isChecked(),
-                          mpModelValue,
-                          this
-                        ));
-
+      mpModelValue->setHasNoise(mpBoxAddNoise->isChecked());
       mChanged = true;
     }
 
   // Noise Expression
   if (mpModelValue->getNoiseExpression() != mpNoiseExpressionWidget->mpExpressionWidget->getExpression())
     {
-      mpUndoStack->push(new GlobalQuantityChangeCommand(
-                          CCopasiUndoCommand::GLOBALQUANTITY_NOISE_EXPRESSION_CHANGE,
-                          FROM_UTF8(mpModelValue->getNoiseExpression()),
-                          FROM_UTF8(mpNoiseExpressionWidget->mpExpressionWidget->getExpression()),
-                          mpModelValue,
-                          this
-                        ));
+      mpModelValue->setNoiseExpression(mpNoiseExpressionWidget->mpExpressionWidget->getExpression());
       mChanged = true;
     }
 
   // set unit
   if (mpModelValue->getUnitExpression() != TO_UTF8(mpEditUnits->text()))
     {
-      mpUndoStack->push(new GlobalQuantityChangeCommand(
-                          CCopasiUndoCommand::GLOBALQUANTITY_UNIT_CHANGE,
-                          FROM_UTF8(mpModelValue->getUnitExpression()),
-                          mpEditUnits->text(),
-                          mpModelValue,
-                          this
-                        ));
-
+      mpModelValue->setUnitExpression(TO_UTF8(mpEditUnits->text()));
       mChanged = true;
     }
 
@@ -502,9 +489,11 @@ void CQModelValue::save()
 
   if (mChanged)
     {
-      mpDataModel->changed();
-      protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mKey);
+      CUndoData UndoData;
+      mpModelValue->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
+      ListViews::addUndoMetaData(this, UndoData);
 
+      slotNotifyChanges(mpDataModel->recordData(UndoData));
       load();
     }
 
@@ -537,7 +526,7 @@ void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
       mpInitialExpressionEMW->hide();
 
       // enable the option of use Initial Value
-      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::ASSIGNMENT);
+      mpEditInitialValue->setEnabled(TO_UTF8(mpComboBoxType->currentText()) != CModelEntity::StatusName[CModelEntity::Status::ASSIGNMENT]);
 
       // we don't need to update the Initial Expression Widget
     }
@@ -558,168 +547,4 @@ void CQModelValue::slotUnitChanged()
   mpLblInitialValue->setText("Initial Value" + ValueUnits);
   mpLblValue->setText("Value" + ValueUnits);
   mpLblRate->setText("Rate" + RateUnits);
-}
-
-//Undo methods
-void CQModelValue::createNewGlobalQuantity()
-{
-  // save the current setting values
-  leave();
-
-  assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
-
-  // standard name
-  std::string name = "quantity_1";
-
-  // if the standard name already exists then creating the new event will fail
-  // thus, a growing index will automatically be added to the standard name
-  int i = 1;
-
-  while (!(mpModelValue = pModel->createModelValue(name)))
-    {
-      i++;
-      name = "quantity_";
-      name += TO_UTF8(QString::number(i));
-    }
-
-  std::string key = mpModelValue->getKey();
-  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-}
-
-void CQModelValue::deleteGlobalQuantity()
-{
-
-  if (mpModelValue == NULL)
-    return;
-
-  QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(this, "quantity",
-                                FROM_UTF8(mpModelValue->getObjectName()),
-                                mpModelValue);
-
-  switch (choice)
-    {
-      case QMessageBox::Ok:
-      {
-        mpUndoStack->push(new DeleteGlobalQuantityCommand(this));
-        break;
-      }
-
-      default:
-        break;
-    }
-
-  mpListView->switchToOtherWidget(CCopasiUndoCommand::GLOBALQUANTITIES, "");
-}
-
-void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityData)
-{
-  assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
-
-  std::string key = pGlobalQuantityData->getKey();
-  pModel->removeModelValue(key);
-  mpModelValue = NULL;
-
-#undef DELETE
-  protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, key);
-  protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITIES);
-}
-
-void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pData)
-{
-  assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
-  assert(pModel != NULL);
-
-  CDataObject *pGlobalQuantity =  pData->restoreObjectIn(pModel);
-
-  if (pGlobalQuantity == NULL)
-    return;
-
-  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
-
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, pGlobalQuantity->getKey());
-}
-
-bool
-CQModelValue::changeValue(const std::string& key,
-                          CCopasiUndoCommand::Type type,
-                          const QVariant& newValue,
-                          double iValue /* = std::numeric_limits<double>::quiet_NaN()*/)
-{
-  if (!mIgnoreUpdates)
-    {
-      mKey = key;
-      mpObject = CRootContainer::getKeyFactory()->get(mKey);
-      mpModelValue = dynamic_cast<CModelValue*>(mpObject);
-      load();
-    }
-
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-
-  switch (type)
-    {
-      case CCopasiUndoCommand::GLOBALQUANTITY_EXPRESSION_CHANGE:
-        mpModelValue->setExpression(TO_UTF8(newValue.toString()));
-        break;
-
-      case CCopasiUndoCommand::GLOBALQUANTITY_INITIAL_VALUE_CHANGE:
-        mpModelValue->setInitialValue(newValue.toDouble());
-        break;
-
-      case CCopasiUndoCommand::GLOBALQUANTITY_INITIAL_EXPRESSION_CHANGE:
-        mpModelValue->setInitialExpression(TO_UTF8(newValue.toString()));
-
-        if (newValue.toString().isEmpty())
-          mpModelValue->setInitialValue(iValue);
-
-        break;
-
-      case CCopasiUndoCommand::GLOBALQUANTITY_SIMULATION_TYPE_CHANGE:
-      {
-        QString newTypeName = newValue.toString();
-        int index = newTypeName.length() > 1
-                    ? mItemToType[mpComboBoxType->findText(newTypeName)]
-                    : newValue.toInt();
-        mpModelValue->setStatus((CModelEntity::Status)index);
-
-        if (iValue == iValue
-            && mpModelValue->getStatus() != CModelEntity::Status::ASSIGNMENT)
-          mpModelValue->setInitialValue(iValue);
-
-        break;
-      }
-
-      case CCopasiUndoCommand::GLOBALQUANTITY_ADD_NOISE_CHANGE:
-        mpModelValue->setHasNoise(newValue.toBool());
-        break;
-
-      case CCopasiUndoCommand::GLOBALQUANTITY_NOISE_EXPRESSION_CHANGE:
-        mpModelValue->setNoiseExpression(TO_UTF8(newValue.toString()));
-        break;
-
-      case CCopasiUndoCommand::GLOBALQUANTITY_UNIT_CHANGE:
-        mpModelValue->setUnitExpression(TO_UTF8(newValue.toString()));
-        break;
-
-      default:
-        return false;
-    }
-
-  if (mIgnoreUpdates) return true;
-
-  assert(mpDataModel != NULL);
-  mpDataModel->changed();
-  protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mKey);
-
-  load();
-
-  return true;
 }

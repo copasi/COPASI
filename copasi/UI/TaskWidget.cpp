@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -146,7 +151,7 @@ void TaskWidget::assistantBtnClicked()
 
   if (pDlg->exec() == QDialog::Accepted)
     {
-      protectedNotify(ListViews::PLOT, ListViews::ADD, "");
+      protectedNotify(ListViews::ObjectType::PLOT, ListViews::ADD, std::string());
     }
 
   if (pDlg)delete pDlg;
@@ -336,7 +341,7 @@ bool TaskWidget::commonAfterRunTask()
   mpDataModel->finish();
 
   CMathContainer * pContainer = mpTask->getMathContainer();
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, pContainer->getModel().getKey());
+  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, pContainer->getModel().getKey());
 
   unsetCursor();
   CopasiUI3Window::getMainWindow()->suspendAutoSave(false);
@@ -468,7 +473,35 @@ CCopasiTask* TaskWidget::getTask()
 }
 //*********************************************************************
 
-bool TaskWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & C_UNUSED(key))
+bool TaskWidget::loadTask()
+{
+  return loadTaskProtected();
+}
+
+bool TaskWidget::saveTask()
+{
+  bool success = true;
+
+  if (mpTask != NULL)
+    {
+      CData OldData(mpTask->toData());
+
+      success = saveTaskProtected();
+
+      CUndoData UndoData;
+      mpTask->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
+
+      if (!UndoData.empty())
+        {
+          ListViews::addUndoMetaData(this, UndoData);
+          slotNotifyChanges(mpDataModel->recordData(UndoData));
+        }
+    }
+
+  return success;
+}
+
+bool TaskWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates)
     {
@@ -477,12 +510,20 @@ bool TaskWidget::update(ListViews::ObjectType objectType, ListViews::Action acti
 
   switch (objectType)
     {
-      case ListViews::MODEL:
+      case ListViews::ObjectType::MODEL:
 
-        if (action == ListViews::ADD &&
+        if (action != ListViews::CHANGE &&
             mpMethodWidget != NULL)
           {
             mpMethodWidget->clearHistory();
+          }
+
+        break;
+
+      case ListViews::ObjectType::TASK:
+        if (cn == mObjectCN)
+          {
+            loadTaskProtected();
           }
 
         break;
@@ -494,7 +535,7 @@ bool TaskWidget::update(ListViews::ObjectType objectType, ListViews::Action acti
   return true;
 }
 
-bool TaskWidget::leave()
+bool TaskWidget::leaveProtected()
 {
   return saveTask();
 }

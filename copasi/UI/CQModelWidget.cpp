@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -14,7 +19,6 @@
  *  Created on: Aug 13, 2010
  *      Author: shoops
  */
-#include <QUndoStack>
 #include <QCompleter>
 #include <QTimer>
 
@@ -33,7 +37,6 @@
 #include "copasi/utilities/CUnitDefinitionDB.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
-#include "copasi/undoFramework/ModelChangeCommand.h"
 
 CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   CopasiWidget(parent, name),
@@ -61,8 +64,6 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   pValidator = new CQValidatorUnit(mpEditLengthUnit);
   pValidator->setConstraint("m");
   mpEditLengthUnit->setValidator(pValidator);
-
-  mpUndoStack = NULL;
 
 #ifndef COPASI_EXTUNIT
   mpLblAreaUnit->hide();
@@ -189,19 +190,19 @@ void CQModelWidget::load()
   if (mpModel == NULL)
     return;
 
-  mpEditTimeUnit->setText(FROM_UTF8(mpModel->getTimeUnitName()));
+  mpEditTimeUnit->setText(FROM_UTF8(mpModel->getTimeUnit()));
   static_cast< const CQValidatorUnit * >(mpEditTimeUnit->validator())->saved();
 
-  mpEditQuantityUnit->setText(FROM_UTF8(mpModel->getQuantityUnitName()));
+  mpEditQuantityUnit->setText(FROM_UTF8(mpModel->getQuantityUnit()));
   static_cast< const CQValidatorUnit * >(mpEditQuantityUnit->validator())->saved();
 
-  mpEditVolumeUnit->setText(FROM_UTF8(mpModel->getVolumeUnitName()));
+  mpEditVolumeUnit->setText(FROM_UTF8(mpModel->getVolumeUnit()));
   static_cast< const CQValidatorUnit * >(mpEditVolumeUnit->validator())->saved();
 
-  mpEditAreaUnit->setText(FROM_UTF8(mpModel->getAreaUnitName()));
+  mpEditAreaUnit->setText(FROM_UTF8(mpModel->getAreaUnit()));
   static_cast< const CQValidatorUnit * >(mpEditAreaUnit->validator())->saved();
 
-  mpEditLengthUnit->setText(FROM_UTF8(mpModel->getLengthUnitName()));
+  mpEditLengthUnit->setText(FROM_UTF8(mpModel->getLengthUnit()));
   static_cast< const CQValidatorUnit * >(mpEditLengthUnit->validator())->saved();
 
   mpEditAvogadro->setText(QString::number(mpModel->getAvogadro(), 'g', 14));
@@ -219,11 +220,10 @@ void CQModelWidget::load()
 
 #endif
 
-  mpEditInitialTime->setReadOnly(mpModel->isAutonomous());
   mpEditInitialTime->setText(convertToQString(mpModel->getInitialTime()));
   mpEditCurrentTime->setText(convertToQString(mpModel->getTime()));
 
-  mpCheckStochasticCorrection->setChecked(mpModel->getModelType() == CModel::deterministic);
+  mpCheckStochasticCorrection->setChecked(mpModel->getModelType() == CModel::ModelType::deterministic);
 
   slotUnitChanged();
 
@@ -236,118 +236,65 @@ void CQModelWidget::save()
     return;
 
   bool changed = false;
+  CData OldData(mpModel->toData());
 
   mIgnoreUpdates = true;
 
-  if (mpUndoStack == NULL)
+  if (mpEditTimeUnit->text() != FROM_UTF8(mpModel->getTimeUnit()))
     {
-      mpUndoStack = static_cast<CQCopasiApplication*>(qApp)
-                    ->getMainWindow()->getUndoStack();
-    }
-
-  if (mpEditTimeUnit->text() != FROM_UTF8(mpModel->getTimeUnitName()))
-    {
-      mpUndoStack->push(
-        new ModelChangeCommand(CCopasiUndoCommand::MODEL_TIME_UNIT_CHANGE,
-                               FROM_UTF8(mpModel->getTimeUnitName()),
-                               mpEditTimeUnit->text(),
-                               this));
+      mpModel->setTimeUnit(TO_UTF8(mpEditTimeUnit->text()));
       changed = true;
     }
 
-  if (mpEditVolumeUnit->text() != FROM_UTF8(mpModel->getVolumeUnitName()))
+  if (mpEditVolumeUnit->text() != FROM_UTF8(mpModel->getVolumeUnit()))
     {
-      mpUndoStack->push(
-        new ModelChangeCommand(CCopasiUndoCommand::MODEL_VOLUME_UNIT_CHANGE,
-                               FROM_UTF8(mpModel->getVolumeUnitName()),
-                               mpEditVolumeUnit->text(),
-                               this));
+      mpModel->setVolumeUnit(TO_UTF8(mpEditVolumeUnit->text()));
       changed = true;
     }
 
-  if (mpEditAreaUnit->text() != FROM_UTF8(mpModel->getAreaUnitName()))
+  if (mpEditAreaUnit->text() != FROM_UTF8(mpModel->getAreaUnit()))
     {
-      mpUndoStack->push(
-        new ModelChangeCommand(CCopasiUndoCommand::MODEL_AREA_UNIT_CHANGE,
-                               FROM_UTF8(mpModel->getAreaUnitName()),
-                               mpEditAreaUnit->text(),
-                               this));
+      mpModel->setAreaUnit(TO_UTF8(mpEditAreaUnit->text()));
       changed = true;
     }
 
-  if (mpEditLengthUnit->text() != FROM_UTF8(mpModel->getLengthUnitName()))
+  if (mpEditLengthUnit->text() != FROM_UTF8(mpModel->getLengthUnit()))
     {
-      mpUndoStack->push(
-        new ModelChangeCommand(CCopasiUndoCommand::MODEL_LENGTH_UNIT_CHANGE,
-                               FROM_UTF8(mpModel->getLengthUnitName()),
-                               mpEditLengthUnit->text(),
-                               this));
+      mpModel->setLengthUnit(TO_UTF8(mpEditLengthUnit->text()));
       changed = true;
     }
 
-  if (mpEditQuantityUnit->text() != FROM_UTF8(mpModel->getQuantityUnitName()))
+  if (mpEditQuantityUnit->text() != FROM_UTF8(mpModel->getQuantityUnit()))
     {
-      QList< QVariant > OldValues, NewValues;
-
-      OldValues.append(FROM_UTF8(mpModel->getQuantityUnitName()));
-      NewValues.append(mpEditQuantityUnit->text());
-      OldValues.append(mFramework);
-      NewValues.append(mFramework);
-
-      mpUndoStack->push(
-        new ModelChangeCommand(CCopasiUndoCommand::MODEL_QUANTITY_UNIT_CHANGE,
-                               OldValues, NewValues,
-                               this));
+      mpModel->setQuantityUnit(TO_UTF8(mpEditQuantityUnit->text()), static_cast< CCore::Framework >(mFramework));
       changed = true;
     }
 
   if (mpEditAvogadro->text() != QString::number(mpModel->getAvogadro(), 'g', 14))
     {
-      QList< QVariant > OldValues, NewValues;
-
-      OldValues.append(mpModel->getAvogadro());
-      NewValues.append(mpEditAvogadro->text());
-      OldValues.append(mFramework);
-      NewValues.append(mFramework);
-
-      mpUndoStack->push(
-        new ModelChangeCommand(CCopasiUndoCommand::MODEL_AVOGADRO_NUMBER_CHANGE,
-                               OldValues, NewValues,
-                               this));
+      mpModel->setAvogadro(mpEditAvogadro->text().toDouble(), static_cast< CCore::Framework >(mFramework));
       changed = true;
     }
 
-  if (mpCheckStochasticCorrection->isChecked() != (mpModel->getModelType() == CModel::deterministic))
+  if (mpCheckStochasticCorrection->isChecked() != (mpModel->getModelType() == CModel::ModelType::deterministic))
     {
-      mpUndoStack->push(
-        new ModelChangeCommand(CCopasiUndoCommand::MODEL_STOCHASTIC_CORRECTION_CHANGE,
-                               mpModel->getModelType() == CModel::deterministic,
-                               mpCheckStochasticCorrection->isChecked(),
-                               this));
+      mpModel->setModelType(mpCheckStochasticCorrection->isChecked() ? CModel::ModelType::deterministic : CModel::ModelType::stochastic);
       changed = true;
     }
 
   if (mpEditInitialTime->text() != convertToQString(mpModel->getInitialTime()))
     {
-      mpUndoStack->push(
-        new ModelChangeCommand(CCopasiUndoCommand::MODEL_INITIAL_TIME_CHANGE,
-                               mpModel->getInitialTime(),
-                               mpEditInitialTime->text().toDouble(),
-                               this));
+      mpModel->setInitialValue(mpEditInitialTime->text().toDouble());
       changed = true;
     }
 
-  mIgnoreUpdates = false;
-
   if (changed)
     {
-      if (mpDataModel != NULL)
-        {
-          mpDataModel->changed();
-        }
+      CUndoData UndoData;
+      mpModel->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
+      ListViews::addUndoMetaData(this, UndoData);
 
-      protectedNotify(ListViews::MODEL, ListViews::CHANGE, mKey);
-
+      slotNotifyChanges(mpDataModel->recordData(UndoData));
       load();
     }
 
@@ -365,15 +312,14 @@ void CQModelWidget::slotBtnOKClicked()
   load();
 }
 
-bool CQModelWidget::update(ListViews::ObjectType objectType,
-                           ListViews::Action C_UNUSED(action), const std::string & key)
+bool CQModelWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates) return true;
 
   switch (objectType)
     {
-      case ListViews::MODEL:
-        enter(key);
+      case ListViews::ObjectType::MODEL:
+        enter(cn);
         break;
 
       default:
@@ -383,7 +329,7 @@ bool CQModelWidget::update(ListViews::ObjectType objectType,
   return true;
 }
 
-bool CQModelWidget::leave()
+bool CQModelWidget::leaveProtected()
 {
   save();
 
@@ -401,85 +347,11 @@ bool CQModelWidget::enterProtected()
 
   load();
 
-  mpNotes->enter(mKey);
+  mpNotes->enter(mObjectCN);
 
   return true;
 }
 
-bool
-CQModelWidget::changeValue(CCopasiUndoCommand::Type type, const QVariant& newValue)
-{
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-
-  if (mpModel == NULL)
-    {
-      assert(mpDataModel != NULL);
-      CModel * pModel = mpDataModel->getModel();
-      assert(pModel != NULL);
-      mpModel = pModel;
-    }
-
-  if (type == CCopasiUndoCommand::MODEL_TIME_UNIT_CHANGE)
-    {
-      mpModel->setTimeUnit(TO_UTF8(newValue.toString()));
-    }
-  else if (type == CCopasiUndoCommand::MODEL_QUANTITY_UNIT_CHANGE)
-    {
-      QList< QVariant > Values = newValue.toList();
-      mpModel->setQuantityUnit(TO_UTF8(Values[0].toString()), (CCore::Framework) Values[1].toInt());
-    }
-  else if (type == CCopasiUndoCommand::MODEL_VOLUME_UNIT_CHANGE)
-    {
-      mpModel->setVolumeUnit(TO_UTF8(newValue.toString()));
-    }
-  else if (type == CCopasiUndoCommand::MODEL_AREA_UNIT_CHANGE)
-    {
-      mpModel->setAreaUnit(TO_UTF8(newValue.toString()));
-    }
-  else if (type == CCopasiUndoCommand::MODEL_LENGTH_UNIT_CHANGE)
-    {
-      mpModel->setLengthUnit(TO_UTF8(newValue.toString()));
-    }
-  else if (type == CCopasiUndoCommand::MODEL_AVOGADRO_NUMBER_CHANGE)
-    {
-      QList< QVariant > Values = newValue.toList();
-      mpModel->setAvogadro(Values[0].toDouble(), (CCore::Framework) Values[1].toInt());
-    }
-  else if (type == CCopasiUndoCommand::MODEL_INITIAL_TIME_CHANGE)
-    {
-      mpModel->setInitialTime(newValue.toDouble());
-    }
-  else if (type == CCopasiUndoCommand::MODEL_STOCHASTIC_CORRECTION_CHANGE)
-    {
-      if (newValue.toBool())
-        {
-          mpModel->setModelType(CModel::deterministic);
-        }
-      else
-        {
-          mpModel->setModelType(CModel::stochastic);
-        }
-    }
-  else
-    {
-      return false;
-    }
-
-  if (mIgnoreUpdates) return true;
-
-  if (mpDataModel != NULL)
-    {
-      mpDataModel->changed();
-    }
-
-  protectedNotify(ListViews::MODEL, ListViews::CHANGE, mKey);
-
-  load();
-
-  return true;
-}
-
-// virtual
 void CQModelWidget::slotUpdateAvogadro()
 {
   CQUpdateAvogadro *pDialog = new CQUpdateAvogadro(this);
@@ -489,29 +361,21 @@ void CQModelWidget::slotUpdateAvogadro()
   switch (pDialog->exec())
     {
       case QDialog::Accepted:
-        if (mpUndoStack == NULL)
-          {
-            mpUndoStack = static_cast<CQCopasiApplication*>(qApp)
-                          ->getMainWindow()->getUndoStack();
-          }
+      {
+        CData OldData(mpModel->toData());
 
-        {
-          QList< QVariant > OldValues, NewValues;
+        mpModel->setAvogadro(CUnit::Avogadro, static_cast< CCore::Framework >(pDialog->getSelection()));
 
-          OldValues.append(mpModel->getAvogadro());
-          NewValues.append(CUnit::Avogadro);
-          OldValues.append(pDialog->getSelection());
-          NewValues.append(pDialog->getSelection());
+        CUndoData UndoData;
+        mpModel->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(pDialog->getSelection()));
+        ListViews::addUndoMetaData(this, UndoData);
 
-          mpUndoStack->push(
-            new ModelChangeCommand(CCopasiUndoCommand::MODEL_AVOGADRO_NUMBER_CHANGE,
-                                   OldValues, NewValues,
-                                   this));
+        slotNotifyChanges(mpDataModel->recordData(UndoData));
 
-          load();
-        }
+        load();
+      }
 
-        break;
+      break;
 
       case QDialog::Rejected:
         break;

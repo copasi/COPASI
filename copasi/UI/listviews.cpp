@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -118,25 +123,116 @@
 #endif
 
 // static
-const std::string ListViews::ObjectTypeName[] =
+const CEnumAnnotation< std::string, ListViews::ObjectType > ListViews::ObjectTypeName(
 {
-  "Species", // METABOLITE
-  "Compartment", // COMPARTMENT
-  "Reaction", // REACTION
-  "Function", // FUNCTION
-  "Model", // MODEL
-  "State", // STATE
-  "Report", // REPORT
-  "Plot", // PLOT
-  "Global Quantity", // MODELVALUE
-  "Event", // EVENT
-  "Annotation", //  MIRIAM
-  "Layout", // LAYOUT
-  "Parameter Overview", // PARAMETEROVERVIEW
-  "Parameter Set", // MODELPARAMETERSET
-  "Unit", //UNIT
-  ""
-};
+  "Species" // METABOLITE
+  , "Compartment" // COMPARTMENT
+  , "Reaction" // REACTION
+  , "Function" // FUNCTION
+  , "Model" // MODEL
+  , "State" // STATE
+  , "Report" // REPORT
+  , "Plot" // PLOT
+  , "Global Quantity" // MODELVALUE
+  , "Event" // EVENT
+  , "Annotation" //  MIRIAM
+  , "Layout" // LAYOUT
+  , "Parameter Set" // MODELPARAMETERSET
+  , "Task" // TASK
+  , "Result" //RESULT
+  , "Unit" //UNIT
+  , "Vector" // VECTOR
+  , "Parameter Overview" // PARAMETEROVERVIEW
+});
+
+// static
+const CEnumAnnotation< std::string, ListViews::ObjectType > ListViews::DataObjectType(
+{
+  "Metabolite" // METABOLITE
+  , "Compartment" // COMPARTMENT
+  , "Reaction" // REACTION
+  , "Function" // FUNCTION
+  , "Model" // MODEL
+  , "State" // STATE (Such an object does not exist)
+  , "ReportDefinition" // REPORT
+  , "PlotItem" // PLOT
+  , "ModelValue" // MODELVALUE
+  , "Event" // EVENT
+  , "CMIRIAMInfo" // MIRIAM (These are several different objects which will be handled through there parent)
+  , "Layout" // LAYOUT
+  , "ModelParameterSet" // MODELPARAMETERSET
+  , "Task" // TASK
+  , "Result" //RESULT
+  , "Unit" // UNIT
+  , "Vector" // VECTOR
+  , "ParameterOverView" // PARAMETEROVERVIEW (Such an object does not exist)
+});
+
+// static
+const CEnumAnnotation< std::string, ListViews::WidgetType > ListViews::WidgetName(
+{
+  "NotFound"
+  , "COPASI"
+  , "Model"
+  , "Biochemical"
+  , "Compartments"
+  , "Compartment Detail"
+  , "Species"
+  , "Species Detail"
+  , "Reactions"
+  , "Reaction Detail"
+  , "Global Quantities"
+  , "GlobalQuantity Detail"
+  , "Events"
+  , "Event Detail"
+  , "Parameter Overview"
+  , "Parameter Sets"
+  , "Parameter Set Detail"
+  , "Mathematical"
+  , "Differential Equations"
+  , "Matrices"
+  , "Update Order"
+  , "Diagrams"
+  , "Tasks"
+  , "Steady-State"
+  , "Steady-State Result"
+  , "Stoichiometric Analysis"
+  , "Elementary Modes"
+  , "Elementary Modes Result"
+  , "Mass Conservation"
+  , "Mass Conservation Result"
+  , "Time Course"
+  , "Time Course Result"
+  , "Metabolic Control Analysis"
+  , "Metabolic Control Analysis Result"
+  , "Lyapunov Exponents"
+  , "Lyapunov Exponents Result"
+  , "Time Scale Separation Analysis"
+  , "Time Scale Separation Analysis Result"
+  , "Cross Section"
+  , "Cross Section Result"
+  , "Analytics"
+  , "Analytics Result"
+  , "Parameter Scan"
+  , "Optimization"
+  , "Optimization Result"
+  , "Parameter Estimation"
+  , "Parameter Estimation Result"
+  , "Sensitivities"
+  , "Sensitivities Result"
+  , "Linear Noise Approximation"
+  , "Linear Noise Approximation Result"
+  , "Oscillation"
+  , "Output Specifications"
+  , "Plots"
+  , "Plot Detail"
+  , "Report Templates"
+  , "Report Template Detail"
+  , "Functions"
+  , "Function Detail"
+  , "Units"
+  , "Unit Detail"
+});
 
 // static
 ListViews * ListViews::ancestor(QObject * qObject)
@@ -165,6 +261,38 @@ CDataModel * ListViews::dataModel(QObject * qObject)
   return NULL;
 }
 
+// static
+void ListViews::addUndoMetaData(QObject * qObject, CUndoData & undoData)
+{
+  ListViews * pListView = ListViews::ancestor(qObject);
+
+  if (pListView != NULL)
+    {
+      undoData.addMetaDataProperty("Widget Type", ListViews::WidgetName[pListView->getCurrentItemId()]);
+
+      CQTabWidget *pTabWidget = dynamic_cast<CQTabWidget *>(pListView->getCurrentWidget());
+
+      if (pTabWidget != NULL)
+        {
+          undoData.addMetaDataProperty("Widget Tab", pTabWidget->getSelectedTab());
+        }
+
+      undoData.addMetaDataProperty("Widget Object CN (before)", pListView->getCurrentItemCN());
+      undoData.addMetaDataProperty("Widget Object CN (after)", pListView->getCurrentItemRegisteredCN());
+
+      if (pListView->getCurrentItemId() != WidgetType::SpeciesDetail)
+        {
+          undoData.addMetaDataProperty("Widget Object Name (before)", CCommonName::nameFromCN(pListView->getCurrentItemCN()));
+          undoData.addMetaDataProperty("Widget Object Name (after)", CCommonName::nameFromCN(pListView->getCurrentItemRegisteredCN()));
+        }
+      else
+        {
+          undoData.addMetaDataProperty("Widget Object Name (before)", CCommonName::nameFromCN(pListView->getCurrentItemCN()) + "{" + CCommonName::compartmentNameFromCN(pListView->getCurrentItemCN()) + "}");
+          undoData.addMetaDataProperty("Widget Object Name (after)", CCommonName::nameFromCN(pListView->getCurrentItemRegisteredCN()) + "{" + CCommonName::compartmentNameFromCN(pListView->getCurrentItemRegisteredCN()) + "}");
+        }
+    }
+}
+
 // -----------------------------------------------------------------
 //////////////////////////////////////////////////////////////////////////
 // Definitions of the ListViews class as declared in listviews.h
@@ -190,7 +318,8 @@ ListViews::ListViews(QWidget *parent,
   mpTreeSortDM(NULL),
   mpMathModel(NULL),
   mpCurrentWidget(NULL),
-  mCurrentItemKey(),
+  mCurrentItemCN(),
+  mCurrentItemRegisteredCN(),
   mpCMCAResultWidget(NULL),
   mpCQMCAWidget(NULL),
   mpCQLNAWidget(NULL),
@@ -289,7 +418,8 @@ ListViews::ListViews(QWidget *parent,
   mpStackedWidget->addWidget(defaultWidget);
 
   mpCurrentWidget = defaultWidget; // keeps track of the mpCurrentWidget in use
-  mCurrentItemKey = "";
+  mCurrentItemCN.clear();
+  mCurrentItemRegisteredCN.clear();
   mpStackedWidget->setCurrentWidget(defaultWidget);
 
   QList<int> Sizes = sizes();
@@ -302,6 +432,8 @@ ListViews::ListViews(QWidget *parent,
   // establishes the communication between the mpTreeView clicked and the routine called....
   connect(mpTreeDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(slotSort(const QModelIndex &, const QModelIndex &)));
+  connect(mpDataModelGUI, SIGNAL(signalSwitchWidget(ListViews::WidgetType, const CCommonName &, int)),
+          this, SLOT(slotSwitchWidget(ListViews::WidgetType, const CCommonName &, int)));
 }
 
 ListViews::~ListViews()
@@ -314,8 +446,8 @@ ListViews::~ListViews()
 void ListViews::resetCache()
 {
   //First Disconnect updateCompleteView() and notifyView() from DataModelGUI
-  disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, std::string)),
-             this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, std::string)));
+  disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
+             this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
 
   mpTreeDM->setGuiDM(mpDataModelGUI);
   mpTreeDM->setCopasiDM(mpDataModel);
@@ -323,8 +455,8 @@ void ListViews::resetCache()
 
   emit signalResetCache();
 
-  connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string &)),
-          this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string &)));
+  connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
+          this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
 }
 
 /***********ListViews::ConstructNodeWidgets()---------------------------->
@@ -342,7 +474,7 @@ void ListViews::ConstructNodeWidgets()
 
   if (!compartmentsWidget1)
     {
-      compartmentsWidget1 = new CQTabWidget(ListViews::COMPARTMENT, new CQCompartment(this), this);
+      compartmentsWidget1 = new CQTabWidget(ListViews::ObjectType::COMPARTMENT, new CQCompartment(this), this);
       mpStackedWidget->addWidget(compartmentsWidget1);
     }
 
@@ -364,7 +496,7 @@ void ListViews::ConstructNodeWidgets()
 
   if (!eventWidget1)
     {
-      eventWidget1 = new CQTabWidget(ListViews::EVENT, new CQEventWidget1(this), this);
+      eventWidget1 = new CQTabWidget(ListViews::ObjectType::EVENT, new CQEventWidget1(this), this);
       mpStackedWidget->addWidget(eventWidget1);
     }
 
@@ -376,7 +508,7 @@ void ListViews::ConstructNodeWidgets()
 
   if (!functionWidget1)
     {
-      functionWidget1 = new CQTabWidget(ListViews::FUNCTION, new FunctionWidget1(this), this);
+      functionWidget1 = new CQTabWidget(ListViews::ObjectType::FUNCTION, new FunctionWidget1(this), this);
       mpStackedWidget->addWidget(functionWidget1);
     }
 
@@ -400,19 +532,19 @@ void ListViews::ConstructNodeWidgets()
 
   if (!metabolitesWidget1)
     {
-      metabolitesWidget1 = new CQTabWidget(ListViews::METABOLITE, new CQSpeciesDetail(this), this);
+      metabolitesWidget1 = new CQTabWidget(ListViews::ObjectType::METABOLITE, new CQSpeciesDetail(this), this);
       mpStackedWidget->addWidget(metabolitesWidget1);
     }
 
   if (!modelWidget)
     {
-      modelWidget = new CQTabWidget(ListViews::MODEL, new CQModelWidget(this), this);
+      modelWidget = new CQTabWidget(ListViews::ObjectType::MODEL, new CQModelWidget(this), this);
       mpStackedWidget->addWidget(modelWidget);
     }
 
   if (!mpModelValueWidget)
     {
-      mpModelValueWidget = new CQTabWidget(ListViews::MODELVALUE, new CQModelValue(this), this);
+      mpModelValueWidget = new CQTabWidget(ListViews::ObjectType::MODELVALUE, new CQModelValue(this), this);
       mpStackedWidget->addWidget(mpModelValueWidget);
     }
 
@@ -460,7 +592,14 @@ void ListViews::ConstructNodeWidgets()
 
   if (!mpParameterSetWidget)
     {
-      mpParameterSetWidget = new CQTabWidget(ListViews::MODELPARAMETERSET, new CQParameterOverviewWidget(this), this);
+      CQParameterOverviewWidget* overviewWidget = new CQParameterOverviewWidget(this);
+      overviewWidget->setBtnGroupVisible(false);
+      mpParameterSetWidget = new CQTabWidget(ListViews::ObjectType::MODELPARAMETERSET, overviewWidget, this);
+
+      QPushButton* btn = new QPushButton("Save to File");
+      connect(btn, SIGNAL(pressed()), overviewWidget, SLOT(slotBtnSaveToFile()));
+      mpParameterSetWidget->getHeaderLayout()->addWidget(btn);
+
       mpStackedWidget->addWidget(mpParameterSetWidget);
     }
 
@@ -532,7 +671,7 @@ void ListViews::ConstructNodeWidgets()
 
   if (!reactionsWidget1)
     {
-      reactionsWidget1 = new CQTabWidget(ListViews::REACTION, new ReactionsWidget1(this), this);
+      reactionsWidget1 = new CQTabWidget(ListViews::ObjectType::REACTION, new ReactionsWidget1(this), this);
       mpStackedWidget->addWidget(reactionsWidget1);
     }
 
@@ -568,7 +707,7 @@ void ListViews::ConstructNodeWidgets()
 
   if (!mpUnitDetail)
     {
-      mpUnitDetail = new CQTabWidget(ListViews::UNIT, new CQUnitDetail(this), this);
+      mpUnitDetail = new CQTabWidget(ListViews::ObjectType::UNIT, new CQUnitDetail(this), this);
       mpStackedWidget->addWidget(mpUnitDetail);
     }
 
@@ -675,47 +814,47 @@ void ListViews::ConstructNodeWidgets()
     }
 }
 
-CopasiWidget* ListViews::findTabWidgetFromId(size_t id) const
+CopasiWidget* ListViews::findTabWidgetFromId(const ListViews::WidgetType & id) const
 {
   switch (id)
     {
-      case 111:
+      case WidgetType::Compartments:
         return compartmentsWidget1;
         break;
 
-      case 112:
+      case WidgetType::Species:
         return metabolitesWidget1;
         break;
 
-      case 114:
+      case WidgetType::Reactions:
         return reactionsWidget1;
         break;
 
-      case 115:
+      case WidgetType::GlobalQuantities:
         return mpModelValueWidget;
         break;
 
-      case 116:
+      case WidgetType::Events:
         return eventWidget1;
         break;
 
-      case 119:
+      case WidgetType::ParameterSets:
         return mpParameterSetWidget;
         break;
 
-      case 43:
+      case WidgetType::ReportTemplates:
         return tableDefinition1;
         break;
 
-      case 42:
+      case WidgetType::Plots:
         return mpPlotSubwidget;
         break;
 
-      case 5:
+      case WidgetType::Functions:
         return functionWidget1;
         break;
 
-      case 6:
+      case WidgetType::Units:
         return mpUnitDetail;
         break;
     }
@@ -732,9 +871,9 @@ CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
   if (!index.isValid()) return NULL;
 
   // first try ID
-  size_t id = mpTreeDM->getIdFromIndex(index);
+  WidgetType id = mpTreeDM->getIdFromIndex(index);
 
-  if (id != C_INVALID_INDEX)
+  if (id != WidgetType::NotFound)
     {
 
       return findWidgetFromId(id);
@@ -746,205 +885,242 @@ CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
   return findTabWidgetFromId(id);
 }
 
-CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
+CopasiWidget* ListViews::findWidgetFromId(const ListViews::WidgetType & id) const
 {
   switch (id)
     {
-      case static_cast<size_t>(-1):
+      case WidgetType::NotFound:
         break; //continue with parent id
 
-      case 0:
+      case WidgetType::COPASI:
         return defaultWidget;
         break;
 
-      case 1:
+      case WidgetType::Model:
         return modelWidget;
         break;
 
-      case 111:
+      case WidgetType::Compartments:
         return mpCompartmentsWidget;
         break;
 
-      case 112:
+      case WidgetType::CompartmentDetail:
+        return compartmentsWidget1;
+        break;
+
+      case WidgetType::Species:
         return mpSpeciesWidget;
         break;
 
-      case 114:
+      case WidgetType::SpeciesDetail:
+        return metabolitesWidget1;
+        break;
+
+      case WidgetType::Reactions:
         return mpReactionsWidget;
         break;
 
-      case 115:
+      case WidgetType::ReactionDetail:
+        return reactionsWidget1;
+        break;
+
+      case WidgetType::GlobalQuantities:
         return mpGlobalQuantitiesWidget;
         break;
 
-      case 116:
+      case WidgetType::GlobalQuantityDetail:
+        return mpModelValueWidget;
+        break;
+
+      case WidgetType::Events:
         return eventsWidget;
         break;
 
-      case 118:
+      case WidgetType::EventDetail:
+        return eventWidget1;
+        break;
+
+      case WidgetType::ParameterOverview:
         return mpParameterOverviewWidget;
         break;
 
-      case 119:
+      case WidgetType::ParameterSets:
         return mpParameterSetsWidget;
         break;
 
-        //case 122:
-        //  return functionSymbols;
-        //  break;
+      case WidgetType::ParameterSetDetail:
+        return mpParameterSetWidget;
+        break;
+
 #ifdef HAVE_MML
 
-      case 126:
+      case WidgetType::DifferentialEquations:
         return differentialEquations;
         break;
 #endif // HAVE_MML
 
-      case 127:
+      case WidgetType::Matrices:
         return mpMathMatrixWidget;
         break;
 #ifdef COPASI_DEBUG
 
-      case 128:
+      case WidgetType::UpdateOrder:
         return mpUpdatesWidget;
         break;
 #endif
 
-      case 13:
+      case WidgetType::Diagrams:
         return mpLayoutsWidget;
         break;
 
-      case 21:
+      case WidgetType::SteadyState:
         return steadystateWidget;
         break;
 
-      case 211:
+      case WidgetType::SteadyStateResult:
         return stateWidget;
         break;
 
-      case 221:
+      case WidgetType::ElementaryModes:
         return mpEFMWidget;
         break;
 
-      case 2211:
+      case WidgetType::ElementaryModesResult:
         return mpEFMResultWidget;
         break;
 
-      case 222:
+      case WidgetType::MassConservation:
         return mpMoietiesTaskWidget;
         break;
 
-      case 2221:
+      case WidgetType::MassConservationResult:
         return mpMoietiesTaskResult;
         break;
 
-      case 23:
+      case WidgetType::TimeCourse:
         return trajectoryWidget;
         break;
 
-      case 231:
+      case WidgetType::TimeCourseResult:
         return timeSeriesWidget;
         break;
 
-      case 24:
+      case WidgetType::MetabolicControlAnalysis:
         return mpCQMCAWidget;
         break;
 
-      case 241:
+      case WidgetType::MetabolicControlAnalysisResult:
         return mpCMCAResultWidget;
         break;
 
-      case 26:
+      case WidgetType::LyapunovExponents:
         return lyapWidget;
         break;
 
-      case 261:
+      case WidgetType::LyapunovExponentsResult:
         return lyapResultWidget;
         break;
 
-      case 27:
+      case WidgetType::TimeScaleSeparationAnalysis:
         return tssaWidget;
         break;
 
-      case 271:
+      case WidgetType::TimeScaleSeparationAnalysisResult:
         return tssaResultWidget;
         break;
 
-      case 28:
+      case WidgetType::CrossSection:
         return crossSectionTaskWidget;
         break;
 
-      case 281:
+      case WidgetType::CrossSectionResult:
         return crossSectionTimeSeriesWidget;
         break;
 
 #ifdef WITH_ANALYTICS
 
-      case 29:
+      case WidgetType::Analysis:
         return analyticsWidget;
         break;
 
-      case 291:
+      case WidgetType::AnalysisResult:
         return analyticsResultWidget;
         break;
 #endif // WITH_ANALYTICS
 
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 
-      case 36:
+      case WidgetType::Oscillation:
         return oscillationTaskWidget;
         break;
 #endif
 
-      case 31:
+      case WidgetType::ParameterScan:
         return scanWidget;
         break;
 
-      case 32:
+      case WidgetType::Optimization:
         return optimizationWidget;
         break;
 
-      case 321:
+      case WidgetType::OptimizationResult:
         return optResultWidget;
         break;
 
-      case 33:
+      case WidgetType::ParameterEstimation:
         return paramFittingWidget;
         break;
 
-      case 331:
+      case WidgetType::ParameterEstimationResult:
         return mpFittingResultWidget;
         break;
 
-      case 34:
+      case WidgetType::Sensitivities:
         return sensWidget;
         break;
 
-      case 341:
+      case WidgetType::SensitivitiesResult:
         return sensResultWidget;
         break;
 
-      case 35:
+      case WidgetType::LinearNoiseApproximation:
         return mpCQLNAWidget;
         break;
 
-      case 351:
+      case WidgetType::LinearNoiseApproximationResult:
         return mpCLNAResultWidget;
         break;
 
-      case 43:                                         //Report
+      case WidgetType::ReportTemplates:
         return mpReportsWidget;
         break;
 
-      case 42:
+      case WidgetType::ReportTemplateDetail:
+        return tableDefinition1;
+        break;
+
+      case WidgetType::Plots:
         return mpPlotsWidget;
         break;
 
-      case 5:
+      case WidgetType::PlotDetail:
+        return mpPlotSubwidget;
+        break;
+
+      case WidgetType::Functions:
         return mpFunctionsWidget;
         break;
 
-      case 6:
+      case WidgetType::FunctionDetail:
+        return functionWidget1;
+        break;
+
+      case WidgetType::Units:
         return mpUnitsWidget;
+        break;
+
+      case WidgetType::UnitDetail:
+        return mpUnitDetail;
         break;
     }
 
@@ -970,10 +1146,14 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
   if (!newWidget) return; //do nothing
 
-  std::string itemKey = mpTreeDM->getKeyFromIndex(index);
+  const CCommonName & itemCN = mpTreeDM->getCNFromIndex(index);
 
-  if (newWidget == mpCurrentWidget)
-    if (itemKey == mCurrentItemKey) return; //do nothing
+  if (newWidget == mpCurrentWidget &&
+      itemCN == mCurrentItemRegisteredCN)
+    {
+      mCurrentItemCN = mCurrentItemRegisteredCN;
+      return; //do nothing
+    }
 
   // leave old widget
   if (mpCurrentWidget)
@@ -993,43 +1173,53 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
   // enter new widget
   if (newWidget)
-    ((CopasiWidget*)newWidget)->enter(itemKey);
+    ((CopasiWidget*)newWidget)->enter(itemCN);
 
   // fall back
   if (!newWidget)
     {newWidget = defaultWidget;}
 
-  mCurrentItemKey = itemKey;
-
-  // we emit the signal after the old widget has saved
-  // the changes
-  emit signalFolderChanged(index);
-
+  mCurrentItemCN = itemCN;
+  mCurrentItemRegisteredCN = itemCN;
   mpCurrentWidget = newWidget;
   mpStackedWidget->setCurrentWidget(mpCurrentWidget);
 
   mpTreeView->scrollTo(index);
+
+  // we emit the signal after the old widget has saved
+  // the changes
+  emit signalFolderChanged(index);
 }
 
-void ListViews::switchToOtherWidget(const size_t & id, const std::string & key)
+void ListViews::switchToOtherWidget(const ListViews::WidgetType & id, const CCommonName & cn, const int & tabIndex)
 {
   // do not switch if we are there already
-  if (id == C_INVALID_INDEX && !key.empty() && key == mCurrentItemKey)
-    return;
+  if (!cn.empty() &&
+      cn == mCurrentItemRegisteredCN)
+    {
+      mCurrentItemCN = mCurrentItemRegisteredCN;
+      return;
+    }
 
-  QModelIndex Index = mpTreeDM->index(id, key);
+  QModelIndex Index = mpTreeDM->index(id, cn);
   QModelIndex SortIndex = mpTreeSortDM->mapFromSource(Index);
 
   mpTreeView->setCurrentIndex(SortIndex);
+
+  CQTabWidget *pTabWidget = dynamic_cast<CQTabWidget *>(mpCurrentWidget);
+
+  if (pTabWidget != NULL &&
+      tabIndex != -1)
+    pTabWidget->selectTab(tabIndex);
 }
 
 //********** some methods to store and restore the state of the listview ****
 
-size_t ListViews::getCurrentItemId()
+ListViews::WidgetType ListViews::getCurrentItemId()
 {
   QModelIndex index = mpTreeView->currentIndex();
 
-  if (!index.isValid()) return C_INVALID_INDEX;
+  if (!index.isValid()) return WidgetType::NotFound;
 
   return mpTreeDM->getIdFromIndex(index);
 }
@@ -1038,12 +1228,12 @@ size_t ListViews::getCurrentItemId()
 
 //static members **************************
 
-bool ListViews::slotNotify(ObjectType objectType, Action action, std::string key)
+bool ListViews::slotNotify(ObjectType objectType, Action action, const CCommonName & cn)
 {
-  if (objectType != MODEL 
-      && objectType != STATE 
-      //&&  action != ADD 
-    )
+  if (objectType != ObjectType::MODEL
+      && objectType != ObjectType::STATE
+      //&&  action != ADD
+     )
     {
       assert(mpDataModel != NULL);
       mpDataModel->changed();
@@ -1055,14 +1245,15 @@ bool ListViews::slotNotify(ObjectType objectType, Action action, std::string key
   // actually it would have been better to do this when a model is deleted, but
   // the deletion notification is only sent to the listviews if the deleted
   // model had been changed.
-  if (objectType == MODEL && action == DELETE)
+  if (objectType == ObjectType::MODEL && action == DELETE)
     {
       mpLayoutsWidget->deleteLayoutWindows();
     }
 
-  if (!updateCurrentWidget(objectType, action, key)) success = false;
+  if (!updateCurrentWidget(objectType, action, cn)) success = false;
 
-  notifyChildWidgets(objectType, action, key);
+  notifyChildWidgets(objectType, action, cn);
+  emit signalNotify(objectType, action, cn);
 
   return success;
 }
@@ -1072,12 +1263,17 @@ void ListViews::slotSort(const QModelIndex & /* index1 */, const QModelIndex & /
   mpTreeView->sortByColumn(0, Qt::AscendingOrder);
 }
 
-bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const std::string & key)
+void ListViews::slotSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn, int tabIndex)
+{
+  switchToOtherWidget(widgetType, cn, tabIndex);
+}
+
+bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const CCommonName & cn)
 {
   bool success = true;
 
   if (mpCurrentWidget)
-    mpCurrentWidget->update(objectType, action, key);
+    mpCurrentWidget->update(objectType, action, cn);
 
   return success;
 }
@@ -1090,9 +1286,14 @@ void ListViews::clearCurrentWidget()
   mpCurrentWidget = NULL;
 }
 
-const std::string& ListViews::getCurrentItemKey() const
+const CCommonName & ListViews::getCurrentItemCN() const
 {
-  return mCurrentItemKey;
+  return mCurrentItemCN;
+}
+
+const CCommonName & ListViews::getCurrentItemRegisteredCN() const
+{
+  return mCurrentItemRegisteredCN;
 }
 
 void ListViews::commit()
@@ -1103,7 +1304,7 @@ void ListViews::commit()
 
 void ListViews::notifyChildWidgets(ObjectType objectType,
                                    Action action,
-                                   const std::string & key)
+                                   const CCommonName & cn)
 {
   QList <CopasiWidget *> widgets = findChildren<CopasiWidget *>();
   QListIterator<CopasiWidget *> it(widgets); // iterate over the CopasiWidgets
@@ -1113,7 +1314,7 @@ void ListViews::notifyChildWidgets(ObjectType objectType,
     {
       if ((pCopasiWidget = it.next()) != NULL)
         {
-          pCopasiWidget->update(objectType, action, key);
+          pCopasiWidget->update(objectType, action, cn);
         }
     }
 }

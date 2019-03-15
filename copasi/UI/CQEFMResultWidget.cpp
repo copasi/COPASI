@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -101,22 +106,22 @@ CQEFMResultWidget::~CQEFMResultWidget()
 }
 
 // virtual
-bool CQEFMResultWidget::leave()
+bool CQEFMResultWidget::leaveProtected()
 {
   return true;
 }
 
 // virtual
-bool CQEFMResultWidget::update(ListViews::ObjectType objectType,
-                               ListViews::Action action,
-                               const std::string & /* key */)
+bool CQEFMResultWidget::updateProtected(ListViews::ObjectType objectType,
+                                        ListViews::Action action,
+                                        const CCommonName & cn)
 {
   // We need to update the task when a new model is loaded.
   switch (objectType)
     {
-      case ListViews::MODEL:
-      case ListViews::REACTION:
-      case ListViews::METABOLITE:
+      case ListViews::ObjectType::MODEL:
+      case ListViews::ObjectType::REACTION:
+      case ListViews::ObjectType::METABOLITE:
         switch (action)
           {
             case ListViews::ADD:

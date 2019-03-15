@@ -33,24 +33,16 @@ template < class CType > class CDataVectorNS;
 #define COL_RATE_COMPARTMENTS         6
 #define COL_IEXPRESSION_COMPARTMENTS  7
 #define COL_EXPRESSION_COMPARTMENTS   8
-#ifdef WITH_SDE_SUPPORT
-# define COL_NEXPRESSION_COMPARTMENTS  9
-# define TOTAL_COLS_COMPARTMENTS       10
-#else
-# define TOTAL_COLS_COMPARTMENTS       9
-#endif
+#define COL_NEXPRESSION_COMPARTMENTS  9
+#define TOTAL_COLS_COMPARTMENTS       10
 
 class CQCompartmentDM : public CQBaseDataModel
 {
   Q_OBJECT
 
-  friend class CompartmentDataChangeCommand;
-  friend class InsertCompartmentRowsCommand;
-
 public:
   CQCompartmentDM(QObject *parent = 0);
   const QStringList& getTypes();
-  const std::vector< unsigned C_INT32 >& getItemToType();
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
   virtual Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -59,35 +51,20 @@ public:
                               int role = Qt::DisplayRole) const;
   virtual bool setData(const QModelIndex &index, const QVariant &value,
                        int role = Qt::EditRole);
-
-  bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
-
-  //TODO Undo
-  bool compartmentDataChange(const QModelIndex& index,
-                             const QVariant &value,
-                             UndoCompartmentData *pUndoData);
-
-  void insertNewCompartmentRow(int position, int rows, const QModelIndex& index,
-                               const QVariant& value);
-  void addCompartmentRow(UndoCompartmentData *pCompartmentData);
-  void deleteCompartmentRow(UndoCompartmentData *pCompartmentData);
-  bool removeCompartmentRows(QModelIndexList& rows, const QModelIndex&);
-  bool insertCompartmentRows(QList <UndoCompartmentData *>& pCompartmentData);
-  void deleteCompartmentRows(QList <UndoCompartmentData *>& pCompartmentData);
-  bool removeAllCompartmentRows();
+  bool removeRows(QModelIndexList rows, const QModelIndex & parent = QModelIndex());
   bool clear();
 
-public slots:
+private:
+  void insertNewRows(int position, int rows,
+                     int column = COL_NAME_COMPARTMENTS,
+                     const QVariant & value = "compartment");
+
 protected:
   virtual void resetCacheProtected();
-  QStringList mTypes;
-  /**
-    * A vector mapping the item index to a model value type
-    */
-  std::vector< unsigned C_INT32 > mItemToType;
-  virtual bool insertRows(int position, int rows, const QModelIndex & source);
-  virtual bool removeRows(int position, int rows);
+  virtual bool insertRows(int position, int rows, const QModelIndex & parent = QModelIndex());
+  virtual bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex());
 
+  QStringList mTypes;
   QStringList mUnits;
   CDataVectorNS< CCompartment > * mpCompartments;
 };

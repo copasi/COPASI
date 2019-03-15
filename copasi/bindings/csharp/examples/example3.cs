@@ -117,7 +117,7 @@ class example3
 
           CCopasiParameter parameter = method.getParameter("Absolute Tolerance");
           Debug.Assert(parameter != null);
-          Debug.Assert(parameter.getType() == CCopasiParameter.DOUBLE);
+          Debug.Assert(parameter.getType() == CCopasiParameter.Type_DOUBLE);
           parameter.setDblValue(1.0e-12);
 
           bool result=true;

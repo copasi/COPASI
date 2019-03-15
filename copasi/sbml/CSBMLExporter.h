@@ -17,6 +17,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+
+
+
+
 #ifndef CSBMLExporter_H__
 #define CSBMLExporter_H__
 
@@ -143,6 +147,7 @@ public:
    * resets the currently set callback by calling setHandler(NULL)
    */
   virtual void clearCallBack();
+
 
   /**
    * This utility functions adds a new step to the progress dialog (if present)
@@ -573,7 +578,7 @@ protected:
    * , otherwise it is a function call.
    */
   CEvaluationNode* createKineticExpression(CFunction* pFun,
-      const std::vector<std::vector<std::string> >& arguments);
+      const std::vector<std::vector<const CDataObject *> >& arguments);
 
   /**
    * Checks if the given datamodel contains events.
@@ -626,7 +631,7 @@ protected:
    * This method checks if the given event assignment object is SBML
    * compatible.
    */
-  static void isEventAssignmentSBMLCompatible(std::string& key,
+  static void isEventAssignmentSBMLCompatible(const CDataObject * pTarget,
       const CExpression* pExpression,
       const CDataModel& dataModel,
       unsigned int sbmlLevel,
@@ -718,7 +723,7 @@ protected:
    * mass action.
    */
   static CEvaluationNode* createMassActionExpression(
-    const std::vector<std::vector<std::string> >& arguments,
+    const std::vector<std::vector<const CDataObject *> >& arguments,
     bool isReversible);
 
   /**

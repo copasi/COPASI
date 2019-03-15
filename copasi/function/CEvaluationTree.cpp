@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -132,7 +137,7 @@ CEvaluationTree::copy(const CEvaluationTree & src)
   return pNew;
 }
 
-CEvaluationTree * CEvaluationTree::fromData(const CData & data)
+CEvaluationTree * CEvaluationTree::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   CEvaluationTree * pNew = create((CEvaluationTree::Type) data.getProperty(CData::EVALUATION_TREE_TYPE).toUint());
 
@@ -147,21 +152,21 @@ CEvaluationTree * CEvaluationTree::fromData(const CData & data)
 // virtual
 CData CEvaluationTree::toData() const
 {
-  CData Data;
+  CData Data = CDataContainer::toData();
 
   // TODO CRITICAL Implement me!
-  fatalError();
+  // fatalError();
 
   return Data;
 }
 
 // virtual
-bool CEvaluationTree::applyData(const CData & data)
+bool CEvaluationTree::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
-  bool success = true;
+  bool success = CDataContainer::applyData(data, changes);
 
   // TODO CRITICAL Implement me!
-  fatalError();
+  // fatalError();
 
   return success;
 }

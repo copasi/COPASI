@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -41,7 +46,7 @@ CXMLHandler * ConstantHandler::processStart(const XML_Char * pszName,
         Value = mpParser->getAttributeValue("value", papszAttrs);
 
         mpData->pReaction->getParameters().addParameter(Name,
-            CCopasiParameter::DOUBLE,
+            CCopasiParameter::Type::DOUBLE,
             (C_FLOAT64) CCopasiXMLInterface::DBL(Value));
 
         addFix(Key, mpData->pReaction->getParameters().getParameter(Name));

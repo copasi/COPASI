@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -39,38 +44,8 @@ class CCopasiParameterGroup: public CCopasiParameter
 public:
   typedef std::vector< CCopasiParameter * > elements;
   typedef elements::iterator index_iterator;
-
-  class name_iterator
-  {
-  public:
-    name_iterator();
-
-    name_iterator(const CCopasiParameterGroup & group,
-                  const bool & begin);
-
-    name_iterator(const name_iterator & src);
-
-    ~name_iterator();
-
-    CDataObject * operator*() const;
-
-    CDataObject * operator->() const;
-
-    name_iterator & operator++();
-
-    name_iterator operator++(int);
-
-    bool operator != (const name_iterator & rhs) const;
-
-  private:
-    const CCopasiParameterGroup * mpGroup;
-    bool mNameEnd;
-    std::map< std::string, std::set< CDataObject * > >::iterator mName;
-    bool mObjectEnd;
-    std::set< CDataObject * >::iterator mObject;
-    bool mParameterEnd;
-    std::vector< CCopasiParameter * >::iterator mParameter;
-  };
+  typedef CDataObjectMap::type_iterator< CCopasiParameter > name_iterator;
+  typedef CDataObjectMap::const_type_iterator< CCopasiParameter > const_name_iterator;
 
   // Operations
 protected:
@@ -103,8 +78,32 @@ public:
    */
   virtual ~CCopasiParameterGroup();
 
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
   virtual CData toData() const;
-  virtual bool applyData(const CData & data);
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param CUndoData & undoData
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
+   */
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
 
   virtual const CObjectInterface * getObject(const CCommonName & cn) const;
 
@@ -125,21 +124,32 @@ public:
   /**
    * Retrieve the begin of unsorted iterator
    * Note: the swap function may be used to change the order
-   * @return name_iterator begin
+   * @return index_iterator begin
    */
   index_iterator beginIndex() const;
 
   /**
    * Retrieve the end of unsorted iterator
    * Note: the swap function may be used to change the order
-   * @return name_iterator end
+   * @return index_iterator end
    */
   index_iterator endIndex() const;
 
   /**
+   * Retrieve the start iterator going through the parameters sorted by name
+   * @return const_name_iterator begin
+   */
+  const_name_iterator beginName() const;
+
+  /**
+   * Retrieve the end iterator going through the parameters sorted by name
+   * @return const_name_iterator end
+   */
+  const_name_iterator endName() const;
+
+  /**
    * Add a parameter
    * @param const CCopasiParameter & parameter
-   * @param const CCopasiParameter::UserInterfaceFlag & flag (default: CCopasiParameter::UserInterfaceFlag::All)
    * @return bool success
    */
   bool addParameter(const CCopasiParameter & parameter);
@@ -148,7 +158,7 @@ public:
    * Add a parameter to the group
    * @param const std::string & name
    * @param const CCopasiParameter::Type type
-   * @param const CCopasiParameter::UserInterfaceFlag & flag (default: CCopasiParameter::UserInterfaceFlag::All)
+   * @param const CCopasiParameter::UserInterfaceFlag & flag (default: CCopasiParameter::UserInterfaceFlag::All))
    * @return bool success
    */
   bool addParameter(const std::string & name,
@@ -171,7 +181,7 @@ public:
   {
     CCopasiParameter * pParameter;
 
-    if (type == GROUP)
+    if (type == Type::GROUP)
       {
         // Create a temporary group with the correct name
         CCopasiParameterGroup *tmp = new CCopasiParameterGroup(name);
@@ -222,22 +232,29 @@ public:
    * @param const std::string & name
    * @param const CCopasiParameter::Type type
    * @param const CType & Value
+   * @param const CCopasiParameter::UserInterfaceFlag & flag (default: CCopasiParameter::UserInterfaceFlag::All)
    * @return CCopasiParameter * pParameter
    */
   template < class CType >
   CType * assertParameter(const std::string & name,
                           const CCopasiParameter::Type type,
-                          const CType & defaultValue)
+                          const CType & defaultValue,
+                          const CCopasiParameter::UserInterfaceFlag & flag = CCopasiParameter::UserInterfaceFlag::All)
   {
     CCopasiParameter * pParm = getParameter(name);
 
-    if (pParm && pParm->getType() == type) return &pParm->getValue< CType >();
+    if (pParm == NULL || pParm->getType() != type)
+      {
+        if (pParm) removeParameter(name);
 
-    if (pParm) removeParameter(name);
+        addParameter(name, type, defaultValue);
+        pParm = getParameter(name);
+        pParm->setUserInterfaceFlag(flag);
+      }
 
-    addParameter(name, type, defaultValue);
+    pParm->setUserInterfaceFlag(pParm->getUserInterfaceFlag() & ~UserInterfaceFlag(eUserInterfaceFlag::unsupported));
 
-    return &getParameter(name)->getValue< CType >();
+    return &pParm->getValue< CType >();
   }
 
   /**
@@ -258,9 +275,11 @@ public:
    * Assert that a group with the given name is present.
    * If not the group is created as empty group.
    * @param const std::string & name
+   * @param const CCopasiParameter::UserInterfaceFlag & flag (default: CCopasiParameter::UserInterfaceFlag::All)
    * @return CCopasiParameterGroup * pGroup
    */
-  CCopasiParameterGroup * assertGroup(const std::string & name);
+  CCopasiParameterGroup * assertGroup(const std::string & name,
+                                      const CCopasiParameter::UserInterfaceFlag & flag = CCopasiParameter::UserInterfaceFlag::All);
 
   /**
    * Remove a parameter or subgroup from the group
@@ -495,7 +514,8 @@ public:
    * The size of the parameter group
    * @ return size_t size
    */
-  size_t size(const UserInterfaceFlag & flag = UserInterfaceFlag::All) const;
+  size_t size(const UserInterfaceFlag & require = UserInterfaceFlag::None,
+              const UserInterfaceFlag & exclude = UserInterfaceFlag::None) const;
 
   /**
    * Clear all parameters and subgroups
@@ -504,7 +524,21 @@ public:
 
   virtual size_t getIndex(const CDataObject * pObject) const;
 
-  virtual CDataObject * insert(const CData & data);
+  /**
+   * Create and insert an undo object based on the given data.
+   * This method needs to be re-implemented in container which support INSERT and REMOVE
+   * @param const CData & data
+   * @return CUndoObjectInterface * pUndoObject
+   */
+  virtual CUndoObjectInterface * insert(const CData & data);
+
+  /**
+   * Update the index of a contained object
+   * This method needs to be re-implemented in container which care about the order of contained objects
+   * @param const size_t & index
+   * @param const CUndoObjectInterface * pUndoObject
+   */
+  virtual void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject);
 
   /**
    * Retrieve the index of a parameter or subgroup with a given name
@@ -559,7 +593,7 @@ public:
   virtual void setUserInterfaceFlag(const UserInterfaceFlag & flag);
 
 private:
-  CCopasiParameterGroup *mpElementTemplates;
+  CCopasiParameterGroup *mpElementTemplates {NULL };
 };
 
 // :TODO: This should be a member function but Visual C++ 6.0
@@ -609,13 +643,18 @@ ElevateTo * elevate(CCopasiParameter * pParm)
           return NULL;
         }
 
+      CCopasiParameter::UserInterfaceFlag Flag = pFrom->getUserInterfaceFlag();
       pTo = new ElevateTo(*pFrom, NO_PARENT);
 
       // We do not want the parameter to be removed from the group which would happen during deletion.
       // To prevent this we remove it manually from the parent class.
       pGrp->CCopasiParameter::remove(pParm);
       delete pParm;
+
+      *it = NULL;
+
       pGrp->CCopasiParameter::add(pTo, true);
+      pTo->CCopasiParameter::setUserInterfaceFlag(Flag);
 
       *it = pTo;
     }

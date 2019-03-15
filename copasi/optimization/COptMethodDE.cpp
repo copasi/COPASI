@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -7,6 +12,8 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
+
+// originally implemented by Michalina Kaszuba, 2012, University of Manchester
 
 #include <limits>
 #include <string>
@@ -36,12 +43,12 @@ COptMethodDE::COptMethodDE(const CDataContainer * pParent,
   mBestIndex(C_INVALID_INDEX)
 
 {
-  addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 2000);
-  addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 10);
-  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
-  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-  addParameter("Mutation Variance", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.1, eUserInterfaceFlag::editable);
-  addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
+  assertParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 10);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Mutation Variance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.1, eUserInterfaceFlag::editable);
+  assertParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
@@ -334,7 +341,8 @@ bool COptMethodDE::initialize()
 
   if (mPopulationSize < 4)
     {
-      mMethodLog.enterLogItem(COptLogItem(COptLogItem::DE_usrdef_error_pop_size).with(4));
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(COptLogEntry("User defined Population Size too small. Reset to minimum (4)."));
 
       mPopulationSize = 4;
       setValue("Population Size", mPopulationSize);
@@ -388,7 +396,13 @@ bool COptMethodDE::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start_nodoc));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Algorithm started.",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Differential_Evolution/"
+      )
+    );
 
   size_t i;
 
@@ -422,7 +436,8 @@ bool COptMethodDE::optimise()
       *mContainerVariables[i] = mut;
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   Continue &= evaluate(*mIndividuals[0]);
   mValues[0] = mEvaluationValue;
@@ -455,7 +470,8 @@ bool COptMethodDE::optimise()
 
   if (!Continue)
     {
-      mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_early_stop));
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user after initial population creation."));
 
       if (mpCallBack)
         mpCallBack->finishItem(mhGenerations);
@@ -475,9 +491,17 @@ bool COptMethodDE::optimise()
       if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
         break;
 
-      if (Stalled > 10)
+      if (Stalled > 50)
         {
-          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::DE_fittest_not_changed_x_random_generated).iter(mCurrentGeneration).with(Stalled - 1).with(40));
+          if (mLogVerbosity > 0)
+            mMethodLog.enterLogEntry(
+              COptLogEntry(
+                "Generation " + std::to_string(mCurrentGeneration) +
+                ": Fittest individual has not changed in the last " + std::to_string(Stalled - 1) +
+                " generations. 40% of individuals randomized."
+              ));
+
+          Stalled = 0;
 
           Continue &= creation((size_t) 0.4 * mPopulationSize, (size_t) 0.8 * mPopulationSize);
         }
@@ -490,8 +514,7 @@ bool COptMethodDE::optimise()
       // get the index of the fittest
       mBestIndex = fittest();
 
-      if (mBestIndex != C_INVALID_INDEX &&
-          mValues[mBestIndex] < mBestValue)
+      if ((mBestIndex != C_INVALID_INDEX) && (mValues[mBestIndex] < mBestValue))
         {
           Stalled = 0;
           mBestValue = mValues[mBestIndex];
@@ -510,7 +533,11 @@ bool COptMethodDE::optimise()
       mpParentTask->output(COutputInterface::MONITORING);
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_gener).iter(mCurrentGeneration - 1).with(mGenerations));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm finished.",
+                   "Terminated after " + std::to_string(mCurrentGeneration - 1) + " of " +
+                   std::to_string(mGenerations) + " generations."));
 
   if (mpCallBack)
     mpCallBack->finishItem(mhGenerations);

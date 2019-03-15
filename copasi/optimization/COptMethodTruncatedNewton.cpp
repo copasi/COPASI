@@ -60,7 +60,13 @@ bool COptMethodTruncatedNewton::optimise()
 {
   if (!initialize()) return false;
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Truncated.Newton"));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Truncated Newton algorithm started",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Truncated_Newton/"
+      )
+    );
 
   C_FLOAT64 fest;
   C_INT lw, ierror = 0;
@@ -111,69 +117,114 @@ bool COptMethodTruncatedNewton::optimise()
       *mContainerVariables[i] = (mCurrent[i]);
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   // Report the first value as the current best
   mBestValue = evaluate();
   mBest = mCurrent;
   mContinue = mpOptProblem->setSolution(mBestValue, mBest);
 
-  repeat = 0;
+  //tnbc_ wants a signed int for loglevel...
+  C_INT msglvl;
+  msglvl = (int) mLogVerbosity;
 
-  while (repeat < 10 && mContinue)
+  // estimate minimum is 1/10 initial function value (which is now in mBestValue)
+  fest = 0.1 * mBestValue;
+  ierror = 0;
+
+  // minimise
+  try
     {
-      repeat++;
+      mpCTruncatedNewton->tnbc_(&ierror,
+                                &mVariableSize,
+                                mCurrent.array(),
+                                &fest,
+                                mGradient.array(),
+                                dwork.array(),
+                                &lw,
+                                mpTruncatedNewton,
+                                low.array(),
+                                up.array(),
+                                iPivot.array(),
+                                &msglvl,
+                                &mMethodLog);
+      mEvaluationValue = fest;
 
-      // estimate minimum is 1/10 initial function value
-      fest = (1 - pow(0.9, (C_FLOAT64) repeat)) * mEvaluationValue;
-      ierror = 0;
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(COptLogEntry("tnbc_() return value = " + std::to_string(ierror)));
 
-      // minimise
-      try
+      // Is the corrected value better than solution?
+      if (mEvaluationValue < mBestValue)
         {
-          mpCTruncatedNewton->tnbc_(&ierror, &mVariableSize, mCurrent.array(), &fest, mGradient.array(), dwork.array(),
-                                    &lw, mpTruncatedNewton, low.array(), up.array(), iPivot.array());
-          mEvaluationValue = fest;
+          // We found a new bestAlgorithm finished. value lets report it.
+          // and store that value
+          mBest = mCurrent;
+          mBestValue = mEvaluationValue;
+
+          mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+
+          // We found a new best value lets report it.
+          mpParentTask->output(COutputInterface::DURING);
+        }
+    }
+  // This signals that the user opted to interrupt
+  catch (bool)
+    {
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user."));
+    }
+
+  if (ierror < 0)
+    fatalError(); // Invalid parameter values.
+
+  /*
+   * TODO: THIS SEEMS TO BE FALSE; THIS TEST SHOULD NOT BE DONE!
+   * THIS SECTION CANDIDATE FOR REMOVAL!
+   */
+
+  // The way the method is currently implemented may lead to parameters just outside the boundaries.
+  // We need to check whether the current value is within the boundaries or whether the corrected
+  // leads to an improved solution.
+  bool withinBounds = true;
+
+  for (i = 0; i < mVariableSize; i++)
+    {
+      const COptItem & OptItem = *(*mpOptItem)[i];
+
+      //force it to be within the bounds
+      switch (OptItem.checkConstraint(mCurrent[i]))
+        {
+          case - 1:
+            withinBounds = false;
+            mCurrent[i] = *OptItem.getLowerBoundValue();
+
+            if (mLogVerbosity > 1)
+              mMethodLog.enterLogEntry(COptLogEntry("Parameter " + std::to_string(i) + " below lower bound. Reseting."));
+
+            break;
+
+          case 1:
+            withinBounds = false;
+            mCurrent[i] = *OptItem.getUpperBoundValue();
+
+            if (mLogVerbosity > 1)
+              mMethodLog.enterLogEntry(COptLogEntry("Parameter " + std::to_string(i) + " above upper bound. Reseting."));
+
+            break;
+
+          case 0:
+            break;
         }
 
-      // This signals that the user opted to interupt
-      catch (bool)
-        {
-          break;
-        }
+      *mContainerVariables[i] = (mCurrent[i]);
+    }
 
-      if (ierror < 0)
-        fatalError(); // Invalid parameter values.
-
-      // The way the method is currently implemented may lead to parameters just outside the boundaries.
-      // We need to check whether the current value is within the boundaries or whether the corrected
-      // leads to an improved solution.
-
-      bool withinBounds = true;
-
-      for (i = 0; i < mVariableSize; i++)
-        {
-          const COptItem & OptItem = *(*mpOptItem)[i];
-
-          //force it to be within the bounds
-          switch (OptItem.checkConstraint(mCurrent[i]))
-            {
-              case - 1:
-                withinBounds = false;
-                mCurrent[i] = *OptItem.getLowerBoundValue();
-                break;
-
-              case 1:
-                withinBounds = false;
-                mCurrent[i] = *OptItem.getUpperBoundValue();
-                break;
-
-              case 0:
-                break;
-            }
-
-          *mContainerVariables[i] = (mCurrent[i]);
-        }
+  if (!withinBounds)
+    {
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(
+          COptLogEntry("Solution parameters outside of the boundaries. Repeating calculations from current border position."));
 
       evaluate();
 
@@ -190,60 +241,14 @@ bool COptMethodTruncatedNewton::optimise()
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
         }
-
-      // We found a solution
-      if (withinBounds)
-        break;
-
-      // Choosing another starting point will be left to the user
-#ifdef XXXX
-
-      // Try another starting point
-      for (i = 0; i < mVariableSize; i++)
-        {
-          mCurrent[i] *= 1.2;
-          const COptItem & OptItem = *(*mpOptItem)[i];
-
-          //force it to be within the bounds
-          switch (OptItem.checkConstraint(mCurrent[i]))
-            {
-              case - 1:
-                mCurrent[i] = *OptItem.getLowerBoundValue();
-                break;
-
-              case 1:
-                mCurrent[i] = *OptItem.getUpperBoundValue();
-                break;
-
-              case 0:
-                break;
-            }
-
-          *mContainerVariables[i] = (mCurrent[i]);
-        }
-
-      evaluate();
-
-      // Check whether we improved
-      if (mEvaluationValue < mBestValue)
-        {
-          // We found a new best value lets report it.
-          // and store that value
-          mBest = mCurrent;
-          mBestValue = mEvaluationValue;
-
-          mContinue = mpOptProblem->setSolution(mBestValue, mBest);
-
-          // We found a new best value lets report it.
-          mpParentTask->output(COutputInterface::DURING);
-        }
-
-#endif // XXXX
-
-      if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::TN_next_repeat).with(repeat));
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish));
+  /*
+   * END OF SECTION CANDIDATE FOR REMOVAL
+   */
+
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(COptLogEntry("Algorithm finished."));
 
   return true;
 }
@@ -306,11 +311,18 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *f, C_FL
           *mContainerVariables[i] = (x[i] * 1.001);
           g[i] = (evaluate() - *f) / (x[i] * 0.001);
         }
-
       else
         {
+          // why use 1e-7? shouldn't this be epsilon, or something like that?
           *mContainerVariables[i] = (1e-7);
           g[i] = (evaluate() - *f) / 1e-7;
+
+          if (mLogVerbosity > 2)
+            {
+              std::ostringstream auxStream;
+              auxStream << "Calculating gradient for zero valued parameter " << i << ", using 1e-7, results in " << g[i] << ".";
+              mMethodLog.enterLogEntry(COptLogEntry(auxStream.str()));
+            }
         }
 
       *mContainerVariables[i] = (x[i]);

@@ -1,109 +1,99 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
+
+#include <sstream>
 
 #include "copasi.h"
 
 #include "CData.h"
 
-#include "utilities/utility.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/utilities/Cmd5.h"
 
 // static
 const CEnumAnnotation< std::string, CData::Property > CData::PropertyName(
 {
-  // EXPRESSION = 0,
-  "Expression",
-  // INITIAL_EXPRESSION,
-  "Initial Expression",
-  // INITIAL_VALUE,
-  "Initial Value",
-  // SIMULATION_TYPE,
-  "Simulation Type",
-  // SPATIAL_DIMENSION,
-  "Spatial Dimensions",
-  // ADD_NOISE,
-  "Add Noise",
-  // NOISE_EXPRESSION,
-  "Noise Expression",
-  // OBJECT_NAME,
-  "Object Name",
-  // OBJECT_PARENT_CN,
-  "Object Parent CN",
-  // OBJECT_TYPE,
-  "Object Type",
-  // OBJECT_FLAG,
-  "Object Flag",
-  // OBJECT_INDEX,
-  "Object Index",
-  // OBJECT_REFERENCES,
-  "Object References",
-  // OBJECT_REFERENCE,
-  "Object Reference",
-  // OBJECT_REFERENCE_CN,
-  "Object Reference CN",
-  // OBJECT_REFERENCE_INDEX,
-  "Object Reference Index",
-  // OBJECT_POINTER,
-  "Object Pointer",
-  // EVALUATION_TREE_TYPE,
-  "Evaluation Tree Type",
-  // TASK_TYPE,
-  "Task Type",
-  // PLOT_TYPE,
-  "Plot Type",
-  // PLOT_ITEM_TYPE,
-  "Plot Item Type",
-  // PARAMETER_TYPE,
-  "Parameter Type",
-  // PARAMETER_VALUE,
-  "Parameter Value",
-  // UNIT,
-  "Unit",
-  // VOLUME_UNIT,
-  "Volume Unit",
-  // AREA_UNIT,
-  "Area Unit",
-  // LENGTH_UNIT,
-  "Length Unit",
-  // TIME_UNIT,
-  "Time Unit",
-  // QUANTITY_UNIT,
-  "Quantity Unit",
-  // MODEL_TYPE,
-  "Model Type",
-  // AVOGADRO_NUMBER,
-  "Avogadro's Number",
-  // DIMENSIONALITY,
-  "Dimensionality",
-  // ARRAY_ELEMENT_INDEX,
-  "Array Element Index",
-  // COMMENT,
-  "Comment",
-  // REPORT_SEPARATOR,
-  "Report Separator",
-  // REPORT_IS_TABLE,
-  "Report is Table",
-  // REPORT_SHOW_TITLE,
-  "Report show Title",
-  // REPORT_PRECISION,
-  "Report Precision",
-  // MIRIAM_PREDICATE,
-  "MIRIAM Predicate",
-  // MIRIAM_RESOURCE,
-  "MIRIAM Resource",
-  // MIRIAM_ID,
-  "MIRIAM Id",
-  // DATE,
-  "Date",
-  // GIVEN_NAME,
-  "Given Name",
-  // FAMILY_NAME,
-  "Family Name",
-  // EMAIL,
-  "Email",
-  // ORGANIZATION,
-  "Organization"
+  "Expression", // EXPRESSION
+  "Initial Expression", // INITIAL_EXPRESSION
+  "Initial Value", // INITIAL_VALUE
+  "Initial Intensive Value", // INITIAL_INTENSIVE_VALUE
+  "Simulation Type", // SIMULATION_TYPE
+  "Spatial Dimensions", // SPATIAL_DIMENSION
+  "Add Noise", // ADD_NOISE
+  "Noise Expression", // NOISE_EXPRESSION
+  "Chemical Equation", // CHEMICAL_EQUATION
+  "Kinetic Law", // KINETIC_LAW
+  "Kinetic Law Unit Type", // KINETIC_LAW_UNIT_TYPE
+  "Kinetic Law Variable Mapping", // KINEITC_LAW_VARIABLE_MAPPING
+  "Local Reaction Parameters", // LOCAL_REACTION_PARAMETERS
+  "Scaling Compartment", // SCALING_COMPARTMENT
+  "Object UUID", // OBJECT_UUID
+  "Object Name", // OBJECT_NAME
+  "Object Parent CN", // OBJECT_PARENT_CN
+  "Object Type", // OBJECT_TYPE
+  "Object Flag", // OBJECT_FLAG
+  "Object Hash", // OBJECT_HASH,
+  "Object Index", // OBJECT_INDEX
+  "Object References", // OBJECT_REFERENCES
+  "Object Reference", // OBJECT_REFERENCE
+  "Object Reference CN", // OBJECT_REFERENCE_CN
+  "Object Reference Index", // OBJECT_REFERENCE_INDEX
+  "Object Pointer", // OBJECT_POINTER
+  "Evaluation Tree Type", // EVALUATION_TREE_TYPE
+  "Task Type", // TASK_TYPE
+  "Task Scheduled", // TASK_SCHEDULED
+  "Task Update Model", // TASK_UPDATE_MODEL
+  "Task Report", // TASK_REPORT
+  "Task Report Target", // TASK_REPORT_TARGET
+  "Task Report Append", // TASK_REPORT_APPEND
+  "Task Report Confirm Overwrite", // TASK_REPORT_CONFIRM_OVERWRITE
+  "Problem", // PROBLEM
+  "Method", // METHOD
+  "Method Type", // METHOD_TYPE
+  "Plot Type", // PLOT_TYPE
+  "Plot Item Type", // PLOT_ITEM_TYPE
+  "Parameter Type", // PARAMETER_TYPE
+  "Parameter Role", // PARAMETER_ROLE
+  "Parameter Used", //  PARAMETER_USED
+  "Parameter Value", // PARAMETER_VALUE
+  "Unit", // UNIT
+  "Volume Unit", // VOLUME_UNIT
+  "Area Unit", // AREA_UNIT
+  "Length Unit", // LENGTH_UNIT
+  "Time Unit", // TIME_UNIT
+  "Quantity Unit", // QUANTITY_UNIT
+  "Model Type", // MODEL_TYPE
+  "Avogadro's Number", // AVOGADRO_NUMBER
+  "Dimensionality", // DIMENSIONALITY
+  "Array Element Index", // ARRAY_ELEMENT_INDEX
+  "Report Separator", // REPORT_SEPARATOR
+  "Report is Table", // REPORT_IS_TABLE
+  "Report show Title", // REPORT_SHOW_TITLE
+  "Report Precision", // REPORT_PRECISION
+  "Notes", // NOTES
+  "MIRIAM Predicate", // MIRIAM_PREDICATE
+  "MIRIAM Resource", // MIRIAM_RESOURCE
+  "MIRIAM Description", // MIRIAM_DESCRIPTION
+  "MIRIAM Id", // MIRIAM_ID
+  "Date", // DATE
+  "Given Name", // GIVEN_NAME
+  "Family Name", // FAMILY_NAME
+  "Email", // EMAIL
+  "Organization", // ORGANIZATION
+  "Framework", // FRAMEWORK
+  "Value", // VALUE
+  "Delay Assignment", // DELAY_ASSIGNMENT
+  "Fire at Initial Time", // FIRE_AT_INITIALTIME
+  "Persistent Trigger", // PERSISTENT_TRIGGER
+  "Trigger Expression", // TRIGGER_EXPRESSION
+  "Delay Expression", // DELAY_EXPRESSION
+  "Priority Expression", // PRIORITY_EXPRESSION
+  "Assignments", // ASSIGNMENTS
+  "Vector Content" // VECTOR_CONTENT
+  "Unit symbol", // UNIT_SYMBOL
+  "Unit expression", // UNIT_EXPRESSION
 });
 
 CData::CData():
@@ -130,6 +120,11 @@ CData & CData::operator = (const CData & rhs)
 bool CData::operator == (const CData & rhs) const
 {
   return *static_cast< const std::map< std::string, CDataValue > * >(this) == *static_cast< const std::map< std::string, CDataValue > * >(&rhs);
+}
+
+bool CData::operator != (const CData & rhs) const
+{
+  return *static_cast< const std::map< std::string, CDataValue > * >(this) != *static_cast< const std::map< std::string, CDataValue > * >(&rhs);
 }
 
 const CDataValue & CData::getProperty(const std::string & name) const
@@ -168,24 +163,6 @@ CDataValue & CData::getProperty(const std::string & name)
 CDataValue & CData::getProperty(const Property & property)
 {
   return getProperty(PropertyName[property]);
-}
-
-bool CData::setProperty(const std::string & name, const CDataValue & value)
-{
-  std::map< std::string, CDataValue >::iterator found = find(name);
-
-  if (found != end())
-    {
-      found->second = value;
-      return true;
-    }
-
-  return false;
-}
-
-bool CData::setProperty(const Property & property, const CDataValue & value)
-{
-  return setProperty(PropertyName[property], value);
 }
 
 bool CData::addProperty(const std::string & name, const CDataValue & value)
@@ -255,6 +232,19 @@ bool CData::empty() const
   return std::map< std::string, CDataValue >::empty();
 }
 
+void CData::clear()
+{
+  std::map< std::string, CDataValue >::clear();
+}
+
+std::string CData::hash() const
+{
+  std::stringstream Data;
+  Data << *this;
+
+  return Cmd5::digest(Data);
+}
+
 CData::const_iterator CData::begin() const
 {
   return std::map< std::string, CDataValue >::begin();
@@ -274,4 +264,10 @@ std::ostream & operator << (std::ostream & os, const CData & o)
     os << it->first << ": " << it->second << std::endl;
 
   return os;
+}
+
+std::istream & operator >> (std::istream & is, const CData & i)
+{
+  // TODO CRITICAL Implement me!
+  return is;
 }

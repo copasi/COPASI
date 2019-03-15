@@ -1,3 +1,8 @@
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -36,7 +41,6 @@ public:
   virtual ~CQTrajectoryWidget();
 
   virtual bool runTask();
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
 public slots:
   void slotDuration();
@@ -47,8 +51,9 @@ public slots:
   void slotAutomaticIntervals(bool checked);
 
 protected:
-  virtual bool saveTask();
-  virtual bool loadTask();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool saveTaskProtected();
+  virtual bool loadTaskProtected();
   virtual bool taskFinishedEvent();
 
 protected slots:

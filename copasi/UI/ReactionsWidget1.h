@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,9 +37,6 @@ class CReactionInterface;
 class ParameterTable;
 class MyLineEdit;
 
-#include <copasi/undoFramework/CCopasiUndoCommand.h>
-class ReactionChangeCommand;
-
 class ReactionsWidget1 : public CopasiWidget, public Ui::ReactionsWidget1
 {
   Q_OBJECT
@@ -51,8 +48,6 @@ public:
   ReactionsWidget1(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
   ~ReactionsWidget1();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-  virtual bool leave();
   virtual void setFramework(int framework);
   void copy();
 
@@ -77,25 +72,14 @@ protected slots:
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
+
   bool loadFromReaction(const CReaction* reaction);
   bool saveToReaction();
   void FillWidgetFromRI();
 
   CReactionInterface * mpRi;
-
-  //additional functions for UNDO framework
-  void deleteReaction();
-  void addReaction(std::string & reaObjectName, CReactionInterface *pRi);
-  void addReaction(UndoReactionData *pData);
-  void createNewReaction();
-  void deleteReaction(UndoReactionData *pData);
-public:
-  bool changeReaction(const std::string& key,
-                      CCopasiUndoCommand::Type type,
-                      const QVariant& newValue,
-                      const QVariant& newSecondValueValue,
-                      ReactionChangeCommand* command
-                     );
 };
 
 #endif // REACTIONSWIDGET1_H

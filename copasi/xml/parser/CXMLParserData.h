@@ -177,7 +177,7 @@ public:
   /**
    * The keys of the source parameters for a call parameter.
    */
-  std::map< std::string, std::vector< std::string > > SourceParameterKeys;
+  std::map< std::string, std::vector< const CDataObject * > > SourceParameterObjects;
 
   /**
    * A map relating CopasiXML function keys with internal keys

@@ -126,6 +126,14 @@ endif()
 
 CHECK_TYPE_SIZE("void*"  CMAKE_SIZEOF_VOID_P)
 
+CHECK_TYPE_SIZE("unsigned int"  CMAKE_SIZEOF_UINT)
+CHECK_TYPE_SIZE("size_t"  CMAKE_SIZEOF_SIZE_T)
+
+if (NOT CMAKE_SIZEOF_SIZE_T EQUAL CMAKE_SIZEOF_UINT)
+  # will be written in config file
+  set (DATAVALUE_NEEDS_SIZE_T_MEMBERS 1)
+endif()
+
 
 set(COPASI_BUILD_TYPE "native")
 if (CMAKE_SIZEOF_VOID_P EQUAL 4)
@@ -208,9 +216,6 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 if (NOT WIN32)
 option(ENABLE_COPASI_DEBUG_TRACE "Enable COPASI Debug Tracing" ${DEFAULT_DEBUG_TRACING})
-if(ENABLE_COPASI_DEBUG_TRACE)
-  add_definitions(-DCOPASI_DEBUG_TRACE)
-endif(ENABLE_COPASI_DEBUG_TRACE)
 mark_as_advanced(ENABLE_COPASI_DEBUG_TRACE)
 endif()
 
@@ -224,56 +229,18 @@ mark_as_advanced(DISABLE_CORE_OBJECT_LIBRARY)
 # by the current simulation value (instead of 0) this removes the bias when
 # using value scaled experimental data.
 option(ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING "Scale parameter estimation residuals with the simulation value" OFF)
-if (ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING)
-  add_definitions(-DCOPASI_PARAMETERFITTING_RESIDUAL_SCALING)
-endif(ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING)
 
-option(ENABLE_COPASI_BANDED_GRAPH "Enable the banded graph widget" OFF)
-if (ENABLE_COPASI_BANDED_GRAPH)
-  add_definitions(-DCOPASI_BANDED_GRAPH)
-endif(ENABLE_COPASI_BANDED_GRAPH)
-
+option(ENABLE_COPASI_BANDED_GRAPH "Enable the banded graph widget" ON)
 option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" OFF)
-if (ENABLE_COPASI_NONLIN_DYN_OSCILLATION)
-  add_definitions(-DCOPASI_NONLIN_DYN_OSCILLATION)
+option(ENABLE_COPASI_EXTUNIT "Extended Unit Support" ${DEFAULT_EXTUNIT})
+option(ENABLE_ANALYTICS "Enable Analytics Task" OFF)
+
+if (WIN32)
+  add_definitions(-DLIBCOMBINE_STATIC=1)
 endif()
 
-option(ENABLE_COPASI_EXTUNIT "Extended Unit Support" ${DEFAULT_EXTUNIT})
-if (ENABLE_COPASI_EXTUNIT)
-  add_definitions(-DCOPASI_EXTUNIT)
-endif(ENABLE_COPASI_EXTUNIT)
-
-option(ENABLE_WITH_MERGEMODEL "Enable Model Merging" ON)
-if (ENABLE_WITH_MERGEMODEL)
-  add_definitions(-DWITH_MERGEMODEL)
-endif(ENABLE_WITH_MERGEMODEL)
-
-option(ENABLE_ANALYTICS "Enable Analytics Task" OFF)
-if (ENABLE_ANALYTICS)
-add_definitions(-DWITH_ANALYTICS)
-endif(ENABLE_ANALYTICS)
-
-option(ENABLE_PE_EVENT_CREATION "Enable Event Creation out of time series data" ON)
-if (ENABLE_PE_EVENT_CREATION)
-  add_definitions(-DWITH_PE_EVENT_CREATION)
-endif(ENABLE_PE_EVENT_CREATION)
-
-option(ENABLE_COMBINE_ARCHIVE "Enable COMBINE Archive support" ON)
-if (ENABLE_COMBINE_ARCHIVE)
-  add_definitions(-DWITH_COMBINE_ARCHIVE)
-
-  if (WIN32)
-    add_definitions(-DLIBCOMBINE_STATIC=1)
-  endif()
-
-  find_package(LIBCOMBINE REQUIRED)
-  include_directories(BEFORE ${COMBINE_INCLUDE_DIR})
-endif(ENABLE_COMBINE_ARCHIVE)
-
-option(ENABLE_SDE_SUPPORT "Enable the support of Stochastic Differential Equations" ON)
-if (ENABLE_SDE_SUPPORT)
-  add_definitions(-DWITH_SDE_SUPPORT)
-endif(ENABLE_SDE_SUPPORT)
+find_package(LIBCOMBINE REQUIRED)
+include_directories(BEFORE ${COMBINE_INCLUDE_DIR})
 
 option(COPASI_INSTALL_C_API "Enable this option to also install the COPASI C API" OFF)
 
@@ -300,25 +267,13 @@ if ( NOT CLAPACK_FOUND )
 endif ()
 
 
-IF(DEFINED F2C_INTEGER)
-  add_definitions(-DF2C_INTEGER=${F2C_INTEGER})
-ENDIF()
-
-IF(DEFINED F2C_LOGICAL)
-  add_definitions(-DF2C_LOGICAL=${F2C_LOGICAL})
-ENDIF()
-
 option(CLAPACK_NO_BLASWRAP "If defined the NO_BLASWRAP compile option will be added" OFF)
-if (CLAPACK_NO_BLASWRAP)
-  add_definitions(-DNO_BLAS_WRAP)
-endif(CLAPACK_NO_BLASWRAP)
-
-if(DEFINED F2C_HAVE_H)
-  add_definitions(-DHAVE_F2C_H)
-endif()
 
 include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LAPACK_CFLAGS}")
+
+find_package(CROSSGUID REQUIRED)
+include_directories(BEFORE ${CROSSGUID_INCLUDE_DIR})
 
 find_package(EXPAT REQUIRED)
 include_directories(BEFORE ${EXPAT_INCLUDE_DIR})
@@ -353,27 +308,15 @@ endforeach()
 endif()
 
 
-# TODO find libsedml, version
-# Option for the COPASI support for SEDML
-option (ENABLE_COPASI_SEDML "Enables SEDML support." ON)
-mark_as_advanced(ENABLE_COPASI_SEDML)
-if(ENABLE_COPASI_SEDML)
-  add_definitions(-DCOPASI_SEDML)
-  if (WIN32)
-  add_definitions(-DLIBSEDML_STATIC)
-  endif()
+if (WIN32)
+add_definitions(-DLIBSEDML_STATIC)
+endif()
 
-  find_package(LIBSEDML REQUIRED)
-  include_directories(BEFORE ${LIBSEDML_INCLUDE_DIR})
-endif(ENABLE_COPASI_SEDML)
+find_package(LIBSEDML REQUIRED)
+include_directories(BEFORE ${LIBSEDML_INCLUDE_DIR})
 
 # actually iconv is only needed on BSD like systems
 find_package(ICONV)
-
-if (ICONV_SECOND_ARGUMENT_IS_CONST)
-  add_definitions(-DCOPASI_ICONV_CONST_CHAR)
-endif (ICONV_SECOND_ARGUMENT_IS_CONST)
-
 
 #platform specific defines
 
@@ -470,8 +413,7 @@ if(BUILD_GUI)
     
     set (ADDITIONAL_QT5_MODULES)
     if (QT5_USE_DATAVISUALIZATION)
-      set (ADDITIONAL_QT5_MODULES ${ADDITIONAL_QT5_MODULES} DataVisualization)
-      add_definitions(-DWITH_QT5_VISUALIZATION)
+    set (ADDITIONAL_QT5_MODULES ${ADDITIONAL_QT5_MODULES} DataVisualization)
     endif()
     
     if (QT_USE_TEXTBROWSER)
@@ -538,7 +480,6 @@ if(BUILD_GUI)
 
   if(ENABLE_MML)
     find_package(QtMmlQt4 REQUIRED)
-    add_definitions(-DHAVE_MML)
   endif(ENABLE_MML)
 
   # check for sbw
@@ -546,7 +487,6 @@ if(BUILD_GUI)
   if (ENABLE_SBW_INTEGRATION)
   find_package(SBW REQUIRED)
   include_directories(${SBW_INCLUDE_DIR})
-  add_definitions(-DCOPASI_SBW_INTEGRATION)
 
   # set up definitions for SBW
   if(UNIX)
@@ -598,16 +538,6 @@ endif ()
 
 option (ENABLE_USE_SBMLUNIT "Enables extended unit support." OFF)
 mark_as_advanced(ENABLE_USE_SBMLUNIT)
-if(ENABLE_USE_SBMLUNIT)
-add_definitions(-DUSE_SBMLUNIT)
-endif(ENABLE_USE_SBMLUNIT)
-
-#Option for the COPASI support for SEDML currently being developed by Joseph
-option (ENABLE_COPASI_SEDML "Enables SEDML support." ON)
-mark_as_advanced(ENABLE_COPASI_SEDML)
-if(ENABLE_COPASI_SEDML)
-  add_definitions(-DCOPASI_SEDML)
-endif(ENABLE_COPASI_SEDML)
 
 #Option for the COPASI support for Provenance Framework currently being developed by Peyman
 option (ENABLE_PROVENANCE "Enables Provenance support." OFF)
@@ -617,22 +547,10 @@ mark_as_advanced(ENABLE_PROVENANCE)
 option (ENABLE_VERSIONING "Enables Versioning support." OFF)
 mark_as_advanced(ENABLE_VERSIONING)
 
-#Option for the COPASI support for UNDO Framework currently being developed by Joseph
-option (ENABLE_COPASI_UNDO "Enables UNDO support." ON)
-mark_as_advanced(ENABLE_COPASI_UNDO)
 
-if(ENABLE_PROVENANCE)
-  set(ENABLE_VERSIONING ON)
-  add_definitions(-DCOPASI_Provenance)
-endif(ENABLE_PROVENANCE)
-
-if(ENABLE_VERSIONING)
-  add_definitions(-DCOPASI_Versioning)
-endif(ENABLE_VERSIONING)
-
-if(ENABLE_COPASI_UNDO)
-  add_definitions(-DCOPASI_UNDO)
-endif(ENABLE_COPASI_UNDO)
+if(ENABLE_PROVENANCE AND NOT ENABLE_VERSIONING)
+  set(ENABLE_VERSIONING ON CACHE BOOL "Enable Versioning Support" FORCE)
+endif(ENABLE_PROVENANCE AND NOT ENABLE_VERSIONING)
 
 option (BUILD_SEMANTIC_TESTSUITE "Build the program to run the SBML semantic testsuite." OFF)
 option (BUILD_STEADY_STATE_RUNNER "Build the program to run the comparisons on steady state results." OFF)
@@ -858,6 +776,12 @@ endif()
 
 endif (BUILD_HYB_TESTS)
 
+option(BUILD_CATCH_TESTS "Compile catch 2 unit tests." OFF)
+if (BUILD_CATCH_TESTS)
+  if (EXISTS ${CMAKE_SOURCE_DIR}/catch-unit-tests)
+  add_subdirectory(catch-unit-tests)
+  endif()
+endif(BUILD_CATCH_TESTS)
 
 # also install additional files and examples
 file(GLOB_RECURSE WIZARD_HELP_FILES "${PROJECT_SOURCE_DIR}/copasi/wizard/help_html" copasi/wizard/help_html/*.html)
@@ -891,6 +815,9 @@ message(STATUS "-----------------------------------------------------------
    LAPACK Libs       = ${CLAPACK_LIBRARIES}
    LAPACK LDFLAGS    = ${CLAPACK_LINKER_FLAGS}
 
+   crossguid Libs    = ${CROSSGUID_LIBRARY}
+   cross include     = ${CROSSGUID_INCLUDE_DIR}
+
    Expat Libs        = ${EXPAT_LIBRARY}
    Expat include     = ${EXPAT_INCLUDE_DIR}
 
@@ -917,8 +844,8 @@ message(STATUS "-----------------------------------------------------------
    SBW lib           = ${SBW_LIBRARIES}
    SBW include       = ${SBW_INCLUDE_DIR}
 
-   libSEDML lib       = ${LIBSEDML_LIBRARY}
-   libSEDML include   = ${LIBSEDML_INCLUDE_DIR}
+   libSEDML lib      = ${LIBSEDML_LIBRARY}
+   libSEDML include  = ${LIBSEDML_INCLUDE_DIR}
 
    Combine lib       = ${COMBINE_LIBRARY}
    Combine include   = ${COMBINE_INCLUDE_DIR}
@@ -928,12 +855,12 @@ message(STATUS "-----------------------------------------------------------
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
    SBW integration          = ${ENABLE_SBW_INTEGRATION}
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
-   Model Merging            = ${ENABLE_WITH_MERGEMODEL}
-   SEDML support            = ${ENABLE_COPASI_SEDML}
-   Combine Archive support  = ${ENABLE_COMBINE_ARCHIVE}
-   SDE support              = ${ENABLE_SDE_SUPPORT}
+   Model Merging            = ON
+   SEDML support            = ON
+   Combine Archive support  = ON
+   SDE support              = ON
    GPROF support            = ${ENABLE_GPROF}
-   UNDO framework           = ${ENABLE_COPASI_UNDO}
+   UNDO framework           = ON
    Versioning framework     = ${ENABLE_VERSIONING}
    Provenance framework     = ${ENABLE_PROVENANCE}
    Analytics Task           = ${ENABLE_ANALYTICS}

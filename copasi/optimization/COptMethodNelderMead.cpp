@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -37,9 +42,9 @@ COptMethodNelderMead::COptMethodNelderMead(const CDataContainer * pParent,
     const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType)
 {
-  addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 200);
-  addParameter("Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.e-005);
-  addParameter("Scale", CCopasiParameter::UDOUBLE, (C_FLOAT64) 10.0);
+  assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
+  assertParameter("Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.e-005);
+  assertParameter("Scale", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 10.0);
 
   initObjects();
 }
@@ -185,7 +190,13 @@ bool COptMethodNelderMead::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Nelder.Mead"));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Algorithm started.",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Nelder_-_Mead/"
+      )
+    );
 
   // set tolerances for local minima test to zero
   C_FLOAT64 abstol, reltol;
@@ -251,7 +262,8 @@ bool COptMethodNelderMead::optimise()
       mStep[i] = (*OptItem.getUpperBoundValue() - *OptItem.getLowerBoundValue()) / mScale;
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   evaluate();
 
@@ -562,7 +574,11 @@ First:
         }
     }   /* while not found and not quit ... */
 
-  if (mLogVerbosity >= 1 && found) mMethodLog.enterLogItem(COptLogItem(COptLogItem::NM_fval_change_lower_than_tol).iter(mIteration));
+  if (mLogVerbosity > 0 && found)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Iteration " + std::to_string(mIteration) + ": Variance of the objective function values at the vertices of the simplex are lower than tolerance. Checking whether local minimum was found."
+      ));
 
   /* **** bail out if necessary **** */
   if (quit || !mContinue) goto Finish;
@@ -601,16 +617,25 @@ First:
 
   /* ---- return on finding a local minimum to the desired accuracy. ---- */
 
-  if (ok) /* then */
+  if (ok)
     {
-      mMethodLog.enterLogItem(COptLogItem(COptLogItem::NM_local_min_termination).iter(mIteration));
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(
+          COptLogEntry(
+            "Iteration " + std::to_string(mIteration) + ": Found a local minimum. Terminating."
+          )
+        );
 
       goto Finish;
     }
 
   /* ---- Reduce the size of the simplex and restart the procedure. ---- */
 
-  if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::NM_no_local_min_reducing_simplex).iter(mIteration));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Iteration " + std::to_string(mIteration) + ": No local minimum found. Reducing simplex size."
+      ));
 
   found = 0;   /* -- we did not find a 1 minimum -- */
   del = std::max(del * factor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
@@ -618,7 +643,12 @@ First:
   goto First;
 
 Finish:  /* end of procedure */
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_iter).iter(mIteration).with(mIterationLimit));
+
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm finished.",
+                   "Terminated after " + std::to_string(mIteration) + " of " + std::to_string(mIterationLimit) + " iterations."
+                  ));
 
   if (mpCallBack)
     mpCallBack->finishItem(mhIteration);

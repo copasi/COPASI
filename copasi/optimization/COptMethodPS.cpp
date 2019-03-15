@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -49,12 +54,12 @@ COptMethodPS::COptMethodPS(const CDataContainer * pParent,
   mStopAfterStalledIterations(0),
   mContinue(true)
 {
-  addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 2000);
-  addParameter("Swarm Size", CCopasiParameter::UINT, (unsigned C_INT32) 50);
-  addParameter("Std. Deviation", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
-  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
-  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
-  addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
+  assertParameter("Swarm Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 50);
+  assertParameter("Std. Deviation", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-6);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Stop after # Stalled Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
@@ -340,7 +345,8 @@ bool COptMethodPS::initialize()
       mPopulationSize = 5;
       setValue("Swarm Size", mPopulationSize);
 
-      mMethodLog.enterLogItem(COptLogItem(COptLogItem::PS_usrdef_error_swarm_size).with(5));
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(COptLogEntry("User defined Swarm Size too small. Reset to minimum number (5)."));
     }
 
   mVariance = getValue< C_FLOAT64 >("Std. Deviation");
@@ -366,7 +372,12 @@ bool COptMethodPS::initialize()
 
   mpPermutation = new CPermutation(mpRandom, mPopulationSize);
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::PS_info_informants).with(mNumInformedMin).with(mPopulationSize));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Minimal number of informants per particle is " + std::to_string(mNumInformedMin) +
+        " at a swarm size of " + std::to_string(mPopulationSize) + " particles."
+      ));
 
   mpPermutation = new CPermutation(mpRandom, mPopulationSize);
 
@@ -459,6 +470,10 @@ C_FLOAT64 COptMethodPS::calcFValVariance() const
       if (*pValue == std::numeric_limits<C_FLOAT64>::infinity())
         return false;
 
+      //WARNING:This function returns C_FLOAT64, but above we have return false; !!!!!
+      // should we return 0.0 instead? (yes, false is often represeted with 0, but it
+      // does not have to!)
+
       Delta = *pValue - Mean;
       Mean += Delta / ++N;
       // This uses the new mean, i.e., not Delta * Delta
@@ -480,6 +495,7 @@ C_FLOAT64 COptMethodPS::calcVariableVariance(const size_t & variable) const
   std::vector<CVector< C_FLOAT64 > *>::const_iterator pIndividual = mIndividuals.begin();
   std::vector<CVector< C_FLOAT64 > *>::const_iterator pIndividualEnd = mIndividuals.end();
 
+  // WARNING: parameter values can be infinity, this needs to deal with that (as above)
   for (; pIndividual != pIndividualEnd; ++pIndividual)
     {
       pValue = (*pIndividual)->array() + variable;
@@ -502,14 +518,20 @@ bool COptMethodPS::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Particle.Swarm"));
-
   C_FLOAT64 * pIndividual = mIndividuals[0]->array();
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[0];
   C_FLOAT64 * pBestPosition = mBestPositions[0];
   std::vector< COptItem * >::const_iterator itOptItem = mpOptItem->begin();
   C_FLOAT64 ** ppContainerVariable = mContainerVariables.array();
+
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Particle Swarm algorithm started",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Particle_Swarm/"
+      )
+    );
 
   // initialise the population
   // first individual is the initial guess
@@ -544,7 +566,8 @@ bool COptMethodPS::optimise()
       **ppContainerVariable = *pIndividual;
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   // calculate its fitness
   mBestValues[0] = mValues[0] = evaluate();
@@ -583,13 +606,26 @@ bool COptMethodPS::optimise()
         {
           buildInformants();
 
-          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::PS_no_particle_improved, dumpStatus()).iter(mCurrentGeneration).with(mNumInformed));
+          if (mLogVerbosity > 1)
+            mMethodLog.enterLogEntry(
+              COptLogEntry(
+                "Iteration " + std::to_string(mCurrentGeneration) +
+                ": None of the particles improved in objective function value.",
+                "Rebuilding with " + std::to_string(mNumInformed) + " informants per particle.",
+                dumpStatus()));
         }
       else
         {
           if (reachedStdDeviation())
             {
-              mMethodLog.enterLogItem(COptLogItem(COptLogItem::PS_stddev_lower_than_tol_termination, dumpStatus()).iter(mCurrentGeneration));
+              if (mLogVerbosity > 1)
+                mMethodLog.enterLogEntry(
+                  COptLogEntry(
+                    "Iteration " + std::to_string(mCurrentGeneration) +
+                    ": Standard deviation of the particles was lower than tolerance. Terminating.",
+                    "",
+                    dumpStatus()));
+
               break;
             }
 
@@ -607,7 +643,13 @@ bool COptMethodPS::optimise()
   if (mpCallBack)
     mpCallBack->finishItem(mhGenerations);
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_iter, dumpStatus()).iter(mCurrentGeneration).with(mGenerations));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm finished.",
+                   "Terminated after " + std::to_string(mCurrentGeneration) +
+                   " of " + std::to_string(mGenerations) + " iterations.",
+                   dumpStatus()
+                  ));
 
   cleanup();
 
@@ -621,7 +663,7 @@ unsigned C_INT32 COptMethodPS::getMaxLogVerbosity() const
 
 std::string COptMethodPS::dumpStatus() const
 {
-  if (mLogVerbosity >= 2)
+  if (mLogVerbosity > 1)
     {
       std::stringstream status;
 

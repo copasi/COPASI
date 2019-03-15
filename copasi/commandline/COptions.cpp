@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -234,15 +234,16 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("ExportBerkeleyMadonna", Options.ExportBerkeleyMadonna);
   setValue("MaxTime", Options.MaxTime);
 
-#ifdef COPASI_SEDML
   setValue("ImportSEDML", Options.ImportSEDML);
   setValue("ExportSEDML", Options.ExportSEDML);
-#endif
 
-#ifdef WITH_COMBINE_ARCHIVE
   setValue("ImportCombineArchive", Options.ImportCombineArchive);
   setValue("ExportCombineArchive", Options.ExportCombineArchive);
-#endif
+
+  setValue("ConvertToIrreversible", Options.ConvertToIrreversible);
+  setValue("ScheduledTask", Options.ScheduledTask);
+  setValue("ReportFile", Options.ReportFile);
+
 
   delete pPreParser;
 

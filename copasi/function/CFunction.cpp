@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -29,9 +34,9 @@
 #include "utilities/copasimathml.h"
 
 // static
-CFunction * CFunction::fromData(const CData & data)
+CFunction * CFunction::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
-  CEvaluationTree * pTree = CEvaluationTree::fromData(data);
+  CEvaluationTree * pTree = CEvaluationTree::fromData(data, pParent);
 
   CFunction * pNew = dynamic_cast< CFunction * >(pTree);
 
@@ -46,23 +51,48 @@ CFunction * CFunction::fromData(const CData & data)
 // virtual
 CData CFunction::toData() const
 {
-  CData Data;
+  CData Data = CEvaluationTree::toData();
 
   // TODO CRITICAL Implement me!
-  fatalError();
+  // fatalError();
+
+  Data.appendData(CAnnotation::toData());
 
   return Data;
 }
 
 // virtual
-bool CFunction::applyData(const CData & data)
+bool CFunction::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
-  bool success = true;
+  bool success = CEvaluationTree::applyData(data, changes);
 
   // TODO CRITICAL Implement me!
-  fatalError();
+  // fatalError();
+
+  success &= CAnnotation::applyData(data, changes);
 
   return success;
+}
+
+// virtual
+void CFunction::createUndoData(CUndoData & undoData,
+                               const CUndoData::Type & type,
+                               const CData & oldData,
+                               const CCore::Framework & framework) const
+{
+  CEvaluationTree::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  // TODO CRITICAL Implement me!
+  // fatalError();
+
+  CAnnotation::createUndoData(undoData, type, oldData, framework);
+
+  return;
 }
 
 CFunction::CFunction(const std::string & name,
@@ -76,6 +106,7 @@ CFunction::CFunction(const std::string & name,
   mReversible(TriUnspecified)
 {
   mKey = CRootContainer::getKeyFactory()->add("Function", this);
+  initMiriamAnnotation(mKey);
 }
 
 CFunction::CFunction(const CFunction & src,
@@ -88,8 +119,8 @@ CFunction::CFunction(const CFunction & src,
   mReversible(src.mReversible)
 {
   mKey = CRootContainer::getKeyFactory()->add("Function", this);
-
   setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
+
   compile();
 }
 
@@ -287,11 +318,11 @@ CIssue CFunction::initVariables()
         if ((*it)->mainType() == CEvaluationNode::MainType::VARIABLE)
           {
             mVariables.add((*it)->getData(),
-                           CFunctionParameter::FLOAT64,
-                           CFunctionParameter::VARIABLE);
+                           CFunctionParameter::DataType::FLOAT64,
+                           CFunctionParameter::Role::VARIABLE);
             NewVariables.add((*it)->getData(),
-                             CFunctionParameter::FLOAT64,
-                             CFunctionParameter::VARIABLE);
+                             CFunctionParameter::DataType::FLOAT64,
+                             CFunctionParameter::Role::VARIABLE);
           }
     }
 
@@ -321,14 +352,14 @@ bool CFunction::isSuitable(const size_t noSubstrates,
     return false;
 
   //check substrates
-  if (mVariables.isVector(CFunctionParameter::SUBSTRATE))
+  if (mVariables.isVector(CFunctionParameter::Role::SUBSTRATE))
     {
       if (noSubstrates == 0 || noSubstrates == C_INVALID_INDEX)
         return false;
     }
   else //is no vector
     {
-      if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) != noSubstrates &&
+      if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::Role::SUBSTRATE) != noSubstrates &&
           noSubstrates != C_INVALID_INDEX)
         return false;
     }
@@ -336,21 +367,21 @@ bool CFunction::isSuitable(const size_t noSubstrates,
   //check products
   if (reversible == TriTrue)
     {
-      if (mVariables.isVector(CFunctionParameter::PRODUCT))
+      if (mVariables.isVector(CFunctionParameter::Role::PRODUCT))
         {
           if (noProducts == 0 || noProducts == C_INVALID_INDEX)
             return false;
         }
       else //is no vector
         {
-          if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) != noProducts &&
+          if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::Role::PRODUCT) != noProducts &&
               noProducts != C_INVALID_INDEX)
             return false;
         }
     }
 
   //no VARIABLE variables allowed for kinetic functions
-  if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::VARIABLE) != 0)
+  if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::Role::VARIABLE) != 0)
     return false;
 
   return true;
@@ -548,18 +579,18 @@ std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNo
 
   for (i = 0; i < imax; ++i)
     {
-      if (newFunction1->mVariables[i]->getUsage() == CFunctionParameter::PRODUCT)
-        newFunction1->mVariables[i]->setUsage(CFunctionParameter::MODIFIER);
+      if (newFunction1->mVariables[i]->getUsage() == CFunctionParameter::Role::PRODUCT)
+        newFunction1->mVariables[i]->setUsage(CFunctionParameter::Role::MODIFIER);
     }
 
   imax = newFunction2->mVariables.size();
 
   for (i = 0; i < imax; ++i)
     {
-      if (newFunction2->mVariables[i]->getUsage() == CFunctionParameter::PRODUCT)
-        newFunction2->mVariables[i]->setUsage(CFunctionParameter::SUBSTRATE);
-      else if (newFunction2->mVariables[i]->getUsage() == CFunctionParameter::SUBSTRATE)
-        newFunction2->mVariables[i]->setUsage(CFunctionParameter::MODIFIER);
+      if (newFunction2->mVariables[i]->getUsage() == CFunctionParameter::Role::PRODUCT)
+        newFunction2->mVariables[i]->setUsage(CFunctionParameter::Role::SUBSTRATE);
+      else if (newFunction2->mVariables[i]->getUsage() == CFunctionParameter::Role::SUBSTRATE)
+        newFunction2->mVariables[i]->setUsage(CFunctionParameter::Role::MODIFIER);
     }
 
   newFunction1->compile();

@@ -138,7 +138,7 @@ bool CQEFMReactionDM::insertRows(int /* position */, int /* rows */, const QMode
 }
 
 // virtual
-bool CQEFMReactionDM::removeRows(int /* position */, int /* rows */)
+bool CQEFMReactionDM::removeRows(int /* position */, int /* rows */, const QModelIndex & /* index */)
 {
   return false;
 }

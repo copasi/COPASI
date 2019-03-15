@@ -1,16 +1,6 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
 // All rights reserved.
 
 #include "CQParameterResultItemModel.h"
@@ -63,9 +53,9 @@ CQParameterResultItemModel::init()
   mBackgroundColor.getHsv(&h, &s, &v);
 
   if (s < 20)
-  {
-    s = 20;
-  }
+    {
+      s = 20;
+    }
 
   mBackgroundColor.setHsv(0, s, v);
 }
@@ -95,79 +85,87 @@ CQParameterResultItemModel::data(const QModelIndex & index, int role) const
   const COptItem *current = row < mItems.size() ? mItems[row] : NULL;
   const C_FLOAT64 & Solution = row < mSolutions.size() ? mSolutions[row] : std::numeric_limits<double>::quiet_NaN();
 
-
   if (role == Qt::BackgroundRole && current != NULL)
-  {
-    switch (column)
     {
-    case LowerBound:
-    {
-      if (current->getLowerBoundValue() != NULL && 1.01 * *current->getLowerBoundValue() > Solution)
-      {
-        return QBrush(mBackgroundColor);
-      }
-      break;
-    }
-    case UpperBound:
-    {
-      if (current->getUpperBoundValue() != NULL && 0.99 * *current->getUpperBoundValue() < Solution)
-      {
-        return QBrush(mBackgroundColor);
-      }
-      break;
+      switch (column)
+        {
+          case LowerBound:
+          {
+            if (current->getLowerBoundValue() != NULL && 1.01 * *current->getLowerBoundValue() > Solution)
+              {
+                return QBrush(mBackgroundColor);
+              }
 
-    }
-    }
+            break;
+          }
 
+          case UpperBound:
+          {
+            if (current->getUpperBoundValue() != NULL && 0.99 * *current->getUpperBoundValue() < Solution)
+              {
+                return QBrush(mBackgroundColor);
+              }
 
-    return QVariant();
-  }
+            break;
+          }
+        }
+
+      return QVariant();
+    }
 
   if (role == Qt::DisplayRole)
-  {
-
-    switch ((CQParameterResultItemModel::COLUMS)column)
     {
-    case Parameter:
-    {
-      const CDataObject *pObject =
-        CObjectInterface::DataObject(mpDataModel->getObjectFromCN(mItems[row]->getObjectCN()));
 
-      if (pObject)
-      {
-        if (dynamic_cast<const CFitProblem*>(mpProblem) != NULL)
+      switch ((CQParameterResultItemModel::COLUMS)column)
         {
-        std::string Experiments =
-          static_cast<CFitItem *>(mItems[row])->getExperiments();
+          case Parameter:
+          {
+            const CDataObject *pObject =
+              CObjectInterface::DataObject(mpDataModel->getObjectFromCN(mItems[row]->getObjectCN()));
 
-        if (Experiments != "")
-          Experiments = "; {" + Experiments + "}";
+            if (pObject)
+              {
+                if (dynamic_cast<const CFitProblem*>(mpProblem) != NULL)
+                  {
+                    std::string Experiments =
+                      static_cast<CFitItem *>(mItems[row])->getExperiments();
 
-        return FROM_UTF8(pObject->getObjectDisplayName() + Experiments);
+                    if (Experiments != "")
+                      Experiments = "; {" + Experiments + "}";
+
+                    return FROM_UTF8(pObject->getObjectDisplayName() + Experiments);
+                  }
+
+                return FROM_UTF8(pObject->getObjectDisplayName());
+              }
+
+            return "Not Found";
+          }
+
+          case LowerBound:
+            return FROM_UTF8(current->getLowerBound());
+
+          case StartValue:
+            return current->getLastStartValue();
+
+          case Value:
+            return Solution;
+
+          case UpperBound:
+            return FROM_UTF8(current->getUpperBound());
+
+          case StdDeviation:
+            return row < mStdDeviations.size() ? mStdDeviations[row] : std::numeric_limits<double>::quiet_NaN();
+
+          case CoeffOfVariation:
+            return row < mStdDeviations.size() ? fabs(100 * mStdDeviations[row] / Solution) : std::numeric_limits<double>::quiet_NaN();
+
+          case Gradient:
+          {
+            return row < mGradients.size() ? mGradients[row] : std::numeric_limits<double>::quiet_NaN();
+          }
         }
-        return FROM_UTF8(pObject->getObjectDisplayName());
-      }
-      return "Not Found";
     }
-    case LowerBound:
-      return FROM_UTF8(current->getLowerBound());
-    case StartValue:
-      return current->getLastStartValue();
-    case Value:
-      return Solution;
-    case UpperBound:
-      return FROM_UTF8(current->getUpperBound());
-    case StdDeviation:
-      return row < mStdDeviations.size() ? mStdDeviations[row] : std::numeric_limits<double>::quiet_NaN();
-    case CoeffOfVariation:
-      return row < mStdDeviations.size() ? fabs(100 * mStdDeviations[row] / Solution) : std::numeric_limits<double>::quiet_NaN();
-    case Gradient:
-    {
-      return row < mGradients.size() ? mGradients[row] : std::numeric_limits<double>::quiet_NaN();
-    }
-
-    }
-  }
 
   return QVariant();
 }
@@ -176,41 +174,48 @@ QVariant
 CQParameterResultItemModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
   if (role == Qt::SizeHintRole && orientation == Qt::Horizontal)
-  {
-    QSize initial = QAbstractTableModel::headerData(section, orientation, role).toSize();
-    return QSize(section == CoeffOfVariation ? 130 : 80, 20);
-  }
+    {
+      QSize initial = QAbstractTableModel::headerData(section, orientation, role).toSize();
+      return QSize(section == CoeffOfVariation ? 130 : 80, 20);
+    }
 
   if (role != Qt::DisplayRole)
     return QVariant();
 
   if (orientation == Qt::Horizontal)
-  {
-    switch ((CQParameterResultItemModel::COLUMS)section)
     {
-    case Parameter:
-      return "Parameter";
-    case LowerBound:
-      return "Lower Bound";
-    case StartValue:
-      return "Start Value";
-    case Value:
-      return "Value";
-    case UpperBound:
-      return "Upper Bound";
-    case StdDeviation:
-      return "Std. Deviation";
-    case CoeffOfVariation:
-      return "Coeff. of Variation [%]";
-    case Gradient:
-      return "Gradient";
+      switch ((CQParameterResultItemModel::COLUMS)section)
+        {
+          case Parameter:
+            return "Parameter";
+
+          case LowerBound:
+            return "Lower Bound";
+
+          case StartValue:
+            return "Start Value";
+
+          case Value:
+            return "Value";
+
+          case UpperBound:
+            return "Upper Bound";
+
+          case StdDeviation:
+            return "Std. Deviation";
+
+          case CoeffOfVariation:
+            return "Coeff. of Variation [%]";
+
+          case Gradient:
+            return "Gradient";
+        }
     }
-  }
   else
-  {
-    // for the vertical headers use just the section numbers
-    return section + 1;
-  }
+    {
+      // for the vertical headers use just the section numbers
+      return section + 1;
+    }
 
   return QVariant();
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,6 +7,22 @@
 
 #include "CDataValue.h"
 #include "CData.h"
+
+#include "copasi/utilities/utility.h"
+
+// static
+const CEnumAnnotation< std::string, CDataValue::Type > CDataValue::TypeName(
+{
+  "real", // DOUBLE = 0,
+  "integer", // INT,
+  "unsignedInteger", // UINT
+  "Boolean", // BOOL
+  "text", // STRING
+  "dataValues", // DATA_VALUES,
+  "dataVector", // DATA_VECTOR,
+  "pointer", // VOID_POINTER
+  "invalid" // INVALID
+});
 
 CDataValue::CDataValue(const Type & type):
   mType(CDataValue::INVALID),
@@ -20,6 +36,8 @@ CDataValue::CDataValue(const CDataValue & src):
   mpData(NULL)
 {
   assignData(src);
+
+  assert(mType == src.mType);
 }
 
 CDataValue::CDataValue(const C_FLOAT64 & value):
@@ -43,6 +61,15 @@ CDataValue::CDataValue(const unsigned C_INT32 & value):
   assignData(value);
 }
 
+#ifdef DATAVALUE_NEEDS_SIZE_T_MEMBERS
+CDataValue::CDataValue(const size_t & value):
+  mType(CDataValue::INVALID),
+  mpData(NULL)
+{
+  assignData(value);
+}
+#endif // DATAVALUE_NEEDS_SIZE_T_MEMBERS
+
 CDataValue::CDataValue(const bool & value):
   mType(CDataValue::INVALID),
   mpData(NULL)
@@ -62,6 +89,13 @@ CDataValue::CDataValue(const char * value):
   mpData(NULL)
 {
   assignData(std::string(value));
+}
+
+CDataValue::CDataValue(const CData & value):
+  mType(CDataValue::INVALID),
+  mpData(NULL)
+{
+  assignData(value);
 }
 
 CDataValue::CDataValue(const void * pVoidPointer):
@@ -121,6 +155,15 @@ CDataValue & CDataValue::operator = (const unsigned C_INT32 & value)
   return *this;
 }
 
+#ifdef DATAVALUE_NEEDS_SIZE_T_MEMBERS
+CDataValue & CDataValue::operator = (const size_t & value)
+{
+  assignData(value);
+
+  return *this;
+}
+#endif // DATAVALUE_NEEDS_SIZE_T_MEMBERS
+
 CDataValue & CDataValue::operator = (const bool & value)
 {
   assignData(value);
@@ -129,6 +172,13 @@ CDataValue & CDataValue::operator = (const bool & value)
 }
 
 CDataValue & CDataValue::operator = (const std::string & value)
+{
+  assignData(value);
+
+  return *this;
+}
+
+CDataValue & CDataValue::operator = (const CData & value)
 {
   assignData(value);
 
@@ -185,6 +235,15 @@ const unsigned C_INT32 & CDataValue::toUint() const
   return *static_cast< const unsigned C_INT32 * >(mpData);
 }
 
+size_t CDataValue::toSizeT() const
+{
+  if (mType != UINT ||
+      *static_cast< const unsigned C_INT32 * >(mpData) == std::numeric_limits< unsigned C_INT32 >::max())
+    return std::numeric_limits< size_t >::max();
+
+  return *static_cast< const unsigned C_INT32 * >(mpData);
+}
+
 const bool & CDataValue::toBool() const
 {
   static const bool Invalid(false);
@@ -203,6 +262,16 @@ const std::string & CDataValue::toString() const
     return Invalid;
 
   return *static_cast< const std::string * >(mpData);
+}
+
+const CData & CDataValue::toData() const
+{
+  static const CData Invalid;
+
+  if (mType != DATA)
+    return Invalid;
+
+  return *static_cast< const CData * >(mpData);
 }
 
 const std::vector< CDataValue > & CDataValue::toDataValues() const
@@ -228,6 +297,11 @@ const std::vector< CData > & CDataValue::toDataVector() const
 const void * CDataValue::toVoidPointer() const
 {
   return (mType != VOID_POINTER) ? NULL : mpData;
+}
+
+const void * CDataValue::raw() const
+{
+  return mpData;
 }
 
 const CDataValue::Type & CDataValue::getType() const
@@ -261,6 +335,10 @@ bool CDataValue::operator == (const CDataValue & rhs) const
         return (toString() == rhs.toString());
         break;
 
+      case DATA:
+        return (toData() == rhs.toData());
+        break;
+
       case DATA_VALUES:
         return (toDataValues() == rhs.toDataValues());
         break;
@@ -274,7 +352,7 @@ bool CDataValue::operator == (const CDataValue & rhs) const
         break;
 
       case INVALID:
-        return false;
+        return (raw() == rhs.raw());
         break;
     }
 
@@ -307,6 +385,10 @@ bool CDataValue::operator != (const CDataValue & rhs) const
         return (toString() != rhs.toString());
         break;
 
+      case DATA:
+        return (toData() != rhs.toData());
+        break;
+
       case DATA_VALUES:
         return (toDataValues() != rhs.toDataValues());
         break;
@@ -320,7 +402,7 @@ bool CDataValue::operator != (const CDataValue & rhs) const
         break;
 
       case INVALID:
-        return true;
+        return (raw() != rhs.raw());
         break;
     }
 
@@ -355,6 +437,10 @@ void CDataValue::allocateData(const CDataValue::Type & type)
 
       case STRING:
         mpData = new std::string;
+        break;
+
+      case DATA:
+        mpData = new CData;
         break;
 
       case DATA_VALUES:
@@ -403,6 +489,10 @@ void CDataValue::deleteData()
         delete static_cast< std::string * >(mpData);
         break;
 
+      case DATA:
+        delete static_cast< CData * >(mpData);
+        break;
+
       case DATA_VALUES:
         delete static_cast< std::vector< CDataValue > * >(mpData);
         break;
@@ -443,6 +533,14 @@ void CDataValue::assignData(const CDataValue & rhs)
         assignData(*static_cast< std::string * >(rhs.mpData));
         break;
 
+      case DATA:
+        assignData(*static_cast< CData * >(rhs.mpData));
+        break;
+
+      case DATA_VALUES:
+        assignData(*static_cast< std::vector< CDataValue > * >(rhs.mpData));
+        break;
+
       case DATA_VECTOR:
         assignData(*static_cast< std::vector< CData > * >(rhs.mpData));
         break;
@@ -477,6 +575,14 @@ void CDataValue::assignData(const unsigned C_INT32 & value)
   *static_cast< unsigned C_INT32 * >(mpData) = value;
 }
 
+#ifdef DATAVALUE_NEEDS_SIZE_T_MEMBERS
+void CDataValue::assignData(const size_t & value)
+{
+  unsigned C_INT32 Value = std::min(value, (size_t) std::numeric_limits< unsigned C_INT32 >::max());
+  assignData(Value);
+}
+#endif // DATAVALUE_NEEDS_SIZE_T_MEMBERS
+
 void CDataValue::assignData(const bool & value)
 {
   allocateData(BOOL);
@@ -489,6 +595,13 @@ void CDataValue::assignData(const std::string & value)
   allocateData(STRING);
 
   *static_cast< std::string * >(mpData) = value;
+}
+
+void CDataValue::assignData(const CData & value)
+{
+  allocateData(DATA);
+
+  *static_cast< CData * >(mpData) = value;
 }
 
 void CDataValue::assignData(const std::vector< CDataValue > & value)
@@ -525,15 +638,40 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
         break;
 
       case CDataValue::UINT:
-        os << o.toUint();
-        break;
+      {
+        const unsigned C_INT32 & Value = o.toUint();
+
+        if (Value < std::numeric_limits< unsigned C_INT32 >::max())
+          {
+            os << Value;
+          }
+        else
+          {
+            os << -1;
+          }
+      }
+
+      break;
 
       case CDataValue::BOOL:
-        os << o.toBool();
+
+        if (o.toBool())
+          {
+            os << "true";
+          }
+        else
+          {
+            os << "false";
+          }
+
         break;
 
       case CDataValue::STRING:
         os << o.toString();
+        break;
+
+      case CDataValue::DATA:
+        os << std::endl << o.toData();
         break;
 
       case CDataValue::DATA_VALUES:
@@ -542,7 +680,7 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
         std::vector< CDataValue >::const_iterator end = o.toDataValues().end();
 
         for (; it != end; ++it)
-          os << *it << std::endl;
+          os << std::endl << *it;
       }
       break;
 
@@ -552,7 +690,7 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
         std::vector< CData >::const_iterator end = o.toDataVector().end();
 
         for (; it != end; ++it)
-          os << *it << std::endl;
+          os << std::endl << *it;
       }
       break;
 
@@ -566,4 +704,91 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
     }
 
   return os;
+}
+
+std::istream & operator >> (std::istream & is, CDataValue & i)
+{
+  switch (i.mType)
+    {
+      case CDataValue::DOUBLE:
+        is >> *static_cast< C_FLOAT64 * >(i.mpData);
+        break;
+
+      case CDataValue::INT:
+        is >> *static_cast< C_INT32 * >(i.mpData);
+        break;
+
+      case CDataValue::UINT:
+
+        if (is.peek() == '-')
+          {
+            // Advance
+            C_INT32 dummy;
+            is >> dummy;
+
+            *static_cast< unsigned C_INT32 * >(i.mpData) = std::numeric_limits< unsigned C_INT32 >::max();
+          }
+        else
+          {
+            is >> *static_cast< unsigned C_INT32 * >(i.mpData);
+          }
+
+        break;
+
+      case CDataValue::BOOL:
+      {
+        std::string dummy;
+        is >> dummy;
+
+        *static_cast< bool * >(i.mpData) = dummy == "true" ? true : false;
+      }
+      break;
+
+      case CDataValue::STRING:
+        is >> *static_cast< std::string * >(i.mpData);
+        break;
+
+      case CDataValue::DATA:
+        is >> *static_cast< const CData * >(i.mpData);
+        break;
+
+      case CDataValue::DATA_VALUES:
+      {
+        std::vector< CDataValue >::iterator it = static_cast< std::vector< CDataValue > * >(i.mpData)->begin();
+        std::vector< CDataValue >::iterator end = static_cast< std::vector< CDataValue > * >(i.mpData)->end();
+
+        for (; it != end; ++it)
+          is >> *it;
+      }
+      break;
+
+      case CDataValue::DATA_VECTOR:
+      {
+        std::vector< CData >::iterator it = static_cast< std::vector< CData > * >(i.mpData)->begin();
+        std::vector< CData >::iterator end = static_cast< std::vector< CData > * >(i.mpData)->end();
+
+        for (; it != end; ++it)
+          is >> *it;
+      }
+      break;
+
+      case CDataValue::VOID_POINTER:
+      {
+        std::string dummy;
+        is >> dummy;
+
+        i.mpData = stringToPointer(dummy);
+      }
+      break;
+
+      case CDataValue::INVALID:
+      {
+        // Advance past "??? Invalid ???"
+        std::string dummy;
+        is >> dummy >> dummy >> dummy;
+      }
+      break;
+    }
+
+  return is;
 }

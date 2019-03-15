@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -203,21 +208,21 @@ bool CQUnitDM::setData(const QModelIndex &index, const QVariant &value,
         pUnitDef->setObjectName(TO_UTF8(createNewName("unit", COL_SYMBOL_UNITS)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::UNIT, ListViews::CHANGE, pUnitDef->getKey());
+      emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::CHANGE, pUnitDef->getCN());
     }
 
   return true;
 }
 
-bool CQUnitDM::insertRows(int position, int rows, const QModelIndex&)
+bool CQUnitDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
+  beginInsertRows(parent, position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
       CUnitDefinition *pUnitDef;
       CRootContainer::getUnitList()->add(pUnitDef = new CUnitDefinition(TO_UTF8(createNewName("unit", COL_NAME_UNITS)), CRootContainer::getUnitList()), true);
-      emit notifyGUI(ListViews::UNIT, ListViews::ADD, pUnitDef->getKey());
+      emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::ADD, pUnitDef->getCN());
     }
 
   endInsertRows();
@@ -225,7 +230,7 @@ bool CQUnitDM::insertRows(int position, int rows, const QModelIndex&)
   return true;
 }
 
-bool CQUnitDM::removeRows(int position, int rows)
+bool CQUnitDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   if (rows <= 0)
     return true;
@@ -242,10 +247,10 @@ bool CQUnitDM::removeRows(int position, int rows)
 
   for (itDeletedKey = DeletedKeys.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow, ++row)
     {
-      *itDeletedKey = itRow->getKey();
+      *itDeletedKey = itRow->getCN();
     }
 
-  beginRemoveRows(QModelIndex(), position, position + row - 1);
+  beginRemoveRows(parent, position, position + row - 1);
 
   for (itDeletedKey = DeletedKeys.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++row)
     {
@@ -255,7 +260,7 @@ bool CQUnitDM::removeRows(int position, int rows)
 
           if (pUnitDef != NULL) delete pUnitDef;
 
-          emit notifyGUI(ListViews::UNIT, ListViews::DELETE, *itDeletedKey);
+          emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::DELETE, *itDeletedKey);
         }
     }
 

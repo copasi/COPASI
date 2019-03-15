@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -13,6 +13,9 @@
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
 # All rights reserved. 
+
+
+
 
 
 # This is an example on how to build models with the COPASI backend API.
@@ -129,7 +132,7 @@ def main():
       # constant flux has only one function parameter
       assert reaction.getFunctionParameters().size() == 1
       # so there should be only one entry in the parameter mapping as well
-      assert len(reaction.getParameterMappings()) == 1
+      assert len(reaction.getParameterObjects()) == 1
       parameterGroup = reaction.getParameters()
       assert parameterGroup.size() == 1
       parameter = parameterGroup.getParameter(0)
@@ -174,7 +177,7 @@ def main():
 
   assert reaction.getFunctionParameters().size() == 2
   # so there should be two entries in the parameter mapping as well
-  assert len(reaction.getParameterMappings()) == 2
+  assert len(reaction.getParameterObjects()) == 2
   # mass action is a special case since the parameter mappings for the
   # substrates (and products) are in a vector
 
@@ -197,10 +200,10 @@ def main():
   # of the local one that is created by default
   # The first parameter is the one for the rate constant, so we point it to
   # the key of out model value
-  reaction.setParameterMapping(0, modelValue.getKey())
+  reaction.setParameterObject(0, modelValue)
   # now we have to set the parameter mapping for the substrates
-  reaction.addParameterMapping("substrate", g6p.getKey())
-  reaction.addParameterMapping("substrate", adp.getKey())
+  reaction.addParameterObject("substrate", g6p)
+  reaction.addParameterObject("substrate", adp)
 
   # finally compile the model
   # compile needs to be done before updating all initial values for

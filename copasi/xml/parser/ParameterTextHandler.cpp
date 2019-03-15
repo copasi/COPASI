@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -41,11 +46,11 @@ CXMLHandler * ParameterTextHandler::processStart(const XML_Char * pszName,
         // Parameter has attributes name, type and value
         name = mpParser->getAttributeValue("name", papszAttrs);
         cType = mpParser->getAttributeValue("type", papszAttrs);
-        type = toEnum(cType, CCopasiParameter::XMLType, CCopasiParameter::INVALID);
+        type = CCopasiParameter::XMLType.toEnum(cType, CCopasiParameter::Type::INVALID);
 
         switch (type)
           {
-            case CCopasiParameter::EXPRESSION:
+            case CCopasiParameter::Type::EXPRESSION:
               pHandlerToCall = getHandler(CharacterData);
               break;
 

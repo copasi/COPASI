@@ -170,43 +170,37 @@ protected:
    *  Multiplication of  submatrix
    */
 
-  void smmult(CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & C, C_INT & n1, C_INT & n2, C_INT & n3);
+  void smmult(const CMatrix< C_FLOAT64 > & A, const CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & C, C_INT n1, C_INT n2, C_INT n3);
 
   /**
    *  Substruction of  submatrix
    */
 
-  void smsubst(CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & C, C_INT & n1, C_INT & n2);
+  void smsubst(const CMatrix< C_FLOAT64 > & A, const CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & C, C_INT n1, C_INT n2);
 
   /**
    *   Addition of submatrix
    */
 
-  void smadd(CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & C, C_INT & n1, C_INT & n2);
+  void smadd(const CMatrix< C_FLOAT64 > & A, const CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & C, C_INT n1, C_INT n2);
 
   /**
    *   Normalize  submatrix
    */
 
-  void smnorm(C_INT & n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, C_INT & n1);
-
-  /**
-   *   TEST: perturbate basis vectors A
-   */
-
-  void perturbateA(C_INT & n, CMatrix< C_FLOAT64 > & A, C_FLOAT64 delta);
+  void smnorm(C_INT n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, C_INT n1);
 
   /**
    *   Inverse  submatrix
    */
 
-  void sminverse(C_INT & n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
+  void sminverse(C_INT n, const CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B);
 
   /**
    * compute amplitudes of fast and slow modes
    **/
 
-  void modesAmplitude(C_INT & N, C_INT & M, CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F);
+  void modesAmplitude(C_INT N, const CVector< C_FLOAT64 > & g, const CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F);
 
   /**
    * compute CSP radical pointer and  fast reaction pointers
@@ -237,10 +231,10 @@ protected:
    * Refinement Procedre :
    *  Lamm, Combustion Science and Technoligy, 1993.
    **/
-  void basisRefinement(C_INT & N, C_INT & M,
-                       CMatrix< C_FLOAT64 > & ALA, CMatrix< C_FLOAT64 > & TAU,
-                       CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B,
-                       CMatrix< C_FLOAT64 > & A0, CMatrix< C_FLOAT64 > & B0);
+  void basisRefinement(C_INT N, C_INT M,
+                      const CMatrix< C_FLOAT64 > & ALA, const CMatrix< C_FLOAT64 > & TAU,
+                      CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B,
+                      CMatrix< C_FLOAT64 > & A0, CMatrix< C_FLOAT64 > & B0);
 
   /**
    * evaluate Jacobian for the current y
@@ -262,12 +256,13 @@ protected:
    * check : whether each of the analysed M modes is exhausted
    **/
 
-  bool modesAreExhausted(C_INT & N, C_INT & M, C_FLOAT64 & tauM, C_FLOAT64 & tauM1 , CVector< C_FLOAT64 > & g, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F);
+  bool modesAreExhausted(C_INT N, C_INT M, C_FLOAT64 & tauM, C_FLOAT64 & tauM1, CVector< C_FLOAT64 > & g,
+                         const CMatrix< C_FLOAT64 > & A, const CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F);
 
   /**
    * compute  the norm C  of the off-diagonal blocks
    **/
-  C_INT isBlockDiagonal(C_INT & N, C_INT & M, CMatrix< C_FLOAT64 > & ALA, C_FLOAT64 SMALL);
+  C_INT isBlockDiagonal(C_INT N, C_INT M, const CMatrix< C_FLOAT64 > & ALA, const C_FLOAT64 & SMALL);
 
   /**
    *  Start procedure of the CSP algorithm.
@@ -280,7 +275,7 @@ protected:
    * CSP output : empty
    **/
 
-  void emptyOutputData(C_INT & N, C_INT & M, C_INT & R);
+  void emptyOutputData(C_INT N, C_INT M, C_INT R);
 
 
 protected:

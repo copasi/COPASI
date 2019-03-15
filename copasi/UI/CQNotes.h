@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -43,8 +48,6 @@ protected:
 
 #include "copasi/UI/ui_CQNotes.h"
 #include "copasi/UI/CQValidator.h"
-
-class QUndoStack;
 
 class CQValidatorXML : public CQValidator< QPlainTextEdit >
 {
@@ -105,11 +108,6 @@ public:
   CQNotes(QWidget *parent = 0, const char *name = 0);
   ~CQNotes();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &key);
-  virtual bool leave();
-
-  void changeNotes(const std::string &key, const std::string &notes);
-
 protected slots:
   void slotToggleMode();
   void slotOpenUrl(const QUrl &url);
@@ -118,6 +116,8 @@ protected slots:
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
 
 private:
   void load();
@@ -128,9 +128,7 @@ private:
   CQValidatorXML *mpValidatorXML;
   QValidator::State mValidity;
 
-  std::string mKeyToCopy;
-
-  QUndoStack *mpUndoStack;
+  CCommonName mObjectCNToCopy;
 
   QWidget* mpWebView;
 
@@ -139,7 +137,6 @@ private:
    * to recognize whether changes have been made to the element or not.
    */
   QString mLoadedText;
-
 };
 
 #endif // COPASI_CQNotes

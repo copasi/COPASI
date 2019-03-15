@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,7 +45,7 @@ public:
    * @param const CData & data
    * @return CFittingPoint * pDataObject
    */
-  static CFittingPoint * fromData(const CData & data);
+  static CFittingPoint * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -53,7 +58,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
 
   CFittingPoint(const std::string & name = "unknown",
                 const CDataContainer * pParent = NO_PARENT);
@@ -293,7 +298,7 @@ public:
 
   void setNormalizeWeightsPerExperiment(bool flag);
   bool getNormalizeWeightsPerExperiment() const;
-  
+
   /**
    * Retrieve the time data of the experiment.
    * @return const CVector< C_FLOAT64 > & timeData
@@ -559,21 +564,19 @@ public:
    * @return size_t count
    */
   size_t getColumnValidValueCount(const CObjectInterface * pObject) const;
-  
+
   /**
   * get number of independent data points for the whole experiment
-  * only valid data points (that contain actual data) are counted. 
+  * only valid data points (that contain actual data) are counted.
   */
-    size_t getValidValueCount() const;
-    
+  size_t getValidValueCount() const;
+
   /**
   * get number of independent data points expected given the number of rows and columns
   *
   */
-   size_t getTotalValueCount() const;
-    
-    
-  
+  size_t getTotalValueCount() const;
+
   /**
    * Retrieve the list of independent objects
    * @return const CObjectInterface::ObjectSet & independentObjects
@@ -695,11 +698,11 @@ private:
   /**
    * Pointer to the actual independent values in the model
    * in the order in which they occur as colums in the file,
-   * which is also the order in which the numbers are stored in the 
+   * which is also the order in which the numbers are stored in the
    * various internal data structures
    */
   CVector< C_FLOAT64 * > mDependentValues;
-  
+
   CVector< C_FLOAT64 * > mIndependentValues;
 
   CMathContainer * mpContainer;
@@ -720,9 +723,9 @@ private:
   C_FLOAT64 mMeanSD;
   C_FLOAT64 mObjectiveValue;
   C_FLOAT64 mRMS;
-  
+
   size_t mValidValueCount;
-  
+
   CVector< C_FLOAT64 > mRowObjectiveValue;
   CVector< C_FLOAT64 > mRowRMS;
 

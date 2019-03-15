@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,7 +27,7 @@
 
 #include "copasi/core/CObjectInterface.h"
 #include "copasi/core/CFlags.h"
-
+#include "copasi/undo/CUndoObjectInterface.h"
 #include "copasi/utilities/CValidity.h"
 
 class CDataObject;
@@ -30,14 +35,12 @@ class CDataContainer;
 class CModel;
 class CDataModel;
 class CUnit;
-class CData;
-class CUndoData;
 
 template <class CType> class CDataObjectReference;
 
 //********************************************************************************
 
-class CDataObject: public CObjectInterface
+class CDataObject: public CObjectInterface, public CUndoObjectInterface
 {
 public:
   typedef std::set< const CDataObject * > DataObjectSet;
@@ -75,15 +78,18 @@ protected:
               const std::string & type = "CN",
               const CFlags< Flag > & flag = CFlags< Flag >::None);
 
-  CDataObject(const CDataObject & src);
-
 public:
   /**
    * Static method to create a CDataObject based on the provided data
    * @param const CData & data
    * @return CDataObject * pDataObject
    */
-  static CDataObject * fromData(const CData & data);
+  static CDataObject * fromData(const CData & data, CUndoObjectInterface * pParent);
+
+  /**
+   * Destruct the object
+   */
+  virtual void destruct();
 
   /**
    * Retrieve the data describing the object
@@ -96,19 +102,26 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
 
   /**
-   * Append all required dependent undo data
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
    * @param CUndoData & undoData
-   * @param const CCore::Framework & framework
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
    */
-  virtual void appendDependentData(CUndoData & undoData, const CCore::Framework & framework);
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
 
   static void sanitizeObjectName(std::string & name);
 
   CDataObject(const CDataObject & src,
-              const CDataContainer * pParent);
+              const CDataContainer * pParent = NULL);
 
   virtual ~CDataObject();
 
@@ -260,12 +273,11 @@ private:
 
   CFlags< Flag > mObjectFlag;
 
-  std::set< CDataContainer * > mReferences;
-
   std::set< const CValidity * > mReferencedValidities;
   CValidity mAggregateValidity;
 
 protected:
+  std::set< CDataContainer * > mReferences;
   ObjectSet mPrerequisits;
 };
 

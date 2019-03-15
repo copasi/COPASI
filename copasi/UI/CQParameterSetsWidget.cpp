@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,8 +52,8 @@ CQParameterSetsWidget::CQParameterSetsWidget(QWidget *parent, const char *name)
   mpTblParameterSets->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   setFramework(mFramework);
   // Connect the table widget
-  connect(mpParameterSetsDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpParameterSetsDM, SIGNAL(signalNotifyChanges(const CUndoData::CChangeSet &)),
+          this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
   connect(mpParameterSetsDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -113,28 +118,31 @@ void CQParameterSetsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQParameterSetsWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &C_UNUSED(key))
+bool CQParameterSetsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
-
-  if (objectType == ListViews::MODEL &&
-    (action == ListViews::DELETE ||
-      action == ListViews::ADD))
-  {
-    mpDataModel = NULL;
-    mpObject = NULL;
-    mKey = "";
-  }
+  if (objectType == ListViews::ObjectType::MODEL &&
+      (action == ListViews::DELETE ||
+       action == ListViews::ADD))
+    {
+      mpObject = NULL;
+      mObjectCN.clear();
+    }
 
   if (mIgnoreUpdates || !isVisible())
     {
       return true;
     }
 
+  if (objectType == ListViews::ObjectType::MODEL ||
+      objectType == ListViews::ObjectType::MODELPARAMETERSET)
+    {
+      enterProtected();
+    }
 
   return true;
 }
 
-bool CQParameterSetsWidget::leave()
+bool CQParameterSetsWidget::leaveProtected()
 {
   return true;
 }
@@ -144,7 +152,7 @@ bool CQParameterSetsWidget::enterProtected()
   if (mpObject == NULL)
     {
       if (mpDataModel != NULL)
-        mpObject = mpDataModel->getModel();
+        mpObject = &mpDataModel->getModel()->getModelParameterSets();
 
       if (mpObject == NULL)
         return false;
@@ -156,7 +164,7 @@ bool CQParameterSetsWidget::enterProtected()
                  this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
     }
 
-  mpParameterSetsDM->setListOfModelParameterSets(&static_cast< CModel * >(mpObject)->getModelParameterSets());
+  mpParameterSetsDM->setListOfModelParameterSets(dynamic_cast< CDataVectorN< CModelParameterSet > * >(mpObject));
   mpProxyModel->setSourceModel(mpParameterSetsDM);
   //Set Model for the TableView
   mpTblParameterSets->setModel(NULL);
@@ -227,15 +235,13 @@ void CQParameterSetsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  if (mpObject == NULL)
+  CDataVector < CModelParameterSet > * pVector = dynamic_cast< CDataVector < CModelParameterSet > * >(mpObject);
+
+  if (pVector != NULL &&
+      index.row() < pVector->size())
     {
-      return;
+      mpListView->switchToOtherWidget(ListViews::WidgetType::ParameterSetDetail, pVector->operator [](index.row()).getCN());
     }
-
-  std::string key = static_cast< CModel * >(mpObject)->getModelParameterSets()[index.row()].getKey();
-
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void CQParameterSetsWidget::keyPressEvent(QKeyEvent *ev)

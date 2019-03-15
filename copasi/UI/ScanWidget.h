@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -43,9 +43,11 @@ public:
 
 protected:
 
-  virtual bool loadTask();
+  virtual bool loadTaskProtected();
 
-  virtual bool saveTask();
+  virtual bool saveTaskProtected();
+
+  virtual bool taskFinishedEvent();
 
   //dummy, should not be used in this widget
   virtual CCopasiMethod * createMethod(const CTaskEnum::Method & /*type*/);
@@ -56,6 +58,8 @@ protected:
   QComboBox* comboType;
 
   QGridLayout* ScanWidgetLayout;
+
+  bool mIsLoading { false };
 
 protected slots:
   bool slotAddItem();

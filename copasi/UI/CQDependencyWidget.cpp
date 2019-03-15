@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -79,7 +84,7 @@ void CQDependencyWidget::updateFromDependencies(std::set< const CDataObject * > 
     {
       const CDataObject *pObject = *it;
       QTableWidgetItem *item = new QTableWidgetItem(FROM_UTF8(pObject->getObjectName()) + ":");
-      item->setData(Qt::UserRole, FROM_UTF8(pObject->getKey()));
+      item->setData(Qt::UserRole, FROM_UTF8(pObject->getCN()));
       mpTable->setItem(i, 0, item);
       mpTable->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(getDetailsFor(pObject, elements))));
     }
@@ -101,7 +106,7 @@ CQDependencyWidget::getDetailsFor(const CDataObject *pObject, std::set< const CD
 
   const CReaction *pReaction = dynamic_cast<const CReaction *>(pObject);
 
-  if (pReaction != NULL) return CChemEqInterface::getChemEqString(mpModel, *pReaction, false);
+  if (pReaction != NULL) return CChemEqInterface::getChemEqString(*pReaction, false);
 
   const CModelEntity *pEntity = dynamic_cast<const CModelEntity *>(pObject);
 
@@ -207,17 +212,15 @@ CQDependencyWidget::getNumDependencies() const
 void
 CQDependencyWidget::rowDoubleClicked(int row, int)
 {
-  std::string key = TO_UTF8(mpTable->item(row, 0)->data(Qt::UserRole).toString());
+  std::string cn = TO_UTF8(mpTable->item(row, 0)->data(Qt::UserRole).toString());
 
-  if (key.empty()) return;
+  if (cn.empty()) return;
 
   if (mpListView == NULL)
     {
-      mpListView = CopasiUI3Window::getMainWindow()->getMainWidget();
+      CopasiUI3Window::getMainWindow()->getMainWidget()->switchToOtherWidget(ListViews::WidgetType::NotFound, cn);
+      return;
     }
 
-  if (mpListView != NULL)
-    {
-      mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-    }
+  mpListView->switchToOtherWidget(ListViews::WidgetType::NotFound, cn);
 }

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -67,7 +72,7 @@ CQFittingWidget::~CQFittingWidget()
   // no need to delete child widgets, Qt does it all for us
 }
 
-bool CQFittingWidget::saveTask()
+bool CQFittingWidget::saveTaskProtected()
 {
   CFitTask * pTask =
     dynamic_cast< CFitTask * >(mpTask);
@@ -226,7 +231,7 @@ bool CQFittingWidget::saveTask()
   return true;
 }
 
-bool CQFittingWidget::loadTask()
+bool CQFittingWidget::loadTaskProtected()
 {
   CFitTask * pTask =
     dynamic_cast< CFitTask * >(mpTask);
@@ -294,7 +299,7 @@ bool CQFittingWidget::loadTask()
 bool CQFittingWidget::runTask()
 {
   CFitTask * pTask =
-    dynamic_cast< CFitTask * >(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CFitTask * >(mpObject);
 
   if (!pTask) return false;
 
@@ -312,7 +317,7 @@ bool CQFittingWidget::taskFinishedEvent()
   bool result = TaskWidget::taskFinishedEvent();
 
   CFitTask * pTask =
-    dynamic_cast< CFitTask * >(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CFitTask * >(mpObject);
 
   if (!pTask) return false;
 
@@ -320,7 +325,7 @@ bool CQFittingWidget::taskFinishedEvent()
 
   for (size_t i = mnParamterSetsBeforeRun; i < finalCount; ++i)
     {
-      protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pTask->getObjectDataModel()->getModel()->getModelParameterSets()[i].getKey());
+      protectedNotify(ListViews::ObjectType::MODELPARAMETERSET, ListViews::ADD, pTask->getObjectDataModel()->getModel()->getModelParameterSets()[i].CDataObject::getCN());
     }
 
   return true;
@@ -361,6 +366,7 @@ void CQFittingWidget::init()
 
   mpMethodWidget->setValidMethods(CFitTask::ValidMethods);
   mpMethodWidget->showMethodParameters(true);
+  mpMethodWidget->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
   verticalLayout->addWidget(mpMethodWidget);
 
   verticalLayout->addWidget(mpBtnWidget);

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,12 +12,10 @@
 #define COPASI_GUI_TYPES_H
 
 #include <copasi/UI/AboutDialog.h>
-#include <copasi/UI/CBrowseModelVersionDialog.h>
 #include <copasi/UI/CColorScale.h>
 #include <copasi/UI/CCopasiPlotSelectionDialog.h>
 #include <copasi/UI/CCopasiSelectionDialog.h>
 #include <copasi/UI/CCopasiSelectionWidget.h>
-#include <copasi/UI/CCreateModelVersionDialog.h>
 #include <copasi/UI/CEntityProvenanceDialog.h>
 #include <copasi/UI/ChemEqValidator.h>
 #include <copasi/UI/CLNAResultSubwidget.h>
@@ -138,7 +141,6 @@
 #include <copasi/UI/CQTSSAResultWidget.h>
 #include <copasi/UI/CQTSSATimeScaleWidget.h>
 #include <copasi/UI/CQTSSAWidget.h>
-#include <copasi/UI/CQUndoHistoryDialog.h>
 #include <copasi/UI/CQUnitDetail.h>
 #include <copasi/UI/CQUnitDM.h>
 #include <copasi/UI/CQUnitsWidget.h>
@@ -154,7 +156,6 @@
 #include <copasi/UI/CScanWidgetTask.h>
 #include <copasi/UI/CUpDownSubwidget.h>
 #include <copasi/UI/CWindowInterface.h>
-#include <copasi/UI/DataModel.txt.h>
 #include <copasi/UI/DataModelGUI.h>
 #include <copasi/UI/DefaultplotDialog.h>
 #include <copasi/UI/FunctionWidget1.h>

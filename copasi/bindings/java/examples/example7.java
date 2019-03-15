@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -12,6 +12,12 @@
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
+
+
+
+
+
+
 
 
 
@@ -128,13 +134,13 @@ public class example7
      // per default the usage of those parameters will be set to VARIABLE
      long index = function.getVariableIndex("temp");
      CFunctionParameter param = variables.getParameter(index);
-     assert param.getUsage() == CFunctionParameter.VARIABLE;
+     assert param.getUsage() == CFunctionParameter.Role_VARIABLE;
      // This is correct for temp, but substrate should get the usage SUBSTRATE in order
      // for us to use the function with the reaction created above
      // So we need to set the usage for "substrate" manually
      index = function.getVariableIndex("substrate");
      param = variables.getParameter(index);
-     param.setUsage(CFunctionParameter.SUBSTRATE);
+     param.setUsage(CFunctionParameter.Role_SUBSTRATE);
 
      // set the rate law for the reaction
      reaction.setFunction(function);
@@ -143,8 +149,8 @@ public class example7
      // COPASI also needs to know what object it has to assocuiate with the individual function parameters
      // In our case we need to tell COPASI that substrate is to be replaced by the substrate of the reaction
      // and temp is to be replaced by the global parameter K
-     reaction.setParameterMapping("substrate", S.getKey());
-     reaction.setParameterMapping("temp", MV.getKey());
+     reaction.setParameterObject("substrate", S);
+     reaction.setParameterObject("temp", MV);
      
      // finally compile the model
      // compile needs to be done before updating all initial values for

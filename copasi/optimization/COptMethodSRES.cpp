@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -46,12 +51,12 @@ COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
   mBestValue(std::numeric_limits< C_FLOAT64 >::max())
 
 {
-  addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
-  addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 20);
-  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
-  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
-  addParameter("Pf", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.475);  //*****ADDED for SR
-  addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
+  assertParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 20);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Pf", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.475);  //*****ADDED for SR
+  assertParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
@@ -126,8 +131,7 @@ bool COptMethodSRES::replicate()
   // iterate over parents
   for (i = 0; itSrc != endSrc && Continue; ++itSrc, ++itSrcVariance, ++i)
     {
-      // iterate over the child rate - 1 since the first child is the
-      // parent.
+      // iterate over the child rate - 1 since the first child is the parent.
       for (j = 1; j < childrate; ++j, ++itTarget, ++itTargetVariance)
         {
           // first just copy the individuals
@@ -367,7 +371,8 @@ bool COptMethodSRES::creation(size_t first)
           *pVariance = std::min(*OptItem.getUpperBoundValue() - mut, mut - *OptItem.getLowerBoundValue()) / sqrt(double(mVariableSize));
         }
 
-      if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+      if (!pointInParameterDomain && (mLogVerbosity > 0))
+        mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
       Continue = evaluate(**it);
       *pValue++ = mEvaluationValue;
@@ -513,7 +518,10 @@ bool COptMethodSRES::initialize()
       mPf = 0.475;
       setValue("Pf", mPf);
 
-      mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_usrdef_error_pf).with(mPf));
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(
+          COptLogEntry("User defined Pf not in interval (0,1). Reset to default: " + std::to_string(mPf) + "."
+                      ));
     }
 
   mIndividuals.resize(childrate * mPopulationSize);
@@ -645,7 +653,13 @@ bool COptMethodSRES::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Evolutionary.Strategy.SRES"));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Algorithm started",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Evolutionary_Strategy_SRES/"
+      )
+    );
 
   // initialise the population
   Continue = creation(0);
@@ -666,7 +680,8 @@ bool COptMethodSRES::optimise()
 
   if (!Continue)
     {
-      mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_early_stop));
+      if (mLogVerbosity > 0)
+        mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user."));
 
       if (mpCallBack)
         mpCallBack->finishItem(mhGenerations);
@@ -685,32 +700,56 @@ bool COptMethodSRES::optimise()
       // perturb the population if we have stalled for a while
       if (Stalled80 > 80)
         {
-          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_fittest_not_changed_x_random_generated).iter(mGeneration).with(Stalled80 - 1).with(80);
+          if (mLogVerbosity > 0)
+            mMethodLog.enterLogEntry(
+              COptLogEntry(
+                "Generation " + std::to_string(mCurrentGeneration) +
+                "generations: Fittest individual has not changed for the last " + std::to_string(Stalled80 - 1) +
+                ". 80% of individuals randomized."
+              ));
 
-                Continue = creation((size_t)(mPopulationSize * 0.2));
-                Stalled10 = Stalled20 = Stalled40 = Stalled80 = 0;
-          }
+          Continue = creation((size_t)(mPopulationSize * 0.2));
+          Stalled10 = Stalled20 = Stalled40 = Stalled80 = 0;
+        }
       else if (Stalled40 > 40)
         {
-          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_fittest_not_changed_x_random_generated).iter(mGeneration).with(Stalled80 - 1).with(40);
+          if (mLogVerbosity > 0)
+            mMethodLog.enterLogEntry(
+              COptLogEntry(
+                "Generation " + std::to_string(mCurrentGeneration) +
+                "generations: Fittest individual has not changed for the last " + std::to_string(Stalled40 - 1) +
+                ". 40% of individuals randomized."
+              ));
 
-                Continue = creation((size_t)(mPopulationSize * 0.6));
-                Stalled10 = Stalled20 = Stalled40 = 0;
-          }
+          Continue = creation((size_t)(mPopulationSize * 0.6));
+          Stalled10 = Stalled20 = Stalled40 = 0;
+        }
       else if (Stalled20 > 20)
         {
-          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_fittest_not_changed_x_random_generated).iter(mGeneration).with(Stalled80 - 1).with(20);
+          if (mLogVerbosity > 0)
+            mMethodLog.enterLogEntry(
+              COptLogEntry(
+                "Generation " + std::to_string(mCurrentGeneration) +
+                "generations: Fittest individual has not changed for the last " + std::to_string(Stalled20 - 1) +
+                ". 20% of individuals randomized."
+              ));
 
-                Continue = creation((size_t)(mPopulationSize * 0.8));
-                Stalled10 = Stalled20 = 0;
-          }
+          Continue = creation((size_t)(mPopulationSize * 0.8));
+          Stalled10 = Stalled20 = 0;
+        }
       else if (Stalled10 > 10)
         {
-          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_fittest_not_changed_x_random_generated).iter(mGeneration).with(Stalled80 - 1).with(10);
+          if (mLogVerbosity > 0)
+            mMethodLog.enterLogEntry(
+              COptLogEntry(
+                "Generation " + std::to_string(mCurrentGeneration) +
+                "generations: Fittest individual has not changed for the last " + std::to_string(Stalled10 - 1) +
+                ". 10% of individuals randomized."
+              ));
 
-                Continue = creation((size_t)(mPopulationSize * 0.9));
-                Stalled10 = 0;
-          }
+          Continue = creation((size_t)(mPopulationSize * 0.9));
+          Stalled10 = 0;
+        }
 
 #else
 
@@ -755,7 +794,11 @@ bool COptMethodSRES::optimise()
       mpParentTask->output(COutputInterface::MONITORING);
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_gener).iter(mCurrentGeneration - 1).with(mGenerations));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm finished.",
+                   "Terminated after " + std::to_string(mCurrentGeneration - 1) + " of " +
+                   std::to_string(mGenerations) + " generations."));
 
   if (mpCallBack)
     mpCallBack->finishItem(mhGenerations);

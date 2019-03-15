@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,18 +27,17 @@
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "function/CFunction.h"
+#include "copasi/model/CMetab.h"
 #include "UI/CQCompartment.h"
 #include "UI/CQSpeciesDetail.h"
 #include "UI/ReactionsWidget1.h"
 #include "UI/CQUnitDetail.h"
 
-#include <QUndoStack>
-#include <copasi/undoFramework/EntityRenameCommand.h>
 #include <copasi/UI/copasiui3window.h>
 
 #ifdef COPASI_Provenance
 #include "CEntityProvenanceDialog.h"
-#include "versioning/CModelVersion.h"
+#include "../versioning/CModelVersionHierarchy.h"
 #include "commandline/CConfigurationFile.h"
 #endif
 
@@ -55,13 +59,13 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
 
   switch (mObjectType)
     {
-      case  ListViews::MODEL:
+      case  ListViews::ObjectType::MODEL:
         mpBtnNew->hide();
         mpBtnCopy->hide();
         mpBtnDelete->hide();
         break;
 
-      case ListViews::MODELPARAMETERSET:
+      case ListViews::ObjectType::MODELPARAMETERSET:
         mpBtnNew->setText("Apply");
         mpBtnNew->setToolTip("Apply the current parameters to the model.");
 
@@ -88,9 +92,6 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
   mPages.push_back(pRDFTreeView);
   mpTabWidget->addTab(pRDFTreeView, "RDF Browser");
 
-  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
-  setUndoStack(pWindow->getUndoStack());
-
 #ifdef COPASI_Provenance
 
   if ((FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Species") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Compartment") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Reaction") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Event") || (FROM_UTF8(ListViews::ObjectTypeName[mObjectType]) == "Global Quantity"))
@@ -114,7 +115,7 @@ CQTabWidget::~CQTabWidget()
   // TODO Auto-generated destructor stub
 }
 
-bool CQTabWidget::leave()
+bool CQTabWidget::leaveProtected()
 {
   if (mIgnoreLeave) return true;
 
@@ -129,6 +130,16 @@ bool CQTabWidget::leave()
   return true;
 }
 
+QHBoxLayout * CQTabWidget::getHeaderLayout()
+{
+  return mpLayoutName;
+}
+
+QHBoxLayout * CQTabWidget::getButtonLayout()
+{
+  return mpLayoutBtn;
+}
+
 bool CQTabWidget::enterProtected()
 {
   load();
@@ -137,37 +148,40 @@ bool CQTabWidget::enterProtected()
   std::vector< CopasiWidget * >::iterator end = mPages.end();
 
   for (; it != end; ++it)
-    (*it)->enter(mKey);
+    (*it)->enter(mObjectCN);
 
   return true;
 }
 
-bool CQTabWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool CQTabWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {
       return true;
     }
 
-  if (objectType == mObjectType &&
-      key == mKey)
+  if (cn == mObjectCN)
     {
-      switch (action)
+      if (objectType == mObjectType)
         {
-          case ListViews::RENAME:
-            load();
-            break;
+          switch (action)
+            {
+              case ListViews::RENAME:
+              case ListViews::CHANGE:
+                load();
+                break;
 
-          case ListViews::DELETE:
-            mpObject = NULL;
-            break;
+              case ListViews::DELETE:
+                mpObject = NULL;
+                mObjectCN.clear();
+                break;
 
-          default:
-            break;
+              default:
+                break;
+            }
         }
     }
 
-  // We do not need to update the child pages as they are directly called from listviews.
   return true;
 }
 
@@ -176,16 +190,18 @@ void CQTabWidget::selectTab(int index) const
   mpTabWidget->setCurrentIndex(index);
 }
 
+int CQTabWidget::getSelectedTab() const
+{
+  return mpTabWidget->currentIndex();
+}
+
 void CQTabWidget::load()
 {
-  // mpObject can not be trusted
-  mpObject = CRootContainer::getKeyFactory()->get(mKey);
-
   if (mpObject != NULL)
     {
       mpEditName->setText(FROM_UTF8(mpObject->getObjectName()));
 
-      if (mObjectType == ListViews::FUNCTION)
+      if (mObjectType == ListViews::ObjectType::FUNCTION)
         {
           bool readOnly = static_cast< const CFunction * >(mpObject)->isReadOnly();
 
@@ -194,7 +210,7 @@ void CQTabWidget::load()
           mpBtnRevert->setEnabled(!readOnly);
           mpBtnDelete->setEnabled(!readOnly);
         }
-      else if (mObjectType == ListViews::UNIT)
+      else if (mObjectType == ListViews::ObjectType::UNIT)
         {
           bool readOnly = static_cast< const CUnitDefinition * >(mpObject)->isReadOnly();
 
@@ -206,11 +222,11 @@ void CQTabWidget::load()
 
 #ifdef COPASI_Provenance
 
-      if (mObjectType == ListViews::METABOLITE ||
-          mObjectType == ListViews::COMPARTMENT ||
-          mObjectType == ListViews::REACTION ||
-          mObjectType == ListViews::EVENT ||
-          mObjectType == ListViews::MODELVALUE)
+      if (mObjectType == ListViews::ObjectType::METABOLITE ||
+          mObjectType == ListViews::ObjectType::COMPARTMENT ||
+          mObjectType == ListViews::ObjectType::REACTION ||
+          mObjectType == ListViews::ObjectType::EVENT ||
+          mObjectType == ListViews::ObjectType::MODELVALUE)
         {
           CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window *>(CopasiUI3Window::getMainWindow());
 
@@ -231,10 +247,9 @@ void CQTabWidget::load()
 
 bool CQTabWidget::save()
 {
-  // mpObject can not be trusted
-  mpObject = CRootContainer::getKeyFactory()->get(mKey);
-
   if (mpObject == NULL) return false;
+
+  bool success = true;
 
   // We need to tell the sub-widgets to ignore all notifications
   std::vector< CopasiWidget * >::iterator it = mPages.begin();
@@ -245,16 +260,42 @@ bool CQTabWidget::save()
 
   if (mpObject->getObjectName() != TO_UTF8(mpEditName->text()))
     {
-      CUndoData Data(CUndoData::Type::CHANGE, mpObject);
-      Data.addProperty(CData::OBJECT_NAME, mpObject->getObjectName(), TO_UTF8(mpEditName->text()));
+      std::string NewName = TO_UTF8(mpEditName->text());
+      CDataObject::sanitizeObjectName(NewName);
+      CDataContainer * pParent = mpObject->getObjectParent();
 
-      mpDataModel->applyData(Data);
-      mpDataModel->changed();
+      if (pParent != NULL &&
+          pParent->hasFlag(CDataObject::NameVector) &&
+          pParent->getObject("[" + CCommonName::escape(NewName) + "]") != NULL)
+        {
+          QString msg;
+          msg = "Unable to rename " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]).toLower() + " '" + FROM_UTF8(mpObject->getObjectName()) + "'\n"
+                + "to '" + FROM_UTF8(NewName) + "' since a " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]).toLower() + " with that name already exists.\n";
 
-      mpUndoStack->push(new EntityRenameCommand(mpObject,
-                        mpObject->getObjectName(),
-                        TO_UTF8(mpEditName->text()),
-                        this));
+          CQMessageBox::information(this,
+                                    "Unable to rename " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]),
+                                    msg,
+                                    QMessageBox::Ok, QMessageBox::Ok);
+
+          mpEditName->setText(FROM_UTF8(mpObject->getObjectName()));
+          success = false;
+        }
+      else
+        {
+          CData OldData(mpObject->toData());
+          mpObject->setObjectName(NewName);
+
+          CUndoData UndoData;
+          mpObject->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast<CCore::Framework>(mFramework));
+          ListViews::addUndoMetaData(this, UndoData);
+
+          if (dynamic_cast< CMetab * >(mpObject))
+            UndoData.addMetaDataProperty("Widget Object Name (after)", mpObject->getObjectName() + "{" + CCommonName::compartmentNameFromCN(mpObject->getCN()) + "}");
+          else
+            UndoData.addMetaDataProperty("Widget Object Name (after)", mpObject->getObjectName());
+
+          slotNotifyChanges(mpDataModel->recordData(UndoData));
+        }
     }
 
   // We need to tell the sub-widgets to accept notifications again
@@ -264,14 +305,14 @@ bool CQTabWidget::save()
   for (; it != end; ++it)
     (*it)->setIgnoreUpdates(false);
 
-  return true;
+  return success;
 }
 
 void CQTabWidget::slotBtnCommit()
 {
   mpBtnCommit->setFocus();
 
-  leave();
+  leaveProtected();
   enterProtected();
 }
 
@@ -291,7 +332,7 @@ void CQTabWidget::slotBtnNew()
 {
   mpBtnNew->setFocus();
 
-  leave();
+  leaveProtected();
 
   mIgnoreLeave = true;
   emit newClicked();
@@ -302,11 +343,11 @@ void CQTabWidget::slotBtnCopy()
 {
   mpBtnCopy->setFocus();
 
-  leave();
+  leaveProtected();
 
   mIgnoreLeave = true;
 
-  // CQCompartments and CQSpecies have copy options, use CModelExpansion, and do their own switching.
+  // CQCompartments, CQSpeciesDetail, and ReactionsWidget1 have copy options, use CModelExpansion, and do their own switching.
   if (QString(mPages[0]->metaObject()->className()) == "CQCompartment")
     {
       CQCompartment * pQCompartment = dynamic_cast< CQCompartment * >(mPages[0]);
@@ -322,53 +363,19 @@ void CQTabWidget::slotBtnCopy()
       ReactionsWidget1 * pReactionsWidget1 = dynamic_cast< ReactionsWidget1 * >(mPages[0]);
       pReactionsWidget1->copy();
     }
-  else if (QString(mPages[0]->metaObject()->className()) == "CQUnitDetail")
+  else if (QString(mPages[0]->metaObject()->className()) == "CQUnitDetail" ||
+           QString(mPages[0]->metaObject()->className()) == "CQModelValue" ||
+           QString(mPages[0]->metaObject()->className()) == "CQEventWidget1")
     {
       emit copyClicked();
     }
-  else
+  else // Old Style Copy
     {
       emit copyClicked();
       emit newClicked();
     }
 
   mIgnoreLeave = false;
-}
-
-bool CQTabWidget::renameEntity(const std::string& key, const std::string& newName)
-{
-  mKey = key;
-  load();
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-
-  if (mpObject == NULL)
-    return false;
-
-  if (!mpObject->setObjectName(newName))
-    {
-      QString msg;
-      msg = "Unable to rename " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]).toLower() + " '" + FROM_UTF8(mpObject->getObjectName()) + "'\n"
-            + "to '" + FROM_UTF8(newName) + "' since a " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]).toLower() + " with that name already exists.\n";
-
-      CQMessageBox::information(this,
-                                "Unable to rename " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]),
-                                msg,
-                                QMessageBox::Ok, QMessageBox::Ok);
-
-      mpEditName->setText(FROM_UTF8(mpObject->getObjectName()));
-      return false;
-    }
-
-  mpEditName->setText(FROM_UTF8(newName));
-
-  protectedNotify(mObjectType, ListViews::RENAME, mKey);
-
-  if (mpDataModel != NULL)
-    {
-      mpDataModel->changed();
-    }
-
-  return true;
 }
 
 const int CQTabWidget::getNumTabs() const

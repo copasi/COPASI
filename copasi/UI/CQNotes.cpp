@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -66,7 +71,6 @@ CQWebEnginePage::acceptNavigationRequest(const QUrl & url,
 
 #include <copasi/UI/copasiui3window.h>
 #include <copasi/UI/CQCopasiApplication.h>
-#include <copasi/undoFramework/ChangeNotesCommand.h>
 
 CQValidatorXML::CQValidatorXML(QPlainTextEdit * parent, const char * name):
   CQValidator< QPlainTextEdit >(parent, &QPlainTextEdit::toPlainText, name),
@@ -174,8 +178,7 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
   mChanged(false),
   mpValidatorXML(NULL),
   mValidity(QValidator::Acceptable),
-  mKeyToCopy("")
-  , mpUndoStack(NULL)
+  mObjectCNToCopy()
   , mpWebView(NULL)
 
 {
@@ -209,11 +212,11 @@ CQNotes::~CQNotes()
 
 void CQNotes::slotBtnCopy()
 {
-  mKeyToCopy = mKey;
+  mObjectCNToCopy = mObjectCN;
 }
 
 // virtual
-bool CQNotes::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool CQNotes::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {
@@ -224,7 +227,7 @@ bool CQNotes::update(ListViews::ObjectType objectType, ListViews::Action action,
     {
       case ListViews::CHANGE:
 
-        if (key == mKey)
+        if (cn == mObjectCN)
           {
             load();
           }
@@ -233,10 +236,10 @@ bool CQNotes::update(ListViews::ObjectType objectType, ListViews::Action action,
 
       case ListViews::DELETE:
 
-        if (key == mKey || objectType == ListViews::MODEL)
+        if (cn == mObjectCN || objectType == ListViews::ObjectType::MODEL)
           {
             mpObject = NULL;
-            mKey = "";
+            mObjectCN.clear();
           }
 
         break;
@@ -245,7 +248,7 @@ bool CQNotes::update(ListViews::ObjectType objectType, ListViews::Action action,
         break;
     }
 
-  if (objectType == ListViews::MODEL &&
+  if (objectType == ListViews::ObjectType::MODEL &&
       action == ListViews::DELETE)
     {
       mEditMode = false;
@@ -255,20 +258,15 @@ bool CQNotes::update(ListViews::ObjectType objectType, ListViews::Action action,
 }
 
 // virtual
-bool CQNotes::leave()
+bool CQNotes::leaveProtected()
 {
-  //mpBtnToggleEdit->setFocus();
-
-  mpObject = CRootContainer::getKeyFactory()->get(mKey);
-
   if (mpObject != NULL)
     {
       save();
     }
   else
     {
-      mKey = "";
-      mpDataModel = NULL;
+      mObjectCN.clear();
     }
 
   return true;
@@ -277,17 +275,21 @@ bool CQNotes::leave()
 // virtual
 bool CQNotes::enterProtected()
 {
-  if (mKeyToCopy == "")
+  if (mObjectCNToCopy == "")
     {
       load();
     }
   else
     {
-      mpObject = CRootContainer::getKeyFactory()->get(mKeyToCopy);
+      CObjectInterface::ContainerList List;
+      List.push_back(mpDataModel);
+
+      // This will check the current data model and the root container for the object;
+      mpObject = const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, mObjectCNToCopy)));
       load();
-      mpObject = CRootContainer::getKeyFactory()->get(mKey);
+      mpObject = const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, mObjectCN)));
       save();
-      mKeyToCopy = "";
+      mObjectCN.clear();
     }
 
   return true;
@@ -347,8 +349,6 @@ void CQNotes::slotValidateXML()
 
 void CQNotes::load()
 {
-  mpObject = CRootContainer::getKeyFactory()->get(mKey);
-
   if (mpObject != NULL)
     {
       QString Notes;
@@ -428,15 +428,11 @@ void CQNotes::save()
       plainText = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + plainText + "</body>";
     }
 
-  if (mpUndoStack == NULL)
-    {
-      CopasiUI3Window *  pWindow = static_cast<CQCopasiApplication*>(qApp)->getMainWindow();
+  CUndoData UndoData(CUndoData::Type::CHANGE, mpObject->toData());
+  UndoData.addProperty(CData::Property::NOTES, notes, plainText);
+  ListViews::addUndoMetaData(this, UndoData);
 
-      if (pWindow)
-        mpUndoStack = pWindow->getUndoStack();
-    }
-
-  mpUndoStack->push(new ChangeNotesCommand(mpObject, notes, plainText, this));
+  slotNotifyChanges(mpDataModel->applyData(UndoData));
 }
 
 void CQNotes::slotOpenUrl(const QUrl & url)
@@ -448,41 +444,4 @@ void CQNotes::slotOpenUrl(const QUrl & url)
 
   QDesktopServices::openUrl(url);
   return;
-}
-
-void CQNotes::changeNotes(const std::string& key, const std::string& notes)
-{
-  if (mpListView->getCurrentItemKey() != mKey || key != mKey)
-    {
-      mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-    }
-
-  mKey = key;
-  load();
-
-  CAnnotation * pAnnotation = CAnnotation::castObject(mpObject);
-  CReportDefinition * pReportDefinition = static_cast< CReportDefinition * >(mpObject);
-
-  if (pAnnotation != NULL)
-    {
-      pAnnotation->setNotes(notes);
-    }
-  else if (pReportDefinition != NULL)
-    {
-      pReportDefinition->setComment(notes);
-    }
-
-  mChanged = true;
-
-  if (mIgnoreUpdates)
-    return;
-
-  if (mpDataModel != NULL)
-    {
-      mpDataModel->changed();
-    }
-
-  protectedNotify(ListViews::MODEL, ListViews::CHANGE, mKey);
-
-  mChanged = false;
 }

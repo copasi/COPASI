@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,16 +25,23 @@
 CUndoStack::CUndoStack():
   std::vector< CUndoData * >(),
   mpDataModel(NULL),
-  mCurrent(C_INVALID_INDEX)
+  mCurrent(C_INVALID_INDEX),
+  mLastExecuted(C_INVALID_INDEX)
 {}
 
 CUndoStack::CUndoStack(const CDataModel & dataModel):
   std::vector< CUndoData * >(),
   mpDataModel(const_cast< CDataModel * >(&dataModel)),
-  mCurrent(C_INVALID_INDEX)
+  mCurrent(C_INVALID_INDEX),
+  mLastExecuted(C_INVALID_INDEX)
 {}
 
 CUndoStack::~CUndoStack()
+{
+  clear();
+}
+
+void CUndoStack::clear()
 {
   iterator it = std::vector< CUndoData * >::begin();
   iterator end = std::vector< CUndoData * >::end();
@@ -39,7 +51,9 @@ CUndoStack::~CUndoStack()
       delete *it;
     }
 
-  clear();
+  std::vector< CUndoData * >::clear();
+  mCurrent = C_INVALID_INDEX;
+  mLastExecuted = C_INVALID_INDEX;
 }
 
 const CUndoData & CUndoStack::operator [](const size_t & index) const
@@ -47,44 +61,50 @@ const CUndoData & CUndoStack::operator [](const size_t & index) const
   return *std::vector< CUndoData * >::operator[](index);
 }
 
-size_t CUndoStack::setCurrent(const size_t & index)
+CUndoData::CChangeSet CUndoStack::setCurrentIndex(const size_t & index, const bool & execute)
 {
+  CUndoData::CChangeSet Changes;
+
   // Nothing to do
-  if (index == mCurrent)
+  if (index == mCurrent ||
+      (index >= size() &&
+       index != C_INVALID_INDEX))
     {
-      return mCurrent;
+      return Changes;
     }
 
-  // If the index is larger than the current index and valid
-  // we need to re-apply data
-  if (index > mCurrent &&
-      index != C_INVALID_INDEX)
+  // If the index is smaller than the current or equal to C_INVALID_INDEX we must undo
+  if ((index < mCurrent && mCurrent != C_INVALID_INDEX) ||
+      index == C_INVALID_INDEX)
     {
-      std::vector< CUndoData * >::iterator it = std::vector< CUndoData * >::begin() + mCurrent;
-      std::vector< CUndoData * >::iterator end = std::vector< CUndoData * >::end();
+      // The first data which can be undone is mCurrent
+      std::vector< CUndoData * >::reverse_iterator it = std::vector< CUndoData * >::rbegin() + (size() - mCurrent - 1);
+      std::vector< CUndoData * >::reverse_iterator end = (index != C_INVALID_INDEX) ? it + (mCurrent - index) : std::vector< CUndoData * >::rend();
 
       for (; it != end; ++it)
         {
-          (*it)->apply(*mpDataModel);
+          (*it)->undo(*mpDataModel, Changes, execute);
         }
+
+      mLastExecuted = index + 1;
     }
-  // We need to undo all data starting with mCurrent and ending just before index;
-  else
+  else if (index < size())
     {
-      // The reverse iterator need to point to mCurrent therefore the forward iterator need to point beyond.
-      std::vector< CUndoData * >::reverse_iterator it(std::vector< CUndoData * >::begin() + (mCurrent + 1));
-      // If index == C_INVALID_INDEX then index + 1 = 0, i.e., just what we want.
-      std::vector< CUndoData * >::reverse_iterator end(std::vector< CUndoData * >::rend() - (index + 1));
+      // The first data which can be applied is mCurrent + 1.
+      std::vector< CUndoData * >::iterator it = std::vector< CUndoData * >::begin() + (mCurrent + 1);
+      std::vector< CUndoData * >::iterator end = it + (index - mCurrent);
 
       for (; it != end; ++it)
         {
-          (*it)->undo(*mpDataModel);
+          (*it)->apply(*mpDataModel, Changes, execute);
         }
+
+      mLastExecuted = index;
     }
 
   mCurrent = index;
 
-  return mCurrent;
+  return Changes;
 }
 
 size_t CUndoStack::size() const
@@ -107,28 +127,57 @@ CUndoStack::const_iterator CUndoStack::end() const
   return std::vector< CUndoData * >::end();
 }
 
-size_t CUndoStack::record(const CUndoData & data)
+std::pair< const CUndoData *, bool > CUndoStack::getLastExecution() const
 {
-  mCurrent++;
+  if (mLastExecuted >= size())
+    return std::make_pair((CUndoData *) NULL, false);
 
-  // Check whether we need to remove not applied data, i.e., all data
-  // after mCurrent
-  if (mCurrent != size())
+  return std::make_pair(&operator[](mLastExecuted), mLastExecuted == mCurrent);
+}
+
+CUndoData::CChangeSet CUndoStack::record(const CUndoData & data, const bool & execute)
+{
+  // Remove all not applied data, i.e., all data which we can redo
+  while (canRedo())
     {
-      iterator Current = std::vector< CUndoData * >::begin() + mCurrent;
-
-      iterator it = Current;
-      iterator end = std::vector< CUndoData * >::end();
-
-      for (; it != end; ++it)
-        delete *it;
-
-      erase(Current, std::vector< CUndoData * >::end());
+      delete * std::vector< CUndoData * >::rbegin();
+      std::vector< CUndoData * >::pop_back();
     }
 
   push_back(new CUndoData(data));
 
-  assert(mCurrent == size() - 1);
+  assert(canRedo());
 
-  return mCurrent;
+  // We can not use redo() since it implies execute = true!
+  return setCurrentIndex(mCurrent + 1, execute);
+}
+
+bool CUndoStack::canUndo() const
+{
+  return mCurrent != C_INVALID_INDEX;
+}
+
+bool CUndoStack::canRedo() const
+{
+  return mCurrent + 1 < size();
+}
+
+CUndoData::CChangeSet CUndoStack::undo()
+{
+  if (canUndo())
+    {
+      return setCurrentIndex(mCurrent - 1, true);
+    }
+
+  return CUndoData::CChangeSet();
+}
+
+CUndoData::CChangeSet CUndoStack::redo()
+{
+  if (canRedo())
+    {
+      return setCurrentIndex(mCurrent + 1, true);
+    }
+
+  return CUndoData::CChangeSet();
 }

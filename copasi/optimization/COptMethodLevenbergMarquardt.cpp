@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -21,8 +26,9 @@
 // levmarq.cpp : Restricted step Newton method (Marquardt iteration)
 
 #include <cmath>
-#include "copasi.h"
+#include <sstream>
 
+#include "copasi.h"
 #include "COptMethodLevenbergMarquardt.h"
 #include "COptProblem.h"
 #include "COptItem.h"
@@ -61,10 +67,10 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
   mHaveResiduals(false),
   mResidualJacobianT()
 {
-  addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 2000);
-  addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006);
-  addParameter("Modulation", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006, eUserInterfaceFlag::editable);
-  addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
+  assertParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006);
+  assertParameter("Modulation", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006, eUserInterfaceFlag::editable);
+  assertParameter("Stop after # stalled iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
 }
@@ -112,7 +118,13 @@ bool COptMethodLevenbergMarquardt::optimise()
       return false;
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Levenberg.Marquardt"));
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry(
+        "Levenberg-Marquardt algorithm started",
+        "For more information about this method see: http://copasi.org/Support/User_Manual/Methods/Optimization_Methods/Levenberg_-_Marquardt/"
+      )
+    );
 
   C_INT dim, starts, info, nrhs;
   C_INT one = 1;
@@ -164,7 +176,8 @@ bool COptMethodLevenbergMarquardt::optimise()
       *mContainerVariables[i] = mCurrent[i];
     }
 
-  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+  if (!pointInParameterDomain && (mLogVerbosity > 0))
+    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   // keep the current parameter for later
   mBest = mCurrent;
@@ -225,7 +238,11 @@ bool COptMethodLevenbergMarquardt::optimise()
       // if Hessian is positive definite solve Hess * h = -grad
       if (info == 0)
         {
-          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_hess_pos_def).iter(mIteration));
+          if (mLogVerbosity > 2)
+            mMethodLog.enterLogEntry(
+              COptLogEntry(
+                "Iteration " + std::to_string(mIteration) + ": Hessian matrix is positive definite. Calculating gradient."
+              ));
 
           // SUBROUTINE DPOTRS(UPLO, N, NRHS, A, LDA, B, LDB, INFO)
           dpotrs_(&UPLO, &dim, &one, mHessianLM.array(), &dim, mStep.array(), &dim, &info);
@@ -236,7 +253,13 @@ bool COptMethodLevenbergMarquardt::optimise()
         }
       else
         {
-          if (mLogVerbosity >= 1 && info > 0) mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_hess_not_pos_def).iter(mIteration).with(info));
+          if (mLogVerbosity > 1)
+            mMethodLog.enterLogEntry(
+              COptLogEntry(
+                "Iteration " + std::to_string(mIteration) +
+                ": Hessian matrix is not positive definite because the leading minor of order " +
+                std::to_string(info) + " is not positive definite. Reducing step size."
+              ));
 
           // We are in a concave region. Thus the current step is an over estimation.
           // We reduce it by dividing by lambda
@@ -244,6 +267,17 @@ bool COptMethodLevenbergMarquardt::optimise()
             {
               mStep[i] /= LM_lambda;
             }
+        }
+
+      if (mLogVerbosity > 2)
+        {
+          C_INT oit;
+          std::ostringstream auxStream;
+
+          for (oit = 0; oit < dim; oit++)
+            auxStream << "x[" << oit << "]=" << mStep[oit] << " ";
+
+          mMethodLog.enterLogEntry(COptLogEntry("search direction: ", "", auxStream.str()));
         }
 
 //REVIEW:START
@@ -266,12 +300,28 @@ bool COptMethodLevenbergMarquardt::optimise()
             {
               case - 1:
                 mCurrent[i] = *OptItem.getLowerBoundValue() + std::numeric_limits< C_FLOAT64 >::epsilon();
+
+                if (mLogVerbosity > 2)
+                  mMethodLog.enterLogEntry(
+                    COptLogEntry(
+                      "Iteration " + std::to_string(mIteration) +
+                      ": parameter #" + std::to_string(i) + " below the lower bound."
+                    ));
+
                 pointInParameterDomain = false;
                 break;
 
               case 1:
                 mCurrent[i] = *OptItem.getUpperBoundValue() - std::numeric_limits< C_FLOAT64 >::epsilon();
                 pointInParameterDomain = false;
+
+                if (mLogVerbosity > 2)
+                  mMethodLog.enterLogEntry(
+                    COptLogEntry(
+                      "Iteration " + std::to_string(mIteration) +
+                      ": parameter #" + std::to_string(i) + " above the upper bound."
+                    ));
+
                 break;
 
               case 0:
@@ -334,6 +384,20 @@ bool COptMethodLevenbergMarquardt::optimise()
       // calculate the objective function value
       evaluate();
 
+      if (mLogVerbosity > 1)
+        {
+          C_INT oit;
+          std::ostringstream string1, string2;
+
+          string1 << "niter=" << mIteration << ", f=" << mEvaluationValue << ", fbest=" << mBestValue;
+          string2 << "position: ";
+
+          for (oit = 0; oit < dim; oit++)
+            string2 << "x[" << oit << "]=" << mCurrent[oit] << " ";
+
+          mMethodLog.enterLogEntry(COptLogEntry(string1.str(), "", string2.str()));
+        }
+
       // set the convergence check amplitudes
       // convx has the relative change in objective function value
       convx = (mBestValue - mEvaluationValue) / mBestValue;
@@ -364,7 +428,13 @@ bool COptMethodLevenbergMarquardt::optimise()
             {
               if (starts < 3)
                 {
-                  mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_fval_and_param_change_lower_than_tol).iter(mIteration).with(starts));
+                  if (mLogVerbosity > 1)
+                    mMethodLog.enterLogEntry(
+                      COptLogEntry(
+                        "Iteration " + std::to_string(mIteration) +
+                        ": Objective function value and parameter change lower than tolerance (" +
+                        std::to_string(starts) + "/3). Resetting lambda."
+                      ));
 
                   // let's restart with lambda=1
                   LM_lambda = 1.0;
@@ -372,7 +442,13 @@ bool COptMethodLevenbergMarquardt::optimise()
                 }
               else
                 {
-                  mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_fval_and_param_change_lower_than_tol_termination).iter(mIteration).with(starts));
+                  if (mLogVerbosity > 1)
+                    mMethodLog.enterLogEntry(
+                      COptLogEntry(
+                        "Iteration " + std::to_string(mIteration) +
+                        ": Objective function value and parameter change lower than tolerance (3/3). Terminating."
+                      ));
+
                   // signal the end
                   nu = 0.0;
                 }
@@ -389,20 +465,34 @@ bool COptMethodLevenbergMarquardt::optimise()
           // if lambda too high terminate
           if (LM_lambda > LAMBDA_MAX)
             {
-              mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_lambda_max_termination).iter(mIteration));
+              if (mLogVerbosity > 1)
+                mMethodLog.enterLogEntry(
+                  COptLogEntry(
+                    "Iteration " + std::to_string(mIteration) +
+                    ": Lambda reached maximal value. Terminating."
+                  ));
 
               nu = 0.0;
             }
           else
             {
-              if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_inc_lambda).iter(mIteration));
-
               // increase lambda
               LM_lambda *= nu * 2;
               // don't recalculate the Hessian
               calc_hess = false;
               // correct the number of iterations
               mIteration--;
+
+              if (mLogVerbosity > 1)
+                {
+                  std::ostringstream auxStream;
+                  auxStream << LM_lambda;
+                  mMethodLog.enterLogEntry(
+                    COptLogEntry(
+                      "Iteration " + std::to_string(mIteration) +
+                      ": Restarting iteration with increased lambda.",
+                      "Lambda = " + auxStream.str()));
+                }
             }
         }
 
@@ -410,8 +500,16 @@ bool COptMethodLevenbergMarquardt::optimise()
         mContinue &= mpCallBack->progressItem(mhIteration);
     }
 
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_count_edge_of_param_domain).with(mParameterOutOfBounds));
-  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_iter).iter(mIteration).with(mIterationLimit));
+  if ((mLogVerbosity > 1) && (mParameterOutOfBounds > 0))
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm reached the edge of the parameter domain " +
+                   std::to_string(mParameterOutOfBounds) + " times."));
+
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(
+      COptLogEntry("Algorithm finished.",
+                   "Terminated after " + std::to_string(mIteration) + " of " + std::to_string(mIterationLimit) + " iterations."
+                  ));
 
   if (mpCallBack)
     mpCallBack->finishItem(mhIteration);
@@ -488,8 +586,8 @@ bool COptMethodLevenbergMarquardt::initialize()
   else
     mHaveResiduals = false;
 
-  if (getParameter("Stop after # Stalled Iterations"))
-    mStopAfterStalledIterations = getValue <unsigned C_INT32>("Stop after # Stalled Iterations");
+  if (getParameter("Stop after # stalled iterations"))
+    mStopAfterStalledIterations = getValue <unsigned C_INT32>("Stop after # stalled iterations");
 
   return true;
 }

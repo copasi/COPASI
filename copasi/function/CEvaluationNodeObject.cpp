@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -136,7 +136,12 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
             const CObjectInterface * pObject = pDataObject->getValueObject();
 
             if (!pObject)
-              return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
+              {
+                mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+                mpValue = &mValue;
+
+                return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
+              }
 
             if (mpObject != pObject && pObject != NULL)
               {

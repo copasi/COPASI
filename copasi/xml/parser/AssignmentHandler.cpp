@@ -8,6 +8,8 @@
 // of Manchester.
 // All rights reserved.
 
+
+
 #include "copasi.h"
 
 #include "AssignmentHandler.h"
@@ -54,25 +56,17 @@ CXMLHandler * AssignmentHandler::processStart(const XML_Char * pszName,
           {
             Key = mpParser->getAttributeValue("targetKey", papszAttrs);
             pME = dynamic_cast<const CModelEntity *>(mpData->mKeyMap.get(Key));
-          }
-        else
-          {
-            std::string ModelCN = mpData->pModel->getCN();
 
-            if (Target.find(ModelCN) == 0 &&
-                Target.length() > ModelCN.length())
+            if (pME != NULL)
               {
-                pME = dynamic_cast<const CModelEntity *>(mpData->pModel->getObject(Target.substr(ModelCN.length() + 1)));
-              }
-            else
-              {
-                pME = dynamic_cast<const CModelEntity *>(mpData->pModel->getObjectFromCN(Target));
+                Target = pME->getCN();
               }
           }
 
-        if (pME != NULL)
+        if (!Target.empty() &&
+            mpData->pEvent->getAssignments().getIndex(Target) == C_INVALID_INDEX)
           {
-            mpData->pEventAssignment = new CEventAssignment(pME->getKey());
+            mpData->pEventAssignment = new CEventAssignment(Target);
             mpData->pEvent->getAssignments().add(mpData->pEventAssignment, true);
           }
 

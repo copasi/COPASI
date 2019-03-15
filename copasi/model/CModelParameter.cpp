@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,18 +22,19 @@
 #include "CModelParameterSet.h"
 #include "CMetabNameInterface.h"
 #include "CReaction.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "function/CExpression.h"
-#include "model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/model/CModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CDataObject.h"
-#include "utilities/CUnitValidator.h"
-#include "utilities/CUnit.h"
-#include "math/CMathExpression.h"
+#include "copasi/utilities/CUnitValidator.h"
+#include "copasi/utilities/CUnit.h"
+#include "copasi/math/CMathExpression.h"
+#include "copasi/core/CDataString.h"
 
 // static
-const char * CModelParameter::TypeNames[] =
+const CEnumAnnotation< std::string, CModelParameter::Type > CModelParameter::TypeNames(
 {
   "Model",
   "Compartment",
@@ -38,47 +44,209 @@ const char * CModelParameter::TypeNames[] =
   "Reaction",
   "Group",
   "Set",
-  "unknown",
-  NULL
-};
+  "unknown"
+});
 
 // static
-std::string CModelParameter::nameFromCN(const CCommonName & cn)
+const CEnumAnnotation< std::string, CModelParameter::CompareResult > CModelParameter::CompareResultNames(
 {
-  CCommonName Primary = cn.getPrimary();
-  CCommonName Remainder = cn.getRemainder();
+  "Obsolete",
+  "Missing",
+  "Modified",
+  "Conflict",
+  "Identical"
+});
 
-  while (Remainder != "")
+// static
+CModelParameter * CModelParameter::fromData(const CData & data, CUndoObjectInterface * pParent)
+{
+  CModelParameter * pModelParameter = NULL;
+
+  Type type = TypeNames.toEnum(data.getProperty(CData::OBJECT_TYPE).toString(), Type::unknown);
+
+  switch (type)
     {
-      Primary = Remainder.getPrimary();
-      Remainder = Remainder.getRemainder();
+      case Type::Compartment:
+        pModelParameter = new CModelParameterCompartment(NULL);
+        break;
+
+      case Type::Species:
+        pModelParameter = new CModelParameterSpecies(NULL);
+        break;
+
+      case Type::ReactionParameter:
+        pModelParameter = new CModelParameterReactionParameter(NULL, type);
+        break;
+
+      case Type::Model:
+      case Type::ModelValue:
+        pModelParameter = new CModelParameter(NULL, type);
+        break;
+
+      case Type::Reaction:
+      case Type::Group:
+        pModelParameter = new CModelParameterGroup(NULL, type);
+        break;
+
+      case Type::Set:
+      default:
+        break;
     }
 
-  std::string Name = Primary.getElementName(0);
+  return pModelParameter;
+}
 
-  if (Name != "")
+// virtual
+void CModelParameter::destruct()
+{
+  delete this;
+}
+
+// virtual
+CData CModelParameter::toData() const
+{
+  CData Data;
+
+  if (mType != Type::Set)
     {
-      return Name;
+      Data.addProperty(CData::OBJECT_NAME, mCN);
+      Data.addProperty(CData::OBJECT_UUID, getUuid().str());
+      Data.addProperty(CData::OBJECT_PARENT_CN, getSet() != NULL ? getSet()->getCN() : CCommonName());
+      Data.addProperty(CData::OBJECT_TYPE, TypeNames[mType]);
+      Data.addProperty(CData::OBJECT_INDEX, getIndex());
     }
 
-  return Primary.getObjectName();
+  switch (mType)
+    {
+      case Type::Model:
+      case Type::Compartment:
+      case Type::Species:
+      case Type::ModelValue:
+      case Type::ReactionParameter:
+      {
+        CData ParameterValue;
+        ParameterValue.addProperty(CData::INITIAL_VALUE, mValue);
+
+        Data.addProperty(CData::PARAMETER_VALUE, ParameterValue);
+        Data.addProperty(CData::SIMULATION_TYPE, CModelEntity::StatusName[mSimulationType]);
+        Data.addProperty(CData::INITIAL_EXPRESSION, getInitialExpression());
+      }
+      break;
+
+      default:
+        break;
+    }
+
+  return Data;
+}
+
+// virtual
+bool CModelParameter::applyData(const CData & data, CUndoData::CChangeSet & changes)
+{
+  if (mType == Type::Set)
+    {
+      return true;
+    }
+
+  if (data.isSetProperty(CData::OBJECT_NAME))
+    {
+      setCN(data.getProperty(CData::OBJECT_NAME).toString());
+    }
+
+  if (mpParent != NULL &&
+      data.isSetProperty(CData::OBJECT_INDEX))
+    {
+      mpParent->updateIndex(data.getProperty(CData::OBJECT_INDEX).toSizeT(), this);
+    }
+
+  if (data.isSetProperty(CData::SIMULATION_TYPE))
+    {
+      mSimulationType = CModelEntity::StatusName.toEnum(data.getProperty(CData::SIMULATION_TYPE).toString(), CModelEntity::Status::FIXED);
+    }
+
+  if (data.isSetProperty(CData::PARAMETER_VALUE) &&
+      data.getProperty(CData::PARAMETER_VALUE).getType() == CDataValue::DATA)
+    {
+      const CData & Data = data.getProperty(CData::PARAMETER_VALUE).toData();
+      setValue(Data.getProperty(CData::INITIAL_VALUE).toDouble(),
+               CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
+    }
+
+  if (data.isSetProperty(CData::INITIAL_EXPRESSION))
+    {
+      setInitialExpression(data.getProperty(CData::INITIAL_EXPRESSION).toString());
+    }
+
+  return true;
+}
+
+// virtual
+void CModelParameter::createUndoData(CUndoData & undoData,
+                                     const CUndoData::Type & type,
+                                     const CData & oldData,
+                                     const CCore::Framework & framework) const
+{
+  if (type != CUndoData::Type::CHANGE)
+    {
+      undoData = CUndoData(type, this);
+      return;
+    }
+
+  if (mType != Type::Set)
+    {
+      std::cout << "Processing: " << oldData.getProperty(CData::OBJECT_NAME).toString() << std::endl;
+
+      undoData.addProperty(CData::OBJECT_NAME, oldData.getProperty(CData::OBJECT_NAME), mCN);
+      undoData.addProperty(CData::OBJECT_UUID, oldData.getProperty(CData::OBJECT_UUID), getUuid().str());
+      undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), getSet() != NULL ? getSet()->getCN() : CCommonName());
+      undoData.addProperty(CData::OBJECT_TYPE, oldData.getProperty(CData::OBJECT_TYPE), TypeNames[mType]);
+      undoData.addProperty(CData::OBJECT_INDEX, oldData.getProperty(CData::OBJECT_INDEX), getIndex());
+    }
+
+  switch (mType)
+    {
+      case Type::Model:
+      case Type::Compartment:
+      case Type::Species:
+      case Type::ModelValue:
+      case Type::ReactionParameter:
+      {
+        CData OldParameterValue;
+        OldParameterValue.addProperty(CData::INITIAL_VALUE, oldData.getProperty(CData::PARAMETER_VALUE).toData().getProperty(CData::INITIAL_VALUE));
+        OldParameterValue.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+
+        CData NewParameterValue;
+        NewParameterValue.addProperty(CData::INITIAL_VALUE, mValue);
+        NewParameterValue.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+
+        undoData.addProperty(CData::PARAMETER_VALUE, OldParameterValue, NewParameterValue);
+        undoData.addProperty(CData::SIMULATION_TYPE, oldData.getProperty(CData::SIMULATION_TYPE), CModelEntity::StatusName[mSimulationType]);
+        undoData.addProperty(CData::INITIAL_EXPRESSION, oldData.getProperty(CData::INITIAL_EXPRESSION), getInitialExpression());
+      }
+      break;
+
+      default:
+        break;
+    }
+
+  return;
 }
 
 CModelParameter::CModelParameter(CModelParameterGroup * pParent, const CModelParameter::Type & type):
+  CUndoObjectInterface(),
   mpParent(static_cast< CModelParameterGroup * >(pParent)),
   mType(type),
   mCN(),
-  mSimulationType(type == CModelParameter::Model ? CModelEntity::Status::TIME : CModelEntity::Status::FIXED),
+  mSimulationType(type == CModelParameter::Type::Model ? CModelEntity::Status::TIME : CModelEntity::Status::FIXED),
   mValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
   mpInitialExpression(NULL),
-  mCompareResult(CModelParameter::Identical),
+  mCompareResult(CModelParameter::CompareResult::Identical),
   mpObject(NULL),
   mIsInitialExpressionValid(true)
-{
-  assert(mType == Set || mpParent != NULL);
-}
+{}
 
 CModelParameter::CModelParameter(const CModelParameter & src, CModelParameterGroup * pParent):
+  CUndoObjectInterface(src),
   mpParent(pParent),
   mType(src.mType),
   mCN(src.mCN),
@@ -89,7 +257,7 @@ CModelParameter::CModelParameter(const CModelParameter & src, CModelParameterGro
   mpObject(src.mpObject),
   mIsInitialExpressionValid(src.mIsInitialExpressionValid)
 {
-  assert(mType == Set || mpParent != NULL);
+  assert(mType == Type::Set || mpParent != NULL);
 
   setInitialExpression(src.getInitialExpression());
 }
@@ -103,6 +271,23 @@ CModelParameter::~CModelParameter()
     }
 
   pdelete(mpInitialExpression);
+}
+
+// virtual
+CModelParameterSet * CModelParameter::toSet()
+{
+  return NULL;
+}
+
+// virtual
+const CModelParameterSet * CModelParameter::toSet() const
+{
+  return NULL;
+}
+
+bool CModelParameter::operator < (const CModelParameter & rhs) const
+{
+  return mCN < rhs.mCN;
 }
 
 void CModelParameter::setParent(CModelParameterGroup * pParent)
@@ -126,11 +311,11 @@ CValidatedUnit CModelParameter::getUnit(const CCore::Framework & framework) cons
 
   switch (mType)
     {
-      case Model:
+      case Type::Model:
         return CValidatedUnit(getModel()->getTimeUnit(), false);
         break;
 
-      case Compartment:
+      case Type::Compartment:
       {
         const CCompartment * pCompartment = static_cast< const CCompartment * >(mpObject);
 
@@ -143,7 +328,7 @@ CValidatedUnit CModelParameter::getUnit(const CCore::Framework & framework) cons
       }
       break;
 
-      case Species:
+      case Type::Species:
       {
         const CMetab * pSpecies = static_cast< const CMetab * >(mpObject);
 
@@ -161,7 +346,7 @@ CValidatedUnit CModelParameter::getUnit(const CCore::Framework & framework) cons
       }
       break;
 
-      case ModelValue:
+      case Type::ModelValue:
       {
         const CModelValue * pModelValue = static_cast< const CModelValue * >(mpObject);
 
@@ -174,11 +359,11 @@ CValidatedUnit CModelParameter::getUnit(const CCore::Framework & framework) cons
       }
       break;
 
-      case ReactionParameter:
+      case Type::ReactionParameter:
         return mpParent->getObjectUnit(this);
         break;
 
-      case Reaction:
+      case Type::Reaction:
       {
         const CReaction * pReaction = static_cast< const CReaction * >(mpObject);
 
@@ -216,21 +401,21 @@ bool CModelParameter::setSimulationType(const CModelEntity::Status & simulationT
 
   switch (mType)
     {
-      case Model:
+      case Type::Model:
         success = (simulationType == CModelEntity::Status::TIME);
         break;
 
-      case Species:
+      case Type::Species:
         success = (simulationType != CModelEntity::Status::TIME);
         break;
 
-      case ReactionParameter:
+      case Type::ReactionParameter:
         success = (simulationType == CModelEntity::Status::FIXED ||
                    simulationType == CModelEntity::Status::ASSIGNMENT);
         break;
 
-      case ModelValue:
-      case Compartment:
+      case Type::ModelValue:
+      case Type::Compartment:
         success = (simulationType != CModelEntity::Status::TIME &&
                    simulationType != CModelEntity::Status::REACTIONS);
         break;
@@ -331,10 +516,9 @@ size_t CModelParameter::getIndex() const
 
 bool CModelParameter::isReadOnly() const
 {
-  if (mType == Reaction ||
-      mType == Group ||
-      mType == Set ||
-      (mType == Model && getModel()->isAutonomous()) ||
+  if (mType == Type::Reaction ||
+      mType == Type::Group ||
+      mType == Type::Set ||
       (mIsInitialExpressionValid && getInitialExpression() != ""))
     {
       return true;
@@ -350,18 +534,18 @@ CDataObject * CModelParameter::getObject() const
 
 CModelParameterSet * CModelParameter::getSet() const
 {
-  if (mType == Set)
+  if (mType == Type::Set)
     {
-      return static_cast< CModelParameterSet * >(const_cast< CModelParameter * >(this));
+      return const_cast< CModelParameter * >(this)->toSet();
     }
 
   CModelParameterGroup * pParent = mpParent;
 
   while (pParent != NULL)
     {
-      if (pParent->getType() == Set)
+      if (pParent->getType() == Type::Set)
         {
-          return static_cast< CModelParameterSet * >(pParent);
+          return pParent->toSet();
         }
 
       pParent = pParent->getParent();
@@ -395,7 +579,7 @@ std::string CModelParameter::getName() const
       return mpObject->getObjectName();
     }
 
-  return nameFromCN(mCN);
+  return CCommonName::nameFromCN(mCN);
 }
 
 void CModelParameter::compile()
@@ -410,18 +594,18 @@ void CModelParameter::compile()
 
   if (mpObject != NULL)
     {
-      if (mType == unknown)
+      if (mType == Type::unknown)
         {
           if (dynamic_cast< CModel * >(mpObject) != NULL)
-            mType = Model;
+            mType = Type::Model;
           else if (dynamic_cast< CCompartment * >(mpObject) != NULL)
-            mType = Compartment;
+            mType = Type::Compartment;
           else if (dynamic_cast< CMetab * >(mpObject) != NULL)
-            mType = Species;
+            mType = Type::Species;
           else if (dynamic_cast< CModelValue * >(mpObject) != NULL)
-            mType = ModelValue;
+            mType = Type::ModelValue;
           else if (dynamic_cast< CCopasiParameter * >(mpObject) != NULL)
-            mType = ReactionParameter;
+            mType = Type::ReactionParameter;
         }
     }
 
@@ -439,17 +623,17 @@ const CModelParameter::CompareResult & CModelParameter::diff(const CModelParamet
     const CCore::Framework & framework,
     const bool & /* createMissing */)
 {
-  if (mCompareResult == Missing ||
-      mCompareResult == Obsolete)
+  if (mCompareResult == CompareResult::Missing ||
+      mCompareResult == CompareResult::Obsolete)
     {
       return mCompareResult;
     }
 
   switch (mType)
     {
-      case Compartment:
-      case Species:
-      case ModelValue:
+      case Type::Compartment:
+      case Type::Species:
+      case Type::ModelValue:
 
         if (other.getObject() != NULL &&
             mpObject != NULL &&
@@ -457,7 +641,7 @@ const CModelParameter::CompareResult & CModelParameter::diff(const CModelParamet
             (fabs(getValue(CCore::Framework::ParticleNumbers) - other.getValue(CCore::Framework::ParticleNumbers)) > 50 * (fabs(getValue(CCore::Framework::ParticleNumbers)) + fabs(other.getValue(CCore::Framework::ParticleNumbers))) * std::numeric_limits< C_FLOAT64 >::epsilon() ||
              getInitialExpression() != ""))
           {
-            mCompareResult = Conflict;
+            mCompareResult = CompareResult::Conflict;
             return mCompareResult;
           }
 
@@ -470,11 +654,11 @@ const CModelParameter::CompareResult & CModelParameter::diff(const CModelParamet
   if (getInitialExpression() != other.getInitialExpression() ||
       fabs(getValue(framework) - other.getValue(framework)) > 50 * (fabs(getValue(framework)) + fabs(other.getValue(framework))) * std::numeric_limits< C_FLOAT64 >::epsilon())
     {
-      mCompareResult = Modified;
+      mCompareResult = CompareResult::Modified;
     }
   else
     {
-      mCompareResult = Identical;
+      mCompareResult = CompareResult::Identical;
     }
 
   return mCompareResult;
@@ -489,24 +673,10 @@ bool CModelParameter::updateModel()
     {
       switch (mType)
         {
-          case Model:
-          {
-            CModel * pModel = static_cast< CModel * >(mpObject);
-
-            if (!pModel->isAutonomous())
-              {
-                pModel->setInitialValue(mValue);
-              }
-            else
-              {
-                pModel->setInitialValue(0.0);
-              }
-          }
-          break;
-
-          case Compartment:
-          case Species:
-          case ModelValue:
+          case Type::Model:
+          case Type::Compartment:
+          case Type::Species:
+          case Type::ModelValue:
           {
             CModelEntity * pEntity = static_cast< CModelEntity * >(mpObject);
 
@@ -522,7 +692,7 @@ bool CModelParameter::updateModel()
           }
           break;
 
-          case ReactionParameter:
+          case Type::ReactionParameter:
           {
             CCopasiParameter * pParameter = static_cast< CCopasiParameter * >(mpObject);
             CReaction * pReaction = static_cast< CReaction * >(mpObject->getObjectAncestor("Reaction"));
@@ -542,14 +712,16 @@ bool CModelParameter::updateModel()
                 pParameter->setValue(* (C_FLOAT64 *) pObject->getValuePointer());
 
                 // We map the parameter to the global quantity
-                pReaction->setParameterMapping(pParameter->getObjectName(), pObject->getObjectParent()->getKey());
+                std::vector< const CDataObject * > Objects(1, pObject->getObjectParent());
+                pReaction->setParameterObjects(pParameter->getObjectName(), Objects);
               }
             else
               {
                 pParameter->setValue(mValue);
 
                 // We need to remove the existing mapping to a global quantity1.
-                pReaction->setParameterMapping(pParameter->getObjectName(), pParameter->getKey());
+                std::vector< const CDataObject * > Objects(1, pParameter);
+                pReaction->setParameterObjects(pParameter->getObjectName(), Objects);
               }
           }
           break;
@@ -570,19 +742,19 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
 
   if (modifyExistence)
     {
-      if (mCompareResult == CModelParameter::Obsolete)
+      if (mCompareResult == CModelParameter::CompareResult::Obsolete)
         {
           delete this;
 
           return true;
         }
 
-      if (mCompareResult == CModelParameter::Missing)
+      if (mCompareResult == CModelParameter::CompareResult::Missing)
         {
-          mCompareResult = CModelParameter::Identical;
+          mCompareResult = CModelParameter::CompareResult::Identical;
         }
 
-      if (mType != ReactionParameter &&
+      if (mType != Type::ReactionParameter &&
           mpObject != NULL)
         {
           mSimulationType = static_cast< CModelEntity * >(mpObject)->getStatus();
@@ -595,24 +767,10 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
 
       switch (mType)
         {
-          case Model:
-          {
-            CModel * pModel = static_cast< CModel * >(mpObject);
-
-            if (!pModel->isAutonomous())
-              {
-                Value = pModel->getInitialValue();
-              }
-            else
-              {
-                Value = 0.0;
-              }
-          }
-          break;
-
-          case Compartment:
-          case Species:
-          case ModelValue:
+          case Type::Model:
+          case Type::Compartment:
+          case Type::Species:
+          case Type::ModelValue:
           {
             CModelEntity * pEntity = static_cast< CModelEntity * >(mpObject);
 
@@ -620,7 +778,7 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
           }
           break;
 
-          case ReactionParameter:
+          case Type::ReactionParameter:
           {
             CCopasiParameter * pParameter = static_cast< CCopasiParameter * >(mpObject);
             Value = pParameter->getValue< C_FLOAT64 >();
@@ -639,12 +797,12 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
                 else
                   {
                     mSimulationType = CModelEntity::Status::ASSIGNMENT;
-                    const std::vector<std::string> ModelValue = pReaction->getParameterMapping(getName());
+                    const std::vector< const CDataObject * > ModelValue = pReaction->getParameterObjects(getName());
 
                     assert(ModelValue.size() == 1);
 
-                    CModelValue * pModelValue = static_cast< CModelValue * >(CRootContainer::getKeyFactory()->get(ModelValue[0]));
-                    static_cast< CModelParameterReactionParameter * >(this)->setGlobalQuantityCN(pModelValue->getInitialValueReference()->getCN());
+                    const CModelValue * pModelValue = dynamic_cast< const CModelValue * >(ModelValue[0]);
+                    static_cast< CModelParameterReactionParameter * >(this)->setGlobalQuantityCN(pModelValue != NULL ? pModelValue->getInitialValueReference()->getCN() : CDataString("not found").getCN());
                   }
               }
 
@@ -652,7 +810,7 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
 
             if (GlobalQuantityCN != "")
               {
-                CModelParameter * pGlobalQuantity = getSet()->getModelParameter(GlobalQuantityCN);
+                const CModelParameter * pGlobalQuantity = getSet()->getModelParameter(GlobalQuantityCN);
 
                 if (pGlobalQuantity != NULL)
                   {
@@ -744,6 +902,53 @@ void CModelParameterCompartment::removeSpecies(CModelParameterSpecies * pSpecies
   mSpecies.erase(pSpecies);
 }
 
+// virtual
+CData CModelParameterSpecies::toData() const
+{
+  CData Data(CModelParameter::toData());
+
+  CData ParameterValue = Data.getProperty(CData::PARAMETER_VALUE).toData();
+  ParameterValue.addProperty(CData::INITIAL_INTENSIVE_VALUE, mConcentration);
+  Data.addProperty(CData::PARAMETER_VALUE, ParameterValue);
+
+  return Data;
+}
+
+// virtual
+void CModelParameterSpecies::createUndoData(CUndoData & undoData,
+    const CUndoData::Type & type,
+    const CData & oldData,
+    const CCore::Framework & framework) const
+{
+  CModelParameter::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  CData OldParameterValue;
+  CData NewParameterValue;
+
+  if (framework == CCore::Framework::Concentration)
+    {
+      OldParameterValue.addProperty(CData::INITIAL_VALUE, oldData.getProperty(CData::PARAMETER_VALUE).toData().getProperty(CData::INITIAL_INTENSIVE_VALUE));
+      NewParameterValue.addProperty(CData::INITIAL_VALUE, mConcentration);
+    }
+  else
+    {
+      OldParameterValue.addProperty(CData::INITIAL_VALUE, oldData.getProperty(CData::PARAMETER_VALUE).toData().getProperty(CData::INITIAL_VALUE));
+      NewParameterValue.addProperty(CData::INITIAL_VALUE, mValue);
+    }
+
+  OldParameterValue.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+  NewParameterValue.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+
+  undoData.addProperty(CData::PARAMETER_VALUE, OldParameterValue, NewParameterValue);
+
+  return;
+}
+
 CModelParameterSpecies::CModelParameterSpecies(CModelParameterGroup * pParent, const CModelParameter::Type & type):
   CModelParameter(pParent, type),
   mCompartmentCN(),
@@ -777,7 +982,7 @@ std::string CModelParameterSpecies::getName() const
       return CMetabNameInterface::getDisplayName(pModel, *static_cast< CMetab * >(mpObject), false);
     }
 
-  return nameFromCN(mCN) + '{' + nameFromCN(mCompartmentCN) + '}';
+  return CCommonName::nameFromCN(mCN) + '{' + CCommonName::nameFromCN(mCompartmentCN) + '}';
 }
 
 // virtual
@@ -785,7 +990,7 @@ void CModelParameterSpecies::compile()
 {
   CModelParameter::compile();
 
-  mpCompartment = static_cast< CModelParameterCompartment * >(getSet()->getModelParameter(mCompartmentCN));
+  mpCompartment = static_cast< CModelParameterCompartment * >(getSet()->toGroup()->getModelParameter(mCompartmentCN));
 
   if (mpCompartment != NULL)
     {
@@ -803,27 +1008,23 @@ void CModelParameterSpecies::setCN(const CCommonName & cn)
 
   // Determine the CN for the compartment.
   // "CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A]"
-  CCommonName Tmp = mCN;
-  std::string Separator = "";
-
-  for (; Tmp != ""; Tmp = Tmp.getRemainder())
-    {
-      CCommonName Primary = Tmp.getPrimary();
-      mCompartmentCN += Separator + Primary;
-      Separator = ",";
-
-      if (Primary.getObjectType() == "Vector" &&
-          Primary.getObjectName() == "Compartments")
-        {
-          break;
-        }
-    }
+  mCompartmentCN = mCN.substr(0, mCN.find(",Vector=Metabolites"));
 }
 
 // virtual
 void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const CCore::Framework & framework)
 {
   CModel * pModel = getModel();
+
+  if (mpCompartment == NULL)
+    {
+      mpCompartment = static_cast< CModelParameterCompartment * >(getSet()->toGroup()->getModelParameter(mCompartmentCN));
+
+      if (mpCompartment != NULL)
+        {
+          mpCompartment->addSpecies(this);
+        }
+    }
 
   if (framework == CCore::Framework::Concentration)
     {
@@ -876,7 +1077,7 @@ std::ostream &operator<<(std::ostream &os, const CModelParameter & o)
   os << "  CN:         " << o.mCN << std::endl;
   os << "  Value:      " << o.mValue << std::endl;
   os << "  Expression: " << o.getInitialExpression() << std::endl;
-  os << "  Diff:       " << o.mCompareResult << std::endl;
+  os << "  Diff:       " << CModelParameter::CompareResultNames[o.mCompareResult] << std::endl;
 
   return os;
 }
@@ -904,7 +1105,7 @@ void CModelParameterReactionParameter::compile()
 {
   CModelParameter::compile();
 
-  mGlobalQuantityCN = std::string();
+  mGlobalQuantityCN.clear();
 
   std::string Infix = getInitialExpression();
 
@@ -912,21 +1113,10 @@ void CModelParameterReactionParameter::compile()
     {
       // Infix: <CN,Reference=InitialValue> or <CN,Reference=Value>
       CCommonName Tmp = Infix.substr(1, Infix.length() - 2);
-      std::string Separator = "";
+      std::string ObjectType;
+      std::string ObjectName;
 
-      for (; Tmp != ""; Tmp = Tmp.getRemainder())
-        {
-          CCommonName Primary = Tmp.getPrimary();
-
-          if (Primary.getObjectType() == "Reference")
-            {
-              break;
-            }
-
-          mGlobalQuantityCN += Separator + Primary;
-          Separator = ",";
-        }
-
+      Tmp.split(mGlobalQuantityCN, ObjectType, ObjectName);
       setSimulationType(CModelEntity::Status::ASSIGNMENT);
     }
   else
@@ -934,7 +1124,7 @@ void CModelParameterReactionParameter::compile()
       setSimulationType(CModelEntity::Status::FIXED);
     }
 
-  mpGlobalQuantity = this->getSet()->getModelParameter(mGlobalQuantityCN);
+  mpGlobalQuantity = getSet()->toGroup()->getModelParameter(mGlobalQuantityCN);
 
   if (mpGlobalQuantity != NULL)
     {
@@ -954,6 +1144,12 @@ const CReaction * CModelParameterReactionParameter::getReaction() const
   return mpReaction;
 }
 
+// static
+CCommonName CModelParameterReactionParameter::getReactionCN(const CCommonName & reactionParameterCN)
+{
+  return reactionParameterCN.substr(0, reactionParameterCN.find(",ParameterGroup=Parameters"));
+}
+
 void CModelParameterReactionParameter::setGlobalQuantityCN(const std::string & globalQuantityCN)
 {
   if (globalQuantityCN == "")
@@ -965,6 +1161,7 @@ void CModelParameterReactionParameter::setGlobalQuantityCN(const std::string & g
       setInitialExpression("<" + globalQuantityCN + ">");
     }
 
+  mpParent->compile();
   compile();
 }
 

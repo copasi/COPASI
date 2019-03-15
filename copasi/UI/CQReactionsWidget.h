@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,8 +31,6 @@ public:
   CQReactionsWidget(QWidget* parent = 0, const char* name = 0);
   ~CQReactionsWidget();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-  virtual bool leave();
   virtual void setFramework(int framework);
   virtual CQBaseDataModel* getCqDataModel();
 
@@ -44,6 +42,9 @@ private:
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
+
   virtual void keyPressEvent(QKeyEvent* ev);
 
 protected slots:
@@ -56,7 +57,6 @@ protected slots:
   virtual void dataChanged(const QModelIndex& topLeft,
                            const QModelIndex& bottomRight);
   virtual void slotFilterChanged();
-
 };
 
 #endif // CQReactionsWidget_h

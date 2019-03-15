@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -132,12 +137,17 @@ bool ScanWidget::runTask()
   return success;
 }
 
-bool ScanWidget::loadTask()
+bool ScanWidget::loadTaskProtected()
 {
+  if (mIsLoading)
+    return true; // currently loading
+
+  mIsLoading = true;
+
   loadCommon();
 
   CScanTask* scanTask =
-    dynamic_cast< CScanTask * >(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CScanTask * >(mpObject);
 
   if (!scanTask) return false;
 
@@ -166,7 +176,7 @@ bool ScanWidget::loadTask()
 
       switch (type)
         {
-            //+++
+          //+++
           case CScanProblem::SCAN_LINEAR:
             tmp1 = new CScanWidgetScan(scrollview);
             tmp1->load(scanProblem->getScanItem(i));
@@ -196,6 +206,8 @@ bool ScanWidget::loadTask()
   scrollview->addWidget(tmpT, false); //false: no control buttons (up/down/del)
 
   mChanged = false;
+
+  mIsLoading = false;
 
   return true;
 }
@@ -301,12 +313,15 @@ bool ScanWidget::slotAddItem()
   return true;
 }
 
-bool ScanWidget::saveTask()
+bool ScanWidget::saveTaskProtected()
 {
+  if (mIsLoading)
+    return true; // currently loading the widget list cannot be trusted
+
   saveCommon();
 
   CScanTask* scanTask =
-    dynamic_cast< CScanTask * >(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CScanTask * >(mpObject);
 
   if (!scanTask) return false;
 
@@ -387,6 +402,22 @@ bool ScanWidget::saveTask()
 
       mChanged = false;
     }
+
+  return true;
+}
+
+bool ScanWidget::taskFinishedEvent()
+{
+  if (!mpTask) return false;
+
+  CScanProblem* pProblem = dynamic_cast<CScanProblem*>(mpTask->getProblem());
+
+  if (!pProblem) return false;
+
+  if (pProblem->getSubtask() != CTaskEnum::Task::parameterFitting)
+    return false;
+
+  protectedNotify(ListViews::ObjectType::MODELPARAMETERSET, ListViews::ADD);
 
   return true;
 }

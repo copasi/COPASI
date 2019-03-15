@@ -3,8 +3,13 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
+
+
+
 #ifndef CQ_3DBARS_MODIFIER_H
 #define CQ_3DBARS_MODIFIER_H
+
+#include <copasi/config.h>
 
 #ifdef WITH_QT5_VISUALIZATION
 
@@ -94,6 +99,7 @@ private:
   QVector3D m_defaultTarget;
 };
 
+
 #include <QtDataVisualization/Q3DInputHandler>
 
 using namespace QtDataVisualization;
@@ -135,6 +141,7 @@ protected:
   QPoint mPosDown;
   InputState mState;
 };
+
 
 #else
 

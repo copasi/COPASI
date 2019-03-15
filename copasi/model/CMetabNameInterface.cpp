@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -82,7 +82,6 @@ CMetabNameInterface::getDisplayName(const CModel* model,
     return Metabolite;
 
   return createUniqueDisplayName(Metabolite, compartment, quoted);
-
 }
 
 std::string
@@ -114,6 +113,16 @@ CMetabNameInterface::getMetaboliteKey(const CModel* model,
     return metab->getKey();
   else
     return "";
+}
+
+// static
+std::string CMetabNameInterface::getSpeciesCN(const CModel* pModel,
+    const std::string & species,
+    const std::string & compartment)
+{
+  assert(pModel != NULL);
+
+  return  pModel->getCN() + ",Vector=Compartments[" + CCommonName::escape(compartment) + "],Vector=Metabolites[" + CCommonName::escape(species) + "]";
 }
 
 CMetab *

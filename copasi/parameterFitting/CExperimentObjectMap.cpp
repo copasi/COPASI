@@ -73,7 +73,7 @@ bool CExperimentObjectMap::elevateChildren()
       for (; itColumn != endColumn; ++itColumn)
         {
           CCopasiParameterGroup * pGroup = New.assertGroup((*itColumn)->getObjectName());
-          pGroup->assertParameter("Object CN", CCopasiParameter::CN, (*itColumn)->getValue< CRegisteredCommonName >());
+          pGroup->assertParameter("Object CN", CCopasiParameter::Type::CN, (*itColumn)->getValue< CRegisteredCommonName >());
         }
 
       clear();
@@ -336,7 +336,7 @@ CExperimentObjectMap::CDataColumn::~CDataColumn()
 
 void CExperimentObjectMap::CDataColumn::initializeParameter()
 {
-  mpRole = (CExperiment::Type *) assertParameter("Role", CCopasiParameter::UINT, (unsigned C_INT32) CExperiment::ignore);
+  mpRole = (CExperiment::Type *) assertParameter("Role", CCopasiParameter::Type::UINT, (unsigned C_INT32) CExperiment::ignore);
 
   CCopasiParameter * pParm = getParameter("Object CN");
 
@@ -388,7 +388,7 @@ bool CExperimentObjectMap::CDataColumn::setObjectCN(const std::string & objectCN
         *mpObjectCN = objectCN;
       else
         mpObjectCN =
-          assertParameter("Object CN", CCopasiParameter::CN, (CCommonName) objectCN);
+          assertParameter("Object CN", CCopasiParameter::Type::CN, (CCommonName) objectCN);
     }
 
   return true;
@@ -422,7 +422,7 @@ bool CExperimentObjectMap::CDataColumn::setScale(const C_FLOAT64 & weight)
       if (mpScale != NULL)
         *mpScale = weight;
       else
-        mpScale = assertParameter("Weight", CCopasiParameter::UDOUBLE, weight);
+        mpScale = assertParameter("Weight", CCopasiParameter::Type::UDOUBLE, weight);
 
       return true;
     }

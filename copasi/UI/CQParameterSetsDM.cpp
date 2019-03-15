@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,6 +42,17 @@ int CQParameterSetsDM::rowCount(const QModelIndex & /* parent */) const
 bool CQParameterSetsDM::clear()
 {
   return removeRows(0, rowCount());
+}
+
+void CQParameterSetsDM::resetCacheProtected()
+{
+  if (mpDataModel == NULL || mpDataModel->getModel() == NULL)
+    {
+      mpListOfParameterSets = NULL;
+      return;
+    }
+
+  mpListOfParameterSets = &mpDataModel->getModel()->getModelParameterSets();
 }
 
 int CQParameterSetsDM::columnCount(const QModelIndex & /* parent */) const
@@ -150,7 +166,7 @@ bool CQParameterSetsDM::isDefaultRow(const QModelIndex & /* index */) const
   return false;
 }
 
-bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex &)
+bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
   if (mpListOfParameterSets == NULL) return false;
 
@@ -169,40 +185,44 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex &)
       while (pModel->getModelParameterSets().getIndex(TO_UTF8(Name)) != C_INVALID_INDEX)
         Name = QString("Parameter Set %1").arg(LocalTimeStamp().c_str());
 
-      CModelParameterSet * pNew = new CModelParameterSet(pModel->getActiveModelParameterSet(),  pModel, false);
+      CModelParameterSet * pNew = new CModelParameterSet(pModel->getActiveModelParameterSet(), NULL, false);
       pNew->setObjectName(TO_UTF8(Name));
       mpListOfParameterSets->add(pNew, true);
 
-      emit notifyGUI(ListViews::MODELPARAMETERSET, ListViews::ADD, pNew->getKey());
+      CUndoData UndoData(CUndoData::Type::INSERT, pNew->toData());
+      ListViews::addUndoMetaData(this, UndoData);
+      emit signalNotifyChanges(mpDataModel->recordData(UndoData));
     }
 
   endInsertRows();
   return true;
 }
 
-bool CQParameterSetsDM::removeRows(int position, int rows)
+bool CQParameterSetsDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   if (rows <= 0) return true;
 
   if (mpListOfParameterSets == NULL) return false;
 
-  beginRemoveRows(QModelIndex(), position, position + rows - 1);
-  std::vector< CModelParameterSet * > DeletedModelParameterSets;
-  DeletedModelParameterSets.resize(rows);
-  std::vector< CModelParameterSet * >::iterator itDeletedModelParameterSet;
-  std::vector< CModelParameterSet * >::iterator endDeletedModelParameterSet = DeletedModelParameterSets.end();
-  CDataVectorN< CModelParameterSet >::iterator itRow = mpListOfParameterSets->begin() + position;
+  std::vector< const CModelParameterSet * > ToBeDeleted;
+  CDataVectorN< CModelParameterSet >::const_iterator it = mpListOfParameterSets->begin() + position;
+  CDataVectorN< CModelParameterSet >::const_iterator end = mpListOfParameterSets->begin() + position + rows;
 
-  for (itDeletedModelParameterSet = DeletedModelParameterSets.begin(); itDeletedModelParameterSet != endDeletedModelParameterSet; ++itDeletedModelParameterSet, ++itRow)
+  for (; it != end; ++it)
     {
-      *itDeletedModelParameterSet = itRow;
+      ToBeDeleted.push_back(&*it);
     }
 
-  for (itDeletedModelParameterSet = DeletedModelParameterSets.begin(); itDeletedModelParameterSet != endDeletedModelParameterSet; ++itDeletedModelParameterSet)
+  beginRemoveRows(parent, position, position + rows - 1);
+
+  std::vector< const CModelParameterSet * >::iterator itDeleted = ToBeDeleted.begin();
+  std::vector< const CModelParameterSet * >::iterator endDeleted = ToBeDeleted.end();
+
+  for (itDeleted = ToBeDeleted.begin(); itDeleted != endDeleted; ++itDeleted)
     {
-      std::string Key = (*itDeletedModelParameterSet)->getKey();
-      pdelete(*itDeletedModelParameterSet);
-      emit notifyGUI(ListViews::MODELPARAMETERSET, ListViews::DELETE, Key);
+      CUndoData UndoData(CUndoData::Type::REMOVE, (*itDeleted)->toData());
+      ListViews::addUndoMetaData(this, UndoData);
+      emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
   endRemoveRows();

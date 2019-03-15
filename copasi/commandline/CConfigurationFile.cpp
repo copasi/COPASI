@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -57,9 +62,9 @@ CRecentFiles::~CRecentFiles()
 void CRecentFiles::initializeParameter()
 {
   mpMaxFiles =
-    assertParameter("MaxFiles", CCopasiParameter::UINT, (unsigned C_INT32) 5);
+    assertParameter("MaxFiles", CCopasiParameter::Type::UINT, (unsigned C_INT32) 5);
   mpRecentFiles = assertGroup("Recent Files");
-  mpRecentFiles->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::basic));
+  mpRecentFiles->setUserInterfaceFlag(mpRecentFiles->getUserInterfaceFlag() & ~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::eUserInterfaceFlag::basic));
 }
 
 void CRecentFiles::addFile(const std::string & file)
@@ -101,7 +106,7 @@ void CRecentFiles::addFile(const std::string & file)
     }
 
   if (mpRecentFiles->size() < *mpMaxFiles)
-    mpRecentFiles->addParameter("File", CCopasiParameter::STRING, NewFile);
+    mpRecentFiles->addParameter("File", CCopasiParameter::Type::STRING, NewFile);
 
   return;
 }
@@ -201,22 +206,25 @@ void CConfigurationFile::initializeParameter()
   assertGroup("Recent Files");
   assertGroup("Recent SBML Files");
   assertGroup("Recent SEDML Files");
-  mpUseOpenGL = assertParameter("Use OpenGL", CCopasiParameter::BOOL, false);
-  mpUseAdvancedSliders = assertParameter("Use Advanced Sliders", CCopasiParameter::BOOL, true);
-  mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::BOOL, false);
-  mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true);
-  mpEnableAdditionalOptimizationParameters = assertParameter("Enable additional optimization parameters", CCopasiParameter::BOOL, false);
-  mpDisplayPopulations = assertParameter("Display Populations during Optimization", CCopasiParameter::BOOL, false);
-  mpPrecision = assertParameter("Double Precision for String Conversion", CCopasiParameter::INT, 10);
+  mpUseOpenGL = assertParameter("Use OpenGL", CCopasiParameter::Type::BOOL, false);
+  mpUseAdvancedSliders = assertParameter("Use Advanced Sliders", CCopasiParameter::Type::BOOL, true);
+  mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::Type::BOOL, false);
+  mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::Type::BOOL, true);
+  mpEnableAdditionalOptimizationParameters = assertParameter("Enable additional optimization parameters", CCopasiParameter::Type::BOOL, false);
+  mpDisplayPopulations = assertParameter("Display Populations during Optimization", CCopasiParameter::Type::BOOL, false);
+  mpPrecision = assertParameter("Double Precision for String Conversion", CCopasiParameter::Type::INT, 10);
 
-  mpApplicationFont = assertParameter("Application Font", CCopasiParameter::STRING, std::string(""));
-  getParameter("Application Font")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::editable));
+  mpApplicationFont = assertParameter("Application Font", CCopasiParameter::Type::STRING, std::string(""));
 
-  assertGroup("MIRIAM Resources")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::basic));
+  CCopasiParameter* pParm = getParameter("Application Font");
+  pParm->setUserInterfaceFlag(pParm->getUserInterfaceFlag() & ~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::eUserInterfaceFlag::editable));
+
+  pParm = assertGroup("MIRIAM Resources");
+  pParm->setUserInterfaceFlag(pParm->getUserInterfaceFlag() & ~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::eUserInterfaceFlag::basic));
 
   mpDisplayIssueSeverity = assertGroup("Display Issue Severity");
   mpDisplayIssueKinds = assertGroup("Display Issue Kinds");
-  mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::BOOL, false);
+  mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::Type::BOOL, false);
 
   // Remove display issue kinds which can no longer be mapped;
   CCopasiParameterGroup::elements::const_iterator itKind = mpDisplayIssueKinds->beginIndex();
@@ -239,24 +247,25 @@ void CConfigurationFile::initializeParameter()
 
   for (size_t i = 1; i < CIssue::severityNames.size(); i++) //skip the "success" flag
     {
-      mpDisplayIssueSeverity->assertParameter(std::string(CIssue::severityNames[i]), CCopasiParameter::BOOL, true);
+      mpDisplayIssueSeverity->assertParameter(std::string(CIssue::severityNames[i]), CCopasiParameter::Type::BOOL, true);
     }
 
   for (size_t i = 0; i < CIssue::kindNames.size(); i++)
     {
-      mpDisplayIssueKinds->assertParameter(std::string(CIssue::kindNames[i]), CCopasiParameter::BOOL, true);
+      mpDisplayIssueKinds->assertParameter(std::string(CIssue::kindNames[i]), CCopasiParameter::Type::BOOL, true);
     }
 
-  mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::STRING, std::string(""));
-  getParameter("Working Directory")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::editable));
+  mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::Type::STRING, std::string(""));
+  pParm = getParameter("Working Directory");
+  pParm->setUserInterfaceFlag(pParm->getUserInterfaceFlag() & ~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::eUserInterfaceFlag::editable));
 
-  mpProxyServer = assertParameter("Proxy Server", CCopasiParameter::STRING, std::string(""));
-  mpProxyPort = assertParameter("Proxy Port", CCopasiParameter::INT, 0);
-  mpProxyUser = assertParameter("Proxy User", CCopasiParameter::STRING, std::string(""));
-  mpProxyPass = assertParameter("Proxy Password", CCopasiParameter::STRING, std::string(""));
+  mpProxyServer = assertParameter("Proxy Server", CCopasiParameter::Type::STRING, std::string(""));
+  mpProxyPort = assertParameter("Proxy Port", CCopasiParameter::Type::INT, 0);
+  mpProxyUser = assertParameter("Proxy User", CCopasiParameter::Type::STRING, std::string(""));
+  mpProxyPass = assertParameter("Proxy Password", CCopasiParameter::Type::STRING, std::string(""));
 
-  mpCurrentAuthorGivenName = assertParameter("Given Name", CCopasiParameter::STRING, std::string("Anonymous"));
-  mpCurrentAuthorFamilyName = assertParameter("Family Name", CCopasiParameter::STRING, std::string("Anonymous"));
+  mpCurrentAuthorGivenName = assertParameter("Given Name", CCopasiParameter::Type::STRING, std::string("Anonymous"));
+  mpCurrentAuthorFamilyName = assertParameter("Family Name", CCopasiParameter::Type::STRING, std::string("Anonymous"));
 
   if (getParameter("Famliy Name") != NULL)
     {
@@ -265,8 +274,8 @@ void CConfigurationFile::initializeParameter()
       delete pParameter;
     }
 
-  mpCurrentAuthorOrganization = assertParameter("Organization", CCopasiParameter::STRING, std::string(""));
-  mpCurrentAuthorEmail = assertParameter("Email", CCopasiParameter::STRING, std::string("An.other@mailinator.com"));
+  mpCurrentAuthorOrganization = assertParameter("Organization", CCopasiParameter::Type::STRING, std::string(""));
+  mpCurrentAuthorEmail = assertParameter("Email", CCopasiParameter::Type::STRING, std::string("An.other@mailinator.com"));
 
   elevateChildren();
 }
@@ -522,7 +531,7 @@ bool CConfigurationFile::CXML::save(std::ostream & os,
              << CVersion::VERSION.getVersion()
              << " (http://www.copasi.org) at "
              << UTCTimeStamp()
-             << " UTC -->"
+             << " -->"
              << std::endl;
 
   saveParameter(mConfiguration);

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -67,11 +72,22 @@
 
 size_t SliderDialog::numMappings = 14;
 
-size_t SliderDialog::folderMappings[][2] =
+ListViews::WidgetType SliderDialog::folderMappings[][2] =
 {
-  {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24},
-  {241, 24}, {31, 31}, {32, 32}, {321, 32}, {33, 33},
-  {331, 33}, {35, 35}, {28, 28}, {281, 28}
+  {ListViews::WidgetType::SteadyState, ListViews::WidgetType::SteadyState},
+  {ListViews::WidgetType::SteadyStateResult, ListViews::WidgetType::SteadyState},
+  {ListViews::WidgetType::TimeCourse, ListViews::WidgetType::TimeCourse},
+  {ListViews::WidgetType::TimeCourseResult, ListViews::WidgetType::TimeCourse},
+  {ListViews::WidgetType::MetabolicControlAnalysis, ListViews::WidgetType::MetabolicControlAnalysis},
+  {ListViews::WidgetType::MetabolicControlAnalysisResult, ListViews::WidgetType::MetabolicControlAnalysis},
+  {ListViews::WidgetType::ParameterScan, ListViews::WidgetType::ParameterScan},
+  {ListViews::WidgetType::Optimization, ListViews::WidgetType::Optimization},
+  {ListViews::WidgetType::OptimizationResult, ListViews::WidgetType::Optimization},
+  {ListViews::WidgetType::ParameterEstimation, ListViews::WidgetType::ParameterEstimation},
+  {ListViews::WidgetType::ParameterEstimationResult, ListViews::WidgetType::ParameterEstimation},
+  {ListViews::WidgetType::LinearNoiseApproximation, ListViews::WidgetType::LinearNoiseApproximation},
+  {ListViews::WidgetType::CrossSection, ListViews::WidgetType::CrossSection},
+  {ListViews::WidgetType::CrossSectionResult, ListViews::WidgetType::CrossSection}
 };
 
 //size_t SliderDialog::numKnownTasks = 4;
@@ -86,7 +102,7 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::Wi
   mSliderMap(),
   mTaskMap(),
   mInitialValueMap(),
-  mCurrentFolderId(0),
+  mCurrentFolderId(ListViews::WidgetType::COPASI),
   mSliderValueChanged(false),
   mSliderPressed(false),
   mFramework(0),
@@ -110,22 +126,22 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::Wi
   mpaResetValue = this->mpContextMenu->addAction("Reset Value", this, SLOT(resetValue()));
   mpaSetDefault = this->mpContextMenu->addAction("Set new default value", this, SLOT(setDefault()));
 
-  this->mSliderMap[C_INVALID_INDEX].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", mpSliderBox));
+  this->mSliderMap[ListViews::WidgetType::NotFound].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", mpSliderBox));
 
-  this->mTaskMap[23] = &SliderDialog::runTimeCourse;
-  this->mTaskMap[21] = &SliderDialog::runSteadyStateTask;
-  this->mTaskMap[31] = &SliderDialog::runScanTask;
-  this->mTaskMap[24] = &SliderDialog::runMCATask;
-  this->mTaskMap[35] = &SliderDialog::runLNATask;
-  this->mTaskMap[33] = &SliderDialog::runParameterEstimationTask;
-  this->mTaskMap[32] = &SliderDialog::runOptimizationTask;
-  this->mTaskMap[28] = &SliderDialog::runCrossSectionTask;
+  this->mTaskMap[ListViews::WidgetType::TimeCourse] = &SliderDialog::runTimeCourse;
+  this->mTaskMap[ListViews::WidgetType::SteadyState] = &SliderDialog::runSteadyStateTask;
+  this->mTaskMap[ListViews::WidgetType::ParameterScan] = &SliderDialog::runScanTask;
+  this->mTaskMap[ListViews::WidgetType::MetabolicControlAnalysis] = &SliderDialog::runMCATask;
+  this->mTaskMap[ListViews::WidgetType::LinearNoiseApproximation] = &SliderDialog::runLNATask;
+  this->mTaskMap[ListViews::WidgetType::ParameterEstimation] = &SliderDialog::runParameterEstimationTask;
+  this->mTaskMap[ListViews::WidgetType::Optimization] = &SliderDialog::runOptimizationTask;
+  this->mTaskMap[ListViews::WidgetType::CrossSection] = &SliderDialog::runCrossSectionTask;
 
   connect(this->mpRunTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   connect(this->mpNewSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
   connect(this->mpRestoreButton, SIGNAL(clicked()), this, SLOT(restoreDefaults()));
 
-  this->setCurrentFolderId(C_INVALID_INDEX);
+  this->setCurrentFolderId(ListViews::WidgetType::NotFound);
   init();
 }
 
@@ -316,7 +332,7 @@ void SliderDialog::removeSlider()
 }
 
 void
-SliderDialog::removeSlider(size_t folderId)
+SliderDialog::removeSlider(ListViews::WidgetType folderId)
 {
   if (mpCurrSlider)
     {
@@ -342,7 +358,7 @@ SliderDialog::removeSlider(size_t folderId)
 }
 
 void
-SliderDialog::deleteSlider(CopasiSlider* pSlider, size_t folderId)
+SliderDialog::deleteSlider(CopasiSlider* pSlider, ListViews::WidgetType folderId)
 {
   if (pSlider)
     {
@@ -401,10 +417,15 @@ void SliderDialog::editSlider()
 
   pSettingsDialog->setSlider(mpCurrSlider->getCSlider());
 
+  bool needRun = false;
+
   if (pSettingsDialog->exec() == QDialog::Accepted)
     {
       addSlider(pSettingsDialog->getSlider());
       mpCurrSlider->updateSliderData();
+
+      needRun = pSettingsDialog->needRun();
+
       /*
       if ((!mpCurrSlider->isEnabled()) && mpCurrSlider->getCSlider()->compile())
         {
@@ -415,6 +436,19 @@ void SliderDialog::editSlider()
 
   delete pSettingsDialog;
   delete pVector;
+
+  if (needRun)
+    {
+      if (mpAutoRunCheckBox->isChecked())
+        {
+          runTask();
+        }
+      else
+        {
+          updateAllSliders();
+        }
+    }
+
 }
 
 SliderDialog::~SliderDialog()
@@ -433,7 +467,7 @@ void SliderDialog::clear()
   this->clearSliderBox();
   size_t j, maxWidgets;
 
-  std::map< size_t, std::vector< QWidget* > >::iterator it = mSliderMap.begin();
+  std::map< ListViews::WidgetType, std::vector< QWidget* > >::iterator it = mSliderMap.begin();
 
   while (it != mSliderMap.end())
     {
@@ -551,13 +585,13 @@ CopasiSlider* SliderDialog::findCopasiSliderForCSlider(CSlider* pCSlider)
   return pResult;
 }
 
-void SliderDialog::setCurrentFolderId(size_t id)
+void SliderDialog::setCurrentFolderId(ListViews::WidgetType id)
 {
   id = mapFolderId2EntryId(id);
 
   if (id == mCurrentFolderId) return;
 
-  if (id == C_INVALID_INDEX || !this->mpParentWindow->isEnabled())
+  if (id == ListViews::WidgetType::NotFound || !this->mpParentWindow->isEnabled())
     {
       setEnabled(false);
     }
@@ -570,44 +604,16 @@ void SliderDialog::setCurrentFolderId(size_t id)
   mCurrentFolderId = id;
 
   // Set appropriate window title
-  QString thisWindowTitle = "Sliders";
-
-  switch (id)
+  if (id == ListViews::WidgetType::NotFound)
     {
-      case 23:
-        thisWindowTitle = "Time Course " + thisWindowTitle;
-        break;
-
-      case 21:
-        thisWindowTitle = "Steady-State " + thisWindowTitle;
-        break;
-
-      case 31:
-        thisWindowTitle = "Parameter Scan " + thisWindowTitle;
-        break;
-
-      case 24:
-        thisWindowTitle = "Metabolic Control Analysis " + thisWindowTitle;
-        break;
-
-      case 35:
-        thisWindowTitle = "Linear Noise Approximation " + thisWindowTitle;
-        break;
-
-      case 33:
-        thisWindowTitle = "Parameter Estimation " + thisWindowTitle;
-        break;
-
-      case 32:
-        thisWindowTitle = "Optimization " + thisWindowTitle;
-        break;
-
-      case 28:
-        thisWindowTitle = "Cross Section " + thisWindowTitle;
-        break;
+      setWindowTitle("No Task selected");
     }
+  else
+    {
+      QString thisWindowTitle = FROM_UTF8(std::string(ListViews::WidgetName[id] + " Sliders"));
 
-  setWindowTitle(thisWindowTitle);
+      setWindowTitle(thisWindowTitle);
+    }
 
   fillSliderBox();
 }
@@ -652,7 +658,7 @@ CopasiSlider *SliderDialog::getCopasiSliderForCSlider(std::vector<QWidget*>& v, 
 
 void SliderDialog::createSlidersForFolder(std::vector<QWidget*>& v)
 {
-  if (mCurrentFolderId == C_INVALID_INDEX)
+  if (mCurrentFolderId == ListViews::WidgetType::NotFound)
     return;
 
   std::vector<CSlider*>* pVector = getCSlidersForCurrentFolderId();
@@ -768,9 +774,9 @@ void SliderDialog::fillSliderBox()
     }
 }
 
-size_t SliderDialog::mapFolderId2EntryId(size_t folderId) const
+ListViews::WidgetType SliderDialog::mapFolderId2EntryId(ListViews::WidgetType folderId) const
 {
-  size_t id = C_INVALID_INDEX;
+  ListViews::WidgetType id = ListViews::WidgetType::NotFound;
   size_t counter;
 
   for (counter = 0; counter < SliderDialog::numMappings; ++counter)
@@ -846,7 +852,7 @@ void SliderDialog::runTimeCourse()
     {
       CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
-      mpParentWindow->getMainWidget()->getTrajectoryWidget()->enter(pDataModel->getTaskList()->operator[]("Time-Course").getKey());
+      mpParentWindow->getMainWidget()->getTrajectoryWidget()->enter(pDataModel->getTaskList()->operator[]("Time-Course").getCN());
       mpParentWindow->getMainWidget()->getTrajectoryWidget()->runTask();
     }
 }
@@ -865,7 +871,7 @@ void SliderDialog::runScanTask()
     {
       CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
-      mpParentWindow->getMainWidget()->getScanWidget()->enter(pDataModel->getTaskList()->operator[]("Scan").getKey());
+      mpParentWindow->getMainWidget()->getScanWidget()->enter(pDataModel->getTaskList()->operator[]("Scan").getCN());
       mpParentWindow->getMainWidget()->getScanWidget()->runTask();
     }
 }
@@ -876,7 +882,7 @@ void SliderDialog::runMCATask()
     {
       CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
-      mpParentWindow->getMainWidget()->getMCAWidget()->enter(pDataModel->getTaskList()->operator[]("Metabolic Control Analysis").getKey());
+      mpParentWindow->getMainWidget()->getMCAWidget()->enter(pDataModel->getTaskList()->operator[]("Metabolic Control Analysis").getCN());
       mpParentWindow->getMainWidget()->getMCAWidget()->runTask();
     }
 }
@@ -887,7 +893,7 @@ void SliderDialog::runLNATask()
     {
       CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
-      mpParentWindow->getMainWidget()->getLNAWidget()->enter(pDataModel->getTaskList()->operator[]("Linear Noise Approximation").getKey());
+      mpParentWindow->getMainWidget()->getLNAWidget()->enter(pDataModel->getTaskList()->operator[]("Linear Noise Approximation").getCN());
       mpParentWindow->getMainWidget()->getLNAWidget()->runTask();
     }
 }
@@ -898,7 +904,7 @@ void SliderDialog::runParameterEstimationTask()
     {
       CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
-      mpParentWindow->getMainWidget()->getFittingWidget()->enter(pDataModel->getTaskList()->operator[]("Parameter Estimation").getKey());
+      mpParentWindow->getMainWidget()->getFittingWidget()->enter(pDataModel->getTaskList()->operator[]("Parameter Estimation").getCN());
       mpParentWindow->getMainWidget()->getFittingWidget()->runTask();
     }
 }
@@ -909,7 +915,7 @@ void SliderDialog::runCrossSectionTask()
     {
       CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
-      mpParentWindow->getMainWidget()->getCrossSectionWidget()->enter(pDataModel->getTaskList()->operator[]("Cross Section").getKey());
+      mpParentWindow->getMainWidget()->getCrossSectionWidget()->enter(pDataModel->getTaskList()->operator[]("Cross Section").getCN());
       mpParentWindow->getMainWidget()->getCrossSectionWidget()->runTask();
     }
 }
@@ -920,7 +926,7 @@ void SliderDialog::runOptimizationTask()
     {
       CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
-      mpParentWindow->getMainWidget()->getOptimizationWidget()->enter(pDataModel->getTaskList()->operator[]("Optimization").getKey());
+      mpParentWindow->getMainWidget()->getOptimizationWidget()->enter(pDataModel->getTaskList()->operator[]("Optimization").getCN());
       mpParentWindow->getMainWidget()->getOptimizationWidget()->runTask();
     }
 }
@@ -935,7 +941,7 @@ void SliderDialog::closeEvent(QCloseEvent* e)
     }
 }
 
-CCopasiTask* SliderDialog::getTaskForFolderId(size_t folderId)
+CCopasiTask* SliderDialog::getTaskForFolderId(ListViews::WidgetType folderId)
 {
   folderId = mapFolderId2EntryId(folderId);
   CCopasiTask* task = NULL;
@@ -944,35 +950,35 @@ CCopasiTask* SliderDialog::getTaskForFolderId(size_t folderId)
 
   switch (folderId)
     {
-      case 21:
+      case ListViews::WidgetType::SteadyState:
         task = dynamic_cast<CSteadyStateTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));
         break;
 
-      case 23:
+      case ListViews::WidgetType::TimeCourse:
         task = dynamic_cast<CTrajectoryTask *>(&pDataModel->getTaskList()->operator[]("Time-Course"));
         break;
 
-      case 24:
+      case ListViews::WidgetType::MetabolicControlAnalysis:
         task = dynamic_cast<CMCATask *>(&pDataModel->getTaskList()->operator[]("Metabolic Control Analysis"));
         break;
 
-      case 31:
+      case ListViews::WidgetType::ParameterScan:
         task = dynamic_cast<CScanTask *>(&pDataModel->getTaskList()->operator[]("Scan"));
         break;
 
-      case 35:
+      case ListViews::WidgetType::LinearNoiseApproximation:
         task = dynamic_cast<CLNATask *>(&pDataModel->getTaskList()->operator[]("Linear Noise Approximation"));
         break;
 
-      case 33:
+      case ListViews::WidgetType::ParameterEstimation:
         task = dynamic_cast<CFitTask *>(&pDataModel->getTaskList()->operator[]("Parameter Estimation"));
         break;
 
-      case 32:
+      case ListViews::WidgetType::Optimization:
         task = dynamic_cast<COptTask *>(&pDataModel->getTaskList()->operator[]("Optimization"));
         break;
 
-      case 28:
+      case ListViews::WidgetType::CrossSection:
         task = dynamic_cast<CCrossSectionTask *>(&pDataModel->getTaskList()->operator[]("Cross Section"));
         break;
 
@@ -1002,7 +1008,7 @@ void SliderDialog::updateAllSliders()
   // To solve this, I added a new argument to updateValue that determines if the call also updates the dependencies.
   // Here we do not let the updateValue call update the dependencies, but we take care of this ourselves
   // with a call to ListView::refreshInitialValues
-  if (mCurrentFolderId == C_INVALID_INDEX) return;
+  if (mCurrentFolderId == ListViews::WidgetType::NotFound) return;
 
   bool autoModify = mpAutoModifyRangesCheckBox->isChecked();
   this->deleteInvalidSliders();
@@ -1049,7 +1055,7 @@ void SliderDialog::removeSlider(CopasiSlider* slider)
   removeSlider(mCurrentFolderId);
 }
 
-void SliderDialog::removeSlider(CopasiSlider* slider, size_t folderId)
+void SliderDialog::removeSlider(CopasiSlider* slider, ListViews::WidgetType folderId)
 {
   setCurrentSlider(slider);
   removeSlider(folderId);
@@ -1257,7 +1263,7 @@ void SliderDialog::setFramework(int framework)
   bool changed = false;
   // we go through the sliders and check if the slider for species amount
   // or concentration are still appropriate for the framework that has been set
-  std::map<size_t, std::vector<QWidget*> >::iterator it = this->mSliderMap.begin(), endit = this->mSliderMap.end();
+  std::map<ListViews::WidgetType, std::vector<QWidget*> >::iterator it = this->mSliderMap.begin(), endit = this->mSliderMap.end();
   std::vector<QWidget*>::iterator it2, endit2;
   CopasiSlider* pSlider = NULL;
 
@@ -1343,11 +1349,11 @@ void
 SliderDialog::deleteInvalidSliders()
 {
   bool sliderDeleted = false;
-  std::map< size_t, std::vector< QWidget* > >::iterator it = mSliderMap.begin();
+  std::map< ListViews::WidgetType, std::vector< QWidget* > >::iterator it = mSliderMap.begin();
 
   for (; it != mSliderMap.end(); ++it)
     {
-      if (it->first == C_INVALID_INDEX)
+      if (it->first == ListViews::WidgetType::NotFound)
         continue;
 
       sliderDeleted |= deleteInvalidSlidersFromFolder(it->first);
@@ -1362,7 +1368,7 @@ SliderDialog::deleteInvalidSliders()
 }
 
 bool
-SliderDialog::deleteInvalidSlidersFromFolder(size_t folderId)
+SliderDialog::deleteInvalidSlidersFromFolder(ListViews::WidgetType folderId)
 {
   std::vector<QWidget*> &v = mSliderMap[folderId];
   std::vector<QWidget*>::iterator wit = v.begin(), wendit = v.end();
@@ -1402,8 +1408,8 @@ SliderDialog::deleteInvalidSlidersFromFolder(size_t folderId)
 void SliderDialog::reset()
 {
   this->clear();
-  assert(this->mSliderMap[C_INVALID_INDEX].size() == 0);
-  this->mSliderMap[C_INVALID_INDEX].push_back(new QLabel("<p>There are no sliders available for this task.<br>If you select one of the tasks that supports<br>sliders in the copasi object tree, this dialog<br>will become active.</p>", NULL));
+  assert(this->mSliderMap[ListViews::WidgetType::NotFound].size() == 0);
+  this->mSliderMap[ListViews::WidgetType::NotFound].push_back(new QLabel("<p>There are no sliders available for this task.<br>If you select one of the tasks that supports<br>sliders in the copasi object tree, this dialog<br>will become active.</p>", NULL));
 }
 
 /**

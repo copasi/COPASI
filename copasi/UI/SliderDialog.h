@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -31,6 +36,7 @@
 #include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/UI/CWindowInterface.h"
 #include "copasi/UI/ui_SliderDialog.h"
+#include "copasi/UI/listviews.h"
 
 class QScrollArea;
 class QCheckBox;
@@ -54,7 +60,7 @@ public:
   SliderDialog(QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0);
   virtual ~SliderDialog();
   void addSlider(CSlider* slider);
-  void setCurrentFolderId(size_t id);
+  void setCurrentFolderId(ListViews::WidgetType id);
   void setParentWindow(CopasiUI3Window* pPW);
 
   // sets the framework on the sliders dialog
@@ -105,14 +111,14 @@ protected:
    * @param folderId the folder to delete sliders from
    * @return boolean indicating whether sliders have been deleted (true), or not
    */
-  bool deleteInvalidSlidersFromFolder(size_t folderId);
+  bool deleteInvalidSlidersFromFolder(ListViews::WidgetType folderId);
 
-  size_t mapFolderId2EntryId(size_t folderId) const;
+  ListViews::WidgetType mapFolderId2EntryId(ListViews::WidgetType folderId) const;
 
   void init();
 
   static size_t numMappings;
-  static size_t folderMappings[][2];
+  static ListViews::WidgetType folderMappings[][2];
 
   virtual void contextMenuEvent(QContextMenuEvent* e);
 
@@ -126,7 +132,7 @@ protected:
   virtual void runCrossSectionTask();
   virtual void closeEvent(QCloseEvent* e);
 
-  virtual CCopasiTask* getTaskForFolderId(size_t folderId);
+  virtual CCopasiTask* getTaskForFolderId(ListViews::WidgetType folderId);
   std::vector<CSlider*>* getCSlidersForObject(CDataObject* pObject, std::vector<CSlider*>* pVector) const;
   CopasiSlider* findCopasiSliderForCSlider(CSlider* pCSlider);
   CSlider* equivalentSliderExists(CSlider* pCSlider);
@@ -156,13 +162,13 @@ protected:
 
 protected slots:
   void removeSlider(CopasiSlider* slider);
-  void removeSlider(CopasiSlider* slider, size_t folderId);
+  void removeSlider(CopasiSlider* slider, ListViews::WidgetType folderId);
   void editSlider(CopasiSlider* slider);
   void restoreDefaults();
   void removeSlider();
-  void removeSlider(size_t folderId);
+  void removeSlider(ListViews::WidgetType folderId);
   void deleteSlider(CopasiSlider* pSlider);
-  void deleteSlider(CopasiSlider* pSlider, size_t folderId);
+  void deleteSlider(CopasiSlider* pSlider, ListViews::WidgetType folderId);
   void editSlider();
   void createNewSlider();
   void runTask();
@@ -181,10 +187,10 @@ protected:
   QAction* mpaResetValue;
   QAction* mpaSetDefault;
   CopasiSlider* mpCurrSlider;
-  std::map< size_t, std::vector< QWidget* > > mSliderMap;
-  std::map < size_t, void(SliderDialog::*)() > mTaskMap;
-  std::map< size_t, std::vector< double > > mInitialValueMap;
-  size_t mCurrentFolderId;
+  std::map< ListViews::WidgetType, std::vector< QWidget* > > mSliderMap;
+  std::map < ListViews::WidgetType, void(SliderDialog::*)() > mTaskMap;
+  std::map< ListViews::WidgetType, std::vector< double > > mInitialValueMap;
+  ListViews::WidgetType mCurrentFolderId;
   bool mSliderValueChanged;
   bool mSliderPressed;
   int mFramework;

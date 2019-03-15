@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -52,8 +57,8 @@ CQReportsWidget::CQReportsWidget(QWidget *parent, const char *name)
   mpTblReports->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   setFramework(mFramework);
   // Connect the table widget
-  connect(mpReportDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpReportDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpReportDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -117,7 +122,7 @@ void CQReportsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQReportsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
+bool CQReportsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (!mIgnoreUpdates && isVisible())
     {
@@ -127,7 +132,7 @@ bool CQReportsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListVie
   return true;
 }
 
-bool CQReportsWidget::leave()
+bool CQReportsWidget::leaveProtected()
 {
   return true;
 }
@@ -140,6 +145,7 @@ bool CQReportsWidget::enterProtected()
                  this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
     }
 
+  mpReportDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpReportDM);
   //Set Model for the TableView
   mpTblReports->setModel(NULL);
@@ -206,15 +212,13 @@ void CQReportsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(mpDataModel != NULL);
+  CDataVector < CReportDefinition > * pVector = dynamic_cast< CDataVector < CReportDefinition > * >(mpObject);
 
-  if (!mpDataModel->getModel())
-    return;
-
-  std::string key = mpDataModel->getReportDefinitionList()->operator[](index.row()).getKey();
-
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  if (pVector != NULL &&
+      index.row() < pVector->size())
+    {
+      mpListView->switchToOtherWidget(ListViews::WidgetType::ReportTemplateDetail, pVector->operator [](index.row()).getCN());
+    }
 }
 
 void CQReportsWidget::keyPressEvent(QKeyEvent *ev)

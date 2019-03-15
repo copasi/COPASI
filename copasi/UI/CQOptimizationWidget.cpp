@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -62,7 +62,7 @@ CQOptimizationWidget::~CQOptimizationWidget()
   // no need to delete child widgets, Qt does it all for us
 }
 
-bool CQOptimizationWidget::saveTask()
+bool CQOptimizationWidget::saveTaskProtected()
 {
   COptTask * pTask =
     dynamic_cast< COptTask * >(mpTask);
@@ -127,7 +127,7 @@ bool CQOptimizationWidget::saveTask()
   return true;
 }
 
-bool CQOptimizationWidget::loadTask()
+bool CQOptimizationWidget::loadTaskProtected()
 {
   COptTask * pTask =
     dynamic_cast< COptTask * >(mpTask);
@@ -172,7 +172,7 @@ bool CQOptimizationWidget::runTask()
   // ----
 
   COptTask * pTask =
-    dynamic_cast< COptTask * >(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< COptTask * >(mpObject);
 
   if (!pTask) return false;
 
@@ -217,6 +217,7 @@ void CQOptimizationWidget::init()
 
   mpMethodWidget->setValidMethods(COptTask::ValidMethods);
   mpMethodWidget->showMethodParameters(true);
+  mpMethodWidget->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
   verticalLayout->addWidget(mpMethodWidget);
 
   verticalLayout->addWidget(mpBtnWidget);

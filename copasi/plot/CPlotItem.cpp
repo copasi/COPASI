@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -74,7 +79,7 @@ const char* CPlotItem::XMLRecordingActivity[] =
 };
 
 // static
-CPlotItem * CPlotItem::fromData(const CData & data)
+CPlotItem * CPlotItem::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CPlotItem(data.getProperty(CData::OBJECT_NAME).toString(),
                        NO_PARENT,
@@ -93,7 +98,7 @@ CData CPlotItem::toData() const
 }
 
 // virtual
-bool CPlotItem::applyData(const CData & data)
+bool CPlotItem::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
   bool success = true;
 
@@ -138,31 +143,31 @@ void CPlotItem::setType(CPlotItem::Type type)
   //create parameters
   if (type == curve2d || type == bandedGraph)
     {
-      assertParameter("Line type", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-      assertParameter("Line subtype", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-      assertParameter("Line width", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
-      assertParameter("Symbol subtype", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+      assertParameter("Line type", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+      assertParameter("Line subtype", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+      assertParameter("Line width", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0);
+      assertParameter("Symbol subtype", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
     }
 
   if (type == spectogram)
     {
-      assertParameter("logZ", CCopasiParameter::BOOL, false);
-      assertParameter("bilinear", CCopasiParameter::BOOL, true);
-      assertParameter("contours", CCopasiParameter::STRING, std::string(""));
-      assertParameter("maxZ", CCopasiParameter::STRING, std::string(""));
-      assertParameter("colorMap", CCopasiParameter::STRING, std::string("Default"));
+      assertParameter("logZ", CCopasiParameter::Type::BOOL, false);
+      assertParameter("bilinear", CCopasiParameter::Type::BOOL, true);
+      assertParameter("contours", CCopasiParameter::Type::STRING, std::string(""));
+      assertParameter("maxZ", CCopasiParameter::Type::STRING, std::string(""));
+      assertParameter("colorMap", CCopasiParameter::Type::STRING, std::string("Default"));
     }
 
   if (type == histoItem1d)
     {
-      assertParameter("increment", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
+      assertParameter("increment", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.0);
     }
 
   if (type == curve2d || type == histoItem1d || type == bandedGraph || type == surface || type == spectogram)
     {
-      assertParameter("Color", CCopasiParameter::STRING, std::string("auto"));
+      assertParameter("Color", CCopasiParameter::Type::STRING, std::string("auto"));
 
-      mpXMLActivity = assertParameter("Recording Activity", CCopasiParameter::STRING, std::string("during"));
+      mpXMLActivity = assertParameter("Recording Activity", CCopasiParameter::Type::STRING, std::string("during"));
 
       mActivity = toEnum(mpXMLActivity->c_str(), XMLRecordingActivity, COutputInterface::DURING);
 
@@ -176,8 +181,8 @@ void CPlotItem::setType(CPlotItem::Type type)
 
   if (type == plot2d)
     {
-      assertParameter("log X", CCopasiParameter::BOOL, false);
-      assertParameter("log Y", CCopasiParameter::BOOL, false);
+      assertParameter("log X", CCopasiParameter::Type::BOOL, false);
+      assertParameter("log Y", CCopasiParameter::Type::BOOL, false);
       mpXMLActivity = NULL;
       mActivity = (COutputInterface::Activity) 0;
     }

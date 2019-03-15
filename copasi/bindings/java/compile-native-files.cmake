@@ -8,6 +8,12 @@
 # of Manchester. 
 # All rights reserved. 
 
+
+
+
+
+
+
 ###############################################################################
 #
 # Description       : CMake build script for native java files
@@ -26,7 +32,10 @@ set (SWIG_ENUM_FIX_FILES
         "${BIN_DIRECTORY}/java-files/org/COPASI/CCore.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CModelParameter.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CFunctionParameter.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CCopasiParameter.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CReaction.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CModel.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CUndoData.java"
      )
 
 foreach(broken_file ${SWIG_ENUM_FIX_FILES})
@@ -39,8 +48,9 @@ foreach(broken_file ${SWIG_ENUM_FIX_FILES})
 #  message(STATUS "${OUT} 1: ${CMAKE_MATCH_1} 2: ${CMAKE_MATCH_2} 3: ${CMAKE_MATCH_3}")
 
   string(REGEX REPLACE 
-   "public final static int ([a-zA-Z]*_)([_a-zA-Z0-9]*) = ([a-zA-Z0-9]*) \\+ 1"
+   "public final static int ([a-zA-Z]+_)([_a-zA-Z0-9]*) = ([a-zA-Z0-9]*) \\+ 1"
    "public final static int \\1\\2 = \\1\\3 + 1; // FIXED" 
+
    SOURCECODE "${SOURCECODE}")
   file(WRITE "${broken_file}" "${SOURCECODE}")
   get_filename_component(baseName ${broken_file} NAME)
@@ -63,11 +73,16 @@ if (EXISTS ${BIN_DIRECTORY}/copasi.jar)
 	file(REMOVE ${BIN_DIRECTORY}/copasi.jar)	
 endif()
 
+SET (COMPATIBILITY_ARGS)
+if (COMPATIBILIY)
+SET (COMPATIBILITY_ARGS ${COMPATIBILITY_ARGS} -source ${COMPATIBILIY} -target ${COMPATIBILIY})
+endif()
+
+
 # compile files
 execute_process(
 	COMMAND "${Java_JAVAC_EXECUTABLE}"
-		 -source 1.5
-		 -target 1.5
+		 ${COMPATIBILITY_ARGS}
 		 -d java-files
 		 ${NATIVE_FILES}	
 	WORKING_DIRECTORY "${BIN_DIRECTORY}"
@@ -116,8 +131,7 @@ make_directory(${BIN_DIRECTORY}/gui/org/COPASI/gui/)
 # compile files
 execute_process(
 	COMMAND "${Java_JAVAC_EXECUTABLE}"
-		 -source 1.5
-		 -target 1.5
+		 ${COMPATIBILITY_ARGS}
 		 -cp ${BIN_DIRECTORY}/copasi.jar
 		 -d gui
 		 ${NATIVE_FILES}	

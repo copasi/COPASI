@@ -48,6 +48,9 @@ endif (ENABLE_FLEX_BISON)
 file(GLOB HEADERS_MODEL model/*.h model/*.hpp)
 file(GLOB SOURCES_MODEL model/*.cpp)
 
+list(REMOVE_ITEM HEADERS_MODEL ${CMAKE_CURRENT_SOURCE_DIR}/model/CModelMerging.h)
+list(REMOVE_ITEM SOURCES_MODEL ${CMAKE_CURRENT_SOURCE_DIR}/model/CModelMerging.cpp)
+
 # create source group for IDEs
 source_group(model FILES ${SOURCES_MODEL} ${HEADERS_MODEL})
 

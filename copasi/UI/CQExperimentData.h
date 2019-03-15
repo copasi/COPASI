@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -43,7 +43,7 @@ public:
 
   friend class CQExperimentDataValidator;
 
-  virtual bool load(CExperimentSet * pExperimentSet , CDataModel * pDataModel);
+  virtual bool load(CExperimentSet * pExperimentSet, CDataModel * pDataModel);
 
   void loadFromCopy();
 
@@ -107,6 +107,7 @@ protected slots:
   void slotSeparator();
   void slotCheckFrom(bool checked);
   void slotCheckTo(bool checked);
+  void slotCheckToAll(bool checked);
 
 private:
   void init();

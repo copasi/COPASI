@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -104,6 +109,9 @@ class CQLayoutsWidget;
 
 class CQPlotSubwidget;
 class CDataModel;
+class CUndoData;
+
+#include "copasi/core/CRegisteredCommonName.h"
 
 //********************************************************************************
 
@@ -114,9 +122,9 @@ class ListViews : public QSplitter
   friend class CopasiUI3Window;
 
 public:
-  static const std::string ObjectTypeName[];
   static ListViews * ancestor(QObject * qObject);
   static CDataModel * dataModel(QObject * qObject);
+  static void addUndoMetaData(QObject * qObject, CUndoData & undoData);
 
   ListViews(QWidget * parent, DataModelGUI * pDataModelGUI, CDataModel * pDataModel);
   virtual ~ListViews();
@@ -126,22 +134,99 @@ public:
 #endif
   // CHANGE does not include RENAME
   enum Action {CHANGE = 0, ADD, DELETE, RENAME};
-  enum ObjectType {METABOLITE = 0
-                                , COMPARTMENT
-                   , REACTION
-                   , FUNCTION
-                   , MODEL
-                   , STATE
-                   , REPORT
-                   , PLOT
-                   , MODELVALUE
-                   , EVENT
-                   , MIRIAM
-                   , LAYOUT
-                   , PARAMETEROVERVIEW
-                   , MODELPARAMETERSET
-                   , UNIT
-                  };
+  enum struct ObjectType
+  {
+    METABOLITE
+    , COMPARTMENT
+    , REACTION
+    , FUNCTION
+    , MODEL
+    , STATE
+    , REPORT
+    , PLOT
+    , MODELVALUE
+    , EVENT
+    , MIRIAM
+    , LAYOUT
+    , MODELPARAMETERSET
+    , TASK
+    , RESULT
+    , UNIT
+    , VECTOR
+    , PARAMETEROVERVIEW
+    , __SIZE
+  };
+
+  static const CEnumAnnotation< std::string, ObjectType > ObjectTypeName;
+  static const CEnumAnnotation< std::string, ObjectType > DataObjectType;
+
+  enum struct WidgetType
+  {
+    NotFound
+    , COPASI
+    , Model
+    , Biochemical
+    , Compartments
+    , CompartmentDetail
+    , Species
+    , SpeciesDetail
+    , Reactions
+    , ReactionDetail
+    , GlobalQuantities
+    , GlobalQuantityDetail
+    , Events
+    , EventDetail
+    , ParameterOverview
+    , ParameterSets
+    , ParameterSetDetail
+    , Mathematical
+    , DifferentialEquations
+    , Matrices
+    , UpdateOrder
+    , Diagrams
+    , Tasks
+    , SteadyState
+    , SteadyStateResult
+    , StoichiometricAnalysis
+    , ElementaryModes
+    , ElementaryModesResult
+    , MassConservation
+    , MassConservationResult
+    , TimeCourse
+    , TimeCourseResult
+    , MetabolicControlAnalysis
+    , MetabolicControlAnalysisResult
+    , LyapunovExponents
+    , LyapunovExponentsResult
+    , TimeScaleSeparationAnalysis
+    , TimeScaleSeparationAnalysisResult
+    , CrossSection
+    , CrossSectionResult
+    , Analytics
+    , AnalyticsResult
+    , ParameterScan
+    , Optimization
+    , OptimizationResult
+    , ParameterEstimation
+    , ParameterEstimationResult
+    , Sensitivities
+    , SensitivitiesResult
+    , LinearNoiseApproximation
+    , LinearNoiseApproximationResult
+    , Oscillation
+    , OutputSpecifications
+    , Plots
+    , PlotDetail
+    , ReportTemplates
+    , ReportTemplateDetail
+    , Functions
+    , FunctionDetail
+    , Units
+    , UnitDetail
+    , __SIZE
+  };
+
+  static const CEnumAnnotation< std::string, WidgetType > WidgetName;
 
   DataModelGUI * getDataModelGUI();
   CDataModel * getDataModel();
@@ -153,11 +238,11 @@ public:
   void updateMIRIAMResourceContents();
   void commit();
 
-  void switchToOtherWidget(const size_t & id, const std::string & key);
+  void switchToOtherWidget(const WidgetType & id, const CCommonName & cn, const int & tabIndex = -1);
 
-  size_t getCurrentItemId();
-  CopasiWidget* findWidgetFromId(const size_t & id) const;
-  CopasiWidget* findTabWidgetFromId(size_t id) const;
+  WidgetType getCurrentItemId();
+  CopasiWidget* findWidgetFromId(const WidgetType & id) const;
+  CopasiWidget* findTabWidgetFromId(const WidgetType & id) const;
 
   // return current widget - added 02.07.08
   CopasiWidget* getCurrentWidget();
@@ -167,7 +252,8 @@ public:
    */
   void clearCurrentWidget();
 
-  const std::string& getCurrentItemKey() const;
+  const CCommonName & getCurrentItemCN() const;
+  const CCommonName & getCurrentItemRegisteredCN() const;
 
   //TODO these are convenience methods used by SliderDialog. They should be
   //replaced by something more generic.
@@ -186,6 +272,7 @@ public:
 
 signals:
   void signalFolderChanged(const QModelIndex & index);
+  void signalNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   void signalResetCache();
 
 private:
@@ -197,15 +284,16 @@ public slots:
   void slotFolderChanged(const QModelIndex & index);
 
 private slots:
-  bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, std::string key = "");
+  bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   void slotSort(const QModelIndex & index1, const QModelIndex & index2);
+  void slotSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn, int tabIndex);
 
 private:
-  bool updateCurrentWidget(ObjectType objectType, Action action, const std::string & key = "");
+  bool updateCurrentWidget(ObjectType objectType, Action action, const CCommonName & cn);
 
   void notifyChildWidgets(ObjectType objectType,
                           Action action,
-                          const std::string & key);
+                          const CCommonName & cn);
 
   DataModelGUI * mpDataModelGUI;
   CDataModel * mpDataModel;
@@ -214,7 +302,8 @@ private:
   QSortFilterProxyModel * mpTreeSortDM;
   CMathModel *mpMathModel;
   CopasiWidget* mpCurrentWidget;
-  std::string mCurrentItemKey;
+  CCommonName mCurrentItemCN;
+  CRegisteredCommonName mCurrentItemRegisteredCN;
 
   //the widgets
   CQBrowserPane *mpTreeView;

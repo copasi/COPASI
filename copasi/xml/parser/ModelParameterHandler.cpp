@@ -57,19 +57,19 @@ CXMLHandler * ModelParameterHandler::processStart(const XML_Char * pszName,
             Value = CCopasiXMLInterface::DBL(pValue);
           }
 
-        Type = toEnum(pType, CModelParameter::TypeNames, CModelParameter::unknown);
+        Type = CModelParameter::TypeNames.toEnum(pType, CModelParameter::Type::unknown);
 
         switch (Type)
           {
-            case CModelParameter::Species:
+            case CModelParameter::Type::Species:
               mpData->pCurrentModelParameter = new CModelParameterSpecies(mpData->ModelParameterGroupStack.top());
               break;
 
-            case CModelParameter::Compartment:
+            case CModelParameter::Type::Compartment:
               mpData->pCurrentModelParameter = new CModelParameterCompartment(mpData->ModelParameterGroupStack.top());
               break;
 
-            case CModelParameter::ReactionParameter:
+            case CModelParameter::Type::ReactionParameter:
               mpData->pCurrentModelParameter = new CModelParameterReactionParameter(mpData->ModelParameterGroupStack.top());
               break;
 

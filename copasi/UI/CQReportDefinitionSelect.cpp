@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -73,7 +78,7 @@ void CQReportDefinitionSelect::loadReportDefinitionVector()
       mpReport->setAppend(mpCheckAppend->isChecked());
       mpReport->setConfirmOverwrite(mpCheckConfirmOverwrite->isChecked());
       mpReport->setTarget(TO_UTF8(mpEditTarget->text()));
-      mpListView->getDataModelGUI()->notify(ListViews::REPORT, ListViews::CHANGE, ""); //notify Table Definition to
+      mpListView->getDataModelGUI()->notify(ListViews::ObjectType::REPORT, ListViews::CHANGE, std::string()); //notify Table Definition to
 
       if (CQMessageBox::question(NULL, "No Report Template Defined",
                                  "No report definition defined, COPASI has already created a new one for you.\n Do you want to switch to the GUI to edit it?",
@@ -149,7 +154,7 @@ void CQReportDefinitionSelect::slotEdit()
   CReportDefinitionVector* pReportDefinitionVector = pDataModel->getReportDefinitionList();
   C_INT32 row;
   row = mpComboDefinition->currentIndex();
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, pReportDefinitionVector->operator[](row).getKey());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::ReportTemplateDetail, pReportDefinitionVector->operator[](row).getCN());
   accept(); // if shown then close
   mShow = false; // if not shown then close
 }

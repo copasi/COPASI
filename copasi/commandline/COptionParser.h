@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,7 +34,6 @@
 // name with the cxx_header_def variable
 #ifndef COPASI_COptionParser
 #define COPASI_COptionParser
-
 
 // standard includes
 #include <stdexcept>
@@ -74,6 +73,7 @@ enum SBMLSchema_enum
 struct options
 {
   options(void) :
+    ConvertToIrreversible(false),
     License(false),
     MaxTime(0),
     NoLogo(false),
@@ -83,6 +83,7 @@ struct options
   {}
   std::string     ConfigDir;
   std::string     ConfigFile;
+  bool     ConvertToIrreversible;
   std::string     CopasiDir;
   std::string     ExportBerkeleyMadonna;
   std::string     ExportC;
@@ -97,8 +98,10 @@ struct options
   bool     License;
   int     MaxTime;
   bool     NoLogo;
+  std::string     ReportFile;
   SBMLSchema_enum     SBMLSchema;
   std::string     Save;
+  std::string     ScheduledTask;
   std::string     Tmp;
   bool     Validate;
   bool     Verbose;
@@ -113,6 +116,7 @@ struct option_locations
   typedef int size_type;
   size_type ConfigDir;
   size_type ConfigFile;
+  size_type ConvertToIrreversible;
   size_type CopasiDir;
   size_type ExportBerkeleyMadonna;
   size_type ExportC;
@@ -127,8 +131,10 @@ struct option_locations
   size_type License;
   size_type MaxTime;
   size_type NoLogo;
+  size_type ReportFile;
   size_type SBMLSchema;
   size_type Save;
+  size_type ScheduledTask;
   size_type Tmp;
   size_type Validate;
   size_type Verbose;
@@ -142,7 +148,7 @@ class option_error : public std::runtime_error
 {
 public:
   option_error(const std::string &what_arg)
-    : runtime_error(what_arg) { }
+    : runtime_error(what_arg) {}
 
   const char* get_help_comment(void) const;
 };
@@ -157,14 +163,14 @@ class autoexcept : public option_error
 public:
   // constructor
   autoexcept(autothrow id, const std::string &message)
-    : option_error(message), autothrow_(id) { }
+    : option_error(message), autothrow_(id) {}
 
   /**
    * get the autothrow enum member for the autothrow
    * option that caused the exception.
    */
   autothrow get_autothrow_id(void) const
-  { return autothrow_; }
+  {return autothrow_;}
 private:
   autothrow autothrow_;
 };
@@ -191,15 +197,15 @@ public:
 
   /// get a list of nonoptions from the command line
   const std::vector<std::string>& get_non_options(void) const
-  { return non_options_; }
+  {return non_options_;}
 
   /// get the main options
   const options& get_options(void) const
-  { return options_; }
+  {return options_;}
 
   /// get the main option locations
   const option_locations& get_locations(void) const
-  { return locations_; }
+  {return locations_;}
 private:
   options options_;
   option_locations locations_;
@@ -226,10 +232,13 @@ private:
     option_ExportBerkeleyMadonna,
     option_ExportC,
     option_ExportXPPAUT,
-    option_MaxTime
+    option_MaxTime,
+    option_ConvertToIrreversible,
+    option_ReportFile,
+    option_ScheduledTask
   } openum_;
 
-  enum parser_state { state_option, state_value, state_consume } state_;
+  enum parser_state {state_option, state_value, state_consume } state_;
   std::vector<std::string> non_options_;
 
   enum opsource

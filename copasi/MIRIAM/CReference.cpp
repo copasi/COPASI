@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,10 +30,37 @@
 #include "copasi/core/CRootContainer.h"
 
 // static
-CReference * CReference::fromData(const CData & data)
+CReference * CReference::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
-  return new CReference(data.getProperty(CData::OBJECT_NAME).toString(),
-                        NO_PARENT);
+  CReference * pReference = NULL;
+  CDataContainer * pObjectParent = dynamic_cast< CDataContainer * >(pParent);
+
+  if (pObjectParent != NULL)
+    {
+      CMIRIAMInfo * pMiriamInfo = dynamic_cast< CMIRIAMInfo * >(pObjectParent->getObjectAncestor("CMIRIAMInfo"));
+
+      if (pMiriamInfo != NULL)
+        {
+          pReference = pMiriamInfo->createReference(data.getProperty(CData::OBJECT_NAME).toString());
+          pObjectParent->remove(pReference);
+        }
+    }
+
+  return pReference;
+}
+
+// virtual
+void CReference::destruct()
+{
+  CMIRIAMInfo * pMiriamInfo = dynamic_cast< CMIRIAMInfo * >(getObjectAncestor("CMIRIAMInfo"));
+
+  if (pMiriamInfo != NULL)
+    {
+      pMiriamInfo->removeReference(this);
+      pMiriamInfo->save();
+    }
+
+  CDataContainer::destruct();
 }
 
 // virtual
@@ -38,14 +70,18 @@ CData CReference::toData() const
 
   Data.addProperty(CData::MIRIAM_RESOURCE, getResource());
   Data.addProperty(CData::MIRIAM_ID, getId());
+  Data.addProperty(CData::MIRIAM_DESCRIPTION, getDescription());
+
+  Data.removeProperty(CData::OBJECT_INDEX);
+  Data.addProperty(CData::OBJECT_HASH, Data.hash());
 
   return Data;
 }
 
 // virtual
-bool CReference::applyData(const CData & data)
+bool CReference::applyData(const CData & data, CUndoData::CChangeSet & changes)
 {
-  bool success = CDataContainer::applyData(data);
+  bool success = CDataContainer::applyData(data, changes);
 
   if (data.isSetProperty(CData::MIRIAM_RESOURCE))
     {
@@ -57,7 +93,43 @@ bool CReference::applyData(const CData & data)
       setId(data.getProperty(CData::MIRIAM_ID).toString());
     }
 
+  if (data.isSetProperty(CData::MIRIAM_DESCRIPTION))
+    {
+      setDescription(data.getProperty(CData::MIRIAM_DESCRIPTION).toString());
+    }
+
+  CMIRIAMInfo * pMiriamInfo = dynamic_cast< CMIRIAMInfo * >(getObjectAncestor("CMIRIAMInfo"));
+
+  if (pMiriamInfo != NULL)
+    {
+      return pMiriamInfo->save();
+    }
+
   return success;
+}
+
+// virtual
+void CReference::createUndoData(CUndoData & undoData,
+                                const CUndoData::Type & type,
+                                const CData & oldData,
+                                const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::MIRIAM_RESOURCE, oldData.getProperty(CData::MIRIAM_RESOURCE), getResource());
+  undoData.addProperty(CData::MIRIAM_ID, oldData.getProperty(CData::MIRIAM_ID), getId());
+  undoData.addProperty(CData::MIRIAM_DESCRIPTION, oldData.getProperty(CData::MIRIAM_DESCRIPTION), getDescription());
+  undoData.removeProperty(CData::OBJECT_INDEX);
+
+  if (!undoData.empty())
+    {
+      undoData.addProperty(CData::OBJECT_HASH, oldData.getProperty(CData::OBJECT_HASH), toData().getProperty(CData::OBJECT_HASH));
+    }
 }
 
 CReference::CReference(const std::string & objectName,

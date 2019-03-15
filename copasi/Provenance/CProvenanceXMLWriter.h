@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -6,9 +11,10 @@
 #ifndef CProvenanceXMLWriter_H
 #define CProvenanceXMLWriter_H
 
-#include <QUndoStack>
 #include <QtCore/QModelIndex>
 #include <QtCore/QMap>
+
+class CUndoStack;
 
 class CProvenanceXMLWriter
 
@@ -16,9 +22,12 @@ class CProvenanceXMLWriter
   //Q_OBJECT
 
 public:
-
-  //explicit CProvenanceXMLWriter(QWidget *parent = 0 , QUndoStack * undoStack = NULL, QString PathFile = "", QString ProvenanceOrigionFiletype = "", QString ProvenanceOrigionTime = "", QString ProvenanceParentOfCurrentModel = "", QString VersioningParentOfCurrentModel = "", QList<QString> VersionsPathToCurrentModel = QList<QString> ());
-  explicit CProvenanceXMLWriter(QWidget *parent = 0 , QUndoStack * undoStack = NULL, QString PathFile = "", QString ProvenanceOrigionFiletype = "", QString ProvenanceOrigionTime = "", QList<QString> VersionsPathToCurrentModel = QList<QString> ());
+  explicit CProvenanceXMLWriter(QWidget *parent = 0 ,
+                                CUndoStack * undoStack = NULL,
+                                QString PathFile = "",
+                                QString ProvenanceOrigionFiletype = "",
+                                QString ProvenanceOrigionTime = "",
+                                QList<QString> VersionsPathToCurrentModel = QList<QString> ());
 
   ~CProvenanceXMLWriter();
 
@@ -109,7 +118,7 @@ private:
   /**
    * A point to Undo Stack
    */
-  QUndoStack * mpUndoStack;
+  CUndoStack * mpUndoStack;
 
   /**
   *  A list of Versions from the root to the Parent of Current Model

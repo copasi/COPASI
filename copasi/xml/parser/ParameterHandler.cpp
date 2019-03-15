@@ -56,7 +56,7 @@ CXMLHandler * ParameterHandler::processStart(const XML_Char * pszName,
         // Parameter has attributes name, type and value
         name = mpParser->getAttributeValue("name", papszAttrs);
         cType = mpParser->getAttributeValue("type", papszAttrs);
-        type = toEnum(cType, CCopasiParameter::XMLType, CCopasiParameter::INVALID);
+        type = CCopasiParameter::XMLType.toEnum(cType, CCopasiParameter::Type::INVALID);
         cValue = mpParser->getAttributeValue("value", papszAttrs);
 
         if (cValue != NULL)
@@ -66,27 +66,27 @@ CXMLHandler * ParameterHandler::processStart(const XML_Char * pszName,
 
         switch (type)
           {
-            case CCopasiParameter::DOUBLE:
+            case CCopasiParameter::Type::DOUBLE:
               d = CCopasiXMLInterface::DBL(sValue.c_str());
               pValue = &d;
               break;
 
-            case CCopasiParameter::UDOUBLE:
+            case CCopasiParameter::Type::UDOUBLE:
               d = CCopasiXMLInterface::DBL(sValue.c_str());
               pValue = &d;
               break;
 
-            case CCopasiParameter::INT:
+            case CCopasiParameter::Type::INT:
               i = strToInt(sValue.c_str());
               pValue = &i;
               break;
 
-            case CCopasiParameter::UINT:
+            case CCopasiParameter::Type::UINT:
               ui = strToUnsignedInt(sValue.c_str());
               pValue = &ui;
               break;
 
-            case CCopasiParameter::BOOL:
+            case CCopasiParameter::Type::BOOL:
 
               if (sValue == "0" || sValue == "false")
                 {
@@ -100,13 +100,13 @@ CXMLHandler * ParameterHandler::processStart(const XML_Char * pszName,
               pValue = &b;
               break;
 
-            case CCopasiParameter::STRING:
-            case CCopasiParameter::FILE:
-            case CCopasiParameter::CN:
+            case CCopasiParameter::Type::STRING:
+            case CCopasiParameter::Type::FILE:
+            case CCopasiParameter::Type::CN:
               pValue = &sValue;
               break;
 
-            case CCopasiParameter::KEY:
+            case CCopasiParameter::Type::KEY:
             {
               if (sValue != "" &&
                   CKeyFactory::isValidKey(sValue))

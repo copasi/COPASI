@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,6 +51,8 @@ const char const_usage[] =
   "                                default is .copasi in the home directory.\n"
   "  --configfile file             The configuration file for copasi. The\n"
   "                                default is copasi in the ConfigDir.\n"
+  "  --convert-to-irreversible     Converts reversible reactions to irreversibl-\n"
+  "                                e ones before running Task.\n"
   "  --exportBerkeleyMadonna file  The Berkeley Madonna file to export.\n"
   "  --exportC file                The C code file to export.\n"
   "  --exportCA file               The COMBINE archive file to export.\n"
@@ -63,6 +65,9 @@ const char const_usage[] =
   "  --maxTime seconds             The maximal time CopasiSE may run in\n"
   "                                seconds.\n"
   "  --nologo                      Surpresses the startup message.\n"
+  "  --report-file file            Override report file name to be used except\n"
+  "                                for the one defined in the scheduled task.\n"
+  "  --scheduled-task taskName     Override the task marked as executable.\n"
   "  --validate                    Only validate the given input file (COPASI,\n"
   "                                Gepasi, or SBML) without performing any\n"
   "                                calculations.\n"
@@ -204,6 +209,9 @@ void copasi::COptionParser::finalize(void)
           case option_ConfigFile:
             throw option_error("missing value for 'configfile' option");
 
+          case option_ConvertToIrreversible:
+            throw option_error("missing value for 'convert-to-irreversible' option");
+
           case option_CopasiDir:
             throw option_error("missing value for 'copasidir' option");
 
@@ -246,11 +254,17 @@ void copasi::COptionParser::finalize(void)
           case option_NoLogo:
             throw option_error("missing value for 'nologo' option");
 
+          case option_ReportFile:
+            throw option_error("missing value for 'report-file' option");
+
           case option_SBMLSchema:
             throw option_error("missing value for 'SBMLSchema' option");
 
           case option_Save:
             throw option_error("missing value for 'save' option");
+
+          case option_ScheduledTask:
+            throw option_error("missing value for 'scheduled-task' option");
 
           case option_Tmp:
             throw option_error("missing value for 'tmp' option");
@@ -261,9 +275,7 @@ void copasi::COptionParser::finalize(void)
           case option_Verbose:
             throw option_error("missing value for 'verbose' option");
         }
-
     }
-
 }
 //#########################################################################
 void copasi::COptionParser::parse_element(const char *element, int position, opsource source)
@@ -279,7 +291,7 @@ void copasi::COptionParser::parse_element(const char *element, int position, ops
       case state_option:
         if (length >= 2 && element[0] == '-' && element[1] == '-')
           {
-            if (length == 2) { state_ = state_consume; return; }
+            if (length == 2) {state_ = state_consume; return;}
 
             element += 2;
             const char *value = element;
@@ -473,6 +485,20 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
       openum_ = option_ConfigFile;
       locations_.ConfigFile = position;
       state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "convert-to-irreversible") == 0)
+    {
+      source = source; // kill compiler unused variable warning
+
+      if (locations_.ConvertToIrreversible)
+        {
+          throw option_error("the 'convert-to-irreversible' option is only allowed once");
+        }
+
+      openum_ = option_ConvertToIrreversible;
+      locations_.ConvertToIrreversible = position;
+      options_.ConvertToIrreversible = !options_.ConvertToIrreversible;
       return;
     }
   else if (strcmp(option, "copasidir") == 0)
@@ -671,6 +697,20 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
       options_.NoLogo = !options_.NoLogo;
       return;
     }
+  else if (strcmp(option, "report-file") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'report-file' option is only allowed on the command line");
+
+      if (locations_.ReportFile)
+        {
+          throw option_error("the 'report-file' option is only allowed once");
+        }
+
+      openum_ = option_ReportFile;
+      locations_.ReportFile = position;
+      state_ = state_value;
+      return;
+    }
   else if (strcmp(option, "save") == 0)
     {
       source = source; // kill compiler unused variable warning
@@ -682,6 +722,20 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
 
       openum_ = option_Save;
       locations_.Save = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "scheduled-task") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'scheduled-task' option is only allowed on the command line");
+
+      if (locations_.ScheduledTask)
+        {
+          throw option_error("the 'scheduled-task' option is only allowed once");
+        }
+
+      openum_ = option_ScheduledTask;
+      locations_.ScheduledTask = position;
       state_ = state_value;
       return;
     }
@@ -751,6 +805,9 @@ void copasi::COptionParser::parse_value(const char *value)
         options_.ConfigFile = value;
       }
       break;
+
+      case option_ConvertToIrreversible:
+        break;
 
       case option_CopasiDir:
       {
@@ -845,6 +902,12 @@ void copasi::COptionParser::parse_value(const char *value)
       case option_NoLogo:
         break;
 
+      case option_ReportFile:
+      {
+        options_.ReportFile = value;
+      }
+      break;
+
       case option_SBMLSchema:
       {
         SBMLSchema_enum evalue;
@@ -901,6 +964,12 @@ void copasi::COptionParser::parse_value(const char *value)
       }
       break;
 
+      case option_ScheduledTask:
+      {
+        options_.ScheduledTask = value;
+      }
+      break;
+
       case option_Tmp:
       {
         options_.Tmp = value;
@@ -927,72 +996,80 @@ const char* expand_long_name(const std::string &name)
   std::string::size_type name_size = name.size();
   std::vector<const char*> matches;
 
-  if (name_size <= 10 && name.compare(0, name_size, "SBMLSchema", name_size) == 0)
+  if (name_size <= 10 && name.compare("SBMLSchema") == 0)
     matches.push_back("SBMLSchema");
 
-  if (name_size <= 9 && name.compare(0, name_size, "configdir", name_size) == 0)
+  if (name_size <= 9 && name.compare("configdir") == 0)
     matches.push_back("configdir");
 
-  if (name_size <= 10 && name.compare(0, name_size, "configfile", name_size) == 0)
+  if (name_size <= 10 && name.compare("configfile") == 0)
     matches.push_back("configfile");
 
-  if (name_size <= 9 && name.compare(0, name_size, "copasidir", name_size) == 0)
+  if (name_size <= 23 && name.compare("convert-to-irreversible") == 0)
+    matches.push_back("convert-to-irreversible");
+
+  if (name_size <= 9 && name.compare("copasidir") == 0)
     matches.push_back("copasidir");
 
-  if (name_size <= 21 && name.compare(0, name_size, "exportBerkeleyMadonna", name_size) == 0)
+  if (name_size <= 21 && name.compare("exportBerkeleyMadonna") == 0)
     matches.push_back("exportBerkeleyMadonna");
 
-  if (name_size <= 7 && name.compare(0, name_size, "exportC", name_size) == 0)
+  if (name_size <= 7 && name.compare("exportC") == 0)
     matches.push_back("exportC");
 
-  if (name_size <= 8 && name.compare(0, name_size, "exportCA", name_size) == 0)
+  if (name_size <= 8 && name.compare("exportCA") == 0)
     matches.push_back("exportCA");
 
-  if (name_size <= 10 && name.compare(0, name_size, "exportSBML", name_size) == 0)
+  if (name_size <= 10 && name.compare("exportSBML") == 0)
     matches.push_back("exportSBML");
 
-  if (name_size <= 11 && name.compare(0, name_size, "exportSEDML", name_size) == 0)
+  if (name_size <= 11 && name.compare("exportSEDML") == 0)
     matches.push_back("exportSEDML");
 
-  if (name_size <= 12 && name.compare(0, name_size, "exportXPPAUT", name_size) == 0)
+  if (name_size <= 12 && name.compare("exportXPPAUT") == 0)
     matches.push_back("exportXPPAUT");
 
-  if (name_size <= 4 && name.compare(0, name_size, "home", name_size) == 0)
+  if (name_size <= 4 && name.compare("home") == 0)
     matches.push_back("home");
 
-  if (name_size <= 8 && name.compare(0, name_size, "importCA", name_size) == 0)
+  if (name_size <= 8 && name.compare("importCA") == 0)
     matches.push_back("importCA");
 
-  if (name_size <= 10 && name.compare(0, name_size, "importSBML", name_size) == 0)
+  if (name_size <= 10 && name.compare("importSBML") == 0)
     matches.push_back("importSBML");
 
-  if (name_size <= 11 && name.compare(0, name_size, "importSEDML", name_size) == 0)
+  if (name_size <= 11 && name.compare("importSEDML") == 0)
     matches.push_back("importSEDML");
 
-  if (name_size <= 7 && name.compare(0, name_size, "license", name_size) == 0)
+  if (name_size <= 7 && name.compare("license") == 0)
     matches.push_back("license");
 
-  if (name_size <= 7 && name.compare(0, name_size, "maxTime", name_size) == 0)
+  if (name_size <= 7 && name.compare("maxTime") == 0)
     matches.push_back("maxTime");
 
-  if (name_size <= 6 && name.compare(0, name_size, "nologo", name_size) == 0)
+  if (name_size <= 6 && name.compare("nologo") == 0)
     matches.push_back("nologo");
 
-  if (name_size <= 4 && name.compare(0, name_size, "save", name_size) == 0)
+  if (name_size <= 11 && name.compare("report-file") == 0)
+    matches.push_back("report-file");
+
+  if (name_size <= 4 && name.compare("save") == 0)
     matches.push_back("save");
 
-  if (name_size <= 3 && name.compare(0, name_size, "tmp", name_size) == 0)
+  if (name_size <= 14 && name.compare("scheduled-task") == 0)
+    matches.push_back("scheduled-task");
+
+  if (name_size <= 3 && name.compare("tmp") == 0)
     matches.push_back("tmp");
 
-  if (name_size <= 8 && name.compare(0, name_size, "validate", name_size) == 0)
+  if (name_size <= 8 && name.compare("validate") == 0)
     matches.push_back("validate");
 
-  if (name_size <= 7 && name.compare(0, name_size, "verbose", name_size) == 0)
+  if (name_size <= 7 && name.compare("verbose") == 0)
     matches.push_back("verbose");
 
-  if (name_size <= 4 && name.compare(0, name_size, "help", name_size) == 0)
+  if (name_size <= 4 && name.compare("help") == 0)
     matches.push_back("help");
-
 
   if (matches.empty())
     {
