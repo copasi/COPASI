@@ -405,12 +405,16 @@ void CRadau5Method::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 
   static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);
 }
 
-void CRadau5Method::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
+void CRadau5Method::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y , C_FLOAT64 * ydot)
 {
-  *mpContainerStateTime = *t;
+  C_FLOAT64 mpYTemp[mData.dim];
+  memcpy(mpYTemp, mpContainerStateTime, (mData.dim) * sizeof(C_FLOAT64));
+  memcpy(mpContainerStateTime, y, (mData.dim) * sizeof(C_FLOAT64));
 
   mpContainer->updateSimulatedValues(*mpReducedModel);
-  memcpy(ydot, mpYdot, mData.dim * sizeof(C_FLOAT64));
+  memcpy(ydot+1, mpYdot+1, (mData.dim-1) * sizeof(C_FLOAT64));
+
+  memcpy(mpContainerStateTime, mpYTemp, (mData.dim) * sizeof(C_FLOAT64));
 
 #ifdef DEBUG_NUMERICS
   std::cout << "State:     " << mpContainer->getState(false) << std::endl;
