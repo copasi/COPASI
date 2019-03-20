@@ -16,7 +16,12 @@
 
 #include <cmath>
 #include "copasi.h"
-#include <f2c.h>
+
+# ifdef HAVE_F2C_H
+#  include <f2c.h>
+# else
+#  include "copasi/lapack/f2c.h"
+# endif
 
 //template<class T>
 //inline const T& max(const T& a, const T& b)
