@@ -107,9 +107,9 @@ void CRadau5Method::initializeParameter()
   //CCopasiParameter *pParm;
 
   mpReducedModel = assertParameter("Integrate Reduced Model", CCopasiParameter::Type::BOOL, (bool) false);
-  mpRelativeTolerance = assertParameter("Relative Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-6);
-  mpAbsoluteTolerance = assertParameter("Absolute Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-12);
-  mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::Type::UINT, (unsigned C_INT32) 10000);
+  mpRelativeTolerance = assertParameter("Relative Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-4);
+  mpAbsoluteTolerance = assertParameter("Absolute Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-6);
+  mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::Type::UINT, (unsigned C_INT32) 1e10);
   mpInitialStepSize = assertParameter("Initial Step Size", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-3);
 
 }
@@ -396,6 +396,7 @@ void CRadau5Method::start()
   mDWork = 0.0;
   mIWork.resize(LIWORK);
   mIWork = 0;
+  mIWork[1] = *mpMaxInternalSteps;
 
   return;
 }
