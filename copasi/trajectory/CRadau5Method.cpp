@@ -159,11 +159,11 @@ void CRadau5Method::stateChange(const CMath::StateChange & change)
 void solout(integer *nr, double *xold, double *x, double *y, double *cont, integer *lrc, integer *n, double *rpar, integer *ipar,
             integer *irtrn)
 {
-  if ( *(x+1) != *rpar)
-  {
-    *irtrn = (*x != *xold) ? -1 : 1;
-    *rpar = *(x+1);
-  }
+  if (*(x + 1) != *rpar)
+    {
+      *irtrn = (*x != *xold) ? -1 : 1;
+      *rpar = *(x + 1);
+    }
 }
 
 
@@ -243,9 +243,10 @@ CTrajectoryMethod::Status CRadau5Method::step(const double & deltaT,
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 30);
             }
+
           Status = FAILURE;
           return Status;
-      }
+        }
 
       if (!mpContainer->isStateValid())
         {
@@ -327,7 +328,7 @@ void CRadau5Method::start()
   mpY = mpContainerStateTime;
   mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getCountFixedEventTargets();
   mpAtol = mAtol.array() + mpContainer->getCountFixedEventTargets();
-    
+
   mRtol.resize(mData.dim);
   mRtol = *mpRelativeTolerance;
 
@@ -408,14 +409,16 @@ void CRadau5Method::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 
 
 void CRadau5Method::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y , C_FLOAT64 * ydot)
 {
-  C_FLOAT64 mpYTemp[mData.dim];
+  C_FLOAT64 *mpYTemp = (C_FLOAT64 *)malloc(sizeof(C_FLOAT64) * mData.dim);
   memcpy(mpYTemp, mpContainerStateTime, (mData.dim) * sizeof(C_FLOAT64));
   memcpy(mpContainerStateTime, y, (mData.dim) * sizeof(C_FLOAT64));
 
   mpContainer->updateSimulatedValues(*mpReducedModel);
-  memcpy(ydot+1, mpYdot+1, (mData.dim-1) * sizeof(C_FLOAT64));
+  memcpy(ydot + 1, mpYdot + 1, (mData.dim - 1) * sizeof(C_FLOAT64));
 
   memcpy(mpContainerStateTime, mpYTemp, (mData.dim) * sizeof(C_FLOAT64));
+
+  free(mpYTemp);
 
 #ifdef DEBUG_NUMERICS
   std::cout << "State:     " << mpContainer->getState(false) << std::endl;
