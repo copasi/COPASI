@@ -3,7 +3,6 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-
 #include "copasi.h"
 
 #include "CRadau5Method.h"
@@ -111,7 +110,6 @@ void CRadau5Method::initializeParameter()
   mpAbsoluteTolerance = assertParameter("Absolute Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-6);
   mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::Type::UINT, (unsigned C_INT32) 1e10);
   mpInitialStepSize = assertParameter("Initial Step Size", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-3);
-
 }
 
 bool CRadau5Method::elevateChildren()
@@ -154,18 +152,16 @@ void CRadau5Method::stateChange(const CMath::StateChange & change)
     }
 }
 
-
 /* solout function to interupt after successfull computation for automatic step size */
 void solout(integer *nr, double *xold, double *x, double *y, double *cont, integer *lrc, integer *n, double *rpar, integer *ipar,
             integer *irtrn)
 {
-  if ( *(x+1) != *rpar)
-  {
-    *irtrn = (*x != *xold) ? -1 : 1;
-    *rpar = *(x+1);
-  }
+  if (*(x + 1) != *rpar)
+    {
+      *irtrn = (*x != *xold) ? -1 : 1;
+      *rpar = *(x + 1);
+    }
 }
-
 
 CTrajectoryMethod::Status CRadau5Method::step(const double & deltaT,
     const bool & final)
@@ -221,8 +217,6 @@ CTrajectoryMethod::Status CRadau5Method::step(const double & deltaT,
               mSavedState.Status = FAILURE;
             }
         }
-
-
     }
   else
     {
@@ -243,9 +237,10 @@ CTrajectoryMethod::Status CRadau5Method::step(const double & deltaT,
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 30);
             }
+
           Status = FAILURE;
           return Status;
-      }
+        }
 
       if (!mpContainer->isStateValid())
         {
@@ -327,7 +322,7 @@ void CRadau5Method::start()
   mpY = mpContainerStateTime;
   mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getCountFixedEventTargets();
   mpAtol = mAtol.array() + mpContainer->getCountFixedEventTargets();
-    
+
   mRtol.resize(mData.dim);
   mRtol = *mpRelativeTolerance;
 
@@ -349,7 +344,7 @@ void CRadau5Method::start()
 
   H = *mpInitialStepSize;
 
-  IOUT = mTask == 5 ? 1 : 0 ;
+  IOUT = mTask == 5 ? 1 : 0;
 
   /* optional parameters */
   rpar = 0;
@@ -406,21 +401,21 @@ void CRadau5Method::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 
   static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);
 }
 
-void CRadau5Method::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y , C_FLOAT64 * ydot)
+void CRadau5Method::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
-  C_FLOAT64 mpYTemp[mData.dim];
-  memcpy(mpYTemp, mpContainerStateTime, (mData.dim) * sizeof(C_FLOAT64));
+  CVector< C_FLOAT64 > mYTemp(mData.dim);
+  memcpy(mYTemp.begin(), mpContainerStateTime, (mData.dim) * sizeof(C_FLOAT64));
   memcpy(mpContainerStateTime, y, (mData.dim) * sizeof(C_FLOAT64));
 
   mpContainer->updateSimulatedValues(*mpReducedModel);
-  memcpy(ydot+1, mpYdot+1, (mData.dim-1) * sizeof(C_FLOAT64));
-
-  memcpy(mpContainerStateTime, mpYTemp, (mData.dim) * sizeof(C_FLOAT64));
+  memcpy(ydot + 1, mpYdot + 1, (mData.dim - 1) * sizeof(C_FLOAT64));
 
 #ifdef DEBUG_NUMERICS
   std::cout << "State:     " << mpContainer->getState(false) << std::endl;
   std::cout << "Rate:      " << mpContainer->getRate(false) << std::endl;
 #endif // DEBUG_NUMERICS
+
+  memcpy(mpContainerStateTime, mYTemp.begin(), (mData.dim) * sizeof(C_FLOAT64));
 
   return;
 }
