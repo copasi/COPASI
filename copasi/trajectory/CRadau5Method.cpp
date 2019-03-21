@@ -152,17 +152,6 @@ void CRadau5Method::stateChange(const CMath::StateChange & change)
     }
 }
 
-/* solout function to interupt after successfull computation for automatic step size */
-void solout(integer *nr, double *xold, double *x, double *y, double *cont, integer *lrc, integer *n, double *rpar, integer *ipar,
-            integer *irtrn)
-{
-  if (*(x + 1) != *rpar)
-    {
-      *irtrn = (*x != *xold) ? -1 : 1;
-      *rpar = *(x + 1);
-    }
-}
-
 CTrajectoryMethod::Status CRadau5Method::step(const double & deltaT,
     const bool & final)
 {
@@ -458,6 +447,25 @@ void CRadau5Method::evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
                           const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
 {
   // TODO Implement me.
+}
+
+/* solout function to generate output after successfull computation for automatic step size */
+void CRadau5Method::solout(integer *nr, double *xold, double *x, double *y, double *cont, integer *lrc, integer *n, double *rpar, integer *ipar, integer *irtrn)
+{
+  if (*x != *xold && *(x+1) != *rpar)
+    {
+      static_cast<Data *>((void *) ipar)->pMethod->output(x);
+      *rpar = *(x+1);
+    }
+}
+
+void CRadau5Method::output(const double *t)
+{
+  if (*t < mpProblem->getDuration())
+    {
+      *mpContainerStateTime = *t;
+      CTrajectoryMethod::output(*mpReducedModel);
+    }
 }
 
 void CRadau5Method::maskRoots(CVectorCore< C_FLOAT64 > & rootValues)
