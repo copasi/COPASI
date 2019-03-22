@@ -465,6 +465,7 @@ void CRadau5Method::output(const double *t)
     {
       *mpContainerStateTime = *t;
       CTrajectoryMethod::output(*mpReducedModel);
+      *mpContainerStateTime = 0;
     }
 }
 
