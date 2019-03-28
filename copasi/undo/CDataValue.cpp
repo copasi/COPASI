@@ -18,6 +18,7 @@ const CEnumAnnotation< std::string, CDataValue::Type > CDataValue::TypeName(
   "unsignedInteger", // UINT
   "Boolean", // BOOL
   "text", // STRING
+  "data", // DATA,
   "dataValues", // DATA_VALUES,
   "dataVector", // DATA_VECTOR,
   "pointer", // VOID_POINTER
