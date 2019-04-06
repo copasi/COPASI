@@ -29,10 +29,6 @@ if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
 endif(POLICY CMP0048)
 
-if(POLICY CMP0043)
-  cmake_policy(SET CMP0043 OLD)
-endif(POLICY CMP0043)
-
 # add an option to override the version
 set(COPASI_OVERRIDE_VERSION "" CACHE STRING "Version String to override the version parsed from the header" )
 mark_as_advanced(COPASI_OVERRIDE_VERSION)
@@ -41,7 +37,6 @@ mark_as_advanced(COPASI_OVERRIDE_VERSION)
 if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/copasi/CopasiVersion.h" AND NOT COPASI_OVERRIDE_VERSION)
   set(COPASI_OVERRIDE_VERSION "4.12.65")
 endif()
-
 
 set(COPASI_VERSION_MAJOR)
 set(COPASI_VERSION_MINOR)
