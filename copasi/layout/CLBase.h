@@ -1,4 +1,14 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -229,6 +239,14 @@ public:
     mDepth *= scaleFactor;
   }
 
+  bool isEmpty() const
+  {
+    return mWidth == 0
+           && mHeight == 0
+           && mDepth == 0
+           ;
+  }
+
   /**
    * convert to sbml dimension
    */
@@ -264,15 +282,17 @@ public:
    */
   CLBoundingBox(const BoundingBox & bb);
 
-  const CLPoint & getPosition() const {return mPosition;};
-  const CLDimensions & getDimensions() const {return mDimensions;};
+  const CLPoint & getPosition() const {return mPosition;}
+  const CLDimensions & getDimensions() const {return mDimensions;}
 
-  CLPoint & getPosition() {return mPosition;};
-  CLPoint getCenter() const {return CLPoint(mPosition.getX() + 0.5 * mDimensions.getWidth(), mPosition.getY() + 0.5 * mDimensions.getHeight());};
-  CLDimensions & getDimensions() {return mDimensions;};
+  CLPoint & getPosition() {return mPosition;}
+  CLPoint getCenter() const {return CLPoint(mPosition.getX() + 0.5 * mDimensions.getWidth(), mPosition.getY() + 0.5 * mDimensions.getHeight());}
+  CLDimensions & getDimensions() {return mDimensions;}
 
-  void setPosition(const CLPoint & p) {mPosition = p;};
-  void setDimensions(const CLDimensions & d) {mDimensions = d;};
+  void setPosition(const CLPoint & p) {mPosition = p;}
+  void setDimensions(const CLDimensions & d) {mDimensions = d;}
+
+  bool isEmpty() const { return mPosition.isEmpty() && mDimensions.isEmpty();  }
 
   virtual void moveBy(const CLPoint &p)
   {
