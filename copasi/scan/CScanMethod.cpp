@@ -219,7 +219,7 @@ CScanItemLinear::CScanItemLinear(CCopasiParameterGroup* si):
   if (mUseValues && !values.empty())
     {
       std::vector<std::string> elems;
-      ResultParser::split(values, std::string(",; |"), elems);
+      ResultParser::split(values, std::string(",; |\n\t\r"), elems);
 
 for (std::string & number : elems)
         {
