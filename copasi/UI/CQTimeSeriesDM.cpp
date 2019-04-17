@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -56,10 +61,10 @@ QVariant CQTimeSeriesDM::data(const QModelIndex &index, int role) const
   switch (mFramework)
     {
       case 0:
-        return convertToQString(mpTimeSeries->getConcentrationData(index.row(), index.column()));
+        return mpTimeSeries->getConcentrationData(index.row(), index.column());
 
       case 1:
-        return convertToQString(mpTimeSeries->getData(index.row(), index.column()));
+        return mpTimeSeries->getData(index.row(), index.column());
     }
 
   return QVariant();
