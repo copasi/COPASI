@@ -3508,9 +3508,9 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
           tmp_ma->addChild(tt2);
         }
 
-      CDerive::compileTree(tmp_ma, NULL);
-
       CExpression * tmpExp = new CExpression("Mass action expression", this);
+      CDerive::compileTree(tmp_ma, tmpExp);
+
       tmpExp->setRoot(tmp_ma);
       tmpExp->compile(); //this converts references from model entities to value references
 
