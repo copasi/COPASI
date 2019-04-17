@@ -3,6 +3,7 @@
 #define COPASI_CMathDerive
 
 class CMathContainer;
+class CEvaluationNode;
 
 /**
  * This class contains all the information that is needed to calculate derivatives in a CMathContainer.
@@ -15,9 +16,18 @@ public:
   
   CMathDerive(const CMathContainer* pContainer, size_t fun, size_t var);
   
+  ///just for testing
+  const CEvaluationNode* getRootNode();
+  
 private:
 
+  void initOneVar(size_t fun, size_t var);
+  
+  
+  
   const CMathContainer* mpContainer;
+  
+  CEvaluationNode* mpRootNode;
 
 
 

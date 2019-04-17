@@ -210,6 +210,7 @@ bool CQMathMatrixWidget::enterProtected()
 }
 
 #include <qtablewidget.h>
+#include "math/CMathDerive.h"
 
 void CQMathMatrixWidget::slotDerivButtonPressed()
 {
@@ -218,16 +219,22 @@ void CQMathMatrixWidget::slotDerivButtonPressed()
 
   assert(mpDataModel != NULL);
   CModel* pModel = mpDataModel->getModel();
-  CEvaluationNode* tmpnode = pModel->prepareElasticity(&pModel->getReactions()[0],
-                             &pModel->getMetabolites()[0], false);
+  
+  //test new CMathDerivative class
+  CMathDerive md(&pModel->getMathContainer(),56,38);
+  
+  const CEvaluationNode* tmpnode = md.getRootNode();
+  
+  //CEvaluationNode* tmpnode = pModel->prepareElasticity(&pModel->getReactions()[1],
+  //                           &pModel->getMetabolites()[0], false);
 
-  CEvaluationNode* tmpnode2 = pModel->prepareElasticity(&pModel->getReactions()[0],
+  CEvaluationNode* tmpnode2 = pModel->prepareElasticity(&pModel->getReactions()[1],
                               &pModel->getMetabolites()[0], true);
 
   //create empty environment. Variable nodes should not occur in an expression
   std::vector<std::vector<std::string> > env;
 
-  std::string tmpstring = tmpnode->buildMMLString(false, env);
+  std::string tmpstring = tmpnode ? tmpnode->buildMMLString(false, env) : "";
   std::string tmpstring2 = tmpnode2->buildMMLString(false, env);
 
   mpMML->setBaseFontPointSize(qApp->font().pointSize());
