@@ -452,7 +452,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataO
   if (pENObj)
     {
       //first check whether the object is the derivation variable
-      if (pObject->getCN() == pENObj->getObjectCN())
+      if (pObject && pObject->getCN() == pENObj->getObjectCN())
         {
           //std::cout << "*";
           return new CEvaluationNodeNumber(CEvaluationNode::SubType::INTEGER, "1");

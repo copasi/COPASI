@@ -37,8 +37,10 @@ void CMathDerive::initOneVar(size_t fun, size_t var)
   
   //CEvaluationNode* tmp;
 
-  std::vector<const CEvaluationNode*> env;
-  //mpRootNode = CDerive::deriveBranch(pMExp->getRoot(), pVarObj, env, pMExp, true);
+  //std::vector<const CEvaluationNode*> env;
+  
+  CDerive derive;
+  derive.deriveBranch(pMExp->getRoot(), NULL);
 
 
 }
