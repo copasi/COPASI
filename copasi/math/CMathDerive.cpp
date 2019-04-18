@@ -5,6 +5,7 @@
 
 #include "math/CMathContainer.h"
 #include "math/CMathExpression.h"
+#include "function/CDerive.h"
 
 
 
@@ -33,8 +34,13 @@ void CMathDerive::initOneVar(size_t fun, size_t var)
   CMathObject* pVMO = mpContainer->getMathObject(&mpContainer->getValues()[var]);
 
   const CMathExpression* pMExp = pFMO->getExpressionPtr();
-  //mpRootNode = pMExp->getRoot();
   
+  //CEvaluationNode* tmp;
+
+  std::vector<const CEvaluationNode*> env;
+  //mpRootNode = CDerive::deriveBranch(pMExp->getRoot(), pVarObj, env, pMExp, true);
+
+
 }
 
 const CEvaluationNode* CMathDerive::getRootNode()
