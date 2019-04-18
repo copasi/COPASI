@@ -36,7 +36,7 @@
 #include "function/CExpression.h"
 
 //activate display of test of symbolic derivatives
-//#define _DERIV_TEST_
+#define _DERIV_TEST_
 
 /**
  *  Constructs a CQMathMatrixWidget which is a child of 'parent', with the
@@ -212,11 +212,12 @@ bool CQMathMatrixWidget::enterProtected()
 #include <qtablewidget.h>
 #include "math/CMathDerive.h"
 
+#include "math/CMathDerive.h"
+
 void CQMathMatrixWidget::slotDerivButtonPressed()
 {
 #ifdef _DERIV_TEST_
   std::cout << "Deriv" << std::endl;
-
   assert(mpDataModel != NULL);
   CModel* pModel = mpDataModel->getModel();
   
@@ -228,14 +229,17 @@ void CQMathMatrixWidget::slotDerivButtonPressed()
   //CEvaluationNode* tmpnode = pModel->prepareElasticity(&pModel->getReactions()[1],
   //                           &pModel->getMetabolites()[0], false);
 
-  CEvaluationNode* tmpnode2 = pModel->prepareElasticity(&pModel->getReactions()[1],
-                              &pModel->getMetabolites()[0], true);
+  //CEvaluationNode* tmpnode2 = pModel->prepareElasticity(&pModel->getReactions()[1],
+  //                           &pModel->getMetabolites()[0], true);
 
   //create empty environment. Variable nodes should not occur in an expression
   std::vector<std::vector<std::string> > env;
 
   std::string tmpstring = tmpnode ? tmpnode->buildMMLString(false, env) : "";
-  std::string tmpstring2 = tmpnode2->buildMMLString(false, env);
+  
+  return;
+  
+  std::string tmpstring2 = ""; //tmpnode2->buildMMLString(false, env);
 
   mpMML->setBaseFontPointSize(qApp->font().pointSize());
   mpMML->setFontName(QtMmlWidget::NormalFont, qApp->font().family());
