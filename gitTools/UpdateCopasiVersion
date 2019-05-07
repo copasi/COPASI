@@ -55,7 +55,7 @@ fi
 
 # git log --pretty=%H $current_commit..HEAD
 commitList=`git log --pretty=%H $current_commit..HEAD`
-git log --pretty="%H %d" ${current_commit}..@{upstream} | ${GAWK} -- '$0 ~ /Build-/ {printf "%s %s,", gensub(/.*Build-([0-9]+).*/, "\\\\1", "g", $0), $1}'
+# git log --pretty="%H %d" ${current_commit}..@{upstream}
 buildList=`git log --pretty="%H %d" ${current_commit}..@{upstream} | ${GAWK} -- '$0 ~ /Build-/ {printf "%s %s,", gensub(/.*Build-([0-9]+).*/, "\\\\1", "g", $0), $1}'`
 
 SAVEIFS=$IFS
@@ -68,7 +68,7 @@ for b in $buildList; do
   commit=${b##* }
   
   if [ `echo $commitList | grep ${commit}` ]; then
-    if [ $current_build == 81 ]; then 
+    if [ $current_build == 207 ]; then 
       current_build=${build}
       current_commit=${commit}
     fi
