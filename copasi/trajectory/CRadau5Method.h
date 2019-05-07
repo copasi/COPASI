@@ -313,6 +313,13 @@ public:
   virtual void evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
                      const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD);
 
+  /**
+   *  This helps to output when automatic step size is selected
+   */
+  static void solout(integer *nr, double *xold, double *x, double *y, double *cont, integer *lrc, integer *n, double *rpar, integer *ipar, integer *irtrn);
+
+  virtual void output(const double *t);
+
 private:
   /**
    * Initialize the method parameter

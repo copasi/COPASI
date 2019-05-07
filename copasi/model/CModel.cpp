@@ -3446,6 +3446,7 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
   CEvaluationNode* tmp;
   CExpression * derivExp = new CExpression("derivative expression", this);
 
+
   //first handle mass action
   if (dynamic_cast<const CMassAction*>(pReaction->getFunction()))
     {
@@ -3465,16 +3466,18 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
 
       prod.push_back(pReaction->getMap().getObjects()[0].value); //k1
 
+      std::vector<const CEvaluationNode*> env;
+      CDerive der(env, derivExp, simplify);
+
       if (prod.size() == 1)
         tmp_ma = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getCN() + ">");
       else
         {
-          tmp_ma = CDerive::multiply(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getCN() + ">"),
-                                     new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[1]->getCN() + ">"), simplify);
+          tmp_ma = der.multiply(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getCN() + ">"),
+                                     new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[1]->getCN() + ">"));
 
           for (j = 2; j < prod.size(); ++j)
-            tmp_ma = CDerive::multiply(tmp_ma,
-                                       new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[j]->getCN() + ">"), simplify);
+            tmp_ma = der.multiply(tmp_ma, new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[j]->getCN() + ">"));
         }
 
       //backwards part
@@ -3495,12 +3498,11 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
             tt2 = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getCN() + ">");
           else
             {
-              tt2 = CDerive::multiply(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getCN() + ">"),
-                                      new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[1]->getCN() + ">"), simplify);
+              tt2 = der.multiply(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getCN() + ">"),
+                                 new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[1]->getCN() + ">"));
 
               for (j = 2; j < prod.size(); ++j)
-                tt2 = CDerive::multiply(tt2,
-                                        new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[j]->getCN() + ">"), simplify);
+                tt2 = der.multiply(tt2, new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[j]->getCN() + ">"));
             }
 
           tmp_ma = new CEvaluationNodeOperator(CEvaluationNode::SubType::MINUS, "-");
@@ -3508,14 +3510,13 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
           tmp_ma->addChild(tt2);
         }
 
-      CDerive::compileTree(tmp_ma, NULL);
-
       CExpression * tmpExp = new CExpression("Mass action expression", this);
+      der.compileTree(tmp_ma);
+
       tmpExp->setRoot(tmp_ma);
       tmpExp->compile(); //this converts references from model entities to value references
 
-      std::vector<const CEvaluationNode*> env;
-      tmp = CDerive::deriveBranch(tmp_ma, pVarObj, env, derivExp, simplify);
+      tmp = der.deriveBranch(tmp_ma, pVarObj);
 
       CDerive::deleteBranch(tmp_ma);
     }
@@ -3542,7 +3543,8 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
           tmpENO->compile(derivExp); //this uses derivExp as a dummy expression (so that the node has a context for the compile()
         }
 
-      tmp = CDerive::deriveBranch(pReaction->getFunction()->getRoot(), pVarObj, env, derivExp, simplify);
+      CDerive derive(env, derivExp, simplify);
+      tmp = derive.deriveBranch(pReaction->getFunction()->getRoot(), pVarObj);
 
       for (int l = (int)env.size() - 1; l >= 0; l--)
         {

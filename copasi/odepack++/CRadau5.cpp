@@ -1121,7 +1121,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
         }
         nsolu = *n;
         conra5_1.hsol = hold;
-        (*solout)(&nrsol, &xosol, &conra5_1.xsol, &y[1], &cont[1], &lrc, &nsolu, &rpar[1], &ipar[1], &irtrn);
+        (*solout)(&nrsol, &xosol, &conra5_1.xsol, &y[1], &cont[1], &lrc, &nsolu, &rpar[1], n, &irtrn);
         if (irtrn < 0) {
             goto L179;
         }
@@ -1479,7 +1479,7 @@ L40:
             }
             nsolu = *n;
             conra5_1.hsol = hold;
-            (*solout)(&nrsol, &xosol, &conra5_1.xsol, &y[1], &cont[1], &lrc, &nsolu, &rpar[1], &ipar[1], &irtrn);
+            (*solout)(&nrsol, &xosol, &conra5_1.xsol, &y[1], &cont[1], &lrc, &nsolu, &rpar[1], n, &irtrn);
             if (irtrn < 0) {
                 goto L179;
             }
