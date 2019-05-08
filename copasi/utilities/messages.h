@@ -145,6 +145,7 @@ const MESSAGES Messages[] =
   {MCTrajectoryMethod + 28, "CTrajectoryMethod (28): The model contains an ODE rule.\nStochastic simulation is not possible."},
   {MCTrajectoryMethod + 29, "CTrajectoryMethod (29): NMAX limit reached during Radau5 integration."},
   {MCTrajectoryMethod + 30, "CTrajectoryMethod (30): Step size became too small during Radau5 integration."},
+  {MCTrajectoryMethod + 31, "CTrajectoryMethod (31): The model contains events. Radau5 integration is not possible with this version of COPASI."},
 
   // XML Package
   {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},

@@ -279,6 +279,10 @@ void CRadau5Method::start()
 {
   CTrajectoryMethod::start();
 
+  if (mpContainer->getEvents().size())
+  {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 31);
+  }
   /* Reset lsoda */
   mLsodaStatus = 1;
 
