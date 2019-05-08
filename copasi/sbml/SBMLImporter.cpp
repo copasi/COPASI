@@ -178,6 +178,43 @@ public:
 
 #endif
 
+#if LIBSBML_VERSION >= 51801
+
+#include <sbml/util/CallbackRegistry.h>
+
+class SbmlProgressCallback : public Callback
+{
+public:
+  SbmlProgressCallback(CProcessReport* pProcess)
+    : mpProcess(pProcess)
+  {
+  }
+
+  virtual int process(SBMLDocument* doc)
+  {
+    if (mpProcess != NULL && !mpProcess->progress())
+      {
+        CCopasiMessage(CCopasiMessage::WARNING, "The operation was interrupted.");
+        return LIBSBML_OPERATION_FAILED;
+      }
+
+    return LIBSBML_OPERATION_SUCCESS;
+  }
+
+private:
+  CProcessReport *mpProcess;
+};
+
+#else
+
+class SbmlProgressCallback
+{
+  SbmlProgressCallback(CProcessReport*) {}
+};
+
+#endif
+
+
 std::string unitKindToString(UnitKind_t kind);
 
 // static
@@ -3318,7 +3355,8 @@ SBMLImporter::SBMLImporter():
   mCompartmentMap(),
   mParameterFluxMap(),
   mChangedObjects(),
-  mUnitExpressions()
+  mUnitExpressions(),
+  mpSbmlCallback(NULL)
 {
   this->speciesMap = std::map<std::string, CMetab*>();
   this->functionDB = NULL;
@@ -3357,7 +3395,15 @@ SBMLImporter::SBMLImporter():
  * Destructor that does nothing.
  */
 SBMLImporter::~SBMLImporter()
-{}
+{
+  if (mpSbmlCallback != NULL)
+    {
+#if LIBSBML_VERSION >= 51801
+      CallbackRegistry::removeCallback(mpSbmlCallback);
+      pdelete(mpSbmlCallback);
+#endif
+    }
+}
 
 /**
  * This functions replaces all species nodes for species that are in the substanceOnlySpeciesVector.
@@ -3454,7 +3500,17 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
   // error in case external references can't be resolved.
   sbmlDoc->setLocationURI(mpDataModel->getReferenceDirectory());
 
-  unsigned int checkResult = sbmlDoc->getNumErrors(LIBSBML_SEV_ERROR) + sbmlDoc->checkConsistency();
+
+  unsigned int checkResult = sbmlDoc->getNumErrors(LIBSBML_SEV_ERROR);
+
+  try
+    {
+      checkResult += sbmlDoc->checkConsistency();
+    }
+  catch (...)
+    {
+    }
+
 
   sbmlDoc->setLocationURI(mpDataModel->getReferenceDirectory());
 
@@ -6354,6 +6410,22 @@ bool SBMLImporter::containsVolume(const ASTNode* pNode, const std::string& compa
 void SBMLImporter::setImportHandler(CProcessReport* pHandler)
 {
   mpProgressHandler = pHandler;
+
+#if LIBSBML_VERSION >= 51801
+
+  if (mpSbmlCallback != NULL)
+    {
+      CallbackRegistry::removeCallback(mpSbmlCallback);
+      pdelete(mpSbmlCallback);
+    }
+
+  if (pHandler)
+    {
+      mpSbmlCallback = new SbmlProgressCallback(pHandler);
+      CallbackRegistry::addCallback(mpSbmlCallback);
+    }
+
+#endif
 }
 
 CProcessReport* SBMLImporter::getImportHandlerAddr() const
