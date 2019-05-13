@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,6 +73,20 @@ CScanWidgetScan::~CScanWidgetScan()
   // no need to delete child widgets, Qt does it all for us
 }
 
+void CScanWidgetScan::slotIntervalsChecked()
+{
+  radIntervals->setChecked(!radIntervals->isChecked());
+  wdgIntervals->setVisible(radIntervals->isChecked());
+  wdgValues->setVisible(!radIntervals->isChecked());
+}
+
+void CScanWidgetScan::slotValuesChecked()
+{
+  radValues->setChecked(!radValues->isChecked());
+  wdgIntervals->setVisible(!radValues->isChecked());
+  wdgValues->setVisible(radValues->isChecked());
+}
+
 void CScanWidgetScan::init()
 {
   lineEditObject->setReadOnly(true);
@@ -75,6 +94,9 @@ void CScanWidgetScan::init()
   lineEditNumber->setValidator(new QIntValidator(lineEditNumber));
   lineEditMin->setValidator(new QDoubleValidator(lineEditMin));
   lineEditMax->setValidator(new QDoubleValidator(lineEditMax));
+
+  wdgIntervals->setVisible(radIntervals->isChecked());
+  wdgValues->setVisible(!radIntervals->isChecked());
 
   mpObject = NULL;
 }
@@ -105,6 +127,7 @@ void CScanWidgetScan::initFromObject(const CDataObject *obj)
           lineEditNumber->setText("10");
           lineEditMin->setText(convertToQString(value * 0.5));
           lineEditMax->setText(convertToQString(value * 2));
+          txtValues->setText("");
         }
     }
   else
@@ -113,6 +136,7 @@ void CScanWidgetScan::initFromObject(const CDataObject *obj)
       lineEditNumber->setText("");
       lineEditMin->setText("");
       lineEditMax->setText("");
+      txtValues->setText("");
     }
 }
 
@@ -127,6 +151,28 @@ void CScanWidgetScan::load(const CCopasiParameterGroup * pItem)
 
   if (type != CScanProblem::SCAN_LINEAR)
     return;
+
+  std::string values;
+  bool useValues = false;
+
+  if (mpData->getParameter("Values") != NULL)
+    {
+      values = mpData->getValue< std::string >("Values");
+    }
+
+  if (mpData->getParameter("Use Values") != NULL)
+    {
+      useValues = mpData->getValue< bool >("Use Values");
+    }
+
+
+
+  txtValues->setText(FROM_UTF8(values));
+
+  if (useValues)
+    slotValuesChecked();
+  else
+    slotIntervalsChecked();
 
   lineEditNumber->setText(QString::number(mpData->getValue< C_INT32 >("Number of steps")));
   std::string tmpString = mpData->getValue< std::string >("Object");
@@ -169,6 +215,16 @@ bool CScanWidgetScan::save(CCopasiParameterGroup * pItem) const
     {
       mpData->setValue("Object", std::string(""));
     }
+
+  if (!mpData->getParameter("Values"))
+    mpData->addParameter("Values", CCopasiParameter::Type::STRING, std::string(""));
+
+  if (!mpData->getParameter("Use Values"))
+    mpData->addParameter("Use Values", CCopasiParameter::Type::BOOL, false);
+
+  std::string stringValues = TO_UTF8(txtValues->text());
+  mpData->setValue("Values", stringValues);
+  mpData->setValue("Use Values", radValues->isChecked());
 
   if (pItem != NULL)
     {

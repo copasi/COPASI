@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,6 +26,7 @@
 #include <locale.h>
 
 #include <QApplication>
+#include <QLocale>
 
 #define COPASI_MAIN
 
@@ -55,6 +61,7 @@ int main(int argc, char *argv[])
   // Fix for Issue 1377, if locale is not set to the default one, some
   // numbers will be displayed in the systems default locale:
   setlocale(LC_ALL, "C");
+  QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
 
   // Fix of Issue with Text centering on OSX Mavericks
 #ifdef Q_OS_MACX

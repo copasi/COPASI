@@ -187,6 +187,34 @@ void CQTrajectoryWidget::slotAutomaticIntervals(bool checked)
   mpEditIntervalSize->setEnabled(!checked);
 }
 
+void CQTrajectoryWidget::slotOutputEvent(bool checked)
+{
+  mpCheckOutputEvent2->setChecked(checked);
+  mpCheckOutputEvent->setChecked(checked);
+}
+
+void CQTrajectoryWidget::slotStartInSteadyState(bool checked)
+{
+  mpCheckStartInSteadyState->setChecked(checked);
+  mpCheckStartInSteadyState2->setChecked(checked);
+}
+
+void CQTrajectoryWidget::slotSaveOutput(bool checked)
+{
+  mpCheckSave->setChecked(checked);
+  mpCheckSave2->setChecked(checked);
+}
+
+void CQTrajectoryWidget::slotSwitchToValues()
+{
+  mpStackWidget->setCurrentWidget(pageNumbers);
+}
+
+void CQTrajectoryWidget::slotSwitchToTrajectory()
+{
+  mpStackWidget->setCurrentWidget(pageTrajectory);
+}
+
 bool CQTrajectoryWidget::saveTaskProtected()
 {
   CTrajectoryTask * pTask =
@@ -281,6 +309,23 @@ bool CQTrajectoryWidget::saveTaskProtected()
       mChanged = true;
     }
 
+  bool useValues = mpStackWidget->currentIndex() == 1;
+
+  if (trajectoryproblem->getUseValues() != useValues)
+    {
+      trajectoryproblem->setUseValues(useValues);
+      mChanged = true;
+    }
+
+  std::string valueString = TO_UTF8(txtValues->text());
+
+  if (trajectoryproblem->getValueString() != valueString)
+    {
+      trajectoryproblem->setValues(valueString);
+      mChanged = true;
+    }
+
+
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
   mpValidatorIntervals->saved();
@@ -338,6 +383,13 @@ bool CQTrajectoryWidget::loadTaskProtected()
   checkTimeSeries();
 
   updateIntervals();
+
+  txtValues->setText(FROM_UTF8(TrajectoryProblem->getValueString()));
+
+  if (TrajectoryProblem->getUseValues())
+    slotSwitchToValues();
+  else
+    slotSwitchToTrajectory();
 
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();

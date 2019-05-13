@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -114,8 +119,10 @@ public:
 class CScanItemLinear: public CScanItem
 {
 private:
+  std::vector<C_FLOAT64> mValues;
   C_FLOAT64 mMin, mMax, mFaktor;
   bool mLog;
+  bool mUseValues;
 public:
   CScanItemLinear(CCopasiParameterGroup* si);
   virtual void step();

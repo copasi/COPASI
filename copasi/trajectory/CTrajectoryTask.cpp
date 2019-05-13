@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -228,7 +233,16 @@ void CTrajectoryTask::signalMathContainerChanged()
     }
 }
 
-bool CTrajectoryTask::process(const bool & useInitialValues)
+bool CTrajectoryTask::process(const bool& useInitialValues)
+{
+  if (mpTrajectoryProblem->getUseValues())
+    return processValues(useInitialValues);
+
+  return processTrajectory(useInitialValues);
+}
+
+
+bool CTrajectoryTask::processTrajectory(const bool& useInitialValues)
 {
   //*****
   mProceed = true;
@@ -341,6 +355,146 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
             }
         }
       while ((*mpLess)(*mpContainerStateTime, CompareEndTime) && flagProceed);
+    }
+
+  catch (int)
+    {
+      mpContainer->setState(mContainerState);
+      mpContainer->updateSimulatedValues(mUpdateMoieties);
+      mpContainer->updateTransientDataValues();
+      mpContainer->pushAllTransientValues();
+
+      if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
+        {
+          output(COutputInterface::DURING);
+        }
+
+      if (hProcess != C_INVALID_INDEX) mpCallBack->finishItem(hProcess);
+
+      output(COutputInterface::AFTER);
+
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 16);
+    }
+
+  catch (CCopasiException & Exception)
+    {
+      mpContainer->setState(mContainerState);
+      mpContainer->updateSimulatedValues(mUpdateMoieties);
+      mpContainer->updateTransientDataValues();
+      mpContainer->pushAllTransientValues();
+
+      if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
+        {
+          output(COutputInterface::DURING);
+        }
+
+      if (hProcess != C_INVALID_INDEX) mpCallBack->finishItem(hProcess);
+
+      output(COutputInterface::AFTER);
+
+      throw CCopasiException(Exception.getMessage());
+    }
+
+  if (hProcess != C_INVALID_INDEX) mpCallBack->finishItem(hProcess);
+
+  output(COutputInterface::AFTER);
+
+  return true;
+}
+
+
+bool CTrajectoryTask::processValues(const bool& useInitialValues)
+{
+  //*****
+  mProceed = true;
+
+  processStart(useInitialValues);
+
+  //*****
+
+  //size_t FailCounter = 0;
+
+  std::vector<C_FLOAT64> values = mpTrajectoryProblem->getValues();
+
+  C_FLOAT64 Duration = values.back();
+  C_FLOAT64 OutputStartTime = values.front();
+  C_FLOAT64 StepNumber = 1;
+  size_t NumSteps = values.size();
+
+  //the output starts only after "outputStartTime" has passed
+  if (useInitialValues)
+    mOutputStartTime = OutputStartTime;
+  else
+    mOutputStartTime = *mpContainerStateTime + OutputStartTime;
+
+  C_FLOAT64 NextTimeToReport;
+
+  const C_FLOAT64 EndTime = *mpContainerStateTime + Duration;
+  const C_FLOAT64 StartTime = *mpContainerStateTime;
+  C_FLOAT64 CompareEndTime;
+
+  mpLessOrEqual = &fle;
+  mpLess = &fl;
+
+  // It suffices to reach the end time within machine precision
+  CompareEndTime = EndTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
+
+  unsigned C_INT32 StepCounter = 1;
+
+  output(COutputInterface::BEFORE);
+
+  bool flagProceed = true;
+  C_FLOAT64 handlerFactor = 100.0 / (NumSteps + 1);
+
+  C_FLOAT64 Percentage = 0;
+  size_t hProcess = C_INVALID_INDEX;
+
+  if (mpCallBack != NULL && StepNumber > 1.0)
+    {
+      mpCallBack->setName("performing simulation...");
+      C_FLOAT64 hundred = 100;
+      hProcess = mpCallBack->addItem("Completion",
+                                     Percentage,
+                                     &hundred);
+    }
+
+  try
+    {
+      // We need to execute any scheduled events for T_0
+      CMath::StateChange StateChange = mpContainer->processQueue(true);
+
+      if (StateChange)
+        {
+
+          if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
+            {
+              output(COutputInterface::DURING);
+            }
+
+          mContainerState = mpContainer->getState(mUpdateMoieties);
+          mpTrajectoryMethod->stateChange(StateChange);
+        }
+
+      for (size_t i = 0; i < NumSteps &&
+           (*mpLess)(*mpContainerStateTime, CompareEndTime) && flagProceed; ++i)
+        {
+          // This is numerically more stable then adding
+          // mpTrajectoryProblem->getStepSize().
+          NextTimeToReport = values[i];
+
+          flagProceed &= processStep(NextTimeToReport, NextTimeToReport == EndTime);
+
+          if (hProcess != C_INVALID_INDEX)
+            {
+              Percentage = (*mpContainerStateTime - StartTime) * handlerFactor;
+              flagProceed &= mpCallBack->progressItem(hProcess);
+            }
+
+          if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
+            {
+              output(COutputInterface::DURING);
+            }
+        }
     }
 
   catch (int)

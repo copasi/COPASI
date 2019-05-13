@@ -23,15 +23,13 @@
 #
 ###############################################################################
 
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.0)
+
 if(POLICY CMP0048)
-  cmake_policy(SET CMP0048 OLD)
+  cmake_policy(SET CMP0048 NEW)
 endif(POLICY CMP0048)
 
-if(POLICY CMP0043)
-  cmake_policy(SET CMP0043 OLD)
-endif(POLICY CMP0043)
-project (CopasiUI)
+project (CopasiUI VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 
 include_directories(BEFORE "${PROJECT_SOURCE_DIR}/.." "${PROJECT_SOURCE_DIR}/../.." "${PROJECT_SOURCE_DIR}")
 

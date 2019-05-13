@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,11 +40,12 @@
 //#include "model/CState.h"
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
+#include <copasi/utilities/CParameterEstimationUtils.h>
 
 
 //this constructor is only used by derived classes to provide a different task type
 CTrajectoryProblem::CTrajectoryProblem(const CTaskEnum::Task & type,
-                 const CDataContainer * pParent):
+                                       const CDataContainer * pParent):
   CCopasiProblem(type, pParent),
   mpAutomaticStepSize(NULL),
   mpDuration(NULL),
@@ -49,6 +55,8 @@ CTrajectoryProblem::CTrajectoryProblem(const CTaskEnum::Task & type,
   mpOutputStartTime(NULL),
   mpOutputEvent(NULL),
   mpStartInSteadyState(NULL),
+  mpUseValues(NULL),
+  mpValueString(NULL),
   mStepNumberSetLast(true)
 {
   initializeParameter();
@@ -70,6 +78,8 @@ CTrajectoryProblem::CTrajectoryProblem(const CDataContainer * pParent):
   mpOutputStartTime(NULL),
   mpOutputEvent(NULL),
   mpStartInSteadyState(NULL),
+  mpUseValues(NULL),
+  mpValueString(NULL),
   mStepNumberSetLast(true)
 {
   initializeParameter();
@@ -92,6 +102,8 @@ CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src,
   mpOutputStartTime(NULL),
   mpOutputEvent(NULL),
   mpStartInSteadyState(NULL),
+  mpUseValues(NULL),
+  mpValueString(NULL),
   mStepNumberSetLast(src.mStepNumberSetLast)
 {
   initializeParameter();
@@ -115,6 +127,8 @@ void CTrajectoryProblem::initializeParameter()
   mpOutputStartTime = assertParameter("OutputStartTime", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.0);
   mpOutputEvent = assertParameter("Output Event", CCopasiParameter::Type::BOOL, (bool) false);
   mpStartInSteadyState = assertParameter("Start in Steady State", CCopasiParameter::Type::BOOL, false);
+  mpUseValues = assertParameter("Use Values", CCopasiParameter::Type::BOOL, false);
+  mpValueString = assertParameter("Values", CCopasiParameter::Type::STRING, std::string(""));
 }
 
 bool CTrajectoryProblem::elevateChildren()
@@ -136,6 +150,9 @@ void CTrajectoryProblem::initObjects()
  */
 void CTrajectoryProblem::setStepNumber(const unsigned C_INT32 & stepNumber)
 {
+  if (*mpStepNumber == stepNumber)
+    return;
+
   *mpStepNumber = stepNumber;
   mStepNumberSetLast = true;
   sync();
@@ -156,6 +173,9 @@ const unsigned C_INT32 & CTrajectoryProblem::getStepNumber() const
  */
 void CTrajectoryProblem::setStepSize(const C_FLOAT64 & stepSize)
 {
+  if (*mpStepSize == stepSize)
+    return;
+
   *mpStepSize = stepSize;
   mStepNumberSetLast = false;
   sync();
@@ -320,4 +340,53 @@ bool CTrajectoryProblem::getStartInSteadyState() const
     return *mpStartInSteadyState;
   else
     return false;
+}
+
+void CTrajectoryProblem::setValues(const std::string& values)
+{
+  *mpValueString = values;
+}
+
+void CTrajectoryProblem::setValues(const std::vector<C_FLOAT64>& values)
+{
+  std::stringstream str;
+
+for (C_FLOAT64 value : values)
+    {
+      str << value;
+    }
+
+  setValues(str.str());
+}
+
+std::vector<C_FLOAT64> CTrajectoryProblem::getValues() const
+{
+  std::vector<C_FLOAT64> result;
+
+  std::vector<std::string> elems;
+  ResultParser::split(*mpValueString, std::string(",; |\n\t\r"), elems);
+
+for (std::string & number : elems)
+    {
+      result.push_back(ResultParser::saveToDouble(number));
+    }
+
+
+
+  return result;
+}
+
+const std::string& CTrajectoryProblem::getValueString() const
+{
+  return *mpValueString;
+}
+
+void CTrajectoryProblem::setUseValues(bool flag)
+{
+  *mpUseValues = flag;
+}
+
+bool CTrajectoryProblem::getUseValues() const
+{
+  return *mpUseValues;
 }

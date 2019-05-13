@@ -177,6 +177,13 @@ CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, siz
       tmp->addParameter("log", CCopasiParameter::Type::BOOL, false);
     }
 
+  if (type == SCAN_LINEAR)
+    {
+      tmp->addParameter("Values", CCopasiParameter::Type::STRING, std::string(""));
+      tmp->addParameter("Use Values", CCopasiParameter::Type::BOOL, false);
+    }
+
+
   if (type == SCAN_RANDOM)
     {
       tmp->addParameter("Distribution type", CCopasiParameter::Type::UINT, (unsigned C_INT32)0);

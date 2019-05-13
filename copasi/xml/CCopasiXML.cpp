@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -1480,7 +1485,11 @@ bool CCopasiXML::saveTaskList()
 
           if (!CDirEntry::isRelativePath(Target) &&
               !CDirEntry::makePathRelative(Target, mPWD))
-            Target = CDirEntry::fileName(Target);
+            {
+              // leave absolute path instead of breaking it
+              // Target = CDirEntry::fileName(Target);
+              CCopasiMessage(CCopasiMessage::WARNING, "Couldn't create relative path for Report Target of Task '%s' for file '%s' to '%s', leaving the absolute path.", pTask->getObjectName().c_str(), Target.c_str(), mPWD.c_str());
+            }
 
           Attributes.add("target", Target);
           Attributes.add("append", tReport.append());
@@ -1850,9 +1859,10 @@ bool CCopasiXML::saveLayoutList()
 
               startSaveElement("ReactionGlyph", Attributes);
 
-              if (cg->getCurve().getNumCurveSegments() == 0)
+              if (!cg->getBoundingBox().isEmpty())
                 saveBoundingBox(cg->getBoundingBox());
-              else
+
+              if (cg->getCurve().getNumCurveSegments() >= 0)
                 saveCurve(cg->getCurve());
 
               // metab reference glyphs
