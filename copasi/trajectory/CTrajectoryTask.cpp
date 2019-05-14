@@ -416,6 +416,9 @@ bool CTrajectoryTask::processValues(const bool& useInitialValues)
 
   std::vector<C_FLOAT64> values = mpTrajectoryProblem->getValues();
 
+  if (values.empty())
+    return false;
+
   C_FLOAT64 Duration = values.back();
   C_FLOAT64 OutputStartTime = values.front();
   C_FLOAT64 StepNumber = 1;
