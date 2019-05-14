@@ -618,9 +618,11 @@ std::vector<std::string>& ResultParser::split(const std::string& seq, const std:
 
       if (shouldContinue)
         {
-          if (tmp.rdbuf()->in_avail() > 0)
+          std::string str = tmp.str();
+
+          if (!str.empty())
             {
-              elems.push_back(tmp.str());
+              elems.push_back(str);
               tmp.str("");
             }
 
@@ -631,9 +633,11 @@ std::vector<std::string>& ResultParser::split(const std::string& seq, const std:
 
     }
 
-  if (tmp.rdbuf()->in_avail() > 0)
+  std::string str = tmp.str();
+
+  if (!str.empty())
     {
-      elems.push_back(tmp.str());
+      elems.push_back(str);
     }
 
   return elems;
