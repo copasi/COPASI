@@ -33,6 +33,8 @@
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
 
+#include <copasi/resourcesUI/CQIconResource.h>
+
 /*
  *  Constructs a CQExperimentSelection as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -43,6 +45,9 @@
 CQExperimentSelection::CQExperimentSelection(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
   : QDialog(parent, fl)
 {
+#ifndef Darwin
+  setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+#endif // not Darwin
   setObjectName(QString::fromUtf8(name));
   setModal(modal);
   setupUi(this);
