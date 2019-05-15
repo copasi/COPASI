@@ -1122,38 +1122,34 @@ bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
   pdelete(mpTrajectoryProblem);
 
 
+
   if (updateModel && pExp != NULL)
     {
-
-      std::vector<COptItem*>::iterator itItem;
-      std::vector<COptItem*>::iterator endItem = mpOptItems->end();
-      C_FLOAT64** pUpdate = mExperimentValues.array();
-
-      // set the global and experiment local fit item values.
-      for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
-        if (*pUpdate)
-          {
-            CFitItem* pItem = static_cast<CFitItem*>(*itItem);
-            std::string affectedExperiments = pItem->getExperiments();
-            std::vector<std::string> elems;
-            ResultParser::split(affectedExperiments, ", ", elems);
-
-            // only update value if it applies to all or the specific selected experiment
-            if (affectedExperiments.empty() || std::find(elems.begin(), elems.end(), pExp->getObjectName()) != elems.end())
-              **pUpdate = pItem->getLocalValue();
-          }
-
       // Synchronize the initial state.
       size_t index = mpExperimentSet->getIndex(pExp);
 
       if (index != C_INVALID_INDEX)
-        mpContainer->applyUpdateSequence(mExperimentInitialUpdates[index]);
+        {
+          std::vector<COptItem*>::iterator itItem;
+          std::vector<COptItem*>::iterator endItem = mpOptItems->end();
+          C_FLOAT64** pUpdate = mExperimentValues.array() + (mpOptItems->size() * index);
+
+          // set the global and experiment local fit item values.
+          for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
+            if (*pUpdate)
+              {
+                **pUpdate = static_cast<CFitItem*>(*itItem)->getLocalValue();
+              }
+
+          mpContainer->applyUpdateSequence(mExperimentInitialUpdates[index]);
+        }
 
       // Update the independent data.
       pExp->updateModelWithIndependentData(0);
 
       mpContainer->pushInitialState();
     }
+
 
   return success;
 }
