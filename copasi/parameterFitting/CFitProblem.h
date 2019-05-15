@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -30,6 +35,7 @@ class CTrajectoryProblem;
 class CState;
 class CFitConstraint;
 class CDataArray;
+class CExperiment;
 template < class CMatrixType > class CMatrixInterface;
 
 class CFitProblem : public COptProblem
@@ -93,6 +99,8 @@ public:
    */
   virtual bool restore(const bool & updateModel);
 
+  bool restore(const bool& updateModel, CExperiment* pExp);
+
   /**
    * Check whether all functional constraints are fulfilled.
    * @result bool fulfilled
@@ -151,23 +159,23 @@ public:
    * calculate the FIM from only a part of the parameter estimation jacobian
    * only columns from a to b-1 are used or excluded, depending on the exclude flag
    */
-  void calcPartialFIM(const CMatrix< C_FLOAT64 >& jacobian, CMatrix< C_FLOAT64 >& fim, size_t a, size_t b, bool exclude=false);
-  
+  void calcPartialFIM(const CMatrix< C_FLOAT64 >& jacobian, CMatrix< C_FLOAT64 >& fim, size_t a, size_t b, bool exclude = false);
+
   /**
-   * calculate the Eigenvalues and -vectors for a matrix. 
+   * calculate the Eigenvalues and -vectors for a matrix.
    * This is intended for the FIM, and we assume only real (and positive) eigenvalues
    */
   void calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& eigenvalues, CMatrix< C_FLOAT64 >& eigenvectors);
-  
+
   /**
    * calculate the inverse of a matrix and normalize it.
-   * This is used for calculating the correlation Matric from the FIM, 
+   * This is used for calculating the correlation Matric from the FIM,
    * and therefore we can assume a symmetric positive definite matrix
    * The SD of the parameters is also calculated from the diagonal of the covariance
    */
   bool calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd);
 
-  
+
   /**
    * Calculate the statistics for the problem
    * @param const C_FLOAT64 & factor (Default: 1.0e-003)
@@ -204,7 +212,7 @@ public:
    * It is scaled by parameter values
    */
   CDataArray & getScaledParameterEstimationJacobian() const;
-  
+
   /**
    * Retrieve the Fisher Information Matrix of the solution variables.
    * @return CArrayAnnotation & fisherInformationMatrix
@@ -509,7 +517,7 @@ private:
   CVector< C_FLOAT64 > mParameterSD;
 
   /**
-   * the Jacobian of tha parameter estimation, 
+   * the Jacobian of tha parameter estimation,
    *i.e. the derivatives of the residuals with respect to the parameters
    */
   CMatrix< C_FLOAT64 > mDeltaResidualDeltaParameter;
@@ -524,7 +532,7 @@ private:
   CMatrix< C_FLOAT64 > mDeltaResidualDeltaParameterScaled;
   CMatrixInterface< CMatrix< C_FLOAT64 > > * mpDeltaResidualDeltaParameterScaledInterface;
   CDataArray * mpDeltaResidualDeltaParameterScaledMatrix;
-  
+
   /**
    * The Fisher information or parameter correlation matrix
    */

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -111,7 +116,7 @@ void CQExperimentSelection::load(QComboBox * pBox, const CExperimentSet * pExper
 
   int j, jmax = mpBox->count();
 
-  if (jmax == 0)
+  if (jmax == 0 && !mIsSingleSelection)
     {
       slotBtnAll();
       return;
@@ -126,6 +131,17 @@ void CQExperimentSelection::load(QComboBox * pBox, const CExperimentSet * pExper
           Found[0]->setSelected(true);
         }
     }
+}
+
+void CQExperimentSelection::setSingleSelection(bool isSingleSelection)
+{
+  mIsSingleSelection = isSingleSelection;
+
+  if (mpList != NULL)
+    mpList->setSelectionMode(isSingleSelection ? QListView::SingleSelection : QListView::MultiSelection);
+
+  mpBtnNone->setVisible(!isSingleSelection);
+  mpBtnAll->setVisible(!isSingleSelection);
 }
 
 void CQExperimentSelection::init()
