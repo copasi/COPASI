@@ -72,6 +72,9 @@
 #include <copasi/parameterFitting/CExperimentSet.h>
 #include <copasi/parameterFitting/CExperiment.h>
 
+#include <copasi/shinyExport/uiShiny.c>
+#include <copasi/shinyExport/serverShiny.c>
+
 CDataModel::CDataModel(const bool withGUI):
   CDataContainer("Root", NULL, "CN", CDataObject::DataModel),
   COutputHandler(),
@@ -1387,6 +1390,153 @@ CDataModel::addCopasiFileToArchive(CombineArchive *archive,
   catch (...)
     {
     }
+}
+
+bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bool includeData, bool overwriteFile, CProcessReport * pProgressReport)
+{
+    CCopasiMessage::clearDeque();
+    
+    std::string PWD;
+    COptions::getValue("PWD", PWD);
+    
+    if (CDirEntry::isRelativePath(fileName) &&
+        !CDirEntry::makePathAbsolute(fileName, PWD))
+        fileName = CDirEntry::fileName(fileName);
+    
+    if (CDirEntry::exist(fileName))
+    {
+        if (!overwriteFile)
+        {
+            CCopasiMessage(CCopasiMessage::ERROR,
+                           MCDirEntry + 1,
+                           fileName.c_str());
+            return false;
+        }
+        
+        if (!CDirEntry::isWritable(fileName))
+        {
+            CCopasiMessage(CCopasiMessage::ERROR,
+                           MCDirEntry + 2,
+                           fileName.c_str());
+            return false;
+        }
+        
+        // delete existing file
+        std::remove(fileName.c_str());
+    }
+    
+    CombineArchive archive;
+    
+    std::map<std::string, std::string> renamedExperiments;
+    std::map<std::string, std::string>::iterator renameIt;
+    CFitProblem *problem = NULL;
+    
+    if (includeData)
+    {
+        // go through all experiments and find the files and add them to the archive
+        // alter COPASI file (temporarily) to reference those files
+        problem = dynamic_cast<CFitProblem*>((*getTaskList())[static_cast< size_t >(CTaskEnum::Task::parameterFitting)].getProblem());
+        {
+            CExperimentSet& experiments = problem->getExperimentSet();
+            
+            std::vector<std::string> fileNames = experiments.getFileNames();
+            std::vector<std::string>::iterator it = fileNames.begin();
+            
+            for (; it != fileNames.end(); ++it)
+            {
+                //renamedExperiments[*it] = "./copasi/" + CDirEntry::fileName(*it);
+                renamedExperiments[*it] = CDirEntry::fileName(*it);
+                archive.addFile(*it, "./copasi/" + CDirEntry::fileName(*it), KnownFormats::guessFormat(*it), false);
+            }
+            
+            // rename files temporarily
+            for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+            {
+                for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+                {
+                    CExperiment* current = experiments.getExperiment(i);
+                    
+                    if (current->getFileName() == renameIt->first)
+                    {
+                        current->setFileName(renameIt->second);
+                    }
+                }
+            }
+        }
+        {
+            CExperimentSet& experiments = problem->getCrossValidationSet();
+            
+            std::vector<std::string> fileNames = experiments.getFileNames();
+            std::vector<std::string>::iterator it = fileNames.begin();
+            
+            for (; it != fileNames.end(); ++it)
+            {
+                renamedExperiments[*it] = CDirEntry::fileName(*it);
+                archive.addFile(*it, "./copasi/" + CDirEntry::fileName(*it), KnownFormats::guessFormat(*it), false);
+            }
+            
+            // rename files temporarily
+            for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+            {
+                for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+                {
+                    CExperiment* current = experiments.getExperiment(i);
+                    
+                    if (current->getFileName() == renameIt->first)
+                    {
+                        current->setFileName(renameIt->second);
+                    }
+                }
+            }
+        }
+        
+        if (includeCOPASI)
+        {
+            addCopasiFileToArchive(&archive, "./copasi/model.cps", pProgressReport);
+        }
+        
+        // restore filenames
+        {
+            CExperimentSet& experiments = problem->getExperimentSet();
+            
+            for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+            {
+                for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+                {
+                    CExperiment* current = experiments.getExperiment(i);
+                    
+                    if (current->getFileNameOnly() == renameIt->second)
+                    {
+                        current->setFileName(renameIt->first);
+                    }
+                }
+            }
+        }
+        {
+            CExperimentSet& experiments = problem->getCrossValidationSet();
+            
+            for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+            {
+                for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+                {
+                    CExperiment* current = experiments.getExperiment(i);
+                    
+                    if (current->getFileNameOnly() == renameIt->second)
+                    {
+                        current->setFileName(renameIt->first);
+                    }
+                }
+            }
+        }
+    }
+  
+    
+    archive.addFileFromString(shinyUIString, "./ui.r", KnownFormats::lookupFormat("R"), true);
+    archive.addFileFromString(shinyServerString, "./server.r", KnownFormats::lookupFormat("R"), true);
+
+ 
+    archive.writeToFile(fileName);
+    return false;
 }
 
 bool CDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, bool includeSBML, bool includeData, bool includeSEDML, bool overwriteFile, CProcessReport * pProgressReport)

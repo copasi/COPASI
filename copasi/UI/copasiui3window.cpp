@@ -218,6 +218,7 @@ CopasiUI3Window::CopasiUI3Window():
 
   mpaImportCombine(NULL),
   mpaExportCombine(NULL),
+  mpaExportShiny(NULL),
 
   mpaAddModel(NULL),
   mpaMergeModels(NULL),
@@ -440,6 +441,10 @@ void CopasiUI3Window::createActions()
   connect(mpaImportCombine, SIGNAL(triggered()), this, SLOT(slotImportCombine()));
   mpaExportCombine = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export Combine Archive", this);
   connect(mpaExportCombine, SIGNAL(triggered()), this, SLOT(slotExportCombine()));
+
+  mpaExportShiny = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export Shiny Archive", this);
+  connect(mpaExportShiny, SIGNAL(triggered()), this, SLOT(slotExportShiny()));
+
 
 #ifdef COPASI_Provenance
   mpaProvenance = new QAction("Provenance", this);
@@ -685,6 +690,7 @@ void CopasiUI3Window::createMenuBar()
   pFileMenu->addSeparator();
   pFileMenu->addAction(mpaImportCombine);
   pFileMenu->addAction(mpaExportCombine);
+  pFileMenu->addAction(mpaExportShiny);
 
   pFileMenu->addSeparator();
   mpMenuSEDMLSupport = pFileMenu->addMenu("SED-ML Support");
@@ -3503,6 +3509,52 @@ void CopasiUI3Window::slotImportCombineFinished(bool success)
   mSaveAsRequired = true;
   mNewFile = "";
 }
+
+void CopasiUI3Window::slotExportShiny(QString str)
+{
+    mpDataModelGUI->commit();
+    C_INT32 Answer = QMessageBox::No;
+    QString tmp;
+    
+    if (str.isEmpty()) str = "untitled.zip";
+    
+#ifdef DEBUG_UI
+    qDebug() << "Filename on slotFileSaveAs = " << str;
+#endif
+    
+    while (Answer == QMessageBox::No)
+    {
+        tmp =
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                                          str, "Archive Files (*.zip)",
+                                          "Choose a filename to save under");
+        
+        if (tmp.isEmpty()) return;
+        
+#ifdef DEBUG_UI
+        qDebug() << "tmp = " << tmp;
+#endif
+        // Checks whether the file exists
+        Answer = checkSelection(tmp);
+        
+        if (Answer == QMessageBox::Cancel) return;
+    }
+    
+    if (mpDataModelGUI && !tmp.isNull())
+    {
+        setCursor(Qt::WaitCursor);
+        connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportCombineFinished(bool)));
+        mpDataModelGUI->exportShinyArchive(TO_UTF8(tmp), true);
+#ifdef COPASI_Provenance
+        //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel(), mpVersionHierarchy->getVersionsPathToCurrentModel());
+        CProvenanceXMLWriter *ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mpVersionHierarchy->getVersionsPathToCurrentModel());
+        ProvenanceXMLWriter->updateCurrentSessionProvenance();
+        //mProvenanceParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
+        ProvenanceXMLWriter->updateOrigionOfProvenance(mProvenanceOfOrigionOfFile);
+#endif
+    }
+}
+
 void CopasiUI3Window::slotExportCombine(QString str)
 {
   mpDataModelGUI->commit();

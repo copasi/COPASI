@@ -259,6 +259,7 @@ protected slots:
   void slotImportCombineFinished(bool success);
   void slotExportCombine(QString str = QString::null);
   void slotExportCombineFinished(bool success);
+  void slotExportShiny(QString str = QString::null);
 
   void slotUndo();
   void slotRedo();
@@ -334,6 +335,7 @@ private:
 
   QAction* mpaImportCombine;
   QAction* mpaExportCombine;
+  QAction* mpaExportShiny;
 
   QAction* mpaAddModel;
   QAction* mpaMergeModels;

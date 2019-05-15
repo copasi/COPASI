@@ -255,6 +255,12 @@ public:
                             bool overwriteFile = false,
                             CProcessReport* pProgressReport = NULL);
 
+  bool exportShinyArchive(std::string fileName,
+                            bool includeCOPASI = true,
+                            bool includeData = true,
+                            bool overwriteFile = false,
+                            CProcessReport* pProgressReport = NULL);
+
   /**
    * adds the current COPASI model to the archive with the given
    * target name

@@ -1037,6 +1037,45 @@ void DataModelGUI::importCellDesigner()
     }
 }
 
+void DataModelGUI::exportShinyArchive(const std::string & fileName, bool overwriteFile)
+{
+    mpProgressBar = CProgressBar::create();
+    
+    mSuccess = true;
+    mFileName = fileName;
+    mOverWrite = overwriteFile;
+    
+    mpThread = new CQThread(this, &DataModelGUI::exportShinyArchiveRun);
+    connect(mpThread, SIGNAL(finished()), this, SLOT(exportShinyFinished()));
+    mpThread->start();
+}
+
+void DataModelGUI::exportShinyArchiveRun()
+{
+    try
+    {
+      assert(mpDataModel != NULL);
+      mSuccess = mpDataModel->exportShinyArchive(mFileName,
+                 true,
+                 true,
+                 mOverWrite,
+                 mpProgressBar);
+    }
+    
+    catch (...)
+    {
+        mSuccess = false;
+    }
+}
+
+void DataModelGUI::exportShinyFinished()
+{
+    
+    disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportShinyFinished()));
+    
+    threadFinished();
+}
+
 void DataModelGUI::openCombineArchive(const std::string & fileName)
 {
   mpProgressBar = CProgressBar::create();

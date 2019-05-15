@@ -80,8 +80,10 @@ public:
 
   void openCombineArchive(const std::string & fileName);
   void exportCombineArchive(const std::string & fileName, bool overwriteFile = false);
+  void exportShinyArchive(const std::string & fileName, bool overwriteFile = false);
   void openCombineArchiveRun();
   void exportCombineArchiveRun();
+  void exportShinyArchiveRun();
 
   // SEDML
   void exportSEDML(const std::string & fileName, bool overwriteFile, int sedmlLevel, int sedmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
@@ -114,6 +116,7 @@ public slots:
   void exportMathModelFinished();
   void importCombineFinished();
   void exportCombineFinished();
+  void exportShinyFinished();
 
   void addModelFinished();
 
