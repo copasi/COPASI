@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -50,6 +55,8 @@
 
 #include "lapack/blaswrap.h"           //use blas
 #include "lapack/lapackwrap.h"        //use CLAPACK
+
+#include <copasi/utilities/CParameterEstimationUtils.h>
 
 //  Default constructor
 CFitProblem::CFitProblem(const CTaskEnum::Task & type,
@@ -1088,6 +1095,14 @@ bool CFitProblem::calculate()
 
 bool CFitProblem::restore(const bool & updateModel)
 {
+  bool haveExperiment = mpExperimentSet != NULL &&
+                        mpExperimentSet->size() > 0;
+  return restore(updateModel, haveExperiment ?
+                 mpExperimentSet->getExperiment(0) : NULL);
+}
+
+bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
+{
   bool success = true;
 
   if (mpTrajectory != NULL)
@@ -1100,11 +1115,45 @@ bool CFitProblem::restore(const bool & updateModel)
     success &= mpSteadyState->restore();
 
   if (mpTrajectoryProblem)
-    *mpTrajectory->getProblem() = *mpTrajectoryProblem;
+    * mpTrajectory->getProblem() = *mpTrajectoryProblem;
 
   success &= COptProblem::restore(updateModel);
 
   pdelete(mpTrajectoryProblem);
+
+
+  if (updateModel && pExp != NULL)
+    {
+
+      std::vector<COptItem*>::iterator itItem;
+      std::vector<COptItem*>::iterator endItem = mpOptItems->end();
+      C_FLOAT64** pUpdate = mExperimentValues.array();
+
+      // set the global and experiment local fit item values.
+      for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
+        if (*pUpdate)
+          {
+            CFitItem* pItem = static_cast<CFitItem*>(*itItem);
+            std::string affectedExperiments = pItem->getExperiments();
+            std::vector<std::string> elems;
+            ResultParser::split(affectedExperiments, ", ", elems);
+
+            // only update value if it applies to all or the specific selected experiment
+            if (affectedExperiments.empty() || std::find(elems.begin(), elems.end(), pExp->getObjectName()) != elems.end())
+              **pUpdate = pItem->getLocalValue();
+          }
+
+      // Synchronize the initial state.
+      size_t index = mpExperimentSet->getIndex(pExp);
+
+      if (index != C_INVALID_INDEX)
+        mpContainer->applyUpdateSequence(mExperimentInitialUpdates[index]);
+
+      // Update the independent data.
+      pExp->updateModelWithIndependentData(0);
+
+      mpContainer->pushInitialState();
+    }
 
   return success;
 }
