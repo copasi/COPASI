@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -145,6 +150,8 @@ bool CQTaskMethodWidget::saveMethod()
 
   if (!pMethod) return false;
 
+  if (!mpActiveMethod) return false;
+
   bool changed = false;
 
   if (mShowMethodParameters)
@@ -270,6 +277,8 @@ void CQTaskMethodWidget::clearHistory()
       }
 
   mMethodHistory.clear();
+
+  mpActiveMethod = NULL;
 }
 
 void CQTaskMethodWidget::pushMethod(CCopasiMethod * pMethod)
