@@ -1399,6 +1399,7 @@ bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bo
     std::string PWD;
     COptions::getValue("PWD", PWD);
     
+    std::string fileBaseName = CDirEntry::baseName(fileName);
     if (CDirEntry::isRelativePath(fileName) &&
         !CDirEntry::makePathAbsolute(fileName, PWD))
         fileName = CDirEntry::fileName(fileName);
@@ -1446,7 +1447,7 @@ bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bo
             {
                 //renamedExperiments[*it] = "./copasi/" + CDirEntry::fileName(*it);
                 renamedExperiments[*it] = CDirEntry::fileName(*it);
-                archive.addFile(*it, "./copasi/" + CDirEntry::fileName(*it), KnownFormats::guessFormat(*it), false);
+                archive.addFile(*it, "./"+ fileBaseName +"/copasi/" + CDirEntry::fileName(*it), KnownFormats::guessFormat(*it), false);
             }
             
             // rename files temporarily
@@ -1472,7 +1473,7 @@ bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bo
             for (; it != fileNames.end(); ++it)
             {
                 renamedExperiments[*it] = CDirEntry::fileName(*it);
-                archive.addFile(*it, "./copasi/" + CDirEntry::fileName(*it), KnownFormats::guessFormat(*it), false);
+                archive.addFile(*it, "./"+ fileBaseName +"/copasi/"  + CDirEntry::fileName(*it), KnownFormats::guessFormat(*it), false);
             }
             
             // rename files temporarily
@@ -1492,7 +1493,7 @@ bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bo
         
         if (includeCOPASI)
         {
-            addCopasiFileToArchive(&archive, "./copasi/model.cps", pProgressReport);
+            addCopasiFileToArchive(&archive, "./"+ fileBaseName +"/copasi/model.cps", pProgressReport);
         }
         
         // restore filenames
@@ -1531,8 +1532,8 @@ bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bo
     }
   
     
-    archive.addFileFromString(shinyUIString, "./ui.r", KnownFormats::lookupFormat("R"), true);
-    archive.addFileFromString(shinyServerString, "./server.r", KnownFormats::lookupFormat("R"), true);
+    archive.addFileFromString(shinyUIString, "./"+ fileBaseName + "/ui.r", KnownFormats::lookupFormat("R"), true);
+    archive.addFileFromString(shinyServerString, "./"+ fileBaseName + "/server.r", KnownFormats::lookupFormat("R"), true);
 
  
     archive.writeToFile(fileName);
