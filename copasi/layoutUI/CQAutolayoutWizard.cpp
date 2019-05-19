@@ -414,7 +414,7 @@ void CQSelectionWizardPage::fillTree(const CModel& model)
       this->mpCompartmentsItem->addChild(pItem);
       // add all compartments to the item
       QList<QTreeWidgetItem*> children, children2;
-      unsigned int i = 0, iMax = compartments.size();
+      size_t i = 0, iMax = compartments.size();
       QTreeWidgetItem *pChild1;
       const CCompartment* pCompartment = NULL;
       QTreeWidgetItem *pItem2 = NULL, *pItem3 = NULL;

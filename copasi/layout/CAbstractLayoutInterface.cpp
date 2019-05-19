@@ -14,7 +14,7 @@
 #include "CAbstractLayoutInterface.h"
 
 
-unsigned int CAbstractLayoutInterface::getNumVariables() const
+size_t CAbstractLayoutInterface::getNumVariables() const
 {
   return mVarDescription.size();
 }

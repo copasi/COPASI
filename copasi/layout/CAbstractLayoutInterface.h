@@ -31,7 +31,7 @@ public:
   //virtual bool getState(std::vector<double> & vars) = 0;
   virtual double getPotential() = 0;
 
-  unsigned int getNumVariables() const;
+  size_t getNumVariables() const;
   const std::vector<VariableDescription> & getVariablesDescription() const;
 
   virtual const std::vector<double> & getInitialValues() const = 0;
