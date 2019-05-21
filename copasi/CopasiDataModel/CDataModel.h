@@ -256,10 +256,10 @@ public:
                             CProcessReport* pProgressReport = NULL);
 
   bool exportShinyArchive(std::string fileName,
-                            bool includeCOPASI = true,
-                            bool includeData = true,
-                            bool overwriteFile = false,
-                            CProcessReport* pProgressReport = NULL);
+                          bool includeCOPASI = true,
+                          bool includeData = true,
+                          bool overwriteFile = false,
+                          CProcessReport* pProgressReport = NULL);
 
   /**
    * adds the current COPASI model to the archive with the given
@@ -310,6 +310,7 @@ public:
 
   SCopasiXMLGUI * getGUI();
   const std::string & getFileName() const;
+  void  setFileName(const std::string& fileName);
 
   bool isChanged() const;
   void changed(const bool & changed = true);

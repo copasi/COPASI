@@ -59,7 +59,7 @@ public:
 
   bool createModel();
   void loadModel(const std::string & fileName);
-  void downloadFileFromUrl(const std::string& url, const std::string& destination);
+  void downloadFileFromUrl(const std::string& url, const std::string& destination, bool withProgress = true);
   void saveModel(const std::string & fileName, bool overwriteFile = false);
 
   void addModel(const std::string & fileName);
