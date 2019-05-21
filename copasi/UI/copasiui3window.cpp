@@ -3760,7 +3760,7 @@ void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
   if (!doc.isObject())
     return;
 
-  QRegExp rx("\\S+ (\\d+)\.(\\d+) \\(\\S+ (\\d+)\\)");
+  QRegExp rx("\\S+ (\\d+)\\.(\\d+) \\(\\S+ (\\d+)\\)");
 
   if (rx.indexIn(doc["name"].toString()) >= 0  && rx.captureCount() == 3)
     {
