@@ -453,7 +453,6 @@ void CopasiUI3Window::createActions()
   mpaExportShiny = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export Shiny Archive", this);
   connect(mpaExportShiny, SIGNAL(triggered()), this, SLOT(slotExportShiny()));
 
-
 #ifdef COPASI_Provenance
   mpaProvenance = new QAction("Provenance", this);
   connect(mpaProvenance, SIGNAL(activated()), this, SLOT(slotProvenance()));
@@ -3738,7 +3737,6 @@ void CopasiUI3Window::slotCheckForUpdate()
   connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCheckForUpdateFinished(bool)));
   mpDataModelGUI->downloadFileFromUrl("https://tiny.cc/latest_copasi", TmpFileName, false);
   //mpDataModelGUI->downloadFileFromUrl("http://bit.ly/latest_copasi", TmpFileName, false);
-
 }
 
 void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
@@ -3762,7 +3760,7 @@ void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
 
   QRegExp rx("\\S+ (\\d+)\\.(\\d+) \\(\\S+ (\\d+)\\)");
 
-  if (rx.indexIn(doc["name"].toString()) >= 0  && rx.captureCount() == 3)
+  if (rx.indexIn(doc.object().value(QString::fromUtf8("name")).toString()) >= 0  && rx.captureCount() == 3)
     {
       int major = rx.cap(1).toInt();
       int minor = rx.cap(2).toInt();
@@ -3792,7 +3790,6 @@ void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
           QMessageBox::information(this, "No newer version available", QString("The COPASI version you are using (%1), is newer than the latest one available on our website (%2).")
                                    .arg(FROM_UTF8(currentVersion)).arg(FROM_UTF8(latestVersion)));
         }
-
     }
 }
 
