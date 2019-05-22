@@ -203,7 +203,7 @@ void DataModelGUI::loadModel(const std::string & fileName)
   mpThread->start();
 }
 
-void DataModelGUI::downloadFileFromUrl(const std::string & url, const std::string& destination)
+void DataModelGUI::downloadFileFromUrl(const std::string & url, const std::string& destination, bool withProgress)
 {
 
   mSuccess = true;
@@ -240,11 +240,15 @@ void DataModelGUI::downloadFileFromUrl(const std::string & url, const std::strin
       manager->setProxy(QNetworkProxy(QNetworkProxy::HttpProxy, server, port, user, pass));
     }
 
-  // start progress dialog
-  mpProgressBar = CProgressBar::create();
-  mpProgressBar->setName("Download file...");
-  mDownloadedBytes = 0; mDownloadedTotalBytes = 100;
-  mUpdateItem = ((CProcessReport*)mpProgressBar)->addItem("Download file", mDownloadedBytes, &mDownloadedTotalBytes);
+  if (withProgress)
+    {
+      // start progress dialog
+      mpProgressBar = CProgressBar::create();
+      mpProgressBar->setName("Download file...");
+      mDownloadedBytes = 0; mDownloadedTotalBytes = 100;
+      mUpdateItem = ((CProcessReport*)mpProgressBar)->addItem("Download file", mDownloadedBytes, &mDownloadedTotalBytes);
+    }
+
   mFileName = destination;
 
   connect(manager, SIGNAL(finished(QNetworkReply*)),
@@ -621,7 +625,26 @@ void DataModelGUI::downloadFinished(QNetworkReply *reply)
 {
   mSuccess = false;
   mDownloadedBytes = 100;
-  mpProgressBar->progressItem(mUpdateItem);
+  bool withProgress = mpProgressBar != NULL;
+
+  if (withProgress) mpProgressBar->finishItem(mUpdateItem);
+
+  std::string redirectUrl = reply == NULL ? std::string("") :
+                            TO_UTF8(reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl().toString());
+
+  if (!redirectUrl.empty())
+    {
+      if (withProgress)
+        {
+          mpProgressBar->finish();
+          mpProgressBar->deleteLater();
+          mpProgressBar = NULL;
+        }
+
+      reply->deleteLater();
+      downloadFileFromUrl(redirectUrl, mFileName, withProgress);
+      return;
+    }
 
   if (reply != NULL && reply->error() == QNetworkReply::NoError && reply->bytesAvailable() > 0)
     {
@@ -657,7 +680,7 @@ void DataModelGUI::miriamDownloadProgress(qint64 received, qint64 total)
       ++mDownloadedBytes;
     }
 
-  if (!mpProgressBar->progressItem(mUpdateItem))
+  if (mpProgressBar != NULL && !mpProgressBar->progressItem(mUpdateItem))
     {
       QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
 
@@ -1035,6 +1058,45 @@ void DataModelGUI::importCellDesigner()
             }
         }
     }
+}
+
+void DataModelGUI::exportShinyArchive(const std::string & fileName, bool overwriteFile)
+{
+  mpProgressBar = CProgressBar::create();
+
+  mSuccess = true;
+  mFileName = fileName;
+  mOverWrite = overwriteFile;
+
+  mpThread = new CQThread(this, &DataModelGUI::exportShinyArchiveRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(exportShinyFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::exportShinyArchiveRun()
+{
+  try
+    {
+      assert(mpDataModel != NULL);
+      mSuccess = mpDataModel->exportShinyArchive(mFileName,
+                 true,
+                 true,
+                 mOverWrite,
+                 mpProgressBar);
+    }
+
+  catch (...)
+    {
+      mSuccess = false;
+    }
+}
+
+void DataModelGUI::exportShinyFinished()
+{
+
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportShinyFinished()));
+
+  threadFinished();
 }
 
 void DataModelGUI::openCombineArchive(const std::string & fileName)

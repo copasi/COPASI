@@ -39,6 +39,14 @@
 #include <QFontDialog>
 #include <QtCore/QDateTime>
 
+#include <QByteArray>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QRegExp>
+#include <QDesktopServices>
+
 #include <vector>
 #include <sstream>
 
@@ -218,6 +226,7 @@ CopasiUI3Window::CopasiUI3Window():
 
   mpaImportCombine(NULL),
   mpaExportCombine(NULL),
+  mpaExportShiny(NULL),
 
   mpaAddModel(NULL),
   mpaMergeModels(NULL),
@@ -440,6 +449,9 @@ void CopasiUI3Window::createActions()
   connect(mpaImportCombine, SIGNAL(triggered()), this, SLOT(slotImportCombine()));
   mpaExportCombine = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export Combine Archive", this);
   connect(mpaExportCombine, SIGNAL(triggered()), this, SLOT(slotExportCombine()));
+
+  mpaExportShiny = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export Shiny Archive", this);
+  connect(mpaExportShiny, SIGNAL(triggered()), this, SLOT(slotExportShiny()));
 
 #ifdef COPASI_Provenance
   mpaProvenance = new QAction("Provenance", this);
@@ -685,6 +697,7 @@ void CopasiUI3Window::createMenuBar()
   pFileMenu->addSeparator();
   pFileMenu->addAction(mpaImportCombine);
   pFileMenu->addAction(mpaExportCombine);
+  pFileMenu->addAction(mpaExportShiny);
 
   pFileMenu->addSeparator();
   mpMenuSEDMLSupport = pFileMenu->addMenu("SED-ML Support");
@@ -766,6 +779,8 @@ void CopasiUI3Window::createMenuBar()
   menuBar()->addSeparator();
   QMenu *help = menuBar()->addMenu("&Help");
   help->addAction("Simple &Wizard", this, SLOT(slotTutorialWizard()));
+  help->addSeparator();
+  help->addAction("&Check for Update", this, SLOT(slotCheckForUpdate()));
   help->addSeparator();
   help->addAction("&About", this, SLOT(about()), Qt::Key_F1);
   help->addAction("&License", this, SLOT(license()));
@@ -3503,6 +3518,52 @@ void CopasiUI3Window::slotImportCombineFinished(bool success)
   mSaveAsRequired = true;
   mNewFile = "";
 }
+
+void CopasiUI3Window::slotExportShiny(QString str)
+{
+  mpDataModelGUI->commit();
+  C_INT32 Answer = QMessageBox::No;
+  QString tmp;
+
+  if (str.isEmpty()) str = "untitled.zip";
+
+#ifdef DEBUG_UI
+  qDebug() << "Filename on slotFileSaveAs = " << str;
+#endif
+
+  while (Answer == QMessageBox::No)
+    {
+      tmp =
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                                          str, "Archive Files (*.zip)",
+                                          "Choose a filename to save under");
+
+      if (tmp.isEmpty()) return;
+
+#ifdef DEBUG_UI
+      qDebug() << "tmp = " << tmp;
+#endif
+      // Checks whether the file exists
+      Answer = checkSelection(tmp);
+
+      if (Answer == QMessageBox::Cancel) return;
+    }
+
+  if (mpDataModelGUI && !tmp.isNull())
+    {
+      setCursor(Qt::WaitCursor);
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportCombineFinished(bool)));
+      mpDataModelGUI->exportShinyArchive(TO_UTF8(tmp), true);
+#ifdef COPASI_Provenance
+      //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel(), mpVersionHierarchy->getVersionsPathToCurrentModel());
+      CProvenanceXMLWriter *ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mpVersionHierarchy->getVersionsPathToCurrentModel());
+      ProvenanceXMLWriter->updateCurrentSessionProvenance();
+      //mProvenanceParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
+      ProvenanceXMLWriter->updateOrigionOfProvenance(mProvenanceOfOrigionOfFile);
+#endif
+    }
+}
+
 void CopasiUI3Window::slotExportCombine(QString str)
 {
   mpDataModelGUI->commit();
@@ -3664,6 +3725,72 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
   // open url
   connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFromUrlFinished(bool)));
   mpDataModelGUI->downloadFileFromUrl(TO_UTF8(url), TmpFileName);
+}
+
+void CopasiUI3Window::slotCheckForUpdate()
+{
+  // check whether user has not opted out checking for updates
+  std::string TmpFileName;
+  COptions::getValue("Tmp", TmpFileName);
+  TmpFileName = CDirEntry::createTmpName(TmpFileName, ".rss");
+
+  connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCheckForUpdateFinished(bool)));
+  mpDataModelGUI->downloadFileFromUrl("https://tiny.cc/latest_copasi", TmpFileName, false);
+  //mpDataModelGUI->downloadFileFromUrl("http://bit.ly/latest_copasi", TmpFileName, false);
+}
+
+void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
+{
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCheckForUpdateFinished(bool)));
+
+  if (!success) return;
+
+  QFile file(mpDataModelGUI->getFileName().c_str());
+  file.open(QIODevice::ReadOnly);
+  QByteArray data = file.readAll();
+  file.close();
+  file.remove();
+  QJsonDocument doc = QJsonDocument::fromJson(data);
+
+  if (doc.isEmpty())
+    return;
+
+  if (!doc.isObject())
+    return;
+
+  QRegExp rx("\\S+ (\\d+)\\.(\\d+) \\(\\S+ (\\d+)\\)");
+
+  if (rx.indexIn(doc.object().value(QString::fromUtf8("name")).toString()) >= 0  && rx.captureCount() == 3)
+    {
+      int major = rx.cap(1).toInt();
+      int minor = rx.cap(2).toInt();
+      int release = rx.cap(3).toInt();
+      CVersion latest; latest.setVersion(major, minor, release, false, "stable", "");
+      std::string latestVersion = latest.getVersion();
+      std::string currentVersion = CVersion::VERSION.getVersion();
+
+      if (major > CVersion::VERSION.getVersionMajor() ||
+          (major == CVersion::VERSION.getVersionMajor() && minor > CVersion::VERSION.getVersionMinor()) ||
+          (major == CVersion::VERSION.getVersionMajor() && minor == CVersion::VERSION.getVersionMinor() && release > CVersion::VERSION.getVersionDevel())
+         )
+        {
+          if (QMessageBox::question(this, "New COPASI version available", QString("The COPASI version you are using (%1), is older than the latest one available on our website (%2). Do you want to download it?")
+                                    .arg(FROM_UTF8(currentVersion)).arg(FROM_UTF8(latestVersion)), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+            {
+              QDesktopServices::openUrl(QUrl("http://copasi.org/Download/"));
+            }
+        }
+      else if (major == CVersion::VERSION.getVersionMajor() && minor == CVersion::VERSION.getVersionMinor() && release == CVersion::VERSION.getVersionDevel())
+        {
+          QMessageBox::information(this, "No newer version available", QString("The COPASI version you are using (%1), is the same as the latest one available on our website.")
+                                   .arg(FROM_UTF8(currentVersion)));
+        }
+      else
+        {
+          QMessageBox::information(this, "No newer version available", QString("The COPASI version you are using (%1), is newer than the latest one available on our website (%2).")
+                                   .arg(FROM_UTF8(currentVersion)).arg(FROM_UTF8(latestVersion)));
+        }
+    }
 }
 
 void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)

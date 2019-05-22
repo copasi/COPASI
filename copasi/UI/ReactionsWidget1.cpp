@@ -496,6 +496,10 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 
       // Run a table update, to update the mapped value, and it's
       // editing status, in the adjacent cell.
+
+      if (reaction->getFunction() != &mpRi->getFunction())
+        saveToReaction();
+
       mpParameterMapping->updateTable(*mpRi, dynamic_cast< CReaction * >(mpObject));
     }
   else if (mpRi->getUsage(Index) == CFunctionParameter::Role::VOLUME)

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -169,6 +174,8 @@ public slots:
   void slotUpdateHideMainToolbarAction();
   void slotHideMainToolbar(bool flag);
   void slotCopy();
+  void slotCheckForUpdate();
+  void slotCheckForUpdateFinished(bool flag);
 
   /**
    * This should only be called by the destructor of the object browser dialog
@@ -259,6 +266,7 @@ protected slots:
   void slotImportCombineFinished(bool success);
   void slotExportCombine(QString str = QString::null);
   void slotExportCombineFinished(bool success);
+  void slotExportShiny(QString str = QString::null);
 
   void slotUndo();
   void slotRedo();
@@ -334,6 +342,7 @@ private:
 
   QAction* mpaImportCombine;
   QAction* mpaExportCombine;
+  QAction* mpaExportShiny;
 
   QAction* mpaAddModel;
   QAction* mpaMergeModels;
