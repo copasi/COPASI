@@ -539,6 +539,8 @@ bool CScanMethod::loop(size_t level)
         }
       catch (const CCopasiException&)
         {
+          if (!mpProblem->getContinueOnError())
+            throw;
 
           CCopasiMessage::getLastMessage(); // remove the error so we don't have too many of those in the log
           ++failCounter;
