@@ -1,4 +1,14 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -97,6 +107,42 @@ bool CVersion::isCompatible(const CVersion & version) const
   if (mCompatible.find(version.mBuild) != mCompatible.end()) return true;
 
   return false;
+}
+
+bool CVersion::operator>(const CVersion& other) const
+{
+  return (mMajor > other.getVersionMajor() ||
+          (mMajor == other.getVersionMajor() && mMinor > other.getVersionMinor()) ||
+          (mMajor == other.getVersionMajor() && mMinor == other.getVersionMinor() && mBuild > other.getVersionDevel())
+         );
+}
+
+bool CVersion::operator<(const CVersion& other) const
+{
+  return (mMajor < other.getVersionMajor() ||
+          (mMajor == other.getVersionMajor() && mMinor < other.getVersionMinor()) ||
+          (mMajor == other.getVersionMajor() && mMinor == other.getVersionMinor() && mBuild < other.getVersionDevel())
+         );
+}
+
+bool CVersion::operator==(const CVersion& other) const
+{
+  return (mMajor == other.getVersionMajor() && mMinor == other.getVersionMinor() && mBuild == other.getVersionDevel());
+}
+
+bool CVersion::operator>=(const CVersion& other) const
+{
+  return (*this > other) || (*this == other);
+}
+
+bool CVersion::operator<=(const CVersion& other) const
+{
+  return (*this < other) || (*this == other);
+}
+
+bool CVersion::operator!=(const CVersion& other) const
+{
+  return !(*this == other);
 }
 
 void CVersion::setVersion(const C_INT32 & major,

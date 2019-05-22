@@ -105,6 +105,7 @@ public:
   void exportMathModelRun();
 
   const std::string& getFileName() const;
+  const std::string& getLastDownloadUrl() const;
 
 public slots:
   void loadModelFinished();
@@ -181,6 +182,7 @@ private:
   std::string mSBMLImportString;
   std::string * mpSBMLExportString;
   std::string mFileName;
+  std::string mDownloadUrl;
   bool mOverWrite;
   int mSBMLLevel;
   int mSBMLVersion;

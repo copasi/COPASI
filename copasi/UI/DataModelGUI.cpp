@@ -100,6 +100,7 @@ DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel):
   mSBMLImportString(),
   mpSBMLExportString(NULL),
   mFileName(),
+  mDownloadUrl(),
   mOverWrite(false),
   mSBMLLevel(2),
   mSBMLVersion(4),
@@ -250,6 +251,7 @@ void DataModelGUI::downloadFileFromUrl(const std::string & url, const std::strin
     }
 
   mFileName = destination;
+  mDownloadUrl = url;
 
   connect(manager, SIGNAL(finished(QNetworkReply*)),
           this, SLOT(downloadFinished(QNetworkReply*)));
@@ -570,6 +572,11 @@ void DataModelGUI::exportMathModelRun()
 const std::string & DataModelGUI::getFileName() const
 {
   return mFileName;
+}
+
+const std::string& DataModelGUI::getLastDownloadUrl() const
+{
+  return mDownloadUrl;
 }
 
 void DataModelGUI::exportMathModelFinished()
