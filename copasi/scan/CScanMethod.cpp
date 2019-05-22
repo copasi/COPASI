@@ -47,6 +47,7 @@
 #include "copasi/core/CRootContainer.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CParameterEstimationUtils.h"
+#include <copasi/utilities/CCopasiException.h>
 
 // Uncomment this line below to get debug print out.
 // #define DEBUG_OUTPUT 1
@@ -518,23 +519,41 @@ bool CScanMethod::loop(size_t level)
   bool isLastMasterItem = (level == (mScanItems.size() - 1)); //TODO
 
   CScanItem* currentSI = mScanItems[level];
+  size_t failCounter = 0;
 
   for (currentSI->reset(); !currentSI->isFinished(); currentSI->step())
     {
       //TODO: handle slave SIs
 
-      if (isLastMasterItem)
+      try
         {
-          if (!calculate()) return false;
+
+          if (isLastMasterItem)
+            {
+              if (!calculate()) return false;
+            }
+          else
+            {
+              if (!loop(level + 1)) return false;
+            } //TODO
         }
-      else
+      catch (const CCopasiException&)
         {
-          if (!loop(level + 1)) return false;
-        } //TODO
+
+          CCopasiMessage::getLastMessage(); // remove the error so we don't have too many of those in the log
+          ++failCounter;
+        }
 
       //separator needs to be handled slightly differently if we are at the last item
       if (currentSI->isNesting())
         ((CScanTask*)(getObjectParent()))->outputSeparatorCallback(level == mLastNestingItem);
+
+
+    }
+
+  if (failCounter > 0)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "%ld subtask executions failed.", failCounter);
     }
 
   return true;
