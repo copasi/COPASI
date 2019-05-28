@@ -117,7 +117,7 @@ public:
   // trim from both ends
   static inline std::string &trim_in_place(std::string &s);
 
-  static inline std::string trim(const std::string &s1);
+  static std::string trim(const std::string &s1);
 
   static std::vector<ResultData*>  parseContent(const std::string& content);
 
