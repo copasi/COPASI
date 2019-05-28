@@ -251,7 +251,7 @@ if (ENABLE_FLEX_BISON)
   set(BISON_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/yacc.sh")
 endif (ENABLE_FLEX_BISON)
 
-option(ENABLE_GPROF "Enable comiling and linking for gprof analysis." OFF)
+option(ENABLE_GPROF "Enable compiling and linking for gprof analysis." OFF)
 if (ENABLE_GPROF)
   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-pg")
   set(CMAKE_EXE_LINKER_FLAGS "-pg")
