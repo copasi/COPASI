@@ -3132,5 +3132,34 @@ const CDataObject *CDataModel::findObjectByDisplayName(const std::string& displa
           }
       }
   }
+
+  // try for local reaction parameters
+
+  pos = displayString.find(")");
+
+  if (pos != std::string::npos && (displayString.size() > (pos + 2)))
+    {
+      std::string reactionName = displayString.substr(1, pos - 1);
+      std::string parameter = displayString.substr(pos + 2);
+
+      size_t reactionIndex = model->getReactions().getIndex(reactionName);
+
+      if (reactionIndex == C_INVALID_INDEX)
+        return NULL;
+
+      const CReaction& reaction = model->getReactions()[reactionIndex];
+      size_t paramIndex = reaction.getParameterIndex(parameter);
+
+      if (paramIndex == C_INVALID_INDEX)
+        return NULL;
+
+      auto& paramObjects = reaction.getParameterObjects(paramIndex);
+
+      if (!paramObjects.empty())
+        return paramObjects[0];
+
+    }
+
+
   return NULL;
 }
