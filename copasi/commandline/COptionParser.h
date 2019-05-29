@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -34,6 +39,7 @@
 // name with the cxx_header_def variable
 #ifndef COPASI_COptionParser
 #define COPASI_COptionParser
+
 
 // standard includes
 #include <stdexcept>
@@ -98,6 +104,7 @@ struct options
   bool     License;
   int     MaxTime;
   bool     NoLogo;
+  std::string     ReparameterizeModel;
   std::string     ReportFile;
   SBMLSchema_enum     SBMLSchema;
   std::string     Save;
@@ -131,6 +138,7 @@ struct option_locations
   size_type License;
   size_type MaxTime;
   size_type NoLogo;
+  size_type ReparameterizeModel;
   size_type ReportFile;
   size_type SBMLSchema;
   size_type Save;
@@ -148,7 +156,7 @@ class option_error : public std::runtime_error
 {
 public:
   option_error(const std::string &what_arg)
-    : runtime_error(what_arg) {}
+    : runtime_error(what_arg) { }
 
   const char* get_help_comment(void) const;
 };
@@ -163,14 +171,14 @@ class autoexcept : public option_error
 public:
   // constructor
   autoexcept(autothrow id, const std::string &message)
-    : option_error(message), autothrow_(id) {}
+    : option_error(message), autothrow_(id) { }
 
   /**
    * get the autothrow enum member for the autothrow
    * option that caused the exception.
    */
   autothrow get_autothrow_id(void) const
-  {return autothrow_;}
+  { return autothrow_; }
 private:
   autothrow autothrow_;
 };
@@ -197,15 +205,15 @@ public:
 
   /// get a list of nonoptions from the command line
   const std::vector<std::string>& get_non_options(void) const
-  {return non_options_;}
+  { return non_options_; }
 
   /// get the main options
   const options& get_options(void) const
-  {return options_;}
+  { return options_; }
 
   /// get the main option locations
   const option_locations& get_locations(void) const
-  {return locations_;}
+  { return locations_; }
 private:
   options options_;
   option_locations locations_;
@@ -235,10 +243,11 @@ private:
     option_MaxTime,
     option_ConvertToIrreversible,
     option_ReportFile,
-    option_ScheduledTask
+    option_ScheduledTask,
+    option_ReparameterizeModel
   } openum_;
 
-  enum parser_state {state_option, state_value, state_consume } state_;
+  enum parser_state { state_option, state_value, state_consume } state_;
   std::vector<std::string> non_options_;
 
   enum opsource

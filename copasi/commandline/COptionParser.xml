@@ -1,6 +1,11 @@
 <!--
     This file demostrates how to specify options to clo++
 -->
+<!-- Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the -->
+<!-- University of Virginia, University of Heidelberg, and University -->
+<!-- of Connecticut School of Medicine. -->
+<!-- All rights reserved. -->
+
 <!-- Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and University of -->
 <!-- of Connecticut School of Medicine. -->
@@ -367,6 +372,20 @@
            hidden="no">
     <name>scheduled-task</name>
     <comment>Override the task marked as executable.</comment>
+   </option>
+   <option id="ReparameterizeModel"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="both"
+           argname="file"
+           hidden="no">
+    <name>reparameterize</name>
+    <name>r</name>
+    <comment>
+      Before any task is run, the model is reparameterized with
+      the values specified in the provided INI file.
+    </comment>
    </option>
  </options>
 </cloxx>

@@ -56,6 +56,7 @@
 # include <combine/util.h>
 # include <omex/CaContent.h>
 # include <copasi/utilities/CCopasiMessage.h>
+# include <copasi/utilities/CParameterEstimationUtils.h>
 
 #include <sedml/SedDocument.h>
 #include "sedml/SEDMLImporter.h"
@@ -3008,6 +3009,93 @@ CUndoData::CChangeSet CDataModel::recordData(const CUndoData & data)
     }
 
   return CUndoData::CChangeSet();
+}
+
+bool
+CDataModel::changeModelParameter(CDataObject* element, double value)
+{
+  if (element == NULL)
+    return false;
+
+  CDataObjectReference<double>* pRef =
+    dynamic_cast<CDataObjectReference<double>*>(element);
+
+  if (pRef != NULL)
+    {
+      if (pRef->getValuePointer() != NULL)
+        {
+          *static_cast<double*>(pRef->getValuePointer()) = value;
+
+          if (pRef->getObjectName() == "InitialConcentration" &&
+              pRef->getObjectDataModel() != NULL &&
+              pRef->getObjectDataModel()->getModel() != NULL)
+            pRef->getObjectDataModel()->getModel()->updateInitialValues(pRef);
+
+          return true;
+        }
+    }
+
+  CCopasiParameter* pParam = dynamic_cast<CCopasiParameter*>(element);
+
+  if (pParam != NULL)
+    {
+      if (pParam->getValuePointer() != NULL)
+        {
+          *static_cast<double*>(pParam->getValuePointer()) = value;
+          return true;
+        }
+    }
+
+  return false;
+}
+
+void
+CDataModel::reparameterizeFromIniFile(const std::string& fileName)
+{
+  if (!getModel())
+    return;
+
+  std::ifstream ifs(fileName.c_str(), std::ios_base::in);
+
+  if (!ifs.good())
+    {
+      return;
+    }
+
+  std::string line;
+
+  while (std::getline(ifs, line))
+    {
+      // remove comments
+      size_t pos = line.find(';');
+
+      if (pos != std::string::npos)
+        line = line.substr(0, pos);
+
+      pos = line.rfind('=');
+
+      if (pos == std::string::npos) // no equals sign found invalid
+        continue;
+
+      std::string key = ResultParser::trim(line.substr(0, pos));
+      std::string value = ResultParser::trim(line.substr(pos + 1));
+
+      if (key.empty() || value.empty())
+        continue;
+
+      double dValue = ResultParser::saveToDouble(value);
+
+      CDataObject* element =
+        const_cast<CDataObject*>(findObjectByDisplayName(key));
+
+      if (element == NULL) // no such element, or no supported element
+        continue;
+
+      if (changeModelParameter(element, dValue))
+        getModel()->setCompileFlag(); // mark as changed
+    }
+
+  getModel()->compileIfNecessary(NULL); // compile if needed
 }
 
 const CDataObject *CDataModel::findObjectByDisplayName(const std::string& displayString) const

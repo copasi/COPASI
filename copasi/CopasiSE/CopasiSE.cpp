@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -197,6 +202,11 @@ int main(int argc, char *argv[])
       bool importCA = COptions::isSet("ImportCombineArchive") && !COptions::compareValue("ImportCombineArchive", std::string(""));
       bool needImport = importSBML | importSEDML | importCA;
 
+      std::string iniFileName;
+
+      if (COptions::isSet("ReparameterizeModel") && !COptions::compareValue("ReparameterizeModel", std::string("")))
+        COptions::getValue("ReparameterizeModel", iniFileName);
+
       if (needImport)
         {
           if (importSBML)
@@ -267,6 +277,9 @@ int main(int argc, char *argv[])
               pDataModel->getModel()->compileIfNecessary(NULL);
             }
 
+          if (!iniFileName.empty())
+            pDataModel->reparameterizeFromIniFile(iniFileName);
+
           retcode = exportCurrentModel();
 
           if (retcode != NO_EXPORT_REQUESTED)
@@ -324,6 +337,9 @@ int main(int argc, char *argv[])
                   pDataModel->getModel()->convert2NonReversible();
                   pDataModel->getModel()->compileIfNecessary(NULL);
                 }
+
+              if (!iniFileName.empty())
+                pDataModel->reparameterizeFromIniFile(iniFileName);
 
               retcode = exportCurrentModel();
 
