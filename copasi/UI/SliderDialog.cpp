@@ -250,7 +250,7 @@ void SliderDialog::createNewSlider()
               // if the user has not specified noToAll, we need to prompt
               else if (!noToAll)
                 {
-                  QMessageBox::StandardButton result = CQMessageBox::information(NULL, "Slider Exists",
+                  QMessageBox::StandardButton result = CQMessageBox::information(this, "Slider Exists",
                                                        "A slider for this object already exists.\n\nDo you want to reset the range of the slider?",
                                                        QMessageBox::Yes | QMessageBox::No | QMessageBox::YesToAll | QMessageBox::NoToAll, QMessageBox::No);
 
@@ -710,7 +710,7 @@ void SliderDialog::createSlidersForFolder(std::vector<QWidget*>& v)
 
   if (issueWarning)
     {
-      CQMessageBox::information(NULL, "Invalid Slider",
+      CQMessageBox::information(this, "Invalid Slider",
                                 "One or more sliders are invalid and have been disabled!",
                                 QMessageBox::Ok, QMessageBox::NoButton);
     }
@@ -1087,7 +1087,7 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CDataObject* pObject, 
         {
           if (!sliderDeleted)
             {
-              CQMessageBox::information(NULL, "Missing slider objects",
+              CQMessageBox::information(const_cast< SliderDialog * >(this), "Missing slider objects",
                                         "One or more objects that had sliders defined have been deleted. Sliders will therefore be deleted as well.",
                                         QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
             }
@@ -1360,7 +1360,7 @@ SliderDialog::deleteInvalidSliders()
 
   if (sliderDeleted)
     {
-      CQMessageBox::information(NULL, "Invalid Slider",
+      CQMessageBox::information(this, "Invalid Slider",
                                 "One or more sliders were invalid and have been deleted!",
                                 QMessageBox::Ok, QMessageBox::NoButton);
     }

@@ -255,7 +255,7 @@ bool CQParameterSetsDM::removeRows(QModelIndexList rows, const QModelIndex & /* 
       if (delRow != C_INVALID_INDEX)
         {
           QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, "layout",
+            CQMessageBox::confirmDelete(ListViews::ancestor(this), "layout",
                                         FROM_UTF8(pModelParameterSet->getObjectName()),
                                         pModelParameterSet);
 

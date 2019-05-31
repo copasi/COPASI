@@ -559,7 +559,7 @@ void CopasiUI3Window::slotFunctionDBSave(QString dbFile)
           if (dbFile.isEmpty()) return;
 
           // Checks whether the file exists
-          Answer = checkSelection(dbFile);
+          Answer = checkSelection(this, dbFile);
 
           if (Answer == QMessageBox::Cancel) return;
         }
@@ -611,7 +611,7 @@ CopasiUI3Window::slotParameterSetsSave(QString dbFile)
           if (dbFile.isEmpty()) return;
 
           // Checks whether the file exists
-          Answer = checkSelection(dbFile);
+          Answer = checkSelection(this, dbFile);
 
           if (Answer == QMessageBox::Cancel) return;
         }
@@ -816,7 +816,7 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
       qDebug() << "tmp = " << tmp;
 #endif
       // Checks whether the file exists
-      Answer = checkSelection(tmp);
+      Answer = checkSelection(this, tmp);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -1223,13 +1223,13 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
 
 void CopasiUI3Window::slotFileExamplesCopasiFiles(QString file)
 {
-  CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
+  CopasiFileDialog::openExampleDir(this); //Sets CopasiFileDialog::LastDir
   slotFileOpen(file);
 }
 
 void CopasiUI3Window::slotFileExamplesSBMLFiles(QString file)
 {
-  CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
+  CopasiFileDialog::openExampleDir(this); //Sets CopasiFileDialog::LastDir
   slotImportSBML(file);
 }
 
@@ -1799,7 +1799,7 @@ void CopasiUI3Window::slotExportSBML()
       if (tmp.isEmpty()) return;
 
       // Checks whether the file exists
-      Answer = checkSelection(tmp);
+      Answer = checkSelection(this, tmp);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -1852,7 +1852,7 @@ void CopasiUI3Window::slotExportMathModel()
       qDebug() << "user's filter pointer = " << *userFilter;
 #endif
       // Checks whether the file exists
-      Answer = checkSelection(tmp);
+      Answer = checkSelection(this, tmp);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -2555,7 +2555,7 @@ void CopasiUI3Window::slotCapture()
       if (fileName.isEmpty()) return;
 
       // Checks whether the file exists
-      Answer = checkSelection(fileName);
+      Answer = checkSelection(this, fileName);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -3125,7 +3125,7 @@ void CopasiUI3Window::disableSliders(bool disable)
 
 void CopasiUI3Window::slotFileExamplesSEDMLFiles(QString file)
 {
-  CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
+  CopasiFileDialog::openExampleDir(this); //Sets CopasiFileDialog::LastDir
   slotImportSEDML(file);
 }
 void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
@@ -3390,7 +3390,7 @@ void CopasiUI3Window::slotExportSEDML()
       if (tmp.isEmpty()) return;
 
       // Checks whether the file exists
-      Answer = checkSelection(tmp);
+      Answer = checkSelection(this, tmp);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -3545,7 +3545,7 @@ void CopasiUI3Window::slotExportShiny(QString str)
       qDebug() << "tmp = " << tmp;
 #endif
       // Checks whether the file exists
-      Answer = checkSelection(tmp);
+      Answer = checkSelection(this, tmp);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -3590,7 +3590,7 @@ void CopasiUI3Window::slotExportCombine(QString str)
       qDebug() << "tmp = " << tmp;
 #endif
       // Checks whether the file exists
-      Answer = checkSelection(tmp);
+      Answer = checkSelection(this, tmp);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -3835,7 +3835,6 @@ void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCheckForUpdateFinished(bool)));
       mpDataModelGUI->downloadFileFromUrl("https://api.github.com/repos/copasi/COPASI/releases/latest", mpDataModelGUI->getFileName(), false);
     }
-
 }
 
 void CopasiUI3Window::slotClearSbmlIds()

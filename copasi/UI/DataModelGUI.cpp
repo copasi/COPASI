@@ -998,7 +998,7 @@ void DataModelGUI::importCellDesigner()
                         importCD = true;
 
                       // ask the user if the CellDesigner annotation should be imported
-                      if (importCD || CQMessageBox::question(NULL, "CellDesigner import", "A CellDesigner diagram was found in this file.\nDo you want to import the diagram?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+                      if (importCD || CQMessageBox::question(ListViews::ancestor(this), "CellDesigner import", "A CellDesigner diagram was found in this file.\nDo you want to import the diagram?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
                         {
                           // do the import
                           CCellDesignerImporter cd_importer(pSBMLDocument);

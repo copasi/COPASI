@@ -375,7 +375,7 @@ bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex& index)
       CCompartment * pCompartment = *j;
 
       QMessageBox::StandardButton choice =
-        CQMessageBox::confirmDelete(NULL, "compartment",
+        CQMessageBox::confirmDelete(ListViews::ancestor(this), "compartment",
                                     FROM_UTF8(pCompartment->getObjectName()),
                                     pCompartment);
 

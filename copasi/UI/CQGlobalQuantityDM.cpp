@@ -372,7 +372,7 @@ bool CQGlobalQuantityDM::removeRows(QModelIndexList rows, const QModelIndex& ind
       CModelValue * pModelValue = *j;
 
       QMessageBox::StandardButton choice =
-        CQMessageBox::confirmDelete(NULL, "quantity",
+        CQMessageBox::confirmDelete(ListViews::ancestor(this), "quantity",
                                     FROM_UTF8(pModelValue->getObjectName()),
                                     pModelValue);
 

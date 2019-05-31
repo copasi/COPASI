@@ -149,7 +149,7 @@ void CQReportDefinition::btnAdvancedClicked()
 {
   if (mAdvanced)
     {
-      if (CQMessageBox::question(NULL, "Report Conversion",
+      if (CQMessageBox::question(this, "Report Conversion",
                                  "Converting an advanced report to a table may result in loss of customization.\n"
                                  "Do you want to proceed?",
                                  QMessageBox::Ok | QMessageBox::Cancel,
