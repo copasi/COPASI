@@ -1044,6 +1044,25 @@ void CModel::buildMoieties()
   return;
 }
 
+void CModel::clearSbmlIds()
+{
+for (auto & comp : getCompartments())
+    comp.setSBMLId("");
+
+for (auto & metab : getMetabolites())
+    metab.setSBMLId("");
+
+for (auto & param : getModelValues())
+    param.setSBMLId("");
+
+for (auto & reaction : getReactions())
+    reaction.setSBMLId("");
+
+for (auto & c_event : getEvents())
+    c_event.setSBMLId("");
+
+}
+
 //this is supposed to be so fast it can be called often to be kept up to date
 //all the time. At the moment it creates the mMetabolites and sorts the fixed
 //metabs to the end
@@ -2512,7 +2531,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-#pragma region   //find_experiment
+  #pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2562,7 +2581,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-#pragma endregion //find_experiment
+  #pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::Task::timeCourse)
     {
@@ -3264,7 +3283,7 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
                 TreesWithDiscontinuities.push_back((*ppEntity)->getNoiseExpressionPtr());
               }
 
-          // Intentionally no break statement!
+            // Intentionally no break statement!
 
           case Status::ASSIGNMENT:
 
@@ -3474,7 +3493,7 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
       else
         {
           tmp_ma = der.multiply(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getCN() + ">"),
-                                     new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[1]->getCN() + ">"));
+                                new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[1]->getCN() + ">"));
 
           for (j = 2; j < prod.size(); ++j)
             tmp_ma = der.multiply(tmp_ma, new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[j]->getCN() + ">"));

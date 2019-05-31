@@ -756,7 +756,8 @@ void CopasiUI3Window::createMenuBar()
 
   mpTools->addAction(mpaCheckModel);
   mpTools->addAction("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
-  mpTools->addAction("&Create Events For Timeseries Experiment", this, SLOT(slotCreateEventsForTimeseries()));
+  mpTools->addAction("Create &Events For Timeseries Experiment", this, SLOT(slotCreateEventsForTimeseries()));
+  mpTools->addAction("&Remove SBML Ids from model", this, SLOT(slotClearSbmlIds()));
   mpTools->addAction(mpaParameterEstimationResult);
 #ifdef COPASI_SBW_INTEGRATION
   // create and populate SBW menu
@@ -3835,6 +3836,13 @@ void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
       mpDataModelGUI->downloadFileFromUrl("https://api.github.com/repos/copasi/COPASI/releases/latest", mpDataModelGUI->getFileName(), false);
     }
 
+}
+
+void CopasiUI3Window::slotClearSbmlIds()
+{
+  if (!mpDataModel || !mpDataModel->getModel()) return;
+
+  mpDataModel->getModel()->clearSbmlIds();
 }
 
 void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)

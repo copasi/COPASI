@@ -176,6 +176,7 @@ public slots:
   void slotCopy();
   void slotCheckForUpdate();
   void slotCheckForUpdateFinished(bool flag);
+  void slotClearSbmlIds();
 
   /**
    * This should only be called by the destructor of the object browser dialog

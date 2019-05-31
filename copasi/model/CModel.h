@@ -230,6 +230,11 @@ public:
    */
   void buildMoieties();
 
+  /**
+   * clears all SBML ids in the model
+   */
+  void clearSbmlIds();
+
 private:
   /**
    *  compute the actual initial value of all moieties
