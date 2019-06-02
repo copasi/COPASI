@@ -22,10 +22,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
 #ifndef COPASI_UI3_WINDOW_H
 #define COPASI_UI3_WINDOW_H
 
@@ -131,12 +127,11 @@ public:
 
   void exportSEDMLToString(std::string & SEDML);
 
-
 // COMBINE Archive will take care of file management
   /*
-  #ifdef COPASI_Provenance
+#ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-  #endif
+#endif
   */
 
   CQOptPopulation* getPopulationDisplay();
@@ -300,6 +295,8 @@ private:
 
   void setApplicationFont();
 
+  void checkForUpdates();
+
   DataModelGUI* mpDataModelGUI; // to keep track of the data model..
   CDataModel* mpDataModel;
 
@@ -419,6 +416,8 @@ private:
 #endif
 
   CQOptPopulation* mpPopulationDisplay;
+
+  bool mAutoUpdateCheck;
 
 #ifdef COPASI_SBW_INTEGRATION
 public:

@@ -289,6 +289,7 @@ CopasiUI3Window::CopasiUI3Window():
   , mProvenanceOfOrigionOfFile(QString(""))
 #endif
   , mpPopulationDisplay(NULL)
+  , mAutoUpdateCheck(false)
 {
   // There can only be one
   pMainWindow = this;
@@ -355,6 +356,8 @@ CopasiUI3Window::CopasiUI3Window():
   // drop acceptance
   setAcceptDrops(true);
   mpListView->mpTreeView->setFocus();
+
+  checkForUpdates();
 }
 
 CopasiUI3Window::~CopasiUI3Window()
@@ -2619,6 +2622,14 @@ void CopasiUI3Window::setApplicationFont()
   qApp->setStyleSheet(" * {font : }");
 }
 
+void CopasiUI3Window::checkForUpdates()
+{
+  if (!CRootContainer::getConfiguration()->getCheckForUpdates().checkRequired()) return;
+
+  mAutoUpdateCheck = true;
+  slotCheckForUpdate();
+}
+
 #include "UI/CQExpandModelData.h"
 void CopasiUI3Window::slotExpandModel()
 {
@@ -3737,12 +3748,15 @@ void CopasiUI3Window::slotCheckForUpdate()
 
   connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCheckForUpdateFinished(bool)));
 
+  std::string url = TO_UTF8(QString("http://latest.copasi.org?version=%1.%2.%3").arg(CVersion::VERSION.getVersionMajor()).arg(CVersion::VERSION.getVersionMinor()).arg(CVersion::VERSION.getVersionDevel()));
+  mpDataModelGUI->downloadFileFromUrl(url, TmpFileName, false);
+
   // we have several options to figure out what the latest version is
   // implement it ourselves
   //mpDataModelGUI->downloadFileFromUrl("https://update.bioquant.uni-heidelberg.de|virginia|ucon/", TmpFileName, false);
   //
   // use is.gd -> we get basic access information of the link + country the request came from
-  mpDataModelGUI->downloadFileFromUrl("https://is.gd/latest_copasi", TmpFileName, false);
+  // mpDataModelGUI->downloadFileFromUrl("https://is.gd/latest_copasi", TmpFileName, false);
   //
   // use bit.do -> does not count links at all :(
   //mpDataModelGUI->downloadFileFromUrl("http://bit.do/latest_copasi", TmpFileName, false);
@@ -3757,13 +3771,14 @@ void CopasiUI3Window::slotCheckForUpdate()
   //mpDataModelGUI->downloadFileFromUrl("https://api.github.com/repos/copasi/COPASI/releases/latest", TmpFileName, false);
 }
 
-CVersion getVersionFromFile(const std::string& fileName)
+bool getVersionFromFile(const std::string& fileName, CVersion & latest)
 {
-  CVersion latest;
+  latest = CVersion::VERSION;
+
   QFile file(fileName.c_str());
 
   if (!file.open(QIODevice::ReadOnly))
-    return latest;
+    return false;
 
   QByteArray data = file.readAll();
   file.close();
@@ -3771,10 +3786,10 @@ CVersion getVersionFromFile(const std::string& fileName)
   QJsonDocument doc = QJsonDocument::fromJson(data);
 
   if (doc.isEmpty())
-    return latest;
+    return false;
 
   if (!doc.isObject())
-    return latest;
+    return false;
 
   QRegExp rx("\\S+ (\\d+)\\.(\\d+) \\(\\S+ (\\d+)\\)");
 
@@ -3784,56 +3799,104 @@ CVersion getVersionFromFile(const std::string& fileName)
       int minor = rx.cap(2).toInt();
       int release = rx.cap(3).toInt();
       latest.setVersion(major, minor, release, false, "stable", "");
+
+      return true;
     }
 
-  return latest;
+  return false;
 }
 
 void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
 {
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCheckForUpdateFinished(bool)));
 
-  bool tryAgain = !success;
+  CVersion Latest;
 
   if (success)
     {
-      CVersion latest = getVersionFromFile(mpDataModelGUI->getFileName());
+      success &= getVersionFromFile(mpDataModelGUI->getFileName(), Latest);
+    }
 
-      if (latest.getVersionMajor() != 0)
+  if (success)
+    {
+      if (mAutoUpdateCheck)
         {
-          std::string latestVersion = latest.getVersion();
-          std::string currentVersion = CVersion::VERSION.getVersion();
+          CRootContainer::getConfiguration()->getCheckForUpdates().setChecked();
 
-          if (latest > CVersion::VERSION)
+          if (CRootContainer::getConfiguration()->getCheckForUpdates().skipVersion(Latest))
             {
-              if (QMessageBox::question(this, "New COPASI version available", QString("The COPASI version you are using (%1), is older than the latest one available on our website (%2). Do you want to download it?")
-                                        .arg(FROM_UTF8(currentVersion)).arg(FROM_UTF8(latestVersion)), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
-                {
-                  QDesktopServices::openUrl(QUrl("http://copasi.org/Download/"));
-                }
+              mAutoUpdateCheck = false;
+              CRootContainer::getConfiguration()->save();
+
+              return;
             }
-          else if (latest == CVersion::VERSION)
+        }
+
+      std::string latestVersion = Latest.getVersion();
+      std::string currentVersion = CVersion::VERSION.getVersion();
+
+      if (Latest > CVersion::VERSION)
+        {
+          CQMessageBox Question(QMessageBox::Question,
+                                FROM_UTF8(std::string("Software Update")),
+                                FROM_UTF8(std::string("The following software is available for download:\n  COPASI %1\n\nDo you want to download it?")).arg(FROM_UTF8(latestVersion)),
+                                QMessageBox::NoButton,
+                                this
+                               );
+
+          QPushButton *pIgnore = NULL;
+
+          if (mAutoUpdateCheck)
             {
-              QMessageBox::information(this, "No newer version available", QString("The COPASI version you are using (%1), is the same as the latest one available on our website.")
-                                       .arg(FROM_UTF8(currentVersion)));
+              pIgnore = Question.addButton(QMessageBox::Ignore);
+              pIgnore->setText(FROM_UTF8(std::string("Skip Version")));
+            }
+
+          QPushButton *pAccept = Question.addButton(QMessageBox::Ok);
+          QPushButton *pReject = Question.addButton(QMessageBox::Cancel);
+
+          Question.setDefaultButton(pAccept);
+
+          Question.exec();
+          QAbstractButton * pClicked = Question.clickedButton();
+
+          if (pClicked == pAccept)
+            {
+              QDesktopServices::openUrl(QUrl("http://copasi.org/Download/"));
+            }
+          else if (pClicked == pIgnore && pIgnore != NULL)
+            {
+              CRootContainer::getConfiguration()->getCheckForUpdates().setSkipVersion(Latest);
+            }
+        }
+      else if (!mAutoUpdateCheck)
+        {
+          if (Latest == CVersion::VERSION)
+            {
+              CQMessageBox::information(this, FROM_UTF8(std::string("Software Update")),
+                                        QString("You are running the latest version:\n  COPASI %1.").arg(FROM_UTF8(currentVersion)));
             }
           else
             {
-              QMessageBox::information(this, "No newer version available", QString("The COPASI version you are using (%1), is newer than the latest one available on our website (%2).")
-                                       .arg(FROM_UTF8(currentVersion)).arg(FROM_UTF8(latestVersion)));
+              CQMessageBox::information(this, FROM_UTF8(std::string("Software Update")),
+                                        QString("You are running a pre-release version:\n  COPASI %1.").arg(FROM_UTF8(currentVersion)));
             }
         }
-      else
+
+      if (mAutoUpdateCheck)
         {
-          tryAgain = true;
+          mAutoUpdateCheck = false;
+          CRootContainer::getConfiguration()->save();
         }
     }
-
-  // try again using github directly
-  if (tryAgain && mpDataModelGUI->getLastDownloadUrl() != "https://api.github.com/repos/copasi/COPASI/releases/latest")
+  else if (mpDataModelGUI->getLastDownloadUrl() != "https://api.github.com/repos/copasi/COPASI/releases/latest")
     {
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCheckForUpdateFinished(bool)));
       mpDataModelGUI->downloadFileFromUrl("https://api.github.com/repos/copasi/COPASI/releases/latest", mpDataModelGUI->getFileName(), false);
+    }
+  else
+    {
+      mAutoUpdateCheck = false;
     }
 }
 

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,6 +28,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <iomanip>
 
 #include <stdlib.h>
 #include <string.h>
@@ -76,6 +82,17 @@ std::string UTCTimeStamp()
   sTime = gmtime(&Time);
 
   return ISODateTime(sTime) + "Z";
+}
+
+time_t timeFromUTC(const std::string utc)
+{
+  tm t = {};
+  std::istringstream ss(utc.c_str());
+  ss.imbue(std::locale::classic());
+
+  ss >> std::get_time(&t, "%Y-%m-%dT%H:%M:%SZ");
+
+  return mktime(&t);
 }
 
 bool isNumber(const std::string & str)

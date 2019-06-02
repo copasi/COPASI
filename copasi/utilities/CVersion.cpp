@@ -41,7 +41,11 @@ const CVersion CVersion::VERSION(COPASI_VERSION_MAJOR,
                                  COPASI_VERSION_MINOR,
                                  COPASI_VERSION_BUILD,
                                  COPASI_VERSION_MODIFIED,
+#ifdef COPASI_DEBUG
+                                 "Debug",
+#else
                                  COPASI_VERSION_COMMENT,
+#endif
                                  COPASI_VERSION_CREATOR);
 
 CVersion::CVersion(C_INT32 major,
@@ -145,6 +149,11 @@ bool CVersion::operator!=(const CVersion& other) const
   return !(*this == other);
 }
 
+bool CVersion::mayBeUpdated() const
+{
+  return (mComment == "stable");
+}
+
 void CVersion::setVersion(const C_INT32 & major,
                           const C_INT32 & minor,
                           const C_INT32 & devel,
@@ -189,10 +198,6 @@ const std::string & CVersion::getVersion() const
 
 void CVersion::setString()
 {
-#ifdef COPASI_DEBUG
-  mComment = "Debug";
-#endif
-
   std::stringstream Build;
   Build << mBuild;
 

@@ -173,6 +173,8 @@ public:
   bool operator==(const CVersion& other) const;
   bool operator!=(const CVersion& other) const;
 
+  bool mayBeUpdated() const;
+
 private:
   /**
    *  Creates the version string.
