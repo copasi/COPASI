@@ -61,10 +61,10 @@ QVariant CQTimeSeriesDM::data(const QModelIndex &index, int role) const
   switch (mFramework)
     {
       case 0:
-        return mpTimeSeries->getConcentrationData(index.row(), index.column());
+        return QVariant(mpTimeSeries->getConcentrationData(index.row(), index.column()));
 
       case 1:
-        return mpTimeSeries->getData(index.row(), index.column());
+        return QVariant(mpTimeSeries->getData(index.row(), index.column()));
     }
 
   return QVariant();
