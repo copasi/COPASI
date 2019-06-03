@@ -94,6 +94,7 @@ struct options
   std::string     ExportBerkeleyMadonna;
   std::string     ExportC;
   std::string     ExportCombineArchive;
+  std::string     ExportIni;
   std::string     ExportSBML;
   std::string     ExportSEDML;
   std::string     ExportXPPAUT;
@@ -128,6 +129,7 @@ struct option_locations
   size_type ExportBerkeleyMadonna;
   size_type ExportC;
   size_type ExportCombineArchive;
+  size_type ExportIni;
   size_type ExportSBML;
   size_type ExportSEDML;
   size_type ExportXPPAUT;
@@ -244,7 +246,8 @@ private:
     option_ConvertToIrreversible,
     option_ReportFile,
     option_ScheduledTask,
-    option_ReparameterizeModel
+    option_ReparameterizeModel,
+    option_ExportIni
   } openum_;
 
   enum parser_state { state_option, state_value, state_consume } state_;

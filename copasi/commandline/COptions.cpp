@@ -250,6 +250,7 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("ReportFile", Options.ReportFile);
 
   setValue("ReparameterizeModel", Options.ReparameterizeModel);
+  setValue("ExportIni", Options.ExportIni);
 
 
   delete pPreParser;

@@ -67,6 +67,7 @@ int exportSBML();
 int exportCurrentModel();
 int runScheduledTasks(CProcessReport * pProcessReport);
 int saveCurrentModel();
+int exportParametersToIniFile();
 
 CDataModel* pDataModel = NULL;
 bool Validate = false;
@@ -207,6 +208,7 @@ int main(int argc, char *argv[])
       if (COptions::isSet("ReparameterizeModel") && !COptions::compareValue("ReparameterizeModel", std::string("")))
         COptions::getValue("ReparameterizeModel", iniFileName);
 
+
       if (needImport)
         {
           if (importSBML)
@@ -286,6 +288,7 @@ int main(int argc, char *argv[])
             {
               // Since only one export file name can be specified
               // for export we stop execution.
+              exportParametersToIniFile();
               goto finish;
             }
 
@@ -294,6 +297,8 @@ int main(int argc, char *argv[])
               // combine archives or SED-ML will have defined tasks
               retcode = runScheduledTasks(pProcessReport);
             }
+
+          exportParametersToIniFile();
 
           // If no export file was given, we write to the save file or
           // the default file.
@@ -347,10 +352,13 @@ int main(int argc, char *argv[])
                 {
                   // Since only one export file name can be specified
                   // for export we stop execution.
+                  exportParametersToIniFile();
                   break;
                 }
 
               retcode = runScheduledTasks(pProcessReport);
+
+              exportParametersToIniFile();
 
               // Check whether a file for saving the resulting model is given
               if (!COptions::compareValue("Save", std::string("")))
@@ -416,7 +424,7 @@ int runScheduledTasks(CProcessReport * pProcessReport)
     return 0;
 
   CDataVectorN< CCopasiTask > & TaskList = *pDataModel->getTaskList();
-  size_t i, imax = TaskList.size();
+  size_t imax = TaskList.size();
 
   if (!ScheduledTask.empty())
     {
@@ -494,6 +502,32 @@ for (CCopasiTask & task : TaskList)
       }
 
   return retcode;
+}
+
+int exportParametersToIniFile()
+{
+  int retcode = 0;
+  std::string exportIni;
+
+  if (COptions::isSet("ExportIni") && !COptions::compareValue("ExportIni", std::string("")))
+    COptions::getValue("ExportIni", exportIni);
+
+  if (exportIni.empty())
+    return retcode;
+
+  std::ofstream fs(CLocaleString::fromUtf8(exportIni).c_str());
+
+  if (!fs.good()) return -1;
+
+  if (!pDataModel || !pDataModel->getModel()) return -2;
+
+  pDataModel->getModel()->getActiveModelParameterSet().
+  saveToStream(fs, CCore::Framework::Concentration, "ini", "");
+
+  fs.close();
+
+  return retcode;
+
 }
 
 int exportCurrentModel()

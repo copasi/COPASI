@@ -377,7 +377,7 @@
            type="string"
            mandatory="no"
            strict="yes"
-           location="both"
+           location="commandline"
            argname="file"
            hidden="no">
     <name>reparameterize</name>
@@ -385,6 +385,19 @@
     <comment>
       Before any task is run, the model is reparameterized with
       the values specified in the provided INI file.
+    </comment>
+   </option>
+   <option id="ExportIni"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           argname="file"
+           hidden="no">
+    <name>exportIni</name>
+    <comment>
+      export the parameterization of the model as INI file for use with 
+      the --reparameterize option.
     </comment>
    </option>
  </options>

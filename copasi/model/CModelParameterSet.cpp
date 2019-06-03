@@ -596,6 +596,57 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
 
       os << std::endl;
     }
+  else if (mode == "ini")
+    {
+      itNode.setProcessingModes(CNodeIteratorMode::After);
+
+      while (itNode.next() != itNode.end())
+        {
+          if (*itNode != NULL && (itNode->getValue(framework) == itNode->getValue(framework)))
+            {
+              if (itNode->getType() != Type::Group &&
+                  itNode->getType() != Type::Set &&
+                  itNode->getObject() != NULL)
+                {
+
+                  const CDataObject* current = itNode->getObject();
+                  const CMetab* pMetab = dynamic_cast<const CMetab*>(current);
+                  const CCompartment* pComp = dynamic_cast<const CCompartment*>(current);
+                  const CModelValue* pParam = dynamic_cast<const CModelValue*>(current);
+                  const CModel* pModel = dynamic_cast<const CModel*>(current);
+
+                  if (pModel != NULL) continue; // ignore time for now
+
+                  if (pMetab != NULL)
+                    {
+                      if (framework == CCore::Framework::Concentration)
+                        os << pMetab->getInitialConcentrationReference()->getObjectDisplayName()
+                           << " = " << itNode->getValue(framework) << std::endl;
+                      else
+                        os << pMetab->getInitialValueReference()->getObjectDisplayName()
+                           << " = " << itNode->getValue(framework) << std::endl;
+                    }
+                  else if (pComp != NULL)
+                    {
+                      os << pComp->getInitialValueReference()->getObjectDisplayName()
+                         << " = " << itNode->getValue(framework) << std::endl;
+                    }
+                  else if (pParam != NULL)
+                    {
+                      os << pParam->getInitialValueReference()->getObjectDisplayName()
+                         << " = " << itNode->getValue(framework) << std::endl;
+                    }
+                  else
+                    {
+                      os << current->getObjectDisplayName() << " = " << itNode->getValue(framework) << std::endl;
+                    }
+                }
+            }
+        }
+
+      os << std::endl;
+    }
+
   else
     {
       success = false;

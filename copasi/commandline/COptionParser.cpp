@@ -61,6 +61,9 @@ const char const_usage[] =
   "  --exportBerkeleyMadonna file  The Berkeley Madonna file to export.\n"
   "  --exportC file                The C code file to export.\n"
   "  --exportCA file               The COMBINE archive file to export.\n"
+  "  --exportIni file              export the parameterization of the model as\n"
+  "                                INI file for use with the --reparameterize\n"
+  "                                option.\n"
   "  --exportSEDML file            The SEDML file to export.\n"
   "  --exportXPPAUT file           The XPPAUT file to export.\n"
   "  --home dir                    Your home directory.\n"
@@ -231,6 +234,9 @@ void copasi::COptionParser::finalize(void)
 
           case option_ExportCombineArchive:
             throw option_error("missing value for 'exportCA' option");
+
+          case option_ExportIni:
+            throw option_error("missing value for 'exportIni' option");
 
           case option_ExportSBML:
             throw option_error("missing value for 'exportSBML' option");
@@ -414,7 +420,7 @@ void copasi::COptionParser::parse_short_option(char option, int position, opsour
         return;
 
       case 'r':
-        source = source; // kill compiler unused variable warning
+        if (source != source_cl) throw option_error("the 'reparameterize' option can only be used on the command line");
 
         if (locations_.ReparameterizeModel)
           {
@@ -583,6 +589,20 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
       state_ = state_value;
       return;
     }
+  else if (strcmp(option, "exportIni") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'exportIni' option is only allowed on the command line");
+
+      if (locations_.ExportIni)
+        {
+          throw option_error("the 'exportIni' option is only allowed once");
+        }
+
+      openum_ = option_ExportIni;
+      locations_.ExportIni = position;
+      state_ = state_value;
+      return;
+    }
   else if (strcmp(option, "exportSBML") == 0)
     {
       if (source != source_cl) throw option_error("the 'exportSBML' option is only allowed on the command line");
@@ -725,7 +745,7 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
     }
   else if (strcmp(option, "reparameterize") == 0)
     {
-      source = source; // kill compiler unused variable warning
+      if (source != source_cl) throw option_error("the 'reparameterize' option is only allowed on the command line");
 
       if (locations_.ReparameterizeModel)
         {
@@ -870,6 +890,12 @@ void copasi::COptionParser::parse_value(const char *value)
       case option_ExportCombineArchive:
       {
         options_.ExportCombineArchive = value;
+      }
+      break;
+
+      case option_ExportIni:
+      {
+        options_.ExportIni = value;
       }
       break;
 
@@ -1065,6 +1091,9 @@ const char* expand_long_name(const std::string &name)
 
   if (name_size <= 8 && name.compare(0, name_size, "exportCA", name_size) == 0)
     matches.push_back("exportCA");
+
+  if (name_size <= 9 && name.compare(0, name_size, "exportIni", name_size) == 0)
+    matches.push_back("exportIni");
 
   if (name_size <= 10 && name.compare(0, name_size, "exportSBML", name_size) == 0)
     matches.push_back("exportSBML");
