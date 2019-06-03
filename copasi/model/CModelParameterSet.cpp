@@ -539,14 +539,19 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
         {
           if (*itNode != NULL)
             {
-              for (unsigned int i = 1; i < itNode.level(); i++)
+              unsigned int level = itNode.level();
+              const CDataObject* current = itNode->getObject();
+              const CReaction* pReaction = dynamic_cast<const CReaction*>(current);
+              C_FLOAT64 value = itNode->getValue(framework);
+
+              for (unsigned int i = 1; i < level; i++)
                 {
                   os << separator;
                 }
 
               os << itNode->getName();
 
-              for (size_t i = itNode.level(); i < 6; i++)
+              for (size_t i = level; i < 6; i++)
                 {
                   os << separator;
                 }
@@ -554,7 +559,10 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
               if (itNode->getType() != Type::Group &&
                   itNode->getType() != Type::Set)
                 {
-                  os << itNode->getValue(framework) << " " << itNode->getUnit(framework).getExpression();
+                  if (pReaction != NULL)
+                    os << itNode->getUnit(framework).getExpression();
+                  else
+                    os << value << " " << itNode->getUnit(framework).getExpression();
                 }
 
               os << std::endl;
@@ -569,10 +577,17 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
         {
           if (*itNode != NULL)
             {
+              const CReaction* pReaction = dynamic_cast<const CReaction*>(itNode->getObject());
+              const CModelEntity* pEntity = dynamic_cast<const CModelEntity*>(itNode->getObject());
+
               if (itNode->getType() != Type::Group &&
-                  itNode->getType() != Type::Set)
+                  itNode->getType() != Type::Set && pReaction == NULL)
                 {
-                  os << itNode->getName() << " " << itNode->getUnit(framework).getExpression() << separator;
+                  if (pEntity == NULL && itNode->getObject()) // local parameter
+                    os << itNode->getObject()->getObjectDisplayName()
+                       << " " << itNode->getUnit(framework).getExpression() << separator;
+                  else
+                    os << itNode->getName() << " " << itNode->getUnit(framework).getExpression() << separator;
                 }
             }
         }
@@ -586,8 +601,10 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
         {
           if (*itNode != NULL)
             {
+              const CReaction* pReaction = dynamic_cast<const CReaction*>(itNode->getObject());
+
               if (itNode->getType() != Type::Group &&
-                  itNode->getType() != Type::Set)
+                  itNode->getType() != Type::Set && pReaction == NULL)
                 {
                   os << itNode->getValue(framework) << separator;
                 }
@@ -602,18 +619,19 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
 
       while (itNode.next() != itNode.end())
         {
-          if (*itNode != NULL && (itNode->getValue(framework) == itNode->getValue(framework)))
+          if (*itNode != NULL)
             {
+              const CDataObject* current = itNode->getObject();
+              const CMetab* pMetab = dynamic_cast<const CMetab*>(current);
+              const CCompartment* pComp = dynamic_cast<const CCompartment*>(current);
+              const CModelValue* pParam = dynamic_cast<const CModelValue*>(current);
+              const CModel* pModel = dynamic_cast<const CModel*>(current);
+              const CReaction* pReaction = dynamic_cast<const CReaction*>(itNode->getObject());
+
               if (itNode->getType() != Type::Group &&
                   itNode->getType() != Type::Set &&
-                  itNode->getObject() != NULL)
+                  pReaction == NULL)
                 {
-
-                  const CDataObject* current = itNode->getObject();
-                  const CMetab* pMetab = dynamic_cast<const CMetab*>(current);
-                  const CCompartment* pComp = dynamic_cast<const CCompartment*>(current);
-                  const CModelValue* pParam = dynamic_cast<const CModelValue*>(current);
-                  const CModel* pModel = dynamic_cast<const CModel*>(current);
 
                   if (pModel != NULL) continue; // ignore time for now
 
