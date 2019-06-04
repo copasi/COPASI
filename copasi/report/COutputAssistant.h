@@ -99,6 +99,18 @@ public:
   const CDefaultOutputDescription & getItem(C_INT32 id);
 
   /**
+   * get the id of output definition with the given name
+   *
+   * @param name the name of the default output description to find
+   * @param isPlot boolean indicating whether we are looking for a plot
+   *        (true, default) or report.
+   * @return the item id if found, or -1 if it is not
+   */
+  static
+  C_INT32 findItemByName(const std::string& name, bool isPlot = true);
+
+
+  /**
    *  create a plot or report from template with index id.
    *  returns a pointer to the plot or report definition (or NULL)
    *  if activate==true and the ouput is a report the report is set as
