@@ -307,6 +307,8 @@ bool CMathDependencyNode::buildUpdateSequence(const CCore::SimulationContextFlag
 
   while (itNode.next())
     {
+      const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(itNode->getObject());
+
       switch (itNode.state())
         {
           case CMathDependencyNodeIterator::Recursive:
@@ -319,6 +321,23 @@ bool CMathDependencyNode::buildUpdateSequence(const CCore::SimulationContextFlag
               {
                 itNode.skipChildren();
               }
+            else if (context.isSet(CCore::SimulationContext::UseMoieties) &&
+                     itNode.parent() != NULL &&
+                     pMathObject != NULL &&
+                     pMathObject->getEntityType() == CMath::EntityType::Species &&
+                     pMathObject->getValueType() == CMath::ValueType::Value &&
+                     !pMathObject->isInitialValue() &&
+                     pMathObject->isIntensiveProperty())
+              {
+                const CMathObject * pMathParent = dynamic_cast< const CMathObject * >(itNode.parent()->getObject());
+
+                if (pMathParent != NULL &&
+                    pMathObject->getCorrespondingProperty() == pMathParent &&
+                    pMathParent->getSimulationType() == CMath::SimulationType::Dependent)
+                  {
+                    itNode.skipChildren();
+                  }
+              }
 
             break;
 
@@ -328,9 +347,6 @@ bool CMathDependencyNode::buildUpdateSequence(const CCore::SimulationContextFlag
             // are skipped in Before processing.
             if (itNode->isChanged() && itNode->isRequested())
               {
-                const CObjectInterface * pObject = itNode->getObject();
-                const CMathObject * pMathObject = dynamic_cast< const CMathObject *>(pObject);
-
                 // For an extensive transient value of a dependent species we have 2
                 // possible assignments depending on the context.
                 //   1) Conversion from the intensive property
@@ -339,12 +355,14 @@ bool CMathDependencyNode::buildUpdateSequence(const CCore::SimulationContextFlag
                 // The solution is that the moiety automatically updates the value in conjunction
                 // with the dependency graph omitting the value in the update sequence if the context
                 // is CMath::UseMoieties.
+                // Therefore, an extensive transient dependent value of a species must not be updated
 
                 if (!context.isSet(CCore::SimulationContext::UseMoieties) ||
-                    (pMathObject != NULL &&
-                     pMathObject->getCorrespondingProperty() != static_cast< const CMathObject *>(mpObject) &&
-                     (pMathObject->getSimulationType() != CMath::SimulationType::Dependent ||
-                      pMathObject->getValueType() != CMath::ValueType::Value)))
+                    pMathObject == NULL ||
+                    pMathObject->getSimulationType() != CMath::SimulationType::Dependent ||
+                    pMathObject->getValueType() != CMath::ValueType::Value ||
+                    pMathObject->isInitialValue() ||
+                    pMathObject->isIntensiveProperty())
                   {
                     // Only Math Objects with expressions can be updated.
                     if (pMathObject != NULL &&
