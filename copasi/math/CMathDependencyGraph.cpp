@@ -120,6 +120,19 @@ void CMathDependencyGraph::removeObject(const CObjectInterface * pObject)
   mObjects2Nodes.erase(found);
 }
 
+void CMathDependencyGraph::removePrerequisite(const CObjectInterface * pObject, const CObjectInterface * pPrerequisite)
+{
+  iterator foundObject = mObjects2Nodes.find(pObject);
+  iterator foundPrerequisite = mObjects2Nodes.find(pPrerequisite);
+
+  if (foundObject == mObjects2Nodes.end() ||
+      foundPrerequisite == mObjects2Nodes.end())
+    return;
+
+  foundObject->second->removePrerequisite(foundPrerequisite->second);
+  foundPrerequisite->second->removeDependent(foundObject->second);
+}
+
 bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequence,
     const CCore::SimulationContextFlag & context,
     const CObjectInterface::ObjectSet & changedObjects,
@@ -142,7 +155,7 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
 
   if (found != notFound)
     {
-      success &= found->second->updateDependentState(context, changedObjects);
+      success &= found->second->updateDependentState(context, changedObjects, true);
 #ifdef DEBUG_OUTPUT
       std::cout << *static_cast< const CDataObject * >(mpContainer->getRandomObject()) << std::endl;
 #endif // DEBUG_OUTPUT
@@ -172,7 +185,7 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
 
       if (found != notFound)
         {
-          success &= found->second->updateDependentState(context, changedObjects);
+          success &= found->second->updateDependentState(context, changedObjects, true);
         }
     }
 
@@ -210,7 +223,7 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
       if (found != notFound)
         {
           found->second->setChanged(false);
-          success &= found->second->updateCalculatedState(context, changedObjects);
+          success &= found->second->updateCalculatedState(context, changedObjects, true);
         }
     }
 
@@ -255,9 +268,11 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
       if (found != notFound)
         {
           found->second->setRequested(true);
-          success &= found->second->updatePrerequisiteState(context, changedObjects);
+          success &= found->second->updatePrerequisiteState(context, changedObjects, true);
         }
     }
+
+  if (!success) goto finish;
 
 #ifdef DEBUG_OUTPUT
   {
@@ -267,12 +282,10 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
   }
 #endif // DEBUG_OUTPUT
 
-  if (!success) goto finish;
-
   it = requestedObjects.begin();
   end = requestedObjects.end();
 
-  for (; it != end && success; ++it)
+  for (; it != end; ++it)
     {
       // We may have data objects which are ignored as they are always up to date
       if ((*it)->getDataObject() == *it)
@@ -284,7 +297,7 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
 
       if (found != notFound)
         {
-          success &= found->second->buildUpdateSequence(context, UpdateSequence);
+          success &= found->second->buildUpdateSequence(context, UpdateSequence, false);
           continue;
         }
 
@@ -307,15 +320,6 @@ finish:
   if (!success)
     {
       UpdateSequence.clear();
-
-      if (it != end && *it != NULL)
-        {
-          CCopasiMessage(CCopasiMessage::ERROR, MCMathModel + 3, (*it)->getCN().c_str());
-        }
-      else
-        {
-          CCopasiMessage(CCopasiMessage::ERROR, MCMathModel + 3, "cn not found");
-        }
     }
 
   updateSequence.setMathContainer(mpContainer);
@@ -384,6 +388,37 @@ bool CMathDependencyGraph::dependsOn(const CObjectInterface * pObject,
   getUpdateSequence(UpdateSequence, context, changedObjects, RequestedObjects);
 
   return !UpdateSequence.empty();
+}
+
+bool CMathDependencyGraph::hasCircularDependencies(const CObjectInterface * pObject,
+    const CCore::SimulationContextFlag & context,
+    const CObjectInterface * pChangedObject) const
+{
+  CCore::CUpdateSequence UpdateSequence;
+  CObjectInterface::ObjectSet ChangedObjects;
+
+  if (pChangedObject != NULL)
+    {
+      ChangedObjects.insert(pChangedObject);
+    }
+
+  CObjectInterface::ObjectSet RequestedObjects;
+
+  if (pObject != NULL)
+    {
+      RequestedObjects.insert(pObject);
+    }
+
+  size_t Size = CCopasiMessage::size();
+
+  bool hasCircularDependencies = !getUpdateSequence(UpdateSequence, context, ChangedObjects, RequestedObjects);
+
+  while (CCopasiMessage::size() > Size)
+    {
+      CCopasiMessage::getLastMessage();
+    }
+
+  return hasCircularDependencies;
 }
 
 bool CMathDependencyGraph::appendDirectDependents(const CObjectInterface::ObjectSet & changedObjects,
@@ -458,7 +493,7 @@ bool CMathDependencyGraph::appendAllDependents(const CObjectInterface::ObjectSet
 
       if (found != notFound)
         {
-          success &= found->second->updateDependentState(CCore::SimulationContext::Default, changedObjects);
+          success &= found->second->updateDependentState(CCore::SimulationContext::Default, changedObjects, true);
         }
     }
 
@@ -492,7 +527,7 @@ bool CMathDependencyGraph::appendAllDependents(const CObjectInterface::ObjectSet
 
       if (found != notFound)
         {
-          success &= found->second->updateIgnoredState(CCore::SimulationContext::Default, changedObjects);
+          success &= found->second->updateIgnoredState(CCore::SimulationContext::Default, changedObjects, true);
         }
     }
 

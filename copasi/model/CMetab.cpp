@@ -457,26 +457,14 @@ CIssue CMetab::compile()
 
 void CMetab::compileIsInitialValueChangeAllowed()
 {
-  mIsInitialConcentrationChangeAllowed = true;
-  mIsInitialParticleNumberChangeAllowed = true;
-
   if (mpModel == NULL || mpCompartment == NULL) return;
 
   const CMathContainer & Container = mpModel->getMathContainer();
 
-  CMathObject * pInitialSize = Container.getMathObject(mpCompartment->getInitialValueReference());
+  const CObjectInterface::ObjectSet & InitialValueChangeProhibited = Container.getValueChangeProhibited();
 
-  // If the compartment size depends on the initial particle number than the initial concentration may not be changed
-  // since [] = # / S = # / f(#).
-  mIsInitialConcentrationChangeAllowed =
-    !Container.getInitialDependencies().dependsOn(pInitialSize, CCore::SimulationContext::Default,
-        Container.getMathObject(mpIValueReference));
-
-  // If the compartment size depends on the initial concentration than initial the particle number may not be changed
-  // since # = [] * S = [] * f([]).
-  mIsInitialParticleNumberChangeAllowed =
-    !Container.getInitialDependencies().dependsOn(pInitialSize, CCore::SimulationContext::Default,
-        Container.getMathObject(mpIConcReference));
+  mIsInitialConcentrationChangeAllowed = InitialValueChangeProhibited.find(Container.getMathObject(mpIConcReference)) == InitialValueChangeProhibited.end();
+  mIsInitialParticleNumberChangeAllowed = InitialValueChangeProhibited.find(Container.getMathObject(mpIValueReference)) == InitialValueChangeProhibited.end();
 
   return;
 }

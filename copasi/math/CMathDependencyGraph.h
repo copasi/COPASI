@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -63,6 +68,13 @@ public:
   void removeObject(const CObjectInterface * pObject);
 
   /**
+   * Remove a prerequisite of an object
+   * @param const CObjectInterface * pObject
+   * @param const CObjectInterface * pPrerequisite
+   */
+  void removePrerequisite(const CObjectInterface * pObject, const CObjectInterface * pPrerequisite);
+
+  /**
    * Construct a update sequence for the given context. Please note the calculated objects
    * must be calculated based on the same changed values and context.
    * @param const CCore::SimulationContextFlag & context
@@ -99,6 +111,16 @@ public:
   bool dependsOn(const CObjectInterface * pObject,
                  const CCore::SimulationContextFlag & context,
                  const CObjectInterface::ObjectSet & changedObjects) const;
+
+  /**
+   * Check whether the given object depends on the changed object in given context
+   * @param const CCore::SimulationContextFlag & context
+   * @param const CObjectInterface * pChangedObject
+   * @return bool dependsOn
+   */
+  bool hasCircularDependencies(const CObjectInterface * pObject,
+                               const CCore::SimulationContextFlag & context,
+                               const CObjectInterface * pChangedObject) const;
 
   /**
    * Append all objects which directly depend on the given changed objects
