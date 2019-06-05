@@ -3549,6 +3549,7 @@ void CopasiUI3Window::slotImportCombineFinished(bool success)
   updateTitle();
   mSaveAsRequired = true;
   mNewFile = "";
+  performNextAction();
 }
 
 void CopasiUI3Window::slotExportShiny(QString str)
@@ -3807,6 +3808,36 @@ void CopasiUI3Window::activateElement(const std::string& activate)
     }
 }
 
+void CopasiUI3Window::removeReportTargets()
+{
+  if (!mpDataModel->getTaskList())
+    return;
+
+  auto& taskList = *mpDataModel->getTaskList();
+  std::stringstream str;
+
+for (auto & task : taskList)
+    {
+      std::string target = task.getReport().getTarget();
+
+      if (!target.empty())
+        {
+          str << "  task: " << task.getObjectName() << " target: " << target << std::endl;
+          task.getReport().setTarget("");
+        }
+    }
+
+  std::string removedReports = str.str();
+
+  if (removedReports.empty())
+    return;
+
+  CQMessageBox::information(this, "Removed Report targets",
+                            QString("The following report targets have been removed\n\n%1")
+                            .arg(FROM_UTF8(removedReports)));
+
+}
+
 std::string mapTaskNameToWidgetName(const std::string& name)
 {
   ListViews::WidgetType id = ListViews::WidgetName.toEnum(name, ListViews::WidgetType::NotFound);
@@ -3926,6 +3957,12 @@ void CopasiUI3Window::performNextAction()
       case SelectElement:
       {
         activateElement(next.second);
+        break;
+      }
+
+      case RemoveReportTargets:
+      {
+        removeReportTargets();
         break;
       }
 
@@ -4165,6 +4202,8 @@ void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
   if (success)
     {
       QString tempFileName = FROM_UTF8(mpDataModelGUI->getFileName());
+
+      mActionStack.push_front(std::make_pair(RemoveReportTargets, ""));
 
       if (isArchive(tempFileName))
         {

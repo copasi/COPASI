@@ -81,6 +81,7 @@ enum CopasiUIActions
   SelectElement,
   RunTask,
   CreatePlot,
+  RemoveReportTargets,
   Invalid
 };
 
@@ -211,6 +212,12 @@ public:
    * @param elementToActivate the element to activate
    */
   void activateElement(const std::string& elementToActivate);
+
+  /**
+   * goes through the list of tasks, and removes all report targets specified
+   * while informing which ones were removed.
+   */
+  void removeReportTargets();
 
 
 protected slots:
