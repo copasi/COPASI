@@ -257,7 +257,7 @@ bool CQReportDM::removeRows(QModelIndexList rows, const QModelIndex&)
           DeletedObjects.insert(pReport);
 
           QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, "report",
+            CQMessageBox::confirmDelete(ListViews::ancestor(this), "report",
                                         FROM_UTF8(pReport->getObjectName()),
                                         NULL);
 

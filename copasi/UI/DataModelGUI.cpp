@@ -100,6 +100,7 @@ DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel):
   mSBMLImportString(),
   mpSBMLExportString(NULL),
   mFileName(),
+  mDownloadUrl(),
   mOverWrite(false),
   mSBMLLevel(2),
   mSBMLVersion(4),
@@ -250,6 +251,7 @@ void DataModelGUI::downloadFileFromUrl(const std::string & url, const std::strin
     }
 
   mFileName = destination;
+  mDownloadUrl = url;
 
   connect(manager, SIGNAL(finished(QNetworkReply*)),
           this, SLOT(downloadFinished(QNetworkReply*)));
@@ -570,6 +572,11 @@ void DataModelGUI::exportMathModelRun()
 const std::string & DataModelGUI::getFileName() const
 {
   return mFileName;
+}
+
+const std::string& DataModelGUI::getLastDownloadUrl() const
+{
+  return mDownloadUrl;
 }
 
 void DataModelGUI::exportMathModelFinished()
@@ -991,7 +998,7 @@ void DataModelGUI::importCellDesigner()
                         importCD = true;
 
                       // ask the user if the CellDesigner annotation should be imported
-                      if (importCD || CQMessageBox::question(NULL, "CellDesigner import", "A CellDesigner diagram was found in this file.\nDo you want to import the diagram?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+                      if (importCD || CQMessageBox::question(ListViews::ancestor(this), "CellDesigner import", "A CellDesigner diagram was found in this file.\nDo you want to import the diagram?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
                         {
                           // do the import
                           CCellDesignerImporter cd_importer(pSBMLDocument);

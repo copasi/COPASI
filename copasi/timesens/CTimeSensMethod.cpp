@@ -1,20 +1,11 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
 // All rights reserved.
 
 /**
@@ -44,8 +35,8 @@ const bool CTimeSensMethod::ReducedModel(false);
  *  Default constructor.
  */
 CTimeSensMethod::CTimeSensMethod(const CDataContainer * pParent,
-                                     const CTaskEnum::Method & methodType,
-                                     const CTaskEnum::Task & taskType):
+                                 const CTaskEnum::Method & methodType,
+                                 const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
   mContainerState(),
   mpContainerStateTime(NULL),
@@ -63,7 +54,7 @@ CTimeSensMethod::CTimeSensMethod(const CDataContainer * pParent,
  *  @param "const CTimeSensMethod &" src
  */
 CTimeSensMethod::CTimeSensMethod(const CTimeSensMethod & src,
-                                     const CDataContainer * pParent):
+                                 const CDataContainer * pParent):
   CCopasiMethod(src, pParent),
   mContainerState(),
   mpContainerStateTime(NULL),
@@ -139,7 +130,7 @@ void CTimeSensMethod::start()
 {
   initResult(); //initializes the container and resizes state and result data structures
   initializeDerivativesCalculations(*mpReducedModel);
- 
+
   return;
 }
 
@@ -199,24 +190,28 @@ void CTimeSensMethod::initResult()
   mpProblem->getScaledStateResultAnnotated()->setDimensionDescription(1, "Parameters");
 
   size_t i;
+
   for (i = 0; i < mSystemSize; ++i)
-  {
-    CMathObject* mo = mpContainer->getMathObject(mpContainerStateTime+i+1);
-    if (mo)
     {
-      mpProblem->getStateResultAnnotated()->setAnnotation(0, i,mo->getDataObject() );
-      mpProblem->getScaledStateResultAnnotated()->setAnnotation(0, i,mo->getDataObject() );
+      CMathObject* mo = mpContainer->getMathObject(mpContainerStateTime + i + 1);
+
+      if (mo)
+        {
+          mpProblem->getStateResultAnnotated()->setAnnotation(0, i, mo->getDataObject());
+          mpProblem->getScaledStateResultAnnotated()->setAnnotation(0, i, mo->getDataObject());
+        }
     }
-  }
+
   for (i = 0; i < mNumParameters; ++i)
-  {
-    const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(i)));
-    if (mo)
     {
-      mpProblem->getStateResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
-      mpProblem->getScaledStateResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
+      const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(i)));
+
+      if (mo)
+        {
+          mpProblem->getStateResultAnnotated()->setAnnotation(1, i, mo->getDataObject());
+          mpProblem->getScaledStateResultAnnotated()->setAnnotation(1, i, mo->getDataObject());
+        }
     }
-  }
 
   s.clear();
   s.push_back(mpProblem->getNumTargets());
@@ -233,23 +228,26 @@ void CTimeSensMethod::initResult()
   mpProblem->getScaledTargetsResultAnnotated()->setDimensionDescription(1, "Parameters");
 
   for (i = 0; i < mpProblem->getNumTargets(); ++i)
-  {
-    const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getTargetCN(i)));
-    if (mo)
     {
-      mpProblem->getTargetsResultAnnotated()->setAnnotation(0, i, mo->getDataObject() );
-      mpProblem->getScaledTargetsResultAnnotated()->setAnnotation(0, i, mo->getDataObject() );
+      const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getTargetCN(i)));
+
+      if (mo)
+        {
+          mpProblem->getTargetsResultAnnotated()->setAnnotation(0, i, mo->getDataObject());
+          mpProblem->getScaledTargetsResultAnnotated()->setAnnotation(0, i, mo->getDataObject());
+        }
     }
-  }
+
   for (i = 0; i < mNumParameters; ++i)
-  {
-    const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(i)));
-    if (mo)
     {
-      mpProblem->getTargetsResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
-      mpProblem->getScaledTargetsResultAnnotated()->setAnnotation(1, i, mo->getDataObject() );
+      const CMathObject* mo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(i)));
+
+      if (mo)
+        {
+          mpProblem->getTargetsResultAnnotated()->setAnnotation(1, i, mo->getDataObject());
+          mpProblem->getScaledTargetsResultAnnotated()->setAnnotation(1, i, mo->getDataObject());
+        }
     }
-  }
 }
 
 void CTimeSensMethod::calculate_dInitialState_dPar(CMatrix<C_FLOAT64>& s)
@@ -277,10 +275,11 @@ void CTimeSensMethod::calculate_dInitialState_dPar(CMatrix<C_FLOAT64>& s)
 
   C_FLOAT64 * pS;
   C_FLOAT64 * pSEnd = s.array() + mSystemSize * mNumParameters;
-  
+
   CCore::Framework tmpFramework;
-  
+
   size_t Col;
+
   for (Col = 0;  Col < mNumParameters; ++Col)
     {
       Store = *mParameterInitialValuePointers[Col];
@@ -304,8 +303,12 @@ void CTimeSensMethod::calculate_dInitialState_dPar(CMatrix<C_FLOAT64>& s)
       InvDelta = 1.0 / (X2 - X1);
 
       tmpFramework = mParameterIsInitialConcentration[Col] ? CCore::Framework::Concentration : CCore::Framework::ParticleNumbers;
-      
+
       *mParameterInitialValuePointers[Col] = X1;
+
+      // TODO CRITICAL Bug 2773 We are not guaranteed that this will work for concentration
+      // We need to create individual update sequences for each tracked parameter instead of using brute force
+
       mpContainer->updateInitialValues(tmpFramework); //ParticleNumbers  Concentration
       memcpy(Y1.array(), pInitialState, mSystemSize * sizeof(C_FLOAT64));
 
@@ -320,11 +323,11 @@ void CTimeSensMethod::calculate_dInitialState_dPar(CMatrix<C_FLOAT64>& s)
       pY2 = Y2.array();
 
       for (; pS < pSEnd; pS += mNumParameters, ++pY1, ++pY2)
-        *pS = (*pY2 - *pY1) * InvDelta;
+        * pS = (*pY2 - *pY1) * InvDelta;
     }
 
-    mpContainer->updateInitialValues(tmpFramework);
-  }
+  mpContainer->updateInitialValues(tmpFramework);
+}
 
 void CTimeSensMethod::calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced)
 {
@@ -351,6 +354,7 @@ void CTimeSensMethod::calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced)
   C_FLOAT64 * pSEnd = s.array() + mSystemSize * mNumParameters;
 
   size_t Col;
+
   for (Col = 0;  Col < mNumParameters; ++Col)
     {
       Store = *mParameterTransientValuePointers[Col];
@@ -390,7 +394,7 @@ void CTimeSensMethod::calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced)
       pY2 = Y2.array();
 
       for (; pS < pSEnd; pS += mNumParameters, ++pY1, ++pY2)
-        *pS = (*pY2 - *pY1) * InvDelta;
+        * pS = (*pY2 - *pY1) * InvDelta;
     }
 
   mpContainer->applyUpdateSequence(mSeq1);
@@ -424,6 +428,7 @@ void CTimeSensMethod::calculate_dAssignments_dState(CMatrix<C_FLOAT64>& s, bool 
   C_FLOAT64 * pSEnd = s.array() + mNumAssTargets * mSystemSize;
 
   size_t Col;
+
   for (Col = 0;  Col < mSystemSize; ++Col, ++pX)
     {
       Store = *pX;
@@ -449,13 +454,15 @@ void CTimeSensMethod::calculate_dAssignments_dState(CMatrix<C_FLOAT64>& s, bool 
       *pX = X1;
       mpContainer->applyUpdateSequence(mSeq3);
       size_t i;
-      for (i=0; i<mNumAssTargets; ++i)
-        Y1[i]=*mAssTargetValuePointers[i];
+
+      for (i = 0; i < mNumAssTargets; ++i)
+        Y1[i] = *mAssTargetValuePointers[i];
 
       *pX = X2;
       mpContainer->applyUpdateSequence(mSeq3);
-      for (i=0; i<mNumAssTargets; ++i)
-        Y2[i]=*mAssTargetValuePointers[i];
+
+      for (i = 0; i < mNumAssTargets; ++i)
+        Y2[i] = *mAssTargetValuePointers[i];
 
       *pX = Store;
 
@@ -464,7 +471,7 @@ void CTimeSensMethod::calculate_dAssignments_dState(CMatrix<C_FLOAT64>& s, bool 
       pY2 = Y2.array();
 
       for (; pS < pSEnd; pS += mSystemSize, ++pY1, ++pY2)
-        *pS = (*pY2 - *pY1) * InvDelta;
+        * pS = (*pY2 - *pY1) * InvDelta;
     }
 
   mpContainer->applyUpdateSequence(mSeq3);
@@ -491,6 +498,7 @@ void CTimeSensMethod::calculate_dAssignments_dPar(CMatrix<C_FLOAT64>& s)
   C_FLOAT64 * pSEnd = s.array() + mNumAssTargets * mNumParameters;
 
   size_t Col;
+
   for (Col = 0;  Col < mNumParameters; ++Col)
     {
       Store = *mParameterTransientValuePointers[Col];
@@ -516,13 +524,15 @@ void CTimeSensMethod::calculate_dAssignments_dPar(CMatrix<C_FLOAT64>& s)
       *mParameterTransientValuePointers[Col] = X1;
       mpContainer->applyUpdateSequence(mSeq2);
       size_t i;
-      for (i=0; i<mNumAssTargets; ++i)
-        Y1[i]=*mAssTargetValuePointers[i];
+
+      for (i = 0; i < mNumAssTargets; ++i)
+        Y1[i] = *mAssTargetValuePointers[i];
 
       *mParameterTransientValuePointers[Col] = X2;
       mpContainer->applyUpdateSequence(mSeq2);
-      for (i=0; i<mNumAssTargets; ++i)
-        Y2[i]=*mAssTargetValuePointers[i];
+
+      for (i = 0; i < mNumAssTargets; ++i)
+        Y2[i] = *mAssTargetValuePointers[i];
 
       *mParameterTransientValuePointers[Col] = Store;
 
@@ -531,12 +541,11 @@ void CTimeSensMethod::calculate_dAssignments_dPar(CMatrix<C_FLOAT64>& s)
       pY2 = Y2.array();
 
       for (; pS < pSEnd; pS += mNumParameters, ++pY1, ++pY2)
-        *pS = (*pY2 - *pY1) * InvDelta;
+        * pS = (*pY2 - *pY1) * InvDelta;
     }
 
   mpContainer->applyUpdateSequence(mSeq2);
 }
-
 
 void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
 {
@@ -548,72 +557,75 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
 
   CObjectInterface::ObjectSet Changed;
   size_t Col;
-  for (Col = 0; Col<mNumParameters; ++Col)
-  {
-  
-    const CMathObject* pMo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(Col)));
-    const CMathObject* pMo2;
-    //const CMathObject*  pMo = mpContainer->getMathObject(mpProblem->getParameterCN(Col)); //I do not know why this does not work...
-    //const CMathObject * pMo = mpContainer->getMathObject(object*);
 
-    if (pMo != NULL)
+  for (Col = 0; Col < mNumParameters; ++Col)
+    {
+
+      const CMathObject* pMo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getParameterCN(Col)));
+      const CMathObject* pMo2;
+      //const CMathObject*  pMo = mpContainer->getMathObject(mpProblem->getParameterCN(Col)); //I do not know why this does not work...
+      //const CMathObject * pMo = mpContainer->getMathObject(object*);
+
+      if (pMo != NULL)
+        {
+          mParameterIsInitialConcentration[Col] = pMo->isIntensiveProperty();
+          mParameterInitialValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
+          mParameterTransientValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
+          pMo2 = mpContainer->getMathObject(pMo->getDataObject()->getObjectParent()->getValueObject());
+
+          if (pMo2->getSimulationType() == CMath::SimulationType::Fixed)
             {
-              mParameterIsInitialConcentration[Col] = pMo->isIntensiveProperty();
-              mParameterInitialValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
-              mParameterTransientValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
-              pMo2 = mpContainer->getMathObject ( pMo->getDataObject()->getObjectParent()->getValueObject());
-              if (pMo2->getSimulationType()==CMath::SimulationType::Fixed)
-              {
-                mParameterTransientValuePointers[Col] = (C_FLOAT64 *) pMo2->getValuePointer();
-                Changed.insert(pMo2);
-              }
-              else
-              {
-                Changed.insert(pMo);
-              }
+              mParameterTransientValuePointers[Col] = (C_FLOAT64 *) pMo2->getValuePointer();
+              Changed.insert(pMo2);
             }
           else
             {
-              mParameterInitialValuePointers[Col] = NULL;
-              mParameterTransientValuePointers[Col] = NULL;
+              Changed.insert(pMo);
             }
-  }
+        }
+      else
+        {
+          mParameterInitialValuePointers[Col] = NULL;
+          mParameterTransientValuePointers[Col] = NULL;
+        }
+    }
 
   printObjectSet("Parameters", Changed); //debug
-  
+
   //generate an update sequence for calculate_dRate_dPar().
   //it should update the rates (RHS) after changes in the specified parameters
   mpContainer->getTransientDependencies().getUpdateSequence(mSeq1, CCore::SimulationContext::Default,
-          Changed, //the parameters
-          mpContainer->getSimulationUpToDateObjects() ); 
+      Changed, //the parameters
+      mpContainer->getSimulationUpToDateObjects());
   //TODO: this seems to work, but I have no idea if it is the correct and most efficient way to do it.
   //Also it may be more efficient if we create one update list for each parameter, and not a joint list for all
 
   printObjectSet("Simulation objects", mpContainer->getSimulationUpToDateObjects());
   printUpdateSeq("seq1", mSeq1); //debug
-  
+
   //we need a vector of Pointers to access the values of the assignment targets for which we calculate sensitivities
   mAssTargetValuePointers.resize(mNumAssTargets);
   CObjectInterface::ObjectSet assTargets;
-  for (Col = 0; Col<mNumAssTargets; ++Col)
-  {
-    const CMathObject* pMo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getTargetCN(Col)));
-    //const CMathObject*  pMo = mpContainer->getMathObject(mpProblem->getParameterCN(Col)); //I do not know why this does not work...
-    //const CMathObject * pMo = mpContainer->getMathObject(object*);
 
-    if (pMo != NULL)
-            {
-              mAssTargetValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
-              assTargets.insert(pMo);
-            }
-          else
-            {
-              mAssTargetValuePointers[Col] = NULL;
-            }
-  }
+  for (Col = 0; Col < mNumAssTargets; ++Col)
+    {
+      const CMathObject* pMo = dynamic_cast<const CMathObject*>(mpContainer->getObject(mpProblem->getTargetCN(Col)));
+      //const CMathObject*  pMo = mpContainer->getMathObject(mpProblem->getParameterCN(Col)); //I do not know why this does not work...
+      //const CMathObject * pMo = mpContainer->getMathObject(object*);
 
-  printObjectSet("targets",assTargets); //debug
-  
+      if (pMo != NULL)
+        {
+          mAssTargetValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
+          assTargets.insert(pMo);
+        }
+      else
+        {
+          mAssTargetValuePointers[Col] = NULL;
+        }
+    }
+
+  printObjectSet("targets", assTargets); //debug
+
   //generate an update sequence for calculate_dAssignments_dPar().
   //it should update the assignment targets after changes in the specified parameters
   mpContainer->getTransientDependencies().getUpdateSequence(mSeq2,
@@ -621,9 +633,8 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
       Changed,  //the requested parameters
       assTargets); //the assignment targets
 
-  printUpdateSeq("seq2",mSeq2); //debug
+  printUpdateSeq("seq2", mSeq2); //debug
 
-  
   //generate an update sequence for calculate_dAssignments_dState().
   //it should update the assignment targets after changes in the state variables
   mpContainer->getTransientDependencies().getUpdateSequence(mSeq3,
@@ -631,21 +642,20 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
       mpContainer->getStateObjects(reduced),  //the state variables
       assTargets); //the assignment targets
 
-  printUpdateSeq("seq3",mSeq3); //debug
+  printUpdateSeq("seq3", mSeq3); //debug
 
-  
   //TODO: create update lists for the various other numerical derivatives calculations
- 
 }
-
 
 //static
 void CTimeSensMethod::printObjectSet(const std::string & s, const CObjectInterface::ObjectSet & os)
 {
   std::cout << "object set: " << s << std::endl;
   CObjectInterface::ObjectSet::const_iterator it;
+
   for (it = os.begin(); it != os.end(); ++it)
     std::cout << " - " << (*it)->getObjectDisplayName() << std::endl;
+
   std::cout << std::endl;
 }
 
@@ -655,24 +665,26 @@ void CTimeSensMethod::printUpdateSeq(const std::string & s, const CCore::CUpdate
   std::cout << "update seq: " << s << std::endl;
   CMathUpdateSequence::const_iterator it = us.begin();
   CMathUpdateSequence::const_iterator end = us.end();
-  
+
   for (; it != end; ++it)
-  {
-    const CDataObject * pDataObject = CObjectInterface::DataObject(*it);
-    const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(*it);
-    
-    if (pDataObject == NULL && pMathObject == NULL)
-      std::cout << " - "<< "NULL" ;
-    
-    if (pDataObject != NULL)
     {
-      std::cout << " - "<< /* pDataObject->getObjectParent()->getObjectDisplayName() << " : " << */ pDataObject->getObjectDisplayName();
+      const CDataObject * pDataObject = CObjectInterface::DataObject(*it);
+      const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(*it);
+
+      if (pDataObject == NULL && pMathObject == NULL)
+        std::cout << " - " << "NULL";
+
+      if (pDataObject != NULL)
+        {
+          std::cout << " - " << /* pDataObject->getObjectParent()->getObjectDisplayName() << " : " << */ pDataObject->getObjectDisplayName();
+        }
+      else if (pMathObject != NULL)
+        {
+          std::cout << " - " << "Mathobject:  " << pMathObject->getObjectDisplayName();
+        }
+
+      std::cout << std::endl;
     }
-    else if (pMathObject != NULL)
-    {
-      std::cout << " - "<< "Mathobject:  " << pMathObject->getObjectDisplayName();
-    }
-    std::cout << std::endl;
-  }
+
   std::cout << std::endl;
 }

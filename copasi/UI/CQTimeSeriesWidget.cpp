@@ -163,7 +163,7 @@ void CQTimeSeriesWidget::slotSave()
       if (fileName.isEmpty()) return;
 
       // Checks whether the file exists
-      Answer = checkSelection(fileName);
+      Answer = checkSelection(this, fileName);
 
       if (Answer == QMessageBox::Cancel) return;
     }

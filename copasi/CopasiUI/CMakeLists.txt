@@ -1,3 +1,18 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 ###############################################################################
 #
 # Description       : CMake build script for COPASI
@@ -7,19 +22,8 @@
 # This file is part of COPASI.  Please visit http://COPASI.org for more
 # information about COPASI, and the latest version of COPASI.
 #
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., University of Heidelberg, and The University
-# of Manchester.
-# All rights reserved.
 #
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
 #
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
 #
 ###############################################################################
 
@@ -62,7 +66,7 @@ if (APPLE)
 
 set(COPASI_UI_FLAGS MACOSX_BUNDLE)
 set(MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/CopasiUI.plist )
-set(MACOSX_BUNDLE_ICON_FILE ${CMAKE_SOURCE_DIR}/copasi.icns )
+set(MACOSX_BUNDLE_ICON_FILE copasi.icns )
 set(MACOSX_BUNDLE_BUNDLE_VERSION  "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 set(MACOSX_BUNDLE_INFO_STRING "COPASI ${MACOSX_BUNDLE_BUNDLE_VERSION} is distributed under the Artistic License 2.0." )
 set(MACOSX_BUNDLE_GUI_IDENTIFIER  "org.copasi.CopasiUI" )

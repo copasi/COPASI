@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -662,13 +667,14 @@ SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
             SedRepeatedTask *repeat = static_cast<SedRepeatedTask*>(current);
             SedRange* range = repeat->getRange(repeat->getRangeId());
 
-            if (range == NULL || range->getTypeCode() != SEDML_RANGE_UNIFORMRANGE)
+            if (range == NULL && range->getTypeCode() != SEDML_RANGE_FUNCTIONALRANGE)
               {
-                CCopasiMessage(CCopasiMessage::WARNING, "This version of COPASI only supports uniform ranges.");
+                CCopasiMessage(CCopasiMessage::WARNING, "This version of COPASI only supports uniform ranges and value ranges.");
                 continue;
               }
 
-            SedUniformRange* urange = static_cast<SedUniformRange*>(range);
+            SedUniformRange* urange = dynamic_cast<SedUniformRange*>(range);
+            SedVectorRange* vrange = dynamic_cast<SedVectorRange*>(range);
             CScanTask *tTask = static_cast<CScanTask*>(&mpDataModel->getTaskList()->operator[]("Scan"));
             tTask->setScheduled(true);
             CScanProblem *pProblem = static_cast<CScanProblem*>(tTask->getProblem());
@@ -698,12 +704,37 @@ SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
                         continue;
                       }
 
-                    CCopasiParameterGroup*group = pProblem->addScanItem(CScanProblem::SCAN_LINEAR, urange->getNumberOfPoints(), obj);
-                    group->setValue< C_FLOAT64 >("Minimum", urange->getStart());
-                    group->setValue< C_FLOAT64 >("Maximum", urange->getEnd());
-                    group->setValue< bool >("log", (!urange->isSetType() ||
-                                                    urange->getType().empty() ||
-                                                    urange->getType() == "linear") ? false : true);
+                    int numPoints = 0;
+
+                    if (vrange != NULL)
+                      numPoints = vrange->getNumValues();
+                    else if (urange != NULL)
+                      numPoints = urange->getNumberOfPoints();
+
+                    CCopasiParameterGroup*group = pProblem->addScanItem(CScanProblem::SCAN_LINEAR, numPoints, obj);
+
+                    if (urange != NULL)
+                      {
+                        group->setValue< C_FLOAT64 >("Minimum", urange->getStart());
+                        group->setValue< C_FLOAT64 >("Maximum", urange->getEnd());
+                        group->setValue< bool >("Use Values", false);
+                        group->setValue< bool >("log", (!urange->isSetType() ||
+                                                        urange->getType().empty() ||
+                                                        urange->getType() == "linear") ? false : true);
+
+                      }
+
+                    if (vrange != NULL)
+                      {
+                        group->setValue< bool >("Use Values", true);
+                        std::stringstream str;
+                        std::vector<double> vals = vrange->getValues();
+
+for (double val : vals)
+                          str << val << " ";
+
+                        group->setValue< std::string >("Values", str.str());
+                      }
                   }
               }
 

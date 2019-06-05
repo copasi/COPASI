@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -243,6 +248,9 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("ConvertToIrreversible", Options.ConvertToIrreversible);
   setValue("ScheduledTask", Options.ScheduledTask);
   setValue("ReportFile", Options.ReportFile);
+
+  setValue("ReparameterizeModel", Options.ReparameterizeModel);
+  setValue("ExportIni", Options.ExportIni);
 
 
   delete pPreParser;

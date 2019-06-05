@@ -137,7 +137,8 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpCurrentAuthorFamilyName(NULL),
   mpCurrentAuthorOrganization(NULL),
   mpCurrentAuthorEmail(NULL),
-  mpPrecision(NULL)
+  mpPrecision(NULL),
+  mpCheckForUpdates(NULL)
 
 {initializeParameter();}
 
@@ -167,7 +168,8 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpCurrentAuthorFamilyName(NULL),
   mpCurrentAuthorOrganization(NULL),
   mpCurrentAuthorEmail(NULL),
-  mpPrecision(NULL)
+  mpPrecision(NULL),
+  mpCheckForUpdates(NULL)
 {initializeParameter();}
 
 CConfigurationFile::~CConfigurationFile()
@@ -197,6 +199,11 @@ bool CConfigurationFile::elevateChildren()
   CMIRIAMResourceObject::setMIRIAMResources(mpRecentMIRIAMResources);
 
   if (!mpRecentMIRIAMResources) success = false;
+
+  mpCheckForUpdates =
+    elevate<CCheckForUpdates, CCopasiParameterGroup>(getGroup("Check for Updates"));
+
+  if (!mpCheckForUpdates) success = false;
 
   return success;
 }
@@ -276,6 +283,8 @@ void CConfigurationFile::initializeParameter()
 
   mpCurrentAuthorOrganization = assertParameter("Organization", CCopasiParameter::Type::STRING, std::string(""));
   mpCurrentAuthorEmail = assertParameter("Email", CCopasiParameter::Type::STRING, std::string("An.other@mailinator.com"));
+
+  assertGroup("Check for Updates");
 
   elevateChildren();
 }
@@ -648,4 +657,81 @@ C_INT32 CConfigurationFile::getDoublePrecision() const
 void CConfigurationFile::setDoublePrecision(C_INT32 precision)
 {
   *mpPrecision = precision;
+}
+
+CCheckForUpdates & CConfigurationFile::getCheckForUpdates()
+{
+  return *mpCheckForUpdates;
+}
+
+CCheckForUpdates::CCheckForUpdates(const std::string & name, const CDataContainer * pParent)
+  : CCopasiParameterGroup(name, pParent)
+  , mpEnabled(NULL)
+  , mpSkipVersion(NULL)
+  , mpLastChecked(NULL)
+  , mpInterval(NULL)
+{
+  initializeParameter();
+}
+
+CCheckForUpdates::CCheckForUpdates(const CCheckForUpdates & src,
+                                   const CDataContainer * pParent)
+  : CCopasiParameterGroup(src, pParent)
+  , mpEnabled(NULL)
+  , mpSkipVersion(NULL)
+  , mpLastChecked(NULL)
+  , mpInterval(NULL)
+{
+  initializeParameter();
+}
+
+CCheckForUpdates::CCheckForUpdates(const CCopasiParameterGroup & src,
+                                   const CDataContainer * pParent)
+  : CCopasiParameterGroup(src, pParent)
+  , mpEnabled(NULL)
+  , mpSkipVersion(NULL)
+  , mpLastChecked(NULL)
+  , mpInterval(NULL)
+{
+  initializeParameter();
+}
+
+// virtual
+CCheckForUpdates::~CCheckForUpdates() {}
+
+void CCheckForUpdates::initializeParameter()
+{
+  mpEnabled = assertParameter("Enabled", CCopasiParameter::Type::BOOL, true);
+  mpSkipVersion = assertParameter("Skip Version", CCopasiParameter::Type::STRING, std::string(""));
+  mpLastChecked = assertParameter("Last Checked", CCopasiParameter::Type::STRING, std::string("0000-00-00T00:00:00Z"));
+  mpInterval = assertParameter("Interval", CCopasiParameter::Type::UINT, (unsigned C_INT32) 7);
+}
+
+bool CCheckForUpdates::skipVersion(const CVersion & version) const
+{
+  return (*mpSkipVersion == version.getVersion());
+}
+
+bool CCheckForUpdates::checkRequired() const
+{
+  if (*mpEnabled && CVersion::VERSION.mayBeUpdated())
+    {
+      // Compare current time with mpLastChecked + mpInterval days
+      time_t lastChecked = timeFromUTC(*mpLastChecked);
+      time_t now = timeFromUTC(UTCTimeStamp());
+
+      return difftime(now, lastChecked) > *mpInterval * 86400;
+    }
+
+  return false;
+}
+
+void CCheckForUpdates::setSkipVersion(const CVersion & version)
+{
+  *mpSkipVersion = version.getVersion();
+}
+
+void CCheckForUpdates::setChecked()
+{
+  *mpLastChecked = UTCTimeStamp();
 }

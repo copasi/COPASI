@@ -257,6 +257,8 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::step(const double & deltaT,
         {
           Result = FAILURE;
         }
+
+      if (mpProblem->getAutomaticStepSize()) break;
     }
 
   // std::cout << "mContainerState: " << mContainerState << std::endl;

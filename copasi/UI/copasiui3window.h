@@ -22,10 +22,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
 #ifndef COPASI_UI3_WINDOW_H
 #define COPASI_UI3_WINDOW_H
 
@@ -35,6 +31,7 @@
 #include <QtCore/QModelIndex>
 #include <QtCore/QMap>
 #include <QtCore/QPointer>
+#include <QUrl>
 
 #include <copasi/config.h>
 
@@ -77,6 +74,16 @@ class CModelVersionHierarchy;
 class CQOptPopulation;
 class CDataModel;
 class CUndoStack;
+
+enum CopasiUIActions
+{
+  DownloadUrl,
+  SelectElement,
+  RunTask,
+  CreatePlot,
+  RemoveReportTargets,
+  Invalid
+};
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
@@ -131,7 +138,6 @@ public:
 
   void exportSEDMLToString(std::string & SEDML);
 
-
 // COMBINE Archive will take care of file management
   /*
   #ifdef COPASI_Provenance
@@ -176,6 +182,7 @@ public slots:
   void slotCopy();
   void slotCheckForUpdate();
   void slotCheckForUpdateFinished(bool flag);
+  void slotClearSbmlIds();
 
   /**
    * This should only be called by the destructor of the object browser dialog
@@ -189,6 +196,29 @@ public slots:
 
   void slotFileOpen(QString file = QString::null);
   void slotFileOpenFromUrl(QString url = QString::null);
+
+  void slotHandleCopasiScheme(const QUrl& url);
+
+public:
+  /**
+   * performs the next action from the action stack
+   */
+  void performNextAction();
+  /**
+   * activates the specified element, which can be a model element specified
+   * by display name, cn, or one of the widgetname enumerations of the listviews
+   * class
+   *
+   * @param elementToActivate the element to activate
+   */
+  void activateElement(const std::string& elementToActivate);
+
+  /**
+   * goes through the list of tasks, and removes all report targets specified
+   * while informing which ones were removed.
+   */
+  void removeReportTargets();
+
 
 protected slots:
   void slotFileOpenFinished(bool success);
@@ -298,6 +328,8 @@ private:
   void updateTitle();
 
   void setApplicationFont();
+
+  void checkForUpdates();
 
   DataModelGUI* mpDataModelGUI; // to keep track of the data model..
   CDataModel* mpDataModel;
@@ -418,6 +450,10 @@ private:
 #endif
 
   CQOptPopulation* mpPopulationDisplay;
+
+  bool mAutoUpdateCheck;
+
+  std::deque< std::pair < CopasiUIActions, std::string > > mActionStack;
 
 #ifdef COPASI_SBW_INTEGRATION
 public:

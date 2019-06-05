@@ -259,7 +259,7 @@ bool setParameterValue(CCopasiParameterGroup * pGroup,
   return setParameterValue(pGroup->getParameter(name), value);
 }
 
-C_INT32 checkSelection(const QString & file)
+C_INT32 checkSelection(QWidget * parent, const QString & file)
 {
 
 #ifdef DEBUG_UI
@@ -269,13 +269,13 @@ C_INT32 checkSelection(const QString & file)
   if (QFileInfo(file).exists())
     {
       if (CDirEntry::isWritable(TO_UTF8(file)))
-        return CQMessageBox::question(NULL, "File exists!",
+        return CQMessageBox::question(parent, "File exists!",
                                       "Overwrite existing file " + file + "?",
                                       QMessageBox::Ok | QMessageBox::Cancel,
                                       QMessageBox::Cancel);
       else
         {
-          CQMessageBox::information(NULL, "File read-only",
+          CQMessageBox::information(parent, "File read-only",
                                     "The file is read-only. Please select another file!",
                                     QMessageBox::Ok, QMessageBox::Ok);
           return QMessageBox::Cancel;

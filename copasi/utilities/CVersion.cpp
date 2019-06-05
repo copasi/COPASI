@@ -1,4 +1,14 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,7 +41,11 @@ const CVersion CVersion::VERSION(COPASI_VERSION_MAJOR,
                                  COPASI_VERSION_MINOR,
                                  COPASI_VERSION_BUILD,
                                  COPASI_VERSION_MODIFIED,
+#ifdef COPASI_DEBUG
+                                 "Debug",
+#else
                                  COPASI_VERSION_COMMENT,
+#endif
                                  COPASI_VERSION_CREATOR);
 
 CVersion::CVersion(C_INT32 major,
@@ -99,6 +113,47 @@ bool CVersion::isCompatible(const CVersion & version) const
   return false;
 }
 
+bool CVersion::operator>(const CVersion& other) const
+{
+  return (mMajor > other.getVersionMajor() ||
+          (mMajor == other.getVersionMajor() && mMinor > other.getVersionMinor()) ||
+          (mMajor == other.getVersionMajor() && mMinor == other.getVersionMinor() && mBuild > other.getVersionDevel())
+         );
+}
+
+bool CVersion::operator<(const CVersion& other) const
+{
+  return (mMajor < other.getVersionMajor() ||
+          (mMajor == other.getVersionMajor() && mMinor < other.getVersionMinor()) ||
+          (mMajor == other.getVersionMajor() && mMinor == other.getVersionMinor() && mBuild < other.getVersionDevel())
+         );
+}
+
+bool CVersion::operator==(const CVersion& other) const
+{
+  return (mMajor == other.getVersionMajor() && mMinor == other.getVersionMinor() && mBuild == other.getVersionDevel());
+}
+
+bool CVersion::operator>=(const CVersion& other) const
+{
+  return (*this > other) || (*this == other);
+}
+
+bool CVersion::operator<=(const CVersion& other) const
+{
+  return (*this < other) || (*this == other);
+}
+
+bool CVersion::operator!=(const CVersion& other) const
+{
+  return !(*this == other);
+}
+
+bool CVersion::mayBeUpdated() const
+{
+  return (mComment == "stable");
+}
+
 void CVersion::setVersion(const C_INT32 & major,
                           const C_INT32 & minor,
                           const C_INT32 & devel,
@@ -143,10 +198,6 @@ const std::string & CVersion::getVersion() const
 
 void CVersion::setString()
 {
-#ifdef COPASI_DEBUG
-  mComment = "Debug";
-#endif
-
   std::stringstream Build;
   Build << mBuild;
 

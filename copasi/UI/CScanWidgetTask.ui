@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+<comment> Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> University of Virginia, University of Heidelberg, and University </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> All rights reserved. </comment>
+
  <comment> All rights reserved. </comment>
  <class>CScanWidgetTask</class>
  <widget class="QWidget" name="CScanWidgetTask">
@@ -18,7 +42,16 @@
    <bool>false</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -193,22 +226,6 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <spacer name="spacer3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Maximum</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>30</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
          <widget class="QCheckBox" name="checkOutput">
           <property name="toolTip">
            <string>If this is activated output will be generated during each calculation. &lt;p&gt;If it is not activated only the state at the end of each calculation will be plotted.</string>
@@ -221,6 +238,13 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="checked">
            <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="mpContinueOnError">
+          <property name="text">
+           <string>Continue on Error</string>
           </property>
          </widget>
         </item>

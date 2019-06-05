@@ -72,6 +72,7 @@ void CScanProblem::initializeParameter()
 
   assertParameter("Output in subtask", CCopasiParameter::Type::BOOL, true);
   assertParameter("Adjust initial conditions", CCopasiParameter::Type::BOOL, false);
+  assertParameter("Continue on Error", CCopasiParameter::Type::BOOL, false);
 }
 
 //***********************************
@@ -103,6 +104,17 @@ void CScanProblem::setContinueFromCurrentState(bool aic)
 
 bool CScanProblem::getContinueFromCurrentState() const
 {return getValue< bool >("Adjust initial conditions");}
+
+bool CScanProblem::getContinueOnError() const
+{
+  return getValue< bool >("Continue on Error");
+}
+
+void CScanProblem::setContinueOnError(bool coe)
+{
+  setValue("Continue on Error", coe);
+}
+
 
 //************************************
 

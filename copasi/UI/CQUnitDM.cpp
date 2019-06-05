@@ -184,7 +184,7 @@ bool CQUnitDM::setData(const QModelIndex &index, const QVariant &value,
               msg = "Unable set Symbol of Unit '" + FROM_UTF8(pUnitDef->getObjectName()) + "'\n"
                     + "to '" + value.toString() + "' since a Unit with that symbol already exists.\n";
 
-              CQMessageBox::information(NULL,
+              CQMessageBox::information(ListViews::ancestor(this),
                                         "Unable set Symbol",
                                         msg,
                                         QMessageBox::Ok, QMessageBox::Ok);
@@ -197,7 +197,7 @@ bool CQUnitDM::setData(const QModelIndex &index, const QVariant &value,
               QString msg;
               msg = "Expression must not be changed for '" + FROM_UTF8(pUnitDef->getObjectName()) + "'.\n";
 
-              CQMessageBox::information(NULL,
+              CQMessageBox::information(ListViews::ancestor(this),
                                         "Unable to change Unit Expression",
                                         msg,
                                         QMessageBox::Ok, QMessageBox::Ok);
@@ -304,7 +304,7 @@ bool CQUnitDM::removeRows(QModelIndexList rows, const QModelIndex&)
       if (delRow != C_INVALID_INDEX)
         {
           QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, "unit",
+            CQMessageBox::confirmDelete(ListViews::ancestor(this), "unit",
                                         FROM_UTF8((*j)->getObjectName()),
                                         *j);
 

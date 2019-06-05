@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,7 +23,6 @@
 #include <QtCore/QString>
 #include <QPainter>
 #include <QPrinter>
-
 
 #include "utilities/CCopasiException.h"
 
@@ -190,7 +194,7 @@ void CQExpressionMmlStackedWidget::slotSaveExpression()
       if (outfilename.isEmpty()) return;
 
       // Checks whether the file exists
-      Answer = checkSelection(outfilename);
+      Answer = checkSelection(this, outfilename);
 
       if (Answer == QMessageBox::Cancel)
         return;
@@ -209,7 +213,6 @@ void CQExpressionMmlStackedWidget::slotSaveExpression()
   else
     saveMML(outfilename);
 }
-
 
 void CQExpressionMmlStackedWidget::savePDF(const QString& outfilename)
 {
@@ -232,7 +235,6 @@ void CQExpressionMmlStackedWidget::savePDF(const QString& outfilename)
   painter.begin(&printer);
   doc.paint(&painter, QPoint(0, 0));
   painter.end();
-
 }
 
 void CQExpressionMmlStackedWidget::savePNG(const QString& outfilename)

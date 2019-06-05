@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -39,6 +44,7 @@
 #include "utilities/CVersion.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CDirEntry.h"
+#include "utilities/CParameterEstimationUtils.h"
 #include "CopasiDataModel/CDataModel.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
@@ -267,13 +273,33 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelI
           double min = (current->getParameter("Minimum")->getValue< C_FLOAT64 >());
           double max = (current->getParameter("Maximum")->getValue< C_FLOAT64 >());
           bool log = (current->getParameter("log")->getValue< bool >());
+          std::string values = current->getParameter("Values") != NULL ? current->getParameter("Values")->getValue<std::string>() : std::string("");
 
-          SedUniformRange *range = task->createUniformRange();
-          range->setId(SEDMLUtils::getNextId("range", task->getNumRanges()));
-          range->setStart(min);
-          range->setEnd(max);
-          range->setNumberOfPoints(numSteps);
-          range->setType(log ? "log" : "linear");
+          std::string rangeId = SEDMLUtils::getNextId("range", task->getNumRanges());
+
+          if (current->getParameter("Use Values") != NULL && current->getParameter("Use Values")->getValue< bool >() && !values.empty())
+            {
+              SedVectorRange* range = task->createVectorRange();
+              range->setId(rangeId);
+              std::vector<std::string> elems;
+              ResultParser::split(values, std::string(",; |\n\t\r"), elems);
+
+for (std::string & number : elems)
+                {
+                  range->addValue(ResultParser::saveToDouble(number));
+                }
+
+            }
+          else
+            {
+              SedUniformRange* range = task->createUniformRange();
+              range->setId(rangeId);
+              range->setStart(min);
+              range->setEnd(max);
+              range->setNumberOfPoints(numSteps);
+              range->setType(log ? "log" : "linear");
+            }
+
 
           const CRegisteredCommonName& cn = (current->getParameter("Object")->getValue< CCommonName >());
           const CDataObject* pObject = static_cast<const CDataObject*>(dataModel.getObject(cn));
@@ -304,8 +330,8 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelI
               change->setTarget(xpath);
             }
 
-          change->setRange(range->getId());
-          change->setMath(SBML_parseFormula(range->getId().c_str()));
+          change->setRange(rangeId);
+          change->setMath(SBML_parseFormula(rangeId.c_str()));
 
           continue;
         }
@@ -327,11 +353,12 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelI
  */
 std::string CSEDMLExporter::createTimeCourseTask(CDataModel& dataModel, const std::string & modelId)
 {
+  CCopasiTask* pTask = &dataModel.getTaskList()->operator[]("Time-Course");
+  CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(pTask->getProblem());
+
   mpTimecourse = this->mpSEDMLDocument->createUniformTimeCourse();
   mpTimecourse->setId(SEDMLUtils::getNextId("sim", mpSEDMLDocument->getNumSimulations()));
   //presently SEDML only supports time course
-  CCopasiTask* pTask = &dataModel.getTaskList()->operator[]("Time-Course");
-  CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(pTask->getProblem());
   mpTimecourse->setInitialTime(0.0);
   double outputStartTime = tProblem->getOutputStartTime();
   double stepSize = tProblem->getStepSize();
@@ -562,8 +589,11 @@ void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
 
   for (i = 0; i < imax; i++)
     {
-      pPSedPlot = this->mpSEDMLDocument->createPlot2D();
       const CPlotSpecification* pPlot = &dataModel.getPlotDefinitionList()->operator[](i);
+
+      if (!pPlot->isActive()) continue; // ignore deactivated plots
+
+      pPSedPlot = this->mpSEDMLDocument->createPlot2D();
       std::string plotName = pPlot->getObjectName();
 
       SEDMLUtils::removeCharactersFromString(plotName, "[]");
@@ -674,13 +704,15 @@ void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
 
 CSEDMLExporter::CSEDMLExporter()
   : mpSEDMLDocument(NULL)
+  , mSEDMLLevel(1)
+  , mSEDMLVersion(2)
   , mpTimecourse(NULL)
   , mpTimecourseTask(NULL)
 {
-  // TODO Auto-generated constructor stub
+
 }
 
 CSEDMLExporter::~CSEDMLExporter()
 {
-  // TODO Auto-generated destructor stub
+
 }

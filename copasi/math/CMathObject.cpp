@@ -225,7 +225,11 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
             mSimulationType == CMath::SimulationType::Dependent &&
             !mIsIntensiveProperty)
           {
-            if (mpCorrespondingProperty != pObject)
+            const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(pObject);
+
+            if (pMathObject != NULL &&
+                pMathObject->getEntityType() == CMath::EntityType::Moiety &&
+                pMathObject->getValueType() == CMath::ValueType::DependentMass)
               {
                 return true;
               }

@@ -238,7 +238,7 @@ public:
    * Save the parameter set to a stream
    * @param std::ostream & os
    * @param const CCore::Framework & framework
-   * @param const std::string & mode (report or table)
+   * @param const std::string & mode (report, ini or table)
    * @param const std::string & separator
    */
   bool saveToStream(std::ostream & os,

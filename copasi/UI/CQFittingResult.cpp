@@ -538,7 +538,7 @@ void CQFittingResult::slotSave(void)
 
       fileName = fileName.remove(QRegExp("\\.$"));
 
-      Answer = checkSelection(fileName);
+      Answer = checkSelection(this, fileName);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -582,7 +582,6 @@ void CQFittingResult::slotUpdateModel()
           return;
         }
     }
-
 
   pProb->restore(true, pSelected);
 

@@ -474,12 +474,12 @@ void CQParameterOverviewWidget::slotBtnSaveToFile()
     {
       fileName =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          "untitled.tsv", "Tab Separated Files (*.tsv);;Comma Separated Files (*.csv);;TEXT Files (*.txt)", "Save as");
+                                          "untitled.tsv", "Tab Separated Files (*.tsv);;Comma Separated Files (*.csv);;TEXT Files (*.txt);;INI Files (*.ini)", "Save as");
 
       if (fileName.isEmpty()) return;
 
       // Checks whether the file exists
-      Answer = checkSelection(fileName);
+      Answer = checkSelection(this, fileName);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -500,6 +500,11 @@ void CQParameterOverviewWidget::slotBtnSaveToFile()
     {
       mode = "table";
       separator = ",";
+    }
+  else if (fileName.endsWith(".ini"))
+    {
+      mode = "ini";
+      separator = "";
     }
   else
     {

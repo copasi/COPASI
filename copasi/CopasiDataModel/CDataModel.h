@@ -362,6 +362,25 @@ public:
   CUndoData::CChangeSet applyData(const CUndoData & data);
   CUndoData::CChangeSet recordData(const CUndoData & data);
 
+  /**
+   * changes the provided model element to the given double value
+   */
+  static bool changeModelParameter(CDataObject* element, double value);
+
+  /**
+   * updates the data model with values from the provided ini file.
+   * This file should have the simple syntax, of one of more statements:
+   *
+   *    name = value
+   *
+   * where name is a valid DisplayName of a model object, and value a double
+   * value to be assigned. To indicate a comment, use the semicolon ';' after
+   * which the remaining line will be disregarded.
+   *
+   * @param fileName the fileName of the ini file
+   */
+  void reparameterizeFromIniFile(const std::string& fileName);
+
 #ifdef COPASI_Versioning
   CModelVersionHierarchy * getModelVersionHierarchy();
 #endif // COPASI_Versioning

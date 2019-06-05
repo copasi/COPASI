@@ -249,7 +249,7 @@ bool CQLayoutsDM::removeRows(QModelIndexList rows, const QModelIndex & /* index 
       if (delRow != C_INVALID_INDEX)
         {
           QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, "layout",
+            CQMessageBox::confirmDelete(ListViews::ancestor(this), "layout",
                                         FROM_UTF8(pLayout->getObjectName()),
                                         pLayout);
 

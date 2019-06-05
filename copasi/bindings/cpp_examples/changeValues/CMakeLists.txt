@@ -3,11 +3,6 @@
 # of Connecticut School of Medicine. 
 # All rights reserved. 
 
-# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., University of Heidelberg, and University of 
-# of Connecticut School of Medicine. 
-# All rights reserved. 
-
 ###############################################################################
 #
 # Description       : CMake build script for COPASI
@@ -22,28 +17,20 @@
 #
 ###############################################################################
 
-# only create this example if we build the gui
-if (BUILD_GUI)
-
 cmake_minimum_required (VERSION 2.6)
-
-if(POLICY CMP0020)
-  cmake_policy(SET CMP0020 NEW)
-endif(POLICY CMP0020)
 
 if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
 endif(POLICY CMP0048)
 
-project (renderLayout VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
+project (changeValues VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 
-set(SOURCES ${SOURCES} main.cpp)
+include_directories("${PROJECT_SOURCE_DIR}/../../.." "${PROJECT_SOURCE_DIR}/../../../.." "${PROJECT_SOURCE_DIR}")
 
-# set up include directory for the COPASI library
-include(${CMAKE_SOURCE_DIR}/copasi/CMakeUIApp.cmake)
+set(SOURCES ${SOURCES} changeValues.cpp)
 
-add_executable(renderLayout ${SOURCES} ${HEADERS})
-add_dependencies(renderLayout ${SE_DEPENDENCIES}) 
-target_link_libraries(renderLayout libCOPASIUI ${SE_LIBS} ${SE_EXTERNAL_LIBS})
+include(../../../CMakeConsoleApp.cmake)
 
-endif(BUILD_GUI)
+add_executable(changeValues ${SOURCES} ${HEADERS})
+add_dependencies(changeValues ${SE_DEPENDENCIES}) 
+target_link_libraries(changeValues ${SE_LIBS} ${SE_EXTERNAL_LIBS})

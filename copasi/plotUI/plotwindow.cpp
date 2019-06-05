@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,7 +23,6 @@
 // All rights reserved.
 
 // the window containing the plot and buttons for supported operations
-
 
 #include <QToolBar>
 #include <QPrinter>
@@ -111,7 +115,6 @@ PlotWindow::PlotWindow(COutputHandlerPlot *pHandler, const CPlotSpecification *p
     {
       mpaDeactivatePlot->setText("Activate");
     }
-
 }
 
 void PlotWindow::createMenus()
@@ -362,7 +365,7 @@ void PlotWindow::printAsImage()
       //      qDebug() << "extensionName = " << extensionName;
 #endif
       // check whether the file exists
-      Answer = checkSelection(fileName);
+      Answer = checkSelection(this, fileName);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -411,7 +414,7 @@ void PlotWindow::slotSaveData()
       if (fileName.isNull()) return;
 
       // Checks whether the file exists
-      Answer = checkSelection(fileName);
+      Answer = checkSelection(this, fileName);
 
       if (Answer == QMessageBox::Cancel) return;
     }
