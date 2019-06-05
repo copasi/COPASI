@@ -166,6 +166,9 @@ const CDefaultOutputDescription & COutputAssistant::getItem(C_INT32 id)
 C_INT32
 COutputAssistant::findItemByName(const std::string& name, bool isPlot /*= true*/)
 {
+  if (mMap.empty())
+    initialize();
+
 for (auto & entry : mMap)
     {
       if (entry.second.isPlot == isPlot && entry.second.name == name)

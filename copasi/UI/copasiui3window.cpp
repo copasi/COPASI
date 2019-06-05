@@ -290,6 +290,7 @@ CopasiUI3Window::CopasiUI3Window():
 #endif
   , mpPopulationDisplay(NULL)
   , mAutoUpdateCheck(false)
+  , mActionStack()
 {
   // There can only be one
   pMainWindow = this;
@@ -1026,6 +1027,22 @@ void CopasiUI3Window::slotFileOpen(QString file)
   else
     newFile = file;
 
+  QUrl url(newFile);
+
+  if (url.scheme() == "http" || url.scheme() == "https")
+    {
+      // download from url
+      slotFileOpenFromUrl(file);
+      return;
+    }
+  else if (url.scheme() == "copasi")
+    {
+      // handle copasi scheme
+      slotHandleCopasiScheme(url);
+      return;
+    }
+
+
   // gives the file information to the datamodel to handle it
 
   if (!newFile.isNull())
@@ -1222,6 +1239,8 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
 
     CQMessageBox::warning(this, QString("File Warning"), Message,
                           QMessageBox::Ok, QMessageBox::Ok);
+
+  performNextAction();
 }
 
 void CopasiUI3Window::slotFileExamplesCopasiFiles(QString file)
@@ -1754,6 +1773,7 @@ void CopasiUI3Window::slotImportSBMLFinished(bool success)
   updateTitle();
   mSaveAsRequired = true;
   mNewFile = "";
+  performNextAction();
 }
 
 void CopasiUI3Window::slotExportSBML()
@@ -1909,7 +1929,7 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
   if (CCopasiMessage::size() != 0)
     {
       // Display warnings messages.
-      CQMessageBox::information(this, "Event Creation succeded with warnings",
+      CQMessageBox::information(this, "Event Creation succeeded with warnings",
                                 CCopasiMessage::getAllMessageText().c_str(),
                                 QMessageBox::Ok,
                                 QMessageBox::Ok);
@@ -3729,6 +3749,15 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
         return;
     }
 
+  QUrl qUrl(url);
+
+  if (qUrl.scheme() == "copasi")
+    {
+      slotHandleCopasiScheme(qUrl);
+      return;
+    }
+
+
   // create temp filename
   std::string TmpFileName;
   COptions::getValue("Tmp", TmpFileName);
@@ -3737,6 +3766,227 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
   // open url
   connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFromUrlFinished(bool)));
   mpDataModelGUI->downloadFileFromUrl(TO_UTF8(url), TmpFileName);
+}
+
+#include <QUrlQuery>
+#include <copasi/report/COutputAssistant.h>
+
+
+void CopasiUI3Window::activateElement(const std::string& activate)
+{
+  // resolve display name first
+  const CDataObject* obj = mpDataModel->findObjectByDisplayName(activate);
+
+  if (obj != NULL)
+    {
+      mpListView->switchToOtherWidget(ListViews::WidgetType::NotFound, obj->getCN());
+    }
+  else
+    {
+      // see whether it is a task name
+      ListViews::WidgetType id = ListViews::WidgetName.toEnum(activate, ListViews::WidgetType::NotFound);
+
+      if (id != ListViews::WidgetType::NotFound)
+        {
+          mpListView->switchToOtherWidget(id, CCommonName(""));
+        }
+      else
+        {
+          // try cn
+          obj = dynamic_cast<const CDataObject*>(CRootContainer::getRoot()->getObject(activate));
+
+          if (obj == NULL)
+            obj = dynamic_cast<const CDataObject*>(mpDataModel->getObject(activate));
+
+          if (obj == NULL)
+            obj = dynamic_cast<const CDataObject*>(mpDataModel->getModel()->getObject(activate));
+
+          if (obj != NULL)
+            mpListView->switchToOtherWidget(ListViews::WidgetType::NotFound, obj->getCN());
+        }
+    }
+}
+
+std::string mapTaskNameToWidgetName(const std::string& name)
+{
+  ListViews::WidgetType id = ListViews::WidgetName.toEnum(name, ListViews::WidgetType::NotFound);
+
+  if (id != ListViews::WidgetType::NotFound)
+    return name;
+
+  if (name == "Time-Course")
+    return "Time Course";
+
+  if (name == "Scan")
+    return "Parameter Scan";
+
+  if (name == "Time-Course Sensitivities")
+    return "Time Course Sensitivities";
+
+  if (name == "Moieties")
+    return "Mass Conservation";
+
+  if (name == "Elementary Flux Modes")
+    return "Elementary Modes";
+
+  return name;
+}
+
+void CopasiUI3Window::performNextAction()
+{
+  if (mActionStack.empty())
+    return;
+
+  auto next = mActionStack.front();
+  mActionStack.pop_front();
+
+  switch (next.first)
+    {
+      case DownloadUrl:
+      {
+        slotFileOpenFromUrl(FROM_UTF8(next.second));
+        return;
+      }
+
+      case CreatePlot:
+      {
+        C_INT32 id = COutputAssistant::findItemByName(next.second, true);
+
+        if (id != -1)
+          {
+            const auto& description = COutputAssistant::getItem(id);
+            size_t taskIndex = mpDataModel->getTaskList()->
+                               getIndex(CTaskEnum::TaskName[description.mTaskType]);
+
+            auto* result = COutputAssistant::createDefaultOutput(id, &((*mpDataModel->getTaskList())[taskIndex]), mpDataModel);
+            mpDataModelGUI->notify(ListViews::ObjectType::PLOT, ListViews::ADD, result->getCN());
+          }
+
+        break;
+      }
+
+      case RunTask:
+      {
+        size_t taskIndex = C_INVALID_INDEX;
+        auto& taskList = *mpDataModel->getTaskList();
+
+        if (next.second == "scheduled")
+          {
+            // find scheduled task to activate
+            for (size_t i = 0; i <= taskList.size(); ++i)
+              {
+                if (taskList[i].isScheduled())
+                  {
+                    taskIndex = i;
+                    break;
+                  }
+              }
+          }
+        else if (next.second == "true")
+          {
+            // run active task
+            TaskWidget* pTaskWidget = dynamic_cast<TaskWidget*>(mpListView->getCurrentWidget());
+
+            if (pTaskWidget != NULL && pTaskWidget->getTask())
+              {
+                taskIndex = taskList.getIndex(pTaskWidget->getTask()->getObjectName());
+              }
+          }
+        else
+          {
+            // the specified name should be a task name
+            taskIndex = taskList.getIndex(next.second);
+          }
+
+        if (taskIndex != C_INVALID_INDEX)
+          {
+            std::string taskName = taskList[taskIndex].getObjectName();
+            // select task
+            activateElement(mapTaskNameToWidgetName(taskName));
+
+            // wait for activation
+            for (int i = 0; i < 5; ++i)
+              {
+                qApp->processEvents();
+                QThread::msleep(100);
+              }
+
+            // press run
+            TaskWidget* pTaskWidget = dynamic_cast<TaskWidget*>(mpListView->getCurrentWidget());
+
+            if (pTaskWidget != NULL)
+              {
+                pTaskWidget->runBtnClicked();
+              }
+          }
+
+        break;
+      }
+
+      case SelectElement:
+      {
+        activateElement(next.second);
+        break;
+      }
+
+      default:
+        break;
+    }
+
+  if (!mActionStack.empty())
+    {
+      for (int i = 0; i < 3; ++i)
+        {
+          qApp->processEvents();
+          QThread::msleep(100);
+        }
+
+      performNextAction();
+    }
+
+}
+
+void CopasiUI3Window::slotHandleCopasiScheme(QUrl url)
+{
+  if (url.scheme() != "copasi")
+    return;
+
+  mActionStack.clear();
+
+  // find out what to do
+
+  QUrlQuery query(url);
+
+  std::string downloadUrl = TO_UTF8(query.queryItemValue("downloadUrl", QUrl::FullyDecoded));
+
+  if (!downloadUrl.empty())
+    {
+      mActionStack.push_back(std::make_pair(DownloadUrl, downloadUrl));
+    }
+
+  std::string createPlot = TO_UTF8(query.queryItemValue("createPlot", QUrl::FullyDecoded));
+
+  if (!createPlot.empty())
+    {
+      mActionStack.push_back(std::make_pair(CreatePlot, createPlot));
+    }
+
+  std::string activate = TO_UTF8(query.queryItemValue("activate", QUrl::FullyDecoded));
+
+  if (!activate.empty())
+    {
+      mActionStack.push_back(std::make_pair(SelectElement, activate));
+    }
+
+  std::string runTask = TO_UTF8(query.queryItemValue("runTask", QUrl::FullyDecoded));
+
+  if (!runTask.empty())
+    {
+      mActionStack.push_back(std::make_pair(RunTask, runTask));
+    }
+
+  performNextAction();
+
 }
 
 void CopasiUI3Window::slotCheckForUpdate()
@@ -3906,6 +4156,7 @@ void CopasiUI3Window::slotClearSbmlIds()
 
   mpDataModel->getModel()->clearSbmlIds();
 }
+
 
 void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
 {

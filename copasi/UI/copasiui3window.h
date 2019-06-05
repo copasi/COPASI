@@ -31,6 +31,7 @@
 #include <QtCore/QModelIndex>
 #include <QtCore/QMap>
 #include <QtCore/QPointer>
+#include <QUrl>
 
 #include <copasi/config.h>
 
@@ -73,6 +74,15 @@ class CModelVersionHierarchy;
 class CQOptPopulation;
 class CDataModel;
 class CUndoStack;
+
+enum CopasiUIActions
+{
+  DownloadUrl,
+  SelectElement,
+  RunTask,
+  CreatePlot,
+  Invalid
+};
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
@@ -129,9 +139,9 @@ public:
 
 // COMBINE Archive will take care of file management
   /*
-#ifdef COPASI_Provenance
+  #ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-#endif
+  #endif
   */
 
   CQOptPopulation* getPopulationDisplay();
@@ -185,6 +195,23 @@ public slots:
 
   void slotFileOpen(QString file = QString::null);
   void slotFileOpenFromUrl(QString url = QString::null);
+
+  void slotHandleCopasiScheme(QUrl url);
+
+public:
+  /**
+   * performs the next action from the action stack
+   */
+  void performNextAction();
+  /**
+   * activates the specified element, which can be a model element specified
+   * by display name, cn, or one of the widgetname enumerations of the listviews
+   * class
+   *
+   * @param elementToActivate the element to activate
+   */
+  void activateElement(const std::string& elementToActivate);
+
 
 protected slots:
   void slotFileOpenFinished(bool success);
@@ -418,6 +445,8 @@ private:
   CQOptPopulation* mpPopulationDisplay;
 
   bool mAutoUpdateCheck;
+
+  std::deque< std::pair < CopasiUIActions, std::string > > mActionStack;
 
 #ifdef COPASI_SBW_INTEGRATION
 public:
