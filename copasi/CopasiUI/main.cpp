@@ -27,6 +27,7 @@
 
 #include <QApplication>
 #include <QLocale>
+#include <QDesktopServices>
 
 #define COPASI_MAIN
 
@@ -125,6 +126,8 @@ int main(int argc, char *argv[])
           CQUndoTester*  tester = new CQUndoTester(&a, NULL);
           tester->startTestIn(1000);
         }
+
+      QDesktopServices::setUrlHandler("copasi", pWindow, "slotHandleCopasiScheme");
 
       a.exec();
     }

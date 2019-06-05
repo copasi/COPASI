@@ -3983,7 +3983,7 @@ void CopasiUI3Window::performNextAction()
 
 }
 
-void CopasiUI3Window::slotHandleCopasiScheme(QUrl url)
+void CopasiUI3Window::slotHandleCopasiScheme(const QUrl& url)
 {
   if (url.scheme() != "copasi")
     return;

@@ -197,7 +197,7 @@ public slots:
   void slotFileOpen(QString file = QString::null);
   void slotFileOpenFromUrl(QString url = QString::null);
 
-  void slotHandleCopasiScheme(QUrl url);
+  void slotHandleCopasiScheme(const QUrl& url);
 
 public:
   /**
