@@ -1,4 +1,14 @@
 #!/bin/bash
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
@@ -17,6 +27,9 @@
 THIS_DIR=$(cd `dirname $0` && pwd)
 DEST_DIR=~/.local/share/applications
 COPASI_DIR=$1
+
+TARGET=${DEST_DIR}/COPASI.desktop
+
 # bail if desktop icon exists
 if [ -f "${TARGET}" ]
 then
@@ -47,20 +60,19 @@ fi
 # get full path to it
 COPASI_DIR=$(cd $1 && pwd)
 
-if [ ! -d "${DEST_DIR}"]
+if [ ! -d "${DEST_DIR}" ]
 then
   mkdir ${DEST_DIR}
 fi
-
-TARGET=${DEST_DIR}/COPASI.desktop
 
 echo "[Desktop Entry]" > ${TARGET}
 echo "Version=1.0" >> ${TARGET}
 echo "Terminal=false" >> ${TARGET}
 echo "Type=Application" >> ${TARGET}
 echo "Name=COPASI" >> ${TARGET}
-echo "Exec=${COPASI_DIR}/bin/CopasiUI %f" >> ${TARGET}
+echo "Exec=${COPASI_DIR}/bin/CopasiUI %u" >> ${TARGET}
 echo "NoDisplay=false"  >> ${TARGET}
+echo "MimeType=x-scheme-handler/copasi" >> ${TARGET}
 if [ -f "${COPASI_DIR}/share/copasi/icons/Copasi48-Alpha.xpm" ]
 then
   echo "Icon=${COPASI_DIR}/share/copasi/icons/Copasi48-Alpha.xpm" >> ${TARGET}
@@ -68,5 +80,8 @@ fi
 
 echo "The desktop file has now been created in:"
 echo " ${TARGET}"
-
-
+echo ""
+echo "Now register the copasi URL scheme with: " 
+echo ""
+echo "xdg-settings set default-url-scheme-handler copasi COPASI.desktop"
+echo ""
