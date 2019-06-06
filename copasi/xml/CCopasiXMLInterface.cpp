@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -445,7 +450,11 @@ bool CCopasiXMLInterface::saveParameter(const CCopasiParameter & parameter)
 
         if (!CDirEntry::isRelativePath(File) &&
             !CDirEntry::makePathRelative(File, mPWD))
-          File = CDirEntry::fileName(File);
+          {
+            // the following code, will break the working filename
+            // File = CDirEntry::fileName(File);
+            CCopasiMessage(CCopasiMessage::WARNING, "Couldn't create relative path for File '%s' to '%s', leaving the absolute path.", File.c_str(), mPWD.c_str());
+          }
 
         Attributes.add("value", File);
 
