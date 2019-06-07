@@ -358,7 +358,8 @@ CopasiUI3Window::CopasiUI3Window():
   setAcceptDrops(true);
   mpListView->mpTreeView->setFocus();
 
-  checkForUpdates();
+
+  QTimer::singleShot(10, this, SLOT(slotAutoCheckForUpdates()));
 }
 
 CopasiUI3Window::~CopasiUI3Window()
@@ -2642,8 +2643,24 @@ void CopasiUI3Window::setApplicationFont()
   qApp->setStyleSheet(" * {font : }");
 }
 
-void CopasiUI3Window::checkForUpdates()
+void CopasiUI3Window::slotAutoCheckForUpdates()
 {
+
+  if (CRootContainer::getConfiguration()->getCheckForUpdates().needToConfirmCheckForUpdate())
+    {
+      auto result = CQMessageBox::question(this, "Enable check for updates?",
+                                           "This version of COPASI can notify you in case a new version of COPASI is available. You can change the frequency of the checks (default weekly), or enable/disable the check later in the Preferences dialog. To manually check for an update use 'Help\\Check for Update' at any time.\n\nWould you like to enable the automatic update feature?",
+                                           QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No,
+                                           QMessageBox::StandardButton::No);
+
+      if (result == QMessageBox::StandardButton::No)
+        {
+          CRootContainer::getConfiguration()->getCheckForUpdates().setConfirmedCheckForUpdate(true);
+          CRootContainer::getConfiguration()->getCheckForUpdates().setEnabled(false);
+          CRootContainer::getConfiguration()->save();
+        }
+    }
+
   if (!CRootContainer::getConfiguration()->getCheckForUpdates().checkRequired()) return;
 
   mAutoUpdateCheck = true;
