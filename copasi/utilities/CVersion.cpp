@@ -28,12 +28,12 @@
  * (C) Pedro Mendes 2001
  */
 #include <sstream>
-
 #include "copasi.h"
 
 #include "CVersion.h"
 #include "utility.h"
 #include "CopasiVersion.h"
+#include "copasi/core/CVector.h"
 
 // initialize the global version instance
 // static
@@ -212,4 +212,44 @@ void CVersion::setString()
     mVersion = StringPrint("%d.%d.%s (%s)", mMajor, mMinor, Build.str().c_str(), mComment.c_str());
   else
     mVersion = StringPrint("%d.%d.%s (Source)", mMajor, mMinor, Build.str().c_str());
+}
+
+const CVersion &  CVersion::setVersion(const std::string & version)
+{
+  const char * pModified;
+  CVector< char > Build(version.length() + 1);
+  Build = 0x0;
+
+  CVector< char > Comment(version.length() + 1);
+  Comment = 0x0;
+
+  if (3 == sscanf(version.c_str(), "%d.%d (Build %s)", &mMajor, &mMinor, Build.array()))
+    {
+      mComment = "stable";
+      mBuild = strToInt(Build.array(), &pModified);
+      mSourcesModified = (*pModified == '+');
+    }
+  else if (4 == sscanf(version.c_str(), "%d.%d.%s (%s)", &mMajor, &mMinor, Build.array(), Comment.array()))
+    {
+      char c = Comment[strlen(Comment.array())];
+
+      if (c == ')')
+        Comment[strlen(Comment.array()) - 1] = 0x0;
+
+      mComment = Comment.array();
+      mBuild = strToInt(Build.array(), &pModified);
+      mSourcesModified = (*pModified == '+');
+    }
+  else
+    {
+      mMajor = 0;
+      mMinor = 0;
+      mBuild = 0;
+      mSourcesModified = false;
+      mComment = "";
+    }
+
+  setString();
+
+  return *this;
 }

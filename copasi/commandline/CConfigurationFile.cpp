@@ -664,7 +664,6 @@ CCheckForUpdates & CConfigurationFile::getCheckForUpdates()
   return *mpCheckForUpdates;
 }
 
-
 CCheckForUpdates::CCheckForUpdates(const std::string & name, const CDataContainer * pParent)
   : CCopasiParameterGroup(name, pParent)
   , mpEnabled(NULL)
@@ -709,7 +708,9 @@ void CCheckForUpdates::initializeParameter()
   mpSkipVersion = assertParameter("Skip Version", CCopasiParameter::Type::STRING, std::string(""));
   mpLastChecked = assertParameter("Last Checked", CCopasiParameter::Type::STRING, std::string("0000-00-00T00:00:00Z"));
   mpInterval = assertParameter("Interval", CCopasiParameter::Type::UINT, (unsigned C_INT32) 7);
-  mpConfirmedCheck = assertParameter("Confirmed Check for Update", CCopasiParameter::Type::BOOL, false);
+  mpConfirmedCheck = assertParameter("Confirmed Check for Update", CCopasiParameter::Type::STRING, std::string(""));
+
+  getParameter("Confirmed Check for Update")->setUserInterfaceFlag(CCopasiParameter::UserInterfaceFlag::None);
 }
 
 bool CCheckForUpdates::isEnabled() const
@@ -719,12 +720,12 @@ bool CCheckForUpdates::isEnabled() const
 
 void CCheckForUpdates::setConfirmedCheckForUpdate(bool flag)
 {
-  *mpConfirmedCheck = flag;
+  *mpConfirmedCheck = flag ? CVersion::VERSION.getVersion() : "";
 }
 
 bool CCheckForUpdates::needToConfirmCheckForUpdate() const
 {
-  return mpConfirmedCheck;
+  return (CVersion().setVersion(*mpConfirmedCheck) < CVersion::VERSION);
 }
 
 void CCheckForUpdates::setEnabled(bool enabled)
@@ -734,7 +735,7 @@ void CCheckForUpdates::setEnabled(bool enabled)
 
 bool CCheckForUpdates::skipVersion(const CVersion & version) const
 {
-  return (*mpSkipVersion == version.getVersion());
+  return (version <= CVersion().setVersion(*mpSkipVersion));
 }
 
 bool CCheckForUpdates::checkRequired() const

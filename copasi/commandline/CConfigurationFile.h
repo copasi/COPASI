@@ -95,7 +95,7 @@ private:
 
   unsigned C_INT32 * mpInterval;
 
-  bool* mpConfirmedCheck;
+  std::string * mpConfirmedCheck;
 };
 
 class CRecentFiles : public CCopasiParameterGroup
@@ -635,7 +635,6 @@ private:
   C_INT32* mpPrecision;
 
   CCheckForUpdates * mpCheckForUpdates;
-
 };
 
 #endif // COPASI_CConfigurationFile
