@@ -186,7 +186,7 @@ QModelIndex CQParameterGroupDM::index(int row, int column, const QModelIndex & p
 
             for (; itRow != endRow; ++itRow)
               {
-                if ((*itRow)->isBasic()) --Row;
+                if ((*itRow)->isBasic() && !(*itRow)->isUnsupported()) --Row;
 
                 if (Row == -1)
                   {
@@ -216,7 +216,7 @@ QModelIndex CQParameterGroupDM::index(int row, int column, const QModelIndex & p
 
       for (; itRow != endRow; ++itRow)
         {
-          if ((*itRow)->isBasic()) --Row;
+          if ((*itRow)->isBasic() && !(*itRow)->isUnsupported()) --Row;
 
           if (Row == -1)
             {
@@ -251,8 +251,7 @@ QModelIndex CQParameterGroupDM::parent(const QModelIndex & index) const
 // virtual
 int CQParameterGroupDM::rowCount(const QModelIndex & parent) const
 {
-  CCopasiParameter::UserInterfaceFlag Exclude(CCopasiParameter::UserInterfaceFlag::None);
-  //CCopasiParameter::UserInterfaceFlag Exclude(CCopasiParameter::eUserInterfaceFlag::unsupported);
+  CCopasiParameter::UserInterfaceFlag Exclude(CCopasiParameter::eUserInterfaceFlag::unsupported);
   CCopasiParameter::UserInterfaceFlag Require(mAdvanced ? CCopasiParameter::UserInterfaceFlag::None : CCopasiParameter::eUserInterfaceFlag::basic);
 
   if (!parent.isValid())
