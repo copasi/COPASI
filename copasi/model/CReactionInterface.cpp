@@ -437,16 +437,22 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
 
       CMetab Species(itSpecies->first);
 
+      size_t compIndex = mpModel->getCompartments().getIndex(itSpecies->second);
+      C_FLOAT64 volume = compIndex == C_INVALID_INDEX ? 1.0 : mpModel->getCompartments()[compIndex].getInitialValue();
+
+      if (volume != volume)
+        volume = 1.0;
+
       switch (framework)
         {
           case CCore::Framework::Concentration:
             Species.setInitialConcentration(1.0);
-            Species.setInitialValue(mpModel->getQuantity2NumberFactor());
+            Species.setInitialValue(mpModel->getQuantity2NumberFactor() * volume); // model compile will use this value to compute initial concentration
             break;
 
           case CCore::Framework::ParticleNumbers:
             Species.setInitialValue(100.0);
-            Species.setInitialConcentration(100.0 * mpModel->getNumber2QuantityFactor());
+            Species.setInitialConcentration(100.0 * mpModel->getNumber2QuantityFactor()); // value is ignored
             break;
         }
 
