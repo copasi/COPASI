@@ -1495,7 +1495,7 @@ bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bo
 
       if (includeCOPASI)
         {
-          addCopasiFileToArchive(&archive, "./" + fileBaseName + "/copasi/model.cps", pProgressReport);
+          addCopasiFileToArchive(&archive, "./" + fileBaseName + "/copasi/" + fileBaseName + ".cps", pProgressReport);
         }
 
       // restore filenames
