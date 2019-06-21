@@ -298,7 +298,7 @@ bool CConfigurationFile::save()
 
   XML.setConfiguration(*this);
 
-  bool success = XML.CCopasiXMLInterface::save(ConfigFile, ConfigFile);
+  bool success = XML.CCopasiXMLInterface::save(ConfigFile, CDirEntry::dirName(ConfigFile));
 
   return success;
 }
