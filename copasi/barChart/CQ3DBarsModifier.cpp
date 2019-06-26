@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -631,7 +636,7 @@ void CQ3DBarsModifier::setReflection(bool enabled)
 
 
 CQCustomInputHandler::CQCustomInputHandler(QAbstract3DGraph *graph, QObject *parent)
-  : Q3DInputHandler(parent)
+  : QTouch3DInputHandler(parent)
   , m_graph(graph)
   , m_axisX(NULL)
   , m_axisY(NULL)
