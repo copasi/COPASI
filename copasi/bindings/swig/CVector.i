@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -103,5 +108,11 @@ typedef CVector<CDataObject*> ObjectVector;
 %template(SizeTVector) CVector<size_t>;
 %template(ObjectVectorCore) CVectorCore<CDataObject*>;
 %template(ObjectVector) CVector<CDataObject*>;
+%template(ObjectVectorCore) CVectorCore<CDataObject*>;
+%template(ConstObjectVector) CVector<const CDataObject*>;
+%template(ConstFunctionVector) CVector<const CFunction*>;
+%template(ConstFunctionVectorCore) CVectorCore<const CFunction*>;
+%template(ConstObjectInterfaceVector) CVector<const CObjectInterface*>;
+%template(ConstObjectInterfaceVectorCore) CVectorCore<const CObjectInterface*>;
 
 
