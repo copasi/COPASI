@@ -2262,9 +2262,8 @@ const std::vector< const CDataObject * > & CReaction::getParameterObjects(const 
 {
   std::map< std::string, size_t >::const_iterator found = mParameterNameToIndex.find(name);
 
-  if (found != mParameterNameToIndex.end());
-
-  return getParameterObjects(found->second);
+  if (found != mParameterNameToIndex.end())
+    return getParameterObjects(found->second);
 
   return getParameterObjects(C_INVALID_INDEX);
 }
