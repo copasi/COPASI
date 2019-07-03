@@ -158,6 +158,12 @@ public:
                   const std::string & creator = "");
 
   /**
+   * Set a version number
+   * @param const std::string & version
+   */
+  const CVersion & setVersion(const std::string & version);
+
+  /**
    * Compare Versions
    * @param const CVersion & version
    * @return bool isCompatible

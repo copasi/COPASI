@@ -182,6 +182,7 @@ public slots:
   void slotCopy();
   void slotCheckForUpdate();
   void slotCheckForUpdateFinished(bool flag);
+  void slotAutoCheckForUpdates();
   void slotClearSbmlIds();
 
   /**
@@ -328,8 +329,6 @@ private:
   void updateTitle();
 
   void setApplicationFont();
-
-  void checkForUpdates();
 
   DataModelGUI* mpDataModelGUI; // to keep track of the data model..
   CDataModel* mpDataModel;

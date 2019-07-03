@@ -64,6 +64,14 @@ public:
    */
   virtual ~CCheckForUpdates();
 
+  void setEnabled(bool enabled);
+
+  bool isEnabled() const;
+
+  void setConfirmedCheckForUpdate(bool flag);
+
+  bool needToConfirmCheckForUpdate() const;
+
   bool skipVersion(const CVersion & version) const;
 
   bool checkRequired() const;
@@ -86,6 +94,8 @@ private:
   std::string * mpLastChecked;
 
   unsigned C_INT32 * mpInterval;
+
+  std::string * mpConfirmedCheck;
 };
 
 class CRecentFiles : public CCopasiParameterGroup
@@ -431,6 +441,9 @@ public:
    */
   void setDoublePrecision(C_INT32 precision);
 
+  /**
+   * @return auto update settings
+   */
   CCheckForUpdates & getCheckForUpdates();
 
 private:

@@ -298,7 +298,7 @@ bool CConfigurationFile::save()
 
   XML.setConfiguration(*this);
 
-  bool success = XML.CCopasiXMLInterface::save(ConfigFile, ConfigFile);
+  bool success = XML.CCopasiXMLInterface::save(ConfigFile, CDirEntry::dirName(ConfigFile));
 
   return success;
 }
@@ -670,6 +670,7 @@ CCheckForUpdates::CCheckForUpdates(const std::string & name, const CDataContaine
   , mpSkipVersion(NULL)
   , mpLastChecked(NULL)
   , mpInterval(NULL)
+  , mpConfirmedCheck(NULL)
 {
   initializeParameter();
 }
@@ -681,6 +682,7 @@ CCheckForUpdates::CCheckForUpdates(const CCheckForUpdates & src,
   , mpSkipVersion(NULL)
   , mpLastChecked(NULL)
   , mpInterval(NULL)
+  , mpConfirmedCheck(NULL)
 {
   initializeParameter();
 }
@@ -692,6 +694,7 @@ CCheckForUpdates::CCheckForUpdates(const CCopasiParameterGroup & src,
   , mpSkipVersion(NULL)
   , mpLastChecked(NULL)
   , mpInterval(NULL)
+  , mpConfirmedCheck(NULL)
 {
   initializeParameter();
 }
@@ -705,11 +708,34 @@ void CCheckForUpdates::initializeParameter()
   mpSkipVersion = assertParameter("Skip Version", CCopasiParameter::Type::STRING, std::string(""));
   mpLastChecked = assertParameter("Last Checked", CCopasiParameter::Type::STRING, std::string("0000-00-00T00:00:00Z"));
   mpInterval = assertParameter("Interval", CCopasiParameter::Type::UINT, (unsigned C_INT32) 7);
+  mpConfirmedCheck = assertParameter("Confirmed Check for Update", CCopasiParameter::Type::STRING, std::string(""));
+
+  getParameter("Confirmed Check for Update")->setUserInterfaceFlag(CCopasiParameter::UserInterfaceFlag::None);
+}
+
+bool CCheckForUpdates::isEnabled() const
+{
+  return *mpEnabled;
+}
+
+void CCheckForUpdates::setConfirmedCheckForUpdate(bool flag)
+{
+  *mpConfirmedCheck = flag ? CVersion::VERSION.getVersion() : "";
+}
+
+bool CCheckForUpdates::needToConfirmCheckForUpdate() const
+{
+  return (CVersion().setVersion(*mpConfirmedCheck) < CVersion::VERSION);
+}
+
+void CCheckForUpdates::setEnabled(bool enabled)
+{
+  *mpEnabled = enabled;
 }
 
 bool CCheckForUpdates::skipVersion(const CVersion & version) const
 {
-  return (*mpSkipVersion == version.getVersion());
+  return (version <= CVersion().setVersion(*mpSkipVersion));
 }
 
 bool CCheckForUpdates::checkRequired() const

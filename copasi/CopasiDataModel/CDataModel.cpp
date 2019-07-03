@@ -704,7 +704,7 @@ CDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessRepo
 
       try
         {
-          if (!XML.CCopasiXMLInterface::save(TmpFileName, FileName))
+          if (!XML.CCopasiXMLInterface::save(TmpFileName, CDirEntry::dirName(FileName)))
             {
               CDirEntry::remove(TmpFileName);
               success = false;
@@ -725,7 +725,7 @@ CDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessRepo
     {
       try
         {
-          if (!XML.CCopasiXMLInterface::save(FileName, FileName))
+          if (!XML.CCopasiXMLInterface::save(FileName, CDirEntry::dirName(FileName)))
             return false;
         }
 
@@ -1495,7 +1495,7 @@ bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bo
 
       if (includeCOPASI)
         {
-          addCopasiFileToArchive(&archive, "./" + fileBaseName + "/copasi/model.cps", pProgressReport);
+          addCopasiFileToArchive(&archive, "./" + fileBaseName + "/copasi/" + fileBaseName + ".cps", pProgressReport);
         }
 
       // restore filenames

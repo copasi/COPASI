@@ -48,6 +48,6 @@ static const char* shinyUIString = "\n"
                                    "            )\n"
                                    "  ),\n"
                                    "  tags$hr(),\n"
-                                   "  h5('This web-based interface uses Shiny package in R and CoRC, which a high-level R API for COPASI. The CoRC package can be downloaded from: https://jpahle.github.io/CoRC.')\n"
+                                   "  tagList('This web-based interface uses Shiny package in R and CoRC, which a high-level R API for COPASI. The CoRC package can be downloaded from:', a('https://jpahle.github.io/CoRC', href= 'https://jpahle.github.io/CoRC'))\n"
                                    ")\n"
                                    "";

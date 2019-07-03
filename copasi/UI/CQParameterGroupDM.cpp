@@ -186,7 +186,7 @@ QModelIndex CQParameterGroupDM::index(int row, int column, const QModelIndex & p
 
             for (; itRow != endRow; ++itRow)
               {
-                if ((*itRow)->isBasic()) --Row;
+                if ((*itRow)->isBasic() && !(*itRow)->isUnsupported()) --Row;
 
                 if (Row == -1)
                   {
@@ -216,7 +216,7 @@ QModelIndex CQParameterGroupDM::index(int row, int column, const QModelIndex & p
 
       for (; itRow != endRow; ++itRow)
         {
-          if ((*itRow)->isBasic()) --Row;
+          if ((*itRow)->isBasic() && !(*itRow)->isUnsupported()) --Row;
 
           if (Row == -1)
             {

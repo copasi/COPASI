@@ -13,15 +13,15 @@
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleVersion</key>
-  <string>%COPASI_VERSION%</string>
+  <string>${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}</string>
   <key>CFBundleShortVersionString</key>
-  <string>%COPASI_VERSION%</string>
+  <string>${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}</string>
   <key>CFBundleLongVersionString</key>
-  <string>%COPASI_VERSION%</string>
+  <string>${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}</string>
   <key>CFBundleGetInfoString</key>
-  <string>COPASI %COPASI_VERSION% is distributed under the Artistic License 2.0.</string>
+  <string>COPASI ${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD} is distributed under the Artistic License 2.0.</string>
   <key>NSHumanReadableCopyright</key>
-  <string>COPASI %COPASI_VERSION% is distributed under the Artistic License 2.0.</string>
+  <string>COPASI ${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD} is distributed under the Artistic License 2.0.</string>
   <key>CFBundleExecutable</key>
   <string>CopasiUI</string>
   <key>CFBundleIdentifier</key>

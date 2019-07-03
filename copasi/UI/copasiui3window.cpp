@@ -358,7 +358,7 @@ CopasiUI3Window::CopasiUI3Window():
   setAcceptDrops(true);
   mpListView->mpTreeView->setFocus();
 
-  checkForUpdates();
+  QTimer::singleShot(10, this, SLOT(slotAutoCheckForUpdates()));
 }
 
 CopasiUI3Window::~CopasiUI3Window()
@@ -1041,7 +1041,6 @@ void CopasiUI3Window::slotFileOpen(QString file)
       slotHandleCopasiScheme(url);
       return;
     }
-
 
   // gives the file information to the datamodel to handle it
 
@@ -2642,8 +2641,21 @@ void CopasiUI3Window::setApplicationFont()
   qApp->setStyleSheet(" * {font : }");
 }
 
-void CopasiUI3Window::checkForUpdates()
+void CopasiUI3Window::slotAutoCheckForUpdates()
 {
+
+  if (CRootContainer::getConfiguration()->getCheckForUpdates().needToConfirmCheckForUpdate())
+    {
+      QMessageBox::StandardButton result = CQMessageBox::question(this, "Enable check for updates?",
+                                           "This version of COPASI can notify you in case a new version of COPASI is available. You can change the frequency of the checks (default weekly), or enable/disable the check later in the Preferences dialog. To manually check for an update use 'Help\\Check for Update' at any time.\n\nWould you like to enable the automatic update feature?",
+                                           QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No,
+                                           QMessageBox::StandardButton::No);
+
+      CRootContainer::getConfiguration()->getCheckForUpdates().setEnabled(result == QMessageBox::StandardButton::Yes);
+      CRootContainer::getConfiguration()->getCheckForUpdates().setConfirmedCheckForUpdate(true);
+      CRootContainer::getConfiguration()->save();
+    }
+
   if (!CRootContainer::getConfiguration()->getCheckForUpdates().checkRequired()) return;
 
   mAutoUpdateCheck = true;
@@ -3758,7 +3770,6 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
       return;
     }
 
-
   // create temp filename
   std::string TmpFileName;
   COptions::getValue("Tmp", TmpFileName);
@@ -3771,7 +3782,6 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
 
 #include <QUrlQuery>
 #include <copasi/report/COutputAssistant.h>
-
 
 void CopasiUI3Window::activateElement(const std::string& activate)
 {
@@ -3816,7 +3826,7 @@ void CopasiUI3Window::removeReportTargets()
   auto& taskList = *mpDataModel->getTaskList();
   std::stringstream str;
 
-for (auto & task : taskList)
+  for (auto & task : taskList)
     {
       std::string target = task.getReport().getTarget();
 
@@ -3835,7 +3845,6 @@ for (auto & task : taskList)
   CQMessageBox::information(this, "Removed Report targets",
                             QString("The following report targets have been removed\n\n%1")
                             .arg(FROM_UTF8(removedReports)));
-
 }
 
 std::string mapTaskNameToWidgetName(const std::string& name)
@@ -3980,7 +3989,6 @@ void CopasiUI3Window::performNextAction()
 
       performNextAction();
     }
-
 }
 
 void CopasiUI3Window::slotHandleCopasiScheme(const QUrl& url)
@@ -4023,7 +4031,6 @@ void CopasiUI3Window::slotHandleCopasiScheme(const QUrl& url)
     }
 
   performNextAction();
-
 }
 
 void CopasiUI3Window::slotCheckForUpdate()
@@ -4078,19 +4085,13 @@ bool getVersionFromFile(const std::string& fileName, CVersion & latest)
   if (!doc.isObject())
     return false;
 
-  QRegExp rx("\\S+ (\\d+)\\.(\\d+) \\(\\S+ (\\d+)\\)");
+  std:: string Version = TO_UTF8(doc.object().value(QString::fromUtf8("name")).toString());
 
-  if (rx.indexIn(doc.object().value(QString::fromUtf8("name")).toString()) >= 0 && rx.captureCount() == 3)
-    {
-      int major = rx.cap(1).toInt();
-      int minor = rx.cap(2).toInt();
-      int release = rx.cap(3).toInt();
-      latest.setVersion(major, minor, release, false, "stable", "");
+  if (Version.empty()) return false;
 
-      return true;
-    }
+  latest.setVersion(Version.substr(7));
 
-  return false;
+  return true;
 }
 
 void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
@@ -4106,17 +4107,15 @@ void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
 
   if (success)
     {
-      if (mAutoUpdateCheck)
+      CRootContainer::getConfiguration()->getCheckForUpdates().setChecked();
+
+      if (mAutoUpdateCheck &&
+          CRootContainer::getConfiguration()->getCheckForUpdates().skipVersion(Latest))
         {
-          CRootContainer::getConfiguration()->getCheckForUpdates().setChecked();
+          mAutoUpdateCheck = false;
+          CRootContainer::getConfiguration()->save();
 
-          if (CRootContainer::getConfiguration()->getCheckForUpdates().skipVersion(Latest))
-            {
-              mAutoUpdateCheck = false;
-              CRootContainer::getConfiguration()->save();
-
-              return;
-            }
+          return;
         }
 
       std::string latestVersion = Latest.getVersion();
@@ -4170,11 +4169,8 @@ void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
             }
         }
 
-      if (mAutoUpdateCheck)
-        {
-          mAutoUpdateCheck = false;
-          CRootContainer::getConfiguration()->save();
-        }
+      mAutoUpdateCheck = false;
+      CRootContainer::getConfiguration()->save();
     }
   else if (mpDataModelGUI->getLastDownloadUrl() != "https://api.github.com/repos/copasi/COPASI/releases/latest")
     {
@@ -4193,7 +4189,6 @@ void CopasiUI3Window::slotClearSbmlIds()
 
   mpDataModel->getModel()->clearSbmlIds();
 }
-
 
 void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
 {
