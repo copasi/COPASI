@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -85,13 +90,18 @@ CMetabNameInterface::getDisplayName(const CModel* model,
 }
 
 std::string
-CMetabNameInterface::createUniqueDisplayName(const std::string & Metabolite, const std::string & compartment, const bool & quoted)
+CMetabNameInterface::createUniqueDisplayName(const std::string & metabolite, const std::string & compartment, const bool & quoted)
 {
   std::string Compartment = quoted ? quote(compartment, "{}") : compartment;
 
   if ((quoted && isNumber(Compartment)) ||
       (Compartment.find(' ') != std::string::npos && Compartment.find('"') == std::string::npos))
     Compartment = "\"" + Compartment + "\"";
+
+  std::string Metabolite(metabolite);
+
+  if (quoted && (Metabolite.find(' ') != std::string::npos && Metabolite.find('"') == std::string::npos))
+    Metabolite = "\"" + Metabolite + "\"";
 
   return Metabolite + '{' + Compartment + '}';
 }
@@ -137,13 +147,19 @@ CMetabNameInterface::getMetabolite(const CModel* model,
 
   if (compartment != "")
     {
+      std::string::size_type compPos = metabolite.find("{" + compartment + "}");
+      std::string metabName(metabolite);
+
+      if (compPos != std::string::npos)
+        metabName = metabolite.substr(0, compPos);
+
       Index = model->getCompartments().getIndex(compartment);
 
       if (Index != C_INVALID_INDEX)
         {
           const CCompartment *pCompartment = &model->getCompartments()[Index];
 
-          Index = pCompartment->getMetabolites().getIndex(metabolite);
+          Index = pCompartment->getMetabolites().getIndex(metabName);
 
           if (Index != C_INVALID_INDEX)
             return const_cast< CMetab * >(&pCompartment->getMetabolites()[Index]);
