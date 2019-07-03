@@ -802,7 +802,7 @@ void DataModelGUI::notifyChanges(const CUndoData::CChangeSet & changes)
 
               case CUndoData::Type::CHANGE:
                 Action = ListViews::Action::CHANGE;
-                CN = it->objectAfter;
+                CN = it->objectBefore;
                 break;
 
               case CUndoData::Type::REMOVE:
