@@ -319,7 +319,7 @@ CQBrowserPaneDM::CNode * CQBrowserPaneDM::findNodeFromId(const ListViews::Widget
 
 CQBrowserPaneDM::CNode * CQBrowserPaneDM::findNodeFromCN(const CCommonName & cn) const
 {
-  std::map< std::string, CNode * >::const_iterator found = mCN2Node.find(cn);
+  std::map< CRegisteredCommonName, CNode * >::const_iterator found = mCN2Node.find(cn);
 
   if (found != mCN2Node.end())
     {
@@ -918,7 +918,7 @@ void CQBrowserPaneDM::destroyNode(CNode * pNode)
 {
   if (!pNode->getCN().empty())
     {
-      std::map< std::string, CNode * >::iterator found = mCN2Node.find(pNode->getCN());
+      std::map< CRegisteredCommonName, CNode * >::iterator found = mCN2Node.find(pNode->getCN());
 
       if (found != mCN2Node.end() &&
           found->second == pNode)

@@ -186,7 +186,7 @@ private:
   CValidity::Severity mSeverityFilter;
   CValidity::Kind mKindFilter;
 
-  std::map< std::string, CNode * > mCN2Node;
+  std::map< CRegisteredCommonName, CNode * > mCN2Node;
   std::map< ListViews::WidgetType, CNode * > mId2Node;
 };
 
