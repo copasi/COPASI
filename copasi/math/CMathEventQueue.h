@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -70,8 +75,6 @@ public:
      * @return const C_FLOAT64 & executionTime
      */
     inline const C_FLOAT64 & getExecutionTime() const {return mExecutionTime;}
-
-    friend std::ostream &operator<<(std::ostream &os, const CKey & o);
 
     // Attributes
   private:
@@ -168,8 +171,6 @@ public:
      * Retrieve the priority
      */
     const C_FLOAT64 & getPriority() const;
-
-    friend std::ostream &operator<<(std::ostream &os, const CAction & o);
 
     // Attributes
   private:
