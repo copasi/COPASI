@@ -157,6 +157,7 @@ private:
                      const size_t & sortOrder,
                      CNode * pParent);
 
+  void updateMap(CNode * pNode, const CCommonName & OldCN);
   void updateNode(CNode * pNode, const CCommonName & CN);
 
   void destroyNode(CNode * pNode);

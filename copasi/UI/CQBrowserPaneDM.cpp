@@ -373,9 +373,67 @@ void CQBrowserPaneDM::remove(CNode * pNode)
 
 void CQBrowserPaneDM::rename(CNode * pNode, const QString & displayRole)
 {
-  if (pNode->getDisplayRole() != displayRole)
+  if (pNode->getDisplayRole() == displayRole) return;
+
+  const CCommonName & NewCN = pNode->getCN();
+  CCommonName OldCN;
+  std::string ObjectType;
+  std::string ObjectName;
+
+  pNode->getCN().split(OldCN, ObjectType, ObjectName);
+
+  OldCN += "[" + CCommonName::escape(TO_UTF8(pNode->getDisplayRole())) + "]";
+
+  // A renamed object has a new CN however the map still uses the old CN
+  updateMap(pNode, OldCN);
+  pNode->setDisplayRole(displayRole);
+
+  // Issue 2804: Renaming a compartment invalidates the map for all contained species
+  // and may effect their display name
+  if (pNode->getId() == ListViews::WidgetType::CompartmentDetail)
     {
-      pNode->setDisplayRole(displayRole);
+      std::map< std::string, CNode * >::iterator next = mCN2Node.lower_bound(OldCN);
+      size_t length = NewCN.length();
+
+      // Fetch the species by it's CN
+      CObjectInterface::ContainerList List;
+      List.push_back(mpCopasiDM);
+
+      while (next != mCN2Node.end() && next->first.find(OldCN) == 0)
+        {
+          CNode * pSpecies = next->second;
+          updateMap(pSpecies, OldCN + pSpecies->getCN().substr(length));
+          next = mCN2Node.lower_bound(OldCN);
+
+          // Species need to be handled differently
+          const CMetab * pMetab = dynamic_cast< const CMetab *>(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, pSpecies->getCN())));
+
+          if (pMetab == NULL) continue;
+
+          // We have an object  CN we can therefore determine the display role.
+          QString DisplayRole = FROM_UTF8(pMetab->getObjectName());
+
+          const CModel * pModel = pMetab->getModel();
+
+          if (pModel != NULL)
+            {
+              DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *pMetab, false));
+            }
+
+          if (DisplayRole != pSpecies->getDisplayRole())
+            {
+              pSpecies->setDisplayRole(DisplayRole);
+
+              if (mEmitDataChanged)
+                {
+                  QModelIndex Index = index(pSpecies);
+                  emit dataChanged(Index, Index);
+
+                  Index = index(static_cast< CNode * >(pSpecies->getParent()));
+                  emit dataChanged(Index, Index);
+                }
+            }
+        }
     }
 
   if (mEmitDataChanged)
@@ -697,7 +755,7 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
 
   if (pObject != NULL)
     {
-      // We have a CN we can there fore determine the display role.
+      // We have a CN we can therefore determine the display role.
       DisplayRole = FROM_UTF8(pObject->getObjectName());
 
       // Species need to be handled differently
@@ -901,6 +959,16 @@ CQBrowserPaneDM::CNode * CQBrowserPaneDM::createNode(const ListViews::WidgetType
   mId2Node[id] = pNode;
 
   return pNode;
+}
+
+void CQBrowserPaneDM::updateMap(CNode * pNode, const CCommonName & OldCN)
+{
+  if (pNode != NULL &&
+      pNode->getCN() != OldCN)
+    {
+      mCN2Node.erase(OldCN);
+      mCN2Node[pNode->getCN()] = pNode;
+    }
 }
 
 void CQBrowserPaneDM::updateNode(CNode * pNode, const CCommonName & CN)
