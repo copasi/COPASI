@@ -583,7 +583,7 @@ void CopasiUI3Window::slotFunctionDBLoad(QString dbFile)
     {
       dbFile =
         CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                          QString::null, "COPASI Function DB (*.cpk)",
+                                          QString(), "COPASI Function DB (*.cpk)",
                                           "Choose a file");
     }
 
@@ -636,7 +636,7 @@ CopasiUI3Window::slotParameterSetsLoad(QString dbFile)
     {
       dbFile =
         CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                          QString::null, "COPASI Parameter Sets (*.cpmp)",
+                                          QString(), "COPASI Parameter Sets (*.cpmp)",
                                           "Choose a file");
     }
 
@@ -1021,7 +1021,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
   if (file == "")
     newFile =
-      CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString::null,
+      CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString(),
                                         "COPASI Files (*.gps *.cps);;All Files (*)",
                                         "Choose a file");
   else
@@ -1192,7 +1192,7 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
       mpDataModelGUI->createModel();
     }
 
-  QString Message = QString::null;
+  QString Message = QString();
 
   if (msg.getNumber() != MCCopasiMessage + 1)
     {
@@ -1267,7 +1267,7 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
 
   if (file == "")
     newFile =
-      CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString::null,
+      CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString(),
                                         "COPASI Files (*.gps *.cps);;All Files (*)",
                                         "Choose a file");
   else
@@ -1678,7 +1678,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
   if (file == "")
     SBMLFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                        QString::null, "XML Files (*.xml);;All Files (*)",
+                                        QString(), "XML Files (*.xml);;All Files (*)",
                                         "Choose a file");
   else
     SBMLFile = file;
@@ -1786,7 +1786,7 @@ void CopasiUI3Window::slotExportSBML()
 
   while (Answer == QMessageBox::No)
     {
-      QString Default = QString::null;
+      QString Default = QString();
       assert(mpDataModel != NULL);
 
       if (mpDataModel->getFileName() != "")
@@ -1852,7 +1852,7 @@ void CopasiUI3Window::slotExportMathModel()
 
   while (Answer == QMessageBox::No)
     {
-      QString Default = QString::null;
+      QString Default = QString();
 
       if (mpDataModel->getFileName() != "")
         Default
@@ -2565,7 +2565,7 @@ void CopasiUI3Window::slotFrameworkChanged(int index)
 
 void CopasiUI3Window::slotCapture()
 {
-  QPixmap pixmap = QPixmap::grabWidget(mpListView->getCurrentWidget());
+  QPixmap pixmap = mpListView->getCurrentWidget()->grab();
   C_INT32 Answer = QMessageBox::No;
   QString fileName;
 
@@ -3263,7 +3263,7 @@ void CopasiUI3Window::slotImportSEDML(QString file)
   if (file == "")
     SEDMLFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                        QString::null, "SED-ML files (*.sedml *.xml);;All Files (*)",
+                                        QString(), "SED-ML files (*.sedml *.xml);;All Files (*)",
                                         "Choose a file");
   else
     SEDMLFile = file;
@@ -3398,7 +3398,7 @@ void CopasiUI3Window::slotExportSEDML()
 
   while (Answer == QMessageBox::No)
     {
-      QString Default = QString::null;
+      QString Default = QString();
       assert(CRootContainer::getDatamodelList()->size() > 0);
 
       if (mpDataModel->getFileName() != "")
@@ -3468,7 +3468,7 @@ void CopasiUI3Window::slotImportCombine(QString file)
   if (file == "")
     combineArchiveFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                        QString::null, "Combine Archive Files (*.omex;*.sbex;*.sedx);;All Files (*)",
+                                        QString(), "Combine Archive Files (*.omex;*.sbex;*.sedx);;All Files (*)",
                                         "Choose a file");
   else
     combineArchiveFile = file;

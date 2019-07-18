@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -380,7 +385,7 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
           pItem = new QTableWidgetItem(" ? ");
         }
 
-      pItem->setBackgroundColor(color);
+      pItem->setBackground(color);
       pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
       setItem((int) rowCounter, 4, pItem);
 
@@ -449,7 +454,7 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
                         {
                           pItem = new QTableWidgetItem("");
                           pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
-                          pItem->setBackgroundColor(color);
+                          pItem->setBackground(color);
                           setItem((int) rowCounter, k, pItem);
                         }
 
@@ -501,7 +506,7 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
                       pParamObject->getStatus() == CModelEntity::Status::FIXED)
                     {
                       pItem->setText(convertToQString(pParamObject->getInitialValue()));
-                      pItem->setTextColor(QColor(Qt::darkGray));
+                      pItem->setForeground(QColor(Qt::darkGray));
                     }
                 }
             }

@@ -35,7 +35,7 @@ CLNAResultWidget::CLNAResultWidget(QWidget *parent, const char *name, Qt::Window
   if (!name)
     setObjectName("CLNAResultWidget");
 
-  setWindowTitle(trUtf8("CLNAResultWidget"));
+  setWindowTitle("CLNAResultWidget");
   mWidgetLayout = new QGridLayout(this);
   mWidgetLayout->setObjectName("Layout");
   mCentralWidget = new CLNAResultSubwidget(this, "CLNAResultSubwidget");

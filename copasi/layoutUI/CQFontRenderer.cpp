@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -302,7 +307,7 @@ QFont CQFontRenderer::getFont(const CLFontSpec& spec)
 std::pair<double, double> CQFontRenderer::getTextureSize(const QFont& font, const std::string& text)
 {
   QFontMetrics fontMetrics(font);
-  int textWidthInPixels = fontMetrics.width(text.c_str()) + 2;
+  int textWidthInPixels = fontMetrics.horizontalAdvance(text.c_str()) + 2;
   int textHeightInPixels = fontMetrics.height() + 2;
   return std::pair<double, double>(textWidthInPixels, textHeightInPixels);
 }

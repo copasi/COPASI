@@ -126,7 +126,7 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
       if (newFile != "")
         CRootContainer::getConfiguration()->setWorkingDirectory(CDirEntry::dirName(TO_UTF8(newFile)));
       else
-        return QString::null;
+        return QString();
 
       if (pSelectedFilter->indexOf("(*)") >= 0)
         {

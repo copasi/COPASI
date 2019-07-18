@@ -69,7 +69,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WindowFlags f)
   if (!name)
     setObjectName("ScanWidget");
 
-  setWindowTitle(trUtf8("ScanWidget"));
+  setWindowTitle("ScanWidget");
   ScanWidgetLayout = new QGridLayout(this);
   ScanWidgetLayout->setMargin(11);
   ScanWidgetLayout->setSpacing(6);
