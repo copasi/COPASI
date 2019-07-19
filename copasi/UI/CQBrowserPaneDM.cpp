@@ -115,7 +115,8 @@ CQBrowserPaneDM::CQBrowserPaneDM(QObject * pParent):
   mSeverityFilter(),
   mKindFilter(),
   mCN2Node(),
-  mId2Node()
+  mId2Node(),
+  mpRenameHandler(NULL)
 {
   createStaticDM();
 
@@ -136,12 +137,18 @@ CQBrowserPaneDM::CQBrowserPaneDM(QObject * pParent):
   connect(dynamic_cast<CopasiUI3Window *>(CopasiUI3Window::getMainWindow()), SIGNAL(signalPreferenceUpdated()), this, SLOT(slotRefreshValidityFilters()));
 
   slotRefreshValidityFilters();
+
+  mpRenameHandler = new CRegisteredCommonName::ClassMemberRename< CQBrowserPaneDM >(this, &CQBrowserPaneDM::rename);
+  CRegisteredCommonName::registerHandler(mpRenameHandler);
 }
 
 // virtual
 CQBrowserPaneDM::~CQBrowserPaneDM()
 {
   pdelete(mpRoot);
+
+  CRegisteredCommonName::deregisterHandler(mpRenameHandler);
+  pdelete(mpRenameHandler);
 }
 
 // virtual
@@ -369,81 +376,6 @@ void CQBrowserPaneDM::remove(CNode * pNode)
   QModelIndex Parent = index(static_cast< CNode * >(pNode->getParent()));
 
   removeRows(pNode->getRow(), 1, Parent);
-}
-
-void CQBrowserPaneDM::rename(CNode * pNode, const QString & displayRole)
-{
-  if (pNode->getDisplayRole() == displayRole) return;
-
-  const CCommonName & NewCN = pNode->getCN();
-  CCommonName OldCN;
-  std::string ObjectType;
-  std::string ObjectName;
-
-  pNode->getCN().split(OldCN, ObjectType, ObjectName);
-
-  OldCN += "[" + CCommonName::escape(TO_UTF8(pNode->getDisplayRole())) + "]";
-
-  // A renamed object has a new CN however the map still uses the old CN
-  updateMap(pNode, OldCN);
-  pNode->setDisplayRole(displayRole);
-
-  // Issue 2804: Renaming a compartment invalidates the map for all contained species
-  // and may effect their display name
-  if (pNode->getId() == ListViews::WidgetType::CompartmentDetail)
-    {
-      std::map< std::string, CNode * >::iterator next = mCN2Node.lower_bound(OldCN);
-      size_t length = NewCN.length();
-
-      // Fetch the species by it's CN
-      CObjectInterface::ContainerList List;
-      List.push_back(mpCopasiDM);
-
-      while (next != mCN2Node.end() && next->first.find(OldCN) == 0)
-        {
-          CNode * pSpecies = next->second;
-          updateMap(pSpecies, OldCN + pSpecies->getCN().substr(length));
-          next = mCN2Node.lower_bound(OldCN);
-
-          // Species need to be handled differently
-          const CMetab * pMetab = dynamic_cast< const CMetab *>(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, pSpecies->getCN())));
-
-          if (pMetab == NULL) continue;
-
-          // We have an object  CN we can therefore determine the display role.
-          QString DisplayRole = FROM_UTF8(pMetab->getObjectName());
-
-          const CModel * pModel = pMetab->getModel();
-
-          if (pModel != NULL)
-            {
-              DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *pMetab, false));
-            }
-
-          if (DisplayRole != pSpecies->getDisplayRole())
-            {
-              pSpecies->setDisplayRole(DisplayRole);
-
-              if (mEmitDataChanged)
-                {
-                  QModelIndex Index = index(pSpecies);
-                  emit dataChanged(Index, Index);
-
-                  Index = index(static_cast< CNode * >(pSpecies->getParent()));
-                  emit dataChanged(Index, Index);
-                }
-            }
-        }
-    }
-
-  if (mEmitDataChanged)
-    {
-      QModelIndex Index = index(pNode);
-      emit dataChanged(Index, Index);
-
-      Index = index(static_cast< CNode * >(pNode->getParent()));
-      emit dataChanged(Index, Index);
-    }
 }
 
 void CQBrowserPaneDM::add(const ListViews::WidgetType & id,
@@ -708,6 +640,78 @@ void CQBrowserPaneDM::load(const ListViews::WidgetType & id)
     }
 }
 
+void CQBrowserPaneDM::rename(const std::string & oldCN, const std::string & newCN)
+{
+  if (oldCN == newCN) return;
+
+  std::map< std::string, CNode * >::iterator found = mCN2Node.find(oldCN);
+
+  if (found == mCN2Node.end()) return;
+
+  CNode * pNode = found->second;
+  mCN2Node.erase(found);
+
+  if (pNode == NULL) return;
+
+  mCN2Node[newCN] = pNode;
+
+  switch (pNode->getId())
+    {
+      case ListViews::WidgetType::CompartmentDetail:
+      case ListViews::WidgetType::SpeciesDetail:
+      case ListViews::WidgetType::ReactionDetail:
+      case ListViews::WidgetType::GlobalQuantityDetail:
+      case ListViews::WidgetType::EventDetail:
+      case ListViews::WidgetType::ParameterSetDetail:
+      case ListViews::WidgetType::PlotDetail:
+      case ListViews::WidgetType::ReportTemplateDetail:
+      case ListViews::WidgetType::FunctionDetail:
+      case ListViews::WidgetType::UnitDetail:
+        break;
+
+      default:
+        // No modification of the display role allowed.
+        return;
+        break;
+    }
+
+  // Fetch the object by it's CN
+  CObjectInterface::ContainerList List;
+  List.push_back(mpCopasiDM);
+  const CDataObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, pNode->getCN()));
+
+  if (pObject == NULL) return;
+
+  // We have an object CN we can therefore determine the display role.
+  QString DisplayRole = FROM_UTF8(pObject->getObjectName());
+
+  const CMetab * pMetab = dynamic_cast< const CMetab * >(pObject);
+
+  if (pMetab != NULL)
+    {
+      const CModel * pModel = pMetab->getModel();
+
+      if (pModel != NULL)
+        {
+          DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *pMetab, false));
+        }
+    }
+
+  if (DisplayRole != pNode->getDisplayRole())
+    {
+      pNode->setDisplayRole(DisplayRole);
+
+      if (mEmitDataChanged)
+        {
+          QModelIndex Index = index(pNode);
+          emit dataChanged(Index, Index);
+
+          Index = index(static_cast< CNode * >(pNode->getParent()));
+          emit dataChanged(Index, Index);
+        }
+    }
+}
+
 bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mpCopasiDM == NULL)
@@ -776,27 +780,6 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
     {
       case ListViews::RENAME:
       case ListViews::CHANGE:
-
-        switch (objectType)
-          {
-            case ListViews::ObjectType::COMPARTMENT:
-            case ListViews::ObjectType::METABOLITE:
-            case ListViews::ObjectType::REACTION:
-            case ListViews::ObjectType::MODELVALUE:
-            case ListViews::ObjectType::EVENT:
-            case ListViews::ObjectType::PLOT:
-            case ListViews::ObjectType::REPORT:
-            case ListViews::ObjectType::FUNCTION:
-            case ListViews::ObjectType::LAYOUT:
-            case ListViews::ObjectType::MODELPARAMETERSET:
-            case ListViews::ObjectType::UNIT:
-              rename(pNode, DisplayRole);
-              break;
-
-            default:
-              break;
-          }
-
         break;
 
       case ListViews::DELETE:
@@ -959,16 +942,6 @@ CQBrowserPaneDM::CNode * CQBrowserPaneDM::createNode(const ListViews::WidgetType
   mId2Node[id] = pNode;
 
   return pNode;
-}
-
-void CQBrowserPaneDM::updateMap(CNode * pNode, const CCommonName & OldCN)
-{
-  if (pNode != NULL &&
-      pNode->getCN() != OldCN)
-    {
-      mCN2Node.erase(OldCN);
-      mCN2Node[pNode->getCN()] = pNode;
-    }
 }
 
 void CQBrowserPaneDM::updateNode(CNode * pNode, const CCommonName & CN)
