@@ -33,7 +33,7 @@
 #include "qtUtilities.h"
 #include "CCopasiSelectionDialog.h"
 #include "CQMessageBox.h"
-#include "CQDoubleValidator.h"
+#include "CQValidator.h"
 
 #include "copasi/resourcesUI/CQIconResource.h"
 
@@ -367,17 +367,21 @@ void SliderSettingsDialog::init()
   mpExtendedOptionsButton->setText("Advanced >>");
   hideOptionsControls();
   this->setFixedSize(minimumSizeHint());
-  mpObjectValueEdit->setValidator(new CQDoubleValidator(this));
-  mpOriginalValueEdit->setValidator(new CQDoubleValidator(this));
-  mpMinValueEdit->setValidator(new CQDoubleValidator(this));
-  mpMaxValueEdit->setValidator(new CQDoubleValidator(this));
-  mpMinorTickSizeEdit->setValidator(new CQDoubleValidator(this));
-  QIntValidator* v = new QIntValidator(this);
-  v->setBottom(0);
-  mpNumMinorTicksEdit->setValidator(v);
-  v = new QIntValidator(this);
-  v->setBottom(0);
-  mpMinorMajorFactorEdit->setValidator(v);
+
+  mpObjectValueEdit->setValidator(new CQValidatorDouble(mpObjectValueEdit));
+  mpOriginalValueEdit->setValidator(new CQValidatorDouble(mpOriginalValueEdit));
+  mpMinValueEdit->setValidator(new CQValidatorDouble(mpMinValueEdit));
+  mpMaxValueEdit->setValidator(new CQValidatorDouble(mpMaxValueEdit));
+  mpMinorTickSizeEdit->setValidator(new CQValidatorDouble(mpMinorTickSizeEdit));
+
+  CQValidatorInt * pValidator = new CQValidatorInt(mpNumMinorTicksEdit);
+  pValidator->setRange(0, std::numeric_limits< int >::max());
+  mpNumMinorTicksEdit->setValidator(pValidator);
+
+  pValidator = new CQValidatorInt(mpMinorMajorFactorEdit);
+  pValidator->setRange(0, std::numeric_limits< int >::max());
+  mpMinorMajorFactorEdit->setValidator(pValidator);
+
   updateInputFields();
 }
 
