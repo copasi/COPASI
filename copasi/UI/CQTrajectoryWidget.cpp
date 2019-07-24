@@ -42,6 +42,7 @@
 #include "copasi/utilities/CCopasiException.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/CParameterEstimationUtils.h"
 
 /*
  *  Constructs a CQTrajectoryWidget which is a child of 'parent', with the
@@ -70,14 +71,14 @@ void CQTrajectoryWidget::init()
 
   mpHeaderWidget->setTaskName("Time Course");
 
-  verticalLayout->insertWidget(0, mpHeaderWidget);  // header
+  mpVerticalLayout->insertWidget(0, mpHeaderWidget);  // header
   // verticalLayout->insertSpacing(1, 14);       // space between header and body
 
   mpMethodWidget->setValidMethods(CTrajectoryTask::ValidMethods);
   mpMethodWidget->showMethodParameters(true);
-  verticalLayout->addWidget(mpMethodWidget);
+  mpVerticalLayout->addWidget(mpMethodWidget);
 
-  verticalLayout->addWidget(mpBtnWidget);     // 'footer'
+  mpVerticalLayout->addWidget(mpBtnWidget);     // 'footer'
 
   slotOutputDelay(false);
 
@@ -189,30 +190,17 @@ void CQTrajectoryWidget::slotAutomaticIntervals(bool checked)
 
 void CQTrajectoryWidget::slotOutputEvent(bool checked)
 {
-  mpCheckOutputEvent2->setChecked(checked);
   mpCheckOutputEvent->setChecked(checked);
 }
 
 void CQTrajectoryWidget::slotStartInSteadyState(bool checked)
 {
   mpCheckStartInSteadyState->setChecked(checked);
-  mpCheckStartInSteadyState2->setChecked(checked);
 }
 
 void CQTrajectoryWidget::slotSaveOutput(bool checked)
 {
   mpCheckSave->setChecked(checked);
-  mpCheckSave2->setChecked(checked);
-}
-
-void CQTrajectoryWidget::slotSwitchToValues()
-{
-  mpStackWidget->setCurrentWidget(pageNumbers);
-}
-
-void CQTrajectoryWidget::slotSwitchToTrajectory()
-{
-  mpStackWidget->setCurrentWidget(pageTrajectory);
 }
 
 bool CQTrajectoryWidget::saveTaskProtected()
@@ -309,7 +297,7 @@ bool CQTrajectoryWidget::saveTaskProtected()
       mChanged = true;
     }
 
-  bool useValues = mpStackWidget->currentIndex() == 1;
+  bool useValues = (mpTabWidget->currentWidget() == mpValuesWidget);
 
   if (trajectoryproblem->getUseValues() != useValues)
     {
@@ -317,14 +305,13 @@ bool CQTrajectoryWidget::saveTaskProtected()
       mChanged = true;
     }
 
-  std::string valueString = TO_UTF8(txtValues->text());
+  std::string valueString = TO_UTF8(mpEditValues->text());
 
   if (trajectoryproblem->getValueString() != valueString)
     {
       trajectoryproblem->setValues(valueString);
       mChanged = true;
     }
-
 
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
@@ -384,12 +371,12 @@ bool CQTrajectoryWidget::loadTaskProtected()
 
   updateIntervals();
 
-  txtValues->setText(FROM_UTF8(TrajectoryProblem->getValueString()));
+  mpEditValues->setText(FROM_UTF8(TrajectoryProblem->getValueString()));
 
   if (TrajectoryProblem->getUseValues())
-    slotSwitchToValues();
+    mpTabWidget->setCurrentWidget(mpValuesWidget);
   else
-    slotSwitchToTrajectory();
+    mpTabWidget->setCurrentWidget(mpDurationWidget);
 
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
@@ -446,7 +433,27 @@ void CQTrajectoryWidget::updateIntervals()
 {
   assert(mpDataModel != NULL);
   C_FLOAT64 InitialTime = mpDataModel->getModel()->getInitialTime();
-  C_FLOAT64 Duration = mpEditDuration->text().toDouble();
+  C_FLOAT64 Duration;
+
+  if (mpTabWidget->currentWidget() == mpValuesWidget)
+    {
+      std::set< C_FLOAT64 > Values;
+
+      std::vector< std::string > elems;
+      ResultParser::split(TO_UTF8(mpEditValues->text()), std::string(",; |\n\t\r"), elems);
+
+      for (std::string & number : elems)
+        {
+          Values.insert(ResultParser::saveToDouble(number));
+        }
+
+      Duration = Values.size() ? *Values.rbegin() : std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+    }
+  else
+    {
+      Duration = mpEditDuration->text().toDouble();
+    }
+
   C_FLOAT64 OutputStartTime = InitialTime;
 
   if (mpCheckDelay->isChecked())
@@ -544,4 +551,5 @@ void CQTrajectoryWidget::showUnits()
   mpCheckDelay->setText("Suppress Output Before" + TimeUnits);
   mpLblIntegrationInterval->setText("Integration Interval" + TimeUnits);
   mpLblOutputInterval->setText("Output Interval" + TimeUnits);
+  mpLblValues->setText("Values" + TimeUnits);
 }

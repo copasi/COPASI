@@ -241,7 +241,6 @@ bool CTrajectoryTask::process(const bool& useInitialValues)
   return processTrajectory(useInitialValues);
 }
 
-
 bool CTrajectoryTask::processTrajectory(const bool& useInitialValues)
 {
   //*****
@@ -309,7 +308,7 @@ bool CTrajectoryTask::processTrajectory(const bool& useInitialValues)
   C_FLOAT64 Percentage = 0;
   size_t hProcess = C_INVALID_INDEX;
 
-  if (mpCallBack != NULL && StepNumber > 1.0)
+  if (mpCallBack != NULL)
     {
       mpCallBack->setName("performing simulation...");
       C_FLOAT64 hundred = 100;
@@ -402,7 +401,6 @@ bool CTrajectoryTask::processTrajectory(const bool& useInitialValues)
   return true;
 }
 
-
 bool CTrajectoryTask::processValues(const bool& useInitialValues)
 {
   //*****
@@ -414,23 +412,24 @@ bool CTrajectoryTask::processValues(const bool& useInitialValues)
 
   //size_t FailCounter = 0;
 
-  std::vector<C_FLOAT64> values = mpTrajectoryProblem->getValues();
+  std::set<C_FLOAT64> Values = mpTrajectoryProblem->getValues();
 
-  if (values.empty())
-    return false;
+  if (Values.empty())
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryProblem + 32);
+      return false;
+    }
 
-  C_FLOAT64 Duration = values.back();
-  C_FLOAT64 OutputStartTime = values.front();
-  C_FLOAT64 StepNumber = 1;
-  size_t NumSteps = values.size();
+  std::set<C_FLOAT64>::const_iterator itValue = Values.begin();
+  C_FLOAT64 Duration = *Values.rbegin() - *mpContainerStateTime;
 
   //the output starts only after "outputStartTime" has passed
   if (useInitialValues)
-    mOutputStartTime = OutputStartTime;
+    mOutputStartTime = mpTrajectoryProblem->getOutputStartTime();
   else
-    mOutputStartTime = *mpContainerStateTime + OutputStartTime;
+    mOutputStartTime = *mpContainerStateTime + mpTrajectoryProblem->getOutputStartTime();
 
-  C_FLOAT64 NextTimeToReport;
+  C_FLOAT64 NextTimeToReport = - std::numeric_limits< C_FLOAT64 >::infinity();
 
   const C_FLOAT64 EndTime = *mpContainerStateTime + Duration;
   const C_FLOAT64 StartTime = *mpContainerStateTime;
@@ -442,17 +441,15 @@ bool CTrajectoryTask::processValues(const bool& useInitialValues)
   // It suffices to reach the end time within machine precision
   CompareEndTime = EndTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
 
-  unsigned C_INT32 StepCounter = 1;
-
   output(COutputInterface::BEFORE);
 
   bool flagProceed = true;
-  C_FLOAT64 handlerFactor = 100.0 / (NumSteps + 1);
+  C_FLOAT64 handlerFactor = 100.0 / Duration;
 
   C_FLOAT64 Percentage = 0;
   size_t hProcess = C_INVALID_INDEX;
 
-  if (mpCallBack != NULL && StepNumber > 1.0)
+  if (mpCallBack != NULL)
     {
       mpCallBack->setName("performing simulation...");
       C_FLOAT64 hundred = 100;
@@ -466,24 +463,24 @@ bool CTrajectoryTask::processValues(const bool& useInitialValues)
       // We need to execute any scheduled events for T_0
       CMath::StateChange StateChange = mpContainer->processQueue(true);
 
+      if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
+        {
+          output(COutputInterface::DURING);
+        }
+
       if (StateChange)
         {
-
-          if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
-            {
-              output(COutputInterface::DURING);
-            }
-
           mContainerState = mpContainer->getState(mUpdateMoieties);
           mpTrajectoryMethod->stateChange(StateChange);
         }
 
-      for (size_t i = 0; i < NumSteps &&
-           (*mpLess)(*mpContainerStateTime, CompareEndTime) && flagProceed; ++i)
+      do
         {
-          // This is numerically more stable then adding
-          // mpTrajectoryProblem->getStepSize().
-          NextTimeToReport = values[i];
+          // We silently ignore values in the past
+          while (NextTimeToReport <= *mpContainerStateTime && itValue != Values.end())
+            {
+              NextTimeToReport = *itValue++;
+            }
 
           flagProceed &= processStep(NextTimeToReport, NextTimeToReport == EndTime);
 
@@ -498,6 +495,7 @@ bool CTrajectoryTask::processValues(const bool& useInitialValues)
               output(COutputInterface::DURING);
             }
         }
+      while ((*mpLess)(*mpContainerStateTime, CompareEndTime) && flagProceed);
     }
 
   catch (int)
