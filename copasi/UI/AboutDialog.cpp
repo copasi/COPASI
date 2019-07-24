@@ -99,7 +99,7 @@ AboutDialog::AboutDialog(QWidget *parent,
   Palette.setBrush(QPalette::Base, QBrush(QPixmap((const char **)copasi_beta_background_xpm)));
   textEdit->setPalette(Palette);
   QFontMetrics FontMetrics = this->fontMetrics();
-  int w = width * (FontMetrics.horizontalAdvance('W') + FontMetrics.horizontalAdvance('I')) / 2;
+  int w = width * (FontMetrics.width('W') + FontMetrics.width('I')) / 2;
   int h = heigth * FontMetrics.lineSpacing();
   this->textEdit->setFixedSize(w, h);
   this->textEdit->setReadOnly(true);

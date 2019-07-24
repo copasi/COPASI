@@ -307,7 +307,7 @@ QFont CQFontRenderer::getFont(const CLFontSpec& spec)
 std::pair<double, double> CQFontRenderer::getTextureSize(const QFont& font, const std::string& text)
 {
   QFontMetrics fontMetrics(font);
-  int textWidthInPixels = fontMetrics.horizontalAdvance(text.c_str()) + 2;
+  int textWidthInPixels = fontMetrics.width(text.c_str()) + 2;
   int textHeightInPixels = fontMetrics.height() + 2;
   return std::pair<double, double>(textWidthInPixels, textHeightInPixels);
 }
