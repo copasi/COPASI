@@ -28,6 +28,9 @@
 %ignore CDataContainer::add(CDataObject*,const bool&); // needs to be hidden since it conflicts with methods in derived classes 
 %ignore CDataContainer::remove(CDataObject*); // needs to be hidden since it conflicts with methods in derived classes 
 %ignore CDataContainer::getObjects;
+%ignore CDataContainer::insert;
+%ignore CDataContainer::updateIndex;
+
 
 %include "core/CDataContainer.h"
 
