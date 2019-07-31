@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -1886,9 +1891,6 @@ L90:
   /* System generated locals */
   C_INT i__1;
 
-  /* Builtin functions */
-  //  C_INT s_wsfe(cilist *), do_fio(C_INT *, char *, ftnlen), e_wsfe(void);
-
   /* Local variables */
   C_INT i__;
   C_FLOAT64 vr;
@@ -2394,9 +2396,6 @@ L100:
 
   /* System generated locals */
   C_INT i__1;
-
-  /* Builtin functions */
-  // C_INT s_wsfe(cilist *), do_fio(C_INT *, char *, ftnlen), e_wsfe(void);
 
   /* Local variables */
   C_FLOAT64 cond;

@@ -1,22 +1,24 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.cpp,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:11:20 $
-// End CVS Header
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -56,7 +58,7 @@ static C_INT c__3 = 3;
 static C_INT c__0 = 0;
 
 CPraxis::CPraxis():
-    mpRandom(NULL)
+  mpRandom(NULL)
 {
   mpRandom = CRandom::createGenerator();
 }
@@ -1630,8 +1632,8 @@ L2:
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L3: */
-      t[i__ -1] = q_1.qa * q_1.q0[i__ - 1] + q_1.qb * x[i__] + q_1.qc *
-                  q_1.q1[i__ - 1];
+      t[i__ - 1] = q_1.qa * q_1.q0[i__ - 1] + q_1.qb * x[i__] + q_1.qc *
+                   q_1.q1[i__ - 1];
     }
 
   /* ...THE FUNCTION EVALUATION COUNTER NF IS INCREMENTED... */
@@ -1799,8 +1801,11 @@ L3:
   switch ((int)*option)
     {
       case 1: goto L1;
+
       case 2: goto L2;
+
       case 3: goto L3;
+
       case 4: goto L4;
     }
 
@@ -1846,7 +1851,7 @@ L4:
   return 0;
 } /* vcprnt_ */
 
-/* Subroutine */ int CPraxis::print_(C_INT * /* n */ , C_FLOAT64 * /* x */ , C_INT * /* prin */,
+/* Subroutine */ int CPraxis::print_(C_INT * /* n */, C_FLOAT64 * /* x */, C_INT * /* prin */,
                                      C_FLOAT64 * /* fmin */)
 {
 #ifdef XXXX
@@ -1858,8 +1863,6 @@ L4:
   C_INT i;
   C_FLOAT64 ln = 0.0;
 
-  /* Builtin functions */
-  C_FLOAT64 d_lg10(C_FLOAT64 *);
   /* Parameter adjustments */
   --x;
 
@@ -1907,7 +1910,7 @@ L2:
   return 0;
 } /* print_ */
 
-/* Subroutine */ int maprnt_(C_INT * /* option */ , C_FLOAT64 * /* v */, C_INT * /* m */,
+/* Subroutine */ int maprnt_(C_INT * /* option */, C_FLOAT64 * /* v */, C_INT * /* m */,
                              C_INT * /* n */)
 {
 #ifdef XXXX
@@ -1932,6 +1935,7 @@ L2:
   switch ((int)*option)
     {
       case 1: goto L1;
+
       case 2: goto L2;
     }
 
@@ -1957,7 +1961,7 @@ L3:
 
       for (j = low; j <= i__2; ++j)
         {
-          printf("  %12g", v[i*v_dim1 + j]);
+          printf("  %12g", v[i * v_dim1 + j]);
         }
 
       printf("\n");
