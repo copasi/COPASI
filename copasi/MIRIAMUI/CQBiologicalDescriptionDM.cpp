@@ -273,7 +273,7 @@ bool CQBiologicalDescriptionDM::removeRows(QModelIndexList rows, const QModelInd
 
               msg.append("'?");
 
-              choice = CQMessageBox::question(NULL, tr("Confirm Delete"), msg,
+              choice = CQMessageBox::question(ListViews::ancestor(this), tr("Confirm Delete"), msg,
                                               QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll,
                                               QMessageBox::No);
             }

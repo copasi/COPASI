@@ -310,7 +310,7 @@ bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex& index)
       CEvent * pEvent = *j;
 
       QMessageBox::StandardButton choice =
-        CQMessageBox::confirmDelete(NULL, "event",
+        CQMessageBox::confirmDelete(ListViews::ancestor(this), "event",
                                     FROM_UTF8(pEvent->getObjectName()),
                                     pEvent);
 

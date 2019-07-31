@@ -42,6 +42,7 @@
 #include "copasi/utilities/CCopasiException.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/CParameterEstimationUtils.h"
 
 /*
  *  Constructs a CQTrajectoryWidget which is a child of 'parent', with the
@@ -70,14 +71,14 @@ void CQTrajectoryWidget::init()
 
   mpHeaderWidget->setTaskName("Time Course");
 
-  verticalLayout->insertWidget(0, mpHeaderWidget);  // header
+  mpVerticalLayout->insertWidget(0, mpHeaderWidget);  // header
   // verticalLayout->insertSpacing(1, 14);       // space between header and body
 
   mpMethodWidget->setValidMethods(CTrajectoryTask::ValidMethods);
   mpMethodWidget->showMethodParameters(true);
-  verticalLayout->addWidget(mpMethodWidget);
+  mpVerticalLayout->addWidget(mpMethodWidget);
 
-  verticalLayout->addWidget(mpBtnWidget);     // 'footer'
+  mpVerticalLayout->addWidget(mpBtnWidget);     // 'footer'
 
   slotOutputDelay(false);
 
@@ -187,6 +188,21 @@ void CQTrajectoryWidget::slotAutomaticIntervals(bool checked)
   mpEditIntervalSize->setEnabled(!checked);
 }
 
+void CQTrajectoryWidget::slotOutputEvent(bool checked)
+{
+  mpCheckOutputEvent->setChecked(checked);
+}
+
+void CQTrajectoryWidget::slotStartInSteadyState(bool checked)
+{
+  mpCheckStartInSteadyState->setChecked(checked);
+}
+
+void CQTrajectoryWidget::slotSaveOutput(bool checked)
+{
+  mpCheckSave->setChecked(checked);
+}
+
 bool CQTrajectoryWidget::saveTaskProtected()
 {
   CTrajectoryTask * pTask =
@@ -281,6 +297,22 @@ bool CQTrajectoryWidget::saveTaskProtected()
       mChanged = true;
     }
 
+  bool useValues = (mpTabWidget->currentWidget() == mpValuesWidget);
+
+  if (trajectoryproblem->getUseValues() != useValues)
+    {
+      trajectoryproblem->setUseValues(useValues);
+      mChanged = true;
+    }
+
+  std::string valueString = TO_UTF8(mpEditValues->text());
+
+  if (trajectoryproblem->getValueString() != valueString)
+    {
+      trajectoryproblem->setValues(valueString);
+      mChanged = true;
+    }
+
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
   mpValidatorIntervals->saved();
@@ -339,6 +371,13 @@ bool CQTrajectoryWidget::loadTaskProtected()
 
   updateIntervals();
 
+  mpEditValues->setText(FROM_UTF8(TrajectoryProblem->getValueString()));
+
+  if (TrajectoryProblem->getUseValues())
+    mpTabWidget->setCurrentWidget(mpValuesWidget);
+  else
+    mpTabWidget->setCurrentWidget(mpDurationWidget);
+
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
   mpValidatorIntervals->saved();
@@ -394,7 +433,27 @@ void CQTrajectoryWidget::updateIntervals()
 {
   assert(mpDataModel != NULL);
   C_FLOAT64 InitialTime = mpDataModel->getModel()->getInitialTime();
-  C_FLOAT64 Duration = mpEditDuration->text().toDouble();
+  C_FLOAT64 Duration;
+
+  if (mpTabWidget->currentWidget() == mpValuesWidget)
+    {
+      std::set< C_FLOAT64 > Values;
+
+      std::vector< std::string > elems;
+      ResultParser::split(TO_UTF8(mpEditValues->text()), std::string(",; |\n\t\r"), elems);
+
+      for (std::string & number : elems)
+        {
+          Values.insert(ResultParser::saveToDouble(number));
+        }
+
+      Duration = Values.size() ? *Values.rbegin() : std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+    }
+  else
+    {
+      Duration = mpEditDuration->text().toDouble();
+    }
+
   C_FLOAT64 OutputStartTime = InitialTime;
 
   if (mpCheckDelay->isChecked())
@@ -492,4 +551,5 @@ void CQTrajectoryWidget::showUnits()
   mpCheckDelay->setText("Suppress Output Before" + TimeUnits);
   mpLblIntegrationInterval->setText("Integration Interval" + TimeUnits);
   mpLblOutputInterval->setText("Output Interval" + TimeUnits);
+  mpLblValues->setText("Values" + TimeUnits);
 }

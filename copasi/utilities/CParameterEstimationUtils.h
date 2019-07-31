@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -112,7 +117,7 @@ public:
   // trim from both ends
   static inline std::string &trim_in_place(std::string &s);
 
-  static inline std::string trim(const std::string &s1);
+  static std::string trim(const std::string &s1);
 
   static std::vector<ResultData*>  parseContent(const std::string& content);
 
@@ -125,6 +130,7 @@ public:
   static std::vector<FittingItem*> readItems(std::istream& reader, bool& flag);
   static std::vector<std::string> split(const std::string &s, char delim, bool removeEmpty = true);
   static std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems, bool removeEmpty = true);
+  static std::vector<std::string>& split(const std::string& s, const std::string& delims, std::vector<std::string>& elems);
 
   static double saveToDouble(const std::string& doubleString, double defaultValue = 0);
 

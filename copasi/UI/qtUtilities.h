@@ -170,7 +170,7 @@ const CopasiWidget * GetCopasiWidget(const QObject * pObject);
  * param const QString & file
  * @return C_INT32 overwrite
  */
-C_INT32 checkSelection(const QString & file);
+C_INT32 checkSelection(QWidget * parent, const QString & file);
 
 /**
  * This converts a std::vector<std::string> into a QStringList

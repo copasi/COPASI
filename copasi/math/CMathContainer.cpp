@@ -301,7 +301,8 @@ CMathContainer::CMathContainer():
   mSize(),
   mNoiseInputObjects(),
   mUpdateSequences(),
-  mNumTotalRootsIgnored(0)
+  mNumTotalRootsIgnored(0),
+  mValueChangeProhibited()
 {
   memset(&mSize, 0, sizeof(mSize));
 }
@@ -398,7 +399,8 @@ CMathContainer::CMathContainer(CModel & model):
   mSize(),
   mNoiseInputObjects(),
   mUpdateSequences(),
-  mNumTotalRootsIgnored(0)
+  mNumTotalRootsIgnored(0),
+  mValueChangeProhibited()
 {
   memset(&mSize, 0, sizeof(mSize));
 
@@ -504,7 +506,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mSize(),
   mNoiseInputObjects(src.mNoiseInputObjects),
   mUpdateSequences(),
-  mNumTotalRootsIgnored(src.mNumTotalRootsIgnored)
+  mNumTotalRootsIgnored(src.mNumTotalRootsIgnored),
+  mValueChangeProhibited(src.mValueChangeProhibited)
 {
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CDataContainer
@@ -865,6 +868,7 @@ CVector< CMathEvent::CTrigger::CRootProcessor * > & CMathContainer::getRootProce
 
 void CMathContainer::updateInitialValues(const CCore::Framework & framework)
 {
+  // This will not be able to adjust values which are in mValueChangeProhibited
   switch (framework)
     {
       case CCore::Framework::Concentration:
@@ -1459,6 +1463,7 @@ void CMathContainer::compile()
   createDelays();
 
   createDependencyGraphs();
+  createValueChangeProhibited();
   createUpdateSequences();
 
   CMathReaction * pReaction = mReactions.array();
@@ -1611,6 +1616,11 @@ const CMathDependencyGraph & CMathContainer::getTransientDependencies() const
 const CObjectInterface::ObjectSet & CMathContainer::getInitialStateObjects() const
 {
   return mInitialStateValueAll;
+}
+
+const CObjectInterface::ObjectSet & CMathContainer::getValueChangeProhibited() const
+{
+  return mValueChangeProhibited;
 }
 
 const CObjectInterface::ObjectSet & CMathContainer::getStateObjects(const bool & reduced) const
@@ -2331,6 +2341,50 @@ void CMathContainer::createDependencyGraphs()
   return;
 }
 
+void CMathContainer::createValueChangeProhibited()
+{
+  mValueChangeProhibited.clear();
+
+  // We need to find all extensive and intensive initial species values which may not be changed,
+  // i.e., the corresponding compartment size depends on it.
+
+  // If the compartment size depends on the initial particle number than the initial concentration may not be changed
+  // since [] = # / S = # / f(#).
+  // If the compartment size depends on the initial concentration than the initial particle number may not be changed
+  // since # = [] * S = [] * f([]).
+
+  const CMathObject * pObject = mObjects.array();
+  const CMathObject * pObjectEnd = getMathObject(mExtensiveValues.array());
+
+  for (; pObject != pObjectEnd; ++pObject)
+    if (pObject->getEntityType() == CMath::EntityType::Species &&
+        pObject->getValueType() == CMath::ValueType::Value)
+      {
+        CMathObject * pCompartment = getMathObject(pObject->getCompartmentValue());
+
+        if (mInitialDependencies.hasCircularDependencies(pCompartment, CCore::SimulationContext::UpdateMoieties, pObject))
+          {
+            mValueChangeProhibited.insert(pObject);
+            mInitialDependencies.removePrerequisite(pObject->getCorrespondingProperty(), pCompartment);
+          }
+      }
+
+  pObjectEnd = getMathObject(mExtensiveRates.array());
+
+  for (; pObject != pObjectEnd; ++pObject)
+    if (pObject->getEntityType() == CMath::EntityType::Species &&
+        pObject->getValueType() == CMath::ValueType::Value)
+      {
+        CMathObject * pCompartment = getMathObject(pObject->getCompartmentValue());
+
+        if (mTransientDependencies.hasCircularDependencies(pCompartment, CCore::SimulationContext::Default, pObject))
+          {
+            mValueChangeProhibited.insert(pObject);
+            mTransientDependencies.removePrerequisite(pObject->getCorrespondingProperty(), pCompartment);
+          }
+      }
+}
+
 void CMathContainer::createUpdateSequences()
 {
   sanitizeDataValue2DataObject();
@@ -2427,21 +2481,24 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
                 case CMath::SimulationType::Conversion:
 
-                  // If the species has an initial assignment the intensive values has to be calculated.
+                  // If the species has an initial assignment the intensive and extensive values has to be calculated.
                   if (pObject->getCorrespondingProperty()->getSimulationType() == CMath::SimulationType::Assignment)
                     {
                       RequestedExtensive.insert(pObject);
                       RequestedIntensive.insert(pObject);
                     }
-                  else if (pObject->isIntensiveProperty())
+                  else if (mValueChangeProhibited.find(pObject) == mValueChangeProhibited.end())
                     {
-                      mInitialStateValueIntensive.insert(pObject);
-                      RequestedExtensive.insert(pObject);
-                    }
-                  else
-                    {
-                      mInitialStateValueExtensive.insert(pObject);
-                      RequestedIntensive.insert(pObject);
+                      if (pObject->isIntensiveProperty())
+                        {
+                          mInitialStateValueIntensive.insert(pObject);
+                          RequestedExtensive.insert(pObject);
+                        }
+                      else
+                        {
+                          mInitialStateValueExtensive.insert(pObject);
+                          RequestedIntensive.insert(pObject);
+                        }
                     }
 
                   break;
@@ -2486,6 +2543,7 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
     }
 
   // Build the update sequence
+  // Bug 2773: It is OK for one of these to fail
   mInitialDependencies.getUpdateSequence(mSynchronizeInitialValuesSequenceExtensive,
                                          CCore::SimulationContext::UpdateMoieties,
                                          mInitialStateValueExtensive,
@@ -2639,12 +2697,20 @@ void CMathContainer::createUpdateSimulationValuesSequence()
           case CMath::SimulationType::Time:
           case CMath::SimulationType::ODE:
           case CMath::SimulationType::Independent:
-            mStateValues.insert(pObject);
-            mReducedStateValues.insert(pObject);
+            if (mValueChangeProhibited.find(pObject) == mValueChangeProhibited.end())
+              {
+                mStateValues.insert(pObject);
+                mReducedStateValues.insert(pObject);
+              }
+
             break;
 
           case CMath::SimulationType::Dependent:
-            mStateValues.insert(pObject);
+            if (mValueChangeProhibited.find(pObject) == mValueChangeProhibited.end())
+              {
+                mStateValues.insert(pObject);
+              }
+
             ReducedSimulationRequiredValues.insert(pObject);
             break;
 
@@ -3762,6 +3828,28 @@ CMathObject * CMathContainer::getInitialValueObject(const CMathObject * pObject)
 {
   if (pObject != NULL)
     return getMathObject(getInitialValuePointer(&pObject->getValue()));
+
+  return NULL;
+}
+
+C_FLOAT64 * CMathContainer::getValuePointer(const C_FLOAT64 * pInitialValue) const
+{
+  assert((mValues.begin() <= pInitialValue && pInitialValue < mValues.end()) || getDataObject(pInitialValue) != NULL);
+
+  const C_FLOAT64 * pValue = pInitialValue;
+
+  if (mValues.begin() <= pInitialValue && pInitialValue < mExtensiveValues.begin())
+    {
+      pValue = mExtensiveValues.begin() + (pInitialValue - mValues.begin());
+    }
+
+  return const_cast< C_FLOAT64 * >(pValue);
+}
+
+CMathObject * CMathContainer::getValueObject(const CMathObject * pInitialObject) const
+{
+  if (pInitialObject != NULL)
+    return getMathObject(getValuePointer(&pInitialObject->getValue()));
 
   return NULL;
 }
@@ -5227,6 +5315,8 @@ void CMathContainer::relocate(const sSize & size,
 
   // Relocate Delays
   relocateVector(mDelays, size.nDelayLags, Relocations);
+
+  relocateObjectSet(mValueChangeProhibited, Relocations);
 
   mSize = size;
   mpProcessQueue->start();

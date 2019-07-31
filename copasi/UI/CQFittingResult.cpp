@@ -51,6 +51,7 @@
 #include "math/CMathContainer.h"
 
 #include "UI/qtUtilities.h"
+#include "CQExperimentSelection.h"
 
 #include <QSortFilterProxyModel>
 #include <copasi/UI/CQParameterResultItemModel.h>
@@ -537,7 +538,7 @@ void CQFittingResult::slotSave(void)
 
       fileName = fileName.remove(QRegExp("\\.$"));
 
-      Answer = checkSelection(fileName);
+      Answer = checkSelection(this, fileName);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -553,7 +554,36 @@ void CQFittingResult::slotSave(void)
 
 void CQFittingResult::slotUpdateModel()
 {
-  const_cast< CFitProblem * >(mpProblem)->restore(true);
+  CFitProblem* pProb = const_cast<CFitProblem*>(mpProblem);
+  CExperimentSet& set = pProb->getExperimentSet();
+  CExperiment* pSelected = NULL;
+  size_t numExperiments = set.size();
+
+  if (numExperiments == 1)
+    {
+      pSelected = set.getExperiment(0);
+    }
+  else if (numExperiments > 1)
+    {
+      CQExperimentSelection* pDialog = new CQExperimentSelection(this);
+      pDialog->setSingleSelection(true);
+      QComboBox* pBox = new QComboBox(NULL);
+      pBox->setVisible(false);
+      pBox->addItem(FROM_UTF8(set.getExperiment(0)->getObjectName()));
+
+      pDialog->load(pBox, &set);
+
+      if (pDialog->exec() == QDialog::Accepted)
+        {
+          pSelected = set.getExperiment(TO_UTF8(pBox->itemText(0)));
+        }
+      else
+        {
+          return;
+        }
+    }
+
+  pProb->restore(true, pSelected);
 
   // We need to notify the GUI to update all values
   protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());

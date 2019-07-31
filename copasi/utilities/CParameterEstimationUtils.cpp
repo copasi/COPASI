@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -590,6 +595,49 @@ std::vector<std::string> &ResultParser::split(const std::string &s, char delim, 
 
       if (!removeEmpty || !item.empty())
         elems.push_back(item);
+    }
+
+  return elems;
+}
+
+std::vector<std::string>& ResultParser::split(const std::string& seq, const std::string& delims, std::vector<std::string>& elems)
+{
+  std::stringstream tmp;
+
+  for (size_t i = 0; i < seq.length(); ++i)
+    {
+      char cur = seq[i];
+      bool shouldContinue = false;
+
+      for (size_t j = 0; j < delims.length(); ++j)
+        if (cur == delims[j])
+          {
+            shouldContinue = true;
+            break;
+          }
+
+      if (shouldContinue)
+        {
+          std::string str = tmp.str();
+
+          if (!str.empty())
+            {
+              elems.push_back(str);
+              tmp.str("");
+            }
+
+          continue;
+        }
+
+      tmp << cur;
+
+    }
+
+  std::string str = tmp.str();
+
+  if (!str.empty())
+    {
+      elems.push_back(str);
     }
 
   return elems;

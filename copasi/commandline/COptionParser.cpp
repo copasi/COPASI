@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -56,6 +61,9 @@ const char const_usage[] =
   "  --exportBerkeleyMadonna file  The Berkeley Madonna file to export.\n"
   "  --exportC file                The C code file to export.\n"
   "  --exportCA file               The COMBINE archive file to export.\n"
+  "  --exportIni file              export the parameterization of the model as\n"
+  "                                INI file for use with the --reparameterize\n"
+  "                                option.\n"
   "  --exportSEDML file            The SEDML file to export.\n"
   "  --exportXPPAUT file           The XPPAUT file to export.\n"
   "  --home dir                    Your home directory.\n"
@@ -76,6 +84,9 @@ const char const_usage[] =
   "  -c, --copasidir dir           The COPASI installation directory.\n"
   "  -e, --exportSBML file         The SBML file to export.\n"
   "  -i, --importSBML file         A SBML file to import.\n"
+  "  -r, --reparameterize file     Before any task is run, the model is\n"
+  "                                reparameterized with the values specified\n"
+  "                                in the provided INI file.\n"
   "  -s, --save file               The file the model is saved to after work.\n"
   "  -t, --tmp dir                 The temp directory used for autosave.\n";
 
@@ -224,6 +235,9 @@ void copasi::COptionParser::finalize(void)
           case option_ExportCombineArchive:
             throw option_error("missing value for 'exportCA' option");
 
+          case option_ExportIni:
+            throw option_error("missing value for 'exportIni' option");
+
           case option_ExportSBML:
             throw option_error("missing value for 'exportSBML' option");
 
@@ -254,6 +268,9 @@ void copasi::COptionParser::finalize(void)
           case option_NoLogo:
             throw option_error("missing value for 'nologo' option");
 
+          case option_ReparameterizeModel:
+            throw option_error("missing value for 'reparameterize' option");
+
           case option_ReportFile:
             throw option_error("missing value for 'report-file' option");
 
@@ -275,7 +292,9 @@ void copasi::COptionParser::finalize(void)
           case option_Verbose:
             throw option_error("missing value for 'verbose' option");
         }
+
     }
+
 }
 //#########################################################################
 void copasi::COptionParser::parse_element(const char *element, int position, opsource source)
@@ -291,7 +310,7 @@ void copasi::COptionParser::parse_element(const char *element, int position, ops
       case state_option:
         if (length >= 2 && element[0] == '-' && element[1] == '-')
           {
-            if (length == 2) {state_ = state_consume; return;}
+            if (length == 2) { state_ = state_consume; return; }
 
             element += 2;
             const char *value = element;
@@ -398,6 +417,19 @@ void copasi::COptionParser::parse_short_option(char option, int position, opsour
         openum_ = option_ImportSBML;
         state_ = state_value;
         locations_.ImportSBML = position;
+        return;
+
+      case 'r':
+        if (source != source_cl) throw option_error("the 'reparameterize' option can only be used on the command line");
+
+        if (locations_.ReparameterizeModel)
+          {
+            throw option_error("the 'reparameterize' option is only allowed once");
+          }
+
+        openum_ = option_ReparameterizeModel;
+        state_ = state_value;
+        locations_.ReparameterizeModel = position;
         return;
 
       case 's':
@@ -557,6 +589,20 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
       state_ = state_value;
       return;
     }
+  else if (strcmp(option, "exportIni") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'exportIni' option is only allowed on the command line");
+
+      if (locations_.ExportIni)
+        {
+          throw option_error("the 'exportIni' option is only allowed once");
+        }
+
+      openum_ = option_ExportIni;
+      locations_.ExportIni = position;
+      state_ = state_value;
+      return;
+    }
   else if (strcmp(option, "exportSBML") == 0)
     {
       if (source != source_cl) throw option_error("the 'exportSBML' option is only allowed on the command line");
@@ -697,6 +743,20 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
       options_.NoLogo = !options_.NoLogo;
       return;
     }
+  else if (strcmp(option, "reparameterize") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'reparameterize' option is only allowed on the command line");
+
+      if (locations_.ReparameterizeModel)
+        {
+          throw option_error("the 'reparameterize' option is only allowed once");
+        }
+
+      openum_ = option_ReparameterizeModel;
+      locations_.ReparameterizeModel = position;
+      state_ = state_value;
+      return;
+    }
   else if (strcmp(option, "report-file") == 0)
     {
       if (source != source_cl) throw option_error("the 'report-file' option is only allowed on the command line");
@@ -833,6 +893,12 @@ void copasi::COptionParser::parse_value(const char *value)
       }
       break;
 
+      case option_ExportIni:
+      {
+        options_.ExportIni = value;
+      }
+      break;
+
       case option_ExportSBML:
       {
         options_.ExportSBML = value;
@@ -901,6 +967,12 @@ void copasi::COptionParser::parse_value(const char *value)
 
       case option_NoLogo:
         break;
+
+      case option_ReparameterizeModel:
+      {
+        options_.ReparameterizeModel = value;
+      }
+      break;
 
       case option_ReportFile:
       {
@@ -996,80 +1068,87 @@ const char* expand_long_name(const std::string &name)
   std::string::size_type name_size = name.size();
   std::vector<const char*> matches;
 
-  if (name_size <= 10 && name.compare("SBMLSchema") == 0)
+  if (name_size <= 10 && name.compare(0, name_size, "SBMLSchema", name_size) == 0)
     matches.push_back("SBMLSchema");
 
-  if (name_size <= 9 && name.compare("configdir") == 0)
+  if (name_size <= 9 && name.compare(0, name_size, "configdir", name_size) == 0)
     matches.push_back("configdir");
 
-  if (name_size <= 10 && name.compare("configfile") == 0)
+  if (name_size <= 10 && name.compare(0, name_size, "configfile", name_size) == 0)
     matches.push_back("configfile");
 
-  if (name_size <= 23 && name.compare("convert-to-irreversible") == 0)
+  if (name_size <= 23 && name.compare(0, name_size, "convert-to-irreversible", name_size) == 0)
     matches.push_back("convert-to-irreversible");
 
-  if (name_size <= 9 && name.compare("copasidir") == 0)
+  if (name_size <= 9 && name.compare(0, name_size, "copasidir", name_size) == 0)
     matches.push_back("copasidir");
 
-  if (name_size <= 21 && name.compare("exportBerkeleyMadonna") == 0)
+  if (name_size <= 21 && name.compare(0, name_size, "exportBerkeleyMadonna", name_size) == 0)
     matches.push_back("exportBerkeleyMadonna");
 
-  if (name_size <= 7 && name.compare("exportC") == 0)
+  if (name_size <= 7 && name.compare(0, name_size, "exportC", name_size) == 0)
     matches.push_back("exportC");
 
-  if (name_size <= 8 && name.compare("exportCA") == 0)
+  if (name_size <= 8 && name.compare(0, name_size, "exportCA", name_size) == 0)
     matches.push_back("exportCA");
 
-  if (name_size <= 10 && name.compare("exportSBML") == 0)
+  if (name_size <= 9 && name.compare(0, name_size, "exportIni", name_size) == 0)
+    matches.push_back("exportIni");
+
+  if (name_size <= 10 && name.compare(0, name_size, "exportSBML", name_size) == 0)
     matches.push_back("exportSBML");
 
-  if (name_size <= 11 && name.compare("exportSEDML") == 0)
+  if (name_size <= 11 && name.compare(0, name_size, "exportSEDML", name_size) == 0)
     matches.push_back("exportSEDML");
 
-  if (name_size <= 12 && name.compare("exportXPPAUT") == 0)
+  if (name_size <= 12 && name.compare(0, name_size, "exportXPPAUT", name_size) == 0)
     matches.push_back("exportXPPAUT");
 
-  if (name_size <= 4 && name.compare("home") == 0)
+  if (name_size <= 4 && name.compare(0, name_size, "home", name_size) == 0)
     matches.push_back("home");
 
-  if (name_size <= 8 && name.compare("importCA") == 0)
+  if (name_size <= 8 && name.compare(0, name_size, "importCA", name_size) == 0)
     matches.push_back("importCA");
 
-  if (name_size <= 10 && name.compare("importSBML") == 0)
+  if (name_size <= 10 && name.compare(0, name_size, "importSBML", name_size) == 0)
     matches.push_back("importSBML");
 
-  if (name_size <= 11 && name.compare("importSEDML") == 0)
+  if (name_size <= 11 && name.compare(0, name_size, "importSEDML", name_size) == 0)
     matches.push_back("importSEDML");
 
-  if (name_size <= 7 && name.compare("license") == 0)
+  if (name_size <= 7 && name.compare(0, name_size, "license", name_size) == 0)
     matches.push_back("license");
 
-  if (name_size <= 7 && name.compare("maxTime") == 0)
+  if (name_size <= 7 && name.compare(0, name_size, "maxTime", name_size) == 0)
     matches.push_back("maxTime");
 
-  if (name_size <= 6 && name.compare("nologo") == 0)
+  if (name_size <= 6 && name.compare(0, name_size, "nologo", name_size) == 0)
     matches.push_back("nologo");
 
-  if (name_size <= 11 && name.compare("report-file") == 0)
+  if (name_size <= 14 && name.compare(0, name_size, "reparameterize", name_size) == 0)
+    matches.push_back("reparameterize");
+
+  if (name_size <= 11 && name.compare(0, name_size, "report-file", name_size) == 0)
     matches.push_back("report-file");
 
-  if (name_size <= 4 && name.compare("save") == 0)
+  if (name_size <= 4 && name.compare(0, name_size, "save", name_size) == 0)
     matches.push_back("save");
 
-  if (name_size <= 14 && name.compare("scheduled-task") == 0)
+  if (name_size <= 14 && name.compare(0, name_size, "scheduled-task", name_size) == 0)
     matches.push_back("scheduled-task");
 
-  if (name_size <= 3 && name.compare("tmp") == 0)
+  if (name_size <= 3 && name.compare(0, name_size, "tmp", name_size) == 0)
     matches.push_back("tmp");
 
-  if (name_size <= 8 && name.compare("validate") == 0)
+  if (name_size <= 8 && name.compare(0, name_size, "validate", name_size) == 0)
     matches.push_back("validate");
 
-  if (name_size <= 7 && name.compare("verbose") == 0)
+  if (name_size <= 7 && name.compare(0, name_size, "verbose", name_size) == 0)
     matches.push_back("verbose");
 
-  if (name_size <= 4 && name.compare("help") == 0)
+  if (name_size <= 4 && name.compare(0, name_size, "help", name_size) == 0)
     matches.push_back("help");
+
 
   if (matches.empty())
     {

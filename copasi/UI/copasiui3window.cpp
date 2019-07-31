@@ -39,6 +39,14 @@
 #include <QFontDialog>
 #include <QtCore/QDateTime>
 
+#include <QByteArray>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QRegExp>
+#include <QDesktopServices>
+
 #include <vector>
 #include <sstream>
 
@@ -218,6 +226,7 @@ CopasiUI3Window::CopasiUI3Window():
 
   mpaImportCombine(NULL),
   mpaExportCombine(NULL),
+  mpaExportShiny(NULL),
 
   mpaAddModel(NULL),
   mpaMergeModels(NULL),
@@ -280,6 +289,8 @@ CopasiUI3Window::CopasiUI3Window():
   , mProvenanceOfOrigionOfFile(QString(""))
 #endif
   , mpPopulationDisplay(NULL)
+  , mAutoUpdateCheck(false)
+  , mActionStack()
 {
   // There can only be one
   pMainWindow = this;
@@ -346,6 +357,8 @@ CopasiUI3Window::CopasiUI3Window():
   // drop acceptance
   setAcceptDrops(true);
   mpListView->mpTreeView->setFocus();
+
+  QTimer::singleShot(10, this, SLOT(slotAutoCheckForUpdates()));
 }
 
 CopasiUI3Window::~CopasiUI3Window()
@@ -440,6 +453,9 @@ void CopasiUI3Window::createActions()
   connect(mpaImportCombine, SIGNAL(triggered()), this, SLOT(slotImportCombine()));
   mpaExportCombine = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export Combine Archive", this);
   connect(mpaExportCombine, SIGNAL(triggered()), this, SLOT(slotExportCombine()));
+
+  mpaExportShiny = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export Shiny Archive", this);
+  connect(mpaExportShiny, SIGNAL(triggered()), this, SLOT(slotExportShiny()));
 
 #ifdef COPASI_Provenance
   mpaProvenance = new QAction("Provenance", this);
@@ -547,7 +563,7 @@ void CopasiUI3Window::slotFunctionDBSave(QString dbFile)
           if (dbFile.isEmpty()) return;
 
           // Checks whether the file exists
-          Answer = checkSelection(dbFile);
+          Answer = checkSelection(this, dbFile);
 
           if (Answer == QMessageBox::Cancel) return;
         }
@@ -567,7 +583,7 @@ void CopasiUI3Window::slotFunctionDBLoad(QString dbFile)
     {
       dbFile =
         CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                          QString::null, "COPASI Function DB (*.cpk)",
+                                          QString(), "COPASI Function DB (*.cpk)",
                                           "Choose a file");
     }
 
@@ -599,7 +615,7 @@ CopasiUI3Window::slotParameterSetsSave(QString dbFile)
           if (dbFile.isEmpty()) return;
 
           // Checks whether the file exists
-          Answer = checkSelection(dbFile);
+          Answer = checkSelection(this, dbFile);
 
           if (Answer == QMessageBox::Cancel) return;
         }
@@ -620,7 +636,7 @@ CopasiUI3Window::slotParameterSetsLoad(QString dbFile)
     {
       dbFile =
         CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                          QString::null, "COPASI Parameter Sets (*.cpmp)",
+                                          QString(), "COPASI Parameter Sets (*.cpmp)",
                                           "Choose a file");
     }
 
@@ -685,6 +701,7 @@ void CopasiUI3Window::createMenuBar()
   pFileMenu->addSeparator();
   pFileMenu->addAction(mpaImportCombine);
   pFileMenu->addAction(mpaExportCombine);
+  pFileMenu->addAction(mpaExportShiny);
 
   pFileMenu->addSeparator();
   mpMenuSEDMLSupport = pFileMenu->addMenu("SED-ML Support");
@@ -743,7 +760,8 @@ void CopasiUI3Window::createMenuBar()
 
   mpTools->addAction(mpaCheckModel);
   mpTools->addAction("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
-  mpTools->addAction("&Create Events For Timeseries Experiment", this, SLOT(slotCreateEventsForTimeseries()));
+  mpTools->addAction("Create &Events For Timeseries Experiment", this, SLOT(slotCreateEventsForTimeseries()));
+  mpTools->addAction("&Remove SBML Ids from model", this, SLOT(slotClearSbmlIds()));
   mpTools->addAction(mpaParameterEstimationResult);
 #ifdef COPASI_SBW_INTEGRATION
   // create and populate SBW menu
@@ -766,6 +784,8 @@ void CopasiUI3Window::createMenuBar()
   menuBar()->addSeparator();
   QMenu *help = menuBar()->addMenu("&Help");
   help->addAction("Simple &Wizard", this, SLOT(slotTutorialWizard()));
+  help->addSeparator();
+  help->addAction("&Check for Update", this, SLOT(slotCheckForUpdate()));
   help->addSeparator();
   help->addAction("&About", this, SLOT(about()), Qt::Key_F1);
   help->addAction("&License", this, SLOT(license()));
@@ -800,7 +820,7 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
       qDebug() << "tmp = " << tmp;
 #endif
       // Checks whether the file exists
-      Answer = checkSelection(tmp);
+      Answer = checkSelection(this, tmp);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -1001,11 +1021,26 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
   if (file == "")
     newFile =
-      CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString::null,
+      CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString(),
                                         "COPASI Files (*.gps *.cps);;All Files (*)",
                                         "Choose a file");
   else
     newFile = file;
+
+  QUrl url(newFile);
+
+  if (url.scheme() == "http" || url.scheme() == "https")
+    {
+      // download from url
+      slotFileOpenFromUrl(file);
+      return;
+    }
+  else if (url.scheme() == "copasi")
+    {
+      // handle copasi scheme
+      slotHandleCopasiScheme(url);
+      return;
+    }
 
   // gives the file information to the datamodel to handle it
 
@@ -1157,7 +1192,7 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
       mpDataModelGUI->createModel();
     }
 
-  QString Message = QString::null;
+  QString Message = QString();
 
   if (msg.getNumber() != MCCopasiMessage + 1)
     {
@@ -1203,17 +1238,19 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
 
     CQMessageBox::warning(this, QString("File Warning"), Message,
                           QMessageBox::Ok, QMessageBox::Ok);
+
+  performNextAction();
 }
 
 void CopasiUI3Window::slotFileExamplesCopasiFiles(QString file)
 {
-  CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
+  CopasiFileDialog::openExampleDir(this); //Sets CopasiFileDialog::LastDir
   slotFileOpen(file);
 }
 
 void CopasiUI3Window::slotFileExamplesSBMLFiles(QString file)
 {
-  CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
+  CopasiFileDialog::openExampleDir(this); //Sets CopasiFileDialog::LastDir
   slotImportSBML(file);
 }
 
@@ -1230,7 +1267,7 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
 
   if (file == "")
     newFile =
-      CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString::null,
+      CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString(),
                                         "COPASI Files (*.gps *.cps);;All Files (*)",
                                         "Choose a file");
   else
@@ -1641,7 +1678,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
   if (file == "")
     SBMLFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                        QString::null, "XML Files (*.xml);;All Files (*)",
+                                        QString(), "XML Files (*.xml);;All Files (*)",
                                         "Choose a file");
   else
     SBMLFile = file;
@@ -1735,6 +1772,7 @@ void CopasiUI3Window::slotImportSBMLFinished(bool success)
   updateTitle();
   mSaveAsRequired = true;
   mNewFile = "";
+  performNextAction();
 }
 
 void CopasiUI3Window::slotExportSBML()
@@ -1748,7 +1786,7 @@ void CopasiUI3Window::slotExportSBML()
 
   while (Answer == QMessageBox::No)
     {
-      QString Default = QString::null;
+      QString Default = QString();
       assert(mpDataModel != NULL);
 
       if (mpDataModel->getFileName() != "")
@@ -1783,7 +1821,7 @@ void CopasiUI3Window::slotExportSBML()
       if (tmp.isEmpty()) return;
 
       // Checks whether the file exists
-      Answer = checkSelection(tmp);
+      Answer = checkSelection(this, tmp);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -1814,7 +1852,7 @@ void CopasiUI3Window::slotExportMathModel()
 
   while (Answer == QMessageBox::No)
     {
-      QString Default = QString::null;
+      QString Default = QString();
 
       if (mpDataModel->getFileName() != "")
         Default
@@ -1836,7 +1874,7 @@ void CopasiUI3Window::slotExportMathModel()
       qDebug() << "user's filter pointer = " << *userFilter;
 #endif
       // Checks whether the file exists
-      Answer = checkSelection(tmp);
+      Answer = checkSelection(this, tmp);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -1890,7 +1928,7 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
   if (CCopasiMessage::size() != 0)
     {
       // Display warnings messages.
-      CQMessageBox::information(this, "Event Creation succeded with warnings",
+      CQMessageBox::information(this, "Event Creation succeeded with warnings",
                                 CCopasiMessage::getAllMessageText().c_str(),
                                 QMessageBox::Ok,
                                 QMessageBox::Ok);
@@ -2527,7 +2565,7 @@ void CopasiUI3Window::slotFrameworkChanged(int index)
 
 void CopasiUI3Window::slotCapture()
 {
-  QPixmap pixmap = QPixmap::grabWidget(mpListView->getCurrentWidget());
+  QPixmap pixmap = mpListView->getCurrentWidget()->grab();
   C_INT32 Answer = QMessageBox::No;
   QString fileName;
 
@@ -2539,7 +2577,7 @@ void CopasiUI3Window::slotCapture()
       if (fileName.isEmpty()) return;
 
       // Checks whether the file exists
-      Answer = checkSelection(fileName);
+      Answer = checkSelection(this, fileName);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -2601,6 +2639,27 @@ void CopasiUI3Window::setApplicationFont()
   // Two calls so that the tabwidget labels are correct
   qApp->setStyleSheet(" * {font : }");
   qApp->setStyleSheet(" * {font : }");
+}
+
+void CopasiUI3Window::slotAutoCheckForUpdates()
+{
+
+  if (CRootContainer::getConfiguration()->getCheckForUpdates().needToConfirmCheckForUpdate())
+    {
+      QMessageBox::StandardButton result = CQMessageBox::question(this, "Enable check for updates?",
+                                           "This version of COPASI can notify you in case a new version of COPASI is available. You can change the frequency of the checks (default weekly), or enable/disable the check later in the Preferences dialog. To manually check for an update use 'Help\\Check for Update' at any time.\n\nWould you like to enable the automatic update feature?",
+                                           QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No,
+                                           QMessageBox::StandardButton::No);
+
+      CRootContainer::getConfiguration()->getCheckForUpdates().setEnabled(result == QMessageBox::StandardButton::Yes);
+      CRootContainer::getConfiguration()->getCheckForUpdates().setConfirmedCheckForUpdate(true);
+      CRootContainer::getConfiguration()->save();
+    }
+
+  if (!CRootContainer::getConfiguration()->getCheckForUpdates().checkRequired()) return;
+
+  mAutoUpdateCheck = true;
+  slotCheckForUpdate();
 }
 
 #include "UI/CQExpandModelData.h"
@@ -3109,7 +3168,7 @@ void CopasiUI3Window::disableSliders(bool disable)
 
 void CopasiUI3Window::slotFileExamplesSEDMLFiles(QString file)
 {
-  CopasiFileDialog::openExampleDir(); //Sets CopasiFileDialog::LastDir
+  CopasiFileDialog::openExampleDir(this); //Sets CopasiFileDialog::LastDir
   slotImportSEDML(file);
 }
 void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
@@ -3204,7 +3263,7 @@ void CopasiUI3Window::slotImportSEDML(QString file)
   if (file == "")
     SEDMLFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                        QString::null, "SED-ML files (*.sedml *.xml);;All Files (*)",
+                                        QString(), "SED-ML files (*.sedml *.xml);;All Files (*)",
                                         "Choose a file");
   else
     SEDMLFile = file;
@@ -3339,7 +3398,7 @@ void CopasiUI3Window::slotExportSEDML()
 
   while (Answer == QMessageBox::No)
     {
-      QString Default = QString::null;
+      QString Default = QString();
       assert(CRootContainer::getDatamodelList()->size() > 0);
 
       if (mpDataModel->getFileName() != "")
@@ -3374,7 +3433,7 @@ void CopasiUI3Window::slotExportSEDML()
       if (tmp.isEmpty()) return;
 
       // Checks whether the file exists
-      Answer = checkSelection(tmp);
+      Answer = checkSelection(this, tmp);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -3409,7 +3468,7 @@ void CopasiUI3Window::slotImportCombine(QString file)
   if (file == "")
     combineArchiveFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                        QString::null, "Combine Archive Files (*.omex;*.sbex;*.sedx);;All Files (*)",
+                                        QString(), "Combine Archive Files (*.omex;*.sbex;*.sedx);;All Files (*)",
                                         "Choose a file");
   else
     combineArchiveFile = file;
@@ -3502,7 +3561,54 @@ void CopasiUI3Window::slotImportCombineFinished(bool success)
   updateTitle();
   mSaveAsRequired = true;
   mNewFile = "";
+  performNextAction();
 }
+
+void CopasiUI3Window::slotExportShiny(QString str)
+{
+  mpDataModelGUI->commit();
+  C_INT32 Answer = QMessageBox::No;
+  QString tmp;
+
+  if (str.isEmpty()) str = "untitled.zip";
+
+#ifdef DEBUG_UI
+  qDebug() << "Filename on slotFileSaveAs = " << str;
+#endif
+
+  while (Answer == QMessageBox::No)
+    {
+      tmp =
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                                          str, "Archive Files (*.zip)",
+                                          "Choose a filename to save under");
+
+      if (tmp.isEmpty()) return;
+
+#ifdef DEBUG_UI
+      qDebug() << "tmp = " << tmp;
+#endif
+      // Checks whether the file exists
+      Answer = checkSelection(this, tmp);
+
+      if (Answer == QMessageBox::Cancel) return;
+    }
+
+  if (mpDataModelGUI && !tmp.isNull())
+    {
+      setCursor(Qt::WaitCursor);
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportCombineFinished(bool)));
+      mpDataModelGUI->exportShinyArchive(TO_UTF8(tmp), true);
+#ifdef COPASI_Provenance
+      //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel(), mpVersionHierarchy->getVersionsPathToCurrentModel());
+      CProvenanceXMLWriter *ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mpVersionHierarchy->getVersionsPathToCurrentModel());
+      ProvenanceXMLWriter->updateCurrentSessionProvenance();
+      //mProvenanceParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
+      ProvenanceXMLWriter->updateOrigionOfProvenance(mProvenanceOfOrigionOfFile);
+#endif
+    }
+}
+
 void CopasiUI3Window::slotExportCombine(QString str)
 {
   mpDataModelGUI->commit();
@@ -3528,7 +3634,7 @@ void CopasiUI3Window::slotExportCombine(QString str)
       qDebug() << "tmp = " << tmp;
 #endif
       // Checks whether the file exists
-      Answer = checkSelection(tmp);
+      Answer = checkSelection(this, tmp);
 
       if (Answer == QMessageBox::Cancel) return;
     }
@@ -3656,6 +3762,14 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
         return;
     }
 
+  QUrl qUrl(url);
+
+  if (qUrl.scheme() == "copasi")
+    {
+      slotHandleCopasiScheme(qUrl);
+      return;
+    }
+
   // create temp filename
   std::string TmpFileName;
   COptions::getValue("Tmp", TmpFileName);
@@ -3666,6 +3780,416 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
   mpDataModelGUI->downloadFileFromUrl(TO_UTF8(url), TmpFileName);
 }
 
+#include <QUrlQuery>
+#include <copasi/report/COutputAssistant.h>
+
+void CopasiUI3Window::activateElement(const std::string& activate)
+{
+  // resolve display name first
+  const CDataObject* obj = mpDataModel->findObjectByDisplayName(activate);
+
+  if (obj != NULL)
+    {
+      mpListView->switchToOtherWidget(ListViews::WidgetType::NotFound, obj->getCN());
+    }
+  else
+    {
+      // see whether it is a task name
+      ListViews::WidgetType id = ListViews::WidgetName.toEnum(activate, ListViews::WidgetType::NotFound);
+
+      if (id != ListViews::WidgetType::NotFound)
+        {
+          mpListView->switchToOtherWidget(id, CCommonName(""));
+        }
+      else
+        {
+          // try cn
+          obj = dynamic_cast<const CDataObject*>(CRootContainer::getRoot()->getObject(activate));
+
+          if (obj == NULL)
+            obj = dynamic_cast<const CDataObject*>(mpDataModel->getObject(activate));
+
+          if (obj == NULL)
+            obj = dynamic_cast<const CDataObject*>(mpDataModel->getModel()->getObject(activate));
+
+          if (obj != NULL)
+            mpListView->switchToOtherWidget(ListViews::WidgetType::NotFound, obj->getCN());
+        }
+    }
+}
+
+void CopasiUI3Window::removeReportTargets()
+{
+  if (!mpDataModel->getTaskList())
+    return;
+
+  auto& taskList = *mpDataModel->getTaskList();
+  std::stringstream str;
+
+  for (auto & task : taskList)
+    {
+      std::string target = task.getReport().getTarget();
+
+      if (!target.empty())
+        {
+          str << "  task: " << task.getObjectName() << " target: " << target << std::endl;
+          task.getReport().setTarget("");
+        }
+    }
+
+  std::string removedReports = str.str();
+
+  if (removedReports.empty())
+    return;
+
+  CQMessageBox::information(this, "Removed Report targets",
+                            QString("The following report targets have been removed\n\n%1")
+                            .arg(FROM_UTF8(removedReports)));
+}
+
+std::string mapTaskNameToWidgetName(const std::string& name)
+{
+  ListViews::WidgetType id = ListViews::WidgetName.toEnum(name, ListViews::WidgetType::NotFound);
+
+  if (id != ListViews::WidgetType::NotFound)
+    return name;
+
+  if (name == "Time-Course")
+    return "Time Course";
+
+  if (name == "Scan")
+    return "Parameter Scan";
+
+  if (name == "Time-Course Sensitivities")
+    return "Time Course Sensitivities";
+
+  if (name == "Moieties")
+    return "Mass Conservation";
+
+  if (name == "Elementary Flux Modes")
+    return "Elementary Modes";
+
+  return name;
+}
+
+void CopasiUI3Window::performNextAction()
+{
+  if (mActionStack.empty())
+    return;
+
+  auto next = mActionStack.front();
+  mActionStack.pop_front();
+
+  switch (next.first)
+    {
+      case DownloadUrl:
+      {
+        slotFileOpenFromUrl(FROM_UTF8(next.second));
+        return;
+      }
+
+      case CreatePlot:
+      {
+        C_INT32 id = COutputAssistant::findItemByName(next.second, true);
+
+        if (id != -1)
+          {
+            const auto& description = COutputAssistant::getItem(id);
+            size_t taskIndex = mpDataModel->getTaskList()->
+                               getIndex(CTaskEnum::TaskName[description.mTaskType]);
+
+            auto* result = COutputAssistant::createDefaultOutput(id, &((*mpDataModel->getTaskList())[taskIndex]), mpDataModel);
+            mpDataModelGUI->notify(ListViews::ObjectType::PLOT, ListViews::ADD, result->getCN());
+          }
+
+        break;
+      }
+
+      case RunTask:
+      {
+        size_t taskIndex = C_INVALID_INDEX;
+        auto& taskList = *mpDataModel->getTaskList();
+
+        if (next.second == "scheduled")
+          {
+            // find scheduled task to activate
+            for (size_t i = 0; i <= taskList.size(); ++i)
+              {
+                if (taskList[i].isScheduled())
+                  {
+                    taskIndex = i;
+                    break;
+                  }
+              }
+          }
+        else if (next.second == "true")
+          {
+            // run active task
+            TaskWidget* pTaskWidget = dynamic_cast<TaskWidget*>(mpListView->getCurrentWidget());
+
+            if (pTaskWidget != NULL && pTaskWidget->getTask())
+              {
+                taskIndex = taskList.getIndex(pTaskWidget->getTask()->getObjectName());
+              }
+          }
+        else
+          {
+            // the specified name should be a task name
+            taskIndex = taskList.getIndex(next.second);
+          }
+
+        if (taskIndex != C_INVALID_INDEX)
+          {
+            std::string taskName = taskList[taskIndex].getObjectName();
+            // select task
+            activateElement(mapTaskNameToWidgetName(taskName));
+
+            // wait for activation
+            for (int i = 0; i < 5; ++i)
+              {
+                qApp->processEvents();
+                QThread::msleep(100);
+              }
+
+            // press run
+            TaskWidget* pTaskWidget = dynamic_cast<TaskWidget*>(mpListView->getCurrentWidget());
+
+            if (pTaskWidget != NULL)
+              {
+                pTaskWidget->runBtnClicked();
+              }
+          }
+
+        break;
+      }
+
+      case SelectElement:
+      {
+        activateElement(next.second);
+        break;
+      }
+
+      case RemoveReportTargets:
+      {
+        removeReportTargets();
+        break;
+      }
+
+      default:
+        break;
+    }
+
+  if (!mActionStack.empty())
+    {
+      for (int i = 0; i < 3; ++i)
+        {
+          qApp->processEvents();
+          QThread::msleep(100);
+        }
+
+      performNextAction();
+    }
+}
+
+void CopasiUI3Window::slotHandleCopasiScheme(const QUrl& url)
+{
+  if (url.scheme() != "copasi")
+    return;
+
+  mActionStack.clear();
+
+  // find out what to do
+
+  QUrlQuery query(url);
+
+  std::string downloadUrl = TO_UTF8(query.queryItemValue("downloadUrl", QUrl::FullyDecoded));
+
+  if (!downloadUrl.empty())
+    {
+      mActionStack.push_back(std::make_pair(DownloadUrl, downloadUrl));
+    }
+
+  std::string createPlot = TO_UTF8(query.queryItemValue("createPlot", QUrl::FullyDecoded));
+
+  if (!createPlot.empty())
+    {
+      mActionStack.push_back(std::make_pair(CreatePlot, createPlot));
+    }
+
+  std::string activate = TO_UTF8(query.queryItemValue("activate", QUrl::FullyDecoded));
+
+  if (!activate.empty())
+    {
+      mActionStack.push_back(std::make_pair(SelectElement, activate));
+    }
+
+  std::string runTask = TO_UTF8(query.queryItemValue("runTask", QUrl::FullyDecoded));
+
+  if (!runTask.empty())
+    {
+      mActionStack.push_back(std::make_pair(RunTask, runTask));
+    }
+
+  performNextAction();
+}
+
+void CopasiUI3Window::slotCheckForUpdate()
+{
+  // check whether user has not opted out checking for updates
+  std::string TmpFileName;
+  COptions::getValue("Tmp", TmpFileName);
+  TmpFileName = CDirEntry::createTmpName(TmpFileName, ".json");
+
+  connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCheckForUpdateFinished(bool)));
+
+  std::string url = TO_UTF8(QString("http://latest.copasi.org?version=%1.%2.%3").arg(CVersion::VERSION.getVersionMajor()).arg(CVersion::VERSION.getVersionMinor()).arg(CVersion::VERSION.getVersionDevel()));
+  mpDataModelGUI->downloadFileFromUrl(url, TmpFileName, false);
+
+  // we have several options to figure out what the latest version is
+  // implement it ourselves
+  //mpDataModelGUI->downloadFileFromUrl("https://update.bioquant.uni-heidelberg.de|virginia|ucon/", TmpFileName, false);
+  //
+  // use is.gd -> we get basic access information of the link + country the request came from
+  // mpDataModelGUI->downloadFileFromUrl("https://is.gd/latest_copasi", TmpFileName, false);
+  //
+  // use bit.do -> does not count links at all :(
+  //mpDataModelGUI->downloadFileFromUrl("http://bit.do/latest_copasi", TmpFileName, false);
+  //
+  // use tiny.cc -> unfortunately we only get a counter of whether the link was accessed
+  //mpDataModelGUI->downloadFileFromUrl("https://tiny.cc/latest_copasi", TmpFileName, false);
+  //
+  // use bit.ly -> unfortunately url tracking from applications seems to be a paid feature
+  //mpDataModelGUI->downloadFileFromUrl("http://bit.ly/latest_copasi", TmpFileName, false);
+  //
+  // use directly the github api -> we won't have any information about whether the update feature is used
+  //mpDataModelGUI->downloadFileFromUrl("https://api.github.com/repos/copasi/COPASI/releases/latest", TmpFileName, false);
+}
+
+bool getVersionFromFile(const std::string& fileName, CVersion & latest)
+{
+  latest = CVersion::VERSION;
+
+  QFile file(fileName.c_str());
+
+  if (!file.open(QIODevice::ReadOnly))
+    return false;
+
+  QByteArray data = file.readAll();
+  file.close();
+  file.remove();
+  QJsonDocument doc = QJsonDocument::fromJson(data);
+
+  if (doc.isEmpty())
+    return false;
+
+  if (!doc.isObject())
+    return false;
+
+  std:: string Version = TO_UTF8(doc.object().value(QString::fromUtf8("name")).toString());
+
+  if (Version.empty()) return false;
+
+  latest.setVersion(Version.substr(7));
+
+  return true;
+}
+
+void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
+{
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCheckForUpdateFinished(bool)));
+
+  CVersion Latest;
+
+  if (success)
+    {
+      success &= getVersionFromFile(mpDataModelGUI->getFileName(), Latest);
+    }
+
+  if (success)
+    {
+      CRootContainer::getConfiguration()->getCheckForUpdates().setChecked();
+
+      if (mAutoUpdateCheck &&
+          CRootContainer::getConfiguration()->getCheckForUpdates().skipVersion(Latest))
+        {
+          mAutoUpdateCheck = false;
+          CRootContainer::getConfiguration()->save();
+
+          return;
+        }
+
+      std::string latestVersion = Latest.getVersion();
+      std::string currentVersion = CVersion::VERSION.getVersion();
+
+      if (Latest > CVersion::VERSION)
+        {
+          CQMessageBox Question(QMessageBox::Question,
+                                FROM_UTF8(std::string("Software Update")),
+                                FROM_UTF8(std::string("The following software is available for download:\n  COPASI %1\n\nDo you want to download it?")).arg(FROM_UTF8(latestVersion)),
+                                QMessageBox::NoButton,
+                                this
+                               );
+
+          QPushButton *pIgnore = NULL;
+
+          if (mAutoUpdateCheck)
+            {
+              pIgnore = Question.addButton(QMessageBox::Ignore);
+              pIgnore->setText(FROM_UTF8(std::string("Skip Version")));
+            }
+
+          QPushButton *pAccept = Question.addButton(QMessageBox::Ok);
+          QPushButton *pReject = Question.addButton(QMessageBox::Cancel);
+
+          Question.setDefaultButton(pAccept);
+
+          Question.exec();
+          QAbstractButton * pClicked = Question.clickedButton();
+
+          if (pClicked == pAccept)
+            {
+              QDesktopServices::openUrl(QUrl("http://copasi.org/Download/"));
+            }
+          else if (pClicked == pIgnore && pIgnore != NULL)
+            {
+              CRootContainer::getConfiguration()->getCheckForUpdates().setSkipVersion(Latest);
+            }
+        }
+      else if (!mAutoUpdateCheck)
+        {
+          if (Latest == CVersion::VERSION)
+            {
+              CQMessageBox::information(this, FROM_UTF8(std::string("Software Update")),
+                                        QString("You are running the latest version:\n  COPASI %1.").arg(FROM_UTF8(currentVersion)));
+            }
+          else
+            {
+              CQMessageBox::information(this, FROM_UTF8(std::string("Software Update")),
+                                        QString("You are running a pre-release version:\n  COPASI %1.").arg(FROM_UTF8(currentVersion)));
+            }
+        }
+
+      mAutoUpdateCheck = false;
+      CRootContainer::getConfiguration()->save();
+    }
+  else if (mpDataModelGUI->getLastDownloadUrl() != "https://api.github.com/repos/copasi/COPASI/releases/latest")
+    {
+      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCheckForUpdateFinished(bool)));
+      mpDataModelGUI->downloadFileFromUrl("https://api.github.com/repos/copasi/COPASI/releases/latest", mpDataModelGUI->getFileName(), false);
+    }
+  else
+    {
+      mAutoUpdateCheck = false;
+    }
+}
+
+void CopasiUI3Window::slotClearSbmlIds()
+{
+  if (!mpDataModel || !mpDataModel->getModel()) return;
+
+  mpDataModel->getModel()->clearSbmlIds();
+}
+
 void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
 {
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFromUrlFinished(bool)));
@@ -3673,6 +4197,8 @@ void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
   if (success)
     {
       QString tempFileName = FROM_UTF8(mpDataModelGUI->getFileName());
+
+      mActionStack.push_front(std::make_pair(RemoveReportTargets, ""));
 
       if (isArchive(tempFileName))
         {

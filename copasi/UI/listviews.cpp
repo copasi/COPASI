@@ -118,6 +118,10 @@
 # include "CQAnalyticsWidget.h"
 #endif // WITH_ANALYTICS
 
+#ifdef WITH_TIME_SENS
+# include "CQTimeSensWidget.h"
+#endif // WITH_TIME_SENS
+
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 #include "CQOscillationTaskWidget.h"
 #endif
@@ -209,6 +213,8 @@ const CEnumAnnotation< std::string, ListViews::WidgetType > ListViews::WidgetNam
   , "Lyapunov Exponents Result"
   , "Time Scale Separation Analysis"
   , "Time Scale Separation Analysis Result"
+  , "Time Course Sensitivities"
+  , "Time Course Sensitivities Result"
   , "Cross Section"
   , "Cross Section Result"
   , "Analytics"
@@ -373,6 +379,10 @@ ListViews::ListViews(QWidget *parent,
   analyticsWidget(NULL),
   analyticsResultWidget(NULL),
 #endif // WITH_ANALYTICS
+#ifdef WITH_TIME_SENS
+  timeSensWidget(NULL),
+  timeSensResultWidget(NULL),
+#endif // WITH_TIME_SENS
 
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   oscillationTaskWidget(NULL),
@@ -781,6 +791,22 @@ void ListViews::ConstructNodeWidgets()
 
 #endif // WITH_ANALYTICS
 
+#ifdef WITH_TIME_SENS
+
+  if (!timeSensResultWidget)
+    {
+      timeSensResultWidget = new CQTimeSeriesWidget(this);
+      mpStackedWidget->addWidget(timeSensResultWidget);
+    }
+
+  if (!timeSensWidget)
+    {
+      timeSensWidget = new CQTimeSensWidget(this);
+      mpStackedWidget->addWidget(timeSensWidget);
+    }
+
+#endif // WITH_TIME_SENS
+
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 
   if (!oscillationTaskWidget)
@@ -1047,6 +1073,17 @@ CopasiWidget* ListViews::findWidgetFromId(const ListViews::WidgetType & id) cons
         return analyticsResultWidget;
         break;
 #endif // WITH_ANALYTICS
+
+#ifdef WITH_TIME_SENS
+
+      case ListViews::WidgetType::TimeCourseSensitivities:
+        return timeSensWidget;
+        break;
+
+      case ListViews::WidgetType::TimeCourseSensitivitiesResult:
+        return timeSensResultWidget;
+        break;
+#endif // WITH_TIME_SENS
 
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
 
@@ -1396,3 +1433,10 @@ CQCrossSectionTaskWidget* ListViews::getCrossSectionWidget()
 {
   return crossSectionTaskWidget;
 }
+
+#ifdef WITH_TIME_SENS
+CQTimeSensWidget* ListViews::getTimeSensWidget()
+{
+  return timeSensWidget;
+}
+#endif // WITH_TIME_SENS

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,12 +42,12 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/core/CDataVector.h"
 /*
-*  Constructs a ObjectDebug as a child of 'parent', with the
-*  name 'name' and widget flags set to 'f'.
-*
-*  The dialog will by default be modeless, unless you set 'modal' to
-*  true to construct a modal dialog.
-*/
+ *  Constructs a ObjectDebug as a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  true to construct a modal dialog.
+ */
 ObjectDebug::ObjectDebug(QWidget* parent, Qt::WindowFlags fl)
   : QDialog(parent, fl)
 {
@@ -52,8 +57,8 @@ ObjectDebug::ObjectDebug(QWidget* parent, Qt::WindowFlags fl)
 }
 
 /*
-*  Destroys the object and frees any allocated resources
-*/
+ *  Destroys the object and frees any allocated resources
+ */
 ObjectDebug::~ObjectDebug()
 {
   // no need to delete child widgets, Qt does it all for us
@@ -76,10 +81,10 @@ public:
   {}
 
   /*MyListViewItemWithPtr(QTreeWidgetItem * parent, const CDataObject * ptr,
-    QString label1, QString label2 = QString::null,
-    QString label3 = QString::null, QString label4 = QString::null,
-    QString label5 = QString::null, QString label6 = QString::null,
-    QString label7 = QString::null, QString label8 = QString::null)
+    QString label1, QString label2 = QString(),
+    QString label3 = QString(), QString label4 = QString(),
+    QString label5 = QString(), QString label6 = QString(),
+    QString label7 = QString(), QString label8 = QString())
     : QTreeWidgetItem(parent, label1, label2, label3, label4, label5, label6, label7, label8),
     mpObject(ptr)
   {}*/
@@ -102,11 +107,17 @@ void ObjectDebug::addObjectRecursive(QTreeWidgetItem * parent, const void * ptr)
   //assert(CRootContainer::getDatamodelList()->size() > 0);
 
   QString flags;
+
   if (obj->hasFlag(CDataObject::Container)) flags += "C"; else flags += " ";
+
   if (obj->hasFlag(CDataObject::Vector)) flags += "V"; else flags += " ";
+
   if (obj->hasFlag(CDataObject::Matrix)) flags += "M"; else flags += " ";
+
   if (obj->hasFlag(CDataObject::NameVector)) flags += "N"; else flags += " ";
+
   if (obj->hasFlag(CDataObject::Reference)) flags += "R"; else flags += " ";
+
   if (obj->hasFlag(CDataObject::NonUniqueName)) flags += " Nun"; else flags += " Unn";
 
   if (obj->hasFlag(CDataObject::ValueInt)) flags += "Int";
@@ -190,7 +201,6 @@ void ObjectDebug::update()
 
   const CDataObject * obj;
 
-
   QTreeWidgetItem * element;
   element = new MyListViewItemWithPtr(ListOfObjects, NULL, QStringList() << "*");
   element->setExpanded(true);
@@ -202,7 +212,6 @@ void ObjectDebug::update()
   addObjectRecursive(element, (const void *)obj);
 
   ListOfObjects->addTopLevelItem(element);
-
 }
 
 void ObjectDebug::init()

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
@@ -131,7 +136,15 @@ size_t INVALID_INDEX();
 %ignore CIssue::eKind;
 %ignore CIssue::eSeverity;
 
+%ignore *::beginName;
+%ignore *::begin_name;
+%ignore *::endName;
+%ignore *::end_name;
+
+%include <copasi/undo/CUndoObjectInterface.h>
+%template(CDataStdVector) std::vector<CData>;
 %include <copasi/undo/CData.h>
+%template(CDataValueStdVector) std::vector<CDataValue>;
 %include <copasi/undo/CDataValue.h>
 %include <copasi/undo/CUndoData.h>
 

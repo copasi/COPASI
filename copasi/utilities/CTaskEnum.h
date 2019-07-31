@@ -37,6 +37,7 @@ public:
     crosssection,
     lna,
     analytics,
+    timeSens,
     UnsetTask,
     __SIZE
   };
@@ -80,6 +81,7 @@ public:
     TruncatedNewton,
     Newton,
     deterministic,
+    RADAU5,
     LSODA2,
     directMethod,
     stochastic,
@@ -107,6 +109,7 @@ public:
     crossSectionMethod,
     linearNoiseApproximation,
     analyticsMethod,
+    timeSensLsoda,
     __SIZE
   };
 

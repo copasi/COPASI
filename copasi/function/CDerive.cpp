@@ -25,6 +25,26 @@
 #include "function/CFunction.h"
 #include "utilities/CNodeIterator.h"
 
+CDerive::CDerive():
+  mEnv(),
+  mpTree(NULL),
+  mSimplify(true)
+{
+
+}
+
+CDerive::CDerive(std::vector<const CEvaluationNode*>&  env,
+          const CEvaluationTree* pTree,
+          bool simplify):
+  mEnv(env),
+  mpTree(pTree),
+  mSimplify(simplify)
+{
+
+}
+
+
+
 bool CDerive::isOne(const CEvaluationNode* node)
 {
   const CEvaluationNodeNumber * pENN = dynamic_cast<const CEvaluationNodeNumber*>(node);
@@ -55,9 +75,9 @@ void CDerive::deleteBranch(CEvaluationNode* node)
   delete node;
 }
 
-CEvaluationNode* CDerive::multiply(CEvaluationNode* n1, CEvaluationNode* n2, bool simplify)
+CEvaluationNode* CDerive::multiply(CEvaluationNode* n1, CEvaluationNode* n2)
 {
-  if (simplify)
+  if (mSimplify)
     {
       if (isZero(n1) || isZero(n2))
         {
@@ -97,9 +117,9 @@ CEvaluationNode* CDerive::multiply(CEvaluationNode* n1, CEvaluationNode* n2, boo
   return tmpNode;
 }
 
-CEvaluationNode* CDerive::divide(CEvaluationNode* n1, CEvaluationNode* n2, bool simplify)
+CEvaluationNode* CDerive::divide(CEvaluationNode* n1, CEvaluationNode* n2)
 {
-  if (simplify)
+  if (mSimplify)
     {
       if (isZero(n1))
         {
@@ -139,9 +159,9 @@ CEvaluationNode* CDerive::divide(CEvaluationNode* n1, CEvaluationNode* n2, bool 
   return tmpNode;
 }
 
-CEvaluationNode* CDerive::add(CEvaluationNode* n1, CEvaluationNode* n2, bool simplify)
+CEvaluationNode* CDerive::add(CEvaluationNode* n1, CEvaluationNode* n2)
 {
-  if (simplify)
+  if (mSimplify)
     {
       if (isZero(n1))
         {
@@ -181,9 +201,9 @@ CEvaluationNode* CDerive::add(CEvaluationNode* n1, CEvaluationNode* n2, bool sim
   return newNode;
 }
 
-CEvaluationNode* CDerive::subtract(CEvaluationNode *n1, CEvaluationNode *n2, bool simplify)
+CEvaluationNode* CDerive::subtract(CEvaluationNode *n1, CEvaluationNode *n2)
 {
-  if (simplify)
+  if (mSimplify)
     {
       if (isZero(n1))
         {
@@ -225,9 +245,9 @@ CEvaluationNode* CDerive::subtract(CEvaluationNode *n1, CEvaluationNode *n2, boo
   return newNode;
 }
 
-CEvaluationNode* CDerive::power(CEvaluationNode* n1, CEvaluationNode* n2, bool simplify)
+CEvaluationNode* CDerive::power(CEvaluationNode* n1, CEvaluationNode* n2)
 {
-  if (simplify)
+  if (mSimplify)
     {
       if (isOne(n2))
         {
@@ -308,11 +328,7 @@ CEvaluationNode * CDerive::copyBranch_var2obj(const CEvaluationNode* node, std::
 }
 
 //TODO remove pModel
-CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataObject * pObject,
-                                       std::vector<const CEvaluationNode*>& env,
-                                       //std::vector<const CDataObject*>& objenv,
-                                       const CEvaluationTree* pTree,
-                                       bool simplify)
+CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataObject * pObject)
 {
   CEvaluationNode * newNode = NULL;
 
@@ -322,11 +338,11 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataO
     {
       if (!pENO->getLeft() || !pENO->getRight()) return NULL;
 
-      CEvaluationNode * pLeftDeriv = deriveBranch(pENO->getLeft(), pObject, env, pTree, simplify);
+      CEvaluationNode * pLeftDeriv = deriveBranch(pENO->getLeft(), pObject);
 
       if (!pLeftDeriv) return NULL;
 
-      CEvaluationNode * pRightDeriv = deriveBranch(pENO->getRight(), pObject, env, pTree, simplify);
+      CEvaluationNode * pRightDeriv = deriveBranch(pENO->getRight(), pObject);
 
       if (!pRightDeriv) {delete pLeftDeriv; return NULL;}
 
@@ -336,76 +352,73 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataO
         {
           case CEvaluationNode::SubType::MULTIPLY:
           {
-            CEvaluationNode * pLeftCopy = copyBranch_var2obj(pENO->getLeft(), env);
-            CEvaluationNode * pRightCopy = copyBranch_var2obj(pENO->getRight(), env);
+            CEvaluationNode * pLeftCopy = copyBranch_var2obj(pENO->getLeft(), mEnv);
+            CEvaluationNode * pRightCopy = copyBranch_var2obj(pENO->getRight(), mEnv);
 
-            CEvaluationNode * tmpNode1 = multiply(pRightCopy, pLeftDeriv, simplify);
-            CEvaluationNode * tmpNode2 = multiply(pRightDeriv, pLeftCopy, simplify);
+            CEvaluationNode * tmpNode1 = multiply(pRightCopy, pLeftDeriv);
+            CEvaluationNode * tmpNode2 = multiply(pRightDeriv, pLeftCopy);
 
-            return add(tmpNode1, tmpNode2, simplify);
+            return add(tmpNode1, tmpNode2);
           }
           break;
 
           case CEvaluationNode::SubType::DIVIDE:
           {
-            CEvaluationNode * pLeftCopy = copyBranch_var2obj(pENO->getLeft(), env);
-            CEvaluationNode * pRightCopy = copyBranch_var2obj(pENO->getRight(), env);
+            CEvaluationNode * pLeftCopy = copyBranch_var2obj(pENO->getLeft(), mEnv);
+            CEvaluationNode * pRightCopy = copyBranch_var2obj(pENO->getRight(), mEnv);
 
             //numerator
-            CEvaluationNode * tmpNode1 = multiply(pRightCopy, pLeftDeriv, simplify);
-            CEvaluationNode * tmpNode2 = multiply(pRightDeriv, pLeftCopy, simplify);
+            CEvaluationNode * tmpNode1 = multiply(pRightCopy, pLeftDeriv);
+            CEvaluationNode * tmpNode2 = multiply(pRightDeriv, pLeftCopy);
 
-            CEvaluationNode * minusNode = subtract(tmpNode1, tmpNode2, simplify);
+            CEvaluationNode * minusNode = subtract(tmpNode1, tmpNode2);
 
             minusNode->compile(NULL);
 
             //denominator
-            CEvaluationNode * powerNode = power(copyBranch_var2obj(pENO->getRight(), env),
-                                                new CEvaluationNodeNumber(CEvaluationNode::SubType::INTEGER, "2"),
-                                                simplify);
+            CEvaluationNode * powerNode = power(copyBranch_var2obj(pENO->getRight(), mEnv),
+                                                new CEvaluationNodeNumber(CEvaluationNode::SubType::INTEGER, "2"));
 
-            return divide(minusNode, powerNode, simplify);
+            return divide(minusNode, powerNode);
           }
           break;
 
           case CEvaluationNode::SubType::PLUS:
 
-            return add(pLeftDeriv, pRightDeriv, simplify);
+            return add(pLeftDeriv, pRightDeriv);
             break;
 
           case CEvaluationNode::SubType::MINUS:
 
-            return subtract(pLeftDeriv, pRightDeriv, simplify);
+            return subtract(pLeftDeriv, pRightDeriv);
             break;
 
           case CEvaluationNode::SubType::POWER:
           {
             // b-1
-            CEvaluationNode * tmpNode = subtract(copyBranch_var2obj(pENO->getRight(), env),
-                                                 new CEvaluationNodeNumber(CEvaluationNode::SubType::INTEGER, "1"),
-                                                 simplify);
+            CEvaluationNode * tmpNode = subtract(copyBranch_var2obj(pENO->getRight(), mEnv),
+                                                 new CEvaluationNodeNumber(CEvaluationNode::SubType::INTEGER, "1"));
 
             // a^(b-1)
-            CEvaluationNode * powerNode = power(copyBranch_var2obj(pENO->getLeft(), env), tmpNode, simplify);
+            CEvaluationNode * powerNode = power(copyBranch_var2obj(pENO->getLeft(), mEnv), tmpNode);
 
             // b*a'
-            tmpNode = multiply(copyBranch_var2obj(pENO->getRight(), env),
-                               pLeftDeriv, simplify);
+            tmpNode = multiply(copyBranch_var2obj(pENO->getRight(), mEnv),
+                               pLeftDeriv);
 
             // ln a
             CEvaluationNodeFunction * funcNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::LOG, "ln");
-            funcNode->addChild(copyBranch_var2obj(pENO->getLeft(), env)); // add a
+            funcNode->addChild(copyBranch_var2obj(pENO->getLeft(), mEnv)); // add a
 
             // a * b' * ln a
-            CEvaluationNode * tmpNode2 = multiply(copyBranch_var2obj(pENO->getLeft(), env),
-                                                  multiply(pRightDeriv, funcNode, simplify),
-                                                  simplify);
+            CEvaluationNode * tmpNode2 = multiply(copyBranch_var2obj(pENO->getLeft(), mEnv),
+                                                  multiply(pRightDeriv, funcNode));
 
             // b*a + a*b * ln a
-            CEvaluationNode * plusNode = add(tmpNode, tmpNode2, simplify);
+            CEvaluationNode * plusNode = add(tmpNode, tmpNode2);
 
             // a^(b-1)*(b*a + a*b * ln a)
-            return multiply(powerNode, plusNode, simplify);
+            return multiply(powerNode, plusNode);
           }
           break;
 
@@ -418,11 +431,12 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataO
 
   if (pENV)
     {
-      if (!env[pENV->getIndex()])
+      if (!mEnv[pENV->getIndex()])
         return NULL;
 
       //basically just expand the tree.
-      return deriveBranch(env[pENV->getIndex()], pObject, env, pTree, simplify);
+      return deriveBranch(mEnv[pENV->getIndex()], pObject
+      );
     }
 
   const CEvaluationNodeNumber * pENN = dynamic_cast<const CEvaluationNodeNumber*>(node);
@@ -438,7 +452,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataO
   if (pENObj)
     {
       //first check whether the object is the derivation variable
-      if (pObject->getCN() == pENObj->getObjectCN())
+      if (pObject && pObject->getCN() == pENObj->getObjectCN())
         {
           //std::cout << "*";
           return new CEvaluationNodeNumber(CEvaluationNode::SubType::INTEGER, "1");
@@ -457,24 +471,22 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataO
           //In this context, the concentration is expanded as "amount of substance/volume"
           std::string tmpstr = tmpObj->getObjectParent() ? "<" + tmpObj->getObjectParent()->getCN() + ",Reference=ParticleNumber>" : "<>";
           CEvaluationNodeObject* amount = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, tmpstr);
-          amount->compile(pTree);
+          amount->compile(mpTree);
 
           tmpstr = tmpObj->getObjectAncestor("Compartment") ? "<" + tmpObj->getObjectAncestor("Compartment")->getCN() + ",Reference=Volume>"  : "<>";
           CEvaluationNodeObject* volume = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, tmpstr);
-          volume->compile(pTree);
+          volume->compile(mpTree);
           CEvaluationNodeObject* volume2 = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, tmpstr); //we need this node twice
-          volume2->compile(pTree);
+          volume2->compile(mpTree);
 
-          CEvaluationNode* damount = deriveBranch(amount, pObject, env, pTree, simplify);
-          CEvaluationNode* dvolume = deriveBranch(volume, pObject, env, pTree, simplify);
+          CEvaluationNode* damount = deriveBranch(amount, pObject);
+          CEvaluationNode* dvolume = deriveBranch(volume, pObject);
 
           // A / V - A*V /V^2
           return
-            subtract(divide(damount, volume, simplify),
-                     divide(multiply(amount, dvolume, simplify),
-                            power(volume2, new CEvaluationNodeNumber(CEvaluationNode::SubType::INTEGER, "2"), simplify),
-                            simplify),
-                     simplify);
+            subtract(divide(damount, volume),
+                     divide(multiply(amount, dvolume),
+                            power(volume2, new CEvaluationNodeNumber(CEvaluationNode::SubType::INTEGER, "2"))));
         }
 
       //TODO:
@@ -503,31 +515,29 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataO
 
       for (i = 0; i < imax; ++i)
         {
-          CEvaluationNode* tmpnode = copyBranch_var2obj(pENCall->getListOfChildNodes()[i], env);
-          compileTree(tmpnode, pTree);
+          CEvaluationNode* tmpnode = copyBranch_var2obj(pENCall->getListOfChildNodes()[i], mEnv);
+          compileTree(tmpnode);
           subenv[i] = tmpnode;
         }
 
-      return deriveBranch(pENCall->getCalledTree()->getRoot(), pObject,
-                          subenv,
-                          pTree, simplify);
+      return deriveBranch(pENCall->getCalledTree()->getRoot(), pObject);
     }
 
   return newNode;
 }
 
-//static
-void CDerive::compileTree(CEvaluationNode* node, const CEvaluationTree * pTree)
+
+void CDerive::compileTree(CEvaluationNode* node)
 {
   if (!node) return;
 
-  node->compile(pTree);
+  node->compile(mpTree);
 
   CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(node->getChild());
 
   while (child != NULL)
     {
-      compileTree(child, pTree);
+      compileTree(child);
       child = dynamic_cast<CEvaluationNode*>(child->getSibling());
     }
 }

@@ -93,6 +93,7 @@ protected:
   QTreeWidgetItem* mpResultMatrixSubtree;
   QTreeWidgetItem* mpResultSteadyStateSubtree;
   QTreeWidgetItem* mpResultSensitivitySubtree;
+  QTreeWidgetItem* mpResultTimeSensitivitySubtree;
 
 #ifdef WITH_ANALYTICS
   QTreeWidgetItem* mpResultAnalyticsSubtree;

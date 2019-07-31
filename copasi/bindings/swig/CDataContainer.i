@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -23,6 +28,10 @@
 %ignore CDataContainer::add(CDataObject*,const bool&); // needs to be hidden since it conflicts with methods in derived classes 
 %ignore CDataContainer::remove(CDataObject*); // needs to be hidden since it conflicts with methods in derived classes 
 %ignore CDataContainer::getObjects;
+%ignore CDataContainer::insert;
+%ignore CDataContainer::updateIndex;
+
 
 %include "core/CDataContainer.h"
 
+%template(ContainerList) std::vector<const CDataContainer*>;

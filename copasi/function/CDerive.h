@@ -32,6 +32,11 @@ class CDerive
 {
 public:
 
+  CDerive();
+  CDerive(std::vector<const CEvaluationNode*>&  env,
+          const CEvaluationTree* pTree,
+          bool simplify);
+
   //private:
 
   /// tests whether the node is numerically 1
@@ -47,11 +52,11 @@ public:
    * These methods create a node for a basic mathematical operation.
    * In addition they check for basic simplifications
    */
-  static CEvaluationNode* multiply(CEvaluationNode* n1, CEvaluationNode* n2, bool simplify);
-  static CEvaluationNode* divide(CEvaluationNode* n1, CEvaluationNode* n2, bool simplify);
-  static CEvaluationNode* add(CEvaluationNode* n1, CEvaluationNode* n2, bool simplify);
-  static CEvaluationNode* subtract(CEvaluationNode* n1, CEvaluationNode* n2, bool simplify);
-  static CEvaluationNode* power(CEvaluationNode* n1, CEvaluationNode* n2, bool simplify);
+  CEvaluationNode* multiply(CEvaluationNode* n1, CEvaluationNode* n2);
+  CEvaluationNode* divide(CEvaluationNode* n1, CEvaluationNode* n2);
+  CEvaluationNode* add(CEvaluationNode* n1, CEvaluationNode* n2);
+  CEvaluationNode* subtract(CEvaluationNode* n1, CEvaluationNode* n2);
+  CEvaluationNode* power(CEvaluationNode* n1, CEvaluationNode* n2);
 
   static CEvaluationNode * copyBranch_var2obj(const CEvaluationNode* node, std::vector<const CEvaluationNode*> & env);
 
@@ -71,13 +76,16 @@ public:
    * @param pTree, the tree to differentiate
    * @param simplify if true the expression will be simplified
    */
-  static CEvaluationNode* deriveBranch(const CEvaluationNode* node, const CDataObject * pObject,
-                                       std::vector<const CEvaluationNode*>& env,
-                                       //std::vector<const CDataObject*>& objenv,
-                                       const CEvaluationTree* pTree,
-                                       bool simplify);
+  CEvaluationNode* deriveBranch(const CEvaluationNode* node, const CDataObject * pObject);
 
-  static void compileTree(CEvaluationNode* node, const CEvaluationTree * pTree);
+  void compileTree(CEvaluationNode* node);
+  
+private:
+  
+  std::vector<const CEvaluationNode*> mEnv;
+  const CEvaluationTree* mpTree;
+  bool mSimplify;
+  
 };
 
 #endif

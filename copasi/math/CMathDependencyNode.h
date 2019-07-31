@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -16,6 +21,7 @@
 
 #include "copasi/core/CDataObject.h"
 #include "copasi/math/CMathEnum.h"
+#include "copasi/utilities/CCopasiMessage.h"
 
 class CMathContainer;
 
@@ -88,45 +94,55 @@ public:
    * Update the state of all dependents (and dependents thereof) to changed,
    * @param const CCore::SimulationContextFlag & context
    * @param const CObjectInterface::ObjectSet & changedObjects
+   * @param bool ignoreCircularDependecies
    * @return bool success
    */
   bool updateDependentState(const CCore::SimulationContextFlag & context,
-                            const CObjectInterface::ObjectSet & changedObjects);
+                            const CObjectInterface::ObjectSet & changedObjects,
+                            bool ignoreCircularDependecies);
 
   /**
    * Update the state of all prerequisites (and prerequisites thereof) to requested.
    * @param const CCore::SimulationContextFlag & context
    * @param const CObjectInterface::ObjectSet & changedObjects
+   * @param bool ignoreCircularDependecies
    * @return bool success
    */
   bool updatePrerequisiteState(const CCore::SimulationContextFlag & context,
-                               const CObjectInterface::ObjectSet & changedObjects);
+                               const CObjectInterface::ObjectSet & changedObjects,
+                               bool ignoreCircularDependecies);
 
   /**
    * Update the state of all prerequisites (and prerequisites thereof) to calculate.
    * @param const CCore::SimulationContextFlag & context
    * @param const CObjectInterface::ObjectSet & changedObjects
+   * @param bool ignoreCircularDependecies
    * @return bool success
    */
   bool updateCalculatedState(const CCore::SimulationContextFlag & context,
-                             const CObjectInterface::ObjectSet & changedObjects);
+                             const CObjectInterface::ObjectSet & changedObjects,
+                             bool ignoreCircularDependecies);
 
   /**
    * Update the state of all dependents (and dependents thereof) to changed,
    * @param const CCore::SimulationContextFlag & context
+   * @param bool ignoreCircularDependecies
    * @return bool success
    */
   bool updateIgnoredState(const CCore::SimulationContextFlag & context,
-                          const CObjectInterface::ObjectSet & changedObjects);
+                          const CObjectInterface::ObjectSet & changedObjects,
+                          bool ignoreCircularDependecies);
 
   /**
    * Build the sequence of objects which need to be updated to calculate the object value.
    * @param const CCore::SimulationContextFlag & context
    * @param std::vector < CObjectInterface * > & updateSequence
+   * @param bool ignoreCircularDependecies
    * @return bool success
    */
   bool buildUpdateSequence(const CCore::SimulationContextFlag & context,
-                           std::vector < CObjectInterface * > & updateSequence);
+                           std::vector < CObjectInterface * > & updateSequence,
+                           bool ignoreCircularDependecies);
 
   /**
    * Set whether the current node has changed its value
@@ -171,6 +187,8 @@ public:
 
   // Attributes
 private:
+  bool createMessage(bool ignoreCircularDependecies);
+
   const CObjectInterface * mpObject;
   std::vector< CMathDependencyNode * > mPrerequisites;
   std::vector< CMathDependencyNode * > mDependents;

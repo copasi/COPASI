@@ -56,6 +56,7 @@
 # include <combine/util.h>
 # include <omex/CaContent.h>
 # include <copasi/utilities/CCopasiMessage.h>
+# include <copasi/utilities/CParameterEstimationUtils.h>
 
 #include <sedml/SedDocument.h>
 #include "sedml/SEDMLImporter.h"
@@ -71,6 +72,9 @@
 #include <copasi/parameterFitting/CFitProblem.h>
 #include <copasi/parameterFitting/CExperimentSet.h>
 #include <copasi/parameterFitting/CExperiment.h>
+
+#include <copasi/shinyExport/uiShiny.c>
+#include <copasi/shinyExport/serverShiny.c>
 
 CDataModel::CDataModel(const bool withGUI):
   CDataContainer("Root", NULL, "CN", CDataObject::DataModel),
@@ -474,9 +478,9 @@ bool CDataModel::loadModelParameterSets(const std::string & fileName,
   CDataVectorN< CModelParameterSet > & loadedSet = parameterSetModel->getModelParameterSets();
   CCommonName loadedModelCn = parameterSetModel->getCN();
 
-  for (CModelParameterSet & set : loadedSet)
+for (CModelParameterSet & set : loadedSet)
     {
-      for (CModelParameter * current : dynamic_cast< CModelParameterGroup & >(set))
+for (CModelParameter * current : dynamic_cast< CModelParameterGroup & >(set))
         {
           replaceCnInGroup(current, loadedModelCn, thisModelsCn);
         }
@@ -500,7 +504,7 @@ void CDataModel::replaceCnInGroup(CModelParameter* pParam,
   if (!group)
     return;
 
-  for (CModelParameter * element : *group)
+for (CModelParameter * element : *group)
     {
       CModelParameterGroup* inside = dynamic_cast<CModelParameterGroup*>(element);
 
@@ -700,7 +704,7 @@ CDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessRepo
 
       try
         {
-          if (!XML.CCopasiXMLInterface::save(TmpFileName, FileName))
+          if (!XML.CCopasiXMLInterface::save(TmpFileName, CDirEntry::dirName(FileName)))
             {
               CDirEntry::remove(TmpFileName);
               success = false;
@@ -721,7 +725,7 @@ CDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessRepo
     {
       try
         {
-          if (!XML.CCopasiXMLInterface::save(FileName, FileName))
+          if (!XML.CCopasiXMLInterface::save(FileName, CDirEntry::dirName(FileName)))
             return false;
         }
 
@@ -1387,6 +1391,155 @@ CDataModel::addCopasiFileToArchive(CombineArchive *archive,
   catch (...)
     {
     }
+}
+
+bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bool includeData, bool overwriteFile, CProcessReport * pProgressReport)
+{
+  CCopasiMessage::clearDeque();
+
+  std::string PWD;
+  COptions::getValue("PWD", PWD);
+
+  std::string fileBaseName = CDirEntry::baseName(fileName);
+
+  if (CDirEntry::isRelativePath(fileName) &&
+      !CDirEntry::makePathAbsolute(fileName, PWD))
+    fileName = CDirEntry::fileName(fileName);
+
+  if (CDirEntry::exist(fileName))
+    {
+      if (!overwriteFile)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 1,
+                         fileName.c_str());
+          return false;
+        }
+
+      if (!CDirEntry::isWritable(fileName))
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 2,
+                         fileName.c_str());
+          return false;
+        }
+
+      // delete existing file
+      std::remove(fileName.c_str());
+    }
+
+  CombineArchive archive;
+
+  std::map<std::string, std::string> renamedExperiments;
+  std::map<std::string, std::string>::iterator renameIt;
+  CFitProblem *problem = NULL;
+
+  if (includeData)
+    {
+      // go through all experiments and find the files and add them to the archive
+      // alter COPASI file (temporarily) to reference those files
+      problem = dynamic_cast<CFitProblem*>((*getTaskList())[static_cast< size_t >(CTaskEnum::Task::parameterFitting)].getProblem());
+      {
+        CExperimentSet& experiments = problem->getExperimentSet();
+
+        std::vector<std::string> fileNames = experiments.getFileNames();
+        std::vector<std::string>::iterator it = fileNames.begin();
+
+        for (; it != fileNames.end(); ++it)
+          {
+            //renamedExperiments[*it] = "./copasi/" + CDirEntry::fileName(*it);
+            renamedExperiments[*it] = CDirEntry::fileName(*it);
+            archive.addFile(*it, "./" + fileBaseName + "/copasi/" + CDirEntry::fileName(*it), KnownFormats::guessFormat(*it), false);
+          }
+
+        // rename files temporarily
+        for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+          {
+            for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+              {
+                CExperiment* current = experiments.getExperiment(i);
+
+                if (current->getFileName() == renameIt->first)
+                  {
+                    current->setFileName(renameIt->second);
+                  }
+              }
+          }
+      }
+      {
+        CExperimentSet& experiments = problem->getCrossValidationSet();
+
+        std::vector<std::string> fileNames = experiments.getFileNames();
+        std::vector<std::string>::iterator it = fileNames.begin();
+
+        for (; it != fileNames.end(); ++it)
+          {
+            renamedExperiments[*it] = CDirEntry::fileName(*it);
+            archive.addFile(*it, "./" + fileBaseName + "/copasi/"  + CDirEntry::fileName(*it), KnownFormats::guessFormat(*it), false);
+          }
+
+        // rename files temporarily
+        for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+          {
+            for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+              {
+                CExperiment* current = experiments.getExperiment(i);
+
+                if (current->getFileName() == renameIt->first)
+                  {
+                    current->setFileName(renameIt->second);
+                  }
+              }
+          }
+      }
+
+      if (includeCOPASI)
+        {
+          addCopasiFileToArchive(&archive, "./" + fileBaseName + "/copasi/" + fileBaseName + ".cps", pProgressReport);
+        }
+
+      // restore filenames
+      {
+        CExperimentSet& experiments = problem->getExperimentSet();
+
+        for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+          {
+            for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+              {
+                CExperiment* current = experiments.getExperiment(i);
+
+                if (current->getFileNameOnly() == renameIt->second)
+                  {
+                    current->setFileName(renameIt->first);
+                  }
+              }
+          }
+      }
+      {
+        CExperimentSet& experiments = problem->getCrossValidationSet();
+
+        for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+          {
+            for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+              {
+                CExperiment* current = experiments.getExperiment(i);
+
+                if (current->getFileNameOnly() == renameIt->second)
+                  {
+                    current->setFileName(renameIt->first);
+                  }
+              }
+          }
+      }
+    }
+
+
+  archive.addFileFromString(shinyUIString, "./" + fileBaseName + "/ui.r", KnownFormats::lookupFormat("R"), true);
+  archive.addFileFromString(shinyServerString, "./" + fileBaseName + "/server.r", KnownFormats::lookupFormat("R"), true);
+
+
+  archive.writeToFile(fileName);
+  return false;
 }
 
 bool CDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, bool includeSBML, bool includeData, bool includeSEDML, bool overwriteFile, CProcessReport * pProgressReport)
@@ -2196,7 +2349,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::parameterFitting:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2225,7 +2378,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::lyap:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2242,7 +2395,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::mca:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2259,7 +2412,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::lna:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2276,7 +2429,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::sens:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2293,7 +2446,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::tssAnalysis:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2433,6 +2586,11 @@ SCopasiXMLGUI * CDataModel::getGUI()
 
 const std::string & CDataModel::getFileName() const
 {return mData.mSaveFileName;}
+
+void CDataModel::setFileName(const std::string & fileName)
+{
+  mData.mSaveFileName = fileName;
+}
 
 bool CDataModel::isChanged() const
 {return mData.mChanged;}
@@ -2787,6 +2945,8 @@ void CDataModel::commonAfterLoad(CProcessReport* pProcessReport,
         {
           // need initialize, so that all objects are created for the
           // object browser
+          if (!mData.mWithGUI && !it->isScheduled()) continue;
+
           it->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
 
           // but we should restore any possible changes made to the model
@@ -2849,6 +3009,93 @@ CUndoData::CChangeSet CDataModel::recordData(const CUndoData & data)
     }
 
   return CUndoData::CChangeSet();
+}
+
+bool
+CDataModel::changeModelParameter(CDataObject* element, double value)
+{
+  if (element == NULL)
+    return false;
+
+  CDataObjectReference<double>* pRef =
+    dynamic_cast<CDataObjectReference<double>*>(element);
+
+  if (pRef != NULL)
+    {
+      if (pRef->getValuePointer() != NULL)
+        {
+          *static_cast<double*>(pRef->getValuePointer()) = value;
+
+          if (pRef->getObjectName() == "InitialConcentration" &&
+              pRef->getObjectDataModel() != NULL &&
+              pRef->getObjectDataModel()->getModel() != NULL)
+            pRef->getObjectDataModel()->getModel()->updateInitialValues(pRef);
+
+          return true;
+        }
+    }
+
+  CCopasiParameter* pParam = dynamic_cast<CCopasiParameter*>(element);
+
+  if (pParam != NULL)
+    {
+      if (pParam->getValuePointer() != NULL)
+        {
+          *static_cast<double*>(pParam->getValuePointer()) = value;
+          return true;
+        }
+    }
+
+  return false;
+}
+
+void
+CDataModel::reparameterizeFromIniFile(const std::string& fileName)
+{
+  if (!getModel())
+    return;
+
+  std::ifstream ifs(fileName.c_str(), std::ios_base::in);
+
+  if (!ifs.good())
+    {
+      return;
+    }
+
+  std::string line;
+
+  while (std::getline(ifs, line))
+    {
+      // remove comments
+      size_t pos = line.find(';');
+
+      if (pos != std::string::npos)
+        line = line.substr(0, pos);
+
+      pos = line.rfind('=');
+
+      if (pos == std::string::npos) // no equals sign found invalid
+        continue;
+
+      std::string key = ResultParser::trim(line.substr(0, pos));
+      std::string value = ResultParser::trim(line.substr(pos + 1));
+
+      if (key.empty() || value.empty())
+        continue;
+
+      double dValue = ResultParser::saveToDouble(value);
+
+      CDataObject* element =
+        const_cast<CDataObject*>(findObjectByDisplayName(key));
+
+      if (element == NULL) // no such element, or no supported element
+        continue;
+
+      if (changeModelParameter(element, dValue))
+        getModel()->setCompileFlag(); // mark as changed
+    }
+
+  getModel()->compileIfNecessary(NULL); // compile if needed
 }
 
 const CDataObject *CDataModel::findObjectByDisplayName(const std::string& displayString) const
@@ -2973,5 +3220,34 @@ const CDataObject *CDataModel::findObjectByDisplayName(const std::string& displa
           }
       }
   }
+
+  // try for local reaction parameters
+
+  pos = displayString.find(")");
+
+  if (pos != std::string::npos && (displayString.size() > (pos + 2)))
+    {
+      std::string reactionName = displayString.substr(1, pos - 1);
+      std::string parameter = displayString.substr(pos + 2);
+
+      size_t reactionIndex = model->getReactions().getIndex(reactionName);
+
+      if (reactionIndex == C_INVALID_INDEX)
+        return NULL;
+
+      const CReaction& reaction = model->getReactions()[reactionIndex];
+      size_t paramIndex = reaction.getParameterIndex(parameter);
+
+      if (paramIndex == C_INVALID_INDEX)
+        return NULL;
+
+      auto& paramObjects = reaction.getParameterObjects(paramIndex);
+
+      if (!paramObjects.empty())
+        return paramObjects[0];
+
+    }
+
+
   return NULL;
 }

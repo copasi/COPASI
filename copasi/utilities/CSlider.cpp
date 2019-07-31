@@ -180,6 +180,9 @@ bool CSlider::setSliderObject(const CDataObject * pObject)
   C_FLOAT64 value = this->getSliderValue();
   this->mOriginalValue = value;
 
+  if (mOriginalValue <= 0.0)
+    mScaling = CSlider::linear;
+
   if (this->mMinValue > value)
     {
       this->mMinValue = value;

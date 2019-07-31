@@ -23,6 +23,10 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "crosssection/CCrossSectionTask.h"
 
+#ifdef WITH_TIME_SENS
+#include "timesens/CTimeSensTask.h"
+#endif // WITH_TIME_SENS
+
 CQTimeSeriesWidget::CQTimeSeriesWidget(QWidget* parent):
   CopasiWidget(parent),
   mpTimeSeries(NULL),
@@ -97,6 +101,14 @@ const CTimeSeries* getTimeSeriesFromTask(const CCopasiTask * pTask)
   if (cross != NULL)
     return &cross->getTimeSeries();
 
+#ifdef WITH_TIME_SENS
+  const CTimeSensTask* sens = dynamic_cast<const CTimeSensTask *>(pTask);
+
+  if (sens != NULL)
+    return &sens->getTimeSeries();
+
+#endif // WITH_TIME_SENS
+
   return NULL;
 }
 
@@ -151,7 +163,7 @@ void CQTimeSeriesWidget::slotSave()
       if (fileName.isEmpty()) return;
 
       // Checks whether the file exists
-      Answer = checkSelection(fileName);
+      Answer = checkSelection(this, fileName);
 
       if (Answer == QMessageBox::Cancel) return;
     }

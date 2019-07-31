@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -64,6 +69,7 @@ bool bl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 const CTaskEnum::Method CTrajectoryTask::ValidMethods[] =
 {
   CTaskEnum::Method::deterministic,
+  CTaskEnum::Method::RADAU5,
   CTaskEnum::Method::stochastic,
   CTaskEnum::Method::directMethod,
   CTaskEnum::Method::tauLeap,
@@ -227,7 +233,15 @@ void CTrajectoryTask::signalMathContainerChanged()
     }
 }
 
-bool CTrajectoryTask::process(const bool & useInitialValues)
+bool CTrajectoryTask::process(const bool& useInitialValues)
+{
+  if (mpTrajectoryProblem->getUseValues())
+    return processValues(useInitialValues);
+
+  return processTrajectory(useInitialValues);
+}
+
+bool CTrajectoryTask::processTrajectory(const bool& useInitialValues)
 {
   //*****
   mProceed = true;
@@ -294,7 +308,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   C_FLOAT64 Percentage = 0;
   size_t hProcess = C_INVALID_INDEX;
 
-  if (mpCallBack != NULL && StepNumber > 1.0)
+  if (mpCallBack != NULL)
     {
       mpCallBack->setName("performing simulation...");
       C_FLOAT64 hundred = 100;
@@ -325,6 +339,148 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
           // mpTrajectoryProblem->getStepSize().
           NextTimeToReport =
             StartTime + (EndTime - StartTime) * StepCounter++ / StepNumber;
+
+          flagProceed &= processStep(NextTimeToReport, NextTimeToReport == EndTime);
+
+          if (hProcess != C_INVALID_INDEX)
+            {
+              Percentage = (*mpContainerStateTime - StartTime) * handlerFactor;
+              flagProceed &= mpCallBack->progressItem(hProcess);
+            }
+
+          if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
+            {
+              output(COutputInterface::DURING);
+            }
+        }
+      while ((*mpLess)(*mpContainerStateTime, CompareEndTime) && flagProceed);
+    }
+
+  catch (int)
+    {
+      mpContainer->setState(mContainerState);
+      mpContainer->updateSimulatedValues(mUpdateMoieties);
+      mpContainer->updateTransientDataValues();
+      mpContainer->pushAllTransientValues();
+
+      if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
+        {
+          output(COutputInterface::DURING);
+        }
+
+      if (hProcess != C_INVALID_INDEX) mpCallBack->finishItem(hProcess);
+
+      output(COutputInterface::AFTER);
+
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 16);
+    }
+
+  catch (CCopasiException & Exception)
+    {
+      mpContainer->setState(mContainerState);
+      mpContainer->updateSimulatedValues(mUpdateMoieties);
+      mpContainer->updateTransientDataValues();
+      mpContainer->pushAllTransientValues();
+
+      if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
+        {
+          output(COutputInterface::DURING);
+        }
+
+      if (hProcess != C_INVALID_INDEX) mpCallBack->finishItem(hProcess);
+
+      output(COutputInterface::AFTER);
+
+      throw CCopasiException(Exception.getMessage());
+    }
+
+  if (hProcess != C_INVALID_INDEX) mpCallBack->finishItem(hProcess);
+
+  output(COutputInterface::AFTER);
+
+  return true;
+}
+
+bool CTrajectoryTask::processValues(const bool& useInitialValues)
+{
+  //*****
+  mProceed = true;
+
+  processStart(useInitialValues);
+
+  //*****
+
+  //size_t FailCounter = 0;
+
+  std::set<C_FLOAT64> Values = mpTrajectoryProblem->getValues();
+
+  if (Values.empty())
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryProblem + 32);
+      return false;
+    }
+
+  std::set<C_FLOAT64>::const_iterator itValue = Values.begin();
+  C_FLOAT64 Duration = *Values.rbegin() - *mpContainerStateTime;
+
+  //the output starts only after "outputStartTime" has passed
+  if (useInitialValues)
+    mOutputStartTime = mpTrajectoryProblem->getOutputStartTime();
+  else
+    mOutputStartTime = *mpContainerStateTime + mpTrajectoryProblem->getOutputStartTime();
+
+  C_FLOAT64 NextTimeToReport = - std::numeric_limits< C_FLOAT64 >::infinity();
+
+  const C_FLOAT64 EndTime = *mpContainerStateTime + Duration;
+  const C_FLOAT64 StartTime = *mpContainerStateTime;
+  C_FLOAT64 CompareEndTime;
+
+  mpLessOrEqual = &fle;
+  mpLess = &fl;
+
+  // It suffices to reach the end time within machine precision
+  CompareEndTime = EndTime - 100.0 * (fabs(EndTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
+
+  output(COutputInterface::BEFORE);
+
+  bool flagProceed = true;
+  C_FLOAT64 handlerFactor = 100.0 / Duration;
+
+  C_FLOAT64 Percentage = 0;
+  size_t hProcess = C_INVALID_INDEX;
+
+  if (mpCallBack != NULL)
+    {
+      mpCallBack->setName("performing simulation...");
+      C_FLOAT64 hundred = 100;
+      hProcess = mpCallBack->addItem("Completion",
+                                     Percentage,
+                                     &hundred);
+    }
+
+  try
+    {
+      // We need to execute any scheduled events for T_0
+      CMath::StateChange StateChange = mpContainer->processQueue(true);
+
+      if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
+        {
+          output(COutputInterface::DURING);
+        }
+
+      if (StateChange)
+        {
+          mContainerState = mpContainer->getState(mUpdateMoieties);
+          mpTrajectoryMethod->stateChange(StateChange);
+        }
+
+      do
+        {
+          // We silently ignore values in the past
+          while (NextTimeToReport <= *mpContainerStateTime && itValue != Values.end())
+            {
+              NextTimeToReport = *itValue++;
+            }
 
           flagProceed &= processStep(NextTimeToReport, NextTimeToReport == EndTime);
 

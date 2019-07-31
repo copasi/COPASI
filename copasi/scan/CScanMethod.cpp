@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -41,6 +46,8 @@
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "utilities/CCopasiMessage.h"
+#include "utilities/CParameterEstimationUtils.h"
+#include <copasi/utilities/CCopasiException.h>
 
 // Uncomment this line below to get debug print out.
 // #define DEBUG_OUTPUT 1
@@ -189,7 +196,9 @@ bool CScanItemRepeat::isValidScanItem(const bool & /* continueFromCurrentState *
 
 CScanItemLinear::CScanItemLinear(CCopasiParameterGroup* si):
   CScanItem(si),
-  mLog(false)
+  mValues(),
+  mLog(false),
+  mUseValues(false)
 {
   mLog = si->getValue< bool >("log");
   mMin = si->getValue< C_FLOAT64 >("Minimum");
@@ -204,15 +213,51 @@ CScanItemLinear::CScanItemLinear(CCopasiParameterGroup* si):
   mFaktor = (mMax - mMin) / mNumSteps;
 
   //TODO: log scanning of negative values?
+
+  mUseValues = si->getValue<bool>("Use Values");
+  std::string values = si->getValue<std::string>("Values");
+
+  if (mUseValues && !values.empty())
+    {
+      std::vector<std::string> elems;
+      ResultParser::split(values, std::string(",; |\n\t\r"), elems);
+
+for (std::string & number : elems)
+        {
+          mValues.push_back(ResultParser::saveToDouble(number));
+        }
+
+      mNumSteps = 0;
+
+      if (!mValues.empty())
+        mNumSteps = mValues.size() - 1;
+
+    }
+
 }
 
 void CScanItemLinear::step()
 {
   //do something ...
-  C_FLOAT64 Value = mMin + mIndex * mFaktor;
+  C_FLOAT64 Value;
 
-  if (mLog)
-    Value = exp(Value);
+  if (!mUseValues)
+    {
+      Value = mMin + mIndex * mFaktor;
+
+      if (mLog)
+        Value = exp(Value);
+
+    }
+  else
+    {
+      //the index
+      if (mIndex >= mValues.size())
+        Value = 1.0;
+      else
+        Value = mValues[mIndex];
+
+    }
 
   //the index
   if (mIndex > mNumSteps)
@@ -474,23 +519,43 @@ bool CScanMethod::loop(size_t level)
   bool isLastMasterItem = (level == (mScanItems.size() - 1)); //TODO
 
   CScanItem* currentSI = mScanItems[level];
+  size_t failCounter = 0;
 
   for (currentSI->reset(); !currentSI->isFinished(); currentSI->step())
     {
       //TODO: handle slave SIs
 
-      if (isLastMasterItem)
+      try
         {
-          if (!calculate()) return false;
+
+          if (isLastMasterItem)
+            {
+              if (!calculate()) return false;
+            }
+          else
+            {
+              if (!loop(level + 1)) return false;
+            } //TODO
         }
-      else
+      catch (const CCopasiException&)
         {
-          if (!loop(level + 1)) return false;
-        } //TODO
+          if (!mpProblem->getContinueOnError())
+            throw;
+
+          CCopasiMessage::getLastMessage(); // remove the error so we don't have too many of those in the log
+          ++failCounter;
+        }
 
       //separator needs to be handled slightly differently if we are at the last item
       if (currentSI->isNesting())
         ((CScanTask*)(getObjectParent()))->outputSeparatorCallback(level == mLastNestingItem);
+
+
+    }
+
+  if (failCounter > 0)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "%ld subtask executions failed.", failCounter);
     }
 
   return true;

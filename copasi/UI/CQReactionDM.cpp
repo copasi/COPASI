@@ -317,7 +317,7 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex& index)
       CReaction * pReaction = *j;
 
       QMessageBox::StandardButton choice =
-        CQMessageBox::confirmDelete(NULL, "reaction",
+        CQMessageBox::confirmDelete(ListViews::ancestor(this), "reaction",
                                     FROM_UTF8(pReaction->getObjectName()),
                                     pReaction);
 

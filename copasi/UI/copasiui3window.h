@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -17,10 +22,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
 #ifndef COPASI_UI3_WINDOW_H
 #define COPASI_UI3_WINDOW_H
 
@@ -30,6 +31,7 @@
 #include <QtCore/QModelIndex>
 #include <QtCore/QMap>
 #include <QtCore/QPointer>
+#include <QUrl>
 
 #include <copasi/config.h>
 
@@ -72,6 +74,16 @@ class CModelVersionHierarchy;
 class CQOptPopulation;
 class CDataModel;
 class CUndoStack;
+
+enum CopasiUIActions
+{
+  DownloadUrl,
+  SelectElement,
+  RunTask,
+  CreatePlot,
+  RemoveReportTargets,
+  Invalid
+};
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
@@ -126,12 +138,11 @@ public:
 
   void exportSEDMLToString(std::string & SEDML);
 
-
 // COMBINE Archive will take care of file management
   /*
-  #ifdef COPASI_Provenance
+#ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-  #endif
+#endif
   */
 
   CQOptPopulation* getPopulationDisplay();
@@ -169,6 +180,10 @@ public slots:
   void slotUpdateHideMainToolbarAction();
   void slotHideMainToolbar(bool flag);
   void slotCopy();
+  void slotCheckForUpdate();
+  void slotCheckForUpdateFinished(bool flag);
+  void slotAutoCheckForUpdates();
+  void slotClearSbmlIds();
 
   /**
    * This should only be called by the destructor of the object browser dialog
@@ -180,24 +195,46 @@ public slots:
 
   void openInitialDocument(const QString & file);
 
-  void slotFileOpen(QString file = QString::null);
-  void slotFileOpenFromUrl(QString url = QString::null);
+  void slotFileOpen(QString file = QString());
+  void slotFileOpenFromUrl(QString url = QString());
+
+  void slotHandleCopasiScheme(const QUrl& url);
+
+public:
+  /**
+   * performs the next action from the action stack
+   */
+  void performNextAction();
+  /**
+   * activates the specified element, which can be a model element specified
+   * by display name, cn, or one of the widgetname enumerations of the listviews
+   * class
+   *
+   * @param elementToActivate the element to activate
+   */
+  void activateElement(const std::string& elementToActivate);
+
+  /**
+   * goes through the list of tasks, and removes all report targets specified
+   * while informing which ones were removed.
+   */
+  void removeReportTargets();
 
 protected slots:
   void slotFileOpenFinished(bool success);
   void slotFileOpenFromUrlFinished(bool success);
-  void slotFileExamplesCopasiFiles(QString file = QString::null);
-  void slotFileExamplesSBMLFiles(QString file = QString::null);
+  void slotFileExamplesCopasiFiles(QString file = QString());
+  void slotFileExamplesSBMLFiles(QString file = QString());
   void slotFileSave();
-  void slotFileSaveAs(QString str = QString::null);
+  void slotFileSaveAs(QString str = QString());
   void slotFileSaveFinished(bool success);
-  void slotFunctionDBSave(QString str = QString::null);
-  void slotFunctionDBLoad(QString str = QString::null);
-  void slotParameterSetsSave(QString str = QString::null);
-  void slotParameterSetsLoad(QString str = QString::null);
+  void slotFunctionDBSave(QString str = QString());
+  void slotFunctionDBLoad(QString str = QString());
+  void slotParameterSetsSave(QString str = QString());
+  void slotParameterSetsLoad(QString str = QString());
   void newDoc();
   void slotFilePrint();
-  void slotImportSBML(QString file = QString::null);
+  void slotImportSBML(QString file = QString());
   void slotImportSBMLFinished(bool success);
   void slotImportSBMLFromStringFinished(bool success);
   void slotExportSBML();
@@ -232,7 +269,7 @@ protected slots:
   void slotCloseAllWindows();
   void slotActivateWindowTriggered(QAction* action);
 
-  void slotAddFileOpen(QString file = QString::null);
+  void slotAddFileOpen(QString file = QString());
   void slotAddFileOpenFinished(bool success);
   void slotMergeModels();
 
@@ -246,8 +283,8 @@ protected slots:
   void slotShowObjectBrowserDialog(bool flag);
 
   // SEDML
-  void slotFileExamplesSEDMLFiles(QString file = QString::null);
-  void slotImportSEDML(QString file = QString::null);
+  void slotFileExamplesSEDMLFiles(QString file = QString());
+  void slotImportSEDML(QString file = QString());
   void slotImportSEDMLFinished(bool success);
   void slotImportSEDMLFromStringFinished(bool success);
   void slotExportSEDML();
@@ -255,10 +292,11 @@ protected slots:
   void slotExportSEDMLToStringFinished(bool success);
   void slotOpenRecentSEDMLFile(QAction * pAction);
 
-  void slotImportCombine(QString file = QString::null);
+  void slotImportCombine(QString file = QString());
   void slotImportCombineFinished(bool success);
-  void slotExportCombine(QString str = QString::null);
+  void slotExportCombine(QString str = QString());
   void slotExportCombineFinished(bool success);
+  void slotExportShiny(QString str = QString());
 
   void slotUndo();
   void slotRedo();
@@ -334,6 +372,7 @@ private:
 
   QAction* mpaImportCombine;
   QAction* mpaExportCombine;
+  QAction* mpaExportShiny;
 
   QAction* mpaAddModel;
   QAction* mpaMergeModels;
@@ -409,6 +448,10 @@ private:
 #endif
 
   CQOptPopulation* mpPopulationDisplay;
+
+  bool mAutoUpdateCheck;
+
+  std::deque< std::pair < CopasiUIActions, std::string > > mActionStack;
 
 #ifdef COPASI_SBW_INTEGRATION
 public:

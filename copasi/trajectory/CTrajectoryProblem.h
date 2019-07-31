@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,6 +42,14 @@ class CTrajectoryProblem : public CCopasiProblem
 {
 protected:
   CTrajectoryProblem(const CTrajectoryProblem & src);
+
+  /**
+   * Specific constructor
+   *  can be used to specify a different task type.
+   *  only to be used by derived classes
+   */
+  CTrajectoryProblem(const CTaskEnum::Task & type,
+                     const CDataContainer * pParent);
 
 public:
   // Operations
@@ -88,9 +101,9 @@ public:
 
   /**
    * Retrieve the size a integration step the trajectory method should do.
-   * @return const bool & automaticStepSize
+   * @return bool automaticStepSize
    */
-  const bool & getAutomaticStepSize() const;
+  bool getAutomaticStepSize() const;
 
   /**
    * Set the size a integration step the trajectory method should do.
@@ -152,6 +165,14 @@ public:
 
   void setStartInSteadyState(bool flag);
   bool getStartInSteadyState() const;
+
+  void setValues(const std::string& values);
+  void setValues(const std::vector<C_FLOAT64>& values);
+  std::set<C_FLOAT64> getValues() const;
+  const std::string& getValueString() const;
+
+  void setUseValues(bool flag);
+  bool getUseValues() const;
 
   /**
    * Load a trajectory problem
@@ -219,6 +240,17 @@ protected:
    * realized as a CCopasiParameter
    */
   bool* mpStartInSteadyState;
+
+  /**
+   * Indicates whether a time course is using a the normal trajectory or a list of values
+   * to integrate over
+   */
+  bool* mpUseValues;
+
+  /**
+   * the string with specific values to hit during integration
+   */
+  std::string* mpValueString;
 
   /**
    *  Indicate whether the step number or step size was set last.

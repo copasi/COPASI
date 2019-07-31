@@ -6,10 +6,10 @@ GAWK=`gitTool gawk`
 WGET=`gitTool wget`
 
 current_major=4
-current_minor=12
-current_build=81
+current_minor=25
+current_build=207
 current_comment=Source
-current_commit=1d8d55d2500dd50673a0545a104c081a48827533
+current_commit=117075e61eab32f5f4ff2b8fcf9550219f905682
 
 # We only register a build.
 if [ "_$1" == "_--registerBuild" ]; then
@@ -52,8 +52,10 @@ if [ "_${version}" != _ ]; then
   current_major=${version%% *}
   current_minor=${version##* }
 fi
- 
+
+# git log --pretty=%H $current_commit..HEAD
 commitList=`git log --pretty=%H $current_commit..HEAD`
+# git log --pretty="%H %d" ${current_commit}..@{upstream}
 buildList=`git log --pretty="%H %d" ${current_commit}..@{upstream} | ${GAWK} -- '$0 ~ /Build-/ {printf "%s %s,", gensub(/.*Build-([0-9]+).*/, "\\\\1", "g", $0), $1}'`
 
 SAVEIFS=$IFS
@@ -66,7 +68,7 @@ for b in $buildList; do
   commit=${b##* }
   
   if [ `echo $commitList | grep ${commit}` ]; then
-    if [ $current_build == 81 ]; then 
+    if [ $current_build == 207 ]; then 
       current_build=${build}
       current_commit=${commit}
     fi
@@ -78,8 +80,8 @@ done
 IFS=$SAVEIFS
 
 compatible=all
-previous=80
-next=81
+previous=206
+next=207
 
 compatibility={
 

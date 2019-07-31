@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -25,6 +30,73 @@
 #include "xml/CCopasiXMLInterface.h"
 
 class CMIRIAMResources;
+class CVersion;
+
+class CCheckForUpdates : public CCopasiParameterGroup
+{
+public:
+  /**
+   * Default constructor
+   * @param const std::string & name (default: Check for Updates)
+   * @param const CDataContainer * pParent (default: NULL)
+   */
+  CCheckForUpdates(const std::string & name = "Check for Updates",
+                   const CDataContainer * pParent = NO_PARENT);
+
+  /**
+   * Copy constructor
+   * @param const CCheckForUpdate & src
+   * @param const CDataContainer * pParent (default: NULL)
+   */
+  CCheckForUpdates(const CCheckForUpdates & src,
+                   const CDataContainer * pParent);
+
+  /**
+   * Specific constructor
+   * @param const CCopasiParameterGroup & group
+   * @param const CDataContainer * pParent (default: NULL)
+   */
+  CCheckForUpdates(const CCopasiParameterGroup & group,
+                   const CDataContainer * pParent);
+
+  /**
+   * Destructor
+   */
+  virtual ~CCheckForUpdates();
+
+  void setEnabled(bool enabled);
+
+  bool isEnabled() const;
+
+  void setConfirmedCheckForUpdate(bool flag);
+
+  bool needToConfirmCheckForUpdate() const;
+
+  bool skipVersion(const CVersion & version) const;
+
+  bool checkRequired() const;
+
+  void setSkipVersion(const CVersion & version);
+
+  void setChecked();
+
+private:
+  /**
+   * Allocates all group parameters and assures that they are
+   * properly initialized.
+   */
+  void initializeParameter();
+
+  bool * mpEnabled;
+
+  std::string * mpSkipVersion;
+
+  std::string * mpLastChecked;
+
+  unsigned C_INT32 * mpInterval;
+
+  std::string * mpConfirmedCheck;
+};
 
 class CRecentFiles : public CCopasiParameterGroup
 {
@@ -369,6 +441,11 @@ public:
    */
   void setDoublePrecision(C_INT32 precision);
 
+  /**
+   * @return auto update settings
+   */
+  CCheckForUpdates & getCheckForUpdates();
+
 private:
   /**
    * Allocates all group parameters and assures that they are
@@ -556,6 +633,8 @@ private:
    * to string
    */
   C_INT32* mpPrecision;
+
+  CCheckForUpdates * mpCheckForUpdates;
 };
 
 #endif // COPASI_CConfigurationFile

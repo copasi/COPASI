@@ -692,6 +692,12 @@ public:
   const CObjectInterface::ObjectSet & getInitialStateObjects() const;
 
   /**
+   * Retrieve the objects for which the intial value change is prohibitied.
+   * @return CObjectInterface::ObjectSet & initialValueChangeProhibited
+   */
+  const CObjectInterface::ObjectSet & getValueChangeProhibited() const;
+
+  /**
    * Retrieve the objects which represent the state or reduced state.
    * @param const bool & reduced (default: false)
    * @return CObjectInterface::ObjectSet & stateObjects
@@ -786,6 +792,20 @@ public:
    * @return CMathObject * pInitialValueObject
    */
   CMathObject * getInitialValueObject(const CMathObject * pObject) const;
+
+  /**
+   * Retrieve the pointer to the corresponding value
+   * @param const C_FLOAT64 * pInitialValue
+   * @return C_FLOAT64 * pvalue
+   */
+  C_FLOAT64 * getValuePointer(const C_FLOAT64 * pInitialValue) const;
+
+  /**
+   * Retrieve the pointer to the corresponding value object
+   * @param const CMathObject * pInitialObject
+   * @return CMathObject * pValueObject
+   */
+  CMathObject * getValueObject(const CMathObject * pInitialObject) const;
 
   /**
    * Add an entity to the container
@@ -952,6 +972,11 @@ private:
    * Create Dependency Graphs
    */
   void createDependencyGraphs();
+
+  /**
+   * Create the set of object for which the initial value change is prohibited
+   */
+  void createValueChangeProhibited();
 
   /**
    * Create Update Sequences
@@ -1416,6 +1441,11 @@ private:
    * The total number of ignored event roots.
    */
   size_t mNumTotalRootsIgnored;
+
+  /**
+   * A set of object for which changing the initial value is prohibeted;
+   */
+  CObjectInterface::ObjectSet mValueChangeProhibited;
 };
 
 #endif // COPASI_CMathContainer

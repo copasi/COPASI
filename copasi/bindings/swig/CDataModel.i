@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -26,6 +31,10 @@
                  CProcessReport* pProcessReport,
                  const bool & deleteOldData = true);
 
+%ignore CDataModel::getCurrentSEDMLDocument;
+%ignore CDataModel::getCopasi2SEDMLMap;
+
+                 
 //%ignore CDataModel::saveModel(const std::string& fileName,CProcessReport* pProcessReport, bool overwriteFile=false , const bool& autoSave=false);
 //%ignore CDataModel::newModel;
 //%ignore CDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler,

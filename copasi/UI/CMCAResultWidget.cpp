@@ -45,7 +45,7 @@ CMCAResultWidget::CMCAResultWidget(QWidget* parent, const char* name, Qt::Window
   if (!name)
     setObjectName("CMCAResultWidget");
 
-  setWindowTitle(trUtf8("CMCAResultWidget"));
+  setWindowTitle("CMCAResultWidget");
 
   mWidgetLayout = new QGridLayout(this);
   mWidgetLayout->setObjectName("Layout");

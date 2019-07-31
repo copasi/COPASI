@@ -158,13 +158,13 @@ void CQMiriamWidget::slotNotifyChanges(const CUndoData::CChangeSet & changes)
 void CQMiriamWidget::slotBtnDeleteClicked()
 {
   if (mpTblAuthors->hasFocus())
-    {deleteSelectedAuthors();}
+    deleteSelectedAuthors();
   else if (mpTblReferences->hasFocus())
-    {deleteSelectedReferences();}
+    deleteSelectedReferences();
   else if (mpTblModified->hasFocus())
-    {deleteSelectedModifieds();}
+    deleteSelectedModifieds();
   else if (mpTblDescription->hasFocus())
-    {deleteSelectedBiologicalDescriptions();}
+    deleteSelectedBiologicalDescriptions();
 }
 
 void CQMiriamWidget::deleteSelectedAuthors()
@@ -390,12 +390,18 @@ bool CQMiriamWidget::enterProtected()
       mObjectCNToCopy.clear();
     }
 
+  CMIRIAMInfo * pOldMIRIAMInfo = mpMIRIAMInfo;
+
   mpMIRIAMInfo = CAnnotation::allocateMiriamInfo(dynamic_cast< CDataContainer * >(mpObject));
 
   mpCreatorDM->setMIRIAMInfo(mpMIRIAMInfo);
   mpReferenceDM->setMIRIAMInfo(mpMIRIAMInfo);
   mpBiologicalDescriptionDM->setMIRIAMInfo(mpMIRIAMInfo);
   mpModifiedDM->setMIRIAMInfo(mpMIRIAMInfo);
+
+  if (pOldMIRIAMInfo != mpMIRIAMInfo &&
+      pOldMIRIAMInfo != NULL)
+    delete pOldMIRIAMInfo;
 
   //Set Models for the 4 TableViews
   std::vector<CQTableView *>::const_iterator it = mWidgets.begin();
@@ -432,14 +438,18 @@ bool CQMiriamWidget::leaveProtected()
   if (mpMIRIAMInfo != NULL)
     {
       mpMIRIAMInfo->save();
-      delete mpMIRIAMInfo;
-      mpMIRIAMInfo = NULL;
-    }
 
-  mpCreatorDM->setMIRIAMInfo(mpMIRIAMInfo);
-  mpReferenceDM->setMIRIAMInfo(mpMIRIAMInfo);
-  mpBiologicalDescriptionDM->setMIRIAMInfo(mpMIRIAMInfo);
-  mpModifiedDM->setMIRIAMInfo(mpMIRIAMInfo);
+      if (!isVisible())
+        {
+          mpCreatorDM->setMIRIAMInfo(NULL);
+          mpReferenceDM->setMIRIAMInfo(NULL);
+          mpBiologicalDescriptionDM->setMIRIAMInfo(NULL);
+          mpModifiedDM->setMIRIAMInfo(NULL);
+
+          delete mpMIRIAMInfo;
+          mpMIRIAMInfo = NULL;
+        }
+    }
 
   return true;
 }

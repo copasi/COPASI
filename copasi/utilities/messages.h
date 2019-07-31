@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -143,6 +148,10 @@ const MESSAGES Messages[] =
   {MCTrajectoryMethod + 26, "CTrajectoryMethod (26): A tau-Leap step encountered numerical problems.\nPlease check whether some particle numbers are large."},
   {MCTrajectoryMethod + 27, "CTrajectoryMethod (27): Numerical problem: a propensity is NaN."},
   {MCTrajectoryMethod + 28, "CTrajectoryMethod (28): The model contains an ODE rule.\nStochastic simulation is not possible."},
+  {MCTrajectoryMethod + 29, "CTrajectoryMethod (29): NMAX limit reached during Radau5 integration."},
+  {MCTrajectoryMethod + 30, "CTrajectoryMethod (30): Step size became too small during Radau5 integration."},
+  {MCTrajectoryMethod + 31, "CTrajectoryMethod (31): The model contains events. Radau5 integration is not possible with this version of COPASI."},
+  {MCTrajectoryMethod + 32, "CTrajectoryMethod (32): No values provided for output."},
 
   // XML Package
   {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},

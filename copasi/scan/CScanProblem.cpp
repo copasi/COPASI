@@ -72,6 +72,7 @@ void CScanProblem::initializeParameter()
 
   assertParameter("Output in subtask", CCopasiParameter::Type::BOOL, true);
   assertParameter("Adjust initial conditions", CCopasiParameter::Type::BOOL, false);
+  assertParameter("Continue on Error", CCopasiParameter::Type::BOOL, false);
 }
 
 //***********************************
@@ -103,6 +104,17 @@ void CScanProblem::setContinueFromCurrentState(bool aic)
 
 bool CScanProblem::getContinueFromCurrentState() const
 {return getValue< bool >("Adjust initial conditions");}
+
+bool CScanProblem::getContinueOnError() const
+{
+  return getValue< bool >("Continue on Error");
+}
+
+void CScanProblem::setContinueOnError(bool coe)
+{
+  setValue("Continue on Error", coe);
+}
+
 
 //************************************
 
@@ -176,6 +188,13 @@ CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, siz
       tmp->addParameter("Maximum", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.0);
       tmp->addParameter("log", CCopasiParameter::Type::BOOL, false);
     }
+
+  if (type == SCAN_LINEAR)
+    {
+      tmp->addParameter("Values", CCopasiParameter::Type::STRING, std::string(""));
+      tmp->addParameter("Use Values", CCopasiParameter::Type::BOOL, false);
+    }
+
 
   if (type == SCAN_RANDOM)
     {

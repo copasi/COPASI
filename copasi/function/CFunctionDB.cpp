@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,6 +38,7 @@
 #include "FunctionDB.xml.h"
 
 #include "utilities/CCopasiException.h"
+#include "utilities/CDirEntry.h"
 #include "copasi/core/CDataObjectReference.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "report/CKeyFactory.h"
@@ -103,7 +109,7 @@ bool CFunctionDB::save(const std::string& fileName)
 {
   CCopasiXML XML;
   XML.setFunctionList(&mLoadedFunctions);
-  return XML.CCopasiXMLInterface::save(fileName, fileName);
+  return XML.CCopasiXMLInterface::save(fileName, CDirEntry::dirName(fileName));
 }
 
 C_INT32 CFunctionDB::load(CReadConfig &configbuffer)

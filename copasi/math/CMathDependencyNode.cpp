@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -96,8 +101,11 @@ std::vector< CMathDependencyNode * > & CMathDependencyNode::getDependents()
 }
 
 bool CMathDependencyNode::updateDependentState(const CCore::SimulationContextFlag & context,
-    const CObjectInterface::ObjectSet & changedObjects)
+    const CObjectInterface::ObjectSet & changedObjects,
+    bool ignoreCircularDependecies)
 {
+  bool success = true;
+
   CMathDependencyNodeIterator itNode(this, CMathDependencyNodeIterator::Dependents);
   itNode.setProcessingModes(CMathDependencyNodeIterator::Before);
 
@@ -109,7 +117,7 @@ bool CMathDependencyNode::updateDependentState(const CCore::SimulationContextFla
         {
           if (itNode->getObject()->isPrerequisiteForContext(itNode.parent()->getObject(), context, changedObjects))
             {
-              return false;
+              success &= itNode->createMessage(ignoreCircularDependecies);
             }
 
           continue;
@@ -134,12 +142,15 @@ bool CMathDependencyNode::updateDependentState(const CCore::SimulationContextFla
         }
     }
 
-  return itNode.state() == CMathDependencyNodeIterator::End;
+  return success;
 }
 
 bool CMathDependencyNode::updatePrerequisiteState(const CCore::SimulationContextFlag & context,
-    const CObjectInterface::ObjectSet & changedObjects)
+    const CObjectInterface::ObjectSet & changedObjects,
+    bool ignoreCircularDependecies)
 {
+  bool success = true;
+
   CMathDependencyNodeIterator itNode(this, CMathDependencyNodeIterator::Prerequisites);
   itNode.setProcessingModes(CMathDependencyNodeIterator::Before);
 
@@ -151,7 +162,7 @@ bool CMathDependencyNode::updatePrerequisiteState(const CCore::SimulationContext
         {
           if (itNode.parent()->getObject()->isPrerequisiteForContext(itNode->getObject(), context, changedObjects))
             {
-              return false;
+              success &= itNode->createMessage(ignoreCircularDependecies);
             }
 
           continue;
@@ -166,7 +177,8 @@ bool CMathDependencyNode::updatePrerequisiteState(const CCore::SimulationContext
       // We are guaranteed that the current node has a parent as the only node without is this,
       // which is handled above.
       if (!itNode->isRequested() &&
-          itNode.parent()->getObject()->isPrerequisiteForContext(itNode->getObject(), context, changedObjects))
+          itNode.parent()->getObject()->isPrerequisiteForContext(itNode->getObject(), context, changedObjects) &&
+          changedObjects.find(itNode->getObject()) == changedObjects.end())
         {
           itNode->setRequested(true);
         }
@@ -176,12 +188,15 @@ bool CMathDependencyNode::updatePrerequisiteState(const CCore::SimulationContext
         }
     }
 
-  return itNode.state() == CMathDependencyNodeIterator::End;
+  return success;
 }
 
 bool CMathDependencyNode::updateCalculatedState(const CCore::SimulationContextFlag & context,
-    const CObjectInterface::ObjectSet & changedObjects)
+    const CObjectInterface::ObjectSet & changedObjects,
+    bool ignoreCircularDependecies)
 {
+  bool success = true;
+
   CMathDependencyNodeIterator itNode(this, CMathDependencyNodeIterator::Prerequisites);
   itNode.setProcessingModes(CMathDependencyNodeIterator::Before);
 
@@ -193,7 +208,7 @@ bool CMathDependencyNode::updateCalculatedState(const CCore::SimulationContextFl
         {
           if (itNode.parent()->getObject()->isPrerequisiteForContext(itNode->getObject(), context, changedObjects))
             {
-              return false;
+              success &= itNode->createMessage(ignoreCircularDependecies);
             }
 
           continue;
@@ -218,12 +233,15 @@ bool CMathDependencyNode::updateCalculatedState(const CCore::SimulationContextFl
         }
     }
 
-  return itNode.state() == CMathDependencyNodeIterator::End;
+  return success;
 }
 
 bool CMathDependencyNode::updateIgnoredState(const CCore::SimulationContextFlag & context,
-    const CObjectInterface::ObjectSet & changedObjects)
+    const CObjectInterface::ObjectSet & changedObjects,
+    bool ignoreCircularDependecies)
 {
+  bool success = true;
+
   if (isChanged())
     {
       setChanged(false);
@@ -239,7 +257,7 @@ bool CMathDependencyNode::updateIgnoredState(const CCore::SimulationContextFlag 
             {
               if (itNode.parent()->getObject()->isPrerequisiteForContext(itNode->getObject(), context, changedObjects))
                 {
-                  return false;
+                  success &= itNode->createMessage(ignoreCircularDependecies);
                 }
 
               continue;
@@ -265,34 +283,60 @@ bool CMathDependencyNode::updateIgnoredState(const CCore::SimulationContextFlag 
 
           if (!PrerequisiteChanged)
             {
-              itNode->updateIgnoredState(context, changedObjects);
+              itNode->updateIgnoredState(context, changedObjects, ignoreCircularDependecies);
             }
         }
 
       return itNode.state() == CMathDependencyNodeIterator::End;
     }
 
-  return true;
+  return success;
 }
 
 bool CMathDependencyNode::buildUpdateSequence(const CCore::SimulationContextFlag & context,
-    std::vector < CObjectInterface * > & updateSequence)
+    std::vector < CObjectInterface * > & updateSequence,
+    bool ignoreCircularDependecies)
 {
+  bool success = true;
+
   if (!mChanged || !mRequested)
-    return true;
+    return success;
 
   CMathDependencyNodeIterator itNode(this, CMathDependencyNodeIterator::Prerequisites);
   itNode.setProcessingModes(CMathDependencyNodeIterator::Flag(CMathDependencyNodeIterator::Before) | CMathDependencyNodeIterator::After);
 
   while (itNode.next())
     {
+      const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(itNode->getObject());
+
       switch (itNode.state())
         {
+          case CMathDependencyNodeIterator::Recursive:
+            success &= itNode->createMessage(ignoreCircularDependecies);
+            break;
+
           case CMathDependencyNodeIterator::Before:
 
             if (!itNode->isChanged() || !itNode->isRequested())
               {
                 itNode.skipChildren();
+              }
+            else if (context.isSet(CCore::SimulationContext::UseMoieties) &&
+                     itNode.parent() != NULL &&
+                     pMathObject != NULL &&
+                     pMathObject->getEntityType() == CMath::EntityType::Species &&
+                     pMathObject->getValueType() == CMath::ValueType::Value &&
+                     !pMathObject->isInitialValue() &&
+                     pMathObject->isIntensiveProperty())
+              {
+                const CMathObject * pMathParent = dynamic_cast< const CMathObject * >(itNode.parent()->getObject());
+
+                if (pMathParent != NULL &&
+                    pMathObject->getCorrespondingProperty() == pMathParent &&
+                    pMathParent->getSimulationType() == CMath::SimulationType::Dependent)
+                  {
+                    itNode.skipChildren();
+                  }
               }
 
             break;
@@ -303,9 +347,6 @@ bool CMathDependencyNode::buildUpdateSequence(const CCore::SimulationContextFlag
             // are skipped in Before processing.
             if (itNode->isChanged() && itNode->isRequested())
               {
-                const CObjectInterface * pObject = itNode->getObject();
-                const CMathObject * pMathObject = dynamic_cast< const CMathObject *>(pObject);
-
                 // For an extensive transient value of a dependent species we have 2
                 // possible assignments depending on the context.
                 //   1) Conversion from the intensive property
@@ -314,12 +355,14 @@ bool CMathDependencyNode::buildUpdateSequence(const CCore::SimulationContextFlag
                 // The solution is that the moiety automatically updates the value in conjunction
                 // with the dependency graph omitting the value in the update sequence if the context
                 // is CMath::UseMoieties.
+                // Therefore, an extensive transient dependent value of a species must not be updated
 
                 if (!context.isSet(CCore::SimulationContext::UseMoieties) ||
-                    (pMathObject != NULL &&
-                     pMathObject->getCorrespondingProperty() != static_cast< const CMathObject *>(mpObject) &&
-                     (pMathObject->getSimulationType() != CMath::SimulationType::Dependent ||
-                      pMathObject->getValueType() != CMath::ValueType::Value)))
+                    pMathObject == NULL ||
+                    pMathObject->getSimulationType() != CMath::SimulationType::Dependent ||
+                    pMathObject->getValueType() != CMath::ValueType::Value ||
+                    pMathObject->isInitialValue() ||
+                    pMathObject->isIntensiveProperty())
                   {
                     // Only Math Objects with expressions can be updated.
                     if (pMathObject != NULL &&
@@ -341,7 +384,7 @@ bool CMathDependencyNode::buildUpdateSequence(const CCore::SimulationContextFlag
 
   mChanged = false;
 
-  return itNode.state() == CMathDependencyNodeIterator::End;
+  return success;
 }
 
 void CMathDependencyNode::setChanged(const bool & changed)
@@ -414,4 +457,21 @@ void CMathDependencyNode::updateEdges(const std::map< CMathDependencyNode *, CMa
       std::map< CMathDependencyNode *, CMathDependencyNode * >::const_iterator found = map.find(*it);
       *it = found->second;
     }
+}
+
+bool CMathDependencyNode::createMessage(bool ignoreCircularDependecies)
+{
+  if (!ignoreCircularDependecies)
+    {
+      if (getObject() != NULL)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCMathModel + 3, getObject()->getCN().c_str());
+        }
+      else
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCMathModel + 3, "cn not found");
+        }
+    }
+
+  return ignoreCircularDependecies;
 }

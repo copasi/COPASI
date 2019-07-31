@@ -47,10 +47,10 @@ Once the dependencies have been built, COPASI is easily compiled using
 In the above `../copasi-dependencies` is the location of the compiled 
 copasi-dependencies project. The option `BUILD_GUI=OFF` builds only the 
 command line version of COPASI (aka `CopasiSE`). To build the graphical 
-frontend (aka `CopasiUI`), and having Qt 4 installed, the option would 
-need to be `BUILD_GUI=ON`. The option `CMAKE_INSTALL_PREFIX=~/copasi`
- specifies, that COPASI ought to be installed in the current users home 
-directory in a subfolder `copasi`. The path `../COPASI` is the source directory of COPASI that has been created by the git clone command in the first statement.  
+frontend (aka `CopasiUI`), and having Qt 4 or 5 installed, the option would 
+need to be `BUILD_GUI=ON`. In that case you'd additionally provide an option `SELECT_QT=Qt5` (or `SELECT_QT=Qt4`) for COPASI to look for the Qt libraries.   
+
+The option `CMAKE_INSTALL_PREFIX=~/copasi` specifies, that COPASI ought to be installed in the current users home directory in a subfolder `copasi`. The path `../COPASI` is the source directory of COPASI that has been created by the git clone command in the first statement.  
 
 There are many more compile options available, options for building the 
 language bindings as well as options to enable some experimental features that
@@ -59,6 +59,17 @@ graphical cmake frontend in the continuing from the above command this would
 be done with:
 
 	cmake-gui ../COPASI
+
+### The correct version number
+The COPASI version number you will see in your application is generated during the build process. For this to work we install git hooks, so it gets updated automatically, by running: 
+
+	./gitTools/initTools
+
+once from the COPASI source dir (which will set up the paths to astyle, gawk, dos2unix and wget). This helps us keep commits formatted correctly from different operating systems. Once that is set up, a call to: 
+
+	 ./gitTools/UpdateCopasiVersion
+
+will update the `<copasi/CopasiVersion.h>` to match that of the selected branch. That   
 
 ### Linking a C++ program against the COPASI API
 To link your own program against the COPASI C++ API you would first build COPASI as described above however, with an additional CMake option `-DCOPASI_INSTALL_C_API=ON`. Thus the full configure / make / install commands from above would be: 

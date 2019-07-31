@@ -93,6 +93,10 @@ const CQBrowserPaneDM::sNodeInfo CQBrowserPaneDM::TreeInfo[] =
 #ifdef COPASI_NONLIN_DYN_OSCILLATION
   {ListViews::WidgetType::Tasks, ListViews::WidgetType::Oscillation, "Oscillation "},
 #endif
+#ifdef WITH_TIME_SENS
+  {ListViews::WidgetType::Tasks, ListViews::WidgetType::TimeCourseSensitivities, "Time Course Sensitivities"},
+  {ListViews::WidgetType::TimeCourseSensitivities, ListViews::WidgetType::TimeCourseSensitivitiesResult, "Result"},
+#endif // WITH_TIME_SENS
   {ListViews::WidgetType::COPASI, ListViews::WidgetType::OutputSpecifications, "Output Specifications"},
   {ListViews::WidgetType::OutputSpecifications, ListViews::WidgetType::Plots, "Plots"},
   {ListViews::WidgetType::OutputSpecifications, ListViews::WidgetType::ReportTemplates, "Report Templates"},
@@ -111,7 +115,8 @@ CQBrowserPaneDM::CQBrowserPaneDM(QObject * pParent):
   mSeverityFilter(),
   mKindFilter(),
   mCN2Node(),
-  mId2Node()
+  mId2Node(),
+  mpRenameHandler(NULL)
 {
   createStaticDM();
 
@@ -132,12 +137,18 @@ CQBrowserPaneDM::CQBrowserPaneDM(QObject * pParent):
   connect(dynamic_cast<CopasiUI3Window *>(CopasiUI3Window::getMainWindow()), SIGNAL(signalPreferenceUpdated()), this, SLOT(slotRefreshValidityFilters()));
 
   slotRefreshValidityFilters();
+
+  mpRenameHandler = new CRegisteredCommonName::ClassMemberRename< CQBrowserPaneDM >(this, &CQBrowserPaneDM::rename);
+  CRegisteredCommonName::registerHandler(mpRenameHandler);
 }
 
 // virtual
 CQBrowserPaneDM::~CQBrowserPaneDM()
 {
   pdelete(mpRoot);
+
+  CRegisteredCommonName::deregisterHandler(mpRenameHandler);
+  pdelete(mpRenameHandler);
 }
 
 // virtual
@@ -367,23 +378,6 @@ void CQBrowserPaneDM::remove(CNode * pNode)
   removeRows(pNode->getRow(), 1, Parent);
 }
 
-void CQBrowserPaneDM::rename(CNode * pNode, const QString & displayRole)
-{
-  if (pNode->getDisplayRole() != displayRole)
-    {
-      pNode->setDisplayRole(displayRole);
-    }
-
-  if (mEmitDataChanged)
-    {
-      QModelIndex Index = index(pNode);
-      emit dataChanged(Index, Index);
-
-      Index = index(static_cast< CNode * >(pNode->getParent()));
-      emit dataChanged(Index, Index);
-    }
-}
-
 void CQBrowserPaneDM::add(const ListViews::WidgetType & id,
                           const CCommonName & cn,
                           const QString & displayRole,
@@ -473,6 +467,10 @@ void CQBrowserPaneDM::load()
 #ifdef WITH_ANALYTICS
   updateNode(findNodeFromId(ListViews::WidgetType::Analytics), mpCopasiDM->getTaskList()->operator[]("Analytics").getCN());
 #endif // WITH_ANALYTICS
+
+#ifdef WITH_TIME_SENS
+  updateNode(findNodeFromId(ListViews::WidgetType::TimeCourseSensitivities), mpCopasiDM->getTaskList()->operator[]("Time-Course Sensitivities").getCN());
+#endif // WITH_TIME_SENS
 
   updateNode(findNodeFromId(ListViews::WidgetType::ParameterScan), mpCopasiDM->getTaskList()->operator[]("Scan").getCN());
   updateNode(findNodeFromId(ListViews::WidgetType::Optimization), mpCopasiDM->getTaskList()->operator[]("Optimization").getCN());
@@ -642,6 +640,78 @@ void CQBrowserPaneDM::load(const ListViews::WidgetType & id)
     }
 }
 
+void CQBrowserPaneDM::rename(const std::string & oldCN, const std::string & newCN)
+{
+  if (oldCN == newCN) return;
+
+  std::map< std::string, CNode * >::iterator found = mCN2Node.find(oldCN);
+
+  if (found == mCN2Node.end()) return;
+
+  CNode * pNode = found->second;
+  mCN2Node.erase(found);
+
+  if (pNode == NULL) return;
+
+  mCN2Node[newCN] = pNode;
+
+  switch (pNode->getId())
+    {
+      case ListViews::WidgetType::CompartmentDetail:
+      case ListViews::WidgetType::SpeciesDetail:
+      case ListViews::WidgetType::ReactionDetail:
+      case ListViews::WidgetType::GlobalQuantityDetail:
+      case ListViews::WidgetType::EventDetail:
+      case ListViews::WidgetType::ParameterSetDetail:
+      case ListViews::WidgetType::PlotDetail:
+      case ListViews::WidgetType::ReportTemplateDetail:
+      case ListViews::WidgetType::FunctionDetail:
+      case ListViews::WidgetType::UnitDetail:
+        break;
+
+      default:
+        // No modification of the display role allowed.
+        return;
+        break;
+    }
+
+  // Fetch the object by it's CN
+  CObjectInterface::ContainerList List;
+  List.push_back(mpCopasiDM);
+  const CDataObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, pNode->getCN()));
+
+  if (pObject == NULL) return;
+
+  // We have an object CN we can therefore determine the display role.
+  QString DisplayRole = FROM_UTF8(pObject->getObjectName());
+
+  const CMetab * pMetab = dynamic_cast< const CMetab * >(pObject);
+
+  if (pMetab != NULL)
+    {
+      const CModel * pModel = pMetab->getModel();
+
+      if (pModel != NULL)
+        {
+          DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *pMetab, false));
+        }
+    }
+
+  if (DisplayRole != pNode->getDisplayRole())
+    {
+      pNode->setDisplayRole(DisplayRole);
+
+      if (mEmitDataChanged)
+        {
+          QModelIndex Index = index(pNode);
+          emit dataChanged(Index, Index);
+
+          Index = index(static_cast< CNode * >(pNode->getParent()));
+          emit dataChanged(Index, Index);
+        }
+    }
+}
+
 bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mpCopasiDM == NULL)
@@ -689,7 +759,7 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
 
   if (pObject != NULL)
     {
-      // We have a CN we can there fore determine the display role.
+      // We have a CN we can therefore determine the display role.
       DisplayRole = FROM_UTF8(pObject->getObjectName());
 
       // Species need to be handled differently
@@ -710,27 +780,6 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
     {
       case ListViews::RENAME:
       case ListViews::CHANGE:
-
-        switch (objectType)
-          {
-            case ListViews::ObjectType::COMPARTMENT:
-            case ListViews::ObjectType::METABOLITE:
-            case ListViews::ObjectType::REACTION:
-            case ListViews::ObjectType::MODELVALUE:
-            case ListViews::ObjectType::EVENT:
-            case ListViews::ObjectType::PLOT:
-            case ListViews::ObjectType::REPORT:
-            case ListViews::ObjectType::FUNCTION:
-            case ListViews::ObjectType::LAYOUT:
-            case ListViews::ObjectType::MODELPARAMETERSET:
-            case ListViews::ObjectType::UNIT:
-              rename(pNode, DisplayRole);
-              break;
-
-            default:
-              break;
-          }
-
         break;
 
       case ListViews::DELETE:

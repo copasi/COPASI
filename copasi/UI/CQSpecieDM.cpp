@@ -577,7 +577,7 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex & parent)
       CMetab * pSpecies = *j;
 
       QMessageBox::StandardButton choice =
-        CQMessageBox::confirmDelete(NULL, "species",
+        CQMessageBox::confirmDelete(ListViews::ancestor(this), "species",
                                     FROM_UTF8(pSpecies->getObjectName()),
                                     pSpecies);
 

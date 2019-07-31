@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,6 +36,7 @@ class CPlotSpecification;
 class CReportDefinition;
 class CDataObject;
 class CDataModel;
+class CDataArray;
 
 class CDefaultOutputDescription
 {
@@ -93,6 +99,18 @@ public:
   const CDefaultOutputDescription & getItem(C_INT32 id);
 
   /**
+   * get the id of output definition with the given name
+   *
+   * @param name the name of the default output description to find
+   * @param isPlot boolean indicating whether we are looking for a plot
+   *        (true, default) or report.
+   * @return the item id if found, or -1 if it is not
+   */
+  static
+  C_INT32 findItemByName(const std::string& name, bool isPlot = true);
+
+
+  /**
    *  create a plot or report from template with index id.
    *  returns a pointer to the plot or report definition (or NULL)
    *  if activate==true and the ouput is a report the report is set as
@@ -128,6 +146,8 @@ private:           //************************************
                                  const std::string & comment,
                                  const CTaskEnum::Task & taskType,
                                  CDataModel* pDataModel);
+
+  static void add2DDataArrayToVector(std::vector<const CDataObject *> &pVector, const CDataArray* pArray);
 
   static const std::string emptyString;
   static const CDefaultOutputDescription emptyItem;

@@ -102,6 +102,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
+  // API use by setData
   virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
 
   /**
@@ -120,6 +121,7 @@ public:
 
   static void sanitizeObjectName(std::string & name);
 
+  // API
   CDataObject(const CDataObject & src,
               const CDataContainer * pParent = NULL);
 
@@ -134,6 +136,7 @@ public:
    * Retrieve the CN of the object
    * @return CCommonName
    */
+  // API (for reporting and expressions)
   virtual CCommonName getCN() const;
 
   /**
@@ -168,6 +171,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
+  // API implement ostream
   virtual void print(std::ostream * ostream) const;
 
   /**
@@ -187,12 +191,14 @@ public:
    * @param bool richtext (default: false)
    * @return std::string objectDisplayName
    */
+  // API
   virtual std::string getObjectDisplayName() const;
 
   /**
    * Get the aggregation of any issues associated with this object
    * @return const CValidity & validity
    */
+  // API
   virtual const CValidity & getValidity() const;
 
   /**
@@ -214,8 +220,10 @@ public:
    * @param const std::string & name
    * @return success
    */
+  // API
   bool setObjectName(const std::string & name);
 
+  // API
   const std::string & getObjectName() const;
 
   const std::string & getObjectType() const;
@@ -243,6 +251,7 @@ public:
    * Retrieve the units of the object.
    * @return std::string units
    */
+  // API
   virtual const std::string getUnits() const;
 
   bool hasFlag(const Flag & flag) const;

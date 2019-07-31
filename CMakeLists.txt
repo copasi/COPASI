@@ -1,3 +1,18 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 ##############################################################################
 #
 # Description       : CMake build script for COPASI
@@ -7,19 +22,8 @@
 # This file is part of COPASI.  Please visit http://COPASI.org for more
 # information about COPASI, and the latest version of COPASI.
 #
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., University of Heidelberg, and The University
-# of Manchester.
-# All rights reserved.
 #
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
 #
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
 #
 ###############################################################################
 
@@ -29,10 +33,6 @@ if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
 endif(POLICY CMP0048)
 
-if(POLICY CMP0043)
-  cmake_policy(SET CMP0043 OLD)
-endif(POLICY CMP0043)
-
 # add an option to override the version
 set(COPASI_OVERRIDE_VERSION "" CACHE STRING "Version String to override the version parsed from the header" )
 mark_as_advanced(COPASI_OVERRIDE_VERSION)
@@ -41,7 +41,6 @@ mark_as_advanced(COPASI_OVERRIDE_VERSION)
 if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/copasi/CopasiVersion.h" AND NOT COPASI_OVERRIDE_VERSION)
   set(COPASI_OVERRIDE_VERSION "4.12.65")
 endif()
-
 
 set(COPASI_VERSION_MAJOR)
 set(COPASI_VERSION_MINOR)
@@ -123,6 +122,8 @@ if (CMAKE_MAJOR_VERSION LESS 3 OR CMAKE_MINOR_VERSION LESS 1)
 else()
   set(CMAKE_CXX_STANDARD 11)
 endif()
+
+CHECK_FUNCTION_EXISTS(strptime HAVE_STRPTIME)
 
 CHECK_TYPE_SIZE("void*"  CMAKE_SIZEOF_VOID_P)
 
@@ -539,6 +540,10 @@ endif ()
 option (ENABLE_USE_SBMLUNIT "Enables extended unit support." OFF)
 mark_as_advanced(ENABLE_USE_SBMLUNIT)
 
+option (ENABLE_TIME_SENS "Enables Time Sensitivities task in UI." ON)
+mark_as_advanced(ENABLE_TIME_SENS)
+
+
 #Option for the COPASI support for Provenance Framework currently being developed by Peyman
 option (ENABLE_PROVENANCE "Enables Provenance support." OFF)
 mark_as_advanced(ENABLE_PROVENANCE)
@@ -864,6 +869,7 @@ message(STATUS "-----------------------------------------------------------
    Versioning framework     = ${ENABLE_VERSIONING}
    Provenance framework     = ${ENABLE_PROVENANCE}
    Analytics Task           = ${ENABLE_ANALYTICS}
+   Time Sensitivities task  = ${ENABLE_TIME_SENS}
    Additional Defines       = ${DirDefs}
 
   Language Bindings:

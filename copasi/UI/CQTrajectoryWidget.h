@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -49,6 +54,10 @@ public slots:
   void updateIntervals();
   void slotOutputDelay(bool checked);
   void slotAutomaticIntervals(bool checked);
+
+  void slotOutputEvent(bool checked);
+  void slotStartInSteadyState(bool checked);
+  void slotSaveOutput(bool checked);
 
 protected:
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);

@@ -193,7 +193,7 @@ bool CQFunctionDM::setData(const QModelIndex &index, const QVariant &value,
               QString msg;
               msg = "Type must not be changed for '" + FROM_UTF8(pFunc->getObjectName()) + "'.\n";
 
-              CQMessageBox::information(NULL,
+              CQMessageBox::information(ListViews::ancestor(this),
                                         "Unable to change Function Type",
                                         msg,
                                         QMessageBox::Ok, QMessageBox::Ok);
@@ -208,7 +208,7 @@ bool CQFunctionDM::setData(const QModelIndex &index, const QVariant &value,
                   QString msg;
                   msg = "Incorrect  mathematical description'" + FROM_UTF8(pFunc->getObjectName()) + "'.\n";
 
-                  CQMessageBox::information(NULL,
+                  CQMessageBox::information(ListViews::ancestor(this),
                                             "Unable to change mathematical description",
                                             msg,
                                             QMessageBox::Ok, QMessageBox::Ok);
@@ -324,7 +324,7 @@ bool CQFunctionDM::removeRows(QModelIndexList rows, const QModelIndex&)
       if (delRow != C_INVALID_INDEX)
         {
           QMessageBox::StandardButton choice =
-            CQMessageBox::confirmDelete(NULL, "function",
+            CQMessageBox::confirmDelete(ListViews::ancestor(this), "function",
                                         FROM_UTF8(pFunction->getObjectName()),
                                         pFunction);
 

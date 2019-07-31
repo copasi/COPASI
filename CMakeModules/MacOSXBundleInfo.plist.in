@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleInfoDictionaryVersion</key>
+  <string>6.0</string>
+  <key>CFBundleDevelopmentRegion</key>
+  <string>English</string>
+  <key>CFBundleName</key>
+  <string>CopasiUI</string>
+  <key>CFBundleIconFile</key>
+  <string>copasi.icns</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>CFBundleVersion</key>
+  <string>${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}</string>
+  <key>CFBundleShortVersionString</key>
+  <string>${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}</string>
+  <key>CFBundleLongVersionString</key>
+  <string>${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}</string>
+  <key>CFBundleGetInfoString</key>
+  <string>COPASI ${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD} is distributed under the Artistic License 2.0.</string>
+  <key>NSHumanReadableCopyright</key>
+  <string>COPASI ${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD} is distributed under the Artistic License 2.0.</string>
+  <key>CFBundleExecutable</key>
+  <string>CopasiUI</string>
+  <key>CFBundleIdentifier</key>
+  <string>org.copasi.COPASI.CopasiUI</string>
+  <key>CFBundleDocumentTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleTypeName</key>
+      <string>COPASI</string>
+      <key>CFBundleTypeExtensions</key>
+      <array>
+        <string>cps</string>
+      </array>
+      <key>CFBundleTypeIconFile</key>
+      <string>copasi.icns</string>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>LSHandlerRank</key>
+      <string>Default</string>
+    </dict>
+  </array>
+  <key>CSResourcesFileMapped</key>
+  <true/>
+  <key>LSRequiresCarbon</key>
+  <true/>
+  <key>NSPrincipalClass</key>
+  <string>NSApplication</string>
+  <key>NSHighResolutionCapable</key>
+  <string>True</string>
+  <key>CFBundleSignature</key>
+  <string>????</string>
+  <key>CFBundleURLTypes</key>
+  <array>
+      <dict>
+          <key>CFBundleURLName</key>
+          <string>org.copasi.COPASI.CopasiUI</string>
+          <key>CFBundleURLSchemes</key>
+          <array>
+              <string>copasi</string>
+          </array>
+      </dict>
+  </array>
+</dict>
+</plist>

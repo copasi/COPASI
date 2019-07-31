@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -52,7 +57,7 @@ QString CopasiFileDialog::StartWith(const QString & startWith)
 }
 
 // static
-void CopasiFileDialog::openExampleDir()
+void CopasiFileDialog::openExampleDir(QWidget * parent)
 {
   std::string ExampleDir;
   COptions::getValue("ExampleDir", ExampleDir);
@@ -60,7 +65,7 @@ void CopasiFileDialog::openExampleDir()
   if (CDirEntry::isDir(ExampleDir))
     CRootContainer::getConfiguration()->setWorkingDirectory(ExampleDir);
   else
-    CQMessageBox::information(NULL, "Directory Not Found", FROM_UTF8(ExampleDir),
+    CQMessageBox::information(parent, "Directory Not Found", FROM_UTF8(ExampleDir),
                               QMessageBox::Ok, QMessageBox::Ok);
 }
 
@@ -121,7 +126,7 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
       if (newFile != "")
         CRootContainer::getConfiguration()->setWorkingDirectory(CDirEntry::dirName(TO_UTF8(newFile)));
       else
-        return QString::null;
+        return QString();
 
       if (pSelectedFilter->indexOf("(*)") >= 0)
         {
@@ -138,7 +143,7 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
 
               if (rx.indexIn(fileName) < 0)
                 {
-                  CQMessageBox::information(NULL, "Save File Error",
+                  CQMessageBox::information(parent, "Save File Error",
                                             "Filename can have an extension 1 to 4 characters long.",
                                             QMessageBox::Ok, QMessageBox::Ok);
                   fileValid = false;
@@ -149,7 +154,7 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
 
               if (rxDigits.indexIn(fileName) > 0)
                 {
-                  CQMessageBox::information(NULL, "Save File Error",
+                  CQMessageBox::information(parent, "Save File Error",
                                             "All characters in the file extension cannot be digits.",
                                             QMessageBox::Ok, QMessageBox::Ok);
                   fileValid = false;

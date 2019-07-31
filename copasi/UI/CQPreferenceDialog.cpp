@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,6 +30,8 @@
 
 #include "commandline/CConfigurationFile.h"
 #include "copasi/core/CRootContainer.h"
+
+#include <copasi/MIRIAM/CConstants.h>
 
 #define COL_NAME 0
 #define COL_VALUE 1
@@ -56,6 +63,8 @@ CQPreferenceDialog::~CQPreferenceDialog()
     {
       delete mpConfiguration;
       mpConfiguration = NULL;
+      // restore pointer to miriam resources
+      CMIRIAMResourceObject::setMIRIAMResources(&CRootContainer::getConfiguration()->getRecentMIRIAMResources());
     }
 }
 
@@ -98,6 +107,8 @@ void CQPreferenceDialog::slotBtnCancel()
 
       delete mpConfiguration;
       mpConfiguration = NULL;
+      // restore pointer to miriam resources
+      CMIRIAMResourceObject::setMIRIAMResources(&CRootContainer::getConfiguration()->getRecentMIRIAMResources());
     }
 
   done(0);

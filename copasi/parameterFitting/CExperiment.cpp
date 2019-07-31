@@ -948,6 +948,8 @@ bool CExperiment::read(std::istream & in,
       currentLine++;
     }
 
+  bool isTimeCourse = *mpTaskType == CTaskEnum::Task::timeCourse;
+
   for (j = 0; j < mNumDataRows && !in.fail(); j++, currentLine++)
     {
       in >> Row;
@@ -965,6 +967,8 @@ bool CExperiment::read(std::istream & in,
           continue;
         }
 
+      bool isFirstRow = (currentLine == (*mpHeaderRow + 1)) || (*mpHeaderRow == C_INVALID_INDEX && currentLine == 1);
+
       IndependentCount = 0;
       DependentCount = 0;
 
@@ -977,7 +981,9 @@ bool CExperiment::read(std::istream & in,
 
               case independent:
 
-                if (!Cells[i].isValue())
+                if ((!isTimeCourse && !Cells[i].isValue()) // we need all rows for steady state data
+                    || (isTimeCourse && isFirstRow && !Cells[i].isValue()) // for time course we need first row only
+                   )
                   {
                     CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 11,
                                    getObjectName().c_str(), currentLine, i + 1);

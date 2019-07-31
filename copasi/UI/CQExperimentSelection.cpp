@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,6 +33,8 @@
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
 
+#include <copasi/resourcesUI/CQIconResource.h>
+
 /*
  *  Constructs a CQExperimentSelection as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -38,6 +45,9 @@
 CQExperimentSelection::CQExperimentSelection(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
   : QDialog(parent, fl)
 {
+#ifndef Darwin
+  setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+#endif // not Darwin
   setObjectName(QString::fromUtf8(name));
   setModal(modal);
   setupUi(this);
@@ -111,7 +121,7 @@ void CQExperimentSelection::load(QComboBox * pBox, const CExperimentSet * pExper
 
   int j, jmax = mpBox->count();
 
-  if (jmax == 0)
+  if (jmax == 0 && !mIsSingleSelection)
     {
       slotBtnAll();
       return;
@@ -126,6 +136,17 @@ void CQExperimentSelection::load(QComboBox * pBox, const CExperimentSet * pExper
           Found[0]->setSelected(true);
         }
     }
+}
+
+void CQExperimentSelection::setSingleSelection(bool isSingleSelection)
+{
+  mIsSingleSelection = isSingleSelection;
+
+  if (mpList != NULL)
+    mpList->setSelectionMode(isSingleSelection ? QListView::SingleSelection : QListView::MultiSelection);
+
+  mpBtnNone->setVisible(!isSingleSelection);
+  mpBtnAll->setVisible(!isSingleSelection);
 }
 
 void CQExperimentSelection::init()

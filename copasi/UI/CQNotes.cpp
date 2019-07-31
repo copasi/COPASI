@@ -27,6 +27,7 @@
 #include "CQNotes.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
+
 #if defined(QT_USE_TEXTBROWSER)
 # include <QTextBrowser>
 #elif !defined(QT5_USE_WEBENGINE)
@@ -188,7 +189,7 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
 
 #if defined(QT_USE_TEXTBROWSER)
   mpWebView = new QTextBrowser(this);
-  static_cast<QTextBrowser*>(mpWebView)->setOpenExternalLinks(true);
+  connect(mpWebView, SIGNAL(anchorClicked(QUrl)), this, SLOT(slotOpenUrl(QUrl)));
 #elif !defined(QT5_USE_WEBENGINE)
   mpWebView = new QWebView(this);
   static_cast<QWebView*>(mpWebView)->
@@ -197,6 +198,7 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
 #else
   mpWebView = new QWebEngineView(this);
   static_cast<QWebEngineView*>(mpWebView)->setPage(new CQWebEnginePage);
+  connect(mpWebView, SIGNAL(urlChanged(QUrl)), this, SLOT(slotOpenUrl(QUrl)));
 #endif
 
   mpVerticalLayout->addWidget(mpWebView);
@@ -441,6 +443,12 @@ void CQNotes::slotOpenUrl(const QUrl & url)
 
   if (scheme == "about" || scheme == "data")
     return;
+
+  if (scheme == "copasi")
+    {
+      dynamic_cast<CQCopasiApplication*>(qApp)->getMainWindow()->slotHandleCopasiScheme(url);
+      return;
+    }
 
   QDesktopServices::openUrl(url);
   return;

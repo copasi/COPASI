@@ -84,7 +84,7 @@ TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WindowFlags fl):
   if (!name)
     setObjectName("TaskWidget");
 
-  setWindowTitle(trUtf8("TaskWidget"));
+  setWindowTitle("TaskWidget");
 
   mpTaskThread = new CQTaskThread(this);
 

@@ -2250,18 +2250,22 @@ bool CReaction::setParameterCNs(const std::string & name, const std::vector< CRe
 
 const std::vector< const CDataObject * > & CReaction::getParameterObjects(const size_t & index) const
 {
-  assert(index < mParameterIndexToObjects.size());
+  static std::vector< const CDataObject * > NotFound(1, NULL);
 
-  return mParameterIndexToObjects[index];
+  if (index < mParameterIndexToObjects.size())
+    return mParameterIndexToObjects[index];
+
+  return NotFound;
 }
 
 const std::vector< const CDataObject * > & CReaction::getParameterObjects(const std::string & name) const
 {
   std::map< std::string, size_t >::const_iterator found = mParameterNameToIndex.find(name);
 
-  assert(found != mParameterNameToIndex.end());
+  if (found != mParameterNameToIndex.end())
+    return getParameterObjects(found->second);
 
-  return getParameterObjects(found->second);
+  return getParameterObjects(C_INVALID_INDEX);
 }
 
 const std::vector< std::vector< const CDataObject * > > & CReaction::getParameterObjects() const

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -19,6 +24,25 @@ std::set<CRegisteredCommonName*> CRegisteredCommonName::mSet;
 
 // static
 bool CRegisteredCommonName::mEnabled(true);;
+
+// static
+std::set< CRegisteredCommonName::RenameInterface * > CRegisteredCommonName::mRegisteredHandlers;
+
+CRegisteredCommonName::Rename::Rename(CRegisteredCommonName::Rename::Type method)
+  : CRegisteredCommonName::RenameInterface()
+  , mMethod(method)
+{}
+
+// virtual
+CRegisteredCommonName::Rename::~Rename() {}
+
+// virtual
+void CRegisteredCommonName::Rename::operator()(const std::string & oldCN,
+    const std::string & newCN)
+{
+  // execute member function
+  return (*mMethod)(oldCN, newCN);
+}
 
 CRegisteredCommonName::CRegisteredCommonName() :
   CCommonName()
@@ -54,6 +78,8 @@ void CRegisteredCommonName::handle(const std::string & oldCN, const std::string 
       size_t oldSize = oldCN.size();
       size_t currentSize;
 
+      std::map< std::string, CRegisteredCommonName * > Renamed;
+
       for (; it != itEnd; ++it)
         {
           // either need to take currentSize out, or need to use the variable
@@ -65,8 +91,21 @@ void CRegisteredCommonName::handle(const std::string & oldCN, const std::string 
                (currentSize > oldSize && (**it)[oldSize] == ',')) &&
               oldCN.compare(0, oldSize, **it, 0, oldSize) == 0)
             {
-              (**it).replace(0, oldSize, newCN);
+              Renamed.insert(std::make_pair(**it, *it));
+              (*it)->replace(0, oldSize, newCN);
             }
+        }
+
+      std::set< RenameInterface * >::const_iterator itHandler = mRegisteredHandlers.begin();
+      std::set< RenameInterface * >::const_iterator endHandler = mRegisteredHandlers.end();
+
+      for (; itHandler != endHandler; ++itHandler)
+        {
+          std::map< std::string, CRegisteredCommonName * >::const_iterator itRenamed = Renamed.begin();
+          std::map< std::string, CRegisteredCommonName * >::const_iterator endRenamed = Renamed.end();
+
+          for (; itRenamed != endRenamed; ++itRenamed)
+            (*itHandler)->operator()(itRenamed->first, *itRenamed->second);
         }
     }
 
@@ -179,4 +218,16 @@ void CRegisteredCommonName::setEnabled(const bool & enabled)
 const bool & CRegisteredCommonName::isEnabled()
 {
   return mEnabled;
+}
+
+// static
+void CRegisteredCommonName::registerHandler(CRegisteredCommonName::RenameInterface * pRenameHandler)
+{
+  mRegisteredHandlers.insert(pRenameHandler);
+}
+
+// static
+void CRegisteredCommonName::deregisterHandler(CRegisteredCommonName::RenameInterface * pRenameHandler)
+{
+  mRegisteredHandlers.erase(pRenameHandler);
 }

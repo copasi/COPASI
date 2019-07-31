@@ -252,25 +252,20 @@ bool CDataObject::setObjectName(const std::string & name)
 
   std::string OldName = mObjectName;
 
-  if (CRegisteredCommonName::isEnabled() &&
-      mpObjectParent != NULL)
-    {
-      std::string oldCN = this->getCN();
-      mObjectName = Name;
-      std::string newCN = this->getCN();
-
-      CRegisteredCommonName::handle(oldCN, newCN);
-    }
-  else
-    {
-      mObjectName = Name;
-    }
+  std::string oldCN = this->getCN();
+  mObjectName = Name;
 
   std::set< CDataContainer * >::iterator it = mReferences.begin();
   std::set< CDataContainer * >::iterator end = mReferences.end();
 
   for (; it != end; ++it)
     (*it)->objectRenamed(this, OldName);
+
+  if (CRegisteredCommonName::isEnabled() &&
+      mpObjectParent != NULL)
+    {
+      CRegisteredCommonName::handle(oldCN, this->getCN());
+    }
 
   return true;
 }

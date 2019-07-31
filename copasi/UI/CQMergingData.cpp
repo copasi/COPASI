@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -41,8 +46,8 @@ CQMergingData::CQMergingData(QWidget* parent, CModel * pModel, Qt::WindowFlags f
   : QDialog(parent, fl)
 {
   setupUi(this);
-  connect(mpTree1, SIGNAL(currentItemChanged(QTreeWidgetItem * , QTreeWidgetItem *)), this, SLOT(treeSelectionChanged()));
-  connect(mpTree2, SIGNAL(currentItemChanged(QTreeWidgetItem * , QTreeWidgetItem *)), this, SLOT(treeSelectionChanged()));
+  connect(mpTree1, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(treeSelectionChanged()));
+  connect(mpTree2, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(treeSelectionChanged()));
 
   mpModel = pModel;
 
@@ -85,19 +90,19 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map< QT
       if (it != added.end())
         {
           pItem->setFont(0, tmpFont);
-          //pItem->setBackgroundColor(0, QColor(200,200,250));
+          //pItem->setBackground(0, QColor(200,200,250));
         }
 
       //highlight objects that are referred to by others
       if (highlightInvolved)
         {
           if (!mex.existDependentEntities(pObj))
-            pItem->setTextColor(0, QColor(130, 130, 130));
+            pItem->setForeground(0, QColor(130, 130, 130));
         }
 
       itemMap[pItem] = pObj;
       pW->addTopLevelItem(pItem);
-      pW->setFirstItemColumnSpanned(pItem, true);
+      pItem->setFirstColumnSpanned(true);
 
       //add species
       //QTreeWidgetItem * pChild;
@@ -108,7 +113,7 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map< QT
           pObj = &pModel->getCompartments()[i].getMetabolites()[j];
           QTreeWidgetItem * pChild = new QTreeWidgetItem(pItem, 1001);
           pChild->setText(0,  FROM_UTF8(pObj->getObjectName()));
-          pW->setFirstItemColumnSpanned(pChild, true);
+          pChild->setFirstColumnSpanned(true);
 
           //highlight new objects
           std::set< const CDataObject * >::const_iterator it = added.find(pObj);
@@ -116,14 +121,14 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map< QT
           if (it != added.end())
             {
               pChild->setFont(0, tmpFont);
-              //pChild->setBackgroundColor(0, QColor(200,200,250));
+              //pChild->setBackground(0, QColor(200,200,250));
             }
 
           //highlight objects that are referred to by others
           if (highlightInvolved)
             {
               if (!mex.existDependentEntities(pObj))
-                pChild->setTextColor(0, QColor(130, 130, 130));
+                pChild->setForeground(0, QColor(130, 130, 130));
             }
 
           itemMap[pChild] = pObj;
@@ -137,7 +142,7 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map< QT
       QTreeWidgetItem * pItem = new QTreeWidgetItem((QTreeWidget*)NULL, 1000);
       pItem->setText(0, "Global Quantities");
       pW->addTopLevelItem(pItem);
-      pW->setFirstItemColumnSpanned(pItem, true);
+      pItem->setFirstColumnSpanned(true);
 
       //QTreeWidgetItem * pChild;
       size_t j, jmax = pModel->getModelValues().size();
@@ -147,7 +152,7 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map< QT
           const CDataObject * pObj = &pModel->getModelValues()[j];
           QTreeWidgetItem * pChild = new QTreeWidgetItem(pItem, 1001);
           pChild->setText(0,  FROM_UTF8(pObj->getObjectName()));
-          pW->setFirstItemColumnSpanned(pChild, true);
+          pChild->setFirstColumnSpanned(true);
 
           //highlight new objects
           std::set< const CDataObject * >::const_iterator it = added.find(pObj);
@@ -155,14 +160,14 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map< QT
           if (it != added.end())
             {
               pChild->setFont(0, tmpFont);
-              //pChild->setBackgroundColor(0, QColor(200,200,250));
+              //pChild->setBackground(0, QColor(200,200,250));
             }
 
           //highlight objects that are referred to by others
           if (highlightInvolved)
             {
               if (!mex.existDependentEntities(pObj))
-                pChild->setTextColor(0, QColor(130, 130, 130));
+                pChild->setForeground(0, QColor(130, 130, 130));
             }
 
           itemMap[pChild] = pObj;
@@ -176,7 +181,7 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map< QT
       QTreeWidgetItem * pItem = new QTreeWidgetItem((QTreeWidget*)NULL, 1000);
       pItem->setText(0, "Reactions");
       pW->addTopLevelItem(pItem);
-      pW->setFirstItemColumnSpanned(pItem, true);
+      pItem->setFirstColumnSpanned(true);
 
       QFont tmpFontSmall = pItem->font(0);
       tmpFontSmall.setPointSize(tmpFontSmall.pointSize() - 2);
@@ -189,7 +194,7 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map< QT
           const CDataObject * pObj = &pModel->getReactions()[j];
           QTreeWidgetItem * pChild = new QTreeWidgetItem(pItem, 1001);
           pChild->setText(0,  FROM_UTF8(pObj->getObjectName()));
-          pW->setFirstItemColumnSpanned(pChild, false);
+          pChild->setFirstColumnSpanned(false);
 
           //add the chemical equation (with a smaller font)
           const CReaction * pReaction = dynamic_cast<const CReaction*>(pObj);
@@ -205,16 +210,16 @@ void CQMergingData::fillTree(QTreeWidget* pW, const CModel* pModel, std::map< QT
           if (it != added.end())
             {
               pChild->setFont(0, tmpFont);
-              //pChild->setBackgroundColor(0, QColor(200,200,250));
+              //pChild->setBackground(0, QColor(200,200,250));
             }
 
           //highlight objects that are referred to by others
           if (highlightInvolved)
             {
               if (!mex.existDependentEntities(pObj))
-                pChild->setTextColor(0, QColor(130, 130, 130));
+                pChild->setForeground(0, QColor(130, 130, 130));
 
-              pChild->setTextColor(1, QColor(130, 130, 130));
+              pChild->setForeground(1, QColor(130, 130, 130));
             }
 
           itemMap[pChild] = pObj;
