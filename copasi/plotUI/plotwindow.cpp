@@ -350,7 +350,7 @@ void PlotWindow::printAsImage()
       //      QString userFilter = new QString;
       /*
             fileName = CopasiFileDialog::getSaveFileNameAndFilter(filter, this, "Save File Dialog",
-                       QString::null, "PNG Files (*.png);;SVG Files (*.svg)", "Save to");
+                       QString(), "PNG Files (*.png);;SVG Files (*.svg)", "Save to");
       */
       fileName = CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
                  "untitled.pdf", "PDF Files (*.pdf);;PNG Files (*.png);;SVG Files (*.svg)", "Save Plot as Image", new QString);

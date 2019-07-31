@@ -86,13 +86,24 @@ std::string UTCTimeStamp()
 
 time_t timeFromUTC(const std::string utc)
 {
+
+#ifdef HAVE_STRPTIME
+
+  struct tm t;
+  strptime(utc.c_str(), "%Y-%m-%dT%H:%M:%SZ", &t);
+
+#else
+
   tm t = {};
   std::istringstream ss(utc.c_str());
   ss.imbue(std::locale::classic());
-
   ss >> std::get_time(&t, "%Y-%m-%dT%H:%M:%SZ");
 
+#endif
+
   return mktime(&t);
+
+
 }
 
 bool isNumber(const std::string & str)

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -11,6 +16,59 @@
 class CRegisteredCommonName: public CCommonName
 {
 public:
+  class RenameInterface
+  {
+  public:
+    typedef void (*Type)(const std::string & /* oldCN */,
+                         const std::string & /* newCN */);
+
+    virtual ~RenameInterface() {};
+
+    virtual void operator()(const std::string & oldCN,
+                            const std::string &  newCN) = 0;
+  };
+
+  class Rename : public RenameInterface
+  {
+  public:
+    Rename() = delete;
+    Rename(Type method);
+
+    virtual ~Rename();
+
+    // override operator "()"
+    virtual void operator()(const std::string & oldCN,
+                            const std::string & newCN);
+
+  private:
+    Type mMethod;
+  };
+
+  template <class Renamer>
+  class ClassMemberRename : public RenameInterface
+  {
+  public:
+    ClassMemberRename() = delete;
+
+    ClassMemberRename(Renamer * pRenamer,
+                      void (Renamer::*method)(const std::string & /* oldCN */,
+                          const std::string & /* newCN */));
+
+    virtual ~ClassMemberRename();
+
+    // override operator "()"
+    virtual void operator()(const std::string & oldCN,
+                            const std::string & newCN);
+
+  private:
+    /**
+     * The pointer to the instance of the caller
+     */
+    Renamer * mpRenamer;             // pointer to object
+    void (Renamer::*mpMethod)(const std::string & /* oldCN */,
+                              const std::string & /* newCN */);
+  };
+
   /**
    * Default Constructor
    */
@@ -60,16 +118,54 @@ public:
    */
   static void sanitizeObjectNames();
 
+  /**
+   * Register and additional handler
+   * @param RenameInterface * pRenameHandler
+   */
+  static void registerHandler(RenameInterface * pRenameHandler);
+
+  /**
+   * Deregister and additional handler
+   * @param RenameInterface * pRenameHandler
+   */
+  static void deregisterHandler(RenameInterface * pRenameHandler);
+
 private:
   /**
    * A set which contains all registered comon names
    */
-  static std::set<CRegisteredCommonName*> mSet;
+  static std::set< CRegisteredCommonName * > mSet;
 
   /**
    * A flag indicating whether renaming is enabled.
    */
   static bool mEnabled;
+
+  /**
+   * A set of registered handlers
+   */
+  static std::set< RenameInterface * > mRegisteredHandlers;
 };
+
+template <class Renamer>
+CRegisteredCommonName::ClassMemberRename< Renamer >::ClassMemberRename(Renamer * pRenamer,
+    void (Renamer::*method)(const std::string & /* oldCN */, const std::string & /* newCN */)):
+  RenameInterface(),
+  mpRenamer(pRenamer),
+  mpMethod(method) {}
+
+// virtual
+template <class Renamer>
+CRegisteredCommonName::ClassMemberRename< Renamer >::~ClassMemberRename() {}
+
+// override operator "()"
+// virtual
+template <class Renamer>
+void CRegisteredCommonName::ClassMemberRename< Renamer >::operator()(const std::string & oldCN,
+    const std::string & newCN)
+{
+  // execute member function
+  return (*mpRenamer.*mpMethod)(oldCN, newCN);
+}
 
 #endif // COPASI_CRegisteredCommonName

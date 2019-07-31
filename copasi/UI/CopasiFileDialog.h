@@ -36,17 +36,17 @@ public:
 
   static QString getOpenFileName(QWidget * parent = 0,
                                  const char * name = 0,
-                                 const QString & startWith = QString::null,
-                                 const QString & filter = QString::null,
-                                 const QString & caption = QString::null,
+                                 const QString & startWith = QString(),
+                                 const QString & filter = QString(),
+                                 const QString & caption = QString(),
                                  QString * pSelectedFilter = NULL,
                                  QFileDialog::Options options = 0);
 
   static QString getSaveFileName(QWidget * parent = 0,
                                  const char * name = 0,
-                                 const QString & startWith = QString::null,
-                                 const QString & filter = QString::null,
-                                 const QString & caption = QString::null,
+                                 const QString & startWith = QString(),
+                                 const QString & filter = QString(),
+                                 const QString & caption = QString(),
                                  QString * pSelectedFilter = NULL,
                                  QFileDialog::Options options = 0);
 private:

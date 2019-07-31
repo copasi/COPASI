@@ -280,9 +280,10 @@ void CRadau5Method::start()
   CTrajectoryMethod::start();
 
   if (mpContainer->getEvents().size())
-  {
+    {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 31);
-  }
+    }
+
   /* Reset lsoda */
   mLsodaStatus = 1;
 
@@ -396,19 +397,21 @@ void CRadau5Method::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 
 
 void CRadau5Method::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
-  CVector< C_FLOAT64 > mYTemp(mData.dim);
-  memcpy(mYTemp.begin(), mpContainerStateTime, (mData.dim) * sizeof(C_FLOAT64));
-  memcpy(mpContainerStateTime, y, (mData.dim) * sizeof(C_FLOAT64));
+  CVector< C_FLOAT64 > yTemp(mData.dim);
+  memcpy(yTemp.array(), mpContainerStateTime, mData.dim * sizeof(C_FLOAT64));
+
+  if (y != mpContainerStateTime)
+    memcpy(mpContainerStateTime, y, mData.dim * sizeof(C_FLOAT64));
 
   mpContainer->updateSimulatedValues(*mpReducedModel);
-  memcpy(ydot + 1, mpYdot + 1, (mData.dim - 1) * sizeof(C_FLOAT64));
+  memcpy(ydot, mpYdot, mData.dim * sizeof(C_FLOAT64));
 
 #ifdef DEBUG_NUMERICS
   std::cout << "State:     " << mpContainer->getState(false) << std::endl;
   std::cout << "Rate:      " << mpContainer->getRate(false) << std::endl;
 #endif // DEBUG_NUMERICS
 
-  memcpy(mpContainerStateTime, mYTemp.begin(), (mData.dim) * sizeof(C_FLOAT64));
+  memcpy(mpContainerStateTime, yTemp.array(), mData.dim * sizeof(C_FLOAT64));
 
   return;
 }
@@ -456,10 +459,10 @@ void CRadau5Method::evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
 /* solout function to generate output after successfull computation for automatic step size */
 void CRadau5Method::solout(integer *nr, double *xold, double *x, double *y, double *cont, integer *lrc, integer *n, double *rpar, integer *ipar, integer *irtrn)
 {
-  if (*x != *xold && *(x+1) != *rpar)
+  if (*x != *xold && *(x + 1) != *rpar)
     {
       static_cast<Data *>((void *) ipar)->pMethod->output(x);
-      *rpar = *(x+1);
+      *rpar = *(x + 1);
     }
 }
 

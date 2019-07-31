@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -92,9 +97,8 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, Qt::
   ObjectBrowserLayout->setObjectName(QString::fromUtf8("ObjectListView"));
   ObjectListView = new QTreeWidget(this);
   ObjectListView->setObjectName("");
-  //  ObjectListView->addColumn(trUtf8("Object Browser"));
   QStringList strList;
-  strList << trUtf8("Name") << trUtf8("Type");
+  strList << "Name" << "Type";
   ObjectListView->setHeaderLabels(strList);
   //ObjectListView->header()->setClickEnabled(false, ObjectListView->header()->count() - 1);
   ObjectListView->setAcceptDrops(false);
@@ -122,15 +126,15 @@ ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, Qt::
       ObjectBrowserLayout->addWidget(Line1, 1, 1, 0, 3);
       clearButton = new QPushButton(this);
       clearButton->setObjectName("clearButton");
-      clearButton->setText(trUtf8("Clear"));
+      clearButton->setText("Clear");
       ObjectBrowserLayout->addWidget(clearButton, 2, 0);
       commitButton = new QPushButton(this);
       commitButton->setObjectName("commitButton");
-      commitButton->setText(trUtf8("Commit"));
+      commitButton->setText("Commit");
       ObjectBrowserLayout->addWidget(commitButton, 2, 3);
       toggleViewButton = new QPushButton(this);
       toggleViewButton->setObjectName("toggleViewButton");
-      toggleViewButton->setText(trUtf8("Selected Items"));
+      toggleViewButton->setText("Selected Items");
       ObjectBrowserLayout->addWidget(toggleViewButton, 2, 2);
       spacer = new QSpacerItem(131, 31, QSizePolicy::Expanding, QSizePolicy::Minimum);
       ObjectBrowserLayout->addItem(spacer, 2, 1);
@@ -257,7 +261,7 @@ void ObjectBrowserWidget::toggleViewClicked()
         updateSelectedItemsView();
         currentPage = SELECTEDITEMPAGE;
 
-        if (toggleViewButton) toggleViewButton->setText(trUtf8("Tree View"));
+        if (toggleViewButton) toggleViewButton->setText(QString::fromUtf8("Tree View"));
 
         ObjectListView->hide();
         ObjectItemText->show();
@@ -266,7 +270,7 @@ void ObjectBrowserWidget::toggleViewClicked()
       case SELECTEDITEMPAGE:
         currentPage = LISTVIEWPAGE;
 
-        if (toggleViewButton) toggleViewButton->setText(trUtf8("Selected Items"));
+        if (toggleViewButton) toggleViewButton->setText(QString::fromUtf8("Selected Items"));
 
         ObjectListView->show();
         ObjectItemText->hide();
@@ -485,14 +489,14 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem *parent,
   CDataContainer::objectMap::const_iterator end = pObjectList->end();
 
   if (copaParent->hasFlag(CDataObject::Array))
-  {
-    ObjectBrowserItem *currentItem = new ObjectBrowserItem(parent, last, copaParent, objectItemList);
-    last = currentItem;
-    currentItem->setText(0, "Matrix");  
-    currentItem->setObjectType(OBJECTATTR);
-    currentItem->attachKey();
-    childStack->insert(currentItem);
-  }
+    {
+      ObjectBrowserItem *currentItem = new ObjectBrowserItem(parent, last, copaParent, objectItemList);
+      last = currentItem;
+      currentItem->setText(0, "Matrix");
+      currentItem->setObjectType(OBJECTATTR);
+      currentItem->attachKey();
+      childStack->insert(currentItem);
+    }
 
   if ((copaParent->hasFlag(CDataObject::Vector)) && (nField))
     {

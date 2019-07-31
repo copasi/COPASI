@@ -140,9 +140,9 @@ public:
 
 // COMBINE Archive will take care of file management
   /*
-  #ifdef COPASI_Provenance
+#ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-  #endif
+#endif
   */
 
   CQOptPopulation* getPopulationDisplay();
@@ -195,8 +195,8 @@ public slots:
 
   void openInitialDocument(const QString & file);
 
-  void slotFileOpen(QString file = QString::null);
-  void slotFileOpenFromUrl(QString url = QString::null);
+  void slotFileOpen(QString file = QString());
+  void slotFileOpenFromUrl(QString url = QString());
 
   void slotHandleCopasiScheme(const QUrl& url);
 
@@ -220,22 +220,21 @@ public:
    */
   void removeReportTargets();
 
-
 protected slots:
   void slotFileOpenFinished(bool success);
   void slotFileOpenFromUrlFinished(bool success);
-  void slotFileExamplesCopasiFiles(QString file = QString::null);
-  void slotFileExamplesSBMLFiles(QString file = QString::null);
+  void slotFileExamplesCopasiFiles(QString file = QString());
+  void slotFileExamplesSBMLFiles(QString file = QString());
   void slotFileSave();
-  void slotFileSaveAs(QString str = QString::null);
+  void slotFileSaveAs(QString str = QString());
   void slotFileSaveFinished(bool success);
-  void slotFunctionDBSave(QString str = QString::null);
-  void slotFunctionDBLoad(QString str = QString::null);
-  void slotParameterSetsSave(QString str = QString::null);
-  void slotParameterSetsLoad(QString str = QString::null);
+  void slotFunctionDBSave(QString str = QString());
+  void slotFunctionDBLoad(QString str = QString());
+  void slotParameterSetsSave(QString str = QString());
+  void slotParameterSetsLoad(QString str = QString());
   void newDoc();
   void slotFilePrint();
-  void slotImportSBML(QString file = QString::null);
+  void slotImportSBML(QString file = QString());
   void slotImportSBMLFinished(bool success);
   void slotImportSBMLFromStringFinished(bool success);
   void slotExportSBML();
@@ -270,7 +269,7 @@ protected slots:
   void slotCloseAllWindows();
   void slotActivateWindowTriggered(QAction* action);
 
-  void slotAddFileOpen(QString file = QString::null);
+  void slotAddFileOpen(QString file = QString());
   void slotAddFileOpenFinished(bool success);
   void slotMergeModels();
 
@@ -284,8 +283,8 @@ protected slots:
   void slotShowObjectBrowserDialog(bool flag);
 
   // SEDML
-  void slotFileExamplesSEDMLFiles(QString file = QString::null);
-  void slotImportSEDML(QString file = QString::null);
+  void slotFileExamplesSEDMLFiles(QString file = QString());
+  void slotImportSEDML(QString file = QString());
   void slotImportSEDMLFinished(bool success);
   void slotImportSEDMLFromStringFinished(bool success);
   void slotExportSEDML();
@@ -293,11 +292,11 @@ protected slots:
   void slotExportSEDMLToStringFinished(bool success);
   void slotOpenRecentSEDMLFile(QAction * pAction);
 
-  void slotImportCombine(QString file = QString::null);
+  void slotImportCombine(QString file = QString());
   void slotImportCombineFinished(bool success);
-  void slotExportCombine(QString str = QString::null);
+  void slotExportCombine(QString str = QString());
   void slotExportCombineFinished(bool success);
-  void slotExportShiny(QString str = QString::null);
+  void slotExportShiny(QString str = QString());
 
   void slotUndo();
   void slotRedo();

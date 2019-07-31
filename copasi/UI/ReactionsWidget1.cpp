@@ -74,7 +74,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::Windo
   if (!name)
     setObjectName("ReactionsWidget1");
 
-  setWindowTitle(trUtf8("ReactionsWidget1"));
+  setWindowTitle("ReactionsWidget1");
 
   mpEditReactionScheme->setValidator(new ChemEqValidator(mpEditReactionScheme));
 

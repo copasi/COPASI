@@ -59,9 +59,6 @@ public slots:
   void slotStartInSteadyState(bool checked);
   void slotSaveOutput(bool checked);
 
-  void slotSwitchToValues();
-  void slotSwitchToTrajectory();
-
 protected:
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   virtual bool saveTaskProtected();

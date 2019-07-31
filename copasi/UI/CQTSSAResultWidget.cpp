@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,7 +51,7 @@ CQTSSAResultWidget::CQTSSAResultWidget(QWidget* parent, const char* name, Qt::Wi
   if (!name)
     setObjectName("CQTSSAResultWidget");
 
-  setWindowTitle(trUtf8("CQTSSAResultWidget"));
+  setWindowTitle("CQTSSAResultWidget");
 
   mWidgetLayout = new QGridLayout(this);
   mWidgetLayout->setObjectName("Layout");
@@ -54,7 +59,6 @@ CQTSSAResultWidget::CQTSSAResultWidget(QWidget* parent, const char* name, Qt::Wi
   mCentralWidget = new CQTSSAResultSubWidget(this);
   mCentralWidget->setObjectName("CQTSSAResultSubWidget");
   mWidgetLayout->addWidget(mCentralWidget, 0, 0);
-
 }
 
 /*
@@ -62,7 +66,6 @@ CQTSSAResultWidget::CQTSSAResultWidget(QWidget* parent, const char* name, Qt::Wi
  */
 CQTSSAResultWidget::~CQTSSAResultWidget()
 {
-
 }
 
 CQTSSAResultSubWidget *

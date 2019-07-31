@@ -101,9 +101,9 @@ public:
 
   /**
    * Retrieve the size a integration step the trajectory method should do.
-   * @return const bool & automaticStepSize
+   * @return bool automaticStepSize
    */
-  const bool & getAutomaticStepSize() const;
+  bool getAutomaticStepSize() const;
 
   /**
    * Set the size a integration step the trajectory method should do.
@@ -168,7 +168,7 @@ public:
 
   void setValues(const std::string& values);
   void setValues(const std::vector<C_FLOAT64>& values);
-  std::vector<C_FLOAT64> getValues() const;
+  std::set<C_FLOAT64> getValues() const;
   const std::string& getValueString() const;
 
   void setUseValues(bool flag);
@@ -240,7 +240,6 @@ protected:
    * realized as a CCopasiParameter
    */
   bool* mpStartInSteadyState;
-
 
   /**
    * Indicates whether a time course is using a the normal trajectory or a list of values

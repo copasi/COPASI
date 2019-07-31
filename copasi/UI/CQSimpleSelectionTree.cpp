@@ -1154,7 +1154,7 @@ void CQSimpleSelectionTree::selectObjects(std::vector< const CDataObject * > *ob
             }
         }
 
-      setItemSelected(item, true);
+      item->setSelected(true);
     }
 
   removeEmptySubTree(&mpExpertSubtree);

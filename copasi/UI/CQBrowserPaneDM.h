@@ -129,8 +129,6 @@ public:
 
   void remove(CNode * pNode);
 
-  void rename(CNode * pNode, const QString & displayRole);
-
   void add(const ListViews::WidgetType & id,
            const CCommonName & cn,
            const QString & displayRole,
@@ -143,6 +141,8 @@ public:
   void load();
 
   void load(const ListViews::WidgetType & id);
+
+  void rename(const std::string & oldCN, const std::string & newCN);
 
 public slots:
   bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
@@ -188,6 +188,8 @@ private:
 
   std::map< std::string, CNode * > mCN2Node;
   std::map< ListViews::WidgetType, CNode * > mId2Node;
+
+  CRegisteredCommonName::RenameInterface * mpRenameHandler;
 };
 
 #endif // COPASI_CQBrowserPaneDM

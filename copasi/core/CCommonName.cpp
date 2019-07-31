@@ -184,6 +184,8 @@ void CCommonName::split(CCommonName & parentCN, std::string & objectType, std::s
   // We may have a vector and based on it's name we can determine the type
   else if (Primary.getObjectType() == "Vector")
     {
+      objectType = Primary.getObjectName();
+
       // Vector:                    ObjectType:
       // Compartments               Compartment
       // Metabolites                Metabolite

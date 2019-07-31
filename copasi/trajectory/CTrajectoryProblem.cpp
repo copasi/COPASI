@@ -40,8 +40,7 @@
 //#include "model/CState.h"
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include <copasi/utilities/CParameterEstimationUtils.h>
-
+#include "copasi/utilities/CParameterEstimationUtils.h"
 
 //this constructor is only used by derived classes to provide a different task type
 CTrajectoryProblem::CTrajectoryProblem(const CTaskEnum::Task & type,
@@ -63,7 +62,6 @@ CTrajectoryProblem::CTrajectoryProblem(const CTaskEnum::Task & type,
   initObjects();
   CONSTRUCTOR_TRACE;
 }
-
 
 /**
  *  Default constructor.
@@ -190,9 +188,9 @@ void CTrajectoryProblem::setStepSize(const C_FLOAT64 & stepSize)
 const C_FLOAT64 & CTrajectoryProblem::getStepSize() const
 {return *mpStepSize;}
 
-const bool & CTrajectoryProblem::getAutomaticStepSize() const
+bool CTrajectoryProblem::getAutomaticStepSize() const
 {
-  return *mpAutomaticStepSize;
+  return *mpAutomaticStepSize && !*mpUseValues;
 }
 
 void CTrajectoryProblem::setAutomaticStepSize(const bool & automaticStepSize)
@@ -351,7 +349,7 @@ void CTrajectoryProblem::setValues(const std::vector<C_FLOAT64>& values)
 {
   std::stringstream str;
 
-for (C_FLOAT64 value : values)
+  for (C_FLOAT64 value : values)
     {
       str << value;
     }
@@ -359,19 +357,17 @@ for (C_FLOAT64 value : values)
   setValues(str.str());
 }
 
-std::vector<C_FLOAT64> CTrajectoryProblem::getValues() const
+std::set<C_FLOAT64> CTrajectoryProblem::getValues() const
 {
-  std::vector<C_FLOAT64> result;
+  std::set<C_FLOAT64> result;
 
   std::vector<std::string> elems;
   ResultParser::split(*mpValueString, std::string(",; |\n\t\r"), elems);
 
-for (std::string & number : elems)
+  for (std::string & number : elems)
     {
-      result.push_back(ResultParser::saveToDouble(number));
+      result.insert(ResultParser::saveToDouble(number));
     }
-
-
 
   return result;
 }

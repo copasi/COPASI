@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -196,7 +201,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       if (pM->getStatus() == CModelEntity::Status::TIME) c = QColor(250, 150, 150);
 
       QTableWidgetItem* tmpItem = new QTableWidgetItem(FROM_UTF8(pM->getObjectName()));
-      tmpItem->setBackgroundColor(c);
+      tmpItem->setBackground(c);
       mpTableObj->setItem((int) i, 0, tmpItem);
 
       //mpTableObj->setText(i, 0, FROM_UTF8(pM->getObjectName()));
@@ -237,7 +242,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       if (pM->getStatus() == CModelEntity::Status::TIME) c = QColor(250, 150, 150);
 
       QTableWidgetItem* tmpItem = new QTableWidgetItem(FROM_UTF8(pM->getObjectName()));
-      tmpItem->setBackgroundColor(c);
+      tmpItem->setBackground(c);
       mpTableObj->setItem((int) i, 3, tmpItem);
       //mpTableObj->setText(i, 3, FROM_UTF8(pM->getObjectName()));
 
@@ -284,7 +289,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       if (dynamic_cast< const CModelValue * >(pME)) c = QColor(100, 100, 250);
 
       QTableWidgetItem* tmpItem = new QTableWidgetItem(FROM_UTF8(pME->getObjectDisplayName()));
-      tmpItem->setBackgroundColor(c);
+      tmpItem->setBackground(c);
       mpTableState->setItem((int) i, 0, tmpItem);
 
       //second column
@@ -308,7 +313,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       if (pME->getStatus() == CModelEntity::Status::TIME) c = QColor(250, 150, 150);
 
       tmpItem = new QTableWidgetItem(FROM_UTF8(tmpString));
-      tmpItem->setBackgroundColor(c);
+      tmpItem->setBackground(c);
       mpTableState->setItem((int) i, 1, tmpItem);
 
       //third column: create empty items
@@ -333,17 +338,17 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
   QColor c(200, 250, 250);
 
   for (i = st.beginIndependent() - st.getEntities().array(); i < (size_t)(st.endIndependent() - st.getEntities().array()); ++i)
-    mpTableState->item(i, 2)->setBackgroundColor(c);
+    mpTableState->item(i, 2)->setBackground(c);
 
   c = QColor(250, 200, 250);
 
   for (i = st.beginDependent() - st.getEntities().array(); i < (size_t)(st.endDependent() - st.getEntities().array()); ++i)
-    mpTableState->item(i, 2)->setBackgroundColor(c);
+    mpTableState->item(i, 2)->setBackground(c);
 
   c = QColor(200, 200, 200);
 
   for (i = st.beginFixed() - st.getEntities().array(); i < (size_t)(st.endFixed() - st.getEntities().array()); ++i)
-    mpTableState->item(i, 2)->setBackgroundColor(c);
+    mpTableState->item(i, 2)->setBackground(c);
 
   //add absolute Tolerances to table
   CVector< C_FLOAT64 > atolv = pModel->initializeAtolVector(1, false);
@@ -393,7 +398,7 @@ void CQUpdatesWidget::loadMathContainer(const CMathContainer& MC)
 
           QString s = FROM_UTF8(CMath::ValueTypeName[pMO->getValueType()]);
           tmpItem = new QTableWidgetItem(s);
-          tmpItem->setBackgroundColor(pMO->isInitialValue() ? QColor(255, 255, 200) : QColor(200, 200, 250));
+          tmpItem->setBackground(pMO->isInitialValue() ? QColor(255, 255, 200) : QColor(200, 200, 250));
           mpTableMathState->setItem(i, 1, tmpItem);
 
           s = FROM_UTF8(CMath::SimulationTypeName[pMO->getSimulationType()]);
@@ -402,7 +407,7 @@ void CQUpdatesWidget::loadMathContainer(const CMathContainer& MC)
 
           s = FROM_UTF8(CMath::EntityTypeName[pMO->getEntityType()]);
           tmpItem = new QTableWidgetItem(s);
-          tmpItem->setBackgroundColor(pMO->isIntensiveProperty() ? QColor(255, 220, 220) : QColor(220, 255, 220));
+          tmpItem->setBackground(pMO->isIntensiveProperty() ? QColor(255, 220, 220) : QColor(220, 255, 220));
           mpTableMathState->setItem(i, 3, tmpItem);
 
           const CMathExpression* pMExp = pMO->getExpressionPtr();
