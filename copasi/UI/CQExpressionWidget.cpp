@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -30,18 +35,18 @@
 #include "qtUtilities.h"
 #include "listviews.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "CopasiDataModel/CDataModel.h"
-#include "function/CExpression.h"
-#include "function/CFunctionDB.h"
-#include "function/CMassAction.h"
-#include "core/CDataArray.h"
-#include "model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/function/CMassAction.h"
+#include "copasi/core/CDataArray.h"
+#include "copasi/model/CModel.h"
 #include "CQMatrixDialog.h"
 #include "qtUtilities.h"
 #include "copasi/core/CRootContainer.h"
-#include "commandline/CConfigurationFile.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 #define DEBUG_UI
 

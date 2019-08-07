@@ -33,14 +33,14 @@
 
 #include "sbml/packages/layout/sbml/GeneralGlyph.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CLayout.h"
 #include "CLReactionGlyph.h"
 #include "SBMLDocumentLoader.h"
 
-#include "report/CKeyFactory.h"
-#include "sbml/CSBMLExporter.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/sbml/CSBMLExporter.h"
 #include "copasi/core/CRootContainer.h"
 
 // static
@@ -83,7 +83,7 @@ CLayout::CLayout(const std::string & name,
     mvReactions("ListOfReactionGlyphs", this),
     mvLabels("ListOfTextGlyphs", this),
     mvGraphicalObjects("ListOfGraphicalObjects", this)
-  , mvLocalRenderInformationObjects("ListOfLocalRenderInformationObjects", this)
+    , mvLocalRenderInformationObjects("ListOfLocalRenderInformationObjects", this)
 {}
 
 CLayout::CLayout(const CLayout & src,
@@ -97,7 +97,7 @@ CLayout::CLayout(const CLayout & src,
     mvReactions("ListOfReactionGlyphs", this),
     mvLabels("ListOfTextGlyphs", this),
     mvGraphicalObjects("ListOfGraphicalObjects", this)
-  , mvLocalRenderInformationObjects(src.mvLocalRenderInformationObjects, this)
+    , mvLocalRenderInformationObjects(src.mvLocalRenderInformationObjects, this)
 {
   //TODO references from one glyph to another have to be reconstructed after
   //     copying. This applies to Labels and species reference glyphs
@@ -262,7 +262,7 @@ CLayout::CLayout(const Layout & sbml,
     mvReactions("ListOfReactionGlyphs", this),
     mvLabels("ListOfTextGlyphs", this),
     mvGraphicalObjects("ListOfGraphicalObjects", this)
-  , mvLocalRenderInformationObjects("ListOfLocalRenderInformationObjects", this)
+    , mvLocalRenderInformationObjects("ListOfLocalRenderInformationObjects", this)
 {
   //add the copasi key to the map
   layoutmap[sbml.getId()] = mKey;

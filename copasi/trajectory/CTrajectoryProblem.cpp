@@ -34,11 +34,11 @@
 #include <cmath>
 #include <string>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CTrajectoryProblem.h"
-#include "model/CModel.h"
-//#include "model/CState.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
+//#include "copasi/model/CState.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/utilities/CParameterEstimationUtils.h"
 
@@ -349,7 +349,7 @@ void CTrajectoryProblem::setValues(const std::vector<C_FLOAT64>& values)
 {
   std::stringstream str;
 
-  for (C_FLOAT64 value : values)
+for (C_FLOAT64 value : values)
     {
       str << value;
     }
@@ -364,7 +364,7 @@ std::set<C_FLOAT64> CTrajectoryProblem::getValues() const
   std::vector<std::string> elems;
   ResultParser::split(*mpValueString, std::string(",; |\n\t\r"), elems);
 
-  for (std::string & number : elems)
+for (std::string & number : elems)
     {
       result.insert(ResultParser::saveToDouble(number));
     }

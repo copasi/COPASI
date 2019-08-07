@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -20,15 +25,15 @@
 #include <cmath>
 #include <limits>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CMCAMethod.h"
 #include "CMCAProblem.h"
 #include "CSteadyStateTask.h"
-#include "model/CModel.h"
-#include "math/CMathContainer.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/utility.h"
-#include "utilities/CLinkMatrix.h"
+#include "copasi/model/CModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/utilities/CReadConfig.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/utilities/CLinkMatrix.h"
 
 #include "lapack/blaswrap.h"
 #include "lapack/lapackwrap.h"

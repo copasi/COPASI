@@ -22,15 +22,15 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CSlider.h"
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModel.h"
-#include "math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/math/CMathContainer.h"
 
 const char * CSlider::TypeName[] =
 {"float", "unsignedFloat", "integer", "unsignedInteger", "Undefined", NULL};

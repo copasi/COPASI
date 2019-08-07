@@ -15,7 +15,7 @@
 #include <cfloat>
 #include <climits>
 #include <cmath>
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CNL2SOL.h"
 
 /* Table of constant values */
@@ -9753,7 +9753,7 @@ integer i1mach_(integer *i)
 
       case 6:  return sizeof(int);    /* Fortran 77 value: 1 character */
 
-      /*    per character storage unit */
+        /*    per character storage unit */
       case 7:  return 2;    /* base for integers -- may need changing */
 
       case 8:  return 31;    /* digits of integer base -- may need changing */

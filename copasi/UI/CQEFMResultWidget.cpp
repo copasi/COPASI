@@ -26,10 +26,10 @@
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
 
-#include "elementaryFluxModes/CEFMTask.h"
-#include "elementaryFluxModes/CFluxMode.h"
-#include "utilities/utility.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/elementaryFluxModes/CEFMTask.h"
+#include "copasi/elementaryFluxModes/CFluxMode.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/commandline/CLocaleString.h"
 
 CQEFMResultWidget::CQEFMResultWidget(QWidget *parent, const char *name) :
   CopasiWidget(parent, name),

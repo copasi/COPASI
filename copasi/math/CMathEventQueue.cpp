@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -10,13 +15,13 @@
 
 #include <limits>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CMathEventQueue.h"
 #include "CMathContainer.h"
 #include "CMathEvent.h"
-#include "function/CExpression.h"
-#include "randomGenerator/CRandom.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/randomGenerator/CRandom.h"
 
 #include "copasi/core/CRootContainer.h"
 #include "copasi/commandline/CConfigurationFile.h"
@@ -440,18 +445,18 @@ CMathEventQueue::iterator CMathEventQueue::getAction()
 
   switch (PriorityActions.size())
     {
-      // No prioritized actions
+        // No prioritized actions
       case 0:
         // We arbitrarily pick the first
         return PendingActions.first;
         break;
 
-      // One action has the highest priority
+        // One action has the highest priority
       case 1:
         return PriorityActions[0];
         break;
 
-      // Pick one randomly
+        // Pick one randomly
       default:
         return PriorityActions[mpContainer->getRandomGenerator().getRandomU(PriorityActions.size() - 1)];
         break;

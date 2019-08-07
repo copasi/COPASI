@@ -22,16 +22,16 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CLsodaMethod.h"
 #include "CTrajectoryProblem.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "model/CState.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CState.h"
 
 // Uncomment this line below to get numeric debug print out.
 // #define DEBUG_NUMERICS 1
@@ -511,8 +511,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
             saveState(mLastRootState, ROOT);
             break;
 
-          // The break statement is intentionally missing since we
-          // have to continue to check the root masking state.
+            // The break statement is intentionally missing since we
+            // have to continue to check the root masking state.
           default:
 
             // We made a successful step and therefore invalidate the last root state

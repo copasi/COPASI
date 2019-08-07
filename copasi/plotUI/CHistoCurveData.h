@@ -40,11 +40,11 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_spectrogram.h>
 
-#include "plot/CPlotItem.h"
+#include "copasi/plot/CPlotItem.h"
 
 #include "copasi/core/CDataObject.h"
-#include "output/COutputHandler.h"
-#include "utilities/CopasiTime.h"
+#include "copasi/output/COutputHandler.h"
+#include "copasi/utilities/CopasiTime.h"
 #include "copasi/core/CVector.h"
 #include "copasi/core/CMatrix.h"
 

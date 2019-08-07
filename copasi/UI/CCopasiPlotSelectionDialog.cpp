@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,13 +32,13 @@
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CCopasiPlotSelectionDialog.h"
 #include "CCopasiSelectionWidget.h"
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
-#include "model/CModel.h"
+#include "copasi/model/CModel.h"
 #include "copasi/core/CDataObject.h"
 
 CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags f):

@@ -1,3 +1,13 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -98,11 +108,11 @@
   if (yychar != YYERRCODE) correctErrorPosition(); \
   CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CChemEqParser.h"
 
-#include "utilities/CCopasiMessage.h"
-#include "utilities/utility.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/utility.h"
 
 #undef yyparse
 #define yyparse CChemEqParserBase::yyparse

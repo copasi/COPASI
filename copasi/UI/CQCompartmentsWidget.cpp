@@ -25,11 +25,11 @@
 #include <QKeyEvent>
 
 #include "qtUtilities.h"
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CQMessageBox.h"
 
-#include "model/CModel.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 
 #include "copasiui3window.h"

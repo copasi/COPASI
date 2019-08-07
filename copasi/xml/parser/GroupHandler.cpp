@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,19 +13,19 @@
 // of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "GroupHandler.h"
 #include "CXMLParser.h"
-#include "utilities/CCopasiMessage.h"
+#include "copasi/utilities/CCopasiMessage.h"
 
-#include "layout/CLayout.h"
-#include "layout/CLRenderCurve.h"
-#include "layout/CLPolygon.h"
-#include "layout/CLRectangle.h"
-#include "layout/CLEllipse.h"
-#include "layout/CLImage.h"
-#include "layout/CLText.h"
+#include "copasi/layout/CLayout.h"
+#include "copasi/layout/CLRenderCurve.h"
+#include "copasi/layout/CLPolygon.h"
+#include "copasi/layout/CLRectangle.h"
+#include "copasi/layout/CLEllipse.h"
+#include "copasi/layout/CLImage.h"
+#include "copasi/layout/CLText.h"
 
 /**
  * Replace Group with the name type of the handler and implement the

@@ -25,7 +25,7 @@
 #ifndef COPASI_CFitProblem
 #define COPASI_CFitProblem
 
-#include "optimization/COptProblem.h"
+#include "copasi/optimization/COptProblem.h"
 #include <copasi/parameterFitting/CFitItem.h>
 #include "copasi/core/CMatrix.h"
 

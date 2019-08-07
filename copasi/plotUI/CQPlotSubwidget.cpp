@@ -25,19 +25,19 @@
 #include <copasi/plotUI/CQSpectogramWidget.h>
 
 #include "plotwindow.h"
-#include "plot/CPlotSpecification.h"
-#include "plot/COutputDefinitionVector.h"
-#include "report/CKeyFactory.h"
-#include "core/CDataArray.h"
-#include "UI/CCopasiPlotSelectionDialog.h"
-#include "model/CMetabNameInterface.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "UI/DataModelGUI.h"
+#include "copasi/plot/CPlotSpecification.h"
+#include "copasi/plot/COutputDefinitionVector.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/core/CDataArray.h"
+#include "copasi/UI/CCopasiPlotSelectionDialog.h"
+#include "copasi/model/CMetabNameInterface.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/UI/DataModelGUI.h"
 #include "copasi/UI/qtUtilities.h"
 #include "copasi/core/CRootContainer.h"
 
-#include "UI/CCopasiSelectionDialog.h"
-#include "UI/CQMultipleSelectionDialog.h"
+#include "copasi/UI/CCopasiSelectionDialog.h"
+#include "copasi/UI/CQMultipleSelectionDialog.h"
 #include <QListWidgetItem>
 #include <QtCore/QList>
 #include <QtCore/QMap>
@@ -1104,7 +1104,7 @@ bool CQPlotSubwidget::updateProtected(ListViews::ObjectType objectType, ListView
 
   switch (objectType)
     {
-      //TODO: check list:
+        //TODO: check list:
       case ListViews::ObjectType::MODEL:
         switch (action)
           {

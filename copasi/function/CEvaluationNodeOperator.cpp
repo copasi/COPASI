@@ -24,15 +24,15 @@
 
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 #include "sbml/math/ASTNode.h"
-#include "utilities/CNodeIterator.h"
-#include "utilities/CValidatedUnit.h"
-#include "math/CMathObject.h"
-#include "math/CMathContainer.h"
+#include "copasi/utilities/CNodeIterator.h"
+#include "copasi/utilities/CValidatedUnit.h"
+#include "copasi/math/CMathObject.h"
+#include "copasi/math/CMathContainer.h"
 
 CEvaluationNodeOperator::CEvaluationNodeOperator():
   CEvaluationNode(MainType::OPERATOR, SubType::INVALID, ""),
@@ -1529,7 +1529,7 @@ CEvaluationNode * CEvaluationNodeOperator::getRight()
 const CEvaluationNode * CEvaluationNodeOperator::getRight() const
 {return mpRightNode;}
 
-#include "utilities/copasimathml.h"
+#include "copasi/utilities/copasimathml.h"
 
 // virtual
 std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string > & children,

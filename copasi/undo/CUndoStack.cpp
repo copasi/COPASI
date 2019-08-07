@@ -15,12 +15,12 @@
  *      Author: shoops
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CUndoStack.h"
 #include "CUndoData.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 CUndoStack::CUndoStack():
   std::vector< CUndoData * >(),

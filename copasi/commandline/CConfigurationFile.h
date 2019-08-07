@@ -25,9 +25,9 @@
 #ifndef COPASI_CConfigurationFile
 #define COPASI_CConfigurationFile
 
-#include "utilities/CCopasiParameterGroup.h"
-#include "MIRIAM/CMIRIAMResource.h"
-#include "xml/CCopasiXMLInterface.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/MIRIAM/CMIRIAMResource.h"
+#include "copasi/xml/CCopasiXMLInterface.h"
 
 class CMIRIAMResources;
 class CVersion;

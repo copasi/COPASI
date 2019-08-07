@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -19,7 +24,7 @@
 
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CChemEqInterface.h"
 #include "CMetabNameInterface.h"
 #include "CChemEq.h"
@@ -28,7 +33,7 @@
 #include "CModel.h"
 
 #include "copasi/core/CDataVector.h"
-#include "utilities/utility.h"
+#include "copasi/utilities/utility.h"
 
 CChemEqInterface::CChemEqInterface():
   mpChemEq(NULL),

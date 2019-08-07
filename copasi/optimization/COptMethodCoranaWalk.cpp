@@ -19,16 +19,16 @@
 
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "COptMethodCoranaWalk.h"
 #include "COptProblem.h"
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "parameterFitting/CFitProblem.h"
+#include "copasi/parameterFitting/CFitProblem.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CRandom.h"
 
 #define STORED 2
 #define NS 5

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,9 +29,9 @@
 
 #include "copasi/core/CMatrix.h"
 #include "copasi/core/CVector.h"
-#include "tssanalysis/CTSSAMethod.h"
+#include "copasi/tssanalysis/CTSSAMethod.h"
 
-#include "odepack++/CLSODA.h"
+#include "copasi/odepack++/CLSODA.h"
 
 class CModel;
 class CState;
@@ -232,9 +237,9 @@ protected:
    *  Lamm, Combustion Science and Technoligy, 1993.
    **/
   void basisRefinement(C_INT N, C_INT M,
-                      const CMatrix< C_FLOAT64 > & ALA, const CMatrix< C_FLOAT64 > & TAU,
-                      CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B,
-                      CMatrix< C_FLOAT64 > & A0, CMatrix< C_FLOAT64 > & B0);
+                       const CMatrix< C_FLOAT64 > & ALA, const CMatrix< C_FLOAT64 > & TAU,
+                       CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B,
+                       CMatrix< C_FLOAT64 > & A0, CMatrix< C_FLOAT64 > & B0);
 
   /**
    * evaluate Jacobian for the current y

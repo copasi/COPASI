@@ -1,22 +1,24 @@
-// Begin CVS Header
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CAnnotation.i,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/03 13:53:19 $
-// End CVS Header
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 %ignore CAnnotation::operator==;
 %ignore CAnnotation::getUnsupportedAnnotations() const;
 
 %{
 
-#include "model/CAnnotation.h"
+#include "copasi/model/CAnnotation.h"
 
 %}
 

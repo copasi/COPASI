@@ -19,9 +19,9 @@
 #include "CQLayoutsDM.h"
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "layout/CListOfLayouts.h"
+#include "copasi/layout/CListOfLayouts.h"
 
 CQLayoutsDM::CQLayoutsDM(QObject *parent) :
   CQBaseDataModel(parent, NULL),

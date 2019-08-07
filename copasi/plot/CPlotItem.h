@@ -31,11 +31,11 @@
 
 #include <string>
 #include <vector>
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "utilities/CCopasiParameterGroup.h"
-#include "core/CRegisteredCommonName.h"
-#include "output/COutputHandler.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/core/CRegisteredCommonName.h"
+#include "copasi/output/COutputHandler.h"
 
 #undef min
 #undef max

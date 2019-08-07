@@ -22,7 +22,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include <sstream>
 #include <vector>
@@ -35,15 +35,15 @@
 #include "CEvaluationLexer.h"
 #include "CFunctionDB.h"
 
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CDataObjectReference.h"
 #include "sbml/math/ASTNode.h"
-#include "utilities/CCopasiTree.h"
-#include "utilities/CNodeIterator.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/CCopasiTree.h"
+#include "copasi/utilities/CNodeIterator.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/core/CDataObject.h"
-#include "math/CMathObject.h"
+#include "copasi/math/CMathObject.h"
 
 const std::string CEvaluationTree::TypeName[] =
 {

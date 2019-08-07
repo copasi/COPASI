@@ -26,9 +26,9 @@
 
 #include "CQExpressionWidget.h"
 
-#include "UI/CQMessageBox.h"
+#include "copasi/UI/CQMessageBox.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 #include "CQValidatorUnit.h"

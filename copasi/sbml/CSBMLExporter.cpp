@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -29,7 +34,7 @@
 #include "SBMLUtils.h"
 
 #include "SBMLImporter.h"
-#include "utilities/CCopasiException.h"
+#include "copasi/utilities/CCopasiException.h"
 #include "copasi/utilities/CUnit.h"
 #include "sbml/SBMLDocument.h"
 #include "sbml/Compartment.h"
@@ -39,7 +44,7 @@
 #include <sbml/packages/layout/extension/LayoutExtension.h>
 #include <sbml/conversion/ConversionProperties.h>
 
-#include "layout/CLDefaultStyles.h"
+#include "copasi/layout/CLDefaultStyles.h"
 #include <sbml/packages/render/extension/RenderExtension.h>
 #include <sbml/packages/render/extension/RenderListOfLayoutsPlugin.h>
 #include <sbml/packages/render/sbml/GlobalRenderInformation.h>
@@ -61,41 +66,41 @@
 #include "sbml/annotation/CVTerm.h"
 #include "sbml/SBMLErrorLog.h"
 #include "sbml/SBMLError.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "SBMLIncompatibility.h"
-#include "model/CCompartment.h"
-#include "model/CModel.h"
-#include "model/CEvent.h"
-#include "model/CMetab.h"
-#include "function/CExpression.h"
-#include "function/CEvaluationNode.h"
-#include "model/CAnnotation.h"
-#include "model/CReaction.h"
-#include "utilities/CCopasiParameter.h"
-#include "model/CModelValue.h"
-#include "function/CFunction.h"
-#include "report/CKeyFactory.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CEvent.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/function/CEvaluationNode.h"
+#include "copasi/model/CAnnotation.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/utilities/CCopasiParameter.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/report/CKeyFactory.h"
 #include "ConverterASTNode.h"
-#include "utilities/CCopasiTree.h"
-#include "model/CChemEqElement.h"
-#include "utilities/CVersion.h"
+#include "copasi/utilities/CCopasiTree.h"
+#include "copasi/model/CChemEqElement.h"
+#include "copasi/utilities/CVersion.h"
 #include "sbml/Trigger.h"
 #include "sbml/Event.h"
 #include "sbml/EventAssignment.h"
 #include <sbml/xml/XMLInputStream.h>
 #include "compareExpressions/compare_utilities.h"
-#include "MIRIAM/CRDFUtilities.h"
-#include "MIRIAM/CModelMIRIAMInfo.h"
-#include "MIRIAM/CReference.h"
-#include "MIRIAM/CBiologicalDescription.h"
-#include "MIRIAM/CConstants.h"
-#include "MIRIAM/CCreator.h"
-#include "MIRIAM/CModified.h"
-#include "MIRIAM/CRDFPredicate.h"
-#include "layout/CListOfLayouts.h"
+#include "copasi/MIRIAM/CRDFUtilities.h"
+#include "copasi/MIRIAM/CModelMIRIAMInfo.h"
+#include "copasi/MIRIAM/CReference.h"
+#include "copasi/MIRIAM/CBiologicalDescription.h"
+#include "copasi/MIRIAM/CConstants.h"
+#include "copasi/MIRIAM/CCreator.h"
+#include "copasi/MIRIAM/CModified.h"
+#include "copasi/MIRIAM/CRDFPredicate.h"
+#include "copasi/layout/CListOfLayouts.h"
 #include "copasi/core/CRootContainer.h"
-#include "utilities/CVersion.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/utilities/CVersion.h"
+#include "copasi/commandline/CLocaleString.h"
 
 // helper functions for function definitions
 

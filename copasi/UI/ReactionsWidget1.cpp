@@ -33,7 +33,7 @@
 
 #include <QWidget>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "ReactionsWidget1.h"
 #include "listviews.h"
 #include "parametertable.h"
@@ -44,18 +44,18 @@
 #include "CQMessageBox.h"
 #include "CQNameSelectionDialog.h"  // for Copy button compartment options
 
-#include "resourcesUI/CQIconResource.h"
-#include "model/CReactionInterface.h"
+#include "copasi/resourcesUI/CQIconResource.h"
+#include "copasi/model/CReactionInterface.h"
 
 #include "copasi/core/CDataVector.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModel.h"
-#include "function/CFunctionDB.h"
-#include "function/CFunctionParameters.h"
-#include "function/CFunctionParameter.h"
-#include "report/CKeyFactory.h"
-#include "model/CModelExpansion.h"    //for Copy button and options
+#include "copasi/model/CModel.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/function/CFunctionParameters.h"
+#include "copasi/function/CFunctionParameter.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/model/CModelExpansion.h"    //for Copy button and options
 
 //UNDO framework
 #include "copasiui3window.h"

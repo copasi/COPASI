@@ -16,7 +16,7 @@
 #include "CQTimeSeriesDM.h"
 #include "qtUtilities.h"
 
-#include "trajectory/CTimeSeries.h"
+#include "copasi/trajectory/CTimeSeries.h"
 
 CQTimeSeriesDM::CQTimeSeriesDM(QObject *parent):
   CQBaseDataModel(parent, NULL),

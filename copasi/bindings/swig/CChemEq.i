@@ -28,8 +28,8 @@
 
 %{
 
-#include "model/CChemEq.h"
-#include "model/CChemEqInterface.h"
+#include "copasi/model/CChemEq.h"
+#include "copasi/model/CChemEqInterface.h"
 
 %}
 

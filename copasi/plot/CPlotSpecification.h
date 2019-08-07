@@ -32,9 +32,9 @@
 #include <string>
 #include <set>
 
-#include "plot/CPlotItem.h"
+#include "copasi/plot/CPlotItem.h"
 #include "copasi/core/CDataVector.h"
-#include "utilities/CCopasiTask.h"
+#include "copasi/utilities/CCopasiTask.h"
 
 class CModel;
 

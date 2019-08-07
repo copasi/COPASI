@@ -30,8 +30,8 @@
 #include "copasi/core/CDataVector.h"
 #include "copasi/core/CMatrix.h"
 #include "copasi/core/CVector.h"
-#include "utilities/CCopasiParameterGroup.h"
-#include "utilities/CCopasiTask.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiTask.h"
 
 class CExperimentObjectMap;
 class CMathContainer;

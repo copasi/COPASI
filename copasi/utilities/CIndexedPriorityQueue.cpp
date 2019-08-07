@@ -1,26 +1,28 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CIndexedPriorityQueue.cpp,v $
-//   $Revision: 1.19 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:34:55 $
-// End CVS Header
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CCopasiMessage.h"
 #include "CIndexedPriorityQueue.h"
 
@@ -41,6 +43,7 @@ size_t CIndexedPriorityQueue::topIndex() const
 {
   if (mHeap.empty())
     return C_INVALID_INDEX;
+
   return mHeap[0].mIndex;
 }
 
@@ -53,7 +56,8 @@ size_t CIndexedPriorityQueue::removeStochReaction(const size_t index)
   if (index >= mIndexPointer.size()) return C_INVALID_INDEX;
 
   if ((mIndexPointer[index] != C_INVALID_INDEX) && (mIndexPointer[index] != (mHeap.size() - 1))) // if the node with the given index exists in the tree
-    {// remove the node with the given index from the tree
+    {
+      // remove the node with the given index from the tree
       swapNodes(t = mIndexPointer[index], mHeap.size() - 1);
       mHeap.pop_back();
       mIndexPointer[index] = -1;

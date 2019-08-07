@@ -31,7 +31,7 @@
 #include <cmath>
 #include <algorithm>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 // #define DEBUG_MATRIX
 
@@ -41,23 +41,23 @@
 #include "CState.h"
 #include "CModelValue.h"
 #include "CObjectLists.h"
-#include "function/CFunctionDB.h"
+#include "copasi/function/CFunctionDB.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "report/CKeyFactory.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/CCopasiMessage.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/core/CDataVector.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/core/CVector.h"
-#include "utilities/CluX.h"
-#include "utilities/utility.h"
-#include "utilities/CProcessReport.h"
+#include "copasi/utilities/CluX.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/utilities/CProcessReport.h"
 #include "CReactionInterface.h"
-#include "core/CDataArray.h"
+#include "copasi/core/CDataArray.h"
 #include "CMetabNameInterface.h"
 
-#include "math/CMathContainer.h"
+#include "copasi/math/CMathContainer.h"
 
 #include "lapack/blaswrap.h"
 #include "lapack/lapackwrap.h"
@@ -3451,7 +3451,7 @@ const CMathContainer & CModel::getMathContainer() const
 CMathContainer & CModel::getMathContainer()
 {return *mpMathContainer;}
 
-#include "function/CDerive.h"
+#include "copasi/function/CDerive.h"
 
 CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CModelEntity* pVar, bool simplify)
 {

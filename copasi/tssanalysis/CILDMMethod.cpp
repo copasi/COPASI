@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,20 +22,20 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CILDMMethod.h"
 #include "CTSSATask.h"
 #include "CTSSAProblem.h"
 
-#include "math/CMathContainer.h"
+#include "copasi/math/CMathContainer.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModel.h"
-#include "model/CMetab.h"
-//#include "model/CState.h"
-//#include "utilities/CMatrix.h"
-//#include "core/CDataArray.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetab.h"
+//#include "copasi/model/CState.h"
+//#include "copasi/utilities/CMatrix.h"
+//#include "copasi/core/CDataArray.h"
 //#include "copasi/core/CDataObjectReference.h"
 
 #include "lapack/lapackwrap.h"        // CLAPACK

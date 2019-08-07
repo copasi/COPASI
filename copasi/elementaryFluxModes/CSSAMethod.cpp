@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,20 +23,20 @@
  *  Methods to conduct Stoichiometric Stability Analysis.-
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "lapack/blaswrap.h"
 #include "lapack/lapackwrap.h"
 
-#include "elementaryFluxModes/CSSAMethod.h"
-#include "elementaryFluxModes/CEFMTask.h"
-#include "utilities/CCopasiProblem.h"
-#include "elementaryFluxModes/CEFMMethod.h"
-#include "elementaryFluxModes/CFluxMode.h"
+#include "copasi/elementaryFluxModes/CSSAMethod.h"
+#include "copasi/elementaryFluxModes/CEFMTask.h"
+#include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/elementaryFluxModes/CEFMMethod.h"
+#include "copasi/elementaryFluxModes/CFluxMode.h"
 
-#include "model/CModel.h"
-#include "model/CState.h"
-#include "utilities/CProcessReport.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CState.h"
+#include "copasi/utilities/CProcessReport.h"
 
 /**
  *  Copy constructor.

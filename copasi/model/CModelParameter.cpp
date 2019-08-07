@@ -15,7 +15,7 @@
 
 #include <limits>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CModelParameter.h"
 #include "CModelParameterGroup.h"

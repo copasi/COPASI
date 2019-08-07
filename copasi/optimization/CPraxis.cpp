@@ -30,11 +30,11 @@
 #include <cmath>
 #include <stdio.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CPraxis.h"
 
-#include "randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CRandom.h"
 
 int maprnt_(C_INT *, C_FLOAT64 *, C_INT *, C_INT *);
 int vcprnt_(C_INT *, C_FLOAT64 *, C_INT *);

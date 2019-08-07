@@ -20,7 +20,7 @@
 
 #include "CQReferenceDM.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "copasi/UI/CQMessageBox.h"
 #include "copasi/UI/qtUtilities.h"

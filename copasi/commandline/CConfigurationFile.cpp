@@ -22,18 +22,18 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CConfigurationFile.h"
 #include "COptions.h"
 
-#include "CopasiDataModel/CDataModel.h"
-#include "utilities/CVersion.h"
-#include "utilities/utility.h"
-#include "utilities/CDirEntry.h"
-#include "MIRIAM/CConstants.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/CVersion.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/utilities/CDirEntry.h"
+#include "copasi/MIRIAM/CConstants.h"
 
-#include "xml/parser/CXMLParser.h"
+#include "copasi/xml/parser/CXMLParser.h"
 
 CRecentFiles::CRecentFiles(const std::string & name,
                            const CDataContainer * pParent):

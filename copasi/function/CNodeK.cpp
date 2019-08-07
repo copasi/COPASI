@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,10 +28,10 @@
 
 #include <stdio.h>
 
-#include "copasi.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/utility.h"
+#include "copasi/copasi.h"
+#include "copasi/utilities/CReadConfig.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/utility.h"
 
 #include "CNodeK.h"
 

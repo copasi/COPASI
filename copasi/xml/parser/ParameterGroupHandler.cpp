@@ -13,14 +13,14 @@
 // of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "ParameterGroupHandler.h"
 
 #include "CXMLParser.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CCopasiParameterGroup.h"
-#include "utilities/CCopasiTask.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiTask.h"
 
 /**
  * Replace ParameterGroup with the name type of the handler and implement the

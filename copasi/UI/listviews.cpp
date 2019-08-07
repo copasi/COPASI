@@ -102,16 +102,16 @@
 
 #include "CQTabWidget.h"
 
-#include "UI/CQLayoutsWidget.h"
+#include "copasi/UI/CQLayoutsWidget.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "report/CReportDefinitionVector.h"
-#include "plot/COutputDefinitionVector.h"
-#include "plotUI/CQPlotSubwidget.h"
-#include "model/CModel.h"
+#include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/plot/COutputDefinitionVector.h"
+#include "copasi/plotUI/CQPlotSubwidget.h"
+#include "copasi/model/CModel.h"
 #include "CQCrossSectionTaskWidget.h"
 
 #ifdef WITH_ANALYTICS

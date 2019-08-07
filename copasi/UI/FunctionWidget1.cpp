@@ -24,23 +24,23 @@
 
 #include "FunctionWidget1.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "listviews.h"
 #include "CQMessageBox.h"
 #include "FunctionWidget1.h"
 #include "qtUtilities.h"
 
-#include "tex/CMathMLToTeX.h"
+#include "copasi/tex/CMathMLToTeX.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CMetab.h"
-#include "model/CModel.h"
-#include "utilities/CCopasiException.h"
-#include "function/CFunction.h"
-#include "function/CFunctionDB.h"
-#include "function/CKinFunction.h"
-#include "utilities/CUnitValidator.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CModel.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/function/CKinFunction.h"
+#include "copasi/utilities/CUnitValidator.h"
 
 #include "CopasiFileDialog.h"
 

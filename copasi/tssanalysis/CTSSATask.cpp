@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,17 +33,17 @@
 
 #include <string>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CTSSATask.h"
 #include "CTSSAProblem.h"
 #include "CTSSAMethod.h"
-#include "math/CMathContainer.h"
-#include "report/CKeyFactory.h"
-#include "report/CReport.h"
-#include "utilities/CProcessReport.h"
-#include "utilities/CCopasiException.h"
-#include  "CopasiDataModel/CDataModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/report/CReport.h"
+#include "copasi/utilities/CProcessReport.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 #define XXXX_Reporting
 
@@ -120,9 +125,9 @@ bool CTSSATask::updateMatrices()
 
   assert(dynamic_cast<CTSSAProblem *>(mpProblem) != NULL);
 
-  
+
   mpMethod->setMathContainer(mpContainer);
-  
+
   if (!mpMethod->isValidProblem(mpProblem)) return false;
 
   CTSSAMethod * pMethod = dynamic_cast<CTSSAMethod*>(mpMethod);

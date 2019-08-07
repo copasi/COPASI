@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,17 +17,17 @@
 
 #include "CTaskFactory.h"
 
-#include "steadystate/CSteadyStateTask.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "scan/CScanTask.h"
-#include "elementaryFluxModes/CEFMTask.h"
-#include "optimization/COptTask.h"
-#include "parameterFitting/CFitTask.h"
-#include "steadystate/CMCATask.h"
-#include "lna/CLNATask.h"
-#include "lyap/CLyapTask.h"
-#include "sensitivities/CSensTask.h"
-#include "tssanalysis/CTSSATask.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/scan/CScanTask.h"
+#include "copasi/elementaryFluxModes/CEFMTask.h"
+#include "copasi/optimization/COptTask.h"
+#include "copasi/parameterFitting/CFitTask.h"
+#include "copasi/steadystate/CMCATask.h"
+#include "copasi/lna/CLNATask.h"
+#include "copasi/lyap/CLyapTask.h"
+#include "copasi/sensitivities/CSensTask.h"
+#include "copasi/tssanalysis/CTSSATask.h"
 #include "moieties/CMoietiesTask.h"
 #include "crosssection/CCrossSectionTask.h"
 #include "timesens/CTimeSensTask.h"

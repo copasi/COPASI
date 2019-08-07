@@ -31,19 +31,19 @@
 
 #include <algorithm>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CFunctionDB.h"
 #include "CFunction.h"
 #include "FunctionDB.xml.h"
 
-#include "utilities/CCopasiException.h"
-#include "utilities/CDirEntry.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/CDirEntry.h"
 #include "copasi/core/CDataObjectReference.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
-#include "report/CKeyFactory.h"
-#include "xml/CCopasiXML.h"
-#include "model/CModel.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/xml/CCopasiXML.h"
+#include "copasi/model/CModel.h"
 
 CFunctionDB::CFunctionDB(const std::string & name,
                          const CDataContainer * pParent):

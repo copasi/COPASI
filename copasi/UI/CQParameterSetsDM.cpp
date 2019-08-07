@@ -19,10 +19,10 @@
 #include "CQParameterSetsDM.h"
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModel.h"
-#include "model/CModelParameterSet.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CModelParameterSet.h"
 
 CQParameterSetsDM::CQParameterSetsDM(QObject *parent) :
   CQBaseDataModel(parent, NULL),

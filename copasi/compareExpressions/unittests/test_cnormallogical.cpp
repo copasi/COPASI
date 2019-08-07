@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,7 +26,7 @@
 #include "compareExpressions/CNormalLogicalItem.h"
 #include "compareExpressions/CNormalChoiceLogical.h"
 #include "compareExpressions/CNormalFraction.h"
-#include "function/CEvaluationTree.h"
+#include "copasi/function/CEvaluationTree.h"
 #include "compareExpressions/CNormalTranslation.h"
 #include "compareExpressions/CNormalSum.h"
 #include "compareExpressions/CNormalItemPower.h"

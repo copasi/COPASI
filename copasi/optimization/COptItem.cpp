@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,18 +28,18 @@
 #include <sstream>
 #include <stdlib.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "COptItem.h"
 
-#include "math/CMathObject.h"
-#include "randomGenerator/CRandom.h"
+#include "copasi/math/CMathObject.h"
+#include "copasi/randomGenerator/CRandom.h"
 #include "copasi/core/CDataContainer.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "core/CRegisteredCommonName.h"
-#include "utilities/CCopasiParameterGroup.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/utility.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRegisteredCommonName.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/utility.h"
 
 C_FLOAT64 NaN = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 

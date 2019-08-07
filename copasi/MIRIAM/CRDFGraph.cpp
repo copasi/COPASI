@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,11 +26,11 @@
 #include <fstream>
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "model/CReaction.h"
-#include "function/CFunction.h"
-#include "utilities/CCopasiMessage.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/utilities/CCopasiMessage.h"
 
 #include "CRDFGraph.h"
 #include "CRDFSubject.h"
@@ -284,7 +289,7 @@ bool CRDFGraph::removeTriplet(CRDFNode * pSubject,
                               CRDFNode * pObject)
 { return pSubject->removeEdge(predicate, pObject);}
 
-bool 
+bool
 CRDFGraph::removeTriplet(const CRDFTriplet & triplet)
 {
   if (!triplet)
@@ -558,15 +563,15 @@ bool CRDFGraph::removeEmptyNodes()
 
       for (; itTriplet != endTriplet; ++itTriplet)
         {
-        deletedSomething |= itTriplet->pSubject->removeEdge(itTriplet->Predicate,
-                                          itTriplet->pObject);
+          deletedSomething |= itTriplet->pSubject->removeEdge(itTriplet->Predicate,
+                              itTriplet->pObject);
         }
     }
 
   if (ToBeRemoved.size() > 0 && !deletedSomething)
-  {
-    CCopasiMessage(CCopasiMessage::WARNING_FILTERED, "Failure in removing empty elements from converting RDF node.");
-  }
+    {
+      CCopasiMessage(CCopasiMessage::WARNING_FILTERED, "Failure in removing empty elements from converting RDF node.");
+    }
 
   return ToBeRemoved.size() > 0 && deletedSomething;
 }

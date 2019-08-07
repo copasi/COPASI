@@ -8,11 +8,11 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "COptMethodNL2SOL.h"
 #include "COptProblem.h"
-#include "parameterFitting/CFitProblem.h"
+#include "copasi/parameterFitting/CFitProblem.h"
 #include "COptItem.h"
 #include "COptTask.h"
 #include "FminBrent.h"

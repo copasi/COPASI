@@ -30,21 +30,21 @@
  *  Created for COPASI by Stefan Hoops 2003
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CCopasiTask.h"
 #include "CCopasiProblem.h"
 #include "CCopasiMethod.h"
 #include "CTaskFactory.h"
-#include "report/CReport.h"
-#include "report/CKeyFactory.h"
-#include "output/COutputHandler.h"
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "model/CState.h"
+#include "copasi/report/CReport.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/output/COutputHandler.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CState.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "core/CDataTimer.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CDataTimer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CReportDefinition.h"
 

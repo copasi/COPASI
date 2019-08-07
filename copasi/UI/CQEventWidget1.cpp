@@ -28,18 +28,18 @@
 #include <vector>
 #include <string.h>
 
-#include "UI/qtUtilities.h"
+#include "copasi/UI/qtUtilities.h"
 
 #include "CQMessageBox.h"
 #include "CCopasiSelectionDialog.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
-#include "CopasiDataModel/CDataModel.h"
-#include "model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
 
-#include "model/CEvent.h"
-#include "report/CKeyFactory.h"
-#include "utilities/CCopasiMessage.h"
+#include "copasi/model/CEvent.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/core/CRootContainer.h"
 
 /*

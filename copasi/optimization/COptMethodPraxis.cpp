@@ -22,14 +22,14 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "COptMethodPraxis.h"
 #include "COptProblem.h"
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "parameterFitting/CFitProblem.h"
+#include "copasi/parameterFitting/CFitProblem.h"
 #include "copasi/core/CDataObjectReference.h"
 
 COptMethodPraxis::COptMethodPraxis(const CDataContainer * pParent,

@@ -32,14 +32,14 @@
 
 #include <string>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "utilities/CCopasiParameter.h"
+#include "copasi/utilities/CCopasiParameter.h"
 
 #include "copasi/undo/CData.h"
-#include "utilities/CCopasiParameterGroup.h"
-#include "utilities/CCopasiMessage.h"
-#include "report/CKeyFactory.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CDataObjectReference.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/undo/CUndoData.h"

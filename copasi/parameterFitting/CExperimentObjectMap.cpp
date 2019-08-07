@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,13 +27,13 @@
 #include <cmath>
 #include <stdlib.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CExperimentObjectMap.h"
 
-#include "math/CMathContainer.h"
-#include "utilities/utility.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 CExperimentObjectMap::CExperimentObjectMap(const std::string & name,
     const CDataContainer * pParent):

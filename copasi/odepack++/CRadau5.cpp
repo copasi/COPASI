@@ -16,7 +16,7 @@
  */
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CRadau5.h"
 #include "Cxerrwd.h"

@@ -24,14 +24,14 @@
 
 #include <QLayout>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CMCAResultWidget.h"
 #include "CMCAResultSubwidget.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "steadystate/CMCATask.h"
-#include "steadystate/CMCAMethod.h"
+#include "copasi/steadystate/CMCATask.h"
+#include "copasi/steadystate/CMCAMethod.h"
 #include "qtUtilities.h"
 #include "copasi/core/CDataVector.h"
 

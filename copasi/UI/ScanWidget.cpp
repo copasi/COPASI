@@ -37,13 +37,13 @@
 
 #include <QInputDialog>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "ScanWidget.h"
-#include "scan/CScanTask.h"
-#include "scan/CScanProblem.h"
-#include "scan/CScanMethod.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/scan/CScanTask.h"
+#include "copasi/scan/CScanProblem.h"
+#include "copasi/scan/CScanMethod.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 
 #include "CQTaskHeaderWidget.h"
@@ -51,10 +51,10 @@
 #include "CQSimpleSelectionTree.h"
 #include "CCopasiSelectionDialog.h"
 
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 #include "qtUtilities.h"
 #include "CScanContainerWidget.h"
-#include "utilities/CopasiTime.h"
+#include "copasi/utilities/CopasiTime.h"
 
 //+++
 //#include "CScanWidgetBreak.h"
@@ -176,7 +176,7 @@ bool ScanWidget::loadTaskProtected()
 
       switch (type)
         {
-          //+++
+            //+++
           case CScanProblem::SCAN_LINEAR:
             tmp1 = new CScanWidgetScan(scrollview);
             tmp1->load(scanProblem->getScanItem(i));

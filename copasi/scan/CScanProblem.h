@@ -31,9 +31,9 @@
 
 #include <string>
 
-#include "utilities/CCopasiProblem.h"
-#include "utilities/CReadConfig.h"
-//#include "model/CState.h"
+#include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/utilities/CReadConfig.h"
+//#include "copasi/model/CState.h"
 
 //class CModel;
 

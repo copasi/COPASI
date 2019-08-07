@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -22,11 +27,11 @@
 
 #include <vector>
 #include <string>
-#include "copasi.h"
-//#include "model/CChemEq.h"
-#include "model/CReaction.h"
-#include "model/CChemEqInterface.h"
-#include "function/CFunction.h"
+#include "copasi/copasi.h"
+//#include "copasi/model/CChemEq.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CChemEqInterface.h"
+#include "copasi/function/CFunction.h"
 
 //class CFunction;
 class CModel;

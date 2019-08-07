@@ -22,23 +22,23 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CQSensResultWidget.h"
 
 #include <QMessageBox>
 
 #include "qtUtilities.h"
-#include "sensitivities/CSensTask.h"
-#include "sensitivities/CSensProblem.h"
+#include "copasi/sensitivities/CSensTask.h"
+#include "copasi/sensitivities/CSensProblem.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/core/CDataVector.h"
 
-#include "UI/CopasiFileDialog.h"
-#include "sensitivities/CSensTask.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/UI/CopasiFileDialog.h"
+#include "copasi/sensitivities/CSensTask.h"
+#include "copasi/commandline/CLocaleString.h"
 
 /*
  *  Constructs a CQSensResultWidget which is a child of 'parent', with the

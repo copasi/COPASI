@@ -15,7 +15,7 @@
 
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "copasi/utilities/CUnitComponent.h"
 
 CUnitComponent::CUnitComponent(CBaseUnit::Kind kind,

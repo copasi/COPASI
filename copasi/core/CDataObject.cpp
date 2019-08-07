@@ -22,7 +22,7 @@
 #include <algorithm>
 
 #include "copasi/CopasiDataModel/CDataModel.h"
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "copasi/core/CDataContainer.h"
 #include "copasi/core/CRegisteredCommonName.h"

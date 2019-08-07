@@ -32,21 +32,21 @@
 #include <string>
 #include <cmath>
 
-#include "copasi.h"
-#include "model/CModel.h"
-#include "model/CState.h"
-#include "utilities/CReadConfig.h"
-#include "randomGenerator/CRandom.h"
-//#include "utilities/CWriteConfig.h"
+#include "copasi/copasi.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CState.h"
+#include "copasi/utilities/CReadConfig.h"
+#include "copasi/randomGenerator/CRandom.h"
+//#include "copasi/utilities/CWriteConfig.h"
 #include "CScanProblem.h"
 #include "CScanMethod.h"
 #include "CScanTask.h"
 
-#include "math/CMathContainer.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CParameterEstimationUtils.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CParameterEstimationUtils.h"
 #include <copasi/utilities/CCopasiException.h>
 
 // Uncomment this line below to get debug print out.

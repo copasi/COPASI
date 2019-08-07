@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,14 +22,14 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CObjectLists.h"
 #include "copasi/core/CDataObject.h"
-#include "model/CModel.h"
-#include "report/CKeyFactory.h"
+#include "copasi/model/CModel.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
-#include "core/CDataArray.h"
+#include "copasi/core/CDataArray.h"
 
 //static
 const std::string CObjectLists::ListTypeName[] =
@@ -134,7 +139,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case SINGLE_OBJECT:
         break;
 
-      // Metabolites
+        // Metabolites
       case METABS:
 
         for (; itMetab != endMetab; ++itMetab)
@@ -281,7 +286,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
 
         break;
 
-      // reactions
+        // reactions
       case REACTIONS:
 
         for (; itReaction != endReaction; ++itReaction)
@@ -303,7 +308,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
 
         break;
 
-      // global quantities
+        // global quantities
       case GLOBAL_PARAMETERS:
 
         for (; itValue != endValue; ++itValue)
@@ -367,7 +372,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
 
         break;
 
-      // compartments
+        // compartments
       case COMPARTMENTS:
 
         for (; itComp != endComp; ++itComp)

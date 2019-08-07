@@ -34,17 +34,17 @@
 #include <limits>
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CCopasiXMLInterface.h"
-#include "model/CModel.h"
-#include "report/CReportDefinition.h"
-#include "report/CReportDefinitionVector.h"
-#include "plot/COutputDefinitionVector.h"
-#include "plot/CPlotSpecification.h"
+#include "copasi/model/CModel.h"
+#include "copasi/report/CReportDefinition.h"
+#include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/plot/COutputDefinitionVector.h"
+#include "copasi/plot/CPlotSpecification.h"
 #include "copasi/core/CDataVector.h"
-#include "utilities/CSlider.h"
-#include "utilities/CDirEntry.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/utilities/CSlider.h"
+#include "copasi/utilities/CDirEntry.h"
+#include "copasi/commandline/CLocaleString.h"
 
 SCopasiXMLGUI::SCopasiXMLGUI(const std::string & name,
                              const CDataContainer * pParent,

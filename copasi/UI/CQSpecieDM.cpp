@@ -20,19 +20,19 @@
 
 #include <QtCore/QString>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CChemEqInterface.h"
-#include "model/CModel.h"
-#include "function/CExpression.h"
+#include "copasi/model/CChemEqInterface.h"
+#include "copasi/model/CModel.h"
+#include "copasi/function/CExpression.h"
 
 #include "CQMessageBox.h"
 #include "CQSpecieDM.h"
 #include "qtUtilities.h"
 
-#include "model/CReaction.h"
-#include "model/CMetab.h"
-#include "model/CReactionInterface.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CReactionInterface.h"
 #include "copasi/undo/CUndoData.h"
 
 CQSpecieDM::CQSpecieDM(QObject *parent):

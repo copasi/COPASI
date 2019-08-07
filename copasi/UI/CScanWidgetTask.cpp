@@ -29,11 +29,11 @@
 #include "CScanWidgetTask.h"
 #include "CCopasiSelectionDialog.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "utilities/CCopasiParameterGroup.h"
-#include "core/CRegisteredCommonName.h"
-#include "scan/CScanProblem.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/core/CRegisteredCommonName.h"
+#include "copasi/scan/CScanProblem.h"
 
 /*
  *  Constructs a CScanWidgetTask as a child of 'parent', with the

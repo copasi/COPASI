@@ -14,14 +14,14 @@
 // All rights reserved.
 
 #include <QGridLayout>
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CLNAResultWidget.h"
 #include "CLNAResultSubwidget.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "lna/CLNATask.h"
-#include "lna/CLNAMethod.h"
+#include "copasi/lna/CLNATask.h"
+#include "copasi/lna/CLNAMethod.h"
 #include "qtUtilities.h"
 #include "copasi/core/CDataVector.h"
 

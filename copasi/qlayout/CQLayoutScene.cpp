@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,7 +22,7 @@
 #include <QImage>
 #include <QGraphicsEffect>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qlayout/CQLayoutScene.h"
 #include "qlayout/CQCopasiEffect.h"
@@ -25,16 +30,16 @@
 #include "qlayout/CQStyledGraphicsItem.h"
 #include "qlayout/CQConnectionGraphicsItem.h"
 #include "qlayout/CQRenderConverter.h"
-#include "layout/CLayout.h"
-#include "layout/CLGlyphs.h"
-#include "layout/CLText.h"
-#include "layout/CLReactionGlyph.h"
-#include "layout/CLRenderResolver.h"
-#include "layout/CLGlobalRenderInformation.h"
-#include "layout/CListOfLayouts.h"
-#include "layout/CLLocalRenderInformation.h"
-#include "layout/CLDefaultStyles.h"
-#include "layout/CCopasiSpringLayout.h"
+#include "copasi/layout/CLayout.h"
+#include "copasi/layout/CLGlyphs.h"
+#include "copasi/layout/CLText.h"
+#include "copasi/layout/CLReactionGlyph.h"
+#include "copasi/layout/CLRenderResolver.h"
+#include "copasi/layout/CLGlobalRenderInformation.h"
+#include "copasi/layout/CListOfLayouts.h"
+#include "copasi/layout/CLLocalRenderInformation.h"
+#include "copasi/layout/CLDefaultStyles.h"
+#include "copasi/layout/CCopasiSpringLayout.h"
 
 #include <copasi/model/CModel.h>
 #include <copasi/model/CCompartment.h>
@@ -43,7 +48,7 @@
 #include <copasi/model/CChemEq.h>
 #include <copasi/utilities/CVersion.h>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 

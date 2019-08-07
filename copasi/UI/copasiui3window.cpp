@@ -65,26 +65,26 @@
 #include "copasi/UI/CQTabWidget.h"
 #include "copasiWidget.h"
 #include "TaskWidget.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/CDirEntry.h"
-#include "model/CModel.h"
-#include "commandline/COptionParser.h"
-#include "commandline/COptions.h"
-#include "commandline/CConfigurationFile.h"
-#include "commandline/CLocaleString.h"
-#include "wizard/wizard.h"
-#include "sbml/SBMLIncompatibility.h"
-#include "MIRIAM/CConstants.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/CDirEntry.h"
+#include "copasi/model/CModel.h"
+#include "copasi/commandline/COptionParser.h"
+#include "copasi/commandline/COptions.h"
+#include "copasi/commandline/CConfigurationFile.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/wizard/wizard.h"
+#include "copasi/sbml/SBMLIncompatibility.h"
+#include "copasi/MIRIAM/CConstants.h"
 #include "copasi/utilities/CVersion.h"
-#include "model/CModelExpansion.h"
+#include "copasi/model/CModelExpansion.h"
 #include "copasi/UI/CQCheckModelWindow.h"
 #include <copasi/UI/CQBrowserPane.h>
 
-#include "model/CModelExpansion.h"
+#include "copasi/model/CModelExpansion.h"
 
 #include <UI/CWindowInterface.h>
 
@@ -2467,7 +2467,7 @@ const bool &CopasiUI3Window::messageShown() const
   return mMessageShown;
 }
 
-#include "model/CModelAnalyzer.h"
+#include "copasi/model/CModelAnalyzer.h"
 void CopasiUI3Window::slotCheckModel()
 {
   assert(mpDataModel != NULL);
@@ -2662,7 +2662,7 @@ void CopasiUI3Window::slotAutoCheckForUpdates()
   slotCheckForUpdate();
 }
 
-#include "UI/CQExpandModelData.h"
+#include "copasi/UI/CQExpandModelData.h"
 void CopasiUI3Window::slotExpandModel()
 {
   CQExpandModelData *widget = new CQExpandModelData(this, mpDataModel->getModel());
@@ -2670,7 +2670,7 @@ void CopasiUI3Window::slotExpandModel()
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, std::string());
 }
 
-#include "UI/CQMergingData.h"
+#include "copasi/UI/CQMergingData.h"
 
 void CopasiUI3Window::slotMergeModels()
 {
@@ -3826,7 +3826,7 @@ void CopasiUI3Window::removeReportTargets()
   auto& taskList = *mpDataModel->getTaskList();
   std::stringstream str;
 
-  for (auto & task : taskList)
+for (auto & task : taskList)
     {
       std::string target = task.getReport().getTarget();
 

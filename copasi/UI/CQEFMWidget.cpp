@@ -31,10 +31,10 @@
 #include "CQMessageBox.h"
 #include "CQEFMResultWidget.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "elementaryFluxModes/CEFMMethod.h"
-#include "elementaryFluxModes/CEFMTask.h"
+#include "copasi/elementaryFluxModes/CEFMMethod.h"
+#include "copasi/elementaryFluxModes/CEFMTask.h"
 
 /*
  *  Constructs a CQEFMWidget which is a child of 'parent', with the

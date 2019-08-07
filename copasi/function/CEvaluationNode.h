@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,8 +29,8 @@
 #include <vector>
 #include <map>
 
-#include "copasi.h"
-#include "utilities/CCopasiNode.h"
+#include "copasi/copasi.h"
+#include "copasi/utilities/CCopasiNode.h"
 #include "CFunctionAnalyzer.h"
 #include "copasi/core/CEnumAnnotation.h"
 

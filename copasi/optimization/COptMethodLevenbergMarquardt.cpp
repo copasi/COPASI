@@ -28,13 +28,13 @@
 #include <cmath>
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "COptMethodLevenbergMarquardt.h"
 #include "COptProblem.h"
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "parameterFitting/CFitProblem.h"
+#include "copasi/parameterFitting/CFitProblem.h"
 #include "copasi/core/CDataObjectReference.h"
 
 #include "lapack/lapackwrap.h"

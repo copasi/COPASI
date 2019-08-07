@@ -25,10 +25,10 @@
 #include "CQPreferenceDialog.h"
 #include "CQMessageBox.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "qtUtilities.h"
 
-#include "commandline/CConfigurationFile.h"
+#include "copasi/commandline/CConfigurationFile.h"
 #include "copasi/core/CRootContainer.h"
 
 #include <copasi/MIRIAM/CConstants.h>

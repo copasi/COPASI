@@ -10,7 +10,7 @@
 
 %{
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 %}
 

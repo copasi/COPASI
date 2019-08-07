@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,7 +31,7 @@
  *  Created for COPASI by Stefan Hoops 2002
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "copasi/core/CDataVector.h"
 #include "CSteadyStateMethod.h"
@@ -34,8 +39,8 @@
 #include "CSteadyStateTask.h"
 #include "CEigen.h"
 
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
 
 /**
  *  Default constructor.
@@ -219,7 +224,7 @@ bool CSteadyStateMethod::allPositive()
 
             break;
 
-          // No restrictions on other values
+            // No restrictions on other values
           default:
             break;
         }

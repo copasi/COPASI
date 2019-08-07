@@ -37,9 +37,9 @@
 #include <vector>
 
 #include "copasi/core/CDataObject.h"
-#include "core/CRegisteredCommonName.h"
-#include "core/CDataString.h"
-#include "utilities/CCopasiTask.h"
+#include "copasi/core/CRegisteredCommonName.h"
+#include "copasi/core/CDataString.h"
+#include "copasi/utilities/CCopasiTask.h"
 
 class CReportDefinition;
 class CComment;

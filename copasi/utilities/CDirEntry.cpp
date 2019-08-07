@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -43,17 +48,17 @@ typedef struct stat STAT;
 # include <unistd.h>
 #endif // WIN32
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CDirEntry.h"
 #include "utility.h"
 #include "CCopasiMessage.h"
 
-#include "randomGenerator/CRandom.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/commandline/CLocaleString.h"
 
 #ifdef WIN32
-# include "commandline/COptions.h"
+# include "copasi/commandline/COptions.h"
 const std::string CDirEntry::Separator = "\\";
 #else
 const std::string CDirEntry::Separator = "/";

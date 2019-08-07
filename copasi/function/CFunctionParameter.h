@@ -35,7 +35,7 @@
 #include <string>
 #include <iostream>
 
-#include "utilities/CReadConfig.h"
+#include "copasi/utilities/CReadConfig.h"
 #include "copasi/core/CDataContainer.h"
 
 /** @dia:pos 15.1888,24.6765 */

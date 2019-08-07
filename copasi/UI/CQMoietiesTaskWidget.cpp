@@ -23,10 +23,10 @@
 
 #include "CQMoietiesTaskWidget.h"
 
-#include "UI/CQTaskBtnWidget.h"
-#include "UI/CQTaskHeaderWidget.h"
+#include "copasi/UI/CQTaskBtnWidget.h"
+#include "copasi/UI/CQTaskHeaderWidget.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "moieties/CMoietiesMethod.h"
 #include "moieties/CMoietiesTask.h"

@@ -29,21 +29,21 @@
 #include "CReportDefinition.h"
 #include "CReportDefinitionVector.h"
 
-#include "utilities/CCopasiProblem.h"
-#include "utilities/CCopasiTask.h"
-#include "trajectory/CTrajectoryProblem.h"
-#include "steadystate/CSteadyStateProblem.h"
-#include "math/CMathContainer.h"
-#include "model/CObjectLists.h"
-#include "model/CModel.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
+#include "copasi/steadystate/CSteadyStateProblem.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CObjectLists.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "plot/COutputDefinitionVector.h"
-#include "plot/CPlotColors.h"
-#include "parameterFitting/CFitProblem.h"
-#include "parameterFitting/CExperimentSet.h"
-#include "parameterFitting/CExperiment.h"
-#include "scan/CScanProblem.h"
+#include "copasi/plot/COutputDefinitionVector.h"
+#include "copasi/plot/CPlotColors.h"
+#include "copasi/parameterFitting/CFitProblem.h"
+#include "copasi/parameterFitting/CExperimentSet.h"
+#include "copasi/parameterFitting/CExperiment.h"
+#include "copasi/scan/CScanProblem.h"
 
 #include <core/CDataArray.h>
 
@@ -1547,7 +1547,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
   return NULL;
 }
 
-#include "plot/COutputDefinitionVector.h"
+#include "copasi/plot/COutputDefinitionVector.h"
 
 //static
 CPlotSpecification* COutputAssistant::createPlot(const std::string & name,

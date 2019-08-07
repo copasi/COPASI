@@ -35,7 +35,7 @@ email                : rluktuke@vt.edu
  * class is inherited from the COptAlgorithm class
  ***************************************************************************/
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "COptMethod.h"
 #include "COptProblem.h"
@@ -44,9 +44,9 @@ email                : rluktuke@vt.edu
 
 #include "CRandomSearch.h"
 
-#include "math/CMathContainer.h"
+#include "copasi/math/CMathContainer.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CRandom.h"
 
 CRandomSearch::CRandomSearch(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,

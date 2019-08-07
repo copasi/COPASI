@@ -20,7 +20,7 @@
 #include "qtUtilities.h"
 #include <QSortFilterProxyModel>
 
-#include "trajectory/CTrajectoryTask.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
 #include "crosssection/CCrossSectionTask.h"
 
 #ifdef WITH_TIME_SENS

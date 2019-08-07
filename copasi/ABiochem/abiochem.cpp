@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,7 +31,7 @@
 
 #define COPASI_MAIN // needed for anything with a main()
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include <iostream>
 #include <fstream>
@@ -43,16 +48,16 @@
 // #include "tnt/tnt.h"
 // #include "tnt/cmat.h"
 
-#include "utilities/readwrite.h"
-#include "elementaryFluxModes/CElementaryFluxModes.h"
-#include "model/model.h"
-#include "model/CSpec2Model.h"
-#include "output/output.h"
-#include "function/CFunctionDB.h"
-// #include "trajectory/trajectory.h"
-#include "steadystate/CEigen.h"
-#include "utilities/CGlobals.h"
-#include "utilities/CMethodParameter.h"
+#include "copasi/utilities/readwrite.h"
+#include "copasi/elementaryFluxModes/CElementaryFluxModes.h"
+#include "copasi/model/model.h"
+#include "copasi/model/CSpec2Model.h"
+#include "copasi/output/output.h"
+#include "copasi/function/CFunctionDB.h"
+// #include "copasi/trajectory/trajectory.h"
+#include "copasi/steadystate/CEigen.h"
+#include "copasi/utilities/CGlobals.h"
+#include "copasi/utilities/CMethodParameter.h"
 #include "ABiochem/clo.h"
 #include "ABiochem/CGene.h"
 #include "ABiochem/ABiochem.h"

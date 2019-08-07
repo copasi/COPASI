@@ -40,7 +40,7 @@
 
 #include "icons/copasi_beta_background.xpm"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 const char *AboutDialog::text =
   "<h2>COPASI %1</h2>"

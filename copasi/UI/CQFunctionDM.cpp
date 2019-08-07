@@ -24,14 +24,14 @@
 #include "CQMessageBox.h"
 #include "CQFunctionDM.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "function/CFunctionDB.h"
-#include "model/CModel.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/model/CModel.h"
 
 CQFunctionDM::CQFunctionDM(QObject *parent, CDataModel * pDataModel)
   : CQBaseDataModel(parent, pDataModel)

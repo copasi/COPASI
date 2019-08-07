@@ -20,11 +20,11 @@
 
 #include <QtCore/QString>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "report/CKeyFactory.h"
-#include "function/CExpression.h"
-#include "model/CModel.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/model/CModel.h"
 
 #include "CQMessageBox.h"
 #include "CQEventDM.h"

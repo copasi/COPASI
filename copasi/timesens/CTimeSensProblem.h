@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -14,7 +19,7 @@
 
 #include <string>
 
-#include "trajectory/CTrajectoryProblem.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
 #include "copasi/core/CDataArray.h"
 
 class CTimeSensProblem : public CTrajectoryProblem
@@ -52,7 +57,7 @@ public:
   virtual bool elevateChildren();
 
   // handling the parameters for which sensitivities are to be calculated:
-  
+
   size_t getNumParameters();
 
   void addParameterCN(const CCommonName& cn);

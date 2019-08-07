@@ -18,7 +18,7 @@
 
 #include <vector>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "copasi/model/CModelParameter.h"
 

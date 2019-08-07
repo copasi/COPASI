@@ -25,20 +25,20 @@
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
 
-#include "model/CReaction.h"
-#include "model/CMetab.h"
-#include "model/CReactionInterface.h"
-#include "model/CEvent.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/model/CEvent.h"
 
-#include "UI/CQCopasiApplication.h"
+#include "copasi/UI/CQCopasiApplication.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CCompartment.h"
-#include "model/CModel.h"
-#include "function/CExpression.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CModel.h"
+#include "copasi/function/CExpression.h"
 #include "copasi/undo/CUndoData.h"
 
 CQCompartmentDM::CQCompartmentDM(QObject *parent)

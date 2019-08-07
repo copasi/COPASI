@@ -33,7 +33,7 @@
 
 %{
 
-#include "core/CVector.h"
+#include "copasi/core/CVector.h"
 
 %}
 

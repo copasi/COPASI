@@ -24,16 +24,16 @@
 #include <QClipboard>
 #include <QKeyEvent>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
 
-#include "model/CModel.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "plot/COutputDefinitionVector.h"
-#include "plot/CPlotSpecification.h"
+#include "copasi/plot/COutputDefinitionVector.h"
+#include "copasi/plot/CPlotSpecification.h"
 
 /*
  *  Constructs a CQPlotsWidget which is a child of 'parent', with the

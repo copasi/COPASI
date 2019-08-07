@@ -15,17 +15,17 @@
 
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CMathObject.h"
 #include "CMathExpression.h"
 #include "CMathContainer.h"
 
-#include "model/CMetab.h"
-#include "model/CCompartment.h"
-#include "model/CModel.h"
-#include "function/CExpression.h"
-#include "utilities/utility.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CModel.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/utilities/utility.h"
 // static
 C_FLOAT64 CMathObject::InvalidValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 

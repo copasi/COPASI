@@ -26,15 +26,15 @@
 #include <QButtonGroup>
 
 #include "wizard.h"
-#include "UI/CQMessageBox.h"
-#include "UI/listviews.h"
-#include "UI/copasiui3window.h"
+#include "copasi/UI/CQMessageBox.h"
+#include "copasi/UI/listviews.h"
+#include "copasi/UI/copasiui3window.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "commandline/COptions.h"
+#include "copasi/commandline/COptions.h"
 
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
 #include <iostream>
 

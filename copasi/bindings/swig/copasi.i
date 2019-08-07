@@ -85,7 +85,7 @@
 %{
 
 #define COPASI_MAIN
-#include "copasi.h"
+#include "copasi/copasi.h"
 #undef COPASI_MAIN
 
 #include "local.cpp"

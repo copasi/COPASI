@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -18,21 +23,21 @@
 #include <sstream>
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include <model/CEvent.h>
 
 #include "CCrossSectionTask.h"
 #include "CCrossSectionProblem.h"
 //#include "CCrossSectionMethod.h"
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "model/CState.h"
-#include "report/CKeyFactory.h"
-#include "report/CReport.h"
-#include "utilities/CProcessReport.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/CCallback.h"
-#include  "CopasiDataModel/CDataModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CState.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/report/CReport.h"
+#include "copasi/utilities/CProcessReport.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/CCallback.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 CCrossSectionTask::CCrossSectionTask(const CDataContainer * pParent,
                                      const CTaskEnum::Task & type):

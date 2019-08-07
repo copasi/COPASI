@@ -24,15 +24,15 @@
 #include <QClipboard>
 #include <QKeyEvent>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
 
-#include "model/CModel.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "function/CFunctionDB.h"
+#include "copasi/function/CFunctionDB.h"
 
 /*
  *  Constructs a CQFunctionsWidget which is a child of 'parent', with the

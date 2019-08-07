@@ -23,9 +23,9 @@
 #include "CModelExpansion.h"
 
 #include "CModel.h"
-#include "function/CExpression.h"
+#include "copasi/function/CExpression.h"
 #include "copasi/core/CDataObject.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/undo/CUndoData.h"
 

@@ -32,12 +32,12 @@
 
 #include <string>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CSteadyStateProblem.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModel.h"
+#include "copasi/model/CModel.h"
 
 /**
  *  Default constructor.

@@ -35,14 +35,14 @@
 //
 //
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CMetabNameInterface.h"
 #include "CModel.h"
 #include "CChemEqParser.h"
 
 #include "copasi/core/CDataContainer.h"
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
 
 std::string

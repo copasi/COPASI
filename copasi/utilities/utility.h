@@ -30,7 +30,7 @@
 #include <string.h>
 // #include <stdio.h>
 #include <stdarg.h>
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #define INITIALTEXTSIZE 1024
 

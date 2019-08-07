@@ -32,8 +32,8 @@
 
 #include "CLGraphicalObject.h"
 
-#include "report/CKeyFactory.h"
-#include "sbml/CSBMLExporter.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/sbml/CSBMLExporter.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
@@ -211,8 +211,8 @@ void CLGraphicalObject::print(std::ostream * ostream) const
 {*ostream << *this;}
 
 #/**
- * Method to set the role of a graphical object.
- */
+* Method to set the role of a graphical object.
+*/
 void CLGraphicalObject::setObjectRole(const std::string& role)
 {
   this->mObjectRole = role;

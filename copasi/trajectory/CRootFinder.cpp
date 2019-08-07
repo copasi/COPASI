@@ -16,7 +16,7 @@
 #include <cmath>
 
 #include "CRootFinder.h"
-#include "math/CMathEnum.h"
+#include "copasi/math/CMathEnum.h"
 
 CRootFinder::CRootFinder():
   mRelativeTolerance(1e-6),

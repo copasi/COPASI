@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -11,7 +16,7 @@
 #include <stdlib.h>
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CBitPatternMethod.h"
 #include "CEFMProblem.h"
@@ -19,10 +24,10 @@
 #include "CStepMatrix.h"
 #include "CBitPatternTree.h"
 
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "model/CChemEqInterface.h"
-#include "utilities/CProcessReport.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CChemEqInterface.h"
+#include "copasi/utilities/CProcessReport.h"
 #include "copasi/core/CDataObjectReference.h"
 
 #include "lapack/blaswrap.h"

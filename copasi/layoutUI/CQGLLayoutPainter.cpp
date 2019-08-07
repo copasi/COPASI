@@ -20,7 +20,7 @@
 #endif
 
 // SBML includes
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "copasi/model/CModel.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
@@ -81,7 +81,7 @@
 #undef CursorShape
 #endif // __APPLE__
 
-#include "UI/CQMessageBox.h"
+#include "copasi/UI/CQMessageBox.h"
 
 // check that the OpenGL extensions we plan to use are at least defined so that we have the necessary enumerations
 #if !defined(GL_EXT_framebuffer_object) || !defined(GL_EXT_framebuffer_multisample)

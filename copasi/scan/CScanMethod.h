@@ -32,10 +32,10 @@
 
 #include <string>
 
-#include "utilities/CCopasiMethod.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "report/CReport.h"
+#include "copasi/utilities/CCopasiMethod.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/report/CReport.h"
 
 class CScanProblem;
 class CScanTask;

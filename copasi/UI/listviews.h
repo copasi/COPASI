@@ -34,7 +34,7 @@
 #include <QTreeView>
 #include <QStackedWidget>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 class CQTabWidget;
 class CQBrowserPane;

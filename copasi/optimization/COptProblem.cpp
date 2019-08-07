@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -32,31 +37,31 @@
  */
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "COptTask.h"
 #include "COptProblem.h"
 #include "COptItem.h"
 
-#include "function/CFunctionDB.h"
+#include "copasi/function/CFunctionDB.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 
-#include "steadystate/CSteadyStateTask.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "steadystate/CSteadyStateProblem.h"
-#include "trajectory/CTrajectoryProblem.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/steadystate/CSteadyStateProblem.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
 
-#include "math/CMathContainer.h"
-#include "math/CMathExpression.h"
-#include "model/CModel.h"
-#include "model/CCompartment.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/math/CMathExpression.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CCompartment.h"
 
 #include "copasi/core/CDataObjectReference.h"
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 
-#include "utilities/CProcessReport.h"
-#include "utilities/CCopasiException.h"
+#include "copasi/utilities/CProcessReport.h"
+#include "copasi/utilities/CCopasiException.h"
 
 // static
 const CTaskEnum::Task COptProblem::ValidSubtasks[] =

@@ -26,9 +26,9 @@
 #define COPASI_CSlider
 
 #include "copasi/core/CDataContainer.h"
-#include "core/CRegisteredCommonName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 
-#include "math/CMathUpdateSequence.h"
+#include "copasi/math/CMathUpdateSequence.h"
 
 class CSlider : public CDataContainer
 {

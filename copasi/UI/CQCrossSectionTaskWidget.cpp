@@ -26,18 +26,18 @@
 #include "CQMessageBox.h"
 #include "CQValidator.h"
 
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "DataModelGUI.h"
 #include "qtUtilities.h"
 #include "CCopasiSelectionDialog.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModel.h"
-#include "utilities/CCopasiException.h"
+#include "copasi/model/CModel.h"
+#include "copasi/utilities/CCopasiException.h"
 
 #include "crosssection/CCrossSectionTask.h"
 #include "crosssection/CCrossSectionProblem.h"

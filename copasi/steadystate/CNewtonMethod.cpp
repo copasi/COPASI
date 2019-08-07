@@ -25,23 +25,23 @@
 #include <algorithm>
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CSteadyStateMethod.h"
 #include "CSteadyStateProblem.h"
 #include "CSteadyStateTask.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "model/CCompartment.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "trajectory/CTrajectoryProblem.h"
-//#include "trajectory/CTrajectoryMethod.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/utility.h"
-#include "utilities/CProcessReport.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
+//#include "copasi/trajectory/CTrajectoryMethod.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/utilities/CProcessReport.h"
 
 #include "lapack/lapackwrap.h"
 #include "lapack/blaswrap.h"
@@ -201,7 +201,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
   C_FLOAT64 maxDuration = forward ? mMaxDurationForward : -mMaxDurationBackward;
   //minimum duration is either hardcoded or equal to maximum duration, whichever is smaller.
   C_FLOAT64 minDuration = forward ? (mMaxDurationForward < 1e-1 ? mMaxDurationForward : 1e-1)
-                          : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
+                            : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
 
   //progress bar
   size_t hProcess;

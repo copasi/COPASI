@@ -34,7 +34,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "utility.h"
 #include "CCopasiMessage.h"

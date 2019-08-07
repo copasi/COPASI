@@ -24,16 +24,16 @@
 
 #include <QFileDialog>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CopasiFileDialog.h"
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
 
-#include "commandline/COptions.h"
-#include "utilities/CDirEntry.h"
+#include "copasi/commandline/COptions.h"
+#include "copasi/utilities/CDirEntry.h"
 #include "copasi/core/CRootContainer.h"
-#include "commandline/CConfigurationFile.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 #ifdef DEBUG_UI
 #include <QtCore/QtDebug>

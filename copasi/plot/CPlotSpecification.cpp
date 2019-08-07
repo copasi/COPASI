@@ -26,7 +26,7 @@
 
 #include "CPlotSpecification.h"
 
-#include "model/CModel.h"
+#include "copasi/model/CModel.h"
 #include "copasi/core/CDataObjectReference.h"
 
 // static

@@ -34,28 +34,28 @@
 
 #define COPASI_MAIN
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/model/CModel.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/CCopasiTask.h"
-#include "utilities/CCopasiProblem.h"
-#include "commandline/COptionParser.h"
-#include "commandline/COptions.h"
-#include "function/CFunctionDB.h"
-#include "function/CEvaluationTree.h"
-#include "function/CFunction.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/commandline/COptionParser.h"
+#include "copasi/commandline/COptions.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/function/CEvaluationTree.h"
+#include "copasi/function/CFunction.h"
 
-#include "randomGenerator/CRandom.h"
-#include "core/CDataTimer.h"
-#include "report/CKeyFactory.h"
-#include "utilities/CVersion.h"
-#include "utilities/CDirEntry.h"
-#include "utilities/CSparseMatrix.h"
-#include "utilities/CProcessReport.h"
+#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/core/CDataTimer.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/CVersion.h"
+#include "copasi/utilities/CDirEntry.h"
+#include "copasi/utilities/CSparseMatrix.h"
+#include "copasi/utilities/CProcessReport.h"
 
 #define OPERATION_FAILED 1
 #define NO_EXPORT_REQUESTED 2

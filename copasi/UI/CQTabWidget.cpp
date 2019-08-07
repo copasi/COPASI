@@ -24,21 +24,21 @@
 #include "MIRIAMUI/CQMiriamWidget.h"
 #include "MIRIAMUI/CQRDFTreeView.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "function/CFunction.h"
+#include "copasi/function/CFunction.h"
 #include "copasi/model/CMetab.h"
-#include "UI/CQCompartment.h"
-#include "UI/CQSpeciesDetail.h"
-#include "UI/ReactionsWidget1.h"
-#include "UI/CQUnitDetail.h"
+#include "copasi/UI/CQCompartment.h"
+#include "copasi/UI/CQSpeciesDetail.h"
+#include "copasi/UI/ReactionsWidget1.h"
+#include "copasi/UI/CQUnitDetail.h"
 
 #include <copasi/UI/copasiui3window.h>
 
 #ifdef COPASI_Provenance
 #include "CEntityProvenanceDialog.h"
 #include "../versioning/CModelVersionHierarchy.h"
-#include "commandline/CConfigurationFile.h"
+#include "copasi/commandline/CConfigurationFile.h"
 #endif
 
 #include "copasi/undo/CUndoData.h"
@@ -69,7 +69,7 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
         mpBtnNew->setText("Apply");
         mpBtnNew->setToolTip("Apply the current parameters to the model.");
 
-      // The break statement is intentionally missing
+        // The break statement is intentionally missing
 
       default:
         CQNotes* pNotes = new CQNotes(mpTabWidget);

@@ -1,6 +1,8 @@
-// Copyright � 2006 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
 // All rights reserved.
+
 //
 // This C++ code is based on an f2c conversion of the Fortran
 // library
@@ -8,17 +10,17 @@
 #ifndef ODEPACK_CRadau5
 #define ODEPACK_CRadau5
 
-#include "odepack++/CInternalSolver.h"
+#include "copasi/odepack++/CInternalSolver.h"
 #include "dc_decsol.h"
 
 
 class CRadau5: public CInternalSolver
 {
 public:
-    CRadau5();
-    ~CRadau5();
-    
-    integer operator() (integer *n,        //  Number of equations
+  CRadau5();
+  ~CRadau5();
+
+  integer operator()(integer *n,         //  Number of equations
                      evalF fcn,          //  Evaluate f
                      doublereal *x,     //  Initial X values
                      doublereal *y,    //  Initial Y values
@@ -44,12 +46,12 @@ public:
                      doublereal *rpar,  //  Real parameter for working
                      integer *ipar,     //  integer parameter for working
                      integer *idid);    //  Output status
-    
+
 private:
-    
-    static const integer mxstp0;
-    static const integer mxhnl0;
-    static const integer mord[2];
+
+  static const integer mxstp0;
+  static const integer mxhnl0;
+  static const integer mord[2];
 };
 
 #endif // ODEPACK_CRadau5

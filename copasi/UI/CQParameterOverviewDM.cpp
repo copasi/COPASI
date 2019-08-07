@@ -23,12 +23,12 @@
 #include "CQParameterOverviewDM.h"
 #include "qtUtilities.h"
 
-#include "model/CModelParameterSet.h"
-#include "function/CExpression.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/model/CModelParameterSet.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
 #include <QCommonStyle>
-#include "model/CModel.h"
+#include "copasi/model/CModel.h"
 #include "copasi/UI/copasiWidget.h"
 #include "copasi/utilities/CValidatedUnit.h"
 #include "copasi/CopasiDataModel/CDataModel.h"

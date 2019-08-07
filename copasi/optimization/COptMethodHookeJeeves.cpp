@@ -31,7 +31,7 @@
 /* Adapted for Gepasi by Pedro Mendes, 18 August 1997              */
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "COptMethodHookeJeeves.h"
 #include "COptProblem.h"

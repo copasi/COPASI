@@ -21,10 +21,10 @@
 #include <QtCore/QString>
 #include <QtCore/QList>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "plot/CPlotSpecification.h"
-#include "plot/COutputDefinitionVector.h"
+#include "copasi/plot/CPlotSpecification.h"
+#include "copasi/plot/COutputDefinitionVector.h"
 
 #include "CQPlotDM.h"
 #include "qtUtilities.h"

@@ -25,19 +25,19 @@
 #include <stdio.h>
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CMoiety.h"
 #include "CModel.h"
 #include "CCompartment.h"
 #include "CMetabNameInterface.h"
 
 #include "copasi/core/CDataObjectReference.h"
-#include "report/CKeyFactory.h"//By G
-#include "function/CExpression.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CReadConfig.h"
+#include "copasi/report/CKeyFactory.h"//By G
+#include "copasi/function/CExpression.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CReadConfig.h"
 #include "copasi/core/CDataVector.h"
-#include "utilities/utility.h"
+#include "copasi/utilities/utility.h"
 #include "copasi/core/CRootContainer.h"
 
 // static

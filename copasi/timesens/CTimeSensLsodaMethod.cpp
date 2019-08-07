@@ -1,36 +1,27 @@
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
 
 
 
 
-
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CTimeSensLsodaMethod.h"
 #include "CTimeSensProblem.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "model/CState.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CState.h"
 
 // Uncomment this line below to get numeric debug print out.
 // #define DEBUG_NUMERICS 1
@@ -39,8 +30,8 @@
 // #define DEBUG_FLOW 1
 
 CTimeSensLsodaMethod::CTimeSensLsodaMethod(const CDataContainer * pParent,
-                           const CTaskEnum::Method & methodType,
-                           const CTaskEnum::Task & taskType):
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType):
   CTimeSensMethod(pParent, methodType, taskType),
   mpRelativeTolerance(NULL),
   mpAbsoluteTolerance(NULL),
@@ -77,7 +68,7 @@ CTimeSensLsodaMethod::CTimeSensLsodaMethod(const CDataContainer * pParent,
 }
 
 CTimeSensLsodaMethod::CTimeSensLsodaMethod(const CTimeSensLsodaMethod & src,
-                           const CDataContainer * pParent):
+    const CDataContainer * pParent):
   CTimeSensMethod(src, pParent),
   mpRelativeTolerance(NULL),
   mpAbsoluteTolerance(NULL),
@@ -167,9 +158,9 @@ void CTimeSensLsodaMethod::stateChange(const CMath::StateChange & change)
 
       mpContainer->updateSimulatedValues(*mpReducedModel);
       setRootMaskType(NONE);
-    
+
       //the event has changed variables in the math container, so the state for the integrator needs to be updated
-      memcpy(mVariables.array(), mpContainerStateTime, (mSystemSize+1) * sizeof(C_FLOAT64)); //TODO shift?
+      memcpy(mVariables.array(), mpContainerStateTime, (mSystemSize + 1) * sizeof(C_FLOAT64)); //TODO shift?
 
     }
 }
@@ -261,9 +252,9 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
                   &mNumRoots, // 19. number of constraint functions g(i)
                   mRootsFound.array()); // 20. integer array of length NG for output of root information
 
-          memcpy(mpContainerStateTime, mVariables.array(), (mSystemSize+1) * sizeof(C_FLOAT64));
+          memcpy(mpContainerStateTime, mVariables.array(), (mSystemSize + 1) * sizeof(C_FLOAT64));
           //copySensitivitiesToResultMatrix(); //TODO we do this now after each integration step, probably only necessary before output...
-  
+
           // There exist situations where LSODAR reports status = 3, which are actually status = -33
           // Obviously the trivial case is where LSODAR did not advance at all, i.e, the start time
           // equals the current time. It may also happen that a very small steps has been taken.
@@ -464,7 +455,7 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
              EvalJ, // 16. evaluate J (not given)
              &mJType);        // 17. the type of jacobian calculate (2)
 
-      memcpy(mpContainerStateTime, mVariables.array(), (mSystemSize+1) * sizeof(C_FLOAT64));
+      memcpy(mpContainerStateTime, mVariables.array(), (mSystemSize + 1) * sizeof(C_FLOAT64));
       //copySensitivitiesToResultMatrix(); //TODO we do this now after each integration step, probably only necessary before output...
 
       if (mLsodaStatus <= 0 ||
@@ -543,24 +534,26 @@ void CTimeSensLsodaMethod::start()
 
 
   //init size of the system
-  mData.dim = (C_INT)(1+mSystemSize * (1 + mNumParameters)); //including time
-  
+  mData.dim = (C_INT)(1 + mSystemSize * (1 + mNumParameters)); //including time
+
   //initialize the vector on which lsoda will work
   mVariables.resize(mData.dim);
-  
+
   //initial state of the system
-  memcpy(mVariables.array(), mpContainerStateTime, (mSystemSize+1) * sizeof(C_FLOAT64));
+  memcpy(mVariables.array(), mpContainerStateTime, (mSystemSize + 1) * sizeof(C_FLOAT64));
   //initial state of the sensitivities
   //the sensitivities are initialized with the derivatives of the initial assignments wrt the parameters
   CMatrix<C_FLOAT64> initSens;
   calculate_dInitialState_dPar(initSens);
   //std::cout << initSens;
-  size_t i,j;
-  for (i=0; i<mSystemSize; ++i)
-    for (j=0; j<mNumParameters; ++j)
-    {
-      mVariables[i + (j+1)*mSystemSize + 1] = (initSens[i][j]);
-    }
+  size_t i, j;
+
+  for (i = 0; i < mSystemSize; ++i)
+    for (j = 0; j < mNumParameters; ++j)
+      {
+        mVariables[i + (j + 1)*mSystemSize + 1] = (initSens[i][j]);
+      }
+
   copySensitivitiesToResultMatrix();
 
   //reserve space for jacobian, etc.
@@ -572,10 +565,12 @@ void CTimeSensLsodaMethod::start()
   //init absolute tolerances for the extended ODE
   CVector< C_FLOAT64 > tmpAtol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
   mAtol.resize(mData.dim);
-  for (i = 0; i < mSystemSize+1; ++i)
-    mAtol[i] = tmpAtol[i+ mpContainer->getCountFixedEventTargets()]; //TODO shift? + mpContainer->getCountFixedEventTargets()
-  for (i = mSystemSize+1; i < mData.dim; ++i)
-    mAtol[i] = mAtol[i-mSystemSize];// 1e-12;
+
+  for (i = 0; i < mSystemSize + 1; ++i)
+    mAtol[i] = tmpAtol[i + mpContainer->getCountFixedEventTargets()]; //TODO shift? + mpContainer->getCountFixedEventTargets()
+
+  for (i = mSystemSize + 1; i < mData.dim; ++i)
+    mAtol[i] = mAtol[i - mSystemSize]; // 1e-12;
 
   /* Configure lsoda(r) */
   mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9) + 3 * mNumRoots);
@@ -614,19 +609,19 @@ void CTimeSensLsodaMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_F
 
 void CTimeSensLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
-/*
-#ifdef DEBUG_NUMERICS
-  std::cout << "State:     " << mpContainer->getState(false) << std::endl;
-  std::cout << "Rate:      " << mpContainer->getRate(false) << std::endl;
-#endif // DEBUG_NUMERICS
-*/
+  /*
+  #ifdef DEBUG_NUMERICS
+    std::cout << "State:     " << mpContainer->getState(false) << std::endl;
+    std::cout << "Rate:      " << mpContainer->getRate(false) << std::endl;
+  #endif // DEBUG_NUMERICS
+  */
   assert(y == mVariables.array());
 
   //update the container and calculate the RHS of the system
   *mpContainerStateTime = *t; //redundant?
-  memcpy(mpContainerStateTime, mVariables.array(), (mSystemSize+1) * sizeof(C_FLOAT64)); //TODO shift?
+  memcpy(mpContainerStateTime, mVariables.array(), (mSystemSize + 1) * sizeof(C_FLOAT64)); //TODO shift?
   mpContainer->updateSimulatedValues(*mpReducedModel);
-  memcpy(ydot, mpYdot, (mSystemSize+1) * sizeof(C_FLOAT64));
+  memcpy(ydot, mpYdot, (mSystemSize + 1) * sizeof(C_FLOAT64));
 
   //calculate the RHS of the extended system
   mpContainer->calculateJacobian(mJacobian, 1e-6, *mpReducedModel);
@@ -637,14 +632,15 @@ void CTimeSensLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLO
   const C_FLOAT64 *dbl2, *dbl3, *dbl1end, *dbl3end, *dbl_dRdP;
   dbl1 = ydot + mSystemSize + 1;
   size_t i;
+
   for (i = 1; i <= mNumParameters; ++i)
     {
       dbl1end = dbl1 + mSystemSize;
       dbl2 = mJacobian.array();
 
-      dbl_dRdP = mdRate_dPar[0]+i-1;
+      dbl_dRdP = mdRate_dPar[0] + i - 1;
 
-      for (; dbl1 != dbl1end; ++dbl1, dbl_dRdP+=mNumParameters)
+      for (; dbl1 != dbl1end; ++dbl1, dbl_dRdP += mNumParameters)
         {
           *dbl1 = *dbl_dRdP; // 0.0;
 
@@ -660,11 +656,11 @@ void CTimeSensLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLO
 }
 
 void CTimeSensLsodaMethod::EvalR(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
-                         const C_INT * nr, C_FLOAT64 * r)
+                                 const C_INT * nr, C_FLOAT64 * r)
 {static_cast<Data *>((void *) n)->pMethod->evalR(t, y, nr, r);}
 
 void CTimeSensLsodaMethod::evalR(const C_FLOAT64 * t, const C_FLOAT64 *  /* y */,
-                         const C_INT *  nr, C_FLOAT64 * r)
+                                 const C_INT *  nr, C_FLOAT64 * r)
 {
   *mpContainerStateTime = *t;
   mpContainer->updateRootValues(*mpReducedModel);
@@ -689,12 +685,12 @@ void CTimeSensLsodaMethod::evalR(const C_FLOAT64 * t, const C_FLOAT64 *  /* y */
 
 // static
 void CTimeSensLsodaMethod::EvalJ(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
-                         const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
+                                 const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
 {static_cast<Data *>((void *) n)->pMethod->evalJ(t, y, ml, mu, pd, nRowPD);}
 
 // virtual
 void CTimeSensLsodaMethod::evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
-                         const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
+                                 const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
 {
   // TODO Implement me.
 }
@@ -1025,21 +1021,22 @@ void CTimeSensLsodaMethod::resetState(CTimeSensLsodaMethod::State & state)
 void CTimeSensLsodaMethod::copySensitivitiesToResultMatrix()
 {
   //TODO for now this is a quite inefficient implementation
-  size_t i,j;
+  size_t i, j;
   CArray::index_type index;
   index.resize(2);
-  for (i=0; i<mSystemSize; ++i)
-    for (j=0; j<mNumParameters; ++j)
-    {
-      //mVariables[i + (j+1)*mSystemSize + 1] = (initSens[i][j]);
-      index[0]=i; index[1]=j;
-      mpProblem->getStateResult()[index] =  mVariables[i + (j+1)*mSystemSize + 1];
-      mpProblem->getScaledStateResult()[index] =  mVariables[i + (j+1)*mSystemSize + 1]
-                 * *mParameterTransientValuePointers[j]
-                 / *(mpContainerStateTime+1+i);
 
-    }
-  
+  for (i = 0; i < mSystemSize; ++i)
+    for (j = 0; j < mNumParameters; ++j)
+      {
+        //mVariables[i + (j+1)*mSystemSize + 1] = (initSens[i][j]);
+        index[0] = i; index[1] = j;
+        mpProblem->getStateResult()[index] =  mVariables[i + (j + 1) * mSystemSize + 1];
+        mpProblem->getScaledStateResult()[index] =  mVariables[i + (j + 1) * mSystemSize + 1]
+            * *mParameterTransientValuePointers[j]
+            / *(mpContainerStateTime + 1 + i);
+
+      }
+
   //calculate sensitivities for assignments
   calculate_dAssignments_dPar(mdAssignment_dPar);
   std::cout << mdAssignment_dPar;
@@ -1048,17 +1045,20 @@ void CTimeSensLsodaMethod::copySensitivitiesToResultMatrix()
 
   C_FLOAT64 tmp;
   size_t k;
-  for (i=0; i<mpProblem->getNumTargets(); ++i)
-    for (j=0; j<mNumParameters; ++j)
-    {
-      tmp = mdAssignment_dPar[i][j];
-      for (k=0; k<mSystemSize; ++k)
-        tmp += mAssignmentJacobian[i][k] * mVariables[k + (j+1)*mSystemSize + 1];
-      index[0]=i; index[1]=j;
-      mpProblem->getTargetsResult()[index] = tmp; 
-      mpProblem->getScaledTargetsResult()[index] = tmp
-                * *mParameterTransientValuePointers[j]
-                / *mAssTargetValuePointers[i]; 
-    }
-  
+
+  for (i = 0; i < mpProblem->getNumTargets(); ++i)
+    for (j = 0; j < mNumParameters; ++j)
+      {
+        tmp = mdAssignment_dPar[i][j];
+
+        for (k = 0; k < mSystemSize; ++k)
+          tmp += mAssignmentJacobian[i][k] * mVariables[k + (j + 1) * mSystemSize + 1];
+
+        index[0] = i; index[1] = j;
+        mpProblem->getTargetsResult()[index] = tmp;
+        mpProblem->getScaledTargetsResult()[index] = tmp
+            * *mParameterTransientValuePointers[j]
+            / *mAssTargetValuePointers[i];
+      }
+
 }

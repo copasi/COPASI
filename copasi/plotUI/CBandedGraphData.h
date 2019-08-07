@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,11 +40,11 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_spectrogram.h>
 
-#include "plot/CPlotItem.h"
+#include "copasi/plot/CPlotItem.h"
 
 #include "copasi/core/CDataObject.h"
-#include "output/COutputHandler.h"
-#include "utilities/CopasiTime.h"
+#include "copasi/output/COutputHandler.h"
+#include "copasi/utilities/CopasiTime.h"
 #include "copasi/core/CVector.h"
 #include "copasi/core/CMatrix.h"
 

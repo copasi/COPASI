@@ -18,7 +18,7 @@
 
 
 %{
-#include "core/CRegisteredCommonName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CDataObject.h"
 %}
 

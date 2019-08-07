@@ -35,8 +35,8 @@
 
 #include <string>
 
-#include "utilities/CCopasiProblem.h"
-#include "utilities/CReadConfig.h"
+#include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/utilities/CReadConfig.h"
 
 class CTrajectoryProblem : public CCopasiProblem
 {

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,10 +29,10 @@
 #include "CEvaluationNode.h"
 //#include "CEvaluationNodeOperator.h"
 #include "CFunction.h"
-#include "model/CModel.h"
-#include "report/CKeyFactory.h"
+#include "copasi/model/CModel.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
-#include "utilities/CNodeIterator.h"
+#include "copasi/utilities/CNodeIterator.h"
 
 #if defined(WIN32) && _MSC_VER < 1800
 // we can't call this truncate because truncate
@@ -1114,10 +1119,10 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
                   Result = itNode.context()[0] ^ itNode.context()[1];
                   break;
 
-                // case MODULUS:
-                //   Value = (C_FLOAT64) (((size_t) mpLeft->value()) % ((size_t) mpRight->value()));
-                //   break;
-                //
+                  // case MODULUS:
+                  //   Value = (C_FLOAT64) (((size_t) mpLeft->value()) % ((size_t) mpRight->value()));
+                  //   break;
+                  //
 
                 default:
                   Result = CValue::unknown;

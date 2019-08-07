@@ -24,12 +24,12 @@
 #include "CQPushButtonDelegate.h"
 #include "CQComboDelegate.h"
 
-#include "commandline/CLocaleString.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "model/CModelParameterSet.h"
-#include "model/CModel.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModelParameterSet.h"
+#include "copasi/model/CModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "core/CDataString.h"
+#include "copasi/core/CDataString.h"
 
 #include "copasiui3window.h"
 

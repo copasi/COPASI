@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,16 +24,16 @@
 #include "WebServicesIssues/soapMiriamWebServicesSoapBindingProxy.h"
 #include "WebServicesIssues/MiriamWebServicesSoapBinding.nsmap"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CMIRIAMResource.h"
 #include "CConstants.h"
 #include "CRDFTriplet.h"
 #include "CRDFNode.h"
 
-#include "utilities/CCopasiException.h"
+#include "copasi/utilities/CCopasiException.h"
 #include "copasi/core/CRootContainer.h"
-#include "commandline/CConfigurationFile.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 #include <sbml/xml/XMLNode.h>
 #include <sbml/xml/XMLAttributes.h>

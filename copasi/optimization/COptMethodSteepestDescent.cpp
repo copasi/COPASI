@@ -22,7 +22,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include <sstream>
 
 #include "COptMethodSteepestDescent.h"

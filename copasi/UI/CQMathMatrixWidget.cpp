@@ -24,16 +24,16 @@
 
 #include "CQMathMatrixWidget.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/core/CArray.h"
 #include "copasi/math/CMathContainer.h"
-#include "model/CModel.h"
-#include "function/CExpression.h"
+#include "copasi/model/CModel.h"
+#include "copasi/function/CExpression.h"
 
 //activate display of test of symbolic derivatives
 #define _DERIV_TEST_
@@ -210,9 +210,9 @@ bool CQMathMatrixWidget::enterProtected()
 }
 
 #include <qtablewidget.h>
-#include "math/CMathDerive.h"
+#include "copasi/math/CMathDerive.h"
 
-#include "math/CMathDerive.h"
+#include "copasi/math/CMathDerive.h"
 
 void CQMathMatrixWidget::slotDerivButtonPressed()
 {
@@ -220,12 +220,12 @@ void CQMathMatrixWidget::slotDerivButtonPressed()
   std::cout << "Deriv" << std::endl;
   assert(mpDataModel != NULL);
   CModel* pModel = mpDataModel->getModel();
-  
+
   //test new CMathDerivative class
-  CMathDerive md(&pModel->getMathContainer(),56,38);
-  
+  CMathDerive md(&pModel->getMathContainer(), 56, 38);
+
   const CEvaluationNode* tmpnode = md.getRootNode();
-  
+
   //CEvaluationNode* tmpnode = pModel->prepareElasticity(&pModel->getReactions()[1],
   //                           &pModel->getMetabolites()[0], false);
 
@@ -236,9 +236,9 @@ void CQMathMatrixWidget::slotDerivButtonPressed()
   std::vector<std::vector<std::string> > env;
 
   std::string tmpstring = tmpnode ? tmpnode->buildMMLString(false, env) : "";
-  
+
   return;
-  
+
   std::string tmpstring2 = ""; //tmpnode2->buildMMLString(false, env);
 
   mpMML->setBaseFontPointSize(qApp->font().pointSize());

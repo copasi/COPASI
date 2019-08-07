@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,16 +24,16 @@
 
 #include <sbml/math/ASTNode.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 #include "CFunction.h"
 #include "CExpression.h"
 #include "CFunctionDB.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "utilities/utility.h"
-#include "utilities/CUnitValidator.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/utilities/CUnitValidator.h"
 #include "copasi/core/CRootContainer.h"
 
 CEvaluationNodeCall::CEvaluationNodeCall():
@@ -603,7 +608,7 @@ const CFunction * CEvaluationNodeCall::getCalledTree() const
     }
 }
 
-#include "utilities/copasimathml.h"
+#include "copasi/utilities/copasimathml.h"
 
 // virtual
 std::string CEvaluationNodeCall::getMMLString(const std::vector< std::string > & children,

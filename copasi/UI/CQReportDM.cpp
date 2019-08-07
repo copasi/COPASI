@@ -21,10 +21,10 @@
 #include <QtCore/QString>
 #include <QtCore/QList>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "report/CReportDefinition.h"
-#include "report/CReportDefinitionVector.h"
+#include "copasi/report/CReportDefinition.h"
+#include "copasi/report/CReportDefinitionVector.h"
 
 #include "CQMessageBox.h"
 #include "CQReportDM.h"

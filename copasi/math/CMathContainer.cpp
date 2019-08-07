@@ -13,21 +13,21 @@
 // of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CMathContainer.h"
 #include "CMathExpression.h"
 #include "CMathEventQueue.h"
 #include "CMathUpdateSequence.h"
 
-#include "model/CModel.h"
-#include "model/CCompartment.h"
-#include "model/CMetab.h"
-#include "model/CModelValue.h"
-#include "model/CObjectLists.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "utilities/CNodeIterator.h"
-#include "randomGenerator/CRandom.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CObjectLists.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/CNodeIterator.h"
+#include "copasi/randomGenerator/CRandom.h"
 #include "lapack/blaswrap.h"
 
 // Uncomment this line below to get debug print out.
@@ -796,7 +796,7 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
 
             break;
 
-          // These are fixed event targets the absolute tolerance can be large since they do not change
+            // These are fixed event targets the absolute tolerance can be large since they do not change
           default:
             *pAtol = std::max(1.0, *pAtol);
         }
@@ -1663,7 +1663,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
       // We need to replace variables, expand called trees, and handle discrete nodes.
       switch (itNode->mainType() | itNode->subType())
         {
-          // Handle object nodes which are of type CN and AVOGADRO
+            // Handle object nodes which are of type CN and AVOGADRO
           case (CEvaluationNode::MainType::OBJECT | CEvaluationNode::SubType::AVOGADRO):
           case (CEvaluationNode::MainType::OBJECT | CEvaluationNode::SubType::CN):
           {
@@ -2523,7 +2523,7 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
             break;
 
-          // Everything which is not a value must be calculated.
+            // Everything which is not a value must be calculated.
           default:
             RequestedExtensive.insert(pObject);
             RequestedIntensive.insert(pObject);
@@ -2622,11 +2622,11 @@ void CMathContainer::createApplyInitialValuesSequence()
 
             break;
 
-          // Delay values are always calculate in a separate step
+            // Delay values are always calculate in a separate step
           case CMath::ValueType::DelayValue:
             break;
 
-          // Everything else must be calculated.
+            // Everything else must be calculated.
           default:
             Requested.insert(pObject);
             break;
@@ -4600,7 +4600,7 @@ void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree,
             createDiscontinuityDataEvent(*itNode);
             break;
 
-          // Call nodes and variables are eliminated.
+            // Call nodes and variables are eliminated.
           case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::FUNCTION):
           case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::EXPRESSION):
           case (CEvaluationNode::MainType::VARIABLE | CEvaluationNode::SubType::DEFAULT):

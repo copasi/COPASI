@@ -21,7 +21,7 @@
 #ifndef CQReferenceDM_H
 #define CQReferenceDM_H
 
-#include "UI/CQBaseDataModel.h"
+#include "copasi/UI/CQBaseDataModel.h"
 
 class CMIRIAMInfo;
 

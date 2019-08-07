@@ -15,7 +15,7 @@
 
 #include "CQReportDefinitionSelect.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 #include "listviews.h"
@@ -23,11 +23,11 @@
 #include "CQMessageBox.h"
 #include "CopasiFileDialog.h"
 
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
 #include "copasi/core/CRootContainer.h"
-#include "report/CReportDefinitionVector.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 CQReportDefinitionSelect::CQReportDefinitionSelect(QWidget * parent, Qt::WindowFlags f) :
   QDialog(parent, f),

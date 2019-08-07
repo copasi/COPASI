@@ -32,8 +32,8 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 
 //UNDO framework classes
-#include "undo/CUndoStack.h"
-#include "undo/CUndoData.h"
+#include "copasi/undo/CUndoStack.h"
+#include "copasi/undo/CUndoData.h"
 
 /*
  *  Constructs a CQSpeciesDetail which is a child of 'parent', with the

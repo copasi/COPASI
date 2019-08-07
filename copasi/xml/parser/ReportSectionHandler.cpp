@@ -15,12 +15,12 @@
 
 #include "ReportSectionHandler.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CXMLParser.h"
-#include "utilities/CCopasiMessage.h"
+#include "copasi/utilities/CCopasiMessage.h"
 
-#include "report/CReportDefinition.h"
+#include "copasi/report/CReportDefinition.h"
 /**
  * Replace Header with the name type of the handler and implement the
  * three methods below.

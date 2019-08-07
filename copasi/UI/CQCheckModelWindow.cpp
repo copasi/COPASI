@@ -17,7 +17,7 @@
 #include "copasi/resourcesUI/CQIconResource.h"
 #include "copasi/UI/CopasiFileDialog.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "copasi/UI/qtUtilities.h"
 
 #include "copasi/model/CModelAnalyzer.h"

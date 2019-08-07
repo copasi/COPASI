@@ -32,16 +32,16 @@
 #include <vector>
 #include <limits>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CModel.h"
 #include "CModelValue.h"
 
-#include "CopasiDataModel/CDataModel.h"
-#include "function/CExpression.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/function/CExpression.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "report/CKeyFactory.h"
-#include "utilities/utility.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/utility.h"
 #include "copasi/core/CRootContainer.h"
 
 //static

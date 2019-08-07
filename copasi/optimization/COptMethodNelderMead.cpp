@@ -27,14 +27,14 @@
 
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "COptMethodNelderMead.h"
 #include "COptProblem.h"
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "parameterFitting/CFitProblem.h"
+#include "copasi/parameterFitting/CFitProblem.h"
 #include "copasi/core/CDataObjectReference.h"
 
 COptMethodNelderMead::COptMethodNelderMead(const CDataContainer * pParent,

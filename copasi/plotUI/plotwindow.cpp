@@ -35,13 +35,13 @@
 
 #include "plotwindow.h"
 #include "CopasiPlot.h"
-#include "plot/CPlotSpecification.h"
+#include "copasi/plot/CPlotSpecification.h"
 #include "COutputHandlerPlot.h"
 
-#include "UI/copasiui3window.h"
-#include "UI/CQMessageBox.h"
-#include "UI/qtUtilities.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/UI/copasiui3window.h"
+#include "copasi/UI/CQMessageBox.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
 #ifdef DEBUG_UI
 #include <QtCore/QtDebug>

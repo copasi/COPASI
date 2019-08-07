@@ -28,7 +28,7 @@
  * (C) Pedro Mendes 2001
  */
 #include <sstream>
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CVersion.h"
 #include "utility.h"

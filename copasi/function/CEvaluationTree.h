@@ -31,7 +31,7 @@
 #include "copasi/core/CDataContainer.h"
 #include "copasi/core/CVector.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
 LIBSBML_CPP_NAMESPACE_END

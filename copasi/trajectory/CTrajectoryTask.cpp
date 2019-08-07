@@ -35,21 +35,21 @@
 #include <string>
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CTrajectoryTask.h"
 #include "CTrajectoryProblem.h"
 #include "CTrajectoryMethod.h"
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "model/CModel.h"
-#include "model/CState.h"
-#include "report/CKeyFactory.h"
-#include "report/CReport.h"
-#include "utilities/CProcessReport.h"
-#include "utilities/CCopasiException.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "steadystate/CSteadyStateTask.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CState.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/report/CReport.h"
+#include "copasi/utilities/CProcessReport.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
 
 #define XXXX_Reporting
 

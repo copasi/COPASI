@@ -32,7 +32,7 @@
 
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CTSSAMethod.h"
 #include "CTSSAProblem.h"
@@ -41,12 +41,12 @@
 #include "CCSPMethod.h"
 
 #include "CTSSAProblem.h"
-#include "math/CMathContainer.h"
-#include "model/CCompartment.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModel.h"
-#include "trajectory/CLsodaMethod.h"
+#include "copasi/model/CModel.h"
+#include "copasi/trajectory/CLsodaMethod.h"
 
 #include "lapack/lapackwrap.h"        // CLAPACK
 #include "lapack/blaswrap.h"           // BLAS

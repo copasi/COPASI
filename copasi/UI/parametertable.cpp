@@ -29,19 +29,19 @@
 
 #include "parametertable.h"
 #include "CQComboDelegate.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 
-#include "model/CReactionInterface.h"
-#include "model/CModel.h"
-#include "model/CReaction.h"
-#include "model/CMetabNameInterface.h"
-#include "utilities/CUnitValidator.h"
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CMetabNameInterface.h"
+#include "copasi/utilities/CUnitValidator.h"
 #include "copasi/core/CRootContainer.h"
-#include "math/CMathExpression.h"
+#include "copasi/math/CMathExpression.h"
 
 ParameterTable::ParameterTable(QWidget * parent)
   : QTableWidget(parent),

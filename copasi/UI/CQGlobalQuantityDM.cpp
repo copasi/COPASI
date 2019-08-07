@@ -20,18 +20,18 @@
 
 #include <QtCore/QString>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModelValue.h"
-#include "function/CExpression.h"
-#include "model/CModel.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/model/CModel.h"
 
 #include "CQMessageBox.h"
 #include "CQGlobalQuantityDM.h"
 #include "qtUtilities.h"
 
-#include "model/CReaction.h"
-#include "model/CReactionInterface.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CReactionInterface.h"
 #include "copasi/UI/CQCopasiApplication.h"
 
 CQGlobalQuantityDM::CQGlobalQuantityDM(QObject *parent)

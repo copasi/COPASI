@@ -26,16 +26,16 @@
 #include <QDesktopServices>
 #include <QtCore/QUrl>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "UI/qtUtilities.h"
-#include "UI/CQMessageBox.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/UI/CQMessageBox.h"
 
-#include "MIRIAM/CModelMIRIAMInfo.h"
-#include "function/CFunction.h"
+#include "copasi/MIRIAM/CModelMIRIAMInfo.h"
+#include "copasi/function/CFunction.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
-#include "commandline/CConfigurationFile.h"
+#include "copasi/commandline/CConfigurationFile.h"
 #include "copasi/UI/DataModelGUI.h"
 
 /*

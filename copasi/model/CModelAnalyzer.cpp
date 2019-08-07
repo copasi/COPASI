@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,8 +30,8 @@
 //#include "CEvaluationNodeOperator.h"
 //#include "CFunction.h"
 #include "CModel.h"
-#include "report/CKeyFactory.h"
-#include "function/CFunctionAnalyzer.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/function/CFunctionAnalyzer.h"
 #include "copasi/core/CRootContainer.h"
 
 CModelAnalyzer::CModelAnalyzer(const CModel* model)
@@ -190,7 +195,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
       switch (role)
         {
-          //substrate must be matched to a substr. of the reaction (COPASI bug?)
+            //substrate must be matched to a substr. of the reaction (COPASI bug?)
           case CFunctionParameter::Role::SUBSTRATE:
             jmax = reaction->getChemEq().getSubstrates().size();
 
@@ -209,7 +214,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
             break;
 
-          //Product must be matched to a product of the reaction (COPASI bug?)
+            //Product must be matched to a product of the reaction (COPASI bug?)
           case CFunctionParameter::Role::PRODUCT:
             jmax = reaction->getChemEq().getProducts().size();
 
@@ -228,7 +233,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
             break;
 
-          //modifier should be matched to a modifier in the chemeq
+            //modifier should be matched to a modifier in the chemeq
           case CFunctionParameter::Role::MODIFIER:
             jmax = reaction->getChemEq().getModifiers().size();
 
@@ -248,7 +253,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
             break;
 
-          //parameter must be matched to a local or global parameter (COPASI bug)
+            //parameter must be matched to a local or global parameter (COPASI bug)
           case CFunctionParameter::Role::PARAMETER:
             //first search in local parameters list
             jmax = reaction->getParameters().size();

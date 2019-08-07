@@ -29,23 +29,23 @@
 #include "CQMessageBox.h"
 #include "CQCompartmentCopyOptions.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CDataModel.h"
-#include "model/CModel.h"
-#include "model/CMetab.h"
-#include "model/CCompartment.h"
-#include "model/CChemEqInterface.h"
-#include "model/CModelExpansion.h"    //for Copy button and options
-#include "model/CReactionInterface.h" //for Copy button internal reactions only
-#include "function/CExpression.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CChemEqInterface.h"
+#include "copasi/model/CModelExpansion.h"    //for Copy button and options
+#include "copasi/model/CReactionInterface.h" //for Copy button internal reactions only
+#include "copasi/function/CExpression.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/core/CDataContainer.h"
 
-#include "undo/CUndoStack.h"
-#include "undo/CUndoData.h"
+#include "copasi/undo/CUndoStack.h"
+#include "copasi/undo/CUndoData.h"
 
 /*
  *  Constructs a CQCompartment which is a child of 'parent', with the

@@ -21,17 +21,17 @@
 #include "CQRDFTreeView.h"
 #include "CQRDFTreeViewItem.h"
 
-#include "UI/CQMessageBox.h"
-#include "UI/qtUtilities.h"
+#include "copasi/UI/CQMessageBox.h"
+#include "copasi/UI/qtUtilities.h"
 
-#include "MIRIAM/CRDFGraph.h"
-#include "MIRIAM/CRDFParser.h"
-#include "MIRIAM/CRDFSubject.h"
+#include "copasi/MIRIAM/CRDFGraph.h"
+#include "copasi/MIRIAM/CRDFParser.h"
+#include "copasi/MIRIAM/CRDFSubject.h"
 
-#include "model/CModelValue.h"
-#include "model/CEvent.h"
-#include "model/CReaction.h"
-#include "function/CFunction.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CEvent.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/function/CFunction.h"
 #include "copasi/core/CRootContainer.h"
 
 #define COL_SUBJECT    0

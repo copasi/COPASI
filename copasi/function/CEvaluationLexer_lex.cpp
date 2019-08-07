@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -281,8 +286,8 @@ struct yy_buffer_state
  * Returns the top of the stack, or NULL.
  */
 #define YY_CURRENT_BUFFER ((yy_buffer_stack) \
-                            ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
-                            : NULL)
+                           ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
+                           : NULL)
 
 /* Same as previous macro, but useful when we know that the buffer stack is not
  * NULL or when we need an lvalue. For internal use only.
@@ -756,7 +761,7 @@ static yyconst flex_int16_t yy_chk[903] =
 #line 10 "function/CEvaluationLexer.lpp"
 #include <vector>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CEvaluationNode.h"
 #include "CEvaluationLexer.h"
 #include "CEvaluationParser_yacc.hpp"
@@ -878,7 +883,7 @@ static int yy_flex_strlen(yyconst char *);
 YY_DECL
 {
   yy_state_type yy_current_state;
-  char *yy_cp, *yy_bp;
+  char * yy_cp, *yy_bp;
   int yy_act;
 
   if (!(yy_init))
@@ -963,7 +968,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
         switch (yy_act)
           {
-            /* beginning of action switch */
+              /* beginning of action switch */
             case 0: /* must back up */
               /* undo the effects of YY_DO_BEFORE_ACTION */
               *yy_cp = (yy_hold_char);
@@ -2584,7 +2589,7 @@ int yyFlexLexer::yyinput()
                 /* Reset buffer status. */
                 yyrestart(yyin);
 
-              /*FALLTHROUGH*/
+                /*FALLTHROUGH*/
 
               case EOB_ACT_END_OF_FILE:
               {

@@ -1,12 +1,24 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/Cr250.cpp,v $
-   $Revision: 1.9 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:00 $
-   End CVS Header */
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -48,17 +60,17 @@
  *   Generator", Dr. Dobb's Journal #176.
  ******************************************************************************/
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CRandom.h"
 
 Cr250::Cr250(unsigned C_INT32 seed):
-    CRandom(),
-    mIndex(0)
+  CRandom(),
+  mIndex(0)
 {
   setModulus(65535);
   initialize(seed);
 }
-Cr250::~Cr250(){}
+Cr250::~Cr250() {}
 
 void Cr250::initialize(unsigned C_INT32 seed)
 {
@@ -91,6 +103,7 @@ void Cr250::initialize(unsigned C_INT32 seed)
       mask >>= 1;
       msb >>= 1;
     }
+
   return;
 }
 
@@ -153,5 +166,5 @@ C_FLOAT64 Cr250::dr250()
 unsigned C_INT16 Cr250::myrand()
 {
   mSeed = mSeed * 0x015a4e35L + 1;
-  return (mSeed >> 16)&0x7fff;
+  return (mSeed >> 16) & 0x7fff;
 }

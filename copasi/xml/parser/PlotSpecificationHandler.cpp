@@ -1,16 +1,26 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "PlotSpecificationHandler.h"
 #include "CXMLParser.h"
-#include "utilities/CCopasiMessage.h"
+#include "copasi/utilities/CCopasiMessage.h"
 
 #include "ParameterGroupHandler.h"
-#include "plot/COutputDefinitionVector.h"
+#include "copasi/plot/COutputDefinitionVector.h"
 
 /**
  * Replace PlotSpecification with the name type of the handler and implement the
@@ -48,8 +58,9 @@ CXMLHandler * PlotSpecificationHandler::processStart(const XML_Char * pszName,
         mpData->pCurrentPlot->setType(toEnum(sType, CPlotItem::XMLType, CPlotItem::curve2d));
         active = mpParser->getAttributeValue("active", papszAttrs, "true");
         mpData->pCurrentPlot->setActive(mpParser->toBool(active));
-        
+
         taskTypes = mpParser->getAttributeValue("taskTypes", papszAttrs, false);
+
         if (taskTypes != NULL)
           mpData->pCurrentPlot->setTaskTypes(taskTypes);
 

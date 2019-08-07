@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,8 +26,8 @@
 #define COPASI_CStochMethod
 
 #include "copasi/core/CVector.h"
-#include "trajectory/CTrajectoryMethod.h"
-#include "utilities/CDependencyGraph.h"
+#include "copasi/trajectory/CTrajectoryMethod.h"
+#include "copasi/utilities/CDependencyGraph.h"
 
 class CTrajectoryProblem;
 class CMathReaction;

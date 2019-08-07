@@ -13,14 +13,14 @@
 // of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CMathDependencyNode.h"
 #include "CMathObject.h"
 #include "CMathDependencyNodeIterator.h"
 #include "CMathContainer.h"
 
-#include "model/CMetab.h"
+#include "copasi/model/CMetab.h"
 
 CMathDependencyNode::CMathDependencyNode():
   mpObject(NULL),

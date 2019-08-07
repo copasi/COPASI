@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,8 +22,8 @@
 #include <limits>
 
 #include "copasi/core/CVector.h"
-#include "optimization/COptPopulationMethod.h"
-#include "optimization/COptProblem.h"
+#include "copasi/optimization/COptPopulationMethod.h"
+#include "copasi/optimization/COptProblem.h"
 
 class CRandom;
 
@@ -284,12 +289,12 @@ private:
   /**
    * a pointer to an opt problem used for local minimization
    */
-  COptProblem * mpOptProblemLocal{NULL};
+  COptProblem * mpOptProblemLocal {NULL};
 
   /**
    * a pointer to an opt method used for local minimization
    */
-  COptMethod * mpLocalMinimizer{NULL};
+  COptMethod * mpLocalMinimizer {NULL};
 };
 
 #endif  // COPASI_COptMethodSS

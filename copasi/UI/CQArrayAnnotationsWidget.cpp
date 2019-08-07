@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -31,7 +36,7 @@
 #include <cmath>
 #endif
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CQArrayAnnotationsWidget.h"
 #include "qtUtilities.h"
@@ -41,7 +46,7 @@
 
 #include <iostream>
 
-#include "resourcesUI/CQIconResource.h"  //icons for bars and table toggle button
+#include "copasi/resourcesUI/CQIconResource.h"  //icons for bars and table toggle button
 
 #ifdef DEBUG_UI
 #include <QtCore/QtDebug>

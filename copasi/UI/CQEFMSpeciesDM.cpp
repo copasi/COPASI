@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -16,13 +21,13 @@
 #include "CQEFMSpeciesDM.h"
 #include "qtUtilities.h"
 
-#include "elementaryFluxModes/CEFMTask.h"
-#include "elementaryFluxModes/CEFMMethod.h"
-#include "elementaryFluxModes/CFluxMode.h"
-#include "model/CModel.h"
-#include "model/CMetabNameInterface.h"
-#include "utilities/CCopasiProblem.h"
-#include "math/CMathContainer.h"
+#include "copasi/elementaryFluxModes/CEFMTask.h"
+#include "copasi/elementaryFluxModes/CEFMMethod.h"
+#include "copasi/elementaryFluxModes/CFluxMode.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetabNameInterface.h"
+#include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/math/CMathContainer.h"
 
 CQEFMSpeciesDM::CQEFMSpeciesDM(QObject *parent):
   CQBaseDataModel(parent, NULL),

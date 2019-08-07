@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -15,21 +20,21 @@
 #include <string>
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CTimeSensTask.h"
 #include "CTimeSensProblem.h"
 #include "CTimeSensMethod.h"
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "model/CModel.h"
-#include "model/CState.h"
-#include "report/CKeyFactory.h"
-#include "report/CReport.h"
-#include "utilities/CProcessReport.h"
-#include "utilities/CCopasiException.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "steadystate/CSteadyStateTask.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CState.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/report/CReport.h"
+#include "copasi/utilities/CProcessReport.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
 
 #define XXXX_Reporting
 
@@ -551,8 +556,9 @@ bool CTimeSensTask::updateMatrices()
 
 //virtual
 void CTimeSensTask::output(const COutputInterface::Activity & activity)
-  {
-    if (mpTimeSensMethod)
-      mpTimeSensMethod->copySensitivitiesToResultMatrix();
-    CCopasiTask::output(activity);
-  }
+{
+  if (mpTimeSensMethod)
+    mpTimeSensMethod->copySensitivitiesToResultMatrix();
+
+  CCopasiTask::output(activity);
+}

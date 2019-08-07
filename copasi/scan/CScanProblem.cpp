@@ -29,10 +29,10 @@
 #include <string>
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CScanProblem.h"
-//#include "model/CModel.h"
-//#include "model/CState.h"
+//#include "copasi/model/CModel.h"
+//#include "copasi/model/CState.h"
 
 /**
  *  Default constructor.

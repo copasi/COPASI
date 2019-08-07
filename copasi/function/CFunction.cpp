@@ -24,14 +24,14 @@
 
 #include <algorithm>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CFunction.h"
 #include "CFunctionDB.h"
 
 #include "copasi/core/CRootContainer.h"
-#include "model/CModel.h"
-#include "utilities/copasimathml.h"
+#include "copasi/model/CModel.h"
+#include "copasi/utilities/copasimathml.h"
 
 // static
 CFunction * CFunction::fromData(const CData & data, CUndoObjectInterface * pParent)

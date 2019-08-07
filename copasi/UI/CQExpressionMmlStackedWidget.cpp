@@ -24,14 +24,14 @@
 #include <QPainter>
 #include <QPrinter>
 
-#include "utilities/CCopasiException.h"
+#include "copasi/utilities/CCopasiException.h"
 
 #include "CQMessageBox.h"
 #include "qtUtilities.h" // for UTF8
 #include "CopasiFileDialog.h"
-#include "tex/CMathMLToTeX.h"
-#include "commandline/CLocaleString.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/tex/CMathMLToTeX.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
 #include <fstream>
 

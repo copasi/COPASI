@@ -1,10 +1,22 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalItem.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/12/11 20:55:55 $
-// End CVS Header
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
@@ -17,15 +29,15 @@
 # pragma warning (disable: 4355)
 #endif  // WIN32
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CNormalItem.h"
 #include "CNormalFraction.h"
 
-#include "function/CEvaluationTree.h"
-#include "function/CEvaluationNode.h"
-#include "function/CEvaluationNodeOperator.h"
-#include "function/CEvaluationNodeFunction.h"
+#include "copasi/function/CEvaluationTree.h"
+#include "copasi/function/CEvaluationNode.h"
+#include "copasi/function/CEvaluationNodeOperator.h"
+#include "copasi/function/CEvaluationNodeFunction.h"
 
 /**
  * Default constructor
@@ -80,43 +92,45 @@ bool CNormalItem::setType(const Type& type)
  * @return mName
  */
 const std::string CNormalItem::getName() const
-  {
-    return mName;
-  }
+{
+  return mName;
+}
 
 /**
  * Retrieve the type of this item.
  * @return mType
  */
 const CNormalItem::Type& CNormalItem::getType() const
-  {
-    return mType;
-  }
+{
+  return mType;
+}
 
 /**
  * Examine equality of two items.
  * @return bool.
  */
 bool CNormalItem::operator==(const CNormalItem & rhs) const
-  {return ((rhs.mName == mName) && (rhs.mType == mType));}
+{return ((rhs.mName == mName) && (rhs.mType == mType));}
 
 /**
  * Examine inequality of two item.
  * @return bool.
  */
 bool CNormalItem::operator<(const CNormalItem & rhs) const
-  {
-    if (mType < rhs.mType)
-      return true;
-    if (rhs.mType < mType)
-      return false;
-    return (mName < rhs.mName);
-  }
+{
+  if (mType < rhs.mType)
+    return true;
+
+  if (rhs.mType < mType)
+    return false;
+
+  return (mName < rhs.mName);
+}
 
 std::string CNormalItem::toString() const
-  {
-    return this->mName;
-  }
+{
+  return this->mName;
+}
 
 std::ostream & operator<< (std::ostream &os, const CNormalItem & d)
 {
@@ -125,6 +139,6 @@ std::ostream & operator<< (std::ostream &os, const CNormalItem & d)
 }
 
 CNormalBase * CNormalItem::copy() const
-  {
-    return new CNormalItem(*this);
-  }
+{
+  return new CNormalItem(*this);
+}

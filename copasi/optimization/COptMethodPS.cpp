@@ -24,17 +24,17 @@
 
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "COptMethodPS.h"
 #include "COptProblem.h"
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "randomGenerator/CRandom.h"
-#include "randomGenerator/CPermutation.h"
-#include "utilities/CProcessReport.h"
-#include "utilities/CSort.h"
+#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CPermutation.h"
+#include "copasi/utilities/CProcessReport.h"
+#include "copasi/utilities/CSort.h"
 #include "copasi/core/CDataObjectReference.h"
 
 COptMethodPS::COptMethodPS(const CDataContainer * pParent,

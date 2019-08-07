@@ -32,7 +32,7 @@
 
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CFitProblem.h"
 #include "CFitItem.h"
@@ -40,18 +40,18 @@
 #include "CExperimentSet.h"
 #include "CExperiment.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "report/CKeyFactory.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "trajectory/CTrajectoryProblem.h"
-#include "utilities/CProcessReport.h"
-#include "utilities/CCopasiException.h"
-#include "core/CDataArray.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
+#include "copasi/utilities/CProcessReport.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/core/CDataArray.h"
 
 #include "lapack/blaswrap.h"           //use blas
 #include "lapack/lapackwrap.h"        //use CLAPACK

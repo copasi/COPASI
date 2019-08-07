@@ -15,16 +15,16 @@
 
 #include "CStochasticRungeKuttaRI5.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CTrajectoryProblem.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "model/CState.h"
-#include "randomGenerator/CRandom.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CState.h"
+#include "copasi/randomGenerator/CRandom.h"
 
 // Uncomment this line below to get debug print out.
 // #define DEBUG_OUTPUT 1

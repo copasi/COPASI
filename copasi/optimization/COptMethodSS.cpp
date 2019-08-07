@@ -25,16 +25,16 @@
 # include <fstream>
 #endif
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "COptMethodSS.h"
 #include "COptProblem.h"
-#include "parameterFitting/CFitProblem.h"
+#include "copasi/parameterFitting/CFitProblem.h"
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "randomGenerator/CRandom.h"
-#include "utilities/CProcessReport.h"
-#include "utilities/CSort.h"
+#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/utilities/CProcessReport.h"
+#include "copasi/utilities/CSort.h"
 #include "copasi/core/CDataObjectReference.h"
 
 COptMethodSS::COptMethodSS(const CDataContainer * pParent,

@@ -29,13 +29,13 @@
  *  Created for COPASI by Mudita Singhal
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CKeyFactory.h"
 #include "CReportDefinition.h"
 #include "CReport.h"
 
-#include "utilities/CCopasiMessage.h"
+#include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/undo/CData.h"
 #include "copasi/core/CRootContainer.h"
 

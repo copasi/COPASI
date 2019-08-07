@@ -26,23 +26,23 @@
 #include <limits>
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CExperiment.h"
 #include "CExperimentObjectMap.h"
 #include "CFitTask.h"
 
-#include "CopasiDataModel/CDataModel.h"
-#include "math/CMathContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/math/CMathContainer.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModel.h"
+#include "copasi/model/CModel.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "report/CKeyFactory.h"
-#include "utilities/CTableCell.h"
-#include "utilities/CSort.h"
-#include "utilities/CDirEntry.h"
-#include "utilities/utility.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/CTableCell.h"
+#include "copasi/utilities/CSort.h"
+#include "copasi/utilities/CDirEntry.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/commandline/CLocaleString.h"
 
 std::istream & skipLine(std::istream & in);
 

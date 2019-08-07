@@ -26,12 +26,12 @@
 
 #include <QComboBox>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 
-#include "parameterFitting/CExperimentSet.h"
-#include "parameterFitting/CExperiment.h"
+#include "copasi/parameterFitting/CExperimentSet.h"
+#include "copasi/parameterFitting/CExperiment.h"
 
 #include <copasi/resourcesUI/CQIconResource.h>
 

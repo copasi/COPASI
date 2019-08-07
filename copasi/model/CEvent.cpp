@@ -22,22 +22,22 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include <stdio.h>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "CModel.h"
 #include "CEvent.h"
 
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/utility.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/utility.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
-#include "function/CExpression.h"
-#include "MIRIAM/CRDFUtilities.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/MIRIAM/CRDFUtilities.h"
 
 // static
 CEventAssignment * CEventAssignment::fromData(const CData & data, CUndoObjectInterface * pParent)

@@ -17,17 +17,17 @@
 #include "CQComboDelegate.h"
 #include "CQPushButtonDelegate.h"
 #include "CCopasiSelectionDialog.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CDataModel.h"
-#include "model/CObjectLists.h"
-#include "utilities/CCopasiTask.h"
-#include "utilities/CCopasiMethod.h"
-#include "utilities/utility.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/model/CObjectLists.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/utilities/CCopasiMethod.h"
+#include "copasi/utilities/utility.h"
 
 CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
   QWidget(parent, f),

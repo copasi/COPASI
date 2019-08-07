@@ -18,8 +18,8 @@
 
 #include "CModelParameterGroup.h"
 #include "CModel.h"
-#include "utilities/CUnitValidator.h"
-#include "math/CMathExpression.h"
+#include "copasi/utilities/CUnitValidator.h"
+#include "copasi/math/CMathExpression.h"
 
 // Uncoment the line below to debug undo processing
 // #define DEBUG_UNDO 1

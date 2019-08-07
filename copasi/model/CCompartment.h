@@ -35,9 +35,9 @@
 
 #include <string>
 
-#include "model/CModelValue.h"
+#include "copasi/model/CModelValue.h"
 #include "copasi/core/CDataVector.h"
-#include "model/CMetab.h"
+#include "copasi/model/CMetab.h"
 
 class CReadConfig;
 

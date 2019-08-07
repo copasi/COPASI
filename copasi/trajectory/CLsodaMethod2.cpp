@@ -8,16 +8,16 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CLsodaMethod2.h"
 #include "CTrajectoryProblem.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "model/CState.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CState.h"
 
 // Uncomment this line below to get numeric debug print out.
 // #define DEBUG_NUMERICS 1

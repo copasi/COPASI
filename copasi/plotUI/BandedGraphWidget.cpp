@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -10,17 +15,17 @@
 
 #include "BandedGraphWidget.h"
 
-#include "UI/CCopasiSelectionDialog.h"
-#include "UI/qtUtilities.h"
+#include "copasi/UI/CCopasiSelectionDialog.h"
+#include "copasi/UI/qtUtilities.h"
 #include "CQPlotEditWidget.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "copasi/core/CRootContainer.h"
 #include "copasi/model/CModel.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
-#include "plot/CPlotItem.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/plot/CPlotItem.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
 /**
  * In multiple edit mode, we don't want to edit name & channels

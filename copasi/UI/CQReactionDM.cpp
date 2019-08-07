@@ -21,12 +21,12 @@
 #include <QtCore/QString>
 #include <QtCore/QList>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CChemEqInterface.h"
-#include "model/CReaction.h"
-#include "model/CReactionInterface.h"
-#include "model/CModel.h"
+#include "copasi/model/CChemEqInterface.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/model/CModel.h"
 
 #include "CQMessageBox.h"
 #include "CQReactionDM.h"

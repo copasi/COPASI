@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,13 +33,13 @@
 #include <QHBoxLayout>
 #include <QToolTip>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CopasiSlider.h"
 #include "listviews.h"
 #include "qtUtilities.h"
 #include "DataModelGUI.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
 CopasiSlider::CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent):

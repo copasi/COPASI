@@ -29,33 +29,33 @@
 //
 // Converted for COPASI by Stefan Hoops
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include <algorithm>
 #include <stdio.h>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "CReaction.h"
 #include "CReactionInterface.h"
 #include "CCompartment.h"
 #include "CModel.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/CNodeIterator.h"
-#include "utilities/utility.h"
-#include "function/CFunctionDB.h"
+#include "copasi/utilities/CReadConfig.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/CNodeIterator.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/function/CFunctionDB.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 #include "CMetabNameInterface.h"
 #include "CChemEqInterface.h" //only for load()
 #include "CChemEqElement.h"
-#include "function/CExpression.h"
+#include "copasi/function/CExpression.h"
 #include "copasi/core/CRootContainer.h"
 #include "sbml/Species.h"
 #include "sbml/Parameter.h"
 #include "sbml/Compartment.h"
-#include "sbml/SBMLImporter.h"
+#include "copasi/sbml/SBMLImporter.h"
 
 // static
 CEnumAnnotation< std::string, CReaction::KineticLawUnit > CReaction::KineticLawUnitTypeName(

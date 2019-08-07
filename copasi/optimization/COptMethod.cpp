@@ -33,7 +33,7 @@
 
 #include <limits.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "COptTask.h"
 #include "COptMethod.h"

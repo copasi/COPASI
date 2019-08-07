@@ -21,7 +21,7 @@
 #ifndef CQBiologicalDescriptionDM_H
 #define CQBiologicalDescriptionDM_H
 
-#include "UI/CQBaseDataModel.h"
+#include "copasi/UI/CQBaseDataModel.h"
 
 class CMIRIAMInfo;
 
