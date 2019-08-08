@@ -397,7 +397,10 @@ if(BUILD_GUI)
     FIND_LIBRARY(OPENGL_gl_LIBRARY NAMES GL PATHS /usr/lib/x86_64-linux-gnu/mesa)
   endif (UNIX AND NOT APPLE)
 
-  set (OpenGL_GL_PREFERENCE GLVND)
+  if(POLICY CMP0072)
+    cmake_policy(SET CMP0072 OLD)
+  endif(POLICY CMP0072)
+
   find_package(OpenGL REQUIRED)
 
   include(${CMAKE_CURRENT_SOURCE_DIR}/ChooseQtVersion.cmake)
