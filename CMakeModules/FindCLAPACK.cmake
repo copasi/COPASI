@@ -343,7 +343,7 @@ add_definitions(-DNO_BLAS_WRAP)
 
 endif(CONAN_LIB_DIRS_CLAPACK)
 
-endif(NOT CLAPACK_LIBRARIES)
+endif(NOT CLAPACK_LIBRARIES AND NOT APPLE)
 
 # find_library(CLAPACK_LIBRARIES NAMES clapack libclapack lapack liblapapack)
 
