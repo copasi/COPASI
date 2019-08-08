@@ -58,7 +58,7 @@
 #include <QtDataVisualization>
 #include <QMenu>
 
-#include "CQ3DBarsModifier.h"
+#include "copasi/barChart/CQ3DBarsModifier.h"
 
 using namespace QtDataVisualization;
 
