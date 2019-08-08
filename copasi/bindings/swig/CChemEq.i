@@ -37,8 +37,8 @@
 %ignore CChemEq::reverse(); // this has not been implemented
 %catches(CCopasiException) CChemEq::getLargestCompartment() const;
 
-%include "model/CChemEq.h"
-%include "model/CChemEqInterface.h"
+%include "copasi/model/CChemEq.h"
+%include "copasi/model/CChemEqInterface.h"
 
 %template(StringSet)  std::set< std::string >;
 

@@ -31,6 +31,6 @@
 %ignore CEigen::print(std::ostream * ostream) const;
 %ignore &operator<<(std::ostream &os, const CEigen &A);
 
-%include "steadystate/CEigen.h"
+%include "copasi/steadystate/CEigen.h"
 
 

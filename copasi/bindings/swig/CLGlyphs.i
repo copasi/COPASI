@@ -39,6 +39,6 @@
 %ignore CLTextGlyph::print;
 
 
-%include "layout/CLGlyphs.h"
+%include "copasi/layout/CLGlyphs.h"
 
 

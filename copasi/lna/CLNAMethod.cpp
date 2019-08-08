@@ -27,8 +27,8 @@
 #include "copasi/utilities/CCopasiTask.h"
 #include "copasi/utilities/CReadConfig.h"
 
-#include "lapack/blaswrap.h"
-#include "lapack/lapackwrap.h"
+#include "copasi/lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 /**
  * Default constructor

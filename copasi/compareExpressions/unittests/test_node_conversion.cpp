@@ -26,13 +26,13 @@
 
 #include <string>
 
-#include "compareExpressions/ConvertToCEvaluationNode.h"
-#include "compareExpressions/CNormalSum.h"
-#include "compareExpressions/CNormalBase.h"
-#include "compareExpressions/CNormalFraction.h"
-#include "compareExpressions/CNormalProduct.h"
-#include "compareExpressions/CNormalItem.h"
-#include "compareExpressions/CNormalItemPower.h"
+#include "copasi/compareExpressions/ConvertToCEvaluationNode.h"
+#include "copasi/compareExpressions/CNormalSum.h"
+#include "copasi/compareExpressions/CNormalBase.h"
+#include "copasi/compareExpressions/CNormalFraction.h"
+#include "copasi/compareExpressions/CNormalProduct.h"
+#include "copasi/compareExpressions/CNormalItem.h"
+#include "copasi/compareExpressions/CNormalItemPower.h"
 #include "copasi/core/CRootContainer.h"
 
 #include "copasi/function/CEvaluationTree.h"

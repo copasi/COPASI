@@ -24,9 +24,9 @@
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
 /*
-#include "crosssection/CCrossSectionTask.h"
-#include "crosssection/CCrossSectionProblem.h"
-#include "crosssection/CCrossSectionMethod.h"
+#include "copasi/crosssection/CCrossSectionTask.h"
+#include "copasi/crosssection/CCrossSectionProblem.h"
+#include "copasi/crosssection/CCrossSectionMethod.h"
  */
 /*
  *  Constructs a CQCrossSectionWidget which is a child of 'parent', with the

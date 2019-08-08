@@ -47,7 +47,7 @@
 %ignore CLBoundingBox::getSBMLBoundingBox() const;
 
 
-%include "layout/CLBase.h"
+%include "copasi/layout/CLBase.h"
 
 // unignore getX and getY for CLPoint
 %rename(getX) CLPoint::getX;

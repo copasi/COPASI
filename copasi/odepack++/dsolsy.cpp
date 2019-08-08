@@ -46,7 +46,7 @@ static C_INT c__0 = 0;
 #include "dgbsl.h"
 #include "dgesl.h"
 
-#include "lapack/lapackwrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 /* DECK DSOLSY */
 /* Subroutine */

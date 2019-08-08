@@ -74,7 +74,7 @@
 #include "copasi/layout/CLCurve.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
-#include "layoutUI/CQLayoutThread.h"
+#include "copasi/layoutUI/CQLayoutThread.h"
 
 #include "copasi/UI/icons/photo.xpm"
 #include "copasi/resourcesUI/CQIconResource.h"

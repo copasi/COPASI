@@ -38,7 +38,7 @@
 
 #include "copasi/function/CEvaluationNodeFunction.h"
 #include <sbml/FunctionDefinition.h>
-#include <sbml/SBMLIncompatibility.h>
+#include "SBMLIncompatibility.h"
 
 class CAnnotation;
 class CChemEqElement;

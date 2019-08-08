@@ -43,8 +43,8 @@
 #include "copasi/utilities/utility.h"
 #include "copasi/utilities/CProcessReport.h"
 
-#include "lapack/lapackwrap.h"
-#include "lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
+#include "copasi/lapack/blaswrap.h"
 
 CNewtonMethod::CNewtonMethod(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,

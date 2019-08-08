@@ -41,7 +41,7 @@
 
 #include "copasi/analytics/CAnalyticsTask.h"
 #include "copasi/analytics/CAnalyticsProblem.h"
-//#include "crosssection/CCrossSectionMethod.h"
+//#include "copasi/crosssection/CCrossSectionMethod.h"
 
 /*
  *  Constructs a CQAnalyticsWidget which is a child of 'parent', with the

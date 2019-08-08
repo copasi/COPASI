@@ -29,7 +29,7 @@
 %}
 
 
-%include "utilities/CCopasiException.h"
+%include "copasi/utilities/CCopasiException.h"
 
 
 

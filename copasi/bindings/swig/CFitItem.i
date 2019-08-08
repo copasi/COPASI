@@ -28,7 +28,7 @@
 %ignore CFitItem::getObjectValue;
 %ignore CFitItem::getUpdateMethod;
 
-%include "parameterFitting/CFitItem.h"
+%include "copasi/parameterFitting/CFitItem.h"
 
 // unignore getObjectValue
 %rename(getObjectValue) CFitItem::getObjectValue;

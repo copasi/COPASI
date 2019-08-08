@@ -13,14 +13,14 @@
 // of Manchester.
 // All rights reserved.
 
-#include <qlayout/CQLabelGraphicsItem.h>
-#include <qlayout/CQRenderConverter.h>
+#include <copasi/qlayout/CQLabelGraphicsItem.h>
+#include <copasi/qlayout/CQRenderConverter.h>
 
 #include "copasi/copasi.h"
 
-#include <layout/CLGlyphs.h>
-#include <layout/CLRenderResolver.h>
-#include <UI/qtUtilities.h>
+#include <copasi/layout/CLGlyphs.h>
+#include <copasi/layout/CLRenderResolver.h>
+#include <copasi/UI/qtUtilities.h>
 
 CQLabelGraphicsItem::CQLabelGraphicsItem(const CLTextGlyph* textGlyph, const CLRenderResolver* resolver)
   : QGraphicsTextItem(FROM_UTF8(textGlyph->getText()))

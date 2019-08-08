@@ -59,8 +59,8 @@
 
 #include "copasi/math/CMathContainer.h"
 
-#include "lapack/blaswrap.h"
-#include "lapack/lapackwrap.h"
+#include "copasi/lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 #define MNumMetabolitesReactionDependent (mNumMetabolitesReaction - mNumMetabolitesReactionIndependent)
 

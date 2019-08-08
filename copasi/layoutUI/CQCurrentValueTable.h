@@ -27,7 +27,7 @@
 
 #include "copasi/copasi.h"
 
-#include "layoutUI/CDataEntity.h"
+#include "copasi/layoutUI/CDataEntity.h"
 
 class QPushButton;
 class QTableWidget;

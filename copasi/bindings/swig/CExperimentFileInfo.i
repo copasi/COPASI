@@ -28,6 +28,6 @@
 %ignore CExperimentFileInfo::getNextUnusedSection;
 %ignore CExperimentFileInfo::adjustForEmptyLines;
 
-%include "parameterFitting/CExperimentFileInfo.h"
+%include "copasi/parameterFitting/CExperimentFileInfo.h"
 
 

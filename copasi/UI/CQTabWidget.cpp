@@ -21,8 +21,8 @@
 #include "qtUtilities.h"
 #include "CQNotes.h"
 
-#include "MIRIAMUI/CQMiriamWidget.h"
-#include "MIRIAMUI/CQRDFTreeView.h"
+#include "copasi/MIRIAMUI/CQMiriamWidget.h"
+#include "copasi/MIRIAMUI/CQRDFTreeView.h"
 
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"

@@ -32,7 +32,7 @@
 %ignore MESSAGES;
 %ignore Message;
 
-%include "utilities/CCopasiMessage.h"
+%include "copasi/utilities/CCopasiMessage.h"
 
 
 

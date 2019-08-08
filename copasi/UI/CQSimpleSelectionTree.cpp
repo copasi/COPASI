@@ -34,7 +34,7 @@
 #include "copasi/steadystate/CMCAMethod.h"
 #include "copasi/steadystate/CSteadyStateTask.h"
 #include "copasi/sensitivities/CSensProblem.h"
-#include "timesens/CTimeSensProblem.h"
+#include "copasi/timesens/CTimeSensProblem.h"
 #include "copasi/tssanalysis/CCSPMethod.h"
 #include "copasi/tssanalysis/CTSSATask.h"
 

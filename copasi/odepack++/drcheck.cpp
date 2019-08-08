@@ -33,8 +33,8 @@
 
 #include "CInternalSolver.h"
 
-#include "lapack/blaswrap.h"
-#include "lapack/lapackwrap.h"
+#include "copasi/lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 #define dls001_1 (mdls001_._1)
 #define dls001_2 (mdls001_._2)

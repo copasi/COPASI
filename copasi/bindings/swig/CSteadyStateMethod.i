@@ -32,7 +32,7 @@
 
 %ignore CSteadyStateMethod::process;
 
-%include "steadystate/CSteadyStateMethod.h"
+%include "copasi/steadystate/CSteadyStateMethod.h"
 
 %extend CSteadyStateMethod
 {

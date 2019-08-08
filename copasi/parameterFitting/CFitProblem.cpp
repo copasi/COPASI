@@ -53,8 +53,8 @@
 #include "copasi/utilities/CCopasiException.h"
 #include "copasi/core/CDataArray.h"
 
-#include "lapack/blaswrap.h"           //use blas
-#include "lapack/lapackwrap.h"        //use CLAPACK
+#include "copasi/lapack/blaswrap.h"           //use blas
+#include "copasi/lapack/lapackwrap.h"        //use CLAPACK
 
 #include <copasi/utilities/CParameterEstimationUtils.h>
 

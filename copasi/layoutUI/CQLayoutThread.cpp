@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,15 +17,15 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QSharedPointer>
 
-#include <layoutUI/CQLayoutThread.h>
-#include <layoutUI/CQSpringLayoutParameterWindow.h>
+#include <copasi/layoutUI/CQLayoutThread.h>
+#include <copasi/layoutUI/CQSpringLayoutParameterWindow.h>
 
-#include <layout/CCopasiSpringLayout.h>
-#include <layout/CLayoutEngine.h>
-#include <layout/CLayout.h>
-#include <layout/CLayoutState.h>
+#include <copasi/layout/CCopasiSpringLayout.h>
+#include <copasi/layout/CLayoutEngine.h>
+#include <copasi/layout/CLayout.h>
+#include <copasi/layout/CLayoutState.h>
 
-#include <UI/copasiui3window.h>
+#include <copasi/UI/copasiui3window.h>
 
 CQLayoutThread::CQLayoutThread(QWidget* parent)
   : QThread(parent)

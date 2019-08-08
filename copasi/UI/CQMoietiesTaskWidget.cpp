@@ -28,8 +28,8 @@
 
 #include "copasi/copasi.h"
 
-#include "moieties/CMoietiesMethod.h"
-#include "moieties/CMoietiesTask.h"
+#include "copasi/moieties/CMoietiesMethod.h"
+#include "copasi/moieties/CMoietiesTask.h"
 
 /*
  *  Constructs a CQMoietiesTaskWidget which is a child of 'parent', with the

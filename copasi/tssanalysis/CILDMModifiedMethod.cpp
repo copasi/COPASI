@@ -30,8 +30,8 @@
 #include "copasi/model/CMetab.h"
 #include "copasi/math/CMathContainer.h"
 
-#include "lapack/lapackwrap.h"        // CLAPACK
-#include "lapack/blaswrap.h"           // BLAS
+#include "copasi/lapack/lapackwrap.h"        // CLAPACK
+#include "copasi/lapack/blaswrap.h"           // BLAS
 
 CILDMModifiedMethod::CILDMModifiedMethod(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,

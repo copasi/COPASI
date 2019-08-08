@@ -54,7 +54,7 @@
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/utilities/CSort.h"
 
-#include "lapack/lapackwrap.h"        //use CLAPACK
+#include "copasi/lapack/lapackwrap.h"        //use CLAPACK
 
 /**
  * Default constructor

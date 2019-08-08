@@ -41,7 +41,7 @@
 
 %ignore operator<<(std::ostream&,const CMCATask&);
 
-%include "steadystate/CMCATask.h"
+%include "copasi/steadystate/CMCATask.h"
 
    
 #ifdef SWIGR

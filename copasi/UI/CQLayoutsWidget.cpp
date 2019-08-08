@@ -45,7 +45,7 @@
 #include "copasi/layoutUI/CQNewMainWindow.h"
 
 #ifndef DISABLE_QT_LAYOUT_RENDERING
-# include <qlayout/CQAnimationWindow.h>
+# include <copasi/qlayout/CQAnimationWindow.h>
 #endif //DISABLE_QT_LAYOUT_RENDERING
 
 #include "copasi/layoutUI/CQAutolayoutWizard.h"

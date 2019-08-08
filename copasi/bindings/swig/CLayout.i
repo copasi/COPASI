@@ -57,6 +57,6 @@ typedef CDataVector<CLGraphicalObject> GraphicalObjectVector;
 %warnfilter(813) CLayout;
 
 
-%include "layout/CLayout.h"
+%include "copasi/layout/CLayout.h"
 
 

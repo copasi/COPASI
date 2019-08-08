@@ -30,7 +30,7 @@
 
 %ignore CChemEqElement::writeElement() const; // not implement
 
-%include "model/CChemEqElement.h"
+%include "copasi/model/CChemEqElement.h"
 
 
 

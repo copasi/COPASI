@@ -46,8 +46,8 @@
 %ignore CCopasiMethod::print;
 %ignore CCopasiMethod::printResult;
 
-%include "utilities/CCopasiMethod.h"
-%include "utilities/CTaskEnum.h"
+%include "copasi/utilities/CCopasiMethod.h"
+%include "copasi/utilities/CTaskEnum.h"
 
 
 %extend CCopasiMethod{

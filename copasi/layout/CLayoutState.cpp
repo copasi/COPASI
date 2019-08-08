@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,11 +13,11 @@
 // of Manchester.
 // All rights reserved.
 
-#include <layout/CLayoutState.h>
+#include <copasi/layout/CLayoutState.h>
 
-#include <layout/CLBase.h>
-#include <layout/CLCurve.h>
-#include <layout/CLayout.h>
+#include <copasi/layout/CLBase.h>
+#include <copasi/layout/CLCurve.h>
+#include <copasi/layout/CLayout.h>
 
 void tagKey(CLGraphicalObject* element)
 {

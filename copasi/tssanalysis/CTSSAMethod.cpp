@@ -48,8 +48,8 @@
 #include "copasi/model/CModel.h"
 #include "copasi/trajectory/CLsodaMethod.h"
 
-#include "lapack/lapackwrap.h"        // CLAPACK
-#include "lapack/blaswrap.h"           // BLAS
+#include "copasi/lapack/lapackwrap.h"        // CLAPACK
+#include "copasi/lapack/blaswrap.h"           // BLAS
 
 /**
  *  Default constructor.

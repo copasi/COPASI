@@ -30,8 +30,8 @@
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/core/CDataObjectReference.h"
 
-#include "lapack/blaswrap.h"
-#include "lapack/lapackwrap.h"
+#include "copasi/lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 #define DEBUG_MATRIX
 

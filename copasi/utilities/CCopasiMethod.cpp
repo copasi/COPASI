@@ -38,7 +38,7 @@
 
 #include "copasi/math/CMathContainer.h"
 
-#include "crosssection/CCrossSectionMethod.h"
+#include "copasi/crosssection/CCrossSectionMethod.h"
 #include "copasi/elementaryFluxModes/CBitPatternMethod.h"
 #include "copasi/elementaryFluxModes/CBitPatternTreeMethod.h"
 #include "copasi/elementaryFluxModes/CEFMAlgorithm.h"
@@ -46,7 +46,7 @@
 #include "copasi/lna/CLNAMethod.h"
 // #include "copasi/lyap/CLyapMethod.h"
 #include "copasi/lyap/CLyapWolfMethod.h"
-#include "moieties/CMoietiesMethod.h"
+#include "copasi/moieties/CMoietiesMethod.h"
 #include "copasi/optimization/COptMethodCoranaWalk.h"
 #include "copasi/optimization/COptMethodDE.h"
 #include "copasi/optimization/COptMethodEP.h"
@@ -87,7 +87,7 @@
 #include "copasi/tssanalysis/CCSPMethod.h"
 #include "copasi/tssanalysis/CILDMMethod.h"
 #include "copasi/tssanalysis/CILDMModifiedMethod.h"
-#include "timesens/CTimeSensLsodaMethod.h"
+#include "copasi/timesens/CTimeSensLsodaMethod.h"
 // #include "copasi/tssanalysis/CTSSAMethod.h"
 
 //static

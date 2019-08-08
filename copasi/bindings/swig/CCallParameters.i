@@ -36,7 +36,7 @@
 // suppress warnings on nested structures
 %warnfilter(325) UType;
 
-%include "function/CCallParameters.h" 
+%include "copasi/function/CCallParameters.h" 
 
 %template(PointerCallParameters) CCallParameters<C_FLOAT64>;
 typedef CCallParameters<C_FLOAT64> PointerCallParameters;

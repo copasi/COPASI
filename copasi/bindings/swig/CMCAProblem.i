@@ -24,5 +24,5 @@
 %ignore CMCAProblem::print;
 %ignore operator<<(std::ostream& os,const CMCAProblem& o);
 
-%include "steadystate/CMCAProblem.h"
+%include "copasi/steadystate/CMCAProblem.h"
 

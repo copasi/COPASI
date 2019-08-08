@@ -28,9 +28,9 @@
 #include "copasi/lyap/CLyapTask.h"
 #include "copasi/sensitivities/CSensTask.h"
 #include "copasi/tssanalysis/CTSSATask.h"
-#include "moieties/CMoietiesTask.h"
-#include "crosssection/CCrossSectionTask.h"
-#include "timesens/CTimeSensTask.h"
+#include "copasi/moieties/CMoietiesTask.h"
+#include "copasi/crosssection/CCrossSectionTask.h"
+#include "copasi/timesens/CTimeSensTask.h"
 
 #ifdef WITH_ANALYTICS
 # include "analytics/CAnalyticsTask.h"

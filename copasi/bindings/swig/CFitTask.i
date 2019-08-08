@@ -38,7 +38,7 @@
 %ignore CFitTask::setMethodType(const int& type);
 #endif // SWIGR
 
-%include "parameterFitting/CFitTask.h"
+%include "copasi/parameterFitting/CFitTask.h"
 
 %extend CFitTask{
   std::vector<C_INT32> getValidMethods() const

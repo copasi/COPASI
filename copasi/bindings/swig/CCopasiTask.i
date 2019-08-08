@@ -93,8 +93,8 @@
 %template(TaskSubTypeVector) std::vector<CTaskEnum::Task>;
 %template(MethodSubTypeVector) std::vector<CTaskEnum::Method>;
 
-%include "utilities/CTaskEnum.h"
-%include "utilities/CCopasiTask.h"
+%include "copasi/utilities/CTaskEnum.h"
+%include "copasi/utilities/CCopasiTask.h"
 
 #if (defined SWIGJAVA || defined SWIGCSHARP)                    
 %rename (NO_OUTPUT) CCopasiTask::NO_OUTPUT;

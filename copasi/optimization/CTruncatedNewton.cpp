@@ -34,8 +34,8 @@
 #include "CTruncatedNewton.h"
 #include "COptLog.h"
 
-#include "lapack/blaswrap.h"
-#include "lapack/lapackwrap.h"
+#include "copasi/lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 C_FLOAT64 mchpr1_(void);
 C_FLOAT64 step1_(C_FLOAT64 *fnew, C_FLOAT64 *fm, C_FLOAT64 *gtp,

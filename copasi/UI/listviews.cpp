@@ -98,7 +98,7 @@
 #include "CQReportDefinition.h"
 #include "CQPlotsWidget.h"
 #include "CQMathMatrixWidget.h"
-#include "MIRIAMUI/CQMiriamWidget.h"
+#include "copasi/MIRIAMUI/CQMiriamWidget.h"
 
 #include "CQTabWidget.h"
 

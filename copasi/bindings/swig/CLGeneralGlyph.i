@@ -26,7 +26,7 @@
 %}
 
 
-%include "layout/CLReactionGlyph.h"
+%include "copasi/layout/CLReactionGlyph.h"
 
 %template(ReferenceGlyphVector) CDataVector<CLReferenceGlyph>;
 typedef CDataVector<CLReferenceGlyph> ReferenceGlyphVector;

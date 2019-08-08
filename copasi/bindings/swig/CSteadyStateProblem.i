@@ -32,7 +32,7 @@
 %ignore CSteadyStateProblem::setJacobianRequested;
 %ignore CSteadyStateProblem::setStabilityAnalysisRequested;
 
-%include "steadystate/CSteadyStateProblem.h"
+%include "copasi/steadystate/CSteadyStateProblem.h"
 
 // unignore setJacobianRequested
 %rename (setJacobianRequested) CSteadyStateProblem::setJacobianRequested;

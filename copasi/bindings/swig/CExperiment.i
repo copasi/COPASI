@@ -25,7 +25,7 @@
 #include <fstream>
 #include <sstream>    
 #include "copasi/parameterFitting/CExperiment.h"
-#include "copasi/function/CLocaleString.h"
+#include "copasi/commandline/CLocaleString.h"
 
 %}
 
@@ -45,7 +45,7 @@
 // read is rather useless since it takes an istream as its first argument
 %ignore CExperiment::read(std::istream&,unsigned C_INT32&);
 
-%include "parameterFitting/CExperiment.h"
+%include "copasi/parameterFitting/CExperiment.h"
 
 //%rename (read) CExperiment::read;
 

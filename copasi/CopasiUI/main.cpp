@@ -54,7 +54,7 @@
 
 #ifdef Darwin
 # include <QtCore/QDir>
-# include "UI/qtUtilities.h"
+# include "copasi/UI/qtUtilities.h"
 #endif // Darwin
 
 int main(int argc, char *argv[])

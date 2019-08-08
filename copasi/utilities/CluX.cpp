@@ -34,7 +34,7 @@
 #include "copasi/core/CVector.h"
 #include "CProcessReport.h"
 
-#include "lapack/lapackwrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 // #define DEBUG_MATRIX
 

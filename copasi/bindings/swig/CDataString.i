@@ -24,6 +24,6 @@
 #endif // SWIGJAVA || CSHARP
 
 
-%include "core/CDataString.h"
+%include "copasi/core/CDataString.h"
 
 

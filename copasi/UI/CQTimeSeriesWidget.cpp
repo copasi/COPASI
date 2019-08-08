@@ -21,10 +21,10 @@
 #include <QSortFilterProxyModel>
 
 #include "copasi/trajectory/CTrajectoryTask.h"
-#include "crosssection/CCrossSectionTask.h"
+#include "copasi/crosssection/CCrossSectionTask.h"
 
 #ifdef WITH_TIME_SENS
-#include "timesens/CTimeSensTask.h"
+#include "copasi/timesens/CTimeSensTask.h"
 #endif // WITH_TIME_SENS
 
 CQTimeSeriesWidget::CQTimeSeriesWidget(QWidget* parent):

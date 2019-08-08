@@ -40,7 +40,11 @@
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <GL/glext.h>
+#ifdef HAVE_GL_EXT
+# include <GL/glext.h>
+#else
+# include <copasi/GL/glext.h>
+#endif // HAVE_GL_EXT
 #endif // __APPLE__
 
 #include "copasi/layout/utility_classes.h"

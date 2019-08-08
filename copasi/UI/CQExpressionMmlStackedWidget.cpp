@@ -35,7 +35,7 @@
 
 #include <fstream>
 
-#include <utilities/CCopasiMessage.h>
+#include <copasi/utilities/CCopasiMessage.h>
 // turns out that the fatalError definition in copasi message is incompatible
 // with the mml widget
 #undef fatalError

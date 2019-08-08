@@ -21,7 +21,7 @@
 
 %nodefaultctor CCreator;
 
-%include "MIRIAM/CCreator.h"
+%include "copasi/MIRIAM/CCreator.h"
 
 
 

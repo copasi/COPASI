@@ -28,9 +28,9 @@
 
 #include "copasi/function/CEvaluationTree.h"
 #include "copasi/utilities/CCopasiException.h"
-#include "compareExpressions/CNormalTranslation.h"
-#include "compareExpressions/CNormalBase.h"
-#include "compareExpressions/CNormalFraction.h"
+#include "copasi/compareExpressions/CNormalTranslation.h"
+#include "copasi/compareExpressions/CNormalBase.h"
+#include "copasi/compareExpressions/CNormalFraction.h"
 #include "copasi/core/CRootContainer.h"
 
 void test_expression_comparison::setUp()

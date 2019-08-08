@@ -90,7 +90,11 @@
 #else
 # include "GL/gl.h"
 # include "GL/glu.h"
-# include "GL/glext.h"
+#ifdef HAVE_GL_EXT
+# include <GL/glext.h>
+#else
+# include <copasi/GL/glext.h>
+#endif // HAVE_GL_EXT
 # ifndef _WIN32
 #  define GLX_GLXEXT_PROTOTYPES
 #  include "GL/glx.h"

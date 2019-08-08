@@ -32,7 +32,7 @@
 
 #include "CVersion.h"
 #include "utility.h"
-#include "CopasiVersion.h"
+#include "copasi/CopasiVersion.h"
 #include "copasi/core/CVector.h"
 
 // initialize the global version instance

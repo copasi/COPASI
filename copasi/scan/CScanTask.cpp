@@ -50,7 +50,7 @@
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "crosssection/CCrossSectionTask.h"
+#include "copasi/crosssection/CCrossSectionTask.h"
 
 CScanTask::CScanTask(const CDataContainer * pParent,
                      const CTaskEnum::Task & type):

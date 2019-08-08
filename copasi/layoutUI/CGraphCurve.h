@@ -33,7 +33,7 @@
 #include "copasi/layout/CLCurve.h"
 #include "copasi/layout/CLReactionGlyph.h"
 
-#include "layoutUI/CArrow.h"
+#include "copasi/layoutUI/CArrow.h"
 
 class CGraphCurve : public CLCurve
 {

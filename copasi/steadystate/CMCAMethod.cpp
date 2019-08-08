@@ -35,8 +35,8 @@
 #include "copasi/utilities/utility.h"
 #include "copasi/utilities/CLinkMatrix.h"
 
-#include "lapack/blaswrap.h"
-#include "lapack/lapackwrap.h"
+#include "copasi/lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 //TODO: put all matrix resizing and annotations creation in one place, so
 // that it has to be done only once if several MCA are calculated (e.g. in a scan)

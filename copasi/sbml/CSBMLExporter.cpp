@@ -88,7 +88,7 @@
 #include "sbml/Event.h"
 #include "sbml/EventAssignment.h"
 #include <sbml/xml/XMLInputStream.h>
-#include "compareExpressions/compare_utilities.h"
+#include "copasi/compareExpressions/compare_utilities.h"
 #include "copasi/MIRIAM/CRDFUtilities.h"
 #include "copasi/MIRIAM/CModelMIRIAMInfo.h"
 #include "copasi/MIRIAM/CReference.h"

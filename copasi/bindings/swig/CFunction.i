@@ -51,7 +51,7 @@
 
 #endif // SWIGJAVA || CSHARP
 
-%include "function/CFunction.h" 
+%include "copasi/function/CFunction.h" 
 
 %extend CFunction
 {

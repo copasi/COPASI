@@ -72,9 +72,9 @@
 #endif // SWIGPERL
 
 
-%include "core/CDataArray.h"
-%include "core/CMatrix.h"
-%include "core/CArray.h"
+%include "copasi/core/CDataArray.h"
+%include "copasi/core/CMatrix.h"
+%include "copasi/core/CArray.h"
 
 %extend CArrayInterface {
    /* convert the operator[] to get methods */

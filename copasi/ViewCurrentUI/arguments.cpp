@@ -30,7 +30,7 @@
 #include "copasi/plot/CPlotSpecification.h"
 #include "copasi/plot/COutputDefinitionVector.h"
 
-#include "qlayout/CQLayoutScene.h"
+#include "copasi/qlayout/CQLayoutScene.h"
 #include "copasi/layout/CListOfLayouts.h"
 
 #include "copasi/utilities/CCopasiMethod.h"

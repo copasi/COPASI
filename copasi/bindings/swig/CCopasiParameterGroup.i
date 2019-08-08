@@ -76,7 +76,7 @@
 #endif // SWIGPYTHON
 */
 
-%include "utilities/CCopasiParameterGroup.h"
+%include "copasi/utilities/CCopasiParameterGroup.h"
 
 /*
 %extend CCopasiParameterGroup

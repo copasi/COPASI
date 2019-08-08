@@ -37,8 +37,8 @@
 #include "copasi/parameterFitting/CFitProblem.h"
 #include "copasi/core/CDataObjectReference.h"
 
-#include "lapack/lapackwrap.h"
-#include "lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
+#include "copasi/lapack/blaswrap.h"
 
 #define LAMBDA_MAX 1e80
 

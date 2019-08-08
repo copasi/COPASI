@@ -43,8 +43,8 @@
 %ignore CDataArray::appendElementReferences;
 %ignore operator<<(std::ostream &os, const CDataArray & o);
 
-%include "core/CDataArray.h"
-%include "core/CMatrix.h"
+%include "copasi/core/CDataArray.h"
+%include "copasi/core/CMatrix.h"
 
 %extend CMatrixInterface {
 

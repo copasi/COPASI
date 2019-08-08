@@ -31,7 +31,7 @@
 %ignore CExperimentSet::getExperiment(size_t const &) const;
 
 
-%include "parameterFitting/CExperimentSet.h"
+%include "copasi/parameterFitting/CExperimentSet.h"
 
 
 

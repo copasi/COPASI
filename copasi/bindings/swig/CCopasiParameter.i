@@ -56,7 +56,7 @@
 // suppress warnings on nested structures
 %warnfilter(325) Value;
 
-%include "utilities/CCopasiParameter.h"
+%include "copasi/utilities/CCopasiParameter.h"
 
 #ifdef SWIGR
 %rename(getType) CCopasiParameter::getType() const;

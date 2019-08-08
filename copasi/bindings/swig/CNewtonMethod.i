@@ -30,6 +30,6 @@
 
 %ignore CNewtonMethod::load;
 
-%include "steadystate/CNewtonMethod.h"
+%include "copasi/steadystate/CNewtonMethod.h"
 
 

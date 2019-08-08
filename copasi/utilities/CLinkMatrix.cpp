@@ -21,8 +21,8 @@
 
 #include "copasi/core/CDataVector.h"
 
-#include "lapack/blaswrap.h"
-#include "lapack/lapackwrap.h"
+#include "copasi/lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 // Define to output debugging information
 // #define DEBUG_MATRIX

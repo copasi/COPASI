@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -13,8 +18,8 @@
 #ifndef COPASI_CNL2SOL
 #define COPASI_CNL2SOL
 
-#include "lapack/lapackwrap.h"
-#include "lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
+#include "copasi/lapack/blaswrap.h"
 
 class FNL2SOL
 {

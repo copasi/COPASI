@@ -41,8 +41,8 @@
 #include "copasi/core/CDataObjectReference.h"
 #include "copasi/trajectory/CLsodaMethod.h"
 
-#include "lapack/lapackwrap.h"        // CLAPACK
-#include "lapack/blaswrap.h"           // BLAS
+#include "copasi/lapack/lapackwrap.h"        // CLAPACK
+#include "copasi/lapack/blaswrap.h"           // BLAS
 
 CCSPMethod::CCSPMethod(const CDataContainer * pParent,
                        const CTaskEnum::Method & methodType,

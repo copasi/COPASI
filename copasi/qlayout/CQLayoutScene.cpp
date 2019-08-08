@@ -24,12 +24,12 @@
 
 #include "copasi/copasi.h"
 
-#include "qlayout/CQLayoutScene.h"
-#include "qlayout/CQCopasiEffect.h"
-#include "qlayout/CQLabelGraphicsItem.h"
-#include "qlayout/CQStyledGraphicsItem.h"
-#include "qlayout/CQConnectionGraphicsItem.h"
-#include "qlayout/CQRenderConverter.h"
+#include "copasi/qlayout/CQLayoutScene.h"
+#include "copasi/qlayout/CQCopasiEffect.h"
+#include "copasi/qlayout/CQLabelGraphicsItem.h"
+#include "copasi/qlayout/CQStyledGraphicsItem.h"
+#include "copasi/qlayout/CQConnectionGraphicsItem.h"
+#include "copasi/qlayout/CQRenderConverter.h"
 #include "copasi/layout/CLayout.h"
 #include "copasi/layout/CLGlyphs.h"
 #include "copasi/layout/CLText.h"

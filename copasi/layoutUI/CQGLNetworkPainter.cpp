@@ -74,9 +74,9 @@ C_FLOAT64 log2(const C_FLOAT64 __x)
 #include "copasi/UI/qtUtilities.h"
 #include "copasi/layout/CLayout.h"
 #include "copasi/core/CDataVector.h"
-#include "layoutUI/CVisParameters.h"
-#include "layoutUI/CDataEntity.h"
-#include "layoutUI/BezierCurve.h"
+#include "copasi/layoutUI/CVisParameters.h"
+#include "copasi/layoutUI/CDataEntity.h"
+#include "copasi/layoutUI/BezierCurve.h"
 
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"

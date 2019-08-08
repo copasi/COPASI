@@ -57,7 +57,7 @@
 // suppress warnings on multiple inheritance
 %warnfilter(813) CEvaluationTree;
 
-%include "function/CEvaluationTree.h"
+%include "copasi/function/CEvaluationTree.h"
 
 %extend CEvaluationTree
 {

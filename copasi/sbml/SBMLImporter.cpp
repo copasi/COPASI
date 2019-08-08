@@ -91,7 +91,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/MIRIAM/CRDFGraphConverter.h"
-#include "compareExpressions/CEvaluationNodeNormalizer.h"
+#include "copasi/compareExpressions/CEvaluationNodeNormalizer.h"
 #include "copasi/commandline/CLocaleString.h"
 #include "copasi/commandline/COptions.h"
 

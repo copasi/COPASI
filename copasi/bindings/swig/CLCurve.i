@@ -34,6 +34,6 @@
 %ignore CLCurve::CLCurve(const Curve&);
 %ignore CLCurve::exportToSBML;
 
-%include "layout/CLCurve.h"
+%include "copasi/layout/CLCurve.h"
 
 

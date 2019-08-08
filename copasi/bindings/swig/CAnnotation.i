@@ -30,7 +30,7 @@
 %}
 
 
-%include "model/CAnnotation.h"
+%include "copasi/model/CAnnotation.h"
 
 %extend CAnnotation
 {

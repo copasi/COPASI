@@ -32,7 +32,7 @@ typedef CDataVectorN<CLayout> LayoutVectorN;
 %ignore CListOfLayouts::getListOfGlobalRenderInformationObjects() const;
 %ignore CListOfLayouts::getRenderInformation(size_t) const;
 
-%include "layout/CListOfLayouts.h"
+%include "copasi/layout/CListOfLayouts.h"
 
 // unignore addLayout
 %rename(addLayout) CListOfLayouts::addLayout;

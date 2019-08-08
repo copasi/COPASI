@@ -86,7 +86,7 @@
 
 #include "copasi/model/CModelExpansion.h"
 
-#include <UI/CWindowInterface.h>
+#include <copasi/UI/CWindowInterface.h>
 
 #include "CQSEDMLFileDialog.h"
 
@@ -534,7 +534,7 @@ CopasiUI3Window::slotLoadParameterEstimationProtocol()
   dlg->deleteLater();
 }
 
-#include <UI/objectdebug.h>
+#include <copasi/UI/objectdebug.h>
 void CopasiUI3Window::slotShowDebugInfo()
 {
   ObjectDebug* dlg = new ObjectDebug(this);

@@ -33,7 +33,7 @@
 #include "copasi/randomGenerator/CRandom.h"
 
 #include "sbml/math/ASTNode.h"
-#include "sbml/ConverterASTNode.h"
+#include "copasi/sbml/ConverterASTNode.h"
 
 CRandom * CEvaluationNodeFunction::mpRandom = NULL;
 

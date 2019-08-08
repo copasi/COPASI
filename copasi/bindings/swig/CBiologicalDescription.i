@@ -29,8 +29,8 @@
 %ignore CMIRIAMResourceObject::setNode;
 %ignore CMIRIAMResourceObject::getNode;
 
-%include "MIRIAM/CBiologicalDescription.h"
-%include "MIRIAM/CConstants.h"
+%include "copasi/MIRIAM/CBiologicalDescription.h"
+%include "copasi/MIRIAM/CConstants.h"
 
 
 

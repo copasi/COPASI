@@ -33,7 +33,7 @@
 
 #include "SEDMLUtils.h"
 
-#include "sbml/CSBMLExporter.h"
+#include "copasi/sbml/CSBMLExporter.h"
 #include "CSEDMLExporter.h"
 
 #include "copasi/trajectory/CTrajectoryTask.h"

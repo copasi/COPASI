@@ -30,6 +30,6 @@
 // suppress warnings on multiple inheritance
 %warnfilter(813) CLGraphicalObject;
 
-%include "layout/CLGraphicalObject.h"
+%include "copasi/layout/CLGraphicalObject.h"
 
 

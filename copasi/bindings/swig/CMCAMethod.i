@@ -22,5 +22,5 @@
 %newobject CMCAMethod::createMethod(CTaskEnum::Method& subType = CTaskEnum::mcaMethodReder);
 
 
-%include "steadystate/CMCAMethod.h"
+%include "copasi/steadystate/CMCAMethod.h"
 

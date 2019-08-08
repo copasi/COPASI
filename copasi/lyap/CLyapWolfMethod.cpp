@@ -33,7 +33,7 @@
 
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/math/CMathContainer.h"
-#include "lapack/blaswrap.h"
+#include "copasi/lapack/blaswrap.h"
 
 CLyapWolfMethod::CLyapWolfMethod(const CDataContainer * pParent,
                                  const CTaskEnum::Method & methodType,

@@ -28,7 +28,7 @@
 #include "copasi/UI/copasiui3window.h"
 #include "copasi/UI/CQMessageBox.h"
 #include "copasi/UI/qtUtilities.h"
-#include "qlayout/CQZoomableView.h"
+#include "copasi/qlayout/CQZoomableView.h"
 #include "copasi/UI/CColorScale.h"
 #include "copasi/resourcesUI/CQIconResource.h"
 #include "copasi/optimization/COptPopulationMethod.h"

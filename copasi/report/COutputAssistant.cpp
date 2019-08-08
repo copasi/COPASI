@@ -45,7 +45,7 @@
 #include "copasi/parameterFitting/CExperiment.h"
 #include "copasi/scan/CScanProblem.h"
 
-#include <core/CDataArray.h>
+#include <copasi/core/CDataArray.h>
 
 //******* COutputAssistant **********************************
 

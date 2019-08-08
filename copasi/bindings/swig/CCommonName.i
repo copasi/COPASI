@@ -29,8 +29,8 @@
 %include "std_string.i"
 %include "std_vector.i"
 
-%include "core/CCommonName.h"
-%include "core/CRegisteredCommonName.h"
+%include "copasi/core/CCommonName.h"
+%include "copasi/core/CRegisteredCommonName.h"
 
 %extend CCommonName
 {

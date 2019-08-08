@@ -23,15 +23,15 @@
 // All rights reserved.
 
 #include "test_cnormallogical.hpp"
-#include "compareExpressions/CNormalLogicalItem.h"
-#include "compareExpressions/CNormalChoiceLogical.h"
-#include "compareExpressions/CNormalFraction.h"
+#include "copasi/compareExpressions/CNormalLogicalItem.h"
+#include "copasi/compareExpressions/CNormalChoiceLogical.h"
+#include "copasi/compareExpressions/CNormalFraction.h"
 #include "copasi/function/CEvaluationTree.h"
-#include "compareExpressions/CNormalTranslation.h"
-#include "compareExpressions/CNormalSum.h"
-#include "compareExpressions/CNormalItemPower.h"
-#include "compareExpressions/CNormalProduct.h"
-#include "compareExpressions/CNormalItem.h"
+#include "copasi/compareExpressions/CNormalTranslation.h"
+#include "copasi/compareExpressions/CNormalSum.h"
+#include "copasi/compareExpressions/CNormalItemPower.h"
+#include "copasi/compareExpressions/CNormalProduct.h"
+#include "copasi/compareExpressions/CNormalItem.h"
 #include "copasi/core/CRootContainer.h"
 
 template void CNormalLogical::cleanSet(const CNormalLogical::ItemSet&);

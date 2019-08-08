@@ -25,7 +25,7 @@
 #include "copasi/function/CEvaluationNodeOperator.h"
 #include "copasi/core/CRootContainer.h"
 
-#include "compareExpressions/CNormalTranslation.h"
+#include "copasi/compareExpressions/CNormalTranslation.h"
 
 void test_depth_first_iterator::setUp()
 {

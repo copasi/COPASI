@@ -39,5 +39,5 @@
 %ignore CCopasiProblem::printResult(std::ostream* ostream) const;
 %ignore operator<<(std::ostream& os,const CCopasiProblem& o);
 
-%include "utilities/CCopasiProblem.h"
+%include "copasi/utilities/CCopasiProblem.h"
 

@@ -37,7 +37,7 @@
 
 #endif // SWIGJAVA || CSHARP
 
-%include "model/CCompartment.h"
+%include "copasi/model/CCompartment.h"
 
 %extend CCompartment{
 

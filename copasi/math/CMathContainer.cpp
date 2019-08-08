@@ -28,7 +28,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/utilities/CNodeIterator.h"
 #include "copasi/randomGenerator/CRandom.h"
-#include "lapack/blaswrap.h"
+#include "copasi/lapack/blaswrap.h"
 
 // Uncomment this line below to get debug print out.
 // #define DEBUG_OUTPUT 1

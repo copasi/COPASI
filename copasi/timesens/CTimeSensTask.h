@@ -20,7 +20,7 @@
 #ifndef COPASI_CTimeSensTask
 #define COPASI_CTimeSensTask
 
-//#include "timesens/CTimeSensMethod.h"
+//#include "copasi/timesens/CTimeSensMethod.h"
 #include "copasi/utilities/CCopasiTask.h"
 #include "copasi/trajectory/CTimeSeries.h"
 

@@ -123,7 +123,7 @@ typedef CExpression DisownedExpression;
 // suppress warnings on multiple inheritance
 %warnfilter(813) CEvent;
 
-%include "model/CEvent.h"
+%include "copasi/model/CEvent.h"
 
 %extend CEvent
 {

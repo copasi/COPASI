@@ -21,7 +21,7 @@
 
 %ignore CExpression::writeMathML;
 
-%include "function/CExpression.h"
+%include "copasi/function/CExpression.h"
 
 // unignore writeMathML
 %rename(writeMathML) CExpression::writeMathML;

@@ -64,7 +64,7 @@ using namespace QtDataVisualization;
 
 #else
 
-#include "barChart/qwt3dPlot.h"
+#include "copasi/barChart/qwt3dPlot.h"
 
 #endif // WITH_QT5_VISUALIZATION
 

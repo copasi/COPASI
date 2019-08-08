@@ -32,8 +32,8 @@
 #include <string>
 
 #include "copasi/copasi.h"
-#include "lapack/blaswrap.h"
-#include "lapack/lapackwrap.h"
+#include "copasi/lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 #include "CLSODAR.h"
 #include "Cxerrwd.h"

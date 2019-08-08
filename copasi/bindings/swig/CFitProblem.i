@@ -29,7 +29,7 @@
 %ignore CFitProblem::getExperimentSet() const;
 %ignore CFitProblem::getCrossValidationSet() const;
 
-%include "parameterFitting/CFitProblem.h"
+%include "copasi/parameterFitting/CFitProblem.h"
 
 
 

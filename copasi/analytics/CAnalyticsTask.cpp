@@ -24,7 +24,7 @@
 #include <cmath>
 
 #include "copasi/copasi.h"
-#include <model/CEvent.h>
+#include <copasi/model/CEvent.h>
 
 #include "CAnalyticsTask.h"
 #include "CAnalyticsProblem.h"

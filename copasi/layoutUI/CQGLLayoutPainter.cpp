@@ -72,8 +72,11 @@
 #define GLX_GLXEXT_LEGACY
 #include <GL/gl.h>
 #include <GL/glu.h>
-// I am including a new glext with the source code
+#ifdef HAVE_GL_EXT
 # include <GL/glext.h>
+#else
+# include <copasi/GL/glext.h>
+#endif // HAVE_GL_EXT
 #ifndef _WIN32
 #include <GL/glx.h>
 #endif // _WIN32

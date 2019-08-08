@@ -102,7 +102,7 @@
 // suppress warnings on multiple inheritance
 %warnfilter(813) CDataModel;
 
-%include "CopasiDataModel/CDataModel.h"
+%include "copasi/CopasiDataModel/CDataModel.h"
 
 %rename(newModel) CDataModel::newModel;
 

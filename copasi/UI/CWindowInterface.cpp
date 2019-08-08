@@ -1,10 +1,20 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-#include <UI/CWindowInterface.h>
-#include <UI/copasiui3window.h>
+#include <copasi/UI/CWindowInterface.h>
+#include <copasi/UI/copasiui3window.h>
 
 CWindowInterface::CWindowInterface(QWidget *parent /*= NULL*/, Qt::WindowFlags flags /*= NULL*/)
   : QMainWindow(parent, flags)

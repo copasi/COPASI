@@ -49,7 +49,7 @@
 
 %rename (getResult) CSteadyStateTask::getResult() const; // unignore %getResult()
 
-%include "steadystate/CSteadyStateTask.h"
+%include "copasi/steadystate/CSteadyStateTask.h"
 
    
 #ifdef SWIGR
