@@ -1,3 +1,8 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -21,6 +26,7 @@ find_package(crossguid CONFIG REQUIRED
   PATHS $ENV{CROSSGUID_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
         ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
         /usr/${CMAKE_INSTALL_LIBDIR}/cmake
+        ${CONAN_LIB_DIRS_CROSSGUID}/cmake
   )
 
 if (NOT CROSSGUID_FOUND)
@@ -58,6 +64,7 @@ if (NOT CROSSGUID_FOUND)
           /opt/csw/lib    Blastwave
           /opt/lib
           /usr/freeware/lib64
+          ${CONAN_LIB_DIRS_CROSSGUID}
     NO_DEFAULT_PATH)
     
   if (NOT CROSSGUID_LIBRARY)

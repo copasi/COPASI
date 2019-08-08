@@ -1,3 +1,8 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -20,6 +25,40 @@
 #
 # Created by Robert Osfield.
 # Modified by Ralph Gauges
+
+
+if(UNIX OR CYGWIN OR MINGW)
+  set(LIBSEDML_LIBRARY_NAME sedml)
+else()
+  set(LIBSEDML_LIBRARY_NAME libsedml)
+endif()
+
+
+message (STATUS "Looking for ${LIBSEDML_LIBRARY_NAME}")
+
+find_package(${LIBSEDML_LIBRARY_NAME} CONFIG QUIET)
+
+if (NOT ${LIBSEDML_LIBRARY_NAME}_FOUND)
+  find_package(${LIBSEDML_LIBRARY_NAME} CONFIG QUIET
+    PATHS /usr/lib/cmake
+          /usr/local/lib/cmake
+          /opt/lib/cmake
+          /opt/local/lib/cmake
+          /sw/lib/cmake
+          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
+          ${CONAN_LIB_DIRS_LIBSEDML}/cmake
+  )
+endif()
+
+if (${LIBSEDML_LIBRARY_NAME}_FOUND)
+
+  get_target_property(LIBSEDML_LIBRARY ${LIBSEDML_LIBRARY_NAME} LOCATION)
+  get_filename_component(LIB_PATH ${LIBSEDML_LIBRARY} DIRECTORY)
+  file(TO_CMAKE_PATH ${LIB_PATH}/../include LIBSEDML_INCLUDE_DIR)  
+  get_filename_component (LIBSEDML_INCLUDE_DIR ${LIBSEDML_INCLUDE_DIR} REALPATH)
+  get_target_property(LIBSEDML_VERSION ${LIBSEDML_LIBRARY_NAME} VERSION)
+
+else()
 
 find_path(LIBSEDML_INCLUDE_DIR sedml/SedBase.h
     PATHS $ENV{LIBSEDML_DIR}/include
@@ -49,6 +88,7 @@ find_library(LIBSEDML_LIBRARY
           ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
           ${COPASI_DEPENDENCY_DIR}/lib
           ${COPASI_DEPENDENCY_DIR}
+          ${CONAN_LIB_DIRS_LIBSEDML}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/lib        # Fink
@@ -64,6 +104,11 @@ if (NOT LIBSEDML_LIBRARY)
               sedml)
 endif (NOT LIBSEDML_LIBRARY)
 
+if (NOT LIBSEDML_LIBRARY)
+    message(FATAL_ERROR "libSEDML library not found!")
+endif (NOT LIBSEDML_LIBRARY)
+
+
 find_library(LIBNUML_LIBRARY 
     NAMES numl-static 
           numl
@@ -74,6 +119,7 @@ find_library(LIBNUML_LIBRARY
           ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
           ${COPASI_DEPENDENCY_DIR}/lib
           ${COPASI_DEPENDENCY_DIR}
+          ${CONAN_LIB_DIRS_LIBNUML}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/lib        # Fink
@@ -82,6 +128,14 @@ find_library(LIBNUML_LIBRARY
           /opt/lib
           /usr/freeware/lib64
     NO_DEFAULT_PATH)
+
+endif()
+
+  add_library(${LIBSEDML_LIBRARY_NAME} UNKNOWN IMPORTED)
+  set_target_properties(${LIBSEDML_LIBRARY_NAME} PROPERTIES IMPORTED_LOCATION ${LIBSEDML_LIBRARY})
+  set_target_properties(${LIBSEDML_LIBRARY_NAME} PROPERTIES INTERFACE_LINK_LIBRARIES ${LIBNUML_LIBRARY})
+  
+
 
 if (NOT LIBSEDML_INCLUDE_DIR)
     message(FATAL_ERROR "libsedml include dir not found not found!")

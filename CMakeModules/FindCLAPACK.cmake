@@ -1,3 +1,8 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -292,6 +297,53 @@ endif(NOT CLAPACK_LIBRARIES)
 if (NOT CLAPACK_LINKER_FLAGS)
 set(CLAPACK_LINKER_FLAGS ${LAPACK_LINKER_FLAGS})
 endif(NOT CLAPACK_LINKER_FLAGS)
+
+if (NOT CLAPACK_LIBRARIES AND NOT APPLE)
+
+if (CONAN_LIB_DIRS_LAPACK)
+
+find_library( LAPACK_LIBRARY
+                NAMES liblapack lapack lapack.dll
+                PATHS ${CONAN_LIB_DIRS_LAPACK} )
+find_library( BLAS_LIBRARY
+                NAMES libblas blas blas.dll
+                PATHS ${CONAN_LIB_DIRS_LAPACK} )
+
+SET (CLAPACK_LIBRARIES ${LAPACK_LIBRARY} ${BLAS_LIBRARY})
+SET (BLA_VENDOR "Conan")
+
+endif(CONAN_LIB_DIRS_LAPACK)
+
+if (CONAN_LIB_DIRS_CLAPACK)
+
+find_library( LAPACK_LIBRARY
+                NAMES liblapack lapack liblapack.a
+                PATHS ${CONAN_LIB_DIRS_CLAPACK} )
+find_library( BLAS_LIBRARY
+                NAMES libblas blas libblas.a
+                PATHS ${CONAN_LIB_DIRS_CLAPACK} )
+
+find_library( F2C_LIBRARY
+                NAMES libf2c libf2c.a
+                PATHS ${CONAN_LIB_DIRS_CLAPACK} )
+
+SET (CLAPACK_LIBRARIES ${LAPACK_LIBRARY} ${BLAS_LIBRARY} ${F2C_LIBRARY})
+SET (CLAPACK_INCLUDE_DIR ${CONAN_INCLUDE_DIRS_CLAPACK})
+SET (F2C_INCLUDE_DIR ${CONAN_INCLUDE_DIRS_CLAPACK})
+SET (BLASWRAP_INCLUDE_DIR ${CONAN_INCLUDE_DIRS_CLAPACK})
+
+SET (BLA_VENDOR "COPASI Dependencies")
+
+
+add_definitions(-DHAVE_BLASWRAP_H)
+add_definitions(-DHAVE_F2C_H)
+add_definitions(-DHAVE_CLAPACK_H)
+add_definitions(-DNO_BLAS_WRAP)
+
+
+endif(CONAN_LIB_DIRS_CLAPACK)
+
+endif(NOT CLAPACK_LIBRARIES)
 
 # find_library(CLAPACK_LIBRARIES NAMES clapack libclapack lapack liblapapack)
 

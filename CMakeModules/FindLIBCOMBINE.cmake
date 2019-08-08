@@ -1,3 +1,8 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -44,6 +49,7 @@ if (NOT ${COMBINE_LIBRARY_NAME}_FOUND)
         $ENV{COMBINE_DIR}/lib/cmake
         ${COPASI_DEPENDENCY_DIR}/lib/cmake
         /usr/lib/cmake
+        ${CONAN_LIB_DIRS_LIBCOMBINE}/cmake
   )
 endif()
 
@@ -98,6 +104,7 @@ else()
           ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
           ${COPASI_DEPENDENCY_DIR}/lib
           ${COPASI_DEPENDENCY_DIR}
+          ${CONAN_LIB_DIRS_LIBCOMBINE}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/lib         Fink
