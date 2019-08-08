@@ -1,3 +1,18 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 ###############################################################################
 #
 # Description       : CMake build script for COPASI
@@ -7,19 +22,8 @@
 # This file is part of COPASI.  Please visit http://COPASI.org for more
 # information about COPASI, and the latest version of COPASI.
 #
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., University of Heidelberg, and The University
-# of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
 #
 ###############################################################################
 
@@ -31,19 +35,14 @@ endif(POLICY CMP0048)
 
 project (sbml-testsuite  VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 
-include_directories("${PROJECT_SOURCE_DIR}/.." "${PROJECT_SOURCE_DIR}/../copasi" "${PROJECT_SOURCE_DIR}")
+include_directories(${COPASI_INCLUDE_DIRS})
 
 set(SOURCES ${SOURCES} wrapper.cpp)
 
-include(../copasi/common.cmake)
-include(../copasi/CMakeConsoleApp.cmake)
+add_executable(sbml-testsuite ${SOURCES})
+target_link_libraries(sbml-testsuite libCOPASISE-static)
 
-
-add_executable(sbml-testsuite ${SOURCES} ${HEADERS})
 install(TARGETS sbml-testsuite DESTINATION bin)
-
-add_dependencies(sbml-testsuite ${SE_DEPENDENCIES}) 
-target_link_libraries(sbml-testsuite ${SE_LIBS} ${SE_EXTERNAL_LIBS} )
 
 
 option(SBML_TESTSUITE_RUN "Run the SBML testsuite as test" OFF)

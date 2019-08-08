@@ -1,3 +1,18 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 ###############################################################################
 #
 # Description       : CMake build script for COPASI Python bindings
@@ -7,19 +22,8 @@
 # This file is part of COPASI.  Please visit http://COPASI.org for more
 # information about COPASI, and the latest version of COPASI.
 #
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., University of Heidelberg, and The University
-# of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
 #
 ###############################################################################
 
@@ -92,16 +96,8 @@ add_custom_target(binding_python_swig ALL DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/py
 #
 
 
-include(../../common.cmake)
-include(../../CMakeConsoleApp.cmake)
-
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../..)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../swig)
-include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(BEFORE ${CMAKE_BINARY_DIR})
+include_directories(${COPASI_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 if (WIN32)
@@ -139,9 +135,9 @@ if (PYTHON_USE_DYNAMIC_LOOKUP)
   if (APPLE)
     set_target_properties (binding_python_lib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
   endif()
-  target_link_libraries(binding_python_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS})
+  target_link_libraries(binding_python_lib libCOPASISE-static)
 else()
-  target_link_libraries(binding_python_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS} ${PYTHON_LIBRARIES})
+  target_link_libraries(binding_python_lib libCOPASISE-static ${PYTHON_LIBRARIES})
 endif()
 
 # 

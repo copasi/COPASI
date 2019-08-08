@@ -1,3 +1,18 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 ###############################################################################
 #
 # Description       : CMake build script for COASI Java bindings
@@ -7,19 +22,8 @@
 # This file is part of COPASI.  Please visit http://COPASI.org for more
 # information about COPASI, and the latest version of COPASI.
 #
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., University of Heidelberg, and The University
-# of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
 #
 ###############################################################################
 
@@ -123,16 +127,8 @@ add_custom_command(
 	
 add_custom_target(binding_java_swig DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/java.i)
 
-	
-include(../../common.cmake)
-include(../../CMakeConsoleApp.cmake)
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../..)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../swig)
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(BEFORE ${CMAKE_BINARY_DIR})
+include_directories(${COPASI_INCLUDE_DIRS})
 
 # if additional directories are set be sure to include them
 if (JNI_INCLUDE_DIRS)
@@ -157,7 +153,7 @@ endif()
 
 install(TARGETS binding_java_lib DESTINATION bindings/java )
 
-target_link_libraries(binding_java_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS} )
+target_link_libraries(binding_java_lib libCOPASISE-static)
 
 SET(COPASI_JAR ${CMAKE_CURRENT_BINARY_DIR}/copasi.jar)
 SET(COPASI_GUI_JAR ${CMAKE_CURRENT_BINARY_DIR}/copasi-gui.jar)

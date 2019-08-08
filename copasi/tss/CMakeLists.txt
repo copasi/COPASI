@@ -1,3 +1,18 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 ###############################################################################
 #
 # Description       : CMake build script for COPASI
@@ -7,31 +22,10 @@
 # This file is part of COPASI.  Please visit http://COPASI.org for more
 # information about COPASI, and the latest version of COPASI.
 #
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., University of Heidelberg, and The University
-# of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
 #
 ###############################################################################
-
-#cmake_minimum_required (VERSION 2.6)
-#project (tss)
-#
-#
-#include_directories(
-#  "${PROJECT_SOURCE_DIR}/.." 
-#  "${PROJECT_SOURCE_DIR}/../.." 
-#  "${PROJECT_SOURCE_DIR}"
-#)
 
 file(GLOB HEADERS_TSS tss/*.h)
 file(GLOB SOURCES_TSS tss/*.cpp)
@@ -56,20 +50,3 @@ source_group(tss FILES ${SOURCES_TSS} ${HEADERS_TSS})
 set(COPASI_SOURCES ${COPASI_SOURCES} ${SOURCES_TSS})
 set(COPASI_HEADERS ${COPASI_HEADERS} ${HEADERS_TSS})
 
-
-#set(HEADERS ${HEADERS} CODEExporter.h)
-#set(HEADERS ${HEADERS} CODEExporterC.h)
-#set(HEADERS ${HEADERS} CODEExporterBM.h)
-#set(HEADERS ${HEADERS} CODEExporterXPPAUT.h)
-#
-#set(SOURCES ${SOURCES} CODEExporter.cpp)
-#set(SOURCES ${SOURCES} CODEExporterC.cpp)
-#set(SOURCES ${SOURCES} CODEExporterBM.cpp)
-#set(SOURCES ${SOURCES} CODEExporterXPPAUT.cpp)
-#
-#
-
-#add_library(tss STATIC ${SOURCES} ${HEADERS})
-#
-#target_link_libraries(tss trajectory)
-#

@@ -308,6 +308,7 @@ include_directories(BEFORE ${dir})
 endforeach()
 endif()
 
+SET(COPASI_INCLUDE_DIRS ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 
 if (WIN32)
 add_definitions(-DLIBSEDML_STATIC)

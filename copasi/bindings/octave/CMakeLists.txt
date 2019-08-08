@@ -1,3 +1,18 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 ###############################################################################
 #
 # Description       : CMake build script for COPASI octave bindings
@@ -7,19 +22,8 @@
 # This file is part of COPASI.  Please visit http://COPASI.org for more
 # information about COPASI, and the latest version of COPASI.
 #
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., University of Heidelberg, and The University
-# of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
 #
 ###############################################################################
 
@@ -28,7 +32,6 @@ include(FindPythonLibs)
 include(FindPythonInterp)
 find_package(Octave REQUIRED)
 
-include(../../CMakeConsoleApp.cmake)
 ####################################################################
 #
 # ensure that LAPACK variables are there for swig
@@ -105,13 +108,8 @@ add_custom_target(binding_octave_swig ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/co
 #
 # Build native library
 #
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../..)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../swig)
-include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(BEFORE ${CMAKE_BINARY_DIR})
+include_directories(${COPASI_INCLUDE_DIRS})
 
 include_directories(${OCTAVE_INCLUDE_DIR})
 include_directories(${OCTAVE_INCLUDE_DIR}/octave)
@@ -140,7 +138,7 @@ else()
 	endif()
 endif()
 
-target_link_libraries(binding_octave_lib libCOPASISE-static ${SE_LIBS} ${SE_EXTERNAL_LIBS}  ${OCTAVE_OCTAVE_LIBRARY})
+target_link_libraries(binding_octave_lib libCOPASISE-static ${OCTAVE_OCTAVE_LIBRARY})
 
 # 
 # Determine the python installation directory

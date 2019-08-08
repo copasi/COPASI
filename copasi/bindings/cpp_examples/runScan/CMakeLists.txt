@@ -25,12 +25,9 @@ endif(POLICY CMP0048)
 
 project (runScan VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 
-include_directories("${PROJECT_SOURCE_DIR}/../../.." "${PROJECT_SOURCE_DIR}/../../../.." "${PROJECT_SOURCE_DIR}")
+include_directories(${COPASI_INCLUDE_DIRS})
 
 set(SOURCES ${SOURCES} runScan.cpp)
 
-include(../../../CMakeConsoleApp.cmake)
-
 add_executable(runScan ${SOURCES} ${HEADERS})
-add_dependencies(runScan ${SE_DEPENDENCIES}) 
-target_link_libraries(runScan ${SE_LIBS} ${SE_EXTERNAL_LIBS})
+target_link_libraries(runScan libCOPASISE-static)

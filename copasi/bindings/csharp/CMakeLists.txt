@@ -1,3 +1,18 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 ###############################################################################
 #
 # Description       : CMake build script for COPASI C# bindings
@@ -7,19 +22,8 @@
 # This file is part of COPASI.  Please visit http://COPASI.org for more
 # information about COPASI, and the latest version of COPASI.
 #
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., University of Heidelberg, and The University
-# of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
 #
 ###############################################################################
 
@@ -142,22 +146,15 @@ add_custom_target(binding_csharp_swig DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/csharp
 # Build native library
 # 
 
-include(../../common.cmake)
-include(../../CMakeConsoleApp.cmake)
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../..)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../swig)
-include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(BEFORE ${CMAKE_BINARY_DIR})
+include_directories(${COPASI_INCLUDE_DIRS})
 
 add_library(binding_csharp_native_lib SHARED ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp) 
 add_dependencies(binding_csharp_native_lib binding_csharp_swig)
 
 set_target_properties (binding_csharp_native_lib PROPERTIES OUTPUT_NAME "copasics")
 
-target_link_libraries(binding_csharp_native_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS} )
+target_link_libraries(binding_csharp_native_lib libCOPASISE-static)
 
 INSTALL(TARGETS binding_csharp_native_lib 
         DESTINATION bindings/csharp
