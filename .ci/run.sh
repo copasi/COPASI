@@ -18,5 +18,5 @@ fi
 mkdir build
 cd build
 conan install .. --build=missing
-cmake -DBUILD_GUI=OFF -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 ../COPASI/
+cmake -DBUILD_GUI=OFF -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 ../
 cmake --build . --config Release --target CopasiSE
