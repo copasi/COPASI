@@ -169,7 +169,7 @@ import sys
 
 %{
 #include "copasi/core/CRootContainer.h"
-#include "copasi/function/COptions.h"
+#include "copasi/commandline/COptions.h"
 %}
 
 %init %{

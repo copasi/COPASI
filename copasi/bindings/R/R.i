@@ -178,7 +178,7 @@ import types
 
 %{
 #include "copasi/core/CRootContainer.h"
-#include "copasi/function/COptions.h"
+#include "copasi/commandline/COptions.h"
 #include "RProcessCallback.h"
 %}
 
