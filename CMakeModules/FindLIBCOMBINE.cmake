@@ -30,31 +30,6 @@ if (UNIX)
 else()
   set(COMBINE_LIBRARY_NAME libCombine-static)
 endif()
-
-if (EXISTS ${COPASI_BINARY_DIR}/Findlibcombine.cmake)
-#find_package(libcombine QUIET)
-include (${COPASI_BINARY_DIR}/Findlibcombine.cmake)
-endif()
-
-if (libcombine_FOUND AND NOT ${CMAKE_VERSION} VERSION_LESS "3.0")
-
-  # provided by conan, so just copy information
-  add_library(${COMBINE_LIBRARY_NAME} UNKNOWN IMPORTED)
-  set_target_properties(${COMBINE_LIBRARY_NAME} PROPERTIES IMPORTED_LOCATION ${libcombine_LIBS})
-  get_target_property(tmp libcombine::libcombine INTERFACE_LINK_LIBRARIES)
-  set_property(TARGET ${COMBINE_LIBRARY_NAME} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${tmp})
-  get_target_property(tmp libcombine::libcombine INTERFACE_COMPILE_DEFINITIONS)
-  set_property(TARGET ${COMBINE_LIBRARY_NAME} APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS ${tmp})
-  get_target_property(tmp libcombine::libcombine INTERFACE_INCLUDE_DIRECTORIES)
-  set_property(TARGET ${COMBINE_LIBRARY_NAME} APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${tmp})
-  
-  set(COMBINE_LIBRARY ${libcombine_LIBS})
-  set(COMBINE_INCLUDE_DIR ${libcombine_INCLUDE_DIRS})  
-  set(${COMBINE_LIBRARY_NAME}_FOUND ON)
-  message(STATUS "Found libCombine ${libcombine_VERSION}")
-  
-else()
-
 find_package(${COMBINE_LIBRARY_NAME} CONFIG QUIET)
 
 if (NOT ${COMBINE_LIBRARY_NAME}_FOUND)
@@ -136,7 +111,6 @@ else()
         NAMES ${COMBINE_LIBRARY_NAME})
   endif (NOT COMBINE_LIBRARY)
 endif(${COMBINE_LIBRARY_NAME}_FOUND)
-endif(libcombine_FOUND AND NOT ${CMAKE_VERSION} VERSION_LESS "3.0")
 
 if (NOT COMBINE_LIBRARY)
     message(FATAL_ERROR "COMBINE library not found!")

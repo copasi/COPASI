@@ -169,8 +169,9 @@ if (COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
 include(cmake-set-dependencies.cmake)
 endif(COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
 
-
-
+if (EXISTS ${CMAKE_BINARY_DIR}/conan_paths.cmake)
+include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
+endif()
 set(CMAKE_MODULE_PATH "${COPASI_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
 IF(DEFINED CMAKE_BUILD_TYPE)

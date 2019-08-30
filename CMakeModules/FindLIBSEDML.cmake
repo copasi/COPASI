@@ -33,34 +33,6 @@ else()
   set(LIBSEDML_LIBRARY_NAME libsedml)
 endif()
 
-
-if (EXISTS ${COPASI_BINARY_DIR}/Findlibsedml.cmake)
-#find_package(libsedml QUIET)
-include (${COPASI_BINARY_DIR}/Findlibsedml.cmake)
-endif()
-
-if (libsedml_FOUND AND NOT ${CMAKE_VERSION} VERSION_LESS "3.0")
-
-  # provided by conan, so just copy information
-  if (NOT TARGET ${LIBSEDML_LIBRARY_NAME})
-  add_library(${LIBSEDML_LIBRARY_NAME} UNKNOWN IMPORTED)
-  set_target_properties(${LIBSEDML_LIBRARY_NAME} PROPERTIES IMPORTED_LOCATION ${libcombine_LIBS})
-  get_target_property(tmp libsedml::libsedml INTERFACE_LINK_LIBRARIES)
-  set_property(TARGET ${LIBSEDML_LIBRARY_NAME} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${tmp})
-  get_target_property(tmp libsedml::libsedml INTERFACE_COMPILE_DEFINITIONS)
-  set_property(TARGET ${LIBSEDML_LIBRARY_NAME} APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS ${tmp})
-  get_target_property(tmp libsedml::libsedml INTERFACE_INCLUDE_DIRECTORIES)
-  set_property(TARGET ${LIBSEDML_LIBRARY_NAME} APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${tmp})
-  endif()
-  
-  set(LIBSEDML_LIBRARY ${libsedml_LIBS})
-  set(LIBSEDML_INCLUDE_DIR ${libsedml_INCLUDE_DIRS})  
-  set(LIBSEDML_VERSION ${libsedml_VERSION})
-  set(${LIBSEDML_LIBRARY_NAME}_FOUND ON)
-  message(STATUS "Found libSEDML ${libsedml_VERSION}")
-
-else()
-
 message (STATUS "Looking for ${LIBSEDML_LIBRARY_NAME}")
 
 find_package(${LIBSEDML_LIBRARY_NAME} CONFIG QUIET)
@@ -171,8 +143,6 @@ endif (NOT LIBSEDML_INCLUDE_DIR)
 if (NOT LIBSEDML_LIBRARY)
     message(FATAL_ERROR "LIBSEDML library not found!")
 endif (NOT LIBSEDML_LIBRARY)
-
-endif (libsedml_FOUND AND NOT ${CMAKE_VERSION} VERSION_LESS "3.0")
 
 set(LIBSEDML_FOUND "NO")
 if(LIBSEDML_LIBRARY)
