@@ -31,7 +31,10 @@ else()
   set(COMBINE_LIBRARY_NAME libCombine-static)
 endif()
 
-find_package(libcombine QUIET)
+if (EXISTS ${COPASI_BINARY_DIR}/Findlibcombine.cmake)
+#find_package(libcombine QUIET)
+include (${COPASI_BINARY_DIR}/Findlibcombine.cmake)
+endif()
 
 if (libcombine_FOUND AND NOT ${CMAKE_VERSION} VERSION_LESS "3.0")
 

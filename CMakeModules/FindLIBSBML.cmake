@@ -31,6 +31,34 @@ if (NOT LIBSBML_SHARED)
   set(LIBSBML_LIBRARY_NAME "${LIBSBML_LIBRARY_NAME}-static")
 endif()
 
+if (EXISTS ${COPASI_BINARY_DIR}/Findlibsbml.cmake)
+#find_package(libsbml QUIET)
+include (${COPASI_BINARY_DIR}/Findlibsbml.cmake)
+endif()
+
+if (libsbml_FOUND AND NOT ${CMAKE_VERSION} VERSION_LESS "3.0")
+
+
+  # provided by conan, so just copy information
+  if (NOT TARGET ${LIBSBML_LIBRARY_NAME})
+  add_library(${LIBSBML_LIBRARY_NAME} UNKNOWN IMPORTED)
+  set_target_properties(${LIBSBML_LIBRARY_NAME} PROPERTIES IMPORTED_LOCATION ${libcombine_LIBS})
+  get_target_property(tmp libsbml::libsbml INTERFACE_LINK_LIBRARIES)
+  set_property(TARGET ${LIBSBML_LIBRARY_NAME} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${tmp})
+  get_target_property(tmp libsbml::libsbml INTERFACE_COMPILE_DEFINITIONS)
+  set_property(TARGET ${LIBSBML_LIBRARY_NAME} APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS ${tmp})
+  get_target_property(tmp libsbml::libsbml INTERFACE_INCLUDE_DIRECTORIES)
+  set_property(TARGET ${LIBSBML_LIBRARY_NAME} APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${tmp})
+  endif()
+  
+  set(LIBSBML_LIBRARY ${libsbml_LIBS})
+  set(LIBSBML_INCLUDE_DIR ${libsbml_INCLUDE_DIRS})  
+  set(LIBSBML_VERSION ${libsbml_VERSION})
+  set(${LIBSBML_LIBRARY_NAME}_FOUND ON)
+  message(STATUS "Found libSBML ${libsbml_VERSION}")
+
+else()
+
 message (STATUS "Looking for ${LIBSBML_LIBRARY_NAME}")
 
 find_package(${LIBSBML_LIBRARY_NAME} CONFIG QUIET)
@@ -115,7 +143,7 @@ endif (NOT LIBSBML_LIBRARY)
   set_target_properties(${LIBSBML_LIBRARY_NAME} PROPERTIES IMPORTED_LOCATION ${LIBSBML_LIBRARY})
 
 endif()
-
+endif (libsbml_FOUND AND NOT ${CMAKE_VERSION} VERSION_LESS "3.0")
 
 
 set(LIBSBML_FOUND "NO")
