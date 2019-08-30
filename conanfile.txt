@@ -10,3 +10,4 @@ clapack/3.2.1@fbergmann/stable
 
 [generators]
 cmake
+cmake_find_package
