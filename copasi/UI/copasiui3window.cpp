@@ -3975,6 +3975,12 @@ void CopasiUI3Window::performNextAction()
         break;
       }
 
+      case CheckForUpdates:
+      {
+        slotCheckForUpdate();
+        break;
+      }
+
       default:
         break;
     }
@@ -4035,6 +4041,14 @@ void CopasiUI3Window::slotHandleCopasiScheme(const QUrl& url)
 
 void CopasiUI3Window::slotCheckForUpdate()
 {
+  // if the datamodel is already performing an action (loading / importing)
+  // we need to delay checking for updates
+  if (mpDataModelGUI->isBusy())
+    {
+      mActionStack.push_back(std::make_pair(CheckForUpdates, ""));
+      return;
+    }
+
   // check whether user has not opted out checking for updates
   std::string TmpFileName;
   COptions::getValue("Tmp", TmpFileName);
@@ -4102,7 +4116,7 @@ void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
 
   if (success)
     {
-      success &= getVersionFromFile(mpDataModelGUI->getFileName(), Latest);
+      success &= getVersionFromFile(mpDataModelGUI->getLastDownloadDestination(), Latest);
     }
 
   if (success)
@@ -4175,7 +4189,7 @@ void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
   else if (mpDataModelGUI->getLastDownloadUrl() != "https://api.github.com/repos/copasi/COPASI/releases/latest")
     {
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCheckForUpdateFinished(bool)));
-      mpDataModelGUI->downloadFileFromUrl("https://api.github.com/repos/copasi/COPASI/releases/latest", mpDataModelGUI->getFileName(), false);
+      mpDataModelGUI->downloadFileFromUrl("https://api.github.com/repos/copasi/COPASI/releases/latest", mpDataModelGUI->getLastDownloadDestination(), false);
     }
   else
     {
@@ -4196,7 +4210,7 @@ void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
 
   if (success)
     {
-      QString tempFileName = FROM_UTF8(mpDataModelGUI->getFileName());
+      QString tempFileName = FROM_UTF8(mpDataModelGUI->getLastDownloadDestination());
 
       mActionStack.push_front(std::make_pair(RemoveReportTargets, ""));
 

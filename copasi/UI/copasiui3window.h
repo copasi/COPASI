@@ -82,6 +82,7 @@ enum CopasiUIActions
   RunTask,
   CreatePlot,
   RemoveReportTargets,
+  CheckForUpdates,
   Invalid
 };
 
@@ -140,9 +141,9 @@ public:
 
 // COMBINE Archive will take care of file management
   /*
-#ifdef COPASI_Provenance
+  #ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-#endif
+  #endif
   */
 
   CQOptPopulation* getPopulationDisplay();

@@ -101,6 +101,7 @@ DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel):
   mpSBMLExportString(NULL),
   mFileName(),
   mDownloadUrl(),
+  mDownloadDestination(),
   mOverWrite(false),
   mSBMLLevel(2),
   mSBMLVersion(4),
@@ -250,7 +251,7 @@ void DataModelGUI::downloadFileFromUrl(const std::string & url, const std::strin
       mUpdateItem = ((CProcessReport*)mpProgressBar)->addItem("Download file", mDownloadedBytes, &mDownloadedTotalBytes);
     }
 
-  mFileName = destination;
+  mDownloadDestination = destination;
   mDownloadUrl = url;
 
   connect(manager, SIGNAL(finished(QNetworkReply*)),
@@ -480,6 +481,13 @@ void DataModelGUI::exportSBMLToStringFinished()
   threadFinished();
 }
 
+bool
+DataModelGUI::isBusy() const
+{
+  return mpThread != NULL;
+}
+
+
 void DataModelGUI::threadFinished()
 {
   if (mpThread != NULL)
@@ -579,6 +587,12 @@ const std::string& DataModelGUI::getLastDownloadUrl() const
   return mDownloadUrl;
 }
 
+const std::string& DataModelGUI::getLastDownloadDestination() const
+{
+  return mDownloadDestination;
+}
+
+
 void DataModelGUI::exportMathModelFinished()
 {
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportMathModelFinished()));
@@ -649,13 +663,13 @@ void DataModelGUI::downloadFinished(QNetworkReply *reply)
         }
 
       reply->deleteLater();
-      downloadFileFromUrl(redirectUrl, mFileName, withProgress);
+      downloadFileFromUrl(redirectUrl, mDownloadDestination, withProgress);
       return;
     }
 
   if (reply != NULL && reply->error() == QNetworkReply::NoError && reply->bytesAvailable() > 0)
     {
-      QFile downloadedFile(mFileName.c_str());
+      QFile downloadedFile(mDownloadDestination.c_str());
 
       if (downloadedFile.open(QFile::WriteOnly))
         {
