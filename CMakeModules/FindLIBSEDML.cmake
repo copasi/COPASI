@@ -17,7 +17,7 @@
 # This module defines:
 # LIBSEDML_INCLUDE_DIR, where to find the headers
 #
-# LIBSEDML_LIBRARY, LIBSEDML_LIBRARY_DEBUG
+# LIBSEDML_LIBRARY,
 # LIBSEDML_FOUND
 #
 # $LIBSEDML_DIR is an environment variable that would
@@ -32,7 +32,6 @@ if(UNIX OR CYGWIN OR MINGW)
 else()
   set(LIBSEDML_LIBRARY_NAME libsedml)
 endif()
-
 
 message (STATUS "Looking for ${LIBSEDML_LIBRARY_NAME}")
 

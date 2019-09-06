@@ -18,17 +18,11 @@
 # This module defines:
 # COMBINE_INCLUDE_DIR, where to find the headers
 #
-# COMBINE_LIBRARY, COMBINE_LIBRARY_DEBUG
+# COMBINE_LIBRARY
 # COMBINE_FOUND
-#
-# $COMBINE_DIR is an environment variable that would
-# correspond to the ./configure --prefix=$COMBINE_DIR
 #
 # Created by Robert Osfield.
 # Modified by Ralph Gauges
-
-# message (STATUS "$ENV{COMBINE_DIR}")
-
 
 set(COMBINE_LIBRARY_NAME)
 if (UNIX)
@@ -36,8 +30,6 @@ if (UNIX)
 else()
   set(COMBINE_LIBRARY_NAME libCombine-static)
 endif()
-
-
 find_package(${COMBINE_LIBRARY_NAME} CONFIG QUIET)
 
 if (NOT ${COMBINE_LIBRARY_NAME}_FOUND)
@@ -60,11 +52,11 @@ get_target_property(COMBINE_LIBRARY ${COMBINE_LIBRARY_NAME} IMPORTED_LOCATION_RE
 
 if (NOT COMBINE_LIBRARY)
   get_target_property(COMBINE_LIBRARY ${COMBINE_LIBRARY_NAME} IMPORTED_LOCATION_DEBUG)
-endif()
+endif(NOT COMBINE_LIBRARY)
 
 if (NOT COMBINE_LIBRARY)
   set(COMBINE_LIBRARY)
-endif()
+endif(NOT COMBINE_LIBRARY)
 
 get_target_property(COMBINE_INTERFACE_LINK_LIBRARIES ${COMBINE_LIBRARY_NAME} INTERFACE_LINK_LIBRARIES)
 
@@ -118,7 +110,7 @@ else()
     find_library(COMBINE_LIBRARY 
         NAMES ${COMBINE_LIBRARY_NAME})
   endif (NOT COMBINE_LIBRARY)
-endif()
+endif(${COMBINE_LIBRARY_NAME}_FOUND)
 
 if (NOT COMBINE_LIBRARY)
     message(FATAL_ERROR "COMBINE library not found!")
@@ -126,9 +118,49 @@ endif (NOT COMBINE_LIBRARY)
 
 set(COMBINE_FOUND "NO")
 if(COMBINE_LIBRARY)
-    if   (COMBINE_INCLUDE_DIR)
-        SET(COMBINE_FOUND "YES")
-    endif(COMBINE_INCLUDE_DIR)
+  if (COMBINE_INCLUDE_DIR)
+    SET(COMBINE_FOUND "YES")
+    
+    # # see whether library works and get version
+    # SET(ADDITIONAL_DEFS)
+    # if ("${COMBINE_LIBRARY}" MATCHES "static")
+    #   SET(ADDITIONAL_DEFS ${ADDITIONAL_DEFS} "-DLIBCOMBINE_STATIC=1")
+    # endif()
+    # 
+    # set(TEST_FILE ${CMAKE_BINARY_DIR}/test_libcombine.cpp)
+    # file(WRITE ${TEST_FILE} "#include <omex/common/libcombine-version.h>
+    # #include <iostream>
+    # 
+    # using namespace std;
+    # 
+    # int main()
+    # {
+    #   cout << getLibCombineDottedVersion() << endl;
+    #   return 0;
+    # }
+    # ")
+    # 
+    # try_run(
+    #   LIBCOMBINE_VERSIONTEST_EXITCODE
+    #   LIBCOMBINE_VERSIONTEST_COMPILE
+    #   ${CMAKE_BINARY_DIR}
+    #   ${TEST_FILE}
+    #   CMAKE_FLAGS -DINCLUDE_DIRECTORIES=${COMBINE_INCLUDE_DIR}
+    #   COMPILE_DEFINITIONS ${ADDITIONAL_DEFS}
+    #   LINK_LIBRARIES ${COMBINE_LIBRARY}
+    #   RUN_OUTPUT_VARIABLE COMBINE_VERSION
+    #   COMPILE_OUTPUT_VARIABLE COMPILE_OUTPUT
+    # )
+    # 
+    # if (COMBINE_VERSION)
+    #   string(STRIP ${COMBINE_VERSION} COMBINE_VERSION)
+    #   if (COMBINE_VERSION)
+    #     message("Found libCombine Version: ${COMBINE_VERSION}")
+    #   endif()
+    # endif()
+    
+    
+  endif(COMBINE_INCLUDE_DIR)
 endif(COMBINE_LIBRARY)
 
 include(FindPackageHandleStandardArgs)

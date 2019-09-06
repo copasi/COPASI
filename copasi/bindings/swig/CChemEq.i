@@ -40,7 +40,9 @@
 %include "copasi/model/CChemEq.h"
 %include "copasi/model/CChemEqInterface.h"
 
+#ifndef SWIGR
 %template(StringSet)  std::set< std::string >;
+#endif
 
 %extend CChemEq
 {

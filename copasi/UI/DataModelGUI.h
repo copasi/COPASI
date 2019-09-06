@@ -106,6 +106,12 @@ public:
 
   const std::string& getFileName() const;
   const std::string& getLastDownloadUrl() const;
+  const std::string& getLastDownloadDestination() const;
+
+  /**
+   * @return true, if the operation thread is not null, false otherwise
+   */
+  bool isBusy() const;
 
 public slots:
   void loadModelFinished();
@@ -180,9 +186,10 @@ private:
   CProgressBar * mpProgressBar;
   bool mSuccess;
   std::string mSBMLImportString;
-  std::string * mpSBMLExportString;
+  std::string *mpSBMLExportString;
   std::string mFileName;
   std::string mDownloadUrl;
+  std::string mDownloadDestination;
   bool mOverWrite;
   int mSBMLLevel;
   int mSBMLVersion;

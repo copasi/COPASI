@@ -285,7 +285,7 @@ target_link_libraries(libCOPASISE-static ${CROSSGUID_LIBRARY} ${RAPTOR_LIBRARY} 
  if (EXTRA_LIBS)
    target_link_libraries(libCOPASISE-static ${EXTRA_LIBS})   
  else ()
-   if (UNIX AND ${BLA_VENDOR} STREQUAL "Intel (MKL)")
+   if (UNIX AND BLA_VENDOR AND "${BLA_VENDOR}" STREQUAL "Intel (MKL)")
      target_link_libraries(libCOPASISE-static -lpthread -lm)
    endif()
  endif(EXTRA_LIBS)

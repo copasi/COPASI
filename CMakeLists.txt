@@ -84,6 +84,16 @@ endif()
 
 project (COPASI VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 
+set (CONAN_INFO)
+if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
+set (CONAN_INFO ${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
+elseif (EXISTS ${CMAKE_BINARY_DIR}/../conanbuildinfo.cmake)
+set (CONAN_INFO ${CMAKE_BINARY_DIR}/../conanbuildinfo.cmake)
+endif()
+if (CONAN_INFO)
+include(${CONAN_INFO})
+conan_basic_setup(SKIP_STD)
+endif()
 
 include (CMakeTestCCompiler)
 include (CheckCSourceCompiles)
@@ -159,8 +169,9 @@ if (COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
 include(cmake-set-dependencies.cmake)
 endif(COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
 
-
-
+if (EXISTS ${CMAKE_BINARY_DIR}/conan_paths.cmake)
+include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
+endif()
 set(CMAKE_MODULE_PATH "${COPASI_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
 IF(DEFINED CMAKE_BUILD_TYPE)

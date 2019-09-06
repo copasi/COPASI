@@ -116,8 +116,6 @@ endif (NOT LIBSBML_LIBRARY)
 
 endif()
 
-
-
 set(LIBSBML_FOUND "NO")
 if(LIBSBML_LIBRARY)
     if (LIBSBML_INCLUDE_DIR)
