@@ -214,26 +214,29 @@ CScanItemLinear::CScanItemLinear(CCopasiParameterGroup* si):
 
   //TODO: log scanning of negative values?
 
-  mUseValues = si->getValue<bool>("Use Values");
-  std::string values = si->getValue<std::string>("Values");
-
-  if (mUseValues && !values.empty())
+  if (si->getParameter("Use Values") && si->getParameter("Values"))
     {
-      std::vector<std::string> elems;
-      ResultParser::split(values, std::string(",; |\n\t\r"), elems);
+      mUseValues = si->getValue<bool>("Use Values");
+      std::string values = si->getValue<std::string>("Values");
+
+      if (mUseValues && !values.empty())
+        {
+          std::vector<std::string> elems;
+          ResultParser::split(values, std::string(",; |\n\t\r"), elems);
 
 for (std::string & number : elems)
-        {
-          mValues.push_back(ResultParser::saveToDouble(number));
+            {
+              mValues.push_back(ResultParser::saveToDouble(number));
+            }
+
+          mNumSteps = 0;
+
+          if (!mValues.empty())
+            mNumSteps = mValues.size() - 1;
+
         }
 
-      mNumSteps = 0;
-
-      if (!mValues.empty())
-        mNumSteps = mValues.size() - 1;
-
     }
-
 }
 
 void CScanItemLinear::step()
