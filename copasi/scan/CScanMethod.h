@@ -96,6 +96,7 @@ protected:
   CScanItem(CCopasiParameterGroup* si);
 
   //initObject();
+  virtual void ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg);
 
 private:
   CScanItem();
@@ -107,6 +108,7 @@ class CScanItemRepeat: public CScanItem
 {
 public:
   CScanItemRepeat(CCopasiParameterGroup* si);
+
   virtual void step();
 
   virtual ~CScanItemRepeat() {};
@@ -130,6 +132,9 @@ public:
   virtual ~CScanItemLinear() {};
 
   virtual bool isValidScanItem(const bool & continueFromCurrentState);
+protected:
+  virtual void ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg);
+
 };
 
 //***********************************+
@@ -147,6 +152,8 @@ public:
 
   virtual void step();
   virtual bool isNesting() const {return false;};
+protected:
+  virtual void ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg);
 };
 
 //***********************************+
