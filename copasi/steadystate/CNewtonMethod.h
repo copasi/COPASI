@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -87,11 +92,11 @@ public:
    * @param const CMatrix< C_FLOAT64 > & A
    * @param CVector< C_FLOAT64 > & X
    * @param const CVectorCore< const C_FLOAT64 > & B
-   * @return size_t rankDeficiency
+   * @return std::pair< size_t, double > (rankDeficiency, error)
    */
-  size_t solveAxEqB(const CMatrix< C_FLOAT64 > & A,
-                    CVector< C_FLOAT64 > & X,
-                    const CVectorCore< const C_FLOAT64 > & B) const;
+  std::pair< size_t, double > solveAxEqB(const CMatrix< C_FLOAT64 > & A,
+                                         CVector< C_FLOAT64 > & X,
+                                         const CVectorCore< const C_FLOAT64 > & B) const;
 
   /**
    * Specific constructor
