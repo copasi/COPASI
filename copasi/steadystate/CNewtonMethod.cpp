@@ -602,6 +602,11 @@ C_FLOAT64 CNewtonMethod::targetFunction()
 
   std::pair< size_t, double > Result = solveAxEqB(*mpJacobian, Distance, mdxdt);
 
+  if (mpJacobian->numCols() == Result.first)
+    {
+      return std::numeric_limits< C_FLOAT64 >::infinity();
+    }
+
   // We look at all ODE determined entity and dependent species rates.
   C_FLOAT64 * pDistance = Distance.array();
   C_FLOAT64 * pDistanceEnd = pDistance + Distance.size();
