@@ -35,9 +35,6 @@
 #include "copasi/model/CModel.h"
 #include "copasi/function/CExpression.h"
 
-//activate display of test of symbolic derivatives
-#define _DERIV_TEST_
-
 /**
  *  Constructs a CQMathMatrixWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -68,7 +65,7 @@ CQMathMatrixWidget::CQMathMatrixWidget(QWidget* parent)
   tcs->setMinMax(-1.5, 1.5);
   mpArrayWidget3->setColorScalingAutomatic(false);
 
-#ifdef _DERIV_TEST_
+#ifdef COPASI_DEBUG_TRACE
   connect(mpDerivButton, SIGNAL(clicked()), this, SLOT(slotDerivButtonPressed()));
 #else
 
@@ -216,7 +213,7 @@ bool CQMathMatrixWidget::enterProtected()
 
 void CQMathMatrixWidget::slotDerivButtonPressed()
 {
-#ifdef _DERIV_TEST_
+#ifdef COPASI_DEBUG_TRACE
   std::cout << "Deriv" << std::endl;
   assert(mpDataModel != NULL);
   CModel* pModel = mpDataModel->getModel();
