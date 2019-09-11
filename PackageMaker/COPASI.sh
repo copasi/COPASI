@@ -1,4 +1,9 @@
 #!/bin/bash
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -27,12 +32,6 @@ pushd Applications/COPASI
 echo macdeployqt CopasiUI.app
 macdeployqt CopasiUI.app
 popd
-
-# Create the Info.plist file for CopasiUI
-echo sed -e 's/%COPASI_VERSION%/'$major.$minor.$build'/g' \
-  ${SOURCE}/copasi/CopasiUI/CopasiUI.plist '>' Applications/COPASI/CopasiUI.app/Contents/Info.plist
-sed -e 's/%COPASI_VERSION%/'$major.$minor.$build'/g' \
-  ${SOURCE}/copasi/CopasiUI/CopasiUI.plist > Applications/COPASI/CopasiUI.app/Contents/Info.plist
 
 echo mkdir -p Applications/COPASI/CopasiUI.app/Contents/Resources
 mkdir -p Applications/COPASI/CopasiUI.app/Contents/Resources
