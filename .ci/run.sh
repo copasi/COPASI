@@ -23,11 +23,11 @@ cmake -DBUILD_GUI=OFF -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0 ../
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     build-wrapper-linux-x86-64 --out-dir ../bw-output make CopasiSE
-    ctest
+    #ctest
     cd ..
     sonar-scanner  -X -Dproject.settings=./.sonarcloud.properties
 else 
     cmake --build . --config Release --target CopasiSE
-    ctest
+    #ctest
 fi
 
