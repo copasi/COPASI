@@ -4,10 +4,14 @@ env:
      - CONAN_LOGIN_USERNAME: "fbergmann"
      - CONAN_CHANNEL: "testing"
      - CONAN_UPLOAD: "https://api.bintray.com/conan/fbergmann/conan"
-     - CONAN_STABLE_BRANCH_PATTERN: "release/*"
      - CONAN_BUILD_POLICY: "missing"
-     - CONAN_UPLOAD_ONLY_WHEN_STABLE: 1 # Will only upload when the branch matches "release/*"
      - CONAN_DOCKER_32_IMAGES: 1
+
+addons:
+  sonarcloud:
+    organization: "copasi"
+    token:
+    secure: enHkIWKy737cMfTNPocVYozq9SFR5PCir7ojp+HtdGNge+crQvDJS23GqeTJqybeDi/jD4zgi/0UMt9g+HG0VzSeTKUciCcGErN9cnXzBHoCMdK3whX36Zf8P170AA+tUzlcFVHLfzPwRiNcNq8rUDh4Emi0zgbiGg2iqmsYJ2w=
 
 linux: &linux
    os: linux
