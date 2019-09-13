@@ -11,7 +11,7 @@ addons:
   sonarcloud:
     organization: "copasi"
     token:
-    secure: enHkIWKy737cMfTNPocVYozq9SFR5PCir7ojp+HtdGNge+crQvDJS23GqeTJqybeDi/jD4zgi/0UMt9g+HG0VzSeTKUciCcGErN9cnXzBHoCMdK3whX36Zf8P170AA+tUzlcFVHLfzPwRiNcNq8rUDh4Emi0zgbiGg2iqmsYJ2w=
+      secure: enHkIWKy737cMfTNPocVYozq9SFR5PCir7ojp+HtdGNge+crQvDJS23GqeTJqybeDi/jD4zgi/0UMt9g+HG0VzSeTKUciCcGErN9cnXzBHoCMdK3whX36Zf8P170AA+tUzlcFVHLfzPwRiNcNq8rUDh4Emi0zgbiGg2iqmsYJ2w=
 
 linux: &linux
    os: linux
