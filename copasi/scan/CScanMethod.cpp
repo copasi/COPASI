@@ -104,6 +104,7 @@ CScanItem::CScanItem(CCopasiParameterGroup* si):
   mFlagFinished(false)
 {
   assert(si != NULL);
+  ensureParameterGroupHasAllElements(si);
 
   mNumSteps = si->getValue< unsigned C_INT32 >("Number of steps");
 
@@ -118,6 +119,12 @@ CScanItem::CScanItem(CCopasiParameterGroup* si):
     {
       mpObjectValue = (C_FLOAT64 *) mpObject->getValuePointer();
     }
+}
+
+void CScanItem::ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg)
+{
+  pg->assertParameter("Number of steps", CCopasiParameter::Type::UINT, 0);
+  pg->assertParameter("Object", CCopasiParameter::Type::CN, std::string());
 }
 
 size_t CScanItem::getNumSteps() const {return mNumSteps;}
@@ -200,6 +207,8 @@ CScanItemLinear::CScanItemLinear(CCopasiParameterGroup* si):
   mLog(false),
   mUseValues(false)
 {
+  ensureParameterGroupHasAllElements(si);
+
   mLog = si->getValue< bool >("log");
   mMin = si->getValue< C_FLOAT64 >("Minimum");
   mMax = si->getValue< C_FLOAT64 >("Maximum");
@@ -214,26 +223,29 @@ CScanItemLinear::CScanItemLinear(CCopasiParameterGroup* si):
 
   //TODO: log scanning of negative values?
 
-  mUseValues = si->getValue<bool>("Use Values");
-  std::string values = si->getValue<std::string>("Values");
-
-  if (mUseValues && !values.empty())
+  if (si->getParameter("Use Values") && si->getParameter("Values"))
     {
-      std::vector<std::string> elems;
-      ResultParser::split(values, std::string(",; |\n\t\r"), elems);
+      mUseValues = si->getValue<bool>("Use Values");
+      std::string values = si->getValue<std::string>("Values");
+
+      if (mUseValues && !values.empty())
+        {
+          std::vector<std::string> elems;
+          ResultParser::split(values, std::string(",; |\n\t\r"), elems);
 
 for (std::string & number : elems)
-        {
-          mValues.push_back(ResultParser::saveToDouble(number));
+            {
+              mValues.push_back(ResultParser::saveToDouble(number));
+            }
+
+          mNumSteps = 0;
+
+          if (!mValues.empty())
+            mNumSteps = mValues.size() - 1;
+
         }
 
-      mNumSteps = 0;
-
-      if (!mValues.empty())
-        mNumSteps = mValues.size() - 1;
-
     }
-
 }
 
 void CScanItemLinear::step()
@@ -288,6 +300,17 @@ bool CScanItemLinear::isValidScanItem(const bool & continueFromCurrentState)
   return true;
 }
 
+void CScanItemLinear::ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg)
+{
+  pg->assertParameter("log", CCopasiParameter::Type::BOOL, false);
+  pg->assertParameter("Minimum", CCopasiParameter::Type::DOUBLE, 0);
+  pg->assertParameter("Maximum", CCopasiParameter::Type::DOUBLE, 0);
+  pg->assertParameter("Use Values", CCopasiParameter::Type::BOOL, false);
+  pg->assertParameter("Values", CCopasiParameter::Type::STRING, std::string());
+
+
+}
+
 //*******
 
 CScanItemRandom::CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg):
@@ -296,6 +319,8 @@ CScanItemRandom::CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg):
   mRandomType(0),
   mLog(false)
 {
+  ensureParameterGroupHasAllElements(si);
+
   mRandomType = si->getValue< unsigned C_INT32 >("Distribution type");
 
   mLog = si->getValue< bool >("log");
@@ -367,6 +392,15 @@ void CScanItemRandom::step()
     }
 
   ++mIndex;
+}
+
+void CScanItemRandom::ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg)
+{
+  pg->assertParameter("Distribution type", CCopasiParameter::Type::UINT, 0);
+  pg->assertParameter("log", CCopasiParameter::Type::BOOL, false);
+  pg->assertParameter("Minimum", CCopasiParameter::Type::DOUBLE, 0);
+  pg->assertParameter("Maximum", CCopasiParameter::Type::DOUBLE, 0);
+
 }
 
 //**************** CScanMethod class ***************************

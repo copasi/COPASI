@@ -383,7 +383,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
 
   calculateJacobian(currentValue, true);
 
-  if (solveAxEqB(*mpJacobian, mH, mdxdt) != 0)
+  if (solveAxEqB(*mpJacobian, mH, mdxdt).second != 0.0)
     {
       // We need to check that mH != 0
       C_FLOAT64 * pH = mH.array();
@@ -600,7 +600,9 @@ C_FLOAT64 CNewtonMethod::targetFunction()
 
   CVector< C_FLOAT64 > Distance;
 
-  if (mpJacobian->numCols() == solveAxEqB(*mpJacobian, Distance, mdxdt))
+  std::pair< size_t, double > Result = solveAxEqB(*mpJacobian, Distance, mdxdt);
+
+  if (mpJacobian->numCols() == Result.first)
     {
       return std::numeric_limits< C_FLOAT64 >::infinity();
     }
@@ -609,7 +611,7 @@ C_FLOAT64 CNewtonMethod::targetFunction()
   C_FLOAT64 * pDistance = Distance.array();
   C_FLOAT64 * pDistanceEnd = pDistance + Distance.size();
   C_FLOAT64 * pCurrentState = mpX;
-  C_FLOAT64 * pAtol = mAtol.array();
+  const C_FLOAT64 * pAtol = mAtol.array();
 
   // Assure that all values are updated.
   mpContainer->updateSimulatedValues(true);
@@ -626,10 +628,8 @@ C_FLOAT64 CNewtonMethod::targetFunction()
 
   for (; pDistance != pDistanceEnd; ++pDistance, ++pCurrentState, ++pAtol, ++pMathObject, ++ppCompartmentVolume)
     {
-      *pAtol = std::max(fabs(*pCurrentState), *pAtol);
-
       // Prevent division by 0
-      tmp = *pDistance / *pAtol;
+      tmp = *pDistance / std::max(fabs(*pCurrentState), *pAtol);
       RelativeDistance += tmp * tmp;
 
       tmp = *pDistance;
@@ -648,6 +648,11 @@ C_FLOAT64 CNewtonMethod::targetFunction()
     isnan(AbsoluteDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(AbsoluteDistance);
 
   C_FLOAT64 TargetValue = std::max(RelativeDistance, AbsoluteDistance);
+
+  if (Result.first > 0)
+    {
+      TargetValue *= std::max(1.0, Result.second);
+    }
 
   return TargetValue;
 }
@@ -794,18 +799,21 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   return true;
 }
 
-size_t CNewtonMethod::solveAxEqB(const CMatrix< C_FLOAT64 > & jacobian,
-                                 CVector< C_FLOAT64 > & X,
-                                 const CVectorCore< const C_FLOAT64 > & B) const
+std::pair< size_t, double > CNewtonMethod::solveAxEqB(const CMatrix< C_FLOAT64 > & jacobian,
+    CVector< C_FLOAT64 > & X,
+    const CVectorCore< const C_FLOAT64 > & B) const
 {
   assert(B.size() == jacobian.numCols());
 
   C_INT M = (C_INT) jacobian.numCols();
   C_INT N = (C_INT) jacobian.numRows();
 
+  std::pair< size_t, double > Result(M, std::numeric_limits< C_FLOAT64 >::infinity());
+
   if (M == 0 || N == 0 || M != N)
     {
-      return M;
+      Result.first = abs(M - N);
+      return Result;
     }
 
   X = * reinterpret_cast<const CVectorCore< C_FLOAT64 > * >(&B);
@@ -827,7 +835,10 @@ size_t CNewtonMethod::solveAxEqB(const CMatrix< C_FLOAT64 > & jacobian,
 
       for (; mpJT < mpJTEnd; mpJT += M, ++mpJ)
         {
-          if (isnan(*mpJ)) return M;
+          if (isnan(*mpJ))
+            {
+              return Result;
+            }
 
           *mpJT = *mpJ;
         }
@@ -986,7 +997,7 @@ size_t CNewtonMethod::solveAxEqB(const CMatrix< C_FLOAT64 > & jacobian,
 
   if (INFO < 0)
     {
-      return M;
+      return Result;
     }
 
   LWORK = (C_INT) WORK[0];
@@ -997,8 +1008,73 @@ size_t CNewtonMethod::solveAxEqB(const CMatrix< C_FLOAT64 > & jacobian,
 
   if (INFO < 0)
     {
-      return M;
+      return Result;
     }
 
-  return M - RANK;
+  if (RANK != M)
+    {
+      Result.first = M - RANK;
+
+      // We need to check whether the || Ax - b || is sufficiently small.
+      // Calculate Ax
+      char T = 'N';
+      C_INT One = 1;
+      C_FLOAT64 Alpha = 1.0;
+      C_FLOAT64 Beta = 0.0;
+
+      CVector< C_FLOAT64 > Ax = * reinterpret_cast<const CVectorCore< C_FLOAT64 > * >(&B);
+
+      dgemm_(&T, &T, &One, &N, &N, &Alpha, X.array(), &One,
+             const_cast< C_FLOAT64 * >(jacobian.array()), &N, &Beta, Ax.array(), &One);
+
+      // Calculate absolute and relative error
+      C_FLOAT64 *pAx = Ax.array();
+      C_FLOAT64 *pAxEnd = pAx + Ax.size();
+      const C_FLOAT64 *pB = B.array();
+      C_FLOAT64 * pCurrentState = mpX;
+      const C_FLOAT64 * pAtol = mAtol.array();
+
+      // Assure that all values are updated.
+      mpContainer->updateSimulatedValues(true);
+      mpContainer->applyUpdateSequence(mUpdateConcentrations);
+
+      const CMathObject * pMathObject = mpContainer->getMathObject(mpContainerStateTime + 1);
+      C_FLOAT64 * const * ppCompartmentVolume = mCompartmentVolumes.array();
+      C_FLOAT64 Number2Quantity = mpContainer->getModel().getNumber2QuantityFactor();
+
+      C_FLOAT64 AbsoluteDistance = 0.0; // Largest relative distance
+      C_FLOAT64 RelativeDistance = 0.0; // Total relative distance
+
+      C_FLOAT64 tmp;
+
+      for (; pAx != pAxEnd; ++pAx, ++pB, ++pCurrentState, ++pAtol, ++pMathObject, ++ppCompartmentVolume)
+        {
+          // Prevent division by 0
+          tmp = fabs(*pAx - *pB) / std::max(fabs(*pCurrentState), *pAtol);
+          RelativeDistance += tmp * tmp;
+
+          tmp = fabs(*pAx - *pB);
+
+          if (pMathObject->getEntityType() == CMath::EntityType::Species)
+            {
+              tmp /= mpContainer->getQuantity2NumberFactor() ***ppCompartmentVolume;
+            }
+
+          AbsoluteDistance += tmp * tmp;
+        }
+
+      RelativeDistance =
+        isnan(RelativeDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(RelativeDistance);
+      AbsoluteDistance =
+        isnan(AbsoluteDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(AbsoluteDistance);
+
+      Result.second = std::max(RelativeDistance, AbsoluteDistance);
+    }
+  else
+    {
+      Result.first = 0;
+      Result.second = 0.0;
+    }
+
+  return Result;
 }
