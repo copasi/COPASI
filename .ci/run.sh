@@ -25,7 +25,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     build-wrapper-linux-x86-64 --out-dir ../bw-output make CopasiSE
     #ctest
     cd ..
-    sonar-scanner  -X -Dproject.settings=./.sonarcloud.properties
+    sonar-scanner -Dproject.settings=./.sonarcloud.properties
 else 
     cmake --build . --config Release --target CopasiSE
     #ctest
