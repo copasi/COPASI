@@ -64,7 +64,7 @@ CXMLHandler * ParameterDescriptionHandler::processStart(const XML_Char * pszName
         Order = (unsigned C_INT32) atoi(order);
 
         role = mpParser->getAttributeValue("role", papszAttrs);
-        Role = CFunctionParameter::RoleNameXML.toEnum(role, CFunctionParameter::Role::VARIABLE);
+        Role = role == NULL ? CFunctionParameter::Role::VARIABLE : CFunctionParameter::RoleNameXML.toEnum(role, CFunctionParameter::Role::VARIABLE);
         //if (Role == "") fatalError();
 
         minOccurs = mpParser->getAttributeValue("minOccurs", papszAttrs, "1");

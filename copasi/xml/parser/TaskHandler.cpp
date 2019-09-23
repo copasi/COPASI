@@ -59,7 +59,7 @@ CXMLHandler * TaskHandler::processStart(const XML_Char * pszName,
 
         Key = mpParser->getAttributeValue("key", papszAttrs, false);
         type = mpParser->getAttributeValue("type", papszAttrs);
-        Type = CTaskEnum::TaskXML.toEnum(type, CTaskEnum::Task::UnsetTask);
+        Type = type == NULL ? CTaskEnum::Task::UnsetTask  :  CTaskEnum::TaskXML.toEnum(type, CTaskEnum::Task::UnsetTask);
         Scheduled = mpParser->toBool(mpParser->getAttributeValue("scheduled", papszAttrs, "false"));
         UpdateModel = mpParser->toBool(mpParser->getAttributeValue("updateModel", papszAttrs, "false"));
 
