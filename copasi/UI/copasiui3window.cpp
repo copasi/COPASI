@@ -3154,6 +3154,9 @@ void CopasiUI3Window::dropEvent(QDropEvent *event)
  */
 void CopasiUI3Window::disableSliders(bool disable)
 {
+  if (mpSliders == NULL)
+    return;
+
   if (disable)
     {
       this->mSliderDialogEnabled = this->mpSliders->isEnabled();
