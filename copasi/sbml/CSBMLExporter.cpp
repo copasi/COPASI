@@ -119,9 +119,9 @@ std::string hasFunctionDefinitionForURI(SBMLDocument* pSBMLDocument,
 
       if (element == NULL) continue;
 
-      for (unsigned int i = 0 ; i < element->getNumChildren(); ++i)
+      for (unsigned int j = 0 ; j < element->getNumChildren(); ++j)
         {
-          const XMLNode& annot = element->getChild(i);
+          const XMLNode& annot = element->getChild(j);
 
           if (annot.getURI() == sNamespace &&
               annot.getName() == elementName &&

@@ -63,7 +63,7 @@ CXMLHandler * ModelValueHandler::processStart(const XML_Char * pszName,
               simulationType = mpParser->getAttributeValue("simulationType", papszAttrs);
           }
 
-        SimulationType = CModelEntity::XMLStatus.toEnum(simulationType, CModelEntity::Status::FIXED);
+        SimulationType = simulationType == NULL ? CModelEntity::Status::FIXED : CModelEntity::XMLStatus.toEnum(simulationType, CModelEntity::Status::FIXED);
         AddNoise = mpParser->toBool(mpParser->getAttributeValue("addNoise", papszAttrs, "false"));
 
         mpMV = new CModelValue();

@@ -52,7 +52,8 @@ CXMLHandler * ModelParameterGroupHandler::processStart(const XML_Char * pszName,
 
         CN = mpParser->getAttributeValue("cn", papszAttrs);
         pType = mpParser->getAttributeValue("type", papszAttrs);
-        Type = CModelParameter::TypeNames.toEnum(pType, CModelParameter::Type::Group);
+        Type = pType == NULL ? CModelParameter::Type::Group :
+               CModelParameter::TypeNames.toEnum(pType, CModelParameter::Type::Group);
 
         {
           CModelParameterGroup * pModelParameterGroup = new CModelParameterGroup(mpData->ModelParameterGroupStack.top(), Type);

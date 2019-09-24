@@ -62,7 +62,7 @@ CXMLHandler * ModelParameterHandler::processStart(const XML_Char * pszName,
             Value = CCopasiXMLInterface::DBL(pValue);
           }
 
-        Type = CModelParameter::TypeNames.toEnum(pType, CModelParameter::Type::unknown);
+        Type = pType == NULL ? CModelParameter::Type::unknown : CModelParameter::TypeNames.toEnum(pType, CModelParameter::Type::unknown);
 
         switch (Type)
           {
@@ -85,7 +85,7 @@ CXMLHandler * ModelParameterHandler::processStart(const XML_Char * pszName,
 
         mpData->pCurrentModelParameter->setCN(std::string(CN));
 
-        SimulationType = CModelEntity::XMLStatus.toEnum(pSimulationType, CModelEntity::Status::FIXED);
+        SimulationType = pSimulationType == NULL ? CModelEntity::Status::FIXED : CModelEntity::XMLStatus.toEnum(pSimulationType, CModelEntity::Status::FIXED);
         mpData->pCurrentModelParameter->setSimulationType(SimulationType);
 
         mpData->pCurrentModelParameter->setValue(Value, CCore::Framework::ParticleNumbers);

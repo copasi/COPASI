@@ -70,7 +70,7 @@ CXMLHandler * MetaboliteHandler::processStart(const XML_Char * pszName,
               simulationType = reactions;
           }
 
-        SimulationType = CModelEntity::XMLStatus.toEnum(simulationType, CModelEntity::Status::REACTIONS);
+        SimulationType = simulationType == NULL ? CModelEntity::Status::REACTIONS : CModelEntity::XMLStatus.toEnum(simulationType, CModelEntity::Status::REACTIONS);
         Compartment = mpParser->getAttributeValue("compartment", papszAttrs);
         AddNoise = mpParser->toBool(mpParser->getAttributeValue("addNoise", papszAttrs, "false"));
 

@@ -61,7 +61,7 @@ CXMLHandler * ParameterHandler::processStart(const XML_Char * pszName,
         // Parameter has attributes name, type and value
         name = mpParser->getAttributeValue("name", papszAttrs);
         cType = mpParser->getAttributeValue("type", papszAttrs);
-        type = CCopasiParameter::XMLType.toEnum(cType, CCopasiParameter::Type::INVALID);
+        type = cType == NULL ? CCopasiParameter::Type::INVALID : CCopasiParameter::XMLType.toEnum(cType, CCopasiParameter::Type::INVALID);
         cValue = mpParser->getAttributeValue("value", papszAttrs);
 
         if (cValue != NULL)
@@ -133,7 +133,9 @@ CXMLHandler * ParameterHandler::processStart(const XML_Char * pszName,
             break;
 
             default:
-              CCopasiMessage(CCopasiMessage::ERROR, MCXML + 16, name.c_str(), cType, mpParser->getCurrentLineNumber());
+              if (cType != NULL) // otherwise missing attribute will have been logged
+                CCopasiMessage(CCopasiMessage::ERROR, MCXML + 16, name.c_str(), cType, mpParser->getCurrentLineNumber());
+
               pValue = NULL;
               break;
           }
