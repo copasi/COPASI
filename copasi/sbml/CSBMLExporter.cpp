@@ -22,10 +22,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
 #include <cmath>
 
 #define USE_LAYOUT 1
@@ -553,21 +549,11 @@ void CSBMLExporter::createTimeUnit(const CDataModel& dataModel)
     }
   else
     {
-      // only add it if it is not the default unit definition anyway
-      // from SBML Level 3 on, there are no default units
-      // so we have to write it
-      if (this->mSBMLLevel > 2 || unit.getKind() != UNIT_KIND_SECOND || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
-        {
-          // set the unit definition
-          pSBMLModel->addUnitDefinition(&uDef);
-        }
+      // set the unit definition
+      pSBMLModel->addUnitDefinition(&uDef);
     }
 
-// if we write an SBML L3 document, we have to explicitely set the units on the model
-  if (this->mSBMLLevel > 2)
-    {
-      pSBMLModel->setTimeUnits(uDef.getId());
-    }
+  pSBMLModel->setTimeUnits(uDef.getId());
 }
 
 /**
@@ -654,19 +640,11 @@ void CSBMLExporter::createVolumeUnit(const CDataModel& dataModel)
     }
   else
     {
-      // only add it if it is not the default unit definition anyway
-      if (this->mSBMLLevel > 2 || unit.getKind() != UNIT_KIND_LITRE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
-        {
-          // set the unit definition
-          pSBMLModel->addUnitDefinition(&uDef);
-        }
+      // set the unit definition
+      pSBMLModel->addUnitDefinition(&uDef);
     }
 
-// if we write an SBML L3 document, we have to explicitely set the units on the model
-  if (this->mSBMLLevel > 2)
-    {
-      pSBMLModel->setVolumeUnits(uDef.getId());
-    }
+  pSBMLModel->setVolumeUnits(uDef.getId());
 }
 
 /**
@@ -753,23 +731,16 @@ void CSBMLExporter::createSubstanceUnit(const CDataModel& dataModel)
     }
   else
     {
-      // only add it if it is not the default unit definition anyway
-      if (this->mSBMLLevel > 2 || unit.getKind() != UNIT_KIND_MOLE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
-        {
-          // set the unit definition
-          pSBMLModel->addUnitDefinition(&uDef);
-        }
+      // set the unit definition
+      pSBMLModel->addUnitDefinition(&uDef);
     }
 
-// if we write an SBML L3 document, we have to explicitely set the units on the model
+  pSBMLModel->setSubstanceUnits(uDef.getId());
 
+  // here we also set the extent unit to the same unit as the substance unit
+  // because COPASI does not know about different extent units
   if (this->mSBMLLevel > 2)
-    {
-      pSBMLModel->setSubstanceUnits(uDef.getId());
-      // here we also set the extent unit to the same unit as the substance unit
-      // because COPASI does not know about different extent units
-      pSBMLModel->setExtentUnits(uDef.getId());
-    }
+    pSBMLModel->setExtentUnits(uDef.getId());
 }
 
 /**
@@ -862,20 +833,11 @@ void CSBMLExporter::createLengthUnit(const CDataModel& dataModel)
     }
   else
     {
-      // only add it if it is not the default unit definition anyway
-      if (this->mSBMLLevel > 2 || unit.getKind() != UNIT_KIND_METRE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
-        {
-          // set the unit definition
-          pSBMLModel->addUnitDefinition(&uDef);
-        }
+      // set the unit definition
+      pSBMLModel->addUnitDefinition(&uDef);
     }
 
-// if we write an SBML L3 document, we have to explicitly set the units on the model
-
-  if (this->mSBMLLevel > 2)
-    {
-      pSBMLModel->setLengthUnits(uDef.getId());
-    }
+  pSBMLModel->setLengthUnits(uDef.getId());
 }
 
 /**
@@ -968,23 +930,11 @@ void CSBMLExporter::createAreaUnit(const CDataModel& dataModel)
     }
   else
     {
-      // only add it if it is not the default unit definition anyway
-      if (this->mSBMLLevel > 2 ||
-          unit.getKind() != UNIT_KIND_METRE ||
-          unit.getScale() != 0 ||
-          unit.getExponent() != 2 ||
-          unit.getMultiplier() != 1.0)
-        {
-          // set the unit definition
-          pSBMLModel->addUnitDefinition(&uDef);
-        }
+      // set the unit definition
+      pSBMLModel->addUnitDefinition(&uDef);
     }
 
-// if we write an SBML L3 document, we have to explicitly set the units on the model
-  if (this->mSBMLLevel > 2)
-    {
-      pSBMLModel->setAreaUnits(uDef.getId());
-    }
+  pSBMLModel->setAreaUnits(uDef.getId());
 }
 
 /**
@@ -1076,7 +1026,6 @@ void CSBMLExporter::createCompartment(const CCompartment& compartment)
       this->mAssignmentVector.push_back(&compartment);
       pSBMLCompartment->setConstant(false);
       removeInitialAssignment(pSBMLCompartment->getId());
-
     }
   else if (status == CModelEntity::Status::ODE)
     {
@@ -7197,9 +7146,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqbiol_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqbiol_isDescribedBy:
+          //    break;
           case CRDFPredicate::bqbiol_isEncodedBy:
           case CRDFPredicate::copasi_isEncodedBy:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7236,7 +7185,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
 
-            // This qualifier is supported in libsbml 4.1
+          // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7298,9 +7247,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setModelQualifierType(BQM_HAS_INSTANCE);
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqmodel_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqmodel_isDescribedBy:
+          //    break;
           default:
             // there are many qualifiers that start e.g. with copasi_ which are
             // not handled
