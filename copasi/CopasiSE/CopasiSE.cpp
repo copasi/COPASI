@@ -292,11 +292,8 @@ int main(int argc, char *argv[])
               goto finish;
             }
 
-          if (!importSBML)
-            {
-              // combine archives or SED-ML will have defined tasks
-              retcode = runScheduledTasks(pProcessReport);
-            }
+          // combine archives or SED-ML will have defined tasks
+          retcode = runScheduledTasks(pProcessReport);
 
           exportParametersToIniFile();
 
