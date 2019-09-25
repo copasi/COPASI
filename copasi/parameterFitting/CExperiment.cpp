@@ -242,6 +242,9 @@ CExperiment::~CExperiment() {}
 
 CExperiment & CExperiment::operator = (const CExperiment & rhs)
 {
+  if (this == &rhs)
+    return *this;
+
   std::string Key = getValue< std::string >("Key");
 
   clear();

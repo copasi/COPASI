@@ -607,6 +607,9 @@ CLinkMatrixView::~CLinkMatrixView()
 CLinkMatrixView &
 CLinkMatrixView::operator = (const CLinkMatrixView & rhs)
 {
+  if (this == &rhs)
+    return *this;
+
   mpA = rhs.mpA;
   mpNumIndependent = rhs.mpNumIndependent;
 

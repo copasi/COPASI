@@ -360,6 +360,9 @@ void CCopasiMessage::handler(const bool & /* _throw */)
 // overload assignment operator
 CCopasiMessage &CCopasiMessage::operator=(const CCopasiMessage & RHS)
 {
+  if (this == &RHS)
+    return *this;
+
   mText = RHS.mText;
   mType = RHS.mType;
   mNumber = RHS.mNumber;

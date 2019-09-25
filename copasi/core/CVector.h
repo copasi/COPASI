@@ -106,6 +106,9 @@ public:
    */
   CVectorCore< CType > & operator = (const CVectorCore <CType> & rhs)
   {
+    if (this == &rhs)
+      return *this;
+
     // Nothing to do
     if (this == &rhs ||
         (mpBuffer == rhs.mpBuffer && mSize == rhs.mSize))
@@ -378,6 +381,9 @@ public:
    */
   CVector< CType > & operator = (const CVector <CType> & rhs)
   {
+    if (this == &rhs)
+      return *this;
+
     copy(rhs);
 
     return * this;

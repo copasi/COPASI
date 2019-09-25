@@ -70,6 +70,9 @@ CCopasiTimeVariable CCopasiTimeVariable::operator - (const CCopasiTimeVariable &
 
 CCopasiTimeVariable & CCopasiTimeVariable::operator = (const CCopasiTimeVariable & rhs)
 {
+  if (this == &rhs)
+    return *this;
+
   mTime = rhs.mTime;
   return *this;
 }

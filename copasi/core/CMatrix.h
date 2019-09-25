@@ -216,6 +216,9 @@ public:
    */
   virtual CMatrix <CType> & operator = (const CMatrix <CType> & rhs)
   {
+    if (this == &rhs)
+      return *this;
+
     // Independent from whether the mpBuffer or rhs.mpBuffer is NULL we need to resize;
     if (mRows != rhs.mRows || mCols != rhs.mCols)
       resize(rhs.mRows, rhs.mCols);

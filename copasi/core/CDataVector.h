@@ -468,6 +468,9 @@ public:
    */
   CDataVector< CType > & operator = (const CDataVector< CType > & rhs)
   {
+    if (this == &rhs)
+      return *this;
+
     cleanup();
 
     const_iterator it = rhs.begin();
@@ -581,7 +584,7 @@ public:
         {
           CDataContainer::remove(*it);
           (*it)->setObjectParent(NULL);
-          delete (*it);
+          delete(*it);
           *it = NULL;
         }
 

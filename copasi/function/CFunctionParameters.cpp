@@ -54,6 +54,9 @@ void CFunctionParameters::cleanup()
 
 CFunctionParameters & CFunctionParameters::operator=(const CFunctionParameters & src)
 {
+  if (this == &src)
+    return *this;
+
   mParameters.deepCopy(src.mParameters);
   return *this;
 }
