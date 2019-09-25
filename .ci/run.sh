@@ -16,6 +16,7 @@ if [[ "$(uname -s)" == 'Darwin' ]]; then
 fi
 
 git fetch --unshallow
+git fetch origin develop
 mkdir build
 cd build
 conan install .. --build=missing
