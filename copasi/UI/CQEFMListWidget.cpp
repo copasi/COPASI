@@ -21,6 +21,8 @@
 #include "CQEFMListWidget.h"
 
 #include "copasi/elementaryFluxModes/CEFMTask.h"
+#include <copasi/core/CRootContainer.h>
+#include <copasi/commandline/CConfigurationFile.h>
 
 CQEFMListWidget::CQEFMListWidget(QWidget *parent, const char *name) :
   QWidget(parent),
@@ -31,11 +33,16 @@ CQEFMListWidget::CQEFMListWidget(QWidget *parent, const char *name) :
   setObjectName(QString::fromUtf8(name));
   setupUi(this);
   mpEFMTable->verticalHeader()->hide();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpEFMTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpEFMTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpEFMTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpEFMTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpEFMTable->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   //Create Source Data Model.
   mpFluxModeDM = new CQFluxModeDM(this);
@@ -47,7 +54,12 @@ CQEFMListWidget::CQEFMListWidget(QWidget *parent, const char *name) :
   //Set Model for the TableView
   mpEFMTable->setModel(NULL);
   mpEFMTable->setModel(mpProxyModel);
-  mpEFMTable->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpEFMTable->resizeColumnsToContents();
+    }
+
   connect(mpEditFilter, SIGNAL(textChanged(const QString &)), this, SLOT(slotFilterChanged()));
 }
 
@@ -65,7 +77,12 @@ bool CQEFMListWidget::loadResult(const CEFMTask *pTask)
   //Set Model for the TableView
   mpEFMTable->setModel(NULL);
   mpEFMTable->setModel(mpProxyModel);
-  mpEFMTable->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpEFMTable->resizeColumnsToContents();
+    }
+
   return true;
 }
 

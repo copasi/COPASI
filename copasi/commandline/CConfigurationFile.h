@@ -331,6 +331,16 @@ public:
   void setDisplayPopulations(bool flag);
 
   /**
+   * @return a flag on whether the GUI should resize tables to contents
+   */
+  bool resizeToContents() const;
+
+  /**
+  *  Set whether the GUI should resize tables to contents
+  */
+  void setResizeToContents(bool flag);
+
+  /**
    * Retrieve the working directory
    * @return const std::string & workingDirectory
    */
@@ -635,6 +645,11 @@ private:
   C_INT32* mpPrecision;
 
   CCheckForUpdates * mpCheckForUpdates;
+
+  /**
+  * A pointer indicating whether the GUI should resize tables to contents
+  */
+  bool* mpResizeToContents;
 };
 
 #endif // COPASI_CConfigurationFile

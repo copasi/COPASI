@@ -42,6 +42,8 @@
 #include "copasi/function/CKinFunction.h"
 #include "copasi/utilities/CUnitValidator.h"
 
+#include <copasi/commandline/CConfigurationFile.h>
+
 #include "CopasiFileDialog.h"
 
 #include <QComboBox>
@@ -316,8 +318,12 @@ bool FunctionWidget1::loadParameterTable()
 
   Table1->blockSignals(false);
   Table1->horizontalHeader()->setStretchLastSection(true);
-  Table1->resizeColumnsToContents();
-  Table1->resizeRowsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      Table1->resizeColumnsToContents();
+      Table1->resizeRowsToContents();
+    }
 
   /*
   Table1->setFixedSize(Table1->horizontalHeader()->length() + 10,

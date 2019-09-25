@@ -19,6 +19,9 @@
 #include <copasi/UI/qtUtilities.h>
 #include <copasi/UI/copasiui3window.h>
 
+#include <copasi/core/CRootContainer.h>
+#include <copasi/commandline/CConfigurationFile.h>
+
 CQDependencyWidget::CQDependencyWidget(QWidget *parent, const char *name, Qt::WindowFlags f)
   : CopasiWidget(parent, name, f)
   , mType(UNKNOWN)
@@ -30,6 +33,9 @@ CQDependencyWidget::CQDependencyWidget(QWidget *parent, const char *name, Qt::Wi
 #if QT_VERSION >= 0x050000
   mpTable->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
 #endif
+
+  mResizeTableToRows = CRootContainer::getConfiguration()->resizeToContents();
+
 }
 
 CQDependencyWidget::~CQDependencyWidget()

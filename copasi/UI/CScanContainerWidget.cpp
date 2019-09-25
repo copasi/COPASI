@@ -35,6 +35,9 @@
 #include "CScanWidgetRandom.h"
 #include "CUpDownSubwidget.h"
 
+#include <copasi/core/CRootContainer.h>
+#include <copasi/commandline/CConfigurationFile.h>
+
 CScanContainerWidget::CScanContainerWidget(QWidget * parent, const char * name) :
   QTableWidget(parent)
 {
@@ -225,8 +228,11 @@ void CScanContainerWidget::updateTable()
 {
   qApp->processEvents();
 
-  resizeRowsToContents();
-  resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      resizeRowsToContents();
+      resizeColumnsToContents();
+    }
 }
 
 void CScanContainerWidget::enableCopy(const bool & enable)
@@ -236,6 +242,9 @@ void CScanContainerWidget::resizeEvent(QResizeEvent *e)
 {
   QTableWidget::resizeEvent(e);
 
-  resizeRowsToContents();
-  resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      resizeRowsToContents();
+      resizeColumnsToContents();
+    }
 }

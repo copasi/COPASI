@@ -42,6 +42,7 @@
 #include "copasi/optimization/COptLog.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/commandline/CLocaleString.h"
+#include "copasi/commandline/CConfigurationFile.h"
 #include "copasi/model/CModel.h"
 #include "copasi/math/CMathContainer.h"
 
@@ -130,8 +131,11 @@ bool CQOptimizationResult::enterProtected()
   sortModel->setSourceModel(model);
   mpParameters->setModel(sortModel);
 
-  mpParameters->resizeColumnsToContents();
-  mpParameters->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpParameters->resizeColumnsToContents();
+      mpParameters->resizeRowsToContents();
+    }
 
   // clear log
   mpLogTree->clear();

@@ -33,6 +33,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 /*
  *  Constructs a CQReportsWidget which is a child of 'parent', with the
@@ -153,7 +154,12 @@ bool CQReportsWidget::enterProtected()
   connect(mpTblReports->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
           this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   updateDeleteBtns();
-  mpTblReports->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblReports->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   return true;
 }
@@ -195,7 +201,11 @@ void CQReportsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(select
 void CQReportsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                   const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblReports->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblReports->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   updateDeleteBtns();
 }

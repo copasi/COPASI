@@ -43,6 +43,7 @@
 #include "copasi/optimization/COptTask.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
+#include <copasi/commandline/CConfigurationFile.h>
 
 /*
  *  Constructs a StateSubwidget which is a child of 'parent', with the
@@ -116,8 +117,13 @@ void StateSubwidget::loadMetabolites()
       }
 
   mpTblMetabolites->setRowCount(i);
-  mpTblMetabolites->resizeColumnsToContents();
-  mpTblMetabolites->resizeRowsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblMetabolites->resizeColumnsToContents();
+      mpTblMetabolites->resizeRowsToContents();
+    }
+
   mpTblMetabolites->setSortingEnabled(true);
 }
 
@@ -151,8 +157,13 @@ void StateSubwidget::loadCompartments()
       }
 
   mpTblCompartments->setRowCount(i);
-  mpTblCompartments->resizeColumnsToContents();
-  mpTblCompartments->resizeRowsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblCompartments->resizeColumnsToContents();
+      mpTblCompartments->resizeRowsToContents();
+    }
+
   mpTblCompartments->setSortingEnabled(true);
 }
 
@@ -187,8 +198,13 @@ void StateSubwidget::loadReactions()
     }
 
   mpTblReactions->setRowCount(i);
-  mpTblReactions->resizeColumnsToContents();
-  mpTblReactions->resizeRowsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblReactions->resizeColumnsToContents();
+      mpTblReactions->resizeRowsToContents();
+    }
+
   mpTblReactions->setSortingEnabled(true);
 }
 
@@ -222,8 +238,13 @@ void StateSubwidget::loadModelValues()
       }
 
   mpTblModelValues->setRowCount(i);
-  mpTblModelValues->resizeColumnsToContents();
-  mpTblModelValues->resizeRowsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblModelValues->resizeColumnsToContents();
+      mpTblModelValues->resizeRowsToContents();
+    }
+
   mpTblModelValues->setSortingEnabled(true);
 }
 
@@ -259,8 +280,12 @@ void StateSubwidget::loadJacobian()
       tableEigenValues->setItem((int) i, 1, pItem);
     }
 
-  tableEigenValues->resizeColumnsToContents();
-  tableEigenValues->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      tableEigenValues->resizeColumnsToContents();
+      tableEigenValues->resizeRowsToContents();
+    }
+
   tableEigenValues->setSortingEnabled(true);
 
   //JacobianX
@@ -293,8 +318,12 @@ void StateSubwidget::loadJacobian()
       tableEigenValuesX->setItem((int) i, 1, pItem);
     }
 
-  tableEigenValuesX->resizeColumnsToContents();
-  tableEigenValuesX->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      tableEigenValuesX->resizeColumnsToContents();
+      tableEigenValuesX->resizeRowsToContents();
+    }
+
   tableEigenValuesX->setSortingEnabled(true);
 
   //stability report

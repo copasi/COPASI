@@ -42,6 +42,7 @@
 #include "copasi/utilities/CUnitValidator.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/math/CMathExpression.h"
+#include <copasi/commandline/CConfigurationFile.h>
 
 ParameterTable::ParameterTable(QWidget * parent)
   : QTableWidget(parent),
@@ -530,12 +531,18 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
           pItem->setText(convertToQString(ri.getLocalValue(i)));
         }
 
-      resizeRowToContents((int) rowCounter);
+      if (CRootContainer::getConfiguration()->resizeToContents())
+        {
+          resizeRowToContents((int)rowCounter);
+        }
 
       ++rowCounter;
     }
 
-  resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      resizeColumnsToContents();
+    }
 
   blockSignals(false);
   setSortingEnabled(wasSortingEnabled);

@@ -34,6 +34,7 @@
 #include "copasi/math/CMathContainer.h"
 #include "copasi/model/CModel.h"
 #include "copasi/function/CExpression.h"
+#include <copasi/commandline/CConfigurationFile.h>
 
 /**
  *  Constructs a CQMathMatrixWidget which is a child of 'parent', with the
@@ -371,7 +372,11 @@ void CQMathMatrixWidget::calculateJacobian(CMatrix< C_FLOAT64 >& matrix,
       eigenValuesWidget->setItem((int)i, 1, pItem);
     }
 
-  eigenValuesWidget->resizeColumnsToContents();
-  eigenValuesWidget->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      eigenValuesWidget->resizeColumnsToContents();
+      eigenValuesWidget->resizeRowsToContents();
+    }
+
   eigenValuesWidget->setSortingEnabled(true);
 }

@@ -28,6 +28,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 /*
  *  Constructs a CQParameterSetsWidget which is a child of 'parent', with the
@@ -43,11 +44,16 @@ CQParameterSetsWidget::CQParameterSetsWidget(QWidget *parent, const char *name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblParameterSets->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblParameterSets->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblParameterSets->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblParameterSets->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblParameterSets->verticalHeader()->hide();
   mpTblParameterSets->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   setFramework(mFramework);
@@ -74,7 +80,11 @@ void CQParameterSetsWidget::slotBtnNewClicked()
 {
   mpParameterSetsDM->insertRow(mpParameterSetsDM->rowCount(), QModelIndex());
   updateDeleteBtns();
-  mpTblParameterSets->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblParameterSets->resizeColumnsToContents();
+    }
 }
 
 void CQParameterSetsWidget::slotBtnDeleteClicked()
@@ -172,7 +182,12 @@ bool CQParameterSetsWidget::enterProtected()
   connect(mpTblParameterSets->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
           this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   updateDeleteBtns();
-  mpTblParameterSets->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblParameterSets->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   return true;
 }
@@ -218,7 +233,11 @@ void CQParameterSetsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(
 void CQParameterSetsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                         const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblParameterSets->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblParameterSets->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   updateDeleteBtns();
 }

@@ -29,7 +29,7 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/utilities/CUnitDefinition.h"
 #include "copasi/utilities/CUnitDefinitionDB.h"
-
+#include <copasi/commandline/CConfigurationFile.h>
 /*
  *  Constructs a CQUnitsWidget which is a child of 'parent', with the
  *  name 'name'.'
@@ -45,11 +45,16 @@ CQUnitsWidget::CQUnitsWidget(QWidget *parent, const char *name)
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
   mpProxyModel->sort(COL_NAME_UNITS);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblUnits->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblUnits->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblUnits->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblUnits->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblUnits->verticalHeader()->hide();
   mpTblUnits->sortByColumn(COL_NAME_UNITS, Qt::AscendingOrder);
   setFramework(mFramework);
@@ -161,7 +166,12 @@ bool CQUnitsWidget::enterProtected()
   connect(mpTblUnits->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
           this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   updateDeleteBtns();
-  mpTblUnits->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblUnits->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   return true;
 }
@@ -203,7 +213,11 @@ void CQUnitsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected
 void CQUnitsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                 const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblUnits->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblUnits->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   updateDeleteBtns();
 }

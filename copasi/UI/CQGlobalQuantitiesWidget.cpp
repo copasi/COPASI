@@ -32,7 +32,7 @@
 #include "copasi/model/CModel.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-
+#include <copasi/commandline/CConfigurationFile.h>
 #include "copasiui3window.h"
 
 /*
@@ -52,11 +52,16 @@ CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget *parent, const char *
   //Setting values for Types comboBox
   mpTypeDelegate = new CQComboDelegate(this, mpGlobalQuantityDM->getTypes());
   mpTblGlobalQuantities->setItemDelegateForColumn(COL_TYPE_GQ, mpTypeDelegate);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblGlobalQuantities->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblGlobalQuantities->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblGlobalQuantities->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblGlobalQuantities->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblGlobalQuantities->verticalHeader()->hide();
   mpTblGlobalQuantities->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
@@ -169,7 +174,12 @@ bool CQGlobalQuantitiesWidget::enterProtected()
   connect(mpTblGlobalQuantities->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
           this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   updateDeleteBtns();
-  mpTblGlobalQuantities->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblGlobalQuantities->resizeColumnsToContents();
+    }
+
   return true;
 }
 
@@ -210,7 +220,11 @@ void CQGlobalQuantitiesWidget::slotSelectionChanged(const QItemSelection &C_UNUS
 void CQGlobalQuantitiesWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
     const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblGlobalQuantities->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblGlobalQuantities->resizeColumnsToContents();
+    }
+
   updateDeleteBtns();
 }
 

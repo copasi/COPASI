@@ -35,6 +35,7 @@
 #include "copasi/model/CModel.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
+#include <copasi/commandline/CConfigurationFile.h>
 
 #include "copasiui3window.h"
 
@@ -52,11 +53,16 @@ CQEventsWidget::CQEventsWidget(QWidget *parent, const char *name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblEvents->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblEvents->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblEvents->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblEvents->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblEvents->verticalHeader()->hide();
   mpTblEvents->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
@@ -167,7 +173,12 @@ bool CQEventsWidget::enterProtected()
   connect(mpTblEvents->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
           this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   updateDeleteBtns();
-  mpTblEvents->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblEvents->resizeColumnsToContents();
+    }
+
   return true;
 }
 
@@ -208,7 +219,11 @@ void CQEventsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selecte
 void CQEventsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                  const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblEvents->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblEvents->resizeColumnsToContents();
+    }
+
   updateDeleteBtns();
 }
 

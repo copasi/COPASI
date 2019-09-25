@@ -47,6 +47,8 @@
 #include "copasi/model/CModel.h"
 #include "copasi/math/CMathContainer.h"
 
+#include <copasi/commandline/CConfigurationFile.h>
+
 #include <QtCore/QtDebug>
 
 /*
@@ -566,7 +568,12 @@ bool CQFittingItemWidget::load(CDataModel *pDataModel,
     selectRow(C_INVALID_INDEX);
 
   emit numberChanged((int) mpItemsCopy->size());
-  mpTable->resizeRowsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTable->resizeRowsToContents();
+    }
+
   return true;
 }
 

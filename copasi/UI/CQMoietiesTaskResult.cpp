@@ -36,6 +36,7 @@
 #include "copasi/utilities/utility.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/commandline/CLocaleString.h"
+#include "copasi/commandline/CConfigurationFile.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
 #define COL_SPECIES  0
@@ -217,8 +218,12 @@ void CQMoietiesTaskResult::load()
 
   mpTabWidget->setTabText(mpTabWidget->indexOf(mpMoieties), "Moieties (" + QString::number(i) + ")");
 
-  mpMoieties->resizeColumnsToContents();
-  mpMoieties->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpMoieties->resizeColumnsToContents();
+      mpMoieties->resizeRowsToContents();
+    }
+
   mpMoieties->setSortingEnabled(true);
 
   // Fill the stoichiometry matrix

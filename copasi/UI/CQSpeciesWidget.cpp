@@ -32,6 +32,7 @@
 #include "copasi/model/CModel.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
+#include <copasi/commandline/CConfigurationFile.h>
 
 #include "copasiui3window.h"
 
@@ -58,11 +59,16 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget *parent, const char *name)
   //Setting values for Types comboBox
   mpTypeDelegate = new CQComboDelegate(this, mpSpecieDM->getTypes(), false);
   mpTblSpecies->setItemDelegateForColumn(COL_TYPE_SPECIES, mpTypeDelegate);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblSpecies->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblSpecies->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblSpecies->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblSpecies->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblSpecies->verticalHeader()->hide();
   mpTblSpecies->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
@@ -171,7 +177,12 @@ bool CQSpeciesWidget::enterProtected()
   connect(mpTblSpecies->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
           this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   updateDeleteBtns();
-  mpTblSpecies->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblSpecies->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   refreshCompartments();
   return true;
@@ -214,7 +225,11 @@ void CQSpeciesWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(select
 void CQSpeciesWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                   const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblSpecies->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblSpecies->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   refreshCompartments();
   updateDeleteBtns();

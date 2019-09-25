@@ -1362,8 +1362,11 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
   setTypeItems(TimeRow);
 
-  mpTable->resizeColumnsToContents();
-  mpTable->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTable->resizeColumnsToContents();
+      mpTable->resizeRowsToContents();
+    }
 }
 
 void CQExperimentData::slotTypeChanged(int row, int index)

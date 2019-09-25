@@ -30,6 +30,8 @@
 #include "copasi/elementaryFluxModes/CFluxMode.h"
 #include "copasi/utilities/utility.h"
 #include "copasi/commandline/CLocaleString.h"
+#include <copasi/core/CRootContainer.h>
+#include <copasi/commandline/CConfigurationFile.h>
 
 CQEFMResultWidget::CQEFMResultWidget(QWidget *parent, const char *name) :
   CopasiWidget(parent, name),
@@ -59,13 +61,18 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget *parent, const char *name) :
   //Set Model for the TableView
   mpReactionMatrix->setModel(NULL);
   mpReactionMatrix->setModel(mpProxyModelReactions);
-  mpReactionMatrix->resizeColumnsToContents();
-  mpSpeciesMatrix->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpReactionMatrix->resizeColumnsToContents();
 #if QT_VERSION >= 0x050000
-  mpSpeciesMatrix->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpSpeciesMatrix->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpSpeciesMatrix->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpSpeciesMatrix->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
+  mpSpeciesMatrix->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   mpSpeciesMatrix->verticalHeader()->hide();
   //Create Source Data Model.
   mpSpeciesDM = new CQEFMSpeciesDM(this);
@@ -77,13 +84,18 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget *parent, const char *name) :
   //Set Model for the TableView
   mpSpeciesMatrix->setModel(NULL);
   mpSpeciesMatrix->setModel(mpProxyModelSpecies);
-  mpSpeciesMatrix->resizeColumnsToContents();
   mpNetReactions->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpSpeciesMatrix->resizeColumnsToContents();
 #if QT_VERSION >= 0x050000
-  mpNetReactions->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpNetReactions->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpNetReactions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpNetReactions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpNetReactions->verticalHeader()->hide();
   //Create Source Data Model.
   mpNetReactionDM = new CQEFMNetReactionDM(this);
@@ -95,7 +107,11 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget *parent, const char *name) :
   //Set Model for the TableView
   mpNetReactions->setModel(NULL);
   mpNetReactions->setModel(mpProxyModelNetReactions);
-  mpNetReactions->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpNetReactions->resizeColumnsToContents();
+    }
 }
 
 CQEFMResultWidget::~CQEFMResultWidget()
@@ -169,19 +185,34 @@ bool CQEFMResultWidget::loadResult(const CCopasiTask *pTask)
   //Set Model for the TableView
   mpReactionMatrix->setModel(NULL);
   mpReactionMatrix->setModel(mpProxyModelReactions);
-  mpReactionMatrix->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpReactionMatrix->resizeColumnsToContents();
+    }
+
   mpSpeciesDM->setTask(mpTask);
   mpProxyModelSpecies->setSourceModel(mpSpeciesDM);
   //Set Model for the TableView
   mpSpeciesMatrix->setModel(NULL);
   mpSpeciesMatrix->setModel(mpProxyModelSpecies);
-  mpSpeciesMatrix->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpSpeciesMatrix->resizeColumnsToContents();
+    }
+
   mpNetReactionDM->setTask(mpTask);
   mpProxyModelNetReactions->setSourceModel(mpNetReactionDM);
   //Set Model for the TableView
   mpNetReactions->setModel(NULL);
   mpNetReactions->setModel(mpProxyModelNetReactions);
-  mpNetReactions->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpNetReactions->resizeColumnsToContents();
+    }
+
   return success;
 }
 

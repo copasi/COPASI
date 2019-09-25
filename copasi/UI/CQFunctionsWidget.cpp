@@ -33,6 +33,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/function/CFunctionDB.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 /*
  *  Constructs a CQFunctionsWidget which is a child of 'parent', with the
@@ -48,11 +49,16 @@ CQFunctionsWidget::CQFunctionsWidget(QWidget *parent, const char *name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblFunctions->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblFunctions->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblFunctions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblFunctions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblFunctions->verticalHeader()->hide();
   mpTblFunctions->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
@@ -164,7 +170,12 @@ bool CQFunctionsWidget::enterProtected()
   connect(mpTblFunctions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
           this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   updateDeleteBtns();
-  mpTblFunctions->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblFunctions->resizeColumnsToContents();
+    }
+
   return true;
 }
 
@@ -205,7 +216,11 @@ void CQFunctionsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(sele
 void CQFunctionsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                     const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblFunctions->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblFunctions->resizeColumnsToContents();
+    }
+
   updateDeleteBtns();
 }
 

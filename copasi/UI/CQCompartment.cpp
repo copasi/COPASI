@@ -42,6 +42,7 @@
 #include "copasi/model/CReactionInterface.h" //for Copy button internal reactions only
 #include "copasi/function/CExpression.h"
 #include "copasi/core/CRootContainer.h"
+#include "copasi/commandline/CConfigurationFile.h"
 #include "copasi/core/CDataContainer.h"
 
 #include "copasi/undo/CUndoStack.h"
@@ -644,7 +645,10 @@ void CQCompartment::loadMetaboliteTable()
         }
     }
 
-  mpMetaboliteTable->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpMetaboliteTable->resizeRowsToContents();
+    }
 
   return;
 }

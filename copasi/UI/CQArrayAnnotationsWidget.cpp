@@ -43,6 +43,8 @@
 #include "CQComboDelegate.h"
 #include "CQArrayAnnotationsWidgetDM.h"
 #include "CQSortFilterProxyModel.h"
+#include <copasi/core/CRootContainer.h>
+#include <copasi/commandline/CConfigurationFile.h>
 
 #include <iostream>
 
@@ -306,14 +308,21 @@ void CQArrayAnnotationsWidget::initSelectionTable()
       mpSelectionTable->setItem((int)i, 1, pItem);
     }
 
-  mpSelectionTable->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpSelectionTable->resizeColumnsToContents();
+    }
 
   mpSelectionTable->show();
 
-  mpSelectionTable->resizeColumnsToContents();
-  mpSelectionTable->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpSelectionTable->resizeColumnsToContents();
+      mpSelectionTable->resizeRowsToContents();
 
-  mpSelectionTable->setMaximumHeight(mpSelectionTable->verticalHeader()->sectionSize(0) * (mpArray->dimensionality() + 1));
+      mpSelectionTable->setMaximumHeight(mpSelectionTable->verticalHeader()->sectionSize(0) * (mpArray->dimensionality() + 1));
+    }
+
 }
 
 void CQArrayAnnotationsWidget::clearWidget()
@@ -477,8 +486,11 @@ void CQArrayAnnotationsWidget::fillTableN(size_t rowIndex, size_t colIndex,
 
   mOneDimensional = false;
 
-  mpContentTableView->resizeRowsToContents();
-  mpContentTableView->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpContentTableView->resizeRowsToContents();
+      mpContentTableView->resizeColumnsToContents();
+    }
 
   if (mpStack->currentIndex() != 0)
     fillBarChart();
@@ -517,8 +529,11 @@ void CQArrayAnnotationsWidget::fillTable1(size_t rowIndex,
 
   mOneDimensional = true;
 
-  mpContentTableView->resizeRowsToContents();
-  mpContentTableView->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpContentTableView->resizeRowsToContents();
+      mpContentTableView->resizeColumnsToContents();
+    }
 
   if (mpStack->currentIndex() != 0)
     fillBarChart();

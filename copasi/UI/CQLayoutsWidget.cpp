@@ -65,11 +65,16 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget *parent)
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
   mpProxyModel->setSourceModel(mpLayoutsDM);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblLayouts->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblLayouts->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblLayouts->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblLayouts->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblLayouts->verticalHeader()->hide();
   mpTblLayouts->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   mpTblLayouts->setModel(mpProxyModel);
@@ -342,7 +347,11 @@ void CQLayoutsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 void CQLayoutsWidget::dataChanged(const QModelIndex & /* topLeft */,
                                   const QModelIndex & /* bottomRight */)
 {
-  mpTblLayouts->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblLayouts->resizeColumnsToContents();
+    }
+
   updateDeleteBtns();
   showButtons();
 }

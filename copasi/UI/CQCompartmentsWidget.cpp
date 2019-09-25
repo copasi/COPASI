@@ -31,6 +31,7 @@
 #include "copasi/model/CModel.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
+#include <copasi/commandline/CConfigurationFile.h>
 
 #include "copasiui3window.h"
 
@@ -52,11 +53,16 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget *parent, const char *name)
   //Setting values for Types comboBox
   mpTypeDelegate = new CQComboDelegate(this, mpCompartmentDM->getTypes());
   mpTblCompartments->setItemDelegateForColumn(COL_TYPE_COMPARTMENTS, mpTypeDelegate);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblCompartments->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblCompartments->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblCompartments->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblCompartments->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblCompartments->verticalHeader()->hide();
   mpTblCompartments->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
@@ -172,7 +178,12 @@ bool CQCompartmentsWidget::enterProtected()
   mpProxyModel->setSourceModel(mpCompartmentDM);
   mpTblCompartments->setModel(NULL);
   mpTblCompartments->setModel(mpProxyModel);
-  mpTblCompartments->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblCompartments->resizeColumnsToContents();
+    }
+
   connect(mpTblCompartments->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
           this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   updateDeleteBtns();
@@ -216,7 +227,11 @@ void CQCompartmentsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(s
 void CQCompartmentsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                        const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblCompartments->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblCompartments->resizeColumnsToContents();
+    }
+
   updateDeleteBtns();
 }
 

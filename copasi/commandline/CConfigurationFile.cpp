@@ -138,7 +138,8 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpCurrentAuthorOrganization(NULL),
   mpCurrentAuthorEmail(NULL),
   mpPrecision(NULL),
-  mpCheckForUpdates(NULL)
+  mpCheckForUpdates(NULL),
+  mpResizeToContents(NULL)
 
 {initializeParameter();}
 
@@ -169,7 +170,8 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpCurrentAuthorOrganization(NULL),
   mpCurrentAuthorEmail(NULL),
   mpPrecision(NULL),
-  mpCheckForUpdates(NULL)
+  mpCheckForUpdates(NULL),
+  mpResizeToContents(NULL)
 {initializeParameter();}
 
 CConfigurationFile::~CConfigurationFile()
@@ -219,6 +221,7 @@ void CConfigurationFile::initializeParameter()
   mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::Type::BOOL, true);
   mpEnableAdditionalOptimizationParameters = assertParameter("Enable additional optimization parameters", CCopasiParameter::Type::BOOL, false);
   mpDisplayPopulations = assertParameter("Display Populations during Optimization", CCopasiParameter::Type::BOOL, false);
+  mpResizeToContents = assertParameter("Resize Tables to Content", CCopasiParameter::Type::BOOL, true);
   mpPrecision = assertParameter("Double Precision for String Conversion", CCopasiParameter::Type::INT, 10);
 
   mpApplicationFont = assertParameter("Application Font", CCopasiParameter::Type::STRING, std::string(""));
@@ -453,6 +456,16 @@ bool CConfigurationFile::showItemIssues(CIssue::eKind kind) const
 void CConfigurationFile::setDisplayPopulations(bool flag)
 {
   *mpDisplayPopulations = flag;
+}
+
+bool CConfigurationFile::resizeToContents() const
+{
+  return *mpResizeToContents;
+}
+
+void CConfigurationFile::setResizeToContents(bool flag)
+{
+  *mpResizeToContents = flag;
 }
 
 const std::string CConfigurationFile::getWorkingDirectory() const

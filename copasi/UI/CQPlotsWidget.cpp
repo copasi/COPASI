@@ -34,6 +34,7 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/plot/COutputDefinitionVector.h"
 #include "copasi/plot/CPlotSpecification.h"
+#include <copasi/commandline/CConfigurationFile.h>
 
 /*
  *  Constructs a CQPlotsWidget which is a child of 'parent', with the
@@ -49,11 +50,16 @@ CQPlotsWidget::CQPlotsWidget(QWidget *parent, const char *name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblPlots->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblPlots->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblPlots->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblPlots->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblPlots->verticalHeader()->hide();
   mpTblPlots->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   setFramework(mFramework);
@@ -188,7 +194,12 @@ bool CQPlotsWidget::enterProtected()
   connect(mpTblPlots->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
           this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   updateDeleteBtns();
-  mpTblPlots->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblPlots->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   return true;
 }
@@ -230,7 +241,11 @@ void CQPlotsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected
 void CQPlotsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                 const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblPlots->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblPlots->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   updateDeleteBtns();
 }
