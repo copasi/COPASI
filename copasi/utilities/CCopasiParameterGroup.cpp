@@ -101,7 +101,7 @@ bool CCopasiParameterGroup::applyData(const CData & data, CUndoData::CChangeSet 
 
       for (; it != end; ++it)
         {
-          CDataObject * pObject;
+          CDataObject * pObject = NULL;
           size_t Index = it->getProperty(CData::OBJECT_INDEX).toSizeT();
 
           if (Index < size())

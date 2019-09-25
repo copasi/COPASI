@@ -386,19 +386,15 @@ const CValidity::Kind & CValidity::get(const CIssue::eSeverity & severity) const
     {
       case CIssue::eSeverity::Error:
         return mErrors;
-        break;
 
       case CIssue::eSeverity::Warning:
         return mWarnings;
-        break;
 
       case CIssue::eSeverity::Information:
         return mInformation;
-        break;
 
       default:
         return OK;
-        break;
     }
 }
 

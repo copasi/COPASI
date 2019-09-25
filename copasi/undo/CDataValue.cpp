@@ -323,43 +323,33 @@ bool CDataValue::operator == (const CDataValue & rhs) const
     {
       case DOUBLE:
         return (toDouble() == rhs.toDouble());
-        break;
 
       case INT:
         return (toInt() == rhs.toInt());
-        break;
 
       case UINT:
         return (toUint() == rhs.toUint());
-        break;
 
       case BOOL:
         return (toBool() == rhs.toBool());
-        break;
 
       case STRING:
         return (toString() == rhs.toString());
-        break;
 
       case DATA:
         return (toData() == rhs.toData());
-        break;
 
       case DATA_VALUES:
         return (toDataValues() == rhs.toDataValues());
-        break;
 
       case DATA_VECTOR:
         return (toDataVector() == rhs.toDataVector());
-        break;
 
       case VOID_POINTER:
         return (toVoidPointer() == rhs.toVoidPointer());
-        break;
 
       case INVALID:
         return (raw() == rhs.raw());
-        break;
     }
 
   return false;

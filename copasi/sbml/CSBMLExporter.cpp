@@ -7018,18 +7018,7 @@ void CSBMLExporter::createAvogadroIfNeeded(const CDataModel & dataModel)
   pSBMLAvogadro->setId(sbmlId);
   const_cast<CModelValue*>(this->mpAvogadro)->setSBMLId(sbmlId);
   this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLAvogadro));
-
-  if (this->mSBMLLevel != 1)
-    {
-      pSBMLAvogadro->setConstant(true);
-    }
-  else
-    {
-      // Level 1 doesn't know the constant flag and
-      // libSBML does not drop it automatically
-      pSBMLAvogadro->setConstant(true);
-    }
-
+  pSBMLAvogadro->setConstant(true);
   pSBMLAvogadro->setValue(dataModel.getModel()->getQuantity2NumberFactor());
   this->mHandledSBMLObjects.insert(pSBMLAvogadro);
   this->mCOPASI2SBMLMap[this->mpAvogadro] = pSBMLAvogadro;
@@ -7146,9 +7135,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             break;
 
-          // IS DESCRIBED BY is handled in the references below
-          //case bqbiol_isDescribedBy:
-          //    break;
+            // IS DESCRIBED BY is handled in the references below
+            //case bqbiol_isDescribedBy:
+            //    break;
           case CRDFPredicate::bqbiol_isEncodedBy:
           case CRDFPredicate::copasi_isEncodedBy:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7185,7 +7174,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
 
-          // This qualifier is supported in libsbml 4.1
+            // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7247,9 +7236,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setModelQualifierType(BQM_HAS_INSTANCE);
             break;
 
-          // IS DESCRIBED BY is handled in the references below
-          //case bqmodel_isDescribedBy:
-          //    break;
+            // IS DESCRIBED BY is handled in the references below
+            //case bqmodel_isDescribedBy:
+            //    break;
           default:
             // there are many qualifiers that start e.g. with copasi_ which are
             // not handled
