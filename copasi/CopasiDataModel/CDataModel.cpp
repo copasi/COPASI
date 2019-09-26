@@ -2310,6 +2310,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
         pReport->setSeparator("\t");
+        pReport->getHeaderAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Time-Course],Object=Description"));
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Time-Course],Object=Result"));
         break;
 
