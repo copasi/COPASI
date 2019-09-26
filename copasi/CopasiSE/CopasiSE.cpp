@@ -461,7 +461,7 @@ for (CCopasiTask & task : TaskList)
 
         try
           {
-            success = task.initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
+            success = task.initialize(CCopasiTask::OUTPUT_UI, pDataModel, NULL);
 
             // We need to check whether the result is saved in any form.
             // If not we need to stop right here to avoid wasting time.

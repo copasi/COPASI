@@ -2305,7 +2305,12 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         break;
 
       case CTaskEnum::Task::timeCourse:
-        // No default report available.
+        pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
+        pReport->setTaskType(taskType);
+        pReport->setComment("Automatically generated report.");
+        pReport->setIsTable(false);
+        pReport->setSeparator("\t");
+        pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Time-Course],Object=Result"));
         break;
 
       case CTaskEnum::Task::scan:

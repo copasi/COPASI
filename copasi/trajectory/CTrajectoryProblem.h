@@ -83,7 +83,6 @@ public:
   /**
    * Set the number of time steps the trajectory method should integrate.
    * @param "const unsigned C_INT32 &" stepNumber
-   * @parem bool success
    */
   void setStepNumber(const unsigned C_INT32 & stepNumber);
 
@@ -120,7 +119,6 @@ public:
   /**
    * Set the end time.
    * @param "const C_FLOAT64 &" duration
-   * @parem bool success
    */
   void setDuration(const C_FLOAT64 & duration);
 
@@ -181,6 +179,8 @@ public:
    */
   void load(CReadConfig & configBuffer,
             CReadConfig::Mode mode = CReadConfig::NEXT);
+
+  virtual void printResult(std::ostream* ostream) const;
 
 private:
   /**

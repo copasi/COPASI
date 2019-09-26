@@ -26,6 +26,7 @@
 #define TIMESERIES_H
 
 #include <vector>
+#include <ostream>
 
 #include "copasi/core/CMatrix.h"
 #include "copasi/core/CVector.h"
@@ -115,6 +116,17 @@ public:
   int save(const std::string& fileName,
            bool writeParticleNumbers = false,
            const std::string& separator = "\t") const;
+  /**
+   * Save the time series to the given stream
+   * @param str the stream to write the series to
+   * @param bool writeParticleNumbers (default: false)
+   * @param const std::string& separator (default: "\t")
+   * @return int retcode
+   */
+  int save(std::ostream& str,
+           bool writeParticleNumbers = false,
+           const std::string& separator = "\t") const;
+
 
   /**
    * Retrieve the number of time steps (rows)

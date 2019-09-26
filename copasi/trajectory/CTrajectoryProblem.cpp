@@ -36,6 +36,8 @@
 
 #include "copasi/copasi.h"
 #include "CTrajectoryProblem.h"
+#include "CTrajectoryTask.h"
+#include "CTimeSeries.h"
 #include "copasi/model/CModel.h"
 //#include "copasi/model/CState.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
@@ -260,6 +262,25 @@ void CTrajectoryProblem::load(CReadConfig & configBuffer,
 
       sync();
     }
+}
+
+
+void CTrajectoryProblem::printResult(std::ostream* pStream) const
+{
+  if (!pStream)
+    return;
+
+  if (!timeSeriesRequested())
+    {
+      *pStream << " No time series requested, please change problem settings." << std::endl;
+    }
+
+  const CTrajectoryTask* pTask = dynamic_cast<const CTrajectoryTask*>(getObjectParent());
+
+  if (!pTask)
+    return;
+
+  pTask->getTimeSeries().save(*pStream);
 }
 
 /**
