@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -87,28 +92,44 @@ void CReport::cleanup()
 }
 
 const CReportDefinition* CReport::getReportDefinition() const
-{return mpReportDef;}
+{
+  return mpReportDef;
+}
 
 void CReport::setReportDefinition(const CReportDefinition* reportDef)
-{mpReportDef = reportDef;}
+{
+  mpReportDef = reportDef;
+}
 
 const std::string & CReport::getTarget() const
-{return mTarget;}
+{
+  return mTarget;
+}
 
 void CReport::setTarget(const std::string & target)
-{mTarget = target;}
+{
+  mTarget = target;
+}
 
 const bool & CReport::append() const
-{return mAppend;}
+{
+  return mAppend;
+}
 
 void CReport::setAppend(const bool & append)
-{mAppend = append;}
+{
+  mAppend = append;
+}
 
 const bool & CReport::confirmOverwrite() const
-{return mConfirmOverwrite;}
+{
+  return mConfirmOverwrite;
+}
 
 void CReport::setConfirmOverwrite(const bool & confirmOverwrite)
-{mConfirmOverwrite = confirmOverwrite;}
+{
+  mConfirmOverwrite = confirmOverwrite;
+}
 
 void CReport::output(const Activity & activity)
 {
