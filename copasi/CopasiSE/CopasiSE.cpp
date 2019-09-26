@@ -425,7 +425,7 @@ int runScheduledTasks(CProcessReport * pProcessReport)
 
   if (!ScheduledTask.empty())
     {
-      if (!TaskList.getIndex(ScheduledTask) == C_INVALID_INDEX)
+      if (TaskList.getIndex(ScheduledTask) == C_INVALID_INDEX)
         {
           std::cerr << "No task '" << ScheduledTask << "' to be marked executable"
                     << std::endl << std::endl;
@@ -440,6 +440,9 @@ for (CCopasiTask & task : TaskList)
 
       CCopasiTask& toBeScheduled = TaskList[ScheduledTask];
       toBeScheduled.setScheduled(true);
+
+      if (!COptions::compareValue("Save", std::string("")))
+        toBeScheduled.setUpdateModel(true);
     }
 
 
