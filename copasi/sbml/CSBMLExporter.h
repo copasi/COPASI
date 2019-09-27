@@ -23,9 +23,6 @@
 // All rights reserved.
 
 
-
-
-
 #ifndef CSBMLExporter_H__
 #define CSBMLExporter_H__
 
@@ -183,7 +180,7 @@ public:
   void finishExport();
 
   /**
-   * Default construktor
+   * Default constructor
    */
   CSBMLExporter();
 
@@ -411,7 +408,7 @@ protected:
                                          std::vector<SBMLIncompatibility>& result);
 
   /**
-   * Checks the given node and all it's children for the occurence of
+   * Checks the given node and all it's children for the occurrence of
    * piecewise functions.
    */
   static void checkForPiecewiseFunctions(const CEvaluationNode& node,
@@ -420,7 +417,7 @@ protected:
                                          const std::string& objectType);
 
   /**
-   * Checks wether the given data model can be exported to SBML Level1
+   * Checks whether the given data model can be exported to SBML Level1
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
@@ -428,7 +425,7 @@ protected:
                                       std::vector<SBMLIncompatibility>& result);
 
   /**
-   * Checks wether the given data model can be exported to SBML Level2 Version1.
+   * Checks whether the given data model can be exported to SBML Level2 Version1.
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
@@ -436,7 +433,7 @@ protected:
                                         std::vector<SBMLIncompatibility>& result);
 
   /**
-   * Checks wether the given data model can be exported to SBML Level2 Version3.
+   * Checks whether the given data model can be exported to SBML Level2 Version3.
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
@@ -457,16 +454,16 @@ protected:
       std::vector<SBMLIncompatibility>& result);
 
   /**
-   * Checks wether the model contains a metabolite that is defined by an ODE
+   * Checks whether the model contains a metabolite that is defined by an ODE
    * expression and that is located in a variable volume. Since COPASI
-   * interprets the expression differntly from SBML, we can not correctly
+   * interprets the expression differently from SBML, we can not correctly
    * export this yet. See Bug 903.
    */
   static void checkForODESpeciesInNonfixedCompartment(const CDataModel& dataModel,
       std::vector<SBMLIncompatibility> result);
 
   /**
-   * Checks wether the rule in the given model entity can be exported to
+   * Checks whether the rule in the given model entity can be exported to
    * the specified version of SBML.
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
@@ -482,7 +479,7 @@ protected:
                                          std::map<const std::string, Parameter*>* initialMap = NULL);
 
   /**
-   * Checks wether the rule in the given model entity can be exported to SBML Level2 Version1.
+   * Checks whether the rule in the given model entity can be exported to SBML Level2 Version1.
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
@@ -491,7 +488,7 @@ protected:
       std::vector<SBMLIncompatibility>& result);
 
   /**
-   * Checks wether the rule in the given model entity can be exported to SBML Level2 Version1.
+   * Checks whether the rule in the given model entity can be exported to SBML Level2 Version1.
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
@@ -500,7 +497,7 @@ protected:
       std::vector<SBMLIncompatibility>& result);
 
   /**
-   * Checks wether the rule in the given model entity can be exported to SBML Level2 Version3.
+   * Checks whether the rule in the given model entity can be exported to SBML Level2 Version3.
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
@@ -509,7 +506,7 @@ protected:
       std::vector<SBMLIncompatibility>& result);
 
   /**
-   * This static methods checks, wether the model uses any function calls
+   * This methods checks, whether the model uses any function calls
    * that can not be expressed in SBML like the random distribution
    * functions.
    */
@@ -520,7 +517,7 @@ protected:
 
   /**
    * This static methods checks recursively, whether the given CEvaluationNode
-   * constains any function calls that can not be expressed in SBML like the
+   * contains any function calls that can not be expressed in SBML like the
    * random distribution functions.
    */
   static void checkForUnsupportedFunctionCalls(const CEvaluationNode& node,
@@ -529,7 +526,7 @@ protected:
       const std::string& objectDescription);
 
   /**
-   * This method checks wether the given model contains any initial assignments.
+   * This method checks whether the given model contains any initial assignments.
    */
   static void checkForInitialAssignments(const CDataModel& dataModel,
                                          std::vector<SBMLIncompatibility>& result);
@@ -611,7 +608,7 @@ protected:
   std::vector<const CModelEntity*> orderRules(const CDataModel& dataModel);
 
   /**
-   * Creates a new COPASI2SBMLMap baed on the old map and the copied
+   * Creates a new COPASI2SBMLMap based on the old map and the copied
    * SBMLDocument.
    */
   void updateCOPASI2SBMLMap(const CDataModel& dataModel);
@@ -704,7 +701,7 @@ protected:
                                           std::set<const CModelEntity*>& dependencies);
 
   /**
-   * Creates an ASTNode based tree where all occurences of nodes that are not
+   * Creates an ASTNode based tree where all occurrences of nodes that are not
    * supported in SBML Level 1 are replaced by supported constructs.
    * On error an exception is created.
    * The caller is responsible for freeing the memory of the returned object.
