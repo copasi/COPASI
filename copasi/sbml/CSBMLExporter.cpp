@@ -399,7 +399,7 @@ CSBMLExporter::createProgressStepOrStop(unsigned C_INT32 globalStep,
 CSBMLExporter::CSBMLExporter()
   : mpSBMLDocument(NULL)
   , mSBMLLevel(2)
-  , mSBMLVersion(1)
+  , mSBMLVersion(4)
   , mIncompleteExport(false)
   , mVariableVolumes(false)
   , mpAvogadro(NULL)
@@ -2554,28 +2554,38 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
                     {
                       if (sbmlLevel < 3) // l3 supports avogadro as csymbol
                         {
-                          Parameter* param = new Parameter(sbmlLevel, sbmlVersion);
+                          Parameter* param = (*initialMap)[pObject->getCN()];
+
+                          if (!param)
+                            {
+                              param = new Parameter(sbmlLevel, sbmlVersion);
+                              param->initDefaults();
+                              param->setId(CSBMLExporter::createUniqueId(idMap, "Avogadro", false));
+                              param->setAnnotation("<avogadro xmlns='http://copasi.org/constant' />");
+                              param->setName(pObject->getObjectName());
+                              param->setValue(*((double*)pObject->getValuePointer()));
+                              idMap.insert(std::pair<const std::string, const SBase*>(param->getId(), param));
+
+                              (*initialMap)[pObject->getCN()] = param;
+                            }
+                        }
+                    }
+                  else if (pObject->getObjectName() == "Quantity Conversion Factor")
+                    {
+                      Parameter* param = (*initialMap)[pObject->getCN()];
+
+                      if (!param)
+                        {
+                          param = new Parameter(sbmlLevel, sbmlVersion);
                           param->initDefaults();
-                          param->setId(CSBMLExporter::createUniqueId(idMap, "Avogadro", false));
-                          param->setAnnotation("<avogadro xmlns='http://copasi.org/constant' />");
+                          param->setId(CSBMLExporter::createUniqueId(idMap, "QuantityConversionFactor", false));
+                          param->setAnnotation("<quantityConversionFactor xmlns='http://copasi.org/constant' />");
                           param->setName(pObject->getObjectName());
                           param->setValue(*((double*)pObject->getValuePointer()));
                           idMap.insert(std::pair<const std::string, const SBase*>(param->getId(), param));
 
                           (*initialMap)[pObject->getCN()] = param;
                         }
-                    }
-                  else if (pObject->getObjectName() == "Quantity Conversion Factor")
-                    {
-                      Parameter* param = new Parameter(sbmlLevel, sbmlVersion);
-                      param->initDefaults();
-                      param->setId(CSBMLExporter::createUniqueId(idMap, "QuantityConversionFactor", false));
-                      param->setAnnotation("<quantityConversionFactor xmlns='http://copasi.org/constant' />");
-                      param->setName(pObject->getObjectName());
-                      param->setValue(*((double*)pObject->getValuePointer()));
-                      idMap.insert(std::pair<const std::string, const SBase*>(param->getId(), param));
-
-                      (*initialMap)[pObject->getCN()] = param;
                     }
                   else
                     {
