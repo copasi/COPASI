@@ -318,6 +318,16 @@ bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews
   // Assure that the pointer is still valid;
   mpAnnotation = CAnnotation::castObject(mpObject);
 
+
+  if (action == ListViews::DELETE && objectType == ListViews::ObjectType::MODEL)
+    {
+      mpMIRIAMInfo = NULL;
+      mObjectCN = CCommonName("");
+
+      return leaveProtected();
+    }
+
+
   if (!mIgnoreUpdates &&
       cn == mObjectCN)
     {
