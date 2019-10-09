@@ -369,7 +369,7 @@ void CQSpeciesDetail::save()
   // Add Noise
   if (mpMetab->hasNoise() != mpBoxAddNoise->isChecked())
     {
-      mpMetab->setHasNoise(mpBoxAddNoise->isChecked());
+      mpMetab->setHasNoise(mpBoxAddNoise->isChecked() && mpMetab->getStatus() == CModelEntity::Status::ODE);
       mChanged = true;
     }
 
@@ -751,6 +751,7 @@ void CQSpeciesDetail::speciesTypeChanged(const QString & type)
         mpBoxUseInitialExpression->setEnabled(true);
         slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
         mpBoxAddNoise->hide();
+        mpBoxAddNoise->setChecked(false);
         slotAddNoiseChanged(false);
         break;
 
@@ -761,6 +762,7 @@ void CQSpeciesDetail::speciesTypeChanged(const QString & type)
         slotInitialTypeChanged(false);
         mpExpressionEMW->updateWidget();
         mpBoxAddNoise->hide();
+        mpBoxAddNoise->setChecked(false);
         slotAddNoiseChanged(false);
         break;
 
@@ -781,6 +783,7 @@ void CQSpeciesDetail::speciesTypeChanged(const QString & type)
         mpBoxUseInitialExpression->setEnabled(true);
         slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
         mpBoxAddNoise->hide();
+        mpBoxAddNoise->setChecked(false);
         slotAddNoiseChanged(false);
         break;
 

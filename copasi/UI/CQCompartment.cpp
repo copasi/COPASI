@@ -257,6 +257,7 @@ void CQCompartment::slotTypeChanged(const QString & type)
         slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
 
         mpBoxAddNoise->hide();
+        mpBoxAddNoise->setChecked(false);
         slotAddNoiseChanged(false);
         break;
 
@@ -272,6 +273,7 @@ void CQCompartment::slotTypeChanged(const QString & type)
         mpExpressionEMW->updateWidget();
 
         mpBoxAddNoise->hide();
+        mpBoxAddNoise->setChecked(false);
         slotAddNoiseChanged(false);
 
         break;
