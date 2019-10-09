@@ -1640,6 +1640,8 @@ bool CMathObject::createConvertedExpression(const CExpression * pExpression,
 {
   assert(pExpression != NULL);
 
+  if (!pExpression) return false;
+
   bool success = true;
   pdelete(mpExpression);
 
@@ -1935,7 +1937,7 @@ bool CMathObject::createIntensiveNoiseExpression(const CMetab * pSpecies,
 
   bool success = true;
 
-  if (pSpecies->hasNoise())
+  if (pSpecies->hasNoise() && pSpecies->getNoiseExpressionPtr())
     {
       mpExpression = new CMathExpression(*pSpecies->getNoiseExpressionPtr(), container, !mIsInitialValue);
     }
