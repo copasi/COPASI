@@ -48,6 +48,9 @@ ParameterGroupHandler::ParameterGroupHandler(CXMLParser & parser, CXMLParserData
   mNonUniqueParameters["ListOfVariables"].insert("Variables");
 
   mNonUniqueParameters["Deterministic Reactions"].insert("Reaction");
+
+  mNonUniqueParameters["ListOfParameters"].insert("ParameterCN");
+  mNonUniqueParameters["ListOfTargets"].insert("TargetCN");
 }
 
 // virtual
