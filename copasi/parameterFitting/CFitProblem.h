@@ -175,8 +175,9 @@ public:
    * This is used for calculating the correlation Matric from the FIM,
    * and therefore we can assume a symmetric positive definite matrix
    * The SD of the parameters is also calculated from the diagonal of the covariance
+   * if scale is true, the cov matrix will be scaled to unity diagonal elements
    */
-  bool calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd);
+  bool calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd, bool scale);
 
 
   /**

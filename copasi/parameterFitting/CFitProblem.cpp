@@ -1768,7 +1768,7 @@ void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 
 
 }
 
-bool CFitProblem::calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd)
+bool CFitProblem::calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd, bool scale)
 {
   corr = fim;
 
@@ -1916,6 +1916,9 @@ bool CFitProblem::calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >&
           corr(i, i) = 1.0;
         }
     }
+
+  if (!scale)
+    return true;
 
   for (i = 0; i < imax; i++)
     for (l = 0; l < imax; l++)
@@ -2150,7 +2153,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       calcEigen(mFisher, mFisherEigenvalues, mFisherEigenvectors);
       calcEigen(mFisherScaled, mFisherScaledEigenvalues, mFisherScaledEigenvectors);
 
-      if (!calcCov(mFisher, mCorrelation, mParameterSD))
+      if (!calcCov(mFisher, mCorrelation, mParameterSD, true))
         {
           // Make sure the timer is accurate.
           mCPUTime.calculateValue();
