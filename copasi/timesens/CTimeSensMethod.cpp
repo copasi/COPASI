@@ -128,8 +128,8 @@ CTimeSensMethod::Status CTimeSensMethod::step(const double & /* deltaT */,
 
 void CTimeSensMethod::start()
 {
-  initResult(); //initializes the container and resizes state and result data structures
-  initializeDerivativesCalculations(*mpReducedModel);
+  //initResult(); //initializes the container and resizes state and result data structures
+  //initializeDerivativesCalculations(*mpReducedModel);
 
   return;
 }

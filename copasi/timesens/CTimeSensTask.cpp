@@ -170,6 +170,8 @@ bool CTimeSensTask::initialize(const OutputFlag & of,
 
   success &= updateMatrices();
 
+  static_cast<CTimeSensMethod*>(mpMethod)->initializeDerivativesCalculations(static_cast<CTimeSensMethod*>(mpMethod)->integrateReducedModel());
+
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
   signalMathContainerChanged();

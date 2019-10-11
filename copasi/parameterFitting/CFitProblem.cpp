@@ -867,8 +867,6 @@ bool CFitProblem::initialize()
       // do not update initial values when running fit
       mpTimeSens->setUpdateModel(false);
 
-      mpTimeSens->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-
       mpTimeSensProblem =
         new CTimeSensProblem(*static_cast<CTimeSensProblem*>(mpTimeSens->getProblem()), NO_PARENT);
 
@@ -886,10 +884,15 @@ bool CFitProblem::initialize()
       pProblem->clearTargetCNs();
       const CVector< const CObjectInterface* >& dependents = mpExperimentSet->getDependentObjects();
 
+
 for (auto dep : dependents)
         {
           pProblem->addTargetCN(dep->getCN());
         }
+
+
+      mpTimeSens->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+
 
       mJacTimeSens.resize(mSolutionVariables.size(), mpExperimentSet->getDataPointCount());
     }
@@ -1002,6 +1005,32 @@ bool CFitProblem::calculate()
 
           kmax = pExp->getNumDataRows();
 
+          const std::map< const CObjectInterface*, size_t >& map = pExp->getDependentObjectsMap();
+          std::map<size_t, const CObjectInterface*> reverseObjectMap;
+          std::map< std::pair<std::string, std::string>, CDataArray::index_type > indexMap;
+          std::map<size_t, std::string> reverseCnMap;
+
+          if (*mpUseTimeSens)
+            {
+              for (auto it = map.begin(); it != map.end(); ++it)
+                {
+                  reverseObjectMap[it->second] = it->first;
+                  reverseCnMap[it->second] = it->first->getCN();
+                }
+
+              for (size_t i = 0; i < mpOptItems->size(); ++i)
+                {
+                  std::string paramCn = mpOptItems->operator [](i)->getObjectCN();
+
+                  for (size_t k = 0; k < reverseCnMap.size(); ++k)
+                    {
+                      std::string dependenCn = reverseCnMap[k];
+                      indexMap[std::make_pair(dependenCn, paramCn)] = static_cast<CTimeSensProblem*>(mpTimeSens->getProblem())->getTargetsResultAnnotated()->cnToIndex( { dependenCn, paramCn });
+                    }
+
+                }
+            }
+
           switch (pExp->getExperimentType())
             {
               case CTaskEnum::Task::steadyState:
@@ -1056,6 +1085,7 @@ bool CFitProblem::calculate()
                     //resize the storage for the extended time series
                     pExp->initExtendedTimeSeries(numIntermediateSteps * (kmax > 0 ? kmax - 1 : 0) + 1);
                   }
+
 
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
                   {
@@ -1154,13 +1184,6 @@ bool CFitProblem::calculate()
                             CTimeSensProblem* pProblem = static_cast<CTimeSensProblem*>(mpTimeSens->getProblem());
                             // get current target result
                             CDataArray* pCurrentResult = pProblem->getTargetsResultAnnotated();
-                            const std::map< const CObjectInterface*, size_t >& map = pExp->getDependentObjectsMap();
-                            std::map<size_t, const CObjectInterface*> reverseMap;
-
-                            for (auto it = map.begin(); it != map.end(); ++it)
-                              {
-                                reverseMap[it->second] = it->first;
-                              }
 
                             auto it = mpOptItems->begin();
 
@@ -1168,11 +1191,12 @@ bool CFitProblem::calculate()
                               {
                                 std::string paramCn = mpOptItems->operator [](i)->getObjectCN();
 
-                                for (size_t k = 0; k < reverseMap.size(); ++k)
+                                for (size_t k = 0; k < reverseObjectMap.size(); ++k)
                                   {
-                                    const CObjectInterface* pObj = reverseMap[k];
-                                    std::string dependenCn = pObj->getCN();
-                                    double value = pCurrentResult->operator[](CDataArray::name_index_type( {dependenCn, paramCn}));
+                                    const CObjectInterface* pObj = reverseObjectMap[k];
+                                    std::string dependenCn = reverseCnMap[k];
+                                    //double value = pCurrentResult->operator[](CDataArray::name_index_type( {dependenCn, paramCn}));
+                                    double value = pCurrentResult->getArray()->operator[](indexMap[std::make_pair(dependenCn, paramCn)]);
                                     size_t index = map.find(pObj)->second;
                                     double meassurement = pExp->getDependentData()(j, index);
 
