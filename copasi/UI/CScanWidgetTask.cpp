@@ -108,6 +108,10 @@ void CScanWidgetTask::load(const CScanProblem * pg)
         n = 9;
         break;
 
+      case CTaskEnum::Task::timeSens:
+        n = 10;
+        break;
+
       default:
         n = 0;
         break;
@@ -172,6 +176,10 @@ bool CScanWidgetTask::save(CScanProblem * pg) const
 
       case 9:
         Type = CTaskEnum::Task::tssAnalysis;
+        break;
+
+      case 10:
+        Type = CTaskEnum::Task::timeSens;
         break;
 
       default :

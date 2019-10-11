@@ -190,6 +190,11 @@ p, li { white-space: pre-wrap; }
             <string>Time Scale Separation Analysis</string>
            </property>
           </item>
+          <item>
+           <property name="text">
+            <string>Time Course Sensitivities</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item>
