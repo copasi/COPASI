@@ -220,6 +220,12 @@ bool CQFittingWidget::saveTaskProtected()
       pProblem->setCalculateStatistics(mpCheckStatistics->isChecked());
     }
 
+  if (mpUseTimeSens->isChecked() != pProblem->getUseTimeSens())
+    {
+      mChanged = true;
+      pProblem->setUseTimeSens(mpUseTimeSens->isChecked());
+    }
+
   mChanged |= mpParameters->save(&ExperimentMap, &CrossValidationMap);
   mChanged |= mpConstraints->save(&ExperimentMap, &CrossValidationMap);
 
@@ -273,6 +279,7 @@ bool CQFittingWidget::loadTaskProtected()
   mpCheckRandomize->setChecked(pProblem->getRandomizeStartValues());
   mpCreateParameterSets->setChecked(pProblem->getCreateParameterSets());
   mpCheckStatistics->setChecked(pProblem->getCalculateStatistics());
+  mpUseTimeSens->setChecked(pProblem->getUseTimeSens());
 
   mpParameters->load(mpDataModel, pProblem->getGroup("OptimizationItemList"), &mExperimentKeyMap, &mCrossValidationKeyMap);
 

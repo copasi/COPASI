@@ -576,7 +576,7 @@ void CExperiment::storeExtendedTimeSeriesData(C_FLOAT64 time)
   //first store time
   *mStorageIt = time; ++mStorageIt;
 
-  //do all necessary refreshs
+  //do all necessary refreshes
   mpContainer->applyUpdateSequence(mDependentUpdateSequence);
 
   //store the calculated data

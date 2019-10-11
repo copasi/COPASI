@@ -210,7 +210,13 @@ bool COptMethodLevenbergMarquardt::optimise()
         break;
 
       // calculate gradient and Hessian
-      if (calc_hess) hessian();
+      if (calc_hess)
+        {
+          hessian();
+
+          //std::ofstream ohess; ohess.open("hessian.txt"); ohess << mResidualJacobianT; ohess.close();
+          //std::ofstream osens; osens.open("sens.txt"); osens << dynamic_cast<CFitProblem*>(mpOptProblem)->getTimeSensJac(); osens.close();
+        }
 
       calc_hess = true;
 
@@ -716,6 +722,8 @@ void COptMethodLevenbergMarquardt::hessian()
       C_FLOAT64 * pHessian;
       C_FLOAT64 * pJacobian;
 
+      CFitProblem* pFit = dynamic_cast<CFitProblem*>(mpOptProblem);
+
       for (i = 0; i < mVariableSize; i++)
         {
           pHessian = mHessian[i];
@@ -723,9 +731,18 @@ void COptMethodLevenbergMarquardt::hessian()
           for (j = 0; j <= i; j++, pHessian++)
             {
               *pHessian = 0.0;
-              pJacobianT = mResidualJacobianT[i];
+
+              if (pFit && pFit->getUseTimeSens())
+                pJacobianT = pFit->getTimeSensJac()[i];
+              else
+                pJacobianT = mResidualJacobianT[i];
+
               pEnd = pJacobianT + ResidualSize;
-              pJacobian = mResidualJacobianT[j];
+
+              if (pFit && pFit->getUseTimeSens())
+                pJacobian = pFit->getTimeSensJac()[j];
+              else
+                pJacobian = mResidualJacobianT[j];
 
               for (; pJacobianT != pEnd; pJacobianT++, pJacobian++)
                 *pHessian += *pJacobianT **pJacobian;

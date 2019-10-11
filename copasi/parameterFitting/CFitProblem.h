@@ -36,6 +36,9 @@ class CState;
 class CFitConstraint;
 class CDataArray;
 class CExperiment;
+class CTimeSensTask;
+class CTimeSensProblem;
+
 template < class CMatrixType > class CMatrixInterface;
 
 class CFitProblem : public COptProblem
@@ -330,7 +333,13 @@ public:
    */
   const bool & getCreateParameterSets() const;
 
+  void setUseTimeSens(bool value);
+  const bool& getUseTimeSens() const;
+
   void createParameterSets();
+
+  const CMatrix<C_FLOAT64>& getTimeSensJac() const;
+  CMatrix<C_FLOAT64>& getTimeSensJac();
 
 protected:
   /**
@@ -585,6 +594,17 @@ private:
    * The original value of the trajectory update flag
    */
   bool mTrajectoryUpdate;
+
+  /** A flag indicating whether or not to use time sens task */
+  bool* mpUseTimeSens;
+
+  CTimeSensTask* mpTimeSens;
+
+  CTimeSensProblem* mpTimeSensProblem;
+
+  CMatrix< C_FLOAT64 > mJacTimeSens;
+
+  std::string* mpParmTimeSensCN;
 };
 
 #endif  // COPASI_CFitProblem
