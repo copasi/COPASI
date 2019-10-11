@@ -647,9 +647,11 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
   //TODO: create update lists for the various other numerical derivatives calculations
 }
 
+
 //static
 void CTimeSensMethod::printObjectSet(const std::string & s, const CObjectInterface::ObjectSet & os)
 {
+#ifdef DEBUG_OBJECTLISTS
   std::cout << "object set: " << s << std::endl;
   CObjectInterface::ObjectSet::const_iterator it;
 
@@ -657,11 +659,13 @@ void CTimeSensMethod::printObjectSet(const std::string & s, const CObjectInterfa
     std::cout << " - " << (*it)->getObjectDisplayName() << std::endl;
 
   std::cout << std::endl;
+#endif
 }
 
 //static
 void CTimeSensMethod::printUpdateSeq(const std::string & s, const CCore::CUpdateSequence & us)
 {
+#ifdef DEBUG_OBJECTLISTS
   std::cout << "update seq: " << s << std::endl;
   CMathUpdateSequence::const_iterator it = us.begin();
   CMathUpdateSequence::const_iterator end = us.end();
@@ -687,4 +691,5 @@ void CTimeSensMethod::printUpdateSeq(const std::string & s, const CCore::CUpdate
     }
 
   std::cout << std::endl;
+#endif
 }
