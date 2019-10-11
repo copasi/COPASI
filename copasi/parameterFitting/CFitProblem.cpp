@@ -1771,6 +1771,7 @@ void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 
 bool CFitProblem::calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd, bool scale)
 {
   corr = fim;
+  sd.resize(fim.numRows());
 
   // The Fisher Information matrix is a symmetric positive semidefinit matrix.
   /* int dpotrf_(char *uplo, integer *n, doublereal *a,
