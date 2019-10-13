@@ -704,7 +704,13 @@ void COptMethodLevenbergMarquardt::hessian()
 #endif //XXXX
 
       C_FLOAT64 * pGradient = mGradient.array();
-      pJacobianT = mResidualJacobianT.array();
+
+      CFitProblem* pFit = dynamic_cast<CFitProblem*>(mpOptProblem);
+
+      if (pFit && pFit->getUseTimeSens())
+        pJacobianT = pFit->getTimeSensJac().array();
+      else
+        pJacobianT = mResidualJacobianT.array();
 
       for (i = 0; i < mVariableSize; i++, pGradient++)
         {
@@ -712,7 +718,10 @@ void COptMethodLevenbergMarquardt::hessian()
           pCurrentResiduals = CurrentResiduals.array();
 
           for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pJacobianT++)
-            *pGradient += *pJacobianT **pCurrentResiduals;
+            if (pFit && pFit->getUseTimeSens())
+              *pGradient -= *pJacobianT * *pCurrentResiduals;
+            else
+              *pGradient += *pJacobianT * *pCurrentResiduals;
 
           // This is formally correct but cancels out with factor 2 below
           // *pGradient *= 2.0;
@@ -721,8 +730,6 @@ void COptMethodLevenbergMarquardt::hessian()
       // calculate the Hessian
       C_FLOAT64 * pHessian;
       C_FLOAT64 * pJacobian;
-
-      CFitProblem* pFit = dynamic_cast<CFitProblem*>(mpOptProblem);
 
       for (i = 0; i < mVariableSize; i++)
         {
