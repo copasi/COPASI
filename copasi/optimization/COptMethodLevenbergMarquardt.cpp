@@ -643,8 +643,10 @@ void COptMethodLevenbergMarquardt::hessian()
     {
       evaluate();
 
-      const CVector< C_FLOAT64 > & Residuals =
-        static_cast<CFitProblem *>(mpOptProblem)->getResiduals();
+      CFitProblem* pFit = static_cast<CFitProblem*>(mpOptProblem);
+      bool bUseTimeSens = pFit->getUseTimeSens();
+
+      const CVector< C_FLOAT64 > & Residuals = pFit->getResiduals();
 
       const CVector< C_FLOAT64 > CurrentResiduals = Residuals;
 
@@ -656,58 +658,60 @@ void COptMethodLevenbergMarquardt::hessian()
       const C_FLOAT64 * pEnd = CurrentResiduals.array() + ResidualSize;
       const C_FLOAT64 * pResiduals;
 
-      C_FLOAT64 Delta;
-      C_FLOAT64 x;
-
-      for (i = 0; i < mVariableSize && mContinue; i++)
+      if (!bUseTimeSens)
         {
-//REVIEW:START
-          if ((x = mCurrent[i]) != 0.0)
+
+          C_FLOAT64 Delta;
+          C_FLOAT64 x;
+
+          for (i = 0; i < mVariableSize && mContinue; i++)
             {
-              Delta = 1.0 / (x * mModulation);
-              *mContainerVariables[i] = (x * mod1);
+              //REVIEW:START
+              if ((x = mCurrent[i]) != 0.0)
+                {
+                  Delta = 1.0 / (x * mModulation);
+                  *mContainerVariables[i] = (x * mod1);
+                }
+
+              else
+                {
+                  Delta = 1.0 / mModulation;
+                  *mContainerVariables[i] = (mModulation);
+                  //REVIEW:END
+                }
+
+              // evaluate another column of the Jacobian
+              evaluate();
+              pCurrentResiduals = CurrentResiduals.array();
+              pResiduals = Residuals.array();
+
+              for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pResiduals++, pJacobianT++)
+                *pJacobianT = (*pResiduals - *pCurrentResiduals) * Delta;
+
+              *mContainerVariables[i] = (x);
             }
-
-          else
-            {
-              Delta = 1.0 / mModulation;
-              *mContainerVariables[i] = (mModulation);
-//REVIEW:END
-            }
-
-          // evaluate another column of the Jacobian
-          evaluate();
-          pCurrentResiduals = CurrentResiduals.array();
-          pResiduals = Residuals.array();
-
-          for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pResiduals++, pJacobianT++)
-            *pJacobianT = (*pResiduals - *pCurrentResiduals) * Delta;
-
-          *mContainerVariables[i] = (x);
-        }
 
 #ifdef XXXX
-      // calculate the gradient
-      C_INT m = 1;
-      C_INT n = mGradient.size();
-      C_INT k = mResidualJacobianT.numCols(); /* == CurrentResiduals.size() */
+          // calculate the gradient
+          C_INT m = 1;
+          C_INT n = mGradient.size();
+          C_INT k = mResidualJacobianT.numCols(); /* == CurrentResiduals.size() */
 
-      char op = 'N';
+          char op = 'N';
 
-      C_FLOAT64 Alpha = 1.0;
-      C_FLOAT64 Beta = 0.0;
+          C_FLOAT64 Alpha = 1.0;
+          C_FLOAT64 Beta = 0.0;
 
-      dgemm_("N", "T", &m, &n, &k, &Alpha,
-             const_cast<C_FLOAT64 *>(CurrentResiduals.array()), &m,
-             mResidualJacobianT.array(), &n, &Beta,
-             const_cast<C_FLOAT64 *>(mGradient.array()), &m);
+          dgemm_("N", "T", &m, &n, &k, &Alpha,
+                 const_cast<C_FLOAT64*>(CurrentResiduals.array()), &m,
+                 mResidualJacobianT.array(), &n, &Beta,
+                 const_cast<C_FLOAT64*>(mGradient.array()), &m);
 #endif //XXXX
+        }
 
       C_FLOAT64 * pGradient = mGradient.array();
 
-      CFitProblem* pFit = dynamic_cast<CFitProblem*>(mpOptProblem);
-
-      if (pFit && pFit->getUseTimeSens())
+      if (bUseTimeSens)
         pJacobianT = pFit->getTimeSensJac().array();
       else
         pJacobianT = mResidualJacobianT.array();
@@ -718,7 +722,7 @@ void COptMethodLevenbergMarquardt::hessian()
           pCurrentResiduals = CurrentResiduals.array();
 
           for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pJacobianT++)
-            if (pFit && pFit->getUseTimeSens())
+            if (bUseTimeSens)
               *pGradient -= *pJacobianT * *pCurrentResiduals;
             else
               *pGradient += *pJacobianT * *pCurrentResiduals;
