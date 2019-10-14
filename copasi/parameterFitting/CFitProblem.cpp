@@ -1100,9 +1100,10 @@ bool CFitProblem::calculate()
                             for (ic = 1; ic < numIntermediateSteps; ++ic)
                               {
                                 ttt = pExp->getTimeData()[j - 1] + (pExp->getTimeData()[j] - pExp->getTimeData()[j - 1]) * (C_FLOAT64(ic) / numIntermediateSteps);
-                                mpTrajectory->processStep(ttt);
 
                                 if (mpTimeSens) mpTimeSens->processStep(ttt);
+                                else mpTrajectory->processStep(ttt);
+
 
                                 //save the simulation results in the experiment
                                 pExp->storeExtendedTimeSeriesData(ttt);
@@ -1115,9 +1116,8 @@ bool CFitProblem::calculate()
 
                         if (Advanced)
                           {
-                            mpTrajectory->processStep(NextTime);
-
                             if (mpTimeSens) mpTimeSens->processStep(NextTime);
+                            else mpTrajectory->processStep(NextTime);
 
                             LastTime = NextTime;
                           }
@@ -1128,22 +1128,25 @@ bool CFitProblem::calculate()
                         // independent data.
                         pExp->updateModelWithIndependentData(0);
 
-                        static_cast<CTrajectoryProblem*>(mpTrajectory->getProblem())->setStepNumber(1);
-                        mpTrajectory->processStart(true);
-
                         if (mpTimeSens)
                           {
                             static_cast<CTrajectoryProblem*>(mpTimeSens->getProblem())->setStepNumber(1);
                             mpTimeSens->processStart(true);
+                          }
+                        else
+                          {
+                            static_cast<CTrajectoryProblem*>(mpTrajectory->getProblem())->setStepNumber(1);
+                            mpTrajectory->processStart(true);
                           }
 
                         C_FLOAT64 NextTime = pExp->getTimeData()[0];
 
                         if (NextTime != *mpInitialStateTime)
                           {
-                            mpTrajectory->processStep(NextTime);
+
 
                             if (mpTimeSens) mpTimeSens->processStep(NextTime);
+                            else mpTrajectory->processStep(NextTime);
 
                             LastTime = NextTime;
                           }
@@ -2449,9 +2452,9 @@ bool CFitProblem::calculateCrossValidation()
                             for (ic = 1; ic < numIntermediateSteps; ++ic)
                               {
                                 ttt = pExp->getTimeData()[j - 1] + (pExp->getTimeData()[j] - pExp->getTimeData()[j - 1]) * (C_FLOAT64(ic) / numIntermediateSteps);
-                                mpTrajectory->processStep(ttt);
 
                                 if (mpTimeSens) mpTimeSens->processStep(ttt);
+                                else mpTrajectory->processStep(ttt);
 
                                 //save the simulation results in the experiment
                                 pExp->storeExtendedTimeSeriesData(ttt);
@@ -2464,9 +2467,9 @@ bool CFitProblem::calculateCrossValidation()
 
                         if (Advanced)
                           {
-                            mpTrajectory->processStep(NextTime);
 
                             if (mpTimeSens) mpTimeSens->processStep(NextTime);
+                            else mpTrajectory->processStep(NextTime);
 
                             LastTime = NextTime;
                           }
@@ -2481,22 +2484,24 @@ bool CFitProblem::calculateCrossValidation()
                         // value updates as one unit.
                         mpContainer->applyUpdateSequence(mCrossValidationInitialUpdates[i]);
 
-                        static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem())->setStepNumber(1);
-                        mpTrajectory->processStart(true);
 
                         if (mpTimeSens)
                           {
                             static_cast<CTrajectoryProblem*>(mpTimeSens->getProblem())->setStepNumber(1);
                             mpTimeSens->processStart(true);
                           }
+                        else
+                          {
+                            static_cast<CTrajectoryProblem*>(mpTrajectory->getProblem())->setStepNumber(1);
+                            mpTrajectory->processStart(true);
+                          }
 
                         C_FLOAT64 NextTime = pExp->getTimeData()[0];
 
                         if (NextTime != *mpInitialStateTime)
                           {
-                            mpTrajectory->processStep(NextTime);
-
                             if (mpTimeSens) mpTimeSens->processStep(NextTime);
+                            else mpTrajectory->processStep(NextTime);
 
                             LastTime = NextTime;
                           }
