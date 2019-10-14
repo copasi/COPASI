@@ -272,6 +272,13 @@ bool COptMethodTruncatedNewton::initialize()
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
   mGradient.resize(mVariableSize);
 
+  CFitProblem* pFitProblem = dynamic_cast<CFitProblem*>(mpOptProblem);
+
+  if (pFitProblem != NULL)
+    {
+      pFitProblem->setResidualsRequired(true);
+    }
+
   return true;
 }
 
@@ -282,7 +289,7 @@ bool COptMethodTruncatedNewton::cleanup()
 
 // callback function, evaluate the value of the objective function and its gradient
 //(by finite differences), translated by f2c, edited by Pedro and then modified for COPASI by Joseph
-C_INT COptMethodTruncatedNewton::sFun(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *f, C_FLOAT64 *g)
+C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FLOAT64* g)
 {
   C_INT i;
 
@@ -292,6 +299,9 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *f, C_FL
 
   //carry out the function evaluation
   *f = evaluate();
+
+
+  CFitProblem* pFit = dynamic_cast<CFitProblem*>(mpOptProblem);
 
   // Check whether we improved
   if (mEvaluationValue < mBestValue)
@@ -308,29 +318,51 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *f, C_FL
       mpParentTask->output(COutputInterface::DURING);
     }
 
-  // Calculate the gradient
-  for (i = 0; i < *n && mContinue; i++)
+  if (pFit && pFit->getUseTimeSens())
     {
-      if (x[i] != 0.0)
-        {
-          *mContainerVariables[i] = (x[i] * 1.001);
-          g[i] = (evaluate() - *f) / (x[i] * 0.001);
-        }
-      else
-        {
-          // why use 1e-7? shouldn't this be epsilon, or something like that?
-          *mContainerVariables[i] = (1e-7);
-          g[i] = (evaluate() - *f) / 1e-7;
+      C_FLOAT64* pJacobianT = pFit->getTimeSensJac().array();
+      const CVector< C_FLOAT64 >& Residuals = pFit->getResiduals();
+      const C_FLOAT64* pCurrentResiduals;
+      size_t ResidualSize = Residuals.size();
+      const C_FLOAT64* pEnd = Residuals.array() + ResidualSize;
 
-          if (mLogVerbosity > 2)
+      for (size_t i = 0; i < mVariableSize; i++, g++)
+        {
+          *g = 0.0;
+          pCurrentResiduals = Residuals.array();
+
+          for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pJacobianT++)
+            *g -= *pJacobianT * *pCurrentResiduals;
+
+        }
+    }
+  else
+    {
+
+      // Calculate the gradient
+      for (i = 0; i < *n && mContinue; i++)
+        {
+          if (x[i] != 0.0)
             {
-              std::ostringstream auxStream;
-              auxStream << "Calculating gradient for zero valued parameter " << i << ", using 1e-7, results in " << g[i] << ".";
-              mMethodLog.enterLogEntry(COptLogEntry(auxStream.str()));
+              *mContainerVariables[i] = (x[i] * 1.001);
+              g[i] = (evaluate() - *f) / (x[i] * 0.001);
             }
-        }
+          else
+            {
+              // why use 1e-7? shouldn't this be epsilon, or something like that?
+              *mContainerVariables[i] = (1e-7);
+              g[i] = (evaluate() - *f) / 1e-7;
 
-      *mContainerVariables[i] = (x[i]);
+              if (mLogVerbosity > 2)
+                {
+                  std::ostringstream auxStream;
+                  auxStream << "Calculating gradient for zero valued parameter " << i << ", using 1e-7, results in " << g[i] << ".";
+                  mMethodLog.enterLogEntry(COptLogEntry(auxStream.str()));
+                }
+            }
+
+          *mContainerVariables[i] = (x[i]);
+        }
     }
 
   if (!mContinue)
