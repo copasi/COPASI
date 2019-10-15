@@ -641,7 +641,7 @@ void COptMethodLevenbergMarquardt::hessian()
 
   if (mHaveResiduals)
     {
-      evaluate();
+      // evaluate();
 
       CFitProblem* pFit = static_cast<CFitProblem*>(mpOptProblem);
       bool bUseTimeSens = pFit->getUseTimeSens();
