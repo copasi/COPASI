@@ -534,6 +534,18 @@ public:
   C_FLOAT64 getDefaultScale(const CObjectInterface * pObject) const;
 
   /**
+   * Retrieve the scaling factor for the object.
+   * @param const CObjectInterface * pObject
+   * @return C_FLOAT64 scale or NULL if object can't be found
+   */
+  const C_FLOAT64* getScale(const CObjectInterface* pObject) const;
+
+  /**
+   * @return the scaling matrix
+   */
+  const CMatrix< C_FLOAT64 > & getScalingMatrix() const;
+
+  /**
    * Retrieve the RMS for the object.
    * @param const CObjectInterface * pObject
    * @return C_FLOAT64 RMS

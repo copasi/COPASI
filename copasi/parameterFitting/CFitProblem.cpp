@@ -1206,7 +1206,7 @@ bool CFitProblem::calculate()
                                     if (meassurement != meassurement)
                                       mJacTimeSens(i, pos + k) = 0; // missing data
                                     else
-                                      mJacTimeSens(i, pos + k) = value;
+                                      mJacTimeSens(i, pos + k) = value * pExp->getScalingMatrix()(j, index);
                                   }
                               }
                           }

@@ -1579,6 +1579,22 @@ C_FLOAT64 CExperiment::getDefaultScale(const CObjectInterface * pObject) const
   return mDefaultColumnScale[it->second];
 }
 
+const C_FLOAT64*
+CExperiment::getScale(const CObjectInterface* pObject) const
+{
+  std::map< const CObjectInterface*, size_t >::const_iterator it = mDependentObjectsMap.find(const_cast<CObjectInterface*>(pObject));
+
+  if (it == mDependentObjectsMap.end())
+    return NULL;
+
+  return mScale[it->second];
+}
+
+const CMatrix<C_FLOAT64>& CExperiment::getScalingMatrix() const
+{
+  return mScale;
+}
+
 C_FLOAT64 CExperiment::getRMS(const CObjectInterface * pObject) const
 {
   std::map< const CObjectInterface *, size_t >::const_iterator it = mDependentObjectsMap.find(const_cast< CObjectInterface * >(pObject));
