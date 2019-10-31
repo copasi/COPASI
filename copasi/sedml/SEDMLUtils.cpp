@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -116,6 +121,7 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
         {
           return targetXPathString + sbmlId + "\']";
         }
+
       return "";
     }
 
@@ -132,8 +138,10 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
         {
           return targetXPathString + sbmlId + "\']";
         }
+
       return "";
     }
+
   if (type == "Value" || type == "InitialValue")
     {
       if (type == "InitialValue")
@@ -196,8 +204,10 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
         {
           return targetXPathString + sbmlId + "\']";
         }
+
       return "";
     }
+
   if (type == "Volume" || type == "InitialVolume")
     {
       targetXPathString = "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id=\'";
@@ -222,8 +232,10 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
         {
           return targetXPathString + sbmlId + "\']";
         }
+
       return "";
     }
+
   if (type == "Time" || type == "Initial Time")
     return SEDML_TIME_URN;
 
@@ -315,18 +327,61 @@ SEDMLUtils::removeCharactersFromString(std::string& str, const std::string& char
 std::string
 SEDMLUtils::getXPathForObject(const CDataObject& object)
 {
+  std::string sbmlId = getSbmlId(object);
+  std::string targetXPathString;
+
+  if (!sbmlId.empty())
+    {
+      targetXPathString = getXPathForSbmlIdAndType(object.getObjectName(), sbmlId);
+
+      if (!targetXPathString.empty())
+        return targetXPathString;
+    }
+
   const std::string& type = object.getObjectName();
   const CDataModel* dm = object.getObjectDataModel();
   std::string yAxis = object.getObjectDisplayName();
-  std::string targetXPathString = getXPathAndName(yAxis, type,
-                                  dm->getModel(), *dm);
+  targetXPathString = getXPathAndName(yAxis, type,
+                                      dm->getModel(), *dm);
   return targetXPathString;
+}
+
+std::string SEDMLUtils::getXPathForSbmlIdAndType(const std::string& type, const std::string& sbmlId)
+{
+  if (type == "Concentration" || type == "InitialConcentration")
+    return "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=\'" + sbmlId + "\']";
+
+  if (type == "Flux")
+    return "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id=\'" + sbmlId + "\']";
+
+  if (type == "Volume" || type == "InitialVolume")
+    return "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id=\'" + sbmlId + "\']";
+
+  if (type == "Value" || type == "InitialValue")
+    return "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=\'" + sbmlId + "\']";
+
+  return std::string();
 }
 
 std::string SEDMLUtils::getNextId(const std::string& base, int count)
 {
   std::stringstream str; str << base << count;
   return str.str();
+}
+
+std::string SEDMLUtils::getSbmlId(const CDataObject& object)
+{
+  const CModelEntity* entity = dynamic_cast<const CModelEntity*>(&object);
+
+  if (entity != NULL)
+    return entity->getSBMLId();
+
+  entity = dynamic_cast<const CModelEntity*>(object.getObjectParent());
+
+  if (entity != NULL)
+    return entity->getSBMLId();
+
+  return std::string();
 }
 
 int SEDMLUtils::processArchive(const std::string & archiveFile,

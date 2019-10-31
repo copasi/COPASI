@@ -540,11 +540,20 @@ void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
 
               if (object == NULL) continue;
 
-              const std::string& typeX = object->getObjectName();
-              std::string xAxis = object->getObjectDisplayName();
+              std::string xAxis = SEDMLUtils::getSbmlId(*object);
+              std::string targetXPathStringX;
 
-              std::string targetXPathStringX = SEDMLUtils::getXPathAndName(xAxis, typeX,
-                                               pModel, dataModel);
+              if (!xAxis.empty())
+                targetXPathStringX = SEDMLUtils::getXPathForObject(*object);
+
+              if (targetXPathStringX.empty())
+                {
+                  const std::string& typeX = object->getObjectName();
+                  xAxis = object->getObjectDisplayName();
+
+                  targetXPathStringX = SEDMLUtils::getXPathAndName(xAxis, typeX,
+                                       pModel, dataModel);
+                }
 
               if (object->getCN() == pTime->getCN())
                 pPDGen = pTimeDGenp;
@@ -648,15 +657,24 @@ void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
 
           std::string yAxis = objectY->getObjectDisplayName();
 
-          std::string sbmlId = yAxis;
+          std::string sbmlId = SEDMLUtils::getSbmlId(*objectY);
+          std::string targetXPathString;
 
-          std::string targetXPathString = SEDMLUtils::getXPathAndName(sbmlId, type,
-                                          pModel, dataModel);
+          if (!sbmlId.empty())
+            targetXPathString = SEDMLUtils::getXPathForObject(*objectY);
 
           if (targetXPathString.empty())
             {
-              CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as no xpath expression for it could be generated.",  pPlotItem->getObjectName().c_str(), pPlotItem->getChannels()[1].c_str());
-              continue;
+              sbmlId = yAxis;
+
+              targetXPathString = SEDMLUtils::getXPathAndName(sbmlId, type,
+                                  pModel, dataModel);
+
+              if (targetXPathString.empty())
+                {
+                  CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as no xpath expression for it could be generated.", pPlotItem->getObjectName().c_str(), pPlotItem->getChannels()[1].c_str());
+                  continue;
+                }
             }
 
           pPDGen = createDataGenerator(
