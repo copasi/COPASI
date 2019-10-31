@@ -469,6 +469,11 @@ public:
    */
   virtual const C_FLOAT64 & getValue(const CCore::Framework & framework) const;
 
+  /**
+   * Update the corresponding model object with the current parameter settings
+   */
+  virtual bool updateModel();
+
 private:
   /**
    * Retrieve the CN of the compartment the species is contained in.
