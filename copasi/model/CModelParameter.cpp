@@ -890,6 +890,14 @@ void CModelParameterCompartment::setValue(const C_FLOAT64 & value, const CCore::
     {
       (*it)->setValue(*pSpeciesValue, framework);
     }
+
+  CModelParameterSet* pSet = getSet();
+
+  if (pSet->isActive())
+    {
+      updateModel();
+    }
+
 }
 
 void CModelParameterCompartment::addSpecies(CModelParameterSpecies * pSpecies)
@@ -1052,6 +1060,14 @@ void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const CCore::Fram
           mConcentration = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
         }
     }
+
+  CModelParameterSet* pSet = getSet();
+
+  if (pSet->isActive())
+    {
+      updateModel();
+    }
+
 }
 
 // virtual
@@ -1063,6 +1079,18 @@ const C_FLOAT64 & CModelParameterSpecies::getValue(const CCore::Framework & fram
     }
 
   return mValue;
+}
+
+bool CModelParameterSpecies::updateModel()
+{
+  CMetab* pMetab = static_cast<CMetab*>(mpObject);
+
+  if (pMetab && pMetab->getStatus() != CModelEntity::Status::ASSIGNMENT)
+    {
+      pMetab->setInitialConcentration(mConcentration);
+    }
+
+  return CModelParameter::updateModel();
 }
 
 CCommonName CModelParameterSpecies::getCompartmentCN() const
