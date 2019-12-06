@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,7 +28,8 @@
 #include <limits>
 #include <cmath>
 
-#ifdef WIN32 // These are not part of ANSI C and Visual C++ misses them.
+#if defined(WIN32)
+#if __cplusplus <= 199711L  // These are not part of ANSI C and Visual C++ misses them.
 static inline double asinh(double value)
 {return log(value + sqrt(value * value + 1.0));}
 
@@ -35,6 +41,7 @@ static inline double atanh(double value)
 
 static inline double round(double value)
 {return  value < 0.0 ? -floor(-value + 0.5) : floor(value + 0.5);}
+#endif // not c++11
 #endif // WIN32
 
 #include "copasi/function/CEvaluationNode.h"

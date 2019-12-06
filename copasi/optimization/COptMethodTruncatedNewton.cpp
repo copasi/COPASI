@@ -87,7 +87,7 @@ bool COptMethodTruncatedNewton::optimise()
 
   // initial point is the first guess but we have to make sure that
   // we are within the parameter domain
-  C_INT i, repeat;
+  C_INT i;
   bool pointInParameterDomain = true;
 
   for (i = 0; i < mVariableSize; i++)

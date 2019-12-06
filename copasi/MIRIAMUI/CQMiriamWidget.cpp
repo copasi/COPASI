@@ -589,6 +589,8 @@ void CQMiriamWidget::slotCopyEvent()
       pBaseDM = mpBiologicalDescriptionDM;
       pTbl = mpTblDescription;
     }
+  else
+    return;
 
   QModelIndexList selRows = pTbl->selectionModel()->selectedRows(0);
 
