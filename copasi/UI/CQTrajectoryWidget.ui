@@ -305,16 +305,18 @@
  </customwidgets>
  <tabstops>
   <tabstop>mpEditDuration</tabstop>
-  <tabstop>mpEditIntervalSize</tabstop>
   <tabstop>mpEditIntervals</tabstop>
+  <tabstop>mpEditIntervalSize</tabstop>
   <tabstop>mpCheckAutomaticInterval</tabstop>
+  <tabstop>mpCheckStartInSteadyState</tabstop>
   <tabstop>mpCheckDelay</tabstop>
   <tabstop>mpEditDelay</tabstop>
   <tabstop>mpCheckOutputEvent</tabstop>
   <tabstop>mpCheckSave</tabstop>
-  <tabstop>mpCheckStartInSteadyState</tabstop>
   <tabstop>mpEditIntegrationInterval</tabstop>
   <tabstop>mpEditOutputInterval</tabstop>
+  <tabstop>mpTabWidget</tabstop>
+  <tabstop>mpEditValues</tabstop>
  </tabstops>
  <resources/>
  <connections>
