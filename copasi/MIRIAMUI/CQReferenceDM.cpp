@@ -39,6 +39,11 @@ void CQReferenceDM::setMIRIAMInfo(CMIRIAMInfo * pMiriamInfo)
   endResetModel();
 }
 
+void CQReferenceDM::resetCacheProtected()
+{
+  mpMIRIAMInfo = NULL;
+}
+
 int CQReferenceDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
   if (mpMIRIAMInfo != NULL)

@@ -47,6 +47,7 @@ public:
 protected:
   virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
   virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+  virtual void resetCacheProtected();
   CMIRIAMInfo* mpMIRIAMInfo;
 };
 

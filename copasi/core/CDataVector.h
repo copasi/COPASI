@@ -1456,7 +1456,7 @@ public:
    */
   virtual void load(CReadConfig & configbuffer, size_t size)
   {
-    size_t i;
+    size_t i = 0;
 
     CDataVector< CType >::cleanup();
     CDataVector< CType >::resize(size);

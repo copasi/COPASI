@@ -424,7 +424,7 @@ void CQCompartment::load()
 
   //Dimensionality
   mpComboBoxDim->setCurrentIndex(mpCompartment->getDimensionality());
-  // slotDimesionalityChanged(mpCompartment->getDimensionality());
+  slotDimesionalityChanged(mpCompartment->getDimensionality());
 
   // Simulation Type
   mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mpCompartment->getStatus()])));

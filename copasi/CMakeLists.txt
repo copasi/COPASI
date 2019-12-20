@@ -554,7 +554,7 @@ if(BUILD_GUI)
   QT_BIND_TO_TARGET(libCOPASIUI)
   target_link_libraries(libCOPASIUI libCOPASISE-static ${SBW_LIBRARY} ${QWT_LIBRARY} ${QWTPLOT3D_LIBRARY} ${MML_LIBRARY})
   if (${CMAKE_VERSION} VERSION_GREATER "2.8.11")
-    target_include_directories(libCOPASIUI PRIVATE ${GUI_INCLUDE_DIRS})
+    target_include_directories(libCOPASIUI PUBLIC ${GUI_INCLUDE_DIRS})
   endif()
   
   if (OPENGL_glu_LIBRARY AND OPENGL_gl_LIBRARY)

@@ -240,6 +240,7 @@ bool CReaction::applyData(const CData & data, CUndoData::CChangeSet & changes)
   if (data.isSetProperty(CData::KINETIC_LAW_UNIT_TYPE))
     {
       setKineticLawUnitType(CReaction::KineticLawUnitTypeName.toEnum(data.getProperty(CData::KINETIC_LAW_UNIT_TYPE).toString()));
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::SCALING_COMPARTMENT))

@@ -37,6 +37,11 @@ void CQBiologicalDescriptionDM::setMIRIAMInfo(CMIRIAMInfo * pMiriamInfo)
   endResetModel();
 }
 
+void CQBiologicalDescriptionDM::resetCacheProtected()
+{
+  mpMIRIAMInfo = NULL;
+}
+
 int CQBiologicalDescriptionDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
   if (mpMIRIAMInfo != NULL)

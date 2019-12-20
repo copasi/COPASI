@@ -235,6 +235,11 @@ bool CQCreatorDM::removeRows(int position, int rows, const QModelIndex & parent)
   return true;
 }
 
+void CQCreatorDM::resetCacheProtected()
+{
+  mpMIRIAMInfo = NULL;
+}
+
 bool CQCreatorDM::removeRows(QModelIndexList rows, const QModelIndex&)
 {
   if (rows.isEmpty())

@@ -172,7 +172,7 @@ bool COptMethodSteepestDescent::optimise()
           C_INT oit;
           std::ostringstream auxStream;
 
-          for (oit = 0; oit < mVariableSize; oit++)
+          for (oit = 0; (size_t)oit < mVariableSize; ++oit)
             auxStream << "x[" << oit << "]=" << mGradient[oit] << " ";
 
           mMethodLog.enterLogEntry(COptLogEntry("search direction: ", "", auxStream.str()));
@@ -229,7 +229,7 @@ bool COptMethodSteepestDescent::optimise()
           string1 << "niter=" << mCurrentIteration << ", f=" << fmx << ", fbest=" << mBestValue;
           string2 << "position: ";
 
-          for (oit = 0; oit < mVariableSize; oit++)
+          for (oit = 0; (size_t)oit < mVariableSize; ++oit)
             string2 << "x[" << oit << "]=" << mIndividual[oit] << " ";
 
           mMethodLog.enterLogEntry(COptLogEntry(string1.str(), "", string2.str()));
