@@ -47,9 +47,11 @@ public:
                int role = Qt::EditRole);
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
+
 protected:
   virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
   virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+  virtual void resetCacheProtected();
   CMIRIAMInfo* mpMIRIAMInfo;
 };
 
