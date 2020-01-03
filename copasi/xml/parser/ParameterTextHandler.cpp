@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,7 +51,7 @@ CXMLHandler * ParameterTextHandler::processStart(const XML_Char * pszName,
         // Parameter has attributes name, type and value
         name = mpParser->getAttributeValue("name", papszAttrs);
         cType = mpParser->getAttributeValue("type", papszAttrs);
-        type = cType == NULL ? CCopasiParameter::Type::INVALID : CCopasiParameter::XMLType.toEnum(cType, CCopasiParameter::Type::INVALID);
+        type = CCopasiParameter::XMLType.toEnum(cType, CCopasiParameter::Type::INVALID);
 
         switch (type)
           {

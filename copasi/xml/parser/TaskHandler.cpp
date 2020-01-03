@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -59,7 +59,7 @@ CXMLHandler * TaskHandler::processStart(const XML_Char * pszName,
 
         Key = mpParser->getAttributeValue("key", papszAttrs, false);
         type = mpParser->getAttributeValue("type", papszAttrs);
-        Type = type == NULL ? CTaskEnum::Task::UnsetTask  :  CTaskEnum::TaskXML.toEnum(type, CTaskEnum::Task::UnsetTask);
+        Type = CTaskEnum::TaskXML.toEnum(type, CTaskEnum::Task::UnsetTask);
         Scheduled = mpParser->toBool(mpParser->getAttributeValue("scheduled", papszAttrs, "false"));
         UpdateModel = mpParser->toBool(mpParser->getAttributeValue("updateModel", papszAttrs, "false"));
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,9 +51,8 @@ CXMLHandler * ModelParameterGroupHandler::processStart(const XML_Char * pszName,
         assert(!mpData->ModelParameterGroupStack.empty());
 
         CN = mpParser->getAttributeValue("cn", papszAttrs);
-        pType = mpParser->getAttributeValue("type", papszAttrs);
-        Type = pType == NULL ? CModelParameter::Type::Group :
-               CModelParameter::TypeNames.toEnum(pType, CModelParameter::Type::Group);
+        pType = mpParser->getAttributeValue("type", papszAttrs, "Group");
+        Type = CModelParameter::TypeNames.toEnum(pType, CModelParameter::Type::Group);
 
         {
           CModelParameterGroup * pModelParameterGroup = new CModelParameterGroup(mpData->ModelParameterGroupStack.top(), Type);
