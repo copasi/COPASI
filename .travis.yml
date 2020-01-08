@@ -17,6 +17,9 @@ cache:
   directories:
     - $HOME/sonarcache
 
+git:
+  depth: false
+
 linux: &linux
    os: linux
    dist: xenial

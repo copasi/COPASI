@@ -15,7 +15,6 @@ if [[ "$(uname -s)" == 'Darwin' ]]; then
     pyenv activate conan
 fi
 
-git fetch --unshallow
 git fetch origin develop
 mkdir build
 cd build
