@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,7 +45,6 @@ CXMLHandler * ReportDefinitionHandler::processStart(const XML_Char * pszName,
   const char * Name;
   const char * Separator;
   const char * Precision;
-  const char* cType;
   CTaskEnum::Task type;
 
   switch (mCurrentElement.first)
@@ -53,8 +52,7 @@ CXMLHandler * ReportDefinitionHandler::processStart(const XML_Char * pszName,
       case ReportDefinition:
         Key = mpParser->getAttributeValue("key", papszAttrs);
         Name = mpParser->getAttributeValue("name", papszAttrs);
-        cType = mpParser->getAttributeValue("taskType", papszAttrs);
-        type = cType == NULL ? CTaskEnum::Task::UnsetTask : CTaskEnum::TaskXML.toEnum(cType, CTaskEnum::Task::UnsetTask);
+        type = CTaskEnum::TaskXML.toEnum(mpParser->getAttributeValue("taskType", papszAttrs), CTaskEnum::Task::UnsetTask);
 
         Separator = mpParser->getAttributeValue("separator", papszAttrs, "\t");
         Precision = mpParser->getAttributeValue("precision", papszAttrs, "6");

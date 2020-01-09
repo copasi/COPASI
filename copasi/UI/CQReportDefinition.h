@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -25,6 +30,7 @@
 #include "copasi/UI/ui_CQReportDefinition.h"
 
 class CReportDefinition;
+class QAction;
 
 class CQReportDefinition : public CopasiWidget, public Ui::CQReportDefinition
 {
@@ -79,6 +85,12 @@ private slots:
   void slotAddLineBreak();
   void slotAddItem();
   void setDirty();
+
+private:
+
+  void _setup(QTableWidget* pList);
+
+  QAction* mpSeparator;
 };
 
 #endif // CQREPORTDEFINITION_H

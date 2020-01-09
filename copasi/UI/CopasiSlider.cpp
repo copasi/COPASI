@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -119,38 +119,42 @@ void CopasiSlider::focusSlider()
 
 void CopasiSlider::updateSliderData()
 {
-  if (mpCSlider)
+  if (mpCSlider == NULL || mpQSlider == NULL)
+    return;
+
+  //mpCSlider->compile();
+  mpQSlider->setMinimum(0);
+  mpQSlider->setMaximum(mpCSlider->getTickNumber());
+  mpQSlider->setTickInterval(1);
+  mpQSlider->setSingleStep(1);
+  mpQSlider->setPageStep(mpCSlider->getTickFactor());
+  disconnect(mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
+  mpQSlider->setValue(calculatePositionFromValue(mpCSlider->getSliderValue()));
+  connect(mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
+  updateLabel();
+
+  if (mpQSlider->isEnabled() == false)
     {
-      //mpCSlider->compile();
-      mpQSlider->setMinimum(0);
-      mpQSlider->setMaximum(mpCSlider->getTickNumber());
-      mpQSlider->setTickInterval(1);
-      mpQSlider->setSingleStep(1);
-      mpQSlider->setPageStep(mpCSlider->getTickFactor());
-      disconnect(mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
-      mpQSlider->setValue(calculatePositionFromValue(mpCSlider->getSliderValue()));
-      connect(mpQSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
-      updateLabel();
-
-      if (mpQSlider->isEnabled() == false)
+      if (mpCSlider->getSliderObject() != NULL)
         {
-          if (mpCSlider->getSliderObject() != NULL)
-            {
-              mpQSlider->setEnabled(true);
-            }
+          mpQSlider->setEnabled(true);
         }
-
-      update();
     }
+
+  update();
+
 }
 
 C_FLOAT64 CopasiSlider::value() const
 {
+  if (mpCSlider == NULL) return 0;
+
   return mpCSlider->getSliderValue();
 }
 
 void CopasiSlider::setValue(C_FLOAT64 value)
 {
+  if (mpCSlider == NULL) return;
 
   // we set the value ourselves so that listviews can do the
   // update of the dependent values as well as taking the framework into
@@ -184,22 +188,30 @@ void CopasiSlider::setValue(C_FLOAT64 value)
 
 unsigned C_INT32 CopasiSlider::minorMajorFactor() const
 {
+  if (mpCSlider == NULL) return 0;
+
   return mpCSlider->getTickFactor();
 }
 
 void CopasiSlider::setMinorMajorFactor(unsigned C_INT32 factor)
 {
+  if (mpCSlider == NULL || mpQSlider == NULL) return;
+
   mpCSlider->setTickFactor(factor);
   mpQSlider->setPageStep(mpQSlider->singleStep()*factor);
 }
 
 C_FLOAT64 CopasiSlider::minorTickInterval() const
 {
+  if (mpCSlider == NULL) return 0;
+
   return (C_FLOAT64)(mpCSlider->getMaxValue() - mpCSlider->getMinValue()) / ((C_FLOAT64)mpCSlider->getTickNumber());
 }
 
 void CopasiSlider::setNumMinorTicks(unsigned C_INT32 numMinorTicks)
 {
+  if (mpCSlider == NULL || mpQSlider == NULL) return;
+
   mpCSlider->setTickNumber(numMinorTicks);
   // set maxValue and value of slider
   mpQSlider->setMaximum(numMinorTicks);
@@ -208,32 +220,44 @@ void CopasiSlider::setNumMinorTicks(unsigned C_INT32 numMinorTicks)
 
 unsigned C_INT32 CopasiSlider::numMinorTicks() const
 {
+  if (mpCSlider == NULL) return 0;
+
   return mpCSlider->getTickNumber();
 }
 
 C_FLOAT64 CopasiSlider::minValue() const
 {
+  if (mpCSlider == NULL) return 0;
+
   return mpCSlider->getMinValue();
 }
 
 C_FLOAT64 CopasiSlider::maxValue() const
 {
+  if (mpCSlider == NULL) return 0;
+
   return mpCSlider->getMaxValue();
 }
 
 const CDataObject* CopasiSlider::object() const
 {
+  if (mpCSlider == NULL) return NULL;
+
   return mpCSlider->getSliderObject();
 }
 
 void CopasiSlider::setObject(const CDataObject * object)
 {
+  if (mpCSlider == NULL) return;
+
   mpCSlider->setSliderObject(object);
   updateSliderData();
 }
 
 void CopasiSlider::setMaxValue(C_FLOAT64 value)
 {
+  if (mpCSlider == NULL || mpQSlider == NULL) return;
+
   mpCSlider->setMaxValue(value);
 
   mpQSlider->setValue(calculatePositionFromValue(mpCSlider->getSliderValue()));
@@ -243,6 +267,8 @@ void CopasiSlider::setMaxValue(C_FLOAT64 value)
 
 void CopasiSlider::setMinValue(C_FLOAT64 value)
 {
+  if (mpCSlider == NULL || mpQSlider == NULL) return;
+
   mpCSlider->setMinValue(value);
 
   mpQSlider->setValue(calculatePositionFromValue(mpCSlider->getSliderValue()));
@@ -252,6 +278,8 @@ void CopasiSlider::setMinValue(C_FLOAT64 value)
 
 void CopasiSlider::updateLabel()
 {
+  if (mpCSlider == NULL || mpLabel == NULL) return;
+
   double minValue, maxValue, currValue;
   minValue = mpCSlider->getMinValue();
   maxValue = mpCSlider->getMaxValue();
@@ -285,6 +313,8 @@ void CopasiSlider::updateLabel()
 
 void CopasiSlider::sliderValueChanged(int value)
 {
+  if (mpCSlider == NULL) return;
+
   mpCSlider->setSliderValue(calculateValueFromPosition(value), false);
 
   updateLabel();
@@ -304,16 +334,22 @@ void CopasiSlider::qSliderPressed()
 
 CSlider::Type CopasiSlider::type() const
 {
+  if (mpCSlider == NULL) return CSlider::Undefined;
+
   return mpCSlider->getSliderType();
 }
 
 void CopasiSlider::setType(CSlider::Type type)
 {
+  if (mpCSlider == NULL) return;
+
   mpCSlider->setSliderType(type);
 }
 
 void CopasiSlider::updateValue(bool modifyRange, bool updateDependencies)
 {
+  if (mpCSlider == NULL) return;
+
   double value = mpCSlider->getSliderValue();
   double maxValue = mpCSlider->getMaxValue();
   double minValue = mpCSlider->getMinValue();
@@ -365,8 +401,15 @@ CSlider* CopasiSlider::getCSlider() const
   return mpCSlider;
 }
 
+void CopasiSlider::setCSlider(CSlider* pSlider)
+{
+  mpCSlider = pSlider;
+}
+
 C_FLOAT64 CopasiSlider::calculateValueFromPosition(int position)
 {
+  if (mpCSlider == NULL) return 0;
+
   double value;
   double exponent;
 
@@ -391,6 +434,8 @@ C_FLOAT64 CopasiSlider::calculateValueFromPosition(int position)
 
 int CopasiSlider::calculatePositionFromValue(C_FLOAT64 value)
 {
+  if (mpCSlider == NULL) return 0;
+
   int position;
 
   switch (mpCSlider->getScaling())
@@ -417,11 +462,15 @@ void CopasiSlider::resetValue()
 
 C_FLOAT64 CopasiSlider::originalValue() const
 {
+  if (mpCSlider == NULL) return 0;
+
   return mpCSlider->getOriginalValue();
 }
 
 void CopasiSlider::setOriginalValue(C_FLOAT64 value)
 {
+  if (mpCSlider == NULL) return;
+
   mpCSlider->setOriginalValue(value);
 }
 /**

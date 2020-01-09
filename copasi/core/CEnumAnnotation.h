@@ -1,8 +1,12 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
-
 
 #ifndef COPASI_CEnumAnnotation
 #define COPASI_CEnumAnnotation
@@ -87,6 +91,19 @@ public:
       }
 
     return enumDefault;
+  }
+
+  /**
+   * Conversion from annotation to enum
+   * @param const char * pAnnotation
+   * @param Enum enumDefault (default: Enum::__SIZE)
+   */
+  Enum toEnum(const char * pAnnotation, Enum enumDefault = Enum::__SIZE) const
+  {
+    if (pAnnotation == NULL)
+      return enumDefault;
+
+    return toEnum(Type(pAnnotation), enumDefault);
   }
 
 private:

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -55,14 +55,14 @@ CXMLHandler * ModelParameterHandler::processStart(const XML_Char * pszName,
         CN = mpParser->getAttributeValue("cn", papszAttrs);
         pValue = mpParser->getAttributeValue("value", papszAttrs);
         pType = mpParser->getAttributeValue("type", papszAttrs);
-        pSimulationType = mpParser->getAttributeValue("simulationType", papszAttrs);
+        pSimulationType = mpParser->getAttributeValue("simulationType", papszAttrs, "unknown");
 
         if (pValue != NULL)
           {
             Value = CCopasiXMLInterface::DBL(pValue);
           }
 
-        Type = pType == NULL ? CModelParameter::Type::unknown : CModelParameter::TypeNames.toEnum(pType, CModelParameter::Type::unknown);
+        Type = CModelParameter::TypeNames.toEnum(pType, CModelParameter::Type::unknown);
 
         switch (Type)
           {
@@ -85,7 +85,7 @@ CXMLHandler * ModelParameterHandler::processStart(const XML_Char * pszName,
 
         mpData->pCurrentModelParameter->setCN(std::string(CN));
 
-        SimulationType = pSimulationType == NULL ? CModelEntity::Status::FIXED : CModelEntity::XMLStatus.toEnum(pSimulationType, CModelEntity::Status::FIXED);
+        SimulationType = CModelEntity::XMLStatus.toEnum(pSimulationType, CModelEntity::Status::FIXED);
         mpData->pCurrentModelParameter->setSimulationType(SimulationType);
 
         mpData->pCurrentModelParameter->setValue(Value, CCore::Framework::ParticleNumbers);

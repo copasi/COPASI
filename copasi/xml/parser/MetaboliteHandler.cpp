@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -70,7 +70,7 @@ CXMLHandler * MetaboliteHandler::processStart(const XML_Char * pszName,
               simulationType = reactions;
           }
 
-        SimulationType = simulationType == NULL ? CModelEntity::Status::REACTIONS : CModelEntity::XMLStatus.toEnum(simulationType, CModelEntity::Status::REACTIONS);
+        SimulationType = CModelEntity::XMLStatus.toEnum(simulationType, CModelEntity::Status::REACTIONS);
         Compartment = mpParser->getAttributeValue("compartment", papszAttrs);
         AddNoise = mpParser->toBool(mpParser->getAttributeValue("addNoise", papszAttrs, "false"));
 

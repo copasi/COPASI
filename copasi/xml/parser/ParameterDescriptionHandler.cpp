@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -64,13 +64,13 @@ CXMLHandler * ParameterDescriptionHandler::processStart(const XML_Char * pszName
         Order = (unsigned C_INT32) atoi(order);
 
         role = mpParser->getAttributeValue("role", papszAttrs);
-        Role = role == NULL ? CFunctionParameter::Role::VARIABLE : CFunctionParameter::RoleNameXML.toEnum(role, CFunctionParameter::Role::VARIABLE);
+        Role = CFunctionParameter::RoleNameXML.toEnum(role, CFunctionParameter::Role::VARIABLE);
         //if (Role == "") fatalError();
 
         minOccurs = mpParser->getAttributeValue("minOccurs", papszAttrs, "1");
         MinOccurs = strToUnsignedInt(minOccurs);
 
-        maxOccurs = mpParser->getAttributeValue("maxOccurs", papszAttrs , "1");
+        maxOccurs = mpParser->getAttributeValue("maxOccurs", papszAttrs, "1");
 
         if (std::string("unbounded") == std::string(maxOccurs))
           MaxOccurs = (unsigned C_INT32) - 1;
