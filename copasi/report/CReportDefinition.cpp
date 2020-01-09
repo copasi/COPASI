@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -71,8 +71,35 @@ bool CReportDefinition::applyData(const CData & data, CUndoData::CChangeSet & ch
 {
   bool success = CDataObject::applyData(data, changes);
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  if (data.isSetProperty(CData::NOTES))
+    {
+      mComment = data.getProperty(CData::NOTES).toString();
+    }
+
+  if (data.isSetProperty(CData::TASK_TYPE))
+    {
+      mTaskType = CTaskEnum::TaskName.toEnum(data.getProperty(CData::TASK_TYPE).toString(), CTaskEnum::Task::timeCourse);
+    }
+
+  if (data.isSetProperty(CData::REPORT_SEPARATOR))
+    {
+      mSeparator = data.getProperty(CData::REPORT_SEPARATOR).toString();
+    }
+
+  if (data.isSetProperty(CData::REPORT_IS_TABLE))
+    {
+      mTable = data.getProperty(CData::REPORT_IS_TABLE).toBool();
+    }
+
+  if (data.isSetProperty(CData::REPORT_SHOW_TITLE))
+    {
+      mbTitle = data.getProperty(CData::REPORT_SHOW_TITLE).toBool();
+    }
+
+  if (data.isSetProperty(CData::REPORT_PRECISION))
+    {
+      mPrecision = data.getProperty(CData::REPORT_PRECISION).toUint();
+    }
 
   return success;
 }
@@ -90,8 +117,13 @@ void CReportDefinition::createUndoData(CUndoData & undoData,
       return;
     }
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  undoData.addProperty(CData::NOTES, oldData.getProperty(CData::NOTES), mComment);
+  undoData.addProperty(CData::TASK_TYPE, oldData.getProperty(CData::TASK_TYPE), CTaskEnum::TaskName[mTaskType]);
+  undoData.addProperty(CData::REPORT_SEPARATOR, oldData.getProperty(CData::REPORT_SEPARATOR), mSeparator.getStaticString());
+  undoData.addProperty(CData::REPORT_IS_TABLE, oldData.getProperty(CData::REPORT_IS_TABLE), mTable);
+  undoData.addProperty(CData::REPORT_SHOW_TITLE, oldData.getProperty(CData::REPORT_SHOW_TITLE), mbTitle);
+  undoData.addProperty(CData::REPORT_PRECISION, oldData.getProperty(CData::REPORT_PRECISION), mPrecision);
+
 
   return;
 }
