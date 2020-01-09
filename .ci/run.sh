@@ -23,7 +23,7 @@ cmake -DBUILD_GUI=OFF -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_FLAGS=-D_
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     ccache --zero-stats
-    build-wrapper-linux-x86-64 --out-dir ../bw-output make CopasiSE
+    build-wrapper-linux-x86-64 --out-dir ../bw-output make -j2 CopasiSE
     ccache --show-stats
     #ctest
     cd ..
