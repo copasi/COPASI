@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -355,6 +355,21 @@ public:
     if (!isValidValue(CType())) return false;
 
     assignValidValues(&validValues);
+    return true;
+  }
+
+  template < class CType, class Enum> bool setValidValues(const CEnumAnnotation< CType, Enum> & validValues)
+  {
+    if (!isValidValue(CType())) return false;
+
+    std::vector< std::pair < CType, CType > > ValidValues;
+
+    for (size_t i = 0; i < validValues.size(); i++)
+      {
+        ValidValues.push_back(std::make_pair(validValues[i], validValues[i]));
+      }
+
+    assignValidValues(&ValidValues);
     return true;
   }
 
