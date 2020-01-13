@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -96,6 +96,8 @@ class CopasiUI3Window : public QMainWindow
   Q_OBJECT
 
 public:
+  typedef void (CopasiUI3Window::*DeferredLoadFile)(QString);
+
   static CopasiUI3Window * create();
 
   static CopasiUI3Window * getMainWindow();
@@ -141,9 +143,9 @@ public:
 
 // COMBINE Archive will take care of file management
   /*
-  #ifdef COPASI_Provenance
+#ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-  #endif
+#endif
   */
 
   CQOptPopulation* getPopulationDisplay();
@@ -162,7 +164,7 @@ public:
   const QMap< QPointer<QMainWindow>, QPointer<QAction> > & getWindows() const;
 
 signals:
-  void signalLoadFile(QString newFile);
+  void signalDefferedLoadFile(QString newFile);
   void signalQuit();
   void signalPreferenceUpdated();
 
@@ -176,6 +178,7 @@ protected:
   void dropEvent(QDropEvent *event);
 
 public slots:
+  void slotDefferedLoadFile(QString str);
   void slotShowSliders(bool flag);
   void slotShowDependencies(bool flag);
   void slotUpdateHideMainToolbarAction();
@@ -233,7 +236,7 @@ protected slots:
   void slotFunctionDBLoad(QString str = QString());
   void slotParameterSetsSave(QString str = QString());
   void slotParameterSetsLoad(QString str = QString());
-  void newDoc();
+  void slotNewDoc(QString str = QString());
   void slotFilePrint();
   void slotImportSBML(QString file = QString());
   void slotImportSBMLFinished(bool success);
@@ -338,6 +341,8 @@ private:
   QToolBar *mpMainToolbar;
 
   QString FixedTitle;
+
+  DeferredLoadFile mpDeferredLoadFile;
 
   QAction* mpaNew;
   QAction* mpaOpen;
