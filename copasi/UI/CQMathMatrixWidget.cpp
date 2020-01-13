@@ -24,6 +24,8 @@
 
 #include "CQMathMatrixWidget.h"
 
+#include <qmath.h>
+
 #include "copasi/copasi.h"
 
 #include "qtUtilities.h"
@@ -352,11 +354,12 @@ void CQMathMatrixWidget::calculateJacobian(CMatrix< C_FLOAT64 >& matrix,
   pContainer->calculateJacobian(matrix, derivationFactor, reduced);
 
   eigenValues.calcEigenValues(matrix);
+  eigenValues.stabilityAnalysis(derivationFactor);
   const CVector< C_FLOAT64 > & eigen_r = eigenValues.getR();
   const CVector< C_FLOAT64 > & eigen_i = eigenValues.getI();
 
   eigenValuesWidget->clearContents();
-  eigenValuesWidget->setSortingEnabled(reduced);
+  eigenValuesWidget->setSortingEnabled(false);
 
   size_t i, imax = eigen_i.size();
   eigenValuesWidget->setRowCount((int)imax);
@@ -370,6 +373,33 @@ void CQMathMatrixWidget::calculateJacobian(CMatrix< C_FLOAT64 >& matrix,
       pItem = new QTableWidgetItem(QVariant::Double);
       pItem->setData(Qt::DisplayRole, eigen_i[i]);
       eigenValuesWidget->setItem((int)i, 1, pItem);
+      
+      //time scales in 3rd col
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, 1 / eigen_r[i]);
+      
+      if (eigen_r[i] > 0)
+        pItem->setBackground(QBrush(QColor(255, 200, 200)));
+      eigenValuesWidget->setItem((int) i, 2, pItem);
+      
+      //frequency/period of oscillations
+      if (abs(eigen_i[i]) > 1e-12)
+      {
+        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem->setData(Qt::DisplayRole, abs(eigen_i[i] / (2 * M_PI)));
+        eigenValuesWidget->setItem((int) i, 3, pItem);
+        
+        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem->setData(Qt::DisplayRole, abs(1 / eigen_i[i] * (2 * M_PI)));
+        eigenValuesWidget->setItem((int) i, 4, pItem);
+      }
+      else
+      {
+        eigenValuesWidget->setItem((int) i, 3, NULL);
+        eigenValuesWidget->setItem((int) i, 4, NULL);
+      }
+
+      
     }
 
   if (CRootContainer::getConfiguration()->resizeToContents())

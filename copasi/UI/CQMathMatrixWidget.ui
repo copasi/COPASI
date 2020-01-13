@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., University of Heidelberg, and University of </comment>
-<comment> of Connecticut School of Medicine. </comment>
-<comment> All rights reserved. </comment>
-
-<comment> Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., University of Heidelberg, and The University </comment>
-<comment> of Manchester. </comment>
-<comment> All rights reserved. </comment>
-
  <comment> All rights reserved. </comment>
  <class>CQMathMatrixWidget</class>
  <widget class="QWidget" name="CQMathMatrixWidget">
@@ -17,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>495</width>
-    <height>150</height>
+    <width>752</width>
+    <height>437</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +18,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="mpTabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <widget class="CQArrayAnnotationsWidget" name="mpArrayWidget1">
       <attribute name="title">
@@ -129,6 +119,21 @@
            <column>
             <property name="text">
              <string>Imaginary</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Time scale</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Frequency</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Period</string>
             </property>
            </column>
           </widget>
@@ -253,6 +258,21 @@
            <column>
             <property name="text">
              <string>Imaginary</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Time Scale</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Frequency</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Period</string>
             </property>
            </column>
           </widget>
