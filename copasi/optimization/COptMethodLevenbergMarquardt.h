@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -220,6 +220,11 @@ private:
    * The transpose jacobian of the residuals.
    */
   CMatrix< C_FLOAT64 > mResidualJacobianT;
+
+  C_FLOAT64 mInitialLamda;
+  C_FLOAT64 mLambdaUp;
+  C_FLOAT64 mLambdaDown;
+
 };
 
 #endif  // COPASI_COptMethodLevenbergMarquardt

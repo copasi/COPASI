@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -71,6 +71,10 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
   assertParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006);
   assertParameter("Modulation", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006, eUserInterfaceFlag::editable);
   assertParameter("Stop after # stalled iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Initial Lambda", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)1.0, eUserInterfaceFlag::editable);
+  assertParameter("Lambda Decrease", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)2.0, eUserInterfaceFlag::editable);
+  assertParameter("Lambda Increase", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)4.0, eUserInterfaceFlag::editable);
+
 
   initObjects();
 }
@@ -195,7 +199,7 @@ bool COptMethodLevenbergMarquardt::optimise()
     }
 
   // Initialize LM_lambda
-  LM_lambda = 1.0;
+  LM_lambda = mInitialLamda;
   nu = 2.0;
   calc_hess = true;
   starts = 1;
@@ -428,7 +432,7 @@ bool COptMethodLevenbergMarquardt::optimise()
           mpParentTask->output(COutputInterface::DURING);
 
           // decrease LM_lambda
-          LM_lambda /= nu;
+          LM_lambda /= mLambdaDown; // nu
 
           if ((convp < mTolerance) && (convx < mTolerance))
             {
@@ -443,7 +447,7 @@ bool COptMethodLevenbergMarquardt::optimise()
                       ));
 
                   // let's restart with lambda=1
-                  LM_lambda = 1.0;
+                  LM_lambda = mInitialLamda;
                   starts++;
                 }
               else
@@ -483,7 +487,7 @@ bool COptMethodLevenbergMarquardt::optimise()
           else
             {
               // increase lambda
-              LM_lambda *= nu * 2;
+              LM_lambda *= mLambdaUp; // nu * 2;
               // don't recalculate the Hessian
               calc_hess = false;
               // correct the number of iterations
@@ -556,6 +560,21 @@ bool COptMethodLevenbergMarquardt::initialize()
   mModulation = 0.001;
   mIterationLimit = getValue< unsigned C_INT32 >("Iteration Limit");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
+
+  if (getParameter("Lambda Increase"))
+    mLambdaUp = getValue<C_FLOAT64>("Lambda Increase");
+  else
+    mLambdaUp = 4;
+
+  if (getParameter("Lambda Decrease"))
+    mLambdaDown = getValue<C_FLOAT64>("Lambda Decrease");
+  else
+    mLambdaDown = 2;
+
+  if (getParameter("Initial Lambda"))
+    mInitialLamda = getValue<C_FLOAT64>("Initial Lambda");
+  else
+    mInitialLamda = 1;
 
   if (getParameter("Modulation"))
     mModulation = getValue< C_FLOAT64 >("Modulation");
