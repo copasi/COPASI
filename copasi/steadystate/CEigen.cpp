@@ -769,6 +769,15 @@ std::ostream &operator<<(std::ostream &os, const CEigen &A)
   // Output Eigne-stiffness
   os << " stiffness = " << A.mStiffness << std::endl;
   os << " time hierarchy = " << A.mHierarchy << std::endl;
+  
+  os << std::endl;
+  os << "Fold bifurcaton test functions (standard, bifurcation discovery tool): " << A.mBifurcationIndicator_Fold
+  << ", " << A.mBifurcationIndicator_Fold_BDT <<  std::endl;
+  os << "Hopf bifurcaton test functions (standard, bifurcation discovery tool): " << A.mBifurcationIndicator_Hopf
+  << ", " << A.mBifurcationIndicator_Hopf_BDT <<  std::endl;
+
+  os << std::endl;
+  os << "Oscillation indicator: " << A.mOscillationIndicator_EV  << std::endl;
 
   return os;
 }
