@@ -1,24 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., University of Heidelberg, and University of </comment>
-<comment> of Connecticut School of Medicine. </comment>
-<comment> All rights reserved. </comment>
-
-<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., University of Heidelberg, and The University </comment>
-<comment> of Manchester. </comment>
-<comment> All rights reserved. </comment>
-
-<comment> Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-<comment> and The University of Manchester. </comment>
-<comment> All rights reserved. </comment>
-
-<comment> Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc. and EML Research, gGmbH. </comment>
-<comment> All rights reserved. </comment>
-
  <comment> All rights reserved. </comment>
  <class>StateSubwidget</class>
  <widget class="CopasiWidget" name="StateSubwidget">
@@ -26,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>562</width>
-    <height>308</height>
+    <width>955</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -76,7 +57,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>6</number>
      </property>
      <property name="usesScrollButtons">
       <bool>true</bool>
@@ -86,7 +67,16 @@
        <string>Species</string>
       </attribute>
       <layout class="QVBoxLayout">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -150,7 +140,16 @@
        <string>Compartments</string>
       </attribute>
       <layout class="QVBoxLayout">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -199,7 +198,16 @@
        <string>Model Quantities</string>
       </attribute>
       <layout class="QHBoxLayout">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -245,7 +253,16 @@
        <string>Reactions</string>
       </attribute>
       <layout class="QVBoxLayout">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -294,7 +311,16 @@
        <string>Stability</string>
       </attribute>
       <layout class="QVBoxLayout">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -307,7 +333,16 @@
        <string>Jacobian (Complete)</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -396,6 +431,21 @@
                <string>Imaginary</string>
               </property>
              </column>
+             <column>
+              <property name="text">
+               <string>Time scale</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Frequency</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Period</string>
+              </property>
+             </column>
             </widget>
            </item>
            <item row="0" column="1">
@@ -441,7 +491,16 @@
        <string>Jacobian (Reduced)</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -530,6 +589,21 @@
                <string>Imaginary</string>
               </property>
              </column>
+             <column>
+              <property name="text">
+               <string>Time scale</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Frequency</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Period</string>
+              </property>
+             </column>
             </widget>
            </item>
            <item row="0" column="1">
@@ -575,7 +649,16 @@
        <string>Protocol</string>
       </attribute>
       <layout class="QGridLayout">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item row="0" column="0">
