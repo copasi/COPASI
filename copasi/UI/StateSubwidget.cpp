@@ -268,6 +268,7 @@ void StateSubwidget::loadJacobian()
 
   size_t i, imax = eigen_i.size();
   tableEigenValues->setRowCount((int) imax);
+  tableEigenValues->setColumnCount(5);
 
   for (i = 0; i < imax; ++i)
     {
@@ -278,6 +279,31 @@ void StateSubwidget::loadJacobian()
       pItem = new QTableWidgetItem(QVariant::Double);
       pItem->setData(Qt::DisplayRole, eigen_i[i]);
       tableEigenValues->setItem((int) i, 1, pItem);
+
+      //time scales in 3rd col
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, 1/eigen_r[i]);
+      if (eigen_r[i]>0)
+        pItem->setBackground(QBrush(QColor(255,200,200)));
+      tableEigenValues->setItem((int) i, 2, pItem);
+
+      //frequency/period of oscillations
+      if (abs(eigen_i[i])>1e-12)
+      {
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, abs(eigen_i[i]/(2*M_PI)));
+      tableEigenValues->setItem((int) i, 3, pItem);
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, abs(1/eigen_i[i]*(2*M_PI)));
+      tableEigenValues->setItem((int) i, 4, pItem);
+      }
+      else
+      {
+      tableEigenValues->setItem((int) i, 3, NULL);
+      tableEigenValues->setItem((int) i, 4, NULL);
+      }
+
     }
 
   if (CRootContainer::getConfiguration()->resizeToContents())
