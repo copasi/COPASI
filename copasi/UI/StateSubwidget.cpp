@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,6 +25,7 @@
 #include "StateSubwidget.h"
 
 #include <sstream>
+#include <qmath.h>
 
 #include "copasi/copasi.h"
 #include "CQArrayAnnotationsWidget.h"
@@ -282,27 +283,29 @@ void StateSubwidget::loadJacobian()
 
       //time scales in 3rd col
       pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, 1/eigen_r[i]);
-      if (eigen_r[i]>0)
-        pItem->setBackground(QBrush(QColor(255,200,200)));
+      pItem->setData(Qt::DisplayRole, 1 / eigen_r[i]);
+
+      if (eigen_r[i] > 0)
+        pItem->setBackground(QBrush(QColor(255, 200, 200)));
+
       tableEigenValues->setItem((int) i, 2, pItem);
 
       //frequency/period of oscillations
-      if (abs(eigen_i[i])>1e-12)
-      {
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, abs(eigen_i[i]/(2*M_PI)));
-      tableEigenValues->setItem((int) i, 3, pItem);
+      if (abs(eigen_i[i]) > 1e-12)
+        {
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayRole, abs(eigen_i[i] / (2 * M_PI)));
+          tableEigenValues->setItem((int) i, 3, pItem);
 
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, abs(1/eigen_i[i]*(2*M_PI)));
-      tableEigenValues->setItem((int) i, 4, pItem);
-      }
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayRole, abs(1 / eigen_i[i] * (2 * M_PI)));
+          tableEigenValues->setItem((int) i, 4, pItem);
+        }
       else
-      {
-      tableEigenValues->setItem((int) i, 3, NULL);
-      tableEigenValues->setItem((int) i, 4, NULL);
-      }
+        {
+          tableEigenValues->setItem((int) i, 3, NULL);
+          tableEigenValues->setItem((int) i, 4, NULL);
+        }
 
     }
 
