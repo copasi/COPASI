@@ -680,7 +680,7 @@ bool CModelParameter::updateModel()
           {
             CModelEntity * pEntity = static_cast< CModelEntity * >(mpObject);
 
-            if (pEntity->getStatus() != CModelEntity::Status::ASSIGNMENT)
+            if (pEntity->getStatus() != CModelEntity::Status::ASSIGNMENT && mValue == mValue)
               {
                 pEntity->setInitialValue(mValue);
 
@@ -715,7 +715,7 @@ bool CModelParameter::updateModel()
                 std::vector< const CDataObject * > Objects(1, pObject->getObjectParent());
                 pReaction->setParameterObjects(pParameter->getObjectName(), Objects);
               }
-            else
+            else if (mValue == mValue)
               {
                 pParameter->setValue(mValue);
 
