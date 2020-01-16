@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,23 +46,65 @@
 #include "copasi/lapack/lapackwrap.h"
 #include "copasi/lapack/blaswrap.h"
 
+// static
+const CEnumAnnotation< std::string, CNewtonMethod::eTargetCriterion > CNewtonMethod::TargetCriterion(
+{
+  "Distance and Rate",
+  "Distance",
+  "Rate"
+});
+
 CNewtonMethod::CNewtonMethod(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
-                             const CTaskEnum::Task & taskType):
-  CSteadyStateMethod(pParent, methodType, taskType),
-  mIpiv(NULL),
-  mpTrajectory(NULL),
-  mStartState()
+                             const CTaskEnum::Task & taskType)
+  : CSteadyStateMethod(pParent, methodType, taskType)
+  , mUseNewton(true)
+  , mUseIntegration(true)
+  , mUseBackIntegration(false)
+  , mAcceptNegative(false)
+  , mForceNewton(true)
+  , mKeepProtocol(true)
+  , mIterationLimit(50)
+  , mMaxDurationForward(1e9)
+  , mMaxDurationBackward(1e6)
+  , mDimension(0)
+  , mpX(NULL)
+  , mAtol()
+  , mH()
+  , mXold()
+  , mdxdt()
+  , mIpiv(NULL)
+  , mpTrajectory(NULL)
+  , mStartState()
+  , mUpdateConcentrations()
+  , mTargetCriterion(eTargetCriterion::DistanceAndRate)
 {
   initializeParameter();
 }
 
 CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
-                             const CDataContainer * pParent):
-  CSteadyStateMethod(src, pParent),
-  mIpiv(NULL),
-  mpTrajectory(NULL),
-  mStartState()
+                             const CDataContainer * pParent)
+  : CSteadyStateMethod(src, pParent)
+  , mUseNewton(src.mUseNewton)
+  , mUseIntegration(src.mUseIntegration)
+  , mUseBackIntegration(src.mUseBackIntegration)
+  , mAcceptNegative(src.mAcceptNegative)
+  , mForceNewton(true)
+  , mKeepProtocol(true)
+  , mIterationLimit(src.mIterationLimit)
+  , mMaxDurationForward(src.mMaxDurationForward)
+  , mMaxDurationBackward(src.mMaxDurationBackward)
+  , mDimension(0)
+  , mpX(NULL)
+  , mAtol()
+  , mH()
+  , mXold()
+  , mdxdt()
+  , mIpiv(NULL)
+  , mpTrajectory(NULL)
+  , mStartState()
+  , mUpdateConcentrations()
+  , mTargetCriterion(src.mTargetCriterion)
 {
   initializeParameter();
 }
@@ -83,6 +125,12 @@ void CNewtonMethod::initializeParameter()
   assertParameter("Maximum duration for backward integration", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1e6);
   //assertParameter("Force additional Newton step", CCopasiParameter::Type::BOOL, true);
   //assertParameter("Keep Protocol", CCopasiParameter::Type::BOOL, true);
+
+  assertParameter("Target Criterion", CCopasiParameter::Type::STRING, TargetCriterion[0]);
+  pParm = getParameter("Target Criterion");
+
+  if (pParm != NULL)
+    pParm->setValidValues(TargetCriterion);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("Newton.UseNewton")) != NULL)
@@ -201,7 +249,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
   C_FLOAT64 maxDuration = forward ? mMaxDurationForward : -mMaxDurationBackward;
   //minimum duration is either hardcoded or equal to maximum duration, whichever is smaller.
   C_FLOAT64 minDuration = forward ? (mMaxDurationForward < 1e-1 ? mMaxDurationForward : 1e-1)
-                            : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
+                          : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
 
   //progress bar
   size_t hProcess;
@@ -279,7 +327,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 
           if (mKeepProtocol)
             mMethodLog << "  Integration with duration " << duration
-                       << ". Criterium matched by " << value << ".\n\n";
+                       << ". Criterion matched by " << value << ".\n\n";
 
           return CNewtonMethod::found;
         }
@@ -287,7 +335,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
         {
           if (mKeepProtocol)
             mMethodLog << "  Integration with duration " << duration
-                       << ". Criterium not matched by " << value << ".\n\n";
+                       << ". Criterion not matched by " << value << ".\n\n";
         }
 
       if (mUseNewton)
@@ -594,6 +642,52 @@ bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
 
 C_FLOAT64 CNewtonMethod::targetFunction()
 {
+  return std::max(targetFunctionRate(), targetFunctionDistance());
+}
+
+C_FLOAT64 CNewtonMethod::targetFunctionRate()
+{
+  if (mTargetCriterion == eTargetCriterion::Distance) return 0.0;
+
+  // Assure that all values are updated.
+  mpContainer->updateSimulatedValues(true);
+  mpContainer->applyUpdateSequence(mUpdateConcentrations);
+
+  C_FLOAT64 MaxRate = 0;
+  C_FLOAT64 tmp;
+
+  // We look at all ODE determined entity and dependent species rates.
+  const C_FLOAT64 * pIt = mdxdt.begin();
+  const C_FLOAT64 * pEnd = mdxdt.end();
+  C_FLOAT64 * pCurrentState = mpX;
+  const C_FLOAT64 * pAtol = mAtol.array();
+  const CMathObject * pMathObject = mpContainer->getMathObject(mpContainerStateTime + 1);
+  C_FLOAT64 ** ppCompartmentVolume = mCompartmentVolumes.array();
+  C_FLOAT64 Number2Quantity = mpContainer->getModel().getNumber2QuantityFactor();
+
+  for (; pIt != pEnd; ++pIt, ++pAtol, ++pMathObject, ++ppCompartmentVolume)
+    {
+      tmp = fabs(*pIt) / std::min(*pAtol, std::max(100.0 * std::numeric_limits< C_FLOAT64 >::min(), fabs(*pCurrentState)));
+
+      if (pMathObject->getEntityType() == CMath::EntityType::Species)
+        {
+          tmp /= mpContainer->getQuantity2NumberFactor() ***ppCompartmentVolume;
+        }
+
+      if (tmp > MaxRate)
+        MaxRate = tmp;
+
+      if (isnan(tmp))
+        return std::numeric_limits< C_FLOAT64 >::infinity();
+    }
+
+  return MaxRate;
+}
+
+C_FLOAT64 CNewtonMethod::targetFunctionDistance()
+{
+  if (mTargetCriterion == eTargetCriterion::Rate) return 0.0;
+
   // New criterion: We solve Jacobian * x = current rates and compare x with the current state
   // Calculate the Jacobian
   calculateJacobian(*mpSSResolution, true);
@@ -607,15 +701,15 @@ C_FLOAT64 CNewtonMethod::targetFunction()
       return std::numeric_limits< C_FLOAT64 >::infinity();
     }
 
+  // Assure that all values are updated.
+  mpContainer->updateSimulatedValues(true);
+  mpContainer->applyUpdateSequence(mUpdateConcentrations);
+
   // We look at all ODE determined entity and dependent species rates.
   C_FLOAT64 * pDistance = Distance.array();
   C_FLOAT64 * pDistanceEnd = pDistance + Distance.size();
   C_FLOAT64 * pCurrentState = mpX;
   const C_FLOAT64 * pAtol = mAtol.array();
-
-  // Assure that all values are updated.
-  mpContainer->updateSimulatedValues(true);
-  mpContainer->applyUpdateSequence(mUpdateConcentrations);
 
   const CMathObject * pMathObject = mpContainer->getMathObject(mpContainerStateTime + 1);
   C_FLOAT64 ** ppCompartmentVolume = mCompartmentVolumes.array();
@@ -716,6 +810,8 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
 
   if (getValue< bool >("Accept Negative Concentrations"))
     mAcceptNegative = true;
+
+  mTargetCriterion = TargetCriterion.toEnum(getValue< std::string >("Target Criterion"), eTargetCriterion::DistanceAndRate);
 
   mForceNewton = true;
   mKeepProtocol = true;

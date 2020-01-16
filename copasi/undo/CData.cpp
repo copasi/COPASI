@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -78,6 +78,7 @@ const CEnumAnnotation< std::string, CData::Property > CData::PropertyName(
   "Report show Title", // REPORT_SHOW_TITLE
   "Report Precision", // REPORT_PRECISION
   "Notes", // NOTES
+  "MIRIAM RDF/XML", // MIRIAM_RDF_XML
   "MIRIAM Predicate", // MIRIAM_PREDICATE
   "MIRIAM Resource", // MIRIAM_RESOURCE
   "MIRIAM Description", // MIRIAM_DESCRIPTION

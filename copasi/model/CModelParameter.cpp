@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -680,7 +680,8 @@ bool CModelParameter::updateModel()
           {
             CModelEntity * pEntity = static_cast< CModelEntity * >(mpObject);
 
-            if (pEntity->getStatus() != CModelEntity::Status::ASSIGNMENT)
+            if (pEntity->getStatus() != CModelEntity::Status::ASSIGNMENT &&
+                !std::isnan(mValue))
               {
                 pEntity->setInitialValue(mValue);
 
@@ -715,7 +716,7 @@ bool CModelParameter::updateModel()
                 std::vector< const CDataObject * > Objects(1, pObject->getObjectParent());
                 pReaction->setParameterObjects(pParameter->getObjectName(), Objects);
               }
-            else
+            else if (!std::isnan(mValue))
               {
                 pParameter->setValue(mValue);
 
@@ -897,7 +898,6 @@ void CModelParameterCompartment::setValue(const C_FLOAT64 & value, const CCore::
     {
       updateModel();
     }
-
 }
 
 void CModelParameterCompartment::addSpecies(CModelParameterSpecies * pSpecies)
@@ -1067,7 +1067,6 @@ void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const CCore::Fram
     {
       updateModel();
     }
-
 }
 
 // virtual
@@ -1085,7 +1084,8 @@ bool CModelParameterSpecies::updateModel()
 {
   CMetab* pMetab = static_cast<CMetab*>(mpObject);
 
-  if (pMetab && pMetab->getStatus() != CModelEntity::Status::ASSIGNMENT)
+  if (pMetab && pMetab->getStatus() != CModelEntity::Status::ASSIGNMENT &&
+      !std::isnan(mConcentration))
     {
       pMetab->setInitialConcentration(mConcentration);
     }

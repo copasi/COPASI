@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,6 +40,17 @@ class CTrajectoryTask;
 
 class CNewtonMethod : public CSteadyStateMethod
 {
+public:
+  enum struct eTargetCriterion
+  {
+    DistanceAndRate,
+    Distance,
+    Rate,
+    __SIZE
+  };
+
+  static const CEnumAnnotation< std::string, eTargetCriterion > TargetCriterion;
+
   // Attributes
 private:
   enum NewtonResultCode
@@ -78,6 +89,7 @@ private:
   CVector< C_FLOAT64 > mStartState;
 
   CCore::CUpdateSequence mUpdateConcentrations;
+  eTargetCriterion mTargetCriterion;
 
   // Operations
 private:
@@ -195,6 +207,18 @@ private:
   CNewtonMethod::NewtonResultCode doNewtonStep(C_FLOAT64 & currentValue);
 
   CNewtonMethod::NewtonResultCode doIntegration(bool forward);
+
+  /**
+   * This is the function that is supposed to be near zero if a steady
+   * state is detected.
+   */
+  C_FLOAT64 targetFunctionRate();
+
+  /**
+   * This is the function that is supposed to be near zero if a steady
+   * state is detected.
+   */
+  C_FLOAT64 targetFunctionDistance();
 
   void calculateDerivativesX();
 
