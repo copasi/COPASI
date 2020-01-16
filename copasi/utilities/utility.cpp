@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -413,7 +413,12 @@ C_INT32 strToInt(const char * str,
 
   in >> Value;
 
-  if (pTail != NULL && !isnan(Value))
+#ifdef _MSC_VER
+
+  if (pTail != NULL && !_isnan(Value)) // MSVC does not yet support isnan for non floating points
+#else
+  if (pTail != NULL && !std::isnan(Value))
+#endif
     {
       *pTail = str + std::min< size_t >((size_t)in.tellg(), strlen(str));
     }
@@ -443,7 +448,12 @@ unsigned C_INT32 strToUnsignedInt(const char * str,
 
   in >> Value;
 
-  if (pTail != NULL && !isnan(Value))
+#ifdef _MSC_VER
+
+  if (pTail != NULL && !_isnan(Value)) // MSVC does not yet support isnan for non floating points
+#else
+  if (pTail != NULL && !std::isnan(Value))
+#endif
     {
       *pTail = str + std::min< size_t >((size_t)in.tellg(), strlen(str));
     }
