@@ -327,7 +327,7 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
 }
 
 #ifdef USE_SBMLUNIT
-# include "sbmlunit/CSBMLunitInterface.h"
+# include "copasi/sbmlunit/CSBMLunitInterface.h"
 #endif // USE_SBMLUNIT
 
 void
