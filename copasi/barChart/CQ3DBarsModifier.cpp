@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -199,7 +199,7 @@ for (auto it : coldescr)
 
           double value = (double)(*pData->array())[mSelectedCell];
 
-          if (isnan(value) || !finite(value))
+          if (std::isnan(value) || !finite(value))
             {
               value = 0;
             }
