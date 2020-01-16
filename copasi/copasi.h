@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -72,11 +77,11 @@ LIBSEDML_CPP_NAMESPACE_USE
 using std::isnan;
 #endif
 
-#ifdef Darwin
-# ifndef isnan
-#  define isnan(__x) ((__x == __x) != true)
-# endif
-#endif
+// #ifdef Darwin
+// # ifndef isnan
+// #  define isnan(__x) ((__x == __x) != true)
+// # endif
+// #endif
 
 #if (defined __GNUC__ && __GNUC__ < 3)
 # define ios_base ios
