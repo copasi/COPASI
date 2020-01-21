@@ -90,6 +90,8 @@ private:
 
   CCore::CUpdateSequence mUpdateConcentrations;
   eTargetCriterion mTargetCriterion;
+  C_FLOAT64 mTargetDistance;
+  C_FLOAT64 mTargetRate;
 
   // Operations
 private:
@@ -99,17 +101,6 @@ private:
   CNewtonMethod();
 
 public:
-  /**
-   * Solve A * X = B for X and returns the rank deficiency of matrix.
-   * @param const CMatrix< C_FLOAT64 > & A
-   * @param CVector< C_FLOAT64 > & X
-   * @param const CVectorCore< const C_FLOAT64 > & B
-   * @return std::pair< size_t, double > (rankDeficiency, error)
-   */
-  std::pair< size_t, double > solveAxEqB(const CMatrix< C_FLOAT64 > & A,
-                                         CVector< C_FLOAT64 > & X,
-                                         const CVectorCore< const C_FLOAT64 > & B) const;
-
   /**
    * Specific constructor
    * @param const CDataContainer * pParent
@@ -158,7 +149,7 @@ public:
    */
   virtual CSteadyStateMethod::ReturnCode processInternal();
 
-  bool isSteadyState(C_FLOAT64 value);
+  bool isSteadyState(const C_FLOAT64 & value) const;
 
   /**
    * This is the function that is supposed to be near zero if a steady
@@ -207,6 +198,8 @@ private:
   CNewtonMethod::NewtonResultCode doNewtonStep(C_FLOAT64 & currentValue);
 
   CNewtonMethod::NewtonResultCode doIntegration(bool forward);
+
+  std::string targetValueToString() const;
 
   /**
    * This is the function that is supposed to be near zero if a steady

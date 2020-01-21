@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,13 +47,19 @@
  */
 CSteadyStateMethod::CSteadyStateMethod(const CDataContainer * pParent,
                                        const CTaskEnum::Method & methodType,
-                                       const CTaskEnum::Task & taskType):
-  CCopasiMethod(pParent, methodType, taskType),
-  mpProblem(NULL),
-  mContainerState(),
-  mContainerStateReduced(),
-  mpContainerStateTime(NULL),
-  mCompartmentVolumes()
+                                       const CTaskEnum::Task & taskType)
+  : CCopasiMethod(pParent, methodType, taskType)
+  , mpProblem(NULL)
+  , mpParentTask(NULL)
+  , mSteadyState()
+  , mpJacobian(NULL)
+  , mpSSResolution(NULL)
+  , mpDerivationFactor(NULL)
+  , mpDerivationResolution(NULL)
+  , mContainerState()
+  , mContainerStateReduced()
+  , mpContainerStateTime()
+  , mCompartmentVolumes()
 {
   initializeParameter();
   CONSTRUCTOR_TRACE;
@@ -64,13 +70,19 @@ CSteadyStateMethod::CSteadyStateMethod(const CDataContainer * pParent,
  *  @param "const CSteadyStateMethod &" src
  */
 CSteadyStateMethod::CSteadyStateMethod(const CSteadyStateMethod & src,
-                                       const CDataContainer * pParent):
-  CCopasiMethod(src, pParent),
-  mpProblem(src.mpProblem),
-  mContainerState(),
-  mContainerStateReduced(),
-  mpContainerStateTime(NULL),
-  mCompartmentVolumes()
+                                       const CDataContainer * pParent)
+  : CCopasiMethod(src, pParent)
+  , mpProblem(src.mpProblem)
+  , mpParentTask(src.mpParentTask)
+  , mSteadyState()
+  , mpJacobian(src.mpJacobian)
+  , mpSSResolution(NULL)
+  , mpDerivationFactor(NULL)
+  , mpDerivationResolution(NULL)
+  , mContainerState()
+  , mContainerStateReduced()
+  , mpContainerStateTime(src.mpContainerStateTime)
+  , mCompartmentVolumes()
 {
   initializeParameter();
   CONSTRUCTOR_TRACE;
@@ -224,7 +236,7 @@ bool CSteadyStateMethod::allPositive()
 
             break;
 
-            // No restrictions on other values
+          // No restrictions on other values
           default:
             break;
         }
@@ -288,7 +300,7 @@ void CSteadyStateMethod::calculateJacobian(const C_FLOAT64 & oldMaxRate, const b
       mpContainer->setState(mContainerState);
     }
 
-  mpContainer->calculateJacobian(*mpJacobian, std::min(*mpDerivationFactor, oldMaxRate), reduced);
+  mpContainer->calculateJacobian(*mpJacobian, *mpDerivationFactor, reduced);
 }
 
 std::string CSteadyStateMethod::getMethodLog() const
