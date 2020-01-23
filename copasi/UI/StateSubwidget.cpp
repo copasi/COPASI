@@ -348,20 +348,20 @@ void StateSubwidget::loadJacobian()
 
       //time scales in 3rd col
       pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, 1/eigen_r[i]);
-      if (eigen_r[i]>0)
+      pItem->setData(Qt::DisplayRole, 1/eigen_rX[i]);
+      if (eigen_rX[i]>0)
         pItem->setBackground(QBrush(QColor(255,200,200)));
       tableEigenValuesX->setItem((int) i, 2, pItem);
       
       //frequency/period of oscillations
-      if (abs(eigen_i[i])>1e-12)
+      if (abs(eigen_iX[i])>1e-12)
       {
         pItem = new QTableWidgetItem(QVariant::Double);
-        pItem->setData(Qt::DisplayRole, abs(eigen_i[i]/(2*M_PI)));
+        pItem->setData(Qt::DisplayRole, abs(eigen_iX[i]/(2*M_PI)));
         tableEigenValuesX->setItem((int) i, 3, pItem);
         
         pItem = new QTableWidgetItem(QVariant::Double);
-        pItem->setData(Qt::DisplayRole, abs(1/eigen_i[i]*(2*M_PI)));
+        pItem->setData(Qt::DisplayRole, abs(1/eigen_iX[i]*(2*M_PI)));
         tableEigenValuesX->setItem((int) i, 4, pItem);
       }
       else
