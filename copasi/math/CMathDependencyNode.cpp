@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -312,6 +312,25 @@ bool CMathDependencyNode::buildUpdateSequence(const CCore::SimulationContextFlag
       switch (itNode.state())
         {
           case CMathDependencyNodeIterator::Recursive:
+            if (context.isSet(CCore::SimulationContext::UseMoieties) &&
+                itNode.parent() != NULL &&
+                pMathObject != NULL &&
+                pMathObject->getEntityType() == CMath::EntityType::Species &&
+                pMathObject->getValueType() == CMath::ValueType::Value &&
+                !pMathObject->isInitialValue() &&
+                pMathObject->isIntensiveProperty())
+              {
+                const CMathObject * pMathParent = dynamic_cast< const CMathObject * >(itNode.parent()->getObject());
+
+                if (pMathParent != NULL &&
+                    pMathObject->getCorrespondingProperty() == pMathParent &&
+                    pMathParent->getSimulationType() == CMath::SimulationType::Dependent)
+                  {
+                    itNode.skipChildren();
+                    continue;
+                  }
+              }
+
             success &= itNode->createMessage(ignoreCircularDependecies);
             break;
 
