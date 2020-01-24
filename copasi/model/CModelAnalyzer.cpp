@@ -492,7 +492,8 @@ bool CReactionResult::writeResult(std::ostream & os, bool rt, bool verbose, bool
 
 bool CReactionResult::hasIssue() const
 {
-  return writeResult(std::stringstream(), false, false, false);
+  std::stringstream str;
+  return writeResult(str, false, false, false);
 }
 
 std::string CReactionResult::getResultString(bool rt, bool verbose) const
