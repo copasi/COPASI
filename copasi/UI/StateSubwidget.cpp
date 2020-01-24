@@ -291,14 +291,14 @@ void StateSubwidget::loadJacobian()
       tableEigenValues->setItem((int) i, 2, pItem);
 
       //frequency/period of oscillations
-      if (abs(eigen_i[i]) > 1e-12)
+      if (fabs(eigen_i[i]) > 1e-12)
         {
           pItem = new QTableWidgetItem(QVariant::Double);
-          pItem->setData(Qt::DisplayRole, abs(eigen_i[i] / (2 * M_PI)));
+          pItem->setData(Qt::DisplayRole, fabs(eigen_i[i] / (2.0 * M_PI)));
           tableEigenValues->setItem((int) i, 3, pItem);
 
           pItem = new QTableWidgetItem(QVariant::Double);
-          pItem->setData(Qt::DisplayRole, abs(1 / eigen_i[i] * (2 * M_PI)));
+          pItem->setData(Qt::DisplayRole, fabs(1.0 / eigen_i[i] * (2.0 * M_PI)));
           tableEigenValues->setItem((int) i, 4, pItem);
         }
       else
@@ -348,27 +348,29 @@ void StateSubwidget::loadJacobian()
 
       //time scales in 3rd col
       pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, 1/eigen_rX[i]);
-      if (eigen_rX[i]>0)
-        pItem->setBackground(QBrush(QColor(255,200,200)));
+      pItem->setData(Qt::DisplayRole, 1 / eigen_rX[i]);
+
+      if (eigen_rX[i] > 0)
+        pItem->setBackground(QBrush(QColor(255, 200, 200)));
+
       tableEigenValuesX->setItem((int) i, 2, pItem);
-      
+
       //frequency/period of oscillations
-      if (abs(eigen_iX[i])>1e-12)
-      {
-        pItem = new QTableWidgetItem(QVariant::Double);
-        pItem->setData(Qt::DisplayRole, abs(eigen_iX[i]/(2*M_PI)));
-        tableEigenValuesX->setItem((int) i, 3, pItem);
-        
-        pItem = new QTableWidgetItem(QVariant::Double);
-        pItem->setData(Qt::DisplayRole, abs(1/eigen_iX[i]*(2*M_PI)));
-        tableEigenValuesX->setItem((int) i, 4, pItem);
-      }
+      if (fabs(eigen_iX[i]) > 1e-12)
+        {
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayRole, fabs(eigen_iX[i] / (2 * M_PI)));
+          tableEigenValuesX->setItem((int) i, 3, pItem);
+
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayRole, fabs(1 / eigen_iX[i] * (2 * M_PI)));
+          tableEigenValuesX->setItem((int) i, 4, pItem);
+        }
       else
-      {
-        tableEigenValuesX->setItem((int) i, 3, NULL);
-        tableEigenValuesX->setItem((int) i, 4, NULL);
-      }
+        {
+          tableEigenValuesX->setItem((int) i, 3, NULL);
+          tableEigenValuesX->setItem((int) i, 4, NULL);
+        }
     }
 
   if (CRootContainer::getConfiguration()->resizeToContents())
