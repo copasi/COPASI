@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -62,6 +62,52 @@ std::ostream & operator<<(std::ostream &os, const CFunctionAnalyzer::CValue & v)
   os << "}";
 
   return os;
+}
+
+
+CFunctionAnalyzer::CValue::CValue() : mStatus(Status(novalue)), mDouble(0.0)
+{
+
+}
+
+
+CFunctionAnalyzer::CValue::CValue(Status status) : mStatus(status), mDouble(0.0)
+{
+
+}
+
+
+CFunctionAnalyzer::CValue::CValue(const double& d) : mStatus(known), mDouble(d)
+{
+
+}
+
+CFunctionAnalyzer::CValue::~CValue()
+{
+}
+
+
+const double& CFunctionAnalyzer::CValue::getValue() const
+{
+  return mDouble;
+}
+
+
+void CFunctionAnalyzer::CValue::setValue(const double& value)
+{
+  mDouble = value; mStatus = known;
+}
+
+
+const CFunctionAnalyzer::CFunctionAnalyzer::CValue::Status& CFunctionAnalyzer::CValue::getStatus() const
+{
+  return mStatus;
+}
+
+
+void CFunctionAnalyzer::CValue::setStatus(const Status& status)
+{
+  mStatus = status;
 }
 
 CFunctionAnalyzer::CValue CFunctionAnalyzer::CValue::operator*(const CFunctionAnalyzer::CValue & rhs) const
@@ -331,6 +377,17 @@ void CFunctionAnalyzer::CValue::Or(const CValue & v) //  {mStatus = Status(mStat
   if (v.mStatus & known) this->mDouble = v.mDouble;
 }
 
+
+void CFunctionAnalyzer::CValue::Or(int s)
+{
+  mStatus = Status(mStatus | s);
+}
+
+void CFunctionAnalyzer::CValue::orValue(const double& value)
+{
+  Or(CValue(value)); /*  mDouble = value; Or(known);*/
+}
+
 bool CFunctionAnalyzer::CValue::isPositive() const
 {
   if (mStatus == positive) return true;
@@ -414,26 +471,42 @@ CFunctionAnalyzer::Result::Result()
   : mpFunction(NULL),
     mIrreversibleKineticsWithProducts(false),
     mReversibleNonSplitable(false)
-{};
+{
+}
 
-bool CFunctionAnalyzer::Result::writeResult(std::ostream & os, bool rt, bool verbose) const
+CFunctionAnalyzer::Result::~Result()
+{
+}
+
+void CFunctionAnalyzer::Result::clear()
+{
+  *this = Result();
+}
+
+bool CFunctionAnalyzer::Result::writeResult(std::ostream & os, bool rt, bool verbose, bool writeToStream /*= true*/) const
 {
   bool ret = false;
 
   if (!mpFunction) return false;
 
-  //function name
-  if (rt) os << "<h3>";
+  if (writeToStream)
+    {
+      //function name
+      if (rt) os << "<h3>";
 
-  os << mpFunction->getObjectName();
+      os << mpFunction->getObjectName();
 
-  if (rt) os << "</h3>";
+      if (rt) os << "</h3>";
 
-  os << "\n";
+      os << "\n";
+    }
+
 
   if (mIrreversibleKineticsWithProducts)
     {
-      os << write(1, rt, "The kinetic function is marked as irreversible but at least one of its variables is labeled as product.\n", "");
+      if (writeToStream)
+        os << write(1, rt, "The kinetic function is marked as irreversible but at least one of its variables is labeled as product.\n", "");
+
       ret = true;
     }
 
@@ -446,9 +519,11 @@ bool CFunctionAnalyzer::Result::writeResult(std::ostream & os, bool rt, bool ver
   bool eee = true;
 
   if (mpFunction->isReversible() != TriUnspecified)
-    eee = mOriginalFunction.writeAnalysis(tmpss, rt, isReversible);
+    eee = mOriginalFunction.writeAnalysis(tmpss, rt, isReversible, writeToStream);
 
   if (eee) ret = true;
+
+  if (!writeToStream && ret) return ret;
 
   if (eee || verbose)
     {
@@ -459,7 +534,9 @@ bool CFunctionAnalyzer::Result::writeResult(std::ostream & os, bool rt, bool ver
   //deal with splitted reversible functions
   if (mReversibleNonSplitable)
     {
-      os << write(1, rt, "Copasi is not able to split the reversible kinetic function into two irreversible functions.\n", "");
+      if (writeToStream)
+        os << write(1, rt, "Copasi is not able to split the reversible kinetic function into two irreversible functions.\n", "");
+
       ret = true;
     }
   else if (isReversible)
@@ -471,6 +548,8 @@ bool CFunctionAnalyzer::Result::writeResult(std::ostream & os, bool rt, bool ver
       bool eee2 = mBPart.writeAnalysis(tmpss2, rt, false);
 
       if (eee1 || eee2) ret = true;
+
+      if (!writeToStream && ret) return ret;
 
       if (eee1 || eee2 || verbose)
         {
@@ -492,7 +571,7 @@ bool CFunctionAnalyzer::Result::writeResult(std::ostream & os, bool rt, bool ver
   return ret;
 }
 
-bool CFunctionAnalyzer::Result::FunctionInformation::writeAnalysis(std::ostream & os, bool rt, bool reversible /*const CFunction * pF*/) const
+bool CFunctionAnalyzer::Result::FunctionInformation::writeAnalysis(std::ostream & os, bool rt, bool reversible /*const CFunction * pF*/, bool writeToStream /*= true*/) const
 {
   bool ret = false;
 
@@ -504,33 +583,43 @@ bool CFunctionAnalyzer::Result::FunctionInformation::writeAnalysis(std::ostream 
       //first for positive parameter values
       if (!mUnchangedParameters[1].containsPositive())
         {
-          os << write(1, rt, "The kinetic function cannot take positive values for positive parameter values.\n",
-                      "This means the reaction will never proceed in the forward direction.");
+          if (writeToStream)
+            os << write(1, rt, "The kinetic function cannot take positive values for positive parameter values.\n",
+                        "This means the reaction will never proceed in the forward direction.");
+
           ret = true;
         }
 
       if (!mUnchangedParameters[1].containsZero())
         {
-          os << write(1, rt, "The kinetic function never equals zero for positive parameter values.\n",
-                      "This is unexpected for reversible reactions.");
+          if (writeToStream)
+            os << write(1, rt, "The kinetic function never equals zero for positive parameter values.\n",
+                        "This is unexpected for reversible reactions.");
+
           ret = true;
         }
 
       if (!mUnchangedParameters[1].containsNegative())
         {
-          os << write(1, rt, "The kinetic function cannot take negative values for positive parameter values.\n",
-                      "This means the reaction will never proceed in the backwards direction.");
+          if (writeToStream)
+            os << write(1, rt, "The kinetic function cannot take negative values for positive parameter values.\n",
+                        "This means the reaction will never proceed in the backwards direction.");
+
           ret = true;
         }
 
       if (mUnchangedParameters[1].isInvalid())
         {
-          os << write(2, rt, "The kinetic function is always invalid for positive parameter values.\n", "");
+          if (writeToStream)
+            os << write(2, rt, "The kinetic function is always invalid for positive parameter values.\n", "");
+
           ret = true;
         }
       else if (mUnchangedParameters[1].containsInvalid())
         {
-          os << write(1, rt, "The kinetic function can be invalid even if metabolite concentrations and parameter values are positive.\n", "");
+          if (writeToStream)
+            os << write(1, rt, "The kinetic function can be invalid even if metabolite concentrations and parameter values are positive.\n", "");
+
           ret = true;
         }
 
@@ -539,33 +628,43 @@ bool CFunctionAnalyzer::Result::FunctionInformation::writeAnalysis(std::ostream 
         {
           if (!mUnchangedParameters[2].containsPositive())
             {
-              os << write(1, rt, "The kinetic function cannot take positive values for the actual parameter values.\n",
-                          "This means the reaction will never proceed in the forward direction.");
+              if (writeToStream)
+                os << write(1, rt, "The kinetic function cannot take positive values for the actual parameter values.\n",
+                            "This means the reaction will never proceed in the forward direction.");
+
               ret = true;
             }
 
           if (!mUnchangedParameters[2].containsZero())
             {
-              os << write(1, rt, "The kinetic function never equals zero for the actual parameter values.\n",
-                          "This is unexpected for reversible reactions.");
+              if (writeToStream)
+                os << write(1, rt, "The kinetic function never equals zero for the actual parameter values.\n",
+                            "This is unexpected for reversible reactions.");
+
               ret = true;
             }
 
           if (!mUnchangedParameters[2].containsNegative())
             {
-              os << write(1, rt, "The kinetic function cannot take negative values for the actual parameter values.\n",
-                          "This means the reaction will never proceed in the backwards direction.");
+              if (writeToStream)
+                os << write(1, rt, "The kinetic function cannot take negative values for the actual parameter values.\n",
+                            "This means the reaction will never proceed in the backwards direction.");
+
               ret = true;
             }
 
           if (mUnchangedParameters[2].isInvalid())
             {
-              os << write(2, rt, "The kinetic function is always invalid for the actual parameter values.\n", "");
+              if (writeToStream)
+                os << write(2, rt, "The kinetic function is always invalid for the actual parameter values.\n", "");
+
               ret = true;
             }
           else if (mUnchangedParameters[2].containsInvalid())
             {
-              os << write(1, rt, "The kinetic function can be invalid for the actual parameter values even if metabolite concentrations are positive.\n", "");
+              if (writeToStream)
+                os << write(1, rt, "The kinetic function can be invalid for the actual parameter values even if metabolite concentrations are positive.\n", "");
+
               ret = true;
             }
         }
@@ -582,39 +681,48 @@ bool CFunctionAnalyzer::Result::FunctionInformation::writeAnalysis(std::ostream 
           //first for positive parameter values
           if (mSubstrateZero[i].second[1].isNegative())
             {
-              os << write(0, rt, "The kinetic function is always negative for positive parameter values if substrate \""
-                          + mSubstrateZero[i].first.second //  pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                          + "\" is set to zero.\n" ,
-                          "This is the expected behaviour for reversible reactions. Without substrates the reaction can only proceed backwards.");
+              if (writeToStream)
+                os << write(0, rt, "The kinetic function is always negative for positive parameter values if substrate \""
+                            + mSubstrateZero[i].first.second //  pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                            + "\" is set to zero.\n" ,
+                            "This is the expected behaviour for reversible reactions. Without substrates the reaction can only proceed backwards.");
             }
           else if (mSubstrateZero[i].second[1].containsNegative())
             {
-              os << write(1, rt, "Copasi could not show that the kinetic function is always negative for positive parameter values if substrate \""
-                          + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                          + "\" is set to zero.\n" , "");
+              if (writeToStream)
+                os << write(1, rt, "Copasi could not show that the kinetic function is always negative for positive parameter values if substrate \""
+                            + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                            + "\" is set to zero.\n" , "");
+
               ret = true;
             }
           else
             {
-              os << write(2, rt, "The kinetic function is never negative for positive parameter values if substrate \""
-                          + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                          + "\" is set to zero.\n" ,
-                          "This means the reaction never proceeds backwards even if no substrate is present. This is unexpected for a reversible reaction.");
+              if (writeToStream)
+                os << write(2, rt, "The kinetic function is never negative for positive parameter values if substrate \""
+                            + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                            + "\" is set to zero.\n" ,
+                            "This means the reaction never proceeds backwards even if no substrate is present. This is unexpected for a reversible reaction.");
+
               ret = true;
             }
 
           if (mSubstrateZero[i].second[1].isInvalid())
             {
-              os << write(2, rt, "The kinetic function is always invalid for positive parameter values if substrate \""
-                          + mSubstrateZero[i].first.second  //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                          + "\" is set to zero.\n" , "");
+              if (writeToStream)
+                os << write(2, rt, "The kinetic function is always invalid for positive parameter values if substrate \""
+                            + mSubstrateZero[i].first.second  //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                            + "\" is set to zero.\n" , "");
+
               ret = true;
             }
           else if (mSubstrateZero[i].second[1].containsInvalid())
             {
-              os << write(1, rt, "The kinetic function can be invalid for positive parameter values if substrate \""
-                          + mSubstrateZero[i].first.second //  pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                          + "\" is set to zero.\n" , "");
+              if (writeToStream)
+                os << write(1, rt, "The kinetic function can be invalid for positive parameter values if substrate \""
+                            + mSubstrateZero[i].first.second //  pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                            + "\" is set to zero.\n" , "");
+
               ret = true;
             }
 
@@ -623,39 +731,48 @@ bool CFunctionAnalyzer::Result::FunctionInformation::writeAnalysis(std::ostream 
             {
               if (mSubstrateZero[i].second[2].isNegative())
                 {
-                  os << write(0, rt, "The kinetic function is always negative for the actual parameter values if substrate \""
-                              + mSubstrateZero[i].first.second //  pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                              + "\" is set to zero.\n" ,
-                              "This is the expected behaviour for reversible reactions. Without substrates the reaction can only proceed backwards.");
+                  if (writeToStream)
+                    os << write(0, rt, "The kinetic function is always negative for the actual parameter values if substrate \""
+                                + mSubstrateZero[i].first.second //  pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                                + "\" is set to zero.\n" ,
+                                "This is the expected behaviour for reversible reactions. Without substrates the reaction can only proceed backwards.");
                 }
               else if (mSubstrateZero[i].second[2].containsNegative())
                 {
-                  os << write(1, rt, "Copasi could not show that the kinetic function is always negative for the actual parameter values if substrate \""
-                              + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                              + "\" is set to zero.\n" , "");
+                  if (writeToStream)
+                    os << write(1, rt, "Copasi could not show that the kinetic function is always negative for the actual parameter values if substrate \""
+                                + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                                + "\" is set to zero.\n" , "");
+
                   ret = true;
                 }
               else
                 {
-                  os << write(2, rt, "The kinetic function is never negative for the actual parameter values if substrate \""
-                              + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                              + "\" is set to zero.\n" ,
-                              "This means the reaction never proceeds backwards even if no substrate is present. This is unexpected for a reversible reaction.");
+                  if (writeToStream)
+                    os << write(2, rt, "The kinetic function is never negative for the actual parameter values if substrate \""
+                                + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                                + "\" is set to zero.\n" ,
+                                "This means the reaction never proceeds backwards even if no substrate is present. This is unexpected for a reversible reaction.");
+
                   ret = true;
                 }
 
               if (mSubstrateZero[i].second[2].isInvalid())
                 {
-                  os << write(2, rt, "The kinetic function is always invalid for the actual parameter values if substrate \""
-                              + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                              + "\" is set to zero.\n" , "");
+                  if (writeToStream)
+                    os << write(2, rt, "The kinetic function is always invalid for the actual parameter values if substrate \""
+                                + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                                + "\" is set to zero.\n" , "");
+
                   ret = true;
                 }
               else if (mSubstrateZero[i].second[2].containsInvalid())
                 {
-                  os << write(1, rt, "The kinetic function can be invalid for the actual parameter values if substrate \""
-                              + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                              + "\" is set to zero.\n" , "");
+                  if (writeToStream)
+                    os << write(1, rt, "The kinetic function can be invalid for the actual parameter values if substrate \""
+                                + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                                + "\" is set to zero.\n" , "");
+
                   ret = true;
                 }
             }
@@ -671,39 +788,48 @@ bool CFunctionAnalyzer::Result::FunctionInformation::writeAnalysis(std::ostream 
           //first for positive parameter values
           if (mProductZero[i].second[1].isPositive())
             {
-              os << write(0, rt, "The kinetic function is always positive for positive parameter values if product \""
-                          + mProductZero[i].first.second //  pF->getVariables()[mProductZero[i].first]->getObjectName()
-                          + "\" is set to zero.\n" ,
-                          "This is the expected behaviour for reversible reactions. With products absent the reaction can only proceed forward.");
+              if (writeToStream)
+                os << write(0, rt, "The kinetic function is always positive for positive parameter values if product \""
+                            + mProductZero[i].first.second //  pF->getVariables()[mProductZero[i].first]->getObjectName()
+                            + "\" is set to zero.\n" ,
+                            "This is the expected behaviour for reversible reactions. With products absent the reaction can only proceed forward.");
             }
           else if (mProductZero[i].second[1].containsPositive())
             {
-              os << write(1, rt, "Copasi could not show that the kinetic function is always positive for positive parameter values if product \""
-                          + mProductZero[i].first.second //pF->getVariables()[mProductZero[i].first]->getObjectName()
-                          + "\" is set to zero.\n" , "");
+              if (writeToStream)
+                os << write(1, rt, "Copasi could not show that the kinetic function is always positive for positive parameter values if product \""
+                            + mProductZero[i].first.second //pF->getVariables()[mProductZero[i].first]->getObjectName()
+                            + "\" is set to zero.\n" , "");
+
               ret = true;
             }
           else
             {
-              os << write(2, rt, "The kinetic function is never positive for positive parameter values if product \""
-                          + mProductZero[i].first.second //pF->getVariables()[mProductZero[i].first]->getObjectName()
-                          + "\" is set to zero.\n" ,
-                          "This means the reaction never proceeds forward even if no product is present. This is unexpected for a reversible reaction.");
+              if (writeToStream)
+                os << write(2, rt, "The kinetic function is never positive for positive parameter values if product \""
+                            + mProductZero[i].first.second //pF->getVariables()[mProductZero[i].first]->getObjectName()
+                            + "\" is set to zero.\n" ,
+                            "This means the reaction never proceeds forward even if no product is present. This is unexpected for a reversible reaction.");
+
               ret = true;
             }
 
           if (mProductZero[i].second[1].isInvalid())
             {
-              os << write(2, rt, "The kinetic function is always invalid for positive parameter values if product \""
-                          + mProductZero[i].first.second  //pF->getVariables()[mProductZero[i].first]->getObjectName()
-                          + "\" is set to zero.\n" , "");
+              if (writeToStream)
+                os << write(2, rt, "The kinetic function is always invalid for positive parameter values if product \""
+                            + mProductZero[i].first.second  //pF->getVariables()[mProductZero[i].first]->getObjectName()
+                            + "\" is set to zero.\n" , "");
+
               ret = true;
             }
           else if (mProductZero[i].second[1].containsInvalid())
             {
-              os << write(1, rt, "The kinetic function can be invalid for positive parameter values if product \""
-                          + mProductZero[i].first.second //  pF->getVariables()[mProductZero[i].first]->getObjectName()
-                          + "\" is set to zero.\n" , "");
+              if (writeToStream)
+                os << write(1, rt, "The kinetic function can be invalid for positive parameter values if product \""
+                            + mProductZero[i].first.second //  pF->getVariables()[mProductZero[i].first]->getObjectName()
+                            + "\" is set to zero.\n" , "");
+
               ret = true;
             }
 
@@ -712,39 +838,48 @@ bool CFunctionAnalyzer::Result::FunctionInformation::writeAnalysis(std::ostream 
             {
               if (mProductZero[i].second[2].isPositive())
                 {
-                  os << write(0, rt, "The kinetic function is always positive for the actual parameter values if product \""
-                              + mProductZero[i].first.second //  pF->getVariables()[mProductZero[i].first]->getObjectName()
-                              + "\" is set to zero.\n" ,
-                              "This is the expected behaviour for reversible reactions. With products absent the reaction can only proceed forward.");
+                  if (writeToStream)
+                    os << write(0, rt, "The kinetic function is always positive for the actual parameter values if product \""
+                                + mProductZero[i].first.second //  pF->getVariables()[mProductZero[i].first]->getObjectName()
+                                + "\" is set to zero.\n" ,
+                                "This is the expected behaviour for reversible reactions. With products absent the reaction can only proceed forward.");
                 }
               else if (mProductZero[i].second[2].containsPositive())
                 {
-                  os << write(1, rt, "Copasi could not show that the kinetic function is always positive for the actual parameter values if product \""
-                              + mProductZero[i].first.second //pF->getVariables()[mProductZero[i].first]->getObjectName()
-                              + "\" is set to zero.\n" , "");
+                  if (writeToStream)
+                    os << write(1, rt, "Copasi could not show that the kinetic function is always positive for the actual parameter values if product \""
+                                + mProductZero[i].first.second //pF->getVariables()[mProductZero[i].first]->getObjectName()
+                                + "\" is set to zero.\n" , "");
+
                   ret = true;
                 }
               else
                 {
-                  os << write(2, rt, "The kinetic function is never positive for the actual parameter values if product \""
-                              + mProductZero[i].first.second //pF->getVariables()[mProductZero[i].first]->getObjectName()
-                              + "\" is set to zero.\n" ,
-                              "This means the reaction never proceeds forward even if no product is present. This is unexpected for a reversible reaction.");
+                  if (writeToStream)
+                    os << write(2, rt, "The kinetic function is never positive for the actual parameter values if product \""
+                                + mProductZero[i].first.second //pF->getVariables()[mProductZero[i].first]->getObjectName()
+                                + "\" is set to zero.\n" ,
+                                "This means the reaction never proceeds forward even if no product is present. This is unexpected for a reversible reaction.");
+
                   ret = true;
                 }
 
               if (mProductZero[i].second[2].isInvalid())
                 {
-                  os << write(2, rt, "The kinetic function is always invalid for the actual parameter values if substrate \""
-                              + mProductZero[i].first.second //pF->getVariables()[mProductZero[i].first]->getObjectName()
-                              + "\" is set to zero.\n" , "");
+                  if (writeToStream)
+                    os << write(2, rt, "The kinetic function is always invalid for the actual parameter values if substrate \""
+                                + mProductZero[i].first.second //pF->getVariables()[mProductZero[i].first]->getObjectName()
+                                + "\" is set to zero.\n" , "");
+
                   ret = true;
                 }
               else if (mProductZero[i].second[2].containsInvalid())
                 {
-                  os << write(1, rt, "The kinetic function can be invalid for the actual parameter values if substrate \""
-                              + mProductZero[i].first.second //pF->getVariables()[mProductZero[i].first]->getObjectName()
-                              + "\" is set to zero.\n" , "");
+                  if (writeToStream)
+                    os << write(1, rt, "The kinetic function can be invalid for the actual parameter values if substrate \""
+                                + mProductZero[i].first.second //pF->getVariables()[mProductZero[i].first]->getObjectName()
+                                + "\" is set to zero.\n" , "");
+
                   ret = true;
                 }
             }
@@ -758,44 +893,59 @@ bool CFunctionAnalyzer::Result::FunctionInformation::writeAnalysis(std::ostream 
       //first for positive parameter values
       if (mUnchangedParameters[1].isPositive())
         {
-          os << write(0, rt, "The kinetic function is positive for positive parameter values.\n", "");
+          if (writeToStream)
+            os << write(0, rt, "The kinetic function is positive for positive parameter values.\n", "");
         }
       else
         {
-          os << write(1, rt, "Copasi could not show that the kinetic function is positive for positive parameter values.\n", "");
+          if (writeToStream)
+            os << write(1, rt, "Copasi could not show that the kinetic function is positive for positive parameter values.\n", "");
+
           ret = true;
         }
 
       if (mUnchangedParameters[1].isZero())
         {
-          os << write(2, rt, "The kinetic function is always zero for positive parameter values.\n", "");
+          if (writeToStream)
+            os << write(2, rt, "The kinetic function is always zero for positive parameter values.\n", "");
+
           ret = true;
         }
       else if (mUnchangedParameters[1].containsZero())
         {
-          os << write(1, rt, "The kinetic function can be zero even if substrate concentrations and parameter values are positive.\n", "");
+          if (writeToStream)
+            os << write(1, rt, "The kinetic function can be zero even if substrate concentrations and parameter values are positive.\n", "");
+
           ret = true;
         }
 
       if (mUnchangedParameters[1].isNegative())
         {
-          os << write(2, rt, "The kinetic function is always negative for positive parameter values.\n", "");
+          if (writeToStream)
+            os << write(2, rt, "The kinetic function is always negative for positive parameter values.\n", "");
+
           ret = true;
         }
       else if (mUnchangedParameters[1].containsNegative())
         {
-          os << write(1, rt, "The kinetic function can be negative even if substrate concentrations and parameter values are positive.\n", "");
+          if (writeToStream)
+            os << write(1, rt, "The kinetic function can be negative even if substrate concentrations and parameter values are positive.\n", "");
+
           ret = true;
         }
 
       if (mUnchangedParameters[1].isInvalid())
         {
-          os << write(2, rt, "The kinetic function is always invalid for positive parameter values.\n", "");
+          if (writeToStream)
+            os << write(2, rt, "The kinetic function is always invalid for positive parameter values.\n", "");
+
           ret = true;
         }
       else if (mUnchangedParameters[1].containsInvalid())
         {
-          os << write(1, rt, "The kinetic function can be invalid even if substrate concentrations and parameter values are positive.\n", "");
+          if (writeToStream)
+            os << write(1, rt, "The kinetic function can be invalid even if substrate concentrations and parameter values are positive.\n", "");
+
           ret = true;
         }
 
@@ -804,44 +954,59 @@ bool CFunctionAnalyzer::Result::FunctionInformation::writeAnalysis(std::ostream 
         {
           if (mUnchangedParameters[2].isPositive())
             {
-              os << write(0, rt, "The kinetic function is positive for the actual parameter values.\n", "");
+              if (writeToStream)
+                os << write(0, rt, "The kinetic function is positive for the actual parameter values.\n", "");
             }
           else
             {
-              os << write(1, rt, "Copasi could not show that the kinetic function is positive for the actual parameter values.\n", "");
+              if (writeToStream)
+                os << write(1, rt, "Copasi could not show that the kinetic function is positive for the actual parameter values.\n", "");
+
               ret = true;
             }
 
           if (mUnchangedParameters[2].isZero())
             {
-              os << write(2, rt, "The kinetic function is always zero for the actual parameter values.\n", "");
+              if (writeToStream)
+                os << write(2, rt, "The kinetic function is always zero for the actual parameter values.\n", "");
+
               ret = true;
             }
           else if (mUnchangedParameters[2].containsZero())
             {
-              os << write(1, rt, "The kinetic function can be zero for the actual parameter values even if substrate concentrations are positive.\n", "");
+              if (writeToStream)
+                os << write(1, rt, "The kinetic function can be zero for the actual parameter values even if substrate concentrations are positive.\n", "");
+
               ret = true;
             }
 
           if (mUnchangedParameters[2].isNegative())
             {
-              os << write(2, rt, "The kinetic function is always negative for the actual parameter values.\n", "");
+              if (writeToStream)
+                os << write(2, rt, "The kinetic function is always negative for the actual parameter values.\n", "");
+
               ret = true;
             }
           else if (mUnchangedParameters[2].containsNegative())
             {
-              os << write(1, rt, "The kinetic function can be negative for the actual parameter values even if substrate concentrations are positive.\n", "");
+              if (writeToStream)
+                os << write(1, rt, "The kinetic function can be negative for the actual parameter values even if substrate concentrations are positive.\n", "");
+
               ret = true;
             }
 
           if (mUnchangedParameters[2].isInvalid())
             {
-              os << write(2, rt, "The kinetic function is always invalid for the actual parameter values.\n", "");
+              if (writeToStream)
+                os << write(2, rt, "The kinetic function is always invalid for the actual parameter values.\n", "");
+
               ret = true;
             }
           else if (mUnchangedParameters[2].containsInvalid())
             {
-              os << write(1, rt, "The kinetic function can be invalid for the actual parameter values even if substrate concentrations are positive.\n", "");
+              if (writeToStream)
+                os << write(1, rt, "The kinetic function can be invalid for the actual parameter values even if substrate concentrations are positive.\n", "");
+
               ret = true;
             }
         }
@@ -858,37 +1023,46 @@ bool CFunctionAnalyzer::Result::FunctionInformation::writeAnalysis(std::ostream 
           //first for positive parameter values
           if (mSubstrateZero[i].second[1].isZero())
             {
-              os << write(0, rt, "The kinetic function is always zero for positive parameter values if substrate \""
-                          + mSubstrateZero[i].first.second //  pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                          + "\" is set to zero.\n" , "");
+              if (writeToStream)
+                os << write(0, rt, "The kinetic function is always zero for positive parameter values if substrate \""
+                            + mSubstrateZero[i].first.second //  pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                            + "\" is set to zero.\n" , "");
             }
           else if (mSubstrateZero[i].second[1].containsZero())
             {
-              os << write(1, rt, "Copasi could not show that the kinetic function is always zero for positive parameter values if substrate \""
-                          + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                          + "\" is set to zero.\n" , "");
+              if (writeToStream)
+                os << write(1, rt, "Copasi could not show that the kinetic function is always zero for positive parameter values if substrate \""
+                            + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                            + "\" is set to zero.\n" , "");
+
               ret = true;
             }
           else
             {
-              os << write(2, rt, "The kinetic function is never zero for positive parameter values if substrate \""
-                          + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                          + "\" is set to zero.\n" , "");
+              if (writeToStream)
+                os << write(2, rt, "The kinetic function is never zero for positive parameter values if substrate \""
+                            + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                            + "\" is set to zero.\n" , "");
+
               ret = true;
             }
 
           if (mSubstrateZero[i].second[1].isInvalid())
             {
-              os << write(2, rt, "The kinetic function is always invalid for positive parameter values if substrate \""
-                          + mSubstrateZero[i].first.second  //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                          + "\" is set to zero.\n" , "");
+              if (writeToStream)
+                os << write(2, rt, "The kinetic function is always invalid for positive parameter values if substrate \""
+                            + mSubstrateZero[i].first.second  //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                            + "\" is set to zero.\n" , "");
+
               ret = true;
             }
           else if (mSubstrateZero[i].second[1].containsInvalid())
             {
-              os << write(1, rt, "The kinetic function can be invalid for positive parameter values if substrate \""
-                          + mSubstrateZero[i].first.second //  pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                          + "\" is set to zero.\n" , "");
+              if (writeToStream)
+                os << write(1, rt, "The kinetic function can be invalid for positive parameter values if substrate \""
+                            + mSubstrateZero[i].first.second //  pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                            + "\" is set to zero.\n" , "");
+
               ret = true;
             }
 
@@ -897,37 +1071,46 @@ bool CFunctionAnalyzer::Result::FunctionInformation::writeAnalysis(std::ostream 
             {
               if (mSubstrateZero[i].second[2].isZero())
                 {
-                  os << write(0, rt, "The kinetic function is always zero for the actual parameter values if substrate \""
-                              + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                              + "\" is set to zero.\n" , "");
+                  if (writeToStream)
+                    os << write(0, rt, "The kinetic function is always zero for the actual parameter values if substrate \""
+                                + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                                + "\" is set to zero.\n" , "");
                 }
               else if (mSubstrateZero[i].second[2].containsZero())
                 {
-                  os << write(1, rt, "Copasi could not show that the kinetic function is always zero for the actual parameter values if substrate \""
-                              + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                              + "\" is set to zero.\n" , "");
+                  if (writeToStream)
+                    os << write(1, rt, "Copasi could not show that the kinetic function is always zero for the actual parameter values if substrate \""
+                                + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                                + "\" is set to zero.\n" , "");
+
                   ret = true;
                 }
               else
                 {
-                  os << write(2, rt, "The kinetic function is never zero for the actual parameter values if substrate \""
-                              + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                              + "\" is set to zero.\n" , "");
+                  if (writeToStream)
+                    os << write(2, rt, "The kinetic function is never zero for the actual parameter values if substrate \""
+                                + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                                + "\" is set to zero.\n" , "");
+
                   ret = true;
                 }
 
               if (mSubstrateZero[i].second[2].isInvalid())
                 {
-                  os << write(2, rt, "The kinetic function is always invalid for the actual parameter values if substrate \""
-                              + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                              + "\" is set to zero.\n" , "");
+                  if (writeToStream)
+                    os << write(2, rt, "The kinetic function is always invalid for the actual parameter values if substrate \""
+                                + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                                + "\" is set to zero.\n" , "");
+
                   ret = true;
                 }
               else if (mSubstrateZero[i].second[2].containsInvalid())
                 {
-                  os << write(1, rt, "The kinetic function can be invalid for the actual parameter values if substrate \""
-                              + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
-                              + "\" is set to zero.\n" , "");
+                  if (writeToStream)
+                    os << write(1, rt, "The kinetic function can be invalid for the actual parameter values if substrate \""
+                                + mSubstrateZero[i].first.second //pF->getVariables()[mSubstrateZero[i].first]->getObjectName()
+                                + "\" is set to zero.\n" , "");
+
                   ret = true;
                 }
             }
@@ -1369,6 +1552,17 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
       pdelete(tmp.first);
       pdelete(tmp.second);
     }
+}
+
+
+CFunctionAnalyzer::CFunctionAnalyzer(const CFunction* f, const CReaction* reaction /*= NULL*/)
+{
+  checkKineticFunction(f, reaction);
+}
+
+const CFunctionAnalyzer::Result& CFunctionAnalyzer::getResult() const
+{
+  return mResult;
 }
 
 //static

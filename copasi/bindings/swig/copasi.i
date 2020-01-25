@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -344,6 +344,9 @@ size_t INVALID_INDEX();
 %include <copasi/optimization/CRandomSearch.h>
 %include <copasi/optimization/COptMethodTruncatedNewton.h>
 
+%include <copasi/function/CFunctionAnalyzer.h>
+%include <copasi/model/CModelAnalyzer.h>
+
 %{
 
 
@@ -387,7 +390,13 @@ size_t INVALID_INDEX();
 #include <copasi/optimization/CRandomSearch.h>
 #include <copasi/optimization/COptMethodTruncatedNewton.h>
 
+#include <copasi/function/CFunctionAnalyzer.h>
+#include <copasi/model/CModelAnalyzer.h>
+
 %}
+
+%template(CReactionResultStdVector) std::vector< CReactionResult >;
+typedef std::vector< CReactionResult > CReactionResultStdVector;
 
 %template(CFluxModeStdVector) std::vector<CFluxMode>;
 typedef std::vector<CFluxMode> CFluxModeStdVector;

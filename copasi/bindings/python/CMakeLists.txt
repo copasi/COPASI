@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -173,6 +173,12 @@ set_tests_properties(${target} PROPERTIES ENVIRONMENT PYTHONPATH=${NEW_PYTHON_PA
 endif()
 
 endmacro()
+
+add_test(NAME test_python_checkModel
+         COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/checkModel.py
+                                      ${CMAKE_SOURCE_DIR}/TestSuite/distribution/brusselator-model.xml
+)
+ADJUST_PYTHONPATH(test_python_checkModel)
 
 add_test(NAME test_python_example1
          COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example1.py         

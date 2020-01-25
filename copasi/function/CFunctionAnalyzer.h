@@ -1,22 +1,24 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionAnalyzer.h,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:28:19 $
-// End CVS Header
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -66,25 +68,24 @@ public:
       unknown = 7
     };
 
-    CValue()
-        : mStatus(Status(novalue)), mDouble(0.0) {};
+    CValue();
 
-    CValue(Status status)
-        : mStatus(status), mDouble(0.0) {};
+    CValue(Status status);
 
-    CValue(const double & d)
-        : mStatus(known), mDouble(d) {};
+    CValue(const double & d);
 
-    const double & getValue() const {return mDouble;};
+    virtual ~CValue();
+
+    const double & getValue() const;
 
     /**
      * set value to be the only possible value
      */
-    void setValue(const double & value) {mDouble = value; mStatus = known;};
+    void setValue(const double & value);
 
-    const Status & getStatus() const {return mStatus;};
+    const Status & getStatus() const;
 
-    void setStatus(const Status & status) {mStatus = status;};
+    void setStatus(const Status & status);
 
     CValue operator*(const CValue & rhs) const;
     CValue operator/(const CValue & rhs) const;
@@ -113,17 +114,13 @@ public:
 
     static CValue generalize(const double & d);
 
-    void Or(int s) {mStatus = Status(mStatus | s);};
+    void Or(int s);
     void Or(const CValue & v); //  {mStatus = Status(mStatus | s);};
 
     /**
      * add the value to the set off possible values
      */
-#ifdef WIN32 // To prevent a fatal compiler error in Visual Studio C++ 6.0
-    void orValue(const double value) {Or(CValue(value)); /*  mDouble = value; Or(known);*/};
-#else
-    void orValue(const double & value) {Or(CValue(value)); /*  mDouble = value; Or(known);*/};
-#endif
+    void orValue(const double & value);
 
   private:
     Status mStatus;
@@ -159,17 +156,18 @@ public:
        * This writes a (hopefully) user understandable interpretation of the results to os.
        * The return value indicates if a problem was reported.
        */
-      bool writeAnalysis(std::ostream & os, bool rt, bool reversible) const;
+      bool writeAnalysis(std::ostream & os, bool rt, bool reversible, bool writeToStream = true) const;
     };
 
     Result();
-    void clear() {*this = Result();};
+    virtual ~Result();
+    void clear();
 
     /**
      * writes a text report about the function to the stream. The return value
      * indicates if a problem was reported.
      */
-    bool writeResult(std::ostream & os, bool rt, bool verbose) const;
+    bool writeResult(std::ostream & os, bool rt, bool verbose, bool writeToStream = true) const;
 
     //void writeTable(std::ostream & os, bool rt) const;
 
@@ -188,12 +186,11 @@ public:
     FunctionInformation mBPart;
   };
 
+  CFunctionAnalyzer(const CFunction* f, const CReaction* reaction = NULL);
+
   void checkKineticFunction(const CFunction * f, const CReaction * reaction = NULL);
 
-  CFunctionAnalyzer(const CFunction * f, const CReaction * reaction = NULL)
-  {checkKineticFunction(f, reaction);};
-
-  const Result & getResult() const {return mResult;};
+  const Result & getResult() const;
 
   /**
    * Mode tells how to interpret an object in CValue arithmetics.

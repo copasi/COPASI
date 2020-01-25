@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,9 +53,9 @@ void CModelAnalyzer::checkModel(const CModel* model)
     }
 }
 
-CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* reaction)
+CReactionResult CModelAnalyzer::checkReaction(const CReaction* reaction)
 {
-  ReactionResult ret;
+  CReactionResult ret;
 
   if (!reaction) return ret;
 
@@ -338,26 +338,43 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
 #define WRITE(__level, __text) os << CFunctionAnalyzer::write(__level, rt, __text, "");
 
-bool CModelAnalyzer::ReactionResult::writeResult(std::ostream & os, bool rt, bool verbose) const
+
+CReactionResult::CReactionResult()
+  : mKineticUnspecifiedReversibility(false)
+  , mReversibilityMismatch(false)
+{
+
+}
+
+CReactionResult::~CReactionResult()
+{
+}
+
+bool CReactionResult::writeResult(std::ostream & os, bool rt, bool verbose, bool writeToStream /*= true*/) const
 {
   bool ret = false;
 
   //reaction name
-  if (rt) os << "<h2>";
+  if (writeToStream)
+    {
+      if (rt) os << "<h2>";
 
-  os << mReactionName;
+      os << mReactionName;
 
-  if (rt) os << "</h2>";
+      if (rt) os << "</h2>";
 
-  os << "\n";
+      os << "\n";
 
-  //reaction results
-  if (mKineticUnspecifiedReversibility)
-    os << CFunctionAnalyzer::write(1, rt, "The kinetic function has unspecified reversibility.",
-                                   "This means that checking the kinetic function will be less strict.");
 
-  if (mReversibilityMismatch)
-    os << CFunctionAnalyzer::write(3, rt, "The reversibility of the reaction and the kinetic function doesn't match.", "");
+      //reaction results
+      if (mKineticUnspecifiedReversibility)
+        os << CFunctionAnalyzer::write(1, rt, "The kinetic function has unspecified reversibility.",
+                                       "This means that checking the kinetic function will be less strict.");
+
+      if (mReversibilityMismatch)
+        os << CFunctionAnalyzer::write(3, rt, "The reversibility of the reaction and the kinetic function doesn't match.", "");
+
+    }
 
   size_t i, imax;
   imax = mChemEqSubs.size();
@@ -473,6 +490,25 @@ bool CModelAnalyzer::ReactionResult::writeResult(std::ostream & os, bool rt, boo
   return ret;
 }
 
+bool CReactionResult::hasIssue() const
+{
+  std::stringstream str;
+  return writeResult(str, false, false, false);
+}
+
+std::string CReactionResult::getResultString(bool rt, bool verbose) const
+{
+  std::stringstream str;
+  writeResult(str, rt, verbose);
+  return str.str();
+}
+
+
+const std::string& CReactionResult::getName() const
+{
+  return mReactionName;
+}
+
 void CModelAnalyzer::writeReport(std::ostream & os, bool rt, bool verbose) const
 {
 
@@ -484,4 +520,9 @@ void CModelAnalyzer::writeReport(std::ostream & os, bool rt, bool verbose) const
       //std::ostringstream tmpss;
       mReactionResults[i].writeResult(os, rt, verbose);
     }
+}
+
+const std::vector<CReactionResult>& CModelAnalyzer::getReactionResults() const
+{
+  return mReactionResults;
 }

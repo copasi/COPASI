@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -309,6 +309,21 @@ CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
   mpContainer(src.mpContainer),
   mpCallBack(src.mpCallBack)
 {}
+
+CCopasiMethod & CCopasiMethod::operator=(const CCopasiMethod & rhs)
+{
+  CCopasiParameterGroup::operator=(rhs);
+
+  // Check for assignment to itself
+  if (this == &rhs) return *this;
+
+  mTaskType = rhs.mTaskType;
+  mSubType = rhs.mSubType;
+  mpContainer = rhs.mpContainer;
+  mpCallBack = rhs.mpCallBack;
+
+  return *this;
+}
 
 CCopasiMethod::~CCopasiMethod() {}
 
