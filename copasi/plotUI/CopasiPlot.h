@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -220,12 +220,12 @@ private:
    * The order of 2d curve objects used when the data is saved.
    * The first object in each vector is the object for the X axis.
    */
-  std::vector< std::vector < const CObjectInterface * > > mSaveCurveObjects;
+  std::vector< std::vector < std::string > > mSaveCurveObjects;
 
   /**
    * The order of histogram objects used when the data is saved.
    */
-  std::vector< const CObjectInterface * > mSaveHistogramObjects;
+  std::vector< std::string > mSaveHistogramObjects;
 
   /**
    * Vector of actual data lines in the local buffers
@@ -241,7 +241,7 @@ private:
    * Map activity and object to index indicating where data is stored within
    * the current activity.
    */
-  std::map< Activity, std::map< const CObjectInterface *, size_t > > mObjectIndex;
+  std::map< Activity, std::map< std::string, size_t > > mObjectIndex;
 
   /**
    * The list of curves
@@ -262,16 +262,6 @@ private:
    * A map between a specification identified by its key and a curve
    */
   std::map< std::string, CPlotSpectogram* > mSpectogramMap;
-
-  /**
-   * Vector of the activity of each item (curve)
-   */
-  // std::vector<Activity> mCurveActivities;
-
-  /**
-   * Map of curve to the index to the corresponding histogram.
-   */
-  //std::vector<size_t> mHistoIndices;
 
   /**
    * Count of data lines recorded during activity BEFORE.
