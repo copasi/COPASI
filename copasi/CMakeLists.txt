@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -273,6 +273,7 @@ set_target_properties (libCOPASISE-static PROPERTIES OUTPUT_NAME "COPASISE")
 
 target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY_NAME})
 target_link_libraries(libCOPASISE-static ${COMBINE_LIBRARY_NAME})
+target_compile_features(libCOPASISE-static PUBLIC cxx_std_11)
 
 if (APPLE)
   FIND_LIBRARY(COREFOUNDATION_LIBRARY CoreFoundation REQUIRED)
@@ -587,6 +588,7 @@ if(BUILD_GUI)
 
 
   set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
+  target_compile_features(libCOPASIUI PUBLIC cxx_std_11)
 
   set(UI_LIBS libCOPASIUI)
   set(UI_DEPENDENCIES libCOPASIUI)

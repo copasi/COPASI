@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -117,7 +117,6 @@ else ()
 	set (CMAKE_INSTALL_FULL_INCLUDEDIR "${CMAKE_INSTALL_PREFIX}/include")
 endif ()
 
-
 # preferably link against the static versions
 # as compared to the dynamic ones
 
@@ -125,12 +124,6 @@ option(PREFER_STATIC "Preferably link against the static library versions" ON)
 
 if (NOT WIN32 AND PREFER_STATIC)
  SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
-endif()
-
-if (CMAKE_MAJOR_VERSION LESS 3 OR CMAKE_MINOR_VERSION LESS 1)
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
-else()
-  set(CMAKE_CXX_STANDARD 11)
 endif()
 
 CHECK_FUNCTION_EXISTS(strptime HAVE_STRPTIME)
