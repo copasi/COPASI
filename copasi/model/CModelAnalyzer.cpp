@@ -381,99 +381,114 @@ bool CReactionResult::writeResult(std::ostream & os, bool rt, bool verbose, bool
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(2, rt, "The reaction substrate \""
-                                     + mChemEqSubs[i]
-                                     + "\" is not mapped to a corresponding function parameter.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(2, rt, "The reaction substrate \""
+                                       + mChemEqSubs[i]
+                                       + "\" is not mapped to a corresponding function parameter.", "");
+
+      ret = true;
     }
 
   imax = mChemEqProds.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(2, rt, "The reaction product \""
-                                     + mChemEqProds[i]
-                                     + "\" is not mapped to a corresponding function parameter.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(2, rt, "The reaction product \""
+                                       + mChemEqProds[i]
+                                       + "\" is not mapped to a corresponding function parameter.", "");
+
+      ret = true;
     }
 
   imax = mChemEqMods.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(1, rt, "The reaction modifier \""
-                                     + mChemEqMods[i]
-                                     + "\" is not mapped to a corresponding function parameter.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(1, rt, "The reaction modifier \""
+                                       + mChemEqMods[i]
+                                       + "\" is not mapped to a corresponding function parameter.", "");
     }
 
   imax = mNotMetabolite.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
-                                     + mNotMetabolite[i]
-                                     + "\" which should be mapped to a metabolite is mapped to something else.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mNotMetabolite[i]
+                                       + "\" which should be mapped to a metabolite is mapped to something else.", "");
     }
 
   imax = mFunctionParametersSubs.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
-                                     + mFunctionParametersSubs[i]
-                                     + "\" is not mapped to a substrate of the reaction.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersSubs[i]
+                                       + "\" is not mapped to a substrate of the reaction.", "");
     }
 
   imax = mFunctionParametersProds.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
-                                     + mFunctionParametersProds[i]
-                                     + "\" is not mapped to a product of the reaction.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersProds[i]
+                                       + "\" is not mapped to a product of the reaction.", "");
     }
 
   imax = mFunctionParametersMods.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
-                                     + mFunctionParametersMods[i]
-                                     + "\" is not mapped to a modifier of the reaction.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersMods[i]
+                                       + "\" is not mapped to a modifier of the reaction.", "");
     }
 
   imax = mFunctionParametersParams.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
-                                     + mFunctionParametersParams[i]
-                                     + "\" is not mapped to local parameter or a global value.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersParams[i]
+                                       + "\" is not mapped to local parameter or a global value.", "");
     }
 
   imax = mFunctionParametersVol.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
-                                     + mFunctionParametersVol[i]
-                                     + "\" is not mapped to a compartment.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersVol[i]
+                                       + "\" is not mapped to a compartment.", "");
     }
 
   imax = mFunctionParametersTime.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
-                                     + mFunctionParametersTime[i]
-                                     + "\" is not correctly handled as model time.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersTime[i]
+                                       + "\" is not correctly handled as model time.", "");
     }
 
   imax = mFunctionParametersVar.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(1, rt, "The function parameter \""
-                                     + mFunctionParametersVar[i]
-                                     + "\" is marked as \"variable\". Not sure what this means.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(1, rt, "The function parameter \""
+                                       + mFunctionParametersVar[i]
+                                       + "\" is marked as \"variable\". Not sure what this means.", "");
     }
 
   //function results
