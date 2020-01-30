@@ -88,7 +88,7 @@ CXMLHandler * ModelParameterHandler::processStart(const XML_Char * pszName,
         SimulationType = CModelEntity::XMLStatus.toEnum(pSimulationType, CModelEntity::Status::FIXED);
         mpData->pCurrentModelParameter->setSimulationType(SimulationType);
 
-        mpData->pCurrentModelParameter->setValue(Value, CCore::Framework::ParticleNumbers);
+        mpData->pCurrentModelParameter->setValue(Value, CCore::Framework::ParticleNumbers, false);
         break;
 
       case InitialExpression:

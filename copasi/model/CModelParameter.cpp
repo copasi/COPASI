@@ -153,8 +153,7 @@ bool CModelParameter::applyData(const CData & data, CUndoData::CChangeSet & chan
       setCN(data.getProperty(CData::OBJECT_NAME).toString());
     }
 
-  if (mpParent != NULL &&
-      data.isSetProperty(CData::OBJECT_INDEX))
+  if (mpParent != NULL && data.isSetProperty(CData::OBJECT_INDEX))
     {
       mpParent->updateIndex(data.getProperty(CData::OBJECT_INDEX).toSizeT(), this);
     }
@@ -164,8 +163,7 @@ bool CModelParameter::applyData(const CData & data, CUndoData::CChangeSet & chan
       mSimulationType = CModelEntity::StatusName.toEnum(data.getProperty(CData::SIMULATION_TYPE).toString(), CModelEntity::Status::FIXED);
     }
 
-  if (data.isSetProperty(CData::PARAMETER_VALUE) &&
-      data.getProperty(CData::PARAMETER_VALUE).getType() == CDataValue::DATA)
+  if (data.isSetProperty(CData::PARAMETER_VALUE) && data.getProperty(CData::PARAMETER_VALUE).getType() == CDataValue::DATA)
     {
       const CData & Data = data.getProperty(CData::PARAMETER_VALUE).toData();
       setValue(Data.getProperty(CData::INITIAL_VALUE).toDouble(),
@@ -232,30 +230,30 @@ void CModelParameter::createUndoData(CUndoData & undoData,
   return;
 }
 
-CModelParameter::CModelParameter(CModelParameterGroup * pParent, const CModelParameter::Type & type):
-  CUndoObjectInterface(),
-  mpParent(static_cast< CModelParameterGroup * >(pParent)),
-  mType(type),
-  mCN(),
-  mSimulationType(type == CModelParameter::Type::Model ? CModelEntity::Status::TIME : CModelEntity::Status::FIXED),
-  mValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
-  mpInitialExpression(NULL),
-  mCompareResult(CModelParameter::CompareResult::Identical),
-  mpObject(NULL),
-  mIsInitialExpressionValid(true)
+CModelParameter::CModelParameter(CModelParameterGroup * pParent, const CModelParameter::Type & type)
+  : CUndoObjectInterface()
+  , mpParent(static_cast< CModelParameterGroup * >(pParent))
+  , mType(type)
+  , mCN()
+  , mSimulationType(type == CModelParameter::Type::Model ? CModelEntity::Status::TIME : CModelEntity::Status::FIXED)
+  , mValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mpInitialExpression(NULL)
+  , mCompareResult(CModelParameter::CompareResult::Identical)
+  , mpObject(NULL)
+  , mIsInitialExpressionValid(true)
 {}
 
-CModelParameter::CModelParameter(const CModelParameter & src, CModelParameterGroup * pParent):
-  CUndoObjectInterface(src),
-  mpParent(pParent),
-  mType(src.mType),
-  mCN(src.mCN),
-  mSimulationType(src.mSimulationType),
-  mValue(src.mValue),
-  mpInitialExpression(NULL),
-  mCompareResult(src.mCompareResult),
-  mpObject(src.mpObject),
-  mIsInitialExpressionValid(src.mIsInitialExpressionValid)
+CModelParameter::CModelParameter(const CModelParameter & src, CModelParameterGroup * pParent)
+  : CUndoObjectInterface(src)
+  , mpParent(pParent)
+  , mType(src.mType)
+  , mCN(src.mCN)
+  , mSimulationType(src.mSimulationType)
+  , mValue(src.mValue)
+  , mpInitialExpression(NULL)
+  , mCompareResult(src.mCompareResult)
+  , mpObject(src.mpObject)
+  , mIsInitialExpressionValid(src.mIsInitialExpressionValid)
 {
   assert(mType == Type::Set || mpParent != NULL);
 
@@ -285,7 +283,7 @@ const CModelParameterSet * CModelParameter::toSet() const
   return NULL;
 }
 
-bool CModelParameter::operator < (const CModelParameter & rhs) const
+bool CModelParameter::operator<(const CModelParameter & rhs) const
 {
   return mCN < rhs.mCN;
 }
@@ -410,14 +408,12 @@ bool CModelParameter::setSimulationType(const CModelEntity::Status & simulationT
         break;
 
       case Type::ReactionParameter:
-        success = (simulationType == CModelEntity::Status::FIXED ||
-                   simulationType == CModelEntity::Status::ASSIGNMENT);
+        success = (simulationType == CModelEntity::Status::FIXED || simulationType == CModelEntity::Status::ASSIGNMENT);
         break;
 
       case Type::ModelValue:
       case Type::Compartment:
-        success = (simulationType != CModelEntity::Status::TIME &&
-                   simulationType != CModelEntity::Status::REACTIONS);
+        success = (simulationType != CModelEntity::Status::TIME && simulationType != CModelEntity::Status::REACTIONS);
         break;
 
       default:
@@ -439,9 +435,12 @@ const CModelEntity::Status & CModelParameter::getSimulationType() const
 }
 
 // virtual
-void CModelParameter::setValue(const C_FLOAT64 & value, const CCore::Framework & /* framework */)
+void CModelParameter::setValue(const C_FLOAT64 & value, const CCore::Framework & /* framework */, bool updateModelIfActive)
 {
   mValue = value;
+
+  if (!updateModelIfActive)
+    return;
 
   CModelParameterSet * pSet = getSet();
 
@@ -473,7 +472,7 @@ void CModelParameter::setInitialExpression(const std::string & initialExpression
   mpInitialExpression->setInfix(initialExpression);
 }
 
-const CExpression* CModelParameter::getInitialExpressionPtr() const
+const CExpression * CModelParameter::getInitialExpressionPtr() const
 {
   return mpInitialExpression;
 }
@@ -508,7 +507,8 @@ size_t CModelParameter::getIndex() const
 
   for (; it != end; ++it, ++Index)
     {
-      if (*it == this) return Index;
+      if (*it == this)
+        return Index;
     }
 
   return C_INVALID_INDEX;
@@ -516,10 +516,7 @@ size_t CModelParameter::getIndex() const
 
 bool CModelParameter::isReadOnly() const
 {
-  if (mType == Type::Reaction ||
-      mType == Type::Group ||
-      mType == Type::Set ||
-      (mIsInitialExpressionValid && getInitialExpression() != ""))
+  if (mType == Type::Reaction || mType == Type::Group || mType == Type::Set || (mIsInitialExpressionValid && getInitialExpression() != ""))
     {
       return true;
     }
@@ -623,8 +620,7 @@ const CModelParameter::CompareResult & CModelParameter::diff(const CModelParamet
     const CCore::Framework & framework,
     const bool & /* createMissing */)
 {
-  if (mCompareResult == CompareResult::Missing ||
-      mCompareResult == CompareResult::Obsolete)
+  if (mCompareResult == CompareResult::Missing || mCompareResult == CompareResult::Obsolete)
     {
       return mCompareResult;
     }
@@ -635,11 +631,7 @@ const CModelParameter::CompareResult & CModelParameter::diff(const CModelParamet
       case Type::Species:
       case Type::ModelValue:
 
-        if (other.getObject() != NULL &&
-            mpObject != NULL &&
-            static_cast< CModelEntity *>(mpObject)->getStatus() == CModelEntity::Status::ASSIGNMENT &&
-            (fabs(getValue(CCore::Framework::ParticleNumbers) - other.getValue(CCore::Framework::ParticleNumbers)) > 50 * (fabs(getValue(CCore::Framework::ParticleNumbers)) + fabs(other.getValue(CCore::Framework::ParticleNumbers))) * std::numeric_limits< C_FLOAT64 >::epsilon() ||
-             getInitialExpression() != ""))
+        if (other.getObject() != NULL && mpObject != NULL && static_cast< CModelEntity * >(mpObject)->getStatus() == CModelEntity::Status::ASSIGNMENT && (fabs(getValue(CCore::Framework::ParticleNumbers) - other.getValue(CCore::Framework::ParticleNumbers)) > 50 * (fabs(getValue(CCore::Framework::ParticleNumbers)) + fabs(other.getValue(CCore::Framework::ParticleNumbers))) * std::numeric_limits< C_FLOAT64 >::epsilon() || getInitialExpression() != ""))
           {
             mCompareResult = CompareResult::Conflict;
             return mCompareResult;
@@ -651,8 +643,7 @@ const CModelParameter::CompareResult & CModelParameter::diff(const CModelParamet
         break;
     }
 
-  if (getInitialExpression() != other.getInitialExpression() ||
-      fabs(getValue(framework) - other.getValue(framework)) > 50 * (fabs(getValue(framework)) + fabs(other.getValue(framework))) * std::numeric_limits< C_FLOAT64 >::epsilon())
+  if (getInitialExpression() != other.getInitialExpression() || fabs(getValue(framework) - other.getValue(framework)) > 50 * (fabs(getValue(framework)) + fabs(other.getValue(framework))) * std::numeric_limits< C_FLOAT64 >::epsilon())
     {
       mCompareResult = CompareResult::Modified;
     }
@@ -680,8 +671,7 @@ bool CModelParameter::updateModel()
           {
             CModelEntity * pEntity = static_cast< CModelEntity * >(mpObject);
 
-            if (pEntity->getStatus() != CModelEntity::Status::ASSIGNMENT &&
-                !std::isnan(mValue))
+            if (pEntity->getStatus() != CModelEntity::Status::ASSIGNMENT && !std::isnan(mValue))
               {
                 pEntity->setInitialValue(mValue);
 
@@ -698,8 +688,7 @@ bool CModelParameter::updateModel()
             CCopasiParameter * pParameter = static_cast< CCopasiParameter * >(mpObject);
             CReaction * pReaction = static_cast< CReaction * >(mpObject->getObjectAncestor("Reaction"));
 
-            if (mIsInitialExpressionValid &&
-                getInitialExpression() != "")
+            if (mIsInitialExpressionValid && getInitialExpression() != "")
               {
                 CModel * pModel = mpParent->getModel();
                 assert(pModel != NULL);
@@ -710,7 +699,7 @@ bool CModelParameter::updateModel()
                 assert(pObject != NULL);
 
                 // We assign the object value
-                pParameter->setValue(* (C_FLOAT64 *) pObject->getValuePointer());
+                pParameter->setValue(*(C_FLOAT64 *) pObject->getValuePointer());
 
                 // We map the parameter to the global quantity
                 std::vector< const CDataObject * > Objects(1, pObject->getObjectParent());
@@ -755,8 +744,7 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
           mCompareResult = CModelParameter::CompareResult::Identical;
         }
 
-      if (mType != Type::ReactionParameter &&
-          mpObject != NULL)
+      if (mType != Type::ReactionParameter && mpObject != NULL)
         {
           mSimulationType = static_cast< CModelEntity * >(mpObject)->getStatus();
         }
@@ -826,7 +814,7 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
             break;
         }
 
-      setValue(Value, CCore::Framework::ParticleNumbers);
+      setValue(Value, CCore::Framework::ParticleNumbers, false);
     }
 
   return success;
@@ -844,14 +832,14 @@ const CModelParameter * CModelParameter::getChild(const size_t & /* index */) co
   return NULL;
 }
 
-CModelParameterCompartment::CModelParameterCompartment(CModelParameterGroup * pParent, const CModelParameter::Type & type):
-  CModelParameter(pParent, type),
-  mSpecies()
+CModelParameterCompartment::CModelParameterCompartment(CModelParameterGroup * pParent, const CModelParameter::Type & type)
+  : CModelParameter(pParent, type)
+  , mSpecies()
 {}
 
-CModelParameterCompartment::CModelParameterCompartment(const CModelParameterCompartment & src, CModelParameterGroup * pParent):
-  CModelParameter(src, pParent),
-  mSpecies()
+CModelParameterCompartment::CModelParameterCompartment(const CModelParameterCompartment & src, CModelParameterGroup * pParent)
+  : CModelParameter(src, pParent)
+  , mSpecies()
 {}
 
 // virtual
@@ -869,7 +857,7 @@ CModelParameterCompartment::~CModelParameterCompartment()
 }
 
 // virtual
-void CModelParameterCompartment::setValue(const C_FLOAT64 & value, const CCore::Framework & framework)
+void CModelParameterCompartment::setValue(const C_FLOAT64 & value, const CCore::Framework & framework, bool updateModelIfActive)
 {
   CVector< C_FLOAT64 > SpeciesValues(mSpecies.size());
   C_FLOAT64 * pSpeciesValue = SpeciesValues.array();
@@ -889,10 +877,13 @@ void CModelParameterCompartment::setValue(const C_FLOAT64 & value, const CCore::
 
   for (; it != end; ++it, ++pSpeciesValue)
     {
-      (*it)->setValue(*pSpeciesValue, framework);
+      (*it)->setValue(*pSpeciesValue, framework, updateModelIfActive);
     }
 
-  CModelParameterSet* pSet = getSet();
+  if (!updateModelIfActive)
+    return;
+
+  CModelParameterSet * pSet = getSet();
 
   if (pSet->isActive())
     {
@@ -957,18 +948,18 @@ void CModelParameterSpecies::createUndoData(CUndoData & undoData,
   return;
 }
 
-CModelParameterSpecies::CModelParameterSpecies(CModelParameterGroup * pParent, const CModelParameter::Type & type):
-  CModelParameter(pParent, type),
-  mCompartmentCN(),
-  mpCompartment(NULL),
-  mConcentration(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+CModelParameterSpecies::CModelParameterSpecies(CModelParameterGroup * pParent, const CModelParameter::Type & type)
+  : CModelParameter(pParent, type)
+  , mCompartmentCN()
+  , mpCompartment(NULL)
+  , mConcentration(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
 {}
 
-CModelParameterSpecies::CModelParameterSpecies(const CModelParameterSpecies & src, CModelParameterGroup * pParent):
-  CModelParameter(src, pParent),
-  mCompartmentCN(src.mCompartmentCN),
-  mpCompartment(NULL),
-  mConcentration(src.mConcentration)
+CModelParameterSpecies::CModelParameterSpecies(const CModelParameterSpecies & src, CModelParameterGroup * pParent)
+  : CModelParameter(src, pParent)
+  , mCompartmentCN(src.mCompartmentCN)
+  , mpCompartment(NULL)
+  , mConcentration(src.mConcentration)
 {}
 
 // virtual
@@ -1020,7 +1011,7 @@ void CModelParameterSpecies::setCN(const CCommonName & cn)
 }
 
 // virtual
-void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const CCore::Framework & framework)
+void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const CCore::Framework & framework, bool updateModelIfActive)
 {
   CModel * pModel = getModel();
 
@@ -1061,7 +1052,10 @@ void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const CCore::Fram
         }
     }
 
-  CModelParameterSet* pSet = getSet();
+  if (!updateModelIfActive)
+    return;
+
+  CModelParameterSet * pSet = getSet();
 
   if (pSet->isActive())
     {
@@ -1082,10 +1076,9 @@ const C_FLOAT64 & CModelParameterSpecies::getValue(const CCore::Framework & fram
 
 bool CModelParameterSpecies::updateModel()
 {
-  CMetab* pMetab = static_cast<CMetab*>(mpObject);
+  CMetab * pMetab = static_cast< CMetab * >(mpObject);
 
-  if (pMetab && pMetab->getStatus() != CModelEntity::Status::ASSIGNMENT &&
-      !std::isnan(mConcentration))
+  if (pMetab && pMetab->getStatus() != CModelEntity::Status::ASSIGNMENT && !std::isnan(mConcentration))
     {
       pMetab->setInitialConcentration(mConcentration);
     }
@@ -1098,7 +1091,7 @@ CCommonName CModelParameterSpecies::getCompartmentCN() const
   return mCompartmentCN;
 }
 
-std::ostream &operator<<(std::ostream &os, const CModelParameter & o)
+std::ostream & operator<<(std::ostream & os, const CModelParameter & o)
 {
   os << "Model Parameter:" << std::endl;
   os << "  Type:       " << CModelParameter::TypeNames[o.mType] << std::endl;
@@ -1110,18 +1103,18 @@ std::ostream &operator<<(std::ostream &os, const CModelParameter & o)
   return os;
 }
 
-CModelParameterReactionParameter::CModelParameterReactionParameter(CModelParameterGroup * pParent, const CModelParameter::Type & type):
-  CModelParameter(pParent, type),
-  mpReaction(NULL),
-  mGlobalQuantityCN(),
-  mpGlobalQuantity(NULL)
+CModelParameterReactionParameter::CModelParameterReactionParameter(CModelParameterGroup * pParent, const CModelParameter::Type & type)
+  : CModelParameter(pParent, type)
+  , mpReaction(NULL)
+  , mGlobalQuantityCN()
+  , mpGlobalQuantity(NULL)
 {}
 
-CModelParameterReactionParameter::CModelParameterReactionParameter(const CModelParameterReactionParameter & src, CModelParameterGroup * pParent):
-  CModelParameter(src, pParent),
-  mpReaction(NULL),
-  mGlobalQuantityCN(src.mGlobalQuantityCN),
-  mpGlobalQuantity(NULL)
+CModelParameterReactionParameter::CModelParameterReactionParameter(const CModelParameterReactionParameter & src, CModelParameterGroup * pParent)
+  : CModelParameter(src, pParent)
+  , mpReaction(NULL)
+  , mGlobalQuantityCN(src.mGlobalQuantityCN)
+  , mpGlobalQuantity(NULL)
 {}
 
 // virtual
