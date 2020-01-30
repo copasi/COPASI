@@ -27,7 +27,7 @@
 #
 ###############################################################################
 
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.1.3)
 
 if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
@@ -264,16 +264,17 @@ endif()
 
 
 if (APPLE AND CMAKE_GENERATOR STREQUAL "Xcode" OR DISABLE_CORE_OBJECT_LIBRARY)
-add_library (libCOPASISE-static STATIC ${COPASI_SOURCES} ${COPASI_HEADERS})
+  add_library (libCOPASISE-static STATIC ${COPASI_SOURCES} ${COPASI_HEADERS})
+  target_compile_features(libCOPASISE-static PUBLIC cxx_std_11)
 else()
-add_library (libCOPASISE-core OBJECT ${COPASI_SOURCES} ${COPASI_HEADERS})
-add_library (libCOPASISE-static STATIC $<TARGET_OBJECTS:libCOPASISE-core>)
+  add_library (libCOPASISE-core OBJECT ${COPASI_SOURCES} ${COPASI_HEADERS})
+  target_compile_features(libCOPASISE-core PUBLIC cxx_std_11)
+  add_library (libCOPASISE-static STATIC $<TARGET_OBJECTS:libCOPASISE-core>)
 endif()
 set_target_properties (libCOPASISE-static PROPERTIES OUTPUT_NAME "COPASISE")
 
 target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY_NAME})
 target_link_libraries(libCOPASISE-static ${COMBINE_LIBRARY_NAME})
-target_compile_features(libCOPASISE-static PUBLIC cxx_std_11)
 
 if (APPLE)
   FIND_LIBRARY(COREFOUNDATION_LIBRARY CoreFoundation REQUIRED)
@@ -345,6 +346,8 @@ if(ENABLE_LIBCOPASISE_SHARED)
   else()
     add_library (libCOPASISE-shared SHARED $<TARGET_OBJECTS:libCOPASISE-core>)
   endif()
+
+  target_compile_features(libCOPASISE-shared PUBLIC cxx_std_11)
 
   set_target_properties (libCOPASISE-shared PROPERTIES OUTPUT_NAME "COPASISE")
 
@@ -552,6 +555,8 @@ if(BUILD_GUI)
 
 
   add_library(libCOPASIUI STATIC ${COPASI_UI_SOURCES} ${COPASI_UI_HEADERS} ${HEADERS_UI_FORMS} ${COPASI_RCC_SOURCES} ${HEADERS_UI_MOC})
+  target_compile_features(libCOPASIUI PUBLIC cxx_std_11)
+
   QT_BIND_TO_TARGET(libCOPASIUI)
   target_link_libraries(libCOPASIUI libCOPASISE-static ${SBW_LIBRARY} ${QWT_LIBRARY} ${QWTPLOT3D_LIBRARY} ${MML_LIBRARY})
   if (${CMAKE_VERSION} VERSION_GREATER "2.8.11")
