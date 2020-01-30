@@ -593,7 +593,6 @@ if(BUILD_GUI)
 
 
   set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
-  target_compile_features(libCOPASIUI PUBLIC cxx_std_11)
 
   set(UI_LIBS libCOPASIUI)
   set(UI_DEPENDENCIES libCOPASIUI)
