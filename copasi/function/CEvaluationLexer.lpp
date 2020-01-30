@@ -9,10 +9,10 @@
 %{
 #include <vector>
 
-#include "copasi.h"
-#include "CEvaluationNode.h"
-#include "CEvaluationLexer.h"
-#include "CEvaluationParser_yacc.hpp"
+#include "copasi/copasi.h"
+#include "copasi/function/CEvaluationNode.h"
+#include "copasi/function/CEvaluationLexer.h"
+#include "copasi/function/CEvaluationParser_yacc.hpp"
 
 #ifndef YYERRCODE
 #define YYERRCODE 256

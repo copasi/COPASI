@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,9 +22,9 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#line 2 "CChemEqParser_lex.cpp"
+#line 1 "CChemEqParser_lex.cpp"
 
-#line 4 "CChemEqParser_lex.cpp"
+#line 3 "CChemEqParser_lex.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -33,7 +33,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 6
-#define YY_FLEX_SUBMINOR_VERSION 1
+#define YY_FLEX_SUBMINOR_VERSION 4
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -45,6 +45,24 @@
  * altogether.
  */
 #define yyFlexLexer CChemEqParserFlexLexer
+
+#ifdef yyalloc
+#define CChemEqParseralloc_ALREADY_DEFINED
+#else
+#define yyalloc CChemEqParseralloc
+#endif
+
+#ifdef yyrealloc
+#define CChemEqParserrealloc_ALREADY_DEFINED
+#else
+#define yyrealloc CChemEqParserrealloc
+#endif
+
+#ifdef yyfree
+#define CChemEqParserfree_ALREADY_DEFINED
+#else
+#define yyfree CChemEqParserfree
+#endif
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
 
@@ -112,6 +130,10 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
+#ifndef SIZE_MAX
+#define SIZE_MAX               (~(size_t)0)
+#endif
+
 #endif /* ! C99 */
 
 #endif /* ! FLEXINT_H */
@@ -136,32 +158,26 @@ typedef unsigned int flex_uint32_t;
 /* Returned upon end-of-file. */
 #define YY_NULL 0
 
-/* Promotes a possibly negative, possibly signed char to an unsigned
- * integer for use as an array index.  If the signed char is negative,
- * we want to instead treat it as an 8-bit unsigned char, hence the
- * double cast.
+/* Promotes a possibly negative, possibly signed char to an
+ *   integer in range [0..255] for use as an array index.
  */
-#define YY_SC_TO_UI(c) ((unsigned int) (unsigned char) c)
+#define YY_SC_TO_UI(c) ((YY_CHAR) (c))
 
 /* Enter a start condition.  This macro really ought to take a parameter,
  * but we do it the disgusting crufty way forced on us by the ()-less
  * definition of BEGIN.
  */
 #define BEGIN (yy_start) = 1 + 2 *
-
 /* Translate the current start state into a value that can be later handed
  * to BEGIN to return to the state.  The YYSTATE alias is for lex
  * compatibility.
  */
 #define YY_START (((yy_start) - 1) / 2)
 #define YYSTATE YY_START
-
 /* Action number for EOF rule of a given start state. */
 #define YY_STATE_EOF(state) (YY_END_OF_BUFFER + state + 1)
-
 /* Special action meaning "start processing a new file". */
 #define YY_NEW_FILE yyrestart(yyin)
-
 #define YY_END_OF_BUFFER_CHAR 0
 
 /* Size of default input buffer. */
@@ -213,7 +229,6 @@ extern int yyleng;
       YY_DO_BEFORE_ACTION; /* set up yytext again */ \
     } \
   while (0)
-
 #define unput(c) yyunput(c, (yytext_ptr))
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
@@ -290,18 +305,16 @@ struct yy_buffer_state
 #define YY_CURRENT_BUFFER ((yy_buffer_stack) \
                            ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
                            : NULL)
-
 /* Same as previous macro, but useful when we know that the buffer stack is not
  * NULL or when we need an lvalue. For internal use only.
  */
 #define YY_CURRENT_BUFFER_LVALUE (yy_buffer_stack)[(yy_buffer_stack_top)]
 
-void *CChemEqParseralloc(yy_size_t);
-void *CChemEqParserrealloc(void *, yy_size_t);
-void CChemEqParserfree(void *);
+void *yyalloc(yy_size_t);
+void *yyrealloc(void *, yy_size_t);
+void yyfree(void *);
 
 #define yy_new_buffer yy_create_buffer
-
 #define yy_set_interactive(is_interactive) \
   {\
     if (! YY_CURRENT_BUFFER ){\
@@ -311,7 +324,6 @@ void CChemEqParserfree(void *);
       } \
     YY_CURRENT_BUFFER_LVALUE->yy_is_interactive = is_interactive; \
   }
-
 #define yy_set_bol(at_bol) \
   {\
     if (! YY_CURRENT_BUFFER ){\
@@ -321,12 +333,10 @@ void CChemEqParserfree(void *);
       } \
     YY_CURRENT_BUFFER_LVALUE->yy_at_bol = at_bol; \
   }
-
 #define YY_AT_BOL() (YY_CURRENT_BUFFER_LVALUE->yy_at_bol)
 
 /* Begin user sect3 */
-
-typedef unsigned char YY_CHAR;
+typedef flex_uint8_t YY_CHAR;
 
 #define yytext_ptr yytext
 
@@ -341,7 +351,6 @@ typedef unsigned char YY_CHAR;
   (yy_hold_char) = *yy_cp; \
   *yy_cp = '\0'; \
   (yy_c_buf_p) = yy_cp;
-
 #define YY_NUM_RULES 12
 #define YY_END_OF_BUFFER 13
 /* This struct is not used in this scanner,
@@ -351,7 +360,7 @@ struct yy_trans_info
   flex_int32_t yy_verify;
   flex_int32_t yy_nxt;
 };
-static yyconst flex_int16_t yy_accept[32] =
+static const flex_int16_t yy_accept[32] =
 {
   0,
   0,    0,   13,    9,    9,    9,   10,   11,    3,    2,
@@ -360,7 +369,7 @@ static yyconst flex_int16_t yy_accept[32] =
   0
 };
 
-static yyconst YY_CHAR yy_ec[256] =
+static const YY_CHAR yy_ec[256] =
 {
   0,
   1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
@@ -393,14 +402,14 @@ static yyconst YY_CHAR yy_ec[256] =
   1,    1,    1,    1,    1
 };
 
-static yyconst YY_CHAR yy_meta[19] =
+static const YY_CHAR yy_meta[19] =
 {
   0,
   1,    2,    2,    3,    4,    1,    1,    1,    1,    1,
   1,    1,    1,    1,    1,    1,    4,    4
 };
 
-static yyconst flex_uint16_t yy_base[35] =
+static const flex_int16_t yy_base[35] =
 {
   0,
   0,    0,   63,   51,   17,    0,    0,   17,   50,   49,
@@ -409,7 +418,7 @@ static yyconst flex_uint16_t yy_base[35] =
   64,   51,   52,   55
 };
 
-static yyconst flex_int16_t yy_def[35] =
+static const flex_int16_t yy_def[35] =
 {
   0,
   31,    1,   31,   32,   32,    5,   33,   34,   32,   32,
@@ -418,7 +427,7 @@ static yyconst flex_int16_t yy_def[35] =
   0,   31,   31,   31
 };
 
-static yyconst flex_uint16_t yy_nxt[83] =
+static const flex_int16_t yy_nxt[83] =
 {
   0,
   4,    5,    6,    7,    8,    9,   10,   11,    4,   12,
@@ -432,7 +441,7 @@ static yyconst flex_uint16_t yy_nxt[83] =
   31,   31
 };
 
-static yyconst flex_int16_t yy_chk[83] =
+static const flex_int16_t yy_chk[83] =
 {
   0,
   1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -453,14 +462,14 @@ static yyconst flex_int16_t yy_chk[83] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "model/CChemEqParser.lpp"
+#line 1 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
 /* scanner for kinetic functions */
-#line 9 "model/CChemEqParser.lpp"
+#line 9 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
 #include <vector>
 
 #include "copasi/copasi.h"
-#include "CChemEqParser.h"
-#include "CChemEqParser_yacc.hpp"
+#include "copasi/model/CChemEqParser.h"
+#include "copasi/model/CChemEqParser_yacc.hpp"
 
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/utilities/utility.h"
@@ -477,7 +486,8 @@ static yyconst flex_int16_t yy_chk[83] =
   mpData->name = yytext; \
   mPosition += yyleng;
 
-#line 452 "CChemEqParser_lex.cpp"
+#line 460 "CChemEqParser_lex.cpp"
+#line 461 "CChemEqParser_lex.cpp"
 
 #define INITIAL 0
 
@@ -493,11 +503,11 @@ static yyconst flex_int16_t yy_chk[83] =
 #endif
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy(char *, yyconst char *, int);
+static void yy_flex_strncpy(char *, const char *, int);
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen(yyconst char *);
+static int yy_flex_strlen(const char *);
 #endif
 
 #ifndef YY_NO_INPUT
@@ -578,7 +588,7 @@ static int yy_flex_strlen(yyconst char *);
 YY_DECL
 {
   yy_state_type yy_current_state;
-  char * yy_cp, *yy_bp;
+  char *yy_cp, *yy_bp;
   int yy_act;
 
   if (!(yy_init))
@@ -609,9 +619,9 @@ YY_DECL
     }
 
   {
-#line 36 "model/CChemEqParser.lpp"
+#line 36 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
 
-#line 586 "CChemEqParser_lex.cpp"
+#line 595 "CChemEqParser_lex.cpp"
 
     while (/*CONSTCOND*/1)     /* loops until end-of-file is reached */
       {
@@ -643,10 +653,10 @@ yy_match:
                 yy_current_state = (int) yy_def[yy_current_state];
 
                 if (yy_current_state >= 32)
-                  yy_c = yy_meta[(unsigned int) yy_c];
+                  yy_c = yy_meta[yy_c];
               }
 
-            yy_current_state = yy_nxt[yy_base[yy_current_state] + (flex_int16_t) yy_c];
+            yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
             ++yy_cp;
           }
         while (yy_current_state != 31);
@@ -663,7 +673,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
         switch (yy_act)
           {
-              /* beginning of action switch */
+            /* beginning of action switch */
             case 0: /* must back up */
               /* undo the effects of YY_DO_BEFORE_ACTION */
               *yy_cp = (yy_hold_char);
@@ -673,7 +683,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 1:
               YY_RULE_SETUP
-#line 37 "model/CChemEqParser.lpp"
+#line 37 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
 
               COMMON_ACTION;
               return TOKEN_NUMBER;
@@ -682,7 +692,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 2:
               YY_RULE_SETUP
-#line 42 "model/CChemEqParser.lpp"
+#line 42 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
 
               COMMON_ACTION;
               return TOKEN_PLUS;
@@ -691,7 +701,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 3:
               YY_RULE_SETUP
-#line 47 "model/CChemEqParser.lpp"
+#line 47 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
 
               COMMON_ACTION;
               return TOKEN_MULTIPLY;
@@ -700,7 +710,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 4:
               YY_RULE_SETUP
-#line 52 "model/CChemEqParser.lpp"
+#line 52 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
 
               COMMON_ACTION;
               return TOKEN_BEGIN_COMPARTMENT;
@@ -709,7 +719,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 5:
               YY_RULE_SETUP
-#line 57 "model/CChemEqParser.lpp"
+#line 57 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
 
               COMMON_ACTION;
               return TOKEN_END_COMPARTMENT;
@@ -718,7 +728,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 6:
               YY_RULE_SETUP
-#line 62 "model/CChemEqParser.lpp"
+#line 62 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
 
               COMMON_ACTION;
               return TOKEN_BEGIN_MODIFIERS;
@@ -727,7 +737,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 7:
               YY_RULE_SETUP
-#line 67 "model/CChemEqParser.lpp"
+#line 67 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
 
               COMMON_ACTION;
               return TOKEN_BEGIN_PRODUCTS;
@@ -737,7 +747,7 @@ do_action:  /* This label is used only to access EOF actions. */
             case 8:
               /* rule 8 can match eol */
               YY_RULE_SETUP
-#line 72 "model/CChemEqParser.lpp"
+#line 72 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
 
               COMMON_ACTION;
               mpData->name = unQuote(mpData->name);
@@ -748,7 +758,7 @@ do_action:  /* This label is used only to access EOF actions. */
             case 9:
               /* rule 9 can match eol */
               YY_RULE_SETUP
-#line 78 "model/CChemEqParser.lpp"
+#line 78 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
 
               COMMON_ACTION;
               return TOKEN_NAME;
@@ -758,7 +768,7 @@ do_action:  /* This label is used only to access EOF actions. */
             case 10:
               /* rule 10 can match eol */
               YY_RULE_SETUP
-#line 83 "model/CChemEqParser.lpp"
+#line 83 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
 
               mPosition += yyleng;
               //COMMON_ACTION;
@@ -766,13 +776,13 @@ do_action:  /* This label is used only to access EOF actions. */
               YY_BREAK
 
             case YY_STATE_EOF(INITIAL):
-#line 88 "model/CChemEqParser.lpp"
+#line 88 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
               return 0;
               YY_BREAK
 
             case 11:
               YY_RULE_SETUP
-#line 90 "model/CChemEqParser.lpp"
+#line 90 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
 
               CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 2, mPosition);
               return YYERRCODE;
@@ -781,10 +791,10 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 12:
               YY_RULE_SETUP
-#line 95 "model/CChemEqParser.lpp"
+#line 95 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
               ECHO;
               YY_BREAK
-#line 740 "CChemEqParser_lex.cpp"
+#line 749 "CChemEqParser_lex.cpp"
 
             case YY_END_OF_BUFFER:
             {
@@ -972,9 +982,9 @@ void yyFlexLexer::ctor_common()
 yyFlexLexer::~yyFlexLexer()
 {
   delete [] yy_state_buf;
-  CChemEqParserfree(yy_start_stack);
+  yyfree(yy_start_stack);
   yy_delete_buffer(YY_CURRENT_BUFFER);
-  CChemEqParserfree(yy_buffer_stack);
+  yyfree(yy_buffer_stack);
 }
 
 /* The contents of this function are C++ specific, so the () macro is not used.
@@ -1053,7 +1063,7 @@ int yyFlexLexer::yy_get_next_buffer()
 {
   char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
   char *source = (yytext_ptr);
-  yy_size_t number_to_move, i;
+  int number_to_move, i;
   int ret_val;
 
   if ((yy_c_buf_p) > &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars) + 1])
@@ -1083,7 +1093,7 @@ int yyFlexLexer::yy_get_next_buffer()
   /* Try to read more data. */
 
   /* First move last chars to start of buffer. */
-  number_to_move = (yy_size_t)((yy_c_buf_p) - (yytext_ptr)) - 1;
+  number_to_move = (int)((yy_c_buf_p) - (yytext_ptr) - 1);
 
   for (i = 0; i < number_to_move; ++i)
     *(dest++) = *(source++);
@@ -1120,7 +1130,8 @@ int yyFlexLexer::yy_get_next_buffer()
 
               b->yy_ch_buf = (char *)
                              /* Include room in for 2 EOB chars. */
-                             CChemEqParserrealloc((void *) b->yy_ch_buf, b->yy_buf_size + 2);
+                             yyrealloc((void *) b->yy_ch_buf,
+                                       (yy_size_t)(b->yy_buf_size + 2));
             }
           else
             /* Can't grow it, we don't own it. */
@@ -1165,14 +1176,18 @@ int yyFlexLexer::yy_get_next_buffer()
   else
     ret_val = EOB_ACT_CONTINUE_SCAN;
 
-  if ((int)((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size)
+  if (((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size)
     {
       /* Extend the array by 50%, plus the number we really need. */
       int new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
-      YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) CChemEqParserrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, new_size);
+      YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyrealloc(
+                                              (void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, (yy_size_t) new_size);
 
       if (! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf)
         YY_FATAL_ERROR("out of dynamic memory in yy_get_next_buffer()");
+
+      /* "- 2" to take care of EOB's */
+      YY_CURRENT_BUFFER_LVALUE->yy_buf_size = (int)(new_size - 2);
     }
 
   (yy_n_chars) += number_to_move;
@@ -1208,10 +1223,10 @@ yy_state_type yyFlexLexer::yy_get_previous_state()
           yy_current_state = (int) yy_def[yy_current_state];
 
           if (yy_current_state >= 32)
-            yy_c = yy_meta[(unsigned int) yy_c];
+            yy_c = yy_meta[yy_c];
         }
 
-      yy_current_state = yy_nxt[yy_base[yy_current_state] + (flex_int16_t) yy_c];
+      yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
     }
 
   return yy_current_state;
@@ -1240,10 +1255,10 @@ yy_state_type yyFlexLexer::yy_try_NUL_trans(yy_state_type yy_current_state)
       yy_current_state = (int) yy_def[yy_current_state];
 
       if (yy_current_state >= 32)
-        yy_c = yy_meta[(unsigned int) yy_c];
+        yy_c = yy_meta[yy_c];
     }
 
-  yy_current_state = yy_nxt[yy_base[yy_current_state] + (flex_int16_t) yy_c];
+  yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
   yy_is_jam = (yy_current_state == 31);
 
   return yy_is_jam ? 0 : yy_current_state;
@@ -1265,7 +1280,7 @@ void yyFlexLexer::yyunput(int c, char* yy_bp)
       /* +2 for EOB chars. */
       int number_to_move = (yy_n_chars) + 2;
       char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
-                     YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
+                YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
       char *source =
         &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move];
 
@@ -1308,7 +1323,7 @@ int yyFlexLexer::yyinput()
       else
         {
           /* need more input */
-          int offset = (yy_c_buf_p) - (yytext_ptr);
+          int offset = (int)((yy_c_buf_p) - (yytext_ptr));
           ++(yy_c_buf_p);
 
           switch (yy_get_next_buffer())
@@ -1327,7 +1342,7 @@ int yyFlexLexer::yyinput()
                 /* Reset buffer status. */
                 yyrestart(yyin);
 
-                /*FALLTHROUGH*/
+              /*FALLTHROUGH*/
 
               case EOB_ACT_END_OF_FILE:
               {
@@ -1384,6 +1399,11 @@ void yyFlexLexer::yyrestart(std::istream& input_file)
  */
 void yyFlexLexer::yyrestart(std::istream* input_file)
 {
+  if (! input_file)
+    {
+      input_file = &yyin;
+    }
+
   yyrestart(*input_file);
 }
 
@@ -1441,17 +1461,17 @@ YY_BUFFER_STATE yyFlexLexer::yy_create_buffer(std::istream& file, int size)
 {
   YY_BUFFER_STATE b;
 
-  b = (YY_BUFFER_STATE) CChemEqParseralloc(sizeof(struct yy_buffer_state));
+  b = (YY_BUFFER_STATE) yyalloc(sizeof(struct yy_buffer_state));
 
   if (! b)
     YY_FATAL_ERROR("out of dynamic memory in yy_create_buffer()");
 
-  b->yy_buf_size = (yy_size_t)size;
+  b->yy_buf_size = size;
 
   /* yy_ch_buf has to be 2 characters longer than the size given because
    * we need to put in 2 end-of-buffer characters.
    */
-  b->yy_ch_buf = (char *) CChemEqParseralloc(b->yy_buf_size + 2);
+  b->yy_ch_buf = (char *) yyalloc((yy_size_t)(b->yy_buf_size + 2));
 
   if (! b->yy_ch_buf)
     YY_FATAL_ERROR("out of dynamic memory in yy_create_buffer()");
@@ -1488,9 +1508,9 @@ void yyFlexLexer::yy_delete_buffer(YY_BUFFER_STATE b)
     YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE) 0;
 
   if (b->yy_is_our_buffer)
-    CChemEqParserfree((void *) b->yy_ch_buf);
+    yyfree((void *) b->yy_ch_buf);
 
-  CChemEqParserfree((void *) b);
+  yyfree((void *) b);
 }
 
 /* Initializes or reinitializes a buffer.
@@ -1608,7 +1628,7 @@ void yyFlexLexer::yypop_buffer_state(void)
  */
 void yyFlexLexer::yyensure_buffer_stack(void)
 {
-  int num_to_alloc;
+  yy_size_t num_to_alloc;
 
   if (!(yy_buffer_stack))
     {
@@ -1618,7 +1638,7 @@ void yyFlexLexer::yyensure_buffer_stack(void)
        * immediate realloc on the next call.
            */
       num_to_alloc = 1; /* After all that talk, this was set to 1 anyways... */
-      (yy_buffer_stack) = (struct yy_buffer_state**)CChemEqParseralloc
+      (yy_buffer_stack) = (struct yy_buffer_state**)yyalloc
                           (num_to_alloc * sizeof(struct yy_buffer_state*)
                           );
 
@@ -1639,7 +1659,7 @@ void yyFlexLexer::yyensure_buffer_stack(void)
       yy_size_t grow_size = 8 /* arbitrary grow size */;
 
       num_to_alloc = (yy_buffer_stack_max) + grow_size;
-      (yy_buffer_stack) = (struct yy_buffer_state**)CChemEqParserrealloc
+      (yy_buffer_stack) = (struct yy_buffer_state**)yyrealloc
                           ((yy_buffer_stack),
                            num_to_alloc * sizeof(struct yy_buffer_state*)
                           );
@@ -1663,10 +1683,11 @@ void yyFlexLexer::yy_push_state(int _new_state)
       new_size = (yy_size_t)(yy_start_stack_depth) * sizeof(int);
 
       if (!(yy_start_stack))
-        (yy_start_stack) = (int *) CChemEqParseralloc(new_size);
+        (yy_start_stack) = (int *) yyalloc(new_size);
 
       else
-        (yy_start_stack) = (int *) CChemEqParserrealloc((void *)(yy_start_stack), new_size);
+        (yy_start_stack) = (int *) yyrealloc(
+                             (void *)(yy_start_stack), new_size);
 
       if (!(yy_start_stack))
         YY_FATAL_ERROR("out of memory expanding start-condition stack");
@@ -1694,7 +1715,7 @@ int yyFlexLexer::yy_top_state()
 #define YY_EXIT_FAILURE 2
 #endif
 
-void yyFlexLexer::LexerError(yyconst char* msg)
+void yyFlexLexer::LexerError(const char* msg)
 {
   std::cerr << msg << std::endl;
   exit(YY_EXIT_FAILURE);
@@ -1724,7 +1745,7 @@ void yyFlexLexer::LexerError(yyconst char* msg)
  */
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy(char* s1, yyconst char * s2, int n)
+static void yy_flex_strncpy(char* s1, const char * s2, int n)
 {
 
   int i;
@@ -1735,7 +1756,7 @@ static void yy_flex_strncpy(char* s1, yyconst char * s2, int n)
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen(yyconst char * s)
+static int yy_flex_strlen(const char * s)
 {
   int n;
 
@@ -1746,12 +1767,12 @@ static int yy_flex_strlen(yyconst char * s)
 }
 #endif
 
-void *CChemEqParseralloc(yy_size_t  size)
+void *yyalloc(yy_size_t  size)
 {
   return malloc(size);
 }
 
-void *CChemEqParserrealloc(void * ptr, yy_size_t  size)
+void *yyrealloc(void * ptr, yy_size_t  size)
 {
 
   /* The cast to (char *) in the following accommodates both
@@ -1764,11 +1785,11 @@ void *CChemEqParserrealloc(void * ptr, yy_size_t  size)
   return realloc(ptr, size);
 }
 
-void CChemEqParserfree(void * ptr)
+void yyfree(void * ptr)
 {
-  free((char *) ptr);    /* see CChemEqParserrealloc() for (char *) cast */
+  free((char *) ptr);    /* see yyrealloc() for (char *) cast */
 }
 
 #define YYTABLES_NAME "yytables"
 
-#line 95 "model/CChemEqParser.lpp"
+#line 95 "/raid/shoops/git/COPASI/copasi/model/CChemEqParser.lpp"
