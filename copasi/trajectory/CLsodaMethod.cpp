@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -511,8 +511,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
             saveState(mLastRootState, ROOT);
             break;
 
-            // The break statement is intentionally missing since we
-            // have to continue to check the root masking state.
+          // The break statement is intentionally missing since we
+          // have to continue to check the root masking state.
           default:
 
             // We made a successful step and therefore invalidate the last root state
@@ -994,7 +994,7 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
 bool CLsodaMethod::hasStateChanged(const CVectorCore< C_FLOAT64 > & startState) const
 {
   // Check whether we are at the start of the integrations, i.e., the start state time is NaN.
-  if (isnan(startState[mpContainer->getCountFixedEventTargets()]))
+  if (std::isnan(startState[mpContainer->getCountFixedEventTargets()]))
     {
       return true;
     }

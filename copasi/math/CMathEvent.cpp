@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -198,7 +198,7 @@ void CMathEvent::CTrigger::CRootProcessor::toggle(const C_FLOAT64 & time,
   // value of the root expression changes sign. In that case it is save
   // to toggle the state.
 
-  if (!isnan(mLastToggleTime) &&
+  if (!std::isnan(mLastToggleTime) &&
       mLastToggleTime == time)
     {
       return;
@@ -1649,7 +1649,7 @@ C_FLOAT64 CMathEvent::getCalculationTime() const
   mpContainer->applyUpdateSequence(mDelaySequence);
 
   if (mDelayExecution ||
-      isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
+      std::isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
     {
       return *mpTime;
     }
@@ -1662,7 +1662,7 @@ C_FLOAT64 CMathEvent::getExecutionTime() const
   mpContainer->applyUpdateSequence(mDelaySequence);
 
   if (!mDelayExecution ||
-      isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
+      std::isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
     {
       return *mpTime;
     }

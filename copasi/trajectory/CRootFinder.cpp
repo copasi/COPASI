@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -109,8 +109,8 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
     }
 
   // Check whether we are restarting
-  if (isnan(mTimeLeft) &&
-      isnan(mTimeRight) &&
+  if (std::isnan(mTimeLeft) &&
+      std::isnan(mTimeRight) &&
       timeLeft == mTimeCurrent)
     {
       mTimeCurrent = std::numeric_limits< C_FLOAT64 >::quiet_NaN();

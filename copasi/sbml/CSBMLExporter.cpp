@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1006,7 +1006,7 @@ void CSBMLExporter::createCompartment(const CCompartment& compartment)
   double value = compartment.getInitialValue();
 
   // if the value is NaN, unset the initial volume
-  if (!isnan(value))
+  if (!std::isnan(value))
     {
       pSBMLCompartment->setVolume(value);
     }
@@ -1200,7 +1200,7 @@ void CSBMLExporter::createMetabolite(const CMetab& metab)
   double value = metab.getInitialConcentration();
 
   // if the value is NaN, unset the initial amount
-  if (!isnan(value))
+  if (!std::isnan(value))
     {
       // if we set the concentration on a species that had the amount
       // set, the meaning of the model is different when the user changed
@@ -1374,7 +1374,7 @@ void CSBMLExporter::createParameter(const CModelValue& modelValue)
   double value = modelValue.getInitialValue();
 
   // if the value is NaN, unset the parameters value
-  if (!isnan(value))
+  if (!std::isnan(value))
     {
       pParameter->setValue(value);
     }
@@ -5343,7 +5343,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CDataMode
                   double value = reaction.getParameterValue(pPara->getObjectName());
 
                   // if the value is NaN, leave the parameter value unset.
-                  if (!isnan(value))
+                  if (!std::isnan(value))
                     {
                       pSBMLPara->setValue(value);
                     }
@@ -7145,9 +7145,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqbiol_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqbiol_isDescribedBy:
+          //    break;
           case CRDFPredicate::bqbiol_isEncodedBy:
           case CRDFPredicate::copasi_isEncodedBy:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7184,7 +7184,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
 
-            // This qualifier is supported in libsbml 4.1
+          // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7246,9 +7246,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setModelQualifierType(BQM_HAS_INSTANCE);
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqmodel_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqmodel_isDescribedBy:
+          //    break;
           default:
             // there are many qualifiers that start e.g. with copasi_ which are
             // not handled

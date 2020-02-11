@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -270,7 +270,7 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
     {
       *pA = *pMatrix;
 
-      if (!std::isfinite(*pA) && !isnan(*pA))
+      if (!std::isfinite(*pA) && !std::isnan(*pA))
         {
           if (*pA > 0)
             *pA = std::numeric_limits< C_FLOAT64 >::max();
@@ -769,12 +769,12 @@ std::ostream &operator<<(std::ostream &os, const CEigen &A)
   // Output Eigne-stiffness
   os << " stiffness = " << A.mStiffness << std::endl;
   os << " time hierarchy = " << A.mHierarchy << std::endl;
-  
+
   os << std::endl;
   os << "Fold bifurcaton test functions (standard, bifurcation discovery tool): " << A.mBifurcationIndicator_Fold
-  << ", " << A.mBifurcationIndicator_Fold_BDT <<  std::endl;
+     << ", " << A.mBifurcationIndicator_Fold_BDT <<  std::endl;
   os << "Hopf bifurcaton test functions (standard, bifurcation discovery tool): " << A.mBifurcationIndicator_Hopf
-  << ", " << A.mBifurcationIndicator_Hopf_BDT <<  std::endl;
+     << ", " << A.mBifurcationIndicator_Hopf_BDT <<  std::endl;
 
   os << std::endl;
   os << "Oscillation indicator: " << A.mOscillationIndicator_EV  << std::endl;

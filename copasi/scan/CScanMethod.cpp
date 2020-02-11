@@ -285,7 +285,7 @@ bool CScanItemLinear::isValidScanItem(const bool & continueFromCurrentState)
 
   if (mLog)
     {
-      if (isnan(mFaktor) || mFaktor < - std::numeric_limits< C_FLOAT64 >::max() || std::numeric_limits< C_FLOAT64 >::max() < mFaktor)
+      if (std::isnan(mFaktor) || mFaktor < - std::numeric_limits< C_FLOAT64 >::max() || std::numeric_limits< C_FLOAT64 >::max() < mFaktor)
         {
           //not a valid range for log
           CCopasiMessage(CCopasiMessage::ERROR, "Only positive values for min and max are possible for a logarithmic scan.");

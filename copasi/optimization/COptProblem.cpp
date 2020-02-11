@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,10 +21,6 @@
 // Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-
-
-
 
 /**
  *  File name: COptProblem.cpp
@@ -599,7 +595,7 @@ bool COptProblem::calculate()
       mCalculateValue = std::numeric_limits< C_FLOAT64 >::infinity();
     }
 
-  if (isnan(mCalculateValue))
+  if (std::isnan(mCalculateValue))
     {
       mFailedCounterNaN++;
       mCalculateValue = std::numeric_limits< C_FLOAT64 >::infinity();

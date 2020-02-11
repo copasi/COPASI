@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -540,9 +540,9 @@ std::pair< C_INT32, C_INT32 > CUnit::removeSymbolFromUnit(const CUnit & symbol, 
 
       while (itOld != endOld && itNew != endNew)
         {
-          if (isnan(itOld->getExponent()) ||
-              isnan(itOld->getMultiplier()) ||
-              isnan(itOld->getScale()))
+          if (std::isnan(itOld->getExponent()) ||
+              std::isnan(itOld->getMultiplier()) ||
+              std::isnan(itOld->getScale()))
             {
               return Result;
             }

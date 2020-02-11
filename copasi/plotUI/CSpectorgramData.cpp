@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,7 +42,6 @@ CSpectorgramData::CSpectorgramData()
   , mSizeX(0)
   , mSizeY(0)
 {
-
 }
 
 CSpectorgramData::CSpectorgramData(const CVector<double> &x,
@@ -73,9 +77,7 @@ CSpectorgramData::CSpectorgramData(const CVector<double> &x,
   , mSizeX(0)
   , mSizeY(0)
 {
-
 }
-
 
 CSpectorgramData::CSpectorgramData(const CSpectorgramData& other)
 #if QWT_VERSION > 0x060000
@@ -105,7 +107,6 @@ CSpectorgramData::CSpectorgramData(const CSpectorgramData& other)
   , mSizeY(0)
 
 {
-
 }
 
 CSpectorgramData &CSpectorgramData::operator =(const CSpectorgramData &rhs)
@@ -136,7 +137,6 @@ CSpectorgramData &CSpectorgramData::operator =(const CSpectorgramData &rhs)
   return *this;
 }
 
-
 CSpectorgramData::~CSpectorgramData()
 {
   pdelete(mpMatrix);
@@ -163,18 +163,18 @@ CSpectorgramData::calculateExtremes() const
   mLastRectangle = mSize;
 
   // We have to remember whether we have an initial NaN
-  bool MinXisNaN = isnan(mMinX);
-  bool MaxXisNaN = isnan(mMaxX);
-  bool MinYisNaN = isnan(mMinY);
-  bool MaxYisNaN = isnan(mMaxY);
-  bool MinZisNaN = isnan(mMinZ);
-  bool MaxZisNaN = isnan(mMaxZ);
+  bool MinXisNaN = std::isnan(mMinX);
+  bool MaxXisNaN = std::isnan(mMaxX);
+  bool MinYisNaN = std::isnan(mMinY);
+  bool MaxYisNaN = std::isnan(mMaxY);
+  bool MinZisNaN = std::isnan(mMinZ);
+  bool MaxZisNaN = std::isnan(mMaxZ);
 
   while (xIt < end)
     {
       const double xv = *xIt++;
 
-      if (!isnan(xv))
+      if (!std::isnan(xv))
         {
           if (xv < mMinX || MinXisNaN)
             {
@@ -191,7 +191,7 @@ CSpectorgramData::calculateExtremes() const
 
       double yv = *yIt++;
 
-      if (!isnan(yv))
+      if (!std::isnan(yv))
         {
           if (yv < mMinY || MinYisNaN)
             {
@@ -208,7 +208,7 @@ CSpectorgramData::calculateExtremes() const
 
       double zv = *zIt++;
 
-      if (!isnan(zv))
+      if (!std::isnan(zv))
         {
           if (zv < mMinZ || MinZisNaN)
             {
@@ -224,11 +224,9 @@ CSpectorgramData::calculateExtremes() const
         }
     }
 
-  if (isnan(mMinX + mMaxX + mMinY + mMaxY))
+  if (std::isnan(mMinX + mMaxX + mMinY + mMaxY))
     return;
-
 }
-
 
 QwtDoubleRect CSpectorgramData::boundingRect() const
 {
@@ -237,7 +235,7 @@ QwtDoubleRect CSpectorgramData::boundingRect() const
 
   calculateExtremes();
 
-  if (isnan(mMinX + mMaxX + mMinY + mMaxY))
+  if (std::isnan(mMinX + mMaxX + mMinY + mMaxY))
     return QwtDoubleRect(1.0, 1.0, -0.1, -0.1); // invalid
 
   return QwtDoubleRect(mMinX, mMinY, mMaxX - mMinX, mMaxY - mMinY);
@@ -293,13 +291,11 @@ CSpectorgramData::bilinearAround(int xIndex, int yIndex,
   double x1y2 = (*mpMatrix)(xIndex, yNeighbor);
   double x2y2 = (*mpMatrix)(xNeighbor, yNeighbor);
 
-
   return
     ((y2 - y) / (y2 - y1))
     * ((x2 - x) / (x2 - x1) * x1y1 + (x - x1) / (x2 - x1) * x2y1)
     + ((y - y1) / (y2 - y1))
     * ((x2 - x) / (x2 - x1) * x1y2 + (x - x1) / (x2 - x1) * x2y2);
-
 }
 
 bool
@@ -320,7 +316,6 @@ CSpectorgramData::value(double x, double y) const
 
   if (mpMatrix == NULL || mSize == 0)
     return 0;
-
 
   int xpos = 0;
   int ypos = 0;
@@ -362,7 +357,6 @@ CSpectorgramData::value(double x, double y) const
     return log(value);
 
   return value;
-
 }
 
 void
@@ -372,8 +366,6 @@ CSpectorgramData::setSize(const size_t &size)
     return;
 
   mSize = size;
-
-
 
   initializeMatrix();
 
@@ -403,7 +395,6 @@ CSpectorgramData::reallocated(const CVector<double> *pX, const CVector<double> *
   mMaxSize = pX->size();
 
   assert(mSize <= mMaxSize);
-
 }
 
 void
@@ -419,7 +410,6 @@ CSpectorgramData::initializeMatrix()
   const double *yIt = mpY;
   const double *end = mpX + mSize;
   const double *endY = mpY + mSize;
-
 
   mValuesX.clear();
   mValuesY.clear();
@@ -450,7 +440,6 @@ CSpectorgramData::initializeMatrix()
       mValuesY.push_back(current);
     }
 
-
   mEndX = mValuesX.end();
   mEndY = mValuesY.end();
 
@@ -465,7 +454,6 @@ CSpectorgramData::initializeMatrix()
 
   if (mSizeY > 2)
     mDistanceY = fabs(mValuesY[1] - mValuesY[0]);
-
 
   mpMatrix = new CMatrix<double>(mSizeX, mSizeY);
   *mpMatrix = std::numeric_limits<double>::quiet_NaN();
@@ -492,11 +480,8 @@ CSpectorgramData::initializeMatrix()
       int xpos = curX - mValuesX.begin();
       int ypos = curY - mValuesY.begin();
 
-
       (*mpMatrix)(xpos, ypos) = *zIt;
-
     }
-
 }
 double
 CSpectorgramData::getLimitZ() const
@@ -509,4 +494,3 @@ CSpectorgramData::setLimitZ(double limitZ)
 {
   mLimitZ = limitZ;
 }
-

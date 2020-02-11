@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -220,7 +220,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
     {
       *pA = *pMatrix;
 
-      if (!std::isfinite(*pA) && !isnan(*pA))
+      if (!std::isfinite(*pA) && !std::isnan(*pA))
         {
           if (*pA > 0)
             *pA = std::numeric_limits< C_FLOAT64 >::max();
@@ -311,7 +311,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
 
           at = mJacobianReduced[i][j];
 
-          if (!std::isfinite(at) && !isnan(at))
+          if (!std::isfinite(at) && !std::isnan(at))
             {
               if (at > 0)
                 at = std::numeric_limits< C_FLOAT64 >::max();

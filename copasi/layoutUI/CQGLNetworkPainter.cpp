@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -119,10 +119,10 @@ const GLfloat CQGLNetworkPainter::MIRROR_X[] =
 const GLfloat CQGLNetworkPainter::MIRROR_Y[] =
 {
   -1.0f, 0.0f, 0.0f, 0.0f
-  , 0.0f, 1.0f, 0.0f, 0.0f
-  , 0.0f, 0.0f, 1.0f, 0.0f
-  , 0.0f, 0.0f, 0.0f, 1.0f
-};
+    , 0.0f, 1.0f, 0.0f, 0.0f
+    , 0.0f, 0.0f, 1.0f, 0.0f
+    , 0.0f, 0.0f, 0.0f, 1.0f
+  };
 
 const C_INT32 CQGLNetworkPainter::MIN_HEIGHT = 10;
 
@@ -2292,7 +2292,7 @@ void CQGLNetworkPainter::showStep(size_t stepNumber)
                   // no color mode
                   if (val != -std::numeric_limits< C_FLOAT64 >::max())
                     {
-                      if (isnan(val)) // test for NaN
+                      if (std::isnan(val)) // test for NaN
                         {
                           std::map<std::string, CGraphNode>::iterator itNodeObj = nodeMap.find(viewerNodes[i]);
 
@@ -2325,7 +2325,7 @@ void CQGLNetworkPainter::showStep(size_t stepNumber)
 
                   if (val != -std::numeric_limits< C_FLOAT64 >::max())
                     {
-                      if (isnan(val)) // test for NaN
+                      if (std::isnan(val)) // test for NaN
                         {
                           setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
                         }

@@ -704,7 +704,7 @@ C_FLOAT64 CNewtonMethod::targetFunctionRate()
       if (tmp > MaxRate)
         MaxRate = tmp;
 
-      if (isnan(tmp))
+      if (std::isnan(tmp))
         return std::numeric_limits< C_FLOAT64 >::infinity();
     }
 
@@ -752,9 +752,9 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
     }
 
   RelativeDistance =
-    isnan(RelativeDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(RelativeDistance + Info.relativeError * Info.relativeError);
+    std::isnan(RelativeDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(RelativeDistance + Info.relativeError * Info.relativeError);
   AbsoluteDistance =
-    isnan(AbsoluteDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(AbsoluteDistance + Info.absoluteError * Info.absoluteError);
+    std::isnan(AbsoluteDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(AbsoluteDistance + Info.absoluteError * Info.absoluteError);
 
   C_FLOAT64 TargetValue = std::max(RelativeDistance, AbsoluteDistance);
 

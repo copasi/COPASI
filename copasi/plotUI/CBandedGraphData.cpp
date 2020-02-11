@@ -1,10 +1,19 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include <copasi/plotUI/CBandedGraphData.h>
-
 
 //********************  CBandedGraphData  *********************************
 CBandedGraphData::CBandedGraphData():
@@ -136,16 +145,16 @@ CBandedGraphData::boundingRect() const
   mLastRectangle = mSize;
 
   // We have to remember whether we have an initial NaN
-  bool MinXisNaN = isnan(mMinX);
-  bool MaxXisNaN = isnan(mMaxX);
-  bool MinYisNaN = isnan(mMinY);
-  bool MaxYisNaN = isnan(mMaxY);
+  bool MinXisNaN = std::isnan(mMinX);
+  bool MaxXisNaN = std::isnan(mMaxX);
+  bool MinYisNaN = std::isnan(mMinY);
+  bool MaxYisNaN = std::isnan(mMaxY);
 
   while (xIt < end)
     {
       const double xv = *xIt++;
 
-      if (!isnan(xv))
+      if (!std::isnan(xv))
         {
           if (xv < mMinX || MinXisNaN)
             {
@@ -163,9 +172,9 @@ CBandedGraphData::boundingRect() const
       double yv1 = *yIt1++;
       double yv2 = *yIt2++;
 
-      if (isnan(yv1) || isnan(yv2))
+      if (std::isnan(yv1) || std::isnan(yv2))
         {
-          yv1 = isnan(yv1) ? yv2 : yv1;
+          yv1 = std::isnan(yv1) ? yv2 : yv1;
           yv2 = yv1;
         }
       else if (yv1 > yv2)
@@ -175,7 +184,7 @@ CBandedGraphData::boundingRect() const
           yv2 = tmp;
         } // now: yv1 <= yv2
 
-      if (!isnan(yv1))
+      if (!std::isnan(yv1))
         {
           if (yv1 < mMinY || MinYisNaN)
             {
@@ -191,7 +200,7 @@ CBandedGraphData::boundingRect() const
         }
     }
 
-  if (isnan(mMinX + mMaxX + mMinY + mMaxY))
+  if (std::isnan(mMinX + mMaxX + mMinY + mMaxY))
     return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
 
   // We need to avoid very small data ranges (absolute and relative)

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -611,7 +611,7 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
     {
       for (; pScaled != pScaledRowEnd; ++pScaled)
         {
-          success &= !isnan(*pScaled);
+          success &= !std::isnan(*pScaled);
 
           *pSum += *pScaled;
           *pMax = std::max(*pMax, fabs(*pScaled));
@@ -637,7 +637,7 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
     {
       for (; pScaled != pScaledRowEnd; ++pScaled)
         {
-          success &= !isnan(*pScaled);
+          success &= !std::isnan(*pScaled);
 
           *pSum += *pScaled;
           *pMax = std::max(*pMax, fabs(*pScaled));

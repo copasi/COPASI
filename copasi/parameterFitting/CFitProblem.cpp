@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,14 +21,6 @@
 // Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-
-
-
-
-
-
-
 
 #include <cmath>
 
@@ -1082,7 +1074,7 @@ bool CFitProblem::calculate()
       mpContainer->setCompleteInitialState(mCompleteInitialState);
     }
 
-  if (isnan(mCalculateValue))
+  if (std::isnan(mCalculateValue))
     {
       mFailedCounterNaN++;
       mCalculateValue = mWorstValue;
@@ -1121,8 +1113,6 @@ bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
 
   pdelete(mpTrajectoryProblem);
 
-
-
   if (updateModel && pExp != NULL)
     {
       // Synchronize the initial state.
@@ -1149,7 +1139,6 @@ bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
 
       mpContainer->pushInitialState();
     }
-
 
   return success;
 }
@@ -1494,7 +1483,6 @@ void CFitProblem::calcPartialFIM(const CMatrix< C_FLOAT64 >& jacobian, CMatrix< 
       }
 }
 
-
 void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& eigenvalues, CMatrix< C_FLOAT64 >& eigenvectors)
 {
   /* int dsyev_(char *jobz, char *uplo, integer *n, doublereal *a,
@@ -1602,7 +1590,6 @@ void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 
       eigenvectors = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       eigenvalues = std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
-
 }
 
 bool CFitProblem::calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd)
@@ -1907,8 +1894,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       ExperimentStartInResiduals.push_back(count); //
 
-
-
       C_FLOAT64 * pDeltaResidualDeltaParameter = mDeltaResidualDeltaParameter.array();
       C_FLOAT64 * pDeltaResidualDeltaParameterScaled = mDeltaResidualDeltaParameterScaled.array();
 
@@ -2004,10 +1989,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
         //  for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
         //}
-
       }
       */
-
 
       setResidualsRequired(false);
       mStoreResults = true;
@@ -2347,7 +2330,7 @@ bool CFitProblem::calculateCrossValidation()
       mpContainer->setCompleteInitialState(mCompleteInitialState);
     }
 
-  if (isnan(CalculateValue))
+  if (std::isnan(CalculateValue))
     {
       mFailedCounterNaN++;
       CalculateValue = mWorstValue;

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -409,7 +409,7 @@ std::string CExperimentObjectMap::CDataColumn::getObjectCN() const
 
 bool CExperimentObjectMap::CDataColumn::setScale(const C_FLOAT64 & weight)
 {
-  if (isnan(weight))
+  if (std::isnan(weight))
     {
       if (mpScale != NULL)
         {
@@ -422,7 +422,7 @@ bool CExperimentObjectMap::CDataColumn::setScale(const C_FLOAT64 & weight)
 
   C_FLOAT64 DefaultWeight = getDefaultScale();
 
-  if (weight != DefaultWeight || isnan(DefaultWeight))
+  if (weight != DefaultWeight || std::isnan(DefaultWeight))
     {
       if (mpScale != NULL)
         *mpScale = weight;
