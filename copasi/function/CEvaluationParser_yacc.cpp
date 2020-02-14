@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,11 +22,12 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.5.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -64,11 +65,14 @@
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 /* Identify Bison output.  */
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.4"
+#define YYBISON_VERSION "3.5"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -87,12 +91,11 @@
 #define yyerror         CEvaluationParsererror
 #define yydebug         CEvaluationParserdebug
 #define yynerrs         CEvaluationParsernerrs
-
 #define yylval          CEvaluationParserlval
 #define yychar          CEvaluationParserchar
 
-/* Copy the first part of user declarations.  */
-#line 4 "CEvaluationParser.ypp" /* yacc.c:339  */
+/* First part of user prologue.  */
+#line 4 "CEvaluationParser.ypp"
 
 #define YYSTYPE CEvaluationNode *
 
@@ -109,19 +112,32 @@
   CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
 
 #include "copasi/copasi.h"
-#include "CEvaluationNode.h"
-#include "CEvaluationLexer.h"
+#include "copasi/function/CEvaluationNode.h"
+#include "copasi/function/CEvaluationLexer.h"
 
 #undef yyparse
 #define yyparse CEvaluationParserBase::yyparse
 
-#line 98 "CEvaluationParser_yacc.cpp" /* yacc.c:339  */
+#line 101 "CEvaluationParser_yacc.cpp"
 
-# ifndef YY_NULLPTR
-#  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
+# ifndef YY_CAST
+#  ifdef __cplusplus
+#   define YY_CAST(Type, Val) static_cast<Type> (Val)
+#   define YY_REINTERPRET_CAST(Type, Val) reinterpret_cast<Type> (Val)
 #  else
-#   define YY_NULLPTR 0
+#   define YY_CAST(Type, Val) ((Type) (Val))
+#   define YY_REINTERPRET_CAST(Type, Val) ((Type) (Val))
+#  endif
+# endif
+# ifndef YY_NULLPTR
+#  if defined __cplusplus
+#   if 201103L <= __cplusplus
+#    define YY_NULLPTR nullptr
+#   else
+#    define YY_NULLPTR 0
+#   endif
+#  else
+#   define YY_NULLPTR ((void*)0)
 #  endif
 # endif
 
@@ -133,8 +149,8 @@
 # define YYERROR_VERBOSE 0
 #endif
 
-/* In a future release of Bison, this section will be replaced
-   by #include "CEvaluationParser.tab.hpp".  */
+/* Use api.header.include to #include this header
+   instead of duplicating it here.  */
 #ifndef YY_CEVALUATIONPARSER_CEVALUATIONPARSER_TAB_HPP_INCLUDED
 # define YY_CEVALUATIONPARSER_CEVALUATIONPARSER_TAB_HPP_INCLUDED
 /* Debug traces.  */
@@ -193,36 +209,79 @@ extern YYSTYPE CEvaluationParserlval;
 
 #endif /* !YY_CEVALUATIONPARSER_CEVALUATIONPARSER_TAB_HPP_INCLUDED  */
 
-/* Copy the second part of user declarations.  */
-
-#line 181 "CEvaluationParser_yacc.cpp" /* yacc.c:358  */
-
 #ifdef short
 # undef short
 #endif
 
-#ifdef YYTYPE_UINT8
-typedef YYTYPE_UINT8 yytype_uint8;
-#else
-typedef unsigned char yytype_uint8;
+/* On compilers that do not define __PTRDIFF_MAX__ etc., make sure
+   <limits.h> and (if available) <stdint.h> are included
+   so that the code can choose integer types of a good width.  */
+
+#ifndef __PTRDIFF_MAX__
+# include <limits.h> /* INFRINGES ON USER NAME SPACE */
+# if defined __STDC_VERSION__ && 199901 <= __STDC_VERSION__
+#  include <stdint.h> /* INFRINGES ON USER NAME SPACE */
+#  define YY_STDINT_H
+# endif
 #endif
 
-#ifdef YYTYPE_INT8
-typedef YYTYPE_INT8 yytype_int8;
+/* Narrow types that promote to a signed type and that can represent a
+   signed or unsigned integer of at least N bits.  In tables they can
+   save space and decrease cache pressure.  Promoting to a signed type
+   helps avoid bugs in integer arithmetic.  */
+
+#ifdef __INT_LEAST8_MAX__
+typedef __INT_LEAST8_TYPE__ yytype_int8;
+#elif defined YY_STDINT_H
+typedef int_least8_t yytype_int8;
 #else
 typedef signed char yytype_int8;
 #endif
 
-#ifdef YYTYPE_UINT16
-typedef YYTYPE_UINT16 yytype_uint16;
+#ifdef __INT_LEAST16_MAX__
+typedef __INT_LEAST16_TYPE__ yytype_int16;
+#elif defined YY_STDINT_H
+typedef int_least16_t yytype_int16;
 #else
-typedef unsigned short int yytype_uint16;
+typedef short yytype_int16;
 #endif
 
-#ifdef YYTYPE_INT16
-typedef YYTYPE_INT16 yytype_int16;
+#if defined __UINT_LEAST8_MAX__ && __UINT_LEAST8_MAX__ <= __INT_MAX__
+typedef __UINT_LEAST8_TYPE__ yytype_uint8;
+#elif (!defined __UINT_LEAST8_MAX__ && defined YY_STDINT_H \
+       && UINT_LEAST8_MAX <= INT_MAX)
+typedef uint_least8_t yytype_uint8;
+#elif !defined __UINT_LEAST8_MAX__ && UCHAR_MAX <= INT_MAX
+typedef unsigned char yytype_uint8;
 #else
-typedef short int yytype_int16;
+typedef short yytype_uint8;
+#endif
+
+#if defined __UINT_LEAST16_MAX__ && __UINT_LEAST16_MAX__ <= __INT_MAX__
+typedef __UINT_LEAST16_TYPE__ yytype_uint16;
+#elif (!defined __UINT_LEAST16_MAX__ && defined YY_STDINT_H \
+       && UINT_LEAST16_MAX <= INT_MAX)
+typedef uint_least16_t yytype_uint16;
+#elif !defined __UINT_LEAST16_MAX__ && USHRT_MAX <= INT_MAX
+typedef unsigned short yytype_uint16;
+#else
+typedef int yytype_uint16;
+#endif
+
+#ifndef YYPTRDIFF_T
+# if defined __PTRDIFF_TYPE__ && defined __PTRDIFF_MAX__
+#  define YYPTRDIFF_T __PTRDIFF_TYPE__
+#  define YYPTRDIFF_MAXIMUM __PTRDIFF_MAX__
+# elif defined PTRDIFF_MAX
+#  ifndef ptrdiff_t
+#   include <stddef.h> /* INFRINGES ON USER NAME SPACE */
+#  endif
+#  define YYPTRDIFF_T ptrdiff_t
+#  define YYPTRDIFF_MAXIMUM PTRDIFF_MAX
+# else
+#  define YYPTRDIFF_T long
+#  define YYPTRDIFF_MAXIMUM LONG_MAX
+# endif
 #endif
 
 #ifndef YYSIZE_T
@@ -230,15 +289,27 @@ typedef short int yytype_int16;
 #  define YYSIZE_T __SIZE_TYPE__
 # elif defined size_t
 #  define YYSIZE_T size_t
-# elif ! defined YYSIZE_T
+# elif defined __STDC_VERSION__ && 199901 <= __STDC_VERSION__
 #  include <stddef.h> /* INFRINGES ON USER NAME SPACE */
 #  define YYSIZE_T size_t
 # else
-#  define YYSIZE_T unsigned int
+#  define YYSIZE_T unsigned
 # endif
 #endif
 
-#define YYSIZE_MAXIMUM ((YYSIZE_T) -1)
+#define YYSIZE_MAXIMUM                                  \
+  YY_CAST (YYPTRDIFF_T,                                 \
+           (YYPTRDIFF_MAXIMUM < YY_CAST (YYSIZE_T, -1)  \
+            ? YYPTRDIFF_MAXIMUM                         \
+            : YY_CAST (YYSIZE_T, -1)))
+
+#define YYSIZEOF(X) YY_CAST (YYPTRDIFF_T, sizeof (X))
+
+/* Stored state numbers (used for stacks). */
+typedef yytype_uint8 yy_state_t;
+
+/* State numbers in computations.  */
+typedef int yy_state_fast_t;
 
 #ifndef YY_
 # if defined YYENABLE_NLS && YYENABLE_NLS
@@ -252,30 +323,19 @@ typedef short int yytype_int16;
 # endif
 #endif
 
-#ifndef YY_ATTRIBUTE
-# if (defined __GNUC__                                               \
-      && (2 < __GNUC__ || (__GNUC__ == 2 && 96 <= __GNUC_MINOR__)))  \
-     || defined __SUNPRO_C && 0x5110 <= __SUNPRO_C
-#  define YY_ATTRIBUTE(Spec) __attribute__(Spec)
+#ifndef YY_ATTRIBUTE_PURE
+# if defined __GNUC__ && 2 < __GNUC__ + (96 <= __GNUC_MINOR__)
+#  define YY_ATTRIBUTE_PURE __attribute__ ((__pure__))
 # else
-#  define YY_ATTRIBUTE(Spec) /* empty */
+#  define YY_ATTRIBUTE_PURE
 # endif
 #endif
 
-#ifndef YY_ATTRIBUTE_PURE
-# define YY_ATTRIBUTE_PURE   YY_ATTRIBUTE ((__pure__))
-#endif
-
 #ifndef YY_ATTRIBUTE_UNUSED
-# define YY_ATTRIBUTE_UNUSED YY_ATTRIBUTE ((__unused__))
-#endif
-
-#if !defined _Noreturn \
-     && (!defined __STDC_VERSION__ || __STDC_VERSION__ < 201112)
-# if defined _MSC_VER && 1200 <= _MSC_VER
-#  define _Noreturn __declspec (noreturn)
+# if defined __GNUC__ && 2 < __GNUC__ + (7 <= __GNUC_MINOR__)
+#  define YY_ATTRIBUTE_UNUSED __attribute__ ((__unused__))
 # else
-#  define _Noreturn YY_ATTRIBUTE ((__noreturn__))
+#  define YY_ATTRIBUTE_UNUSED
 # endif
 #endif
 
@@ -286,13 +346,13 @@ typedef short int yytype_int16;
 # define YYUSE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
+#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
-# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN \
-  _Pragma ("GCC diagnostic push") \
-  _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")\
+# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                            \
+  _Pragma ("GCC diagnostic push")                                     \
+  _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")              \
   _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
-# define YY_IGNORE_MAYBE_UNINITIALIZED_END \
+# define YY_IGNORE_MAYBE_UNINITIALIZED_END      \
   _Pragma ("GCC diagnostic pop")
 #else
 # define YY_INITIAL_VALUE(Value) Value
@@ -304,6 +364,20 @@ typedef short int yytype_int16;
 #ifndef YY_INITIAL_VALUE
 # define YY_INITIAL_VALUE(Value) /* Nothing. */
 #endif
+
+#if defined __cplusplus && defined __GNUC__ && ! defined __ICC && 6 <= __GNUC__
+# define YY_IGNORE_USELESS_CAST_BEGIN                          \
+  _Pragma ("GCC diagnostic push")                            \
+  _Pragma ("GCC diagnostic ignored \"-Wuseless-cast\"")
+# define YY_IGNORE_USELESS_CAST_END            \
+  _Pragma ("GCC diagnostic pop")
+#endif
+#ifndef YY_IGNORE_USELESS_CAST_BEGIN
+# define YY_IGNORE_USELESS_CAST_BEGIN
+# define YY_IGNORE_USELESS_CAST_END
+#endif
+
+#define YY_ASSERT(E) ((void) (0 && (E)))
 
 #if ! defined yyoverflow || YYERROR_VERBOSE
 
@@ -379,17 +453,17 @@ void free(void *);  /* INFRINGES ON USER NAME SPACE */
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
 {
-  yytype_int16 yyss_alloc;
+  yy_state_t yyss_alloc;
   YYSTYPE yyvs_alloc;
 };
 
 /* The size of the maximum gap between one aligned stack and the next.  */
-# define YYSTACK_GAP_MAXIMUM (sizeof (union yyalloc) - 1)
+# define YYSTACK_GAP_MAXIMUM (YYSIZEOF (union yyalloc) - 1)
 
 /* The size of an array large to enough to hold all stacks, each with
    N elements.  */
 # define YYSTACK_BYTES(N) \
-  ((N) * (sizeof (yytype_int16) + sizeof (YYSTYPE)) \
+  ((N) * (YYSIZEOF (yy_state_t) + YYSIZEOF (YYSTYPE)) \
    + YYSTACK_GAP_MAXIMUM)
 
 # define YYCOPY_NEEDED 1
@@ -402,11 +476,11 @@ union yyalloc
 # define YYSTACK_RELOCATE(Stack_alloc, Stack)                           \
   do                                                                  \
     {\
-      YYSIZE_T yynewbytes;                                            \
+      YYPTRDIFF_T yynewbytes;                                         \
       YYCOPY (&yyptr->Stack_alloc, Stack, yysize);                    \
       Stack = &yyptr->Stack_alloc;                                    \
-      yynewbytes = yystacksize * sizeof (*Stack) + YYSTACK_GAP_MAXIMUM; \
-      yyptr += yynewbytes / sizeof (*yyptr);                          \
+      yynewbytes = yystacksize * YYSIZEOF (*Stack) + YYSTACK_GAP_MAXIMUM; \
+      yyptr += yynewbytes / YYSIZEOF (*yyptr);                        \
     }                                                                 \
   while (0)
 
@@ -418,12 +492,12 @@ union yyalloc
 # ifndef YYCOPY
 #  if defined __GNUC__ && 1 < __GNUC__
 #   define YYCOPY(Dst, Src, Count) \
-  __builtin_memcpy (Dst, Src, (Count) * sizeof (*(Src)))
+  __builtin_memcpy (Dst, Src, YY_CAST (YYSIZE_T, (Count)) * sizeof (*(Src)))
 #  else
 #   define YYCOPY(Dst, Src, Count)              \
   do                                        \
     {\
-      YYSIZE_T yyi;                         \
+      YYPTRDIFF_T yyi;                      \
       for (yyi = 0; yyi < (Count); yyi++)   \
         (Dst)[yyi] = (Src)[yyi];            \
     }                                       \
@@ -446,17 +520,17 @@ union yyalloc
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  162
 
-/* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
-   by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   286
 
+/* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
+   as returned by yylex, with out-of-bounds checking.  */
 #define YYTRANSLATE(YYX)                                                \
-  ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
+  (0 <= (YYX) && (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
 
 /* YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to TOKEN-NUM
-   as returned by yylex, without out-of-bounds checking.  */
-static const yytype_uint8 yytranslate[] =
+   as returned by yylex.  */
+static const yytype_int8 yytranslate[] =
 {
   0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
   2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -491,7 +565,7 @@ static const yytype_uint8 yytranslate[] =
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint16 yyrline[] =
+static const yytype_int16 yyrline[] =
 {
   0,    87,    87,    92,    97,   103,   108,   113,   121,   131,
   136,   142,   149,   156,   163,   170,   177,   184,   189,   195,
@@ -526,7 +600,7 @@ static const char *const yytname[] =
 # ifdef YYPRINT
 /* YYTOKNUM[NUM] -- (External) token number corresponding to the
    (internal) symbol number NUM (which must be that of a token).  */
-static const yytype_uint16 yytoknum[] =
+static const yytype_int16 yytoknum[] =
 {
   0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
   265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
@@ -535,14 +609,14 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -50
+#define YYPACT_NINF (-50)
 
-#define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-50)))
+#define yypact_value_is_default(Yyn) \
+  ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF -54
+#define YYTABLE_NINF (-54)
 
-#define yytable_value_is_error(Yytable_value) \
+#define yytable_value_is_error(Yyn) \
   0
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
@@ -571,7 +645,7 @@ static const yytype_int16 yypact[] =
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
    Performed when YYTABLE does not specify something else to do.  Zero
    means the default is an error.  */
-static const yytype_uint8 yydefact[] =
+static const yytype_int8 yydefact[] =
 {
   0,     9,     6,    65,     0,     0,     0,     0,    27,     0,
   0,     0,    10,     2,     3,     5,     0,    60,     0,     0,
@@ -596,13 +670,13 @@ static const yytype_uint8 yydefact[] =
 static const yytype_int16 yypgoto[] =
 {
   -50,   -50,    45,     0,   132,   -49,   -50,   -50,   -50
-};
+  };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
   -1,    11,    22,    26,    14,    54,    55,    15,    16
-};
+  };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
    positive, shift that token.  If negative, reduce the rule whose
@@ -723,7 +797,7 @@ static const yytype_int16 yycheck[] =
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
-static const yytype_uint8 yystos[] =
+static const yytype_int8 yystos[] =
 {
   0,     3,     4,     6,     7,     8,     9,    15,    16,    17,
   27,    33,    34,    35,    36,    39,    40,    30,    27,    27,
@@ -745,7 +819,7 @@ static const yytype_uint8 yystos[] =
 };
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
-static const yytype_uint8 yyr1[] =
+static const yytype_int8 yyr1[] =
 {
   0,    32,    33,    33,    33,    34,    34,    34,    34,    35,
   35,    35,    35,    35,    35,    35,    35,    35,    35,    35,
@@ -757,7 +831,7 @@ static const yytype_uint8 yyr1[] =
 };
 
 /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
-static const yytype_uint8 yyr2[] =
+static const yytype_int8 yyr2[] =
 {
   0,     2,     1,     1,     1,     1,     1,     8,     8,     1,
   1,     3,     3,     3,     3,     3,     3,     3,     4,     6,
@@ -779,7 +853,7 @@ static const yytype_uint8 yyr2[] =
 
 #define YYRECOVERING()  (!!yyerrstatus)
 
-#define YYBACKUP(Token, Value)                                  \
+#define YYBACKUP(Token, Value)                                    \
   do                                                              \
     if (yychar == YYEMPTY)                                        \
       {\
@@ -830,15 +904,15 @@ static const yytype_uint8 yyr2[] =
         }                                                                     \
     } while (0)
 
-/*----------------------------------------.
-| Print this symbol's value on YYOUTPUT.  |
-`----------------------------------------*/
+/*-----------------------------------.
+| Print this symbol's value on YYO.  |
+`-----------------------------------*/
 
 static void
-yy_symbol_value_print(FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_value_print(FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
 {
-  FILE *yyo = yyoutput;
-  YYUSE(yyo);
+  FILE *yyoutput = yyo;
+  YYUSE(yyoutput);
 
   if (!yyvaluep)
     return;
@@ -846,24 +920,26 @@ yy_symbol_value_print(FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep
 # ifdef YYPRINT
 
   if (yytype < YYNTOKENS)
-    YYPRINT(yyoutput, yytoknum[yytype], *yyvaluep);
+    YYPRINT(yyo, yytoknum[yytype], *yyvaluep);
 
 # endif
+  YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
   YYUSE(yytype);
+  YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
-/*--------------------------------.
-| Print this symbol on YYOUTPUT.  |
-`--------------------------------*/
+/*---------------------------.
+| Print this symbol on YYO.  |
+`---------------------------*/
 
 static void
-yy_symbol_print(FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_print(FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
 {
-  YYFPRINTF(yyoutput, "%s %s (",
+  YYFPRINTF(yyo, "%s %s (",
             yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
 
-  yy_symbol_value_print(yyoutput, yytype, yyvaluep);
-  YYFPRINTF(yyoutput, ")");
+  yy_symbol_value_print(yyo, yytype, yyvaluep);
+  YYFPRINTF(yyo, ")");
 }
 
 /*------------------------------------------------------------------.
@@ -872,7 +948,7 @@ yy_symbol_print(FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
 `------------------------------------------------------------------*/
 
 static void
-yy_stack_print(yytype_int16 *yybottom, yytype_int16 *yytop)
+yy_stack_print(yy_state_t *yybottom, yy_state_t *yytop)
 {
   YYFPRINTF(stderr, "Stack now");
 
@@ -896,12 +972,12 @@ yy_stack_print(yytype_int16 *yybottom, yytype_int16 *yytop)
 `------------------------------------------------*/
 
 static void
-yy_reduce_print(yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule)
+yy_reduce_print(yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule)
 {
-  unsigned long int yylno = yyrline[yyrule];
+  int yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
   int yyi;
-  YYFPRINTF(stderr, "Reducing stack by rule %d (line %lu):\n",
+  YYFPRINTF(stderr, "Reducing stack by rule %d (line %d):\n",
             yyrule - 1, yylno);
 
   /* The symbols being reduced.  */
@@ -910,7 +986,7 @@ yy_reduce_print(yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule)
       YYFPRINTF(stderr, "   $%d = ", yyi + 1);
       yy_symbol_print(stderr,
                       yystos[yyssp[yyi + 1 - yynrhs]],
-                      &(yyvsp[(yyi + 1) - (yynrhs)])
+                      &yyvsp[(yyi + 1) - (yynrhs)]
                      );
       YYFPRINTF(stderr, "\n");
     }
@@ -952,13 +1028,13 @@ int yydebug = YYDEBUG;
 
 # ifndef yystrlen
 #  if defined __GLIBC__ && defined _STRING_H
-#   define yystrlen strlen
+#   define yystrlen(S) (YY_CAST (YYPTRDIFF_T, strlen (S)))
 #  else
 /* Return the length of YYSTR.  */
-static YYSIZE_T
+static YYPTRDIFF_T
 yystrlen(const char *yystr)
 {
-  YYSIZE_T yylen;
+  YYPTRDIFF_T yylen;
 
   for (yylen = 0; yystr[yylen]; yylen++)
     continue;
@@ -996,12 +1072,12 @@ yystpcpy(char *yydest, const char *yysrc)
    backslash-backslash).  YYSTR is taken from yytname.  If YYRES is
    null, do not copy; instead, return the length of what the result
    would have been.  */
-static YYSIZE_T
+static YYPTRDIFF_T
 yytnamerr(char *yyres, const char *yystr)
 {
   if (*yystr == '"')
     {
-      YYSIZE_T yyn = 0;
+      YYPTRDIFF_T yyn = 0;
       char const *yyp = yystr;
 
       for (;;)
@@ -1014,8 +1090,11 @@ yytnamerr(char *yyres, const char *yystr)
             case '\\':
               if (*++yyp != '\\')
                 goto do_not_strip_quotes;
+              else
+                goto append;
 
-              /* Fall through.  */
+append:
+
             default:
               if (yyres)
                 yyres[yyn] = *yyp;
@@ -1033,10 +1112,10 @@ yytnamerr(char *yyres, const char *yystr)
 do_not_strip_quotes:;
     }
 
-  if (! yyres)
+  if (yyres)
+    return yystpcpy(yyres, yystr) - yyres;
+  else
     return yystrlen(yystr);
-
-  return yystpcpy(yyres, yystr) - yyres;
 }
 # endif
 
@@ -1049,19 +1128,19 @@ do_not_strip_quotes:;
    *YYMSG_ALLOC to the required number of bytes.  Return 2 if the
    required number of bytes is too large to store.  */
 static int
-yysyntax_error(YYSIZE_T *yymsg_alloc, char **yymsg,
-               yytype_int16 *yyssp, int yytoken)
+yysyntax_error(YYPTRDIFF_T *yymsg_alloc, char **yymsg,
+               yy_state_t *yyssp, int yytoken)
 {
-  YYSIZE_T yysize0 = yytnamerr(YY_NULLPTR, yytname[yytoken]);
-  YYSIZE_T yysize = yysize0;
   enum {YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
   /* Internationalized format string. */
   const char *yyformat = YY_NULLPTR;
-  /* Arguments of yyformat. */
+  /* Arguments of yyformat: reported tokens (one for the "unexpected",
+     one per "expected"). */
   char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
-  /* Number of reported tokens (one for the "unexpected", one per
-     "expected"). */
+  /* Actual size of YYARG. */
   int yycount = 0;
+  /* Cumulated lengths of YYARG.  */
+  YYPTRDIFF_T yysize = 0;
 
   /* There are many possibilities here to consider:
      - If this state is a consistent state with a default action, then
@@ -1089,6 +1168,8 @@ yysyntax_error(YYSIZE_T *yymsg_alloc, char **yymsg,
   if (yytoken != YYEMPTY)
     {
       int yyn = yypact[*yyssp];
+      YYPTRDIFF_T yysize0 = yytnamerr(YY_NULLPTR, yytname[yytoken]);
+      yysize = yysize0;
       yyarg[yycount++] = yytname[yytoken];
 
       if (!yypact_value_is_default(yyn))
@@ -1115,13 +1196,13 @@ yysyntax_error(YYSIZE_T *yymsg_alloc, char **yymsg,
 
                 yyarg[yycount++] = yytname[yyx];
                 {
-                  YYSIZE_T yysize1 = yysize + yytnamerr(YY_NULLPTR, yytname[yyx]);
+                  YYPTRDIFF_T yysize1
+                    = yysize + yytnamerr(YY_NULLPTR, yytname[yyx]);
 
-                  if (!(yysize <= yysize1
-                        && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+                  if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
+                    yysize = yysize1;
+                  else
                     return 2;
-
-                  yysize = yysize1;
                 }
               }
         }
@@ -1133,6 +1214,8 @@ yysyntax_error(YYSIZE_T *yymsg_alloc, char **yymsg,
 case N:                               \
   yyformat = S;                       \
   break
+
+      default: /* Avoid compiler warnings. */
         YYCASE_(0, YY_("syntax error"));
         YYCASE_(1, YY_("syntax error, unexpected %s"));
         YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
@@ -1143,12 +1226,14 @@ case N:                               \
     }
 
   {
-    YYSIZE_T yysize1 = yysize + yystrlen(yyformat);
+    /* Don't count the "%s"s in the final size, but reserve room for
+       the terminator.  */
+    YYPTRDIFF_T yysize1 = yysize + (yystrlen(yyformat) - 2 * yycount) + 1;
 
-    if (!(yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+    if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
+      yysize = yysize1;
+    else
       return 2;
-
-    yysize = yysize1;
   }
 
   if (*yymsg_alloc < yysize)
@@ -1177,8 +1262,8 @@ case N:                               \
         }
       else
         {
-          yyp++;
-          yyformat++;
+          ++yyp;
+          ++yyformat;
         }
   }
   return 0;
@@ -1219,7 +1304,7 @@ int yynerrs;
 int
 yyparse(void)
 {
-  int yystate;
+  yy_state_fast_t yystate;
   /* Number of tokens to shift before error messages enabled.  */
   int yyerrstatus;
 
@@ -1231,16 +1316,16 @@ yyparse(void)
      to reallocate them elsewhere.  */
 
   /* The state stack.  */
-  yytype_int16 yyssa[YYINITDEPTH];
-  yytype_int16 *yyss;
-  yytype_int16 *yyssp;
+  yy_state_t yyssa[YYINITDEPTH];
+  yy_state_t *yyss;
+  yy_state_t *yyssp;
 
   /* The semantic value stack.  */
   YYSTYPE yyvsa[YYINITDEPTH];
   YYSTYPE *yyvs;
   YYSTYPE *yyvsp;
 
-  YYSIZE_T yystacksize;
+  YYPTRDIFF_T yystacksize;
 
   int yyn;
   int yyresult;
@@ -1254,7 +1339,7 @@ yyparse(void)
   /* Buffer for error messages, and its allocated size.  */
   char yymsgbuf[128];
   char *yymsg = yymsgbuf;
-  YYSIZE_T yymsg_alloc = sizeof yymsgbuf;
+  YYPTRDIFF_T yymsg_alloc = sizeof yymsgbuf;
 #endif
 
 #define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N))
@@ -1276,45 +1361,52 @@ yyparse(void)
   goto yysetstate;
 
   /*------------------------------------------------------------.
-  | yynewstate -- Push a new state, which is found in yystate.  |
+  | yynewstate -- push a new state, which is found in yystate.  |
   `------------------------------------------------------------*/
 yynewstate:
   /* In all cases, when you get here, the value and location stacks
      have just been pushed.  So pushing a state here evens the stacks.  */
   yyssp++;
 
+  /*--------------------------------------------------------------------.
+  | yysetstate -- set current state (the top of the stack) to yystate.  |
+  `--------------------------------------------------------------------*/
 yysetstate:
-  *yyssp = yystate;
+  YYDPRINTF((stderr, "Entering state %d\n", yystate));
+  YY_ASSERT(0 <= yystate && yystate < YYNSTATES);
+  YY_IGNORE_USELESS_CAST_BEGIN
+  *yyssp = YY_CAST(yy_state_t, yystate);
+  YY_IGNORE_USELESS_CAST_END
 
   if (yyss + yystacksize - 1 <= yyssp)
+#if !defined yyoverflow && !defined YYSTACK_RELOCATE
+    goto yyexhaustedlab;
+
+#else
     {
       /* Get the current used size of the three stacks, in elements.  */
-      YYSIZE_T yysize = yyssp - yyss + 1;
+      YYPTRDIFF_T yysize = yyssp - yyss + 1;
 
-#ifdef yyoverflow
+# if defined yyoverflow
       {
         /* Give user a chance to reallocate the stack.  Use copies of
            these so that the &'s don't force the real ones into
            memory.  */
+        yy_state_t *yyss1 = yyss;
         YYSTYPE *yyvs1 = yyvs;
-        yytype_int16 *yyss1 = yyss;
 
         /* Each stack pointer address is followed by the size of the
            data in use in that stack, in bytes.  This used to be a
            conditional around just the two extra args, but that might
            be undefined if yyoverflow is a macro.  */
         yyoverflow(YY_("memory exhausted"),
-                   &yyss1, yysize * sizeof(*yyssp),
-                   &yyvs1, yysize * sizeof(*yyvsp),
+                   &yyss1, yysize * YYSIZEOF(*yyssp),
+                   &yyvs1, yysize * YYSIZEOF(*yyvsp),
                    &yystacksize);
-
         yyss = yyss1;
         yyvs = yyvs1;
       }
-#else /* no yyoverflow */
-# ifndef YYSTACK_RELOCATE
-      goto yyexhaustedlab;
-# else
+# else /* defined YYSTACK_RELOCATE */
 
       /* Extend the stack our own way.  */
       if (YYMAXDEPTH <= yystacksize)
@@ -1326,34 +1418,35 @@ yysetstate:
         yystacksize = YYMAXDEPTH;
 
       {
-        yytype_int16 *yyss1 = yyss;
+        yy_state_t *yyss1 = yyss;
         union yyalloc *yyptr =
-            (union yyalloc *) YYSTACK_ALLOC(YYSTACK_BYTES(yystacksize));
+          YY_CAST(union yyalloc *,
+                  YYSTACK_ALLOC(YY_CAST(YYSIZE_T, YYSTACK_BYTES(yystacksize))));
 
         if (! yyptr)
           goto yyexhaustedlab;
 
         YYSTACK_RELOCATE(yyss_alloc, yyss);
         YYSTACK_RELOCATE(yyvs_alloc, yyvs);
-#  undef YYSTACK_RELOCATE
+# undef YYSTACK_RELOCATE
 
         if (yyss1 != yyssa)
           YYSTACK_FREE(yyss1);
       }
 # endif
-#endif /* no yyoverflow */
 
       yyssp = yyss + yysize - 1;
       yyvsp = yyvs + yysize - 1;
 
-      YYDPRINTF((stderr, "Stack size increased to %lu\n",
-                 (unsigned long int) yystacksize));
+      YY_IGNORE_USELESS_CAST_BEGIN
+      YYDPRINTF((stderr, "Stack size increased to %ld\n",
+                 YY_CAST(long, yystacksize)));
+      YY_IGNORE_USELESS_CAST_END
 
       if (yyss + yystacksize - 1 <= yyssp)
         YYABORT;
     }
-
-  YYDPRINTF((stderr, "Entering state %d\n", yystate));
+#endif /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
 
   if (yystate == YYFINAL)
     YYACCEPT;
@@ -1364,7 +1457,6 @@ yysetstate:
   | yybackup.  |
   `-----------*/
 yybackup:
-
   /* Do appropriate processing given the current state.  Read a
      lookahead token if we need one and don't already have one.  */
 
@@ -1419,15 +1511,13 @@ yybackup:
 
   /* Shift the lookahead token.  */
   YY_SYMBOL_PRINT("Shifting", yytoken, &yylval, &yylloc);
-
-  /* Discard the shifted token.  */
-  yychar = YYEMPTY;
-
   yystate = yyn;
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
   *++yyvsp = yylval;
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 
+  /* Discard the shifted token.  */
+  yychar = YYEMPTY;
   goto yynewstate;
 
   /*-----------------------------------------------------------.
@@ -1442,7 +1532,7 @@ yydefault:
   goto yyreduce;
 
   /*-----------------------------.
-  | yyreduce -- Do a reduction.  |
+  | yyreduce -- do a reduction.  |
   `-----------------------------*/
 yyreduce:
   /* yyn is the number of a rule to reduce with.  */
@@ -1463,811 +1553,811 @@ yyreduce:
   switch (yyn)
     {
       case 2:
-#line 88 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 88 "CEvaluationParser.ypp"
         {
           mValueType = CEvaluationNode::ValueType::Number;
-          mpRootNode = (yyval);
+          mpRootNode = yyval;
         }
 
-#line 1435 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1531 "CEvaluationParser_yacc.cpp"
         break;
 
       case 3:
-#line 93 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 93 "CEvaluationParser.ypp"
         {
           mValueType = CEvaluationNode::ValueType::Boolean;
-          mpRootNode = (yyval);
+          mpRootNode = yyval;
         }
 
-#line 1444 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1540 "CEvaluationParser_yacc.cpp"
         break;
 
       case 4:
-#line 98 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 98 "CEvaluationParser.ypp"
         {
           mValueType = CEvaluationNode::ValueType::Unknown;
-          mpRootNode = (yyval);
+          mpRootNode = yyval;
         }
 
-#line 1453 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1549 "CEvaluationParser_yacc.cpp"
         break;
 
       case 5:
-#line 104 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 104 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[0]);
-          mpRootNode = (yyval);
+          yyval = yyvsp[0];
+          mpRootNode = yyval;
         }
 
-#line 1462 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1558 "CEvaluationParser_yacc.cpp"
         break;
 
       case 6:
-#line 109 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 109 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[0]);
-          mpRootNode = (yyval);
+          yyval = yyvsp[0];
+          mpRootNode = yyval;
         }
 
-#line 1471 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1567 "CEvaluationParser_yacc.cpp"
         break;
 
       case 7:
-#line 114 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 114 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-7]);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyval)->addChild((yyvsp[-3]));
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-7];
+          yyval->addChild(yyvsp[-5]);
+          yyval->addChild(yyvsp[-3]);
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1483 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1579 "CEvaluationParser_yacc.cpp"
         break;
 
       case 8:
-#line 122 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 122 "CEvaluationParser.ypp"
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval) = (yyvsp[-7]);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyval)->addChild((yyvsp[-3]));
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyvsp[-7]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval = yyvsp[-7];
+          yyval->addChild(yyvsp[-5]);
+          yyval->addChild(yyvsp[-3]);
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1496 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1592 "CEvaluationParser_yacc.cpp"
         break;
 
       case 9:
-#line 132 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 132 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[0]);
-          mpRootNode = (yyval);
+          yyval = yyvsp[0];
+          mpRootNode = yyval;
         }
 
-#line 1505 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1601 "CEvaluationParser_yacc.cpp"
         break;
 
       case 10:
-#line 137 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 137 "CEvaluationParser.ypp"
         {
-          (yyvsp[0])->setValueType(CEvaluationNode::ValueType::Number);
-          (yyval) = (yyvsp[0]);
-          mpRootNode = (yyval);
+          yyvsp[0]->setValueType(CEvaluationNode::ValueType::Number);
+          yyval = yyvsp[0];
+          mpRootNode = yyval;
         }
 
-#line 1515 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1611 "CEvaluationParser_yacc.cpp"
         break;
 
       case 11:
-#line 143 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 143 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1526 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1622 "CEvaluationParser_yacc.cpp"
         break;
 
       case 12:
-#line 150 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 150 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1537 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1633 "CEvaluationParser_yacc.cpp"
         break;
 
       case 13:
-#line 157 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 157 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1548 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1644 "CEvaluationParser_yacc.cpp"
         break;
 
       case 14:
-#line 164 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 164 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1559 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1655 "CEvaluationParser_yacc.cpp"
         break;
 
       case 15:
-#line 171 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 171 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1570 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1666 "CEvaluationParser_yacc.cpp"
         break;
 
       case 16:
-#line 178 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 178 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1581 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1677 "CEvaluationParser_yacc.cpp"
         break;
 
       case 17:
-#line 185 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 185 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          mpRootNode = yyval;
         }
 
-#line 1590 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1686 "CEvaluationParser_yacc.cpp"
         break;
 
       case 18:
-#line 190 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 190 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-3]);
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-3];
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1600 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1696 "CEvaluationParser_yacc.cpp"
         break;
 
       case 19:
-#line 196 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 196 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-5]);
-          (yyval)->addChild((yyvsp[-3]));
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-5];
+          yyval->addChild(yyvsp[-3]);
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1611 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1707 "CEvaluationParser_yacc.cpp"
         break;
 
       case 20:
-#line 203 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 203 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1621 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1717 "CEvaluationParser_yacc.cpp"
         break;
 
       case 21:
-#line 209 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 209 "CEvaluationParser.ypp"
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Number);
-          (yyval) = (yyvsp[-7]);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyval)->addChild((yyvsp[-3]));
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyvsp[-7]->setValueType(CEvaluationNode::ValueType::Number);
+          yyval = yyvsp[-7];
+          yyval->addChild(yyvsp[-5]);
+          yyval->addChild(yyvsp[-3]);
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1634 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1730 "CEvaluationParser_yacc.cpp"
         break;
 
       case 22:
-#line 218 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 218 "CEvaluationParser.ypp"
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Number);
-          (yyval) = (yyvsp[-7]);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyvsp[-3])->setValueType(CEvaluationNode::ValueType::Number);
-          (yyval)->addChild((yyvsp[-3]));
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyvsp[-7]->setValueType(CEvaluationNode::ValueType::Number);
+          yyval = yyvsp[-7];
+          yyval->addChild(yyvsp[-5]);
+          yyvsp[-3]->setValueType(CEvaluationNode::ValueType::Number);
+          yyval->addChild(yyvsp[-3]);
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1648 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1744 "CEvaluationParser_yacc.cpp"
         break;
 
       case 23:
-#line 228 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 228 "CEvaluationParser.ypp"
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Number);
-          (yyval) = (yyvsp[-7]);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyval)->addChild((yyvsp[-3]));
-          (yyvsp[-1])->setValueType(CEvaluationNode::ValueType::Number);
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyvsp[-7]->setValueType(CEvaluationNode::ValueType::Number);
+          yyval = yyvsp[-7];
+          yyval->addChild(yyvsp[-5]);
+          yyval->addChild(yyvsp[-3]);
+          yyvsp[-1]->setValueType(CEvaluationNode::ValueType::Number);
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1662 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1758 "CEvaluationParser_yacc.cpp"
         break;
 
       case 24:
-#line 238 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 238 "CEvaluationParser.ypp"
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Number);
-          (yyval) = (yyvsp[-7]);
-          (yyvsp[-5])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyval)->addChild((yyvsp[-3]));
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyvsp[-7]->setValueType(CEvaluationNode::ValueType::Number);
+          yyval = yyvsp[-7];
+          yyvsp[-5]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval->addChild(yyvsp[-5]);
+          yyval->addChild(yyvsp[-3]);
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1676 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1772 "CEvaluationParser_yacc.cpp"
         break;
 
       case 25:
-#line 248 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 248 "CEvaluationParser.ypp"
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Number);
-          (yyval) = (yyvsp[-7]);
-          (yyvsp[-5])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyvsp[-3])->setValueType(CEvaluationNode::ValueType::Number);
-          (yyval)->addChild((yyvsp[-3]));
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyvsp[-7]->setValueType(CEvaluationNode::ValueType::Number);
+          yyval = yyvsp[-7];
+          yyvsp[-5]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval->addChild(yyvsp[-5]);
+          yyvsp[-3]->setValueType(CEvaluationNode::ValueType::Number);
+          yyval->addChild(yyvsp[-3]);
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1691 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1787 "CEvaluationParser_yacc.cpp"
         break;
 
       case 26:
-#line 259 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 259 "CEvaluationParser.ypp"
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Number);
-          (yyval) = (yyvsp[-7]);
-          (yyvsp[-5])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyval)->addChild((yyvsp[-3]));
-          (yyvsp[-1])->setValueType(CEvaluationNode::ValueType::Number);
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyvsp[-7]->setValueType(CEvaluationNode::ValueType::Number);
+          yyval = yyvsp[-7];
+          yyvsp[-5]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval->addChild(yyvsp[-5]);
+          yyval->addChild(yyvsp[-3]);
+          yyvsp[-1]->setValueType(CEvaluationNode::ValueType::Number);
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1706 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1802 "CEvaluationParser_yacc.cpp"
         break;
 
       case 27:
-#line 271 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 271 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[0]);
-          mpRootNode = (yyval);
+          yyval = yyvsp[0];
+          mpRootNode = yyval;
         }
 
-#line 1715 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1811 "CEvaluationParser_yacc.cpp"
         break;
 
       case 28:
-#line 276 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 276 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-7]);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyval)->addChild((yyvsp[-3]));
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-7];
+          yyval->addChild(yyvsp[-5]);
+          yyval->addChild(yyvsp[-3]);
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1727 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1823 "CEvaluationParser_yacc.cpp"
         break;
 
       case 29:
-#line 284 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 284 "CEvaluationParser.ypp"
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval) = (yyvsp[-7]);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyvsp[-3])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval)->addChild((yyvsp[-3]));
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyvsp[-7]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval = yyvsp[-7];
+          yyval->addChild(yyvsp[-5]);
+          yyvsp[-3]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval->addChild(yyvsp[-3]);
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1741 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1837 "CEvaluationParser_yacc.cpp"
         break;
 
       case 30:
-#line 294 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 294 "CEvaluationParser.ypp"
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval) = (yyvsp[-7]);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyval)->addChild((yyvsp[-3]));
-          (yyvsp[-1])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyvsp[-7]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval = yyvsp[-7];
+          yyval->addChild(yyvsp[-5]);
+          yyval->addChild(yyvsp[-3]);
+          yyvsp[-1]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1755 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1851 "CEvaluationParser_yacc.cpp"
         break;
 
       case 31:
-#line 304 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 304 "CEvaluationParser.ypp"
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval) = (yyvsp[-7]);
-          (yyvsp[-5])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyval)->addChild((yyvsp[-3]));
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyvsp[-7]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval = yyvsp[-7];
+          yyvsp[-5]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval->addChild(yyvsp[-5]);
+          yyval->addChild(yyvsp[-3]);
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1769 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1865 "CEvaluationParser_yacc.cpp"
         break;
 
       case 32:
-#line 314 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 314 "CEvaluationParser.ypp"
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval) = (yyvsp[-7]);
-          (yyvsp[-5])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyvsp[-3])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval)->addChild((yyvsp[-3]));
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyvsp[-7]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval = yyvsp[-7];
+          yyvsp[-5]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval->addChild(yyvsp[-5]);
+          yyvsp[-3]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval->addChild(yyvsp[-3]);
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1784 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1880 "CEvaluationParser_yacc.cpp"
         break;
 
       case 33:
-#line 325 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 325 "CEvaluationParser.ypp"
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval) = (yyvsp[-7]);
-          (yyvsp[-5])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyval)->addChild((yyvsp[-3]));
-          (yyvsp[-1])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
+          yyvsp[-7]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval = yyvsp[-7];
+          yyvsp[-5]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval->addChild(yyvsp[-5]);
+          yyval->addChild(yyvsp[-3]);
+          yyvsp[-1]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval->addChild(yyvsp[-1]);
+          mpRootNode = yyval;
         }
 
-#line 1799 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1895 "CEvaluationParser_yacc.cpp"
         break;
 
       case 34:
-#line 336 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 336 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1810 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1906 "CEvaluationParser_yacc.cpp"
         break;
 
       case 35:
-#line 343 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 343 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyvsp[-2])->setValueType(CEvaluationNode::ValueType::Number);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyvsp[-2]->setValueType(CEvaluationNode::ValueType::Number);
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1822 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1918 "CEvaluationParser_yacc.cpp"
         break;
 
       case 36:
-#line 351 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 351 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1833 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1929 "CEvaluationParser_yacc.cpp"
         break;
 
       case 37:
-#line 358 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 358 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyvsp[0])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyvsp[0]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1845 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1941 "CEvaluationParser_yacc.cpp"
         break;
 
       case 38:
-#line 366 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 366 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyvsp[-2])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyvsp[-2]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1857 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1953 "CEvaluationParser_yacc.cpp"
         break;
 
       case 39:
-#line 374 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 374 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1868 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1964 "CEvaluationParser_yacc.cpp"
         break;
 
       case 40:
-#line 381 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 381 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyvsp[-2])->setValueType(CEvaluationNode::ValueType::Number);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyvsp[-2]->setValueType(CEvaluationNode::ValueType::Number);
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1880 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1976 "CEvaluationParser_yacc.cpp"
         break;
 
       case 41:
-#line 389 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 389 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1891 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1987 "CEvaluationParser_yacc.cpp"
         break;
 
       case 42:
-#line 396 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 396 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyvsp[0])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyvsp[0]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1903 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1999 "CEvaluationParser_yacc.cpp"
         break;
 
       case 43:
-#line 404 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 404 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyvsp[-2])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyvsp[-2]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1915 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2011 "CEvaluationParser_yacc.cpp"
         break;
 
       case 44:
-#line 412 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 412 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1926 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2022 "CEvaluationParser_yacc.cpp"
         break;
 
       case 45:
-#line 419 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 419 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1937 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2033 "CEvaluationParser_yacc.cpp"
         break;
 
       case 46:
-#line 426 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 426 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1948 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2044 "CEvaluationParser_yacc.cpp"
         break;
 
       case 47:
-#line 433 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 433 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1959 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2055 "CEvaluationParser_yacc.cpp"
         break;
 
       case 48:
-#line 440 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 440 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1970 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2066 "CEvaluationParser_yacc.cpp"
         break;
 
       case 49:
-#line 447 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 447 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1981 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2077 "CEvaluationParser_yacc.cpp"
         break;
 
       case 50:
-#line 454 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 454 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[-2]);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 1992 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2088 "CEvaluationParser_yacc.cpp"
         break;
 
       case 51:
-#line 461 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 461 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          mpRootNode = yyval;
         }
 
-#line 2001 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2097 "CEvaluationParser_yacc.cpp"
         break;
 
       case 52:
-#line 466 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 466 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 2011 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2107 "CEvaluationParser_yacc.cpp"
         break;
 
       case 53:
-#line 472 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 472 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
-          (yyvsp[0])->setValueType(CEvaluationNode::ValueType::Boolean);
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
+          yyval = yyvsp[-1];
+          yyvsp[0]->setValueType(CEvaluationNode::ValueType::Boolean);
+          yyval->addChild(yyvsp[0]);
+          mpRootNode = yyval;
         }
 
-#line 2022 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2118 "CEvaluationParser_yacc.cpp"
         break;
 
       case 54:
-#line 480 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 480 "CEvaluationParser.ypp"
         {
-          (yyval) = new CEvaluationNodeVector();
-          mpNodeList->push_back((yyval));
+          yyval = new CEvaluationNodeVector();
+          mpNodeList->push_back(yyval);
         }
 
-#line 2031 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2127 "CEvaluationParser_yacc.cpp"
         break;
 
       case 55:
-#line 485 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 485 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
+          yyval = yyvsp[-1];
         }
 
-#line 2039 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2135 "CEvaluationParser_yacc.cpp"
         break;
 
       case 56:
-#line 491 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 491 "CEvaluationParser.ypp"
         {
-          (yyval) = new CEvaluationNodeVector();
-          mpNodeList->push_back((yyval));
-          (yyval)->addChild((yyvsp[0]));
+          yyval = new CEvaluationNodeVector();
+          mpNodeList->push_back(yyval);
+          yyval->addChild(yyvsp[0]);
         }
 
-#line 2049 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2145 "CEvaluationParser_yacc.cpp"
         break;
 
       case 57:
-#line 497 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 497 "CEvaluationParser.ypp"
         {
-          (yyval) = new CEvaluationNodeVector();
-          mpNodeList->push_back((yyval));
-          (yyval)->addChild((yyvsp[0]));
+          yyval = new CEvaluationNodeVector();
+          mpNodeList->push_back(yyval);
+          yyval->addChild(yyvsp[0]);
         }
 
-#line 2059 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2155 "CEvaluationParser_yacc.cpp"
         break;
 
       case 58:
-#line 503 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 503 "CEvaluationParser.ypp"
         {
-          (yyval)->addChild((yyvsp[0]));
+          yyval->addChild(yyvsp[0]);
         }
 
-#line 2067 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2163 "CEvaluationParser_yacc.cpp"
         break;
 
       case 59:
-#line 507 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 507 "CEvaluationParser.ypp"
         {
-          (yyval)->addChild((yyvsp[0]));
+          yyval->addChild(yyvsp[0]);
         }
 
-#line 2075 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2171 "CEvaluationParser_yacc.cpp"
         break;
 
       case 60:
-#line 512 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 512 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-1]);
+          yyval = yyvsp[-1];
         }
 
-#line 2083 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2179 "CEvaluationParser_yacc.cpp"
         break;
 
       case 61:
-#line 516 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 516 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-2]);
-          (yyval)->addChild((yyvsp[-1]));
+          yyval = yyvsp[-2];
+          yyval->addChild(yyvsp[-1]);
         }
 
-#line 2092 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2188 "CEvaluationParser_yacc.cpp"
         break;
 
       case 62:
-#line 521 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 521 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-2]);
-          (yyval)->addChild((yyvsp[-1]));
+          yyval = yyvsp[-2];
+          yyval->addChild(yyvsp[-1]);
         }
 
-#line 2101 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2197 "CEvaluationParser_yacc.cpp"
         break;
 
       case 63:
-#line 526 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 526 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-2]);
-          (yyval)->addChild((yyvsp[-1]));
+          yyval = yyvsp[-2];
+          yyval->addChild(yyvsp[-1]);
         }
 
-#line 2110 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2206 "CEvaluationParser_yacc.cpp"
         break;
 
       case 64:
-#line 531 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 531 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-2]);
-          (yyval)->addChild((yyvsp[-1]));
+          yyval = yyvsp[-2];
+          yyval->addChild(yyvsp[-1]);
         }
 
-#line 2119 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2215 "CEvaluationParser_yacc.cpp"
         break;
 
       case 65:
-#line 537 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 537 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[0]);
+          yyval = yyvsp[0];
         }
 
-#line 2127 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2223 "CEvaluationParser_yacc.cpp"
         break;
 
       case 66:
-#line 541 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 541 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-2]);
-          (yyval)->addChild((yyvsp[-1]));
+          yyval = yyvsp[-2];
+          yyval->addChild(yyvsp[-1]);
         }
 
-#line 2136 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2232 "CEvaluationParser_yacc.cpp"
         break;
 
       case 67:
-#line 546 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 546 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-2]);
-          (yyval)->addChild((yyvsp[-1]));
+          yyval = yyvsp[-2];
+          yyval->addChild(yyvsp[-1]);
         }
 
-#line 2145 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2241 "CEvaluationParser_yacc.cpp"
         break;
 
       case 68:
-#line 551 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 551 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-2]);
-          (yyval)->addChild((yyvsp[-1]));
+          yyval = yyvsp[-2];
+          yyval->addChild(yyvsp[-1]);
         }
 
-#line 2154 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2250 "CEvaluationParser_yacc.cpp"
         break;
 
       case 69:
-#line 556 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 556 "CEvaluationParser.ypp"
         {
-          (yyval) = (yyvsp[-2]);
-          (yyval)->addChild((yyvsp[-1]));
+          yyval = yyvsp[-2];
+          yyval->addChild(yyvsp[-1]);
         }
 
-#line 2163 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2259 "CEvaluationParser_yacc.cpp"
         break;
 
-#line 2167 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2263 "CEvaluationParser_yacc.cpp"
 
       default: break;
     }
@@ -2294,15 +2384,13 @@ yyreduce:
   /* Now 'shift' the result of the reduction.  Determine what state
      that goes to, based on the state we popped back to and the rule
      number reduced by.  */
-
-  yyn = yyr1[yyn];
-
-  yystate = yypgoto[yyn - YYNTOKENS] + *yyssp;
-
-  if (0 <= yystate && yystate <= YYLAST && yycheck[yystate] == *yyssp)
-    yystate = yytable[yystate];
-  else
-    yystate = yydefgoto[yyn - YYNTOKENS];
+  {
+    const int yylhs = yyr1[yyn] - YYNTOKENS;
+    const int yyi = yypgoto[yylhs] + *yyssp;
+    yystate = (0 <= yyi && yyi <= YYLAST && yycheck[yyi] == *yyssp
+               ? yytable[yyi]
+               : yydefgoto[yylhs]);
+  }
 
   goto yynewstate;
 
@@ -2335,7 +2423,7 @@ yyerrlab:
             if (yymsg != yymsgbuf)
               YYSTACK_FREE(yymsg);
 
-            yymsg = (char *) YYSTACK_ALLOC(yymsg_alloc);
+            yymsg = YY_CAST(char *, YYSTACK_ALLOC(YY_CAST(YYSIZE_T, yymsg_alloc)));
 
             if (!yymsg)
               {
@@ -2387,11 +2475,10 @@ yyerrlab:
   `---------------------------------------------------*/
 yyerrorlab:
 
-  /* Pacify compilers like GCC when the user code never invokes
-     YYERROR and the label yyerrorlab therefore never appears in user
-     code.  */
-  if (/*CONSTCOND*/ 0)
-    goto yyerrorlab;
+  /* Pacify compilers when the user code never invokes YYERROR and the
+     label yyerrorlab therefore never appears in user code.  */
+  if (0)
+    YYERROR;
 
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYERROR.  */
@@ -2469,6 +2556,9 @@ yyexhaustedlab:
   /* Fall through.  */
 #endif
 
+  /*-----------------------------------------------------.
+  | yyreturn -- parsing is finished, return the result.  |
+  `-----------------------------------------------------*/
 yyreturn:
 
   if (yychar != YYEMPTY)
@@ -2506,4 +2596,4 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 562 "CEvaluationParser.ypp" /* yacc.c:1906  */
+#line 562 "CEvaluationParser.ypp"

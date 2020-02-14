@@ -13,6 +13,7 @@
 find_path(QWTPLOT3D_INCLUDE_DIR qwt3d_plot.h
     PATHS $ENV{QWTPLOT3D_DIR}/include
           $ENV{QWTPLOT3D_DIR}
+          ${QT_INCLUDE_DIRS}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/include # Fink

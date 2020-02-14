@@ -102,8 +102,6 @@ time_t timeFromUTC(const std::string utc)
 #endif
 
   return mktime(&t);
-
-
 }
 
 bool isNumber(const std::string & str)
@@ -383,7 +381,7 @@ double strToDouble(const char * str,
       Value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
 
-  if (pTail != NULL && !isnan(Value))
+  if (pTail != NULL && !std::isnan(Value))
     {
       *pTail = str + std::min< size_t >((size_t)in.tellg(), strlen(str));
     }

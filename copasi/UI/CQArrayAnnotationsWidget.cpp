@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,14 +21,6 @@
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-
-
-
-
-
-
-
 
 #ifdef SunOS
 #include <ieeefp.h>
@@ -53,7 +45,6 @@
 #ifdef DEBUG_UI
 #include <QtCore/QtDebug>
 #endif
-
 
 #ifdef WITH_QT5_VISUALIZATION
 
@@ -322,7 +313,6 @@ void CQArrayAnnotationsWidget::initSelectionTable()
 
       mpSelectionTable->setMaximumHeight(mpSelectionTable->verticalHeader()->sectionSize(0) * (mpArray->dimensionality() + 1));
     }
-
 }
 
 void CQArrayAnnotationsWidget::clearWidget()
@@ -659,13 +649,10 @@ void CQArrayAnnotationsWidget::switchToBarChart()
 
       mpButton->setIcon(CQIconResource::icon(CQIconResource::table));
       mpButtonReset->hide();
-
     }
 }
 
-
 #ifdef WITH_QT5_VISUALIZATION
-
 
 void CQArrayAnnotationsWidget::slotShowContextMenu(const QPoint &pos)
 {
@@ -679,7 +666,6 @@ void CQArrayAnnotationsWidget::slotShowContextMenu(const QPoint &pos)
         m_contextMenu->popup(m_container->mapToGlobal(pos));
     }
 }
-
 
 #endif // WITH_QT5_VISUALIZATION
 
@@ -723,7 +709,6 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
 
 #ifdef WITH_QT5_VISUALIZATION
 
-
   if (!m_graph)
     return;
 
@@ -743,12 +728,9 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
       int col = mpPlot3d->mpSliderColumn->value() / mpPlot3d->scaleFactor();
 
       selectTableCell(row, col);
-
     }
 
 #endif
-
-
 }
 
 void CQArrayAnnotationsWidget::selectTableCell(int row, int col)
@@ -806,7 +788,6 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
           m_modifier->zoomToSelectedBar();
           return;
         }
-
     }
 
 #else
@@ -877,7 +858,6 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
     }
 
 #endif
-
 }
 
 void CQArrayAnnotationsWidget::slotContentCellClicked(const QModelIndex & index)
@@ -955,14 +935,11 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (!mWithBarChart)
     return;
 
-
   if (!mpArray) return;
 
 #ifdef WITH_QT5_VISUALIZATION
 
-
   m_modifier->loadData(mpArray, mRowIndex, mColIndex);
-
 
 #else
 
@@ -970,7 +947,6 @@ void CQArrayAnnotationsWidget::fillBarChart()
     createBarChart();
 
   //  mBarChartFilled = true;
-
 
   mBarChartFilled = true;
 
@@ -1025,7 +1001,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
             if (!mOneDimensional)
               mSelectedCell[mColIndex] = j;
 
-            if (isnan((double)(*mpArray->array())[mSelectedCell]) ||
+            if (std::isnan((double)(*mpArray->array())[mSelectedCell]) ||
                 !finite((double)(*mpArray->array())[mSelectedCell]))
               {
                 data[j][i] = 0;
@@ -1113,8 +1089,6 @@ void CQArrayAnnotationsWidget::fillBarChart()
     }
 
 #endif
-
-
 }
 
 void CQArrayAnnotationsWidget::createBarChart()
@@ -1209,7 +1183,5 @@ void CQArrayAnnotationsWidget::createBarChart()
 
   mBarChartFilled = false;
 
-
 #endif // WITH_QT5_VISUALIZATION
-
 }

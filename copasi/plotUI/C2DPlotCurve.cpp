@@ -1,8 +1,17 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
-
 
 #include <copasi/plotUI/C2DCurveData.h>
 #include <copasi/plotUI/CHistoCurveData.h>
@@ -148,7 +157,7 @@ void C2DPlotCurve::myDrawLines(QPainter *painter,
       int i;
 
       for (i = from; i <= to; ++i)
-        if (isnan(this->sample(i).x()) || isnan(sample(i).y())) //NaN
+        if (std::isnan(this->sample(i).x()) || std::isnan(sample(i).y())) //NaN
           break;
 
       if (i == from)
@@ -195,7 +204,7 @@ void C2DPlotCurve::drawSymbols(QPainter *painter, const QwtSymbol &symbol,
     {
 
       //find the next not-NaN point
-      while (isnan(sample(from2).x()) || isnan(sample(from2).y()))
+      while (std::isnan(sample(from2).x()) || std::isnan(sample(from2).y()))
         {
           ++from2;
 
@@ -213,7 +222,7 @@ void C2DPlotCurve::drawSymbols(QPainter *painter, const QwtSymbol &symbol,
           if (to2 > to)
             break;
         }
-      while (!(isnan(sample(to2).x()) || isnan(sample(to2).y())));
+      while (!(std::isnan(sample(to2).x()) || std::isnan(sample(to2).y())));
 
       --to2;
 
@@ -242,7 +251,7 @@ void C2DPlotCurve::myDrawLines(QPainter *painter,
       int i;
 
       for (i = from; i <= to; ++i)
-        if (isnan(x(i)) || isnan(y(i))) //NaN
+        if (std::isnan(x(i)) || std::isnan(y(i))) //NaN
           break;
 
       if (i == from)
@@ -289,7 +298,7 @@ void C2DPlotCurve::drawSymbols(QPainter *painter, const QwtSymbol &symbol,
     {
 
       //find the next not-NaN point
-      while (isnan(x(from2)) || isnan(y(from2)))
+      while (std::isnan(x(from2)) || std::isnan(y(from2)))
         {
           ++from2;
 
@@ -307,7 +316,7 @@ void C2DPlotCurve::drawSymbols(QPainter *painter, const QwtSymbol &symbol,
           if (to2 > to)
             break;
         }
-      while (!(isnan(x(to2)) || isnan(y(to2))));
+      while (!(std::isnan(x(to2)) || std::isnan(y(to2))));
 
       --to2;
 

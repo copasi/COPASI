@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -27,7 +27,7 @@
 #
 ###############################################################################
 
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.1.3)
 
 if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
@@ -264,10 +264,10 @@ endif()
 
 
 if (APPLE AND CMAKE_GENERATOR STREQUAL "Xcode" OR DISABLE_CORE_OBJECT_LIBRARY)
-add_library (libCOPASISE-static STATIC ${COPASI_SOURCES} ${COPASI_HEADERS})
+  add_library (libCOPASISE-static STATIC ${COPASI_SOURCES} ${COPASI_HEADERS})
 else()
-add_library (libCOPASISE-core OBJECT ${COPASI_SOURCES} ${COPASI_HEADERS})
-add_library (libCOPASISE-static STATIC $<TARGET_OBJECTS:libCOPASISE-core>)
+  add_library (libCOPASISE-core OBJECT ${COPASI_SOURCES} ${COPASI_HEADERS})
+  add_library (libCOPASISE-static STATIC $<TARGET_OBJECTS:libCOPASISE-core>)
 endif()
 set_target_properties (libCOPASISE-static PROPERTIES OUTPUT_NAME "COPASISE")
 
@@ -344,6 +344,7 @@ if(ENABLE_LIBCOPASISE_SHARED)
   else()
     add_library (libCOPASISE-shared SHARED $<TARGET_OBJECTS:libCOPASISE-core>)
   endif()
+
 
   set_target_properties (libCOPASISE-shared PROPERTIES OUTPUT_NAME "COPASISE")
 
@@ -551,6 +552,7 @@ if(BUILD_GUI)
 
 
   add_library(libCOPASIUI STATIC ${COPASI_UI_SOURCES} ${COPASI_UI_HEADERS} ${HEADERS_UI_FORMS} ${COPASI_RCC_SOURCES} ${HEADERS_UI_MOC})
+
   QT_BIND_TO_TARGET(libCOPASIUI)
   target_link_libraries(libCOPASIUI libCOPASISE-static ${SBW_LIBRARY} ${QWT_LIBRARY} ${QWTPLOT3D_LIBRARY} ${MML_LIBRARY})
   if (${CMAKE_VERSION} VERSION_GREATER "2.8.11")

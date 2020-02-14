@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -233,7 +233,7 @@ CScanItemLinear::CScanItemLinear(CCopasiParameterGroup* si):
           std::vector<std::string> elems;
           ResultParser::split(values, std::string(",; |\n\t\r"), elems);
 
-for (std::string & number : elems)
+          for (std::string & number : elems)
             {
               mValues.push_back(ResultParser::saveToDouble(number));
             }
@@ -242,9 +242,7 @@ for (std::string & number : elems)
 
           if (!mValues.empty())
             mNumSteps = mValues.size() - 1;
-
         }
-
     }
 }
 
@@ -259,7 +257,6 @@ void CScanItemLinear::step()
 
       if (mLog)
         Value = exp(Value);
-
     }
   else
     {
@@ -268,7 +265,6 @@ void CScanItemLinear::step()
         Value = 1.0;
       else
         Value = mValues[mIndex];
-
     }
 
   //the index
@@ -289,7 +285,7 @@ bool CScanItemLinear::isValidScanItem(const bool & continueFromCurrentState)
 
   if (mLog)
     {
-      if (isnan(mFaktor) || mFaktor < - std::numeric_limits< C_FLOAT64 >::max() || std::numeric_limits< C_FLOAT64 >::max() < mFaktor)
+      if (std::isnan(mFaktor) || mFaktor < - std::numeric_limits< C_FLOAT64 >::max() || std::numeric_limits< C_FLOAT64 >::max() < mFaktor)
         {
           //not a valid range for log
           CCopasiMessage(CCopasiMessage::ERROR, "Only positive values for min and max are possible for a logarithmic scan.");
@@ -307,8 +303,6 @@ void CScanItemLinear::ensureParameterGroupHasAllElements(CCopasiParameterGroup* 
   pg->assertParameter("Maximum", CCopasiParameter::Type::DOUBLE, 0);
   pg->assertParameter("Use Values", CCopasiParameter::Type::BOOL, false);
   pg->assertParameter("Values", CCopasiParameter::Type::STRING, std::string());
-
-
 }
 
 //*******
@@ -400,7 +394,6 @@ void CScanItemRandom::ensureParameterGroupHasAllElements(CCopasiParameterGroup* 
   pg->assertParameter("log", CCopasiParameter::Type::BOOL, false);
   pg->assertParameter("Minimum", CCopasiParameter::Type::DOUBLE, 0);
   pg->assertParameter("Maximum", CCopasiParameter::Type::DOUBLE, 0);
-
 }
 
 //**************** CScanMethod class ***************************
@@ -414,7 +407,8 @@ CScanMethod::CScanMethod(const CDataContainer * pParent,
   mpRandomGenerator(NULL),
   mTotalSteps(1),
   mLastNestingItem(C_INVALID_INDEX),
-  mContinueFromCurrentState(false)
+  mContinueFromCurrentState(false),
+  mFailCounter(0)
 {
   mpRandomGenerator = CRandom::createGenerator(CRandom::r250);
 }
@@ -535,13 +529,20 @@ bool CScanMethod::scan()
   for (i = 0; i < imax; ++i)
     mScanItems[i]->storeValue();
 
+  mFailCounter = 0;
+
   //Do the scan...
   if (imax) //there are scan items
     success = loop(0);
   else
     success = calculate(); //nothing to scan, only one call to the subtask
 
-  //restore old parameter values
+  if (mFailCounter > 0)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "%ld subtask executions failed.", mFailCounter);
+    }
+
+  // restore old parameter values
   for (i = 0; i < imax; ++i)
     mScanItems[i]->restoreValue();
 
@@ -559,37 +560,20 @@ bool CScanMethod::loop(size_t level)
     {
       //TODO: handle slave SIs
 
-      try
+      if (isLastMasterItem)
         {
-
-          if (isLastMasterItem)
-            {
-              if (!calculate()) return false;
-            }
-          else
-            {
-              if (!loop(level + 1)) return false;
-            } //TODO
+          if (!calculate())
+            return false;
         }
-      catch (const CCopasiException&)
+      else
         {
-          if (!mpProblem->getContinueOnError())
-            throw;
-
-          CCopasiMessage::getLastMessage(); // remove the error so we don't have too many of those in the log
-          ++failCounter;
+          if (!loop(level + 1))
+            return false;
         }
 
-      //separator needs to be handled slightly differently if we are at the last item
+      // separator needs to be handled slightly differently if we are at the last item
       if (currentSI->isNesting())
         ((CScanTask*)(getObjectParent()))->outputSeparatorCallback(level == mLastNestingItem);
-
-
-    }
-
-  if (failCounter > 0)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, "%ld subtask executions failed.", failCounter);
     }
 
   return true;
@@ -607,7 +591,30 @@ bool CScanMethod::calculate()
   std::cout << "CScanMethod::calculate State 2: " << mpContainer->getValues() << std::endl;
 #endif // DEBUG_OUTPUT
 
-  return mpTask->processCallback();
+  bool success = true;
+
+  CVector< C_FLOAT64 > InitialState = mpContainer->getInitialState();
+
+  try
+    {
+      success = mpTask->processCallback();
+    }
+  catch (const CCopasiException &)
+    {
+      success = false;
+      CCopasiMessage::getLastMessage();
+    }
+
+  if (!success)
+    {
+      ++mFailCounter;
+      success = mpProblem->getContinueOnError();
+    }
+
+  // Assure that the subtask did not interfere with the scan operation.
+  mpContainer->setInitialState(InitialState);
+
+  return success;
 }
 
 void CScanMethod::setProblem(CScanProblem * problem)

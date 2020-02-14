@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -280,10 +280,10 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
       QStringList list = contours.split(QRegExp(",| |;"), QString::SkipEmptyParts);
       QwtValueList contourLevels;
 
-      foreach(const QString & level, list)
-      {
-        contourLevels += level.toDouble();
-      }
+      foreach (const QString & level, list)
+        {
+          contourLevels += level.toDouble();
+        }
 
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
@@ -615,7 +615,7 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
   imax = mpPlotSpecification->getItems().size();
   mDataIndex.resize(imax);
 
-  std::vector< std::vector < const CObjectInterface * > >::iterator itX;
+  std::vector< std::vector < std::string > >::iterator itX;
 
   for (i = 0; i < imax; ++i)
     {
@@ -630,10 +630,14 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
 
       for (j = 0; j < jmax; ++j)
         {
+          std::string DisplayName;
           const CObjectInterface * pObj = CObjectInterface::GetObjectFromCN(listOfContainer, pItem->getChannels()[j]);
 
           if (pObj)
-            mObjects.insert(pObj);
+            {
+              mObjects.insert(pObj);
+              DisplayName = pObj->getObjectDisplayName();
+            }
           else
             CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6,
                            pItem->getChannels()[j].c_str());
@@ -646,12 +650,12 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
             {
               // We have an X value
               for (itX = mSaveCurveObjects.begin(); itX != mSaveCurveObjects.end(); ++itX)
-                if (*itX->begin() == pObj) break;
+                if (*itX->begin() == DisplayName) break;
 
               if (itX == mSaveCurveObjects.end())
                 {
-                  std::vector < const CObjectInterface * > NewX;
-                  NewX.push_back(pObj);
+                  std::vector < std::string > NewX;
+                  NewX.push_back(DisplayName);
 
                   mSaveCurveObjects.push_back(NewX);
                   itX = mSaveCurveObjects.end() - 1;
@@ -661,11 +665,11 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
                 }
 
               if (pItem->getType() == CPlotItem::histoItem1d)
-                mSaveHistogramObjects.push_back(pObj);
+                mSaveHistogramObjects.push_back(DisplayName);
             }
           else
             {
-              itX->push_back(pObj);
+              itX->push_back(DisplayName);
 
               if (!isSpectogram)
                 setAxisUnits(yLeft, pObj);
@@ -710,13 +714,13 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
               mDataIndex[i][j] = DataIndex;
 
               // Store the [Activity][object] to data index.
-              mObjectIndex[ItemActivity][pObj] = DataIndex.second;
+              mObjectIndex[ItemActivity][DisplayName] = DataIndex.second;
             }
           else
             {
               // The object already existed we only need to
               // store [curve][channel] to data index.
-              DataIndex.second = mObjectIndex[ItemActivity][pObj];
+              DataIndex.second = mObjectIndex[ItemActivity][DisplayName];
               mDataIndex[i][j] = DataIndex;
             }
         }
@@ -1121,19 +1125,16 @@ bool CopasiPlot::saveData(const std::string & filename)
   // Write the table header
   fs << "# ";
 
-  std::vector< std::vector < const CObjectInterface  * > >::const_iterator itX;
-  std::vector< std::vector < const CObjectInterface * > >::const_iterator endX =
+  std::vector< std::vector < std::string > >::const_iterator itX;
+  std::vector< std::vector < std::string > >::const_iterator endX =
     mSaveCurveObjects.end();
 
-  std::vector < const CObjectInterface * >::const_iterator it;
-  std::vector < const CObjectInterface * >::const_iterator end;
+  std::vector < std::string >::const_iterator it;
+  std::vector < std::string >::const_iterator end;
 
   for (itX = mSaveCurveObjects.begin(); itX != endX; ++itX)
     for (it = itX->begin(), end = itX->end(); it != end; ++it)
-      if (CObjectInterface::DataObject(*it) != NULL)
-        fs << CObjectInterface::DataObject(*it)->getObjectDisplayName() << "\t";
-      else
-        fs << "Not found\t";
+      fs << *it << "\t";
 
   fs << "\n";
 
@@ -1149,8 +1150,8 @@ bool CopasiPlot::saveData(const std::string & filename)
 
   Offset.resize(imax);
 
-  std::map< Activity, std::map< const CObjectInterface *, size_t > >::iterator itActivity;
-  std::map< const CObjectInterface *, size_t >::iterator itObject;
+  std::map< Activity, std::map< std::string, size_t > >::iterator itActivity;
+  std::map< std::string, size_t >::iterator itObject;
 
   if (mDataBefore)
     {
@@ -1328,12 +1329,7 @@ bool CopasiPlot::saveData(const std::string & filename)
               FirstHistogram = false;
             }
 
-          if (CObjectInterface::DataObject(mSaveHistogramObjects[HistogramIndex]) != NULL)
-            fs << CObjectInterface::DataObject(mSaveHistogramObjects[HistogramIndex])->getObjectDisplayName();
-          else
-            fs << "Not found";
-
-          fs << std::endl;
+          fs << mSaveHistogramObjects[HistogramIndex] << std::endl;
 
 #if QWT_VERSION > 0x060000
           CHistoCurveData * pData = static_cast< CHistoCurveData * >((*itCurves)->data());

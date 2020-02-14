@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -75,7 +75,8 @@ CQEventWidget1::~CQEventWidget1()
 /*! Slot to delete the active event widget */
 void CQEventWidget1::slotBtnDelete()
 {
-  if (mpEvent == NULL) return;
+  if (mpEvent == NULL)
+    return;
 
   QMessageBox::StandardButton choice =
     CQMessageBox::confirmDelete(this, "event",
@@ -155,7 +156,7 @@ void CQEventWidget1::init()
   connect(mpComboBoxDelay, SIGNAL(currentIndexChanged(int)), this, SLOT(slotChooseDelay(int)));
   connect(mpLBTarget, SIGNAL(currentRowChanged(int)), this, SLOT(slotActualizeAssignmentExpression(int)));
 
-//  mpExpressionTrigger->mpExpressionWidget->setBoolean(true);
+  //  mpExpressionTrigger->mpExpressionWidget->setBoolean(true);
   mpExpressionTrigger->mpExpressionWidget->setBoolean(true);
   mExpressionDelayValid = true;
   mpExpressionDelay->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
@@ -189,11 +190,13 @@ void CQEventWidget1::slotAddTarget()
   const CDataObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
-  if (pObject == NULL) return;
+  if (pObject == NULL)
+    return;
 
   const CModelEntity * pME = dynamic_cast< const CModelEntity * >(pObject->getObjectParent());
 
-  if (pME == NULL) return;
+  if (pME == NULL)
+    return;
 
   QString displayName(FROM_UTF8(pME->getObjectDisplayName()));
 
@@ -211,8 +214,9 @@ void CQEventWidget1::slotAddTarget()
  */
 void CQEventWidget1::slotDeleteTarget()
 {
-  if (mCurrentTarget > mAssignments.size() - 1 ||
-      mAssignments.size() == 0) return;
+  if (mCurrentTarget > mAssignments.size() - 1
+      || mAssignments.size() == 0)
+    return;
 
   size_t ToBeDeleted = mCurrentTarget;
 
@@ -239,27 +243,28 @@ int CQEventWidget1::getDelayTypeIndex()
   return 2; // Assignment only
 }
 
-bool
-CQEventWidget1::loadFromEvent()
+bool CQEventWidget1::loadFromEvent()
 {
-  if (mpEvent == NULL) return false;
+  if (mpEvent == NULL)
+    return false;
 
   const CModel * pModel =
     dynamic_cast< const CModel * >(mpEvent->getObjectAncestor("Model"));
 
-  if (pModel == NULL) return false;
+  if (pModel == NULL)
+    return false;
 
   // *** Expression of Trigger
   mpExpressionTrigger->mpExpressionWidget->setExpression(mpEvent->getTriggerExpression());
-  mpExpressionTrigger->updateWidget();    // bring into view mode
+  mpExpressionTrigger->updateWidget(); // bring into view mode
 
   // *** Expression of Priority
   mpExpressionPriority->mpExpressionWidget->setExpression(mpEvent->getPriorityExpression());
-  mpExpressionPriority->updateWidget();    // bring into view mode
+  mpExpressionPriority->updateWidget(); // bring into view mode
 
   // *** Expression of Delay
   mpExpressionDelay->mpExpressionWidget->setExpression(mpEvent->getDelayExpression());
-  mpExpressionDelay->updateWidget();    // bring into view mode
+  mpExpressionDelay->updateWidget(); // bring into view mode
 
   // ** delay type
   mpComboBoxDelay->setCurrentIndex(getDelayTypeIndex());
@@ -295,8 +300,8 @@ CQEventWidget1::loadFromEvent()
 
   size_t NewTarget = mCurrentTarget;
 
-  if (mCurrentTarget == C_INVALID_INDEX &&
-      mAssignments.size() > 0)
+  if (mCurrentTarget == C_INVALID_INDEX
+      && mAssignments.size() > 0)
     {
       NewTarget = 0;
     }
@@ -317,7 +322,8 @@ CQEventWidget1::loadFromEvent()
 /*! The slot to save all current values of the active event widget */
 void CQEventWidget1::saveToEvent()
 {
-  if (mpEvent == NULL) return;
+  if (mpEvent == NULL)
+    return;
 
   mIgnoreUpdates = true;
 
@@ -343,25 +349,26 @@ void CQEventWidget1::saveToEvent()
       mChanged = true;
     }
 
-  if (!mpEvent->getDelayExpression().empty() &&
-      mpComboBoxDelay->currentIndex() != getDelayTypeIndex())
+  if (!mpEvent->getDelayExpression().empty()
+      && mpComboBoxDelay->currentIndex() != getDelayTypeIndex())
     {
       mpEvent->setDelayAssignment(mpComboBoxDelay->currentIndex() == 2);
       mChanged = true;
     }
 
-  if (mpEvent->getFireAtInitialTime() !=  mpFireAtInitialTime->isChecked())
+  if (mpEvent->getFireAtInitialTime() != mpFireAtInitialTime->isChecked())
     {
       mpEvent->setFireAtInitialTime(mpFireAtInitialTime->isChecked());
       mChanged = true;
     }
 
-  if (mpEvent->getPersistentTrigger() ==  mpTriggerPersistent->isChecked())
+  if (mpEvent->getPersistentTrigger() == mpTriggerPersistent->isChecked())
     {
-      mpEvent->setPersistentTrigger(mpTriggerPersistent->isChecked());
+      mpEvent->setPersistentTrigger(!mpTriggerPersistent->isChecked());
     }
 
-  if (mCurrentTarget != C_INVALID_INDEX && mAssignments.size() > mCurrentTarget)
+  if (mCurrentTarget != C_INVALID_INDEX
+      && mAssignments.size() > mCurrentTarget)
     {
       mAssignments[mCurrentTarget].setExpression(mpExpressionEA->mpExpressionWidget->getExpression());
     }
@@ -409,7 +416,8 @@ bool CQEventWidget1::updateProtected(ListViews::ObjectType objectType, ListViews
       case ListViews::ObjectType::EVENT:
 
         // If the currently displayed metabolite is deleted we need to remove its references.
-        if (action == ListViews::DELETE && mObjectCN == cn)
+        if (action == ListViews::DELETE
+            && mObjectCN == cn)
           {
             mObjectCN.clear();
             mpObject = NULL;
@@ -426,7 +434,8 @@ bool CQEventWidget1::updateProtected(ListViews::ObjectType objectType, ListViews
         break;
     }
 
-  if (isVisible() && !mIgnoreUpdates)
+  if (isVisible()
+      && !mIgnoreUpdates)
     enterProtected();
 
   return true;
@@ -443,22 +452,22 @@ bool CQEventWidget1::enterProtected()
       List.push_back(mpDataModel);
 
       // This will check the current data model and the root container for the object;
-      mpEvent = dynamic_cast<CEvent *>(const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, mObjectCNToCopy))));
+      mpEvent = dynamic_cast< CEvent * >(const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, mObjectCNToCopy))));
       mObjectCNToCopy.clear();
     }
   else
     {
-      mpEvent = dynamic_cast<CEvent*>(mpObject);
+      mpEvent = dynamic_cast< CEvent * >(mpObject);
     }
 
   mCurrentTarget = C_INVALID_INDEX;
 
   if (mpEvent)
     {
-      success =  loadFromEvent();
+      success = loadFromEvent();
     }
 
-  mpEvent = dynamic_cast<CEvent*>(mpObject);
+  mpEvent = dynamic_cast< CEvent * >(mpObject);
 
   if (!success)
     {
@@ -474,7 +483,8 @@ bool CQEventWidget1::leaveProtected()
   // no saving if the dialog is not visible right now
   // (the changes would already have been saved the last time
   // it was visible and the pane was left)
-  if (!isVisible()) return true;
+  if (!isVisible())
+    return true;
 
   saveToEvent();
 
@@ -493,11 +503,13 @@ void CQEventWidget1::slotSelectObject()
   const CDataObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
-  if (pObject == NULL) return;
+  if (pObject == NULL)
+    return;
 
   const CModelEntity * pME = dynamic_cast< const CModelEntity * >(pObject->getObjectParent());
 
-  if (pME == NULL) return;
+  if (pME == NULL)
+    return;
 
   if (mAssignments[mCurrentTarget].setTargetCN(pME->getCN()))
     {
@@ -509,19 +521,20 @@ void CQEventWidget1::slotSelectObject()
 /// Slot to actualize the assignment expression widget of event assignment according to the target
 void CQEventWidget1::slotActualizeAssignmentExpression(int index)
 {
-  if (mIgnoreUpdates) return;
+  if (mIgnoreUpdates)
+    return;
 
   size_t NewTarget = (size_t) index;
 
-  if (NewTarget != C_INVALID_INDEX &&
-      NewTarget >= mAssignments.size())
+  if (NewTarget != C_INVALID_INDEX
+      && NewTarget >= mAssignments.size())
     {
       NewTarget = mAssignments.size() - 1;
     }
 
   // Save the current assignment
-  if (NewTarget != mCurrentTarget &&
-      mCurrentTarget < mAssignments.size())
+  if (NewTarget != mCurrentTarget
+      && mCurrentTarget < mAssignments.size())
     {
       mAssignments[mCurrentTarget].setExpression(mpExpressionEA->mpExpressionWidget->getExpression());
     }

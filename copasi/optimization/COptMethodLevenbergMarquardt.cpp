@@ -188,7 +188,7 @@ bool COptMethodLevenbergMarquardt::optimise()
 
   evaluate();
 
-  if (!isnan(mEvaluationValue))
+  if (!std::isnan(mEvaluationValue))
     {
       // and store that value
       mBestValue = mEvaluationValue;

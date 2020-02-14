@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -30,22 +30,19 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 
 CSensItem::CSensItem()
-  : mSingleObjectCN(),
-    mListType(CObjectLists::SINGLE_OBJECT)
+  : mSingleObjectCN()
+  , mListType(CObjectLists::SINGLE_OBJECT)
 {}
 
 CSensItem::CSensItem(const std::string & cn)
   : mSingleObjectCN(cn)
   , mListType(CObjectLists::SINGLE_OBJECT)
-{
-}
+{}
 
 CSensItem::CSensItem(CObjectLists::ListType type)
   : mSingleObjectCN()
   , mListType(type)
-
-{
-}
+{}
 
 bool CSensItem::isSingleObject() const
 {
@@ -64,7 +61,7 @@ const CCommonName & CSensItem::getSingleObjectCN() const
   return mSingleObjectCN;
 }
 
-std::string CSensItem::getSingleObjectDisplayName(const CDataModel* pDataModel) const
+std::string CSensItem::getSingleObjectDisplayName(const CDataModel * pDataModel) const
 {
   const CObjectInterface * pObject = pDataModel->getObjectFromCN(mSingleObjectCN);
 
@@ -110,17 +107,23 @@ bool CSensItem::operator!=(const CSensItem & rhs) const
   return !(*this == rhs);
 }
 
-std::vector<CDataObject*> CSensItem::getVariablesPointerList(CDataModel* pDataModel)
+std::vector< CDataObject * > CSensItem::getVariablesPointerList(CDataModel * pDataModel)
 {
-  std::vector<CDataObject*> ret;
+  std::vector< CDataObject * > ret;
 
   if (isSingleObject())
     {
       const CDataObject * tmpObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(getSingleObjectCN()));
 
-      if (!tmpObject) {return ret;}  //return empty list
+      if (!tmpObject)
+        {
+          return ret;
+        } //return empty list
 
-      if (!tmpObject->hasFlag(CDataObject::ValueDbl)) {return ret;}  //return empty list
+      if (!tmpObject->hasFlag(CDataObject::ValueDbl))
+        {
+          return ret;
+        } //return empty list
 
       ret.push_back(const_cast< CDataObject * >(tmpObject));
     }
@@ -163,44 +166,55 @@ const char * CSensProblem::XMLSubTask[] =
 };
 
 //static
-void CSensProblem::createParametersInGroup(CCopasiParameterGroup *pg)
+void CSensProblem::createParametersInGroup(CCopasiParameterGroup * pg)
 {
-  if (!pg) return;
+  if (!pg)
+    return;
 
   pg->assertParameter("SingleObject", CCopasiParameter::Type::CN, CCommonName(""));
   pg->assertParameter("ObjectListType", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 }
 
 //static
-void CSensProblem::copySensItemToParameterGroup(const CSensItem * si, CCopasiParameterGroup *pg)
+void CSensProblem::copySensItemToParameterGroup(const CSensItem * si, CCopasiParameterGroup * pg)
 {
   CCommonName cn("");
 
-  if (!pg) return; if (!si) return;
+  if (!pg)
+    return;
+
+  if (!si)
+    return;
 
   if (si->isSingleObject())
     cn = si->getSingleObjectCN();
 
   pg->setValue("SingleObject", cn);
-  pg->setValue("ObjectListType", (unsigned C_INT32)si->getListType());
+  pg->setValue("ObjectListType", (unsigned C_INT32) si->getListType());
 }
 
 //static
-void CSensProblem::copyParameterGroupToSensItem(const CCopasiParameterGroup *pg, CSensItem * si)
+void CSensProblem::copyParameterGroupToSensItem(const CCopasiParameterGroup * pg, CSensItem * si)
 {
 
-  if (!pg) return; if (!si) return;
+  if (!pg)
+    return;
+
+  if (!si)
+    return;
 
   const CCommonName * pCN = &pg->getValue< CCommonName >("SingleObject");
-  const CObjectLists::ListType* pLT = &pg->getValue< CObjectLists::ListType >("ObjectListType");
+  const CObjectLists::ListType * pLT = &pg->getValue< CObjectLists::ListType >("ObjectListType");
 
   CCommonName cn("");
 
-  if (pCN) cn = *pCN;
+  if (pCN)
+    cn = *pCN;
 
-  CObjectLists::ListType lt = (CObjectLists::ListType)0;
+  CObjectLists::ListType lt = (CObjectLists::ListType) 0;
 
-  if (pLT) lt = *pLT;
+  if (pLT)
+    lt = *pLT;
 
   //  if (cn != "")
   si->setSingleObjectCN(cn);
@@ -212,14 +226,14 @@ void CSensProblem::copyParameterGroupToSensItem(const CCopasiParameterGroup *pg,
  *  Default constructor.
  *  @param "CModel *" pModel
  */
-CSensProblem::CSensProblem(const CDataContainer * pParent):
-  CCopasiProblem(CTaskEnum::Task::sens, pParent),
-  mpSubTaskType(NULL),
-  mpTargetFunctions(NULL),
-  mpVariablesGroup(NULL),
-  mpResultAnnotation(NULL),
-  mpScaledResultAnnotation(NULL),
-  mpCollapsedResultAnnotation(NULL)
+CSensProblem::CSensProblem(const CDataContainer * pParent)
+  : CCopasiProblem(CTaskEnum::Task::sens, pParent)
+  , mpSubTaskType(NULL)
+  , mpTargetFunctions(NULL)
+  , mpVariablesGroup(NULL)
+  , mpResultAnnotation(NULL)
+  , mpScaledResultAnnotation(NULL)
+  , mpCollapsedResultAnnotation(NULL)
 {
   initializeParameter();
   initObjects();
@@ -242,14 +256,14 @@ CSensProblem::CSensProblem(const CDataContainer * pParent):
  *  @param "const CSensProblem &" src
  */
 CSensProblem::CSensProblem(const CSensProblem & src,
-                           const CDataContainer * pParent):
-  CCopasiProblem(src, pParent),
-  mpSubTaskType(NULL),
-  mpTargetFunctions(NULL),
-  mpVariablesGroup(NULL),
-  mpResultAnnotation(NULL),
-  mpScaledResultAnnotation(NULL),
-  mpCollapsedResultAnnotation(NULL)
+                           const CDataContainer * pParent)
+  : CCopasiProblem(src, pParent)
+  , mpSubTaskType(NULL)
+  , mpTargetFunctions(NULL)
+  , mpVariablesGroup(NULL)
+  , mpResultAnnotation(NULL)
+  , mpScaledResultAnnotation(NULL)
+  , mpCollapsedResultAnnotation(NULL)
 {
   initializeParameter();
   initObjects();
@@ -283,14 +297,17 @@ void CSensProblem::initializeParameter()
  *  Destructor.
  */
 CSensProblem::~CSensProblem()
-{DESTRUCTOR_TRACE;}
+{
+  DESTRUCTOR_TRACE;
+}
 
 /**
  *   set the problem's SubTaskType:
  */
-void
-CSensProblem::setSubTaskType(const CSensProblem::SubTaskType & type)
-{*mpSubTaskType = type;}
+void CSensProblem::setSubTaskType(const CSensProblem::SubTaskType & type)
+{
+  *mpSubTaskType = type;
+}
 
 /**
  *   get the problem's SubTaskType:
@@ -306,9 +323,9 @@ CSensProblem::SubTaskType CSensProblem::getSubTaskType() const
 CSensItem CSensProblem::getTargetFunctions() const
 {
   CSensItem ret;
-  CCopasiParameterGroup* tmp;
+  CCopasiParameterGroup * tmp;
 
-  tmp = (CCopasiParameterGroup*)(mpTargetFunctions);
+  tmp = (CCopasiParameterGroup *)(mpTargetFunctions);
 
   copyParameterGroupToSensItem(tmp, &ret);
 
@@ -328,9 +345,9 @@ size_t CSensProblem::getNumberOfVariables() const
 CSensItem CSensProblem::getVariables(size_t index) const
 {
   CSensItem ret;
-  CCopasiParameterGroup* tmp;
+  CCopasiParameterGroup * tmp;
 
-  tmp = (CCopasiParameterGroup*)(mpVariablesGroup->getParameter(index));
+  tmp = (CCopasiParameterGroup *)(mpVariablesGroup->getParameter(index));
 
   copyParameterGroupToSensItem(tmp, &ret);
 
@@ -340,9 +357,9 @@ CSensItem CSensProblem::getVariables(size_t index) const
 void CSensProblem::addVariables(const CSensItem & item)
 {
   //create parameter group corresponding to sens item
-  CCopasiParameterGroup* tmp;
+  CCopasiParameterGroup * tmp;
   mpVariablesGroup->addGroup("Variables");
-  tmp = (CCopasiParameterGroup*)(mpVariablesGroup->getParameter(getNumberOfVariables() - 1));
+  tmp = (CCopasiParameterGroup *)(mpVariablesGroup->getParameter(getNumberOfVariables() - 1));
 
   createParametersInGroup(tmp);
 
@@ -445,10 +462,10 @@ bool CSensProblem::collapsRequested() const
 }
 
 //static
-std::vector<CObjectLists::ListType>
+std::vector< CObjectLists::ListType >
 CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
 {
-  std::vector<CObjectLists::ListType> list;
+  std::vector< CObjectLists::ListType > list;
 
   //list.push_back(CObjectLists::EMPTY_LIST);
 
@@ -500,22 +517,22 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
         break;
 
         /*case (CSensProblem::LyapunovExp):
-                list.push_back(CObjectLists::SINGLE_OBJECT);
-                list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
-                list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
-                list.push_back(CObjectLists::REACTION_CONC_FLUXES);
-                list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
-          break;*/
+                  list.push_back(CObjectLists::SINGLE_OBJECT);
+                  list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
+                  list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+                  list.push_back(CObjectLists::REACTION_CONC_FLUXES);
+                  list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
+            break;*/
     }
 
   return list;
 }
 
 //static
-std::vector<CObjectLists::ListType>
+std::vector< CObjectLists::ListType >
 CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
 {
-  std::vector<CObjectLists::ListType> list;
+  std::vector< CObjectLists::ListType > list;
 
   // the 'unset' type, abusing CObjectLists::ALL_METABS
   list.push_back((CObjectLists::ListType) 0);
@@ -571,13 +588,13 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
         break;
 
         /*case (LyapunovExp):
-                list.push_back(CObjectLists::SINGLE_OBJECT);
-                list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
-                list.push_back(CObjectLists::GLOBAL_PARAMETER_VALUES);
-                list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
-                list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
-                list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
-          break;*/
+                  list.push_back(CObjectLists::SINGLE_OBJECT);
+                  list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+                  list.push_back(CObjectLists::GLOBAL_PARAMETER_VALUES);
+                  list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
+                  list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
+                  list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
+            break;*/
     }
 
   return list;
@@ -588,11 +605,15 @@ void CSensProblem::printResult(std::ostream * ostream) const
   std::ostream & os = *ostream;
 
   //os << "Sensitivities result." << std::endl;
-  if (mpResultAnnotation)
+  if (mpResultAnnotation != NULL)
     os << *mpResultAnnotation << std::endl;
 
-  if (mpScaledResultAnnotation)
+  if (mpScaledResultAnnotation != NULL)
     os << *mpScaledResultAnnotation << std::endl;
+
+  if (collapsRequested()
+      && mpCollapsedResultAnnotation != NULL)
+    os << *mpCollapsedResultAnnotation << std::endl;
 }
 
 /**
@@ -609,7 +630,7 @@ std::ostream &operator<<(std::ostream &os, const CSensItem & si)
 }
  */
 
-std::string CSensItem::print(const CDataModel* pDataModel) const
+std::string CSensItem::print(const CDataModel * pDataModel) const
 {
   std::ostringstream os;
 
@@ -621,29 +642,34 @@ std::string CSensItem::print(const CDataModel* pDataModel) const
   return os.str();
 }
 
-std::ostream &operator<<(std::ostream &os, const CSensProblem & o)
+std::ostream & operator<<(std::ostream & os, const CSensProblem & o)
 {
   os << "Function(s) to be derived:" << std::endl;
-  const CDataModel* pDataModel = o.getObjectDataModel();
+  const CDataModel * pDataModel = o.getObjectDataModel();
   assert(pDataModel != NULL);
-  os << o.getTargetFunctions().print(pDataModel) << std::endl << std::endl;
+  os << o.getTargetFunctions().print(pDataModel) << std::endl
+     << std::endl;
 
   os << "Calculation to perform: "
-     << CSensProblem::SubTaskName[o.getSubTaskType()] << std::endl << std::endl;
+     << CSensProblem::SubTaskName[o.getSubTaskType()] << std::endl
+     << std::endl;
 
   size_t i, imax = o.getNumberOfVariables();
 
   for (i = 0; i < imax; ++i)
     {
       os << "Variable(s) for " << i + 1 << ". derivation:" << std::endl;
-      os << o.getVariables(i).print(pDataModel) << std::endl << std::endl;
+      os << o.getVariables(i).print(pDataModel) << std::endl
+         << std::endl;
     }
 
   return os;
 }
 
 void CSensProblem::print(std::ostream * ostream) const
-{*ostream << *this;}
+{
+  *ostream << *this;
+}
 
 void CSensProblem::initDebugProblem()
 {

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,7 +22,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#line 3 "<stdout>"
+#line 2 "<stdout>"
 
 #define  YY_INT_ALIGNED short int
 
@@ -31,7 +31,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 6
-#define YY_FLEX_SUBMINOR_VERSION 1
+#define YY_FLEX_SUBMINOR_VERSION 4
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -43,6 +43,24 @@
  * altogether.
  */
 #define yyFlexLexer CEvaluationFlexLexer
+
+#ifdef yyalloc
+#define CEvaluationalloc_ALREADY_DEFINED
+#else
+#define yyalloc CEvaluationalloc
+#endif
+
+#ifdef yyrealloc
+#define CEvaluationrealloc_ALREADY_DEFINED
+#else
+#define yyrealloc CEvaluationrealloc
+#endif
+
+#ifdef yyfree
+#define CEvaluationfree_ALREADY_DEFINED
+#else
+#define yyfree CEvaluationfree
+#endif
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
 
@@ -110,6 +128,10 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
+#ifndef SIZE_MAX
+#define SIZE_MAX               (~(size_t)0)
+#endif
+
 #endif /* ! C99 */
 
 #endif /* ! FLEXINT_H */
@@ -134,32 +156,26 @@ typedef unsigned int flex_uint32_t;
 /* Returned upon end-of-file. */
 #define YY_NULL 0
 
-/* Promotes a possibly negative, possibly signed char to an unsigned
- * integer for use as an array index.  If the signed char is negative,
- * we want to instead treat it as an 8-bit unsigned char, hence the
- * double cast.
+/* Promotes a possibly negative, possibly signed char to an
+ *   integer in range [0..255] for use as an array index.
  */
-#define YY_SC_TO_UI(c) ((unsigned int) (unsigned char) c)
+#define YY_SC_TO_UI(c) ((YY_CHAR) (c))
 
 /* Enter a start condition.  This macro really ought to take a parameter,
  * but we do it the disgusting crufty way forced on us by the ()-less
  * definition of BEGIN.
  */
 #define BEGIN (yy_start) = 1 + 2 *
-
 /* Translate the current start state into a value that can be later handed
  * to BEGIN to return to the state.  The YYSTATE alias is for lex
  * compatibility.
  */
 #define YY_START (((yy_start) - 1) / 2)
 #define YYSTATE YY_START
-
 /* Action number for EOF rule of a given start state. */
 #define YY_STATE_EOF(state) (YY_END_OF_BUFFER + state + 1)
-
 /* Special action meaning "start processing a new file". */
 #define YY_NEW_FILE yyrestart(yyin)
-
 #define YY_END_OF_BUFFER_CHAR 0
 
 /* Size of default input buffer. */
@@ -211,7 +227,6 @@ extern int yyleng;
       YY_DO_BEFORE_ACTION; /* set up yytext again */ \
     } \
   while (0)
-
 #define unput(c) yyunput(c, (yytext_ptr))
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
@@ -288,18 +303,16 @@ struct yy_buffer_state
 #define YY_CURRENT_BUFFER ((yy_buffer_stack) \
                            ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
                            : NULL)
-
 /* Same as previous macro, but useful when we know that the buffer stack is not
  * NULL or when we need an lvalue. For internal use only.
  */
 #define YY_CURRENT_BUFFER_LVALUE (yy_buffer_stack)[(yy_buffer_stack_top)]
 
-void *CEvaluationalloc(yy_size_t);
-void *CEvaluationrealloc(void *, yy_size_t);
-void CEvaluationfree(void *);
+void *yyalloc(yy_size_t);
+void *yyrealloc(void *, yy_size_t);
+void yyfree(void *);
 
 #define yy_new_buffer yy_create_buffer
-
 #define yy_set_interactive(is_interactive) \
   {\
     if (! YY_CURRENT_BUFFER ){\
@@ -309,7 +322,6 @@ void CEvaluationfree(void *);
       } \
     YY_CURRENT_BUFFER_LVALUE->yy_is_interactive = is_interactive; \
   }
-
 #define yy_set_bol(at_bol) \
   {\
     if (! YY_CURRENT_BUFFER ){\
@@ -319,12 +331,10 @@ void CEvaluationfree(void *);
       } \
     YY_CURRENT_BUFFER_LVALUE->yy_at_bol = at_bol; \
   }
-
 #define YY_AT_BOL() (YY_CURRENT_BUFFER_LVALUE->yy_at_bol)
 
 /* Begin user sect3 */
-
-typedef unsigned char YY_CHAR;
+typedef flex_uint8_t YY_CHAR;
 
 #define yytext_ptr yytext
 
@@ -339,7 +349,6 @@ typedef unsigned char YY_CHAR;
   (yy_hold_char) = *yy_cp; \
   *yy_cp = '\0'; \
   (yy_c_buf_p) = yy_cp;
-
 #define YY_NUM_RULES 81
 #define YY_END_OF_BUFFER 82
 /* This struct is not used in this scanner,
@@ -349,7 +358,7 @@ struct yy_trans_info
   flex_int32_t yy_verify;
   flex_int32_t yy_nxt;
 };
-static yyconst flex_int16_t yy_accept[391] =
+static const flex_int16_t yy_accept[391] =
 {
   0,
   0,    0,    0,    0,    0,    0,    0,    0,   82,   80,
@@ -396,7 +405,7 @@ static yyconst flex_int16_t yy_accept[391] =
   78,   78,   78,   78,   53,   78,   78,   78,    2,    0
 };
 
-static yyconst YY_CHAR yy_ec[256] =
+static const YY_CHAR yy_ec[256] =
 {
   0,
   1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
@@ -429,7 +438,7 @@ static yyconst YY_CHAR yy_ec[256] =
   1,    1,    1,    1,    1
 };
 
-static yyconst YY_CHAR yy_meta[72] =
+static const YY_CHAR yy_meta[72] =
 {
   0,
   1,    1,    1,    1,    1,    1,    1,    2,    1,    1,
@@ -442,7 +451,7 @@ static yyconst YY_CHAR yy_meta[72] =
   1
 };
 
-static yyconst flex_uint16_t yy_base[396] =
+static const flex_int16_t yy_base[396] =
 {
   0,
   0,    0,    0,    0,   71,    0,  139,  140,  830,  831,
@@ -490,7 +499,7 @@ static yyconst flex_uint16_t yy_base[396] =
   739,  742,  744,  747,  162
 };
 
-static yyconst flex_int16_t yy_def[396] =
+static const flex_int16_t yy_def[396] =
 {
   0,
   390,    1,    1,    1,  390,    5,    1,    1,  390,  390,
@@ -538,7 +547,7 @@ static yyconst flex_int16_t yy_def[396] =
   390,  390,  390,  390,  390
 };
 
-static yyconst flex_uint16_t yy_nxt[903] =
+static const flex_int16_t yy_nxt[903] =
 {
   0,
   10,   11,   12,   13,   14,   10,   10,   15,   16,   10,
@@ -643,7 +652,7 @@ static yyconst flex_uint16_t yy_nxt[903] =
   390,  390
 };
 
-static yyconst flex_int16_t yy_chk[903] =
+static const flex_int16_t yy_chk[903] =
 {
   0,
   1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -755,16 +764,16 @@ static yyconst flex_int16_t yy_chk[903] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "function/CEvaluationLexer.lpp"
+#line 1 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 /* scanner for kinetic functions */
 
-#line 10 "function/CEvaluationLexer.lpp"
+#line 10 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 #include <vector>
 
 #include "copasi/copasi.h"
-#include "CEvaluationNode.h"
-#include "CEvaluationLexer.h"
-#include "CEvaluationParser_yacc.hpp"
+#include "copasi/function/CEvaluationNode.h"
+#include "copasi/function/CEvaluationLexer.h"
+#include "copasi/function/CEvaluationParser_yacc.hpp"
 
 #ifndef YYERRCODE
 #define YYERRCODE 256
@@ -779,7 +788,8 @@ static yyconst flex_int16_t yy_chk[903] =
   mPosition += yyleng;\
   mpNodeList->push_back(mpNode);
 
-#line 756 "<stdout>"
+#line 764 "<stdout>"
+#line 765 "<stdout>"
 
 #define INITIAL 0
 #define sSIGNorVALUE 1
@@ -798,11 +808,11 @@ static yyconst flex_int16_t yy_chk[903] =
 #endif
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy(char *, yyconst char *, int);
+static void yy_flex_strncpy(char *, const char *, int);
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen(yyconst char *);
+static int yy_flex_strlen(const char *);
 #endif
 
 #ifndef YY_NO_INPUT
@@ -883,7 +893,7 @@ static int yy_flex_strlen(yyconst char *);
 YY_DECL
 {
   yy_state_type yy_current_state;
-  char * yy_cp, *yy_bp;
+  char *yy_cp, *yy_bp;
   int yy_act;
 
   if (!(yy_init))
@@ -914,9 +924,9 @@ YY_DECL
     }
 
   {
-#line 36 "function/CEvaluationLexer.lpp"
+#line 36 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
-#line 893 "<stdout>"
+#line 902 "<stdout>"
 
     while (/*CONSTCOND*/1)     /* loops until end-of-file is reached */
       {
@@ -948,10 +958,10 @@ yy_match:
                 yy_current_state = (int) yy_def[yy_current_state];
 
                 if (yy_current_state >= 391)
-                  yy_c = yy_meta[(unsigned int) yy_c];
+                  yy_c = yy_meta[yy_c];
               }
 
-            yy_current_state = yy_nxt[yy_base[yy_current_state] + (flex_int16_t) yy_c];
+            yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
             ++yy_cp;
           }
         while (yy_current_state != 390);
@@ -968,7 +978,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
         switch (yy_act)
           {
-              /* beginning of action switch */
+            /* beginning of action switch */
             case 0: /* must back up */
               /* undo the effects of YY_DO_BEFORE_ACTION */
               *yy_cp = (yy_hold_char);
@@ -978,7 +988,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 1:
               YY_RULE_SETUP
-#line 37 "function/CEvaluationLexer.lpp"
+#line 37 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sOPERATOR);
               mpNode = new CEvaluationNodeNumber(CEvaluationNode::SubType::DOUBLE,
@@ -990,7 +1000,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 2:
               YY_RULE_SETUP
-#line 45 "function/CEvaluationLexer.lpp"
+#line 45 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sOPERATOR);
               mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::EXPONENTIALE,
@@ -1002,7 +1012,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 3:
               YY_RULE_SETUP
-#line 53 "function/CEvaluationLexer.lpp"
+#line 53 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sOPERATOR);
               mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::PI,
@@ -1014,7 +1024,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 4:
               YY_RULE_SETUP
-#line 61 "function/CEvaluationLexer.lpp"
+#line 61 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sOPERATOR);
               mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::True,
@@ -1026,7 +1036,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 5:
               YY_RULE_SETUP
-#line 69 "function/CEvaluationLexer.lpp"
+#line 69 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sOPERATOR);
               mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::False,
@@ -1038,7 +1048,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 6:
               YY_RULE_SETUP
-#line 77 "function/CEvaluationLexer.lpp"
+#line 77 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sOPERATOR);
               mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::Infinity,
@@ -1050,7 +1060,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 7:
               YY_RULE_SETUP
-#line 85 "function/CEvaluationLexer.lpp"
+#line 85 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sOPERATOR);
               mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::NaN,
@@ -1062,7 +1072,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 8:
               YY_RULE_SETUP
-#line 93 "function/CEvaluationLexer.lpp"
+#line 93 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sVALUE);
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::NOT,
@@ -1074,7 +1084,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 9:
               YY_RULE_SETUP
-#line 101 "function/CEvaluationLexer.lpp"
+#line 101 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::LE,
@@ -1086,7 +1096,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 10:
               YY_RULE_SETUP
-#line 109 "function/CEvaluationLexer.lpp"
+#line 109 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::LT,
@@ -1098,7 +1108,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 11:
               YY_RULE_SETUP
-#line 117 "function/CEvaluationLexer.lpp"
+#line 117 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::GE,
@@ -1110,7 +1120,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 12:
               YY_RULE_SETUP
-#line 125 "function/CEvaluationLexer.lpp"
+#line 125 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::GT,
@@ -1122,7 +1132,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 13:
               YY_RULE_SETUP
-#line 133 "function/CEvaluationLexer.lpp"
+#line 133 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::NE,
@@ -1134,7 +1144,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 14:
               YY_RULE_SETUP
-#line 141 "function/CEvaluationLexer.lpp"
+#line 141 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::EQ,
@@ -1146,7 +1156,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 15:
               YY_RULE_SETUP
-#line 149 "function/CEvaluationLexer.lpp"
+#line 149 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::AND,
@@ -1158,7 +1168,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 16:
               YY_RULE_SETUP
-#line 157 "function/CEvaluationLexer.lpp"
+#line 157 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::XOR,
@@ -1170,7 +1180,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 17:
               YY_RULE_SETUP
-#line 165 "function/CEvaluationLexer.lpp"
+#line 165 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::OR,
@@ -1183,7 +1193,7 @@ do_action:  /* This label is used only to access EOF actions. */
             case 18:
               /* rule 18 can match eol */
               YY_RULE_SETUP
-#line 173 "function/CEvaluationLexer.lpp"
+#line 173 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sOPERATOR);
               mpNode = new CEvaluationNodeUnit(CEvaluationNode::SubType::DEFAULT,
@@ -1196,7 +1206,7 @@ do_action:  /* This label is used only to access EOF actions. */
             case 19:
               /* rule 19 can match eol */
               YY_RULE_SETUP
-#line 181 "function/CEvaluationLexer.lpp"
+#line 181 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sOPERATOR);
               mpNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN,
@@ -1208,7 +1218,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 20:
               YY_RULE_SETUP
-#line 189 "function/CEvaluationLexer.lpp"
+#line 189 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sOPERATOR);
               mpNode = new CEvaluationNodeObject(CEvaluationNode::SubType::POINTER,
@@ -1223,7 +1233,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 197 "function/CEvaluationLexer.lpp"
+#line 197 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::LOG,
                                                    yytext);
@@ -1237,7 +1247,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 204 "function/CEvaluationLexer.lpp"
+#line 204 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::LOG10,
                                                    yytext);
@@ -1251,7 +1261,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 211 "function/CEvaluationLexer.lpp"
+#line 211 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::EXP,
                                                    yytext);
@@ -1265,7 +1275,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 218 "function/CEvaluationLexer.lpp"
+#line 218 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SIN,
                                                    yytext);
@@ -1279,7 +1289,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 225 "function/CEvaluationLexer.lpp"
+#line 225 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::COS,
                                                    yytext);
@@ -1293,7 +1303,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 232 "function/CEvaluationLexer.lpp"
+#line 232 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::TAN,
                                                    yytext);
@@ -1307,7 +1317,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 239 "function/CEvaluationLexer.lpp"
+#line 239 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SEC,
                                                    yytext);
@@ -1321,7 +1331,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 246 "function/CEvaluationLexer.lpp"
+#line 246 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::CSC,
                                                    yytext);
@@ -1335,7 +1345,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 253 "function/CEvaluationLexer.lpp"
+#line 253 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::COT,
                                                    yytext);
@@ -1349,7 +1359,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 260 "function/CEvaluationLexer.lpp"
+#line 260 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SINH,
                                                    yytext);
@@ -1363,7 +1373,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 267 "function/CEvaluationLexer.lpp"
+#line 267 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::COSH,
                                                    yytext);
@@ -1377,7 +1387,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 274 "function/CEvaluationLexer.lpp"
+#line 274 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::TANH,
                                                    yytext);
@@ -1391,7 +1401,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 281 "function/CEvaluationLexer.lpp"
+#line 281 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SECH,
                                                    yytext);
@@ -1405,7 +1415,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 288 "function/CEvaluationLexer.lpp"
+#line 288 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::CSCH,
                                                    yytext);
@@ -1419,7 +1429,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 295 "function/CEvaluationLexer.lpp"
+#line 295 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::COTH,
                                                    yytext);
@@ -1433,7 +1443,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 302 "function/CEvaluationLexer.lpp"
+#line 302 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCSIN,
                                                    yytext);
@@ -1447,7 +1457,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 309 "function/CEvaluationLexer.lpp"
+#line 309 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCOS,
                                                    yytext);
@@ -1461,7 +1471,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 316 "function/CEvaluationLexer.lpp"
+#line 316 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCTAN,
                                                    yytext);
@@ -1475,7 +1485,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 323 "function/CEvaluationLexer.lpp"
+#line 323 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCSEC,
                                                    yytext);
@@ -1489,7 +1499,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 330 "function/CEvaluationLexer.lpp"
+#line 330 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCSC,
                                                    yytext);
@@ -1503,7 +1513,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 337 "function/CEvaluationLexer.lpp"
+#line 337 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCOT,
                                                    yytext);
@@ -1517,7 +1527,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 344 "function/CEvaluationLexer.lpp"
+#line 344 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCSINH,
                                                    yytext);
@@ -1531,7 +1541,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 351 "function/CEvaluationLexer.lpp"
+#line 351 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCOSH,
                                                    yytext);
@@ -1545,7 +1555,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 358 "function/CEvaluationLexer.lpp"
+#line 358 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCTANH,
                                                    yytext);
@@ -1559,7 +1569,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 365 "function/CEvaluationLexer.lpp"
+#line 365 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCSECH,
                                                    yytext);
@@ -1573,7 +1583,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 372 "function/CEvaluationLexer.lpp"
+#line 372 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCSCH,
                                                    yytext);
@@ -1587,7 +1597,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 379 "function/CEvaluationLexer.lpp"
+#line 379 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCOTH,
                                                    yytext);
@@ -1601,7 +1611,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 386 "function/CEvaluationLexer.lpp"
+#line 386 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SIGN,
                                                    yytext);
@@ -1615,7 +1625,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 393 "function/CEvaluationLexer.lpp"
+#line 393 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SQRT,
                                                    yytext);
@@ -1629,7 +1639,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 400 "function/CEvaluationLexer.lpp"
+#line 400 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ABS,
                                                    yytext);
@@ -1643,7 +1653,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 407 "function/CEvaluationLexer.lpp"
+#line 407 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::FLOOR,
                                                    yytext);
@@ -1657,7 +1667,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 414 "function/CEvaluationLexer.lpp"
+#line 414 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::CEIL,
                                                    yytext);
@@ -1671,7 +1681,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 421 "function/CEvaluationLexer.lpp"
+#line 421 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::FACTORIAL,
                                                    yytext);
@@ -1685,7 +1695,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 428 "function/CEvaluationLexer.lpp"
+#line 428 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::RUNIFORM,
                                                    yytext);
@@ -1699,7 +1709,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 435 "function/CEvaluationLexer.lpp"
+#line 435 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::RGAMMA,
                                                    yytext);
@@ -1713,7 +1723,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 442 "function/CEvaluationLexer.lpp"
+#line 442 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::RPOISSON,
                                                    yytext);
@@ -1727,7 +1737,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 449 "function/CEvaluationLexer.lpp"
+#line 449 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::RNORMAL,
                                                    yytext);
@@ -1741,7 +1751,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 456 "function/CEvaluationLexer.lpp"
+#line 456 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::MAX,
                                                    yytext);
@@ -1755,7 +1765,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 463 "function/CEvaluationLexer.lpp"
+#line 463 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::MIN,
                                                    yytext);
@@ -1769,7 +1779,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 470 "function/CEvaluationLexer.lpp"
+#line 470 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeDelay(CEvaluationNode::SubType::DELAY,
                                                 yytext);
@@ -1783,7 +1793,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 477 "function/CEvaluationLexer.lpp"
+#line 477 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mpNode = new CEvaluationNodeChoice(CEvaluationNode::SubType::IF,
                                                  yytext);
@@ -1799,12 +1809,12 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 484 "function/CEvaluationLexer.lpp"
+#line 484 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               {
                 std::string tmp(yytext);
                 mpNode = new CEvaluationNodeCall(CEvaluationNode::SubType::EXPRESSION,
-                tmp.substr(0, tmp.length() - 1));
+                                                 tmp.substr(0, tmp.length() - 1));
               }
               COMMON_ACTION;
               return TOKEN_CALL;
@@ -1814,12 +1824,12 @@ do_action:  /* This label is used only to access EOF actions. */
             case 63:
               /* rule 63 can match eol */
               YY_RULE_SETUP
-#line 494 "function/CEvaluationLexer.lpp"
+#line 494 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               {
                 std::string tmp(yytext);
                 mpNode = new CEvaluationNodeCall(CEvaluationNode::SubType::FUNCTION,
-                tmp.substr(0, tmp.length() - 1));
+                                                 tmp.substr(0, tmp.length() - 1));
               }
               COMMON_ACTION;
               return TOKEN_CALL;
@@ -1828,7 +1838,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 64:
               YY_RULE_SETUP
-#line 504 "function/CEvaluationLexer.lpp"
+#line 504 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sVALUE);
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::MINUS,
@@ -1840,7 +1850,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 65:
               YY_RULE_SETUP
-#line 512 "function/CEvaluationLexer.lpp"
+#line 512 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sVALUE);
               mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::PLUS,
@@ -1852,7 +1862,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 66:
               YY_RULE_SETUP
-#line 520 "function/CEvaluationLexer.lpp"
+#line 520 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::POWER,
@@ -1864,7 +1874,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 67:
               YY_RULE_SETUP
-#line 528 "function/CEvaluationLexer.lpp"
+#line 528 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY,
@@ -1876,7 +1886,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 68:
               YY_RULE_SETUP
-#line 536 "function/CEvaluationLexer.lpp"
+#line 536 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::DIVIDE,
@@ -1888,7 +1898,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 69:
               YY_RULE_SETUP
-#line 544 "function/CEvaluationLexer.lpp"
+#line 544 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MODULUS,
@@ -1900,7 +1910,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 70:
               YY_RULE_SETUP
-#line 552 "function/CEvaluationLexer.lpp"
+#line 552 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::REMAINDER,
@@ -1912,7 +1922,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 71:
               YY_RULE_SETUP
-#line 560 "function/CEvaluationLexer.lpp"
+#line 560 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::PLUS,
@@ -1924,7 +1934,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 72:
               YY_RULE_SETUP
-#line 568 "function/CEvaluationLexer.lpp"
+#line 568 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MINUS,
@@ -1936,7 +1946,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 73:
               YY_RULE_SETUP
-#line 576 "function/CEvaluationLexer.lpp"
+#line 576 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mPosition += yyleng;
@@ -1949,7 +1959,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 74:
               YY_RULE_SETUP
-#line 585 "function/CEvaluationLexer.lpp"
+#line 585 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mPosition += yyleng;
@@ -1962,7 +1972,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 75:
               YY_RULE_SETUP
-#line 594 "function/CEvaluationLexer.lpp"
+#line 594 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sSIGNorVALUE);
               mPosition += yyleng;
@@ -1975,7 +1985,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 76:
               YY_RULE_SETUP
-#line 603 "function/CEvaluationLexer.lpp"
+#line 603 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sOPERATOR);
               mPosition += yyleng;
@@ -1988,7 +1998,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 77:
               YY_RULE_SETUP
-#line 612 "function/CEvaluationLexer.lpp"
+#line 612 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sOPERATOR);
               mPosition += yyleng;
@@ -2002,7 +2012,7 @@ do_action:  /* This label is used only to access EOF actions. */
             case 78:
               /* rule 78 can match eol */
               YY_RULE_SETUP
-#line 621 "function/CEvaluationLexer.lpp"
+#line 621 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               BEGIN(sOPERATOR);
               mpNode = new CEvaluationNodeVariable(CEvaluationNode::SubType::DEFAULT,
@@ -2015,7 +2025,7 @@ do_action:  /* This label is used only to access EOF actions. */
             case 79:
               /* rule 79 can match eol */
               YY_RULE_SETUP
-#line 629 "function/CEvaluationLexer.lpp"
+#line 629 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               mPosition += yyleng;
               // mpNode = new CEvaluationNodeWhiteSpace(CEvaluationNode::SubType::DEFAULT,
@@ -2028,13 +2038,13 @@ do_action:  /* This label is used only to access EOF actions. */
             case YY_STATE_EOF(sSIGNorVALUE):
             case YY_STATE_EOF(sOPERATOR):
             case YY_STATE_EOF(sVALUE):
-#line 636 "function/CEvaluationLexer.lpp"
+#line 636 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
               return 0;
               YY_BREAK
 
             case 80:
               YY_RULE_SETUP
-#line 638 "function/CEvaluationLexer.lpp"
+#line 638 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
 
               CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 2, mPosition);
               return YYERRCODE;
@@ -2043,10 +2053,10 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 81:
               YY_RULE_SETUP
-#line 643 "function/CEvaluationLexer.lpp"
+#line 643 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"
               ECHO;
               YY_BREAK
-#line 1935 "<stdout>"
+#line 1944 "<stdout>"
 
             case YY_END_OF_BUFFER:
             {
@@ -2234,9 +2244,9 @@ void yyFlexLexer::ctor_common()
 yyFlexLexer::~yyFlexLexer()
 {
   delete [] yy_state_buf;
-  CEvaluationfree(yy_start_stack);
+  yyfree(yy_start_stack);
   yy_delete_buffer(YY_CURRENT_BUFFER);
-  CEvaluationfree(yy_buffer_stack);
+  yyfree(yy_buffer_stack);
 }
 
 /* The contents of this function are C++ specific, so the () macro is not used.
@@ -2315,7 +2325,7 @@ int yyFlexLexer::yy_get_next_buffer()
 {
   char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
   char *source = (yytext_ptr);
-  yy_size_t number_to_move, i;
+  int number_to_move, i;
   int ret_val;
 
   if ((yy_c_buf_p) > &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars) + 1])
@@ -2345,7 +2355,7 @@ int yyFlexLexer::yy_get_next_buffer()
   /* Try to read more data. */
 
   /* First move last chars to start of buffer. */
-  number_to_move = (yy_size_t)((yy_c_buf_p) - (yytext_ptr)) - 1;
+  number_to_move = (int)((yy_c_buf_p) - (yytext_ptr) - 1);
 
   for (i = 0; i < number_to_move; ++i)
     *(dest++) = *(source++);
@@ -2382,7 +2392,8 @@ int yyFlexLexer::yy_get_next_buffer()
 
               b->yy_ch_buf = (char *)
                              /* Include room in for 2 EOB chars. */
-                             CEvaluationrealloc((void *) b->yy_ch_buf, b->yy_buf_size + 2);
+                             yyrealloc((void *) b->yy_ch_buf,
+                                       (yy_size_t)(b->yy_buf_size + 2));
             }
           else
             /* Can't grow it, we don't own it. */
@@ -2427,14 +2438,18 @@ int yyFlexLexer::yy_get_next_buffer()
   else
     ret_val = EOB_ACT_CONTINUE_SCAN;
 
-  if ((int)((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size)
+  if (((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size)
     {
       /* Extend the array by 50%, plus the number we really need. */
       int new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
-      YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) CEvaluationrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, new_size);
+      YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyrealloc(
+                                              (void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, (yy_size_t) new_size);
 
       if (! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf)
         YY_FATAL_ERROR("out of dynamic memory in yy_get_next_buffer()");
+
+      /* "- 2" to take care of EOB's */
+      YY_CURRENT_BUFFER_LVALUE->yy_buf_size = (int)(new_size - 2);
     }
 
   (yy_n_chars) += number_to_move;
@@ -2470,10 +2485,10 @@ yy_state_type yyFlexLexer::yy_get_previous_state()
           yy_current_state = (int) yy_def[yy_current_state];
 
           if (yy_current_state >= 391)
-            yy_c = yy_meta[(unsigned int) yy_c];
+            yy_c = yy_meta[yy_c];
         }
 
-      yy_current_state = yy_nxt[yy_base[yy_current_state] + (flex_int16_t) yy_c];
+      yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
     }
 
   return yy_current_state;
@@ -2502,10 +2517,10 @@ yy_state_type yyFlexLexer::yy_try_NUL_trans(yy_state_type yy_current_state)
       yy_current_state = (int) yy_def[yy_current_state];
 
       if (yy_current_state >= 391)
-        yy_c = yy_meta[(unsigned int) yy_c];
+        yy_c = yy_meta[yy_c];
     }
 
-  yy_current_state = yy_nxt[yy_base[yy_current_state] + (flex_int16_t) yy_c];
+  yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
   yy_is_jam = (yy_current_state == 390);
 
   return yy_is_jam ? 0 : yy_current_state;
@@ -2527,7 +2542,7 @@ void yyFlexLexer::yyunput(int c, char* yy_bp)
       /* +2 for EOB chars. */
       int number_to_move = (yy_n_chars) + 2;
       char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
-                     YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
+                YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
       char *source =
         &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move];
 
@@ -2570,7 +2585,7 @@ int yyFlexLexer::yyinput()
       else
         {
           /* need more input */
-          int offset = (yy_c_buf_p) - (yytext_ptr);
+          int offset = (int)((yy_c_buf_p) - (yytext_ptr));
           ++(yy_c_buf_p);
 
           switch (yy_get_next_buffer())
@@ -2589,7 +2604,7 @@ int yyFlexLexer::yyinput()
                 /* Reset buffer status. */
                 yyrestart(yyin);
 
-                /*FALLTHROUGH*/
+              /*FALLTHROUGH*/
 
               case EOB_ACT_END_OF_FILE:
               {
@@ -2646,6 +2661,11 @@ void yyFlexLexer::yyrestart(std::istream& input_file)
  */
 void yyFlexLexer::yyrestart(std::istream* input_file)
 {
+  if (! input_file)
+    {
+      input_file = &yyin;
+    }
+
   yyrestart(*input_file);
 }
 
@@ -2703,17 +2723,17 @@ YY_BUFFER_STATE yyFlexLexer::yy_create_buffer(std::istream& file, int size)
 {
   YY_BUFFER_STATE b;
 
-  b = (YY_BUFFER_STATE) CEvaluationalloc(sizeof(struct yy_buffer_state));
+  b = (YY_BUFFER_STATE) yyalloc(sizeof(struct yy_buffer_state));
 
   if (! b)
     YY_FATAL_ERROR("out of dynamic memory in yy_create_buffer()");
 
-  b->yy_buf_size = (yy_size_t)size;
+  b->yy_buf_size = size;
 
   /* yy_ch_buf has to be 2 characters longer than the size given because
    * we need to put in 2 end-of-buffer characters.
    */
-  b->yy_ch_buf = (char *) CEvaluationalloc(b->yy_buf_size + 2);
+  b->yy_ch_buf = (char *) yyalloc((yy_size_t)(b->yy_buf_size + 2));
 
   if (! b->yy_ch_buf)
     YY_FATAL_ERROR("out of dynamic memory in yy_create_buffer()");
@@ -2750,9 +2770,9 @@ void yyFlexLexer::yy_delete_buffer(YY_BUFFER_STATE b)
     YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE) 0;
 
   if (b->yy_is_our_buffer)
-    CEvaluationfree((void *) b->yy_ch_buf);
+    yyfree((void *) b->yy_ch_buf);
 
-  CEvaluationfree((void *) b);
+  yyfree((void *) b);
 }
 
 /* Initializes or reinitializes a buffer.
@@ -2870,7 +2890,7 @@ void yyFlexLexer::yypop_buffer_state(void)
  */
 void yyFlexLexer::yyensure_buffer_stack(void)
 {
-  int num_to_alloc;
+  yy_size_t num_to_alloc;
 
   if (!(yy_buffer_stack))
     {
@@ -2880,7 +2900,7 @@ void yyFlexLexer::yyensure_buffer_stack(void)
        * immediate realloc on the next call.
            */
       num_to_alloc = 1; /* After all that talk, this was set to 1 anyways... */
-      (yy_buffer_stack) = (struct yy_buffer_state**)CEvaluationalloc
+      (yy_buffer_stack) = (struct yy_buffer_state**)yyalloc
                           (num_to_alloc * sizeof(struct yy_buffer_state*)
                           );
 
@@ -2901,7 +2921,7 @@ void yyFlexLexer::yyensure_buffer_stack(void)
       yy_size_t grow_size = 8 /* arbitrary grow size */;
 
       num_to_alloc = (yy_buffer_stack_max) + grow_size;
-      (yy_buffer_stack) = (struct yy_buffer_state**)CEvaluationrealloc
+      (yy_buffer_stack) = (struct yy_buffer_state**)yyrealloc
                           ((yy_buffer_stack),
                            num_to_alloc * sizeof(struct yy_buffer_state*)
                           );
@@ -2925,10 +2945,11 @@ void yyFlexLexer::yy_push_state(int _new_state)
       new_size = (yy_size_t)(yy_start_stack_depth) * sizeof(int);
 
       if (!(yy_start_stack))
-        (yy_start_stack) = (int *) CEvaluationalloc(new_size);
+        (yy_start_stack) = (int *) yyalloc(new_size);
 
       else
-        (yy_start_stack) = (int *) CEvaluationrealloc((void *)(yy_start_stack), new_size);
+        (yy_start_stack) = (int *) yyrealloc(
+                             (void *)(yy_start_stack), new_size);
 
       if (!(yy_start_stack))
         YY_FATAL_ERROR("out of memory expanding start-condition stack");
@@ -2956,7 +2977,7 @@ int yyFlexLexer::yy_top_state()
 #define YY_EXIT_FAILURE 2
 #endif
 
-void yyFlexLexer::LexerError(yyconst char* msg)
+void yyFlexLexer::LexerError(const char* msg)
 {
   std::cerr << msg << std::endl;
   exit(YY_EXIT_FAILURE);
@@ -2986,7 +3007,7 @@ void yyFlexLexer::LexerError(yyconst char* msg)
  */
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy(char* s1, yyconst char * s2, int n)
+static void yy_flex_strncpy(char* s1, const char * s2, int n)
 {
 
   int i;
@@ -2997,7 +3018,7 @@ static void yy_flex_strncpy(char* s1, yyconst char * s2, int n)
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen(yyconst char * s)
+static int yy_flex_strlen(const char * s)
 {
   int n;
 
@@ -3008,12 +3029,12 @@ static int yy_flex_strlen(yyconst char * s)
 }
 #endif
 
-void *CEvaluationalloc(yy_size_t  size)
+void *yyalloc(yy_size_t  size)
 {
   return malloc(size);
 }
 
-void *CEvaluationrealloc(void * ptr, yy_size_t  size)
+void *yyrealloc(void * ptr, yy_size_t  size)
 {
 
   /* The cast to (char *) in the following accommodates both
@@ -3026,11 +3047,11 @@ void *CEvaluationrealloc(void * ptr, yy_size_t  size)
   return realloc(ptr, size);
 }
 
-void CEvaluationfree(void * ptr)
+void yyfree(void * ptr)
 {
-  free((char *) ptr);    /* see CEvaluationrealloc() for (char *) cast */
+  free((char *) ptr);    /* see yyrealloc() for (char *) cast */
 }
 
 #define YYTABLES_NAME "yytables"
 
-#line 643 "function/CEvaluationLexer.lpp"
+#line 643 "/raid/shoops/git/COPASI/copasi/function/CEvaluationLexer.lpp"

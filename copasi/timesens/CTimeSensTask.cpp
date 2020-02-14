@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -210,7 +210,7 @@ bool CTimeSensTask::process(const bool & useInitialValues)
   C_FLOAT64 StepNumber = fabs(Duration) / StepSize;
 
   if (mpTimeSensProblem->getAutomaticStepSize() ||
-      isnan(StepNumber) ||
+      std::isnan(StepNumber) ||
       StepNumber < 1.0)
     {
       StepNumber = 1.0;
@@ -544,7 +544,6 @@ void CTimeSensTask::signalMethodChanged()
 
 const CTimeSeries & CTimeSensTask::getTimeSeries() const
 {return mTimeSeries;}
-
 
 bool CTimeSensTask::updateMatrices()
 {

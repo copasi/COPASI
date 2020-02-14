@@ -278,8 +278,8 @@ void CSteadyStateMethod::doJacobian(CMatrix< C_FLOAT64 > & jacobian,
 {
   mpContainer->setState(mSteadyState);
 
-  mpContainer->calculateJacobian(jacobian, *mpDerivationResolution, false);
-  mpContainer->calculateJacobian(jacobianX, *mpDerivationResolution, true);
+  mpContainer->calculateJacobian(jacobian, *mpDerivationFactor, false);
+  mpContainer->calculateJacobian(jacobianX, *mpDerivationFactor, true);
 }
 
 C_FLOAT64 CSteadyStateMethod::getStabilityResolution()

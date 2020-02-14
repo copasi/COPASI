@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -107,16 +112,16 @@ QwtDoubleRect C2DCurveData::boundingRect() const
   mLastRectangle = mSize;
 
   // We have to remember whether we have an initial NaN
-  bool MinXisNaN = isnan(mMinX);
-  bool MaxXisNaN = isnan(mMaxX);
-  bool MinYisNaN = isnan(mMinY);
-  bool MaxYisNaN = isnan(mMaxY);
+  bool MinXisNaN = std::isnan(mMinX);
+  bool MaxXisNaN = std::isnan(mMaxX);
+  bool MinYisNaN = std::isnan(mMinY);
+  bool MaxYisNaN = std::isnan(mMaxY);
 
   while (xIt < end)
     {
       const double xv = *xIt++;
 
-      if (!isnan(xv))
+      if (!std::isnan(xv))
         {
           if ((xv < mMinX || MinXisNaN) && xv > -std::numeric_limits< double >::infinity())
             {
@@ -133,7 +138,7 @@ QwtDoubleRect C2DCurveData::boundingRect() const
 
       const double yv = *yIt++;
 
-      if (!isnan(yv))
+      if (!std::isnan(yv))
         {
           if ((yv < mMinY || MinYisNaN) && yv > -std::numeric_limits< double >::infinity())
             {
@@ -149,7 +154,7 @@ QwtDoubleRect C2DCurveData::boundingRect() const
         }
     }
 
-  if (isnan(mMinX + mMaxX + mMinY + mMaxY))
+  if (std::isnan(mMinX + mMaxX + mMinY + mMaxY))
     return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
 
   // We need to avoid very small data ranges (absolute and relative)
@@ -173,7 +178,6 @@ QwtDoubleRect C2DCurveData::boundingRect() const
       mMinX = mMinX - minRange * 0.5;
       mMaxX = mMaxX + minRange * 0.5;
     }
-
 
   return QwtDoubleRect(mMinX, mMinY, mMaxX - mMinX, mMaxY - mMinY);
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -203,7 +203,7 @@ bool COptItem::setStartValue(const C_FLOAT64 & value)
 
 const C_FLOAT64 & COptItem::getStartValue() const
 {
-  if (!isnan(*mpParmStartValue))
+  if (!std::isnan(*mpParmStartValue))
     return *mpParmStartValue;
 
   if (mpObjectValue == NULL)
@@ -388,7 +388,7 @@ bool COptItem::compile(CObjectInterface::ContainerList listOfContainer)
       success = false;
     }
 
-  if (isnan(*mpParmStartValue))
+  if (std::isnan(*mpParmStartValue))
     *mpParmStartValue = *mpObjectValue;
 
   return success;

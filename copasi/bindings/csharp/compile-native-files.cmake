@@ -1,3 +1,8 @@
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -68,6 +73,7 @@ set (SWIG_ENUM_FIX_FILES
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CReaction.cs"
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CModel.cs"
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CUndoData.cs"
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CNewtonMethod.cs"
      )
 
 

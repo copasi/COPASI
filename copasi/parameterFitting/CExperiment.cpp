@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -448,7 +448,7 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
         for (; pDataDependent != pEnd;
              pDataDependent++, ppDependentValues++, pScale++, residuals++)
           {
-            if (isnan(*pDataDependent))
+            if (std::isnan(*pDataDependent))
               {
                 // We ignore missing data, i.e., the residual is 0.
                 *residuals = 0.0;
@@ -467,7 +467,7 @@ C_FLOAT64 CExperiment::sumOfSquares(const size_t & index,
         for (; pDataDependent != pEnd;
              pDataDependent++, ppDependentValues++, pScale++)
           {
-            if (isnan(*pDataDependent)) continue;
+            if (std::isnan(*pDataDependent)) continue;
 
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
             Residual = (*pDataDependent - **ppDependentValues) / std::max(1.0, **ppDependentValues);
@@ -533,7 +533,7 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const size_t & index,
         {
           *dependentValues = **ppDependentValues;
 
-          if (isnan(*pDataDependent)) continue;
+          if (std::isnan(*pDataDependent)) continue;
 
 #ifdef COPASI_PARAMETERFITTING_RESIDUAL_SCALING
           Residual = (*pDataDependent - *dependentValues) / std::max(1.0, *dependentValues);
@@ -651,7 +651,7 @@ bool CExperiment::calculateStatistics()
           Residual = (*pDataDependentCalculated - *pDataDependent) **pScale;
 #endif
 
-          if (isnan(Residual)) continue;
+          if (std::isnan(Residual)) continue;
 
           mMean += Residual;
 
@@ -710,7 +710,7 @@ bool CExperiment::calculateStatistics()
           Residual = mMean - (*pDataDependentCalculated - *pDataDependent) **pScale;
 #endif
 
-          if (isnan(Residual)) continue;
+          if (std::isnan(Residual)) continue;
 
           mMeanSD += Residual * Residual;
         }
@@ -1040,7 +1040,7 @@ bool CExperiment::read(std::istream & in,
       mDataDependent.applyPivot(Pivot);
 
       for (mNumDataRows--; mNumDataRows != C_INVALID_INDEX; mNumDataRows--)
-        if (!isnan(mDataTime[mNumDataRows])) break;
+        if (!std::isnan(mDataTime[mNumDataRows])) break;
 
       mNumDataRows++;
     }
@@ -1072,7 +1072,7 @@ bool CExperiment::calculateWeights()
       {
         C_FLOAT64 & Data = mDataDependent[i][j];
 
-        if (!isnan(Data))
+        if (!std::isnan(Data))
           {
             mColumnValidValueCount[j]++;
             mMeans[j] += Data;
@@ -1628,7 +1628,7 @@ C_FLOAT64 CExperiment::getErrorSum(const CObjectInterface * pObject) const
     {
       Residual = Weight * (*pDataDependentCalculated - *pDataDependent);
 
-      if (isnan(Residual)) continue;
+      if (std::isnan(Residual)) continue;
 
       Mean += Residual;
     }
@@ -1665,7 +1665,7 @@ C_FLOAT64 CExperiment::getErrorMeanSD(const CObjectInterface * pObject,
       Residual = errorMean - (*pDataDependentCalculated - *pDataDependent) **pScale;
 #endif
 
-      if (isnan(Residual)) continue;
+      if (std::isnan(Residual)) continue;
 
       MeanSD += Residual * Residual;
     }

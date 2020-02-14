@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -666,7 +666,7 @@ bool CMathContainer::isStateValid() const
 
   for (; pIt != pEnd; ++pIt)
     {
-      if (isnan(*pIt))
+      if (std::isnan(*pIt))
         {
           return false;
         }
@@ -796,7 +796,7 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
 
             break;
 
-            // These are fixed event targets the absolute tolerance can be large since they do not change
+          // These are fixed event targets the absolute tolerance can be large since they do not change
           default:
             *pAtol = std::max(1.0, *pAtol);
         }
@@ -1663,7 +1663,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
       // We need to replace variables, expand called trees, and handle discrete nodes.
       switch (itNode->mainType() | itNode->subType())
         {
-            // Handle object nodes which are of type CN and AVOGADRO
+          // Handle object nodes which are of type CN and AVOGADRO
           case (CEvaluationNode::MainType::OBJECT | CEvaluationNode::SubType::AVOGADRO):
           case (CEvaluationNode::MainType::OBJECT | CEvaluationNode::SubType::CN):
           {
@@ -2523,7 +2523,7 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
             break;
 
-            // Everything which is not a value must be calculated.
+          // Everything which is not a value must be calculated.
           default:
             RequestedExtensive.insert(pObject);
             RequestedIntensive.insert(pObject);
@@ -2622,11 +2622,11 @@ void CMathContainer::createApplyInitialValuesSequence()
 
             break;
 
-            // Delay values are always calculate in a separate step
+          // Delay values are always calculate in a separate step
           case CMath::ValueType::DelayValue:
             break;
 
-            // Everything else must be calculated.
+          // Everything else must be calculated.
           default:
             Requested.insert(pObject);
             break;
@@ -4600,7 +4600,7 @@ void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree,
             createDiscontinuityDataEvent(*itNode);
             break;
 
-            // Call nodes and variables are eliminated.
+          // Call nodes and variables are eliminated.
           case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::FUNCTION):
           case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::EXPRESSION):
           case (CEvaluationNode::MainType::VARIABLE | CEvaluationNode::SubType::DEFAULT):

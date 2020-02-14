@@ -17,11 +17,11 @@
   if (yychar != YYERRCODE) correctErrorPosition(); \
   CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
 
-#include "copasi.h"
-#include "CChemEqParser.h"
+#include "copasi/copasi.h"
+#include "copasi/model/CChemEqParser.h"
 
-#include "utilities/CCopasiMessage.h"
-#include "utilities/utility.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/utility.h"
 
 #undef yyparse
 #define yyparse CChemEqParserBase::yyparse

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -252,7 +252,7 @@ bool CMathEventQueue::addAssignment(const C_FLOAT64 & executionTime,
   // If the assignment is in the future or it has a priority the
   // cascading level must be zero.
   if (executionTime > *mpTime ||
-      !isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
+      !std::isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
     CascadingLevel = 0;
 
   pEvent->addPendingAction(mActions.insert(std::make_pair(CKey(executionTime, equality, CascadingLevel),
@@ -273,7 +273,7 @@ bool CMathEventQueue::addCalculation(const C_FLOAT64 & executionTime,
   // If the assignment is in the future or it has a priority the
   // cascading level must be zero.
   if (executionTime > *mpTime ||
-      !isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
+      !std::isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
     CascadingLevel = 0;
 
   pEvent->addPendingAction(mActions.insert(std::make_pair(CKey(executionTime, equality, CascadingLevel),
@@ -418,7 +418,7 @@ CMathEventQueue::iterator CMathEventQueue::getAction()
   for (; itAction != PendingActions.second; ++itAction)
     {
       // Events without priority are ignored
-      if (isnan(itAction->second.getPriority()))
+      if (std::isnan(itAction->second.getPriority()))
         {
           continue;
         }
@@ -445,18 +445,18 @@ CMathEventQueue::iterator CMathEventQueue::getAction()
 
   switch (PriorityActions.size())
     {
-        // No prioritized actions
+      // No prioritized actions
       case 0:
         // We arbitrarily pick the first
         return PendingActions.first;
         break;
 
-        // One action has the highest priority
+      // One action has the highest priority
       case 1:
         return PriorityActions[0];
         break;
 
-        // Pick one randomly
+      // Pick one randomly
       default:
         return PriorityActions[mpContainer->getRandomGenerator().getRandomU(PriorityActions.size() - 1)];
         break;

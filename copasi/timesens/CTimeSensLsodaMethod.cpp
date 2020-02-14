@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,10 +7,6 @@
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
-
-
-
-
 
 #include "copasi/copasi.h"
 
@@ -161,7 +157,6 @@ void CTimeSensLsodaMethod::stateChange(const CMath::StateChange & change)
 
       //the event has changed variables in the math container, so the state for the integrator needs to be updated
       memcpy(mVariables.array(), mpContainerStateTime, (mSystemSize + 1) * sizeof(C_FLOAT64)); //TODO shift?
-
     }
 }
 
@@ -277,7 +272,6 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
                   mLsodaStatus = -33;
                   mRootCounter = 0;
                 }
-
             }
 
           // Try without over shooting.
@@ -414,8 +408,8 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::step(const double & deltaT,
             saveState(mLastRootState, ROOT);
             break;
 
-            // The break statement is intentionally missing since we
-            // have to continue to check the root masking state.
+          // The break statement is intentionally missing since we
+          // have to continue to check the root masking state.
           default:
 
             // We made a successful step and therefore invalidate the last root state
@@ -532,7 +526,6 @@ void CTimeSensLsodaMethod::start()
 
   destroyRootMask();
 
-
   //init size of the system
   mData.dim = (C_INT)(1 + mSystemSize * (1 + mNumParameters)); //including time
 
@@ -560,7 +553,7 @@ void CTimeSensLsodaMethod::start()
   mJacobian.resize(mSystemSize, mSystemSize);
   mdRate_dPar.resize(mSystemSize, mNumParameters);
 
-  mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getCountFixedEventTargets() ;
+  mpYdot = mpContainer->getRate(*mpReducedModel).array() + mpContainer->getCountFixedEventTargets();
 
   //init absolute tolerances for the extended ODE
   CVector< C_FLOAT64 > tmpAtol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
@@ -610,10 +603,10 @@ void CTimeSensLsodaMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_F
 void CTimeSensLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
   /*
-  #ifdef DEBUG_NUMERICS
+#ifdef DEBUG_NUMERICS
     std::cout << "State:     " << mpContainer->getState(false) << std::endl;
     std::cout << "Rate:      " << mpContainer->getRate(false) << std::endl;
-  #endif // DEBUG_NUMERICS
+#endif // DEBUG_NUMERICS
   */
   assert(y == mVariables.array());
 
@@ -965,7 +958,7 @@ CTimeSensMethod::Status CTimeSensLsodaMethod::peekAhead()
 bool CTimeSensLsodaMethod::hasStateChanged(const CVectorCore< C_FLOAT64 > & startState) const
 {
   // Check whether we are at the start of the integrations, i.e., the start state time is NaN.
-  if (isnan(startState[mpContainer->getCountFixedEventTargets()]))
+  if (std::isnan(startState[mpContainer->getCountFixedEventTargets()]))
     {
       return true;
     }
@@ -1034,7 +1027,6 @@ void CTimeSensLsodaMethod::copySensitivitiesToResultMatrix()
         mpProblem->getScaledStateResult()[index] =  mVariables[i + (j + 1) * mSystemSize + 1]
             * *mParameterTransientValuePointers[j]
             / *(mpContainerStateTime + 1 + i);
-
       }
 
   //calculate sensitivities for assignments
@@ -1060,5 +1052,4 @@ void CTimeSensLsodaMethod::copySensitivitiesToResultMatrix()
             * *mParameterTransientValuePointers[j]
             / *mAssTargetValuePointers[i];
       }
-
 }

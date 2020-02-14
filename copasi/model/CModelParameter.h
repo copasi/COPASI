@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -189,8 +189,10 @@ public:
    * Set the value of the parameter based on the current framework
    * @param const double & value
    * @param const Framework & framework
+   * @param updateModelIfActive if this is the active parameter set,
+   *        write the changes back to the model
    */
-  virtual void setValue(const double & value, const CCore::Framework & framework);
+  virtual void setValue(const C_FLOAT64 & value, const CCore::Framework & framework, bool updateModelIfActive = true);
 
   /**
    * Retrieve the value of the parameter based on the current framework
@@ -377,8 +379,10 @@ public:
    * Set the value of the parameter based on the current framework
    * @param const double & value
    * @param const Framework & framework
+   * @param updateModelIfActive if this is the active parameter set,
+   *        write the changes back to the model
    */
-  virtual void setValue(const C_FLOAT64 & value, const CCore::Framework & framework);
+  virtual void setValue(const C_FLOAT64 & value, const CCore::Framework & framework, bool updateModelIfActive = true);
 
   /**
    * Add a pointer to a species parameter to the compartment
@@ -459,8 +463,10 @@ public:
    * Set the value of the parameter based on the current framework
    * @param const double & value
    * @param const Framework & framework
+   * @param updateModelIfActive if this is the active parameter set,
+   *        write the changes back to the model
    */
-  virtual void setValue(const C_FLOAT64 & value, const CCore::Framework & framework);
+  virtual void setValue(const C_FLOAT64 & value, const CCore::Framework & framework, bool updateModelIfActive = true);
 
   /**
    * Retrieve the value of the parameter based on the current framework

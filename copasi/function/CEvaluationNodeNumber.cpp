@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -146,7 +146,7 @@ CEvaluationNode * CEvaluationNodeNumber::fromAST(const ASTNode * pASTNode, const
             pNode = new CEvaluationNodeFunction(SubType::MINUS, "-");
             pNode->addChild(new CEvaluationNodeConstant(SubType::Infinity, "INFINITY"));
           }
-        else if (isnan(pASTNode->getReal()))
+        else if (std::isnan(pASTNode->getReal()))
           {
             pNode = new CEvaluationNodeConstant(SubType::NaN, "NAN");
           }
@@ -179,7 +179,7 @@ CEvaluationNode * CEvaluationNodeNumber::fromAST(const ASTNode * pASTNode, const
             pNode = new CEvaluationNodeFunction(SubType::MINUS, "-");
             pNode->addChild(new CEvaluationNodeConstant(SubType::Infinity, "INFINITY"));
           }
-        else if (isnan(pASTNode->getReal()))
+        else if (std::isnan(pASTNode->getReal()))
           {
             pNode = new CEvaluationNodeConstant(SubType::NaN, "NAN");
           }

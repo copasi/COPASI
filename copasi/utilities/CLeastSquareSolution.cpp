@@ -3,6 +3,7 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
+#include <cmath>
 #include "copasi/utilities/CLeastSquareSolution.h"
 
 #include "copasi/lapack/lapackwrap.h"
@@ -44,7 +45,7 @@ size_t CLeastSquareSolution::solve(const CMatrix< C_FLOAT64 > & aMatrix,
 
       for (; mpJT < mpJTEnd; mpJT += M, ++mpJ)
         {
-          if (isnan(*mpJ))
+          if (std::isnan(*mpJ))
             {
               xVector = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
@@ -292,9 +293,9 @@ CLeastSquareSolution::ResultInfo CLeastSquareSolution::solve(const CMatrix< C_FL
     }
 
   Info.relativeError =
-    isnan(Info.relativeError) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(Info.relativeError);
+    std::isnan(Info.relativeError) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(Info.relativeError);
   Info.absoluteError =
-    isnan(Info.absoluteError) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(Info.absoluteError);
+    std::isnan(Info.absoluteError) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(Info.absoluteError);
 
   return Info;
 }

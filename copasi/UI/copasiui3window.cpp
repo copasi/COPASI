@@ -3767,7 +3767,7 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
               QString("Enter URL to open"),
               QString("Please specify a URL to open (can be any supported format)"),
               QLineEdit::Normal,
-              QString("http://www.ebi.ac.uk/biomodels-main/download?mid=BIOMD0000000001")
+              QString("http://www.ebi.ac.uk/biomodels/model/download/BIOMD0000000001")
 
             );
 
@@ -3839,7 +3839,7 @@ void CopasiUI3Window::removeReportTargets()
   auto& taskList = *mpDataModel->getTaskList();
   std::stringstream str;
 
-  for (auto & task : taskList)
+for (auto & task : taskList)
     {
       std::string target = task.getReport().getTarget();
 

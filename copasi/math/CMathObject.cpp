@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -354,7 +354,7 @@ void CMathObject::calculateValue()
 #ifdef COPASI_DEBUG_TRACE
 
   // Check for NaN
-  if (isnan(*mpValue) && mpExpression->getInfix() != "")
+  if (std::isnan(*mpValue) && mpExpression->getInfix() != "")
     {
       std::cout << "NaN Value for: " << getCN() << std::endl;
     }
