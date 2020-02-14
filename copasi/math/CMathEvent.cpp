@@ -33,14 +33,6 @@
 #include "copasi/utilities/CNodeIterator.h"
 #include "copasi/utilities/CCallback.h"
 
-#ifdef _MSC_VER
-namespace std
-{
-//bool isnan(double d) {return d != d;}
-extern bool isnan(double d);
-}
-#endif
-
 // Uncomment this line below to get numeric debug print out.
 // #define DEBUG_OUTPUT 1
 
