@@ -49,8 +49,7 @@ const CEnumAnnotation< std::string, CNewtonMethod::eTargetCriterion > CNewtonMet
 {
   "Distance and Rate",
   "Distance",
-  "Rate"
-});
+  "Rate"});
 
 CNewtonMethod::CNewtonMethod(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
@@ -114,11 +113,13 @@ CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
 }
 
 CNewtonMethod::~CNewtonMethod()
-{cleanup();}
+{
+  cleanup();
+}
 
 void CNewtonMethod::initializeParameter()
 {
-  CCopasiParameter *pParm;
+  CCopasiParameter * pParm;
 
   assertParameter("Use Newton", CCopasiParameter::Type::BOOL, true);
   assertParameter("Use Integration", CCopasiParameter::Type::BOOL, true);
@@ -183,7 +184,10 @@ bool CNewtonMethod::elevateChildren()
 
 void CNewtonMethod::cleanup()
 {
-  if (mIpiv) delete [] mIpiv; mIpiv = NULL;
+  if (mIpiv)
+    delete[] mIpiv;
+
+  mIpiv = NULL;
 
   pdelete(mpTrajectory);
 }
@@ -266,7 +270,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
   if (mpCallBack)
     hProcess = mpCallBack->addItem(tmpstring,
                                    Step,
-                                   & MaxSteps);
+                                   &MaxSteps);
 
   //setup trajectory
   CTrajectoryProblem * pTrajectoryProblem = NULL;
@@ -276,7 +280,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
       mpTrajectory->setCallBack(mpCallBack);
 
       pTrajectoryProblem =
-        dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
+        dynamic_cast< CTrajectoryProblem * >(mpTrajectory->getProblem());
       assert(pTrajectoryProblem);
       pTrajectoryProblem->setStepNumber(1);
     }
@@ -286,7 +290,8 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 
   for (duration = minDuration; fabs(duration) <= fabs(maxDuration); duration *= iterationFactor, Step++)
     {
-      if (mpCallBack && !mpCallBack->progressItem(hProcess)) break;
+      if (mpCallBack && !mpCallBack->progressItem(hProcess))
+        break;
 
       pTrajectoryProblem->setDuration(duration);
 
@@ -327,7 +332,8 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 
       if (isSteadyState(value))
         {
-          if (mpCallBack) mpCallBack->finishItem(hProcess);
+          if (mpCallBack)
+            mpCallBack->finishItem(hProcess);
 
           if (mKeepProtocol)
             mMethodLog << "  Integration with duration " << duration
@@ -344,17 +350,20 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 
       if (mUseNewton)
         {
-          if (mKeepProtocol) mMethodLog << "  Try Newton's method from this starting point. \n";
+          if (mKeepProtocol)
+            mMethodLog << "  Try Newton's method from this starting point. \n";
 
           NewtonResultCode returnCode = processNewton();
 
-          if (mKeepProtocol) mMethodLog << "\n";
+          if (mKeepProtocol)
+            mMethodLog << "\n";
 
           // mpParentTask->separate(COutputInterface::DURING);
 
           if (returnCode == CNewtonMethod::found)
             {
-              if (mpCallBack) mpCallBack->finishItem(hProcess);
+              if (mpCallBack)
+                mpCallBack->finishItem(hProcess);
 
               return CNewtonMethod::found;
             }
@@ -370,7 +379,8 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
         }
     }
 
-  if (mpCallBack) mpCallBack->finishItem(hProcess);
+  if (mpCallBack)
+    mpCallBack->finishItem(hProcess);
 
   return CNewtonMethod::notFound;
 }
@@ -392,7 +402,8 @@ CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
   // Newton
   if (mUseNewton)
     {
-      if (mKeepProtocol) mMethodLog << "Try Newton's method. \n";
+      if (mKeepProtocol)
+        mMethodLog << "Try Newton's method. \n";
 
       returnCode = processNewton();
 
@@ -403,7 +414,8 @@ CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
   // forward integration
   if (mUseIntegration)
     {
-      if (mKeepProtocol) mMethodLog << "\nTry forward integration. \n";
+      if (mKeepProtocol)
+        mMethodLog << "\nTry forward integration. \n";
 
       returnCode = doIntegration(true); //true means forward
 
@@ -414,7 +426,8 @@ CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
   // backward integration
   if (mUseBackIntegration)
     {
-      if (mKeepProtocol) mMethodLog << "\nTry backward integration. \n";
+      if (mKeepProtocol)
+        mMethodLog << "\nTry backward integration. \n";
 
       returnCode = doIntegration(false); //false means backwards
 
@@ -490,7 +503,8 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
       calculateDerivativesX();
       currentValue = targetFunction();
 
-      if (mKeepProtocol) mMethodLog << "    Newton step failed. Damping limit exceeded.\n";
+      if (mKeepProtocol)
+        mMethodLog << "    Newton step failed. Damping limit exceeded.\n";
 
       return CNewtonMethod::dampingLimitExceeded;
 
@@ -540,25 +554,30 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
   if (mpCallBack)
     hProcess = mpCallBack->addItem("Newton method...",
                                    k,
-                                   & mIterationLimit);
+                                   &mIterationLimit);
 
   calculateDerivativesX();
   C_FLOAT64 targetValue = targetFunction();
 
   {
-    if (mKeepProtocol) mMethodLog << "   Starting Newton Iterations...\n";
+    if (mKeepProtocol)
+      mMethodLog << "   Starting Newton Iterations...\n";
 
     for (k = 0; k < mIterationLimit && !isSteadyState(targetValue); k++)
       {
-        if (mpCallBack && !mpCallBack->progressItem(hProcess)) break;
+        if (mpCallBack && !mpCallBack->progressItem(hProcess))
+          break;
 
         result = doNewtonStep(targetValue);
 
-        if (singularJacobian == result) break;
+        if (singularJacobian == result)
+          break;
 
-        if (dampingLimitExceeded == result) break;
+        if (dampingLimitExceeded == result)
+          break;
 
-        if (negativeValueFound == result) break;
+        if (negativeValueFound == result)
+          break;
       }
   }
 
@@ -582,11 +601,15 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
     {
       bool tmp = true;
 
-      ++k; if (mpCallBack && !mpCallBack->progressItem(hProcess)) tmp = false;
+      ++k;
+
+      if (mpCallBack && !mpCallBack->progressItem(hProcess))
+        tmp = false;
 
       if (tmp)
         {
-          if (mKeepProtocol) mMethodLog << "   Do additional step to refine result...\n";
+          if (mKeepProtocol)
+            mMethodLog << "   Do additional step to refine result...\n";
 
           result = doNewtonStep(targetValue);
 
@@ -595,21 +618,24 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
 
           if (CNewtonMethod::singularJacobian == result)
             {
-              if (mKeepProtocol) mMethodLog << "   Additional step failed. Old values restored.\n";
+              if (mKeepProtocol)
+                mMethodLog << "   Additional step failed. Old values restored.\n";
 
               result = CNewtonMethod::found;
             }
 
           if (CNewtonMethod::dampingLimitExceeded == result)
             {
-              if (mKeepProtocol) mMethodLog << "   Additional step failed. Old values restored.\n";
+              if (mKeepProtocol)
+                mMethodLog << "   Additional step failed. Old values restored.\n";
 
               result = CNewtonMethod::found;
             }
 
           if (CNewtonMethod::negativeValueFound == result)
             {
-              if (mKeepProtocol) mMethodLog << "   Additional step failed. Old values restored.\n";
+              if (mKeepProtocol)
+                mMethodLog << "   Additional step failed. Old values restored.\n";
 
               result = CNewtonMethod::found;
             }
@@ -617,7 +643,8 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
     }
 
   //end progress bar
-  if (mpCallBack) mpCallBack->finishItem(hProcess);
+  if (mpCallBack)
+    mpCallBack->finishItem(hProcess);
 
   return result;
 }
@@ -647,7 +674,7 @@ C_FLOAT64 CNewtonMethod::targetFunction()
 {
   if (mTargetCriterion != eTargetCriterion::Rate)
     {
-      calculateJacobian(*mpSSResolution, true);
+      calculateJacobian(std::max(mTargetRate, mTargetDistance), true);
     }
 
   // Assure that all values are updated.
@@ -684,7 +711,8 @@ std::string CNewtonMethod::targetValueToString() const
 
 C_FLOAT64 CNewtonMethod::targetFunctionRate()
 {
-  if (mTargetCriterion == eTargetCriterion::Distance) return 0.0;
+  if (mTargetCriterion == eTargetCriterion::Distance)
+    return 0.0;
 
   // Assure that all values are updated.
 
@@ -695,7 +723,7 @@ C_FLOAT64 CNewtonMethod::targetFunctionRate()
   const C_FLOAT64 * pIt = mdxdt.begin();
   const C_FLOAT64 * pEnd = mdxdt.end();
   C_FLOAT64 * pCurrentState = mpX;
-  const C_FLOAT64 * pAtol = mAtol.array() + 1; // for Time
+  const C_FLOAT64 * pAtol = mAtol.array();
 
   for (; pIt != pEnd; ++pIt, ++pAtol)
     {
@@ -713,7 +741,9 @@ C_FLOAT64 CNewtonMethod::targetFunctionRate()
 
 C_FLOAT64 CNewtonMethod::targetFunctionDistance()
 {
-  if (mTargetCriterion == eTargetCriterion::Rate) return 0.0;
+  if (mTargetCriterion == eTargetCriterion::Rate
+      || mdxdt.size() == 0)
+    return 0.0;
 
   CVector< C_FLOAT64 > Distance;
 
@@ -728,7 +758,7 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
   C_FLOAT64 * pDistance = Distance.array();
   C_FLOAT64 * pDistanceEnd = pDistance + Distance.size();
   C_FLOAT64 * pCurrentState = mpX;
-  const C_FLOAT64 * pAtol = mAtol.array() + 1; // for Time
+  const C_FLOAT64 * pAtol = mAtol.array();
   C_FLOAT64 ** ppCompartmentVolume = mCompartmentVolumes.array();
 
   C_FLOAT64 AbsoluteDistance = 0.0;
@@ -764,10 +794,10 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
 //virtual
 bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  if (!CSteadyStateMethod::isValidProblem(pProblem)) return false;
+  if (!CSteadyStateMethod::isValidProblem(pProblem))
+    return false;
 
-  if (!mpContainer->isAutonomous() &&
-      getValue< bool >("Use Newton"))
+  if (!mpContainer->isAutonomous() && getValue< bool >("Use Newton"))
     CCopasiMessage(CCopasiMessage::WARNING, MCSteadyState + 1);
 
   //const CSteadyStateProblem * pP = dynamic_cast<const CSteadyStateProblem *>(pProblem);
@@ -798,7 +828,8 @@ bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
 
 bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
 {
-  if (!CSteadyStateMethod::initialize(pProblem)) return false;
+  if (!CSteadyStateMethod::initialize(pProblem))
+    return false;
 
   CTrajectoryProblem * pTrajectoryProblem = NULL;
   CTrajectoryMethod * pTrajectoryMethod = NULL;
@@ -806,8 +837,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   cleanup();
 
   /* Configure Newton */
-  mUseNewton = mUseIntegration = mUseBackIntegration = mAcceptNegative
-                                 = mForceNewton = mKeepProtocol = false;
+  mUseNewton = mUseIntegration = mUseBackIntegration = mAcceptNegative = mForceNewton = mKeepProtocol = false;
 
   if (getValue< bool >("Use Newton"))
     mUseNewton = true;
@@ -836,12 +866,13 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   mpX = mContainerStateReduced.array() + mpContainer->getCountFixedEventTargets() + 1;
   mDimension = mContainerStateReduced.size() - mpContainer->getCountFixedEventTargets() - 1;
 
-  mAtol = mpContainer->initializeAtolVector(*mpSSResolution, false);
+  CVector< C_FLOAT64 > Atol = mpContainer->initializeAtolVector(*mpSSResolution, false);
+  mAtol = CVectorCore< C_FLOAT64 >(Atol.size() - 1, Atol.begin() + 1);
 
   mH.resize(mDimension);
   mXold.resize(mDimension);
   mdxdt.initialize(mDimension, mpContainer->getRate(false).array() + mpContainer->getCountFixedEventTargets() + 1);
-  mIpiv = new C_INT [mDimension];
+  mIpiv = new C_INT[mDimension];
 
   mCompartmentVolumes.resize(mDimension + mpContainer->getCountDependentSpecies());
   mCompartmentVolumes = NULL;
@@ -849,7 +880,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   if (mUseIntegration || mUseBackIntegration)
     {
       // create an appropriate trajectory task
-      CDataModel* pDataModel = getObjectDataModel();
+      CDataModel * pDataModel = getObjectDataModel();
       assert(pDataModel != NULL);
       CTrajectoryTask * pSrc =
         dynamic_cast< CTrajectoryTask * >(&pDataModel->getTaskList()->operator[]("Time-Course"));
@@ -860,14 +891,14 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
         mpTrajectory = new CTrajectoryTask(this);
 
       pTrajectoryProblem =
-        dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
+        dynamic_cast< CTrajectoryProblem * >(mpTrajectory->getProblem());
       assert(pTrajectoryProblem);
 
       if (mpTrajectory->getMethod()->getSubType() != CTaskEnum::Method::deterministic)
         mpTrajectory->setMethodType(CTaskEnum::Method::deterministic);
 
       pTrajectoryMethod =
-        dynamic_cast<CTrajectoryMethod *>(mpTrajectory->getMethod());
+        dynamic_cast< CTrajectoryMethod * >(mpTrajectory->getMethod());
       assert(pTrajectoryMethod);
 
       pTrajectoryProblem->setStepNumber(1);
