@@ -2173,16 +2173,44 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           return false;
         }
 
+    /*
       //experimental code...
-      /*
-      CMatrix< C_FLOAT64 > tmpFIM, tmpEigenValues, tmpEigenVectors;
+    
+      CMatrix< C_FLOAT64 > tmpFIM, tmpEigenValues, tmpEigenVectors, tmpCorr;
+      CVector<C_FLOAT64> tmpSD;
+    
+      //for testing: Inverse of the scaled and unscaled FIM, result scaled and unscaled...
+      if (calcCov(mFisher, tmpCorr, tmpSD, false))
+        std::cout << tmpSD << std::endl;
+        std::cout << tmpCorr << std::endl;
+      if (calcCov(mFisher, tmpCorr, tmpSD, true))
+        std::cout << tmpSD << std::endl;
+        std::cout << tmpCorr << std::endl;
+      if (calcCov(mFisherScaled, tmpCorr, tmpSD, false))
+        std::cout << tmpSD << std::endl;
+        std::cout << tmpCorr << std::endl;
+      if (calcCov(mFisherScaled, tmpCorr, tmpSD, true))
+        std::cout << tmpSD << std::endl;
+        std::cout << tmpCorr << std::endl;
 
       size_t exp_index, dep_index, row_index;
+      //loop over experiments
       for (exp_index=0; exp_index < mpExperimentSet->getExperimentCount(); ++exp_index)
       {
-        calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, ExperimentStartInResiduals[exp_index], ExperimentStartInResiduals[exp_index+1]);
-        std::cout << tmpFIM << std::endl;
-
+        std::cout << exp_index << std::endl;
+      
+        //calculate the scaled FIM of one experiment only, and output the Eigenvalues
+        calcPartialFIM(mDeltaResidualDeltaParameterScaled, tmpFIM, ExperimentStartInResiduals[exp_index], ExperimentStartInResiduals[exp_index+1]);
+        //std::cout << tmpFIM << std::endl;
+      
+        calcEigen(tmpFIM, tmpEigenValues, tmpEigenVectors);
+        std::cout << tmpEigenValues << std::endl;
+      
+        //calculate the unscaled FIM for all but one experiment, calculate the Covariance Matrix and the SDs from that.
+        calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, ExperimentStartInResiduals[exp_index], ExperimentStartInResiduals[exp_index+1], true);
+        if (calcCov(tmpFIM, tmpCorr, tmpSD, true))
+          std::cout << tmpSD << std::endl;
+        
         //for (dep_index=0; dep_index < mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(); ++dep_index)
         //{
         //  calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, <#size_t a#>, <#size_t b#>)
