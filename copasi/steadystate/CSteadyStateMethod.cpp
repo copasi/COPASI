@@ -60,6 +60,7 @@ CSteadyStateMethod::CSteadyStateMethod(const CDataContainer * pParent,
   , mContainerStateReduced()
   , mpContainerStateTime()
   , mCompartmentVolumes()
+  , mAtol()
 {
   initializeParameter();
   CONSTRUCTOR_TRACE;
@@ -83,6 +84,7 @@ CSteadyStateMethod::CSteadyStateMethod(const CSteadyStateMethod & src,
   , mContainerStateReduced()
   , mpContainerStateTime(src.mpContainerStateTime)
   , mCompartmentVolumes()
+  , mAtol(src.mAtol)
 {
   initializeParameter();
   CONSTRUCTOR_TRACE;
@@ -183,17 +185,20 @@ CSteadyStateMethod::processInternal()
 
 bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution) const
 {
-  const CMathReaction * pReaction = mpContainer->getReactions().array();
-  const CMathReaction * pReactionEnd = pReaction + mpContainer->getReactions().size();
+  mpContainer->updateTransientDataValues();
+  const CMathReaction * pReaction = mpContainer->getReactions().begin();
+  const CMathReaction * pReactionEnd = mpContainer->getReactions().end();
+  const C_FLOAT64 * pBase = mpContainerStateTime + 1;
 
   for (; pReaction != pReactionEnd; ++pReaction)
     {
-      // We are checking the amount flux whether we have an equilibrium.
-      // TODO CRITICAL Do we need to scale with the compartment size?
-      if (* (C_FLOAT64 *) pReaction->getFluxObject()->getValuePointer() > resolution)
-        {
+      const CMathReaction::SpeciesBalance * pBalance = pReaction->getNumberBalance().begin();
+      const CMathReaction::SpeciesBalance * pBalanceEnd = pReaction->getNumberBalance().end();
+      const C_FLOAT64 & ParticleFlux = pReaction->getParticleFluxObject()->getValue();
+
+      for (; pBalance != pBalanceEnd; ++pBalance)
+        if (fabs(pBalance->second * ParticleFlux) / std::max(*pBalance->first, mAtol[pBalance->first - pBase]) > resolution)
           return false;
-        }
     }
 
   return true;
@@ -269,6 +274,9 @@ bool CSteadyStateMethod::initialize(const CSteadyStateProblem * pProblem)
   mContainerState.initialize(mpContainer->getState(false));
   mContainerStateReduced.initialize(mpContainer->getState(true));
   mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
+
+  CVector< C_FLOAT64 > Atol = mpContainer->initializeAtolVector(*mpSSResolution, false);
+  mAtol = CVectorCore< C_FLOAT64 >(Atol.size() - 1, Atol.begin() + 1);
 
   return true;
 }

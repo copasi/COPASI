@@ -66,7 +66,6 @@ CNewtonMethod::CNewtonMethod(const CDataContainer * pParent,
   , mMaxDurationBackward(1e6)
   , mDimension(0)
   , mpX(NULL)
-  , mAtol()
   , mH()
   , mXold()
   , mdxdt()
@@ -96,7 +95,6 @@ CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
   , mMaxDurationBackward(src.mMaxDurationBackward)
   , mDimension(src.mDimension)
   , mpX(NULL)
-  , mAtol(src.mAtol)
   , mH(src.mH)
   , mXold(src.mXold)
   , mdxdt()
@@ -591,9 +589,9 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
   if (mKeepProtocol)
     {
       if (CNewtonMethod::found == result)
-        mMethodLog << "   Success: Target criterium matched by " << targetValueToString() << ".\n";
+        mMethodLog << "   Success: Target criterion matched by " << targetValueToString() << ".\n";
       else if (CNewtonMethod::dampingLimitExceeded == result)
-        mMethodLog << "   Failed: Target criterium not matched after reaching iteration limit. " << targetValueToString() << "\n";
+        mMethodLog << "   Failed: Target criterion not matched after reaching iteration limit. " << targetValueToString() << "\n";
     }
 
   //do an additional Newton step to refine the result
@@ -865,9 +863,6 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
 
   mpX = mContainerStateReduced.array() + mpContainer->getCountFixedEventTargets() + 1;
   mDimension = mContainerStateReduced.size() - mpContainer->getCountFixedEventTargets() - 1;
-
-  CVector< C_FLOAT64 > Atol = mpContainer->initializeAtolVector(*mpSSResolution, false);
-  mAtol = CVectorCore< C_FLOAT64 >(Atol.size() - 1, Atol.begin() + 1);
 
   mH.resize(mDimension);
   mXold.resize(mDimension);
