@@ -78,7 +78,6 @@ private:
 
   size_t mDimension;
   C_FLOAT64 * mpX;
-  CVector< C_FLOAT64 > mAtol;
   CVector< C_FLOAT64 > mH;
   CVector< C_FLOAT64 > mXold;
   CVectorCore< const C_FLOAT64 > mdxdt;
