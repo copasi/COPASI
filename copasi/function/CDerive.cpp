@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,7 +35,6 @@ CDerive::CDerive():
   mpTree(NULL),
   mSimplify(true)
 {
-
 }
 
 CDerive::CDerive(std::vector<const CEvaluationNode*>&  env,
@@ -45,10 +44,7 @@ CDerive::CDerive(std::vector<const CEvaluationNode*>&  env,
   mpTree(pTree),
   mSimplify(simplify)
 {
-
 }
-
-
 
 bool CDerive::isOne(const CEvaluationNode* node)
 {
@@ -464,7 +460,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataO
         }
 
       //now we need to check if we know something about the object so that it needs to be expanded
-      const CDataObject * tmpObj = (const CDataObject *)pENObj->getObjectInterfacePtr();
+      const CDataObject * tmpObj = CDataObject::DataObject(pENObj->getObjectInterfacePtr());
 
       if (!tmpObj)
         return NULL;
@@ -530,7 +526,6 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataO
 
   return newNode;
 }
-
 
 void CDerive::compileTree(CEvaluationNode* node)
 {
