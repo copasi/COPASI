@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -61,8 +61,6 @@ CQExpressionMmlStackedWidget::CQExpressionMmlStackedWidget(QWidget* parent)
   mpBtnViewExpression->setIcon(CQIconResource::icon(CQIconResource::renderMathML));
   mpBtnEditExpression->setIcon(CQIconResource::icon(CQIconResource::edit));
   mpBtnSaveExpression->setIcon(CQIconResource::icon(CQIconResource::fileExport));
-
-  mpMmlScrollView->setStyleSheet(QString(mpMmlScrollView->widget()->metaObject()->className()) + "{background-color:" + QColor(Qt::white).name() + ";}");
 
 #ifdef WIN32
   // on windows there ought to be a border around the MML widget

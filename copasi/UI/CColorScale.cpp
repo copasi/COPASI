@@ -33,8 +33,8 @@ CColorScale::CColorScale()
   , mNaN(85, 85, 135)
 {
   QPalette Palette = QGuiApplication::palette();
-  mForeground = Palette.color(QPalette::Active, QPalette::Foreground);
-  mBackground = Palette.color(QPalette::Active, QPalette::Background);
+  mForeground = Palette.color(QPalette::Active, QPalette::Text);
+  mBackground = Palette.color(QPalette::Active, QPalette::Base);
 
   if (mForeground.redF() + mForeground.greenF() + mForeground.blueF() < mBackground.redF() + mBackground.greenF() + mBackground.blueF())
     {
