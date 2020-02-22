@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,7 +25,7 @@
 #include <QColor>
 
 #ifdef SunOS
-# include <ieeefp.h>
+#  include <ieeefp.h>
 #endif
 
 #include "copasi/copasi.h"
@@ -43,7 +43,7 @@
 class CColorScale
 {
 public:
-  CColorScale(): mIsUsed(false) {};
+  CColorScale();
 
   virtual ~CColorScale() {};
 
@@ -70,13 +70,19 @@ public:
   /**
    * this is called by the array annotation widget to indicate that the scaler is in use
    */
-  void setIsUsed(bool f) {mIsUsed = f;};
+  void setIsUsed(bool f)
+  {
+    mIsUsed = f;
+  };
 
   /**
    * if setIsUsed() was used isUsed() can be called to find out if the scaler is
    * already in use. One scaler must not be used in several widgets.
    */
-  bool isUsed() const {return mIsUsed;};
+  bool isUsed() const
+  {
+    return mIsUsed;
+  };
 
 private:
   /**
@@ -84,18 +90,28 @@ private:
    * call setIsUsed() to keep this up to date.
    */
   bool mIsUsed;
+
+protected:
+  QColor mForeground;
+  QColor mBackground;
+  QColor mSmallNumbers;
+  QColor mLargeNumbers;
+  QColor mNaN;
 };
 
 /**
  * This returns white, if the absolute value of the number is smaller than the
  * threshold. Otherwise if it is positive, the color is green, if negative red.
  */
-class CColorScale1 : public CColorScale
+class CColorScaleDiscrete : public CColorScale
 {
 public:
-  CColorScale1();
+  CColorScaleDiscrete();
 
-  void setThreshold(const C_FLOAT64 & n) {m1 = n;};
+  void setThreshold(const C_FLOAT64 & n)
+  {
+    m1 = n;
+  };
 
   virtual QColor getColor(const C_FLOAT64 & number) const;
 
@@ -117,18 +133,27 @@ public:
   * Set minimum and maximum of number range
   */
   void setMinMax(const C_FLOAT64 & min, const C_FLOAT64 & max)
-  {mMin = min; mMax = max;};
+  {
+    mMin = min;
+    mMax = max;
+  };
 
   /**
   * Log scaling is not yet implemented
   */
-  void setLog(bool l) {mLog = l;}    ; //log not implemented yet!
+  void setLog(bool l)
+  {
+    mLog = l;
+  }; //log not implemented yet!
 
   /**
   * If this is true, the number range (if automatically determined)
   * is centered around 0.0.
   */
-  void setSymmetric(bool s) {mSym = s;};
+  void setSymmetric(bool s)
+  {
+    mSym = s;
+  };
 
   virtual QColor getColor(const C_FLOAT64 & number) const;
 
@@ -151,18 +176,12 @@ protected:
 class CColorScaleAdvanced : public CColorScaleSimple
 {
 public:
-
   CColorScaleAdvanced();
 
   virtual QColor getColor(const C_FLOAT64 & number) const;
 
   void setColorMin(QColor col);
   void setColorMax(QColor col);
-
-protected:
-
-  QColor mColorMin;
-  QColor mColorMax;
 };
 
 /**
@@ -179,7 +198,10 @@ public:
   /**
   *
   */
-  void setFactor(C_FLOAT64 f) {mFactor = f;};
+  void setFactor(C_FLOAT64 f)
+  {
+    mFactor = f;
+  };
 
   virtual void startAutomaticParameterCalculation();
   virtual void passValue(const C_FLOAT64 & number);
@@ -220,7 +242,6 @@ protected:
   C_INT32 mInt;
 };
 
-
 /**
  * This scaler automatically decides to use log scaling or not.
  * In addition, it will also consider quantiles for scaling, so that outliers are disregarded
@@ -228,7 +249,6 @@ protected:
 class CColorScaleAuto : public CColorScaleAdvanced
 {
 public:
-
   CColorScaleAuto();
 
   //virtual QColor getColor(const C_FLOAT64 & number) const;
@@ -240,12 +260,8 @@ public:
   virtual void passValue(const C_FLOAT64 & number);
   virtual void finishAutomaticParameterCalculation();
 
-
 protected:
-  std::vector<C_FLOAT64> mData;
-
+  std::vector< C_FLOAT64 > mData;
 };
-
-
 
 #endif
