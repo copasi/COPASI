@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,9 +18,6 @@
 // and The University of Manchester.
 // All rights reserved.
 
-
-
-
 /*!
  \file CQMmlScrollView.cpp
  \brief Implementation file of class CQMmlScrollView
@@ -37,7 +34,6 @@
 
 #include "CQMmlScrollView.h"
 
-
 ///  Constructor
 CQMmlScrollView::CQMmlScrollView(QWidget* parent, const char* /* name */, Qt::WindowFlags /* fl */)
   : QScrollArea(parent)
@@ -45,7 +41,13 @@ CQMmlScrollView::CQMmlScrollView(QWidget* parent, const char* /* name */, Qt::Wi
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
 #ifdef HAVE_MML
-  mpMmlWidget = new QtMmlWidget(viewport() /*, "mpMmlWidget"*/);
+  mpMmlWidget = new QtMmlWidget();
+  mpMmlWidget->setObjectName(QString::fromUtf8("mpMmlWidget"));
+  QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  sizePolicy.setHorizontalStretch(0);
+  sizePolicy.setVerticalStretch(0);
+  sizePolicy.setHeightForWidth(mpMmlWidget->sizePolicy().hasHeightForWidth());
+  mpMmlWidget->setSizePolicy(sizePolicy);
   mpMmlWidget->setMinimumSize(QSize(0, 0));
   setWidget(mpMmlWidget);
 #endif // HAVE_MML
@@ -64,8 +66,6 @@ void CQMmlScrollView::updateWidget(std::ostringstream &mml)
   mpMmlWidget->setContent(FROM_UTF8(mml.str()));
   mpMmlWidget->setBaseFontPointSize(qApp->font().pointSize());
   mpMmlWidget->setFontName(QtMmlWidget::NormalFont, qApp->font().family());
-
   mpMmlWidget->resize(mpMmlWidget->sizeHint().width(), mpMmlWidget->sizeHint().height());
-
 #endif // HAVE_MML
 }
