@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1255,7 +1255,7 @@ void CReaction::initObjects()
 
 std::string CReaction::getDefaultNoiseExpression() const
 {
-  return "sign(<" + mpParticleFluxReference->getCN() + ">)*sqrt(abs(<" + mpParticleFluxReference->getCN() + ">))";
+  return "sqrt(abs(<" + mpParticleFluxReference->getCN() + ">))";
 }
 
 bool CReaction::setNoiseExpression(const std::string & expression)
