@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -87,110 +87,114 @@ const C_FLOAT64 beta43 = -1.0 / 2.0;
 
 CStochasticRungeKuttaRI5::CStochasticRungeKuttaRI5(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
-    const CTaskEnum::Task & taskType):
-  CTrajectoryMethod(pParent, methodType, taskType),
-  mContainerVariables(),
-  mContainerRates(),
-  mContainerNoise(),
-  mContainerRoots(),
-  mNumVariables(0),
-  mNumNoise(0),
-  mNumRoots(0),
-  mpInternalStepSize(NULL),
-  mpMaxInternalSteps(NULL),
-  mpForcePhysicalCorrectness(NULL),
-  mpRootRelativeTolerance(NULL),
-  mpRandom(NULL),
-  mStepSize(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
-  mSqrtStepSize(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
-  mRandomIHat(),
-  mRandomITilde(),
-  mRandomIMatrix(),
-  mTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
-  mTargetTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
-  mTargetDelta(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
-  mLastCalculatedTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
-  mLastCalculatedVariables(),
-  mInternalSteps(0),
-  mH10(),
-  mSumAll1(),
-  mSumPartial1(),
-  mH20(),
-  mH2k(),
-  mHH2k(),
-  mSumAll2(),
-  mSumPartial2(),
-  mH30(),
-  mH3k(),
-  mHH3k(),
-  mA(),
-  mB(),
-  mBB(),
-  mNoiseInputValues(),
-  mNoiseUpdateSequences(),
-  mPhysicalValues(),
-  mRootFinder(),
-  mpRootValueCalculator(NULL),
-  mRoots(),
-  mRootCounter(0),
-  mRootMask(),
-  mRootMasking(CRootFinder::NONE),
-  mpPhysicalCorrectnessRootFound(NULL)
+    const CTaskEnum::Task & taskType)
+  : CTrajectoryMethod(pParent, methodType, taskType)
+  , mContainerVariables()
+  , mContainerRates()
+  , mContainerNoise()
+  , mContainerRoots()
+  , mNumVariables(0)
+  , mNumNoise(0)
+  , mNumRoots(0)
+  , mpInternalStepSize(NULL)
+  , mpMaxInternalSteps(NULL)
+  , mpForcePhysicalCorrectness(NULL)
+  , mpRootRelativeTolerance(NULL)
+  , mpAbsoluteTolerance(NULL)
+  , mAtol()
+  , mpRandom(NULL)
+  , mStepSize(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mSqrtStepSize(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mRandomIHat()
+  , mRandomITilde()
+  , mRandomIMatrix()
+  , mTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mTargetTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mTargetDelta(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mLastCalculatedTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mLastCalculatedVariables()
+  , mInternalSteps(0)
+  , mH10()
+  , mSumAll1()
+  , mSumPartial1()
+  , mH20()
+  , mH2k()
+  , mHH2k()
+  , mSumAll2()
+  , mSumPartial2()
+  , mH30()
+  , mH3k()
+  , mHH3k()
+  , mA()
+  , mB()
+  , mBB()
+  , mNoiseInputValues()
+  , mNoiseUpdateSequences()
+  , mPhysicalValues()
+  , mRootFinder()
+  , mpRootValueCalculator(NULL)
+  , mRoots()
+  , mRootCounter(0)
+  , mRootMask()
+  , mRootMasking(CRootFinder::NONE)
+  , mpPhysicalCorrectnessRootFound(NULL)
 {
   mpRootValueCalculator = new CRootFinder::EvalTemplate< CStochasticRungeKuttaRI5 >(this, & CStochasticRungeKuttaRI5::evalRoot);
   initializeParameter();
 }
 
 CStochasticRungeKuttaRI5::CStochasticRungeKuttaRI5(const CStochasticRungeKuttaRI5 & src,
-    const CDataContainer * pParent):
-  CTrajectoryMethod(src, pParent),
-  mContainerVariables(),
-  mContainerRates(),
-  mContainerNoise(),
-  mContainerRoots(),
-  mNumVariables(src.mNumVariables),
-  mNumNoise(src.mNumNoise),
-  mNumRoots(src.mNumRoots),
-  mpInternalStepSize(NULL),
-  mpMaxInternalSteps(NULL),
-  mpForcePhysicalCorrectness(NULL),
-  mpRootRelativeTolerance(NULL),
-  mpRandom(NULL),
-  mStepSize(src.mStepSize),
-  mSqrtStepSize(src.mSqrtStepSize),
-  mRandomIHat(src.mRandomIHat),
-  mRandomITilde(src.mRandomITilde),
-  mRandomIMatrix(src.mRandomIMatrix),
-  mTime(src.mTime),
-  mTargetTime(src.mTargetTime),
-  mTargetDelta(src.mTargetDelta),
-  mLastCalculatedTime(src.mLastCalculatedTime),
-  mLastCalculatedVariables(src.mLastCalculatedVariables),
-  mInternalSteps(src.mInternalSteps),
-  mH10(src.mH10),
-  mSumAll1(src.mSumAll1),
-  mSumPartial1(src.mSumPartial1),
-  mH20(src.mH20),
-  mH2k(src.mH2k),
-  mHH2k(src.mHH2k),
-  mSumAll2(src.mSumAll2),
-  mSumPartial2(src.mSumPartial2),
-  mH30(src.mH30),
-  mH3k(src.mH3k),
-  mHH3k(src.mHH3k),
-  mA(src.mA),
-  mB(src.mB),
-  mBB(src.mBB),
-  mNoiseInputValues(src.mNoiseInputValues),
-  mNoiseUpdateSequences(src.mNoiseUpdateSequences),
-  mPhysicalValues(src.mPhysicalValues),
-  mRootFinder(src.mRootFinder),
-  mpRootValueCalculator(NULL),
-  mRoots(),
-  mRootCounter(src.mRootCounter),
-  mRootMask(src.mRootMask),
-  mRootMasking(src.mRootMasking),
-  mpPhysicalCorrectnessRootFound(src.mpPhysicalCorrectnessRootFound)
+    const CDataContainer * pParent)
+  : CTrajectoryMethod(src, pParent)
+  , mContainerVariables()
+  , mContainerRates()
+  , mContainerNoise()
+  , mContainerRoots()
+  , mNumVariables(src.mNumVariables)
+  , mNumNoise(src.mNumNoise)
+  , mNumRoots(src.mNumRoots)
+  , mpInternalStepSize(NULL)
+  , mpMaxInternalSteps(NULL)
+  , mpForcePhysicalCorrectness(NULL)
+  , mpRootRelativeTolerance(NULL)
+  , mpAbsoluteTolerance(NULL)
+  , mAtol(src.mAtol)
+  , mpRandom(NULL)
+  , mStepSize(src.mStepSize)
+  , mSqrtStepSize(src.mSqrtStepSize)
+  , mRandomIHat(src.mRandomIHat)
+  , mRandomITilde(src.mRandomITilde)
+  , mRandomIMatrix(src.mRandomIMatrix)
+  , mTime(src.mTime)
+  , mTargetTime(src.mTargetTime)
+  , mTargetDelta(src.mTargetDelta)
+  , mLastCalculatedTime(src.mLastCalculatedTime)
+  , mLastCalculatedVariables(src.mLastCalculatedVariables)
+  , mInternalSteps(src.mInternalSteps)
+  , mH10(src.mH10)
+  , mSumAll1(src.mSumAll1)
+  , mSumPartial1(src.mSumPartial1)
+  , mH20(src.mH20)
+  , mH2k(src.mH2k)
+  , mHH2k(src.mHH2k)
+  , mSumAll2(src.mSumAll2)
+  , mSumPartial2(src.mSumPartial2)
+  , mH30(src.mH30)
+  , mH3k(src.mH3k)
+  , mHH3k(src.mHH3k)
+  , mA(src.mA)
+  , mB(src.mB)
+  , mBB(src.mBB)
+  , mNoiseInputValues(src.mNoiseInputValues)
+  , mNoiseUpdateSequences(src.mNoiseUpdateSequences)
+  , mPhysicalValues(src.mPhysicalValues)
+  , mRootFinder(src.mRootFinder)
+  , mpRootValueCalculator(NULL)
+  , mRoots()
+  , mRootCounter(src.mRootCounter)
+  , mRootMask(src.mRootMask)
+  , mRootMasking(src.mRootMasking)
+  , mpPhysicalCorrectnessRootFound(src.mpPhysicalCorrectnessRootFound)
 {
   initializeParameter();
 
@@ -207,8 +211,9 @@ CStochasticRungeKuttaRI5::~CStochasticRungeKuttaRI5()
 void CStochasticRungeKuttaRI5::initializeParameter()
 {
   mpInternalStepSize = assertParameter("Internal Steps Size", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-4);
-  mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100);
+  mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::Type::UINT, (unsigned C_INT32) 10000);
   mpForcePhysicalCorrectness = assertParameter("Force Physical Correctness", CCopasiParameter::Type::BOOL, true);
+  mpAbsoluteTolerance = assertParameter("Absolute Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-6);
   mpRootRelativeTolerance = assertParameter("Tolerance for Root Finder", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-6);
 }
 
@@ -278,6 +283,9 @@ void CStochasticRungeKuttaRI5::start()
   assert(mContainerNoise.size() == mNumVariables);
 
   mNumNoise = mpContainer->getCountNoise();
+
+  CVector< C_FLOAT64 > Atol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, false);
+  mAtol = CVectorCore< C_FLOAT64 >(Atol.size() - 1, Atol.begin() + 1);
 
   mContainerRoots.initialize(mpContainer->getRoots());
   mNumRoots = mContainerRoots.size();
@@ -842,7 +850,7 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::internalStep()
     {
       bool Step = true;
 
-      while (Step)
+      while (Step && mInternalSteps < *mpMaxInternalSteps)
         {
           switch (mRootFinder.checkRoots(mTime, std::min(mTime + *mpInternalStepSize, mTargetTime), mRootMasking))
             {
@@ -936,6 +944,11 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::internalStep()
       calculateStateVariables(std::min(mTime + *mpInternalStepSize, mTargetTime));
     }
 
+  if (mInternalSteps >= *mpMaxInternalSteps)
+    {
+      Result = FAILURE;
+    }
+
   // Check whether the new state is valid
   if (!mpContainer->isStateValid())
     {
@@ -956,15 +969,16 @@ C_FLOAT64 CStochasticRungeKuttaRI5::calculateSmallestPhysicalValue() const
 
   const C_FLOAT64 * pV = mContainerVariables.begin();
   const C_FLOAT64 * pVEnd = mContainerVariables.end();
+  const C_FLOAT64 * pAtol = mAtol.begin();
   const bool * pPhysicalValue = mPhysicalValues.begin();
 
-  for (; pV != pVEnd; ++pV, ++pPhysicalValue)
-    if (*pPhysicalValue && *pV < SmallestPhysicalValue)
+  for (; pV != pVEnd; ++pV, ++pPhysicalValue, ++pAtol)
+    if (*pPhysicalValue && *pV + *pAtol < SmallestPhysicalValue)
       {
-        SmallestPhysicalValue = *pV;
+        SmallestPhysicalValue = *pV  + *pAtol;
       }
 
-  return SmallestPhysicalValue + 1.0e-12;
+  return SmallestPhysicalValue; // TODO CRITICAL This needs to be based on tolerances.
 }
 
 void CStochasticRungeKuttaRI5::createRootMask()
