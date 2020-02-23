@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,13 +22,13 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "FunctionWidget1.h"
+#include "copasi/UI/FunctionWidget1.h"
 
 #include "copasi/copasi.h"
-#include "listviews.h"
-#include "CQMessageBox.h"
-#include "FunctionWidget1.h"
-#include "qtUtilities.h"
+#include "copasi/UI/listviews.h"
+#include "copasi/UI/CQMessageBox.h"
+#include "copasi/UI/FunctionWidget1.h"
+#include "copasi/UI/qtUtilities.h"
 
 #include "copasi/tex/CMathMLToTeX.h"
 
@@ -42,12 +42,13 @@
 #include "copasi/function/CKinFunction.h"
 #include "copasi/utilities/CUnitValidator.h"
 
-#include <copasi/commandline/CConfigurationFile.h>
+#include "copasi/commandline/CConfigurationFile.h"
 
-#include "CopasiFileDialog.h"
+#include "copasi/UI/CopasiFileDialog.h"
 
 #include <QComboBox>
 #include <QToolTip>
+#include <QApplication>
 
 #define COL_NAME 0
 #define COL_USAGE 1
@@ -210,6 +211,12 @@ bool FunctionWidget1::loadParameterTable()
   Table1->setRowCount((int) params.size());
   Table1->blockSignals(true);
 
+  QPalette Palette = QGuiApplication::palette();
+  QColor Foreground = Palette.color(QPalette::Active, QPalette::Text);
+  QColor Background = Palette.color(QPalette::Active, QPalette::Base);
+
+  bool isDarkTheme = (Foreground.redF() + Foreground.greenF() + Foreground.blueF() > Background.redF() + Background.greenF() + Background.blueF());
+
   for (j = 0; j < params.size(); j++)
     {
       usage = params[j]->getUsage();
@@ -274,13 +281,20 @@ bool FunctionWidget1::loadParameterTable()
       else
         Table1->item((int) j, COL_NAME)->setText(Name);
 
-      Table1->item((int) j, COL_NAME)->setBackground(QBrush(color));
+      if (isDarkTheme)
+        Table1->item((int) j, COL_NAME)->setForeground(QBrush(color));
+      else
+        Table1->item((int) j, COL_NAME)->setBackground(QBrush(color));
 
       // col. 1 (description)
       QTableWidgetItem *newItem2 = new QTableWidgetItem();
       newItem2->setFlags(Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
       Table1->setItem((int) j, COL_USAGE, newItem2);
-      Table1->item((int) j, COL_USAGE)->setBackground(QBrush(color));
+
+      if (isDarkTheme)
+        Table1->item((int) j, COL_USAGE)->setForeground(QBrush(color));
+      else
+        Table1->item((int) j, COL_USAGE)->setBackground(QBrush(color));
 
       QComboBox *comboItem = new QComboBox(Table1);
       comboItem->addItems(Usages);
@@ -313,7 +327,10 @@ bool FunctionWidget1::loadParameterTable()
       else
         Table1->item((int) j, COL_UNIT)->setText(strUnit);
 
-      Table1->item((int) j, COL_UNIT)->setBackground(QBrush(color));
+      if (isDarkTheme)
+        Table1->item((int) j, COL_UNIT)->setForeground(QBrush(color));
+      else
+        Table1->item((int) j, COL_UNIT)->setBackground(QBrush(color));
     }
 
   Table1->blockSignals(false);
