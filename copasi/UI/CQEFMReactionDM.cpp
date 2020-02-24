@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,12 +35,17 @@ CQEFMReactionDM::CQEFMReactionDM(QObject *parent):
   mReactionsSize(0)
 {}
 
-int CQEFMReactionDM::rowCount(const QModelIndex & C_UNUSED(parent)) const
+size_t CQEFMReactionDM::size() const
 {
-  if (mpTask == NULL)
-    return 0;
+  if (mpTask != NULL)
+    return mModesSize;
 
-  return (int) mModesSize;
+  return 0;
+}
+
+int CQEFMReactionDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched;
 }
 
 int CQEFMReactionDM::columnCount(const QModelIndex & C_UNUSED(parent)) const

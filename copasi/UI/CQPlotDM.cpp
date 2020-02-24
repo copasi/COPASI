@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,10 +35,19 @@ CQPlotDM::CQPlotDM(QObject *parent, CDataModel * pDataModel)
 {
 }
 
+size_t CQPlotDM::size() const
+{
+  if (mpDataModel != NULL)
+    return mpDataModel->getPlotDefinitionList()->size();
+
+  return 0;
+}
+
 int CQPlotDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mpDataModel->getPlotDefinitionList()->size() + 1;
+  return mFetched + 1;
 }
+
 int CQPlotDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
   return TOTAL_COLS_PLOTS;

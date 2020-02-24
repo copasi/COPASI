@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -43,6 +48,7 @@ protected:
   virtual void resetCacheProtected();
   bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
   bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+  virtual size_t size() const override;
 
   // cache the pretty-printed unit strings
   mutable QMap< const CUnitDefinition *, QVariant > mUnitCache;
