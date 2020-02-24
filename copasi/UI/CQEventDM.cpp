@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,12 +33,22 @@
 CQEventDM::CQEventDM(QObject *parent, CDataModel * pDataModel)
   : CQBaseDataModel(parent, pDataModel)
   , mpEvents(NULL)
-{}
-
-int CQEventDM::rowCount(const QModelIndex&) const
 {
-  return mpDataModel->getModel()->getEvents().size() + 1;
 }
+
+size_t CQEventDM::size() const
+{
+  if (mpDataModel != NULL)
+    return mpDataModel->getModel()->getEvents().size();
+
+  return 0;
+}
+
+int CQEventDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched + 1;
+}
+
 int CQEventDM::columnCount(const QModelIndex&) const
 {
   return TOTAL_COLS_EVENTS;

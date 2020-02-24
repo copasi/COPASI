@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,10 +35,10 @@
 #include "copasi/model/CReactionInterface.h"
 #include "copasi/undo/CUndoData.h"
 
-CQSpecieDM::CQSpecieDM(QObject *parent):
-  CQBaseDataModel(parent, NULL),
-  mpMetabolites(NULL),
-  mNotify(true)
+CQSpecieDM::CQSpecieDM(QObject * parent)
+  : CQBaseDataModel(parent, NULL)
+  , mpMetabolites(NULL)
+  , mNotify(true)
 {
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::REACTIONS]));
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::FIXED]));
@@ -56,9 +56,17 @@ const QStringList& CQSpecieDM::getTypes()
   return mTypes;
 }
 
-int CQSpecieDM::rowCount(const QModelIndex&) const
+size_t CQSpecieDM::size() const
 {
-  return mpMetabolites->size() + 1;
+  if (mpMetabolites != NULL)
+    return mpMetabolites->size();
+
+  return 0;
+}
+
+int CQSpecieDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched + 1;
 }
 
 int CQSpecieDM::columnCount(const QModelIndex&) const

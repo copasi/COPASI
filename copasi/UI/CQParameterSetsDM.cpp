@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,11 +32,17 @@ CQParameterSetsDM::CQParameterSetsDM(QObject *parent) :
 CQParameterSetsDM::~CQParameterSetsDM()
 {}
 
-int CQParameterSetsDM::rowCount(const QModelIndex & /* parent */) const
+size_t CQParameterSetsDM::size() const
 {
-  if (mpListOfParameterSets == NULL) return 0;
+  if (mpListOfParameterSets != NULL)
+    return mpListOfParameterSets->size();
 
-  return (int) mpListOfParameterSets->size();
+  return 0;
+}
+
+int CQParameterSetsDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched;
 }
 
 bool CQParameterSetsDM::clear()
