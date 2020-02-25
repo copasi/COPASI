@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -54,6 +54,8 @@ CQEventsWidget::CQEventsWidget(QWidget *parent, const char *name)
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
 
+  mpTblEvents->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
 #if QT_VERSION >= 0x050000
@@ -70,6 +72,7 @@ CQEventsWidget::CQEventsWidget(QWidget *parent, const char *name)
           this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
   connect(mpEventDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
 }
@@ -159,25 +162,25 @@ CQBaseDataModel * CQEventsWidget::getCqDataModel()
 
 bool CQEventsWidget::enterProtected()
 {
-  if (mpTblEvents->selectionModel() != NULL)
-    {
-      disconnect(mpTblEvents->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblEvents->horizontalHeader()->saveState();
+  blockSignals(true);
 
   mpEventDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpEventDM);
   //Set Model for the TableView
   mpTblEvents->setModel(NULL);
   mpTblEvents->setModel(mpProxyModel);
-  connect(mpTblEvents->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+
   updateDeleteBtns();
+  mpTblEvents->horizontalHeader()->restoreState(State);
+  blockSignals(false);
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
       mpTblEvents->resizeColumnsToContents();
     }
+
+  emit initFilter();
 
   return true;
 }
@@ -284,6 +287,17 @@ void CQEventsWidget::keyPressEvent(QKeyEvent *ev)
 
 void CQEventsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|New Event", Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter + "|New Event", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }

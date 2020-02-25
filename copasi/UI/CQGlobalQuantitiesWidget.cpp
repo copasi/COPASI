@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,6 +53,8 @@ CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget *parent, const char *
   mpTypeDelegate = new CQComboDelegate(this, mpGlobalQuantityDM->getTypes());
   mpTblGlobalQuantities->setItemDelegateForColumn(COL_TYPE_GQ, mpTypeDelegate);
 
+  mpTblGlobalQuantities->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
 #if QT_VERSION >= 0x050000
@@ -69,6 +71,7 @@ CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget *parent, const char *
           this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
   connect(mpGlobalQuantityDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
 }
@@ -160,25 +163,25 @@ CQBaseDataModel * CQGlobalQuantitiesWidget::getCqDataModel()
 
 bool CQGlobalQuantitiesWidget::enterProtected()
 {
-  if (mpTblGlobalQuantities->selectionModel() != NULL)
-    {
-      disconnect(mpTblGlobalQuantities->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblGlobalQuantities->horizontalHeader()->saveState();
+  blockSignals(true);
 
   mpGlobalQuantityDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpGlobalQuantityDM);
   //Set Model for the TableView
   mpTblGlobalQuantities->setModel(NULL);
   mpTblGlobalQuantities->setModel(mpProxyModel);
-  connect(mpTblGlobalQuantities->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+
   updateDeleteBtns();
+  mpTblGlobalQuantities->horizontalHeader()->restoreState(State);
+  blockSignals(false);
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
       mpTblGlobalQuantities->resizeColumnsToContents();
     }
+
+  emit initFilter();
 
   return true;
 }
@@ -285,6 +288,17 @@ void CQGlobalQuantitiesWidget::keyPressEvent(QKeyEvent *ev)
 
 void CQGlobalQuantitiesWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|New Quantity", Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter + "|New Quantity", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }

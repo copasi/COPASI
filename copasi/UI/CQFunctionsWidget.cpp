@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -50,6 +50,8 @@ CQFunctionsWidget::CQFunctionsWidget(QWidget *parent, const char *name)
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
 
+  mpTblFunctions->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
 #if QT_VERSION >= 0x050000
@@ -66,6 +68,7 @@ CQFunctionsWidget::CQFunctionsWidget(QWidget *parent, const char *name)
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpFunctionDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
 }
@@ -156,25 +159,25 @@ bool CQFunctionsWidget::leaveProtected()
 
 bool CQFunctionsWidget::enterProtected()
 {
-  if (mpTblFunctions->selectionModel() != NULL)
-    {
-      disconnect(mpTblFunctions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblFunctions->horizontalHeader()->saveState();
+  blockSignals(true);
 
   mpFunctionDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpFunctionDM);
   //Set Model for the TableView
   mpTblFunctions->setModel(NULL);
   mpTblFunctions->setModel(mpProxyModel);
-  connect(mpTblFunctions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+
   updateDeleteBtns();
+  mpTblFunctions->horizontalHeader()->restoreState(State);
+  blockSignals(false);
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
       mpTblFunctions->resizeColumnsToContents();
     }
+
+  emit initFilter();
 
   return true;
 }
@@ -281,6 +284,17 @@ void CQFunctionsWidget::keyPressEvent(QKeyEvent *ev)
 
 void CQFunctionsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|New Function", Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter + "|New Function", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }
