@@ -44,7 +44,6 @@ public:
    */
   void setBtnGroupVisible(bool isVisible);
 
-
 private:
   void buildSelectionList();
 
@@ -52,6 +51,9 @@ protected:
   virtual bool enterProtected();
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   virtual bool leaveProtected();
+
+signals:
+  void initFilter();
 
 protected slots:
   virtual void slotBtnRevert();
@@ -67,6 +69,7 @@ protected slots:
   void slotOpenEditor(const QModelIndex & index);
   void slotCloseEditor(const QModelIndex & index);
   void slotResolve(const QModelIndex & index);
+  virtual void slotFilterChanged();
 
 private:
   CModelParameterSet * mpParameterSet;

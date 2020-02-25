@@ -66,6 +66,8 @@ public:
 
   virtual bool insertRows(int position, int rows, const QModelIndex & source);
   virtual bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex());
+  bool canFetchMore(const QModelIndex &parent) const override;
+  void fetchMore(const QModelIndex &parent) override;
 
 protected:
   virtual void resetCacheProtected();
@@ -97,10 +99,24 @@ private:
   int mFramework;
 
   // cache the unit strings, to make viewing the parameter overview table faster
-  mutable std::set< CValidatedUnit > mUnitCache;
+  mutable std::map< CValidatedUnit, CValidatedUnit > mUnitCache;
 
   // the key to the currently active parameter set
   std::string mParameterSetKey;
+
+  CModelParameterGroup const * mpTimes;
+  CModelParameterGroup const * mpCompartments;
+  CModelParameterGroup const * mpSpecies;
+  CModelParameterGroup const * mpModelValues;
+  CModelParameterGroup const * mpReactions;
+
+  size_t mFetchLimit;
+  size_t mTimesFetched;
+  size_t mCompartmentsFetched;
+  size_t mSpeciesFetched;
+  size_t mModelValuesFetched;
+  size_t mReactionsFetched;
+  size_t mGroupsFetched;
 };
 
 #endif // COPASI_CQParameterOverviewDM

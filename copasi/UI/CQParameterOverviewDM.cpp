@@ -32,6 +32,7 @@
 #include "copasi/UI/copasiWidget.h"
 #include "copasi/utilities/CValidatedUnit.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CDataString.h"
 
 #define COL_NAME       0
 #define COL_DIFF       1
@@ -45,6 +46,18 @@ CQParameterOverviewDM::CQParameterOverviewDM(QObject * pParent)
   : CQBaseTreeDataModel(pParent, NULL)
   , mpModelParameterSet(NULL)
   , mFramework(0)
+  , mpTimes(NULL)
+  , mpCompartments(NULL)
+  , mpSpecies(NULL)
+  , mpModelValues(NULL)
+  , mpReactions(NULL)
+  , mFetchLimit(50)
+  , mTimesFetched(0)
+  , mCompartmentsFetched(0)
+  , mSpeciesFetched(0)
+  , mModelValuesFetched(0)
+  , mReactionsFetched(0)
+  , mGroupsFetched(0)
 {}
 
 // virtual
@@ -213,7 +226,7 @@ int CQParameterOverviewDM::rowCount(const QModelIndex & parent) const
   if (!parent.isValid())
     {
       if (mpModelParameterSet != NULL)
-        return 5;
+        return mGroupsFetched;
       else
         return 0;
     }
@@ -222,10 +235,30 @@ int CQParameterOverviewDM::rowCount(const QModelIndex & parent) const
 
   switch (pParent->getType())
     {
-      case CModelParameter::Type::Reaction:
       case CModelParameter::Type::Group:
+        if (pParent == mpTimes)
+          return mTimesFetched;
+
+        if (pParent == mpCompartments)
+          return mCompartmentsFetched;
+
+        if (pParent == mpSpecies)
+          return mSpeciesFetched;
+
+        if (pParent == mpModelValues)
+          return mModelValuesFetched;
+
+        if (pParent == mpReactions)
+          return mReactionsFetched;
+
+        break;
+
       case CModelParameter::Type::Set:
-        return (int) static_cast< CModelParameterGroup * >(pParent) ->size();
+        return (int) static_cast< CModelParameterGroup * >(pParent)->size();
+        break;
+
+      case CModelParameter::Type::Reaction:
+        return (int) static_cast< CModelParameterGroup * >(pParent)->size();
         break;
 
       default:
@@ -237,20 +270,16 @@ int CQParameterOverviewDM::rowCount(const QModelIndex & parent) const
 
 void CQParameterOverviewDM::setModelParameterSet(CModelParameterSet * pModelParameterSet)
 {
-  if (mpModelParameterSet != pModelParameterSet)
-    {
-      beginResetModel();
-      mpModelParameterSet = pModelParameterSet;
-      mUnitCache.clear();
-      endResetModel();
-    }
+  beginResetModel();
+  mpModelParameterSet = pModelParameterSet;
+  resetCacheProtected();
+  endResetModel();
 }
 
 void CQParameterOverviewDM::setFramework(const int & framework)
 {
   beginResetModel();
   mFramework = framework;
-  mUnitCache.clear();
   endResetModel();
 }
 
@@ -458,24 +487,25 @@ QVariant CQParameterOverviewDM::unitData(const CModelParameter * pNode, int role
 
   CValidatedUnit Unit = pNode->getUnit(static_cast< CCore::Framework >(mFramework));
 
-  std::set< CValidatedUnit >::const_iterator it = mUnitCache.find(Unit);
+  std::map< CValidatedUnit, CValidatedUnit >::const_iterator it = mUnitCache.find(Unit);
 
   if (it == mUnitCache.end())
     {
-      Unit.buildExpression();
-      it = mUnitCache.insert(Unit).first;
+      CValidatedUnit Formated(Unit);
+      Formated.buildExpression();
+      it = mUnitCache.insert(std::make_pair(Unit, Formated)).first;
     }
 
   switch (role)
     {
       case Qt::DecorationRole:
-        if (it->conflict())
+        if (it->second.conflict())
           return QCommonStyle().standardIcon(QStyle::SP_MessageBoxWarning);
 
         break;
 
       case Qt::ToolTipRole:
-        if (it->conflict())
+        if (it->second.conflict())
           {
             CValidity Validity;
             Validity.add(CIssue(CIssue::eSeverity::Warning, CIssue::eKind::UnitConflict));
@@ -485,7 +515,7 @@ QVariant CQParameterOverviewDM::unitData(const CModelParameter * pNode, int role
         break;
 
       case Qt::DisplayRole:
-        return FROM_UTF8(it->getExpression());
+        return FROM_UTF8(it->second.getExpression());
         break;
     }
 
@@ -616,4 +646,174 @@ bool CQParameterOverviewDM::removeRows(int /*position*/, int /*rows*/, const QMo
 void CQParameterOverviewDM::resetCacheProtected()
 {
   mUnitCache.clear();
+  mpTimes = NULL;
+  mpCompartments = NULL;
+  mpSpecies = NULL;
+  mpModelValues = NULL;
+  mpReactions = NULL;
+  mTimesFetched = 0;
+  mCompartmentsFetched = 0;
+  mSpeciesFetched = 0;
+  mModelValuesFetched = 0;
+  mReactionsFetched = 0;
+  mGroupsFetched = 0;
+
+  if (mpModelParameterSet == NULL)
+    return;
+
+  mpTimes = static_cast< const CModelParameterGroup * >(mpModelParameterSet->getModelParameter(CDataString("Initial Time").getCN()));
+  mpCompartments = static_cast< const CModelParameterGroup * >(mpModelParameterSet->getModelParameter(CDataString("Initial Compartment Sizes").getCN()));
+  mpSpecies = static_cast< const CModelParameterGroup * >(mpModelParameterSet->getModelParameter(CDataString("Initial Species Values").getCN()));
+  mpModelValues = static_cast< const CModelParameterGroup * >(mpModelParameterSet->getModelParameter(CDataString("Initial Global Quantities").getCN()));
+  mpReactions = static_cast< const CModelParameterGroup * >(mpModelParameterSet->getModelParameter(CDataString("Kinetic Parameters").getCN()));
+
+  size_t FetchLimit = mFetchLimit;
+
+  if (mpTimes != NULL)
+    {
+      mTimesFetched = std::min(FetchLimit, mpTimes->size());
+      FetchLimit -= mTimesFetched;
+    }
+
+  if (mTimesFetched > 0)
+    mGroupsFetched++;
+
+  if (mpCompartments != NULL)
+    {
+      mCompartmentsFetched = std::min(FetchLimit, mpCompartments->size());
+      FetchLimit -= mCompartmentsFetched;
+    }
+
+  if (mCompartmentsFetched > 0)
+    mGroupsFetched++;
+
+  if (mpSpecies != NULL)
+    {
+      mSpeciesFetched = std::min(FetchLimit, mpSpecies->size());
+      FetchLimit -= mSpeciesFetched;
+    }
+
+  if (mSpeciesFetched > 0)
+    mGroupsFetched++;
+
+  if (mpModelValues != NULL)
+    {
+      mModelValuesFetched = std::min(FetchLimit, mpModelValues->size());
+      FetchLimit -= mModelValuesFetched;
+    }
+
+  if (mModelValuesFetched > 0)
+    mGroupsFetched++;
+
+  if (mpReactions != NULL)
+    {
+      mReactionsFetched = std::min(FetchLimit, mpReactions->size());
+    }
+
+  if (mReactionsFetched > 0)
+    mGroupsFetched++;
+}
+
+bool CQParameterOverviewDM::canFetchMore(const QModelIndex & parent) const
+{
+  if (!parent.isValid())
+    return false;
+
+  CModelParameter * pParent = nodeFromIndex(parent);
+
+  if (pParent->getType() != CModelParameter::Type::Group)
+    return false;
+
+  if (pParent == mpTimes)
+    return mTimesFetched < mpTimes->size();
+
+  if (mTimesFetched < mpTimes->size())
+    return false;
+
+  if (pParent == mpCompartments)
+    return mCompartmentsFetched < mpCompartments->size();
+
+  if (mCompartmentsFetched < mpCompartments->size())
+    return false;
+
+  if (pParent == mpSpecies)
+    return mSpeciesFetched < mpSpecies->size();
+
+  if (mSpeciesFetched < mpSpecies->size())
+    return false;
+
+  if (pParent == mpModelValues)
+    return mModelValuesFetched < mpModelValues->size();
+
+  if (mModelValuesFetched < mpModelValues->size())
+    return false;
+
+  if (pParent == mpReactions)
+    return mReactionsFetched < mpReactions->size();
+
+  return false;
+}
+
+void CQParameterOverviewDM::fetchMore(const QModelIndex & parent)
+{
+  if (!parent.isValid())
+    {
+      return;
+    }
+
+  CModelParameter * pParent = nodeFromIndex(parent);
+
+  if (pParent->getType() != CModelParameter::Type::Group)
+    return;
+
+  size_t * pFetched = NULL;
+  size_t FetchTarget = 0;
+  int ToBeFetched = 0;
+
+  if (pParent == mpTimes)
+    {
+      pFetched = &mTimesFetched;
+      FetchTarget = mpTimes->size();
+    }
+  else if (pParent == mpCompartments)
+    {
+      pFetched = &mCompartmentsFetched;
+      FetchTarget = mpCompartments->size();
+    }
+  else if (pParent == mpSpecies)
+    {
+      pFetched = &mSpeciesFetched;
+      FetchTarget = mpSpecies->size();
+    }
+  else if (pParent == mpModelValues)
+    {
+      pFetched = &mModelValuesFetched;
+      FetchTarget = mpModelValues->size();
+    }
+  else if (pParent == mpReactions)
+    {
+      pFetched = &mReactionsFetched;
+      FetchTarget = mpReactions->size();
+    }
+  else
+    return;
+
+  ToBeFetched = std::min(mFetchLimit, FetchTarget - *pFetched);
+
+  if (ToBeFetched <= 0)
+    return;
+
+  beginInsertRows(parent, *pFetched, *pFetched + ToBeFetched - 1);
+  *pFetched += ToBeFetched;
+  endInsertRows();
+
+  if (*pFetched >= FetchTarget && mGroupsFetched < 5)
+    {
+      beginInsertRows(QModelIndex(), mGroupsFetched, mGroupsFetched);
+      mGroupsFetched++;
+      endInsertRows();
+
+      if (canFetchMore(index(mGroupsFetched - 1, 0)))
+        fetchMore(index(mGroupsFetched - 1, 0));
+    }
 }
