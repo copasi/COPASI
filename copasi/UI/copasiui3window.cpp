@@ -3478,7 +3478,7 @@ void CopasiUI3Window::slotImportCombine(QString file)
   if (file == "")
     combineArchiveFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                        QString(), "Combine Archive Files (*.omex;*.sbex;*.sedx);;All Files (*)",
+                                        QString(), "Combine Archive Files (*.omex *.sbex *.sedx);;All Files (*)",
                                         "Choose a file");
   else
     combineArchiveFile = file;
@@ -3839,7 +3839,7 @@ void CopasiUI3Window::removeReportTargets()
   auto& taskList = *mpDataModel->getTaskList();
   std::stringstream str;
 
-for (auto & task : taskList)
+  for (auto & task : taskList)
     {
       std::string target = task.getReport().getTarget();
 
