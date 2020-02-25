@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -62,6 +62,7 @@ CQReportsWidget::CQReportsWidget(QWidget *parent, const char *name)
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpReportDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
 }
@@ -140,20 +141,18 @@ bool CQReportsWidget::leaveProtected()
 
 bool CQReportsWidget::enterProtected()
 {
-  if (mpTblReports->selectionModel() != NULL)
-    {
-      disconnect(mpTblReports->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblReports->horizontalHeader()->saveState();
+  blockSignals(true);
 
   mpReportDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpReportDM);
   //Set Model for the TableView
   mpTblReports->setModel(NULL);
   mpTblReports->setModel(mpProxyModel);
-  connect(mpTblReports->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+
   updateDeleteBtns();
+  mpTblReports->horizontalHeader()->restoreState(State);
+  blockSignals(false);
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
@@ -161,6 +160,8 @@ bool CQReportsWidget::enterProtected()
     }
 
   setFramework(mFramework);
+  emit initFilter();
+
   return true;
 }
 
@@ -267,8 +268,19 @@ void CQReportsWidget::keyPressEvent(QKeyEvent *ev)
 
 void CQReportsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|New Report", Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter + "|New Report", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }
 
 void CQReportsWidget::setFramework(int framework)

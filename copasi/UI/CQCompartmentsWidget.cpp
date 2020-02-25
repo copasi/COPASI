@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -54,6 +54,8 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget *parent, const char *name)
   mpTypeDelegate = new CQComboDelegate(this, mpCompartmentDM->getTypes());
   mpTblCompartments->setItemDelegateForColumn(COL_TYPE_COMPARTMENTS, mpTypeDelegate);
 
+  mpTblCompartments->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
 #if QT_VERSION >= 0x050000
@@ -70,6 +72,7 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget *parent, const char *name)
           this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
   connect(mpCompartmentDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
 }
@@ -168,25 +171,25 @@ CQBaseDataModel * CQCompartmentsWidget::getCqDataModel()
 
 bool CQCompartmentsWidget::enterProtected()
 {
-  if (mpTblCompartments->selectionModel() != NULL)
-    {
-      disconnect(mpTblCompartments->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblCompartments->horizontalHeader()->saveState();
+  blockSignals(true);
 
   mpCompartmentDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpCompartmentDM);
   mpTblCompartments->setModel(NULL);
   mpTblCompartments->setModel(mpProxyModel);
 
+  updateDeleteBtns();
+  mpTblCompartments->horizontalHeader()->restoreState(State);
+  blockSignals(false);
+
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
       mpTblCompartments->resizeColumnsToContents();
     }
 
-  connect(mpTblCompartments->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-  updateDeleteBtns();
+  emit initFilter();
+
   return true;
 }
 
@@ -292,6 +295,17 @@ void CQCompartmentsWidget::keyPressEvent(QKeyEvent *ev)
 
 void CQCompartmentsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|New Compartment", Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter + "|New Compartment", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }

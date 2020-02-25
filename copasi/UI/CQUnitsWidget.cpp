@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,6 +46,8 @@ CQUnitsWidget::CQUnitsWidget(QWidget *parent, const char *name)
   mpProxyModel->setFilterKeyColumn(-1);
   mpProxyModel->sort(COL_NAME_UNITS);
 
+  mpTblUnits->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
 #if QT_VERSION >= 0x050000
@@ -63,6 +65,7 @@ CQUnitsWidget::CQUnitsWidget(QWidget *parent, const char *name)
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpUnitDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
 }
@@ -152,20 +155,18 @@ bool CQUnitsWidget::leaveProtected()
 
 bool CQUnitsWidget::enterProtected()
 {
-  if (mpTblUnits->selectionModel() != NULL)
-    {
-      disconnect(mpTblUnits->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblUnits->horizontalHeader()->saveState();
+  blockSignals(true);
 
   mpUnitDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpUnitDM);
   //Set Model for the TableView
   mpTblUnits->setModel(NULL);
   mpTblUnits->setModel(mpProxyModel);
-  connect(mpTblUnits->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+
   updateDeleteBtns();
+  mpTblUnits->horizontalHeader()->restoreState(State);
+  blockSignals(false);
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
@@ -173,6 +174,8 @@ bool CQUnitsWidget::enterProtected()
     }
 
   setFramework(mFramework);
+  emit initFilter();
+
   return true;
 }
 
@@ -279,8 +282,19 @@ void CQUnitsWidget::keyPressEvent(QKeyEvent *ev)
 
 void CQUnitsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|New Unit", Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter + "|New Unit", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }
 
 void CQUnitsWidget::setFramework(int framework)

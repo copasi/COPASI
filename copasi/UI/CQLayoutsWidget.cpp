@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,9 +17,6 @@
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
-
-
-
 
 #include "CQLayoutsWidget.h"
 
@@ -66,6 +63,8 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget *parent)
   mpProxyModel->setFilterKeyColumn(-1);
   mpProxyModel->setSourceModel(mpLayoutsDM);
 
+  mpTblLayouts->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
 #if QT_VERSION >= 0x050000
@@ -85,6 +84,7 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget *parent)
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpLayoutsDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
   connect(mpPushButtonDelegate, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotShowLayout(const QModelIndex &)));
@@ -171,11 +171,8 @@ void CQLayoutsWidget::updateDeleteBtns()
 // virtual
 bool CQLayoutsWidget::enterProtected()
 {
-  if (mpTblLayouts->selectionModel() != NULL)
-    {
-      disconnect(mpTblLayouts->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblLayouts->horizontalHeader()->saveState();
+  blockSignals(true);
 
   assert(mpDataModel != NULL);
   CListOfLayouts *pListOfLayouts = mpDataModel->getListOfLayouts();
@@ -210,9 +207,13 @@ bool CQLayoutsWidget::enterProtected()
         }
     }
 
-  connect(mpTblLayouts->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+  updateDeleteBtns();
+  mpTblLayouts->horizontalHeader()->restoreState(State);
+  blockSignals(false);
+
   dataChanged(QModelIndex(), QModelIndex());
+  emit initFilter();
+
   return true;
 }
 
@@ -359,8 +360,19 @@ void CQLayoutsWidget::dataChanged(const QModelIndex & /* topLeft */,
 // virtual
 void CQLayoutsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text(), Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter, Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }
 
 /**

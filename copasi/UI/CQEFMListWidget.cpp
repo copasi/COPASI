@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,6 +34,8 @@ CQEFMListWidget::CQEFMListWidget(QWidget *parent, const char *name) :
   setupUi(this);
   mpEFMTable->verticalHeader()->hide();
 
+  mpEFMTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
 #if QT_VERSION >= 0x050000
@@ -60,7 +62,8 @@ CQEFMListWidget::CQEFMListWidget(QWidget *parent, const char *name) :
       mpEFMTable->resizeColumnsToContents();
     }
 
-  connect(mpEditFilter, SIGNAL(textChanged(const QString &)), this, SLOT(slotFilterChanged()));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
+  connect(mpLEFilter, SIGNAL(textChanged(const QString &)), this, SLOT(slotFilterChanged()));
 }
 
 CQEFMListWidget::~CQEFMListWidget()
@@ -71,6 +74,9 @@ CQEFMListWidget::~CQEFMListWidget()
 
 bool CQEFMListWidget::loadResult(const CEFMTask *pTask)
 {
+  QByteArray State = mpEFMTable->horizontalHeader()->saveState();
+  blockSignals(true);
+
   mpTask = pTask;
   mpFluxModeDM->setTask(mpTask);
   mpProxyModel->setSourceModel(mpFluxModeDM);
@@ -78,16 +84,32 @@ bool CQEFMListWidget::loadResult(const CEFMTask *pTask)
   mpEFMTable->setModel(NULL);
   mpEFMTable->setModel(mpProxyModel);
 
+  mpEFMTable->horizontalHeader()->restoreState(State);
+  blockSignals(false);
+
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
       mpEFMTable->resizeColumnsToContents();
     }
+
+  emit initFilter();
 
   return true;
 }
 
 void CQEFMListWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpEditFilter->text(), Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter, Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }
