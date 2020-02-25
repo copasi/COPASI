@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -95,7 +95,7 @@ CEvaluationNode * CEvaluationNodeVariable::fromAST(const ASTNode * pASTNode, con
 }
 
 // virtual
-CValidatedUnit CEvaluationNodeVariable::getUnit(const CMathContainer & container,
+CValidatedUnit CEvaluationNodeVariable::getUnit(const CMathContainer & /* container */,
     const std::vector< CValidatedUnit > & units) const
 {
   if (mIndex < units.size())

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -322,7 +322,7 @@ std::string CEvaluationNodeChoice::getMMLString(const std::vector< std::string >
 }
 
 // virtual
-CValidatedUnit CEvaluationNodeChoice::getUnit(const CMathContainer & container,
+CValidatedUnit CEvaluationNodeChoice::getUnit(const CMathContainer & /* container */,
     const std::vector< CValidatedUnit > & units) const
 {
   return CValidatedUnit::merge(units[1], units[2]);
@@ -330,8 +330,8 @@ CValidatedUnit CEvaluationNodeChoice::getUnit(const CMathContainer & container,
 
 // virtual
 CValidatedUnit CEvaluationNodeChoice::setUnit(const CMathContainer & container,
-    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
-    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+    const std::map < CEvaluationNode *, CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode *, CValidatedUnit > & targetUnits) const
 {
   CValidatedUnit Result(CEvaluationNode::setUnit(container, currentUnits, targetUnits));
 
