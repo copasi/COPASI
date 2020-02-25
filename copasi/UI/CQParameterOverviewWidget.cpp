@@ -70,6 +70,7 @@ CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char
           this, SLOT(slotOpenEditor(const QModelIndex &)));
   connect(mpParameterSetDM, SIGNAL(signalCloseEditor(const QModelIndex &)),
           this, SLOT(slotCloseEditor(const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
 }
 
 CQParameterOverviewWidget::~CQParameterOverviewWidget()
@@ -201,7 +202,6 @@ void CQParameterOverviewWidget::setBtnGroupVisible(bool isVisible)
   mpBtnWidget->setVisible(isVisible);
 }
 
-
 // virtual
 bool CQParameterOverviewWidget::leaveProtected()
 {
@@ -271,7 +271,6 @@ bool CQParameterOverviewWidget::enterProtected()
 
   // We need to make sure the original is fully compiled.
   mpParameterSet->compile();
-
   mGlobalQuantities.clear();
 
   bool didOwnCopy = mOwnCopy;
@@ -298,11 +297,7 @@ bool CQParameterOverviewWidget::enterProtected()
     pdelete(pOldParameterSet);
 
   mpTreeView->expandAll();
-
-  for (int i = 0; i < 6; i++)
-    {
-      mpTreeView->resizeColumnToContents(i);
-    }
+  emit initFilter();
 
   return true;
 }
@@ -654,4 +649,15 @@ void CQParameterOverviewWidget::slotResolve(const QModelIndex & index)
 
   mpTreeView->expandAll();
   mpTreeView->resizeColumnToContents(3);
+}
+
+void CQParameterOverviewWidget::slotFilterChanged()
+{
+  for (int i = 0; i < 5; ++i)
+    {
+      while (mpParameterSetDM->canFetchMore(mpParameterSetDM->index(i, 0)))
+        mpParameterSetDM->fetchMore(mpParameterSetDM->index(i, 0));
+    }
+
+  mpTreeView->expandAll();
 }
