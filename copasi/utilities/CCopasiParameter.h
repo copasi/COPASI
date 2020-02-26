@@ -476,7 +476,8 @@ private:
   }
 };
 
-template < class CType > bool compareValues(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
+template < class CType >
+bool compareValues(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
 {
   if (*static_cast< CType * >(lhs.getValuePointer()) != *static_cast< CType * >(rhs.getValuePointer()))
     {
@@ -490,7 +491,8 @@ template < class CType > bool compareValues(const CCopasiParameter & lhs, const 
 
   if (pLeft != NULL && pRight != NULL)
     {
-      if (pLeft->size() != pRight->size()) return false;
+      if (pLeft->size() != pRight->size())
+        return false;
 
       typename std::vector< std::pair< CType, CType > >::const_iterator itLeft = pLeft->begin();
       typename std::vector< std::pair< CType, CType > >::const_iterator endLeft = pLeft->end();
@@ -498,8 +500,8 @@ template < class CType > bool compareValues(const CCopasiParameter & lhs, const 
 
       for (; itLeft != endLeft; ++itLeft, ++itRight)
         {
-          if (itLeft->first != itRight->first ||
-              itLeft->second != itRight->second) return false;
+          if (itLeft->first != itRight->first || itLeft->second != itRight->second)
+            return false;
         }
     }
   else if (pLeft != NULL || pRight != NULL)
