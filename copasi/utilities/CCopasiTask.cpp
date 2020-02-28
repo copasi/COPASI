@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -179,9 +179,28 @@ void CCopasiTask::createUndoData(CUndoData & undoData,
 
   if (mpMethod != NULL)
     {
-      CUndoData UndoData;
-      mpMethod->createUndoData(UndoData, type, oldData.getProperty(CData::METHOD).toData(), framework);
-      undoData.addProperty(CData::METHOD, UndoData.getOldData(), UndoData.getNewData());
+      if (undoData.isChangedProperty(CData::METHOD_TYPE))
+        {
+          // Method data needs to be put into pre and post processing data as we have a simultaneous remove and insert of methods
+          CUndoData MethodUndoData;
+          CCopasiMethod * pTmpMethod = createMethod(CTaskEnum::MethodName.toEnum(oldData.getProperty(CData::METHOD_TYPE).toString()));
+          pTmpMethod->createUndoData(MethodUndoData, CUndoData::Type::CHANGE, oldData.getProperty(CData::METHOD).toData(), CCore::Framework::ParticleNumbers);
+          undoData.addPreProcessData(MethodUndoData);
+          delete pTmpMethod;
+
+          MethodUndoData.clear();
+          pTmpMethod = createMethod(mpMethod->getSubType());
+          mpMethod->createUndoData(MethodUndoData, CUndoData::Type::CHANGE, pTmpMethod->toData(), CCore::Framework::ParticleNumbers);
+          undoData.addPostProcessData(MethodUndoData);
+          delete pTmpMethod;
+        }
+      else
+        {
+          // Method data can be added directly
+          CUndoData MethodUndoData;
+          mpMethod->createUndoData(MethodUndoData, CUndoData::Type::CHANGE, oldData.getProperty(CData::METHOD).toData(), CCore::Framework::ParticleNumbers);
+          undoData.addProperty(CData::METHOD, MethodUndoData.getOldData(), MethodUndoData.getNewData());
+        }
     }
   else
     {
