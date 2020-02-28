@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -210,9 +210,6 @@ bool CQTrajectoryWidget::saveTaskProtected()
 
   if (!pTask) return false;
 
-  saveCommon();
-  saveMethod();
-
   CTrajectoryProblem* trajectoryproblem =
     dynamic_cast<CTrajectoryProblem *>(pTask->getProblem());
   assert(trajectoryproblem);
@@ -326,9 +323,6 @@ bool CQTrajectoryWidget::loadTaskProtected()
     dynamic_cast< CTrajectoryTask * >(mpTask);
 
   if (!pTask) return false;
-
-  loadCommon();
-  loadMethod();
 
   showUnits();
 

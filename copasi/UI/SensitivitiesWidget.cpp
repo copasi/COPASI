@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -86,8 +86,6 @@ void SensitivitiesWidget::init()
 
 bool SensitivitiesWidget::saveTaskProtected()
 {
-  saveCommon();
-  saveMethod();
   CSensTask *sensTask =
     dynamic_cast<CSensTask *>(mpObject);
 
@@ -211,8 +209,6 @@ bool SensitivitiesWidget::taskFinishedEvent()
 
 bool SensitivitiesWidget::loadTaskProtected()
 {
-  loadCommon();
-  loadMethod();
   CSensTask *sensTask =
     dynamic_cast<CSensTask *>(mpObject);
   assert(sensTask);

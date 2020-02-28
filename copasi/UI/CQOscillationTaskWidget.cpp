@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -77,10 +77,6 @@ bool CQOscillationTaskWidget::saveTaskProtected()
 
     if (!pTask) return false;
 
-    // save functions from the Parent, TaskWidget
-    saveCommon();
-    saveMethod();
-
     // check the existence of Problem
     CCrossSectionProblem* pProblem =
       dynamic_cast<CCrossSectionProblem *>(pTask->getProblem());
@@ -111,10 +107,6 @@ bool CQOscillationTaskWidget::loadTaskProtected()
       dynamic_cast< CCrossSectionTask * >(mpTask);
 
     if (!pTask) return false;
-
-    // load functions from the Parent, TaskWidget
-    loadCommon();
-    loadMethod();
 
     // load Problem
     CCrossSectionProblem* pProblem =

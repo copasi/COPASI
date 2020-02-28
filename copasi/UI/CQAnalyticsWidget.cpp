@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -154,9 +154,6 @@ bool CQAnalyticsWidget::saveTaskProtected()
   if (!pTask) return false;
 
   // save functions from the Parent, TaskWidget
-  saveCommon();
-  saveMethod();
-
   // check the existence of Problem
   CAnalyticsProblem* pProblem =
     dynamic_cast<CAnalyticsProblem *>(pTask->getProblem());
@@ -216,10 +213,6 @@ bool CQAnalyticsWidget::loadTaskProtected()
     dynamic_cast< CAnalyticsTask * >(mpTask);
 
   if (!pTask) return false;
-
-  // load functions from the Parent, TaskWidget
-  loadCommon();
-  loadMethod();
 
   showUnits();
 
