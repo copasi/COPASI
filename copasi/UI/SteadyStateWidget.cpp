@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -134,9 +134,6 @@ bool SteadyStateWidget::taskFinishedEvent()
 
 bool SteadyStateWidget::loadTaskProtected()
 {
-  loadCommon();
-  loadMethod();
-
   CSteadyStateTask* mSteadyStateTask =
     dynamic_cast<CSteadyStateTask *>(mpObject);
 
@@ -172,9 +169,6 @@ bool SteadyStateWidget::loadTaskProtected()
 
 bool SteadyStateWidget::saveTaskProtected()
 {
-  saveCommon();
-  saveMethod();
-
   CSteadyStateTask* mSteadyStateTask =
     dynamic_cast<CSteadyStateTask *>(mpObject);
 

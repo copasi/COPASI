@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,18 +68,19 @@
  *  Constructs a TaskWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WindowFlags fl):
-  CopasiWidget(parent, name, fl),
-  mProgressBar(NULL),
-  mpHeaderWidget(NULL),
-  mpMethodWidget(NULL),
-  mpBtnWidget(NULL),
-  mpMethodLayout(NULL),
-  mpSpacer1(NULL),
-  mpSpacer2(NULL),
-  mpTask(NULL),
-  mpMethod(NULL),
-  mChanged(false)
+TaskWidget::TaskWidget(QWidget * parent, const char * name, Qt::WindowFlags fl)
+  : CopasiWidget(parent, name, fl)
+  , mProgressBar(NULL)
+  , mpHeaderWidget(NULL)
+  , mpMethodWidget(NULL)
+  , mpBtnWidget(NULL)
+  , mpMethodLayout(NULL)
+  , mpSpacer1(NULL)
+  , mpSpacer2(NULL)
+  , mpTask(NULL)
+  , mpMethod(NULL)
+  , mChanged(false)
+  , mIgnoreProblemData(false)
 {
   if (!name)
     setObjectName("TaskWidget");
@@ -200,6 +201,9 @@ bool TaskWidget::loadMethod()
 {
   if (!mpTask) return false;
 
+  if (mpMethodWidget == NULL)
+    return true;
+
   mpMethodWidget->setTask(mpTask);
 
   return mpMethodWidget->loadMethod();
@@ -224,7 +228,10 @@ bool TaskWidget::saveMethod()
 {
   if (!mpTask) return false;
 
-  mChanged &= mpMethodWidget->saveMethod();
+  if (mpMethodWidget != NULL)
+    {
+      mChanged &= mpMethodWidget->saveMethod();
+    }
 
   return true;
 }
@@ -448,12 +455,11 @@ void TaskWidget::finishTask()
 
   catch (...) {}
 
-  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
-    {
-      CQMessageBox::information(this, "Calculation Warning",
-                                CCopasiMessage::getAllMessageText().c_str(),
-                                QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-    }
+  {
+    CQMessageBox::information(this, "Calculation Warning",
+                              CCopasiMessage::getAllMessageText().c_str(),
+                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+  }
 
   CCopasiMessage::clearDeque();
 
@@ -475,7 +481,11 @@ CCopasiTask* TaskWidget::getTask()
 
 bool TaskWidget::loadTask()
 {
-  return loadTaskProtected();
+  bool success = true;
+  success &= loadCommon();
+  success &= loadMethod();
+  success &= loadTaskProtected();
+  return success;
 }
 
 bool TaskWidget::saveTask()
@@ -484,12 +494,16 @@ bool TaskWidget::saveTask()
 
   if (mpTask != NULL)
     {
+      mpTask->setIgnoreProblemData(mIgnoreProblemData);
       CData OldData(mpTask->toData());
 
-      success = saveTaskProtected();
+      success &= saveTaskProtected();
+      success &= saveMethod();
+      success &= saveCommon();
 
       CUndoData UndoData;
       mpTask->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
+      mpTask->setIgnoreProblemData(false);
 
       if (!UndoData.empty())
         {
@@ -523,7 +537,7 @@ bool TaskWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Ac
       case ListViews::ObjectType::TASK:
         if (cn == mObjectCN)
           {
-            loadTaskProtected();
+            loadTask();
           }
 
         break;

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -78,9 +78,6 @@ bool CQFittingWidget::saveTaskProtected()
     dynamic_cast< CFitTask * >(mpTask);
 
   if (!pTask) return false;
-
-  saveCommon();
-  saveMethod();
 
   CFitProblem * pProblem =
     dynamic_cast<CFitProblem *>(mpTask->getProblem());
@@ -237,9 +234,6 @@ bool CQFittingWidget::loadTaskProtected()
     dynamic_cast< CFitTask * >(mpTask);
 
   if (!pTask) return false;
-
-  loadCommon();
-  loadMethod();
 
   CFitProblem * pProblem =
     dynamic_cast<CFitProblem *>(mpTask->getProblem());

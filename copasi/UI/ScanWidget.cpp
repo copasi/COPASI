@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -144,8 +144,6 @@ bool ScanWidget::loadTaskProtected()
 
   mIsLoading = true;
 
-  loadCommon();
-
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(mpObject);
 
@@ -176,7 +174,7 @@ bool ScanWidget::loadTaskProtected()
 
       switch (type)
         {
-            //+++
+          //+++
           case CScanProblem::SCAN_LINEAR:
             tmp1 = new CScanWidgetScan(scrollview);
             tmp1->load(scanProblem->getScanItem(i));
@@ -317,8 +315,6 @@ bool ScanWidget::saveTaskProtected()
 {
   if (mIsLoading)
     return true; // currently loading the widget list cannot be trusted
-
-  saveCommon();
 
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(mpObject);

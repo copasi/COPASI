@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -123,9 +123,6 @@ bool CQMCAWidget::loadTaskProtected()
 
   if (!pProblem) return false;
 
-  loadCommon();
-  loadMethod();
-
   mpCheckSteadyState->setChecked(pProblem->isSteadyStateRequested());
 
   if (mpCheckSteadyState->isChecked())
@@ -150,9 +147,6 @@ bool CQMCAWidget::saveTaskProtected()
   CMCATask * pTask = dynamic_cast< CMCATask * >(mpTask);
 
   if (!pTask) return false;
-
-  saveCommon();
-  saveMethod();
 
   CMCAProblem * pProblem =
     dynamic_cast< CMCAProblem * >(mpTask->getProblem());

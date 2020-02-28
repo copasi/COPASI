@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -161,9 +161,6 @@ bool CQTSSAWidget::saveTaskProtected()
 
   if (!pTask) return false;
 
-  saveCommon();
-  saveMethod();
-
   CTSSAProblem* pTssaProblem =
     dynamic_cast<CTSSAProblem *>(pTask->getProblem());
 
@@ -200,9 +197,6 @@ bool CQTSSAWidget::loadTaskProtected()
     dynamic_cast< CTSSATask * >(mpTask);
 
   if (!pTask) return false;
-
-  loadCommon();
-  loadMethod();
 
   CTSSAProblem * pTssaProblem = dynamic_cast<CTSSAProblem *>(pTask->getProblem());
 

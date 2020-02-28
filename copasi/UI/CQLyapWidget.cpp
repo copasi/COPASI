@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -83,9 +83,6 @@ bool CQLyapWidget::loadTaskProtected()
 
   if (!pTask) return false;
 
-  loadCommon();
-  loadMethod();
-
   CLyapProblem* pProblem =
     dynamic_cast< CLyapProblem * >(mpTask->getProblem());
 
@@ -113,9 +110,6 @@ bool CQLyapWidget::saveTaskProtected()
   CLyapTask * pTask = dynamic_cast< CLyapTask * >(mpTask);
 
   if (!pTask) return false;
-
-  saveCommon();
-  saveMethod();
 
   CLyapProblem* pProblem =
     dynamic_cast< CLyapProblem * >(mpTask->getProblem());

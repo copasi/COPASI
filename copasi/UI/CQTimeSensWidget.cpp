@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -189,9 +189,6 @@ bool CQTimeSensWidget::saveTaskProtected()
 
   if (!pTask) return false;
 
-  saveCommon();
-  saveMethod();
-
   CTimeSensProblem* timeSensProblem =
     dynamic_cast<CTimeSensProblem *>(pTask->getProblem());
   assert(timeSensProblem);
@@ -304,9 +301,6 @@ bool CQTimeSensWidget::loadTaskProtected()
 
   if (!pTask) return false;
 
-  loadCommon();
-  loadMethod();
-
   showUnits();
 
   CTimeSensProblem* timeSensProblem =
@@ -376,13 +370,12 @@ bool CQTimeSensWidget::loadTaskProtected()
 
   if (!toBeRemoved.empty())
     {
-for (std::string cn : toBeRemoved)
+      for (std::string cn : toBeRemoved)
         {
           timeSensProblem->removeParameterCN(cn);
           mpTimeSensProblem->removeParameterCN(cn);
         }
     }
-
 
   // load targets
   mpListTargets->clear();
@@ -406,7 +399,7 @@ for (std::string cn : toBeRemoved)
 
   if (!toBeRemoved.empty())
     {
-for (std::string cn : toBeRemoved)
+      for (std::string cn : toBeRemoved)
         {
           timeSensProblem->removeTargetCN(cn);
           mpTimeSensProblem->removeTargetCN(cn);
@@ -572,7 +565,7 @@ void CQTimeSensWidget::slotAddParameter()
   std::vector< const CDataObject * > selection =
     CCopasiSelectionDialog::getObjectVector(this, CQSimpleSelectionTree::Parameters);
 
-for (const CDataObject * item : selection)
+  for (const CDataObject * item : selection)
     {
       if (!mpListParameters->findItems(FROM_UTF8(item->getObjectDisplayName()), Qt::MatchExactly).empty())
         continue;
@@ -617,7 +610,7 @@ void CQTimeSensWidget::slotAddTarget()
         //& (~CQSimpleSelectionTree::Results)
                                            );
 
-for (const CDataObject * item : selection)
+  for (const CDataObject * item : selection)
     {
       if (!mpListTargets->findItems(FROM_UTF8(item->getObjectDisplayName()), Qt::MatchExactly).empty())
         continue;
