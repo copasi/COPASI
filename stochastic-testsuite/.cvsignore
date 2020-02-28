@@ -1,9 +1,0 @@
-stochastic-testsuite
-Makefile
-tests
-stochastic-testsuite.app
-dmsts-24
-*models
-*.result
-trace
-*.xcodeproj

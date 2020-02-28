@@ -1,6 +1,0 @@
-moc_qwt3dPlot.cpp
-Makefile
-moc_qwt3dBaseWidget.cpp
-*.xcodeproj
-moc_*.cpp
-ui_*.h
