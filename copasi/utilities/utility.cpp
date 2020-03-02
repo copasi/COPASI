@@ -27,6 +27,7 @@
 #include <limits>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <iostream>
 #include <iomanip>
 
@@ -67,7 +68,7 @@ std::string LocalTimeStamp()
   time_t Time;
   time(&Time);
 
-  tm *sTime = NULL;
+  tm * sTime = NULL;
   sTime = localtime(&Time);
 
   return ISODateTime(sTime);
@@ -78,7 +79,7 @@ std::string UTCTimeStamp()
   time_t Time;
   time(&Time);
 
-  tm *sTime = NULL;
+  tm * sTime = NULL;
   sTime = gmtime(&Time);
 
   return ISODateTime(sTime) + "Z";
@@ -106,12 +107,14 @@ time_t timeFromUTC(const std::string utc)
 
 bool isNumber(const std::string & str)
 {
-  if (str.find_first_of("+-.0123456789")) return false;
+  if (str.find_first_of("+-.0123456789"))
+    return false;
 
   const char * Tail;
-  strToDouble(str.c_str(), & Tail);
+  strToDouble(str.c_str(), &Tail);
 
-  if (*Tail) return false;
+  if (*Tail)
+    return false;
 
   return true;
 }
@@ -121,7 +124,7 @@ std::string StringPrint(const char * format, ...)
   C_INT32 TextSize = INITIALTEXTSIZE;
   C_INT32 Printed = 0;
 
-  char *Text = NULL;
+  char * Text = NULL;
 
   Text = new char[TextSize + 1];
 
@@ -132,7 +135,7 @@ std::string StringPrint(const char * format, ...)
 
   while (Printed < 0 || TextSize < Printed)
     {
-      delete [] Text;
+      delete[] Text;
 
       (Printed < 0) ? TextSize *= 2 : TextSize = Printed;
       Text = new char[TextSize + 1];
@@ -145,7 +148,7 @@ std::string StringPrint(const char * format, ...)
 
   std::string Result = Text;
 
-  delete [] Text;
+  delete[] Text;
   return Result;
 }
 
@@ -217,120 +220,340 @@ bool stringReplace(std::string & str, const std::string & target, const std::str
  *
  */
 
-void FixSName(const std::string &original, std::string &fixed)
+void FixSName(const std::string & original, std::string & fixed)
 {
   size_t i, len;
 
   // check reserved names
-  if (original == "abs") {fixed = "_abs"; return;}
+  if (original == "abs")
+    {
+      fixed = "_abs";
+      return;
+    }
 
-  if (original == "acos") {fixed = "_acos"; return;}
+  if (original == "acos")
+    {
+      fixed = "_acos";
+      return;
+    }
 
-  if (original == "and") {fixed = "_and"; return;}
+  if (original == "and")
+    {
+      fixed = "_and";
+      return;
+    }
 
-  if (original == "asin") {fixed = "_asin"; return;}
+  if (original == "asin")
+    {
+      fixed = "_asin";
+      return;
+    }
 
-  if (original == "atan") {fixed = "_atan"; return;}
+  if (original == "atan")
+    {
+      fixed = "_atan";
+      return;
+    }
 
-  if (original == "ceil") {fixed = "_ceil"; return;}
+  if (original == "ceil")
+    {
+      fixed = "_ceil";
+      return;
+    }
 
-  if (original == "cos") {fixed = "_cos"; return;}
+  if (original == "cos")
+    {
+      fixed = "_cos";
+      return;
+    }
 
-  if (original == "exp") {fixed = "_exp"; return;}
+  if (original == "exp")
+    {
+      fixed = "_exp";
+      return;
+    }
 
-  if (original == "floor") {fixed = "_floor"; return;}
+  if (original == "floor")
+    {
+      fixed = "_floor";
+      return;
+    }
 
-  if (original == "hilli") {fixed = "_hilli"; return;}
+  if (original == "hilli")
+    {
+      fixed = "_hilli";
+      return;
+    }
 
-  if (original == "hillmmr") {fixed = "_hillmmr"; return;}
+  if (original == "hillmmr")
+    {
+      fixed = "_hillmmr";
+      return;
+    }
 
-  if (original == "hillmr") {fixed = "_hillmr"; return;}
+  if (original == "hillmr")
+    {
+      fixed = "_hillmr";
+      return;
+    }
 
-  if (original == "hillr") {fixed = "_hillr"; return;}
+  if (original == "hillr")
+    {
+      fixed = "_hillr";
+      return;
+    }
 
-  if (original == "isouur") {fixed = "_isouur"; return;}
+  if (original == "isouur")
+    {
+      fixed = "_isouur";
+      return;
+    }
 
-  if (original == "log") {fixed = "_log"; return;}
+  if (original == "log")
+    {
+      fixed = "_log";
+      return;
+    }
 
-  if (original == "log10") {fixed = "_log10"; return;}
+  if (original == "log10")
+    {
+      fixed = "_log10";
+      return;
+    }
 
-  if (original == "massi") {fixed = "_massi"; return;}
+  if (original == "massi")
+    {
+      fixed = "_massi";
+      return;
+    }
 
-  if (original == "massr") {fixed = "_massr"; return;}
+  if (original == "massr")
+    {
+      fixed = "_massr";
+      return;
+    }
 
-  if (original == "not") {fixed = "_not"; return;}
+  if (original == "not")
+    {
+      fixed = "_not";
+      return;
+    }
 
-  if (original == "or") {fixed = "_or"; return;}
+  if (original == "or")
+    {
+      fixed = "_or";
+      return;
+    }
 
-  if (original == "ordbbr") {fixed = "_ordbbr"; return;}
+  if (original == "ordbbr")
+    {
+      fixed = "_ordbbr";
+      return;
+    }
 
-  if (original == "ordbur") {fixed = "_ordbur"; return;}
+  if (original == "ordbur")
+    {
+      fixed = "_ordbur";
+      return;
+    }
 
-  if (original == "ordubr") {fixed = "_ordubr"; return;}
+  if (original == "ordubr")
+    {
+      fixed = "_ordubr";
+      return;
+    }
 
-  if (original == "pow") {fixed = "_pow"; return;}
+  if (original == "pow")
+    {
+      fixed = "_pow";
+      return;
+    }
 
-  if (original == "ppbr") {fixed = "_ppbr"; return;}
+  if (original == "ppbr")
+    {
+      fixed = "_ppbr";
+      return;
+    }
 
-  if (original == "sin") {fixed = "_sin"; return;}
+  if (original == "sin")
+    {
+      fixed = "_sin";
+      return;
+    }
 
-  if (original == "sqr") {fixed = "_sqr"; return;}
+  if (original == "sqr")
+    {
+      fixed = "_sqr";
+      return;
+    }
 
-  if (original == "sqrt") {fixed = "_sqrt"; return;}
+  if (original == "sqrt")
+    {
+      fixed = "_sqrt";
+      return;
+    }
 
-  if (original == "substance") {fixed = "_substance"; return;}
+  if (original == "substance")
+    {
+      fixed = "_substance";
+      return;
+    }
 
-  if (original == "time") {fixed = "_time"; return;}
+  if (original == "time")
+    {
+      fixed = "_time";
+      return;
+    }
 
-  if (original == "tan") {fixed = "_tan"; return;}
+  if (original == "tan")
+    {
+      fixed = "_tan";
+      return;
+    }
 
-  if (original == "umai") {fixed = "_umai"; return;}
+  if (original == "umai")
+    {
+      fixed = "_umai";
+      return;
+    }
 
-  if (original == "umar") {fixed = "_umar"; return;}
+  if (original == "umar")
+    {
+      fixed = "_umar";
+      return;
+    }
 
-  if (original == "uai") {fixed = "_uai"; return;}
+  if (original == "uai")
+    {
+      fixed = "_uai";
+      return;
+    }
 
-  if (original == "ualii") {fixed = "_ualii"; return;}
+  if (original == "ualii")
+    {
+      fixed = "_ualii";
+      return;
+    }
 
-  if (original == "uar") {fixed = "_uar"; return;}
+  if (original == "uar")
+    {
+      fixed = "_uar";
+      return;
+    }
 
-  if (original == "ucii") {fixed = "_ucii"; return;}
+  if (original == "ucii")
+    {
+      fixed = "_ucii";
+      return;
+    }
 
-  if (original == "ucir") {fixed = "_ucir"; return;}
+  if (original == "ucir")
+    {
+      fixed = "_ucir";
+      return;
+    }
 
-  if (original == "ucti") {fixed = "_ucti"; return;}
+  if (original == "ucti")
+    {
+      fixed = "_ucti";
+      return;
+    }
 
-  if (original == "uctr") {fixed = "_uctr"; return;}
+  if (original == "uctr")
+    {
+      fixed = "_uctr";
+      return;
+    }
 
-  if (original == "uhmi") {fixed = "_uhmi"; return;}
+  if (original == "uhmi")
+    {
+      fixed = "_uhmi";
+      return;
+    }
 
-  if (original == "uhmr") {fixed = "_uhmr"; return;}
+  if (original == "uhmr")
+    {
+      fixed = "_uhmr";
+      return;
+    }
 
-  if (original == "umi") {fixed = "_umi"; return;}
+  if (original == "umi")
+    {
+      fixed = "_umi";
+      return;
+    }
 
-  if (original == "unii") {fixed = "_unii"; return;}
+  if (original == "unii")
+    {
+      fixed = "_unii";
+      return;
+    }
 
-  if (original == "unir") {fixed = "_unir"; return;}
+  if (original == "unir")
+    {
+      fixed = "_unir";
+      return;
+    }
 
-  if (original == "uuhr") {fixed = "_uuhr"; return;}
+  if (original == "uuhr")
+    {
+      fixed = "_uuhr";
+      return;
+    }
 
-  if (original == "umr") {fixed = "_umr"; return;}
+  if (original == "umr")
+    {
+      fixed = "_umr";
+      return;
+    }
 
-  if (original == "usii") {fixed = "_usii"; return;}
+  if (original == "usii")
+    {
+      fixed = "_usii";
+      return;
+    }
 
-  if (original == "usir") {fixed = "_usir"; return;}
+  if (original == "usir")
+    {
+      fixed = "_usir";
+      return;
+    }
 
-  if (original == "uuci") {fixed = "_uuci"; return;}
+  if (original == "uuci")
+    {
+      fixed = "_uuci";
+      return;
+    }
 
-  if (original == "uucr") {fixed = "_uucr"; return;}
+  if (original == "uucr")
+    {
+      fixed = "_uucr";
+      return;
+    }
 
-  if (original == "uui") {fixed = "_uui"; return;}
+  if (original == "uui")
+    {
+      fixed = "_uui";
+      return;
+    }
 
-  if (original == "uur") {fixed = "_uur"; return;}
+  if (original == "uur")
+    {
+      fixed = "_uur";
+      return;
+    }
 
-  if (original == "volume") {fixed = "_volume"; return;}
+  if (original == "volume")
+    {
+      fixed = "_volume";
+      return;
+    }
 
-  if (original == "xor") {fixed = "_xor"; return;}
+  if (original == "xor")
+    {
+      fixed = "_xor";
+      return;
+    }
 
   len = original.length();
 
@@ -341,7 +564,10 @@ void FixSName(const std::string &original, std::string &fixed)
       if ((original[0] >= '0') && (original[0] <= '9'))
         fixed = "_" + original;
       else
-        {fixed = original; fixed [0] = '_';}
+        {
+          fixed = original;
+          fixed[0] = '_';
+        }
     }
   else
     fixed = original;
@@ -349,15 +575,14 @@ void FixSName(const std::string &original, std::string &fixed)
   len = fixed.length();
 
   for (i = 1; i < len; i++)
-    if ((fixed [i] != '_') && ((fixed [i] < 'A') || (fixed [i] > 'z')) &&
-        ((fixed [i] < '0') || (fixed [i] > '9')))
-      fixed [i] = '_';
+    if ((fixed[i] != '_') && ((fixed[i] < 'A') || (fixed[i] > 'z')) && ((fixed[i] < '0') || (fixed[i] > '9')))
+      fixed[i] = '_';
 }
 
 double strToDouble(const char * str,
                    char const ** pTail)
 {
-  double Value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  double Value = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
   if (pTail != NULL)
     {
@@ -378,12 +603,12 @@ double strToDouble(const char * str,
 
   if (in.fail())
     {
-      Value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      Value = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
     }
 
   if (pTail != NULL && !std::isnan(Value))
     {
-      *pTail = str + std::min< size_t >((size_t)in.tellg(), strlen(str));
+      *pTail = str + std::min< size_t >((size_t) in.tellg(), strlen(str));
     }
 
   return Value;
@@ -418,7 +643,7 @@ C_INT32 strToInt(const char * str,
   if (pTail != NULL && !std::isnan(Value))
 #endif
     {
-      *pTail = str + std::min< size_t >((size_t)in.tellg(), strlen(str));
+      *pTail = str + std::min< size_t >((size_t) in.tellg(), strlen(str));
     }
 
   return Value;
@@ -453,7 +678,7 @@ unsigned C_INT32 strToUnsignedInt(const char * str,
   if (pTail != NULL && !std::isnan(Value))
 #endif
     {
-      *pTail = str + std::min< size_t >((size_t)in.tellg(), strlen(str));
+      *pTail = str + std::min< size_t >((size_t) in.tellg(), strlen(str));
     }
 
   return Value;
@@ -536,9 +761,7 @@ std::string nameToSbmlId(const std::string & name)
           continue;
         }
 
-      if (('0' <= *it && *it <= '9') ||
-          ('a' <= *it && *it <= 'z') ||
-          ('A' <= *it && *it <= 'Z'))
+      if (('0' <= *it && *it <= '9') || ('a' <= *it && *it <= 'z') || ('A' <= *it && *it <= 'Z'))
         {
           IdStream << *it;
         }
@@ -556,4 +779,30 @@ std::string nameToSbmlId(const std::string & name)
     }
 
   return Id.substr(0, Id.length() - 1);
+}
+
+bool containsTag(const std::string & filename, const std::string & tagname, int numLines)
+{
+  std::string line;
+  int count = 0;
+
+  std::ifstream file(filename);
+
+  std::string tag1 = std::string("<") + tagname;
+  std::string tag2 = std::string(":") + tagname;
+
+  while (count < numLines && std::getline(file, line))
+    {
+      if (line.find(tag1) != std::string::npos || line.find(tag2) != std::string::npos)
+        return true;
+
+      ++count;
+    }
+
+  return false;
+}
+
+bool isProbablySBML(const std::string & filename)
+{
+  return containsTag(filename, "sbml");
 }

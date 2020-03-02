@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -212,4 +212,27 @@ std::string pointerToString(const void * pVoid);
  * @return std::string SbmlId
  */
 std::string nameToSbmlId(const std::string & name);
+
+/**
+ * Test whether a given XML tag is present in the first number of lines
+ * of a given file.
+ *
+ * @param filename the filename to be tested
+ * @param tagname the tag name to be tested for
+ * @param numLines the number of lines to be tested (default 10)
+ *
+ * @return boolean indicating whether the tag appeared in the first numLines.
+ */
+bool containsTag(const std::string & filename, const std::string & tagname, int numLines = 10);
+
+/**
+ * Tests whether the file is SBML by reading the first 10 lines and looking
+ * for the presence of the sbml tag.
+ *
+ * @param filename the filename to be tested
+ *
+ * @return true, if the first 10 lines contain the sbml tag, false otherwise.
+ */
+bool isProbablySBML(const std::string & filename);
+
 #endif // COPASI_utilities

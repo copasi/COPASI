@@ -94,6 +94,8 @@
 # include "copasi/core/CCore.h"
 # include "copasi/undo/CUndoStack.h"
 
+#include <copasi/utilities/utility.h>
+
 #ifdef COPASI_SBW_INTEGRATION
 #include <stdlib.h>
 #endif // COPASI_SBW_INTEGRATION
@@ -1280,7 +1282,7 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
   if (file.isEmpty())
     newFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString(),
-                                        "COPASI Files (*.gps *.cps);;All Files (*)",
+                                        "All Supported Files(*.gps *.cps *.sbml *.xml);;COPASI Files (*.gps *.cps);;SBML Files (*.xml *.sbml);;All Files (*)",
                                         "Choose a file");
   else
     newFile = file;
@@ -3093,22 +3095,7 @@ void CopasiUI3Window::dragEnterEvent(QDragEnterEvent *event)
  */
 bool isProbablySBML(QString &fileName)
 {
-  QFile file(fileName);
-
-  if (!file.open(QIODevice::ReadOnly))
-    return false;
-
-  for (int i = 0; i < 10; ++i)
-    {
-      QByteArray array = file.readLine();
-      QString current(array);
-
-      if (current.contains("<sbml") || current.contains(":sbml>"))
-        return true;
-    }
-
-  file.close();
-  return false;
+  return isProbablySBML(std::string(TO_UTF8(fileName)));
 }
 
 /**
@@ -3118,21 +3105,7 @@ bool isProbablySBML(QString &fileName)
  */
 bool isProbablySEDML(QString &fileName)
 {
-  QFile file(fileName);
-
-  if (!file.open(QIODevice::ReadOnly))
-    return false;
-
-  for (int i = 0; i < 5; ++i)
-    {
-      QByteArray array = file.readLine();
-
-      if (QString(array).contains("<sedML"))
-        return true;
-    }
-
-  file.close();
-  return false;
+  return containsTag(std::string(TO_UTF8(fileName)), "sedML", 5);
 }
 
 void CopasiUI3Window::dropEvent(QDropEvent *event)
@@ -3839,7 +3812,7 @@ void CopasiUI3Window::removeReportTargets()
   auto& taskList = *mpDataModel->getTaskList();
   std::stringstream str;
 
-  for (auto & task : taskList)
+for (auto & task : taskList)
     {
       std::string target = task.getReport().getTarget();
 
