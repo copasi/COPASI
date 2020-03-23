@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -190,6 +190,8 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
 #if defined(QT_USE_TEXTBROWSER)
   mpWebView = new QTextBrowser(this);
   connect(mpWebView, SIGNAL(anchorClicked(QUrl)), this, SLOT(slotOpenUrl(QUrl)));
+  static_cast< QTextBrowser * >(mpWebView)->setOpenLinks(false);
+
 #elif !defined(QT5_USE_WEBENGINE)
   mpWebView = new QWebView(this);
   static_cast<QWebView*>(mpWebView)->
