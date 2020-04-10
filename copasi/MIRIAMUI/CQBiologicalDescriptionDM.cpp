@@ -193,6 +193,8 @@ bool CQBiologicalDescriptionDM::insertRows(int position, int rows, const QModelI
 
       if (pBiologicalDescription == NULL)
         continue;
+
+      mFetched += 1;
     }
 
   endInsertRows();

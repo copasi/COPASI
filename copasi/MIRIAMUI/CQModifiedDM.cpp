@@ -184,6 +184,8 @@ bool CQModifiedDM::insertRows(int position, int rows, const QModelIndex & parent
 
       if (pModification == NULL)
         continue;
+
+      mFetched += 1;
     }
 
   endInsertRows();

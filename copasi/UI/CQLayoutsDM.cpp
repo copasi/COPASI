@@ -193,6 +193,7 @@ bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex & parent)
 
   for (int row = 0; row < rows; ++row)
     {
+      mFetched += 1;
       emit notifyGUI(ListViews::ObjectType::LAYOUT, ListViews::ADD, mpListOfLayouts->operator[](Position + row).getCN());
     }
 

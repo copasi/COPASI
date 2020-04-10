@@ -194,6 +194,8 @@ bool CQReferenceDM::insertRows(int position, int rows, const QModelIndex & paren
 
       if (pReference == NULL)
         continue;
+
+      mFetched += 1;
     }
 
   endInsertRows();

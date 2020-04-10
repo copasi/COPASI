@@ -199,6 +199,8 @@ bool CQCreatorDM::insertRows(int position, int rows, const QModelIndex & parent)
 
       if (pCreator == NULL)
         continue;
+
+      mFetched += 1;
     }
 
   endInsertRows();

@@ -172,6 +172,11 @@ bool CQReportDM::insertRows(int position, int rows, const QModelIndex & parent)
     {
       QString Name = createNewName(mNewName, COL_NAME_REPORTS);
       CReportDefinition *pRepDef = mpDataModel->getReportDefinitionList()->createReportDefinition(TO_UTF8(Name), "");
+
+      if (pRepDef == NULL) continue;
+
+      mFetched += 1;
+
       emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::ADD, pRepDef->getCN());
     }
 

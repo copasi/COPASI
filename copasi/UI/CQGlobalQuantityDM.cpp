@@ -407,6 +407,8 @@ void CQGlobalQuantityDM::insertNewRows(int position, int rows, int column, const
       if (pModelValue == NULL)
         continue;
 
+      mFetched += 1;
+
       if (column == COL_TYPE_GQ)
         {
           pModelValue->setStatus(CModelEntity::StatusName.toEnum(TO_UTF8(value.toString())));

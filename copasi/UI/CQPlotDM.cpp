@@ -233,6 +233,11 @@ bool CQPlotDM::insertRows(int position, int rows, const QModelIndex & parent)
       QString Name = this->createNewName(mNewName, COL_NAME_PLOTS);
 
       CPlotSpecification *pPS = mpDataModel->getPlotDefinitionList()->createPlotSpec(TO_UTF8(Name), CPlotItem::plot2d);
+
+      if (pPS == NULL) continue;
+
+      mFetched += 1;
+
       emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::ADD, pPS->CCopasiParameter::getCN());
     }
 

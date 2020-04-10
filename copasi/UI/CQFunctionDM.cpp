@@ -239,6 +239,8 @@ bool CQFunctionDM::insertRows(int position, int rows, const QModelIndex & parent
       QString Name = createNewName(mNewName, COL_NAME_FUNCTIONS);
 
       CRootContainer::getFunctionList()->add(pFunc = new CKinFunction(TO_UTF8(Name)), true);
+      mFetched += 1;
+
       emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::ADD, pFunc->getCN());
     }
 
