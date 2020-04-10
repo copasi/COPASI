@@ -346,6 +346,8 @@ void CQEventDM::insertNewRows(int position, int rows, int column, const QVariant
       if (pEvent == NULL)
         continue;
 
+      mFetched += 1;
+
       CUndoData UndoData(CUndoData::Type::INSERT, pEvent);
       ListViews::addUndoMetaData(this, UndoData);
       emit signalNotifyChanges(mpDataModel->recordData(UndoData));

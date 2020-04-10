@@ -547,6 +547,8 @@ void CQSpecieDM::insertNewRows(int position, int rows, int column, const QVarian
           continue;
         }
 
+      mFetched += 1;
+
       CUndoData UndoData(CUndoData::Type::INSERT, pSpecies);
 
       if (pComp != NULL)

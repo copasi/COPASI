@@ -353,6 +353,8 @@ void CQReactionDM::insertNewRows(int position, int rows, int column, const QVari
 
       if (pRea == NULL) continue;
 
+      mFetched += 1;
+
       CUndoData UndoData(CUndoData::Type::INSERT, pRea);
 
       if (column == COL_EQUATION)

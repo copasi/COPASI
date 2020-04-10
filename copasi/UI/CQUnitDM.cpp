@@ -226,8 +226,13 @@ bool CQUnitDM::insertRows(int position, int rows, const QModelIndex & parent)
 
   for (int row = 0; row < rows; ++row)
     {
-      CUnitDefinition *pUnitDef;
-      CRootContainer::getUnitList()->add(pUnitDef = new CUnitDefinition(TO_UTF8(createNewName("unit", COL_NAME_UNITS)), CRootContainer::getUnitList()), true);
+      CUnitDefinition *pUnitDef  = new CUnitDefinition(TO_UTF8(createNewName("unit", COL_NAME_UNITS)), CRootContainer::getUnitList());
+
+      if (pUnitDef == NULL) continue;
+
+      mFetched += 1;
+
+      CRootContainer::getUnitList()->add(pUnitDef, true);
       emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::ADD, pUnitDef->getCN());
     }
 

@@ -410,6 +410,8 @@ void CQCompartmentDM::insertNewRows(int position, int rows, int column, const QV
       if (pComp == NULL)
         continue;
 
+      mFetched += 1;
+
       if (column == COL_TYPE_COMPARTMENTS)
         {
           pComp->setStatus(CModelEntity::StatusName.toEnum(TO_UTF8(value.toString())));

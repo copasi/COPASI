@@ -194,6 +194,7 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex & p
       CModelParameterSet * pNew = new CModelParameterSet(pModel->getActiveModelParameterSet(), NULL, false);
       pNew->setObjectName(TO_UTF8(Name));
       mpListOfParameterSets->add(pNew, true);
+      mFetched += 1;
 
       CUndoData UndoData(CUndoData::Type::INSERT, pNew->toData());
       ListViews::addUndoMetaData(this, UndoData);
