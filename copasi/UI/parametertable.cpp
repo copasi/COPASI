@@ -259,11 +259,17 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
   for (it = ri.getListOfMetabs(usage).begin(); it != ri.getListOfMetabs(usage).end(); ++it)
     mSubstrates += FROM_UTF8(CMetabNameInterface::unQuote(*it));
 
+  if (mSubstrates.empty())
+    mSubstrates += "unknown";
+
   mProducts.clear();
   usage = CFunctionParameter::Role::PRODUCT;
 
   for (it = ri.getListOfMetabs(usage).begin(); it != ri.getListOfMetabs(usage).end(); ++it)
     mProducts += FROM_UTF8(CMetabNameInterface::unQuote(*it));
+
+  if (mProducts.empty())
+    mProducts += "unknown";
 
   mModifiers.clear();  // Get all metabs; modifiers are never locked
   vectorOfStrings2QStringList(getListOfAllMetabNames(*pModel, ri), mModifiers);
@@ -623,7 +629,9 @@ void ParameterTable::slotCellChanged(int row, int col)
 
   const QStringList & comboList = mpComboDelegate->getItems(Index);
 
-  if (col == 2 && comboList[0] == "--local--") //is Parameter
+  if (col == 2
+      && !comboList.empty()
+      && comboList[0] == "--local--") //is Parameter
     {
       emit parameterStatusChanged((int) i, (newVal == "--local--"));
 
