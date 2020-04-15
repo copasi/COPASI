@@ -453,13 +453,13 @@ void TaskWidget::finishTask()
         }
     }
 
-  catch (...) {}
+  catch (...)
 
-  {
-    CQMessageBox::information(this, "Calculation Warning",
-                              CCopasiMessage::getAllMessageText().c_str(),
-                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-  }
+    {
+      CQMessageBox::information(this, "Calculation Warning",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+    }
 
   CCopasiMessage::clearDeque();
 
