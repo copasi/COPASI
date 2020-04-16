@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -63,6 +63,27 @@ CScanWidgetRepeat::~CScanWidgetRepeat()
 
 void CScanWidgetRepeat::init()
 {
+  QPalette Palette = QGuiApplication::palette();
+  QColor Foreground = Palette.color(QPalette::Active, QPalette::Text);
+  QColor Background = Palette.color(QPalette::Active, QPalette::Base);
+
+  if (Foreground.redF() + Foreground.greenF() + Foreground.blueF() > Background.redF() + Background.greenF() + Background.blueF())
+    {
+      setStyleSheet("color: " + QColor(207, 206, 249, 255).name(QColor::HexRgb));
+    }
+  else
+    {
+      QPalette palette;
+      QBrush brush(QColor(207, 206, 249, 255));
+      brush.setStyle(Qt::SolidPattern);
+      palette.setBrush(QPalette::Active, QPalette::Base, brush);
+      palette.setBrush(QPalette::Inactive, QPalette::Base, brush);
+      QBrush brush1(QColor(212, 208, 200, 255));
+      brush1.setStyle(Qt::SolidPattern);
+      palette.setBrush(QPalette::Disabled, QPalette::Base, brush1);
+      frame->setPalette(palette);
+    }
+
   lineEditNumber->setValidator(new QIntValidator(lineEditNumber));
 }
 
