@@ -78,7 +78,7 @@ QVariant CQReportDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= mpDataModel->getReportDefinitionList()->size())
         {
           switch (index.column())
             {
