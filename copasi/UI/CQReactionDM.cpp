@@ -80,7 +80,7 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= mpReactions->size())
         {
           switch (index.column())
             {
