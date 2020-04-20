@@ -79,7 +79,7 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
   if (!index.isValid())
     return Qt::ItemIsEnabled;
 
-  if (isDefaultRow(index))
+  if (isDefaultRow(index) || index.row() >= mpMetabolites->size())
     {
       if (index.column() == COL_NAME_SPECIES || index.column() == COL_COMPARTMENT ||
           index.column() == COL_TYPE_SPECIES || index.column() == COL_ICONCENTRATION ||
@@ -144,7 +144,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= mpMetabolites->size())
         {
           switch (index.column())
             {
