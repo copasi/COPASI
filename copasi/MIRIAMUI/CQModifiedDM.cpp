@@ -74,7 +74,7 @@ QVariant CQModifiedDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int)mpMIRIAMInfo->getModifications().size())
         {
           if (index.column() == COL_ROW_NUMBER)
             return QVariant(QString(""));

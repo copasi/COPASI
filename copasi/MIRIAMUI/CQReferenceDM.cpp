@@ -72,7 +72,7 @@ QVariant CQReferenceDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int)mpMIRIAMInfo->getReferences().size())
         {
           if (index.column() == COL_RESOURCE_REFERENCE)
             return QVariant(QString("-- select --"));
