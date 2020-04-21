@@ -193,7 +193,9 @@ void CQFunctionsWidget::updateDeleteBtns()
     {
       if (selRows.size() == 1)
         {
-          if (mpFunctionDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
+          QModelIndex index = mpProxyModel->mapToSource(selRows[0]);
+
+          if (mpFunctionDM->isDefaultRow(index) || mpFunctionDM->isFunctionReadOnly(index))
             selected = false;
           else
             selected = true;

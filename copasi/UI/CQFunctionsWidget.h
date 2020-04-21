@@ -45,7 +45,6 @@ private:
   CQFunctionDM* mpFunctionDM;
   CQSortFilterProxyModel *mpProxyModel;
   void deleteSelectedFunctions();
-  void updateDeleteBtns();
 
 signals:
   void initFilter();
@@ -54,6 +53,7 @@ protected:
   virtual void keyPressEvent(QKeyEvent* ev);
 
 protected slots:
+  virtual void updateDeleteBtns();
   virtual void slotBtnNewClicked();
   virtual void slotBtnDeleteClicked();
   virtual void slotBtnClearClicked();
