@@ -76,7 +76,7 @@ QVariant CQUnitDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= CRootContainer::getUnitList()->size())
         {
           switch (index.column())
             {
@@ -248,22 +248,25 @@ bool CQUnitDM::removeRows(int position, int rows, const QModelIndex & parent)
 
   std::vector< std::string > DeletedKeys;
   DeletedKeys.resize(rows);
+  std::vector< std::string > DeletedCNs;
+  DeletedCNs.resize(rows);
 
-  std::vector< std::string >::iterator itDeletedKey;
+  std::vector< std::string >::iterator itDeletedKey, itDeletedCN;
   std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
 
   CDataVector< CUnitDefinition >::const_iterator itRow =
     CRootContainer::getUnitList()->begin() + position;
   int row = 0;
 
-  for (itDeletedKey = DeletedKeys.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow, ++row)
+  for (itDeletedKey = DeletedKeys.begin(), row = 0, itDeletedCN = DeletedCNs.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itDeletedCN, ++itRow, ++row)
     {
-      *itDeletedKey = itRow->getCN();
+      *itDeletedKey = itRow->getKey();
+      *itDeletedCN = itRow->getCN();
     }
 
   beginRemoveRows(parent, position, position + row - 1);
 
-  for (itDeletedKey = DeletedKeys.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++row)
+  for (itDeletedKey = DeletedKeys.begin(), row = 0, itDeletedCN = DeletedCNs.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itDeletedCN, ++row)
     {
       if (*itDeletedKey != "")
         {
@@ -271,7 +274,7 @@ bool CQUnitDM::removeRows(int position, int rows, const QModelIndex & parent)
 
           if (pUnitDef != NULL) delete pUnitDef;
 
-          emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::DELETE, *itDeletedKey);
+          emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::DELETE, *itDeletedCN);
         }
     }
 

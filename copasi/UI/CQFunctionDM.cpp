@@ -261,35 +261,39 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex & parent
 
   std::vector< std::string > DeletedKeys;
   DeletedKeys.resize(rows);
+  std::vector< std::string > DeletedCNs;
+  DeletedCNs.resize(rows);
 
-  std::vector< std::string >::iterator itDeletedKey;
+  std::vector< std::string >::iterator itDeletedKey, itDeletedCN;
   std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
 
   CDataVector< CFunction >::const_iterator itRow =
     CRootContainer::getFunctionList()->loadedFunctions().begin() + position;
   int row = 0;
 
-  for (itDeletedKey = DeletedKeys.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow, ++row)
+  for (itDeletedKey = DeletedKeys.begin(), itDeletedCN = DeletedCNs.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++itDeletedCN, ++itRow, ++row)
     {
       if (isFunctionReadOnly(this->index(position + row, 0)))
         {
           *itDeletedKey = "";
+          *itDeletedCN = "";
         }
       else
         {
           *itDeletedKey = itRow->getKey();
+          *itDeletedCN = itRow->getCN();
         }
     }
 
   beginRemoveRows(parent, position, position + row - 1);
 
-  for (itDeletedKey = DeletedKeys.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++row)
+  for (itDeletedKey = DeletedKeys.begin(), itDeletedCN = DeletedCNs.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++itDeletedCN, ++row)
     {
       if (*itDeletedKey != "")
         {
           if (CRootContainer::getFunctionList()->removeFunction(*itDeletedKey))
             {
-              emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, *itDeletedKey);
+              emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, *itDeletedCN);
               emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, std::string()); //Refresh all as there may be dependencies.
             }
         }
@@ -320,6 +324,7 @@ bool CQFunctionDM::removeRows(QModelIndexList rows, const QModelIndex&)
   for (i = rows.begin(); i != rows.end(); ++i)
     {
       if (!isDefaultRow(*i) &&
+          i->row() < CRootContainer::getFunctionList()->loadedFunctions().size()  &&
           (pFunction = &CRootContainer::getFunctionList()->loadedFunctions()[i->row()]) != NULL &&
           !pFunction->isReadOnly())
         pFunctions.append(&CRootContainer::getFunctionList()->loadedFunctions()[i->row()]);
