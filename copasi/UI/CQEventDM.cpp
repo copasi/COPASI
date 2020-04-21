@@ -80,7 +80,7 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index) || index.row() >= mpDataModel->getModel()->getEvents().size())
+      if (isDefaultRow(index) || index.row() >= (int) mpDataModel->getModel()->getEvents().size())
         {
           switch (index.column())
             {
@@ -360,7 +360,7 @@ bool CQEventDM::clear()
 {
   QModelIndexList rows;
 
-  for (int i = 0; i < mpEvents->size(); i++)
+  for (int i = 0; i < (int) mpEvents->size(); i++)
     {
       rows.append(index(i, 0));
     }

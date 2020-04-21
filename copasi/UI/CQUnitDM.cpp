@@ -76,7 +76,7 @@ QVariant CQUnitDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index) || index.row() >= CRootContainer::getUnitList()->size())
+      if (isDefaultRow(index) || index.row() >= (int) CRootContainer::getUnitList()->size())
         {
           switch (index.column())
             {

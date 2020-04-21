@@ -79,7 +79,7 @@ QVariant CQPlotDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index) || index.row() >= mpDataModel->getPlotDefinitionList()->size())
+      if (isDefaultRow(index) || index.row() >= (int) mpDataModel->getPlotDefinitionList()->size())
         {
           switch (index.column())
             {

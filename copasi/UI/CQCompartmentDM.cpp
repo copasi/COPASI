@@ -109,7 +109,7 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index) || index.row() >= mpCompartments->size())
+      if (isDefaultRow(index) || index.row() >= (int) mpCompartments->size())
         {
           switch (index.column())
             {
@@ -434,7 +434,7 @@ bool CQCompartmentDM::clear()
 {
   QModelIndexList rows;
 
-  for (int i = 0; i < mpCompartments->size(); i++)
+  for (int i = 0; i < (int) mpCompartments->size(); i++)
     {
       rows.append(index(i, 0));
     }
