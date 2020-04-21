@@ -71,7 +71,7 @@ QVariant CQBiologicalDescriptionDM::data(const QModelIndex &index, int role) con
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int)mpMIRIAMInfo->getBiologicalDescriptions().size())
         {
           if (index.column() == COL_RELATIONSHIP || index.column() == COL_RESOURCE_BD)
             return QVariant(QString("-- select --"));
@@ -139,7 +139,7 @@ bool CQBiologicalDescriptionDM::setData(const QModelIndex &index, const QVariant
     {
       CUndoData::Type UndoType = CUndoData::Type::CHANGE;
 
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int)mpMIRIAMInfo->getBiologicalDescriptions().size())
         {
           if (index.data() != value)
             {
