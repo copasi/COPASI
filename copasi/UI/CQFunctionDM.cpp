@@ -70,6 +70,9 @@ Qt::ItemFlags CQFunctionDM::flags(const QModelIndex &index) const
 
 bool CQFunctionDM::isFunctionReadOnly(const QModelIndex &index) const
 {
+  if (index.row() >= CRootContainer::getFunctionList()->loadedFunctions().size())
+    return false;
+
   const CFunction *pFunc = &CRootContainer::getFunctionList()->loadedFunctions()[index.row()];
   return pFunc->isReadOnly();
 }
@@ -87,7 +90,7 @@ QVariant CQFunctionDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= CRootContainer::getFunctionList()->loadedFunctions().size())
         {
           switch (index.column())
             {
@@ -274,7 +277,7 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex & parent
         }
       else
         {
-          *itDeletedKey = itRow->getCN();
+          *itDeletedKey = itRow->getKey();
         }
     }
 
@@ -284,9 +287,11 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex & parent
     {
       if (*itDeletedKey != "")
         {
-          CRootContainer::getFunctionList()->removeFunction(*itDeletedKey);
-          emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, *itDeletedKey);
-          emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, std::string()); //Refresh all as there may be dependencies.
+          if (CRootContainer::getFunctionList()->removeFunction(*itDeletedKey))
+            {
+              emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, *itDeletedKey);
+              emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, std::string()); //Refresh all as there may be dependencies.
+            }
         }
     }
 
