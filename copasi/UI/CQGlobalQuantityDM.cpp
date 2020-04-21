@@ -98,7 +98,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index) || index.row() >= mpGlobalQuantities->size())
+      if (isDefaultRow(index) || index.row() >= (int) mpGlobalQuantities->size())
         {
           switch (index.column())
             {
@@ -431,7 +431,7 @@ bool CQGlobalQuantityDM::clear()
 {
   QModelIndexList rows;
 
-  for (int i = 0; i < mpGlobalQuantities->size(); i++)
+  for (int i = 0; i < (int) mpGlobalQuantities->size(); i++)
     {
       rows.append(index(i, 0));
     }

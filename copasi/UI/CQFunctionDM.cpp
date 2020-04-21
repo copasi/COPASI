@@ -70,7 +70,7 @@ Qt::ItemFlags CQFunctionDM::flags(const QModelIndex &index) const
 
 bool CQFunctionDM::isFunctionReadOnly(const QModelIndex &index) const
 {
-  if (index.row() >= CRootContainer::getFunctionList()->loadedFunctions().size())
+  if (index.row() >= (int) CRootContainer::getFunctionList()->loadedFunctions().size())
     return false;
 
   const CFunction *pFunc = &CRootContainer::getFunctionList()->loadedFunctions()[index.row()];
@@ -90,7 +90,7 @@ QVariant CQFunctionDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index) || index.row() >= CRootContainer::getFunctionList()->loadedFunctions().size())
+      if (isDefaultRow(index) || index.row() >= (int) CRootContainer::getFunctionList()->loadedFunctions().size())
         {
           switch (index.column())
             {
@@ -323,9 +323,8 @@ bool CQFunctionDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) &&
-          i->row() < CRootContainer::getFunctionList()->loadedFunctions().size()  &&
-          (pFunction = &CRootContainer::getFunctionList()->loadedFunctions()[i->row()]) != NULL &&
+      if (!isDefaultRow(*i) && i->row() < (int) CRootContainer::getFunctionList()->loadedFunctions().size()
+          && (pFunction = &CRootContainer::getFunctionList()->loadedFunctions()[i->row()]) != NULL &&
           !pFunction->isReadOnly())
         pFunctions.append(&CRootContainer::getFunctionList()->loadedFunctions()[i->row()]);
     }
