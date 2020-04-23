@@ -25,10 +25,12 @@ Several environment variables can be used to modify the build:
 * `COPASI_DEP_DIR_32`: windows binary dependencies directory containing 32bit binaries. defaults to `../win_copasi_dependencies_32/`
 * `COPASI_DEP_DIR_64`: windows binary dependencies directory containing 64bit binaries. defaults to `../win_copasi_dependencies_64/`
 
-To change what compiler / cmake generator is used, the following variables will be passed on: 
+To change what compiler / cmake generator is used, the following environment variables will be passed on: 
 
 * `CMAKE_CXX_COMPILER`
 * `CMAKE_C_COMPILER`
 * `CMAKE_LINKER`
 * `CMAKE_GENERATOR`
+* `SWIG_DIR`
+* `SWIG_EXECUTABLE`
 
