@@ -195,7 +195,6 @@ class CMakeBuild(build_ext):
         copasi_args = [
             '-DBUILD_GUI=OFF',
             '-DENABLE_PYTHON=ON',
-            '-DPYTHON_USE_DYNAMIC_LOOKUP=ON',
             '-DPYTHON_EXECUTABLE=' + sys.executable
         ]
 
@@ -204,8 +203,11 @@ class CMakeBuild(build_ext):
           'SWIG_EXECUTABLE'
         ])
 
+        if not is_win:
+          copasi_args.append('-DPYTHON_USE_DYNAMIC_LOOKUP=ON')
+
         if not is_win and not is_osx:
-          cmake_args.append('-DCMAKE_CXX_FLAGS=-fPIC')
+          copasi_args.append('-DCMAKE_CXX_FLAGS=-fPIC')
 
         cmake_args = cmake_args + copasi_args
         
