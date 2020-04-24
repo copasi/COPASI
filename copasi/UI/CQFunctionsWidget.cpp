@@ -212,12 +212,6 @@ void CQFunctionsWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQFunctionsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
-    const QItemSelection &C_UNUSED(deselected))
-{
-  updateDeleteBtns();
-}
-
 void CQFunctionsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                     const QModelIndex &C_UNUSED(bottomRight))
 {

@@ -88,6 +88,7 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget *parent)
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
   connect(mpPushButtonDelegate, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotShowLayout(const QModelIndex &)));
+  connect(mpTblLayouts, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 // virtual
@@ -327,8 +328,7 @@ void CQLayoutsWidget::slotBtnClearClicked()
 }
 
 // virtual
-void CQLayoutsWidget::slotSelectionChanged(const QItemSelection & /* selected */,
-    const QItemSelection & /* deselected */)
+void CQLayoutsWidget::slotSelectionChanged()
 {
   updateDeleteBtns();
 }
