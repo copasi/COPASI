@@ -75,6 +75,7 @@ CQEventsWidget::CQEventsWidget(QWidget *parent, const char *name)
   connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
+  connect(mpTblEvents, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 /*
@@ -213,8 +214,7 @@ void CQEventsWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQEventsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
-    const QItemSelection &C_UNUSED(deselected))
+void CQEventsWidget::slotSelectionChanged()
 {
   updateDeleteBtns();
 }

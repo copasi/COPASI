@@ -68,6 +68,7 @@ CQUnitsWidget::CQUnitsWidget(QWidget *parent, const char *name)
   connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
+  connect(mpTblUnits, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 /*
@@ -207,8 +208,7 @@ void CQUnitsWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQUnitsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
-    const QItemSelection &C_UNUSED(deselected))
+void CQUnitsWidget::slotSelectionChanged()
 {
   updateDeleteBtns();
 }

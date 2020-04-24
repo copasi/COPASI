@@ -75,6 +75,7 @@ CQReactionsWidget::CQReactionsWidget(QWidget *parent, const char *name)
   connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
+  connect(mpTblReactions, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
   CopasiUI3Window   *pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
 }
 
@@ -192,8 +193,7 @@ void CQReactionsWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQReactionsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
-    const QItemSelection &C_UNUSED(deselected))
+void CQReactionsWidget::slotSelectionChanged()
 {
   updateDeleteBtns();
 }

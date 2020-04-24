@@ -59,8 +59,7 @@ protected slots:
   virtual void slotBtnClearClicked();
   virtual void slotBtnActivateAllClicked();
   virtual void slotBtnDeactivateAllClicked();
-  virtual void slotSelectionChanged(const QItemSelection& selected,
-                                    const QItemSelection& deselected);
+  virtual void slotSelectionChanged();
   virtual void slotDoubleClicked(const QModelIndex proxyIndex);
   virtual void dataChanged(const QModelIndex& topLeft,
                            const QModelIndex& bottomRight);
