@@ -221,6 +221,7 @@ bool CQLayoutsDM::removeRows(int position, int rows, const QModelIndex & parent)
 
   for (itDeletedLayout = DeletedLayouts.begin(); itDeletedLayout != endDeletedLayout; ++itDeletedLayout)
     {
+      mFetched -= 1;
       std::string cn = (*itDeletedLayout)->getCN();
       pdelete(*itDeletedLayout);
       emit notifyGUI(ListViews::ObjectType::LAYOUT, ListViews::DELETE, cn);
