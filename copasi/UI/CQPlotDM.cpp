@@ -236,7 +236,7 @@ bool CQPlotDM::insertRows(int position, int rows, const QModelIndex & parent)
 
       if (pPS == NULL) continue;
 
-      mFetched += 1;
+      ++mFetched;
 
       emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::ADD, pPS->CCopasiParameter::getCN());
     }
@@ -260,6 +260,7 @@ bool CQPlotDM::removeRows(int position, int rows, const QModelIndex & parent)
       CPlotSpecification* pPS =
         &mpDataModel->getPlotDefinitionList()->operator[](position);
       std::string deletedKey = pPS->CCopasiParameter::getCN();
+      --mFetched;
       mpDataModel->getPlotDefinitionList()->CDataVector< CPlotSpecification >::remove(position);
       emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::DELETE, deletedKey);
     }

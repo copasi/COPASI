@@ -230,7 +230,7 @@ bool CQUnitDM::insertRows(int position, int rows, const QModelIndex & parent)
 
       if (pUnitDef == NULL) continue;
 
-      mFetched += 1;
+      ++mFetched;
 
       CRootContainer::getUnitList()->add(pUnitDef, true);
       emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::ADD, pUnitDef->getCN());
@@ -272,7 +272,11 @@ bool CQUnitDM::removeRows(int position, int rows, const QModelIndex & parent)
         {
           CDataObject * pUnitDef = CRootContainer::getKeyFactory()->get(*itDeletedKey);
 
-          if (pUnitDef != NULL) delete pUnitDef;
+          if (pUnitDef != NULL)
+            {
+              --mFetched;
+              delete pUnitDef;
+            }
 
           emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::DELETE, *itDeletedCN);
         }

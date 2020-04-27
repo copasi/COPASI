@@ -347,8 +347,9 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex & 
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+      --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
@@ -407,7 +408,7 @@ void CQGlobalQuantityDM::insertNewRows(int position, int rows, int column, const
       if (pModelValue == NULL)
         continue;
 
-      mFetched += 1;
+      ++mFetched;
 
       if (column == COL_TYPE_GQ)
         {

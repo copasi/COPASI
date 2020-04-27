@@ -194,7 +194,7 @@ bool CQBiologicalDescriptionDM::insertRows(int position, int rows, const QModelI
       if (pBiologicalDescription == NULL)
         continue;
 
-      mFetched += 1;
+      ++mFetched;
     }
 
   endInsertRows();
@@ -226,8 +226,9 @@ bool CQBiologicalDescriptionDM::removeRows(int position, int rows, const QModelI
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+
+      --mFetched;
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 

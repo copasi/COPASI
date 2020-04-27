@@ -195,7 +195,7 @@ bool CQReferenceDM::insertRows(int position, int rows, const QModelIndex & paren
       if (pReference == NULL)
         continue;
 
-      mFetched += 1;
+      ++mFetched;
     }
 
   endInsertRows();
@@ -227,8 +227,9 @@ bool CQReferenceDM::removeRows(int position, int rows, const QModelIndex & paren
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+      --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 

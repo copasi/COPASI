@@ -175,7 +175,7 @@ bool CQReportDM::insertRows(int position, int rows, const QModelIndex & parent)
 
       if (pRepDef == NULL) continue;
 
-      mFetched += 1;
+      ++mFetched;
 
       emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::ADD, pRepDef->getCN());
     }
@@ -225,6 +225,7 @@ bool CQReportDM::removeRows(int position, int rows, const QModelIndex & parent)
             }
         }
 
+      --mFetched;
       std::string deletedKey = pReport->getCN();
       pReportList->remove(pReport);
       emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::DELETE, deletedKey);
