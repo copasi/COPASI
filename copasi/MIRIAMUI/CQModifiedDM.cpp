@@ -185,7 +185,7 @@ bool CQModifiedDM::insertRows(int position, int rows, const QModelIndex & parent
       if (pModification == NULL)
         continue;
 
-      mFetched += 1;
+      ++mFetched;
     }
 
   endInsertRows();
@@ -217,8 +217,9 @@ bool CQModifiedDM::removeRows(int position, int rows, const QModelIndex & parent
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+
+      --mFetched;
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 

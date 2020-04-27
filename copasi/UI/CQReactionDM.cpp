@@ -292,8 +292,9 @@ bool CQReactionDM::removeRows(int position, int rows, const QModelIndex & parent
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+      --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
@@ -353,7 +354,7 @@ void CQReactionDM::insertNewRows(int position, int rows, int column, const QVari
 
       if (pRea == NULL) continue;
 
-      mFetched += 1;
+      ++mFetched;
 
       CUndoData UndoData(CUndoData::Type::INSERT, pRea);
 

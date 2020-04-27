@@ -193,7 +193,7 @@ bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex & parent)
 
   for (int row = 0; row < rows; ++row)
     {
-      mFetched += 1;
+      ++mFetched;
       emit notifyGUI(ListViews::ObjectType::LAYOUT, ListViews::ADD, mpListOfLayouts->operator[](Position + row).getCN());
     }
 
@@ -221,7 +221,7 @@ bool CQLayoutsDM::removeRows(int position, int rows, const QModelIndex & parent)
 
   for (itDeletedLayout = DeletedLayouts.begin(); itDeletedLayout != endDeletedLayout; ++itDeletedLayout)
     {
-      mFetched -= 1;
+      --mFetched;
       std::string cn = (*itDeletedLayout)->getCN();
       pdelete(*itDeletedLayout);
       emit notifyGUI(ListViews::ObjectType::LAYOUT, ListViews::DELETE, cn);

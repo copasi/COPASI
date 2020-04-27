@@ -194,7 +194,7 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex & p
       CModelParameterSet * pNew = new CModelParameterSet(pModel->getActiveModelParameterSet(), NULL, false);
       pNew->setObjectName(TO_UTF8(Name));
       mpListOfParameterSets->add(pNew, true);
-      mFetched += 1;
+      ++mFetched;
 
       CUndoData UndoData(CUndoData::Type::INSERT, pNew->toData());
       ListViews::addUndoMetaData(this, UndoData);
@@ -229,6 +229,8 @@ bool CQParameterSetsDM::removeRows(int position, int rows, const QModelIndex & p
     {
       CUndoData UndoData(CUndoData::Type::REMOVE, (*itDeleted)->toData());
       ListViews::addUndoMetaData(this, UndoData);
+      --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 

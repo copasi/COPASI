@@ -500,8 +500,9 @@ bool CQSpecieDM::removeRows(int position, int rows, const QModelIndex & parent)
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+      --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
@@ -547,7 +548,7 @@ void CQSpecieDM::insertNewRows(int position, int rows, int column, const QVarian
           continue;
         }
 
-      mFetched += 1;
+      ++mFetched;
 
       CUndoData UndoData(CUndoData::Type::INSERT, pSpecies);
 

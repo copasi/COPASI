@@ -350,8 +350,9 @@ bool CQCompartmentDM::removeRows(int position, int rows, const QModelIndex & par
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+      --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
@@ -410,7 +411,7 @@ void CQCompartmentDM::insertNewRows(int position, int rows, int column, const QV
       if (pComp == NULL)
         continue;
 
-      mFetched += 1;
+      ++mFetched;
 
       if (column == COL_TYPE_COMPARTMENTS)
         {

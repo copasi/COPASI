@@ -242,7 +242,7 @@ bool CQFunctionDM::insertRows(int position, int rows, const QModelIndex & parent
       QString Name = createNewName(mNewName, COL_NAME_FUNCTIONS);
 
       CRootContainer::getFunctionList()->add(pFunc = new CKinFunction(TO_UTF8(Name)), true);
-      mFetched += 1;
+      ++mFetched;
 
       emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::ADD, pFunc->getCN());
     }
@@ -293,6 +293,7 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex & parent
         {
           if (CRootContainer::getFunctionList()->removeFunction(*itDeletedKey))
             {
+              mFetched--;
               emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, *itDeletedCN);
               emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, std::string()); //Refresh all as there may be dependencies.
             }
