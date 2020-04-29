@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> University of Virginia, University of Heidelberg, and University </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and University of </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -17,7 +22,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>404</width>
+    <width>449</width>
     <height>180</height>
    </rect>
   </property>
@@ -142,6 +147,15 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mpEditName</tabstop>
+  <tabstop>mpTabWidget</tabstop>
+  <tabstop>mpBtnCommit</tabstop>
+  <tabstop>mpBtnRevert</tabstop>
+  <tabstop>mpBtnNew</tabstop>
+  <tabstop>mpBtnCopy</tabstop>
+  <tabstop>mpBtnDelete</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

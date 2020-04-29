@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> University of Virginia, University of Heidelberg, and University </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and University of </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -17,7 +22,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>331</width>
+    <width>354</width>
     <height>190</height>
    </rect>
   </property>
@@ -83,6 +88,9 @@ p, li { white-space: pre-wrap; }
     <widget class="QTreeView" name="mpTreeView">
      <property name="editTriggers">
       <set>QAbstractItemView::AllEditTriggers</set>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectItems</enum>
      </property>
      <property name="rootIsDecorated">
       <bool>true</bool>
@@ -161,6 +169,13 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mpBtnSaveToFile</tabstop>
+  <tabstop>mpTreeView</tabstop>
+  <tabstop>mpBtnCommit</tabstop>
+  <tabstop>mpBtnRevert</tabstop>
+  <tabstop>mpBtnSaveAs</tabstop>
+ </tabstops>
  <includes>
   <include location="global">vector</include>
  </includes>
