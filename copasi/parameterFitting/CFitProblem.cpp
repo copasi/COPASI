@@ -199,6 +199,11 @@ CFitProblem::~CFitProblem()
 
 void CFitProblem::initObjects()
 {
+  addObjectReference("Root Mean Square", mRMS, CDataObject::ValueDbl);
+  addObjectReference("Standard Deviation", mSD, CDataObject::ValueDbl);
+
+  addObjectReference("Validation Root Mean Square", mCrossValidationRMS, CDataObject::ValueDbl);
+  addObjectReference("Validation Standard Deviation", mCrossValidationSD, CDataObject::ValueDbl);
   addObjectReference("Validation Solution", mCrossValidationSolutionValue, CDataObject::ValueDbl);
   addObjectReference("Validation Objective", mCrossValidationObjective, CDataObject::ValueDbl);
 
