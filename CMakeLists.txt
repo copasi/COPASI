@@ -487,16 +487,16 @@ if(BUILD_GUI)
   # find Qt4
   #find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui QtXml QtWebKit QtNetwork)
   # check for qwt, TODO check if the version is OK
-  find_package(QwtQt4 REQUIRED)
+  find_package(QWT REQUIRED)
   # check for qwtplot3d
-  find_package(Qwtplot3dQt4 REQUIRED)
+  find_package(QWTPLOT3D REQUIRED)
 
   # if the MML widget is available, we need to enable "HAVE_MML"
 
   option(ENABLE_MML "Enable the MML widget" ON)
 
   if(ENABLE_MML)
-    find_package(QtMmlQt4 REQUIRED)
+    find_package(MML REQUIRED)
   endif(ENABLE_MML)
 
   # check for sbw
