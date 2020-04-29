@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -202,11 +202,11 @@ CModel::CModel(CDataContainer* pParent):
   CModelEntity("New Model", pParent, "Model"),
   mStateTemplate(*this),
   mStructuralDependencies(),
-  mVolumeUnit("ml"),
+  mVolumeUnit("l"),
   mAreaUnit("m\xc2\xb2"),
   mLengthUnit("m"),
   mTimeUnit("s"),
-  mQuantityUnit("mmol"),
+  mQuantityUnit("mol"),
   mType(CModel::ModelType::deterministic),
   mCompartments("Compartments", this),
   mMetabolites("Metabolites", this),
@@ -1046,21 +1046,20 @@ void CModel::buildMoieties()
 
 void CModel::clearSbmlIds()
 {
-for (auto & comp : getCompartments())
+  for (auto & comp : getCompartments())
     comp.setSBMLId("");
 
-for (auto & metab : getMetabolites())
+  for (auto & metab : getMetabolites())
     metab.setSBMLId("");
 
-for (auto & param : getModelValues())
+  for (auto & param : getModelValues())
     param.setSBMLId("");
 
-for (auto & reaction : getReactions())
+  for (auto & reaction : getReactions())
     reaction.setSBMLId("");
 
-for (auto & c_event : getEvents())
+  for (auto & c_event : getEvents())
     c_event.setSBMLId("");
-
 }
 
 //this is supposed to be so fast it can be called often to be kept up to date
@@ -2531,7 +2530,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-  #pragma region   //find_experiment
+#pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2581,7 +2580,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-  #pragma endregion //find_experiment
+#pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::Task::timeCourse)
     {
@@ -3283,7 +3282,7 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
                 TreesWithDiscontinuities.push_back((*ppEntity)->getNoiseExpressionPtr());
               }
 
-            // Intentionally no break statement!
+          // Intentionally no break statement!
 
           case Status::ASSIGNMENT:
 
@@ -3464,7 +3463,6 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
 
   CEvaluationNode* tmp;
   CExpression * derivExp = new CExpression("derivative expression", this);
-
 
   //first handle mass action
   if (dynamic_cast<const CMassAction*>(pReaction->getFunction()))
