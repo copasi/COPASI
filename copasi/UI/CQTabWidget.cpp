@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -69,7 +69,7 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
         mpBtnNew->setText("Apply");
         mpBtnNew->setToolTip("Apply the current parameters to the model.");
 
-        // The break statement is intentionally missing
+      // The break statement is intentionally missing
 
       default:
         CQNotes* pNotes = new CQNotes(mpTabWidget);
@@ -365,7 +365,8 @@ void CQTabWidget::slotBtnCopy()
     }
   else if (QString(mPages[0]->metaObject()->className()) == "CQUnitDetail" ||
            QString(mPages[0]->metaObject()->className()) == "CQModelValue" ||
-           QString(mPages[0]->metaObject()->className()) == "CQEventWidget1")
+           QString(mPages[0]->metaObject()->className()) == "CQEventWidget1" ||
+           QString(mPages[0]->metaObject()->className()) == "CQParameterOverviewWidget")
     {
       emit copyClicked();
     }
