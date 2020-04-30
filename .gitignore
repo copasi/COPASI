@@ -62,3 +62,7 @@ AppendAllDependents\.dot
 \.pydevproject
 callgrind.out.*
 \.vscode/
+/dist/
+/install*
+/build_*
+python_copasi.egg-info
