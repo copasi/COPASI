@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -161,77 +166,94 @@ CQSpectogramWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original
 
   if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
 
-  bool thingsChanged = false;
+  bool changed = false;
 
-  if (original != NULL)
+  // compare whether things changed
+  if (original == NULL
+      || original->getTitle() != title)
     {
-      // compare whether things changed
-      if (original->getTitle() != title)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getType() != CPlotItem::spectogram)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getActivity() != Activity)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getChannels().size() != 3)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getChannels()[0] != xName)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getChannels()[1] != yName)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getChannels()[2] != zName)
-        thingsChanged = true;
-
-      if (thingsChanged || *curve->assertParameter("contours", CCopasiParameter::Type::STRING, std::string("")) != TO_UTF8(mpContours->text()))
-        thingsChanged = true;
-
-      if (thingsChanged || *curve->assertParameter("maxZ", CCopasiParameter::Type::STRING, std::string("")) != TO_UTF8(mpMaxZ->text()))
-        thingsChanged = true;
-
-      if (thingsChanged || *curve->assertParameter("colorMap", CCopasiParameter::Type::STRING, std::string("")) != TO_UTF8(mpColorMap->currentText()))
-        thingsChanged = true;
-
-      if (thingsChanged || *curve->assertParameter("logZ", CCopasiParameter::Type::BOOL, false) != mpLogZ->isChecked())
-        thingsChanged = true;
-
-      if (thingsChanged || *curve->assertParameter("bilinear", CCopasiParameter::Type::BOOL, true) != mpBilinear->isChecked())
-        thingsChanged = true;
+      changed = true;
+      curve->setTitle(title);
     }
-  else thingsChanged = true;
 
-  if (!thingsChanged)
-    return false;
+  if (original == NULL
+      || original->getType() != CPlotItem::spectogram
+      || original->getChannels().size() != 3)
+    {
+      changed = true;
+      curve->setType(CPlotItem::spectogram);
+      curve->getChannels().resize(3);
+    }
 
-  //title
-  curve->setTitle(title);
+  if (original == NULL
+      || original->getActivity() != Activity)
+    {
+      changed = true;
+      curve->setActivity((COutputInterface::Activity) Activity);
+    }
 
-  //channels
-  curve->getChannels().clear();
-  curve->getChannels().push_back(CPlotDataChannelSpec(xName));
-  curve->getChannels().push_back(CPlotDataChannelSpec(yName));
-  curve->getChannels().push_back(CPlotDataChannelSpec(zName));
+  if (original == NULL
+      || original->getChannels()[0] != xName)
+    {
+      changed = true;
+      curve->getChannels()[0] = CPlotDataChannelSpec(xName);
+    }
 
-  curve->setActivity((COutputInterface::Activity) Activity);
+  if (original == NULL
+      || original->getChannels()[1] != yName)
+    {
+      changed = true;
+      curve->getChannels()[1] = CPlotDataChannelSpec(yName);
+    }
 
-  bool* pLogZ = curve->assertParameter("logZ", CCopasiParameter::Type::BOOL, false);
-  bool* pBilinear = curve->assertParameter("bilinear", CCopasiParameter::Type::BOOL, true);
-  std::string* pContours = curve->assertParameter("contours", CCopasiParameter::Type::STRING, std::string(""));
-  std::string* pMaxZ = curve->assertParameter("maxZ", CCopasiParameter::Type::STRING, std::string(""));
-  std::string* pColorMap = curve->assertParameter("colorMap", CCopasiParameter::Type::STRING, std::string("Default"));
+  if (original == NULL
+      || original->getChannels()[2] != zName)
+    {
+      changed = true;
+      curve->getChannels()[2] = CPlotDataChannelSpec(zName);
+    }
 
-  *pLogZ = mpLogZ->isChecked();
-  *pBilinear = mpBilinear->isChecked();
+  if (original == NULL
+      || *curve->assertParameter("contours", CCopasiParameter::Type::STRING, std::string("")) != TO_UTF8(mpContours->text()))
+    {
+      changed = true;
+      std::string * pContours = curve->assertParameter("contours", CCopasiParameter::Type::STRING, std::string(""));
+      *pContours = TO_UTF8(mpContours->text());
+    }
 
-  *pContours = TO_UTF8(mpContours->text());
-  *pMaxZ = TO_UTF8(mpMaxZ->text());
-  *pColorMap = TO_UTF8(mpColorMap->currentText());
+  if (original == NULL
+      || *curve->assertParameter("maxZ", CCopasiParameter::Type::STRING, std::string("")) != TO_UTF8(mpMaxZ->text()))
+    {
+      changed = true;
+      std::string * pMaxZ = curve->assertParameter("maxZ", CCopasiParameter::Type::STRING, std::string(""));
+      *pMaxZ = TO_UTF8(mpMaxZ->text());
+    }
 
-  return true;
+  if (original == NULL
+      || *curve->assertParameter("colorMap", CCopasiParameter::Type::STRING, std::string("")) != TO_UTF8(mpColorMap->currentText()))
+    {
+      changed = true;
+      std::string * pColorMap = curve->assertParameter("colorMap", CCopasiParameter::Type::STRING, std::string("Default"));
+      *pColorMap = TO_UTF8(mpColorMap->currentText());
+    }
+
+  if (original == NULL
+      || *curve->assertParameter("logZ", CCopasiParameter::Type::BOOL, false) != mpLogZ->isChecked())
+    {
+      changed = true;
+      bool * pLogZ = curve->assertParameter("logZ", CCopasiParameter::Type::BOOL, false);
+      *pLogZ = mpLogZ->isChecked();
+    }
+
+  if (original == NULL
+      || *curve->assertParameter("bilinear", CCopasiParameter::Type::BOOL, true) != mpBilinear->isChecked())
+    {
+      changed = true;
+      bool * pBilinear = curve->assertParameter("bilinear", CCopasiParameter::Type::BOOL, true);
+      *pBilinear = mpBilinear->isChecked();
+    }
+
+  return changed;
 }
 
 void

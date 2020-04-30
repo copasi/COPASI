@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -153,46 +158,47 @@ bool HistoWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original /
   CCommonName name = mpObjectX ? mpObjectX->getCN() : CCommonName("");
   C_FLOAT64 increment = mpEditIncrement->text().toDouble();
 
-  bool thingsChanged = false;
+  bool changed = false;
 
-  if (original != NULL)
+  // compare whether things changed
+  if (original == NULL
+      || original->getTitle() != title)
     {
-      if (original->getType() != CPlotItem::histoItem1d)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getTitle() != title)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getValue< C_FLOAT64 >("increment") != increment)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getActivity() != Activity)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getChannels().size() != 1)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getChannels()[0] != name)
-        thingsChanged = true;
+      changed = true;
+      curve->setTitle(title);
     }
-  else thingsChanged = true;
 
-  if (!thingsChanged)
-    return false;
+  if (original == NULL
+      || original->getType() != CPlotItem::histoItem1d
+      || original->getChannels().size() != 1)
+    {
+      changed = true;
+      curve->setType(CPlotItem::histoItem1d);
+      curve->getChannels().resize(1);
+    }
 
-  //title
-  curve->setTitle(title);
+  if (original == NULL
+      || original->getValue< C_FLOAT64 >("increment") != increment)
+    {
+      changed = true;
+      curve->setValue("increment", increment);
+    }
 
-  //channels
-  curve->getChannels().clear();
-  curve->getChannels().push_back(CPlotDataChannelSpec(name));
+  if (original == NULL
+      || original->getActivity() != Activity)
+    {
+      changed = true;
+      curve->setActivity((COutputInterface::Activity) Activity);
+    }
 
-  //other parameters: TODO
-  curve->setValue("increment", increment);
+  if (original == NULL
+      || original->getChannels()[0] != name)
+    {
+      changed = true;
+      curve->getChannels()[0] = CPlotDataChannelSpec(name);
+    }
 
-  curve->setActivity((COutputInterface::Activity) Activity);
-
-  return true;
+  return changed;
 }
 
 /**

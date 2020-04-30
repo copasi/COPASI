@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -121,63 +121,16 @@ void CQPlotSubwidget::storeChanges()
           mLastSelection[0]->setText(newName);
           mList.insert(newName, item);
         }
-
-      // assign current
     }
   else
     {
-      if (!areOfSameType(mLastSelection) || !mpStack->isEnabled())
-        return;
-
-      CPlotItem *common = new CPlotItem("nope");
-
-      if (mpStack->currentWidget() == mpHistoWidget)
-        {
-          common->setType(CPlotItem::histoItem1d);
-        }
-
-#if COPASI_BANDED_GRAPH
-      else if (mpStack->currentWidget() == mpBandedGraphWidget)
-        {
-          common->setType(CPlotItem::bandedGraph);
-        }
-
-#endif
-      else if (mpStack->currentWidget() == mpSpectogramWidget)
-        {
-          common->setType(CPlotItem::spectogram);
-        }
-      else
-        {
-          common->setType(CPlotItem::curve2d);
-        }
-
-      common = updateItem(common);
-
-      if (common == NULL)
-        return;
-
       QList<QListWidgetItem *>::const_iterator it;
 
       for (it = mLastSelection.begin(); it != mLastSelection.end(); ++it)
         {
-          CPlotItem *current = mList[(*it)->text()];
-
-          if (current == NULL)
-            continue;
-
-          std::vector<CPlotDataChannelSpec> channels = current->getChannels();
-          CPlotItem *newItem = new CPlotItem(*common, NO_PARENT);
-          newItem->setType(current->getType());
-          newItem->setTitle(current->getTitle());
-          newItem->getChannels() = channels;
-          newItem->setActivity(common->getActivity());
-          mList[(*it)->text()] = newItem;
-          delete current;
+          // This suffices since editing the name/title is blocked.
+          updateItem(mList[(*it)->text()]);
         }
-
-      pdelete(common);
-      // assign multiple
     }
 }
 
@@ -1104,7 +1057,7 @@ bool CQPlotSubwidget::updateProtected(ListViews::ObjectType objectType, ListView
 
   switch (objectType)
     {
-        //TODO: check list:
+      //TODO: check list:
       case ListViews::ObjectType::MODEL:
         switch (action)
           {
