@@ -952,11 +952,10 @@ bool CQPlotSubwidget::saveToPlotSpec()
   //curves
   CPlotItem *item;
   storeChanges();
-  QMap<QString, CPlotItem *>::iterator it;
 
-  for (it = mList.begin(); it != mList.end(); ++it)
+  for (int i = 0, imax = mpListPlotItems->count(); i < imax; ++i)
     {
-      CPlotItem *currentItem = (*it);
+      CPlotItem *currentItem = mList[mpListPlotItems->item(i)->text()];
 
       if (currentItem == NULL) continue;
 
