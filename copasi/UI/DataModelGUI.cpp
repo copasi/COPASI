@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -756,7 +756,7 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
   connect(manager, SIGNAL(finished(QNetworkReply*)),
           this, SLOT(miriamDownloadFinished(QNetworkReply*)));
 
-  QNetworkReply* reply = manager->get(QNetworkRequest(QUrl("https://www.ebi.ac.uk/miriam/main/export/xml/")));
+  QNetworkReply* reply = manager->get(QNetworkRequest(QUrl("http://copasi.org/static/miriam.xml")));
   connect(reply, SIGNAL(downloadProgress(qint64, qint64)),
           this, SLOT(miriamDownloadProgress(qint64, qint64)));
 
