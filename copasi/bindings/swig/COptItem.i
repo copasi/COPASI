@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -25,6 +25,7 @@
 %{
 
 #include "copasi/optimization/COptItem.h"
+#include "copasi/parameterFitting/CFitItem.h"
 
 %}
 
@@ -45,20 +46,34 @@
 {
     double getObjectValue() const
     {
+        if (!$self->getObjectValue())
+          return std::numeric_limits<double>::quiet_NaN();
+
         double v=*($self->getObjectValue());
         return v;
     }
 
     double getLowerBoundValue() const
     {
+        if (!$self->getLowerBoundValue())
+          return std::numeric_limits<double>::quiet_NaN();
+
         double v=*($self->getLowerBoundValue());
         return v;
     }
 
     double getUpperBoundValue() const
     {
+        if (!$self->getUpperBoundValue())
+          return std::numeric_limits<double>::quiet_NaN();
+
         double v=*($self->getUpperBoundValue());
         return v;
+    }
+    
+    CFitItem* asFitItem()
+    {
+      return dynamic_cast<CFitItem*>($self);
     }
 }
 
