@@ -75,6 +75,7 @@ public:
     //do no output
     NO_OUTPUT = 0,
     OUTPUT_BEFORE = INITIALIZE,
+    OUTPUT_DURING = STREAM,
     OUTPUT_AFTER = FINISH,
     //do output except time series, but do not initialize/finish
     OUTPUT = REPORT | PLOT | STREAM,
