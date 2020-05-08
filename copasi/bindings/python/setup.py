@@ -4,6 +4,7 @@ import os
 import sys
 import shutil
 import platform
+import sysconfig 
 from os.path import abspath, exists, join, split
 
 from setuptools import setup, Extension
@@ -20,6 +21,12 @@ def prepend_variables(args, variables):
         args.insert(0, '-D' + var + '=' +temp)
   return args
 
+
+def get_lib_full_path(path, partial): 
+  for file in os.listdir(path): 
+    if partial in file: 
+      return os.path.join(path, file)
+  return None
 
 def makedirs(folder, *args, **kwargs):
   try:
@@ -129,7 +136,7 @@ class CMakeBuild(build_ext):
           suffix = suffix[:suffix.rfind('/')]
         if '\\' in suffix:
           suffix = suffix[:suffix.rfind('\\')]
-        
+          
         ext_dir = self.get_ext_fullpath(extension.name)
         makedirs(build_temp)
         target_lib_path = abspath(ext_dir)
@@ -166,6 +173,15 @@ class CMakeBuild(build_ext):
           'CMAKE_GENERATOR'
         ])
 
+        if is_win_32:
+          if not '-G' in str(cmake_args):
+            cmake_args.append('-A')
+            cmake_args.append('win32')
+
+        if is_osx: 
+          cmake_args.append('-DCLANG_USE_LIBCPP=ON')
+          cmake_args.append('-DCMAKE_OSX_DEPLOYMENT_TARGET=10.9')
+
         # example of build args
         build_args = [
             '--config', config,
@@ -175,9 +191,10 @@ class CMakeBuild(build_ext):
         global DEP_DIR
         if not DEP_DIR and not self.dry_run:
             print("compiling dependencies")
-            dep_inst_dir = os.path.join(cwd, 'install_dependencies_' + suffix)
+            dep_suffix = sysconfig.get_platform()
+            dep_inst_dir = os.path.join(cwd, 'install_dependencies_' + dep_suffix)
             if not exists(dep_inst_dir):
-               dep_build_dir = os.path.join(cwd, 'build_dependencies_' + suffix)
+               dep_build_dir = os.path.join(cwd, 'build_dependencies_' + dep_suffix)
                dep_src_dir = DEP_SRC_DIR
                makedirs(dep_build_dir)
                os.chdir(dep_build_dir)
@@ -195,7 +212,8 @@ class CMakeBuild(build_ext):
         copasi_args = [
             '-DBUILD_GUI=OFF',
             '-DENABLE_PYTHON=ON',
-            '-DPYTHON_EXECUTABLE=' + sys.executable
+            '-DPYTHON_EXECUTABLE=' + sys.executable,
+            '-DPYTHON_INCLUDE_DIR=' + sysconfig.get_paths()['include']
         ]
 
         copasi_args = prepend_variables(copasi_args, [
@@ -216,9 +234,6 @@ class CMakeBuild(build_ext):
           cmake_args.append('-DLIBEXPAT_INCLUDE_DIR=' + join(DEP_DIR, 'include'))
 
         if is_win_32:
-          if not '-G' in str(cmake_args):
-            cmake_args.append('-A')
-            cmake_args.append('win32')
           if DEP_DIR32:
             cmake_args.append('-DCOPASI_DEPENDENCY_DIR=' + DEP_DIR32)
             cmake_args.append('-DLIBEXPAT_INCLUDE_DIR=' + join(DEP_DIR32, 'include'))
@@ -226,9 +241,6 @@ class CMakeBuild(build_ext):
           if DEP_DIR64:
             cmake_args.append('-DCOPASI_DEPENDENCY_DIR=' + DEP_DIR64)
             cmake_args.append('-DLIBEXPAT_INCLUDE_DIR=' + join(DEP_DIR64, 'include'))
-        elif is_osx: 
-          cmake_args.append('-DCLANG_USE_LIBCPP=ON')
-          cmake_args.append('-DCMAKE_OSX_DEPLOYMENT_TARGET=10.9')
 
         os.chdir(build_temp)
         self.spawn(['cmake', SRC_DIR] + cmake_args)
