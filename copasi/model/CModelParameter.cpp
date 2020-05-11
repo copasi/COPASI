@@ -688,25 +688,32 @@ bool CModelParameter::updateModel()
           {
             CCopasiParameter * pParameter = static_cast< CCopasiParameter * >(mpObject);
             CReaction * pReaction = static_cast< CReaction * >(mpObject->getObjectAncestor("Reaction"));
+            CDataObject * pObject = NULL;
 
-            if (mIsInitialExpressionValid && getInitialExpression() != "")
+            if (mIsInitialExpressionValid
+                && getInitialExpression() != "")
               {
                 CModel * pModel = mpParent->getModel();
-                assert(pModel != NULL);
-
                 CCommonName CN = static_cast< CEvaluationNodeObject * >(mpInitialExpression->getRoot())->getObjectCN();
-                CDataObject * pObject = const_cast< CDataObject * >(CObjectInterface::DataObject(pModel->getObjectFromCN(CN)));
 
-                assert(pObject != NULL);
+                if (pModel != NULL)
+                  {
+                    pObject = const_cast< CDataObject * >(CObjectInterface::DataObject(pModel->getObjectFromCN(CN)));
+                  }
 
-                // We assign the object value
-                pParameter->setValue(*(C_FLOAT64 *) pObject->getValuePointer());
+                if (pObject != NULL)
+                  {
+                    // We assign the object value
+                    pParameter->setValue(*(C_FLOAT64 *) pObject->getValuePointer());
 
-                // We map the parameter to the global quantity
-                std::vector< const CDataObject * > Objects(1, pObject->getObjectParent());
-                pReaction->setParameterObjects(pParameter->getObjectName(), Objects);
+                    // We map the parameter to the global quantity
+                    std::vector< const CDataObject * > Objects(1, pObject->getObjectParent());
+                    pReaction->setParameterObjects(pParameter->getObjectName(), Objects);
+                  }
               }
-            else if (!std::isnan(mValue))
+
+            if (pObject == NULL
+                && !std::isnan(mValue))
               {
                 pParameter->setValue(mValue);
 

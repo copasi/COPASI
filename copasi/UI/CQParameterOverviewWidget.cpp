@@ -521,7 +521,7 @@ void CQParameterOverviewWidget::slotBtnSaveAs()
 void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameterSet)
 {
   // commit all changes
-  slotBtnCommit();
+  // slotBtnCommit();
 
   if (pParameterSet == NULL)
     {
@@ -573,7 +573,9 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
   if (SelectionList.indexOf(Name) <= 0)
     {
       CModelParameterSet * pNew = new CModelParameterSet(*pParameterSet, pModel, false);
+      CRegisteredCommonName::setEnabled(false);
       pNew->setObjectName(TO_UTF8(Name));
+      CRegisteredCommonName::setEnabled(true);
 
       // We are sure that a set with that name does not exist.
       Sets.add(pNew, true);
