@@ -94,8 +94,8 @@ with open(version_file_name, 'r') as version_file:
 print ("Version is: {0}".format(VERSION))
 print ("building for python: {0}".format(sys.version))
 
-if not exists('copasi'):
-  makedirs('copasi')
+if not exists('COPASI'):
+  makedirs('COPASI')
 
 
 class CMakeExtension(Extension):
