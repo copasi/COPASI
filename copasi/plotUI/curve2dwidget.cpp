@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -184,10 +189,6 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
 bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original /*= NULL*/) const
 {
-  //if (!(mpObjectX && mpObjectY)) return false;
-
-  //curve->setType(CPlotItem::curve2d);
-
   std::string title = TO_UTF8(mpEditTitle->text());
   unsigned C_INT32 lineType = (unsigned C_INT32)mpBoxType->currentIndex();
   unsigned C_INT32 lineSubType = (unsigned C_INT32)mpBoxLineSubType->currentIndex();
@@ -206,68 +207,82 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original
   CCommonName xName = mpObjectX ? mpObjectX->getCN() : CCommonName("");
   CCommonName yName = mpObjectY ? mpObjectY->getCN() : CCommonName("");
 
-  bool thingsChanged = false;
+  bool changed = false;
 
-  if (original != NULL)
+  // compare whether things changed
+  if (original == NULL
+      || original->getTitle() != title)
     {
-      // compare whether things changed
-      if (original->getTitle() != title)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getType() != CPlotItem::curve2d)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getValue< unsigned C_INT32 >("Line type") != lineType)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getValue< unsigned C_INT32 >("Line subtype") != lineSubType)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getValue< unsigned C_INT32 >("Symbol subtype") != symbolSubType)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getValue< C_FLOAT64 >("Line width") != lineWidth)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getValue< std::string >("Color") != color)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getActivity() != Activity)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getChannels().size() != 2)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getChannels()[0] != xName)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getChannels()[1] != yName)
-        thingsChanged = true;
+      changed = true;
+      curve->setTitle(title);
     }
-  else thingsChanged = true;
 
-  if (!thingsChanged)
-    return false;
+  if (original == NULL
+      || original->getType() != CPlotItem::curve2d
+      || original->getChannels().size() != 2)
+    {
+      changed = true;
+      curve->setType(CPlotItem::curve2d);
+      curve->getChannels().resize(2);
+    }
 
-  //title
-  curve->setTitle(title);
+  if (original == NULL
+      || original->getValue< unsigned C_INT32 >("Line type") != lineType)
+    {
+      changed = true;
+      curve->setValue("Line type", lineType);
+    }
 
-  //channels
-  curve->getChannels().clear();
-  curve->getChannels().push_back(CPlotDataChannelSpec(xName));
-  curve->getChannels().push_back(CPlotDataChannelSpec(yName));
+  if (original == NULL
+      || original->getValue< unsigned C_INT32 >("Line subtype") != lineSubType)
+    {
+      changed = true;
+      curve->setValue("Line subtype", lineSubType);
+    }
 
-  curve->setValue("Line type", lineType);
-  curve->setValue("Line subtype", lineSubType);
-  curve->setValue("Symbol subtype", symbolSubType);
-  curve->setValue("Line width", lineWidth);
+  if (original == NULL
+      || original->getValue< unsigned C_INT32 >("Symbol subtype") != symbolSubType)
+    {
+      changed = true;
+      curve->setValue("Symbol subtype", symbolSubType);
+    }
 
-  //color
-  curve->setValue("Color", color);
+  if (original == NULL
+      || original->getValue< C_FLOAT64 >("Line width") != lineWidth)
+    {
+      changed = true;
+      curve->setValue("Line width", lineWidth);
+    }
 
-  curve->setActivity((COutputInterface::Activity) Activity);
+  if (original == NULL
+      || original->getValue< std::string >("Color") != color)
+    {
+      changed = true;
+      curve->setValue("Color", color);
+    }
 
-  return true;
+  if (original == NULL
+      || original->getActivity() != Activity)
+    {
+      changed = true;
+      curve->setActivity((COutputInterface::Activity) Activity);
+    }
+
+  if (original == NULL
+      || original->getChannels()[0] != xName)
+    {
+      changed = true;
+      curve->getChannels()[0] = CPlotDataChannelSpec(xName);
+    }
+
+  if (original == NULL
+      || original->getChannels()[1] != yName)
+    {
+      changed = true;
+      curve->getChannels()[1] = CPlotDataChannelSpec(yName);
+    }
+
+  return changed;
 }
 
 void Curve2DWidget::buttonPressedX()

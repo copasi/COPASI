@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -164,6 +164,6 @@ if(COMBINE_LIBRARY)
 endif(COMBINE_LIBRARY)
 
 include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(COMBINE REQUIRED COMBINE_INCLUDE_DIR COMBINE_LIBRARY)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(LIBCOMBINE REQUIRED COMBINE_INCLUDE_DIR COMBINE_LIBRARY)
 
 mark_as_advanced(COMBINE_INCLUDE_DIR COMBINE_LIBRARY)
