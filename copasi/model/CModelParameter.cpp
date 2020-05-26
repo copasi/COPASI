@@ -610,7 +610,7 @@ void CModelParameter::compile()
   if (mpInitialExpression != NULL)
     {
       size_t Size = CCopasiMessage::size();
-      mIsInitialExpressionValid = mpInitialExpression->compile();
+      mIsInitialExpressionValid = mpInitialExpression->compile(ContainerList);
 
       while (CCopasiMessage::size() > Size)
         CCopasiMessage::getLastMessage();
@@ -710,6 +710,10 @@ bool CModelParameter::updateModel()
                     std::vector< const CDataObject * > Objects(1, pObject->getObjectParent());
                     pReaction->setParameterObjects(pParameter->getObjectName(), Objects);
                   }
+              }
+            else
+              {
+                std::cout << "???" << std::endl;
               }
 
             if (pObject == NULL
