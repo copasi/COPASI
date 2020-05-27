@@ -192,8 +192,6 @@ void CModelParameter::createUndoData(CUndoData & undoData,
 
   if (mType != Type::Set)
     {
-      std::cout << "Processing: " << oldData.getProperty(CData::OBJECT_NAME).toString() << std::endl;
-
       undoData.addProperty(CData::OBJECT_NAME, oldData.getProperty(CData::OBJECT_NAME), mCN);
       // The UUID of an object must never be changed.
       // undoData.addProperty(CData::OBJECT_UUID, oldData.getProperty(CData::OBJECT_UUID), getUuid().str());
@@ -710,10 +708,6 @@ bool CModelParameter::updateModel()
                     std::vector< const CDataObject * > Objects(1, pObject->getObjectParent());
                     pReaction->setParameterObjects(pParameter->getObjectName(), Objects);
                   }
-              }
-            else
-              {
-                std::cout << "???" << std::endl;
               }
 
             if (pObject == NULL
