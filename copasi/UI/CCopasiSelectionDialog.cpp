@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -64,6 +64,8 @@ CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * n
   setObjectName(QString::fromUtf8(name));
   setModal(modal);
   setAttribute(Qt::WA_DeleteOnClose);
+  setMinimumHeight(480);
+
   mpMainLayout = new QVBoxLayout(this);
 
   mpSelectionWidget = new CCopasiSelectionWidget(this);
