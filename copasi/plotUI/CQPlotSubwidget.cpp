@@ -65,7 +65,7 @@ CQPlotSubwidget::CQPlotSubwidget(QWidget* parent, const char* name, Qt::WindowFl
   mpStack->addWidget(mpHistoWidget);
 #ifdef COPASI_BANDED_GRAPH
   QPushButton *buttonBandedGraph = new QPushButton(this);
-  buttonBandedGraph->setText("New Banded Graph");
+  buttonBandedGraph->setText("New &Banded Graph");
   layoutCurves->insertWidget(5, buttonBandedGraph);
   connect(buttonBandedGraph, SIGNAL(clicked()), this, SLOT(addBandedGraphSlot()));
   mpBandedGraphWidget = new BandedGraphWidget(this);
