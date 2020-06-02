@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,6 +40,7 @@
 #include "CQMessageBox.h"
 #include "copasi/model/CModel.h"
 #include "copasi/core/CDataObject.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
 CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags f):
   QDialog(parent, f)
@@ -58,6 +59,12 @@ CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const ch
 {
   setObjectName(QString::fromUtf8(name));
   setModal(modal);
+  setMinimumHeight(480);
+
+#ifndef Darwin
+  setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+#endif // not Darwin
+
   mpMainLayout = new QVBoxLayout(this);
   mpSplitter = new QSplitter(this);
   mpSplitter->setOrientation(Qt::Horizontal);
@@ -73,11 +80,11 @@ CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const ch
   mpXAxisSelectionBox = new QWidget(mpSplitter);
   QVBoxLayout *vBox1 = new QVBoxLayout(mpXAxisSelectionBox);
   mpXAxisSelectionBox->setLayout(vBox1);
-  mpXAxisSelectionBox->layout()->setContentsMargins(5, 5, 5, 5);
+  mpXAxisSelectionBox->layout()->setContentsMargins(0, 0, 0, 5);
   mpYAxisSelectionBox = new QWidget(mpSplitter);
   QVBoxLayout *vBox2 = new QVBoxLayout(mpYAxisSelectionBox);
   mpYAxisSelectionBox->setLayout(vBox2);
-  mpYAxisSelectionBox->layout()->setContentsMargins(5, 5, 5, 5);
+  mpYAxisSelectionBox->layout()->setContentsMargins(0, 0, 0, 5);
   mpXAxisLabel = new QLabel("X-Axis:", mpXAxisSelectionBox);
   mpXAxisLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   mpXAxisSelectionBox->layout()->addWidget(mpXAxisLabel);

@@ -425,6 +425,8 @@ void chooseAxisFromSelection(
 void CQPlotSubwidget::addCurve2D()
 {
   CCopasiPlotSelectionDialog *pBrowser = new CCopasiPlotSelectionDialog();
+  pBrowser->setWindowTitle("New Curve");
+
   std::vector< const CDataObject * > vector1;
   std::vector< const CDataObject * > vector2;
   pBrowser->setOutputVectors(&vector1, &vector2);
@@ -489,6 +491,8 @@ void CQPlotSubwidget::addCurve2D()
 void CQPlotSubwidget::addSpectrum()
 {
   CCopasiPlotSelectionDialog *pBrowser = new CCopasiPlotSelectionDialog();
+  pBrowser->setWindowTitle("New Contour");
+
   std::vector< const CDataObject * > vector1;
   std::vector< const CDataObject * > vector2;
   pBrowser->setOutputVectors(&vector1, &vector2);
@@ -566,6 +570,8 @@ void CQPlotSubwidget::addBandedGraphTab(const std::string &title,
 void CQPlotSubwidget::addBandedGraph()
 {
   CCopasiPlotSelectionDialog *pBrowser = new CCopasiPlotSelectionDialog();
+  pBrowser->setWindowTitle("New Banded Graph");
+
   std::vector< const CDataObject * > vector1;
   std::vector< const CDataObject * > vector2;
   pBrowser->setOutputVectors(&vector1, &vector2);
@@ -1056,7 +1062,7 @@ bool CQPlotSubwidget::updateProtected(ListViews::ObjectType objectType, ListView
 
   switch (objectType)
     {
-      //TODO: check list:
+        //TODO: check list:
       case ListViews::ObjectType::MODEL:
         switch (action)
           {
