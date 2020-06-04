@@ -29,8 +29,7 @@ necessary for COPASI, they include `clapack`, `cppunit`, `expat`, `raptor`
 the `Qt MML widget`. Instructions for building the dependencies are described 
 here: 
 
-* [General Instructions](https://github.com/copasi/copasi-dependencies/blob/master/readme.md)  
-* [Linux build instructions](https://github.com/copasi/copasi-dependencies/blob/master/readme_linux.md)
+* [General Instructions](https://github.com/copasi/copasi-dependencies/blob/master/readme.md)
 
 #### Compiling COPASI
 Once the dependencies have been built, COPASI is easily compiled using 
@@ -43,11 +42,11 @@ Once the dependencies have been built, COPASI is easily compiled using
 	make
 	make install 
 
-In the above `../copasi-dependencies` is the location of the compiled 
-copasi-dependencies project. The option `BUILD_GUI=OFF` builds only the 
+In the above `../copasi-dependencies/bin` is the location of the build folder of the compiled 
+copasi-dependencies. The option `BUILD_GUI=OFF` builds only the 
 command line version of COPASI (aka `CopasiSE`). To build the graphical 
 frontend (aka `CopasiUI`), and having Qt 4 or 5 installed, the option would 
-need to be `BUILD_GUI=ON`. In that case you'd additionally provide an option `SELECT_QT=Qt5` (or `SELECT_QT=Qt4`) for COPASI to look for the Qt libraries.   
+need to be `BUILD_GUI=ON`. In that case you'd additionally provide an option `SELECT_QT=Qt5` (or `SELECT_QT=Qt4`) for COPASI to look for the Qt libraries. (To help finding the Qt version you selected, you should specify the `Qt5_DIR=<dir>` variable to point to the `lib/cmake/Qt5` directory of the Qt5 installation. Alternatively for Qt4 you can set the `QT_DIR=<dir>` variable to point to your Qt4 installation.) 
 
 The option `CMAKE_INSTALL_PREFIX=~/copasi` specifies, that COPASI ought to be installed in the current users home directory in a subfolder `copasi`. The path `../COPASI` is the source directory of COPASI that has been created by the git clone command in the first statement.  
 
