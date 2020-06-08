@@ -740,7 +740,13 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     endif ()
 endif ()
 
-set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_CURRENT_BINARY_DIR};/.git/;/.svn/;/.libs/;/.deps/;/.bzr/;/.o$/;/.lo$/;/.la$/;${CPACK_SOURCE_IGNORE_FILES};/.DS_Store;/.svnignore;blib;libsbml-dist;/gps/;CopasiWS;userdocs;docs")
+set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_CURRENT_BINARY_DIR};/.git/;/.svn/;/.libs/;/.deps/;/.bzr/;/.o$/;/.lo$/;/.la$/;/.vs/;/.vscode/;/dist/;/build/;${CPACK_SOURCE_IGNORE_FILES};/.DS_Store;/.svnignore;blib;libsbml-dist;/gps/;CopasiWS;userdocs;docs")
+
+list (APPEND CPACK_SOURCE_IGNORE_FILES "/.*\\\\.tmp")
+list (APPEND CPACK_SOURCE_IGNORE_FILES "/.*\\\\.bak")
+list (APPEND CPACK_SOURCE_IGNORE_FILES "/.*\\\\.egg-info")
+list (APPEND CPACK_SOURCE_IGNORE_FILES "/build_.*")
+list (APPEND CPACK_SOURCE_IGNORE_FILES "/install_.*")
 
 if(UNIX)
     set(CPACK_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")

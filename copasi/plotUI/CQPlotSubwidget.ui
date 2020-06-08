@@ -209,7 +209,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>New Curve</string>
+        <string>New C&amp;urve</string>
        </property>
       </widget>
      </item>
@@ -222,14 +222,14 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>New Histogram</string>
+        <string>New &amp;Histogram</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="addContourButton">
        <property name="text">
-        <string>New Contour </string>
+        <string>New C&amp;ontour </string>
        </property>
       </widget>
      </item>
@@ -242,7 +242,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Delete Curve</string>
+        <string>De&amp;lete Curve</string>
        </property>
       </widget>
      </item>
@@ -256,14 +256,14 @@
      <item>
       <widget class="QPushButton" name="startPlotButton">
        <property name="text">
-        <string>Commit</string>
+        <string>Commi&amp;t</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="resetButton">
        <property name="text">
-        <string>Revert</string>
+        <string>&amp;Revert</string>
        </property>
       </widget>
      </item>
@@ -283,21 +283,21 @@
      <item>
       <widget class="QPushButton" name="copyPlotButton">
        <property name="text">
-        <string>Copy</string>
+        <string>&amp;Copy</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="addPlotButton">
        <property name="text">
-        <string>New</string>
+        <string>&amp;New</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="deletePlotButton">
        <property name="text">
-        <string>Delete</string>
+        <string>&amp;Delete</string>
        </property>
       </widget>
      </item>

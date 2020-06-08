@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -73,7 +73,9 @@ if (NOT CROSSGUID_FOUND)
   endif (NOT CROSSGUID_LIBRARY)
   
   if (CROSSGUID_LIBRARY AND UNIX AND NOT APPLE)
-    set(CROSSGUID_LIBRARY ${CROSSGUID_LIBRARY} -luuid)
+    #set(CROSSGUID_LIBRARY ${CROSSGUID_LIBRARY} -luuid)
+    find_package(Libuuid REQUIRED)
+    set(CROSSGUID_LIBRARY ${CROSSGUID_LIBRARY} ${LIBUUID_LIBRARY})
   endif ()
   
   set(CROSSGUID_FOUND ${CROSSGUID_LIBRARY})

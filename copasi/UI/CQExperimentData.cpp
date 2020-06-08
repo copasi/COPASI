@@ -526,7 +526,7 @@ void CQExperimentData::slotFileAdd()
     CopasiFileDialog::getOpenFileName(this,
                                       "Open File Dialog",
                                       "",
-                                      "Data Files (*.txt *.csv);;All Files (*)",
+                                      "Data Files (*.txt *.csv *.tsv);;All Files (*)",
                                       "Open Data Files");
 
   if (File.isNull()) return;
@@ -620,7 +620,7 @@ void CQExperimentData::slotFileEdit()
     CopasiFileDialog::getOpenFileName(this,
                                       "Replace File Dialog",
                                       FROM_UTF8(oldFileName),
-                                      "Data Files (*.txt *.csv);;All Files (*)",
+                                      "Data Files (*.txt *.csv *.tsv);;All Files (*)",
                                       "Replace Data File");
 
   if (newFile.isNull()) return;

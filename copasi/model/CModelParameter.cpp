@@ -192,8 +192,6 @@ void CModelParameter::createUndoData(CUndoData & undoData,
 
   if (mType != Type::Set)
     {
-      std::cout << "Processing: " << oldData.getProperty(CData::OBJECT_NAME).toString() << std::endl;
-
       undoData.addProperty(CData::OBJECT_NAME, oldData.getProperty(CData::OBJECT_NAME), mCN);
       // The UUID of an object must never be changed.
       // undoData.addProperty(CData::OBJECT_UUID, oldData.getProperty(CData::OBJECT_UUID), getUuid().str());
@@ -610,7 +608,7 @@ void CModelParameter::compile()
   if (mpInitialExpression != NULL)
     {
       size_t Size = CCopasiMessage::size();
-      mIsInitialExpressionValid = mpInitialExpression->compile();
+      mIsInitialExpressionValid = mpInitialExpression->compile(ContainerList);
 
       while (CCopasiMessage::size() > Size)
         CCopasiMessage::getLastMessage();
