@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,6 +25,7 @@
 #include "StateSubwidget.h"
 
 #include <sstream>
+#include <qmath.h>
 
 #include "copasi/copasi.h"
 #include "CQArrayAnnotationsWidget.h"
@@ -43,6 +44,7 @@
 #include "copasi/optimization/COptTask.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
+#include <copasi/commandline/CConfigurationFile.h>
 
 /*
  *  Constructs a StateSubwidget which is a child of 'parent', with the
@@ -116,8 +118,13 @@ void StateSubwidget::loadMetabolites()
       }
 
   mpTblMetabolites->setRowCount(i);
-  mpTblMetabolites->resizeColumnsToContents();
-  mpTblMetabolites->resizeRowsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblMetabolites->resizeColumnsToContents();
+      mpTblMetabolites->resizeRowsToContents();
+    }
+
   mpTblMetabolites->setSortingEnabled(true);
 }
 
@@ -151,8 +158,13 @@ void StateSubwidget::loadCompartments()
       }
 
   mpTblCompartments->setRowCount(i);
-  mpTblCompartments->resizeColumnsToContents();
-  mpTblCompartments->resizeRowsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblCompartments->resizeColumnsToContents();
+      mpTblCompartments->resizeRowsToContents();
+    }
+
   mpTblCompartments->setSortingEnabled(true);
 }
 
@@ -187,8 +199,13 @@ void StateSubwidget::loadReactions()
     }
 
   mpTblReactions->setRowCount(i);
-  mpTblReactions->resizeColumnsToContents();
-  mpTblReactions->resizeRowsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblReactions->resizeColumnsToContents();
+      mpTblReactions->resizeRowsToContents();
+    }
+
   mpTblReactions->setSortingEnabled(true);
 }
 
@@ -222,8 +239,13 @@ void StateSubwidget::loadModelValues()
       }
 
   mpTblModelValues->setRowCount(i);
-  mpTblModelValues->resizeColumnsToContents();
-  mpTblModelValues->resizeRowsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblModelValues->resizeColumnsToContents();
+      mpTblModelValues->resizeRowsToContents();
+    }
+
   mpTblModelValues->setSortingEnabled(true);
 }
 
@@ -247,6 +269,7 @@ void StateSubwidget::loadJacobian()
 
   size_t i, imax = eigen_i.size();
   tableEigenValues->setRowCount((int) imax);
+  tableEigenValues->setColumnCount(5);
 
   for (i = 0; i < imax; ++i)
     {
@@ -257,10 +280,41 @@ void StateSubwidget::loadJacobian()
       pItem = new QTableWidgetItem(QVariant::Double);
       pItem->setData(Qt::DisplayRole, eigen_i[i]);
       tableEigenValues->setItem((int) i, 1, pItem);
+
+      //time scales in 3rd col
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, 1 / eigen_r[i]);
+
+      if (eigen_r[i] > 0)
+        pItem->setBackground(QBrush(QColor(255, 200, 200)));
+
+      tableEigenValues->setItem((int) i, 2, pItem);
+
+      //frequency/period of oscillations
+      if (fabs(eigen_i[i]) > 1e-12)
+        {
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayRole, fabs(eigen_i[i] / (2.0 * M_PI)));
+          tableEigenValues->setItem((int) i, 3, pItem);
+
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayRole, fabs(1.0 / eigen_i[i] * (2.0 * M_PI)));
+          tableEigenValues->setItem((int) i, 4, pItem);
+        }
+      else
+        {
+          tableEigenValues->setItem((int) i, 3, NULL);
+          tableEigenValues->setItem((int) i, 4, NULL);
+        }
+
     }
 
-  tableEigenValues->resizeColumnsToContents();
-  tableEigenValues->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      tableEigenValues->resizeColumnsToContents();
+      tableEigenValues->resizeRowsToContents();
+    }
+
   tableEigenValues->setSortingEnabled(true);
 
   //JacobianX
@@ -291,10 +345,40 @@ void StateSubwidget::loadJacobian()
       pItem = new QTableWidgetItem(QVariant::Double);
       pItem->setData(Qt::DisplayRole, eigen_iX[i]);
       tableEigenValuesX->setItem((int) i, 1, pItem);
+
+      //time scales in 3rd col
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, 1 / eigen_rX[i]);
+
+      if (eigen_rX[i] > 0)
+        pItem->setBackground(QBrush(QColor(255, 200, 200)));
+
+      tableEigenValuesX->setItem((int) i, 2, pItem);
+
+      //frequency/period of oscillations
+      if (fabs(eigen_iX[i]) > 1e-12)
+        {
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayRole, fabs(eigen_iX[i] / (2 * M_PI)));
+          tableEigenValuesX->setItem((int) i, 3, pItem);
+
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayRole, fabs(1 / eigen_iX[i] * (2 * M_PI)));
+          tableEigenValuesX->setItem((int) i, 4, pItem);
+        }
+      else
+        {
+          tableEigenValuesX->setItem((int) i, 3, NULL);
+          tableEigenValuesX->setItem((int) i, 4, NULL);
+        }
     }
 
-  tableEigenValuesX->resizeColumnsToContents();
-  tableEigenValuesX->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      tableEigenValuesX->resizeColumnsToContents();
+      tableEigenValuesX->resizeRowsToContents();
+    }
+
   tableEigenValuesX->setSortingEnabled(true);
 
   //stability report

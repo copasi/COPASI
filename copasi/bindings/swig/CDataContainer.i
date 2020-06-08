@@ -32,6 +32,8 @@
 %ignore CDataContainer::updateIndex;
 
 
-%include "core/CDataContainer.h"
+%include "copasi/core/CDataContainer.h"
 
+#ifndef SWIGR
 %template(ContainerList) std::vector<const CDataContainer*>;
+#endif

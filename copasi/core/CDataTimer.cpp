@@ -8,7 +8,7 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CDataTimer.h"
 #include "copasi/core/CDataContainer.h"

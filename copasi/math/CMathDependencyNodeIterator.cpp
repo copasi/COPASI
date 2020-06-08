@@ -13,7 +13,7 @@
 // of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CMathDependencyNodeIterator.h"
 #include "CMathDependencyNode.h"

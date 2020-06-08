@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -20,18 +25,18 @@
 #include <cmath>
 #include <limits>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CMCAMethod.h"
 #include "CMCAProblem.h"
 #include "CSteadyStateTask.h"
-#include "model/CModel.h"
-#include "math/CMathContainer.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/utility.h"
-#include "utilities/CLinkMatrix.h"
+#include "copasi/model/CModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/utilities/CReadConfig.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/utilities/CLinkMatrix.h"
 
-#include "lapack/blaswrap.h"
-#include "lapack/lapackwrap.h"
+#include "copasi/lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 //TODO: put all matrix resizing and annotations creation in one place, so
 // that it has to be done only once if several MCA are calculated (e.g. in a scan)
@@ -606,7 +611,7 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
     {
       for (; pScaled != pScaledRowEnd; ++pScaled)
         {
-          success &= !isnan(*pScaled);
+          success &= !std::isnan(*pScaled);
 
           *pSum += *pScaled;
           *pMax = std::max(*pMax, fabs(*pScaled));
@@ -632,7 +637,7 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
     {
       for (; pScaled != pScaledRowEnd; ++pScaled)
         {
-          success &= !isnan(*pScaled);
+          success &= !std::isnan(*pScaled);
 
           *pSum += *pScaled;
           *pMax = std::max(*pMax, fabs(*pScaled));

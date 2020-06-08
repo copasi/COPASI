@@ -17,16 +17,16 @@
  *  Created for COPASI by Stefan Hoops 2002
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CTimeSensMethod.h"
 #include "CTimeSensLsodaMethod.h"
 #include "CTimeSensProblem.h"
 #include "CTimeSensTask.h"
 
-#include "model/CState.h"
-#include "model/CCompartment.h"
-#include "math/CMathContainer.h"
+#include "copasi/model/CState.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/math/CMathContainer.h"
 
 // static
 const bool CTimeSensMethod::ReducedModel(false);

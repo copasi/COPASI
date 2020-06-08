@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,7 +32,7 @@
 
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CEFMTask.h"
 #include "CEFMMethod.h"
@@ -38,12 +43,12 @@
 #include "CSSAMethod.h"
 #endif
 
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "model/CMetab.h"
-#include "model/CMetabNameInterface.h"
-#include "model/CChemEqInterface.h"
-#include "utilities/CCopasiProblem.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CMetabNameInterface.h"
+#include "copasi/model/CChemEqInterface.h"
+#include "copasi/utilities/CCopasiProblem.h"
 
 CEFMTask::CEFMTask(const CDataContainer * pParent,
                    const CTaskEnum::Task & type):

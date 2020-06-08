@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,13 +21,13 @@
 #include "CQRDFTreeViewItem.h"
 #include "CQRDFTreeView.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "UI/qtUtilities.h"
+#include "copasi/UI/qtUtilities.h"
 
-#include "MIRIAM/CRDFGraph.h"
-#include "MIRIAM/CRDFObject.h"
-#include "MIRIAM/CRDFLiteral.h"
+#include "copasi/MIRIAM/CRDFGraph.h"
+#include "copasi/MIRIAM/CRDFObject.h"
+#include "copasi/MIRIAM/CRDFLiteral.h"
 
 #define COL_SUBJECT    0
 #define COL_PREDICATE  1

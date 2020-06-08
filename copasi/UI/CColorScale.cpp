@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -14,35 +19,60 @@
 // All rights reserved.
 
 #include <cmath>
+#include <QGuiApplication>
+#include <QPalette>
 
-#include "CColorScale.h"
+#include "copasi/UI/CColorScale.h"
 
-CColorScale1::CColorScale1()
-  : m1(1e-4)
+CColorScale::CColorScale()
+  : mIsUsed(false)
+  , mForeground()
+  , mBackground()
+  , mSmallNumbers()
+  , mLargeNumbers()
+  , mNaN(85, 85, 135)
+{
+  QPalette Palette = QGuiApplication::palette();
+  mForeground = Palette.color(QPalette::Active, QPalette::Text);
+  mBackground = Palette.color(QPalette::Active, QPalette::Base);
+
+  if (mForeground.redF() + mForeground.greenF() + mForeground.blueF() < mBackground.redF() + mBackground.greenF() + mBackground.blueF())
+    {
+      mSmallNumbers = QColor(Qt::red);
+      mLargeNumbers = QColor(Qt::green);
+    }
+  else
+    {
+      mSmallNumbers = QColor(Qt::darkRed);
+      mLargeNumbers = QColor(Qt::darkGreen);
+    }
+};
+
+CColorScaleDiscrete::CColorScaleDiscrete()
+  : CColorScale()
+  , m1(1e-4)
 {}
 
 //virtual
-QColor CColorScale1::getColor(const C_FLOAT64 & number) const
+QColor CColorScaleDiscrete::getColor(const C_FLOAT64 & number) const
 {
-  QColor color;
-
   if (fabs(number) < m1)
-    color = QColor(250, 250, 250);
-  else if (number > 0)
-    color = QColor(200, 255, 200);
-  else
-    color = QColor(255, 200, 200);
+    return mBackground;
 
-  return color;
+  if (number > 0)
+    return mLargeNumbers;
+
+  return mSmallNumbers;
 }
 
 //**************************
 
 CColorScaleSimple::CColorScaleSimple()
-  : mMin(0.0),
-    mMax(1.0),
-    mLog(false),
-    mSym(false)
+  : CColorScale()
+  , mMin(0.0)
+  , mMax(1.0)
+  , mLog(false)
+  , mSym(false)
 {}
 
 //virtual
@@ -56,35 +86,38 @@ QColor CColorScaleSimple::getColor(const C_FLOAT64 & number) const
   else
     tmp = (number - mMin) / (mMax - mMin);
 
-  if (tmp > 1) tmp = 1;
+  if (std::isnan(tmp))
+    return mNaN;
 
-  if (tmp < 0) tmp = 0;
+  if (tmp > 1)
+    tmp = 1;
 
-  int r = 0;
-  int g = 0;
-  int b = 0;
+  if (tmp < 0)
+    tmp = 0;
 
-  if (tmp != tmp)
+  double red;
+  double green;
+  double blue;
+  double alpha;
+
+  if (tmp < 0.5)
     {
-      r = 85;
-      g = 85;
-      b = 135;
-    }
-  else if (tmp < 0.5)
-    {
-      r = 255;
-      g = (int)(255 + (tmp - 0.5) * 260);
-      b = (int)(255 + (tmp - 0.5) * 260);
+      tmp = 1.0 - 2.0 * tmp;
+      red = mSmallNumbers.redF() * tmp + mBackground.redF() * (1.0 - tmp);
+      green = mSmallNumbers.greenF() * tmp + mBackground.greenF() * (1.0 - tmp);
+      blue = mSmallNumbers.blueF() * tmp + mBackground.blueF() * (1.0 - tmp);
+      alpha = mSmallNumbers.alphaF() * tmp + mBackground.alphaF() * (1.0 - tmp);
     }
   else
     {
-      r = (int)(255 - (tmp - 0.5) * 260);
-      g = 255;
-      b = (int)(255 - (tmp - 0.5) * 260);
+      tmp = 2.0 * tmp - 1.0;
+      red = mLargeNumbers.redF() * tmp + mBackground.redF() * (1.0 - tmp);
+      green = mLargeNumbers.greenF() * tmp + mBackground.greenF() * (1.0 - tmp);
+      blue = mLargeNumbers.blueF() * tmp + mBackground.blueF() * (1.0 - tmp);
+      alpha = mLargeNumbers.alphaF() * tmp + mBackground.alphaF() * (1.0 - tmp);
     }
 
-  QColor color(r, g, b);
-  return color;
+  return QColor::fromRgbF(red, green, blue, alpha);
 }
 
 //virtual
@@ -99,12 +132,14 @@ void CColorScaleSimple::passValue(const C_FLOAT64 & number)
 {
   //if (number != number) return; //NaN
 
-  if (fabs(number) >= std::numeric_limits< C_FLOAT64 >::max()) return; //Inf or max
+  if (fabs(number) >= std::numeric_limits< C_FLOAT64 >::max())
+    return; //Inf or max
 
+  if (number > mMax)
+    mMax = number;
 
-  if (number > mMax) mMax = number;
-
-  if (number < mMin) mMin = number;
+  if (number < mMin)
+    mMin = number;
 }
 
 //virtual
@@ -119,7 +154,7 @@ void CColorScaleSimple::finishAutomaticParameterCalculation()
       else
         tmp = fabs(mMin);
 
-      mMin = - tmp;
+      mMin = -tmp;
       mMax = tmp;
     }
 
@@ -135,18 +170,17 @@ void CColorScaleSimple::finishAutomaticParameterCalculation()
 CColorScaleAdvanced::CColorScaleAdvanced()
   : CColorScaleSimple()
 {
-  mColorMax = QColor(0, 255, 0);
-  mColorMin = QColor(240, 240, 240);
+  mSmallNumbers = mBackground;
 }
 
 void CColorScaleAdvanced::setColorMin(QColor col)
 {
-  mColorMin = col;
+  mSmallNumbers = col;
 }
 
 void CColorScaleAdvanced::setColorMax(QColor col)
 {
-  mColorMax = col;
+  mLargeNumbers = col;
 }
 
 QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number) const
@@ -159,27 +193,32 @@ QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number) const
   else
     tmp = (number - mMin) / (mMax - mMin);
 
-  if (tmp > 1) tmp = 1;
+  if (std::isnan(tmp))
+    return mNaN;
 
-  if (tmp < 0 || tmp != tmp) tmp = 0;
+  if (tmp > 1)
+    tmp = 1;
 
-  int r = (int)(mColorMin.red() * (1 - tmp) + mColorMax.red() * tmp);
-  int g = (int)(mColorMin.green() * (1 - tmp) + mColorMax.green() * tmp);
-  int b = (int)(mColorMin.blue() * (1 - tmp) + mColorMax.blue() * tmp);
-  int a = (int)(mColorMin.alpha() * (1 - tmp) + mColorMax.alpha() * tmp);
+  if (tmp < 0)
+    tmp = 0;
 
-  QColor color(r, g, b, a);
-  return color;
+  int r = (int)(mSmallNumbers.red() * (1 - tmp) + mLargeNumbers.red() * tmp);
+  int g = (int)(mSmallNumbers.green() * (1 - tmp) + mLargeNumbers.green() * tmp);
+  int b = (int)(mSmallNumbers.blue() * (1 - tmp) + mLargeNumbers.blue() * tmp);
+  int a = (int)(mSmallNumbers.alpha() * (1 - tmp) + mLargeNumbers.alpha() * tmp);
+
+  return QColor(r, g, b, a);
 }
 
 //**************************
 
 CColorScaleAuto::CColorScaleAuto()
-  : CColorScaleAdvanced(),
-    mData()
+  : CColorScaleAdvanced()
+  , mData()
 {
-  mColorMax = QColor(255, 0, 0, 80);
-  mColorMin = QColor(0, 255, 0, 80);
+  QColor Tmp = mLargeNumbers;
+  mLargeNumbers = QColor(mSmallNumbers.red(), mSmallNumbers.green(), mSmallNumbers.blue(), 80);
+  mSmallNumbers = QColor(Tmp.red(), Tmp.green(), Tmp.blue(), 80);
 }
 
 //virtual
@@ -213,19 +252,15 @@ void CColorScaleAuto::finishAutomaticParameterCalculation()
     {
       mLog = true;
     }
-
 }
-
-
-
 
 //**************************
 
 CColorScaleAverage::CColorScaleAverage()
-  : CColorScaleSimple(),
-    mFactor(3.0),
-    mFloat(0.0),
-    mInt(0)
+  : CColorScaleSimple()
+  , mFactor(3.0)
+  , mFloat(0.0)
+  , mInt(0)
 {}
 
 //virtual
@@ -238,9 +273,11 @@ void CColorScaleAverage::startAutomaticParameterCalculation()
 //virtual
 void CColorScaleAverage::passValue(const C_FLOAT64 & number)
 {
-  if (number != number) return; //NaN
+  if (number != number)
+    return; //NaN
 
-  if (fabs(number) >= std::numeric_limits< C_FLOAT64 >::max()) return; //Inf
+  if (fabs(number) >= std::numeric_limits< C_FLOAT64 >::max())
+    return; //Inf
 
   ++mInt;
   mFloat += fabs(number);
@@ -266,53 +303,49 @@ void CColorScaleAverage::finishAutomaticParameterCalculation()
 //**************************
 
 CColorScaleBiLog::CColorScaleBiLog()
-  : m1(-6.0),
-    m2(2.0),
-    mFloat(0.0),
-    mInt(0)
+  : CColorScale()
+  , m1(-6.0)
+  , m2(2.0)
+  , mFloat(0.0)
+  , mInt(0)
 {}
 
 //virtual
 QColor CColorScaleBiLog::getColor(const C_FLOAT64 & number) const
 {
   C_FLOAT64 logtmp = log(fabs(number));
-
   C_FLOAT64 tmp = (logtmp - m1) / (m2 - m1); //scale to 0..1
 
-  if (tmp > 1) tmp = 1;
+  if (std::isnan(tmp))
+    return mNaN;
 
-  if (tmp < 0) tmp = 0;
+  if (tmp > 1)
+    tmp = 1;
 
-  if (number > 0)
-    tmp = 0.5 + tmp * 0.5;
-  else
-    tmp = 0.5 - tmp * 0.5;
+  if (tmp < 0)
+    tmp = 0;
 
-  int r = 0;
-  int g = 0;
-  int b = 0;
+  double red;
+  double green;
+  double blue;
+  double alpha;
 
-  if (tmp != tmp)
+  if (number < 0)
     {
-      r = 85;
-      g = 85;
-      b = 135;
-    }
-  else if (tmp < 0.5)
-    {
-      r = 255;
-      g = (int)(255 + (tmp - 0.5) * 260);
-      b = (int)(255 + (tmp - 0.5) * 260);
+      red = mSmallNumbers.redF() * tmp + mBackground.redF() * (1.0 - tmp);
+      green = mSmallNumbers.greenF() * tmp + mBackground.greenF() * (1.0 - tmp);
+      blue = mSmallNumbers.blueF() * tmp + mBackground.blueF() * (1.0 - tmp);
+      alpha = mSmallNumbers.alphaF() * tmp + mBackground.alphaF() * (1.0 - tmp);
     }
   else
     {
-      r = (int)(255 - (tmp - 0.5) * 260);
-      g = 255;
-      b = (int)(255 - (tmp - 0.5) * 260);
+      red = mLargeNumbers.redF() * tmp + mBackground.redF() * (1.0 - tmp);
+      green = mLargeNumbers.greenF() * tmp + mBackground.greenF() * (1.0 - tmp);
+      blue = mLargeNumbers.blueF() * tmp + mBackground.blueF() * (1.0 - tmp);
+      alpha = mLargeNumbers.alphaF() * tmp + mBackground.alphaF() * (1.0 - tmp);
     }
 
-  QColor color(r, g, b);
-  return color;
+  return QColor::fromRgbF(red, green, blue, alpha);
 }
 
 //virtual
@@ -327,18 +360,23 @@ void CColorScaleBiLog::startAutomaticParameterCalculation()
 //virtual
 void CColorScaleBiLog::passValue(const C_FLOAT64 & number)
 {
-  if (number != number) return; //NaN
+  if (number != number)
+    return; //NaN
 
-  if (fabs(number) >= std::numeric_limits< C_FLOAT64 >::max()) return; //Inf
+  if (fabs(number) >= std::numeric_limits< C_FLOAT64 >::max())
+    return; //Inf
 
-  if (number == 0.0) return;
+  if (number == 0.0)
+    return;
 
   C_FLOAT64 tmp = log(fabs(number));
 
   //minmax
-  if (tmp > m2) m2 = tmp;
+  if (tmp > m2)
+    m2 = tmp;
 
-  if (tmp < m1) m1 = tmp;
+  if (tmp < m1)
+    m1 = tmp;
 
   //average
   ++mInt;
@@ -356,11 +394,12 @@ void CColorScaleBiLog::finishAutomaticParameterCalculation()
   m2 -= 1.0;
 }
 
-void CColorScaleBiLog::setWhitepoint(const C_FLOAT64 & n) {m1 = log(n);}
+void CColorScaleBiLog::setWhitepoint(const C_FLOAT64 & n)
+{
+  m1 = log(n);
+}
 
-void CColorScaleBiLog::setMaxIntensityPoint(const C_FLOAT64 & n) {m2 = log(n);}
-
-
-
-
-
+void CColorScaleBiLog::setMaxIntensityPoint(const C_FLOAT64 & n)
+{
+  m2 = log(n);
+}

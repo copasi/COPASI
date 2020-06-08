@@ -16,9 +16,9 @@
   if (yychar != YYERRCODE) correctErrorPosition(); \
   CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
 
-#include "copasi.h"
-#include "CEvaluationNode.h"
-#include "CEvaluationLexer.h"
+#include "copasi/copasi.h"
+#include "copasi/function/CEvaluationNode.h"
+#include "copasi/function/CEvaluationLexer.h"
 
 #undef yyparse
 #define yyparse CEvaluationParserBase::yyparse

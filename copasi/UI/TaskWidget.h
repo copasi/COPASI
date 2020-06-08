@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -86,9 +86,17 @@ public slots:
 
   void slotFinishThread();
 
-protected:
+private:
   bool loadTask();
   bool saveTask();
+
+  bool loadCommon();
+  bool saveCommon();
+
+  bool loadMethod();
+  bool saveMethod();
+
+protected:
 
   virtual bool enterProtected();
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
@@ -99,13 +107,6 @@ protected:
 
   CCopasiMethod * createMethod(const CTaskEnum::Method & type);
 
-  //these methods should be called by the loadTask() or saveTask() methods
-  //of the derived classes. They handle the "executable" checkbox
-  bool loadCommon();
-  bool saveCommon();
-
-  bool loadMethod();
-  bool saveMethod();
   virtual bool taskFinishedEvent();
 
   //this method should be called at the beginning or the end of the runTask() method
@@ -130,6 +131,7 @@ protected:
 
   bool mChanged;
   CQTaskThread *mpTaskThread;
+  bool mIgnoreProblemData;
 };
 
 #endif

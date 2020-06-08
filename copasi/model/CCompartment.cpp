@@ -32,12 +32,12 @@
 #include <iostream>
 #include <cmath>
 
-#include "copasi.h"
-#include "utilities/CReadConfig.h"
+#include "copasi/copasi.h"
+#include "copasi/utilities/CReadConfig.h"
 #include "copasi/core/CDataVector.h"
-#include "utilities/utility.h"
+#include "copasi/utilities/utility.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 #include "CCompartment.h"
 #include "CModel.h"
 #include "copasi/core/CRootContainer.h"
@@ -75,7 +75,7 @@ bool CCompartment::applyData(const CData & data, CUndoData::CChangeSet & changes
       const CData & Data = data.getProperty(CData::INITIAL_VALUE).toData();
       mIValue = Data.getProperty(CData::VALUE).toDouble();
       mpModel->updateInitialValues(CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
-      changes.add({CUndoData::Type::CHANGE, "State", mpModel->getCN(), mpModel->getCN()});
+      changes.add( {CUndoData::Type::CHANGE, "State", mpModel->getCN(), mpModel->getCN()});
     }
 
   if (data.isSetProperty(CData::SPATIAL_DIMENSION))

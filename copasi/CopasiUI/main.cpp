@@ -31,20 +31,20 @@
 
 #define COPASI_MAIN
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "UI/CQCopasiApplication.h"
-#include "UI/copasiui3window.h"
-#include "UI/DataModelGUI.h"
-#include "UI/CQMessageBox.h"
+#include "copasi/UI/CQCopasiApplication.h"
+#include "copasi/UI/copasiui3window.h"
+#include "copasi/UI/DataModelGUI.h"
+#include "copasi/UI/CQMessageBox.h"
 #include  <copasi/UI/CQUndoTester.h>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "function/CFunctionDB.h"
-#include "function/CFunction.h"
-#include "commandline/COptionParser.h"
-#include "commandline/COptions.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/commandline/COptionParser.h"
+#include "copasi/commandline/COptions.h"
 
 #ifdef COPASI_SBW_INTEGRATION
 // SBW includes
@@ -54,7 +54,7 @@
 
 #ifdef Darwin
 # include <QtCore/QDir>
-# include "UI/qtUtilities.h"
+# include "copasi/UI/qtUtilities.h"
 #endif // Darwin
 
 int main(int argc, char *argv[])

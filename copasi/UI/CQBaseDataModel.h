@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,8 +53,12 @@ public:
 
   void setDataModel(CDataModel * pDataModel);
   CDataModel * getDataModel() const;
+
   void beginResetModel();
   void endResetModel();
+
+  bool canFetchMore(const QModelIndex &parent) const override;
+  void fetchMore(const QModelIndex &parent) override;
 
 public slots:
   void resetCache();
@@ -63,9 +67,12 @@ protected:
   virtual void resetCacheProtected();
   virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex()) = 0;
   virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) = 0;
+  virtual size_t size() const = 0;
 
   CDataModel * mpDataModel;
   int mFramework;
+  size_t mFetched;
+  size_t mFetchLimit;
 
 signals:
   void notifyGUI(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);

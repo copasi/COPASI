@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,47 +21,47 @@
  * Copyright Stefan Hoops
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "xml/CExpat.h"
+#include "copasi/xml/CExpat.h"
 
 #include "CXMLParser.h"
 #include "CXMLHandler.h"
 
-#include "xml/CCopasiXMLInterface.h"
-#include "utilities/CCopasiMessage.h"
-#include "function/CFunction.h"
-#include "function/CExpression.h"
-#include "model/CModel.h"
-#include "model/CModelParameterSet.h"
-#include "report/CKeyFactory.h"
-#include "report/CReportDefinitionVector.h"
-#include "report/CReportDefinition.h"
-#include "utilities/CUnitDefinitionDB.h"
-#include "utilities/CUnitDefinition.h"
+#include "copasi/xml/CCopasiXMLInterface.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CModelParameterSet.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/report/CReportDefinition.h"
+#include "copasi/utilities/CUnitDefinitionDB.h"
+#include "copasi/utilities/CUnitDefinition.h"
 
-#include "utilities/CVersion.h"
-#include "utilities/CCopasiParameter.h"
-#include "utilities/CCopasiParameterGroup.h"
-#include "utilities/CSlider.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CMCATask.h"
-#include "lna/CLNATask.h"
-#include "tssanalysis/CTSSATask.h"
-#include "scan/CScanTask.h"
-#include "elementaryFluxModes/CEFMTask.h"
-#include "optimization/COptTask.h"
-#include "parameterFitting/CFitTask.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "lyap/CLyapTask.h"
-#include "sensitivities/CSensTask.h"
-#include "moieties/CMoietiesTask.h"
-#include "crosssection/CCrossSectionTask.h"
-#include "plot/COutputDefinitionVector.h"
-#include "plot/CPlotSpecification.h"
-#include "plot/CPlotItem.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "layout/CListOfLayouts.h"
+#include "copasi/utilities/CVersion.h"
+#include "copasi/utilities/CCopasiParameter.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CSlider.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/steadystate/CMCATask.h"
+#include "copasi/lna/CLNATask.h"
+#include "copasi/tssanalysis/CTSSATask.h"
+#include "copasi/scan/CScanTask.h"
+#include "copasi/elementaryFluxModes/CEFMTask.h"
+#include "copasi/optimization/COptTask.h"
+#include "copasi/parameterFitting/CFitTask.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/lyap/CLyapTask.h"
+#include "copasi/sensitivities/CSensTask.h"
+#include "copasi/moieties/CMoietiesTask.h"
+#include "copasi/crosssection/CCrossSectionTask.h"
+#include "copasi/plot/COutputDefinitionVector.h"
+#include "copasi/plot/CPlotSpecification.h"
+#include "copasi/plot/CPlotItem.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/layout/CListOfLayouts.h"
 #include "copasi/core/CRootContainer.h"
 
 #include "copasi/layout/CLGradientStop.h"

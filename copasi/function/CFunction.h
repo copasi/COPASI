@@ -25,9 +25,9 @@
 #ifndef COPASI_CFunction
 #define COPASI_CFunction
 
-#include "function/CEvaluationTree.h"
-#include "function/CFunctionParameters.h"
-#include "function/CCallParameters.h"
+#include "copasi/function/CEvaluationTree.h"
+#include "copasi/function/CFunctionParameters.h"
+#include "copasi/function/CCallParameters.h"
 #include "copasi/core/CDataVector.h"
 #include "copasi/model/CAnnotation.h"
 

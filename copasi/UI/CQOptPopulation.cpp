@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,16 +25,16 @@
 
 #include "CQOptPopulation.h"
 
-#include "UI/copasiui3window.h"
-#include "UI/CQMessageBox.h"
-#include "UI/qtUtilities.h"
-#include "qlayout/CQZoomableView.h"
-#include "UI/CColorScale.h"
-#include "resourcesUI/CQIconResource.h"
-#include "optimization/COptPopulationMethod.h"
-#include "optimization/COptTask.h"
-#include "optimization/COptProblem.h"
-#include "optimization/COptItem.h"
+#include "copasi/UI/copasiui3window.h"
+#include "copasi/UI/CQMessageBox.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/qlayout/CQZoomableView.h"
+#include "copasi/UI/CColorScale.h"
+#include "copasi/resourcesUI/CQIconResource.h"
+#include "copasi/optimization/COptPopulationMethod.h"
+#include "copasi/optimization/COptTask.h"
+#include "copasi/optimization/COptProblem.h"
+#include "copasi/optimization/COptItem.h"
 
 #ifdef DEBUG_UI
 #include <QtCore/QtDebug>

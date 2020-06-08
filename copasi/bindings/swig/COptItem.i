@@ -1,23 +1,31 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/COptItem.i,v $ 
-//   $Revision: 1.3 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:28 $ 
-// End CVS Header 
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
 %{
 
-#include "optimization/COptItem.h"
+#include "copasi/optimization/COptItem.h"
+#include "copasi/parameterFitting/CFitItem.h"
 
 %}
 
@@ -38,20 +46,34 @@
 {
     double getObjectValue() const
     {
+        if (!$self->getObjectValue())
+          return std::numeric_limits<double>::quiet_NaN();
+
         double v=*($self->getObjectValue());
         return v;
     }
 
     double getLowerBoundValue() const
     {
+        if (!$self->getLowerBoundValue())
+          return std::numeric_limits<double>::quiet_NaN();
+
         double v=*($self->getLowerBoundValue());
         return v;
     }
 
     double getUpperBoundValue() const
     {
+        if (!$self->getUpperBoundValue())
+          return std::numeric_limits<double>::quiet_NaN();
+
         double v=*($self->getUpperBoundValue());
         return v;
+    }
+    
+    CFitItem* asFitItem()
+    {
+      return dynamic_cast<CFitItem*>($self);
     }
 }
 

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,36 +29,36 @@
 #include <sstream>
 #include <ctype.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 
 #include "CODEExporter.h"
 
-#include "model/CModel.h"
-#include "model/CMetab.h"
-#include "model/CMetabNameInterface.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CMetabNameInterface.h"
 #include "copasi/core/CDataVector.h"
-#include "model/CReaction.h"
-#include "model/CMoiety.h"
-#include "model/CChemEqElement.h"
-#include "math/CMathContainer.h"
-#include "function/CFunction.h"
-#include "function/CExpression.h"
-#include "function/CFunctionDB.h"
-#include "report/CKeyFactory.h"
-#include "function/CEvaluationTree.h"
-#include "function/CEvaluationNode.h"
-#include "function/CEvaluationNodeObject.h"
-#include "function/CEvaluationNodeOperator.h"
-#include "function/CEvaluationNodeFunction.h"
-#include "utilities/CCopasiTree.h"
-#include "utilities/CCopasiMessage.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CMoiety.h"
+#include "copasi/model/CChemEqElement.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/function/CEvaluationTree.h"
+#include "copasi/function/CEvaluationNode.h"
+#include "copasi/function/CEvaluationNodeObject.h"
+#include "copasi/function/CEvaluationNodeOperator.h"
+#include "copasi/function/CEvaluationNodeFunction.h"
+#include "copasi/utilities/CCopasiTree.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/commandline/CLocaleString.h"
 
-#include "trajectory/CTrajectoryTask.h"
-#include "trajectory/CTrajectoryProblem.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
 
 /**
  ** Constructor for the exporter.

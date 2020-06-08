@@ -32,8 +32,8 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 
 //UNDO framework classes
-#include "undo/CUndoStack.h"
-#include "undo/CUndoData.h"
+#include "copasi/undo/CUndoStack.h"
+#include "copasi/undo/CUndoData.h"
 
 /*
  *  Constructs a CQSpeciesDetail which is a child of 'parent', with the
@@ -369,7 +369,7 @@ void CQSpeciesDetail::save()
   // Add Noise
   if (mpMetab->hasNoise() != mpBoxAddNoise->isChecked())
     {
-      mpMetab->setHasNoise(mpBoxAddNoise->isChecked());
+      mpMetab->setHasNoise(mpBoxAddNoise->isChecked() && mpMetab->getStatus() == CModelEntity::Status::ODE);
       mChanged = true;
     }
 
@@ -751,6 +751,7 @@ void CQSpeciesDetail::speciesTypeChanged(const QString & type)
         mpBoxUseInitialExpression->setEnabled(true);
         slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
         mpBoxAddNoise->hide();
+        mpBoxAddNoise->setChecked(false);
         slotAddNoiseChanged(false);
         break;
 
@@ -761,6 +762,7 @@ void CQSpeciesDetail::speciesTypeChanged(const QString & type)
         slotInitialTypeChanged(false);
         mpExpressionEMW->updateWidget();
         mpBoxAddNoise->hide();
+        mpBoxAddNoise->setChecked(false);
         slotAddNoiseChanged(false);
         break;
 
@@ -781,6 +783,7 @@ void CQSpeciesDetail::speciesTypeChanged(const QString & type)
         mpBoxUseInitialExpression->setEnabled(true);
         slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
         mpBoxAddNoise->hide();
+        mpBoxAddNoise->setChecked(false);
         slotAddNoiseChanged(false);
         break;
 

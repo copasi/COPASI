@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -14,9 +19,9 @@
 #include <QMainWindow>
 #include <QtCore/QSharedPointer>
 
-#include <UI/CWindowInterface.h>
+#include <copasi/UI/CWindowInterface.h>
 
-#include <layout/CLayoutState.h>
+#include <copasi/layout/CLayoutState.h>
 #include <copasi/qlayout/ui_CQAnimationWindow.h>
 
 class CQLayoutScene;

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,10 +21,10 @@
 #include <QtCore/QString>
 #include <QtCore/QList>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "plot/CPlotSpecification.h"
-#include "plot/COutputDefinitionVector.h"
+#include "copasi/plot/CPlotSpecification.h"
+#include "copasi/plot/COutputDefinitionVector.h"
 
 #include "CQPlotDM.h"
 #include "qtUtilities.h"
@@ -35,10 +35,19 @@ CQPlotDM::CQPlotDM(QObject *parent, CDataModel * pDataModel)
 {
 }
 
+size_t CQPlotDM::size() const
+{
+  if (mpDataModel != NULL)
+    return mpDataModel->getPlotDefinitionList()->size();
+
+  return 0;
+}
+
 int CQPlotDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mpDataModel->getPlotDefinitionList()->size() + 1;
+  return mFetched + 1;
 }
+
 int CQPlotDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
   return TOTAL_COLS_PLOTS;
@@ -70,7 +79,7 @@ QVariant CQPlotDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int) mpDataModel->getPlotDefinitionList()->size())
         {
           switch (index.column())
             {
@@ -224,6 +233,11 @@ bool CQPlotDM::insertRows(int position, int rows, const QModelIndex & parent)
       QString Name = this->createNewName(mNewName, COL_NAME_PLOTS);
 
       CPlotSpecification *pPS = mpDataModel->getPlotDefinitionList()->createPlotSpec(TO_UTF8(Name), CPlotItem::plot2d);
+
+      if (pPS == NULL) continue;
+
+      ++mFetched;
+
       emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::ADD, pPS->CCopasiParameter::getCN());
     }
 
@@ -246,6 +260,7 @@ bool CQPlotDM::removeRows(int position, int rows, const QModelIndex & parent)
       CPlotSpecification* pPS =
         &mpDataModel->getPlotDefinitionList()->operator[](position);
       std::string deletedKey = pPS->CCopasiParameter::getCN();
+      --mFetched;
       mpDataModel->getPlotDefinitionList()->CDataVector< CPlotSpecification >::remove(position);
       emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::DELETE, deletedKey);
     }

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,23 +41,23 @@
 
 /* DEFINE ********************************************************************/
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CTauLeapMethod.h"
 #include "CTrajectoryProblem.h"
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "model/CMetab.h"
-#include "model/CReaction.h"
-#include "model/CState.h"
-#include "model/CChemEq.h"
-#include "model/CChemEqElement.h"
-#include "model/CCompartment.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CState.h"
+#include "copasi/model/CChemEq.h"
+#include "copasi/model/CChemEqElement.h"
+#include "copasi/model/CCompartment.h"
 #include "copasi/core/CDataVector.h"
 #include "copasi/core/CMatrix.h"
-#include "utilities/CDependencyGraph.h"
-#include "utilities/CIndexedPriorityQueue.h"
-#include "randomGenerator/CRandom.h"
+#include "copasi/utilities/CDependencyGraph.h"
+#include "copasi/utilities/CIndexedPriorityQueue.h"
+#include "copasi/randomGenerator/CRandom.h"
 
 /* DEFINE ********************************************************************/
 #define TAU                    0.01

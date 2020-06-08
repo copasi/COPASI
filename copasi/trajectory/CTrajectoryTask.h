@@ -35,10 +35,10 @@
 #ifndef COPASI_CTrajectoryTask
 #define COPASI_CTrajectoryTask
 
-#include "trajectory/CTrajectoryMethod.h"
-#include "utilities/CCopasiTask.h"
-#include "utilities/CReadConfig.h"
-#include "trajectory/CTimeSeries.h"
+#include "copasi/trajectory/CTrajectoryMethod.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/utilities/CReadConfig.h"
+#include "copasi/trajectory/CTimeSeries.h"
 
 class CTrajectoryProblem;
 class CTrajectoryMethod;

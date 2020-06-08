@@ -25,8 +25,8 @@
 #include "CPlotItem.h"
 
 #include "copasi/undo/CData.h"
-#include "report/CKeyFactory.h"
-#include "utilities/utility.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/utility.h"
 
 const std::string CPlotItem::TypeName[] =
 {

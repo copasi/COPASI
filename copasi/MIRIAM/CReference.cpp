@@ -18,15 +18,15 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CRDFGraph.h"
 #include "CModelMIRIAMInfo.h"
 #include "CReference.h"
 
-#include "report/CKeyFactory.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "model/CModel.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
 #include "copasi/core/CRootContainer.h"
 
 // static

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -30,21 +30,21 @@
  *  Created for COPASI by Stefan Hoops 2003
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CCopasiTask.h"
 #include "CCopasiProblem.h"
 #include "CCopasiMethod.h"
 #include "CTaskFactory.h"
-#include "report/CReport.h"
-#include "report/CKeyFactory.h"
-#include "output/COutputHandler.h"
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "model/CState.h"
+#include "copasi/report/CReport.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/output/COutputHandler.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CState.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "core/CDataTimer.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CDataTimer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CReportDefinition.h"
 
@@ -73,7 +73,10 @@ CData CCopasiTask::toData() const
   Data.addProperty(CData::TASK_REPORT_TARGET, mReport.getTarget());
   Data.addProperty(CData::TASK_REPORT_APPEND, mReport.append());
   Data.addProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE, mReport.confirmOverwrite());
-  Data.addProperty(CData::PROBLEM, mpProblem != NULL ? mpProblem->toData() : CData());
+
+  if (!mIgnoreProblemData)
+    Data.addProperty(CData::PROBLEM, mpProblem != NULL ? mpProblem->toData() : CData());
+
   Data.addProperty(CData::METHOD_TYPE, CTaskEnum::MethodName[mpMethod != NULL ? mpMethod->getSubType()  : CTaskEnum::Method::UnsetMethod]);
   Data.addProperty(CData::METHOD, mpMethod != NULL ? mpMethod->toData() : CData());
 
@@ -164,24 +167,46 @@ void CCopasiTask::createUndoData(CUndoData & undoData,
   undoData.addProperty(CData::TASK_REPORT_APPEND, oldData.getProperty(CData::TASK_REPORT_APPEND), mReport.append());
   undoData.addProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE, oldData.getProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE), mReport.confirmOverwrite());
 
-  if (mpProblem != NULL)
+  if (!mIgnoreProblemData)
     {
-      CUndoData UndoData;
-      mpProblem->createUndoData(UndoData, type, oldData.getProperty(CData::PROBLEM).toData(), framework);
-      undoData.addProperty(CData::PROBLEM, UndoData.getOldData(), UndoData.getNewData());
-    }
-  else
-    {
-      undoData.addProperty(CData::PROBLEM, oldData.getProperty(CData::PROBLEM), CData());
+      if (mpProblem != NULL)
+        {
+          CUndoData UndoData;
+          mpProblem->createUndoData(UndoData, type, oldData.getProperty(CData::PROBLEM).toData(), framework);
+          undoData.addProperty(CData::PROBLEM, UndoData.getOldData(), UndoData.getNewData());
+        }
+      else
+        {
+          undoData.addProperty(CData::PROBLEM, oldData.getProperty(CData::PROBLEM), CData());
+        }
     }
 
   undoData.addProperty(CData::METHOD_TYPE, oldData.getProperty(CData::METHOD_TYPE), CTaskEnum::MethodName[mpMethod != NULL ? mpMethod->getSubType() : CTaskEnum::Method::UnsetMethod]);
 
   if (mpMethod != NULL)
     {
-      CUndoData UndoData;
-      mpMethod->createUndoData(UndoData, type, oldData.getProperty(CData::METHOD).toData(), framework);
-      undoData.addProperty(CData::METHOD, UndoData.getOldData(), UndoData.getNewData());
+      if (undoData.isChangedProperty(CData::METHOD_TYPE))
+        {
+          // Method data needs to be put into pre and post processing data as we have a simultaneous remove and insert of methods
+          CUndoData MethodUndoData;
+          CCopasiMethod * pTmpMethod = createMethod(CTaskEnum::MethodName.toEnum(oldData.getProperty(CData::METHOD_TYPE).toString()));
+          pTmpMethod->createUndoData(MethodUndoData, CUndoData::Type::CHANGE, oldData.getProperty(CData::METHOD).toData(), CCore::Framework::ParticleNumbers);
+          undoData.addPreProcessData(MethodUndoData);
+          delete pTmpMethod;
+
+          MethodUndoData.clear();
+          pTmpMethod = createMethod(mpMethod->getSubType());
+          mpMethod->createUndoData(MethodUndoData, CUndoData::Type::CHANGE, pTmpMethod->toData(), CCore::Framework::ParticleNumbers);
+          undoData.addPostProcessData(MethodUndoData);
+          delete pTmpMethod;
+        }
+      else
+        {
+          // Method data can be added directly
+          CUndoData MethodUndoData;
+          mpMethod->createUndoData(MethodUndoData, CUndoData::Type::CHANGE, oldData.getProperty(CData::METHOD).toData(), CCore::Framework::ParticleNumbers);
+          undoData.addProperty(CData::METHOD, MethodUndoData.getOldData(), MethodUndoData.getNewData());
+        }
     }
   else
     {
@@ -202,68 +227,77 @@ bool CCopasiTask::isValidMethod(const CTaskEnum::Method & method,
   return false;
 }
 
-CCopasiTask::CCopasiTask():
-  CDataContainer(CTaskEnum::TaskName[CTaskEnum::Task::UnsetTask], NULL, "Task"),
-  mType(CTaskEnum::Task::UnsetTask),
-  mKey(CRootContainer::getKeyFactory()->add("Task", this)),
-  mDescription(this),
-  mResult(this),
-  mScheduled(false),
-  mUpdateModel(false),
-  mpProblem(NULL),
-  mpMethod(NULL),
-  mReport(),
-  mInitialState(),
-  mpContainer(NULL),
-  mpCallBack(NULL),
-  mpSliders(NULL),
-  mDoOutput(OUTPUT_SE),
-  mpOutputHandler(NULL),
-  mOutputCounter(0)
-{initObjects();}
+CCopasiTask::CCopasiTask()
+  : CDataContainer(CTaskEnum::TaskName[CTaskEnum::Task::UnsetTask], NULL, "Task")
+  , mType(CTaskEnum::Task::UnsetTask)
+  , mKey(CRootContainer::getKeyFactory()->add("Task", this))
+  , mDescription(this)
+  , mResult(this)
+  , mScheduled(false)
+  , mUpdateModel(false)
+  , mIgnoreProblemData(false)
+  , mpProblem(NULL)
+  , mpMethod(NULL)
+  , mReport()
+  , mInitialState()
+  , mpContainer(NULL)
+  , mpCallBack(NULL)
+  , mpSliders(NULL)
+  , mDoOutput(OUTPUT_SE)
+  , mpOutputHandler(NULL)
+  , mOutputCounter(0)
+{
+  initObjects();
+}
 
 CCopasiTask::CCopasiTask(const CDataContainer * pParent,
                          const CTaskEnum::Task & taskType,
-                         const std::string & type):
-  CDataContainer(CTaskEnum::TaskName[taskType], pParent, type),
-  mType(taskType),
-  mKey(CRootContainer::getKeyFactory()->add("Task", this)),
-  mDescription(this),
-  mResult(this),
-  mScheduled(false),
-  mUpdateModel(false),
-  mpProblem(NULL),
-  mpMethod(NULL),
-  mReport(),
-  mpContainer(NULL),
-  mInitialState(),
-  mpCallBack(NULL),
-  mpSliders(NULL),
-  mDoOutput(OUTPUT_SE),
-  mpOutputHandler(NULL),
-  mOutputCounter(0)
-{initObjects();}
+                         const std::string & type)
+  : CDataContainer(CTaskEnum::TaskName[taskType], pParent, type)
+  , mType(taskType)
+  , mKey(CRootContainer::getKeyFactory()->add("Task", this))
+  , mDescription(this)
+  , mResult(this)
+  , mScheduled(false)
+  , mUpdateModel(false)
+  , mIgnoreProblemData(false)
+  , mpProblem(NULL)
+  , mpMethod(NULL)
+  , mReport()
+  , mpContainer(NULL)
+  , mInitialState()
+  , mpCallBack(NULL)
+  , mpSliders(NULL)
+  , mDoOutput(OUTPUT_SE)
+  , mpOutputHandler(NULL)
+  , mOutputCounter(0)
+{
+  initObjects();
+}
 
 CCopasiTask::CCopasiTask(const CCopasiTask & src,
-                         const CDataContainer * pParent):
-  CDataContainer(src, pParent),
-  mType(src.mType),
-  mKey(CRootContainer::getKeyFactory()->add("Task", this)),
-  mDescription(src.mDescription, this),
-  mResult(src.mResult, this),
-  mScheduled(src.mScheduled),
-  mUpdateModel(src.mUpdateModel),
-  mpProblem(NULL),
-  mpMethod(NULL),
-  mReport(src.mReport),
-  mpContainer(src.mpContainer),
-  mInitialState(src.mInitialState),
-  mpCallBack(NULL),
-  mpSliders(NULL),
-  mDoOutput(src.mDoOutput),
-  mpOutputHandler(NULL),
-  mOutputCounter(0)
-{initObjects();}
+                         const CDataContainer * pParent)
+  : CDataContainer(src, pParent)
+  , mType(src.mType)
+  , mKey(CRootContainer::getKeyFactory()->add("Task", this))
+  , mDescription(src.mDescription, this)
+  , mResult(src.mResult, this)
+  , mScheduled(src.mScheduled)
+  , mUpdateModel(src.mUpdateModel)
+  , mIgnoreProblemData(src.mIgnoreProblemData)
+  , mpProblem(NULL)
+  , mpMethod(NULL)
+  , mReport(src.mReport)
+  , mpContainer(src.mpContainer)
+  , mInitialState(src.mInitialState)
+  , mpCallBack(NULL)
+  , mpSliders(NULL)
+  , mDoOutput(src.mDoOutput)
+  , mpOutputHandler(NULL)
+  , mOutputCounter(0)
+{
+  initObjects();
+}
 
 CCopasiTask::~CCopasiTask()
 {
@@ -279,19 +313,45 @@ CCopasiTask::~CCopasiTask()
 //bool CCopasiTask::setName(const std::string & name)
 //{return setObjectName(name);}
 
-CTaskEnum::Task CCopasiTask::getType() const {return mType;}
+CTaskEnum::Task CCopasiTask::getType() const
+{
+  return mType;
+}
 
-void CCopasiTask::setType(const CTaskEnum::Task & type) {mType = type;}
+void CCopasiTask::setType(const CTaskEnum::Task & type)
+{
+  mType = type;
+}
 
-const std::string & CCopasiTask::getKey() const {return mKey;}
+const std::string & CCopasiTask::getKey() const
+{
+  return mKey;
+}
 
-void CCopasiTask::setScheduled(const bool & scheduled) {mScheduled = scheduled;}
+void CCopasiTask::setScheduled(const bool & scheduled)
+{
+  mScheduled = scheduled;
+}
 
-const bool & CCopasiTask::isScheduled() const {return mScheduled;}
+const bool & CCopasiTask::isScheduled() const
+{
+  return mScheduled;
+}
 
-void CCopasiTask::setUpdateModel(const bool & updateModel) {mUpdateModel = updateModel;}
+void CCopasiTask::setUpdateModel(const bool & updateModel)
+{
+  mUpdateModel = updateModel;
+}
 
-const bool & CCopasiTask::isUpdateModel() const {return mUpdateModel;}
+const bool & CCopasiTask::isUpdateModel() const
+{
+  return mUpdateModel;
+}
+
+void CCopasiTask::setIgnoreProblemData(const bool & ignoreProblemData)
+{
+  mIgnoreProblemData = ignoreProblemData;
+}
 
 void CCopasiTask::setMathContainer(CMathContainer * pContainer)
 {

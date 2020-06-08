@@ -33,26 +33,26 @@
 
 #include "SEDMLUtils.h"
 
-#include "sbml/CSBMLExporter.h"
+#include "copasi/sbml/CSBMLExporter.h"
 #include "CSEDMLExporter.h"
 
-#include "trajectory/CTrajectoryTask.h"
-#include "trajectory/CTrajectoryProblem.h"
-#include "scan/CScanTask.h"
-#include "scan/CScanProblem.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/CVersion.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CDirEntry.h"
-#include "utilities/CParameterEstimationUtils.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "plot/COutputDefinitionVector.h"
-#include "plot/CPlotSpecification.h"
-#include "report/CReportDefinition.h"
-#include "model/CModel.h"
-#include "model/CCompartment.h"
-#include "model/CModelValue.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
+#include "copasi/scan/CScanTask.h"
+#include "copasi/scan/CScanProblem.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/CVersion.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CDirEntry.h"
+#include "copasi/utilities/CParameterEstimationUtils.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/plot/COutputDefinitionVector.h"
+#include "copasi/plot/CPlotSpecification.h"
+#include "copasi/report/CReportDefinition.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/commandline/CLocaleString.h"
 
 #define SEDML_SET_ID(element, arguments) \
   {\
@@ -540,11 +540,20 @@ void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
 
               if (object == NULL) continue;
 
-              const std::string& typeX = object->getObjectName();
-              std::string xAxis = object->getObjectDisplayName();
+              std::string xAxis = SEDMLUtils::getSbmlId(*object);
+              std::string targetXPathStringX;
 
-              std::string targetXPathStringX = SEDMLUtils::getXPathAndName(xAxis, typeX,
-                                               pModel, dataModel);
+              if (!xAxis.empty())
+                targetXPathStringX = SEDMLUtils::getXPathForObject(*object);
+
+              if (targetXPathStringX.empty())
+                {
+                  const std::string& typeX = object->getObjectName();
+                  xAxis = object->getObjectDisplayName();
+
+                  targetXPathStringX = SEDMLUtils::getXPathAndName(xAxis, typeX,
+                                       pModel, dataModel);
+                }
 
               if (object->getCN() == pTime->getCN())
                 pPDGen = pTimeDGenp;
@@ -648,15 +657,24 @@ void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
 
           std::string yAxis = objectY->getObjectDisplayName();
 
-          std::string sbmlId = yAxis;
+          std::string sbmlId = SEDMLUtils::getSbmlId(*objectY);
+          std::string targetXPathString;
 
-          std::string targetXPathString = SEDMLUtils::getXPathAndName(sbmlId, type,
-                                          pModel, dataModel);
+          if (!sbmlId.empty())
+            targetXPathString = SEDMLUtils::getXPathForObject(*objectY);
 
           if (targetXPathString.empty())
             {
-              CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as no xpath expression for it could be generated.",  pPlotItem->getObjectName().c_str(), pPlotItem->getChannels()[1].c_str());
-              continue;
+              sbmlId = yAxis;
+
+              targetXPathString = SEDMLUtils::getXPathAndName(sbmlId, type,
+                                  pModel, dataModel);
+
+              if (targetXPathString.empty())
+                {
+                  CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as no xpath expression for it could be generated.", pPlotItem->getObjectName().c_str(), pPlotItem->getChannels()[1].c_str());
+                  continue;
+                }
             }
 
           pPDGen = createDataGenerator(

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -346,7 +351,7 @@ protected:
   C_INT mSlow;
 
   /**
-   *  Tolerance for Deuflhard criterium
+   *  Tolerance for Deuflhard criterion
    */
   C_FLOAT64 mDtol;
 
@@ -375,7 +380,6 @@ protected:
    * stepcounter
    **/
   int mCurrentStep;
-
 };
 
 #endif // COPASI_CTSSAMethod

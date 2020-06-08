@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,9 +19,9 @@
 // All rights reserved.
 
 #include "CQCreatorDM.h"
-#include "UI/CQMessageBox.h"
+#include "copasi/UI/CQMessageBox.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "copasi/UI/CQMessageBox.h"
 #include "copasi/UI/qtUtilities.h"
@@ -40,12 +40,17 @@ void CQCreatorDM::setMIRIAMInfo(CMIRIAMInfo * pMiriamInfo)
   endResetModel();
 }
 
-int CQCreatorDM::rowCount(const QModelIndex&) const
+size_t  CQCreatorDM::size() const
 {
   if (mpMIRIAMInfo != NULL)
-    return (int) mpMIRIAMInfo->getCreators().size() + 1;
+    return (int) mpMIRIAMInfo->getCreators().size();
 
   return 0;
+}
+
+int CQCreatorDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched + 1;
 }
 
 int CQCreatorDM::columnCount(const QModelIndex&) const
@@ -63,7 +68,7 @@ QVariant CQCreatorDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int) mpMIRIAMInfo->getCreators().size())
         {
           if (index.column() == COL_ROW_NUMBER)
             return QVariant(QString(""));
@@ -194,6 +199,8 @@ bool CQCreatorDM::insertRows(int position, int rows, const QModelIndex & parent)
 
       if (pCreator == NULL)
         continue;
+
+      ++mFetched;
     }
 
   endInsertRows();
@@ -225,14 +232,20 @@ bool CQCreatorDM::removeRows(int position, int rows, const QModelIndex & parent)
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+
+      --mFetched;
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
   endRemoveRows();
 
   return true;
+}
+
+void CQCreatorDM::resetCacheProtected()
+{
+  mpMIRIAMInfo = NULL;
 }
 
 bool CQCreatorDM::removeRows(QModelIndexList rows, const QModelIndex&)

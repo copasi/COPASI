@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -8,11 +13,11 @@
  *  Container for a log message created by the copasi optimization methods.
  *  Stores various variable for later compilation of a message string.
  *
- *  Created for COPASI by Jonas Förster 2013
+ *  Created for COPASI by Jonas Fï¿½rster 2013
  */
 
 #include "COptLogItem.h"
-#include "utilities/utility.h"
+#include "copasi/utilities/utility.h"
 
 const std::string COptLogItem::MsgIDHeader[] =
 {

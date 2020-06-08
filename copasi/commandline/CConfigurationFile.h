@@ -25,9 +25,9 @@
 #ifndef COPASI_CConfigurationFile
 #define COPASI_CConfigurationFile
 
-#include "utilities/CCopasiParameterGroup.h"
-#include "MIRIAM/CMIRIAMResource.h"
-#include "xml/CCopasiXMLInterface.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/MIRIAM/CMIRIAMResource.h"
+#include "copasi/xml/CCopasiXMLInterface.h"
 
 class CMIRIAMResources;
 class CVersion;
@@ -329,6 +329,16 @@ public:
   *  Set whether weights in Parameter Estimation should be normalized per experiment
   */
   void setDisplayPopulations(bool flag);
+
+  /**
+   * @return a flag on whether the GUI should resize tables to contents
+   */
+  bool resizeToContents() const;
+
+  /**
+  *  Set whether the GUI should resize tables to contents
+  */
+  void setResizeToContents(bool flag);
 
   /**
    * Retrieve the working directory
@@ -635,6 +645,11 @@ private:
   C_INT32* mpPrecision;
 
   CCheckForUpdates * mpCheckForUpdates;
+
+  /**
+  * A pointer indicating whether the GUI should resize tables to contents
+  */
+  bool* mpResizeToContents;
 };
 
 #endif // COPASI_CConfigurationFile

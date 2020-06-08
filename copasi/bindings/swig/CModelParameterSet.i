@@ -36,8 +36,8 @@
 
 %{
 
-#include "model/CModelParameterSet.h"
-#include "model/CModelParameter.h"
+#include "copasi/model/CModelParameterSet.h"
+#include "copasi/model/CModelParameter.h"
 
 %}
 

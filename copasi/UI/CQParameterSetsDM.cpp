@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,10 +19,10 @@
 #include "CQParameterSetsDM.h"
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModel.h"
-#include "model/CModelParameterSet.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CModelParameterSet.h"
 
 CQParameterSetsDM::CQParameterSetsDM(QObject *parent) :
   CQBaseDataModel(parent, NULL),
@@ -32,11 +32,17 @@ CQParameterSetsDM::CQParameterSetsDM(QObject *parent) :
 CQParameterSetsDM::~CQParameterSetsDM()
 {}
 
-int CQParameterSetsDM::rowCount(const QModelIndex & /* parent */) const
+size_t CQParameterSetsDM::size() const
 {
-  if (mpListOfParameterSets == NULL) return 0;
+  if (mpListOfParameterSets != NULL)
+    return mpListOfParameterSets->size();
 
-  return (int) mpListOfParameterSets->size();
+  return 0;
+}
+
+int CQParameterSetsDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched;
 }
 
 bool CQParameterSetsDM::clear()
@@ -188,6 +194,7 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex & p
       CModelParameterSet * pNew = new CModelParameterSet(pModel->getActiveModelParameterSet(), NULL, false);
       pNew->setObjectName(TO_UTF8(Name));
       mpListOfParameterSets->add(pNew, true);
+      ++mFetched;
 
       CUndoData UndoData(CUndoData::Type::INSERT, pNew->toData());
       ListViews::addUndoMetaData(this, UndoData);
@@ -222,6 +229,8 @@ bool CQParameterSetsDM::removeRows(int position, int rows, const QModelIndex & p
     {
       CUndoData UndoData(CUndoData::Type::REMOVE, (*itDeleted)->toData());
       ListViews::addUndoMetaData(this, UndoData);
+      --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -14,7 +19,7 @@
 #include <QSortFilterProxyModel>
 
 #include "copasi/UI/listviews.h"
-#include "copasi/UI/CQBaseDataModel.h"
+#include "copasi/UI/CQBaseTreeDataModel.h"
 
 class CModelParameterSet;
 class CModelParameterGroup;
@@ -25,7 +30,7 @@ class CValidatedUnit;
 
 #define COL_VALUE      3
 
-class CQParameterOverviewDM : public CQBaseDataModel
+class CQParameterOverviewDM : public CQBaseTreeDataModel
 {
   Q_OBJECT
 
@@ -61,6 +66,8 @@ public:
 
   virtual bool insertRows(int position, int rows, const QModelIndex & source);
   virtual bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex());
+  bool canFetchMore(const QModelIndex &parent) const override;
+  void fetchMore(const QModelIndex &parent) override;
 
 protected:
   virtual void resetCacheProtected();
@@ -92,10 +99,24 @@ private:
   int mFramework;
 
   // cache the unit strings, to make viewing the parameter overview table faster
-  mutable std::set< CValidatedUnit > mUnitCache;
+  mutable std::map< CValidatedUnit, CValidatedUnit > mUnitCache;
 
   // the key to the currently active parameter set
   std::string mParameterSetKey;
+
+  CModelParameterGroup const * mpTimes;
+  CModelParameterGroup const * mpCompartments;
+  CModelParameterGroup const * mpSpecies;
+  CModelParameterGroup const * mpModelValues;
+  CModelParameterGroup const * mpReactions;
+
+  size_t mFetchLimit;
+  size_t mTimesFetched;
+  size_t mCompartmentsFetched;
+  size_t mSpeciesFetched;
+  size_t mModelValuesFetched;
+  size_t mReactionsFetched;
+  size_t mGroupsFetched;
 };
 
 #endif // COPASI_CQParameterOverviewDM

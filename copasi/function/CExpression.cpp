@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -22,11 +27,11 @@
     \brief Implementation file of class CExpression
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CExpression.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 CExpression::CExpression(const std::string & name,
                          const CDataContainer * pParent):
@@ -214,7 +219,7 @@ std::string CExpression::getXPPString() const
   return str1;
 }
 
-#include "utilities/copasimathml.h"
+#include "copasi/utilities/copasimathml.h"
 
 void CExpression::writeMathML(std::ostream & out, bool fullExpand, size_t l) const
 {

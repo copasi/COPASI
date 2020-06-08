@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -48,14 +53,14 @@
 #define COPASI_CHybridMethod
 
 /* INCLUDES ******************************************************************/
-#include "trajectory/CTrajectoryMethod.h"
+#include "copasi/trajectory/CTrajectoryMethod.h"
 #include <set>
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include "utilities/CVersion.h"
-#include "utilities/CDependencyGraph.h"
-#include "utilities/CIndexedPriorityQueue.h"
+#include "copasi/utilities/CVersion.h"
+#include "copasi/utilities/CDependencyGraph.h"
+#include "copasi/utilities/CIndexedPriorityQueue.h"
 #include "copasi/core/CDataVector.h"
 #include "copasi/core/CMatrix.h"
 

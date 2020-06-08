@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,14 +24,15 @@
 #include <QClipboard>
 #include <QKeyEvent>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
 
-#include "model/CModel.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
+#include <copasi/commandline/CConfigurationFile.h>
 
 #include "copasiui3window.h"
 
@@ -49,11 +50,18 @@ CQReactionsWidget::CQReactionsWidget(QWidget *parent, const char *name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
+
+  mpTblReactions->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblReactions->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblReactions->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblReactions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblReactions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblReactions->verticalHeader()->hide();
   mpTblReactions->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   setFramework(mFramework);
@@ -64,8 +72,10 @@ CQReactionsWidget::CQReactionsWidget(QWidget *parent, const char *name)
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpReactionDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
+  connect(mpTblReactions, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
   CopasiUI3Window   *pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
 }
 
@@ -130,22 +140,28 @@ bool CQReactionsWidget::leaveProtected()
 
 bool CQReactionsWidget::enterProtected()
 {
-  if (mpTblReactions->selectionModel() != NULL)
-    {
-      disconnect(mpTblReactions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblReactions->horizontalHeader()->saveState();
+  blockSignals(true);
 
   mpReactionDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpReactionDM);
-  //Set Model for the TableView
+
+  // Set Model for the TableView
   mpTblReactions->setModel(NULL);
   mpTblReactions->setModel(mpProxyModel);
-  connect(mpTblReactions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+
   updateDeleteBtns();
-  mpTblReactions->resizeColumnsToContents();
+  mpTblReactions->horizontalHeader()->restoreState(State);
+  blockSignals(false);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblReactions->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
+  emit initFilter();
+
   return true;
 }
 
@@ -177,8 +193,7 @@ void CQReactionsWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQReactionsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
-    const QItemSelection &C_UNUSED(deselected))
+void CQReactionsWidget::slotSelectionChanged()
 {
   updateDeleteBtns();
 }
@@ -186,7 +201,11 @@ void CQReactionsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(sele
 void CQReactionsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                     const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblReactions->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblReactions->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   updateDeleteBtns();
 }
@@ -248,8 +267,19 @@ void CQReactionsWidget::keyPressEvent(QKeyEvent *ev)
 
 void CQReactionsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|New Reaction", Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter + "|New Reaction", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }
 
 void CQReactionsWidget::setFramework(int framework)

@@ -131,7 +131,7 @@ CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
 {}
 
 CFunctionParameter::CFunctionParameter(const std::string &name,
-                                       const enum CFunctionParameter::DataType &type,
+                                       const CFunctionParameter::DataType &type,
                                        Role usage,
                                        const CDataContainer * pParent) :
   CDataContainer(name, pParent, "Variable"),

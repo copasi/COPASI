@@ -24,8 +24,8 @@
 
 #include "qtUtilities.h"
 
-#include "utilities/CCopasiParameterGroup.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
 #define COL_NAME       0
 #define COL_VALUE      1

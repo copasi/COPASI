@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -29,18 +34,20 @@
 #include "CQStartValueReset.h"
 #include "qtUtilities.h"
 
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
-#include "CopasiDataModel/CDataModel.h"
-#include "report/CKeyFactory.h"
-#include "parameterFitting/CFitItem.h"
-#include "parameterFitting/CFitProblem.h"
-#include "parameterFitting/CExperiment.h"
-#include "parameterFitting/CExperimentSet.h"
-#include "utilities/utility.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/parameterFitting/CFitItem.h"
+#include "copasi/parameterFitting/CFitProblem.h"
+#include "copasi/parameterFitting/CExperiment.h"
+#include "copasi/parameterFitting/CExperimentSet.h"
+#include "copasi/utilities/utility.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModel.h"
-#include "math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/math/CMathContainer.h"
+
+#include <copasi/commandline/CConfigurationFile.h>
 
 #include <QtCore/QtDebug>
 
@@ -331,17 +338,45 @@ void CQFittingItemWidget::slotParamEdit()
         break;
     }
 
-  if (mSelection.size() > 1)
+  int numSelected = mSelection.size();
+  std::vector< const CDataObject * > currentSelection;
+  currentSelection.reserve(numSelected);
+  std::set< size_t >::const_iterator it = mSelection.begin();
+  std::set< size_t >::const_iterator end = mSelection.end();
+
+  if (mpDataModel)
+    for (; it != end; ++it)
+      {
+        const COptItem * pCurrent = (*mpItemsCopy)[*it];
+
+        if (!pCurrent || pCurrent->getObjectCN().empty())
+          continue;
+
+        const CDataObject * pObject =
+          dynamic_cast<const CDataObject*>
+          (mpDataModel->getObjectFromCN(pCurrent->getObjectCN()));
+
+        if (!pObject)
+          continue;
+
+        currentSelection.push_back(pObject);
+      }
+
+  if (numSelected > 1)
     {
-      const CDataObject *pObject =
-        CCopasiSelectionDialog::getObjectSingle(this, Classes);
+      const CDataObject * pObject =
+        CCopasiSelectionDialog::getObjectSingle(this, Classes,
+            currentSelection.empty() ? NULL :  currentSelection.front());
 
       if (pObject)
         Selection.push_back(pObject);
     }
   else
-    Selection =
-      CCopasiSelectionDialog::getObjectVector(this, Classes);
+    {
+      Selection =
+        CCopasiSelectionDialog::getObjectVector(this, Classes,
+            currentSelection.empty() ? NULL : &currentSelection);
+    }
 
   if (Selection.size() != 0)
     {
@@ -561,7 +596,12 @@ bool CQFittingItemWidget::load(CDataModel *pDataModel,
     selectRow(C_INVALID_INDEX);
 
   emit numberChanged((int) mpItemsCopy->size());
-  mpTable->resizeRowsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTable->resizeRowsToContents();
+    }
+
   return true;
 }
 

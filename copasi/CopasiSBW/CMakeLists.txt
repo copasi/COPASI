@@ -1,11 +1,25 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 cmake_minimum_required (VERSION 2.8)
 
 if (SBW_FOUND)
 
 set(SBW_SOURCES SBWTranslator.cpp)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${COPASI_INCLUDE_DIRS})
 include_directories(${SBW_INCLUDE_DIR})
-include(../CMakeConsoleApp.cmake)
 
 
 set(CopasiSBW_UI_FLAGS)
@@ -17,7 +31,7 @@ if(WIN32 AND NOT CYGWIN)
 endif(WIN32 AND NOT CYGWIN)
 
 add_executable(CopasiSBW ${CopasiSBW_UI_FLAGS} ${SBW_SOURCES})
-target_link_libraries(CopasiSBW ${SE_LIBS} ${SE_EXTERNAL_LIBS} ${SBW_LIBRARIES})
+target_link_libraries(CopasiSBW libCOPASISE-static ${SBW_LIBRARIES})
 
 if (UNIX AND NOT APPLE)
 target_link_libraries(CopasiSBW pthread z)

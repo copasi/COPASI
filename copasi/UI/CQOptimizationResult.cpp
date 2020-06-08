@@ -35,15 +35,16 @@
 #include "copasi/math/CMathContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
-#include "optimization/COptTask.h"
-#include "optimization/COptProblem.h"
-#include "optimization/COptItem.h"
-#include "optimization/COptMethod.h"
-#include "optimization/COptLog.h"
-#include "core/CRootContainer.h"
-#include "commandline/CLocaleString.h"
-#include "model/CModel.h"
-#include "math/CMathContainer.h"
+#include "copasi/optimization/COptTask.h"
+#include "copasi/optimization/COptProblem.h"
+#include "copasi/optimization/COptItem.h"
+#include "copasi/optimization/COptMethod.h"
+#include "copasi/optimization/COptLog.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/commandline/CConfigurationFile.h"
+#include "copasi/model/CModel.h"
+#include "copasi/math/CMathContainer.h"
 
 #include <copasi/UI/CQParameterResultItemModel.h>
 #include <QSortFilterProxyModel>
@@ -130,8 +131,11 @@ bool CQOptimizationResult::enterProtected()
   sortModel->setSourceModel(model);
   mpParameters->setModel(sortModel);
 
-  mpParameters->resizeColumnsToContents();
-  mpParameters->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpParameters->resizeColumnsToContents();
+      mpParameters->resizeRowsToContents();
+    }
 
   // clear log
   mpLogTree->clear();

@@ -32,16 +32,16 @@
 
 #include <string>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CMCAProblem.h"
 #include "CMCATask.h"
 #include "CSteadyStateTask.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModel.h"
-#include "model/CState.h"
-#include "report/CKeyFactory.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CState.h"
+#include "copasi/report/CKeyFactory.h"
 
 /**
  *  Default constructor.

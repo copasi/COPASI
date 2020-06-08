@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,14 +24,15 @@
 #include <QClipboard>
 #include <QKeyEvent>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
 
-#include "model/CModel.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
+#include <copasi/commandline/CConfigurationFile.h>
 
 #include "copasiui3window.h"
 
@@ -58,11 +59,18 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget *parent, const char *name)
   //Setting values for Types comboBox
   mpTypeDelegate = new CQComboDelegate(this, mpSpecieDM->getTypes(), false);
   mpTblSpecies->setItemDelegateForColumn(COL_TYPE_SPECIES, mpTypeDelegate);
+
+  mpTblSpecies->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblSpecies->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblSpecies->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblSpecies->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblSpecies->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblSpecies->verticalHeader()->hide();
   mpTblSpecies->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
@@ -70,8 +78,10 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget *parent, const char *name)
           this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
   connect(mpSpecieDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
+  connect(mpTblSpecies, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 /*
@@ -157,23 +167,28 @@ bool CQSpeciesWidget::leaveProtected()
 
 bool CQSpeciesWidget::enterProtected()
 {
-  if (mpTblSpecies->selectionModel() != NULL)
-    {
-      disconnect(mpTblSpecies->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblSpecies->horizontalHeader()->saveState();
+  blockSignals(true);
 
   mpSpecieDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpSpecieDM);
   //Set Model for the TableView
   mpTblSpecies->setModel(NULL);
   mpTblSpecies->setModel(mpProxyModel);
-  connect(mpTblSpecies->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+
   updateDeleteBtns();
-  mpTblSpecies->resizeColumnsToContents();
+  mpTblSpecies->horizontalHeader()->restoreState(State);
+  blockSignals(false);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblSpecies->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   refreshCompartments();
+  emit initFilter();
+
   return true;
 }
 
@@ -205,8 +220,7 @@ void CQSpeciesWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQSpeciesWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
-    const QItemSelection &C_UNUSED(deselected))
+void CQSpeciesWidget::slotSelectionChanged()
 {
   updateDeleteBtns();
 }
@@ -214,7 +228,11 @@ void CQSpeciesWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(select
 void CQSpeciesWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                   const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblSpecies->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblSpecies->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   refreshCompartments();
   updateDeleteBtns();
@@ -277,8 +295,19 @@ void CQSpeciesWidget::keyPressEvent(QKeyEvent *ev)
 
 void CQSpeciesWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|New Species", Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter + "|New Species", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }
 
 void CQSpeciesWidget::setFramework(int framework)

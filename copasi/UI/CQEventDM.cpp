@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,11 +20,11 @@
 
 #include <QtCore/QString>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "report/CKeyFactory.h"
-#include "function/CExpression.h"
-#include "model/CModel.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/model/CModel.h"
 
 #include "CQMessageBox.h"
 #include "CQEventDM.h"
@@ -33,12 +33,22 @@
 CQEventDM::CQEventDM(QObject *parent, CDataModel * pDataModel)
   : CQBaseDataModel(parent, pDataModel)
   , mpEvents(NULL)
-{}
-
-int CQEventDM::rowCount(const QModelIndex&) const
 {
-  return mpDataModel->getModel()->getEvents().size() + 1;
 }
+
+size_t CQEventDM::size() const
+{
+  if (mpDataModel != NULL)
+    return mpDataModel->getModel()->getEvents().size();
+
+  return 0;
+}
+
+int CQEventDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched + 1;
+}
+
 int CQEventDM::columnCount(const QModelIndex&) const
 {
   return TOTAL_COLS_EVENTS;
@@ -70,7 +80,7 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int) mpDataModel->getModel()->getEvents().size())
         {
           switch (index.column())
             {
@@ -276,8 +286,9 @@ bool CQEventDM::removeRows(int position, int rows, const QModelIndex & parent)
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+      --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
@@ -336,6 +347,8 @@ void CQEventDM::insertNewRows(int position, int rows, int column, const QVariant
       if (pEvent == NULL)
         continue;
 
+      ++mFetched;
+
       CUndoData UndoData(CUndoData::Type::INSERT, pEvent);
       ListViews::addUndoMetaData(this, UndoData);
       emit signalNotifyChanges(mpDataModel->recordData(UndoData));
@@ -348,7 +361,7 @@ bool CQEventDM::clear()
 {
   QModelIndexList rows;
 
-  for (int i = 0; i < mpEvents->size(); i++)
+  for (int i = 0; i < (int) mpEvents->size(); i++)
     {
       rows.append(index(i, 0));
     }

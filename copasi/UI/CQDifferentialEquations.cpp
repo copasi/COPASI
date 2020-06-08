@@ -41,13 +41,13 @@
 # include <qtmmlwidget.h>
 #endif // HAVE_MML
 
-#include "model/CMMLOutput.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/model/CMMLOutput.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "qtUtilities.h"
-#include "utilities/utility.h"
-#include "tex/CMathMLToTeX.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/tex/CMathMLToTeX.h"
 #include "copasi/core/CRootContainer.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/commandline/CLocaleString.h"
 
 #include "CopasiFileDialog.h"
 

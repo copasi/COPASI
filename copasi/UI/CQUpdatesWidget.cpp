@@ -23,18 +23,18 @@
 #include <QTabWidget>
 #include <qtmmlwidget.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CQUpdatesWidget.h"
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 
-#include "model/CModel.h"
-#include "math/CMathContainer.h"
-#include "math/CMathUpdateSequence.h"
-#include "math/CMathExpression.h"
+#include "copasi/model/CModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/math/CMathUpdateSequence.h"
+#include "copasi/math/CMathExpression.h"
 
 /**
  *  Constructs a CQUpdatesWidget which is a child of 'parent', with the

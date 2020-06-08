@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,10 +32,10 @@
 
 #include <string>
 
-#include "utilities/CCopasiMethod.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "report/CReport.h"
+#include "copasi/utilities/CCopasiMethod.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/report/CReport.h"
 
 class CScanProblem;
 class CScanTask;
@@ -134,7 +134,6 @@ public:
   virtual bool isValidScanItem(const bool & continueFromCurrentState);
 protected:
   virtual void ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg);
-
 };
 
 //***********************************+
@@ -209,6 +208,11 @@ protected:
    * or the initial state
    */
   bool mContinueFromCurrentState;
+
+  /**
+   * Count exceptions thrown by subtask
+   */
+  size_t mFailCounter;
 
   // Operations
 private:

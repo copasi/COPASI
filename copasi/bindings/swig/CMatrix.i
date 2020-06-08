@@ -24,8 +24,8 @@
 
 %{
 
-#include "core/CMatrix.h"
-#include "utilities/CLinkMatrix.h"
+#include "copasi/core/CMatrix.h"
+#include "copasi/utilities/CLinkMatrix.h"
 
 %}
 

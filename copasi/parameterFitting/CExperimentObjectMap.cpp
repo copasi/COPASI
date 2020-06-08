@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,13 +27,13 @@
 #include <cmath>
 #include <stdlib.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CExperimentObjectMap.h"
 
-#include "math/CMathContainer.h"
-#include "utilities/utility.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 CExperimentObjectMap::CExperimentObjectMap(const std::string & name,
     const CDataContainer * pParent):
@@ -404,7 +409,7 @@ std::string CExperimentObjectMap::CDataColumn::getObjectCN() const
 
 bool CExperimentObjectMap::CDataColumn::setScale(const C_FLOAT64 & weight)
 {
-  if (isnan(weight))
+  if (std::isnan(weight))
     {
       if (mpScale != NULL)
         {
@@ -417,7 +422,7 @@ bool CExperimentObjectMap::CDataColumn::setScale(const C_FLOAT64 & weight)
 
   C_FLOAT64 DefaultWeight = getDefaultScale();
 
-  if (weight != DefaultWeight || isnan(DefaultWeight))
+  if (weight != DefaultWeight || std::isnan(DefaultWeight))
     {
       if (mpScale != NULL)
         *mpScale = weight;

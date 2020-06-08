@@ -10,7 +10,7 @@
 
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CDataObject.h"

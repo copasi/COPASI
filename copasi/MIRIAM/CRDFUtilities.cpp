@@ -1,19 +1,26 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFUtilities.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/02 16:12:51 $
-// End CVS Header
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
 #include <algorithm>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CRDFUtilities.h"
 
@@ -44,6 +51,7 @@ unsigned C_INT32 CRDFUtilities::fixLocalFileAboutReference(std::string & rdfXml,
 
       // Check whether we have a Qualifier:about attribute
       pos = rdfXml.find(Qualifier + "about=", start);
+
       if (pos < end && pos != std::string::npos)
         {
           pos += Qualifier.length() + 6;
@@ -105,6 +113,7 @@ unsigned C_INT32 CRDFUtilities::fixSBMLRdf(std::string & rdfXml)
       // Remember the current candidate
       std::string::size_type currentStart = start;
       std::string::size_type currentEnd = end;
+
       if (findNextElement(rdfXml, "", start, end) &&
           findNextElement(rdfXml, RDFQualifier + "Bag", currentStart, currentEnd) &&
           start == currentStart &&
@@ -144,6 +153,7 @@ unsigned C_INT32 CRDFUtilities::fixSBMLRdf(std::string & rdfXml)
       rdfXml.insert(end, " " + RDFQualifier + "parseType=\"Resource\"");
       count++;
     }
+
   return count;
 }
 
@@ -158,11 +168,13 @@ std::string CRDFUtilities::getNameSpaceQualifier(const std::string & rdfXml,
     {
       // Locate first name space declaration
       start = rdfXml.find("xmlns:", end);
+
       if (start == std::string::npos)
         break;
 
       start += 6;
       end = rdfXml.find("=", start);
+
       if (end == std::string::npos)
         break;
 
@@ -206,34 +218,38 @@ bool CRDFUtilities::findNextElement(const std::string & rdfXml,
         {
           switch (*it)
             {
-            case '\'':
-              if (!ignoreDouble)
-                {
-                  ignore = !ignore;
-                  ignoreSingle = !ignoreSingle;
-                }
-              break;
+              case '\'':
+                if (!ignoreDouble)
+                  {
+                    ignore = !ignore;
+                    ignoreSingle = !ignoreSingle;
+                  }
 
-            case '\"':
-              if (!ignoreSingle)
-                {
-                  ignore = !ignore;
-                  ignoreDouble = !ignoreDouble;
-                }
-              break;
+                break;
 
-            case '<':
-              if (!ignore)
-                start = it - rdfXml.begin();
-              break;
+              case '\"':
+                if (!ignoreSingle)
+                  {
+                    ignore = !ignore;
+                    ignoreDouble = !ignoreDouble;
+                  }
 
-            case '>':
-              if (!ignore && start != std::string::npos)
-                end = it - rdfXml.begin();
-              break;
+                break;
 
-            default:
-              break;
+              case '<':
+                if (!ignore)
+                  start = it - rdfXml.begin();
+
+                break;
+
+              case '>':
+                if (!ignore && start != std::string::npos)
+                  end = it - rdfXml.begin();
+
+                break;
+
+              default:
+                break;
             }
         }
 

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -17,7 +22,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include <iostream>
 
 #include <QApplication>
@@ -29,6 +34,9 @@
 #include "CScanWidgetRepeat.h"
 #include "CScanWidgetRandom.h"
 #include "CUpDownSubwidget.h"
+
+#include <copasi/core/CRootContainer.h>
+#include <copasi/commandline/CConfigurationFile.h>
 
 CScanContainerWidget::CScanContainerWidget(QWidget * parent, const char * name) :
   QTableWidget(parent)

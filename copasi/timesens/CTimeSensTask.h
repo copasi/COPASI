@@ -1,20 +1,11 @@
-  // Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
 // All rights reserved.
 
 /**
@@ -29,9 +20,9 @@
 #ifndef COPASI_CTimeSensTask
 #define COPASI_CTimeSensTask
 
-//#include "timesens/CTimeSensMethod.h"
-#include "utilities/CCopasiTask.h"
-#include "trajectory/CTimeSeries.h"
+//#include "copasi/timesens/CTimeSensMethod.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/trajectory/CTimeSeries.h"
 
 class CTimeSensProblem;
 class CTimeSensMethod;
@@ -62,7 +53,7 @@ public:
    * @param const CTaskEnum::Task & type (default: timeCourse)
    */
   CTimeSensTask(const CDataContainer * pParent,
-                  const CTaskEnum::Task & type = CTaskEnum::Task::timeSens);
+                const CTaskEnum::Task & type = CTaskEnum::Task::timeSens);
 
   /**
     * Copy constructor
@@ -70,7 +61,7 @@ public:
     * @param const CDataContainer * pParent (default: NULL)
     */
   CTimeSensTask(const CTimeSensTask & src,
-                  const CDataContainer * pParent);
+                const CDataContainer * pParent);
 
   /**
    * Destructor

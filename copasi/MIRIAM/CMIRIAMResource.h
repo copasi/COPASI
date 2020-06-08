@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,12 +29,12 @@
 #ifndef COPASI_CMIRIAMResource
 #define COPASI_CMIRIAMResource
 
-#include "utilities/CCopasiParameter.h"
-#include "utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiParameter.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
 #include <time.h>
 #include <string>
-#include "utilities/CProcessReport.h"
-#include "utilities/utility.h"
+#include "copasi/utilities/CProcessReport.h"
+#include "copasi/utilities/utility.h"
 
 class CProcessReport;
 

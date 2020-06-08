@@ -22,15 +22,15 @@
 
 #include <string>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CLNAProblem.h"
 #include "CLNATask.h"
-#include "steadystate/CSteadyStateTask.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
 
-#include "model/CModel.h"
-#include "model/CState.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "report/CKeyFactory.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CState.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
 
 /**

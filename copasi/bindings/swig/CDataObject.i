@@ -18,7 +18,7 @@
 
 
 %{
-#include "core/CRegisteredCommonName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CDataObject.h"
 %}
 
@@ -43,8 +43,8 @@
 %ignore CDataObject::destruct;
 %ignore CDataObject::createUndoData;
 
-%include "core/CRegisteredCommonName.h"
-%include "core/CDataObject.h"
+%include "copasi/core/CRegisteredCommonName.h"
+%include "copasi/core/CDataObject.h"
 
 %extend CObjectInterface
 {

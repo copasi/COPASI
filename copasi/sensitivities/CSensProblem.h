@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -34,29 +39,28 @@
 class CSensItem
 {
 public:
-
   CSensItem();
-  CSensItem(const std::string& cn);
+  CSensItem(const std::string & cn);
   CSensItem(CObjectLists::ListType type);
 
   bool isSingleObject() const;
 
   void setSingleObjectCN(const CCommonName & cn);
   const CCommonName & getSingleObjectCN() const;
-  std::string getSingleObjectDisplayName(const CDataModel* pDataModel) const;
+  std::string getSingleObjectDisplayName(const CDataModel * pDataModel) const;
 
   void setListType(CObjectLists::ListType lt);
   const CObjectLists::ListType & getListType() const;
   std::string getListTypeDisplayName() const;
 
-  std::vector<CDataObject*> getVariablesPointerList(CDataModel* pDataModel);
+  std::vector< CDataObject * > getVariablesPointerList(CDataModel * pDataModel);
 
   //size_t dimensionality() const;
 
   bool operator==(const CSensItem & rhs) const;
   bool operator!=(const CSensItem & rhs) const;
 
-  std::string print(const CDataModel* pDataModel) const;
+  std::string print(const CDataModel * pDataModel) const;
 
 private:
   CCommonName mSingleObjectCN;
@@ -68,7 +72,7 @@ private:
 /**
  *  CSensProblem class.
  */
-class CSensProblem: public CCopasiProblem
+class CSensProblem : public CCopasiProblem
 {
 public:
   /**
@@ -90,8 +94,8 @@ public:
 
   static const char * XMLSubTask[];
 
-  static std::vector<CObjectLists::ListType> getPossibleTargetFunctions(CSensProblem::SubTaskType);
-  static std::vector<CObjectLists::ListType> getPossibleVariables(CSensProblem::SubTaskType);
+  static std::vector< CObjectLists::ListType > getPossibleTargetFunctions(CSensProblem::SubTaskType);
+  static std::vector< CObjectLists::ListType > getPossibleVariables(CSensProblem::SubTaskType);
 
   // Operations
 
@@ -170,7 +174,7 @@ public:
    * @param const Problem & A
    * @return ostream & os
    */
-  friend std::ostream &operator<<(std::ostream &os, const CSensProblem & o);
+  friend std::ostream & operator<<(std::ostream & os, const CSensProblem & o);
 
   /**
    * This is the output method for any object. It calls the insert operator<<
@@ -189,11 +193,11 @@ private:
   /**
    *  create the copasi parameters corresponding to the members of a CSensItem
    */
-  static void createParametersInGroup(CCopasiParameterGroup *pg);
+  static void createParametersInGroup(CCopasiParameterGroup * pg);
 
-  static void copySensItemToParameterGroup(const CSensItem * si, CCopasiParameterGroup *pg);
+  static void copySensItemToParameterGroup(const CSensItem * si, CCopasiParameterGroup * pg);
 
-  static void copyParameterGroupToSensItem(const CCopasiParameterGroup *pg, CSensItem * si);
+  static void copyParameterGroupToSensItem(const CCopasiParameterGroup * pg, CSensItem * si);
 
   /**
    *  this sets up a problem for debugging purposes
@@ -203,8 +207,6 @@ private:
   CSensProblem::SubTaskType * mpSubTaskType;
 
   CCopasiParameterGroup * mpTargetFunctions;
-
-  //std::vector<CSensItem> mVariables;
 
   /**
    *  This holds the variables items

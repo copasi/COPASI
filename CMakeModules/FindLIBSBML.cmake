@@ -1,3 +1,8 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -38,6 +43,7 @@ if (NOT ${LIBSBML_LIBRARY_NAME}_FOUND)
           /opt/local/lib/cmake
           /sw/lib/cmake
           ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
+          ${CONAN_LIB_DIRS_LIBSBML}/cmake
   )
 endif()
 
@@ -85,6 +91,7 @@ find_library(LIBSBML_LIBRARY
           ${COPASI_DEPENDENCY_DIR}
           ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
           ${COPASI_DEPENDENCY_DIR}/lib
+          ${CONAN_LIB_DIRS_LIBSBML}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/lib        # Fink
@@ -108,8 +115,6 @@ endif (NOT LIBSBML_LIBRARY)
   set_target_properties(${LIBSBML_LIBRARY_NAME} PROPERTIES IMPORTED_LOCATION ${LIBSBML_LIBRARY})
 
 endif()
-
-
 
 set(LIBSBML_FOUND "NO")
 if(LIBSBML_LIBRARY)

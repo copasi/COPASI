@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -34,14 +39,14 @@
 #include "CCopasiSelectionWidget.h"
 #include "listviews.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 
 #include "qtUtilities.h"
-#include "core/CDataArray.h"
-#include "model/CModel.h"
+#include "copasi/core/CDataArray.h"
+#include "copasi/model/CModel.h"
 #include "CQMatrixDialog.h"
 #include "CQMessageBox.h"
 
@@ -59,6 +64,8 @@ CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * n
   setObjectName(QString::fromUtf8(name));
   setModal(modal);
   setAttribute(Qt::WA_DeleteOnClose);
+  setMinimumHeight(480);
+
   mpMainLayout = new QVBoxLayout(this);
 
   mpSelectionWidget = new CCopasiSelectionWidget(this);

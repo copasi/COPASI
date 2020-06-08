@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -13,7 +18,7 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CRDFGraphConverter.h"
 #include "CRDFParser.h"
@@ -21,23 +26,24 @@
 #include "CRDFGraph.h"
 #include "CRDFUtilities.h"
 #include "CMIRIAMResource.h"
-#include "utilities/CCopasiMessage.h"
+#include "copasi/utilities/CCopasiMessage.h"
 
 void CRDFGraphConverter::deleteConverterData()
 {
-  size_t i = 0; 
-  while (true)
-  {
-    CRDFGraphConverter::sChange& current = CRDFGraphConverter::SBML2CopasiChanges[i++];
-    
-    if (current.pCheckTriplet != NULL)
-    {
-      pdelete(current.pCheckTriplet);
-    }
+  size_t i = 0;
 
-    if (current.Source == CRDFPredicate::end)
-      break;
-  }
+  while (true)
+    {
+      CRDFGraphConverter::sChange& current = CRDFGraphConverter::SBML2CopasiChanges[i++];
+
+      if (current.pCheckTriplet != NULL)
+        {
+          pdelete(current.pCheckTriplet);
+        }
+
+      if (current.Source == CRDFPredicate::end)
+        break;
+    }
 }
 
 // static
@@ -251,6 +257,10 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph, const CRDFGraphConverter::s
 
               if (it == end) break;
             }
+
+
+          if (Failed.find(*it) != Failed.end()) // if this triplet failed before, stop
+            break;
 
           if (!convert(pGraph, *it, NewPath))
             {

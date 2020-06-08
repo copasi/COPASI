@@ -1,12 +1,24 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/Cmt19937.cpp,v $
-   $Revision: 1.8 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/21 18:15:48 $
-   End CVS Header */
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -59,7 +71,7 @@
  * email: matumoto@math.keio.ac.jp
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CRandom.h"
 
 /* Period parameters */
@@ -73,21 +85,22 @@
   ((Cmt19937_MIXBITS(u,v) >> 1) ^ ((v)&1UL ? Cmt19937_MATRIX_A : 0UL))
 
 Cmt19937::Cmt19937(unsigned C_INT32 seed):
-    CRandom(),
-    mLeft(1),
-    mNext(NULL)
+  CRandom(),
+  mLeft(1),
+  mNext(NULL)
 {
   setModulus(0xffffffffUL);
   initialize(seed);
 }
 
-Cmt19937::~Cmt19937(){}
+Cmt19937::~Cmt19937() {}
 
 /* initializes mState[Cmt19937_N] with a seed */
 void Cmt19937::initialize(unsigned C_INT32 seed)
 {
   int j;
   mState[0] = seed & 0xffffffffUL;
+
   for (j = 1; j < Cmt19937_N; j++)
     {
       mState[j] = (1812433253UL * (mState[j - 1] ^ (mState[j - 1] >> 30)) + j);
@@ -97,6 +110,7 @@ void Cmt19937::initialize(unsigned C_INT32 seed)
       /* 2002/01/09 modified by Makoto Matsumoto             */
       mState[j] &= 0xffffffffUL;  /* for >32 bit machines */
     }
+
   mLeft = 1;
 }
 
@@ -111,6 +125,7 @@ void Cmt19937::init_by_array(unsigned C_INT32 init_key[],
   i = 1;
   j = 0;
   k = (Cmt19937_N > key_length ? Cmt19937_N : key_length);
+
   for (; k; k--)
     {
       mState[i] = (mState[i] ^ ((mState[i - 1] ^ (mState[i - 1] >> 30)) * 1664525UL))
@@ -118,19 +133,23 @@ void Cmt19937::init_by_array(unsigned C_INT32 init_key[],
       mState[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
       i++;
       j++;
+
       if (i >= Cmt19937_N)
-      {mState[0] = mState[Cmt19937_N - 1]; i = 1;}
+        {mState[0] = mState[Cmt19937_N - 1]; i = 1;}
+
       if (j >= key_length)
         j = 0;
     }
+
   for (k = Cmt19937_N - 1; k; k--)
     {
       mState[i] = (mState[i] ^ ((mState[i - 1] ^ (mState[i - 1] >> 30)) * 1566083941UL))
                   - i; /* non linear */
       mState[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
       i++;
+
       if (i >= Cmt19937_N)
-      {mState[0] = mState[Cmt19937_N - 1]; i = 1;}
+        {mState[0] = mState[Cmt19937_N - 1]; i = 1;}
     }
 
   mState[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */
@@ -159,6 +178,7 @@ unsigned C_INT32 Cmt19937::getRandomU()
 {
   if (--mLeft == 0)
     next_state();
+
   mNumberU = *mNext++;
 
   /* Tempering */
@@ -175,6 +195,7 @@ C_INT32 Cmt19937::getRandomS()
 {
   if (--mLeft == 0)
     next_state();
+
   mNumberU = *mNext++;
 
   /* Tempering */
@@ -191,6 +212,7 @@ C_FLOAT64 Cmt19937::getRandomCC()
 {
   if (--mLeft == 0)
     next_state();
+
   mNumberU = *mNext++;
 
   /* Tempering */
@@ -208,6 +230,7 @@ C_FLOAT64 Cmt19937::getRandomCO()
 {
   if (--mLeft == 0)
     next_state();
+
   mNumberU = *mNext++;
 
   /* Tempering */
@@ -225,6 +248,7 @@ C_FLOAT64 Cmt19937::getRandomOO()
 {
   if (--mLeft == 0)
     next_state();
+
   mNumberU = *mNext++;
 
   /* Tempering */
@@ -246,7 +270,7 @@ C_FLOAT64 Cmt19937::genrand_res53()
 /* These real versions are due to Isaku Wada, 2002/01/09 added */
 
 Cmt19937HR::Cmt19937HR(unsigned C_INT32 seed):
-    Cmt19937(seed)
+  Cmt19937(seed)
 {}
 
 /* generates a random number on [0,1]-real-interval */
@@ -282,16 +306,21 @@ int main()
   /* You may use init_genrand(seed) with any 32bit integer */
   /* as a seed for a simpler initialization                */
   printf("1000 outputs of getRandomU()\n");
+
   for (i = 0; i < 1000; i++)
     {
       printf("%10lu ", getRandomU());
+
       if (i % 5 == 4)
         printf("\n");
     }
+
   printf("\n1000 outputs of genrand_real2()\n");
+
   for (i = 0; i < 1000; i++)
     {
       printf("%10.8f ", getRandomCO());
+
       if (i % 5 == 4)
         printf("\n");
     }

@@ -25,12 +25,9 @@ endif(POLICY CMP0048)
 
 project (changeValues VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 
-include_directories("${PROJECT_SOURCE_DIR}/../../.." "${PROJECT_SOURCE_DIR}/../../../.." "${PROJECT_SOURCE_DIR}")
+include_directories(${COPASI_INCLUDE_DIRS})
 
 set(SOURCES ${SOURCES} changeValues.cpp)
 
-include(../../../CMakeConsoleApp.cmake)
-
 add_executable(changeValues ${SOURCES} ${HEADERS})
-add_dependencies(changeValues ${SE_DEPENDENCIES}) 
-target_link_libraries(changeValues ${SE_LIBS} ${SE_EXTERNAL_LIBS})
+target_link_libraries(changeValues libCOPASISE-static)

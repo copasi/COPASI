@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,9 +13,9 @@
 // of Manchester.
 // All rights reserved.
 
-#line 2 "CUnitParser_lex.cpp"
+#line 1 "CUnitParser_lex.cpp"
 
-#line 4 "CUnitParser_lex.cpp"
+#line 3 "CUnitParser_lex.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -19,7 +24,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 6
-#define YY_FLEX_SUBMINOR_VERSION 0
+#define YY_FLEX_SUBMINOR_VERSION 4
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -31,6 +36,24 @@
  * altogether.
  */
 #define yyFlexLexer CUnitParserFlexLexer
+
+#ifdef yyalloc
+#define CUnitParseralloc_ALREADY_DEFINED
+#else
+#define yyalloc CUnitParseralloc
+#endif
+
+#ifdef yyrealloc
+#define CUnitParserrealloc_ALREADY_DEFINED
+#else
+#define yyrealloc CUnitParserrealloc
+#endif
+
+#ifdef yyfree
+#define CUnitParserfree_ALREADY_DEFINED
+#else
+#define yyfree CUnitParserfree
+#endif
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
 
@@ -98,6 +121,10 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
+#ifndef SIZE_MAX
+#define SIZE_MAX               (~(size_t)0)
+#endif
+
 #endif /* ! C99 */
 
 #endif /* ! FLEXINT_H */
@@ -110,56 +137,38 @@ typedef unsigned int flex_uint32_t;
 #include <cstring>
 /* end standard C++ headers. */
 
-#ifdef __cplusplus
-
-/* The "const" storage-class-modifier is valid. */
-#define YY_USE_CONST
-
-#else /* ! __cplusplus */
-
-/* C99 requires __STDC__ to be defined as 1. */
-#if defined (__STDC__)
-
-#define YY_USE_CONST
-
-#endif  /* defined (__STDC__) */
-#endif  /* ! __cplusplus */
-
-#ifdef YY_USE_CONST
+/* TODO: this is always defined, so inline it */
 #define yyconst const
+
+#if defined(__GNUC__) && __GNUC__ >= 3
+#define yynoreturn __attribute__((__noreturn__))
 #else
-#define yyconst
+#define yynoreturn
 #endif
 
 /* Returned upon end-of-file. */
 #define YY_NULL 0
 
-/* Promotes a possibly negative, possibly signed char to an unsigned
- * integer for use as an array index.  If the signed char is negative,
- * we want to instead treat it as an 8-bit unsigned char, hence the
- * double cast.
+/* Promotes a possibly negative, possibly signed char to an
+ *   integer in range [0..255] for use as an array index.
  */
-#define YY_SC_TO_UI(c) ((unsigned int) (unsigned char) c)
+#define YY_SC_TO_UI(c) ((YY_CHAR) (c))
 
 /* Enter a start condition.  This macro really ought to take a parameter,
  * but we do it the disgusting crufty way forced on us by the ()-less
  * definition of BEGIN.
  */
 #define BEGIN (yy_start) = 1 + 2 *
-
 /* Translate the current start state into a value that can be later handed
  * to BEGIN to return to the state.  The YYSTATE alias is for lex
  * compatibility.
  */
 #define YY_START (((yy_start) - 1) / 2)
 #define YYSTATE YY_START
-
 /* Action number for EOF rule of a given start state. */
 #define YY_STATE_EOF(state) (YY_END_OF_BUFFER + state + 1)
-
 /* Special action meaning "start processing a new file". */
 #define YY_NEW_FILE yyrestart(yyin)
-
 #define YY_END_OF_BUFFER_CHAR 0
 
 /* Size of default input buffer. */
@@ -189,7 +198,7 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 typedef size_t yy_size_t;
 #endif
 
-extern yy_size_t yyleng;
+extern int yyleng;
 
 #define EOB_ACT_CONTINUE_SCAN 0
 #define EOB_ACT_END_OF_FILE 1
@@ -211,7 +220,6 @@ extern yy_size_t yyleng;
       YY_DO_BEFORE_ACTION; /* set up yytext again */ \
     } \
   while (0)
-
 #define unput(c) yyunput(c, (yytext_ptr))
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
@@ -227,7 +235,7 @@ struct yy_buffer_state
   /* Size of input buffer in bytes, not including room for EOB
    * characters.
    */
-  yy_size_t yy_buf_size;
+  int yy_buf_size;
 
   /* Number of characters read into yy_ch_buf, not including EOB
    * characters.
@@ -286,20 +294,18 @@ struct yy_buffer_state
  * Returns the top of the stack, or NULL.
  */
 #define YY_CURRENT_BUFFER ((yy_buffer_stack) \
-                            ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
-                            : NULL)
-
+                           ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
+                           : NULL)
 /* Same as previous macro, but useful when we know that the buffer stack is not
  * NULL or when we need an lvalue. For internal use only.
  */
 #define YY_CURRENT_BUFFER_LVALUE (yy_buffer_stack)[(yy_buffer_stack_top)]
 
-void *CUnitParseralloc(yy_size_t);
-void *CUnitParserrealloc(void *, yy_size_t);
-void CUnitParserfree(void *);
+void *yyalloc(yy_size_t);
+void *yyrealloc(void *, yy_size_t);
+void yyfree(void *);
 
 #define yy_new_buffer yy_create_buffer
-
 #define yy_set_interactive(is_interactive) \
   {\
     if (! YY_CURRENT_BUFFER ){\
@@ -309,7 +315,6 @@ void CUnitParserfree(void *);
       } \
     YY_CURRENT_BUFFER_LVALUE->yy_is_interactive = is_interactive; \
   }
-
 #define yy_set_bol(at_bol) \
   {\
     if (! YY_CURRENT_BUFFER ){\
@@ -319,12 +324,10 @@ void CUnitParserfree(void *);
       } \
     YY_CURRENT_BUFFER_LVALUE->yy_at_bol = at_bol; \
   }
-
 #define YY_AT_BOL() (YY_CURRENT_BUFFER_LVALUE->yy_at_bol)
 
 /* Begin user sect3 */
-
-typedef unsigned char YY_CHAR;
+typedef flex_uint8_t YY_CHAR;
 
 #define yytext_ptr yytext
 
@@ -335,11 +338,10 @@ typedef unsigned char YY_CHAR;
  */
 #define YY_DO_BEFORE_ACTION \
   (yytext_ptr) = yy_bp; \
-  yyleng = (size_t) (yy_cp - yy_bp); \
+  yyleng = (int) (yy_cp - yy_bp); \
   (yy_hold_char) = *yy_cp; \
   *yy_cp = '\0'; \
   (yy_c_buf_p) = yy_cp;
-
 #define YY_NUM_RULES 16
 #define YY_END_OF_BUFFER 17
 /* This struct is not used in this scanner,
@@ -349,7 +351,7 @@ struct yy_trans_info
   flex_int32_t yy_verify;
   flex_int32_t yy_nxt;
 };
-static yyconst flex_int16_t yy_acclist[177] =
+static const flex_int16_t yy_acclist[177] =
 {
   0,
   17,   15,   16,   14,   15,   16,   14,   16,   15,   16,
@@ -373,7 +375,7 @@ static yyconst flex_int16_t yy_acclist[177] =
   11,   11,   11,    8,   11,   11
 };
 
-static yyconst flex_int16_t yy_accept[121] =
+static const flex_int16_t yy_accept[121] =
 {
   0,
   1,    1,    1,    1,    1,    1,    1,    2,    4,    7,
@@ -391,7 +393,7 @@ static yyconst flex_int16_t yy_accept[121] =
   172,  172,  173,  174,  174,  176,  177,  177,  177,  177
 };
 
-static yyconst YY_CHAR yy_ec[256] =
+static const YY_CHAR yy_ec[256] =
 {
   0,
   1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
@@ -424,7 +426,7 @@ static yyconst YY_CHAR yy_ec[256] =
   1,    1,    1,    1,    1
 };
 
-static yyconst YY_CHAR yy_meta[61] =
+static const YY_CHAR yy_meta[61] =
 {
   0,
   1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -435,7 +437,7 @@ static yyconst YY_CHAR yy_meta[61] =
   2,    2,    2,    2,    1,    1,    1,    1,    1,    1
 };
 
-static yyconst flex_uint16_t yy_base[124] =
+static const flex_int16_t yy_base[124] =
 {
   0,
   0,    0,   59,   65,    0,    0,  299,  300,   61,   63,
@@ -454,7 +456,7 @@ static yyconst flex_uint16_t yy_base[124] =
   288,   75,  290
 };
 
-static yyconst flex_int16_t yy_def[124] =
+static const flex_int16_t yy_def[124] =
 {
   0,
   119,    1,  120,  120,    1,    1,  119,  119,  119,  119,
@@ -473,7 +475,7 @@ static yyconst flex_int16_t yy_def[124] =
   119,  119,  119
 };
 
-static yyconst flex_uint16_t yy_nxt[361] =
+static const flex_int16_t yy_nxt[361] =
 {
   0,
   8,    9,   10,   11,   12,   13,   14,   15,    8,   16,
@@ -517,7 +519,7 @@ static yyconst flex_uint16_t yy_nxt[361] =
   119,  119,  119,  119,  119,  119,  119,  119,  119,  119
 };
 
-static yyconst flex_int16_t yy_chk[361] =
+static const flex_int16_t yy_chk[361] =
 {
   0,
   1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -577,20 +579,20 @@ static yyconst flex_int16_t yy_chk[361] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "utilities/CUnitParser.lpp"
+#line 1 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 /* scanner for kinetic functions */
 
-#line 11 "utilities/CUnitParser.lpp"
+#line 11 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 #include <vector>
 
 #define YYSTYPE CUnitParserBase::Data
 
-#include "copasi.h"
-#include "CUnitParser.h"
-#include "CUnitParser_yacc.hpp"
+#include "copasi/copasi.h"
+#include "copasi/utilities/CUnitParser.h"
+#include "copasi/utilities/CUnitParser_yacc.hpp"
 
-#include "utilities/CCopasiMessage.h"
-#include "utilities/utility.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/utility.h"
 
 #ifndef YYERRCODE
 #define YYERRCODE 256
@@ -608,7 +610,8 @@ static yyconst flex_int16_t yy_chk[361] =
   mPosition += yyleng; \
   if (mOldSymbol != mNewSymbol) {mReplacedExpression += (CUnitParserlval.token == USER_DEFINED_UNIT && mOldSymbol == yytext) ? mNewSymbol : yytext;}
 
-#line 595 "CUnitParser_lex.cpp"
+#line 591 "CUnitParser_lex.cpp"
+#line 592 "CUnitParser_lex.cpp"
 
 #define INITIAL 0
 #define sNUMBER 1
@@ -626,11 +629,11 @@ static yyconst flex_int16_t yy_chk[361] =
 #endif
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy(char *, yyconst char *, int);
+static void yy_flex_strncpy(char *, const char *, int);
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen(yyconst char *);
+static int yy_flex_strlen(const char *);
 #endif
 
 #ifndef YY_NO_INPUT
@@ -724,7 +727,7 @@ YY_DECL
 
       /* Create the reject buffer large enough to save one state per allowed character. */
       if (!(yy_state_buf))
-        (yy_state_buf) = (yy_state_type *)CUnitParseralloc(YY_STATE_BUF_SIZE);
+        (yy_state_buf) = (yy_state_type *)yyalloc(YY_STATE_BUF_SIZE);
 
       if (!(yy_state_buf))
         YY_FATAL_ERROR("out of dynamic memory in yylex()");
@@ -749,9 +752,9 @@ YY_DECL
     }
 
   {
-#line 47 "utilities/CUnitParser.lpp"
+#line 47 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
-#line 737 "CUnitParser_lex.cpp"
+#line 734 "CUnitParser_lex.cpp"
 
     while (/*CONSTCOND*/1)     /* loops until end-of-file is reached */
       {
@@ -781,10 +784,10 @@ yy_match:
                 yy_current_state = (int) yy_def[yy_current_state];
 
                 if (yy_current_state >= 120)
-                  yy_c = yy_meta[(unsigned int) yy_c];
+                  yy_c = yy_meta[yy_c];
               }
 
-            yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+            yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
             *(yy_state_ptr)++ = yy_current_state;
             ++yy_cp;
           }
@@ -842,7 +845,7 @@ do_action:  /* This label is used only to access EOF actions. */
             /* beginning of action switch */
             case 1:
               YY_RULE_SETUP
-#line 48 "utilities/CUnitParser.lpp"
+#line 48 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               CUnitParserlval.token = MULTIPLY;
               COMMON_ACTION;
@@ -852,7 +855,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 2:
               YY_RULE_SETUP
-#line 54 "utilities/CUnitParser.lpp"
+#line 54 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               CUnitParserlval.token = DIVIDE;
               COMMON_ACTION;
@@ -862,7 +865,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 3:
               YY_RULE_SETUP
-#line 60 "utilities/CUnitParser.lpp"
+#line 60 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               CUnitParserlval.token = START_PARENS;
               COMMON_ACTION;
@@ -872,7 +875,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 4:
               YY_RULE_SETUP
-#line 66 "utilities/CUnitParser.lpp"
+#line 66 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               CUnitParserlval.token = END_PARENS;
               COMMON_ACTION;
@@ -882,7 +885,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 5:
               YY_RULE_SETUP
-#line 72 "utilities/CUnitParser.lpp"
+#line 72 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               BEGIN(sNUMBER);
               CUnitParserlval.token = EXPONENT;
@@ -893,7 +896,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 6:
               YY_RULE_SETUP
-#line 79 "utilities/CUnitParser.lpp"
+#line 79 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               CUnitParserlval.token = SUPERSCRIPT_2;
               COMMON_ACTION;
@@ -903,7 +906,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 7:
               YY_RULE_SETUP
-#line 85 "utilities/CUnitParser.lpp"
+#line 85 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               CUnitParserlval.token = SUPERSCRIPT_3;
               COMMON_ACTION;
@@ -913,7 +916,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 8:
               YY_RULE_SETUP
-#line 91 "utilities/CUnitParser.lpp"
+#line 91 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               CUnitParserlval.token = KIND;
               COMMON_ACTION;
@@ -923,7 +926,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 9:
               YY_RULE_SETUP
-#line 97 "utilities/CUnitParser.lpp"
+#line 97 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               CUnitParserlval.token = SI_UNIT;
               COMMON_ACTION;
@@ -934,7 +937,7 @@ do_action:  /* This label is used only to access EOF actions. */
             case 10:
               /* rule 10 can match eol */
               YY_RULE_SETUP
-#line 103 "utilities/CUnitParser.lpp"
+#line 103 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               CUnitParserlval.token = SCALE;
               COMMON_ACTION;
@@ -945,7 +948,7 @@ do_action:  /* This label is used only to access EOF actions. */
             case 11:
               /* rule 11 can match eol */
               YY_RULE_SETUP
-#line 109 "utilities/CUnitParser.lpp"
+#line 109 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               CUnitParserlval.token = USER_DEFINED_UNIT;
               COMMON_ACTION;
@@ -955,7 +958,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 12:
               YY_RULE_SETUP
-#line 115 "utilities/CUnitParser.lpp"
+#line 115 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               BEGIN(sANY);
               CUnitParserlval.token = NUMBER;
@@ -969,7 +972,7 @@ do_action:  /* This label is used only to access EOF actions. */
               (yy_c_buf_p) = yy_cp -= 1;
               YY_DO_BEFORE_ACTION; /* set up yytext again */
               YY_RULE_SETUP
-#line 122 "utilities/CUnitParser.lpp"
+#line 122 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               CUnitParserlval.token = POWER_OF_TEN;
               COMMON_ACTION;
@@ -980,7 +983,7 @@ do_action:  /* This label is used only to access EOF actions. */
             case 14:
               /* rule 14 can match eol */
               YY_RULE_SETUP
-#line 129 "utilities/CUnitParser.lpp"
+#line 129 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               COMMON_ACTION;
 
@@ -989,7 +992,7 @@ do_action:  /* This label is used only to access EOF actions. */
             case YY_STATE_EOF(INITIAL):
             case YY_STATE_EOF(sNUMBER):
             case YY_STATE_EOF(sANY):
-#line 133 "utilities/CUnitParser.lpp"
+#line 133 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               return 0;
 
@@ -997,7 +1000,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 15:
               YY_RULE_SETUP
-#line 137 "utilities/CUnitParser.lpp"
+#line 137 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
 
               CCopasiMessage(CCopasiMessage::ERROR, MCUnit + 2, mPosition);
               return YYERRCODE;
@@ -1006,10 +1009,10 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 16:
               YY_RULE_SETUP
-#line 142 "utilities/CUnitParser.lpp"
+#line 142 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"
               ECHO;
               YY_BREAK
-#line 970 "CUnitParser_lex.cpp"
+#line 967 "CUnitParser_lex.cpp"
 
             case YY_END_OF_BUFFER:
             {
@@ -1184,7 +1187,7 @@ void yyFlexLexer::ctor_common()
   yy_start_stack_ptr = yy_start_stack_depth = 0;
   yy_start_stack = NULL;
 
-  yy_buffer_stack = 0;
+  yy_buffer_stack = NULL;
   yy_buffer_stack_top = 0;
   yy_buffer_stack_max = 0;
 
@@ -1196,9 +1199,9 @@ void yyFlexLexer::ctor_common()
 yyFlexLexer::~yyFlexLexer()
 {
   delete [] yy_state_buf;
-  CUnitParserfree(yy_start_stack);
+  yyfree(yy_start_stack);
   yy_delete_buffer(YY_CURRENT_BUFFER);
-  CUnitParserfree(yy_buffer_stack);
+  yyfree(yy_buffer_stack);
 }
 
 /* The contents of this function are C++ specific, so the () macro is not used.
@@ -1277,7 +1280,7 @@ int yyFlexLexer::yy_get_next_buffer()
 {
   char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
   char *source = (yytext_ptr);
-  yy_size_t number_to_move, i;
+  int number_to_move, i;
   int ret_val;
 
   if ((yy_c_buf_p) > &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars) + 1])
@@ -1307,7 +1310,7 @@ int yyFlexLexer::yy_get_next_buffer()
   /* Try to read more data. */
 
   /* First move last chars to start of buffer. */
-  number_to_move = (yy_size_t)((yy_c_buf_p) - (yytext_ptr)) - 1;
+  number_to_move = (int)((yy_c_buf_p) - (yytext_ptr) - 1);
 
   for (i = 0; i < number_to_move; ++i)
     *(dest++) = *(source++);
@@ -1320,7 +1323,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
   else
     {
-      yy_size_t num_to_read =
+      int num_to_read =
         YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
       while (num_to_read <= 0)
@@ -1360,14 +1363,18 @@ int yyFlexLexer::yy_get_next_buffer()
   else
     ret_val = EOB_ACT_CONTINUE_SCAN;
 
-  if ((int)((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size)
+  if (((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size)
     {
       /* Extend the array by 50%, plus the number we really need. */
       int new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
-      YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) CUnitParserrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, new_size);
+      YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyrealloc(
+                                              (void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, (yy_size_t) new_size);
 
       if (! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf)
         YY_FATAL_ERROR("out of dynamic memory in yy_get_next_buffer()");
+
+      /* "- 2" to take care of EOB's */
+      YY_CURRENT_BUFFER_LVALUE->yy_buf_size = (int)(new_size - 2);
     }
 
   (yy_n_chars) += number_to_move;
@@ -1400,10 +1407,10 @@ yy_state_type yyFlexLexer::yy_get_previous_state()
           yy_current_state = (int) yy_def[yy_current_state];
 
           if (yy_current_state >= 120)
-            yy_c = yy_meta[(unsigned int) yy_c];
+            yy_c = yy_meta[yy_c];
         }
 
-      yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+      yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
       *(yy_state_ptr)++ = yy_current_state;
     }
 
@@ -1426,10 +1433,10 @@ yy_state_type yyFlexLexer::yy_try_NUL_trans(yy_state_type yy_current_state)
       yy_current_state = (int) yy_def[yy_current_state];
 
       if (yy_current_state >= 120)
-        yy_c = yy_meta[(unsigned int) yy_c];
+        yy_c = yy_meta[yy_c];
     }
 
-  yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+  yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
   yy_is_jam = (yy_current_state == 119);
 
   if (! yy_is_jam)
@@ -1452,9 +1459,9 @@ void yyFlexLexer::yyunput(int c, char* yy_bp)
     {
       /* need to shift things up to make room */
       /* +2 for EOB chars. */
-      yy_size_t number_to_move = (yy_n_chars) + 2;
+      int number_to_move = (yy_n_chars) + 2;
       char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
-                     YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
+                YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
       char *source =
         &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move];
 
@@ -1464,7 +1471,7 @@ void yyFlexLexer::yyunput(int c, char* yy_bp)
       yy_cp += (int)(dest - source);
       yy_bp += (int)(dest - source);
       YY_CURRENT_BUFFER_LVALUE->yy_n_chars =
-        (yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
+        (yy_n_chars) = (int) YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
 
       if (yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2)
         YY_FATAL_ERROR("flex scanner push-back overflow");
@@ -1497,7 +1504,7 @@ int yyFlexLexer::yyinput()
       else
         {
           /* need more input */
-          yy_size_t offset = (yy_c_buf_p) - (yytext_ptr);
+          int offset = (int)((yy_c_buf_p) - (yytext_ptr));
           ++(yy_c_buf_p);
 
           switch (yy_get_next_buffer())
@@ -1521,7 +1528,7 @@ int yyFlexLexer::yyinput()
               case EOB_ACT_END_OF_FILE:
               {
                 if (yywrap())
-                  return EOF;
+                  return 0;
 
                 if (!(yy_did_buffer_switch_on_eof))
                   YY_NEW_FILE;
@@ -1573,6 +1580,11 @@ void yyFlexLexer::yyrestart(std::istream& input_file)
  */
 void yyFlexLexer::yyrestart(std::istream* input_file)
 {
+  if (! input_file)
+    {
+      input_file = &yyin;
+    }
+
   yyrestart(*input_file);
 }
 
@@ -1630,17 +1642,17 @@ YY_BUFFER_STATE yyFlexLexer::yy_create_buffer(std::istream& file, int size)
 {
   YY_BUFFER_STATE b;
 
-  b = (YY_BUFFER_STATE) CUnitParseralloc(sizeof(struct yy_buffer_state));
+  b = (YY_BUFFER_STATE) yyalloc(sizeof(struct yy_buffer_state));
 
   if (! b)
     YY_FATAL_ERROR("out of dynamic memory in yy_create_buffer()");
 
-  b->yy_buf_size = (yy_size_t)size;
+  b->yy_buf_size = size;
 
   /* yy_ch_buf has to be 2 characters longer than the size given because
    * we need to put in 2 end-of-buffer characters.
    */
-  b->yy_ch_buf = (char *) CUnitParseralloc(b->yy_buf_size + 2);
+  b->yy_ch_buf = (char *) yyalloc((yy_size_t)(b->yy_buf_size + 2));
 
   if (! b->yy_ch_buf)
     YY_FATAL_ERROR("out of dynamic memory in yy_create_buffer()");
@@ -1677,9 +1689,9 @@ void yyFlexLexer::yy_delete_buffer(YY_BUFFER_STATE b)
     YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE) 0;
 
   if (b->yy_is_our_buffer)
-    CUnitParserfree((void *) b->yy_ch_buf);
+    yyfree((void *) b->yy_ch_buf);
 
-  CUnitParserfree((void *) b);
+  yyfree((void *) b);
 }
 
 /* Initializes or reinitializes a buffer.
@@ -1807,7 +1819,7 @@ void yyFlexLexer::yyensure_buffer_stack(void)
        * immediate realloc on the next call.
            */
       num_to_alloc = 1; /* After all that talk, this was set to 1 anyways... */
-      (yy_buffer_stack) = (struct yy_buffer_state**)CUnitParseralloc
+      (yy_buffer_stack) = (struct yy_buffer_state**)yyalloc
                           (num_to_alloc * sizeof(struct yy_buffer_state*)
                           );
 
@@ -1828,7 +1840,7 @@ void yyFlexLexer::yyensure_buffer_stack(void)
       yy_size_t grow_size = 8 /* arbitrary grow size */;
 
       num_to_alloc = (yy_buffer_stack_max) + grow_size;
-      (yy_buffer_stack) = (struct yy_buffer_state**)CUnitParserrealloc
+      (yy_buffer_stack) = (struct yy_buffer_state**)yyrealloc
                           ((yy_buffer_stack),
                            num_to_alloc * sizeof(struct yy_buffer_state*)
                           );
@@ -1849,13 +1861,14 @@ void yyFlexLexer::yy_push_state(int _new_state)
       yy_size_t new_size;
 
       (yy_start_stack_depth) += YY_START_STACK_INCR;
-      new_size = (yy_start_stack_depth) * sizeof(int);
+      new_size = (yy_size_t)(yy_start_stack_depth) * sizeof(int);
 
       if (!(yy_start_stack))
-        (yy_start_stack) = (int *) CUnitParseralloc(new_size);
+        (yy_start_stack) = (int *) yyalloc(new_size);
 
       else
-        (yy_start_stack) = (int *) CUnitParserrealloc((void *)(yy_start_stack), new_size);
+        (yy_start_stack) = (int *) yyrealloc(
+                             (void *)(yy_start_stack), new_size);
 
       if (!(yy_start_stack))
         YY_FATAL_ERROR("out of memory expanding start-condition stack");
@@ -1883,7 +1896,7 @@ int yyFlexLexer::yy_top_state()
 #define YY_EXIT_FAILURE 2
 #endif
 
-void yyFlexLexer::LexerError(yyconst char msg[])
+void yyFlexLexer::LexerError(const char* msg)
 {
   std::cerr << msg << std::endl;
   exit(YY_EXIT_FAILURE);
@@ -1913,7 +1926,7 @@ void yyFlexLexer::LexerError(yyconst char msg[])
  */
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy(char* s1, yyconst char * s2, int n)
+static void yy_flex_strncpy(char* s1, const char * s2, int n)
 {
 
   int i;
@@ -1924,7 +1937,7 @@ static void yy_flex_strncpy(char* s1, yyconst char * s2, int n)
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen(yyconst char * s)
+static int yy_flex_strlen(const char * s)
 {
   int n;
 
@@ -1935,12 +1948,12 @@ static int yy_flex_strlen(yyconst char * s)
 }
 #endif
 
-void *CUnitParseralloc(yy_size_t  size)
+void *yyalloc(yy_size_t  size)
 {
-  return (void *) malloc(size);
+  return malloc(size);
 }
 
-void *CUnitParserrealloc(void * ptr, yy_size_t  size)
+void *yyrealloc(void * ptr, yy_size_t  size)
 {
 
   /* The cast to (char *) in the following accommodates both
@@ -1950,14 +1963,14 @@ void *CUnitParserrealloc(void * ptr, yy_size_t  size)
    * any pointer type to void*, and deal with argument conversions
    * as though doing an assignment.
    */
-  return (void *) realloc((char *) ptr, size);
+  return realloc(ptr, size);
 }
 
-void CUnitParserfree(void * ptr)
+void yyfree(void * ptr)
 {
-  free((char *) ptr);    /* see CUnitParserrealloc() for (char *) cast */
+  free((char *) ptr);    /* see yyrealloc() for (char *) cast */
 }
 
 #define YYTABLES_NAME "yytables"
 
-#line 142 "utilities/CUnitParser.lpp"
+#line 142 "/raid/shoops/git/COPASI/copasi/utilities/CUnitParser.lpp"

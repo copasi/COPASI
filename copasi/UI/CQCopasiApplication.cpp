@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -16,7 +21,7 @@
 #include "CQCopasiApplication.h"
 #include "copasiui3window.h"
 #include "listviews.h"
-#include "utilities/CCopasiException.h"
+#include "copasi/utilities/CCopasiException.h"
 
 #ifdef COPASI_DEBUG
 #include <iostream>
@@ -90,9 +95,10 @@ bool CQCopasiApplication::event(QEvent * pEvent)
         if (mStarting)
           {
             mFile = static_cast<QFileOpenEvent *>(pEvent)->file();
+
             if (mFile.isEmpty())
               mFile = static_cast<QFileOpenEvent *>(pEvent)->url().toString();
-            
+
           }
         else
           {
@@ -100,8 +106,10 @@ bool CQCopasiApplication::event(QEvent * pEvent)
             // is open we will re-open the first file that was supposed to be
             // opened.
             mFile = static_cast<QFileOpenEvent *>(pEvent)->file();
+
             if (mFile.isEmpty())
               mFile = static_cast<QFileOpenEvent *>(pEvent)->url().toString();
+
             mpMainWindow->slotFileOpen(mFile);
           }
 

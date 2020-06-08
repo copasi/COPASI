@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,15 +24,16 @@
 #include <QClipboard>
 #include <QKeyEvent>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
 
-#include "model/CModel.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "function/CFunctionDB.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 /*
  *  Constructs a CQFunctionsWidget which is a child of 'parent', with the
@@ -48,11 +49,18 @@ CQFunctionsWidget::CQFunctionsWidget(QWidget *parent, const char *name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
+
+  mpTblFunctions->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblFunctions->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblFunctions->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblFunctions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblFunctions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblFunctions->verticalHeader()->hide();
   mpTblFunctions->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
@@ -60,6 +68,7 @@ CQFunctionsWidget::CQFunctionsWidget(QWidget *parent, const char *name)
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpFunctionDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
 }
@@ -150,21 +159,26 @@ bool CQFunctionsWidget::leaveProtected()
 
 bool CQFunctionsWidget::enterProtected()
 {
-  if (mpTblFunctions->selectionModel() != NULL)
-    {
-      disconnect(mpTblFunctions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblFunctions->horizontalHeader()->saveState();
+  blockSignals(true);
 
   mpFunctionDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpFunctionDM);
   //Set Model for the TableView
   mpTblFunctions->setModel(NULL);
   mpTblFunctions->setModel(mpProxyModel);
-  connect(mpTblFunctions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+
   updateDeleteBtns();
-  mpTblFunctions->resizeColumnsToContents();
+  mpTblFunctions->horizontalHeader()->restoreState(State);
+  blockSignals(false);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblFunctions->resizeColumnsToContents();
+    }
+
+  emit initFilter();
+
   return true;
 }
 
@@ -179,7 +193,9 @@ void CQFunctionsWidget::updateDeleteBtns()
     {
       if (selRows.size() == 1)
         {
-          if (mpFunctionDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
+          QModelIndex index = mpProxyModel->mapToSource(selRows[0]);
+
+          if (mpFunctionDM->isDefaultRow(index) || mpFunctionDM->isFunctionReadOnly(index))
             selected = false;
           else
             selected = true;
@@ -196,16 +212,14 @@ void CQFunctionsWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQFunctionsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
-    const QItemSelection &C_UNUSED(deselected))
-{
-  updateDeleteBtns();
-}
-
 void CQFunctionsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                     const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblFunctions->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblFunctions->resizeColumnsToContents();
+    }
+
   updateDeleteBtns();
 }
 
@@ -266,6 +280,17 @@ void CQFunctionsWidget::keyPressEvent(QKeyEvent *ev)
 
 void CQFunctionsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|New Function", Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter + "|New Function", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }

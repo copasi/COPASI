@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -13,7 +18,7 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CQBaseDataModel.h"
 #include <copasi/utilities/utility.h>
 #include <copasi/UI/qtUtilities.h>
@@ -22,6 +27,8 @@ CQBaseDataModel::CQBaseDataModel(QObject *parent, CDataModel * pDataModel)
   : QAbstractTableModel(parent)
   , mpDataModel(pDataModel)
   , mFramework(0)
+  , mFetched(0)
+  , mFetchLimit(50)
 {
   if (mpDataModel == NULL)
     {
@@ -73,6 +80,9 @@ void CQBaseDataModel::resetCache()
 
   beginResetModel();
   resetCacheProtected();
+
+  mFetched = std::min(mFetchLimit, size());
+
   endResetModel();
 }
 
@@ -145,4 +155,29 @@ void CQBaseDataModel::beginResetModel()
 void CQBaseDataModel::endResetModel()
 {
   QAbstractTableModel::endResetModel();
+}
+
+bool CQBaseDataModel::canFetchMore(const QModelIndex & parent) const
+{
+  if (parent.isValid())
+    return false;
+
+  return mFetched < size();
+}
+
+void CQBaseDataModel::fetchMore(const QModelIndex & parent)
+{
+  if (parent.isValid())
+    return;
+
+  int ToBeFetched = std::min(mFetchLimit, size() - mFetched);
+
+  if (ToBeFetched <= 0)
+    return;
+
+  beginInsertRows(QModelIndex(), mFetched, mFetched + ToBeFetched - 1);
+
+  mFetched += ToBeFetched;
+
+  endInsertRows();
 }

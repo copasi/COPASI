@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -39,12 +44,6 @@ public:
    */
   void setBtnGroupVisible(bool isVisible);
 
-  /**
-  * This method returns the data model from all the overview widgets.
-  * @return data model of this widget (or NULL if it does not have one)
-  */
-  virtual CQBaseDataModel* getCqDataModel();
-
 private:
   void buildSelectionList();
 
@@ -52,6 +51,9 @@ protected:
   virtual bool enterProtected();
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   virtual bool leaveProtected();
+
+signals:
+  void initFilter();
 
 protected slots:
   virtual void slotBtnRevert();
@@ -67,6 +69,7 @@ protected slots:
   void slotOpenEditor(const QModelIndex & index);
   void slotCloseEditor(const QModelIndex & index);
   void slotResolve(const QModelIndex & index);
+  virtual void slotFilterChanged();
 
 private:
   CModelParameterSet * mpParameterSet;

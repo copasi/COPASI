@@ -1,3 +1,18 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 ###############################################################################
 #
 # Description       : CMake build script for COPASI
@@ -7,27 +22,14 @@
 # This file is part of COPASI.  Please visit http://COPASI.org for more
 # information about COPASI, and the latest version of COPASI.
 #
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., University of Heidelberg, and The University
-# of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
 #
 ###############################################################################
 
 find_package(PythonInterp)
 
 set(COPSISE_SOURCES CopasiSE.cpp)
-
-include(../CMakeConsoleApp.cmake)
 
 if (BUILD_STATIC_COPASISE) 
     set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static") 
@@ -43,7 +45,7 @@ if (BUILD_STATIC_COPASISE)
 endif (BUILD_STATIC_COPASISE) 
 
 add_executable(CopasiSE ${COPSISE_SOURCES})
-target_link_libraries(CopasiSE ${SE_LIBS} ${SE_EXTERNAL_LIBS})
+target_link_libraries(CopasiSE libCOPASISE-static)
 
 install(TARGETS CopasiSE DESTINATION bin)
 

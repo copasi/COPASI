@@ -15,7 +15,7 @@
 
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CDataArray.h"
 #include "copasi/core/CDataVector.h"

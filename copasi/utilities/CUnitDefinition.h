@@ -25,7 +25,7 @@
 
 #include "copasi/utilities/CUnit.h"
 #include "copasi/core/CDataContainer.h"
-#include "model/CAnnotation.h"
+#include "copasi/model/CAnnotation.h"
 
 class CUnitDefinitionDB;
 

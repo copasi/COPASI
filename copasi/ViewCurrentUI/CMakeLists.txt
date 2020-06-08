@@ -1,3 +1,18 @@
+# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 ###############################################################################
 #
 # Description       : CMake build script for COPASI
@@ -7,19 +22,8 @@
 # This file is part of COPASI.  Please visit http://COPASI.org for more
 # information about COPASI, and the latest version of COPASI.
 #
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., University of Heidelberg, and The University
-# of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
 # 
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
 #
 ###############################################################################
 
@@ -30,23 +34,16 @@ if (NOT BUILD_GUI)
   message(FATAL_ERROR "ViewCurrentUI requires a UI build. Please toggle BUILD_GUI." )
 endif()
 
-include_directories(BEFORE "${PROJECT_SOURCE_DIR}/.." "${PROJECT_SOURCE_DIR}/../.." "${PROJECT_SOURCE_DIR}")
+include_directories(${COPASI_INCLUDE_DIRS})
 
 SET(HEADERS ${HEADERS} worker.h arguments.h)
 qt4_wrap_cpp(MOC_HEADERS ${HEADERS})
 
 set(SOURCES ${SOURCES} ${MOC_HEADERS} main.cpp worker.cpp arguments.cpp)
 
-include(../common.cmake)
-include(../CMakeConsoleApp.cmake)
-include(../CMakeUIApp.cmake)
-
 if (ENABLE_SBW_INTEGRATION)
 include_directories(${SBW_INCLUDE_DIR})
 endif()
-
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/../UI)
 
 set(COPASI_UI_FLAGS)
 if(WIN32 AND NOT CYGWIN)
@@ -76,8 +73,7 @@ endif(APPLE)
 
 add_executable(ViewCurrentUI ${COPASI_UI_FLAGS} ${SOURCES} ${HEADERS})
 
-target_link_libraries(ViewCurrentUI ${SE_LIBS} ${UI_LIBS} ${SE_EXTERNAL_LIBS} ${UI_EXTERNAL_LIBS}
-                      ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
+target_link_libraries(ViewCurrentUI libCOPASIUI)
 QT_BIND_TO_TARGET(ViewCurrentUI)
 
 install(TARGETS ViewCurrentUI DESTINATION bin)

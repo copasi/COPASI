@@ -28,9 +28,9 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "utilities/CCopasiTask.h"
+#include "copasi/utilities/CCopasiTask.h"
 
 class CPlotSpecification;
 class CReportDefinition;

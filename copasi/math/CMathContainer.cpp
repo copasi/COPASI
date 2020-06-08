@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -13,22 +13,22 @@
 // of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CMathContainer.h"
 #include "CMathExpression.h"
 #include "CMathEventQueue.h"
 #include "CMathUpdateSequence.h"
 
-#include "model/CModel.h"
-#include "model/CCompartment.h"
-#include "model/CMetab.h"
-#include "model/CModelValue.h"
-#include "model/CObjectLists.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "utilities/CNodeIterator.h"
-#include "randomGenerator/CRandom.h"
-#include "lapack/blaswrap.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CObjectLists.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/CNodeIterator.h"
+#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/lapack/blaswrap.h"
 
 // Uncomment this line below to get debug print out.
 // #define DEBUG_OUTPUT 1
@@ -666,7 +666,7 @@ bool CMathContainer::isStateValid() const
 
   for (; pIt != pEnd; ++pIt)
     {
-      if (isnan(*pIt))
+      if (std::isnan(*pIt))
         {
           return false;
         }

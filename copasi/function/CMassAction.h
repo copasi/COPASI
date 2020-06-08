@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,7 +32,7 @@
 #ifndef COPASI_CMassAction
 #define COPASI_CMassAction
 
-#include "function/CFunction.h"
+#include "copasi/function/CFunction.h"
 
 /** @dia:pos 62.0314,41.4407 */
 /** @dia:route CFunction; v,58.2,35.55,39.4413,82.281,41.4407 */

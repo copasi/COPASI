@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,24 +22,24 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CILDMMethod.h"
 #include "CTSSATask.h"
 #include "CTSSAProblem.h"
 
-#include "math/CMathContainer.h"
+#include "copasi/math/CMathContainer.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModel.h"
-#include "model/CMetab.h"
-//#include "model/CState.h"
-//#include "utilities/CMatrix.h"
-//#include "core/CDataArray.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetab.h"
+//#include "copasi/model/CState.h"
+//#include "copasi/utilities/CMatrix.h"
+//#include "copasi/core/CDataArray.h"
 //#include "copasi/core/CDataObjectReference.h"
 
-#include "lapack/lapackwrap.h"        // CLAPACK
-#include "lapack/blaswrap.h"           // BLAS
+#include "copasi/lapack/lapackwrap.h"        // CLAPACK
+#include "copasi/lapack/blaswrap.h"           // BLAS
 
 //#define ILDMDEBUG
 
@@ -237,7 +242,7 @@ void CILDMMethod::step(const double & deltaT)
   /* If complex eigenvalues */
 
   //BUG 873
-  if (dim > 1 && mR(dim - 1, dim - 1) == mR(dim - 2 , dim - 2))
+  if (dim > 1 && mR(dim - 1, dim - 1) == mR(dim - 2, dim - 2))
     if (dim == 2)
       {
         slow = dim;
@@ -259,7 +264,7 @@ void CILDMMethod::step(const double & deltaT)
     }
 
   // C_INT number, k;
-  /** Classical ILDM iterations. The number of slow variables is decreased until the Deuflhard criterium holds */
+  /** Classical ILDM iterations. The number of slow variables is decreased until the Deuflhard criterion holds */
   /*  do START slow iterations */
 
   while (slow > 1)
@@ -269,7 +274,7 @@ void CILDMMethod::step(const double & deltaT)
       slow = dim - fast;
 
       if (fast < dim - 1)
-        if (mR(slow, slow) == mR(slow - 1 , slow - 1))
+        if (mR(slow, slow) == mR(slow - 1, slow - 1))
           fast = fast + 1;
 
       slow = dim - fast;
@@ -313,14 +318,14 @@ void CILDMMethod::step(const double & deltaT)
       /* Check real parts of eigenvalues of Jacobian */
 
       for (i = slow ; i < dim; i++)
-        if (mR(i , i) >= 0)
+        if (mR(i, i) >= 0)
           {
             failed_while = 1;
             goto integration;
           }
 
       if (fast > 0)
-        mEPS = 1 / fabs(mR(slow , slow));
+        mEPS = 1 / fabs(mR(slow, slow));
 
       mCfast.resize(fast);
 
@@ -356,7 +361,7 @@ integration:
           fast = fast - 1;
           slow = dim - fast;
 
-          if ((fast >= 1) && (mR(slow - 1, slow - 1) == mR(slow , slow)))
+          if ((fast >= 1) && (mR(slow - 1, slow - 1) == mR(slow, slow)))
             fast = fast - 1;
 
           slow = dim - fast;
@@ -517,7 +522,7 @@ integration:
             if (denom_reac[i] == 0)
               Slow_react_contr(j, i) = 0;
             else
-              Slow_react_contr(j, i) = (Slow_react_contr(j , i)) / denom_reac[i] * 100;
+              Slow_react_contr(j, i) = (Slow_react_contr(j, i)) / denom_reac[i] * 100;
           }
 
       for (i = 0; i < reacs_size; i ++)

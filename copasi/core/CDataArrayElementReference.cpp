@@ -9,7 +9,7 @@
 // All rights reserved.
 
 #include "copasi/core/CDataContainer.h"
-#include "core/CDataArray.h"
+#include "copasi/core/CDataArray.h"
 #include "CArrayElementReference.h"
 
 // static
@@ -73,9 +73,9 @@ CArrayElementReference::CArrayElementReference(const std::vector< std::string > 
     const CFlags< Flag > & flag)
   : CDataObject("Value", pParent, "ElementReference",
                 flag | CDataObject::Reference | CDataObject::NonUniqueName | CDataObject::ValueDbl),
-    //    mpReference(NULL),
-    mIndex(index.begin(), index.end()),
-    mIgnoreUpdateObjectName(false)
+  //    mpReference(NULL),
+  mIndex(index.begin(), index.end()),
+  mIgnoreUpdateObjectName(false)
 {
   assert(pParent != NULL);
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,12 +24,12 @@
 #include "CQPushButtonDelegate.h"
 #include "CQComboDelegate.h"
 
-#include "commandline/CLocaleString.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "model/CModelParameterSet.h"
-#include "model/CModel.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModelParameterSet.h"
+#include "copasi/model/CModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "core/CDataString.h"
+#include "copasi/core/CDataString.h"
 
 #include "copasiui3window.h"
 
@@ -70,6 +70,7 @@ CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char
           this, SLOT(slotOpenEditor(const QModelIndex &)));
   connect(mpParameterSetDM, SIGNAL(signalCloseEditor(const QModelIndex &)),
           this, SLOT(slotCloseEditor(const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
 }
 
 CQParameterOverviewWidget::~CQParameterOverviewWidget()
@@ -201,11 +202,6 @@ void CQParameterOverviewWidget::setBtnGroupVisible(bool isVisible)
   mpBtnWidget->setVisible(isVisible);
 }
 
-CQBaseDataModel * CQParameterOverviewWidget::getCqDataModel()
-{
-  return mpParameterSetDM;
-}
-
 // virtual
 bool CQParameterOverviewWidget::leaveProtected()
 {
@@ -275,7 +271,6 @@ bool CQParameterOverviewWidget::enterProtected()
 
   // We need to make sure the original is fully compiled.
   mpParameterSet->compile();
-
   mGlobalQuantities.clear();
 
   bool didOwnCopy = mOwnCopy;
@@ -302,11 +297,7 @@ bool CQParameterOverviewWidget::enterProtected()
     pdelete(pOldParameterSet);
 
   mpTreeView->expandAll();
-
-  for (int i = 0; i < 6; i++)
-    {
-      mpTreeView->resizeColumnToContents(i);
-    }
+  emit initFilter();
 
   return true;
 }
@@ -393,6 +384,8 @@ void CQParameterOverviewWidget::slotBtnNew()
       return;
     }
 
+  CModelParameterSet * pSetToApply = mpParameterSet;
+
   // We first asked whether the user wants to save the current model values
   QMessageBox::StandardButton answer = CQMessageBox::question(this, "Save current Model Parameters?",
                                        "You are about to overwrite the current model values.\n"
@@ -410,7 +403,7 @@ void CQParameterOverviewWidget::slotBtnNew()
     }
 
   // TODO CRITICAL We need to record all changes to the model
-  mpParameterSet->updateModel();
+  pSetToApply->updateModel();
 
   // Notify the GUI that the model state has changed.
   protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, pModel->getCN());
@@ -447,7 +440,7 @@ void CQParameterOverviewWidget::slotBtnCopy()
       Name += TO_UTF8(QString::number(i));
     }
 
-  CModelParameterSet * pNew = new CModelParameterSet(pModel->getActiveModelParameterSet(), pModel, false);
+  CModelParameterSet * pNew = new CModelParameterSet(*mpParameterSetCopy, pModel, false);
   pNew->setObjectName(Name);
   Sets.add(pNew, true);
 
@@ -528,7 +521,7 @@ void CQParameterOverviewWidget::slotBtnSaveAs()
 void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameterSet)
 {
   // commit all changes
-  slotBtnCommit();
+  // slotBtnCommit();
 
   if (pParameterSet == NULL)
     {
@@ -579,8 +572,10 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
 
   if (SelectionList.indexOf(Name) <= 0)
     {
-      CModelParameterSet * pNew = new CModelParameterSet(pModel->getActiveModelParameterSet(), pModel, false);
+      CModelParameterSet * pNew = new CModelParameterSet(*pParameterSet, pModel, false);
+      CRegisteredCommonName::setEnabled(false);
       pNew->setObjectName(TO_UTF8(Name));
+      CRegisteredCommonName::setEnabled(true);
 
       // We are sure that a set with that name does not exist.
       Sets.add(pNew, true);
@@ -598,9 +593,9 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
                                  QString("Are you sure you want to overwrite the parameter set %1").arg(Name),
                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
         {
-          CModelParameterSet * pExisting = &Sets[TO_UTF8(Name)];
+          CModelParameterSet *pExisting = &Sets[TO_UTF8(Name)];
           CData OldData = pExisting->toData();
-          pExisting->assignSetContent(pModel->getActiveModelParameterSet(), false);
+          pExisting->assignSetContent(*pParameterSet, false);
 
           CUndoData UndoData;
           pExisting->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
@@ -658,4 +653,15 @@ void CQParameterOverviewWidget::slotResolve(const QModelIndex & index)
 
   mpTreeView->expandAll();
   mpTreeView->resizeColumnToContents(3);
+}
+
+void CQParameterOverviewWidget::slotFilterChanged()
+{
+  for (int i = 0; i < 5; ++i)
+    {
+      while (mpParameterSetDM->canFetchMore(mpParameterSetDM->index(i, 0)))
+        mpParameterSetDM->fetchMore(mpParameterSetDM->index(i, 0));
+    }
+
+  mpTreeView->expandAll();
 }

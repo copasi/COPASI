@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,7 +33,11 @@
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
+#ifdef HAVE_GL_EXT
 # include <GL/glext.h>
+#else
+# include <copasi/GL/glext.h>
+#endif // HAVE_GL_EXT
 #endif // __APPLE__
 
 

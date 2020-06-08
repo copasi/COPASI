@@ -1,0 +1,13 @@
+[requires]
+Expat/2.2.7@pix4d/stable
+crossguid/0.2.2@fbergmann/stable
+libcombine/0.2.3@fbergmann/stable
+libsedml/0.4.5@fbergmann/stable
+libsbml/5.18.1@fbergmann/stable
+raptor/1.4.19@fbergmann/stable
+zipper/0.9.1@fbergmann/stable
+clapack/3.2.1@fbergmann/stable
+
+[generators]
+cmake
+cmake_paths

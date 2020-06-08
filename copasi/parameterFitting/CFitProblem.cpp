@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,17 +22,9 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
-
-
-
-
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CFitProblem.h"
 #include "CFitItem.h"
@@ -40,21 +32,21 @@
 #include "CExperimentSet.h"
 #include "CExperiment.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "report/CKeyFactory.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "trajectory/CTrajectoryProblem.h"
-#include "utilities/CProcessReport.h"
-#include "utilities/CCopasiException.h"
-#include "core/CDataArray.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
+#include "copasi/utilities/CProcessReport.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/core/CDataArray.h"
 
-#include "lapack/blaswrap.h"           //use blas
-#include "lapack/lapackwrap.h"        //use CLAPACK
+#include "copasi/lapack/blaswrap.h"           //use blas
+#include "copasi/lapack/lapackwrap.h"        //use CLAPACK
 
 #include <copasi/utilities/CParameterEstimationUtils.h>
 
@@ -207,6 +199,11 @@ CFitProblem::~CFitProblem()
 
 void CFitProblem::initObjects()
 {
+  addObjectReference("Root Mean Square", mRMS, CDataObject::ValueDbl);
+  addObjectReference("Standard Deviation", mSD, CDataObject::ValueDbl);
+
+  addObjectReference("Validation Root Mean Square", mCrossValidationRMS, CDataObject::ValueDbl);
+  addObjectReference("Validation Standard Deviation", mCrossValidationSD, CDataObject::ValueDbl);
   addObjectReference("Validation Solution", mCrossValidationSolutionValue, CDataObject::ValueDbl);
   addObjectReference("Validation Objective", mCrossValidationObjective, CDataObject::ValueDbl);
 
@@ -1082,7 +1079,7 @@ bool CFitProblem::calculate()
       mpContainer->setCompleteInitialState(mCompleteInitialState);
     }
 
-  if (isnan(mCalculateValue))
+  if (std::isnan(mCalculateValue))
     {
       mFailedCounterNaN++;
       mCalculateValue = mWorstValue;
@@ -1121,8 +1118,6 @@ bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
 
   pdelete(mpTrajectoryProblem);
 
-
-
   if (updateModel && pExp != NULL)
     {
       // Synchronize the initial state.
@@ -1149,7 +1144,6 @@ bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
 
       mpContainer->pushInitialState();
     }
-
 
   return success;
 }
@@ -1494,7 +1488,6 @@ void CFitProblem::calcPartialFIM(const CMatrix< C_FLOAT64 >& jacobian, CMatrix< 
       }
 }
 
-
 void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& eigenvalues, CMatrix< C_FLOAT64 >& eigenvectors)
 {
   /* int dsyev_(char *jobz, char *uplo, integer *n, doublereal *a,
@@ -1602,7 +1595,6 @@ void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 
       eigenvectors = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       eigenvalues = std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
-
 }
 
 bool CFitProblem::calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd)
@@ -1907,8 +1899,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       ExperimentStartInResiduals.push_back(count); //
 
-
-
       C_FLOAT64 * pDeltaResidualDeltaParameter = mDeltaResidualDeltaParameter.array();
       C_FLOAT64 * pDeltaResidualDeltaParameterScaled = mDeltaResidualDeltaParameterScaled.array();
 
@@ -2004,10 +1994,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
         //  for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
         //}
-
       }
       */
-
 
       setResidualsRequired(false);
       mStoreResults = true;
@@ -2347,7 +2335,7 @@ bool CFitProblem::calculateCrossValidation()
       mpContainer->setCompleteInitialState(mCompleteInitialState);
     }
 
-  if (isnan(CalculateValue))
+  if (std::isnan(CalculateValue))
     {
       mFailedCounterNaN++;
       CalculateValue = mWorstValue;

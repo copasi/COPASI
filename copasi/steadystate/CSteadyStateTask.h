@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,11 +38,11 @@
 #include <iostream>
 
 #include "copasi/core/CMatrix.h"
-#include "utilities/CCopasiTask.h"
-#include "core/CDataArray.h"
-#include "utilities/CReadConfig.h"
-#include "steadystate/CSteadyStateMethod.h"
-#include "steadystate/CEigen.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/core/CDataArray.h"
+#include "copasi/utilities/CReadConfig.h"
+#include "copasi/steadystate/CSteadyStateMethod.h"
+#include "copasi/steadystate/CEigen.h"
 
 class CSteadyStateProblem;
 class CReportDefinitionVector;

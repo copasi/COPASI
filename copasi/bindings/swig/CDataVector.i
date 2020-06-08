@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -35,11 +40,11 @@
 %{
 
 #include "copasi/core/CDataVector.h"
-#include "plot/CPlotSpecification.h"
+#include "copasi/plot/CPlotSpecification.h"
 #include <copasi/elementaryFluxModes/CFluxMode.h>
-#include <layout/CLBase.h>
-#include <layout/CLCurve.h>
-#include <model/CObjectLists.h>
+#include <copasi/layout/CLBase.h>
+#include <copasi/layout/CLCurve.h>
+#include <copasi/model/CObjectLists.h>
 
 %}
 
@@ -77,7 +82,7 @@
 %rename(addCopy) CDataVector::add(const CType&);
 
 
-%include "core/CDataVector.h"
+%include "copasi/core/CDataVector.h"
 
 // this extension makes the assumption hat only instances of classes
 // that are derived from CDataObject are stored in a CDataVector

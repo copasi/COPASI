@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,8 +30,8 @@
 //#include "CEvaluationNodeOperator.h"
 //#include "CFunction.h"
 #include "CModel.h"
-#include "report/CKeyFactory.h"
-#include "function/CFunctionAnalyzer.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/function/CFunctionAnalyzer.h"
 #include "copasi/core/CRootContainer.h"
 
 CModelAnalyzer::CModelAnalyzer(const CModel* model)
@@ -48,9 +53,9 @@ void CModelAnalyzer::checkModel(const CModel* model)
     }
 }
 
-CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* reaction)
+CReactionResult CModelAnalyzer::checkReaction(const CReaction* reaction)
 {
-  ReactionResult ret;
+  CReactionResult ret;
 
   if (!reaction) return ret;
 
@@ -190,7 +195,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
       switch (role)
         {
-          //substrate must be matched to a substr. of the reaction (COPASI bug?)
+            //substrate must be matched to a substr. of the reaction (COPASI bug?)
           case CFunctionParameter::Role::SUBSTRATE:
             jmax = reaction->getChemEq().getSubstrates().size();
 
@@ -209,7 +214,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
             break;
 
-          //Product must be matched to a product of the reaction (COPASI bug?)
+            //Product must be matched to a product of the reaction (COPASI bug?)
           case CFunctionParameter::Role::PRODUCT:
             jmax = reaction->getChemEq().getProducts().size();
 
@@ -228,7 +233,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
             break;
 
-          //modifier should be matched to a modifier in the chemeq
+            //modifier should be matched to a modifier in the chemeq
           case CFunctionParameter::Role::MODIFIER:
             jmax = reaction->getChemEq().getModifiers().size();
 
@@ -248,7 +253,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
             break;
 
-          //parameter must be matched to a local or global parameter (COPASI bug)
+            //parameter must be matched to a local or global parameter (COPASI bug)
           case CFunctionParameter::Role::PARAMETER:
             //first search in local parameters list
             jmax = reaction->getParameters().size();
@@ -333,125 +338,157 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
 
 #define WRITE(__level, __text) os << CFunctionAnalyzer::write(__level, rt, __text, "");
 
-bool CModelAnalyzer::ReactionResult::writeResult(std::ostream & os, bool rt, bool verbose) const
+
+CReactionResult::CReactionResult()
+  : mKineticUnspecifiedReversibility(false)
+  , mReversibilityMismatch(false)
+{
+
+}
+
+CReactionResult::~CReactionResult()
+{
+}
+
+bool CReactionResult::writeResult(std::ostream & os, bool rt, bool verbose, bool writeToStream /*= true*/) const
 {
   bool ret = false;
 
   //reaction name
-  if (rt) os << "<h2>";
+  if (writeToStream)
+    {
+      if (rt) os << "<h2>";
 
-  os << mReactionName;
+      os << mReactionName;
 
-  if (rt) os << "</h2>";
+      if (rt) os << "</h2>";
 
-  os << "\n";
+      os << "\n";
 
-  //reaction results
-  if (mKineticUnspecifiedReversibility)
-    os << CFunctionAnalyzer::write(1, rt, "The kinetic function has unspecified reversibility.",
-                                   "This means that checking the kinetic function will be less strict.");
 
-  if (mReversibilityMismatch)
-    os << CFunctionAnalyzer::write(3, rt, "The reversibility of the reaction and the kinetic function doesn't match.", "");
+      //reaction results
+      if (mKineticUnspecifiedReversibility)
+        os << CFunctionAnalyzer::write(1, rt, "The kinetic function has unspecified reversibility.",
+                                       "This means that checking the kinetic function will be less strict.");
+
+      if (mReversibilityMismatch)
+        os << CFunctionAnalyzer::write(3, rt, "The reversibility of the reaction and the kinetic function doesn't match.", "");
+
+    }
 
   size_t i, imax;
   imax = mChemEqSubs.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(2, rt, "The reaction substrate \""
-                                     + mChemEqSubs[i]
-                                     + "\" is not mapped to a corresponding function parameter.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(2, rt, "The reaction substrate \""
+                                       + mChemEqSubs[i]
+                                       + "\" is not mapped to a corresponding function parameter.", "");
+
+      ret = true;
     }
 
   imax = mChemEqProds.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(2, rt, "The reaction product \""
-                                     + mChemEqProds[i]
-                                     + "\" is not mapped to a corresponding function parameter.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(2, rt, "The reaction product \""
+                                       + mChemEqProds[i]
+                                       + "\" is not mapped to a corresponding function parameter.", "");
+
+      ret = true;
     }
 
   imax = mChemEqMods.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(1, rt, "The reaction modifier \""
-                                     + mChemEqMods[i]
-                                     + "\" is not mapped to a corresponding function parameter.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(1, rt, "The reaction modifier \""
+                                       + mChemEqMods[i]
+                                       + "\" is not mapped to a corresponding function parameter.", "");
     }
 
   imax = mNotMetabolite.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
-                                     + mNotMetabolite[i]
-                                     + "\" which should be mapped to a metabolite is mapped to something else.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mNotMetabolite[i]
+                                       + "\" which should be mapped to a metabolite is mapped to something else.", "");
     }
 
   imax = mFunctionParametersSubs.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
-                                     + mFunctionParametersSubs[i]
-                                     + "\" is not mapped to a substrate of the reaction.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersSubs[i]
+                                       + "\" is not mapped to a substrate of the reaction.", "");
     }
 
   imax = mFunctionParametersProds.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
-                                     + mFunctionParametersProds[i]
-                                     + "\" is not mapped to a product of the reaction.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersProds[i]
+                                       + "\" is not mapped to a product of the reaction.", "");
     }
 
   imax = mFunctionParametersMods.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
-                                     + mFunctionParametersMods[i]
-                                     + "\" is not mapped to a modifier of the reaction.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersMods[i]
+                                       + "\" is not mapped to a modifier of the reaction.", "");
     }
 
   imax = mFunctionParametersParams.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
-                                     + mFunctionParametersParams[i]
-                                     + "\" is not mapped to local parameter or a global value.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersParams[i]
+                                       + "\" is not mapped to local parameter or a global value.", "");
     }
 
   imax = mFunctionParametersVol.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
-                                     + mFunctionParametersVol[i]
-                                     + "\" is not mapped to a compartment.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersVol[i]
+                                       + "\" is not mapped to a compartment.", "");
     }
 
   imax = mFunctionParametersTime.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
-                                     + mFunctionParametersTime[i]
-                                     + "\" is not correctly handled as model time.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(3, rt, "The function parameter \""
+                                       + mFunctionParametersTime[i]
+                                       + "\" is not correctly handled as model time.", "");
     }
 
   imax = mFunctionParametersVar.size();
 
   for (i = 0; i < imax; ++i)
     {
-      os << CFunctionAnalyzer::write(1, rt, "The function parameter \""
-                                     + mFunctionParametersVar[i]
-                                     + "\" is marked as \"variable\". Not sure what this means.", "");
+      if (writeToStream)
+        os << CFunctionAnalyzer::write(1, rt, "The function parameter \""
+                                       + mFunctionParametersVar[i]
+                                       + "\" is marked as \"variable\". Not sure what this means.", "");
     }
 
   //function results
@@ -468,6 +505,25 @@ bool CModelAnalyzer::ReactionResult::writeResult(std::ostream & os, bool rt, boo
   return ret;
 }
 
+bool CReactionResult::hasIssue() const
+{
+  std::stringstream str;
+  return writeResult(str, false, false, false);
+}
+
+std::string CReactionResult::getResultString(bool rt, bool verbose) const
+{
+  std::stringstream str;
+  writeResult(str, rt, verbose);
+  return str.str();
+}
+
+
+const std::string& CReactionResult::getName() const
+{
+  return mReactionName;
+}
+
 void CModelAnalyzer::writeReport(std::ostream & os, bool rt, bool verbose) const
 {
 
@@ -479,4 +535,9 @@ void CModelAnalyzer::writeReport(std::ostream & os, bool rt, bool verbose) const
       //std::ostringstream tmpss;
       mReactionResults[i].writeResult(os, rt, verbose);
     }
+}
+
+const std::vector<CReactionResult>& CModelAnalyzer::getReactionResults() const
+{
+  return mReactionResults;
 }

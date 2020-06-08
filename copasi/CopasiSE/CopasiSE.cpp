@@ -34,28 +34,28 @@
 
 #define COPASI_MAIN
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/model/CModel.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/CCopasiTask.h"
-#include "utilities/CCopasiProblem.h"
-#include "commandline/COptionParser.h"
-#include "commandline/COptions.h"
-#include "function/CFunctionDB.h"
-#include "function/CEvaluationTree.h"
-#include "function/CFunction.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/commandline/COptionParser.h"
+#include "copasi/commandline/COptions.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/function/CEvaluationTree.h"
+#include "copasi/function/CFunction.h"
 
-#include "randomGenerator/CRandom.h"
-#include "core/CDataTimer.h"
-#include "report/CKeyFactory.h"
-#include "utilities/CVersion.h"
-#include "utilities/CDirEntry.h"
-#include "utilities/CSparseMatrix.h"
-#include "utilities/CProcessReport.h"
+#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/core/CDataTimer.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/CVersion.h"
+#include "copasi/utilities/CDirEntry.h"
+#include "copasi/utilities/CSparseMatrix.h"
+#include "copasi/utilities/CProcessReport.h"
 
 #define OPERATION_FAILED 1
 #define NO_EXPORT_REQUESTED 2
@@ -292,11 +292,8 @@ int main(int argc, char *argv[])
               goto finish;
             }
 
-          if (!importSBML)
-            {
-              // combine archives or SED-ML will have defined tasks
-              retcode = runScheduledTasks(pProcessReport);
-            }
+          // combine archives or SED-ML will have defined tasks
+          retcode = runScheduledTasks(pProcessReport);
 
           exportParametersToIniFile();
 
@@ -428,7 +425,7 @@ int runScheduledTasks(CProcessReport * pProcessReport)
 
   if (!ScheduledTask.empty())
     {
-      if (!TaskList.getIndex(ScheduledTask) == C_INVALID_INDEX)
+      if (TaskList.getIndex(ScheduledTask) == C_INVALID_INDEX)
         {
           std::cerr << "No task '" << ScheduledTask << "' to be marked executable"
                     << std::endl << std::endl;
@@ -443,6 +440,9 @@ for (CCopasiTask & task : TaskList)
 
       CCopasiTask& toBeScheduled = TaskList[ScheduledTask];
       toBeScheduled.setScheduled(true);
+
+      if (!COptions::compareValue("Save", std::string("")))
+        toBeScheduled.setUpdateModel(true);
     }
 
 
@@ -461,7 +461,7 @@ for (CCopasiTask & task : TaskList)
 
         try
           {
-            success = task.initialize(CCopasiTask::OUTPUT_SE, pDataModel, NULL);
+            success = task.initialize(CCopasiTask::OUTPUT_UI, pDataModel, NULL);
 
             // We need to check whether the result is saved in any form.
             // If not we need to stop right here to avoid wasting time.

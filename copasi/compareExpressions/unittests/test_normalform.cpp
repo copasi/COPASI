@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,20 +28,20 @@
 #include <set>
 #include <cmath>
 
-#include "function/CEvaluationTree.h"
-#include "function/CEvaluationNode.h"
-#include "compareExpressions/CNormalFraction.h"
-#include "compareExpressions/CNormalTranslation.h"
-#include "compareExpressions/CNormalSum.h"
-#include "compareExpressions/CNormalProduct.h"
-#include "compareExpressions/CNormalItemPower.h"
-#include "compareExpressions/CNormalItem.h"
-#include "compareExpressions/CNormalFunction.h"
-#include "compareExpressions/CNormalGeneralPower.h"
-#include "compareExpressions/CNormalChoice.h"
-#include "compareExpressions/CNormalChoiceLogical.h"
-#include "compareExpressions/CNormalLogical.h"
-#include "compareExpressions/CNormalLogicalItem.h"
+#include "copasi/function/CEvaluationTree.h"
+#include "copasi/function/CEvaluationNode.h"
+#include "copasi/compareExpressions/CNormalFraction.h"
+#include "copasi/compareExpressions/CNormalTranslation.h"
+#include "copasi/compareExpressions/CNormalSum.h"
+#include "copasi/compareExpressions/CNormalProduct.h"
+#include "copasi/compareExpressions/CNormalItemPower.h"
+#include "copasi/compareExpressions/CNormalItem.h"
+#include "copasi/compareExpressions/CNormalFunction.h"
+#include "copasi/compareExpressions/CNormalGeneralPower.h"
+#include "copasi/compareExpressions/CNormalChoice.h"
+#include "copasi/compareExpressions/CNormalChoiceLogical.h"
+#include "copasi/compareExpressions/CNormalLogical.h"
+#include "copasi/compareExpressions/CNormalLogicalItem.h"
 #include "copasi/core/CRootContainer.h"
 
 #ifdef __SUNPRO_CC

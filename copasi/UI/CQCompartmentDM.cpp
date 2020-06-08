@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,20 +25,20 @@
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
 
-#include "model/CReaction.h"
-#include "model/CMetab.h"
-#include "model/CReactionInterface.h"
-#include "model/CEvent.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/model/CEvent.h"
 
-#include "UI/CQCopasiApplication.h"
+#include "copasi/UI/CQCopasiApplication.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CCompartment.h"
-#include "model/CModel.h"
-#include "function/CExpression.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CModel.h"
+#include "copasi/function/CExpression.h"
 #include "copasi/undo/CUndoData.h"
 
 CQCompartmentDM::CQCompartmentDM(QObject *parent)
@@ -60,10 +60,19 @@ const QStringList& CQCompartmentDM::getTypes()
   return mTypes;
 }
 
-int CQCompartmentDM::rowCount(const QModelIndex&) const
+size_t CQCompartmentDM::size() const
 {
-  return mpCompartments->size() + 1;
+  if (mpCompartments != NULL)
+    return mpCompartments->size();
+
+  return 0;
 }
+
+int CQCompartmentDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched + 1;
+}
+
 int CQCompartmentDM::columnCount(const QModelIndex&) const
 {
   return TOTAL_COLS_COMPARTMENTS;
@@ -100,7 +109,7 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int) mpCompartments->size())
         {
           switch (index.column())
             {
@@ -341,8 +350,9 @@ bool CQCompartmentDM::removeRows(int position, int rows, const QModelIndex & par
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+      --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
@@ -401,6 +411,8 @@ void CQCompartmentDM::insertNewRows(int position, int rows, int column, const QV
       if (pComp == NULL)
         continue;
 
+      ++mFetched;
+
       if (column == COL_TYPE_COMPARTMENTS)
         {
           pComp->setStatus(CModelEntity::StatusName.toEnum(TO_UTF8(value.toString())));
@@ -423,7 +435,7 @@ bool CQCompartmentDM::clear()
 {
   QModelIndexList rows;
 
-  for (int i = 0; i < mpCompartments->size(); i++)
+  for (int i = 0; i < (int) mpCompartments->size(); i++)
     {
       rows.append(index(i, 0));
     }

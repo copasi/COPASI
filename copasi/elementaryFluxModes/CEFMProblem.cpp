@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,17 +22,17 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CEFMProblem.h"
 #include "CEFMTask.h"
 #include "CFluxMode.h"
 #include "CEFMMethod.h"
 
-#include "model/CReaction.h"
-#include "model/CModel.h"
-#include "model/CMetabNameInterface.h"
-#include "math/CMathContainer.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetabNameInterface.h"
+#include "copasi/math/CMathContainer.h"
 
 //  Default constructor
 CEFMProblem::CEFMProblem(const CDataContainer * pParent):

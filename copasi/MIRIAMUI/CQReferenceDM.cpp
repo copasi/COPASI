@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,7 +20,7 @@
 
 #include "CQReferenceDM.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "copasi/UI/CQMessageBox.h"
 #include "copasi/UI/qtUtilities.h"
@@ -39,12 +39,22 @@ void CQReferenceDM::setMIRIAMInfo(CMIRIAMInfo * pMiriamInfo)
   endResetModel();
 }
 
-int CQReferenceDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+void CQReferenceDM::resetCacheProtected()
+{
+  mpMIRIAMInfo = NULL;
+}
+
+size_t CQReferenceDM::size() const
 {
   if (mpMIRIAMInfo != NULL)
-    return (int) mpMIRIAMInfo->getReferences().size() + 1;
+    return (int) mpMIRIAMInfo->getReferences().size();
 
   return 0;
+}
+
+int CQReferenceDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched + 1;
 }
 
 int CQReferenceDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
@@ -62,7 +72,7 @@ QVariant CQReferenceDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int)mpMIRIAMInfo->getReferences().size())
         {
           if (index.column() == COL_RESOURCE_REFERENCE)
             return QVariant(QString("-- select --"));
@@ -184,6 +194,8 @@ bool CQReferenceDM::insertRows(int position, int rows, const QModelIndex & paren
 
       if (pReference == NULL)
         continue;
+
+      ++mFetched;
     }
 
   endInsertRows();
@@ -215,8 +227,9 @@ bool CQReferenceDM::removeRows(int position, int rows, const QModelIndex & paren
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+      --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 

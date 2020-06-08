@@ -23,20 +23,20 @@
 // All rights reserved.
 
 #include <QGridLayout>
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CQTSSAResultWidget.h"
 #include "CQTSSAResultSubWidget.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/core/CDataVector.h"
-#include "tssanalysis/CTSSATask.h"
+#include "copasi/tssanalysis/CTSSATask.h"
 
-//#include "report/CKeyFactory.h"
+//#include "copasi/report/CKeyFactory.h"
 #include "qtUtilities.h"
-#include "tssanalysis/CTSSAMethod.h"
+#include "copasi/tssanalysis/CTSSAMethod.h"
 
-#include "tssanalysis/CTSSATask.h"
+#include "copasi/tssanalysis/CTSSATask.h"
 
 CTSSATask* pTask;
 CTSSAMethod* pTSSILDM;

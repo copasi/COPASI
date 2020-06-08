@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,17 +28,17 @@
 #include <cmath>
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "COptMethodLevenbergMarquardt.h"
 #include "COptProblem.h"
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "parameterFitting/CFitProblem.h"
+#include "copasi/parameterFitting/CFitProblem.h"
 #include "copasi/core/CDataObjectReference.h"
 
-#include "lapack/lapackwrap.h"
-#include "lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
+#include "copasi/lapack/blaswrap.h"
 
 #define LAMBDA_MAX 1e80
 
@@ -184,7 +184,7 @@ bool COptMethodLevenbergMarquardt::optimise()
 
   evaluate();
 
-  if (!isnan(mEvaluationValue))
+  if (!std::isnan(mEvaluationValue))
     {
       // and store that value
       mBestValue = mEvaluationValue;

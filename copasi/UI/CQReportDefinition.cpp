@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -38,6 +38,38 @@
 #include "copasi/xml/CCopasiXMLInterface.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
+void _addItem(QTableWidget* pList, QTableWidgetItem* item)
+{
+  int row = pList->rowCount();
+  pList->insertRow(row);
+  pList->setItem(row, 0, item);
+}
+
+void _insertItem(QTableWidget* pList, int row, QTableWidgetItem* item)
+{
+  pList->insertRow(row);
+  pList->setItem(row, 0, item);
+}
+
+void
+CQReportDefinition::_setup(QTableWidget* pList)
+{
+  pList->setColumnCount(1);
+  pList->horizontalHeader()->setVisible(false);
+  pList->horizontalHeader()->setStretchLastSection(true);
+
+  pList->addAction(mpActAddItem);
+  pList->addAction(mpActAddSeparator);
+  pList->addAction(mpActAddLineBreak);
+  pList->addAction(mpActEditItem);
+  pList->addAction(mpActEditText);
+  pList->addAction(mpSeparator);
+  pList->addAction(mpActDeleteItem);
+
+  connect(pList, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), mpActEditItem, SLOT(trigger()));
+  connect(pList->model(), SIGNAL(layoutChanged()), this, SLOT(setDirty()));
+}
+
 /*
  *  Constructs a CQReportDefinition which is a child of 'parent', with the
  *  name 'name'.'
@@ -63,52 +95,13 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
 
   mpTaskBox->addItems(TaskNames);
 
-  QAction* separator = new QAction("", this);
-  separator->setSeparator(true);
+  mpSeparator = new QAction("", this);
+  mpSeparator->setSeparator(true);
 
-  this->mpTableList->addAction(this->mpActAddItem);
-  this->mpTableList->addAction(this->mpActAddSeparator);
-  this->mpTableList->addAction(this->mpActAddLineBreak);
-  this->mpTableList->addAction(this->mpActEditItem);
-  this->mpTableList->addAction(this->mpActEditText);
-  this->mpTableList->addAction(separator);
-  this->mpTableList->addAction(this->mpActDeleteItem);
-
-  this->mpHeaderList->addAction(this->mpActAddItem);
-  this->mpHeaderList->addAction(this->mpActAddSeparator);
-  this->mpHeaderList->addAction(this->mpActAddLineBreak);
-  this->mpHeaderList->addAction(this->mpActEditItem);
-  this->mpHeaderList->addAction(this->mpActEditText);
-  this->mpHeaderList->addAction(separator);
-  this->mpHeaderList->addAction(this->mpActDeleteItem);
-
-  this->mpBodyList->addAction(this->mpActAddItem);
-  this->mpBodyList->addAction(this->mpActAddSeparator);
-  this->mpBodyList->addAction(this->mpActAddLineBreak);
-  this->mpBodyList->addAction(this->mpActEditItem);
-  this->mpBodyList->addAction(this->mpActEditText);
-  this->mpBodyList->addAction(separator);
-  this->mpBodyList->addAction(this->mpActDeleteItem);
-
-  this->mpFooterList->addAction(this->mpActAddItem);
-  this->mpFooterList->addAction(this->mpActAddSeparator);
-  this->mpFooterList->addAction(this->mpActAddLineBreak);
-  this->mpFooterList->addAction(this->mpActEditItem);
-  this->mpFooterList->addAction(this->mpActEditText);
-  this->mpFooterList->addAction(separator);
-  this->mpFooterList->addAction(this->mpActDeleteItem);
-
-  connect(mpTableList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), mpActEditItem, SLOT(trigger()));
-  connect(mpTableList->model(), SIGNAL(layoutChanged()), this, SLOT(setDirty()));
-
-  connect(mpHeaderList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), mpActEditItem, SLOT(trigger()));
-  connect(mpHeaderList->model(), SIGNAL(layoutChanged()), this, SLOT(setDirty()));
-
-  connect(mpBodyList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), mpActEditItem, SLOT(trigger()));
-  connect(mpBodyList->model(), SIGNAL(layoutChanged()), this, SLOT(setDirty()));
-
-  connect(mpFooterList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), mpActEditItem, SLOT(trigger()));
-  connect(mpFooterList->model(), SIGNAL(layoutChanged()), this, SLOT(setDirty()));
+  _setup(mpTableList);
+  _setup(mpHeaderList);
+  _setup(mpBodyList);
+  _setup(mpFooterList);
 }
 
 /*
@@ -157,21 +150,25 @@ void CQReportDefinition::btnAdvancedClicked()
         {
           // We convert the body without the separators to a table.
           mpTableList->clear();
+          mpTableList->setRowCount(0);
 
-          unsigned C_INT32 i, imax = mpBodyList->count();
+          unsigned C_INT32 i, imax = mpBodyList->rowCount();
 
           for (i = 0; i < imax; ++i)
             {
-              CQReportListItem *current = static_cast<CQReportListItem *>(mpBodyList->item(i));
+              CQReportListItem *current = static_cast<CQReportListItem *>(mpBodyList->item(i, 0));
               const CCommonName& name = current->getCN();
 
               if (name.getObjectType() != "Separator")
-                mpTableList->addItem(new CQReportListItem(name, mpDataModel));
+                _addItem(mpTableList, new CQReportListItem(name, mpDataModel));
             }
 
           mpHeaderList->clear();
+          mpHeaderList->setRowCount(0);
           mpBodyList->clear();
+          mpBodyList->setRowCount(0);
           mpFooterList->clear();
+          mpFooterList->setRowCount(0);
 
           setAdvancedMode(false);
 
@@ -223,14 +220,14 @@ void CQReportDefinition::btnItemClicked()
 
   if (SelectedVector.size() != 0)
     {
-      QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentWidget());
+      QTableWidget * pList = static_cast< QTableWidget * >(mpReportSectionTab->currentWidget());
       std::vector< const CDataObject * >::const_iterator it = SelectedVector.begin();
       std::vector< const CDataObject * >::const_iterator end = SelectedVector.end();
 
       for (; it != end; ++it)
         {
           pItem = new CQReportListItem(*it);
-          pList->addItem(pItem);
+          _addItem(pList, pItem);
         }
 
       mChanged = true;
@@ -248,7 +245,7 @@ void CQReportDefinition::btnSeparatorClicked()
   else
     Separator = TO_UTF8_UNTRIMMED(mpSeparator->text());
 
-  static_cast<QListWidget *>(mpReportSectionTab->currentWidget())->addItem(new CQReportListItem(Separator.getCN(), mpDataModel));
+  _addItem(static_cast<QTableWidget*>(mpReportSectionTab->currentWidget()), new CQReportListItem(Separator.getCN(), mpDataModel));
 
   mChanged = true;
 
@@ -257,7 +254,7 @@ void CQReportDefinition::btnSeparatorClicked()
 
 void CQReportDefinition::btnLineBreakClicked()
 {
-  static_cast<QListWidget *>(mpReportSectionTab->currentWidget())->addItem(new CQReportListItem(CDataString("\n").getCN(), mpDataModel));
+  _addItem(static_cast<QTableWidget*>(mpReportSectionTab->currentWidget()), new CQReportListItem(CDataString("\n").getCN(), mpDataModel));
 }
 
 void CQReportDefinition::btnTextClicked()
@@ -269,7 +266,7 @@ void CQReportDefinition::btnTextClicked()
     {
       CDataString Text(TO_UTF8(pDialog->getText()));
 
-      static_cast<QListWidget *>(mpReportSectionTab->currentWidget())->addItem(new CQReportListItem(Text.getCN(), mpDataModel));
+      _addItem(static_cast<QTableWidget*>(mpReportSectionTab->currentWidget()), new CQReportListItem(Text.getCN(), mpDataModel));
     }
 
   delete pDialog;
@@ -281,20 +278,21 @@ void CQReportDefinition::btnTextClicked()
 
 void CQReportDefinition::btnDeleteClicked()
 {
-  QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentWidget());
+  QTableWidget * pList = static_cast< QTableWidget * >(mpReportSectionTab->currentWidget());
 
-  QListWidgetItem * pNewSelection = NULL;
+  QTableWidgetItem * pNewSelection = NULL;
 
   int i, multipleSelection;
 
-  for (i = pList->count() - 1, multipleSelection = 0; 0 <= i; i--)
-    if (pList->item(i)->isSelected())
+  for (i = pList->rowCount() - 1, multipleSelection = 0; 0 <= i; i--)
+    if (pList->item(i, 0)->isSelected())
       {
-        delete pList->takeItem(i);
+        delete pList->takeItem(i, 0);
+        pList->removeRow(i);
 
-        if (!pNewSelection && i < pList->count())
+        if (!pNewSelection && i < pList->rowCount())
           {
-            pNewSelection = pList->item(i); // We select the next.
+            pNewSelection = pList->item(i, 0); // We select the next.
           }
 
         multipleSelection++;
@@ -308,8 +306,8 @@ void CQReportDefinition::btnDeleteClicked()
   if (multipleSelection > 1) return;
 
   // Only one item was select and we move the selection to the next
-  if (!pNewSelection && pList->count()) // We have removed item at the end.
-    pNewSelection = pList->item(pList->count() - 1);
+  if (!pNewSelection && pList->rowCount()) // We have removed item at the end.
+    pNewSelection = pList->item(pList->rowCount() - 1, 0);
 
   // pNewSelection is NULL if the list is empty
   if (pNewSelection)
@@ -322,13 +320,13 @@ void CQReportDefinition::btnDeleteClicked()
 
 void CQReportDefinition::btnUpClicked()
 {
-  QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentWidget());
+  QTableWidget * pList = static_cast< QTableWidget * >(mpReportSectionTab->currentWidget());
   int i, to, multipleSelection;
 
-  QListWidgetItem * pMove;
+  QTableWidgetItem * pMove;
 
-  for (i = pList->count() - 1, to = -1, multipleSelection = 0; i >= 0; i--)
-    if (pList->item(i)->isSelected())
+  for (i = pList->rowCount() - 1, to = -1, multipleSelection = 0; i >= 0; i--)
+    if (pList->item(i, 0)->isSelected())
       {
         if (multipleSelection == 0)
           {
@@ -339,11 +337,12 @@ void CQReportDefinition::btnUpClicked()
       }
     else if (multipleSelection > 0)
       {
-        pMove = pList->takeItem(i);
+        pMove = pList->takeItem(i, 0);
+        pList->removeRow(i);
 
         if (pMove)
           {
-            pList->insertItem(to, pMove);
+            _insertItem(pList, to, pMove);
 
             multipleSelection = 0;
             mChanged = true;
@@ -352,21 +351,21 @@ void CQReportDefinition::btnUpClicked()
 
   // Unselect things we can not move.
   for (i = 0; i < multipleSelection; i++)
-    pList->item(i)->setSelected(false);
+    pList->item(i, 0)->setSelected(false);
 
   return;
 }
 
 void CQReportDefinition::btnDownClicked()
 {
-  QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentWidget());
+  QTableWidget * pList = static_cast< QTableWidget * >(mpReportSectionTab->currentWidget());
   int i, imax, to, multipleSelection;
 
-  QListWidgetItem * pMove;
+  QTableWidgetItem * pMove;
 
   // Find the index of the first selected item.
-  for (i = 0, imax = pList->count(), to = -1, multipleSelection = 0; i < imax; i++)
-    if (pList->item(i)->isSelected())
+  for (i = 0, imax = pList->rowCount(), to = -1, multipleSelection = 0; i < imax; i++)
+    if (pList->item(i, 0)->isSelected())
       {
         if (multipleSelection == 0) to = i;
 
@@ -374,11 +373,12 @@ void CQReportDefinition::btnDownClicked()
       }
     else if (multipleSelection > 0)
       {
-        pMove = pList->takeItem(i);
+        pMove = pList->takeItem(i, 0);
+        pList->removeRow(i);
 
         if (pMove)
           {
-            pList->insertItem(to, pMove);
+            _insertItem(pList, to, pMove);
 
             multipleSelection = 0;
             mChanged = true;
@@ -386,8 +386,8 @@ void CQReportDefinition::btnDownClicked()
       }
 
   // Unselect things we can not move.
-  for (i = pList->count() - multipleSelection, imax = pList->count(); i < imax; i++)
-    pList->item(i)->setSelected(false);
+  for (i = pList->rowCount() - multipleSelection, imax = pList->rowCount(); i < imax; i++)
+    pList->item(i, 0)->setSelected(false);
 
   return;
 }
@@ -513,15 +513,25 @@ void CQReportDefinition::btnCommitClicked()
 
 void CQReportDefinition::slotDeleteCurrentItem()
 {
-  QListWidget * current = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
-  QList<QListWidgetItem*> selected = current->selectedItems();
+  QTableWidget * current = static_cast<QTableWidget *>(mpReportSectionTab->currentWidget());
+  QList<QTableWidgetItem*> selected = current->selectedItems();
 
   if (selected.empty())
     {
       return;
     }
 
-  qDeleteAll(selected);
+  auto it = selected.begin();
+  auto end = selected.end();
+
+  while (it != end)
+    {
+      QTableWidgetItem* item = *it;
+      int row = item->row();
+      current->removeRow(row);
+      ++it;
+    }
+
   setDirty();
 }
 
@@ -532,10 +542,10 @@ void CQReportDefinition::slotEditCurrentItem()
 
   if (!pModel) return;
 
-  QListWidget * pList = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
-  QList<QListWidgetItem*> selectedItems = pList->selectedItems();
+  QTableWidget * pList = static_cast<QTableWidget *>(mpReportSectionTab->currentWidget());
+  QList<QTableWidgetItem*> selectedItems = pList->selectedItems();
 
-  foreach (QListWidgetItem * item, selectedItems)
+  foreach (QTableWidgetItem * item, selectedItems)
     {
       CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
       const CCommonName & name = current->getCN();
@@ -567,12 +577,12 @@ void CQReportDefinition::slotEditCurrentItemText()
 
   if (!pModel) return;
 
-  QListWidget * pList = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
-  QList<QListWidgetItem*> selectedItems = pList->selectedItems();
+  QTableWidget * pList = static_cast<QTableWidget *>(mpReportSectionTab->currentWidget());
+  QList<QTableWidgetItem*> selectedItems = pList->selectedItems();
 
   CQTextDialog * pDialog = new CQTextDialog(this);
 
-  foreach (QListWidgetItem * item, selectedItems)
+  foreach (QTableWidgetItem * item, selectedItems)
     {
       CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
       const CCommonName & name = current->getCN();
@@ -623,17 +633,17 @@ void CQReportDefinition::slotAddSeparator()
   else
     Separator = TO_UTF8_UNTRIMMED(mpSeparator->text());
 
-  QListWidget * current = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
+  QTableWidget * current = static_cast<QTableWidget *>(mpReportSectionTab->currentWidget());
 
-  QList<QListWidgetItem*> selected = current->selectedItems();
+  QList<QTableWidgetItem*> selected = current->selectedItems();
 
   if (selected.empty())
     {
-      current->addItem(new CQReportListItem(Separator.getCN(), mpDataModel));
+      _addItem(current, new CQReportListItem(Separator.getCN(), mpDataModel));
     }
   else
     {
-      current->insertItem(current->row(selected.first()), new CQReportListItem(Separator.getCN(), mpDataModel));
+      _insertItem(current, current->row(selected.first()), new CQReportListItem(Separator.getCN(), mpDataModel));
     }
 
   mChanged = true;
@@ -643,17 +653,17 @@ void CQReportDefinition::slotAddSeparator()
 
 void CQReportDefinition::slotAddLineBreak()
 {
-  QListWidget * current = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
+  QTableWidget * current = static_cast<QTableWidget *>(mpReportSectionTab->currentWidget());
 
-  QList<QListWidgetItem*> selected = current->selectedItems();
+  QList<QTableWidgetItem*> selected = current->selectedItems();
 
   if (selected.empty())
     {
-      current->addItem(new CQReportListItem(CDataString("\n").getCN(), mpDataModel));
+      _addItem(current, new CQReportListItem(CDataString("\n").getCN(), mpDataModel));
     }
   else
     {
-      current->insertItem(current->row(selected.first()), new CQReportListItem(CDataString("\n").getCN(), mpDataModel));
+      _insertItem(current, current->row(selected.first()), new CQReportListItem(CDataString("\n").getCN(), mpDataModel));
     }
 
   mChanged = true;
@@ -663,9 +673,9 @@ void CQReportDefinition::slotAddLineBreak()
 
 void CQReportDefinition::slotAddItem()
 {
-  QListWidget * current = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
+  QTableWidget * current = static_cast<QTableWidget *>(mpReportSectionTab->currentWidget());
 
-  QList<QListWidgetItem*> selected = current->selectedItems();
+  QList<QTableWidgetItem*> selected = current->selectedItems();
 
   std::vector< const CDataObject * > SelectedVector =
     //    CCopasiSelectionDialog::getObjectVector(this, CQSimpleSelectionTree::NO_RESTRICTION);
@@ -675,7 +685,7 @@ void CQReportDefinition::slotAddItem()
 
   if (SelectedVector.size() != 0)
     {
-      QListWidget * pList = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
+      QTableWidget * pList = static_cast<QTableWidget *>(mpReportSectionTab->currentWidget());
       std::vector< const CDataObject * >::const_iterator it = SelectedVector.begin();
       std::vector< const CDataObject * >::const_iterator end = SelectedVector.end();
 
@@ -685,11 +695,11 @@ void CQReportDefinition::slotAddItem()
 
           if (selected.empty())
             {
-              pList->addItem(pItem);
+              _addItem(pList, pItem);
             }
           else
             {
-              current->insertItem(current->row(selected.first()), pItem);
+              _insertItem(current, current->row(selected.first()), pItem);
             }
         }
 
@@ -759,9 +769,13 @@ bool CQReportDefinition::load()
 
   // Reset everything.
   mpHeaderList->clear();
+  mpHeaderList->setRowCount(0);
   mpBodyList->clear();
+  mpBodyList->setRowCount(0);
   mpFooterList->clear();
+  mpFooterList->setRowCount(0);
   mpTableList->clear();
+  mpTableList->setRowCount(0);
 
   mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
   mpTaskBox->setCurrentIndex(static_cast<size_t>(mpReportDefinition->getTaskType()));
@@ -795,7 +809,7 @@ bool CQReportDefinition::load()
       pList = mpReportDefinition->getTableAddr();
 
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
-        mpTableList->addItem(new CQReportListItem(*it, mpDataModel));
+        _addItem(mpTableList, new CQReportListItem(*it, mpDataModel));
     }
   else
     {
@@ -804,17 +818,17 @@ bool CQReportDefinition::load()
       pList = mpReportDefinition->getHeaderAddr();
 
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
-        mpHeaderList->addItem(new CQReportListItem(*it, mpDataModel));
+        _addItem(mpHeaderList, new CQReportListItem(*it, mpDataModel));
 
       pList = mpReportDefinition->getBodyAddr();
 
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
-        mpBodyList->addItem(new CQReportListItem(*it, mpDataModel));
+        _addItem(mpBodyList, new CQReportListItem(*it, mpDataModel));
 
       pList = mpReportDefinition->getFooterAddr();
 
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
-        mpFooterList->addItem(new CQReportListItem(*it, mpDataModel));
+        _addItem(mpFooterList, new CQReportListItem(*it, mpDataModel));
     }
 
   mChanged = false;
@@ -823,8 +837,6 @@ bool CQReportDefinition::load()
 
 bool CQReportDefinition::save()
 {
-  if (!mChanged) return true;
-
   if (!mpReportDefinition) return false;
 
   if (mpReportDefinition->getObjectName() != TO_UTF8(mpName->text()))
@@ -873,30 +885,48 @@ bool CQReportDefinition::save()
 
       pList = mpReportDefinition->getHeaderAddr();
 
-      for (i = 0, imax = mpHeaderList->count(); i < imax; i++)
-        if (static_cast<CQReportListItem *>(mpHeaderList->item(i))->getCN().getObjectType()
-            == "Separator")
-          pList->push_back(mpReportDefinition->getSeparator().getCN());
-        else
-          pList->push_back(static_cast<CQReportListItem *>(mpHeaderList->item(i))->getCN());
+      for (i = 0, imax = mpHeaderList->rowCount(); i < imax; i++)
+        {
+          CQReportListItem* item = dynamic_cast<CQReportListItem*>(mpHeaderList->item(i, 0));
+
+          if (item == NULL) continue;
+
+          if (item->getCN().getObjectType()
+              == "Separator")
+            pList->push_back(mpReportDefinition->getSeparator().getCN());
+          else
+            pList->push_back(item->getCN());
+        }
 
       pList = mpReportDefinition->getBodyAddr();
 
-      for (i = 0, imax = mpBodyList->count(); i < imax; i++)
-        if (static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN().getObjectType()
-            == "Separator")
-          pList->push_back(mpReportDefinition->getSeparator().getCN());
-        else
-          pList->push_back(static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN());
+      for (i = 0, imax = mpBodyList->rowCount(); i < imax; i++)
+        {
+          CQReportListItem* item = dynamic_cast<CQReportListItem*>(mpBodyList->item(i, 0));
+
+          if (item == NULL) continue;
+
+          if (item->getCN().getObjectType()
+              == "Separator")
+            pList->push_back(mpReportDefinition->getSeparator().getCN());
+          else
+            pList->push_back(item->getCN());
+        }
 
       pList = mpReportDefinition->getFooterAddr();
 
-      for (i = 0, imax = mpFooterList->count(); i < imax; i++)
-        if (static_cast<CQReportListItem *>(mpFooterList->item(i))->getCN().getObjectType()
-            == "Separator")
-          pList->push_back(mpReportDefinition->getSeparator().getCN());
-        else
-          pList->push_back(static_cast<CQReportListItem *>(mpFooterList->item(i))->getCN());
+      for (i = 0, imax = mpFooterList->rowCount(); i < imax; i++)
+        {
+          CQReportListItem* item = dynamic_cast<CQReportListItem*>(mpFooterList->item(i, 0));
+
+          if (item == NULL) continue;
+
+          if (item->getCN().getObjectType()
+              == "Separator")
+            pList->push_back(mpReportDefinition->getSeparator().getCN());
+          else
+            pList->push_back(static_cast<CQReportListItem*>(mpFooterList->item(i, 0))->getCN());
+        }
     }
   else
     {
@@ -906,8 +936,15 @@ bool CQReportDefinition::save()
 
       pList = mpReportDefinition->getTableAddr();
 
-      for (i = 0, imax = mpTableList->count(); i < imax; i++)
-        pList->push_back(static_cast<CQReportListItem *>(mpTableList->item(i))->getCN());
+      for (i = 0, imax = mpTableList->rowCount(); i < imax; i++)
+        {
+          CQReportListItem* item = dynamic_cast<CQReportListItem*>(mpTableList->item(i, 0));
+
+          if (item == NULL)
+            continue;
+
+          pList->push_back(item->getCN());
+        }
     }
 
   assert(mpDataModel != NULL);

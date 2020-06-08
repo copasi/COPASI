@@ -1,30 +1,38 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/Cxerrwd.cpp,v $
- $Revision: 1.6 $
- $Name:  $
- $Author: shoops $
- $Date: 2009/01/07 19:01:06 $
- End CVS Header */
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
 //
 // This C++ code is based on an f2c conversion of the Fortran
 // library ODEPACK available at: http://www.netlib.org/odepack/
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "Cxerrwd.h"
 
 Cxerrwd::Cxerrwd(const bool & print):
-    mPrint(print),
-    mpOstream(NULL)
+  mPrint(print),
+  mpOstream(NULL)
 {}
 
 Cxerrwd::~Cxerrwd() {}
@@ -35,9 +43,9 @@ void Cxerrwd::setOstream(std::ostream & os)
 void Cxerrwd::enablePrint(const bool & print)
 {mPrint = print;}
 
-void Cxerrwd::operator() (const std::string & msg, const C_INT *, const C_INT *, const C_INT
-                          *level, const C_INT *ni, const C_INT *i1, const C_INT *i2, const C_INT *nr,
-                          const double *r1, const double *r2, C_INT)
+void Cxerrwd::operator()(const std::string & msg, const C_INT *, const C_INT *, const C_INT
+                         *level, const C_INT *ni, const C_INT *i1, const C_INT *i2, const C_INT *nr,
+                         const double *r1, const double *r2, C_INT)
 {
   /* ***BEGIN PROLOGUE  XERRWD */
   /* ***SUBSIDIARY */
@@ -116,19 +124,22 @@ void Cxerrwd::operator() (const std::string & msg, const C_INT *, const C_INT *,
     {
       *mpOstream << "\tIn above message, I1 = '" << *i1 << "'\n";
     }
+
   if (*ni == 2)
     {
       *mpOstream << "\tIn above message, I1 = '" << *i1
-      << "', I2 = '" << *i2 << "'\n";
+                 << "', I2 = '" << *i2 << "'\n";
     }
+
   if (*nr == 1)
     {
       *mpOstream << "\tIn above message, R1 = '" << *r1 << "'\n";
     }
+
   if (*nr == 2)
     {
       *mpOstream << "\tIn above message, R1 = '" << *r1
-      << "', R2 = '" << *r2 << "'\n";
+                 << "', R2 = '" << *r2 << "'\n";
     }
 
   /*  Abort the run if LEVEL = 2. */

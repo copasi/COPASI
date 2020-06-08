@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -10,15 +15,15 @@
 
 #include <sbml/math/ASTNode.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "utilities/utility.h"
-#include "utilities/CValidatedUnit.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/utilities/CValidatedUnit.h"
 #include "copasi/core/CRootContainer.h"
 
 CEvaluationNodeDelay::CEvaluationNodeDelay():
@@ -241,7 +246,7 @@ ASTNode* CEvaluationNodeDelay::toAST(const CDataModel* pDataModel) const
   return pNode;
 }
 
-#include "utilities/copasimathml.h"
+#include "copasi/utilities/copasimathml.h"
 
 // virtual
 std::string CEvaluationNodeDelay::getMMLString(const std::vector< std::string > & children,

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,26 +22,28 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include <QApplication>
 #include <QTableWidgetItem>
-#include <QtCore/QStringList>
+#include <QStringList>
 #include <QLineEdit>
 #include <QCommonStyle>
 
-#include "parametertable.h"
-#include "CQComboDelegate.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/UI/parametertable.h"
+#include "copasi/UI/CQComboDelegate.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "qtUtilities.h"
+#include "copasi/UI/qtUtilities.h"
 
-#include "model/CReactionInterface.h"
-#include "model/CModel.h"
-#include "model/CReaction.h"
-#include "model/CMetabNameInterface.h"
-#include "utilities/CUnitValidator.h"
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CMetabNameInterface.h"
+#include "copasi/utilities/CUnitValidator.h"
 #include "copasi/core/CRootContainer.h"
-#include "math/CMathExpression.h"
+#include "copasi/math/CMathExpression.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 ParameterTable::ParameterTable(QWidget * parent)
   : QTableWidget(parent),
@@ -257,11 +259,17 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
   for (it = ri.getListOfMetabs(usage).begin(); it != ri.getListOfMetabs(usage).end(); ++it)
     mSubstrates += FROM_UTF8(CMetabNameInterface::unQuote(*it));
 
+  if (mSubstrates.empty())
+    mSubstrates += "unknown";
+
   mProducts.clear();
   usage = CFunctionParameter::Role::PRODUCT;
 
   for (it = ri.getListOfMetabs(usage).begin(); it != ri.getListOfMetabs(usage).end(); ++it)
     mProducts += FROM_UTF8(CMetabNameInterface::unQuote(*it));
+
+  if (mProducts.empty())
+    mProducts += "unknown";
 
   mModifiers.clear();  // Get all metabs; modifiers are never locked
   vectorOfStrings2QStringList(getListOfAllMetabNames(*pModel, ri), mModifiers);
@@ -273,6 +281,11 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
 
   QTableWidgetItem *pItem = NULL;
 
+  QPalette Palette = QGuiApplication::palette();
+  QColor Foreground = Palette.color(QPalette::Active, QPalette::Text);
+  QColor Background = Palette.color(QPalette::Active, QPalette::Base);
+
+  bool isDarkTheme = (Foreground.redF() + Foreground.greenF() + Foreground.blueF() > Background.redF() + Background.greenF() + Background.blueF());
   QColor subsColor(255, 210, 210);
   QColor prodColor(210, 255, 210);
   QColor modiColor(250, 250, 190);
@@ -337,7 +350,11 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
 
       // add first column
       pItem = new QTableWidgetItem(qUsage);
-      pItem->setBackground(color);
+
+      if (isDarkTheme)
+        pItem->setForeground(color);
+      else
+        pItem->setBackground(color);
 
       if (usage == CFunctionParameter::Role::SUBSTRATE)
         pItem->setIcon(CQIconResource::icon(CQIconResource::reactionSubstrate));
@@ -351,7 +368,11 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
 
       // add second column
       pItem = new QTableWidgetItem(FROM_UTF8(ri.getParameterName(i)));
-      pItem->setBackground(color);
+
+      if (isDarkTheme)
+        pItem->setForeground(color);
+      else
+        pItem->setBackground(color);
 
       if ((usage != CFunctionParameter::Role::PARAMETER)
           && (usage != CFunctionParameter::Role::VOLUME)
@@ -385,19 +406,33 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
           pItem = new QTableWidgetItem(" ? ");
         }
 
-      pItem->setBackground(color);
+      if (isDarkTheme)
+        pItem->setForeground(color);
+      else
+        pItem->setBackground(color);
+
       pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
       setItem((int) rowCounter, 4, pItem);
 
       // Create and color Value column
       pItem = new QTableWidgetItem("");
-      pItem->setBackground(QColor(color));
+
+      if (isDarkTheme)
+        pItem->setForeground(color);
+      else
+        pItem->setBackground(color);
+
       pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
       setItem((int) rowCounter, 3, pItem);
 
       // add fourth (Mapping) column (col index = 3)
       pItem = new QTableWidgetItem("");
-      pItem->setBackground(color);
+
+      if (isDarkTheme)
+        pItem->setForeground(color);
+      else
+        pItem->setBackground(color);
+
       setItem((int) rowCounter, 2, pItem);
 
       // if line is for a metabolite Parameter . . .
@@ -454,7 +489,12 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
                         {
                           pItem = new QTableWidgetItem("");
                           pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
-                          pItem->setBackground(color);
+
+                          if (isDarkTheme)
+                            pItem->setForeground(color);
+                          else
+                            pItem->setBackground(color);
+
                           setItem((int) rowCounter, k, pItem);
                         }
 
@@ -492,6 +532,7 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
             {
               pItem->setText(convertToQString(ri.getLocalValue(i)));
               pItem->setFlags(pItem->flags() | (Qt::ItemIsEditable));
+              pItem->setForeground(Foreground);
             }
           else
             {
@@ -506,7 +547,6 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
                       pParamObject->getStatus() == CModelEntity::Status::FIXED)
                     {
                       pItem->setText(convertToQString(pParamObject->getInitialValue()));
-                      pItem->setForeground(QColor(Qt::darkGray));
                     }
                 }
             }
@@ -530,12 +570,18 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
           pItem->setText(convertToQString(ri.getLocalValue(i)));
         }
 
-      resizeRowToContents((int) rowCounter);
+      if (CRootContainer::getConfiguration()->resizeToContents())
+        {
+          resizeRowToContents((int)rowCounter);
+        }
 
       ++rowCounter;
     }
 
-  resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      resizeColumnsToContents();
+    }
 
   blockSignals(false);
   setSortingEnabled(wasSortingEnabled);
@@ -583,7 +629,9 @@ void ParameterTable::slotCellChanged(int row, int col)
 
   const QStringList & comboList = mpComboDelegate->getItems(Index);
 
-  if (col == 2 && comboList[0] == "--local--") //is Parameter
+  if (col == 2
+      && !comboList.empty()
+      && comboList[0] == "--local--") //is Parameter
     {
       emit parameterStatusChanged((int) i, (newVal == "--local--"));
 

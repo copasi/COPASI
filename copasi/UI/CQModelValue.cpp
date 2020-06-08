@@ -26,9 +26,9 @@
 
 #include "CQExpressionWidget.h"
 
-#include "UI/CQMessageBox.h"
+#include "copasi/UI/CQMessageBox.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 #include "CQValidatorUnit.h"
@@ -163,6 +163,7 @@ void CQModelValue::slotTypeChanged(const QString & type)
         slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
 
         mpBoxAddNoise->hide();
+        mpBoxAddNoise->setChecked(false);
         slotAddNoiseChanged(false);
 
         break;
@@ -180,6 +181,7 @@ void CQModelValue::slotTypeChanged(const QString & type)
         mpExpressionEMW->updateWidget();
 
         mpBoxAddNoise->hide();
+        mpBoxAddNoise->setChecked(false);
         slotAddNoiseChanged(false);
 
         break;

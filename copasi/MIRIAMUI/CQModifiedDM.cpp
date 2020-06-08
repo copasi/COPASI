@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,7 +22,7 @@
 
 #include "CQModifiedDM.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "copasi/UI/CQMessageBox.h"
 #include "copasi/UI/qtUtilities.h"
@@ -41,12 +41,22 @@ void CQModifiedDM::setMIRIAMInfo(CMIRIAMInfo * pMiriamInfo)
   endResetModel();
 }
 
-int CQModifiedDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+void CQModifiedDM::resetCacheProtected()
+{
+  mpMIRIAMInfo = NULL;
+}
+
+size_t CQModifiedDM::size() const
 {
   if (mpMIRIAMInfo != NULL)
-    return (int) mpMIRIAMInfo->getModifications().size() + 1;
+    return (int) mpMIRIAMInfo->getModifications().size();
 
   return 0;
+}
+
+int CQModifiedDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched + 1;
 }
 
 int CQModifiedDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
@@ -64,7 +74,7 @@ QVariant CQModifiedDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int)mpMIRIAMInfo->getModifications().size())
         {
           if (index.column() == COL_ROW_NUMBER)
             return QVariant(QString(""));
@@ -174,6 +184,8 @@ bool CQModifiedDM::insertRows(int position, int rows, const QModelIndex & parent
 
       if (pModification == NULL)
         continue;
+
+      ++mFetched;
     }
 
   endInsertRows();
@@ -205,8 +217,9 @@ bool CQModifiedDM::removeRows(int position, int rows, const QModelIndex & parent
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+
+      --mFetched;
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 

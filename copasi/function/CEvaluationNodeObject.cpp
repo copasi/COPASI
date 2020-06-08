@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -17,18 +22,18 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 #include "CExpression.h"
-#include "core/CRegisteredCommonName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CDataObject.h"
 #include "copasi/core/CDataContainer.h"
-#include "model/CModel.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "math/CMathObject.h"
-#include "math/CMathContainer.h"
-#include "utilities/CValidatedUnit.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/math/CMathObject.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/utilities/CValidatedUnit.h"
 
 #include "sbml/math/ASTNode.h"
 #include "sbml/SBase.h"
@@ -499,7 +504,7 @@ void CEvaluationNodeObject::setObjectValuePtr(C_FLOAT64 * pObjectValue)
   return;
 }
 
-#include "utilities/copasimathml.h"
+#include "copasi/utilities/copasimathml.h"
 
 // virtual
 std::string CEvaluationNodeObject::getMMLString(const std::vector< std::string > & /* children */ ,

@@ -1,16 +1,28 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportBody.cpp,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:10 $
-   End CVS Header */
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CReportBody.h"
 
 //////////////////////////////////////////////////
@@ -19,7 +31,7 @@
 //
 //////////////////////////////////////////////////
 CReportBody::CReportBody():
-    mpReportTable(NULL)
+  mpReportTable(NULL)
 {}
 
 CReportBody::~CReportBody()
@@ -43,9 +55,9 @@ void CReportBody::setTable(CReportTable *table)
 //
 //////////////////////////////////////////////////
 CReportTable::CReportTable():
-    mpObjectNameVector(NULL),
-    mSeparator(" "),
-    mPrintTitle(true)
+  mpObjectNameVector(NULL),
+  mSeparator(" "),
+  mPrintTitle(true)
 {}
 
 CReportTable::~CReportTable()

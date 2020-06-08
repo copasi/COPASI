@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,7 +56,7 @@
 #include <limits>
 #include <utility>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "copasi/output/COutputHandler.h"
 
 #include "FontChooser.h"
@@ -66,12 +71,12 @@ C_FLOAT64 log2(const C_FLOAT64 __x)
 
 #include "copasi/core/CRootContainer.h"
 #include "CQNewMainWindow.h"
-#include "UI/qtUtilities.h"
-#include "layout/CLayout.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/layout/CLayout.h"
 #include "copasi/core/CDataVector.h"
-#include "layoutUI/CVisParameters.h"
-#include "layoutUI/CDataEntity.h"
-#include "layoutUI/BezierCurve.h"
+#include "copasi/layoutUI/CVisParameters.h"
+#include "copasi/layoutUI/CDataEntity.h"
+#include "copasi/layoutUI/BezierCurve.h"
 
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -114,10 +119,10 @@ const GLfloat CQGLNetworkPainter::MIRROR_X[] =
 const GLfloat CQGLNetworkPainter::MIRROR_Y[] =
 {
   -1.0f, 0.0f, 0.0f, 0.0f
-  , 0.0f, 1.0f, 0.0f, 0.0f
-  , 0.0f, 0.0f, 1.0f, 0.0f
-  , 0.0f, 0.0f, 0.0f, 1.0f
-};
+    , 0.0f, 1.0f, 0.0f, 0.0f
+    , 0.0f, 0.0f, 1.0f, 0.0f
+    , 0.0f, 0.0f, 0.0f, 1.0f
+  };
 
 const C_INT32 CQGLNetworkPainter::MIN_HEIGHT = 10;
 
@@ -2287,7 +2292,7 @@ void CQGLNetworkPainter::showStep(size_t stepNumber)
                   // no color mode
                   if (val != -std::numeric_limits< C_FLOAT64 >::max())
                     {
-                      if (isnan(val)) // test for NaN
+                      if (std::isnan(val)) // test for NaN
                         {
                           std::map<std::string, CGraphNode>::iterator itNodeObj = nodeMap.find(viewerNodes[i]);
 
@@ -2320,7 +2325,7 @@ void CQGLNetworkPainter::showStep(size_t stepNumber)
 
                   if (val != -std::numeric_limits< C_FLOAT64 >::max())
                     {
-                      if (isnan(val)) // test for NaN
+                      if (std::isnan(val)) // test for NaN
                         {
                           setNodeSize(viewerNodes[i], CVisParameters::DEFAULT_NODE_SIZE);
                         }

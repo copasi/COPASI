@@ -1,24 +1,26 @@
-// Begin CVS Header 
-//   $Source: /fs/turing/cvs/copasi_dev/copasi/bindings/swig/CFitItem.i,v $ 
-//   $Revision: 1.3 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:27 $ 
-// End CVS Header 
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
 
 %{
 
-#include "parameterFitting/CFitItem.h"
+#include "copasi/parameterFitting/CFitItem.h"
 
 %}
 
@@ -26,7 +28,7 @@
 %ignore CFitItem::getObjectValue;
 %ignore CFitItem::getUpdateMethod;
 
-%include "parameterFitting/CFitItem.h"
+%include "copasi/parameterFitting/CFitItem.h"
 
 // unignore getObjectValue
 %rename(getObjectValue) CFitItem::getObjectValue;

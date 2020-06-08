@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,17 +26,17 @@
 #include <limits>
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CExperimentSet.h"
 #include "CExperiment.h"
 
-#include "CopasiDataModel/CDataModel.h"
-#include "math/CMathContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/math/CMathContainer.h"
 #include "copasi/core/CRootContainer.h"
-#include "report/CKeyFactory.h"
-#include "utilities/utility.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/commandline/CLocaleString.h"
 
 CExperimentSet::CExperimentSet(const CDataContainer * pParent,
                                const std::string & name):

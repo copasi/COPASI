@@ -39,11 +39,7 @@ project (renderLayout VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.$
 
 set(SOURCES ${SOURCES} main.cpp)
 
-# set up include directory for the COPASI library
-include(${CMAKE_SOURCE_DIR}/copasi/CMakeUIApp.cmake)
-
 add_executable(renderLayout ${SOURCES} ${HEADERS})
-add_dependencies(renderLayout ${SE_DEPENDENCIES}) 
-target_link_libraries(renderLayout libCOPASIUI ${SE_LIBS} ${SE_EXTERNAL_LIBS})
+target_link_libraries(renderLayout libCOPASIUI)
 
 endif(BUILD_GUI)

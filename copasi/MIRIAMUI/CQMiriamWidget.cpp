@@ -26,16 +26,16 @@
 #include <QDesktopServices>
 #include <QtCore/QUrl>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "UI/qtUtilities.h"
-#include "UI/CQMessageBox.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/UI/CQMessageBox.h"
 
-#include "MIRIAM/CModelMIRIAMInfo.h"
-#include "function/CFunction.h"
+#include "copasi/MIRIAM/CModelMIRIAMInfo.h"
+#include "copasi/function/CFunction.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
-#include "commandline/CConfigurationFile.h"
+#include "copasi/commandline/CConfigurationFile.h"
 #include "copasi/UI/DataModelGUI.h"
 
 /*
@@ -318,6 +318,16 @@ bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews
   // Assure that the pointer is still valid;
   mpAnnotation = CAnnotation::castObject(mpObject);
 
+
+  if (action == ListViews::DELETE && objectType == ListViews::ObjectType::MODEL)
+    {
+      mpMIRIAMInfo = NULL;
+      mObjectCN = CCommonName("");
+
+      return leaveProtected();
+    }
+
+
   if (!mIgnoreUpdates &&
       cn == mObjectCN)
     {
@@ -404,11 +414,14 @@ bool CQMiriamWidget::enterProtected()
     delete pOldMIRIAMInfo;
 
   //Set Models for the 4 TableViews
-  std::vector<CQTableView *>::const_iterator it = mWidgets.begin();
-  std::vector<CQTableView *>::const_iterator end = mWidgets.end();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      std::vector<CQTableView*>::const_iterator it = mWidgets.begin();
+      std::vector<CQTableView*>::const_iterator end = mWidgets.end();
 
-  for (; it != end; it++)
-    (*it)->resizeColumnsToContents();
+      for (; it != end; it++)
+        (*it)->resizeColumnsToContents();
+    }
 
   QDateTime DTCreated;
 
@@ -536,8 +549,11 @@ void CQMiriamWidget::dataChanged(const QModelIndex &topLeft, const QModelIndex &
   std::vector<CQTableView *>::const_iterator it = mWidgets.begin();
   std::vector<CQTableView *>::const_iterator end = mWidgets.end();
 
-  for (; it != end; it++)
-    (*it)->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      for (; it != end; it++)
+        (*it)->resizeColumnsToContents();
+    }
 
   if (mpTblAuthors->hasFocus())
     mpTblAuthors->selectionModel()->select(topLeft, QItemSelectionModel::Select);
@@ -573,6 +589,8 @@ void CQMiriamWidget::slotCopyEvent()
       pBaseDM = mpBiologicalDescriptionDM;
       pTbl = mpTblDescription;
     }
+  else
+    return;
 
   QModelIndexList selRows = pTbl->selectionModel()->selectedRows(0);
 

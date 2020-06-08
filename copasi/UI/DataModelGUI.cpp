@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,7 +24,7 @@
 
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "DataModelGUI.h"
 #include "CQThread.h"
@@ -33,31 +33,31 @@
 #include "listviews.h"
 #include "CQMessageBox.h"
 #include "CQBrowserPaneDM.h"
-#include "plotUI/COutputHandlerPlot.h"
+#include "copasi/plotUI/COutputHandlerPlot.h"
 
-#include "function/CFunctionDB.h"
-#include "model/CModel.h"
-#include "model/CModelValue.h"
-#include "model/CMetabNameInterface.h"
-#include "math/CMathContainer.h"
-#include "plotUI/COutputHandlerPlot.h"
-#include "plot/COutputDefinitionVector.h"
-#include "report/CReportDefinitionVector.h"
-#include "scan/CScanTask.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CMCATask.h"
-#include "lna/CLNATask.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "tssanalysis/CTSSATask.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CMetabNameInterface.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/plotUI/COutputHandlerPlot.h"
+#include "copasi/plot/COutputDefinitionVector.h"
+#include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/scan/CScanTask.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/steadystate/CMCATask.h"
+#include "copasi/lna/CLNATask.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/tssanalysis/CTSSATask.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/core/CVector.h"
-#include "utilities/CCopasiException.h"
-#include "commandline/CConfigurationFile.h"
-#include "utilities/CCopasiTree.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/commandline/CConfigurationFile.h"
+#include "copasi/utilities/CCopasiTree.h"
 
-//#include "model/CModelMerging.h"
+//#include "copasi/model/CModelMerging.h"
 
 #define USE_LAYOUT 1
 #define USE_RENDER 1
@@ -67,11 +67,11 @@
 #include <sbml/packages/render/sbml/Text.h>
 #include <sbml/packages/layout/sbml/LineSegment.h>
 
-#include "layout/CLayout.h"
-#include "layout/CListOfLayouts.h"
-#include "layout/SBMLDocumentLoader.h"
-#include "sbml/CCellDesignerImporter.h"
-#include "sbml/SBMLUtils.h"
+#include "copasi/layout/CLayout.h"
+#include "copasi/layout/CListOfLayouts.h"
+#include "copasi/layout/SBMLDocumentLoader.h"
+#include "copasi/sbml/CCellDesignerImporter.h"
+#include "copasi/sbml/SBMLUtils.h"
 
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
 
@@ -756,7 +756,7 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
   connect(manager, SIGNAL(finished(QNetworkReply*)),
           this, SLOT(miriamDownloadFinished(QNetworkReply*)));
 
-  QNetworkReply* reply = manager->get(QNetworkRequest(QUrl("https://www.ebi.ac.uk/miriam/main/export/xml/")));
+  QNetworkReply* reply = manager->get(QNetworkRequest(QUrl("http://copasi.org/static/miriam.xml")));
   connect(reply, SIGNAL(downloadProgress(qint64, qint64)),
           this, SLOT(miriamDownloadProgress(qint64, qint64)));
 

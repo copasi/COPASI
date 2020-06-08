@@ -1,3 +1,8 @@
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -41,22 +46,10 @@ set(LAPACK_FIND_QUIETLY TRUE)
 set(BLA_STATIC TRUE)
 set(LAPACK_STATIC TRUE)
 
-if (LINUX AND NOT APPLE AND NOT DEFINED ENV{MKLROOT})
-  set(TMP ${CMAKE_FIND_LIBRARY_SUFFIXES})
-  set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} .so.3)
-  find_library( GFORTRAN_LIBRARY
-                NAMES gfortran
-                PATHS ENV LD_LIBRARY_PATH )
-  set(CMAKE_FIND_LIBRARY_SUFFIXES ${TMP})
-
-  if (GFORTRAN_LIBRARY)
-    set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} .so.3gf)
-  endif () 
-endif ()
-
-set(BLA_VENDOR "Apple")
-find_package(LAPACK)
-
+if (APPLE)
+  set(BLA_VENDOR "Apple")
+  find_package(LAPACK)
+endif()
 
 if (BLAS_FOUND AND APPLE)
   add_definitions(-DHAVE_APPLE)
@@ -112,20 +105,6 @@ if (NOT LAPACK_FOUND)
   endif ()
 endif ()
 
-if (NOT LAPACK_FOUND)
-  set(BLA_VENDOR "ATLAS")
-  find_package(LAPACK)
-endif() 
-
-if (NOT LAPACK_FOUND)
-  set(BLA_VENDOR "Generic")
-  find_package(LAPACK REQUIRED)
-endif() 
-
-if (LAPACK_FOUND AND GFORTRAN_LIBRARY)
-  set(LAPACK_LIBRARIES ${LAPACK_LIBRARIES} ${GFORTRAN_LIBRARY} m)
-endif()
-
 if (NOT LAPACK_FOUND AND DEFINED ENV{LAPACK_DIR} AND EXISTS $ENV{LAPACK_DIR})
   message (status " Using COPASI Dependencies for LAPACK")
 
@@ -134,17 +113,17 @@ if (NOT LAPACK_FOUND AND DEFINED ENV{LAPACK_DIR} AND EXISTS $ENV{LAPACK_DIR})
 
   find_library(CLAPACK_LIBRARY_LAPACK
       NAMES lapack
-      PATHS $ENV{LAPACK_DIR}/lib
+      PATHS $ENV{LAPACK_DIR}/${CMAKE_INSTALL_LIBDIR} ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
       NO_DEFAULT_PATH)
 
   find_library(CLAPACK_LIBRARY_BLAS
       NAMES blas
-      PATHS $ENV{LAPACK_DIR}/lib
+      PATHS $ENV{LAPACK_DIR}/${CMAKE_INSTALL_LIBDIR} ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
       NO_DEFAULT_PATH)
 
   find_library(CLAPACK_LIBRARY_F2C
       NAMES f2c
-      PATHS $ENV{LAPACK_DIR}/lib
+      PATHS $ENV{LAPACK_DIR}/${CMAKE_INSTALL_LIBDIR} ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
       NO_DEFAULT_PATH)
 
   set (CLAPACK_LIBRARIES
@@ -157,6 +136,34 @@ if (NOT LAPACK_FOUND AND DEFINED ENV{LAPACK_DIR} AND EXISTS $ENV{LAPACK_DIR})
   add_definitions(-DNO_BLAS_WRAP)
 
   set (BLA_VENDOR "COPASI Dependencies")
+  set (LAPACK_FOUND "Yes")
+endif()
+
+if (NOT LAPACK_FOUND AND LINUX)
+  set(TMP ${CMAKE_FIND_LIBRARY_SUFFIXES})
+  set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} .so.3)
+  find_library( GFORTRAN_LIBRARY
+                NAMES gfortran
+                PATHS ENV LD_LIBRARY_PATH )
+  set(CMAKE_FIND_LIBRARY_SUFFIXES ${TMP})
+
+  if (GFORTRAN_LIBRARY)
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} .so.3gf)
+  endif () 
+endif ()
+
+if (NOT LAPACK_FOUND)
+  set(BLA_VENDOR "ATLAS")
+  find_package(LAPACK)
+endif() 
+
+if (NOT LAPACK_FOUND)
+  set(BLA_VENDOR "Generic")
+  find_package(LAPACK REQUIRED)
+endif() 
+
+if (LAPACK_FOUND AND GFORTRAN_LIBRARY)
+  set(LAPACK_LIBRARIES ${LAPACK_LIBRARIES} ${GFORTRAN_LIBRARY} m)
 endif()
 
 if (NOT BLASWRAP_INCLUDE_DIR)
@@ -292,6 +299,53 @@ endif(NOT CLAPACK_LIBRARIES)
 if (NOT CLAPACK_LINKER_FLAGS)
 set(CLAPACK_LINKER_FLAGS ${LAPACK_LINKER_FLAGS})
 endif(NOT CLAPACK_LINKER_FLAGS)
+
+if (NOT CLAPACK_LIBRARIES AND NOT APPLE)
+
+if (CONAN_LIB_DIRS_LAPACK)
+
+find_library( LAPACK_LIBRARY
+                NAMES liblapack lapack lapack.dll
+                PATHS ${CONAN_LIB_DIRS_LAPACK} )
+find_library( BLAS_LIBRARY
+                NAMES libblas blas blas.dll
+                PATHS ${CONAN_LIB_DIRS_LAPACK} )
+
+SET (CLAPACK_LIBRARIES ${LAPACK_LIBRARY} ${BLAS_LIBRARY})
+SET (BLA_VENDOR "Conan")
+
+endif(CONAN_LIB_DIRS_LAPACK)
+
+if (CONAN_LIB_DIRS_CLAPACK)
+
+find_library( LAPACK_LIBRARY
+                NAMES liblapack lapack liblapack.a
+                PATHS ${CONAN_LIB_DIRS_CLAPACK} )
+find_library( BLAS_LIBRARY
+                NAMES libblas blas libblas.a
+                PATHS ${CONAN_LIB_DIRS_CLAPACK} )
+
+find_library( F2C_LIBRARY
+                NAMES libf2c libf2c.a
+                PATHS ${CONAN_LIB_DIRS_CLAPACK} )
+
+SET (CLAPACK_LIBRARIES ${LAPACK_LIBRARY} ${BLAS_LIBRARY} ${F2C_LIBRARY})
+SET (CLAPACK_INCLUDE_DIR ${CONAN_INCLUDE_DIRS_CLAPACK})
+SET (F2C_INCLUDE_DIR ${CONAN_INCLUDE_DIRS_CLAPACK})
+SET (BLASWRAP_INCLUDE_DIR ${CONAN_INCLUDE_DIRS_CLAPACK})
+
+SET (BLA_VENDOR "COPASI Dependencies")
+
+
+add_definitions(-DHAVE_BLASWRAP_H)
+add_definitions(-DHAVE_F2C_H)
+add_definitions(-DHAVE_CLAPACK_H)
+add_definitions(-DNO_BLAS_WRAP)
+
+
+endif(CONAN_LIB_DIRS_CLAPACK)
+
+endif(NOT CLAPACK_LIBRARIES AND NOT APPLE)
 
 # find_library(CLAPACK_LIBRARIES NAMES clapack libclapack lapack liblapapack)
 

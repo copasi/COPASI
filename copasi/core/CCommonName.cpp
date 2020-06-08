@@ -18,7 +18,7 @@
 
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CCommonName.h"
 #include "copasi/utilities/utility.h"
 #include "copasi/undo/CData.h"

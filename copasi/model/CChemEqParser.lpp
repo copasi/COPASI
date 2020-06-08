@@ -8,12 +8,12 @@
 %{
 #include <vector>
 
-#include "copasi.h"
-#include "CChemEqParser.h"
-#include "CChemEqParser_yacc.hpp"
+#include "copasi/copasi.h"
+#include "copasi/model/CChemEqParser.h"
+#include "copasi/model/CChemEqParser_yacc.hpp"
 
-#include "utilities/CCopasiMessage.h"
-#include "utilities/utility.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/utility.h"
 
 #ifndef YYERRCODE
 #define YYERRCODE 256

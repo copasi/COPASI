@@ -49,19 +49,19 @@
 #include <limits.h>
 #include <iterator>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CHybridMethod.h"
 #include "CTrajectoryProblem.h"
-#include "model/CModel.h"
-#include "model/CMetab.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetab.h"
 #include "copasi/core/CDataVector.h"
 #include "copasi/core/CMatrix.h"
-#include "utilities/CDependencyGraph.h"
-#include "utilities/CIndexedPriorityQueue.h"
-#include "randomGenerator/CRandom.h"
+#include "copasi/utilities/CDependencyGraph.h"
+#include "copasi/utilities/CIndexedPriorityQueue.h"
+#include "copasi/randomGenerator/CRandom.h"
 #include "copasi/utilities/CVersion.h"
-#include "math/CMathContainer.h"
+#include "copasi/math/CMathContainer.h"
 
 /**
  *   Default constructor.

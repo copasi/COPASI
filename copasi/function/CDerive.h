@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,7 +25,7 @@
 #ifndef COPASI_CDerive
 #define COPASI_CDerive
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include <vector>
 
 class CEvaluationNode;
@@ -79,13 +84,13 @@ public:
   CEvaluationNode* deriveBranch(const CEvaluationNode* node, const CDataObject * pObject);
 
   void compileTree(CEvaluationNode* node);
-  
+
 private:
-  
+
   std::vector<const CEvaluationNode*> mEnv;
   const CEvaluationTree* mpTree;
   bool mSimplify;
-  
+
 };
 
 #endif

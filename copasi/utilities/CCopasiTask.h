@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -75,6 +75,7 @@ public:
     //do no output
     NO_OUTPUT = 0,
     OUTPUT_BEFORE = INITIALIZE,
+    OUTPUT_DURING = STREAM,
     OUTPUT_AFTER = FINISH,
     //do output except time series, but do not initialize/finish
     OUTPUT = REPORT | PLOT | STREAM,
@@ -274,6 +275,12 @@ public:
    * @return const bool & updateModel
    */
   const bool & isUpdateModel() const;
+
+  /**
+   * Set whether the task shall ignoew problem data
+   * @param const bool & ignoreProblemData
+   */
+  void setIgnoreProblemData(const bool & ignoreProblemData);
 
   /**
    * Set the pointer to container used for calculations
@@ -480,6 +487,11 @@ protected:
    * The restore method must act accordingly.
    */
   bool mUpdateModel;
+
+  /**
+   *
+   */
+  bool mIgnoreProblemData;
 
   /**
    * The problem of the task

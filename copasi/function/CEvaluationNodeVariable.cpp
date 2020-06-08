@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,10 +22,10 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
-#include "utilities/CValidatedUnit.h"
+#include "copasi/utilities/CValidatedUnit.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -90,7 +95,7 @@ CEvaluationNode * CEvaluationNodeVariable::fromAST(const ASTNode * pASTNode, con
 }
 
 // virtual
-CValidatedUnit CEvaluationNodeVariable::getUnit(const CMathContainer & container,
+CValidatedUnit CEvaluationNodeVariable::getUnit(const CMathContainer & /* container */,
     const std::vector< CValidatedUnit > & units) const
 {
   if (mIndex < units.size())
@@ -109,7 +114,7 @@ ASTNode* CEvaluationNodeVariable::toAST(const CDataModel* /*pDataModel*/) const
   return node;
 }
 
-#include "utilities/copasimathml.h"
+#include "copasi/utilities/copasimathml.h"
 
 // virtual
 std::string CEvaluationNodeVariable::getMMLString(const std::vector< std::string > & /* children */,

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,17 +40,17 @@
 #include <string.h>
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CStochDirectMethod.h"
 #include "copasi/core/CDataVector.h"
-#include "function/CFunction.h"
-#include "randomGenerator/CRandom.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/randomGenerator/CRandom.h"
 #include "CTrajectoryMethod.h"
 #include "CTrajectoryProblem.h"
-#include "math/CMathContainer.h"
-#include "model/CState.h"
-#include "model/CCompartment.h"
-#include "model/CModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CState.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CModel.h"
 
 CStochDirectMethod::CStochDirectMethod(const CDataContainer * pParent,
                                        const CTaskEnum::Method & methodType,
@@ -321,7 +321,7 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 startTime, const C_FLOAT64 
         }
 
       // We need to throw an exception if mA0 is NaN
-      if (isnan(mA0))
+      if (std::isnan(mA0))
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 27);
         }

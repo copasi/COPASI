@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -23,16 +28,16 @@
 
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 //#include "copasi/core/CDataVector.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "CSensMethod.h"
 #include "CSensProblem.h"
 
-#include "math/CMathContainer.h"
-#include "utilities/CProcessReport.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/utilities/CProcessReport.h"
 
 /**
  *  Default constructor.
@@ -487,10 +492,10 @@ bool CSensMethod::initialize(CSensProblem* problem)
                     (&pDataModel->getTaskList()->operator[]("Time-Course"));
         break;
 
-      /*    case CSensProblem::LyapunovExp:
-            mpSubTask = dynamic_cast<CCopasiTask*>
-                        (&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
-            break;*/
+        /*    case CSensProblem::LyapunovExp:
+              mpSubTask = dynamic_cast<CCopasiTask*>
+                          (&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
+              break;*/
 
       case CSensProblem::ParameterEstimation:
         mpSubTask = dynamic_cast<CCopasiTask*>

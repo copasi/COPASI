@@ -1,12 +1,22 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include <QtCore/QTimer>
 
-#include <qlayout/CQAnimationControls.h>
-#include <resourcesUI/CQIconResource.h>
+#include <copasi/qlayout/CQAnimationControls.h>
+#include <copasi/resourcesUI/CQIconResource.h>
 
 CQAnimationControls::CQAnimationControls(QWidget* parent)
   : QWidget(parent)

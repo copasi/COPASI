@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,10 +34,16 @@ CQUnitDM::CQUnitDM(QObject *parent, CDataModel * pDataModel)
 {
 }
 
+size_t CQUnitDM::size() const
+{
+  return CRootContainer::getUnitList()->size();
+}
+
 int CQUnitDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (int) CRootContainer::getUnitList()->size() + 1;
+  return mFetched + 1;
 }
+
 int CQUnitDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
   return TOTAL_COLS_UNITS;
@@ -70,7 +76,7 @@ QVariant CQUnitDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int) CRootContainer::getUnitList()->size())
         {
           switch (index.column())
             {
@@ -220,8 +226,13 @@ bool CQUnitDM::insertRows(int position, int rows, const QModelIndex & parent)
 
   for (int row = 0; row < rows; ++row)
     {
-      CUnitDefinition *pUnitDef;
-      CRootContainer::getUnitList()->add(pUnitDef = new CUnitDefinition(TO_UTF8(createNewName("unit", COL_NAME_UNITS)), CRootContainer::getUnitList()), true);
+      CUnitDefinition *pUnitDef  = new CUnitDefinition(TO_UTF8(createNewName("unit", COL_NAME_UNITS)), CRootContainer::getUnitList());
+
+      if (pUnitDef == NULL) continue;
+
+      ++mFetched;
+
+      CRootContainer::getUnitList()->add(pUnitDef, true);
       emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::ADD, pUnitDef->getCN());
     }
 
@@ -237,30 +248,37 @@ bool CQUnitDM::removeRows(int position, int rows, const QModelIndex & parent)
 
   std::vector< std::string > DeletedKeys;
   DeletedKeys.resize(rows);
+  std::vector< std::string > DeletedCNs;
+  DeletedCNs.resize(rows);
 
-  std::vector< std::string >::iterator itDeletedKey;
+  std::vector< std::string >::iterator itDeletedKey, itDeletedCN;
   std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
 
   CDataVector< CUnitDefinition >::const_iterator itRow =
     CRootContainer::getUnitList()->begin() + position;
   int row = 0;
 
-  for (itDeletedKey = DeletedKeys.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow, ++row)
+  for (itDeletedKey = DeletedKeys.begin(), row = 0, itDeletedCN = DeletedCNs.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itDeletedCN, ++itRow, ++row)
     {
-      *itDeletedKey = itRow->getCN();
+      *itDeletedKey = itRow->getKey();
+      *itDeletedCN = itRow->getCN();
     }
 
   beginRemoveRows(parent, position, position + row - 1);
 
-  for (itDeletedKey = DeletedKeys.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++row)
+  for (itDeletedKey = DeletedKeys.begin(), row = 0, itDeletedCN = DeletedCNs.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itDeletedCN, ++row)
     {
       if (*itDeletedKey != "")
         {
           CDataObject * pUnitDef = CRootContainer::getKeyFactory()->get(*itDeletedKey);
 
-          if (pUnitDef != NULL) delete pUnitDef;
+          if (pUnitDef != NULL)
+            {
+              --mFetched;
+              delete pUnitDef;
+            }
 
-          emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::DELETE, *itDeletedKey);
+          emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::DELETE, *itDeletedCN);
         }
     }
 

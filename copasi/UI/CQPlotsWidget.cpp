@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,16 +24,17 @@
 #include <QClipboard>
 #include <QKeyEvent>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
 
-#include "model/CModel.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "plot/COutputDefinitionVector.h"
-#include "plot/CPlotSpecification.h"
+#include "copasi/plot/COutputDefinitionVector.h"
+#include "copasi/plot/CPlotSpecification.h"
+#include <copasi/commandline/CConfigurationFile.h>
 
 /*
  *  Constructs a CQPlotsWidget which is a child of 'parent', with the
@@ -49,11 +50,18 @@ CQPlotsWidget::CQPlotsWidget(QWidget *parent, const char *name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
+
+  mpTblPlots->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblPlots->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblPlots->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblPlots->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblPlots->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblPlots->verticalHeader()->hide();
   mpTblPlots->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   setFramework(mFramework);
@@ -62,10 +70,12 @@ CQPlotsWidget::CQPlotsWidget(QWidget *parent, const char *name)
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpPlotDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
   connect(mpBtnActivateAll, SIGNAL(pressed()), this, SLOT(slotBtnActivateAllClicked()));
   connect(mpBtnDeactivateAll, SIGNAL(pressed()), this, SLOT(slotBtnDeactivateAllClicked()));
+  connect(mpTblPlots, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 /*
@@ -174,11 +184,8 @@ bool CQPlotsWidget::leaveProtected()
 
 bool CQPlotsWidget::enterProtected()
 {
-  if (mpTblPlots->selectionModel() != NULL)
-    {
-      disconnect(mpTblPlots->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblPlots->horizontalHeader()->saveState();
+  blockSignals(true);
 
   mpPlotDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpPlotDM);
@@ -187,9 +194,19 @@ bool CQPlotsWidget::enterProtected()
   mpTblPlots->setModel(mpProxyModel);
   connect(mpTblPlots->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
           this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+
   updateDeleteBtns();
-  mpTblPlots->resizeColumnsToContents();
+  mpTblPlots->horizontalHeader()->restoreState(State);
+  blockSignals(false);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblPlots->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
+  emit initFilter();
+
   return true;
 }
 
@@ -221,8 +238,7 @@ void CQPlotsWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQPlotsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
-    const QItemSelection &C_UNUSED(deselected))
+void CQPlotsWidget::slotSelectionChanged()
 {
   updateDeleteBtns();
 }
@@ -230,7 +246,11 @@ void CQPlotsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected
 void CQPlotsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                 const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblPlots->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblPlots->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   updateDeleteBtns();
 }
@@ -293,8 +313,19 @@ void CQPlotsWidget::keyPressEvent(QKeyEvent *ev)
 
 void CQPlotsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|New Plot", Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter + "|New Plot", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }
 
 void CQPlotsWidget::setFramework(int framework)

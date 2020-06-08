@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -65,12 +70,14 @@ private:
    */
   LayoutWindow * createLayoutWindow(int row, CLayout* pLayout);
 
+signals:
+  void initFilter();
+
 protected slots:
   virtual void slotBtnNewClicked();
   virtual void slotBtnDeleteClicked();
   virtual void slotBtnClearClicked();
-  virtual void slotSelectionChanged(const QItemSelection& selected,
-                                    const QItemSelection& deselected);
+  virtual void slotSelectionChanged();
   virtual void slotDoubleClicked(const QModelIndex proxyIndex);
   virtual void dataChanged(const QModelIndex& topLeft,
                            const QModelIndex& bottomRight);

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -17,10 +22,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
 #include <cmath>
 
 #define USE_LAYOUT 1
@@ -29,7 +30,7 @@
 #include "SBMLUtils.h"
 
 #include "SBMLImporter.h"
-#include "utilities/CCopasiException.h"
+#include "copasi/utilities/CCopasiException.h"
 #include "copasi/utilities/CUnit.h"
 #include "sbml/SBMLDocument.h"
 #include "sbml/Compartment.h"
@@ -39,7 +40,7 @@
 #include <sbml/packages/layout/extension/LayoutExtension.h>
 #include <sbml/conversion/ConversionProperties.h>
 
-#include "layout/CLDefaultStyles.h"
+#include "copasi/layout/CLDefaultStyles.h"
 #include <sbml/packages/render/extension/RenderExtension.h>
 #include <sbml/packages/render/extension/RenderListOfLayoutsPlugin.h>
 #include <sbml/packages/render/sbml/GlobalRenderInformation.h>
@@ -61,41 +62,41 @@
 #include "sbml/annotation/CVTerm.h"
 #include "sbml/SBMLErrorLog.h"
 #include "sbml/SBMLError.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "SBMLIncompatibility.h"
-#include "model/CCompartment.h"
-#include "model/CModel.h"
-#include "model/CEvent.h"
-#include "model/CMetab.h"
-#include "function/CExpression.h"
-#include "function/CEvaluationNode.h"
-#include "model/CAnnotation.h"
-#include "model/CReaction.h"
-#include "utilities/CCopasiParameter.h"
-#include "model/CModelValue.h"
-#include "function/CFunction.h"
-#include "report/CKeyFactory.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CEvent.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/function/CEvaluationNode.h"
+#include "copasi/model/CAnnotation.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/utilities/CCopasiParameter.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/report/CKeyFactory.h"
 #include "ConverterASTNode.h"
-#include "utilities/CCopasiTree.h"
-#include "model/CChemEqElement.h"
-#include "utilities/CVersion.h"
+#include "copasi/utilities/CCopasiTree.h"
+#include "copasi/model/CChemEqElement.h"
+#include "copasi/utilities/CVersion.h"
 #include "sbml/Trigger.h"
 #include "sbml/Event.h"
 #include "sbml/EventAssignment.h"
 #include <sbml/xml/XMLInputStream.h>
-#include "compareExpressions/compare_utilities.h"
-#include "MIRIAM/CRDFUtilities.h"
-#include "MIRIAM/CModelMIRIAMInfo.h"
-#include "MIRIAM/CReference.h"
-#include "MIRIAM/CBiologicalDescription.h"
-#include "MIRIAM/CConstants.h"
-#include "MIRIAM/CCreator.h"
-#include "MIRIAM/CModified.h"
-#include "MIRIAM/CRDFPredicate.h"
-#include "layout/CListOfLayouts.h"
+#include "copasi/compareExpressions/compare_utilities.h"
+#include "copasi/MIRIAM/CRDFUtilities.h"
+#include "copasi/MIRIAM/CModelMIRIAMInfo.h"
+#include "copasi/MIRIAM/CReference.h"
+#include "copasi/MIRIAM/CBiologicalDescription.h"
+#include "copasi/MIRIAM/CConstants.h"
+#include "copasi/MIRIAM/CCreator.h"
+#include "copasi/MIRIAM/CModified.h"
+#include "copasi/MIRIAM/CRDFPredicate.h"
+#include "copasi/layout/CListOfLayouts.h"
 #include "copasi/core/CRootContainer.h"
-#include "utilities/CVersion.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/utilities/CVersion.h"
+#include "copasi/commandline/CLocaleString.h"
 
 // helper functions for function definitions
 
@@ -118,9 +119,9 @@ std::string hasFunctionDefinitionForURI(SBMLDocument* pSBMLDocument,
 
       if (element == NULL) continue;
 
-      for (unsigned int i = 0 ; i < element->getNumChildren(); ++i)
+      for (unsigned int j = 0 ; j < element->getNumChildren(); ++j)
         {
-          const XMLNode& annot = element->getChild(i);
+          const XMLNode& annot = element->getChild(j);
 
           if (annot.getURI() == sNamespace &&
               annot.getName() == elementName &&
@@ -326,7 +327,7 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
 }
 
 #ifdef USE_SBMLUNIT
-# include "sbmlunit/CSBMLunitInterface.h"
+# include "copasi/sbmlunit/CSBMLunitInterface.h"
 #endif // USE_SBMLUNIT
 
 void
@@ -398,7 +399,7 @@ CSBMLExporter::createProgressStepOrStop(unsigned C_INT32 globalStep,
 CSBMLExporter::CSBMLExporter()
   : mpSBMLDocument(NULL)
   , mSBMLLevel(2)
-  , mSBMLVersion(1)
+  , mSBMLVersion(4)
   , mIncompleteExport(false)
   , mVariableVolumes(false)
   , mpAvogadro(NULL)
@@ -548,21 +549,11 @@ void CSBMLExporter::createTimeUnit(const CDataModel& dataModel)
     }
   else
     {
-      // only add it if it is not the default unit definition anyway
-      // from SBML Level 3 on, there are no default units
-      // so we have to write it
-      if (this->mSBMLLevel > 2 || unit.getKind() != UNIT_KIND_SECOND || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
-        {
-          // set the unit definition
-          pSBMLModel->addUnitDefinition(&uDef);
-        }
+      // set the unit definition
+      pSBMLModel->addUnitDefinition(&uDef);
     }
 
-// if we write an SBML L3 document, we have to explicitely set the units on the model
-  if (this->mSBMLLevel > 2)
-    {
-      pSBMLModel->setTimeUnits(uDef.getId());
-    }
+  pSBMLModel->setTimeUnits(uDef.getId());
 }
 
 /**
@@ -649,19 +640,11 @@ void CSBMLExporter::createVolumeUnit(const CDataModel& dataModel)
     }
   else
     {
-      // only add it if it is not the default unit definition anyway
-      if (this->mSBMLLevel > 2 || unit.getKind() != UNIT_KIND_LITRE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
-        {
-          // set the unit definition
-          pSBMLModel->addUnitDefinition(&uDef);
-        }
+      // set the unit definition
+      pSBMLModel->addUnitDefinition(&uDef);
     }
 
-// if we write an SBML L3 document, we have to explicitely set the units on the model
-  if (this->mSBMLLevel > 2)
-    {
-      pSBMLModel->setVolumeUnits(uDef.getId());
-    }
+  pSBMLModel->setVolumeUnits(uDef.getId());
 }
 
 /**
@@ -748,23 +731,16 @@ void CSBMLExporter::createSubstanceUnit(const CDataModel& dataModel)
     }
   else
     {
-      // only add it if it is not the default unit definition anyway
-      if (this->mSBMLLevel > 2 || unit.getKind() != UNIT_KIND_MOLE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
-        {
-          // set the unit definition
-          pSBMLModel->addUnitDefinition(&uDef);
-        }
+      // set the unit definition
+      pSBMLModel->addUnitDefinition(&uDef);
     }
 
-// if we write an SBML L3 document, we have to explicitely set the units on the model
+  pSBMLModel->setSubstanceUnits(uDef.getId());
 
+  // here we also set the extent unit to the same unit as the substance unit
+  // because COPASI does not know about different extent units
   if (this->mSBMLLevel > 2)
-    {
-      pSBMLModel->setSubstanceUnits(uDef.getId());
-      // here we also set the extent unit to the same unit as the substance unit
-      // because COPASI does not know about different extent units
-      pSBMLModel->setExtentUnits(uDef.getId());
-    }
+    pSBMLModel->setExtentUnits(uDef.getId());
 }
 
 /**
@@ -857,20 +833,11 @@ void CSBMLExporter::createLengthUnit(const CDataModel& dataModel)
     }
   else
     {
-      // only add it if it is not the default unit definition anyway
-      if (this->mSBMLLevel > 2 || unit.getKind() != UNIT_KIND_METRE || unit.getScale() != 0 || unit.getExponent() != 1 || unit.getMultiplier() != 1.0)
-        {
-          // set the unit definition
-          pSBMLModel->addUnitDefinition(&uDef);
-        }
+      // set the unit definition
+      pSBMLModel->addUnitDefinition(&uDef);
     }
 
-// if we write an SBML L3 document, we have to explicitly set the units on the model
-
-  if (this->mSBMLLevel > 2)
-    {
-      pSBMLModel->setLengthUnits(uDef.getId());
-    }
+  pSBMLModel->setLengthUnits(uDef.getId());
 }
 
 /**
@@ -963,23 +930,11 @@ void CSBMLExporter::createAreaUnit(const CDataModel& dataModel)
     }
   else
     {
-      // only add it if it is not the default unit definition anyway
-      if (this->mSBMLLevel > 2 ||
-          unit.getKind() != UNIT_KIND_METRE ||
-          unit.getScale() != 0 ||
-          unit.getExponent() != 2 ||
-          unit.getMultiplier() != 1.0)
-        {
-          // set the unit definition
-          pSBMLModel->addUnitDefinition(&uDef);
-        }
+      // set the unit definition
+      pSBMLModel->addUnitDefinition(&uDef);
     }
 
-// if we write an SBML L3 document, we have to explicitly set the units on the model
-  if (this->mSBMLLevel > 2)
-    {
-      pSBMLModel->setAreaUnits(uDef.getId());
-    }
+  pSBMLModel->setAreaUnits(uDef.getId());
 }
 
 /**
@@ -1051,7 +1006,7 @@ void CSBMLExporter::createCompartment(const CCompartment& compartment)
   double value = compartment.getInitialValue();
 
   // if the value is NaN, unset the initial volume
-  if (!isnan(value))
+  if (!std::isnan(value))
     {
       pSBMLCompartment->setVolume(value);
     }
@@ -1071,7 +1026,6 @@ void CSBMLExporter::createCompartment(const CCompartment& compartment)
       this->mAssignmentVector.push_back(&compartment);
       pSBMLCompartment->setConstant(false);
       removeInitialAssignment(pSBMLCompartment->getId());
-
     }
   else if (status == CModelEntity::Status::ODE)
     {
@@ -1246,7 +1200,7 @@ void CSBMLExporter::createMetabolite(const CMetab& metab)
   double value = metab.getInitialConcentration();
 
   // if the value is NaN, unset the initial amount
-  if (!isnan(value))
+  if (!std::isnan(value))
     {
       // if we set the concentration on a species that had the amount
       // set, the meaning of the model is different when the user changed
@@ -1420,7 +1374,7 @@ void CSBMLExporter::createParameter(const CModelValue& modelValue)
   double value = modelValue.getInitialValue();
 
   // if the value is NaN, unset the parameters value
-  if (!isnan(value))
+  if (!std::isnan(value))
     {
       pParameter->setValue(value);
     }
@@ -2600,28 +2554,38 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
                     {
                       if (sbmlLevel < 3) // l3 supports avogadro as csymbol
                         {
-                          Parameter* param = new Parameter(sbmlLevel, sbmlVersion);
+                          Parameter* param = (*initialMap)[pObject->getCN()];
+
+                          if (!param)
+                            {
+                              param = new Parameter(sbmlLevel, sbmlVersion);
+                              param->initDefaults();
+                              param->setId(CSBMLExporter::createUniqueId(idMap, "Avogadro", false));
+                              param->setAnnotation("<avogadro xmlns='http://copasi.org/constant' />");
+                              param->setName(pObject->getObjectName());
+                              param->setValue(*((double*)pObject->getValuePointer()));
+                              idMap.insert(std::pair<const std::string, const SBase*>(param->getId(), param));
+
+                              (*initialMap)[pObject->getCN()] = param;
+                            }
+                        }
+                    }
+                  else if (pObject->getObjectName() == "Quantity Conversion Factor")
+                    {
+                      Parameter* param = (*initialMap)[pObject->getCN()];
+
+                      if (!param)
+                        {
+                          param = new Parameter(sbmlLevel, sbmlVersion);
                           param->initDefaults();
-                          param->setId(CSBMLExporter::createUniqueId(idMap, "Avogadro", false));
-                          param->setAnnotation("<avogadro xmlns='http://copasi.org/constant' />");
+                          param->setId(CSBMLExporter::createUniqueId(idMap, "QuantityConversionFactor", false));
+                          param->setAnnotation("<quantityConversionFactor xmlns='http://copasi.org/constant' />");
                           param->setName(pObject->getObjectName());
                           param->setValue(*((double*)pObject->getValuePointer()));
                           idMap.insert(std::pair<const std::string, const SBase*>(param->getId(), param));
 
                           (*initialMap)[pObject->getCN()] = param;
                         }
-                    }
-                  else if (pObject->getObjectName() == "Quantity Conversion Factor")
-                    {
-                      Parameter* param = new Parameter(sbmlLevel, sbmlVersion);
-                      param->initDefaults();
-                      param->setId(CSBMLExporter::createUniqueId(idMap, "QuantityConversionFactor", false));
-                      param->setAnnotation("<quantityConversionFactor xmlns='http://copasi.org/constant' />");
-                      param->setName(pObject->getObjectName());
-                      param->setValue(*((double*)pObject->getValuePointer()));
-                      idMap.insert(std::pair<const std::string, const SBase*>(param->getId(), param));
-
-                      (*initialMap)[pObject->getCN()] = param;
                     }
                   else
                     {
@@ -5379,7 +5343,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CDataMode
                   double value = reaction.getParameterValue(pPara->getObjectName());
 
                   // if the value is NaN, leave the parameter value unset.
-                  if (!isnan(value))
+                  if (!std::isnan(value))
                     {
                       pSBMLPara->setValue(value);
                     }
@@ -7064,18 +7028,7 @@ void CSBMLExporter::createAvogadroIfNeeded(const CDataModel & dataModel)
   pSBMLAvogadro->setId(sbmlId);
   const_cast<CModelValue*>(this->mpAvogadro)->setSBMLId(sbmlId);
   this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLAvogadro));
-
-  if (this->mSBMLLevel != 1)
-    {
-      pSBMLAvogadro->setConstant(true);
-    }
-  else
-    {
-      // Level 1 doesn't know the constant flag and
-      // libSBML does not drop it automatically
-      pSBMLAvogadro->setConstant(true);
-    }
-
+  pSBMLAvogadro->setConstant(true);
   pSBMLAvogadro->setValue(dataModel.getModel()->getQuantity2NumberFactor());
   this->mHandledSBMLObjects.insert(pSBMLAvogadro);
   this->mCOPASI2SBMLMap[this->mpAvogadro] = pSBMLAvogadro;
@@ -7192,9 +7145,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqbiol_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqbiol_isDescribedBy:
+          //    break;
           case CRDFPredicate::bqbiol_isEncodedBy:
           case CRDFPredicate::copasi_isEncodedBy:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7231,7 +7184,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
 
-            // This qualifier is supported in libsbml 4.1
+          // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7293,9 +7246,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setModelQualifierType(BQM_HAS_INSTANCE);
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqmodel_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqmodel_isDescribedBy:
+          //    break;
           default:
             // there are many qualifiers that start e.g. with copasi_ which are
             // not handled

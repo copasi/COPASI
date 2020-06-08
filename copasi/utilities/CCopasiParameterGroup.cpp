@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -101,7 +101,7 @@ bool CCopasiParameterGroup::applyData(const CData & data, CUndoData::CChangeSet 
 
       for (; it != end; ++it)
         {
-          CDataObject * pObject;
+          CDataObject * pObject = NULL;
           size_t Index = it->getProperty(CData::OBJECT_INDEX).toSizeT();
 
           if (Index < size())
@@ -154,18 +154,23 @@ void CCopasiParameterGroup::createUndoData(CUndoData & undoData,
   std::vector< CData >::const_iterator itOldData = OldValueData.begin();
   std::vector< CData >::const_iterator endOldData = OldValueData.end();
 
-  std::multimap< std::string, const CData * > OldValueMap;
+  std::map< std::pair < std::string, size_t >, const CData * > OldValueMap;
 
   for (; itOldData != endOldData; ++itOldData)
-    {
-      OldValueMap.insert(std::make_pair(itOldData->getProperty(CData::OBJECT_NAME).toString(), &*itOldData));
-    }
+    OldValueMap.insert(std::make_pair(std::make_pair(itOldData->getProperty(CData::OBJECT_NAME).toString(), itOldData->getProperty(CData::OBJECT_INDEX).toSizeT()), &*itOldData));
 
-  std::multimap< std::string, const CData * >::const_iterator itOLD = OldValueMap.begin();
-  std::multimap< std::string, const CData * >::const_iterator endOLD = OldValueMap.end();
+  std::map< std::pair < std::string, size_t >, const CCopasiParameter * > NewValueMap;
 
-  const_name_iterator itNEW(getObjects().begin());
-  const_name_iterator endNEW(getObjects().end());
+  index_iterator itObject = static_cast< elements * >(mpValue)->begin();
+  index_iterator endObject = static_cast< elements * >(mpValue)->end();
+
+  for (; itObject != endObject; ++itObject)
+    NewValueMap.insert(std::make_pair(std::make_pair((*itObject)->getObjectName(), getIndex(*itObject)), *itObject));
+
+  std::map< std::pair < std::string, size_t >, const CData * >::const_iterator itOLD = OldValueMap.begin();
+  std::map< std::pair < std::string, size_t >, const CData * >::const_iterator endOLD = OldValueMap.end();
+  std::map< std::pair < std::string, size_t >, const CCopasiParameter * >::const_iterator itNEW = NewValueMap.begin();
+  std::map< std::pair < std::string, size_t >, const CCopasiParameter * >::const_iterator endNEW = NewValueMap.end();
 
   std::map< size_t, const CData * > ToBeRemoved;
   std::map< size_t, const CCopasiParameter * > ToBeAdded;
@@ -174,8 +179,8 @@ void CCopasiParameterGroup::createUndoData(CUndoData & undoData,
 
   while (itOLD != endOLD && itNEW != endNEW)
     {
-      const std::string & NameNEW = itNEW->getObjectName();
-      const std::string & NameOLD = itOLD->first;
+      const std::string & NameNEW = itNEW->first.first;
+      const std::string & NameOLD = itOLD->first.first;
 
       // The OLD parameter is missing in the NEW thus we need to remove it
       if (NameOLD < NameNEW)
@@ -188,14 +193,14 @@ void CCopasiParameterGroup::createUndoData(CUndoData & undoData,
       // The NEW parameter is missing in the OLD thus we need to insert it
       if (NameOLD > NameNEW)
         {
-          ToBeAdded.insert(std::make_pair(getIndex(*itNEW), *itNEW));
+          ToBeAdded.insert(std::make_pair(itNEW->first.second, itNEW->second));
           ++itNEW;
           continue;
         }
 
       // The names are equal it suffices to use the assignment operator of the parameter
       // We need to post process the PARAMETER_INDEX of the recorded changes
-      ChangedParameter.push_back(std::make_pair(itOLD->second, *itNEW));
+      ChangedParameter.push_back(std::make_pair(itOLD->second, itNEW->second));
 
       ++itNEW;
       ++itOLD;
@@ -204,7 +209,7 @@ void CCopasiParameterGroup::createUndoData(CUndoData & undoData,
   // All remaining NEW parameters need to be added
   while (itNEW != endNEW)
     {
-      ToBeAdded.insert(std::make_pair(getIndex(*itNEW), *itNEW));
+      ToBeAdded.insert(std::make_pair(itNEW->first.second, itNEW->second));
 
       ++itNEW;
     }
@@ -267,6 +272,7 @@ void CCopasiParameterGroup::createUndoData(CUndoData & undoData,
             NewCorrectedIndex--;
 
           CUndoData UndoData;
+
           itChanged->second->createUndoData(UndoData, CUndoData::Type::CHANGE, * itChanged->first, framework);
           UndoData.addProperty(CData::OBJECT_INDEX, OldCorrectedIndex, NewCorrectedIndex);
 
@@ -537,16 +543,19 @@ std::ostream &operator<<(std::ostream &os, const CCopasiParameterGroup & o)
 bool operator==(const CCopasiParameterGroup & lhs,
                 const CCopasiParameterGroup & rhs)
 {
-  if (lhs.getObjectName() != rhs.getObjectName()) return false;
+  if (lhs.getObjectName() != rhs.getObjectName())
+    return false;
 
-  if (lhs.size() != rhs.size()) return false;
+  if (lhs.size() != rhs.size())
+    return false;
 
   CCopasiParameterGroup::elements::const_iterator itLhs = lhs.beginIndex();
   CCopasiParameterGroup::elements::const_iterator endLhs = lhs.endIndex();
   CCopasiParameterGroup::elements::const_iterator itRhs = rhs.beginIndex();
 
   for (; itLhs != endLhs; ++itLhs, ++itRhs)
-    if (!(**itLhs == **itRhs)) return false;
+    if (!(**itLhs == **itRhs))
+      return false;
 
   return true;
 }

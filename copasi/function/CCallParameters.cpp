@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,12 +22,12 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CCallParameters.h"
 #include "CFunction.h"
 
-#include "utilities/CCopasiParameter.h"
-#include "model/CModel.h"
+#include "copasi/utilities/CCopasiParameter.h"
+#include "copasi/model/CModel.h"
 
 // static
 CDataObject * CFunctionParameterMap::pUnmappedObject = NULL;

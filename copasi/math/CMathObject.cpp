@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -15,17 +15,17 @@
 
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CMathObject.h"
 #include "CMathExpression.h"
 #include "CMathContainer.h"
 
-#include "model/CMetab.h"
-#include "model/CCompartment.h"
-#include "model/CModel.h"
-#include "function/CExpression.h"
-#include "utilities/utility.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CModel.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/utilities/utility.h"
 // static
 C_FLOAT64 CMathObject::InvalidValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
@@ -354,7 +354,7 @@ void CMathObject::calculateValue()
 #ifdef COPASI_DEBUG_TRACE
 
   // Check for NaN
-  if (isnan(*mpValue) && mpExpression->getInfix() != "")
+  if (std::isnan(*mpValue) && mpExpression->getInfix() != "")
     {
       std::cout << "NaN Value for: " << getCN() << std::endl;
     }
@@ -1640,6 +1640,8 @@ bool CMathObject::createConvertedExpression(const CExpression * pExpression,
 {
   assert(pExpression != NULL);
 
+  if (!pExpression) return false;
+
   bool success = true;
   pdelete(mpExpression);
 
@@ -1935,7 +1937,7 @@ bool CMathObject::createIntensiveNoiseExpression(const CMetab * pSpecies,
 
   bool success = true;
 
-  if (pSpecies->hasNoise())
+  if (pSpecies->hasNoise() && pSpecies->getNoiseExpressionPtr())
     {
       mpExpression = new CMathExpression(*pSpecies->getNoiseExpressionPtr(), container, !mIsInitialValue);
     }

@@ -28,11 +28,11 @@
  * (C) Pedro Mendes 2001
  */
 #include <sstream>
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CVersion.h"
 #include "utility.h"
-#include "CopasiVersion.h"
+#include "copasi/CopasiVersion.h"
 #include "copasi/core/CVector.h"
 
 // initialize the global version instance

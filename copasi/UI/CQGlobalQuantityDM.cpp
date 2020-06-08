@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,18 +20,18 @@
 
 #include <QtCore/QString>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModelValue.h"
-#include "function/CExpression.h"
-#include "model/CModel.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/model/CModel.h"
 
 #include "CQMessageBox.h"
 #include "CQGlobalQuantityDM.h"
 #include "qtUtilities.h"
 
-#include "model/CReaction.h"
-#include "model/CReactionInterface.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CReactionInterface.h"
 #include "copasi/UI/CQCopasiApplication.h"
 
 CQGlobalQuantityDM::CQGlobalQuantityDM(QObject *parent)
@@ -49,10 +49,19 @@ const QStringList& CQGlobalQuantityDM::getTypes()
   return mTypes;
 }
 
+size_t CQGlobalQuantityDM::size() const
+{
+  if (mpGlobalQuantities != NULL)
+    return mpGlobalQuantities->size();
+
+  return 0;
+}
+
 int CQGlobalQuantityDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mpGlobalQuantities->size() + 1;
+  return mFetched + 1;
 }
+
 int CQGlobalQuantityDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
   return TOTAL_COLS_GQ;
@@ -89,7 +98,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int) mpGlobalQuantities->size())
         {
           switch (index.column())
             {
@@ -338,8 +347,9 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex & 
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+      --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
@@ -398,6 +408,8 @@ void CQGlobalQuantityDM::insertNewRows(int position, int rows, int column, const
       if (pModelValue == NULL)
         continue;
 
+      ++mFetched;
+
       if (column == COL_TYPE_GQ)
         {
           pModelValue->setStatus(CModelEntity::StatusName.toEnum(TO_UTF8(value.toString())));
@@ -420,7 +432,7 @@ bool CQGlobalQuantityDM::clear()
 {
   QModelIndexList rows;
 
-  for (int i = 0; i < mpGlobalQuantities->size(); i++)
+  for (int i = 0; i < (int) mpGlobalQuantities->size(); i++)
     {
       rows.append(index(i, 0));
     }

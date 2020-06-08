@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,11 +8,11 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "COptMethodNL2SOL.h"
 #include "COptProblem.h"
-#include "parameterFitting/CFitProblem.h"
+#include "copasi/parameterFitting/CFitProblem.h"
 #include "COptItem.h"
 #include "COptTask.h"
 #include "FminBrent.h"
@@ -120,7 +120,7 @@ bool COptMethodNL2SOL::optimise()
   calcr(&nResiduals, &mVariableSize, mCurrent.array(), &dummy, NULL, &dummy, &mBestValue, (U_fp) fCalcr);
   mBest = mCurrent;
 
-  if (!isnan(mEvaluationValue))
+  if (!std::isnan(mEvaluationValue))
     {
       // and store that value
       mBestValue = mEvaluationValue;

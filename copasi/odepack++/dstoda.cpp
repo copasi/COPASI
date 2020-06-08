@@ -1,4 +1,14 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,7 +30,7 @@
 
 #include <algorithm>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CInternalSolver.h"
 
@@ -292,7 +302,9 @@ L150:
   switch (iret)
     {
       case 1: goto L160;
+
       case 2: goto L170;
+
       case 3: goto L200;
     }
 

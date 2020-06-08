@@ -27,13 +27,13 @@
 #include <QTextStream>
 #include <QAbstractItemView>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include <copasi/core/CRootContainer.h>
 #include <copasi/commandline/CConfigurationFile.h>
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
-#include "utilities/CCopasiParameterGroup.h"
-#include "utilities/CDirEntry.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CDirEntry.h"
 #include "copasiWidget.h"
 #include "CQCopasiApplication.h"
 #include "copasiui3window.h"

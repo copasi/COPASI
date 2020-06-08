@@ -29,28 +29,29 @@
 
 #include "CQFittingResult.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CopasiFileDialog.h"
 #include "CQMessageBox.h"
 
-#include "CopasiDataModel/CDataModel.h"
-#include "parameterFitting/CFitTask.h"
-#include "parameterFitting/CFitProblem.h"
-#include "parameterFitting/CFitItem.h"
-#include "parameterFitting/CExperimentSet.h"
-#include "parameterFitting/CExperiment.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/parameterFitting/CFitTask.h"
+#include "copasi/parameterFitting/CFitProblem.h"
+#include "copasi/parameterFitting/CFitItem.h"
+#include "copasi/parameterFitting/CExperimentSet.h"
+#include "copasi/parameterFitting/CExperiment.h"
 
 #include "copasi/core/CRootContainer.h"
 
-#include "optimization/COptMethod.h"
-#include "optimization/COptLog.h"
+#include "copasi/optimization/COptMethod.h"
+#include "copasi/optimization/COptLog.h"
 
-#include "commandline/CLocaleString.h"
-#include "model/CModel.h"
-#include "math/CMathContainer.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/commandline/CConfigurationFile.h"
+#include "copasi/model/CModel.h"
+#include "copasi/math/CMathContainer.h"
 
-#include "UI/qtUtilities.h"
+#include "copasi/UI/qtUtilities.h"
 #include "CQExperimentSelection.h"
 
 #include <QSortFilterProxyModel>
@@ -254,8 +255,12 @@ bool CQFittingResult::enterProtected()
   QSortFilterProxyModel*  sortModel = new QSortFilterProxyModel(this);
   sortModel->setSourceModel(model);
   mpParameters->setModel(sortModel);
-  mpParameters->resizeColumnsToContents();
-  mpParameters->resizeRowsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpParameters->resizeColumnsToContents();
+      mpParameters->resizeRowsToContents();
+    }
 
   // Results per Experiment tab: Loop over the experiments
   loadExperimentTab();
@@ -310,8 +315,12 @@ bool CQFittingResult::enterProtected()
       mpValues->setItem((int) i, 5, pItem);
     }
 
-  mpValues->resizeColumnsToContents();
-  mpValues->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpValues->resizeColumnsToContents();
+      mpValues->resizeRowsToContents();
+    }
+
   mpValues->setSortingEnabled(true);
 
   // Fill correlation matrix
@@ -442,8 +451,12 @@ bool CQFittingResult::enterProtected()
       mpCrossValidationValues->setItem(i, 4, pItem);
     }
 
-  mpCrossValidationValues->resizeColumnsToContents();
-  mpCrossValidationValues->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpCrossValidationValues->resizeColumnsToContents();
+      mpCrossValidationValues->resizeRowsToContents();
+    }
+
   mpCrossValidationValues->setSortingEnabled(true);
 
   mpLogTree->clear();

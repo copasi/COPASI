@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -11,19 +16,19 @@
 #include <cmath>
 #include <limits>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CLNAMethod.h"
 #include "CLNAProblem.h"
 
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "utilities/utility.h"
-#include "utilities/CCopasiTask.h"
-#include "utilities/CReadConfig.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/utilities/CReadConfig.h"
 
-#include "lapack/blaswrap.h"
-#include "lapack/lapackwrap.h"
+#include "copasi/lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 /**
  * Default constructor
@@ -215,7 +220,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
     {
       *pA = *pMatrix;
 
-      if (!std::isfinite(*pA) && !isnan(*pA))
+      if (!std::isfinite(*pA) && !std::isnan(*pA))
         {
           if (*pA > 0)
             *pA = std::numeric_limits< C_FLOAT64 >::max();
@@ -306,7 +311,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
 
           at = mJacobianReduced[i][j];
 
-          if (!std::isfinite(at) && !isnan(at))
+          if (!std::isfinite(at) && !std::isnan(at))
             {
               if (at > 0)
                 at = std::numeric_limits< C_FLOAT64 >::max();

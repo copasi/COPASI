@@ -15,7 +15,7 @@
 
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CMathDependencyGraph.h"
 #include "CMathDependencyNode.h"
@@ -23,8 +23,8 @@
 #include "CMathContainer.h"
 
 #include "copasi/core/CDataContainer.h"
-#include "core/CRegisteredCommonName.h"
-#include "utilities/CCopasiMessage.h"
+#include "copasi/core/CRegisteredCommonName.h"
+#include "copasi/utilities/CCopasiMessage.h"
 
 // Uncomment this line below to get debug print out.
 // #define DEBUG_OUTPUT 1
@@ -74,7 +74,7 @@ void CMathDependencyGraph::clear()
 
   for (; it != end; ++it)
     {
-      delete (it->second);
+      delete(it->second);
     }
 
   mObjects2Nodes.clear();

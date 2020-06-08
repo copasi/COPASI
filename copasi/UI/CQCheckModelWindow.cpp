@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,7 +17,7 @@
 #include "copasi/resourcesUI/CQIconResource.h"
 #include "copasi/UI/CopasiFileDialog.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "copasi/UI/qtUtilities.h"
 
 #include "copasi/model/CModelAnalyzer.h"
@@ -46,8 +46,8 @@ void CQCheckModelWindow::setAnalyzer(CModelAnalyzer* analyzer)
 
   if (mpAnalyzer != NULL)
     {
-      const std::vector<CModelAnalyzer::ReactionResult>& results = mpAnalyzer->getReactionResults();
-      std::vector<CModelAnalyzer::ReactionResult>::const_iterator it = results.begin();
+      const std::vector<CReactionResult>& results = mpAnalyzer->getReactionResults();
+      std::vector<CReactionResult>::const_iterator it = results.begin();
 
       for (; it != results.end(); ++it)
         {
@@ -148,8 +148,8 @@ void CQCheckModelWindow::displayResult()
   else
     {
       std::string current = TO_UTF8(mpSelection->currentText());
-      const std::vector<CModelAnalyzer::ReactionResult>& results = mpAnalyzer->getReactionResults();
-      std::vector<CModelAnalyzer::ReactionResult>::const_iterator it = results.begin();
+      const std::vector<CReactionResult>& results = mpAnalyzer->getReactionResults();
+      std::vector<CReactionResult>::const_iterator it = results.begin();
 
       for (; it != results.end(); ++it)
         {

@@ -1,36 +1,38 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CZeroSet.cpp,v $
-//   $Revision: 1.8 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:27:36 $
-// End CVS Header
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CZeroSet.h"
 #include "CStepMatrixColumn.h"
 
 CZeroSet::CIndex::CIndex(const size_t & index):
-    mIndex(index / (CHAR_BIT * sizeof(size_t))),
-    mBit(1 << (index % (CHAR_BIT * sizeof(size_t)))),
-    mNotBit(C_INVALID_INDEX - mBit)
+  mIndex(index / (CHAR_BIT * sizeof(size_t))),
+  mBit(1 << (index % (CHAR_BIT * sizeof(size_t)))),
+  mNotBit(C_INVALID_INDEX - mBit)
 {}
 
 CZeroSet::CIndex::CIndex(const CZeroSet::CIndex & src):
-    mIndex(src.mIndex),
-    mBit(src.mBit),
-    mNotBit(src.mNotBit)
+  mIndex(src.mIndex),
+  mBit(src.mBit),
+  mNotBit(src.mNotBit)
 {}
 
 CZeroSet::CIndex::~CIndex()
@@ -78,17 +80,17 @@ bool CZeroSet::CIndex::operator < (const CZeroSet::CIndex & rhs) const
 }
 
 CZeroSet::CZeroSet(const size_t & size):
-    mBitSet(size / (CHAR_BIT * sizeof(size_t)) + 1),
-    mIgnoredBits(mBitSet.size() * CHAR_BIT * sizeof(size_t) - size),
-    mNumberSetBits(size)
+  mBitSet(size / (CHAR_BIT * sizeof(size_t)) + 1),
+  mIgnoredBits(mBitSet.size() * CHAR_BIT * sizeof(size_t) - size),
+  mNumberSetBits(size)
 {
   mBitSet = C_INVALID_INDEX;
 }
 
 CZeroSet::CZeroSet(const CZeroSet & src):
-    mBitSet(src.mBitSet),
-    mIgnoredBits(src.mIgnoredBits),
-    mNumberSetBits(src.mNumberSetBits)
+  mBitSet(src.mBitSet),
+  mIgnoredBits(src.mIgnoredBits),
+  mNumberSetBits(src.mNumberSetBits)
 {}
 
 CZeroSet::~CZeroSet()

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,12 +33,12 @@
 #include <string>
 #include <limits.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CTSSAProblem.h"
 #include "CTSSATask.h"
-#include "model/CModel.h"
-//#include "model/CState.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
+//#include "copasi/model/CState.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 
 /**

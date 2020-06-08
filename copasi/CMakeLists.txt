@@ -1,3 +1,18 @@
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 ###############################################################################
 #
 # Description       : CMake build script for COPASI
@@ -7,23 +22,12 @@
 # This file is part of COPASI.  Please visit http://COPASI.org for more
 # information about COPASI, and the latest version of COPASI.
 #
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., University of Heidelberg, and The University
-# of Manchester.
-# All rights reserved.
 #
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-# and The University of Manchester.
-# All rights reserved.
 #
-# Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-# Properties, Inc. and EML Research, gGmbH.
-# All rights reserved.
 #
 ###############################################################################
 
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.1.3)
 
 if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
@@ -35,8 +39,6 @@ cmake_policy(SET CMP0011 NEW)
 if (COPASI_INSTALL_C_API)
   include (CMakePackageConfigHelpers)
 endif(COPASI_INSTALL_C_API)
-
-include (common.cmake)
 
 set(COPASI_SOURCES)
 set(COPASI_HEADERS)
@@ -232,8 +234,6 @@ endif(EXTRA_MOC_OPTIONS)
   endif()
 
 
-  
-
 ###############################################################################
 # write configuration options to headers
 
@@ -242,19 +242,16 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DI
 # rebuilds after every configuration change
 copy_if_different_and_remove(${CMAKE_CURRENT_BINARY_DIR}/config.h.tmp ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 set(COPASI_HEADERS ${COPASI_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/config.h)
-include_directories(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 
-
+#link_directories(${CMAKE_BINARY_DIR}/copasi)
 
 
 include_directories(
-  "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/.."
+  ${COPASI_INCLUDE_DIRS}
   ${RAPTOR_INCLUDE_DIR}
   ${LIBEXPAT_INCLUDE_DIR}
   ${LAPACK_INCLUDE_DIR}
   ${LIBSBML_INCLUDE_DIR}
-
 )
 
 #need to include iconv dir
@@ -267,19 +264,32 @@ endif()
 
 
 if (APPLE AND CMAKE_GENERATOR STREQUAL "Xcode" OR DISABLE_CORE_OBJECT_LIBRARY)
-add_library (libCOPASISE-static STATIC ${COPASI_SOURCES} ${COPASI_HEADERS})
+  add_library (libCOPASISE-static STATIC ${COPASI_SOURCES} ${COPASI_HEADERS})
 else()
-add_library (libCOPASISE-core OBJECT ${COPASI_SOURCES} ${COPASI_HEADERS})
-add_library (libCOPASISE-static STATIC $<TARGET_OBJECTS:libCOPASISE-core>)
+  add_library (libCOPASISE-core OBJECT ${COPASI_SOURCES} ${COPASI_HEADERS})
+  add_library (libCOPASISE-static STATIC $<TARGET_OBJECTS:libCOPASISE-core>)
 endif()
 set_target_properties (libCOPASISE-static PROPERTIES OUTPUT_NAME "COPASISE")
 
-target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY})
-if (${LIBNUML_LIBRARY})
-target_link_libraries(libCOPASISE-static ${LIBNUML_LIBRARY})
-endif()
+target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY_NAME})
+target_link_libraries(libCOPASISE-static ${COMBINE_LIBRARY_NAME})
 
-target_link_libraries(libCOPASISE-static ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${EXPAT_LIBRARY} ${CLAPACK_LIBRARIES})
+if (APPLE)
+  FIND_LIBRARY(COREFOUNDATION_LIBRARY CoreFoundation REQUIRED)
+  MARK_AS_ADVANCED (COREFOUNDATION_LIBRARY)
+  target_link_libraries(libCOPASISE-static ${COREFOUNDATION_LIBRARY})
+endif (APPLE)
+
+target_link_libraries(libCOPASISE-static ${CROSSGUID_LIBRARY} ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY_NAME} ${EXPAT_LIBRARIES} ${EXPAT_LIBRARY} ${CLAPACK_LIBRARIES})
+
+ if (EXTRA_LIBS)
+   target_link_libraries(libCOPASISE-static ${EXTRA_LIBS})   
+ else ()
+   if (UNIX AND BLA_VENDOR AND "${BLA_VENDOR}" STREQUAL "Intel (MKL)")
+     target_link_libraries(libCOPASISE-static -lpthread -lm)
+   endif()
+ endif(EXTRA_LIBS)
+
 
 #need to link against iconv
 if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
@@ -334,6 +344,7 @@ if(ENABLE_LIBCOPASISE_SHARED)
   else()
     add_library (libCOPASISE-shared SHARED $<TARGET_OBJECTS:libCOPASISE-core>)
   endif()
+
 
   set_target_properties (libCOPASISE-shared PROPERTIES OUTPUT_NAME "COPASISE")
 
@@ -424,6 +435,7 @@ if(BUILD_GUI)
 
   set(HEADERS_UI_MOC)
   set(HEADERS_UI_FORMS)
+  set(GUI_INCLUDE_DIRS)
 
   if (Qt5_FOUND)
     include(CMakeParseArguments)
@@ -517,13 +529,12 @@ if(BUILD_GUI)
       set(HEADERS_UI_FORMS ${HEADERS_UI_FORMS} ${TEMP_UI_FORMS})
     endif (Qt5_FOUND)
 
-    include_directories(${CMAKE_CURRENT_BINARY_DIR}/${dir})
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/${dir})
+    set (GUI_INCLUDE_DIRS ${GUI_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR}/${dir})
+    
   endforeach()
 
-
-  include_directories(${CMAKE_CURRENT_BINARY_DIR})
-  include_directories(${CMAKE_BINARY_DIR})
+  
+  set(GUI_INCLUDE_DIRS ${GUI_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_BINARY_DIR})
   include_directories(${LIBSBML_INCLUDE_DIR})
   include_directories(${QWT_INCLUDE_DIR})
   include_directories(${QWTPLOT3D_INCLUDE_DIR})
@@ -535,15 +546,47 @@ if(BUILD_GUI)
 
   include_directories(${LIBSEDML_INCLUDE_DIR})
 
+  if (NOT ${CMAKE_VERSION} VERSION_GREATER "2.8.11")
+    include_directories(${GUI_INCLUDE_DIRS})
+  endif()
+
+
   add_library(libCOPASIUI STATIC ${COPASI_UI_SOURCES} ${COPASI_UI_HEADERS} ${HEADERS_UI_FORMS} ${COPASI_RCC_SOURCES} ${HEADERS_UI_MOC})
+
   QT_BIND_TO_TARGET(libCOPASIUI)
   target_link_libraries(libCOPASIUI libCOPASISE-static ${SBW_LIBRARY} ${QWT_LIBRARY} ${QWTPLOT3D_LIBRARY} ${MML_LIBRARY})
+  if (${CMAKE_VERSION} VERSION_GREATER "2.8.11")
+    target_include_directories(libCOPASIUI PUBLIC ${GUI_INCLUDE_DIRS})
+  endif()
   
   if (OPENGL_glu_LIBRARY AND OPENGL_gl_LIBRARY)
   # need to specify the dependencies on the gl libraries on some linux systems
   # to ensure the order of these libraries during link is correct
   target_link_libraries(libCOPASIUI ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
   endif()
+
+
+  if (NOT USING_INTEL)
+    target_link_libraries(libCOPASIUI ${ZLIB_LIBRARY})
+  endif (NOT USING_INTEL)
+  
+  if (ENABLE_SBW_INTEGRATION)
+  target_link_libraries(libCOPASIUI ${SBW_LIBRARIES})
+  endif(ENABLE_SBW_INTEGRATION)
+  
+  # On some linux systems we do require a link against the pthread library
+  # as well as the libz library
+  if (UNIX AND NOT APPLE)
+    find_package(Threads)
+    find_package(ZLIB)
+    if (CMAKE_USE_PTHREADS_INIT)
+      target_link_libraries(libCOPASIUI ${CMAKE_THREAD_LIBS_INIT})
+    endif()
+    if (ZLIB_FOUND)
+      target_link_libraries(libCOPASIUI ${ZLIB_LIBRARIES})
+    endif()
+  endif()
+
 
   set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
 
@@ -591,12 +634,10 @@ mark_as_advanced(BUILD_SE)
 
 if(BUILD_SE)
   add_subdirectory(CopasiSE)
-  add_dependencies(CopasiSE libCOPASISE-static ${SE_DEPENDENCIES})
 endif(BUILD_SE)
 
 if(BUILD_GUI)
   add_subdirectory(CopasiUI)
-  add_dependencies(CopasiUI ${SE_DEPENDENCIES} libCOPASIUI ${UI_DEPENDENCIES})
 
   option(BUILD_VIEWCURRENT "Build the viewer for optimization / fitting tasks (ViewCurrent)." OFF)
   mark_as_advanced(BUILD_VIEWCURRENT)
@@ -612,5 +653,3 @@ mark_as_advanced(BUILD_COPASISBW)
 if(BUILD_COPASISBW AND SBW_FOUND)
   add_subdirectory(CopasiSBW)
 endif(BUILD_COPASISBW AND SBW_FOUND)
-
-

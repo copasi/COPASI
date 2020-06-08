@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -7,8 +12,6 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
-
-
 
 #include "copasi/utilities/CUnitValidator.h"
 #include "copasi/utilities/CNodeIterator.h"
@@ -21,15 +24,14 @@
 //}
 
 CUnitValidator::CUnitValidator(const CMathContainer & math,
-                               const CEvaluationTree & tree):
-  mMathContainer(*const_cast< CMathContainer * >(&math)),
-  mTree(tree),
-  mTargetUnit(),
-  mProvidedVariableUnits(),
-  mVariableUnits(),
-  mObjectUnits(),
-  mNodeUnits(),
-  mApplyIntitialValue(true)
+                               const CEvaluationTree & tree)
+  : mMathContainer(*const_cast< CMathContainer * >(&math))
+  , mTree(tree)
+  , mTargetUnit()
+  , mProvidedVariableUnits()
+  , mVariableUnits()
+  , mObjectUnits()
+  , mNodeUnits()
 {
   switch (mTree.getType())
     {
@@ -46,15 +48,14 @@ CUnitValidator::CUnitValidator(const CMathContainer & math,
     }
 }
 
-CUnitValidator::CUnitValidator(const CUnitValidator &src):
-  mMathContainer(src.mMathContainer),
-  mTree(src.mTree),
-  mTargetUnit(src.mTargetUnit),
-  mProvidedVariableUnits(src.mProvidedVariableUnits),
-  mVariableUnits(src.mVariableUnits),
-  mObjectUnits(src.mObjectUnits),
-  mNodeUnits(src.mNodeUnits),
-  mApplyIntitialValue(src.mApplyIntitialValue)
+CUnitValidator::CUnitValidator(const CUnitValidator & src)
+  : mMathContainer(src.mMathContainer)
+  , mTree(src.mTree)
+  , mTargetUnit(src.mTargetUnit)
+  , mProvidedVariableUnits(src.mProvidedVariableUnits)
+  , mVariableUnits(src.mVariableUnits)
+  , mObjectUnits(src.mObjectUnits)
+  , mNodeUnits(src.mNodeUnits)
 {}
 
 CUnitValidator::~CUnitValidator()
@@ -103,14 +104,6 @@ bool CUnitValidator::validate()
       return false;
     }
 
-  CVector< C_FLOAT64 > CurrentValues;
-
-  if (mApplyIntitialValue)
-    {
-      CurrentValues = mMathContainer.getValues();
-      mMathContainer.applyInitialValues();
-    }
-
   mObjectUnits.clear();
   mNodeUnits.clear();
 
@@ -122,8 +115,8 @@ bool CUnitValidator::validate()
 
   bool conflict = false;
 
-  std::map < CEvaluationNode * , CValidatedUnit >::const_iterator itMap = mNodeUnits.begin();
-  std::map < CEvaluationNode * , CValidatedUnit >::const_iterator endMap = mNodeUnits.end();
+  std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itMap = mNodeUnits.begin();
+  std::map < CEvaluationNode *, CValidatedUnit >::const_iterator endMap = mNodeUnits.end();
 
   for (; itMap != endMap && !conflict; ++itMap)
     if (itMap->second.conflict())
@@ -157,16 +150,11 @@ bool CUnitValidator::validate()
         }
     }
 
-  std::map < CEvaluationNode * , CValidatedUnit >::iterator found = mNodeUnits.find(const_cast< CEvaluationNode * >(mTree.getRoot()));
+  std::map < CEvaluationNode *, CValidatedUnit >::iterator found = mNodeUnits.find(const_cast< CEvaluationNode * >(mTree.getRoot()));
 
   if (found != mNodeUnits.end())
     {
       found->second.setConflict(conflict);
-    }
-
-  if (mApplyIntitialValue)
-    {
-      mMathContainer.setValues(CurrentValues);
     }
 
   return !conflict;
@@ -234,11 +222,11 @@ bool CUnitValidator::setUnits()
 {
   bool UnitDetermined = false;
   CValidatedUnit tmpUnit;
-  std::map < CEvaluationNode * , CValidatedUnit > CurrentNodeUnits(mNodeUnits);
-  std::map < CEvaluationNode * , CValidatedUnit > TargetNodeUnits;
+  std::map < CEvaluationNode *, CValidatedUnit > CurrentNodeUnits(mNodeUnits);
+  std::map < CEvaluationNode *, CValidatedUnit > TargetNodeUnits;
   mNodeUnits.clear();
 
-  std::map < CEvaluationNode * , CValidatedUnit >::iterator found;
+  std::map < CEvaluationNode *, CValidatedUnit >::iterator found;
 
   CNodeIterator< CEvaluationNode > it(const_cast< CEvaluationNode * >(mTree.getRoot()));
   it.setProcessingModes(CNodeIteratorMode::Before);
@@ -339,7 +327,7 @@ const CValidatedUnit & CUnitValidator::getObjectUnit(const CObjectInterface * pO
 
 const CValidatedUnit & CUnitValidator::getUnit() const
 {
-  std::map < CEvaluationNode * , CValidatedUnit >::const_iterator found = mNodeUnits.find(const_cast< CEvaluationNode * >(mTree.getRoot()));
+  std::map < CEvaluationNode *, CValidatedUnit >::const_iterator found = mNodeUnits.find(const_cast< CEvaluationNode * >(mTree.getRoot()));
 
   if (found != mNodeUnits.end())
     {

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -11,14 +16,14 @@
 #include <QPen>
 #include <QBrush>
 
-#include <qlayout/CQStyledGraphicsItem.h>
-#include <qlayout/CQRenderConverter.h>
-#include <qlayout/CQLayoutScene.h>
+#include <copasi/qlayout/CQStyledGraphicsItem.h>
+#include <copasi/qlayout/CQRenderConverter.h>
+#include <copasi/qlayout/CQLayoutScene.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include <layout/CLGlyphs.h>
-#include <layout/CLRenderResolver.h>
+#include <copasi/layout/CLGlyphs.h>
+#include <copasi/layout/CLRenderResolver.h>
 
 CQStyledGraphicsItem::CQStyledGraphicsItem(const CLGraphicalObject* go, const CLRenderResolver* resolver)
   : CQCopasiGraphicsItem(resolver, resolver != NULL ? resolver->resolveStyle(go) : NULL)

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,19 +28,19 @@
 #include <algorithm>
 #include <cmath>
 
-#include "copasi.h"
-#include "utilities/CCopasiNode.h"
-#include "function/CEvaluationNodeNumber.h"
-#include "function/CEvaluationNodeConstant.h"
-#include "function/CEvaluationNodeObject.h"
-#include "function/CEvaluationNodeFunction.h"
-#include "function/CEvaluationNodeCall.h"
-#include "function/CEvaluationNodeStructure.h"
-#include "function/CEvaluationNodeChoice.h"
-#include "function/CEvaluationNodeVariable.h"
-#include "function/CEvaluationNodeLogical.h"
-#include "function/CEvaluationNodeVector.h"
-#include "function/CEvaluationNodeWhiteSpace.h"
+#include "copasi/copasi.h"
+#include "copasi/utilities/CCopasiNode.h"
+#include "copasi/function/CEvaluationNodeNumber.h"
+#include "copasi/function/CEvaluationNodeConstant.h"
+#include "copasi/function/CEvaluationNodeObject.h"
+#include "copasi/function/CEvaluationNodeFunction.h"
+#include "copasi/function/CEvaluationNodeCall.h"
+#include "copasi/function/CEvaluationNodeStructure.h"
+#include "copasi/function/CEvaluationNodeChoice.h"
+#include "copasi/function/CEvaluationNodeVariable.h"
+#include "copasi/function/CEvaluationNodeLogical.h"
+#include "copasi/function/CEvaluationNodeVector.h"
+#include "copasi/function/CEvaluationNodeWhiteSpace.h"
 
 const double CEvaluationNodeNormalizer::ZERO = 1e-100;
 
@@ -105,10 +110,10 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalize(const CEvaluationNode* pNo
           case CEvaluationNode::MainType::VECTOR:
             pResult = normalizeCEvaluationNodeVector(dynamic_cast<const CEvaluationNodeVector*>(pNode));
             break;
-            
+
           case CEvaluationNode::MainType::UNIT:
             break;
-            
+
           case CEvaluationNode::MainType::__SIZE:
             break;
         }
@@ -179,7 +184,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeOperator(con
           case CEvaluationNode::SubType::MINUS:
             pResult = CEvaluationNodeNormalizer::normalizeMinusNode(pNode);
             break;
-            
+
           default:
             break;
         }
@@ -297,13 +302,13 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeFunction(con
 
             break;
 
-          /*
-          case CEvaluationNode::S_MINUS:
-              // relace the - by a multiplication with -1
-              // !!! Maybe this is not possible since CEvaluationNodeNumber
-              // elements can not hold negative numbers.
-              pResult=new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY,"");
-          */
+            /*
+            case CEvaluationNode::S_MINUS:
+                // relace the - by a multiplication with -1
+                // !!! Maybe this is not possible since CEvaluationNodeNumber
+                // elements can not hold negative numbers.
+                pResult=new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY,"");
+            */
           case CEvaluationNode::SubType::PLUS:
             // eliminate the plus
             pResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
@@ -418,9 +423,9 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeCall(const C
 
                 ++it;
               }
-            }
-            break;
-          
+          }
+          break;
+
           default:
             break;
         }
@@ -498,6 +503,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeChoice(const
                 pResult = NULL;
               }
           }
+
           default:
             break;
         }

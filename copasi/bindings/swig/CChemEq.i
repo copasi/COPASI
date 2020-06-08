@@ -28,8 +28,8 @@
 
 %{
 
-#include "model/CChemEq.h"
-#include "model/CChemEqInterface.h"
+#include "copasi/model/CChemEq.h"
+#include "copasi/model/CChemEqInterface.h"
 
 %}
 
@@ -37,10 +37,12 @@
 %ignore CChemEq::reverse(); // this has not been implemented
 %catches(CCopasiException) CChemEq::getLargestCompartment() const;
 
-%include "model/CChemEq.h"
-%include "model/CChemEqInterface.h"
+%include "copasi/model/CChemEq.h"
+%include "copasi/model/CChemEqInterface.h"
 
+#ifndef SWIGR
 %template(StringSet)  std::set< std::string >;
+#endif
 
 %extend CChemEq
 {

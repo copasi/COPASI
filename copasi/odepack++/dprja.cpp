@@ -1,4 +1,14 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,11 +30,11 @@
 
 #include <algorithm>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CInternalSolver.h"
 
-#include "lapack/lapackwrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 #define dls001_1 (mdls001_._1)
 #define dls001_2 (mdls001_._2)
@@ -122,9 +132,13 @@ C_INT CInternalSolver::dprja_(C_INT *neq, double *y, double *yh,
   switch (dls001_1.miter)
     {
       case 1: goto L100;
+
       case 2: goto L200;
+
       case 3: goto L300;
+
       case 4: goto L400;
+
       case 5: goto L500;
     }
 

@@ -28,7 +28,7 @@
 #include <QGridLayout>
 #include <QCloseEvent>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "copasiui3window.h"
 #include "copasi/core/CDataObject.h"

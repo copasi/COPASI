@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,13 +32,13 @@
 #include <cmath>
 #include <limits>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CSparseMatrix.h"
 
 #include "copasi/core/CMatrix.h"
-#include "lapack/blaswrap.h"
-#include "lapack/lapackwrap.h"
+#include "copasi/lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 // ---------- CSparseMatrixElement
 
@@ -589,8 +594,8 @@ CCompressedColumnFormat::const_row_iterator CCompressedColumnFormat::endRow(cons
 // ---------- SparseMatrixTest
 
 #ifdef COPASI_DEBUG
-#include "randomGenerator/CRandom.h"
-#include "core/CDataTimer.h"
+#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/core/CDataTimer.h"
 
 bool SparseMatrixTest(const size_t & size,
                       const C_FLOAT64 & sparseness,

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -8,18 +13,18 @@
 // of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CMathExpression.h"
 #include "CMathContainer.h"
 
-#include "function/CExpression.h"
-#include "function/CFunction.h"
-#include "function/CEvaluationNode.h"
-#include "function/CEvaluationNodeObject.h"
-#include "function/CEvaluationLexer.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/function/CEvaluationNode.h"
+#include "copasi/function/CEvaluationNodeObject.h"
+#include "copasi/function/CEvaluationLexer.h"
 
-#include "utilities/CCopasiTree.h"
+#include "copasi/utilities/CCopasiTree.h"
 
 #define pMathContainer static_cast< const CMathContainer * >(getObjectParent())
 

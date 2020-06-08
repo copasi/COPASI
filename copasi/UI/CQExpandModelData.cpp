@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,13 +23,13 @@
 #include "CQExpandModelData.h"
 #include "listviews.h"
 
-#include "copasi.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "model/CModelExpansion.h"
+#include "copasi/copasi.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModelExpansion.h"
 #include "copasi/core/CRootContainer.h"
 
-#include "UI/qtUtilities.h"
-#include "model/CModel.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/model/CModel.h"
 
 CQExpandModelData::CQExpandModelData(QWidget* parent, CModel* pModel)
   : QDialog(parent)

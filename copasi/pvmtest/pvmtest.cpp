@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,11 +24,11 @@
 
 #define COPASI_MAIN
 
-#include "copasi.h"
-#include "utilities/CGlobals.h"
-#include "optimization/COptMethod.h"
-#include "optimization/CRealProblem.h"
-#include "utilities/CCopasiException.h"
+#include "copasi/copasi.h"
+#include "copasi/utilities/CGlobals.h"
+#include "copasi/optimization/COptMethod.h"
+#include "copasi/optimization/CRealProblem.h"
+#include "copasi/utilities/CCopasiException.h"
 #include "copasi/core/CRootContainer.h"
 
 C_INT32 TestOptimization(void);     //yohe: new

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,17 +32,17 @@
  * Created for COPASI by Stefan Hoops 2002
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CSteadyStateTask.h"
 #include "CSteadyStateProblem.h"
 #include "CSteadyStateMethod.h"
 
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "model/CMetabNameInterface.h"
-#include "report/CKeyFactory.h"
-#include "report/CReport.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetabNameInterface.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/report/CReport.h"
 
 #include <sstream>
 

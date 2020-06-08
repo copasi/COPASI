@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -17,49 +22,42 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
-
-
-
-
 #ifdef SunOS
 #include <ieeefp.h>
 #else
 #include <cmath>
 #endif
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CQArrayAnnotationsWidget.h"
 #include "qtUtilities.h"
 #include "CQComboDelegate.h"
 #include "CQArrayAnnotationsWidgetDM.h"
 #include "CQSortFilterProxyModel.h"
+#include <copasi/core/CRootContainer.h>
+#include <copasi/commandline/CConfigurationFile.h>
 
 #include <iostream>
 
-#include "resourcesUI/CQIconResource.h"  //icons for bars and table toggle button
+#include "copasi/resourcesUI/CQIconResource.h"  //icons for bars and table toggle button
 
 #ifdef DEBUG_UI
 #include <QtCore/QtDebug>
 #endif
-
 
 #ifdef WITH_QT5_VISUALIZATION
 
 #include <QtDataVisualization>
 #include <QMenu>
 
-#include "CQ3DBarsModifier.h"
+#include "copasi/barChart/CQ3DBarsModifier.h"
 
 using namespace QtDataVisualization;
 
 #else
 
-#include "barChart/qwt3dPlot.h"
+#include "copasi/barChart/qwt3dPlot.h"
 
 #endif // WITH_QT5_VISUALIZATION
 
@@ -301,14 +299,20 @@ void CQArrayAnnotationsWidget::initSelectionTable()
       mpSelectionTable->setItem((int)i, 1, pItem);
     }
 
-  mpSelectionTable->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpSelectionTable->resizeColumnsToContents();
+    }
 
   mpSelectionTable->show();
 
-  mpSelectionTable->resizeColumnsToContents();
-  mpSelectionTable->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpSelectionTable->resizeColumnsToContents();
+      mpSelectionTable->resizeRowsToContents();
 
-  mpSelectionTable->setMaximumHeight(mpSelectionTable->verticalHeader()->sectionSize(0) * (mpArray->dimensionality() + 1));
+      mpSelectionTable->setMaximumHeight(mpSelectionTable->verticalHeader()->sectionSize(0) * (mpArray->dimensionality() + 1));
+    }
 }
 
 void CQArrayAnnotationsWidget::clearWidget()
@@ -472,8 +476,11 @@ void CQArrayAnnotationsWidget::fillTableN(size_t rowIndex, size_t colIndex,
 
   mOneDimensional = false;
 
-  mpContentTableView->resizeRowsToContents();
-  mpContentTableView->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpContentTableView->resizeRowsToContents();
+      mpContentTableView->resizeColumnsToContents();
+    }
 
   if (mpStack->currentIndex() != 0)
     fillBarChart();
@@ -512,8 +519,11 @@ void CQArrayAnnotationsWidget::fillTable1(size_t rowIndex,
 
   mOneDimensional = true;
 
-  mpContentTableView->resizeRowsToContents();
-  mpContentTableView->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpContentTableView->resizeRowsToContents();
+      mpContentTableView->resizeColumnsToContents();
+    }
 
   if (mpStack->currentIndex() != 0)
     fillBarChart();
@@ -639,13 +649,10 @@ void CQArrayAnnotationsWidget::switchToBarChart()
 
       mpButton->setIcon(CQIconResource::icon(CQIconResource::table));
       mpButtonReset->hide();
-
     }
 }
 
-
 #ifdef WITH_QT5_VISUALIZATION
-
 
 void CQArrayAnnotationsWidget::slotShowContextMenu(const QPoint &pos)
 {
@@ -659,7 +666,6 @@ void CQArrayAnnotationsWidget::slotShowContextMenu(const QPoint &pos)
         m_contextMenu->popup(m_container->mapToGlobal(pos));
     }
 }
-
 
 #endif // WITH_QT5_VISUALIZATION
 
@@ -703,7 +709,6 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
 
 #ifdef WITH_QT5_VISUALIZATION
 
-
   if (!m_graph)
     return;
 
@@ -723,12 +728,9 @@ void CQArrayAnnotationsWidget::setFocusOnTable()
       int col = mpPlot3d->mpSliderColumn->value() / mpPlot3d->scaleFactor();
 
       selectTableCell(row, col);
-
     }
 
 #endif
-
-
 }
 
 void CQArrayAnnotationsWidget::selectTableCell(int row, int col)
@@ -786,7 +788,6 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
           m_modifier->zoomToSelectedBar();
           return;
         }
-
     }
 
 #else
@@ -857,7 +858,6 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
     }
 
 #endif
-
 }
 
 void CQArrayAnnotationsWidget::slotContentCellClicked(const QModelIndex & index)
@@ -935,14 +935,11 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (!mWithBarChart)
     return;
 
-
   if (!mpArray) return;
 
 #ifdef WITH_QT5_VISUALIZATION
 
-
   m_modifier->loadData(mpArray, mRowIndex, mColIndex);
-
 
 #else
 
@@ -950,7 +947,6 @@ void CQArrayAnnotationsWidget::fillBarChart()
     createBarChart();
 
   //  mBarChartFilled = true;
-
 
   mBarChartFilled = true;
 
@@ -1005,7 +1001,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
             if (!mOneDimensional)
               mSelectedCell[mColIndex] = j;
 
-            if (isnan((double)(*mpArray->array())[mSelectedCell]) ||
+            if (std::isnan((double)(*mpArray->array())[mSelectedCell]) ||
                 !finite((double)(*mpArray->array())[mSelectedCell]))
               {
                 data[j][i] = 0;
@@ -1093,8 +1089,6 @@ void CQArrayAnnotationsWidget::fillBarChart()
     }
 
 #endif
-
-
 }
 
 void CQArrayAnnotationsWidget::createBarChart()
@@ -1189,7 +1183,5 @@ void CQArrayAnnotationsWidget::createBarChart()
 
   mBarChartFilled = false;
 
-
 #endif // WITH_QT5_VISUALIZATION
-
 }

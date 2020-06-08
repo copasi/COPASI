@@ -22,7 +22,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CQLyapResultWidget.h"
 
@@ -30,15 +30,15 @@
 
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "report/CKeyFactory.h"
-#include "model/CModel.h"
-#include "lyap/CLyapProblem.h"
-#include "lyap/CLyapTask.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/model/CModel.h"
+#include "copasi/lyap/CLyapProblem.h"
+#include "copasi/lyap/CLyapTask.h"
+#include "copasi/commandline/CLocaleString.h"
 
-#include "UI/CopasiFileDialog.h"
+#include "copasi/UI/CopasiFileDialog.h"
 
 /*
  *  Constructs a CQLyapResultWidget which is a child of 'parent', with the

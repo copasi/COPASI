@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,7 +28,7 @@
 //
 
 #define COPASI_MAIN
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include <iostream>
 #include <fstream>
@@ -32,38 +37,38 @@
 #include <iomanip>
 #include <algorithm>
 
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/CVersion.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/CVersion.h"
 #include "copasi/core/CDataVector.h"
-#include "utilities/CDependencyGraph.h"
-#include "utilities/CIndexedPriorityQueue.h"
+#include "copasi/utilities/CDependencyGraph.h"
+#include "copasi/utilities/CIndexedPriorityQueue.h"
 
-#include "utilities/readwrite.h"
-#include "elementaryFluxModes/CElementaryFluxModes.h"
-#include "model/model.h"
-#include "model/CSpec2Model.h"
-#include "output/output.h"
-#include "function/CMassAction.h"
-#include "function/CFunctionDB.h"
-#include "optimization/COptMethod.h"
-#include "optimization/CRealProblem.h"
-#include "utilities/CGlobals.h"
-#include "randomGenerator/CRandom.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CEigen.h"
-#include "steadystate/CMca.h"
-#include "randomGenerator/CRandom.h"
-#include "utilities/CluX.h"
-#include "core/CRegisteredCommonName.h"
+#include "copasi/utilities/readwrite.h"
+#include "copasi/elementaryFluxModes/CElementaryFluxModes.h"
+#include "copasi/model/model.h"
+#include "copasi/model/CSpec2Model.h"
+#include "copasi/output/output.h"
+#include "copasi/function/CMassAction.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/optimization/COptMethod.h"
+#include "copasi/optimization/CRealProblem.h"
+#include "copasi/utilities/CGlobals.h"
+#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/steadystate/CEigen.h"
+#include "copasi/steadystate/CMca.h"
+#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/utilities/CluX.h"
+#include "copasi/core/CRegisteredCommonName.h"
 
 #include "mathmodel/CMathModel.h"
-#include "utilities/CCopasiNode.h"
-#include "utilities/CCopasiTree.h"
+#include "copasi/utilities/CCopasiNode.h"
+#include "copasi/utilities/CCopasiTree.h"
 #include "mathmodel/CMathNode.h"
-#include "xml/CCopasiXMLInterface.h"
-#include "xml/CCopasiXML.h"
+#include "copasi/xml/CCopasiXMLInterface.h"
+#include "copasi/xml/CCopasiXML.h"
 #include "copasi/core/CRootContainer.h"
 
 using namespace std;

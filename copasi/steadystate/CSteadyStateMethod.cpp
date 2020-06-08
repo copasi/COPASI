@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,7 +31,7 @@
  *  Created for COPASI by Stefan Hoops 2002
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "copasi/core/CDataVector.h"
 #include "CSteadyStateMethod.h"
@@ -34,21 +39,28 @@
 #include "CSteadyStateTask.h"
 #include "CEigen.h"
 
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
 
 /**
  *  Default constructor.
  */
 CSteadyStateMethod::CSteadyStateMethod(const CDataContainer * pParent,
                                        const CTaskEnum::Method & methodType,
-                                       const CTaskEnum::Task & taskType):
-  CCopasiMethod(pParent, methodType, taskType),
-  mpProblem(NULL),
-  mContainerState(),
-  mContainerStateReduced(),
-  mpContainerStateTime(NULL),
-  mCompartmentVolumes()
+                                       const CTaskEnum::Task & taskType)
+  : CCopasiMethod(pParent, methodType, taskType)
+  , mpProblem(NULL)
+  , mpParentTask(NULL)
+  , mSteadyState()
+  , mpJacobian(NULL)
+  , mpSSResolution(NULL)
+  , mpDerivationFactor(NULL)
+  , mpDerivationResolution(NULL)
+  , mContainerState()
+  , mContainerStateReduced()
+  , mpContainerStateTime()
+  , mCompartmentVolumes()
+  , mAtol()
 {
   initializeParameter();
   CONSTRUCTOR_TRACE;
@@ -59,13 +71,20 @@ CSteadyStateMethod::CSteadyStateMethod(const CDataContainer * pParent,
  *  @param "const CSteadyStateMethod &" src
  */
 CSteadyStateMethod::CSteadyStateMethod(const CSteadyStateMethod & src,
-                                       const CDataContainer * pParent):
-  CCopasiMethod(src, pParent),
-  mpProblem(src.mpProblem),
-  mContainerState(),
-  mContainerStateReduced(),
-  mpContainerStateTime(NULL),
-  mCompartmentVolumes()
+                                       const CDataContainer * pParent)
+  : CCopasiMethod(src, pParent)
+  , mpProblem(src.mpProblem)
+  , mpParentTask(src.mpParentTask)
+  , mSteadyState()
+  , mpJacobian(src.mpJacobian)
+  , mpSSResolution(NULL)
+  , mpDerivationFactor(NULL)
+  , mpDerivationResolution(NULL)
+  , mContainerState()
+  , mContainerStateReduced()
+  , mpContainerStateTime(src.mpContainerStateTime)
+  , mCompartmentVolumes()
+  , mAtol(src.mAtol)
 {
   initializeParameter();
   CONSTRUCTOR_TRACE;
@@ -166,17 +185,20 @@ CSteadyStateMethod::processInternal()
 
 bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution) const
 {
-  const CMathReaction * pReaction = mpContainer->getReactions().array();
-  const CMathReaction * pReactionEnd = pReaction + mpContainer->getReactions().size();
+  mpContainer->updateTransientDataValues();
+  const CMathReaction * pReaction = mpContainer->getReactions().begin();
+  const CMathReaction * pReactionEnd = mpContainer->getReactions().end();
+  const C_FLOAT64 * pBase = mpContainerStateTime + 1;
 
   for (; pReaction != pReactionEnd; ++pReaction)
     {
-      // We are checking the amount flux whether we have an equilibrium.
-      // TODO CRITICAL Do we need to scale with the compartment size?
-      if (* (C_FLOAT64 *) pReaction->getFluxObject()->getValuePointer() > resolution)
-        {
+      const CMathReaction::SpeciesBalance * pBalance = pReaction->getNumberBalance().begin();
+      const CMathReaction::SpeciesBalance * pBalanceEnd = pReaction->getNumberBalance().end();
+      const C_FLOAT64 & ParticleFlux = pReaction->getParticleFluxObject()->getValue();
+
+      for (; pBalance != pBalanceEnd; ++pBalance)
+        if (fabs(pBalance->second * ParticleFlux) / std::max(*pBalance->first, mAtol[pBalance->first - pBase]) > resolution)
           return false;
-        }
     }
 
   return true;
@@ -253,6 +275,9 @@ bool CSteadyStateMethod::initialize(const CSteadyStateProblem * pProblem)
   mContainerStateReduced.initialize(mpContainer->getState(true));
   mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
 
+  CVector< C_FLOAT64 > Atol = mpContainer->initializeAtolVector(*mpSSResolution, false);
+  mAtol = CVectorCore< C_FLOAT64 >(Atol.size() - 1, Atol.begin() + 1);
+
   return true;
 }
 
@@ -261,8 +286,8 @@ void CSteadyStateMethod::doJacobian(CMatrix< C_FLOAT64 > & jacobian,
 {
   mpContainer->setState(mSteadyState);
 
-  mpContainer->calculateJacobian(jacobian, *mpDerivationResolution, false);
-  mpContainer->calculateJacobian(jacobianX, *mpDerivationResolution, true);
+  mpContainer->calculateJacobian(jacobian, *mpDerivationFactor, false);
+  mpContainer->calculateJacobian(jacobianX, *mpDerivationFactor, true);
 }
 
 C_FLOAT64 CSteadyStateMethod::getStabilityResolution()
@@ -283,7 +308,7 @@ void CSteadyStateMethod::calculateJacobian(const C_FLOAT64 & oldMaxRate, const b
       mpContainer->setState(mContainerState);
     }
 
-  mpContainer->calculateJacobian(*mpJacobian, std::min(*mpDerivationFactor, oldMaxRate), reduced);
+  mpContainer->calculateJacobian(*mpJacobian, *mpDerivationFactor, reduced);
 }
 
 std::string CSteadyStateMethod::getMethodLog() const

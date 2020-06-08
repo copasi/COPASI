@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -175,7 +180,7 @@ int main(int argc, char *argv[])
       //**** create a task ****
 
       CSteadyStateTask* pSSTask = new CSteadyStateTask(pDataModel->getTaskList());
-      pSSTask->setMethodType(CTaskEnum::Newton);
+      pSSTask->setMethodType(CTaskEnum::Method::Newton);
       pSSTask->getProblem()->setModel(pDataModel->getModel());
 
       pSSTask->setScheduled(true);

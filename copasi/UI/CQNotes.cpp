@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,18 +57,18 @@ CQWebEnginePage::acceptNavigationRequest(const QUrl & url,
 
 #endif // QT_USE_TEXTBROWSER
 
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
 
-#include "model/CModelValue.h"
-#include "model/CReaction.h"
-#include "model/CEvent.h"
-#include "function/CFunction.h"
-#include "report/CKeyFactory.h"
-#include "report/CReportDefinition.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CEvent.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/report/CReportDefinition.h"
 #include "copasi/core/CRootContainer.h"
-#include "commandline/CConfigurationFile.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 #include <copasi/UI/copasiui3window.h>
 #include <copasi/UI/CQCopasiApplication.h>
@@ -190,6 +190,8 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
 #if defined(QT_USE_TEXTBROWSER)
   mpWebView = new QTextBrowser(this);
   connect(mpWebView, SIGNAL(anchorClicked(QUrl)), this, SLOT(slotOpenUrl(QUrl)));
+  static_cast< QTextBrowser * >(mpWebView)->setOpenLinks(false);
+
 #elif !defined(QT5_USE_WEBENGINE)
   mpWebView = new QWebView(this);
   static_cast<QWebView*>(mpWebView)->

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,16 +24,19 @@
 
 #include "CQMathMatrixWidget.h"
 
-#include "copasi.h"
+#include <qmath.h>
+
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/core/CArray.h"
 #include "copasi/math/CMathContainer.h"
-#include "model/CModel.h"
-#include "function/CExpression.h"
+#include "copasi/model/CModel.h"
+#include "copasi/function/CExpression.h"
+#include <copasi/commandline/CConfigurationFile.h>
 
 /**
  *  Constructs a CQMathMatrixWidget which is a child of 'parent', with the
@@ -207,9 +210,9 @@ bool CQMathMatrixWidget::enterProtected()
 }
 
 #include <qtablewidget.h>
-#include "math/CMathDerive.h"
+#include "copasi/math/CMathDerive.h"
 
-#include "math/CMathDerive.h"
+#include "copasi/math/CMathDerive.h"
 
 void CQMathMatrixWidget::slotDerivButtonPressed()
 {
@@ -217,12 +220,12 @@ void CQMathMatrixWidget::slotDerivButtonPressed()
   std::cout << "Deriv" << std::endl;
   assert(mpDataModel != NULL);
   CModel* pModel = mpDataModel->getModel();
-  
+
   //test new CMathDerivative class
-  CMathDerive md(&pModel->getMathContainer(),56,38);
-  
+  CMathDerive md(&pModel->getMathContainer(), 56, 38);
+
   const CEvaluationNode* tmpnode = md.getRootNode();
-  
+
   //CEvaluationNode* tmpnode = pModel->prepareElasticity(&pModel->getReactions()[1],
   //                           &pModel->getMetabolites()[0], false);
 
@@ -233,9 +236,9 @@ void CQMathMatrixWidget::slotDerivButtonPressed()
   std::vector<std::vector<std::string> > env;
 
   std::string tmpstring = tmpnode ? tmpnode->buildMMLString(false, env) : "";
-  
+
   return;
-  
+
   std::string tmpstring2 = ""; //tmpnode2->buildMMLString(false, env);
 
   mpMML->setBaseFontPointSize(qApp->font().pointSize());
@@ -351,11 +354,12 @@ void CQMathMatrixWidget::calculateJacobian(CMatrix< C_FLOAT64 >& matrix,
   pContainer->calculateJacobian(matrix, derivationFactor, reduced);
 
   eigenValues.calcEigenValues(matrix);
+  eigenValues.stabilityAnalysis(derivationFactor);
   const CVector< C_FLOAT64 > & eigen_r = eigenValues.getR();
   const CVector< C_FLOAT64 > & eigen_i = eigenValues.getI();
 
   eigenValuesWidget->clearContents();
-  eigenValuesWidget->setSortingEnabled(reduced);
+  eigenValuesWidget->setSortingEnabled(false);
 
   size_t i, imax = eigen_i.size();
   eigenValuesWidget->setRowCount((int)imax);
@@ -369,9 +373,41 @@ void CQMathMatrixWidget::calculateJacobian(CMatrix< C_FLOAT64 >& matrix,
       pItem = new QTableWidgetItem(QVariant::Double);
       pItem->setData(Qt::DisplayRole, eigen_i[i]);
       eigenValuesWidget->setItem((int)i, 1, pItem);
+
+      //time scales in 3rd col
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, 1 / eigen_r[i]);
+
+      if (eigen_r[i] > 0)
+        pItem->setBackground(QBrush(QColor(255, 200, 200)));
+
+      eigenValuesWidget->setItem((int) i, 2, pItem);
+
+      //frequency/period of oscillations
+      if (fabs(eigen_i[i]) > 1e-12)
+        {
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayRole, fabs(eigen_i[i] / (2.0 * M_PI)));
+          eigenValuesWidget->setItem((int) i, 3, pItem);
+
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayRole, fabs(1.0 / eigen_i[i] * (2.0 * M_PI)));
+          eigenValuesWidget->setItem((int) i, 4, pItem);
+        }
+      else
+        {
+          eigenValuesWidget->setItem((int) i, 3, NULL);
+          eigenValuesWidget->setItem((int) i, 4, NULL);
+        }
+
+
     }
 
-  eigenValuesWidget->resizeColumnsToContents();
-  eigenValuesWidget->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      eigenValuesWidget->resizeColumnsToContents();
+      eigenValuesWidget->resizeRowsToContents();
+    }
+
   eigenValuesWidget->setSortingEnabled(true);
 }

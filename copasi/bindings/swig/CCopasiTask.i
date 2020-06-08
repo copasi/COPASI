@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -34,9 +39,9 @@
 
 %{
 #include <exception>
-#include "utilities/CTaskEnum.h"
-#include "utilities/CCopasiTask.h"
-#include "utilities/CCopasiException.h"
+#include "copasi/utilities/CTaskEnum.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/utilities/CCopasiException.h"
 %}
 
 %catches(CCopasiException) CCopasiTask::process();
@@ -64,6 +69,7 @@
 %ignore CCopasiTask::NO_OUTPUT;
 %ignore CCopasiTask::OUTPUT;
 %ignore CCopasiTask::OUTPUT_BEFORE;
+%ignore CCopasiTask::OUTPUT_DURING;
 %ignore CCopasiTask::OUTPUT_AFTER;
 %ignore CCopasiTask::OUTPUT_SE;
 %ignore CCopasiTask::OUTPUT_UI;
@@ -88,12 +94,13 @@
 %template(TaskSubTypeVector) std::vector<CTaskEnum::Task>;
 %template(MethodSubTypeVector) std::vector<CTaskEnum::Method>;
 
-%include "utilities/CTaskEnum.h"
-%include "utilities/CCopasiTask.h"
+%include "copasi/utilities/CTaskEnum.h"
+%include "copasi/utilities/CCopasiTask.h"
 
 #if (defined SWIGJAVA || defined SWIGCSHARP)                    
 %rename (NO_OUTPUT) CCopasiTask::NO_OUTPUT;
 %rename (OUTPUT_BEFORE) CCopasiTask::OUTPUT_BEFORE;
+%rename (OUTPUT_DURING) CCopasiTask::OUTPUT_DURING;
 %rename (OUTPUT_AFTER) CCopasiTask::OUTPUT_AFTER;
 %rename (OUTPUT) CCopasiTask::OUTPUT;
 %rename (OUTPUT_SE) CCopasiTask::OUTPUT_SE;
@@ -106,7 +113,8 @@
   
   static const unsigned int CCopasiTask::NO_OUTPUT=0;
   static const unsigned int CCopasiTask::OUTPUT_BEFORE=1;
-  static const unsigned int CCopasiTask::OUTPUT_AFTER=2;
+  static const unsigned int CCopasiTask::OUTPUT_DURING=2;
+  static const unsigned int CCopasiTask::OUTPUT_AFTER=4;
   static const unsigned int CCopasiTask::OUTPUT=50;
   static const unsigned int CCopasiTask::OUTPUT_SE=55;
   static const unsigned int CCopasiTask::OUTPUT_UI=119;

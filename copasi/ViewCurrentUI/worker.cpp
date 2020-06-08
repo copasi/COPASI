@@ -15,16 +15,16 @@
 
 #include "worker.h"
 
-#include "UI/copasiui3window.h"
-#include "UI/DataModelGUI.h"
-#include "UI/CQFittingWidget.h"
-#include "UI/listviews.h"
-#include "parameterFitting/CFitTask.h"
-#include "parameterFitting/CFitProblem.h"
+#include "copasi/UI/copasiui3window.h"
+#include "copasi/UI/DataModelGUI.h"
+#include "copasi/UI/CQFittingWidget.h"
+#include "copasi/UI/listviews.h"
+#include "copasi/parameterFitting/CFitTask.h"
+#include "copasi/parameterFitting/CFitProblem.h"
 #include <QtCore/QThread>
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "UI/CWindowInterface.h"
+#include "copasi/UI/CWindowInterface.h"
 
 #include <arguments.h>
 #include <QtCore/QString>
@@ -122,7 +122,7 @@ TaskWidget* Worker::getWidgetForTask(CCopasiTask *task)  const
       case CTaskEnum::moieties:
       case CTaskEnum::crosssection:
 
-      //case CTaskEnum::unset:
+        //case CTaskEnum::unset:
       default:
         // have no widget for these
         return NULL;
@@ -163,7 +163,7 @@ int Worker::getIndexForTask(CCopasiTask* task)
       case CTaskEnum::moieties:
       case CTaskEnum::crosssection:
 
-      //case CTaskEnum::unset:
+        //case CTaskEnum::unset:
       default:
         // have no id
         return -1;

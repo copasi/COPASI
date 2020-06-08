@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,10 +57,17 @@ CQUndoDM::CQUndoDM(QObject *parent, CDataModel * pDataModel, QTableView * pTable
 CQUndoDM::~CQUndoDM()
 {}
 
-// virtual
-int CQUndoDM::rowCount(const QModelIndex &parent) const
+size_t CQUndoDM::size() const
 {
-  return static_cast< int >(mpUndoStack->size());
+  if (mpUndoStack != NULL)
+    return mpUndoStack->size();
+
+  return 0;
+}
+
+int CQUndoDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched;
 }
 
 // virtual

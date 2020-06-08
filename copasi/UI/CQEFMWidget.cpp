@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,10 +31,10 @@
 #include "CQMessageBox.h"
 #include "CQEFMResultWidget.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "elementaryFluxModes/CEFMMethod.h"
-#include "elementaryFluxModes/CEFMTask.h"
+#include "copasi/elementaryFluxModes/CEFMMethod.h"
+#include "copasi/elementaryFluxModes/CEFMTask.h"
 
 /*
  *  Constructs a CQEFMWidget which is a child of 'parent', with the
@@ -95,9 +95,6 @@ bool CQEFMWidget::saveTaskProtected()
 
   if (!pTask) return false;
 
-  saveCommon();
-  saveMethod();
-
   return true;
 }
 
@@ -107,9 +104,6 @@ bool CQEFMWidget::loadTaskProtected()
     dynamic_cast< CEFMTask * >(mpTask);
 
   if (!pTask) return false;
-
-  loadCommon();
-  loadMethod();
 
   return true;
 }

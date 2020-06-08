@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,13 +23,13 @@
 
 #include "CQMoietiesTaskWidget.h"
 
-#include "UI/CQTaskBtnWidget.h"
-#include "UI/CQTaskHeaderWidget.h"
+#include "copasi/UI/CQTaskBtnWidget.h"
+#include "copasi/UI/CQTaskHeaderWidget.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "moieties/CMoietiesMethod.h"
-#include "moieties/CMoietiesTask.h"
+#include "copasi/moieties/CMoietiesMethod.h"
+#include "copasi/moieties/CMoietiesTask.h"
 
 /*
  *  Constructs a CQMoietiesTaskWidget which is a child of 'parent', with the
@@ -89,8 +89,6 @@ bool CQMoietiesTaskWidget::saveTaskProtected()
   if (dynamic_cast< CMoietiesTask * >(mpTask) == NULL)
     return false;
 
-  saveCommon();
-
   return true;
 }
 
@@ -98,8 +96,6 @@ bool CQMoietiesTaskWidget::loadTaskProtected()
 {
   if (dynamic_cast< CMoietiesTask * >(mpTask) == NULL)
     return false;
-
-  loadCommon();
 
   return true;
 }

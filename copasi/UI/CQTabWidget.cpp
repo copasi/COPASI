@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,24 +21,24 @@
 #include "qtUtilities.h"
 #include "CQNotes.h"
 
-#include "MIRIAMUI/CQMiriamWidget.h"
-#include "MIRIAMUI/CQRDFTreeView.h"
+#include "copasi/MIRIAMUI/CQMiriamWidget.h"
+#include "copasi/MIRIAMUI/CQRDFTreeView.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "function/CFunction.h"
+#include "copasi/function/CFunction.h"
 #include "copasi/model/CMetab.h"
-#include "UI/CQCompartment.h"
-#include "UI/CQSpeciesDetail.h"
-#include "UI/ReactionsWidget1.h"
-#include "UI/CQUnitDetail.h"
+#include "copasi/UI/CQCompartment.h"
+#include "copasi/UI/CQSpeciesDetail.h"
+#include "copasi/UI/ReactionsWidget1.h"
+#include "copasi/UI/CQUnitDetail.h"
 
 #include <copasi/UI/copasiui3window.h>
 
 #ifdef COPASI_Provenance
 #include "CEntityProvenanceDialog.h"
 #include "../versioning/CModelVersionHierarchy.h"
-#include "commandline/CConfigurationFile.h"
+#include "copasi/commandline/CConfigurationFile.h"
 #endif
 
 #include "copasi/undo/CUndoData.h"
@@ -365,7 +365,8 @@ void CQTabWidget::slotBtnCopy()
     }
   else if (QString(mPages[0]->metaObject()->className()) == "CQUnitDetail" ||
            QString(mPages[0]->metaObject()->className()) == "CQModelValue" ||
-           QString(mPages[0]->metaObject()->className()) == "CQEventWidget1")
+           QString(mPages[0]->metaObject()->className()) == "CQEventWidget1" ||
+           QString(mPages[0]->metaObject()->className()) == "CQParameterOverviewWidget")
     {
       emit copyClicked();
     }

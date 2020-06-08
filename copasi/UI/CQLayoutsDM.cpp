@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,9 +19,9 @@
 #include "CQLayoutsDM.h"
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "layout/CListOfLayouts.h"
+#include "copasi/layout/CListOfLayouts.h"
 
 CQLayoutsDM::CQLayoutsDM(QObject *parent) :
   CQBaseDataModel(parent, NULL),
@@ -32,11 +32,17 @@ CQLayoutsDM::CQLayoutsDM(QObject *parent) :
 CQLayoutsDM::~CQLayoutsDM()
 {}
 
-int CQLayoutsDM::rowCount(const QModelIndex & /* parent */) const
+size_t CQLayoutsDM::size() const
 {
-  if (mpListOfLayouts == NULL) return 0;
+  if (mpListOfLayouts != NULL)
+    return mpListOfLayouts->size();
 
-  return (int) mpListOfLayouts->size();
+  return 0;
+}
+
+int CQLayoutsDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched;
 }
 
 // virtual
@@ -187,6 +193,7 @@ bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex & parent)
 
   for (int row = 0; row < rows; ++row)
     {
+      ++mFetched;
       emit notifyGUI(ListViews::ObjectType::LAYOUT, ListViews::ADD, mpListOfLayouts->operator[](Position + row).getCN());
     }
 
@@ -214,6 +221,7 @@ bool CQLayoutsDM::removeRows(int position, int rows, const QModelIndex & parent)
 
   for (itDeletedLayout = DeletedLayouts.begin(); itDeletedLayout != endDeletedLayout; ++itDeletedLayout)
     {
+      --mFetched;
       std::string cn = (*itDeletedLayout)->getCN();
       pdelete(*itDeletedLayout);
       emit notifyGUI(ListViews::ObjectType::LAYOUT, ListViews::DELETE, cn);

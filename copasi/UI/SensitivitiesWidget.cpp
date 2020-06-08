@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,16 +35,16 @@
 #include "CQTaskHeaderWidget.h"
 #include "CQTaskMethodWidget.h"
 #include "CCopasiSelectionDialog.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "sensitivities/CSensTask.h"
-#include "sensitivities/CSensProblem.h"
-#include "sensitivities/CSensMethod.h"
-#include "model/CModel.h"
-#include "utilities/CCopasiException.h"
-#include "report/CKeyFactory.h"
+#include "copasi/sensitivities/CSensTask.h"
+#include "copasi/sensitivities/CSensProblem.h"
+#include "copasi/sensitivities/CSensMethod.h"
+#include "copasi/model/CModel.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/report/CKeyFactory.h"
 #include "CQSensResultWidget.h"
 
 /**
@@ -86,8 +86,6 @@ void SensitivitiesWidget::init()
 
 bool SensitivitiesWidget::saveTaskProtected()
 {
-  saveCommon();
-  saveMethod();
   CSensTask *sensTask =
     dynamic_cast<CSensTask *>(mpObject);
 
@@ -211,8 +209,6 @@ bool SensitivitiesWidget::taskFinishedEvent()
 
 bool SensitivitiesWidget::loadTaskProtected()
 {
-  loadCommon();
-  loadMethod();
   CSensTask *sensTask =
     dynamic_cast<CSensTask *>(mpObject);
   assert(sensTask);

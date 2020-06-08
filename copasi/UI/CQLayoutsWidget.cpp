@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -13,9 +18,6 @@
 // and The University of Manchester.
 // All rights reserved.
 
-
-
-
 #include "CQLayoutsWidget.h"
 
 #include <iostream>
@@ -27,7 +29,7 @@
 
 #include "listviews.h"
 #include "qtUtilities.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
 #include "copasi/layout/CLayout.h"
 #include "copasi/layout/CListOfLayouts.h"
@@ -40,7 +42,7 @@
 #include "copasi/layoutUI/CQNewMainWindow.h"
 
 #ifndef DISABLE_QT_LAYOUT_RENDERING
-# include <qlayout/CQAnimationWindow.h>
+# include <copasi/qlayout/CQAnimationWindow.h>
 #endif //DISABLE_QT_LAYOUT_RENDERING
 
 #include "copasi/layoutUI/CQAutolayoutWizard.h"
@@ -60,11 +62,18 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget *parent)
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
   mpProxyModel->setSourceModel(mpLayoutsDM);
+
+  mpTblLayouts->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblLayouts->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblLayouts->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblLayouts->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblLayouts->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblLayouts->verticalHeader()->hide();
   mpTblLayouts->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   mpTblLayouts->setModel(mpProxyModel);
@@ -75,9 +84,11 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget *parent)
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpLayoutsDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
   connect(mpPushButtonDelegate, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotShowLayout(const QModelIndex &)));
+  connect(mpTblLayouts, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 // virtual
@@ -161,11 +172,8 @@ void CQLayoutsWidget::updateDeleteBtns()
 // virtual
 bool CQLayoutsWidget::enterProtected()
 {
-  if (mpTblLayouts->selectionModel() != NULL)
-    {
-      disconnect(mpTblLayouts->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblLayouts->horizontalHeader()->saveState();
+  blockSignals(true);
 
   assert(mpDataModel != NULL);
   CListOfLayouts *pListOfLayouts = mpDataModel->getListOfLayouts();
@@ -200,9 +208,13 @@ bool CQLayoutsWidget::enterProtected()
         }
     }
 
-  connect(mpTblLayouts->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+  updateDeleteBtns();
+  mpTblLayouts->horizontalHeader()->restoreState(State);
+  blockSignals(false);
+
   dataChanged(QModelIndex(), QModelIndex());
+  emit initFilter();
+
   return true;
 }
 
@@ -264,7 +276,7 @@ void CQLayoutsWidget::slotBtnNewClicked()
   pLayout->setObjectName(name);
   pListOfLayouts->addLayout(pLayout, m);
   // update the table
-  mpLayoutsDM->insertRows(mpLayoutsDM->rowCount() - 1, 1);
+  mpLayoutsDM->insertRows(mpLayoutsDM->rowCount(), 1);
   dataChanged(QModelIndex(), QModelIndex());
   LayoutWindow *window = createLayoutWindow(pListOfLayouts->size() - 1, pLayout);
   CQNewMainWindow *pWin = dynamic_cast<CQNewMainWindow *>(window);
@@ -316,8 +328,7 @@ void CQLayoutsWidget::slotBtnClearClicked()
 }
 
 // virtual
-void CQLayoutsWidget::slotSelectionChanged(const QItemSelection & /* selected */,
-    const QItemSelection & /* deselected */)
+void CQLayoutsWidget::slotSelectionChanged()
 {
   updateDeleteBtns();
 }
@@ -337,7 +348,11 @@ void CQLayoutsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 void CQLayoutsWidget::dataChanged(const QModelIndex & /* topLeft */,
                                   const QModelIndex & /* bottomRight */)
 {
-  mpTblLayouts->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblLayouts->resizeColumnsToContents();
+    }
+
   updateDeleteBtns();
   showButtons();
 }
@@ -345,8 +360,19 @@ void CQLayoutsWidget::dataChanged(const QModelIndex & /* topLeft */,
 // virtual
 void CQLayoutsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text(), Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter, Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }
 
 /**

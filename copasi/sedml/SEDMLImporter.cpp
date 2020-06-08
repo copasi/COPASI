@@ -34,49 +34,49 @@
 #include <sedml/SedTypes.h>
 #include <sbml/math/FormulaFormatter.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "report/CKeyFactory.h"
-#include "model/CModel.h"
-#include "model/CCompartment.h"
-#include "model/CMetab.h"
-#include "model/CReaction.h"
-#include "model/CModelValue.h"
-#include "model/CEvent.h"
-#include "function/CNodeK.h"
-#include "function/CFunctionDB.h"
-#include "function/CEvaluationTree.h"
-#include "function/CExpression.h"
-#include "function/CFunctionParameters.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CEvent.h"
+#include "copasi/function/CNodeK.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/function/CEvaluationTree.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/function/CFunctionParameters.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "utilities/CCopasiTree.h"
-#include "utilities/CNodeIterator.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/CCopasiTree.h"
+#include "copasi/utilities/CNodeIterator.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "MIRIAM/CRDFGraphConverter.h"
-#include "compareExpressions/CEvaluationNodeNormalizer.h"
-#include "commandline/CLocaleString.h"
-#include "commandline/COptions.h"
+#include "copasi/MIRIAM/CRDFGraphConverter.h"
+#include "copasi/compareExpressions/CEvaluationNodeNormalizer.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/commandline/COptions.h"
 
-#include "utilities/CProcessReport.h"
+#include "copasi/utilities/CProcessReport.h"
 #include "copasi/commandline/CConfigurationFile.h"
 
-#include "utilities/CCopasiMessage.h"
+#include "copasi/utilities/CCopasiMessage.h"
 
 //TODO SEDML
-#include "trajectory/CTrajectoryTask.h"
-#include "trajectory/CTrajectoryProblem.h"
-#include "sbml/SBMLImporter.h"
-#include "utilities/CDirEntry.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/CCopasiTask.h"
-#include "plot/COutputDefinitionVector.h"
-#include "plot/CPlotSpecification.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
+#include "copasi/sbml/SBMLImporter.h"
+#include "copasi/utilities/CDirEntry.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/plot/COutputDefinitionVector.h"
+#include "copasi/plot/CPlotSpecification.h"
 
-#include "report/CReportDefinitionVector.h"
+#include "copasi/report/CReportDefinitionVector.h"
 
-#include <steadystate/CSteadyStateTask.h>
-#include <scan/CScanTask.h>
+#include <copasi/steadystate/CSteadyStateTask.h>
+#include <copasi/scan/CScanTask.h>
 
 #include "SEDMLImporter.h"
 #include "SEDMLUtils.h"

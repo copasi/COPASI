@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,15 +24,16 @@
 #include <QClipboard>
 #include <QKeyEvent>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
 
-#include "model/CModel.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "report/CReportDefinitionVector.h"
+#include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 /*
  *  Constructs a CQReportsWidget which is a child of 'parent', with the
@@ -61,8 +62,10 @@ CQReportsWidget::CQReportsWidget(QWidget *parent, const char *name)
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpReportDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
+  connect(mpTblReports, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 /*
@@ -139,22 +142,27 @@ bool CQReportsWidget::leaveProtected()
 
 bool CQReportsWidget::enterProtected()
 {
-  if (mpTblReports->selectionModel() != NULL)
-    {
-      disconnect(mpTblReports->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblReports->horizontalHeader()->saveState();
+  blockSignals(true);
 
   mpReportDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpReportDM);
   //Set Model for the TableView
   mpTblReports->setModel(NULL);
   mpTblReports->setModel(mpProxyModel);
-  connect(mpTblReports->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+
   updateDeleteBtns();
-  mpTblReports->resizeColumnsToContents();
+  mpTblReports->horizontalHeader()->restoreState(State);
+  blockSignals(false);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblReports->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
+  emit initFilter();
+
   return true;
 }
 
@@ -186,8 +194,7 @@ void CQReportsWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQReportsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
-    const QItemSelection &C_UNUSED(deselected))
+void CQReportsWidget::slotSelectionChanged()
 {
   updateDeleteBtns();
 }
@@ -195,7 +202,11 @@ void CQReportsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(select
 void CQReportsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                   const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblReports->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblReports->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   updateDeleteBtns();
 }
@@ -257,8 +268,19 @@ void CQReportsWidget::keyPressEvent(QKeyEvent *ev)
 
 void CQReportsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|New Report", Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter + "|New Report", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }
 
 void CQReportsWidget::setFramework(int framework)

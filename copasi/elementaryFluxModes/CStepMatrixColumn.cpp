@@ -1,17 +1,19 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrixColumn.cpp,v $
-//   $Revision: 1.12 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:51:18 $
-// End CVS Header
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -20,23 +22,23 @@
 #include <cmath>
 #include <limits>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CStepMatrixColumn.h"
 #include "CBitPatternTreeMethod.h"
 
 CStepMatrixColumn::CStepMatrixColumn(const size_t & size):
-    mZeroSet(size),
-    mReaction(),
-    mIterator(NULL)
+  mZeroSet(size),
+  mReaction(),
+  mIterator(NULL)
 {}
 
 CStepMatrixColumn::CStepMatrixColumn(const CZeroSet & set,
                                      CStepMatrixColumn const * pPositive,
                                      CStepMatrixColumn const * pNegative):
-    mZeroSet(set),
-    mReaction(),
-    mIterator(NULL)
+  mZeroSet(set),
+  mReaction(),
+  mIterator(NULL)
 {
   C_INT64 PosMult = -pNegative->getMultiplier();
   C_INT64 NegMult = pPositive->getMultiplier();

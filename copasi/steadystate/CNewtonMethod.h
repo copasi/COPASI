@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,6 +40,17 @@ class CTrajectoryTask;
 
 class CNewtonMethod : public CSteadyStateMethod
 {
+public:
+  enum struct eTargetCriterion
+  {
+    DistanceAndRate,
+    Distance,
+    Rate,
+    __SIZE
+  };
+
+  static const CEnumAnnotation< std::string, eTargetCriterion > TargetCriterion;
+
   // Attributes
 private:
   enum NewtonResultCode
@@ -67,7 +78,6 @@ private:
 
   size_t mDimension;
   C_FLOAT64 * mpX;
-  CVector< C_FLOAT64 > mAtol;
   CVector< C_FLOAT64 > mH;
   CVector< C_FLOAT64 > mXold;
   CVectorCore< const C_FLOAT64 > mdxdt;
@@ -78,6 +88,9 @@ private:
   CVector< C_FLOAT64 > mStartState;
 
   CCore::CUpdateSequence mUpdateConcentrations;
+  eTargetCriterion mTargetCriterion;
+  C_FLOAT64 mTargetDistance;
+  C_FLOAT64 mTargetRate;
 
   // Operations
 private:
@@ -87,17 +100,6 @@ private:
   CNewtonMethod();
 
 public:
-  /**
-   * Solve A * X = B for X and returns the rank deficiency of matrix.
-   * @param const CMatrix< C_FLOAT64 > & A
-   * @param CVector< C_FLOAT64 > & X
-   * @param const CVectorCore< const C_FLOAT64 > & B
-   * @return std::pair< size_t, double > (rankDeficiency, error)
-   */
-  std::pair< size_t, double > solveAxEqB(const CMatrix< C_FLOAT64 > & A,
-                                         CVector< C_FLOAT64 > & X,
-                                         const CVectorCore< const C_FLOAT64 > & B) const;
-
   /**
    * Specific constructor
    * @param const CDataContainer * pParent
@@ -146,7 +148,7 @@ public:
    */
   virtual CSteadyStateMethod::ReturnCode processInternal();
 
-  bool isSteadyState(C_FLOAT64 value);
+  bool isSteadyState(const C_FLOAT64 & value) const;
 
   /**
    * This is the function that is supposed to be near zero if a steady
@@ -195,6 +197,20 @@ private:
   CNewtonMethod::NewtonResultCode doNewtonStep(C_FLOAT64 & currentValue);
 
   CNewtonMethod::NewtonResultCode doIntegration(bool forward);
+
+  std::string targetValueToString() const;
+
+  /**
+   * This is the function that is supposed to be near zero if a steady
+   * state is detected.
+   */
+  C_FLOAT64 targetFunctionRate();
+
+  /**
+   * This is the function that is supposed to be near zero if a steady
+   * state is detected.
+   */
+  C_FLOAT64 targetFunctionDistance();
 
   void calculateDerivativesX();
 

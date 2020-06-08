@@ -20,17 +20,17 @@
 
 #include <map>
 
-#include "CopasiDataModel/CDataModel.h"
-#include "model/CModel.h"
-#include "model/CMetab.h"
-#include "model/CModelValue.h"
-#include "model/CModelExpansion.h"
-#include "model/CChemEqInterface.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CModelExpansion.h"
+#include "copasi/model/CChemEqInterface.h"
 
 //#include "copasi/core/CRootContainer.h"
 
-#include "UI/qtUtilities.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
 #include "CQMergingData.h"
 

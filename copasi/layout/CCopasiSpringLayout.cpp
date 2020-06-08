@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -11,16 +16,16 @@
 #include <iostream>
 #include <map>
 
-#include <layout/CCopasiSpringLayout.h>
-#include <layout/CLGlyphs.h>
-#include <layout/CLReactionGlyph.h>
-#include <layout/CLayout.h>
+#include <copasi/layout/CCopasiSpringLayout.h>
+#include <copasi/layout/CLGlyphs.h>
+#include <copasi/layout/CLReactionGlyph.h>
+#include <copasi/layout/CLayout.h>
 
-#include <model/CCompartment.h>
-#include <model/CReaction.h>
-#include <model/CMetab.h>
+#include <copasi/model/CCompartment.h>
+#include <copasi/model/CReaction.h>
+#include <copasi/model/CMetab.h>
 
-#include <randomGenerator/CRandom.h>
+#include <copasi/randomGenerator/CRandom.h>
 
 /*
 

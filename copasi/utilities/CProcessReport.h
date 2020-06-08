@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,7 +29,7 @@
 #include <map>
 
 #include "copasi/core/CVector.h"
-#include "utilities/CCopasiParameter.h"
+#include "copasi/utilities/CCopasiParameter.h"
 
 class CCopasiTimeVariable;
 
@@ -175,8 +180,8 @@ public:
    * @return size_t handle
    */
   virtual size_t addItem(const std::string & name,
-                 const std::string & value,
-                 const std::string * pEndValue = NULL);
+                         const std::string & value,
+                         const std::string * pEndValue = NULL);
 
   /**
    * Add a process report item to to the list of reporting items.

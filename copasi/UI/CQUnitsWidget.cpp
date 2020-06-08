@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,7 +29,7 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/utilities/CUnitDefinition.h"
 #include "copasi/utilities/CUnitDefinitionDB.h"
-
+#include <copasi/commandline/CConfigurationFile.h>
 /*
  *  Constructs a CQUnitsWidget which is a child of 'parent', with the
  *  name 'name'.'
@@ -45,11 +45,18 @@ CQUnitsWidget::CQUnitsWidget(QWidget *parent, const char *name)
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
   mpProxyModel->sort(COL_NAME_UNITS);
+
+  mpTblUnits->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblUnits->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblUnits->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblUnits->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblUnits->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblUnits->verticalHeader()->hide();
   mpTblUnits->sortByColumn(COL_NAME_UNITS, Qt::AscendingOrder);
   setFramework(mFramework);
@@ -58,8 +65,10 @@ CQUnitsWidget::CQUnitsWidget(QWidget *parent, const char *name)
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpUnitDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
+  connect(mpTblUnits, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 /*
@@ -147,22 +156,27 @@ bool CQUnitsWidget::leaveProtected()
 
 bool CQUnitsWidget::enterProtected()
 {
-  if (mpTblUnits->selectionModel() != NULL)
-    {
-      disconnect(mpTblUnits->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblUnits->horizontalHeader()->saveState();
+  blockSignals(true);
 
   mpUnitDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpUnitDM);
   //Set Model for the TableView
   mpTblUnits->setModel(NULL);
   mpTblUnits->setModel(mpProxyModel);
-  connect(mpTblUnits->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+
   updateDeleteBtns();
-  mpTblUnits->resizeColumnsToContents();
+  mpTblUnits->horizontalHeader()->restoreState(State);
+  blockSignals(false);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblUnits->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
+  emit initFilter();
+
   return true;
 }
 
@@ -194,8 +208,7 @@ void CQUnitsWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQUnitsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
-    const QItemSelection &C_UNUSED(deselected))
+void CQUnitsWidget::slotSelectionChanged()
 {
   updateDeleteBtns();
 }
@@ -203,7 +216,11 @@ void CQUnitsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected
 void CQUnitsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                 const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblUnits->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblUnits->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   updateDeleteBtns();
 }
@@ -265,8 +282,19 @@ void CQUnitsWidget::keyPressEvent(QKeyEvent *ev)
 
 void CQUnitsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|New Unit", Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter + "|New Unit", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }
 
 void CQUnitsWidget::setFramework(int framework)

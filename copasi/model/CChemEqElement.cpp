@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -23,13 +28,13 @@
 // (C) Stefan Hoops 2001
 //
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "copasi/core/CDataVector.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/utility.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/utility.h"
 #include "CChemEqElement.h"
 #include "CCompartment.h"
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CDataObjectReference.h"
 #include "CMetabNameInterface.h"
 #include "copasi/core/CRootContainer.h"

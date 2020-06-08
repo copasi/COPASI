@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,17 +22,17 @@
  * Created for Copasi by Juergen Pahle 2010
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CLNATask.h"
 #include "CLNAProblem.h"
 #include "CLNAMethod.h"
-#include "steadystate/CSteadyStateTask.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
 
-#include "CopasiDataModel/CDataModel.h"
-#include "math/CMathContainer.h"
-#include "report/CKeyFactory.h"
-#include "report/CReport.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/report/CReport.h"
 
 #define XXXX_Reporting
 

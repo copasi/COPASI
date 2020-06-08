@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -340,7 +340,7 @@ void CModelParameterSet::createFromModel()
 
   pParameter = mpTimes->add(Type::Model);
   pParameter->setCN(mpModel->getCN());
-  pParameter->setValue(mpModel->getInitialTime(), CCore::Framework::ParticleNumbers);
+  pParameter->setValue(mpModel->getInitialTime(), CCore::Framework::ParticleNumbers, false);
 
   CDataVector< CCompartment >::const_iterator itCompartment = mpModel->getCompartments().begin();
   CDataVector< CCompartment >::const_iterator endCompartment = mpModel->getCompartments().end();
@@ -350,7 +350,7 @@ void CModelParameterSet::createFromModel()
       pParameter = mpCompartments->add(Type::Compartment);
       pParameter->setCN(itCompartment->getCN());
       pParameter->setSimulationType(itCompartment->getStatus());
-      pParameter->setValue(itCompartment->getInitialValue(), CCore::Framework::ParticleNumbers);
+      pParameter->setValue(itCompartment->getInitialValue(), CCore::Framework::ParticleNumbers, false);
       pParameter->setInitialExpression(itCompartment->getInitialExpression());
     }
 
@@ -362,7 +362,7 @@ void CModelParameterSet::createFromModel()
       pParameter = mpSpecies->add(Type::Species);
       pParameter->setCN(itSpecies->getCN());
       pParameter->setSimulationType(itSpecies->getStatus());
-      pParameter->setValue(itSpecies->getInitialValue(), CCore::Framework::ParticleNumbers);
+      pParameter->setValue(itSpecies->getInitialValue(), CCore::Framework::ParticleNumbers, false);
       pParameter->setInitialExpression(itSpecies->getInitialExpression());
     }
 
@@ -374,7 +374,7 @@ void CModelParameterSet::createFromModel()
       pParameter = mpModelValues->add(Type::ModelValue);
       pParameter->setCN(itModelValue->getCN());
       pParameter->setSimulationType(itModelValue->getStatus());
-      pParameter->setValue(itModelValue->getInitialValue(), CCore::Framework::ParticleNumbers);
+      pParameter->setValue(itModelValue->getInitialValue(), CCore::Framework::ParticleNumbers, false);
       pParameter->setInitialExpression(itModelValue->getInitialExpression());
     }
 
@@ -407,7 +407,7 @@ void CModelParameterSet::createFromModel()
           if (itReaction->isLocalParameter((*itParameter)->getObjectName()))
             {
               pParameter->setSimulationType(CModelEntity::Status::FIXED);
-              pParameter->setValue((*itParameter)->getValue< C_FLOAT64 >(), CCore::Framework::ParticleNumbers);
+              pParameter->setValue((*itParameter)->getValue< C_FLOAT64 >(), CCore::Framework::ParticleNumbers, false);
             }
           else
             {
@@ -420,7 +420,7 @@ void CModelParameterSet::createFromModel()
 
               if (pModelValue == NULL) fatalError();
 
-              pParameter->setValue(pModelValue->getInitialValue(), CCore::Framework::ParticleNumbers);
+              pParameter->setValue(pModelValue->getInitialValue(), CCore::Framework::ParticleNumbers, false);
               pParameter->setInitialExpression("<" + pModelValue->getInitialValueReference()->getCN() + ">");
             }
         }

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,24 +33,24 @@
 #include <string>
 #include <iostream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "function/CEvaluationTree.h"
-#include "function/CEvaluationNode.h"
-//#include "function/CEvaluationNodeOperator.h"
-//#include "function/CEvaluationNodeFunction.h"
-//#include "function/CEvaluationNode.h"
+#include "copasi/function/CEvaluationTree.h"
+#include "copasi/function/CEvaluationNode.h"
+//#include "copasi/function/CEvaluationNodeOperator.h"
+//#include "copasi/function/CEvaluationNodeFunction.h"
+//#include "copasi/function/CEvaluationNode.h"
 
 #include "CNormalTranslation.h"
 
 //#include <vector>
 #include "copasi/core/CDataContainer.h"
 
-#include "utilities/CopasiTime.h"
-#include "randomGenerator/CRandom.h"
-#include "report/CKeyFactory.h"
+#include "copasi/utilities/CopasiTime.h"
+#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/report/CKeyFactory.h"
 
-#include "function/CFunction.h"
+#include "copasi/function/CFunction.h"
 
 /*
 tested functions:

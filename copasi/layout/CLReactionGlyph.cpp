@@ -36,10 +36,10 @@
 #include <sbml/packages/layout/sbml/GeneralGlyph.h>
 #include <sbml/packages/layout/sbml/ReferenceGlyph.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CLReactionGlyph.h"
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
 
 CLGlyphWithCurve::CLGlyphWithCurve(const std::string & name,

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,13 +37,13 @@
 
 #include <QInputDialog>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "ScanWidget.h"
-#include "scan/CScanTask.h"
-#include "scan/CScanProblem.h"
-#include "scan/CScanMethod.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/scan/CScanTask.h"
+#include "copasi/scan/CScanProblem.h"
+#include "copasi/scan/CScanMethod.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 
 #include "CQTaskHeaderWidget.h"
@@ -51,10 +51,10 @@
 #include "CQSimpleSelectionTree.h"
 #include "CCopasiSelectionDialog.h"
 
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 #include "qtUtilities.h"
 #include "CScanContainerWidget.h"
-#include "utilities/CopasiTime.h"
+#include "copasi/utilities/CopasiTime.h"
 
 //+++
 //#include "CScanWidgetBreak.h"
@@ -143,8 +143,6 @@ bool ScanWidget::loadTaskProtected()
     return true; // currently loading
 
   mIsLoading = true;
-
-  loadCommon();
 
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(mpObject);
@@ -317,8 +315,6 @@ bool ScanWidget::saveTaskProtected()
 {
   if (mIsLoading)
     return true; // currently loading the widget list cannot be trusted
-
-  saveCommon();
 
   CScanTask* scanTask =
     dynamic_cast< CScanTask * >(mpObject);

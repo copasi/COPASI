@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,7 +37,7 @@
 #include <sbml/packages/render/sbml/Text.h>
 #include <sbml/packages/render/sbml/LocalStyle.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "SBMLDocumentLoader.h"
 #include "CListOfLayouts.h"
@@ -44,9 +49,9 @@
 #include <sbml/packages/render/extension/RenderListOfLayoutsPlugin.h>
 #include <sbml/packages/render/extension/RenderLayoutPlugin.h>
 
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
-#include "sbml/SBMLUtils.h" //from the copasi sbml dir
+#include "copasi/sbml/SBMLUtils.h" //from the copasi sbml dir
 
 //static
 void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,

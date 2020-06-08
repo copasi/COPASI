@@ -1,11 +1,21 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-#include <qlayout/CQAnimationSettingsEditor.h>
-#include <qlayout/CQCopasiAnimation.h>
-#include <qlayout/CQEffectDescription.h>
+#include <copasi/qlayout/CQAnimationSettingsEditor.h>
+#include <copasi/qlayout/CQCopasiAnimation.h>
+#include <copasi/qlayout/CQEffectDescription.h>
 
 CQAnimationSettingsEditor::CQAnimationSettingsEditor(QWidget *parent, Qt::WindowFlags f)
   : QDialog(parent, f)

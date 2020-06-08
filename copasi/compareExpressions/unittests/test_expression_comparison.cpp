@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,11 +26,11 @@
 
 #include <stdexcept>
 
-#include "function/CEvaluationTree.h"
-#include "utilities/CCopasiException.h"
-#include "compareExpressions/CNormalTranslation.h"
-#include "compareExpressions/CNormalBase.h"
-#include "compareExpressions/CNormalFraction.h"
+#include "copasi/function/CEvaluationTree.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/compareExpressions/CNormalTranslation.h"
+#include "copasi/compareExpressions/CNormalBase.h"
+#include "copasi/compareExpressions/CNormalFraction.h"
 #include "copasi/core/CRootContainer.h"
 
 void test_expression_comparison::setUp()

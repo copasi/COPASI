@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,23 +16,30 @@
 #include "CQTimeSeriesDM.h"
 #include "qtUtilities.h"
 
-#include "trajectory/CTimeSeries.h"
+#include "copasi/trajectory/CTimeSeries.h"
 
 CQTimeSeriesDM::CQTimeSeriesDM(QObject *parent):
   CQBaseDataModel(parent, NULL),
   mpTimeSeries(NULL),
   mFramework(0)
-{}
+{
+  mFetchLimit = 1000;
+}
 
 CQTimeSeriesDM::~CQTimeSeriesDM()
 {}
 
-// virtual
-int CQTimeSeriesDM::rowCount(const QModelIndex & /* parent */) const
+size_t CQTimeSeriesDM::size() const
 {
-  if (mpTimeSeries == NULL) return 0;
+  if (mpTimeSeries != NULL)
+    return mpTimeSeries->getRecordedSteps();
 
-  return (int) mpTimeSeries->getRecordedSteps();
+  return 0;
+}
+
+int CQTimeSeriesDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched;
 }
 
 // virtual

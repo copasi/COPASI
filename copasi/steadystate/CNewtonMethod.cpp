@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,54 +25,99 @@
 #include <algorithm>
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CSteadyStateMethod.h"
 #include "CSteadyStateProblem.h"
 #include "CSteadyStateTask.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "math/CMathContainer.h"
-#include "model/CModel.h"
-#include "model/CCompartment.h"
-#include "trajectory/CTrajectoryTask.h"
-#include "trajectory/CTrajectoryProblem.h"
-//#include "trajectory/CTrajectoryMethod.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/utility.h"
-#include "utilities/CProcessReport.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
+//#include "copasi/trajectory/CTrajectoryMethod.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/utilities/CProcessReport.h"
+#include "copasi/utilities/CLeastSquareSolution.h"
 
-#include "lapack/lapackwrap.h"
-#include "lapack/blaswrap.h"
+// static
+const CEnumAnnotation< std::string, CNewtonMethod::eTargetCriterion > CNewtonMethod::TargetCriterion(
+{
+  "Distance and Rate",
+  "Distance",
+  "Rate"});
 
 CNewtonMethod::CNewtonMethod(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
-                             const CTaskEnum::Task & taskType):
-  CSteadyStateMethod(pParent, methodType, taskType),
-  mIpiv(NULL),
-  mpTrajectory(NULL),
-  mStartState()
+                             const CTaskEnum::Task & taskType)
+  : CSteadyStateMethod(pParent, methodType, taskType)
+  , mUseNewton(true)
+  , mUseIntegration(true)
+  , mUseBackIntegration(false)
+  , mAcceptNegative(false)
+  , mForceNewton(true)
+  , mKeepProtocol(true)
+  , mIterationLimit(50)
+  , mMaxDurationForward(1e9)
+  , mMaxDurationBackward(1e6)
+  , mDimension(0)
+  , mpX(NULL)
+  , mH()
+  , mXold()
+  , mdxdt()
+  , mIpiv(NULL)
+  , mpTrajectory(NULL)
+  , mStartState()
+  , mUpdateConcentrations()
+  , mTargetCriterion(eTargetCriterion::DistanceAndRate)
+  , mTargetRate(std::numeric_limits< C_FLOAT64 >::infinity())
+  , mTargetDistance(std::numeric_limits< C_FLOAT64 >::infinity())
+
 {
   initializeParameter();
 }
 
 CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
-                             const CDataContainer * pParent):
-  CSteadyStateMethod(src, pParent),
-  mIpiv(NULL),
-  mpTrajectory(NULL),
-  mStartState()
+                             const CDataContainer * pParent)
+  : CSteadyStateMethod(src, pParent)
+  , mUseNewton(src.mUseNewton)
+  , mUseIntegration(src.mUseIntegration)
+  , mUseBackIntegration(src.mUseBackIntegration)
+  , mAcceptNegative(src.mAcceptNegative)
+  , mForceNewton(src.mForceNewton)
+  , mKeepProtocol(src.mKeepProtocol)
+  , mIterationLimit(src.mIterationLimit)
+  , mMaxDurationForward(src.mMaxDurationForward)
+  , mMaxDurationBackward(src.mMaxDurationBackward)
+  , mDimension(src.mDimension)
+  , mpX(NULL)
+  , mH(src.mH)
+  , mXold(src.mXold)
+  , mdxdt()
+  , mIpiv(NULL)
+  , mpTrajectory(NULL)
+  , mStartState(src.mStartState)
+  , mUpdateConcentrations(src.mUpdateConcentrations)
+  , mTargetCriterion(src.mTargetCriterion)
+  , mTargetRate(src.mTargetRate)
+  , mTargetDistance(src.mTargetDistance)
+
 {
   initializeParameter();
 }
 
 CNewtonMethod::~CNewtonMethod()
-{cleanup();}
+{
+  cleanup();
+}
 
 void CNewtonMethod::initializeParameter()
 {
-  CCopasiParameter *pParm;
+  CCopasiParameter * pParm;
 
   assertParameter("Use Newton", CCopasiParameter::Type::BOOL, true);
   assertParameter("Use Integration", CCopasiParameter::Type::BOOL, true);
@@ -83,6 +128,12 @@ void CNewtonMethod::initializeParameter()
   assertParameter("Maximum duration for backward integration", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1e6);
   //assertParameter("Force additional Newton step", CCopasiParameter::Type::BOOL, true);
   //assertParameter("Keep Protocol", CCopasiParameter::Type::BOOL, true);
+
+  assertParameter("Target Criterion", CCopasiParameter::Type::STRING, TargetCriterion[0]);
+  pParm = getParameter("Target Criterion");
+
+  if (pParm != NULL)
+    pParm->setValidValues(TargetCriterion);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("Newton.UseNewton")) != NULL)
@@ -131,7 +182,10 @@ bool CNewtonMethod::elevateChildren()
 
 void CNewtonMethod::cleanup()
 {
-  if (mIpiv) delete [] mIpiv; mIpiv = NULL;
+  if (mIpiv)
+    delete[] mIpiv;
+
+  mIpiv = NULL;
 
   pdelete(mpTrajectory);
 }
@@ -214,7 +268,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
   if (mpCallBack)
     hProcess = mpCallBack->addItem(tmpstring,
                                    Step,
-                                   & MaxSteps);
+                                   &MaxSteps);
 
   //setup trajectory
   CTrajectoryProblem * pTrajectoryProblem = NULL;
@@ -224,7 +278,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
       mpTrajectory->setCallBack(mpCallBack);
 
       pTrajectoryProblem =
-        dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
+        dynamic_cast< CTrajectoryProblem * >(mpTrajectory->getProblem());
       assert(pTrajectoryProblem);
       pTrajectoryProblem->setStepNumber(1);
     }
@@ -234,7 +288,8 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 
   for (duration = minDuration; fabs(duration) <= fabs(maxDuration); duration *= iterationFactor, Step++)
     {
-      if (mpCallBack && !mpCallBack->progressItem(hProcess)) break;
+      if (mpCallBack && !mpCallBack->progressItem(hProcess))
+        break;
 
       pTrajectoryProblem->setDuration(duration);
 
@@ -275,11 +330,12 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
 
       if (isSteadyState(value))
         {
-          if (mpCallBack) mpCallBack->finishItem(hProcess);
+          if (mpCallBack)
+            mpCallBack->finishItem(hProcess);
 
           if (mKeepProtocol)
             mMethodLog << "  Integration with duration " << duration
-                       << ". Criterium matched by " << value << ".\n\n";
+                       << ". Criterion matched by " << targetValueToString() << ".\n\n";
 
           return CNewtonMethod::found;
         }
@@ -287,22 +343,25 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
         {
           if (mKeepProtocol)
             mMethodLog << "  Integration with duration " << duration
-                       << ". Criterium not matched by " << value << ".\n\n";
+                       << ". Criterion not matched by " << targetValueToString() << ".\n\n";
         }
 
       if (mUseNewton)
         {
-          if (mKeepProtocol) mMethodLog << "  Try Newton's method from this starting point. \n";
+          if (mKeepProtocol)
+            mMethodLog << "  Try Newton's method from this starting point. \n";
 
           NewtonResultCode returnCode = processNewton();
 
-          if (mKeepProtocol) mMethodLog << "\n";
+          if (mKeepProtocol)
+            mMethodLog << "\n";
 
           // mpParentTask->separate(COutputInterface::DURING);
 
           if (returnCode == CNewtonMethod::found)
             {
-              if (mpCallBack) mpCallBack->finishItem(hProcess);
+              if (mpCallBack)
+                mpCallBack->finishItem(hProcess);
 
               return CNewtonMethod::found;
             }
@@ -318,7 +377,8 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
         }
     }
 
-  if (mpCallBack) mpCallBack->finishItem(hProcess);
+  if (mpCallBack)
+    mpCallBack->finishItem(hProcess);
 
   return CNewtonMethod::notFound;
 }
@@ -340,7 +400,8 @@ CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
   // Newton
   if (mUseNewton)
     {
-      if (mKeepProtocol) mMethodLog << "Try Newton's method. \n";
+      if (mKeepProtocol)
+        mMethodLog << "Try Newton's method. \n";
 
       returnCode = processNewton();
 
@@ -351,7 +412,8 @@ CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
   // forward integration
   if (mUseIntegration)
     {
-      if (mKeepProtocol) mMethodLog << "\nTry forward integration. \n";
+      if (mKeepProtocol)
+        mMethodLog << "\nTry forward integration. \n";
 
       returnCode = doIntegration(true); //true means forward
 
@@ -362,7 +424,8 @@ CSteadyStateMethod::ReturnCode CNewtonMethod::processInternal()
   // backward integration
   if (mUseBackIntegration)
     {
-      if (mKeepProtocol) mMethodLog << "\nTry backward integration. \n";
+      if (mKeepProtocol)
+        mMethodLog << "\nTry backward integration. \n";
 
       returnCode = doIntegration(false); //false means backwards
 
@@ -383,7 +446,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
 
   calculateJacobian(currentValue, true);
 
-  if (solveAxEqB(*mpJacobian, mH, mdxdt).second != 0.0)
+  if (CLeastSquareSolution::solve(*mpJacobian, mdxdt, mH) != mpJacobian->numCols())
     {
       // We need to check that mH != 0
       C_FLOAT64 * pH = mH.array();
@@ -404,13 +467,14 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
         }
     }
 
+  // Force the loop to be enterred at least once
   C_FLOAT64 newValue = currentValue * 1.001;
 
   //repeat till the new max rate is smaller than the old.
   //max 32 times
   size_t i;
 
-  for (i = 0; (i < 32) && !((newValue < currentValue)); i++)
+  for (i = 0; (i < 32) && !(newValue < currentValue); i++)
     {
       C_FLOAT64 * pXit = mpX;
       C_FLOAT64 * pXoldIt = mXold.array();
@@ -437,7 +501,8 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
       calculateDerivativesX();
       currentValue = targetFunction();
 
-      if (mKeepProtocol) mMethodLog << "    Newton step failed. Damping limit exceeded.\n";
+      if (mKeepProtocol)
+        mMethodLog << "    Newton step failed. Damping limit exceeded.\n";
 
       return CNewtonMethod::dampingLimitExceeded;
 
@@ -464,9 +529,9 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
   if (mKeepProtocol)
     {
       if (i <= 1)
-        mMethodLog << "    Regular Newton step.      New value: " << currentValue << "\n";
+        mMethodLog << "    Regular Newton step.      New value: " << targetValueToString() << "\n";
       else
-        mMethodLog << "    Newton step with damping. New value: " << currentValue
+        mMethodLog << "    Newton step with damping. New value: " << targetValueToString()
                    << " (" << i - 1 << " damping iteration(s))\n";
     }
 
@@ -487,27 +552,30 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
   if (mpCallBack)
     hProcess = mpCallBack->addItem("Newton method...",
                                    k,
-                                   & mIterationLimit);
-
-  C_FLOAT64 targetValue;
+                                   &mIterationLimit);
 
   calculateDerivativesX();
-  targetValue = targetFunction();
+  C_FLOAT64 targetValue = targetFunction();
 
   {
-    if (mKeepProtocol) mMethodLog << "   Starting Newton Iterations...\n";
+    if (mKeepProtocol)
+      mMethodLog << "   Starting Newton Iterations...\n";
 
     for (k = 0; k < mIterationLimit && !isSteadyState(targetValue); k++)
       {
-        if (mpCallBack && !mpCallBack->progressItem(hProcess)) break;
+        if (mpCallBack && !mpCallBack->progressItem(hProcess))
+          break;
 
         result = doNewtonStep(targetValue);
 
-        if (singularJacobian == result) break;
+        if (singularJacobian == result)
+          break;
 
-        if (dampingLimitExceeded == result) break;
+        if (dampingLimitExceeded == result)
+          break;
 
-        if (negativeValueFound == result) break;
+        if (negativeValueFound == result)
+          break;
       }
   }
 
@@ -521,9 +589,9 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
   if (mKeepProtocol)
     {
       if (CNewtonMethod::found == result)
-        mMethodLog << "   Success: Target criterium matched by " << targetValue << ".\n";
+        mMethodLog << "   Success: Target criterion matched by " << targetValueToString() << ".\n";
       else if (CNewtonMethod::dampingLimitExceeded == result)
-        mMethodLog << "   Failed: Target criterium not matched after reaching iteration limit. " << targetValue << "\n";
+        mMethodLog << "   Failed: Target criterion not matched after reaching iteration limit. " << targetValueToString() << "\n";
     }
 
   //do an additional Newton step to refine the result
@@ -531,11 +599,15 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
     {
       bool tmp = true;
 
-      ++k; if (mpCallBack && !mpCallBack->progressItem(hProcess)) tmp = false;
+      ++k;
+
+      if (mpCallBack && !mpCallBack->progressItem(hProcess))
+        tmp = false;
 
       if (tmp)
         {
-          if (mKeepProtocol) mMethodLog << "   Do additional step to refine result...\n";
+          if (mKeepProtocol)
+            mMethodLog << "   Do additional step to refine result...\n";
 
           result = doNewtonStep(targetValue);
 
@@ -544,21 +616,24 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
 
           if (CNewtonMethod::singularJacobian == result)
             {
-              if (mKeepProtocol) mMethodLog << "   Additional step failed. Old values restored.\n";
+              if (mKeepProtocol)
+                mMethodLog << "   Additional step failed. Old values restored.\n";
 
               result = CNewtonMethod::found;
             }
 
           if (CNewtonMethod::dampingLimitExceeded == result)
             {
-              if (mKeepProtocol) mMethodLog << "   Additional step failed. Old values restored.\n";
+              if (mKeepProtocol)
+                mMethodLog << "   Additional step failed. Old values restored.\n";
 
               result = CNewtonMethod::found;
             }
 
           if (CNewtonMethod::negativeValueFound == result)
             {
-              if (mKeepProtocol) mMethodLog << "   Additional step failed. Old values restored.\n";
+              if (mKeepProtocol)
+                mMethodLog << "   Additional step failed. Old values restored.\n";
 
               result = CNewtonMethod::found;
             }
@@ -566,7 +641,8 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
     }
 
   //end progress bar
-  if (mpCallBack) mpCallBack->finishItem(hProcess);
+  if (mpCallBack)
+    mpCallBack->finishItem(hProcess);
 
   return result;
 }
@@ -581,7 +657,7 @@ bool CNewtonMethod::containsNaN() const
   return !mpContainer->isStateValid();
 }
 
-bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
+bool CNewtonMethod::isSteadyState(const C_FLOAT64 & value) const
 {
   if (value > *mpSSResolution)
     return false;
@@ -594,15 +670,84 @@ bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
 
 C_FLOAT64 CNewtonMethod::targetFunction()
 {
-  // New criterion: We solve Jacobian * x = current rates and compare x with the current state
-  // Calculate the Jacobian
-  calculateJacobian(*mpSSResolution, true);
+  if (mTargetCriterion != eTargetCriterion::Rate)
+    {
+      calculateJacobian(std::max(mTargetRate, mTargetDistance), true);
+    }
+
+  // Assure that all values are updated.
+  mpContainer->updateSimulatedValues(true);
+  mpContainer->applyUpdateSequence(mUpdateConcentrations);
+
+  mTargetRate = targetFunctionRate();
+  mTargetDistance = targetFunctionDistance();
+
+  return std::max(mTargetRate, mTargetDistance);
+}
+
+std::string CNewtonMethod::targetValueToString() const
+{
+  std::ostringstream os;
+
+  switch (mTargetCriterion)
+    {
+      case eTargetCriterion::DistanceAndRate:
+        os << "Distance: " << mTargetDistance << ", Rate: " << mTargetRate;
+        break;
+
+      case eTargetCriterion::Distance:
+        os << "Distance: " << mTargetDistance;
+        break;
+
+      case eTargetCriterion::Rate:
+        os << "Rate: " << mTargetRate;
+        break;
+    }
+
+  return os.str();
+}
+
+C_FLOAT64 CNewtonMethod::targetFunctionRate()
+{
+  if (mTargetCriterion == eTargetCriterion::Distance)
+    return 0.0;
+
+  // Assure that all values are updated.
+
+  C_FLOAT64 MaxRate = 0.0;
+  C_FLOAT64 tmp;
+
+  // We look at all ODE determined entity and dependent species rates.
+  const C_FLOAT64 * pIt = mdxdt.begin();
+  const C_FLOAT64 * pEnd = mdxdt.end();
+  C_FLOAT64 * pCurrentState = mpX;
+  const C_FLOAT64 * pAtol = mAtol.array();
+
+  for (; pIt != pEnd; ++pIt, ++pAtol)
+    {
+      tmp = fabs(*pIt) / std::max(fabs(*pCurrentState), *pAtol);
+
+      if (tmp > MaxRate)
+        MaxRate = tmp;
+
+      if (std::isnan(tmp))
+        return std::numeric_limits< C_FLOAT64 >::infinity();
+    }
+
+  return MaxRate;
+}
+
+C_FLOAT64 CNewtonMethod::targetFunctionDistance()
+{
+  if (mTargetCriterion == eTargetCriterion::Rate
+      || mdxdt.size() == 0)
+    return 0.0;
 
   CVector< C_FLOAT64 > Distance;
 
-  std::pair< size_t, double > Result = solveAxEqB(*mpJacobian, Distance, mdxdt);
+  CLeastSquareSolution::ResultInfo Info = CLeastSquareSolution::solve(*mpJacobian, mdxdt, mAtol, mCompartmentVolumes, mpContainer->getQuantity2NumberFactor(), Distance);
 
-  if (mpJacobian->numCols() == Result.first)
+  if (Info.rank == 0)
     {
       return std::numeric_limits< C_FLOAT64 >::infinity();
     }
@@ -612,21 +757,13 @@ C_FLOAT64 CNewtonMethod::targetFunction()
   C_FLOAT64 * pDistanceEnd = pDistance + Distance.size();
   C_FLOAT64 * pCurrentState = mpX;
   const C_FLOAT64 * pAtol = mAtol.array();
-
-  // Assure that all values are updated.
-  mpContainer->updateSimulatedValues(true);
-  mpContainer->applyUpdateSequence(mUpdateConcentrations);
-
-  const CMathObject * pMathObject = mpContainer->getMathObject(mpContainerStateTime + 1);
   C_FLOAT64 ** ppCompartmentVolume = mCompartmentVolumes.array();
-  C_FLOAT64 Number2Quantity = mpContainer->getModel().getNumber2QuantityFactor();
 
-  C_FLOAT64 AbsoluteDistance = 0.0; // Largest relative distance
-  C_FLOAT64 RelativeDistance = 0.0; // Total relative distance
-
+  C_FLOAT64 AbsoluteDistance = 0.0;
+  C_FLOAT64 RelativeDistance = 0.0;
   C_FLOAT64 tmp;
 
-  for (; pDistance != pDistanceEnd; ++pDistance, ++pCurrentState, ++pAtol, ++pMathObject, ++ppCompartmentVolume)
+  for (; pDistance != pDistanceEnd; ++pDistance, ++pCurrentState, ++pAtol, ++ppCompartmentVolume)
     {
       // Prevent division by 0
       tmp = *pDistance / std::max(fabs(*pCurrentState), *pAtol);
@@ -634,25 +771,20 @@ C_FLOAT64 CNewtonMethod::targetFunction()
 
       tmp = *pDistance;
 
-      if (pMathObject->getEntityType() == CMath::EntityType::Species)
+      if (*ppCompartmentVolume != NULL)
         {
-          tmp /= mpContainer->getQuantity2NumberFactor() ***ppCompartmentVolume;
+          tmp /= mpContainer->getQuantity2NumberFactor() * **ppCompartmentVolume;
         }
 
       AbsoluteDistance += tmp * tmp;
     }
 
   RelativeDistance =
-    isnan(RelativeDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(RelativeDistance);
+    std::isnan(RelativeDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(RelativeDistance + Info.relativeError * Info.relativeError);
   AbsoluteDistance =
-    isnan(AbsoluteDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(AbsoluteDistance);
+    std::isnan(AbsoluteDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(AbsoluteDistance + Info.absoluteError * Info.absoluteError);
 
   C_FLOAT64 TargetValue = std::max(RelativeDistance, AbsoluteDistance);
-
-  if (Result.first > 0)
-    {
-      TargetValue *= std::max(1.0, Result.second);
-    }
 
   return TargetValue;
 }
@@ -660,10 +792,10 @@ C_FLOAT64 CNewtonMethod::targetFunction()
 //virtual
 bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  if (!CSteadyStateMethod::isValidProblem(pProblem)) return false;
+  if (!CSteadyStateMethod::isValidProblem(pProblem))
+    return false;
 
-  if (!mpContainer->isAutonomous() &&
-      getValue< bool >("Use Newton"))
+  if (!mpContainer->isAutonomous() && getValue< bool >("Use Newton"))
     CCopasiMessage(CCopasiMessage::WARNING, MCSteadyState + 1);
 
   //const CSteadyStateProblem * pP = dynamic_cast<const CSteadyStateProblem *>(pProblem);
@@ -694,7 +826,8 @@ bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
 
 bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
 {
-  if (!CSteadyStateMethod::initialize(pProblem)) return false;
+  if (!CSteadyStateMethod::initialize(pProblem))
+    return false;
 
   CTrajectoryProblem * pTrajectoryProblem = NULL;
   CTrajectoryMethod * pTrajectoryMethod = NULL;
@@ -702,8 +835,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   cleanup();
 
   /* Configure Newton */
-  mUseNewton = mUseIntegration = mUseBackIntegration = mAcceptNegative
-                                 = mForceNewton = mKeepProtocol = false;
+  mUseNewton = mUseIntegration = mUseBackIntegration = mAcceptNegative = mForceNewton = mKeepProtocol = false;
 
   if (getValue< bool >("Use Newton"))
     mUseNewton = true;
@@ -717,6 +849,10 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   if (getValue< bool >("Accept Negative Concentrations"))
     mAcceptNegative = true;
 
+  mTargetCriterion = TargetCriterion.toEnum(getValue< std::string >("Target Criterion"), eTargetCriterion::DistanceAndRate);
+  mTargetRate = std::numeric_limits< C_FLOAT64 >::infinity();
+  mTargetDistance = std::numeric_limits< C_FLOAT64 >::infinity();
+
   mForceNewton = true;
   mKeepProtocol = true;
 
@@ -728,12 +864,10 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   mpX = mContainerStateReduced.array() + mpContainer->getCountFixedEventTargets() + 1;
   mDimension = mContainerStateReduced.size() - mpContainer->getCountFixedEventTargets() - 1;
 
-  mAtol = mpContainer->initializeAtolVector(*mpSSResolution, false);
-
   mH.resize(mDimension);
   mXold.resize(mDimension);
   mdxdt.initialize(mDimension, mpContainer->getRate(false).array() + mpContainer->getCountFixedEventTargets() + 1);
-  mIpiv = new C_INT [mDimension];
+  mIpiv = new C_INT[mDimension];
 
   mCompartmentVolumes.resize(mDimension + mpContainer->getCountDependentSpecies());
   mCompartmentVolumes = NULL;
@@ -741,7 +875,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   if (mUseIntegration || mUseBackIntegration)
     {
       // create an appropriate trajectory task
-      CDataModel* pDataModel = getObjectDataModel();
+      CDataModel * pDataModel = getObjectDataModel();
       assert(pDataModel != NULL);
       CTrajectoryTask * pSrc =
         dynamic_cast< CTrajectoryTask * >(&pDataModel->getTaskList()->operator[]("Time-Course"));
@@ -752,14 +886,14 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
         mpTrajectory = new CTrajectoryTask(this);
 
       pTrajectoryProblem =
-        dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
+        dynamic_cast< CTrajectoryProblem * >(mpTrajectory->getProblem());
       assert(pTrajectoryProblem);
 
       if (mpTrajectory->getMethod()->getSubType() != CTaskEnum::Method::deterministic)
         mpTrajectory->setMethodType(CTaskEnum::Method::deterministic);
 
       pTrajectoryMethod =
-        dynamic_cast<CTrajectoryMethod *>(mpTrajectory->getMethod());
+        dynamic_cast< CTrajectoryMethod * >(mpTrajectory->getMethod());
       assert(pTrajectoryMethod);
 
       pTrajectoryProblem->setStepNumber(1);
@@ -797,284 +931,4 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
     }
 
   return true;
-}
-
-std::pair< size_t, double > CNewtonMethod::solveAxEqB(const CMatrix< C_FLOAT64 > & jacobian,
-    CVector< C_FLOAT64 > & X,
-    const CVectorCore< const C_FLOAT64 > & B) const
-{
-  assert(B.size() == jacobian.numCols());
-
-  C_INT M = (C_INT) jacobian.numCols();
-  C_INT N = (C_INT) jacobian.numRows();
-
-  std::pair< size_t, double > Result(M, std::numeric_limits< C_FLOAT64 >::infinity());
-
-  if (M == 0 || N == 0 || M != N)
-    {
-      Result.first = abs(M - N);
-      return Result;
-    }
-
-  X = * reinterpret_cast<const CVectorCore< C_FLOAT64 > * >(&B);
-
-  C_INT LDA = std::max< C_INT >(1, M);
-  C_INT NRHS = 1;
-
-  // We need the transpose of the Jacobian;
-  CMatrix< C_FLOAT64 > JT(M, N);
-  const C_FLOAT64 * mpJ = jacobian.array();
-  C_FLOAT64 * mpJTcolumn = JT.array();
-  C_FLOAT64 * mpJTcolumnEnd = mpJTcolumn + M;
-  C_FLOAT64 * mpJT = JT.array();
-  C_FLOAT64 * mpJTEnd = mpJT + JT.size();
-
-  for (; mpJTcolumn != mpJTcolumnEnd; ++mpJTcolumn)
-    {
-      mpJT = mpJTcolumn;
-
-      for (; mpJT < mpJTEnd; mpJT += M, ++mpJ)
-        {
-          if (isnan(*mpJ))
-            {
-              return Result;
-            }
-
-          *mpJT = *mpJ;
-        }
-    }
-
-  CVector< C_INT > JPVT(M);
-  JPVT = 0;
-
-  C_FLOAT64 RCOND = 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon();
-
-  C_INT RANK = 0;
-
-  CVector< C_FLOAT64 > WORK(1);
-  C_INT LWORK = -1;
-  C_INT INFO;
-
-  /*
-      SUBROUTINE DGELSY(M, N, NRHS, A, LDA, B, LDB, JPVT, RCOND, RANK,
-     $                   WORK, LWORK, INFO)
-   *
-   *  -- LAPACK driver routine (version 3.2) --
-   *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
-   *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-   *     November 2006
-   *
-   *     .. Scalar Arguments ..
-      INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
-      DOUBLE PRECISION   RCOND
-   *     ..
-   *     .. Array Arguments ..
-      INTEGER            JPVT(*)
-      DOUBLE PRECISION   A(LDA, * ), B(LDB, * ), WORK(*)
-   *     ..
-   *
-   *  Purpose
-   *  =======
-   *
-   *  DGELSY computes the minimum-norm solution to a real linear least
-   *  squares problem:
-   *      minimize || A * X - B ||
-   *  using a complete orthogonal factorization of A.  A is an M-by-N
-   *  matrix which may be rank-deficient.
-   *
-   *  Several right hand side vectors b and solution vectors x can be
-   *  handled in a single call; they are stored as the columns of the
-   *  M-by-NRHS right hand side matrix B and the N-by-NRHS solution
-   *  matrix X.
-   *
-   *  The routine first computes a QR factorization with column pivoting:
-   *      A * P = Q * [ R11 R12 ]
-   *                  [  0  R22 ]
-   *  with R11 defined as the largest leading submatrix whose estimated
-   *  condition number is less than 1/RCOND.  The order of R11, RANK,
-   *  is the effective rank of A.
-   *
-   *  Then, R22 is considered to be negligible, and R12 is annihilated
-   *  by orthogonal transformations from the right, arriving at the
-   *  complete orthogonal factorization:
-   *     A * P = Q * [ T11 0 ] * Z
-   *                 [  0  0 ]
-   *  The minimum-norm solution is then
-   *     X = P * Z' [ inv(T11)*Q1'*B ]
-   *                [        0       ]
-   *  where Q1 consists of the first RANK columns of Q.
-   *
-   *  This routine is basically identical to the original xGELSX except
-   *  three differences:
-   *    o The call to the subroutine xGEQPF has been substituted by the
-   *      the call to the subroutine xGEQP3. This subroutine is a Blas-3
-   *      version of the QR factorization with column pivoting.
-   *    o Matrix B (the right hand side) is updated with Blas-3.
-   *    o The permutation of matrix B (the right hand side) is faster and
-   *      more simple.
-   *
-   *  Arguments
-   *  =========
-   *
-   *  M       (input) INTEGER
-   *          The number of rows of the matrix A.  M >= 0.
-   *
-   *  N       (input) INTEGER
-   *          The number of columns of the matrix A.  N >= 0.
-   *
-   *  NRHS    (input) INTEGER
-   *          The number of right hand sides, i.e., the number of
-   *          columns of matrices B and X. NRHS >= 0.
-   *
-   *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
-   *          On entry, the M-by-N matrix A.
-   *          On exit, A has been overwritten by details of its
-   *          complete orthogonal factorization.
-   *
-   *  LDA     (input) INTEGER
-   *          The leading dimension of the array A.  LDA >= max(1,M).
-   *
-   *  B       (input/output) DOUBLE PRECISION array, dimension (LDB,NRHS)
-   *          On entry, the M-by-NRHS right hand side matrix B.
-   *          On exit, the N-by-NRHS solution matrix X.
-   *
-   *  LDB     (input) INTEGER
-   *          The leading dimension of the array B. LDB >= max(1,M,N).
-   *
-   *  JPVT    (input/output) INTEGER array, dimension (N)
-   *          On entry, if JPVT(i) .ne. 0, the i-th column of A is permuted
-   *          to the front of AP, otherwise column i is a free column.
-   *          On exit, if JPVT(i) = k, then the i-th column of AP
-   *          was the k-th column of A.
-   *
-   *  RCOND   (input) DOUBLE PRECISION
-   *          RCOND is used to determine the effective rank of A, which
-   *          is defined as the order of the largest leading triangular
-   *          submatrix R11 in the QR factorization with pivoting of A,
-   *          whose estimated condition number < 1/RCOND.
-   *
-   *  RANK    (output) INTEGER
-   *          The effective rank of A, i.e., the order of the submatrix
-   *          R11.  This is the same as the order of the submatrix T11
-   *          in the complete orthogonal factorization of A.
-   *
-   *  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
-   *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
-   *
-   *  LWORK   (input) INTEGER
-   *          The dimension of the array WORK.
-   *          The unblocked strategy requires that:
-   *             LWORK >= MAX(MN+3*N+1, 2*MN+NRHS ),
-   *          where MN = min(M, N ).
-   *          The block algorithm requires that:
-   *             LWORK >= MAX(MN+2*N+N*(N+1), 2*MN+NB*NRHS ),
-   *          where NB is an upper bound on the blocksize returned
-   *          by ILAENV for the routines DGEQP3, DTZRZF, STZRQF, DORMQR,
-   *          and DORMRZ.
-   *
-   *          If LWORK = -1, then a workspace query is assumed; the routine
-   *          only calculates the optimal size of the WORK array, returns
-   *          this value as the first entry of the WORK array, and no error
-   *          message related to LWORK is issued by XERBLA.
-   *
-   *  INFO    (output) INTEGER
-   *          = 0: successful exit
-   *          < 0: If INFO = -i, the i-th argument had an illegal value.
-   *
-   *  Further Details
-   *  ===============
-   *
-   *  Based on contributions by
-   *    A. Petitet, Computer Science Dept., Univ. of Tenn., Knoxville, USA
-   *    E. Quintana-Orti, Depto. de Informatica, Universidad Jaime I, Spain
-   *    G. Quintana-Orti, Depto. de Informatica, Universidad Jaime I, Spain
-   *
-   *  =====================================================================
-   */
-
-  dgelsy_(&M, &N, &NRHS, JT.array(), &LDA, X.array(), &LDA, JPVT.array(), &RCOND, &RANK,
-          WORK.array(), &LWORK, &INFO);
-
-  if (INFO < 0)
-    {
-      return Result;
-    }
-
-  LWORK = (C_INT) WORK[0];
-  WORK.resize(LWORK);
-
-  dgelsy_(&M, &N, &NRHS, JT.array(), &LDA, X.array(), &LDA, JPVT.array(), &RCOND, &RANK,
-          WORK.array(), &LWORK, &INFO);
-
-  if (INFO < 0)
-    {
-      return Result;
-    }
-
-  if (RANK != M)
-    {
-      Result.first = M - RANK;
-
-      // We need to check whether the || Ax - b || is sufficiently small.
-      // Calculate Ax
-      char T = 'N';
-      C_INT One = 1;
-      C_FLOAT64 Alpha = 1.0;
-      C_FLOAT64 Beta = 0.0;
-
-      CVector< C_FLOAT64 > Ax = * reinterpret_cast<const CVectorCore< C_FLOAT64 > * >(&B);
-
-      dgemm_(&T, &T, &One, &N, &N, &Alpha, X.array(), &One,
-             const_cast< C_FLOAT64 * >(jacobian.array()), &N, &Beta, Ax.array(), &One);
-
-      // Calculate absolute and relative error
-      C_FLOAT64 *pAx = Ax.array();
-      C_FLOAT64 *pAxEnd = pAx + Ax.size();
-      const C_FLOAT64 *pB = B.array();
-      C_FLOAT64 * pCurrentState = mpX;
-      const C_FLOAT64 * pAtol = mAtol.array();
-
-      // Assure that all values are updated.
-      mpContainer->updateSimulatedValues(true);
-      mpContainer->applyUpdateSequence(mUpdateConcentrations);
-
-      const CMathObject * pMathObject = mpContainer->getMathObject(mpContainerStateTime + 1);
-      C_FLOAT64 * const * ppCompartmentVolume = mCompartmentVolumes.array();
-      C_FLOAT64 Number2Quantity = mpContainer->getModel().getNumber2QuantityFactor();
-
-      C_FLOAT64 AbsoluteDistance = 0.0; // Largest relative distance
-      C_FLOAT64 RelativeDistance = 0.0; // Total relative distance
-
-      C_FLOAT64 tmp;
-
-      for (; pAx != pAxEnd; ++pAx, ++pB, ++pCurrentState, ++pAtol, ++pMathObject, ++ppCompartmentVolume)
-        {
-          // Prevent division by 0
-          tmp = fabs(*pAx - *pB) / std::max(fabs(*pCurrentState), *pAtol);
-          RelativeDistance += tmp * tmp;
-
-          tmp = fabs(*pAx - *pB);
-
-          if (pMathObject->getEntityType() == CMath::EntityType::Species)
-            {
-              tmp /= mpContainer->getQuantity2NumberFactor() ***ppCompartmentVolume;
-            }
-
-          AbsoluteDistance += tmp * tmp;
-        }
-
-      RelativeDistance =
-        isnan(RelativeDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(RelativeDistance);
-      AbsoluteDistance =
-        isnan(AbsoluteDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(AbsoluteDistance);
-
-      Result.second = std::max(RelativeDistance, AbsoluteDistance);
-    }
-  else
-    {
-      Result.first = 0;
-      Result.second = 0.0;
-    }
-
-  return Result;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,16 +32,16 @@
 #include "CProgressBar.h"
 #include "CQSteadyStateResult.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CSteadyStateProblem.h"
-#include "model/CModel.h"
-#include "utilities/CCopasiException.h"
-#include "report/CKeyFactory.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/steadystate/CSteadyStateProblem.h"
+#include "copasi/model/CModel.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/report/CKeyFactory.h"
 
 /**
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the
@@ -134,9 +134,6 @@ bool SteadyStateWidget::taskFinishedEvent()
 
 bool SteadyStateWidget::loadTaskProtected()
 {
-  loadCommon();
-  loadMethod();
-
   CSteadyStateTask* mSteadyStateTask =
     dynamic_cast<CSteadyStateTask *>(mpObject);
 
@@ -172,9 +169,6 @@ bool SteadyStateWidget::loadTaskProtected()
 
 bool SteadyStateWidget::saveTaskProtected()
 {
-  saveCommon();
-  saveMethod();
-
   CSteadyStateTask* mSteadyStateTask =
     dynamic_cast<CSteadyStateTask *>(mpObject);
 

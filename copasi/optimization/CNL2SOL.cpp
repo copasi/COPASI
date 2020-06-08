@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -10,7 +15,7 @@
 #include <cfloat>
 #include <climits>
 #include <cmath>
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CNL2SOL.h"
 
 /* Table of constant values */
@@ -29,6 +34,9 @@ static integer c__4 = 4;
 static integer c__0 = 0;
 static logical c_false = FALSE_;
 static doublereal c_b767 = .33333333333333331;
+
+int s_copy(char *a, char *b, ftnlen la, ftnlen lb);
+doublereal pow_dd(doublereal *ap, doublereal *bp);
 
 CNL2SOL::CNL2SOL()
 {
@@ -1365,9 +1373,6 @@ int dd7upd_(doublereal *d__, doublereal *dr, integer *iv,
   /* System generated locals */
   integer dr_dim1, dr_offset, i__1, i__2;
   doublereal d__1, d__2, d__3;
-
-  /* Builtin functions */
-  double sqrt(doublereal);
 
   /* Local variables */
   static integer jcni, jtol0, i__, k;
@@ -3629,9 +3634,6 @@ int dg7qts_(doublereal *d__, doublereal *dig, doublereal *
   integer i__1, i__2;
   doublereal d__1, d__2, d__3;
 
-  /* Builtin functions */
-  double sqrt(doublereal);
-
   /* Local variables */
   static integer diag, emin, emax;
   static doublereal root;
@@ -4723,9 +4725,6 @@ doublereal dh2rfg_(doublereal *a, doublereal *b, doublereal *x, doublereal *y,
   /* System generated locals */
   doublereal ret_val, d__1, d__2;
 
-  /* Builtin functions */
-  double sqrt(doublereal);
-
   /* Local variables */
   static doublereal c__, t, a1, b1;
 
@@ -5316,9 +5315,6 @@ int dl7mst_(doublereal *d__, doublereal *g, integer *ierr,
   /* System generated locals */
   integer i__1, i__2, i__3;
   doublereal d__1, d__2;
-
-  /* Builtin functions */
-  double sqrt(doublereal);
 
   /* Local variables */
   static integer pp1o2, rmat;
@@ -6178,9 +6174,6 @@ int dl7srt_(integer *n1, integer *n, doublereal *l,
   /* System generated locals */
   integer i__1, i__2, i__3;
 
-  /* Builtin functions */
-  double sqrt(doublereal);
-
   /* Local variables */
   static integer i__, j, k;
   static doublereal t;
@@ -6679,9 +6672,6 @@ int dparck_(integer *alg, doublereal *d__, integer *iv,
 
   /* System generated locals */
   integer i__1, i__2;
-
-  /* Builtin functions */
-  int s_copy(char *, char *, ftnlen, ftnlen);
 
   /* Local variables */
   static integer i__, j, k, l, m;
@@ -7274,9 +7264,6 @@ int dq7rad_(integer *n, integer *nn, integer *p, doublereal *qtr,
   integer w_dim1, w_offset, i__1, i__2;
   doublereal d__1;
 
-  /* Builtin functions */
-  double sqrt(doublereal);
-
   /* Local variables */
   static integer i__, j, k;
   static doublereal s, t;
@@ -7724,9 +7711,6 @@ doublereal dr7mdc_(integer *k)
 
   /* System generated locals */
   doublereal ret_val;
-
-  /* Builtin functions */
-  double sqrt(doublereal);
 
   /* Local variables */
   extern doublereal d1mach_(integer *);
@@ -9305,9 +9289,6 @@ doublereal dv2nrm_(integer *p, doublereal *x)
   integer i__1;
   doublereal ret_val, d__1;
 
-  /* Builtin functions */
-  double sqrt(doublereal);
-
   /* Local variables */
   static integer i__, j;
   static doublereal r__, t, scale;
@@ -9449,9 +9430,6 @@ int dv7dfl_(integer *alg, integer *lv, doublereal *v)
 {
   /* System generated locals */
   doublereal d__1, d__2, d__3;
-
-  /* Builtin functions */
-  double pow_dd(doublereal *, doublereal *);
 
   /* Local variables */
   extern doublereal dr7mdc_(integer *);
@@ -9775,7 +9753,7 @@ integer i1mach_(integer *i)
 
       case 6:  return sizeof(int);    /* Fortran 77 value: 1 character */
 
-      /*    per character storage unit */
+        /*    per character storage unit */
       case 7:  return 2;    /* base for integers -- may need changing */
 
       case 8:  return 31;    /* digits of integer base -- may need changing */

@@ -25,7 +25,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #ifdef WIN32
 # ifndef WIN32_LEAN_AND_MEAN
@@ -54,9 +54,9 @@
 #include "COptionParser.h"
 #include "COptions.h"
 
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CDirEntry.h"
-#include "utilities/utility.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CDirEntry.h"
+#include "copasi/utilities/utility.h"
 
 COptions::optionType COptions::mOptions;
 COptions::nonOptionType COptions::mNonOptions;

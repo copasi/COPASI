@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,25 +27,25 @@
 #include <QLabel>
 #include <QToolButton>
 
-#include "UI/CQTaskBtnWidget.h"
-#include "UI/CQTaskHeaderWidget.h"
-#include "UI/CQTaskMethodWidget.h"
-#include "UI/CQFittingItemWidget.h"
-#include "UI/CProgressBar.h"
-#include "UI/CQExperimentData.h"
+#include "copasi/UI/CQTaskBtnWidget.h"
+#include "copasi/UI/CQTaskHeaderWidget.h"
+#include "copasi/UI/CQTaskMethodWidget.h"
+#include "copasi/UI/CQFittingItemWidget.h"
+#include "copasi/UI/CProgressBar.h"
+#include "copasi/UI/CQExperimentData.h"
 
 #include <copasi/utilities/CCopasiMessage.h>
 #include <copasi/UI/CQMessageBox.h>
 
-#include "report/CKeyFactory.h"
-#include "parameterFitting/CFitTask.h"
-#include "parameterFitting/CFitItem.h"
-#include "optimization/COptMethod.h"
-#include "parameterFitting/CFitProblem.h"
-#include "parameterFitting/CExperimentSet.h"
-#include "parameterFitting/CExperiment.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "utilities/CCopasiException.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/parameterFitting/CFitTask.h"
+#include "copasi/parameterFitting/CFitItem.h"
+#include "copasi/optimization/COptMethod.h"
+#include "copasi/parameterFitting/CFitProblem.h"
+#include "copasi/parameterFitting/CExperimentSet.h"
+#include "copasi/parameterFitting/CExperiment.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/CCopasiException.h"
 #include "copasi/core/CRootContainer.h"
 
 #include <copasi/parameterFitting/CFitTask.h>
@@ -78,9 +78,6 @@ bool CQFittingWidget::saveTaskProtected()
     dynamic_cast< CFitTask * >(mpTask);
 
   if (!pTask) return false;
-
-  saveCommon();
-  saveMethod();
 
   CFitProblem * pProblem =
     dynamic_cast<CFitProblem *>(mpTask->getProblem());
@@ -237,9 +234,6 @@ bool CQFittingWidget::loadTaskProtected()
     dynamic_cast< CFitTask * >(mpTask);
 
   if (!pTask) return false;
-
-  loadCommon();
-  loadMethod();
 
   CFitProblem * pProblem =
     dynamic_cast<CFitProblem *>(mpTask->getProblem());

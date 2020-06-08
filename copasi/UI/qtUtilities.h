@@ -30,7 +30,7 @@
 #include <QtCore/QString>
 
 #include <copasi/copasi.h>
-#include "utilities/CCopasiParameter.h"
+#include "copasi/utilities/CCopasiParameter.h"
 
 class QStringList;
 class CCopasiParameterGroup;

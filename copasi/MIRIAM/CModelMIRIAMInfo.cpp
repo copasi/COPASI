@@ -26,7 +26,7 @@
 #include <fstream>
 #include <string>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CModelMIRIAMInfo.h"
 #include "CRDFWriter.h"
@@ -37,11 +37,11 @@
 #include "CRDFPredicate.h"
 #include "CRDFGraph.h"
 
-#include "model/CModelValue.h"
-#include "model/CEvent.h"
-#include "model/CReaction.h"
-#include "function/CFunction.h"
-#include "report/CKeyFactory.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CEvent.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
 
 // virtual

@@ -1,4 +1,14 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,7 +29,7 @@
 #include <cmath>
 #include <algorithm>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CInternalSolver.h"
 
@@ -36,7 +46,7 @@ static C_INT c__0 = 0;
 #include "dgbsl.h"
 #include "dgesl.h"
 
-#include "lapack/lapackwrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 /* DECK DSOLSY */
 /* Subroutine */
@@ -110,9 +120,13 @@ C_INT CInternalSolver::dsolsy_(double *wm, C_INT *iwm, double *x,
   switch (dls001_1.miter)
     {
       case 1: goto L100;
+
       case 2: goto L100;
+
       case 3: goto L300;
+
       case 4: goto L400;
+
       case 5: goto L400;
     }
 

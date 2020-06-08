@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,17 +24,17 @@
 
 #include <limits>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CTimeSeries.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "math/CMathContainer.h"
-#include "model/CMetabNameInterface.h"
-#include "model/CModel.h"
-#include "report/CKeyFactory.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/model/CMetabNameInterface.h"
+#include "copasi/model/CModel.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/commandline/CLocaleString.h"
 
 #include "sbml/SBase.h"
 #include "sbml/Compartment.h"
@@ -412,31 +417,33 @@ std::string CTimeSeries::getSBMLId(const size_t & var, const CDataModel* pDataMo
   return result;
 }
 
-int CTimeSeries::save(const std::string& fileName, bool writeParticleNumbers, const std::string& separator) const
+
+int
+CTimeSeries::save(std::ostream& str, bool writeParticleNumbers,
+                  const std::string& separator) const
 {
-  std::ofstream fileStream(CLocaleString::fromUtf8(fileName).c_str());
-  std::ostringstream* stringStream = new std::ostringstream();
-  (*stringStream) << "# ";
+  std::ostringstream stringStream;
+  stringStream << "# ";
   size_t counter2;
   size_t maxCount2 = this->getNumVariables();
 
   for (counter2 = 0; counter2 < maxCount2; ++counter2)
     {
-      (*stringStream) << this->getTitle(counter2) << separator;
+      stringStream << this->getTitle(counter2) << separator;
     }
 
-  (*stringStream) << std::endl;
-  fileStream << stringStream->str();
+  stringStream << std::endl;
+  str << stringStream.str();
 
-  if (!fileStream.good()) return 1;
+  if (!str.good()) return 1;
 
   size_t counter;
   size_t maxCount = mRecordedSteps;
 
   for (counter = 0; counter < maxCount; ++counter)
     {
-      delete stringStream;
-      stringStream = new std::ostringstream();
+      stringStream.str("");
+      stringStream.clear();
 
       for (counter2 = 0; counter2 < maxCount2; ++counter2)
         {
@@ -451,16 +458,22 @@ int CTimeSeries::save(const std::string& fileName, bool writeParticleNumbers, co
               value = this->getConcentrationData(counter, counter2);
             }
 
-          (*stringStream) << value << separator;
+          stringStream << value << separator;
         }
 
-      (*stringStream) << std::endl;
-      fileStream << stringStream->str();
+      stringStream << std::endl;
+      str << stringStream.str();
 
-      if (!fileStream.good()) return 1;
+      if (!str.good()) return 1;
     }
 
-  fileStream.close();
-  delete stringStream;
   return 0;
+}
+
+int CTimeSeries::save(const std::string& fileName, bool writeParticleNumbers, const std::string& separator) const
+{
+  std::ofstream fileStream(CLocaleString::fromUtf8(fileName).c_str());
+  int result = save(fileStream, writeParticleNumbers, separator);
+  fileStream.close();
+  return result;
 }

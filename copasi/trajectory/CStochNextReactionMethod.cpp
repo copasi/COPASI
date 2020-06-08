@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,11 +24,11 @@
 
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CStochNextReactionMethod.h"
 #include "CTrajectoryMethod.h"
 
-#include "math/CMathContainer.h"
+#include "copasi/math/CMathContainer.h"
 
 CStochNextReactionMethod::CStochNextReactionMethod(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
@@ -48,7 +53,7 @@ C_FLOAT64 CStochNextReactionMethod::doSingleStep(C_FLOAT64 /* time */, C_FLOAT64
   C_FLOAT64 steptime = mPQ.topKey();
 
   // We need to throw an exception if mA0 is NaN
-  if (isnan(steptime))
+  if (std::isnan(steptime))
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 27);
     }

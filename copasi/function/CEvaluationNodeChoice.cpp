@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -17,12 +22,12 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 
-#include "utilities/CValidatedUnit.h"
+#include "copasi/utilities/CValidatedUnit.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -268,7 +273,7 @@ ASTNode* CEvaluationNodeChoice::toAST(const CDataModel* pDataModel) const
   return node;
 }
 
-#include "utilities/copasimathml.h"
+#include "copasi/utilities/copasimathml.h"
 
 // virtual
 std::string CEvaluationNodeChoice::getMMLString(const std::vector< std::string > & children,
@@ -317,7 +322,7 @@ std::string CEvaluationNodeChoice::getMMLString(const std::vector< std::string >
 }
 
 // virtual
-CValidatedUnit CEvaluationNodeChoice::getUnit(const CMathContainer & container,
+CValidatedUnit CEvaluationNodeChoice::getUnit(const CMathContainer & /* container */,
     const std::vector< CValidatedUnit > & units) const
 {
   return CValidatedUnit::merge(units[1], units[2]);
@@ -325,8 +330,8 @@ CValidatedUnit CEvaluationNodeChoice::getUnit(const CMathContainer & container,
 
 // virtual
 CValidatedUnit CEvaluationNodeChoice::setUnit(const CMathContainer & container,
-    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
-    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+    const std::map < CEvaluationNode *, CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode *, CValidatedUnit > & targetUnits) const
 {
   CValidatedUnit Result(CEvaluationNode::setUnit(container, currentUnits, targetUnits));
 

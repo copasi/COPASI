@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,10 +34,10 @@
  */
 
 #define COPASI_TRACE_CONSTRUCTION
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include <stdio.h>
-#include "utilities/CMethodParameter.h"
-#include "model/model.h"
+#include "copasi/utilities/CMethodParameter.h"
+#include "copasi/model/model.h"
 #include "ABiochem/CGene.h"
 
 extern "C" void r250_init(int seed);

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,7 +25,7 @@
 #ifndef COPASI_CEvaluationNodeLogical
 #define COPASI_CEvaluationNodeLogical
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
 LIBSBML_CPP_NAMESPACE_END
@@ -105,10 +110,10 @@ public:
         case SubType::LE:
           mValue = (*mpLeftValue <= *mpRightValue) ? 1.0 : 0.0;
           break;
-          
+
         default:
           break;
-          
+
       }
   }
 

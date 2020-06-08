@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,25 +20,25 @@
 
 #include <QtCore/QString>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CChemEqInterface.h"
-#include "model/CModel.h"
-#include "function/CExpression.h"
+#include "copasi/model/CChemEqInterface.h"
+#include "copasi/model/CModel.h"
+#include "copasi/function/CExpression.h"
 
 #include "CQMessageBox.h"
 #include "CQSpecieDM.h"
 #include "qtUtilities.h"
 
-#include "model/CReaction.h"
-#include "model/CMetab.h"
-#include "model/CReactionInterface.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CReactionInterface.h"
 #include "copasi/undo/CUndoData.h"
 
-CQSpecieDM::CQSpecieDM(QObject *parent):
-  CQBaseDataModel(parent, NULL),
-  mpMetabolites(NULL),
-  mNotify(true)
+CQSpecieDM::CQSpecieDM(QObject * parent)
+  : CQBaseDataModel(parent, NULL)
+  , mpMetabolites(NULL)
+  , mNotify(true)
 {
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::REACTIONS]));
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::FIXED]));
@@ -56,9 +56,17 @@ const QStringList& CQSpecieDM::getTypes()
   return mTypes;
 }
 
-int CQSpecieDM::rowCount(const QModelIndex&) const
+size_t CQSpecieDM::size() const
 {
-  return mpMetabolites->size() + 1;
+  if (mpMetabolites != NULL)
+    return mpMetabolites->size();
+
+  return 0;
+}
+
+int CQSpecieDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched + 1;
 }
 
 int CQSpecieDM::columnCount(const QModelIndex&) const
@@ -71,7 +79,7 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
   if (!index.isValid())
     return Qt::ItemIsEnabled;
 
-  if (isDefaultRow(index))
+  if (isDefaultRow(index) || index.row() >= (int) mpMetabolites->size())
     {
       if (index.column() == COL_NAME_SPECIES || index.column() == COL_COMPARTMENT ||
           index.column() == COL_TYPE_SPECIES || index.column() == COL_ICONCENTRATION ||
@@ -136,7 +144,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int) mpMetabolites->size())
         {
           switch (index.column())
             {
@@ -492,8 +500,9 @@ bool CQSpecieDM::removeRows(int position, int rows, const QModelIndex & parent)
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+      --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
@@ -538,6 +547,8 @@ void CQSpecieDM::insertNewRows(int position, int rows, int column, const QVarian
 
           continue;
         }
+
+      ++mFetched;
 
       CUndoData UndoData(CUndoData::Type::INSERT, pSpecies);
 
@@ -594,7 +605,7 @@ bool CQSpecieDM::clear()
 {
   QModelIndexList rows;
 
-  for (int i = 0; i < mpMetabolites->size(); i++)
+  for (int i = 0; i < (int) mpMetabolites->size(); i++)
     {
       rows.append(index(i, 0));
     }

@@ -1,0 +1,3 @@
+#object	min	max	initial
+(R1).k1	1e-3	1e3	10
+[X]_0	0	10	2

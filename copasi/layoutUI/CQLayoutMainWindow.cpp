@@ -60,7 +60,7 @@
 #include "CQPlayerControlWidget.h"
 #include "CQScreenshotOptionsDialog.h"
 
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
 #ifdef DEBUG_UI
 #include <QtCore/QtDebug>

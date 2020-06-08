@@ -1,9 +1,14 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CDataValue.h"
 #include "CData.h"
@@ -318,43 +323,33 @@ bool CDataValue::operator == (const CDataValue & rhs) const
     {
       case DOUBLE:
         return (toDouble() == rhs.toDouble());
-        break;
 
       case INT:
         return (toInt() == rhs.toInt());
-        break;
 
       case UINT:
         return (toUint() == rhs.toUint());
-        break;
 
       case BOOL:
         return (toBool() == rhs.toBool());
-        break;
 
       case STRING:
         return (toString() == rhs.toString());
-        break;
 
       case DATA:
         return (toData() == rhs.toData());
-        break;
 
       case DATA_VALUES:
         return (toDataValues() == rhs.toDataValues());
-        break;
 
       case DATA_VECTOR:
         return (toDataVector() == rhs.toDataVector());
-        break;
 
       case VOID_POINTER:
         return (toVoidPointer() == rhs.toVoidPointer());
-        break;
 
       case INVALID:
         return (raw() == rhs.raw());
-        break;
     }
 
   return false;

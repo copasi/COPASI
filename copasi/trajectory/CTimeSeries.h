@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,11 +26,12 @@
 #define TIMESERIES_H
 
 #include <vector>
+#include <ostream>
 
 #include "copasi/core/CMatrix.h"
 #include "copasi/core/CVector.h"
-#include "model/CState.h"
-#include "output/COutputHandler.h"
+#include "copasi/model/CState.h"
+#include "copasi/output/COutputHandler.h"
 
 class CModel;
 class CDataModel;
@@ -110,6 +116,17 @@ public:
   int save(const std::string& fileName,
            bool writeParticleNumbers = false,
            const std::string& separator = "\t") const;
+  /**
+   * Save the time series to the given stream
+   * @param str the stream to write the series to
+   * @param bool writeParticleNumbers (default: false)
+   * @param const std::string& separator (default: "\t")
+   * @return int retcode
+   */
+  int save(std::ostream& str,
+           bool writeParticleNumbers = false,
+           const std::string& separator = "\t") const;
+
 
   /**
    * Retrieve the number of time steps (rows)

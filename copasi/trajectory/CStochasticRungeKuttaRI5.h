@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -156,6 +156,13 @@ private:
    * A pointer to the value of "Tolerance for Root Finder"
    */
   C_FLOAT64 * mpRootRelativeTolerance;
+
+  /**
+   * A pointer to to the value "Absolute Tolerance"
+   */
+  C_FLOAT64 * mpAbsoluteTolerance;
+
+  CVector< C_FLOAT64 > mAtol;
 
   /**
    * A pointer to the random number generator

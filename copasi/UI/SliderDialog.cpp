@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -336,19 +336,24 @@ SliderDialog::removeSlider(ListViews::WidgetType folderId)
 {
   if (mpCurrSlider)
     {
-      CDataModel * pDataModel = mpCurrSlider->getCSlider()->getObjectDataModel();
-      assert(pDataModel != NULL);
-      CDataVector<CSlider>* pSliderList = pDataModel->getGUI()->getSliderList();
-      size_t i, maxCount = pSliderList->size();
 
-      for (i = 0; i < maxCount; ++i)
+      if (mpCurrSlider->getCSlider())
         {
-          CSlider* pTmpSlider = &pSliderList->operator[](i);
+          CDataModel* pDataModel = mpCurrSlider->getCSlider()->getObjectDataModel();
+          assert(pDataModel != NULL);
+          CDataVector<CSlider>* pSliderList = pDataModel->getGUI()->getSliderList();
+          int i, maxCount = (int)pSliderList->size();
 
-          if (pTmpSlider == mpCurrSlider->getCSlider())
+          for (i = maxCount - 1; i >= 0; --i)
             {
-              pSliderList->remove(i);
-              break;
+              CSlider* pTmpSlider = &pSliderList->operator[](i);
+
+              if (pTmpSlider == mpCurrSlider->getCSlider())
+                {
+                  pSliderList->remove(i);
+                  mpCurrSlider->setCSlider(NULL);
+                  break;
+                }
             }
         }
 
@@ -368,6 +373,7 @@ SliderDialog::deleteSlider(CopasiSlider* pSlider, ListViews::WidgetType folderId
 
       std::vector<double>* valVec = &mInitialValueMap[mCurrentFolderId];
       std::vector<double>::iterator itVal = valVec->begin();
+      std::vector<double>::iterator itValEnd = valVec->end();
 
       while (it != end)
         {
@@ -377,16 +383,17 @@ SliderDialog::deleteSlider(CopasiSlider* pSlider, ListViews::WidgetType folderId
             }
 
           ++it;
-          ++itVal;
+
+          if (itVal != itValEnd)
+            ++itVal;
         }
 
-      if (it == end)
-        {
-          return;
-        }
+      if (it != end)
+        v->erase(it);
 
-      v->erase(it);
-      valVec->erase(itVal);
+      if (itVal != itValEnd)
+        valVec->erase(itVal);
+
       mpSliderBox->layout()->removeWidget(pSlider);
       pdelete(pSlider);
       mChanged = true;

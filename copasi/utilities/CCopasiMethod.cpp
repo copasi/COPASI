@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -31,59 +36,59 @@
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/utilities/CCopasiProblem.h"
 
-#include "math/CMathContainer.h"
+#include "copasi/math/CMathContainer.h"
 
-#include "crosssection/CCrossSectionMethod.h"
-#include "elementaryFluxModes/CBitPatternMethod.h"
-#include "elementaryFluxModes/CBitPatternTreeMethod.h"
-#include "elementaryFluxModes/CEFMAlgorithm.h"
-// #include "elementaryFluxModes/CSSAMethod.h"
-#include "lna/CLNAMethod.h"
-// #include "lyap/CLyapMethod.h"
-#include "lyap/CLyapWolfMethod.h"
-#include "moieties/CMoietiesMethod.h"
-#include "optimization/COptMethodCoranaWalk.h"
-#include "optimization/COptMethodDE.h"
-#include "optimization/COptMethodEP.h"
-#include "optimization/COptMethodGA.h"
-#include "optimization/COptMethodGASR.h"
-#include "optimization/COptMethodHookeJeeves.h"
-#include "optimization/COptMethodLevenbergMarquardt.h"
-#include "optimization/COptMethodNelderMead.h"
-#include "optimization/COptMethodPS.h"
-#include "optimization/COptMethodPraxis.h"
-#include "optimization/COptMethodSA.h"
-#include "optimization/COptMethodSRES.h"
-#include "optimization/COptMethodSS.h"
-#include "optimization/COptMethodStatistics.h"
-#include "optimization/COptMethodSteepestDescent.h"
-#include "optimization/COptMethodTruncatedNewton.h"
-#include "optimization/COptMethodNL2SOL.h"
-#include "optimization/CRandomSearch.h"
+#include "copasi/crosssection/CCrossSectionMethod.h"
+#include "copasi/elementaryFluxModes/CBitPatternMethod.h"
+#include "copasi/elementaryFluxModes/CBitPatternTreeMethod.h"
+#include "copasi/elementaryFluxModes/CEFMAlgorithm.h"
+// #include "copasi/elementaryFluxModes/CSSAMethod.h"
+#include "copasi/lna/CLNAMethod.h"
+// #include "copasi/lyap/CLyapMethod.h"
+#include "copasi/lyap/CLyapWolfMethod.h"
+#include "copasi/moieties/CMoietiesMethod.h"
+#include "copasi/optimization/COptMethodCoranaWalk.h"
+#include "copasi/optimization/COptMethodDE.h"
+#include "copasi/optimization/COptMethodEP.h"
+#include "copasi/optimization/COptMethodGA.h"
+#include "copasi/optimization/COptMethodGASR.h"
+#include "copasi/optimization/COptMethodHookeJeeves.h"
+#include "copasi/optimization/COptMethodLevenbergMarquardt.h"
+#include "copasi/optimization/COptMethodNelderMead.h"
+#include "copasi/optimization/COptMethodPS.h"
+#include "copasi/optimization/COptMethodPraxis.h"
+#include "copasi/optimization/COptMethodSA.h"
+#include "copasi/optimization/COptMethodSRES.h"
+#include "copasi/optimization/COptMethodSS.h"
+#include "copasi/optimization/COptMethodStatistics.h"
+#include "copasi/optimization/COptMethodSteepestDescent.h"
+#include "copasi/optimization/COptMethodTruncatedNewton.h"
+#include "copasi/optimization/COptMethodNL2SOL.h"
+#include "copasi/optimization/CRandomSearch.h"
 // #include "oscillation/COscillationMethod.h"
-#include "scan/CScanMethod.h"
-#include "sensitivities/CSensMethod.h"
-#include "steadystate/CMCAMethod.h"
-#include "steadystate/CNewtonMethod.h"
-// #include "steadystate/CSteadyStateMethod.h"
-// #include "trajectory/CExpRKMethod.h"
-#include "trajectory/CHybridMethodODE45.h"
-#include "trajectory/CLsodaMethod.h"
-#include "trajectory/CRadau5Method.h"
-#include "trajectory/CStochDirectMethod.h"
-// #include "trajectory/CStochMethod.h"
-#include "trajectory/CHybridNextReactionRKMethod.h"
-#include "trajectory/CHybridNextReactionLSODAMethod.h"
-#include "trajectory/CStochNextReactionMethod.h"
-#include "trajectory/CTauLeapMethod.h"
-#include "trajectory/CTrajAdaptiveSA.h"
-#include "trajectory/CTrajectoryMethodDsaLsodar.h"
-#include "trajectory/CStochasticRungeKuttaRI5.h"
-#include "tssanalysis/CCSPMethod.h"
-#include "tssanalysis/CILDMMethod.h"
-#include "tssanalysis/CILDMModifiedMethod.h"
-#include "timesens/CTimeSensLsodaMethod.h"
-// #include "tssanalysis/CTSSAMethod.h"
+#include "copasi/scan/CScanMethod.h"
+#include "copasi/sensitivities/CSensMethod.h"
+#include "copasi/steadystate/CMCAMethod.h"
+#include "copasi/steadystate/CNewtonMethod.h"
+// #include "copasi/steadystate/CSteadyStateMethod.h"
+// #include "copasi/trajectory/CExpRKMethod.h"
+#include "copasi/trajectory/CHybridMethodODE45.h"
+#include "copasi/trajectory/CLsodaMethod.h"
+#include "copasi/trajectory/CRadau5Method.h"
+#include "copasi/trajectory/CStochDirectMethod.h"
+// #include "copasi/trajectory/CStochMethod.h"
+#include "copasi/trajectory/CHybridNextReactionRKMethod.h"
+#include "copasi/trajectory/CHybridNextReactionLSODAMethod.h"
+#include "copasi/trajectory/CStochNextReactionMethod.h"
+#include "copasi/trajectory/CTauLeapMethod.h"
+#include "copasi/trajectory/CTrajAdaptiveSA.h"
+#include "copasi/trajectory/CTrajectoryMethodDsaLsodar.h"
+#include "copasi/trajectory/CStochasticRungeKuttaRI5.h"
+#include "copasi/tssanalysis/CCSPMethod.h"
+#include "copasi/tssanalysis/CILDMMethod.h"
+#include "copasi/tssanalysis/CILDMModifiedMethod.h"
+#include "copasi/timesens/CTimeSensLsodaMethod.h"
+// #include "copasi/tssanalysis/CTSSAMethod.h"
 
 //static
 CCopasiMethod * CCopasiMethod::createMethod(const CDataContainer * pParent,
@@ -177,11 +182,11 @@ CCopasiMethod * CCopasiMethod::createMethod(const CDataContainer * pParent,
       case CTaskEnum::Method::deterministic:
         pMethod = new CLsodaMethod(pParent, methodType, taskType);
         break;
-            
+
       case CTaskEnum::Method::RADAU5:
         pMethod = new CRadau5Method(pParent, methodType, taskType);
         break;
-            
+
       case CTaskEnum::Method::directMethod:
         pMethod = new CStochDirectMethod(pParent, methodType, taskType);
         break;
@@ -277,11 +282,11 @@ CCopasiMethod * CCopasiMethod::createMethod(const CDataContainer * pParent,
       case CTaskEnum::Method::linearNoiseApproximation:
         pMethod = new CLNAMethod(pParent, methodType, taskType);
         break;
-      
+
       case CTaskEnum::Method::timeSensLsoda:
         pMethod = new CTimeSensLsodaMethod(pParent, methodType, taskType);
         break;
-   }
+    }
 
   return pMethod;
 }
@@ -304,6 +309,21 @@ CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
   mpContainer(src.mpContainer),
   mpCallBack(src.mpCallBack)
 {}
+
+CCopasiMethod & CCopasiMethod::operator=(const CCopasiMethod & rhs)
+{
+  CCopasiParameterGroup::operator=(rhs);
+
+  // Check for assignment to itself
+  if (this == &rhs) return *this;
+
+  mTaskType = rhs.mTaskType;
+  mSubType = rhs.mSubType;
+  mpContainer = rhs.mpContainer;
+  mpCallBack = rhs.mpCallBack;
+
+  return *this;
+}
 
 CCopasiMethod::~CCopasiMethod() {}
 

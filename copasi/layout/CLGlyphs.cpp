@@ -34,7 +34,7 @@
 
 #include "CLGlyphs.h"
 
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/undo/CData.h"
 

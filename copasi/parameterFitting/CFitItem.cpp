@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,13 +25,13 @@
 #include <limits>
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CFitItem.h"
 
-#include "report/CKeyFactory.h"
-#include "utilities/CCopasiParameterGroup.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 
 CFitItem::CFitItem(const CDataContainer * pParent,

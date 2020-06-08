@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,33 +29,33 @@
 //
 // Converted for COPASI by Stefan Hoops
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include <algorithm>
 #include <stdio.h>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "CReaction.h"
 #include "CReactionInterface.h"
 #include "CCompartment.h"
 #include "CModel.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/CNodeIterator.h"
-#include "utilities/utility.h"
-#include "function/CFunctionDB.h"
+#include "copasi/utilities/CReadConfig.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/CNodeIterator.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/function/CFunctionDB.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 #include "CMetabNameInterface.h"
 #include "CChemEqInterface.h" //only for load()
 #include "CChemEqElement.h"
-#include "function/CExpression.h"
+#include "copasi/function/CExpression.h"
 #include "copasi/core/CRootContainer.h"
 #include "sbml/Species.h"
 #include "sbml/Parameter.h"
 #include "sbml/Compartment.h"
-#include "sbml/SBMLImporter.h"
+#include "copasi/sbml/SBMLImporter.h"
 
 // static
 CEnumAnnotation< std::string, CReaction::KineticLawUnit > CReaction::KineticLawUnitTypeName(
@@ -240,6 +240,7 @@ bool CReaction::applyData(const CData & data, CUndoData::CChangeSet & changes)
   if (data.isSetProperty(CData::KINETIC_LAW_UNIT_TYPE))
     {
       setKineticLawUnitType(CReaction::KineticLawUnitTypeName.toEnum(data.getProperty(CData::KINETIC_LAW_UNIT_TYPE).toString()));
+      compileModel = true;
     }
 
   if (data.isSetProperty(CData::SCALING_COMPARTMENT))
@@ -1254,7 +1255,7 @@ void CReaction::initObjects()
 
 std::string CReaction::getDefaultNoiseExpression() const
 {
-  return "sign(<" + mpParticleFluxReference->getCN() + ">)*sqrt(abs(<" + mpParticleFluxReference->getCN() + ">))";
+  return "sqrt(abs(<" + mpParticleFluxReference->getCN() + ">))";
 }
 
 bool CReaction::setNoiseExpression(const std::string & expression)

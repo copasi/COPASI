@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -15,7 +15,7 @@
 
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "copasi/utilities/CUnitComponent.h"
 
 CUnitComponent::CUnitComponent(CBaseUnit::Kind kind,
@@ -93,7 +93,7 @@ bool CUnitComponent::operator==(const CUnitComponent& rightSide) const
 
 bool CUnitComponent::isValid() const
 {
-  return (!(isnan(mExponent) || isnan(mScale) || isnan(mScale)));
+  return (!(std::isnan(mExponent) || std::isnan(mScale) || std::isnan(mScale)));
 }
 
 // friend

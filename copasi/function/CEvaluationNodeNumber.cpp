@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,10 +27,10 @@
 #include <stdlib.h>
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CEvaluationNode.h"
-#include "utilities/utility.h"
-#include "utilities/CValidatedUnit.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/utilities/CValidatedUnit.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -141,7 +146,7 @@ CEvaluationNode * CEvaluationNodeNumber::fromAST(const ASTNode * pASTNode, const
             pNode = new CEvaluationNodeFunction(SubType::MINUS, "-");
             pNode->addChild(new CEvaluationNodeConstant(SubType::Infinity, "INFINITY"));
           }
-        else if (isnan(pASTNode->getReal()))
+        else if (std::isnan(pASTNode->getReal()))
           {
             pNode = new CEvaluationNodeConstant(SubType::NaN, "NAN");
           }
@@ -174,7 +179,7 @@ CEvaluationNode * CEvaluationNodeNumber::fromAST(const ASTNode * pASTNode, const
             pNode = new CEvaluationNodeFunction(SubType::MINUS, "-");
             pNode->addChild(new CEvaluationNodeConstant(SubType::Infinity, "INFINITY"));
           }
-        else if (isnan(pASTNode->getReal()))
+        else if (std::isnan(pASTNode->getReal()))
           {
             pNode = new CEvaluationNodeConstant(SubType::NaN, "NAN");
           }
@@ -267,7 +272,7 @@ ASTNode* CEvaluationNodeNumber::toAST(const CDataModel* /* pDataModel */) const
   return node;
 }
 
-#include "utilities/copasimathml.h"
+#include "copasi/utilities/copasimathml.h"
 
 // virtual
 std::string CEvaluationNodeNumber::getMMLString(const std::vector< std::string > & /* children */,

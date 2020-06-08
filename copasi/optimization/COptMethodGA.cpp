@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -30,17 +30,17 @@
 # include <fstream>
 #endif
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "COptMethodGA.h"
 #include "COptProblem.h"
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "randomGenerator/CRandom.h"
-#include "randomGenerator/CPermutation.h"
-#include "utilities/CProcessReport.h"
-#include "utilities/CSort.h"
+#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CPermutation.h"
+#include "copasi/utilities/CProcessReport.h"
+#include "copasi/utilities/CSort.h"
 #include "copasi/core/CDataObjectReference.h"
 
 COptMethodGA::COptMethodGA(const CDataContainer * pParent,
@@ -539,7 +539,7 @@ bool COptMethodGA::optimise()
   Continue &= evaluate(*mIndividuals[0]);
   mValues[0] = mEvaluationValue;
 
-  if (!isnan(mEvaluationValue))
+  if (!std::isnan(mEvaluationValue))
     {
       // and store that value
       mBestValue = mValues[0];

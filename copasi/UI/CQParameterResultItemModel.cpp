@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -173,12 +178,6 @@ CQParameterResultItemModel::data(const QModelIndex & index, int role) const
 QVariant
 CQParameterResultItemModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-  if (role == Qt::SizeHintRole && orientation == Qt::Horizontal)
-    {
-      QSize initial = QAbstractTableModel::headerData(section, orientation, role).toSize();
-      return QSize(section == CoeffOfVariation ? 130 : 80, 20);
-    }
-
   if (role != Qt::DisplayRole)
     return QVariant();
 

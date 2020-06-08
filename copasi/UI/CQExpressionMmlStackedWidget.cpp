@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,18 +24,18 @@
 #include <QPainter>
 #include <QPrinter>
 
-#include "utilities/CCopasiException.h"
+#include "copasi/utilities/CCopasiException.h"
 
 #include "CQMessageBox.h"
 #include "qtUtilities.h" // for UTF8
 #include "CopasiFileDialog.h"
-#include "tex/CMathMLToTeX.h"
-#include "commandline/CLocaleString.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/tex/CMathMLToTeX.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
 #include <fstream>
 
-#include <utilities/CCopasiMessage.h>
+#include <copasi/utilities/CCopasiMessage.h>
 // turns out that the fatalError definition in copasi message is incompatible
 // with the mml widget
 #undef fatalError
@@ -61,8 +61,6 @@ CQExpressionMmlStackedWidget::CQExpressionMmlStackedWidget(QWidget* parent)
   mpBtnViewExpression->setIcon(CQIconResource::icon(CQIconResource::renderMathML));
   mpBtnEditExpression->setIcon(CQIconResource::icon(CQIconResource::edit));
   mpBtnSaveExpression->setIcon(CQIconResource::icon(CQIconResource::fileExport));
-
-  mpMmlScrollView->setStyleSheet(QString(mpMmlScrollView->widget()->metaObject()->className()) + "{background-color:" + QColor(Qt::white).name() + ";}");
 
 #ifdef WIN32
   // on windows there ought to be a border around the MML widget

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -12,16 +17,16 @@
  *  Created by Paul Willy on 08/05/11.
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CQOscillationTaskWidget.h"
 #include "listviews.h"
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
 /*
-#include "crosssection/CCrossSectionTask.h"
-#include "crosssection/CCrossSectionProblem.h"
-#include "crosssection/CCrossSectionMethod.h"
+#include "copasi/crosssection/CCrossSectionTask.h"
+#include "copasi/crosssection/CCrossSectionProblem.h"
+#include "copasi/crosssection/CCrossSectionMethod.h"
  */
 /*
  *  Constructs a CQCrossSectionWidget which is a child of 'parent', with the
@@ -72,10 +77,6 @@ bool CQOscillationTaskWidget::saveTaskProtected()
 
     if (!pTask) return false;
 
-    // save functions from the Parent, TaskWidget
-    saveCommon();
-    saveMethod();
-
     // check the existence of Problem
     CCrossSectionProblem* pProblem =
       dynamic_cast<CCrossSectionProblem *>(pTask->getProblem());
@@ -106,10 +107,6 @@ bool CQOscillationTaskWidget::loadTaskProtected()
       dynamic_cast< CCrossSectionTask * >(mpTask);
 
     if (!pTask) return false;
-
-    // load functions from the Parent, TaskWidget
-    loadCommon();
-    loadMethod();
 
     // load Problem
     CCrossSectionProblem* pProblem =

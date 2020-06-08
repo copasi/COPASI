@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+<comment> Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> University of Virginia, University of Heidelberg, and University </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
 <comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and University of </comment>
 <comment> of Connecticut School of Medicine. </comment>
@@ -27,7 +32,7 @@
     <x>0</x>
     <y>0</y>
     <width>464</width>
-    <height>526</height>
+    <height>561</height>
    </rect>
   </property>
   <property name="caption" stdset="0">
@@ -409,7 +414,7 @@
        <property name="currentIndex">
         <number>0</number>
        </property>
-       <widget class="QListWidget" name="mpTableList">
+       <widget class="CQTableWidget" name="mpTableList">
         <property name="contextMenuPolicy">
          <enum>Qt::ActionsContextMenu</enum>
         </property>
@@ -435,7 +440,7 @@
          <string>Table</string>
         </attribute>
        </widget>
-       <widget class="QListWidget" name="mpHeaderList">
+       <widget class="CQTableWidget" name="mpHeaderList">
         <property name="contextMenuPolicy">
          <enum>Qt::ActionsContextMenu</enum>
         </property>
@@ -461,7 +466,7 @@
          <string>Header</string>
         </attribute>
        </widget>
-       <widget class="QListWidget" name="mpBodyList">
+       <widget class="CQTableWidget" name="mpBodyList">
         <property name="contextMenuPolicy">
          <enum>Qt::ActionsContextMenu</enum>
         </property>
@@ -487,7 +492,7 @@
          <string>Body</string>
         </attribute>
        </widget>
-       <widget class="QListWidget" name="mpFooterList">
+       <widget class="CQTableWidget" name="mpFooterList">
         <property name="contextMenuPolicy">
          <enum>Qt::ActionsContextMenu</enum>
         </property>
@@ -654,6 +659,11 @@
    <extends>QWidget</extends>
    <header>copasi/UI/CQNotes.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CQTableWidget</class>
+   <extends>QTableWidget</extends>
+   <header>copasi/UI/CQTableWidget.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

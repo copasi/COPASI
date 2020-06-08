@@ -1,45 +1,47 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphCurve.cpp,v $
-//   $Revision: 1.19 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:29:15 $
-// End CVS Header
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <algorithm>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CGraphCurve.h"
 #include "BezierCurve.h"
 CGraphCurve::CGraphCurve()
-    : CLCurve()
+  : CLCurve()
 {
   mHasArrow = false;
 }
 
 CGraphCurve::CGraphCurve(const CLCurve & c)
-    : CLCurve(c)
+  : CLCurve(c)
 {
   mHasArrow = false;
 }
 
 CGraphCurve::CGraphCurve(const CGraphCurve & c)
-    : CLCurve(c)
+  : CLCurve(c)
 {
   mHasArrow = c.mHasArrow;
   mArrow = c.mArrow;
@@ -82,7 +84,8 @@ void CGraphCurve::invertOrderOfPoints()
   std::reverse(mvCurveSegments.begin(), mvCurveSegments.end());
 
   if (mHasArrow)
-    {// exchange line segment and end point
+    {
+      // exchange line segment and end point
       CLLineSegment lastSeg = mvCurveSegments[mvCurveSegments.size() - 1];
       CLPoint p = lastSeg.getEnd();
 

@@ -13,30 +13,30 @@
 // of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CQSimpleSelectionTree.h"
-#include "model/CModel.h"
-#include "model/CMetab.h"
-#include "model/CReaction.h"
-#include "utilities/CCopasiParameter.h"
-#include "utilities/CCopasiParameterGroup.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/utilities/CCopasiParameter.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
 #include "copasi/core/CDataObject.h"
 #include "copasi/core/CDataContainer.h"
-#include "core/CDataTimer.h"
-#include "core/CRegisteredCommonName.h"
+#include "copasi/core/CDataTimer.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "qtUtilities.h"
 
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "core/CDataArray.h"
-#include "utilities/CCopasiTask.h"
-#include "steadystate/CMCAMethod.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "sensitivities/CSensProblem.h"
-#include "timesens/CTimeSensProblem.h"
-#include "tssanalysis/CCSPMethod.h"
-#include "tssanalysis/CTSSATask.h"
+#include "copasi/core/CDataArray.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/steadystate/CMCAMethod.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/sensitivities/CSensProblem.h"
+#include "copasi/timesens/CTimeSensProblem.h"
+#include "copasi/tssanalysis/CCSPMethod.h"
+#include "copasi/tssanalysis/CTSSATask.h"
 
 CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget *parent):
   QTreeWidget(parent), mpOutputVector(NULL)

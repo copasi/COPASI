@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -84,6 +84,16 @@ endif()
 
 project (COPASI VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 
+set (CONAN_INFO)
+if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
+set (CONAN_INFO ${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
+elseif (EXISTS ${CMAKE_BINARY_DIR}/../conanbuildinfo.cmake)
+set (CONAN_INFO ${CMAKE_BINARY_DIR}/../conanbuildinfo.cmake)
+endif()
+if (CONAN_INFO)
+include(${CONAN_INFO})
+conan_basic_setup(SKIP_STD)
+endif()
 
 include (CMakeTestCCompiler)
 include (CheckCSourceCompiles)
@@ -159,8 +169,9 @@ if (COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
 include(cmake-set-dependencies.cmake)
 endif(COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
 
-
-
+if (EXISTS ${CMAKE_BINARY_DIR}/conan_paths.cmake)
+include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
+endif()
 set(CMAKE_MODULE_PATH "${COPASI_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
 IF(DEFINED CMAKE_BUILD_TYPE)
@@ -257,7 +268,7 @@ if (ENABLE_FLEX_BISON)
   set(BISON_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/yacc.sh")
 endif (ENABLE_FLEX_BISON)
 
-option(ENABLE_GPROF "Enable comiling and linking for gprof analysis." OFF)
+option(ENABLE_GPROF "Enable compiling and linking for gprof analysis." OFF)
 if (ENABLE_GPROF)
   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-pg")
   set(CMAKE_EXE_LINKER_FLAGS "-pg")
@@ -308,6 +319,7 @@ include_directories(BEFORE ${dir})
 endforeach()
 endif()
 
+SET(COPASI_INCLUDE_DIRS ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 
 if (WIN32)
 add_definitions(-DLIBSEDML_STATIC)
@@ -396,6 +408,10 @@ if(BUILD_GUI)
     FIND_LIBRARY(OPENGL_gl_LIBRARY NAMES GL PATHS /usr/lib/x86_64-linux-gnu/mesa)
   endif (UNIX AND NOT APPLE)
 
+  if(POLICY CMP0072)
+    cmake_policy(SET CMP0072 OLD)
+  endif(POLICY CMP0072)
+
   find_package(OpenGL REQUIRED)
 
   include(${CMAKE_CURRENT_SOURCE_DIR}/ChooseQtVersion.cmake)
@@ -471,16 +487,16 @@ if(BUILD_GUI)
   # find Qt4
   #find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui QtXml QtWebKit QtNetwork)
   # check for qwt, TODO check if the version is OK
-  find_package(QwtQt4 REQUIRED)
+  find_package(QWT REQUIRED)
   # check for qwtplot3d
-  find_package(Qwtplot3dQt4 REQUIRED)
+  find_package(QWTPLOT3D REQUIRED)
 
   # if the MML widget is available, we need to enable "HAVE_MML"
 
   option(ENABLE_MML "Enable the MML widget" ON)
 
   if(ENABLE_MML)
-    find_package(QtMmlQt4 REQUIRED)
+    find_package(MML REQUIRED)
   endif(ENABLE_MML)
 
   # check for sbw
@@ -724,7 +740,13 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     endif ()
 endif ()
 
-set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_CURRENT_BINARY_DIR};/.git/;/.svn/;/.libs/;/.deps/;/.bzr/;/.o$/;/.lo$/;/.la$/;${CPACK_SOURCE_IGNORE_FILES};/.DS_Store;/.svnignore;blib;libsbml-dist;/gps/;CopasiWS;userdocs;docs")
+set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_CURRENT_BINARY_DIR};/.git/;/.svn/;/.libs/;/.deps/;/.bzr/;/.o$/;/.lo$/;/.la$/;/.vs/;/.vscode/;/dist/;/build/;${CPACK_SOURCE_IGNORE_FILES};/.DS_Store;/.svnignore;blib;libsbml-dist;/gps/;CopasiWS;userdocs;docs")
+
+list (APPEND CPACK_SOURCE_IGNORE_FILES "/.*\\\\.tmp")
+list (APPEND CPACK_SOURCE_IGNORE_FILES "/.*\\\\.bak")
+list (APPEND CPACK_SOURCE_IGNORE_FILES "/.*\\\\.egg-info")
+list (APPEND CPACK_SOURCE_IGNORE_FILES "/build_.*")
+list (APPEND CPACK_SOURCE_IGNORE_FILES "/install_.*")
 
 if(UNIX)
     set(CPACK_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")

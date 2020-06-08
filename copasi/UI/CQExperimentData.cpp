@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -35,7 +40,7 @@
 #include "CQValidator.h"
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 #include "CQPushButtonDelegate.h"
 #include "CQComboDelegate.h"
 
@@ -521,7 +526,7 @@ void CQExperimentData::slotFileAdd()
     CopasiFileDialog::getOpenFileName(this,
                                       "Open File Dialog",
                                       "",
-                                      "Data Files (*.txt *.csv);;All Files (*)",
+                                      "Data Files (*.txt *.csv *.tsv);;All Files (*)",
                                       "Open Data Files");
 
   if (File.isNull()) return;
@@ -615,7 +620,7 @@ void CQExperimentData::slotFileEdit()
     CopasiFileDialog::getOpenFileName(this,
                                       "Replace File Dialog",
                                       FROM_UTF8(oldFileName),
-                                      "Data Files (*.txt *.csv);;All Files (*)",
+                                      "Data Files (*.txt *.csv *.tsv);;All Files (*)",
                                       "Replace Data File");
 
   if (newFile.isNull()) return;
@@ -1344,7 +1349,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
           QString ScaleText;
           Qt::ItemFlags FlagMask = Qt::NoItemFlags;
 
-          if ((isnan(DefaultScale) && isnan(Scale)) ||
+          if ((std::isnan(DefaultScale) && std::isnan(Scale)) ||
               DefaultScale == Scale)
             ScaleText = "(" + convertToQString(DefaultScale) + ")";
           else
@@ -1357,8 +1362,11 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
   setTypeItems(TimeRow);
 
-  mpTable->resizeColumnsToContents();
-  mpTable->resizeRowsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTable->resizeColumnsToContents();
+      mpTable->resizeRowsToContents();
+    }
 }
 
 void CQExperimentData::slotTypeChanged(int row, int index)

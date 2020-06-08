@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -10,51 +15,51 @@
 #ifndef COPASI_MODEL_TYPES_H
 #define COPASI_MODEL_TYPES_H
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "core/CRootContainer.h"
-#include "core/CDataObject.h"
-#include "core/CDataObjectReference.h"
-#include "core/CDataContainer.h"
-#include "core/CCore.h"
-#include "core/CArray.h"
-#include "core/CArrayElementReference.h"
-#include "core/CRegisteredCommonName.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/core/CDataObject.h"
+#include "copasi/core/CDataObjectReference.h"
+#include "copasi/core/CDataContainer.h"
+#include "copasi/core/CCore.h"
+#include "copasi/core/CArray.h"
+#include "copasi/core/CArrayElementReference.h"
+#include "copasi/core/CRegisteredCommonName.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 
 #include "copasi/math/CMathContainer.h"
 #include "copasi/math/CMathObject.h"
 #include "copasi/math/CMathEvent.h"
 
-#include "model/CModel.h"
-#include "model/CCompartment.h"
-#include "model/CMetab.h"
-#include "model/CEvent.h"
-#include "model/CReaction.h"
-#include "model/CReactionInterface.h"
-#include "model/CModelValue.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CEvent.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/model/CModelValue.h"
 
-#include "model/CModelParameter.h"
-#include "model/CModelParameterGroup.h"
-#include "model/CModelParameterSet.h"
+#include "copasi/model/CModelParameter.h"
+#include "copasi/model/CModelParameterGroup.h"
+#include "copasi/model/CModelParameterSet.h"
 
-#include "utilities/CCopasiTask.h"
-#include "utilities/CCopasiProblem.h"
-#include "utilities/CCopasiMethod.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/utilities/CCopasiMethod.h"
 
-#include "randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CRandom.h"
 
-#include "report/COutputAssistant.h"
+#include "copasi/report/COutputAssistant.h"
 
-#include "report/CReport.h"
-#include "report/CReportBody.h"
-#include "report/CReportDefinition.h"
-#include "report/CReportDefinitionVector.h"
+#include "copasi/report/CReport.h"
+#include "copasi/report/CReportBody.h"
+#include "copasi/report/CReportDefinition.h"
+#include "copasi/report/CReportDefinitionVector.h"
 
-#include "plot/CPlotItem.h"
-#include "plot/CPlotColors.h"
-#include "plot/CPlotSpecification.h"
-#include "plot/COutputDefinitionVector.h"
+#include "copasi/plot/CPlotItem.h"
+#include "copasi/plot/CPlotColors.h"
+#include "copasi/plot/CPlotSpecification.h"
+#include "copasi/plot/COutputDefinitionVector.h"
 
 #endif // COPASI_MODEL_TYPES_H

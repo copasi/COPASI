@@ -24,16 +24,16 @@
 
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "COptMethodEP.h"
 #include "COptProblem.h"
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CRandom.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "utilities/CSort.h"
+#include "copasi/utilities/CSort.h"
 
 COptMethodEP::COptMethodEP(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,

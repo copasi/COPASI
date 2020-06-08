@@ -1,21 +1,26 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  File name: CEigen.cpp
@@ -40,16 +45,16 @@
 #include <cmath>
 #include <complex>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CEigen.h"
 
 #include "copasi/core/CDataObjectReference.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CSort.h"
+#include "copasi/utilities/CReadConfig.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CSort.h"
 
-#include "lapack/lapackwrap.h"        //use CLAPACK
+#include "copasi/lapack/lapackwrap.h"        //use CLAPACK
 
 /**
  * Default constructor
@@ -265,7 +270,7 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
     {
       *pA = *pMatrix;
 
-      if (!std::isfinite(*pA) && !isnan(*pA))
+      if (!std::isfinite(*pA) && !std::isnan(*pA))
         {
           if (*pA > 0)
             *pA = std::numeric_limits< C_FLOAT64 >::max();
@@ -764,6 +769,15 @@ std::ostream &operator<<(std::ostream &os, const CEigen &A)
   // Output Eigne-stiffness
   os << " stiffness = " << A.mStiffness << std::endl;
   os << " time hierarchy = " << A.mHierarchy << std::endl;
+
+  os << std::endl;
+  os << "Fold bifurcaton test functions (standard, bifurcation discovery tool): " << A.mBifurcationIndicator_Fold
+     << ", " << A.mBifurcationIndicator_Fold_BDT <<  std::endl;
+  os << "Hopf bifurcaton test functions (standard, bifurcation discovery tool): " << A.mBifurcationIndicator_Hopf
+     << ", " << A.mBifurcationIndicator_Hopf_BDT <<  std::endl;
+
+  os << std::endl;
+  os << "Oscillation indicator: " << A.mOscillationIndicator_EV  << std::endl;
 
   return os;
 }

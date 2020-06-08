@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -10,7 +15,7 @@
 
 #include <limits>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CMathEnum.h"
 #include "CMathEvent.h"
@@ -18,23 +23,15 @@
 #include "CMathExpression.h"
 #include "CMathEventQueue.h"
 
-#include "model/CMetab.h"
-#include "model/CCompartment.h"
-#include "model/CModel.h"
-#include "model/CEvent.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CEvent.h"
 
-#include "function/CFunction.h"
+#include "copasi/function/CFunction.h"
 #include "copasi/core/CRootContainer.h"
-#include "utilities/CNodeIterator.h"
-#include "utilities/CCallback.h"
-
-#ifdef _MSC_VER
-namespace std
-{
-//bool isnan(double d) {return d != d;}
-extern bool isnan(double d);
-}
-#endif
+#include "copasi/utilities/CNodeIterator.h"
+#include "copasi/utilities/CCallback.h"
 
 // Uncomment this line below to get numeric debug print out.
 // #define DEBUG_OUTPUT 1
@@ -193,7 +190,7 @@ void CMathEvent::CTrigger::CRootProcessor::toggle(const C_FLOAT64 & time,
   // value of the root expression changes sign. In that case it is save
   // to toggle the state.
 
-  if (!isnan(mLastToggleTime) &&
+  if (!std::isnan(mLastToggleTime) &&
       mLastToggleTime == time)
     {
       return;
@@ -1644,7 +1641,7 @@ C_FLOAT64 CMathEvent::getCalculationTime() const
   mpContainer->applyUpdateSequence(mDelaySequence);
 
   if (mDelayExecution ||
-      isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
+      std::isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
     {
       return *mpTime;
     }
@@ -1657,7 +1654,7 @@ C_FLOAT64 CMathEvent::getExecutionTime() const
   mpContainer->applyUpdateSequence(mDelaySequence);
 
   if (!mDelayExecution ||
-      isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
+      std::isnan(* (C_FLOAT64 *) mpDelay->getValuePointer()))
     {
       return *mpTime;
     }

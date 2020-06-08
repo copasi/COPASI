@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,8 +21,8 @@
 #include "CQFluxModeDM.h"
 #include "qtUtilities.h"
 
-#include "elementaryFluxModes/CEFMTask.h"
-#include "elementaryFluxModes/CFluxMode.h"
+#include "copasi/elementaryFluxModes/CEFMTask.h"
+#include "copasi/elementaryFluxModes/CFluxMode.h"
 
 CQFluxModeDM::CQFluxModeDM(QObject *parent):
   CQBaseDataModel(parent, NULL),
@@ -26,12 +31,17 @@ CQFluxModeDM::CQFluxModeDM(QObject *parent):
   mModesSize(0)
 {}
 
-int CQFluxModeDM::rowCount(const QModelIndex & C_UNUSED(parent)) const
+size_t CQFluxModeDM::size() const
 {
-  if (mpTask == NULL)
-    return 0;
+  if (mpTask != NULL)
+    return mModesSize;
 
-  return (int) mModesSize;
+  return 0;
+}
+
+int CQFluxModeDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched;
 }
 
 int CQFluxModeDM::columnCount(const QModelIndex & C_UNUSED(parent)) const

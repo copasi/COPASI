@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -10,17 +15,17 @@
 
 #include "BandedGraphWidget.h"
 
-#include "UI/CCopasiSelectionDialog.h"
-#include "UI/qtUtilities.h"
+#include "copasi/UI/CCopasiSelectionDialog.h"
+#include "copasi/UI/qtUtilities.h"
 #include "CQPlotEditWidget.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "copasi/core/CRootContainer.h"
 #include "copasi/model/CModel.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
-#include "plot/CPlotItem.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/plot/CPlotItem.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
 /**
  * In multiple edit mode, we don't want to edit name & channels
@@ -148,49 +153,54 @@ BandedGraphWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original 
 
   if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
 
-  bool thingsChanged = false;
+  bool changed = false;
 
-  if (original != NULL)
+  // compare whether things changed
+  if (original == NULL
+      || original->getTitle() != title)
     {
-      // compare whether things changed
-      if (original->getTitle() != title)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getType() != CPlotItem::bandedGraph)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getActivity() != Activity)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getChannels().size() != 3)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getChannels()[0] != xName)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getChannels()[1] != yName1)
-        thingsChanged = true;
-
-      if (thingsChanged || original->getChannels()[2] != yName2)
-        thingsChanged = true;
+      changed = true;
+      curve->setTitle(title);
     }
-  else thingsChanged = true;
 
-  if (!thingsChanged)
-    return false;
+  if (original == NULL
+      || original->getType() != CPlotItem::bandedGraph
+      || original->getChannels().size() != 3)
+    {
+      changed = true;
+      curve->setType(CPlotItem::bandedGraph);
+      curve->getChannels().resize(3);
+    }
 
-  //title
-  curve->setTitle(title);
+  if (original == NULL
+      || original->getActivity() != Activity)
+    {
+      changed = true;
+      curve->setActivity((COutputInterface::Activity) Activity);
+    }
 
-  //channels
-  curve->getChannels().clear();
-  curve->getChannels().push_back(CPlotDataChannelSpec(xName));
-  curve->getChannels().push_back(CPlotDataChannelSpec(yName1));
-  curve->getChannels().push_back(CPlotDataChannelSpec(yName2));
+  if (original == NULL
+      || original->getChannels()[0] != xName)
+    {
+      changed = true;
+      curve->getChannels()[0] = CPlotDataChannelSpec(xName);
+    }
 
-  curve->setActivity((COutputInterface::Activity) Activity);
+  if (original == NULL
+      || original->getChannels()[1] != yName1)
+    {
+      changed = true;
+      curve->getChannels()[1] = CPlotDataChannelSpec(yName1);
+    }
 
-  return true;
+  if (original == NULL
+      || original->getChannels()[2] != yName2)
+    {
+      changed = true;
+      curve->getChannels()[2] = CPlotDataChannelSpec(yName2);
+    }
+
+  return changed;
 }
 
 void

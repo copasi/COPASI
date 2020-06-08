@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,23 +26,23 @@
 
 #include <math.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CCSPMethod.h"
 
 #include "copasi/core/CMatrix.h"
 #include "CTSSAProblem.h"
 #include "CTSSATask.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModel.h"
-#include "math/CMathContainer.h"
-#include "core/CDataArray.h"
+#include "copasi/model/CModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/core/CDataArray.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "trajectory/CLsodaMethod.h"
+#include "copasi/trajectory/CLsodaMethod.h"
 
-#include "lapack/lapackwrap.h"        // CLAPACK
-#include "lapack/blaswrap.h"           // BLAS
+#include "copasi/lapack/lapackwrap.h"        // CLAPACK
+#include "copasi/lapack/blaswrap.h"           // BLAS
 
 CCSPMethod::CCSPMethod(const CDataContainer * pParent,
                        const CTaskEnum::Method & methodType,
@@ -76,13 +81,16 @@ void CCSPMethod::initializeParameter()
 void CCSPMethod::smmult(const CMatrix< C_FLOAT64 > & A, const CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & C, C_INT n1, C_INT n2, C_INT n3)
 {
   C_INT i, j, k;
+
   for (i = 0; i < n1 ; i++)
     for (j = 0; j < n3; j++)
       {
         C(i, j) = 0.;
+
         for (k = 0; k < n2; k++)
           C(i, j) += A(i, k) * B(k, j);
       }
+
   return;
 }
 
@@ -212,6 +220,7 @@ void CCSPMethod::sminverse(C_INT n, const CMatrix< C_FLOAT64 > & A, CMatrix< C_F
   TMP = A;
 
   C_INT i, j;
+
   for (i = 0; i < n; i++)
     for (j = 0; j < n; j++)
       B(i, j) = 0.;
@@ -331,12 +340,14 @@ void CCSPMethod::findCandidatesNumber(C_INT & n, C_INT & k, CVector< C_FLOAT64 >
           if (tmp > 0 && tmp < mEps)
             {
               k++;
+
               if (i)
                 if (eigen[i] == eigen[i - 1]) k++;
             }
           else
             {
               if (tmp < 0) info = 1;
+
               //if (tmp >= mEps) k++;
               break;
             }
@@ -446,12 +457,15 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
 #ifdef CSPDEBUG
   std::cout << "CSP iteration:  " << std::endl;
   std::cout << "Eigen values ordered by increasing " << std::endl;
+
   for (i = 0; i < N; i++)
     std::cout << "eigen[" << i << "]  " << eigen[i] << std::endl;
 
   std::cout << "time scales :  " << std::endl;
+
   for (i = 0; i < N; i++)
     std::cout << fabs(tsc[i]) << std::endl;
+
 #endif
 
   /* find the number of candidate to fast   */
@@ -510,6 +524,7 @@ analyseMmodes:
   CMatrix<C_FLOAT64> ALAM(M, M);
   TAUM = 0;
   ALAM = 0;
+
   for (i = 0; i < M; i++)
     for (j = 0; j < M; j++)
       ALAM(i, j) = ALA(i, j);
@@ -777,6 +792,7 @@ C_INT CCSPMethod::isBlockDiagonal(C_INT N, C_INT M, const CMatrix< C_FLOAT64 > &
         }
 
 #if 1
+
   /* step #2: lower-left block */
   for (i = M; i < N; i++)
     for (j = 0 ; j < M; j++)
@@ -805,6 +821,7 @@ C_INT CCSPMethod::isBlockDiagonal(C_INT N, C_INT M, const CMatrix< C_FLOAT64 > &
 void CCSPMethod::emptyOutputData(C_INT N, C_INT M, C_INT R)
 {
   C_INT i, m, r;
+
   for (m = 0; m < M; m++)
     for (i = 0; i < N; i++)
       {
@@ -1412,16 +1429,19 @@ void CCSPMethod::CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLO
 void CCSPMethod::modesAmplitude(C_INT N, const CVector< C_FLOAT64 > & g, const CMatrix< C_FLOAT64 > & B, CMatrix< C_FLOAT64 > & F)
 {
   C_INT i, j;
+
   /* evaluate amplitudes */
   for (i = 0; i < N; i++)
     {
       F(i, 0) = 0.;
+
       for (j = 0; j < N; j++)
         for (j = 0; j < N; j++)
           {
             F(i, 0) += B(i, j) * g[j];
           }
     }
+
   return;
 }
 
@@ -1538,9 +1558,11 @@ bool CCSPMethod::modesAreExhausted(C_INT N, C_INT M, C_FLOAT64 & tauM, C_FLOAT64
       for (i = 0; i < N; i++)
         {
           tmp = fabs(A(i, j) * F(j, 0) * tauM);
+
           if (tmp >= mYerror[i]) exhausted = false;
         }
     }
+
   return exhausted;
 }
 

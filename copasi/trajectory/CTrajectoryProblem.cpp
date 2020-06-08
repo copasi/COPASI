@@ -34,11 +34,13 @@
 #include <cmath>
 #include <string>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CTrajectoryProblem.h"
-#include "model/CModel.h"
-//#include "model/CState.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "CTrajectoryTask.h"
+#include "CTimeSeries.h"
+#include "copasi/model/CModel.h"
+//#include "copasi/model/CState.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/utilities/CParameterEstimationUtils.h"
 
@@ -262,6 +264,25 @@ void CTrajectoryProblem::load(CReadConfig & configBuffer,
     }
 }
 
+
+void CTrajectoryProblem::printResult(std::ostream* pStream) const
+{
+  if (!pStream)
+    return;
+
+  if (!timeSeriesRequested())
+    {
+      *pStream << " No time series requested, please change problem settings." << std::endl;
+    }
+
+  const CTrajectoryTask* pTask = dynamic_cast<const CTrajectoryTask*>(getObjectParent());
+
+  if (!pTask)
+    return;
+
+  pTask->getTimeSeries().save(*pStream);
+}
+
 /**
  * This function synchronizes step size and number
  */
@@ -349,7 +370,7 @@ void CTrajectoryProblem::setValues(const std::vector<C_FLOAT64>& values)
 {
   std::stringstream str;
 
-  for (C_FLOAT64 value : values)
+for (C_FLOAT64 value : values)
     {
       str << value;
     }
@@ -364,7 +385,7 @@ std::set<C_FLOAT64> CTrajectoryProblem::getValues() const
   std::vector<std::string> elems;
   ResultParser::split(*mpValueString, std::string(",; |\n\t\r"), elems);
 
-  for (std::string & number : elems)
+for (std::string & number : elems)
     {
       result.insert(ResultParser::saveToDouble(number));
     }

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -15,7 +20,9 @@
 
 #include "CQEFMListWidget.h"
 
-#include "elementaryFluxModes/CEFMTask.h"
+#include "copasi/elementaryFluxModes/CEFMTask.h"
+#include <copasi/core/CRootContainer.h>
+#include <copasi/commandline/CConfigurationFile.h>
 
 CQEFMListWidget::CQEFMListWidget(QWidget *parent, const char *name) :
   QWidget(parent),
@@ -26,11 +33,18 @@ CQEFMListWidget::CQEFMListWidget(QWidget *parent, const char *name) :
   setObjectName(QString::fromUtf8(name));
   setupUi(this);
   mpEFMTable->verticalHeader()->hide();
+
+  mpEFMTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpEFMTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpEFMTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpEFMTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpEFMTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpEFMTable->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   //Create Source Data Model.
   mpFluxModeDM = new CQFluxModeDM(this);
@@ -42,8 +56,14 @@ CQEFMListWidget::CQEFMListWidget(QWidget *parent, const char *name) :
   //Set Model for the TableView
   mpEFMTable->setModel(NULL);
   mpEFMTable->setModel(mpProxyModel);
-  mpEFMTable->resizeColumnsToContents();
-  connect(mpEditFilter, SIGNAL(textChanged(const QString &)), this, SLOT(slotFilterChanged()));
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpEFMTable->resizeColumnsToContents();
+    }
+
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
+  connect(mpLEFilter, SIGNAL(textChanged(const QString &)), this, SLOT(slotFilterChanged()));
 }
 
 CQEFMListWidget::~CQEFMListWidget()
@@ -54,18 +74,42 @@ CQEFMListWidget::~CQEFMListWidget()
 
 bool CQEFMListWidget::loadResult(const CEFMTask *pTask)
 {
+  QByteArray State = mpEFMTable->horizontalHeader()->saveState();
+  blockSignals(true);
+
   mpTask = pTask;
   mpFluxModeDM->setTask(mpTask);
   mpProxyModel->setSourceModel(mpFluxModeDM);
   //Set Model for the TableView
   mpEFMTable->setModel(NULL);
   mpEFMTable->setModel(mpProxyModel);
-  mpEFMTable->resizeColumnsToContents();
+
+  mpEFMTable->horizontalHeader()->restoreState(State);
+  blockSignals(false);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpEFMTable->resizeColumnsToContents();
+    }
+
+  emit initFilter();
+
   return true;
 }
 
 void CQEFMListWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpEditFilter->text(), Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter, Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }

@@ -15,7 +15,7 @@
 
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CQBrowserPaneDM.h"
 #include "qtUtilities.h"
@@ -23,19 +23,19 @@
 #include <QMessageBox>
 #include <QCommonStyle>
 
-#include "utilities/CCopasiTree.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "model/CModel.h"
-#include "utilities/CCopasiTask.h"
-#include "utilities/CUnit.h"
-#include "report/CReportDefinitionVector.h"
-#include "plot/COutputDefinitionVector.h"
+#include "copasi/utilities/CCopasiTree.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/utilities/CUnit.h"
+#include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/plot/COutputDefinitionVector.h"
 #include "copasi/core/CRootContainer.h"
-#include "commandline/CConfigurationFile.h"
-#include "function/CFunctionDB.h"
-#include "model/CMetabNameInterface.h"
-#include "resourcesUI/CQIconResource.h"
-#include "UI/copasiui3window.h"
+#include "copasi/commandline/CConfigurationFile.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/model/CMetabNameInterface.h"
+#include "copasi/resourcesUI/CQIconResource.h"
+#include "copasi/UI/copasiui3window.h"
 
 // static
 const CQBrowserPaneDM::sNodeInfo CQBrowserPaneDM::TreeInfo[] =

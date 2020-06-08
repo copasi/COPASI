@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -132,6 +132,7 @@ CData CAnnotation::toData() const
   CData Data;
 
   Data.addProperty(CData::Property::NOTES, mNotes);
+  Data.addProperty(CData::Property::MIRIAM_RDF_XML, mMiriamAnnotation);
 
   return Data;
 }
@@ -143,6 +144,11 @@ bool CAnnotation::applyData(const CData & data, CUndoData::CChangeSet & changes)
       mNotes = data.getProperty(CData::Property::NOTES).toString();
     }
 
+  if (data.isSetProperty(CData::Property::MIRIAM_RDF_XML))
+    {
+      mMiriamAnnotation = data.getProperty(CData::Property::MIRIAM_RDF_XML).toString();
+    }
+
   return true;
 }
 
@@ -151,12 +157,23 @@ void CAnnotation::createUndoData(CUndoData & undoData,
                                  const CData & oldData,
                                  const CCore::Framework & framework) const
 {
-  if (type != CUndoData::Type::CHANGE)
+  switch (type)
     {
-      return;
-    }
+      case CUndoData::Type::CHANGE:
+        undoData.addProperty(CData::Property::NOTES, oldData.getProperty(CData::Property::NOTES), mNotes);
+        undoData.addProperty(CData::Property::MIRIAM_RDF_XML, oldData.getProperty(CData::Property::MIRIAM_RDF_XML), mMiriamAnnotation);
+        break;
 
-  undoData.addProperty(CData::Property::NOTES, oldData.getProperty(CData::Property::NOTES), mNotes);
+      case CUndoData::Type::REMOVE:
+        undoData.addProperty(CData::Property::NOTES, oldData.getProperty(CData::Property::NOTES));
+        undoData.addProperty(CData::Property::MIRIAM_RDF_XML, oldData.getProperty(CData::Property::MIRIAM_RDF_XML));
+        break;
+
+      case CUndoData::Type::INSERT:
+        undoData.addProperty(CData::Property::NOTES, mNotes);
+        undoData.addProperty(CData::Property::MIRIAM_RDF_XML, mMiriamAnnotation);
+        break;
+    }
 }
 
 CAnnotation::CAnnotation():

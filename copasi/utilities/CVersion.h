@@ -33,7 +33,7 @@
 
 #include <set>
 
-#include "copasi.h"
+#include <copasi/copasi.h>
 
 class CVersion
 {

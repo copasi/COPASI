@@ -131,7 +131,7 @@
   <customwidget>
    <class>CQProgressItem</class>
    <extends>QWidget</extends>
-   <header>CQProgressItem.h</header>
+   <header>copasi/UI/CQProgressItem.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

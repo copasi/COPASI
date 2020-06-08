@@ -1,28 +1,40 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test2/CNormalItemPower.cpp,v $
-   $Revision: 1.2 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:06 $
-   End CVS Header */
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include "CNormalItemPower.h"
-#include "function/CEvaluationNode.h"
+#include "copasi/function/CEvaluationNode.h"
 
 CNormalItemPower::CNormalItemPower()
-    : mExp(1.0)
+  : mExp(1.0)
 {}
 
 CNormalItemPower::CNormalItemPower(const CNormalItemPower& src)
-    : mItem(src.mItem), mExp(src.mExp)
+  : mItem(src.mItem), mExp(src.mExp)
 {}
 
 CNormalItemPower::CNormalItemPower(const CNormalItem& item, const C_FLOAT64& exp)
-    : mItem(item), mExp(exp)
+  : mItem(item), mExp(exp)
 {}
 
 CNormalItemPower * CNormalItemPower::createItemPower(const CEvaluationNode* node)
@@ -45,34 +57,37 @@ bool CNormalItemPower::setExp(const C_FLOAT64& number)
 {
   if (mExp < 0.0)
     return false;
+
   mExp = number;
   return true;
 }
 
 const CNormalItem& CNormalItemPower::getItem() const
-  {
-    return mItem;
-  }
+{
+  return mItem;
+}
 
 const C_FLOAT64& CNormalItemPower::getExp() const
-  {
-    return mExp;
-  }
+{
+  return mExp;
+}
 
 bool CNormalItemPower::operator==(const CNormalItemPower & rhs) const
-  {
-    if ((mItem == rhs.mItem) && (mExp == rhs.mExp))
-      return true;
-    else
-      return false;
-  }
+{
+  if ((mItem == rhs.mItem) && (mExp == rhs.mExp))
+    return true;
+  else
+    return false;
+}
 
 bool CNormalItemPower::operator<(const CNormalItemPower & rhs) const
-  {
-    if (mItem < rhs.mItem) return true;
-    if (rhs.mItem < mItem) return false;
-    return (rhs.mExp < mExp);
-  }
+{
+  if (mItem < rhs.mItem) return true;
+
+  if (rhs.mItem < mItem) return false;
+
+  return (rhs.mExp < mExp);
+}
 
 std::ostream & operator<<(std::ostream &os, const CNormalItemPower & d)
 {
@@ -80,8 +95,10 @@ std::ostream & operator<<(std::ostream &os, const CNormalItemPower & d)
     os << d.mItem;
   else
     os << "(" << d.mItem << ")";
+
   if (d.mExp != 1.0)
     os << "^" << d.mExp;
+
   return os;
 }
 

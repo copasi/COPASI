@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,17 +34,17 @@
 #include <limits>
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CCopasiXMLInterface.h"
-#include "model/CModel.h"
-#include "report/CReportDefinition.h"
-#include "report/CReportDefinitionVector.h"
-#include "plot/COutputDefinitionVector.h"
-#include "plot/CPlotSpecification.h"
+#include "copasi/model/CModel.h"
+#include "copasi/report/CReportDefinition.h"
+#include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/plot/COutputDefinitionVector.h"
+#include "copasi/plot/CPlotSpecification.h"
 #include "copasi/core/CDataVector.h"
-#include "utilities/CSlider.h"
-#include "utilities/CDirEntry.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/utilities/CSlider.h"
+#include "copasi/utilities/CDirEntry.h"
+#include "copasi/commandline/CLocaleString.h"
 
 SCopasiXMLGUI::SCopasiXMLGUI(const std::string & name,
                              const CDataContainer * pParent,
@@ -203,7 +203,7 @@ std::string CCopasiXMLInterface::encode(const std::string & str, const EncodingT
 CCopasiXMLInterface::DBL::DBL(const C_FLOAT64 & value):
   mValue(value)
 {
-  if (-mValue < std::numeric_limits< C_FLOAT64 >::min() && mValue < std::numeric_limits< C_FLOAT64 >::min() && !isnan(mValue))
+  if (-mValue < std::numeric_limits< C_FLOAT64 >::min() && mValue < std::numeric_limits< C_FLOAT64 >::min() && !std::isnan(mValue))
     mValue = 0.0;
 }
 
@@ -219,7 +219,7 @@ CCopasiXMLInterface::DBL::DBL(const char * value):
 
   in >> mValue;
 
-  if (isnan(mValue))
+  if (std::isnan(mValue))
     {
       if (!strcmp(value, "INF"))
         mValue = std::numeric_limits<C_FLOAT64>::infinity();
@@ -239,7 +239,7 @@ std::ostream & operator << (std::ostream & os, const CCopasiXMLInterface::DBL & 
 {
   os.precision(std::numeric_limits<double>::digits10 + 2);
 
-  if (isnan(dbl.mValue))
+  if (std::isnan(dbl.mValue))
     os << "NaN";
   else if (std::isfinite(dbl.mValue))
     os << dbl.mValue;

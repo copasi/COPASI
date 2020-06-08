@@ -1,4 +1,14 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,9 +31,9 @@
 #include <algorithm>
 #include <string>
 
-#include "copasi.h"
-#include "lapack/blaswrap.h"
-#include "lapack/lapackwrap.h"
+#include "copasi/copasi.h"
+#include "copasi/lapack/blaswrap.h"
+#include "copasi/lapack/lapackwrap.h"
 
 #include "CLSODAR.h"
 #include "Cxerrwd.h"
@@ -2019,9 +2029,13 @@ L205:
   switch (*itask)
     {
       case 1: goto L210;
+
       case 2: goto L250;
+
       case 3: goto L220;
+
       case 4: goto L230;
+
       case 5: goto L240;
     }
 
@@ -2240,7 +2254,9 @@ L290:
   switch (kgo)
     {
       case 1: goto L300;
+
       case 2: goto L530;
+
       case 3: goto L540;
     }
 
@@ -2326,9 +2342,13 @@ L315:
   switch (*itask)
     {
       case 1: goto L320;
+
       case 2: goto L400;
+
       case 3: goto L330;
+
       case 4: goto L340;
+
       case 5: goto L350;
     }
 

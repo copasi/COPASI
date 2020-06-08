@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,12 +37,23 @@ void CQBiologicalDescriptionDM::setMIRIAMInfo(CMIRIAMInfo * pMiriamInfo)
   endResetModel();
 }
 
-int CQBiologicalDescriptionDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+void CQBiologicalDescriptionDM::resetCacheProtected()
+{
+  mpMIRIAMInfo = NULL;
+}
+
+// virtual
+size_t  CQBiologicalDescriptionDM::size() const
 {
   if (mpMIRIAMInfo != NULL)
-    return (int) mpMIRIAMInfo->getBiologicalDescriptions().size() + 1;
+    return (int) mpMIRIAMInfo->getBiologicalDescriptions().size();
 
   return 0;
+}
+
+int CQBiologicalDescriptionDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched + 1;
 }
 
 int CQBiologicalDescriptionDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
@@ -60,7 +71,7 @@ QVariant CQBiologicalDescriptionDM::data(const QModelIndex &index, int role) con
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int)mpMIRIAMInfo->getBiologicalDescriptions().size())
         {
           if (index.column() == COL_RELATIONSHIP || index.column() == COL_RESOURCE_BD)
             return QVariant(QString("-- select --"));
@@ -128,7 +139,7 @@ bool CQBiologicalDescriptionDM::setData(const QModelIndex &index, const QVariant
     {
       CUndoData::Type UndoType = CUndoData::Type::CHANGE;
 
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int)mpMIRIAMInfo->getBiologicalDescriptions().size())
         {
           if (index.data() != value)
             {
@@ -182,6 +193,8 @@ bool CQBiologicalDescriptionDM::insertRows(int position, int rows, const QModelI
 
       if (pBiologicalDescription == NULL)
         continue;
+
+      ++mFetched;
     }
 
   endInsertRows();
@@ -213,8 +226,9 @@ bool CQBiologicalDescriptionDM::removeRows(int position, int rows, const QModelI
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+
+      --mFetched;
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 

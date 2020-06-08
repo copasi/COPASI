@@ -1,3 +1,13 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -11,14 +21,14 @@
 
 %{
 
-#include "MIRIAM/CMIRIAMResource.h"
-#include "MIRIAM/CRDFGraph.h"
-#include "MIRIAM/CRDFNode.h"
-#include "MIRIAM/CRDFObject.h"
-#include "MIRIAM/CRDFPredicate.h"
-#include "MIRIAM/CRDFSubject.h"
-#include "MIRIAM/CRDFTriplet.h"
-#include "MIRIAM/CModelMIRIAMInfo.h"
+#include "copasi/MIRIAM/CMIRIAMResource.h"
+#include "copasi/MIRIAM/CRDFGraph.h"
+#include "copasi/MIRIAM/CRDFNode.h"
+#include "copasi/MIRIAM/CRDFObject.h"
+#include "copasi/MIRIAM/CRDFPredicate.h"
+#include "copasi/MIRIAM/CRDFSubject.h"
+#include "copasi/MIRIAM/CRDFTriplet.h"
+#include "copasi/MIRIAM/CModelMIRIAMInfo.h"
 
 %}
 
@@ -52,10 +62,10 @@
 
 %include "MIRIAM/CMIRIAMResource.h"
 %include "MIRIAM/CRDFGraph.h"
-#include "MIRIAM/CRDFNode.h"
-#include "MIRIAM/CRDFObject.h"
-#include "MIRIAM/CRDFPredicate.h"
-#include "MIRIAM/CRDFSubject.h"
+#include "copasi/MIRIAM/CRDFNode.h"
+#include "copasi/MIRIAM/CRDFObject.h"
+#include "copasi/MIRIAM/CRDFPredicate.h"
+#include "copasi/MIRIAM/CRDFSubject.h"
 %include "MIRIAM/CRDFTriplet.h"
 %include "MIRIAM/CModelMIRIAMInfo.h"
 

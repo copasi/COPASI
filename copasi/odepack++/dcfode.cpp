@@ -1,19 +1,32 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dcfode.cpp,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:19:11 $
-   End CVS Header */
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
 //
 // This C++ code is based on an f2c conversion of the Fortran
 // library ODEPACK available at: http://www.netlib.org/odepack/
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "dcfode.h"
 
@@ -82,8 +95,9 @@ C_INT dcfode_(C_INT *meth, double *elco, double * tesco)
   /* Function Body */
   switch (*meth)
     {
-    case 1: goto L100;
-    case 2: goto L200;
+      case 1: goto L100;
+
+      case 2: goto L200;
     }
 
 L100:
@@ -95,6 +109,7 @@ L100:
   tesco[39] = 0.;
   pc[0] = 1.;
   rqfac = 1.;
+
   for (nq = 2; nq <= 12; ++nq)
     {
       /* ----------------------------------------------------------------------- */
@@ -110,18 +125,21 @@ L100:
       /* Form coefficients of p(x)*(x+nq-1). ---------------------------------- */
       pc[nq - 1] = 0.;
       i__1 = nqm1;
+
       for (ib = 1; ib <= i__1; ++ib)
         {
           i__ = nqp1 - ib;
           /* L110: */
           pc[i__ - 1] = pc[i__ - 2] + fnqm1 * pc[i__ - 1];
         }
+
       pc[0] = fnqm1 * pc[0];
       /* Compute integral, -1 to 0, of p(x) and x*p(x). ----------------------- */
       pint = pc[0];
       xpin = pc[0] / 2.;
       tsign = 1.;
       i__1 = nq;
+
       for (i__ = 2; i__ <= i__1; ++i__)
         {
           tsign = -tsign;
@@ -129,30 +147,37 @@ L100:
           /* L120: */
           xpin += tsign * pc[i__ - 1] / (i__ + 1);
         }
+
       /* Store coefficients in ELCO and TESCO. -------------------------------- */
       elco[nq * 13 + 1] = pint * rq1fac;
       elco[nq * 13 + 2] = 1.;
       i__1 = nq;
+
       for (i__ = 2; i__ <= i__1; ++i__)
         {
           /* L130: */
           elco[i__ + 1 + nq * 13] = rq1fac * pc[i__ - 1] / i__;
         }
+
       agamq = rqfac * xpin;
       ragq = 1. / agamq;
       tesco[nq * 3 + 2] = ragq;
+
       if (nq < 12)
         {
           tesco[nqp1 * 3 + 1] = ragq * rqfac / nqp1;
         }
+
       tesco[nqm1 * 3 + 3] = ragq;
       /* L140: */
     }
+
   return 0;
 
 L200:
   pc[0] = 1.;
   rq1fac = 1.;
+
   for (nq = 1; nq <= 5; ++nq)
     {
       /* ----------------------------------------------------------------------- */
@@ -165,20 +190,24 @@ L200:
       /* Form coefficients of p(x)*(x+nq). ------------------------------------ */
       pc[nqp1 - 1] = 0.;
       i__1 = nq;
+
       for (ib = 1; ib <= i__1; ++ib)
         {
           i__ = nq + 2 - ib;
           /* L210: */
           pc[i__ - 1] = pc[i__ - 2] + fnq * pc[i__ - 1];
         }
+
       pc[0] = fnq * pc[0];
       /* Store coefficients in ELCO and TESCO. -------------------------------- */
       i__1 = nqp1;
+
       for (i__ = 1; i__ <= i__1; ++i__)
         {
           /* L220: */
           elco[i__ + nq * 13] = pc[i__ - 1] / pc[1];
         }
+
       elco[nq * 13 + 2] = 1.;
       tesco[nq * 3 + 1] = rq1fac;
       tesco[nq * 3 + 2] = nqp1 / elco[nq * 13 + 1];
@@ -186,6 +215,7 @@ L200:
       rq1fac /= fnq;
       /* L230: */
     }
+
   return 0;
   /* ----------------------- END OF SUBROUTINE DCFODE ---------------------- */
 } /* dcfode_ */

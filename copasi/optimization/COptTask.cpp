@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -24,16 +29,16 @@
  * of a problem and a method.
  *
  */
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "COptTask.h"
 #include "COptProblem.h"
 #include "COptMethod.h"
-#include "report/CKeyFactory.h"
-#include "report/CReport.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/report/CReport.h"
 
-#include "model/CModel.h"
-#include "model/CState.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CState.h"
 
 // static
 const CTaskEnum::Method COptTask::ValidMethods[]  =

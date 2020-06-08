@@ -1,3 +1,8 @@
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -28,7 +33,7 @@
 #ifndef COPASI_CFitTask
 #define COPASI_CFitTask
 
-#include "optimization/COptTask.h"
+#include "copasi/optimization/COptTask.h"
 
 class CFitTask : public COptTask
 {

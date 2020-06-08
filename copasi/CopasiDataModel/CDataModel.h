@@ -13,7 +13,7 @@
 
 #include <map>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "copasi/core/CDataContainer.h"
 #include "copasi/output/COutputHandler.h"

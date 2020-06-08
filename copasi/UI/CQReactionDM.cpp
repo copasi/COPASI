@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,12 +21,12 @@
 #include <QtCore/QString>
 #include <QtCore/QList>
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CChemEqInterface.h"
-#include "model/CReaction.h"
-#include "model/CReactionInterface.h"
-#include "model/CModel.h"
+#include "copasi/model/CChemEqInterface.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/model/CModel.h"
 
 #include "CQMessageBox.h"
 #include "CQReactionDM.h"
@@ -35,11 +35,20 @@
 CQReactionDM::CQReactionDM(QObject *parent, CDataModel * pDataModel)
   : CQBaseDataModel(parent, pDataModel)
   , mpReactions(NULL)
-{}
-
-int CQReactionDM::rowCount(const QModelIndex&) const
 {
-  return (int) mpDataModel->getModel()->getReactions().size() + 1;
+}
+
+size_t CQReactionDM::size() const
+{
+  if (mpReactions != NULL)
+    return mpReactions->size();
+
+  return 0;
+}
+
+int CQReactionDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
+{
+  return mFetched + 1;
 }
 
 int CQReactionDM::columnCount(const QModelIndex&) const
@@ -71,7 +80,7 @@ QVariant CQReactionDM::data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-      if (isDefaultRow(index))
+      if (isDefaultRow(index) || index.row() >= (int) mpReactions->size())
         {
           switch (index.column())
             {
@@ -283,8 +292,9 @@ bool CQReactionDM::removeRows(int position, int rows, const QModelIndex & parent
     {
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
       ListViews::addUndoMetaData(this, UndoData);
+      --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
@@ -344,6 +354,8 @@ void CQReactionDM::insertNewRows(int position, int rows, int column, const QVari
 
       if (pRea == NULL) continue;
 
+      ++mFetched;
+
       CUndoData UndoData(CUndoData::Type::INSERT, pRea);
 
       if (column == COL_EQUATION)
@@ -372,7 +384,7 @@ bool CQReactionDM::clear()
 {
   QModelIndexList rows;
 
-  for (int i = 0; i < mpReactions->size(); i++)
+  for (int i = 0; i < (int) mpReactions->size(); i++)
     {
       rows.append(index(i, 0));
     }

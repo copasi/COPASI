@@ -35,20 +35,15 @@ endif(POLICY CMP0048)
 
 project (CopasiUI VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 
-include_directories(BEFORE "${PROJECT_SOURCE_DIR}/.." "${PROJECT_SOURCE_DIR}/../.." "${PROJECT_SOURCE_DIR}")
+include_directories(${COPASI_INCLUDE_DIRS})
 
 set(SOURCES ${SOURCES} main.cpp)
-
-include(../common.cmake)
-include(../CMakeConsoleApp.cmake)
-include(../CMakeUIApp.cmake)
 
 if (ENABLE_SBW_INTEGRATION)
 include_directories(${SBW_INCLUDE_DIR})
 endif()
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/../UI)
+include_directories(${COPASI_INCLUDE_DIRS})
 
 set(COPASI_UI_FLAGS)
 if(WIN32 AND NOT CYGWIN)
@@ -82,30 +77,7 @@ if (BUILD_STATIC_COPASISE)
 endif (BUILD_STATIC_COPASISE) 
 
 add_executable(CopasiUI ${COPASI_UI_FLAGS} ${SOURCES} ${HEADERS})
-target_link_libraries(CopasiUI ${SE_LIBS} ${UI_LIBS} ${SE_EXTERNAL_LIBS} ${UI_EXTERNAL_LIBS}
-                      ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
-QT_BIND_TO_TARGET(CopasiUI)
-
-if (NOT USING_INTEL)
-  target_link_libraries(CopasiUI ${ZLIB_LIBRARY})
-endif (NOT USING_INTEL)
-
-if (ENABLE_SBW_INTEGRATION)
-target_link_libraries(CopasiUI ${SBW_LIBRARIES})
-endif(ENABLE_SBW_INTEGRATION)
-
-# On some linux systems we do require a link against the pthread library
-# as well as the libz library
-if (UNIX AND NOT APPLE)
-  find_package(Threads)
-  find_package(ZLIB)
-  if (CMAKE_USE_PTHREADS_INIT)
-    target_link_libraries(CopasiUI ${CMAKE_THREAD_LIBS_INIT})
-  endif()
-  if (ZLIB_FOUND)
-    target_link_libraries(CopasiUI ${ZLIB_LIBRARIES})
-  endif()
-endif()
+target_link_libraries(CopasiUI libCOPASIUI)
 
 if(NOT APPLE)
     SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/CopasiUI${CMAKE_EXECUTABLE_SUFFIX}" CACHE INTERNAL "")

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,30 +25,26 @@
 #include "CDerive.h"
 
 #include "CEvaluationNode.h"
-#include "utilities/CCopasiParameter.h"
-#include "model/CModelValue.h"
-#include "function/CFunction.h"
-#include "utilities/CNodeIterator.h"
+#include "copasi/utilities/CCopasiParameter.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/utilities/CNodeIterator.h"
 
 CDerive::CDerive():
   mEnv(),
   mpTree(NULL),
   mSimplify(true)
 {
-
 }
 
 CDerive::CDerive(std::vector<const CEvaluationNode*>&  env,
-          const CEvaluationTree* pTree,
-          bool simplify):
+                 const CEvaluationTree* pTree,
+                 bool simplify):
   mEnv(env),
   mpTree(pTree),
   mSimplify(simplify)
 {
-
 }
-
-
 
 bool CDerive::isOne(const CEvaluationNode* node)
 {
@@ -436,7 +437,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataO
 
       //basically just expand the tree.
       return deriveBranch(mEnv[pENV->getIndex()], pObject
-      );
+                         );
     }
 
   const CEvaluationNodeNumber * pENN = dynamic_cast<const CEvaluationNodeNumber*>(node);
@@ -459,7 +460,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataO
         }
 
       //now we need to check if we know something about the object so that it needs to be expanded
-      const CDataObject * tmpObj = (const CDataObject *)pENObj->getObjectInterfacePtr();
+      const CDataObject * tmpObj = CDataObject::DataObject(pENObj->getObjectInterfacePtr());
 
       if (!tmpObj)
         return NULL;
@@ -525,7 +526,6 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataO
 
   return newNode;
 }
-
 
 void CDerive::compileTree(CEvaluationNode* node)
 {

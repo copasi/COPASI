@@ -468,6 +468,9 @@ public:
    */
   CDataVector< CType > & operator = (const CDataVector< CType > & rhs)
   {
+    if (this == &rhs)
+      return *this;
+
     cleanup();
 
     const_iterator it = rhs.begin();
@@ -581,7 +584,7 @@ public:
         {
           CDataContainer::remove(*it);
           (*it)->setObjectParent(NULL);
-          delete (*it);
+          delete(*it);
           *it = NULL;
         }
 
@@ -1453,7 +1456,7 @@ public:
    */
   virtual void load(CReadConfig & configbuffer, size_t size)
   {
-    size_t i;
+    size_t i = 0;
 
     CDataVector< CType >::cleanup();
     CDataVector< CType >::resize(size);

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,22 +26,22 @@
 #include "CQMessageBox.h"
 #include "CQValidator.h"
 
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "DataModelGUI.h"
 #include "qtUtilities.h"
 #include "CCopasiSelectionDialog.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "model/CModel.h"
-#include "utilities/CCopasiException.h"
+#include "copasi/model/CModel.h"
+#include "copasi/utilities/CCopasiException.h"
 
-#include "crosssection/CCrossSectionTask.h"
-#include "crosssection/CCrossSectionProblem.h"
-//#include "crosssection/CCrossSectionMethod.h"
+#include "copasi/crosssection/CCrossSectionTask.h"
+#include "copasi/crosssection/CCrossSectionProblem.h"
+//#include "copasi/crosssection/CCrossSectionMethod.h"
 
 /*
  *  Constructs a CQCrossSectionWidget which is a child of 'parent', with the
@@ -178,10 +178,6 @@ bool CQCrossSectionTaskWidget::saveTaskProtected()
 
   if (!pTask) return false;
 
-  // save functions from the Parent, TaskWidget
-  saveCommon();
-  saveMethod();
-
   // check the existence of Problem
   CCrossSectionProblem* pProblem =
     dynamic_cast<CCrossSectionProblem *>(pTask->getProblem());
@@ -251,10 +247,6 @@ bool CQCrossSectionTaskWidget::loadTaskProtected()
     dynamic_cast< CCrossSectionTask * >(mpTask);
 
   if (!pTask) return false;
-
-  // load functions from the Parent, TaskWidget
-  loadCommon();
-  loadMethod();
 
   showUnits();
 

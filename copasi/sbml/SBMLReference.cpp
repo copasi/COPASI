@@ -1,31 +1,43 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLReference.cpp,v $
-   $Revision: 1.2 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:21 $
-   End CVS Header */
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "SBMLReference.h"
 
 std::string SBMLReference::NotFound = "";
 
 SBMLReference::SBMLReference():
-    mURL(""),
-    mIdToKey(),
-    mKeyToId()
+  mURL(""),
+  mIdToKey(),
+  mKeyToId()
 {}
 
 SBMLReference::SBMLReference(const SBMLReference & src):
-    mURL(src.mURL),
-    mIdToKey(src.mIdToKey),
-    mKeyToId(src.mKeyToId)
+  mURL(src.mURL),
+  mIdToKey(src.mIdToKey),
+  mKeyToId(src.mKeyToId)
 {}
 
 SBMLReference::~SBMLReference()
@@ -38,25 +50,27 @@ bool SBMLReference::setURL(const std::string & url)
 }
 
 const std::string & SBMLReference::getURL() const
-  {return mURL;}
+{return mURL;}
 
 const std::string & SBMLReference::getSBMLid(const std::string & key) const
-  {
-    const_iterator it = mKeyToId.find(key);
-    if (it != mKeyToId.end())
-      return it->second;
-    else
-      return NotFound;
-  }
+{
+  const_iterator it = mKeyToId.find(key);
+
+  if (it != mKeyToId.end())
+    return it->second;
+  else
+    return NotFound;
+}
 
 const std::string & SBMLReference::getCOPASIkey(const std::string & id) const
-  {
-    const_iterator it = mIdToKey.find(id);
-    if (it != mIdToKey.end())
-      return it->second;
-    else
-      return NotFound;
-  }
+{
+  const_iterator it = mIdToKey.find(id);
+
+  if (it != mIdToKey.end())
+    return it->second;
+  else
+    return NotFound;
+}
 
 bool SBMLReference::add(const std::string & id, const std::string & key)
 {
@@ -72,6 +86,7 @@ bool SBMLReference::add(const std::string & id, const std::string & key)
 bool SBMLReference::removeSBMLid(const std::string & id)
 {
   std::map<std::string, std::string>::iterator itId = mIdToKey.find(id);
+
   if (itId == mIdToKey.end()) return false;
 
   std::map<std::string, std::string>::iterator itKey = mKeyToId.find(itId->second);
@@ -106,10 +121,10 @@ SBMLReference::const_iterator SBMLReference::beginCOPASIkey() const
 {return mKeyToId.begin();}
 
 SBMLReference::const_iterator SBMLReference::endCOPASIkey() const
-  {return mKeyToId.end();}
+{return mKeyToId.end();}
 
 SBMLReference::const_iterator SBMLReference::beginSBMLid() const
-  {return mIdToKey.begin();}
+{return mIdToKey.begin();}
 
 SBMLReference::const_iterator SBMLReference::endSBMLid() const
-  {return mIdToKey.end();}
+{return mIdToKey.end();}

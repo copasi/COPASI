@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
@@ -32,7 +37,7 @@
 /**
  * Convert CFitItem objects into the most specific type possible.
  */
-%typemap(out) CFitItem*
+%typemap(out) CFitItem*, CFitItem&
 {
   $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCFitItem($1), 0);
 }
@@ -40,7 +45,7 @@
 /**
  * Convert COptItem objects into the most specific type possible.
  */
-%typemap(out) COptItem*
+%typemap(out) COptItem*, COptItem&
 {
   $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCOptItem($1), 0);
 }
@@ -164,7 +169,7 @@ import sys
 
 %{
 #include "copasi/core/CRootContainer.h"
-#include "commandline/COptions.h"
+#include "copasi/commandline/COptions.h"
 %}
 
 %init %{

@@ -13,8 +13,8 @@
 // of Manchester.
 // All rights reserved.
 
-#include "UI/CopasiFileDialog.h"
-#include "UI/CQMessageBox.h"
+#include "copasi/UI/CopasiFileDialog.h"
+#include "copasi/UI/CQMessageBox.h"
 #include "CQSteadyStateResult.h"
 #include "qtUtilities.h"
 

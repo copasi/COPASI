@@ -41,16 +41,16 @@ Contact: Please contact lixu1@vt.edu.
 #include <QVBoxLayout>
 #include <QFrame>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "ObjectBrowserWidget.h"
 #include "ObjectBrowserItem.h"
 #include "copasiui3window.h"
 #include "qtUtilities.h"
 #include "copasi/core/CDataObject.h"
-#include "core/CRegisteredCommonName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CDataContainer.h"
-#include "core/CDataString.h"
+#include "copasi/core/CDataString.h"
 #include "copasi/core/CDataVector.h"
 #include "copasi/core/CRootContainer.h"
 

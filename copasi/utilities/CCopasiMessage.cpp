@@ -1,4 +1,14 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,14 +34,14 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CCopasiMessage.h"
 #include "messages.h"
 #include "CCopasiException.h"
 #include "utility.h"
 
-#include "commandline/COptionParser.h"
-#include "commandline/COptions.h"
+#include "copasi/commandline/COptionParser.h"
+#include "copasi/commandline/COptions.h"
 
 #define INITIALTEXTSIZE 1024
 
@@ -350,6 +360,9 @@ void CCopasiMessage::handler(const bool & /* _throw */)
 // overload assignment operator
 CCopasiMessage &CCopasiMessage::operator=(const CCopasiMessage & RHS)
 {
+  if (this == &RHS)
+    return *this;
+
   mText = RHS.mText;
   mType = RHS.mType;
   mNumber = RHS.mNumber;

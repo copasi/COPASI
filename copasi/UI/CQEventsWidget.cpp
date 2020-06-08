@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,12 +29,13 @@
 #include <QKeyEvent>
 
 #include "qtUtilities.h"
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CQMessageBox.h"
 
-#include "model/CModel.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
+#include <copasi/commandline/CConfigurationFile.h>
 
 #include "copasiui3window.h"
 
@@ -52,11 +53,18 @@ CQEventsWidget::CQEventsWidget(QWidget *parent, const char *name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
+
+  mpTblEvents->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblEvents->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblEvents->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblEvents->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblEvents->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblEvents->verticalHeader()->hide();
   mpTblEvents->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
@@ -64,8 +72,10 @@ CQEventsWidget::CQEventsWidget(QWidget *parent, const char *name)
           this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
   connect(mpEventDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
+  connect(mpTblEvents, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 /*
@@ -153,21 +163,26 @@ CQBaseDataModel * CQEventsWidget::getCqDataModel()
 
 bool CQEventsWidget::enterProtected()
 {
-  if (mpTblEvents->selectionModel() != NULL)
-    {
-      disconnect(mpTblEvents->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblEvents->horizontalHeader()->saveState();
+  blockSignals(true);
 
   mpEventDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpEventDM);
   //Set Model for the TableView
   mpTblEvents->setModel(NULL);
   mpTblEvents->setModel(mpProxyModel);
-  connect(mpTblEvents->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+
   updateDeleteBtns();
-  mpTblEvents->resizeColumnsToContents();
+  mpTblEvents->horizontalHeader()->restoreState(State);
+  blockSignals(false);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblEvents->resizeColumnsToContents();
+    }
+
+  emit initFilter();
+
   return true;
 }
 
@@ -199,8 +214,7 @@ void CQEventsWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQEventsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
-    const QItemSelection &C_UNUSED(deselected))
+void CQEventsWidget::slotSelectionChanged()
 {
   updateDeleteBtns();
 }
@@ -208,7 +222,11 @@ void CQEventsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selecte
 void CQEventsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                  const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblEvents->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblEvents->resizeColumnsToContents();
+    }
+
   updateDeleteBtns();
 }
 
@@ -269,6 +287,17 @@ void CQEventsWidget::keyPressEvent(QKeyEvent *ev)
 
 void CQEventsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|New Event", Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter + "|New Event", Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }

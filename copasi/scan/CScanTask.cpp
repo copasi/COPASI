@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,28 +29,28 @@
  * of a problem and a method.
  *
  */
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CScanTask.h"
 #include "CScanProblem.h"
 #include "CScanMethod.h"
-#include "utilities/CReadConfig.h"
-#include "report/CKeyFactory.h"
-#include "report/CReport.h"
+#include "copasi/utilities/CReadConfig.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/report/CReport.h"
 
-#include "math/CMathContainer.h"
-#include "optimization/COptProblem.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/optimization/COptProblem.h"
 
-#include "trajectory/CTrajectoryTask.h"
-#include "trajectory/CTrajectoryProblem.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CSteadyStateProblem.h"
-#include "lna/CLNAProblem.h"
-#include "lna/CLNATask.h"
-#include "output/COutputHandler.h"
-#include "utilities/CProcessReport.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/steadystate/CSteadyStateProblem.h"
+#include "copasi/lna/CLNAProblem.h"
+#include "copasi/lna/CLNATask.h"
+#include "copasi/output/COutputHandler.h"
+#include "copasi/utilities/CProcessReport.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "crosssection/CCrossSectionTask.h"
+#include "copasi/crosssection/CCrossSectionTask.h"
 
 CScanTask::CScanTask(const CDataContainer * pParent,
                      const CTaskEnum::Task & type):
@@ -302,7 +307,7 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
   mpSubtask->setCallBack(NULL);
 
   if (mOutputInSubtask)
-    return mpSubtask->initialize(OUTPUT, pOutputHandler, pOstream);
+    return mpSubtask->initialize(OUTPUT_DURING, pOutputHandler, pOstream);
   else
     return mpSubtask->initialize(NO_OUTPUT, pOutputHandler, pOstream);
 

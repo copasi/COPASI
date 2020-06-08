@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -10,13 +15,13 @@
 
 #include <limits>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CMathEventQueue.h"
 #include "CMathContainer.h"
 #include "CMathEvent.h"
-#include "function/CExpression.h"
-#include "randomGenerator/CRandom.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/randomGenerator/CRandom.h"
 
 #include "copasi/core/CRootContainer.h"
 #include "copasi/commandline/CConfigurationFile.h"
@@ -247,7 +252,7 @@ bool CMathEventQueue::addAssignment(const C_FLOAT64 & executionTime,
   // If the assignment is in the future or it has a priority the
   // cascading level must be zero.
   if (executionTime > *mpTime ||
-      !isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
+      !std::isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
     CascadingLevel = 0;
 
   pEvent->addPendingAction(mActions.insert(std::make_pair(CKey(executionTime, equality, CascadingLevel),
@@ -268,7 +273,7 @@ bool CMathEventQueue::addCalculation(const C_FLOAT64 & executionTime,
   // If the assignment is in the future or it has a priority the
   // cascading level must be zero.
   if (executionTime > *mpTime ||
-      !isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
+      !std::isnan(* (C_FLOAT64 *) pEvent->getPriority()->getValuePointer()))
     CascadingLevel = 0;
 
   pEvent->addPendingAction(mActions.insert(std::make_pair(CKey(executionTime, equality, CascadingLevel),
@@ -413,7 +418,7 @@ CMathEventQueue::iterator CMathEventQueue::getAction()
   for (; itAction != PendingActions.second; ++itAction)
     {
       // Events without priority are ignored
-      if (isnan(itAction->second.getPriority()))
+      if (std::isnan(itAction->second.getPriority()))
         {
           continue;
         }

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -157,8 +162,8 @@ protected:
   std::map<size_t, std::string> indexMap;
 };
 
-#include <model/CModel.h>
-#include <trajectory/CTrajectoryTask.h>
+#include <copasi/model/CModel.h>
+#include <copasi/trajectory/CTrajectoryTask.h>
 /**
  * Animation that displays the concentrations per time
  */
@@ -437,7 +442,7 @@ void CQAnimationWindow::closeEvent(QCloseEvent * /*closeEvent*/)
 {
   // stop the autolayout
   mpLayoutThread->stopLayout();
-  
+
   removeFromMainWindow();
 }
 
@@ -460,8 +465,8 @@ void CQAnimationWindow::slotRandomizeLayout()
   mpLayoutThread->randomizeLayout(mpScene->getCurrentLayout());
 }
 
-#include <layout/CCopasiSpringLayout.h>
-#include <layout/CLayoutEngine.h>
+#include <copasi/layout/CCopasiSpringLayout.h>
+#include <copasi/layout/CLayoutEngine.h>
 
 #include <QtCore/QAbstractEventDispatcher>
 #include <QtCore/QAbstractEventDispatcher>

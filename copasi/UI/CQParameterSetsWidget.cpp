@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,15 +19,16 @@
 #include <QClipboard>
 #include <QKeyEvent>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
 
-#include "model/CModel.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "report/CReportDefinitionVector.h"
+#include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 /*
  *  Constructs a CQParameterSetsWidget which is a child of 'parent', with the
@@ -43,11 +44,18 @@ CQParameterSetsWidget::CQParameterSetsWidget(QWidget *parent, const char *name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
+
+  mpTblParameterSets->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
 #if QT_VERSION >= 0x050000
-  mpTblParameterSets->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      mpTblParameterSets->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-  mpTblParameterSets->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+      mpTblParameterSets->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
+    }
+
   mpTblParameterSets->verticalHeader()->hide();
   mpTblParameterSets->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   setFramework(mFramework);
@@ -56,8 +64,10 @@ CQParameterSetsWidget::CQParameterSetsWidget(QWidget *parent, const char *name)
           this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
   connect(mpParameterSetsDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
+  connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
+  connect(mpTblParameterSets, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 /*
@@ -74,7 +84,11 @@ void CQParameterSetsWidget::slotBtnNewClicked()
 {
   mpParameterSetsDM->insertRow(mpParameterSetsDM->rowCount(), QModelIndex());
   updateDeleteBtns();
-  mpTblParameterSets->resizeColumnsToContents();
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblParameterSets->resizeColumnsToContents();
+    }
 }
 
 void CQParameterSetsWidget::slotBtnDeleteClicked()
@@ -158,11 +172,8 @@ bool CQParameterSetsWidget::enterProtected()
         return false;
     }
 
-  if (mpTblParameterSets->selectionModel() != NULL)
-    {
-      disconnect(mpTblParameterSets->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
-    }
+  QByteArray State = mpTblParameterSets->horizontalHeader()->saveState();
+  blockSignals(true);
 
   mpParameterSetsDM->setListOfModelParameterSets(dynamic_cast< CDataVectorN< CModelParameterSet > * >(mpObject));
   mpProxyModel->setSourceModel(mpParameterSetsDM);
@@ -171,9 +182,19 @@ bool CQParameterSetsWidget::enterProtected()
   mpTblParameterSets->setModel(mpProxyModel);
   connect(mpTblParameterSets->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
           this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+
   updateDeleteBtns();
-  mpTblParameterSets->resizeColumnsToContents();
+  mpTblParameterSets->horizontalHeader()->restoreState(State);
+  blockSignals(false);
+
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblParameterSets->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
+  emit initFilter();
+
   return true;
 }
 
@@ -209,8 +230,7 @@ void CQParameterSetsWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQParameterSetsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
-    const QItemSelection &C_UNUSED(deselected))
+void CQParameterSetsWidget::slotSelectionChanged()
 {
   updateDeleteBtns();
 }
@@ -218,7 +238,11 @@ void CQParameterSetsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(
 void CQParameterSetsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                         const QModelIndex &C_UNUSED(bottomRight))
 {
-  mpTblParameterSets->resizeColumnsToContents();
+  if (CRootContainer::getConfiguration()->resizeToContents())
+    {
+      mpTblParameterSets->resizeColumnsToContents();
+    }
+
   setFramework(mFramework);
   updateDeleteBtns();
 }
@@ -280,8 +304,19 @@ void CQParameterSetsWidget::keyPressEvent(QKeyEvent *ev)
 
 void CQParameterSetsWidget::slotFilterChanged()
 {
-  QRegExp regExp(mpLEFilter->text() + "|New Report", Qt::CaseInsensitive, QRegExp::RegExp);
+  QString Filter = mpLEFilter->text();
+
+  if (Filter.isEmpty())
+    {
+      mpProxyModel->setFilterRegExp(QRegExp());
+      return;
+    }
+
+  QRegExp regExp(Filter, Qt::CaseInsensitive, QRegExp::RegExp);
   mpProxyModel->setFilterRegExp(regExp);
+
+  while (mpProxyModel->canFetchMore(QModelIndex()))
+    mpProxyModel->fetchMore(QModelIndex());
 }
 
 void CQParameterSetsWidget::setFramework(int framework)

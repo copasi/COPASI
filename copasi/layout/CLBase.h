@@ -25,7 +25,7 @@
 #ifndef CLBASE_H_
 #define CLBASE_H_
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include <string>
 
 LIBSBML_CPP_NAMESPACE_BEGIN
