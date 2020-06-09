@@ -60,13 +60,21 @@ CScanWidgetTask::~CScanWidgetTask()
 
 void CScanWidgetTask::init()
 {
+#if QT_VERSION >= 0x050000
   QPalette Palette = QGuiApplication::palette();
+#else
+  QPalette Palette = QApplication::palette();
+#endif
   QColor Foreground = Palette.color(QPalette::Active, QPalette::Text);
   QColor Background = Palette.color(QPalette::Active, QPalette::Base);
 
   if (Foreground.redF() + Foreground.greenF() + Foreground.blueF() > Background.redF() + Background.greenF() + Background.blueF())
     {
+#if QT_VERSION >= 0x050000
       setStyleSheet("color: " + QColor(191, 236, 183, 255).name(QColor::HexRgb));
+#else
+      setStyleSheet("color: " + QColor(191, 236, 183, 255).name());
+#endif
     }
   else
     {

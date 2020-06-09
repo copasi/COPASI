@@ -281,7 +281,11 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
 
   QTableWidgetItem *pItem = NULL;
 
+#if QT_VERSION >= 0x050000
   QPalette Palette = QGuiApplication::palette();
+#else
+  QPalette Palette = QApplication::palette();
+#endif
   QColor Foreground = Palette.color(QPalette::Active, QPalette::Text);
   QColor Background = Palette.color(QPalette::Active, QPalette::Base);
 

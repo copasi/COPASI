@@ -584,12 +584,9 @@ void CQTimeSensWidget::slotRemoveParameter()
     return;
 
   QModelIndexList items = mpListParameters->selectionModel()->selectedIndexes();
-  QModelIndexList::reverse_iterator it = items.rbegin();
-  QModelIndexList::reverse_iterator end = items.rend();
-
-  for (; it != end; ++it)
+  for (int i = items.size()-1; i >=0; --i)
     {
-      QListWidgetItem* item = mpListParameters->takeItem(it->row());
+      QListWidgetItem* item = mpListParameters->takeItem(items.at(i).row());
 
       std::string cn = TO_UTF8(item->data(Qt::UserRole).toString());
 
@@ -629,12 +626,10 @@ void CQTimeSensWidget::slotRemoveTarget()
     return;
 
   QModelIndexList items = mpListTargets->selectionModel()->selectedIndexes();
-  QModelIndexList::reverse_iterator it = items.rbegin();
-  QModelIndexList::reverse_iterator end = items.rend();
 
-  for (; it != end; ++it)
+  for (int i = items.size() - 1; i >= 0; --i)
     {
-      QListWidgetItem* item = mpListTargets->takeItem(it->row());
+      QListWidgetItem* item = mpListTargets->takeItem(items.at(i).row());
 
       std::string cn = TO_UTF8(item->data(Qt::UserRole).toString());
 

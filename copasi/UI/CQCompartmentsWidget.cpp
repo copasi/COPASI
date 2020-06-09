@@ -54,7 +54,9 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget *parent, const char *name)
   mpTypeDelegate = new CQComboDelegate(this, mpCompartmentDM->getTypes());
   mpTblCompartments->setItemDelegateForColumn(COL_TYPE_COMPARTMENTS, mpTypeDelegate);
 
+#if QT_VERSION >= 0x050000
   mpTblCompartments->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {

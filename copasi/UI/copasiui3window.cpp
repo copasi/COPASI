@@ -40,10 +40,13 @@
 #include <QtCore/QDateTime>
 
 #include <QByteArray>
+#if QT_VERSION >= 0x050000
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QUrlQuery>
+#endif
 #include <QRegExp>
 #include <QDesktopServices>
 
@@ -93,6 +96,7 @@
 # include "copasi/undoUI/CQUndoDialog.h"
 # include "copasi/core/CCore.h"
 # include "copasi/undo/CUndoStack.h"
+#include <copasi/report/COutputAssistant.h>
 
 #include <copasi/utilities/utility.h>
 
@@ -2578,7 +2582,11 @@ void CopasiUI3Window::slotFrameworkChanged(int index)
 
 void CopasiUI3Window::slotCapture()
 {
+#if QT_VERSION >= 0x050000
   QPixmap pixmap = mpListView->getCurrentWidget()->grab();
+#else
+  QPixmap pixmap = QPixmap::grabWidget(mpListView->getCurrentWidget());
+#endif
   C_INT32 Answer = QMessageBox::No;
   QString fileName;
 
@@ -3766,8 +3774,6 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
   mpDataModelGUI->downloadFileFromUrl(TO_UTF8(url), TmpFileName);
 }
 
-#include <QUrlQuery>
-#include <copasi/report/COutputAssistant.h>
 
 void CopasiUI3Window::activateElement(const std::string& activate)
 {
@@ -3934,7 +3940,9 @@ void CopasiUI3Window::performNextAction()
             for (int i = 0; i < 5; ++i)
               {
                 qApp->processEvents();
+#if QT_VERSION >= 0x050000
                 QThread::msleep(100);
+#endif
               }
 
             // press run
@@ -3976,7 +3984,9 @@ void CopasiUI3Window::performNextAction()
       for (int i = 0; i < 3; ++i)
         {
           qApp->processEvents();
+#if QT_VERSION >= 0x050000
           QThread::msleep(100);
+#endif
         }
 
       performNextAction();
@@ -3985,6 +3995,8 @@ void CopasiUI3Window::performNextAction()
 
 void CopasiUI3Window::slotHandleCopasiScheme(const QUrl& url)
 {
+#if QT_VERSION >= 0x050000
+
   if (url.scheme() != "copasi")
     return;
 
@@ -4023,10 +4035,13 @@ void CopasiUI3Window::slotHandleCopasiScheme(const QUrl& url)
     }
 
   performNextAction();
+#endif
 }
 
 void CopasiUI3Window::slotCheckForUpdate()
 {
+#if QT_VERSION >= 0x050000
+
   // if the datamodel is already performing an action (loading / importing)
   // we need to delay checking for updates
   if (mpDataModelGUI->isBusy())
@@ -4063,12 +4078,15 @@ void CopasiUI3Window::slotCheckForUpdate()
   //
   // use directly the github api -> we won't have any information about whether the update feature is used
   //mpDataModelGUI->downloadFileFromUrl("https://api.github.com/repos/copasi/COPASI/releases/latest", TmpFileName, false);
+#endif
 }
 
 bool getVersionFromFile(const std::string& fileName, CVersion & latest)
 {
+
   latest = CVersion::VERSION;
 
+#if QT_VERSION >= 0x050000
   QFile file(fileName.c_str());
 
   if (!file.open(QIODevice::ReadOnly))
@@ -4090,7 +4108,7 @@ bool getVersionFromFile(const std::string& fileName, CVersion & latest)
   if (Version.empty()) return false;
 
   latest.setVersion(Version.substr(7));
-
+#endif
   return true;
 }
 
