@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8795,11 +8795,11 @@ std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUni
     return previousExpression;
 
   // otherwise
-  CUnit copasiUnit;
+  CUnit copasiUnit("1");
 
   for (size_t i = 0; i < pSBMLUnit->getNumUnits(); ++i)
     {
-      const Unit* current = pSBMLUnit->getUnit(i);
+      const Unit * current = pSBMLUnit->getUnit(i);
       std::string symbol = unitKindToString(current->getKind());
 
       // skip invalid / unsupported
@@ -8811,9 +8811,14 @@ std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUni
         CUnitComponent(
           CBaseUnit::dimensionless,
           current->getMultiplier(),
-          current->getScale()));
-      copasiUnit = copasiUnit.getComponents().empty() ? tmp :  copasiUnit * tmp;
+          current->getScale() * current->getExponentAsDouble()));
+
+      tmp.buildExpression();
+      tmp.compile();
+
+      copasiUnit = copasiUnit * tmp;
     }
+
 
   // construct expression
   copasiUnit.buildExpression();
