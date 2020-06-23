@@ -103,6 +103,7 @@ void CQTimeSeriesDM::setTimeSeries(const CTimeSeries *pTimeSeries)
 {
   beginResetModel();
   mpTimeSeries = pTimeSeries;
+  mFetched = std::min(mFetchLimit, size());
   endResetModel();
   //reset();
 }

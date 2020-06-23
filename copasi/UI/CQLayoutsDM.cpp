@@ -275,6 +275,7 @@ void CQLayoutsDM::setListOfLayouts(CListOfLayouts *pListOfLayouts)
     {
       beginResetModel();
       mpListOfLayouts = pListOfLayouts;
+      mFetched = std::min(mFetchLimit, size());
       endResetModel();
       //reset();
     }
