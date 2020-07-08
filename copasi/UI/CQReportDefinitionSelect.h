@@ -1,12 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinitionSelect.h,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/20 16:26:55 $
-// End CVS Header
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,7 +28,7 @@ class CQReportDefinitionSelect: public QDialog, public Ui::CQReportDefinitionSel
   Q_OBJECT
 
 public:
-  CQReportDefinitionSelect(QWidget * parent = 0, Qt::WindowFlags f = 0);
+  CQReportDefinitionSelect(QWidget * parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
 
   virtual ~CQReportDefinitionSelect();
 

@@ -1,11 +1,11 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
+// Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
 // All rights reserved.
 
 #ifndef COPASI_CQMultipleSelectionDialog
@@ -22,15 +22,14 @@ class CQMultipleSelectionDialog: public QDialog, public Ui::CQMultipleSelectionD
   Q_OBJECT
 
 public:
-  CQMultipleSelectionDialog(QWidget * parent = 0, Qt::WindowFlags f = 0);
+  CQMultipleSelectionDialog(QWidget * parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
   virtual ~CQMultipleSelectionDialog();
 
   void setSelectionList(const QStringList &selectionList);
-  
-  void setCurrentSelection(const QStringList &list);
-    
-  const QStringList & getSelection() const;
 
+  void setCurrentSelection(const QStringList &list);
+
+  const QStringList & getSelection() const;
 
 protected slots:
   virtual void accept();

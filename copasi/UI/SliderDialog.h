@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,7 +57,7 @@ class SliderDialog: public CWindowInterface, public Ui::SliderDialog
   Q_OBJECT
 
 public:
-  SliderDialog(QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0);
+  SliderDialog(QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = Qt::WindowFlags());
   virtual ~SliderDialog();
   void addSlider(CSlider* slider);
   void setCurrentFolderId(ListViews::WidgetType id);

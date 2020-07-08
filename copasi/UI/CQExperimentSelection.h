@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -38,7 +38,7 @@ class CQExperimentSelection : public QDialog, public Ui::CQExperimentSelection
   Q_OBJECT
 
 public:
-  CQExperimentSelection(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0);
+  CQExperimentSelection(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = Qt::WindowFlags());
   ~CQExperimentSelection();
 
   virtual void load(QComboBox * pBox, const CExperimentSet * pExperimentSet);
@@ -46,7 +46,7 @@ public:
 
 protected:
   QComboBox * mpBox;
-  bool mIsSingleSelection { false };
+  bool mIsSingleSelection {false };
 
 protected slots:
 
@@ -55,10 +55,8 @@ protected slots:
   void slotBtnAll();
   void slotBtnNone();
 
-
 private:
   void init();
-
 };
 
 #endif // CQEXPERIMENTSELECTION_H

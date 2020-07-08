@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,7 +24,7 @@ class CQUndoDialog : public QDialog, public Ui::CQUndoDialog
   Q_OBJECT
 
 public:
-  CQUndoDialog(CDataModel * pDataModel, QWidget *parent = 0, Qt::WindowFlags f = 0);
+  CQUndoDialog(CDataModel * pDataModel, QWidget *parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
 
   virtual ~CQUndoDialog();
 

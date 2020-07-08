@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,7 +27,7 @@ class CQAnimationSettingsEditor : public QDialog, public Ui::CQAnimationSettings
 {
   Q_OBJECT
 public:
-  CQAnimationSettingsEditor(QWidget *parent = 0, Qt::WindowFlags f = 0);
+  CQAnimationSettingsEditor(QWidget *parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
   virtual ~CQAnimationSettingsEditor();
   void initFrom(CQCopasiAnimation* other);
   void saveTo(CQCopasiAnimation* target);

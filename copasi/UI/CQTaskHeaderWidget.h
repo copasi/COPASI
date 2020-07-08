@@ -1,14 +1,25 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskHeaderWidget.h,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/10/17 12:24:43 $
-// End CVS Header
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef COPASI_CQTaskHeaderWidget
@@ -25,7 +36,7 @@ class CQTaskHeaderWidget: public QWidget, public Ui::CQTaskHeaderWidget
   Q_OBJECT
 
 public:
-  CQTaskHeaderWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
+  CQTaskHeaderWidget(QWidget* parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
 
   virtual ~CQTaskHeaderWidget();
 

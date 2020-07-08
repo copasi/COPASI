@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,7 +28,7 @@ class CQSpringLayoutParameterWindow : public QDockWidget
 {
   Q_OBJECT
 public:
-  CQSpringLayoutParameterWindow(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
+  CQSpringLayoutParameterWindow(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = Qt::WindowFlags());
   virtual ~CQSpringLayoutParameterWindow();
   CCopasiSpringLayout::Parameters& getLayoutParameters();
 
