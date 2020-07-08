@@ -45,7 +45,7 @@
 #endif // HAVE_MML
 
 #ifdef DEBUG_UI
-#include <QtCoe/QtDebug>
+#include <QtCore/QtDebug>
 #endif
 
 /*
@@ -85,13 +85,13 @@ void CQExpressionMmlStackedWidget::slotGoExpressionWidget()
 {
 #ifdef DEBUG_UI
   qDebug() << "- here on CQExpressionMmlStackedWidget::slotGoExpressionWidget() -";
-  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->text() = " << mpExpressionWidget->text();
+  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->getExpression() = " << mpExpressionWidget->getExpression().c_str();
 #endif
 
   setCurrentWidget(mpExpressionPage);
 
 #ifdef DEBUG_UI
-  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->text() = " << mpExpressionWidget->text();
+  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->getExpression() = " << mpExpressionWidget->getExpression().c_str();;
   qDebug() << "L" << __LINE__ << " on CQEMSW: activeWidget NEW = " << currentIndex();
 #endif
 }
@@ -99,13 +99,13 @@ void CQExpressionMmlStackedWidget::slotGoExpressionWidget()
 void CQExpressionMmlStackedWidget::slotGoMmlWidget()
 {
 #ifdef DEBUG_UI
-  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->text() = " << mpExpressionWidget->text();
+  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->getExpression() = " << mpExpressionWidget->getExpression().c_str();;
 #endif
 
   setCurrentWidget(mpMmlPage);
 
 #ifdef DEBUG_UI
-  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->text() = " << mpExpressionWidget->text();
+  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->getExpression() = " << mpExpressionWidget->getExpression().c_str();;
   qDebug() << "L" << __LINE__ << " on CQEMSW: activeWidget NEW = " << currentIndex();
 #endif
 }
@@ -122,7 +122,7 @@ void CQExpressionMmlStackedWidget::updateWidget()
   std::vector<std::vector<std::string> > params;
 
 #ifdef DEBUG_UI
-  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->text() = " << mpExpressionWidget->text();
+  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->getExpression() = " << mpExpressionWidget->getExpression().c_str();;
   qDebug() << "L" << __LINE__ << " on CQEMSW: activeWidget NEW = " << currentIndex();
 #endif
 
@@ -163,7 +163,7 @@ QString CQExpressionMmlStackedWidget::getText()
 void CQExpressionMmlStackedWidget::init()
 {
 #ifdef DEBUG_UI
-  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->text() = " << mpExpressionWidget->text();
+  qDebug() << "L" << __LINE__ << " on CQEMSW mpExpressionWidget->getExpression() = " << mpExpressionWidget->getExpression().c_str();;
   qDebug() << "L" << __LINE__ << " on CQEMSW: activeWidget = " << currentIndex();
 #endif
 
@@ -199,7 +199,7 @@ void CQExpressionMmlStackedWidget::slotSaveExpression()
     }
 
 #ifdef DEBUG_UI
-  qDebug() << "\non CQEMSW::slotSaveExpression -> filter = " << *filter << "\n";
+  qDebug() << "\non CQEMSW::slotSaveExpression -> filter = " << filter << "\n";
 #endif
 
   if (filter.contains(".tex"))
