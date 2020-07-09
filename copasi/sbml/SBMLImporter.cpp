@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,10 +21,6 @@
 // Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-
-
-
 
 #ifdef WIN32
 # pragma warning (disable: 4786)
@@ -213,7 +209,6 @@ class SbmlProgressCallback
 };
 
 #endif
-
 
 std::string unitKindToString(UnitKind_t kind);
 
@@ -585,7 +580,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
       if (this->mLevel > 2)
         {
           // issue a warning
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "substance", "mole" , "substance");
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "substance", "mole", "substance");
         }
 
       // create the default units
@@ -604,7 +599,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
       if (this->mLevel > 2)
         {
           // issue a warning
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "time", "second" , "time");
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "time", "second", "time");
         }
 
       // create the default units
@@ -623,7 +618,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
       if (this->mLevel > 2)
         {
           // issue a warning
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "volume", "litre" , "volume");
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "volume", "litre", "volume");
         }
 
       // create the default units
@@ -642,7 +637,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
       if (this->mLevel > 2)
         {
           // issue a warning
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "area", "m^2" , "area");
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "area", "m^2", "area");
         }
 
       // create the default units
@@ -661,7 +656,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
       if (this->mLevel > 2)
         {
           // issue a warning
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "length", "m" , "length");
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "length", "m", "length");
         }
 
       // create the default units
@@ -1127,7 +1122,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         return NULL;
     }
 
-
   // set the hasOnlySubstanceUnits flag on all species with zero compartment spatial dimension
   std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
   std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
@@ -1137,7 +1131,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       it->first->setHasOnlySubstanceUnits(true);
       ++it;
     }
-
 
   /* Create all species */
   num = sbmlModel->getNumSpecies();
@@ -1197,7 +1190,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         }
       else
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 5 , sbmlSpecies->getCompartment().c_str(), sbmlSpecies->getId().c_str());
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 5, sbmlSpecies->getCompartment().c_str(), sbmlSpecies->getId().c_str());
         }
 
       ++mCurrentStepCounter;
@@ -1577,20 +1570,18 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (this->mRateRuleForSpeciesReferenceIgnored == true)
     {
-      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 94 , "Rate rule" , "Rate rule");
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 94, "Rate rule", "Rate rule");
     }
 
   if (this->mEventAssignmentForSpeciesReferenceIgnored == true)
     {
-      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 94 , "Event assignment", "event assignment");
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 94, "Event assignment", "event assignment");
     }
 
   if (this->mConversionFactorFound == true)
     {
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 100);
     }
-
-
 
   // unset the hasOnlySubstanceUnits flag on all species that had it set
   it = this->mSubstanceOnlySpecies.begin();
@@ -1601,9 +1592,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       it->first->setHasOnlySubstanceUnits(false);
       ++it;
     }
-
-
-
 
   // Before we set anything we compile the model.
   if (createProgressStepOrStop(13,
@@ -2742,7 +2730,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       hasOnlySubstanceUnitPresent = hasOnlySubstanceUnitPresent ||
                                     (compartment != NULL && compartment->getDimensionality() == 0);
 
-
       // we need to store the id of the species reference if it is set because SBML Level 3 allows
       // references to species references and if we want to support his, we need the id to import
       // expressions that reference a species reference
@@ -3500,7 +3487,6 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
   // error in case external references can't be resolved.
   sbmlDoc->setLocationURI(mpDataModel->getReferenceDirectory());
 
-
   unsigned int checkResult = sbmlDoc->getNumErrors(LIBSBML_SEV_ERROR);
 
   try
@@ -3510,7 +3496,6 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
   catch (...)
     {
     }
-
 
   sbmlDoc->setLocationURI(mpDataModel->getReferenceDirectory());
 
@@ -3594,7 +3579,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_FATAL:
 
-                // treat unknown as fatal
+              // treat unknown as fatal
               default:
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
@@ -5839,7 +5824,7 @@ CEvaluationTree* SBMLImporter::createExpressionFromFunction(const CFunction* pFu
 
   if (pFunParams.size() == functionArgumentCNs.size())
     {
-      std::map<std::string , std::string> variable2CNMap;
+      std::map<std::string, std::string> variable2CNMap;
       size_t i, iMax = pFunParams.size();
 
       for (i = 0; i < iMax; ++i)
@@ -6243,7 +6228,6 @@ bool SBMLImporter::isSimpleFunctionCall(const CEvaluationNode* pRootNode)
   return result;
 }
 
-
 bool SBMLImporter::divideByVolume(ASTNode* node, const std::string& compartmentSBMLId)
 {
   ASTNode* nodeIt = node;
@@ -6295,7 +6279,6 @@ bool SBMLImporter::divideByVolume(ASTNode* node, const std::string& compartmentS
           if (nodeStack.size() == 0)
             finished = true;
         }
-
     }
   while (!finished);
 
@@ -6309,14 +6292,16 @@ bool SBMLImporter::divideByVolume(ASTNode* node, const std::string& compartmentS
     return false;
 
   //that means a parent should exist.
-  ASTNode* parentNode = nodeStack[nodeStack.size() - 1];
-
+  ASTNode* parentNode = nodeStack.back();
 
   //the case where the parent is TIMES and has at least 2 children: just remove the node
   //  (accepting that it may result in a multiplication with one child)
   if (parentNode->getType() == AST_TIMES && parentNode->getNumChildren() > 1)
     {
-      parentNode->removeChild(intStack[intStack.size() - 1]);
+      int childIndex = intStack.back();
+      ASTNode* childNode = parentNode->getChild(childIndex);
+      parentNode->removeChild(childIndex);
+      delete childNode;
       return true;
     }
 
@@ -6328,7 +6313,6 @@ bool SBMLImporter::divideByVolume(ASTNode* node, const std::string& compartmentS
   // - (Volume node at top level can be replaced by "1", this cannot be implemented within this method)
 
   return false;
-
 }
 
 CEvaluationNode* SBMLImporter::variables2objects(const CEvaluationNode* pOrigNode, const std::map<std::string, std::string>& replacementMap)
@@ -6338,7 +6322,7 @@ CEvaluationNode* SBMLImporter::variables2objects(const CEvaluationNode* pOrigNod
 
   if (dynamic_cast<const CEvaluationNodeVariable*>(pOrigNode))
     {
-      std::map<std::string , std::string>::const_iterator pos = replacementMap.find(pOrigNode->getData());
+      std::map<std::string, std::string>::const_iterator pos = replacementMap.find(pOrigNode->getData());
 
       if (pos == replacementMap.end()) fatalError();
 
@@ -6837,11 +6821,11 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
                   {
                     if (ruleType == CModelEntity::Status::ASSIGNMENT)
                       {
-                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "AssignmentRule", "Compartment", sbmlId.c_str());
+                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34, "AssignmentRule", "Compartment", sbmlId.c_str());
                       }
                     else if (ruleType == CModelEntity::Status::ODE)
                       {
-                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "RateRule", "Compartment", sbmlId.c_str());
+                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34, "RateRule", "Compartment", sbmlId.c_str());
                       }
                     else
                       {
@@ -6872,11 +6856,11 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
                   {
                     if (ruleType == CModelEntity::Status::ASSIGNMENT)
                       {
-                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "AssignmentRule", "Species", sbmlId.c_str());
+                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34, "AssignmentRule", "Species", sbmlId.c_str());
                       }
                     else if (ruleType == CModelEntity::Status::ODE)
                       {
-                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "RateRule", "Species", sbmlId.c_str());
+                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34, "RateRule", "Species", sbmlId.c_str());
                       }
                     else
                       {
@@ -6908,11 +6892,11 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
                   {
                     if (ruleType == CModelEntity::Status::ASSIGNMENT)
                       {
-                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "AssignmentRule", "Parameter", sbmlId.c_str());
+                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34, "AssignmentRule", "Parameter", sbmlId.c_str());
                       }
                     else if (ruleType == CModelEntity::Status::ODE)
                       {
-                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "RateRule", "Parameter", sbmlId.c_str());
+                        CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34, "RateRule", "Parameter", sbmlId.c_str());
                       }
                     else
                       {
@@ -6988,11 +6972,11 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
       // issue a warning
       if (ruleType == CModelEntity::Status::ASSIGNMENT)
         {
-          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 32, "AssignmentRule" , sbmlId.c_str());
+          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 32, "AssignmentRule", sbmlId.c_str());
         }
       else if (ruleType == CModelEntity::Status::ODE)
         {
-          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 32, "RateRule" , sbmlId.c_str());
+          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 32, "RateRule", sbmlId.c_str());
         }
       else
         {
@@ -7054,7 +7038,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, const CModelEntity
           id = pos->second->getId();
         }
 
-      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 58 , "rule", id.c_str());
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 58, "rule", id.c_str());
       return;
     }
 
@@ -7113,7 +7097,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, const CModelEntity
         {
           // if it is an assignment rule we do nothing, if it is an ode rule,
           // we need to issue a warning or an error
-          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 51 , pSBMLSpecies->getId().c_str());
+          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 51, pSBMLSpecies->getId().c_str());
         }
     }
 
@@ -8099,7 +8083,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
         }
 
       std::string s = os.str();
-      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 24 , s.substr(0, s.size() - 2).c_str());
+      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 24, s.substr(0, s.size() - 2).c_str());
       // check if the default units have been used for any of the compartments
       // if so, the models has to use the defaults, otherwise we can just
       // choose one
@@ -8477,7 +8461,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       if (!areSBMLUnitDefinitionsIdentical(pUdef, pUdef2))
         {
           // warning
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 78 , "substance", "substance", "substance");
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 78, "substance", "substance", "substance");
         }
 
       delete pUdef2;
@@ -8536,7 +8520,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       if (!areSBMLUnitDefinitionsIdentical(pUdef, pUdef2))
         {
           // warning
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 78 , "time", "time", "time");
+          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 78, "time", "time", "time");
         }
 
       delete pUdef2;
@@ -9492,7 +9476,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<const CD
             }
           else
             {
-              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 57 , "InitialAssignment", symbol.c_str());
+              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 57, "InitialAssignment", symbol.c_str());
             }
         }
 
@@ -10448,7 +10432,6 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
               assert(pMetab != NULL);
               const CCompartment* pCompartment = pMetab->getCompartment();
 
-
               CEvaluationNode* pOrigNode = pExpression->getRoot();
               assert(pOrigNode != NULL);
               CEvaluationNode* pNode = SBMLImporter::divideByObject(pOrigNode, pCompartment->getValueReference());
@@ -10462,7 +10445,6 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
                 {
                   fatalError();
                 }
-
             }
 
           pAssignment = new CEventAssignment(pObject->getKey(), pCOPASIEvent);

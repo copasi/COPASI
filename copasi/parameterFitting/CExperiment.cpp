@@ -970,7 +970,7 @@ bool CExperiment::read(std::istream & in,
           continue;
         }
 
-      bool isFirstRow = (currentLine == (*mpHeaderRow + 1)) || (*mpHeaderRow == C_INVALID_INDEX && currentLine == 1);
+      bool isFirstRow = (currentLine == (*mpHeaderRow + 1)) || (*mpHeaderRow == InvalidIndex && currentLine == 1);
 
       IndependentCount = 0;
       DependentCount = 0;
