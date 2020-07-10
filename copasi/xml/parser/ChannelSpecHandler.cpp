@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -96,6 +96,7 @@ bool ChannelSpecHandler::processEnd(const XML_Char * pszName)
     {
       case ChannelSpec:
         mpData->pCurrentPlotItem->getChannels().push_back(*(mpData->pCurrentChannelSpec));
+        pdelete(mpData->pCurrentChannelSpec);
         finished = true;
         break;
 
