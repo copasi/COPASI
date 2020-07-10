@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,7 +51,7 @@ std::pair< QString, std::pair< unsigned C_INT32, unsigned C_INT32 > > CQSEDMLFil
 
   // We need to avoid the KDE dialog at least under Qt 4.7 and KDE 4.5
   // See: Bug 1651
-  QFileDialog::Options DontUseNativeDialog = 0;
+  QFileDialog::Options DontUseNativeDialog = QFileDialog::Options();
 
 #ifdef Linux
   DontUseNativeDialog = QFileDialog::DontUseNativeDialog;

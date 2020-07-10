@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -491,6 +491,14 @@ public:
    */
   static bool areEqualSubtrees(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2);
 
+  /**
+   * Converts the given SBML unit to a COPASI Unit
+   * @param pSBMLUnit the SBML unit
+   * @return a string corresponding to the unit
+   */
+  std::string createUnitExpressionFor(const UnitDefinition * pSBMLUnit);
+
+
 protected:
   std::vector<CEvaluationNodeObject*>* isMassAction(const CEvaluationTree* pTree,
       const CChemEq& chemicalEquation,
@@ -612,13 +620,6 @@ protected:
                          CModel* pCopasiModel,
                          int level,
                          int version);
-
-  /**
-   * Converts the given SBML unit to a COPASI Unit
-   * @param pSBMLUnit the SBML unit
-   * @return a string corresponding to the unit
-   */
-  std::string createUnitExpressionFor(const UnitDefinition* pSBMLUnit);
 
   /**
    * If the given UnitDefinition can be converted to a form of litre, the

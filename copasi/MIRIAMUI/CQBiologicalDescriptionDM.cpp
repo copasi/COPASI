@@ -34,6 +34,7 @@ void CQBiologicalDescriptionDM::setMIRIAMInfo(CMIRIAMInfo * pMiriamInfo)
 {
   beginResetModel();
   mpMIRIAMInfo = pMiriamInfo;
+  mFetched = std::min(mFetchLimit, size());
   endResetModel();
 }
 

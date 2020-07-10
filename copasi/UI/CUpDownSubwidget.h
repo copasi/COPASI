@@ -1,4 +1,14 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,7 +33,7 @@ class CUpDownSubwidget : public QWidget, public Ui::CUpDownSubwidget
   Q_OBJECT
 
 public:
-  CUpDownSubwidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
+  CUpDownSubwidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = Qt::WindowFlags());
   ~CUpDownSubwidget();
 
   virtual int getIndex() const;
@@ -177,9 +187,13 @@ protected:
     switch (id)
       {
         case image0_ID:  {QImage img; img.loadFromData(image0_data, sizeof(image0_data), "PNG"); return QPixmap::fromImage(img);}
+
         case image1_ID:  {QImage img; img.loadFromData(image1_data, sizeof(image1_data), "PNG"); return QPixmap::fromImage(img);}
+
         case image2_ID:  {QImage img; img.loadFromData(image2_data, sizeof(image2_data), "PNG"); return QPixmap::fromImage(img);}
+
         case image3_ID:  {QImage img; img.loadFromData(image3_data, sizeof(image3_data), "PNG"); return QPixmap::fromImage(img);}
+
         default: return QPixmap();
       } // switch
   } // icon

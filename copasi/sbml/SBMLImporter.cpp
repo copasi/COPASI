@@ -8779,11 +8779,11 @@ std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUni
     return previousExpression;
 
   // otherwise
-  CUnit copasiUnit;
+  CUnit copasiUnit("1");
 
   for (size_t i = 0; i < pSBMLUnit->getNumUnits(); ++i)
     {
-      const Unit* current = pSBMLUnit->getUnit(i);
+      const Unit * current = pSBMLUnit->getUnit(i);
       std::string symbol = unitKindToString(current->getKind());
 
       // skip invalid / unsupported
@@ -8795,9 +8795,14 @@ std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUni
         CUnitComponent(
           CBaseUnit::dimensionless,
           current->getMultiplier(),
-          current->getScale()));
-      copasiUnit = copasiUnit.getComponents().empty() ? tmp :  copasiUnit * tmp;
+          current->getScale() * current->getExponentAsDouble()));
+
+      tmp.buildExpression();
+      tmp.compile();
+
+      copasiUnit = copasiUnit * tmp;
     }
+
 
   // construct expression
   copasiUnit.buildExpression();

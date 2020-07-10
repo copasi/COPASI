@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -25,7 +30,7 @@
 
 
 import org.COPASI.*;
-import java.util.Random;
+import java.io.*;
 
 public class example6
 {
@@ -76,9 +81,6 @@ public class example6
         problem.setDuration(400);
         // tell the problem to actually generate time series data
         problem.setTimeSeriesRequested(true);
-
-        // set some parameters for the LSODA method through the method
-        CTrajectoryMethod method = (CTrajectoryMethod)trajectoryTask.getMethod();
 
         boolean result=true;
         try
@@ -132,9 +134,10 @@ public class example6
         // the first variable in a time series is a always time, for the rest
         // of the variables, we use the SBML id in the header
         double random=0.0;
-        try
+        FileWriter os = null;
+        try        
         {
-          java.io.FileWriter os=new java.io.FileWriter("fakedata_example6.txt");
+          os=new FileWriter("fakedata_example6.txt");
           os.write("# time ");
           CKeyFactory keyFactory=CRootContainer.getKeyFactory();
           assert keyFactory != null;
@@ -188,6 +191,14 @@ public class example6
             System.err.println("Error. Could not write time course data to file.");
             System.out.println(e.getMessage());
             System.exit(1);
+        }
+        if (os != null)
+        {
+        	try {
+				os.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         }
         
         // now we change the parameter values to see if the parameter fitting

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,7 +28,7 @@ class Curve2DWidget : public CQPlotEditWidget, public Ui::Curve2DWidget
   Q_OBJECT
 
 public:
-  Curve2DWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
+  Curve2DWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = Qt::WindowFlags());
   ~Curve2DWidget();
 
   virtual bool LoadFromCurveSpec(const CPlotItem * curve);

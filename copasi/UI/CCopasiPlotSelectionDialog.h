@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -48,7 +48,7 @@ class CCopasiPlotSelectionDialog: public QDialog
   Q_OBJECT
 
 public:
-  CCopasiPlotSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = false, Qt::WindowFlags f = 0);
+  CCopasiPlotSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = false, Qt::WindowFlags f = Qt::WindowFlags());
   ~CCopasiPlotSelectionDialog();
   void setOutputVectors(std::vector< const CDataObject * > *outputVector1,
                         std::vector< const CDataObject * > *outputVector2);

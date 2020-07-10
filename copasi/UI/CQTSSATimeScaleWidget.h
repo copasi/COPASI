@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,7 +34,7 @@ class PaintWidget : public QWidget
   Q_OBJECT
 
 public:
-  PaintWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
+  PaintWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = Qt::WindowFlags());
   ~PaintWidget();
 
   void paintTimeScale(int select);
@@ -49,7 +54,7 @@ class CQTSSATimeScaleWidget : public QWidget
   Q_OBJECT
 
 public:
-  CQTSSATimeScaleWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
+  CQTSSATimeScaleWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = Qt::WindowFlags());
   ~CQTSSATimeScaleWidget();
 
   void paintTimeScale(CVector< C_FLOAT64> vector);

@@ -2698,7 +2698,7 @@ void CopasiUI3Window::slotMergeModels()
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, std::string());
   assert(mpDataModel != NULL);
   CModel *pModel = mpDataModel->getModel();
-  CQMergingData *widget = new CQMergingData(NULL, pModel, 0);
+  CQMergingData *widget = new CQMergingData(NULL, pModel, Qt::WindowFlags());
   widget->exec();
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, std::string());
 }
@@ -3774,7 +3774,6 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
   mpDataModelGUI->downloadFileFromUrl(TO_UTF8(url), TmpFileName);
 }
 
-
 void CopasiUI3Window::activateElement(const std::string& activate)
 {
   // resolve display name first
@@ -3818,7 +3817,7 @@ void CopasiUI3Window::removeReportTargets()
   auto& taskList = *mpDataModel->getTaskList();
   std::stringstream str;
 
-for (auto & task : taskList)
+  for (auto & task : taskList)
     {
       std::string target = task.getReport().getTarget();
 

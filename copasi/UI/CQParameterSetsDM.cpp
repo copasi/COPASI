@@ -283,6 +283,7 @@ void CQParameterSetsDM::setListOfModelParameterSets(CDataVectorN< CModelParamete
     {
       beginResetModel();
       mpListOfParameterSets = pListOfModelParameterSets;
+      mFetched = std::min(mFetchLimit, size());
       endResetModel();
       //reset();
     }
