@@ -120,6 +120,8 @@ QVariant CQEFMNetReactionDM::headerData(int section, Qt::Orientation orientation
 
 void CQEFMNetReactionDM::setTask(const CEFMTask * pTask)
 {
+  beginResetModel();
+
   mpTask = pTask;
 
   if (mpTask != NULL)
@@ -131,6 +133,9 @@ void CQEFMNetReactionDM::setTask(const CEFMTask * pTask)
     {
       mModesSize = 0;
     }
+
+  mFetched = std::min(mFetchLimit, mModesSize);
+  endResetModel();
 }
 
 bool CQEFMNetReactionDM::setData(const QModelIndex & /* index */, const QVariant & /* value */, int /* role */)
