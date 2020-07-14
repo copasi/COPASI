@@ -37,10 +37,11 @@ template < class CType > class CDataVector;
 #define COL_NUMBER                8
 #define COL_CRATE                 9
 #define COL_NRATE                10
-#define COL_IEXPRESSION_SPECIES  11
-#define COL_EXPRESSION_SPECIES   12
-#define COL_NEXPRESSION_SPECIES  13
-#define TOTAL_COLS_SPECIES       14
+#define COL_COUNT_REACTIONS      11
+#define COL_IEXPRESSION_SPECIES  12
+#define COL_EXPRESSION_SPECIES   13
+#define COL_NEXPRESSION_SPECIES  14
+#define TOTAL_COLS_SPECIES       15
 
 class CQSpecieDM : public CQBaseDataModel
 {

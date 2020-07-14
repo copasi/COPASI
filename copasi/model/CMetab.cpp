@@ -654,6 +654,23 @@ bool CMetab::isDependent() const
 const CMoiety * CMetab::getMoiety() const
 {return mpMoiety;}
 
+size_t CMetab::getCountOfDependentReactions() const
+{
+  if (mpModel == NULL)
+    return 0;
+
+  CDataObject::DataObjectSet DependentReactions;
+  CDataObject::DataObjectSet DependentMetabolites;
+  CDataObject::DataObjectSet DependentCompartments;
+  CDataObject::DataObjectSet DependentModelValues;
+  CDataObject::DataObjectSet DependentEvents;
+  CDataObject::DataObjectSet DependentEventAssignments;
+
+  mpModel->appendDirectDependents(*this, DependentReactions, DependentMetabolites, DependentCompartments, DependentModelValues, DependentEvents, DependentEventAssignments, true);
+
+  return DependentReactions.size();
+}
+
 //******************* CMetabOld ***************************************************
 
 // static
