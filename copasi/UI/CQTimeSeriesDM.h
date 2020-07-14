@@ -46,6 +46,7 @@ public:
   void setFramework(int framework);
 
 protected:
+  virtual void resetCacheProtected() override;
   virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
   virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
   virtual size_t size() const override;

@@ -232,6 +232,10 @@ bool CQFunctionDM::setData(const QModelIndex &index, const QVariant &value,
   return true;
 }
 
+// virtual
+void CQFunctionDM::resetCacheProtected()
+{}
+
 bool CQFunctionDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
   beginInsertRows(parent, position, position + rows - 1);

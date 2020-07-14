@@ -70,7 +70,7 @@ public:
   void fetchMore(const QModelIndex &parent) override;
 
 protected:
-  virtual void resetCacheProtected();
+  virtual void resetCacheProtected() override;
 
 signals:
   void signalOpenEditor(const QModelIndex &) const;

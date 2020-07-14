@@ -48,8 +48,8 @@ public:
   virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 
   virtual bool clear();
-  virtual void resetCacheProtected();
 protected:
+  virtual void resetCacheProtected() override;
   virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
   virtual size_t size() const override;
 

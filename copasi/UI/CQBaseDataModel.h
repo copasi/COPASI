@@ -64,7 +64,7 @@ public slots:
   void resetCache();
 
 protected:
-  virtual void resetCacheProtected();
+  virtual void resetCacheProtected() = 0;
   virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex()) = 0;
   virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) = 0;
   virtual size_t size() const = 0;

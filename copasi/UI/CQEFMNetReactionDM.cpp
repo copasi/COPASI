@@ -30,14 +30,13 @@
 CQEFMNetReactionDM::CQEFMNetReactionDM(QObject *parent):
   CQBaseDataModel(parent, NULL),
   mpTask(NULL),
-  mBeginModes(),
-  mModesSize(0)
+  mBeginModes()
 {}
 
 size_t CQEFMNetReactionDM::size() const
 {
   if (mpTask != NULL)
-    return mModesSize;
+    return mpTask->getFluxModes().size();
 
   return 0;
 }
@@ -125,16 +124,10 @@ void CQEFMNetReactionDM::setTask(const CEFMTask * pTask)
   mpTask = pTask;
 
   if (mpTask != NULL)
-    {
-      mBeginModes = mpTask->getFluxModes().begin();
-      mModesSize = mpTask->getFluxModes().size();
-    }
-  else
-    {
-      mModesSize = 0;
-    }
+    mBeginModes = mpTask->getFluxModes().begin();
 
-  mFetched = std::min(mFetchLimit, mModesSize);
+  mFetched = std::min(mFetchLimit, size());
+
   endResetModel();
 }
 
@@ -142,6 +135,10 @@ bool CQEFMNetReactionDM::setData(const QModelIndex & /* index */, const QVariant
 {
   return false;
 }
+
+// virtual
+void CQEFMNetReactionDM::resetCacheProtected()
+{}
 
 // virtual
 bool CQEFMNetReactionDM::insertRows(int /* position */, int /* rows */, const QModelIndex & /* index */)

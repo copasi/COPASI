@@ -49,7 +49,7 @@ public:
 protected:
   virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
   virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
-  virtual void resetCacheProtected();
+  virtual void resetCacheProtected() override;
   virtual size_t size() const override;
 
   CMIRIAMInfo* mpMIRIAMInfo;

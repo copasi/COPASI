@@ -33,7 +33,6 @@ CQEFMSpeciesDM::CQEFMSpeciesDM(QObject *parent):
   CQBaseDataModel(parent, NULL),
   mpTask(NULL),
   mBeginModes(),
-  mModesSize(0),
   mpModel(NULL),
   mBeginSpecies(),
   mSpeciesSize(0)
@@ -42,7 +41,7 @@ CQEFMSpeciesDM::CQEFMSpeciesDM(QObject *parent):
 size_t CQEFMSpeciesDM::size() const
 {
   if (mpTask != NULL)
-    return mModesSize;
+    return mpTask->getFluxModes().size();
 
   return 0;
 }
@@ -140,7 +139,6 @@ void CQEFMSpeciesDM::setTask(const CEFMTask * pTask)
   if (mpTask != NULL)
     {
       mBeginModes = mpTask->getFluxModes().begin();
-      mModesSize = mpTask->getFluxModes().size();
 
       mpModel = &mpTask->getMathContainer()->getModel();
 
@@ -156,12 +154,12 @@ void CQEFMSpeciesDM::setTask(const CEFMTask * pTask)
     }
   else
     {
-      mModesSize = 0;
       mpModel = NULL;
       mSpeciesSize = 0;
     }
 
-  mFetched = std::min(mFetchLimit, mModesSize);
+  mFetched = std::min(mFetchLimit, size());
+
   endResetModel();
 }
 
@@ -169,6 +167,10 @@ bool CQEFMSpeciesDM::setData(const QModelIndex & /* index */, const QVariant & /
 {
   return false;
 }
+
+// virtual
+void CQEFMSpeciesDM::resetCacheProtected()
+{}
 
 // virtual
 bool CQEFMSpeciesDM::insertRows(int /* position */, int /* rows */, const QModelIndex & /* index */)

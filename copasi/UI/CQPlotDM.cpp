@@ -224,6 +224,10 @@ bool CQPlotDM::setData(const QModelIndex &index, const QVariant &value,
   return true;
 }
 
+// virtual
+void CQPlotDM::resetCacheProtected()
+{}
+
 bool CQPlotDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
   beginInsertRows(parent, position, position + rows - 1);
