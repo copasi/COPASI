@@ -126,7 +126,7 @@ QValidator::State CQValidatorExpression::validate(QString & input, int & pos) co
   // The input is the display version of the infix string.
   // We must first convert the display string to infix.
   CQExpressionWidget * pExpressionWidget =
-    static_cast< CQExpressionWidget * >(parent());
+    dynamic_cast< CQExpressionWidget * >(parent());
 
   if (pExpressionWidget != NULL)
     {
@@ -175,7 +175,7 @@ QValidator::State CQValidatorFunction::validate(QString & input, int & pos) cons
   // We must first convert the display string to infix.
   State CurrentState = Invalid;
   CQExpressionWidget * pExpressionWidget =
-    static_cast< CQExpressionWidget * >(parent());
+    dynamic_cast< CQExpressionWidget * >(parent());
 
   if (pExpressionWidget != NULL)
     {
