@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -41,9 +41,9 @@ public:
   virtual int getNumSteps();
   ScaleMode getScaleMode() const;
   void setScaleMode(ScaleMode mode);
-  std::vector<CQEffectDescription*>& getEntries();
+  std::vector<CQEffectDescription>& getEntries();
 protected:
-  std::vector<CQEffectDescription*> mEntries;
+  std::vector<CQEffectDescription> mEntries;
   const CDataModel* mpDataModel;
   ScaleMode mMode;
   int mNumSteps; // populate with the number of steps

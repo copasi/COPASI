@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,6 +37,8 @@ public:
 
   const std::string& getCN()const;
   void setCN(const std::string& cn);
+
+  std::string getDisplayName() const;
 
   const QColor& getStartColor() const;
   void setStartColor(const QColor& color);

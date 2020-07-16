@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,18 +25,10 @@ CQCopasiAnimation::CQCopasiAnimation():
 
 CQCopasiAnimation::~CQCopasiAnimation()
 {
-  std::vector<CQEffectDescription*>::iterator it = mEntries.begin();
-
-  while (it != mEntries.end())
-    {
-      delete *it;
-      ++it;
-    }
-
   mEntries.clear();
 }
 
-std::vector<CQEffectDescription*>& CQCopasiAnimation::getEntries()
+std::vector<CQEffectDescription>& CQCopasiAnimation::getEntries()
 {
   return mEntries;
 }
@@ -48,11 +40,11 @@ int CQCopasiAnimation::getNumSteps()
 
 void CQCopasiAnimation::removeFromScene(CQLayoutScene& scene)
 {
-  std::vector<CQEffectDescription*>::iterator it = mEntries.begin();
+  std::vector<CQEffectDescription>::iterator it = mEntries.begin();
 
   while (it != mEntries.end())
     {
-      (*it)->removeFromScene(scene);
+      (*it).removeFromScene(scene);
       ++it;
     }
 }
@@ -60,7 +52,7 @@ void CQCopasiAnimation::removeFromScene(CQLayoutScene& scene)
 void CQCopasiAnimation::getScales(std::vector<qreal>& scales, int step) //= 0;
 {
   scales.clear();
-  std::vector<CQEffectDescription*>::iterator it = mEntries.begin();
+  std::vector<CQEffectDescription>::iterator it = mEntries.begin();
 
   while (it != mEntries.end())
     {
@@ -77,7 +69,7 @@ void CQCopasiAnimation::applyToScene(CQLayoutScene& scene, int step)
 
   for (size_t i = 0; i < scales.size(); ++i)
     {
-      mEntries[i]->applyToScene(scene, scales[i]);
+      mEntries[i].applyToScene(scene, scales[i]);
     }
 }
 

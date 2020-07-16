@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,6 +19,10 @@
 #include <copasi/qlayout/CQEffectDescription.h>
 #include <copasi/qlayout/CQCopasiEffect.h>
 #include <copasi/qlayout/CQConnectionGraphicsItem.h>
+
+#include <copasi/core/CRootContainer.h>
+#include <copasi/core/CDataVector.h>
+#include <copasi/CopasiDataModel/CDataModel.h>
 
 qreal linear(qreal a, qreal b, qreal t)
 {
@@ -170,6 +174,21 @@ void CQEffectDescription::applyToScene(CQLayoutScene& scene, qreal t)
 void CQEffectDescription::setCN(const std::string& cn)
 {
   mCN = cn;
+}
+
+std::string CQEffectDescription::getDisplayName() const
+{
+  auto* pModelList = CRootContainer::getDatamodelList();
+
+  if (!pModelList || pModelList->empty())
+    return std::string();
+
+  const CDataObject * pObject = dynamic_cast< const CDataObject * >((*pModelList)[0].getObjectFromCN(mCN));
+
+  if (!pObject)
+    return std::string();
+
+  return pObject->getObjectDisplayName();
 }
 
 void CQEffectDescription::setStartColor(const QColor& color)

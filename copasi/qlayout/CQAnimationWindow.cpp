@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,7 +53,7 @@ class QConservedSpeciesAnimation : public CQCopasiAnimation
 
     while (it != metabs.end())
       {
-        mEntries.push_back(new CQEffectDescription(it->getCN()));
+        mEntries.push_back(CQEffectDescription(it->getCN()));
         ++it;
       }
 
@@ -84,7 +84,7 @@ class QConservedSpeciesAnimation : public CQCopasiAnimation
       }
 
     for (size_t i = 0; i < mEntries.size(); ++i)
-      scales.push_back(cnValueMap[mEntries[i]->getCN()]);
+      scales.push_back(cnValueMap[mEntries[i].getCN()]);
   }
 };
 
@@ -104,7 +104,7 @@ public:
 
     while (it != reactions.end())
       {
-        mEntries.push_back(new CQEffectDescription(it->getCN(), CQEffectDescription::Colorize, Qt::black, Qt::red));
+        mEntries.push_back(CQEffectDescription(it->getCN(), CQEffectDescription::Colorize, Qt::black, Qt::red));
         indexMap[count] = it->getCN();
         ++it;
         ++count;
@@ -155,7 +155,7 @@ public:
       }
 
     for (size_t i = 0; i < mEntries.size(); ++i)
-      scales.push_back(cnValueMap[mEntries[i]->getCN()] == 0 ? 0.0 : 1.0);
+      scales.push_back(cnValueMap[mEntries[i].getCN()] == 0 ? 0.0 : 1.0);
   }
 
 protected:
@@ -234,9 +234,9 @@ public:
     for (size_t i = 0; i < mEntries.size(); ++i)
       {
         if (mMode == CQCopasiAnimation::Individual)
-          max  = getMax(series, getIndex(series, mEntries[i]->getCN()));
+          max  = getMax(series, getIndex(series, mEntries[i].getCN()));
 
-        double value = getValue(series, mEntries[i]->getCN(), step);
+        double value = getValue(series, mEntries[i].getCN(), step);
         scales.push_back(value / max);
       }
   }
@@ -250,7 +250,7 @@ public:
 
     while (it != metabs.end())
       {
-        mEntries.push_back(new CQEffectDescription(it->getCN(), CQEffectDescription::Scale));
+        mEntries.push_back(CQEffectDescription(it->getCN(), CQEffectDescription::Scale));
         keyMap[it->getCN()] = it->getKey();
         ++it;
       }
