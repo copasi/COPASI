@@ -1,0 +1,779 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the -->
+<!-- University of Virginia, University of Heidelberg, and University -->
+<!-- of Connecticut School of Medicine. -->
+<!-- All rights reserved. -->
+
+<listOfGlobalRenderInformation xmlns="http://projects.eml.org/bcb/sbml/render/version1_0_0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<renderInformation id='simple_default' name='Copasi simple style' backgroundColor='#FFFFFFFF'>
+  <listOfColorDefinitions>
+    <colorDefinition id='black' value='#000000' />
+    <colorDefinition id='white' value='#ffffff' />
+    <colorDefinition id='transparent' value='#ffffff00' />
+    <colorDefinition id='EmptySetOutline' value='#808080' />
+    <colorDefinition id='EmptySetGradientStart' value='#ffffff' />
+    <colorDefinition id='EmptySetGradientEnd' value='#d3d3d3' />
+    <colorDefinition id='CompartmentBorder' value='#e69600b0' />
+    <colorDefinition id='CloneMarkerColor' value='#ffa500' />
+    <colorDefinition id='CurveColor' value='#000000a0' />
+    <colorDefinition id='ModulationCurveColor' value='#0000a0a0' />
+  </listOfColorDefinitions>
+  <listOfGradientDefinitions>
+    <linearGradient x1='50%' y1='0%' z1='0%' x2='50%' y2='100%' z2='100%' id='cloneMarker' spreadMethod='pad'>
+      <stop offset='0.0' stop-color='transparent' />
+      <stop offset='0.75' stop-color='transparent' />
+      <stop offset='0.76' stop-color='CloneMarkerColor' />
+      <stop offset='1.0' stop-color='CloneMarkerColor' />
+    </linearGradient>
+    <linearGradient x1='0%' y1='0%' z1='0%' x2='100%' y2='100%' z2='100%' id='EmptySetGradient' spreadMethod='pad'>
+      <stop offset='0%' stop-color='EmptySetGradientStart' />
+      <stop offset='100%' stop-color='EmptySetGradientEnd' />
+    </linearGradient>
+  </listOfGradientDefinitions>
+  <listOfLineEndings>
+    <lineEnding id='ActivationHead' enableRotationalMapping='true'>
+      <boundingBox>
+        <position x='-12' y='-6' />
+        <dimensions width='12' height='12' />
+      </boundingBox>
+      <g stroke='CurveColor' stroke-width='1' fill='white'>
+        <ellipse stroke='black' stroke-width='1.0' cx='50%' cy='50%' cz='0.0' rx='50%' ry='50%' />
+      </g>
+    </lineEnding>
+    <lineEnding id='TransitionHead' enableRotationalMapping='true'>
+      <boundingBox>
+        <position x='-8' y='-6' />
+        <dimensions width='12' height='12' />
+      </boundingBox>
+      <g stroke='CurveColor' stroke-width='0.001' fill='CurveColor'>
+        <polygon fill='CurveColor'>
+          <listOfCurveSegments>
+            <curveSegment xsi:type='LineSegment' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+              <start x='0%' y='0%' />
+              <end x='100%' y='50%' />
+            </curveSegment>
+            <curveSegment xsi:type='LineSegment' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+              <start x='100%' y='50%' />
+              <end x='0%' y='100%' />
+            </curveSegment>
+            <curveSegment xsi:type='LineSegment' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+              <start x='0%' y='100%' />
+              <end x='33%' y='50%' />
+            </curveSegment>
+            <curveSegment xsi:type='LineSegment' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+              <start x='33%' y='50%' />
+              <end x='0%' y='0%' />
+            </curveSegment>
+          </listOfCurveSegments>
+        </polygon>
+      </g>
+    </lineEnding>
+    <lineEnding id='ModulationHead' enableRotationalMapping='true'>
+      <boundingBox>
+        <position x='-5' y='-5' />
+        <dimensions width='10' height='10' />
+      </boundingBox>
+      <g stroke='ModulationCurveColor' stroke-width='1' fill='ModulationCurveColor'>
+        <ellipse cx='50%' cy='50%' rx='45%'/>
+      </g>
+    </lineEnding>
+    <lineEnding id='InhibitionHead' enableRotationalMapping='true'>
+      <boundingBox>
+        <position x='-0.5' y='-4' />
+        <dimensions width='0.6' height='8' />
+      </boundingBox>
+      <g stroke='black' stroke-width='2' fill='black'>
+        <polygon>
+          <listOfElements>
+            <element xsi:type='RenderPoint'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' x='0.0' y='0.0'/>
+            <element xsi:type='RenderPoint'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' x='0.3' y='0.0'/>
+            <element xsi:type='RenderPoint'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  x='0.3' y='8.0'/>
+            <element xsi:type='RenderPoint'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' x='0.0' y='8.0'/>
+          </listOfElements>
+        </polygon>
+      </g>
+    </lineEnding>
+</listOfLineEndings>
+  <listOfStyles>
+    <style roleList='invisible'>
+      <g stroke='#ffffff00' fill='#ffffff00'></g>
+    </style>
+    <style roleList='defaultText' typeList='TEXTGLYPH'>
+      <g stroke='black' stroke-width='1' font-family='Verdana' font-size='12' font-weight='normal' font-style='normal' vtext-anchor='middle' text-anchor='middle'></g>
+    </style>
+    <style roleList='substrate sidesubstrate' typeList='REACTIONGLYPH'>
+      <g stroke='CurveColor' stroke-width='3.0' />
+    </style>
+    <style roleList='inhibitor inhibition SBO-0000169'>
+      <g stroke='CurveColor' stroke-width='3.0' endHead='InhibitionHead' />
+    </style>
+    <style roleList='modifier SBO-0000168'>
+      <g stroke='ModulationCurveColor' stroke-width='3.0' fill='white' endHead='ModulationHead' />
+    </style>
+    <style roleList='catalysis activator SBO-0000172'>
+      <g stroke='CurveColor' stroke-width='3.0' fill='white' endHead='ActivationHead' />
+    </style>
+    <style roleList='product sideproduct' typeList='product sideproduct'>
+      <g stroke='CurveColor' stroke-width='3.0' endHead='TransitionHead' />
+    </style>
+    
+    <style roleList='SBO-0000285 NO-SBO' typeList='SPECIESGLYPH'>
+      <!-- Unspecified Entity  -->
+      <g  fill='#a0e0a030'>
+        <rectangle x='0' y='0' width='100%' height='100%'  />
+      </g>
+    </style>
+        <style roleList='SBO-0000289' typeList='COMPARTMENTGLYPH'>
+      <!-- Compartment -->
+      <g stroke='CompartmentBorder' stroke-width='7' >
+        <rectangle x='0' y='0' width='100%' height='100%' rx='20' ry='20' />
+      </g>
+    </style>
+    <style roleList='' typeList='ANY'>
+      <!-- Unspecified Entity  -->
+      <g  stroke='black' fill='#f0707070'>
+        <rectangle x='0' y='0' width='100%' height='100%'  />
+      </g>
+    </style>
+  </listOfStyles>
+</renderInformation>
+
+<renderInformation id='SBGN_default' name='SBGN Default style' backgroundColor='#FFFFFFFF'>
+  <listOfColorDefinitions>
+    <colorDefinition id='black' value='#000000' />
+    <colorDefinition id='white' value='#ffffff' />
+    <colorDefinition id='transparent' value='#ffffff00' />
+    <colorDefinition id='EmptySetOutline' value='#808080' />
+    <colorDefinition id='EmptySetGradientStart' value='#ffffff' />
+    <colorDefinition id='EmptySetGradientEnd' value='#d3d3d3' />
+    <colorDefinition id='CompartmentBorder' value='#666666' />
+    <colorDefinition id='CompartmentGradientStart' value='#CCCCCC' />
+    <colorDefinition id='CompartmentGradientEnd' value='#CCCCFF' />
+    <colorDefinition id='CloneMarkerColor' value='#ffa500' />
+    <colorDefinition id='EPNGradientStart' value='#ffffff' />
+    <colorDefinition id='EPNGradientEnd' value='#c0c0c0' />
+  </listOfColorDefinitions>
+
+  <listOfGradientDefinitions>
+    <linearGradient x1='0%' y1='0%' z1='0%' x2='100%' y2='100%' z2='100%' id='EPNBackgroundGradient' spreadMethod='pad'>
+      <stop offset='0%' stop-color='EPNGradientStart' />
+      <stop offset='100%' stop-color='EPNGradientEnd' />
+    </linearGradient>
+    <linearGradient x1='50%' y1='0%' z1='0%' x2='50%' y2='100%' z2='100%' id='cloneMarker' spreadMethod='pad'>
+      <stop offset='0.0' stop-color='transparent' />
+      <stop offset='0.75' stop-color='transparent' />
+      <stop offset='0.76' stop-color='CloneMarkerColor' />
+      <stop offset='1.0' stop-color='CloneMarkerColor' />
+    </linearGradient>
+    <linearGradient x1='0%' y1='0%' z1='0%' x2='100%' y2='100%' z2='100%' id='EmptySetGradient' spreadMethod='pad'>
+      <stop offset='0%' stop-color='EmptySetGradientStart' />
+      <stop offset='100%' stop-color='EmptySetGradientEnd' />
+    </linearGradient>
+    <linearGradient x1='0%' y1='0%' z1='0%' x2='100%' y2='100%' z2='100%' id='CompartmentGradient' spreadMethod='pad'>
+      <!--<stop offset='0%' stop-color='#ffdead' />
+      <stop offset='100%' stop-color='#ffebcd' />-->
+      <stop offset='0%' stop-color='CompartmentGradientStart' />
+      <stop offset='100%' stop-color='CompartmentGradientEnd' />
+    </linearGradient>
+  </listOfGradientDefinitions>
+
+  <listOfLineEndings>
+    <lineEnding id='ActivationHead' enableRotationalMapping='true'>
+      <boundingBox>
+        <position x='-12' y='-6' />
+        <dimensions width='12' height='12' />
+      </boundingBox>
+      <g stroke='black' stroke-width='1' fill='white'>
+        <ellipse stroke='black' stroke-width='1.0' cx='50%' cy='50%' cz='0.0' rx='50%' ry='50%' />
+      </g>
+    </lineEnding>
+    <lineEnding id='TransitionHead' enableRotationalMapping='true'>
+      <boundingBox>
+        <position x='-12' y='-6' />
+        <dimensions width='12' height='12' />
+      </boundingBox>
+      <g stroke='black' stroke-width='0.001' fill='black'>
+        <polygon fill='black'>
+          <listOfCurveSegments>
+            <curveSegment xsi:type='LineSegment' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+              <start x='0%' y='0%' />
+              <end x='100%' y='50%' />
+            </curveSegment>
+            <curveSegment xsi:type='LineSegment' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+              <start x='100%' y='50%' />
+              <end x='0%' y='100%' />
+            </curveSegment>
+            <curveSegment xsi:type='LineSegment' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+              <start x='0%' y='100%' />
+              <end x='33%' y='50%' />
+            </curveSegment>
+            <curveSegment xsi:type='LineSegment' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+              <start x='33%' y='50%' />
+              <end x='0%' y='0%' />
+            </curveSegment>
+          </listOfCurveSegments>
+        </polygon>
+      </g>
+    </lineEnding>
+    <lineEnding id='ModulationHead' enableRotationalMapping='true'>
+      <boundingBox>
+        <position x='0' y='-5' />
+        <dimensions width='10' height='10' />
+      </boundingBox>
+      <g stroke='black' stroke-width='1' fill='white'>
+        <polygon>
+          <listOfCurveSegments>
+            <curveSegment xsi:type='LineSegment' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+              <start x='0' y='5' />
+              <end x='5' y='10' />
+            </curveSegment>
+            <curveSegment xsi:type='LineSegment' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+              <start x='5' y='10' />
+              <end x='10' y='5' />
+            </curveSegment>
+            <curveSegment xsi:type='LineSegment' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+              <start x='10' y='5' />
+              <end x='5' y='0' />
+            </curveSegment>
+            <curveSegment xsi:type='LineSegment' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+              <start x='5' y='0' />
+              <end x='0' y='5' />
+            </curveSegment>
+          </listOfCurveSegments>
+        </polygon>
+      </g>
+    </lineEnding>
+    <lineEnding id='InhibitionHead' enableRotationalMapping='true'>
+      <boundingBox>
+        <position x='-0.5' y='-4' />
+        <dimensions width='0.6' height='8' />
+      </boundingBox>
+      <g stroke='black' stroke-width='2' fill='black'>
+        <polygon>
+          <listOfElements>
+            <element xsi:type='RenderPoint'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' x='0.0' y='0.0'/>
+            <element xsi:type='RenderPoint'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' x='0.3' y='0.0'/>
+            <element xsi:type='RenderPoint'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  x='0.3' y='8.0'/>
+            <element xsi:type='RenderPoint'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' x='0.0' y='8.0'/>
+          </listOfElements>
+        </polygon>
+      </g>
+    </lineEnding>
+</listOfLineEndings>
+
+  <listOfStyles>
+    <style roleList='invisible'>
+      <g stroke='#ffffff00' fill='#ffffff00'></g>
+    </style>
+    <style roleList='defaultText' typeList='TEXTGLYPH'>
+      <g stroke='black' stroke-width='1' font-family='Verdana' font-size='10' font-weight='normal' font-style='normal' text-anchor='middle' vtext-anchor='middle'></g>
+    </style>
+    <style roleList='substrate sidesubstrate' typeList='REACTIONGLYPH'>
+      <g stroke='black' stroke-width='2.0' />
+    </style>
+    <style roleList='inhibitor inhibition SBO-0000169'>
+      <g stroke='black' stroke-width='2.0' endHead='InhibitionHead' />
+    </style>
+    <style roleList='modifier SBO-0000168'>
+      <g stroke='black' stroke-width='2.0' fill='white' endHead='ModulationHead' />
+    </style>
+    <style roleList='catalysis activator SBO-0000172'>
+      <g stroke='black' stroke-width='2.0' fill='white' endHead='ActivationHead' />
+    </style>
+    <style roleList='product sideproduct' typeList='product sideproduct'>
+      <g stroke='black' stroke-width='2.0' endHead='TransitionHead' />
+    </style>
+    
+    <style roleList='SBO-0000285 NO-SBO' typeList='SPECIESGLYPH ANY'>
+      <!-- Unspecified Entity  -->
+      <g stroke='black' stroke-width='2' fill='EPNBackgroundGradient'>
+        <ellipse cx='50%' cy='50%' cz='0.0' rx='50%' ry='50%' />
+      </g>
+    </style>
+        <style roleList='SBO-0000289' typeList='COMPARTMENTGLYPH'>
+      <!-- Compartment -->
+      <g stroke='CompartmentBorder' stroke-width='7' fill='CompartmentGradient'>
+        <rectangle x='0' y='0' width='100%' height='100%' rx='10%' ry='10%' />
+      </g>
+    </style>
+
+  </listOfStyles>
+</renderInformation>
+
+
+  <renderInformation id="default" name="Blue Gradient Species"  backgroundColor="#FFFFFFFF">
+    <listOfColorDefinitions>
+      <colorDefinition id="speciesColor" value="#D2D2E6"/>
+      <colorDefinition id="compartmentColor" value="#BCCABA"/>
+      <colorDefinition id="white" value="#FFFFFF"/>
+      <colorDefinition id="textColor" value="#000000"/>
+      <colorDefinition id="speciesReferenceColor" value="#4E4E4E"/>
+      <colorDefinition id="frameColor" value="#1A1A1A"/>
+    </listOfColorDefinitions>
+    <listOfGradientDefinitions>
+      <linearGradient id="speciesGlyphGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="white"/>
+        <stop offset="50%" stop-color="speciesColor"/>
+        <stop offset="100%" stop-color="white"/>
+      </linearGradient>
+      <linearGradient id="compartmentGlyphGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="white"/>
+        <stop offset="50%" stop-color="compartmentColor"/>
+        <stop offset="100%" stop-color="white"/>
+      </linearGradient>
+    </listOfGradientDefinitions>
+    <listOfLineEndings>
+      <lineEnding id="ActivationHead" enableRotationalMapping="true">
+        <boundingBox>
+          <position x="-2.0" y="-2.0"/>
+          <dimensions width="5.0" height="4.0"/>
+        </boundingBox>
+        <g stroke="speciesReferenceColor" stroke-width="2.0" fill="none">
+          <polygon>
+            <listOfElements>
+              <element xsi:type="RenderPoint" x="0.0" y="0.0"/>
+              <element xsi:type="RenderPoint" x="5.0" y="2.0"/>
+              <element xsi:type="RenderPoint" x="0.0" y="4.0"/>
+              <element xsi:type="RenderPoint" x="2.0" y="2.0"/>
+            </listOfElements>
+          </polygon>
+        </g>
+      </lineEnding>
+      <lineEnding id="TransitionHead" enableRotationalMapping="true">
+        <boundingBox>
+          <position x="-2.0" y="-2.0"/>
+          <dimensions width="5.0" height="4.0"/>
+        </boundingBox>
+        <g stroke="speciesReferenceColor" stroke-width="1.0" fill="speciesReferenceColor">
+          <polygon>
+            <listOfElements>
+              <element xsi:type="RenderPoint" x="0.0" y="0.0"/>
+              <element xsi:type="RenderPoint" x="5.0" y="2.0"/>
+              <element xsi:type="RenderPoint" x="0.0" y="4.0"/>
+              <element xsi:type="RenderPoint" x="2.0" y="2.0"/>
+            </listOfElements>
+          </polygon>
+        </g>
+      </lineEnding>
+      <lineEnding id="InhibitionHead" enableRotationalMapping="true">
+        <boundingBox>
+          <position x="-0.5" y="-3.0"/>
+          <dimensions width="1.0" height="6.0"/>
+        </boundingBox>
+        <g stroke="speciesReferenceColor" stroke-width="1.0" fill="speciesReferenceColor">
+          <polygon>
+            <listOfElements>
+              <element xsi:type="RenderPoint" x="0.0" y="0.0"/>
+              <element xsi:type="RenderPoint" x="1.0" y="0.0"/>
+              <element xsi:type="RenderPoint" x="1.0" y="6.0"/>
+              <element xsi:type="RenderPoint" x="0.0" y="6.0"/>
+            </listOfElements>
+          </polygon>
+        </g>
+      </lineEnding>
+      <lineEnding id="ModulationHead" enableRotationalMapping="true">
+        <boundingBox>
+          <position x="0.0" y="-2.0"/>
+          <dimensions width="6.0" height="4.0"/>
+        </boundingBox>
+        <g stroke="speciesReferenceColor" stroke-width="1.0" fill="none">
+          <polygon>
+            <listOfElements>
+              <element xsi:type="RenderPoint" x="0.0" y="2.0"/>
+              <element xsi:type="RenderPoint" x="3.0" y="0.0"/>
+              <element xsi:type="RenderPoint" x="6.0" y="2.0"/>
+              <element xsi:type="RenderPoint" x="3.0" y="4.0"/>
+            </listOfElements>
+          </polygon>
+        </g>
+      </lineEnding>
+    </listOfLineEndings>
+    <listOfStyles>
+    <style roleList='invisible'>
+      <g stroke='#ffffff00' fill='#ffffff00'></g>
+    </style>
+      <style id="compartmentGlyphStyle" typeList="COMPARTMENTGLYPH">
+        <g stroke="frameColor" stroke-width="1.0">
+          <rectangle x="0%" y="0%" width="100%" height="100%" rx="10%" ry="10%" fill="compartmentGlyphGradient"/>
+        </g>
+      </style>
+      <style id="speciesGlyphStyle" typeList="SPECIESGLYPH ANY">
+        <g stroke="frameColor" stroke-width="1.0">
+          <rectangle x="0%" y="0%" width="100%" height="100%" rx="10%" ry="10%" fill="speciesGlyphGradient"/>
+        </g>
+      </style>
+      <style id="textGlyphStyle" typeList="TEXTGLYPH">
+        <g stroke="textColor" stroke-width="1.0" font-size="16" text-anchor="middle" vtext-anchor='middle' font-family="sans"/>
+      </style>
+      <style  id="productStyle" roleList="product sideproduct">
+        <g stroke="speciesReferenceColor" stroke-width="2.0" endHead="TransitionHead"/>
+      </style>
+      <style id="substrateStyle" roleList="substrate sidesubstrate" typeList="REACTIONGLYPH SPECIESREFERENCEGLYPH">
+        <g stroke="speciesReferenceColor" stroke-width="2.0" endHead="none"/>
+      </style>
+      <style id="activatorStyle" roleList="activator">
+        <g stroke="speciesReferenceColor" stroke-width="2.0" endHead="ActivationHead"/>
+      </style>
+      <style id="inhibitorStyle" roleList="inhibitor">
+        <g stroke="speciesReferenceColor" stroke-width="2.0" endHead="InhibitionHead"/>
+      </style>
+      <style id="modifierStyle" roleList="modifier">
+        <g stroke="speciesReferenceColor" stroke-width="2.0" endHead="ModulationHead"/>
+      </style>
+    </listOfStyles>
+  </renderInformation>
+
+
+  <renderInformation id="lightBlue" name="blue Species; colored modifiers"  backgroundColor="#FFFFFFFF">
+    <listOfColorDefinitions>
+      <colorDefinition id="lightBlue" value="#ADD8E6"/>
+      <colorDefinition id="white" value="#FFFFFF"/>
+      <colorDefinition id="black" value="#000000"/>
+      <colorDefinition id="red" value="#FF0000"/>
+      <colorDefinition id="green" value="#00FF00"/>
+      <colorDefinition id="blue" value="#0000FF"/>
+      <colorDefinition id="lightYellow" value="#FFFFD1"/>
+      <colorDefinition id="darkGreen" value="#002000"/>
+    </listOfColorDefinitions>
+    <listOfGradientDefinitions>
+      <radialGradient id="speciesGlyphGradient">
+        <stop offset="0%" stop-color="white"/>
+        <stop offset="100%" stop-color="lightBlue"/>
+      </radialGradient>
+    </listOfGradientDefinitions>
+    <listOfLineEndings>
+      <lineEnding id="simpleHead_black">
+        <boundingBox>
+          <position x="-8" y="-3"/>
+          <dimensions width="10" height="6"/>
+        </boundingBox>
+        <g stroke="black" stroke-width="1.0" fill="black">
+          <polygon>
+            <listOfElements>
+              <element xsi:type="RenderPoint" x="0.0" y="0.0" />
+              <element xsi:type="RenderPoint" x="10.0" y="3.0" />
+              <element xsi:type="RenderPoint" x="0.0" y="6.0" />
+            </listOfElements>
+          </polygon>
+        </g>
+      </lineEnding>
+      <lineEnding id="simpleHead_red">
+        <boundingBox>
+          <position x="-8" y="-3"/>
+          <dimensions width="10" height="6"/>
+        </boundingBox>
+        <g stroke="red" stroke-width="1.0" fill="red">
+          <polygon>
+            <listOfElements>
+              <element xsi:type="RenderPoint" x="0.0" y="0.0" />
+              <element xsi:type="RenderPoint" x="10.0" y="3.0" />
+              <element xsi:type="RenderPoint" x="0.0" y="6.0" />
+            </listOfElements>
+          </polygon>
+        </g>
+      </lineEnding>
+      <lineEnding id="simpleHead_green">
+        <boundingBox>
+          <position x="-8" y="-3"/>
+          <dimensions width="10" height="6"/>
+        </boundingBox>
+        <g stroke="green" stroke-width="1.0" fill="green">
+          <polygon>
+             <listOfElements>
+              <element xsi:type="RenderPoint" x="0.0" y="0.0" />
+              <element xsi:type="RenderPoint" x="10.0" y="3.0" />
+              <element xsi:type="RenderPoint" x="0.0" y="6.0" />
+            </listOfElements>
+          </polygon>
+        </g>
+      </lineEnding>
+      <lineEnding id="simpleHead_blue">
+        <boundingBox>
+          <position x="-8" y="-3"/>
+          <dimensions width="10" height="6"/>
+        </boundingBox>
+        <g stroke="blue" stroke-width="1.0" fill="blue">
+          <polygon>
+            <listOfElements>
+              <element xsi:type="RenderPoint" x="0.0" y="0.0" />
+              <element xsi:type="RenderPoint" x="10.0" y="3.0" />
+              <element xsi:type="RenderPoint" x="0.0" y="6.0" />
+            </listOfElements>
+          </polygon>
+        </g>
+      </lineEnding>
+    </listOfLineEndings>
+    <listOfStyles>
+    <style roleList='invisible'>
+      <g stroke='#ffffff00' fill='#ffffff00'></g>
+    </style>
+      <style id="compartmentGlyphStyle" typeList="COMPARTMENTGLYPH">
+        <g stroke="darkGreen" stroke-width="1.0">
+          <rectangle x="0%" y="0%" width="100%" height="100%" rx="10%" ry="10%" fill="lightYellow"/>
+        </g>
+      </style>
+      <style id="speciesGlyphStyle" typeList="SPECIESGLYPH ANY">
+        <g stroke="black" stroke-width="1.0">
+          <rectangle x="0%" y="0%" width="100%" height="100%" rx="5" ry="50%" fill="speciesGlyphGradient"/>
+        </g>
+      </style>
+      <style id="reactionGlyphStyle" typeList="REACTIONGLYPH TEXTGLYPH SPECIESREFERENCEGLYPH">
+        <g stroke="black" stroke-width="1.0" font-size="12" text-anchor="middle" vtext-anchor='middle' font-family="sans"/>
+      </style>
+      <style id="reactantSpeciesReferenceGlyphStyle" roleList="substrate sidesubstrate product sideproduct">
+        <g stroke="black" stroke-width="1.0" endHead="simpleHead_black"/>
+      </style>
+      <style id="activatorSpeciesReferenceGlyphStyle" roleList="activator">
+        <g stroke="green" stroke-width="1.0" endHead="simpleHead_green"/>
+      </style>
+      <style id="modifierSpeciesReferenceGlyphStyle" roleList="modifier">
+        <g stroke="blue" stroke-width="1.0" endHead="simpleHead_blue"/>
+      </style>
+      <style id="inhibitorSpeciesReferenceGlyphStyle" roleList="inhibitor">
+        <g stroke="red" stroke-width="1.0" endHead="simpleHead_red"/>
+      </style>
+    </listOfStyles>
+  </renderInformation>
+
+
+  <renderInformation id="gray_green" name="Gray-Green Style" backgroundColor="#FFFFFFFF">
+    <listOfColorDefinitions>
+      <colorDefinition id="SpeciesColorLight" value="#D2D2E6FF"/>
+      <colorDefinition id="CompartmentColorLight" value="#E1F2DFFF"/>
+      <colorDefinition id="SpeciesColorDark" value="#A8A8B8FF"/>
+      <colorDefinition id="CompartmentColorDark" value="#B2BfB0FF"/>
+      <colorDefinition id="ShadowColor" value="#33333399"/>
+      <colorDefinition id="SpeciesReferenceColor" value="#4C4C4CFF"/>
+      <colorDefinition id="FrameColor" value="#191919FF"/>
+      <colorDefinition id="TextColor" value="#000000FF"/>
+    </listOfColorDefinitions>
+    <listOfGradientDefinitions>
+      <linearGradient id="SpeciesGlyphGradient" x1="50%" y1="0%" x2="50%" y2="100%">
+        <stop offset="0%" stop-color="SpeciesColorLight"/>
+        <stop offset="50%" stop-color="SpeciesColorDark"/>
+        <stop offset="100%" stop-color="SpeciesColorLight"/>
+      </linearGradient>
+      <linearGradient id="CompartmentGlyphGradient" x1="50%" y1="0%" x2="50%" y2="100%">
+        <stop offset="0%" stop-color="CompartmentColorLight"/>
+        <stop offset="50%" stop-color="CompartmentColorDark"/>
+        <stop offset="100%" stop-color="CompartmentColorLight"/>
+      </linearGradient>
+    </listOfGradientDefinitions>
+    <listOfLineEndings>
+      <lineEnding id="ActivationHead" enableRotationalMapping="true">
+        <boundingBox>
+          <position x="-2.0" y="-2.0"/>
+          <dimensions width="5.0" height="4.0"/>
+        </boundingBox>
+        <g stroke="SpeciesReferenceColor" stroke-width="2.0" fill="none">
+          <polygon>
+            <listOfElements>
+              <element xsi:type="RenderPoint" x="0.0" y="0.0"/>
+              <element xsi:type="RenderPoint" x="5.0" y="2.0"/>
+              <element xsi:type="RenderPoint" x="0.0" y="4.0"/>
+              <element xsi:type="RenderPoint" x="2.0" y="2.0"/>
+            </listOfElements>
+          </polygon>
+        </g>
+      </lineEnding>
+      <lineEnding id="TransitionHead" enableRotationalMapping="true">
+        <boundingBox>
+          <position x="-2.0" y="-2.0"/>
+          <dimensions width="5.0" height="4.0"/>
+        </boundingBox>
+        <g stroke="SpeciesReferenceColor" stroke-width="1.0" fill="SpeciesReferenceColor">
+          <polygon>
+            <listOfElements>
+              <element xsi:type="RenderPoint" x="0.0" y="0.0"/>
+              <element xsi:type="RenderPoint" x="5.0" y="2.0"/>
+              <element xsi:type="RenderPoint" x="0.0" y="4.0"/>
+              <element xsi:type="RenderPoint" x="2.0" y="2.0"/>
+            </listOfElements>
+          </polygon>
+        </g>
+      </lineEnding>
+      <lineEnding id="InhibitionHead" enableRotationalMapping="true">
+        <boundingBox>
+          <position x="-0.5" y="-3.0"/>
+          <dimensions width="1.0" height="6.0"/>
+        </boundingBox>
+        <g stroke="SpeciesReferenceColor" stroke-width="1.0" fill="SpeciesReferenceColor">
+          <polygon>
+            <listOfElements>
+              <element xsi:type="RenderPoint" x="0.0" y="0.0"/>
+              <element xsi:type="RenderPoint" x="1.0" y="0.0"/>
+              <element xsi:type="RenderPoint" x="1.0" y="6.0"/>
+              <element xsi:type="RenderPoint" x="0.0" y="6.0"/>
+            </listOfElements>
+          </polygon>
+        </g>
+      </lineEnding>
+      <lineEnding id="ModulationHead" enableRotationalMapping="true">
+        <boundingBox>
+          <position x="0.0" y="-2.0"/>
+          <dimensions width="6.0" height="4.0"/>
+        </boundingBox>
+        <g stroke="SpeciesReferenceColor" stroke-width="1.0" fill="none">
+          <polygon>
+            <listOfElements>
+              <element xsi:type="RenderPoint" x="0.0" y="2.0"/>
+              <element xsi:type="RenderPoint" x="3.0" y="0.0"/>
+              <element xsi:type="RenderPoint" x="6.0" y="2.0"/>
+              <element xsi:type="RenderPoint" x="3.0" y="4.0"/>
+            </listOfElements>
+          </polygon>
+        </g>
+      </lineEnding>
+    </listOfLineEndings>
+    <listOfStyles>
+    <style roleList='invisible'>
+      <g stroke='#ffffff00' fill='#ffffff00'></g>
+    </style>
+      <style id="compartmentGlyphStyle" typeList="COMPARTMENTGLYPH">
+        <g>
+          <rectangle stroke="FrameColor" stroke-width="1.0" fill="CompartmentGlyphGradient" x="0%" y="0%" width="100%" height="100%" rx="10" ry="10"/>
+        </g>
+      </style>
+      <style id="speciesGlyphStyle" typeList="SPECIESGLYPH ANY">
+        <g>
+          <rectangle stroke="FrameColor" stroke-width="1.0" fill="SpeciesGlyphGradient" x="0%" y="0%" width="100%" height="100%" rx="10" ry="10"/>
+        </g>
+      </style>
+      <style id="textGlyphStyle" typeList="TEXTGLYPH">
+        <g stroke="TextColor" font-family="sans-serif" font-size="70%" text-anchor="middle" vtext-anchor="middle"/>
+      </style>
+      <style id="productStyle" roleList="product sideproduct">
+        <g stroke="SpeciesReferenceColor" stroke-width="2.0" endHead="TransitionHead"/>
+      </style>
+      <style id="substrateStyle" roleList="substrate sidesubstrate" typeList="REACTIONGLYPH SPECIESREFERENCEGLYPH">
+        <g stroke="SpeciesReferenceColor" stroke-width="2.0" endHead="none"/>
+      </style>
+      <style id="activatorStyle" roleList="activator">
+        <g stroke="SpeciesReferenceColor" stroke-width="2.0" endHead="ActivationHead"/>
+      </style>
+      <style id="inhibitorStyle" roleList="inhibitor">
+        <g stroke="SpeciesReferenceColor" stroke-width="2.0" endHead="InhibitionHead"/>
+      </style>
+      <style id="modifierStyle" roleList="modifier">
+        <g stroke="SpeciesReferenceColor" stroke-width="2.0" endHead="ModulationHead"/>
+      </style>
+    </listOfStyles>
+  </renderInformation>
+
+
+
+  <renderInformation id="grayStyle" name="Gray Scale" backgroundColor="#FFFFFFFF">
+    <listOfColorDefinitions>
+      <colorDefinition id="lightGray" value="#CECECE"/>
+      <colorDefinition id="white" value="#FFFFFF"/>
+      <colorDefinition id="black" value="#000000"/>
+      <colorDefinition id="lightGray2" value="#F0F0F0"/>
+      <colorDefinition id="gray" value="#0B0B0B"/>
+    </listOfColorDefinitions>
+    <listOfGradientDefinitions>
+      <radialGradient id="speciesGlyphGradient">
+        <stop offset="0%" stop-color="white"/>
+        <stop offset="100%" stop-color="lightGray"/>
+      </radialGradient>
+    </listOfGradientDefinitions>
+    <listOfLineEndings>
+      <lineEnding id="simpleHead_black">
+        <boundingBox>
+          <position x="-8" y="-3"/>
+          <dimensions width="10" height="6"/>
+        </boundingBox>
+        <g stroke="black" stroke-width="1.0" fill="black">
+          <polygon>
+            <listOfElements>
+              <element xsi:type="RenderPoint" x="0.0" y="0.0" />
+              <element xsi:type="RenderPoint" x="10.0" y="3.0" />
+              <element xsi:type="RenderPoint" x="0.0" y="6.0" />
+            </listOfElements>
+          </polygon>
+        </g>
+      </lineEnding>
+    </listOfLineEndings>
+    <listOfStyles>
+    <style roleList='invisible'>
+      <g stroke='#ffffff00' fill='#ffffff00'></g>
+    </style>
+      <style id="compartmentGlyphStyle" typeList="COMPARTMENTGLYPH">
+        <g stroke="gray" stroke-width="1.0">
+          <rectangle x="0%" y="0%" width="100%" height="100%" rx="5%" fill="lightGray2"/>
+        </g>
+      </style>
+      <style id="speciesGlyphStyle" typeList="SPECIESGLYPH ANY">
+        <g stroke="black" stroke-width="1.0">
+          <rectangle x="0%" y="0%" width="100%" height="100%" rx="5%" fill="speciesGlyphGradient"/>
+        </g>
+      </style>
+      <style id="reactionGlyphStyle" typeList="REACTIONGLYPH TEXTGLYPH">
+        <g stroke="black" stroke-width="1.0" font-size="12" text-anchor="middle"  vtext-anchor='middle' font-family="sans"/>
+      </style>
+      <style id="speciesReferenceGlyphStyle" typeList="SPECIESREFERENCEGLYPH">
+        <g stroke="black" stroke-width="1.0" endHead="simpleHead_black" />
+      </style>
+    </listOfStyles>
+  </renderInformation>
+
+
+  <renderInformation id="invertGrayStyle" name="Dark Gray Scale" backgroundColor="#404040FF">
+    <listOfColorDefinitions>
+      <colorDefinition id="lightGray" value="#CECECE"/>
+      <colorDefinition id="white" value="#FFFFFF"/>
+      <colorDefinition id="black" value="#000000"/>
+      <colorDefinition id="lightGray2" value="#F0F0F0"/>
+      <colorDefinition id="gray" value="#0B0B0B"/>
+    </listOfColorDefinitions>
+    <listOfGradientDefinitions>
+      <linearGradient id="speciesGlyphGradient">
+        <stop offset="0%" stop-color="black"/>
+        <stop offset="5%" stop-color="lightGray"/>
+        <stop offset="50%" stop-color="lightGray2"/>
+        <stop offset="95%" stop-color="lightGray"/>
+        <stop offset="100%" stop-color="black"/>
+      </linearGradient>
+    </listOfGradientDefinitions>
+    <listOfLineEndings>
+      <lineEnding id="simpleHead_white">
+        <boundingBox>
+          <position x="-8" y="-3"/>
+          <dimensions width="10" height="6"/>
+        </boundingBox>
+        <g stroke="black" stroke-width="1.0" fill="white">
+          <polygon>
+            <listOfElements>
+              <element xsi:type="RenderPoint" x="0.0" y="0.0" />
+              <element xsi:type="RenderPoint" x="10.0" y="3.0" />
+              <element xsi:type="RenderPoint" x="0.0" y="6.0" />
+            </listOfElements>
+          </polygon>
+        </g>
+      </lineEnding>
+    </listOfLineEndings>
+    <listOfStyles>
+    <style roleList='invisible'>
+      <g stroke='#ffffff00' fill='#ffffff00'></g>
+    </style>
+      <style id="compartmentGlyphStyle" typeList="COMPARTMENTGLYPH">
+        <g stroke="white" stroke-width="1.0">
+          <rectangle x="0%" y="0%" width="100%" height="100%" rx="5%" fill="black"/>
+        </g>
+      </style>
+      <style id="speciesGlyphStyle" typeList="SPECIESGLYPH ANY">
+        <g stroke="white" stroke-width="1.0">
+          <rectangle x="0%" y="0%" width="100%" height="100%" rx="5%" fill="speciesGlyphGradient"/>
+        </g>
+      </style>
+      <style id="reactionGlyphStyle" typeList="REACTIONGLYPH">
+        <g stroke="white" stroke-width="1.0" />
+      </style>
+      <style id="textGlyphStyle" typeList="TEXTGLYPH">
+        <g stroke="black" stroke-width="1.0" font-size="12" text-anchor="middle" vtext-anchor='middle' font-family="sans"/>
+      </style>
+      <style id="speciesReferenceGlyphStyle" typeList="SPECIESREFERENCEGLYPH">
+        <g stroke="white" stroke-width="1.0" endHead="simpleHead_white"/>
+      </style>
+    </listOfStyles>
+  </renderInformation>
+</listOfGlobalRenderInformation>
