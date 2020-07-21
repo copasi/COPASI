@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,9 +28,11 @@ class CQLayoutScene;
 class CQCopasiAnimation;
 class CDataModel;
 class QCloseEvent;
+class QDockWidget;
 class QMenu;
 class CLayout;
 class CQLayoutThread;
+class CQElementProperties;
 
 class CQAnimationWindow : public CWindowInterface, public Ui::CQAnimationWindow
 {
@@ -54,6 +56,8 @@ public slots:
 private:
   void init();
   void toggleUI(bool isPlaying);
+  QDockWidget * createPropertiesWidget();
+
 protected:
   virtual void closeEvent(QCloseEvent *closeEvent);
 
@@ -63,6 +67,7 @@ protected:
   CQCopasiAnimation* mAnimation;
   CQLayoutThread* mpLayoutThread;
   CLayout* mpCopy;
+  CQElementProperties* mpProperties;
 };
 
 #endif // QANIMATION_WINDOW_H

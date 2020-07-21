@@ -42,6 +42,8 @@
 #include "copasi/elementaryFluxModes/CEFMProblem.h"
 #include "copasi/elementaryFluxModes/CFluxMode.h"
 
+#include "CQElementProperties.h"
+
 class QConservedSpeciesAnimation : public CQCopasiAnimation
 {
   virtual void initialize(const CDataModel &dataModel)
@@ -277,6 +279,7 @@ CQAnimationWindow::CQAnimationWindow(CLayout* layout, CDataModel* dataModel)
   , mAnimation(NULL)
   , mpLayoutThread(NULL)
   , mpCopy(NULL)
+  , mpProperties(NULL)
 {
   init();
   setScene(new CQLayoutScene(layout, dataModel), dataModel);
@@ -289,6 +292,7 @@ CQAnimationWindow::CQAnimationWindow()
   , mAnimation(NULL)
   , mpLayoutThread(NULL)
   , mpCopy(NULL)
+  , mpProperties(NULL)
 {
   init();
 }
@@ -325,8 +329,13 @@ void CQAnimationWindow::init()
 
   QDockWidget* pParameterWindow = mpLayoutThread->getParameterWindow();
   addDockWidget(Qt::LeftDockWidgetArea, pParameterWindow);
+
+  QDockWidget * pPropertiesWindow = createPropertiesWidget();
+  addDockWidget(Qt::RightDockWidgetArea, pPropertiesWindow);
+
   viewMenu->addSeparator();
   viewMenu->addAction(pParameterWindow->toggleViewAction());
+  viewMenu->addAction(pPropertiesWindow->toggleViewAction());
   toggleUI(false);
 }
 
@@ -375,6 +384,7 @@ void CQAnimationWindow::setScene(CQLayoutScene* scene, CDataModel* dataModel)
   //setAnimation(new QConservedSpeciesAnimation(), dataModel);
   //setAnimation(new QFluxModeAnimation(), dataModel);
   setAnimation(new QTimeCourseAnimation(), dataModel);
+  mpProperties->setScene(mpScene);
 }
 
 void CQAnimationWindow::slotSwitchAnimation()
@@ -504,6 +514,17 @@ void CQAnimationWindow::toggleUI(bool isPlaying)
     {
       mpLayoutThread->stopLayout();
     }
+}
+
+QDockWidget * CQAnimationWindow::createPropertiesWidget()
+{
+  QDockWidget * pDockProperties = new QDockWidget(this);
+  pDockProperties->setWindowTitle("E&lement Properties");
+  mpProperties = new CQElementProperties(this);
+  connect(this->graphicsView, SIGNAL(renderInformationChanged()), mpProperties, SLOT(slotRenderInformationChanged()));
+  pDockProperties->setWidget(mpProperties);
+  pDockProperties->setVisible(false);
+  return pDockProperties;
 }
 
 /// <summary>
