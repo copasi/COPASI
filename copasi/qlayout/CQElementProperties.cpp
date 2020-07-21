@@ -99,13 +99,25 @@ void CQElementProperties::removeGlyphFromStyle(const std::string & glyphKey, con
 void CQElementProperties::addGlyphToStyle(const std::string & glyphKey, const std::string & styleKey)
 {
   CDataObject * obj = CRootContainer::getKeyFactory()->get(styleKey);
-  CLLocalStyle * pGO = dynamic_cast< CLLocalStyle * >(obj);
+  CLLocalStyle * pLocal = dynamic_cast< CLLocalStyle * >(obj);
 
-  if (pGO == NULL)
+  if (pLocal != NULL)
+    {
+      pLocal->addKey(glyphKey);
+      mpScene->getResolver()->addKeyToMap(glyphKey, pLocal);
+      return;
+    }
+
+  CLStyle * pGlobal = dynamic_cast< CLStyle * >(obj);
+  obj = CRootContainer::getKeyFactory()->get(glyphKey);
+  CLGraphicalObject* pGlyph = dynamic_cast< CLGraphicalObject * >(obj);
+
+  if (pGlobal == NULL || pGlyph == NULL)
     return;
 
-  pGO->addKey(glyphKey);
-  mpScene->getResolver()->addKeyToMap(glyphKey, pGO);
+  pGlyph->setObjectRole(glyphKey);
+  pGlobal->addRole(glyphKey);
+  mpScene->getResolver()->addKeyToMap(glyphKey, pGlobal);
 }
 
 
