@@ -132,6 +132,7 @@ void CQElementProperties::loadFromGlyph(CLGraphicalObject * pGO)
   ui->txtTarget->setText("");
   ui->txtText->setText("");
   ui->txtCurrentStyle->setText("");
+  ui->txtObjectRole->setText("");
 
   if (!pGO)
     return;
@@ -169,6 +170,7 @@ for (auto & text : mpScene->getCurrentLayout()->getListOfTextGlyphs())
 
   ui->txtGlyph->setText(FROM_UTF8(pGO->getKey()));
   ui->txtTarget->setText(FROM_UTF8(pGO->getModelObjectDisplayName()));
+  ui->txtObjectRole->setText(FROM_UTF8(pGO->getObjectRole()));
 
   for (int i = 0; i < ui->cmbStyles->count(); ++i)
     {
@@ -210,6 +212,7 @@ void CQElementProperties::slotApply()
   pGO->setWidth(ui->txtWidth->text().toDouble());
   pGO->setHeight(ui->txtHeight->text().toDouble());
 
+  pGO->setObjectRole(TO_UTF8(ui->txtObjectRole->text()));
 
   std::string styleKey = TO_UTF8(ui->cmbStyles->itemData(ui->cmbStyles->currentIndex()).toString());
 
