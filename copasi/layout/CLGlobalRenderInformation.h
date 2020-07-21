@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -79,7 +79,7 @@ public:
   /**
    * Returns the number of styles.
    */
-  size_t getNumStyles() const;
+  virtual size_t getNumStyles() const;
 
   /**
    * Returns a pointer to the LitOfStyles object.
@@ -95,15 +95,30 @@ public:
    * Returns a pointer to the style with the given index.
    * If the index is invalid, NULL is returned.
    */
-  CLStyle* getStyle(size_t i);
+  virtual CLStyle* getStyle(size_t i);
 
   /**
    * Returns a pointer to the style with the given index.
    * If the index is invalid, NULL is returned.
    */
-  const CLStyle* getStyle(size_t i) const;
+  virtual const CLStyle* getStyle(size_t i) const;
 
+  /**
+   * Creates a new style, and adds it to the list of styles (where it is owned)
+   *
+   * @return the newly created style
+   */
   virtual CLStyle * createStyle();
+
+  /**
+   * Returns the style for the graphical object or NULL
+   *
+   * @param pObject the graphical object
+   * @return the style if one is available for the object
+   */
+  virtual const CLStyle * getStyleForGraphicalObject(const CLGraphicalObject * pObject) const;
+
+  static std::string getTypeForObject(const CLGraphicalObject * pObject);
 
   void addStyle(const CLGlobalStyle* pStyle);
 

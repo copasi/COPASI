@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,6 +18,7 @@
 #include <sbml/packages/render/sbml/LocalStyle.h>
 
 #include "CLLocalStyle.h"
+#include "CLGraphicalObject.h"
 
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
@@ -118,12 +119,28 @@ void CLLocalStyle::addKey(const std::string& key)
   this->mKeyList.insert(key);
 }
 
+bool CLLocalStyle::isInKeyList(const std::string & key) const
+{
+  return isKeyInSet(key);
+}
+
 /**
  * Removes an key from the set.
  */
 void CLLocalStyle::removeKey(const std::string& key)
 {
   this->mKeyList.erase(key);
+}
+
+int CLLocalStyle::appliesTo(const CLGraphicalObject * pObject) const
+{
+  if (!pObject)
+    return 0;
+
+  if (isKeyInSet(pObject->getKey()))
+    return 3;
+
+  return CLStyle::appliesTo(pObject);
 }
 
 /**

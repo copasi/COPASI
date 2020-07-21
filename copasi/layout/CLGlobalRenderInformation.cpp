@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,6 +22,7 @@
 #include <sbml/packages/render/sbml/GlobalRenderInformation.h>
 
 #include "CLGlobalRenderInformation.h"
+#include "CLGraphicalObject.h"
 
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
@@ -142,6 +143,59 @@ CLStyle* CLGlobalRenderInformation::createStyle()
   CLGlobalStyle* pStyle = new CLGlobalStyle();
   this->mListOfStyles.add(pStyle, true);
   return pStyle;
+}
+
+const CLStyle * CLGlobalRenderInformation::getStyleForGraphicalObject(const CLGraphicalObject * pObject) const
+{
+  if (!pObject)
+    return NULL;
+
+  std::vector< const CLStyle * > possibleTypes;
+
+for (const CLStyle & pStyle : mListOfStyles)
+    {
+      if (pStyle.isInRoleList(pObject->getObjectRole()))
+        {
+          return &pStyle;
+        }
+
+      if (pStyle.isInTypeList(getTypeForObject(pObject)))
+        {
+          possibleTypes.push_back(&pStyle);
+          continue;
+        }
+    }
+
+  if (!possibleTypes.empty())
+    return possibleTypes.front();
+
+  return NULL;
+}
+
+#include "CLGlyphs.h"
+#include "CLReactionGlyph.h"
+
+std::string CLGlobalRenderInformation::getTypeForObject(const CLGraphicalObject * pObject)
+{
+  if (dynamic_cast< const CLCompartmentGlyph * >(pObject) != NULL)
+    return "COMPARTMENTGLYPH";
+
+  if (dynamic_cast< const CLMetabGlyph * >(pObject) != NULL)
+    return "SPECIESGLYPH";
+
+  if (dynamic_cast< const CLReactionGlyph * >(pObject) != NULL)
+    return "REACTIONGLYPH";
+
+  if (dynamic_cast< const CLMetabReferenceGlyph * >(pObject) != NULL)
+    return "SPECIESREFERENCEGLYPH";
+
+  if (dynamic_cast< const CLTextGlyph* >(pObject) != NULL)
+    return "TEXTGLYPH";
+
+  if (dynamic_cast< const CLGeneralGlyph * >(pObject) != NULL)
+    return "GENERALGLYPH";
+
+  return std::string("GRAPHICALOBJECT");
 }
 
 void CLGlobalRenderInformation::addStyle(const CLGlobalStyle* pStyle)

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,6 +27,8 @@
 LIBSBML_CPP_NAMESPACE_BEGIN
 class Style;
 LIBSBML_CPP_NAMESPACE_END
+
+class CLGraphicalObject;
 
 class CLStyle : public CLBase, public CDataContainer
 {
@@ -106,9 +113,19 @@ public:
   const std::set<std::string>& getRoleList() const;
 
   /**
+   * @return the roles as string
+   */
+  std::string getRoleListString() const;
+
+  /**
    * Returns the type list.
    */
   const std::set<std::string>& getTypeList() const;
+
+  /**
+   * @return the types in the type list as string
+   */
+  std::string getTypeListString() const;
 
   /**
    * Sets the type list.
@@ -149,6 +166,15 @@ public:
    * object.
    */
   void addSBMLAttributes(Style* pStyle) const;
+
+  /**
+   * Checks whether the style applies to the graphical object
+   *
+   * @param pObject the object to check
+   * @return 0, if the style does not apply, 1 if it applies by type,
+   *         2 if it applies by role
+   */
+  virtual int appliesTo(const CLGraphicalObject * pObject) const;
 };
 
 #endif /* CLStyle_H__ */

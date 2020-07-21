@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -392,6 +397,22 @@ const CLStyle* CLRenderResolver::resolveStyleForKey(const std::string& key) cons
     }
 
   return pResult;
+}
+
+void CLRenderResolver::removeKeyFromMap(const std::string& key)
+{
+  std::map< std::string, const CLStyle * >::iterator pos = mKeyMap.find(key);
+
+  if (pos != mKeyMap.end())
+    {
+      mKeyMap.erase(pos);
+    }
+}
+
+void CLRenderResolver::addKeyToMap(const std::string& key, const CLStyle* pStyle)
+{
+  removeKeyFromMap(key);
+  mKeyMap[key] = pStyle;
 }
 
 /**
