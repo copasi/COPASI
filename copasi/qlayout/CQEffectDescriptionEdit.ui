@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> University of Virginia, University of Heidelberg, and University </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
-
+ <comment> All rights reserved. </comment>
  <class>CQEffectDescriptionEdit</class>
  <widget class="QWidget" name="CQEffectDescriptionEdit">
   <property name="geometry">
@@ -13,7 +23,7 @@
     <x>0</x>
     <y>0</y>
     <width>230</width>
-    <height>220</height>
+    <height>237</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -189,7 +199,7 @@
    <item row="5" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>Object: </string>
+      <string>Graphical: </string>
      </property>
      <property name="buddy">
       <cstring>txtObjectName</cstring>
@@ -200,6 +210,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLineEdit" name="txtObjectName">
+       <property name="toolTip">
+        <string>The model element onto which to map the data</string>
+       </property>
        <property name="readOnly">
         <bool>true</bool>
        </property>
@@ -207,6 +220,37 @@
      </item>
      <item>
       <widget class="QToolButton" name="cmdSelectObject">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Data Object: </string>
+     </property>
+     <property name="buddy">
+      <cstring>txtDataObject</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <layout class="QHBoxLayout">
+     <item>
+      <widget class="QLineEdit" name="txtDataObject">
+       <property name="toolTip">
+        <string>The data to be mapped</string>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="cmdSelectDataObject">
        <property name="text">
         <string>...</string>
        </property>
@@ -226,6 +270,8 @@
   <tabstop>cmdSelectColorEnd</tabstop>
   <tabstop>txtObjectName</tabstop>
   <tabstop>cmdSelectObject</tabstop>
+  <tabstop>txtDataObject</tabstop>
+  <tabstop>cmdSelectDataObject</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -266,6 +312,22 @@
    <signal>clicked()</signal>
    <receiver>CQEffectDescriptionEdit</receiver>
    <slot>slotSelectObject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>242</x>
+     <y>187</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmdSelectDataObject</sender>
+   <signal>clicked()</signal>
+   <receiver>CQEffectDescriptionEdit</receiver>
+   <slot>slotSelectDataObject()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>242</x>
@@ -364,6 +426,7 @@
   <slot>slotSelectColorStart()</slot>
   <slot>slotSelectColorEnd()</slot>
   <slot>slotSelectObject()</slot>
+  <slot>slotSelectDataObject()</slot>
   <slot>slotModeChanged()</slot>
  </slots>
 </ui>

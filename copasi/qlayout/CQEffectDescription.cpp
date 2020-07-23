@@ -51,24 +51,41 @@ QColor interpolate(const QColor &a, const QColor &b, float t)
   return QColor::fromHsv(rh, rs, rv, ra);
 }
 
-CQEffectDescription::CQEffectDescription(const std::string& cn, Mode mode, const QColor &startColor, const QColor& endColor)
-  : mCN(cn)
+CQEffectDescription::CQEffectDescription(const std::string & cn, Mode mode, const QColor & startColor, const QColor & endColor, const std::string & dataCN)
+  : mElementCN(cn)
+  , mDataCN(dataCN)
   , mStartColor(startColor)
   , mEndColor(endColor)
   , mScaleStart(0.5)
   , mScaleEnd(2.0)
   , mMode(mode)
 {
+  if (dataCN.empty())
+    mDataCN = cn;
 }
 
-CQEffectDescription::CQEffectDescription(const std::string& cn, qreal startScale, qreal endScale)
-  : mCN(cn)
+CQEffectDescription::CQEffectDescription(const std::string & cn, const std::string & dataCn, Mode mode)
+  : mElementCN(cn)
+  , mDataCN(dataCn)
+  , mStartColor(Qt::white)
+  , mEndColor(Qt::red)
+  , mScaleStart(0.5)
+  , mScaleEnd(2.0)
+  , mMode(mode)
+{
+}
+
+CQEffectDescription::CQEffectDescription(const std::string & cn, qreal startScale, qreal endScale, const std::string & dataCN)
+  : mElementCN(cn)
+  , mDataCN(dataCN)
   , mStartColor(Qt::white)
   , mEndColor(Qt::red)
   , mScaleStart(startScale)
   , mScaleEnd(endScale)
   , mMode(Scale)
 {
+  if (dataCN.empty())
+    mDataCN = cn;
 }
 
 CQEffectDescription::~CQEffectDescription()
@@ -77,7 +94,7 @@ CQEffectDescription::~CQEffectDescription()
 
 const std::string& CQEffectDescription::getCN()const
 {
-  return mCN;
+  return mElementCN;
 }
 
 const QColor& CQEffectDescription::getStartColor() const
@@ -111,7 +128,7 @@ void CQEffectDescription::setMode(CQEffectDescription::Mode mode)
 
 void CQEffectDescription::removeFromScene(CQLayoutScene& scene)
 {
-  QGraphicsItem *item = scene.getItemFor(mCN);
+  QGraphicsItem *item = scene.getItemFor(mElementCN);
 
   if (item == NULL)
     return;
@@ -126,7 +143,7 @@ void CQEffectDescription::removeFromScene(CQLayoutScene& scene)
 
 void CQEffectDescription::applyToScene(CQLayoutScene& scene, qreal t)
 {
-  QGraphicsItem *item = scene.getItemFor(mCN);
+  QGraphicsItem *item = scene.getItemFor(mElementCN);
 
   if (item == NULL)
     return;
@@ -173,7 +190,7 @@ void CQEffectDescription::applyToScene(CQLayoutScene& scene, qreal t)
 
 void CQEffectDescription::setCN(const std::string& cn)
 {
-  mCN = cn;
+  mElementCN = cn;
 }
 
 std::string CQEffectDescription::getDisplayName() const
@@ -183,12 +200,22 @@ std::string CQEffectDescription::getDisplayName() const
   if (!pModelList || pModelList->empty())
     return std::string();
 
-  const CDataObject * pObject = dynamic_cast< const CDataObject * >((*pModelList)[0].getObjectFromCN(mCN));
+  const CDataObject * pObject = dynamic_cast< const CDataObject * >((*pModelList)[0].getObjectFromCN(mElementCN));
 
   if (!pObject)
     return std::string();
 
   return pObject->getObjectDisplayName();
+}
+
+const std::string & CQEffectDescription::getDataCN() const
+{
+  return mDataCN;
+}
+
+void CQEffectDescription::setDataCN(const std::string & cn)
+{
+  mDataCN = cn;
 }
 
 void CQEffectDescription::setStartColor(const QColor& color)

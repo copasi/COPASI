@@ -18,6 +18,12 @@
 #include <copasi/qlayout/CQEffectDescription.h>
 #include <copasi/UI/qtUtilities.h>
 
+#include <copasi/UI/CCopasiSelectionDialog.h>
+#include <copasi/UI/CQCopasiApplication.h>
+#include <copasi/UI/copasiui3window.h>
+#include <copasi/UI/listviews.h>
+#include <copasi/core/CDataObjectReference.h>
+
 CQAnimationSettingsEditor::CQAnimationSettingsEditor(QWidget *parent, Qt::WindowFlags f)
   : QDialog(parent, f)
 {
@@ -31,12 +37,6 @@ CQAnimationSettingsEditor::~CQAnimationSettingsEditor()
 void CQAnimationSettingsEditor::slotScaleModeChanged()
 {
 }
-
-#include <copasi/UI/CCopasiSelectionDialog.h>
-#include <copasi/UI/CQCopasiApplication.h>
-#include <copasi/UI/copasiui3window.h>
-#include <copasi/UI/listviews.h>
-#include <copasi/core/CDataObjectReference.h>
 
 void CQAnimationSettingsEditor::slotEffectAdded()
 {
@@ -52,7 +52,12 @@ void CQAnimationSettingsEditor::slotEffectAdded()
 
 for (auto * item : objects)
     {
-      mEntries.push_back(CQEffectDescription(item->getCN()));
+      auto * parent = item->getObjectParent();
+
+      if (parent == NULL)
+        continue;
+
+      mEntries.push_back(CQEffectDescription(parent->getCN(), item->getCN()));
     }
 
   // add effects for selected items
