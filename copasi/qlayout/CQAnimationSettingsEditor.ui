@@ -33,7 +33,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Effects Settings</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>

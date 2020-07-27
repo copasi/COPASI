@@ -23,10 +23,12 @@
 #include <copasi/UI/copasiui3window.h>
 #include <copasi/UI/listviews.h>
 #include <copasi/core/CDataObjectReference.h>
+#include <copasi/resourcesUI/CQIconResource.h>
 
 CQAnimationSettingsEditor::CQAnimationSettingsEditor(QWidget *parent, Qt::WindowFlags f)
   : QDialog(parent, f)
 {
+  setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
   setupUi(this);
 }
 
