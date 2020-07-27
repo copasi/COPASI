@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
@@ -78,7 +83,11 @@ class AutoProperty(type):
 
         import re
         import keyword
-        import inspect
+        import sys
+        if sys.version_info < (3, 0):
+          from inspect import getargspec as mygetargspec
+        else:
+          from inspect import getfullargspec as mygetargspec
 
         re_mangle = re.compile(r'[A-Za-z][a-z]+|[A-Z]+(?=$|[A-Z0-9])|\d+')
         re_id = re.compile(r'^[A-Za-z_][A-Za-z0-9_]*$')
@@ -126,12 +135,12 @@ class AutoProperty(type):
             getter = setter = deleter = None
             if name in get_methods:
                 getter = classdict['get'+name]
-            
+
                 #this is a very dirty way of checking if the get method
                 #requires extra arguments (and hence cannot be a property)
                 #it should be possible to do this properly in SWIG?
                 try:
-                  argspec = inspect.getargspec(getter)
+                  argspec = mygetargspec(getter)
                   numargs = len(argspec.args)
                   if numargs > 1 or (numargs == 1 and argspec.args[0] != 'self')  \
                     or (argspec.varargs!=None and name not in allowed_methods and not name.startswith('ListOf') ):
@@ -153,7 +162,7 @@ class AutoProperty(type):
             if name in set_methods:
                 setter = classdict['set'+name]
                 try:
-                 argspec = inspect.getargspec(getter)
+                 argspec = mygetargspec(getter)
                  numargs = len(argspec.args)
                  if numargs > 1 and argspec.args[0] == 'self':
                    cname = classname + '_set' + name
@@ -176,7 +185,7 @@ class AutoProperty(type):
                 deleter = classdict['unset'+name]
 
                 try:
-                  argspec = inspect.getargspec(getter)
+                  argspec = mygetargspec(getter)
                   numargs = len(argspec.args)
                   if numargs == 1 and argspec.args[0] == 'self' and \
                     (argspec.varargs==None or name in allowed_methods):
