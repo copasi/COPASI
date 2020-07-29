@@ -3538,6 +3538,8 @@ void addSymbolComponentToUnitDefinition(UnitDefinition* result, CUnit::SymbolCom
   std::string possibleScale = symbol.substr(0, 1);
   std::string possibleUnit = symbol.substr(1);
 
+  bool use_d_prefix = true;
+
   // need to deal with unsupported time units differently
   // just replace them by their multiplier * s
   if (symbol == "h" || possibleUnit == "h")
@@ -3557,12 +3559,13 @@ void addSymbolComponentToUnitDefinition(UnitDefinition* result, CUnit::SymbolCom
       multiplier *= 86400;
       symbol = "s";
       possibleUnit = "s";
+      use_d_prefix = false;
     }
 
   int unitKind = convertSymbol(possibleUnit);
   int scale = 0;
 
-  if (unitKind != C_INVALID_INDEX && unitExpression != "d")
+  if (unitKind != C_INVALID_INDEX && use_d_prefix)
     scale = static_cast<int>(CBaseUnit::scaleFromPrefix(possibleScale));
   else
     unitKind = convertSymbol(symbol);
