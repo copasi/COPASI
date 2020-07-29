@@ -6268,7 +6268,7 @@ bool SBMLImporter::divideByVolume(ASTNode* node, const std::string& compartmentS
             {
               nodeIt = nodeStack[nodeStack.size() - 1];
 
-              if (nodeIt->getType() == AST_TIMES && nodeIt->getNumChildren() > intStack[intStack.size() - 1] + 1)
+              if (nodeIt->getType() == AST_TIMES && (int)nodeIt->getNumChildren() > intStack[intStack.size() - 1] + 1)
                 {
                   //go to sibling
                   nodeIt = nodeIt->getChild(intStack[intStack.size() - 1] + 1);
@@ -8798,11 +8798,29 @@ std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUni
       if (symbol.empty())
         continue;
 
+      double multiplier = current->getMultiplier();
+
+      if (symbol == "s" && multiplier == 86400)
+        {
+          symbol = "d";
+          multiplier = 1;
+        }
+      else if (symbol == "s" && multiplier == 3600)
+        {
+          symbol = "h";
+          multiplier = 1;
+        }
+      else if (symbol == "s" && multiplier == 60)
+        {
+          symbol = "min";
+          multiplier = 1;
+        }
+
       CUnit tmp = CUnit(symbol).exponentiate(current->getExponentAsDouble());
       tmp.addComponent(
         CUnitComponent(
           CBaseUnit::dimensionless,
-          current->getMultiplier(),
+          multiplier,
           current->getScale() * current->getExponentAsDouble()));
 
       tmp.buildExpression();
@@ -8810,7 +8828,6 @@ std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUni
 
       copasiUnit = copasiUnit * tmp;
     }
-
 
   // construct expression
   copasiUnit.buildExpression();
