@@ -491,6 +491,9 @@ void CQAnimationWindow::init()
   actAnimation->menu()->addAction(actionView_Elementary_Modes);
   actAnimation->menu()->addAction(actionView_Conserved_Species);
   actAnimation->menu()->addAction(actionView_Custom_Time_Course);
+  actAnimation->menu()->addSeparator();
+  actAnimation->menu()->addAction(action_Settings);
+
   actionToolbar->addAction(actAnimation);
 
   QToolBar* selectToolbar = this->addToolBar("Select");
