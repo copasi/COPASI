@@ -64,6 +64,12 @@
           <unit kind="second" exponent="1" scale="0" multiplier="86400"/>
         </listOfUnits>
       </unitDefinition>
+      <unitDefinition id="unit_3" name="1/(#*d)">
+        <listOfUnits>
+          <unit kind="item" exponent="-1" scale="0" multiplier="1"/>
+          <unit kind="second" exponent="-1" scale="0" multiplier="86400"/>
+        </listOfUnits>
+      </unitDefinition>
     </listOfUnitDefinitions>
     <listOfParameters>
       <parameter metaid="COPASI1" id="unit" name="unit" value="1" units="unit_0" constant="true">

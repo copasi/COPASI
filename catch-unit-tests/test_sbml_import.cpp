@@ -35,12 +35,16 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
 
     REQUIRE(expression == "l/(nmol*s)");
 
+    unit = sbml_mod->getUnitDefinition("unit_2");
+    REQUIRE(unit != NULL);
+    expression = importer.createUnitExpressionFor(unit);
+    REQUIRE(expression == "d");
 
-    /* ISSUE 2910: this should be the result ... its not yet
-     unit = sbml_mod->getUnitDefinition("unit_2");
-     REQUIRE(unit != NULL);
-     expression = importer.createUnitExpressionFor(unit);
-     REQUIRE(expression == "d");*/
+    unit = sbml_mod->getUnitDefinition("unit_3");
+    REQUIRE(unit != NULL);
+    expression = importer.createUnitExpressionFor(unit);
+    REQUIRE((expression == "1/(#*d)" || expression == "1/(d*#)"));
+
 
     delete sbml_doc;
 
@@ -52,10 +56,15 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
 
     auto * mod = dm->getModel();
     REQUIRE(mod != NULL);
-    auto * p = mod->createModelValue("p");
+    auto * p = mod->createModelValue("p1");
     REQUIRE(p != NULL);
     p->setValue(1);
     p->setUnitExpression("d");
+
+    p = mod->createModelValue("p2");
+    REQUIRE(p != NULL);
+    p->setValue(1);
+    p->setUnitExpression("1/(#*d)");
 
     CSBMLExporter exp;
     auto sbml = exp.exportModelToString(*dm, 2, 4);
@@ -64,6 +73,7 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
     REQUIRE(doc != NULL);
     auto * sbml_mod = doc->getModel();
     REQUIRE(sbml_mod != NULL);
+
     auto * unitdef = sbml_mod->getUnitDefinition("unit_0");
     REQUIRE(unitdef != NULL);
     REQUIRE(unitdef->getNumUnits() == 1);
@@ -73,6 +83,23 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
     REQUIRE(unit->getMultiplier() == 86400);
     REQUIRE(unit->getExponent() == 1);
     REQUIRE(unit->getKind() == UNIT_KIND_SECOND);
+
+    unitdef = sbml_mod->getUnitDefinition("unit_1");
+    REQUIRE(unitdef != NULL);
+    REQUIRE(unitdef->getNumUnits() == 2);
+    unit = unitdef->getUnit(0);
+    REQUIRE(unit != NULL);
+    REQUIRE(unit->getScale() == 0);
+    REQUIRE(unit->getMultiplier() == 86400);
+    REQUIRE(unit->getExponent() == -1);
+    REQUIRE(unit->getKind() == UNIT_KIND_SECOND);
+
+    unit = unitdef->getUnit(1);
+    REQUIRE(unit != NULL);
+    REQUIRE(unit->getScale() == 0);
+    REQUIRE(unit->getMultiplier() == 1);
+    REQUIRE(unit->getExponent() == -1);
+    REQUIRE(unit->getKind() == UNIT_KIND_ITEM);
 
   }
 
