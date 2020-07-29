@@ -483,6 +483,16 @@ void CQAnimationWindow::init()
   actionToolbar->addAction(actionAuto_Layout);
   actionToolbar->addAction(actionRandomize_Layout);
 
+  QAction * actAnimation = new QAction(this);
+  actAnimation->setIcon(CQIconResource::icon(CQIconResource::animation));
+  actAnimation->setToolTip("Select animation to display on the layout");
+  actAnimation->setMenu(new QMenu());
+  actAnimation->menu()->addAction(actionView_Time_Course);
+  actAnimation->menu()->addAction(actionView_Elementary_Modes);
+  actAnimation->menu()->addAction(actionView_Conserved_Species);
+  actAnimation->menu()->addAction(actionView_Custom_Time_Course);
+  actionToolbar->addAction(actAnimation);
+
   QToolBar* selectToolbar = this->addToolBar("Select");
   graphicsView->fillSelectionToolBar(selectToolbar);
 
