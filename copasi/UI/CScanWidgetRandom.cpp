@@ -85,15 +85,15 @@ void CScanWidgetRandom::init()
   if (Foreground.redF() + Foreground.greenF() + Foreground.blueF() > Background.redF() + Background.greenF() + Background.blueF())
     {
 #if QT_VERSION >= 0x050000
-      setStyleSheet("color: " + QColor(220, 220, 220, 255).name(QColor::HexRgb));
+      setStyleSheet("color: " + QColor(221, 203, 249, 255).name(QColor::HexRgb));
 #else
-      setStyleSheet("color: " + QColor(220, 220, 220, 255).name());
+      setStyleSheet("color: " + QColor(221, 203, 249, 255).name());
 #endif
     }
   else
     {
       QPalette palette;
-      QBrush brush(QColor(220, 220, 220, 255));
+      QBrush brush(QColor(221, 203, 249, 255));
       brush.setStyle(Qt::SolidPattern);
       palette.setBrush(QPalette::Active, QPalette::Base, brush);
       palette.setBrush(QPalette::Inactive, QPalette::Base, brush);
