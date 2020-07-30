@@ -3224,7 +3224,16 @@ const CDataObject * CDataModel::findObjectByDisplayName(const std::string & disp
       size_t paramIndex = reaction.getParameterIndex(parameter);
 
       if (paramIndex == C_INVALID_INDEX)
-        return NULL;
+        {
+          // might be flux / particle flux
+          if (parameter == "Flux")
+            return reaction.getFluxReference();
+
+          if (parameter == "ParticleFlux")
+            return reaction.getParticleFluxReference();
+
+          return NULL;
+        }
 
       auto & paramObjects = reaction.getParameterObjects(paramIndex);
 
