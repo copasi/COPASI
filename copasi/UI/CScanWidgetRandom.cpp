@@ -81,7 +81,7 @@ void CScanWidgetRandom::init()
 #endif
   QColor Foreground = Palette.color(QPalette::Active, QPalette::Text);
   QColor Background = Palette.color(QPalette::Active, QPalette::Base);
-  QColor Target(220, 220, 220, 255);
+  QColor Target(210, 210, 255, 255);
 
   if (Foreground.redF() + Foreground.greenF() + Foreground.blueF() > Background.redF() + Background.greenF() + Background.blueF())
     {

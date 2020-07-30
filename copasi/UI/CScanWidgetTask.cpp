@@ -67,7 +67,7 @@ void CScanWidgetTask::init()
 #endif
   QColor Foreground = Palette.color(QPalette::Active, QPalette::Text);
   QColor Background = Palette.color(QPalette::Active, QPalette::Base);
-  QColor Target(191, 236, 183, 255);
+  QColor Target(255, 210, 210, 255);
 
   if (Foreground.redF() + Foreground.greenF() + Foreground.blueF() > Background.redF() + Background.greenF() + Background.blueF())
     {
