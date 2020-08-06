@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -187,11 +187,11 @@ bool CSteadyStateTask::updateMatrices()
     {
       const CDataObject * pDatabject = pObject->getDataObject()->getObjectParent();
 
-      mpJacobianXAnn->setAnnotation(0 , i, pDatabject);
-      mpJacobianXAnn->setAnnotation(1 , i, pDatabject);
+      mpJacobianXAnn->setAnnotation(0, i, pDatabject);
+      mpJacobianXAnn->setAnnotation(1, i, pDatabject);
 
-      mpJacobianAnn->setAnnotation(0 , i, pDatabject);
-      mpJacobianAnn->setAnnotation(1 , i, pDatabject);
+      mpJacobianAnn->setAnnotation(0, i, pDatabject);
+      mpJacobianAnn->setAnnotation(1, i, pDatabject);
     }
 
   pObjectEnd += size - sizeReduced;
@@ -200,8 +200,8 @@ bool CSteadyStateTask::updateMatrices()
     {
       const CDataObject * pDataObject = pObject->getDataObject()->getObjectParent();
 
-      mpJacobianAnn->setAnnotation(0 , i, pDataObject);
-      mpJacobianAnn->setAnnotation(1 , i, pDataObject);
+      mpJacobianAnn->setAnnotation(0, i, pDataObject);
+      mpJacobianAnn->setAnnotation(1, i, pDataObject);
     }
 
   // initial dimension of Eigenvalues of Jacobian
@@ -250,7 +250,7 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
       mpContainer->applyInitialValues();
     }
 
-  mSteadyState = mpContainer->getState(true);
+  mSteadyState = mpContainer->getState(false);
 
   // A steady-state makes only sense in an autonomous model,
   // i.e., the time of the steady-state must not be changed
@@ -277,9 +277,6 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
     {
       mSteadyState[mpContainer->getCountFixedEventTargets()] = InitialTime;
     }
-
-  if (mResult == CSteadyStateMethod::notFound)
-    restore();
 
   //update Jacobian
   if (mpContainer->isStateValid())
