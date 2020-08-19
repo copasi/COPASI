@@ -698,7 +698,7 @@ std::string CModelEntity::getChildObjectUnits(const CDataObject * pObject) const
       std::string ValueUnit = getChildObjectUnits(mpValueReference);
       std::string TimeUnit = (mpModel != NULL) ? mpModel->getTimeUnit() : "?";
 
-      return ValueUnit + "/(" + TimeUnit + ")";
+      return (ValueUnit.empty() ? "?" : ValueUnit) + "/(" + TimeUnit + ")";
     }
 
   if (pObject == mpValueReference ||

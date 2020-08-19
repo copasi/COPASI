@@ -1,53 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<title>Step 5: Creating a Report Definition</title>
+	<title>Step 5: Creating a Report Definition</title>
 </head>
+
 <body>
-  <div style="text-align:center;margin-left: auto; margin-right: auto;">
-  <h3>Step 5: Creating a Report Definition</h3><br>
+	<div style="text-align:center;margin-left: auto; margin-right: auto;">
+		<h3>Step 5: Creating a Report Definition</h3><br>
 	</div>
 	<p>
-Sometimes, the predefined report and plots that are provided by the <em>Output
-Assistant</em> are not what you want. In this case, we can either start with
-one of the predefined report (or plots) and change it to our needs, or we can
-create a new report (or plot) from scratch.
-In order to create or edit an exisiting report definition, you navigate in the tree to
-<code>Output-&gt;Reports</code>. If you want to edit an exisiting report, just double click on the report you want to edit in the table. If you want to create a new report, click the <strong><code>New</code></strong> button on the bottom then double click on the new entry in the table. You will now find
-yourself in the dialog for the report definition.<br>
-<div style="text-align:center;margin-left: auto; margin-right: auto;">
-(<a href="#Report Definition" name="Report Definition">Click here</a> to go to the Report definition dialog.)
-</div>
-<br>
-<div style="text-align:center;margin-left: auto; margin-right: auto;">
-<img alt="figure: empty Report Definition Dialog" vspace="20" src="./figures/ReportDefinitionDialog.png"/>
-</div>
+		Sometimes, the predefined report and plots that are provided by the <em>Output
+			Assistant</em> are not what you want. In this case, we can either start with
+		one of the predefined report (or plots) and change it to our needs, or we can
+		create a new report (or plot) from scratch.
+		In order to create or edit an exisiting report definition, you navigate in the tree to
+		<code>Output-&gt;Reports</code>. If you want to edit an exisiting report, just double click on the report you
+		want to edit in the table. If you want to create a new report, click the <strong><code>New</code></strong>
+		button on the bottom then double click on the new entry in the table. You will now find
+		yourself in the dialog for the report definition.<br>
+	<div style="text-align:center;margin-left: auto; margin-right: auto;">
+		(<a href="#Report Definition" name="Report Definition">Click here</a> to go to the Report definition dialog.)
+	</div>
+	<br>
+	<div style="text-align:center;margin-left: auto; margin-right: auto;">
+		<img alt="figure: empty Report Definition Dialog" vspace="20"   src="./figures/ReportDefinitionDialog.png" />
+	</div>
 	</p>
-<p>
-If you have created a new report, the list widget is empty. That means that nothing will be put into the
-report. In order to add items for the output, you click on the <strong><code>Item</code></strong> button which
-is located to the right of the empty list. This will open the <em>Object Browser</em>
-dialog where you can select any available object. We will now limit
-ourselves to the <em>time</em> object and the concentrations of the species.
-Expand Species -> Transient Concentrations and select the ones you want in the report (drag or Cmd/Ctrl to select). Also select Time -> Model Time (still with Cmd or Ctrl pressed). You may also check the box to work in <em>expert mode</em>. This exposes the objects, references, and attributes, by actual internal object name, to allow for fuller control.
+	<p>
+		If you have created a new report, the list widget is empty. That means that nothing will be put into the
+		report. In order to add items for the output, you click on the <strong><code>Item</code></strong> button which
+		is located to the right of the empty list. This will open the <em>Object Browser</em>
+		dialog where you can select any available object. We will now limit
+		ourselves to the <em>time</em> object and the concentrations of the species.
+		Expand Species -> Transient Concentrations and select the ones you want in the report (drag or Cmd/Ctrl to
+		select). Also select Time -> Model Time (still with Cmd or Ctrl pressed). You may also check the box to work in
+		<em>expert mode</em>. This exposes the objects, references, and attributes, by actual internal object name, to
+		allow for fuller control.
 
-<div style="text-align:center;margin-left: auto; margin-right: auto;">
-<img alt="figure: Object Browser dialog" vspace="20" src="./figures/ObjectBrowserTree.png"/>
-</div>
-<br>
-Once you have selected all the attributes for the output, you finish the
-selection by clicking the <strong><code>"OK"</code></strong> button.
-</p>
-<p>
-The attributes that you see in the list widget now, will be written to file
-in same the order as the appear in the list. If you want the time
-to appear in the first column of your output instead of the last, you have to change the order of the selected elements.
-You can change the order of the elements by selecting an item in the list and moving it up or down via the <code><strong>Up</strong></code> and 
-<code><strong>Down</strong></code> buttons on the left.
-You can also delete an element by selecting it and then pushing the <strong><code>Delete</code></strong> button.
-<div style="text-align:center;margin-left: auto; margin-right: auto;">
-<img alt="figure: Report Definition dialog with entries" vspace="20" src="./figures/ObjectBrowserSelection.png"/>
-</div>
-</p>
+	<div style="text-align:center;margin-left: auto; margin-right: auto;">
+		<img alt="figure: Object Browser dialog" vspace="20"   src="./figures/ObjectBrowserTree.png" />
+	</div>
+	<br>
+	Once you have selected all the attributes for the output, you finish the
+	selection by clicking the <strong><code>"OK"</code></strong> button.
+	</p>
+	<p>
+		The attributes that you see in the list widget now, will be written to file
+		in same the order as the appear in the list. If you want the time
+		to appear in the first column of your output instead of the last, you have to change the order of the selected
+		elements.
+		You can change the order of the elements by selecting an item in the list and moving it up or down via the
+		<code><strong>Up</strong></code> and
+		<code><strong>Down</strong></code> buttons on the left.
+		You can also delete an element by selecting it and then pushing the <strong><code>Delete</code></strong> button.
+	<div style="text-align:center;margin-left: auto; margin-right: auto;">
+		<img alt="figure: Report Definition dialog with entries" vspace="20"
+			src="./figures/ObjectBrowserSelection.png" />
+	</div>
+	</p>
 </body>
+
 </html>

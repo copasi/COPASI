@@ -63,7 +63,9 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget *parent)
   mpProxyModel->setFilterKeyColumn(-1);
   mpProxyModel->setSourceModel(mpLayoutsDM);
 
+#if QT_VERSION >= 0x050000
   mpTblLayouts->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {

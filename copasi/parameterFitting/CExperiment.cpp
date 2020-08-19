@@ -576,7 +576,7 @@ void CExperiment::storeExtendedTimeSeriesData(C_FLOAT64 time)
   //first store time
   *mStorageIt = time; ++mStorageIt;
 
-  //do all necessary refreshs
+  //do all necessary refreshes
   mpContainer->applyUpdateSequence(mDependentUpdateSequence);
 
   //store the calculated data
@@ -970,7 +970,7 @@ bool CExperiment::read(std::istream & in,
           continue;
         }
 
-      bool isFirstRow = (currentLine == (*mpHeaderRow + 1)) || (*mpHeaderRow == C_INVALID_INDEX && currentLine == 1);
+      bool isFirstRow = (currentLine == (*mpHeaderRow + 1)) || (*mpHeaderRow == InvalidIndex && currentLine == 1);
 
       IndependentCount = 0;
       DependentCount = 0;
@@ -1577,6 +1577,22 @@ C_FLOAT64 CExperiment::getDefaultScale(const CObjectInterface * pObject) const
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
   return mDefaultColumnScale[it->second];
+}
+
+const C_FLOAT64*
+CExperiment::getScale(const CObjectInterface* pObject) const
+{
+  std::map< const CObjectInterface*, size_t >::const_iterator it = mDependentObjectsMap.find(const_cast<CObjectInterface*>(pObject));
+
+  if (it == mDependentObjectsMap.end())
+    return NULL;
+
+  return mScale[it->second];
+}
+
+const CMatrix<C_FLOAT64>& CExperiment::getScalingMatrix() const
+{
+  return mScale;
 }
 
 C_FLOAT64 CExperiment::getRMS(const CObjectInterface * pObject) const

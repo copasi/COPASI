@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -36,7 +41,7 @@ class FunctionWidget1 : public CopasiWidget, public Ui::FunctionWidget1
   Q_OBJECT
 
 public:
-  FunctionWidget1(QWidget *parent, const char * name = 0, Qt::WindowFlags f = 0);
+  FunctionWidget1(QWidget *parent, const char * name = 0, Qt::WindowFlags f = Qt::WindowFlags());
   virtual ~FunctionWidget1();
 
 protected slots:

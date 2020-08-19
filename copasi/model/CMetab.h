@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -348,6 +348,12 @@ public:
    * @return const CMoiety * pMoiety;
    */
   const CMoiety * getMoiety() const;
+
+  /**
+   * Retrieve the count of structural dependent reactions
+   * @return const size_t countOfDependentReactions
+   */
+  size_t getCountOfDependentReactions() const;
 
   /**
    * ostream operator

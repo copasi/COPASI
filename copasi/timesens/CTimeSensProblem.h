@@ -119,63 +119,10 @@ private:
    */
   void initializeParameter();
 
-  /**
-   * This function synchronizes step size and number
-   * @return bool success
-   */
-  bool sync();
-
   void initObjects();
 
   // Attributes
 protected:
-  /**
-   * Pointer to parameter value for duration.
-   */
-  C_FLOAT64 * mpDuration;
-
-  /**
-   * Pointer to parameter value indicating automatic step size.
-   */
-  bool * mpAutomaticStepSize;
-
-  /**
-   * Pointer to parameter value for step size.
-   */
-  C_FLOAT64 * mpStepSize;
-
-  /**
-   * Pointer to parameter value for step number
-   */
-  unsigned C_INT32 * mpStepNumber;
-
-  /**
-   * Pointer to parameter value indicating whether a time series needs to be
-   * stored in memory
-   */
-  bool * mpTimeSeriesRequested;
-
-  /**
-   * Pointer to parameter value for  output start time
-   */
-  C_FLOAT64 * mpOutputStartTime;
-
-  /**
-   * Pointer to parameter value indicating whether events should be added to the
-   * output
-   */
-  bool * mpOutputEvent;
-
-  /**
-   * Indicates whether a time course is supposed to start in a steady state
-   * realized as a CCopasiParameter
-   */
-  bool* mpStartInSteadyState;
-
-  /**
-   *  Indicate whether the step number or step size was set last.
-   */
-  bool mStepNumberSetLast;
 
   /**
    *  These hold the results

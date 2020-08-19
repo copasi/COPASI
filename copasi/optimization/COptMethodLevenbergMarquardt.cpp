@@ -71,6 +71,10 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
   assertParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006);
   assertParameter("Modulation", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006, eUserInterfaceFlag::editable);
   assertParameter("Stop after # stalled iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
+  assertParameter("Initial Lambda", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)1.0, eUserInterfaceFlag::editable);
+  assertParameter("Lambda Decrease", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)2.0, eUserInterfaceFlag::editable);
+  assertParameter("Lambda Increase", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)4.0, eUserInterfaceFlag::editable);
+
 
   initObjects();
 }
@@ -195,7 +199,7 @@ bool COptMethodLevenbergMarquardt::optimise()
     }
 
   // Initialize LM_lambda
-  LM_lambda = 1.0;
+  LM_lambda = mInitialLamda;
   nu = 2.0;
   calc_hess = true;
   starts = 1;
@@ -210,7 +214,13 @@ bool COptMethodLevenbergMarquardt::optimise()
         break;
 
       // calculate gradient and Hessian
-      if (calc_hess) hessian();
+      if (calc_hess)
+        {
+          hessian();
+
+          //std::ofstream ohess; ohess.open("hessian.txt"); ohess << mResidualJacobianT; ohess.close();
+          //std::ofstream osens; osens.open("sens.txt"); osens << dynamic_cast<CFitProblem*>(mpOptProblem)->getTimeSensJac(); osens.close();
+        }
 
       calc_hess = true;
 
@@ -422,7 +432,7 @@ bool COptMethodLevenbergMarquardt::optimise()
           mpParentTask->output(COutputInterface::DURING);
 
           // decrease LM_lambda
-          LM_lambda /= nu;
+          LM_lambda /= mLambdaDown; // nu
 
           if ((convp < mTolerance) && (convx < mTolerance))
             {
@@ -437,7 +447,7 @@ bool COptMethodLevenbergMarquardt::optimise()
                       ));
 
                   // let's restart with lambda=1
-                  LM_lambda = 1.0;
+                  LM_lambda = mInitialLamda;
                   starts++;
                 }
               else
@@ -477,7 +487,7 @@ bool COptMethodLevenbergMarquardt::optimise()
           else
             {
               // increase lambda
-              LM_lambda *= nu * 2;
+              LM_lambda *= mLambdaUp; // nu * 2;
               // don't recalculate the Hessian
               calc_hess = false;
               // correct the number of iterations
@@ -550,6 +560,21 @@ bool COptMethodLevenbergMarquardt::initialize()
   mModulation = 0.001;
   mIterationLimit = getValue< unsigned C_INT32 >("Iteration Limit");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
+
+  if (getParameter("Lambda Increase"))
+    mLambdaUp = getValue<C_FLOAT64>("Lambda Increase");
+  else
+    mLambdaUp = 4;
+
+  if (getParameter("Lambda Decrease"))
+    mLambdaDown = getValue<C_FLOAT64>("Lambda Decrease");
+  else
+    mLambdaDown = 2;
+
+  if (getParameter("Initial Lambda"))
+    mInitialLamda = getValue<C_FLOAT64>("Initial Lambda");
+  else
+    mInitialLamda = 1;
 
   if (getParameter("Modulation"))
     mModulation = getValue< C_FLOAT64 >("Modulation");
@@ -635,10 +660,12 @@ void COptMethodLevenbergMarquardt::hessian()
 
   if (mHaveResiduals)
     {
-      evaluate();
+      // evaluate();
 
-      const CVector< C_FLOAT64 > & Residuals =
-        static_cast<CFitProblem *>(mpOptProblem)->getResiduals();
+      CFitProblem* pFit = static_cast<CFitProblem*>(mpOptProblem);
+      bool bUseTimeSens = pFit->getUseTimeSens();
+
+      const CVector< C_FLOAT64 > & Residuals = pFit->getResiduals();
 
       const CVector< C_FLOAT64 > CurrentResiduals = Residuals;
 
@@ -650,55 +677,63 @@ void COptMethodLevenbergMarquardt::hessian()
       const C_FLOAT64 * pEnd = CurrentResiduals.array() + ResidualSize;
       const C_FLOAT64 * pResiduals;
 
-      C_FLOAT64 Delta;
-      C_FLOAT64 x;
-
-      for (i = 0; i < mVariableSize && mContinue; i++)
+      if (!bUseTimeSens)
         {
-//REVIEW:START
-          if ((x = mCurrent[i]) != 0.0)
+
+          C_FLOAT64 Delta;
+          C_FLOAT64 x;
+
+          for (i = 0; i < mVariableSize && mContinue; i++)
             {
-              Delta = 1.0 / (x * mModulation);
-              *mContainerVariables[i] = (x * mod1);
+              //REVIEW:START
+              if ((x = mCurrent[i]) != 0.0)
+                {
+                  Delta = 1.0 / (x * mModulation);
+                  *mContainerVariables[i] = (x * mod1);
+                }
+
+              else
+                {
+                  Delta = 1.0 / mModulation;
+                  *mContainerVariables[i] = (mModulation);
+                  //REVIEW:END
+                }
+
+              // evaluate another column of the Jacobian
+              evaluate();
+              pCurrentResiduals = CurrentResiduals.array();
+              pResiduals = Residuals.array();
+
+              for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pResiduals++, pJacobianT++)
+                *pJacobianT = (*pResiduals - *pCurrentResiduals) * Delta;
+
+              *mContainerVariables[i] = (x);
             }
-
-          else
-            {
-              Delta = 1.0 / mModulation;
-              *mContainerVariables[i] = (mModulation);
-//REVIEW:END
-            }
-
-          // evaluate another column of the Jacobian
-          evaluate();
-          pCurrentResiduals = CurrentResiduals.array();
-          pResiduals = Residuals.array();
-
-          for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pResiduals++, pJacobianT++)
-            *pJacobianT = (*pResiduals - *pCurrentResiduals) * Delta;
-
-          *mContainerVariables[i] = (x);
-        }
 
 #ifdef XXXX
-      // calculate the gradient
-      C_INT m = 1;
-      C_INT n = mGradient.size();
-      C_INT k = mResidualJacobianT.numCols(); /* == CurrentResiduals.size() */
+          // calculate the gradient
+          C_INT m = 1;
+          C_INT n = mGradient.size();
+          C_INT k = mResidualJacobianT.numCols(); /* == CurrentResiduals.size() */
 
-      char op = 'N';
+          char op = 'N';
 
-      C_FLOAT64 Alpha = 1.0;
-      C_FLOAT64 Beta = 0.0;
+          C_FLOAT64 Alpha = 1.0;
+          C_FLOAT64 Beta = 0.0;
 
-      dgemm_("N", "T", &m, &n, &k, &Alpha,
-             const_cast<C_FLOAT64 *>(CurrentResiduals.array()), &m,
-             mResidualJacobianT.array(), &n, &Beta,
-             const_cast<C_FLOAT64 *>(mGradient.array()), &m);
+          dgemm_("N", "T", &m, &n, &k, &Alpha,
+                 const_cast<C_FLOAT64*>(CurrentResiduals.array()), &m,
+                 mResidualJacobianT.array(), &n, &Beta,
+                 const_cast<C_FLOAT64*>(mGradient.array()), &m);
 #endif //XXXX
+        }
 
       C_FLOAT64 * pGradient = mGradient.array();
-      pJacobianT = mResidualJacobianT.array();
+
+      if (bUseTimeSens)
+        pJacobianT = pFit->getTimeSensJac().array();
+      else
+        pJacobianT = mResidualJacobianT.array();
 
       for (i = 0; i < mVariableSize; i++, pGradient++)
         {
@@ -706,7 +741,10 @@ void COptMethodLevenbergMarquardt::hessian()
           pCurrentResiduals = CurrentResiduals.array();
 
           for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pJacobianT++)
-            *pGradient += *pJacobianT **pCurrentResiduals;
+            if (bUseTimeSens)
+              *pGradient -= *pJacobianT * *pCurrentResiduals;
+            else
+              *pGradient += *pJacobianT * *pCurrentResiduals;
 
           // This is formally correct but cancels out with factor 2 below
           // *pGradient *= 2.0;
@@ -723,9 +761,18 @@ void COptMethodLevenbergMarquardt::hessian()
           for (j = 0; j <= i; j++, pHessian++)
             {
               *pHessian = 0.0;
-              pJacobianT = mResidualJacobianT[i];
+
+              if (pFit && pFit->getUseTimeSens())
+                pJacobianT = pFit->getTimeSensJac()[i];
+              else
+                pJacobianT = mResidualJacobianT[i];
+
               pEnd = pJacobianT + ResidualSize;
-              pJacobian = mResidualJacobianT[j];
+
+              if (pFit && pFit->getUseTimeSens())
+                pJacobian = pFit->getTimeSensJac()[j];
+              else
+                pJacobian = mResidualJacobianT[j];
 
               for (; pJacobianT != pEnd; pJacobianT++, pJacobian++)
                 *pHessian += *pJacobianT **pJacobian;

@@ -1091,7 +1091,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
                 if (pPlotSpecification != NULL)
                   {
                     //first determine color for the current curves
-                    unsigned C_INT32 colorindex = (pPlotSpecification->getItems().size() / 3);
+                    size_t colorindex = (pPlotSpecification->getItems().size() / 3);
 
                     CPlotItem * pItem =
                       pPlotSpecification->createItem(Name + "(Measured Value)", CPlotItem::curve2d);

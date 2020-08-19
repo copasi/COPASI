@@ -50,7 +50,9 @@ CQFunctionsWidget::CQFunctionsWidget(QWidget *parent, const char *name)
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
 
+#if QT_VERSION >= 0x050000
   mpTblFunctions->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {

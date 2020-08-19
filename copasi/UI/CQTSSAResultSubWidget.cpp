@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -130,6 +130,17 @@ void CQTSSAResultSubWidget::slotTableChanged()
       mpArrayWidget->setColorScalingAutomatic(true);
     }
 
+
+  pTSSATask =
+    dynamic_cast< CTSSATask * >(&mpDataModel->getTaskList()->operator[]("Time Scale Separation Analysis"));
+
+  if (!pTSSATask)
+    return;
+
+  pProblem = dynamic_cast< CTSSAProblem * >(pTSSATask->getProblem());
+  pModel = &pTSSATask->getMathContainer()->getModel();
+
+  pMethod = dynamic_cast< CTSSAMethod * >(pTSSATask->getMethod());
   pResult = pMethod->getTable(name);
   mpArrayWidget->setArrayAnnotation(pResult);
 }

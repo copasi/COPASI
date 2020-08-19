@@ -66,10 +66,6 @@ void CQBaseTreeDataModel::resetCache()
   endResetModel();
 }
 
-// virtual
-void CQBaseTreeDataModel::resetCacheProtected()
-{}
-
 bool CQBaseTreeDataModel::isDefaultRow(const QModelIndex& i) const
 {
   //Index has to be from this model and should be valid.

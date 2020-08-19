@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -79,13 +84,13 @@ int main(int argc, char *argv[])
       // create a report with the correct filename and all the species against
       // time.
       CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
-      CReportDefinition* pSteadyStateReport = (*pReports)["Steady-State"];
+      CReportDefinition* pSteadyStateReport = &(*pReports)["Steady-State"];
 
-      CReportDefinition* pReport = (*pReports)["Metabolic Control Analysis"];
+      CReportDefinition* pReport = &(*pReports)["Metabolic Control Analysis"];
 
       //**** create a task ****
 
-      CMCATask* pMCATask = new CMCATask();
+      CMCATask* pMCATask = new CMCATask(pDataModel);
       //pMCATask->setMethodType(CCopasiMethod::Newton);
       pMCATask->getProblem()->setModel(pDataModel->getModel());
 

@@ -573,7 +573,7 @@ bool CScanMethod::loop(size_t level)
 
       // separator needs to be handled slightly differently if we are at the last item
       if (currentSI->isNesting())
-        ((CScanTask*)(getObjectParent()))->outputSeparatorCallback(level == mLastNestingItem);
+        static_cast< CScanTask *>(getObjectParent())->outputSeparatorCallback(level == mLastNestingItem);
     }
 
   return true;

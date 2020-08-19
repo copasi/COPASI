@@ -351,6 +351,10 @@ bool CQUndoDM::setData(const QModelIndex &index, const QVariant &value, int role
 }
 
 // virtual
+void CQUndoDM::resetCacheProtected()
+{}
+
+// virtual
 bool CQUndoDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
   return false;

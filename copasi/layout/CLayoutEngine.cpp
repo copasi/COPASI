@@ -54,7 +54,7 @@ CLayoutEngine::CLayoutEngine(CAbstractLayoutInterface * l, bool /* so */)
 
   mTime = 0;
 
-  mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9) + 3 * 0);
+  mDWork.resize(22 + mData.dim * std::max<size_t>(16, mData.dim + 9) + 3 * 0);
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
   mDWork[7] = 0; //minstep
   mIWork.resize(20 + mData.dim);
@@ -71,7 +71,7 @@ void CLayoutEngine::calcRHS(std::vector<double> & state, double* rhs)
   std::vector<double> forces; forces.resize(mpLayout->getNumVariables());
   calcForces(state, forces);
 
-  unsigned int i, imax = mpLayout->getNumVariables();
+  size_t i, imax = mpLayout->getNumVariables();
 
   for (i = 0; i < imax; ++i)
     {
@@ -116,7 +116,7 @@ void CLayoutEngine::calcForces(std::vector<double> & state, std::vector<double> 
   //symmetric algorithm
   double pot0;
   double store, newpot;
-  unsigned int i, imax = mpLayout->getNumVariables();
+  size_t i, imax = mpLayout->getNumVariables();
 
   for (i = 0; i < imax; ++i)
     {
@@ -144,7 +144,7 @@ double CLayoutEngine::step()
 
   mStopRequested = false;
 
-  unsigned int i, imax = mVariables.size();
+  size_t i, imax = mVariables.size();
 
   //Euler
 
@@ -192,7 +192,7 @@ void CLayoutEngine::stepIntegration()
 
   const double dt = 0.2;
 
-  unsigned int i, imax = mVariables.size();
+  size_t i, imax = mVariables.size();
 
   //Euler
   /*calcRHS(mVariables, &mRhs[0]);

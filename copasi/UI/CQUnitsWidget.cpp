@@ -46,7 +46,9 @@ CQUnitsWidget::CQUnitsWidget(QWidget *parent, const char *name)
   mpProxyModel->setFilterKeyColumn(-1);
   mpProxyModel->sort(COL_NAME_UNITS);
 
+#if QT_VERSION >= 0x050000
   mpTblUnits->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {

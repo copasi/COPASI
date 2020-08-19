@@ -1,20 +1,11 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
+// Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
 // All rights reserved.
 
 /**
@@ -69,8 +60,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
   CTimeSensMethod(const CDataContainer * pParent,
-                    const CTaskEnum::Method & methodType,
-                    const CTaskEnum::Task & taskType = CTaskEnum::Task::timeCourse);
+                  const CTaskEnum::Method & methodType,
+                  const CTaskEnum::Task & taskType = CTaskEnum::Task::timeCourse);
 
   /**
    * Copy constructor.
@@ -78,7 +69,7 @@ public:
    * @param const CDataContainer * pParent (default: NULL)
    */
   CTimeSensMethod(const CTimeSensMethod & src,
-                    const CDataContainer * pParent);
+                  const CDataContainer * pParent);
 
   /**
    *  Destructor.
@@ -144,6 +135,12 @@ public:
    */
   virtual void copySensitivitiesToResultMatrix() = 0;
 
+
+  /**
+   * Initialize everything that is needed for the various derivatives,
+   * e.g. lists of value pointers, update sequences, etc.
+   */
+  void initializeDerivativesCalculations(bool reduced);
 protected:
   /**
    * Signal that the math container has changed
@@ -151,13 +148,8 @@ protected:
   virtual void signalMathContainerChanged();
 
   void output(const bool & useMoieties);
-  
-  /**
-   * Initialize everything that is needed for the various derivatives,
-   * e.g. lists of value pointers, update sequences, etc.
-   */
-  void initializeDerivativesCalculations(bool reduced);
-  
+
+
   /**
    * This calculates the derivatives of the initial state with respect to the requested parameters
    */
@@ -167,12 +159,12 @@ protected:
    * This calculates the derivatives of the RHS with respect to the requested parameters
    */
   void calculate_dRate_dPar(CMatrix<C_FLOAT64>& s, bool reduced);
-  
+
   /**
    * This calculates the derivatives of the assignments with respect to the state variables
    */
   void calculate_dAssignments_dState(CMatrix<C_FLOAT64>& s, bool reduced);
-  
+
   /**
    * This calculates the derivatives of the assignments with respect to the requested parameters
    */
@@ -217,7 +209,7 @@ protected:
    * initialized to false.
    */
   static const bool ReducedModel;
-  
+
   /**
    *  Number of variables in the model
    */
@@ -227,7 +219,7 @@ protected:
    *  Number of parameters for the sensitivities to calculate
    */
   unsigned C_INT32 mNumParameters;
-  
+
   /// Number of assignment targets for which sensitivities are calculated
   size_t mNumAssTargets;
 
@@ -239,10 +231,10 @@ protected:
   /**
    * pointers to the values of the parameters
    */
-  
+
   /// the pointers to the values of the objects as provided by the problem (generally initial values)
   CVector< C_FLOAT64* > mParameterInitialValuePointers;
-  
+
   /// the pointers as used during the simulation, initial values of fixed quantities are replaced by their transient counterparts.
   CVector< C_FLOAT64* > mParameterTransientValuePointers;
 
@@ -255,12 +247,12 @@ protected:
   CCore::CUpdateSequence mSeq1;
   CCore::CUpdateSequence mSeq2;
   CCore::CUpdateSequence mSeq3;
-  
+
   ///some methods for doing debug output
   static void printObjectSet(const std::string & s, const CObjectInterface::ObjectSet & os);
   static void printUpdateSeq(const std::string & s, const CCore::CUpdateSequence & us);
-  
-  
+
+
 };
 
 #endif // COPASI_CTimeSensMethod

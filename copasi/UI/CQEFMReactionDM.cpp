@@ -30,7 +30,6 @@ CQEFMReactionDM::CQEFMReactionDM(QObject *parent):
   CQBaseDataModel(parent, NULL),
   mpTask(NULL),
   mBeginModes(),
-  mModesSize(0),
   mBeginReactions(),
   mReactionsSize(0)
 {}
@@ -38,7 +37,7 @@ CQEFMReactionDM::CQEFMReactionDM(QObject *parent):
 size_t CQEFMReactionDM::size() const
 {
   if (mpTask != NULL)
-    return mModesSize;
+    return mpTask->getFluxModes().size();
 
   return 0;
 }
@@ -119,27 +118,35 @@ QVariant CQEFMReactionDM::headerData(int section, Qt::Orientation orientation,
 
 void CQEFMReactionDM::setTask(const CEFMTask * pTask)
 {
+  beginResetModel();
+
   mpTask = pTask;
 
   if (mpTask != NULL)
     {
       mBeginModes = mpTask->getFluxModes().begin();
-      mModesSize = mpTask->getFluxModes().size();
 
       mBeginReactions = static_cast< const CEFMProblem * >(mpTask->getProblem())->getReorderedReactions().begin();
       mReactionsSize = static_cast< const CEFMProblem * >(mpTask->getProblem())->getReorderedReactions().size();
     }
   else
     {
-      mModesSize = 0;
       mReactionsSize = 0;
     }
+
+  mFetched = std::min(mFetchLimit, size());
+
+  endResetModel();
 }
 
 bool CQEFMReactionDM::setData(const QModelIndex & /* index */, const QVariant & /* value */, int /* role */)
 {
   return false;
 }
+
+// virtual
+void CQEFMReactionDM::resetCacheProtected()
+{}
 
 // virtual
 bool CQEFMReactionDM::insertRows(int /* position */, int /* rows */, const QModelIndex & /* index */)

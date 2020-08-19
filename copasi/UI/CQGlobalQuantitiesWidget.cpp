@@ -53,7 +53,9 @@ CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget *parent, const char *
   mpTypeDelegate = new CQComboDelegate(this, mpGlobalQuantityDM->getTypes());
   mpTblGlobalQuantities->setItemDelegateForColumn(COL_TYPE_GQ, mpTypeDelegate);
 
+#if QT_VERSION >= 0x050000
   mpTblGlobalQuantities->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {

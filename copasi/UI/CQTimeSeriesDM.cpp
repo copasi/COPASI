@@ -103,6 +103,7 @@ void CQTimeSeriesDM::setTimeSeries(const CTimeSeries *pTimeSeries)
 {
   beginResetModel();
   mpTimeSeries = pTimeSeries;
+  mFetched = std::min(mFetchLimit, size());
   endResetModel();
   //reset();
 }
@@ -119,6 +120,10 @@ bool CQTimeSeriesDM::setData(const QModelIndex & /* index */, const QVariant & /
 {
   return false;
 }
+
+// virtual
+void CQTimeSeriesDM::resetCacheProtected()
+{}
 
 // virtual
 bool CQTimeSeriesDM::insertRows(int /* position */, int /* rows */, const QModelIndex & /* index */)

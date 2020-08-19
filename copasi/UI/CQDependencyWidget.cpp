@@ -65,6 +65,9 @@ getNameForType(CDependencyType type)
       case REACTION: return "Reaction";
 
       case EVENT: return "Event";
+  
+      default:
+       break;
     }
 
   return "";

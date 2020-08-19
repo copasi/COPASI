@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,7 +54,7 @@ class CQFittingItemWidget : public QWidget, public Ui::CQFittingItemWidget
   Q_OBJECT
 
 public:
-  CQFittingItemWidget(QWidget * parent = 0, Qt::WindowFlags f = 0);
+  CQFittingItemWidget(QWidget * parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
   ~CQFittingItemWidget();
 
   enum ItemType {OPT_ITEM = 0, OPT_CONSTRAINT, FIT_ITEM, FIT_CONSTRAINT};

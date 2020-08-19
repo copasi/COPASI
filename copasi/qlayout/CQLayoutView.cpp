@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -192,6 +192,8 @@ void CQLayoutView::slotRenderInformationChanged(int index)
 
   current->setRenderInformation(mpDataModel, render);
   current->recreate();
+
+  emit renderInformationChanged();
 }
 
 void CQLayoutView::slotLayoutChanged(int index)
@@ -223,6 +225,10 @@ void CQLayoutView::slotLayoutChanged(int index)
   mIgnoreEvents  = false;
   current->setLayout(layout, mpDataModel, render);
   current->recreate();
+
+  emit layoutChanged();
+  emit renderInformationChanged();
+
 }
 
 CQLayoutView::CQLayoutView(QWidget*parent)
@@ -342,6 +348,7 @@ void CQLayoutView::slotFitOnScreen()
   fitInView(scene()->itemsBoundingRect(), Qt::KeepAspectRatio);
   update();
 }
+
 void CQLayoutView::slotResetZoom()
 {
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
@@ -349,11 +356,13 @@ void CQLayoutView::slotResetZoom()
   ensureVisible(scene()->itemsBoundingRect());
   update();
 }
+
 void CQLayoutView::slotZoomIn()
 {
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
   scale(mScaleFactor, mScaleFactor);
 }
+
 void CQLayoutView::slotZoomOut()
 {
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);

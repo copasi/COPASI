@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,6 +23,11 @@
 #include <copasi/CopasiDataModel/CDataModel.h>
 
 class CQEffectDescription;
+
+/**
+ * Class for COPASI Animations to display task results onto the
+ * graphical diagram.
+ */
 class CQCopasiAnimation
 {
 public:
@@ -34,16 +39,52 @@ public:
 
   CQCopasiAnimation();
   virtual ~CQCopasiAnimation();
+
+  /**
+   * Removes the effect from the scene
+   */
   virtual void removeFromScene(CQLayoutScene& scene);
+
+  /**
+   * Initializes the animation with elements from the given
+   * data model
+   */
   virtual void initialize(const CDataModel &model) = 0;
+
+  /**
+   * if supported, updated the entries to the ones given
+   *
+   * @param entries new entries to be used
+   */
+  virtual void updateEntries(const std::vector< CQEffectDescription > & entries);
+
   virtual void getScales(std::vector<qreal>& scales, int step); //= 0;
+
   virtual void applyToScene(CQLayoutScene& scene, int step);
+
+  /**
+   * @return the number of data points collected from the task
+   */
   virtual int getNumSteps();
+
+  /**
+   * @return the scale mode (individual or global) selected
+   */
   ScaleMode getScaleMode() const;
+
+  /**
+   * Changes the scale mode to the selected one
+   */
   void setScaleMode(ScaleMode mode);
-  std::vector<CQEffectDescription*>& getEntries();
+
+  /**
+   * @return the vector of all effect descriptions
+   */
+  std::vector<CQEffectDescription>& getEntries();
+
 protected:
-  std::vector<CQEffectDescription*> mEntries;
+
+  std::vector<CQEffectDescription> mEntries;
   const CDataModel* mpDataModel;
   ScaleMode mMode;
   int mNumSteps; // populate with the number of steps

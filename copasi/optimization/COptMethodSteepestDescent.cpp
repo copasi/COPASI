@@ -27,6 +27,7 @@
 
 #include "COptMethodSteepestDescent.h"
 #include "COptProblem.h"
+#include "copasi/parameterFitting/CFitProblem.h"
 #include "COptItem.h"
 #include "COptTask.h"
 
@@ -276,6 +277,15 @@ bool COptMethodSteepestDescent::initialize()
 
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
+
+  CFitProblem* pFitProblem = dynamic_cast<CFitProblem*>(mpOptProblem);
+
+  if (pFitProblem != NULL)
+    {
+      pFitProblem->setResidualsRequired(true);
+    }
+
+
   return true;
 }
 
@@ -290,6 +300,29 @@ void COptMethodSteepestDescent::gradient()
   C_FLOAT64 x;
 
   y = evaluate();
+
+  CFitProblem* pFit = dynamic_cast<CFitProblem*>(mpOptProblem);
+
+  if (pFit && pFit->getUseTimeSens())
+    {
+      C_FLOAT64* pJacobianT = pFit->getTimeSensJac().array();
+      const CVector< C_FLOAT64 >& Residuals = pFit->getResiduals();
+      const C_FLOAT64* pCurrentResiduals;
+      size_t ResidualSize = Residuals.size();
+      const C_FLOAT64* pEnd = Residuals.array() + ResidualSize;
+
+      for (size_t i = 0; i < mVariableSize; i++, pGradient++)
+        {
+          *pGradient = 0.0;
+          pCurrentResiduals = Residuals.array();
+
+          for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pJacobianT++)
+            *pGradient += *pJacobianT * *pCurrentResiduals;
+
+        }
+
+      return;
+    }
 
   for (; ppContainerVariable != ppContainerVariableEnd; ++ppContainerVariable, ++pGradient)
     {

@@ -50,6 +50,10 @@
 
 #include <copasi/utilities/CParameterEstimationUtils.h>
 
+#include "copasi/timesens/CTimeSensTask.h"
+#include "copasi/timesens/CTimeSensProblem.h"
+#include "copasi/timesens/CTimeSensMethod.h"
+
 //  Default constructor
 CFitProblem::CFitProblem(const CTaskEnum::Task & type,
                          const CDataContainer * pParent) :
@@ -106,7 +110,12 @@ CFitProblem::CFitProblem(const CTaskEnum::Task & type,
   mpCorrelationMatrixInterface(NULL),
   mpCorrelationMatrix(NULL),
   mpCreateParameterSets(NULL),
-  mTrajectoryUpdate(false)
+  mTrajectoryUpdate(false),
+  mpUseTimeSens(NULL),
+  mpTimeSens(NULL),
+  mpTimeSensProblem(NULL),
+  mJacTimeSens(),
+  mpParmTimeSensCN(NULL)
 
 {
   initObjects();
@@ -167,7 +176,12 @@ CFitProblem::CFitProblem(const CFitProblem& src,
   mpCorrelationMatrixInterface(NULL),
   mpCorrelationMatrix(NULL),
   mpCreateParameterSets(NULL),
-  mTrajectoryUpdate(false)
+  mTrajectoryUpdate(false),
+  mpUseTimeSens(NULL),
+  mpTimeSens(NULL),
+  mpTimeSensProblem(NULL),
+  mJacTimeSens(),
+  mpParmTimeSensCN(NULL)
 {
   initObjects();
   initializeParameter();
@@ -195,6 +209,8 @@ CFitProblem::~CFitProblem()
   pdelete(mpFisherScaledEigenvectorsMatrix);
   pdelete(mpCorrelationMatrixInterface);
   pdelete(mpCorrelationMatrix);
+
+  pdelete(mpTimeSensProblem);
 }
 
 void CFitProblem::initObjects()
@@ -284,6 +300,8 @@ void CFitProblem::initializeParameter()
   mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::Type::CN, CCommonName(""));
   mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::Type::CN, CCommonName(""));
   mpCreateParameterSets = assertParameter("Create Parameter Sets", CCopasiParameter::Type::BOOL, false);
+  mpUseTimeSens = assertParameter("Use Time Sens", CCopasiParameter::Type::BOOL, false);
+  mpParmTimeSensCN = assertParameter("Time-Sens", CCopasiParameter::Type::CN, CCommonName(""));;
 
   assertGroup("Experiment Set");
 
@@ -302,6 +320,16 @@ const bool & CFitProblem::getCreateParameterSets() const
   return *mpCreateParameterSets;
 }
 
+void CFitProblem::setUseTimeSens(bool value)
+{
+  *mpUseTimeSens = value;
+}
+
+const bool& CFitProblem::getUseTimeSens() const
+{
+  return *mpUseTimeSens;
+}
+
 bool CFitProblem::elevateChildren()
 {
   // This call is necessary since CFitProblem is derived from COptProblem.
@@ -311,6 +339,7 @@ bool CFitProblem::elevateChildren()
   // the load of a CopasiML file we replace them with default values if that was the case.
   mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::Type::CN, CCommonName(""));
   mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::Type::CN, CCommonName(""));
+  mpParmTimeSensCN = assertParameter("Time-Sens", CCopasiParameter::Type::CN, CCommonName(""));
 
   CDataVectorN< CCopasiTask > * pTasks = NULL;
   CDataModel* pDataModel = getObjectDataModel();
@@ -813,6 +842,55 @@ bool CFitProblem::initialize()
 
   setResidualsRequired(false);
 
+  pdelete(mpTimeSensProblem);
+
+  if (mpExperimentSet->hasDataForTaskType(CTaskEnum::Task::timeCourse) && *mpUseTimeSens)
+    {
+
+      mpTimeSens =
+        dynamic_cast<CTimeSensTask*>(const_cast<CDataObject*>(CObjectInterface::DataObject(getObjectFromCN(*mpParmTimeSensCN))));
+
+      if (mpTimeSens == NULL)
+        {
+          mpTimeSens =
+            static_cast<CTimeSensTask*>(&pDataModel->getTaskList()->operator[]("Time-Course Sensitivities"));
+        }
+
+      if (mpTimeSens == NULL) fatalError();
+
+      *mpParmTimeCourseCN = mpTimeSens->getCN();
+
+      // do not update initial values when running fit
+      mpTimeSens->setUpdateModel(false);
+
+      mpTimeSensProblem =
+        new CTimeSensProblem(*static_cast<CTimeSensProblem*>(mpTimeSens->getProblem()), NO_PARENT);
+
+      CTimeSensProblem* pProblem = static_cast<CTimeSensProblem*>(mpTimeSens->getProblem());
+      pProblem->clearParameterCNs();
+
+      it = mpOptItems->begin();
+
+      for (; it != mpOptItems->end(); ++it)
+        {
+          pProblem->addParameterCN((*it)->getObjectCN());
+        }
+
+      pProblem->clearTargetCNs();
+      const CVector< const CObjectInterface* >& dependents = mpExperimentSet->getDependentObjects();
+
+      for (auto dep : dependents)
+        {
+          pProblem->addTargetCN(dep->getCN());
+        }
+
+      mpTimeSens->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+
+      mJacTimeSens.resize(mSolutionVariables.size(), mpExperimentSet->getDataPointCount());
+    }
+  else
+    mpTimeSens = NULL;
+
   return success;
 }
 
@@ -918,6 +996,31 @@ bool CFitProblem::calculate()
 
           kmax = pExp->getNumDataRows();
 
+          const std::map< const CObjectInterface*, size_t >& map = pExp->getDependentObjectsMap();
+          std::map<size_t, const CObjectInterface*> reverseObjectMap;
+          std::map< std::pair<std::string, std::string>, CDataArray::index_type > indexMap;
+          std::map<size_t, std::string> reverseCnMap;
+
+          if (*mpUseTimeSens)
+            {
+              for (auto it = map.begin(); it != map.end(); ++it)
+                {
+                  reverseObjectMap[it->second] = it->first;
+                  reverseCnMap[it->second] = it->first->getCN();
+                }
+
+              for (size_t i = 0; i < mpOptItems->size(); ++i)
+                {
+                  std::string paramCn = mpOptItems->operator [](i)->getObjectCN();
+
+                  for (size_t k = 0; k < reverseCnMap.size(); ++k)
+                    {
+                      std::string dependenCn = reverseCnMap[k];
+                      indexMap[std::make_pair(dependenCn, paramCn)] = static_cast<CTimeSensProblem*>(mpTimeSens->getProblem())->getTargetsResultAnnotated()->cnToIndex({dependenCn, paramCn });
+                    }
+                }
+            }
+
           switch (pExp->getExperimentType())
             {
               case CTaskEnum::Task::steadyState:
@@ -986,7 +1089,10 @@ bool CFitProblem::calculate()
                             for (ic = 1; ic < numIntermediateSteps; ++ic)
                               {
                                 ttt = pExp->getTimeData()[j - 1] + (pExp->getTimeData()[j] - pExp->getTimeData()[j - 1]) * (C_FLOAT64(ic) / numIntermediateSteps);
-                                mpTrajectory->processStep(ttt);
+
+                                if (mpTimeSens) mpTimeSens->processStep(ttt);
+                                else mpTrajectory->processStep(ttt);
+
                                 //save the simulation results in the experiment
                                 pExp->storeExtendedTimeSeriesData(ttt);
                               }
@@ -998,7 +1104,9 @@ bool CFitProblem::calculate()
 
                         if (Advanced)
                           {
-                            mpTrajectory->processStep(NextTime);
+                            if (mpTimeSens) mpTimeSens->processStep(NextTime);
+                            else mpTrajectory->processStep(NextTime);
+
                             LastTime = NextTime;
                           }
                       }
@@ -1008,14 +1116,25 @@ bool CFitProblem::calculate()
                         // independent data.
                         pExp->updateModelWithIndependentData(0);
 
-                        static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem())->setStepNumber(1);
-                        mpTrajectory->processStart(true);
+                        if (mpTimeSens)
+                          {
+                            static_cast<CTrajectoryProblem*>(mpTimeSens->getProblem())->setStepNumber(1);
+                            mpTimeSens->processStart(true);
+                          }
+                        else
+                          {
+                            static_cast<CTrajectoryProblem*>(mpTrajectory->getProblem())->setStepNumber(1);
+                            mpTrajectory->processStart(true);
+                          }
 
                         C_FLOAT64 NextTime = pExp->getTimeData()[0];
 
                         if (NextTime != *mpInitialStateTime)
                           {
-                            mpTrajectory->processStep(NextTime);
+
+                            if (mpTimeSens) mpTimeSens->processStep(NextTime);
+                            else mpTrajectory->processStep(NextTime);
+
                             LastTime = NextTime;
                           }
                       }
@@ -1034,14 +1153,50 @@ bool CFitProblem::calculate()
                       }
 
                     if (mStoreResults)
-                      mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
-                    else
-                      mCalculateValue += pExp->sumOfSquares(j, Residuals);
-
-                    if (mStoreResults)
                       {
+                        mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
                         //additionally also store the the simulation result for the extended time series
                         pExp->storeExtendedTimeSeriesData(pExp->getTimeData()[j]);
+                      }
+                    else
+                      {
+                        // current pos
+                        size_t pos = Residuals - mResiduals.array();
+
+                        // update residuals
+                        mCalculateValue += pExp->sumOfSquares(j, Residuals);
+
+                        if (mpTimeSens)
+                          {
+                            // copy results to problem
+                            CTimeSensMethod* pMethod = static_cast<CTimeSensMethod*>(mpTimeSens->getMethod());
+                            pMethod->copySensitivitiesToResultMatrix();
+                            CTimeSensProblem* pProblem = static_cast<CTimeSensProblem*>(mpTimeSens->getProblem());
+                            // get current target result
+                            CDataArray* pCurrentResult = pProblem->getTargetsResultAnnotated();
+
+                            auto it = mpOptItems->begin();
+
+                            for (size_t i = 0 ; i < mpOptItems->size(); ++i)
+                              {
+                                std::string paramCn = mpOptItems->operator [](i)->getObjectCN();
+
+                                for (size_t k = 0; k < reverseObjectMap.size(); ++k)
+                                  {
+                                    const CObjectInterface* pObj = reverseObjectMap[k];
+                                    std::string dependenCn = reverseCnMap[k];
+                                    //double value = pCurrentResult->operator[](CDataArray::name_index_type({dependenCn, paramCn}));
+                                    double value = pCurrentResult->getArray()->operator[](indexMap[std::make_pair(dependenCn, paramCn)]);
+                                    size_t index = map.find(pObj)->second;
+                                    double meassurement = pExp->getDependentData()(j, index);
+
+                                    if (meassurement != meassurement)
+                                      mJacTimeSens(i, pos + k) = 0; // missing data
+                                    else
+                                      mJacTimeSens(i, pos + k) = value * pExp->getScalingMatrix()(j, index);
+                                  }
+                              }
+                          }
                       }
                   }
               }
@@ -1106,17 +1261,26 @@ bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
     {
       success &= mpTrajectory->restore();
       mpTrajectory->setUpdateModel(mTrajectoryUpdate);
+
+      if (mpTrajectoryProblem)
+        *mpTrajectory->getProblem() = *mpTrajectoryProblem;
+    }
+
+  if (mpTimeSens)
+    {
+      success &= mpTimeSens->restore();
+
+      if (mpTimeSensProblem)
+        *mpTimeSens->getProblem() = *mpTimeSensProblem;
     }
 
   if (mpSteadyState != NULL)
     success &= mpSteadyState->restore();
 
-  if (mpTrajectoryProblem)
-    * mpTrajectory->getProblem() = *mpTrajectoryProblem;
-
   success &= COptProblem::restore(updateModel);
 
   pdelete(mpTrajectoryProblem);
+  pdelete(mpTimeSensProblem);
 
   if (updateModel && pExp != NULL)
     {
@@ -1225,6 +1389,16 @@ void CFitProblem::createParameterSets()
 
   // Restore the current initial state
   mpContainer->setCompleteInitialState(CurrentCompleteInitialState);
+}
+
+const CMatrix<C_FLOAT64>& CFitProblem::getTimeSensJac() const
+{
+  return mJacTimeSens;
+}
+
+CMatrix<C_FLOAT64>& CFitProblem::getTimeSensJac()
+{
+  return mJacTimeSens;
 }
 
 void CFitProblem::print(std::ostream * ostream) const
@@ -1350,6 +1524,9 @@ std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
 
   if (o.mpTrajectory)
     o.mpTrajectory->getDescription().print(&os);
+
+  if (o.mpTimeSens)
+    o.mpTimeSens->getDescription().print(&os);
 
   if (!o.mpTrajectory && !o.mpSteadyState)
     os << "No Subtask specified.";
@@ -1597,9 +1774,10 @@ void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 
     }
 }
 
-bool CFitProblem::calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd)
+bool CFitProblem::calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd, bool scale)
 {
   corr = fim;
+  sd.resize(fim.numRows());
 
   // The Fisher Information matrix is a symmetric positive semidefinit matrix.
   /* int dpotrf_(char *uplo, integer *n, doublereal *a,
@@ -1745,6 +1923,9 @@ bool CFitProblem::calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >&
           corr(i, i) = 1.0;
         }
     }
+
+  if (!scale)
+    return true;
 
   for (i = 0; i < imax; i++)
     for (l = 0; l < imax; l++)
@@ -1962,40 +2143,76 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           return false;
         }
 
-      calcFIM(mDeltaResidualDeltaParameter, mFisher);
+      if (*mpUseTimeSens)
+        {
+          calcFIM(mJacTimeSens, mFisher);
+        }
+      else
+        {
+          calcFIM(mDeltaResidualDeltaParameter, mFisher);
+        }
+
       calcFIM(mDeltaResidualDeltaParameterScaled, mFisherScaled);
 
       calcEigen(mFisher, mFisherEigenvalues, mFisherEigenvectors);
       calcEigen(mFisherScaled, mFisherScaledEigenvalues, mFisherScaledEigenvectors);
 
-      if (!calcCov(mFisher, mCorrelation, mParameterSD))
+      if (!calcCov(mFisher, mCorrelation, mParameterSD, true))
         {
           // Make sure the timer is accurate.
           mCPUTime.calculateValue();
           return false;
         }
 
-      //experimental code...
       /*
-      CMatrix< C_FLOAT64 > tmpFIM, tmpEigenValues, tmpEigenVectors;
+        //experimental code...
 
-      size_t exp_index, dep_index, row_index;
-      for (exp_index=0; exp_index < mpExperimentSet->getExperimentCount(); ++exp_index)
-      {
-        calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, ExperimentStartInResiduals[exp_index], ExperimentStartInResiduals[exp_index+1]);
-        std::cout << tmpFIM << std::endl;
+        CMatrix< C_FLOAT64 > tmpFIM, tmpEigenValues, tmpEigenVectors, tmpCorr;
+        CVector<C_FLOAT64> tmpSD;
 
-        //for (dep_index=0; dep_index < mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(); ++dep_index)
-        //{
-        //  calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, <#size_t a#>, <#size_t b#>)
+        //for testing: Inverse of the scaled and unscaled FIM, result scaled and unscaled...
+        if (calcCov(mFisher, tmpCorr, tmpSD, false))
+          std::cout << tmpSD << std::endl;
+          std::cout << tmpCorr << std::endl;
+        if (calcCov(mFisher, tmpCorr, tmpSD, true))
+          std::cout << tmpSD << std::endl;
+          std::cout << tmpCorr << std::endl;
+        if (calcCov(mFisherScaled, tmpCorr, tmpSD, false))
+          std::cout << tmpSD << std::endl;
+          std::cout << tmpCorr << std::endl;
+        if (calcCov(mFisherScaled, tmpCorr, tmpSD, true))
+          std::cout << tmpSD << std::endl;
+          std::cout << tmpCorr << std::endl;
 
-        //  C_FLOAT64 * pSolutionResidual = SolutionResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
-        //  C_FLOAT64 * pResidual = mResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
+        size_t exp_index, dep_index, row_index;
+        //loop over experiments
+        for (exp_index=0; exp_index < mpExperimentSet->getExperimentCount(); ++exp_index)
+        {
+          std::cout << exp_index << std::endl;
 
-        //  for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
-        //}
-      }
-      */
+          //calculate the scaled FIM of one experiment only, and output the Eigenvalues
+          calcPartialFIM(mDeltaResidualDeltaParameterScaled, tmpFIM, ExperimentStartInResiduals[exp_index], ExperimentStartInResiduals[exp_index+1]);
+          //std::cout << tmpFIM << std::endl;
+
+          calcEigen(tmpFIM, tmpEigenValues, tmpEigenVectors);
+          std::cout << tmpEigenValues << std::endl;
+
+          //calculate the unscaled FIM for all but one experiment, calculate the Covariance Matrix and the SDs from that.
+          calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, ExperimentStartInResiduals[exp_index], ExperimentStartInResiduals[exp_index+1], true);
+          if (calcCov(tmpFIM, tmpCorr, tmpSD, true))
+            std::cout << tmpSD << std::endl;
+
+          //for (dep_index=0; dep_index < mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(); ++dep_index)
+          //{
+          //  calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, <#size_t a#>, <#size_t b#>)
+
+          //  C_FLOAT64 * pSolutionResidual = SolutionResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
+          //  C_FLOAT64 * pResidual = mResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
+
+          //  for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
+          //}
+        }
+        */
 
       setResidualsRequired(false);
       mStoreResults = true;
@@ -2237,7 +2454,10 @@ bool CFitProblem::calculateCrossValidation()
                             for (ic = 1; ic < numIntermediateSteps; ++ic)
                               {
                                 ttt = pExp->getTimeData()[j - 1] + (pExp->getTimeData()[j] - pExp->getTimeData()[j - 1]) * (C_FLOAT64(ic) / numIntermediateSteps);
-                                mpTrajectory->processStep(ttt);
+
+                                if (mpTimeSens) mpTimeSens->processStep(ttt);
+                                else mpTrajectory->processStep(ttt);
+
                                 //save the simulation results in the experiment
                                 pExp->storeExtendedTimeSeriesData(ttt);
                               }
@@ -2249,7 +2469,10 @@ bool CFitProblem::calculateCrossValidation()
 
                         if (Advanced)
                           {
-                            mpTrajectory->processStep(NextTime);
+
+                            if (mpTimeSens) mpTimeSens->processStep(NextTime);
+                            else mpTrajectory->processStep(NextTime);
+
                             LastTime = NextTime;
                           }
                       }
@@ -2263,14 +2486,24 @@ bool CFitProblem::calculateCrossValidation()
                         // value updates as one unit.
                         mpContainer->applyUpdateSequence(mCrossValidationInitialUpdates[i]);
 
-                        static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem())->setStepNumber(1);
-                        mpTrajectory->processStart(true);
+                        if (mpTimeSens)
+                          {
+                            static_cast<CTrajectoryProblem*>(mpTimeSens->getProblem())->setStepNumber(1);
+                            mpTimeSens->processStart(true);
+                          }
+                        else
+                          {
+                            static_cast<CTrajectoryProblem*>(mpTrajectory->getProblem())->setStepNumber(1);
+                            mpTrajectory->processStart(true);
+                          }
 
                         C_FLOAT64 NextTime = pExp->getTimeData()[0];
 
                         if (NextTime != *mpInitialStateTime)
                           {
-                            mpTrajectory->processStep(NextTime);
+                            if (mpTimeSens) mpTimeSens->processStep(NextTime);
+                            else mpTrajectory->processStep(NextTime);
+
                             LastTime = NextTime;
                           }
                       }

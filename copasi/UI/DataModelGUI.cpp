@@ -487,7 +487,6 @@ DataModelGUI::isBusy() const
   return mpThread != NULL;
 }
 
-
 void DataModelGUI::threadFinished()
 {
   if (mpThread != NULL)
@@ -591,7 +590,6 @@ const std::string& DataModelGUI::getLastDownloadDestination() const
 {
   return mDownloadDestination;
 }
-
 
 void DataModelGUI::exportMathModelFinished()
 {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the </comment>
 <comment> University of Virginia, University of Heidelberg, and University </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -15,7 +15,7 @@
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
-
+ <comment> All rights reserved. </comment>
  <class>CQAnimationSettingsEditor</class>
  <widget class="QDialog" name="CQAnimationSettingsEditor">
   <property name="geometry">
@@ -33,7 +33,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Effects Settings</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -107,16 +107,16 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QToolButton" name="toolButton">
+          <widget class="QToolButton" name="cmdAddEffect">
            <property name="text">
-            <string>...</string>
+            <string>&amp;Add Effect</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="toolButton_2">
+          <widget class="QToolButton" name="cmdRemoveEffect">
            <property name="text">
-            <string>...</string>
+            <string>&amp;Remove Effect</string>
            </property>
           </widget>
          </item>
@@ -166,8 +166,8 @@
   <tabstop>radGlobal</tabstop>
   <tabstop>radIndividual</tabstop>
   <tabstop>listWidget</tabstop>
-  <tabstop>toolButton</tabstop>
-  <tabstop>toolButton_2</tabstop>
+  <tabstop>cmdAddEffect</tabstop>
+  <tabstop>cmdRemoveEffect</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
@@ -237,7 +237,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>toolButton</sender>
+   <sender>cmdAddEffect</sender>
    <signal>clicked()</signal>
    <receiver>CQAnimationSettingsEditor</receiver>
    <slot>slotEffectAdded()</slot>
@@ -253,7 +253,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>toolButton_2</sender>
+   <sender>cmdRemoveEffect</sender>
    <signal>clicked()</signal>
    <receiver>CQAnimationSettingsEditor</receiver>
    <slot>slotEffectRemoved()</slot>

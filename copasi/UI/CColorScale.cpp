@@ -19,7 +19,12 @@
 // All rights reserved.
 
 #include <cmath>
+
+#if QT_VERSION >= 0x050000
 #include <QGuiApplication>
+#else
+#include <QApplication>
+#endif
 #include <QPalette>
 
 #include "copasi/UI/CColorScale.h"
@@ -32,7 +37,11 @@ CColorScale::CColorScale()
   , mLargeNumbers()
   , mNaN(85, 85, 135)
 {
+#if QT_VERSION >= 0x050000
   QPalette Palette = QGuiApplication::palette();
+#else
+  QPalette Palette = QApplication::palette();
+#endif
   mForeground = Palette.color(QPalette::Active, QPalette::Text);
   mBackground = Palette.color(QPalette::Active, QPalette::Base);
 

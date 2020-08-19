@@ -630,13 +630,15 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
 
       for (j = 0; j < jmax; ++j)
         {
-          std::string DisplayName;
+          std::string objectCN;
+
           const CObjectInterface * pObj = CObjectInterface::GetObjectFromCN(listOfContainer, pItem->getChannels()[j]);
 
           if (pObj)
             {
               mObjects.insert(pObj);
-              DisplayName = pObj->getObjectDisplayName();
+              objectCN = pObj->getCN();
+              mCnNameMap[objectCN] = pObj->getObjectDisplayName();
             }
           else
             CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6,
@@ -650,12 +652,12 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
             {
               // We have an X value
               for (itX = mSaveCurveObjects.begin(); itX != mSaveCurveObjects.end(); ++itX)
-                if (*itX->begin() == DisplayName) break;
+                if (*itX->begin() == objectCN) break;
 
               if (itX == mSaveCurveObjects.end())
                 {
                   std::vector < std::string > NewX;
-                  NewX.push_back(DisplayName);
+                  NewX.push_back(objectCN);
 
                   mSaveCurveObjects.push_back(NewX);
                   itX = mSaveCurveObjects.end() - 1;
@@ -665,11 +667,11 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
                 }
 
               if (pItem->getType() == CPlotItem::histoItem1d)
-                mSaveHistogramObjects.push_back(DisplayName);
+                mSaveHistogramObjects.push_back(objectCN);
             }
           else
             {
-              itX->push_back(DisplayName);
+              itX->push_back(objectCN);
 
               if (!isSpectogram)
                 setAxisUnits(yLeft, pObj);
@@ -714,13 +716,13 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
               mDataIndex[i][j] = DataIndex;
 
               // Store the [Activity][object] to data index.
-              mObjectIndex[ItemActivity][DisplayName] = DataIndex.second;
+              mObjectIndex[ItemActivity][objectCN] = DataIndex.second;
             }
           else
             {
               // The object already existed we only need to
               // store [curve][channel] to data index.
-              DataIndex.second = mObjectIndex[ItemActivity][DisplayName];
+              DataIndex.second = mObjectIndex[ItemActivity][objectCN];
               mDataIndex[i][j] = DataIndex;
             }
         }
@@ -1134,7 +1136,7 @@ bool CopasiPlot::saveData(const std::string & filename)
 
   for (itX = mSaveCurveObjects.begin(); itX != endX; ++itX)
     for (it = itX->begin(), end = itX->end(); it != end; ++it)
-      fs << *it << "\t";
+      fs << mCnNameMap[*it] << "\t";
 
   fs << "\n";
 
@@ -1444,6 +1446,7 @@ void CopasiPlot::clearBuffers()
   mObjectIndex.clear();
 
   mSaveCurveObjects.clear();
+  mCnNameMap.clear();
   mSaveHistogramObjects.clear();
 
   mDataBefore = 0;

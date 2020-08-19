@@ -47,9 +47,9 @@ public:
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
 protected:
-  bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
-  bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
-  virtual void resetCacheProtected();
+  virtual void resetCacheProtected() override;
+  bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override;
+  bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override;
   virtual size_t size() const override;
 
   CMIRIAMInfo* mpMIRIAMInfo;

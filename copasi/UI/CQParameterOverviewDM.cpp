@@ -675,7 +675,8 @@ void CQParameterOverviewDM::resetCacheProtected()
       FetchLimit -= mTimesFetched;
     }
 
-  if (mTimesFetched > 0)
+  if (mTimesFetched > 0
+      || mpTimes->size() == 0)
     mGroupsFetched++;
 
   if (mpCompartments != NULL)
@@ -684,7 +685,8 @@ void CQParameterOverviewDM::resetCacheProtected()
       FetchLimit -= mCompartmentsFetched;
     }
 
-  if (mCompartmentsFetched > 0)
+  if (mCompartmentsFetched > 0
+      || mpCompartments->size() == 0)
     mGroupsFetched++;
 
   if (mpSpecies != NULL)
@@ -693,7 +695,8 @@ void CQParameterOverviewDM::resetCacheProtected()
       FetchLimit -= mSpeciesFetched;
     }
 
-  if (mSpeciesFetched > 0)
+  if (mSpeciesFetched > 0
+      || mpSpecies->size() == 0)
     mGroupsFetched++;
 
   if (mpModelValues != NULL)
@@ -702,7 +705,8 @@ void CQParameterOverviewDM::resetCacheProtected()
       FetchLimit -= mModelValuesFetched;
     }
 
-  if (mModelValuesFetched > 0)
+  if (mModelValuesFetched > 0
+      || mpModelValues->size() == 0)
     mGroupsFetched++;
 
   if (mpReactions != NULL)
@@ -710,7 +714,8 @@ void CQParameterOverviewDM::resetCacheProtected()
       mReactionsFetched = std::min(FetchLimit, mpReactions->size());
     }
 
-  if (mReactionsFetched > 0)
+  if (mReactionsFetched > 0
+      || mpReactions->size() == 0)
     mGroupsFetched++;
 }
 

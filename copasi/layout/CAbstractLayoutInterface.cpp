@@ -1,12 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CAbstractLayoutInterface.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2010/11/26 16:36:36 $
-// End CVS Header
+// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,7 +16,7 @@
 #include "CAbstractLayoutInterface.h"
 
 
-unsigned int CAbstractLayoutInterface::getNumVariables() const
+std::vector<double>::size_type CAbstractLayoutInterface::getNumVariables() const
 {
   return mVarDescription.size();
 }

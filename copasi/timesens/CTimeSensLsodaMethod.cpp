@@ -1031,9 +1031,9 @@ void CTimeSensLsodaMethod::copySensitivitiesToResultMatrix()
 
   //calculate sensitivities for assignments
   calculate_dAssignments_dPar(mdAssignment_dPar);
-  std::cout << mdAssignment_dPar;
+  //std::cout << mdAssignment_dPar;
   calculate_dAssignments_dState(mAssignmentJacobian, *mpReducedModel);
-  std::cout << mAssignmentJacobian;
+  //std::cout << mAssignmentJacobian;
 
   C_FLOAT64 tmp;
   size_t k;

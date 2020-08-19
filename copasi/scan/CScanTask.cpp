@@ -294,6 +294,11 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
                     (&pDataModel->getTaskList()->operator[]("Cross Section"));
         break;
 
+      case CTaskEnum::Task::timeSens:
+        mpSubtask = dynamic_cast<CCopasiTask*>
+                    (&pDataModel->getTaskList()->operator[](CTaskEnum::TaskName[CTaskEnum::Task::timeSens]));
+        break;
+
       default:
         mpSubtask = NULL;
     }

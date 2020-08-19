@@ -211,7 +211,11 @@ bool FunctionWidget1::loadParameterTable()
   Table1->setRowCount((int) params.size());
   Table1->blockSignals(true);
 
+#if QT_VERSION >= 0x050000
   QPalette Palette = QGuiApplication::palette();
+#else
+  QPalette Palette = QApplication::palette();
+#endif
   QColor Foreground = Palette.color(QPalette::Active, QPalette::Text);
   QColor Background = Palette.color(QPalette::Active, QPalette::Base);
 

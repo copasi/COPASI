@@ -28,7 +28,7 @@ class CLayoutEngine
 public:
   struct Data
   {
-    C_INT dim;
+    size_t dim;
     CLayoutEngine * pMethod;
   };
 

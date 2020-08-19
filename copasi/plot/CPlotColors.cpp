@@ -51,7 +51,6 @@ std::string CPlotColors::getCopasiColorStr(size_t index)
 
       case 9:
         return "#1B9E77"; //dark teal
-
     }
 
   return "auto";
@@ -62,7 +61,5 @@ size_t CPlotColors::getNumCopasiColors()
 {
   return 10;
 }
-
-
 
 //QColor curveColours[6] = {QColor(255, 0, 0), QColor(0, 0, 255), QColor(0, 230, 0), QColor(0, 190, 240), QColor(240, 0, 255), QColor(240, 200, 0)} ; //TODO

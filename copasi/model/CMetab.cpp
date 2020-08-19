@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -423,8 +423,15 @@ CIssue CMetab::compile()
       mValidity.add(issue);
       firstWorstIssue &= issue;
 
+      // BUG 2895: at this point we have an invalid expression and should
+      // not be calculating on it. Also getValidity below returns the
+      // aggregate validity, that does not yet include this issue.
+      if (!issue)
+        return firstWorstIssue;
+
       // If we have a valid initial expression, we update the initial value.
       // In case the expression is constant this suffices other are updated lated again.
+
       issue = mpInitialExpression->getValidity().getFirstWorstIssue();
       mValidity.add(issue);
       firstWorstIssue &= issue;
@@ -646,6 +653,23 @@ bool CMetab::isDependent() const
 
 const CMoiety * CMetab::getMoiety() const
 {return mpMoiety;}
+
+size_t CMetab::getCountOfDependentReactions() const
+{
+  if (mpModel == NULL)
+    return 0;
+
+  CDataObject::DataObjectSet DependentReactions;
+  CDataObject::DataObjectSet DependentMetabolites;
+  CDataObject::DataObjectSet DependentCompartments;
+  CDataObject::DataObjectSet DependentModelValues;
+  CDataObject::DataObjectSet DependentEvents;
+  CDataObject::DataObjectSet DependentEventAssignments;
+
+  mpModel->appendDirectDependents(*this, DependentReactions, DependentMetabolites, DependentCompartments, DependentModelValues, DependentEvents, DependentEventAssignments, true);
+
+  return DependentReactions.size();
+}
 
 //******************* CMetabOld ***************************************************
 

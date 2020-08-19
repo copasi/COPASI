@@ -28,7 +28,11 @@
 #include <QComboBox>
 //Added by qt3to4:
 #include <QKeyEvent>
+#if QT_VERSION >= 0x050000
 #include <QGuiApplication>
+#else
+#include <QApplication>
+#endif
 #include <QPalette>
 
 #include "CQExpressionWidget.h"
@@ -68,7 +72,11 @@ CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget * ew)
   : QSyntaxHighlighter(ew)
   , mObjectDisplayPattern(CQExpressionWidget::DisplayPattern)
 {
+#if QT_VERSION >= 0x050000
   QPalette Palette = QGuiApplication::palette();
+#else
+  QPalette Palette = QApplication::palette();
+#endif
   QColor Foreground = Palette.color(QPalette::Active, QPalette::Foreground);
   QColor Background = Palette.color(QPalette::Active, QPalette::Background);
 
@@ -118,7 +126,7 @@ QValidator::State CQValidatorExpression::validate(QString & input, int & pos) co
   // The input is the display version of the infix string.
   // We must first convert the display string to infix.
   CQExpressionWidget * pExpressionWidget =
-    static_cast< CQExpressionWidget * >(parent());
+    dynamic_cast< CQExpressionWidget * >(parent());
 
   if (pExpressionWidget != NULL)
     {
@@ -167,7 +175,7 @@ QValidator::State CQValidatorFunction::validate(QString & input, int & pos) cons
   // We must first convert the display string to infix.
   State CurrentState = Invalid;
   CQExpressionWidget * pExpressionWidget =
-    static_cast< CQExpressionWidget * >(parent());
+    dynamic_cast< CQExpressionWidget * >(parent());
 
   if (pExpressionWidget != NULL)
     {
@@ -224,7 +232,11 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
   mpExpressionHighlighter = new CQExpressionHighlighter(this);
   int h, s, v;
 
+#if QT_VERSION >= 0x050000
   QPalette Palette = QGuiApplication::palette();
+#else
+  QPalette Palette = QApplication::palette();
+#endif
   mText = Palette.color(QPalette::Active, QPalette::Text);
   mSavedColor = Palette.color(QPalette::Active, QPalette::Base);
   mSavedColor.getHsv(&h, &s, &v);

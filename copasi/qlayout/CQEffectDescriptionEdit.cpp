@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,6 +17,15 @@
 
 #include <copasi/qlayout/CQEffectDescription.h>
 #include <copasi/qlayout/CQEffectDescriptionEdit.h>
+
+#include <copasi/UI/CCopasiSelectionDialog.h>
+#include <copasi/UI/CQCopasiApplication.h>
+#include <copasi/UI/copasiui3window.h>
+#include <copasi/UI/listviews.h>
+#include <copasi/core/CRootContainer.h>
+#include <copasi/core/CDataVector.h>
+#include <copasi/CopasiDataModel/CDataModel.h>
+
 
 #include "copasi/UI/qtUtilities.h"
 
@@ -66,6 +75,12 @@ void CQEffectDescriptionEdit::initFrom(const CQEffectDescription* other, bool mu
   else
     txtObjectName->setText(other->getCN().c_str());
 
+  if (multiple)
+    txtDataObject->setText("");
+  else
+    txtDataObject->setText(other->getDataCN().c_str());
+
+
   txtScaleStart->setText(convertToQString(other->getScaleStart()));
   txtScaleEnd->setText(convertToQString(other->getScaleEnd()));
 
@@ -86,7 +101,7 @@ void CQEffectDescriptionEdit::initFrom(const CQEffectDescription* other, bool mu
     }
 }
 
-void CQEffectDescriptionEdit::saveTo(CQEffectDescription* other, bool /* multiple*/)
+void CQEffectDescriptionEdit::saveTo(CQEffectDescription* other, bool multiple)
 {
   other->setStartColor(txtColorStart->palette().color(QPalette::Background));
   other->setEndColor(txtColorEnd->palette().color(QPalette::Background));
@@ -99,6 +114,12 @@ void CQEffectDescriptionEdit::saveTo(CQEffectDescription* other, bool /* multipl
     other->setMode(CQEffectDescription::DropShadow);
   else
     other->setMode(CQEffectDescription::Scale);
+
+  if (!multiple)
+    {
+      other->setDataCN(txtDataObject->text().toStdString());
+      other->setCN(txtObjectName->text().toStdString());
+    }
 }
 
 CQEffectDescription* CQEffectDescriptionEdit::toDescription() const
@@ -117,6 +138,8 @@ CQEffectDescription* CQEffectDescriptionEdit::toDescription() const
   else
     result->setMode(CQEffectDescription::Scale);
 
+  result->setDataCN(txtDataObject->text().toStdString());
+
   return result;
 }
 
@@ -134,6 +157,43 @@ void CQEffectDescriptionEdit::slotScaleStartChanged(QString)
 
 void CQEffectDescriptionEdit::slotSelectObject()
 {
+  auto * pModelList = CRootContainer::getDatamodelList();
+
+  if (!pModelList || pModelList->empty())
+    return;
+
+  const CDataObject * pObject = dynamic_cast< const CDataObject * >((*pModelList)[0].getObjectFromCN(txtObjectName->text().toStdString()));
+
+  pObject =
+    CCopasiSelectionDialog::getObjectSingle(
+      (dynamic_cast< CQCopasiApplication * >(qApp))
+      ->getMainWindow()
+      ->getMainWidget(),
+      CQSimpleSelectionTree::Variables | CQSimpleSelectionTree::ObservedConstants | CQSimpleSelectionTree::ObservedValues, pObject);
+
+  if (pObject)
+    txtObjectName->setText(FROM_UTF8(pObject->getCN()));
+}
+
+void CQEffectDescriptionEdit::slotSelectDataObject()
+{
+  auto * pModelList = CRootContainer::getDatamodelList();
+
+  if (!pModelList || pModelList->empty())
+    return;
+
+  const CDataObject * pObject = dynamic_cast< const CDataObject * >((*pModelList)[0].getObjectFromCN(txtDataObject->text().toStdString()));
+
+
+  pObject =
+    CCopasiSelectionDialog::getObjectSingle(
+      (dynamic_cast< CQCopasiApplication * >(qApp))
+      ->getMainWindow()
+      ->getMainWidget(),
+      CQSimpleSelectionTree::NumericValues, pObject);
+
+  if (pObject)
+    txtDataObject->setText(FROM_UTF8(pObject->getCN()));
 }
 
 void CQEffectDescriptionEdit::slotSelectColorEnd()

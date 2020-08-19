@@ -161,10 +161,16 @@ CSteadyStateMethod::process(CVectorCore< C_FLOAT64 > & State,
 CSteadyStateMethod::ReturnCode
 CSteadyStateMethod::returnProcess(bool steadyStateFound)
 {
-  mSteadyState = mpContainer->getState(true);
-
   if (!steadyStateFound)
-    return CSteadyStateMethod::notFound;
+    {
+      CVectorCore< C_FLOAT64 > InitialState;
+      InitialState.initialize(mpContainer->getInitialState());
+      mSteadyState = CVectorCore< C_FLOAT64 >(mSteadyState.size(), InitialState.array() + (InitialState.size() - mSteadyState.size()));
+
+      return CSteadyStateMethod::notFound;
+    }
+
+  mSteadyState = mpContainer->getState(false);
 
   if (!allPositive())
     return CSteadyStateMethod::foundNegative;

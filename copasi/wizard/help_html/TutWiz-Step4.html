@@ -1,77 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<title>Step 4: Calculating a Time Course</title>
+	<title>Step 4: Calculating a Time Course</title>
 </head>
+
 <body>
-  <div style="text-align:center;margin-left: auto; margin-right: auto;">
-  <h3>Step 4: Calculating a Time Course</h3><br>
+	<div style="text-align:center;margin-left: auto; margin-right: auto;">
+		<h3>Step 4: Calculating a Time Course</h3><br>
 	</div>
 	<p>
-In the tree on the left under Tasks you can find the entry called <em>Time
-Course</em>. Selecting this entry in the tree will bring you to the time course
-settings dialog.<br>
-<div style="text-align:center;margin-left: auto; margin-right: auto;">
-(<a href="#Time Course" name="Time Course">Click here</a> to go to the <em>Time Course</em> dialog)
-</div>
-<br>
-Here you can set all parameters for calculating a time course
-like starting time, end time, how many data points are to be stored and, last
-but not least, the method for calculating the trajectory. So far you can choose between
-deterministic simulation or stochastic simulation. Depending on the simulation
-method, you have some more parameters that can be changed in the table toward
-the bottom of the dialog, but the default values should suffice most of the
-time.
-<br>
-<br>
-<div style="text-align:center;margin-left: auto; margin-right: auto;">
-<img alt="figure: Time Course dialog" vspace="20" src="./figures/TimeCourseDialog.png"/>
-</div>
+		In the tree on the left under Tasks you can find the entry called <em>Time
+			Course</em>. Selecting this entry in the tree will bring you to the time course
+		settings dialog.<br>
+	<div style="text-align:center;margin-left: auto; margin-right: auto;">
+		(<a href="#Time Course" name="Time Course">Click here</a> to go to the <em>Time Course</em> dialog)
+	</div>
+	<br>
+	Here you can set all parameters for calculating a time course
+	like starting time, end time, how many data points are to be stored and, last
+	but not least, the method for calculating the trajectory. So far you can choose between
+	deterministic simulation or stochastic simulation. Depending on the simulation
+	method, you have some more parameters that can be changed in the table toward
+	the bottom of the dialog, but the default values should suffice most of the
+	time.
+	<br>
+	<br>
+	<div style="text-align:center;margin-left: auto; margin-right: auto;">
+		<img alt="figure: Time Course dialog" vspace="20"   src="./figures/TimeCourseDialog.png" />
+	</div>
 	</p>
 	<p>
-Once all values are set, the run button can be used to excecute the timecourse
-calculation. To see the results for the calculation, the <em>Time Course</em> node
-in the tree on the left has a subnode called <em>Result</em>, it contains a
-table with the calculated values for all variables (This only works if the <em>Save Result in Memory</em> checkbox is checked). The <em>Result</em> window
-also has a button that allows saving the results to a file.
-</p>
-<p>
-Sometimes the results of a calculation are to large to be stored in memory, or
-you might want to have other items in the result that are not in the <em>Result</em> table.
-For those cases, COPASI provides means to specify so called reports in which
-the user can specify the items that are to be written to a file.
-</p>
-<p>
-The easiest way to create a report is to choose one of the predefined report
-with COPASI's <em>Output Assistant</em> which can be started by clicking the
-button with the same name at the bottom of the screen.
-<br>
-<br>
-<div style="text-align:center;margin-left: auto; margin-right: auto;">
-<img alt="figure: Output Assistant dialog" vspace="20"
-src="./figures/OutputAssistant.png"/>
-</div>
-</p>
-<p>
-The dialog features a large number of predefined reports as well as plots. Each item on the right side of the dialog, when selected, provides a description on the left side of the dialog.
-By clicking the <strong><code>Create!</code></strong> button, when a item has been selected, the
-corresponding plot or report is created.
-</p>
-<p>
-If the item that has been created was a plot, everything is set and next time,
-the corresponding task is run, a plot window should appear that shows the
-selected plot.
-</p>
-<p>
-If the selected item however was a report, you have to choose a file to which
-the report will write its contents. This can be done by clicking on the
-<strong><code>Report</code></strong> button at the bottom of the <em>Time Course</em> window. The
-dialog that pops up lets you choose the report which you want to associate with
-a file (since a task can have more than one report) and it lets you specify a
-filename.
-</p>
-<p>Once you are done, just click the <strong><code>Confirm</code></strong> button and next time you
-run the task, a file with the contents of the report will be written to disk.
-</p>
+		Once all values are set, the run button can be used to excecute the timecourse
+		calculation. To see the results for the calculation, the <em>Time Course</em> node
+		in the tree on the left has a subnode called <em>Result</em>, it contains a
+		table with the calculated values for all variables (This only works if the <em>Save Result in Memory</em>
+		checkbox is checked). The <em>Result</em> window
+		also has a button that allows saving the results to a file.
+	</p>
+	<p>
+		Sometimes the results of a calculation are to large to be stored in memory, or
+		you might want to have other items in the result that are not in the <em>Result</em> table.
+		For those cases, COPASI provides means to specify so called reports in which
+		the user can specify the items that are to be written to a file.
+	</p>
+	<p>
+		The easiest way to create a report is to choose one of the predefined report
+		with COPASI's <em>Output Assistant</em> which can be started by clicking the
+		button with the same name at the bottom of the screen.
+		<br>
+		<br>
+	<div style="text-align:center;margin-left: auto; margin-right: auto;">
+		<img alt="figure: Output Assistant dialog" vspace="20"   src="./figures/OutputAssistant.png" />
+	</div>
+	</p>
+	<p>
+		The dialog features a large number of predefined reports as well as plots. Each item on the right side of the
+		dialog, when selected, provides a description on the left side of the dialog.
+		By clicking the <strong><code>Create!</code></strong> button, when a item has been selected, the
+		corresponding plot or report is created.
+	</p>
+	<p>
+		If the item that has been created was a plot, everything is set and next time,
+		the corresponding task is run, a plot window should appear that shows the
+		selected plot.
+	</p>
+	<p>
+		If the selected item however was a report, you have to choose a file to which
+		the report will write its contents. This can be done by clicking on the
+		<strong><code>Report</code></strong> button at the bottom of the <em>Time Course</em> window. The
+		dialog that pops up lets you choose the report which you want to associate with
+		a file (since a task can have more than one report) and it lets you specify a
+		filename.
+	</p>
+	<p>Once you are done, just click the <strong><code>Confirm</code></strong> button and next time you
+		run the task, a file with the contents of the report will be written to disk.
+	</p>
 </body>
+
 </html>

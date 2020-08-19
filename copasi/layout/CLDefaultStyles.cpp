@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -11,6 +16,9 @@
 
 
 #include "CLDefaultStyles.h"
+
+#include <copasi/utilities/CDirEntry.h>
+#include <copasi/commandline/COptions.h>
 
 #define USE_LAYOUT 1
 #define USE_RENDER 1
@@ -179,6 +187,7 @@ const char* DEFAULT_STYLES_STRING = \
                                     "    <colorDefinition id='EPNGradientStart' value='#ffffff' />\n"
                                     "    <colorDefinition id='EPNGradientEnd' value='#c0c0c0' />\n"
                                     "  </listOfColorDefinitions>\n"
+
                                     "  <listOfGradientDefinitions>\n"
                                     "    <linearGradient x1='0%' y1='0%' z1='0%' x2='100%' y2='100%' z2='100%' id='EPNBackgroundGradient' spreadMethod='pad'>\n"
                                     "      <stop offset='0%' stop-color='EPNGradientStart' />\n"
@@ -201,6 +210,7 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      <stop offset='100%' stop-color='CompartmentGradientEnd' />\n"
                                     "    </linearGradient>\n"
                                     "  </listOfGradientDefinitions>\n"
+
                                     "  <listOfLineEndings>\n"
                                     "    <lineEnding id='ActivationHead' enableRotationalMapping='true'>\n"
                                     "      <boundingBox>\n"
@@ -284,6 +294,7 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      </g>\n"
                                     "    </lineEnding>\n"
                                     "</listOfLineEndings>\n"
+
                                     "  <listOfStyles>\n"
                                     "    <style roleList='invisible'>\n"
                                     "      <g stroke='#ffffff00' fill='#ffffff00'></g>\n"
@@ -319,8 +330,11 @@ const char* DEFAULT_STYLES_STRING = \
                                     "        <rectangle x='0' y='0' width='100%' height='100%' rx='10%' ry='10%' />\n"
                                     "      </g>\n"
                                     "    </style>\n"
+
                                     "  </listOfStyles>\n"
                                     "</renderInformation>\n"
+
+
                                     "  <renderInformation id=\"default\" name=\"Blue Gradient Species\"  backgroundColor=\"#FFFFFFFF\">\n"
                                     "    <listOfColorDefinitions>\n"
                                     "      <colorDefinition id=\"speciesColor\" value=\"#D2D2E6\"/>\n"
@@ -442,6 +456,8 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      </style>\n"
                                     "    </listOfStyles>\n"
                                     "  </renderInformation>\n"
+
+
                                     "  <renderInformation id=\"lightBlue\" name=\"blue Species; colored modifiers\"  backgroundColor=\"#FFFFFFFF\">\n"
                                     "    <listOfColorDefinitions>\n"
                                     "      <colorDefinition id=\"lightBlue\" value=\"#ADD8E6\"/>\n"
@@ -552,6 +568,8 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      </style>\n"
                                     "    </listOfStyles>\n"
                                     "  </renderInformation>\n"
+
+
                                     "  <renderInformation id=\"gray_green\" name=\"Gray-Green Style\" backgroundColor=\"#FFFFFFFF\">\n"
                                     "    <listOfColorDefinitions>\n"
                                     "      <colorDefinition id=\"SpeciesColorLight\" value=\"#D2D2E6FF\"/>\n"
@@ -675,6 +693,9 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      </style>\n"
                                     "    </listOfStyles>\n"
                                     "  </renderInformation>\n"
+
+
+
                                     "  <renderInformation id=\"grayStyle\" name=\"Gray Scale\" backgroundColor=\"#FFFFFFFF\">\n"
                                     "    <listOfColorDefinitions>\n"
                                     "      <colorDefinition id=\"lightGray\" value=\"#CECECE\"/>\n"
@@ -728,6 +749,8 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      </style>\n"
                                     "    </listOfStyles>\n"
                                     "  </renderInformation>\n"
+
+
                                     "  <renderInformation id=\"invertGrayStyle\" name=\"Dark Gray Scale\" backgroundColor=\"#404040FF\">\n"
                                     "    <listOfColorDefinitions>\n"
                                     "      <colorDefinition id=\"lightGray\" value=\"#CECECE\"/>\n"
@@ -853,9 +876,23 @@ CDataVector<CLGlobalRenderInformation>* loadDefaultStyles()
       delete DEFAULT_STYLES;
     }
 
-  XMLInputStream stream(DEFAULT_STYLES_STRING, false);
-  ListOfGlobalRenderInformation* pRI = new ListOfGlobalRenderInformation();
-  pRI->parseXML(XMLNode(stream));
+  XMLInputStream* stream = NULL;
+  std::string default_file = COptions::getConfigDir() + "/default_styles.xml";
+
+  if (CDirEntry::exist(default_file))
+    {
+      stream = new XMLInputStream(default_file.c_str(), true);
+    }
+  else
+    {
+      stream = new XMLInputStream(DEFAULT_STYLES_STRING, false);
+    }
+
+
+  ListOfGlobalRenderInformation * pRI = new ListOfGlobalRenderInformation();
+  pRI->parseXML(XMLNode(*stream));
+  pdelete(stream);
+
   // convert the SBML objects to COPASI objects
   size_t i, iMax = pRI->size();
   CDataVector<CLGlobalRenderInformation>* pResult = new CDataVector<CLGlobalRenderInformation>;

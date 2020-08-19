@@ -36,6 +36,9 @@ class CState;
 class CFitConstraint;
 class CDataArray;
 class CExperiment;
+class CTimeSensTask;
+class CTimeSensProblem;
+
 template < class CMatrixType > class CMatrixInterface;
 
 class CFitProblem : public COptProblem
@@ -172,8 +175,9 @@ public:
    * This is used for calculating the correlation Matric from the FIM,
    * and therefore we can assume a symmetric positive definite matrix
    * The SD of the parameters is also calculated from the diagonal of the covariance
+   * if scale is true, the cov matrix will be scaled to unity diagonal elements
    */
-  bool calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd);
+  bool calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd, bool scale);
 
 
   /**
@@ -330,7 +334,13 @@ public:
    */
   const bool & getCreateParameterSets() const;
 
+  void setUseTimeSens(bool value);
+  const bool& getUseTimeSens() const;
+
   void createParameterSets();
+
+  const CMatrix<C_FLOAT64>& getTimeSensJac() const;
+  CMatrix<C_FLOAT64>& getTimeSensJac();
 
 protected:
   /**
@@ -585,6 +595,17 @@ private:
    * The original value of the trajectory update flag
    */
   bool mTrajectoryUpdate;
+
+  /** A flag indicating whether or not to use time sens task */
+  bool* mpUseTimeSens;
+
+  CTimeSensTask* mpTimeSens;
+
+  CTimeSensProblem* mpTimeSensProblem;
+
+  CMatrix< C_FLOAT64 > mJacTimeSens;
+
+  std::string* mpParmTimeSensCN;
 };
 
 #endif  // COPASI_CFitProblem

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -178,6 +183,17 @@ public:
    * Sets the deduced object roles.
    */
   void  setDeducedObjectRoles(const std::map<const CLMetabReferenceGlyph*, std::string>& deducedObjectRoles);
+
+
+  /**
+   * Removes the specified key, from the list of styles
+   */
+  void removeKeyFromMap(const std::string & key);
+
+  /**
+   * Adds the specified key to the list of styles
+   */
+  void addKeyToMap(const std::string & key, const CLStyle * pStyle);
 
   /**
    * Retrieve the COPASI Data Model

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -48,7 +53,18 @@ class CQSortFilterProxyModel;
 
 #ifdef WITH_QT5_VISUALIZATION
 
+// the datavisualization api will include windows down the line
+#ifdef WIN32
+# ifndef WIN32_LEAN_AND_MEAN
+#   define WIN32_LEAN_AND_MEAN
+# endif // WIN32_LEAN_AND_MEAN
+#endif
+
 #include <QtDataVisualization/Q3DBars>
+
+#ifdef DELETE
+#  undef DELETE
+#endif
 
 class QWidget;
 class QMenu;

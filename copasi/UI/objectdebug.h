@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,7 +34,7 @@ class ObjectDebug : public QDialog, public Ui_ObjectDebug
   Q_OBJECT
 
 public:
-  ObjectDebug(QWidget* parent = NULL, Qt::WindowFlags fl = 0);
+  ObjectDebug(QWidget* parent = NULL, Qt::WindowFlags fl = Qt::WindowFlags());
   ~ObjectDebug();
 
 public slots:
@@ -39,11 +44,9 @@ public slots:
 
 protected slots:
 
-
 private:
   void addObjectRecursive(QTreeWidgetItem * parent, const void * ptr);
   void init();
-
 };
 
 #endif // OBJECTDEBUG_H

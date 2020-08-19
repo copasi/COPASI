@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,6 +21,7 @@
 #include <sbml/packages/render/sbml/LocalRenderInformation.h>
 
 #include "CLLocalRenderInformation.h"
+#include "CLGraphicalObject.h"
 
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
@@ -141,6 +142,42 @@ CLStyle * CLLocalRenderInformation::createStyle()
   CLLocalStyle* pStyle = new CLLocalStyle();
   this->mListOfStyles.add(pStyle, true);
   return pStyle;
+}
+
+const CLStyle * CLLocalRenderInformation::getStyleForGraphicalObject(const CLGraphicalObject * pObject) const
+{
+  if (!pObject)
+    return NULL;
+
+  std::vector< const CLStyle * > possibleRoles;
+  std::vector< const CLStyle * > possibleTypes;
+
+for (const CLLocalStyle & pStyle : mListOfStyles)
+    {
+      if (pStyle.isKeyInSet(pObject->getKey()))
+        return &pStyle;
+
+      if (pStyle.isInRoleList(pObject->getObjectRole()))
+        {
+          possibleRoles.push_back(&pStyle);
+          continue;
+        }
+
+      if (pStyle.isInTypeList(pObject->getObjectType()))
+        {
+          possibleTypes.push_back(&pStyle);
+          continue;
+        }
+    }
+
+  if (!possibleRoles.empty())
+    return possibleRoles.front();
+
+  if (!possibleTypes.empty())
+    return possibleTypes.front();
+
+  return NULL;
+
 }
 
 void CLLocalRenderInformation::addStyle(const CLLocalStyle* pStyle)

@@ -60,7 +60,9 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget *parent, const char *name)
   mpTypeDelegate = new CQComboDelegate(this, mpSpecieDM->getTypes(), false);
   mpTblSpecies->setItemDelegateForColumn(COL_TYPE_SPECIES, mpTypeDelegate);
 
+#if QT_VERSION >= 0x050000
   mpTblSpecies->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
