@@ -34,6 +34,7 @@ public slots:
   void slotScaleEndChanged(QString);
   void slotScaleStartChanged(QString);
   void slotSelectObject();
+  void slotSelectDataObject();
   void slotSelectColorEnd();
   void slotSelectColorStart();
 protected:

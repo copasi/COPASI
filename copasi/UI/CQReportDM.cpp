@@ -164,6 +164,10 @@ bool CQReportDM::setData(const QModelIndex &index, const QVariant &value,
   return true;
 }
 
+// virtual
+void CQReportDM::resetCacheProtected()
+{}
+
 bool CQReportDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
   beginInsertRows(parent, position, position + rows - 1);

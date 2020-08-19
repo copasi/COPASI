@@ -38,7 +38,9 @@ public slots:
   void slotEffectRemoved();
   void slotSelectionChanged();
 protected:
-  std::vector<CQEffectDescription*> mEntries;
+  void updateListFromEntries();
+
+  std::vector<CQEffectDescription> mEntries;
   QList<QListWidgetItem*> mLastSelection;
 };
 

@@ -486,6 +486,8 @@ protected:
 public:
   static bool areEqualFunctions(const CFunction* pFun, const CFunction* pFun2);
 
+  static bool isEmptyOrWhiteSpace(const std::string & name);
+
   /**
    * Compares to CEvaluationNode based subtrees recursively.
    */

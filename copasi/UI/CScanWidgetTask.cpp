@@ -67,19 +67,20 @@ void CScanWidgetTask::init()
 #endif
   QColor Foreground = Palette.color(QPalette::Active, QPalette::Text);
   QColor Background = Palette.color(QPalette::Active, QPalette::Base);
+  QColor Target(255, 210, 210, 255);
 
   if (Foreground.redF() + Foreground.greenF() + Foreground.blueF() > Background.redF() + Background.greenF() + Background.blueF())
     {
 #if QT_VERSION >= 0x050000
-      setStyleSheet("color: " + QColor(191, 236, 183, 255).name(QColor::HexRgb));
+      setStyleSheet("color: " + Target.name(QColor::HexRgb));
 #else
-      setStyleSheet("color: " + QColor(191, 236, 183, 255).name());
+      setStyleSheet("color: " + Target.name());
 #endif
     }
   else
     {
       QPalette palette;
-      QBrush brush(QColor(191, 236, 183, 255));
+      QBrush brush(Target);
       brush.setStyle(Qt::SolidPattern);
       palette.setBrush(QPalette::Active, QPalette::Base, brush);
       palette.setBrush(QPalette::Inactive, QPalette::Base, brush);

@@ -263,3 +263,27 @@ bool CQTSSAWidget::taskFinishedEvent()
 
   return true;
 }
+
+bool CQTSSAWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+{
+  if (objectType == ListViews::ObjectType::MODEL && action == ListViews::DELETE)
+    {
+      // need to clear annotated matrices, as otherwise they will hold pointers to non-existing things.
+      CQTSSAResultWidget * pResult =
+        dynamic_cast< CQTSSAResultWidget * >(mpListView->findWidgetFromId(ListViews::WidgetType::TimeScaleSeparationAnalysisResult));
+
+      if (pResult == NULL)
+        {
+          return false;
+        }
+
+      mpTSSResultSubWidget = pResult->getSubWidget();
+
+      if (!mpTSSResultSubWidget)
+        return false;
+
+      mpTSSResultSubWidget->discardOldResults();
+    }
+
+  return true;
+}

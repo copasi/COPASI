@@ -2,6 +2,8 @@
 *.bak
 *.o
 *.app
+*.bkp
+*.patch
 moc_*.cpp
 ui_*.h
 /build

@@ -27,14 +27,13 @@
 CQFluxModeDM::CQFluxModeDM(QObject *parent):
   CQBaseDataModel(parent, NULL),
   mpTask(NULL),
-  mBeginModes(),
-  mModesSize(0)
+  mBeginModes()
 {}
 
 size_t CQFluxModeDM::size() const
 {
   if (mpTask != NULL)
-    return mModesSize;
+    return mpTask->getFluxModes().size();
 
   return 0;
 }
@@ -154,17 +153,16 @@ QVariant CQFluxModeDM::headerData(int section, Qt::Orientation orientation,
 
 void CQFluxModeDM::setTask(const CEFMTask * pTask)
 {
+  beginResetModel();
+
   mpTask = pTask;
 
   if (mpTask != NULL)
-    {
-      mBeginModes = mpTask->getFluxModes().begin();
-      mModesSize = mpTask->getFluxModes().size();
-    }
-  else
-    {
-      mModesSize = 0;
-    }
+    mBeginModes = mpTask->getFluxModes().begin();
+
+  mFetched = std::min(mFetchLimit, size());
+
+  endResetModel();
 }
 
 bool CQFluxModeDM::setData(const QModelIndex & /* index */, const QVariant & /* value */,
@@ -172,6 +170,10 @@ bool CQFluxModeDM::setData(const QModelIndex & /* index */, const QVariant & /* 
 {
   return false;
 }
+
+// virtual
+void CQFluxModeDM::resetCacheProtected()
+{}
 
 // virtual
 bool CQFluxModeDM::insertRows(int /* position */, int /* rows */, const QModelIndex & /* index */)

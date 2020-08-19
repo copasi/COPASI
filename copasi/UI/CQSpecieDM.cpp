@@ -252,6 +252,9 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_NRATE:
                 return QVariant(Species.getRate());
 
+              case COL_COUNT_REACTIONS:
+                return QVariant((uint) Species.getCountOfDependentReactions());
+
               case COL_IEXPRESSION_SPECIES:
               {
                 const CExpression * pExpression = NULL;
@@ -345,6 +348,9 @@ QVariant CQSpecieDM::headerData(int section, Qt::Orientation orientation,
 
           case COL_NRATE:
             return QVariant("Number Rate\n" + NRateUnit);
+
+          case COL_COUNT_REACTIONS:
+            return QVariant("Reactions");
 
           case COL_IEXPRESSION_SPECIES:
             return QVariant("Initial Expression\n" + ValueUnit);

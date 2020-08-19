@@ -53,6 +53,7 @@ public:
   void setTask(const CEFMTask * pTask);
 
 protected:
+  virtual void resetCacheProtected() override;
   virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
   virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
   virtual size_t size() const override;
@@ -61,7 +62,6 @@ private:
   const CEFMTask * mpTask;
 
   std::vector< CFluxMode >::const_iterator mBeginModes;
-  size_t mModesSize;
 
   const CModel * mpModel;
   std::vector< CMetab * >::const_iterator mBeginSpecies;

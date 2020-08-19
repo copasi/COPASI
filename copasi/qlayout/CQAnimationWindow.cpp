@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -13,12 +13,16 @@
 // of Manchester.
 // All rights reserved.
 
+#include <limits>
+
 #include <QGraphicsItem>
 #include <QGraphicsEffect>
 #include <QDockWidget>
 #include <QFileDialog>
-#include <QtCore/QDateTime>
+#include <QDateTime>
 #include <QToolBar>
+#include <QAbstractEventDispatcher>
+#include <QTimer>
 
 #include "copasi/qlayout/CQAnimationWindow.h"
 #include "copasi/qlayout/CQAnimationSettingsEditor.h"
@@ -31,16 +35,27 @@
 #include "copasi/layoutUI/CQLayoutThread.h"
 
 #include "copasi/layout/CLayout.h"
+#include <copasi/layout/CCopasiSpringLayout.h>
+#include <copasi/layout/CLayoutEngine.h>
 
 #include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CRootContainer.h"
-#include "copasi/resourcesUI/CQIconResource.h"
 
 #include "copasi/model/CModel.h"
 #include "copasi/model/CReaction.h"
+
 #include "copasi/elementaryFluxModes/CEFMTask.h"
 #include "copasi/elementaryFluxModes/CEFMProblem.h"
 #include "copasi/elementaryFluxModes/CFluxMode.h"
+
+#include <copasi/report/CDataHandler.h>
+
+#include <copasi/trajectory/CTrajectoryTask.h>
+
+#include "copasi/resourcesUI/CQIconResource.h"
+
+#include "CQElementProperties.h"
+
 
 class QConservedSpeciesAnimation : public CQCopasiAnimation
 {
@@ -53,7 +68,7 @@ class QConservedSpeciesAnimation : public CQCopasiAnimation
 
     while (it != metabs.end())
       {
-        mEntries.push_back(new CQEffectDescription(it->getCN()));
+        mEntries.push_back(CQEffectDescription(it->getCN()));
         ++it;
       }
 
@@ -84,7 +99,7 @@ class QConservedSpeciesAnimation : public CQCopasiAnimation
       }
 
     for (size_t i = 0; i < mEntries.size(); ++i)
-      scales.push_back(cnValueMap[mEntries[i]->getCN()]);
+      scales.push_back(cnValueMap[mEntries[i].getCN()]);
   }
 };
 
@@ -104,7 +119,7 @@ public:
 
     while (it != reactions.end())
       {
-        mEntries.push_back(new CQEffectDescription(it->getCN(), CQEffectDescription::Colorize, Qt::black, Qt::red));
+        mEntries.push_back(CQEffectDescription(it->getCN(), CQEffectDescription::Colorize, Qt::black, Qt::red));
         indexMap[count] = it->getCN();
         ++it;
         ++count;
@@ -155,15 +170,13 @@ public:
       }
 
     for (size_t i = 0; i < mEntries.size(); ++i)
-      scales.push_back(cnValueMap[mEntries[i]->getCN()] == 0 ? 0.0 : 1.0);
+      scales.push_back(cnValueMap[mEntries[i].getCN()] == 0 ? 0.0 : 1.0);
   }
 
 protected:
   std::map<size_t, std::string> indexMap;
 };
 
-#include <copasi/model/CModel.h>
-#include <copasi/trajectory/CTrajectoryTask.h>
 /**
  * Animation that displays the concentrations per time
  */
@@ -226,7 +239,7 @@ public:
 
     mNumSteps = series->getRecordedSteps();
 
-    if (series->getRecordedSteps() < (size_t)step)
+    if (mNumSteps < step)
       return;
 
     double max = mMode == CQCopasiAnimation::Global ? getMax(series) : 0;
@@ -234,9 +247,9 @@ public:
     for (size_t i = 0; i < mEntries.size(); ++i)
       {
         if (mMode == CQCopasiAnimation::Individual)
-          max  = getMax(series, getIndex(series, mEntries[i]->getCN()));
+          max  = getMax(series, getIndex(series, mEntries[i].getCN()));
 
-        double value = getValue(series, mEntries[i]->getCN(), step);
+        double value = getValue(series, mEntries[i].getCN(), step);
         scales.push_back(value / max);
       }
   }
@@ -250,7 +263,7 @@ public:
 
     while (it != metabs.end())
       {
-        mEntries.push_back(new CQEffectDescription(it->getCN(), CQEffectDescription::Scale));
+        mEntries.push_back(CQEffectDescription(it->getCN(), CQEffectDescription::Scale));
         keyMap[it->getCN()] = it->getKey();
         ++it;
       }
@@ -270,6 +283,163 @@ protected:
   std::map<std::string, std::string> keyMap;
 };
 
+/**
+ * Animation that displays the selected elements per time
+ */
+class QCustomTimeCourseAnimation : public CQCopasiAnimation
+{
+  ~QCustomTimeCourseAnimation()
+  {
+    pdelete(mpDataHandler);
+  }
+
+  double getMax(const std::vector< std::vector< C_FLOAT64 > > & data, int index = C_INVALID_INDEX)
+  {
+    double max = 0;
+
+    if (index != C_INVALID_INDEX)
+      {
+        for (size_t i = 0; i < data.size(); ++i)
+          {
+            max = qMax(max, data[i][index]);
+          }
+      }
+    else
+      {
+        for (size_t j = 0; j < mEntries.size(); ++j)
+          {
+            index = getIndex(mEntries[j].getCN());
+
+            for (size_t i = 0; i < data.size(); ++i)
+              {
+                max = qMax(max, data[i][index]);
+              }
+          }
+      }
+
+    return max;
+  }
+
+  int getIndex(const std::string& cn)
+  {
+    for (size_t i = 0; i < mCNs.size(); ++i)
+      {
+        if (mCNs[i] == cn)
+          return i;
+      }
+
+    return C_INVALID_INDEX;
+  }
+
+  virtual void getScales(std::vector< qreal >& scales, int step)
+  {
+    auto & data = mpDataHandler->getDuringData();
+    mNumSteps = data.size();
+
+    if (mNumSteps < step)
+      return;
+
+    double max = mMode == CQCopasiAnimation::Global ? getMax(data) : 0;
+
+    for (size_t i = 0; i < mEntries.size(); ++i)
+      {
+
+        int index = getIndex(mEntries[i].getCN());
+
+        if (index == C_INVALID_INDEX)
+          {
+            scales.push_back(std::numeric_limits< double >::quiet_NaN());
+            continue;
+          }
+
+        if (mMode == CQCopasiAnimation::Individual)
+          max = getMax(data, index);
+
+        if (max == 0)
+          max = 1;
+
+        double value = data[step][index];
+        scales.push_back(value / max);
+      }
+  }
+
+  virtual void updateEntries(const std::vector< CQEffectDescription >& entries)
+  {
+    if (mpDataModel == NULL)
+      return;
+
+    // create data handler for it
+    pdelete(mpDataHandler);
+    mCNs.clear();
+
+    mpDataHandler = new CDataHandler();
+
+    // select elements to record
+
+for (auto & entry : entries)
+      {
+        mEntries.push_back(entry);
+        mpDataHandler->addDuringName(entry.getDataCN());
+        mCNs.push_back(entry.getCN());
+      }
+
+    // run task
+    CTrajectoryTask & task = const_cast< CTrajectoryTask & >(
+                               static_cast< const CTrajectoryTask & >((*mpDataModel->getTaskList())["Time-Course"]));
+    task.initialize(CCopasiTask::OUTPUT_DURING, mpDataHandler, NULL);
+    task.process(true);
+    task.restore();
+
+    mNumSteps = mpDataHandler->getDuringData().size();
+
+  }
+
+  virtual void initialize(const CDataModel & dataModel)
+  {
+    mpDataModel = &dataModel;
+
+    setScaleMode(Individual);
+
+    std::vector< CQEffectDescription > entries;
+
+    const CModel & model = *dataModel.getModel();
+    {
+      const CDataVector< CMetab > & metabs = model.getMetabolites();
+      CDataVector< CMetab >::const_iterator it = metabs.begin();
+
+      while (it != metabs.end())
+        {
+          entries.push_back(CQEffectDescription(it->getCN(),
+                                                it->getConcentrationReference()->getCN(),
+                                                CQEffectDescription::Scale));
+          ++it;
+        }
+    }
+    // flux
+    {
+      const auto & reactions = model.getReactions();
+      auto it = reactions.begin();
+
+      while (it != reactions.end())
+        {
+          entries.push_back(CQEffectDescription(it->getCN(),
+                                                it->getFluxReference()->getCN(),
+                                                CQEffectDescription::Colorize));
+          ++it;
+        }
+    }
+
+
+    updateEntries(entries);
+
+
+  }
+
+protected:
+  std::vector< std::string > mCNs;
+  CDataHandler * mpDataHandler {NULL};
+};
+
 CQAnimationWindow::CQAnimationWindow(CLayout* layout, CDataModel* dataModel)
   : mpScene(NULL)
   , mpModel(NULL)
@@ -277,6 +447,7 @@ CQAnimationWindow::CQAnimationWindow(CLayout* layout, CDataModel* dataModel)
   , mAnimation(NULL)
   , mpLayoutThread(NULL)
   , mpCopy(NULL)
+  , mpProperties(NULL)
 {
   init();
   setScene(new CQLayoutScene(layout, dataModel), dataModel);
@@ -289,6 +460,7 @@ CQAnimationWindow::CQAnimationWindow()
   , mAnimation(NULL)
   , mpLayoutThread(NULL)
   , mpCopy(NULL)
+  , mpProperties(NULL)
 {
   init();
 }
@@ -311,6 +483,19 @@ void CQAnimationWindow::init()
   actionToolbar->addAction(actionAuto_Layout);
   actionToolbar->addAction(actionRandomize_Layout);
 
+  QAction * actAnimation = new QAction(this);
+  actAnimation->setIcon(CQIconResource::icon(CQIconResource::animation));
+  actAnimation->setToolTip("Select animation to display on the layout");
+  actAnimation->setMenu(new QMenu());
+  actAnimation->menu()->addAction(actionView_Time_Course);
+  actAnimation->menu()->addAction(actionView_Elementary_Modes);
+  actAnimation->menu()->addAction(actionView_Conserved_Species);
+  actAnimation->menu()->addAction(actionView_Custom_Time_Course);
+  actAnimation->menu()->addSeparator();
+  actAnimation->menu()->addAction(action_Settings);
+
+  actionToolbar->addAction(actAnimation);
+
   QToolBar* selectToolbar = this->addToolBar("Select");
   graphicsView->fillSelectionToolBar(selectToolbar);
 
@@ -325,8 +510,13 @@ void CQAnimationWindow::init()
 
   QDockWidget* pParameterWindow = mpLayoutThread->getParameterWindow();
   addDockWidget(Qt::LeftDockWidgetArea, pParameterWindow);
+
+  QDockWidget * pPropertiesWindow = createPropertiesWidget();
+  addDockWidget(Qt::RightDockWidgetArea, pPropertiesWindow);
+
   viewMenu->addSeparator();
   viewMenu->addAction(pParameterWindow->toggleViewAction());
+  viewMenu->addAction(pPropertiesWindow->toggleViewAction());
   toggleUI(false);
 }
 
@@ -375,6 +565,7 @@ void CQAnimationWindow::setScene(CQLayoutScene* scene, CDataModel* dataModel)
   //setAnimation(new QConservedSpeciesAnimation(), dataModel);
   //setAnimation(new QFluxModeAnimation(), dataModel);
   setAnimation(new QTimeCourseAnimation(), dataModel);
+  mpProperties->setScene(mpScene);
 }
 
 void CQAnimationWindow::slotSwitchAnimation()
@@ -394,6 +585,10 @@ void CQAnimationWindow::slotSwitchAnimation()
   else if (action->text() == "View Conserved Species")
     {
       setAnimation(new QConservedSpeciesAnimation(), graphicsView->getDataModel());
+    }
+  else if (action->text() == "View Custom Time Course")
+    {
+      setAnimation(new QCustomTimeCourseAnimation(), graphicsView->getDataModel());
     }
 }
 
@@ -453,7 +648,10 @@ void CQAnimationWindow::slotEditSettings()
 
   if (editor.exec() == QDialog::Accepted)
     {
+      mAnimation->removeFromScene(*mpScene);
       editor.saveTo(mAnimation);
+
+      slotShowStep(0);
     }
 }
 
@@ -464,14 +662,6 @@ void CQAnimationWindow::slotRandomizeLayout()
   CLayoutState::tagLayout(mpScene->getCurrentLayout());
   mpLayoutThread->randomizeLayout(mpScene->getCurrentLayout());
 }
-
-#include <copasi/layout/CCopasiSpringLayout.h>
-#include <copasi/layout/CLayoutEngine.h>
-
-#include <QtCore/QAbstractEventDispatcher>
-#include <QtCore/QAbstractEventDispatcher>
-
-#include <QtCore/QTimer>
 
 void CQAnimationWindow::slotStopLayout()
 {
@@ -504,6 +694,17 @@ void CQAnimationWindow::toggleUI(bool isPlaying)
     {
       mpLayoutThread->stopLayout();
     }
+}
+
+QDockWidget * CQAnimationWindow::createPropertiesWidget()
+{
+  QDockWidget * pDockProperties = new QDockWidget(this);
+  pDockProperties->setWindowTitle("E&lement Properties");
+  mpProperties = new CQElementProperties(this);
+  connect(this->graphicsView, SIGNAL(renderInformationChanged()), mpProperties, SLOT(slotRenderInformationChanged()));
+  pDockProperties->setWidget(mpProperties);
+  pDockProperties->setVisible(false);
+  return pDockProperties;
 }
 
 /// <summary>

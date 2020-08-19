@@ -79,16 +79,12 @@ void CQBaseDataModel::resetCache()
   assert(mpDataModel != NULL);
 
   beginResetModel();
-  resetCacheProtected();
 
+  resetCacheProtected();
   mFetched = std::min(mFetchLimit, size());
 
   endResetModel();
 }
-
-// virtual
-void CQBaseDataModel::resetCacheProtected()
-{}
 
 bool CQBaseDataModel::isDefaultRow(const QModelIndex& i) const
 {

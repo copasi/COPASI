@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -13,6 +18,7 @@
 #include <sbml/packages/render/sbml/Style.h>
 
 #include "CLStyle.h"
+#include "CLGraphicalObject.h"
 
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
@@ -197,19 +203,29 @@ std::string CLStyle::createStringFromSet(const std::set<std::string>& set)
 
 const std::set<std::string>& CLStyle::getRoleList() const
 {
-  return this->mRoleList;
+  return mRoleList;
+}
+
+std::string CLStyle::getRoleListString() const
+{
+  return createStringFromSet(mRoleList);
 }
 
 const std::set<std::string>& CLStyle::getTypeList() const
 {
-  return this->mTypeList;
+  return mTypeList;
+}
+
+std::string CLStyle::getTypeListString() const
+{
+  return createStringFromSet(mTypeList);
 }
 
 void CLStyle::setRoleList(const std::set<std::string>& roleList)
 {
-  // I do not check roles on purpose since this is more versatil in the light
+  // I do not check roles on purpose since this is more versatile in the light
   // of future extensions
-  this->mRoleList = roleList;
+  mRoleList = roleList;
 }
 
 void CLStyle::setTypeList(const std::set<std::string>& typeList)
@@ -242,4 +258,18 @@ void CLStyle::addSBMLAttributes(Style* pStyle) const
   s.clear();
   CLStyle::readIntoSet(CLStyle::createStringFromSet(this->mTypeList), s);
   pStyle->setTypeList(s);
+}
+
+int CLStyle::appliesTo(const CLGraphicalObject * pObject) const
+{
+  if (!pObject)
+    return 0;
+
+  if (isInRoleList(pObject->getObjectRole()))
+    return 2;
+
+  if (isInTypeList(pObject->getObjectType()))
+    return 1;
+
+  return 0;
 }

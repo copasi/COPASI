@@ -57,13 +57,6 @@ LIBSEDML_CPP_NAMESPACE_USE
 
 #include "copasi/core/CCore.h"
 
-//YH: new defined parameters used by more than one classes
-#define SS_FOUND 1             //steady state found
-#define SS_NOT_FOUND 0         //steady state not found
-#define SS_SINGULAR_JACOBIAN 2
-#define SS_DAMPING_LIMIT 3
-#define SS_ITERATION_LIMIT 4
-
 #ifdef min
 # undef min
 #endif
@@ -76,12 +69,6 @@ LIBSEDML_CPP_NAMESPACE_USE
 # include <cmath>
 using std::isnan;
 #endif
-
-// #ifdef Darwin
-// # ifndef isnan
-// #  define isnan(__x) ((__x == __x) != true)
-// # endif
-// #endif
 
 #if (defined __GNUC__ && __GNUC__ < 3)
 # define ios_base ios

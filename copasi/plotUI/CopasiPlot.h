@@ -221,6 +221,7 @@ private:
    * The first object in each vector is the object for the X axis.
    */
   std::vector< std::vector < std::string > > mSaveCurveObjects;
+  std::map< std::string, std::string > mCnNameMap;
 
   /**
    * The order of histogram objects used when the data is saved.

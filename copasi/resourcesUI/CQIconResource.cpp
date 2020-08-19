@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -90,6 +95,7 @@ void CQIconResource::init()
   Icons[viewmag1].addFile(QString::fromUtf8(":/images/viewmag1.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[viewmagfit].addFile(QString::fromUtf8(":/images/viewmagfit.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[reset].addFile(QString::fromUtf8(":/images/reset.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[animation].addFile(QString::fromUtf8(":/images/animation.png"), QSize(), QIcon::Normal, QIcon::On);
 
   needInit = false;
 }

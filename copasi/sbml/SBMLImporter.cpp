@@ -1018,7 +1018,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   std::string title = sbmlModel->getName();
 
-  if (title.empty())
+  if (isEmptyOrWhiteSpace(title))
     {
       title = "NoName";
     }
@@ -1934,7 +1934,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
 
   std::string functionName = sbmlFunction->getName();
 
-  if (functionName.empty())
+  if (isEmptyOrWhiteSpace(functionName))
     {
       functionName = sbmlFunction->getId();
     }
@@ -2013,7 +2013,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
       if (pVarNode->getType() != AST_NAME)
         {
           // while this is wrong, there is no reason to reject the model, we will catch it later
-          std::string functionname = pSBMLFunction->getName().empty() ?
+          std::string functionname = isEmptyOrWhiteSpace(pSBMLFunction->getName()) ?
                                      pSBMLFunction->getId() : pSBMLFunction->getName();
           CCopasiMessage::Type type = pVarNode->getName() != NULL ? CCopasiMessage::ERROR :
                                       CCopasiMessage::EXCEPTION;
@@ -2152,7 +2152,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
 
   std::string name = sbmlCompartment->getName();
 
-  if (name.empty())
+  if (isEmptyOrWhiteSpace(name))
     {
       name = sbmlCompartment->getId();
     }
@@ -2217,7 +2217,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
 
   std::string name = sbmlSpecies->getName();
 
-  if (name.empty())
+  if (isEmptyOrWhiteSpace(name))
     {
       name = sbmlSpecies->getId();
     }
@@ -2371,7 +2371,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
   std::string name = sbmlReaction->getName();
 
-  if (name.empty())
+  if (isEmptyOrWhiteSpace(name))
     {
       name = sbmlReaction->getId();
     }
@@ -3579,7 +3579,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_FATAL:
 
-              // treat unknown as fatal
+                // treat unknown as fatal
               default:
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
@@ -4716,7 +4716,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
 
   std::string name = sbmlParameter->getName();
 
-  if (!sbmlParameter->isSetName())
+  if (isEmptyOrWhiteSpace(name))
     {
       name = sbmlParameter->getId();
     }
@@ -5455,6 +5455,14 @@ bool SBMLImporter::areEqualFunctions(const CFunction* pFun, const CFunction* pFu
     }
 
   return result;
+}
+
+bool SBMLImporter::isEmptyOrWhiteSpace(const std::string & name)
+{
+  if (name.empty())
+    return true;
+
+  return name.find_first_not_of(" \t\r\n") == std::string::npos;
 }
 
 // static
@@ -6260,7 +6268,7 @@ bool SBMLImporter::divideByVolume(ASTNode* node, const std::string& compartmentS
             {
               nodeIt = nodeStack[nodeStack.size() - 1];
 
-              if (nodeIt->getType() == AST_TIMES && nodeIt->getNumChildren() > intStack[intStack.size() - 1] + 1)
+              if (nodeIt->getType() == AST_TIMES && (int)nodeIt->getNumChildren() > intStack[intStack.size() - 1] + 1)
                 {
                   //go to sibling
                   nodeIt = nodeIt->getChild(intStack[intStack.size() - 1] + 1);
@@ -8790,11 +8798,29 @@ std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUni
       if (symbol.empty())
         continue;
 
+      double multiplier = current->getMultiplier();
+
+      if (symbol == "s" && multiplier == 86400)
+        {
+          symbol = "d";
+          multiplier = 1;
+        }
+      else if (symbol == "s" && multiplier == 3600)
+        {
+          symbol = "h";
+          multiplier = 1;
+        }
+      else if (symbol == "s" && multiplier == 60)
+        {
+          symbol = "min";
+          multiplier = 1;
+        }
+
       CUnit tmp = CUnit(symbol).exponentiate(current->getExponentAsDouble());
       tmp.addComponent(
         CUnitComponent(
           CBaseUnit::dimensionless,
-          current->getMultiplier(),
+          multiplier,
           current->getScale() * current->getExponentAsDouble()));
 
       tmp.buildExpression();
@@ -8802,7 +8828,6 @@ std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUni
 
       copasiUnit = copasiUnit * tmp;
     }
-
 
   // construct expression
   copasiUnit.buildExpression();
@@ -10161,13 +10186,9 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
     }
 
   /* Check if the name of the reaction is unique. */
-  std::string eventName = "Event";
+  std::string eventName = pEvent->getName();
 
-  if (pEvent->isSetName())
-    {
-      eventName = pEvent->getName();
-    }
-  else if (pEvent->isSetId())
+  if (isEmptyOrWhiteSpace(eventName))
     {
       eventName = pEvent->getId();
     }

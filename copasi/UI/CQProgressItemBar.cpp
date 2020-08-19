@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -125,6 +125,10 @@ bool CQProgressItemBar::reset()
       default:
         break;
     }
+
+  // if mFactor is invalid (happens for start == end), reset
+  if (mFactor != mFactor || mFactor > 100)
+    mFactor = 100;
 
   return process();
 }

@@ -122,6 +122,10 @@ bool CQTimeSeriesDM::setData(const QModelIndex & /* index */, const QVariant & /
 }
 
 // virtual
+void CQTimeSeriesDM::resetCacheProtected()
+{}
+
+// virtual
 bool CQTimeSeriesDM::insertRows(int /* position */, int /* rows */, const QModelIndex & /* index */)
 {
   return false;
