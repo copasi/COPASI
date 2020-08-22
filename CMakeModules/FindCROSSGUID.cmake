@@ -69,7 +69,7 @@ if (NOT CROSSGUID_FOUND)
     
   if (NOT CROSSGUID_LIBRARY)
     find_library(CROSSGUID_LIBRARY 
-        NAMES ${CROSSGUID_LIBRARY_NAME})
+        NAMES crossguid crossguid-dgb)
   endif (NOT CROSSGUID_LIBRARY)
   
   if (CROSSGUID_LIBRARY AND UNIX AND NOT APPLE)

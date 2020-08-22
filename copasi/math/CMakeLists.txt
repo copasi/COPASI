@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -29,6 +29,15 @@
 
 file(GLOB HEADERS_MATH math/*.h)
 file(GLOB SOURCES_MATH math/*.cpp)
+
+if (NOT ENABLE_JIT)
+  list(REMOVE_ITEM SOURCES_MATH 
+    ${CMAKE_CURRENT_SOURCE_DIR}/math/CJitCompiler.cpp 
+    ${CMAKE_CURRENT_SOURCE_DIR}/math/CJitExpression.cpp)
+  list(REMOVE_ITEM HEADERS_MATH 
+    ${CMAKE_CURRENT_SOURCE_DIR}/math/CJitCompiler.h 
+    ${CMAKE_CURRENT_SOURCE_DIR}/math/CJitExpression.h)
+endif(NOT ENABLE_JIT)
 
 if (SOURCES_MATH)
 # create source group for IDEs

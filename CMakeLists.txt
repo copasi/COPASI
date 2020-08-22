@@ -290,7 +290,18 @@ include_directories(BEFORE ${CROSSGUID_INCLUDE_DIR})
 find_package(EXPAT REQUIRED)
 include_directories(BEFORE ${EXPAT_INCLUDE_DIR})
 
+option(ENABLE_JIT "Enable Just In Time compilation for math expressions" OFF)
+
+if (ENABLE_JIT)
+  find_package(NATIVEJIT REQUIRED)
+
+  include_directories(BEFORE ${NATIVEJIT_INCLUDE_DIR})
+  set(CMAKE_CXX_FLAGS "${NATIVEJIT_COMPILE_OPTIONS}")
+  set(USE_JIT 1)
+endif (ENABLE_JIT)
+
 # TODO find raptor
+
 # TODO raptor should be restricted to a version which is at least
 # 1.4.18, but lower then 2.0
 find_package(RAPTOR REQUIRED)
@@ -639,7 +650,6 @@ endif()
 #DEFINES -= UNICODE
 #DEFINES += _CRT_SECURE_NO_WARNINGS
 
-
 # are we using the intel compiler
 set(USING_INTEL)
 if ((WIN32 OR (UNIX AND NOT APPLE))
@@ -877,6 +887,9 @@ message(STATUS "-----------------------------------------------------------
    Combine lib       = ${COMBINE_LIBRARY}
    Combine include   = ${COMBINE_INCLUDE_DIR}
 
+   NativeJIT lib     = ${NATIVEJIT_LIBRARY}
+   NativeJIT include = ${NATIVEJIT_INCLUDE_DIR}
+
  Options:
 
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
@@ -892,6 +905,7 @@ message(STATUS "-----------------------------------------------------------
    Provenance framework     = ${ENABLE_PROVENANCE}
    Analytics Task           = ${ENABLE_ANALYTICS}
    Time Sensitivities task  = ${ENABLE_TIME_SENS}
+   JIT Compilation          = ${ENABLE_JIT}
    Additional Defines       = ${DirDefs}
 
   Language Bindings:

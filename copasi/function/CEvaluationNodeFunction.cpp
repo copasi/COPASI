@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -38,34 +38,34 @@
 CRandom * CEvaluationNodeFunction::mpRandom = NULL;
 
 // static
-C_FLOAT64 CEvaluationNodeFunction::runiform(const C_FLOAT64 & lowerBound, const C_FLOAT64 & upperBound)
+C_FLOAT64 CEvaluationNodeFunction::runiform(C_FLOAT64 lowerBound, C_FLOAT64 upperBound)
 {return lowerBound + mpRandom->getRandomOO() * (upperBound - lowerBound);}
 
 // static
-C_FLOAT64 CEvaluationNodeFunction::rnormal(const C_FLOAT64 & mean, const C_FLOAT64 & sd)
+C_FLOAT64 CEvaluationNodeFunction::rnormal(C_FLOAT64 mean, C_FLOAT64 sd)
 {return mpRandom->getRandomNormal(mean, sd);}
 
 //static
-C_FLOAT64 CEvaluationNodeFunction::rgamma(const C_FLOAT64 & shape,
-    const C_FLOAT64 & scale)
+C_FLOAT64 CEvaluationNodeFunction::rgamma(C_FLOAT64 shape,
+    C_FLOAT64 scale)
 {
   return mpRandom->getRandomGamma(shape, scale);
 }
 
 //static
-C_FLOAT64 CEvaluationNodeFunction::rpoisson(const C_FLOAT64 mu)
+C_FLOAT64 CEvaluationNodeFunction::rpoisson(C_FLOAT64 mu)
 {
   return mpRandom->getRandomPoisson(mu);
 }
 
 // static
-C_FLOAT64 CEvaluationNodeFunction::max(const C_FLOAT64 & x1, const C_FLOAT64 & x2)
+C_FLOAT64 CEvaluationNodeFunction::max(C_FLOAT64 x1, C_FLOAT64 x2)
 {
   return std::max(x1, x2);
 }
 
 // static
-C_FLOAT64 CEvaluationNodeFunction::min(const C_FLOAT64 & x1, const C_FLOAT64 & x2)
+C_FLOAT64 CEvaluationNodeFunction::min(C_FLOAT64 x1, C_FLOAT64 x2)
 {
   return std::min(x1, x2);
 }
@@ -1290,8 +1290,8 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         node->addChild(sibling->toAST(pDataModel));
       }
       break;
-      // :TODO: Bug 894: Implement me.
-      //fatalError();
+        // :TODO: Bug 894: Implement me.
+        //fatalError();
       break;
     }
 
@@ -1920,8 +1920,8 @@ CValidatedUnit CEvaluationNodeFunction::getUnit(const CMathContainer & /* contai
 
 // virtual
 CValidatedUnit CEvaluationNodeFunction::setUnit(const CMathContainer & container,
-    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
-    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+    const std::map < CEvaluationNode *, CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode *, CValidatedUnit > & targetUnits) const
 {
   CValidatedUnit Result(CEvaluationNode::setUnit(container, currentUnits, targetUnits));
 

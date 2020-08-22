@@ -1475,6 +1475,17 @@ void CMathContainer::compile()
       pReaction->initialize(itReaction, *this);
     }
 
+#ifdef USE_JIT
+
+  try
+    {
+      mJITCompiler.compile();
+    }
+  catch (...)
+    {}
+
+#endif
+
   updateInitialValues(CCore::Framework::ParticleNumbers);
 
   // TODO We may have unused event triggers and roots due to optimization
@@ -2207,7 +2218,12 @@ bool CMathContainer::compileObjects()
 
   for (; pObject != pObjectEnd; ++pObject)
     {
+#ifdef USE_JIT
+      success &=
+        pObject->compile(*this, mJITCompiler);
+#else
       success &= pObject->compile(*this);
+#endif
     }
 
   return success;
@@ -3993,7 +4009,12 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
             break;
         }
 
+#ifdef USE_JIT
+      pObject->compile(*this, mJITCompiler);
+#else
       pObject->compile(*this);
+#endif
+
       mInitialDependencies.addObject(pObject);
     }
 

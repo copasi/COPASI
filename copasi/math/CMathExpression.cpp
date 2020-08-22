@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,27 +23,38 @@
 #include "copasi/function/CEvaluationNode.h"
 #include "copasi/function/CEvaluationNodeObject.h"
 #include "copasi/function/CEvaluationLexer.h"
-
 #include "copasi/utilities/CCopasiTree.h"
 
 #define pMathContainer static_cast< const CMathContainer * >(getObjectParent())
 
-CMathExpression::CMathExpression():
-  CEvaluationTree(),
-  mPrerequisites()
+CMathExpression::CMathExpression() :
+#ifdef USE_JIT
+  CJitExpression(),
+#endif
+  CEvaluationTree()
+  , mPrerequisites()
+  , mpJitFunction(NULL)
 {}
 
 CMathExpression::CMathExpression(const std::string & name,
-                                 CMathContainer & container):
-  CEvaluationTree(name, &container, CEvaluationTree::MathExpression),
-  mPrerequisites()
+                                 CMathContainer & container) :
+#ifdef USE_JIT
+  CJitExpression(),
+#endif
+  CEvaluationTree(name, &container, CEvaluationTree::MathExpression)
+  , mPrerequisites()
+  , mpJitFunction(NULL)
 {}
 
 CMathExpression::CMathExpression(const CExpression & src,
                                  CMathContainer & container,
-                                 const bool & replaceDiscontinuousNodes):
-  CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression),
-  mPrerequisites()
+                                 const bool & replaceDiscontinuousNodes) :
+#ifdef USE_JIT
+  CJitExpression(),
+#endif
+  CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression)
+  , mPrerequisites()
+  , mpJitFunction(NULL)
 {
   clearNodes();
 
@@ -56,9 +67,13 @@ CMathExpression::CMathExpression(const CExpression & src,
 CMathExpression::CMathExpression(const CFunction & src,
                                  const CCallParameters< C_FLOAT64 > & callParameters,
                                  CMathContainer & container,
-                                 const bool & replaceDiscontinuousNodes):
-  CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression),
-  mPrerequisites()
+                                 const bool & replaceDiscontinuousNodes) :
+#ifdef USE_JIT
+  CJitExpression(),
+#endif
+  CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression)
+  , mPrerequisites()
+  , mpJitFunction(NULL)
 {
   clearNodes();
 
@@ -182,9 +197,29 @@ void CMathExpression::relocate(const CMathContainer * pContainer,
   pContainer->relocateObjectSet(mPrerequisites, relocations);
 }
 
+#ifdef USE_JIT
+// virtual
+bool CMathExpression::compileJit()
+{
+  CJitCompiler * pCompiler = getCompiler();
+
+  if (pCompiler != NULL)
+    {
+      mFunction = pCompiler->compile(*this);
+    }
+
+  return (pCompiler == NULL) || (mFunction != NULL);
+}
+#endif
 const C_FLOAT64 & CMathExpression::value()
 {
-  calculate();
+#ifdef USE_JIT
+
+  if (mFunction != NULL)
+    mValue = calculateJit();
+  else
+#endif
+    calculate();
 
   return mValue;
 }

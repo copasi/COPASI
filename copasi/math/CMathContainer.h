@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,6 +29,12 @@
 #include "copasi/math/CMathDelay.h"
 #include "copasi/math/CMathHistory.h"
 #include "copasi/math/CMathUpdateSequence.h"
+
+#ifdef USE_JIT
+# include "copasi/math/CJitCompiler.h"
+#else
+class CJitCompiler;
+#endif // USE_JIT
 
 #include "copasi/core/CVector.h"
 #include "copasi/model/CModelParameter.h"
@@ -1446,6 +1452,13 @@ private:
    * A set of object for which changing the initial value is prohibeted;
    */
   CObjectInterface::ObjectSet mValueChangeProhibited;
+
+#ifdef USE_JIT
+  /**
+   * The JIT compiler of all math expressions.
+   */
+  CJitCompiler mJITCompiler;
+#endif
 };
 
 #endif // COPASI_CMathContainer

@@ -578,7 +578,11 @@ void CMathObject::appendDelays(CMath::DelayData & Delays) const
   return;
 }
 
+#ifdef USE_JIT
+bool CMathObject::compile(CMathContainer & container, CJitCompiler & jitCompiler)
+#else
 bool CMathObject::compile(CMathContainer & container)
+#endif
 {
   mPrerequisites.clear();
   bool success = true;
@@ -691,6 +695,17 @@ bool CMathObject::compile(CMathContainer & container)
       case CMath::ValueType::__SIZE:
         break;
     }
+
+#ifdef USE_JIT
+
+  if (success
+      && mpExpression != NULL
+      && !mpExpression->getPrerequisites().empty())
+    {
+      mpExpression->setCompiler(jitCompiler);
+    }
+
+#endif
 
   return success;
 }
