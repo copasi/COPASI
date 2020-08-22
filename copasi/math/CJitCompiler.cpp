@@ -299,12 +299,14 @@ void CJitCompiler::release()
   if (mpAllocator != NULL)
     {
       mpAllocator->Reset();
+      delete mpAllocator;
       mpAllocator = NULL;
     }
 
   if (mpExecutionBuffer != NULL)
     {
       mpExecutionBuffer->Reset();
+      delete mpExecutionBuffer;
       mpExecutionBuffer = NULL;
     }
 }
