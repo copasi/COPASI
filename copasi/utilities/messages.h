@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -509,6 +509,11 @@ const MESSAGES Messages[] =
   // UnitDefinition
   {MCUnitDefinition + 1, "CUnitDefinition (1): CUnitDefintion needs to be child of a CUnitDefinitionDB."},
   {MCUnitDefinition + 2, "CUnitDefinition (2): Symbol '%s' is already in use."},
+
+  // Jit Compilation
+  {MCJitCompilation + 1, "CJitCompiler (1): Unhandled error occured in '%' when compiling 's'."},
+  {MCJitCompilation + 2, "CJitCompiler (2): Unhandled node when compiling 's'."},
+  {MCJitCompilation + 3, "CJitCompiler (3): Unhandled error occured: 's'."},
 
   // This must be the last element of the message list! Do not delete!
   {0, NULL}

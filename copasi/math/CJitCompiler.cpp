@@ -6,6 +6,7 @@
 #include "copasi/math/CJitCompiler.h"
 #include "copasi/math/CMathExpression.h"
 #include "copasi/utilities/CNodeIterator.h"
+#include "copasi/utilities/CCopasiMessage.h"
 
 // static
 std::string CJitCompiler::where(std::runtime_error & e)
@@ -50,12 +51,21 @@ bool CJitCompiler::compile()
 
       catch (std::runtime_error & e)
         {
-          std::cout << where(e) << ": " << e.what() << std::endl;
+          CCopasiMessage(CCopasiMessage::WARNING, MCJitCompilation + 3, e.what());
+          success = false;
+        }
+
+      catch (CCopasiMessage & msg)
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, msg.getText().c_str());
           success = false;
         }
 
       if (success)
-        break;
+        {
+          release();
+          break;
+        }
 
       success = allocateExecutionBuffer(2 * mExecutionBufferSize);
     }
@@ -70,8 +80,6 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
   if (mpExecutionBuffer->Available() == 0)
     return ReturnFunction;
 
-  std::cout << mpExecutionBuffer->Available() << ", " << mathExpression.getInfix() << std::endl;
-
   NativeJIT::FunctionBuffer ExecutionBuffer(*mpExecutionBuffer,  mpExecutionBuffer->Available());
   allocateFunctionBuffer(mFunctionBufferSize);
 
@@ -80,6 +88,9 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
       try
         {
           mpExpression = new NativeJIT::Function< C_FLOAT64 >(*mpAllocator, ExecutionBuffer);
+
+          // mpExpression->EnableDiagnostics(std::cout);
+          // ExecutionBuffer.EnableDiagnostics(std::cout);
         }
 
       catch (std::runtime_error & e)
@@ -97,7 +108,7 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
               break;
             }
 
-          std::cout << Where << ": " << e.what() << std::endl;
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCJitCompilation + 1, Where.c_str(), mathExpression.getInfix().c_str());
         }
 
       CNodeContextIterator< const CEvaluationNode, std::vector< Node * > > itNode(mathExpression.getRoot());
@@ -152,6 +163,7 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
                   case CEvaluationNode::MainType::UNIT:
                   case CEvaluationNode::MainType::INVALID:
                   case CEvaluationNode::MainType::__SIZE:
+                    pNode = NULL;
                     break;
                 }
             }
@@ -167,8 +179,13 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
                   break;
                 }
 
-              std::cout << Where << ": " << e.what() << std::endl;
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCJitCompilation + 1, Where.c_str(), mathExpression.getInfix().c_str());
               break;
+            }
+
+          if (pNode == NULL)
+            {
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCJitCompilation + 2, mathExpression.getInfix().c_str());
             }
 
           if (itNode.parentContextPtr() != NULL)
@@ -190,7 +207,7 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
             }
           else if (pNode != NULL)
             {
-              std::cout << "Unhandled node type" << std::endl;
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCJitCompilation + 2, mathExpression.getInfix().c_str());
             }
         }
 
@@ -209,7 +226,7 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
               break;
             }
 
-          std::cout << Where << ": " << e.what() << std::endl;
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCJitCompilation + 1, Where.c_str(), mathExpression.getInfix().c_str());
         }
 
       if (mpExpression != NULL)
@@ -296,6 +313,18 @@ bool CJitCompiler::allocateFunctionBuffer(const size_t & size)
 
 void CJitCompiler::release()
 {
+  std::set< CJitExpression * >::iterator it = mExpressions.begin();
+  std::set< CJitExpression * >::iterator end = mExpressions.end();
+
+  for (; it != end; ++it)
+    (*it)->release();
+
+  if (mpExpression != NULL)
+    {
+      delete mpExpression;
+      mpExpression = NULL;
+    }
+
   if (mpAllocator != NULL)
     {
       mpAllocator->Reset();

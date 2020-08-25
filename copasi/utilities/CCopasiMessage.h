@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -75,6 +80,7 @@ Message;
 #define MCMCA                    MCopasiBase + 5100
 #define MCUnit                   MCopasiBase + 5200
 #define MCUnitDefinition         MCopasiBase + 5300
+#define MCJitCompilation         MCopasiBase + 5400
 
 /**
  *  This throws an exception with information where the error occurred.
