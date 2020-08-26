@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -250,9 +250,11 @@ std::string CDirEntry::createTmpName(const std::string & dir,
 
 #ifdef WIN32
 
-  while ((FD = _creat(TmpName.c_str(), _S_IREAD | _S_IWRITE)) == 0);
+  while ((FD = _wcreat(CLocaleString::fromUtf8(TmpName).c_str(), _S_IREAD | _S_IWRITE)) == 0);
 
-  _close(FD);
+  if (FD != -1) // _close will terminate on bad file descriptor
+    _close(FD);
+
 #else
 
   while ((FD = creat(TmpName.c_str(), S_IRWXU)) == 0);
