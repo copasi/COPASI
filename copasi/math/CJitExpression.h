@@ -13,13 +13,15 @@ class CJitExpression
 public:
   CJitExpression();
 
+  CJitExpression(const CJitExpression & src) = delete;
+
   virtual ~CJitExpression();
 
   double calculateJit();
 
   virtual bool compileJit() = 0;
 
-  void setCompiler(CJitCompiler & compiler);
+  void setCompiler(CJitCompiler * pCompiler);
 
   CJitCompiler * getCompiler();
 

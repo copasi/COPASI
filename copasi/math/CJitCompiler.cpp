@@ -32,13 +32,16 @@ CJitCompiler::CJitCompiler()
 CJitCompiler::~CJitCompiler()
 {
   release();
+
+  while (mExpressions.size())
+    (*mExpressions.begin())->setCompiler(NULL);
 }
 
 bool CJitCompiler::compile()
 {
   bool success = allocateExecutionBuffer(mExecutionBufferSize);
 
-  while (true)
+  while (success)
     {
       std::set< CJitExpression * >::iterator it = mExpressions.begin();
       std::set< CJitExpression * >::iterator end = mExpressions.end();
@@ -53,21 +56,22 @@ bool CJitCompiler::compile()
         {
           CCopasiMessage(CCopasiMessage::WARNING, MCJitCompilation + 3, e.what());
           success = false;
+          continue;
         }
 
       catch (CCopasiMessage & msg)
         {
           CCopasiMessage(CCopasiMessage::WARNING, msg.getText().c_str());
           success = false;
-        }
-
-      if (success)
-        {
-          release();
-          break;
+          continue;
         }
 
       success = allocateExecutionBuffer(2 * mExecutionBufferSize);
+    }
+
+  if (!success)
+    {
+      release();
     }
 
   return success;

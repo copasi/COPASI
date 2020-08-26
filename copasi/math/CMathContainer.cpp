@@ -401,6 +401,9 @@ CMathContainer::CMathContainer(CModel & model):
   mUpdateSequences(),
   mNumTotalRootsIgnored(0),
   mValueChangeProhibited()
+#ifdef USE_JIT
+  , mJITCompiler()
+#endif
 {
   memset(&mSize, 0, sizeof(mSize));
 
@@ -508,6 +511,9 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mUpdateSequences(),
   mNumTotalRootsIgnored(src.mNumTotalRootsIgnored),
   mValueChangeProhibited(src.mValueChangeProhibited)
+#ifdef USE_JIT
+  , mJITCompiler()
+#endif
 {
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CDataContainer

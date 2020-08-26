@@ -702,7 +702,7 @@ bool CMathObject::compile(CMathContainer & container)
       && mpExpression != NULL
       && !mpExpression->getPrerequisites().empty())
     {
-      mpExpression->setCompiler(jitCompiler);
+      mpExpression->setCompiler(&jitCompiler);
     }
 
 #endif

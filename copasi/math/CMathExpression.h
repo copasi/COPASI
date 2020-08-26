@@ -44,6 +44,8 @@ private:
    */
   CMathExpression();
 
+  CMathExpression(const CMathExpression & src) = delete;
+
 public:
   /**
    * Specific constructor.

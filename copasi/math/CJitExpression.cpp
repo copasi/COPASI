@@ -22,15 +22,17 @@ double CJitExpression::calculateJit()
   return (*mFunction)();
 }
 
-void CJitExpression::setCompiler(CJitCompiler & compiler)
+void CJitExpression::setCompiler(CJitCompiler * pCompiler)
 {
-  if (mpCompiler != &compiler)
+  if (mpCompiler != pCompiler)
     {
       if (mpCompiler != NULL)
         mpCompiler->deregisterExpression(this);
 
-      mpCompiler = &compiler;
-      mpCompiler->registerExpression(this);
+      mpCompiler = pCompiler;
+
+      if (mpCompiler != NULL)
+        mpCompiler->registerExpression(this);
 
       mFunction = NULL;
     }
@@ -43,6 +45,5 @@ CJitCompiler * CJitExpression::getCompiler()
 
 void CJitExpression::release()
 {
-  mpCompiler = NULL;
   mFunction = NULL;
 }
