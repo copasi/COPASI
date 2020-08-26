@@ -22,10 +22,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
-
-
-
 #include <algorithm>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -257,7 +253,7 @@ std::string CDirEntry::createTmpName(const std::string & dir,
 
 #else
 
-  while ((FD = creat(TmpName.c_str(), S_IRWXU)) == 0);
+  while ((FD = creat(CLocaleString::fromUtf8(TmpName).c_str(), S_IRWXU)) == 0);
 
   close(FD);
 #endif
