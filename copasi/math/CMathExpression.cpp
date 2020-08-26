@@ -211,6 +211,7 @@ bool CMathExpression::compileJit()
   return (pCompiler == NULL) || (mFunction != NULL);
 }
 #endif
+
 const C_FLOAT64 & CMathExpression::value()
 {
 #ifdef USE_JIT
@@ -218,8 +219,13 @@ const C_FLOAT64 & CMathExpression::value()
   if (mFunction != NULL)
     mValue = calculateJit();
   else
-#endif
     calculate();
+
+#else
+
+  calculate();
+
+#endif
 
   return mValue;
 }

@@ -66,6 +66,9 @@ bool CJitCompiler::compile()
           continue;
         }
 
+      if (success)
+        break;
+
       success = allocateExecutionBuffer(2 * mExecutionBufferSize);
     }
 
