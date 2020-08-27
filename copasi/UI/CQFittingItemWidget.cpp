@@ -67,9 +67,9 @@ CQFittingItemWidget::CQFittingItemWidget(QWidget *parent, Qt::WindowFlags fl)
   mpBtnNew->setIcon(CQIconResource::icon(CQIconResource::editAdd));
   mpBtnDown->setIcon(CQIconResource::icon(CQIconResource::moveDown));
   mpBtnCopy->setIcon(CQIconResource::icon(CQIconResource::editCopy));
-  mpBtnReset->setIcon(CQIconResource::icon(CQIconResource::tool));
-  mpBtnExperiments->setIcon(CQIconResource::icon(CQIconResource::tool));
-  mpBtnCrossValidations->setIcon(CQIconResource::icon(CQIconResource::tool));
+  // mpBtnReset->setIcon(CQIconResource::icon(CQIconResource::tool));
+  // mpBtnExperiments->setIcon(CQIconResource::icon(CQIconResource::tool));
+  // mpBtnCrossValidations->setIcon(CQIconResource::icon(CQIconResource::tool));
   init();
 }
 

@@ -20,10 +20,201 @@
  *      Author: shoops
  */
 
+#include <QApplication>
+
 #include "CQIconResource.h"
 
-#define LOAD_ICON(_id, _name) \
-  Icons[ _id ].addFile(QString::fromUtf8(":/images/" #_name ".png"), QSize(), QIcon::Normal, QIcon::On)
+// static
+const CEnumAnnotation< std::string, CQIconResource::IconID > CQIconResource::BackupName(
+{
+  "bars.png",
+  "captureImage.png",
+  "checkMark.png",
+  "copasi.png",
+  "edit.png",
+  "editAdd.png",
+  "editCopy.png",
+  "editDelete.png",
+  "error.png",
+  "fileAdd.png",
+  "fileExport.png",
+  "fileNew.png",
+  "fileOpen.png",
+  "filePrint.png",
+  "fileSave.png",
+  "fileSaveas.png",
+  "information.png",
+  "isToS.png",
+  "locked.png",
+  "miriam.png",
+  "moveDown.png",
+  "moveUp.png",
+  "warning.png",
+  "parameterMissing.png",
+  "parameterModified.png",
+  "parameterObsolete.png",
+  "playerKill.png",
+  "playerPause.png",
+  "playerStart.png",
+  "playerStop.png",
+  "preferences.png",
+  "reactionModifier.png",
+  "reactionProduct.png",
+  "reactionSubstrate.png",
+  "renderMarkup.png",
+  "renderMathML.png",
+  "separator.png",
+  "slider.png",
+  "sToIs.png",
+  "table.png",
+  "tool.png",
+  "unlocked.png",
+  "zoomOut.png",
+  "play.png",
+  "pause.png",
+  "stop.png",
+  "backward.png",
+  "forward.png",
+  "skipBackward.png",
+  "skipForward.png",
+  "roll.png",
+  "viewmagMinus.png",
+  "viewmagPlus.png",
+  "viewmag1.png",
+  "viewmagfit.png",
+  "reset.png",
+  "animation.png",
+  // This is the default icon which is empty
+  ""
+});
+
+// static
+const CEnumAnnotation< std::string, CQIconResource::IconID > CQIconResource::ThemeName(
+{
+  "bars",
+  "captureImage",
+  "checkMark",
+  "copasi",
+  "document-open",
+  "document-new",
+  "edit-copy",
+  "edit-delete",
+  "error",
+  "list-add",
+  "document-save-as",
+  "document-new",
+  "document-open",
+  "document-print",
+  "document-save",
+  "document-save-as",
+  "information",
+  "isToS",
+  "locked",
+  "miriam",
+  "go-down",
+  "go-up",
+  "warning",
+  "parameterMissing",
+  "parameterModified",
+  "parameterObsolete",
+  "playerKill",
+  "media-playback-pause",
+  "media-playback-start",
+  "media-playback-stop",
+  "preferences",
+  "reactionModifier",
+  "reactionProduct",
+  "reactionSubstrate",
+  "renderMarkup",
+  "renderMathML",
+  "separator",
+  "slider",
+  "sToIs",
+  "table",
+  "tool",
+  "unlocked",
+  "zoom-out",
+  "media-playback-start",
+  "media-playback-pause",
+  "media-playback-stop",
+  "media-seek-backward",
+  "media-seek-forward",
+  "media-skip-backward",
+  "media-skip-forward",
+  "roll",
+  "zoom-out",
+  "zoom-in",
+  "zoom-original",
+  "zoom-fit-best",
+  "reset",
+  "animation",
+  // This is the default icon which is empty
+  "unknown"
+});
+
+// static
+const CEnumAnnotation< QStyle::StandardPixmap, CQIconResource::IconID > CQIconResource::StandardIcon(
+{
+  QStyle::SP_CustomBase, // "bars.png",
+  QStyle::SP_CustomBase, // "captureImage.png",
+  QStyle::SP_CustomBase, // "checkMark.png",
+  QStyle::SP_CustomBase, // "copasi.png",
+  QStyle::SP_CustomBase, // "edit.png",
+  QStyle::SP_CustomBase, // "editAdd.png",
+  QStyle::SP_CustomBase, // "editCopy.png",
+  QStyle::SP_CustomBase, // "editDelete.png",
+  QStyle::SP_MessageBoxCritical, // "error.png",
+  QStyle::SP_CustomBase, // "fileAdd.png",
+  QStyle::SP_CustomBase, // "fileExport.png",
+  QStyle::SP_CustomBase, // "fileNew.png",
+  QStyle::SP_CustomBase, // "fileOpen.png",
+  QStyle::SP_CustomBase, // "filePrint.png",
+  QStyle::SP_CustomBase, // "fileSave.png",
+  QStyle::SP_CustomBase, // "fileSaveas.png",
+  QStyle::SP_MessageBoxInformation, // "information.png",
+  QStyle::SP_CustomBase, // "isToS.png",
+  QStyle::SP_CustomBase, // "locked.png",
+  QStyle::SP_CustomBase, // "miriam.png",
+  QStyle::SP_ArrowDown, // "moveDown.png",
+  QStyle::SP_ArrowUp, // "moveUp.png",
+  QStyle::SP_MessageBoxWarning, // "warning.png",
+  QStyle::SP_CustomBase, // "parameterMissing.png",
+  QStyle::SP_CustomBase, // "parameterModified.png",
+  QStyle::SP_CustomBase, // "parameterObsolete.png",
+  QStyle::SP_CustomBase, // "playerKill.png",
+  QStyle::SP_MediaPause, // "playerPause.png",
+  QStyle::SP_MediaPlay,  // "playerStart.png",
+  QStyle::SP_MediaStop,  // "playerStop.png",
+  QStyle::SP_CustomBase, // "preferences.png",
+  QStyle::SP_CustomBase, // "reactionModifier.png",
+  QStyle::SP_CustomBase, // "reactionProduct.png",
+  QStyle::SP_CustomBase, // "reactionSubstrate.png",
+  QStyle::SP_CustomBase, // "renderMarkup.png",
+  QStyle::SP_CustomBase, // "renderMathML.png",
+  QStyle::SP_CustomBase, // "separator.png",
+  QStyle::SP_CustomBase, // "slider.png",
+  QStyle::SP_CustomBase, // "sToIs.png",
+  QStyle::SP_CustomBase, // "table.png",
+  QStyle::SP_CustomBase, // "tool.png",
+  QStyle::SP_CustomBase, // "unlocked.png",
+  QStyle::SP_CustomBase, // "zoomOut.png",
+  QStyle::SP_MediaPlay, // "play.png",
+  QStyle::SP_MediaPause, // "pause.png",
+  QStyle::SP_MediaStop, // "stop.png",
+  QStyle::SP_MediaSeekBackward, // "backward.png",
+  QStyle::SP_MediaSeekForward, // "forward.png",
+  QStyle::SP_MediaSkipBackward, // "skipBackward.png",
+  QStyle::SP_MediaSkipForward, // "skipForward.png",
+  QStyle::SP_CustomBase, // "roll.png",
+  QStyle::SP_CustomBase, // "viewmagMinus.png",
+  QStyle::SP_CustomBase, // "viewmagPlus.png",
+  QStyle::SP_CustomBase, // "viewmag1.png",
+  QStyle::SP_CustomBase, // "viewmagfit.png",
+  QStyle::SP_CustomBase, // "reset.png",
+  QStyle::SP_CustomBase, // "animation.png",
+  // This is the default icon which is empty
+  QStyle::SP_CustomBase, // ""
+});
 
 // static
 bool CQIconResource::needInit(true);
@@ -37,65 +228,65 @@ void CQIconResource::init()
 
   Q_INIT_RESOURCE(copasi);
 
-  Icons.resize(_size);
+  Icons.resize(__SIZE);
 
-  Icons[bars].addFile(QString::fromUtf8(":/images/bars.png"), QSize(), QIcon::Normal, QIcon::Off);
-  Icons[captureImage].addFile(QString::fromUtf8(":/images/captureImage.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[copasi].addFile(QString::fromUtf8(":/images/copasi.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[checkMark].addFile(QString::fromUtf8(":/images/checkMark.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[edit].addFile(QString::fromUtf8(":/images/edit.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[editAdd].addFile(QString::fromUtf8(":/images/editAdd.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[editCopy].addFile(QString::fromUtf8(":/images/editCopy.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[editDelete].addFile(QString::fromUtf8(":/images/editDelete.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[error].addFile(QString::fromUtf8(":/images/error.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[fileAdd].addFile(QString::fromUtf8(":/images/fileAdd.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[fileExport].addFile(QString::fromUtf8(":/images/fileExport.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[fileNew].addFile(QString::fromUtf8(":/images/fileNew.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[fileOpen].addFile(QString::fromUtf8(":/images/fileOpen.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[filePrint].addFile(QString::fromUtf8(":/images/filePrint.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[fileSave].addFile(QString::fromUtf8(":/images/fileSave.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[fileSaveas].addFile(QString::fromUtf8(":/images/fileSaveas.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[information].addFile(QString::fromUtf8(":/images/information.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[isToS].addFile(QString::fromUtf8(":/images/isToS.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[locked].addFile(QString::fromUtf8(":/images/locked.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[miriam].addFile(QString::fromUtf8(":/images/miriam.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[moveDown].addFile(QString::fromUtf8(":/images/moveDown.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[moveUp].addFile(QString::fromUtf8(":/images/moveUp.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[warning].addFile(QString::fromUtf8(":/images/warning.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[parameterMissing].addFile(QString::fromUtf8(":/images/parameterMissing.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[parameterModified].addFile(QString::fromUtf8(":/images/parameterModified.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[parameterObsolete].addFile(QString::fromUtf8(":/images/parameterObsolete.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[playerKill].addFile(QString::fromUtf8(":/images/playerKill.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[playerPause].addFile(QString::fromUtf8(":/images/playerPause.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[playerStart].addFile(QString::fromUtf8(":/images/playerStart.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[playerStop].addFile(QString::fromUtf8(":/images/playerStop.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[preferences].addFile(QString::fromUtf8(":/images/preferences.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[reactionModifier].addFile(QString::fromUtf8(":/images/reactionModifier.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[reactionProduct].addFile(QString::fromUtf8(":/images/reactionProduct.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[reactionSubstrate].addFile(QString::fromUtf8(":/images/reactionSubstrate.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[renderMarkup].addFile(QString::fromUtf8(":/images/renderMarkup.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[renderMathML].addFile(QString::fromUtf8(":/images/renderMathML.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[separator].addFile(QString::fromUtf8(":/images/separator.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[slider].addFile(QString::fromUtf8(":/images/slider.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[sToIs].addFile(QString::fromUtf8(":/images/sToIs.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[table].addFile(QString::fromUtf8(":/images/table.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[tool].addFile(QString::fromUtf8(":/images/tool.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[unlocked].addFile(QString::fromUtf8(":/images/unlocked.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[zoomOut].addFile(QString::fromUtf8(":/images/zoomOut.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[play].addFile(QString::fromUtf8(":/images/media-playback-start.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[pause].addFile(QString::fromUtf8(":/images/media-playback-pause.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[stop].addFile(QString::fromUtf8(":/images/media-playback-stop.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[backward].addFile(QString::fromUtf8(":/images/media-seek-backward.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[forward].addFile(QString::fromUtf8(":/images/media-seek-forward.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[skipBackward].addFile(QString::fromUtf8(":/images/media-skip-backward.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[skipForward].addFile(QString::fromUtf8(":/images/media-skip-forward.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[roll].addFile(QString::fromUtf8(":/images/roll.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[viewmagMinus].addFile(QString::fromUtf8(":/images/viewmagMinus.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[viewmagPlus].addFile(QString::fromUtf8(":/images/viewmagPlus.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[viewmag1].addFile(QString::fromUtf8(":/images/viewmag1.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[viewmagfit].addFile(QString::fromUtf8(":/images/viewmagfit.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[reset].addFile(QString::fromUtf8(":/images/reset.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[animation].addFile(QString::fromUtf8(":/images/animation.png"), QSize(), QIcon::Normal, QIcon::On);
+  load(bars, QIcon::Normal, QIcon::Off);
+  load(captureImage, QIcon::Normal, QIcon::On);
+  load(copasi, QIcon::Normal, QIcon::On);
+  load(checkMark, QIcon::Normal, QIcon::On);
+  load(edit, QIcon::Normal, QIcon::On);
+  load(editAdd, QIcon::Normal, QIcon::On);
+  load(editCopy, QIcon::Normal, QIcon::On);
+  load(editDelete, QIcon::Normal, QIcon::On);
+  load(error, QIcon::Normal, QIcon::On);
+  load(fileAdd, QIcon::Normal, QIcon::On);
+  load(fileExport, QIcon::Normal, QIcon::On);
+  load(fileNew, QIcon::Normal, QIcon::On);
+  load(fileOpen, QIcon::Normal, QIcon::On);
+  load(filePrint, QIcon::Normal, QIcon::On);
+  load(fileSave, QIcon::Normal, QIcon::On);
+  load(fileSaveas, QIcon::Normal, QIcon::On);
+  load(information, QIcon::Normal, QIcon::On);
+  load(isToS, QIcon::Normal, QIcon::On);
+  load(locked, QIcon::Normal, QIcon::On);
+  load(miriam, QIcon::Normal, QIcon::On);
+  load(moveDown, QIcon::Normal, QIcon::On);
+  load(moveUp, QIcon::Normal, QIcon::On);
+  load(warning, QIcon::Normal, QIcon::On);
+  load(parameterMissing, QIcon::Normal, QIcon::On);
+  load(parameterModified, QIcon::Normal, QIcon::On);
+  load(parameterObsolete, QIcon::Normal, QIcon::On);
+  load(playerKill, QIcon::Normal, QIcon::On);
+  load(playerPause, QIcon::Normal, QIcon::On);
+  load(playerStart, QIcon::Normal, QIcon::On);
+  load(playerStop, QIcon::Normal, QIcon::On);
+  load(preferences, QIcon::Normal, QIcon::On);
+  load(reactionModifier, QIcon::Normal, QIcon::On);
+  load(reactionProduct, QIcon::Normal, QIcon::On);
+  load(reactionSubstrate, QIcon::Normal, QIcon::On);
+  load(renderMarkup, QIcon::Normal, QIcon::On);
+  load(renderMathML, QIcon::Normal, QIcon::On);
+  load(separator, QIcon::Normal, QIcon::On);
+  load(slider, QIcon::Normal, QIcon::On);
+  load(sToIs, QIcon::Normal, QIcon::On);
+  load(table, QIcon::Normal, QIcon::On);
+  load(tool, QIcon::Normal, QIcon::On);
+  load(unlocked, QIcon::Normal, QIcon::On);
+  load(zoomOut, QIcon::Normal, QIcon::On);
+  load(play, QIcon::Normal, QIcon::On);
+  load(pause, QIcon::Normal, QIcon::On);
+  load(stop, QIcon::Normal, QIcon::On);
+  load(backward, QIcon::Normal, QIcon::On);
+  load(forward, QIcon::Normal, QIcon::On);
+  load(skipBackward, QIcon::Normal, QIcon::On);
+  load(skipForward, QIcon::Normal, QIcon::On);
+  load(roll, QIcon::Normal, QIcon::On);
+  load(viewmagMinus, QIcon::Normal, QIcon::On);
+  load(viewmagPlus, QIcon::Normal, QIcon::On);
+  load(viewmag1, QIcon::Normal, QIcon::On);
+  load(viewmagfit, QIcon::Normal, QIcon::On);
+  load(_reset, QIcon::Normal, QIcon::On);
+  load(animation, QIcon::Normal, QIcon::On);
 
   needInit = false;
 }
@@ -105,8 +296,21 @@ const QIcon & CQIconResource::icon(const CQIconResource::IconID & id)
 {
   init();
 
-  if (id < _size)
+  if (id < __SIZE)
     return Icons[id];
 
   return Icons[unknown];
+}
+
+// static
+void CQIconResource::load(IconID iconID, QIcon::Mode mode, QIcon::State state)
+{
+  QIcon & Icon = Icons[iconID];
+
+  if (StandardIcon[iconID] < QStyle::SP_CustomBase)
+    Icon = QApplication::style()->standardIcon(StandardIcon[iconID]);
+  else if (QIcon::hasThemeIcon(QString::fromUtf8(ThemeName[iconID].c_str())))
+    Icon = QIcon::fromTheme(QString::fromUtf8(ThemeName[iconID].c_str()));
+  else
+    Icon.addFile(QString(":/images/" + QString::fromUtf8(BackupName[iconID].c_str())), QSize(), mode, state);
 }

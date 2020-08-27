@@ -77,7 +77,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   mpBtnUpdateAvogadro->hide();
 #endif
 
-  mpBtnUpdateAvogadro->setIcon(CQIconResource::icon(CQIconResource::tool));
+  // mpBtnUpdateAvogadro->setIcon(CQIconResource::icon(CQIconResource::tool));
   mpEditAvogadro->setEnabled(false);
 
   QStringList unitEntries;
