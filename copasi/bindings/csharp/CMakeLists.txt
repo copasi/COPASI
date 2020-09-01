@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -88,6 +88,10 @@ elseif(USE_ACML)
   set(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} -DUSE_ACML)
 elseif(LAPACK_FOUND)
   set(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} -DUSE_LAPACK)
+endif()
+
+if (ENABLE_JIT)
+  set(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} -DUSE_JIT=1)
 endif()
 
 file(GLOB SWIG_DEPENDENCIES 
