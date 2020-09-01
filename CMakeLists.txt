@@ -290,7 +290,13 @@ include_directories(BEFORE ${CROSSGUID_INCLUDE_DIR})
 find_package(EXPAT REQUIRED)
 include_directories(BEFORE ${EXPAT_INCLUDE_DIR})
 
-option(ENABLE_JIT "Enable Just In Time compilation for math expressions" OFF)
+set (ENABLE_JIT_DEFAULT OFF)
+
+if (CMAKE_SYSTEM_PROCESSOR STREQUAL x86_64)
+  set (ENABLE_JIT_DEFAULT ON)
+endif ()
+
+option(ENABLE_JIT "Enable Just In Time compilation for math expressions" ${ENABLE_JIT_DEFAULT})
 
 if (ENABLE_JIT)
   find_package(NATIVEJIT REQUIRED)
