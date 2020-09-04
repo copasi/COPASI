@@ -30,6 +30,7 @@
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CDataArray.h"
 #include "copasi/UI/CCopasiPlotSelectionDialog.h"
+#include "copasi/UI/CCopasiPlot2YSelectionDialog.h"
 #include "copasi/model/CMetabNameInterface.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/UI/DataModelGUI.h"
@@ -329,11 +330,15 @@ void CQPlotSubwidget::addCurveTab(const std::string &title,
   addPlotItem(item);
 }
 
+
 void chooseAxisFromSelection(
   std::vector<const CDataObject *> &vector1,
   std::vector<const CDataObject *> &vector2,
+  std::vector< const CDataObject * > & vector3,
   std::vector<CCommonName> &objects1,
-  std::vector<CCommonName> &objects2, std::map<std::string, std::string> &mapCNToDisplayName)
+  std::vector<CCommonName> &objects2,
+  std::vector< CCommonName > & objects3,
+  std::map< std::string, std::string > & mapCNToDisplayName)
 {
   size_t i;
   std::vector<CCommonName>::const_iterator sit;
@@ -420,6 +425,65 @@ void chooseAxisFromSelection(
             }
         }
     }
+
+  for (i = 0; i < vector3.size(); i++)
+    {
+      if (vector3[i])
+        {
+          // is it an array annotation?
+          if ((pArray = dynamic_cast< const CDataArray * >(vector3[i])))
+            {
+              // second argument is set false for multi selection
+              std::vector< const CDataObject * > vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis 2: ");
+              std::vector< const CDataObject * >::const_iterator it;
+
+              for (it = vvv.begin(); it != vvv.end(); ++it)
+                {
+                  if (!*it)
+                    continue;
+
+                  cn = (*it)->getCN();
+
+                  //check if the CN already is in the list, if not add it.
+                  for (sit = objects3.begin(); sit != objects3.end(); ++sit)
+                    if (*sit == cn)
+                      break;
+
+                  mapCNToDisplayName[cn] = (*it)->getObjectDisplayName();
+
+                  if (sit == objects3.end())
+                    objects3.push_back(cn);
+                }
+            }
+          else
+            {
+              cn = vector3[i]->getCN();
+              mapCNToDisplayName[cn] = vector3[i]->getObjectDisplayName();
+
+              //check if the CN already is in the list, if not add it.
+              for (sit = objects3.begin(); sit != objects3.end(); ++sit)
+                if (*sit == cn)
+                  break;
+
+              if (sit == objects3.end())
+                objects3.push_back(cn);
+            }
+        }
+    }
+}
+
+
+void chooseAxisFromSelection(
+  std::vector< const CDataObject * > & vector1,
+  std::vector< const CDataObject * > & vector2,
+  std::vector< CCommonName > & objects1,
+  std::vector< CCommonName > & objects2,
+  std::map< std::string, std::string > & mapCNToDisplayName)
+{
+
+  std::vector< const CDataObject * > vector3;
+  std::vector< CCommonName > objects3;
+  chooseAxisFromSelection(vector1, vector2, vector3, objects1, objects2, objects3, mapCNToDisplayName);
 }
 
 void CQPlotSubwidget::addCurve2D()
@@ -444,7 +508,7 @@ void CQPlotSubwidget::addCurve2D()
       return;
     }
 
-  std::vector<CCommonName> objects1, objects2;
+  std::vector< CCommonName > objects1, objects2;
   std::map<std::string, std::string> mapCNToDisplayName;
   size_t i;
   chooseAxisFromSelection(vector1, vector2, objects1, objects2, mapCNToDisplayName);
@@ -490,12 +554,16 @@ void CQPlotSubwidget::addCurve2D()
 
 void CQPlotSubwidget::addSpectrum()
 {
-  CCopasiPlotSelectionDialog *pBrowser = new CCopasiPlotSelectionDialog();
+  CCopasiPlot2YSelectionDialog * pBrowser = new CCopasiPlot2YSelectionDialog();
   pBrowser->setWindowTitle("New Contour");
+  pBrowser->setY2Label("Z-Axis");
+  pBrowser->setSingleSelectionY(true);
+  pBrowser->setSingleSelectionY2(true);
 
   std::vector< const CDataObject * > vector1;
   std::vector< const CDataObject * > vector2;
-  pBrowser->setOutputVectors(&vector1, &vector2);
+  std::vector< const CDataObject * > vector3;
+  pBrowser->setOutputVectors(&vector1, &vector2, &vector3);
   assert(mpDataModel != NULL);
   pBrowser->setModel(mpDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
 
@@ -505,34 +573,48 @@ void CQPlotSubwidget::addSpectrum()
     }
 
   //this assumes that the vector is empty if nothing was chosen
-  if (vector1.size() == 0 || vector2.size() == 0)
+  if (vector1.size() == 0 || vector2.size() == 0 || vector3.size() == 0)
     {
       return;
     }
 
-  std::vector<CCommonName> objects1, objects2;
+  std::vector< CCommonName > objects1, objects2, objects3;
   std::map<std::string, std::string> mapCNToDisplayName;
   size_t i;
-  chooseAxisFromSelection(vector1, vector2, objects1, objects2, mapCNToDisplayName);
+  chooseAxisFromSelection(vector1, vector2, vector3, objects1, objects2, objects3, mapCNToDisplayName);
 
   if (objects1.size() == 1)
     {
+      size_t imax;
+
+      if (objects3.size() > objects2.size())
+        imax = objects2.size();
+      else
+        imax = objects3.size();
+
       for (i = 0; i < objects2.size(); ++i)
         {
           addSpectrumTab(mapCNToDisplayName[objects2[i]]
                          + "|"
                          + mapCNToDisplayName[objects1[0]],
-                         objects1[0], objects2[i]);
+                         objects1[0], objects2[i], objects3[i]);
         }
     }
   else if (objects2.size() == 1)
     {
-      for (i = 0; i < objects1.size(); ++i)
+      size_t imax;
+
+      if (objects3.size() > objects1.size())
+        imax = objects1.size();
+      else
+        imax = objects3.size();
+
+      for (i = 0; i < imax; ++i)
         {
           addSpectrumTab(mapCNToDisplayName[objects2[0]]
                          + "|"
                          + mapCNToDisplayName[objects1[i]],
-                         objects1[i], objects2[0]);
+                         objects1[i], objects2[0], objects3[i]);
         }
     }
   else
@@ -544,12 +626,15 @@ void CQPlotSubwidget::addSpectrum()
       else
         imax = objects1.size();
 
+      if (imax > objects3.size())
+        imax = objects3.size();
+
       for (i = 0; i < imax; ++i)
         {
           addSpectrumTab(mapCNToDisplayName[objects2[i]]
                          + "|"
                          + mapCNToDisplayName[objects1[i]],
-                         objects1[i], objects2[i]);
+                         objects1[i], objects2[i], objects3[i]);
         }
     }
 }
@@ -569,12 +654,15 @@ void CQPlotSubwidget::addBandedGraphTab(const std::string &title,
 
 void CQPlotSubwidget::addBandedGraph()
 {
-  CCopasiPlotSelectionDialog *pBrowser = new CCopasiPlotSelectionDialog();
+  CCopasiPlot2YSelectionDialog * pBrowser = new CCopasiPlot2YSelectionDialog();
   pBrowser->setWindowTitle("New Banded Graph");
+  pBrowser->setSingleSelectionY(true);
+  pBrowser->setSingleSelectionY2(true);
 
   std::vector< const CDataObject * > vector1;
   std::vector< const CDataObject * > vector2;
-  pBrowser->setOutputVectors(&vector1, &vector2);
+  std::vector< const CDataObject * > vector3;
+  pBrowser->setOutputVectors(&vector1, &vector2, &vector3);
   assert(mpDataModel != NULL);
   pBrowser->setModel(mpDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
 
@@ -584,34 +672,49 @@ void CQPlotSubwidget::addBandedGraph()
     }
 
   //this assumes that the vector is empty if nothing was chosen
-  if (vector1.size() == 0 || vector2.size() == 0)
+  if (vector1.size() == 0 || vector2.size() == 0 || vector3.size() == 0)
     {
       return;
     }
 
-  std::vector<CCommonName> objects1, objects2;
+  std::vector<CCommonName> objects1, objects2, objects3;
   std::map<std::string, std::string> mapCNToDisplayName;
   size_t i;
-  chooseAxisFromSelection(vector1, vector2, objects1, objects2, mapCNToDisplayName);
+  chooseAxisFromSelection(vector1, vector2, vector3, objects1, objects2, objects3, mapCNToDisplayName);
 
   if (objects1.size() == 1)
     {
-      for (i = 0; i < objects2.size(); ++i)
+
+      size_t imax;
+
+      if (objects3.size() > objects2.size())
+        imax = objects2.size();
+      else
+        imax = objects3.size();
+
+      for (i = 0; i < imax; ++i)
         {
           addBandedGraphTab(mapCNToDisplayName[objects2[i]]
                             + "|"
                             + mapCNToDisplayName[objects1[0]],
-                            objects1[0], objects2[i]);
+                            objects1[0], objects2[i], objects3[i]);
         }
     }
   else if (objects2.size() == 1)
     {
-      for (i = 0; i < objects1.size(); ++i)
+      size_t imax;
+
+      if (objects3.size() > objects1.size())
+        imax = objects1.size();
+      else
+        imax = objects3.size();
+
+      for (i = 0; i < imax; ++i)
         {
           addBandedGraphTab(mapCNToDisplayName[objects2[0]]
                             + "|"
                             + mapCNToDisplayName[objects1[i]],
-                            objects1[i], objects2[0]);
+                            objects1[i], objects2[0], objects3[i]);
         }
     }
   else
@@ -623,12 +726,15 @@ void CQPlotSubwidget::addBandedGraph()
       else
         imax = objects1.size();
 
+      if (imax > objects3.size())
+        imax = objects3.size();
+
       for (i = 0; i < imax; ++i)
         {
           addBandedGraphTab(mapCNToDisplayName[objects2[i]]
                             + "|"
                             + mapCNToDisplayName[objects1[i]],
-                            objects1[i], objects2[i]);
+                            objects1[i], objects2[i], objects3[i]);
         }
     }
 }

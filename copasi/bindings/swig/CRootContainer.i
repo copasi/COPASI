@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -33,17 +38,27 @@
 {
    static CDataModel* get(unsigned C_INT32 index)
     {
+      if (index >= CRootContainer::getDatamodelList()->size())
+        return NULL;
       return (CDataModel*)&(*CRootContainer::getDatamodelList())[index];
     };
 
     CDataModel* getDatamodel(unsigned C_INT32 index)
     {
+      if (index >= CRootContainer::getDatamodelList()->size())
+        return NULL;
       return &(*$self->getDatamodelList())[index];
     };
 
     static void init()
     {
+      try
+      {
         CRootContainer::init(0,NULL,false);
+      }
+      catch(...)
+      {
+      }
     }
 
 };

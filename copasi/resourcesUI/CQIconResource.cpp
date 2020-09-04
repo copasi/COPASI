@@ -24,6 +24,9 @@
 
 #include "CQIconResource.h"
 
+// Uncomment to enable system icons
+// #define SYSTEM_ICONS
+
 // static
 const CEnumAnnotation< std::string, CQIconResource::IconID > CQIconResource::BackupName(
 {
@@ -70,13 +73,13 @@ const CEnumAnnotation< std::string, CQIconResource::IconID > CQIconResource::Bac
   "tool.png",
   "unlocked.png",
   "zoomOut.png",
-  "play.png",
-  "pause.png",
-  "stop.png",
-  "backward.png",
-  "forward.png",
-  "skipBackward.png",
-  "skipForward.png",
+  "media-playback-start.png",
+  "media-playback-pause.png",
+  "media-playback-stop.png",
+  "media-seek-backward.png",
+  "media-seek-forward.png",
+  "media-skip-backward.png",
+  "media-skip-forward.png",
   "roll.png",
   "viewmagMinus.png",
   "viewmagPlus.png",
@@ -307,10 +310,14 @@ void CQIconResource::load(IconID iconID, QIcon::Mode mode, QIcon::State state)
 {
   QIcon & Icon = Icons[iconID];
 
+#ifdef SYSTEM_ICONS
+
   if (StandardIcon[iconID] < QStyle::SP_CustomBase)
     Icon = QApplication::style()->standardIcon(StandardIcon[iconID]);
   else if (QIcon::hasThemeIcon(QString::fromUtf8(ThemeName[iconID].c_str())))
     Icon = QIcon::fromTheme(QString::fromUtf8(ThemeName[iconID].c_str()));
   else
+#endif // SYSTEM_ICONS
+
     Icon.addFile(QString(":/images/" + QString::fromUtf8(BackupName[iconID].c_str())), QSize(), mode, state);
 }
