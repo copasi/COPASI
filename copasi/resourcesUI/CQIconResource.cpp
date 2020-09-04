@@ -24,6 +24,9 @@
 
 #include "CQIconResource.h"
 
+// Uncomment to enable system icons
+// #define SYSTEM_ICONS
+
 // static
 const CEnumAnnotation< std::string, CQIconResource::IconID > CQIconResource::BackupName(
 {
@@ -307,10 +310,14 @@ void CQIconResource::load(IconID iconID, QIcon::Mode mode, QIcon::State state)
 {
   QIcon & Icon = Icons[iconID];
 
+#ifdef SYSTEM_ICONS
+
   if (StandardIcon[iconID] < QStyle::SP_CustomBase)
     Icon = QApplication::style()->standardIcon(StandardIcon[iconID]);
   else if (QIcon::hasThemeIcon(QString::fromUtf8(ThemeName[iconID].c_str())))
     Icon = QIcon::fromTheme(QString::fromUtf8(ThemeName[iconID].c_str()));
   else
+#endif // SYSTEM_ICONS
+
     Icon.addFile(QString(":/images/" + QString::fromUtf8(BackupName[iconID].c_str())), QSize(), mode, state);
 }
