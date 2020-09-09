@@ -259,7 +259,7 @@ CCopasiMessage.size=_COPASI.CCopasiMessage_size
       def setValueV3(self,arg):
         result=False
         if(type(arg)==int):
-           if((self.getType()==self.INT) or (arg < 0)):
+           if((self.getType()==CCopasiParameter.Type_INT) or (arg < 0)):
              result=self.setIntValue(arg)
            else:
              result=self.setUIntValue(arg) 
@@ -278,7 +278,7 @@ CCopasiMessage.size=_COPASI.CCopasiMessage_size
       def setValueV2(self,arg):
         result=False
         if(type(arg)==types.IntType):
-           if((self.getType()==self.INT) or (arg < 0)):
+           if((self.getType()==CCopasiParameter.Type_INT) or (arg < 0)):
              result=self.setIntValue(arg)
            else:
              result=self.setUIntValue(arg) 
@@ -296,25 +296,25 @@ CCopasiMessage.size=_COPASI.CCopasiMessage_size
         
       def getValue(self):
         value=None
-        if(self.getType()==CCopasiParameter.DOUBLE):
+        if(self.getType()==CCopasiParameter.Type_DOUBLE):
           value=self.getDblValue()
-        if(self.getType()==CCopasiParameter.UDOUBLE):
+        if(self.getType()==CCopasiParameter.Type_UDOUBLE):
           value=self.getUDblValue()
-        if(self.getType()==CCopasiParameter.INT):
+        if(self.getType()==CCopasiParameter.Type_INT):
           value=self.getIntValue()
-        if(self.getType()==CCopasiParameter.UINT):
+        if(self.getType()==CCopasiParameter.Type_UINT):
           value=self.getUIntValue()
-        if(self.getType()==CCopasiParameter.BOOL):
+        if(self.getType()==CCopasiParameter.Type_BOOL):
           value=self.getBoolValue()
-        if(self.getType()==CCopasiParameter.GROUP):
+        if(self.getType()==CCopasiParameter.Type_GROUP):
           value=self.getGroupValue()
-        if(self.getType()==CCopasiParameter.STRING):
+        if(self.getType()==CCopasiParameter.Type_STRING):
           value=self.getStringValue()
-        if(self.getType()==CCopasiParameter.KEY):
+        if(self.getType()==CCopasiParameter.Type_KEY):
           value=self.getKeyValue()
-        if(self.getType()==CCopasiParameter.FILE):
+        if(self.getType()==CCopasiParameter.Type_FILE):
           value=self.getFileValue()
-        if(self.getType()==CCopasiParameter.CN):
+        if(self.getType()==CCopasiParameter.Type_CN):
           value=self.getCNValue()
         return value            
   %}
