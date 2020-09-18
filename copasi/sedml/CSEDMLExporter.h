@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,6 +24,9 @@
 #define CSEDMLEXPORTER_H_
 
 #include <sedml/common/sedmlfwd.h>
+
+#include <string>
+#include <unordered_set>
 
 class CTrajectoryTask;
 class CCompartment;
@@ -52,6 +60,8 @@ protected:
   unsigned int mSEDMLVersion;
   SedUniformTimeCourse *mpTimecourse;
   SedTask *mpTimecourseTask;
+
+  std::unordered_set< std::string > mGeneratedIds;
 
 public:
   CSEDMLExporter();
@@ -119,6 +129,14 @@ public:
   void createDataGenerators(CDataModel & dataModel,
                             std::string & taskId,
                             CCopasiTask* task = NULL);
+
+  SedDataGenerator * createDataGenerator(
+    SedDocument * mpSEDMLDocument,
+    const std::string & sbmlId,
+    const std::string & targetXPathString,
+    const std::string & taskId,
+    size_t i,
+    size_t j);
 
   /**
    * Creates the Tasks for SEDML.
