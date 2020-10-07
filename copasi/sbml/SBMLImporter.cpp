@@ -3579,7 +3579,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_FATAL:
 
-                // treat unknown as fatal
+              // treat unknown as fatal
               default:
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
@@ -10191,6 +10191,11 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
   if (isEmptyOrWhiteSpace(eventName))
     {
       eventName = pEvent->getId();
+
+      if (isEmptyOrWhiteSpace(eventName))
+        {
+          eventName = "Event";
+        }
     }
 
   std::string appendix;
