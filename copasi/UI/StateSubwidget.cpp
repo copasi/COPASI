@@ -190,10 +190,14 @@ void StateSubwidget::loadReactions()
       mpTblReactions->setItem(i, 1, pItem);
 
       pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, it->getParticleFlux());
+      pItem->setData(Qt::DisplayRole, it->getFlux() / it->getScalingCompartment()->getValue());
       mpTblReactions->setItem(i, 2, pItem);
 
-      mpTblReactions->setItem(i, 3, new QTableWidgetItem(FROM_UTF8(CChemEqInterface::getChemEqString(*it, false))));
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, it->getParticleFlux());
+      mpTblReactions->setItem(i, 3, pItem);
+
+      mpTblReactions->setItem(i, 4, new QTableWidgetItem(FROM_UTF8(CChemEqInterface::getChemEqString(*it, false))));
 
       i++;
     }
@@ -306,7 +310,6 @@ void StateSubwidget::loadJacobian()
           tableEigenValues->setItem((int) i, 3, NULL);
           tableEigenValues->setItem((int) i, 4, NULL);
         }
-
     }
 
   if (CRootContainer::getConfiguration()->resizeToContents())
@@ -415,8 +418,9 @@ void StateSubwidget::showUnits()
   mpTblMetabolites->horizontalHeaderItem(5)->setText("Number Rate" + FrequencyUnits);
   mpTblMetabolites->horizontalHeaderItem(6)->setText("Transition Time" + TimeUnits);
 
-  mpTblReactions->horizontalHeaderItem(1)->setText("Flux" + QuantityRateUnits);
-  mpTblReactions->horizontalHeaderItem(2)->setText("Number Flux" + FrequencyUnits);
+  mpTblReactions->horizontalHeaderItem(1)->setText("Flux (extensive)" + QuantityRateUnits);
+  mpTblReactions->horizontalHeaderItem(2)->setText("Flux (intensive)" + ConcentrationRateUnits);
+  mpTblReactions->horizontalHeaderItem(3)->setText("Number Flux" + FrequencyUnits);
 }
 
 bool StateSubwidget::loadAll(const CSteadyStateTask * pTask)
@@ -525,7 +529,8 @@ void StateSubwidget::setFramework(int framework)
         mpTblMetabolites->showColumn(4);
         mpTblMetabolites->hideColumn(5);
         mpTblReactions->showColumn(1);
-        mpTblReactions->hideColumn(2);
+        mpTblReactions->showColumn(2);
+        mpTblReactions->hideColumn(3);
         break;
 
       case 1:
@@ -534,7 +539,8 @@ void StateSubwidget::setFramework(int framework)
         mpTblMetabolites->hideColumn(4);
         mpTblMetabolites->showColumn(5);
         mpTblReactions->hideColumn(1);
-        mpTblReactions->showColumn(2);
+        mpTblReactions->hideColumn(2);
+        mpTblReactions->showColumn(3);
         break;
     }
 

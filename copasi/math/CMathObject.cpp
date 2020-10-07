@@ -404,7 +404,6 @@ void CMathObject::calculateParticleFlux()
 }
 
 void CMathObject::calculateExtensiveReactionRate()
-
 {
   *mpValue = 0.0;
 
