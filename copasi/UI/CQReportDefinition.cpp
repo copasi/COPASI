@@ -58,6 +58,11 @@ CQReportDefinition::_setup(QTableWidget* pList)
   pList->horizontalHeader()->setVisible(false);
   pList->horizontalHeader()->setStretchLastSection(true);
 
+  pList->setDragDropOverwriteMode(false);
+  pList->setDragDropMode(QAbstractItemView::InternalMove);
+  pList->setDefaultDropAction(Qt::TargetMoveAction);
+  pList->setSelectionMode(QAbstractItemView::ContiguousSelection);
+
   pList->addAction(mpActAddItem);
   pList->addAction(mpActAddSeparator);
   pList->addAction(mpActAddLineBreak);
@@ -285,18 +290,25 @@ void CQReportDefinition::btnDeleteClicked()
   int i, multipleSelection;
 
   for (i = pList->rowCount() - 1, multipleSelection = 0; 0 <= i; i--)
-    if (pList->item(i, 0)->isSelected())
-      {
-        delete pList->takeItem(i, 0);
-        pList->removeRow(i);
+    {
+      QTableWidgetItem * pCurrItem = pList->item(i, 0);
 
-        if (!pNewSelection && i < pList->rowCount())
-          {
-            pNewSelection = pList->item(i, 0); // We select the next.
-          }
+      if (!pCurrItem)
+        continue;
 
-        multipleSelection++;
-      }
+      if (pCurrItem->isSelected())
+        {
+          delete pList->takeItem(i, 0);
+          pList->removeRow(i);
+
+          if (!pNewSelection && i < pList->rowCount())
+            {
+              pNewSelection = pList->item(i, 0); // We select the next.
+            }
+
+          multipleSelection++;
+        }
+    }
 
   if (multipleSelection == 0) return; // Nothing selected,
 
@@ -326,28 +338,35 @@ void CQReportDefinition::btnUpClicked()
   QTableWidgetItem * pMove;
 
   for (i = pList->rowCount() - 1, to = -1, multipleSelection = 0; i >= 0; i--)
-    if (pList->item(i, 0)->isSelected())
-      {
-        if (multipleSelection == 0)
-          {
-            to = i;
-          }
+    {
+      QTableWidgetItem * pCurrItem = pList->item(i, 0);
 
-        multipleSelection++;
-      }
-    else if (multipleSelection > 0)
-      {
-        pMove = pList->takeItem(i, 0);
-        pList->removeRow(i);
+      if (!pCurrItem)
+        continue;
 
-        if (pMove)
-          {
-            _insertItem(pList, to, pMove);
+      if (pCurrItem->isSelected())
+        {
+          if (multipleSelection == 0)
+            {
+              to = i;
+            }
 
-            multipleSelection = 0;
-            mChanged = true;
-          }
-      }
+          multipleSelection++;
+        }
+      else if (multipleSelection > 0)
+        {
+          pMove = pList->takeItem(i, 0);
+          pList->removeRow(i);
+
+          if (pMove)
+            {
+              _insertItem(pList, to, pMove);
+
+              multipleSelection = 0;
+              mChanged = true;
+            }
+        }
+    }
 
   // Unselect things we can not move.
   for (i = 0; i < multipleSelection; i++)
@@ -365,25 +384,33 @@ void CQReportDefinition::btnDownClicked()
 
   // Find the index of the first selected item.
   for (i = 0, imax = pList->rowCount(), to = -1, multipleSelection = 0; i < imax; i++)
-    if (pList->item(i, 0)->isSelected())
-      {
-        if (multipleSelection == 0) to = i;
+    {
+      QTableWidgetItem * pCurrItem = pList->item(i, 0);
 
-        multipleSelection++;
-      }
-    else if (multipleSelection > 0)
-      {
-        pMove = pList->takeItem(i, 0);
-        pList->removeRow(i);
+      if (!pCurrItem)
+        continue;
 
-        if (pMove)
-          {
-            _insertItem(pList, to, pMove);
+      if (pCurrItem->isSelected())
+        {
+          if (multipleSelection == 0)
+            to = i;
 
-            multipleSelection = 0;
-            mChanged = true;
-          }
-      }
+          multipleSelection++;
+        }
+      else if (multipleSelection > 0)
+        {
+          pMove = pList->takeItem(i, 0);
+          pList->removeRow(i);
+
+          if (pMove)
+            {
+              _insertItem(pList, to, pMove);
+
+              multipleSelection = 0;
+              mChanged = true;
+            }
+        }
+    }
 
   // Unselect things we can not move.
   for (i = pList->rowCount() - multipleSelection, imax = pList->rowCount(); i < imax; i++)
@@ -545,29 +572,29 @@ void CQReportDefinition::slotEditCurrentItem()
   QTableWidget * pList = static_cast<QTableWidget *>(mpReportSectionTab->currentWidget());
   QList<QTableWidgetItem*> selectedItems = pList->selectedItems();
 
-  foreach (QTableWidgetItem * item, selectedItems)
-    {
-      CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
-      const CCommonName & name = current->getCN();
+  foreach(QTableWidgetItem * item, selectedItems)
+  {
+    CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
+    const CCommonName & name = current->getCN();
 
-      if (name.getObjectType() == "Separator")
+    if (name.getObjectType() == "Separator")
+      continue;
+
+    const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObject(name));
+
+    if (pObject == NULL)
+      {
         continue;
+      }
 
-      const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObject(name));
+    const CDataObject* pNewObject =
+      CCopasiSelectionDialog::getObjectSingle(this, CQSimpleSelectionTree::AnyObject, pObject);
 
-      if (pObject == NULL)
-        {
-          continue;
-        }
+    if (pNewObject == NULL || pNewObject == pObject) continue;
 
-      const CDataObject* pNewObject =
-        CCopasiSelectionDialog::getObjectSingle(this, CQSimpleSelectionTree::AnyObject, pObject);
-
-      if (pNewObject == NULL || pNewObject == pObject) continue;
-
-      current->setObject(pNewObject);
-      mChanged = true;
-    }
+    current->setObject(pNewObject);
+    mChanged = true;
+  }
 }
 
 void CQReportDefinition::slotEditCurrentItemText()
@@ -582,44 +609,44 @@ void CQReportDefinition::slotEditCurrentItemText()
 
   CQTextDialog * pDialog = new CQTextDialog(this);
 
-  foreach (QTableWidgetItem * item, selectedItems)
-    {
-      CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
-      const CCommonName & name = current->getCN();
+  foreach(QTableWidgetItem * item, selectedItems)
+  {
+    CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
+    const CCommonName & name = current->getCN();
 
-      std::string objectType = name.getObjectType();
+    std::string objectType = name.getObjectType();
 
-      if (objectType == "Separator")
-        continue;
+    if (objectType == "Separator")
+      continue;
 
-      if (objectType == "String")
-        pDialog->setText(FROM_UTF8(name.getObjectName()));
-      else
-        pDialog->setText(FROM_UTF8(name));
+    if (objectType == "String")
+      pDialog->setText(FROM_UTF8(name.getObjectName()));
+    else
+      pDialog->setText(FROM_UTF8(name));
 
-      if (pDialog->exec() == QDialog::Accepted &&
-          pDialog->getText() != "")
-        {
-          std::string newText = TO_UTF8(pDialog->getText());
+    if (pDialog->exec() == QDialog::Accepted &&
+        pDialog->getText() != "")
+      {
+        std::string newText = TO_UTF8(pDialog->getText());
 
-          if (name != newText)
-            {
-              const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObject(newText));
+        if (name != newText)
+          {
+            const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObject(newText));
 
-              if (pObject != NULL)
-                {
-                  current->setObject(pObject);
-                }
-              else
-                {
-                  CDataString Text(newText);
-                  current->setObject(&Text);
-                }
+            if (pObject != NULL)
+              {
+                current->setObject(pObject);
+              }
+            else
+              {
+                CDataString Text(newText);
+                current->setObject(&Text);
+              }
 
-              mChanged = true;
-            }
-        }
-    }
+            mChanged = true;
+          }
+      }
+  }
 
   delete pDialog;
 }
