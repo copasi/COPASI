@@ -67,4 +67,5 @@ callgrind.out.*
 /dist/
 /install*
 /build_*
+copasi/_*
 python_copasi.egg-info
