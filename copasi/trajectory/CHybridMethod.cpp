@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -177,6 +177,8 @@ CTrajectoryMethod::Status CHybridMethod::step(const double & deltaT,
 
 void CHybridMethod::start()
 {
+  CTrajectoryMethod::start();
+
   mFirstMetabIndex = mpContainer->getCountFixedEventTargets() + 1 + mpContainer->getCountODEs();
   mpFirstMetabValue = mpContainer->getState(false).array() + mFirstMetabIndex;
 

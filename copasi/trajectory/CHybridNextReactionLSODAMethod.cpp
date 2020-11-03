@@ -104,7 +104,6 @@ void CHybridNextReactionLSODAMethod::start()
 
   mLSODA.setMathContainer(mpContainer);
   mLSODA.start();
-  mpContainerStateTime = mLSODA.getTime();
 }
 
 // virtual
