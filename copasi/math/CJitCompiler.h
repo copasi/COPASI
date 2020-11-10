@@ -11,6 +11,13 @@
 #include <NativeJIT/CodeGen/ExecutionBuffer.h>
 #include <NativeJIT/Function.h>
 
+#ifdef ERROR
+#  undef ERROR
+#endif
+
+#ifdef max
+#  undef max
+#endif
 #include "copasi/core/CCore.h"
 
 class CJitExpression;

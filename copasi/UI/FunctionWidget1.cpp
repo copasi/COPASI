@@ -50,6 +50,10 @@
 #include <QToolTip>
 #include <QApplication>
 
+#ifdef DELETE
+#  undef DELETE
+#endif
+
 #define COL_NAME 0
 #define COL_USAGE 1
 #define COL_UNIT 2

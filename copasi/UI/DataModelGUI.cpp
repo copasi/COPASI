@@ -86,6 +86,10 @@
 
 #include <copasi/commandline/COptions.h>
 
+#ifdef DELETE
+#  undef DELETE
+#endif
+
 //*****************************************************************************
 
 DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel):
