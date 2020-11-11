@@ -305,6 +305,11 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
           if (StartTime < SavedTime && SavedTime <= mTargetTime)
             {
               resetState(mSavedState);
+
+              if (mTask == 5)
+                {
+                  mDWork[0] = mTargetTime;
+                }
             }
           else
             {
