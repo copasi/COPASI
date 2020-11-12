@@ -698,6 +698,7 @@ bool CMathObject::compile(CMathContainer & container)
 #ifdef USE_JIT
 
   if (success
+      && CJitCompiler::JitEnabled()
       && mpExpression != NULL
       && !mpExpression->getPrerequisites().empty())
     {

@@ -36,6 +36,8 @@ public:
   typedef NativeJIT::Function< C_FLOAT64 >::FunctionType Function;
   typedef NativeJIT::NodeBase Node;
 
+  static bool & JitEnabled();
+
   CJitCompiler();
 
   virtual ~CJitCompiler();
@@ -62,6 +64,12 @@ private:
 
   typedef bool (*B2B)(bool, bool);
   typedef bool (*B2F)(C_FLOAT64, C_FLOAT64);
+
+  /**
+   * A pointer to a bool indicating whether the CPU supports the sse4.2 instruction set
+   * required for JIT compilation
+   */
+  static bool * pSSE4support;
 
   static std::string where(std::runtime_error & err);
 
