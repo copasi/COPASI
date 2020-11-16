@@ -16,6 +16,11 @@ bool * CJitCompiler::pSSE4support = NULL;
 // static
 bool & CJitCompiler::JitEnabled()
 {
+  if (pSSE4support == NULL)
+    {
+      pSSE4support = new bool(cpu_features::GetX86Info().features.sse4_2);
+    }
+
   return *pSSE4support;
 }
 

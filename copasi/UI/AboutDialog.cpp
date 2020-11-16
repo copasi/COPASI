@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,6 +37,7 @@
 #include <QVBoxLayout>
 #include <QBrush>
 #include <QDialogButtonBox>
+#include <QApplication>
 
 #include "icons/copasi_beta_background.xpm"
 
@@ -79,6 +80,8 @@ const char *AboutDialog::text =
   "<li>LSODA and LSODAR from ODEPACK</li>"
   "<li>Mersenne Twister random number generator, "
   "    Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura</li>"
+  "<li>NativeJIT just in time compiler (%5)</li>"
+  "<li>cpu_features to determine JIT support</li>"
   "</ul>"
   "</p>"
   ;
@@ -91,13 +94,28 @@ AboutDialog::AboutDialog(QWidget *parent,
   textEdit(NULL),
   mainLayout(NULL)
 {
+#if QT_VERSION >= 0x050000
+  QPalette Palette = QGuiApplication::palette();
+#else
+  QPalette Palette = QApplication::palette();
+#endif
+  QColor Foreground = Palette.color(QPalette::Active, QPalette::Text);
+  QColor Background = Palette.color(QPalette::Active, QPalette::Base);
+
+  bool isDarkTheme = (Foreground.redF() + Foreground.greenF() + Foreground.blueF() > Background.redF() + Background.greenF() + Background.blueF());
+
   this->setModal(true);
   this->mainLayout = new QVBoxLayout(this);
   this->mainLayout->setSizeConstraint(QLayout::SetFixedSize);
   this->textEdit = new QTextEdit(this);
-  QPalette Palette;
+
   Palette.setBrush(QPalette::Base, QBrush(QPixmap((const char **)copasi_beta_background_xpm)));
+
+  if (isDarkTheme)
+    Palette.setColor(QPalette::Text, Background);
+
   textEdit->setPalette(Palette);
+
   QFontMetrics FontMetrics = this->fontMetrics();
   int w = width * (FontMetrics.width('W') + FontMetrics.width('I')) / 2;
   int h = heigth * FontMetrics.lineSpacing();
