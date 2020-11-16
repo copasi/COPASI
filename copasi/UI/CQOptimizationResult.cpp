@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -48,6 +48,10 @@
 
 #include <copasi/UI/CQParameterResultItemModel.h>
 #include <QSortFilterProxyModel>
+
+#ifdef DELETE
+#  undef DELETE
+#endif
 
 /*
  *  Constructs a CQOptimizationResult which is a child of 'parent', with the

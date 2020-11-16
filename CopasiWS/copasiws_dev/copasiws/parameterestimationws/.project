@@ -16,14 +16,25 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>classes</name>
-			<type>2</type>
-			<location>/fs/garfinkel/dada/Copasi/development/copasiws_dev/copasiws/parameterestimationws/build/classes</location>
-		</link>
-		<link>
 			<name>XBeans-packaged.jar</name>
 			<type>1</type>
 			<location>/fs/garfinkel/dada/Copasi/development/copasiws_dev/copasiws/parameterestimationws/build/lib/XBeans-packaged.jar</location>
 		</link>
+		<link>
+			<name>classes</name>
+			<type>2</type>
+			<location>/fs/garfinkel/dada/Copasi/development/copasiws_dev/copasiws/parameterestimationws/build/classes</location>
+		</link>
 	</linkedResources>
+	<filteredResources>
+		<filter>
+			<id>1605023107626</id>
+			<name></name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.core.resources.regexFilterMatcher</id>
+				<arguments>node_modules|.git|__CREATED_BY_JAVA_LANGUAGE_SERVER__</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>

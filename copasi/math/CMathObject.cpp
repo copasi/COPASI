@@ -404,7 +404,6 @@ void CMathObject::calculateParticleFlux()
 }
 
 void CMathObject::calculateExtensiveReactionRate()
-
 {
   *mpValue = 0.0;
 
@@ -699,6 +698,7 @@ bool CMathObject::compile(CMathContainer & container)
 #ifdef USE_JIT
 
   if (success
+      && CJitCompiler::JitEnabled()
       && mpExpression != NULL
       && !mpExpression->getPrerequisites().empty())
     {

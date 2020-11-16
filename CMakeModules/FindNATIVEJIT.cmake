@@ -17,6 +17,7 @@ find_package(NATIVEJIT CONFIG REQUIRED
   CONFIGS nativejit-config.cmake
   PATHS $ENV{NATIVEJIT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
         ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
+        ${COPASI_DEPENDENCY_DIR}/lib/cmake
         /usr/${CMAKE_INSTALL_LIBDIR}/cmake
         ${CONAN_LIB_DIRS_NATIVEJIT}/cmake
   )
@@ -52,9 +53,9 @@ if (NOT NATIVEJIT_FOUND)
           ${COPASI_DEPENDENCY_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
-          /sw/lib         Fink
-          /opt/local/lib  MacPorts
-          /opt/csw/lib    Blastwave
+          /sw/lib         # Fink
+          /opt/local/lib  # MacPorts
+          /opt/csw/lib    # Blastwave
           /opt/lib
           /usr/freeware/lib64
           ${CONAN_LIB_DIRS_NATIVEJIT}
@@ -109,6 +110,10 @@ else ()
     get_target_property(NATIVEJIT_LIBRARY NativeJIT IMPORTED_LOCATION_DEBUG)
   endif()
 
+  if (NOT NATIVEJIT_LIBRARY)
+    get_target_property(NATIVEJIT_LIBRARY NativeJIT IMPORTED_LOCATION_NOCONFIG)
+  endif()
+
   get_target_property(NATIVEJIT_INTERFACE_LINK_LIBRARIES NativeJIT INTERFACE_LINK_LIBRARIES)
   
   if (NATIVEJIT_INTERFACE_LINK_LIBRARIES)
@@ -120,6 +125,10 @@ else ()
   if (NOT CODEGEN_LIBRARY)
     get_target_property(CODEGEN_LIBRARY CodeGen IMPORTED_LOCATION_DEBUG)
   endif()
+
+  if (NOT CODEGEN_LIBRARY)
+    get_target_property(CODEGEN_LIBRARY CodeGen IMPORTED_LOCATION_NOCONFIG)
+  endif()  
 
   if (CODEGEN_LIBRARY)
     set(NATIVEJIT_LIBRARY ${NATIVEJIT_LIBRARY} ${CODEGEN_LIBRARY})

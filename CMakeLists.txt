@@ -304,6 +304,9 @@ if (ENABLE_JIT)
   include_directories(BEFORE ${NATIVEJIT_INCLUDE_DIR})
   set(CMAKE_CXX_FLAGS "${NATIVEJIT_COMPILE_OPTIONS}")
   set(USE_JIT 1)
+
+  find_package(CPUFEATURES REQUIRED)
+  include_directories(BEFORE ${CPUFEATURE_INCLUDE_DIR})
 endif (ENABLE_JIT)
 
 # TODO find raptor
@@ -849,52 +852,55 @@ get_directory_property(DirDefs COMPILE_DEFINITIONS)
 message(STATUS "-----------------------------------------------------------
  Building COPASI ${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD} (${CMAKE_BUILD_TYPE})
 
-   Source Dir        = ${CMAKE_SOURCE_DIR}
-   Binary Dir        = ${CMAKE_BINARY_DIR}
-   Install Prefix    = ${CMAKE_INSTALL_PREFIX}
+   Source Dir           = ${CMAKE_SOURCE_DIR}
+   Binary Dir           = ${CMAKE_BINARY_DIR}
+   Install Prefix       = ${CMAKE_INSTALL_PREFIX}
 
  Dependencies:
-   Vendor            = ${BLA_VENDOR}
-   LAPACK Libs       = ${CLAPACK_LIBRARIES}
-   LAPACK LDFLAGS    = ${CLAPACK_LINKER_FLAGS}
+   Vendor               = ${BLA_VENDOR}
+   LAPACK Libs          = ${CLAPACK_LIBRARIES}
+   LAPACK LDFLAGS       = ${CLAPACK_LINKER_FLAGS}
 
-   crossguid Libs    = ${CROSSGUID_LIBRARY}
-   cross include     = ${CROSSGUID_INCLUDE_DIR}
+   crossguid Libs       = ${CROSSGUID_LIBRARY}
+   cross include        = ${CROSSGUID_INCLUDE_DIR}
 
-   Expat Libs        = ${EXPAT_LIBRARY}
-   Expat include     = ${EXPAT_INCLUDE_DIR}
+   Expat Libs           = ${EXPAT_LIBRARY}
+   Expat include        = ${EXPAT_INCLUDE_DIR}
 
-   Raptor Libs       = ${RAPTOR_LIBRARY}
-   Raptor include    = ${RAPTOR_INCLUDE_DIR}
+   Raptor Libs          = ${RAPTOR_LIBRARY}
+   Raptor include       = ${RAPTOR_INCLUDE_DIR}
 
-   libSBML lib       = ${LIBSBML_LIBRARY}
-   libSBML include   = ${LIBSBML_INCLUDE_DIR}
+   libSBML lib          = ${LIBSBML_LIBRARY}
+   libSBML include      = ${LIBSBML_INCLUDE_DIR}
 
-   Qt lib            = ${QT_LIBRARIES}
-   Qt include        = ${QT_INCLUDE_DIRS}
-   Qt version        = ${QT_VERSION}
+   Qt lib               = ${QT_LIBRARIES}
+   Qt include           = ${QT_INCLUDE_DIRS}
+   Qt version           = ${QT_VERSION}
       
-   QWT lib           = ${QWT_LIBRARY}
-   QWT include       = ${QWT_INCLUDE_DIR}
-   QWT version       = ${QWT_VERSION_STRING} (0x${QWT_VERSION_NUMERIC})
+   QWT lib              = ${QWT_LIBRARY}
+   QWT include          = ${QWT_INCLUDE_DIR}
+   QWT version          = ${QWT_VERSION_STRING} (0x${QWT_VERSION_NUMERIC})
 
-   qwtplot3d lib     = ${QWTPLOT3D_LIBRARY}
-   qwtplot3d include = ${QWTPLOT3D_INCLUDE_DIR}
+   qwtplot3d lib        = ${QWTPLOT3D_LIBRARY}
+   qwtplot3d include    = ${QWTPLOT3D_INCLUDE_DIR}
 
-   qtmml lib         = ${MML_LIBRARY}
-   qtmml include     = ${MML_INCLUDE_DIR}
+   qtmml lib            = ${MML_LIBRARY}
+   qtmml include        = ${MML_INCLUDE_DIR}
 
-   SBW lib           = ${SBW_LIBRARIES}
-   SBW include       = ${SBW_INCLUDE_DIR}
+   SBW lib              = ${SBW_LIBRARIES}
+   SBW include          = ${SBW_INCLUDE_DIR}
 
-   libSEDML lib      = ${LIBSEDML_LIBRARY}
-   libSEDML include  = ${LIBSEDML_INCLUDE_DIR}
+   libSEDML lib         = ${LIBSEDML_LIBRARY}
+   libSEDML include     = ${LIBSEDML_INCLUDE_DIR}
 
-   Combine lib       = ${COMBINE_LIBRARY}
-   Combine include   = ${COMBINE_INCLUDE_DIR}
+   Combine lib          = ${COMBINE_LIBRARY}
+   Combine include      = ${COMBINE_INCLUDE_DIR}
 
-   NativeJIT lib     = ${NATIVEJIT_LIBRARY}
-   NativeJIT include = ${NATIVEJIT_INCLUDE_DIR}
+   NativeJIT lib        = ${NATIVEJIT_LIBRARY}
+   NativeJIT include    = ${NATIVEJIT_INCLUDE_DIR}
+
+   cpu_features lib     = ${CPUFEATURES_LIBRARY}
+   cpu_features include = ${CPUFEATURES_INCLUDE_DIR}
 
  Options:
 

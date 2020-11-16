@@ -8,6 +8,22 @@
 #include "copasi/utilities/CNodeIterator.h"
 #include "copasi/utilities/CCopasiMessage.h"
 
+#include <cpu_features/cpuinfo_x86.h>
+
+// static
+bool * CJitCompiler::pSSE4support = NULL;
+
+// static
+bool & CJitCompiler::JitEnabled()
+{
+  if (pSSE4support == NULL)
+    {
+      pSSE4support = new bool(cpu_features::GetX86Info().features.sse4_2);
+    }
+
+  return *pSSE4support;
+}
+
 // static
 std::string CJitCompiler::where(std::runtime_error & e)
 {
@@ -26,7 +42,12 @@ CJitCompiler::CJitCompiler()
   , mExpressions()
   , mExecutionBufferSize(8192)
   , mFunctionBufferSize(8192)
-{}
+{
+  if (pSSE4support == NULL)
+    {
+      pSSE4support = new bool(cpu_features::GetX86Info().features.sse4_2);
+    }
+}
 
 // virtual
 CJitCompiler::~CJitCompiler()
@@ -349,7 +370,8 @@ void CJitCompiler::release()
 
 void CJitCompiler::registerExpression(CJitExpression * pExpression)
 {
-  mExpressions.insert(pExpression);
+  if (*pSSE4support)
+    mExpressions.insert(pExpression);
 }
 
 void CJitCompiler::deregisterExpression(CJitExpression * pExpression)

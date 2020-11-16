@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -54,10 +54,19 @@
 #include "copasi/model/CModelValue.h"
 #include "copasi/commandline/CLocaleString.h"
 
+#include <algorithm>
+
 #define SEDML_SET_ID(element, arguments) \
   {\
     std::ostringstream idStream; idStream << arguments;\
-    element->setId(idStream.str());\
+    std::string pVarId = idStream.str();\
+    int count = 1;\
+    while (mGeneratedIds.find(pVarId) != mGeneratedIds.end())\
+      {\
+        pVarId = SEDMLUtils::getNextId(idStream.str(), ++count);\
+      }\
+    mGeneratedIds.insert(pVarId);\
+    element->setId(pVarId);\
   }
 
 const std::string CSEDMLExporter::exportModelAndTasksToString(CDataModel& dataModel,
@@ -68,7 +77,6 @@ const std::string CSEDMLExporter::exportModelAndTasksToString(CDataModel& dataMo
   this->mSEDMLLevel = sedmlLevel;
   this->mSEDMLVersion = sedmlVersion;
   this->createSEDMLDocument(dataModel, modelLocation);
-
   CSBMLExporter exporter;
   SedWriter* writer = new SedWriter();
 
@@ -188,6 +196,8 @@ void CSEDMLExporter::createSEDMLDocument(CDataModel& dataModel, std::string mode
 
   if (this->mpSEDMLDocument == NULL) fatalError();
 
+  mGeneratedIds.clear();
+
   createModels(dataModel, modelRef);
   createTasks(dataModel,  modelRef);
 }
@@ -233,7 +243,7 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelI
 
   SedRepeatedTask* task = mpSEDMLDocument->createRepeatedTask();
   std::string taskId = SEDMLUtils::getNextId("task", mpSEDMLDocument->getNumTasks());
-  task->setId(taskId);
+  SEDML_SET_ID(task, taskId);
   task->setResetModel(!pProblem->getContinueFromCurrentState());
 
   // create ranges / changes
@@ -255,7 +265,7 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelI
       if (type == CScanProblem::SCAN_REPEAT)
         {
           SedUniformRange *range = task->createUniformRange();
-          range->setId(SEDMLUtils::getNextId("range", task->getNumRanges()));
+          SEDML_SET_ID(range, SEDMLUtils::getNextId("range", task->getNumRanges()));
           range->setStart(0);
           range->setEnd(numSteps);
           range->setNumberOfPoints(numSteps);
@@ -280,7 +290,7 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelI
           if (current->getParameter("Use Values") != NULL && current->getParameter("Use Values")->getValue< bool >() && !values.empty())
             {
               SedVectorRange* range = task->createVectorRange();
-              range->setId(rangeId);
+              SEDML_SET_ID(range, rangeId);
               std::vector<std::string> elems;
               ResultParser::split(values, std::string(",; |\n\t\r"), elems);
 
@@ -293,7 +303,7 @@ for (std::string & number : elems)
           else
             {
               SedUniformRange* range = task->createUniformRange();
-              range->setId(rangeId);
+              SEDML_SET_ID(range, rangeId);
               range->setStart(min);
               range->setEnd(max);
               range->setNumberOfPoints(numSteps);
@@ -357,7 +367,7 @@ std::string CSEDMLExporter::createTimeCourseTask(CDataModel& dataModel, const st
   CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(pTask->getProblem());
 
   mpTimecourse = this->mpSEDMLDocument->createUniformTimeCourse();
-  mpTimecourse->setId(SEDMLUtils::getNextId("sim", mpSEDMLDocument->getNumSimulations()));
+  SEDML_SET_ID(mpTimecourse, SEDMLUtils::getNextId("sim", mpSEDMLDocument->getNumSimulations()));
   //presently SEDML only supports time course
   mpTimecourse->setInitialTime(0.0);
   double outputStartTime = tProblem->getOutputStartTime();
@@ -388,7 +398,7 @@ std::string CSEDMLExporter::createTimeCourseTask(CDataModel& dataModel, const st
 
   mpTimecourseTask = this->mpSEDMLDocument->createTask();
   std::string taskId = SEDMLUtils::getNextId("task", mpSEDMLDocument->getNumTasks());
-  mpTimecourseTask->setId(taskId);
+  SEDML_SET_ID(mpTimecourseTask, taskId);
   mpTimecourseTask->setSimulationReference(mpTimecourse->getId());
   mpTimecourseTask->setModelReference(modelId);
 
@@ -401,7 +411,7 @@ std::string CSEDMLExporter::createTimeCourseTask(CDataModel& dataModel, const st
 std::string CSEDMLExporter::createSteadyStateTask(CDataModel& dataModel, const std::string & modelId)
 {
   SedSteadyState *steady  = this->mpSEDMLDocument->createSteadyState();
-  steady->setId(SEDMLUtils::getNextId("steady", mpSEDMLDocument->getNumSimulations()));
+  SEDML_SET_ID(steady, SEDMLUtils::getNextId("steady", mpSEDMLDocument->getNumSimulations()));
   //presently SEDML only supports time course
   CCopasiTask* pTask = &dataModel.getTaskList()->operator[]("Steady-State");
   CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(pTask->getProblem());
@@ -412,7 +422,7 @@ std::string CSEDMLExporter::createSteadyStateTask(CDataModel& dataModel, const s
 
   SedTask *task = this->mpSEDMLDocument->createTask();
   std::string taskId = SEDMLUtils::getNextId("task", mpSEDMLDocument->getNumTasks());
-  task->setId(taskId);
+  SEDML_SET_ID(task, taskId);
   task->setSimulationReference(steady->getId());
   task->setModelReference(modelId);
 
@@ -425,7 +435,7 @@ std::string CSEDMLExporter::createSteadyStateTask(CDataModel& dataModel, const s
 void CSEDMLExporter::createModels(CDataModel& dataModel, std::string & modelRef)
 {
   SedModel *model = this->mpSEDMLDocument->createModel();
-  model->setId(CDirEntry::baseName(modelRef));
+  SEDML_SET_ID(model, CDirEntry::baseName(modelRef));
   model->setSource(modelRef);
   model->setLanguage("urn:sedml:language:sbml");
 }
@@ -447,7 +457,7 @@ void CSEDMLExporter::createTasks(CDataModel& dataModel, std::string & modelRef)
     createDataGenerators(dataModel, taskId, &dataModel.getTaskList()->operator[]("Scan"));
 }
 
-SedDataGenerator * createDataGenerator(
+SedDataGenerator * CSEDMLExporter::createDataGenerator(
   SedDocument* mpSEDMLDocument,
   const std::string &sbmlId,
   const std::string &targetXPathString,
@@ -726,6 +736,7 @@ CSEDMLExporter::CSEDMLExporter()
   , mSEDMLVersion(2)
   , mpTimecourse(NULL)
   , mpTimecourseTask(NULL)
+  , mGeneratedIds()
 {
 
 }
