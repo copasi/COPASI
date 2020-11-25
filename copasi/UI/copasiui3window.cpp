@@ -132,7 +132,9 @@
 #include "copasi/UI/CQDependencyDialog.h"
 #include "qtUtilities.h"
 
+#ifdef USE_JIT
 #include "copasi/math/CJitCompiler.h"
+#endif 
 
 // static
 CopasiUI3Window *CopasiUI3Window::pMainWindow = NULL;
