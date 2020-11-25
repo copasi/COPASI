@@ -68,89 +68,60 @@
     
   C_FLOAT64 getDblValue()
   {
-    if (!self->hasValidValues())
-      return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-
     C_FLOAT64 val = self->getValue<C_FLOAT64>();
     return val;
   }
 
   C_FLOAT64 getUDblValue()
   {
-    if (!self->hasValidValues())
-      return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-
     C_FLOAT64 val = self->getValue<C_FLOAT64>();
     return val;
   }
 
   C_INT32 getIntValue()
   {
-    if (!self->hasValidValues())
-      return 0;
-    
     C_INT32 val = self->getValue<C_INT32>();    
     return val;
   }
 
   unsigned C_INT32 getUIntValue()
   {
-    if (!self->hasValidValues())
-      return 0;
-
     unsigned C_INT32 val = self->getValue<unsigned C_INT32>();    
     return val;
   }
 
   bool getBoolValue()
   {
-    if (!self->hasValidValues())
-      return false;
-
     bool val = self->getValue<bool>();    
     return val;
   }
 
   std::vector<CCopasiParameter*> getGroupValue()
   {
-    if (!self->hasValidValues())
-      return std::vector<CCopasiParameter*>();
-
     std::vector<CCopasiParameter*> val = self->getValue< std::vector<CCopasiParameter*> >();
     return val;
   }
 
   std::string getStringValue()
   {
-    if (!self->hasValidValues())
-      return "";
-
     std::string val = self->getValue<std::string>();
     return val;
   }
 
-  CRegisteredCommonName getCNValue()
+  CCommonName getCNValue()
   {
-    if (!self->hasValidValues())
-      return CRegisteredCommonName("");
-
-    CRegisteredCommonName val = self->getValue<std::string>();
+    CCommonName val = self->getValue<CCommonName>();
     return val;
   }
 
   std::string getKeyValue()
   {
-    if (!self->hasValidValues())
-      return "";
     std::string val = self->getValue<std::string>();
     return val;
   }
 
   std::string getFileValue()
   {
-    if (!self->hasValidValues())
-      return "";
-
     std::string val = self->getValue<std::string>();
     return val;
   }
@@ -160,9 +131,6 @@
    * think. 
   void* getVoidValue()
   {
-    if (!self->hasValidValues())
-      return NULL;
-
     void* val = self->getValue<void*>();
     return val;
   }
@@ -170,8 +138,6 @@
 
   bool setDblValue(const C_FLOAT64& v)
   {
-    if (!self->hasValidValues())
-      return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
     return self->setValue(v);
   }
 
@@ -205,9 +171,14 @@
     return self->setValue(v);
   }
 
-  bool setCNValue(const CRegisteredCommonName& v)
+  bool setCNValue(const CCommonName& v)
   {
     return self->setValue(v);
+  }
+  
+  bool setCNValue(const std::string& v)
+  {
+    return self->setValue(CCommonName(v));
   }
 
   bool setKeyValue(const std::string& v)
