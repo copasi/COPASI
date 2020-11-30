@@ -1002,6 +1002,19 @@ bool CUnit::isUnitType(UnitType type) const
   return false;
 }
 
+void CUnit::setDimensionLess(double multiplier, double scale, double exponent)
+{
+  if (mpDimensionless == NULL)
+    {
+      mpDimensionless = const_cast< CUnitComponent * >(&*mComponents.insert(CUnitComponent(CBaseUnit::dimensionless, 1.0, 0.0, 0.0)).first);
+    }
+
+  mpDimensionless->setMultiplier(multiplier);
+  mpDimensionless->setScale(scale);
+  mpDimensionless->setExponent(exponent);
+
+}
+
 // friend
 std::ostream &operator<<(std::ostream &os, const CUnit & o)
 {
