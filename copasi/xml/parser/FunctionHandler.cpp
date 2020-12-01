@@ -203,6 +203,7 @@ CXMLHandler * FunctionHandler::processStart(const XML_Char * pszName,
       case Comment:
       case Expression:
       case MathML:
+      case Text:
         pHandlerToCall = getHandler(mCurrentElement.second);
         break;
 
@@ -309,6 +310,7 @@ bool FunctionHandler::processEnd(const XML_Char * pszName)
 
       case Expression:
       case MathML:
+      case Text:
         mInfix = mpData->CharacterData;
 
         break;
@@ -361,15 +363,16 @@ CXMLHandler::sProcessLogic * FunctionHandler::getProcessLogic() const
 {
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, BEFORE, {Function, HANDLER_COUNT}},
-    {"Function", Function, Function, {MiriamAnnotation, Comment, ListOfUnsupportedAnnotations, Expression, MathML, HANDLER_COUNT}},
-    {"MiriamAnnotation", MiriamAnnotation, MiriamAnnotation, {Comment, ListOfUnsupportedAnnotations, Expression, MathML, HANDLER_COUNT}},
-    {"Comment", Comment, Comment, {ListOfUnsupportedAnnotations, Expression, MathML, HANDLER_COUNT}},
-    {"ListOfUnsupportedAnnotations", ListOfUnsupportedAnnotations, ListOfUnsupportedAnnotations, {Expression, MathML, HANDLER_COUNT}},
-    {"Expression", Expression, CharacterData, {ListOfParameterDescriptions, AFTER, HANDLER_COUNT}},
-    {"MathML", MathML, MathML, {ListOfParameterDescriptions, AFTER, HANDLER_COUNT}},
-    {"ListOfParameterDescriptions", ListOfParameterDescriptions, ListOfParameterDescriptions, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
+      {"BEFORE", BEFORE, BEFORE, {Function, HANDLER_COUNT}},
+      {"Function", Function, Function, {MiriamAnnotation, Comment, ListOfUnsupportedAnnotations, Expression, MathML, Text, HANDLER_COUNT}},
+      {"MiriamAnnotation", MiriamAnnotation, MiriamAnnotation, {Comment, ListOfUnsupportedAnnotations, Expression, MathML, Text, HANDLER_COUNT}},
+      {"Comment", Comment, Comment, {ListOfUnsupportedAnnotations, Expression, MathML, Text, HANDLER_COUNT}},
+      {"ListOfUnsupportedAnnotations", ListOfUnsupportedAnnotations, ListOfUnsupportedAnnotations, {Expression, MathML, Text, HANDLER_COUNT}},
+      {"Expression", Expression, CharacterData, {ListOfParameterDescriptions, AFTER, HANDLER_COUNT}},
+      {"MathML", MathML, CharacterData, {Text, ListOfParameterDescriptions, AFTER, HANDLER_COUNT}},
+      {"Text", Text, CharacterData, {ListOfParameterDescriptions, AFTER, HANDLER_COUNT}},
+      {"ListOfParameterDescriptions", ListOfParameterDescriptions, ListOfParameterDescriptions, {AFTER, HANDLER_COUNT}},
+      {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;
