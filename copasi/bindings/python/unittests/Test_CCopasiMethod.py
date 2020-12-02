@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -32,7 +37,7 @@ class Test_CCopasiMethod(unittest.TestCase):
     typename="Enhanced Newton"
     e=COPASI.CCopasiMethod.TypeNameToEnum(typename)
     self.assert_(type(e)==IntType)
-    self.assert_(e==COPASI.CCopasiMethod.Newton)
+    self.assert_(e==COPASI.CTaskEnum.Method_Newton)
 
   def test_getType(self):
     t=self.method.getType()

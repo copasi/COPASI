@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -75,16 +75,23 @@
 
     /**
      * find a parameter by its name and return its index
+     */
     unsigned C_INT32 findParameterByName(const std::string & name, int dataType) const
     {
-        CFunctionParameter::DataType type=(CFunctionParameter::DataType)dataType;
-        return (unsigned C_INT32)$self->findParameterByName(name,type);
+        return (unsigned C_INT32)$self->findParameterByName(name,NULL);
     }
-    */
     
     CFunctionParameter* getParameter(unsigned C_INT32 index)
     {
-        return (*self)[index];
+        try
+        {
+            return (*self)[index];
+        }
+        catch(...)
+        {
+            return NULL;
+        }
+        
     }
 
 }

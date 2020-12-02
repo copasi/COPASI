@@ -1,20 +1,26 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CEvaluationTree.py,v $ 
-#   $Revision: 1.9 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2012/03/05 18:09:29 $ 
-# End CVS Header 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
 
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 import COPASI
@@ -64,7 +70,7 @@ class Test_CEvaluationTree(unittest.TestCase):
 
   def test_getErrorLocation(self):
     badExpr="4 +* 3"
-    self.assert_(not self.tree.setInfix(badExpr))
+    self.assert_(self.tree.setInfix(badExpr).isError())
     pos=self.tree.getErrorLocation()
     self.assert_(type(pos)==IntType)
     self.assert_(pos==2 or pos==3)

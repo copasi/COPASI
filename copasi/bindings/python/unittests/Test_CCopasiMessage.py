@@ -1,14 +1,26 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CCopasiMessage.py,v $ 
-#   $Revision: 1.4 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2009/04/21 15:45:04 $ 
-# End CVS Header 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 import COPASI
@@ -69,13 +81,13 @@ class Test_CCopasiMessage(unittest.TestCase):
     COPASI.CCopasiMessage.clearDeque()
 
   def test_getAllMessageText(self):
-    text=COPASI.CCopasiMessage.getAllMessageText(1)
+    text=COPASI.CCopasiMessage.getAllMessageText(True)
     self.assert_(text!="");
     COPASI.CCopasiMessage.clearDeque()
     text=COPASI.CCopasiMessage.getAllMessageText()
     self.assert_(text=="")
     self.setUp()
-    text=COPASI.CCopasiMessage.getAllMessageText(0)
+    text=COPASI.CCopasiMessage.getAllMessageText(False)
     self.assert_(text!="");
     COPASI.CCopasiMessage.clearDeque()
 

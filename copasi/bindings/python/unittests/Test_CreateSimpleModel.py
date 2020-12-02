@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -25,46 +30,47 @@ from types import *
 def createModel():
     datamodel=COPASI.CRootContainer.addDatamodel()
     model=datamodel.getModel()
-    model.setVolumeUnit(COPASI.CModel.fl)
-    model.setTimeUnit(COPASI.CModel.s)
-    model.setQuantityUnit(COPASI.CModel.fMol)
+    model.setVolumeUnit(COPASI.CUnit.fl)
+    model.setTimeUnit(COPASI.CUnit.s)
+    model.setQuantityUnit(COPASI.CUnit.fMol)
     comp=model.createCompartment("CompartmentA")
     A=model.createMetabolite("A",comp.getObjectName())
-    A.setInitialConcentration(2.0e-4)
     B=model.createMetabolite("B",comp.getObjectName())
-    B.setInitialConcentration(0.0)
     react=model.createReaction("Decay_1")
     react.addSubstrate(A.getKey())
     react.addProduct(B.getKey())
     react.setReversible(False)
     react.setFunction("Mass action (irreversible)")
-    react.setParameterValue("k1",0.5)
-    mapping=COPASI.StringStdVector()
-    mapping.append(react.getChemEq().getSubstrate(0).getMetabolite().getKey())
-    react.setParameterMappingVector(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);
+    mapping=COPASI.DataObjectVector()
+    mapping.append(react.getChemEq().getSubstrate(0).getMetabolite())
+    react.setParameterObjects(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);
     model.compileIfNecessary()
+
+    A.setInitialConcentration(2.0e-4)    
+    B.setInitialConcentration(0.0)
+    react.setParameterValue("k1",0.5)
     changedObjects=COPASI.ObjectStdVector()
     changedObjects.push_back(comp.getObject(COPASI.CCommonName("Reference=InitialVolume")))
     changedObjects.push_back(A.getObject(COPASI.CCommonName("Reference=InitialConcentration")))
     changedObjects.push_back(B.getObject(COPASI.CCommonName("Reference=InitialConcentration")))
-    changedObjects.push_back(react.getParameters().getParameter(0).getObject(COPASI.CCommonName("Reference=Value")))
     model.updateInitialValues(changedObjects)
+
     return datamodel
 
 def extendModel(datamodel):
     model=datamodel.getModel()
     metab=model.createMetabolite("C",model.getCompartment(0).getObjectName())
-    metab.setInitialConcentration(0.0)
     react=model.createReaction("Decay_2")
     react.addSubstrate(model.getMetabolite(1).getKey())
     react.addProduct(metab.getKey())
     react.setReversible(False)
     react.setFunction("Mass action (irreversible)")
-    react.getParameters().getParameter(0).setValue(0.1)
-    mapping=COPASI.StringStdVector()
-    mapping.append(react.getChemEq().getSubstrate(0).getMetabolite().getKey())
-    react.setParameterMappingVector(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);
+    mapping=COPASI.DataObjectVector()
+    mapping.append(react.getChemEq().getSubstrate(0).getMetabolite())
+    react.setParameterObjects(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);
     model.compileIfNecessary()
+    metab.setInitialConcentration(0.0)
+    react.getParameters().getParameter(0).setValue(0.1)
     changedObjects=COPASI.ObjectStdVector()
     changedObjects.push_back(metab.getObject(COPASI.CCommonName("Reference=InitialConcentration")))
     changedObjects.push_back(react.getParameters().getParameter(0).getObject(COPASI.CCommonName("Reference=Value")))
@@ -83,7 +89,7 @@ class Test_CreateSimpleModel(unittest.TestCase):
      self.assert_(self.model.getCompartment(0).getObjectName()=="CompartmentA")
      self.assert_(self.model.getMetabolites().size()==2)
      self.assert_(self.model.getMetabolite(0).getObjectName()=="A")
-     self.assert_(self.model.getMetabolite(0).getInitialConcentration()==2.0e-4)
+     self.assertEquals(self.model.getMetabolite(0).getInitialConcentration(),2.0e-4)
      self.assert_(self.model.getMetabolite(1).getObjectName()=="B")
      self.assert_(self.model.getMetabolite(1).getInitialValue()==0.0)
      self.assert_(self.model.getReactions().size()==1)
@@ -106,7 +112,7 @@ class Test_CreateSimpleModel(unittest.TestCase):
      extendModel(self.datamodel) 
      self.assert_(self.model.getMetabolites().size()==3)
      self.assert_(self.model.getMetabolite(2).getObjectName()=="C")
-     self.assert_(self.model.getMetabolite(2).getInitialValue()==0.0)
+     self.assertEquals(self.model.getMetabolite(2).getInitialValue(),0.0)
      self.assert_(self.model.getReactions().size()==2)
      self.assert_(self.model.getReaction(1).getObjectName()=="Decay_2")
      self.assert_(self.model.getReaction(1).isReversible()==False)
