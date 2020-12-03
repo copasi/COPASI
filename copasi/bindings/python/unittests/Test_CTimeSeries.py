@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -28,42 +33,29 @@ class Test_CTimeSeries(unittest.TestCase):
   def setUp(self):
     self.datamodel=COPASI.CRootContainer.addDatamodel()
     self.datamodel.loadModel("calcium_juergen.cps")
-    self.ctimeseries=COPASI.CTimeSeries()
-    self.ctimeseries.allocate(100)
-    v=COPASI.ContainerStdVector()
-    self.ctimeseries.compile(v,self.datamodel)
-    self.ctimeseries.output(COPASI.COutputHandler.DURING)
-    self.ctimeseries.finish()
+    task = self.datamodel.getTask('Time-Course')
+    problem = task.getProblem()
+    problem.time_series_requested = True
+    task.process(True)
+    self.ctimeseries=task.time_series
 
   def test_getRecordedSteps(self):
     steps=self.ctimeseries.getRecordedSteps()
     self.assert_(type(steps)==IntType)
-    self.assert_(steps==1)
+    self.assertEquals(steps,20001)
 
   def test_getNumVariables(self):
     variables=self.ctimeseries.getNumVariables()
     self.assert_(type(variables)==IntType)
-    self.assert_(variables==5)
+    self.assertEquals(variables,4)
 
   def test_getData(self):
     data=self.ctimeseries.getData(0,1)
-    self.assert_(type(data)==FloatType)
-    version=sys.version.split(".")
-    major=int(version[0])
-    minor=int(version[1])
-    if(major>2 or (major==2 and minor>3)):
-      # check if it is NaN since NaN != NaN
-      self.assert_(data!=data)
+    self.assert_(type(data)==FloatType)    
 
   def test_getConcentrationData(self):
     data=self.ctimeseries.getConcentrationData(0,1)
     self.assert_(type(data)==FloatType)
-    version=sys.version.split(".")
-    major=int(version[0])
-    minor=int(version[1])
-    if(major>2 or (major==2 and minor>3)):
-      # check if it is NaN since NaN != NaN
-      self.assert_(data!=data)
 
   def test_getTitle(self):
     title=self.ctimeseries.getTitle(1)
@@ -73,12 +65,11 @@ class Test_CTimeSeries(unittest.TestCase):
   def test_getTitles(self):
     titles=self.ctimeseries.getTitles()
     self.assert_(type(titles) == ListType)
-    self.assert_(len(titles) == 5)
+    self.assertEquals(len(titles),4)
     self.assert_(titles[0] == "Time")
     self.assert_(titles[1] == "a")
     self.assert_(titles[2] == "b")
     self.assert_(titles[3] == "c")
-    self.assert_(titles[4] == "Compartments[compartment]")
 
   def test_getDataForIndex(self):
     data=self.ctimeseries.getDataForIndex(0)

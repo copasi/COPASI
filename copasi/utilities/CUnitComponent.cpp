@@ -88,7 +88,7 @@ bool CUnitComponent::operator==(const CUnitComponent& rightSide) const
   return (mKind == rightSide.mKind &&
           mExponent == rightSide.mExponent &&
           mScale == rightSide.mScale &&
-          mMultiplier == rightSide.mMultiplier);
+          fabs(mMultiplier / rightSide.mMultiplier - 1.0) < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
 }
 
 bool CUnitComponent::isValid() const

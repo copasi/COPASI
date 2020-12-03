@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -17,7 +22,8 @@ import string
 
 class Test_CRootContainer(unittest.TestCase):
   def setUp(self):
-    pass
+    datamodelList=COPASI.CRootContainer.getDatamodelList()
+    datamodelList.clear()
 
   def test_getRoot(self):
     root = COPASI.CRootContainer.getRoot()
@@ -27,7 +33,7 @@ class Test_CRootContainer(unittest.TestCase):
   def test_AddRemoveDatamodel(self):
       datamodelList=COPASI.CRootContainer.getDatamodelList()
       self.assert_(datamodelList.__class__ == COPASI.DataModelVector)
-      self.assert_(datamodelList.size() == 0)
+      self.assertEqual(datamodelList.size(), 0)
       datamodel = COPASI.CRootContainer.addDatamodel()
       self.assert_(datamodel != None)
       self.assert_(datamodel.__class__ == COPASI.CDataModel)

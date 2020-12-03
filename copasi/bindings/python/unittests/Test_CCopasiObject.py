@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -32,7 +37,7 @@ class Test_CDataObject(unittest.TestCase):
 
     def test_getObjectName(self):
       t=self.object.getObjectName()
-      self.assert_(type(t)==StringType)
+      self.assert_(type(t)==str)
 
     def test_setObjectName(self):
       NAME="MyObject"
@@ -41,11 +46,11 @@ class Test_CDataObject(unittest.TestCase):
 
     def test_getObjectDisplayName(self):
       t=self.object.getObjectDisplayName()
-      self.assert_(type(t)==StringType)
+      self.assert_(type(t)==str)
 
     def test_getObjectType(self):
       t=self.object.getObjectType()
-      self.assert_(type(t)==StringType)
+      self.assert_(type(t)==str)
 
     def test_getObjectParent(self):
       parent=self.object.getObjectParent()  
@@ -57,57 +62,9 @@ class Test_CDataObject(unittest.TestCase):
       cn=self.object.getCN()
       self.assert_(cn.__class__==COPASI.CCommonName)
 
-    def test_isContainer(self):
-      result=self.object.isContainer()
-      self.assert_(type(result)==BooleanType)
-
-    def test_isVector(self):
-      result=self.object.isVector()
-      self.assert_(type(result)==BooleanType)
-
-    def test_isMatrix(self):
-      result=self.object.isMatrix()
-      self.assert_(type(result)==BooleanType)
-
-    def test_isNameVector(self):
-      result=self.object.isNameVector()
-      self.assert_(type(result)==BooleanType)
-
-    def test_isReference(self):
-      result=self.object.isReference()
-      self.assert_(type(result)==BooleanType)
-
-    def test_isValueBool(self):
-      result=self.object.isValueBool()
-      self.assert_(type(result)==BooleanType)
-
-    def test_isValueInt(self):
-      result=self.object.isValueInt()
-      self.assert_(type(result)==BooleanType)
-
-    def test_isValueDbl(self):
-      result=self.object.isValueDbl()
-      self.assert_(type(result)==BooleanType)
-
-    def test_isNonUniqueName(self):
-      result=self.object.isNonUniqueName()
-      self.assert_(type(result)==BooleanType)
-
-    def test_isStaticString(self):
-      result=self.object.isStaticString()
-      self.assert_(type(result)==BooleanType)
-
-    def test_isValueString(self):
-      result=self.object.isValueString()
-      self.assert_(type(result)==BooleanType)
-
-    def test_isSeparator(self):
-      result=self.object.isSeparator()
-      self.assert_(type(result)==BooleanType)
-
     def test_getKey(self):
       key=self.object.getKey()
-      self.assert_(type(key)==StringType) 
+      self.assert_(type(key)==str) 
 
 def suite():
   tests=[
@@ -117,18 +74,6 @@ def suite():
          ,'test_getObjectType'
          ,'test_getObjectParent'
          ,'test_getCN'
-         ,'test_isContainer'
-         ,'test_isVector'
-         ,'test_isMatrix'
-         ,'test_isNameVector'
-         ,'test_isReference'
-         ,'test_isValueBool'
-         ,'test_isValueInt'
-         ,'test_isValueDbl'
-         ,'test_isNonUniqueName'
-         ,'test_isStaticString'
-         ,'test_isValueString'
-         ,'test_isSeparator'
          ,'test_getKey'
         ]
   return unittest.TestSuite(map(Test_CDataObject,tests))

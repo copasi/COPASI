@@ -50,6 +50,44 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
 
   }
 
+
+  SECTION("volume units")
+  {
+    std::string test_file = getTestFile("test-data/volume_units.xml");
+    auto * sbml_doc = readSBMLFromFile(test_file.c_str());
+    REQUIRE(sbml_doc != NULL);
+    auto * sbml_mod = sbml_doc->getModel();
+    REQUIRE(sbml_mod != NULL);
+
+    auto * unit = sbml_mod->getUnitDefinition("um3");
+    REQUIRE(unit != NULL);
+
+    SBMLImporter importer;
+
+    std::string expression = importer.createUnitExpressionFor(unit);
+    delete sbml_doc;
+
+    REQUIRE(!expression.empty());
+
+    auto* dm = CRootContainer::addDatamodel();
+    REQUIRE(dm->importSBML(test_file) == true);
+    const auto* model = dm->getModel();
+    std::string model_units = model->getVolumeUnit();
+    REQUIRE(model_units == expression);
+
+    // now export
+    auto sbml_text = dm->exportSBMLToString(NULL, 3, 1);
+
+    sbml_doc = readSBMLFromString(sbml_text.c_str());
+    sbml_mod = sbml_doc->getModel();
+    unit = sbml_mod->getUnitDefinition("volume");
+    REQUIRE(unit != NULL);
+
+    expression = importer.createUnitExpressionFor(unit);
+    REQUIRE(model_units == expression);
+    delete sbml_doc;
+  }
+
   SECTION("unit export")
   {
     REQUIRE(dm->newModel(NULL, true) == true);

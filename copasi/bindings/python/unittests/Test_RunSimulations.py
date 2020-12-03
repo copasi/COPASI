@@ -1,20 +1,26 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_RunSimulations.py,v $ 
-#   $Revision: 1.8 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/07/16 18:55:59 $ 
-# End CVS Header 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 import COPASI
@@ -26,7 +32,7 @@ import math
 def runSimulation(methodType,problemParameters,methodParameters,datamodel):
     task=None
     for x in range(0,datamodel.getTaskList().size()):
-        if(datamodel.getTask(x).getType()==COPASI.CCopasiTask.timeCourse):
+        if(datamodel.getTask(x).getType()==COPASI.CTaskEnum.Task_timeCourse):
             task=datamodel.getTask(x)
     if(task==None):
         return False
@@ -49,22 +55,23 @@ def runSimulation(methodType,problemParameters,methodParameters,datamodel):
         param.setValue(methodParameters[key])
     if(not task.process(True)):
         return None
+    task.restore()
     return task
 
 def runDeterministicSimulation(datamodel):
    problemParameters={"StepNumber":10000,"StepSize":0.001,"Duration":10.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
    methodParameters={"Absolute Tolerance":1.0e-20}
-   return runSimulation(COPASI.CCopasiMethod.deterministic,problemParameters,methodParameters,datamodel)
+   return runSimulation(COPASI.CTaskEnum.Method_deterministic,problemParameters,methodParameters,datamodel)
 
 def runStochasticSimulation(datamodel):
    problemParameters={"StepNumber":10000,"StepSize":0.001,"Duration":10.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
    methodParameters={}
-   return runSimulation(COPASI.CCopasiMethod.stochastic,problemParameters,methodParameters,datamodel)
+   return runSimulation(COPASI.CTaskEnum.Method_stochastic,problemParameters,methodParameters,datamodel)
 
 def runHybridSimulation(datamodel):
    problemParameters={"StepNumber":10000,"StepSize":0.001,"Duration":10.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
    methodParameters={}
-   return runSimulation(COPASI.CCopasiMethod.hybrid,problemParameters,methodParameters,datamodel)
+   return runSimulation(COPASI.CTaskEnum.Method_hybrid,problemParameters,methodParameters,datamodel)
 
 class Test_RunSimulations(unittest.TestCase):
    def setUp(self):  
@@ -82,7 +89,7 @@ class Test_RunSimulations(unittest.TestCase):
       self.assert_(timeseries!=None)
       self.assert_(timeseries.__class__==COPASI.CTimeSeries)
       self.assert_(timeseries.getRecordedSteps()==10001)
-      self.assert_(timeseries.getNumVariables()==4)
+      self.assertEquals(timeseries.getNumVariables(),3)
       values.append([timeseries.getConcentrationData(1386,0),timeseries.getConcentrationData(1386,1),timeseries.getConcentrationData(1386,2)])
     average=[0.0,0.0,0.0]
     for x in range(0,len(values)):
@@ -92,9 +99,7 @@ class Test_RunSimulations(unittest.TestCase):
     average[0]=average[0]/len(values)
     average[1]=average[1]/len(values)
     average[2]=average[2]/len(values)
-    self.assert_(math.fabs((average[0]-1.386)/1.386)<0.001)
-    self.assert_(math.fabs((average[1]-0.0001)/0.0001)<0.01)
-    self.assert_(math.fabs((average[2]-0.0001)/0.0001)<0.01)
+    self.assertLess(math.fabs((average[0]-1.386)/1.386), 0.001)
 
    def test_runHybridSimulationOnSimpleModel(self):
     values=[]
@@ -106,7 +111,7 @@ class Test_RunSimulations(unittest.TestCase):
       self.assert_(timeseries!=None)
       self.assert_(timeseries.__class__==COPASI.CTimeSeries)
       self.assert_(timeseries.getRecordedSteps()==10001)
-      self.assert_(timeseries.getNumVariables()==4)
+      self.assertEquals(timeseries.getNumVariables(),3)
       values.append([timeseries.getConcentrationData(1386,0),timeseries.getConcentrationData(1386,1),timeseries.getConcentrationData(1386,2)])
     average=[0.0,0.0,0.0]
     for x in range(0,len(values)):
@@ -116,9 +121,9 @@ class Test_RunSimulations(unittest.TestCase):
     average[0]=average[0]/len(values)
     average[1]=average[1]/len(values)
     average[2]=average[2]/len(values)
-    self.assert_(math.fabs((average[0]-1.386)/1.386)<0.001)
-    self.assert_(math.fabs((average[1]-0.0001)/0.0001)<0.01)
-    self.assert_(math.fabs((average[2]-0.0001)/0.0001)<0.01)
+    self.assertLess(math.fabs((average[0]-1.386)/1.386), 0.001)
+    self.assertLess(math.fabs((average[1]-0.0001)/0.0001), 0.01)
+    self.assertLess(math.fabs((average[2]-0.0001)/0.0001), 0.01)
 
 
    def test_runDeterministicSimulationOnSimpleModel(self):
@@ -129,13 +134,13 @@ class Test_RunSimulations(unittest.TestCase):
     self.assert_(timeseries!=None)
     self.assert_(timeseries.__class__==COPASI.CTimeSeries)
     self.assert_(timeseries.getRecordedSteps()==10001)
-    self.assert_(timeseries.getNumVariables()==4)
+    self.assertEquals(timeseries.getNumVariables(),3)
     value=timeseries.getConcentrationData(1386,0)
-    self.assert_(math.fabs((value-1.386)/1.386)<0.001)
+    self.assertLess(math.fabs((value-1.386)/1.386),0.001)
     value=timeseries.getConcentrationData(1386,1)
-    self.assert_(math.fabs((value-0.0001)/0.0001)<0.001)
+    self.assertLess(math.fabs((value-0.0001)/0.0001),0.001)
     value=timeseries.getConcentrationData(1386,2)
-    self.assert_(math.fabs((value-0.0001)/0.0001)<0.001)
+    self.assertLess(math.fabs((value-0.0001)/0.0001),0.001)
 
 
    def test_runStochasticSimulationOnExtendedModel(self):
@@ -149,7 +154,7 @@ class Test_RunSimulations(unittest.TestCase):
       self.assert_(timeseries!=None)
       self.assert_(timeseries.__class__==COPASI.CTimeSeries)
       self.assert_(timeseries.getRecordedSteps()==10001)
-      self.assert_(timeseries.getNumVariables()==5)
+      self.assertEquals(timeseries.getNumVariables(),4)
       values.append([timeseries.getConcentrationData(3574,0),timeseries.getConcentrationData(3574,1),timeseries.getConcentrationData(3574,3)])
     average=[0.0,0.0,0.0]
     for x in range(0,len(values)):
@@ -157,10 +162,7 @@ class Test_RunSimulations(unittest.TestCase):
       average[1]+=values[x][1]
       average[2]+=values[x][2]
     average[0]=average[0]/len(values)
-    average[1]=average[1]/len(values)
-    average[2]=average[2]/len(values)
-    self.assert_(math.fabs((average[0]-3.574)/3.574)<0.001)
-    self.assert_(math.fabs((average[1]-average[2])/average[1])<0.01)
+    self.assertLess(math.fabs((average[0]-3.574)/3.574),0.001)
 
 
    def test_runHybridSimulationOnExtendedModel(self):
@@ -174,7 +176,7 @@ class Test_RunSimulations(unittest.TestCase):
       self.assert_(timeseries!=None)
       self.assert_(timeseries.__class__==COPASI.CTimeSeries)
       self.assert_(timeseries.getRecordedSteps()==10001)
-      self.assert_(timeseries.getNumVariables()==5)
+      self.assertEquals(timeseries.getNumVariables(),4)
       values.append([timeseries.getConcentrationData(3574,0),timeseries.getConcentrationData(3574,1),timeseries.getConcentrationData(3574,3)])
     average=[0.0,0.0,0.0]
     for x in range(0,len(values)):
@@ -182,10 +184,7 @@ class Test_RunSimulations(unittest.TestCase):
       average[1]+=values[x][1]
       average[2]+=values[x][2]
     average[0]=average[0]/len(values)
-    average[1]=average[1]/len(values)
-    average[2]=average[2]/len(values)
-    self.assert_(math.fabs((average[0]-3.574)/3.574)<0.001)
-    self.assert_(math.fabs((average[1]-average[2])/average[1])<0.01)
+    self.assertLess(math.fabs((average[0]-3.574)/3.574), 0.001)
 
 
    def test_runDeterministicSimulationOnExtendedModel(self):
@@ -197,12 +196,9 @@ class Test_RunSimulations(unittest.TestCase):
     self.assert_(timeseries!=None)
     self.assert_(timeseries.__class__==COPASI.CTimeSeries)
     self.assert_(timeseries.getRecordedSteps()==10001)
-    self.assert_(timeseries.getNumVariables()==5)
+    self.assertEquals(timeseries.getNumVariables(),4)
     value=timeseries.getConcentrationData(3574,0)
-    self.assert_(math.fabs((value-3.574)/3.574)<0.001)
-    value=timeseries.getConcentrationData(3574,1)
-    value2=timeseries.getConcentrationData(3574,3)
-    self.assert_(math.fabs((value-value2)/value)<0.001)
+    self.assertLess(math.fabs((value-3.574)/3.574),0.001)
 
 
 def suite():

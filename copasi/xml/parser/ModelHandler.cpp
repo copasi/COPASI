@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -94,14 +94,25 @@ CXMLHandler * ModelHandler::processStart(const XML_Char * pszName,
         mpData->pModel->getModelParameterSets().CDataVector< CModelParameterSet >::remove((size_t) 0);
 
         addFix(mKey, mpData->pModel);
+
         mpData->pModel->setObjectName(Name);
-        mpData->pModel->setTimeUnit(timeUnit);
-        mpData->pModel->setVolumeUnit(volumeUnit);
-        mpData->pModel->setAreaUnit(areaUnit);
-        mpData->pModel->setLengthUnit(lengthUnit);
-        mpData->pModel->setQuantityUnit(quantityUnit, CCore::Framework::ParticleNumbers);
         mpData->pModel->setModelType(ModelType);
-        mpData->pModel->setAvogadro(Avogadro, CCore::Framework::ParticleNumbers);
+
+        {
+          size_t Size = CCopasiMessage::size();
+
+          mpData->pModel->setTimeUnit(timeUnit);
+          mpData->pModel->setVolumeUnit(volumeUnit);
+          mpData->pModel->setAreaUnit(areaUnit);
+          mpData->pModel->setLengthUnit(lengthUnit);
+          mpData->pModel->setQuantityUnit(quantityUnit, CCore::Framework::ParticleNumbers);
+          mpData->pModel->setAvogadro(Avogadro, CCore::Framework::ParticleNumbers);
+
+          // Remove error messages created by setExpression as this may fail
+          // due to incomplete model specification at this time.
+          while (CCopasiMessage::size() > Size)
+            CCopasiMessage::getLastMessage();
+        }
 
         break;
 

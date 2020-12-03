@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -30,8 +30,13 @@
 
 %ignore CReport::open;
 %ignore CReport::getStream;
-%ignore CReport::getReportDefinition() const;
 
+
+#ifdef SWIGPYTHON
+// the automatic property does make it unreadable, this is a workaround that allows the 
+// property to work as intended
+%rename(getAppend) CReport::append;
+#endif
 
 %include "report/CReport.h"
 

@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -34,15 +39,15 @@ class Test_CCopasiProblem(unittest.TestCase):
     self.assert_(type(t)==IntType)
 
 
-  def test_getModel(self):
-    model=self.problem.getModel()
-    self.assert_(model.__class__==COPASI.CModel)
-    self.assert_(model.getKey()==self.datamodel.getModel().getKey())
+  def test_getMathContainer(self):
+    container=self.problem.getMathContainer()
+    self.assert_(container.__class__==COPASI.CMathContainer)
+    self.assert_(container.getModel().getKey()==self.datamodel.getModel().getKey())
 
 def suite():
   tests=[
           'test_getType'
-         ,'test_getModel'
+         ,'test_getMathContainer'
         ]
   return unittest.TestSuite(map(Test_CCopasiProblem,tests))
 

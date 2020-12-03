@@ -1,20 +1,26 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CVersion.py,v $ 
-#   $Revision: 1.8 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/07/16 18:55:59 $ 
-# End CVS Header 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 import COPASI
@@ -42,7 +48,7 @@ class Test_CVersion(unittest.TestCase):
     self.assert_(type(version)==StringType)
 
   def test_setVersion(self):
-    self.cversion.setVersion(5,12,57,"testtesttest")
+    self.cversion.setVersion(5,12,57,True,"testtesttest")
     self.assert_(self.cversion.getVersionMajor()==5)
     self.assert_(self.cversion.getVersionMinor()==12)
     self.assert_(self.cversion.getVersionDevel()==57)

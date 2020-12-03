@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -28,6 +33,7 @@ class Test_CReport(unittest.TestCase):
     self.datamodel=COPASI.CRootContainer.addDatamodel()
     self.task=self.datamodel.getTask(0)
     self.report=self.task.getReport()
+    self.assert_(isinstance(self.report, COPASI.CReport))
 
   def test_getReportDefinition(self):
     reportDefinition=self.report.getReportDefinition()
@@ -54,15 +60,15 @@ class Test_CReport(unittest.TestCase):
     self.assert_(t==target)
 
   def test_append(self):
-    append=self.report.append()
+    append=self.report.append
     self.assert_(type(append)==BooleanType)
 
   def test_setAppend(self):
     self.report.setAppend(True)
-    append=self.report.append()
+    append=self.report.append
     self.assert_(append==True)
     self.report.setAppend(False)
-    append=self.report.append()
+    append=self.report.append
     self.assert_(append==False)
 
 

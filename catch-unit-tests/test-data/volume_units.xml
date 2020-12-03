@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<!-- Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the -->
+<!-- University of Virginia, University of Heidelberg, and University -->
+<!-- of Connecticut School of Medicine. -->
+<!-- All rights reserved. -->
+
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
+  <model areaUnits="um2" extentUnits="molecules" id="_zero__unit_0_det" lengthUnits="um" name="0-unit-0_det" substanceUnits="molecules" timeUnits="s" volumeUnits="um3">
+    <listOfUnitDefinitions>
+      <unitDefinition id="molecules">
+        <listOfUnits>
+          <unit exponent="1" kind="item" multiplier="1" scale="0"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="um3">
+        <listOfUnits>
+          <unit exponent="3" kind="metre" multiplier="1" scale="-6"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="um2">
+        <listOfUnits>
+          <unit exponent="2" kind="metre" multiplier="1" scale="-6"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="um">
+        <listOfUnits>
+          <unit exponent="1" kind="metre" multiplier="1" scale="-6"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="s">
+        <listOfUnits>
+          <unit exponent="1" kind="second" multiplier="1" scale="0"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="s_1">
+        <listOfUnits>
+          <unit exponent="-1" kind="second" multiplier="1" scale="0"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment constant="true" id="c0" name="c0" size="4" spatialDimensions="3" units="um3"/>
+      <compartment constant="true" id="c1" name="c1" size="8" spatialDimensions="3" units="um3"/>
+      <compartment constant="true" id="m0" name="m0" size="12" spatialDimensions="2"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species boundaryCondition="false" compartment="c0" constant="false" hasOnlySubstanceUnits="false" id="s0" initialConcentration="0" substanceUnits="molecules"/>
+      <species boundaryCondition="false" compartment="c0" constant="false" hasOnlySubstanceUnits="false" id="s1" initialConcentration="0.00041513469579068147" substanceUnits="molecules"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter constant="true" id="Kf_r0" units="s_1" value="0"/>
+      <parameter constant="true" id="Kr_r0" units="s_1" value="0"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction fast="false" id="r0" name="r0" reversible="true">
+        <listOfReactants>
+          <speciesReference constant="true" id="r0_s0r" species="s0" stoichiometry="1">
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference constant="true" id="r0_s1p" species="s1" stoichiometry="1">
+          </speciesReference>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> Kf_r0 </ci>
+                  <ci> s0 </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> Kr_r0 </ci>
+                    <ci> s1 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> c0 </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

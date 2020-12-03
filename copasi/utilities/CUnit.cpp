@@ -822,15 +822,17 @@ void CUnit::buildExpression()
               numerator << "*";
             }
 
-          if (CRootContainer::getUnitList()->containsSymbol(it->symbol))
+          if (fabs(1.0 - pow(it->multiplier, it->exponent) * pow(10.0, it->scale * it->exponent)) > 100 * std::numeric_limits< double >::epsilon())
+            {
+              numerator << pow(it->multiplier, it->exponent) * pow(10.0, it->scale * it->exponent) << "*" << CRootContainer::quoteUnitDefSymbol(it->symbol);
+              NumeratorCount++;
+            }
+          else if (CRootContainer::getUnitList()->containsSymbol(it->symbol))
             {
               numerator << CBaseUnit::prefixFromScale(it->scale) << CRootContainer::quoteUnitDefSymbol(it->symbol);
             }
           else
             {
-              if (fabs(1.0 - pow(it->multiplier, it->exponent) * pow(10.0, it->scale * it->exponent)) > 100 * std::numeric_limits< double >::epsilon())
-                numerator << pow(it->multiplier, it->exponent) * pow(10.0, it->scale * it->exponent) << "*";
-
               numerator << CRootContainer::quoteUnitDefSymbol(it->symbol);
             }
 
@@ -848,15 +850,17 @@ void CUnit::buildExpression()
               denominator << "*";
             }
 
-          if (CRootContainer::getUnitList()->containsSymbol(it->symbol))
+          if (fabs(1.0 - pow(it->multiplier, -it->exponent) * pow(10.0, it->scale * -it->exponent)) > 100 * std::numeric_limits< double >::epsilon())
+            {
+              denominator << pow(it->multiplier, -it->exponent) * pow(10.0, it->scale * -it->exponent) << "*" << CRootContainer::quoteUnitDefSymbol(it->symbol);
+              DenominatorCount++;
+            }
+          else if (CRootContainer::getUnitList()->containsSymbol(it->symbol))
             {
               denominator << CBaseUnit::prefixFromScale(it->scale) << CRootContainer::quoteUnitDefSymbol(it->symbol);
             }
           else
             {
-              if (fabs(1.0 - pow(it->multiplier, -it->exponent) * pow(10.0, it->scale * -it->exponent)) > 100 * std::numeric_limits< double >::epsilon())
-                denominator << pow(it->multiplier, -it->exponent) * pow(10.0, it->scale * -it->exponent) << "*";
-
               denominator << CRootContainer::quoteUnitDefSymbol(it->symbol);
             }
 
@@ -1000,6 +1004,18 @@ bool CUnit::isUnitType(UnitType type) const
     }
 
   return false;
+}
+
+void CUnit::setDimensionLess(double multiplier, double scale, double exponent)
+{
+  if (mpDimensionless == NULL)
+    {
+      mpDimensionless = const_cast< CUnitComponent * >(&*mComponents.insert(CUnitComponent(CBaseUnit::dimensionless, 1.0, 0.0, 0.0)).first);
+    }
+
+  mpDimensionless->setMultiplier(multiplier);
+  mpDimensionless->setScale(scale);
+  mpDimensionless->setExponent(exponent);
 }
 
 // friend

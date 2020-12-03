@@ -1,14 +1,26 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CCopasiParameterGroup.py,v $ 
-#   $Revision: 1.10 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2009/04/21 15:45:04 $ 
-# End CVS Header 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 import COPASI
@@ -19,24 +31,24 @@ from types import *
 class Test_CCopasiParameterGroup(unittest.TestCase):
   def setUp(self):
     self.paramgroup=COPASI.CCopasiParameterGroup("ParameterGroup")
-    self.paramgroup.addParameter("param1",COPASI.CCopasiParameter.DOUBLE)
-    self.paramgroup.addParameter("param2",COPASI.CCopasiParameter.DOUBLE)
-    self.paramgroup.addParameter("param3",COPASI.CCopasiParameter.DOUBLE)
+    self.paramgroup.addParameter("param1",COPASI.CCopasiParameter.Type_DOUBLE)
+    self.paramgroup.addParameter("param2",COPASI.CCopasiParameter.Type_DOUBLE)
+    self.paramgroup.addParameter("param3",COPASI.CCopasiParameter.Type_DOUBLE)
 
 
    
   def test_addParameter(self):
     self.paramgroup.clear()
-    self.paramgroup.addParameter("testparam1",COPASI.CCopasiParameter.DOUBLE)
-    self.paramgroup.addParameter("testparam2",COPASI.CCopasiParameter.UDOUBLE)
-    self.paramgroup.addParameter("testparam3",COPASI.CCopasiParameter.INT)
-    self.paramgroup.addParameter("testparam4",COPASI.CCopasiParameter.UINT)
-    self.paramgroup.addParameter("testparam5",COPASI.CCopasiParameter.BOOL)
-    self.paramgroup.addParameter("testparam6",COPASI.CCopasiParameter.GROUP)
-    self.paramgroup.addParameter("testparam7",COPASI.CCopasiParameter.CN)
-    self.paramgroup.addParameter("testparam8",COPASI.CCopasiParameter.STRING)
-    self.paramgroup.addParameter("testparam9",COPASI.CCopasiParameter.KEY)
-    self.paramgroup.addParameter("testparam10",COPASI.CCopasiParameter.FILE)
+    self.paramgroup.addParameter("testparam1",COPASI.CCopasiParameter.Type_DOUBLE)
+    self.paramgroup.addParameter("testparam2",COPASI.CCopasiParameter.Type_UDOUBLE)
+    self.paramgroup.addParameter("testparam3",COPASI.CCopasiParameter.Type_INT)
+    self.paramgroup.addParameter("testparam4",COPASI.CCopasiParameter.Type_UINT)
+    self.paramgroup.addParameter("testparam5",COPASI.CCopasiParameter.Type_BOOL)
+    self.paramgroup.addParameter("testparam6",COPASI.CCopasiParameter.Type_GROUP)
+    self.paramgroup.addParameter("testparam7",COPASI.CCopasiParameter.Type_CN)
+    self.paramgroup.addParameter("testparam8",COPASI.CCopasiParameter.Type_STRING)
+    self.paramgroup.addParameter("testparam9",COPASI.CCopasiParameter.Type_KEY)
+    self.paramgroup.addParameter("testparam10",COPASI.CCopasiParameter.Type_FILE)
     self.assert_(self.paramgroup.size()==10)
 
 
@@ -72,26 +84,26 @@ class Test_CCopasiParameterGroup(unittest.TestCase):
 
   def test_getType(self):
     t=self.paramgroup.getType(0)
-    self.assert_(type(t)==IntType)
-    self.assert_(t==COPASI.CCopasiParameter.DOUBLE)
+    self.assert_(type(t)==int)
+    self.assert_(t==COPASI.CCopasiParameter.Type_DOUBLE)
     t2=self.paramgroup.getType("param2")
-    self.assert_(type(t2)==IntType)
-    self.assert_(t2==COPASI.CCopasiParameter.DOUBLE)
+    self.assert_(type(t2)==int)
+    self.assert_(t2==COPASI.CCopasiParameter.Type_DOUBLE)
 
   def test_getKeyForParameter(self):
     key=self.paramgroup.getKeyForParameter("param1")
-    self.assert_(type(key)==StringType)
+    self.assert_(type(key)==str)
     key=self.paramgroup.getKeyForParameter(2)
-    self.assert_(type(key)==StringType)
+    self.assert_(type(key)==str)
 
   def test_getName(self):
     name=self.paramgroup.getName(1)
-    self.assert_(type(name)==StringType)
+    self.assert_(type(name)==str)
     self.assert_(name=="param2")
 
   def test_size(self):
     size=self.paramgroup.size()
-    self.assert_(type(size)==IntType)
+    self.assert_(type(size)==int)
     self.assert_(size==3)
 
   def test_clear(self):
@@ -100,7 +112,7 @@ class Test_CCopasiParameterGroup(unittest.TestCase):
 
   def test_getIndex(self):
     index=self.paramgroup.getIndex("param3")
-    self.assert_(type(index)==IntType)
+    self.assert_(type(index)==int)
     self.assert_(index==2)
 
 def suite():

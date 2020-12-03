@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -39,15 +44,9 @@ class Test_CTrajectoryTask(unittest.TestCase):
   def test_process(self):
     self.task.process(True)
 
-  def test_getState(self):
-    cstate=self.task.getState()
-    self.task.process(True)
-    cstate=self.task.getState()
-    self.assert_(cstate.__class__==COPASI.CState)
-
   def test_setMethodType(self):
-    self.assert_(self.task.setMethodType(COPASI.CCopasiMethod.stochastic))
-    self.failIf(self.task.setMethodType(COPASI.CCopasiMethod.HookeJeeves))
+    self.assert_(self.task.setMethodType(COPASI.CTaskEnum.Method_stochastic))
+    self.assertFalse(self.task.setMethodType(COPASI.CTaskEnum.Method_HookeJeeves))
 
   def test_getTimeSeries(self):
     self.task.process(True)
@@ -63,7 +62,6 @@ def suite():
   tests=[
           'test_setUp'
          ,'test_process'
-         ,'test_getState'
          ,'test_getTimeSeries'
          ,'test_setMethodType'
          ,'test_getValidMethods'

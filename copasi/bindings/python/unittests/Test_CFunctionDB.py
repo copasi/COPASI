@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -65,7 +70,7 @@ class Test_CFunctionDB(unittest.TestCase):
   def test_suitableFunctions(self):
     sfs=self.functions.suitableFunctions(2,1,COPASI.TriFalse)
     self.assert_(sfs!=None)
-    self.assert_(type(sfs)==TupleType) 
+    self.assert_(isinstance(sfs, COPASI.CFunctionStdVector)) 
     self.assert_(len(sfs)!=0)
 
 def suite():
