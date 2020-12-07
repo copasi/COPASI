@@ -93,6 +93,10 @@ QVariant CQParameterSetsDM::data(const QModelIndex &index, int role) const
 
   if (index.row() >= rowCount()) return QVariant();
 
+  if (mpListOfParameterSets->size() <= index.row())
+    return QVariant();
+
+
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
       switch (index.column())
@@ -213,7 +217,8 @@ bool CQParameterSetsDM::removeRows(int position, int rows, const QModelIndex & p
 
   std::vector< const CModelParameterSet * > ToBeDeleted;
   CDataVectorN< CModelParameterSet >::const_iterator it = mpListOfParameterSets->begin() + position;
-  CDataVectorN< CModelParameterSet >::const_iterator end = mpListOfParameterSets->begin() + position + rows;
+  CDataVectorN< CModelParameterSet >::const_iterator end = mpListOfParameterSets->begin()
+      + position + std::min(rows, (int)mpListOfParameterSets->size());
 
   for (; it != end; ++it)
     {
@@ -279,12 +284,9 @@ bool CQParameterSetsDM::removeRows(QModelIndexList rows, const QModelIndex & /* 
 void CQParameterSetsDM::setListOfModelParameterSets(CDataVectorN< CModelParameterSet > *pListOfModelParameterSets)
 
 {
-  if (mpListOfParameterSets != pListOfModelParameterSets)
-    {
-      beginResetModel();
-      mpListOfParameterSets = pListOfModelParameterSets;
-      mFetched = std::min(mFetchLimit, size());
-      endResetModel();
-      //reset();
-    }
+  beginResetModel();
+  mpListOfParameterSets = pListOfModelParameterSets;
+  mFetched = std::min(mFetchLimit, size());
+  endResetModel();
+  //reset();
 }
