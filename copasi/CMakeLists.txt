@@ -98,7 +98,9 @@ if(ENABLE_VERSIONING)
   include(versioning/CMakeLists.txt)
 endif(ENABLE_VERSIONING)
 
-
+if(ENABLE_OMP)
+  include(OpenMP/CMakeLists.txt)
+endif(ENABLE_OMP)
 
 ###############################################################################
 #
@@ -298,6 +300,9 @@ target_link_libraries(libCOPASISE-static
    endif()
  endif(EXTRA_LIBS)
 
+if (ENABLE_OMP)
+  target_link_libraries(libCOPASISE-static OpenMP::OpenMP_CXX)
+endif (ENABLE_OMP)
 
 #need to link against iconv
 if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
@@ -360,6 +365,11 @@ if(ENABLE_LIBCOPASISE_SHARED)
 
   target_link_libraries(libCOPASISE-shared ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${CLAPACK_LIBRARIES})
   
+  if (ENABLE_OMP)
+    target_link_libraries(libCOPASISE-shared OpenMP::OpenMP_CXX)
+  endif (ENABLE_OMP)
+
+
   #need to link against iconv
   if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
     if (ICONV_LIBRARIES)

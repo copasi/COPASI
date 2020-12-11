@@ -309,6 +309,15 @@ if (ENABLE_JIT)
   include_directories(BEFORE ${CPUFEATURE_INCLUDE_DIR})
 endif (ENABLE_JIT)
 
+option(ENABLE_OMP "Enable the OpenMP support" OFF)
+
+if (ENABLE_OMP)
+  set(USE_OMP 1)
+
+  find_package (OpenMP REQUIRED)
+  include_directories(BEFORE ${OpenMP_INCLUDE_PATH})
+endif(ENABLE_OMP)
+
 # TODO find raptor
 
 # TODO raptor should be restricted to a version which is at least
@@ -918,6 +927,7 @@ message(STATUS "-----------------------------------------------------------
    Analytics Task           = ${ENABLE_ANALYTICS}
    Time Sensitivities task  = ${ENABLE_TIME_SENS}
    JIT Compilation          = ${ENABLE_JIT}
+   OpenMP                   = ${ENABLE_OMP}
    Additional Defines       = ${DirDefs}
 
   Language Bindings:

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -106,7 +106,6 @@ CCopasiTask * CTaskFactory::createTask(const CTaskEnum::Task & type, const CData
         pTask = new CTimeSensTask(pParent);
         break;
 
-
       default:
         break;
     }
@@ -117,4 +116,84 @@ CCopasiTask * CTaskFactory::createTask(const CTaskEnum::Task & type, const CData
     }
 
   return pTask;
+}
+
+// static
+CCopasiTask * CTaskFactory::copyTask(const CCopasiTask * pSrc, const CDataContainer * pParent)
+{
+  if (pSrc == NULL)
+    return NULL;
+
+  CCopasiTask * pCopy = NULL;
+
+  switch (pSrc->getType())
+    {
+      case CTaskEnum::Task::steadyState:
+        pCopy = new CSteadyStateTask(*static_cast< const CSteadyStateTask * >(pSrc), pParent);
+        break;
+
+      case CTaskEnum::Task::timeCourse:
+        pCopy = new CTrajectoryTask(pParent);
+        break;
+
+      case CTaskEnum::Task::scan:
+        pCopy = new CScanTask(pParent);
+        break;
+
+      case CTaskEnum::Task::fluxMode:
+        pCopy = new CEFMTask(pParent);
+        break;
+
+      case CTaskEnum::Task::optimization:
+        pCopy = new COptTask(pParent);
+        break;
+
+      case CTaskEnum::Task::parameterFitting:
+        pCopy = new CFitTask(pParent);
+        break;
+
+      case CTaskEnum::Task::mca:
+        pCopy = new CMCATask(pParent);
+        break;
+
+      case CTaskEnum::Task::lna:
+        pCopy = new CLNATask(pParent);
+        break;
+
+      case CTaskEnum::Task::lyap:
+        pCopy = new CLyapTask(pParent);
+        break;
+
+      case CTaskEnum::Task::sens:
+        pCopy = new CSensTask(pParent);
+        break;
+
+      case CTaskEnum::Task::tssAnalysis:
+        pCopy = new CTSSATask(pParent);
+        break;
+
+      case CTaskEnum::Task::moieties:
+        pCopy = new CMoietiesTask(pParent);
+        break;
+
+      case CTaskEnum::Task::crosssection:
+        pCopy = new CCrossSectionTask(pParent);
+        break;
+
+#ifdef  WITH_ANALYTICS
+
+      case CTaskEnum::Task::analytics:
+        pCopy = new CAnalyticsTask(pParent);
+        break;
+#endif // WITH_ANALYTICS
+
+      case CTaskEnum::Task::timeSens:
+        pCopy = new CTimeSensTask(pParent);
+        break;
+
+      default:
+        break;
+    }
+
+  return pCopy;
 }

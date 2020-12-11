@@ -20,6 +20,7 @@
 #cmakedefine USE_SBMLUNIT
 #cmakedefine DATAVALUE_NEEDS_SIZE_T_MEMBERS
 #cmakedefine USE_JIT @USE_JIT@
+#cmakedefine USE_OMP @USE_OMP@
 
 // debug options
 #cmakedefine COPASI_DEBUG_TRACE
