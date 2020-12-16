@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,23 +27,19 @@
 #include "copasi/report/CReport.h"
 
 #include "copasi/math/CMathContainer.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 CMoietiesTask::CMoietiesTask(const CDataContainer * pParent,
                              const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
-  mpProblem = new CMoietiesProblem(type, this);
-  mpMethod = createMethod(CTaskEnum::Method::Householder);
-  this->add(mpMethod, true);
+  mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::Householder, this);
 }
 
 CMoietiesTask::CMoietiesTask(const CMoietiesTask & src,
                              const CDataContainer * pParent):
   CCopasiTask(src, pParent)
-{
-  mpProblem = new CMoietiesProblem(* static_cast< CMoietiesProblem * >(src.mpProblem), this);
-  mpMethod = createMethod(src.mpMethod->getSubType());
-}
+{}
 
 // virtual
 CMoietiesTask::~CMoietiesTask()

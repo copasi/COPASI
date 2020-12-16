@@ -233,6 +233,14 @@ public:
               const CTaskEnum::Task & taskType = CTaskEnum::Task::scan);
 
   /**
+   * Copy constructor
+   * @param const CScanMethod & src
+   * @param const CDataContainer * pParent
+   */
+  CScanMethod(const CScanMethod & src,
+              const CDataContainer * pParent);
+
+  /**
    *  Destructor.
    */
   ~CScanMethod();

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,26 +49,19 @@
 #include "copasi/model/CMetabNameInterface.h"
 #include "copasi/model/CChemEqInterface.h"
 #include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 CEFMTask::CEFMTask(const CDataContainer * pParent,
                    const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
-  mpProblem = new CEFMProblem(this);
-  mpMethod = createMethod(CTaskEnum::Method::EFMAlgorithm);
-
-  this->add(mpMethod, true);
+  mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::EFMAlgorithm, this);
 }
 
 CEFMTask::CEFMTask(const CEFMTask & src,
                    const CDataContainer * pParent):
   CCopasiTask(src, pParent)
-{
-  mpProblem = new CCopasiProblem(*static_cast< CEFMProblem * >(src.mpProblem), this);
-  mpMethod = createMethod(src.mpMethod->getSubType());
-
-  this->add(mpMethod, true);
-}
+{}
 
 CEFMTask::~CEFMTask()
 {}
@@ -432,7 +425,7 @@ std::string CEFMTask::getReactionEquationBackward(unsigned C_INT32 index1, unsig
     {
       int i = equation.find("=", 0);
       std::string lhs = equation.substr(0, i - 1);
-      std::string rhs = equation.substr(i + 2 , equation.size() - i - 1);
+      std::string rhs = equation.substr(i + 2, equation.size() - i - 1);
       equation = rhs + " -> " + lhs;
     }
 

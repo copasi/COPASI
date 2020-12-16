@@ -50,6 +50,7 @@
 #include "copasi/utilities/CCopasiException.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 #define XXXX_Reporting
 
@@ -100,10 +101,7 @@ CTrajectoryTask::CTrajectoryTask(const CDataContainer * pParent,
   mpLess(&fl),
   mProceed(true)
 {
-  mpProblem = new CTrajectoryProblem(this);
-  mpMethod = createMethod(CTaskEnum::Method::deterministic);
-  this->add(mpMethod, true);
-
+  mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::deterministic, this);
   mUpdateMoieties = static_cast< CTrajectoryMethod * >(mpMethod)->integrateReducedModel();
 
   signalMathContainerChanged();
@@ -125,16 +123,6 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
   mpLess(src.mpLess),
   mProceed(src.mProceed)
 {
-  mpProblem =
-    new CTrajectoryProblem(*static_cast< CTrajectoryProblem * >(src.mpProblem), this);
-
-  mpMethod = createMethod(src.mpMethod->getSubType());
-  * mpMethod = * src.mpMethod;
-
-  mpMethod->elevateChildren();
-
-  this->add(mpMethod, true);
-
   mUpdateMoieties = static_cast< CTrajectoryMethod * >(mpMethod)->integrateReducedModel();
 
   signalMathContainerChanged();
@@ -158,11 +146,10 @@ void CTrajectoryTask::load(CReadConfig & configBuffer)
   ((CTrajectoryProblem *) mpProblem)->load(configBuffer);
 
   pdelete(mpMethod);
-  mpMethod = createMethod(CTaskEnum::Method::deterministic);
+  mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::deterministic, this);
 
   mUpdateMoieties = static_cast< CTrajectoryMethod * >(mpMethod)->integrateReducedModel();
-
-  ((CTrajectoryMethod *)mpMethod)->setProblem((CTrajectoryProblem *) mpProblem);
+  static_cast< CTrajectoryMethod * >(mpMethod)->setProblem(static_cast< CTrajectoryProblem * >(mpProblem));
 }
 
 bool CTrajectoryTask::initialize(const OutputFlag & of,

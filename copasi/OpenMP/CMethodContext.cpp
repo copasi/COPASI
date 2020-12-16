@@ -3,25 +3,25 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-#include "copasi/OpenMP/CTaskContext.h"
+#include "copasi/OpenMP/CMethodContext.h"
+#include "copasi/utilities/CMethodFactory.h"
 #include "copasi/OpenMP/CMathContext.h"
-#include "copasi/utilities/CTaskFactory.h"
 
-CTaskContext::CTaskContext(CCopasiTask * pTask)
+CMethodContext::CMethodContext(CCopasiMethod * pMethod)
   : CContext()
   , mpMathContext(NULL)
 {
   init();
   master() = NULL;
-  setTask(pTask);
+  setMethod(pMethod);
 }
 
-CTaskContext::~CTaskContext()
+CMethodContext::~CMethodContext()
 {
-  setTask(NULL);
+  setMethod(NULL);
 }
 
-void CTaskContext::setTask(CCopasiTask * pTask)
+void CMethodContext::setMethod(CCopasiMethod * pMethod)
 {
   if (master() != NULL)
     {
@@ -29,30 +29,30 @@ void CTaskContext::setTask(CCopasiTask * pTask)
 
       if (mSize > 1)
         {
-          CCopasiTask ** pIt = beginThread();
-          CCopasiTask ** pEnd = endThread();
+          CCopasiMethod ** pIt = beginThread();
+          CCopasiMethod ** pEnd = endThread();
 
           for (; pIt != pEnd; ++pIt)
             delete *pIt;
         }
     }
 
-  if (pTask != NULL)
+  if (pMethod != NULL)
     {
-      master() = pTask;
+      master() = pMethod;
 
       if (mSize > 1)
         {
-          CCopasiTask ** pIt = beginThread();
-          CCopasiTask ** pEnd = endThread();
+          CCopasiMethod ** pIt = beginThread();
+          CCopasiMethod ** pEnd = endThread();
 
           for (; pIt != pEnd; ++pIt)
-            *pIt = CTaskFactory::copy(pTask, INHERIT_PARENT);
+            *pIt = CMethodFactory::copy(pMethod, INHERIT_PARENT);
         }
     }
 }
 
-void CTaskContext::setMathContext(CMathContext * pContext)
+void CMethodContext::setMathContext(CMathContext * pContext)
 {
   mpMathContext = pContext;
 
@@ -62,8 +62,8 @@ void CTaskContext::setMathContext(CMathContext * pContext)
 
       if (mSize > 1)
         {
-          CCopasiTask ** pIt = beginThread();
-          CCopasiTask ** pEnd = endThread();
+          CCopasiMethod ** pIt = beginThread();
+          CCopasiMethod ** pEnd = endThread();
           CMathContainer ** pContainer = mpMathContext->beginThread();
 
           for (; pIt != pEnd; ++pIt, ++pContainer)

@@ -2266,7 +2266,7 @@ const CDataVectorN< CCopasiTask > * CDataModel::getTaskList() const
 CCopasiTask * CDataModel::addTask(const CTaskEnum::Task & taskType)
 {
   CCopasiTask * pTask = NULL;
-  pTask = CTaskFactory::createTask(taskType, mData.pTaskList);
+  pTask = CTaskFactory::create(taskType, mData.pTaskList);
 
   return pTask;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,6 +36,7 @@
 #include "copasi/optimization/COptMethod.h"
 
 #include "copasi/utilities/CCopasiMethod.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 const CTaskEnum::Method CFitTask::ValidMethods[]  =
 {
@@ -66,26 +67,17 @@ CFitTask::CFitTask(const CDataContainer * pParent,
                    const CTaskEnum::Task & type):
   COptTask(pParent, type)
 {
-  pdelete(mpProblem);
-  mpProblem = new CFitProblem(type, this);
-  pdelete(mpMethod);
-  mpMethod = createMethod(CTaskEnum::Method::EvolutionaryProgram);
-
-  ((COptMethod *) mpMethod)->setProblem((COptProblem *) mpProblem);
+  if (getType() == CTaskEnum::Task::parameterFitting)
+    {
+      mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::EvolutionaryProgram, this);
+      static_cast< COptMethod * >(mpMethod)->setProblem(static_cast< COptProblem * >(mpProblem));
+    }
 }
 
 CFitTask::CFitTask(const CFitTask & src,
                    const CDataContainer * pParent):
   COptTask(src, pParent)
-{
-  pdelete(mpProblem);
-  mpProblem = new CFitProblem(*(CFitProblem *) src.mpProblem, this);
-  pdelete(mpMethod);
-  mpMethod = createMethod(src.mpMethod->getSubType());
-  this->add(mpMethod, true);
-
-  ((COptMethod *) mpMethod)->setProblem((COptProblem *) mpProblem);
-}
+{}
 
 CFitTask::~CFitTask()
 {cleanup();}

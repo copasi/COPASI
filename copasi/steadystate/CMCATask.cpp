@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -39,6 +44,7 @@
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/report/CReport.h"
 #include "copasi/math/CMathContainer.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 #define XXXX_Reporting
 
@@ -46,21 +52,13 @@ CMCATask::CMCATask(const CDataContainer * pParent,
                    const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
-  mpProblem = new CMCAProblem(this);
-
-  mpMethod = createMethod(CTaskEnum::Method::mcaMethodReder);
+  mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::mcaMethodReder, this);
 }
 
 CMCATask::CMCATask(const CMCATask & src,
                    const CDataContainer * pParent):
   CCopasiTask(src, pParent)
-{
-  mpProblem =
-    new CMCAProblem(*(CMCAProblem *) src.mpProblem, this);
-
-  mpMethod = createMethod(src.mpMethod->getSubType());
-  this->add(mpMethod, true);
-}
+{}
 
 CMCATask::~CMCATask()
 {}

@@ -44,6 +44,7 @@
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/utilities/CCopasiException.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 #define XXXX_Reporting
 
@@ -78,8 +79,7 @@ CTSSATask::CTSSATask(const CDataContainer * pParent,
   mContainerState(),
   mpContainerStateTime(NULL)
 {
-  mpProblem = new CTSSAProblem(this);
-  mpMethod = createMethod(CTaskEnum::Method::tssILDM);
+  mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::tssILDM, this);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
@@ -99,15 +99,6 @@ CTSSATask::CTSSATask(const CTSSATask & src,
   mContainerState(),
   mpContainerStateTime(NULL)
 {
-  mpProblem =
-    new CTSSAProblem(*static_cast< CTSSAProblem * >(src.mpProblem), this);
-
-  mpMethod = createMethod(src.mpMethod->getSubType());
-  * mpMethod = * src.mpMethod;
-  mpMethod->elevateChildren();
-
-  this->add(mpMethod, true);
-
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 
   if (pParameter != NULL)
@@ -124,7 +115,6 @@ bool CTSSATask::updateMatrices()
   assert(mpProblem != NULL && mpMethod != NULL);
 
   assert(dynamic_cast<CTSSAProblem *>(mpProblem) != NULL);
-
 
   mpMethod->setMathContainer(mpContainer);
 

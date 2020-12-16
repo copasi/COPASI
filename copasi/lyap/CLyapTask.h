@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -100,6 +100,14 @@ public:
    */
   CLyapTask(const CDataContainer * pParent,
             const CTaskEnum::Task & type = CTaskEnum::Task::lyap);
+
+  /**
+   * Copy constructor
+   * @param const CLyapTaks &src
+   * @param const CDataContainer * pParent
+   */
+  CLyapTask(const CLyapTask & src,
+            const CDataContainer * pParent);
 
   /**
    * Destructor

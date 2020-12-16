@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,6 +33,7 @@
 #include "copasi/math/CMathContainer.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/report/CReport.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 #define XXXX_Reporting
 
@@ -40,20 +41,13 @@ CLNATask::CLNATask(const CDataContainer * pParent,
                    const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
-  mpProblem = new CLNAProblem(this);
-
-  mpMethod = createMethod(CTaskEnum::Method::linearNoiseApproximation);
+  mpMethod = CMethodFactory::create(this->getType(), CTaskEnum::Method::linearNoiseApproximation, this);
 }
 
 CLNATask::CLNATask(const CLNATask & src,
                    const CDataContainer * pParent):
   CCopasiTask(src, pParent)
-{
-  mpProblem =
-    new CLNAProblem(*(CLNAProblem *) src.mpProblem, this);
-
-  mpMethod = createMethod(src.mpMethod->getSubType());
-}
+{}
 
 CLNATask::~CLNATask()
 {}

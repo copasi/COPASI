@@ -37,7 +37,7 @@
 #endif // WITH_ANALYTICS
 
 // static
-CCopasiTask * CTaskFactory::createTask(const CTaskEnum::Task & type, const CDataContainer * pParent)
+CCopasiTask * CTaskFactory::create(const CTaskEnum::Task & type, const CDataContainer * pParent)
 {
   CCopasiTask * pTask = NULL;
 
@@ -119,7 +119,7 @@ CCopasiTask * CTaskFactory::createTask(const CTaskEnum::Task & type, const CData
 }
 
 // static
-CCopasiTask * CTaskFactory::copyTask(const CCopasiTask * pSrc, const CDataContainer * pParent)
+CCopasiTask * CTaskFactory::copy(const CCopasiTask * pSrc, const CDataContainer * pParent)
 {
   if (pSrc == NULL)
     return NULL;
@@ -133,62 +133,62 @@ CCopasiTask * CTaskFactory::copyTask(const CCopasiTask * pSrc, const CDataContai
         break;
 
       case CTaskEnum::Task::timeCourse:
-        pCopy = new CTrajectoryTask(pParent);
+        pCopy = new CTrajectoryTask(*static_cast< const CTrajectoryTask * >(pSrc), pParent);
         break;
 
       case CTaskEnum::Task::scan:
-        pCopy = new CScanTask(pParent);
+        pCopy = new CScanTask(*static_cast< const CScanTask * >(pSrc), pParent);
         break;
 
       case CTaskEnum::Task::fluxMode:
-        pCopy = new CEFMTask(pParent);
+        pCopy = new CEFMTask(*static_cast< const CEFMTask * >(pSrc), pParent);
         break;
 
       case CTaskEnum::Task::optimization:
-        pCopy = new COptTask(pParent);
+        pCopy = new COptTask(*static_cast< const COptTask * >(pSrc), pParent);
         break;
 
       case CTaskEnum::Task::parameterFitting:
-        pCopy = new CFitTask(pParent);
+        pCopy = new CFitTask(*static_cast< const CFitTask * >(pSrc), pParent);
         break;
 
       case CTaskEnum::Task::mca:
-        pCopy = new CMCATask(pParent);
+        pCopy = new CMCATask(*static_cast< const CMCATask * >(pSrc), pParent);
         break;
 
       case CTaskEnum::Task::lna:
-        pCopy = new CLNATask(pParent);
+        pCopy = new CLNATask(*static_cast< const CLNATask * >(pSrc), pParent);
         break;
 
       case CTaskEnum::Task::lyap:
-        pCopy = new CLyapTask(pParent);
+        pCopy = new CLyapTask(*static_cast< const CLyapTask * >(pSrc), pParent);
         break;
 
       case CTaskEnum::Task::sens:
-        pCopy = new CSensTask(pParent);
+        pCopy = new CSensTask(*static_cast< const CSensTask * >(pSrc), pParent);
         break;
 
       case CTaskEnum::Task::tssAnalysis:
-        pCopy = new CTSSATask(pParent);
+        pCopy = new CTSSATask(*static_cast< const CTSSATask * >(pSrc), pParent);
         break;
 
       case CTaskEnum::Task::moieties:
-        pCopy = new CMoietiesTask(pParent);
+        pCopy = new CMoietiesTask(*static_cast< const CMoietiesTask * >(pSrc), pParent);
         break;
 
       case CTaskEnum::Task::crosssection:
-        pCopy = new CCrossSectionTask(pParent);
+        pCopy = new CCrossSectionTask(*static_cast< const CCrossSectionTask * >(pSrc), pParent);
         break;
 
 #ifdef  WITH_ANALYTICS
 
       case CTaskEnum::Task::analytics:
-        pCopy = new CAnalyticsTask(pParent);
+        pCopy = new CAnalyticsTask(*static_cast< const CAnalyticsTask * >(pSrc), pParent);
         break;
 #endif // WITH_ANALYTICS
 
       case CTaskEnum::Task::timeSens:
-        pCopy = new CTimeSensTask(pParent);
+        pCopy = new CTimeSensTask(*static_cast< const CTimeSensTask * >(pSrc), pParent);
         break;
 
       default:

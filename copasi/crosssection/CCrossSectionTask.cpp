@@ -38,6 +38,7 @@
 #include "copasi/utilities/CCopasiException.h"
 #include "copasi/utilities/CCallback.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 CCrossSectionTask::CCrossSectionTask(const CDataContainer * pParent,
                                      const CTaskEnum::Task & type):
@@ -66,10 +67,8 @@ CCrossSectionTask::CCrossSectionTask(const CDataContainer * pParent,
   mFreq(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
   mAverageFreq(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
 {
+  mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::deterministic, this);
   initObjects();
-  mpProblem = new CCrossSectionProblem(this);
-  mpMethod = createMethod(CTaskEnum::Method::deterministic);
-  this->add(mpMethod, true);
 }
 
 CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
@@ -100,15 +99,6 @@ CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
   mAverageFreq(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
 {
   initObjects();
-  mpProblem =
-    new CCrossSectionProblem(*static_cast< CCrossSectionProblem * >(src.mpProblem), this);
-
-  mpMethod = createMethod(src.mpMethod->getSubType());
-  * mpMethod = * src.mpMethod;
-
-  mpMethod->elevateChildren();
-
-  this->add(mpMethod, true);
 }
 
 CCrossSectionTask::~CCrossSectionTask()

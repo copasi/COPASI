@@ -63,6 +63,7 @@
 #include "copasi/parameterFitting/CFitTask.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/commandline/CConfigurationFile.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 /*
  *  Constructs a TaskWidget which is a child of 'parent', with the
@@ -572,7 +573,7 @@ CCopasiMethod * TaskWidget::createMethod(const CTaskEnum::Method & type)
 
   if (mpTask != NULL)
     {
-      pMethod = mpTask->createMethod(type);
+      pMethod = CMethodFactory::create(mpTask->getType(), type, mpTask);
     }
 
   return pMethod;

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,6 +36,7 @@
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/utilities/CSort.h"
 #include "copasi/core/CDataObjectReference.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 COptMethodSS::COptMethodSS(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
@@ -133,9 +134,10 @@ bool COptMethodSS::initialize()
     {
       // this is a least squares problem (param estimation)
       // let's use our favorite lsq method
-      mpLocalMinimizer = static_cast< COptMethod * >(CCopasiMethod::createMethod(getObjectParent(),
+      mpLocalMinimizer = static_cast< COptMethod * >(CMethodFactory::create(getType(),
                          CTaskEnum::Method::LevenbergMarquardt,
-                         getType()));
+                         getObjectParent()));
+
       // the intermediate local minimizations use a rather relaxed tolerance
       mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-003);
       // TODO: not sure if we should let this one go that long...
@@ -145,9 +147,10 @@ bool COptMethodSS::initialize()
     {
       // this is a generic optimisation problem
       // let's use Hooke and Jeeves
-      mpLocalMinimizer = static_cast< COptMethod * >(CCopasiMethod::createMethod(getObjectParent(),
+      mpLocalMinimizer = static_cast< COptMethod * >(CMethodFactory::create(getType(),
                          CTaskEnum::Method::HookeJeeves,
-                         getType()));
+                         getObjectParent()));
+
       // with a rather relaxed tolerance (1e-3) for intermediate minimizations
       mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-003);
       mpLocalMinimizer->setValue("Iteration Limit", (C_INT32) 50);

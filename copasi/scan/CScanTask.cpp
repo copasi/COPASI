@@ -51,6 +51,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/crosssection/CCrossSectionTask.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 CScanTask::CScanTask(const CDataContainer * pParent,
                      const CTaskEnum::Task & type):
@@ -61,8 +62,7 @@ CScanTask::CScanTask(const CDataContainer * pParent,
   mOutputInSubtask(false),
   mUseInitialValues(true)
 {
-  mpProblem = new CScanProblem(this);
-  mpMethod = createMethod(CTaskEnum::Method::scanMethod);
+  mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::scanMethod, this);
   static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
 
@@ -75,8 +75,6 @@ CScanTask::CScanTask(const CScanTask & src,
   mOutputInSubtask(false),
   mUseInitialValues(true)
 {
-  mpProblem = new CScanProblem(*(CScanProblem *) src.mpProblem, this);
-  mpMethod = createMethod(CTaskEnum::Method::scanMethod);
   static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
 

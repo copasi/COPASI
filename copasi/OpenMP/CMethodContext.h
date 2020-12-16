@@ -3,30 +3,30 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-#ifndef COPASI_CTaskContext
-#define COPASI_CTaskContext
+#ifndef COPASI_CMethodContext
+#define COPASI_CMethodContext
 
 #include "copasi/OpenMP/CContext.h"
-#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/utilities/CCopasiMethod.h"
 
 class CMathContext;
 
-class CTaskContext : public CContext< CCopasiTask * >
+class CMethodContext : public CContext< CCopasiMethod * >
 {
 public:
-  CTaskContext() = delete;
+  CMethodContext() = delete;
 
-  CTaskContext(const CTaskContext & src) = delete;
+  CMethodContext(const CMethodContext & src) = delete;
 
-  CTaskContext(CCopasiTask * pTask);
+  CMethodContext(CCopasiMethod * pMethod);
 
-  ~CTaskContext();
+  ~CMethodContext();
 
   /**
    * Set the pointer to container used for calculations
-   * @param CCopasiTask * pTask
+   * @param CCopasiMethod * pMethod
    */
-  void setTask(CCopasiTask * pTask);
+  void setMethod(CCopasiMethod * pMethod);
 
   /**
    * Set the pointer to container used for calculations
@@ -38,4 +38,4 @@ private:
   CMathContext * mpMathContext;
 };
 
-#endif // COPASI_CTaskContext
+#endif // COPASI_CMethodContext

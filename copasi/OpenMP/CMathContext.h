@@ -9,7 +9,7 @@
 #include "copasi/OpenMP/CContext.h"
 #include "copasi/math/CMathContainer.h"
 
-class CMathContext: public CContext< CMathContainer * >
+class CMathContext : public CContext< CMathContainer * >
 {
 public:
   CMathContext() = delete;
