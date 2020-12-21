@@ -90,7 +90,7 @@ private:
 
   void _setup(QTableWidget* pList);
 
-  QAction* mpSeparator;
+  QAction* mpActSeparator;
 };
 
 #endif // CQREPORTDEFINITION_H
