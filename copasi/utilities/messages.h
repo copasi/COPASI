@@ -511,9 +511,9 @@ const MESSAGES Messages[] =
   {MCUnitDefinition + 2, "CUnitDefinition (2): Symbol '%s' is already in use."},
 
   // Jit Compilation
-  {MCJitCompilation + 1, "CJitCompiler (1): Unhandled error occured in '%' when compiling 's'."},
-  {MCJitCompilation + 2, "CJitCompiler (2): Unhandled node when compiling 's'."},
-  {MCJitCompilation + 3, "CJitCompiler (3): Unhandled error occured: 's'."},
+  {MCJitCompilation + 1, "CJitCompiler (1): Unhandled error occurred in '%s' when compiling '%s'."},
+  {MCJitCompilation + 2, "CJitCompiler (2): Unhandled node when compiling '%s'."},
+  {MCJitCompilation + 3, "CJitCompiler (3): Unhandled error occurred: '%s'."},
 
   // This must be the last element of the message list! Do not delete!
   {0, NULL}
