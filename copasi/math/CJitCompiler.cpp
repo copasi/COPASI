@@ -125,13 +125,13 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
         {
           std::string Where = where(e);
 
-          if (Where == "/Allocator.cpp")
+          if (Where == "/Allocator.cpp" || Where == "\\Allocator.cpp")
             {
               allocateFunctionBuffer(mFunctionBufferSize * 2);
               ReturnFunction = NULL;
               continue;
             }
-          else if (Where == "/CodeBuffer.h")
+          else if (Where == "/CodeBuffer.h" || Where == "\\CodeBuffer.h")
             {
               break;
             }
@@ -200,7 +200,7 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
             {
               std::string Where = where(e);
 
-              if (Where == "/Allocator.cpp")
+              if (Where == "/Allocator.cpp" || Where == "\\Allocator.cpp")
                 {
                   allocateFunctionBuffer(mFunctionBufferSize * 2);
                   pNode = NULL;
@@ -243,13 +243,13 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
         {
           std::string Where = where(e);
 
-          if (Where == "/Allocator.cpp")
+          if (Where == "/Allocator.cpp" || Where == "\\Allocator.cpp")
             {
               allocateFunctionBuffer(mFunctionBufferSize * 2);
               ReturnFunction = NULL;
               continue;
             }
-          else if (Where == "/CodeBuffer.h")
+          else if (Where == "/CodeBuffer.h" || Where == "\\CodeBuffer.h")
             {
               break;
             }
