@@ -28,7 +28,7 @@ bool & CJitCompiler::JitEnabled()
 std::string CJitCompiler::where(std::runtime_error & e)
 {
   std::string where = e.what();
-  std::string::size_type start = where.find_last_of("/\\");
+  std::string::size_type start = where.find_last_of("/\\") + 1;
   std::string::size_type end = where.find_first_of(":", start);
   where = where.substr(start, end - start);
 
@@ -125,13 +125,13 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
         {
           std::string Where = where(e);
 
-          if (Where == "/Allocator.cpp" || Where == "\\Allocator.cpp")
+          if (Where == "Allocator.cpp")
             {
               allocateFunctionBuffer(mFunctionBufferSize * 2);
               ReturnFunction = NULL;
               continue;
             }
-          else if (Where == "/CodeBuffer.h" || Where == "\\CodeBuffer.h")
+          else if (Where == "CodeBuffer.h")
             {
               break;
             }
@@ -200,7 +200,7 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
             {
               std::string Where = where(e);
 
-              if (Where == "/Allocator.cpp" || Where == "\\Allocator.cpp")
+              if (Where == "Allocator.cpp")
                 {
                   allocateFunctionBuffer(mFunctionBufferSize * 2);
                   pNode = NULL;
@@ -243,13 +243,13 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
         {
           std::string Where = where(e);
 
-          if (Where == "/Allocator.cpp" || Where == "\\Allocator.cpp")
+          if (Where == "Allocator.cpp")
             {
               allocateFunctionBuffer(mFunctionBufferSize * 2);
               ReturnFunction = NULL;
               continue;
             }
-          else if (Where == "/CodeBuffer.h" || Where == "\\CodeBuffer.h")
+          else if (Where == "CodeBuffer.h")
             {
               break;
             }
