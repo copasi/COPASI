@@ -190,7 +190,12 @@ void StateSubwidget::loadReactions()
       mpTblReactions->setItem(i, 1, pItem);
 
       pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, it->getFlux() / it->getScalingCompartment()->getValue());
+
+      if (it->getScalingCompartment() != NULL)
+        pItem->setData(Qt::DisplayRole, it->getFlux() / it->getScalingCompartment()->getValue());
+      else
+        pItem->setData(Qt::DisplayRole, std::numeric_limits< C_FLOAT64 >::quiet_NaN());
+
       mpTblReactions->setItem(i, 2, pItem);
 
       pItem = new QTableWidgetItem(QVariant::Double);

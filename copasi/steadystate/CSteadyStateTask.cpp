@@ -523,7 +523,12 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
       pReaction = &Reactions[i];
       os << pReaction->getObjectName() << "\t";
       os << pReaction->getFlux() << "\t";
-      os << pReaction->getFlux() / pReaction->getScalingCompartment()->getValue() << "\t";
+
+      if (pReaction->getScalingCompartment() != NULL)
+        os << pReaction->getFlux() / pReaction->getScalingCompartment()->getValue() << "\t";
+      else
+        os << std::numeric_limits< C_FLOAT64 >::quiet_NaN() << "\t";
+
       os << pReaction->getParticleFlux() << std::endl;
     }
 
