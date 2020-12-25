@@ -33,11 +33,16 @@ contains a *time* command, but which is not as flexible, one needs to actually c
 command with the full pathname (in most Linux systems this is */usr/bin/time*). In those 
 cases the command used to test those files should be:
 ```bash
-CopasiSE --version >> modelfile.out
-/usr/bin/time -f "%e" -a -o modelfile.out CopasiSE modelfile.cps
+CopasiSE | head -n 1 >> modelfile.out
+/usr/bin/time -f "%e" -a -o modelfile.out CopasiSE --nologo modelfile.cps
 ```
 as this will provide a similar output as with the previous tasks (one line with version 
 numnber and another with time taken to process file in seconds).
+
+In order to enhance reproducibility the entire test suite ran for the results provided here 
+is encoded in a single BASH script *copasispeedtests*. This script has a number of local 
+system dependencies encoded in environment variables at the top, which need to be 
+configured for other systems. It includes basic instructions in comments.
 
 ## Models
 
