@@ -18,12 +18,21 @@ CopasiSE modelfile.cps
 This will append the result to a file named *modelfile.out* (it will create it if not 
 existant yet). To use different versions, you would call this with different CopasiSE 
 versions. Of course, the files can also be used to test the speed of CopasiUI (the GUI 
-front-end used by most users), whcih should not have much difference from the command line 
+front-end used by most users), which should not have much difference from the command line 
 version.
 
 If you want to be accurate, you should run these tests one at a time and not have any other 
 application running that uses considerable CPU time (*i.e.* close your browser, IM 
 application, etc.). If you want to be very accurate, on Linux you could do this in mode 1 
 (as root do *telinit 1* which switches off networking)
+
+Some tests are directed simply at how fast the files are loaded (or imported), and in this 
+case they need to be profiled using the Linux *time* command in this way:
+```bash
+time CopasiSE modelfile.cps
+real    0m0.220s
+user    0m0.111s
+sys     0m0.020s
+```
 
 ## Tests
