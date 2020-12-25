@@ -27,13 +27,16 @@ application, etc.). If you want to be very accurate, on Linux you could do this 
 (as root do *telinit 1* which switches off networking)
 
 Some tests are directed simply at how fast the files are loaded (or imported), and in this 
-case they need to be profiled using the Linux *time* command in this way:
+case they need to be profiled using the Linux */usr/bin/time* command in this way:
 ```bash
 CopasiSE --version >> modelfile.out
 /usr/bin/time -f "%e" -a -o modelfile.out CopasiSE modelfile.cps
 ```
 This will provide the results in file modelfile.out, preceded by the version number. Note 
 that this requires using the GNU version of *time* which needs to be invoked with the full 
-pathname (as opposed to simply *time* which runs a BASH function) 
+pathname (as opposed to simply *time* which runs a BASH function).
+
+Hopefuly a similar usage can be carried out on the console of OS X, and on modern Windows 
+this should probably be run on the Windows Subsystem for Linux (WSL).
 
 ## Tests
