@@ -6,6 +6,60 @@
 # USAGE: run this script in the folder containing all the test .cps files
 #
 # CONFIGURATION
-# Set all the environment variables below to suit your system. To add new 
-# versions of COPASI
-# 
+# Set all the environment variables below to suit your system.
+# All .cps files tested need to be in the same directory as this script
+#
+# VERSIONS contains all the CopasiSE versions to test;
+# it needs to specify the entire pathnames of each one.
+VERSIONS="/usr/local/COPASI-4.16.104-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.24.197-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.25.207-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.27.217-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.28.226-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.29.228-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.30.235-Linux-64bit/bin/CopasiSE"
+
+# TASKS contains all the .cps files that run a specific simulation or 
+# analysis task. Do not include those that test loading/importing 
+TASKS="Pollution_lsoda.cps
+Pollution_radau5.cps"
+
+# LOADS contains all the .cps files that will test loading or importing
+# functions (and which don't have report files encoded)
+LOADS="BCR_load.cps
+egfr_sbml.xml"
+
+# Display list of versions to profile
+if [ -f versions ]; then
+	rm versions
+fi
+
+for f in $VERSIONS
+do
+	$f 2>/dev/null | head -n 1 >> versions
+done
+
+echo
+echo "Getting ready to profile the following versions:"
+cat versions
+echo
+rm versions
+
+# Profile all the loading type files
+
+for f in $LOADS
+do
+	OUT="${f:0:-4}.out"
+	for v in $VERSIONS
+	do
+		if [[ $f = *.cps ]]; then 
+		      $v 2>/dev/null | head -n 1 >> $OUT
+		      /usr/bin/time -f "%e" -a -o $OUT $v --nologo $f
+		elif [[ $f = *.xml ]]; then
+		      $v 2>/dev/null | head -n 1 >> $OUT
+		      /usr/bin/time -f "%e" -a -o $OUT $v --nologo -i $f
+		      TMPF="${f:0:-4}.cps"
+		      rm $TMPF
+		fi
+	done
+done
