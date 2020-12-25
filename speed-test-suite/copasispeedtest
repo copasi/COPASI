@@ -46,20 +46,24 @@ echo
 rm versions
 
 # Profile all the loading type files
-
+echo "Profiling loading files"
 for f in $LOADS
 do
 	OUT="${f:0:-4}.out"
+	printf "$f "
 	for v in $VERSIONS
 	do
 		if [[ $f = *.cps ]]; then 
+		      printf "."
 		      $v 2>/dev/null | head -n 1 >> $OUT
 		      /usr/bin/time -f "%e" -a -o $OUT $v --nologo $f
 		elif [[ $f = *.xml ]]; then
+		      printf "."
 		      $v 2>/dev/null | head -n 1 >> $OUT
 		      /usr/bin/time -f "%e" -a -o $OUT $v --nologo -i $f
 		      TMPF="${f:0:-4}.cps"
 		      rm $TMPF
 		fi
 	done
+	printf "\n"
 done
