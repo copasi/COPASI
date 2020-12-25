@@ -1,0 +1,11 @@
+#! /bin/bash
+#
+# copasispeedtests - a script to run a battery of speed tests for COPASI
+# By Pedro Mendes, December 2020
+#
+# USAGE: run this script in the folder containing all the test .cps files
+#
+# CONFIGURATION
+# Set all the environment variables below to suit your system. To add new 
+# versions of COPASI
+# 
