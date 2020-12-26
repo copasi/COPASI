@@ -22,10 +22,11 @@ VERSIONS="/usr/local/COPASI-4.16.104-Linux-64bit/bin/CopasiSE
 # TASKS contains all the .cps files that run a specific simulation or 
 # analysis task. Do not include those that test loading/importing 
 TASKS="Pollution_lsoda.cps
-Pollution_radau5.cps"
+Pollution_radau5.cps
+EGFR_gillespie.cps"
 
-# LOADS contains all the .cps files that will test loading or importing
-# functions (and which don't have report files encoded)
+# LOADS contains all the .cps and .xml files that will test loading 
+# or importing functions (and which don't output to report files)
 LOADS="BCR_load.cps
 egfr_sbml.xml"
 

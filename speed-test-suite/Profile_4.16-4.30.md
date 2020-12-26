@@ -51,16 +51,19 @@ basic instructions in comments.
 
 ## Tests
 
-Each file is designed to test a single function, be it a simulation or analysis 
+Each file is designed to test a single function, such as simulation or analysis 
 task, as well as model loading and parsing SBML. A full list of tests used 
 and details of each one are included in Table 1.
 
 Table 1. List of tests and their details
 File | Function tested | Observations
 -----|-----------------|--------
-BCR_load.cps | native file loading | very large file with 1122 species and 24388 reactions 
+BCR_load.cps | native file loading | very large file (49 Mb) with 1122 species and 24388 reactions 
+EGFR_sbml.xml | SBML import | fairly large model (2.8Mb) with 356 species and 3749 reactions 
 Pollution_lsoda.cps | LSODA time course | very stiff model
 Pollution_radau5.cps | RADAU5 time course | very stiff model; not all versions have RADAU5 method
+EGFR_gillespie.cps | Gillespie direct method | 
+
 
 
 ## Results
