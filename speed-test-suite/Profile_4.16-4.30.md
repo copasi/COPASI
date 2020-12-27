@@ -72,6 +72,7 @@ Pollution_radau5.cps | RADAU5 time course | stiff model; not all versions have R
 3enzyme_sres.cps | parameter estimation SRES | task is run 10 times
 3enzyme_hj.cps | parameter estimation Hooke-Jeeves | task is run 10 times
 3enzyme_ss.cps | parameter estimation scatter search | task is run 10 times
+3enzyme_ep.cps | parameter estimation evolutionary programming | task is run 10 times
 3enzyme_da.cps | parameter estimation genetic algorithm | task is run 10 times
 3enzyme_rs.cps | parameter estimation random search | task is run 10 times
 
