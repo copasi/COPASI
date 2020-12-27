@@ -59,14 +59,13 @@ Table 1. List of tests and their details
 File | Function tested | Observations
 -----|-----------------|--------
 BCR_load.cps | native file loading | very large file (49 Mb) with 1122 species and 24388 reactions 
-EGFR_sbml.xml | SBML import | fairly large model (2.8Mb) with 356 species and 3749 reactions 
+EGFR_sbml.xml | SBML import | large model (2.8Mb) with 356 species and 3749 reactions 
 EGFR_gillespie.cps | Gillespie direct method | 
 Pollution_lsoda.cps | LSODA time course | very stiff model
 Pollution_radau5.cps | RADAU5 time course | very stiff model; not all versions have RADAU5 method
 3enzyme_nl2sol.cps | parameter estimation NL2SOL | task is run 200 times
 3enzyme_ga.cps | parameter estimation genetic algorithm | task is run 200 times
-
-
+3enzyme_lm.cps | parameter estimation Levenberg-Marquardt | task is run 200 times
 
 ## Results
 
