@@ -38,7 +38,8 @@ Pollution_radau5.cps
 3enzyme_ss.cps
 3enzyme_ep.cps
 3enzyme_da.cps
-3enzyme_rs.cps"
+3enzyme_rs.cps
+KinMMFit_sa.cps"
 
 # LOADS contains all the .cps and .xml files that will test loading 
 # or importing functions (and which don't output to report files)
