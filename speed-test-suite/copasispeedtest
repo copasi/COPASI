@@ -28,7 +28,8 @@ EGFR_gillespie.cps
 3enzyme_ga.cps
 3enzyme_lm.cps
 3enzyme_ps.cps
-3enzyme_sres.cps"
+3enzyme_sres.cps
+3enzyme_hj.cps"
 
 # LOADS contains all the .cps and .xml files that will test loading 
 # or importing functions (and which don't output to report files)

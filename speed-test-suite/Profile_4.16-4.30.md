@@ -67,7 +67,8 @@ Pollution_radau5.cps | RADAU5 time course | very stiff model; not all versions h
 3enzyme_ga.cps | parameter estimation genetic algorithm | task is run 200 times
 3enzyme_lm.cps | parameter estimation Levenberg-Marquardt | task is run 200 times
 3enzyme_ps.cps | parameter estimation particle swarm | task is run 200 times
-3enzyme_sres.cps | parameter estimation particle swarm | task is run 200 times
+3enzyme_sres.cps | parameter estimation SRES | task is run 200 times
+3enzyme_hj.cps | parameter estimation Hooke-Jeeves | task is run 200 times
 
 ## Results
 
