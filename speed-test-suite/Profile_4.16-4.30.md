@@ -70,6 +70,7 @@ Pollution_radau5.cps | RADAU5 time course | stiff model; not all versions have R
 3enzyme_nm.cps | parameter estimation Nelder-Mead | task is run 100 times
 3enzyme_praxis.cps | parameter estimation praxis | task is run 100 times
 3enzyme_ga.cps | parameter estimation genetic algorithm | task is run 10 times
+3enzyme_gasr.cps | parameter estimation genetic algorithm SR | task is run 10 times
 3enzyme_ps.cps | parameter estimation particle swarm | task is run 10 times
 3enzyme_sres.cps | parameter estimation SRES | task is run 10 times
 3enzyme_hj.cps | parameter estimation Hooke-Jeeves | task is run 10 times
