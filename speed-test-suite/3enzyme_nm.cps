@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.30 (Build 235) (http://www.copasi.org) at 2020-12-27T13:13:28Z -->
+<!-- generated with COPASI 4.30 (Build 235) (http://www.copasi.org) at 2020-12-27T13:15:53Z -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
 <COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="30" versionDevel="235" copasiSourcesModified="0">
   <ListOfFunctions>
@@ -1056,12 +1056,12 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
       </Method>
     </Task>
     <Task key="Task_2" name="Scan" type="scan" scheduled="true" updateModel="false">
-      <Report reference="Report_22" target="3enzyme_ga.out" append="1" confirmOverwrite="0"/>
+      <Report reference="Report_22" target="3enzyme_nm.out" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="5"/>
         <ParameterGroup name="ScanItems">
           <ParameterGroup name="ScanItem">
-            <Parameter name="Number of steps" type="unsignedInteger" value="10"/>
+            <Parameter name="Number of steps" type="unsignedInteger" value="100"/>
             <Parameter name="Type" type="unsignedInteger" value="0"/>
             <Parameter name="Object" type="cn" value=""/>
           </ParameterGroup>
@@ -1534,14 +1534,11 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
           <Parameter name="Threshold" type="unsignedInteger" value="5"/>
         </ParameterGroup>
       </Problem>
-      <Method name="Genetic Algorithm" type="GeneticAlgorithm">
+      <Method name="Nelder - Mead" type="NelderMead">
         <Parameter name="Log Verbosity" type="unsignedInteger" value="0"/>
-        <Parameter name="Number of Generations" type="unsignedInteger" value="600"/>
-        <Parameter name="Population Size" type="unsignedInteger" value="40"/>
-        <Parameter name="Random Number Generator" type="unsignedInteger" value="1"/>
-        <Parameter name="Seed" type="unsignedInteger" value="0"/>
-        <Parameter name="Mutation Variance" type="float" value="0.10000000000000001"/>
-        <Parameter name="Stop after # Stalled Generations" type="unsignedInteger" value="0"/>
+        <Parameter name="Iteration Limit" type="unsignedInteger" value="2000"/>
+        <Parameter name="Tolerance" type="unsignedFloat" value="1e-08"/>
+        <Parameter name="Scale" type="unsignedFloat" value="10"/>
       </Method>
     </Task>
     <Task key="Task_6" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
