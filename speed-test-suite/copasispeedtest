@@ -25,7 +25,9 @@ TASKS="EGFR_gillespie.cps
 Pollution_lsoda.cps
 Pollution_radau5.cps
 3enzyme_nl2sol.cps
+3enzyme_steepest.cps
 3enzyme_lm.cps
+3enzyme_tn.cps
 3enzyme_nm.cps
 3enzyme_praxis.cps
 3enzyme_ga.cps

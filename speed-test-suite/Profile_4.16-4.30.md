@@ -64,7 +64,9 @@ EGFR_gillespie.cps | Gillespie direct method |
 Pollution_lsoda.cps | LSODA time course | stiff model
 Pollution_radau5.cps | RADAU5 time course | stiff model; not all versions have RADAU5 method
 3enzyme_nl2sol.cps | parameter estimation NL2SOL | task is run 100 times
+3enzyme_steepest.cps | parameter estimation steepest descent | task is run 100 times
 3enzyme_lm.cps | parameter estimation Levenberg-Marquardt | task is run 100 times
+3enzyme_tn.cps | parameter estimation truncated Newton | task is run 100 times
 3enzyme_nm.cps | parameter estimation Nelder-Mead | task is run 100 times
 3enzyme_praxis.cps | parameter estimation praxis | task is run 100 times
 3enzyme_ga.cps | parameter estimation genetic algorithm | task is run 10 times
