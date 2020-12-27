@@ -26,7 +26,8 @@ Pollution_radau5.cps
 EGFR_gillespie.cps
 3enzyme_nl2sol.cps
 3enzyme_ga.cps
-3enzyme_lm.cps"
+3enzyme_lm.cps
+3enzyme_ps.cps"
 
 # LOADS contains all the .cps and .xml files that will test loading 
 # or importing functions (and which don't output to report files)
