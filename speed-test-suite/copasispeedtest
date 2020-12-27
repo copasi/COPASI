@@ -32,6 +32,7 @@ Pollution_radau5.cps
 3enzyme_sres.cps
 3enzyme_hj.cps
 3enzyme_ss.cps
+3enzyme_da.cps
 3enzyme_rs.cps"
 
 # LOADS contains all the .cps and .xml files that will test loading 
