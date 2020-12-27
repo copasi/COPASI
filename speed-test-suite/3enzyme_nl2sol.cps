@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.30 (Build 235) (http://www.copasi.org) at 2020-12-27T02:59:45Z -->
+<!-- generated with COPASI 4.30 (Build 235) (http://www.copasi.org) at 2020-12-27T13:01:18Z -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
 <COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="30" versionDevel="235" copasiSourcesModified="0">
   <ListOfFunctions>
@@ -311,10 +311,10 @@ Cambidge, MA, pp. 163-186.
           <Modifier metabolite="Metabolite_361" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_9219" name="kcat" value="0.0912698"/>
-          <Constant key="Parameter_6131" name="Keq" value="1"/>
-          <Constant key="Parameter_6125" name="Kms" value="8.20009e+10"/>
-          <Constant key="Parameter_6129" name="Kmp" value="18606"/>
+          <Constant key="Parameter_5818" name="kcat" value="0.0912698"/>
+          <Constant key="Parameter_3918" name="Keq" value="1"/>
+          <Constant key="Parameter_3826" name="Kms" value="8.20009e+10"/>
+          <Constant key="Parameter_9219" name="Kmp" value="18606"/>
         </ListOfConstants>
         <KineticLaw function="Function_3789" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
@@ -328,16 +328,16 @@ Cambidge, MA, pp. 163-186.
               <SourceParameter reference="Metabolite_361"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25757">
-              <SourceParameter reference="Parameter_9219"/>
+              <SourceParameter reference="Parameter_5818"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25758">
-              <SourceParameter reference="Parameter_6131"/>
+              <SourceParameter reference="Parameter_3918"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25759">
-              <SourceParameter reference="Parameter_6125"/>
+              <SourceParameter reference="Parameter_3826"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25760">
-              <SourceParameter reference="Parameter_6129"/>
+              <SourceParameter reference="Parameter_9219"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -364,10 +364,10 @@ Cambidge, MA, pp. 163-186.
           <Modifier metabolite="Metabolite_360" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_6130" name="kcat" value="252974"/>
-          <Constant key="Parameter_9217" name="Keq" value="1"/>
-          <Constant key="Parameter_6132" name="Kms" value="0.00400667"/>
-          <Constant key="Parameter_4244" name="Kmp" value="0.633694"/>
+          <Constant key="Parameter_3920" name="kcat" value="252974"/>
+          <Constant key="Parameter_3529" name="Keq" value="1"/>
+          <Constant key="Parameter_3874" name="Kms" value="0.00400667"/>
+          <Constant key="Parameter_4585" name="Kmp" value="0.633694"/>
         </ListOfConstants>
         <KineticLaw function="Function_3789" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
@@ -381,16 +381,16 @@ Cambidge, MA, pp. 163-186.
               <SourceParameter reference="Metabolite_360"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25757">
-              <SourceParameter reference="Parameter_6130"/>
+              <SourceParameter reference="Parameter_3920"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25758">
-              <SourceParameter reference="Parameter_9217"/>
+              <SourceParameter reference="Parameter_3529"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25759">
-              <SourceParameter reference="Parameter_6132"/>
+              <SourceParameter reference="Parameter_3874"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25760">
-              <SourceParameter reference="Parameter_4244"/>
+              <SourceParameter reference="Parameter_4585"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -417,10 +417,10 @@ Cambidge, MA, pp. 163-186.
           <Modifier metabolite="Metabolite_359" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4243" name="kcat" value="3.48331e-12"/>
-          <Constant key="Parameter_4204" name="Keq" value="1"/>
-          <Constant key="Parameter_4205" name="Kms" value="188640"/>
-          <Constant key="Parameter_4206" name="Kmp" value="6.37804e+10"/>
+          <Constant key="Parameter_7559" name="kcat" value="3.48331e-12"/>
+          <Constant key="Parameter_2787" name="Keq" value="1"/>
+          <Constant key="Parameter_2783" name="Kms" value="188640"/>
+          <Constant key="Parameter_3961" name="Kmp" value="6.37804e+10"/>
         </ListOfConstants>
         <KineticLaw function="Function_3789" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
@@ -434,16 +434,16 @@ Cambidge, MA, pp. 163-186.
               <SourceParameter reference="Metabolite_359"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25757">
-              <SourceParameter reference="Parameter_4243"/>
+              <SourceParameter reference="Parameter_7559"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25758">
-              <SourceParameter reference="Parameter_4204"/>
+              <SourceParameter reference="Parameter_2787"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25759">
-              <SourceParameter reference="Parameter_4205"/>
+              <SourceParameter reference="Parameter_2783"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25760">
-              <SourceParameter reference="Parameter_4206"/>
+              <SourceParameter reference="Parameter_3961"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -467,8 +467,8 @@ Cambidge, MA, pp. 163-186.
           <Modifier metabolite="Metabolite_358" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4210" name="V" value="0.000145861"/>
-          <Constant key="Parameter_4203" name="K" value="2.92705e-07"/>
+          <Constant key="Parameter_2827" name="V" value="0.000145861"/>
+          <Constant key="Parameter_3514" name="K" value="2.92705e-07"/>
         </ListOfConstants>
         <KineticLaw function="Function_3790" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
@@ -476,10 +476,10 @@ Cambidge, MA, pp. 163-186.
               <SourceParameter reference="Metabolite_358"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25766">
-              <SourceParameter reference="Parameter_4210"/>
+              <SourceParameter reference="Parameter_2827"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25765">
-              <SourceParameter reference="Parameter_4203"/>
+              <SourceParameter reference="Parameter_3514"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -500,12 +500,12 @@ Cambidge, MA, pp. 163-186.
           <Substrate metabolite="Metabolite_361" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4202" name="k1" value="1.36308e+10"/>
+          <Constant key="Parameter_2808" name="k1" value="1.36308e+10"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="Parameter_4202"/>
+              <SourceParameter reference="Parameter_2808"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
               <SourceParameter reference="Metabolite_361"/>
@@ -532,8 +532,8 @@ Cambidge, MA, pp. 163-186.
           <Modifier metabolite="Metabolite_357" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4201" name="V" value="1.18071"/>
-          <Constant key="Parameter_4200" name="K" value="0.000873788"/>
+          <Constant key="Parameter_3962" name="V" value="1.18071"/>
+          <Constant key="Parameter_3825" name="K" value="0.000873788"/>
         </ListOfConstants>
         <KineticLaw function="Function_3790" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
@@ -541,10 +541,10 @@ Cambidge, MA, pp. 163-186.
               <SourceParameter reference="Metabolite_357"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25766">
-              <SourceParameter reference="Parameter_4201"/>
+              <SourceParameter reference="Parameter_3962"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25765">
-              <SourceParameter reference="Parameter_4200"/>
+              <SourceParameter reference="Parameter_3825"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -565,12 +565,12 @@ Cambidge, MA, pp. 163-186.
           <Substrate metabolite="Metabolite_360" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4199" name="k1" value="418.156"/>
+          <Constant key="Parameter_3963" name="k1" value="418.156"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="Parameter_4199"/>
+              <SourceParameter reference="Parameter_3963"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
               <SourceParameter reference="Metabolite_360"/>
@@ -597,8 +597,8 @@ Cambidge, MA, pp. 163-186.
           <Modifier metabolite="Metabolite_356" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4198" name="V" value="3.91648e+09"/>
-          <Constant key="Parameter_4197" name="K" value="0.0590694"/>
+          <Constant key="Parameter_3891" name="V" value="3.91648e+09"/>
+          <Constant key="Parameter_3915" name="K" value="0.0590694"/>
         </ListOfConstants>
         <KineticLaw function="Function_3790" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
@@ -606,10 +606,10 @@ Cambidge, MA, pp. 163-186.
               <SourceParameter reference="Metabolite_356"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25766">
-              <SourceParameter reference="Parameter_4198"/>
+              <SourceParameter reference="Parameter_3891"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25765">
-              <SourceParameter reference="Parameter_4197"/>
+              <SourceParameter reference="Parameter_3915"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -630,12 +630,12 @@ Cambidge, MA, pp. 163-186.
           <Substrate metabolite="Metabolite_359" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4196" name="k1" value="5.43385e-08"/>
+          <Constant key="Parameter_3930" name="k1" value="5.43385e-08"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="Parameter_4196"/>
+              <SourceParameter reference="Parameter_3930"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
               <SourceParameter reference="Metabolite_359"/>
@@ -663,11 +663,11 @@ Cambidge, MA, pp. 163-186.
           <Modifier metabolite="Metabolite_365" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4195" name="V" value="8.0471e-06"/>
-          <Constant key="Parameter_4194" name="Kr" value="3.86399e+09"/>
-          <Constant key="Parameter_4193" name="hr" value="1.17071"/>
-          <Constant key="Parameter_4192" name="Ki" value="128.423"/>
-          <Constant key="Parameter_4191" name="hi" value="0.237438"/>
+          <Constant key="Parameter_3878" name="V" value="8.0471e-06"/>
+          <Constant key="Parameter_4176" name="Kr" value="3.86399e+09"/>
+          <Constant key="Parameter_6130" name="hr" value="1.17071"/>
+          <Constant key="Parameter_4174" name="Ki" value="128.423"/>
+          <Constant key="Parameter_5533" name="hi" value="0.237438"/>
         </ListOfConstants>
         <KineticLaw function="Function_3791" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
@@ -678,19 +678,19 @@ Cambidge, MA, pp. 163-186.
               <SourceParameter reference="Metabolite_365"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25764">
-              <SourceParameter reference="Parameter_4195"/>
+              <SourceParameter reference="Parameter_3878"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25761">
-              <SourceParameter reference="Parameter_4194"/>
+              <SourceParameter reference="Parameter_4176"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25768">
-              <SourceParameter reference="Parameter_4193"/>
+              <SourceParameter reference="Parameter_6130"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25769">
-              <SourceParameter reference="Parameter_4192"/>
+              <SourceParameter reference="Parameter_4174"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25770">
-              <SourceParameter reference="Parameter_4191"/>
+              <SourceParameter reference="Parameter_5533"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -711,12 +711,12 @@ Cambidge, MA, pp. 163-186.
           <Substrate metabolite="Metabolite_358" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4190" name="k1" value="2713.9"/>
+          <Constant key="Parameter_4191" name="k1" value="2713.9"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="Parameter_4190"/>
+              <SourceParameter reference="Parameter_4191"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
               <SourceParameter reference="Metabolite_358"/>
@@ -744,11 +744,11 @@ Cambidge, MA, pp. 163-186.
           <Modifier metabolite="Metabolite_364" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4247" name="V" value="5.54494e-11"/>
-          <Constant key="Parameter_4245" name="Kr" value="0.00165854"/>
-          <Constant key="Parameter_4246" name="hr" value="0.58"/>
-          <Constant key="Parameter_4248" name="Ki" value="1.99661e-06"/>
-          <Constant key="Parameter_4251" name="hi" value="1.04453"/>
+          <Constant key="Parameter_4205" name="V" value="5.54494e-11"/>
+          <Constant key="Parameter_2833" name="Kr" value="0.00165854"/>
+          <Constant key="Parameter_2829" name="hr" value="0.58"/>
+          <Constant key="Parameter_2832" name="Ki" value="1.99661e-06"/>
+          <Constant key="Parameter_2834" name="hi" value="1.04453"/>
         </ListOfConstants>
         <KineticLaw function="Function_3791" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
@@ -759,19 +759,19 @@ Cambidge, MA, pp. 163-186.
               <SourceParameter reference="Metabolite_364"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25764">
-              <SourceParameter reference="Parameter_4247"/>
+              <SourceParameter reference="Parameter_4205"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25761">
-              <SourceParameter reference="Parameter_4245"/>
+              <SourceParameter reference="Parameter_2833"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25768">
-              <SourceParameter reference="Parameter_4246"/>
+              <SourceParameter reference="Parameter_2829"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25769">
-              <SourceParameter reference="Parameter_4248"/>
+              <SourceParameter reference="Parameter_2832"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25770">
-              <SourceParameter reference="Parameter_4251"/>
+              <SourceParameter reference="Parameter_2834"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -792,12 +792,12 @@ Cambidge, MA, pp. 163-186.
           <Substrate metabolite="Metabolite_357" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4207" name="k1" value="6.38701e+06"/>
+          <Constant key="Parameter_2838" name="k1" value="6.38701e+06"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="Parameter_4207"/>
+              <SourceParameter reference="Parameter_2838"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
               <SourceParameter reference="Metabolite_357"/>
@@ -825,10 +825,10 @@ Cambidge, MA, pp. 163-186.
           <Modifier metabolite="Metabolite_363" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4189" name="V" value="17319.1"/>
-          <Constant key="Parameter_4188" name="Kr" value="452.268"/>
-          <Constant key="Parameter_4187" name="hr" value="0.451442"/>
-          <Constant key="Parameter_4186" name="Ki" value="0.140194"/>
+          <Constant key="Parameter_3202" name="V" value="17319.1"/>
+          <Constant key="Parameter_4195" name="Kr" value="452.268"/>
+          <Constant key="Parameter_4203" name="hr" value="0.451442"/>
+          <Constant key="Parameter_4204" name="Ki" value="0.140194"/>
           <Constant key="Parameter_4185" name="hi" value="0.936739"/>
         </ListOfConstants>
         <KineticLaw function="Function_3791" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
@@ -840,16 +840,16 @@ Cambidge, MA, pp. 163-186.
               <SourceParameter reference="Metabolite_363"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25764">
-              <SourceParameter reference="Parameter_4189"/>
+              <SourceParameter reference="Parameter_3202"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25761">
-              <SourceParameter reference="Parameter_4188"/>
+              <SourceParameter reference="Parameter_4195"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25768">
-              <SourceParameter reference="Parameter_4187"/>
+              <SourceParameter reference="Parameter_4203"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25769">
-              <SourceParameter reference="Parameter_4186"/>
+              <SourceParameter reference="Parameter_4204"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25770">
               <SourceParameter reference="Parameter_4185"/>
@@ -873,12 +873,12 @@ Cambidge, MA, pp. 163-186.
           <Substrate metabolite="Metabolite_356" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4184" name="k1" value="9170.7"/>
+          <Constant key="Parameter_4206" name="k1" value="9170.7"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="Parameter_4184"/>
+              <SourceParameter reference="Parameter_4206"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
               <SourceParameter reference="Metabolite_356"/>
@@ -896,7 +896,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#ModelParameterSet_1">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-12-27T02:59:34Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-12-27T13:00:55Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -1014,7 +1014,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_15" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+    <Task key="Task_28" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
       <Report reference="Report_23" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="0"/>
@@ -1061,7 +1061,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Subtask" type="unsignedInteger" value="5"/>
         <ParameterGroup name="ScanItems">
           <ParameterGroup name="ScanItem">
-            <Parameter name="Number of steps" type="unsignedInteger" value="200"/>
+            <Parameter name="Number of steps" type="unsignedInteger" value="100"/>
             <Parameter name="Type" type="unsignedInteger" value="0"/>
             <Parameter name="Object" type="cn" value=""/>
           </ParameterGroup>
@@ -1542,7 +1542,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <Task key="Task_22" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
       <Report reference="Report_18" target="" append="1" confirmOverwrite="0"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_15"/>
+        <Parameter name="Steady-State" type="key" value="Task_28"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="Modulation Factor" type="unsignedFloat" value="1.0000000000000001e-09"/>
@@ -1612,7 +1612,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <Task key="Task_17" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
       <Report reference="Report_14" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_15"/>
+        <Parameter name="Steady-State" type="key" value="Task_28"/>
       </Problem>
       <Method name="Linear Noise Approximation" type="LinearNoiseApproximation">
       </Method>
@@ -1653,7 +1653,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_28" name="Time-Course Sensitivities" type="timeSensitivities" scheduled="false" updateModel="false">
+    <Task key="Task_29" name="Time-Course Sensitivities" type="timeSensitivities" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>

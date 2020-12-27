@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.30 (Build 235) (http://www.copasi.org) at 2020-12-27T02:59:30Z -->
+<!-- generated with COPASI 4.30 (Build 235) (http://www.copasi.org) at 2020-12-27T12:05:23Z -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
 <COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="30" versionDevel="235" copasiSourcesModified="0">
   <ListOfFunctions>
@@ -157,10 +157,10 @@ Cambidge, MA, pp. 163-186.
       </Compartment>
     </ListOfCompartments>
     <ListOfMetabolites>
-      <Metabolite key="Metabolite_0" name="S" simulationType="fixed" compartment="Compartment_0" addNoise="false">
+      <Metabolite key="Metabolite_9" name="S" simulationType="fixed" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_0">
+  <rdf:Description rdf:about="#Metabolite_9">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2011-05-23T21:04:30Z</dcterms:W3CDTF>
@@ -170,10 +170,10 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_1" name="M1" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+      <Metabolite key="Metabolite_8" name="M1" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_1">
+  <rdf:Description rdf:about="#Metabolite_8">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2011-05-23T21:03:48Z</dcterms:W3CDTF>
@@ -183,10 +183,10 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_2" name="M2" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+      <Metabolite key="Metabolite_7" name="M2" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_2">
+  <rdf:Description rdf:about="#Metabolite_7">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2011-05-23T21:04:08Z</dcterms:W3CDTF>
@@ -196,10 +196,10 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_3" name="P" simulationType="fixed" compartment="Compartment_0" addNoise="false">
+      <Metabolite key="Metabolite_6" name="P" simulationType="fixed" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_3">
+  <rdf:Description rdf:about="#Metabolite_6">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2011-05-23T21:04:16Z</dcterms:W3CDTF>
@@ -209,10 +209,10 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_4" name="E1" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+      <Metabolite key="Metabolite_5" name="E1" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_4">
+  <rdf:Description rdf:about="#Metabolite_5">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2011-05-23T21:04:46Z</dcterms:W3CDTF>
@@ -222,10 +222,10 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_5" name="E2" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+      <Metabolite key="Metabolite_4" name="E2" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_5">
+  <rdf:Description rdf:about="#Metabolite_4">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2011-05-23T21:04:52Z</dcterms:W3CDTF>
@@ -235,10 +235,10 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_6" name="E3" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+      <Metabolite key="Metabolite_3" name="E3" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_6">
+  <rdf:Description rdf:about="#Metabolite_3">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2011-05-23T21:04:59Z</dcterms:W3CDTF>
@@ -248,10 +248,10 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_7" name="G1" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+      <Metabolite key="Metabolite_2" name="G1" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_7">
+  <rdf:Description rdf:about="#Metabolite_2">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2011-05-23T21:05:08Z</dcterms:W3CDTF>
@@ -261,10 +261,10 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_8" name="G2" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+      <Metabolite key="Metabolite_1" name="G2" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_8">
+  <rdf:Description rdf:about="#Metabolite_1">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2011-05-23T21:05:22Z</dcterms:W3CDTF>
@@ -274,10 +274,10 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_9" name="G3" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+      <Metabolite key="Metabolite_0" name="G3" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_9">
+  <rdf:Description rdf:about="#Metabolite_0">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2011-05-23T21:05:28Z</dcterms:W3CDTF>
@@ -289,10 +289,10 @@ Cambidge, MA, pp. 163-186.
       </Metabolite>
     </ListOfMetabolites>
     <ListOfReactions>
-      <Reaction key="Reaction_0" name="R1" reversible="true" fast="false" addNoise="false">
+      <Reaction key="Reaction_14" name="R1" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_0">
+  <rdf:Description rdf:about="#Reaction_14">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2011-05-23T16:03:16Z</dcterms:W3CDTF>
@@ -302,103 +302,50 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_0" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_1" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfModifiers>
-          <Modifier metabolite="Metabolite_4" stoichiometry="1"/>
-        </ListOfModifiers>
-        <ListOfConstants>
-          <Constant key="Parameter_5074" name="kcat" value="0.0912698"/>
-          <Constant key="Parameter_5068" name="Keq" value="1"/>
-          <Constant key="Parameter_7515" name="Kms" value="8.20009e+10"/>
-          <Constant key="Parameter_7541" name="Kmp" value="18606"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_3789" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_264">
-              <SourceParameter reference="Metabolite_0"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_22225">
-              <SourceParameter reference="Metabolite_1"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_24357">
-              <SourceParameter reference="Metabolite_4"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_25757">
-              <SourceParameter reference="Parameter_5074"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_25758">
-              <SourceParameter reference="Parameter_5068"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_25759">
-              <SourceParameter reference="Parameter_7515"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_25760">
-              <SourceParameter reference="Parameter_7541"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_1" name="R2" reversible="true" fast="false" addNoise="false">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<rdf:Description rdf:about="#Reaction_1">
-<dcterms:created>
-<rdf:Description>
-<dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
-</rdf:Description>
-</dcterms:created>
-</rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_2" stoichiometry="1"/>
+          <Product metabolite="Metabolite_8" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
           <Modifier metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5849" name="kcat" value="252974"/>
-          <Constant key="Parameter_7476" name="Keq" value="1"/>
-          <Constant key="Parameter_4964" name="Kms" value="0.00400667"/>
-          <Constant key="Parameter_7514" name="Kmp" value="0.633694"/>
+          <Constant key="Parameter_4647" name="kcat" value="0.0912698"/>
+          <Constant key="Parameter_4620" name="Keq" value="1"/>
+          <Constant key="Parameter_4646" name="Kms" value="8.20009e+10"/>
+          <Constant key="Parameter_4681" name="Kmp" value="18606"/>
         </ListOfConstants>
         <KineticLaw function="Function_3789" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_264">
-              <SourceParameter reference="Metabolite_1"/>
+              <SourceParameter reference="Metabolite_9"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_22225">
-              <SourceParameter reference="Metabolite_2"/>
+              <SourceParameter reference="Metabolite_8"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_24357">
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25757">
-              <SourceParameter reference="Parameter_5849"/>
+              <SourceParameter reference="Parameter_4647"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25758">
-              <SourceParameter reference="Parameter_7476"/>
+              <SourceParameter reference="Parameter_4620"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25759">
-              <SourceParameter reference="Parameter_4964"/>
+              <SourceParameter reference="Parameter_4646"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25760">
-              <SourceParameter reference="Parameter_7514"/>
+              <SourceParameter reference="Parameter_4681"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_2" name="R3" reversible="true" fast="false" addNoise="false">
+      <Reaction key="Reaction_13" name="R2" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<rdf:Description rdf:about="#Reaction_2">
+<rdf:Description rdf:about="#Reaction_13">
 <dcterms:created>
 <rdf:Description>
 <dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
@@ -408,50 +355,50 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_2" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_8" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+          <Product metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_6" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_7340" name="kcat" value="3.48331e-12"/>
-          <Constant key="Parameter_4936" name="Keq" value="1"/>
-          <Constant key="Parameter_4965" name="Kms" value="188640"/>
-          <Constant key="Parameter_4958" name="Kmp" value="6.37804e+10"/>
+          <Constant key="Parameter_4622" name="kcat" value="252974"/>
+          <Constant key="Parameter_4648" name="Keq" value="1"/>
+          <Constant key="Parameter_4638" name="Kms" value="0.00400667"/>
+          <Constant key="Parameter_3460" name="Kmp" value="0.633694"/>
         </ListOfConstants>
         <KineticLaw function="Function_3789" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_264">
-              <SourceParameter reference="Metabolite_2"/>
+              <SourceParameter reference="Metabolite_8"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_22225">
-              <SourceParameter reference="Metabolite_3"/>
+              <SourceParameter reference="Metabolite_7"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_24357">
-              <SourceParameter reference="Metabolite_6"/>
+              <SourceParameter reference="Metabolite_4"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25757">
-              <SourceParameter reference="Parameter_7340"/>
+              <SourceParameter reference="Parameter_4622"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25758">
-              <SourceParameter reference="Parameter_4936"/>
+              <SourceParameter reference="Parameter_4648"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25759">
-              <SourceParameter reference="Parameter_4965"/>
+              <SourceParameter reference="Parameter_4638"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25760">
-              <SourceParameter reference="Parameter_4958"/>
+              <SourceParameter reference="Parameter_3460"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_3" name="R4" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_12" name="R3" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<rdf:Description rdf:about="#Reaction_3">
+<rdf:Description rdf:about="#Reaction_12">
 <dcterms:created>
 <rdf:Description>
 <dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
@@ -460,63 +407,51 @@ Cambidge, MA, pp. 163-186.
 </rdf:Description>
 </rdf:RDF>
         </MiriamAnnotation>
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
+        </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_4" stoichiometry="1"/>
+          <Product metabolite="Metabolite_6" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_7" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4953" name="V" value="0.000145861"/>
-          <Constant key="Parameter_4963" name="K" value="2.92705e-07"/>
+          <Constant key="Parameter_3421" name="kcat" value="3.48331e-12"/>
+          <Constant key="Parameter_4559" name="Keq" value="1"/>
+          <Constant key="Parameter_4614" name="Kms" value="188640"/>
+          <Constant key="Parameter_3459" name="Kmp" value="6.37804e+10"/>
         </ListOfConstants>
-        <KineticLaw function="Function_3790" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
+        <KineticLaw function="Function_3789" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_25767">
+            <CallParameter functionParameter="FunctionParameter_264">
               <SourceParameter reference="Metabolite_7"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_25766">
-              <SourceParameter reference="Parameter_4953"/>
+            <CallParameter functionParameter="FunctionParameter_22225">
+              <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_25765">
-              <SourceParameter reference="Parameter_4963"/>
+            <CallParameter functionParameter="FunctionParameter_24357">
+              <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_4" name="E1d" reversible="false" fast="false" addNoise="false">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_4">
-    <dcterms:created>
-      <rdf:Description>
-        <dcterms:W3CDTF>2011-05-23T21:20:47Z</dcterms:W3CDTF>
-      </rdf:Description>
-    </dcterms:created>
-  </rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_4" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfConstants>
-          <Constant key="Parameter_6148" name="k1" value="1.36308e+10"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="Parameter_6148"/>
+            <CallParameter functionParameter="FunctionParameter_25757">
+              <SourceParameter reference="Parameter_3421"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_4"/>
+            <CallParameter functionParameter="FunctionParameter_25758">
+              <SourceParameter reference="Parameter_4559"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_25759">
+              <SourceParameter reference="Parameter_4614"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_25760">
+              <SourceParameter reference="Parameter_3459"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_5" name="E2s" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_11" name="R4" reversible="false" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<rdf:Description rdf:about="#Reaction_5">
+<rdf:Description rdf:about="#Reaction_11">
 <dcterms:created>
 <rdf:Description>
 <dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
@@ -529,30 +464,95 @@ Cambidge, MA, pp. 163-186.
           <Product metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_8" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4944" name="V" value="1.18071"/>
-          <Constant key="Parameter_4945" name="K" value="0.000873788"/>
+          <Constant key="Parameter_4693" name="V" value="0.000145861"/>
+          <Constant key="Parameter_3461" name="K" value="2.92705e-07"/>
         </ListOfConstants>
         <KineticLaw function="Function_3790" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_25767">
-              <SourceParameter reference="Metabolite_8"/>
+              <SourceParameter reference="Metabolite_2"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25766">
-              <SourceParameter reference="Parameter_4944"/>
+              <SourceParameter reference="Parameter_4693"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25765">
-              <SourceParameter reference="Parameter_4945"/>
+              <SourceParameter reference="Parameter_3461"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_6" name="E2d" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_10" name="E1d" reversible="false" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<rdf:Description rdf:about="#Reaction_6">
+  <rdf:Description rdf:about="#Reaction_10">
+    <dcterms:created>
+      <rdf:Description>
+        <dcterms:W3CDTF>2011-05-23T21:20:47Z</dcterms:W3CDTF>
+      </rdf:Description>
+    </dcterms:created>
+  </rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfConstants>
+          <Constant key="Parameter_4637" name="k1" value="1.36308e+10"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_80">
+              <SourceParameter reference="Parameter_4637"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Metabolite_5"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_9" name="E2s" reversible="false" fast="false" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Reaction_9">
+<dcterms:created>
+<rdf:Description>
+<dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
+</rdf:Description>
+</dcterms:created>
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_4" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfModifiers>
+          <Modifier metabolite="Metabolite_1" stoichiometry="1"/>
+        </ListOfModifiers>
+        <ListOfConstants>
+          <Constant key="Parameter_4639" name="V" value="1.18071"/>
+          <Constant key="Parameter_3467" name="K" value="0.000873788"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_3790" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_25767">
+              <SourceParameter reference="Metabolite_1"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_25766">
+              <SourceParameter reference="Parameter_4639"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_25765">
+              <SourceParameter reference="Parameter_3467"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_8" name="E2d" reversible="false" fast="false" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Reaction_8">
 <dcterms:created>
 <rdf:Description>
 <dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
@@ -562,18 +562,18 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_7443" name="k1" value="418.156"/>
+          <Constant key="Parameter_3433" name="k1" value="418.156"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="Parameter_7443"/>
+              <SourceParameter reference="Parameter_3433"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_5"/>
+              <SourceParameter reference="Metabolite_4"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -591,114 +591,33 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_6" stoichiometry="1"/>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_9" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_0" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_7482" name="V" value="3.91648e+09"/>
-          <Constant key="Parameter_7331" name="K" value="0.0590694"/>
+          <Constant key="Parameter_3534" name="V" value="3.91648e+09"/>
+          <Constant key="Parameter_3533" name="K" value="0.0590694"/>
         </ListOfConstants>
         <KineticLaw function="Function_3790" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_25767">
-              <SourceParameter reference="Metabolite_9"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_25766">
-              <SourceParameter reference="Parameter_7482"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_25765">
-              <SourceParameter reference="Parameter_7331"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_8" name="E3d" reversible="false" fast="false" addNoise="false">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<rdf:Description rdf:about="#Reaction_8">
-<dcterms:created>
-<rdf:Description>
-<dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
-</rdf:Description>
-</dcterms:created>
-</rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-        <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_6" stoichiometry="1"/>
-        </ListOfSubstrates>
-        <ListOfConstants>
-          <Constant key="Parameter_4788" name="k1" value="5.43385e-08"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="Parameter_4788"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_6"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_9" name="G1s" reversible="false" fast="false" addNoise="false">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<rdf:Description rdf:about="#Reaction_9">
-<dcterms:created>
-<rdf:Description>
-<dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
-</rdf:Description>
-</dcterms:created>
-</rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_7" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfModifiers>
-          <Modifier metabolite="Metabolite_3" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_0" stoichiometry="1"/>
-        </ListOfModifiers>
-        <ListOfConstants>
-          <Constant key="Parameter_4926" name="V" value="8.0471e-06"/>
-          <Constant key="Parameter_4921" name="Kr" value="3.86399e+09"/>
-          <Constant key="Parameter_7477" name="hr" value="1.17071"/>
-          <Constant key="Parameter_7488" name="Ki" value="128.423"/>
-          <Constant key="Parameter_6144" name="hi" value="0.237438"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_3791" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_25762">
-              <SourceParameter reference="Metabolite_3"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_25763">
               <SourceParameter reference="Metabolite_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_25764">
-              <SourceParameter reference="Parameter_4926"/>
+            <CallParameter functionParameter="FunctionParameter_25766">
+              <SourceParameter reference="Parameter_3534"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_25761">
-              <SourceParameter reference="Parameter_4921"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_25768">
-              <SourceParameter reference="Parameter_7477"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_25769">
-              <SourceParameter reference="Parameter_7488"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_25770">
-              <SourceParameter reference="Parameter_6144"/>
+            <CallParameter functionParameter="FunctionParameter_25765">
+              <SourceParameter reference="Parameter_3533"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_10" name="G1d" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_6" name="E3d" reversible="false" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<rdf:Description rdf:about="#Reaction_10">
+<rdf:Description rdf:about="#Reaction_6">
 <dcterms:created>
 <rdf:Description>
 <dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
@@ -708,26 +627,26 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_7523" name="k1" value="2713.9"/>
+          <Constant key="Parameter_4645" name="k1" value="5.43385e-08"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="Parameter_7523"/>
+              <SourceParameter reference="Parameter_4645"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_7"/>
+              <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_11" name="G2s" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_5" name="G1s" reversible="false" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<rdf:Description rdf:about="#Reaction_11">
+<rdf:Description rdf:about="#Reaction_5">
 <dcterms:created>
 <rdf:Description>
 <dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
@@ -737,49 +656,49 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_8" stoichiometry="1"/>
+          <Product metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_3" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_1" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_6" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4929" name="V" value="5.54494e-11"/>
-          <Constant key="Parameter_7528" name="Kr" value="0.00165854"/>
-          <Constant key="Parameter_5101" name="hr" value="0.58"/>
-          <Constant key="Parameter_7527" name="Ki" value="1.99661e-06"/>
-          <Constant key="Parameter_7533" name="hi" value="1.04453"/>
+          <Constant key="Parameter_4912" name="V" value="8.0471e-06"/>
+          <Constant key="Parameter_3438" name="Kr" value="3.86399e+09"/>
+          <Constant key="Parameter_5981" name="hr" value="1.17071"/>
+          <Constant key="Parameter_4682" name="Ki" value="128.423"/>
+          <Constant key="Parameter_3538" name="hi" value="0.237438"/>
         </ListOfConstants>
         <KineticLaw function="Function_3791" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_25762">
-              <SourceParameter reference="Metabolite_3"/>
+              <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25763">
-              <SourceParameter reference="Metabolite_1"/>
+              <SourceParameter reference="Metabolite_9"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25764">
-              <SourceParameter reference="Parameter_4929"/>
+              <SourceParameter reference="Parameter_4912"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25761">
-              <SourceParameter reference="Parameter_7528"/>
+              <SourceParameter reference="Parameter_3438"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25768">
-              <SourceParameter reference="Parameter_5101"/>
+              <SourceParameter reference="Parameter_5981"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25769">
-              <SourceParameter reference="Parameter_7527"/>
+              <SourceParameter reference="Parameter_4682"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25770">
-              <SourceParameter reference="Parameter_7533"/>
+              <SourceParameter reference="Parameter_3538"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_12" name="G2d" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_4" name="G1d" reversible="false" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<rdf:Description rdf:about="#Reaction_12">
+<rdf:Description rdf:about="#Reaction_4">
 <dcterms:created>
 <rdf:Description>
 <dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
@@ -789,78 +708,78 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_8" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_7462" name="k1" value="6.38701e+06"/>
+          <Constant key="Parameter_3501" name="k1" value="2713.9"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="Parameter_7462"/>
+              <SourceParameter reference="Parameter_3501"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_8"/>
-            </CallParameter>
-          </ListOfCallParameters>
-        </KineticLaw>
-      </Reaction>
-      <Reaction key="Reaction_13" name="G3s" reversible="false" fast="false" addNoise="false">
-        <MiriamAnnotation>
-<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<rdf:Description rdf:about="#Reaction_13">
-<dcterms:created>
-<rdf:Description>
-<dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
-</rdf:Description>
-</dcterms:created>
-</rdf:Description>
-</rdf:RDF>
-        </MiriamAnnotation>
-        <ListOfProducts>
-          <Product metabolite="Metabolite_9" stoichiometry="1"/>
-        </ListOfProducts>
-        <ListOfModifiers>
-          <Modifier metabolite="Metabolite_3" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_2" stoichiometry="1"/>
-        </ListOfModifiers>
-        <ListOfConstants>
-          <Constant key="Parameter_7467" name="V" value="17319.1"/>
-          <Constant key="Parameter_7458" name="Kr" value="452.268"/>
-          <Constant key="Parameter_7457" name="hr" value="0.451442"/>
-          <Constant key="Parameter_7450" name="Ki" value="0.140194"/>
-          <Constant key="Parameter_7498" name="hi" value="0.936739"/>
-        </ListOfConstants>
-        <KineticLaw function="Function_3791" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
-          <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_25762">
-              <SourceParameter reference="Metabolite_3"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_25763">
               <SourceParameter reference="Metabolite_2"/>
             </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_3" name="G2s" reversible="false" fast="false" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Reaction_3">
+<dcterms:created>
+<rdf:Description>
+<dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
+</rdf:Description>
+</dcterms:created>
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_1" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfModifiers>
+          <Modifier metabolite="Metabolite_6" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_8" stoichiometry="1"/>
+        </ListOfModifiers>
+        <ListOfConstants>
+          <Constant key="Parameter_4590" name="V" value="5.54494e-11"/>
+          <Constant key="Parameter_3465" name="Kr" value="0.00165854"/>
+          <Constant key="Parameter_4632" name="hr" value="0.58"/>
+          <Constant key="Parameter_3432" name="Ki" value="1.99661e-06"/>
+          <Constant key="Parameter_3462" name="hi" value="1.04453"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_3791" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_25762">
+              <SourceParameter reference="Metabolite_6"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_25763">
+              <SourceParameter reference="Metabolite_8"/>
+            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25764">
-              <SourceParameter reference="Parameter_7467"/>
+              <SourceParameter reference="Parameter_4590"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25761">
-              <SourceParameter reference="Parameter_7458"/>
+              <SourceParameter reference="Parameter_3465"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25768">
-              <SourceParameter reference="Parameter_7457"/>
+              <SourceParameter reference="Parameter_4632"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25769">
-              <SourceParameter reference="Parameter_7450"/>
+              <SourceParameter reference="Parameter_3432"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_25770">
-              <SourceParameter reference="Parameter_7498"/>
+              <SourceParameter reference="Parameter_3462"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_14" name="G3d" reversible="false" fast="false" addNoise="false">
+      <Reaction key="Reaction_2" name="G2d" reversible="false" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<rdf:Description rdf:about="#Reaction_14">
+<rdf:Description rdf:about="#Reaction_2">
 <dcterms:created>
 <rdf:Description>
 <dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
@@ -870,18 +789,99 @@ Cambidge, MA, pp. 163-186.
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_7442" name="k1" value="9170.7"/>
+          <Constant key="Parameter_4678" name="k1" value="6.38701e+06"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="Parameter_7442"/>
+              <SourceParameter reference="Parameter_4678"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Metabolite_9"/>
+              <SourceParameter reference="Metabolite_1"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_1" name="G3s" reversible="false" fast="false" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Reaction_1">
+<dcterms:created>
+<rdf:Description>
+<dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
+</rdf:Description>
+</dcterms:created>
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+        <ListOfProducts>
+          <Product metabolite="Metabolite_0" stoichiometry="1"/>
+        </ListOfProducts>
+        <ListOfModifiers>
+          <Modifier metabolite="Metabolite_6" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_7" stoichiometry="1"/>
+        </ListOfModifiers>
+        <ListOfConstants>
+          <Constant key="Parameter_4615" name="V" value="17319.1"/>
+          <Constant key="Parameter_3514" name="Kr" value="452.268"/>
+          <Constant key="Parameter_3437" name="hr" value="0.451442"/>
+          <Constant key="Parameter_3424" name="Ki" value="0.140194"/>
+          <Constant key="Parameter_3470" name="hi" value="0.936739"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_3791" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_25762">
+              <SourceParameter reference="Metabolite_6"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_25763">
+              <SourceParameter reference="Metabolite_7"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_25764">
+              <SourceParameter reference="Parameter_4615"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_25761">
+              <SourceParameter reference="Parameter_3514"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_25768">
+              <SourceParameter reference="Parameter_3437"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_25769">
+              <SourceParameter reference="Parameter_3424"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_25770">
+              <SourceParameter reference="Parameter_3470"/>
+            </CallParameter>
+          </ListOfCallParameters>
+        </KineticLaw>
+      </Reaction>
+      <Reaction key="Reaction_0" name="G3d" reversible="false" fast="false" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Reaction_0">
+<dcterms:created>
+<rdf:Description>
+<dcterms:W3CDTF>2020-12-22T20:36:54Z</dcterms:W3CDTF>
+</rdf:Description>
+</dcterms:created>
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
+        <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_0" stoichiometry="1"/>
+        </ListOfSubstrates>
+        <ListOfConstants>
+          <Constant key="Parameter_4640" name="k1" value="9170.7"/>
+        </ListOfConstants>
+        <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=3-enzyme linear pathway with gene expression,Vector=Compartments[compartment]">
+          <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_80">
+              <SourceParameter reference="Parameter_4640"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Metabolite_0"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -896,7 +896,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#ModelParameterSet_0">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-12-27T02:59:19Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-12-27T11:58:59Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -997,16 +997,16 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     </ListOfModelParameterSets>
     <StateTemplate>
       <StateTemplateVariable objectReference="Model_0"/>
-      <StateTemplateVariable objectReference="Metabolite_1"/>
-      <StateTemplateVariable objectReference="Metabolite_4"/>
-      <StateTemplateVariable objectReference="Metabolite_5"/>
-      <StateTemplateVariable objectReference="Metabolite_6"/>
-      <StateTemplateVariable objectReference="Metabolite_7"/>
       <StateTemplateVariable objectReference="Metabolite_8"/>
-      <StateTemplateVariable objectReference="Metabolite_9"/>
-      <StateTemplateVariable objectReference="Metabolite_2"/>
-      <StateTemplateVariable objectReference="Metabolite_0"/>
+      <StateTemplateVariable objectReference="Metabolite_5"/>
+      <StateTemplateVariable objectReference="Metabolite_4"/>
       <StateTemplateVariable objectReference="Metabolite_3"/>
+      <StateTemplateVariable objectReference="Metabolite_2"/>
+      <StateTemplateVariable objectReference="Metabolite_1"/>
+      <StateTemplateVariable objectReference="Metabolite_0"/>
+      <StateTemplateVariable objectReference="Metabolite_7"/>
+      <StateTemplateVariable objectReference="Metabolite_9"/>
+      <StateTemplateVariable objectReference="Metabolite_6"/>
       <StateTemplateVariable objectReference="Compartment_0"/>
     </StateTemplate>
     <InitialState type="initialState">
@@ -1014,8 +1014,8 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_0" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
-      <Report reference="Report_22" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_13" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+      <Report reference="Report_0" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="0"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="0"/>
@@ -1033,8 +1033,8 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Target Criterion" type="string" value="Distance and Rate"/>
       </Method>
     </Task>
-    <Task key="Task_12" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
-      <Report reference="Report_2" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_1" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
+      <Report reference="Report_9" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="1"/>
@@ -1055,13 +1055,13 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_11" name="Scan" type="scan" scheduled="true" updateModel="false">
-      <Report reference="Report_0" target="3enzyme_ga.out" append="1" confirmOverwrite="0"/>
+    <Task key="Task_2" name="Scan" type="scan" scheduled="true" updateModel="false">
+      <Report reference="Report_22" target="3enzyme_ga.out" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="5"/>
         <ParameterGroup name="ScanItems">
           <ParameterGroup name="ScanItem">
-            <Parameter name="Number of steps" type="unsignedInteger" value="200"/>
+            <Parameter name="Number of steps" type="unsignedInteger" value="100"/>
             <Parameter name="Type" type="unsignedInteger" value="0"/>
             <Parameter name="Object" type="cn" value=""/>
           </ParameterGroup>
@@ -1073,15 +1073,15 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_10" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
-      <Report reference="Report_10" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_3" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
+      <Report reference="Report_1" target="" append="1" confirmOverwrite="0"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
       </Method>
     </Task>
-    <Task key="Task_9" name="Optimization" type="optimization" scheduled="false" updateModel="false">
-      <Report reference="Report_9" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_4" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+      <Report reference="Report_2" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
         <ParameterText name="ObjectiveExpression" type="expression">
@@ -1102,8 +1102,8 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_8" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
-      <Report reference="Report_8" target="" append="0" confirmOverwrite="0"/>
+    <Task key="Task_5" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+      <Report reference="Report_3" target="" append="0" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
@@ -1544,10 +1544,10 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Stop after # Stalled Generations" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_7" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_7" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_6" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_4" target="" append="1" confirmOverwrite="0"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_0"/>
+        <Parameter name="Steady-State" type="key" value="Task_13"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="Modulation Factor" type="unsignedFloat" value="1.0000000000000001e-09"/>
@@ -1555,8 +1555,8 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Use Smallbone" type="bool" value="1"/>
       </Method>
     </Task>
-    <Task key="Task_6" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
-      <Report reference="Report_6" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_7" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+      <Report reference="Report_5" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -1570,8 +1570,8 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_5" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_5" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_8" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_6" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -1583,8 +1583,8 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="9.9999999999999995e-07"/>
       </Method>
     </Task>
-    <Task key="Task_4" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
-      <Report reference="Report_4" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_9" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
+      <Report reference="Report_7" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
         <ParameterGroup name="TargetFunctions">
@@ -1607,22 +1607,22 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Delta minimum" type="unsignedFloat" value="9.9999999999999998e-13"/>
       </Method>
     </Task>
-    <Task key="Task_3" name="Moieties" type="moieties" scheduled="false" updateModel="false">
-      <Report reference="Report_1" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_10" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+      <Report reference="Report_10" target="" append="1" confirmOverwrite="1"/>
       <Problem>
       </Problem>
       <Method name="Householder Reduction" type="Householder">
       </Method>
     </Task>
-    <Task key="Task_2" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
-      <Report reference="Report_3" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_11" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
+      <Report reference="Report_8" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_0"/>
+        <Parameter name="Steady-State" type="key" value="Task_13"/>
       </Problem>
       <Method name="Linear Noise Approximation" type="LinearNoiseApproximation">
       </Method>
     </Task>
-    <Task key="Task_1" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
+    <Task key="Task_12" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
@@ -1658,7 +1658,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_13" name="Time-Course Sensitivities" type="timeSensitivities" scheduled="false" updateModel="false">
+    <Task key="Task_14" name="Time-Course Sensitivities" type="timeSensitivities" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
@@ -1685,7 +1685,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_22" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_0" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1693,7 +1693,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_10" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+    <Report key="Report_1" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1701,7 +1701,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_9" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_2" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1725,7 +1725,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_8" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_3" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1749,7 +1749,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_7" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_4" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1761,7 +1761,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_6" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_5" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1773,7 +1773,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_5" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_6" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1785,7 +1785,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_4" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
+    <Report key="Report_7" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1797,7 +1797,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Sensitivities],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_3" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
+    <Report key="Report_8" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1809,7 +1809,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_2" name="Time-Course" taskType="timeCourse" separator="&#x09;" precision="6">
+    <Report key="Report_9" name="Time-Course" taskType="timeCourse" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1820,7 +1820,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Time-Course],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_1" name="Moieties" taskType="moieties" separator="&#x09;" precision="6">
+    <Report key="Report_10" name="Moieties" taskType="moieties" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1832,7 +1832,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Moieties],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_0" name="Speed test (scan)" taskType="scan" separator="&#x09;" precision="8">
+    <Report key="Report_22" name="Speed test (scan)" taskType="scan" separator="&#x09;" precision="8">
       <Comment>
       </Comment>
       <Header>
