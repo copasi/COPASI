@@ -23,7 +23,9 @@ VERSIONS="/usr/local/COPASI-4.16.104-Linux-64bit/bin/CopasiSE
 # analysis task. Do not include those that test loading/importing 
 TASKS="Pollution_lsoda.cps
 Pollution_radau5.cps
-EGFR_gillespie.cps"
+EGFR_gillespie.cps
+3enzyme_nl2sol.cps
+3enzyme_ga.cps"
 
 # LOADS contains all the .cps and .xml files that will test loading 
 # or importing functions (and which don't output to report files)
