@@ -31,6 +31,7 @@ IP3CaTissue_gepasi.gps"
 TASKS="EGFR_gillespie.cps
 Pollution_lsoda.cps
 Pollution_radau5.cps
+ERBB-RAS-AKT_ss.cps
 Schoeberl_ss.cps
 Translation_ss.cps
 3enzyme_nl2sol.cps
