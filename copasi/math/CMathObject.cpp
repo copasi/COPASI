@@ -700,7 +700,8 @@ bool CMathObject::compile(CMathContainer & container)
   if (success
       && CJitCompiler::JitEnabled()
       && mpExpression != NULL
-      && !mpExpression->getPrerequisites().empty())
+      && !mpExpression->getPrerequisites().empty()
+      && mValueType != CMath::ValueType::Propensity)
     {
       mpExpression->setCompiler(&jitCompiler);
     }
