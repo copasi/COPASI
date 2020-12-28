@@ -699,9 +699,9 @@ bool CMathObject::compile(CMathContainer & container)
 
   if (success
       && CJitCompiler::JitEnabled()
+      && mpCalculate == &CMathObject::calculateExpression
       && mpExpression != NULL
-      && !mpExpression->getPrerequisites().empty()
-      && mValueType != CMath::ValueType::Propensity)
+      && !mpExpression->getPrerequisites().empty())
     {
       mpExpression->setCompiler(&jitCompiler);
     }
