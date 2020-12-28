@@ -24,6 +24,7 @@
 #include "copasi/function/CEvaluationNodeObject.h"
 #include "copasi/function/CEvaluationLexer.h"
 #include "copasi/utilities/CCopasiTree.h"
+#include "copasi/utilities/CNodeIterator.h"
 
 #define pMathContainer static_cast< const CMathContainer * >(getObjectParent())
 
@@ -205,6 +206,16 @@ bool CMathExpression::compileJit()
 
   if (pCompiler != NULL)
     {
+      CNodeIterator< const CEvaluationNode > itNode(getRoot());
+      size_t MaxLevel = 0;
+
+      while (itNode.next() != itNode.end())
+        if (itNode.level() > MaxLevel)
+          MaxLevel = itNode.level();
+
+      if (MaxLevel > 5000)
+        return mFunction == NULL;
+
       mFunction = pCompiler->compile(*this);
     }
 
