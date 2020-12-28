@@ -64,9 +64,10 @@ IP3CaTissue_gepasi.gps | Gepasi loading | Gepasi file with 192 species and 496 r
 EGFR_gillespie.cps | Gillespie direct method | 
 Pollution_lsoda.cps | LSODA time course | stiff model
 Pollution_radau5.cps | RADAU5 time course | stiff model; not all versions have RADAU5 method
-ERBB-RAS-AKT_ss.cps | Steady state | ss criterion selected: "distance and rate" 1392 species 2686 reactions
-Schoeberl_ss.cps | Steady state | ss criterion selected: "distance"
-Translation_ss.cps | Steady state | ss criterion selected: "distance and rate"
+ERBB-RAS-AKT_ss.cps | steady state | ss criterion selected: "distance and rate" 1392 species 2686 reactions
+Schoeberl_ss.cps | steady state | ss criterion selected: "distance"
+Translation_ss.cps | steady state | ss criterion selected: "distance and rate"
+BIOMOD70_efm.cps | elementary flux modes | model with 105 EFMs
 3enzyme_nl2sol.cps | parameter estimation NL2SOL | task is run 100 times
 3enzyme_steepest.cps | parameter estimation steepest descent | task is run 100 times
 3enzyme_lm.cps | parameter estimation Levenberg-Marquardt | task is run 100 times
