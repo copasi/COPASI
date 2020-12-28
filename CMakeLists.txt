@@ -28,7 +28,8 @@
 ###############################################################################
 
 # we need at least cmake 2.8 for the FindLAPACK functions
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 2.8.12)
+
 if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
 endif(POLICY CMP0048)
@@ -433,13 +434,11 @@ if (WIN32 AND NOT CYGWIN)
 endif()
 
 if(BUILD_GUI)
+  set(OpenGL_GL_PREFERENCE LEGACY)
+
   if (UNIX AND NOT APPLE)
     FIND_LIBRARY(OPENGL_gl_LIBRARY NAMES GL PATHS /usr/lib/x86_64-linux-gnu/mesa)
   endif (UNIX AND NOT APPLE)
-
-  if(POLICY CMP0072)
-    cmake_policy(SET CMP0072 OLD)
-  endif(POLICY CMP0072)
 
   find_package(OpenGL REQUIRED)
 
