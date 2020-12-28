@@ -63,6 +63,7 @@ EGFR_sbml.xml | SBML import | large model (2.8Mb) with 356 species and 3749 reac
 EGFR_gillespie.cps | Gillespie direct method | 
 Pollution_lsoda.cps | LSODA time course | stiff model
 Pollution_radau5.cps | RADAU5 time course | stiff model; not all versions have RADAU5 method
+Schoeberl_ss.cps | Steady state | ss criterion selected: "distance"
 3enzyme_nl2sol.cps | parameter estimation NL2SOL | task is run 100 times
 3enzyme_steepest.cps | parameter estimation steepest descent | task is run 100 times
 3enzyme_lm.cps | parameter estimation Levenberg-Marquardt | task is run 100 times
@@ -78,7 +79,7 @@ Pollution_radau5.cps | RADAU5 time course | stiff model; not all versions have R
 3enzyme_ep.cps | parameter estimation evolutionary programming | task is run 10 times
 3enzyme_da.cps | parameter estimation genetic algorithm | task is run 10 times
 3enzyme_rs.cps | parameter estimation random search | task is run 10 times
-KinMMFit.cps | parameter estimation simulated annealing | task is run 10 times
+KinMMFit_sa.cps | parameter estimation simulated annealing | task is run 10 times
 
 ## Results
 
