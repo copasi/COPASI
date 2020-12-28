@@ -20,6 +20,11 @@ VERSIONS="/usr/local/COPASI-4.16.104-Linux-64bit/bin/CopasiSE
 /usr/local/COPASI-4.29.228-Linux-64bit/bin/CopasiSE
 /usr/local/COPASI-4.30.235-Linux-64bit/bin/CopasiSE"
 
+# LOADS contains all the .cps and .xml files that will test loading 
+# or importing functions (and which don't output to report files)
+LOADS="BCR_load.cps
+egfr_sbml.xml"
+
 # TASKS contains all the .cps files that run a specific simulation or 
 # analysis task. Do not include those that test loading/importing 
 TASKS="EGFR_gillespie.cps
@@ -43,10 +48,7 @@ Schoeberl_ss.cps
 3enzyme_rs.cps
 KinMMFit_sa.cps"
 
-# LOADS contains all the .cps and .xml files that will test loading 
-# or importing functions (and which don't output to report files)
-LOADS="BCR_load.cps
-egfr_sbml.xml"
+# END OF CONFIGURATION
 
 # Display list of versions to profile
 if [ -f versions ]; then
