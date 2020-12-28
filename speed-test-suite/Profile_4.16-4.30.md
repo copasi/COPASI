@@ -60,10 +60,12 @@ File | Function tested | Observations
 -----|-----------------|--------
 BCR_load.cps | native file loading | very large file (49 Mb) with 1122 species and 24388 reactions 
 EGFR_sbml.xml | SBML import | large model (2.8Mb) with 356 species and 3749 reactions 
+2500genes_gepasi.gps | Gepasi loading | large Gepasi file with 2500 species and 
 EGFR_gillespie.cps | Gillespie direct method | 
 Pollution_lsoda.cps | LSODA time course | stiff model
 Pollution_radau5.cps | RADAU5 time course | stiff model; not all versions have RADAU5 method
 Schoeberl_ss.cps | Steady state | ss criterion selected: "distance"
+Translation_ss.cps | Steady state | ss criterion selected: "distance and rate"
 3enzyme_nl2sol.cps | parameter estimation NL2SOL | task is run 100 times
 3enzyme_steepest.cps | parameter estimation steepest descent | task is run 100 times
 3enzyme_lm.cps | parameter estimation Levenberg-Marquardt | task is run 100 times
