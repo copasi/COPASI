@@ -62,6 +62,8 @@ BCR_load.cps | native file loading | very large file (49 Mb) with 1122 species a
 EGFR_sbml.xml | SBML import | large model (2.8Mb) with 356 species and 3749 reactions 
 IP3CaTissue_gepasi.gps | Gepasi loading | Gepasi file with 192 species and 496 reactions
 EGFR_gillespie.cps | Gillespie direct method | 
+multistate_gillespie.cps | Gillespie direct method | 
+multistate_gb.cps | Gillespie Gibson-Bruck | 
 Pollution_lsoda.cps | LSODA time course | stiff model
 Pollution_radau5.cps | RADAU5 time course | stiff model; not all versions have RADAU5 method
 ERBB-RAS-AKT_ss.cps | steady state | ss criterion selected: "distance and rate" 1392 species 2686 reactions

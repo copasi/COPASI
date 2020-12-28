@@ -29,11 +29,14 @@ IP3CaTissue_gepasi.gps"
 # TASKS contains all the .cps files that run a specific simulation or 
 # analysis task. Do not include those that test loading/importing 
 TASKS="EGFR_gillespie.cps
+multistate_gillespie.cps
+multistate_gb.cps
 Pollution_lsoda.cps
 Pollution_radau5.cps
 ERBB-RAS-AKT_ss.cps
 Schoeberl_ss.cps
 Translation_ss.cps
+BIOMOD70_efm.cps
 3enzyme_nl2sol.cps
 3enzyme_steepest.cps
 3enzyme_lm.cps
