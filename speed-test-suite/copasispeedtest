@@ -23,7 +23,8 @@ VERSIONS="/usr/local/COPASI-4.16.104-Linux-64bit/bin/CopasiSE
 # LOADS contains all the .cps and .xml files that will test loading 
 # or importing functions (and which don't output to report files)
 LOADS="BCR_load.cps
-egfr_sbml.xml"
+egfr_sbml.xml
+IP3CaTissue_gepasi.gps"
 
 # TASKS contains all the .cps files that run a specific simulation or 
 # analysis task. Do not include those that test loading/importing 
