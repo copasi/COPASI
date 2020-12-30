@@ -69,6 +69,7 @@ include(math/CMakeLists.txt)
 include(model/CMakeLists.txt)
 include(moieties/CMakeLists.txt)
 include(odepack++/CMakeLists.txt)
+include(OpenMP/CMakeLists.txt)
 include(optimization/CMakeLists.txt)
 include(output/CMakeLists.txt)
 include(parameterFitting/CMakeLists.txt)
@@ -98,9 +99,6 @@ if(ENABLE_VERSIONING)
   include(versioning/CMakeLists.txt)
 endif(ENABLE_VERSIONING)
 
-if(ENABLE_OMP)
-  include(OpenMP/CMakeLists.txt)
-endif(ENABLE_OMP)
 
 ###############################################################################
 #
