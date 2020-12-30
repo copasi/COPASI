@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.16 (Build 104) (http://www.copasi.org) at 2020-12-28 18:39:50 UTC -->
+<!-- generated with COPASI 4.30 (Build 236) (http://www.copasi.org) at 2020-12-30T03:04:37Z -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
-<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="16" versionDevel="104" copasiSourcesModified="0">
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="30" versionDevel="236" copasiSourcesModified="0">
   <ListOfFunctions>
     <Function key="Function_40" name="Function for Glucose transport" type="UserDefined" reversible="true">
       <MiriamAnnotation>
@@ -19,13 +19,13 @@
         Vmaxv0/KMoutv0*(Glcout-Glcin/Keqv0)/(1+Glcout/KMoutv0+Glcin/KMinv0+alfav0*Glcout*Glcin/KMoutv0/KMinv0)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_266" name="Glcin" order="0" role="product"/>
-        <ParameterDescription key="FunctionParameter_258" name="Glcout" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_270" name="KMinv0" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_254" name="KMoutv0" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_268" name="Keqv0" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_264" name="Vmaxv0" order="5" role="constant"/>
-        <ParameterDescription key="FunctionParameter_272" name="alfav0" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter_264" name="Glcin" order="0" role="product"/>
+        <ParameterDescription key="FunctionParameter_263" name="Glcout" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_262" name="KMinv0" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_261" name="KMoutv0" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_250" name="Keqv0" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_265" name="Vmaxv0" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_266" name="alfav0" order="6" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_41" name="Function for Hexokinase" type="UserDefined" reversible="true">
@@ -44,24 +44,24 @@
         Inhibv1*Glcin/(Glcin+KMGlcv1)*(Vmax1v1/KMgATPv1)*(MgATP+Vmax2v1/Vmax1v1*MgATP*Mgf/KMgATPMgv1-Glc6P*MgADP/Keqv1)/(1+MgATP/KMgATPv1*(1+Mgf/KMgATPMgv1)+Mgf/KMgv1+(1.55+Glc6P/KGlc6Pv1)*(1+Mgf/KMgv1)+(Gri23P2f+MgGri23P2)/K23P2Gv1+Mgf*(Gri23P2f+MgGri23P2)/(KMgv1*KMg23P2Gv1))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_285" name="Glc6P" order="0" role="product"/>
-        <ParameterDescription key="FunctionParameter_269" name="Glcin" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_295" name="Gri23P2f" order="2" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_273" name="Inhibv1" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_299" name="K23P2Gv1" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_293" name="KGlc6Pv1" order="5" role="constant"/>
-        <ParameterDescription key="FunctionParameter_265" name="KMGlcv1" order="6" role="constant"/>
-        <ParameterDescription key="FunctionParameter_301" name="KMg23P2Gv1" order="7" role="constant"/>
-        <ParameterDescription key="FunctionParameter_283" name="KMgATPMgv1" order="8" role="constant"/>
-        <ParameterDescription key="FunctionParameter_275" name="KMgATPv1" order="9" role="constant"/>
-        <ParameterDescription key="FunctionParameter_291" name="KMgv1" order="10" role="constant"/>
-        <ParameterDescription key="FunctionParameter_289" name="Keqv1" order="11" role="constant"/>
-        <ParameterDescription key="FunctionParameter_287" name="MgADP" order="12" role="product"/>
-        <ParameterDescription key="FunctionParameter_277" name="MgATP" order="13" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_297" name="MgGri23P2" order="14" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_281" name="Mgf" order="15" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_262" name="Vmax1v1" order="16" role="constant"/>
-        <ParameterDescription key="FunctionParameter_279" name="Vmax2v1" order="17" role="constant"/>
+        <ParameterDescription key="FunctionParameter_273" name="Glc6P" order="0" role="product"/>
+        <ParameterDescription key="FunctionParameter_272" name="Glcin" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_271" name="Gri23P2f" order="2" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_270" name="Inhibv1" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_269" name="K23P2Gv1" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_268" name="KGlc6Pv1" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_267" name="KMGlcv1" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter_274" name="KMg23P2Gv1" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter_275" name="KMgATPMgv1" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter_276" name="KMgATPv1" order="9" role="constant"/>
+        <ParameterDescription key="FunctionParameter_277" name="KMgv1" order="10" role="constant"/>
+        <ParameterDescription key="FunctionParameter_278" name="Keqv1" order="11" role="constant"/>
+        <ParameterDescription key="FunctionParameter_279" name="MgADP" order="12" role="product"/>
+        <ParameterDescription key="FunctionParameter_280" name="MgATP" order="13" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_281" name="MgGri23P2" order="14" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_282" name="Mgf" order="15" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_283" name="Vmax1v1" order="16" role="constant"/>
+        <ParameterDescription key="FunctionParameter_284" name="Vmax2v1" order="17" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_42" name="Function for Glucosephosphate isomerase" type="UserDefined" reversible="true">
@@ -80,12 +80,12 @@
         Vmaxv2*(Glc6P-Fru6P/Keqv2)/(Glc6P+KGlc6Pv2*(1+Fru6P/KFru6Pv2))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_294" name="Fru6P" order="0" role="product"/>
-        <ParameterDescription key="FunctionParameter_298" name="Glc6P" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_282" name="KFru6Pv2" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_286" name="KGlc6Pv2" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_290" name="Keqv2" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_302" name="Vmaxv2" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_302" name="Fru6P" order="0" role="product"/>
+        <ParameterDescription key="FunctionParameter_301" name="Glc6P" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_300" name="KFru6Pv2" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_299" name="KGlc6Pv2" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_298" name="Keqv2" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_297" name="Vmaxv2" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_43" name="Function for Phosphofructokinase" type="UserDefined" reversible="true">
@@ -104,22 +104,22 @@
         Vmaxv3*(Fru6P*MgATP-Fru16P2*MgADP/Keqv3)/((Fru6P+KFru6Pv3)*(MgATP+KMgATPv3)*(1+L0v3*((1+ATPf/KATPv3)*(1+Mgf/KMgv3)/((1+(AMPf+MgAMP)/KAMPv3)*(1+Fru6P/KFru6Pv3)))^4))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_317" name="AMPf" order="0" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_309" name="ATPf" order="1" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_278" name="Fru16P2" order="2" role="product"/>
-        <ParameterDescription key="FunctionParameter_288" name="Fru6P" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_321" name="KAMPv3" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_311" name="KATPv3" order="5" role="constant"/>
-        <ParameterDescription key="FunctionParameter_303" name="KFru6Pv3" order="6" role="constant"/>
-        <ParameterDescription key="FunctionParameter_305" name="KMgATPv3" order="7" role="constant"/>
-        <ParameterDescription key="FunctionParameter_315" name="KMgv3" order="8" role="constant"/>
-        <ParameterDescription key="FunctionParameter_267" name="Keqv3" order="9" role="constant"/>
-        <ParameterDescription key="FunctionParameter_307" name="L0v3" order="10" role="constant"/>
-        <ParameterDescription key="FunctionParameter_274" name="MgADP" order="11" role="product"/>
-        <ParameterDescription key="FunctionParameter_319" name="MgAMP" order="12" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_296" name="MgATP" order="13" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_313" name="Mgf" order="14" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_280" name="Vmaxv3" order="15" role="constant"/>
+        <ParameterDescription key="FunctionParameter_291" name="AMPf" order="0" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_292" name="ATPf" order="1" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_293" name="Fru16P2" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter_294" name="Fru6P" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_295" name="KAMPv3" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_296" name="KATPv3" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_290" name="KFru6Pv3" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter_289" name="KMgATPv3" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter_288" name="KMgv3" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter_287" name="Keqv3" order="9" role="constant"/>
+        <ParameterDescription key="FunctionParameter_286" name="L0v3" order="10" role="constant"/>
+        <ParameterDescription key="FunctionParameter_285" name="MgADP" order="11" role="product"/>
+        <ParameterDescription key="FunctionParameter_303" name="MgAMP" order="12" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_304" name="MgATP" order="13" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_305" name="Mgf" order="14" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_306" name="Vmaxv3" order="15" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_44" name="Function for Aldolase" type="UserDefined" reversible="true">
@@ -138,16 +138,16 @@
         Vmaxv4/KFru16P2v4*(Fru16P2-GraP*DHAP/Keqv4)/(1+Fru16P2/KFru16P2v4+GraP/KiGraPv4+DHAP*(GraP+KGraPv4)/(KDHAPv4*KiGraPv4)+Fru16P2*GraP/(KFru16P2v4*KiiGraPv4))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_306" name="DHAP" order="0" role="product"/>
-        <ParameterDescription key="FunctionParameter_314" name="Fru16P2" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_310" name="GraP" order="2" role="product"/>
-        <ParameterDescription key="FunctionParameter_323" name="KDHAPv4" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_322" name="DHAP" order="0" role="product"/>
+        <ParameterDescription key="FunctionParameter_321" name="Fru16P2" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_320" name="GraP" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter_319" name="KDHAPv4" order="3" role="constant"/>
         <ParameterDescription key="FunctionParameter_318" name="KFru16P2v4" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_292" name="KGraPv4" order="5" role="constant"/>
-        <ParameterDescription key="FunctionParameter_271" name="Keqv4" order="6" role="constant"/>
-        <ParameterDescription key="FunctionParameter_276" name="KiGraPv4" order="7" role="constant"/>
-        <ParameterDescription key="FunctionParameter_325" name="KiiGraPv4" order="8" role="constant"/>
-        <ParameterDescription key="FunctionParameter_322" name="Vmaxv4" order="9" role="constant"/>
+        <ParameterDescription key="FunctionParameter_317" name="KGraPv4" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_316" name="Keqv4" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter_315" name="KiGraPv4" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter_314" name="KiiGraPv4" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter_313" name="Vmaxv4" order="9" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_45" name="Function for Triosephosphate isomerase" type="UserDefined" reversible="true">
@@ -166,12 +166,12 @@
         Vmaxv5*(DHAP-GraP/Keqv5)/(DHAP+KDHAPv5*(1+GraP/KGraPv5))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_284" name="DHAP" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_246" name="GraP" order="1" role="product"/>
-        <ParameterDescription key="FunctionParameter_316" name="KDHAPv5" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_327" name="KGraPv5" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_308" name="Keqv5" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_326" name="Vmaxv5" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_326" name="DHAP" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_325" name="GraP" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter_324" name="KDHAPv5" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_323" name="KGraPv5" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_307" name="Keqv5" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_308" name="Vmaxv5" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_46" name="Function for Glyceraldehyde 3-phosphate dehydrogenase" type="UserDefined" reversible="true">
@@ -190,18 +190,18 @@
         Vmaxv6/(KNADv6*KGraPv6*KPv6)*(NAD*GraP*Phi-Gri13P2*NADH/Keqv6)/((1+NAD/KNADv6)*(1+GraP/KGraPv6)*(1+Phi/KPv6)+(1+NADH/KNADHv6)*(1+Gri13P2/K13P2Gv6)-1)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_333" name="GraP" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_337" name="Gri13P2" order="1" role="product"/>
-        <ParameterDescription key="FunctionParameter_345" name="K13P2Gv6" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_300" name="KGraPv6" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_343" name="KNADHv6" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_312" name="KNADv6" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_328" name="GraP" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_327" name="Gri13P2" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter_312" name="K13P2Gv6" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_311" name="KGraPv6" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_310" name="KNADHv6" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_309" name="KNADv6" order="5" role="constant"/>
         <ParameterDescription key="FunctionParameter_329" name="KPv6" order="6" role="constant"/>
-        <ParameterDescription key="FunctionParameter_341" name="Keqv6" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter_330" name="Keqv6" order="7" role="constant"/>
         <ParameterDescription key="FunctionParameter_331" name="NAD" order="8" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_339" name="NADH" order="9" role="product"/>
-        <ParameterDescription key="FunctionParameter_335" name="Phi" order="10" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_328" name="Vmaxv6" order="11" role="constant"/>
+        <ParameterDescription key="FunctionParameter_332" name="NADH" order="9" role="product"/>
+        <ParameterDescription key="FunctionParameter_333" name="Phi" order="10" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_334" name="Vmaxv6" order="11" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_47" name="Function for Phosphoglycerate kinase" type="UserDefined" reversible="true">
@@ -220,16 +220,16 @@
         Vmaxv7/(KMgADPv7*K13P2Gv7)*(MgADP*Gri13P2-MgATP*Gri3P/Keqv7)/((1+MgADP/KMgADPv7)*(1+Gri13P2/K13P2Gv7)+(1+MgATP/KMgATPv7)*(1+Gri3P/K3PGv7)-1)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_330" name="Gri13P2" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_347" name="Gri3P" order="1" role="product"/>
-        <ParameterDescription key="FunctionParameter_338" name="K13P2Gv7" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_353" name="K3PGv7" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_346" name="Gri13P2" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_345" name="Gri3P" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter_344" name="K13P2Gv7" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_343" name="K3PGv7" order="3" role="constant"/>
         <ParameterDescription key="FunctionParameter_342" name="KMgADPv7" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_351" name="KMgATPv7" order="5" role="constant"/>
-        <ParameterDescription key="FunctionParameter_349" name="Keqv7" order="6" role="constant"/>
-        <ParameterDescription key="FunctionParameter_334" name="MgADP" order="7" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_304" name="MgATP" order="8" role="product"/>
-        <ParameterDescription key="FunctionParameter_346" name="Vmaxv7" order="9" role="constant"/>
+        <ParameterDescription key="FunctionParameter_341" name="KMgATPv7" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_340" name="Keqv7" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter_339" name="MgADP" order="7" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_338" name="MgATP" order="8" role="product"/>
+        <ParameterDescription key="FunctionParameter_337" name="Vmaxv7" order="9" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_48" name="Function for Bisphosphoglycerate mutase" type="UserDefined" reversible="true">
@@ -248,12 +248,12 @@
         kDPGMv8*(Gri13P2-(Gri23P2f+MgGri23P2)/Keqv8)/(1+(Gri23P2f+MgGri23P2)/K23P2Gv8)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_350" name="Gri13P2" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_320" name="Gri23P2f" order="1" role="product"/>
-        <ParameterDescription key="FunctionParameter_355" name="K23P2Gv8" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_340" name="Keqv8" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_332" name="MgGri23P2" order="4" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_354" name="kDPGMv8" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_354" name="Gri13P2" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_353" name="Gri23P2f" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter_352" name="K23P2Gv8" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_351" name="Keqv8" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_350" name="MgGri23P2" order="4" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_349" name="kDPGMv8" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_49" name="Function for Bisphosphoglycerate phosphatase" type="UserDefined" reversible="unspecified">
@@ -272,12 +272,12 @@
         Vmaxv9*(Gri23P2f+MgGri23P2-Gri3P/Keqv9)/(Gri23P2f+MgGri23P2+K23P2Gv9)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_336" name="Gri23P2f" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_357" name="Gri3P" order="1" role="product"/>
-        <ParameterDescription key="FunctionParameter_361" name="K23P2Gv9" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_359" name="Keqv9" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_348" name="MgGri23P2" order="4" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_356" name="Vmaxv9" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_356" name="Gri23P2f" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_355" name="Gri3P" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter_336" name="K23P2Gv9" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_335" name="Keqv9" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_347" name="MgGri23P2" order="4" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_348" name="Vmaxv9" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_50" name="Function for Phosphoglycerate mutase" type="UserDefined" reversible="true">
@@ -296,12 +296,12 @@
         Vmaxv10*(Gri3P-Gri2P/Keqv10)/(Gri3P+K3PGv10*(1+Gri2P/K2PGv10))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_324" name="Gri2P" order="0" role="product"/>
-        <ParameterDescription key="FunctionParameter_358" name="Gri3P" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_367" name="K2PGv10" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_365" name="K3PGv10" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_363" name="Keqv10" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_362" name="Vmaxv10" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_362" name="Gri2P" order="0" role="product"/>
+        <ParameterDescription key="FunctionParameter_361" name="Gri3P" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_360" name="K2PGv10" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_359" name="K3PGv10" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_358" name="Keqv10" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_357" name="Vmaxv10" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_51" name="Function for Enolase" type="UserDefined" reversible="true">
@@ -320,12 +320,12 @@
         Vmaxv11*(Gri2P-PEP/Keqv11)/(Gri2P+K2PGv11*(1+PEP/KPEPv11))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_364" name="Gri2P" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_371" name="K2PGv11" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_373" name="KPEPv11" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_369" name="Keqv11" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_352" name="PEP" order="4" role="product"/>
-        <ParameterDescription key="FunctionParameter_368" name="Vmaxv11" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_368" name="Gri2P" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_367" name="K2PGv11" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_366" name="KPEPv11" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_365" name="Keqv11" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_364" name="PEP" order="4" role="product"/>
+        <ParameterDescription key="FunctionParameter_363" name="Vmaxv11" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_52" name="Function for Pyruvate kinase" type="UserDefined" reversible="true">
@@ -344,19 +344,19 @@
         Vmaxv12*(PEP*MgADP-Pyr*MgATP/Keqv12)/((PEP+KPEPv12)*(MgADP+KMgADPv12)*(1+L0v12*(1+(ATPf+MgATP)/KATPv12)^4/((1+PEP/KPEPv12)^4*(1+Fru16P2/KFru16P2v12)^4)))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_387" name="ATPf" order="0" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_391" name="Fru16P2" order="1" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_389" name="KATPv12" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_393" name="KFru16P2v12" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_383" name="KMgADPv12" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_381" name="KPEPv12" order="5" role="constant"/>
-        <ParameterDescription key="FunctionParameter_379" name="Keqv12" order="6" role="constant"/>
-        <ParameterDescription key="FunctionParameter_385" name="L0v12" order="7" role="constant"/>
-        <ParameterDescription key="FunctionParameter_344" name="MgADP" order="8" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_377" name="MgATP" order="9" role="product"/>
-        <ParameterDescription key="FunctionParameter_370" name="PEP" order="10" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_375" name="Pyr" order="11" role="product"/>
-        <ParameterDescription key="FunctionParameter_374" name="Vmaxv12" order="12" role="constant"/>
+        <ParameterDescription key="FunctionParameter_374" name="ATPf" order="0" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_373" name="Fru16P2" order="1" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_372" name="KATPv12" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_371" name="KFru16P2v12" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_370" name="KMgADPv12" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_369" name="KPEPv12" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_375" name="Keqv12" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter_376" name="L0v12" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter_377" name="MgADP" order="8" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_378" name="MgATP" order="9" role="product"/>
+        <ParameterDescription key="FunctionParameter_379" name="PEP" order="10" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_380" name="Pyr" order="11" role="product"/>
+        <ParameterDescription key="FunctionParameter_381" name="Vmaxv12" order="12" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_53" name="Function for Lactate dehydrogenase" type="UserDefined" reversible="true">
@@ -375,12 +375,12 @@
         Vmaxv13*(Pyr*NADH-Lac*NAD/Keqv13)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_366" name="Keqv13" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_382" name="Lac" order="1" role="product"/>
-        <ParameterDescription key="FunctionParameter_378" name="NAD" order="2" role="product"/>
-        <ParameterDescription key="FunctionParameter_386" name="NADH" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_394" name="Keqv13" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_393" name="Lac" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter_392" name="NAD" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter_391" name="NADH" order="3" role="substrate"/>
         <ParameterDescription key="FunctionParameter_390" name="Pyr" order="4" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_394" name="Vmaxv13" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_389" name="Vmaxv13" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_54" name="Function for Lactate dehydrogenase_2" type="UserDefined" reversible="true">
@@ -399,12 +399,12 @@
         kLDHv14*(Pyr*NADPHf-Lac*NADPf/Keqv14)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_398" name="Keqv14" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_372" name="Lac" order="1" role="product"/>
-        <ParameterDescription key="FunctionParameter_388" name="NADPHf" order="2" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_396" name="NADPf" order="3" role="product"/>
-        <ParameterDescription key="FunctionParameter_380" name="Pyr" order="4" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_360" name="kLDHv14" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_383" name="Keqv14" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_384" name="Lac" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter_385" name="NADPHf" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_386" name="NADPf" order="3" role="product"/>
+        <ParameterDescription key="FunctionParameter_387" name="Pyr" order="4" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_388" name="kLDHv14" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_55" name="Function for ATPase" type="UserDefined" reversible="unspecified">
@@ -423,8 +423,8 @@
         kATPasev15*MgATP
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_395" name="MgATP" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_399" name="kATPasev15" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_399" name="MgATP" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_398" name="kATPasev15" order="1" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_56" name="Function for Adenylate kinase" type="UserDefined" reversible="true">
@@ -443,15 +443,15 @@
         Vmaxv16/(KATPv16*KAMPv16)*(MgATP*AMPf-MgADP*ADPf/Keqv16)/((1+MgATP/KATPv16)*(1+AMPf/KAMPv16)+(MgADP+ADPf)/KADPv16+MgADP*ADPf/KADPv16^2)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_408" name="ADPf" order="0" role="product"/>
-        <ParameterDescription key="FunctionParameter_404" name="AMPf" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_412" name="KADPv16" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_400" name="KAMPv16" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_384" name="KATPv16" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_410" name="Keqv16" order="5" role="constant"/>
-        <ParameterDescription key="FunctionParameter_406" name="MgADP" order="6" role="product"/>
-        <ParameterDescription key="FunctionParameter_402" name="MgATP" order="7" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_392" name="Vmaxv16" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter_396" name="ADPf" order="0" role="product"/>
+        <ParameterDescription key="FunctionParameter_397" name="AMPf" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_395" name="KADPv16" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_382" name="KAMPv16" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_400" name="KATPv16" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_401" name="Keqv16" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_402" name="MgADP" order="6" role="product"/>
+        <ParameterDescription key="FunctionParameter_403" name="MgATP" order="7" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_404" name="Vmaxv16" order="8" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_57" name="Function for Glucose 6-phosphate dehydrogenase" type="UserDefined" reversible="true">
@@ -470,21 +470,21 @@
         Vmaxv17/KG6Pv17/KNADPv17*(Glc6P*NADPf-GlcA6P*NADPHf/Keqv17)/(1+NADPf*(1+Glc6P/KG6Pv17)/KNADPv17+(ATPf+MgATP)/KATPv17+NADPHf/KNADPHv17+(Gri23P2f+MgGri23P2)/KPGA23v17)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_421" name="ATPf" order="0" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_401" name="Glc6P" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_415" name="GlcA6P" order="2" role="product"/>
-        <ParameterDescription key="FunctionParameter_429" name="Gri23P2f" order="3" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_425" name="KATPv17" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_409" name="KG6Pv17" order="5" role="constant"/>
-        <ParameterDescription key="FunctionParameter_427" name="KNADPHv17" order="6" role="constant"/>
-        <ParameterDescription key="FunctionParameter_405" name="KNADPv17" order="7" role="constant"/>
-        <ParameterDescription key="FunctionParameter_433" name="KPGA23v17" order="8" role="constant"/>
-        <ParameterDescription key="FunctionParameter_419" name="Keqv17" order="9" role="constant"/>
-        <ParameterDescription key="FunctionParameter_423" name="MgATP" order="10" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_431" name="MgGri23P2" order="11" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_413" name="ATPf" order="0" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_412" name="Glc6P" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_411" name="GlcA6P" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter_410" name="Gri23P2f" order="3" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_409" name="KATPv17" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_408" name="KG6Pv17" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_407" name="KNADPHv17" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter_406" name="KNADPv17" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter_405" name="KPGA23v17" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter_414" name="Keqv17" order="9" role="constant"/>
+        <ParameterDescription key="FunctionParameter_415" name="MgATP" order="10" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_416" name="MgGri23P2" order="11" role="modifier"/>
         <ParameterDescription key="FunctionParameter_417" name="NADPHf" order="12" role="product"/>
-        <ParameterDescription key="FunctionParameter_397" name="NADPf" order="13" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_413" name="Vmaxv17" order="14" role="constant"/>
+        <ParameterDescription key="FunctionParameter_418" name="NADPf" order="13" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_419" name="Vmaxv17" order="14" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_58" name="Function for Phosphogluconate dehydrogenase" type="UserDefined" reversible="true">
@@ -503,22 +503,22 @@
         Vmaxv18/K6PG1v18/KNADPv18*(GlcA6P*NADPf-Rul5P*NADPHf/Keqv18)/((1+NADPf/KNADPv18)*(1+GlcA6P/K6PG1v18+(Gri23P2f+MgGri23P2)/KPGA23v18)+(ATPf+MgATP)/KATPv18+NADPHf*(1+GlcA6P/K6PG2v18)/KNADPHv18)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_442" name="ATPf" order="0" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_422" name="GlcA6P" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_436" name="Gri23P2f" order="2" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_430" name="K6PG1v18" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_448" name="K6PG2v18" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_446" name="KATPv18" order="5" role="constant"/>
-        <ParameterDescription key="FunctionParameter_450" name="KNADPHv18" order="6" role="constant"/>
-        <ParameterDescription key="FunctionParameter_426" name="KNADPv18" order="7" role="constant"/>
-        <ParameterDescription key="FunctionParameter_440" name="KPGA23v18" order="8" role="constant"/>
-        <ParameterDescription key="FunctionParameter_411" name="Keqv18" order="9" role="constant"/>
-        <ParameterDescription key="FunctionParameter_444" name="MgATP" order="10" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_438" name="MgGri23P2" order="11" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_403" name="NADPHf" order="12" role="product"/>
-        <ParameterDescription key="FunctionParameter_418" name="NADPf" order="13" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_414" name="Rul5P" order="14" role="product"/>
-        <ParameterDescription key="FunctionParameter_434" name="Vmaxv18" order="15" role="constant"/>
+        <ParameterDescription key="FunctionParameter_434" name="ATPf" order="0" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_433" name="GlcA6P" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_432" name="Gri23P2f" order="2" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_431" name="K6PG1v18" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_430" name="K6PG2v18" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_429" name="KATPv18" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_428" name="KNADPHv18" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter_427" name="KNADPv18" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter_426" name="KPGA23v18" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter_425" name="Keqv18" order="9" role="constant"/>
+        <ParameterDescription key="FunctionParameter_424" name="MgATP" order="10" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_423" name="MgGri23P2" order="11" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_422" name="NADPHf" order="12" role="product"/>
+        <ParameterDescription key="FunctionParameter_421" name="NADPf" order="13" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_420" name="Rul5P" order="14" role="product"/>
+        <ParameterDescription key="FunctionParameter_435" name="Vmaxv18" order="15" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_59" name="Function for Glutathione reductase" type="UserDefined" reversible="true">
@@ -537,16 +537,16 @@
         Vmaxv19*(GSSG*NADPHf/(KGSSGv19*KNADPHv19)-GSH^2/KGSHv19^2*NADPf/(KNADPv19*Keqv19))/(1+NADPHf*(1+GSSG/KGSSGv19)/KNADPHv19+NADPf/KNADPv19*(1+GSH*(1+GSH/KGSHv19)/KGSHv19))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_376" name="GSH" order="0" role="product"/>
-        <ParameterDescription key="FunctionParameter_447" name="GSSG" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_420" name="KGSHv19" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_439" name="KGSSGv19" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_435" name="KNADPHv19" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_452" name="KNADPv19" order="5" role="constant"/>
-        <ParameterDescription key="FunctionParameter_454" name="Keqv19" order="6" role="constant"/>
-        <ParameterDescription key="FunctionParameter_443" name="NADPHf" order="7" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_428" name="NADPf" order="8" role="product"/>
-        <ParameterDescription key="FunctionParameter_451" name="Vmaxv19" order="9" role="constant"/>
+        <ParameterDescription key="FunctionParameter_451" name="GSH" order="0" role="product"/>
+        <ParameterDescription key="FunctionParameter_450" name="GSSG" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_449" name="KGSHv19" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_448" name="KGSSGv19" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_447" name="KNADPHv19" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_446" name="KNADPv19" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_445" name="Keqv19" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter_444" name="NADPHf" order="7" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_443" name="NADPf" order="8" role="product"/>
+        <ParameterDescription key="FunctionParameter_442" name="Vmaxv19" order="9" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_60" name="Function for Glutathione oxidation" type="UserDefined" reversible="unspecified">
@@ -565,8 +565,8 @@
         Kv20*GSH
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_432" name="GSH" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_455" name="Kv20" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_455" name="GSH" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_454" name="Kv20" order="1" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_61" name="Function for Phosphoribulose epimerase" type="UserDefined" reversible="true">
@@ -585,12 +585,12 @@
         Vmaxv21*(Rul5P-Xul5P/Keqv21)/(Rul5P+KRu5Pv21*(1+Xul5P/KX5Pv21))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_456" name="KRu5Pv21" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_458" name="KX5Pv21" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_445" name="Keqv21" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_416" name="Rul5P" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_424" name="Vmaxv21" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_437" name="Xul5P" order="5" role="product"/>
+        <ParameterDescription key="FunctionParameter_452" name="KRu5Pv21" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_453" name="KX5Pv21" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_436" name="Keqv21" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_437" name="Rul5P" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_438" name="Vmaxv21" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_439" name="Xul5P" order="5" role="product"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_62" name="Function for Ribose phosphate isomerase" type="UserDefined" reversible="true">
@@ -609,12 +609,12 @@
         Vmaxv22*(Rul5P-Rib5P/Keqv22)/(Rul5P+KRu5Pv22*(1+Rib5P/KR5Pv22))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_464" name="KR5Pv22" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_462" name="KRu5Pv22" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_460" name="Keqv22" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_407" name="Rib5P" order="3" role="product"/>
-        <ParameterDescription key="FunctionParameter_449" name="Rul5P" order="4" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_459" name="Vmaxv22" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_459" name="KR5Pv22" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_458" name="KRu5Pv22" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_457" name="Keqv22" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_456" name="Rib5P" order="3" role="product"/>
+        <ParameterDescription key="FunctionParameter_441" name="Rul5P" order="4" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_440" name="Vmaxv22" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_63" name="Function for Transketolase 1" type="UserDefined" reversible="true">
@@ -633,19 +633,19 @@
         Vmaxv23*(Rib5P*Xul5P-GraP*Sed7P/Keqv23)/((K1v23+Rib5P)*Xul5P+(K2v23+K6v23*Sed7P)*Rib5P+(K3v23+K5v23*Sed7P)*GraP+K4v23*Sed7P+K7v23*Xul5P*GraP)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_466" name="GraP" order="0" role="product"/>
-        <ParameterDescription key="FunctionParameter_472" name="K1v23" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_474" name="K2v23" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_478" name="K3v23" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_482" name="K4v23" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_480" name="K5v23" order="5" role="constant"/>
-        <ParameterDescription key="FunctionParameter_476" name="K6v23" order="6" role="constant"/>
-        <ParameterDescription key="FunctionParameter_484" name="K7v23" order="7" role="constant"/>
-        <ParameterDescription key="FunctionParameter_470" name="Keqv23" order="8" role="constant"/>
-        <ParameterDescription key="FunctionParameter_461" name="Rib5P" order="9" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_468" name="Sed7P" order="10" role="product"/>
-        <ParameterDescription key="FunctionParameter_465" name="Vmaxv23" order="11" role="constant"/>
-        <ParameterDescription key="FunctionParameter_441" name="Xul5P" order="12" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_465" name="GraP" order="0" role="product"/>
+        <ParameterDescription key="FunctionParameter_464" name="K1v23" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_463" name="K2v23" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_462" name="K3v23" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_461" name="K4v23" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_460" name="K5v23" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_466" name="K6v23" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter_467" name="K7v23" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter_468" name="Keqv23" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter_469" name="Rib5P" order="9" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_470" name="Sed7P" order="10" role="product"/>
+        <ParameterDescription key="FunctionParameter_471" name="Vmaxv23" order="11" role="constant"/>
+        <ParameterDescription key="FunctionParameter_472" name="Xul5P" order="12" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_64" name="Function for Transaldolase" type="UserDefined" reversible="true">
@@ -664,19 +664,19 @@
         Vmaxv24*(Sed7P*GraP-E4P*Fru6P/Keqv24)/((K1v24+GraP)*Sed7P+(K2v24+K6v24*Fru6P)*GraP+(K3v24+K5v24*Fru6P)*E4P+K4v24*Fru6P+K7v24*Sed7P*E4P)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_473" name="E4P" order="0" role="product"/>
-        <ParameterDescription key="FunctionParameter_469" name="Fru6P" order="1" role="product"/>
-        <ParameterDescription key="FunctionParameter_477" name="GraP" order="2" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_463" name="K1v24" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_487" name="K2v24" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_491" name="K3v24" order="5" role="constant"/>
-        <ParameterDescription key="FunctionParameter_495" name="K4v24" order="6" role="constant"/>
-        <ParameterDescription key="FunctionParameter_493" name="K5v24" order="7" role="constant"/>
-        <ParameterDescription key="FunctionParameter_489" name="K6v24" order="8" role="constant"/>
-        <ParameterDescription key="FunctionParameter_497" name="K7v24" order="9" role="constant"/>
-        <ParameterDescription key="FunctionParameter_457" name="Keqv24" order="10" role="constant"/>
-        <ParameterDescription key="FunctionParameter_481" name="Sed7P" order="11" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_485" name="Vmaxv24" order="12" role="constant"/>
+        <ParameterDescription key="FunctionParameter_485" name="E4P" order="0" role="product"/>
+        <ParameterDescription key="FunctionParameter_484" name="Fru6P" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter_483" name="GraP" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_482" name="K1v24" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_481" name="K2v24" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_480" name="K3v24" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_479" name="K4v24" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter_478" name="K5v24" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter_477" name="K6v24" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter_476" name="K7v24" order="9" role="constant"/>
+        <ParameterDescription key="FunctionParameter_475" name="Keqv24" order="10" role="constant"/>
+        <ParameterDescription key="FunctionParameter_474" name="Sed7P" order="11" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_473" name="Vmaxv24" order="12" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_65" name="Function for Phosphoribosylpyrophosphate synthetase" type="UserDefined" reversible="true">
@@ -695,14 +695,14 @@
         Vmaxv25*(Rib5P*MgATP-PRPP*MgAMP/Keqv25)/((KATPv25+MgATP)*(KR5Pv25+Rib5P))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_483" name="KATPv25" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_500" name="KR5Pv25" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_475" name="Keqv25" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_467" name="MgAMP" order="3" role="product"/>
-        <ParameterDescription key="FunctionParameter_490" name="MgATP" order="4" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_486" name="PRPP" order="5" role="product"/>
-        <ParameterDescription key="FunctionParameter_494" name="Rib5P" order="6" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_498" name="Vmaxv25" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter_498" name="KATPv25" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_497" name="KR5Pv25" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_496" name="Keqv25" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_495" name="MgAMP" order="3" role="product"/>
+        <ParameterDescription key="FunctionParameter_494" name="MgATP" order="4" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_493" name="PRPP" order="5" role="product"/>
+        <ParameterDescription key="FunctionParameter_492" name="Rib5P" order="6" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_491" name="Vmaxv25" order="7" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_66" name="Function for Transketolase 2" type="UserDefined" reversible="true">
@@ -721,19 +721,19 @@
         Vmaxv26*(E4P*Xul5P-GraP*Fru6P/Keqv26)/((K1v26+E4P)*Xul5P+(K2v26+K6v26*Fru6P)*E4P+(K3v26+K5v26*Fru6P)*GraP+K4v26*Fru6P+K7v26*Xul5P*GraP)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_479" name="E4P" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_502" name="Fru6P" order="1" role="product"/>
-        <ParameterDescription key="FunctionParameter_492" name="GraP" order="2" role="product"/>
-        <ParameterDescription key="FunctionParameter_506" name="K1v26" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_508" name="K2v26" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_512" name="K3v26" order="5" role="constant"/>
-        <ParameterDescription key="FunctionParameter_516" name="K4v26" order="6" role="constant"/>
-        <ParameterDescription key="FunctionParameter_514" name="K5v26" order="7" role="constant"/>
-        <ParameterDescription key="FunctionParameter_510" name="K6v26" order="8" role="constant"/>
-        <ParameterDescription key="FunctionParameter_518" name="K7v26" order="9" role="constant"/>
+        <ParameterDescription key="FunctionParameter_501" name="E4P" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_500" name="Fru6P" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter_499" name="GraP" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter_486" name="K1v26" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_487" name="K2v26" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_488" name="K3v26" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_489" name="K4v26" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter_490" name="K5v26" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter_502" name="K6v26" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter_503" name="K7v26" order="9" role="constant"/>
         <ParameterDescription key="FunctionParameter_504" name="Keqv26" order="10" role="constant"/>
-        <ParameterDescription key="FunctionParameter_501" name="Vmaxv26" order="11" role="constant"/>
-        <ParameterDescription key="FunctionParameter_453" name="Xul5P" order="12" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_505" name="Vmaxv26" order="11" role="constant"/>
+        <ParameterDescription key="FunctionParameter_506" name="Xul5P" order="12" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_67" name="Function for Phosphate exchange" type="UserDefined" reversible="true">
@@ -752,10 +752,10 @@
         Vmaxv27*(Phiex-Phi/Keqv27)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_507" name="Keqv27" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_511" name="Phi" order="1" role="product"/>
-        <ParameterDescription key="FunctionParameter_515" name="Phiex" order="2" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_519" name="Vmaxv27" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_519" name="Keqv27" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_518" name="Phi" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter_517" name="Phiex" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_516" name="Vmaxv27" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_68" name="Function for Lactate exchange" type="UserDefined" reversible="true">
@@ -774,10 +774,10 @@
         Vmaxv28*(Lacex-Lac/Keqv28)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_488" name="Keqv28" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_503" name="Lac" order="1" role="product"/>
-        <ParameterDescription key="FunctionParameter_513" name="Lacex" order="2" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_505" name="Vmaxv28" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_512" name="Keqv28" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_513" name="Lac" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter_514" name="Lacex" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_515" name="Vmaxv28" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_69" name="Function for Pyruvate exchange" type="UserDefined" reversible="true">
@@ -796,10 +796,10 @@
         Vmaxv29*(Pyrex-Pyr/Keqv29)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_521" name="Keqv29" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_499" name="Pyr" order="1" role="product"/>
-        <ParameterDescription key="FunctionParameter_517" name="Pyrex" order="2" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_471" name="Vmaxv29" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_508" name="Keqv29" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_509" name="Pyr" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter_510" name="Pyrex" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_511" name="Vmaxv29" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_70" name="Function for MgATP dissociation" type="UserDefined" reversible="true">
@@ -818,10 +818,10 @@
         EqMult*(MgATP-Mgf*ATPf/KdATP)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_525" name="ATPf" order="0" role="product"/>
-        <ParameterDescription key="FunctionParameter_522" name="EqMult" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_527" name="KdATP" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_509" name="MgATP" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_522" name="ATPf" order="0" role="product"/>
+        <ParameterDescription key="FunctionParameter_521" name="EqMult" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_520" name="KdATP" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_507" name="MgATP" order="3" role="substrate"/>
         <ParameterDescription key="FunctionParameter_523" name="Mgf" order="4" role="product"/>
       </ListOfParameterDescriptions>
     </Function>
@@ -841,11 +841,11 @@
         EqMult*(MgADP-Mgf*ADPf/KdADP)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_530" name="ADPf" order="0" role="product"/>
-        <ParameterDescription key="FunctionParameter_528" name="EqMult" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_532" name="KdADP" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_524" name="MgADP" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_520" name="Mgf" order="4" role="product"/>
+        <ParameterDescription key="FunctionParameter_528" name="ADPf" order="0" role="product"/>
+        <ParameterDescription key="FunctionParameter_527" name="EqMult" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_526" name="KdADP" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_525" name="MgADP" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_524" name="Mgf" order="4" role="product"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_72" name="Function for MgAMP dissociation" type="UserDefined" reversible="true">
@@ -864,11 +864,11 @@
         EqMult*(MgAMP-Mgf*AMPf/KdAMP)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_535" name="AMPf" order="0" role="product"/>
-        <ParameterDescription key="FunctionParameter_533" name="EqMult" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_537" name="KdAMP" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_529" name="MgAMP" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_526" name="Mgf" order="4" role="product"/>
+        <ParameterDescription key="FunctionParameter_533" name="AMPf" order="0" role="product"/>
+        <ParameterDescription key="FunctionParameter_532" name="EqMult" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_531" name="KdAMP" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_530" name="MgAMP" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_529" name="Mgf" order="4" role="product"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_73" name="Function for MgGri23P2 dissociation" type="UserDefined" reversible="true">
@@ -888,10 +888,10 @@
       </Expression>
       <ListOfParameterDescriptions>
         <ParameterDescription key="FunctionParameter_538" name="EqMult" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_540" name="Gri23P2f" order="1" role="product"/>
-        <ParameterDescription key="FunctionParameter_542" name="Kd23P2G" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_534" name="MgGri23P2" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_531" name="Mgf" order="4" role="product"/>
+        <ParameterDescription key="FunctionParameter_537" name="Gri23P2f" order="1" role="product"/>
+        <ParameterDescription key="FunctionParameter_536" name="Kd23P2G" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_535" name="MgGri23P2" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_534" name="Mgf" order="4" role="product"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_74" name="Function for P1NADP dissociation" type="UserDefined" reversible="true">
@@ -911,10 +911,10 @@
       </Expression>
       <ListOfParameterDescriptions>
         <ParameterDescription key="FunctionParameter_543" name="EqMult" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_547" name="Kd1" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_545" name="NADPf" order="2" role="product"/>
-        <ParameterDescription key="FunctionParameter_539" name="P1NADP" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_536" name="P1f" order="4" role="product"/>
+        <ParameterDescription key="FunctionParameter_542" name="Kd1" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_541" name="NADPf" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter_540" name="P1NADP" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_539" name="P1f" order="4" role="product"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_75" name="Function for P1NADPH dissociation" type="UserDefined" reversible="true">
@@ -934,10 +934,10 @@
       </Expression>
       <ListOfParameterDescriptions>
         <ParameterDescription key="FunctionParameter_548" name="EqMult" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_552" name="Kd3" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_550" name="NADPHf" order="2" role="product"/>
-        <ParameterDescription key="FunctionParameter_544" name="P1NADPH" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_541" name="P1f" order="4" role="product"/>
+        <ParameterDescription key="FunctionParameter_547" name="Kd3" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_546" name="NADPHf" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter_545" name="P1NADPH" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_544" name="P1f" order="4" role="product"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_76" name="Function for P2NADP dissociation" type="UserDefined" reversible="true">
@@ -957,10 +957,10 @@
       </Expression>
       <ListOfParameterDescriptions>
         <ParameterDescription key="FunctionParameter_553" name="EqMult" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_557" name="Kd2" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_555" name="NADPf" order="2" role="product"/>
-        <ParameterDescription key="FunctionParameter_549" name="P2NADP" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_546" name="P2f" order="4" role="product"/>
+        <ParameterDescription key="FunctionParameter_552" name="Kd2" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_551" name="NADPf" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter_550" name="P2NADP" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_549" name="P2f" order="4" role="product"/>
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_77" name="Function for P2NADPH dissociation" type="UserDefined" reversible="true">
@@ -980,21 +980,21 @@
       </Expression>
       <ListOfParameterDescriptions>
         <ParameterDescription key="FunctionParameter_558" name="EqMult" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_562" name="Kd4" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_560" name="NADPHf" order="2" role="product"/>
-        <ParameterDescription key="FunctionParameter_554" name="P2NADPH" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_551" name="P2f" order="4" role="product"/>
+        <ParameterDescription key="FunctionParameter_557" name="Kd4" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_556" name="NADPHf" order="2" role="product"/>
+        <ParameterDescription key="FunctionParameter_555" name="P2NADPH" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_554" name="P2f" order="4" role="product"/>
       </ListOfParameterDescriptions>
     </Function>
   </ListOfFunctions>
-  <Model key="Model_4" name="Holzhutter2004_Erythrocyte_Metabolism" simulationType="time" timeUnit="h" volumeUnit="l" areaUnit="m²" lengthUnit="m" quantityUnit="mmol" type="deterministic" avogadroConstant="6.022140857e+23">
+  <Model key="Model_0" name="Holzhutter2004_Erythrocyte_Metabolism" simulationType="time" timeUnit="h" volumeUnit="l" areaUnit="m²" lengthUnit="m" quantityUnit="mmol" type="deterministic" avogadroConstant="6.0221408570000002e+23">
     <MiriamAnnotation>
 <rdf:RDF
    xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#"
    xmlns:dcterms="http://purl.org/dc/terms/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
-  <rdf:Description rdf:about="#Model_4">
+  <rdf:Description rdf:about="#Model_0">
     <dcterms:bibliographicCitation>
       <rdf:Bag>
         <rdf:li>
@@ -1133,7 +1133,7 @@ modelling using JWS Online</a>, Bioinformatics, 20:2143-2144
       </p>
       <p>
         <u>Biomodels Curation</u>
-The model simulates the flux values as given for &quot;kinetic model&quot; in Table 1 of the paper. The model was successfully tested on Jarnac.
+The model simulates the flux values as given for "kinetic model" in Table 1 of the paper. The model was successfully tested on Jarnac.
 </p>
         <p>This model originates from BioModels Database: A Database of Annotated Published Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net Team.<br />
 For more information see the <a href="http://www.ebi.ac.uk/biomodels/legal.html" target="_blank">terms of use</a>.<br />
@@ -1141,10 +1141,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
       </body>
     </Comment>
     <ListOfCompartments>
-      <Compartment key="Compartment_1" name="cytoplasm" simulationType="fixed" dimensionality="3">
+      <Compartment key="Compartment_0" name="cytoplasm" simulationType="fixed" dimensionality="3" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Compartment_1">
+  <rdf:Description rdf:about="#Compartment_0">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.go:GO%3A0005737" />
@@ -1156,10 +1156,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
       </Compartment>
     </ListOfCompartments>
     <ListOfMetabolites>
-      <Metabolite key="Metabolite_1" name="Glucose in" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_0" name="Glucose in" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_1">
+  <rdf:Description rdf:about="#Metabolite_0">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00293" />
@@ -1170,10 +1170,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_3" name="MgATP" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_1" name="MgATP" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_3">
+  <rdf:Description rdf:about="#Metabolite_1">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.chebi:CHEBI%3A15422" />
@@ -1190,10 +1190,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_5" name="Glucose 6-phosphate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_2" name="Glucose 6-phosphate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_5">
+  <rdf:Description rdf:about="#Metabolite_2">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00668" />
@@ -1204,10 +1204,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_7" name="MgADP" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_3" name="MgADP" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_7">
+  <rdf:Description rdf:about="#Metabolite_3">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.chebi:CHEBI%3A16761" />
@@ -1224,10 +1224,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_9" name="Fructose 6-phosphate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_4" name="Fructose 6-phosphate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_9">
+  <rdf:Description rdf:about="#Metabolite_4">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C05345" />
@@ -1238,10 +1238,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_11" name="Fructose 1,6-phosphate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_5" name="Fructose 1,6-phosphate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_11">
+  <rdf:Description rdf:about="#Metabolite_5">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C05378" />
@@ -1252,10 +1252,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_13" name="Glyceraldehyde 3-phosphate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_6" name="Glyceraldehyde 3-phosphate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_13">
+  <rdf:Description rdf:about="#Metabolite_6">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00118" />
@@ -1266,10 +1266,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_15" name="Dihydroxyacetone phosphate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_7" name="Dihydroxyacetone phosphate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_15">
+  <rdf:Description rdf:about="#Metabolite_7">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00111" />
@@ -1280,10 +1280,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_17" name="Phosphate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_8" name="Phosphate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_17">
+  <rdf:Description rdf:about="#Metabolite_8">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.chebi:CHEBI%3A35780" />
@@ -1293,10 +1293,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_19" name="NAD" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_9" name="NAD" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_19">
+  <rdf:Description rdf:about="#Metabolite_9">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00003" />
@@ -1307,10 +1307,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_21" name="1,3-Bisphospho-D-glycerate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_10" name="1,3-Bisphospho-D-glycerate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_21">
+  <rdf:Description rdf:about="#Metabolite_10">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00236" />
@@ -1321,10 +1321,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_23" name="NADH" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_11" name="NADH" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_23">
+  <rdf:Description rdf:about="#Metabolite_11">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00004" />
@@ -1335,10 +1335,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_25" name="3-Phospho-D-glycerate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_12" name="3-Phospho-D-glycerate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_25">
+  <rdf:Description rdf:about="#Metabolite_12">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00197" />
@@ -1349,10 +1349,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_27" name="2,3-Bisphospho-D-glycerate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_13" name="2,3-Bisphospho-D-glycerate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_27">
+  <rdf:Description rdf:about="#Metabolite_13">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C01159" />
@@ -1363,10 +1363,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_29" name="2-Phospho-D-glycerate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_14" name="2-Phospho-D-glycerate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_29">
+  <rdf:Description rdf:about="#Metabolite_14">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00631" />
@@ -1377,10 +1377,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_31" name="Phosphoenolpyruvate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_15" name="Phosphoenolpyruvate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_31">
+  <rdf:Description rdf:about="#Metabolite_15">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00074" />
@@ -1395,10 +1395,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_33" name="Pyruvate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_16" name="Pyruvate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_33">
+  <rdf:Description rdf:about="#Metabolite_16">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.chebi:CHEBI%3A15361" />
@@ -1413,10 +1413,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_35" name="Lactate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_17" name="Lactate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_35">
+  <rdf:Description rdf:about="#Metabolite_17">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00256" />
@@ -1426,10 +1426,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_37" name="NADPH" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_18" name="NADPH" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_37">
+  <rdf:Description rdf:about="#Metabolite_18">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00005" />
@@ -1440,10 +1440,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_39" name="NADP" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_19" name="NADP" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_39">
+  <rdf:Description rdf:about="#Metabolite_19">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00006" />
@@ -1454,10 +1454,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_41" name="AMP" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_20" name="AMP" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_41">
+  <rdf:Description rdf:about="#Metabolite_20">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00020" />
@@ -1468,10 +1468,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_43" name="ADP" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_21" name="ADP" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_43">
+  <rdf:Description rdf:about="#Metabolite_21">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00008" />
@@ -1482,10 +1482,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_45" name="Phospho-D-glucono-1,5-lactone" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_22" name="Phospho-D-glucono-1,5-lactone" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_45">
+  <rdf:Description rdf:about="#Metabolite_22">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C01236" />
@@ -1496,10 +1496,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_47" name="Ribulose 5-phosphate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_23" name="Ribulose 5-phosphate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_47">
+  <rdf:Description rdf:about="#Metabolite_23">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00199" />
@@ -1510,10 +1510,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_49" name="Oxidized Glutathione" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_24" name="Oxidized Glutathione" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_49">
+  <rdf:Description rdf:about="#Metabolite_24">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00127" />
@@ -1524,10 +1524,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_51" name="Reduced Glutathione" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_25" name="Reduced Glutathione" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_51">
+  <rdf:Description rdf:about="#Metabolite_25">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00051" />
@@ -1538,10 +1538,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_53" name="Xylulose 5-phosphate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_26" name="Xylulose 5-phosphate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_53">
+  <rdf:Description rdf:about="#Metabolite_26">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00231" />
@@ -1552,10 +1552,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_55" name="Ribose 5-phosphate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_27" name="Ribose 5-phosphate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_55">
+  <rdf:Description rdf:about="#Metabolite_27">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00117" />
@@ -1566,10 +1566,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_57" name="Sedoheptulose 7-phosphate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_28" name="Sedoheptulose 7-phosphate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_57">
+  <rdf:Description rdf:about="#Metabolite_28">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C05382" />
@@ -1579,10 +1579,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_59" name="Erythrose 4-phosphate" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_29" name="Erythrose 4-phosphate" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_59">
+  <rdf:Description rdf:about="#Metabolite_29">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00279" />
@@ -1593,10 +1593,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_61" name="MgAMP" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_30" name="MgAMP" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_61">
+  <rdf:Description rdf:about="#Metabolite_30">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.chebi:CHEBI%3A16027" />
@@ -1613,10 +1613,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_63" name="ATP" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_31" name="ATP" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_63">
+  <rdf:Description rdf:about="#Metabolite_31">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00002" />
@@ -1627,10 +1627,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_65" name="Mg" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_32" name="Mg" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_65">
+  <rdf:Description rdf:about="#Metabolite_32">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00305" />
@@ -1641,10 +1641,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_67" name="MgGri23P2" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_33" name="MgGri23P2" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_67">
+  <rdf:Description rdf:about="#Metabolite_33">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.chebi:CHEBI%3A17720" />
@@ -1661,10 +1661,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_69" name="Protein1 bound NADP" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_34" name="Protein1 bound NADP" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_69">
+  <rdf:Description rdf:about="#Metabolite_34">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.chebi:CHEBI%3A18009" />
@@ -1681,10 +1681,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_71" name="Protein1" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_35" name="Protein1" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_71">
+  <rdf:Description rdf:about="#Metabolite_35">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.chebi:CHEBI%3A36080" />
@@ -1699,10 +1699,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_73" name="Protein1 bound NADPH" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_36" name="Protein1 bound NADPH" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_73">
+  <rdf:Description rdf:about="#Metabolite_36">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.chebi:CHEBI%3A16474" />
@@ -1719,10 +1719,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_75" name="Protein2 bound NADP" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_37" name="Protein2 bound NADP" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_75">
+  <rdf:Description rdf:about="#Metabolite_37">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.chebi:CHEBI%3A18009" />
@@ -1739,10 +1739,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_77" name="Protein2" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_38" name="Protein2" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_77">
+  <rdf:Description rdf:about="#Metabolite_38">
     <CopasiMT:isVersionOf>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.chebi:CHEBI%3A36080" />
@@ -1757,10 +1757,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_79" name="Protein2 bound NADPH" simulationType="reactions" compartment="Compartment_1">
+      <Metabolite key="Metabolite_39" name="Protein2 bound NADPH" simulationType="reactions" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_79">
+  <rdf:Description rdf:about="#Metabolite_39">
     <CopasiMT:hasPart>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.chebi:CHEBI%3A16474" />
@@ -1777,10 +1777,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_81" name="PRPP" simulationType="fixed" compartment="Compartment_1">
+      <Metabolite key="Metabolite_40" name="PRPP" simulationType="fixed" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_81">
+  <rdf:Description rdf:about="#Metabolite_40">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00119" />
@@ -1791,10 +1791,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_83" name="External Lactate" simulationType="fixed" compartment="Compartment_1">
+      <Metabolite key="Metabolite_41" name="External Lactate" simulationType="fixed" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_83">
+  <rdf:Description rdf:about="#Metabolite_41">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00256" />
@@ -1804,10 +1804,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_85" name="External Pyruvate" simulationType="fixed" compartment="Compartment_1">
+      <Metabolite key="Metabolite_42" name="External Pyruvate" simulationType="fixed" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_85">
+  <rdf:Description rdf:about="#Metabolite_42">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00022" />
@@ -1818,10 +1818,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_87" name="Glucose outside" simulationType="fixed" compartment="Compartment_1">
+      <Metabolite key="Metabolite_43" name="Glucose outside" simulationType="fixed" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_87">
+  <rdf:Description rdf:about="#Metabolite_43">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:kegg.compound:C00293" />
@@ -1832,10 +1832,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
       </Metabolite>
-      <Metabolite key="Metabolite_89" name="Phosphate external" simulationType="fixed" compartment="Compartment_1">
+      <Metabolite key="Metabolite_44" name="Phosphate external" simulationType="fixed" compartment="Compartment_0" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_89">
+  <rdf:Description rdf:about="#Metabolite_44">
     <CopasiMT:is>
       <rdf:Bag>
         <rdf:li rdf:resource="urn:miriam:obo.chebi:CHEBI%3A35780" />
@@ -1847,7 +1847,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
       </Metabolite>
     </ListOfMetabolites>
     <ListOfReactions>
-      <Reaction key="Reaction_0" name="Glucose transport" reversible="true" fast="false">
+      <Reaction key="Reaction_0" name="Glucose transport" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_0">
@@ -1865,45 +1865,45 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_87" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_43" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_1" stoichiometry="1"/>
+          <Product metabolite="Metabolite_0" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5054" name="Vmaxv0" value="33.6"/>
-          <Constant key="Parameter_5055" name="KMoutv0" value="1.7"/>
-          <Constant key="Parameter_5056" name="Keqv0" value="1"/>
-          <Constant key="Parameter_5057" name="KMinv0" value="6.9"/>
-          <Constant key="Parameter_5058" name="alfav0" value="0.54"/>
+          <Constant key="Parameter_5019" name="Vmaxv0" value="33.6"/>
+          <Constant key="Parameter_5018" name="KMoutv0" value="1.7"/>
+          <Constant key="Parameter_5022" name="Keqv0" value="1"/>
+          <Constant key="Parameter_5020" name="KMinv0" value="6.9"/>
+          <Constant key="Parameter_5023" name="alfav0" value="0.54"/>
         </ListOfConstants>
-        <KineticLaw function="Function_40">
+        <KineticLaw function="Function_40" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_266">
-              <SourceParameter reference="Metabolite_1"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_258">
-              <SourceParameter reference="Metabolite_87"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_270">
-              <SourceParameter reference="Parameter_5057"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_254">
-              <SourceParameter reference="Parameter_5055"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_268">
-              <SourceParameter reference="Parameter_5056"/>
-            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_264">
-              <SourceParameter reference="Parameter_5054"/>
+              <SourceParameter reference="Metabolite_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_272">
-              <SourceParameter reference="Parameter_5058"/>
+            <CallParameter functionParameter="FunctionParameter_263">
+              <SourceParameter reference="Metabolite_43"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_262">
+              <SourceParameter reference="Parameter_5020"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_261">
+              <SourceParameter reference="Parameter_5018"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_250">
+              <SourceParameter reference="Parameter_5022"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_265">
+              <SourceParameter reference="Parameter_5019"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_266">
+              <SourceParameter reference="Parameter_5023"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_1" name="Hexokinase" reversible="true" fast="false">
+      <Reaction key="Reaction_1" name="Hexokinase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_1">
@@ -1922,91 +1922,91 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
+          <Substrate metabolite="Metabolite_0" stoichiometry="1"/>
           <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_5" stoichiometry="1"/>
-          <Product metabolite="Metabolite_7" stoichiometry="1"/>
+          <Product metabolite="Metabolite_2" stoichiometry="1"/>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_65" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_27" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_67" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_32" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_13" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5059" name="Inhibv1" value="1"/>
-          <Constant key="Parameter_5060" name="KMGlcv1" value="0.1"/>
-          <Constant key="Parameter_5061" name="Vmax1v1" value="15.8"/>
-          <Constant key="Parameter_5062" name="KMgATPv1" value="1.44"/>
-          <Constant key="Parameter_5063" name="Vmax2v1" value="33.2"/>
-          <Constant key="Parameter_5064" name="KMgATPMgv1" value="1.14"/>
-          <Constant key="Parameter_5065" name="Keqv1" value="3900"/>
-          <Constant key="Parameter_5066" name="KMgv1" value="1.03"/>
-          <Constant key="Parameter_5067" name="KGlc6Pv1" value="0.0045"/>
-          <Constant key="Parameter_5068" name="K23P2Gv1" value="2.7"/>
-          <Constant key="Parameter_5069" name="KMg23P2Gv1" value="3.44"/>
+          <Constant key="Parameter_5024" name="Inhibv1" value="1"/>
+          <Constant key="Parameter_5028" name="KMGlcv1" value="0.1"/>
+          <Constant key="Parameter_5030" name="Vmax1v1" value="15.8"/>
+          <Constant key="Parameter_5031" name="KMgATPv1" value="1.44"/>
+          <Constant key="Parameter_5025" name="Vmax2v1" value="33.2"/>
+          <Constant key="Parameter_5027" name="KMgATPMgv1" value="1.14"/>
+          <Constant key="Parameter_5026" name="Keqv1" value="3900"/>
+          <Constant key="Parameter_5029" name="KMgv1" value="1.03"/>
+          <Constant key="Parameter_5032" name="KGlc6Pv1" value="0.0045"/>
+          <Constant key="Parameter_5033" name="K23P2Gv1" value="2.7"/>
+          <Constant key="Parameter_5067" name="KMg23P2Gv1" value="3.44"/>
         </ListOfConstants>
-        <KineticLaw function="Function_41">
+        <KineticLaw function="Function_41" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_285">
-              <SourceParameter reference="Metabolite_5"/>
+            <CallParameter functionParameter="FunctionParameter_273">
+              <SourceParameter reference="Metabolite_2"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_272">
+              <SourceParameter reference="Metabolite_0"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_271">
+              <SourceParameter reference="Metabolite_13"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_270">
+              <SourceParameter reference="Parameter_5024"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_269">
-              <SourceParameter reference="Metabolite_1"/>
+              <SourceParameter reference="Parameter_5033"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_295">
-              <SourceParameter reference="Metabolite_27"/>
+            <CallParameter functionParameter="FunctionParameter_268">
+              <SourceParameter reference="Parameter_5032"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_273">
-              <SourceParameter reference="Parameter_5059"/>
+            <CallParameter functionParameter="FunctionParameter_267">
+              <SourceParameter reference="Parameter_5028"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_299">
-              <SourceParameter reference="Parameter_5068"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_293">
+            <CallParameter functionParameter="FunctionParameter_274">
               <SourceParameter reference="Parameter_5067"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_265">
-              <SourceParameter reference="Parameter_5060"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_301">
-              <SourceParameter reference="Parameter_5069"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_283">
-              <SourceParameter reference="Parameter_5064"/>
-            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_275">
-              <SourceParameter reference="Parameter_5062"/>
+              <SourceParameter reference="Parameter_5027"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_291">
-              <SourceParameter reference="Parameter_5066"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_289">
-              <SourceParameter reference="Parameter_5065"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_287">
-              <SourceParameter reference="Metabolite_7"/>
+            <CallParameter functionParameter="FunctionParameter_276">
+              <SourceParameter reference="Parameter_5031"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_277">
-              <SourceParameter reference="Metabolite_3"/>
+              <SourceParameter reference="Parameter_5029"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_297">
-              <SourceParameter reference="Metabolite_67"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_281">
-              <SourceParameter reference="Metabolite_65"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_262">
-              <SourceParameter reference="Parameter_5061"/>
+            <CallParameter functionParameter="FunctionParameter_278">
+              <SourceParameter reference="Parameter_5026"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_279">
-              <SourceParameter reference="Parameter_5063"/>
+              <SourceParameter reference="Metabolite_3"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_280">
+              <SourceParameter reference="Metabolite_1"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_281">
+              <SourceParameter reference="Metabolite_33"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_282">
+              <SourceParameter reference="Metabolite_32"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_283">
+              <SourceParameter reference="Parameter_5030"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_284">
+              <SourceParameter reference="Parameter_5025"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_2" name="Glucosephosphate isomerase" reversible="true" fast="false">
+      <Reaction key="Reaction_2" name="Glucosephosphate isomerase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_2">
@@ -2025,41 +2025,41 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_9" stoichiometry="1"/>
+          <Product metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5070" name="Vmaxv2" value="935"/>
-          <Constant key="Parameter_5071" name="Keqv2" value="0.3925"/>
-          <Constant key="Parameter_5072" name="KGlc6Pv2" value="0.182"/>
-          <Constant key="Parameter_5073" name="KFru6Pv2" value="0.071"/>
+          <Constant key="Parameter_5068" name="Vmaxv2" value="935"/>
+          <Constant key="Parameter_5072" name="Keqv2" value="0.3925"/>
+          <Constant key="Parameter_5074" name="KGlc6Pv2" value="0.182"/>
+          <Constant key="Parameter_5075" name="KFru6Pv2" value="0.071"/>
         </ListOfConstants>
-        <KineticLaw function="Function_42">
+        <KineticLaw function="Function_42" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_294">
-              <SourceParameter reference="Metabolite_9"/>
+            <CallParameter functionParameter="FunctionParameter_302">
+              <SourceParameter reference="Metabolite_4"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_301">
+              <SourceParameter reference="Metabolite_2"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_300">
+              <SourceParameter reference="Parameter_5075"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_299">
+              <SourceParameter reference="Parameter_5074"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_298">
-              <SourceParameter reference="Metabolite_5"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_282">
-              <SourceParameter reference="Parameter_5073"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_286">
               <SourceParameter reference="Parameter_5072"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_290">
-              <SourceParameter reference="Parameter_5071"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_302">
-              <SourceParameter reference="Parameter_5070"/>
+            <CallParameter functionParameter="FunctionParameter_297">
+              <SourceParameter reference="Parameter_5068"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_3" name="Phosphofructokinase" reversible="true" fast="false">
+      <Reaction key="Reaction_3" name="Phosphofructokinase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_3">
@@ -2078,83 +2078,83 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_11" stoichiometry="1"/>
-          <Product metabolite="Metabolite_7" stoichiometry="1"/>
+          <Product metabolite="Metabolite_5" stoichiometry="1"/>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_63" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_65" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_41" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_61" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_31" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_32" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_20" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_30" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5074" name="Vmaxv3" value="239"/>
-          <Constant key="Parameter_5075" name="Keqv3" value="100000"/>
-          <Constant key="Parameter_5076" name="KFru6Pv3" value="0.1"/>
-          <Constant key="Parameter_5077" name="KMgATPv3" value="0.068"/>
-          <Constant key="Parameter_5078" name="L0v3" value="0.001072"/>
-          <Constant key="Parameter_5079" name="KATPv3" value="0.01"/>
-          <Constant key="Parameter_5080" name="KMgv3" value="0.44"/>
-          <Constant key="Parameter_5081" name="KAMPv3" value="0.033"/>
+          <Constant key="Parameter_5069" name="Vmaxv3" value="239"/>
+          <Constant key="Parameter_5071" name="Keqv3" value="100000"/>
+          <Constant key="Parameter_5070" name="KFru6Pv3" value="0.1"/>
+          <Constant key="Parameter_5073" name="KMgATPv3" value="0.068"/>
+          <Constant key="Parameter_5076" name="L0v3" value="0.001072"/>
+          <Constant key="Parameter_5065" name="KATPv3" value="0.01"/>
+          <Constant key="Parameter_5063" name="KMgv3" value="0.44"/>
+          <Constant key="Parameter_5062" name="KAMPv3" value="0.033"/>
         </ListOfConstants>
-        <KineticLaw function="Function_43">
+        <KineticLaw function="Function_43" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_317">
-              <SourceParameter reference="Metabolite_41"/>
+            <CallParameter functionParameter="FunctionParameter_291">
+              <SourceParameter reference="Metabolite_20"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_309">
-              <SourceParameter reference="Metabolite_63"/>
+            <CallParameter functionParameter="FunctionParameter_292">
+              <SourceParameter reference="Metabolite_31"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_278">
-              <SourceParameter reference="Metabolite_11"/>
+            <CallParameter functionParameter="FunctionParameter_293">
+              <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_288">
-              <SourceParameter reference="Metabolite_9"/>
+            <CallParameter functionParameter="FunctionParameter_294">
+              <SourceParameter reference="Metabolite_4"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_321">
-              <SourceParameter reference="Parameter_5081"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_311">
-              <SourceParameter reference="Parameter_5079"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_303">
-              <SourceParameter reference="Parameter_5076"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_305">
-              <SourceParameter reference="Parameter_5077"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_315">
-              <SourceParameter reference="Parameter_5080"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_267">
-              <SourceParameter reference="Parameter_5075"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_307">
-              <SourceParameter reference="Parameter_5078"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_274">
-              <SourceParameter reference="Metabolite_7"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_319">
-              <SourceParameter reference="Metabolite_61"/>
+            <CallParameter functionParameter="FunctionParameter_295">
+              <SourceParameter reference="Parameter_5062"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_296">
+              <SourceParameter reference="Parameter_5065"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_290">
+              <SourceParameter reference="Parameter_5070"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_289">
+              <SourceParameter reference="Parameter_5073"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_288">
+              <SourceParameter reference="Parameter_5063"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_287">
+              <SourceParameter reference="Parameter_5071"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_286">
+              <SourceParameter reference="Parameter_5076"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_285">
               <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_313">
-              <SourceParameter reference="Metabolite_65"/>
+            <CallParameter functionParameter="FunctionParameter_303">
+              <SourceParameter reference="Metabolite_30"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_280">
-              <SourceParameter reference="Parameter_5074"/>
+            <CallParameter functionParameter="FunctionParameter_304">
+              <SourceParameter reference="Metabolite_1"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_305">
+              <SourceParameter reference="Metabolite_32"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_306">
+              <SourceParameter reference="Parameter_5069"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_4" name="Aldolase" reversible="true" fast="false">
+      <Reaction key="Reaction_4" name="Aldolase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_4">
@@ -2173,57 +2173,57 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_11" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_13" stoichiometry="1"/>
-          <Product metabolite="Metabolite_15" stoichiometry="1"/>
+          <Product metabolite="Metabolite_6" stoichiometry="1"/>
+          <Product metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5084" name="Vmaxv4" value="98.91"/>
-          <Constant key="Parameter_5083" name="KFru16P2v4" value="0.0071"/>
-          <Constant key="Parameter_5085" name="Keqv4" value="0.114"/>
-          <Constant key="Parameter_5082" name="KiGraPv4" value="0.0572"/>
-          <Constant key="Parameter_5086" name="KGraPv4" value="0.1906"/>
-          <Constant key="Parameter_5087" name="KDHAPv4" value="0.0364"/>
-          <Constant key="Parameter_5088" name="KiiGraPv4" value="0.176"/>
+          <Constant key="Parameter_5066" name="Vmaxv4" value="98.91"/>
+          <Constant key="Parameter_5064" name="KFru16P2v4" value="0.0071"/>
+          <Constant key="Parameter_5037" name="Keqv4" value="0.114"/>
+          <Constant key="Parameter_5035" name="KiGraPv4" value="0.0572"/>
+          <Constant key="Parameter_5034" name="KGraPv4" value="0.1906"/>
+          <Constant key="Parameter_5038" name="KDHAPv4" value="0.0364"/>
+          <Constant key="Parameter_5036" name="KiiGraPv4" value="0.176"/>
         </ListOfConstants>
-        <KineticLaw function="Function_44">
+        <KineticLaw function="Function_44" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_306">
-              <SourceParameter reference="Metabolite_15"/>
+            <CallParameter functionParameter="FunctionParameter_322">
+              <SourceParameter reference="Metabolite_7"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_314">
-              <SourceParameter reference="Metabolite_11"/>
+            <CallParameter functionParameter="FunctionParameter_321">
+              <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_310">
-              <SourceParameter reference="Metabolite_13"/>
+            <CallParameter functionParameter="FunctionParameter_320">
+              <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_323">
-              <SourceParameter reference="Parameter_5087"/>
+            <CallParameter functionParameter="FunctionParameter_319">
+              <SourceParameter reference="Parameter_5038"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_318">
-              <SourceParameter reference="Parameter_5083"/>
+              <SourceParameter reference="Parameter_5064"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_292">
-              <SourceParameter reference="Parameter_5086"/>
+            <CallParameter functionParameter="FunctionParameter_317">
+              <SourceParameter reference="Parameter_5034"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_271">
-              <SourceParameter reference="Parameter_5085"/>
+            <CallParameter functionParameter="FunctionParameter_316">
+              <SourceParameter reference="Parameter_5037"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_276">
-              <SourceParameter reference="Parameter_5082"/>
+            <CallParameter functionParameter="FunctionParameter_315">
+              <SourceParameter reference="Parameter_5035"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_325">
-              <SourceParameter reference="Parameter_5088"/>
+            <CallParameter functionParameter="FunctionParameter_314">
+              <SourceParameter reference="Parameter_5036"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_322">
-              <SourceParameter reference="Parameter_5084"/>
+            <CallParameter functionParameter="FunctionParameter_313">
+              <SourceParameter reference="Parameter_5066"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_5" name="Triosephosphate isomerase" reversible="true" fast="false">
+      <Reaction key="Reaction_5" name="Triosephosphate isomerase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_5">
@@ -2242,41 +2242,41 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_15" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_13" stoichiometry="1"/>
+          <Product metabolite="Metabolite_6" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5089" name="Vmaxv5" value="5456.6"/>
-          <Constant key="Parameter_5090" name="Keqv5" value="0.0407"/>
-          <Constant key="Parameter_5091" name="KDHAPv5" value="0.838"/>
-          <Constant key="Parameter_5104" name="KGraPv5" value="0.428"/>
+          <Constant key="Parameter_5052" name="Vmaxv5" value="5456.6"/>
+          <Constant key="Parameter_5053" name="Keqv5" value="0.0407"/>
+          <Constant key="Parameter_5040" name="KDHAPv5" value="0.838"/>
+          <Constant key="Parameter_5057" name="KGraPv5" value="0.428"/>
         </ListOfConstants>
-        <KineticLaw function="Function_45">
+        <KineticLaw function="Function_45" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_284">
-              <SourceParameter reference="Metabolite_15"/>
+            <CallParameter functionParameter="FunctionParameter_326">
+              <SourceParameter reference="Metabolite_7"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_246">
-              <SourceParameter reference="Metabolite_13"/>
+            <CallParameter functionParameter="FunctionParameter_325">
+              <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_316">
-              <SourceParameter reference="Parameter_5091"/>
+            <CallParameter functionParameter="FunctionParameter_324">
+              <SourceParameter reference="Parameter_5040"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_327">
-              <SourceParameter reference="Parameter_5104"/>
+            <CallParameter functionParameter="FunctionParameter_323">
+              <SourceParameter reference="Parameter_5057"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_307">
+              <SourceParameter reference="Parameter_5053"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_308">
-              <SourceParameter reference="Parameter_5090"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_326">
-              <SourceParameter reference="Parameter_5089"/>
+              <SourceParameter reference="Parameter_5052"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_6" name="Glyceraldehyde 3-phosphate dehydrogenase" reversible="true" fast="false">
+      <Reaction key="Reaction_6" name="Glyceraldehyde 3-phosphate dehydrogenase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_6">
@@ -2295,65 +2295,65 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_13" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_17" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_6" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_8" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_23" stoichiometry="1"/>
-          <Product metabolite="Metabolite_21" stoichiometry="1"/>
+          <Product metabolite="Metabolite_11" stoichiometry="1"/>
+          <Product metabolite="Metabolite_10" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5105" name="Vmaxv6" value="4300"/>
-          <Constant key="Parameter_5106" name="KNADv6" value="0.05"/>
-          <Constant key="Parameter_5107" name="KGraPv6" value="0.005"/>
-          <Constant key="Parameter_5108" name="KPv6" value="3.9"/>
-          <Constant key="Parameter_5109" name="Keqv6" value="0.000192"/>
-          <Constant key="Parameter_5110" name="KNADHv6" value="0.0083"/>
-          <Constant key="Parameter_5111" name="K13P2Gv6" value="0.0035"/>
+          <Constant key="Parameter_5043" name="Vmaxv6" value="4300"/>
+          <Constant key="Parameter_5059" name="KNADv6" value="0.05"/>
+          <Constant key="Parameter_5060" name="KGraPv6" value="0.005"/>
+          <Constant key="Parameter_5054" name="KPv6" value="3.9"/>
+          <Constant key="Parameter_5039" name="Keqv6" value="0.000192"/>
+          <Constant key="Parameter_5047" name="KNADHv6" value="0.0083"/>
+          <Constant key="Parameter_5056" name="K13P2Gv6" value="0.0035"/>
         </ListOfConstants>
-        <KineticLaw function="Function_46">
+        <KineticLaw function="Function_46" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_333">
-              <SourceParameter reference="Metabolite_13"/>
+            <CallParameter functionParameter="FunctionParameter_328">
+              <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_337">
-              <SourceParameter reference="Metabolite_21"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_345">
-              <SourceParameter reference="Parameter_5111"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_300">
-              <SourceParameter reference="Parameter_5107"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_343">
-              <SourceParameter reference="Parameter_5110"/>
+            <CallParameter functionParameter="FunctionParameter_327">
+              <SourceParameter reference="Metabolite_10"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_312">
-              <SourceParameter reference="Parameter_5106"/>
+              <SourceParameter reference="Parameter_5056"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_311">
+              <SourceParameter reference="Parameter_5060"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_310">
+              <SourceParameter reference="Parameter_5047"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_309">
+              <SourceParameter reference="Parameter_5059"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_329">
-              <SourceParameter reference="Parameter_5108"/>
+              <SourceParameter reference="Parameter_5054"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_341">
-              <SourceParameter reference="Parameter_5109"/>
+            <CallParameter functionParameter="FunctionParameter_330">
+              <SourceParameter reference="Parameter_5039"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_331">
-              <SourceParameter reference="Metabolite_19"/>
+              <SourceParameter reference="Metabolite_9"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_339">
-              <SourceParameter reference="Metabolite_23"/>
+            <CallParameter functionParameter="FunctionParameter_332">
+              <SourceParameter reference="Metabolite_11"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_335">
-              <SourceParameter reference="Metabolite_17"/>
+            <CallParameter functionParameter="FunctionParameter_333">
+              <SourceParameter reference="Metabolite_8"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_328">
-              <SourceParameter reference="Parameter_5105"/>
+            <CallParameter functionParameter="FunctionParameter_334">
+              <SourceParameter reference="Parameter_5043"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_7" name="Phosphoglycerate kinase" reversible="true" fast="false">
+      <Reaction key="Reaction_7" name="Phosphoglycerate kinase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_7">
@@ -2372,57 +2372,57 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_21" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_10" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_3" stoichiometry="1"/>
-          <Product metabolite="Metabolite_25" stoichiometry="1"/>
+          <Product metabolite="Metabolite_1" stoichiometry="1"/>
+          <Product metabolite="Metabolite_12" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5112" name="Vmaxv7" value="5000"/>
-          <Constant key="Parameter_5113" name="KMgADPv7" value="0.35"/>
-          <Constant key="Parameter_5114" name="K13P2Gv7" value="0.002"/>
-          <Constant key="Parameter_5115" name="Keqv7" value="1455"/>
-          <Constant key="Parameter_5121" name="KMgATPv7" value="0.48"/>
-          <Constant key="Parameter_5120" name="K3PGv7" value="1.2"/>
+          <Constant key="Parameter_5041" name="Vmaxv7" value="5000"/>
+          <Constant key="Parameter_5055" name="KMgADPv7" value="0.35"/>
+          <Constant key="Parameter_5046" name="K13P2Gv7" value="0.002"/>
+          <Constant key="Parameter_5050" name="Keqv7" value="1455"/>
+          <Constant key="Parameter_5045" name="KMgATPv7" value="0.48"/>
+          <Constant key="Parameter_5049" name="K3PGv7" value="1.2"/>
         </ListOfConstants>
-        <KineticLaw function="Function_47">
+        <KineticLaw function="Function_47" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_330">
-              <SourceParameter reference="Metabolite_21"/>
+            <CallParameter functionParameter="FunctionParameter_346">
+              <SourceParameter reference="Metabolite_10"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_347">
-              <SourceParameter reference="Metabolite_25"/>
+            <CallParameter functionParameter="FunctionParameter_345">
+              <SourceParameter reference="Metabolite_12"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_338">
-              <SourceParameter reference="Parameter_5114"/>
+            <CallParameter functionParameter="FunctionParameter_344">
+              <SourceParameter reference="Parameter_5046"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_353">
-              <SourceParameter reference="Parameter_5120"/>
+            <CallParameter functionParameter="FunctionParameter_343">
+              <SourceParameter reference="Parameter_5049"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_342">
-              <SourceParameter reference="Parameter_5113"/>
+              <SourceParameter reference="Parameter_5055"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_351">
-              <SourceParameter reference="Parameter_5121"/>
+            <CallParameter functionParameter="FunctionParameter_341">
+              <SourceParameter reference="Parameter_5045"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_349">
-              <SourceParameter reference="Parameter_5115"/>
+            <CallParameter functionParameter="FunctionParameter_340">
+              <SourceParameter reference="Parameter_5050"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_334">
-              <SourceParameter reference="Metabolite_7"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_304">
+            <CallParameter functionParameter="FunctionParameter_339">
               <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_346">
-              <SourceParameter reference="Parameter_5112"/>
+            <CallParameter functionParameter="FunctionParameter_338">
+              <SourceParameter reference="Metabolite_1"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_337">
+              <SourceParameter reference="Parameter_5041"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_8" name="Bisphosphoglycerate mutase" reversible="true" fast="false">
+      <Reaction key="Reaction_8" name="Bisphosphoglycerate mutase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_8">
@@ -2440,43 +2440,43 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_21" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_10" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_27" stoichiometry="1"/>
+          <Product metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_67" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5119" name="kDPGMv8" value="76000"/>
-          <Constant key="Parameter_5116" name="Keqv8" value="100000"/>
-          <Constant key="Parameter_5117" name="K23P2Gv8" value="0.04"/>
+          <Constant key="Parameter_5048" name="kDPGMv8" value="76000"/>
+          <Constant key="Parameter_5051" name="Keqv8" value="100000"/>
+          <Constant key="Parameter_5058" name="K23P2Gv8" value="0.04"/>
         </ListOfConstants>
-        <KineticLaw function="Function_48">
+        <KineticLaw function="Function_48" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_350">
-              <SourceParameter reference="Metabolite_21"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_320">
-              <SourceParameter reference="Metabolite_27"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_355">
-              <SourceParameter reference="Parameter_5117"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_340">
-              <SourceParameter reference="Parameter_5116"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_332">
-              <SourceParameter reference="Metabolite_67"/>
-            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_354">
-              <SourceParameter reference="Parameter_5119"/>
+              <SourceParameter reference="Metabolite_10"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_353">
+              <SourceParameter reference="Metabolite_13"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_352">
+              <SourceParameter reference="Parameter_5058"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_351">
+              <SourceParameter reference="Parameter_5051"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_350">
+              <SourceParameter reference="Metabolite_33"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_349">
+              <SourceParameter reference="Parameter_5048"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_9" name="Bisphosphoglycerate phosphatase" reversible="true" fast="false">
+      <Reaction key="Reaction_9" name="Bisphosphoglycerate phosphatase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_9">
@@ -2494,44 +2494,44 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_27" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_25" stoichiometry="1"/>
-          <Product metabolite="Metabolite_17" stoichiometry="1"/>
+          <Product metabolite="Metabolite_12" stoichiometry="1"/>
+          <Product metabolite="Metabolite_8" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_67" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5118" name="Vmaxv9" value="0.53"/>
-          <Constant key="Parameter_5122" name="Keqv9" value="100000"/>
-          <Constant key="Parameter_5123" name="K23P2Gv9" value="0.2"/>
+          <Constant key="Parameter_5042" name="Vmaxv9" value="0.53"/>
+          <Constant key="Parameter_5044" name="Keqv9" value="100000"/>
+          <Constant key="Parameter_5061" name="K23P2Gv9" value="0.2"/>
         </ListOfConstants>
-        <KineticLaw function="Function_49">
+        <KineticLaw function="Function_49" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
+            <CallParameter functionParameter="FunctionParameter_356">
+              <SourceParameter reference="Metabolite_13"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_355">
+              <SourceParameter reference="Metabolite_12"/>
+            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_336">
-              <SourceParameter reference="Metabolite_27"/>
+              <SourceParameter reference="Parameter_5061"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_357">
-              <SourceParameter reference="Metabolite_25"/>
+            <CallParameter functionParameter="FunctionParameter_335">
+              <SourceParameter reference="Parameter_5044"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_361">
-              <SourceParameter reference="Parameter_5123"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_359">
-              <SourceParameter reference="Parameter_5122"/>
+            <CallParameter functionParameter="FunctionParameter_347">
+              <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_348">
-              <SourceParameter reference="Metabolite_67"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_356">
-              <SourceParameter reference="Parameter_5118"/>
+              <SourceParameter reference="Parameter_5042"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_10" name="Phosphoglycerate mutase" reversible="true" fast="false">
+      <Reaction key="Reaction_10" name="Phosphoglycerate mutase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_10">
@@ -2550,41 +2550,41 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_25" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_12" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_29" stoichiometry="1"/>
+          <Product metabolite="Metabolite_14" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5126" name="Vmaxv10" value="2000"/>
-          <Constant key="Parameter_5125" name="Keqv10" value="0.145"/>
-          <Constant key="Parameter_5124" name="K3PGv10" value="5"/>
-          <Constant key="Parameter_5127" name="K2PGv10" value="1"/>
+          <Constant key="Parameter_5077" name="Vmaxv10" value="2000"/>
+          <Constant key="Parameter_5078" name="Keqv10" value="0.145"/>
+          <Constant key="Parameter_5084" name="K3PGv10" value="5"/>
+          <Constant key="Parameter_5083" name="K2PGv10" value="1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_50">
+        <KineticLaw function="Function_50" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_324">
-              <SourceParameter reference="Metabolite_29"/>
+            <CallParameter functionParameter="FunctionParameter_362">
+              <SourceParameter reference="Metabolite_14"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_361">
+              <SourceParameter reference="Metabolite_12"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_360">
+              <SourceParameter reference="Parameter_5083"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_359">
+              <SourceParameter reference="Parameter_5084"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_358">
-              <SourceParameter reference="Metabolite_25"/>
+              <SourceParameter reference="Parameter_5078"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_367">
-              <SourceParameter reference="Parameter_5127"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_365">
-              <SourceParameter reference="Parameter_5124"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_363">
-              <SourceParameter reference="Parameter_5125"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_362">
-              <SourceParameter reference="Parameter_5126"/>
+            <CallParameter functionParameter="FunctionParameter_357">
+              <SourceParameter reference="Parameter_5077"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_11" name="Enolase" reversible="true" fast="false">
+      <Reaction key="Reaction_11" name="Enolase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_11">
@@ -2603,41 +2603,41 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_29" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_14" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_31" stoichiometry="1"/>
+          <Product metabolite="Metabolite_15" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5128" name="Vmaxv11" value="1500"/>
-          <Constant key="Parameter_5129" name="Keqv11" value="1.7"/>
-          <Constant key="Parameter_5130" name="K2PGv11" value="1"/>
-          <Constant key="Parameter_5131" name="KPEPv11" value="1"/>
+          <Constant key="Parameter_5085" name="Vmaxv11" value="1500"/>
+          <Constant key="Parameter_5080" name="Keqv11" value="1.7"/>
+          <Constant key="Parameter_5079" name="K2PGv11" value="1"/>
+          <Constant key="Parameter_5082" name="KPEPv11" value="1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_51">
+        <KineticLaw function="Function_51" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_364">
-              <SourceParameter reference="Metabolite_29"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_371">
-              <SourceParameter reference="Parameter_5130"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_373">
-              <SourceParameter reference="Parameter_5131"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_369">
-              <SourceParameter reference="Parameter_5129"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_352">
-              <SourceParameter reference="Metabolite_31"/>
-            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_368">
-              <SourceParameter reference="Parameter_5128"/>
+              <SourceParameter reference="Metabolite_14"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_367">
+              <SourceParameter reference="Parameter_5079"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_366">
+              <SourceParameter reference="Parameter_5082"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_365">
+              <SourceParameter reference="Parameter_5080"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_364">
+              <SourceParameter reference="Metabolite_15"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_363">
+              <SourceParameter reference="Parameter_5085"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_12" name="Pyruvate kinase" reversible="true" fast="false">
+      <Reaction key="Reaction_12" name="Pyruvate kinase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_12">
@@ -2656,71 +2656,71 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_31" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_15" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_3" stoichiometry="1"/>
-          <Product metabolite="Metabolite_33" stoichiometry="1"/>
+          <Product metabolite="Metabolite_1" stoichiometry="1"/>
+          <Product metabolite="Metabolite_16" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_63" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_11" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_31" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5132" name="Vmaxv12" value="570"/>
-          <Constant key="Parameter_5133" name="Keqv12" value="13790"/>
-          <Constant key="Parameter_5134" name="KPEPv12" value="0.225"/>
-          <Constant key="Parameter_5135" name="KMgADPv12" value="0.474"/>
-          <Constant key="Parameter_5136" name="L0v12" value="19"/>
-          <Constant key="Parameter_5137" name="KATPv12" value="3.39"/>
-          <Constant key="Parameter_5138" name="KFru16P2v12" value="0.005"/>
+          <Constant key="Parameter_5081" name="Vmaxv12" value="570"/>
+          <Constant key="Parameter_5086" name="Keqv12" value="13790"/>
+          <Constant key="Parameter_5090" name="KPEPv12" value="0.225"/>
+          <Constant key="Parameter_5088" name="KMgADPv12" value="0.474"/>
+          <Constant key="Parameter_5087" name="L0v12" value="19"/>
+          <Constant key="Parameter_5091" name="KATPv12" value="3.39"/>
+          <Constant key="Parameter_5089" name="KFru16P2v12" value="0.005"/>
         </ListOfConstants>
-        <KineticLaw function="Function_52">
+        <KineticLaw function="Function_52" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_387">
-              <SourceParameter reference="Metabolite_63"/>
+            <CallParameter functionParameter="FunctionParameter_374">
+              <SourceParameter reference="Metabolite_31"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_391">
-              <SourceParameter reference="Metabolite_11"/>
+            <CallParameter functionParameter="FunctionParameter_373">
+              <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_389">
-              <SourceParameter reference="Parameter_5137"/>
+            <CallParameter functionParameter="FunctionParameter_372">
+              <SourceParameter reference="Parameter_5091"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_393">
-              <SourceParameter reference="Parameter_5138"/>
+            <CallParameter functionParameter="FunctionParameter_371">
+              <SourceParameter reference="Parameter_5089"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_383">
-              <SourceParameter reference="Parameter_5135"/>
+            <CallParameter functionParameter="FunctionParameter_370">
+              <SourceParameter reference="Parameter_5088"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_381">
-              <SourceParameter reference="Parameter_5134"/>
+            <CallParameter functionParameter="FunctionParameter_369">
+              <SourceParameter reference="Parameter_5090"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_379">
-              <SourceParameter reference="Parameter_5133"/>
+            <CallParameter functionParameter="FunctionParameter_375">
+              <SourceParameter reference="Parameter_5086"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_385">
-              <SourceParameter reference="Parameter_5136"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_344">
-              <SourceParameter reference="Metabolite_7"/>
+            <CallParameter functionParameter="FunctionParameter_376">
+              <SourceParameter reference="Parameter_5087"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_377">
               <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_370">
-              <SourceParameter reference="Metabolite_31"/>
+            <CallParameter functionParameter="FunctionParameter_378">
+              <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_375">
-              <SourceParameter reference="Metabolite_33"/>
+            <CallParameter functionParameter="FunctionParameter_379">
+              <SourceParameter reference="Metabolite_15"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_374">
-              <SourceParameter reference="Parameter_5132"/>
+            <CallParameter functionParameter="FunctionParameter_380">
+              <SourceParameter reference="Metabolite_16"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_381">
+              <SourceParameter reference="Parameter_5081"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_13" name="Lactate dehydrogenase" reversible="true" fast="false">
+      <Reaction key="Reaction_13" name="Lactate dehydrogenase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_13">
@@ -2739,41 +2739,41 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_23" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_33" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_11" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_16" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_35" stoichiometry="1"/>
-          <Product metabolite="Metabolite_19" stoichiometry="1"/>
+          <Product metabolite="Metabolite_17" stoichiometry="1"/>
+          <Product metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5139" name="Vmaxv13" value="2.8e+06"/>
-          <Constant key="Parameter_5140" name="Keqv13" value="9090"/>
+          <Constant key="Parameter_5093" name="Vmaxv13" value="2.8e+06"/>
+          <Constant key="Parameter_5095" name="Keqv13" value="9090"/>
         </ListOfConstants>
-        <KineticLaw function="Function_53">
+        <KineticLaw function="Function_53" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_366">
-              <SourceParameter reference="Parameter_5140"/>
+            <CallParameter functionParameter="FunctionParameter_394">
+              <SourceParameter reference="Parameter_5095"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_382">
-              <SourceParameter reference="Metabolite_35"/>
+            <CallParameter functionParameter="FunctionParameter_393">
+              <SourceParameter reference="Metabolite_17"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_378">
-              <SourceParameter reference="Metabolite_19"/>
+            <CallParameter functionParameter="FunctionParameter_392">
+              <SourceParameter reference="Metabolite_9"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_386">
-              <SourceParameter reference="Metabolite_23"/>
+            <CallParameter functionParameter="FunctionParameter_391">
+              <SourceParameter reference="Metabolite_11"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_390">
-              <SourceParameter reference="Metabolite_33"/>
+              <SourceParameter reference="Metabolite_16"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_394">
-              <SourceParameter reference="Parameter_5139"/>
+            <CallParameter functionParameter="FunctionParameter_389">
+              <SourceParameter reference="Parameter_5093"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_14" name="Lactate dehydrogenase_2" reversible="true" fast="false">
+      <Reaction key="Reaction_14" name="Lactate dehydrogenase_2" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_14">
@@ -2786,41 +2786,41 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_33" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_37" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_16" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_18" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_35" stoichiometry="1"/>
-          <Product metabolite="Metabolite_39" stoichiometry="1"/>
+          <Product metabolite="Metabolite_17" stoichiometry="1"/>
+          <Product metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5141" name="kLDHv14" value="243.4"/>
-          <Constant key="Parameter_5142" name="Keqv14" value="14181.8"/>
+          <Constant key="Parameter_5096" name="kLDHv14" value="243.4"/>
+          <Constant key="Parameter_5092" name="Keqv14" value="14181.8"/>
         </ListOfConstants>
-        <KineticLaw function="Function_54">
+        <KineticLaw function="Function_54" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_398">
-              <SourceParameter reference="Parameter_5142"/>
+            <CallParameter functionParameter="FunctionParameter_383">
+              <SourceParameter reference="Parameter_5092"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_372">
-              <SourceParameter reference="Metabolite_35"/>
+            <CallParameter functionParameter="FunctionParameter_384">
+              <SourceParameter reference="Metabolite_17"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_385">
+              <SourceParameter reference="Metabolite_18"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_386">
+              <SourceParameter reference="Metabolite_19"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_387">
+              <SourceParameter reference="Metabolite_16"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_388">
-              <SourceParameter reference="Metabolite_37"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_396">
-              <SourceParameter reference="Metabolite_39"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_380">
-              <SourceParameter reference="Metabolite_33"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_360">
-              <SourceParameter reference="Parameter_5141"/>
+              <SourceParameter reference="Parameter_5096"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_15" name="ATPase" reversible="true" fast="false">
+      <Reaction key="Reaction_15" name="ATPase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_15">
@@ -2838,27 +2838,27 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_17" stoichiometry="1"/>
-          <Product metabolite="Metabolite_7" stoichiometry="1"/>
+          <Product metabolite="Metabolite_8" stoichiometry="1"/>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5143" name="kATPasev15" value="1.68"/>
+          <Constant key="Parameter_5094" name="kATPasev15" value="1.68"/>
         </ListOfConstants>
-        <KineticLaw function="Function_55">
+        <KineticLaw function="Function_55" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_395">
-              <SourceParameter reference="Metabolite_3"/>
-            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_399">
-              <SourceParameter reference="Parameter_5143"/>
+              <SourceParameter reference="Metabolite_1"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_398">
+              <SourceParameter reference="Parameter_5094"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_16" name="Adenylate kinase" reversible="true" fast="false">
+      <Reaction key="Reaction_16" name="Adenylate kinase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_16">
@@ -2876,53 +2876,53 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_41" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_20" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_43" stoichiometry="1"/>
-          <Product metabolite="Metabolite_7" stoichiometry="1"/>
+          <Product metabolite="Metabolite_21" stoichiometry="1"/>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5144" name="Vmaxv16" value="1380"/>
-          <Constant key="Parameter_5145" name="KATPv16" value="0.09"/>
-          <Constant key="Parameter_5146" name="KAMPv16" value="0.08"/>
-          <Constant key="Parameter_5147" name="Keqv16" value="0.25"/>
-          <Constant key="Parameter_5148" name="KADPv16" value="0.11"/>
+          <Constant key="Parameter_5099" name="Vmaxv16" value="1380"/>
+          <Constant key="Parameter_5100" name="KATPv16" value="0.09"/>
+          <Constant key="Parameter_5101" name="KAMPv16" value="0.08"/>
+          <Constant key="Parameter_5097" name="Keqv16" value="0.25"/>
+          <Constant key="Parameter_5098" name="KADPv16" value="0.11"/>
         </ListOfConstants>
-        <KineticLaw function="Function_56">
+        <KineticLaw function="Function_56" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_408">
-              <SourceParameter reference="Metabolite_43"/>
+            <CallParameter functionParameter="FunctionParameter_396">
+              <SourceParameter reference="Metabolite_21"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_404">
-              <SourceParameter reference="Metabolite_41"/>
+            <CallParameter functionParameter="FunctionParameter_397">
+              <SourceParameter reference="Metabolite_20"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_412">
-              <SourceParameter reference="Parameter_5148"/>
+            <CallParameter functionParameter="FunctionParameter_395">
+              <SourceParameter reference="Parameter_5098"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_382">
+              <SourceParameter reference="Parameter_5101"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_400">
-              <SourceParameter reference="Parameter_5146"/>
+              <SourceParameter reference="Parameter_5100"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_384">
-              <SourceParameter reference="Parameter_5145"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_410">
-              <SourceParameter reference="Parameter_5147"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_406">
-              <SourceParameter reference="Metabolite_7"/>
+            <CallParameter functionParameter="FunctionParameter_401">
+              <SourceParameter reference="Parameter_5097"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_402">
               <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_392">
-              <SourceParameter reference="Parameter_5144"/>
+            <CallParameter functionParameter="FunctionParameter_403">
+              <SourceParameter reference="Metabolite_1"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_404">
+              <SourceParameter reference="Parameter_5099"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_17" name="Glucose 6-phosphate dehydrogenase" reversible="true" fast="false">
+      <Reaction key="Reaction_17" name="Glucose 6-phosphate dehydrogenase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_17">
@@ -2946,79 +2946,79 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_39" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_2" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_45" stoichiometry="1"/>
-          <Product metabolite="Metabolite_37" stoichiometry="1"/>
+          <Product metabolite="Metabolite_22" stoichiometry="1"/>
+          <Product metabolite="Metabolite_18" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_63" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_3" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_27" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_67" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_31" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_1" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_13" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5149" name="Vmaxv17" value="162"/>
-          <Constant key="Parameter_5150" name="KG6Pv17" value="0.0667"/>
-          <Constant key="Parameter_5151" name="KNADPv17" value="0.00367"/>
-          <Constant key="Parameter_5152" name="Keqv17" value="2000"/>
-          <Constant key="Parameter_5153" name="KATPv17" value="0.749"/>
-          <Constant key="Parameter_5154" name="KNADPHv17" value="0.00312"/>
-          <Constant key="Parameter_5155" name="KPGA23v17" value="2.289"/>
+          <Constant key="Parameter_5102" name="Vmaxv17" value="162"/>
+          <Constant key="Parameter_5104" name="KG6Pv17" value="0.0667"/>
+          <Constant key="Parameter_5103" name="KNADPv17" value="0.00367"/>
+          <Constant key="Parameter_5105" name="Keqv17" value="2000"/>
+          <Constant key="Parameter_5106" name="KATPv17" value="0.749"/>
+          <Constant key="Parameter_5107" name="KNADPHv17" value="0.00312"/>
+          <Constant key="Parameter_5108" name="KPGA23v17" value="2.289"/>
         </ListOfConstants>
-        <KineticLaw function="Function_57">
+        <KineticLaw function="Function_57" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_421">
-              <SourceParameter reference="Metabolite_63"/>
+            <CallParameter functionParameter="FunctionParameter_413">
+              <SourceParameter reference="Metabolite_31"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_401">
-              <SourceParameter reference="Metabolite_5"/>
+            <CallParameter functionParameter="FunctionParameter_412">
+              <SourceParameter reference="Metabolite_2"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_415">
-              <SourceParameter reference="Metabolite_45"/>
+            <CallParameter functionParameter="FunctionParameter_411">
+              <SourceParameter reference="Metabolite_22"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_429">
-              <SourceParameter reference="Metabolite_27"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_425">
-              <SourceParameter reference="Parameter_5153"/>
+            <CallParameter functionParameter="FunctionParameter_410">
+              <SourceParameter reference="Metabolite_13"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_409">
-              <SourceParameter reference="Parameter_5150"/>
+              <SourceParameter reference="Parameter_5106"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_427">
-              <SourceParameter reference="Parameter_5154"/>
+            <CallParameter functionParameter="FunctionParameter_408">
+              <SourceParameter reference="Parameter_5104"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_407">
+              <SourceParameter reference="Parameter_5107"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_406">
+              <SourceParameter reference="Parameter_5103"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_405">
-              <SourceParameter reference="Parameter_5151"/>
+              <SourceParameter reference="Parameter_5108"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_433">
-              <SourceParameter reference="Parameter_5155"/>
+            <CallParameter functionParameter="FunctionParameter_414">
+              <SourceParameter reference="Parameter_5105"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_419">
-              <SourceParameter reference="Parameter_5152"/>
+            <CallParameter functionParameter="FunctionParameter_415">
+              <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_423">
-              <SourceParameter reference="Metabolite_3"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_431">
-              <SourceParameter reference="Metabolite_67"/>
+            <CallParameter functionParameter="FunctionParameter_416">
+              <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_417">
-              <SourceParameter reference="Metabolite_37"/>
+              <SourceParameter reference="Metabolite_18"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_397">
-              <SourceParameter reference="Metabolite_39"/>
+            <CallParameter functionParameter="FunctionParameter_418">
+              <SourceParameter reference="Metabolite_19"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_413">
-              <SourceParameter reference="Parameter_5149"/>
+            <CallParameter functionParameter="FunctionParameter_419">
+              <SourceParameter reference="Parameter_5102"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_18" name="Phosphogluconate dehydrogenase" reversible="true" fast="false">
+      <Reaction key="Reaction_18" name="Phosphogluconate dehydrogenase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_18">
@@ -3043,83 +3043,83 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_45" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_39" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_22" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_47" stoichiometry="1"/>
-          <Product metabolite="Metabolite_37" stoichiometry="1"/>
+          <Product metabolite="Metabolite_23" stoichiometry="1"/>
+          <Product metabolite="Metabolite_18" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfModifiers>
-          <Modifier metabolite="Metabolite_27" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_67" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_63" stoichiometry="1"/>
-          <Modifier metabolite="Metabolite_3" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_13" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_33" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_31" stoichiometry="1"/>
+          <Modifier metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5156" name="Vmaxv18" value="1575"/>
-          <Constant key="Parameter_5157" name="K6PG1v18" value="0.01"/>
-          <Constant key="Parameter_5042" name="KNADPv18" value="0.018"/>
-          <Constant key="Parameter_5043" name="Keqv18" value="141.7"/>
-          <Constant key="Parameter_5044" name="KPGA23v18" value="0.12"/>
-          <Constant key="Parameter_5045" name="KATPv18" value="0.154"/>
-          <Constant key="Parameter_5046" name="K6PG2v18" value="0.058"/>
-          <Constant key="Parameter_5047" name="KNADPHv18" value="0.0045"/>
+          <Constant key="Parameter_5109" name="Vmaxv18" value="1575"/>
+          <Constant key="Parameter_5110" name="K6PG1v18" value="0.01"/>
+          <Constant key="Parameter_5119" name="KNADPv18" value="0.018"/>
+          <Constant key="Parameter_5118" name="Keqv18" value="141.7"/>
+          <Constant key="Parameter_5117" name="KPGA23v18" value="0.12"/>
+          <Constant key="Parameter_5116" name="KATPv18" value="0.154"/>
+          <Constant key="Parameter_5112" name="K6PG2v18" value="0.058"/>
+          <Constant key="Parameter_5111" name="KNADPHv18" value="0.0045"/>
         </ListOfConstants>
-        <KineticLaw function="Function_58">
+        <KineticLaw function="Function_58" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_442">
-              <SourceParameter reference="Metabolite_63"/>
+            <CallParameter functionParameter="FunctionParameter_434">
+              <SourceParameter reference="Metabolite_31"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_422">
-              <SourceParameter reference="Metabolite_45"/>
+            <CallParameter functionParameter="FunctionParameter_433">
+              <SourceParameter reference="Metabolite_22"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_436">
-              <SourceParameter reference="Metabolite_27"/>
+            <CallParameter functionParameter="FunctionParameter_432">
+              <SourceParameter reference="Metabolite_13"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_431">
+              <SourceParameter reference="Parameter_5110"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_430">
-              <SourceParameter reference="Parameter_5157"/>
+              <SourceParameter reference="Parameter_5112"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_448">
-              <SourceParameter reference="Parameter_5046"/>
+            <CallParameter functionParameter="FunctionParameter_429">
+              <SourceParameter reference="Parameter_5116"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_446">
-              <SourceParameter reference="Parameter_5045"/>
+            <CallParameter functionParameter="FunctionParameter_428">
+              <SourceParameter reference="Parameter_5111"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_450">
-              <SourceParameter reference="Parameter_5047"/>
+            <CallParameter functionParameter="FunctionParameter_427">
+              <SourceParameter reference="Parameter_5119"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_426">
-              <SourceParameter reference="Parameter_5042"/>
+              <SourceParameter reference="Parameter_5117"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_440">
-              <SourceParameter reference="Parameter_5044"/>
+            <CallParameter functionParameter="FunctionParameter_425">
+              <SourceParameter reference="Parameter_5118"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_411">
-              <SourceParameter reference="Parameter_5043"/>
+            <CallParameter functionParameter="FunctionParameter_424">
+              <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_444">
-              <SourceParameter reference="Metabolite_3"/>
+            <CallParameter functionParameter="FunctionParameter_423">
+              <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_438">
-              <SourceParameter reference="Metabolite_67"/>
+            <CallParameter functionParameter="FunctionParameter_422">
+              <SourceParameter reference="Metabolite_18"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_403">
-              <SourceParameter reference="Metabolite_37"/>
+            <CallParameter functionParameter="FunctionParameter_421">
+              <SourceParameter reference="Metabolite_19"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_418">
-              <SourceParameter reference="Metabolite_39"/>
+            <CallParameter functionParameter="FunctionParameter_420">
+              <SourceParameter reference="Metabolite_23"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_414">
-              <SourceParameter reference="Metabolite_47"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_434">
-              <SourceParameter reference="Parameter_5156"/>
+            <CallParameter functionParameter="FunctionParameter_435">
+              <SourceParameter reference="Parameter_5109"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_19" name="Glutathione reductase" reversible="true" fast="false">
+      <Reaction key="Reaction_19" name="Glutathione reductase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_19">
@@ -3138,57 +3138,57 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_49" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_37" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_24" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_18" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_51" stoichiometry="2"/>
-          <Product metabolite="Metabolite_39" stoichiometry="1"/>
+          <Product metabolite="Metabolite_25" stoichiometry="2"/>
+          <Product metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5048" name="Vmaxv19" value="90"/>
-          <Constant key="Parameter_5049" name="KGSSGv19" value="0.0652"/>
-          <Constant key="Parameter_5050" name="KNADPHv19" value="0.00852"/>
-          <Constant key="Parameter_5051" name="KGSHv19" value="20"/>
-          <Constant key="Parameter_5052" name="KNADPv19" value="0.07"/>
-          <Constant key="Parameter_5158" name="Keqv19" value="1.04"/>
+          <Constant key="Parameter_5114" name="Vmaxv19" value="90"/>
+          <Constant key="Parameter_5113" name="KGSSGv19" value="0.0652"/>
+          <Constant key="Parameter_5124" name="KNADPHv19" value="0.00852"/>
+          <Constant key="Parameter_5121" name="KGSHv19" value="20"/>
+          <Constant key="Parameter_5122" name="KNADPv19" value="0.07"/>
+          <Constant key="Parameter_5123" name="Keqv19" value="1.04"/>
         </ListOfConstants>
-        <KineticLaw function="Function_59">
+        <KineticLaw function="Function_59" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_376">
-              <SourceParameter reference="Metabolite_51"/>
+            <CallParameter functionParameter="FunctionParameter_451">
+              <SourceParameter reference="Metabolite_25"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_450">
+              <SourceParameter reference="Metabolite_24"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_449">
+              <SourceParameter reference="Parameter_5121"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_448">
+              <SourceParameter reference="Parameter_5113"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_447">
-              <SourceParameter reference="Metabolite_49"/>
+              <SourceParameter reference="Parameter_5124"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_420">
-              <SourceParameter reference="Parameter_5051"/>
+            <CallParameter functionParameter="FunctionParameter_446">
+              <SourceParameter reference="Parameter_5122"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_439">
-              <SourceParameter reference="Parameter_5049"/>
+            <CallParameter functionParameter="FunctionParameter_445">
+              <SourceParameter reference="Parameter_5123"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_435">
-              <SourceParameter reference="Parameter_5050"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_452">
-              <SourceParameter reference="Parameter_5052"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_454">
-              <SourceParameter reference="Parameter_5158"/>
+            <CallParameter functionParameter="FunctionParameter_444">
+              <SourceParameter reference="Metabolite_18"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_443">
-              <SourceParameter reference="Metabolite_37"/>
+              <SourceParameter reference="Metabolite_19"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_428">
-              <SourceParameter reference="Metabolite_39"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_451">
-              <SourceParameter reference="Parameter_5048"/>
+            <CallParameter functionParameter="FunctionParameter_442">
+              <SourceParameter reference="Parameter_5114"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_20" name="Glutathione oxidation" reversible="true" fast="false">
+      <Reaction key="Reaction_20" name="Glutathione oxidation" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_20">
@@ -3206,26 +3206,26 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_51" stoichiometry="2"/>
+          <Substrate metabolite="Metabolite_25" stoichiometry="2"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_49" stoichiometry="1"/>
+          <Product metabolite="Metabolite_24" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5159" name="Kv20" value="0.03"/>
+          <Constant key="Parameter_5115" name="Kv20" value="0.03"/>
         </ListOfConstants>
-        <KineticLaw function="Function_60">
+        <KineticLaw function="Function_60" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_432">
-              <SourceParameter reference="Metabolite_51"/>
-            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_455">
-              <SourceParameter reference="Parameter_5159"/>
+              <SourceParameter reference="Metabolite_25"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_454">
+              <SourceParameter reference="Parameter_5115"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_21" name="Phosphoribulose epimerase" reversible="true" fast="false">
+      <Reaction key="Reaction_21" name="Phosphoribulose epimerase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_21">
@@ -3244,41 +3244,41 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_47" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_23" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_53" stoichiometry="1"/>
+          <Product metabolite="Metabolite_26" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4935" name="Vmaxv21" value="4634"/>
-          <Constant key="Parameter_4934" name="Keqv21" value="2.7"/>
-          <Constant key="Parameter_4933" name="KRu5Pv21" value="0.19"/>
-          <Constant key="Parameter_4932" name="KX5Pv21" value="0.5"/>
+          <Constant key="Parameter_5120" name="Vmaxv21" value="4634"/>
+          <Constant key="Parameter_5125" name="Keqv21" value="2.7"/>
+          <Constant key="Parameter_5126" name="KRu5Pv21" value="0.19"/>
+          <Constant key="Parameter_5127" name="KX5Pv21" value="0.5"/>
         </ListOfConstants>
-        <KineticLaw function="Function_61">
+        <KineticLaw function="Function_61" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_456">
-              <SourceParameter reference="Parameter_4933"/>
+            <CallParameter functionParameter="FunctionParameter_452">
+              <SourceParameter reference="Parameter_5126"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_458">
-              <SourceParameter reference="Parameter_4932"/>
+            <CallParameter functionParameter="FunctionParameter_453">
+              <SourceParameter reference="Parameter_5127"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_445">
-              <SourceParameter reference="Parameter_4934"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_416">
-              <SourceParameter reference="Metabolite_47"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_424">
-              <SourceParameter reference="Parameter_4935"/>
+            <CallParameter functionParameter="FunctionParameter_436">
+              <SourceParameter reference="Parameter_5125"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_437">
-              <SourceParameter reference="Metabolite_53"/>
+              <SourceParameter reference="Metabolite_23"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_438">
+              <SourceParameter reference="Parameter_5120"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_439">
+              <SourceParameter reference="Metabolite_26"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_22" name="Ribose phosphate isomerase" reversible="true" fast="false">
+      <Reaction key="Reaction_22" name="Ribose phosphate isomerase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_22">
@@ -3297,41 +3297,41 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_47" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_23" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_55" stoichiometry="1"/>
+          <Product metabolite="Metabolite_27" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4931" name="Vmaxv22" value="730"/>
-          <Constant key="Parameter_4930" name="Keqv22" value="3"/>
-          <Constant key="Parameter_4929" name="KRu5Pv22" value="0.78"/>
-          <Constant key="Parameter_4928" name="KR5Pv22" value="2.2"/>
+          <Constant key="Parameter_5128" name="Vmaxv22" value="730"/>
+          <Constant key="Parameter_5133" name="Keqv22" value="3"/>
+          <Constant key="Parameter_5130" name="KRu5Pv22" value="0.78"/>
+          <Constant key="Parameter_5132" name="KR5Pv22" value="2.2"/>
         </ListOfConstants>
-        <KineticLaw function="Function_62">
+        <KineticLaw function="Function_62" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_464">
-              <SourceParameter reference="Parameter_4928"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_462">
-              <SourceParameter reference="Parameter_4929"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_460">
-              <SourceParameter reference="Parameter_4930"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_407">
-              <SourceParameter reference="Metabolite_55"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_449">
-              <SourceParameter reference="Metabolite_47"/>
-            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_459">
-              <SourceParameter reference="Parameter_4931"/>
+              <SourceParameter reference="Parameter_5132"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_458">
+              <SourceParameter reference="Parameter_5130"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_457">
+              <SourceParameter reference="Parameter_5133"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_456">
+              <SourceParameter reference="Metabolite_27"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_441">
+              <SourceParameter reference="Metabolite_23"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_440">
+              <SourceParameter reference="Parameter_5128"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_23" name="Transketolase 1" reversible="true" fast="false">
+      <Reaction key="Reaction_23" name="Transketolase 1" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_23">
@@ -3350,69 +3350,69 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_53" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_55" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_26" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_27" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_13" stoichiometry="1"/>
-          <Product metabolite="Metabolite_57" stoichiometry="1"/>
+          <Product metabolite="Metabolite_6" stoichiometry="1"/>
+          <Product metabolite="Metabolite_28" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4927" name="Vmaxv23" value="23.5"/>
-          <Constant key="Parameter_4926" name="Keqv23" value="1.05"/>
-          <Constant key="Parameter_4925" name="K1v23" value="0.4177"/>
-          <Constant key="Parameter_4924" name="K2v23" value="0.3055"/>
-          <Constant key="Parameter_4923" name="K6v23" value="0.00774"/>
-          <Constant key="Parameter_4922" name="K3v23" value="12.432"/>
-          <Constant key="Parameter_4921" name="K5v23" value="0.41139"/>
-          <Constant key="Parameter_4920" name="K4v23" value="0.00496"/>
-          <Constant key="Parameter_4919" name="K7v23" value="48.8"/>
+          <Constant key="Parameter_5131" name="Vmaxv23" value="23.5"/>
+          <Constant key="Parameter_5129" name="Keqv23" value="1.05"/>
+          <Constant key="Parameter_5137" name="K1v23" value="0.4177"/>
+          <Constant key="Parameter_5136" name="K2v23" value="0.3055"/>
+          <Constant key="Parameter_5134" name="K6v23" value="0.00774"/>
+          <Constant key="Parameter_5135" name="K3v23" value="12.432"/>
+          <Constant key="Parameter_5197" name="K5v23" value="0.41139"/>
+          <Constant key="Parameter_5156" name="K4v23" value="0.00496"/>
+          <Constant key="Parameter_5138" name="K7v23" value="48.8"/>
         </ListOfConstants>
-        <KineticLaw function="Function_63">
+        <KineticLaw function="Function_63" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_466">
-              <SourceParameter reference="Metabolite_13"/>
+            <CallParameter functionParameter="FunctionParameter_465">
+              <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_472">
-              <SourceParameter reference="Parameter_4925"/>
+            <CallParameter functionParameter="FunctionParameter_464">
+              <SourceParameter reference="Parameter_5137"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_474">
-              <SourceParameter reference="Parameter_4924"/>
+            <CallParameter functionParameter="FunctionParameter_463">
+              <SourceParameter reference="Parameter_5136"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_478">
-              <SourceParameter reference="Parameter_4922"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_482">
-              <SourceParameter reference="Parameter_4920"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_480">
-              <SourceParameter reference="Parameter_4921"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_476">
-              <SourceParameter reference="Parameter_4923"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_484">
-              <SourceParameter reference="Parameter_4919"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_470">
-              <SourceParameter reference="Parameter_4926"/>
+            <CallParameter functionParameter="FunctionParameter_462">
+              <SourceParameter reference="Parameter_5135"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_461">
-              <SourceParameter reference="Metabolite_55"/>
+              <SourceParameter reference="Parameter_5156"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_460">
+              <SourceParameter reference="Parameter_5197"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_466">
+              <SourceParameter reference="Parameter_5134"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_467">
+              <SourceParameter reference="Parameter_5138"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_468">
-              <SourceParameter reference="Metabolite_57"/>
+              <SourceParameter reference="Parameter_5129"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_465">
-              <SourceParameter reference="Parameter_4927"/>
+            <CallParameter functionParameter="FunctionParameter_469">
+              <SourceParameter reference="Metabolite_27"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_441">
-              <SourceParameter reference="Metabolite_53"/>
+            <CallParameter functionParameter="FunctionParameter_470">
+              <SourceParameter reference="Metabolite_28"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_471">
+              <SourceParameter reference="Parameter_5131"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_472">
+              <SourceParameter reference="Metabolite_26"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_24" name="Transaldolase" reversible="true" fast="false">
+      <Reaction key="Reaction_24" name="Transaldolase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_24">
@@ -3431,69 +3431,69 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_13" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_57" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_6" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_28" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_59" stoichiometry="1"/>
-          <Product metabolite="Metabolite_9" stoichiometry="1"/>
+          <Product metabolite="Metabolite_29" stoichiometry="1"/>
+          <Product metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4918" name="Vmaxv24" value="27.2"/>
-          <Constant key="Parameter_4917" name="Keqv24" value="1.05"/>
-          <Constant key="Parameter_4916" name="K1v24" value="0.00823"/>
-          <Constant key="Parameter_4915" name="K2v24" value="0.04765"/>
-          <Constant key="Parameter_4914" name="K6v24" value="0.4653"/>
-          <Constant key="Parameter_4913" name="K3v24" value="0.1733"/>
-          <Constant key="Parameter_4912" name="K5v24" value="0.8683"/>
-          <Constant key="Parameter_4911" name="K4v24" value="0.006095"/>
-          <Constant key="Parameter_4910" name="K7v24" value="2.524"/>
+          <Constant key="Parameter_5195" name="Vmaxv24" value="27.2"/>
+          <Constant key="Parameter_5200" name="Keqv24" value="1.05"/>
+          <Constant key="Parameter_5194" name="K1v24" value="0.00823"/>
+          <Constant key="Parameter_5196" name="K2v24" value="0.04765"/>
+          <Constant key="Parameter_5142" name="K6v24" value="0.4653"/>
+          <Constant key="Parameter_5144" name="K3v24" value="0.1733"/>
+          <Constant key="Parameter_5145" name="K5v24" value="0.8683"/>
+          <Constant key="Parameter_5139" name="K4v24" value="0.006095"/>
+          <Constant key="Parameter_5141" name="K7v24" value="2.524"/>
         </ListOfConstants>
-        <KineticLaw function="Function_64">
+        <KineticLaw function="Function_64" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_473">
-              <SourceParameter reference="Metabolite_59"/>
+            <CallParameter functionParameter="FunctionParameter_485">
+              <SourceParameter reference="Metabolite_29"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_469">
-              <SourceParameter reference="Metabolite_9"/>
+            <CallParameter functionParameter="FunctionParameter_484">
+              <SourceParameter reference="Metabolite_4"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_477">
-              <SourceParameter reference="Metabolite_13"/>
+            <CallParameter functionParameter="FunctionParameter_483">
+              <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_463">
-              <SourceParameter reference="Parameter_4916"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_487">
-              <SourceParameter reference="Parameter_4915"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_491">
-              <SourceParameter reference="Parameter_4913"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_495">
-              <SourceParameter reference="Parameter_4911"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_493">
-              <SourceParameter reference="Parameter_4912"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_489">
-              <SourceParameter reference="Parameter_4914"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_497">
-              <SourceParameter reference="Parameter_4910"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_457">
-              <SourceParameter reference="Parameter_4917"/>
+            <CallParameter functionParameter="FunctionParameter_482">
+              <SourceParameter reference="Parameter_5194"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_481">
-              <SourceParameter reference="Metabolite_57"/>
+              <SourceParameter reference="Parameter_5196"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_485">
-              <SourceParameter reference="Parameter_4918"/>
+            <CallParameter functionParameter="FunctionParameter_480">
+              <SourceParameter reference="Parameter_5144"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_479">
+              <SourceParameter reference="Parameter_5139"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_478">
+              <SourceParameter reference="Parameter_5145"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_477">
+              <SourceParameter reference="Parameter_5142"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_476">
+              <SourceParameter reference="Parameter_5141"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_475">
+              <SourceParameter reference="Parameter_5200"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_474">
+              <SourceParameter reference="Metabolite_28"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_473">
+              <SourceParameter reference="Parameter_5195"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_25" name="Phosphoribosylpyrophosphate synthetase" reversible="true" fast="false">
+      <Reaction key="Reaction_25" name="Phosphoribosylpyrophosphate synthetase" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_25">
@@ -3512,49 +3512,49 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_55" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_27" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_61" stoichiometry="1"/>
-          <Product metabolite="Metabolite_81" stoichiometry="1"/>
+          <Product metabolite="Metabolite_30" stoichiometry="1"/>
+          <Product metabolite="Metabolite_40" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4909" name="Vmaxv25" value="1.1"/>
-          <Constant key="Parameter_4908" name="Keqv25" value="100000"/>
-          <Constant key="Parameter_4907" name="KATPv25" value="0.03"/>
-          <Constant key="Parameter_4906" name="KR5Pv25" value="0.57"/>
+          <Constant key="Parameter_5140" name="Vmaxv25" value="1.1"/>
+          <Constant key="Parameter_5143" name="Keqv25" value="100000"/>
+          <Constant key="Parameter_5148" name="KATPv25" value="0.03"/>
+          <Constant key="Parameter_5155" name="KR5Pv25" value="0.57"/>
         </ListOfConstants>
-        <KineticLaw function="Function_65">
+        <KineticLaw function="Function_65" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_483">
-              <SourceParameter reference="Parameter_4907"/>
+            <CallParameter functionParameter="FunctionParameter_498">
+              <SourceParameter reference="Parameter_5148"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_500">
-              <SourceParameter reference="Parameter_4906"/>
+            <CallParameter functionParameter="FunctionParameter_497">
+              <SourceParameter reference="Parameter_5155"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_475">
-              <SourceParameter reference="Parameter_4908"/>
+            <CallParameter functionParameter="FunctionParameter_496">
+              <SourceParameter reference="Parameter_5143"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_467">
-              <SourceParameter reference="Metabolite_61"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_490">
-              <SourceParameter reference="Metabolite_3"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_486">
-              <SourceParameter reference="Metabolite_81"/>
+            <CallParameter functionParameter="FunctionParameter_495">
+              <SourceParameter reference="Metabolite_30"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_494">
-              <SourceParameter reference="Metabolite_55"/>
+              <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_498">
-              <SourceParameter reference="Parameter_4909"/>
+            <CallParameter functionParameter="FunctionParameter_493">
+              <SourceParameter reference="Metabolite_40"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_492">
+              <SourceParameter reference="Metabolite_27"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_491">
+              <SourceParameter reference="Parameter_5140"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_26" name="Transketolase 2" reversible="true" fast="false">
+      <Reaction key="Reaction_26" name="Transketolase 2" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_26">
@@ -3573,69 +3573,69 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_53" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_59" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_26" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_29" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_13" stoichiometry="1"/>
-          <Product metabolite="Metabolite_9" stoichiometry="1"/>
+          <Product metabolite="Metabolite_6" stoichiometry="1"/>
+          <Product metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4905" name="Vmaxv26" value="23.5"/>
-          <Constant key="Parameter_4904" name="Keqv26" value="1.2"/>
-          <Constant key="Parameter_4903" name="K1v26" value="0.00184"/>
-          <Constant key="Parameter_4902" name="K2v26" value="0.3055"/>
-          <Constant key="Parameter_4901" name="K6v26" value="0.122"/>
-          <Constant key="Parameter_4900" name="K3v26" value="0.0548"/>
-          <Constant key="Parameter_4899" name="K5v26" value="0.0287"/>
-          <Constant key="Parameter_4898" name="K4v26" value="0.0003"/>
-          <Constant key="Parameter_4897" name="K7v26" value="0.215"/>
+          <Constant key="Parameter_5159" name="Vmaxv26" value="23.5"/>
+          <Constant key="Parameter_5152" name="Keqv26" value="1.2"/>
+          <Constant key="Parameter_5149" name="K1v26" value="0.00184"/>
+          <Constant key="Parameter_5153" name="K2v26" value="0.3055"/>
+          <Constant key="Parameter_5146" name="K6v26" value="0.122"/>
+          <Constant key="Parameter_5150" name="K3v26" value="0.0548"/>
+          <Constant key="Parameter_5147" name="K5v26" value="0.0287"/>
+          <Constant key="Parameter_5154" name="K4v26" value="0.0003"/>
+          <Constant key="Parameter_5151" name="K7v26" value="0.215"/>
         </ListOfConstants>
-        <KineticLaw function="Function_66">
+        <KineticLaw function="Function_66" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_479">
-              <SourceParameter reference="Metabolite_59"/>
+            <CallParameter functionParameter="FunctionParameter_501">
+              <SourceParameter reference="Metabolite_29"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_500">
+              <SourceParameter reference="Metabolite_4"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_499">
+              <SourceParameter reference="Metabolite_6"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_486">
+              <SourceParameter reference="Parameter_5149"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_487">
+              <SourceParameter reference="Parameter_5153"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_488">
+              <SourceParameter reference="Parameter_5150"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_489">
+              <SourceParameter reference="Parameter_5154"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_490">
+              <SourceParameter reference="Parameter_5147"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_502">
-              <SourceParameter reference="Metabolite_9"/>
+              <SourceParameter reference="Parameter_5146"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_492">
-              <SourceParameter reference="Metabolite_13"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_506">
-              <SourceParameter reference="Parameter_4903"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_508">
-              <SourceParameter reference="Parameter_4902"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_512">
-              <SourceParameter reference="Parameter_4900"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_516">
-              <SourceParameter reference="Parameter_4898"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_514">
-              <SourceParameter reference="Parameter_4899"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_510">
-              <SourceParameter reference="Parameter_4901"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_518">
-              <SourceParameter reference="Parameter_4897"/>
+            <CallParameter functionParameter="FunctionParameter_503">
+              <SourceParameter reference="Parameter_5151"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_504">
-              <SourceParameter reference="Parameter_4904"/>
+              <SourceParameter reference="Parameter_5152"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_501">
-              <SourceParameter reference="Parameter_4905"/>
+            <CallParameter functionParameter="FunctionParameter_505">
+              <SourceParameter reference="Parameter_5159"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_453">
-              <SourceParameter reference="Metabolite_53"/>
+            <CallParameter functionParameter="FunctionParameter_506">
+              <SourceParameter reference="Metabolite_26"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_27" name="Phosphate exchange" reversible="true" fast="false">
+      <Reaction key="Reaction_27" name="Phosphate exchange" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_27">
@@ -3648,33 +3648,33 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_89" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_44" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_17" stoichiometry="1"/>
+          <Product metabolite="Metabolite_8" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4896" name="Vmaxv27" value="100"/>
-          <Constant key="Parameter_4895" name="Keqv27" value="1"/>
+          <Constant key="Parameter_5004" name="Vmaxv27" value="100"/>
+          <Constant key="Parameter_5013" name="Keqv27" value="1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_67">
+        <KineticLaw function="Function_67" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_507">
-              <SourceParameter reference="Parameter_4895"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_511">
-              <SourceParameter reference="Metabolite_17"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_515">
-              <SourceParameter reference="Metabolite_89"/>
-            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_519">
-              <SourceParameter reference="Parameter_4896"/>
+              <SourceParameter reference="Parameter_5013"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_518">
+              <SourceParameter reference="Metabolite_8"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_517">
+              <SourceParameter reference="Metabolite_44"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_516">
+              <SourceParameter reference="Parameter_5004"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_28" name="Lactate exchange" reversible="true" fast="false">
+      <Reaction key="Reaction_28" name="Lactate exchange" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_28">
@@ -3687,33 +3687,33 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_83" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_41" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_35" stoichiometry="1"/>
+          <Product metabolite="Metabolite_17" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4894" name="Vmaxv28" value="10000"/>
-          <Constant key="Parameter_4893" name="Keqv28" value="1"/>
+          <Constant key="Parameter_5008" name="Vmaxv28" value="10000"/>
+          <Constant key="Parameter_5011" name="Keqv28" value="1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_68">
+        <KineticLaw function="Function_68" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_488">
-              <SourceParameter reference="Parameter_4893"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_503">
-              <SourceParameter reference="Metabolite_35"/>
+            <CallParameter functionParameter="FunctionParameter_512">
+              <SourceParameter reference="Parameter_5011"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_513">
-              <SourceParameter reference="Metabolite_83"/>
+              <SourceParameter reference="Metabolite_17"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_505">
-              <SourceParameter reference="Parameter_4894"/>
+            <CallParameter functionParameter="FunctionParameter_514">
+              <SourceParameter reference="Metabolite_41"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_515">
+              <SourceParameter reference="Parameter_5008"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_29" name="Pyruvate exchange" reversible="true" fast="false">
+      <Reaction key="Reaction_29" name="Pyruvate exchange" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_29">
@@ -3726,33 +3726,33 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_85" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_42" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_33" stoichiometry="1"/>
+          <Product metabolite="Metabolite_16" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4892" name="Vmaxv29" value="10000"/>
-          <Constant key="Parameter_4891" name="Keqv29" value="1"/>
+          <Constant key="Parameter_5003" name="Vmaxv29" value="10000"/>
+          <Constant key="Parameter_5007" name="Keqv29" value="1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_69">
+        <KineticLaw function="Function_69" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_521">
-              <SourceParameter reference="Parameter_4891"/>
+            <CallParameter functionParameter="FunctionParameter_508">
+              <SourceParameter reference="Parameter_5007"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_499">
-              <SourceParameter reference="Metabolite_33"/>
+            <CallParameter functionParameter="FunctionParameter_509">
+              <SourceParameter reference="Metabolite_16"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_517">
-              <SourceParameter reference="Metabolite_85"/>
+            <CallParameter functionParameter="FunctionParameter_510">
+              <SourceParameter reference="Metabolite_42"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_471">
-              <SourceParameter reference="Parameter_4892"/>
+            <CallParameter functionParameter="FunctionParameter_511">
+              <SourceParameter reference="Parameter_5003"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_30" name="MgATP dissociation" reversible="true" fast="false">
+      <Reaction key="Reaction_30" name="MgATP dissociation" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_30">
@@ -3765,37 +3765,37 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_65" stoichiometry="1"/>
-          <Product metabolite="Metabolite_63" stoichiometry="1"/>
+          <Product metabolite="Metabolite_32" stoichiometry="1"/>
+          <Product metabolite="Metabolite_31" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4890" name="EqMult" value="1e+07"/>
-          <Constant key="Parameter_4889" name="KdATP" value="0.072"/>
+          <Constant key="Parameter_5006" name="EqMult" value="1e+07"/>
+          <Constant key="Parameter_5015" name="KdATP" value="0.072"/>
         </ListOfConstants>
-        <KineticLaw function="Function_70">
+        <KineticLaw function="Function_70" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_525">
-              <SourceParameter reference="Metabolite_63"/>
-            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_522">
-              <SourceParameter reference="Parameter_4890"/>
+              <SourceParameter reference="Metabolite_31"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_527">
-              <SourceParameter reference="Parameter_4889"/>
+            <CallParameter functionParameter="FunctionParameter_521">
+              <SourceParameter reference="Parameter_5006"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_509">
-              <SourceParameter reference="Metabolite_3"/>
+            <CallParameter functionParameter="FunctionParameter_520">
+              <SourceParameter reference="Parameter_5015"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_507">
+              <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_523">
-              <SourceParameter reference="Metabolite_65"/>
+              <SourceParameter reference="Metabolite_32"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_31" name="MgADP dissociation" reversible="true" fast="false">
+      <Reaction key="Reaction_31" name="MgADP dissociation" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Reaction_31">
@@ -3808,37 +3808,37 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_65" stoichiometry="1"/>
-          <Product metabolite="Metabolite_43" stoichiometry="1"/>
+          <Product metabolite="Metabolite_32" stoichiometry="1"/>
+          <Product metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4888" name="EqMult" value="1e+07"/>
-          <Constant key="Parameter_4887" name="KdADP" value="0.76"/>
+          <Constant key="Parameter_5012" name="EqMult" value="1e+07"/>
+          <Constant key="Parameter_5010" name="KdADP" value="0.76"/>
         </ListOfConstants>
-        <KineticLaw function="Function_71">
+        <KineticLaw function="Function_71" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_530">
-              <SourceParameter reference="Metabolite_43"/>
-            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_528">
-              <SourceParameter reference="Parameter_4888"/>
+              <SourceParameter reference="Metabolite_21"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_532">
-              <SourceParameter reference="Parameter_4887"/>
+            <CallParameter functionParameter="FunctionParameter_527">
+              <SourceParameter reference="Parameter_5012"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_526">
+              <SourceParameter reference="Parameter_5010"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_525">
+              <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_524">
-              <SourceParameter reference="Metabolite_7"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_520">
-              <SourceParameter reference="Metabolite_65"/>
+              <SourceParameter reference="Metabolite_32"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_32" name="MgAMP dissociation" reversible="true" fast="false">
+      <Reaction key="Reaction_32" name="MgAMP dissociation" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Reaction_32">
@@ -3851,37 +3851,37 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_61" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_30" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_65" stoichiometry="1"/>
-          <Product metabolite="Metabolite_41" stoichiometry="1"/>
+          <Product metabolite="Metabolite_32" stoichiometry="1"/>
+          <Product metabolite="Metabolite_20" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4886" name="EqMult" value="1e+07"/>
-          <Constant key="Parameter_4885" name="KdAMP" value="16.64"/>
+          <Constant key="Parameter_5009" name="EqMult" value="1e+07"/>
+          <Constant key="Parameter_5014" name="KdAMP" value="16.64"/>
         </ListOfConstants>
-        <KineticLaw function="Function_72">
+        <KineticLaw function="Function_72" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_535">
-              <SourceParameter reference="Metabolite_41"/>
-            </CallParameter>
             <CallParameter functionParameter="FunctionParameter_533">
-              <SourceParameter reference="Parameter_4886"/>
+              <SourceParameter reference="Metabolite_20"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_537">
-              <SourceParameter reference="Parameter_4885"/>
+            <CallParameter functionParameter="FunctionParameter_532">
+              <SourceParameter reference="Parameter_5009"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_531">
+              <SourceParameter reference="Parameter_5014"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_530">
+              <SourceParameter reference="Metabolite_30"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_529">
-              <SourceParameter reference="Metabolite_61"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_526">
-              <SourceParameter reference="Metabolite_65"/>
+              <SourceParameter reference="Metabolite_32"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_33" name="MgGri23P2 dissociation" reversible="true" fast="false">
+      <Reaction key="Reaction_33" name="MgGri23P2 dissociation" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Reaction_33">
@@ -3894,37 +3894,37 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_67" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_65" stoichiometry="1"/>
-          <Product metabolite="Metabolite_27" stoichiometry="1"/>
+          <Product metabolite="Metabolite_32" stoichiometry="1"/>
+          <Product metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4884" name="EqMult" value="1e+07"/>
-          <Constant key="Parameter_4883" name="Kd23P2G" value="1.667"/>
+          <Constant key="Parameter_5017" name="EqMult" value="1e+07"/>
+          <Constant key="Parameter_5005" name="Kd23P2G" value="1.667"/>
         </ListOfConstants>
-        <KineticLaw function="Function_73">
+        <KineticLaw function="Function_73" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_538">
-              <SourceParameter reference="Parameter_4884"/>
+              <SourceParameter reference="Parameter_5017"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_540">
-              <SourceParameter reference="Metabolite_27"/>
+            <CallParameter functionParameter="FunctionParameter_537">
+              <SourceParameter reference="Metabolite_13"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_542">
-              <SourceParameter reference="Parameter_4883"/>
+            <CallParameter functionParameter="FunctionParameter_536">
+              <SourceParameter reference="Parameter_5005"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_535">
+              <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_534">
-              <SourceParameter reference="Metabolite_67"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_531">
-              <SourceParameter reference="Metabolite_65"/>
+              <SourceParameter reference="Metabolite_32"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_34" name="P1NADP dissociation" reversible="true" fast="false">
+      <Reaction key="Reaction_34" name="P1NADP dissociation" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Reaction_34">
@@ -3937,37 +3937,37 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_69" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_34" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_71" stoichiometry="1"/>
-          <Product metabolite="Metabolite_39" stoichiometry="1"/>
+          <Product metabolite="Metabolite_35" stoichiometry="1"/>
+          <Product metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4882" name="EqMult" value="1e+07"/>
-          <Constant key="Parameter_4881" name="Kd1" value="0.0002"/>
+          <Constant key="Parameter_5016" name="EqMult" value="1e+07"/>
+          <Constant key="Parameter_5192" name="Kd1" value="0.0002"/>
         </ListOfConstants>
-        <KineticLaw function="Function_74">
+        <KineticLaw function="Function_74" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_543">
-              <SourceParameter reference="Parameter_4882"/>
+              <SourceParameter reference="Parameter_5016"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_547">
-              <SourceParameter reference="Parameter_4881"/>
+            <CallParameter functionParameter="FunctionParameter_542">
+              <SourceParameter reference="Parameter_5192"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_545">
-              <SourceParameter reference="Metabolite_39"/>
+            <CallParameter functionParameter="FunctionParameter_541">
+              <SourceParameter reference="Metabolite_19"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_540">
+              <SourceParameter reference="Metabolite_34"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_539">
-              <SourceParameter reference="Metabolite_69"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_536">
-              <SourceParameter reference="Metabolite_71"/>
+              <SourceParameter reference="Metabolite_35"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_35" name="P1NADPH dissociation" reversible="true" fast="false">
+      <Reaction key="Reaction_35" name="P1NADPH dissociation" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_35">
@@ -3980,37 +3980,37 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_73" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_36" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_71" stoichiometry="1"/>
-          <Product metabolite="Metabolite_37" stoichiometry="1"/>
+          <Product metabolite="Metabolite_35" stoichiometry="1"/>
+          <Product metabolite="Metabolite_18" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4880" name="EqMult" value="1e+07"/>
-          <Constant key="Parameter_4879" name="Kd3" value="1e-05"/>
+          <Constant key="Parameter_5193" name="EqMult" value="1e+07"/>
+          <Constant key="Parameter_4840" name="Kd3" value="1e-05"/>
         </ListOfConstants>
-        <KineticLaw function="Function_75">
+        <KineticLaw function="Function_75" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_548">
-              <SourceParameter reference="Parameter_4880"/>
+              <SourceParameter reference="Parameter_5193"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_552">
-              <SourceParameter reference="Parameter_4879"/>
+            <CallParameter functionParameter="FunctionParameter_547">
+              <SourceParameter reference="Parameter_4840"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_550">
-              <SourceParameter reference="Metabolite_37"/>
+            <CallParameter functionParameter="FunctionParameter_546">
+              <SourceParameter reference="Metabolite_18"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_545">
+              <SourceParameter reference="Metabolite_36"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_544">
-              <SourceParameter reference="Metabolite_73"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_541">
-              <SourceParameter reference="Metabolite_71"/>
+              <SourceParameter reference="Metabolite_35"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_36" name="P2NADP dissociation" reversible="true" fast="false">
+      <Reaction key="Reaction_36" name="P2NADP dissociation" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Reaction_36">
@@ -4023,37 +4023,37 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_75" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_37" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_77" stoichiometry="1"/>
-          <Product metabolite="Metabolite_39" stoichiometry="1"/>
+          <Product metabolite="Metabolite_38" stoichiometry="1"/>
+          <Product metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4878" name="EqMult" value="1e+07"/>
-          <Constant key="Parameter_4877" name="Kd2" value="1e-05"/>
+          <Constant key="Parameter_4839" name="EqMult" value="1e+07"/>
+          <Constant key="Parameter_4838" name="Kd2" value="1e-05"/>
         </ListOfConstants>
-        <KineticLaw function="Function_76">
+        <KineticLaw function="Function_76" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_553">
-              <SourceParameter reference="Parameter_4878"/>
+              <SourceParameter reference="Parameter_4839"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_557">
-              <SourceParameter reference="Parameter_4877"/>
+            <CallParameter functionParameter="FunctionParameter_552">
+              <SourceParameter reference="Parameter_4838"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_555">
-              <SourceParameter reference="Metabolite_39"/>
+            <CallParameter functionParameter="FunctionParameter_551">
+              <SourceParameter reference="Metabolite_19"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_550">
+              <SourceParameter reference="Metabolite_37"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_549">
-              <SourceParameter reference="Metabolite_75"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_546">
-              <SourceParameter reference="Metabolite_77"/>
+              <SourceParameter reference="Metabolite_38"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_37" name="P2NADPH dissociation" reversible="true" fast="false">
+      <Reaction key="Reaction_37" name="P2NADPH dissociation" reversible="true" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Reaction_37">
@@ -4066,32 +4066,32 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_79" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_39" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_77" stoichiometry="1"/>
-          <Product metabolite="Metabolite_37" stoichiometry="1"/>
+          <Product metabolite="Metabolite_38" stoichiometry="1"/>
+          <Product metabolite="Metabolite_18" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4876" name="EqMult" value="1e+07"/>
-          <Constant key="Parameter_4875" name="Kd4" value="0.0002"/>
+          <Constant key="Parameter_4837" name="EqMult" value="1e+07"/>
+          <Constant key="Parameter_4836" name="Kd4" value="0.0002"/>
         </ListOfConstants>
-        <KineticLaw function="Function_77">
+        <KineticLaw function="Function_77" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_558">
-              <SourceParameter reference="Parameter_4876"/>
+              <SourceParameter reference="Parameter_4837"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_562">
-              <SourceParameter reference="Parameter_4875"/>
+            <CallParameter functionParameter="FunctionParameter_557">
+              <SourceParameter reference="Parameter_4836"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_560">
-              <SourceParameter reference="Metabolite_37"/>
+            <CallParameter functionParameter="FunctionParameter_556">
+              <SourceParameter reference="Metabolite_18"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_555">
+              <SourceParameter reference="Metabolite_39"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_554">
-              <SourceParameter reference="Metabolite_79"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_551">
-              <SourceParameter reference="Metabolite_77"/>
+              <SourceParameter reference="Metabolite_38"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -4099,6 +4099,19 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
     </ListOfReactions>
     <ListOfModelParameterSets activeSet="ModelParameterSet_0">
       <ModelParameterSet key="ModelParameterSet_0" name="Initial State">
+        <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelParameterSet_0">
+<dcterms:created>
+<rdf:Description>
+<dcterms:W3CDTF>2020-12-30T02:59:42Z</dcterms:W3CDTF>
+</rdf:Description>
+</dcterms:created>
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
         <ModelParameterGroup cn="String=Initial Time" type="Group">
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism" value="0" type="Model" simulationType="time"/>
         </ModelParameterGroup>
@@ -4106,136 +4119,136 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]" value="1" type="Compartment" simulationType="fixed"/>
         </ModelParameterGroup>
         <ModelParameterGroup cn="String=Initial Species Values" type="Group">
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Glucose in]" value="2.74989017953191e+21" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[MgATP]" value="8.4309971998e+20" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Glucose 6-phosphate]" value="2.372723497658e+19" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[MgADP]" value="6.022140857000001e+19" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Fructose 6-phosphate]" value="9.213875511210001e+18" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Fructose 1\,6-phosphate]" value="5.84147663129e+18" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Glyceraldehyde 3-phosphate]" value="3.67350592277e+18" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Dihydroxyacetone phosphate]" value="8.985034158644e+19" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Phosphate]" value="6.0173231443144e+20" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Glucose in]" value="2.7498901795319102e+21" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[MgATP]" value="8.4309971997999995e+20" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Glucose 6-phosphate]" value="2.3727234976580002e+19" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[MgADP]" value="6.0221408570000007e+19" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Fructose 6-phosphate]" value="9.2138755112100014e+18" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Fructose 1\,6-phosphate]" value="5.8414766312900004e+18" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Glyceraldehyde 3-phosphate]" value="3.6735059227699999e+18" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Dihydroxyacetone phosphate]" value="8.9850341586439995e+19" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Phosphate]" value="6.0173231443144003e+20" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[NAD]" value="3.932457979621e+19" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[1\,3-Bisphospho-D-glycerate]" value="3.0110704285e+17" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[NADH]" value="1.2044281714e+17" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[3-Phospho-D-glycerate]" value="3.962568683906e+19" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[3-Phospho-D-glycerate]" value="3.9625686839059997e+19" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[2\,3-Bisphospho-D-glycerate]" value="1.24062123795057e+21" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[2-Phospho-D-glycerate]" value="5.058598319879999e+18" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Phosphoenolpyruvate]" value="6.56413353413e+18" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Pyruvate]" value="5.05859831988e+19" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Lactate]" value="1.01190032820171e+21" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[2-Phospho-D-glycerate]" value="5.0585983198799995e+18" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Phosphoenolpyruvate]" value="6.5641335341299999e+18" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Pyruvate]" value="5.0585983198800003e+19" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Lactate]" value="1.0119003282017099e+21" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[NADPH]" value="2.4088563428e+18" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[NADP]" value="0" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[AMP]" value="0" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[ADP]" value="1.50553521425e+20" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[ADP]" value="1.5055352142500001e+20" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Phospho-D-glucono-1\,5-lactone]" value="1.50553521425e+19" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Ribulose 5-phosphate]" value="2.83040620279e+18" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Ribulose 5-phosphate]" value="2.8304062027900001e+18" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Oxidized Glutathione]" value="2.4088563428e+17" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Reduced Glutathione]" value="1.87505377723552e+21" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Xylulose 5-phosphate]" value="7.64811888839e+18" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Ribose 5-phosphate]" value="8.430997199800001e+18" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Sedoheptulose 7-phosphate]" value="9.27409691978e+18" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Erythrose 4-phosphate]" value="3.79394873991e+18" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Xylulose 5-phosphate]" value="7.6481188883899996e+18" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Ribose 5-phosphate]" value="8.4309971998000005e+18" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Sedoheptulose 7-phosphate]" value="9.2740969197799997e+18" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Erythrose 4-phosphate]" value="3.7939487399100001e+18" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[MgAMP]" value="0" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[ATP]" value="1.50553521425e+20" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Mg]" value="4.817712685600001e+20" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[MgGri23P2]" value="3.0110704285e+20" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[ATP]" value="1.5055352142500001e+20" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Mg]" value="4.8177126856000012e+20" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[MgGri23P2]" value="3.0110704285000001e+20" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Protein1 bound NADP]" value="0" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Protein1]" value="0" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Protein1 bound NADPH]" value="1.44531380568e+19" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Protein2 bound NADP]" value="0" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Protein2]" value="0" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Protein2 bound NADPH]" value="1.44531380568e+19" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[PRPP]" value="6.022140857e+20" type="Species" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[PRPP]" value="6.0221408570000002e+20" type="Species" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[External Lactate]" value="1.011719663976e+21" type="Species" simulationType="fixed"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[External Pyruvate]" value="5.05859831988e+19" type="Species" simulationType="fixed"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Glucose outside]" value="3.0110704285e+21" type="Species" simulationType="fixed"/>
-          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Phosphate external]" value="6.022140857e+20" type="Species" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[External Pyruvate]" value="5.0585983198800003e+19" type="Species" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Glucose outside]" value="3.0110704285000002e+21" type="Species" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm],Vector=Metabolites[Phosphate external]" value="6.0221408570000002e+20" type="Species" simulationType="fixed"/>
         </ModelParameterGroup>
         <ModelParameterGroup cn="String=Initial Global Quantities" type="Group">
         </ModelParameterGroup>
         <ModelParameterGroup cn="String=Kinetic Parameters" type="Group">
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose transport]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose transport],ParameterGroup=Parameters,Parameter=Vmaxv0" value="33.6" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose transport],ParameterGroup=Parameters,Parameter=Vmaxv0" value="33.600000000000001" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose transport],ParameterGroup=Parameters,Parameter=KMoutv0" value="1.7" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose transport],ParameterGroup=Parameters,Parameter=Keqv0" value="1" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose transport],ParameterGroup=Parameters,Parameter=KMinv0" value="6.9" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose transport],ParameterGroup=Parameters,Parameter=alfav0" value="0.54" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose transport],ParameterGroup=Parameters,Parameter=KMinv0" value="6.9000000000000004" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose transport],ParameterGroup=Parameters,Parameter=alfav0" value="0.54000000000000004" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=Inhibv1" value="1" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=KMGlcv1" value="0.1" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=Vmax1v1" value="15.8" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=KMgATPv1" value="1.44" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=Vmax2v1" value="33.2" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=KMgATPMgv1" value="1.14" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=KMGlcv1" value="0.10000000000000001" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=Vmax1v1" value="15.800000000000001" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=KMgATPv1" value="1.4399999999999999" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=Vmax2v1" value="33.200000000000003" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=KMgATPMgv1" value="1.1399999999999999" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=Keqv1" value="3900" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=KMgv1" value="1.03" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=KGlc6Pv1" value="0.0045" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=K23P2Gv1" value="2.7" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=KMg23P2Gv1" value="3.44" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=KGlc6Pv1" value="0.0044999999999999997" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=K23P2Gv1" value="2.7000000000000002" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Hexokinase],ParameterGroup=Parameters,Parameter=KMg23P2Gv1" value="3.4399999999999999" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucosephosphate isomerase]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucosephosphate isomerase],ParameterGroup=Parameters,Parameter=Vmaxv2" value="935" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucosephosphate isomerase],ParameterGroup=Parameters,Parameter=Keqv2" value="0.3925" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucosephosphate isomerase],ParameterGroup=Parameters,Parameter=Keqv2" value="0.39250000000000002" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucosephosphate isomerase],ParameterGroup=Parameters,Parameter=KGlc6Pv2" value="0.182" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucosephosphate isomerase],ParameterGroup=Parameters,Parameter=KFru6Pv2" value="0.07099999999999999" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucosephosphate isomerase],ParameterGroup=Parameters,Parameter=KFru6Pv2" value="0.070999999999999994" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphofructokinase]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphofructokinase],ParameterGroup=Parameters,Parameter=Vmaxv3" value="239" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphofructokinase],ParameterGroup=Parameters,Parameter=Keqv3" value="100000" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphofructokinase],ParameterGroup=Parameters,Parameter=KFru6Pv3" value="0.1" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphofructokinase],ParameterGroup=Parameters,Parameter=KMgATPv3" value="0.068" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphofructokinase],ParameterGroup=Parameters,Parameter=KFru6Pv3" value="0.10000000000000001" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphofructokinase],ParameterGroup=Parameters,Parameter=KMgATPv3" value="0.068000000000000005" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphofructokinase],ParameterGroup=Parameters,Parameter=L0v3" value="0.001072" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphofructokinase],ParameterGroup=Parameters,Parameter=KATPv3" value="0.01" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphofructokinase],ParameterGroup=Parameters,Parameter=KMgv3" value="0.44" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphofructokinase],ParameterGroup=Parameters,Parameter=KAMPv3" value="0.033" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphofructokinase],ParameterGroup=Parameters,Parameter=KAMPv3" value="0.033000000000000002" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Aldolase]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Aldolase],ParameterGroup=Parameters,Parameter=Vmaxv4" value="98.91000366" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Aldolase],ParameterGroup=Parameters,Parameter=KFru16P2v4" value="0.0071" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Aldolase],ParameterGroup=Parameters,Parameter=Vmaxv4" value="98.909999999999997" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Aldolase],ParameterGroup=Parameters,Parameter=KFru16P2v4" value="0.0071000000000000004" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Aldolase],ParameterGroup=Parameters,Parameter=Keqv4" value="0.114" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Aldolase],ParameterGroup=Parameters,Parameter=KiGraPv4" value="0.0572" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Aldolase],ParameterGroup=Parameters,Parameter=KGraPv4" value="0.1906" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Aldolase],ParameterGroup=Parameters,Parameter=KDHAPv4" value="0.0364" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Aldolase],ParameterGroup=Parameters,Parameter=KiiGraPv4" value="0.176" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Aldolase],ParameterGroup=Parameters,Parameter=KiGraPv4" value="0.057200000000000001" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Aldolase],ParameterGroup=Parameters,Parameter=KGraPv4" value="0.19059999999999999" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Aldolase],ParameterGroup=Parameters,Parameter=KDHAPv4" value="0.036400000000000002" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Aldolase],ParameterGroup=Parameters,Parameter=KiiGraPv4" value="0.17599999999999999" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Triosephosphate isomerase]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Triosephosphate isomerase],ParameterGroup=Parameters,Parameter=Vmaxv5" value="5456.600098" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Triosephosphate isomerase],ParameterGroup=Parameters,Parameter=Vmaxv5" value="5456.6000000000004" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Triosephosphate isomerase],ParameterGroup=Parameters,Parameter=Keqv5" value="0.0407" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Triosephosphate isomerase],ParameterGroup=Parameters,Parameter=KDHAPv5" value="0.838" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Triosephosphate isomerase],ParameterGroup=Parameters,Parameter=KGraPv5" value="0.428" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Triosephosphate isomerase],ParameterGroup=Parameters,Parameter=KDHAPv5" value="0.83799999999999997" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Triosephosphate isomerase],ParameterGroup=Parameters,Parameter=KGraPv5" value="0.42799999999999999" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glyceraldehyde 3-phosphate dehydrogenase]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glyceraldehyde 3-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=Vmaxv6" value="4300" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glyceraldehyde 3-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KNADv6" value="0.05" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glyceraldehyde 3-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KGraPv6" value="0.005" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glyceraldehyde 3-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KPv6" value="3.9" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glyceraldehyde 3-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KNADv6" value="0.050000000000000003" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glyceraldehyde 3-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KGraPv6" value="0.0050000000000000001" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glyceraldehyde 3-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KPv6" value="3.8999999999999999" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glyceraldehyde 3-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=Keqv6" value="0.000192" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glyceraldehyde 3-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KNADHv6" value="0.0083" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glyceraldehyde 3-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=K13P2Gv6" value="0.0035" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glyceraldehyde 3-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KNADHv6" value="0.0083000000000000001" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glyceraldehyde 3-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=K13P2Gv6" value="0.0035000000000000001" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoglycerate kinase]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoglycerate kinase],ParameterGroup=Parameters,Parameter=Vmaxv7" value="5000" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoglycerate kinase],ParameterGroup=Parameters,Parameter=KMgADPv7" value="0.35" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoglycerate kinase],ParameterGroup=Parameters,Parameter=KMgADPv7" value="0.34999999999999998" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoglycerate kinase],ParameterGroup=Parameters,Parameter=K13P2Gv7" value="0.002" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoglycerate kinase],ParameterGroup=Parameters,Parameter=Keqv7" value="1455" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoglycerate kinase],ParameterGroup=Parameters,Parameter=KMgATPv7" value="0.48" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoglycerate kinase],ParameterGroup=Parameters,Parameter=KMgATPv7" value="0.47999999999999998" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoglycerate kinase],ParameterGroup=Parameters,Parameter=K3PGv7" value="1.2" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Bisphosphoglycerate mutase]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Bisphosphoglycerate mutase],ParameterGroup=Parameters,Parameter=kDPGMv8" value="76000" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Bisphosphoglycerate mutase],ParameterGroup=Parameters,Parameter=Keqv8" value="100000" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Bisphosphoglycerate mutase],ParameterGroup=Parameters,Parameter=K23P2Gv8" value="0.04" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Bisphosphoglycerate mutase],ParameterGroup=Parameters,Parameter=K23P2Gv8" value="0.040000000000000001" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Bisphosphoglycerate phosphatase]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Bisphosphoglycerate phosphatase],ParameterGroup=Parameters,Parameter=Vmaxv9" value="0.53" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Bisphosphoglycerate phosphatase],ParameterGroup=Parameters,Parameter=Vmaxv9" value="0.53000000000000003" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Bisphosphoglycerate phosphatase],ParameterGroup=Parameters,Parameter=Keqv9" value="100000" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Bisphosphoglycerate phosphatase],ParameterGroup=Parameters,Parameter=K23P2Gv9" value="0.2" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Bisphosphoglycerate phosphatase],ParameterGroup=Parameters,Parameter=K23P2Gv9" value="0.20000000000000001" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoglycerate mutase]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoglycerate mutase],ParameterGroup=Parameters,Parameter=Vmaxv10" value="2000" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoglycerate mutase],ParameterGroup=Parameters,Parameter=Keqv10" value="0.145" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoglycerate mutase],ParameterGroup=Parameters,Parameter=Keqv10" value="0.14499999999999999" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoglycerate mutase],ParameterGroup=Parameters,Parameter=K3PGv10" value="5" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoglycerate mutase],ParameterGroup=Parameters,Parameter=K2PGv10" value="1" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
@@ -4248,109 +4261,109 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Pyruvate kinase]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Pyruvate kinase],ParameterGroup=Parameters,Parameter=Vmaxv12" value="570" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Pyruvate kinase],ParameterGroup=Parameters,Parameter=Keqv12" value="13790" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Pyruvate kinase],ParameterGroup=Parameters,Parameter=KPEPv12" value="0.225" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Pyruvate kinase],ParameterGroup=Parameters,Parameter=KMgADPv12" value="0.474" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Pyruvate kinase],ParameterGroup=Parameters,Parameter=KPEPv12" value="0.22500000000000001" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Pyruvate kinase],ParameterGroup=Parameters,Parameter=KMgADPv12" value="0.47399999999999998" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Pyruvate kinase],ParameterGroup=Parameters,Parameter=L0v12" value="19" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Pyruvate kinase],ParameterGroup=Parameters,Parameter=KATPv12" value="3.39" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Pyruvate kinase],ParameterGroup=Parameters,Parameter=KFru16P2v12" value="0.005" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Pyruvate kinase],ParameterGroup=Parameters,Parameter=KATPv12" value="3.3900000000000001" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Pyruvate kinase],ParameterGroup=Parameters,Parameter=KFru16P2v12" value="0.0050000000000000001" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Lactate dehydrogenase]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Lactate dehydrogenase],ParameterGroup=Parameters,Parameter=Vmaxv13" value="2800000" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Lactate dehydrogenase],ParameterGroup=Parameters,Parameter=Keqv13" value="9090" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Lactate dehydrogenase_2]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Lactate dehydrogenase_2],ParameterGroup=Parameters,Parameter=kLDHv14" value="243.4" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Lactate dehydrogenase_2],ParameterGroup=Parameters,Parameter=Keqv14" value="14181.8" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Lactate dehydrogenase_2],ParameterGroup=Parameters,Parameter=kLDHv14" value="243.40000000000001" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Lactate dehydrogenase_2],ParameterGroup=Parameters,Parameter=Keqv14" value="14181.799999999999" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[ATPase]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[ATPase],ParameterGroup=Parameters,Parameter=kATPasev15" value="1.68" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[ATPase],ParameterGroup=Parameters,Parameter=kATPasev15" value="1.6799999999999999" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Adenylate kinase]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Adenylate kinase],ParameterGroup=Parameters,Parameter=Vmaxv16" value="1380" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Adenylate kinase],ParameterGroup=Parameters,Parameter=KATPv16" value="0.09" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Adenylate kinase],ParameterGroup=Parameters,Parameter=KAMPv16" value="0.08" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Adenylate kinase],ParameterGroup=Parameters,Parameter=KATPv16" value="0.089999999999999997" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Adenylate kinase],ParameterGroup=Parameters,Parameter=KAMPv16" value="0.080000000000000002" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Adenylate kinase],ParameterGroup=Parameters,Parameter=Keqv16" value="0.25" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Adenylate kinase],ParameterGroup=Parameters,Parameter=KADPv16" value="0.11" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose 6-phosphate dehydrogenase]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose 6-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=Vmaxv17" value="162" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose 6-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KG6Pv17" value="0.0667" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose 6-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KNADPv17" value="0.00367" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose 6-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KG6Pv17" value="0.066699999999999995" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose 6-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KNADPv17" value="0.0036700000000000001" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose 6-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=Keqv17" value="2000" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose 6-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KATPv17" value="0.749" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose 6-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KNADPHv17" value="0.00312" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose 6-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KPGA23v17" value="2.289" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose 6-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KNADPHv17" value="0.0031199999999999999" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glucose 6-phosphate dehydrogenase],ParameterGroup=Parameters,Parameter=KPGA23v17" value="2.2890000000000001" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphogluconate dehydrogenase]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphogluconate dehydrogenase],ParameterGroup=Parameters,Parameter=Vmaxv18" value="1575" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphogluconate dehydrogenase],ParameterGroup=Parameters,Parameter=K6PG1v18" value="0.01" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphogluconate dehydrogenase],ParameterGroup=Parameters,Parameter=KNADPv18" value="0.018" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphogluconate dehydrogenase],ParameterGroup=Parameters,Parameter=Keqv18" value="141.7" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphogluconate dehydrogenase],ParameterGroup=Parameters,Parameter=KNADPv18" value="0.017999999999999999" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphogluconate dehydrogenase],ParameterGroup=Parameters,Parameter=Keqv18" value="141.69999999999999" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphogluconate dehydrogenase],ParameterGroup=Parameters,Parameter=KPGA23v18" value="0.12" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphogluconate dehydrogenase],ParameterGroup=Parameters,Parameter=KATPv18" value="0.154" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphogluconate dehydrogenase],ParameterGroup=Parameters,Parameter=K6PG2v18" value="0.058" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphogluconate dehydrogenase],ParameterGroup=Parameters,Parameter=KNADPHv18" value="0.0045" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphogluconate dehydrogenase],ParameterGroup=Parameters,Parameter=K6PG2v18" value="0.058000000000000003" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphogluconate dehydrogenase],ParameterGroup=Parameters,Parameter=KNADPHv18" value="0.0044999999999999997" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glutathione reductase]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glutathione reductase],ParameterGroup=Parameters,Parameter=Vmaxv19" value="90" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glutathione reductase],ParameterGroup=Parameters,Parameter=KGSSGv19" value="0.06519999999999999" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glutathione reductase],ParameterGroup=Parameters,Parameter=KNADPHv19" value="0.00852" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glutathione reductase],ParameterGroup=Parameters,Parameter=KGSSGv19" value="0.065199999999999994" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glutathione reductase],ParameterGroup=Parameters,Parameter=KNADPHv19" value="0.0085199999999999998" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glutathione reductase],ParameterGroup=Parameters,Parameter=KGSHv19" value="20" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glutathione reductase],ParameterGroup=Parameters,Parameter=KNADPv19" value="0.07000000000000001" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glutathione reductase],ParameterGroup=Parameters,Parameter=KNADPv19" value="0.070000000000000007" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glutathione reductase],ParameterGroup=Parameters,Parameter=Keqv19" value="1.04" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glutathione oxidation]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glutathione oxidation],ParameterGroup=Parameters,Parameter=Kv20" value="0.03" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Glutathione oxidation],ParameterGroup=Parameters,Parameter=Kv20" value="0.029999999999999999" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoribulose epimerase]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoribulose epimerase],ParameterGroup=Parameters,Parameter=Vmaxv21" value="4634" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoribulose epimerase],ParameterGroup=Parameters,Parameter=Keqv21" value="2.7" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoribulose epimerase],ParameterGroup=Parameters,Parameter=Keqv21" value="2.7000000000000002" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoribulose epimerase],ParameterGroup=Parameters,Parameter=KRu5Pv21" value="0.19" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoribulose epimerase],ParameterGroup=Parameters,Parameter=KX5Pv21" value="0.5" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Ribose phosphate isomerase]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Ribose phosphate isomerase],ParameterGroup=Parameters,Parameter=Vmaxv22" value="730" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Ribose phosphate isomerase],ParameterGroup=Parameters,Parameter=Keqv22" value="3" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Ribose phosphate isomerase],ParameterGroup=Parameters,Parameter=KRu5Pv22" value="0.78" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Ribose phosphate isomerase],ParameterGroup=Parameters,Parameter=KR5Pv22" value="2.2" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Ribose phosphate isomerase],ParameterGroup=Parameters,Parameter=KRu5Pv22" value="0.78000000000000003" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Ribose phosphate isomerase],ParameterGroup=Parameters,Parameter=KR5Pv22" value="2.2000000000000002" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 1]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 1],ParameterGroup=Parameters,Parameter=Vmaxv23" value="23.5" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 1],ParameterGroup=Parameters,Parameter=Keqv23" value="1.05" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 1],ParameterGroup=Parameters,Parameter=K1v23" value="0.4177" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 1],ParameterGroup=Parameters,Parameter=K2v23" value="0.3055" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 1],ParameterGroup=Parameters,Parameter=K6v23" value="0.00774" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 1],ParameterGroup=Parameters,Parameter=K1v23" value="0.41770000000000002" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 1],ParameterGroup=Parameters,Parameter=K2v23" value="0.30549999999999999" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 1],ParameterGroup=Parameters,Parameter=K6v23" value="0.0077400000000000004" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 1],ParameterGroup=Parameters,Parameter=K3v23" value="12.432" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 1],ParameterGroup=Parameters,Parameter=K5v23" value="0.41139" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 1],ParameterGroup=Parameters,Parameter=K5v23" value="0.41138999999999998" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 1],ParameterGroup=Parameters,Parameter=K4v23" value="0.00496" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 1],ParameterGroup=Parameters,Parameter=K7v23" value="48.8" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 1],ParameterGroup=Parameters,Parameter=K7v23" value="48.799999999999997" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=Vmaxv24" value="27.2" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=Vmaxv24" value="27.199999999999999" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=Keqv24" value="1.05" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=K1v24" value="0.008229999999999999" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=K2v24" value="0.04765" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=K6v24" value="0.4653" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=K3v24" value="0.1733" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=K5v24" value="0.8683" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=K4v24" value="0.006095" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=K1v24" value="0.0082299999999999995" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=K2v24" value="0.047649999999999998" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=K6v24" value="0.46529999999999999" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=K3v24" value="0.17330000000000001" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=K5v24" value="0.86829999999999996" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=K4v24" value="0.0060949999999999997" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transaldolase],ParameterGroup=Parameters,Parameter=K7v24" value="2.524" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoribosylpyrophosphate synthetase]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoribosylpyrophosphate synthetase],ParameterGroup=Parameters,Parameter=Vmaxv25" value="1.1" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoribosylpyrophosphate synthetase],ParameterGroup=Parameters,Parameter=Vmaxv25" value="1.1000000000000001" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoribosylpyrophosphate synthetase],ParameterGroup=Parameters,Parameter=Keqv25" value="100000" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoribosylpyrophosphate synthetase],ParameterGroup=Parameters,Parameter=KATPv25" value="0.03" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoribosylpyrophosphate synthetase],ParameterGroup=Parameters,Parameter=KR5Pv25" value="0.57" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoribosylpyrophosphate synthetase],ParameterGroup=Parameters,Parameter=KATPv25" value="0.029999999999999999" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphoribosylpyrophosphate synthetase],ParameterGroup=Parameters,Parameter=KR5Pv25" value="0.56999999999999995" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 2]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 2],ParameterGroup=Parameters,Parameter=Vmaxv26" value="23.5" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 2],ParameterGroup=Parameters,Parameter=Keqv26" value="1.2" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 2],ParameterGroup=Parameters,Parameter=K1v26" value="0.00184" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 2],ParameterGroup=Parameters,Parameter=K2v26" value="0.3055" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 2],ParameterGroup=Parameters,Parameter=K1v26" value="0.0018400000000000001" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 2],ParameterGroup=Parameters,Parameter=K2v26" value="0.30549999999999999" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 2],ParameterGroup=Parameters,Parameter=K6v26" value="0.122" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 2],ParameterGroup=Parameters,Parameter=K3v26" value="0.0548" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 2],ParameterGroup=Parameters,Parameter=K3v26" value="0.054800000000000001" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 2],ParameterGroup=Parameters,Parameter=K5v26" value="0.0287" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 2],ParameterGroup=Parameters,Parameter=K4v26" value="0.0003" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 2],ParameterGroup=Parameters,Parameter=K4v26" value="0.00029999999999999997" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Transketolase 2],ParameterGroup=Parameters,Parameter=K7v26" value="0.215" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[Phosphate exchange]" type="Reaction">
@@ -4367,15 +4380,15 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[MgATP dissociation]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[MgATP dissociation],ParameterGroup=Parameters,Parameter=EqMult" value="10000000" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[MgATP dissociation],ParameterGroup=Parameters,Parameter=KdATP" value="0.07199999999999999" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[MgATP dissociation],ParameterGroup=Parameters,Parameter=KdATP" value="0.071999999999999995" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[MgADP dissociation]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[MgADP dissociation],ParameterGroup=Parameters,Parameter=EqMult" value="10000000" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[MgADP dissociation],ParameterGroup=Parameters,Parameter=KdADP" value="0.76" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[MgADP dissociation],ParameterGroup=Parameters,Parameter=KdADP" value="0.76000000000000001" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[MgAMP dissociation]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[MgAMP dissociation],ParameterGroup=Parameters,Parameter=EqMult" value="10000000" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[MgAMP dissociation],ParameterGroup=Parameters,Parameter=KdAMP" value="16.64" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[MgAMP dissociation],ParameterGroup=Parameters,Parameter=KdAMP" value="16.640000000000001" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[MgGri23P2 dissociation]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[MgGri23P2 dissociation],ParameterGroup=Parameters,Parameter=EqMult" value="10000000" type="ReactionParameter" simulationType="fixed"/>
@@ -4383,85 +4396,85 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P1NADP dissociation]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P1NADP dissociation],ParameterGroup=Parameters,Parameter=EqMult" value="10000000" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P1NADP dissociation],ParameterGroup=Parameters,Parameter=Kd1" value="0.0002" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P1NADP dissociation],ParameterGroup=Parameters,Parameter=Kd1" value="0.00020000000000000001" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P1NADPH dissociation]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P1NADPH dissociation],ParameterGroup=Parameters,Parameter=EqMult" value="10000000" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P1NADPH dissociation],ParameterGroup=Parameters,Parameter=Kd3" value="1e-05" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P1NADPH dissociation],ParameterGroup=Parameters,Parameter=Kd3" value="1.0000000000000001e-05" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P2NADP dissociation]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P2NADP dissociation],ParameterGroup=Parameters,Parameter=EqMult" value="10000000" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P2NADP dissociation],ParameterGroup=Parameters,Parameter=Kd2" value="1e-05" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P2NADP dissociation],ParameterGroup=Parameters,Parameter=Kd2" value="1.0000000000000001e-05" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P2NADPH dissociation]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P2NADPH dissociation],ParameterGroup=Parameters,Parameter=EqMult" value="10000000" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P2NADPH dissociation],ParameterGroup=Parameters,Parameter=Kd4" value="0.0002" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Reactions[P2NADPH dissociation],ParameterGroup=Parameters,Parameter=Kd4" value="0.00020000000000000001" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
         </ModelParameterGroup>
       </ModelParameterSet>
     </ListOfModelParameterSets>
     <StateTemplate>
-      <StateTemplateVariable objectReference="Model_4"/>
-      <StateTemplateVariable objectReference="Metabolite_3"/>
-      <StateTemplateVariable objectReference="Metabolite_51"/>
-      <StateTemplateVariable objectReference="Metabolite_13"/>
-      <StateTemplateVariable objectReference="Metabolite_37"/>
-      <StateTemplateVariable objectReference="Metabolite_9"/>
-      <StateTemplateVariable objectReference="Metabolite_65"/>
-      <StateTemplateVariable objectReference="Metabolite_17"/>
-      <StateTemplateVariable objectReference="Metabolite_33"/>
-      <StateTemplateVariable objectReference="Metabolite_39"/>
-      <StateTemplateVariable objectReference="Metabolite_47"/>
-      <StateTemplateVariable objectReference="Metabolite_25"/>
-      <StateTemplateVariable objectReference="Metabolite_5"/>
-      <StateTemplateVariable objectReference="Metabolite_21"/>
-      <StateTemplateVariable objectReference="Metabolite_55"/>
-      <StateTemplateVariable objectReference="Metabolite_15"/>
-      <StateTemplateVariable objectReference="Metabolite_35"/>
-      <StateTemplateVariable objectReference="Metabolite_43"/>
-      <StateTemplateVariable objectReference="Metabolite_53"/>
-      <StateTemplateVariable objectReference="Metabolite_29"/>
+      <StateTemplateVariable objectReference="Model_0"/>
       <StateTemplateVariable objectReference="Metabolite_1"/>
-      <StateTemplateVariable objectReference="Metabolite_27"/>
-      <StateTemplateVariable objectReference="Metabolite_59"/>
-      <StateTemplateVariable objectReference="Metabolite_61"/>
-      <StateTemplateVariable objectReference="Metabolite_45"/>
-      <StateTemplateVariable objectReference="Metabolite_71"/>
-      <StateTemplateVariable objectReference="Metabolite_31"/>
-      <StateTemplateVariable objectReference="Metabolite_23"/>
-      <StateTemplateVariable objectReference="Metabolite_11"/>
-      <StateTemplateVariable objectReference="Metabolite_41"/>
-      <StateTemplateVariable objectReference="Metabolite_69"/>
-      <StateTemplateVariable objectReference="Metabolite_75"/>
-      <StateTemplateVariable objectReference="Metabolite_57"/>
-      <StateTemplateVariable objectReference="Metabolite_7"/>
-      <StateTemplateVariable objectReference="Metabolite_79"/>
-      <StateTemplateVariable objectReference="Metabolite_63"/>
-      <StateTemplateVariable objectReference="Metabolite_77"/>
-      <StateTemplateVariable objectReference="Metabolite_67"/>
+      <StateTemplateVariable objectReference="Metabolite_25"/>
+      <StateTemplateVariable objectReference="Metabolite_6"/>
+      <StateTemplateVariable objectReference="Metabolite_18"/>
+      <StateTemplateVariable objectReference="Metabolite_4"/>
+      <StateTemplateVariable objectReference="Metabolite_32"/>
+      <StateTemplateVariable objectReference="Metabolite_8"/>
+      <StateTemplateVariable objectReference="Metabolite_16"/>
       <StateTemplateVariable objectReference="Metabolite_19"/>
-      <StateTemplateVariable objectReference="Metabolite_49"/>
-      <StateTemplateVariable objectReference="Metabolite_73"/>
-      <StateTemplateVariable objectReference="Metabolite_81"/>
-      <StateTemplateVariable objectReference="Metabolite_83"/>
-      <StateTemplateVariable objectReference="Metabolite_85"/>
-      <StateTemplateVariable objectReference="Metabolite_87"/>
-      <StateTemplateVariable objectReference="Metabolite_89"/>
-      <StateTemplateVariable objectReference="Compartment_1"/>
+      <StateTemplateVariable objectReference="Metabolite_23"/>
+      <StateTemplateVariable objectReference="Metabolite_12"/>
+      <StateTemplateVariable objectReference="Metabolite_2"/>
+      <StateTemplateVariable objectReference="Metabolite_10"/>
+      <StateTemplateVariable objectReference="Metabolite_27"/>
+      <StateTemplateVariable objectReference="Metabolite_7"/>
+      <StateTemplateVariable objectReference="Metabolite_17"/>
+      <StateTemplateVariable objectReference="Metabolite_21"/>
+      <StateTemplateVariable objectReference="Metabolite_26"/>
+      <StateTemplateVariable objectReference="Metabolite_14"/>
+      <StateTemplateVariable objectReference="Metabolite_0"/>
+      <StateTemplateVariable objectReference="Metabolite_13"/>
+      <StateTemplateVariable objectReference="Metabolite_29"/>
+      <StateTemplateVariable objectReference="Metabolite_30"/>
+      <StateTemplateVariable objectReference="Metabolite_22"/>
+      <StateTemplateVariable objectReference="Metabolite_35"/>
+      <StateTemplateVariable objectReference="Metabolite_15"/>
+      <StateTemplateVariable objectReference="Metabolite_11"/>
+      <StateTemplateVariable objectReference="Metabolite_5"/>
+      <StateTemplateVariable objectReference="Metabolite_20"/>
+      <StateTemplateVariable objectReference="Metabolite_34"/>
+      <StateTemplateVariable objectReference="Metabolite_37"/>
+      <StateTemplateVariable objectReference="Metabolite_28"/>
+      <StateTemplateVariable objectReference="Metabolite_3"/>
+      <StateTemplateVariable objectReference="Metabolite_38"/>
+      <StateTemplateVariable objectReference="Metabolite_33"/>
+      <StateTemplateVariable objectReference="Metabolite_36"/>
+      <StateTemplateVariable objectReference="Metabolite_39"/>
+      <StateTemplateVariable objectReference="Metabolite_9"/>
+      <StateTemplateVariable objectReference="Metabolite_31"/>
+      <StateTemplateVariable objectReference="Metabolite_24"/>
+      <StateTemplateVariable objectReference="Metabolite_40"/>
+      <StateTemplateVariable objectReference="Metabolite_41"/>
+      <StateTemplateVariable objectReference="Metabolite_42"/>
+      <StateTemplateVariable objectReference="Metabolite_43"/>
+      <StateTemplateVariable objectReference="Metabolite_44"/>
+      <StateTemplateVariable objectReference="Compartment_0"/>
     </StateTemplate>
     <InitialState type="initialState">
-      0 8.4309971998e+20 1.87505377723552e+21 3.67350592277e+18 2.4088563428e+18 9.213875511210001e+18 4.817712685600001e+20 6.0173231443144e+20 5.05859831988e+19 0 2.83040620279e+18 3.962568683906e+19 2.372723497658e+19 3.0110704285e+17 8.430997199800001e+18 8.985034158644e+19 1.01190032820171e+21 1.50553521425e+20 7.64811888839e+18 5.058598319879999e+18 2.74989017953191e+21 1.24062123795057e+21 3.79394873991e+18 0 1.50553521425e+19 0 6.56413353413e+18 1.2044281714e+17 5.84147663129e+18 0 0 0 9.27409691978e+18 6.022140857000001e+19 1.44531380568e+19 1.50553521425e+20 0 3.0110704285e+20 3.932457979621e+19 2.4088563428e+17 1.44531380568e+19 6.022140857e+20 1.011719663976e+21 5.05859831988e+19 3.0110704285e+21 6.022140857e+20 1 
+      0 8.4309971997999995e+20 1.87505377723552e+21 3.6735059227699999e+18 2.4088563428e+18 9.2138755112100014e+18 4.8177126856000012e+20 6.0173231443144003e+20 5.0585983198800003e+19 0 2.8304062027900001e+18 3.9625686839059997e+19 2.3727234976580002e+19 3.0110704285e+17 8.4309971998000005e+18 8.9850341586439995e+19 1.0119003282017099e+21 1.5055352142500001e+20 7.6481188883899996e+18 5.0585983198799995e+18 2.7498901795319102e+21 1.24062123795057e+21 3.7939487399100001e+18 0 1.50553521425e+19 0 6.5641335341299999e+18 1.2044281714e+17 5.8414766312900004e+18 0 0 0 9.2740969197799997e+18 6.0221408570000007e+19 0 3.0110704285000001e+20 1.44531380568e+19 1.44531380568e+19 3.932457979621e+19 1.5055352142500001e+20 2.4088563428e+17 6.0221408570000002e+20 1.011719663976e+21 5.0585983198800003e+19 3.0110704285000002e+21 6.0221408570000002e+20 1 
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_12" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
-      <Report reference="Report_8" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_13" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+      <Report reference="Report_10" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
       </Problem>
       <Method name="Enhanced Newton" type="EnhancedNewton">
-        <Parameter name="Resolution" type="unsignedFloat" value="1e-09"/>
+        <Parameter name="Resolution" type="unsignedFloat" value="1.0000000000000001e-09"/>
         <Parameter name="Derivation Factor" type="unsignedFloat" value="0.001"/>
         <Parameter name="Use Newton" type="bool" value="1"/>
         <Parameter name="Use Integration" type="bool" value="1"/>
@@ -4473,30 +4486,30 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         <Parameter name="Target Criterion" type="string" value="Distance and Rate"/>
       </Method>
     </Task>
-    <Task key="Task_11" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
-      <Report reference="Report_7" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_12" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
+      <Report reference="Report_9" target="" append="1" confirmOverwrite="1"/>
       <Problem>
+        <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
         <Parameter name="Duration" type="float" value="1"/>
         <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
         <Parameter name="OutputStartTime" type="float" value="0"/>
         <Parameter name="Output Event" type="bool" value="0"/>
-        <Parameter name="Continue on Simultaneous Events" type="bool" value="0"/>
-        <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="Start in Steady State" type="bool" value="0"/>
         <Parameter name="Use Values" type="bool" value="0"/>
         <Parameter name="Values" type="string" value=""/>
+        <Parameter name="Continue on Simultaneous Events" type="bool" value="0"/>
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
-        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="9.9999999999999995e-07"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="9.9999999999999998e-13"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="100000"/>
         <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_10" name="Scan" type="scan" scheduled="false" updateModel="false">
+    <Task key="Task_11" name="Scan" type="scan" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
@@ -4508,15 +4521,15 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_9" name="Elementary Flux Modes" type="fluxMode" scheduled="true" updateModel="false">
-      <Report reference="Report_20" target="BIOMOD70_efm.out" append="1" confirmOverwrite="0"/>
+    <Task key="Task_10" name="Elementary Flux Modes" type="fluxMode" scheduled="true" updateModel="false">
+      <Report reference="Report_22" target="BIOMOD70_efm.out" append="1" confirmOverwrite="0"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
       </Method>
     </Task>
-    <Task key="Task_8" name="Optimization" type="optimization" scheduled="false" updateModel="false">
-      <Report reference="Report_5" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_9" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+      <Report reference="Report_7" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
         <ParameterText name="ObjectiveExpression" type="expression">
@@ -4531,14 +4544,14 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         </ParameterGroup>
       </Problem>
       <Method name="Random Search" type="RandomSearch">
+        <Parameter name="Log Verbosity" type="unsignedInteger" value="0"/>
         <Parameter name="Number of Iterations" type="unsignedInteger" value="100000"/>
         <Parameter name="Random Number Generator" type="unsignedInteger" value="1"/>
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
-        <Parameter name="Log Verbosity" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_7" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
-      <Report reference="Report_4" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_8" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+      <Report reference="Report_6" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
@@ -4550,38 +4563,37 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         <Parameter name="Steady-State" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
         <Parameter name="Time-Course" type="cn" value="CN=Root,Vector=TaskList[Time-Course]"/>
         <Parameter name="Create Parameter Sets" type="bool" value="0"/>
+        <Parameter name="Use Time Sens" type="bool" value="0"/>
+        <Parameter name="Time-Sens" type="cn" value=""/>
         <ParameterGroup name="Experiment Set">
         </ParameterGroup>
         <ParameterGroup name="Validation Set">
-          <Parameter name="Threshold" type="unsignedInteger" value="5"/>
           <Parameter name="Weight" type="unsignedFloat" value="1"/>
+          <Parameter name="Threshold" type="unsignedInteger" value="5"/>
         </ParameterGroup>
-        <Parameter name="Use Time Sens" type="bool" value="0"/>
-        <Parameter name="Time-Sens" type="cn" value=""/>
       </Problem>
       <Method name="Evolutionary Programming" type="EvolutionaryProgram">
+        <Parameter name="Log Verbosity" type="unsignedInteger" value="0"/>
         <Parameter name="Number of Generations" type="unsignedInteger" value="200"/>
         <Parameter name="Population Size" type="unsignedInteger" value="20"/>
         <Parameter name="Random Number Generator" type="unsignedInteger" value="1"/>
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
-        <Parameter name="Log Verbosity" type="unsignedInteger" value="0"/>
         <Parameter name="Stop after # Stalled Generations" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_6" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_3" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_7" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_5" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_12"/>
+        <Parameter name="Steady-State" type="key" value="Task_13"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
-        <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-09"/>
-        <Parameter name="Use Reeder" type="bool" value="1"/>
-        <Parameter name="Use Smallbone" type="bool" value="1"/>
+        <Parameter name="Modulation Factor" type="unsignedFloat" value="1.0000000000000001e-09"/>
         <Parameter name="Use Reder" type="bool" value="1"/>
+        <Parameter name="Use Smallbone" type="bool" value="1"/>
       </Method>
     </Task>
-    <Task key="Task_5" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
-      <Report reference="Report_2" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_6" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+      <Report reference="Report_4" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -4590,13 +4602,13 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
       <Method name="Wolf Method" type="WolfMethod">
         <Parameter name="Orthonormalization Interval" type="unsignedFloat" value="1"/>
         <Parameter name="Overall time" type="unsignedFloat" value="1000"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
-        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="9.9999999999999995e-07"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="9.9999999999999998e-13"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_4" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_1" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_5" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_3" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -4608,8 +4620,8 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="0.0001"/>
       </Method>
     </Task>
-    <Task key="Task_3" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
-      <Report reference="Report_0" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_4" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
+      <Report reference="Report_2" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
         <ParameterGroup name="TargetFunctions">
@@ -4622,32 +4634,35 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
             <Parameter name="ObjectListType" type="unsignedInteger" value="41"/>
           </ParameterGroup>
           <ParameterGroup name="Variables">
-            <Parameter name="ObjectListType" type="unsignedInteger" value="0"/>
             <Parameter name="SingleObject" type="cn" value=""/>
+            <Parameter name="ObjectListType" type="unsignedInteger" value="0"/>
           </ParameterGroup>
         </ParameterGroup>
       </Problem>
       <Method name="Sensitivities Method" type="SensitivitiesMethod">
         <Parameter name="Delta factor" type="unsignedFloat" value="0.001"/>
-        <Parameter name="Delta minimum" type="unsignedFloat" value="1e-12"/>
+        <Parameter name="Delta minimum" type="unsignedFloat" value="9.9999999999999998e-13"/>
       </Method>
     </Task>
-    <Task key="Task_2" name="Moieties" type="moieties" scheduled="false" updateModel="false">
-      <Report reference="Report_18" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_3" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+      <Report reference="Report_1" target="" append="1" confirmOverwrite="1"/>
       <Problem>
       </Problem>
       <Method name="Householder Reduction" type="Householder">
       </Method>
     </Task>
-    <Task key="Task_1" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
+    <Task key="Task_2" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
       <Problem>
+        <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
         <Parameter name="Duration" type="float" value="1"/>
         <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
         <Parameter name="OutputStartTime" type="float" value="0"/>
         <Parameter name="Output Event" type="bool" value="0"/>
-        <Parameter name="Continue on Simultaneous Events" type="bool" value="0"/>
+        <Parameter name="Start in Steady State" type="bool" value="0"/>
+        <Parameter name="Use Values" type="bool" value="0"/>
+        <Parameter name="Values" type="string" value=""/>
         <Parameter name="LimitCrossings" type="bool" value="0"/>
         <Parameter name="NumCrossingsLimit" type="unsignedInteger" value="0"/>
         <Parameter name="LimitOutTime" type="bool" value="0"/>
@@ -4663,30 +4678,52 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           
         </ParameterText>
         <Parameter name="SingleVariable" type="cn" value=""/>
-        <Parameter name="AutomaticStepSize" type="bool" value="0"/>
-        <Parameter name="Start in Steady State" type="bool" value="0"/>
-        <Parameter name="Use Values" type="bool" value="0"/>
-        <Parameter name="Values" type="string" value=""/>
+        <Parameter name="Continue on Simultaneous Events" type="bool" value="0"/>
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
-        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="9.9999999999999995e-07"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="9.9999999999999998e-13"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="100000"/>
         <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_13" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
-      <Report reference="Report_19" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_1" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
+      <Report reference="Report_0" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_12"/>
+        <Parameter name="Steady-State" type="key" value="Task_13"/>
       </Problem>
       <Method name="Linear Noise Approximation" type="LinearNoiseApproximation">
       </Method>
     </Task>
+    <Task key="Task_14" name="Time-Course Sensitivities" type="timeSensitivities" scheduled="false" updateModel="false">
+      <Problem>
+        <Parameter name="AutomaticStepSize" type="bool" value="0"/>
+        <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
+        <Parameter name="StepSize" type="float" value="0.01"/>
+        <Parameter name="Duration" type="float" value="1"/>
+        <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
+        <Parameter name="OutputStartTime" type="float" value="0"/>
+        <Parameter name="Output Event" type="bool" value="0"/>
+        <Parameter name="Start in Steady State" type="bool" value="0"/>
+        <Parameter name="Use Values" type="bool" value="0"/>
+        <Parameter name="Values" type="string" value=""/>
+        <ParameterGroup name="ListOfParameters">
+        </ParameterGroup>
+        <ParameterGroup name="ListOfTargets">
+        </ParameterGroup>
+      </Problem>
+      <Method name="LSODA Sensitivities" type="Sensitivities(LSODA)">
+        <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="9.9999999999999995e-07"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="9.9999999999999998e-13"/>
+        <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+        <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
+      </Method>
+    </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_8" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_10" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4694,7 +4731,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_7" name="Time-Course" taskType="timeCourse" separator="&#x09;" precision="6">
+    <Report key="Report_9" name="Time-Course" taskType="timeCourse" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4705,7 +4742,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         <Object cn="CN=Root,Vector=TaskList[Time-Course],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_6" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+    <Report key="Report_8" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4713,7 +4750,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_5" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_7" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4737,7 +4774,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_4" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_6" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4761,7 +4798,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_3" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_5" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4773,7 +4810,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_2" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_4" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4785,7 +4822,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_1" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_3" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4797,7 +4834,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         <Object cn="CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_0" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
+    <Report key="Report_2" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4809,7 +4846,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         <Object cn="CN=Root,Vector=TaskList[Sensitivities],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_18" name="Moieties" taskType="moieties" separator="&#x09;" precision="6">
+    <Report key="Report_1" name="Moieties" taskType="moieties" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4821,7 +4858,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         <Object cn="CN=Root,Vector=TaskList[Moieties],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_19" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
+    <Report key="Report_0" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4833,7 +4870,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         <Object cn="CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_20" name="Speed test" taskType="scan" separator="&#x09;" precision="8">
+    <Report key="Report_22" name="Speed test" taskType="scan" separator="&#x09;" precision="8">
       <Comment>
       </Comment>
       <Header>
@@ -4842,10 +4879,142 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         <Object cn="CN=Root,CN=Information,Timer=Current Date/Time"/>
       </Header>
       <Footer>
+        <Object cn="CN=Root,CN=Information,String=COPASI Version"/>
+        <Object cn="Separator=&#x09;"/>
+        <Object cn="CN=Root,CN=Information,Timer=Current Date/Time"/>
+        <Object cn="String=&#x0a;"/>
         <Object cn="CN=Root,Timer=CPU Time"/>
       </Footer>
     </Report>
   </ListOfReports>
   <GUI>
   </GUI>
+  <ListOfUnitDefinitions>
+    <UnitDefinition key="Unit_1" name="meter" symbol="m">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_0">
+<dcterms:created>
+<rdf:Description>
+<dcterms:W3CDTF>2020-12-30T02:59:35Z</dcterms:W3CDTF>
+</rdf:Description>
+</dcterms:created>
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
+      <Expression>
+        m
+      </Expression>
+    </UnitDefinition>
+    <UnitDefinition key="Unit_5" name="second" symbol="s">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_4">
+<dcterms:created>
+<rdf:Description>
+<dcterms:W3CDTF>2020-12-30T02:59:35Z</dcterms:W3CDTF>
+</rdf:Description>
+</dcterms:created>
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
+      <Expression>
+        s
+      </Expression>
+    </UnitDefinition>
+    <UnitDefinition key="Unit_13" name="Avogadro" symbol="Avogadro">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_12">
+<dcterms:created>
+<rdf:Description>
+<dcterms:W3CDTF>2020-12-30T02:59:35Z</dcterms:W3CDTF>
+</rdf:Description>
+</dcterms:created>
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
+      <Expression>
+        Avogadro
+      </Expression>
+    </UnitDefinition>
+    <UnitDefinition key="Unit_17" name="item" symbol="#">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_16">
+<dcterms:created>
+<rdf:Description>
+<dcterms:W3CDTF>2020-12-30T02:59:35Z</dcterms:W3CDTF>
+</rdf:Description>
+</dcterms:created>
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
+      <Expression>
+        #
+      </Expression>
+    </UnitDefinition>
+    <UnitDefinition key="Unit_35" name="liter" symbol="l">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_34">
+<dcterms:created>
+<rdf:Description>
+<dcterms:W3CDTF>2020-12-30T02:59:35Z</dcterms:W3CDTF>
+</rdf:Description>
+</dcterms:created>
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
+      <Expression>
+        0.001*m^3
+      </Expression>
+    </UnitDefinition>
+    <UnitDefinition key="Unit_41" name="mole" symbol="mol">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_40">
+<dcterms:created>
+<rdf:Description>
+<dcterms:W3CDTF>2020-12-30T02:59:35Z</dcterms:W3CDTF>
+</rdf:Description>
+</dcterms:created>
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
+      <Expression>
+        Avogadro*#
+      </Expression>
+    </UnitDefinition>
+    <UnitDefinition key="Unit_67" name="hour" symbol="h">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_66">
+<dcterms:created>
+<rdf:Description>
+<dcterms:W3CDTF>2020-12-30T02:59:35Z</dcterms:W3CDTF>
+</rdf:Description>
+</dcterms:created>
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
+      <Expression>
+        3600*s
+      </Expression>
+    </UnitDefinition>
+  </ListOfUnitDefinitions>
 </COPASI>
