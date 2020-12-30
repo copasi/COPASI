@@ -37,6 +37,7 @@ ERBB-RAS-AKT_ss.cps
 Schoeberl_ss.cps
 Translation_ss.cps
 BIOMOD70_efm.cps
+Ecoli_efm.cps
 3enzyme_nl2sol.cps
 3enzyme_steepest.cps
 3enzyme_lm.cps
