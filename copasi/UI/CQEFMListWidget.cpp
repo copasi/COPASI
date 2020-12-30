@@ -38,14 +38,11 @@ CQEFMListWidget::CQEFMListWidget(QWidget *parent, const char *name) :
   mpEFMTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 #endif
 
-  if (CRootContainer::getConfiguration()->resizeToContents())
-    {
 #if QT_VERSION >= 0x050000
-      mpEFMTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+  mpEFMTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
-      mpEFMTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  mpEFMTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
-    }
 
   mpEFMTable->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   //Create Source Data Model.
