@@ -93,7 +93,13 @@ bool CEFMTask::initialize(const OutputFlag & of,
 
 bool CEFMTask::process(const bool & /* useInitialValues */)
 {
-  return static_cast<CEFMMethod *>(mpMethod)->calculate();
+  output(COutputInterface::BEFORE);
+
+  bool success = static_cast<CEFMMethod *>(mpMethod)->calculate();
+
+  output(COutputInterface::AFTER);
+
+  return success;
 }
 
 // virtual
