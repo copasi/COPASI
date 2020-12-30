@@ -277,8 +277,8 @@ bool CDirEntry::copy(const std::string & from,
 
   if (isDir(To)) return false;
 
-  std::ifstream in(CLocaleString::fromUtf8(from).c_str(), std::ios::in | std::ios::binary);
-  std::ofstream out(CLocaleString::fromUtf8(To).c_str(), std::ios::out | std::ios::binary);
+  std::ifstream in(CLocaleString::fromUtf8(from).c_str());
+  std::ofstream out(CLocaleString::fromUtf8(To).c_str());
 
   out << in.rdbuf();
 
@@ -313,8 +313,8 @@ bool CDirEntry::move(const std::string & from,
   if (!success)
     {
       {
-        std::ifstream in(CLocaleString::fromUtf8(from).c_str(), std::ios::in | std::ios::binary);
-        std::ofstream out(CLocaleString::fromUtf8(To).c_str(), std::ios::out | std::ios::binary);
+        std::ifstream in(CLocaleString::fromUtf8(from).c_str());
+        std::ofstream out(CLocaleString::fromUtf8(To).c_str());
 
         out << in.rdbuf();
 
