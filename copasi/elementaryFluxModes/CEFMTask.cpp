@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -100,7 +100,13 @@ bool CEFMTask::initialize(const OutputFlag & of,
 
 bool CEFMTask::process(const bool & /* useInitialValues */)
 {
-  return static_cast<CEFMMethod *>(mpMethod)->calculate();
+  output(COutputInterface::BEFORE);
+
+  bool success = static_cast<CEFMMethod *>(mpMethod)->calculate();
+
+  output(COutputInterface::AFTER);
+
+  return success;
 }
 
 // virtual
@@ -432,7 +438,7 @@ std::string CEFMTask::getReactionEquationBackward(unsigned C_INT32 index1, unsig
     {
       int i = equation.find("=", 0);
       std::string lhs = equation.substr(0, i - 1);
-      std::string rhs = equation.substr(i + 2 , equation.size() - i - 1);
+      std::string rhs = equation.substr(i + 2, equation.size() - i - 1);
       equation = rhs + " -> " + lhs;
     }
 
