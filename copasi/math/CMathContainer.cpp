@@ -4029,6 +4029,16 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
 
   createUpdateSequences();
 
+#ifdef USE_JIT
+
+  try
+    {
+      mJITCompiler.compile();
+    }
+  catch (...)
+    {}
+
+#endif
   return Entity;
 }
 
@@ -4096,6 +4106,17 @@ bool CMathContainer::removeAnalysisObject(CMath::Entity< CMathObject > & mathObj
 
   // Create Update sequences
   createUpdateSequences();
+
+#ifdef USE_JIT
+
+  try
+    {
+      mJITCompiler.compile();
+    }
+  catch (...)
+    {}
+
+#endif
 
   return true;
 }
@@ -4325,6 +4346,17 @@ CMathEvent * CMathContainer::addAnalysisEvent(const CEvent * pDataEvent)
 
   analyzeRoots();
   createUpdateSequences();
+
+#ifdef USE_JIT
+
+  try
+    {
+      mJITCompiler.compile();
+    }
+  catch (...)
+    {}
+
+#endif
 
   return pEvent;
 }
@@ -4567,6 +4599,17 @@ bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
 
   analyzeRoots();
   createUpdateSequences();
+
+#ifdef USE_JIT
+
+  try
+    {
+      mJITCompiler.compile();
+    }
+  catch (...)
+    {}
+
+#endif
 
   return true;
 }
