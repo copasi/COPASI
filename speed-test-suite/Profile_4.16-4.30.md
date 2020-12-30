@@ -71,6 +71,7 @@ Schoeberl_ss.cps | steady state | ss criterion selected: "distance"
 Translation_ss.cps | steady state | ss criterion selected: "distance and rate"
 BIOMOD70_efm.cps | elementary flux modes | model with 105 EFMs
 Ecoli_efm.cps | elementary flux modes | model with 15090 EFMs
+Decroly_lyap.cps | Lyapunov exponents | chaotic model
 3enzyme_nl2sol.cps | parameter estimation NL2SOL | task is run 100 times
 3enzyme_steepest.cps | parameter estimation steepest descent | task is run 100 times
 3enzyme_lm.cps | parameter estimation Levenberg-Marquardt | task is run 100 times
