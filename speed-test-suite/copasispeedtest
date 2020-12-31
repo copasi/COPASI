@@ -33,6 +33,8 @@ EGFR_gillespie.cps
 multistate_gillespie.cps
 multistate_gb.cps
 Vilar2002_tauleap.cps
+HuangFerrel_hydrib-rk.cps
+HuangFerrel_hydrib-lsoda.cps
 ERBB-RAS-AKT_ss.cps
 Schoeberl_ss.cps
 Translation_ss.cps
