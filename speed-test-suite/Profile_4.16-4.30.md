@@ -69,6 +69,7 @@ Vilar2002_tauleap.cps | tau-leap time course | noise-driven model, long time cou
 Vilar2002_adaptivetauleap.cps | adaptive tau-leap time course | noise-driven model, long time course
 HuangFerrel_hydrib-rk.cps | hybrid (Runge-Kutta) time course | 
 HuangFerrel_hydrib-lsoda.cps | hybrid (LSODA) time course | 
+Dacheaux2017_hybrid-rk45.cps | hybrid (RK45) time course | two reactions deterministic
 ERBB-RAS-AKT_ss.cps | steady state | ss criterion selected: "distance and rate" 1392 species 2686 reactions
 Schoeberl_ss.cps | steady state | ss criterion selected: "distance"
 Translation_ss.cps | steady state | ss criterion selected: "distance and rate"
