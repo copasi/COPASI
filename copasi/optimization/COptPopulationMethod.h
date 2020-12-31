@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -11,8 +16,9 @@
 #ifndef COPASI_COptPopulationMethod_H
 #define COPASI_COptPopulationMethod_H
 
-#include <copasi/optimization/COptMethod.h>
+#include "copasi/optimization/COptMethod.h"
 #include "copasi/core/CVector.h"
+#include "copasi/OpenMP/CProblemContext.h"
 
 class CRandom;
 
@@ -130,6 +136,16 @@ protected:
    * a pointer to the random number generator.
    */
   CRandom * mpRandom{NULL};
+
+  /**
+   * A thread specific math container
+   */
+  CMathContext * mpMathContext;
+
+  /**
+   * A thread specific problem
+   */
+  CProblemContext * mpProblemContext;
 };
 
 #endif // COPASI_COptPopulationMethod_H

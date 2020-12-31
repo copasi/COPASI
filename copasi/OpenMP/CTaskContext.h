@@ -6,36 +6,9 @@
 #ifndef COPASI_CTaskContext
 #define COPASI_CTaskContext
 
-#include "copasi/OpenMP/CContext.h"
+#include "copasi/OpenMP/CPointerMathContext.h"
 #include "copasi/utilities/CCopasiTask.h"
 
-class CMathContext;
-
-class CTaskContext : public CContext< CCopasiTask * >
-{
-public:
-  CTaskContext() = delete;
-
-  CTaskContext(const CTaskContext & src) = delete;
-
-  CTaskContext(CCopasiTask * pTask);
-
-  ~CTaskContext();
-
-  /**
-   * Set the pointer to container used for calculations
-   * @param CCopasiTask * pTask
-   */
-  void setTask(CCopasiTask * pTask);
-
-  /**
-   * Set the pointer to container used for calculations
-   * @param CMathContext * pContext
-   */
-  void setMathContext(CMathContext * pContext);
-
-private:
-  CMathContext * mpMathContext;
-};
+typedef CPointerMathContext< CMathContainer > CTaskContext;
 
 #endif // COPASI_CTaskContext

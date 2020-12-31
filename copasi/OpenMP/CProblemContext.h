@@ -6,36 +6,9 @@
 #ifndef COPASI_CProblemContext
 #define COPASI_CProblemContext
 
-#include "copasi/OpenMP/CContext.h"
+#include "copasi/OpenMP/CPointerMathContext.h"
 #include "copasi/utilities/CCopasiProblem.h"
 
-class CMathContext;
-
-class CProblemContext : public CContext< CCopasiProblem * >
-{
-public:
-  CProblemContext() = delete;
-
-  CProblemContext(const CProblemContext & src) = delete;
-
-  CProblemContext(CCopasiProblem * pProblem);
-
-  ~CProblemContext();
-
-  /**
-   * Set the pointer to container used for calculations
-   * @param CCopasiProblem * pProblem
-   */
-  void setProblem(CCopasiProblem * pProblem);
-
-  /**
-   * Set the pointer to container used for calculations
-   * @param CMathContext * pContext
-   */
-  void setMathContext(CMathContext * pContext);
-
-private:
-  CMathContext * mpMathContext;
-};
+typedef CPointerMathContext< CMathContainer > CProbleContext;
 
 #endif // COPASI_CProblemContext

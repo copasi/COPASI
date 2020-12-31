@@ -166,6 +166,11 @@ public:
   virtual ~CMathContainer();
 
   /**
+   *
+   */
+  CMathContainer * copy() const;
+
+  /**
    * Retrieve the values of all mathematical objects
    * @return const CVectorCore< C_FLOAT64 > & values
    */

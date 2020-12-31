@@ -592,6 +592,11 @@ CMathContainer::~CMathContainer()
   setObjectParent(NULL);
 }
 
+CMathContainer * CMathContainer::copy() const
+{
+  return new CMathContainer(*this);
+}
+
 const CVectorCore< C_FLOAT64 > & CMathContainer::getValues() const
 {
   return mValues;

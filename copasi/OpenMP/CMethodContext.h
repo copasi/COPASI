@@ -6,36 +6,9 @@
 #ifndef COPASI_CMethodContext
 #define COPASI_CMethodContext
 
-#include "copasi/OpenMP/CContext.h"
+#include "copasi/OpenMP/CPointerMathContext.h"
 #include "copasi/utilities/CCopasiMethod.h"
 
-class CMathContext;
-
-class CMethodContext : public CContext< CCopasiMethod * >
-{
-public:
-  CMethodContext() = delete;
-
-  CMethodContext(const CMethodContext & src) = delete;
-
-  CMethodContext(CCopasiMethod * pMethod);
-
-  ~CMethodContext();
-
-  /**
-   * Set the pointer to container used for calculations
-   * @param CCopasiMethod * pMethod
-   */
-  void setMethod(CCopasiMethod * pMethod);
-
-  /**
-   * Set the pointer to container used for calculations
-   * @param CMathContext * pContext
-   */
-  void setMathContext(CMathContext * pContext);
-
-private:
-  CMathContext * mpMathContext;
-};
+typedef CPointerMathContext< CMathContainer > CMethodContext;
 
 #endif // COPASI_CMethodContext

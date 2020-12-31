@@ -6,21 +6,9 @@
 #ifndef COPASI_CMathContext
 #define COPASI_CMathContext
 
-#include "copasi/OpenMP/CContext.h"
+#include "copasi/OpenMP/CPointerContext.h"
 #include "copasi/math/CMathContainer.h"
 
-class CMathContext : public CContext< CMathContainer * >
-{
-public:
-  CMathContext() = delete;
-
-  CMathContext(const CMathContext & src) = delete;
-
-  CMathContext(CMathContainer * pContainer);
-
-  ~CMathContext();
-
-  void setMathContainer(CMathContainer * pContainer);
-};
+typedef CPointerContext< CMathContainer > CMathContext;
 
 #endif // COPASI_CMathContext
