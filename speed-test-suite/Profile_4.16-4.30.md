@@ -65,7 +65,6 @@ EGFR_gillespie.cps | Gillespie direct method |
 multistate_gillespie.cps | Gillespie direct method | 
 multistate_gb.cps | Gillespie Gibson-Bruck | 
 Pollution_lsoda.cps | LSODA time course | stiff model
-Pollution_radau5.cps | RADAU5 time course | stiff model; not all versions have RADAU5 method
 ERBB-RAS-AKT_ss.cps | steady state | ss criterion selected: "distance and rate" 1392 species 2686 reactions
 Schoeberl_ss.cps | steady state | ss criterion selected: "distance"
 Translation_ss.cps | steady state | ss criterion selected: "distance and rate"
@@ -88,7 +87,8 @@ Decroly_lyap.cps | Lyapunov exponents | chaotic model
 3enzyme_da.cps | parameter estimation genetic algorithm | task is run 10 times
 3enzyme_rs.cps | parameter estimation random search | task is run 10 times
 KinMMFit_sa.cps | parameter estimation simulated annealing | task is run 10 times
-
+Pollution_radau5.cps | RADAU5 time course | stiff model (Build 213 onwards)
+HuangFerrel_sde.cps | RI5 time course (SDE) | (Build 226 onwards)
 ## Results
 
 ## Conclusion

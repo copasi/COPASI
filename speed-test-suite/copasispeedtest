@@ -18,7 +18,7 @@ VERSIONS="/usr/local/COPASI-4.16.104-Linux-64bit/bin/CopasiSE
 /usr/local/COPASI-4.27.217-Linux-64bit/bin/CopasiSE
 /usr/local/COPASI-4.28.226-Linux-64bit/bin/CopasiSE
 /usr/local/COPASI-4.29.228-Linux-64bit/bin/CopasiSE
-/usr/local/COPASI-4.30.235-Linux-64bit/bin/CopasiSE"
+/usr/local/COPASI-4.30.237-Linux-64bit/bin/CopasiSE"
 
 # LOADS contains all the .cps and .xml files that will test loading 
 # or importing functions (and which don't output to report files)
@@ -32,7 +32,6 @@ TASKS="EGFR_gillespie.cps
 multistate_gillespie.cps
 multistate_gb.cps
 Pollution_lsoda.cps
-Pollution_radau5.cps
 ERBB-RAS-AKT_ss.cps
 Schoeberl_ss.cps
 Translation_ss.cps
@@ -55,6 +54,24 @@ Decroly_lyap.cps
 3enzyme_da.cps
 3enzyme_rs.cps
 KinMMFit_sa.cps"
+
+# RADAUVERSIONS are versions that work for the RADAU5 tasks
+RADAUVERSIONS="/usr/local/COPASI-4.26.213-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.27.217-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.28.226-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.29.228-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.30.237-Linux-64bit/bin/CopasiSE"
+
+# RADAUTASKS contains .cps files that test the RADAU5 solver
+RADAUTASKS="Pollution_radau5.cps"
+
+# SDEVERSIONS are versions that work for the SDE tasks
+RESTRICTEDVERSIONS="/usr/local/COPASI-4.28.226-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.29.228-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.30.237-Linux-64bit/bin/CopasiSE"
+
+# SDETASKS contains .cps files that test the RI5 SDE solver
+SDETASKS="HuangFerrel_sde.cps"
 
 # END OF CONFIGURATION
 
@@ -97,12 +114,38 @@ do
 	printf "\n"
 done
 
-# Profile task
+# Profile tasks
 echo "Profiling tasks"
 for f in $TASKS
 do
 	printf "$f "
 	for v in $VERSIONS
+	do
+		printf "."
+		$v --nologo 2>/dev/null $f
+	done
+	printf "\n"
+done
+
+# Profile radau tasks
+echo "Profiling RADAU5 tasks"
+for f in $RADAUTASKS
+do
+	printf "$f "
+	for v in $RADAUVERSIONS
+	do
+		printf "."
+		$v --nologo 2>/dev/null $f
+	done
+	printf "\n"
+done
+
+# Profile sde tasks
+echo "Profiling SDE tasks"
+for f in $SDETASKS
+do
+	printf "$f "
+	for v in $SDEVERSIONS
 	do
 		printf "."
 		$v --nologo 2>/dev/null $f
