@@ -66,6 +66,7 @@ EGFR_gillespie.cps | Gillespie direct method time course |
 multistate_gillespie.cps | Gillespie direct method  time course| 
 multistate_gb.cps | Gibson-Bruck time course | 
 Vilar2002_tauleap.cps | tau-leap time course | noise-driven model, long time course
+Vilar2002_adaptivetauleap.cps | adaptive tau-leap time course | noise-driven model, long time course
 HuangFerrel_hydrib-rk.cps | hybrid (Runge-Kutta) time course | 
 HuangFerrel_hydrib-lsoda.cps | hybrid (LSODA) time course | 
 ERBB-RAS-AKT_ss.cps | steady state | ss criterion selected: "distance and rate" 1392 species 2686 reactions
