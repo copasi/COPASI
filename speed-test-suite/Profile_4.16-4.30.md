@@ -62,9 +62,9 @@ Pollution_lsoda.cps | LSODA time course | stiff model
 BCR_load.cps | native file loading | very large file (49 Mb) with 1122 species and 24388 reactions 
 EGFR_sbml.xml | SBML import | large model (2.8Mb) with 356 species and 3749 reactions 
 IP3CaTissue_gepasi.gps | Gepasi loading | Gepasi file with 192 species and 496 reactions
-EGFR_gillespie.cps | Gillespie direct method | 
-multistate_gillespie.cps | Gillespie direct method | 
-multistate_gb.cps | Gillespie Gibson-Bruck | 
+EGFR_gillespie.cps | Gillespie direct method time course | 
+multistate_gillespie.cps | Gillespie direct method  time course| 
+multistate_gb.cps | Gibson-Bruck time course | 
 Vilar2002_tauleap.cps | tau-leap time course | noise-driven model, long time course
 ERBB-RAS-AKT_ss.cps | steady state | ss criterion selected: "distance and rate" 1392 species 2686 reactions
 Schoeberl_ss.cps | steady state | ss criterion selected: "distance"
