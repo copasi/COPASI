@@ -58,13 +58,14 @@ and details of each one are included in Table 1.
 Table 1. List of tests and their details
 File | Function tested | Observations
 -----|-----------------|--------
+Pollution_lsoda.cps | LSODA time course | stiff model
 BCR_load.cps | native file loading | very large file (49 Mb) with 1122 species and 24388 reactions 
 EGFR_sbml.xml | SBML import | large model (2.8Mb) with 356 species and 3749 reactions 
 IP3CaTissue_gepasi.gps | Gepasi loading | Gepasi file with 192 species and 496 reactions
 EGFR_gillespie.cps | Gillespie direct method | 
 multistate_gillespie.cps | Gillespie direct method | 
 multistate_gb.cps | Gillespie Gibson-Bruck | 
-Pollution_lsoda.cps | LSODA time course | stiff model
+Vilar2002_tauleap.cps | tau-leap time course | noise-driven model, long time course
 ERBB-RAS-AKT_ss.cps | steady state | ss criterion selected: "distance and rate" 1392 species 2686 reactions
 Schoeberl_ss.cps | steady state | ss criterion selected: "distance"
 Translation_ss.cps | steady state | ss criterion selected: "distance and rate"
@@ -89,6 +90,7 @@ Decroly_lyap.cps | Lyapunov exponents | chaotic model
 KinMMFit_sa.cps | parameter estimation simulated annealing | task is run 10 times
 Pollution_radau5.cps | RADAU5 time course | stiff model (Build 213 onwards)
 HuangFerrel_sde.cps | RI5 time course (SDE) | (Build 226 onwards)
+
 ## Results
 
 ## Conclusion
