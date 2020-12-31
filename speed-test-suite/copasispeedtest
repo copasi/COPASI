@@ -42,7 +42,9 @@ Schoeberl_ss.cps
 Translation_ss.cps
 BIOMOD70_efm.cps
 Ecoli_efm.cps
+Ecoli_mca.cps
 Decroly_lyap.cps
+CoopSF4_001_tssa-csp.cps
 3enzyme_nl2sol.cps
 3enzyme_steepest.cps
 3enzyme_lm.cps
