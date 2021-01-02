@@ -46,7 +46,9 @@ Ecoli_mca.cps
 Decroly_lyap.cps
 CoopSF4_001_tssa-ildm.cps
 CoopSF4_001_tssa-csp.cps
+3enzyme_lna.cps
 HuangFerrel_lna.cps
+JumboSF001_lna.cps
 3enzyme_nl2sol.cps
 3enzyme_steepest.cps
 3enzyme_lm.cps

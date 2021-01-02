@@ -79,7 +79,9 @@ Ecoli_mca.cps | metabolic control analysis | model with 77 species and 68 reacti
 Decroly_lyap.cps | Lyapunov exponents | chaotic model
 CoopSF4_001_tssa-ildm.cps | time scale separation analysis ILDM | model with 100 species and 200 reactions
 CoopSF4_001_tssa-csp.cps | time scale separation analysis CSP | model with 100 species and 200 reactions
+3enzyme_lna.cps | linear noise approximation | 
 HuangFerrel_lna.cps | linear noise approximation | 
+JumboSF001_lna.cps | linear noise approximation | model with 1000 species and 2000 reactions
 3enzyme_nl2sol.cps | parameter estimation NL2SOL | task is run 100 times
 3enzyme_steepest.cps | parameter estimation steepest descent | task is run 100 times
 3enzyme_lm.cps | parameter estimation Levenberg-Marquardt | task is run 100 times
