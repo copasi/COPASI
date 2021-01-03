@@ -110,6 +110,7 @@ Weierstrass_opt-de.cps | optimization differential evolution | near-fractal cont
 Weierstrass_opt-ep.cps | optimization evolutionionary programming | near-fractal continuous non-differentiable function, runs 100 times
 Weierstrass_opt-sres.cps | optimization SRES | near-fractal continuous non-differentiable function, runs 100 times
 Weierstrass_opt-sa.cps | optimization simulated annealing | near-fractal continuous non-differentiable function, runs 100 times
+SchafferF7-10_opt-rs.cps | optimization random search | 10D function with concentric local minima, runs 100 times
 SchafferF7-10_opt-ga.cps | optimization genetic algorithm | 10D function with concentric local minima, runs 100 times
 SchafferF7-10_opt-ps.cps | optimization particle swarm | 10D function with concentric local minima, runs 100 times
 Pollution_radau5.cps | RADAU5 time course | stiff model (Build 213 onwards)
