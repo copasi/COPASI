@@ -306,7 +306,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
       </Method>
     </Task>
     <Task key="Task_2" name="Scan" type="scan" scheduled="true" updateModel="false">
-      <Report reference="Report_24" target="SchafferF7-10_opt-ga.txt" append="1" confirmOverwrite="0"/>
+      <Report reference="Report_24" target="SchafferF7-10_opt-ga.out" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="4"/>
         <ParameterGroup name="ScanItems">
