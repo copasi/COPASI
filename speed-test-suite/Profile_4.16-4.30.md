@@ -98,8 +98,8 @@ JumboSF001_lna.cps | linear noise approximation | model with 1000 species and 20
 3enzyme_da.cps | parameter estimation genetic algorithm | task is run 10 times
 3enzyme_rs.cps | parameter estimation random search | task is run 10 times
 KinMMFit_sa.cps | parameter estimation simulated annealing | task is run 10 times
-SchafferF7-10_opt-ga.cps | optimization genetic algorithm | 10D function with concentric local minima, run 100 times
-SchafferF7-10_opt-ps.cps | optimization particle swarm | 10D function with concentric local minima, run 100 times
+SchafferF7-10_opt-ga.cps | optimization genetic algorithm | 10D function with concentric local minima, runs 100 times
+SchafferF7-10_opt-ps.cps | optimization particle swarm | 10D function with concentric local minima, runs 100 times
 Pollution_radau5.cps | RADAU5 time course | stiff model (Build 213 onwards)
 HuangFerrel_sde.cps | RI5 time course (SDE) | (Build 226 onwards)
 
