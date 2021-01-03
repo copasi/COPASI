@@ -100,6 +100,7 @@ JumboSF001_lna.cps | linear noise approximation | model with 1000 species and 20
 KinMMFit_sa.cps | parameter estimation simulated annealing | task is run 10 times
 Colville_opt-tn.cps | optimization truncated Newton | Long, narrow ridge function, runs 100 times
 Colville_opt-sd.cps | optimization steepest descent | Long, narrow ridge function, runs 100 times
+Colville_opt-sd.cps | optimization praxis | Long, narrow ridge function, runs 100 times
 SchafferF7-10_opt-ga.cps | optimization genetic algorithm | 10D function with concentric local minima, runs 100 times
 SchafferF7-10_opt-ps.cps | optimization particle swarm | 10D function with concentric local minima, runs 100 times
 Pollution_radau5.cps | RADAU5 time course | stiff model (Build 213 onwards)
