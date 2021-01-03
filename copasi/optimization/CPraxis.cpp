@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1065,7 +1065,7 @@ L101:
         }
 
       e[k - 1] = 0.;
-      printf("QR FAILED\n");
+      /* printf("QR FAILED\n"); */
 L102:
       i__3 = k;
 
