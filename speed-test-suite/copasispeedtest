@@ -68,6 +68,9 @@ KinMMFit_sa.cps
 Colville_opt-tn.cps
 Colville_opt-sd.cps
 Colville_opt-praxis.cps
+Rosenbrock10_opt-lm.cps
+Rosenbrock10_opt-hj.cps
+Rosenbrock10_opt-ss.cps
 SchafferF7-10_opt-ga.cps
 SchafferF7-10_opt-ps.cps"
 

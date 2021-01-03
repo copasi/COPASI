@@ -103,6 +103,8 @@ Colville_opt-sd.cps | optimization steepest descent | Long, narrow ridge functio
 Colville_opt-sd.cps | optimization praxis | Long, narrow ridge function, runs 100 times
 Rosenbrock10_opt-lm.cps | optimization Levenberg-Marquardt | 10D function with narrow ridge, runs 100 times
 Rosenbrock10_opt-nm.cps | optimization Nelder-Mead | 10D function with narrow ridge, runs 100 times
+Rosenbrock10_opt-hj.cps | optimization Hooke-Jeeves | 10D function with narrow ridge, runs 100 times
+Rosenbrock10_opt-ss.cps | optimization scatter search | 10D function with narrow ridge, runs 100 times
 SchafferF7-10_opt-ga.cps | optimization genetic algorithm | 10D function with concentric local minima, runs 100 times
 SchafferF7-10_opt-ps.cps | optimization particle swarm | 10D function with concentric local minima, runs 100 times
 Pollution_radau5.cps | RADAU5 time course | stiff model (Build 213 onwards)
