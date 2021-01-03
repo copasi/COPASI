@@ -64,7 +64,8 @@ JumboSF001_lna.cps
 3enzyme_ep.cps
 3enzyme_da.cps
 3enzyme_rs.cps
-KinMMFit_sa.cps"
+KinMMFit_sa.cps
+SchafferF7-10_opt-ga.cps"
 
 # RADAUVERSIONS are versions that work for the RADAU5 tasks
 RADAUVERSIONS="/usr/local/COPASI-4.26.213-Linux-64bit/bin/CopasiSE
