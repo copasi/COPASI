@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.30 (Build 236) (http://www.copasi.org) at 2020-12-30T03:04:37Z -->
+<!-- generated with COPASI 4.29 (Build 228) (http://www.copasi.org) at 2021-01-04T13:53:39Z -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
-<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="30" versionDevel="236" copasiSourcesModified="0">
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="29" versionDevel="228" copasiSourcesModified="0">
   <ListOfFunctions>
     <Function key="Function_40" name="Function for Glucose transport" type="UserDefined" reversible="true">
       <MiriamAnnotation>
@@ -987,14 +987,14 @@
       </ListOfParameterDescriptions>
     </Function>
   </ListOfFunctions>
-  <Model key="Model_0" name="Holzhutter2004_Erythrocyte_Metabolism" simulationType="time" timeUnit="h" volumeUnit="l" areaUnit="m²" lengthUnit="m" quantityUnit="mmol" type="deterministic" avogadroConstant="6.0221408570000002e+23">
+  <Model key="Model_1" name="Holzhutter2004_Erythrocyte_Metabolism" simulationType="time" timeUnit="h" volumeUnit="l" areaUnit="m²" lengthUnit="m" quantityUnit="mmol" type="deterministic" avogadroConstant="6.0221408570000002e+23">
     <MiriamAnnotation>
 <rdf:RDF
    xmlns:CopasiMT="http://www.copasi.org/RDF/MiriamTerms#"
    xmlns:dcterms="http://purl.org/dc/terms/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
-  <rdf:Description rdf:about="#Model_0">
+  <rdf:Description rdf:about="#Model_1">
     <dcterms:bibliographicCitation>
       <rdf:Bag>
         <rdf:li>
@@ -1871,11 +1871,11 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_0" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5019" name="Vmaxv0" value="33.6"/>
-          <Constant key="Parameter_5018" name="KMoutv0" value="1.7"/>
-          <Constant key="Parameter_5022" name="Keqv0" value="1"/>
-          <Constant key="Parameter_5020" name="KMinv0" value="6.9"/>
-          <Constant key="Parameter_5023" name="alfav0" value="0.54"/>
+          <Constant key="Parameter_5001" name="Vmaxv0" value="33.6"/>
+          <Constant key="Parameter_5000" name="KMoutv0" value="1.7"/>
+          <Constant key="Parameter_4999" name="Keqv0" value="1"/>
+          <Constant key="Parameter_4998" name="KMinv0" value="6.9"/>
+          <Constant key="Parameter_4997" name="alfav0" value="0.54"/>
         </ListOfConstants>
         <KineticLaw function="Function_40" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -1886,19 +1886,19 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_43"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_262">
-              <SourceParameter reference="Parameter_5020"/>
+              <SourceParameter reference="Parameter_4998"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_261">
-              <SourceParameter reference="Parameter_5018"/>
+              <SourceParameter reference="Parameter_5000"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_250">
-              <SourceParameter reference="Parameter_5022"/>
+              <SourceParameter reference="Parameter_4999"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_265">
-              <SourceParameter reference="Parameter_5019"/>
+              <SourceParameter reference="Parameter_5001"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_266">
-              <SourceParameter reference="Parameter_5023"/>
+              <SourceParameter reference="Parameter_4997"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -1935,17 +1935,17 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Modifier metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5024" name="Inhibv1" value="1"/>
-          <Constant key="Parameter_5028" name="KMGlcv1" value="0.1"/>
-          <Constant key="Parameter_5030" name="Vmax1v1" value="15.8"/>
-          <Constant key="Parameter_5031" name="KMgATPv1" value="1.44"/>
-          <Constant key="Parameter_5025" name="Vmax2v1" value="33.2"/>
-          <Constant key="Parameter_5027" name="KMgATPMgv1" value="1.14"/>
-          <Constant key="Parameter_5026" name="Keqv1" value="3900"/>
-          <Constant key="Parameter_5029" name="KMgv1" value="1.03"/>
-          <Constant key="Parameter_5032" name="KGlc6Pv1" value="0.0045"/>
-          <Constant key="Parameter_5033" name="K23P2Gv1" value="2.7"/>
-          <Constant key="Parameter_5067" name="KMg23P2Gv1" value="3.44"/>
+          <Constant key="Parameter_4996" name="Inhibv1" value="1"/>
+          <Constant key="Parameter_4995" name="KMGlcv1" value="0.1"/>
+          <Constant key="Parameter_4994" name="Vmax1v1" value="15.8"/>
+          <Constant key="Parameter_4993" name="KMgATPv1" value="1.44"/>
+          <Constant key="Parameter_4992" name="Vmax2v1" value="33.2"/>
+          <Constant key="Parameter_4991" name="KMgATPMgv1" value="1.14"/>
+          <Constant key="Parameter_4990" name="Keqv1" value="3900"/>
+          <Constant key="Parameter_4989" name="KMgv1" value="1.03"/>
+          <Constant key="Parameter_4988" name="KGlc6Pv1" value="0.0045"/>
+          <Constant key="Parameter_4987" name="K23P2Gv1" value="2.7"/>
+          <Constant key="Parameter_4986" name="KMg23P2Gv1" value="3.44"/>
         </ListOfConstants>
         <KineticLaw function="Function_41" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -1959,31 +1959,31 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_13"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_270">
-              <SourceParameter reference="Parameter_5024"/>
+              <SourceParameter reference="Parameter_4996"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_269">
-              <SourceParameter reference="Parameter_5033"/>
+              <SourceParameter reference="Parameter_4987"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_268">
-              <SourceParameter reference="Parameter_5032"/>
+              <SourceParameter reference="Parameter_4988"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_267">
-              <SourceParameter reference="Parameter_5028"/>
+              <SourceParameter reference="Parameter_4995"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_274">
-              <SourceParameter reference="Parameter_5067"/>
+              <SourceParameter reference="Parameter_4986"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_275">
-              <SourceParameter reference="Parameter_5027"/>
+              <SourceParameter reference="Parameter_4991"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_276">
-              <SourceParameter reference="Parameter_5031"/>
+              <SourceParameter reference="Parameter_4993"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_277">
-              <SourceParameter reference="Parameter_5029"/>
+              <SourceParameter reference="Parameter_4989"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_278">
-              <SourceParameter reference="Parameter_5026"/>
+              <SourceParameter reference="Parameter_4990"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_279">
               <SourceParameter reference="Metabolite_3"/>
@@ -1998,10 +1998,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_32"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_283">
-              <SourceParameter reference="Parameter_5030"/>
+              <SourceParameter reference="Parameter_4994"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_284">
-              <SourceParameter reference="Parameter_5025"/>
+              <SourceParameter reference="Parameter_4992"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2031,10 +2031,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5068" name="Vmaxv2" value="935"/>
-          <Constant key="Parameter_5072" name="Keqv2" value="0.3925"/>
-          <Constant key="Parameter_5074" name="KGlc6Pv2" value="0.182"/>
-          <Constant key="Parameter_5075" name="KFru6Pv2" value="0.071"/>
+          <Constant key="Parameter_4985" name="Vmaxv2" value="935"/>
+          <Constant key="Parameter_4984" name="Keqv2" value="0.3925"/>
+          <Constant key="Parameter_4983" name="KGlc6Pv2" value="0.182"/>
+          <Constant key="Parameter_4982" name="KFru6Pv2" value="0.071"/>
         </ListOfConstants>
         <KineticLaw function="Function_42" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -2045,16 +2045,16 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_2"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_300">
-              <SourceParameter reference="Parameter_5075"/>
+              <SourceParameter reference="Parameter_4982"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_299">
-              <SourceParameter reference="Parameter_5074"/>
+              <SourceParameter reference="Parameter_4983"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_298">
-              <SourceParameter reference="Parameter_5072"/>
+              <SourceParameter reference="Parameter_4984"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_297">
-              <SourceParameter reference="Parameter_5068"/>
+              <SourceParameter reference="Parameter_4985"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2092,14 +2092,14 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Modifier metabolite="Metabolite_30" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5069" name="Vmaxv3" value="239"/>
-          <Constant key="Parameter_5071" name="Keqv3" value="100000"/>
-          <Constant key="Parameter_5070" name="KFru6Pv3" value="0.1"/>
-          <Constant key="Parameter_5073" name="KMgATPv3" value="0.068"/>
-          <Constant key="Parameter_5076" name="L0v3" value="0.001072"/>
-          <Constant key="Parameter_5065" name="KATPv3" value="0.01"/>
-          <Constant key="Parameter_5063" name="KMgv3" value="0.44"/>
-          <Constant key="Parameter_5062" name="KAMPv3" value="0.033"/>
+          <Constant key="Parameter_4981" name="Vmaxv3" value="239"/>
+          <Constant key="Parameter_4980" name="Keqv3" value="100000"/>
+          <Constant key="Parameter_4979" name="KFru6Pv3" value="0.1"/>
+          <Constant key="Parameter_4978" name="KMgATPv3" value="0.068"/>
+          <Constant key="Parameter_4977" name="L0v3" value="0.001072"/>
+          <Constant key="Parameter_4976" name="KATPv3" value="0.01"/>
+          <Constant key="Parameter_4975" name="KMgv3" value="0.44"/>
+          <Constant key="Parameter_4974" name="KAMPv3" value="0.033"/>
         </ListOfConstants>
         <KineticLaw function="Function_43" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -2116,25 +2116,25 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_4"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_295">
-              <SourceParameter reference="Parameter_5062"/>
+              <SourceParameter reference="Parameter_4974"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_296">
-              <SourceParameter reference="Parameter_5065"/>
+              <SourceParameter reference="Parameter_4976"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_290">
-              <SourceParameter reference="Parameter_5070"/>
+              <SourceParameter reference="Parameter_4979"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_289">
-              <SourceParameter reference="Parameter_5073"/>
+              <SourceParameter reference="Parameter_4978"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_288">
-              <SourceParameter reference="Parameter_5063"/>
+              <SourceParameter reference="Parameter_4975"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_287">
-              <SourceParameter reference="Parameter_5071"/>
+              <SourceParameter reference="Parameter_4980"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_286">
-              <SourceParameter reference="Parameter_5076"/>
+              <SourceParameter reference="Parameter_4977"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_285">
               <SourceParameter reference="Metabolite_3"/>
@@ -2149,7 +2149,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_32"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_306">
-              <SourceParameter reference="Parameter_5069"/>
+              <SourceParameter reference="Parameter_4981"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2180,13 +2180,13 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5066" name="Vmaxv4" value="98.91"/>
-          <Constant key="Parameter_5064" name="KFru16P2v4" value="0.0071"/>
-          <Constant key="Parameter_5037" name="Keqv4" value="0.114"/>
-          <Constant key="Parameter_5035" name="KiGraPv4" value="0.0572"/>
-          <Constant key="Parameter_5034" name="KGraPv4" value="0.1906"/>
-          <Constant key="Parameter_5038" name="KDHAPv4" value="0.0364"/>
-          <Constant key="Parameter_5036" name="KiiGraPv4" value="0.176"/>
+          <Constant key="Parameter_4973" name="Vmaxv4" value="98.91"/>
+          <Constant key="Parameter_4972" name="KFru16P2v4" value="0.0071"/>
+          <Constant key="Parameter_4971" name="Keqv4" value="0.114"/>
+          <Constant key="Parameter_4970" name="KiGraPv4" value="0.0572"/>
+          <Constant key="Parameter_4969" name="KGraPv4" value="0.1906"/>
+          <Constant key="Parameter_4968" name="KDHAPv4" value="0.0364"/>
+          <Constant key="Parameter_4967" name="KiiGraPv4" value="0.176"/>
         </ListOfConstants>
         <KineticLaw function="Function_44" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -2200,25 +2200,25 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_319">
-              <SourceParameter reference="Parameter_5038"/>
+              <SourceParameter reference="Parameter_4968"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_318">
-              <SourceParameter reference="Parameter_5064"/>
+              <SourceParameter reference="Parameter_4972"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_317">
-              <SourceParameter reference="Parameter_5034"/>
+              <SourceParameter reference="Parameter_4969"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_316">
-              <SourceParameter reference="Parameter_5037"/>
+              <SourceParameter reference="Parameter_4971"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_315">
-              <SourceParameter reference="Parameter_5035"/>
+              <SourceParameter reference="Parameter_4970"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_314">
-              <SourceParameter reference="Parameter_5036"/>
+              <SourceParameter reference="Parameter_4967"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_313">
-              <SourceParameter reference="Parameter_5066"/>
+              <SourceParameter reference="Parameter_4973"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2248,10 +2248,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_6" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5052" name="Vmaxv5" value="5456.6"/>
-          <Constant key="Parameter_5053" name="Keqv5" value="0.0407"/>
-          <Constant key="Parameter_5040" name="KDHAPv5" value="0.838"/>
-          <Constant key="Parameter_5057" name="KGraPv5" value="0.428"/>
+          <Constant key="Parameter_4966" name="Vmaxv5" value="5456.6"/>
+          <Constant key="Parameter_4965" name="Keqv5" value="0.0407"/>
+          <Constant key="Parameter_4964" name="KDHAPv5" value="0.838"/>
+          <Constant key="Parameter_4963" name="KGraPv5" value="0.428"/>
         </ListOfConstants>
         <KineticLaw function="Function_45" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -2262,16 +2262,16 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_324">
-              <SourceParameter reference="Parameter_5040"/>
+              <SourceParameter reference="Parameter_4964"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_323">
-              <SourceParameter reference="Parameter_5057"/>
+              <SourceParameter reference="Parameter_4963"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_307">
-              <SourceParameter reference="Parameter_5053"/>
+              <SourceParameter reference="Parameter_4965"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_308">
-              <SourceParameter reference="Parameter_5052"/>
+              <SourceParameter reference="Parameter_4966"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2304,13 +2304,13 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_10" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5043" name="Vmaxv6" value="4300"/>
-          <Constant key="Parameter_5059" name="KNADv6" value="0.05"/>
-          <Constant key="Parameter_5060" name="KGraPv6" value="0.005"/>
-          <Constant key="Parameter_5054" name="KPv6" value="3.9"/>
-          <Constant key="Parameter_5039" name="Keqv6" value="0.000192"/>
-          <Constant key="Parameter_5047" name="KNADHv6" value="0.0083"/>
-          <Constant key="Parameter_5056" name="K13P2Gv6" value="0.0035"/>
+          <Constant key="Parameter_4962" name="Vmaxv6" value="4300"/>
+          <Constant key="Parameter_4961" name="KNADv6" value="0.05"/>
+          <Constant key="Parameter_4960" name="KGraPv6" value="0.005"/>
+          <Constant key="Parameter_4959" name="KPv6" value="3.9"/>
+          <Constant key="Parameter_4958" name="Keqv6" value="0.000192"/>
+          <Constant key="Parameter_4957" name="KNADHv6" value="0.0083"/>
+          <Constant key="Parameter_4956" name="K13P2Gv6" value="0.0035"/>
         </ListOfConstants>
         <KineticLaw function="Function_46" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -2321,22 +2321,22 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_10"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_312">
-              <SourceParameter reference="Parameter_5056"/>
+              <SourceParameter reference="Parameter_4956"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_311">
-              <SourceParameter reference="Parameter_5060"/>
+              <SourceParameter reference="Parameter_4960"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_310">
-              <SourceParameter reference="Parameter_5047"/>
+              <SourceParameter reference="Parameter_4957"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_309">
-              <SourceParameter reference="Parameter_5059"/>
+              <SourceParameter reference="Parameter_4961"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_329">
-              <SourceParameter reference="Parameter_5054"/>
+              <SourceParameter reference="Parameter_4959"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_330">
-              <SourceParameter reference="Parameter_5039"/>
+              <SourceParameter reference="Parameter_4958"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_331">
               <SourceParameter reference="Metabolite_9"/>
@@ -2348,7 +2348,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_8"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_334">
-              <SourceParameter reference="Parameter_5043"/>
+              <SourceParameter reference="Parameter_4962"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2380,12 +2380,12 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_12" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5041" name="Vmaxv7" value="5000"/>
-          <Constant key="Parameter_5055" name="KMgADPv7" value="0.35"/>
-          <Constant key="Parameter_5046" name="K13P2Gv7" value="0.002"/>
-          <Constant key="Parameter_5050" name="Keqv7" value="1455"/>
-          <Constant key="Parameter_5045" name="KMgATPv7" value="0.48"/>
-          <Constant key="Parameter_5049" name="K3PGv7" value="1.2"/>
+          <Constant key="Parameter_4955" name="Vmaxv7" value="5000"/>
+          <Constant key="Parameter_4954" name="KMgADPv7" value="0.35"/>
+          <Constant key="Parameter_4953" name="K13P2Gv7" value="0.002"/>
+          <Constant key="Parameter_4952" name="Keqv7" value="1455"/>
+          <Constant key="Parameter_4951" name="KMgATPv7" value="0.48"/>
+          <Constant key="Parameter_4950" name="K3PGv7" value="1.2"/>
         </ListOfConstants>
         <KineticLaw function="Function_47" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -2396,19 +2396,19 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_12"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_344">
-              <SourceParameter reference="Parameter_5046"/>
+              <SourceParameter reference="Parameter_4953"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_343">
-              <SourceParameter reference="Parameter_5049"/>
+              <SourceParameter reference="Parameter_4950"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_342">
-              <SourceParameter reference="Parameter_5055"/>
+              <SourceParameter reference="Parameter_4954"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_341">
-              <SourceParameter reference="Parameter_5045"/>
+              <SourceParameter reference="Parameter_4951"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_340">
-              <SourceParameter reference="Parameter_5050"/>
+              <SourceParameter reference="Parameter_4952"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_339">
               <SourceParameter reference="Metabolite_3"/>
@@ -2417,7 +2417,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_337">
-              <SourceParameter reference="Parameter_5041"/>
+              <SourceParameter reference="Parameter_4955"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2449,9 +2449,9 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Modifier metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5048" name="kDPGMv8" value="76000"/>
-          <Constant key="Parameter_5051" name="Keqv8" value="100000"/>
-          <Constant key="Parameter_5058" name="K23P2Gv8" value="0.04"/>
+          <Constant key="Parameter_4949" name="kDPGMv8" value="76000"/>
+          <Constant key="Parameter_4948" name="Keqv8" value="100000"/>
+          <Constant key="Parameter_4947" name="K23P2Gv8" value="0.04"/>
         </ListOfConstants>
         <KineticLaw function="Function_48" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -2462,16 +2462,16 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_13"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_352">
-              <SourceParameter reference="Parameter_5058"/>
+              <SourceParameter reference="Parameter_4947"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_351">
-              <SourceParameter reference="Parameter_5051"/>
+              <SourceParameter reference="Parameter_4948"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_350">
               <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_349">
-              <SourceParameter reference="Parameter_5048"/>
+              <SourceParameter reference="Parameter_4949"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2504,9 +2504,9 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Modifier metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5042" name="Vmaxv9" value="0.53"/>
-          <Constant key="Parameter_5044" name="Keqv9" value="100000"/>
-          <Constant key="Parameter_5061" name="K23P2Gv9" value="0.2"/>
+          <Constant key="Parameter_4946" name="Vmaxv9" value="0.53"/>
+          <Constant key="Parameter_4945" name="Keqv9" value="100000"/>
+          <Constant key="Parameter_4944" name="K23P2Gv9" value="0.2"/>
         </ListOfConstants>
         <KineticLaw function="Function_49" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -2517,16 +2517,16 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_12"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_336">
-              <SourceParameter reference="Parameter_5061"/>
+              <SourceParameter reference="Parameter_4944"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_335">
-              <SourceParameter reference="Parameter_5044"/>
+              <SourceParameter reference="Parameter_4945"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_347">
               <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_348">
-              <SourceParameter reference="Parameter_5042"/>
+              <SourceParameter reference="Parameter_4946"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2556,10 +2556,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_14" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5077" name="Vmaxv10" value="2000"/>
-          <Constant key="Parameter_5078" name="Keqv10" value="0.145"/>
-          <Constant key="Parameter_5084" name="K3PGv10" value="5"/>
-          <Constant key="Parameter_5083" name="K2PGv10" value="1"/>
+          <Constant key="Parameter_4943" name="Vmaxv10" value="2000"/>
+          <Constant key="Parameter_4942" name="Keqv10" value="0.145"/>
+          <Constant key="Parameter_4941" name="K3PGv10" value="5"/>
+          <Constant key="Parameter_4940" name="K2PGv10" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_50" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -2570,16 +2570,16 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_12"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_360">
-              <SourceParameter reference="Parameter_5083"/>
+              <SourceParameter reference="Parameter_4940"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_359">
-              <SourceParameter reference="Parameter_5084"/>
+              <SourceParameter reference="Parameter_4941"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_358">
-              <SourceParameter reference="Parameter_5078"/>
+              <SourceParameter reference="Parameter_4942"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_357">
-              <SourceParameter reference="Parameter_5077"/>
+              <SourceParameter reference="Parameter_4943"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2609,10 +2609,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_15" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5085" name="Vmaxv11" value="1500"/>
-          <Constant key="Parameter_5080" name="Keqv11" value="1.7"/>
-          <Constant key="Parameter_5079" name="K2PGv11" value="1"/>
-          <Constant key="Parameter_5082" name="KPEPv11" value="1"/>
+          <Constant key="Parameter_4939" name="Vmaxv11" value="1500"/>
+          <Constant key="Parameter_4938" name="Keqv11" value="1.7"/>
+          <Constant key="Parameter_4937" name="K2PGv11" value="1"/>
+          <Constant key="Parameter_4936" name="KPEPv11" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_51" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -2620,19 +2620,19 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_14"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_367">
-              <SourceParameter reference="Parameter_5079"/>
+              <SourceParameter reference="Parameter_4937"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_366">
-              <SourceParameter reference="Parameter_5082"/>
+              <SourceParameter reference="Parameter_4936"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_365">
-              <SourceParameter reference="Parameter_5080"/>
+              <SourceParameter reference="Parameter_4938"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_364">
               <SourceParameter reference="Metabolite_15"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_363">
-              <SourceParameter reference="Parameter_5085"/>
+              <SourceParameter reference="Parameter_4939"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2668,13 +2668,13 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Modifier metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5081" name="Vmaxv12" value="570"/>
-          <Constant key="Parameter_5086" name="Keqv12" value="13790"/>
-          <Constant key="Parameter_5090" name="KPEPv12" value="0.225"/>
-          <Constant key="Parameter_5088" name="KMgADPv12" value="0.474"/>
-          <Constant key="Parameter_5087" name="L0v12" value="19"/>
-          <Constant key="Parameter_5091" name="KATPv12" value="3.39"/>
-          <Constant key="Parameter_5089" name="KFru16P2v12" value="0.005"/>
+          <Constant key="Parameter_4935" name="Vmaxv12" value="570"/>
+          <Constant key="Parameter_4934" name="Keqv12" value="13790"/>
+          <Constant key="Parameter_4933" name="KPEPv12" value="0.225"/>
+          <Constant key="Parameter_4932" name="KMgADPv12" value="0.474"/>
+          <Constant key="Parameter_4931" name="L0v12" value="19"/>
+          <Constant key="Parameter_4930" name="KATPv12" value="3.39"/>
+          <Constant key="Parameter_4929" name="KFru16P2v12" value="0.005"/>
         </ListOfConstants>
         <KineticLaw function="Function_52" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -2685,22 +2685,22 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_372">
-              <SourceParameter reference="Parameter_5091"/>
+              <SourceParameter reference="Parameter_4930"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_371">
-              <SourceParameter reference="Parameter_5089"/>
+              <SourceParameter reference="Parameter_4929"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_370">
-              <SourceParameter reference="Parameter_5088"/>
+              <SourceParameter reference="Parameter_4932"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_369">
-              <SourceParameter reference="Parameter_5090"/>
+              <SourceParameter reference="Parameter_4933"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_375">
-              <SourceParameter reference="Parameter_5086"/>
+              <SourceParameter reference="Parameter_4934"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_376">
-              <SourceParameter reference="Parameter_5087"/>
+              <SourceParameter reference="Parameter_4931"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_377">
               <SourceParameter reference="Metabolite_3"/>
@@ -2715,7 +2715,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_16"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_381">
-              <SourceParameter reference="Parameter_5081"/>
+              <SourceParameter reference="Parameter_4935"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2747,13 +2747,13 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5093" name="Vmaxv13" value="2.8e+06"/>
-          <Constant key="Parameter_5095" name="Keqv13" value="9090"/>
+          <Constant key="Parameter_4928" name="Vmaxv13" value="2.8e+06"/>
+          <Constant key="Parameter_4927" name="Keqv13" value="9090"/>
         </ListOfConstants>
         <KineticLaw function="Function_53" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_394">
-              <SourceParameter reference="Parameter_5095"/>
+              <SourceParameter reference="Parameter_4927"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_393">
               <SourceParameter reference="Metabolite_17"/>
@@ -2768,7 +2768,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_16"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_389">
-              <SourceParameter reference="Parameter_5093"/>
+              <SourceParameter reference="Parameter_4928"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2794,13 +2794,13 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5096" name="kLDHv14" value="243.4"/>
-          <Constant key="Parameter_5092" name="Keqv14" value="14181.8"/>
+          <Constant key="Parameter_4926" name="kLDHv14" value="243.4"/>
+          <Constant key="Parameter_4925" name="Keqv14" value="14181.8"/>
         </ListOfConstants>
         <KineticLaw function="Function_54" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_383">
-              <SourceParameter reference="Parameter_5092"/>
+              <SourceParameter reference="Parameter_4925"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_384">
               <SourceParameter reference="Metabolite_17"/>
@@ -2815,7 +2815,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_16"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_388">
-              <SourceParameter reference="Parameter_5096"/>
+              <SourceParameter reference="Parameter_4926"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2845,7 +2845,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5094" name="kATPasev15" value="1.68"/>
+          <Constant key="Parameter_4924" name="kATPasev15" value="1.68"/>
         </ListOfConstants>
         <KineticLaw function="Function_55" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -2853,7 +2853,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_398">
-              <SourceParameter reference="Parameter_5094"/>
+              <SourceParameter reference="Parameter_4924"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2884,11 +2884,11 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5099" name="Vmaxv16" value="1380"/>
-          <Constant key="Parameter_5100" name="KATPv16" value="0.09"/>
-          <Constant key="Parameter_5101" name="KAMPv16" value="0.08"/>
-          <Constant key="Parameter_5097" name="Keqv16" value="0.25"/>
-          <Constant key="Parameter_5098" name="KADPv16" value="0.11"/>
+          <Constant key="Parameter_4923" name="Vmaxv16" value="1380"/>
+          <Constant key="Parameter_4922" name="KATPv16" value="0.09"/>
+          <Constant key="Parameter_4921" name="KAMPv16" value="0.08"/>
+          <Constant key="Parameter_4920" name="Keqv16" value="0.25"/>
+          <Constant key="Parameter_4919" name="KADPv16" value="0.11"/>
         </ListOfConstants>
         <KineticLaw function="Function_56" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -2899,16 +2899,16 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_20"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_395">
-              <SourceParameter reference="Parameter_5098"/>
+              <SourceParameter reference="Parameter_4919"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_382">
-              <SourceParameter reference="Parameter_5101"/>
+              <SourceParameter reference="Parameter_4921"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_400">
-              <SourceParameter reference="Parameter_5100"/>
+              <SourceParameter reference="Parameter_4922"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_401">
-              <SourceParameter reference="Parameter_5097"/>
+              <SourceParameter reference="Parameter_4920"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_402">
               <SourceParameter reference="Metabolite_3"/>
@@ -2917,7 +2917,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_404">
-              <SourceParameter reference="Parameter_5099"/>
+              <SourceParameter reference="Parameter_4923"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -2960,13 +2960,13 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Modifier metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5102" name="Vmaxv17" value="162"/>
-          <Constant key="Parameter_5104" name="KG6Pv17" value="0.0667"/>
-          <Constant key="Parameter_5103" name="KNADPv17" value="0.00367"/>
-          <Constant key="Parameter_5105" name="Keqv17" value="2000"/>
-          <Constant key="Parameter_5106" name="KATPv17" value="0.749"/>
-          <Constant key="Parameter_5107" name="KNADPHv17" value="0.00312"/>
-          <Constant key="Parameter_5108" name="KPGA23v17" value="2.289"/>
+          <Constant key="Parameter_4918" name="Vmaxv17" value="162"/>
+          <Constant key="Parameter_4917" name="KG6Pv17" value="0.0667"/>
+          <Constant key="Parameter_4916" name="KNADPv17" value="0.00367"/>
+          <Constant key="Parameter_4915" name="Keqv17" value="2000"/>
+          <Constant key="Parameter_4914" name="KATPv17" value="0.749"/>
+          <Constant key="Parameter_4913" name="KNADPHv17" value="0.00312"/>
+          <Constant key="Parameter_4912" name="KPGA23v17" value="2.289"/>
         </ListOfConstants>
         <KineticLaw function="Function_57" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -2983,22 +2983,22 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_13"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_409">
-              <SourceParameter reference="Parameter_5106"/>
+              <SourceParameter reference="Parameter_4914"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_408">
-              <SourceParameter reference="Parameter_5104"/>
+              <SourceParameter reference="Parameter_4917"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_407">
-              <SourceParameter reference="Parameter_5107"/>
+              <SourceParameter reference="Parameter_4913"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_406">
-              <SourceParameter reference="Parameter_5103"/>
+              <SourceParameter reference="Parameter_4916"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_405">
-              <SourceParameter reference="Parameter_5108"/>
+              <SourceParameter reference="Parameter_4912"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_414">
-              <SourceParameter reference="Parameter_5105"/>
+              <SourceParameter reference="Parameter_4915"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_415">
               <SourceParameter reference="Metabolite_1"/>
@@ -3013,7 +3013,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_19"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_419">
-              <SourceParameter reference="Parameter_5102"/>
+              <SourceParameter reference="Parameter_4918"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -3057,14 +3057,14 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Modifier metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5109" name="Vmaxv18" value="1575"/>
-          <Constant key="Parameter_5110" name="K6PG1v18" value="0.01"/>
-          <Constant key="Parameter_5119" name="KNADPv18" value="0.018"/>
-          <Constant key="Parameter_5118" name="Keqv18" value="141.7"/>
-          <Constant key="Parameter_5117" name="KPGA23v18" value="0.12"/>
-          <Constant key="Parameter_5116" name="KATPv18" value="0.154"/>
-          <Constant key="Parameter_5112" name="K6PG2v18" value="0.058"/>
-          <Constant key="Parameter_5111" name="KNADPHv18" value="0.0045"/>
+          <Constant key="Parameter_4911" name="Vmaxv18" value="1575"/>
+          <Constant key="Parameter_4910" name="K6PG1v18" value="0.01"/>
+          <Constant key="Parameter_4909" name="KNADPv18" value="0.018"/>
+          <Constant key="Parameter_4908" name="Keqv18" value="141.7"/>
+          <Constant key="Parameter_4907" name="KPGA23v18" value="0.12"/>
+          <Constant key="Parameter_4906" name="KATPv18" value="0.154"/>
+          <Constant key="Parameter_4905" name="K6PG2v18" value="0.058"/>
+          <Constant key="Parameter_4904" name="KNADPHv18" value="0.0045"/>
         </ListOfConstants>
         <KineticLaw function="Function_58" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -3078,25 +3078,25 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_13"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_431">
-              <SourceParameter reference="Parameter_5110"/>
+              <SourceParameter reference="Parameter_4910"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_430">
-              <SourceParameter reference="Parameter_5112"/>
+              <SourceParameter reference="Parameter_4905"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_429">
-              <SourceParameter reference="Parameter_5116"/>
+              <SourceParameter reference="Parameter_4906"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_428">
-              <SourceParameter reference="Parameter_5111"/>
+              <SourceParameter reference="Parameter_4904"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_427">
-              <SourceParameter reference="Parameter_5119"/>
+              <SourceParameter reference="Parameter_4909"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_426">
-              <SourceParameter reference="Parameter_5117"/>
+              <SourceParameter reference="Parameter_4907"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_425">
-              <SourceParameter reference="Parameter_5118"/>
+              <SourceParameter reference="Parameter_4908"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_424">
               <SourceParameter reference="Metabolite_1"/>
@@ -3114,7 +3114,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_23"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_435">
-              <SourceParameter reference="Parameter_5109"/>
+              <SourceParameter reference="Parameter_4911"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -3146,12 +3146,12 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5114" name="Vmaxv19" value="90"/>
-          <Constant key="Parameter_5113" name="KGSSGv19" value="0.0652"/>
-          <Constant key="Parameter_5124" name="KNADPHv19" value="0.00852"/>
-          <Constant key="Parameter_5121" name="KGSHv19" value="20"/>
-          <Constant key="Parameter_5122" name="KNADPv19" value="0.07"/>
-          <Constant key="Parameter_5123" name="Keqv19" value="1.04"/>
+          <Constant key="Parameter_4903" name="Vmaxv19" value="90"/>
+          <Constant key="Parameter_4902" name="KGSSGv19" value="0.0652"/>
+          <Constant key="Parameter_4901" name="KNADPHv19" value="0.00852"/>
+          <Constant key="Parameter_4900" name="KGSHv19" value="20"/>
+          <Constant key="Parameter_4899" name="KNADPv19" value="0.07"/>
+          <Constant key="Parameter_4898" name="Keqv19" value="1.04"/>
         </ListOfConstants>
         <KineticLaw function="Function_59" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -3162,19 +3162,19 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_24"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_449">
-              <SourceParameter reference="Parameter_5121"/>
+              <SourceParameter reference="Parameter_4900"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_448">
-              <SourceParameter reference="Parameter_5113"/>
+              <SourceParameter reference="Parameter_4902"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_447">
-              <SourceParameter reference="Parameter_5124"/>
+              <SourceParameter reference="Parameter_4901"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_446">
-              <SourceParameter reference="Parameter_5122"/>
+              <SourceParameter reference="Parameter_4899"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_445">
-              <SourceParameter reference="Parameter_5123"/>
+              <SourceParameter reference="Parameter_4898"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_444">
               <SourceParameter reference="Metabolite_18"/>
@@ -3183,7 +3183,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_19"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_442">
-              <SourceParameter reference="Parameter_5114"/>
+              <SourceParameter reference="Parameter_4903"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -3212,7 +3212,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_24" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5115" name="Kv20" value="0.03"/>
+          <Constant key="Parameter_4897" name="Kv20" value="0.03"/>
         </ListOfConstants>
         <KineticLaw function="Function_60" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -3220,7 +3220,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_25"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_454">
-              <SourceParameter reference="Parameter_5115"/>
+              <SourceParameter reference="Parameter_4897"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -3250,27 +3250,27 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_26" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5120" name="Vmaxv21" value="4634"/>
-          <Constant key="Parameter_5125" name="Keqv21" value="2.7"/>
-          <Constant key="Parameter_5126" name="KRu5Pv21" value="0.19"/>
-          <Constant key="Parameter_5127" name="KX5Pv21" value="0.5"/>
+          <Constant key="Parameter_4896" name="Vmaxv21" value="4634"/>
+          <Constant key="Parameter_4895" name="Keqv21" value="2.7"/>
+          <Constant key="Parameter_4894" name="KRu5Pv21" value="0.19"/>
+          <Constant key="Parameter_4893" name="KX5Pv21" value="0.5"/>
         </ListOfConstants>
         <KineticLaw function="Function_61" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_452">
-              <SourceParameter reference="Parameter_5126"/>
+              <SourceParameter reference="Parameter_4894"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_453">
-              <SourceParameter reference="Parameter_5127"/>
+              <SourceParameter reference="Parameter_4893"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_436">
-              <SourceParameter reference="Parameter_5125"/>
+              <SourceParameter reference="Parameter_4895"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_437">
               <SourceParameter reference="Metabolite_23"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_438">
-              <SourceParameter reference="Parameter_5120"/>
+              <SourceParameter reference="Parameter_4896"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_439">
               <SourceParameter reference="Metabolite_26"/>
@@ -3303,21 +3303,21 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_27" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5128" name="Vmaxv22" value="730"/>
-          <Constant key="Parameter_5133" name="Keqv22" value="3"/>
-          <Constant key="Parameter_5130" name="KRu5Pv22" value="0.78"/>
-          <Constant key="Parameter_5132" name="KR5Pv22" value="2.2"/>
+          <Constant key="Parameter_4892" name="Vmaxv22" value="730"/>
+          <Constant key="Parameter_4891" name="Keqv22" value="3"/>
+          <Constant key="Parameter_4890" name="KRu5Pv22" value="0.78"/>
+          <Constant key="Parameter_4889" name="KR5Pv22" value="2.2"/>
         </ListOfConstants>
         <KineticLaw function="Function_62" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_459">
-              <SourceParameter reference="Parameter_5132"/>
+              <SourceParameter reference="Parameter_4889"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_458">
-              <SourceParameter reference="Parameter_5130"/>
+              <SourceParameter reference="Parameter_4890"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_457">
-              <SourceParameter reference="Parameter_5133"/>
+              <SourceParameter reference="Parameter_4891"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_456">
               <SourceParameter reference="Metabolite_27"/>
@@ -3326,7 +3326,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_23"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_440">
-              <SourceParameter reference="Parameter_5128"/>
+              <SourceParameter reference="Parameter_4892"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -3358,15 +3358,15 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_28" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5131" name="Vmaxv23" value="23.5"/>
-          <Constant key="Parameter_5129" name="Keqv23" value="1.05"/>
-          <Constant key="Parameter_5137" name="K1v23" value="0.4177"/>
-          <Constant key="Parameter_5136" name="K2v23" value="0.3055"/>
-          <Constant key="Parameter_5134" name="K6v23" value="0.00774"/>
-          <Constant key="Parameter_5135" name="K3v23" value="12.432"/>
-          <Constant key="Parameter_5197" name="K5v23" value="0.41139"/>
-          <Constant key="Parameter_5156" name="K4v23" value="0.00496"/>
-          <Constant key="Parameter_5138" name="K7v23" value="48.8"/>
+          <Constant key="Parameter_4888" name="Vmaxv23" value="23.5"/>
+          <Constant key="Parameter_4887" name="Keqv23" value="1.05"/>
+          <Constant key="Parameter_4886" name="K1v23" value="0.4177"/>
+          <Constant key="Parameter_4885" name="K2v23" value="0.3055"/>
+          <Constant key="Parameter_4884" name="K6v23" value="0.00774"/>
+          <Constant key="Parameter_4883" name="K3v23" value="12.432"/>
+          <Constant key="Parameter_4882" name="K5v23" value="0.41139"/>
+          <Constant key="Parameter_4881" name="K4v23" value="0.00496"/>
+          <Constant key="Parameter_4880" name="K7v23" value="48.8"/>
         </ListOfConstants>
         <KineticLaw function="Function_63" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -3374,28 +3374,28 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_464">
-              <SourceParameter reference="Parameter_5137"/>
+              <SourceParameter reference="Parameter_4886"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_463">
-              <SourceParameter reference="Parameter_5136"/>
+              <SourceParameter reference="Parameter_4885"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_462">
-              <SourceParameter reference="Parameter_5135"/>
+              <SourceParameter reference="Parameter_4883"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_461">
-              <SourceParameter reference="Parameter_5156"/>
+              <SourceParameter reference="Parameter_4881"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_460">
-              <SourceParameter reference="Parameter_5197"/>
+              <SourceParameter reference="Parameter_4882"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_466">
-              <SourceParameter reference="Parameter_5134"/>
+              <SourceParameter reference="Parameter_4884"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_467">
-              <SourceParameter reference="Parameter_5138"/>
+              <SourceParameter reference="Parameter_4880"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_468">
-              <SourceParameter reference="Parameter_5129"/>
+              <SourceParameter reference="Parameter_4887"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_469">
               <SourceParameter reference="Metabolite_27"/>
@@ -3404,7 +3404,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_28"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_471">
-              <SourceParameter reference="Parameter_5131"/>
+              <SourceParameter reference="Parameter_4888"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_472">
               <SourceParameter reference="Metabolite_26"/>
@@ -3439,15 +3439,15 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5195" name="Vmaxv24" value="27.2"/>
-          <Constant key="Parameter_5200" name="Keqv24" value="1.05"/>
-          <Constant key="Parameter_5194" name="K1v24" value="0.00823"/>
-          <Constant key="Parameter_5196" name="K2v24" value="0.04765"/>
-          <Constant key="Parameter_5142" name="K6v24" value="0.4653"/>
-          <Constant key="Parameter_5144" name="K3v24" value="0.1733"/>
-          <Constant key="Parameter_5145" name="K5v24" value="0.8683"/>
-          <Constant key="Parameter_5139" name="K4v24" value="0.006095"/>
-          <Constant key="Parameter_5141" name="K7v24" value="2.524"/>
+          <Constant key="Parameter_4879" name="Vmaxv24" value="27.2"/>
+          <Constant key="Parameter_4878" name="Keqv24" value="1.05"/>
+          <Constant key="Parameter_4877" name="K1v24" value="0.00823"/>
+          <Constant key="Parameter_4876" name="K2v24" value="0.04765"/>
+          <Constant key="Parameter_4875" name="K6v24" value="0.4653"/>
+          <Constant key="Parameter_4874" name="K3v24" value="0.1733"/>
+          <Constant key="Parameter_4873" name="K5v24" value="0.8683"/>
+          <Constant key="Parameter_4872" name="K4v24" value="0.006095"/>
+          <Constant key="Parameter_4871" name="K7v24" value="2.524"/>
         </ListOfConstants>
         <KineticLaw function="Function_64" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -3461,34 +3461,34 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_482">
-              <SourceParameter reference="Parameter_5194"/>
+              <SourceParameter reference="Parameter_4877"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_481">
-              <SourceParameter reference="Parameter_5196"/>
+              <SourceParameter reference="Parameter_4876"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_480">
-              <SourceParameter reference="Parameter_5144"/>
+              <SourceParameter reference="Parameter_4874"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_479">
-              <SourceParameter reference="Parameter_5139"/>
+              <SourceParameter reference="Parameter_4872"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_478">
-              <SourceParameter reference="Parameter_5145"/>
+              <SourceParameter reference="Parameter_4873"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_477">
-              <SourceParameter reference="Parameter_5142"/>
+              <SourceParameter reference="Parameter_4875"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_476">
-              <SourceParameter reference="Parameter_5141"/>
+              <SourceParameter reference="Parameter_4871"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_475">
-              <SourceParameter reference="Parameter_5200"/>
+              <SourceParameter reference="Parameter_4878"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_474">
               <SourceParameter reference="Metabolite_28"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_473">
-              <SourceParameter reference="Parameter_5195"/>
+              <SourceParameter reference="Parameter_4879"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -3520,21 +3520,21 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_40" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5140" name="Vmaxv25" value="1.1"/>
-          <Constant key="Parameter_5143" name="Keqv25" value="100000"/>
-          <Constant key="Parameter_5148" name="KATPv25" value="0.03"/>
-          <Constant key="Parameter_5155" name="KR5Pv25" value="0.57"/>
+          <Constant key="Parameter_4870" name="Vmaxv25" value="1.1"/>
+          <Constant key="Parameter_4869" name="Keqv25" value="100000"/>
+          <Constant key="Parameter_4868" name="KATPv25" value="0.03"/>
+          <Constant key="Parameter_4867" name="KR5Pv25" value="0.57"/>
         </ListOfConstants>
         <KineticLaw function="Function_65" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_498">
-              <SourceParameter reference="Parameter_5148"/>
+              <SourceParameter reference="Parameter_4868"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_497">
-              <SourceParameter reference="Parameter_5155"/>
+              <SourceParameter reference="Parameter_4867"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_496">
-              <SourceParameter reference="Parameter_5143"/>
+              <SourceParameter reference="Parameter_4869"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_495">
               <SourceParameter reference="Metabolite_30"/>
@@ -3549,7 +3549,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_27"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_491">
-              <SourceParameter reference="Parameter_5140"/>
+              <SourceParameter reference="Parameter_4870"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -3581,15 +3581,15 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5159" name="Vmaxv26" value="23.5"/>
-          <Constant key="Parameter_5152" name="Keqv26" value="1.2"/>
-          <Constant key="Parameter_5149" name="K1v26" value="0.00184"/>
-          <Constant key="Parameter_5153" name="K2v26" value="0.3055"/>
-          <Constant key="Parameter_5146" name="K6v26" value="0.122"/>
-          <Constant key="Parameter_5150" name="K3v26" value="0.0548"/>
-          <Constant key="Parameter_5147" name="K5v26" value="0.0287"/>
-          <Constant key="Parameter_5154" name="K4v26" value="0.0003"/>
-          <Constant key="Parameter_5151" name="K7v26" value="0.215"/>
+          <Constant key="Parameter_4866" name="Vmaxv26" value="23.5"/>
+          <Constant key="Parameter_4865" name="Keqv26" value="1.2"/>
+          <Constant key="Parameter_4864" name="K1v26" value="0.00184"/>
+          <Constant key="Parameter_4863" name="K2v26" value="0.3055"/>
+          <Constant key="Parameter_4862" name="K6v26" value="0.122"/>
+          <Constant key="Parameter_4861" name="K3v26" value="0.0548"/>
+          <Constant key="Parameter_4860" name="K5v26" value="0.0287"/>
+          <Constant key="Parameter_4859" name="K4v26" value="0.0003"/>
+          <Constant key="Parameter_4858" name="K7v26" value="0.215"/>
         </ListOfConstants>
         <KineticLaw function="Function_66" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -3603,31 +3603,31 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_486">
-              <SourceParameter reference="Parameter_5149"/>
+              <SourceParameter reference="Parameter_4864"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_487">
-              <SourceParameter reference="Parameter_5153"/>
+              <SourceParameter reference="Parameter_4863"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_488">
-              <SourceParameter reference="Parameter_5150"/>
+              <SourceParameter reference="Parameter_4861"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_489">
-              <SourceParameter reference="Parameter_5154"/>
+              <SourceParameter reference="Parameter_4859"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_490">
-              <SourceParameter reference="Parameter_5147"/>
+              <SourceParameter reference="Parameter_4860"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_502">
-              <SourceParameter reference="Parameter_5146"/>
+              <SourceParameter reference="Parameter_4862"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_503">
-              <SourceParameter reference="Parameter_5151"/>
+              <SourceParameter reference="Parameter_4858"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_504">
-              <SourceParameter reference="Parameter_5152"/>
+              <SourceParameter reference="Parameter_4865"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_505">
-              <SourceParameter reference="Parameter_5159"/>
+              <SourceParameter reference="Parameter_4866"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_506">
               <SourceParameter reference="Metabolite_26"/>
@@ -3654,13 +3654,13 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_8" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5004" name="Vmaxv27" value="100"/>
-          <Constant key="Parameter_5013" name="Keqv27" value="1"/>
+          <Constant key="Parameter_4857" name="Vmaxv27" value="100"/>
+          <Constant key="Parameter_4856" name="Keqv27" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_67" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_519">
-              <SourceParameter reference="Parameter_5013"/>
+              <SourceParameter reference="Parameter_4856"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_518">
               <SourceParameter reference="Metabolite_8"/>
@@ -3669,7 +3669,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_44"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_516">
-              <SourceParameter reference="Parameter_5004"/>
+              <SourceParameter reference="Parameter_4857"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -3693,13 +3693,13 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_17" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5008" name="Vmaxv28" value="10000"/>
-          <Constant key="Parameter_5011" name="Keqv28" value="1"/>
+          <Constant key="Parameter_4855" name="Vmaxv28" value="10000"/>
+          <Constant key="Parameter_4854" name="Keqv28" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_68" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_512">
-              <SourceParameter reference="Parameter_5011"/>
+              <SourceParameter reference="Parameter_4854"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_513">
               <SourceParameter reference="Metabolite_17"/>
@@ -3708,7 +3708,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_41"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_515">
-              <SourceParameter reference="Parameter_5008"/>
+              <SourceParameter reference="Parameter_4855"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -3732,13 +3732,13 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_16" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5003" name="Vmaxv29" value="10000"/>
-          <Constant key="Parameter_5007" name="Keqv29" value="1"/>
+          <Constant key="Parameter_4853" name="Vmaxv29" value="10000"/>
+          <Constant key="Parameter_4852" name="Keqv29" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_69" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_508">
-              <SourceParameter reference="Parameter_5007"/>
+              <SourceParameter reference="Parameter_4852"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_509">
               <SourceParameter reference="Metabolite_16"/>
@@ -3747,7 +3747,7 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_42"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_511">
-              <SourceParameter reference="Parameter_5003"/>
+              <SourceParameter reference="Parameter_4853"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -3772,8 +3772,8 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_31" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5006" name="EqMult" value="1e+07"/>
-          <Constant key="Parameter_5015" name="KdATP" value="0.072"/>
+          <Constant key="Parameter_4851" name="EqMult" value="1e+07"/>
+          <Constant key="Parameter_4850" name="KdATP" value="0.072"/>
         </ListOfConstants>
         <KineticLaw function="Function_70" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -3781,10 +3781,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_31"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_521">
-              <SourceParameter reference="Parameter_5006"/>
+              <SourceParameter reference="Parameter_4851"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_520">
-              <SourceParameter reference="Parameter_5015"/>
+              <SourceParameter reference="Parameter_4850"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_507">
               <SourceParameter reference="Metabolite_1"/>
@@ -3815,8 +3815,8 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5012" name="EqMult" value="1e+07"/>
-          <Constant key="Parameter_5010" name="KdADP" value="0.76"/>
+          <Constant key="Parameter_4849" name="EqMult" value="1e+07"/>
+          <Constant key="Parameter_4848" name="KdADP" value="0.76"/>
         </ListOfConstants>
         <KineticLaw function="Function_71" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -3824,10 +3824,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_21"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_527">
-              <SourceParameter reference="Parameter_5012"/>
+              <SourceParameter reference="Parameter_4849"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_526">
-              <SourceParameter reference="Parameter_5010"/>
+              <SourceParameter reference="Parameter_4848"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_525">
               <SourceParameter reference="Metabolite_3"/>
@@ -3858,8 +3858,8 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_20" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5009" name="EqMult" value="1e+07"/>
-          <Constant key="Parameter_5014" name="KdAMP" value="16.64"/>
+          <Constant key="Parameter_4847" name="EqMult" value="1e+07"/>
+          <Constant key="Parameter_4846" name="KdAMP" value="16.64"/>
         </ListOfConstants>
         <KineticLaw function="Function_72" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
@@ -3867,10 +3867,10 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
               <SourceParameter reference="Metabolite_20"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_532">
-              <SourceParameter reference="Parameter_5009"/>
+              <SourceParameter reference="Parameter_4847"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_531">
-              <SourceParameter reference="Parameter_5014"/>
+              <SourceParameter reference="Parameter_4846"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_530">
               <SourceParameter reference="Metabolite_30"/>
@@ -3901,19 +3901,19 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5017" name="EqMult" value="1e+07"/>
-          <Constant key="Parameter_5005" name="Kd23P2G" value="1.667"/>
+          <Constant key="Parameter_4845" name="EqMult" value="1e+07"/>
+          <Constant key="Parameter_4844" name="Kd23P2G" value="1.667"/>
         </ListOfConstants>
         <KineticLaw function="Function_73" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_538">
-              <SourceParameter reference="Parameter_5017"/>
+              <SourceParameter reference="Parameter_4845"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_537">
               <SourceParameter reference="Metabolite_13"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_536">
-              <SourceParameter reference="Parameter_5005"/>
+              <SourceParameter reference="Parameter_4844"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_535">
               <SourceParameter reference="Metabolite_33"/>
@@ -3944,16 +3944,16 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5016" name="EqMult" value="1e+07"/>
-          <Constant key="Parameter_5192" name="Kd1" value="0.0002"/>
+          <Constant key="Parameter_4843" name="EqMult" value="1e+07"/>
+          <Constant key="Parameter_4842" name="Kd1" value="0.0002"/>
         </ListOfConstants>
         <KineticLaw function="Function_74" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_543">
-              <SourceParameter reference="Parameter_5016"/>
+              <SourceParameter reference="Parameter_4843"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_542">
-              <SourceParameter reference="Parameter_5192"/>
+              <SourceParameter reference="Parameter_4842"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_541">
               <SourceParameter reference="Metabolite_19"/>
@@ -3987,13 +3987,13 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
           <Product metabolite="Metabolite_18" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5193" name="EqMult" value="1e+07"/>
+          <Constant key="Parameter_4841" name="EqMult" value="1e+07"/>
           <Constant key="Parameter_4840" name="Kd3" value="1e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_75" unitType="Default" scalingCompartment="CN=Root,Model=Holzhutter2004_Erythrocyte_Metabolism,Vector=Compartments[cytoplasm]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_548">
-              <SourceParameter reference="Parameter_5193"/>
+              <SourceParameter reference="Parameter_4841"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_547">
               <SourceParameter reference="Parameter_4840"/>
@@ -4097,16 +4097,16 @@ To cite BioModels Database, please use: <a href="http://www.ncbi.nlm.nih.gov/pub
         </KineticLaw>
       </Reaction>
     </ListOfReactions>
-    <ListOfModelParameterSets activeSet="ModelParameterSet_0">
-      <ModelParameterSet key="ModelParameterSet_0" name="Initial State">
+    <ListOfModelParameterSets activeSet="ModelParameterSet_1">
+      <ModelParameterSet key="ModelParameterSet_1" name="Initial State">
         <MiriamAnnotation>
 <rdf:RDF
 xmlns:dcterms="http://purl.org/dc/terms/"
 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-<rdf:Description rdf:about="#ModelParameterSet_0">
+<rdf:Description rdf:about="#ModelParameterSet_1">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-12-30T02:59:42Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2021-01-04T13:53:18Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -4414,7 +4414,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
       </ModelParameterSet>
     </ListOfModelParameterSets>
     <StateTemplate>
-      <StateTemplateVariable objectReference="Model_0"/>
+      <StateTemplateVariable objectReference="Model_1"/>
       <StateTemplateVariable objectReference="Metabolite_1"/>
       <StateTemplateVariable objectReference="Metabolite_25"/>
       <StateTemplateVariable objectReference="Metabolite_6"/>
@@ -4467,8 +4467,8 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_13" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
-      <Report reference="Report_10" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_15" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+      <Report reference="Report_11" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
@@ -4486,8 +4486,8 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Target Criterion" type="string" value="Distance and Rate"/>
       </Method>
     </Task>
-    <Task key="Task_12" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
-      <Report reference="Report_9" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_16" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
+      <Report reference="Report_12" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
@@ -4509,7 +4509,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_11" name="Scan" type="scan" scheduled="false" updateModel="false">
+    <Task key="Task_17" name="Scan" type="scan" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
@@ -4521,15 +4521,15 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_10" name="Elementary Flux Modes" type="fluxMode" scheduled="true" updateModel="false">
+    <Task key="Task_18" name="Elementary Flux Modes" type="fluxMode" scheduled="true" updateModel="false">
       <Report reference="Report_22" target="BIOMOD70_efm.out" append="1" confirmOverwrite="0"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
       </Method>
     </Task>
-    <Task key="Task_9" name="Optimization" type="optimization" scheduled="false" updateModel="false">
-      <Report reference="Report_7" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_19" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+      <Report reference="Report_14" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
         <ParameterText name="ObjectiveExpression" type="expression">
@@ -4550,8 +4550,8 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_8" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
-      <Report reference="Report_6" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_20" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+      <Report reference="Report_15" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
@@ -4581,10 +4581,10 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Stop after # Stalled Generations" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_7" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_5" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_21" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_16" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_13"/>
+        <Parameter name="Steady-State" type="key" value="Task_15"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="Modulation Factor" type="unsignedFloat" value="1.0000000000000001e-09"/>
@@ -4592,8 +4592,8 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Use Smallbone" type="bool" value="1"/>
       </Method>
     </Task>
-    <Task key="Task_6" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
-      <Report reference="Report_4" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_22" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+      <Report reference="Report_17" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -4607,8 +4607,8 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_5" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_3" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_23" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_18" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -4620,8 +4620,8 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="0.0001"/>
       </Method>
     </Task>
-    <Task key="Task_4" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
-      <Report reference="Report_2" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_24" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
+      <Report reference="Report_19" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
         <ParameterGroup name="TargetFunctions">
@@ -4644,14 +4644,14 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Delta minimum" type="unsignedFloat" value="9.9999999999999998e-13"/>
       </Method>
     </Task>
-    <Task key="Task_3" name="Moieties" type="moieties" scheduled="false" updateModel="false">
-      <Report reference="Report_1" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_25" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+      <Report reference="Report_20" target="" append="1" confirmOverwrite="1"/>
       <Problem>
       </Problem>
       <Method name="Householder Reduction" type="Householder">
       </Method>
     </Task>
-    <Task key="Task_2" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
+    <Task key="Task_26" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
@@ -4688,15 +4688,15 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_1" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
-      <Report reference="Report_0" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_27" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
+      <Report reference="Report_21" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_13"/>
+        <Parameter name="Steady-State" type="key" value="Task_15"/>
       </Problem>
       <Method name="Linear Noise Approximation" type="LinearNoiseApproximation">
       </Method>
     </Task>
-    <Task key="Task_14" name="Time-Course Sensitivities" type="timeSensitivities" scheduled="false" updateModel="false">
+    <Task key="Task_28" name="Time-Course Sensitivities" type="timeSensitivities" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
@@ -4723,7 +4723,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_10" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_11" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4731,7 +4731,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_9" name="Time-Course" taskType="timeCourse" separator="&#x09;" precision="6">
+    <Report key="Report_12" name="Time-Course" taskType="timeCourse" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4742,7 +4742,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Time-Course],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_8" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+    <Report key="Report_13" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4750,7 +4750,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_7" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_14" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4774,7 +4774,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_6" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_15" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4798,7 +4798,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_5" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_16" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4810,7 +4810,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_4" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_17" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4822,7 +4822,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_3" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_18" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4834,7 +4834,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_2" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
+    <Report key="Report_19" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4846,7 +4846,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Sensitivities],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_1" name="Moieties" taskType="moieties" separator="&#x09;" precision="6">
+    <Report key="Report_20" name="Moieties" taskType="moieties" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4858,7 +4858,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Moieties],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_0" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
+    <Report key="Report_21" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -4873,11 +4873,6 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <Report key="Report_22" name="Speed test" taskType="scan" separator="&#x09;" precision="8">
       <Comment>
       </Comment>
-      <Header>
-        <Object cn="CN=Root,CN=Information,String=COPASI Version"/>
-        <Object cn="Separator=&#x09;"/>
-        <Object cn="CN=Root,CN=Information,Timer=Current Date/Time"/>
-      </Header>
       <Footer>
         <Object cn="CN=Root,CN=Information,String=COPASI Version"/>
         <Object cn="Separator=&#x09;"/>
@@ -4898,7 +4893,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_0">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-12-30T02:59:35Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2021-01-04T13:53:17Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -4916,7 +4911,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_4">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-12-30T02:59:35Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2021-01-04T13:53:17Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -4934,7 +4929,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_12">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-12-30T02:59:35Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2021-01-04T13:53:17Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -4952,7 +4947,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_16">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-12-30T02:59:35Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2021-01-04T13:53:17Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -4970,7 +4965,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_34">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-12-30T02:59:35Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2021-01-04T13:53:17Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -4988,7 +4983,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_40">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-12-30T02:59:35Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2021-01-04T13:53:17Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -5006,7 +5001,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_66">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-12-30T02:59:35Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2021-01-04T13:53:17Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
