@@ -91,7 +91,7 @@ RADAUVERSIONS="/usr/local/COPASI-4.26.213-Linux-64bit/bin/CopasiSE
 RADAUTASKS="Pollution_radau5.cps"
 
 # SDEVERSIONS are versions that work for the SDE tasks
-RESTRICTEDVERSIONS="/usr/local/COPASI-4.28.226-Linux-64bit/bin/CopasiSE
+SDEVERSIONS="/usr/local/COPASI-4.28.226-Linux-64bit/bin/CopasiSE
 /usr/local/COPASI-4.29.228-Linux-64bit/bin/CopasiSE
 /usr/local/COPASI-4.30.237-Linux-64bit/bin/CopasiSE"
 
