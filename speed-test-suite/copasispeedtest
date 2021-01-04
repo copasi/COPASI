@@ -124,7 +124,7 @@ do
 	printf "$f "
 	for v in $VERSIONS
 	do
-		if [[ $f = *.cps ]]; then 
+		if [[ $f = *.?ps ]]; then 
 		      printf "."
 		      $v 2>/dev/null | head -n 1 >> $OUT
 		      /usr/bin/time -f "%e" -a -o $OUT $v --nologo $f
