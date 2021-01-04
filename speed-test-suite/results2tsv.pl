@@ -19,12 +19,25 @@ while( defined($ifile = <*.out>) )
   $name =~ s/\.out//;
   printf(OFILE "$name");
 
+  $header = 0;
   while( <IFILE> )
   {
-    #read only lines with a single numerical value
+    #read data when it starts a line
     if( /^(\d+\.\d*)$/ )
     {
-      printf(OFILE "\t$1" );  
+      printf(OFILE "\t$1" ); 
+      # this was not a header...
+      $header = 0;
+    }
+    else
+    {
+      if( $header == 1 ) 
+      {
+	# if the previous line was a header there is missing data!
+	printf(OFILE "\t");
+      }
+      # this was a header
+      $header = 1;
     }
   }
   printf(OFILE "\n" );    
