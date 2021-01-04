@@ -52,6 +52,14 @@ and you would like to contribute it, please make sure that the file has:
 Articles describing the results of profiling different COPASI versions will be included here. 
 Currently the file *Profile_4.16-4.30.md* contains the results of profiling versions 4.16 to 4.30.
 
+The results of the tests are all written out to files with extension *.out*. To facilitate 
+summarizing the results a PERL script is provided; *results2tsv.pl* reads all *.out* files and writes 
+them to a tab-separated file, with one test per line, with each numeric result in a new column. 
+Note that while this script accounts for missing data it does not identify the special cases where
+some older versions are not run (e.g. with tests for SDE and RADAU5 algorithms). In those 
+cases the user will have to manually shift the columns appropriately.
+
+
 ## List of tests
 File | Function tested | Observations
 -----|-----------------|--------
