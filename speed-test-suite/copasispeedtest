@@ -34,8 +34,8 @@ multistate_gillespie.cps
 multistate_gb.cps
 Vilar2002_tauleap.cps
 Vilar2002_adaptivetauleap.cps
-HuangFerrel_hydrib-rk.cps
-HuangFerrel_hydrib-lsoda.cps
+HuangFerrel_hybrid-rk.cps
+HuangFerrel_hybrid-lsoda.cps
 Dacheaux2017_hybrid-rk45.cps
 ERBB-RAS-AKT_ss.cps
 Schoeberl_ss.cps
