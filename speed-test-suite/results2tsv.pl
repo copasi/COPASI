@@ -40,6 +40,11 @@ while( defined($ifile = <*.out>) )
       $header = 1;
     }
   }
+  if ( $header == 1 )
+  {
+    # last line was a header, so there is missing data
+    printf(OFILE "\t");
+  }  
   printf(OFILE "\n" );    
   close( IFILE );
 }
