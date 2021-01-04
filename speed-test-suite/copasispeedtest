@@ -34,7 +34,6 @@ multistate_gillespie.cps
 multistate_gb.cps
 Vilar2002_tauleap.cps
 Vilar2002_adaptivetauleap.cps
-HuangFerrel_hybrid-rk.cps
 HuangFerrel_hybrid-lsoda.cps
 Dacheaux2017_hybrid-rk45.cps
 ERBB-RAS-AKT_ss.cps
@@ -99,6 +98,18 @@ SDEVERSIONS="/usr/local/COPASI-4.28.226-Linux-64bit/bin/CopasiSE
 # SDETASKS contains .cps files that test the RI5 SDE solver
 SDETASKS="HuangFerrel_sde.cps"
 
+# HRKVERSIONS are versions that work for the hybrid-RK solver
+HRKVERSIONS="/usr/local/COPASI-4.16.104-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.25.207-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.26.213-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.27.217-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.28.226-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.29.228-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.30.237-Linux-64bit/bin/CopasiSE"
+
+# HRKTASKS contains .cps files that test the hybrid-RK solver
+HRKTASKS="HuangFerrel_hybrid-rk.cps"
+
 # END OF CONFIGURATION
 
 # Display list of versions to profile
@@ -139,6 +150,7 @@ do
 	done
 	printf "\n"
 done
+echo
 
 # Profile tasks
 echo "Profiling tasks"
@@ -152,6 +164,7 @@ do
 	done
 	printf "\n"
 done
+echo
 
 # Profile radau tasks
 echo "Profiling RADAU5 tasks"
@@ -165,6 +178,7 @@ do
 	done
 	printf "\n"
 done
+echo
 
 # Profile sde tasks
 echo "Profiling SDE tasks"
@@ -178,6 +192,21 @@ do
 	done
 	printf "\n"
 done
+echo
+
+# Profile sde tasks
+echo "Profiling hybrid-RK tasks"
+for f in $HRKTASKS
+do
+	printf "$f "
+	for v in $HRKVERSIONS
+	do
+		printf "."
+		$v --nologo 2>/dev/null $f
+	done
+	printf "\n"
+done
+echo
 
 # Done!
 printf "\n All tests done.\n"
