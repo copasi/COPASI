@@ -70,6 +70,7 @@ Colville_opt-sd.cps
 Colville_opt-praxis.cps
 Colville_opt-gasr.cps
 Rosenbrock10_opt-lm.cps
+Rosenbrock10_opt-nm.cps
 Rosenbrock10_opt-hj.cps
 Rosenbrock10_opt-ss.cps
 Weierstrass_opt-de.cps
