@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -43,41 +43,37 @@
 
 COptMethod::COptMethod(const CDataContainer * pParent,
                        const CTaskEnum::Method & methodType,
-                       const CTaskEnum::Task & taskType):
-  CCopasiMethod(pParent, methodType, taskType),
-  mpOptProblem(NULL),
-  mpParentTask(NULL),
-  mContainerVariables(),
-  mpOptItem(NULL),
-  mpOptContraints(NULL),
-  mLogVerbosity(0),
-  mMethodLog()
+                       const CTaskEnum::Task & taskType)
+  : CCopasiMethod(pParent, methodType, taskType)
+  , mpParentTask(NULL)
+  , mLogVerbosity(0)
+  , mMethodLog()
+  , mProblemContext(NULL)
+  , mMathContext(NULL)
 {
   assertParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 }
 
 COptMethod::COptMethod(const COptMethod & src,
-                       const CDataContainer * pParent):
-  CCopasiMethod(src, pParent),
-  mpOptProblem(src.mpOptProblem),
-  mpParentTask(src.mpParentTask),
-  mContainerVariables(),
-  mpOptItem(src.mpOptItem),
-  mpOptContraints(src.mpOptContraints),
-  mLogVerbosity(src.mLogVerbosity),
-  mMethodLog(src.mMethodLog)
+                       const CDataContainer * pParent)
+  : CCopasiMethod(src, pParent)
+  , mpParentTask(src.mpParentTask)
+  , mLogVerbosity(src.mLogVerbosity)
+  , mMethodLog(src.mMethodLog)
+  , mProblemContext(src.mProblemContext.master())
+  , mMathContext(src.mMathContext.master())
 {
-  mContainerVariables.initialize(src.mContainerVariables);
+  mProblemContext.setMathContext(mMathContext);
 }
 
 //YOHE: seems "virtual" cannot be outside of class declaration
 COptMethod::~COptMethod()
 {}
 
-void COptMethod::setProblem(COptProblem * problem)
+void COptMethod::setProblem(COptProblem * pProblem)
 {
-  assert(problem);
-  mpOptProblem = problem;
+  mProblemContext.setMaster(pProblem);
+  mProblemContext.setMathContext(mMathContext);
 }
 
 //virtual C_INT32 COptMethod::Optimise(C_FLOAT64 (*func) (void))
@@ -88,31 +84,25 @@ bool COptMethod::optimise(void)
 
 bool COptMethod::initialize()
 {
-  if (!mpOptProblem)
+  if (mProblemContext.master() == NULL)
     return false;
-
-  if (!(mpOptItem = &mpOptProblem->getOptItemList()))
-    return false;
-
-  if (!(mpOptContraints = &mpOptProblem->getConstraintList()))
-    return false;
-
-  mContainerVariables.initialize(mpOptProblem->getContainerVariables());
 
   mpParentTask = dynamic_cast<COptTask *>(getObjectParent());
 
   if (!mpParentTask) return false;
-
-  /*if (pTask &&
-      (mpReport = &pTask->getReport()) &&
-      !mpReport->getStream())
-    mpReport = NULL;*/
 
   //new log
   mLogVerbosity = getValue< unsigned C_INT32 >("Log Verbosity");
   mMethodLog = COptLog();
 
   return true;
+}
+
+// virtual
+void COptMethod::signalMathContainerChanged()
+{
+  mMathContext.setMaster(mpContainer);
+  mProblemContext.setMathContext(mMathContext);
 }
 
 bool COptMethod::cleanup()

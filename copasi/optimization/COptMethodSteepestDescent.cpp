@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -97,7 +97,7 @@ bool COptMethodSteepestDescent::optimise()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *(*mpOptItem)[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
 
       switch (OptItem.checkConstraint(OptItem.getStartValue()))
         {
@@ -116,7 +116,7 @@ bool COptMethodSteepestDescent::optimise()
             break;
         }
 
-      *mContainerVariables[i] = mIndividual[i];
+      *mProblemContext.master()->getContainerVariables()[i] = mIndividual[i];
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -124,7 +124,7 @@ bool COptMethodSteepestDescent::optimise()
 
   fmx = mBestValue = evaluate();
 
-  mContinue = mpOptProblem->setSolution(mBestValue, mIndividual);
+  mContinue = mProblemContext.master()->setSolution(mBestValue, mIndividual);
 
   // We found a new best value lets report it.
   //if (mpReport) mpReport->printBody();
@@ -150,12 +150,12 @@ bool COptMethodSteepestDescent::optimise()
             {
               if (mGradient[i] > 0)
                 {
-                  tmp = *(*mpOptItem)[i]->getUpperBoundValue();
+                  tmp = *mProblemContext.master()->getOptItemList()[i]->getUpperBoundValue();
                 }
 
               else
                 {
-                  tmp = *(*mpOptItem)[i]->getLowerBoundValue();
+                  tmp = *mProblemContext.master()->getOptItemList()[i]->getLowerBoundValue();
                 }
 
               // calculate the size of the largest jump
@@ -219,7 +219,7 @@ bool COptMethodSteepestDescent::optimise()
         }
 
       for (i = 0; i < mVariableSize; i++)
-        mIndividual[i] = *(*mpOptItem)[i]->getObjectValue();
+        mIndividual[i] = *mProblemContext.master()->getOptItemList()[i]->getObjectValue();
 
       if (mLogVerbosity > 1)
         {
@@ -239,7 +239,7 @@ bool COptMethodSteepestDescent::optimise()
         {
           mBestValue = fmx;
 
-          mContinue = mpOptProblem->setSolution(mBestValue, mIndividual);
+          mContinue = mProblemContext.master()->setSolution(mBestValue, mIndividual);
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();
@@ -271,20 +271,18 @@ bool COptMethodSteepestDescent::initialize()
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
 
   mContinue = true;
-  mVariableSize = mpOptItem->size();
+  mVariableSize = mProblemContext.master()->getOptItemList().size();
   mIndividual.resize(mVariableSize);
   mGradient.resize(mVariableSize);
 
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
-
-  CFitProblem* pFitProblem = dynamic_cast<CFitProblem*>(mpOptProblem);
+  CFitProblem* pFitProblem = dynamic_cast<CFitProblem*>(mProblemContext.master());
 
   if (pFitProblem != NULL)
     {
       pFitProblem->setResidualsRequired(true);
     }
-
 
   return true;
 }
@@ -292,7 +290,7 @@ bool COptMethodSteepestDescent::initialize()
 void COptMethodSteepestDescent::gradient()
 {
 
-  C_FLOAT64 **ppContainerVariable = mContainerVariables.array();
+  C_FLOAT64 **ppContainerVariable = mProblemContext.master()->getContainerVariables().array();
   C_FLOAT64 **ppContainerVariableEnd = ppContainerVariable + mVariableSize;
   C_FLOAT64 * pGradient = mGradient.array();
 
@@ -301,7 +299,7 @@ void COptMethodSteepestDescent::gradient()
 
   y = evaluate();
 
-  CFitProblem* pFit = dynamic_cast<CFitProblem*>(mpOptProblem);
+  CFitProblem* pFit = dynamic_cast<CFitProblem*>(mProblemContext.master());
 
   if (pFit && pFit->getUseTimeSens())
     {
@@ -318,7 +316,6 @@ void COptMethodSteepestDescent::gradient()
 
           for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pJacobianT++)
             *pGradient += *pJacobianT * *pCurrentResiduals;
-
         }
 
       return;
@@ -344,7 +341,7 @@ void COptMethodSteepestDescent::gradient()
 
 C_FLOAT64 COptMethodSteepestDescent::descentLine(const C_FLOAT64 & x)
 {
-  C_FLOAT64 **ppContainerVariable = mContainerVariables.array();
+  C_FLOAT64 **ppContainerVariable = mProblemContext.master()->getContainerVariables().array();
   C_FLOAT64 **ppContainerVariableEnd = ppContainerVariable + mVariableSize;
   C_FLOAT64 * pGradient = mGradient.array();
   C_FLOAT64 * pIndividual = mIndividual.array();
@@ -361,16 +358,16 @@ C_FLOAT64 COptMethodSteepestDescent::descentLine(const C_FLOAT64 & x)
 const C_FLOAT64 & COptMethodSteepestDescent::evaluate()
 {
   // evaluate the fitness
-  mContinue = mpOptProblem->calculate();
+  mContinue = mProblemContext.master()->calculate();
 
-  mValue = mpOptProblem->getCalculateValue();
+  mValue = mProblemContext.master()->getCalculateValue();
 
   // when we leave the either the parameter or functional domain
   // we penalize the objective value by forcing it to be larger
   // than the best value recorded so far.
   if (mValue < mBestValue &&
-      (!mpOptProblem->checkParametricConstraints() ||
-       !mpOptProblem->checkFunctionalConstraints()))
+      (!mProblemContext.master()->checkParametricConstraints() ||
+       !mProblemContext.master()->checkFunctionalConstraints()))
     mValue = mBestValue + fabs(mBestValue - mValue);
 
   return mValue;

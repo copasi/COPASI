@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -120,7 +120,7 @@ bool CRandomSearch::initialize()
 
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
-  mVariableSize = mpOptItem->size();
+  mVariableSize = mProblemContext.master()->getOptItemList().size();
   mIndividual.resize(mVariableSize);
 
   return true;
@@ -154,7 +154,7 @@ bool CRandomSearch::optimise()
   for (j = 0; j < mVariableSize; j++)
     {
       C_FLOAT64 & mut = mIndividual[j];
-      COptItem & OptItem = *(*mpOptItem)[j];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
 
       mut = OptItem.getStartValue();
 
@@ -174,7 +174,7 @@ bool CRandomSearch::optimise()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mContainerVariables[j] = (mut);
+      *mProblemContext.master()->getContainerVariables()[j] = (mut);
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -182,7 +182,7 @@ bool CRandomSearch::optimise()
 
   Continue = evaluate(mIndividual);
   mBestValue = mValue;
-  Continue = mpOptProblem->setSolution(mBestValue, mIndividual);
+  Continue = mProblemContext.master()->setSolution(mBestValue, mIndividual);
 
   // We found a new best value lets report it.
   //if (mpReport) mpReport->printBody();
@@ -193,7 +193,7 @@ bool CRandomSearch::optimise()
       for (j = 0; j < mVariableSize && Continue; j++)
         {
           // CALCULATE lower and upper bounds
-          COptItem & OptItem = *(*mpOptItem)[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
           C_FLOAT64 & mut = mIndividual[j];
 
           mut = OptItem.getRandomValue(*mpRandom);
@@ -230,7 +230,7 @@ bool CRandomSearch::optimise()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mContainerVariables[j] = (mut);
+          *mProblemContext.master()->getContainerVariables()[j] = (mut);
         }
 
       Continue = evaluate(mIndividual);
@@ -239,7 +239,7 @@ bool CRandomSearch::optimise()
       if (mValue < mBestValue)
         {
           mBestValue = mValue;
-          Continue = mpOptProblem->setSolution(mBestValue, mIndividual);
+          Continue = mProblemContext.master()->setSolution(mBestValue, mIndividual);
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();
@@ -264,13 +264,13 @@ bool CRandomSearch::evaluate(const CVector< C_FLOAT64 > & /* individual */)
   // since the parameters are created within the bounds.
 
   // evaluate the fitness
-  Continue = mpOptProblem->calculate();
+  Continue = mProblemContext.master()->calculate();
 
   // check wheter the functional constraints are fulfilled
-  if (!mpOptProblem->checkFunctionalConstraints())
+  if (!mProblemContext.master()->checkFunctionalConstraints())
     mValue = std::numeric_limits<C_FLOAT64>::infinity();
   else
-    mValue = mpOptProblem->getCalculateValue();
+    mValue = mProblemContext.master()->getCalculateValue();
 
   return Continue;
 }

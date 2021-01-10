@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -101,7 +101,7 @@ bool COptMethodEP::optimise()
     {
       // and store that value
       mBestValue = mValues[mBestIndex];
-      Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -145,7 +145,7 @@ bool COptMethodEP::optimise()
           Stalled = 0;
           mBestValue = mValues[mBestIndex];
 
-          Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+          Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();
@@ -194,7 +194,7 @@ bool COptMethodEP::initialize()
 
   if (!COptPopulationMethod::initialize()) return false;
 
-  mVariableSize = mpOptItem->size();
+  mVariableSize = mProblemContext.master()->getOptItemList().size();
 
   mIndividuals.resize(2 * mPopulationSize);
 
@@ -231,13 +231,13 @@ bool COptMethodEP::evaluate(const CVector< C_FLOAT64 > & /* individual */)
   // since the parameters are created within the bounds.
 
   // evaluate the fitness
-  Continue = mpOptProblem->calculate();
+  Continue = mProblemContext.master()->calculate();
 
   // check whether the functional constraints are fulfilled
-  if (!mpOptProblem->checkFunctionalConstraints())
+  if (!mProblemContext.master()->checkFunctionalConstraints())
     mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
   else
-    mEvaluationValue = mpOptProblem->getCalculateValue();
+    mEvaluationValue = mProblemContext.master()->getCalculateValue();
 
   return Continue;
 }
@@ -263,7 +263,7 @@ bool COptMethodEP::creation()
   for (i = 0; i < mVariableSize; i++)
     {
       C_FLOAT64 & mut = (*mIndividuals[0])[i];
-      COptItem & OptItem = *(*mpOptItem)[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
 
       mut = OptItem.getStartValue();
 
@@ -303,7 +303,7 @@ bool COptMethodEP::creation()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mContainerVariables[i] = mut;
+      *mProblemContext.master()->getContainerVariables()[i] = mut;
 
       // Set the variance for this parameter.
       (*mVariance[0])[i] = fabs(mut) * 0.5;
@@ -328,7 +328,7 @@ bool COptMethodEP::creation()
       for (j = 0; j < mVariableSize; j++)
         {
           C_FLOAT64 & mut = (*mIndividuals[i])[j];
-          COptItem & OptItem = *(*mpOptItem)[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
 
           // calculate lower and upper bounds
           mn = *OptItem.getLowerBoundValue();
@@ -419,7 +419,7 @@ bool COptMethodEP::creation()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mContainerVariables[j] = mut;
+          *mProblemContext.master()->getContainerVariables()[j] = mut;
 
           // Set the variance for this parameter.
           (*mVariance[i])[j] = fabs(mut) * 0.5;
@@ -547,7 +547,7 @@ bool COptMethodEP::mutate(size_t i)
   for (j = 0; j < mVariableSize; j++)
     {
       C_FLOAT64 & mut = Individual[j];
-      COptItem & OptItem = *(*mpOptItem)[j];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
 
       try
         {
@@ -578,7 +578,7 @@ bool COptMethodEP::mutate(size_t i)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mContainerVariables[j] = mut;
+      *mProblemContext.master()->getContainerVariables()[j] = mut;
     }
 
   // calculate its fitness

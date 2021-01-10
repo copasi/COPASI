@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -92,7 +92,7 @@ bool COptMethodTruncatedNewton::optimise()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *(*mpOptItem)[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
 
       // :TODO: In COPASI the bounds are not necessarry fixed.
       // Since evaluate checks for boundaries and constraints this is not
@@ -119,7 +119,7 @@ bool COptMethodTruncatedNewton::optimise()
         }
 
       // set the value
-      *mContainerVariables[i] = (mCurrent[i]);
+      *mProblemContext.master()->getContainerVariables()[i] = (mCurrent[i]);
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -128,7 +128,7 @@ bool COptMethodTruncatedNewton::optimise()
   // Report the first value as the current best
   mBestValue = evaluate();
   mBest = mCurrent;
-  mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+  mContinue = mProblemContext.master()->setSolution(mBestValue, mBest);
 
   //tnbc_ wants a signed int for loglevel...
   C_INT msglvl;
@@ -167,7 +167,7 @@ bool COptMethodTruncatedNewton::optimise()
           mBest = mCurrent;
           mBestValue = mEvaluationValue;
 
-          mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+          mContinue = mProblemContext.master()->setSolution(mBestValue, mBest);
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
@@ -195,7 +195,7 @@ bool COptMethodTruncatedNewton::optimise()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *(*mpOptItem)[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
 
       //force it to be within the bounds
       switch (OptItem.checkConstraint(mCurrent[i]))
@@ -222,7 +222,7 @@ bool COptMethodTruncatedNewton::optimise()
             break;
         }
 
-      *mContainerVariables[i] = (mCurrent[i]);
+      *mProblemContext.master()->getContainerVariables()[i] = (mCurrent[i]);
     }
 
   if (!withinBounds)
@@ -241,7 +241,7 @@ bool COptMethodTruncatedNewton::optimise()
           mBest = mCurrent;
           mBestValue = mEvaluationValue;
 
-          mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+          mContinue = mProblemContext.master()->setSolution(mBestValue, mBest);
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
@@ -264,7 +264,7 @@ bool COptMethodTruncatedNewton::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mVariableSize = (C_INT) mpOptItem->size();
+  mVariableSize = (C_INT) mProblemContext.master()->getOptItemList().size();
   mCurrent.resize(mVariableSize);
   mBest.resize(mVariableSize);
 
@@ -272,7 +272,7 @@ bool COptMethodTruncatedNewton::initialize()
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
   mGradient.resize(mVariableSize);
 
-  CFitProblem* pFitProblem = dynamic_cast<CFitProblem*>(mpOptProblem);
+  CFitProblem* pFitProblem = dynamic_cast<CFitProblem*>(mProblemContext.master());
 
   if (pFitProblem != NULL)
     {
@@ -295,13 +295,12 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FL
 
   // set the parameter values
   for (i = 0; i < *n; i++)
-    *mContainerVariables[i] = (x[i]);
+    *mProblemContext.master()->getContainerVariables()[i] = (x[i]);
 
   //carry out the function evaluation
   *f = evaluate();
 
-
-  CFitProblem* pFit = dynamic_cast<CFitProblem*>(mpOptProblem);
+  CFitProblem* pFit = dynamic_cast<CFitProblem*>(mProblemContext.master());
 
   // Check whether we improved
   if (mEvaluationValue < mBestValue)
@@ -312,7 +311,7 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FL
         mBest[i] = x[i];
 
       mBestValue = mEvaluationValue;
-      mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+      mContinue = mProblemContext.master()->setSolution(mBestValue, mBest);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -333,7 +332,6 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FL
 
           for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pJacobianT++)
             *g -= *pJacobianT * *pCurrentResiduals;
-
         }
     }
   else
@@ -344,13 +342,13 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FL
         {
           if (x[i] != 0.0)
             {
-              *mContainerVariables[i] = (x[i] * 1.001);
+              *mProblemContext.master()->getContainerVariables()[i] = (x[i] * 1.001);
               g[i] = (evaluate() - *f) / (x[i] * 0.001);
             }
           else
             {
               // why use 1e-7? shouldn't this be epsilon, or something like that?
-              *mContainerVariables[i] = (1e-7);
+              *mProblemContext.master()->getContainerVariables()[i] = (1e-7);
               g[i] = (evaluate() - *f) / 1e-7;
 
               if (mLogVerbosity > 2)
@@ -361,7 +359,7 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FL
                 }
             }
 
-          *mContainerVariables[i] = (x[i]);
+          *mProblemContext.master()->getContainerVariables()[i] = (x[i]);
         }
     }
 
@@ -375,15 +373,15 @@ const C_FLOAT64 & COptMethodTruncatedNewton::evaluate()
 {
   // We do not need to check whether the parametric constraints are fulfilled
   // since the parameters are created within the bounds.
-  mContinue = mpOptProblem->calculate();
-  mEvaluationValue = mpOptProblem->getCalculateValue();
+  mContinue = mProblemContext.master()->calculate();
+  mEvaluationValue = mProblemContext.master()->getCalculateValue();
 
   // when we leave the either the parameter or functional domain
   // we penalize the objective value by forcing it to be larger
   // than the best value recorded so far.
   if (mEvaluationValue < mBestValue &&
-      (!mpOptProblem->checkParametricConstraints() ||
-       !mpOptProblem->checkFunctionalConstraints()))
+      (!mProblemContext.master()->checkParametricConstraints() ||
+       !mProblemContext.master()->checkFunctionalConstraints()))
     mEvaluationValue = mBestValue + mBestValue - mEvaluationValue;
 
   return mEvaluationValue;

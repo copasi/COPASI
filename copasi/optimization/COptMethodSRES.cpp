@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -81,12 +81,12 @@ bool COptMethodSRES::evaluate(const CVector< C_FLOAT64 > & /* individual */)
   // since this method allows for parameters outside the bounds
 
   // evaluate the fitness
-  Continue = mpOptProblem->calculate();
+  Continue = mProblemContext.master()->calculate();
 
   // We do not need to check whether the functional constraints are fulfilled
   // since this method allows for solutions outside the bounds.
 
-  mEvaluationValue = mpOptProblem->getCalculateValue();
+  mEvaluationValue = mProblemContext.master()->getCalculateValue();
 
   return Continue;
 }
@@ -187,7 +187,7 @@ bool COptMethodSRES::mutate()
           C_FLOAT64 & mut = *pVariable;
           C_FLOAT64 Store = mut;
 
-          COptItem & OptItem = *(*mpOptItem)[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
 
           size_t l = C_INVALID_INDEX;
 
@@ -217,7 +217,7 @@ bool COptMethodSRES::mutate()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mContainerVariables[j] = (mut);
+          *mProblemContext.master()->getContainerVariables()[j] = (mut);
         }
 
       // calculate its fitness
@@ -325,7 +325,7 @@ bool COptMethodSRES::creation(size_t first)
       for (j = 0; pVariable != pVariableEnd; ++pVariable, ++pVariance, ++pMaxVariance, ++j)
         {
           C_FLOAT64 & mut = *pVariable;
-          COptItem & OptItem = *(*mpOptItem)[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
 
           mut = OptItem.getStartValue();
 
@@ -365,7 +365,7 @@ bool COptMethodSRES::creation(size_t first)
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mContainerVariables[j] = (mut);
+          *mProblemContext.master()->getContainerVariables()[j] = (mut);
 
           // Set the variance for this parameter.
           *pVariance = std::min(*OptItem.getUpperBoundValue() - mut, mut - *OptItem.getLowerBoundValue()) / sqrt(double(mVariableSize));
@@ -393,7 +393,7 @@ bool COptMethodSRES::creation(size_t first)
       for (j = 0; pVariable != pVariableEnd; ++pVariable, ++pVariance, ++pMaxVariance, ++j)
         {
           C_FLOAT64 & mut = *pVariable;
-          COptItem & OptItem = *(*mpOptItem)[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
 
           // calculate lower and upper bounds
           mn = *OptItem.getLowerBoundValue();
@@ -484,7 +484,7 @@ bool COptMethodSRES::creation(size_t first)
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mContainerVariables[j] = (mut);
+          *mProblemContext.master()->getContainerVariables()[j] = (mut);
 
           // Set the variance for this parameter.
           *pVariance = std::min(*OptItem.getUpperBoundValue() - mut, mut - *OptItem.getLowerBoundValue()) / sqrt(double(mVariableSize));
@@ -538,7 +538,7 @@ bool COptMethodSRES::initialize()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      COptItem & OptItem = *(*mpOptItem)[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
 
       try
         {
@@ -598,8 +598,8 @@ C_FLOAT64 COptMethodSRES::phi(size_t indivNum)
   C_FLOAT64 phiVal = 0.0;
   C_FLOAT64 phiCalc;
 
-  std::vector< COptItem * >::const_iterator it = mpOptItem->begin();
-  std::vector< COptItem * >::const_iterator end = mpOptItem->end();
+  std::vector< COptItem * >::const_iterator it = mProblemContext.master()->getOptItemList().begin();
+  std::vector< COptItem * >::const_iterator end = mProblemContext.master()->getOptItemList().end();
   C_FLOAT64 * pValue = mIndividuals[indivNum]->array();
 
   for (; it != end; ++it, pValue++)
@@ -618,8 +618,8 @@ C_FLOAT64 COptMethodSRES::phi(size_t indivNum)
         }
     }
 
-  it = mpOptContraints->begin();
-  end = mpOptContraints->end();
+  it = mProblemContext.master()->getConstraintList().begin();
+  end = mProblemContext.master()->getConstraintList().end();
 
   for (; it != end; ++it)
     {
@@ -663,7 +663,7 @@ bool COptMethodSRES::optimise()
 
   // initialise the population
   Continue = creation(0);
-  mpOptProblem->setSolution(mValues[0], *mIndividuals[0]);
+  mProblemContext.master()->setSolution(mValues[0], *mIndividuals[0]);
 
   // get the index of the fittest
   BestIndex = fittest();
@@ -672,7 +672,7 @@ bool COptMethodSRES::optimise()
     {
       // and store that value
       mBestValue = mValues[BestIndex];
-      Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[BestIndex]);
+      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[BestIndex]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -781,7 +781,7 @@ bool COptMethodSRES::optimise()
 
           mBestValue = mValues[BestIndex];
 
-          Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[BestIndex]);
+          Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[BestIndex]);
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);

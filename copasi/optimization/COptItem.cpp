@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -230,14 +230,14 @@ void COptItem::rememberStartValue()
   mLastStartValue = getStartValue();
 }
 
-C_FLOAT64 COptItem::getRandomValue(CRandom & Random)
+C_FLOAT64 COptItem::getRandomValue(CRandom & Random) const
 {
   C_FLOAT64 RandomValue;
 
   if (mpLowerBound == NULL ||
       mpUpperBound == NULL)
     {
-      compile(CObjectInterface::ContainerList());
+      const_cast< COptItem * >(this)->compile(CObjectInterface::ContainerList());
     }
 
   if (mpLowerBound == NULL ||

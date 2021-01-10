@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -74,7 +74,6 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
   assertParameter("Initial Lambda", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)1.0, eUserInterfaceFlag::editable);
   assertParameter("Lambda Decrease", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)2.0, eUserInterfaceFlag::editable);
   assertParameter("Lambda Increase", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)4.0, eUserInterfaceFlag::editable);
-
 
   initObjects();
 }
@@ -158,7 +157,7 @@ bool COptMethodLevenbergMarquardt::optimise()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *(*mpOptItem)[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
 
       switch (OptItem.checkConstraint(OptItem.getStartValue()))
         {
@@ -177,7 +176,7 @@ bool COptMethodLevenbergMarquardt::optimise()
             break;
         }
 
-      *mContainerVariables[i] = mCurrent[i];
+      *mProblemContext.master()->getContainerVariables()[i] = mCurrent[i];
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -192,7 +191,7 @@ bool COptMethodLevenbergMarquardt::optimise()
     {
       // and store that value
       mBestValue = mEvaluationValue;
-      mContinue &= mpOptProblem->setSolution(mBestValue, mBest);
+      mContinue &= mProblemContext.master()->setSolution(mBestValue, mBest);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -219,7 +218,7 @@ bool COptMethodLevenbergMarquardt::optimise()
           hessian();
 
           //std::ofstream ohess; ohess.open("hessian.txt"); ohess << mResidualJacobianT; ohess.close();
-          //std::ofstream osens; osens.open("sens.txt"); osens << dynamic_cast<CFitProblem*>(mpOptProblem)->getTimeSensJac(); osens.close();
+          //std::ofstream osens; osens.open("sens.txt"); osens << dynamic_cast<CFitProblem*>(mProblemContext.master())->getTimeSensJac(); osens.close();
         }
 
       calc_hess = true;
@@ -304,7 +303,7 @@ bool COptMethodLevenbergMarquardt::optimise()
         {
           mCurrent[i] = mBest[i] + mStep[i];
 
-          const COptItem & OptItem = *(*mpOptItem)[i];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
 
           switch (OptItem.checkConstraint(mCurrent[i]))
             {
@@ -387,7 +386,7 @@ bool COptMethodLevenbergMarquardt::optimise()
       // calculate the relative change in each parameter
       for (convp = 0.0, i = 0; i < mVariableSize; i++)
         {
-          *mContainerVariables[i] = mCurrent[i];
+          *mProblemContext.master()->getContainerVariables()[i] = mCurrent[i];
           convp += fabs((mCurrent[i] - mBest[i]) / mBest[i]);
         }
 
@@ -426,7 +425,7 @@ bool COptMethodLevenbergMarquardt::optimise()
           mBest = mCurrent;
 
           // Inform the problem about the new solution.
-          mContinue &= mpOptProblem->setSolution(mBestValue, mBest);
+          mContinue &= mProblemContext.master()->setSolution(mBestValue, mBest);
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
@@ -470,7 +469,7 @@ bool COptMethodLevenbergMarquardt::optimise()
           mCurrent = mBest;
 
           for (i = 0; i < mVariableSize; i++)
-            *mContainerVariables[i] = mCurrent[i];
+            *mProblemContext.master()->getContainerVariables()[i] = mCurrent[i];
 
           // if lambda too high terminate
           if (LM_lambda > LAMBDA_MAX)
@@ -537,15 +536,15 @@ const C_FLOAT64 & COptMethodLevenbergMarquardt::evaluate()
   // We do not need to check whether the parametric constraints are fulfilled
   // since the parameters are created within the bounds.
 
-  mContinue &= mpOptProblem->calculate();
-  mEvaluationValue = mpOptProblem->getCalculateValue();
+  mContinue &= mProblemContext.master()->calculate();
+  mEvaluationValue = mProblemContext.master()->getCalculateValue();
 
   // when we leave either the parameter or functional domain
   // we penalize the objective value by forcing it to be larger
   // than the best value recorded so far.
   if (mEvaluationValue < mBestValue &&
-      (!mpOptProblem->checkParametricConstraints() ||
-       !mpOptProblem->checkFunctionalConstraints()))
+      (!mProblemContext.master()->checkParametricConstraints() ||
+       !mProblemContext.master()->checkFunctionalConstraints()))
     mEvaluationValue = mBestValue + mBestValue - mEvaluationValue;
 
   return mEvaluationValue;
@@ -587,7 +586,7 @@ bool COptMethodLevenbergMarquardt::initialize()
                           mIteration,
                           & mIterationLimit);
 
-  mVariableSize = mpOptItem->size();
+  mVariableSize = mProblemContext.master()->getOptItemList().size();
 
   mCurrent.resize(mVariableSize);
   mBest.resize(mVariableSize);
@@ -599,7 +598,7 @@ bool COptMethodLevenbergMarquardt::initialize()
 
   mContinue = true;
 
-  CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(mpOptProblem);
+  CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(mProblemContext.master());
 
   if (pFitProblem != NULL)
     // if (false)
@@ -635,18 +634,18 @@ void COptMethodLevenbergMarquardt::gradient()
 //REVIEW:START
       if ((x = mCurrent[i]) != 0.0)
         {
-          *mContainerVariables[i] = (x * mod1);
+          *mProblemContext.master()->getContainerVariables()[i] = (x * mod1);
           mGradient[i] = (evaluate() - y) / (x * mModulation);
         }
 
       else
         {
-          *mContainerVariables[i] = (mModulation);
+          *mProblemContext.master()->getContainerVariables()[i] = (mModulation);
           mGradient[i] = (evaluate() - y) / mModulation;
         }
 
 //REVIEW:END
-      *mContainerVariables[i] = (x);
+      *mProblemContext.master()->getContainerVariables()[i] = (x);
     }
 }
 
@@ -662,7 +661,7 @@ void COptMethodLevenbergMarquardt::hessian()
     {
       // evaluate();
 
-      CFitProblem* pFit = static_cast<CFitProblem*>(mpOptProblem);
+      CFitProblem* pFit = static_cast<CFitProblem*>(mProblemContext.master());
       bool bUseTimeSens = pFit->getUseTimeSens();
 
       const CVector< C_FLOAT64 > & Residuals = pFit->getResiduals();
@@ -689,13 +688,13 @@ void COptMethodLevenbergMarquardt::hessian()
               if ((x = mCurrent[i]) != 0.0)
                 {
                   Delta = 1.0 / (x * mModulation);
-                  *mContainerVariables[i] = (x * mod1);
+                  *mProblemContext.master()->getContainerVariables()[i] = (x * mod1);
                 }
 
               else
                 {
                   Delta = 1.0 / mModulation;
-                  *mContainerVariables[i] = (mModulation);
+                  *mProblemContext.master()->getContainerVariables()[i] = (mModulation);
                   //REVIEW:END
                 }
 
@@ -707,7 +706,7 @@ void COptMethodLevenbergMarquardt::hessian()
               for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pResiduals++, pJacobianT++)
                 *pJacobianT = (*pResiduals - *pCurrentResiduals) * Delta;
 
-              *mContainerVariables[i] = (x);
+              *mProblemContext.master()->getContainerVariables()[i] = (x);
             }
 
 #ifdef XXXX
@@ -809,7 +808,7 @@ void COptMethodLevenbergMarquardt::hessian()
 //REVIEW:END
             }
 
-          *mContainerVariables[i] = mCurrent[i];
+          *mProblemContext.master()->getContainerVariables()[i] = mCurrent[i];
           gradient();
 
           for (j = 0; j <= i; j++)
@@ -817,7 +816,7 @@ void COptMethodLevenbergMarquardt::hessian()
 
           // restore the original parameter value
           mCurrent[i] = x;
-          *mContainerVariables[i] = (x);
+          *mProblemContext.master()->getContainerVariables()[i] = (x);
         }
 
       // restore the gradient

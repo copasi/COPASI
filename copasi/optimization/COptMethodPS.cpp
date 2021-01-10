@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -90,13 +90,13 @@ const C_FLOAT64 & COptMethodPS::evaluate()
   // since the parameters are created within the bounds.
 
   // evaluate the fitness
-  mContinue &= mpOptProblem->calculate();
+  mContinue &= mProblemContext.master()->calculate();
 
   // check whether the functional constraints are fulfilled
-  if (!mpOptProblem->checkFunctionalConstraints())
+  if (!mProblemContext.master()->checkFunctionalConstraints())
     mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
   else
-    mEvaluationValue = mpOptProblem->getCalculateValue();
+    mEvaluationValue = mProblemContext.master()->getCalculateValue();
 
   return mEvaluationValue;
 }
@@ -113,8 +113,8 @@ bool COptMethodPS::move(const size_t & index)
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[index];
   C_FLOAT64 * pBestPosition = mBestPositions[index];
-  std::vector< COptItem * >::const_iterator itOptItem = mpOptItem->begin();
-  C_FLOAT64 ** ppContainerVariable = mContainerVariables.array();
+  std::vector< COptItem * >::const_iterator itOptItem = mProblemContext.master()->getOptItemList().begin();
+  C_FLOAT64 ** ppContainerVariable = mProblemContext.master()->getContainerVariables().array();
 
   C_FLOAT64 * pBestInformantPosition = mBestPositions[index];
   C_FLOAT64 BestInformantValue = mBestValues[index];
@@ -178,7 +178,7 @@ bool COptMethodPS::move(const size_t & index)
         {
           // and store that value
           mBestIndex = index;
-          mContinue &= mpOptProblem->setSolution(mBestValues[index], *mIndividuals[index]);
+          mContinue &= mProblemContext.master()->setSolution(mBestValues[index], *mIndividuals[index]);
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
@@ -195,8 +195,8 @@ bool COptMethodPS::create(const size_t & index)
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[index];
   C_FLOAT64 * pBestPosition = mBestPositions[index];
-  std::vector< COptItem * >::const_iterator itOptItem = mpOptItem->begin();
-  C_FLOAT64 ** ppContainerVariable = mContainerVariables.array();
+  std::vector< COptItem * >::const_iterator itOptItem = mProblemContext.master()->getOptItemList().begin();
+  C_FLOAT64 ** ppContainerVariable = mProblemContext.master()->getContainerVariables().array();
 
   C_FLOAT64 mn, mx, la;
 
@@ -308,7 +308,7 @@ bool COptMethodPS::create(const size_t & index)
     {
       // and store that value
       mBestIndex = index;
-      mContinue &= mpOptProblem->setSolution(mBestValues[index], *mIndividuals[index]);
+      mContinue &= mProblemContext.master()->setSolution(mBestValues[index], *mIndividuals[index]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -522,8 +522,8 @@ bool COptMethodPS::optimise()
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[0];
   C_FLOAT64 * pBestPosition = mBestPositions[0];
-  std::vector< COptItem * >::const_iterator itOptItem = mpOptItem->begin();
-  C_FLOAT64 ** ppContainerVariable = mContainerVariables.array();
+  std::vector< COptItem * >::const_iterator itOptItem = mProblemContext.master()->getOptItemList().begin();
+  C_FLOAT64 ** ppContainerVariable = mProblemContext.master()->getContainerVariables().array();
 
   if (mLogVerbosity > 0)
     mMethodLog.enterLogEntry(
@@ -574,7 +574,7 @@ bool COptMethodPS::optimise()
 
   // and store that value
   mBestIndex = 0;
-  mContinue &= mpOptProblem->setSolution(mBestValues[0], *mIndividuals[0]);
+  mContinue &= mProblemContext.master()->setSolution(mBestValues[0], *mIndividuals[0]);
 
   // We found a new best value lets report it.
   mpParentTask->output(COutputInterface::DURING);

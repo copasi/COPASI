@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,8 +34,6 @@ COptPopulationMethod::COptPopulationMethod(const CDataContainer * pParent,
   , mIndividuals()
   , mValues()
   , mpRandom(NULL)
-  , mpProblemContext(NULL)
-  , mpMathContext(NULL)
 {
   initObjects();
 }
@@ -51,8 +49,6 @@ COptPopulationMethod::COptPopulationMethod(const COptPopulationMethod & src,
   , mIndividuals()
   , mValues()
   , mpRandom(NULL)
-  , mpProblemContext(NULL)
-  , mpMathContext(NULL)
 {
   initObjects();
 }
@@ -60,9 +56,6 @@ COptPopulationMethod::COptPopulationMethod(const COptPopulationMethod & src,
 COptPopulationMethod::~COptPopulationMethod()
 {
   cleanup();
-
-  pdelete(mpProblemContext);
-  pdelete(mpMathContext);
 }
 
 void COptPopulationMethod::initObjects()
@@ -114,22 +107,7 @@ COptPopulationMethod::initialize()
       mpRandom = CRandom::createGenerator();
     }
 
-  mVariableSize = mpOptItem->size();
-
-  if (mpMathContext == NULL)
-    {
-      mpMathContext = new CMathContext(NULL);
-    }
-
-  mpMathContext->setMaster(mpContainer);
-
-  if (mpProblemContext == NULL)
-    {
-      mpProblemContext = new CProblemContext(NULL);
-    }
-
-  mpProblemContext->setMaster(mpOptProblem);
-  mpProblemContext->setMathContext(mpMathContext);
+  mVariableSize = mProblemContext.master()->getOptItemList().size();
 
   return true;
 }

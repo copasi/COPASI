@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -87,12 +87,12 @@ bool COptMethodGASR::evaluate(const CVector< C_FLOAT64 > & /* individual */)
   // since this method allows for parameters outside the bounds
 
   // evaluate the fitness
-  Continue = mpOptProblem->calculate();
+  Continue = mProblemContext.master()->calculate();
 
   // We do not need to check whether the functional constraints are fulfilled
   // since this method allows for solutions outside the bounds.
 
-  mEvaluationValue = mpOptProblem->getCalculateValue();
+  mEvaluationValue = mProblemContext.master()->getCalculateValue();
 
   return Continue;
 }
@@ -136,7 +136,7 @@ bool COptMethodGASR::mutate(CVector< C_FLOAT64 > & individual)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mContainerVariables[j] = mut;
+      *mProblemContext.master()->getContainerVariables()[j] = mut;
     }
 
   return true;
@@ -279,8 +279,8 @@ C_FLOAT64 COptMethodGASR::phi(size_t indivNum)
   C_FLOAT64 phiVal = 0.0;
   C_FLOAT64 phiCalc;
 
-  std::vector< COptItem * >::const_iterator it = mpOptItem->begin();
-  std::vector< COptItem * >::const_iterator end = mpOptItem->end();
+  std::vector< COptItem * >::const_iterator it = mProblemContext.master()->getOptItemList().begin();
+  std::vector< COptItem * >::const_iterator end = mProblemContext.master()->getOptItemList().end();
   C_FLOAT64 * pValue = mIndividuals[indivNum]->array();
 
   for (; it != end; ++it, pValue++)
@@ -299,8 +299,8 @@ C_FLOAT64 COptMethodGASR::phi(size_t indivNum)
         }
     }
 
-  it = mpOptContraints->begin();
-  end = mpOptContraints->end();
+  it = mProblemContext.master()->getConstraintList().begin();
+  end = mProblemContext.master()->getConstraintList().end();
 
   for (; it != end; ++it)
     {
@@ -349,7 +349,7 @@ bool COptMethodGASR::creation(size_t first,
       for (j = 0; j < mVariableSize; j++)
         {
           // calculate lower and upper bounds
-          COptItem & OptItem = *(*mpOptItem)[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
           mn = *OptItem.getLowerBoundValue();
           mx = *OptItem.getUpperBoundValue();
 
@@ -378,7 +378,7 @@ bool COptMethodGASR::creation(size_t first,
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mContainerVariables[j] = mut;
+          *mProblemContext.master()->getContainerVariables()[j] = mut;
         }
 
       // calculate its fitness
@@ -492,18 +492,18 @@ bool COptMethodGASR::optimise()
   // initialize the population
   // first individual is the initial guess
   for (i = 0; i < mVariableSize; i++)
-    (*mIndividuals[0])[i] = (*mpOptItem)[i]->getStartValue();
+    (*mIndividuals[0])[i] = mProblemContext.master()->getOptItemList()[i]->getStartValue();
 
   // calculate the fitness
   size_t j;
 
   // set the parameter values
   for (j = 0; j < mVariableSize; j++)
-    *mContainerVariables[j] = (*mIndividuals[0])[j];
+    *mProblemContext.master()->getContainerVariables()[j] = (*mIndividuals[0])[j];
 
   Continue = evaluate(*mIndividuals[0]);
   mValues[0] = mEvaluationValue;
-  mpOptProblem->setSolution(mEvaluationValue, *mIndividuals[0]);
+  mProblemContext.master()->setSolution(mEvaluationValue, *mIndividuals[0]);
 
   /* Calculate the phi value of the individual for SR*/
   mPhi[0] = phi(0);
@@ -518,7 +518,7 @@ bool COptMethodGASR::optimise()
     {
       // and store that value
       mBestValue = mValues[mBestIndex];
-      Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -604,7 +604,7 @@ bool COptMethodGASR::optimise()
           Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
           mBestValue = mValues[mBestIndex];
 
-          Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+          Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);

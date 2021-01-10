@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,46 +25,32 @@ public:
    * Set the pointer to container used for calculations
    * @param CMathContext * pContext
    */
-  void setMathContext(CMathContext * pContext);
-
-private:
-  CMathContext * mpMathContext;
+  void setMathContext(CMathContext & Context);
 };
 
 template < class Data > CPointerMathContext< Data >::CPointerMathContext(Data * pMaster)
   : CPointerContext< Data >(pMaster)
-  , mpMathContext(NULL)
 {}
 
 template < class Data > CPointerMathContext< Data >::~CPointerMathContext()
 {}
 
-template < class Data > void CPointerMathContext< Data >::setMathContext(CMathContext * pContext)
+template < class Data > void CPointerMathContext< Data >::setMathContext(CMathContext & Context)
 {
-  mpMathContext = pContext;
-
   if (Base::master() != NULL)
     {
-      Base::master()->setMathContainer(mpMathContext->master());
+      Base::master()->setMathContainer(Context.master());
 
       if (Base::mSize > 1)
         {
           Data ** pIt = Base::beginThread();
           Data ** pEnd = Base::endThread();
-          CMathContainer ** pContainer = mpMathContext->beginThread();
+          CMathContainer ** pContainer = Context.beginThread();
 
           for (; pIt != pEnd; ++pIt, ++pContainer)
             (*pIt)->setMathContainer(*pContainer);
         }
     }
 }
-
-class CCopasiTask;
-class CCopasiProblem;
-class CCopasiMethod;
-
-typedef CPointerMathContext< CCopasiTask > CTaskContext;
-typedef CPointerMathContext< CCopasiProblem > CProblemContext;
-typedef CPointerMathContext< CCopasiMethod > CMethodContext;
 
 #endif // COPASI_CPointerMathContext
