@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -213,8 +213,15 @@ bool CMIRIAMResourceObject::isValid(const std::string & URI) const
   return true;
 }
 
-void CMIRIAMResourceObject::extractId(const std::string & URI)
+void CMIRIAMResourceObject::extractId(const std::string & uri)
 {
+  std::string URI;
+
+  if (uri.length() > 8 && uri.substr(0, 8) == "https://")
+    URI = "http://" + uri.substr(8);
+  else
+    URI = uri;
+
   mId = "";
 
   // Check whether the resource is known.
