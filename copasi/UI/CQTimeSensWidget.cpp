@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -563,7 +563,8 @@ void CQTimeSensWidget::slotAddParameter()
     return;
 
   std::vector< const CDataObject * > selection =
-    CCopasiSelectionDialog::getObjectVector(this, CQSimpleSelectionTree::Parameters);
+    CCopasiSelectionDialog::getObjectVector(this,
+        (CQSimpleSelectionTree::InitialTime | CQSimpleSelectionTree::Parameters));
 
   for (const CDataObject * item : selection)
     {
@@ -584,7 +585,8 @@ void CQTimeSensWidget::slotRemoveParameter()
     return;
 
   QModelIndexList items = mpListParameters->selectionModel()->selectedIndexes();
-  for (int i = items.size()-1; i >=0; --i)
+
+  for (int i = items.size() - 1; i >= 0; --i)
     {
       QListWidgetItem* item = mpListParameters->takeItem(items.at(i).row());
 
@@ -603,9 +605,7 @@ void CQTimeSensWidget::slotAddTarget()
 
   std::vector< const CDataObject * > selection =
     CCopasiSelectionDialog::getObjectVector(this,
-        (CQSimpleSelectionTree::ObservedValues | CQSimpleSelectionTree::EventTarget)
-        //& (~CQSimpleSelectionTree::Results)
-                                           );
+        (CQSimpleSelectionTree::Variables | CQSimpleSelectionTree::ObservedValues | CQSimpleSelectionTree::EventTarget));
 
   for (const CDataObject * item : selection)
     {

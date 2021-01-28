@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -158,8 +158,15 @@ bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessRe
 
   ++processStep;
 
-  if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
-    return false;
+  if (pProcessReport)
+    {
+      if (!pProcessReport->progressItem(hUpdateStep))
+        return false;
+
+      pProcessReport->finishItem(hUpdateStep);
+    }
+
+
 
   sizeNames = root.getNumChildren();
   processSteps = sizeNames + 2;
@@ -249,8 +256,13 @@ bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessRe
 
   processStep++;
 
-  if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
-    return false;
+  if (pProcessReport)
+    {
+      if (!pProcessReport->progressItem(hUpdateStep))
+        return false;
+
+      pProcessReport->finishItem(hUpdateStep);
+    }
 
   return success;
 }
@@ -464,9 +476,16 @@ const CMIRIAMResource & CMIRIAMResources::getMIRIAMResource(const size_t index) 
   return * static_cast< CMIRIAMResource * >(mpMIRIAMResources->getGroup(index));
 }
 
-size_t CMIRIAMResources::getMIRIAMResourceIndex(const std::string & URI) const
+size_t CMIRIAMResources::getMIRIAMResourceIndex(const std::string & uri) const
 {
   size_t index = C_INVALID_INDEX;
+
+  std::string URI;
+
+  if (uri.length() > 8 && uri.substr(0, 8) == "https://")
+    URI = "http://" + uri.substr(8);
+  else
+    URI = uri;
 
   std::map< std::string , size_t >::const_iterator it = mURI2Resource.lower_bound(URI);
   std::map< std::string , size_t >::const_iterator end = mURI2Resource.upper_bound(URI);
@@ -589,19 +608,29 @@ void CMIRIAMResource::printResource() const
   }*/
 
 const CMIRIAMResource & CMIRIAMResource::getMIRIAMMIRIAMResource() const
-{return * this;}
+{
+  return *this;
+}
 
 void CMIRIAMResource::setMIRIAMDisplayName(const std::string & displayName)
-{*mpDisplayName = displayName;}
+{
+  *mpDisplayName = displayName;
+}
 
 const std::string & CMIRIAMResource::getMIRIAMDisplayName() const
-{return *mpDisplayName;}
+{
+  return *mpDisplayName;
+}
 
 void CMIRIAMResource::setMIRIAMURI(const std::string & URI)
-{*mpURI = URI;}
+{
+  *mpURI = URI;
+}
 
 const std::string & CMIRIAMResource::getMIRIAMURI() const
-{return * mpURI;}
+{
+  return *mpURI;
+}
 
 std::string CMIRIAMResource::getIdentifiersOrgURL() const
 {
@@ -609,19 +638,31 @@ std::string CMIRIAMResource::getIdentifiersOrgURL() const
 }
 
 void CMIRIAMResource::setMIRIAMPattern(const std::string & pattern)
-{*mpPattern = pattern;}
+{
+  *mpPattern = pattern;
+}
 
 const std::string & CMIRIAMResource::getMIRIAMPattern() const
-{return * mpPattern;}
+{
+  return *mpPattern;
+}
 
 void CMIRIAMResource::setMIRIAMCitation(const bool & citation)
-{*mpCitation = citation;}
+{
+  *mpCitation = citation;
+}
 
 const bool & CMIRIAMResource::getMIRIAMCitation() const
-{return * mpCitation;}
+{
+  return *mpCitation;
+}
 
 void CMIRIAMResource::addDeprecatedURL(const std::string & URL)
-{mpDeprecated->addParameter("URL", CCopasiParameter::Type::STRING, URL);}
+{
+  mpDeprecated->addParameter("URL", CCopasiParameter::Type::STRING, URL);
+}
 
 const CCopasiParameterGroup & CMIRIAMResource::getMIRIAMDeprecated() const
-{return * mpDeprecated;}
+{
+  return *mpDeprecated;
+}

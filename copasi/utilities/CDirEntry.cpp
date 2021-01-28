@@ -253,7 +253,7 @@ std::string CDirEntry::createTmpName(const std::string & dir,
 
 #else
 
-  while ((FD = creat(CLocaleString::fromUtf8(TmpName).c_str(), S_IRWXU)) == 0);
+  while ((FD = creat(CLocaleString::fromUtf8(TmpName).c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) == 0);
 
   close(FD);
 #endif
