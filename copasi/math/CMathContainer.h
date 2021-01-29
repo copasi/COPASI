@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -897,6 +897,13 @@ private:
   void ignoreDiscontinuityEvent(CMathEvent * pEvent);
 
   /**
+   * Move the container data the container
+   * @param CMathContainer::sSize & size
+   * @return std::vector< CMath::sRelocate > relocations
+   */
+  std::vector< CMath::sRelocate > move(sSize & size);
+
+  /**
    * Resize the container
    * @param CMathContainer::sSize & size
    * @return std::vector< CMath::sRelocate > relocations
@@ -1239,6 +1246,11 @@ private:
   CMathDependencyGraph mTransientDependencies;
 
   /**
+   * Pointers to all update sequences associated with this container;
+   */
+  std::set< CMathUpdateSequence * > mUpdateSequences;
+
+  /**
    * The sequence of updates needed to synchronize the initial values based
    * on extensive values, i.e., species amounts
    */
@@ -1442,11 +1454,6 @@ private:
    * The objects from which the noise originates
    */
   CObjectInterface::ObjectSet mNoiseInputObjects;
-
-  /**
-   * Pointers to all update sequences associated with this container;
-   */
-  std::set< CMathUpdateSequence * > mUpdateSequences;
 
   /**
    * The total number of ignored event roots.

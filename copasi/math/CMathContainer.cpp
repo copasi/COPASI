@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -263,6 +263,7 @@ CMathContainer::CMathContainer():
   mNoiseReduced(),
   mInitialDependencies(this),
   mTransientDependencies(this),
+  mUpdateSequences(),
   mSynchronizeInitialValuesSequenceExtensive(),
   mSynchronizeInitialValuesSequenceIntensive(),
   mApplyInitialValuesSequence(),
@@ -300,7 +301,6 @@ CMathContainer::CMathContainer():
   mIsAutonomous(true),
   mSize(),
   mNoiseInputObjects(),
-  mUpdateSequences(),
   mNumTotalRootsIgnored(0),
   mValueChangeProhibited()
 {
@@ -360,6 +360,7 @@ CMathContainer::CMathContainer(CModel & model):
   mNoiseReduced(),
   mInitialDependencies(this),
   mTransientDependencies(this),
+  mUpdateSequences(),
   mSynchronizeInitialValuesSequenceExtensive(),
   mSynchronizeInitialValuesSequenceIntensive(),
   mApplyInitialValuesSequence(),
@@ -398,7 +399,6 @@ CMathContainer::CMathContainer(CModel & model):
   mIsAutonomous(true),
   mSize(),
   mNoiseInputObjects(),
-  mUpdateSequences(),
   mNumTotalRootsIgnored(0),
   mValueChangeProhibited()
 #ifdef USE_JIT
@@ -418,99 +418,99 @@ CMathContainer::CMathContainer(CModel & model):
   mDataValue2DataObject[(C_FLOAT64*) mpQuantity2NumberFactor->getValuePointer()] = const_cast< CDataObject * >(mpQuantity2NumberFactor);
 }
 
-CMathContainer::CMathContainer(const CMathContainer & src):
-  CDataContainer(src, NULL),
-  mpModel(src.mpModel),
-  mpAvogadro(src.mpAvogadro),
-  mpQuantity2NumberFactor(src.mpQuantity2NumberFactor),
-  mRandom(src.mRandom, this),
-  mpProcessQueue(new CMathEventQueue(*this)),
-  mpRandomGenerator(CRandom::createGenerator()),
-  mValues(),
-  mOldValues(),
-  mpValuesBuffer(NULL),
-  mInitialExtensiveValues(),
-  mInitialIntensiveValues(),
-  mInitialExtensiveRates(),
-  mInitialIntensiveRates(),
-  mInitialParticleFluxes(),
-  mInitialFluxes(),
-  mInitialTotalMasses(),
-  mInitialEventTriggers(),
-  mExtensiveValues(),
-  mIntensiveValues(),
-  mExtensiveRates(),
-  mIntensiveRates(),
-  mParticleFluxes(),
-  mFluxes(),
-  mTotalMasses(),
-  mEventTriggers(),
-  mExtensiveNoise(),
-  mIntensiveNoise(),
-  mReactionNoise(),
-  mReactionParticleNoise(),
-  mEventDelays(),
-  mEventPriorities(),
-  mEventAssignments(),
-  mEventRoots(),
-  mEventRootStates(),
-  mPropensities(),
-  mDependentMasses(),
-  mDiscontinuous(),
-  mDelayValues(),
-  mDelayLags(),
-  mInitialState(),
-  mCompleteInitialState(),
-  mState(),
-  mStateReduced(),
-  mHistory(src.mHistory),
-  mHistoryReduced(),
-  mRate(),
-  mRateReduced(),
-  mNoiseReduced(),
-  mInitialDependencies(src.mInitialDependencies, this),
-  mTransientDependencies(src.mTransientDependencies, this),
-  mSynchronizeInitialValuesSequenceExtensive(src.mSynchronizeInitialValuesSequenceExtensive),
-  mSynchronizeInitialValuesSequenceIntensive(src.mSynchronizeInitialValuesSequenceIntensive),
-  mApplyInitialValuesSequence(src.mApplyInitialValuesSequence),
-  mSimulationValuesSequence(src.mSimulationValuesSequence),
-  mSimulationValuesSequenceReduced(src.mSimulationValuesSequenceReduced),
-  mRootSequence(src.mRootSequence),
-  mRootSequenceReduced(src.mRootSequenceReduced),
-  mNoiseSequence(src.mNoiseSequence),
-  mNoiseSequenceReduced(src.mNoiseSequenceReduced),
-  mPrioritySequence(src.mPrioritySequence),
-  mTransientDataObjectSequence(src.mTransientDataObjectSequence),
-  mInitialStateValueExtensive(src.mInitialStateValueExtensive),
-  mInitialStateValueIntensive(src.mInitialStateValueIntensive),
-  mInitialStateValueAll(src.mInitialStateValueAll),
-  mStateValues(src.mStateValues),
-  mReducedStateValues(src.mReducedStateValues),
-  mSimulationRequiredValues(src.mSimulationRequiredValues),
-  mObjects(),
-  mOldObjects(),
-  mpObjectsBuffer(NULL),
-  mEvents(),
-  mReactions(),
-  mRootIsDiscrete(src.mRootIsDiscrete),
-  mRootIsTimeDependent(src.mRootIsTimeDependent),
-  mRootProcessors(src.mRootProcessors),
-  mRootDerivativesState(src.mRootDerivativesState),
-  mRootDerivatives(src.mRootDerivatives),
-  mDataObject2MathObject(src.mDataObject2MathObject),
-  mDataValue2MathObject(src.mDataValue2MathObject),
-  mDataValue2DataObject(src.mDataValue2DataObject),
-  mDiscontinuityEvents("Discontinuities", this),
-  mDiscontinuityInfix2Object(),
-  mTriggerInfix2Event(),
-  mRootCount2Events(),
-  mDelays(),
-  mIsAutonomous(src.mIsAutonomous),
-  mSize(),
-  mNoiseInputObjects(src.mNoiseInputObjects),
-  mUpdateSequences(),
-  mNumTotalRootsIgnored(src.mNumTotalRootsIgnored),
-  mValueChangeProhibited(src.mValueChangeProhibited)
+CMathContainer::CMathContainer(const CMathContainer & src)
+  : CDataContainer(src, NULL)
+  , mpModel(src.mpModel)
+  , mpAvogadro(src.mpAvogadro)
+  , mpQuantity2NumberFactor(src.mpQuantity2NumberFactor)
+  , mRandom("Random", this, InvalidValue)
+  , mpProcessQueue(new CMathEventQueue(*this))
+  , mpRandomGenerator(CRandom::createGenerator())
+  , mValues()
+  , mOldValues()
+  , mpValuesBuffer(NULL)
+  , mInitialExtensiveValues()
+  , mInitialIntensiveValues()
+  , mInitialExtensiveRates()
+  , mInitialIntensiveRates()
+  , mInitialParticleFluxes()
+  , mInitialFluxes()
+  , mInitialTotalMasses()
+  , mInitialEventTriggers()
+  , mExtensiveValues()
+  , mIntensiveValues()
+  , mExtensiveRates()
+  , mIntensiveRates()
+  , mParticleFluxes()
+  , mFluxes()
+  , mTotalMasses()
+  , mEventTriggers()
+  , mExtensiveNoise()
+  , mIntensiveNoise()
+  , mReactionNoise()
+  , mReactionParticleNoise()
+  , mEventDelays()
+  , mEventPriorities()
+  , mEventAssignments()
+  , mEventRoots()
+  , mEventRootStates()
+  , mPropensities()
+  , mDependentMasses()
+  , mDiscontinuous()
+  , mDelayValues()
+  , mDelayLags()
+  , mInitialState()
+  , mCompleteInitialState()
+  , mState()
+  , mStateReduced()
+  , mHistory(src.mHistory)
+  , mHistoryReduced()
+  , mRate()
+  , mRateReduced()
+  , mNoiseReduced()
+  , mInitialDependencies(src.mInitialDependencies, this)
+  , mTransientDependencies(src.mTransientDependencies, this)
+  , mUpdateSequences()
+  , mSynchronizeInitialValuesSequenceExtensive(src.mSynchronizeInitialValuesSequenceExtensive, this)
+  , mSynchronizeInitialValuesSequenceIntensive(src.mSynchronizeInitialValuesSequenceIntensive, this)
+  , mApplyInitialValuesSequence(src.mApplyInitialValuesSequence, this)
+  , mSimulationValuesSequence(src.mSimulationValuesSequence, this)
+  , mSimulationValuesSequenceReduced(src.mSimulationValuesSequenceReduced, this)
+  , mRootSequence(src.mRootSequence, this)
+  , mRootSequenceReduced(src.mRootSequenceReduced, this)
+  , mNoiseSequence(src.mNoiseSequence, this)
+  , mNoiseSequenceReduced(src.mNoiseSequenceReduced, this)
+  , mPrioritySequence(src.mPrioritySequence, this)
+  , mTransientDataObjectSequence(src.mTransientDataObjectSequence, this)
+  , mInitialStateValueExtensive(src.mInitialStateValueExtensive)
+  , mInitialStateValueIntensive(src.mInitialStateValueIntensive)
+  , mInitialStateValueAll(src.mInitialStateValueAll)
+  , mStateValues(src.mStateValues)
+  , mReducedStateValues(src.mReducedStateValues)
+  , mSimulationRequiredValues(src.mSimulationRequiredValues)
+  , mObjects()
+  , mOldObjects()
+  , mpObjectsBuffer(NULL)
+  , mEvents()
+  , mReactions()
+  , mRootIsDiscrete(src.mRootIsDiscrete)
+  , mRootIsTimeDependent(src.mRootIsTimeDependent)
+  , mRootProcessors(src.mRootProcessors)
+  , mRootDerivativesState(src.mRootDerivativesState)
+  , mRootDerivatives(src.mRootDerivatives)
+  , mDataObject2MathObject(src.mDataObject2MathObject)
+  , mDataValue2MathObject(src.mDataValue2MathObject)
+  , mDataValue2DataObject(src.mDataValue2DataObject)
+  , mDiscontinuityEvents("Discontinuities", this)
+  , mDiscontinuityInfix2Object()
+  , mTriggerInfix2Event()
+  , mRootCount2Events()
+  , mDelays()
+  , mIsAutonomous(src.mIsAutonomous)
+  , mSize(src.mSize)
+  , mNoiseInputObjects(src.mNoiseInputObjects)
+  , mNumTotalRootsIgnored(src.mNumTotalRootsIgnored)
+  , mValueChangeProhibited(src.mValueChangeProhibited)
 #ifdef USE_JIT
   , mJITCompiler()
 #endif
@@ -519,56 +519,69 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   // do not use &model in the constructor of CDataContainer
   setObjectParent(mpModel);
 
-  memset(&mSize, 0, sizeof(mSize));
-  sSize size = src.mSize;
+  sSize size = mSize;
+  size_t ObjectCount = src.mValues.size();
 
-  std::vector< CMath::sRelocate > Relocations = resize(size);
-
+  mpValuesBuffer = (ObjectCount > 0) ? new C_FLOAT64[ObjectCount] : NULL;
+  mValues.initialize(ObjectCount, mpValuesBuffer);
+  mOldValues.initialize(ObjectCount, mpValuesBuffer);
+  size.pValue = mValues.array();
   mValues = src.mValues;
 
-  // Copy the objects
-  CMathObject * pObject = mObjects.array();
-  CMathObject * pObjectEnd = pObject + mObjects.size();
-  const CMathObject * pObjectSrc = src.mObjects.array();
+  mpObjectsBuffer = (ObjectCount > 0) ? new CMathObject[ObjectCount] : NULL;
+  mObjects.initialize(ObjectCount, mpObjectsBuffer);
+  mOldObjects.initialize(ObjectCount, mpObjectsBuffer);
+  size.pObject = mObjects.array();
+
+  CMathObject * pObject = mObjects.begin();
+  CMathObject * pObjectEnd = mObjects.end();
+  const CMathObject * pObjectSrc = src.mObjects.begin();
 
   for (; pObject != pObjectEnd; ++pObject, ++pObjectSrc)
-    {
-      pObject->copy(*pObjectSrc, *this);
-      pObject->relocate(this, Relocations);
-    }
+    pObject->copy(*pObjectSrc, *this);
 
-  CMathEvent * pEvent = mEvents.array();
-  CMathEvent * pEventEnd = pEvent + mEvents.size();
-  const CMathEvent * pEventSrc = src.mEvents.array();
+  mEvents.initialize(mSize.nEvents, new CMathEvent[mSize.nEvents]);
+  CMathEvent * pEvent = mEvents.begin();
+  CMathEvent * pEventEnd = mEvents.end();
+  const CMathEvent * pEventSrc = src.mEvents.begin();
 
   for (; pEvent != pEventEnd; ++pEvent, ++pEventSrc)
-    {
-      pEvent->copy(*pEventSrc, *this);
-      pEvent->relocate(this, Relocations);
-    }
+    pEvent->copy(*pEventSrc, *this);
 
-  CMathReaction * pReaction = mReactions.array();
-  CMathReaction * pReactionEnd = pReaction + mReactions.size();
-  const CMathReaction * pReactionSrc = src.mReactions.array();
+  mReactions.initialize(mSize.nReactions, new CMathReaction[mSize.nReactions]);
+  CMathReaction * pReaction = mReactions.begin();
+  CMathReaction * pReactionEnd = mReactions.end();
+  const CMathReaction * pReactionSrc = src.mReactions.begin();
 
   for (; pReaction != pReactionEnd; ++pReaction, ++pReactionSrc)
-    {
-      pReaction->copy(*pReactionSrc, *this);
-      pReaction->relocate(this, Relocations);
-    }
+    pReaction->copy(*pReactionSrc, *this);
 
-  CMathDelay * pDelay = mDelays.array();
-  CMathDelay * pDelayEnd = pDelay + mDelays.size();
-  const CMathDelay * pDelaySrc = src.mDelays.array();
+  mDelays.initialize(mSize.nDelayLags, new CMathDelay[mSize.nDelayLags]);
+  CMathDelay * pDelay = mDelays.begin();
+  CMathDelay * pDelayEnd = mDelays.end();
+  const CMathDelay * pDelaySrc = src.mDelays.begin();
 
   for (; pDelay != pDelayEnd; ++pDelay, ++pDelaySrc)
-    {
-      pDelay->copy(*pDelaySrc, *this);
-      pDelay->relocate(this, Relocations);
-    }
+    pDelay->copy(*pDelaySrc, *this);
 
-  mOldValues.initialize(mValues);
-  mOldObjects.initialize(mObjects);
+  std::vector< CMath::sRelocate > Relocations = move(size);
+
+  finishResize();
+
+  compileObjects();
+
+  map();
+
+#ifdef USE_JIT
+
+  try
+    {
+      mJITCompiler.compile();
+    }
+  catch (...)
+    {}
+
+#endif
 }
 
 CMathContainer::~CMathContainer()
@@ -5148,8 +5161,6 @@ void CMathContainer::ignoreDiscontinuityEvent(CMathEvent * pEvent)
 
 std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & size)
 {
-  std::vector< CMath::sRelocate > Relocations;
-
   if (size.nFixed == mSize.nFixed &&
       size.nFixedEventTargets == mSize.nFixedEventTargets &&
       size.nTime == mSize.nTime &&
@@ -5167,8 +5178,15 @@ std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & s
       size.nDelayValues == mSize.nDelayValues &&
       size.nDelayLags == mSize.nDelayLags)
     {
-      return Relocations;
+      return std::vector< CMath::sRelocate > ();
     }
+
+  return move(size);
+}
+
+std::vector< CMath::sRelocate > CMathContainer::move(CMathContainer::sSize & size)
+{
+  std::vector< CMath::sRelocate > Relocations;
 
   // We must not relocate mDataObject2MathObject and mDataValue2MathObject as the key might have been deleted and newly allocated.
   mDataObject2MathObject.clear();
@@ -5358,6 +5376,7 @@ void CMathContainer::relocate(const sSize & size,
   relocateObjectSet(mReducedStateValues, Relocations);
   relocateObjectSet(mSimulationRequiredValues, Relocations);
   relocateObjectSet(mNoiseInputObjects, Relocations);
+  relocateObjectSet(mValueChangeProhibited, Relocations);
 
   std::map< const CDataObject *, CMathObject * >::iterator itDataObject2MathObject = mDataObject2MathObject.begin();
   std::map< const CDataObject *, CMathObject * >::iterator endDataObject2MathObject = mDataObject2MathObject.end();
