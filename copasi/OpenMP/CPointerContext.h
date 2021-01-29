@@ -33,6 +33,16 @@ template < class Data > CPointerContext< Data >::CPointerContext(Data * pMaster)
 {
   Base::init();
   Base::master() = NULL;
+
+  if (Base::mSize > 1)
+    {
+      Data ** pIt = Base::beginThread();
+      Data ** pEnd = Base::endThread();
+
+      for (; pIt != pEnd; ++pIt)
+        *pIt = NULL;
+    }
+
   setMaster(pMaster);
 }
 
