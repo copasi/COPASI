@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -2008,7 +2008,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
   if (dimensionality > 3)
     {
       CCopasiMessage Message(CCopasiMessage::WARNING,
-                             "Reaction with id \"%s\" has dimensions of %d, this is not supported by COPASI. COPASI will assume that the compartment is three dimensional."
+                             "The compartment with id \"%s\" has dimensions of %d, this is not supported by COPASI. COPASI will assume that the compartment is three dimensional."
                              , sbmlCompartment->getId().c_str(), dimensionality);
       dimensionality = 3;
       //fatalError();
@@ -2320,7 +2320,12 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           ignoreMassAction = pSBMLModel->getRule(sr->getId()) != NULL;
 
           if (sr->isSetStoichiometry())
-            stoi = sr->getStoichiometry();
+            {
+              stoi = sr->getStoichiometry();
+
+              if (stoi != stoi)
+                stoi = 1.0;
+            }
         }
 
       std::map<std::string, CMetab*>::iterator pos;
@@ -2451,7 +2456,13 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           ignoreMassAction = pSBMLModel->getRule(sr->getId()) != NULL;
 
           if (sr->isSetStoichiometry())
-            stoi = sr->getStoichiometry();
+            {
+              stoi = sr->getStoichiometry();
+
+              if (stoi != stoi)
+                stoi = 1.0;
+            }
+
         }
 
       std::map<std::string, CMetab*>::iterator pos;
