@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -143,7 +143,11 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
               dynamic_cast<CFunction *>(CRootContainer::getFunctionList()->findFunction(mData));
           }
 
-        if (!mpFunction) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::CFunctionNotFound);
+        if (!mpFunction)
+          {
+            mSubType = SubType::DEFAULT;
+            return CIssue(CIssue::eSeverity::Error, CIssue::eKind::CFunctionNotFound);
+          }
 
         mRegisteredFunctionCN = mpFunction->getCN();
 
@@ -188,7 +192,11 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
                   dynamic_cast<CFunction *>(CRootContainer::getFunctionList()->findFunction(mData));
               }
 
-            if (!mpFunction) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::CFunctionNotFound);
+            if (!mpFunction)
+              {
+                mSubType = SubType::DEFAULT;
+                return CIssue(CIssue::eSeverity::Error, CIssue::eKind::CFunctionNotFound);
+              }
 
             mRegisteredFunctionCN = mpFunction->getCN();
 
@@ -309,6 +317,7 @@ std::string CEvaluationNodeCall::getInfix(const std::vector< std::string > & chi
   switch (mSubType)
     {
       case SubType::FUNCTION:
+      case SubType::DEFAULT:
       {
         std::vector< std::string >::const_iterator it = children.begin();
         std::vector< std::string>::const_iterator end = children.end();
@@ -768,7 +777,7 @@ CValidatedUnit CEvaluationNodeCall::setUnit(const CMathContainer & container,
 
   for (it = mCallNodes.begin(); it != end; ++it, ++itValidatedVariableUnit)
     {
-      std::map < CEvaluationNode * , CValidatedUnit >::iterator found = targetUnits.find(const_cast< CEvaluationNode * >(*it));
+      std::map < CEvaluationNode *, CValidatedUnit >::iterator found = targetUnits.find(const_cast< CEvaluationNode * >(*it));
 
       if (found == targetUnits.end())
         {
