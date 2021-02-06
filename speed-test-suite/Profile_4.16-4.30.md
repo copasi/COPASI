@@ -25,9 +25,9 @@ capability). Thus to run the test one needs only to issue the following command:
 ```bash
 CopasiSE modelfile.cps
 ```
-and this appends the results (CPU time in seconds) to the *modelfile.out* file. 
-Note that *CopasiSE* should be the full path of CopasiSE of the appropriate 
-version to test. An example would be 
+This runs the benchmark and appends the results (CPU time in seconds) to the 
+*modelfile.out* file.  Note that *CopasiSE* should be the full path of CopasiSE 
+of the appropriate  version to test. An example would be 
 *\usr\local\COPASI-4.29.227-Linux-64bit\bin\CopasiSE* to test Build 227.
 
 A few tests target the time taken to load a file, and in that case the 
@@ -40,14 +40,15 @@ test those files should be:
 CopasiSE | head -n 1 >> modelfile.out
 /usr/bin/time -f "%e" -a -o modelfile.out CopasiSE --nologo modelfile.cps
 ```
-as this will provide a similar output as with the previous tasks (one line with 
-version numnber and another with time taken to process file in seconds).
+This will provide a similar output as with the previous tasks, namely a first 
+line with version number and another line with the time (in seconds) taken to 
+process the file.
 
-In order to enhance reproducibility the entire test suite ran for the results 
-provided here is encoded in a single BASH script *copasispeedtests*. This 
-script has a number of local system dependencies encoded in environment 
-variables at the top, which need to be configured for other systems. It includes 
-basic instructions in comments.
+In order to enhance reproducibility the entire test suite was ran using a single
+single BASH script *copasispeedtests* that ran all the benchmarks in sequence. 
+This  script has a number of local system dependencies encoded in environment 
+variables at the top, which need to be appropriately configured to match the 
+local requirements (file paths, etc.). 
 
 ## Tests
 
