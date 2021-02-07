@@ -52,9 +52,9 @@ local requirements (file paths, etc.).
 
 ## Tests
 
-Each file is designed to test a single function, such as simulation or analysis 
-task, as well as model loading and parsing SBML. A full list of tests used 
-and details of each one are included in Table 1.
+Each benchmark file is designed to test a single COPASI function, such as 
+simulation or analysis task, as well as model loading and parsing SBML. Table 1
+lists all the benchmarks and their characteristics.
 
 Table 1. List of tests and their details
 File | Function tested | Observations
@@ -118,7 +118,26 @@ Pollution_radau5.cps | RADAU5 time course | stiff model (Build 213 onwards)
 HuangFerrel_sde.cps | RI5 time course (SDE) | (Build 226 onwards)
 
 ## Results
+This benchmark suit was used to profile the latest COPASI version (4.30) as 
+well as several recent ones, as listed in Table 2. All of the tests were run on
+a computer with a Intel(R) Core(TM) i7-9700 CPU at 3.00 GHz running Slackware64 
+Linux distribution and the Linux 64 bit binaries distributed by the COPASI 
+project.
 
+Table 2. List of COPASI versions profiled 
+Version | Build | Observations
+-----|-----|--------
+4.16 | 104 | computations carried out from biochemical model
+4.17 | 135 | computations carried out in math model class
+4.19 | 140 | improved performance
+4.21 | 166 | improved performance of calculations
+4.24 | 197 | SDE solver (RI5)
+4.25 | 207 | improved SDE (RI5) solver, improved RK45 hybrid solver
+4.26 | 213 | updated convergence criterion to steady state
+4.28 | 226 | updated convergence criterion to steady state 
+4.29 | 228 | 
+4.30 | 237 | just-in-time compiler for mathematical expressions
+  
 ## Conclusion
 
  
