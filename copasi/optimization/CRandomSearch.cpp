@@ -51,7 +51,7 @@ email                : rluktuke@vt.edu
 CRandomSearch::CRandomSearch(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
                              const CTaskEnum::Task & taskType)
-  : COptMethod(pParent, methodType, taskType)
+  : COptMethod(pParent, methodType, taskType, false)
   , mIterations(100000)
   , mCurrentIteration(0)
   , mIndividual()

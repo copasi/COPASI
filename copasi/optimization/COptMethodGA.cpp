@@ -46,7 +46,7 @@
 COptMethodGA::COptMethodGA(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType) :
-  COptPopulationMethod(pParent, methodType, taskType),
+  COptPopulationMethod(pParent, methodType, taskType, false),
   mCrossOverFalse(0),
   mCrossOver(0),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
@@ -136,7 +136,7 @@ bool COptMethodGA::mutate(CVector< C_FLOAT64 > & individual)
       C_FLOAT64 & mut = individual[j];
 
       // calculate the mutated parameter
-      mut *= mpRandom->getRandomNormal(1, mMutationVarians);
+      mut *= mRandomContext.master()->getRandomNormal(1, mMutationVarians);
 
       // force it to be within the bounds
       switch (OptItem.checkConstraint(mut))
@@ -169,7 +169,7 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
   mCrossOver = mCrossOverFalse;
 
   if (mVariableSize > 1)
-    nCross = mpRandom->getRandomU((unsigned C_INT32)(mVariableSize / 2));
+    nCross = mRandomContext.master()->getRandomU((unsigned C_INT32)(mVariableSize / 2));
 
   if (nCross == 0)
     {
@@ -184,7 +184,7 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
   // We do not mind if a crossover point gets drawn twice
   for (i = 0; i < nCross; i++)
     {
-      crp = mpRandom->getRandomU((unsigned C_INT32)(mVariableSize - 1));
+      crp = mRandomContext.master()->getRandomU((unsigned C_INT32)(mVariableSize - 1));
       mCrossOver[crp] = true;
     }
 
@@ -259,7 +259,7 @@ bool COptMethodGA::select()
         // get random opponent
         do
           {
-            opp = mpRandom->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
+            opp = mRandomContext.master()->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
           }
         while (i == opp);
 
@@ -368,15 +368,15 @@ bool COptMethodGA::creation(size_t first,
             {
               // determine if linear or log scale
               if ((mn < 0.0) || (mx <= 0.0))
-                mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
               else
                 {
                   la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                   if (la < 1.8)
-                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                    mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
                   else
-                    mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
+                    mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mRandomContext.master()->getRandomCC());
                 }
             }
 
@@ -444,7 +444,7 @@ bool COptMethodGA::initialize()
   mValues = std::numeric_limits<C_FLOAT64>::infinity();
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
-  mpPermutation = new CPermutation(mpRandom, mPopulationSize);
+  mpPermutation = new CPermutation(mRandomContext.master(), mPopulationSize);
 
   mLosses.resize(2 * mPopulationSize);
 

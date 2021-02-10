@@ -35,7 +35,7 @@
 COptMethodTruncatedNewton::COptMethodTruncatedNewton(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType),
+  COptMethod(pParent, methodType, taskType, false),
   mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun)),
   mpCTruncatedNewton(new CTruncatedNewton())
 {

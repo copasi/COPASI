@@ -35,7 +35,7 @@
 COptMethodPraxis::COptMethodPraxis(const CDataContainer * pParent,
                                    const CTaskEnum::Method & methodType,
                                    const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType),
+  COptMethod(pParent, methodType, taskType, false),
   mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction)),
   mpCPraxis(new CPraxis())
 {

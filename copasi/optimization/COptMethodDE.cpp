@@ -34,7 +34,7 @@
 COptMethodDE::COptMethodDE(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
-  COptPopulationMethod(pParent, methodType, taskType),
+  COptPopulationMethod(pParent, methodType, taskType, false),
   mpPermutation(NULL),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
   mMutationVarians(0.1),
@@ -143,12 +143,12 @@ bool COptMethodDE::replicate()
           const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
           C_FLOAT64 & mut = (*mIndividuals[i])[j];
 
-          size_t r = mpRandom->getRandomU(mPopulationSize - 1);
+          size_t r = mRandomContext.master()->getRandomU(mPopulationSize - 1);
 
           if (r < 0.6 * mPopulationSize)
             {
               mut = (*mIndividuals[i - mPopulationSize])[j] *
-                    mpRandom->getRandomNormal(1, mMutationVarians);
+                    mRandomContext.master()->getRandomNormal(1, mMutationVarians);
             }
 
           else
@@ -193,10 +193,10 @@ bool COptMethodDE::replicate()
               const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
               C_FLOAT64 & mut = (*mIndividuals[i - 2 * mPopulationSize])[j];
 
-              size_t r = mpRandom->getRandomU(mPopulationSize - 1);
+              size_t r = mRandomContext.master()->getRandomU(mPopulationSize - 1);
 
               if (r < 0.6 * mPopulationSize)
-                mut *= mpRandom->getRandomNormal(1, mMutationVarians);
+                mut *= mRandomContext.master()->getRandomNormal(1, mMutationVarians);
 
               // force it to be within the bounds
               switch (OptItem.checkConstraint(mut))
@@ -279,15 +279,15 @@ bool COptMethodDE::creation(size_t first, size_t last)
               {
                 // determine if linear or log scale
                 if ((mn < 0.0) || (mx <= 0.0))
-                  mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                  mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
                 else
                   {
                     la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                     if (la < 1.8)
-                      mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                      mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
                     else
-                      mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
+                      mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mRandomContext.master()->getRandomCC());
                   }
               }
 
@@ -348,7 +348,7 @@ bool COptMethodDE::initialize()
       setValue("Population Size", mPopulationSize);
     }
 
-  mpPermutation = new CPermutation(mpRandom, mPopulationSize);
+  mpPermutation = new CPermutation(mRandomContext.master(), mPopulationSize);
 
   mIndividuals.resize(3 * mPopulationSize);
 

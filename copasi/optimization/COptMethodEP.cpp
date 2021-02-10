@@ -38,7 +38,7 @@
 COptMethodEP::COptMethodEP(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
-  COptPopulationMethod(pParent, methodType, taskType),
+  COptPopulationMethod(pParent, methodType, taskType, false),
   mBestIndex(C_INVALID_INDEX),
   mLosses(0),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
@@ -344,16 +344,16 @@ bool COptMethodEP::creation()
                   la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                   if (la < 1.8 || !(mn > 0.0)) // linear
-                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                    mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
                   else
-                    mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
+                    mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mRandomContext.master()->getRandomCC());
                 }
               else if (mx > 0) // 0 is in the interval (mn, mx)
                 {
                   la = log10(mx) + log10(-mn);
 
                   if (la < 3.6) // linear
-                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                    mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
                   else
                     {
                       C_FLOAT64 mean = (mx + mn) * 0.5;
@@ -361,7 +361,7 @@ bool COptMethodEP::creation()
 
                       do
                         {
-                          mut = mpRandom->getRandomNormal(mean, sigma);
+                          mut = mRandomContext.master()->getRandomNormal(mean, sigma);
                         }
                       while ((mut < mn) || (mut > mx));
                     }
@@ -376,9 +376,9 @@ bool COptMethodEP::creation()
                   la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                   if (la < 1.8 || !(mn > 0.0)) // linear
-                    mut = - (mn + mpRandom->getRandomCC() * (mx - mn));
+                    mut = - (mn + mRandomContext.master()->getRandomCC() * (mx - mn));
                   else
-                    mut = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
+                    mut = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mRandomContext.master()->getRandomCC());
                 }
             }
 
@@ -451,7 +451,7 @@ bool COptMethodEP::select()
         // get random opponent
         do
           {
-            opp = mpRandom->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
+            opp = mRandomContext.master()->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
           }
         while (i == opp);
 
@@ -541,7 +541,7 @@ bool COptMethodEP::mutate(size_t i)
   CVector<C_FLOAT64> & Individual = *mIndividuals[i];
   CVector<C_FLOAT64> & Variance = *mVariance[i];
 
-  v1 = mpRandom->getRandomNormal01();
+  v1 = mRandomContext.master()->getRandomNormal01();
 
   // update the variances
   for (j = 0; j < mVariableSize; j++)
@@ -553,10 +553,10 @@ bool COptMethodEP::mutate(size_t i)
         {
           // update the parameter for the variances
           Variance[j] =
-            std::max(Variance[j] * exp(tau1 * v1 + tau2 * mpRandom->getRandomNormal01()), 1e-8);
+            std::max(Variance[j] * exp(tau1 * v1 + tau2 * mRandomContext.master()->getRandomNormal01()), 1e-8);
 
           // calculate the mutated parameter
-          mut += Variance[j] * mpRandom->getRandomNormal01();
+          mut += Variance[j] * mRandomContext.master()->getRandomNormal01();
         }
 
       catch (...)

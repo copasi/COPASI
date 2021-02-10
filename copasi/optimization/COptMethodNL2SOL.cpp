@@ -20,7 +20,7 @@
 COptMethodNL2SOL::COptMethodNL2SOL(const CDataContainer * pParent,
                                    const CTaskEnum::Method & methodType,
                                    const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType),
+  COptMethod(pParent, methodType, taskType, false),
   v(NULL),
   iv(NULL),
   mIterations(150),

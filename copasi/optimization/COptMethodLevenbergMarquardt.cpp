@@ -45,7 +45,7 @@
 COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType) :
-  COptMethod(pParent, methodType, taskType),
+  COptMethod(pParent, methodType, taskType, false),
   mIterationLimit(2000),
   mTolerance(1.e-006),
   mModulation(1.e-006),

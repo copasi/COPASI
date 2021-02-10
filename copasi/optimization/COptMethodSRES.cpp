@@ -45,7 +45,7 @@
 COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
                                const CTaskEnum::Method & methodType,
                                const CTaskEnum::Task & taskType):
-  COptPopulationMethod(pParent, methodType, taskType),
+  COptPopulationMethod(pParent, methodType, taskType, false),
   mStopAfterStalledGenerations(0),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max())
@@ -141,7 +141,7 @@ bool COptMethodSRES::replicate()
           // do recombination on the sigma
           // since sigmas already have one parent's component
           // need only average with the sigmas of the other parent
-          Parent = (i + mpRandom->getRandomU(mPopulationSize - 1)) % mPopulationSize;
+          Parent = (i + mRandomContext.master()->getRandomU(mPopulationSize - 1)) % mPopulationSize;
 
           pVariance = (*itTargetVariance)->array();
           pVarianceEnd = pVariance + mVariableSize;
@@ -180,7 +180,7 @@ bool COptMethodSRES::mutate()
       pVariance = (*itVariance)->array();
       pMaxVariance = mMaxVariance.array();
 
-      v1 = mpRandom->getRandomNormal01();
+      v1 = mRandomContext.master()->getRandomNormal01();
 
       for (j = 0; pVariable != pVariableEnd; ++pVariable, ++pVariance, ++pMaxVariance, ++j)
         {
@@ -195,12 +195,12 @@ bool COptMethodSRES::mutate()
             {
               // update the parameter for the variances
               *pVariance =
-                std::min(*pVariance * exp(mTauPrime * v1 + mTau * mpRandom->getRandomNormal01()), *pMaxVariance);
+                std::min(*pVariance * exp(mTauPrime * v1 + mTau * mRandomContext.master()->getRandomNormal01()), *pMaxVariance);
 
               for (l = 0; l < 10; l++)
                 {
                   // calculate the mutated parameter
-                  mut = Store + *pVariance * mpRandom->getRandomNormal01();
+                  mut = Store + *pVariance * mRandomContext.master()->getRandomNormal01();
 
                   if (OptItem.checkConstraint(mut) == 0)
                     break;
@@ -249,7 +249,7 @@ void COptMethodSRES::select()
       for (j = 0; j < TotalPopulation - 1; j++)  // lambda is number of individuals
         {
           if ((mPhi[j] == 0 && mPhi[j + 1] == 0) || // within bounds
-              (mpRandom->getRandomOO() < mPf))      // random chance to compare values outside bounds
+              (mRandomContext.master()->getRandomOO() < mPf))      // random chance to compare values outside bounds
             {
               // compare obj fcn using mValue alternative code
               if (mValues[j] > mValues[j + 1])
@@ -409,16 +409,16 @@ bool COptMethodSRES::creation(size_t first)
                   la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                   if (la < 1.8 || !(mn > 0.0)) // linear
-                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                    mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
                   else
-                    mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
+                    mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mRandomContext.master()->getRandomCC());
                 }
               else if (mx > 0) // 0 is in the interval (mn, mx)
                 {
                   la = log10(mx) + log10(-mn);
 
                   if (la < 3.6) // linear
-                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                    mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
                   else
                     {
                       C_FLOAT64 mean = (mx + mn) * 0.5;
@@ -426,7 +426,7 @@ bool COptMethodSRES::creation(size_t first)
 
                       do
                         {
-                          mut = mpRandom->getRandomNormal(mean, sigma);
+                          mut = mRandomContext.master()->getRandomNormal(mean, sigma);
                         }
                       while ((mut < mn) || (mut > mx));
                     }
@@ -441,9 +441,9 @@ bool COptMethodSRES::creation(size_t first)
                   la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                   if (la < 1.8 || !(mn > 0.0)) // linear
-                    mut = - (mn + mpRandom->getRandomCC() * (mx - mn));
+                    mut = - (mn + mRandomContext.master()->getRandomCC() * (mx - mn));
                   else
-                    mut = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
+                    mut = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mRandomContext.master()->getRandomCC());
                 }
             }
 

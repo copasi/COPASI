@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -102,9 +102,9 @@ private:
 
   /**
    * Evaluate the fitness of one individual
-   * @return const C_FLOAT64 value
+   * @return C_FLOAT64 value
    */
-  const C_FLOAT64 & evaluate();
+  C_FLOAT64 evaluate();
 
   /**
    * Move the indexed individual in the swarm
@@ -197,11 +197,6 @@ private:
    * Index of the best solution found so far.
    */
   size_t mBestIndex;
-
-  /**
-   * The value of the last evaluation.
-   */
-  C_FLOAT64 mEvaluationValue;
 
   /**
   * if no improvement was made after # stalled iterations

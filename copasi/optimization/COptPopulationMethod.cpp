@@ -24,8 +24,9 @@
 
 COptPopulationMethod::COptPopulationMethod(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
-    const CTaskEnum::Task & taskType /*= CTaskEnum::optimization*/)
-  : COptMethod(pParent, methodType, taskType)
+    const CTaskEnum::Task & taskType,
+    const bool & parallel)
+  : COptMethod(pParent, methodType, taskType, parallel)
   , mPopulationSize(0)
   , mGenerations(0)
   , mCurrentGeneration(0)
@@ -33,7 +34,7 @@ COptPopulationMethod::COptPopulationMethod(const CDataContainer * pParent,
   , mVariableSize(0)
   , mIndividuals()
   , mValues()
-  , mpRandom(NULL)
+  , mRandomContext(parallel)
 {
   initObjects();
 }
@@ -48,7 +49,7 @@ COptPopulationMethod::COptPopulationMethod(const COptPopulationMethod & src,
   , mVariableSize(0)
   , mIndividuals()
   , mValues()
-  , mpRandom(NULL)
+  , mRandomContext(src.mParallel)
 {
   initObjects();
 }
@@ -95,16 +96,14 @@ COptPopulationMethod::initialize()
   else
     mPopulationSize = 0;
 
-  pdelete(mpRandom);
-
   if (getParameter("Random Number Generator") != NULL && getParameter("Seed") != NULL)
     {
-      mpRandom = CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                                          getValue< unsigned C_INT32 >("Seed"));
+      mRandomContext.setMaster(CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
+                               getValue< unsigned C_INT32 >("Seed")));
     }
   else
     {
-      mpRandom = CRandom::createGenerator();
+      mRandomContext.setMaster(CRandom::createGenerator());
     }
 
   mVariableSize = mProblemContext.master()->getOptItemList().size();
@@ -116,8 +115,6 @@ bool
 COptPopulationMethod::cleanup()
 {
   size_t i;
-
-  pdelete(mpRandom);
 
   for (i = 0; i < mIndividuals.size(); i++)
     pdelete(mIndividuals[i]);

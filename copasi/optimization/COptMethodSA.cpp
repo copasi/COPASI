@@ -46,7 +46,7 @@
 COptMethodSA::COptMethodSA(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType)
-  : COptMethod(pParent, methodType, taskType)
+  : COptMethod(pParent, methodType, taskType, false)
   , mTemperature(1.0)
   , mhTemperature(C_INVALID_INDEX)
   , mCoolingFactor(0.85)

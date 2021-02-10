@@ -67,6 +67,15 @@ public:
 
   //data member
 protected:
+  /**
+   * The parent task
+   */
+  COptTask * mpParentTask;
+
+  /**
+   * Boolean indicating whether this method con use parallel execution.
+   */
+  bool mParallel;
 
   /**
    * A thread specific math container
@@ -78,8 +87,8 @@ protected:
    */
   COptProblemContext mProblemContext;
 
-protected:
-  COptTask * mpParentTask;
+  /**
+   * A best objective value found
 
   /**
    * Define the current verbosity for the log
@@ -103,11 +112,13 @@ public:
    * Specific constructor
    * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType
-   * @param const CTaskEnum::Task & taskType (default: optimization)
+   * @param const CTaskEnum::Task & taskType
+   * @param const bool & parallel
    */
   COptMethod(const CDataContainer * pParent,
              const CTaskEnum::Method & methodType,
-             const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
+             const CTaskEnum::Task & taskType,
+             const bool & parallel);
 
   /**
    * Copy constructor
@@ -159,6 +170,22 @@ public:
   const COptLog &getMethodLog() const;
 
 protected:
+  /**
+   * Calculate the objective value for the provided parameter set
+   * @param COptProblem * pProblem
+   * @param const CVectorCore< C_FLOAT64 > & parameters
+   * @return std::pair< C_FLOAT64 objectiveValue, bool continue >
+   */
+  static std::pair< C_FLOAT64, bool > objectiveValue(COptProblem * pProblem, const CVectorCore< C_FLOAT64 > & parameters);
+
+  /**
+   * Reflect the objective value if it is outside the parametric or functional domain
+   * @param COptProblem * pProblem
+   * @param const C_FLOAT64 & bestValue
+   * @param C_FLOAT64 & objectiveValue
+   */
+  static void reflect(COptProblem * pProblem, const C_FLOAT64 & bestValue, C_FLOAT64 & objectiveValue);
+
   /**
    * Signal that the math container has changed
    */

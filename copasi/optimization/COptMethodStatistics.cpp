@@ -37,7 +37,7 @@
 COptMethodStatistics::COptMethodStatistics(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType),
+  COptMethod(pParent, methodType, taskType, false),
   mIndividual(),
   mValue(0.0),
   mVariableSize(0),

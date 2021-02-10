@@ -43,13 +43,15 @@
 
 COptMethod::COptMethod(const CDataContainer * pParent,
                        const CTaskEnum::Method & methodType,
-                       const CTaskEnum::Task & taskType)
+                       const CTaskEnum::Task & taskType,
+                       const bool & parallel)
   : CCopasiMethod(pParent, methodType, taskType)
   , mpParentTask(NULL)
+  , mParallel(parallel)
+  , mMathContext(parallel)
+  , mProblemContext(parallel)
   , mLogVerbosity(0)
   , mMethodLog()
-  , mProblemContext(NULL)
-  , mMathContext(NULL)
 {
   assertParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 }
@@ -58,17 +60,41 @@ COptMethod::COptMethod(const COptMethod & src,
                        const CDataContainer * pParent)
   : CCopasiMethod(src, pParent)
   , mpParentTask(src.mpParentTask)
+  , mParallel(src.mParallel)
+  , mMathContext(src.mParallel)
+  , mProblemContext(src.mParallel)
   , mLogVerbosity(src.mLogVerbosity)
   , mMethodLog(src.mMethodLog)
-  , mProblemContext(src.mProblemContext.master())
-  , mMathContext(src.mMathContext.master())
 {
+  mMathContext.setMaster(src.mMathContext.master());
+  mProblemContext.setMaster(src.mProblemContext.master());
   mProblemContext.setMathContext(mMathContext);
 }
 
 //YOHE: seems "virtual" cannot be outside of class declaration
 COptMethod::~COptMethod()
 {}
+
+// static
+std::pair< C_FLOAT64, bool > COptMethod::objectiveValue(COptProblem * pProblem, const CVectorCore< C_FLOAT64 > & parameters)
+{
+  std::pair< C_FLOAT64, bool > Result;
+
+  pProblem->setParameters(parameters);
+  Result.second = pProblem->calculate();
+  Result.first = pProblem->getCalculateValue();
+
+  return Result;
+}
+
+// static
+void COptMethod::reflect(COptProblem * pProblem, const C_FLOAT64 & bestValue, C_FLOAT64 & objectiveValue)
+{
+  if (objectiveValue < bestValue
+      && (!pProblem->checkParametricConstraints()
+          || !pProblem->checkFunctionalConstraints()))
+    objectiveValue = bestValue + bestValue - objectiveValue;
+}
 
 void COptMethod::setProblem(COptProblem * pProblem)
 {
@@ -86,6 +112,13 @@ bool COptMethod::initialize()
 {
   if (mProblemContext.master() == NULL)
     return false;
+
+  COptProblem **ppProblem = mProblemContext.beginThread();
+  COptProblem **ppProblemEnd = mProblemContext.endThread();
+
+  for (; ppProblem != ppProblemEnd; ++ppProblem)
+    if (mProblemContext.isThread(ppProblem))
+      (*ppProblem)->initialize();
 
   mpParentTask = dynamic_cast<COptTask *>(getObjectParent());
 

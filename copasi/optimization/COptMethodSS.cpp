@@ -41,7 +41,7 @@
 COptMethodSS::COptMethodSS(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
-  COptPopulationMethod(pParent, methodType, taskType),
+  COptPopulationMethod(pParent, methodType, taskType, false),
   mPool(0),
   mPoolVal(0),
   mPoolSize(0),
@@ -257,8 +257,6 @@ bool COptMethodSS::cleanup()
 {
   size_t i;
 
-  pdelete(mpRandom);
-
   pdelete(mpOptProblemLocal);
 
   pdelete(mpLocalMinimizer);
@@ -297,12 +295,12 @@ bool COptMethodSS::localmin(CVector< C_FLOAT64 > & solution, C_FLOAT64 & fval)
     }
 
   // reset the function counter of the local minimizer
-  mpOptProblemLocal->resetEvaluations();
+  mpOptProblemLocal->resetCounters();
 
   // run it
   Running &= mpLocalMinimizer->optimise();
   // add the function evaluations taken in local to the global problem
-  mProblemContext.master()->incrementEvaluations(mpOptProblemLocal->getFunctionEvaluations());
+  mProblemContext.master()->incrementCounters(mpOptProblemLocal->getCounters());
   // pass the results on to the calling parameters
   fval = mpOptProblemLocal->getSolutionValue();
 
@@ -356,14 +354,14 @@ bool COptMethodSS::randomize(C_INT32 i)
 
           // determine if linear or log scale
           if ((mn < 0.0) || (mx <= 0.0))
-            Sol = mn + mpRandom->getRandomCC() * (mx - mn);
+            Sol = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
           else
             {
               if (la < 1.8)
-                Sol = mn + mpRandom->getRandomCC() * (mx - mn);
+                Sol = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
               else
                 Sol = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()))
-                          + la * mpRandom->getRandomCC());
+                          + la * mRandomContext.master()->getRandomCC());
             }
         }
       catch (...)
@@ -427,14 +425,14 @@ bool COptMethodSS::creation(void)
 
               // determine if linear or log scale
               if ((mn < 0.0) || (mx <= 0.0))
-                Sol = mn + (mpRandom->getRandomCC() + (C_FLOAT64) i) * (mx - mn) * 0.25;
+                Sol = mn + (mRandomContext.master()->getRandomCC() + (C_FLOAT64) i) * (mx - mn) * 0.25;
               else
                 {
                   if (la < 1.8)
-                    Sol = mn + (mpRandom->getRandomCC() + (C_FLOAT64) i) * (mx - mn) * 0.25;
+                    Sol = mn + (mRandomContext.master()->getRandomCC() + (C_FLOAT64) i) * (mx - mn) * 0.25;
                   else
                     Sol = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()))
-                              + la * 0.25 * (mpRandom->getRandomCC() + (C_FLOAT64) i));
+                              + la * 0.25 * (mRandomContext.master()->getRandomCC() + (C_FLOAT64) i));
                 }
             }
           catch (...)
@@ -519,7 +517,7 @@ bool COptMethodSS::creation(void)
               if (k > 0) mProb[k] += mProb[k - 1];
             }
 
-          a = mpRandom->getRandomCC();
+          a = mRandomContext.master()->getRandomCC();
 
           for (k = 0; k < 4; k++)
             {
@@ -533,14 +531,14 @@ bool COptMethodSS::creation(void)
 
                       // determine if linear or log scale
                       if ((mn < 0.0) || (mx <= 0.0))
-                        Sol = mn + (mpRandom->getRandomCC() + (C_FLOAT64) k) * (mx - mn) * 0.25;
+                        Sol = mn + (mRandomContext.master()->getRandomCC() + (C_FLOAT64) k) * (mx - mn) * 0.25;
                       else
                         {
                           if (la < 1.8)
-                            Sol = mn + (mpRandom->getRandomCC() + (C_FLOAT64) k) * (mx - mn) * 0.25;
+                            Sol = mn + (mRandomContext.master()->getRandomCC() + (C_FLOAT64) k) * (mx - mn) * 0.25;
                           else
                             Sol = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()))
-                                      + la * 0.25 * (mpRandom->getRandomCC() + (C_FLOAT64) k));
+                                      + la * 0.25 * (mRandomContext.master()->getRandomCC() + (C_FLOAT64) k));
                         }
                     }
                   catch (...)
@@ -904,7 +902,7 @@ bool COptMethodSS::combination(void)
                             break;
                         }
 
-                      xnew[k] = c1 + (c2 - c1) * mpRandom->getRandomCC();
+                      xnew[k] = c1 + (c2 - c1) * mRandomContext.master()->getRandomCC();
                     }
                   catch (...)
                     {
@@ -951,7 +949,7 @@ bool COptMethodSS::combination(void)
               for (k = 0; k < (C_INT32)mVariableSize; ++k)
                 {
                   dd = (xpr[k] - (*mChild[i])[k]) * lambda;
-                  xnew[k] = (*mChild[i])[k] + dd * mpRandom->getRandomCC();
+                  xnew[k] = (*mChild[i])[k] + dd * mRandomContext.master()->getRandomCC();
                   // get the bounds of this parameter
                   const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[k];
 

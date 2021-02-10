@@ -19,8 +19,7 @@
 #include "copasi/optimization/COptMethod.h"
 #include "copasi/core/CVector.h"
 #include "copasi/OpenMP/CProblemContext.h"
-
-class CRandom;
+#include "copasi/OpenMP/CRandomContext.h"
 
 class COptPopulationMethod :
   public COptMethod
@@ -32,14 +31,16 @@ private:
   COptPopulationMethod();
 public:
   /**
-  * Specific constructor
-  * @param const CDataContainer * pParent
-  * @param const CTaskEnum::Method & methodType
-  * @param const CTaskEnum::Task & taskType (default: optimization)
-  */
+   * Specific constructor
+   * @param const CDataContainer * pParent
+   * @param const CTaskEnum::Method & methodType
+   * @param const CTaskEnum::Task & taskType
+   * @param const bool & parallel
+   */
   COptPopulationMethod(const CDataContainer * pParent,
                        const CTaskEnum::Method & methodType,
-                       const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
+                       const CTaskEnum::Task & taskType,
+                       const bool & parallel);
 
   /**
   * Copy constructor
@@ -135,7 +136,7 @@ protected:
   /**
    * a pointer to the random number generator.
    */
-  CRandom * mpRandom{NULL};
+  CRandomContext  mRandomContext;
 };
 
 #endif // COPASI_COptPopulationMethod_H

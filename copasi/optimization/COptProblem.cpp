@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,9 +34,9 @@
 #include <cmath>
 
 #include "copasi/copasi.h"
-#include "COptTask.h"
-#include "COptProblem.h"
-#include "COptItem.h"
+#include "copasi/optimization/COptTask.h"
+#include "copasi/optimization/COptProblem.h"
+#include "copasi/optimization/COptItem.h"
 
 #include "copasi/function/CFunctionDB.h"
 
@@ -57,6 +57,7 @@
 #include "copasi/report/CKeyFactory.h"
 
 #include "copasi/utilities/CProcessReport.h"
+#include "copasi/utilities/CTaskFactory.h"
 #include "copasi/utilities/CCopasiException.h"
 
 // static
@@ -83,7 +84,7 @@ COptProblem::COptProblem(const CTaskEnum::Task & type,
                          const CDataContainer * pParent):
   CCopasiProblem(type, pParent),
   mWorstValue(0.0),
-  mpParmSubtaskCN(NULL),
+  mpParmSubTaskCN(NULL),
   mpParmObjectiveExpression(NULL),
   mpParmMaximize(NULL),
   mpParmRandomizeStartValues(NULL),
@@ -92,7 +93,7 @@ COptProblem::COptProblem(const CTaskEnum::Task & type,
   mpGrpConstraints(NULL),
   mpOptItems(NULL),
   mpConstraintItems(NULL),
-  mpSubtask(NULL),
+  mpSubTask(NULL),
   mpObjectiveExpression(NULL),
   mpMathObjectiveExpression(NULL),
   mInitialRefreshSequence(),
@@ -103,11 +104,7 @@ COptProblem::COptProblem(const CTaskEnum::Task & type,
   mOriginalVariables(),
   mContainerVariables(),
   mSolutionValue(0),
-  mCounter(0),
-  mFailedCounterException(0),
-  mFailedCounterNaN(0),
-  mConstraintCounter(0),
-  mFailedConstraintCounter(0),
+  mCounters(),
   mCPUTime(CCopasiTimer::Type::PROCESS, this),
   mhSolutionValue(C_INVALID_INDEX),
   mhCounter(C_INVALID_INDEX),
@@ -124,7 +121,7 @@ COptProblem::COptProblem(const COptProblem& src,
                          const CDataContainer * pParent):
   CCopasiProblem(src, pParent),
   mWorstValue(src.mWorstValue),
-  mpParmSubtaskCN(NULL),
+  mpParmSubTaskCN(NULL),
   mpParmObjectiveExpression(NULL),
   mpParmMaximize(NULL),
   mpParmRandomizeStartValues(NULL),
@@ -133,7 +130,7 @@ COptProblem::COptProblem(const COptProblem& src,
   mpGrpConstraints(NULL),
   mpOptItems(NULL),
   mpConstraintItems(NULL),
-  mpSubtask(NULL),
+  mpSubTask(NULL),
   mpObjectiveExpression(NULL),
   mpMathObjectiveExpression(NULL),
   mInitialRefreshSequence(),
@@ -144,11 +141,7 @@ COptProblem::COptProblem(const COptProblem& src,
   mOriginalVariables(src.mOriginalVariables),
   mContainerVariables(src.mContainerVariables),
   mSolutionValue(src.mSolutionValue),
-  mCounter(0),
-  mFailedCounterException(0),
-  mFailedCounterNaN(0),
-  mConstraintCounter(0),
-  mFailedConstraintCounter(0),
+  mCounters(),
   mCPUTime(CCopasiTimer::Type::PROCESS, this),
   mhSolutionValue(C_INVALID_INDEX),
   mhCounter(C_INVALID_INDEX),
@@ -162,11 +155,13 @@ COptProblem::COptProblem(const COptProblem& src,
 
 // Destructor
 COptProblem::~COptProblem()
-{}
+{
+  pdelete(mpSubTask);
+}
 
 void COptProblem::initializeParameter()
 {
-  mpParmSubtaskCN = assertParameter("Subtask", CCopasiParameter::Type::CN, CCommonName(""));
+  mpParmSubTaskCN = assertParameter("Subtask", CCopasiParameter::Type::CN, CCommonName(""));
   mpParmObjectiveExpression = assertParameter("ObjectiveExpression", CCopasiParameter::Type::EXPRESSION, std::string(""));
   mpParmMaximize = assertParameter("Maximize", CCopasiParameter::Type::BOOL, false);
   mpParmRandomizeStartValues = assertParameter("Randomize Start Values", CCopasiParameter::Type::BOOL, false);
@@ -181,7 +176,7 @@ void COptProblem::initializeParameter()
 bool COptProblem::elevateChildren()
 {
   // We need to handle the old file format which had two different task keys
-  if (mpParmSubtaskCN != NULL)
+  if (mpParmSubTaskCN != NULL)
     {
       CCopasiParameter * pParameter;
 
@@ -206,7 +201,7 @@ bool COptProblem::elevateChildren()
         }
 
       // If no subtask is defined we default to steady-state
-      if (*mpParmSubtaskCN == "")
+      if (*mpParmSubTaskCN == "")
         setSubtaskType(CTaskEnum::Task::steadyState);
     }
 
@@ -276,7 +271,7 @@ bool COptProblem::elevateChildren()
 void COptProblem::reset()
 {
   mSolutionValue = (*mpParmMaximize ? - std::numeric_limits<C_FLOAT64>::infinity() : std::numeric_limits<C_FLOAT64>::infinity());
-  mCounter = 0;
+  mCounters = sCounter();
 }
 
 bool COptProblem::setCallBack(CProcessReport * pCallBack)
@@ -294,7 +289,7 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
       // We need to reset mCounter to correctly initialize the progress item.
       mhCounter =
         mpCallBack->addItem("Function Evaluations",
-                            mCounter);
+                            mCounters.Counter);
     }
 
   return true;
@@ -302,33 +297,34 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
 
 void COptProblem::initObjects()
 {
-  addObjectReference("Function Evaluations", mCounter, CDataObject::ValueInt);
+  addObjectReference("Function Evaluations", mCounters.Counter, CDataObject::ValueInt);
   addObjectReference("Best Value", mSolutionValue, CDataObject::ValueDbl);
   addVectorReference("Best Parameters", mSolutionVariables, CDataObject::ValueDbl);
 }
 
 bool COptProblem::initializeSubtaskBeforeOutput()
 {
-  if (mpParmSubtaskCN != NULL)
-    {
-      CObjectInterface::ContainerList ListOfContainer;
-      ListOfContainer.push_back(getObjectAncestor("Vector"));
-      mpSubtask = dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmSubtaskCN));
-
-      try
-        {
-          if (mpSubtask != NULL)
-            return mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-        }
-
-      catch (...) {}
-
-      return false;
-    }
+  pdelete(mpSubTask);
 
   // We have a CFitProblem for which it is OK not to have a subtask.
-  mpSubtask = NULL;
-  return true;
+  if (mpParmSubTaskCN == NULL)
+    return true;
+
+  CObjectInterface::ContainerList ListOfContainer;
+  ListOfContainer.push_back(getObjectAncestor("Vector"));
+
+  mpSubTask = CTaskFactory::copy(dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmSubTaskCN)), this);
+
+  try
+    {
+      if (mpSubTask != NULL)
+        return mpSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+    }
+
+  catch (...)
+    {}
+
+  return false;
 }
 
 bool COptProblem::initialize()
@@ -345,11 +341,8 @@ bool COptProblem::initialize()
   bool success = true;
 
   mpReport = NULL;
-  mCounter = 0;
-  mFailedCounterException = 0;
-  mFailedCounterNaN = 0;
-  mConstraintCounter = 0;
-  mFailedConstraintCounter = 0;
+
+  mCounters = sCounter();
 
   mSolutionValue = mWorstValue;
 
@@ -366,8 +359,8 @@ bool COptProblem::initialize()
       if (!mpReport->getStream()) mpReport = NULL;
     }
 
-  if (mpSubtask != NULL)
-    ContainerList.push_back(mpSubtask);
+  if (mpSubTask != NULL)
+    ContainerList.push_back(mpSubTask);
 
   size_t i;
   size_t Size = mpOptItems->size();
@@ -465,12 +458,12 @@ bool COptProblem::restore(const bool & updateModel)
 {
   bool success = true;
 
-  if (mpSubtask != NULL)
+  if (mpSubTask != NULL)
     {
-      bool update = mpSubtask->isUpdateModel();
-      mpSubtask->setUpdateModel(false);
-      success &= mpSubtask->restore();
-      mpSubtask->setUpdateModel(update);
+      bool update = mpSubTask->isUpdateModel();
+      mpSubTask->setUpdateModel(false);
+      success &= mpSubTask->restore();
+      mpSubTask->setUpdateModel(update);
     }
 
   updateContainer(updateModel);
@@ -490,11 +483,11 @@ bool COptProblem::restore(const bool & updateModel)
         }
     }
 
-  if ((mFailedCounterException + mFailedCounterNaN) * 20 > mCounter) // > 5% failure rate
-    CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 8, mFailedCounterException + mFailedCounterNaN, mCounter);
+  if ((mCounters.FailedCounterException + mCounters.FailedCounterNaN) * 20 > mCounters.Counter) // > 5% failure rate
+    CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 8, mCounters.FailedCounterException + mCounters.FailedCounterNaN, mCounters.Counter);
 
-  if (10 * mFailedConstraintCounter > 8 * (mConstraintCounter - 1)) // > 80 % failure rate
-    CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 9, mFailedConstraintCounter, mConstraintCounter - 1);
+  if (10 * mCounters.FailedConstraintCounter > 8 * (mCounters.ConstraintCounter - 1)) // > 80 % failure rate
+    CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 9, mCounters.FailedConstraintCounter, mCounters.ConstraintCounter - 1);
 
   return success;
 }
@@ -518,12 +511,12 @@ bool COptProblem::checkFunctionalConstraints()
   std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
   std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
 
-  mConstraintCounter++;
+  mCounters.ConstraintCounter++;
 
   for (; it != end; ++it)
     if ((*it)->checkConstraint())
       {
-        mFailedConstraintCounter++;
+        mCounters.FailedConstraintCounter++;
         return false;
       }
 
@@ -539,20 +532,20 @@ bool COptProblem::checkFunctionalConstraints()
  */
 bool COptProblem::calculate()
 {
-  mCounter++;
+  mCounters.Counter++;
   bool success = false;
   COutputHandler * pOutputHandler = NULL;
 
-  if (mpSubtask == NULL)
+  if (mpSubTask == NULL)
     return false;
 
   if (mStoreResults &&
-      mpSubtask->getType() == CTaskEnum::Task::timeCourse)
+      mpSubTask->getType() == CTaskEnum::Task::timeCourse)
     {
-      static_cast< CTrajectoryProblem * >(mpSubtask->getProblem())->setTimeSeriesRequested(true);
+      static_cast< CTrajectoryProblem * >(mpSubTask->getProblem())->setTimeSeriesRequested(true);
 
       pOutputHandler = new COutputHandler();
-      mpSubtask->initialize(CCopasiTask::ONLY_TIME_SERIES, pOutputHandler, NULL);
+      mpSubTask->initialize(CCopasiTask::ONLY_TIME_SERIES, pOutputHandler, NULL);
     }
 
   try
@@ -560,7 +553,7 @@ bool COptProblem::calculate()
       mpContainer->applyUpdateSequence(mInitialRefreshSequence);
       // Update all initial values which depend on the optimization items.
 
-      success = mpSubtask->process(true);
+      success = mpSubTask->process(true);
 
       mpContainer->applyUpdateSequence(mUpdateObjectiveFunction);
 
@@ -582,22 +575,22 @@ bool COptProblem::calculate()
     }
 
   if (mStoreResults &&
-      mpSubtask->getType() == CTaskEnum::Task::timeCourse)
+      mpSubTask->getType() == CTaskEnum::Task::timeCourse)
     {
       mStoreResults = false;
-      mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+      mpSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
       pdelete(pOutputHandler);
     }
 
   if (!success)
     {
-      mFailedCounterException++;
+      mCounters.FailedCounterException++;
       mCalculateValue = std::numeric_limits< C_FLOAT64 >::infinity();
     }
 
   if (std::isnan(mCalculateValue))
     {
-      mFailedCounterNaN++;
+      mCounters.FailedCounterNaN++;
       mCalculateValue = std::numeric_limits< C_FLOAT64 >::infinity();
     }
 
@@ -748,6 +741,18 @@ const std::vector< COptItem * > & COptProblem::getOptItemList() const
 const std::vector< COptItem * > & COptProblem::getConstraintList() const
 {return *mpConstraintItems;}
 
+void COptProblem::setParameters(const CVectorCore< C_FLOAT64 > & parameters)
+{
+  assert(parameters.size() == mContainerVariables.size());
+
+  C_FLOAT64 **ppVariable = mContainerVariables.begin();
+  C_FLOAT64 **ppVariableEnd = mContainerVariables.end();
+  const C_FLOAT64 *pParameter = parameters.begin();
+
+  for (; ppVariable != ppVariableEnd; ++ppVariable, ++pParameter)
+    **ppVariable = *pParameter;
+}
+
 CVectorCore< C_FLOAT64 * > & COptProblem::getContainerVariables() const
 {return mContainerVariables;}
 
@@ -776,8 +781,8 @@ const std::string COptProblem::getObjectiveFunction()
 
 bool COptProblem::setSubtaskType(const CTaskEnum::Task & subtaskType)
 {
-  mpSubtask = NULL;
-  *mpParmSubtaskCN = "";
+  pdelete(mpSubTask)
+  *mpParmSubTaskCN = "";
 
   CDataVectorN< CCopasiTask > * pTasks =
     dynamic_cast< CDataVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
@@ -794,8 +799,9 @@ bool COptProblem::setSubtaskType(const CTaskEnum::Task & subtaskType)
       for (i = 0; i < imax; i++)
         if (pTasks->operator[](i).getType() == subtaskType)
           {
-            mpSubtask = &pTasks->operator[](i);
-            *mpParmSubtaskCN = mpSubtask->getCN();
+            mpSubTask = CTaskFactory::copy(&pTasks->operator[](i), this);
+            *mpParmSubTaskCN = mpSubTask->getCN();
+
             return true;
           }
     }
@@ -805,27 +811,31 @@ bool COptProblem::setSubtaskType(const CTaskEnum::Task & subtaskType)
 
 CTaskEnum::Task COptProblem::getSubtaskType() const
 {
-  CObjectInterface::ContainerList ListOfContainer;
-  ListOfContainer.push_back(getObjectAncestor("Vector"));
-  mpSubtask = dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmSubtaskCN));
+  if (mpSubTask != NULL)
+    return mpSubTask->getType();
 
-  if (mpSubtask == NULL)
-    return CTaskEnum::Task::UnsetTask;
-
-  return mpSubtask->getType();
+  return CTaskEnum::Task::UnsetTask;
 }
 
 void COptProblem::setMaximize(const bool & maximize)
-{*mpParmMaximize = maximize;}
+{
+  *mpParmMaximize = maximize;
+}
 
 const bool & COptProblem::maximize() const
-{return *mpParmMaximize;}
+{
+  return *mpParmMaximize;
+}
 
 void COptProblem::setRandomizeStartValues(const bool & randomize)
-{*mpParmRandomizeStartValues = randomize;}
+{
+  *mpParmRandomizeStartValues = randomize;
+}
 
 const bool & COptProblem::getRandomizeStartValues() const
-{return *mpParmRandomizeStartValues;}
+{
+  return *mpParmRandomizeStartValues;
+}
 
 void COptProblem::randomizeStartValues()
 {
@@ -863,19 +873,32 @@ const bool & COptProblem::getCalculateStatistics() const
 {return *mpParmCalculateStatistics;}
 
 const unsigned C_INT32 & COptProblem::getFunctionEvaluations() const
-{return mCounter;}
+{return mCounters.Counter;}
 
-void COptProblem::incrementEvaluations(unsigned C_INT32 increment)
-{mCounter += increment;}
+const COptProblem::sCounter & COptProblem::getCounters() const
+{
+  return mCounters;
+}
 
-void COptProblem::resetEvaluations()
-{mCounter = 0;}
+void COptProblem::incrementCounters(const COptProblem::sCounter & increment)
+{
+  mCounters.Counter += increment.Counter;
+  mCounters.FailedCounterException += increment.FailedCounterException;
+  mCounters.FailedCounterNaN += increment.FailedCounterNaN;
+  mCounters.ConstraintCounter += increment.ConstraintCounter;
+  mCounters.FailedConstraintCounter += increment.FailedConstraintCounter;
+}
+
+void COptProblem::resetCounters()
+{
+  mCounters = sCounter();
+}
 
 const unsigned C_INT32 & COptProblem::getFailedEvaluationsExc() const
-{return mFailedCounterException;}
+{return mCounters.FailedCounterException;}
 
 const unsigned C_INT32 & COptProblem::getFailedEvaluationsNaN() const
-{return mFailedCounterNaN;}
+{return mCounters.FailedCounterNaN;}
 
 const C_FLOAT64 & COptProblem::getExecutionTime() const
 {
@@ -898,11 +921,11 @@ void COptProblem::printResult(std::ostream * ostream) const
 
   CCopasiTimeVariable CPUTime = const_cast<COptProblem *>(this)->mCPUTime.getElapsedTime();
 
-  os << "    Function Evaluations:\t" << mCounter << std::endl;
+  os << "    Function Evaluations:\t" << mCounters.Counter << std::endl;
   os << "    CPU Time [s]:\t"
      << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
      << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
-  os << "    Evaluations/Second [1/s]:\t" << mCounter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << std::endl;
+  os << "    Evaluations/Second [1/s]:\t" << mCounters.Counter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << std::endl;
   os << std::endl;
 
   std::vector< COptItem * >::const_iterator itItem =
@@ -925,8 +948,8 @@ std::ostream &operator<<(std::ostream &os, const COptProblem & o)
 
   os << "Subtask: " << std::endl;
 
-  if (o.mpSubtask)
-    o.mpSubtask->getDescription().print(&os);
+  if (o.mpSubTask)
+    o.mpSubTask->getDescription().print(&os);
   else
     os << "No Subtask specified.";
 

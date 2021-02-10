@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,7 +34,7 @@ typedef int MPI_Win;
 template < class Data > class CContext
 {
 public:
-  CContext();
+  CContext(const bool & parallel = true);
   CContext(const CContext & src);
   ~CContext();
   CContext & operator = (const CContext & rhs);
@@ -59,18 +59,21 @@ public:
 protected:
   Data * mMasterData;
   Data * mThreadData;
+  bool mParallel;
   size_t mSize;
 };
 
-template < class Data > CContext< Data >::CContext()
+template < class Data > CContext< Data >::CContext(const bool & parallel)
   : mMasterData(NULL)
   , mThreadData(NULL)
+  , mParallel(parallel)
   , mSize(0)
 {}
 
 template < class Data > CContext< Data >::CContext(const CContext & src)
   : mMasterData(NULL)
   , mThreadData(NULL)
+  , mParallel(src.mParallel)
   , mSize(0)
 {
   init();
@@ -137,7 +140,7 @@ template < class Data > void CContext< Data >::init()
     return;
 
   mMasterData = new Data();
-  mSize = omp_get_max_threads();
+  mSize = mParallel ? omp_get_max_threads() : 1;
 
   if (mSize > 1)
     {

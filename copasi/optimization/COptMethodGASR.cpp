@@ -39,7 +39,7 @@
 COptMethodGASR::COptMethodGASR(const CDataContainer * pParent,
                                const CTaskEnum::Method & methodType,
                                const CTaskEnum::Task & taskType):
-  COptPopulationMethod(pParent, methodType, taskType),
+  COptPopulationMethod(pParent, methodType, taskType, false),
   mCrossOverFalse(0),
   mCrossOver(0),
   mpPermutation(NULL),
@@ -130,7 +130,7 @@ bool COptMethodGASR::mutate(CVector< C_FLOAT64 > & individual)
       C_FLOAT64 & mut = individual[j];
 
       // calculate the mutated parameter
-      mut *= mpRandom->getRandomNormal(1, mMutationVarians);
+      mut *= mRandomContext.master()->getRandomNormal(1, mMutationVarians);
 
       // for SR do not force to be within bounds
 
@@ -153,7 +153,7 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
   mCrossOver = mCrossOverFalse;
 
   if (mVariableSize > 1)
-    nCross = mpRandom->getRandomU((unsigned C_INT32)(mVariableSize / 2));
+    nCross = mRandomContext.master()->getRandomU((unsigned C_INT32)(mVariableSize / 2));
 
   if (nCross == 0)
     {
@@ -168,7 +168,7 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
   // We do not mind if a crossover point gets drawn twice
   for (i = 0; i < nCross; i++)
     {
-      crp = mpRandom->getRandomU((unsigned C_INT32)(mVariableSize - 1));
+      crp = mRandomContext.master()->getRandomU((unsigned C_INT32)(mVariableSize - 1));
       mCrossOver[crp] = true;
     }
 
@@ -247,7 +247,7 @@ bool COptMethodGASR::select()
       for (j = 0; j < TotalPopulation - 1; j++)  // lambda is number of individuals
         {
           if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||              // within bounds
-              (mpRandom->getRandomOO() < mPf))      // random chance to compare values outside bounds
+              (mRandomContext.master()->getRandomOO() < mPf))      // random chance to compare values outside bounds
             {
               // compare obj fcn using mValue alternative code
               if (mValues[j] > mValues[j + 1])
@@ -359,15 +359,15 @@ bool COptMethodGASR::creation(size_t first,
             {
               // determine if linear or log scale
               if ((mn < 0.0) || (mx <= 0.0))
-                mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
               else
                 {
                   la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                   if (la < 1.8)
-                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                    mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
                   else
-                    mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
+                    mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mRandomContext.master()->getRandomCC());
                 }
             }
 
@@ -431,7 +431,7 @@ bool COptMethodGASR::initialize()
   mValues = std::numeric_limits<double>::infinity();
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
-  mpPermutation = new CPermutation(mpRandom, mPopulationSize);
+  mpPermutation = new CPermutation(mRandomContext.master(), mPopulationSize);
 
   mWins.resize(2 * mPopulationSize);
 

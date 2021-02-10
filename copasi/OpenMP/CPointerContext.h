@@ -17,7 +17,7 @@ public:
 
   CPointerContext(const CPointerContext & src) = delete;
 
-  CPointerContext(Data * pMaster);
+  CPointerContext(const bool & parallel);
 
   ~CPointerContext();
 
@@ -28,9 +28,10 @@ public:
   void setMaster(Data * pMaster);
 };
 
-template < class Data > CPointerContext< Data >::CPointerContext(Data * pMaster)
-  : Base()
+template < class Data > CPointerContext< Data >::CPointerContext(const bool & parallel)
+  : Base(parallel)
 {
+
   Base::init();
   Base::master() = NULL;
 
@@ -42,8 +43,6 @@ template < class Data > CPointerContext< Data >::CPointerContext(Data * pMaster)
       for (; pIt != pEnd; ++pIt)
         *pIt = NULL;
     }
-
-  setMaster(pMaster);
 }
 
 template < class Data > CPointerContext< Data >::~CPointerContext()

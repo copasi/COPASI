@@ -37,7 +37,7 @@
 COptMethodCoranaWalk::COptMethodCoranaWalk(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType)
-  : COptMethod(pParent, methodType, taskType)
+  : COptMethod(pParent, methodType, taskType, false)
   , mTemperature(1.0)
   , mhIterations(C_INVALID_INDEX)
   , mIterations(100)
@@ -113,7 +113,7 @@ bool COptMethodCoranaWalk::optimise()
     }
 
   if (minstep > std::numeric_limits< C_FLOAT64 >::epsilon())
-    minstep /= i;
+    minstep /= mVariableSize;
   else
     minstep = 100 * std::numeric_limits< C_FLOAT64 >::epsilon();
 

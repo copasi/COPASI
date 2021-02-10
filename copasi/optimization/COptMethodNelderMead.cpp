@@ -40,7 +40,7 @@
 COptMethodNelderMead::COptMethodNelderMead(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType)
+  COptMethod(pParent, methodType, taskType, false)
 {
   assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
   assertParameter("Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.e-005);

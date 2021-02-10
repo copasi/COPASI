@@ -38,7 +38,7 @@
 COptMethodSteepestDescent::COptMethodSteepestDescent(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType),
+  COptMethod(pParent, methodType, taskType, false),
   mIterations(100),
   mTolerance(1e-6),
   mContinue(true),

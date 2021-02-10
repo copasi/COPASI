@@ -17,7 +17,7 @@ public:
 
   CPointerMathContext(const CPointerMathContext & src) = delete;
 
-  CPointerMathContext(Data * pMaster);
+  CPointerMathContext(const bool & parallel);
 
   ~CPointerMathContext();
 
@@ -28,8 +28,8 @@ public:
   void setMathContext(CMathContext & Context);
 };
 
-template < class Data > CPointerMathContext< Data >::CPointerMathContext(Data * pMaster)
-  : CPointerContext< Data >(pMaster)
+template < class Data > CPointerMathContext< Data >::CPointerMathContext(const bool & parallel)
+  : CPointerContext< Data >(parallel)
 {}
 
 template < class Data > CPointerMathContext< Data >::~CPointerMathContext()
