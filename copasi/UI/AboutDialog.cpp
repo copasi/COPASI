@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,7 +57,7 @@ const char *AboutDialog::text =
   "Should you have any questions regarding the use of COPASI please visit our "
   "user support at http://www.copasi.org/UserSupportForum."
   "</p><p>If you find any errors or problem you may email us at bugs@copasi.org or "
-  "use our issue tracker at http://www.copasi.org/tracker."
+  "use our issue tracker at http://tracker..copasi.org."
   "</p><p>"
   "COPASI is provided \"AS IS\" without warranty of any kind, either "
   "expressed or implied, including but not limited to the implied "
