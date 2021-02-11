@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -739,7 +739,15 @@ CCopasiParameter * CCopasiParameterGroup::getParameter(std::string name)
 
   if (range.first == range.second) return NULL;
 
-  return dynamic_cast<CCopasiParameter *>(const_cast< CDataObject * >(*range.first));
+  // We need to make sure that we are only returning objects derived from CCopasiParameter.
+  CCopasiParameter * pParameter = NULL;
+
+  for (; range.first != range.second && pParameter == NULL; ++range.first)
+    {
+      pParameter =  dynamic_cast< CCopasiParameter *>(const_cast< CDataObject * >(*range.first));
+    }
+
+  return pParameter;
 }
 
 const CCopasiParameter * CCopasiParameterGroup::getParameter(std::string name) const
