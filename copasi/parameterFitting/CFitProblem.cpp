@@ -510,11 +510,8 @@ bool CFitProblem::initialize()
 
       if (mpSteadyState == NULL)
         {
-          mpParmSubTaskCN = mpParmSteadyStateCN;
-          setSubtaskType(CTaskEnum::Task::steadyState);
-          mpSteadyState = dynamic_cast< CSteadyStateTask * >(mpSubTask);
-          mpSubTask = NULL;
-          mpParmSubTaskCN = NULL;
+          *mpParmSteadyStateCN = setSubtaskType(CTaskEnum::Task::steadyState);
+          mpSteadyState = dynamic_cast< CSteadyStateTask * >(CTaskFactory::copy(dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmSteadyStateCN)), this));
         }
 
       if (mpSteadyState == NULL) fatalError();
@@ -531,11 +528,8 @@ bool CFitProblem::initialize()
 
       if (mpTrajectory == NULL)
         {
-          mpParmSubTaskCN = mpParmTimeCourseCN;
-          setSubtaskType(CTaskEnum::Task::timeCourse);
-          mpTrajectory = dynamic_cast< CTrajectoryTask * >(mpSubTask);
-          mpSubTask = NULL;
-          mpParmSubTaskCN = NULL;
+          *mpParmTimeCourseCN = setSubtaskType(CTaskEnum::Task::timeCourse);
+          mpTrajectory = dynamic_cast< CTrajectoryTask * >(CTaskFactory::copy(dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmTimeCourseCN)), this));
         }
 
       if (mpTrajectory == NULL) fatalError();
@@ -831,11 +825,8 @@ bool CFitProblem::initialize()
 
       if (mpTimeSens == NULL)
         {
-          mpParmSubTaskCN = mpParmTimeSensCN;
-          setSubtaskType(CTaskEnum::Task::timeSens);
-          mpTrajectory = dynamic_cast< CTrajectoryTask * >(mpSubTask);
-          mpSubTask = NULL;
-          mpParmSubTaskCN = NULL;
+          *mpParmTimeSensCN = setSubtaskType(CTaskEnum::Task::timeSens);
+          mpTimeSens = dynamic_cast< CTimeSensTask * >(CTaskFactory::copy(dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmTimeSensCN)), this));
         }
 
       if (mpTimeSens == NULL) fatalError();

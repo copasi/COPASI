@@ -113,7 +113,6 @@ private:
           {
             *pNew = *pOld;
             pNew->relocate(this, relocations);
-            pOld->moved();
           }
 
         if (OldVector.array() != NULL) delete [] OldVector.array();

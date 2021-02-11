@@ -202,7 +202,9 @@ bool COptProblem::elevateChildren()
 
       // If no subtask is defined we default to steady-state
       if (*mpParmSubTaskCN == "")
-        setSubtaskType(CTaskEnum::Task::steadyState);
+        {
+          setSubtaskType(CTaskEnum::Task::steadyState);
+        }
     }
 
   // Handle old file format in which the objective expression was stored in the function DB
@@ -779,10 +781,9 @@ const std::string COptProblem::getObjectiveFunction()
   return *mpParmObjectiveExpression;
 }
 
-bool COptProblem::setSubtaskType(const CTaskEnum::Task & subtaskType)
+CCommonName COptProblem::setSubtaskType(const CTaskEnum::Task & subtaskType)
 {
-  pdelete(mpSubTask)
-  *mpParmSubTaskCN = "";
+  CCommonName SubTaskCN;
 
   CDataVectorN< CCopasiTask > * pTasks =
     dynamic_cast< CDataVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
@@ -794,19 +795,23 @@ bool COptProblem::setSubtaskType(const CTaskEnum::Task & subtaskType)
 
   if (pTasks)
     {
-      size_t i, imax = pTasks->size();
+      CDataVectorN< CCopasiTask >::const_iterator it = pTasks->begin();
+      CDataVectorN< CCopasiTask >::const_iterator end = pTasks->end();
 
-      for (i = 0; i < imax; i++)
-        if (pTasks->operator[](i).getType() == subtaskType)
+      for (; it != end; ++it)
+        if (it->getType() == subtaskType)
           {
-            mpSubTask = CTaskFactory::copy(&pTasks->operator[](i), this);
-            *mpParmSubTaskCN = mpSubTask->getCN();
-
-            return true;
+            SubTaskCN = it->getCN();
+            break;
           }
     }
 
-  return false;
+  if (mpParmSubTaskCN != NULL)
+    {
+      *mpParmSubTaskCN = SubTaskCN;
+    }
+
+  return SubTaskCN;
 }
 
 CTaskEnum::Task COptProblem::getSubtaskType() const

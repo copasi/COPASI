@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -66,13 +66,8 @@ public:
    * @param const CMathContainer * pContainer
    * @param const std::vector< CMath::sRelaocte > & relocations
    */
-  void relocate(const CMathContainer * pContainer,
+  void relocate(CMathContainer * pContainer,
                 const std::vector< CMath::sRelocate > & relocations);
-
-  /**
-   * Notify an object that it has been moved;
-   */
-  void moved();
 
   /**
    * Retrieve the CN of the object
@@ -186,17 +181,29 @@ public:
                          const bool & isInitialValue,
                          const CDataObject * pDataObject);
 
+#ifdef USE_JIT
   /**
    * Compile
    * @param CMathContainer & container
    * @param CJitCompiler & jitCompiler
    * @return bool §success
    */
-#ifdef USE_JIT
   bool compile(CMathContainer & container, CJitCompiler & jitCompiler);
+
+  /**
+   * Set the JIT compiler for expression
+   * @param CJitCompiler & jitCompiler
+   */
+  void setJITCompiler(CJitCompiler & jitCompiler);
 #else
+  /**
+   * Compile
+   * @param CMathContainer & container
+   * @return bool §success
+   */
   bool compile(CMathContainer & container);
 #endif
+
   /**
    * Retrieve the value type
    * @return const CMath::ValueType & valueType

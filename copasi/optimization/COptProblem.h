@@ -298,9 +298,9 @@ public:
   /**
    * Set subtask type
    * @param const CTaskEnum::Task & subtaskType
-   * @return success
+   * @return CCommonName
    */
-  bool setSubtaskType(const CTaskEnum::Task & subtaskType);
+  CCommonName setSubtaskType(const CTaskEnum::Task & subtaskType);
 
   /**
    * Retrieve the subtask type

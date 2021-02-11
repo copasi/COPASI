@@ -428,7 +428,7 @@ CMathContainer::CMathContainer(const CMathContainer & src)
   , mpRandomGenerator(CRandom::createGenerator())
   , mValues()
   , mOldValues()
-  , mpValuesBuffer(NULL)
+  , mpValuesBuffer(src.mpValuesBuffer)
   , mInitialExtensiveValues()
   , mInitialIntensiveValues()
   , mInitialExtensiveRates()
@@ -490,7 +490,7 @@ CMathContainer::CMathContainer(const CMathContainer & src)
   , mSimulationRequiredValues(src.mSimulationRequiredValues)
   , mObjects()
   , mOldObjects()
-  , mpObjectsBuffer(NULL)
+  , mpObjectsBuffer(src.mpObjectsBuffer)
   , mEvents()
   , mReactions()
   , mRootIsDiscrete(src.mRootIsDiscrete)
@@ -512,7 +512,7 @@ CMathContainer::CMathContainer(const CMathContainer & src)
   , mNumTotalRootsIgnored(src.mNumTotalRootsIgnored)
   , mValueChangeProhibited(src.mValueChangeProhibited)
 #ifdef USE_JIT
-  , mJITCompiler()
+  , mJITCompiler(src.mJITCompiler)
 #endif
 {
   // We do not want the model to know about the math container therefore we
@@ -522,23 +522,11 @@ CMathContainer::CMathContainer(const CMathContainer & src)
   sSize size = mSize;
   size_t ObjectCount = src.mValues.size();
 
-  mpValuesBuffer = (ObjectCount > 0) ? new C_FLOAT64[ObjectCount] : NULL;
   mValues.initialize(ObjectCount, mpValuesBuffer);
   mOldValues.initialize(ObjectCount, mpValuesBuffer);
-  size.pValue = mValues.array();
-  mValues = src.mValues;
 
-  mpObjectsBuffer = (ObjectCount > 0) ? new CMathObject[ObjectCount] : NULL;
   mObjects.initialize(ObjectCount, mpObjectsBuffer);
   mOldObjects.initialize(ObjectCount, mpObjectsBuffer);
-  size.pObject = mObjects.array();
-
-  CMathObject * pObject = mObjects.begin();
-  CMathObject * pObjectEnd = mObjects.end();
-  const CMathObject * pObjectSrc = src.mObjects.begin();
-
-  for (; pObject != pObjectEnd; ++pObject, ++pObjectSrc)
-    pObject->copy(*pObjectSrc, *this);
 
   mEvents.initialize(mSize.nEvents, new CMathEvent[mSize.nEvents]);
   CMathEvent * pEvent = mEvents.begin();
@@ -566,13 +554,20 @@ CMathContainer::CMathContainer(const CMathContainer & src)
 
   std::vector< CMath::sRelocate > Relocations = move(size);
 
-  finishResize();
-
-  compileObjects();
+  // We must not call finishResize() as that would release the src values and obvjects;
+  mOldValues.initialize(mValues);
+  mOldObjects.initialize(mObjects);
 
   map();
 
 #ifdef USE_JIT
+  CMathObject *pObject = mObjects.array();
+  CMathObject *pObjectEnd = pObject + mObjects.size();
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      pObject->setJITCompiler(mJITCompiler);
+    }
 
   try
     {
@@ -5249,14 +5244,14 @@ void CMathContainer::relocate(const sSize & size,
   size_t nExtensiveValues = size.nFixed + size.nFixedEventTargets + size.nTime + size.nODE + size.nODESpecies + size.nReactionSpecies + size.nAssignment;
 
   // Move the objects to the new location
-  C_FLOAT64 * pValue = mOldValues.array();
-  C_FLOAT64 * pValueEnd = pValue + mOldValues.size();
-  CMathObject * pObject = mOldObjects.array();
+  const C_FLOAT64 * pValue = mOldValues.array();
+  const C_FLOAT64 * pValueEnd = pValue + mOldValues.size();
+  const CMathObject * pObject = mOldObjects.array();
 
   for (; pValue != pValueEnd; ++pValue, ++pObject)
     {
       // If we are here we are actually resizing
-      C_FLOAT64 * pNewValue = pValue;
+      C_FLOAT64 * pNewValue = const_cast< C_FLOAT64 *>(pValue);
       relocateValue(pNewValue, Relocations);
 
       if (pNewValue != NULL &&
@@ -5265,7 +5260,7 @@ void CMathContainer::relocate(const sSize & size,
           *pNewValue = *pValue;
         }
 
-      CMathObject * pNewObject = pObject;
+      CMathObject * pNewObject = const_cast< CMathObject *>(pObject);
       relocateObject(pNewObject, Relocations);
 
       if (pNewObject != NULL &&
@@ -5273,7 +5268,6 @@ void CMathContainer::relocate(const sSize & size,
         {
           *pNewObject = *pObject;
           pNewObject->relocate(this, Relocations);
-          pObject->moved();
         }
     }
 
@@ -5377,26 +5371,6 @@ void CMathContainer::relocate(const sSize & size,
   relocateObjectSet(mSimulationRequiredValues, Relocations);
   relocateObjectSet(mNoiseInputObjects, Relocations);
   relocateObjectSet(mValueChangeProhibited, Relocations);
-
-  std::map< const CDataObject *, CMathObject * >::iterator itDataObject2MathObject = mDataObject2MathObject.begin();
-  std::map< const CDataObject *, CMathObject * >::iterator endDataObject2MathObject = mDataObject2MathObject.end();
-
-  for (; itDataObject2MathObject != endDataObject2MathObject; ++itDataObject2MathObject)
-    {
-      pObject = itDataObject2MathObject->second;
-      relocateObject(pObject, Relocations);
-      itDataObject2MathObject->second = pObject;
-    }
-
-  std::map< C_FLOAT64 *, CMathObject * >::iterator itDataValue2MathObject = mDataValue2MathObject.begin();
-  std::map< C_FLOAT64 *, CMathObject * >::iterator endDataValue2MathObject = mDataValue2MathObject.end();
-
-  for (; itDataValue2MathObject != endDataValue2MathObject; ++itDataValue2MathObject)
-    {
-      pObject = itDataValue2MathObject->second;
-      relocateObject(pObject, Relocations);
-      itDataValue2MathObject->second = pObject;
-    }
 
   mInitialDependencies.relocate(this, Relocations);
   mTransientDependencies.relocate(this, Relocations);

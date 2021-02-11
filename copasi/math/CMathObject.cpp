@@ -118,7 +118,7 @@ void CMathObject::copy(const CMathObject & src, CMathContainer & container)
     }
 }
 
-void CMathObject::relocate(const CMathContainer * pContainer,
+void CMathObject::relocate(CMathContainer * pContainer,
                            const std::vector< CMath::sRelocate > & relocations)
 {
   pContainer->relocateValue(mpValue, relocations);
@@ -129,6 +129,7 @@ void CMathObject::relocate(const CMathContainer * pContainer,
 
   if (mpExpression != NULL)
     {
+      mpExpression = CMathExpression::copy(*mpExpression, *pContainer);
       mpExpression->relocate(pContainer, relocations);
     }
 
@@ -141,11 +142,6 @@ void CMathObject::relocate(const CMathContainer * pContainer,
     }
 
   pContainer->relocateObjectSet(mPrerequisites, relocations);
-}
-
-void CMathObject::moved()
-{
-  mpExpression = NULL;
 }
 
 // virtual
@@ -697,19 +693,28 @@ bool CMathObject::compile(CMathContainer & container)
 
 #ifdef USE_JIT
 
-  if (success
-      && CJitCompiler::JitEnabled()
+  if (success)
+    {
+      setJITCompiler(jitCompiler);
+    }
+
+#endif // USE_JIT
+
+  return success;
+}
+
+#ifdef USE_JIT
+void CMathObject::setJITCompiler(CJitCompiler & jitCompiler)
+{
+  if (CJitCompiler::JitEnabled()
       && mpCalculate == &CMathObject::calculateExpression
       && mpExpression != NULL
       && !mpExpression->getPrerequisites().empty())
     {
       mpExpression->setCompiler(&jitCompiler);
     }
-
-#endif
-
-  return success;
 }
+#endif // USE_JIT
 
 bool CMathObject::compileInitialValue(CMathContainer & container)
 {
@@ -731,7 +736,6 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
   if (mEntityType == CMath::EntityType::Species)
     {
       pSpecies = static_cast< const CMetab * >(pEntity);
-      const CCompartment * pComparment = pSpecies->getCompartment();
 
       if (mIsIntensiveProperty)
         {

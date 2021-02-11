@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -43,10 +43,18 @@ CJitCompiler::CJitCompiler()
   , mExecutionBufferSize(8192)
   , mFunctionBufferSize(8192)
 {
-  if (pSSE4support == NULL)
-    {
-      pSSE4support = new bool(cpu_features::GetX86Info().features.sse4_2);
-    }
+  JitEnabled();
+}
+
+CJitCompiler::CJitCompiler(const CJitCompiler & src)
+  : mpAllocator(NULL)
+  , mpExecutionBuffer(NULL)
+  , mpExpression(NULL)
+  , mExpressions()
+  , mExecutionBufferSize(src.mExecutionBufferSize)
+  , mFunctionBufferSize(src.mFunctionBufferSize)
+{
+  JitEnabled();
 }
 
 // virtual
