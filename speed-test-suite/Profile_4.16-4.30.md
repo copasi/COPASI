@@ -118,11 +118,26 @@ Pollution_radau5.cps | RADAU5 time course | stiff model (Build 213 onwards)
 HuangFerrel_sde.cps | RI5 time course (SDE) | (Build 226 onwards)
 
 ## Results
-This benchmark suit was used to profile the latest COPASI version (4.30) against
+This benchmark suite was used to profile the latest COPASI version (4.30) against
 a number of recent ones, listed in Table 2. All of the tests were run on a computer 
 with a Intel(R) Core(TM) i7-9700 CPU at 3.00 GHz running Slackware64 
 Linux distribution and the Linux 64 bit binaries distributed by the COPASI 
 project.
+
+Table 2. List of COPASI versions profiled 
+Version | Build | Observations
+-----|-----|--------
+4.16 | 104 | computations carried out from biochemical model class
+4.17 | 135 | computations carried out in separate math model class
+4.19 | 140 | improved performance
+4.21 | 166 | improved performance of calculations
+4.24 | 197 | SDE solver (RI5) introduced 
+4.25 | 207 | improved SDE (RI5) solver, improved RK45 hybrid solver
+4.26 | 213 | updated convergence criterion to steady state
+4.27 | 217 |
+4.28 | 226 | updated convergence criterion to steady state 
+4.29 | 228 | 
+4.30 | 237 | just-in-time compiler for mathematical expressions
 
 The most recent version (4.30) proved to be generally faster than all the 
 previous ones. A number of operations had little change in speed (less than 
@@ -144,21 +159,6 @@ Time course integration with LSODA being 3-fold faster, steady state
 calculations were 3 to 19-fold faster, Hooke-Jeeves optimization was 
 5-fold faster, and Levenberg-Marquardt optimization was an impressive
 668-fold faster. 
-
-Table 2. List of COPASI versions profiled 
-Version | Build | Observations
------|-----|--------
-4.16 | 104 | computations carried out from biochemical model class
-4.17 | 135 | computations carried out in separate math model class
-4.19 | 140 | improved performance
-4.21 | 166 | improved performance of calculations
-4.24 | 197 | SDE solver (RI5) introduced 
-4.25 | 207 | improved SDE (RI5) solver, improved RK45 hybrid solver
-4.26 | 213 | updated convergence criterion to steady state
-4.27 | 217 |
-4.28 | 226 | updated convergence criterion to steady state 
-4.29 | 228 | 
-4.30 | 237 | just-in-time compiler for mathematical expressions
   
 ## Conclusion
 
