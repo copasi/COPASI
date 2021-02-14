@@ -140,18 +140,18 @@ Version | Build | Observations
 4.30 | 237 | just-in-time compiler for mathematical expressions
 
 The most recent version (4.30) proved to be generally faster than all the 
-previous ones. A number of operations had little change in speed (less than 
-13% change in either direction) since the last version (4.29): time course 
-with Gillespie-type stochastic algorithms and time scale separation analysis. 
-Time course integrations with the Gillespie algorithm (direct method) and its
-derivatives (Gibson-Bruck, tau-leap, adaptive tau-leap and hybrid methods) 
-only gained 10-20% more speed. On the other hand, a number of tasks have 
-gained considerable increase in speed: time course with LSODA (50%), time 
-course with RADAU5 (30%), steady state solution (45-72%), and Lyapunov 
-exponents (88%). Most optimization algorithms are also faster, though this 
-seems to depend a lot on the problems. Those with largest improvement were 
-Praxis (48-68%), NL2SOL (44%), truncated Newtwon (33-58%), Hooke-Jeeves 
-(30-50%), Nelder-Mead (22-53%), and Levenberg-Marquardt (21-47%).
+previous ones. A few tasks suffered only small changes in speed since the 
+last version (4.29): file loading, time course with SDE integrator, and
+time scale separation analysis. Time course integrations with the 
+Gillespie algorithm (direct method) and its derivatives (Gibson-Bruck, 
+tau-leap, adaptive tau-leap and hybrid methods) increased in speed by a modest 
+10-20%. But a number of other tasks have gained considerable speedups:
+time course with LSODA (50%), time  course with RADAU5 (30%), steady state 
+solution (45-72%), and Lyapunov exponents (88%). Most optimization algorithms 
+are also faster, though this seems to depend a lot on the problems. Those 
+with largest improvement were Praxis (48-68%), NL2SOL (44%), truncated Newtwon 
+(33-58%), Hooke-Jeeves (30-50%), Nelder-Mead (22-53%), and Levenberg-Marquardt 
+(21-47%).
 
 Relative to version 4.16, the last version where the calculations were 
 carried out from inside the model class, the speedup is often very large. 
