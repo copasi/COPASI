@@ -118,26 +118,53 @@ Pollution_radau5.cps | RADAU5 time course | stiff model (Build 213 onwards)
 HuangFerrel_sde.cps | RI5 time course (SDE) | (Build 226 onwards)
 
 ## Results
-This benchmark suit was used to profile the latest COPASI version (4.30) as 
-well as several recent ones, as listed in Table 2. All of the tests were run on
-a computer with a Intel(R) Core(TM) i7-9700 CPU at 3.00 GHz running Slackware64 
+This benchmark suit was used to profile the latest COPASI version (4.30) against
+a number of recent ones, listed in Table 2. All of the tests were run on a computer 
+with a Intel(R) Core(TM) i7-9700 CPU at 3.00 GHz running Slackware64 
 Linux distribution and the Linux 64 bit binaries distributed by the COPASI 
 project.
+
+The most recent version (4.30) proved to be generally faster than all the 
+previous ones. A number of operations had little change in speed (less than 
+13% change in either direction) since the last version (4.29): time course 
+with Gillespie-type stochastic algorithms and time scale separation analysis. 
+Time course integrations with the Gillespie algorithm (direct method) and its
+derivatives (Gibson-Bruck, tau-leap, adaptive tau-leap and hybrid methods) 
+only gained 10-20% more speed. On the other hand, a number of tasks have 
+gained considerable increase in speed: time course with LSODA (50%), time 
+course with RADAU5 (30%), steady state solution (45-72%), and Lyapunov 
+exponents (88%). Most optimization algorithms are also faster, though this 
+seems to depend a lot on the problems. Those with largest improvement were 
+Praxis (48-68%), NL2SOL (44%), truncated Newtwon (33-58%), Hooke-Jeeves 
+(30-50%), Nelder-Mead (22-53%), and Levenberg-Marquardt (21-47%).
+
+Relative to version 4.16, the last version where the calculations were 
+carried out from inside the model class, the speedup is often very large. 
+Time course integration with LSODA being 3-fold faster, steady state 
+calculations were 3 to 19-fold faster, Hooke-Jeeves optimization was 
+5-fold faster, and Levenberg-Marquardt optimization was an impressive
+668-fold faster. 
 
 Table 2. List of COPASI versions profiled 
 Version | Build | Observations
 -----|-----|--------
-4.16 | 104 | computations carried out from biochemical model
-4.17 | 135 | computations carried out in math model class
+4.16 | 104 | computations carried out from biochemical model class
+4.17 | 135 | computations carried out in separate math model class
 4.19 | 140 | improved performance
 4.21 | 166 | improved performance of calculations
-4.24 | 197 | SDE solver (RI5)
+4.24 | 197 | SDE solver (RI5) introduced 
 4.25 | 207 | improved SDE (RI5) solver, improved RK45 hybrid solver
 4.26 | 213 | updated convergence criterion to steady state
+4.27 | 217 |
 4.28 | 226 | updated convergence criterion to steady state 
 4.29 | 228 | 
 4.30 | 237 | just-in-time compiler for mathematical expressions
   
 ## Conclusion
 
+The most recent version of COPASI, 4.30, is significantly faster than the 
+previous release, 4.28, particularly in the most often used tasks: time
+course integration and steady state solution. Compared with older versions,
+which unfortunately are still cited in recent publications, version 4.30 can
+be orders of magnitude faster.
  
