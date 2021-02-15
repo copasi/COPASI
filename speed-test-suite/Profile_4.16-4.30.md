@@ -135,7 +135,7 @@ Version | Build | Observations
 4.25 | 207 | improved SDE (RI5) solver, improved RK45 hybrid solver
 4.26 | 213 | updated convergence criterion to steady state
 4.27 | 217 |
-4.28 | 226 | updated convergence criterion to steady state 
+4.28 | 226 | updated steady state convergence criterion
 4.29 | 228 | 
 4.30 | 237 | just-in-time compiler for mathematical expressions
 
@@ -148,7 +148,7 @@ tau-leap, adaptive tau-leap and hybrid methods) increased in speed by a modest
 10-20%. But a number of other tasks have gained considerable speedups:
 time course with LSODA (50%), time  course with RADAU5 (30%), steady state 
 solution (45-72%), and Lyapunov exponents (88%). Most optimization algorithms 
-are also faster, though this seems to depend a lot on the problems. Those 
+are also faster, though this seems to be problem-dependent. Those 
 with largest improvement were Praxis (48-68%), NL2SOL (44%), truncated Newtwon 
 (33-58%), Hooke-Jeeves (30-50%), Nelder-Mead (22-53%), and Levenberg-Marquardt 
 (21-47%).
