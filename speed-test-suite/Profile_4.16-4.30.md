@@ -23,9 +23,9 @@ the specific task marked as executable and a report file defined to capture the
 result (CPU time used, as measured internally by COPASI). The report is defined 
 in append mode, which is convenient to run several tests with different versions 
 and capture all in the same report file. Most COPASI versions will also output a 
-line with their version number (except those prior to XXXX, which will simply 
-output an empty line instead of the version number due to lack of that 
-capability). Thus to run the test one needs only to issue the following command:
+line with their version number (except those prior to 4.24, which lack that 
+capability and will simply output an empty line instead). Thus to run the test 
+one needs only to issue the following command:
 ```bash
 CopasiSE modelfile.cps
 ```
