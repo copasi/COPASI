@@ -172,5 +172,5 @@ The most recent version of COPASI, 4.30, is significantly faster than the
 previous release, 4.28, particularly in the most often used tasks: time
 course integration and steady state solution. Compared with older versions,
 which unfortunately are still cited in recent publications, version 4.30 can
-be orders of magnitude faster.
+be several fold faster.
  
