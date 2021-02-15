@@ -2276,7 +2276,16 @@ bool CFitProblem::setSolution(const C_FLOAT64 & value,
   bool Continue = COptProblem::setSolution(value, variables);
 
   if (Continue && mpCrossValidationSet->getExperimentCount() > 0)
-    Continue = calculateCrossValidation();
+    {
+      C_FLOAT64 **ppIt = mContainerVariables.begin();
+      C_FLOAT64 **ppEnd = mContainerVariables.end();
+      C_FLOAT64 *pSolution = mSolutionVariables.begin();
+
+      for (; ppIt != ppEnd; ++ppIt, ++pSolution)
+        **ppIt = *pSolution;
+
+      Continue = calculateCrossValidation();
+    }
 
   return Continue;
 }

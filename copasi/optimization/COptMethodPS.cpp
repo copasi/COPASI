@@ -627,7 +627,7 @@ bool COptMethodPS::optimise()
       Improved = false;
       size_t oldIndex = mBestIndex;
 
-#pragma omp parallel for reduction(|:Improved)
+#pragma omp parallel for shared(mContinue) reduction(|:Improved)
 
       for (i = 0; i < mPopulationSize; i++)
         if (mContinue)
