@@ -121,8 +121,10 @@ HuangFerrel_sde.cps | RI5 time course (SDE) | (Build 226 onwards)
 This benchmark suite was used to profile the latest COPASI version (4.30) against
 a number of recent ones, listed in Table 2. All of the tests were run on a computer 
 with a Intel(R) Core(TM) i7-9700 CPU at 3.00 GHz running Slackware64 
-Linux distribution and the Linux 64 bit binaries distributed by the COPASI 
-project.
+Linux and the Linux 64 bit binaries distributed by the COPASI 
+project. The full set of results is available in the supplementary file  
+[Profile_4.16-4.30.tsv](Profile_4.16-4.30.tsv), below is a summary of the 
+important results.
 
 Table 2. List of COPASI versions profiled 
 Version | Build | Release date | Observations
