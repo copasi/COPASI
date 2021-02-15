@@ -125,19 +125,19 @@ Linux distribution and the Linux 64 bit binaries distributed by the COPASI
 project.
 
 Table 2. List of COPASI versions profiled 
-Version | Build | Observations
------|-----|--------
-4.16 | 104 | computations carried out from biochemical model class
-4.17 | 135 | computations carried out in separate math model class
-4.19 | 140 | improved performance
-4.21 | 166 | improved performance of calculations
-4.24 | 197 | SDE solver (RI5) introduced 
-4.25 | 207 | improved SDE (RI5) solver, improved RK45 hybrid solver
-4.26 | 213 | updated convergence criterion to steady state
-4.27 | 217 |
-4.28 | 226 | updated steady state convergence criterion
-4.29 | 228 | 
-4.30 | 237 | just-in-time compiler for mathematical expressions
+Version | Build | Release date | Observations
+-----|-----|----------|--------
+4.16 | 104 | Aug 2015 | computations carried out from biochemical model class
+4.17 | 135 | Nov 2016 | computations carried out in separate math model class
+4.19 | 140 | Jan 2017 | improved performance
+4.21 | 166 | Oct 2017 | improved performance of calculations
+4.24 | 197 | Jul 2018 | SDE solver (RI5) introduced 
+4.25 | 207 | Mar 2019 | improved SDE (RI5) solver, improved RK45 hybrid solver
+4.26 | 213 | Jul 2019 | updated convergence criterion to steady state
+4.27 | 217 | Sep 2019 |
+4.28 | 226 | Jun 2020 | updated steady state convergence criterion
+4.29 | 228 | Aug 2020 |
+4.30 | 237 | Feb 2021 | just-in-time compiler for mathematical expressions
 
 The most recent version (4.30) proved to be generally faster than all the 
 previous ones. A few tasks suffered only small changes in speed since the 
