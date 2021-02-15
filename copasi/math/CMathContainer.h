@@ -17,6 +17,7 @@
 #define COPASI_CMathContainer
 
 #include <map>
+#include <chrono>
 
 #include "copasi/core/CDataContainer.h"
 #include "copasi/core/CMatrix.h"
@@ -54,31 +55,31 @@ private:
   struct sDiscontinuous
   {
   public:
-    CMathEvent * pEvent;
-    CMathObject * pDiscontinuous;
+    CMathEvent * pEvent{NULL};
+    CMathObject * pDiscontinuous{NULL};
   };
 
   struct sSize
   {
   public:
-    size_t nFixed;
-    size_t nFixedEventTargets; // auto determined
-    size_t nTime; // 0 or 1
-    size_t nODE;
-    size_t nODESpecies;
-    size_t nReactionSpecies; // fixed
-    size_t nAssignment;
-    size_t nIntensiveValues; // fixed
-    size_t nMoieties; // auto determined
-    size_t nEvents;
-    size_t nEventAssignments;
-    size_t nEventRoots; // auto determined
+    size_t nFixed{0};
+    size_t nFixedEventTargets{0}; // auto determined
+    size_t nTime{0}; // 0 or 1
+    size_t nODE{0};
+    size_t nODESpecies{0};
+    size_t nReactionSpecies{0}; // fixed
+    size_t nAssignment{0};
+    size_t nIntensiveValues{0}; // fixed
+    size_t nMoieties{0}; // auto determined
+    size_t nEvents{0};
+    size_t nEventAssignments{0};
+    size_t nEventRoots{0}; // auto determined
     size_t nReactions; // fixed
-    size_t nDiscontinuities; // auto determined
-    size_t nDelayValues; // auto determined
-    size_t nDelayLags; // auto determined
-    C_FLOAT64 * pValue;
-    CMathObject * pObject;
+    size_t nDiscontinuities{0}; // auto determined
+    size_t nDelayValues{0}; // auto determined
+    size_t nDelayLags{0}; // auto determined
+    C_FLOAT64 * pValue{NULL};
+    CMathObject * pObject{NULL};
   };
 
   /**
@@ -163,6 +164,11 @@ public:
    * Destructor
    */
   virtual ~CMathContainer();
+
+  /**
+   * Check whether 2 container would genereate equivialent results
+   */
+  bool operator == (const CMathContainer & rhs);
 
   /**
    *
@@ -1093,13 +1099,6 @@ private:
   void map();
 
   /**
-   * Map the data object to the math object
-   * @param CDataObject * pDataObject
-   * @param CMathObject * pMathObject
-   */
-  void map(const CDataObject * pDataObject, CMathObject * pMathObject);
-
-  /**
    * Create an event of type CEvent::Discontinuity for each discontinuity in the model
    */
   void createDiscontinuityEvents();
@@ -1470,6 +1469,11 @@ private:
    */
   CJitCompiler mJITCompiler;
 #endif
+
+  /**
+   * The compile time of the container needed to indicate whther copies are out sync.
+   */
+  std::chrono::steady_clock::time_point mCompileTime;
 };
 
 #endif // COPASI_CMathContainer

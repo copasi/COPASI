@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -909,6 +909,9 @@ message(STATUS "-----------------------------------------------------------
 
    cpu_features lib     = ${CPUFEATURES_LIBRARY}
    cpu_features include = ${CPUFEATURES_INCLUDE_DIR}
+
+   OpenMP CXX Flags     = ${OpenMP_CXX_FLAGS}
+   OpenMP Libs          = ${OpenMP_C_LIB_NAMES}
 
  Options:
 

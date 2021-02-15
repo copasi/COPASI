@@ -516,6 +516,7 @@ bool CFitProblem::initialize()
 
       if (mpSteadyState == NULL) fatalError();
 
+      mpSteadyState->setMathContainer(mpContainer);
       mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
     }
 
@@ -534,6 +535,7 @@ bool CFitProblem::initialize()
 
       if (mpTrajectory == NULL) fatalError();
 
+      mpTrajectory->setMathContainer(mpContainer);
       mpTrajectory->setUpdateModel(false);
       mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
     }
@@ -832,6 +834,7 @@ bool CFitProblem::initialize()
       if (mpTimeSens == NULL) fatalError();
 
       // do not update initial values when running fit
+      mpTimeSens->setMathContainer(mpContainer);
       mpTimeSens->setUpdateModel(false);
 
       CTimeSensProblem* pProblem = static_cast<CTimeSensProblem*>(mpTimeSens->getProblem());
@@ -853,7 +856,6 @@ bool CFitProblem::initialize()
         }
 
       mpTimeSens->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-
       mJacTimeSens.resize(mSolutionVariables.size(), mpExperimentSet->getDataPointCount());
     }
   else
@@ -1208,7 +1210,8 @@ bool CFitProblem::calculate()
       mCalculateValue = mWorstValue;
     }
 
-  if (mpCallBack) return mpCallBack->progressItem(mhCounter);
+  if (mpCallBack)
+    return mpCallBack->progressItem(mhCounter);
 
   return true;
 }

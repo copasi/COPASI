@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -362,6 +362,8 @@ void CCopasiTask::setIgnoreProblemData(const bool & ignoreProblemData)
 
 void CCopasiTask::setMathContainer(CMathContainer * pContainer)
 {
+  mpContainer = pContainer;
+
   if (mpProblem != NULL)
     {
       mpProblem->setMathContainer(pContainer);
@@ -372,11 +374,7 @@ void CCopasiTask::setMathContainer(CMathContainer * pContainer)
       mpMethod->setMathContainer(pContainer);
     }
 
-  if (pContainer != mpContainer)
-    {
-      mpContainer = pContainer;
-      signalMathContainerChanged();
-    }
+  signalMathContainerChanged();
 }
 
 // virtual

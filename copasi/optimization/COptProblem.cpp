@@ -596,7 +596,8 @@ bool COptProblem::calculate()
       mCalculateValue = std::numeric_limits< C_FLOAT64 >::infinity();
     }
 
-  if (mpCallBack) return mpCallBack->progressItem(mhCounter);
+  if (mpCallBack)
+    return mpCallBack->progressItem(mhCounter);
 
   return true;
 }
@@ -892,6 +893,9 @@ void COptProblem::incrementCounters(const COptProblem::sCounter & increment)
   mCounters.FailedCounterNaN += increment.FailedCounterNaN;
   mCounters.ConstraintCounter += increment.ConstraintCounter;
   mCounters.FailedConstraintCounter += increment.FailedConstraintCounter;
+
+  if (mpCallBack)
+    mpCallBack->progressItem(mhCounter);
 }
 
 void COptProblem::resetCounters()

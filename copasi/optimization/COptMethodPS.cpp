@@ -36,11 +36,11 @@
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/utilities/CSort.h"
 #include "copasi/core/CDataObjectReference.h"
-
+#include <unistd.h>
 COptMethodPS::COptMethodPS(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType)
-  : COptPopulationMethod(pParent, methodType, taskType, false)
+  : COptPopulationMethod(pParent, methodType, taskType, true)
   , mVariance(0.0)
   , mVelocities()
   , mBestValues()
@@ -90,25 +90,26 @@ C_FLOAT64 COptMethodPS::evaluate()
 {
   // We do not need to check whether the parametric constraints are fulfilled
   // since the parameters are created within the bounds.
+  COptProblem *& pOptProblem = mProblemContext.active();
 
   // evaluate the fitness
-  if (!mProblemContext.active()->calculate())
-#pragma OMP_ATOMIC
+  if (!pOptProblem->calculate())
+#pragma omp atomic write
     mContinue = false;
 
   C_FLOAT64 EvaluationValue;
 
   // check whether the functional constraints are fulfilled
-  if (!mProblemContext.active()->checkFunctionalConstraints())
+  if (!pOptProblem->checkFunctionalConstraints())
     EvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
   else
-    EvaluationValue = mProblemContext.active()->getCalculateValue();
+    EvaluationValue = pOptProblem->getCalculateValue();
 
-  if (mProblemContext.isThread(&mProblemContext.active()))
+  if (mProblemContext.isThread(&pOptProblem))
     {
-#pragma OMP_CRITICAL
-      mProblemContext.master()->incrementCounters(mProblemContext.active()->getCounters());
-      mProblemContext.active()->resetCounters();
+#pragma omp critical
+      mProblemContext.master()->incrementCounters(pOptProblem->getCounters());
+      pOptProblem->resetCounters();
     }
 
   return EvaluationValue;
@@ -117,6 +118,9 @@ C_FLOAT64 COptMethodPS::evaluate()
 // move an individual
 bool COptMethodPS::move(const size_t & index)
 {
+  COptProblem *& pProblem = mProblemContext.active();
+  CRandom * pRandom = mRandomContext.active();
+
   static const C_FLOAT64 w = 1 / (2 * log(2.0));
   static const C_FLOAT64 c = 0.5 + log(2.0);
 
@@ -126,8 +130,8 @@ bool COptMethodPS::move(const size_t & index)
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[index];
   C_FLOAT64 * pBestPosition = mBestPositions[index];
-  std::vector< COptItem * >::const_iterator itOptItem = mProblemContext.active()->getOptItemList().begin();
-  C_FLOAT64 ** ppContainerVariable = mProblemContext.active()->getContainerVariables().array();
+  std::vector< COptItem * >::const_iterator itOptItem = pProblem->getOptItemList().begin();
+  C_FLOAT64 ** ppContainerVariable = pProblem->getContainerVariables().array();
 
   C_FLOAT64 * pBestInformantPosition = mBestPositions[index];
   C_FLOAT64 BestInformantValue = mBestValues[index];
@@ -148,8 +152,8 @@ bool COptMethodPS::move(const size_t & index)
        ++pIndividual, ++pVelocity, ++pBestPosition, ++itOptItem, ++ppContainerVariable, ++pBestInformantPosition)
     {
       *pVelocity *= w;
-      *pVelocity += c * mRandomContext.active()->getRandomCC() * (*pBestPosition - *pIndividual);
-      *pVelocity += c * mRandomContext.active()->getRandomCC() * (*pBestInformantPosition - *pIndividual);
+      *pVelocity += c * pRandom->getRandomCC() * (*pBestPosition - *pIndividual);
+      *pVelocity += c * pRandom->getRandomCC() * (*pBestInformantPosition - *pIndividual);
 
       *pIndividual += *pVelocity;
 
@@ -188,8 +192,9 @@ bool COptMethodPS::move(const size_t & index)
       memcpy(mBestPositions[index], mIndividuals[index]->array(), sizeof(C_FLOAT64) * mVariableSize);
 
       // Check if we improved globally
+#pragma omp critical
+
       if (EvaluationValue < mBestValues[mBestIndex])
-#pragma OMP_CIRITCAL
         {
           // and store that value
           mBestIndex = index;
@@ -206,12 +211,15 @@ bool COptMethodPS::move(const size_t & index)
 // initialise an individual
 bool COptMethodPS::create(const size_t & index)
 {
+  COptProblem *& pProblem = mProblemContext.active();
+  CRandom * pRandom = mRandomContext.active();
+
   C_FLOAT64 * pIndividual = mIndividuals[index]->array();
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[index];
   C_FLOAT64 * pBestPosition = mBestPositions[index];
-  std::vector< COptItem * >::const_iterator itOptItem = mProblemContext.active()->getOptItemList().begin();
-  C_FLOAT64 ** ppContainerVariable = mProblemContext.active()->getContainerVariables().array();
+  std::vector< COptItem * >::const_iterator itOptItem = pProblem->getOptItemList().begin();
+  C_FLOAT64 ** ppContainerVariable = pProblem->getContainerVariables().array();
 
   C_FLOAT64 mn, mx, la;
 
@@ -235,14 +243,14 @@ bool COptMethodPS::create(const size_t & index)
 
               if (la < 1.8 || !(mn > 0.0)) // linear
                 {
-                  *pIndividual = mn + mRandomContext.active()->getRandomCC() * (mx - mn);
-                  *pVelocity = mn + mRandomContext.active()->getRandomCC() * (mx - mn) - *pIndividual;
+                  *pIndividual = mn + pRandom->getRandomCC() * (mx - mn);
+                  *pVelocity = mn + pRandom->getRandomCC() * (mx - mn) - *pIndividual;
                 }
               else
                 {
-                  *pIndividual = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mRandomContext.active()->getRandomCC());
+                  *pIndividual = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * pRandom->getRandomCC());
                   *pVelocity =
-                    pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mRandomContext.active()->getRandomCC()) - *pIndividual;
+                    pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * pRandom->getRandomCC()) - *pIndividual;
                 }
             }
           else if (mx > 0) // 0 is in the interval (mn, mx)
@@ -251,8 +259,8 @@ bool COptMethodPS::create(const size_t & index)
 
               if (la < 3.6) // linear
                 {
-                  *pIndividual = mn + mRandomContext.active()->getRandomCC() * (mx - mn);
-                  *pVelocity = mn + mRandomContext.active()->getRandomCC() * (mx - mn) - *pIndividual;
+                  *pIndividual = mn + pRandom->getRandomCC() * (mx - mn);
+                  *pVelocity = mn + pRandom->getRandomCC() * (mx - mn) - *pIndividual;
                 }
               else
                 {
@@ -261,11 +269,11 @@ bool COptMethodPS::create(const size_t & index)
 
                   do
                     {
-                      *pIndividual = mRandomContext.active()->getRandomNormal(mean, sigma);
+                      *pIndividual = pRandom->getRandomNormal(mean, sigma);
                     }
                   while ((*pIndividual < mn) || (*pIndividual > mx));
 
-                  *pVelocity = mRandomContext.active()->getRandomNormal(mean, sigma) - *pIndividual;
+                  *pVelocity = pRandom->getRandomNormal(mean, sigma) - *pIndividual;
                 }
             }
           else // the interval (mn, mx] is in (-inf, 0]
@@ -279,14 +287,14 @@ bool COptMethodPS::create(const size_t & index)
 
               if (la < 1.8 || !(mn > 0.0)) // linear
                 {
-                  *pIndividual = - (mn + mRandomContext.active()->getRandomCC() * (mx - mn));
-                  *pVelocity = - (mn + mRandomContext.active()->getRandomCC() * (mx - mn)) - *pIndividual;
+                  *pIndividual = - (mn + pRandom->getRandomCC() * (mx - mn));
+                  *pVelocity = - (mn + pRandom->getRandomCC() * (mx - mn)) - *pIndividual;
                 }
               else
                 {
-                  *pIndividual = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mRandomContext.active()->getRandomCC());
+                  *pIndividual = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * pRandom->getRandomCC());
                   *pVelocity =
-                    - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mRandomContext.active()->getRandomCC()) - *pIndividual;
+                    - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * pRandom->getRandomCC()) - *pIndividual;
                 }
             }
         }
@@ -319,8 +327,9 @@ bool COptMethodPS::create(const size_t & index)
   // calculate its fitness
   mBestValues[index] = mValues[index] = evaluate();
 
+#pragma omp critical
+
   if (mBestValues[index] < mBestValues[mBestIndex])
-#pragma OMP_CRITICAL
     {
       // and store that value
       mBestIndex = index;
@@ -372,7 +381,9 @@ bool COptMethodPS::initialize()
 
   size_t i;
 
-  for (i = 0; i < mPopulationSize; i++)
+#pragma omp parallel for
+
+  for (i = 0; i < mPopulationSize; ++i)
     mIndividuals[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   mValues.resize(mPopulationSize);
@@ -594,11 +605,11 @@ bool COptMethodPS::optimise()
   mpParentTask->output(COutputInterface::DURING);
 
   // the others are random
-#pragma OMP_PARALLEL_FOR
-  {
-    for (i = 1; i < mPopulationSize && mContinue; i++)
+#pragma omp parallel for shared(mContinue)
+
+  for (i = 1; i < mPopulationSize; i++)
+    if (mContinue)
       create(i);
-  }
 
   // create the informant list
   buildInformants();
@@ -616,11 +627,11 @@ bool COptMethodPS::optimise()
       Improved = false;
       size_t oldIndex = mBestIndex;
 
-#pragma OMP_PARALLEL_FOR
-      {
-        for (i = 0; i < mPopulationSize && mContinue; i++)
+#pragma omp parallel for reduction(|:Improved)
+
+      for (i = 0; i < mPopulationSize; i++)
+        if (mContinue)
           Improved |= move(i);
-      }
 
       if (!Improved)
         {

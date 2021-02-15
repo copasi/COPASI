@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -759,7 +759,11 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
   size_t DependentCount = mDataDependent.numCols();
 
   mDependentValues.resize(DependentCount);
+  mDependentValues = 0x0;
+
   mIndependentValues.resize(IndependentCount);
+  mIndependentValues = 0x0;
+
   mIndependentObjects.clear();
   mDependentObjectsMap.clear();
 

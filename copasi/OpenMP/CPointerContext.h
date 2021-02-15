@@ -8,7 +8,8 @@
 
 #include "copasi/OpenMP/CContext.h"
 
-template < class Data > class CPointerContext : public CContext< Data * >
+template < class Data >
+class CPointerContext : public CContext< Data * >
 {
 public:
   typedef CContext< Data * > Base;
@@ -28,10 +29,10 @@ public:
   void setMaster(Data * pMaster);
 };
 
-template < class Data > CPointerContext< Data >::CPointerContext(const bool & parallel)
+template < class Data >
+CPointerContext< Data >::CPointerContext(const bool & parallel)
   : Base(parallel)
 {
-
   Base::init();
   Base::master() = NULL;
 
@@ -45,12 +46,14 @@ template < class Data > CPointerContext< Data >::CPointerContext(const bool & pa
     }
 }
 
-template < class Data > CPointerContext< Data >::~CPointerContext()
+template < class Data >
+CPointerContext< Data >::~CPointerContext()
 {
   setMaster(NULL);
 }
 
-template < class Data > void CPointerContext< Data >::setMaster(Data * pMaster)
+template < class Data >
+void CPointerContext< Data >::setMaster(Data * pMaster)
 {
   if (Base::master() != NULL)
     {
@@ -62,7 +65,11 @@ template < class Data > void CPointerContext< Data >::setMaster(Data * pMaster)
           Data ** pEnd = Base::endThread();
 
           for (; pIt != pEnd; ++pIt)
-            delete *pIt;
+            if (*pIt != NULL)
+              {
+                delete *pIt;
+                *pIt = NULL;
+              }
         }
     }
 

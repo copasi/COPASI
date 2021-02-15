@@ -211,199 +211,204 @@ void CMathContainer::relocateObject(const CMathObject *& pObject, const std::vec
 
 static C_FLOAT64 InvalidValue;
 
-CMathContainer::CMathContainer():
-  CDataContainer("Math Container", NULL, "CMathContainer"),
-  mpModel(NULL),
-  mpAvogadro(NULL),
-  mpQuantity2NumberFactor(NULL),
-  mRandom("Random", this, InvalidValue),
-  mpProcessQueue(new CMathEventQueue(*this)),
-  mpRandomGenerator(CRandom::createGenerator()),
-  mValues(),
-  mpValuesBuffer(NULL),
-  mInitialExtensiveValues(),
-  mInitialIntensiveValues(),
-  mInitialExtensiveRates(),
-  mInitialIntensiveRates(),
-  mInitialParticleFluxes(),
-  mInitialFluxes(),
-  mInitialTotalMasses(),
-  mInitialEventTriggers(),
-  mExtensiveValues(),
-  mIntensiveValues(),
-  mExtensiveRates(),
-  mIntensiveRates(),
-  mParticleFluxes(),
-  mFluxes(),
-  mTotalMasses(),
-  mEventTriggers(),
-  mExtensiveNoise(),
-  mIntensiveNoise(),
-  mReactionNoise(),
-  mReactionParticleNoise(),
-  mEventDelays(),
-  mEventPriorities(),
-  mEventAssignments(),
-  mEventRoots(),
-  mEventRootStates(),
-  mPropensities(),
-  mDependentMasses(),
-  mDiscontinuous(),
-  mDelayValues(),
-  mDelayLags(),
-  mTransitionTimes(),
-  mInitialState(),
-  mCompleteInitialState(),
-  mState(),
-  mStateReduced(),
-  mHistory(),
-  mHistoryReduced(),
-  mRate(),
-  mRateReduced(),
-  mNoiseReduced(),
-  mInitialDependencies(this),
-  mTransientDependencies(this),
-  mUpdateSequences(),
-  mSynchronizeInitialValuesSequenceExtensive(),
-  mSynchronizeInitialValuesSequenceIntensive(),
-  mApplyInitialValuesSequence(),
-  mSimulationValuesSequence(),
-  mSimulationValuesSequenceReduced(),
-  mRootSequence(),
-  mRootSequenceReduced(),
-  mNoiseSequence(),
-  mNoiseSequenceReduced(),
-  mPrioritySequence(),
-  mTransientDataObjectSequence(),
-  mInitialStateValueExtensive(),
-  mInitialStateValueIntensive(),
-  mInitialStateValueAll(),
-  mStateValues(),
-  mReducedStateValues(),
-  mSimulationRequiredValues(),
-  mObjects(),
-  mpObjectsBuffer(NULL),
-  mEvents(),
-  mReactions(),
-  mRootIsDiscrete(),
-  mRootIsTimeDependent(),
-  mRootProcessors(),
-  mRootDerivativesState(),
-  mRootDerivatives(),
-  mCreateDiscontinuousPointer(),
-  mDataObject2MathObject(),
-  mDataValue2MathObject(),
-  mDataValue2DataObject(),
-  mDiscontinuityEvents("Discontinuities", this),
-  mDiscontinuityInfix2Object(),
-  mTriggerInfix2Event(),
-  mDelays(),
-  mIsAutonomous(true),
-  mSize(),
-  mNoiseInputObjects(),
-  mNumTotalRootsIgnored(0),
-  mValueChangeProhibited()
+CMathContainer::CMathContainer()
+  : CDataContainer("Math Container", NULL, "CMathContainer")
+  , mpModel(NULL)
+  , mpAvogadro(NULL)
+  , mpQuantity2NumberFactor(NULL)
+  , mRandom("Random", this, InvalidValue)
+  , mpProcessQueue(new CMathEventQueue(*this))
+  , mpRandomGenerator(CRandom::createGenerator())
+  , mValues()
+  , mpValuesBuffer(NULL)
+  , mInitialExtensiveValues()
+  , mInitialIntensiveValues()
+  , mInitialExtensiveRates()
+  , mInitialIntensiveRates()
+  , mInitialParticleFluxes()
+  , mInitialFluxes()
+  , mInitialTotalMasses()
+  , mInitialEventTriggers()
+  , mExtensiveValues()
+  , mIntensiveValues()
+  , mExtensiveRates()
+  , mIntensiveRates()
+  , mParticleFluxes()
+  , mFluxes()
+  , mTotalMasses()
+  , mEventTriggers()
+  , mExtensiveNoise()
+  , mIntensiveNoise()
+  , mReactionNoise()
+  , mReactionParticleNoise()
+  , mEventDelays()
+  , mEventPriorities()
+  , mEventAssignments()
+  , mEventRoots()
+  , mEventRootStates()
+  , mPropensities()
+  , mDependentMasses()
+  , mDiscontinuous()
+  , mDelayValues()
+  , mDelayLags()
+  , mTransitionTimes()
+  , mInitialState()
+  , mCompleteInitialState()
+  , mState()
+  , mStateReduced()
+  , mHistory()
+  , mHistoryReduced()
+  , mRate()
+  , mRateReduced()
+  , mNoiseReduced()
+  , mInitialDependencies(this)
+  , mTransientDependencies(this)
+  , mUpdateSequences()
+  , mSynchronizeInitialValuesSequenceExtensive()
+  , mSynchronizeInitialValuesSequenceIntensive()
+  , mApplyInitialValuesSequence()
+  , mSimulationValuesSequence()
+  , mSimulationValuesSequenceReduced()
+  , mRootSequence()
+  , mRootSequenceReduced()
+  , mNoiseSequence()
+  , mNoiseSequenceReduced()
+  , mPrioritySequence()
+  , mTransientDataObjectSequence()
+  , mInitialStateValueExtensive()
+  , mInitialStateValueIntensive()
+  , mInitialStateValueAll()
+  , mStateValues()
+  , mReducedStateValues()
+  , mSimulationRequiredValues()
+  , mObjects()
+  , mpObjectsBuffer(NULL)
+  , mEvents()
+  , mReactions()
+  , mRootIsDiscrete()
+  , mRootIsTimeDependent()
+  , mRootProcessors()
+  , mRootDerivativesState()
+  , mRootDerivatives()
+  , mCreateDiscontinuousPointer()
+  , mDataObject2MathObject()
+  , mDataValue2MathObject()
+  , mDataValue2DataObject()
+  , mDiscontinuityEvents("Discontinuities", this)
+  , mDiscontinuityInfix2Object()
+  , mTriggerInfix2Event()
+  , mDelays()
+  , mIsAutonomous(true)
+  , mSize()
+  , mNoiseInputObjects()
+  , mNumTotalRootsIgnored(0)
+  , mValueChangeProhibited()
+#ifdef USE_JIT
+  , mJITCompiler()
+#endif
+  , mCompileTime()
 {
   memset(&mSize, 0, sizeof(mSize));
 }
 
-CMathContainer::CMathContainer(CModel & model):
-  CDataContainer("Math Container", NULL, "CMathContainer"),
-  mpModel(&model),
-  mpAvogadro(NULL),
-  mpQuantity2NumberFactor(NULL),
-  mRandom("Random", this, InvalidValue),
-  mpProcessQueue(new CMathEventQueue(*this)),
-  mpRandomGenerator(CRandom::createGenerator()),
-  mValues(),
-  mOldValues(),
-  mpValuesBuffer(NULL),
-  mInitialExtensiveValues(),
-  mInitialIntensiveValues(),
-  mInitialExtensiveRates(),
-  mInitialIntensiveRates(),
-  mInitialParticleFluxes(),
-  mInitialFluxes(),
-  mInitialTotalMasses(),
-  mInitialEventTriggers(),
-  mExtensiveValues(),
-  mIntensiveValues(),
-  mExtensiveRates(),
-  mIntensiveRates(),
-  mParticleFluxes(),
-  mFluxes(),
-  mTotalMasses(),
-  mEventTriggers(),
-  mExtensiveNoise(),
-  mIntensiveNoise(),
-  mReactionNoise(),
-  mReactionParticleNoise(),
-  mEventDelays(),
-  mEventPriorities(),
-  mEventAssignments(),
-  mEventRoots(),
-  mEventRootStates(),
-  mPropensities(),
-  mDependentMasses(),
-  mDiscontinuous(),
-  mDelayValues(),
-  mDelayLags(),
-  mTransitionTimes(),
-  mInitialState(),
-  mCompleteInitialState(),
-  mState(),
-  mStateReduced(),
-  mHistory(),
-  mHistoryReduced(),
-  mRate(),
-  mRateReduced(),
-  mNoiseReduced(),
-  mInitialDependencies(this),
-  mTransientDependencies(this),
-  mUpdateSequences(),
-  mSynchronizeInitialValuesSequenceExtensive(),
-  mSynchronizeInitialValuesSequenceIntensive(),
-  mApplyInitialValuesSequence(),
-  mSimulationValuesSequence(),
-  mSimulationValuesSequenceReduced(),
-  mRootSequence(),
-  mRootSequenceReduced(),
-  mNoiseSequence(),
-  mNoiseSequenceReduced(),
-  mPrioritySequence(),
-  mTransientDataObjectSequence(),
-  mInitialStateValueExtensive(),
-  mInitialStateValueIntensive(),
-  mInitialStateValueAll(),
-  mStateValues(),
-  mReducedStateValues(),
-  mSimulationRequiredValues(),
-  mObjects(),
-  mOldObjects(),
-  mpObjectsBuffer(NULL),
-  mEvents(),
-  mReactions(),
-  mRootIsDiscrete(),
-  mRootIsTimeDependent(),
-  mRootProcessors(),
-  mRootDerivativesState(),
-  mRootDerivatives(),
-  mDataObject2MathObject(),
-  mDataValue2MathObject(),
-  mDataValue2DataObject(),
-  mDiscontinuityEvents("Discontinuities", this),
-  mDiscontinuityInfix2Object(),
-  mTriggerInfix2Event(),
-  mRootCount2Events(),
-  mDelays(),
-  mIsAutonomous(true),
-  mSize(),
-  mNoiseInputObjects(),
-  mNumTotalRootsIgnored(0),
-  mValueChangeProhibited()
+CMathContainer::CMathContainer(CModel & model)
+  : CDataContainer("Math Container", NULL, "CMathContainer")
+  , mpModel(&model)
+  , mpAvogadro(NULL)
+  , mpQuantity2NumberFactor(NULL)
+  , mRandom("Random", this, InvalidValue)
+  , mpProcessQueue(new CMathEventQueue(*this))
+  , mpRandomGenerator(CRandom::createGenerator())
+  , mValues()
+  , mOldValues()
+  , mpValuesBuffer(NULL)
+  , mInitialExtensiveValues()
+  , mInitialIntensiveValues()
+  , mInitialExtensiveRates()
+  , mInitialIntensiveRates()
+  , mInitialParticleFluxes()
+  , mInitialFluxes()
+  , mInitialTotalMasses()
+  , mInitialEventTriggers()
+  , mExtensiveValues()
+  , mIntensiveValues()
+  , mExtensiveRates()
+  , mIntensiveRates()
+  , mParticleFluxes()
+  , mFluxes()
+  , mTotalMasses()
+  , mEventTriggers()
+  , mExtensiveNoise()
+  , mIntensiveNoise()
+  , mReactionNoise()
+  , mReactionParticleNoise()
+  , mEventDelays()
+  , mEventPriorities()
+  , mEventAssignments()
+  , mEventRoots()
+  , mEventRootStates()
+  , mPropensities()
+  , mDependentMasses()
+  , mDiscontinuous()
+  , mDelayValues()
+  , mDelayLags()
+  , mTransitionTimes()
+  , mInitialState()
+  , mCompleteInitialState()
+  , mState()
+  , mStateReduced()
+  , mHistory()
+  , mHistoryReduced()
+  , mRate()
+  , mRateReduced()
+  , mNoiseReduced()
+  , mInitialDependencies(this)
+  , mTransientDependencies(this)
+  , mUpdateSequences()
+  , mSynchronizeInitialValuesSequenceExtensive()
+  , mSynchronizeInitialValuesSequenceIntensive()
+  , mApplyInitialValuesSequence()
+  , mSimulationValuesSequence()
+  , mSimulationValuesSequenceReduced()
+  , mRootSequence()
+  , mRootSequenceReduced()
+  , mNoiseSequence()
+  , mNoiseSequenceReduced()
+  , mPrioritySequence()
+  , mTransientDataObjectSequence()
+  , mInitialStateValueExtensive()
+  , mInitialStateValueIntensive()
+  , mInitialStateValueAll()
+  , mStateValues()
+  , mReducedStateValues()
+  , mSimulationRequiredValues()
+  , mObjects()
+  , mOldObjects()
+  , mpObjectsBuffer(NULL)
+  , mEvents()
+  , mReactions()
+  , mRootIsDiscrete()
+  , mRootIsTimeDependent()
+  , mRootProcessors()
+  , mRootDerivativesState()
+  , mRootDerivatives()
+  , mDataObject2MathObject()
+  , mDataValue2MathObject()
+  , mDataValue2DataObject()
+  , mDiscontinuityEvents("Discontinuities", this)
+  , mDiscontinuityInfix2Object()
+  , mTriggerInfix2Event()
+  , mRootCount2Events()
+  , mDelays()
+  , mIsAutonomous(true)
+  , mSize()
+  , mNoiseInputObjects()
+  , mNumTotalRootsIgnored(0)
+  , mValueChangeProhibited()
 #ifdef USE_JIT
   , mJITCompiler()
 #endif
+  , mCompileTime()
 {
   memset(&mSize, 0, sizeof(mSize));
 
@@ -412,10 +417,10 @@ CMathContainer::CMathContainer(CModel & model):
   setObjectParent(mpModel);
 
   mpAvogadro = CObjectInterface::DataObject(mpModel->getObject(CCommonName("Reference=Avogadro Constant")));
-  mDataValue2DataObject[(C_FLOAT64*) mpAvogadro->getValuePointer()] = const_cast< CDataObject * >(mpAvogadro);
+  mDataValue2DataObject[(C_FLOAT64 *) mpAvogadro->getValuePointer()] = const_cast< CDataObject * >(mpAvogadro);
 
   mpQuantity2NumberFactor = CObjectInterface::DataObject(mpModel->getObject(CCommonName("Reference=Quantity Conversion Factor")));
-  mDataValue2DataObject[(C_FLOAT64*) mpQuantity2NumberFactor->getValuePointer()] = const_cast< CDataObject * >(mpQuantity2NumberFactor);
+  mDataValue2DataObject[(C_FLOAT64 *) mpQuantity2NumberFactor->getValuePointer()] = const_cast< CDataObject * >(mpQuantity2NumberFactor);
 }
 
 CMathContainer::CMathContainer(const CMathContainer & src)
@@ -514,6 +519,7 @@ CMathContainer::CMathContainer(const CMathContainer & src)
 #ifdef USE_JIT
   , mJITCompiler(src.mJITCompiler)
 #endif
+  , mCompileTime(src.mCompileTime)
 {
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CDataContainer
@@ -598,6 +604,11 @@ CMathContainer::~CMathContainer()
     }
 
   setObjectParent(NULL);
+}
+
+bool CMathContainer::operator == (const CMathContainer & rhs)
+{
+  return mpModel == rhs.mpModel && mCompileTime == rhs.mCompileTime;
 }
 
 CMathContainer * CMathContainer::copy() const
@@ -1468,6 +1479,7 @@ void CMathContainer::compile()
   initializeObjects(Pointers);
   initializeEvents(Pointers);
 
+  map();
   compileObjects();
   compileEvents();
 
@@ -1552,6 +1564,8 @@ void CMathContainer::compile()
 
   std::cout << std::endl;
 #endif // DEBUG_OUTPUT
+
+  mCompileTime = std::chrono::steady_clock::now();
 }
 
 const CModel & CMathContainer::getModel() const
@@ -2099,13 +2113,11 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
 
   // The simulation time
   // Extensive Initial Value
-  map(mpModel->getInitialValueReference(), p.pInitialExtensiveValuesObject);
   CMathObject::initialize(p.pInitialExtensiveValuesObject++, p.pInitialExtensiveValues++,
                           CMath::ValueType::Value, CMath::EntityType::Model, CMath::SimulationType::Time, false, true,
                           mpModel->getInitialValueReference());
 
   // Extensive Value
-  map(mpModel->getValueReference(), p.pExtensiveValuesObject);
   CMathObject::initialize(p.pExtensiveValuesObject++, p.pExtensiveValues++,
                           CMath::ValueType::Value, CMath::EntityType::Model, CMath::SimulationType::Time, false, false,
                           mpModel->getValueReference());
@@ -2115,7 +2127,6 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
                           CMath::ValueType::Rate, CMath::EntityType::Model, CMath::SimulationType::Time, false, true,
                           mpModel->getRateReference());
   // Extensive Rate
-  map(mpModel->getRateReference(), p.pExtensiveRatesObject);
   CMathObject::initialize(p.pExtensiveRatesObject++, p.pExtensiveRates++,
                           CMath::ValueType::Rate, CMath::EntityType::Model, CMath::SimulationType::Time, false, false,
                           mpModel->getRateReference());
@@ -3586,7 +3597,6 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
           SimulationType = CMath::SimulationType::Assignment;
         }
 
-      map(pObject, p.pInitialExtensiveValuesObject);
       CMathObject::initialize(p.pInitialExtensiveValuesObject++, p.pInitialExtensiveValues++,
                               CMath::ValueType::Value, EntityType, SimulationType, false, true,
                               pObject);
@@ -3600,7 +3610,6 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
           SimulationType = CMath::SimulationType::Conversion;
         }
 
-      map((*it)->getValueReference(), p.pExtensiveValuesObject);
       CMathObject::initialize(p.pExtensiveValuesObject++, p.pExtensiveValues++,
                               CMath::ValueType::Value, EntityType, SimulationType, false, false,
                               (*it)->getValueReference());
@@ -3618,7 +3627,6 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
                               (*it)->getRateReference());
 
       // Extensive Rate
-      map((*it)->getRateReference(), p.pExtensiveRatesObject);
       CMathObject::initialize(p.pExtensiveRatesObject++, p.pExtensiveRates++,
                               CMath::ValueType::Rate, EntityType, SimulationType, false, false,
                               (*it)->getRateReference());
@@ -3628,7 +3636,6 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
           simulationType == CMath::SimulationType::Independent ||
           simulationType == CMath::SimulationType::Dependent)
         {
-          map((*it)->getNoiseReference(), p.pExtensiveNoiseObject);
           CMathObject::initialize(p.pExtensiveNoiseObject++, p.pExtensiveNoise++,
                                   CMath::ValueType::Noise, EntityType, SimulationType, false, false,
                                   (*it)->getNoiseReference());
@@ -3651,7 +3658,6 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
               SimulationType = CMath::SimulationType::Assignment;
             }
 
-          map(pSpecies->getInitialConcentrationReference(), p.pInitialIntensiveValuesObject);
           CMathObject::initialize(p.pInitialIntensiveValuesObject++, p.pInitialIntensiveValues++,
                                   CMath::ValueType::Value, CMath::EntityType::Species, SimulationType, true, true,
                                   pSpecies->getInitialConcentrationReference());
@@ -3664,7 +3670,6 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
               SimulationType = simulationType;
             }
 
-          map(pSpecies->getConcentrationReference(), p.pIntensiveValuesObject);
           CMathObject::initialize(p.pIntensiveValuesObject++, p.pIntensiveValues++,
                                   CMath::ValueType::Value, CMath::EntityType::Species, SimulationType, true, false,
                                   pSpecies->getConcentrationReference());
@@ -3675,7 +3680,7 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
                                   pSpecies->getConcentrationRateReference());
 
           // Intensive Rate
-          map(pSpecies->getConcentrationRateReference(), p.pIntensiveRatesObject);
+
           CMathObject::initialize(p.pIntensiveRatesObject++, p.pIntensiveRates++,
                                   CMath::ValueType::Rate, CMath::EntityType::Species, CMath::SimulationType::Assignment, true, false,
                                   pSpecies->getConcentrationRateReference());
@@ -3685,14 +3690,12 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
               simulationType == CMath::SimulationType::Independent ||
               simulationType == CMath::SimulationType::Dependent)
             {
-              map(pSpecies->getIntensiveNoiseReference(), p.pIntensiveNoiseObject);
               CMathObject::initialize(p.pIntensiveNoiseObject++, p.pIntensiveNoise++,
                                       CMath::ValueType::Noise, CMath::EntityType::Species, CMath::SimulationType::Assignment, true, false,
                                       pSpecies->getIntensiveNoiseReference());
             }
 
           // Transition Time
-          map(pSpecies->getTransitionTimeReference(), p.pTransitionTimeObject);
           CMathObject::initialize(p.pTransitionTimeObject++, p.pTransitionTime++,
                                   CMath::ValueType::TransitionTime, CMath::EntityType::Species, CMath::SimulationType::Assignment, false, false,
                                   pSpecies->getTransitionTimeReference());
@@ -3710,7 +3713,6 @@ void CMathContainer::initializeMathObjects(const std::vector<const CDataObject *
   for (; it != end; ++it)
     {
       // Extensive Initial Value
-      map(const_cast< CDataObject * >(*it), p.pInitialExtensiveValuesObject);
       CMathObject::initialize(p.pInitialExtensiveValuesObject++, p.pInitialExtensiveValues++,
                               CMath::ValueType::Value, CMath::EntityType::LocalReactionParameter, CMath::SimulationType::Fixed, false, true,
                               *it);
@@ -3747,7 +3749,6 @@ void CMathContainer::initializeMathObjects(const CDataVector< CReaction > & reac
                               it->getParticleFluxReference());
 
       // Particle Flux
-      map(it->getParticleFluxReference(), p.pParticleFluxesObject);
       CMathObject::initialize(p.pParticleFluxesObject++, p.pParticleFluxes++,
                               CMath::ValueType::ParticleFlux, CMath::EntityType::Reaction, CMath::SimulationType::Undefined, false, false,
                               it->getParticleFluxReference());
@@ -3758,25 +3759,21 @@ void CMathContainer::initializeMathObjects(const CDataVector< CReaction > & reac
                               it->getFluxReference());
 
       // Flux
-      map(it->getFluxReference(), p.pFluxesObject);
       CMathObject::initialize(p.pFluxesObject++, p.pFluxes++,
                               CMath::ValueType::Flux, CMath::EntityType::Reaction, CMath::SimulationType::Undefined, false, false,
                               it->getFluxReference());
 
       // Noise
-      map(it->getNoiseReference(), p.pReactionNoiseObject);
       CMathObject::initialize(p.pReactionNoiseObject++, p.pReactionNoise++,
                               CMath::ValueType::Noise, CMath::EntityType::Reaction, CMath::SimulationType::Undefined, false, false,
                               it->getNoiseReference());
 
       // Particle Noise
-      map(it->getParticleNoiseReference(), p.pReactionParticleNoiseObject);
       CMathObject::initialize(p.pReactionParticleNoiseObject++, p.pReactionParticleNoise++,
                               CMath::ValueType::ParticleNoise, CMath::EntityType::Reaction, CMath::SimulationType::Undefined, false, false,
                               it->getParticleNoiseReference());
 
       // Propensity
-      map(it->getPropensityReference(), p.pPropensitiesObject);
       CMathObject::initialize(p.pPropensitiesObject++, p.pPropensities++,
                               CMath::ValueType::Propensity, CMath::EntityType::Reaction, CMath::SimulationType::Undefined, false, false,
                               it->getPropensityReference());
@@ -3798,33 +3795,17 @@ void CMathContainer::initializeMathObjects(const CDataVector< CMoiety > & moieti
                               it->getInitialTotalNumberReference());
 
       // Total Mass
-      map(it->getTotalNumberReference(), p.pTotalMassesObject);
       CMathObject::initialize(p.pTotalMassesObject++, p.pTotalMasses++,
                               CMath::ValueType::TotalMass, CMath::EntityType::Moiety, CMath::SimulationType::Undefined, false, false,
                               it->getTotalNumberReference());
 
       // Dependent
-      map(it->getDependentNumberReference(), p.pDependentMassesObject);
       CMathObject::initialize(p.pDependentMassesObject++, p.pDependentMasses++,
                               CMath::ValueType::DependentMass, CMath::EntityType::Moiety, CMath::SimulationType::Undefined, false, false,
                               it->getDependentNumberReference());
     }
 }
 
-// static
-/*
-bool CMathContainer::hasDependencies(const CDataObject * pObject)
-{
-  const CDataObject::DataObjectSet & Dependencies = pObject->getDirectDependencies();
-
-  if (Dependencies.find(pObject->getObjectParent()) != Dependencies.end())
-    {
-      return Dependencies.size() > 1;
-    }
-
-  return Dependencies.size() > 0;
-}
- */
 void CMathContainer::map()
 {
   CMathObject * itObject = mObjects.begin();
@@ -3832,16 +3813,13 @@ void CMathContainer::map()
 
   for (; itObject != endObject; ++itObject)
     {
-      map(itObject->getDataObject(), itObject);
-    }
-}
+      const CDataObject * pDataObject = itObject->getDataObject();
 
-void CMathContainer::map(const CDataObject * pDataObject, CMathObject * pMathObject)
-{
-  if (pDataObject != NULL)
-    {
-      mDataObject2MathObject[pDataObject] = pMathObject;
-      mDataValue2MathObject[(C_FLOAT64 *) pDataObject->getValuePointer()] = pMathObject;
+      if (pDataObject != NULL)
+        {
+          mDataObject2MathObject[pDataObject] = itObject;
+          mDataValue2MathObject[(C_FLOAT64 *) pDataObject->getValuePointer()] = itObject;
+        }
     }
 }
 
@@ -3958,12 +3936,8 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
                 pObject->setExpressionPtr(pExpression);
               }
 
-            if (entity.InitialValue != NULL)
-              {
-                map(entity.InitialValue, pObject);
-              }
-
             Entity.InitialValue = pObject;
+            ++kind;
             break;
 
           case 1:
@@ -3979,12 +3953,8 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
                 pObject->setExpressionPtr(pExpression);
               }
 
-            if (entity.InitialValue != NULL)
-              {
-                map(entity.InitialRate, pObject);
-              }
-
             Entity.InitialRate = pObject;
+            ++kind;
             break;
 
           case 2:
@@ -3999,12 +3969,8 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
                 pObject->setExpressionPtr(pExpression);
               }
 
-            if (entity.InitialValue != NULL)
-              {
-                map(entity.Value, pObject);
-              }
-
             Entity.Value = pObject;
+            ++kind;
             break;
 
           case 3:
@@ -4019,12 +3985,8 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
                 pObject->setExpressionPtr(pExpression);
               }
 
-            if (entity.InitialValue != NULL)
-              {
-                map(entity.Rate, pObject);
-              }
-
             Entity.Rate = pObject;
+            ++kind;
             break;
         }
 
@@ -4037,6 +3999,7 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
       mInitialDependencies.addObject(pObject);
     }
 
+  assert(kind == 4);
   // We resize cleared mDataObject2MathObject and mDataValue2MathObject we must create a new map
   map();
 

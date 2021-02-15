@@ -7,17 +7,19 @@
 #define COPASI_CPointerMathContext
 
 #include "copasi/OpenMP/CMathContext.h"
+#include "copasi/OpenMP/CPointerContextWithParent.h"
 
-template < class Data > class CPointerMathContext : public CPointerContext< Data >
+template < class Data >
+class CPointerMathContext : public CPointerContextWithParent< Data >
 {
 public:
-  typedef CPointerContext< Data > Base;
+  typedef CPointerContextWithParent< Data > Base;
 
   CPointerMathContext() = delete;
 
   CPointerMathContext(const CPointerMathContext & src) = delete;
 
-  CPointerMathContext(const bool & parallel);
+  CPointerMathContext(const bool & parallel, CDataContainer * pParent);
 
   ~CPointerMathContext();
 
@@ -28,14 +30,17 @@ public:
   void setMathContext(CMathContext & Context);
 };
 
-template < class Data > CPointerMathContext< Data >::CPointerMathContext(const bool & parallel)
-  : CPointerContext< Data >(parallel)
+template < class Data >
+CPointerMathContext< Data >::CPointerMathContext(const bool & parallel, CDataContainer * pParent)
+  : Base(parallel, pParent)
 {}
 
-template < class Data > CPointerMathContext< Data >::~CPointerMathContext()
+template < class Data >
+CPointerMathContext< Data >::~CPointerMathContext()
 {}
 
-template < class Data > void CPointerMathContext< Data >::setMathContext(CMathContext & Context)
+template < class Data >
+void CPointerMathContext< Data >::setMathContext(CMathContext & Context)
 {
   if (Base::master() != NULL)
     {
@@ -48,7 +53,14 @@ template < class Data > void CPointerMathContext< Data >::setMathContext(CMathCo
           CMathContainer ** pContainer = Context.beginThread();
 
           for (; pIt != pEnd; ++pIt, ++pContainer)
-            (*pIt)->setMathContainer(*pContainer);
+            {
+              if (*pIt != NULL
+                  && *pContainer != NULL
+                  && (*pIt)->getMathContainer() == *pContainer)
+                continue;
+
+              (*pIt)->setMathContainer(*pContainer);
+            }
         }
     }
 }

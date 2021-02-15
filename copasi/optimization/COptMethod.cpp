@@ -49,7 +49,7 @@ COptMethod::COptMethod(const CDataContainer * pParent,
   , mpParentTask(NULL)
   , mParallel(parallel)
   , mMathContext(parallel)
-  , mProblemContext(parallel)
+  , mProblemContext(parallel, this)
   , mLogVerbosity(0)
   , mMethodLog()
 {
@@ -62,7 +62,7 @@ COptMethod::COptMethod(const COptMethod & src,
   , mpParentTask(src.mpParentTask)
   , mParallel(src.mParallel)
   , mMathContext(src.mParallel)
-  , mProblemContext(src.mParallel)
+  , mProblemContext(src.mParallel, this)
   , mLogVerbosity(src.mLogVerbosity)
   , mMethodLog(src.mMethodLog)
 {
@@ -110,8 +110,12 @@ bool COptMethod::optimise(void)
 
 bool COptMethod::initialize()
 {
-  if (mProblemContext.master() == NULL)
+  if (mMathContext.master() == NULL
+      || mProblemContext.master() == NULL)
     return false;
+
+  mMathContext.sync();
+  mProblemContext.setMathContext(mMathContext);
 
   COptProblem **ppProblem = mProblemContext.beginThread();
   COptProblem **ppProblemEnd = mProblemContext.endThread();

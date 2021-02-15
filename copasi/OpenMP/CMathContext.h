@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -9,6 +9,23 @@
 #include "copasi/OpenMP/CPointerContext.h"
 #include "copasi/math/CMathContainer.h"
 
-typedef CPointerContext< CMathContainer > CMathContext;
+class CMathContext : public CPointerContext< CMathContainer >
+{
+public:
+  typedef CPointerContext< CMathContainer > Base;
+
+  CMathContext() = delete;
+
+  CMathContext(const CMathContext & src) = delete;
+
+  CMathContext(const bool & parallel);
+
+  ~CMathContext();
+
+  /**
+   * Set the pointer to container used for calculations
+   */
+  void sync();
+};
 
 #endif // COPASI_CMathContext

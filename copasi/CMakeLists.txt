@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -265,10 +265,19 @@ endif()
 
 if (APPLE AND CMAKE_GENERATOR STREQUAL "Xcode" OR DISABLE_CORE_OBJECT_LIBRARY)
   add_library (libCOPASISE-static STATIC ${COPASI_SOURCES} ${COPASI_HEADERS})
+
+  if (ENABLE_OMP)
+    target_compile_options(libCOPASISE-static PRIVATE ${OpenMP_CXX_FLAGS})
+  endif (ENABLE_OMP)
 else()
   add_library (libCOPASISE-core OBJECT ${COPASI_SOURCES} ${COPASI_HEADERS})
   add_library (libCOPASISE-static STATIC $<TARGET_OBJECTS:libCOPASISE-core>)
+
+  if (ENABLE_OMP)
+    target_compile_options(libCOPASISE-core PRIVATE ${OpenMP_CXX_FLAGS})
+  endif (ENABLE_OMP)
 endif()
+
 set_target_properties (libCOPASISE-static PROPERTIES OUTPUT_NAME "COPASISE")
 
 target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY_NAME})
@@ -349,9 +358,12 @@ endif(COPASI_INSTALL_C_API)
 
 
 if(ENABLE_LIBCOPASISE_SHARED)
-
   if (APPLE AND CMAKE_GENERATOR STREQUAL "Xcode" OR DISABLE_CORE_OBJECT_LIBRARY)
     add_library (libCOPASISE-shared SHARED ${COPASI_SOURCES} ${COPASI_HEADERS})
+
+    if (ENABLE_OMP)
+      target_compile_options(libCOPASISE-shared PRIVATE ${OpenMP_CXX_FLAGS})
+    endif (ENABLE_OMP)
   else()
     add_library (libCOPASISE-shared SHARED $<TARGET_OBJECTS:libCOPASISE-core>)
   endif()
