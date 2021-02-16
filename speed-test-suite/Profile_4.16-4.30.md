@@ -1,9 +1,9 @@
-# Evolution of COPASI speed in versions 4.16 through to 4.30
-## Pedro Mendes
+# Profiling COPASI's speed in versions 4.16 through to 4.30
+__Pedro Mendes__
 
-February 2021
+*February 2021*
 
-Center for Cell Analysis and Modeling, University of Connecticut School of Medicine
+*Center for Cell Analysis and Modeling, University of Connecticut School of Medicine*
 
 ## Abstract
 
