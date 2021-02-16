@@ -170,3 +170,25 @@ const COptLog &COptMethod::getMethodLog() const
 {
   return mMethodLog;
 }
+
+C_FLOAT64 COptMethod::getBestValue() const
+{
+  return std::numeric_limits< C_FLOAT64 >::infinity();
+}
+
+C_FLOAT64 COptMethod::getCurrentValue() const
+{
+  return std::numeric_limits< C_FLOAT64 >::infinity();
+}
+
+const CVector< C_FLOAT64 > * COptMethod::getBestParameters() const
+{
+  return NULL;
+}
+
+const CVector< C_FLOAT64 > * COptMethod::getCurrentParameters() const
+{
+  return NULL;
+}
+
+

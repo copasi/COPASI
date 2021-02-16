@@ -118,6 +118,7 @@ bool COptMethodPraxis::optimise()
 
   // We found a new best value lets report it.
   mpParentTask->output(COutputInterface::DURING);
+  mpParentTask->output(COutputInterface::MONITORING);
 
   //estimate the machine epsilon
   d1 = 1.0;
@@ -196,6 +197,8 @@ const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
       mpParentTask->output(COutputInterface::DURING);
     }
 
+  mpParentTask->output(COutputInterface::MONITORING);
+
   if (!mContinue)
     throw bool(mContinue);
 
@@ -224,4 +227,24 @@ const C_FLOAT64 & COptMethodPraxis::evaluate()
 unsigned C_INT32 COptMethodPraxis::getMaxLogVerbosity() const
 {
   return 0;
+}
+
+C_FLOAT64 COptMethodPraxis::getBestValue() const
+{
+  return mBestValue;
+}
+
+C_FLOAT64 COptMethodPraxis::getCurrentValue() const
+{
+  return mEvaluationValue;
+}
+
+const CVector< C_FLOAT64 > * COptMethodPraxis::getBestParameters() const
+{
+  return &mBest;
+}
+
+const CVector< C_FLOAT64 > * COptMethodPraxis::getCurrentParameters() const
+{
+  return &mCurrent;
 }

@@ -238,6 +238,8 @@ bool COptMethodHookeJeeves::optimise()
           for (i = 0; i < mVariableSize; i++)
             mDelta[i] *= mRho;
         }
+
+      mpParentTask->output(COutputInterface::MONITORING);
     }
 
   if (mLogVerbosity > 0)
@@ -402,6 +404,26 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 unsigned C_INT32 COptMethodHookeJeeves::getMaxLogVerbosity() const
 {
   return 0;
+}
+
+C_FLOAT64 COptMethodHookeJeeves::getBestValue() const
+{
+  return mBestValue;
+}
+
+C_FLOAT64 COptMethodHookeJeeves::getCurrentValue() const
+{
+  return mBestValue;
+}
+
+const CVector< C_FLOAT64 > * COptMethodHookeJeeves::getBestParameters() const
+{
+  return &mNew;
+}
+
+const CVector< C_FLOAT64 > * COptMethodHookeJeeves::getCurrentParameters() const
+{
+  return &mNew;
 }
 
 /* Find a point X where the nonlinear function f(X) has a local    */

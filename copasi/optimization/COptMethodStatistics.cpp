@@ -131,7 +131,29 @@ bool COptMethodStatistics::optimise()
   //if (mpReport) mpReport->printBody();
   mpParentTask->output(COutputInterface::DURING);
 
+  mpParentTask->output(COutputInterface::MONITORING);
+
   return true;
+}
+
+C_FLOAT64 COptMethodStatistics::getBestValue() const
+{
+  return mValue;
+}
+
+C_FLOAT64 COptMethodStatistics::getCurrentValue() const
+{
+  return mValue;
+}
+
+const CVector< C_FLOAT64 > * COptMethodStatistics::getBestParameters() const
+{
+  return &mIndividual;
+}
+
+const CVector< C_FLOAT64 > * COptMethodStatistics::getCurrentParameters() const
+{
+  return &mIndividual;
 }
 
 // evaluate the fitness of one individual

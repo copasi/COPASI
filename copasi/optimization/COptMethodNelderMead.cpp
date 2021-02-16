@@ -546,6 +546,8 @@ First:
       if (mpCallBack)
         mContinue &= mpCallBack->progressItem(mhIteration);
 
+      mpParentTask->output(COutputInterface::MONITORING);
+
       quit = (mIteration >= mIterationLimit);
 
       if (!quit) /* then */
@@ -717,4 +719,24 @@ bool COptMethodNelderMead::initialize()
 unsigned C_INT32 COptMethodNelderMead::getMaxLogVerbosity() const
 {
   return 1;
+}
+
+C_FLOAT64 COptMethodNelderMead::getBestValue() const
+{
+  return mBestValue;
+}
+
+C_FLOAT64 COptMethodNelderMead::getCurrentValue() const
+{
+  return mBestValue;
+}
+
+const CVector< C_FLOAT64 > * COptMethodNelderMead::getBestParameters() const
+{
+  return &mCurrent;
+}
+
+const CVector< C_FLOAT64 > * COptMethodNelderMead::getCurrentParameters() const
+{
+  return &mCurrent;
 }

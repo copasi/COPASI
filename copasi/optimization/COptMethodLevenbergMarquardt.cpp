@@ -462,6 +462,7 @@ bool COptMethodLevenbergMarquardt::optimise()
                   nu = 0.0;
                 }
             }
+
         }
       else
         {
@@ -507,6 +508,9 @@ bool COptMethodLevenbergMarquardt::optimise()
 
       if (mpCallBack)
         mContinue &= mpCallBack->progressItem(mhIteration);
+
+      mpParentTask->output(COutputInterface::MONITORING);
+
     }
 
   if ((mLogVerbosity > 1) && (mParameterOutOfBounds > 0))
@@ -833,4 +837,24 @@ void COptMethodLevenbergMarquardt::hessian()
 unsigned C_INT32 COptMethodLevenbergMarquardt::getMaxLogVerbosity() const
 {
   return 1;
+}
+
+C_FLOAT64 COptMethodLevenbergMarquardt::getBestValue() const
+{
+  return mBestValue;
+}
+
+C_FLOAT64 COptMethodLevenbergMarquardt::getCurrentValue() const
+{
+  return mEvaluationValue;
+}
+
+const CVector< C_FLOAT64 >* COptMethodLevenbergMarquardt::getBestParameters() const
+{
+  return &mBest;
+}
+
+const CVector< C_FLOAT64 > * COptMethodLevenbergMarquardt::getCurrentParameters() const
+{
+  return &mCurrent;
 }

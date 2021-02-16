@@ -245,6 +245,8 @@ bool CRandomSearch::optimise()
           //if (mpReport) mpReport->printBody();
           mpParentTask->output(COutputInterface::DURING);
         }
+
+      mpParentTask->output(COutputInterface::MONITORING);
     }
 
   if (mLogVerbosity > 0)
@@ -278,4 +280,24 @@ bool CRandomSearch::evaluate(const CVector< C_FLOAT64 > & /* individual */)
 unsigned C_INT32 CRandomSearch::getMaxLogVerbosity() const
 {
   return 0;
+}
+
+C_FLOAT64 CRandomSearch::getBestValue() const
+{
+  return mBestValue;
+}
+
+C_FLOAT64 CRandomSearch::getCurrentValue() const
+{
+  return mValue;
+}
+
+const CVector< C_FLOAT64 > * CRandomSearch::getBestParameters() const
+{
+  return &mIndividual;
+}
+
+const CVector< C_FLOAT64 > * CRandomSearch::getCurrentParameters() const
+{
+  return &mIndividual;
 }

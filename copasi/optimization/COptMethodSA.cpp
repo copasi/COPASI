@@ -348,6 +348,8 @@ bool COptMethodSA::optimise()
 
       if (mpCallBack)
         mContinue &= mpCallBack->progressItem(mhTemperature);
+
+      mpParentTask->output(COutputInterface::MONITORING);
     }
   while (!ready && mContinue);
 
@@ -431,4 +433,24 @@ bool COptMethodSA::initialize()
 unsigned C_INT32 COptMethodSA::getMaxLogVerbosity() const
 {
   return 1;
+}
+
+C_FLOAT64 COptMethodSA::getBestValue() const
+{
+  return mBestValue;
+}
+
+C_FLOAT64 COptMethodSA::getCurrentValue() const
+{
+  return mCurrentValue;
+}
+
+const CVector< C_FLOAT64 > * COptMethodSA::getBestParameters() const
+{
+  return &mCurrent;
+}
+
+const CVector< C_FLOAT64 > * COptMethodSA::getCurrentParameters() const
+{
+  return &mCurrent;
 }

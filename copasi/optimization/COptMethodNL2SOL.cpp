@@ -84,7 +84,7 @@ bool COptMethodNL2SOL::optimise()
   doublereal urparam[1];
 
   // generate the bound arrays
-  bool pointInParameterDomain;
+  bool pointInParameterDomain = true;
 
   for (j = 0; j < mVariableSize; j++)
     {
@@ -128,6 +128,7 @@ bool COptMethodNL2SOL::optimise()
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
+      mpParentTask->output(COutputInterface::MONITORING);
     }
 
   try
@@ -240,6 +241,26 @@ unsigned C_INT32 COptMethodNL2SOL::getMaxLogVerbosity() const
   return 1;
 }
 
+C_FLOAT64 COptMethodNL2SOL::getBestValue() const
+{
+  return mBestValue;
+}
+
+C_FLOAT64 COptMethodNL2SOL::getCurrentValue() const
+{
+  return mEvaluationValue;
+}
+
+const CVector< C_FLOAT64 > * COptMethodNL2SOL::getBestParameters() const
+{
+  return &mBest;
+}
+
+const CVector< C_FLOAT64 > * COptMethodNL2SOL::getCurrentParameters() const
+{
+  return &mCurrent;
+}
+
 C_INT COptMethodNL2SOL::calcr(integer *n, integer *p, doublereal *x, integer *nf, doublereal *resid,
                               integer *uiparm, doublereal *urparm, U_fp ufparm)
 {
@@ -264,6 +285,8 @@ C_INT COptMethodNL2SOL::calcr(integer *n, integer *p, doublereal *x, integer *nf
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
     }
+
+  mpParentTask->output(COutputInterface::MONITORING);
 
   if (resid != NULL)
     {

@@ -169,6 +169,27 @@ public:
    */
   const COptLog &getMethodLog() const;
 
+  /**
+   * @return the objective value
+   */
+  virtual C_FLOAT64 getBestValue() const;
+
+  /**
+   * @return the objective value
+   */
+  virtual C_FLOAT64 getCurrentValue() const;
+
+  /**
+   * @return a the best parameters found
+   */
+  virtual const CVector< C_FLOAT64 > * getBestParameters() const;
+
+  /**
+   * @return a the current guess for parameters
+   */
+  virtual const CVector< C_FLOAT64 > * getCurrentParameters() const;
+
+
 protected:
   /**
    * Calculate the objective value for the provided parameter set

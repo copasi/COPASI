@@ -245,6 +245,8 @@ bool COptMethodSteepestDescent::optimise()
           //if (mpReport) mpReport->printBody();
           mpParentTask->output(COutputInterface::DURING);
         }
+
+      mpParentTask->output(COutputInterface::MONITORING);
     }
 
   if (mLogVerbosity > 0)
@@ -381,4 +383,24 @@ void COptMethodSteepestDescent::initObjects()
 unsigned C_INT32 COptMethodSteepestDescent::getMaxLogVerbosity() const
 {
   return 0;
+}
+
+C_FLOAT64 COptMethodSteepestDescent::getBestValue() const
+{
+  return mBestValue;
+}
+
+C_FLOAT64 COptMethodSteepestDescent::getCurrentValue() const
+{
+  return mBestValue;
+}
+
+const CVector< C_FLOAT64 > * COptMethodSteepestDescent::getBestParameters() const
+{
+  return &mIndividual;
+}
+
+const CVector< C_FLOAT64 > * COptMethodSteepestDescent::getCurrentParameters() const
+{
+  return &mIndividual;
 }

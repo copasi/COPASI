@@ -363,6 +363,8 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FL
         }
     }
 
+  mpParentTask->output(COutputInterface::MONITORING);
+
   if (!mContinue)
     throw bool(mContinue);
 
@@ -390,4 +392,24 @@ const C_FLOAT64 & COptMethodTruncatedNewton::evaluate()
 unsigned C_INT32 COptMethodTruncatedNewton::getMaxLogVerbosity() const
 {
   return 1;
+}
+
+C_FLOAT64 COptMethodTruncatedNewton::getBestValue() const
+{
+  return mBestValue;
+}
+
+C_FLOAT64 COptMethodTruncatedNewton::getCurrentValue() const
+{
+  return mEvaluationValue;
+}
+
+const CVector< C_FLOAT64 > * COptMethodTruncatedNewton::getBestParameters() const
+{
+  return &mBest;
+}
+
+const CVector< C_FLOAT64 > * COptMethodTruncatedNewton::getCurrentParameters() const
+{
+  return &mCurrent;
 }

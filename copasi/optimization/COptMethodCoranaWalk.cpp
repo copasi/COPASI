@@ -167,6 +167,7 @@ bool COptMethodCoranaWalk::optimise()
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
+      mpParentTask->output(COutputInterface::MONITORING);
 
       if (mpCallBack)
         mContinue &= mpCallBack->progressItem(mhIterations);
@@ -252,6 +253,8 @@ bool COptMethodCoranaWalk::optimise()
                     *mProblemContext.master()->getContainerVariables()[h] = mCurrent[h];
                 }
 
+              mpParentTask->output(COutputInterface::MONITORING);
+
               // check if it is time to stop
               if (mCurrentIteration == mIterations) processing = false;
             }
@@ -284,6 +287,7 @@ bool COptMethodCoranaWalk::optimise()
 
       if (mpCallBack)
         mContinue &= mpCallBack->progressItem(mhIterations);
+
     }
   while (processing && mContinue);
 
@@ -354,4 +358,24 @@ bool COptMethodCoranaWalk::initialize()
 unsigned C_INT32 COptMethodCoranaWalk::getMaxLogVerbosity() const
 {
   return 0;
+}
+
+C_FLOAT64 COptMethodCoranaWalk::getBestValue() const
+{
+  return mBestValue;
+}
+
+C_FLOAT64 COptMethodCoranaWalk::getCurrentValue() const
+{
+  return mBestValue;
+}
+
+const CVector< C_FLOAT64 > * COptMethodCoranaWalk::getBestParameters() const
+{
+  return &mCurrent;
+}
+
+const CVector< C_FLOAT64 > * COptMethodCoranaWalk::getCurrentParameters() const
+{
+  return &mCurrent;
 }
