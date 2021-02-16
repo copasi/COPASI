@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -298,7 +298,7 @@ bool TaskWidget::commonBeforeRunTask()
         {
           CopasiUI3Window* pWindow = CopasiUI3Window::getMainWindow();
           CQOptPopulation* pPopWidget = pWindow->getPopulationDisplay();
-          COptPopulationMethod* pMethod = dynamic_cast<COptPopulationMethod*>(mpTask->getMethod());
+          COptMethod * pMethod = dynamic_cast< COptMethod * >(mpTask->getMethod());
           pPopWidget->setMethod(pMethod);
 
           if (pMethod != NULL)
@@ -324,7 +324,7 @@ bool TaskWidget::commonAfterRunTask()
         {
           CopasiUI3Window* pWindow = CopasiUI3Window::getMainWindow();
           CQOptPopulation* pPopWidget = pWindow->getPopulationDisplay();
-          COptPopulationMethod* pMethod = dynamic_cast<COptPopulationMethod*>(mpTask->getMethod());
+          COptMethod * pMethod = dynamic_cast< COptMethod * >(mpTask->getMethod());
           pPopWidget->setMethod(NULL);
 
           if (pMethod != NULL)
