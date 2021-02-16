@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -13,12 +18,16 @@
 #include <vector>
 #include <QToolButton>
 #include <QGraphicsScene>
+#include <QMutex>
 
 #include "copasi/copasi.h"
 #include "copasi/UI/CopasiFileDialog.h"
 #include "copasi/UI/CWindowInterface.h"
+#include "copasi/UI/CColorScale.h"
 #include "copasi/output/COutputHandler.h"
 #include "copasi/core/CVector.h"
+#include "copasi/utilities/CopasiTime.h"
+
 class CDataContainer;
 class CopasiUI3Window;
 class QMenu;
@@ -45,10 +54,13 @@ private:
   C_INT32 mCounter;
 
   std::vector< CVector < C_FLOAT64 > * > mPopulation;
-  CVector<C_FLOAT64> mObjectiveValues;
+  std::vector< C_FLOAT64 > mObjectiveValues;
+
 
   bool mDataInitialized;
   bool mGraphInitialized;
+  bool mDidAllocate;
+  bool mInUpdate;
 
   bool initializing;
 
@@ -62,9 +74,10 @@ private:
   QGraphicsScene * mpGS;
   QGraphicsView * mpGV;
 
-  //list of list of graphics items. The outer list allows for several projections simultaniously
+  //list of list of graphics items. The outer list allows for several projections simultaneously
   //the inner list enumerates graphical representations of the individual parameter sets in the population
   std::vector< std::vector<QGraphicsItem *> > mGraphicItems;
+  std::vector< std::vector< QGraphicsItem * > > mLineItems;
 
   //These are coordinate shifts that specify where on the plane the different projections are located
   std::vector<double> mShiftX;
@@ -73,9 +86,24 @@ private:
   std::vector<C_INT32> mXIndex;
   std::vector<C_INT32> mYIndex;
 
+  qreal mDiameter;
+  QAction * mpaRefresh;
+  QAction * mpaDecreaseCircle;
+  QAction * mpaIncreaseCircle;
+  QAction * mpaResetCircle;
+  QAction * mpaSaveToFile;
+
+  CColorScaleAuto mCS;
+  C_INT32 mMinIndex = 0;
+  C_INT32 mMaxIterations = 500;
+  QMutex mMutex;
+  CCopasiTimeVariable mNextPlotTime;
+
+
   void createToolBar();
   void createMenus();
   void createActions();
+  void setCircle(qreal diameter);
 
 public:
   CQOptPopulation(COutputHandler * pHandler,  CopasiUI3Window * pMainWindow);
@@ -133,9 +161,12 @@ public:
 
 private slots:
 
+  void slotFullRefresh();
   /// Save data into a file
   void slotSaveData();
   void slotCloseWindow();
+  void slotResizeCircle();
+  void slotSaveImage();
 
 public slots:
   virtual void update();
