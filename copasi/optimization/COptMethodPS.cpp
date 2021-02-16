@@ -100,11 +100,7 @@ C_FLOAT64 COptMethodPS::evaluate()
 
   // evaluate the fitness
   if (!pOptProblem->calculate())
-#ifdef _MSC_VER
-    #  pragma omp critical
-#else
-    #pragma omp atomic write
-#endif
+#pragma omp critical
     mContinue = false;
 
   C_FLOAT64 EvaluationValue;
@@ -117,8 +113,9 @@ C_FLOAT64 COptMethodPS::evaluate()
 
   if (mProblemContext.isThread(&pOptProblem))
     {
-      #pragma omp critical
+#pragma omp critical
       mProblemContext.master()->incrementCounters(pOptProblem->getCounters());
+
       pOptProblem->resetCounters();
     }
 
@@ -202,7 +199,7 @@ bool COptMethodPS::move(const size_t & index)
       memcpy(mBestPositions[index], mIndividuals[index]->array(), sizeof(C_FLOAT64) * mVariableSize);
 
       // Check if we improved globally
-      #pragma omp critical
+#pragma omp critical
 
       if (EvaluationValue < mBestValues[mBestIndex])
         {
@@ -337,7 +334,7 @@ bool COptMethodPS::create(const size_t & index)
   // calculate its fitness
   mBestValues[index] = mValues[index] = evaluate();
 
-  #pragma omp critical
+#pragma omp critical
 
   if (mBestValues[index] < mBestValues[mBestIndex])
     {
@@ -391,7 +388,7 @@ bool COptMethodPS::initialize()
 
   size_t i;
 
-  #pragma omp parallel for
+#pragma omp parallel for
 
   for (i = 0; i < mPopulationSize; ++i)
     mIndividuals[i] = new CVector< C_FLOAT64 >(mVariableSize);
@@ -615,11 +612,12 @@ bool COptMethodPS::optimise()
   mpParentTask->output(COutputInterface::DURING);
 
   // the others are random
-  #pragma omp parallel for shared(mContinue)
+  C_INT32 k, kmax = (C_INT32) mPopulationSize;
+#pragma omp parallel for
 
-  for (i = 1; i < mPopulationSize; i++)
+  for (k = 1; k < kmax; k++)
     if (mContinue)
-      create(i);
+      create(k);
 
   // create the informant list
   buildInformants();
@@ -630,18 +628,19 @@ bool COptMethodPS::optimise()
 
   for (; mCurrentGeneration < mGenerations && mContinue; mCurrentGeneration++, Stalled++)
     {
-
       if (mStopAfterStalledIterations != 0 && Stalled > mStopAfterStalledIterations)
         break;
 
       Improved = false;
       size_t oldIndex = mBestIndex;
 
-      #pragma omp parallel for shared(mContinue) reduction(|:Improved)
+      C_INT32 k, kmax = (C_INT32) mPopulationSize;
 
-      for (i = 0; i < mPopulationSize; i++)
+#pragma omp parallel for reduction(|:Improved)
+
+      for (k = 0; k < kmax; k++)
         if (mContinue)
-          Improved |= move(i);
+          Improved |= move(k);
 
       if (!Improved)
         {
