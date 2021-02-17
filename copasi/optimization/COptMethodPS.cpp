@@ -100,7 +100,7 @@ C_FLOAT64 COptMethodPS::evaluate()
 
   // evaluate the fitness
   if (!pOptProblem->calculate())
-#pragma omp critical
+    #pragma omp critical
     mContinue = false;
 
   C_FLOAT64 EvaluationValue;
@@ -113,7 +113,7 @@ C_FLOAT64 COptMethodPS::evaluate()
 
   if (mProblemContext.isThread(&pOptProblem))
     {
-#pragma omp critical
+      #pragma omp critical
       mProblemContext.master()->incrementCounters(pOptProblem->getCounters());
 
       pOptProblem->resetCounters();
@@ -199,7 +199,7 @@ bool COptMethodPS::move(const size_t & index)
       memcpy(mBestPositions[index], mIndividuals[index]->array(), sizeof(C_FLOAT64) * mVariableSize);
 
       // Check if we improved globally
-#pragma omp critical
+      #pragma omp critical
 
       if (EvaluationValue < mBestValues[mBestIndex])
         {
@@ -334,7 +334,7 @@ bool COptMethodPS::create(const size_t & index)
   // calculate its fitness
   mBestValues[index] = mValues[index] = evaluate();
 
-#pragma omp critical
+  #pragma omp critical
 
   if (mBestValues[index] < mBestValues[mBestIndex])
     {
@@ -386,9 +386,9 @@ bool COptMethodPS::initialize()
 
   mIndividuals.resize(mPopulationSize);
 
-  size_t i;
+  int i;
 
-#pragma omp parallel for
+  #pragma omp parallel for
 
   for (i = 0; i < mPopulationSize; ++i)
     mIndividuals[i] = new CVector< C_FLOAT64 >(mVariableSize);
@@ -613,7 +613,7 @@ bool COptMethodPS::optimise()
 
   // the others are random
   C_INT32 k, kmax = (C_INT32) mPopulationSize;
-#pragma omp parallel for
+  #pragma omp parallel for
 
   for (k = 1; k < kmax; k++)
     if (mContinue)
@@ -636,7 +636,7 @@ bool COptMethodPS::optimise()
 
       C_INT32 k, kmax = (C_INT32) mPopulationSize;
 
-#pragma omp parallel for reduction(|:Improved)
+      #pragma omp parallel for reduction(|:Improved)
 
       for (k = 0; k < kmax; k++)
         if (mContinue)
