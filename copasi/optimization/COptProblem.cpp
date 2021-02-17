@@ -320,7 +320,11 @@ bool COptProblem::initializeSubtaskBeforeOutput()
   try
     {
       if (mpSubTask != NULL)
-        return mpSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+        {
+          mpSubTask->setMathContainer(mpContainer);
+
+          return mpSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+        }
     }
 
   catch (...)

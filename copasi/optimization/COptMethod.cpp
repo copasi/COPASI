@@ -122,7 +122,10 @@ bool COptMethod::initialize()
 
   for (; ppProblem != ppProblemEnd; ++ppProblem)
     if (mProblemContext.isThread(ppProblem))
-      (*ppProblem)->initialize();
+      {
+        (*ppProblem)->initializeSubtaskBeforeOutput();
+        (*ppProblem)->initialize();
+      }
 
   mpParentTask = dynamic_cast<COptTask *>(getObjectParent());
 
@@ -190,5 +193,3 @@ const CVector< C_FLOAT64 > * COptMethod::getCurrentParameters() const
 {
   return NULL;
 }
-
-
