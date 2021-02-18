@@ -32,6 +32,7 @@ class CDataContainer;
 class CopasiUI3Window;
 class QMenu;
 class QAction;
+class QLabel;
 class COptMethod;
 class COptPopulationMethod;
 
@@ -98,7 +99,7 @@ private:
   C_INT32 mMaxIterations = 500;
   QMutex mMutex;
   CCopasiTimeVariable mNextPlotTime;
-
+  QLabel * mpLabel;
 
   void createToolBar();
   void createMenus();
@@ -176,4 +177,5 @@ protected:
 
 signals:
   void updateSignal();
+  void setDebugText(QString str);
 };

@@ -132,6 +132,9 @@ CQOptPopulation::CQOptPopulation(COutputHandler * pHandler, CopasiUI3Window * pM
 
   mpGV->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
 
+  mpLabel = new QLabel(this);
+  connect(this, SIGNAL(setDebugText(QString)), mpLabel, SLOT(setText(QString)));
+  statusBar()->addPermanentWidget(mpLabel);
 
   createActions();
   createMenus();
@@ -385,13 +388,7 @@ void CQOptPopulation::closeEvent(QCloseEvent *closeEvent)
 
 std::vector< C_FLOAT64 > to_std_vector(const CVector<C_FLOAT64>& other)
 {
-  std::vector< C_FLOAT64 > result(other.size());
-
-for (auto val : other)
-    {
-      result.push_back(val);
-    }
-
+  std::vector< C_FLOAT64 > result(other.begin(), other.end());
   return result;
 }
 
@@ -494,7 +491,7 @@ for (auto * item : mPopulation)
   unsigned C_INT32 i;
 
   //Color scaling
-  double tmp_min = 1e300;
+  double tmp_min = std::numeric_limits<double>::infinity();
 
   mCS.startAutomaticParameterCalculation();
 
@@ -512,9 +509,9 @@ for (auto * item : mPopulation)
 
   mCS.finishAutomaticParameterCalculation();
 
-
   mCounter++;
 
+  emit setDebugText(QString("min: %1, total: %2").arg(tmp_min).arg(mPopulation.size()));
   emit updateSignal();
 
 }
