@@ -96,8 +96,6 @@ COptPopulationMethod::initialize()
   else
     mPopulationSize = 0;
 
-  pdelete(mRandomContext.master());
-
   CRandom * pRandom = NULL;
 
   if (getParameter("Random Number Generator") != NULL && getParameter("Seed") != NULL)
@@ -125,6 +123,9 @@ COptPopulationMethod::cleanup()
     pdelete(mIndividuals[i]);
 
   mIndividuals.clear();
+
+  pdelete(mRandomContext.master());
+
   return true;
 }
 

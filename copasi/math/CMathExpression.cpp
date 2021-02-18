@@ -172,6 +172,7 @@ CMathExpression * CMathExpression::copy(const CMathExpression & src,
 {
   CMathExpression * pExpression = new CMathExpression(src.getObjectName(), container);
   pExpression->setRoot(src.getRoot()->copyBranch());
+  pExpression->buildCalculationSequence();
   pExpression->mPrerequisites = src.mPrerequisites;
 
   return pExpression;
