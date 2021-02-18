@@ -542,6 +542,25 @@ void updateItem(QGraphicsEllipseItem * gie, double x, double y, QColor color, bo
   gie->setVisible(true);
 }
 
+QString vec_to_string(CVector<C_FLOAT64>* pVec)
+{
+  if (!pVec)
+    return "null";
+
+  if (pVec->size() == 0)
+    return "empty";
+
+  QString result = QString::number(pVec->operator[](0));
+
+  for (int i = 1; i < pVec->size(); ++i)
+    {
+      result.append(QString(", %1").arg(pVec->operator[](i)));
+    }
+
+  return result;
+}
+
+
 void CQOptPopulation::update()
 {
 
@@ -708,6 +727,9 @@ void CQOptPopulation::update()
 
           QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[mShiftX.size()][i]);
 
+          if (gie)
+            gie->setToolTip(QString("obj: %1, (%2)").arg(mObjectiveValues[i]).arg(vec_to_string(current)));
+
           updateItem(gie,
                      (p0 / count + 1) * 1.05 - mDiameter / 2.0,
                      (p1 / count + 1) * 1.05 - mDiameter / 2.0,
@@ -738,6 +760,8 @@ void CQOptPopulation::update()
                      mCS.getColor(mObjectiveValues[i]),
                      i == mMinIndex,
                      isOnBorder);
+
+          if (gie) gie->setToolTip(QString("obj: %1, (%2)").arg(mObjectiveValues[i]).arg(vec_to_string(current)));
         }
 
       last_values = scaled_values;
