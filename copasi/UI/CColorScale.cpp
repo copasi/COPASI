@@ -134,6 +134,7 @@ void CColorScaleSimple::startAutomaticParameterCalculation()
 {
   mMin = std::numeric_limits< C_FLOAT64 >::max();
   mMax = -std::numeric_limits< C_FLOAT64 >::max();
+  mLog = false;
 }
 
 //virtual
