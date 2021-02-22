@@ -355,21 +355,22 @@ void CEvaluationTree::buildCalculationSequence()
   CNodeIterator < CEvaluationNode > itNode(mpRootNode);
   std::vector< CEvaluationNode * > CalculationSequence;
 
-  while (itNode.next() != itNode.end())
-    {
-      switch (itNode->mainType())
-        {
-          case CEvaluationNode::MainType::NUMBER:
-          case CEvaluationNode::MainType::CONSTANT:
-          case CEvaluationNode::MainType::OBJECT:
-          case CEvaluationNode::MainType::UNIT:
-            break;
+  if (mpRootNode)
+    while (itNode.next() != itNode.end())
+      {
+        switch (itNode->mainType())
+          {
+            case CEvaluationNode::MainType::NUMBER:
+            case CEvaluationNode::MainType::CONSTANT:
+            case CEvaluationNode::MainType::OBJECT:
+            case CEvaluationNode::MainType::UNIT:
+              break;
 
-          default:
-            CalculationSequence.push_back(*itNode);
-            break;
-        }
-    }
+            default:
+              CalculationSequence.push_back(*itNode);
+              break;
+          }
+      }
 
   mCalculationSequence.resize(CalculationSequence.size());
   CEvaluationNode ** ppIt = mCalculationSequence.begin();
