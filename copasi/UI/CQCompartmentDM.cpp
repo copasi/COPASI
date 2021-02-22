@@ -435,6 +435,9 @@ bool CQCompartmentDM::clear()
 {
   QModelIndexList rows;
 
+  while (canFetchMore(QModelIndex()))
+    fetchMore(QModelIndex());
+
   for (int i = 0; i < (int) mpCompartments->size(); i++)
     {
       rows.append(index(i, 0));

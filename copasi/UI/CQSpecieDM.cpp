@@ -611,6 +611,9 @@ bool CQSpecieDM::clear()
 {
   QModelIndexList rows;
 
+  while (canFetchMore(QModelIndex()))
+    fetchMore(QModelIndex());
+
   for (int i = 0; i < (int) mpMetabolites->size(); i++)
     {
       rows.append(index(i, 0));

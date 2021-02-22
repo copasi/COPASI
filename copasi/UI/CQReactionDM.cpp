@@ -384,6 +384,9 @@ bool CQReactionDM::clear()
 {
   QModelIndexList rows;
 
+  while (canFetchMore(QModelIndex()))
+    fetchMore(QModelIndex());
+
   for (int i = 0; i < (int) mpReactions->size(); i++)
     {
       rows.append(index(i, 0));

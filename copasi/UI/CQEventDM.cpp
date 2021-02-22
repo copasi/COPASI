@@ -361,6 +361,9 @@ bool CQEventDM::clear()
 {
   QModelIndexList rows;
 
+  while (canFetchMore(QModelIndex()))
+    fetchMore(QModelIndex());
+
   for (int i = 0; i < (int) mpEvents->size(); i++)
     {
       rows.append(index(i, 0));
