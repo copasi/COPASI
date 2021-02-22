@@ -53,7 +53,7 @@ void CQLayoutsDM::resetCacheProtected()
 
 bool CQLayoutsDM::clear()
 {
-  return removeRows(0, rowCount());
+  return removeRows(0, mpListOfLayouts->size(), QModelIndex());
 }
 
 int CQLayoutsDM::columnCount(const QModelIndex & /* parent */) const
@@ -207,7 +207,7 @@ bool CQLayoutsDM::removeRows(int position, int rows, const QModelIndex & parent)
 
   if (mpListOfLayouts == NULL) return false;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
   std::vector< CLayout * > DeletedLayouts;
   DeletedLayouts.resize(rows);
   std::vector< CLayout * >::iterator itDeletedLayout;
@@ -221,7 +221,9 @@ bool CQLayoutsDM::removeRows(int position, int rows, const QModelIndex & parent)
 
   for (itDeletedLayout = DeletedLayouts.begin(); itDeletedLayout != endDeletedLayout; ++itDeletedLayout)
     {
-      --mFetched;
+      if (mFetched > 0)
+        --mFetched;
+
       std::string cn = (*itDeletedLayout)->getCN();
       pdelete(*itDeletedLayout);
       emit notifyGUI(ListViews::ObjectType::LAYOUT, ListViews::DELETE, cn);

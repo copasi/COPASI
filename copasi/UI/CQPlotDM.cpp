@@ -257,14 +257,17 @@ bool CQPlotDM::removeRows(int position, int rows, const QModelIndex & parent)
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   for (int row = 0; row < rows; ++row)
     {
       CPlotSpecification* pPS =
         &mpDataModel->getPlotDefinitionList()->operator[](position);
       std::string deletedKey = pPS->CCopasiParameter::getCN();
-      --mFetched;
+
+      if (mFetched > 0)
+        --mFetched;
+
       mpDataModel->getPlotDefinitionList()->CDataVector< CPlotSpecification >::remove(position);
       emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::DELETE, deletedKey);
     }

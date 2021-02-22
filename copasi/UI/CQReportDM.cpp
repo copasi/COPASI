@@ -204,7 +204,7 @@ bool CQReportDM::removeRows(int position, int rows, const QModelIndex & parent)
   if (pReportList == NULL)
     return false;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   for (int row = 0; row < rows; ++row)
     {
@@ -229,7 +229,9 @@ bool CQReportDM::removeRows(int position, int rows, const QModelIndex & parent)
             }
         }
 
-      --mFetched;
+      if (mFetched > 0)
+        --mFetched;
+
       std::string deletedKey = pReport->getCN();
       pReportList->remove(pReport);
       emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::DELETE, deletedKey);

@@ -209,7 +209,7 @@ bool CQReferenceDM::removeRows(int position, int rows, const QModelIndex & paren
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   std::vector< const CReference * > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -229,7 +229,9 @@ bool CQReferenceDM::removeRows(int position, int rows, const QModelIndex & paren
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
       ListViews::addUndoMetaData(this, UndoData);
-      --mFetched;
+
+      if (mFetched > 0)
+        --mFetched;
 
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }

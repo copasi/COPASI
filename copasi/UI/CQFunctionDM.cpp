@@ -289,7 +289,7 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex & parent
         }
     }
 
-  beginRemoveRows(parent, position, position + row - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   for (itDeletedKey = DeletedKeys.begin(), itDeletedCN = DeletedCNs.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++itDeletedCN, ++row)
     {

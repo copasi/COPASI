@@ -267,7 +267,7 @@ bool CQEventDM::removeRows(int position, int rows, const QModelIndex & parent)
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   std::vector< const CEvent * > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -287,7 +287,9 @@ bool CQEventDM::removeRows(int position, int rows, const QModelIndex & parent)
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
       ListViews::addUndoMetaData(this, UndoData);
-      --mFetched;
+
+      if (mFetched > 0)
+        --mFetched;
 
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
@@ -359,15 +361,5 @@ void CQEventDM::insertNewRows(int position, int rows, int column, const QVariant
 
 bool CQEventDM::clear()
 {
-  QModelIndexList rows;
-
-  while (canFetchMore(QModelIndex()))
-    fetchMore(QModelIndex());
-
-  for (int i = 0; i < (int) mpEvents->size(); i++)
-    {
-      rows.append(index(i, 0));
-    }
-
-  return removeRows(rows);
+  return removeRows(0, mpEvents->size(), QModelIndex());
 }

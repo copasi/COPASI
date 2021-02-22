@@ -331,7 +331,7 @@ bool CQCompartmentDM::removeRows(int position, int rows, const QModelIndex & par
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   std::vector< const CCompartment * > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -351,7 +351,9 @@ bool CQCompartmentDM::removeRows(int position, int rows, const QModelIndex & par
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
       ListViews::addUndoMetaData(this, UndoData);
-      --mFetched;
+
+      if (mFetched > 0)
+        --mFetched;
 
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
@@ -433,15 +435,5 @@ void CQCompartmentDM::insertNewRows(int position, int rows, int column, const QV
 
 bool CQCompartmentDM::clear()
 {
-  QModelIndexList rows;
-
-  while (canFetchMore(QModelIndex()))
-    fetchMore(QModelIndex());
-
-  for (int i = 0; i < (int) mpCompartments->size(); i++)
-    {
-      rows.append(index(i, 0));
-    }
-
-  return removeRows(rows);
+  return removeRows(0, mpCompartments->size(), QModelIndex());
 }

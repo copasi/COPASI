@@ -487,7 +487,7 @@ bool CQSpecieDM::removeRows(int position, int rows, const QModelIndex & parent)
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   std::vector< const CMetab * > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -507,7 +507,9 @@ bool CQSpecieDM::removeRows(int position, int rows, const QModelIndex & parent)
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
       ListViews::addUndoMetaData(this, UndoData);
-      --mFetched;
+
+      if (mFetched > 0)
+        --mFetched;
 
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
@@ -609,15 +611,5 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex & parent)
 
 bool CQSpecieDM::clear()
 {
-  QModelIndexList rows;
-
-  while (canFetchMore(QModelIndex()))
-    fetchMore(QModelIndex());
-
-  for (int i = 0; i < (int) mpMetabolites->size(); i++)
-    {
-      rows.append(index(i, 0));
-    }
-
-  return removeRows(rows);
+  return removeRows(0, mpMetabolites->size(), QModelIndex());
 }

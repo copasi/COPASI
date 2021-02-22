@@ -208,7 +208,7 @@ bool CQBiologicalDescriptionDM::removeRows(int position, int rows, const QModelI
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   std::vector< const CBiologicalDescription * > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -229,7 +229,9 @@ bool CQBiologicalDescriptionDM::removeRows(int position, int rows, const QModelI
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
       ListViews::addUndoMetaData(this, UndoData);
 
-      --mFetched;
+      if (mFetched > 0)
+        --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 

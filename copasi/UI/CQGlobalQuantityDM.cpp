@@ -328,7 +328,7 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex & 
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   std::vector< const CModelValue * > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -348,7 +348,9 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex & 
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
       ListViews::addUndoMetaData(this, UndoData);
-      --mFetched;
+
+      if (mFetched > 0)
+        --mFetched;
 
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
@@ -430,15 +432,5 @@ void CQGlobalQuantityDM::insertNewRows(int position, int rows, int column, const
 
 bool CQGlobalQuantityDM::clear()
 {
-  QModelIndexList rows;
-
-  while (canFetchMore(QModelIndex()))
-    fetchMore(QModelIndex());
-
-  for (int i = 0; i < (int) mpGlobalQuantities->size(); i++)
-    {
-      rows.append(index(i, 0));
-    }
-
-  return removeRows(rows);
+  return removeRows(0, mpGlobalQuantities->size(), QModelIndex());
 }

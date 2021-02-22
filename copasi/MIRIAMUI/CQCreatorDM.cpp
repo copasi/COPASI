@@ -214,7 +214,7 @@ bool CQCreatorDM::removeRows(int position, int rows, const QModelIndex & parent)
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   std::vector< const CCreator * > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -235,7 +235,9 @@ bool CQCreatorDM::removeRows(int position, int rows, const QModelIndex & parent)
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
       ListViews::addUndoMetaData(this, UndoData);
 
-      --mFetched;
+      if (mFetched > 0)
+        --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 

@@ -264,7 +264,7 @@ bool CQUnitDM::removeRows(int position, int rows, const QModelIndex & parent)
       *itDeletedCN = itRow->getCN();
     }
 
-  beginRemoveRows(parent, position, position + row - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   for (itDeletedKey = DeletedKeys.begin(), row = 0, itDeletedCN = DeletedCNs.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itDeletedCN, ++row)
     {
@@ -274,7 +274,9 @@ bool CQUnitDM::removeRows(int position, int rows, const QModelIndex & parent)
 
           if (pUnitDef != NULL)
             {
-              --mFetched;
+              if (mFetched > 0)
+                --mFetched;
+
               delete pUnitDef;
             }
 
