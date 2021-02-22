@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -307,7 +307,7 @@ bool CQUnitDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) &&
+      if (i->isValid() && !isDefaultRow(*i) &&
           (pUnitDef = &CRootContainer::getUnitList()->operator[](i->row())) != NULL &&
           pModel->getUnitSymbolUsage(pUnitDef->getSymbol()).empty() &&
           !pUnitDef->isReadOnly())//Don't delete built-ins or used units

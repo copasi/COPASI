@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -244,7 +244,8 @@ bool CQLayoutsDM::removeRows(QModelIndexList rows, const QModelIndex & /* index 
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      Layouts.append(&mpListOfLayouts->operator[](i->row()));
+      if (i->isValid())
+        Layouts.append(&mpListOfLayouts->operator[](i->row()));
     }
 
   QList< CLayout * >::const_iterator j;

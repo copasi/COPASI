@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -315,7 +315,7 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex& index)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) &&
+      if (i->isValid() && !isDefaultRow(*i) &&
           &mpReactions->operator[](i->row()) != NULL)
         Reactions.append(&mpReactions->operator[](i->row()));
     }
