@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -257,14 +257,17 @@ bool CQPlotDM::removeRows(int position, int rows, const QModelIndex & parent)
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   for (int row = 0; row < rows; ++row)
     {
       CPlotSpecification* pPS =
         &mpDataModel->getPlotDefinitionList()->operator[](position);
       std::string deletedKey = pPS->CCopasiParameter::getCN();
-      --mFetched;
+
+      if (mFetched > 0)
+        --mFetched;
+
       mpDataModel->getPlotDefinitionList()->CDataVector< CPlotSpecification >::remove(position);
       emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::DELETE, deletedKey);
     }
@@ -292,7 +295,7 @@ bool CQPlotDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && &mpDataModel->getPlotDefinitionList()->operator[](i->row()))
+      if (i->isValid() && !isDefaultRow(*i) && &mpDataModel->getPlotDefinitionList()->operator[](i->row()))
         {
           pPS = &mpDataModel->getPlotDefinitionList()->operator[](i->row());
           pPSs.append(pPS);

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -264,7 +264,7 @@ bool CQUnitDM::removeRows(int position, int rows, const QModelIndex & parent)
       *itDeletedCN = itRow->getCN();
     }
 
-  beginRemoveRows(parent, position, position + row - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   for (itDeletedKey = DeletedKeys.begin(), row = 0, itDeletedCN = DeletedCNs.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itDeletedCN, ++row)
     {
@@ -274,7 +274,9 @@ bool CQUnitDM::removeRows(int position, int rows, const QModelIndex & parent)
 
           if (pUnitDef != NULL)
             {
-              --mFetched;
+              if (mFetched > 0)
+                --mFetched;
+
               delete pUnitDef;
             }
 
@@ -307,7 +309,7 @@ bool CQUnitDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) &&
+      if (i->isValid() && !isDefaultRow(*i) &&
           (pUnitDef = &CRootContainer::getUnitList()->operator[](i->row())) != NULL &&
           pModel->getUnitSymbolUsage(pUnitDef->getSymbol()).empty() &&
           !pUnitDef->isReadOnly())//Don't delete built-ins or used units

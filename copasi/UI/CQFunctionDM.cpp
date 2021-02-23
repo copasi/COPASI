@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -289,7 +289,7 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex & parent
         }
     }
 
-  beginRemoveRows(parent, position, position + row - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   for (itDeletedKey = DeletedKeys.begin(), itDeletedCN = DeletedCNs.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++itDeletedCN, ++row)
     {
@@ -328,7 +328,7 @@ bool CQFunctionDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && i->row() < (int) CRootContainer::getFunctionList()->loadedFunctions().size()
+      if (i->isValid() && !isDefaultRow(*i) && i->row() < (int) CRootContainer::getFunctionList()->loadedFunctions().size()
           && (pFunction = &CRootContainer::getFunctionList()->loadedFunctions()[i->row()]) != NULL &&
           !pFunction->isReadOnly())
         pFunctions.append(&CRootContainer::getFunctionList()->loadedFunctions()[i->row()]);

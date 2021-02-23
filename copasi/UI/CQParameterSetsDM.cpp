@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,7 +47,7 @@ int CQParameterSetsDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 
 bool CQParameterSetsDM::clear()
 {
-  return removeRows(0, rowCount());
+  return removeRows(0, mpListOfParameterSets->size(), QModelIndex());
 }
 
 void CQParameterSetsDM::resetCacheProtected()
@@ -95,7 +95,6 @@ QVariant CQParameterSetsDM::data(const QModelIndex &index, int role) const
 
   if (mpListOfParameterSets->size() <= index.row())
     return QVariant();
-
 
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
@@ -225,7 +224,7 @@ bool CQParameterSetsDM::removeRows(int position, int rows, const QModelIndex & p
       ToBeDeleted.push_back(&*it);
     }
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   std::vector< const CModelParameterSet * >::iterator itDeleted = ToBeDeleted.begin();
   std::vector< const CModelParameterSet * >::iterator endDeleted = ToBeDeleted.end();
@@ -234,7 +233,9 @@ bool CQParameterSetsDM::removeRows(int position, int rows, const QModelIndex & p
     {
       CUndoData UndoData(CUndoData::Type::REMOVE, (*itDeleted)->toData());
       ListViews::addUndoMetaData(this, UndoData);
-      --mFetched;
+
+      if (mFetched > 0)
+        --mFetched;
 
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
@@ -256,7 +257,8 @@ bool CQParameterSetsDM::removeRows(QModelIndexList rows, const QModelIndex & /* 
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      ModelParameterSets.append(&mpListOfParameterSets->operator[](i->row()));
+      if (i->isValid())
+        ModelParameterSets.append(&mpListOfParameterSets->operator[](i->row()));
     }
 
   QList< CModelParameterSet * >::const_iterator j;
