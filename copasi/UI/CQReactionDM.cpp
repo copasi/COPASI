@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -273,7 +273,7 @@ bool CQReactionDM::removeRows(int position, int rows, const QModelIndex & parent
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   std::vector< const CReaction * > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -293,7 +293,9 @@ bool CQReactionDM::removeRows(int position, int rows, const QModelIndex & parent
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
       ListViews::addUndoMetaData(this, UndoData);
-      --mFetched;
+
+      if (mFetched > 0)
+        --mFetched;
 
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
@@ -315,7 +317,7 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex& index)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) &&
+      if (i->isValid() && !isDefaultRow(*i) &&
           &mpReactions->operator[](i->row()) != NULL)
         Reactions.append(&mpReactions->operator[](i->row()));
     }
@@ -382,12 +384,5 @@ void CQReactionDM::insertNewRows(int position, int rows, int column, const QVari
 
 bool CQReactionDM::clear()
 {
-  QModelIndexList rows;
-
-  for (int i = 0; i < (int) mpReactions->size(); i++)
-    {
-      rows.append(index(i, 0));
-    }
-
-  return removeRows(rows);
+  return removeRows(0, mpReactions->size(), QModelIndex());
 }

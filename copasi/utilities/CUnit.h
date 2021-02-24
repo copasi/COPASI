@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -143,6 +143,8 @@ public:
   void buildExpression();
   std::vector< SymbolComponent > getSymbolComponents() const;
   bool isUnitType(UnitType type) const;
+
+  void setDimensionLess(double multiplier, double scale, double exponent);
 
 private:
   std::string mExpression;

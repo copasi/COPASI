@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -37,7 +42,7 @@ class Test_CDataModel(unittest.TestCase):
   def test_saveModel(self):
     self.assert_(self.datamodel.loadModel(CPS_FILE),"Error. Could not load model.")
     TMPFILE="calcium_juergen2.cps"
-    self.assert_(self.datamodel.saveModel(TMPFILE,1),"Error. Could not save model.")
+    self.assert_(self.datamodel.saveModel(TMPFILE,True),"Error. Could not save model.")
     self.assert_(self.datamodel.loadModel(TMPFILE),"Error. Could not reload saved model.")
     self.CHECK_CALCIUM_JUERGEN()
 
@@ -59,7 +64,7 @@ class Test_CDataModel(unittest.TestCase):
   def test_exportSBMLToString(self):
     self.assert_(self.datamodel.loadModel(CPS_FILE))
     modelString=self.datamodel.exportSBMLToString()
-    self.assert_(type(modelString)==StringType)
+    self.assert_(type(modelString)==str)
     self.assert_(modelString!="")
 
   def test_exportSBML(self):
@@ -97,13 +102,13 @@ class Test_CDataModel(unittest.TestCase):
   def test_getFileName(self):
     self.datamodel.loadModel(CPS_FILE)
     fileName=self.datamodel.getFileName()
-    self.assert_(type(fileName)==StringType)
+    self.assert_(type(fileName)==str)
     self.assert_(fileName.endswith(CPS_FILE))
 
   def test_getSBMLFileName(self):
     self.datamodel.importSBML(SBML_FILE)
     fileName=self.datamodel.getSBMLFileName()
-    self.assert_(type(fileName)==StringType)
+    self.assert_(type(fileName)==str)
     self.assert_(fileName.endswith(SBML_FILE))
 
   def CHECK_CALCIUM_JUERGEN(self):

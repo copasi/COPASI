@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -254,35 +254,35 @@ void CModelParameterSet::add(CModelParameter * pModelParameter)
 
   if (cn == CDataString("Initial Time").getCN())
     {
-      CModelParameterGroup::remove(mpTimes);
+      pdelete(mpTimes);
       mpTimes = static_cast<CModelParameterGroup *>(pModelParameter);
       return;
     }
 
   if (cn == CDataString("Initial Compartment Sizes").getCN())
     {
-      CModelParameterGroup::remove(mpCompartments);
+      pdelete(mpCompartments);
       mpCompartments = static_cast<CModelParameterGroup *>(pModelParameter);
       return;
     }
 
   if (cn == CDataString("Initial Species Values").getCN())
     {
-      CModelParameterGroup::remove(mpSpecies);
+      pdelete(mpSpecies);
       mpSpecies = static_cast<CModelParameterGroup *>(pModelParameter);
       return;
     }
 
   if (cn == CDataString("Initial Global Quantities").getCN())
     {
-      CModelParameterGroup::remove(mpModelValues);
+      pdelete(mpModelValues);
       mpModelValues = static_cast<CModelParameterGroup *>(pModelParameter);
       return;
     }
 
   if (cn == CDataString("Kinetic Parameters").getCN())
     {
-      CModelParameterGroup::remove(mpReactions);
+      pdelete(mpReactions);
       mpReactions = static_cast<CModelParameterGroup *>(pModelParameter);
       return;
     }

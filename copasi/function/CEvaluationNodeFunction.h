@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -159,8 +159,8 @@ public:
    * @return CValidatedUnit unit
    */
   virtual CValidatedUnit setUnit(const CMathContainer & container,
-                                 const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
-                                 std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const;
+                                 const std::map < CEvaluationNode *, CValidatedUnit > & currentUnits,
+                                 std::map < CEvaluationNode *, CValidatedUnit > & targetUnits) const;
 
   /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children
@@ -197,7 +197,6 @@ public:
   CEvaluationNode * getLeft();
   const CEvaluationNode * getLeft() const;
 
-private:
   std::string handleSign(const std::string & str) const;
 
   std::string handleNot(const std::string & str) const;
@@ -270,34 +269,34 @@ private:
   static inline C_FLOAT64 sign(C_FLOAT64 value)
   {return (value < 0.0) ? -1.0 : (value > 0.0) ? 1.0 : 0.0;}
 
-  static C_FLOAT64 runiform(const C_FLOAT64 & lowerBound,
-                            const C_FLOAT64 & upperBound);
+  static C_FLOAT64 runiform(C_FLOAT64 lowerBound,
+                            C_FLOAT64 upperBound);
 
-  static C_FLOAT64 rnormal(const C_FLOAT64 & mean,
-                           const C_FLOAT64 & sd);
+  static C_FLOAT64 rnormal(C_FLOAT64 mean,
+                           C_FLOAT64 sd);
 
-  static C_FLOAT64 rgamma(const C_FLOAT64 & shape,
-                          const C_FLOAT64 & scale);
+  static C_FLOAT64 rgamma(C_FLOAT64 shape,
+                          C_FLOAT64 scale);
 
-  static C_FLOAT64 rpoisson(const C_FLOAT64 mu);
+  static C_FLOAT64 rpoisson(C_FLOAT64 mu);
 
-  static C_FLOAT64 max(const C_FLOAT64 & x1,
-                       const C_FLOAT64 & x2);
+  static C_FLOAT64 max(C_FLOAT64 x1,
+                       C_FLOAT64 x2);
 
-  static C_FLOAT64 min(const C_FLOAT64 & x1,
-                       const C_FLOAT64 & x2);
+  static C_FLOAT64 min(C_FLOAT64 x1,
+                       C_FLOAT64 x2);
 
   // Attributes
 private:
   C_FLOAT64(*mpFunction)(C_FLOAT64 arg1);
 
-  C_FLOAT64(*mpFunction2)(const C_FLOAT64 & arg1,
-                          const C_FLOAT64 & arg2);
+  C_FLOAT64(*mpFunction2)(C_FLOAT64 arg1,
+                          C_FLOAT64 arg2);
 
-  C_FLOAT64(*mpFunction4)(const C_FLOAT64 & arg1,
-                          const C_FLOAT64 & arg2,
-                          const C_FLOAT64 & arg3,
-                          const C_FLOAT64 & arg4);
+  C_FLOAT64(*mpFunction4)(C_FLOAT64 arg1,
+                          C_FLOAT64 arg2,
+                          C_FLOAT64 arg3,
+                          C_FLOAT64 arg4);
 
   CEvaluationNode * mpArgNode1;
   CEvaluationNode * mpArgNode2;

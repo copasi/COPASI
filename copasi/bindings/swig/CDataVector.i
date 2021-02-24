@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -123,6 +123,18 @@
       return self->add(DISOWN,true);
   }
 
+  virtual bool removeObject(CDataObject * pObject)
+  {
+    try 
+    {
+      return self->remove(pObject);
+    }
+    catch(...)
+    {
+      return false;
+    }
+  }
+
 #ifdef SWIGPYTHON
  size_t __len__() const
  {
@@ -143,14 +155,40 @@
   virtual CDataObject* getByName(const std::string& name)
   {
   try
-  {
+    {
       return (CDataObject*)&((*self)[name]);
     }
-      catch(...)
-      {
-  return NULL;
-      }
+    catch(...)
+    {
+      return NULL;
+    }
   }
+
+  virtual bool removeByName(const std::string& name)
+  {
+    try
+    {
+      self->remove(name);
+      return true;
+    }
+    catch(...)
+    {
+      return false;
+    }
+  }
+
+  virtual size_t getIndexByName(const std::string &name) const
+  {
+    try
+    {
+      return self->getIndex(name);
+    }
+    catch(...)
+    {
+      return C_INVALID_INDEX;
+    }
+  }
+  
 }
 
 %rename(removeObject) CDataVector<CEvent>::remove(CDataObject* pObject);

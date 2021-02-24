@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -209,7 +209,7 @@ bool CQReferenceDM::removeRows(int position, int rows, const QModelIndex & paren
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   std::vector< const CReference * > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -229,7 +229,9 @@ bool CQReferenceDM::removeRows(int position, int rows, const QModelIndex & paren
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
       ListViews::addUndoMetaData(this, UndoData);
-      --mFetched;
+
+      if (mFetched > 0)
+        --mFetched;
 
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
@@ -251,7 +253,7 @@ bool CQReferenceDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && &mpMIRIAMInfo->getReferences()[i->row()])
+      if (i->isValid() && !isDefaultRow(*i) && &mpMIRIAMInfo->getReferences()[i->row()])
         pReferences.append(&mpMIRIAMInfo->getReferences()[i->row()]);
     }
 

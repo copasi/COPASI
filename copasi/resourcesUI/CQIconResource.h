@@ -18,6 +18,9 @@
 
 #include <QtCore/QVector>
 #include <QIcon>
+#include <QStyle>
+
+#include "copasi/core/CEnumAnnotation.h"
 
 class CQIconResource
 {
@@ -79,21 +82,25 @@ public:
     viewmagPlus,
     viewmag1,
     viewmagfit,
-    reset,
+    _reset,
     animation,
     // This is the default icon which is empty
     unknown,
     // This must be the last entry to automatically determine the size!
-    _size
+    __SIZE
   };
 
   static const QIcon & icon(const IconID & id);
 
 private:
   static void init();
+  static void load(IconID iconID, QIcon::Mode mode = QIcon::Normal, QIcon::State state = QIcon::Off);
 
   static QVector< QIcon > Icons;
   static bool needInit;
+  static const CEnumAnnotation< std::string, IconID > BackupName;
+  static const CEnumAnnotation< std::string, IconID > ThemeName;
+  static const CEnumAnnotation< QStyle::StandardPixmap, IconID > StandardIcon;
 };
 
 #endif // COPASI_CQIconResource

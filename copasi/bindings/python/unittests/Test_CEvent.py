@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -26,9 +31,12 @@ class Test_CEvent(unittest.TestCase):
     self.assert_(self.event1 != None)
     self.assert_(self.event1.__class__ == COPASI.CEvent)
 
-  def test_Order(self):
-    self.event1.setOrder(25);
-    self.assert_(self.event1.getOrder()==25)
+  def test_Priority(self):
+    expression = "25"
+    result = self.event1.setPriorityExpression(expression)
+    self.assert_(result == True)
+    expression2 = self.event1.getPriorityExpression()
+    self.assert_(expression == expression2);
 
   def test_DelayAssignment(self):
     self.event1.setDelayAssignment(True)
@@ -54,8 +62,8 @@ class Test_CEvent(unittest.TestCase):
     assignment = self.event1.createAssignment()
     self.assert_(assignment.__class__ == COPASI.CEventAssignment)
     self.assert_(self.event1.getAssignments().size() == 1)
-    assignment.setTargetKey(self.metab.getKey())
-    self.assert_(assignment.getTargetKey() == self.metab.getKey())
+    assignment.setTargetCN(self.metab.getCN())
+    self.assertEquals(assignment.getTargetCN(),self.metab.getCN().getString())
     expression = "5.0+12.3"
     assignment.setExpression(expression)
     expression2 = assignment.getExpression()
@@ -65,7 +73,7 @@ class Test_CEvent(unittest.TestCase):
 def suite():
   tests=[
           'test_Base'
-         ,'test_Order'
+         ,'test_Priority'
          ,'test_DelayAssignment'
          ,'test_TriggerExpression'
          ,'test_DelayExpression'

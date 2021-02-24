@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -208,7 +208,7 @@ bool CQBiologicalDescriptionDM::removeRows(int position, int rows, const QModelI
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   std::vector< const CBiologicalDescription * > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -229,7 +229,9 @@ bool CQBiologicalDescriptionDM::removeRows(int position, int rows, const QModelI
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
       ListViews::addUndoMetaData(this, UndoData);
 
-      --mFetched;
+      if (mFetched > 0)
+        --mFetched;
+
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
@@ -250,7 +252,7 @@ bool CQBiologicalDescriptionDM::removeRows(QModelIndexList rows, const QModelInd
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && &mpMIRIAMInfo->getBiologicalDescriptions()[i->row()])
+      if (i->isValid() && !isDefaultRow(*i) && &mpMIRIAMInfo->getBiologicalDescriptions()[i->row()])
         pBiologicalDescriptions.append(&mpMIRIAMInfo->getBiologicalDescriptions()[i->row()]);
     }
 

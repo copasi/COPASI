@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -479,8 +479,6 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
   if (reaction == NULL)
     return;
 
-  mIgnoreUpdates = true;
-
   if (mpRi->getUsage(Index) == CFunctionParameter::Role::PARAMETER)
     {
       if (sub != 0) return;
@@ -518,8 +516,6 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
           mpEditReactionScheme->setText(FROM_UTF8(mpRi->getChemEqString()));
         }
     }
-
-  mIgnoreUpdates = false;
 
   // update the widget
   int rrr = mpParameterMapping->currentRow();

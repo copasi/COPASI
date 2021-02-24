@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -33,11 +38,6 @@ class Test_CCopasiTask(unittest.TestCase):
     t=self.task.getType()
     self.assert_(type(t)==IntType)
 
-  def test_setType(self):
-    task=COPASI.CCopasiTask("TestTask")
-    task.setType(COPASI.CCopasiTask.scan)
-    self.assert_(task.getType()==COPASI.CCopasiTask.scan)
-
   def test_getKey(self):
     key=self.task.getKey()
     self.assert_(type(key)==StringType)
@@ -67,11 +67,9 @@ class Test_CCopasiTask(unittest.TestCase):
     self.assert_(type(v)==BooleanType)
 
   def test_getValidMethods(self):
-    task=COPASI.CCopasiTask();
-    self.assert_(task!=None)
-    validMethods=task.getValidMethods();
+    validMethods=self.task.getValidMethods();
     self.assert_(type(validMethods)==TupleType);
-    self.assert_(len(validMethods)==0)
+    self.assert_(len(validMethods)!=0)
 
   def test_getReport(self):
     report=self.task.getReport()
@@ -82,7 +80,6 @@ class Test_CCopasiTask(unittest.TestCase):
 def suite():
   tests=[
           'test_getType'
-         ,'test_setType'
          ,'test_getKey'
          ,'test_isScheduled'
          ,'test_setScheduled'

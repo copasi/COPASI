@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,6 +26,7 @@
 
 class CMathExpression;
 class CMathContainer;
+class CJitCompiler;
 class CExpression;
 class CDataObject;
 class CMetab;
@@ -183,10 +189,14 @@ public:
   /**
    * Compile
    * @param CMathContainer & container
+   * @param CJitCompiler & jitCompiler
    * @return bool §success
    */
+#ifdef USE_JIT
+  bool compile(CMathContainer & container, CJitCompiler & jitCompiler);
+#else
   bool compile(CMathContainer & container);
-
+#endif
   /**
    * Retrieve the value type
    * @return const CMath::ValueType & valueType

@@ -167,6 +167,26 @@
         return success;
     }
 
+    bool initializeRawWithOutputHandler(int outputFlags, COutputHandler *pHandler)
+    {
+        bool success;
+
+        // Initialize the task
+        try
+        {
+          success = self->initialize((CCopasiTask::OutputFlag)outputFlags, pHandler, NULL);
+        }
+        
+        catch (CCopasiException &)
+        {
+          success = false;
+        }
+        
+        catch (...) {}
+
+        return success;
+    }
+
     bool initialize(int outputFlags)
     {
          bool success = true;

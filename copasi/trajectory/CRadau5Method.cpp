@@ -5,14 +5,23 @@
 
 #include "copasi/copasi.h"
 
-#include "CRadau5Method.h"
-#include "CTrajectoryProblem.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
 
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/math/CMathContainer.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CState.h"
+
+#include "copasi/trajectory/CRadau5Method.h"
+
+#ifdef min
+#  undef min
+#endif
+
+#ifdef max
+#  undef max
+#endif
 
 // Uncomment this line below to get numeric debug print out.
 // #define DEBUG_NUMERICS 1

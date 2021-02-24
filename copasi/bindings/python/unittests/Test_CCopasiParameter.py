@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -30,7 +35,7 @@ class Test_CCopasiParameter(unittest.TestCase):
     self.param=self.datamodel.getModel().getReaction(0).getParameters().getParameter(0)
 
   def test_setUp(self):
-    self.assert_(self.param.getType()==COPASI.CCopasiParameter.DOUBLE)
+    self.assert_(self.param.getType()==COPASI.CCopasiParameter.Type_DOUBLE)
 
   def test_getKey(self):
     key=self.param.getKey()
@@ -49,7 +54,7 @@ class Test_CCopasiParameter(unittest.TestCase):
   def test_getType(self):
     t=self.param.getType()
     self.assert_(type(t)==IntType)
-    self.assert_(t==COPASI.CCopasiParameter.DOUBLE)
+    self.assert_(t==COPASI.CCopasiParameter.Type_DOUBLE)
 
   def test_isValidValue(self):
     value=1.5

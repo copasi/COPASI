@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -675,8 +675,13 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
               std::ostringstream sss;
               sss << "Exponent " << i + 1;
 
-              pItem = new QTreeWidgetItem(this->mpResultLyapunovSubtree, QStringList(FROM_UTF8(sss.str())));
-              treeItems[pItem] = (CDataObject *) task->getObject("Reference=" + sss.str());
+              const CDataObject * pObject = static_cast< const CDataObject * >(task->getObject("Reference=" + sss.str()));
+
+              if (filter(classes, pObject))
+                {
+                  pItem = new QTreeWidgetItem(this->mpResultLyapunovSubtree, QStringList(FROM_UTF8(sss.str())));
+                  treeItems[pItem] = pObject;
+                }
             }
         }
     }

@@ -119,8 +119,8 @@
 #endif
 
 #ifdef COPASI_Versioning
-#include "../versioningUI/CBrowseModelVersionDialog.h"
-#include "../versioningUI/CCreateModelVersionDialog.h"
+#include "copasi/versioningUI/CBrowseModelVersionDialog.h"
+#include "copasi/versioningUI/CCreateModelVersionDialog.h"
 #endif
 
 #ifdef COPASI_Provenance
@@ -129,8 +129,12 @@
 #include "CEntityProvenanceDialog.h"
 #endif
 
-#include <copasi/UI/CQDependencyDialog.h>
+#include "copasi/UI/CQDependencyDialog.h"
 #include "qtUtilities.h"
+
+#ifdef USE_JIT
+#include "copasi/math/CJitCompiler.h"
+#endif 
 
 // static
 CopasiUI3Window *CopasiUI3Window::pMainWindow = NULL;
@@ -1521,7 +1525,14 @@ void CopasiUI3Window::about()
     .arg(FROM_UTF8(CVersion::VERSION.getVersion()))
     .arg(LIBSBML_DOTTED_VERSION)
     .arg(QWT_VERSION_STR)
-    .arg(QT_VERSION_STR);
+    .arg(QT_VERSION_STR)
+    .arg(
+#ifdef USE_JIT
+      CJitCompiler::JitEnabled() ? "enabled" : "disabled"
+#else
+      "disabled"
+#endif
+    );
   AboutDialog *aboutDialog = new AboutDialog(this, text, 76, 30);
   aboutDialog->setWindowTitle(FixedTitle);
   aboutDialog->exec();

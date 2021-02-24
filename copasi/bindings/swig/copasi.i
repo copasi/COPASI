@@ -201,6 +201,7 @@ size_t INVALID_INDEX();
 %include "COutputHandler.i"
 %include "CReport.i"
 %include "CCopasiTask.i"
+%include "CDataHandler.i"
 
 %ignore CPlotItem::getChannels() const;
 %ignore CPlotItem::XMLRecordingActivity;
@@ -347,6 +348,8 @@ size_t INVALID_INDEX();
 %include <copasi/function/CFunctionAnalyzer.h>
 %include <copasi/model/CModelAnalyzer.h>
 
+%include <copasi/commandline/COptions.h>
+
 %{
 
 
@@ -393,7 +396,11 @@ size_t INVALID_INDEX();
 #include <copasi/function/CFunctionAnalyzer.h>
 #include <copasi/model/CModelAnalyzer.h>
 
+
+#include <copasi/commandline/COptions.h>
+
 %}
+
 
 %template(CReactionResultStdVector) std::vector< CReactionResult >;
 typedef std::vector< CReactionResult > CReactionResultStdVector;

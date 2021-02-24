@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,6 +49,11 @@ class CHybridNextReactionLSODAMethod : public CHybridMethod
   public:
     LSODA(const CHybridNextReactionLSODAMethod * pParent);
     LSODA(const LSODA & src, const CHybridNextReactionLSODAMethod * pParent);
+
+    C_FLOAT64 * getTime()
+    {
+      return mpContainerStateTime;
+    }
 
   protected:
     virtual void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);

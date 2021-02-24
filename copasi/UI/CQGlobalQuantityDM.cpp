@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -328,7 +328,7 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex & 
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   std::vector< const CModelValue * > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -348,7 +348,9 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex & 
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
       ListViews::addUndoMetaData(this, UndoData);
-      --mFetched;
+
+      if (mFetched > 0)
+        --mFetched;
 
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
@@ -369,7 +371,7 @@ bool CQGlobalQuantityDM::removeRows(QModelIndexList rows, const QModelIndex& ind
   QModelIndexList::const_iterator i;
 
   for (i = rows.begin(); i != rows.end(); ++i)
-    if (!isDefaultRow(*i) &&
+    if (i->isValid() && !isDefaultRow(*i) &&
         &mpGlobalQuantities->operator[](i->row()) != NULL)
       {
         ModelValues.append(&mpGlobalQuantities->operator[](i->row()));
@@ -430,12 +432,5 @@ void CQGlobalQuantityDM::insertNewRows(int position, int rows, int column, const
 
 bool CQGlobalQuantityDM::clear()
 {
-  QModelIndexList rows;
-
-  for (int i = 0; i < (int) mpGlobalQuantities->size(); i++)
-    {
-      rows.append(index(i, 0));
-    }
-
-  return removeRows(rows);
+  return removeRows(0, mpGlobalQuantities->size(), QModelIndex());
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -331,7 +331,7 @@ bool CQCompartmentDM::removeRows(int position, int rows, const QModelIndex & par
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
   std::vector< const CCompartment * > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -351,7 +351,9 @@ bool CQCompartmentDM::removeRows(int position, int rows, const QModelIndex & par
       CUndoData UndoData;
       (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
       ListViews::addUndoMetaData(this, UndoData);
-      --mFetched;
+
+      if (mFetched > 0)
+        --mFetched;
 
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
@@ -372,7 +374,7 @@ bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex& index)
   QModelIndexList::const_iterator i;
 
   for (i = rows.begin(); i != rows.end(); ++i)
-    if (!isDefaultRow(*i) &&
+    if (i->isValid() && !isDefaultRow(*i) &&
         &mpCompartments->operator[](i->row()) != NULL)
       {
         Compartments.append(&mpCompartments->operator[](i->row()));
@@ -433,12 +435,5 @@ void CQCompartmentDM::insertNewRows(int position, int rows, int column, const QV
 
 bool CQCompartmentDM::clear()
 {
-  QModelIndexList rows;
-
-  for (int i = 0; i < (int) mpCompartments->size(); i++)
-    {
-      rows.append(index(i, 0));
-    }
-
-  return removeRows(rows);
+  return removeRows(0, mpCompartments->size(), QModelIndex());
 }

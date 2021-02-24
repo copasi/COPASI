@@ -183,7 +183,7 @@ bool CQParameterSetsWidget::enterProtected()
   mpTblParameterSets->setModel(NULL);
   mpTblParameterSets->setModel(mpProxyModel);
   connect(mpTblParameterSets->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+          this, SLOT(slotSelectionChanged()));
 
   updateDeleteBtns();
   mpTblParameterSets->horizontalHeader()->restoreState(State);

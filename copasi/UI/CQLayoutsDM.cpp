@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,7 +53,7 @@ void CQLayoutsDM::resetCacheProtected()
 
 bool CQLayoutsDM::clear()
 {
-  return removeRows(0, rowCount());
+  return removeRows(0, mpListOfLayouts->size(), QModelIndex());
 }
 
 int CQLayoutsDM::columnCount(const QModelIndex & /* parent */) const
@@ -207,7 +207,7 @@ bool CQLayoutsDM::removeRows(int position, int rows, const QModelIndex & parent)
 
   if (mpListOfLayouts == NULL) return false;
 
-  beginRemoveRows(parent, position, position + rows - 1);
+  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
   std::vector< CLayout * > DeletedLayouts;
   DeletedLayouts.resize(rows);
   std::vector< CLayout * >::iterator itDeletedLayout;
@@ -221,7 +221,9 @@ bool CQLayoutsDM::removeRows(int position, int rows, const QModelIndex & parent)
 
   for (itDeletedLayout = DeletedLayouts.begin(); itDeletedLayout != endDeletedLayout; ++itDeletedLayout)
     {
-      --mFetched;
+      if (mFetched > 0)
+        --mFetched;
+
       std::string cn = (*itDeletedLayout)->getCN();
       pdelete(*itDeletedLayout);
       emit notifyGUI(ListViews::ObjectType::LAYOUT, ListViews::DELETE, cn);
@@ -244,7 +246,8 @@ bool CQLayoutsDM::removeRows(QModelIndexList rows, const QModelIndex & /* index 
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      Layouts.append(&mpListOfLayouts->operator[](i->row()));
+      if (i->isValid())
+        Layouts.append(&mpListOfLayouts->operator[](i->row()));
     }
 
   QList< CLayout * >::const_iterator j;

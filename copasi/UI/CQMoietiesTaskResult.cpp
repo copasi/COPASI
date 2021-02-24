@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -93,8 +93,9 @@ void CQMoietiesTaskResult::init()
   pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
   mpMoieties->setHorizontalHeaderItem(COL_EQUATION, pItem);
 
-  CQPushButtonDelegate * pDelegate = new CQPushButtonDelegate(CQIconResource::icon(CQIconResource::tool), "",  CQPushButtonDelegate::ToolButton,
-      this, "When pressed the selected total amount will be created as global quantity.");
+  CQPushButtonDelegate * pDelegate = new CQPushButtonDelegate(CQIconResource::icon(CQIconResource::unknown), QString(), CQPushButtonDelegate::PushButton, this, "When pressed the selected total amount will be created as global quantity.");
+  // CQPushButtonDelegate * pDelegate = new CQPushButtonDelegate(CQIconResource::icon(CQIconResource::tool), "",  CQPushButtonDelegate::ToolButton,
+  //     this, "When pressed the selected total amount will be created as global quantity.");
   mpMoieties->setItemDelegateForColumn(COL_BTN, pDelegate);
 
   connect(pDelegate, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotCreateGlobalQuantity(const QModelIndex &)));
@@ -202,7 +203,7 @@ void CQMoietiesTaskResult::load()
           pItem->setData(Qt::DisplayRole, it->getAmount());
           mpMoieties->setItem(i, COL_AMOUNT, pItem);
 
-          pItem = new QTableWidgetItem("");
+          pItem = new QTableWidgetItem("...");
           mpMoieties->setItem(i, COL_BTN, pItem);
 
           // Show the Button

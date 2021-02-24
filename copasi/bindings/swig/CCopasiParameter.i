@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -68,61 +68,61 @@
     
   C_FLOAT64 getDblValue()
   {
-	  C_FLOAT64 val = self->getValue<C_FLOAT64>();
+    C_FLOAT64 val = self->getValue<C_FLOAT64>();
     return val;
   }
 
   C_FLOAT64 getUDblValue()
   {
-	  C_FLOAT64 val = self->getValue<C_FLOAT64>();
+    C_FLOAT64 val = self->getValue<C_FLOAT64>();
     return val;
   }
 
   C_INT32 getIntValue()
   {
-	  C_INT32 val = self->getValue<C_INT32>();    
+    C_INT32 val = self->getValue<C_INT32>();    
     return val;
   }
 
   unsigned C_INT32 getUIntValue()
   {
-	  unsigned C_INT32 val = self->getValue<unsigned C_INT32>();    
+    unsigned C_INT32 val = self->getValue<unsigned C_INT32>();    
     return val;
   }
 
   bool getBoolValue()
   {
-	  bool val = self->getValue<bool>();    
+    bool val = self->getValue<bool>();    
     return val;
   }
 
   std::vector<CCopasiParameter*> getGroupValue()
   {
-	  std::vector<CCopasiParameter*> val = self->getValue< std::vector<CCopasiParameter*> >();
+    std::vector<CCopasiParameter*> val = self->getValue< std::vector<CCopasiParameter*> >();
     return val;
   }
 
   std::string getStringValue()
   {
-	  std::string val = self->getValue<std::string>();
+    std::string val = self->getValue<std::string>();
     return val;
   }
 
-  CRegisteredCommonName getCNValue()
+  CCommonName getCNValue()
   {
-	  CRegisteredCommonName val = self->getValue<std::string>();
+    CCommonName val = self->getValue<CCommonName>();
     return val;
   }
 
   std::string getKeyValue()
   {
-	  std::string val = self->getValue<std::string>();
+    std::string val = self->getValue<std::string>();
     return val;
   }
 
   std::string getFileValue()
   {
-	  std::string val = self->getValue<std::string>();
+    std::string val = self->getValue<std::string>();
     return val;
   }
 
@@ -131,7 +131,7 @@
    * think. 
   void* getVoidValue()
   {
-	  void* val = self->getValue<void*>();
+    void* val = self->getValue<void*>();
     return val;
   }
   */
@@ -171,9 +171,14 @@
     return self->setValue(v);
   }
 
-  bool setCNValue(const CRegisteredCommonName& v)
+  bool setCNValue(const CCommonName& v)
   {
     return self->setValue(v);
+  }
+  
+  bool setCNValue(const std::string& v)
+  {
+    return self->setValue(CCommonName(v));
   }
 
   bool setKeyValue(const std::string& v)

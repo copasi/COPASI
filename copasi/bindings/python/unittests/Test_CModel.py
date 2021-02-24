@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -128,7 +133,7 @@ class Test_CModel(unittest.TestCase):
 
   def test_setTitle(self):
     title="MyTitle"
-    self.model.setTitle(title)
+    self.model.setObjectName(title)
     self.assert_(self.model.getObjectName()==title)
 
   def test_setNotes(self):
@@ -178,9 +183,8 @@ class Test_CModel(unittest.TestCase):
     self.assert_(v.size()==2)
 
   def test_findMetabByName(self):
-    index=self.model.findMetabByName("D")
-    self.assert_(type(index)==IntType)
-    self.assert_(index==3) 
+    metab=self.model.findMetabByName("D")
+    self.assertEquals(type(metab),COPASI.CMetab)
 
   def test_findMoiety(self):
     moiety=self.model.getMoiety(1)
@@ -188,36 +192,12 @@ class Test_CModel(unittest.TestCase):
     self.assert_(type(index)==IntType)
     self.assert_(index==1)
 
-  def test_getInitialState(self):
-    state=self.model.getInitialState()
-    self.assert_(state.__class__==COPASI.CState)
-
-  def test_getState(self):
-    state=self.model.getInitialState()
-    self.assert_(state.__class__==COPASI.CState)
-
-  def test_setInitialState(self):
-    self.datamodel.loadModel("calcium_juergen.cps")
-    initialTime=self.datamodel.getModel().getInitialState().getTime()
-    trajectoryTask=None
-    for x in range(0,self.datamodel.getTaskList().size()):
-      if(self.datamodel.getTask(x).__class__==COPASI.CTrajectoryTask):
-        trajectoryTask=self.datamodel.getTask(x)
-    self.assert_(trajectoryTask!=None)
-    trajectoryTask.process(True)
-    newState=self.datamodel.getModel().getState()
-    self.assert_(newState.getIndependent(0)!=self.datamodel.getModel().getInitialState().getIndependent(0))
-    self.datamodel.getModel().setInitialState(newState)
-    self.assert_(newState.getIndependent(0)==self.datamodel.getModel().getInitialState().getIndependent(0))
-
-
-
   def test_setVolumeUnit(self):
-    u=COPASI.CModel.l
+    u=COPASI.CUnit.l
     self.model.setVolumeUnit(u)
     self.assert_(self.model.getVolumeUnitEnum()==u)
     self.model.setVolumeUnit("nl")
-    self.assert_(self.model.getVolumeUnitEnum()==COPASI.CModel.nl)
+    self.assert_(self.model.getVolumeUnitEnum()==COPASI.CUnit.nl)
 
   def test_getVolumeUnitName(self):
     n=self.model.getVolumeUnitName()
@@ -228,11 +208,11 @@ class Test_CModel(unittest.TestCase):
     self.assert_(type(e)==IntType)
 
   def test_setTimeUnit(self):
-    u=COPASI.CModel.micros
+    u=COPASI.CUnit.micros
     self.model.setTimeUnit(u)
     self.assert_(self.model.getTimeUnitEnum()==u)
     self.model.setTimeUnit("ms")
-    self.assert_(self.model.getTimeUnitEnum()==COPASI.CModel.ms)
+    self.assert_(self.model.getTimeUnitEnum()==COPASI.CUnit.ms)
 
   def test_getTimeUnitName(self):
     n=self.model.getTimeUnitName()
@@ -243,11 +223,11 @@ class Test_CModel(unittest.TestCase):
     self.assert_(type(e)==IntType)
 
   def test_setQuantityUnit(self):
-    u=COPASI.CModel.microMol
+    u=COPASI.CUnit.microMol
     self.model.setQuantityUnit(u)
     self.assert_(self.model.getQuantityUnitEnum()==u)
-    self.model.setQuantityUnit("nMol")
-    self.assert_(self.model.getQuantityUnitEnum()==COPASI.CModel.nMol)
+    self.model.setQuantityUnit("nmol")
+    self.assert_(self.model.getQuantityUnitEnum()==COPASI.CUnit.nMol)
 
   def test_getQuantityUnitName(self):
     n=self.model.getQuantityUnitName()
@@ -258,10 +238,10 @@ class Test_CModel(unittest.TestCase):
     self.assert_(type(e)==IntType)
 
   def test_setModelType(self):
-    t=COPASI.CModel.deterministic
+    t=COPASI.CModel.ModelType_deterministic
     self.model.setModelType(t)
     self.assert_(self.model.getModelType()==t)
-    t=COPASI.CModel.stochastic
+    t=COPASI.CModel.ModelType_stochastic
     self.model.setModelType(t)
     self.assert_(self.model.getModelType()==t)
 
@@ -277,22 +257,12 @@ class Test_CModel(unittest.TestCase):
     v=self.model.getNumber2QuantityFactor()
     self.assert_(type(v)==FloatType)
 
-  def test_getConcentrationUnits(self):
-    name=self.model.getConcentrationUnitsDisplayString()
-    self.assert_(type(name)==StringType)
-
-  def test_getConcentrationRateUnits(self):
-    name=self.model.getConcentrationRateUnitsDisplayString()
-    self.assert_(type(name)==StringType)
-
-  def test_getQuantityRateUnits(self):
-    name=self.model.getQuantityRateUnitsDisplayString()
-    self.assert_(type(name)==StringType)
-
   def test_createMetabolite(self):
     c=self.model.createCompartment("testCompartment")
     size=self.model.getNumMetabs()
     m=self.model.createMetabolite("testMetabolite","testCompartment")
+    self.model.compileIfNecessary()
+
     self.assert_(self.model.getNumMetabs()==size+1)
     self.assert_(m.__class__==COPASI.CMetab)
     self.assert_(m.getObjectName()=="testMetabolite")
@@ -302,13 +272,16 @@ class Test_CModel(unittest.TestCase):
     c=self.model.createCompartment("testCompartment")
     size=self.model.getNumMetabs()
     m=self.model.createMetabolite("testMetabolite","testCompartment")
+    self.model.compileIfNecessary()
     self.assert_(self.model.getNumMetabs()==size+1)
     self.model.removeMetabolite(m.getKey())
+    self.model.compileIfNecessary()
     self.assert_(self.model.getNumMetabs()==size)
 
   def test_createCompartment(self):
     size=self.model.getNumCompartments()
     c=self.model.createCompartment("testCompartment")
+    self.model.compileIfNecessary()
     self.assert_(self.model.getNumCompartments()==size+1)
     self.assert_(c.__class__==COPASI.CCompartment)
     self.assert_(c.getObjectName()=="testCompartment")
@@ -316,6 +289,7 @@ class Test_CModel(unittest.TestCase):
   def test_removeCompartment(self):
     size=self.model.getNumCompartments()
     c=self.model.createCompartment("testCompartment")
+    self.model.compileIfNecessary()
     self.assert_(self.model.getNumCompartments()==size+1)
     self.assert_(self.model.removeCompartment(c.getKey()))
     self.assert_(self.model.getNumCompartments()==size)
@@ -323,6 +297,7 @@ class Test_CModel(unittest.TestCase):
   def test_createReaction(self):
     size=self.model.getNumReactions()
     r=self.model.createReaction("testReaction")
+    self.model.compileIfNecessary()
     self.assert_(self.model.getNumReactions()==size+1)
     self.assert_(r.__class__==COPASI.CReaction)
     self.assert_(r.getObjectName()=="testReaction")
@@ -330,13 +305,16 @@ class Test_CModel(unittest.TestCase):
   def test_removeReaction(self):
     size=self.model.getNumReactions()
     r=self.model.createReaction("testReaction")
+    self.model.compileIfNecessary()
     self.assert_(self.model.getNumReactions()==size+1)
     self.model.removeReaction(r.getKey())
+    self.model.compileIfNecessary()
     self.assert_(self.model.getNumReactions()==size)
 
   def test_createModelValue(self):
     size=self.model.getNumModelValues()
     mv=self.model.createModelValue("testModelValue")
+    self.model.compileIfNecessary()
     self.assert_(self.model.getNumModelValues()==size+1)
     self.assert_(mv.__class__==COPASI.CModelValue)
     self.assert_(mv.getObjectName()=="testModelValue")
@@ -344,8 +322,10 @@ class Test_CModel(unittest.TestCase):
   def test_removeModelValue(self):
     size=self.model.getNumModelValues()
     mv=self.model.createModelValue("testModelValue")
+    self.model.compileIfNecessary()
     self.assert_(self.model.getNumModelValues()==size+1)
     self.model.removeModelValue(mv.getKey())
+    self.model.compileIfNecessary()
     self.assert_(self.model.getNumModelValues()==size)
 
   def test_hasReversibleReaction(self):
@@ -389,9 +369,6 @@ def suite():
          ,'test_getMoieties'
          ,'test_findMetabByName'
          ,'test_findMoiety'
-         ,'test_getInitialState'
-         ,'test_getState'
-         ,'test_setInitialState'
          ,'test_getVolumeUnitEnum'
          ,'test_getVolumeUnitName'
          ,'test_setVolumeUnit'
@@ -405,9 +382,6 @@ def suite():
          ,'test_setModelType'
          ,'test_getQuantity2NumberFactor'
          ,'test_getNumber2QuantityFactor'
-         ,'test_getConcentrationUnits'
-         ,'test_getConcentrationRateUnits'
-         ,'test_getQuantityRateUnits'
          ,'test_createMetabolite'
          ,'test_removeMetabolite'
          ,'test_createCompartment'

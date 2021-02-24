@@ -401,6 +401,9 @@ CMathContainer::CMathContainer(CModel & model):
   mUpdateSequences(),
   mNumTotalRootsIgnored(0),
   mValueChangeProhibited()
+#ifdef USE_JIT
+  , mJITCompiler()
+#endif
 {
   memset(&mSize, 0, sizeof(mSize));
 
@@ -508,6 +511,9 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mUpdateSequences(),
   mNumTotalRootsIgnored(src.mNumTotalRootsIgnored),
   mValueChangeProhibited(src.mValueChangeProhibited)
+#ifdef USE_JIT
+  , mJITCompiler()
+#endif
 {
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CDataContainer
@@ -1475,6 +1481,17 @@ void CMathContainer::compile()
       pReaction->initialize(itReaction, *this);
     }
 
+#ifdef USE_JIT
+
+  try
+    {
+      mJITCompiler.compile();
+    }
+  catch (...)
+    {}
+
+#endif
+
   updateInitialValues(CCore::Framework::ParticleNumbers);
 
   // TODO We may have unused event triggers and roots due to optimization
@@ -2207,7 +2224,12 @@ bool CMathContainer::compileObjects()
 
   for (; pObject != pObjectEnd; ++pObject)
     {
+#ifdef USE_JIT
+      success &=
+        pObject->compile(*this, mJITCompiler);
+#else
       success &= pObject->compile(*this);
+#endif
     }
 
   return success;
@@ -3993,7 +4015,12 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
             break;
         }
 
+#ifdef USE_JIT
+      pObject->compile(*this, mJITCompiler);
+#else
       pObject->compile(*this);
+#endif
+
       mInitialDependencies.addObject(pObject);
     }
 
@@ -4002,6 +4029,16 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
 
   createUpdateSequences();
 
+#ifdef USE_JIT
+
+  try
+    {
+      mJITCompiler.compile();
+    }
+  catch (...)
+    {}
+
+#endif
   return Entity;
 }
 
@@ -4069,6 +4106,17 @@ bool CMathContainer::removeAnalysisObject(CMath::Entity< CMathObject > & mathObj
 
   // Create Update sequences
   createUpdateSequences();
+
+#ifdef USE_JIT
+
+  try
+    {
+      mJITCompiler.compile();
+    }
+  catch (...)
+    {}
+
+#endif
 
   return true;
 }
@@ -4298,6 +4346,17 @@ CMathEvent * CMathContainer::addAnalysisEvent(const CEvent * pDataEvent)
 
   analyzeRoots();
   createUpdateSequences();
+
+#ifdef USE_JIT
+
+  try
+    {
+      mJITCompiler.compile();
+    }
+  catch (...)
+    {}
+
+#endif
 
   return pEvent;
 }
@@ -4540,6 +4599,17 @@ bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
 
   analyzeRoots();
   createUpdateSequences();
+
+#ifdef USE_JIT
+
+  try
+    {
+      mJITCompiler.compile();
+    }
+  catch (...)
+    {}
+
+#endif
 
   return true;
 }

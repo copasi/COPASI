@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -404,7 +404,6 @@ void CMathObject::calculateParticleFlux()
 }
 
 void CMathObject::calculateExtensiveReactionRate()
-
 {
   *mpValue = 0.0;
 
@@ -578,7 +577,11 @@ void CMathObject::appendDelays(CMath::DelayData & Delays) const
   return;
 }
 
+#ifdef USE_JIT
+bool CMathObject::compile(CMathContainer & container, CJitCompiler & jitCompiler)
+#else
 bool CMathObject::compile(CMathContainer & container)
+#endif
 {
   mPrerequisites.clear();
   bool success = true;
@@ -691,6 +694,19 @@ bool CMathObject::compile(CMathContainer & container)
       case CMath::ValueType::__SIZE:
         break;
     }
+
+#ifdef USE_JIT
+
+  if (success
+      && CJitCompiler::JitEnabled()
+      && mpCalculate == &CMathObject::calculateExpression
+      && mpExpression != NULL
+      && !mpExpression->getPrerequisites().empty())
+    {
+      mpExpression->setCompiler(&jitCompiler);
+    }
+
+#endif
 
   return success;
 }
@@ -1546,7 +1562,12 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
             PositiveFlux << "max(";
             NegativeFlux << "min(";
 
-            if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
+            if (std::isnan(Multiplicity))
+              {
+                PositiveFlux << "nan*";
+                NegativeFlux << "nan*";
+              }
+            else if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
               {
                 PositiveFlux << "infinity*";
                 NegativeFlux << "infinity*";
@@ -1841,7 +1862,11 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
 
       if (First || Multiplicity < 0.0)
         {
-          if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
+          if (std::isnan(Multiplicity))
+            {
+              Infix << "nan*";
+            }
+          else if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
             {
               Infix << "infinity*";
             }
@@ -1868,7 +1893,11 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
         }
       else
         {
-          if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
+          if (std::isnan(Multiplicity))
+            {
+              Infix << "+nan*";
+            }
+          else if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
             {
               Infix << "+infinity*";
             }
@@ -2017,7 +2046,11 @@ bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies
 
       if (First || Multiplicity < 0.0)
         {
-          if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
+          if (std::isnan(Multiplicity))
+            {
+              Infix << "nan";
+            }
+          else if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
             {
               Infix << "infinity";
             }
@@ -2032,7 +2065,11 @@ bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies
         }
       else
         {
-          if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
+          if (std::isnan(Multiplicity))
+            {
+              Infix << "+nan";
+            }
+          else if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
             {
               Infix << "+infinity";
             }

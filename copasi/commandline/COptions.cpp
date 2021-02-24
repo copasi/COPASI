@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -405,6 +405,9 @@ std::string COptions::getHome(void)
            + getEnvironmentVariable("HOMEPATH");
 
 #endif // WIN32
+
+  if (Home == "") // use temp dir as home directory, rather than fail directly
+    Home = getTemp();
 
   if (Home == "")
     {

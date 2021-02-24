@@ -65,7 +65,7 @@ DEP_DIR64 = get_dir_if_exists('COPASI_DEP_DIR_64', '../win_copasi_dependencies_6
 if not SRC_DIR:
   src_defined = os.getenv('COPASI_SRC_DIR')
   if src_defined:
-    raise ValueError("COPASI Source defined as: {0}, but coun't be found".format(src_defined))
+    raise ValueError("COPASI Source defined as: {0}, but couldn't be found".format(src_defined))
   else:
     raise ValueError("COPASI Source not specified or not present, define COPASI_SRC_DIR.")
 
@@ -161,10 +161,11 @@ class CMakeBuild(build_ext):
         is_win_32 = is_win and ('win32' in name or 'win32' in build_temp)
 
         cmake_args = [
-            '-DCMAKE_BUILD_TYPE=' + config, 
-            '-DCMAKE_BUILD_PARALLEL_LEVEL=4',
-            '-DWITH_STATIC_RUNTIME=ON'
+            '-DCMAKE_BUILD_TYPE=' + config
         ]
+        
+        if is_win: 
+          cmake_args.append('-DWITH_STATIC_RUNTIME=ON')
 
         cmake_args = prepend_variables(cmake_args, [
           'CMAKE_CXX_COMPILER', 
@@ -189,7 +190,7 @@ class CMakeBuild(build_ext):
         ]
 
         global DEP_DIR
-        if not DEP_DIR and not self.dry_run:
+        if DEP_DIR and not self.dry_run:
             print("compiling dependencies")
             dep_suffix = sysconfig.get_platform()
             dep_inst_dir = os.path.join(cwd, 'install_dependencies_' + dep_suffix)
@@ -202,6 +203,7 @@ class CMakeBuild(build_ext):
                          + [
                              '-DCMAKE_INSTALL_PREFIX=' + dep_inst_dir,
                              '-DBUILD_UI_DEPS=OFF',
+                             '-DBUILD_zlib=ON',
                              '-DBUILD_archive=OFF',
                            ]
                          )

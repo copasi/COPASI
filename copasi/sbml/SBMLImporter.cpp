@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -751,41 +751,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
 
   if (pTimeUnits != NULL)
     {
-      std::pair<CUnit::TimeUnit, bool> tUnit;
-
-      try
-        {
-          tUnit = this->handleTimeUnit(pTimeUnits);
-        }
-      catch (...)
-        {
-          std::ostringstream os;
-          os << "Error while importing time units.";
-
-          // check if the last message on the stack is an exception
-          // and if so, add the message text to the current exception
-          if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
-            {
-              // we only want the message, not the timestamp line
-              std::string text = CCopasiMessage::peekLastMessage().getText();
-              os << text.substr(text.find("\n"));
-            }
-
-          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
-        }
-
-      if (tUnit.second == false)
-        {
-          // the unit could not be handled, give an error message and
-          // set the units to second
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "time", "second");
-          this->mpCopasiModel->setTimeUnit(CUnit::s);
-        }
-      else
-        {
-          this->mpCopasiModel->setTimeUnit(tUnit.first);
-        }
-
+      mpCopasiModel->setTimeUnit(createUnitExpressionFor(pTimeUnits));
       delete pTimeUnits;
       pTimeUnits = NULL;
     }
@@ -795,41 +761,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
 
   if (pVolumeUnits != NULL)
     {
-      std::pair<CUnit::VolumeUnit, bool> vUnit;
-
-      try
-        {
-          vUnit = this->handleVolumeUnit(pVolumeUnits);
-        }
-      catch (...)
-        {
-          std::ostringstream os;
-          os << "Error while importing volume units.";
-
-          // check if the last message on the stack is an exception
-          // and if so, add the message text to the current exception
-          if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
-            {
-              // we only want the message, not the timestamp line
-              std::string text = CCopasiMessage::peekLastMessage().getText();
-              os << text.substr(text.find("\n"));
-            }
-
-          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
-        }
-
-      if (vUnit.second == false)
-        {
-          // the unit could not be handled, give an error message and
-          // set the units to litre
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "volume", "litre");
-          this->mpCopasiModel->setVolumeUnit(CUnit::l);
-        }
-      else
-        {
-          this->mpCopasiModel->setVolumeUnit(vUnit.first);
-        }
-
+      mpCopasiModel->setVolumeUnit(createUnitExpressionFor(pVolumeUnits));
       delete pVolumeUnits;
       pVolumeUnits = NULL;
     }
@@ -839,41 +771,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
 
   if (pAreaUnits != NULL)
     {
-      std::pair<CUnit::AreaUnit, bool> vUnit;
-
-      try
-        {
-          vUnit = this->handleAreaUnit(pAreaUnits);
-        }
-      catch (...)
-        {
-          std::ostringstream os;
-          os << "Error while importing area units.";
-
-          // check if the last message on the stack is an exception
-          // and if so, add the message text to the current exception
-          if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
-            {
-              // we only want the message, not the timestamp line
-              std::string text = CCopasiMessage::peekLastMessage().getText();
-              os << text.substr(text.find("\n"));
-            }
-
-          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
-        }
-
-      if (vUnit.second == false)
-        {
-          // the unit could not be handled, give an error message and
-          // set the units to litre
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "area", "square meter");
-          this->mpCopasiModel->setAreaUnit(CUnit::m2);
-        }
-      else
-        {
-          this->mpCopasiModel->setAreaUnit(vUnit.first);
-        }
-
+      mpCopasiModel->setAreaUnit(createUnitExpressionFor(pAreaUnits));
       delete pAreaUnits;
       pAreaUnits = NULL;
     }
@@ -883,41 +781,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
 
   if (pLengthUnits != NULL)
     {
-      std::pair<CUnit::LengthUnit, bool> vUnit;
-
-      try
-        {
-          vUnit = this->handleLengthUnit(pLengthUnits);
-        }
-      catch (...)
-        {
-          std::ostringstream os;
-          os << "Error while importing length units.";
-
-          // check if the last message on the stack is an exception
-          // and if so, add the message text to the current exception
-          if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::EXCEPTION)
-            {
-              // we only want the message, not the timestamp line
-              std::string text = CCopasiMessage::peekLastMessage().getText();
-              os << text.substr(text.find("\n"));
-            }
-
-          CCopasiMessage(CCopasiMessage::EXCEPTION, os.str().c_str());
-        }
-
-      if (vUnit.second == false)
-        {
-          // the unit could not be handled, give an error message and
-          // set the units to litre
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "length", "meter");
-          this->mpCopasiModel->setLengthUnit(CUnit::m);
-        }
-      else
-        {
-          this->mpCopasiModel->setLengthUnit(vUnit.first);
-        }
-
+      mpCopasiModel->setLengthUnit(createUnitExpressionFor(pLengthUnits));
       delete pLengthUnits;
       pLengthUnits = NULL;
     }
@@ -2144,7 +2008,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
   if (dimensionality > 3)
     {
       CCopasiMessage Message(CCopasiMessage::WARNING,
-                             "Reaction with id \"%s\" has dimensions of %d, this is not supported by COPASI. COPASI will assume that the compartment is three dimensional."
+                             "The compartment with id \"%s\" has dimensions of %d, this is not supported by COPASI. COPASI will assume that the compartment is three dimensional."
                              , sbmlCompartment->getId().c_str(), dimensionality);
       dimensionality = 3;
       //fatalError();
@@ -2456,7 +2320,12 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           ignoreMassAction = pSBMLModel->getRule(sr->getId()) != NULL;
 
           if (sr->isSetStoichiometry())
-            stoi = sr->getStoichiometry();
+            {
+              stoi = sr->getStoichiometry();
+
+              if (stoi != stoi)
+                stoi = 1.0;
+            }
         }
 
       std::map<std::string, CMetab*>::iterator pos;
@@ -2587,7 +2456,13 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           ignoreMassAction = pSBMLModel->getRule(sr->getId()) != NULL;
 
           if (sr->isSetStoichiometry())
-            stoi = sr->getStoichiometry();
+            {
+              stoi = sr->getStoichiometry();
+
+              if (stoi != stoi)
+                stoi = 1.0;
+            }
+
         }
 
       std::map<std::string, CMetab*>::iterator pos;
@@ -8799,6 +8674,14 @@ std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUni
         continue;
 
       double multiplier = current->getMultiplier();
+      double exponent = current->getExponentAsDouble();
+      double scale = current->getScale();
+
+      if (symbol == "1" && i == 0)
+        {
+          copasiUnit.setDimensionLess(multiplier, scale, exponent);
+          continue;
+        }
 
       if (symbol == "s" && multiplier == 86400)
         {
@@ -8817,11 +8700,13 @@ std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUni
         }
 
       CUnit tmp = CUnit(symbol).exponentiate(current->getExponentAsDouble());
+
       tmp.addComponent(
         CUnitComponent(
           CBaseUnit::dimensionless,
           multiplier,
-          current->getScale() * current->getExponentAsDouble()));
+          exponent == 0 ? current->getScale() :
+          current->getScale() * exponent));
 
       tmp.buildExpression();
       tmp.compile();
@@ -10191,6 +10076,11 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
   if (isEmptyOrWhiteSpace(eventName))
     {
       eventName = pEvent->getId();
+
+      if (isEmptyOrWhiteSpace(eventName))
+        {
+          eventName = "Event";
+        }
     }
 
   std::string appendix;

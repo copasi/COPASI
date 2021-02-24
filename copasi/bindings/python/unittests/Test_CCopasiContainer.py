@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -30,9 +35,7 @@ class Test_CDataContainer(unittest.TestCase):
 
   def  test_ObjectFromName(self):
     metab=self.datamodel.getModel().getMetabolite(1)
-    v=COPASI.ContainerStdVector()
-    v.push_back(self.datamodel.getModel())
-    object=self.datamodel.ObjectFromName(v,metab.getCN())
+    object=self.datamodel.getObjectFromCN(metab.getCN())
     self.assert_(object!=None)
     self.assert_(object.__class__==COPASI.CMetab)
     self.assert_(metab.getCN().getString()==object.getCN().getString())

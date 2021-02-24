@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,18 +22,29 @@
 #include "copasi/math/CMathObject.h"
 #include "copasi/function/CEvaluationTree.h"
 
+#ifdef USE_JIT
+# include "copasi/math/CJitExpression.h"
+#endif
+
 class CExpression;
 class CEvaluationNode;
 class CMathContainer;
+
 template < typename Type > class CCallParameters;
 
-class CMathExpression: public CEvaluationTree
+class CMathExpression:
+#ifdef USE_JIT
+  public CJitExpression,
+#endif
+  public CEvaluationTree
 {
 private:
   /**
    * Hidden default constructor
    */
   CMathExpression();
+
+  CMathExpression(const CMathExpression & src) = delete;
 
 public:
   /**
@@ -85,6 +101,13 @@ public:
   void relocate(const CMathContainer * pContainer,
                 const std::vector< CMath::sRelocate > & relocations);
 
+#ifdef USE_JIT
+  /**
+   * Compile the Jit expression if we have a compiler at hand
+   */
+  virtual bool compileJit() override;
+#endif
+
   /**
    * Evaluate the expression
    * @return const C_FLOAT64 & value
@@ -140,6 +163,15 @@ private:
    * The prerequisites for calculating the expression.
    */
   CObjectInterface::ObjectSet mPrerequisites;
+
+  /**
+   * Pointer to JIT compiled function returning a double
+   */
+#ifdef USE_JIT
+  CJitCompiler::Function * mpJitFunction;
+#else
+  void * mpJitFunction;
+#endif
 };
 
 #endif // COPASI_CMathExpression

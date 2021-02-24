@@ -118,7 +118,7 @@ CQParameterResultItemModel::data(const QModelIndex & index, int role) const
       return QVariant();
     }
 
-  if (role == Qt::DisplayRole)
+  if (role == Qt::DisplayRole && current != NULL)
     {
 
       switch ((CQParameterResultItemModel::COLUMS)column)

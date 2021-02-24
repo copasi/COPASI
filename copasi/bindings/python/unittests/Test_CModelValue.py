@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -54,7 +59,7 @@ class Test_CModelValue(unittest.TestCase):
     self.assert_(type(value)==FloatType)
 
   def test_setStatus(self):
-    status=COPASI.CModelEntity.ASSIGNMENT
+    status=COPASI.CModelEntity.Status_ASSIGNMENT
     self.mv.setStatus(status)
     self.assert_(self.mv.getStatus()==status)
 
@@ -93,7 +98,7 @@ class Test_CModelValue(unittest.TestCase):
     self.assert_(type(value)==BooleanType)
 
   def test_setExpression(self):
-    self.mv.setStatus(COPASI.CModelEntity.ASSIGNMENT)
+    self.mv.setStatus(COPASI.CModelEntity.Status_ASSIGNMENT)
     expr="17"
     self.assert_(self.mv.setExpression(expr))
     self.assert_(self.mv.getExpression()==expr)

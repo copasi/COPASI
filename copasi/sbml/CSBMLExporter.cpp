@@ -451,109 +451,20 @@ void CSBMLExporter::createTimeUnit(const CDataModel& dataModel)
 {
   if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
 
-  UnitDefinition uDef(this->mSBMLLevel, this->mSBMLVersion);
-  uDef.setName("time");
-  uDef.setId("time");
-  Unit unit(this->mSBMLLevel, this->mSBMLVersion);
-  INIT_DEFAULTS(unit);
+  Model * pSBMLModel = this->mpSBMLDocument->getModel();
+  UnitDefinition * uDef = pSBMLModel->removeUnitDefinition("time");
 
-  switch (dataModel.getModel()->getTimeUnitEnum())
-    {
-      case CUnit::d:
-        unit.setKind(UNIT_KIND_SECOND);
-        unit.setExponent(1);
-        unit.setScale(0);
-        unit.setMultiplier(86400);
-        break;
+  // drop existing unit
+  pdelete(uDef);
 
-      case CUnit::h:
-        unit.setKind(UNIT_KIND_SECOND);
-        unit.setExponent(1);
-        unit.setScale(0);
-        unit.setMultiplier(3600);
-        break;
+  // create new one
+  uDef = createUnitDefinitionFor(CUnit(dataModel.getModel()->getTimeUnit()));
+  uDef->setId("time");
+  uDef->setName("time");
 
-      case CUnit::min:
-        unit.setKind(UNIT_KIND_SECOND);
-        unit.setExponent(1);
-        unit.setScale(0);
-        unit.setMultiplier(60);
-        break;
+  // set it
+  pSBMLModel->setTimeUnits(uDef->getId());
 
-      case CUnit::s:
-        unit.setKind(UNIT_KIND_SECOND);
-        unit.setExponent(1);
-        unit.setScale(0);
-        unit.setMultiplier(1);
-        break;
-
-      case CUnit::ms:
-        unit.setKind(UNIT_KIND_SECOND);
-        unit.setExponent(1);
-        unit.setScale(-3);
-        unit.setMultiplier(1);
-        break;
-
-      case CUnit::micros:
-        unit.setKind(UNIT_KIND_SECOND);
-        unit.setExponent(1);
-        unit.setScale(-6);
-        unit.setMultiplier(1);
-        break;
-
-      case CUnit::ns:
-        unit.setKind(UNIT_KIND_SECOND);
-        unit.setExponent(1);
-        unit.setScale(-9);
-        unit.setMultiplier(1);
-        break;
-
-      case CUnit::ps:
-        unit.setKind(UNIT_KIND_SECOND);
-        unit.setExponent(1);
-        unit.setScale(-12);
-        unit.setMultiplier(1);
-        break;
-
-      case CUnit::fs:
-        unit.setKind(UNIT_KIND_SECOND);
-        unit.setExponent(1);
-        unit.setScale(-15);
-        unit.setMultiplier(1);
-        break;
-
-      case CUnit::dimensionlessTime:
-        unit.setKind(UNIT_KIND_DIMENSIONLESS);
-        unit.setExponent(1);
-        unit.setScale(0);
-        unit.setMultiplier(1);
-        break;
-
-      default:
-        CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi time unit.");
-        break;
-    }
-
-  uDef.addUnit(&unit);
-  Model* pSBMLModel = this->mpSBMLDocument->getModel();
-  UnitDefinition* pUdef = pSBMLModel->getUnitDefinition("time");
-
-  if (pUdef != NULL)
-    {
-      // check if it is the same unit as the existing one if there is one
-      // if yes, return, else replace the existing one
-      if (!SBMLImporter::areSBMLUnitDefinitionsIdentical(pUdef, &uDef))
-        {
-          (*pUdef) = uDef;
-        }
-    }
-  else
-    {
-      // set the unit definition
-      pSBMLModel->addUnitDefinition(&uDef);
-    }
-
-  pSBMLModel->setTimeUnits(uDef.getId());
 }
 
 /**
@@ -563,88 +474,19 @@ void CSBMLExporter::createVolumeUnit(const CDataModel& dataModel)
 {
   if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
 
-  UnitDefinition uDef(this->mSBMLLevel, this->mSBMLVersion);
-  uDef.setName("volume");
-  uDef.setId("volume");
-  Unit unit(this->mSBMLLevel, this->mSBMLVersion);
-  INIT_DEFAULTS(unit);
+  Model * pSBMLModel = this->mpSBMLDocument->getModel();
+  UnitDefinition * uDef = pSBMLModel->removeUnitDefinition("volume");
 
-  switch (dataModel.getModel()->getVolumeUnitEnum())
-    {
-      case CUnit::l:
-        unit.setKind(UNIT_KIND_LITRE);
-        unit.setExponent(1);
-        unit.setScale(0);
-        break;
+  // drop existing volume unit
+  pdelete(uDef);
 
-      case CUnit::ml:
-        unit.setKind(UNIT_KIND_LITRE);
-        unit.setExponent(1);
-        unit.setScale(-3);
-        break;
+  // create new one
+  uDef = createUnitDefinitionFor(CUnit(dataModel.getModel()->getVolumeUnit()));
+  uDef->setId("volume");
+  uDef->setName("volume");
 
-      case CUnit::microl:
-        unit.setKind(UNIT_KIND_LITRE);
-        unit.setExponent(1);
-        unit.setScale(-6);
-        break;
-
-      case CUnit::nl:
-        unit.setKind(UNIT_KIND_LITRE);
-        unit.setExponent(1);
-        unit.setScale(-9);
-        break;
-
-      case CUnit::pl:
-        unit.setKind(UNIT_KIND_LITRE);
-        unit.setExponent(1);
-        unit.setScale(-12);
-        break;
-
-      case CUnit::fl:
-        unit.setKind(UNIT_KIND_LITRE);
-        unit.setExponent(1);
-        unit.setScale(-15);
-        break;
-
-      case CUnit::m3:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(3);
-        unit.setScale(0);
-        break;
-
-      case CUnit::dimensionlessVolume:
-        unit.setKind(UNIT_KIND_DIMENSIONLESS);
-        unit.setExponent(1);
-        unit.setScale(0);
-        break;
-
-      default:
-        CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi volume unit.");
-        break;
-    }
-
-  unit.setMultiplier(1.0);
-  uDef.addUnit(&unit);
-  Model* pSBMLModel = this->mpSBMLDocument->getModel();
-  UnitDefinition* pUdef = pSBMLModel->getUnitDefinition("volume");
-
-  if (pUdef != NULL)
-    {
-      // check if it is the same unit as the existing one if there is one
-      // if yes, return, else replace the existing one
-      if (!SBMLImporter::areSBMLUnitDefinitionsIdentical(pUdef, &uDef))
-        {
-          (*pUdef) = uDef;
-        }
-    }
-  else
-    {
-      // set the unit definition
-      pSBMLModel->addUnitDefinition(&uDef);
-    }
-
-  pSBMLModel->setVolumeUnits(uDef.getId());
+  // set it
+  pSBMLModel->setVolumeUnits(uDef->getId());
 }
 
 /**
@@ -750,94 +592,19 @@ void CSBMLExporter::createLengthUnit(const CDataModel& dataModel)
 {
   if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
 
-  UnitDefinition uDef(this->mSBMLLevel, this->mSBMLVersion);
-  uDef.setName("length");
-  uDef.setId("length");
-  Unit unit(this->mSBMLLevel, this->mSBMLVersion);
-  INIT_DEFAULTS(unit);
+  Model * pSBMLModel = this->mpSBMLDocument->getModel();
+  UnitDefinition * uDef = pSBMLModel->removeUnitDefinition("length");
 
-  switch (dataModel.getModel()->getLengthUnitEnum())
-    {
-      case CUnit::m:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(1);
-        unit.setScale(0);
-        break;
+  // drop existing unit
+  pdelete(uDef);
 
-      case CUnit::dm:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(1);
-        unit.setScale(-1);
-        break;
+  // create new one
+  uDef = createUnitDefinitionFor(CUnit(dataModel.getModel()->getLengthUnit()));
+  uDef->setId("length");
+  uDef->setName("length");
 
-      case CUnit::cm:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(1);
-        unit.setScale(-2);
-        break;
-
-      case CUnit::mm:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(1);
-        unit.setScale(-3);
-        break;
-
-      case CUnit::microm:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(1);
-        unit.setScale(-6);
-        break;
-
-      case CUnit::nm:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(1);
-        unit.setScale(-9);
-        break;
-
-      case CUnit::pm:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(1);
-        unit.setScale(-12);
-        break;
-
-      case CUnit::fm:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(1);
-        unit.setScale(-15);
-        break;
-
-      case CUnit::dimensionlessLength:
-        unit.setKind(UNIT_KIND_DIMENSIONLESS);
-        unit.setExponent(1);
-        unit.setScale(0);
-        break;
-
-      default:
-        CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi length unit.");
-        break;
-    }
-
-  unit.setMultiplier(1.0);
-  uDef.addUnit(&unit);
-  Model* pSBMLModel = this->mpSBMLDocument->getModel();
-  UnitDefinition* pUdef = pSBMLModel->getUnitDefinition("length");
-
-  if (pUdef != NULL)
-    {
-      // check if it is the same unit as the existing one if there is one
-      // if yes, return, else replace the existing one
-      if (!SBMLImporter::areSBMLUnitDefinitionsIdentical(pUdef, &uDef))
-        {
-          (*pUdef) = uDef;
-        }
-    }
-  else
-    {
-      // set the unit definition
-      pSBMLModel->addUnitDefinition(&uDef);
-    }
-
-  pSBMLModel->setLengthUnits(uDef.getId());
+  // set it
+  pSBMLModel->setLengthUnits(uDef->getId());
 }
 
 /**
@@ -847,94 +614,19 @@ void CSBMLExporter::createAreaUnit(const CDataModel& dataModel)
 {
   if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
 
-  UnitDefinition uDef(this->mSBMLLevel, this->mSBMLVersion);
-  uDef.setName("area");
-  uDef.setId("area");
-  Unit unit(this->mSBMLLevel, this->mSBMLVersion);
-  INIT_DEFAULTS(unit);
+  Model * pSBMLModel = this->mpSBMLDocument->getModel();
+  UnitDefinition * uDef = pSBMLModel->removeUnitDefinition("area");
 
-  switch (dataModel.getModel()->getAreaUnitEnum())
-    {
-      case CUnit::m:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(2);
-        unit.setScale(0);
-        break;
+  // drop existing unit
+  pdelete(uDef);
 
-      case CUnit::dm:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(2);
-        unit.setScale(-1);
-        break;
+  // create new one
+  uDef = createUnitDefinitionFor(CUnit(dataModel.getModel()->getAreaUnit()));
+  uDef->setId("area");
+  uDef->setName("area");
 
-      case CUnit::cm:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(2);
-        unit.setScale(-2);
-        break;
-
-      case CUnit::mm:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(2);
-        unit.setScale(-3);
-        break;
-
-      case CUnit::microm:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(2);
-        unit.setScale(-6);
-        break;
-
-      case CUnit::nm:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(2);
-        unit.setScale(-9);
-        break;
-
-      case CUnit::pm:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(2);
-        unit.setScale(-12);
-        break;
-
-      case CUnit::fm:
-        unit.setKind(UNIT_KIND_METRE);
-        unit.setExponent(2);
-        unit.setScale(-15);
-        break;
-
-      case CUnit::dimensionlessLength:
-        unit.setKind(UNIT_KIND_DIMENSIONLESS);
-        unit.setExponent(1);
-        unit.setScale(0);
-        break;
-
-      default:
-        CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi area unit.");
-        break;
-    }
-
-  unit.setMultiplier(1.0);
-  uDef.addUnit(&unit);
-  Model* pSBMLModel = this->mpSBMLDocument->getModel();
-  UnitDefinition* pUdef = pSBMLModel->getUnitDefinition("area");
-
-  if (pUdef != NULL)
-    {
-      // check if it is the same unit as the existing one if there is one
-      // if yes, return, else replace the existing one
-      if (!SBMLImporter::areSBMLUnitDefinitionsIdentical(pUdef, &uDef))
-        {
-          (*pUdef) = uDef;
-        }
-    }
-  else
-    {
-      // set the unit definition
-      pSBMLModel->addUnitDefinition(&uDef);
-    }
-
-  pSBMLModel->setAreaUnits(uDef.getId());
+  // set it
+  pSBMLModel->setAreaUnits(uDef->getId());
 }
 
 /**
@@ -3537,6 +3229,12 @@ void addSymbolComponentToUnitDefinition(UnitDefinition* result, CUnit::SymbolCom
   double multiplier = component.multiplier;
   std::string possibleScale = symbol.substr(0, 1);
   std::string possibleUnit = symbol.substr(1);
+
+  if (possibleScale[0] == '\xc2')
+    {
+      possibleScale = symbol.substr(0, 2);
+      possibleUnit = symbol.substr(2);
+    }
 
   bool use_d_prefix = true;
 

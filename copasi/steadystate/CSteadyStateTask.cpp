@@ -494,8 +494,16 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
 
   os << "Reaction" << "\t";
 
-  os << "Flux";
+  os << "Flux (extensive)";
   Units = CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getTimeUnit() + ")");
+
+  if (Units != "")
+    os << " (" << Units << ")";
+
+  os << "\t";
+
+  os << "Flux (intensive)";
+  Units = CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getTimeUnit() + "*" + pModel->getVolumeUnit() + ")");
 
   if (Units != "")
     os << " (" << Units << ")";
@@ -515,6 +523,12 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
       pReaction = &Reactions[i];
       os << pReaction->getObjectName() << "\t";
       os << pReaction->getFlux() << "\t";
+
+      if (pReaction->getScalingCompartment() != NULL)
+        os << pReaction->getFlux() / pReaction->getScalingCompartment()->getValue() << "\t";
+      else
+        os << std::numeric_limits< C_FLOAT64 >::quiet_NaN() << "\t";
+
       os << pReaction->getParticleFlux() << std::endl;
     }
 

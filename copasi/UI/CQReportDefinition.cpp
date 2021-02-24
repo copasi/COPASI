@@ -58,12 +58,17 @@ CQReportDefinition::_setup(QTableWidget* pList)
   pList->horizontalHeader()->setVisible(false);
   pList->horizontalHeader()->setStretchLastSection(true);
 
+  pList->setDragDropOverwriteMode(false);
+  pList->setDragDropMode(QAbstractItemView::InternalMove);
+  pList->setDefaultDropAction(Qt::TargetMoveAction);
+  pList->setSelectionMode(QAbstractItemView::ContiguousSelection);
+
   pList->addAction(mpActAddItem);
   pList->addAction(mpActAddSeparator);
   pList->addAction(mpActAddLineBreak);
   pList->addAction(mpActEditItem);
   pList->addAction(mpActEditText);
-  pList->addAction(mpSeparator);
+  pList->addAction(mpActSeparator);
   pList->addAction(mpActDeleteItem);
 
   connect(pList, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), mpActEditItem, SLOT(trigger()));
@@ -95,8 +100,8 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
 
   mpTaskBox->addItems(TaskNames);
 
-  mpSeparator = new QAction("", this);
-  mpSeparator->setSeparator(true);
+  mpActSeparator = new QAction("", this);
+  mpActSeparator->setSeparator(true);
 
   _setup(mpTableList);
   _setup(mpHeaderList);
@@ -285,18 +290,25 @@ void CQReportDefinition::btnDeleteClicked()
   int i, multipleSelection;
 
   for (i = pList->rowCount() - 1, multipleSelection = 0; 0 <= i; i--)
-    if (pList->item(i, 0)->isSelected())
-      {
-        delete pList->takeItem(i, 0);
-        pList->removeRow(i);
+    {
+      QTableWidgetItem * pCurrItem = pList->item(i, 0);
 
-        if (!pNewSelection && i < pList->rowCount())
-          {
-            pNewSelection = pList->item(i, 0); // We select the next.
-          }
+      if (!pCurrItem)
+        continue;
 
-        multipleSelection++;
-      }
+      if (pCurrItem->isSelected())
+        {
+          delete pList->takeItem(i, 0);
+          pList->removeRow(i);
+
+          if (!pNewSelection && i < pList->rowCount())
+            {
+              pNewSelection = pList->item(i, 0); // We select the next.
+            }
+
+          multipleSelection++;
+        }
+    }
 
   if (multipleSelection == 0) return; // Nothing selected,
 
@@ -326,28 +338,35 @@ void CQReportDefinition::btnUpClicked()
   QTableWidgetItem * pMove;
 
   for (i = pList->rowCount() - 1, to = -1, multipleSelection = 0; i >= 0; i--)
-    if (pList->item(i, 0)->isSelected())
-      {
-        if (multipleSelection == 0)
-          {
-            to = i;
-          }
+    {
+      QTableWidgetItem * pCurrItem = pList->item(i, 0);
 
-        multipleSelection++;
-      }
-    else if (multipleSelection > 0)
-      {
-        pMove = pList->takeItem(i, 0);
-        pList->removeRow(i);
+      if (!pCurrItem)
+        continue;
 
-        if (pMove)
-          {
-            _insertItem(pList, to, pMove);
+      if (pCurrItem->isSelected())
+        {
+          if (multipleSelection == 0)
+            {
+              to = i;
+            }
 
-            multipleSelection = 0;
-            mChanged = true;
-          }
-      }
+          multipleSelection++;
+        }
+      else if (multipleSelection > 0)
+        {
+          pMove = pList->takeItem(i, 0);
+          pList->removeRow(i);
+
+          if (pMove)
+            {
+              _insertItem(pList, to, pMove);
+
+              multipleSelection = 0;
+              mChanged = true;
+            }
+        }
+    }
 
   // Unselect things we can not move.
   for (i = 0; i < multipleSelection; i++)
@@ -365,25 +384,33 @@ void CQReportDefinition::btnDownClicked()
 
   // Find the index of the first selected item.
   for (i = 0, imax = pList->rowCount(), to = -1, multipleSelection = 0; i < imax; i++)
-    if (pList->item(i, 0)->isSelected())
-      {
-        if (multipleSelection == 0) to = i;
+    {
+      QTableWidgetItem * pCurrItem = pList->item(i, 0);
 
-        multipleSelection++;
-      }
-    else if (multipleSelection > 0)
-      {
-        pMove = pList->takeItem(i, 0);
-        pList->removeRow(i);
+      if (!pCurrItem)
+        continue;
 
-        if (pMove)
-          {
-            _insertItem(pList, to, pMove);
+      if (pCurrItem->isSelected())
+        {
+          if (multipleSelection == 0)
+            to = i;
 
-            multipleSelection = 0;
-            mChanged = true;
-          }
-      }
+          multipleSelection++;
+        }
+      else if (multipleSelection > 0)
+        {
+          pMove = pList->takeItem(i, 0);
+          pList->removeRow(i);
+
+          if (pMove)
+            {
+              _insertItem(pList, to, pMove);
+
+              multipleSelection = 0;
+              mChanged = true;
+            }
+        }
+    }
 
   // Unselect things we can not move.
   for (i = pList->rowCount() - multipleSelection, imax = pList->rowCount(); i < imax; i++)

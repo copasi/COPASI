@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -93,7 +93,10 @@ public:
 
   /**
    * Set the URI of the MIRIAM Resource.
+   * (this is expected to be of the legacy format (urn:miriam:...))
+   *
    * @param const std::string & URI
+   *
    */
   void setMIRIAMURI(const std::string & URI);
 

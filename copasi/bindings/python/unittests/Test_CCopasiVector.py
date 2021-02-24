@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -38,7 +43,7 @@ class Test_CDataVector(unittest.TestCase):
   def test_add(self):
     v=COPASI.CompartmentVectorNS()
     comp=COPASI.CCompartment("test_compartment")
-    self.assert_(v.add(comp))
+    self.assert_(v.addAndOwn(comp))
     self.assert_(v.size()==1)
 
   def test_remove(self):

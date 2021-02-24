@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -21,8 +26,7 @@ import Test_CreateSimpleModel
 import math
 
 
-TIME_COURSE_DATA="""
-New Model[Time]	A[ParticleNumber]	B[ParticleNumber]
+TIME_COURSE_DATA="""New Model[Time]	A[ParticleNumber]	B[ParticleNumber]
 0	100	0
 0.25	94	6
 0.5	88	12
@@ -248,11 +252,10 @@ New Model[Time]	A[ParticleNumber]	B[ParticleNumber]
 
 class Test_RunParameterFitting(unittest.TestCase):
    def setUp(self):
-    self.model=Test_CreateSimpleModel.createModel()
+    self.datamodel=Test_CreateSimpleModel.createModel()
 
    def test_runParameterFittingOnSimpleModel(self):
-        self.datamodel=COPASI.CRootContainer.addDatamodel()
-        fitTask=COPASI.self.datamodel.addTask(COPASI.CCopasiTask.parameterFitting)
+        fitTask=self.datamodel.addTask(COPASI.CTaskEnum.Task_parameterFitting)
         self.assert_(fitTask!=None)
         self.assert_(fitTask.__class__==COPASI.CFitTask)
         fitMethod=fitTask.getMethod()
@@ -268,9 +271,11 @@ class Test_RunParameterFitting(unittest.TestCase):
         self.assert_(experimentSet.__class__ == COPASI.CExperimentSet)
         self.assert_(experimentSet.getExperimentCount() == 0)
         # first experiment
-        experiment=COPASI.CExperiment()
+        experiment=COPASI.CExperiment(experimentSet)
         self.assert_(experiment!=None)
         self.assert_(experiment.__class__==COPASI.CExperiment)
+        with open("parameter_fitting_data_simple.txt", 'w') as data_file:
+          data_file.write(TIME_COURSE_DATA)
         experiment.setFileName("parameter_fitting_data_simple.txt")
         experiment.setFirstRow(1)
         self.assert_(experiment.getFirstRow()==1)
@@ -278,8 +283,8 @@ class Test_RunParameterFitting(unittest.TestCase):
         self.assert_(experiment.getLastRow()==22)
         experiment.setHeaderRow(1)
         self.assert_(experiment.getHeaderRow()==1)
-        experiment.setExperimentType(COPASI.CCopasiTask.timeCourse)
-        self.assert_(experiment.getExperimentType()==COPASI.CCopasiTask.timeCourse)
+        experiment.setExperimentType(COPASI.CTaskEnum.Task_timeCourse)
+        self.assert_(experiment.getExperimentType()==COPASI.CTaskEnum.Task_timeCourse)
         experiment.setNumColumns(3)
         self.assert_(experiment.getNumColumns()==3)
         objectMap=experiment.getObjectMap()
@@ -336,6 +341,7 @@ class Test_RunParameterFitting(unittest.TestCase):
         self.assert_(experimentSet.getExperimentCount()==1)
         # addExperiment makes a copy, so we need to get the added experiment
         # again
+        experimentSet.compile(model.getMathContainer())
         experiment=experimentSet.getExperiment(0)
         self.assert_(experiment!=None)
         self.assert_(experiment.__class__==COPASI.CExperiment)
@@ -353,40 +359,35 @@ class Test_RunParameterFitting(unittest.TestCase):
         parameterReference=parameter.getObject(COPASI.CCommonName("Reference=Value"))
         self.assert_(parameterReference!=None)
         self.assert_(parameterReference.__class__==COPASI.CDataObject)
-        fitItem=COPASI.CFitItem()
+        fitItem=fitProblem.addFitItem(parameterReference.getCN())
         self.assert_(fitItem!=None)
         self.assert_(fitItem.__class__==COPASI.CFitItem)
-        fitItem.setObjectCN(parameterReference.getCN())
         fitItem.setStartValue(4.0)
         fitItem.setLowerBound(COPASI.CCommonName("0.0001"))
         fitItem.setUpperBound(COPASI.CCommonName("10"))
-        # add the experiment to the fit item
-        #fitItem.addExperiment(experiment.getKey())
         self.assert_(fitItem.getStartValue()==4.0)
-        #self.assert_(fitItem.getExperimentCount()==1)
         # add the fit item to the correct parameter group
         optimizationItemGroup=fitProblem.getParameter("OptimizationItemList")
         self.assert_(optimizationItemGroup!=None)
         self.assert_(optimizationItemGroup.__class__==COPASI.CCopasiParameterGroup)
-        self.assert_(optimizationItemGroup.size()==0)
-        optimizationItemGroup.addParameter(fitItem)
-        self.assert_(optimizationItemGroup.size()==1)
         # addParameter makes a copy of the fit item, so we have to get it back
         fitItem=optimizationItemGroup.getParameter(0)
         self.assert_(fitItem!=None)
         self.assert_(fitItem.__class__==COPASI.CFitItem)
+        self.datamodel.saveModel('test3.cps',True)
         result=True
         try:
           result=fitTask.process(True)
         except:
           result=False
+        self.assertEqual(COPASI.CCopasiMessage.getAllMessageText(), '')
         self.assert_(result==True)
         # just check if the result is in the correct range. The actual value is
         # probably off since we use only one experiment to fit
         self.assert_((fitItem.getLocalValue()-0.5)/0.5 < 1.0)
 
    def test_runParameterFittingOnExtendedModel(self):
-        Test_CreateSimpleModel.extendModel(self.model)
+        Test_CreateSimpleModel.extendModel(self.datamodel)
 
 
 def suite():
