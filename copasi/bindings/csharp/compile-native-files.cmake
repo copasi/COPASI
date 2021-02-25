@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -74,6 +74,7 @@ set (SWIG_ENUM_FIX_FILES
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CModel.cs"
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CUndoData.cs"
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CNewtonMethod.cs"
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CCopasiTimer.cs"
      )
 
 
@@ -130,6 +131,8 @@ endif()
 #         name'
 
 # compile files
+
+
 execute_process(
 	COMMAND "${CSHARP_COMPILER}"
 		 -target:library
