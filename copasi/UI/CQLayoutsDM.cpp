@@ -51,11 +51,6 @@ void CQLayoutsDM::resetCacheProtected()
   mpListOfLayouts = mpDataModel->getListOfLayouts();
 }
 
-bool CQLayoutsDM::clear()
-{
-  return removeRows(0, mpListOfLayouts->size(), QModelIndex());
-}
-
 int CQLayoutsDM::columnCount(const QModelIndex & /* parent */) const
 {
   return TOTAL_COLS_LAYOUT;

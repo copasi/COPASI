@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,7 +47,6 @@ public:
 
   virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 
-  virtual bool clear();
 protected:
   virtual void resetCacheProtected() override;
   virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
