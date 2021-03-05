@@ -164,6 +164,11 @@ private:
   CMatrix< C_FLOAT64 > mVelocities;
 
   /**
+   * The best value
+   */
+  C_FLOAT64 mBestValue;
+
+  /**
    * Vector of individual best values.
    */
   CVector< C_FLOAT64 > mBestValues;
@@ -172,6 +177,11 @@ private:
    * Matrix of best positions for each individual
    */
   CMatrix< C_FLOAT64 > mBestPositions;
+
+  /**
+   * The improvemets during one iteration
+   */
+  std::map< size_t, C_FLOAT64 > mImprovements;
 
   /**
    * A permutation of integers used to create the informants;
