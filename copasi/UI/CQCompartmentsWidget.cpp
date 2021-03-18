@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -298,15 +298,7 @@ void CQCompartmentsWidget::keyPressEvent(QKeyEvent *ev)
 void CQCompartmentsWidget::slotFilterChanged()
 {
   QString Filter = mpLEFilter->text();
-
-  if (Filter.isEmpty())
-    {
-      mpProxyModel->setFilterRegExp(QRegExp());
-      return;
-    }
-
-  QRegExp regExp(Filter + "|New Compartment", Qt::CaseInsensitive, QRegExp::RegExp);
-  mpProxyModel->setFilterRegExp(regExp);
+  setFilterExpression(mpProxyModel, Filter.isEmpty(), Filter + "|New Compartment");
 
   while (mpProxyModel->canFetchMore(QModelIndex()))
     mpProxyModel->fetchMore(QModelIndex());

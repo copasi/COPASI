@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,6 +33,8 @@
 #include "copasi/UI/copasiui3window.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
+
+#include "CQSortFilterProxyModel.h"
 
 CopasiWidget::CopasiWidget(QWidget *parent, const char *name, Qt::WindowFlags f)
   : QWidget(parent, f),
@@ -89,7 +91,33 @@ bool CopasiWidget::updateProtected(ListViews::ObjectType objectType, ListViews::
 }
 
 bool CopasiWidget::leaveProtected()
-{return true;}
+{
+  return true;
+}
+
+void CopasiWidget::setFilterExpression(CQSortFilterProxyModel * model, bool empty, QString Filter)
+{
+  if (!model)
+    return;
+
+  if (empty)
+    {
+#if QT_VERSION < 6
+      model->setFilterRegExp(QRegExp());
+#else
+      model->setFilterRegularExpression(QRegularExpression());
+#endif
+      return;
+    }
+
+#if QT_VERSION < 6
+  QRegExp regExp(Filter, Qt::CaseInsensitive, QRegExp::RegExp);
+  model->setFilterRegExp(regExp);
+#else
+  QRegularExpression regExp(Filter, QRegularExpression::CaseInsensitiveOption);
+  model->setFilterRegularExpression(regExp);
+#endif
+}
 
 void CopasiWidget::refresh()
 {
