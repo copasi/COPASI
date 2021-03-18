@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -241,21 +241,10 @@ bool isScan(const SedRepeatedTask* task)
 
   const SedDocument* doc = task->getSedDocument();
 
-  if (task->isSetSimulationReference())
-    {
-      const SedSimulation* sim = doc->getSimulation(task->getSimulationReference());
-
-      if (sim != NULL && (
-            sim->getTypeCode() == SEDML_SIMULATION_STEADYSTATE ||
-            sim->getTypeCode() == SEDML_SIMULATION_ONESTEP ||
-            sim->getTypeCode() == SEDML_SIMULATION_UNIFORMTIMECOURSE))
-        return true;
-    }
-
   for (size_t i = 0; i < task->getNumSubTasks(); ++i)
     {
       const SedSubTask* subTask = task->getSubTask(i);
-      const SedTask* t = doc->getTask(subTask->getTask());
+      const SedTask * t = dynamic_cast< const SedTask * >(doc->getTask(subTask->getTask()));
 
       if (isScan(t)) return true;
     }
@@ -322,12 +311,12 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
                 if (!isTimeCourse && !isScanTask)
                   for (size_t j = 0; j < generator->getNumVariables(); ++j)
                     {
-                      const SedTask* t = mpSEDMLDocument->getTask(generator->getVariable(j)->getTaskReference());
+                      const auto* t = mpSEDMLDocument->getTask(generator->getVariable(j)->getTaskReference());
 
                       if (t == NULL) continue;
 
                       isScanTask = t->getTypeCode() == SEDML_TASK_REPEATEDTASK && isScan((const SedRepeatedTask*)t);
-                      isTimeCourse = isTC(t);
+                      isTimeCourse = isTC(dynamic_cast<const SedTask*>(t));
                     }
               }
 
@@ -368,7 +357,10 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
 
             for (unsigned int ic = 0; ic < p->getNumCurves(); ++ic)
               {
-                SedCurve *curve = p->getCurve(ic);
+                SedCurve * curve = dynamic_cast < SedCurve*>(p->getCurve(ic));
+
+                if (!curve)
+                  continue;
 
                 std::string xDataReference = curve->getXDataReference();
                 std::string yDataReference = curve->getYDataReference();
@@ -538,8 +530,11 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
             // if issued as warning, this message is to be disregarded,
             // it was a bug in earlier versions of libSEDML
+#if LIBSEDML_VERSION < 1
             if (pSEDMLError->getErrorId() == SedInvalidNamespaceOnSed)
               continue;
+
+#endif
 
             if (mIgnoredSEDMLMessages.find(pSEDMLError->getErrorId())
                 != mIgnoredSEDMLMessages.end())
@@ -646,17 +641,20 @@ SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
 
   for (unsigned int i = 0; i < mpSEDMLDocument->getNumTasks(); ++i)
     {
-      SedTask * current = mpSEDMLDocument->getTask(i);
+      auto * task = mpSEDMLDocument->getTask(i);
 
-      // skip taks for models we did not import
-      if (current->isSetModelReference() && current->getModelReference() != this->mImportedModel)
-        continue;
 
-      switch (current->getTypeCode())
+      switch (task->getTypeCode())
         {
           case SEDML_TASK:
           {
-            SedSimulation* sedmlsim =
+            auto * current = static_cast< SedTask * >(task);
+
+            // skip tasks for models we did not import
+            if (current->isSetModelReference() && current->getModelReference() != this->mImportedModel)
+              continue;
+
+            SedSimulation * sedmlsim =
               mpSEDMLDocument->getSimulation(current->getSimulationReference());
             updateCopasiTaskForSimulation(sedmlsim, copasi2sedmlmap);
             break;
@@ -664,7 +662,7 @@ SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
 
           case SEDML_TASK_REPEATEDTASK:
           {
-            SedRepeatedTask *repeat = static_cast<SedRepeatedTask*>(current);
+            SedRepeatedTask *repeat = static_cast<SedRepeatedTask*>(task);
             SedRange* range = repeat->getRange(repeat->getRangeId());
 
             if (range == NULL && range->getTypeCode() != SEDML_RANGE_FUNCTIONALRANGE)
@@ -754,7 +752,7 @@ for (double val : vals)
                 continue;
               }
 
-            SedTask* actualSubTask = mpSEDMLDocument->getTask(subTask->getTask());
+            SedTask* actualSubTask = dynamic_cast<SedTask*>(mpSEDMLDocument->getTask(subTask->getTask()));
 
             if (actualSubTask == NULL || !actualSubTask->isSetSimulationReference())
               {
@@ -779,7 +777,7 @@ for (double val : vals)
 
           default:
           {
-            const char* name = SedTypeCode_toString(current->getTypeCode());
+            const char * name = SedTypeCode_toString(task->getTypeCode());
             CCopasiMessage(CCopasiMessage::WARNING,
                            "Encountered unsupported Task type '%s'. This task cannot be imported in COPASI",
                            name != NULL ? name : "unknown");
