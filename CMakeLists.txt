@@ -451,16 +451,27 @@ if(BUILD_GUI)
   endif()
   
   if (${SELECT_QT} MATCHES "Qt5" OR
+      ${SELECT_QT} MATCHES "Qt6" OR
       ${SELECT_QT} MATCHES "Any")
     # then narrow down the precise modules we need
     option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit for notes" OFF)
     option(QT5_USE_DATAVISUALIZATION "Use Qt5DataVisualization instead of the deprecated QwtPlot3D" ON)
+    if (${QT5_USE_DATAVISUALIZATION})
+    option(WITH_DATAVISUALIZATION_NAMESPACES "The DataVisualization modeule uses c++ namespaces" ON)
+    endif()
+    option(WITH_LEGACY_OPENGL "Use Legacy OpenGL visualization" OFF)
     
     set (ADDITIONAL_QT5_MODULES)
     if (QT5_USE_DATAVISUALIZATION)
     set (ADDITIONAL_QT5_MODULES ${ADDITIONAL_QT5_MODULES} DataVisualization)
     endif()
     
+    if(${SELECT_QT} MATCHES "Qt6")
+    # for xml sax parser and qregex
+    set (ADDITIONAL_QT5_MODULES ${ADDITIONAL_QT5_MODULES} Core5Compat)
+    endif()
+    
+
     if (QT_USE_TEXTBROWSER)
       QT_FIND_MODULES( Concurrent
                        Core
@@ -517,7 +528,10 @@ if(BUILD_GUI)
   # check for qwt, TODO check if the version is OK
   find_package(QWT REQUIRED)
   # check for qwtplot3d
+  
+  if (NOT QT5_USE_DATAVISUALIZATION)
   find_package(QWTPLOT3D REQUIRED)
+  endif()
 
   # if the MML widget is available, we need to enable "HAVE_MML"
 
