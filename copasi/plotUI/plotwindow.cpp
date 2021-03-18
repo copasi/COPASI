@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -52,7 +52,9 @@
 
 #if QWT_VERSION > 0x060000
 #include <qwt_plot_renderer.h>
+#include <qwt_text.h>
 #endif
+
 
 #if QWT_VERSION < 0x060000
 // taken from qwt examples/bode
@@ -160,7 +162,7 @@ void PlotWindow::createActions()
   mpaSaveImage ->setToolTip("Save Plot as Image");
   connect(mpaSaveImage, SIGNAL(triggered()), this, SLOT(printAsImage()));
   mpaSaveData = new QAction("Save Data", this);
-  mpaSaveData ->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_S);
+  mpaSaveData ->setShortcut(QKeySequence(Qt::CTRL, Qt::SHIFT, Qt::Key_S));
   mpaSaveData ->setToolTip("Save Data");
   connect(mpaSaveData, SIGNAL(triggered()), this, SLOT(slotSaveData()));
   mpaZoomOut = new QAction("Zoom out", this);
@@ -387,7 +389,9 @@ void PlotWindow::printPlot()
     }
 
   printer.setCreator("COPASI");
+#if QT_VERSION < 6
   printer.setOrientation(QPrinter::Landscape);
+#endif
   QPrintDialog dialog(&printer);
 
   if (dialog.exec())

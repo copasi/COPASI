@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -226,7 +231,9 @@ int ScrollBar::extent() const
   return style().pixelMetric(QStyle::PM_ScrollBarExtent, this);
 #else
   QStyleOptionSlider opt;
+#if QT_VERSION < 6
   opt.init(this);
+#endif
   opt.subControls = QStyle::SC_None;
   opt.activeSubControls = QStyle::SC_None;
   opt.orientation = orientation();

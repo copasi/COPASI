@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -30,8 +30,9 @@
 #include <qwt_plot.h>
 #include <qwt_painter.h>
 
+
 #if QWT_VERSION > 0x060000
-#include <qwt_compat.h>
+#  include <qwt_compat.h>
 #else
 #include <qwt_data.h>
 #include <qwt_raster_data.h>
@@ -84,6 +85,20 @@ public:
 
   bool getBilinear() const;
   void setBilinear(bool bilinear);
+
+#if QWT_VERSION >= 0x060200
+  virtual QwtInterval interval(Qt::Axis axis) const
+  {
+    return d_intervals[axis];
+  }
+  void setInterval(Qt::Axis axis, const QwtInterval & interval)
+  {
+    d_intervals[axis] = interval;
+  }
+
+protected:
+  QwtInterval d_intervals[3];
+#endif
 
 protected:
   CSpectorgramData &operator = (const CSpectorgramData & rhs);
