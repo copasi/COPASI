@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,6 +28,12 @@
 #include <QtCore/QPointer>
 #include <QtCore/QPropertyAnimation>
 
+#ifdef WITH_DATAVISUALIZATION_NAMESPACES
+#      define DATAVIS_NS_PREFIX QtDataVisualization::
+#else
+#      define DATAVIS_NS_PREFIX
+#endif
+
 class CDataArray;
 class CQCustomInputHandler;
 class CQArrayAnnotationsWidget;
@@ -37,7 +43,7 @@ class CQ3DBarsModifier : public QObject
   Q_OBJECT
 
 public:
-  explicit CQ3DBarsModifier(CQArrayAnnotationsWidget* widget, QtDataVisualization::Q3DBars *bargraph);
+  explicit CQ3DBarsModifier(CQArrayAnnotationsWidget * widget, DATAVIS_NS_PREFIX Q3DBars * bargraph);
   ~CQ3DBarsModifier();
 
   void clearData();
@@ -61,7 +67,7 @@ public slots:
   void changeSelectionMode(int selectionMode);
   void changeTheme(int theme);
   void changeShadowQuality(int quality);
-  void shadowQualityUpdatedByVisual(QtDataVisualization::QAbstract3DGraph::ShadowQuality shadowQuality);
+  void shadowQualityUpdatedByVisual(DATAVIS_NS_PREFIX QAbstract3DGraph::ShadowQuality shadowQuality);
   void changeLabelRotation(int rotation);
   void setAxisTitleVisibility(bool enabled);
   void setAxisTitleFixed(bool enabled);
@@ -77,7 +83,7 @@ signals:
   void fontSizeChanged(int size);
 
 private:
-  QtDataVisualization::Q3DBars * m_graph;
+  DATAVIS_NS_PREFIX Q3DBars * m_graph;
   CQCustomInputHandler* m_inputHandler;
   float m_xRotation;
   float m_yRotation;
@@ -88,11 +94,11 @@ private:
   float m_maxval;
   QStringList mRowHeaders;
   QStringList mColHeaders;
-  QtDataVisualization::QValue3DAxis *m_valueAxis;
-  QtDataVisualization::QCategory3DAxis *m_rowAxis;
-  QtDataVisualization::QCategory3DAxis *m_colAxis;
-  QtDataVisualization::QBar3DSeries *m_primarySeries;
-  QtDataVisualization::QAbstract3DSeries::Mesh m_barMesh;
+  DATAVIS_NS_PREFIX QValue3DAxis * m_valueAxis;
+  DATAVIS_NS_PREFIX QCategory3DAxis * m_rowAxis;
+  DATAVIS_NS_PREFIX QCategory3DAxis * m_colAxis;
+  DATAVIS_NS_PREFIX QBar3DSeries * m_primarySeries;
+  DATAVIS_NS_PREFIX QAbstract3DSeries::Mesh m_barMesh;
   bool m_smooth;
   QPropertyAnimation m_animationCameraX;
   QPropertyAnimation m_animationCameraY;
@@ -107,9 +113,9 @@ private:
 
 #include <QtDataVisualization/QTouch3DInputHandler>
 
-using namespace QtDataVisualization;
+//using namespace QtDataVisualization;
 
-class CQCustomInputHandler : public QTouch3DInputHandler
+class CQCustomInputHandler : public DATAVIS_NS_PREFIX QTouch3DInputHandler
 {
   Q_OBJECT
 
@@ -120,9 +126,11 @@ class CQCustomInputHandler : public QTouch3DInputHandler
   };
 
 public:
-  explicit CQCustomInputHandler(QAbstract3DGraph *graph, QObject *parent = 0);
+  explicit CQCustomInputHandler(DATAVIS_NS_PREFIX QAbstract3DGraph * graph, QObject * parent = 0);
 
-  inline void setAxes(QAbstract3DAxis *axisX, QAbstract3DAxis *axisY, QAbstract3DAxis *axisZ)
+  inline void setAxes(DATAVIS_NS_PREFIX QAbstract3DAxis * axisX,
+                      DATAVIS_NS_PREFIX QAbstract3DAxis * axisY,
+                      DATAVIS_NS_PREFIX QAbstract3DAxis * axisZ)
   {
     m_axisX = axisX;
     m_axisY = axisY;
@@ -139,10 +147,10 @@ signals:
   void signalBarDoubleClicked(int row, int col);
 
 protected:
-  QAbstract3DGraph* m_graph;
-  QAbstract3DAxis *m_axisX;
-  QAbstract3DAxis *m_axisY;
-  QAbstract3DAxis *m_axisZ;
+  DATAVIS_NS_PREFIX QAbstract3DGraph * m_graph;
+  DATAVIS_NS_PREFIX QAbstract3DAxis * m_axisX;
+  DATAVIS_NS_PREFIX QAbstract3DAxis * m_axisY;
+  DATAVIS_NS_PREFIX QAbstract3DAxis * m_axisZ;
   QPoint mPosDown;
   InputState mState;
 };
