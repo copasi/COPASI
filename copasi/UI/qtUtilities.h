@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,14 +25,14 @@
 #ifndef COPASI_qtUtilities
 #define COPASI_qtUtilities
 
-#include <QtCore/QVariant>
+#include <QVariant>
 
-#include <QtCore/QString>
+#include <QString>
+#include <QStringList>
 
 #include <copasi/copasi.h>
 #include "copasi/utilities/CCopasiParameter.h"
 
-class QStringList;
 class CCopasiParameterGroup;
 class CopasiWidget;
 class QObject;

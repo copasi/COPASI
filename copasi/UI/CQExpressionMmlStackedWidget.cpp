@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -227,8 +227,12 @@ void CQExpressionMmlStackedWidget::savePDF(const QString& outfilename)
   printer.setOutputFormat(QPrinter::PdfFormat);
   printer.setOutputFileName(outfilename);
   painter.setRenderHints(
-    QPainter::Antialiasing | QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
+    QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+#if QT_VERSION < 6
   printer.setPaperSize(QSizeF(size.width(), size.height()), QPrinter::Point);
+#else
+  printer.setPageSize(QPageSize(QSizeF(size.width(), size.height()), QPageSize::Point));
+#endif
 
   painter.begin(&printer);
   doc.paint(&painter, QPoint(0, 0));
@@ -249,7 +253,6 @@ void CQExpressionMmlStackedWidget::savePNG(const QString& outfilename)
   QPainter painter(&pixmap);
   painter.setRenderHint(QPainter::Antialiasing);
   painter.setRenderHint(QPainter::SmoothPixmapTransform);
-  painter.setRenderHint(QPainter::HighQualityAntialiasing);
   painter.fillRect(0, 0, size.width(), size.height(), Qt::white);
   doc.paint(&painter, QPoint(0, 0));
   pixmap.save(outfilename, "PNG");

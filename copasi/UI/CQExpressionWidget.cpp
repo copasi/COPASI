@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -77,8 +77,8 @@ CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget * ew)
 #else
   QPalette Palette = QApplication::palette();
 #endif
-  QColor Foreground = Palette.color(QPalette::Active, QPalette::Foreground);
-  QColor Background = Palette.color(QPalette::Active, QPalette::Background);
+  QColor Foreground = Palette.color(QPalette::Active, QPalette::WindowText);
+  QColor Background = Palette.color(QPalette::Active, QPalette::Window);
 
   if (Foreground.redF() + Foreground.greenF() + Foreground.blueF() < Background.redF() + Background.greenF() + Background.blueF())
     {

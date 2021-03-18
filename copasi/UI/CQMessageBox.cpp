@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -69,7 +74,12 @@ CQMessageBox::CQMessageBox(Icon icon, const QString &title, const QString &text,
   mpPage1->setObjectName(QString::fromUtf8("mpPage1"));
 
   mpVerticalLayoutPage1 = new QVBoxLayout(mpPage1);
+#if QT_VERSION < 6
   mpVerticalLayoutPage1->setMargin(2);
+#else
+  mpVerticalLayoutPage1->setContentsMargins(2, 2, 2, 2);
+#endif
+
   mpVerticalLayoutPage1->setObjectName(QString::fromUtf8("mpVerticalLayoutPage1"));
 
   mpText1 = new QTextEdit(mpPage1);
@@ -420,7 +430,11 @@ void CQMessageBox::setFilteredText(const QString & text)
       mpPage2->setObjectName(QString::fromUtf8("mpPage2"));
 
       mpVerticalLayoutPage2 = new QVBoxLayout(mpPage2);
+#if QT_VERSION < 6
       mpVerticalLayoutPage2->setMargin(2);
+#else
+      mpVerticalLayoutPage2->setContentsMargins(2, 2, 2, 2);
+#endif
       mpVerticalLayoutPage2->setObjectName(QString::fromUtf8("mpVerticalLayoutPage2"));
 
       mpText2 = new QTextEdit(mpPage2);

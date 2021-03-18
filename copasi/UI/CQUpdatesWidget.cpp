@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,7 +49,11 @@ CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, Qt::WindowFl
   setWindowTitle("CQUpdatesWidget");
 
   mWidgetLayout = new QGridLayout(this);
+#if QT_VERSION < 6
   mWidgetLayout->setMargin(11);
+#else
+  mWidgetLayout->setContentsMargins(11, 11, 11, 11);
+#endif
   mWidgetLayout->setSpacing(6);
   mWidgetLayout->setObjectName("CQUpdatesWidgetLayout");
 

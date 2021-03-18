@@ -258,7 +258,7 @@ void CQOptPopulation::saveToFile(const QString& fileName) const
       printer.setOutputFileName(fileName);
       QPainter painter(&printer);
       painter.setRenderHints(
-        QPainter::Antialiasing | QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
+        QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
       mpGS->render(&painter, QRect(), mpGS->itemsBoundingRect());
       painter.end();
     }
@@ -281,7 +281,7 @@ void CQOptPopulation::saveToFile(const QString& fileName) const
       QImage image(QSize(width() * scale, height() * scale), QImage::Format_ARGB32);
       QPainter painter(&image);
       painter.setRenderHints(
-        QPainter::Antialiasing | QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
+        QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
       mpGS->render(&painter, image.rect(), mpGS->itemsBoundingRect());
       painter.end();
       image.save(fileName);

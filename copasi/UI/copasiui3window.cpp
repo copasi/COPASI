@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,6 +49,7 @@
 #endif
 #include <QRegExp>
 #include <QDesktopServices>
+#include <QActionGroup>
 
 #include <vector>
 #include <sstream>
@@ -134,7 +135,7 @@
 
 #ifdef USE_JIT
 #include "copasi/math/CJitCompiler.h"
-#endif 
+#endif
 
 // static
 CopasiUI3Window *CopasiUI3Window::pMainWindow = NULL;
@@ -426,7 +427,7 @@ void CopasiUI3Window::createActions()
   mpaSave->setShortcut(Qt::CTRL + Qt::Key_S);
   mpaSaveAs = new QAction(CQIconResource::icon(CQIconResource::fileSaveas), "Save &As...", this);
   connect(mpaSaveAs, SIGNAL(triggered()), this, SLOT(slotFileSaveAs()));
-  mpaSaveAs->setShortcut(Qt::SHIFT + Qt::CTRL + Qt::Key_S);
+  mpaSaveAs->setShortcut(QKeySequence(Qt::SHIFT, Qt::CTRL, Qt::Key_S));
   mpaImportSBML = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "&Import SBML...", this);
   connect(mpaImportSBML, SIGNAL(triggered()), this, SLOT(slotImportSBML()));
   mpaImportSBML->setShortcut(Qt::CTRL + Qt::Key_I);
@@ -497,10 +498,10 @@ void CopasiUI3Window::createActions()
   //     QAction* mpaObjectBrowser;
 
   mpaAddModel = new QAction(CQIconResource::icon(CQIconResource::fileAdd), "&Add to model...", this);
-  mpaAddModel->setShortcut(Qt::SHIFT + Qt::CTRL + Qt::Key_A);
+  mpaAddModel->setShortcut(QKeySequence(Qt::SHIFT, Qt::CTRL, Qt::Key_A));
   connect(mpaAddModel, SIGNAL(triggered()), this, SLOT(slotAddFileOpen()));
   mpaMergeModels = new QAction("&Merge added model...", this);
-  mpaMergeModels->setShortcut(Qt::SHIFT + Qt::CTRL + Qt::Key_M);
+  mpaMergeModels->setShortcut(QKeySequence(Qt::SHIFT, Qt::CTRL, Qt::Key_M));
   connect(mpaMergeModels, SIGNAL(triggered()), this, SLOT(slotMergeModels()));
 
   mpaCloseAllWindows = new QAction("Close all windows below:", this);
@@ -3828,7 +3829,7 @@ void CopasiUI3Window::removeReportTargets()
   auto& taskList = *mpDataModel->getTaskList();
   std::stringstream str;
 
-  for (auto & task : taskList)
+for (auto & task : taskList)
     {
       std::string target = task.getReport().getTarget();
 

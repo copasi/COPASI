@@ -117,7 +117,11 @@ AboutDialog::AboutDialog(QWidget *parent,
   textEdit->setPalette(Palette);
 
   QFontMetrics FontMetrics = this->fontMetrics();
+#if QT_VERSION > 5
+  int w = width * (FontMetrics.horizontalAdvance('W') + FontMetrics.horizontalAdvance('I')) / 2;
+#else
   int w = width * (FontMetrics.width('W') + FontMetrics.width('I')) / 2;
+#endif
   int h = heigth * FontMetrics.lineSpacing();
   this->textEdit->setFixedSize(w, h);
   this->textEdit->setReadOnly(true);
