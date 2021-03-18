@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,6 +33,7 @@
 #include <qwt_legend_data.h>
 #include <qwt_legend_label.h>
 #include <qwt_plot_canvas.h>
+#include <qwt_compat.h>
 #else
 #include <qwt_legend_item.h>
 #endif
@@ -69,6 +70,10 @@
 #include <copasi/plotUI/CLinearColorMap.h>
 
 #include <QApplication>
+
+#if QT_VERSION > 6
+#include <QRegularExpression>
+#endif
 
 #define ActivitySize 8
 C_FLOAT64 CopasiPlot::MissingValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -277,13 +282,17 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
   else
     {
       // have explicit list of numbers to plot
+#if QT_VERSION < 6
       QStringList list = contours.split(QRegExp(",| |;"), QString::SkipEmptyParts);
+#else
+      QStringList list = contours.split(QRegularExpression(",| |;"), Qt::SkipEmptyParts);
+#endif
       QwtValueList contourLevels;
 
-      foreach (const QString & level, list)
-        {
-          contourLevels += level.toDouble();
-        }
+      foreach(const QString & level, list)
+      {
+        contourLevels += level.toDouble();
+      }
 
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
