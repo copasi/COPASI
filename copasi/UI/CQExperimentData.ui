@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+<comment> Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> University of Virginia, University of Heidelberg, and University </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
 <comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and University of </comment>
 <comment> of Connecticut School of Medicine. </comment>
@@ -1004,4 +1009,34 @@
    </hints>
   </connection>
  </connections>
+  <slots>
+    <slot>slotRevert()</slot>
+    <slot>slotFirst()</slot>
+    <slot>slotLast()</slot>
+    <slot>slotHeader()</slot>
+    <slot>slotExprimentType(bool)</slot>
+    <slot>slotCheckNormalizeWeightsPerExperiment(bool)</slot>
+    <slot>slotCheckTab(bool)</slot>
+    <slot>slotCheckHeader(bool)</slot>
+    <slot>slotExperimentAdd()</slot>
+    <slot>slotExperimentChanged(QListWidgetItem *, QListWidgetItem *)</slot>
+    <slot>slotExperimentDelete()</slot>
+    <slot>slotFileAdd()</slot>
+    <slot>slotFileChanged(QListWidgetItem *, QListWidgetItem *)</slot>
+    <slot>slotFileEdit()</slot>
+    <slot>slotFileDelete()</slot>
+    <slot>slotCancel()</slot>
+    <slot>slotOK()</slot>
+    <slot>slotUpdateTable()</slot>
+    <slot>slotModelObject(QModelIndex)</slot>
+    <slot>slotModelObjectDelayed()</slot>
+    <slot>slotTypeChanged(int, int)</slot>
+    <slot>slotSeparator()</slot>
+    <slot>slotCheckFrom(bool)</slot>
+    <slot>slotCheckTo(bool)</slot>
+    <slot>slotCheckToAll(bool)</slot>
+    <slot>slotWeightMethod(int)</slot>
+    <slot>loadTable(CExperiment *, bool)</slot>
+    <slot></slot>
+  </slots>
 </ui>

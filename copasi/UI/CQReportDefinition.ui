@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the </comment>
 <comment> University of Virginia, University of Heidelberg, and University </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -1082,11 +1082,32 @@
   </connection>
  </connections>
  <slots>
-  <slot>btnCopyReportClicked()</slot>
-  <slot>slotDeleteCurrentItem()</slot>
-  <slot>slotEditCurrentItem()</slot>
-  <slot>slotEditCurrentItemText()</slot>
-  <slot>slotAddSeparator()</slot>
-  <slot>slotAddItem()</slot>
+   <slot>nameChanged(QString)</slot>
+   <slot>taskChanged(QString)</slot>
+   <slot>commentChanged()</slot>
+   <slot>separatorChanged(QString)</slot>
+   <slot>precisionChanged(QString)</slot>
+   <slot>chkTabClicked()</slot>
+   <slot>btnAdvancedClicked()</slot>
+   <slot>btnItemClicked()</slot>
+   <slot>btnSeparatorClicked()</slot>
+   <slot>btnLineBreakClicked()</slot>
+   <slot>btnTextClicked()</slot>
+   <slot>btnDeleteClicked()</slot>
+   <slot>btnUpClicked()</slot>
+   <slot>btnDownClicked()</slot>
+   <slot>chkTitleClicked()</slot>
+   <slot>btnDeleteReportClicked()</slot>
+   <slot>btnNewReportClicked()</slot>
+   <slot>btnCopyReportClicked()</slot>
+   <slot>btnRevertClicked()</slot>
+   <slot>btnCommitClicked()</slot>
+   <slot>slotDeleteCurrentItem()</slot>
+   <slot>slotEditCurrentItem()</slot>
+   <slot>slotEditCurrentItemText()</slot>
+   <slot>slotAddSeparator()</slot>
+   <slot>slotAddLineBreak()</slot>
+   <slot>slotAddItem()</slot>
+   <slot>setDirty()</slot>
  </slots>
 </ui>

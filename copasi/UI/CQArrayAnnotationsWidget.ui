@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+<comment> Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> University of Virginia, University of Heidelberg, and University </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
 <comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and University of </comment>
 <comment> of Connecticut School of Medicine. </comment>
@@ -219,4 +224,25 @@
    </hints>
   </connection>
  </connections>
+  <slots>
+    <slot>setColorScalingAutomatic(bool)</slot>
+    <slot>setLegendEnabled(bool)</slot>
+    <slot>setSortingEnabled(bool)</slot>
+    <slot>disableBarChart()</slot>
+    <slot>disableSlider()</slot>
+    <slot>setControlsEnabled(bool)</slot>
+    <slot>setFocusOnTable()</slot>
+    <slot>selectTableCell(int, int)</slot>
+    <slot>setFocusOnBars()</slot>
+    <slot>switchToTable()</slot>
+    <slot>clearWidget()</slot>
+    <slot>slotRowSelectionChanged(int)</slot>
+    <slot>slotColumnSelectionChanged(int)</slot>
+    <slot>slotCurrentSelectionIndexChanged(int, int)</slot>
+    <slot>slotContentCellClicked(QModelIndex)</slot>
+    <slot>slotContentDoubleClicked(QModelIndex)</slot>
+    <slot>changeContents()</slot>
+    <slot>setColumnSize(int, int, int)</slot>
+    <slot>slotResetSortOrder()</slot>
+  </slots>
 </ui>
