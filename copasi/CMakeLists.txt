@@ -334,14 +334,14 @@ if (COPASI_INSTALL_C_API)
     endforeach()
 
     install(TARGETS libCOPASISE-static EXPORT libcopasise-static-config
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
         ${INCLUDE_DESTINATION}
         )
 
     install (EXPORT libcopasise-static-config
-        DESTINATION lib/cmake
+        DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake
         )
 
     WRITE_BASIC_PACKAGE_VERSION_FILE(
@@ -352,7 +352,7 @@ if (COPASI_INSTALL_C_API)
 
     install (FILES
         ${CMAKE_CURRENT_BINARY_DIR}/libcopasise-static-config-version.cmake
-        DESTINATION lib/cmake)
+        DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake)
 
 endif(COPASI_INSTALL_C_API)
 
@@ -390,14 +390,14 @@ if(ENABLE_LIBCOPASISE_SHARED)
   if (COPASI_INSTALL_C_API)
 
       install(TARGETS libCOPASISE-shared EXPORT libcopasise-shared-config
-          RUNTIME DESTINATION bin
-          LIBRARY DESTINATION lib
-          ARCHIVE DESTINATION lib
+          RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
+          LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+          ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
           ${INCLUDE_DESTINATION}
           )
 
       install (EXPORT libCOPASISE-shared-config
-          DESTINATION lib/cmake
+          DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake
           )
 
       WRITE_BASIC_PACKAGE_VERSION_FILE(
@@ -408,7 +408,7 @@ if(ENABLE_LIBCOPASISE_SHARED)
 
       install (FILES
           ${CMAKE_CURRENT_BINARY_DIR}/libcopasise-shared-config-version.cmake
-          DESTINATION lib/cmake)
+          DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake)
 
 
   endif(COPASI_INSTALL_C_API)
@@ -456,11 +456,10 @@ if(BUILD_GUI)
   endif(ENABLE_SBW_INTEGRATION)
 
 
-  #if (COPASI_UI_MOC_OPTIONS)
-  #  message(STATUS "Mocing with options: ${COPASI_UI_MOC_OPTIONS}")
-  #endif(COPASI_UI_MOC_OPTIONS)
-  #
-
+  if (COPASI_UI_MOC_OPTIONS)
+    message(STATUS "Mocing with options: ${COPASI_UI_MOC_OPTIONS}")
+  endif(COPASI_UI_MOC_OPTIONS)
+  
   set(HEADERS_UI_MOC)
   set(HEADERS_UI_FORMS)
   set(GUI_INCLUDE_DIRS)
@@ -522,7 +521,7 @@ if(BUILD_GUI)
 
   foreach (dir ${COPASI_UI_DIRECTORIES})
     string(TOUPPER ${dir} suffix)
-    #message(STATUS "Mocing files for subdir: ${dir}")
+    message(STATUS "Mocing files for subdir: ${dir}")
     set(TEMP_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -p${dir})
     
     if (Qt5_FOUND)
@@ -532,6 +531,7 @@ if(BUILD_GUI)
         qt5_wrap_cpp(TEMP_UI_MOC ${dir} ${HEADERS_${suffix}})
       endif(TEMP_UI_MOC_OPTIONS)
       
+
       set(HEADERS_UI_MOC ${HEADERS_UI_MOC} ${TEMP_UI_MOC})
       
       if(FORMS_${suffix})
@@ -563,6 +563,7 @@ if(BUILD_GUI)
 
   
   set(GUI_INCLUDE_DIRS ${GUI_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_BINARY_DIR})
+
   include_directories(${LIBSBML_INCLUDE_DIR})
   include_directories(${QWT_INCLUDE_DIR})
   include_directories(${QWTPLOT3D_INCLUDE_DIR})
@@ -621,16 +622,16 @@ if(BUILD_GUI)
   set(UI_LIBS libCOPASIUI)
   set(UI_DEPENDENCIES libCOPASIUI)
 
-  if (COPASI_INSTALL_C_API)
+  if (COPASI_INSTALL_C_API_)
     install(TARGETS libCOPASIUI EXPORT libcopasiui-config
-      RUNTIME DESTINATION bin
-      LIBRARY DESTINATION lib
-      ARCHIVE DESTINATION lib
+      RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
+      LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+      ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
       ${INCLUDE_DESTINATION}
       )
 
     install (EXPORT libcopasiui-config
-      DESTINATION lib/cmake
+      DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake
       )
 
     WRITE_BASIC_PACKAGE_VERSION_FILE(
@@ -641,7 +642,7 @@ if(BUILD_GUI)
 
     install (FILES
       ${CMAKE_CURRENT_BINARY_DIR}/libcopasiui-config-version.cmake
-      DESTINATION lib/cmake)
+      DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake)
 
     # install headers
     foreach (file ${COPASI_UI_HEADERS})
@@ -649,7 +650,7 @@ if(BUILD_GUI)
       string(REPLACE ${CMAKE_CURRENT_SOURCE_DIR} include/copasi destination ${dir})
       install(FILES ${file} DESTINATION ${destination})
     endforeach()
-  endif(COPASI_INSTALL_C_API)
+  endif(COPASI_INSTALL_C_API_)
 endif(BUILD_GUI)
 
 
