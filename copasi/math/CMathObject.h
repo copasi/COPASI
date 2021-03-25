@@ -305,6 +305,7 @@ private:
   void calculateExtensiveReactionRate();
   void calculatePropensity();
   void calculateCorrectedPropensity();
+  void calculateTransitionTime();
 
   /**
    * Compile initial value objects
