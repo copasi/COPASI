@@ -264,27 +264,12 @@ public:
   void setMIRIAMUpdateFrequencyInDays(const size_t & days);
 
   /**
-   * Update the MIRIAM resources
-   * @param CProcessReport * pProcessReport
-   * @return bool success
-   */
-  bool updateMIRIAMResources(CProcessReport * pProcessReport);
-
-  /**
   * Update the MIRIAM resources using a local filename
   * @param CProcessReport * pProcessReport
   * @return bool success
   */
   bool updateMIRIAMResourcesFromFile(CProcessReport * pProcessReport,
                                      const std::string& filename);
-
-  /**
-   * Automatically update the resources when the last update is older than
-   * the current date minus the update interval.
-   * @param CProcessReport * pProcessReport
-   * @return bool success
-   */
-  bool autoUpdateMIRIAMResources(CProcessReport * pProcessReport);
 
   /**
    * Retrieve the indexed resource

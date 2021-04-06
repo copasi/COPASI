@@ -20,9 +20,9 @@
 
 // These are treated as external includes and must appear first
 
-#include "WebServicesIssues/soapH.h"
-#include "WebServicesIssues/soapMiriamWebServicesSoapBindingProxy.h"
-#include "WebServicesIssues/MiriamWebServicesSoapBinding.nsmap"
+// #include "WebServicesIssues/soapH.h"
+// #include "WebServicesIssues/soapMiriamWebServicesSoapBindingProxy.h"
+// #include "WebServicesIssues/MiriamWebServicesSoapBinding.nsmap"
 
 #include "copasi/copasi.h"
 
@@ -166,8 +166,6 @@ bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessRe
       pProcessReport->finishItem(hUpdateStep);
     }
 
-
-
   sizeNames = root.getNumChildren();
   processSteps = sizeNames + 2;
 
@@ -267,114 +265,6 @@ bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessRe
   return success;
 }
 
-bool CMIRIAMResources::updateMIRIAMResources(CProcessReport * pProcessReport)
-{
-  if (pProcessReport)
-    pProcessReport->setName("MIRIAM Resources Update...");
-
-  bool success = true;
-  MiriamWebServicesSoapBindingProxy * pProxy = new MiriamWebServicesSoapBindingProxy();
-
-  CCopasiParameterGroup * pTmpCpyCMIRIAMResources = new CCopasiParameterGroup("Resources");
-
-  CMIRIAMResource * pMIRIAMResource = NULL;
-  std::string Name, URI, Deprecated, Pattern, IsDeprecated;
-  int itNames = 0, itURIs = 0, sizeNames = 0, sizeURIs = 0;
-  unsigned C_INT32 processStep = 0, processSteps;
-  size_t hUpdateStep;
-  struct ns2__getDataTypesNameResponse DataTypesName;
-
-  if (pProxy->getDataTypesName(DataTypesName) == SOAP_OK)
-    {
-      sizeNames = DataTypesName.getDataTypesNameReturn->__size;
-      processSteps = sizeNames + 2;
-      hUpdateStep = pProcessReport->addItem("Update Process", processStep, &processSteps);
-
-      if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
-        return false;
-
-      for (itNames = 0; itNames < sizeNames; itNames++)
-        {
-          struct ns2__getDataTypeURIsResponse DataTypeURIs;
-
-          if (DataTypesName.getDataTypesNameReturn->__ptr[itNames] != "")
-            Name = DataTypesName.getDataTypesNameReturn->__ptr[itNames];
-
-          pMIRIAMResource = new CMIRIAMResource(Name, NULL);
-
-          if ((pProxy->getDataTypeURI(Name, URI) == SOAP_OK)
-              && (pProxy->getDataTypeURIs(Name, DataTypeURIs) == SOAP_OK)
-              && (pProxy->getDataTypePattern(Name, Pattern) == SOAP_OK))
-            {
-              sizeURIs = DataTypeURIs._getDataTypeURIsReturn->__size;
-
-              if (sizeURIs != 0)
-                {
-                  for (itURIs = 0; itURIs < sizeURIs; itURIs++)
-                    {
-                      Deprecated = DataTypeURIs._getDataTypeURIsReturn->__ptr[itURIs];
-
-                      if (Deprecated != URI)
-                        pMIRIAMResource->addDeprecatedURL(Deprecated);
-                    }
-                }
-
-              pMIRIAMResource->setMIRIAMDisplayName(Name);
-              pMIRIAMResource->setMIRIAMURI(URI);
-              pMIRIAMResource->setMIRIAMPattern(Pattern);
-              pMIRIAMResource->setMIRIAMCitation(URI == "urn:miriam:arxiv" ||
-                                                 URI == "urn:miriam:doi" ||
-                                                 URI == "urn:miriam:pubmed" ||
-                                                 URI == "urn:miriam:isbn");
-
-              pTmpCpyCMIRIAMResources->addParameter(pMIRIAMResource);
-            }
-          else
-            success = false;
-
-          processStep++;
-
-          if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
-            return false;
-        }
-
-      processStep++;
-
-      if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
-        return false;
-    }
-  else
-    success = false;
-
-  if (success)
-    {
-      // TODO add a resource for local objects, i.e., within the current model.
-
-      setMIRIAMLastUpdateDate();
-      *mpMIRIAMResources = *pTmpCpyCMIRIAMResources;
-      elevateChildren();
-      createDisplayNameMap();
-      createURIMap();
-    }
-  else
-    CCopasiMessage(CCopasiMessage::ERROR,
-                   MCAnnotation + 3,
-                   pProxy->soap_fault_string(),
-                   pProxy->soap_fault_detail());
-
-  pdelete(pTmpCpyCMIRIAMResources);
-
-  processStep++;
-
-  if (pProcessReport && !pProcessReport->progressItem(hUpdateStep)) return false;
-
-  if (pProcessReport) pProcessReport->finishItem(hUpdateStep);
-
-  pdelete(pProxy);
-
-  return success;
-}
-
 void CMIRIAMResources::setMIRIAMLastUpdateDate()
 {*mpLastUpdateDate = getActDateInSeconds();}
 
@@ -383,14 +273,6 @@ void CMIRIAMResources::setMIRIAMUpdateFrequencyInDays(const size_t & days)
 
 unsigned C_INT32 CMIRIAMResources::getActDateInSeconds()
 {return (unsigned C_INT32) time(NULL);}
-
-bool CMIRIAMResources::autoUpdateMIRIAMResources(CProcessReport * pProcessReport)
-{
-  if ((*mpLastUpdateDate + *mpUpdateFrequency) <= getActDateInSeconds())
-    {return updateMIRIAMResources(pProcessReport);}
-
-  return false;
-}
 
 bool CMIRIAMResources::elevateChildren()
 {
@@ -487,8 +369,8 @@ size_t CMIRIAMResources::getMIRIAMResourceIndex(const std::string & uri) const
   else
     URI = uri;
 
-  std::map< std::string , size_t >::const_iterator it = mURI2Resource.lower_bound(URI);
-  std::map< std::string , size_t >::const_iterator end = mURI2Resource.upper_bound(URI);
+  std::map< std::string, size_t >::const_iterator it = mURI2Resource.lower_bound(URI);
+  std::map< std::string, size_t >::const_iterator end = mURI2Resource.upper_bound(URI);
 
   if (it == mURI2Resource.begin())
     return index;

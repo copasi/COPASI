@@ -265,12 +265,15 @@ endif()
 
 if (APPLE AND CMAKE_GENERATOR STREQUAL "Xcode" OR DISABLE_CORE_OBJECT_LIBRARY)
   add_library (libCOPASISE-static STATIC ${COPASI_SOURCES} ${COPASI_HEADERS})
+  # target_compile_options(libCOPASISE-static PRIVATE -Werror -Wall -Wextra -Wsuggest-override)
 
   if (ENABLE_OMP)
     target_compile_options(libCOPASISE-static PRIVATE ${OpenMP_CXX_FLAGS})
   endif (ENABLE_OMP)
 else()
   add_library (libCOPASISE-core OBJECT ${COPASI_SOURCES} ${COPASI_HEADERS})
+  # target_compile_options(libCOPASISE-core PRIVATE -Werror -Wall -Wextra -Wsuggest-override)
+  
   add_library (libCOPASISE-static STATIC $<TARGET_OBJECTS:libCOPASISE-core>)
 
   if (ENABLE_OMP)
