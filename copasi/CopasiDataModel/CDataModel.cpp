@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -64,6 +64,8 @@
 
 #include "copasi/model/CModelExpansion.h"
 #include "copasi/model/CModelParameter.h"
+
+#include "copasi/MIRIAM/CModelMIRIAMInfo.h"
 
 #ifdef COPASI_Versioning
 #  include "copasi/versioning/CModelVersionHierarchy.h"
@@ -2837,6 +2839,12 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
     {
       mData.pModel = new CModel(this);
     }
+
+  CMIRIAMInfo MIRIAM;
+  MIRIAM.load(mData.pModel);
+  MIRIAM.addDefaultCreator();
+  MIRIAM.addDefaultCreatedDT();
+  MIRIAM.save();
 
   if (mData.pListOfLayouts == NULL)
     {

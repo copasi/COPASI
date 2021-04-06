@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,15 +28,16 @@
 
 #include "copasi/copasi.h"
 
-#include "CModelMIRIAMInfo.h"
-#include "CRDFWriter.h"
-#include "CRDFLiteral.h"
-#include "CRDFParser.h"
-#include "CConstants.h"
-#include "CRDFObject.h"
-#include "CRDFPredicate.h"
-#include "CRDFGraph.h"
+#include "copasi/MIRIAM/CModelMIRIAMInfo.h"
+#include "copasi/MIRIAM/CRDFWriter.h"
+#include "copasi/MIRIAM/CRDFLiteral.h"
+#include "copasi/MIRIAM/CRDFParser.h"
+#include "copasi/MIRIAM/CConstants.h"
+#include "copasi/MIRIAM/CRDFObject.h"
+#include "copasi/MIRIAM/CRDFPredicate.h"
+#include "copasi/MIRIAM/CRDFGraph.h"
 
+#include "copasi/commandline/CConfigurationFile.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/model/CEvent.h"
 #include "copasi/model/CReaction.h"
@@ -189,6 +190,36 @@ void CMIRIAMInfo::loadCreators()
   return;
 }
 
+CCreator * CMIRIAMInfo::addDefaultCreator(bool force)
+{
+  if ((!mCreators.empty() || !getCreatedDT().empty()) && !force)
+    return NULL;
+
+  CConfigurationFile * pConfig = CRootContainer::getConfiguration();
+
+  if ((pConfig->getCurrentAuthorGivenName().empty() || pConfig->getCurrentAuthorGivenName() == "Anonymous")
+      && (pConfig->getCurrentAuthorGivenName().empty() || pConfig->getCurrentAuthorFamilyName() == "Anonymous")
+      && (pConfig->getCurrentAuthorEmail().empty() || pConfig->getCurrentAuthorEmail() == "An.other@mailinator.com")
+      && pConfig->getCurrentAuthorOrganization().empty())
+    return NULL;
+
+  CCreator * pCreator = createCreator("");
+
+  if (pConfig->getCurrentAuthorGivenName() != "Anonymous" && !pConfig->getCurrentAuthorGivenName().empty())
+    pCreator->setGivenName(pConfig->getCurrentAuthorGivenName());
+
+  if (pConfig->getCurrentAuthorFamilyName() != "Anonymous" && !pConfig->getCurrentAuthorGivenName().empty())
+    pCreator->setFamilyName(pConfig->getCurrentAuthorFamilyName());
+
+  if (pConfig->getCurrentAuthorEmail() != "An.other@mailinator.com" && !pConfig->getCurrentAuthorEmail().empty())
+    pCreator->setEmail(pConfig->getCurrentAuthorEmail());
+
+  if (!pConfig->getCurrentAuthorOrganization().empty())
+    pCreator->setORG(pConfig->getCurrentAuthorOrganization());
+
+  return pCreator;
+}
+
 CDataVector <CReference> & CMIRIAMInfo::getReferences()
 {return mReferences;}
 
@@ -299,6 +330,16 @@ void CMIRIAMInfo::setCreatedDT(const std::string& dt)
     }
 
   mCreated.pObject->setFieldValue(Date, CRDFPredicate::dcterms_W3CDTF, mCreated.pObject->getPath());
+}
+
+bool CMIRIAMInfo::addDefaultCreatedDT()
+{
+  if (!getCreatedDT().empty())
+    return false;
+
+  setCreatedDT(UTCTimeStamp());
+
+  return true;
 }
 
 CDataVector <CModification> & CMIRIAMInfo::getModifications()
