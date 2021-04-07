@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -112,67 +112,72 @@ void CRecentFiles::addFile(const std::string & file)
 }
 
 CConfigurationFile::CConfigurationFile(const std::string & name,
-                                       const CDataContainer * pParent):
-  CCopasiParameterGroup(name, pParent),
-  mpRecentFiles(NULL),
-  mpRecentSBMLFiles(NULL),
-  mpRecentSEDMLFiles(NULL),
-  mpRecentMIRIAMResources(NULL),
-  mpApplicationFont(NULL),
-  mpValidateUnits(NULL),
-  mpDisplayIssueSeverity(NULL),
-  mpDisplayIssueKinds(NULL),
-  mpUseOpenGL(NULL),
-  mpUseAdvancedSliders(NULL),
-  mpUseAdvancedEditing(NULL),
-  mpNormalizePerExperiment(NULL),
-  mpEnableAdditionalOptimizationParameters(NULL),
-  mpDisplayPopulations(NULL),
-  mpWorkingDirectory(NULL),
-  mpProxyServer(NULL),
-  mpProxyPort(NULL),
-  mpProxyUser(NULL),
-  mpProxyPass(NULL),
-  mpCurrentAuthorGivenName(NULL),
-  mpCurrentAuthorFamilyName(NULL),
-  mpCurrentAuthorOrganization(NULL),
-  mpCurrentAuthorEmail(NULL),
-  mpPrecision(NULL),
-  mpCheckForUpdates(NULL),
-  mpResizeToContents(NULL)
-
-{initializeParameter();}
+                                       const CDataContainer * pParent)
+  : CCopasiParameterGroup(name, pParent)
+  , mpRecentFiles(NULL)
+  , mpRecentSBMLFiles(NULL)
+  , mpRecentSEDMLFiles(NULL)
+  , mpRecentMIRIAMResources(NULL)
+  , mpApplicationFont(NULL)
+  , mpValidateUnits(NULL)
+  , mpDisplayIssueSeverity(NULL)
+  , mpDisplayIssueKinds(NULL)
+  , mpUseOpenGL(NULL)
+  , mpUseAdvancedSliders(NULL)
+  , mpUseAdvancedEditing(NULL)
+  , mpNormalizePerExperiment(NULL)
+  , mpEnableAdditionalOptimizationParameters(NULL)
+  , mpDisplayPopulations(NULL)
+  , mpWorkingDirectory(NULL)
+  , mpProxyServer(NULL)
+  , mpProxyPort(NULL)
+  , mpProxyUser(NULL)
+  , mpProxyPass(NULL)
+  , mpCurrentAuthorGivenName(NULL)
+  , mpCurrentAuthorFamilyName(NULL)
+  , mpCurrentAuthorOrganization(NULL)
+  , mpCurrentAuthorEmail(NULL)
+  , mpPrecision(NULL)
+  , mpCheckForUpdates(NULL)
+  , mpResizeToContents(NULL)
+  , mpDisableJIT(NULL)
+{
+  initializeParameter();
+}
 
 CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
-                                       const CDataContainer * pParent):
-  CCopasiParameterGroup(src, pParent),
-  mpRecentFiles(NULL),
-  mpRecentSBMLFiles(NULL),
-  mpRecentSEDMLFiles(NULL),
-  mpRecentMIRIAMResources(NULL),
-  mpApplicationFont(NULL),
-  mpValidateUnits(NULL),
-  mpDisplayIssueSeverity(NULL),
-  mpDisplayIssueKinds(NULL),
-  mpUseOpenGL(NULL),
-  mpUseAdvancedSliders(NULL),
-  mpUseAdvancedEditing(NULL),
-  mpNormalizePerExperiment(NULL),
-  mpEnableAdditionalOptimizationParameters(NULL),
-  mpDisplayPopulations(NULL),
-  mpWorkingDirectory(NULL),
-  mpProxyServer(NULL),
-  mpProxyPort(NULL),
-  mpProxyUser(NULL),
-  mpProxyPass(NULL),
-  mpCurrentAuthorGivenName(NULL),
-  mpCurrentAuthorFamilyName(NULL),
-  mpCurrentAuthorOrganization(NULL),
-  mpCurrentAuthorEmail(NULL),
-  mpPrecision(NULL),
-  mpCheckForUpdates(NULL),
-  mpResizeToContents(NULL)
-{initializeParameter();}
+                                       const CDataContainer * pParent)
+  : CCopasiParameterGroup(src, pParent)
+  , mpRecentFiles(NULL)
+  , mpRecentSBMLFiles(NULL)
+  , mpRecentSEDMLFiles(NULL)
+  , mpRecentMIRIAMResources(NULL)
+  , mpApplicationFont(NULL)
+  , mpValidateUnits(NULL)
+  , mpDisplayIssueSeverity(NULL)
+  , mpDisplayIssueKinds(NULL)
+  , mpUseOpenGL(NULL)
+  , mpUseAdvancedSliders(NULL)
+  , mpUseAdvancedEditing(NULL)
+  , mpNormalizePerExperiment(NULL)
+  , mpEnableAdditionalOptimizationParameters(NULL)
+  , mpDisplayPopulations(NULL)
+  , mpWorkingDirectory(NULL)
+  , mpProxyServer(NULL)
+  , mpProxyPort(NULL)
+  , mpProxyUser(NULL)
+  , mpProxyPass(NULL)
+  , mpCurrentAuthorGivenName(NULL)
+  , mpCurrentAuthorFamilyName(NULL)
+  , mpCurrentAuthorOrganization(NULL)
+  , mpCurrentAuthorEmail(NULL)
+  , mpPrecision(NULL)
+  , mpCheckForUpdates(NULL)
+  , mpResizeToContents(NULL)
+  , mpDisableJIT(NULL)
+{
+  initializeParameter();
+}
 
 CConfigurationFile::~CConfigurationFile()
 {}
@@ -288,6 +293,8 @@ void CConfigurationFile::initializeParameter()
   mpCurrentAuthorEmail = assertParameter("Email", CCopasiParameter::Type::STRING, std::string("An.other@mailinator.com"));
 
   assertGroup("Check for Updates");
+
+  mpDisableJIT = assertParameter("Disable JIT Compilation", CCopasiParameter::Type::BOOL, false);
 
   elevateChildren();
 }
@@ -670,6 +677,16 @@ C_INT32 CConfigurationFile::getDoublePrecision() const
 void CConfigurationFile::setDoublePrecision(C_INT32 precision)
 {
   *mpPrecision = precision;
+}
+
+bool CConfigurationFile::getDisableJIT() const
+{
+  return *mpDisableJIT;
+}
+
+void CConfigurationFile::setDisableJIT(bool disableJIT)
+{
+  *mpDisableJIT = disableJIT;
 }
 
 CCheckForUpdates & CConfigurationFile::getCheckForUpdates()

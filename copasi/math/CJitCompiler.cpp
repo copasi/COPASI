@@ -7,6 +7,8 @@
 #include "copasi/math/CMathExpression.h"
 #include "copasi/utilities/CNodeIterator.h"
 #include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/commandline/CConfigurationFile.h"
+#include "copasi/core/CRootContainer.h"
 
 #include <cpu_features/cpuinfo_x86.h>
 
@@ -14,14 +16,14 @@
 bool * CJitCompiler::pSSE4support = NULL;
 
 // static
-bool & CJitCompiler::JitEnabled()
+bool CJitCompiler::JitEnabled()
 {
   if (pSSE4support == NULL)
     {
       pSSE4support = new bool(cpu_features::GetX86Info().features.sse4_2);
     }
 
-  return *pSSE4support;
+  return *pSSE4support && !CRootContainer::getConfiguration()->getDisableJIT();
 }
 
 // static
@@ -378,7 +380,7 @@ void CJitCompiler::release()
 
 void CJitCompiler::registerExpression(CJitExpression * pExpression)
 {
-  if (*pSSE4support)
+  if (JitEnabled())
     mExpressions.insert(pExpression);
 }
 

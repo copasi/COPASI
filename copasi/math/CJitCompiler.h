@@ -36,7 +36,7 @@ public:
   typedef NativeJIT::Function< C_FLOAT64 >::FunctionType Function;
   typedef NativeJIT::NodeBase Node;
 
-  static bool & JitEnabled();
+  static bool JitEnabled();
 
   CJitCompiler();
 

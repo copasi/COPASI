@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -456,6 +456,18 @@ public:
    */
   CCheckForUpdates & getCheckForUpdates();
 
+  /**
+   * Return whether JIT is disabled
+   * @return bool disbaleJIT
+   */
+  bool getDisableJIT() const;
+
+  /**
+   * Sets the whether JIT compilation is diable
+   * @param bool disableJIT
+   */
+  void setDisableJIT(bool disableJIT);
+
 private:
   /**
    * Allocates all group parameters and assures that they are
@@ -644,12 +656,20 @@ private:
    */
   C_INT32* mpPrecision;
 
+  /**
+   * A pointer to the update check configuration
+   */
   CCheckForUpdates * mpCheckForUpdates;
 
   /**
-  * A pointer indicating whether the GUI should resize tables to contents
-  */
-  bool* mpResizeToContents;
+   * A pointer indicating whether the GUI should resize tables to contents
+   */
+  bool * mpResizeToContents;
+
+  /**
+   * A pointer indicating whether to disable JIT compilation even if it is available
+   */
+  bool * mpDisableJIT;
 };
 
 #endif // COPASI_CConfigurationFile
