@@ -329,10 +329,20 @@ endif()
 if (COPASI_INSTALL_C_API)
     # install config 
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/copasi)
+
     # install headers
     foreach (file ${COPASI_HEADERS})
       get_filename_component(dir ${file} DIRECTORY)
       string(REPLACE ${CMAKE_CURRENT_SOURCE_DIR} include/copasi destination ${dir})
+      install(FILES ${file} DESTINATION ${destination})
+    endforeach()
+
+    # install CMakeModules /raid/shoops/git/COPASI/CMakeModules
+    file(GLOB MODULES ${CMAKE_CURRENT_SOURCE_DIR}/../CMakeModules/*.cmake)
+
+    foreach (file ${MODULES})
+      get_filename_component(dir ${file} DIRECTORY)
+      string(REPLACE ${CMAKE_CURRENT_SOURCE_DIR}/../ share/copasi/ destination ${dir})
       install(FILES ${file} DESTINATION ${destination})
     endforeach()
 
