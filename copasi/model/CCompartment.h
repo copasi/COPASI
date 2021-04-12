@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -139,15 +139,6 @@ public:
    * @return const CDataVectorNS < CMetab > & metabolites
    */
   const CDataVectorNS < CMetab > & getMetabolites() const;
-
-  /**
-   *  Adds a metabolite to the compartment. Only the concentration is taken from
-   *  the metabolite, the number of particles is calculated according to the
-   *  volume of the compartment
-   *  @param const CMetab & metabolite;
-   *  @return bool success
-   */
-  bool createMetabolite(const CMetab & metabolite);
 
   /**
    *  Adds a metabolite to the compartment. Only the concentration is taken from
