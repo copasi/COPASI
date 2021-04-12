@@ -275,9 +275,15 @@ public:
   bool hasDiscontinuity() const;
 
   /**
-   * @return true if any of the given CN's us used by this expression
+   * @return true if any of the given CN's is used by this expression
    */
   bool containsCN(const DataObjectSet& elements) const;
+
+  /**
+   * Retrieve the number of node evaluations required to computate the value of the tree.
+   * @return size_t size
+   */
+  size_t size() const;
 
 protected:
   /**

@@ -318,3 +318,23 @@ bool CQCreatorDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
   return true;
 }
+
+void CQCreatorDM::appendDefaultCreator()
+{
+  beginResetModel();
+
+  CCreator * pCreator = mpMIRIAMInfo->addDefaultCreator(true);
+
+  if (pCreator != NULL)
+    {
+      CUndoData UndoData;
+
+      pCreator->createUndoData(UndoData, CUndoData::Type::INSERT);
+      ListViews::addUndoMetaData(this, UndoData);
+      emit signalNotifyChanges(mpDataModel->recordData(UndoData));
+
+      ++mFetched;
+    }
+
+  endResetModel();
+}

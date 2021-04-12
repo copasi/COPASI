@@ -608,8 +608,3 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex & parent)
 
   return true;
 }
-
-bool CQSpecieDM::clear()
-{
-  return removeRows(0, mpMetabolites->size(), QModelIndex());
-}

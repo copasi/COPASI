@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -211,11 +211,6 @@ void CAnnotation::initMiriamAnnotation(const std::string & newId)
     "xmlns:dcterms=\"http://purl.org/dc/terms/\"\n"
     "xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n"
     "<rdf:Description rdf:about=\"#" + newId + "\">\n"
-    "<dcterms:created>\n"
-    "<rdf:Description>\n"
-    "<dcterms:W3CDTF>" + UTCTimeStamp() + "</dcterms:W3CDTF>\n"
-    "</rdf:Description>\n"
-    "</dcterms:created>\n"
     "</rdf:Description>\n"
     "</rdf:RDF>";
 }

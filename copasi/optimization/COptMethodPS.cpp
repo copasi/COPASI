@@ -49,8 +49,10 @@ COptMethodPS::COptMethodPS(const CDataContainer * pParent,
   : COptPopulationMethod(pParent, methodType, taskType, true)
   , mVariance(0.0)
   , mVelocities()
+  , mBestValue()
   , mBestValues()
   , mBestPositions()
+  , mImprovements()
   , mpPermutation(NULL)
   , mInformants()
   , mNumInformedMin(0)
@@ -74,8 +76,10 @@ COptMethodPS::COptMethodPS(const COptMethodPS & src,
   : COptPopulationMethod(src, pParent)
   , mVariance(0.0)
   , mVelocities()
+  , mBestValue()
   , mBestValues()
   , mBestPositions()
+  , mImprovements()
   , mpPermutation(NULL)
   , mInformants()
   , mNumInformedMin(0)
@@ -194,22 +198,22 @@ bool COptMethodPS::move(const size_t & index)
     {
       Improved = true;
 
-      // Save the individually best value;
-      mBestValues[index] = EvaluationValue;
-      memcpy(mBestPositions[index], mIndividuals[index]->array(), sizeof(C_FLOAT64) * mVariableSize);
-
-      // Check if we improved globally
 #pragma omp critical
+      {
+        mImprovements[index] = EvaluationValue;
 
-      if (EvaluationValue < mBestValues[mBestIndex])
-        {
-          // and store that value
-          mBestIndex = index;
-          mContinue &= mProblemContext.master()->setSolution(mBestValues[index], *mIndividuals[index]);
+        // Check if we improved globally
+        if (EvaluationValue < mBestValue)
+          {
+            // and store that value
+            mBestValue = EvaluationValue;
+            mBestIndex = index;
+            mContinue &= mProblemContext.master()->setSolution(EvaluationValue, *mIndividuals[mBestIndex]);
 
-          // We found a new best value lets report it.
-          mpParentTask->output(COutputInterface::DURING);
-        }
+            // We found a new best value lets report it.
+            mpParentTask->output(COutputInterface::DURING);
+          }
+      }
     }
 
   return Improved;
@@ -333,14 +337,16 @@ bool COptMethodPS::create(const size_t & index)
 
   // calculate its fitness
   mBestValues[index] = mValues[index] = evaluate();
+  memcpy(mBestPositions[index], mIndividuals[index]->array(), sizeof(C_FLOAT64) * mVariableSize);
 
 #pragma omp critical
 
-  if (mBestValues[index] < mBestValues[mBestIndex])
+  if (mBestValues[index] < mBestValue)
     {
       // and store that value
       mBestIndex = index;
-      mContinue &= mProblemContext.master()->setSolution(mBestValues[index], *mIndividuals[index]);
+      mBestValue = mBestValues[mBestIndex];
+      mContinue &= mProblemContext.master()->setSolution(mBestValues[mBestIndex], *mIndividuals[mBestIndex]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -395,6 +401,7 @@ bool COptMethodPS::initialize()
   mValues = std::numeric_limits<double>::infinity();
 
   mVelocities.resize(mPopulationSize, mVariableSize);
+  mBestValue = std::numeric_limits<double>::infinity();
   mBestValues.resize(mPopulationSize);
   mBestValues = std::numeric_limits<double>::infinity();
   mBestPositions.resize(mPopulationSize, mVariableSize);
@@ -600,17 +607,19 @@ bool COptMethodPS::optimise()
     mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   // calculate its fitness
-  mBestValues[0] = mValues[0] = evaluate();
+  mBestValues[0] = mValues[0] = mBestValue = evaluate();
+  memcpy(mBestPositions[0], mIndividuals[0]->array(), sizeof(C_FLOAT64) * mVariableSize);
 
   // and store that value
   mBestIndex = 0;
-  mContinue &= mProblemContext.master()->setSolution(mBestValues[0], *mIndividuals[0]);
+  mContinue &= mProblemContext.master()->setSolution(mBestValues[mBestIndex], *mIndividuals[mBestIndex]);
 
   // We found a new best value lets report it.
   mpParentTask->output(COutputInterface::DURING);
 
   // the others are random
   C_INT32 k, kmax = (C_INT32) mPopulationSize;
+
 #pragma omp parallel for
 
   for (k = 1; k < kmax; k++)
@@ -629,18 +638,17 @@ bool COptMethodPS::optimise()
       if (mStopAfterStalledIterations != 0 && Stalled > mStopAfterStalledIterations)
         break;
 
-      Improved = false;
       size_t oldIndex = mBestIndex;
 
       C_INT32 k, kmax = (C_INT32) mPopulationSize;
 
-#pragma omp parallel for reduction(|:Improved)
+#pragma omp parallel for
 
       for (k = 0; k < kmax; k++)
         if (mContinue)
-          Improved |= move(k);
+          move(k);
 
-      if (!Improved)
+      if (mImprovements.empty())
         {
           buildInformants();
 
@@ -654,6 +662,18 @@ bool COptMethodPS::optimise()
         }
       else
         {
+          std::map< size_t, C_FLOAT64 >::const_iterator itImproved = mImprovements.begin();
+          std::map< size_t, C_FLOAT64 >::const_iterator endImproved = mImprovements.end();
+
+          for (; itImproved != endImproved; ++itImproved)
+            {
+              // Save the individually best value;
+              mBestValues[itImproved->first] = itImproved->second;
+              memcpy(mBestPositions[itImproved->first], mIndividuals[itImproved->first]->array(), sizeof(C_FLOAT64) * mVariableSize);
+            }
+
+          mImprovements.clear();
+
           if (reachedStdDeviation())
             {
               if (mLogVerbosity > 1)

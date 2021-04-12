@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1213,6 +1213,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
       case SubType::PLUS:
         // if this is the unary plus as I suspect,
         // the node will be replaced by its only child
+        needFirstArg = false;
         delete node;
         node = dynamic_cast<const CEvaluationNode*>(this->getChild())->toAST(pDataModel);
         break;
@@ -1290,8 +1291,8 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         node->addChild(sibling->toAST(pDataModel));
       }
       break;
-        // :TODO: Bug 894: Implement me.
-        //fatalError();
+      // :TODO: Bug 894: Implement me.
+      //fatalError();
       break;
     }
 

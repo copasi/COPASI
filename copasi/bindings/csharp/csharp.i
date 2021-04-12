@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
@@ -145,6 +150,7 @@ enum CLASS_TYPE
   , CModelParameterSpecies_Type
   , CModelParameterCompartment_Type
   , CModelParameterReactionParameter_Type
+  , CCopasiTimer_Type
 };
 
 class CCompartment;
@@ -881,6 +887,9 @@ int GetType_CModelParameter(CModelParameter* pPointer);
                 case COPASI.CReportDefinition_Type:
                     // return a CReportDefinition
                     ret = new CReportDefinition(cPtr,owner);
+                    break;
+                case COPASI.CCopasiTimer_Type:
+                    ret = new CCopasiTimer(cPtr,owner);
                     break;
                 case COPASI.CCopasiReportSeparator_Type:
                     // return a CCopasiReportSeparator

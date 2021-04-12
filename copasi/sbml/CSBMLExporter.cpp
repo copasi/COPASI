@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -4907,7 +4907,9 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
 
           if (pNode != NULL)
             {
-              pAssignment->setMath(pNode);
+              if (pAssignment->setMath(pNode) != LIBSBML_OPERATION_SUCCESS)
+                CCopasiMessage(CCopasiMessage::WARNING, "event assignment for variable with id '%s' (in event '%s') with expression '%s' could not be set.", sbmlId.c_str(), event.getObjectName().c_str(), pExpression->getInfix().c_str());
+
               delete pNode;
             }
           else

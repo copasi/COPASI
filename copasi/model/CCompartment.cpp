@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -75,7 +75,7 @@ bool CCompartment::applyData(const CData & data, CUndoData::CChangeSet & changes
       const CData & Data = data.getProperty(CData::INITIAL_VALUE).toData();
       mIValue = Data.getProperty(CData::VALUE).toDouble();
       mpModel->updateInitialValues(CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
-      changes.add( {CUndoData::Type::CHANGE, "State", mpModel->getCN(), mpModel->getCN()});
+      changes.add({CUndoData::Type::CHANGE, "State", mpModel->getCN(), mpModel->getCN()});
     }
 
   if (data.isSetProperty(CData::SPATIAL_DIMENSION))
@@ -204,18 +204,6 @@ CDataVectorNS < CMetab > & CCompartment::getMetabolites()
 
 const CDataVectorNS < CMetab > & CCompartment::getMetabolites() const
 {return mMetabolites;}
-
-/* Note: the metabolite stored in mMetabolites has definitely mpCompartment set.
-   In the case the compartment is part of a model also mpModel is set. */
-bool CCompartment::createMetabolite(const CMetab & metabolite)
-{
-  CMetab * pMetab = new CMetab(metabolite, NO_PARENT);
-
-  if (addMetabolite(pMetab)) return true;
-
-  delete pMetab;
-  return false;
-}
 
 bool CCompartment::addMetabolite(CMetab * pMetabolite)
 {

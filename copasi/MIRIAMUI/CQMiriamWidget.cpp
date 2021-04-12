@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -318,7 +318,6 @@ bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews
   // Assure that the pointer is still valid;
   mpAnnotation = CAnnotation::castObject(mpObject);
 
-
   if (action == ListViews::DELETE && objectType == ListViews::ObjectType::MODEL)
     {
       mpMIRIAMInfo = NULL;
@@ -326,7 +325,6 @@ bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews
 
       return leaveProtected();
     }
-
 
   if (!mIgnoreUpdates &&
       cn == mObjectCN)
@@ -622,4 +620,10 @@ void CQMiriamWidget::slotCopyEvent()
 void CQMiriamWidget::slotBtnCopy()
 {
   mObjectCNToCopy = mObjectCN;
+}
+
+// virtual
+void CQMiriamWidget::slotBtnAddMe()
+{
+  mpCreatorDM->appendDefaultCreator();
 }

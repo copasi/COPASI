@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -330,24 +330,22 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 startTime, const C_FLOAT64 
 
       // We are sure that we have at least 1 reaction
       C_FLOAT64 rand = mpRandomGenerator->getRandomOO() * mA0;
-      const C_FLOAT64 * pAmu = mAmu.array();
-      size_t * idxProp = mPropensityIdx.array();
+      size_t * idxProp = mPropensityIdx.begin();
       C_FLOAT64 sum = 0.0;
       size_t temp_prop;
 
       for (size_t i = 0; i != mNumReactions; ++idxProp, ++i)
         {
-          sum += *(pAmu + * (idxProp));
+          sum += mAmu[*idxProp];
 
           if (sum > rand) break;
 
-          if (i != 0 && (*(pAmu + * (idxProp)) > *(pAmu + * (idxProp - 1))))
-            {
-              temp_prop = *(idxProp);
-              *(idxProp)  = *(idxProp - 1);
-              *(idxProp - 1) = temp_prop;
-            }
+          if (i != 0 && mAmu[*idxProp] > mAmu[*(idxProp - 1)])
+            std::swap(*idxProp, *(idxProp - 1));
         }
+
+      if (idxProp == mPropensityIdx.end())
+        --idxProp;
 
       mNextReactionIndex = *(idxProp);
     }

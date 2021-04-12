@@ -358,8 +358,3 @@ void CQEventDM::insertNewRows(int position, int rows, int column, const QVariant
 
   endInsertRows();
 }
-
-bool CQEventDM::clear()
-{
-  return removeRows(0, mpEvents->size(), QModelIndex());
-}

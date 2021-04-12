@@ -435,6 +435,33 @@ void CMathObject::calculateCorrectedPropensity()
     }
 }
 
+void CMathObject::calculateTransitionTime()
+{
+  C_FLOAT64 PositiveFlux = 0.0;
+  C_FLOAT64 NegativeFlux = 0.0;
+
+  const C_FLOAT64 * pStoi = mStoichiometryVector.begin();
+  const C_FLOAT64 ** ppRate = mRateVector.begin();
+  const C_FLOAT64 ** ppRateEnd = mRateVector.end();
+
+  // The first entry is the species' particle number
+  C_FLOAT64 Value = **ppRate;
+  ++pStoi;
+  ++ppRate;
+
+  for (; ppRate != ppRateEnd; ++ppRate, ++pStoi)
+    {
+      C_FLOAT64 tmp = *pStoi * **ppRate;
+
+      if (tmp >= 0)
+        PositiveFlux += tmp;
+      else
+        NegativeFlux -= tmp;
+    }
+
+  *mpValue = fabs(Value) / std::max(NegativeFlux, PositiveFlux);
+}
+
 const CMath::ValueType & CMathObject::getValueType() const
 {
   return mValueType;
@@ -709,6 +736,7 @@ void CMathObject::setJITCompiler(CJitCompiler & jitCompiler)
   if (CJitCompiler::JitEnabled()
       && mpCalculate == &CMathObject::calculateExpression
       && mpExpression != NULL
+      && mpExpression->size() < 2048
       && !mpExpression->getPrerequisites().empty())
     {
       mpExpression->setCompiler(&jitCompiler);
@@ -1292,7 +1320,7 @@ bool CMathObject::compilePropensity(CMathContainer & container)
   const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
   mpCorrespondingProperty = container.getMathObject(pReaction->getParticleFluxReference());
   mpCorrespondingPropertyValue = static_cast< const C_FLOAT64 * >(mpCorrespondingProperty->getValuePointer());
-  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > CorrectedPropensityCalculationVector;
+  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > CalculationVector;
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
@@ -1353,7 +1381,7 @@ bool CMathObject::compilePropensity(CMathContainer & container)
 
               if (Multiplicity > 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
                 {
-                  CorrectedPropensityCalculationVector.push_back(std::make_pair(Multiplicity, pNumber));
+                  CalculationVector.push_back(std::make_pair(Multiplicity, pNumber));
                 }
 
               while (Multiplicity > 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
@@ -1383,16 +1411,16 @@ bool CMathObject::compilePropensity(CMathContainer & container)
 
   if (!pReaction->isReversible())
     {
-      if (CorrectedPropensityCalculationVector.empty())
+      if (CalculationVector.empty())
         {
           mpCalculate = &CMathObject::calculatePropensity;
         }
       else
         {
-          mStoichiometryVector.resize(CorrectedPropensityCalculationVector.size());
-          mRateVector.resize(CorrectedPropensityCalculationVector.size());
-          std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator itPair = CorrectedPropensityCalculationVector.begin();
-          std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator endPair = CorrectedPropensityCalculationVector.end();
+          mStoichiometryVector.resize(CalculationVector.size());
+          mRateVector.resize(CalculationVector.size());
+          std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator itPair = CalculationVector.begin();
+          std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator endPair = CalculationVector.end();
           C_FLOAT64 * pStoi = mStoichiometryVector.begin();
           const C_FLOAT64 **ppRate = mRateVector.begin();
 
@@ -1416,6 +1444,7 @@ bool CMathObject::compileTotalMass(CMathContainer & container)
   // The default value is NaN
   *mpValue = InvalidValue;
 
+  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > CalculationVector;
   const CMoiety * pMoiety = static_cast< const CMoiety *>(mpDataObject->getObjectParent());
 
   std::ostringstream Infix;
@@ -1439,10 +1468,19 @@ bool CMathObject::compileTotalMass(CMathContainer & container)
           Infix << "+" << Multiplicity;
         }
 
-      First = false;
+      C_FLOAT64 * pValue = (C_FLOAT64 *) container.getMathObject(it->second->getValueReference())->getValuePointer();
 
       Infix << "*";
-      Infix << pointerToString(container.getMathObject(it->second->getValueReference())->getValuePointer());
+      Infix << pointerToString(pValue);
+
+      if (mIsInitialValue)
+        {
+          pValue = container.getInitialValuePointer(pValue);
+        }
+
+      CalculationVector.push_back(std::make_pair(it->first, pValue));
+
+      First = false;
     }
 
   if (mpExpression == NULL)
@@ -1454,6 +1492,21 @@ bool CMathObject::compileTotalMass(CMathContainer & container)
   success &= mpExpression->compile();
   compileExpression();
 
+  mStoichiometryVector.resize(CalculationVector.size());
+  mRateVector.resize(CalculationVector.size());
+  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator itPair = CalculationVector.begin();
+  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator endPair = CalculationVector.end();
+  C_FLOAT64 * pStoi = mStoichiometryVector.begin();
+  const C_FLOAT64 **ppRate = mRateVector.begin();
+
+  for (; itPair != endPair; ++itPair, ++pStoi, ++ppRate)
+    {
+      *pStoi = itPair->first;
+      *ppRate = itPair->second;
+    }
+
+  mpCalculate = &CMathObject::calculateExtensiveReactionRate;
+
   return success;
 }
 
@@ -1464,13 +1517,24 @@ bool CMathObject::compileDependentMass(CMathContainer & container)
   // The default value is NaN
   *mpValue = InvalidValue;
 
-  const CMoiety * pMoiety = static_cast< const CMoiety *>(mpDataObject->getObjectParent());
+  C_FLOAT64 * pValue;
+  std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > > CalculationVector;
+  const CMoiety * pMoiety = static_cast< const CMoiety * >(mpDataObject->getObjectParent());
+
+  pValue = (C_FLOAT64 *) container.getMathObject(pMoiety->getTotalNumberReference())->getValuePointer();
+
+  if (mIsInitialValue)
+    {
+      pValue = container.getInitialValuePointer(pValue);
+    }
+
+  CalculationVector.push_back(std::make_pair(1.0, pValue));
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
   Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
-  Infix << pointerToString(container.getMathObject(pMoiety->getTotalNumberReference())->getValuePointer());
+  Infix << pointerToString(pValue);
 
   std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator it = pMoiety->getEquation().begin();
   std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator end = pMoiety->getEquation().end();
@@ -1495,10 +1559,19 @@ bool CMathObject::compileDependentMass(CMathContainer & container)
           Infix << "+" << fabs(Multiplicity);
         }
 
-      First = false;
+      pValue = (C_FLOAT64 *) container.getMathObject(it->second->getValueReference())->getValuePointer();
 
       Infix << "*";
-      Infix << pointerToString(container.getMathObject(it->second->getValueReference())->getValuePointer());
+      Infix << pointerToString(pValue);
+
+      if (mIsInitialValue)
+        {
+          pValue = container.getInitialValuePointer(pValue);
+        }
+
+      CalculationVector.push_back(std::make_pair(-it->first, pValue));
+
+      First = false;
     }
 
   if (mpExpression == NULL)
@@ -1510,6 +1583,21 @@ bool CMathObject::compileDependentMass(CMathContainer & container)
   success &= mpExpression->compile();
   compileExpression();
 
+  mStoichiometryVector.resize(CalculationVector.size());
+  mRateVector.resize(CalculationVector.size());
+  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator itPair = CalculationVector.begin();
+  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator endPair = CalculationVector.end();
+  C_FLOAT64 * pStoi = mStoichiometryVector.begin();
+  const C_FLOAT64 **ppRate = mRateVector.begin();
+
+  for (; itPair != endPair; ++itPair, ++pStoi, ++ppRate)
+    {
+      *pStoi = itPair->first;
+      *ppRate = itPair->second;
+    }
+
+  mpCalculate = &CMathObject::calculateExtensiveReactionRate;
+
   return success;
 }
 
@@ -1519,6 +1607,8 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
 
   // The default value is NaN
   *mpValue = InvalidValue;
+
+  calculate pCalculate = NULL;
 
   const CMetab * pSpecies = static_cast< const CMetab *>(mpDataObject->getObjectParent());
 
@@ -1548,6 +1638,9 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
         NegativeFlux.precision(std::numeric_limits<double>::digits10 + 2);
 
         bool First = true;
+        std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > CalculationVector;
+        CalculationVector.push_back(std::make_pair(1.0, (C_FLOAT64 *) container.getMathObject(pSpecies->getValueReference())->getValuePointer()));
+
         const std::set< std::pair< const CReaction *, C_FLOAT64 > > & Stoicheometry = container.getModel().getReactionsPerSpecies(pSpecies);
 
         std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoicheometry.begin();
@@ -1601,11 +1694,15 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
                 NegativeFlux << Multiplicity << "*";
               }
 
-            PositiveFlux << pointerToString(container.getMathObject(itStoi->first->getParticleFluxReference())->getValuePointer());
-            NegativeFlux << pointerToString(container.getMathObject(itStoi->first->getParticleFluxReference())->getValuePointer());
+            C_FLOAT64 * pValue = (C_FLOAT64 *) container.getMathObject(itStoi->first->getParticleFluxReference())->getValuePointer();
+
+            PositiveFlux << pointerToString(pValue);
+            NegativeFlux << pointerToString(pValue);
 
             PositiveFlux << ",0)";
             NegativeFlux << ",0)";
+
+            CalculationVector.push_back(std::make_pair(Multiplicity, pValue));
 
             First = false;
           }
@@ -1614,10 +1711,23 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
           {
             Infix << "abs(";
             Infix << pointerToString(container.getMathObject(pSpecies->getValueReference())->getValuePointer());
-            Infix << ")/if(";
-            Infix << pointerToString(container.getMathObject(pSpecies->getRateReference())->getValuePointer());
-            Infix << "<0,-(" << NegativeFlux.str() << ")," << PositiveFlux.str() << ")";
+            Infix << ")/max(-(" << NegativeFlux.str() << ")," << PositiveFlux.str() << ")";
           }
+
+        mStoichiometryVector.resize(CalculationVector.size());
+        mRateVector.resize(CalculationVector.size());
+        std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > >::const_iterator itPair = CalculationVector.begin();
+        std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > >::const_iterator endPair = CalculationVector.end();
+        C_FLOAT64 * pStoi = mStoichiometryVector.begin();
+        const C_FLOAT64 ** ppRate = mRateVector.begin();
+
+        for (; itPair != endPair; ++itPair, ++pStoi, ++ppRate)
+          {
+            *pStoi = itPair->first;
+            *ppRate = itPair->second;
+          }
+
+        pCalculate = &CMathObject::calculateTransitionTime;
       }
       break;
 
@@ -1633,6 +1743,9 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
   success &= mpExpression->setInfix(Infix.str());
   success &= mpExpression->compile();
   compileExpression();
+
+  if (pCalculate != NULL)
+    mpCalculate = pCalculate;
 
   return success;
 }
@@ -1854,7 +1967,7 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
   Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
   bool First = true;
-  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > RateCalculationVector;
+  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > CalculationVector;
   const std::set< std::pair< const CReaction *, C_FLOAT64 > > & Stoicheometry = container.getModel().getReactionsPerSpecies(pSpecies);
 
   std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoicheometry.begin();
@@ -1928,7 +2041,7 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
           pRate = container.getInitialValuePointer(pRate);
         }
 
-      RateCalculationVector.push_back(std::make_pair(Multiplicity, pRate));
+      CalculationVector.push_back(std::make_pair(Multiplicity, pRate));
     }
 
   if (mpExpression == NULL)
@@ -1940,10 +2053,10 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
   success &= mpExpression->compile();
   compileExpression();
 
-  mStoichiometryVector.resize(RateCalculationVector.size());
-  mRateVector.resize(RateCalculationVector.size());
-  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator itPair = RateCalculationVector.begin();
-  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator endPair = RateCalculationVector.end();
+  mStoichiometryVector.resize(CalculationVector.size());
+  mRateVector.resize(CalculationVector.size());
+  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator itPair = CalculationVector.begin();
+  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator endPair = CalculationVector.end();
   C_FLOAT64 * pStoi = mStoichiometryVector.begin();
   const C_FLOAT64 **ppRate = mRateVector.begin();
 
@@ -2036,7 +2149,7 @@ bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies
   Infix.precision(16);
 
   bool First = true;
-  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > RateCalculationVector;
+  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > CalculationVector;
   const std::set< std::pair< const CReaction *, C_FLOAT64 > > & Stoicheometry = container.getModel().getReactionsPerSpecies(pSpecies);
 
   std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoicheometry.begin();
@@ -2095,7 +2208,7 @@ bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies
           pNoise = container.getInitialValuePointer(pNoise);
         }
 
-      RateCalculationVector.push_back(std::make_pair(Multiplicity, pNoise));
+      CalculationVector.push_back(std::make_pair(Multiplicity, pNoise));
     }
 
   if (!First)
@@ -2105,10 +2218,10 @@ bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies
       success &= mpExpression->compile();
       compileExpression();
 
-      mStoichiometryVector.resize(RateCalculationVector.size());
-      mRateVector.resize(RateCalculationVector.size());
-      std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator itPair = RateCalculationVector.begin();
-      std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator endPair = RateCalculationVector.end();
+      mStoichiometryVector.resize(CalculationVector.size());
+      mRateVector.resize(CalculationVector.size());
+      std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator itPair = CalculationVector.begin();
+      std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator endPair = CalculationVector.end();
       C_FLOAT64 * pStoi = mStoichiometryVector.begin();
       const C_FLOAT64 **ppRate = mRateVector.begin();
 

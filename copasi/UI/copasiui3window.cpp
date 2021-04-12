@@ -3140,11 +3140,11 @@ void CopasiUI3Window::dropEvent(QDropEvent *event)
   if (fileName.isEmpty())
     return;
 
-  if (isProbablySBML(fileName))
-    slotImportSBML(fileName);
-
-  else if (isProbablySEDML(fileName))
+  if (isProbablySEDML(fileName))
     slotImportSEDML(fileName);
+
+  else if (isProbablySBML(fileName))
+    slotImportSBML(fileName);
 
   else
     slotFileOpen(fileName);
@@ -4233,6 +4233,11 @@ void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
         {
           mpDataModelGUI->setIgnoreNextFile(true);
           slotImportCombine(tempFileName);
+        }
+      else if (isProbablySEDML(tempFileName))
+        {
+          mpDataModelGUI->setIgnoreNextFile(true);
+          slotImportSBML(tempFileName);
         }
       else if (isProbablySBML(tempFileName))
         {

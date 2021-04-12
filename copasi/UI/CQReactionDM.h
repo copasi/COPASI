@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -58,7 +58,6 @@ public:
   bool updateReactionWithFunctionName(CReaction *pRea, QString &funcName);
 
   bool removeRows(QModelIndexList rows, const QModelIndex & parent = QModelIndex());
-  bool clear();
 
 private:
   void insertNewRows(int position, int rows,

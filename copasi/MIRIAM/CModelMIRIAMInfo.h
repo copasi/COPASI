@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -100,6 +100,13 @@ public:
   bool removeCreator(CCreator * pCreator);
   void loadCreators();
 
+  /**
+   * SMethod to add a creator based on user preferences. If the preferences
+   * or not set NULL is returned
+   * @return CCreator * pCreator
+   */
+  CCreator * addDefaultCreator(bool force = false);
+
   CDataVector <CReference> & getReferences();
   const CDataVector <CReference> & getReferences() const;
   CReference* createReference(const std::string& objectName);
@@ -108,6 +115,7 @@ public:
 
   const std::string getCreatedDT() const;
   void setCreatedDT(const std::string& dt);
+  bool addDefaultCreatedDT();
 
   CDataVector <CModification> & getModifications();
   const CDataVector <CModification> & getModifications() const;

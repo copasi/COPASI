@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -135,15 +140,6 @@ template<> inline CDataObjectReference< bool >::CDataObjectReference(const std::
 {
   assert(pParent != NULL);
 }
-
-template<> inline CDataObjectReference< std::string >::CDataObjectReference(const std::string & name,
-    const CDataContainer * pParent,
-    std::string & reference,
-    const CFlags< Flag > & flag) :
-  CDataObject(name, pParent, "String",
-              flag | CDataObject::ValueString),
-  mpReference(&reference)
-{}
 
 template <class CType> class CDataVectorReference: public CDataObject
 {

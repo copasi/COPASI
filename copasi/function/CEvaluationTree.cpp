@@ -938,3 +938,8 @@ bool CEvaluationTree::containsCN(const DataObjectSet& elements) const
 
   return false;
 }
+
+size_t CEvaluationTree::size() const
+{
+  return mCalculationSequence.size();
+}
