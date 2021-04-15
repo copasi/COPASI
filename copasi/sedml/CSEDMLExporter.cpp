@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -209,7 +209,7 @@ std::string
 CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelId)
 {
   // need L1V2 to export repeated tasks
-  if (mpSEDMLDocument->getVersion() != 2)
+  if (mpSEDMLDocument->getVersion() > 1)
     return "";
 
   CScanTask* pTask =  dynamic_cast<CScanTask*>(&dataModel.getTaskList()->operator[]("Scan"));
