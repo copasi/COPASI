@@ -30,6 +30,8 @@ echo mkdir share
 mkdir share
 echo mkdir share/copasi
 mkdir share/copasi
+echo mkdir share/copasi/applications
+mkdir share/copasi/applications
 echo mkdir share/copasi/config
 mkdir share/copasi/config
 echo mkdir share/copasi/doc
@@ -87,6 +89,11 @@ cp "${SOURCE}"/copasi/iUI/icons/Copasi??-Alpha.xpm share/copasi/icons
 echo cp "${SOURCE}"/copasi/UI/icons/CopasiDoc??-Alpha.xpm share/copasi/icons
 cp "${SOURCE}"/copasi/UI/icons/CopasiDoc??-Alpha.xpm share/copasi/icons
 chmod 644 share/copasi/icons/*
+
+# Copy desktop utilities
+echo cp "${SOURCE}"/LinuxTGZ/applications/* share/copasi/applications
+cp "${SOURCE}"/LinuxTGZ/applications/* share/copasi/applications
+chmod 644 share/copasi/applications/*
 
 # Copy wizard resource
 echo cp "${SOURCE}"/copasi/wizard/help_html/*.html share/copasi/doc/html

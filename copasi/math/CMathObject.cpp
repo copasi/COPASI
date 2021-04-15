@@ -26,6 +26,10 @@
 #include "copasi/model/CModel.h"
 #include "copasi/function/CExpression.h"
 #include "copasi/utilities/utility.h"
+
+// Uncomment next line track any NaN value in calculations
+// #define TRACK_NAN
+
 // static
 C_FLOAT64 CMathObject::InvalidValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
@@ -347,7 +351,7 @@ void CMathObject::calculateValue()
 
   (this->*mpCalculate)();
 
-#ifdef COPASI_DEBUG_TRACE
+#ifdef TRACK_NAN
 
   // Check for NaN
   if (std::isnan(*mpValue) && mpExpression->getInfix() != "")
@@ -355,7 +359,7 @@ void CMathObject::calculateValue()
       std::cout << "NaN Value for: " << getCN() << std::endl;
     }
 
-#endif // COPASI_DEBUG_TRACE
+#endif // TRACK_NAN
 
   // For an extensive transient value of a dependent species we have 2
   // possible assignments depending on the context.
