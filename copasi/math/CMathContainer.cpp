@@ -1465,30 +1465,44 @@ CMathObject * CMathContainer::getLargestReactionCompartment(const CMathReaction 
 
 void CMathContainer::compile()
 {
-  allocate();
+  try
+    {
+      allocate();
 
-  CMath::sPointers Pointers;
-  initializePointers(Pointers);
+      CMath::sPointers Pointers;
+      initializePointers(Pointers);
 
 #ifdef DEBUG_OUPUT
-  printPointers(Pointers);
+      printPointers(Pointers);
 #endif // DEBUG_OUPUT
 
-  initializeDiscontinuousCreationPointer();
+      initializeDiscontinuousCreationPointer();
 
-  initializeObjects(Pointers);
-  initializeEvents(Pointers);
+      initializeObjects(Pointers);
+      initializeEvents(Pointers);
 
-  map();
-  compileObjects();
-  compileEvents();
+      map();
+      compileObjects();
+      compileEvents();
 
-  // These are only used during initialization for setting up the tracking of
-  // discontinuities and are cleared afterwards.
-  mDiscontinuityEvents.clear();
-  mDiscontinuityInfix2Object.clear();
-  mTriggerInfix2Event.clear();
-  mRootCount2Events.clear();
+      // These are only used during initialization for setting up the tracking of
+      // discontinuities and are cleared afterwards.
+      mDiscontinuityEvents.clear();
+      mDiscontinuityInfix2Object.clear();
+      mTriggerInfix2Event.clear();
+      mRootCount2Events.clear();
+    }
+  catch (...)
+    {
+      // These are only used during initialization for setting up the tracking of
+      // discontinuities and are cleared afterwards.
+      mDiscontinuityEvents.clear();
+      mDiscontinuityInfix2Object.clear();
+      mTriggerInfix2Event.clear();
+      mRootCount2Events.clear();
+
+      throw;
+    }
 
   // Create eventual delays
   createDelays();
