@@ -433,7 +433,7 @@ bool CDataModel::addModel(const std::string & fileName, CProcessReport * pProces
         }
     }
 
-  C_INT32 numDatamodels = CRootContainer::getDatamodelList()->size();
+  C_INT32 numDatamodels = (C_INT32) CRootContainer::getDatamodelList()->size();
   CModel * pModel = NULL;
   CModel * pMergeModel = NULL;
 
@@ -472,7 +472,7 @@ bool CDataModel::loadModelParameterSets(const std::string & fileName,
     {
     }
 
-  size_t numDatamodels = CRootContainer::getDatamodelList()->size();
+  C_INT32 numDatamodels = (C_INT32) CRootContainer::getDatamodelList()->size();
 
   if (numDatamodels == 0)
     return false;
@@ -1731,7 +1731,19 @@ bool CDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, 
       archive.addFile(str, "./sedml/simulation.xml", KnownFormats::lookupFormat("sedml"), !includeCOPASI);
     }
 
-  archive.writeToFile(fileName);
+  try
+    {
+      archive.writeToFile(fileName);
+    }
+  catch (const std::exception &ex)
+    {
+      std::stringstream str;
+      str << "Couldn't export combine archive due to: "
+          << ex.what();
+
+      CCopasiMessage(CCopasiMessage::ERROR, str.str().c_str());
+      return false;
+    }
 
   return true;
 }
