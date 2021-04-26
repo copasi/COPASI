@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -324,7 +324,7 @@ void CReport::printFooter()
 }
 
 // Compile the List of Report Objects;
-// Support Parellel
+// Support Parallel
 
 bool CReport::compile(CObjectInterface::ContainerList listOfContainer)
 {
