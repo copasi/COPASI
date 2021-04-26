@@ -231,7 +231,7 @@ int ScrollBar::extent() const
   return style().pixelMetric(QStyle::PM_ScrollBarExtent, this);
 #else
   QStyleOptionSlider opt;
-#if QT_VERSION < 6
+#if QT_VERSION < 0x060000
   opt.init(this);
 #endif
   opt.subControls = QStyle::SC_None;

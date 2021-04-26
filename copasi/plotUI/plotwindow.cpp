@@ -55,7 +55,6 @@
 #include <qwt_text.h>
 #endif
 
-
 #if QWT_VERSION < 0x060000
 // taken from qwt examples/bode
 class PrintFilter: public QwtPlotPrintFilter
@@ -389,7 +388,7 @@ void PlotWindow::printPlot()
     }
 
   printer.setCreator("COPASI");
-#if QT_VERSION < 6
+#if QT_VERSION < 0x060000
   printer.setOrientation(QPrinter::Landscape);
 #endif
   QPrintDialog dialog(&printer);
