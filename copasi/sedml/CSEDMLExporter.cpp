@@ -374,7 +374,7 @@ std::string CSEDMLExporter::createTimeCourseTask(CDataModel& dataModel, const st
   double stepSize = tProblem->getStepSize();
   int stepNumber = (int)tProblem->getStepNumber();
   mpTimecourse->setOutputStartTime(outputStartTime);
-  mpTimecourse->setOutputEndTime(stepNumber * stepSize);
+  mpTimecourse->setOutputEndTime(tProblem->getDuration());
 
   if (outputStartTime > 0)
     {
