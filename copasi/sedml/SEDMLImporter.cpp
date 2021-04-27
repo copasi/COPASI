@@ -687,6 +687,13 @@ SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
                   {
                     SedSetValue* sv = repeat->getTaskChange(j);
 
+                    if (sv->isSetRange())
+                      {
+                        range = repeat->getRange(sv->getRange());
+                        urange = dynamic_cast< SedUniformRange * >(range);
+                        vrange = dynamic_cast< SedVectorRange * >(range);
+                      }
+
                     if (SBML_formulaToString(sv->getMath()) != sv->getRange())
                       {
                         CCopasiMessage(CCopasiMessage::WARNING,
