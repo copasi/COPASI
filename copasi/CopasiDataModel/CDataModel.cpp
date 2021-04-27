@@ -1784,31 +1784,59 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
   // read the master file
   const CaContent * content = archive.getMasterFile();
+  bool haveCopasi = false;
+  std::stringstream messageStream;
 
   // if we don't have one, or we have one we don't understand look for copasi file
-  if (content == NULL || (content->getFormat() != KnownFormats::lookupFormat("sbml") && content->getFormat() != KnownFormats::lookupFormat("copasi") && content->getFormat() != KnownFormats::lookupFormat("sedml")))
-    content = archive.getEntryByFormat("copasi");
+  if (content == NULL ||
+      (content->getFormat() != KnownFormats::lookupFormat("sbml") &&
+       content->getFormat() != KnownFormats::lookupFormat("copasi") &&
+       content->getFormat() != KnownFormats::lookupFormat("sedml")))
+    {
+      content = archive.getEntryByFormat("copasi");
+      haveCopasi = content != NULL;
+
+      if (!haveCopasi)
+        {
+          for (int i = 0; i < archive.getNumEntries(); ++i)
+            {
+              const CaContent * entry = archive.getEntry(i);
+
+              if (entry->getFormat().substr(entry->getFormat().length() - 4) == "/xml" && entry->getLocation().find(".cps") != std::string::npos)
+                {
+                  content = entry;
+                  haveCopasi = true;
+                }
+            }
+        }
+    }
+
 
   // otherwise look for an sedml file
-  if (content == NULL)
-    content = archive.getEntryByFormat("sedml");
+  const CaContent * sedml_content =
+    content != NULL && content->getFormat() == KnownFormats::lookupFormat("sedml") ?
+    content : archive.getEntryByFormat("sedml");
 
   // otherwise look for an sbml file
-  if (content == NULL)
-    content = archive.getEntryByFormat("sbml");
+  const CaContent * sbml_content =
+    content != NULL && content->getFormat() == KnownFormats::lookupFormat("sbml") ?
+    content : archive.getEntryByFormat("sbml");
 
-  if (content == NULL)
+  if (content == NULL && sbml_content == NULL && sedml_content == NULL)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "COMBINE archive without COPASI, SBML or SED-ML files.");
       return false;
     }
 
-  if (content->isFormat("copasi"))
-    {
-      result = this->loadModel(destinationDir + "/" + content->getLocation(), pProgressReport, deleteOldData);
+  bool loadedModel = false;
 
-      if (result)
+  if (haveCopasi || content->isFormat("copasi"))
+    {
+      loadedModel = this->loadModel(destinationDir + "/" + content->getLocation(), pProgressReport, deleteOldData);
+
+      if (loadedModel)
         {
+          result = true;
           // figure out whether the file needs experimental data
           CFitProblem * pProblem = dynamic_cast< CFitProblem * >((*getTaskList())[static_cast< size_t >(CTaskEnum::Task::parameterFitting)].getProblem());
           CExperimentSet & experiments = pProblem->getExperimentSet();
@@ -1869,23 +1897,47 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
                 }
             }
         }
+      else
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, "COMBINE archive import: failed to load COPASI file from archive.");
+          messageStream << CCopasiMessage::getAllMessageText();
+        }
     }
-  else if (content->isFormat("sedml"))
+
+  if (loadedModel == false && sedml_content != NULL)
     {
-      result = this->importSEDML(destinationDir + "/" + content->getLocation(), pProgressReport, deleteOldData);
+      try
+        {
+          loadedModel = this->importSEDML(destinationDir + "/" + sedml_content->getLocation(), pProgressReport, deleteOldData);
+        }
+      catch (const CCopasiException &)
+        {
+          // error is reported to log already
+          CCopasiMessage(CCopasiMessage::ERROR, "COMBINE archive import: failed to load SED-ML file from archive.");
+          messageStream << CCopasiMessage::getAllMessageText();
+          loadedModel = false;
+        }
+
       this->mData.mSEDMLFileName = "";
       this->mData.mSBMLFileName = "";
     }
-  else if (content->isFormat("sbml"))
+
+  if (loadedModel == false && sbml_content != NULL)
     {
-      result = this->importSBML(destinationDir + "/" + content->getLocation(), pProgressReport, deleteOldData);
+      loadedModel = this->importSBML(destinationDir + "/" + sbml_content->getLocation(), pProgressReport, deleteOldData);
       this->mData.mSBMLFileName = "";
     }
+
+  std::string additionalMessages = messageStream.str();
+
+  if (!additionalMessages.empty())
+    CCopasiMessage(CCopasiMessage::ERROR, additionalMessages.c_str());
+
 
   this->mData.mSaveFileName = "";
   this->changed();
 
-  return result;
+  return loadedModel;
 }
 
 // SEDML
