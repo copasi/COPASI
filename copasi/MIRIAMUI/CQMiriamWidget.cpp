@@ -320,10 +320,16 @@ bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews
 
   if (action == ListViews::DELETE && objectType == ListViews::ObjectType::MODEL)
     {
+      // We can no longer trust that the info still exists
+      mpCreatorDM->setMIRIAMInfo(NULL);
+      mpReferenceDM->setMIRIAMInfo(NULL);
+      mpBiologicalDescriptionDM->setMIRIAMInfo(NULL);
+      mpModifiedDM->setMIRIAMInfo(NULL);
+
       mpMIRIAMInfo = NULL;
       mObjectCN = CCommonName("");
 
-      return leaveProtected();
+      return true;
     }
 
   if (!mIgnoreUpdates &&
@@ -336,8 +342,12 @@ bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews
       else
         {
           // We can no longer trust that the info still exists
+          mpCreatorDM->setMIRIAMInfo(NULL);
+          mpReferenceDM->setMIRIAMInfo(NULL);
+          mpBiologicalDescriptionDM->setMIRIAMInfo(NULL);
+          mpModifiedDM->setMIRIAMInfo(NULL);
+
           mpMIRIAMInfo = NULL;
-          return leaveProtected();
         }
     }
 
