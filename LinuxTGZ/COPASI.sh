@@ -118,13 +118,13 @@ popd
 echo tar -chvzf ${PACKAGE_NAME}.tar.gz ${PACKAGE_NAME}
 tar -chzvf ${PACKAGE_NAME}.tar.gz ${PACKAGE_NAME}
 
-echo sed -e 's/%PACKAGE_NAME%/'${PACKAGE_NAME}'/g' -e 's/%VERSION%/'${VERSION}'/g' ${SOURCE}/LinuxTGZ/self-extractor.sh > ${PACKAGE_NAME},sh
-sed -e 's/%PACKAGE_NAME%/'${PACKAGE_NAME}'/g' -e 's/%VERSION%/'${VERSION}'/g' ${SOURCE}/LinuxTGZ/self-extractor.sh > ${PACKAGE_NAME},sh
+echo sed -e 's/%PACKAGE_NAME%/'${PACKAGE_NAME}'/g' -e 's/%VERSION%/'${MyAppVersion}'/g' ${SOURCE}/LinuxTGZ/self-extractor.sh '> '${PACKAGE_NAME}.sh
+sed -e 's/%PACKAGE_NAME%/'${PACKAGE_NAME}'/g' -e 's/%VERSION%/'${MyAppVersion}'/g' ${SOURCE}/LinuxTGZ/self-extractor.sh > ${PACKAGE_NAME}.sh
 
-echo cat ${PACKAGE_NAME}.tar.gz >> ${PACKAGE_NAME},sh
-cat ${PACKAGE_NAME}.tar.gz >> ${PACKAGE_NAME},sh
+echo cat ${PACKAGE_NAME}.tar.gz '>> '${PACKAGE_NAME}.sh
+cat ${PACKAGE_NAME}.tar.gz >> ${PACKAGE_NAME}.sh
 
-echo chmod a+x ${PACKAGE_NAME},sh
-chmod a+x ${PACKAGE_NAME},sh
+echo chmod a+x ${PACKAGE_NAME}.sh
+chmod a+x ${PACKAGE_NAME}.sh
 
 popd

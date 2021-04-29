@@ -4,13 +4,9 @@
 # of Connecticut School of Medicine. 
 # All rights reserved. 
 
-
 echo ""
 echo "COPASI %VERSION% Self Extracting Installer"
 echo ""
-
-# Find where the archive starts
-ARCHIVE=$(awk '/^__ARCHIVE_BELOW__/ {print NR + 1; exit 0; }' "$0")
 
 show_help() {
     echo "Install COPASI %VERSION%"
@@ -19,8 +15,26 @@ show_help() {
     echo "  Usage: $(basename $0) -e [destination]"
 }
 
-extract_only() {
-} 
+prompt() {
+    RESULT="$(echo $3 | sed -e 's?^~?'"${HOME}"'?')"
+    while :
+    do
+        if [ _"${RESULT}" != _ ]; then
+            [ -d "${RESULT}" ] || mkdir -p "${RESULT}"
+            [ -d "${RESULT}" ] && [ -w "${RESULT}" ] && break
+        fi
+        
+        read -e -i "$1" -p "$2: " RESULT
+        RESULT="$(echo ${RESULT} | sed -e 's?^~?'"${HOME}"'?')"
+    done
+
+    echo RESULT: \"${RESULT}\"
+}
+
+EXTRACT_DIR=
+TMP_DIR=
+DESKTOP_DIR=
+INSTALL_DIR=
 
 shopt -s globstar
 
@@ -33,40 +47,63 @@ while getopts "het:d:i:" opt; do
             exit 0
             ;;
         e)
-            EXTRACT_DIR="$(pwd)"
+            shift
+            EXTRACT_DIR="${@:-$(pwd)}"
             ;;
         t)
-            TMP_DIR=$OPTARG
+            TMP_DIR="$OPTARG"
             ;;
         d)
-            DESKTOP_DIR=$OPTARG
+            DESKTOP_DIR="$OPTARG"
             ;;
         i)
-            INSTALL_DIR=$OPTARG
+            INSTALL_DIR="$OPTARG"
             ;;
     esac
 done
 
-# We have an extract directory and will only extract to it
-if [ -Z ${EXTRACT_DIR} ]; then
-    # Check if the user specified a destination and use it
-    [ -Z "$@" ] && EXTRACT_DIR="$@"
+shift $((OPTIND-1))
 
-    tail -n+$ARCHIVE "$0" | tar -xv -C "${EXTRACT_DIR}"
+# Find where the archive starts
+ARCHIVE=$(awk '/^__ARCHIVE_BELOW__/ {print NR + 1; exit 0; }' "$0")
+
+# We have an extract directory and will only extract to it
+if [ _"${EXTRACT_DIR}" != _ ]; then
+    prompt "${EXTRACT_DIR}" "Extract directory: " "${EXTRACT_DIR}"
+    EXTRACT_DIR="$(readlink -f ${RESULT})"
+    
+    echo tail -n+$ARCHIVE "$0" '| 'tar -xzv -C "${EXTRACT_DIR}"
+    tail -n+$ARCHIVE "$0" | tar -xzv -C "${EXTRACT_DIR}"
     exit 0
 fi
 
-[ -Z "${TMP_DIR}"] || read -p "Temp directory: " -i "${TMP-:${TEMP-:/tmp}}" TMP_DIR
+prompt "${TMP-${TEMP-/tmp}}" "Temp directory: " "${TMP_DIR}"
+TMP_DIR="$(readlink -f ${RESULT})"
 
 EXTRACT_DIR=$(mktemp -d "${TMP_DIR}"/copasi.XXXXXX)
-tail -n+$ARCHIVE "$0" | tar -xv -C "${EXTRACT_DIR}"
 
-[ -Z "${INSTALL_DIR}"] || read -p "Installation directory: " -i "/opt/COPASI/%VERSION%" INSTALL_DIR
+echo tail -n+$ARCHIVE "$0" '| 'tar -xzv -C "${EXTRACT_DIR}"
+tail -n+$ARCHIVE "$0" | tar -xzv -C "${EXTRACT_DIR}"
 
-mkdir --parent "${INSTALL_DIR}"
-mv "${EXTRACT_DIR}"/%PACKAGE_NAME%/* "${INSTALL_DIR}"
+prompt "/opt/COPASI/%VERSION%" "Installation directory: " "${INSTALL_DIR}"
+INSTALL_DIR="$(readlink -f ${RESULT})"
 
-[ -Z "${DESKTOP_DIR}"] || read -p "Desktop file location: " -i "~/.local/share/applications/" DESKTOP_DIR
+echo cp -r "${EXTRACT_DIR}"/%PACKAGE_NAME%/'*' "${INSTALL_DIR}"
+cp -r "${EXTRACT_DIR}"/%PACKAGE_NAME%/* "${INSTALL_DIR}"
+
+prompt "~/.local/share/applications" "Desktop file location: " "${DESKTOP_DIR}"
+DESKTOP_DIR="$(readlink -f ${RESULT})"
+
+echo "[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Exec=${INSTALL_DIR}/bin/CopasiUI %u
+Icon=${INSTALL_DIR}/share/copasi/icons/Copasi48-Alpha.xpm
+MimeType=application/xml;x-scheme-handler/copasi;application/x-copasi
+Name=COPASI
+NoDisplay=false
+Type=Application
+Categories=Science;Utility" '> '"${DESKTOP_DIR}"/COPASI.dektop
 
 echo "[Desktop Entry]
 Encoding=UTF-8
