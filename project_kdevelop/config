@@ -1,2 +1,0 @@
-./configure --enable-debug --with-sbml=/home/pan/sven/tools/
---with-qwt=/home/pan/sven/qwt-0.4.1/

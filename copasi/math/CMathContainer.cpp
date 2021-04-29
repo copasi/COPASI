@@ -1465,30 +1465,44 @@ CMathObject * CMathContainer::getLargestReactionCompartment(const CMathReaction 
 
 void CMathContainer::compile()
 {
-  allocate();
+  try
+    {
+      allocate();
 
-  CMath::sPointers Pointers;
-  initializePointers(Pointers);
+      CMath::sPointers Pointers;
+      initializePointers(Pointers);
 
 #ifdef DEBUG_OUPUT
-  printPointers(Pointers);
+      printPointers(Pointers);
 #endif // DEBUG_OUPUT
 
-  initializeDiscontinuousCreationPointer();
+      initializeDiscontinuousCreationPointer();
 
-  initializeObjects(Pointers);
-  initializeEvents(Pointers);
+      initializeObjects(Pointers);
+      initializeEvents(Pointers);
 
-  map();
-  compileObjects();
-  compileEvents();
+      map();
+      compileObjects();
+      compileEvents();
 
-  // These are only used during initialization for setting up the tracking of
-  // discontinuities and are cleared afterwards.
-  mDiscontinuityEvents.clear();
-  mDiscontinuityInfix2Object.clear();
-  mTriggerInfix2Event.clear();
-  mRootCount2Events.clear();
+      // These are only used during initialization for setting up the tracking of
+      // discontinuities and are cleared afterwards.
+      mDiscontinuityEvents.clear();
+      mDiscontinuityInfix2Object.clear();
+      mTriggerInfix2Event.clear();
+      mRootCount2Events.clear();
+    }
+  catch (...)
+    {
+      // These are only used during initialization for setting up the tracking of
+      // discontinuities and are cleared afterwards.
+      mDiscontinuityEvents.clear();
+      mDiscontinuityInfix2Object.clear();
+      mTriggerInfix2Event.clear();
+      mRootCount2Events.clear();
+
+      throw;
+    }
 
   // Create eventual delays
   createDelays();
@@ -2399,36 +2413,53 @@ void CMathContainer::createValueChangeProhibited()
   // If the compartment size depends on the initial concentration than the initial particle number may not be changed
   // since # = [] * S = [] * f([]).
 
-  const CMathObject * pObject = mObjects.array();
-  const CMathObject * pObjectEnd = getMathObject(mExtensiveValues.array());
+  CDataVectorNS < CCompartment >::const_iterator it = mpModel->getCompartments().begin();
+  CDataVectorNS < CCompartment >::const_iterator end = mpModel->getCompartments().end();
 
-  for (; pObject != pObjectEnd; ++pObject)
-    if (pObject->getEntityType() == CMath::EntityType::Species &&
-        pObject->getValueType() == CMath::ValueType::Value)
-      {
-        CMathObject * pCompartment = getMathObject(pObject->getCompartmentValue());
+  for (; it != end; ++it)
+    {
+      // Only if the compartment has an initial expression we may have a problem
+      if (it->getInitialExpressionPtr() == NULL)
+        continue;
 
-        if (mInitialDependencies.hasCircularDependencies(pCompartment, CCore::SimulationContext::UpdateMoieties, pObject))
+      CMathObject * pCompartment = getMathObject(it->getInitialValueReference());
+
+      const CMathObject * pObject = mObjects.array();
+      const CMathObject * pObjectEnd = getMathObject(mInitialExtensiveRates.array());
+
+      for (; pObject != pObjectEnd; ++pObject)
+
+        // Only species in the compartment may pose a problem
+        if (pObject->getEntityType() == CMath::EntityType::Species &&
+            pObject->getValueType() == CMath::ValueType::Value &&
+            pCompartment == getMathObject(pObject->getCompartmentValue()))
           {
-            mValueChangeProhibited.insert(pObject);
-            mInitialDependencies.removePrerequisite(pObject->getCorrespondingProperty(), pCompartment);
+            if (mInitialDependencies.hasCircularDependencies(pCompartment, CCore::SimulationContext::UpdateMoieties, pObject))
+              {
+                mValueChangeProhibited.insert(pObject);
+                mInitialDependencies.removePrerequisite(pObject->getCorrespondingProperty(), pCompartment);
+              }
           }
-      }
 
-  pObjectEnd = getMathObject(mExtensiveRates.array());
+      pObject =  getMathObject(mExtensiveValues.array());
+      pObjectEnd = getMathObject(mExtensiveRates.array());
 
-  for (; pObject != pObjectEnd; ++pObject)
-    if (pObject->getEntityType() == CMath::EntityType::Species &&
-        pObject->getValueType() == CMath::ValueType::Value)
-      {
-        CMathObject * pCompartment = getMathObject(pObject->getCompartmentValue());
+      for (; pObject != pObjectEnd; ++pObject)
 
-        if (mTransientDependencies.hasCircularDependencies(pCompartment, CCore::SimulationContext::Default, pObject))
+        // Only species in the compartment may pose a problem
+        if (pObject->getEntityType() == CMath::EntityType::Species &&
+            pObject->getValueType() == CMath::ValueType::Value &&
+            pCompartment == getMathObject(pObject->getCompartmentValue()))
           {
-            mValueChangeProhibited.insert(pObject);
-            mTransientDependencies.removePrerequisite(pObject->getCorrespondingProperty(), pCompartment);
+            CMathObject * pCompartment = getMathObject(pObject->getCompartmentValue());
+
+            if (mTransientDependencies.hasCircularDependencies(pCompartment, CCore::SimulationContext::Default, pObject))
+              {
+                mValueChangeProhibited.insert(pObject);
+                mTransientDependencies.removePrerequisite(pObject->getCorrespondingProperty(), pCompartment);
+              }
           }
-      }
+    }
 }
 
 void CMathContainer::createUpdateSequences()

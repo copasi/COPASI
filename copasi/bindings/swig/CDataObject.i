@@ -72,13 +72,14 @@ public:
     return *static_cast<bool*>(obj->getValuePointer());
   }
   
-  void setBoolValue(bool value)
+  bool setBoolValue(bool value)
   {
     CDataObject* obj = dynamic_cast<CDataObject*>($self);
     if (obj == NULL || obj->getValuePointer() == NULL || obj->hasFlag(CDataObject::ValueBool))
-      return;
+      return false;
 
     *(bool*)obj->getValuePointer() = value;
+    return true;
   }
   
   int getIntValue()
@@ -89,13 +90,14 @@ public:
     return *static_cast<C_INT32*>(obj->getValuePointer());
   }
   
-  void setIntValue(int value)
+  bool setIntValue(int value)
   {
     CDataObject* obj = dynamic_cast<CDataObject*>($self);
     if (obj == NULL || obj->getValuePointer() == NULL || obj->hasFlag(CDataObject::ValueInt))
-      return;
+      return false;
 
     *(C_INT32*)obj->getValuePointer() = value;
+    return true;
   }
   
   double getDblValue()
@@ -106,13 +108,14 @@ public:
     return *static_cast<double*>(obj->getValuePointer());
   }
   
-  void setDblValue(double value)
+  bool setDblValue(double value)
   {
     CDataObject* obj = dynamic_cast<CDataObject*>($self);
     if (obj == NULL || obj->getValuePointer() == NULL || obj->hasFlag(CDataObject::ValueDbl))
-      return;
+      return false;
 
     *(C_FLOAT64*)obj->getValuePointer() = value;
+    return true;
   }
 
 }

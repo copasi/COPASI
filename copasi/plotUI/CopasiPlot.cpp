@@ -71,7 +71,7 @@
 
 #include <QApplication>
 
-#if QT_VERSION > 6
+#if QT_VERSION > 0x060000
 #include <QRegularExpression>
 #endif
 
@@ -282,17 +282,17 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
   else
     {
       // have explicit list of numbers to plot
-#if QT_VERSION < 6
+#if QT_VERSION < 0x060000
       QStringList list = contours.split(QRegExp(",| |;"), QString::SkipEmptyParts);
 #else
       QStringList list = contours.split(QRegularExpression(",| |;"), Qt::SkipEmptyParts);
 #endif
       QwtValueList contourLevels;
 
-      foreach(const QString & level, list)
-      {
-        contourLevels += level.toDouble();
-      }
+      foreach (const QString & level, list)
+        {
+          contourLevels += level.toDouble();
+        }
 
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);

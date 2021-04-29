@@ -104,7 +104,9 @@ void SEDMLImporter::clearCallBack()
 }
 
 const std::string SEDMLImporter::getArchiveFileName()
-{return mArchiveFileName;}
+{
+  return mArchiveFileName;
+}
 
 /**
  * Creates and returns a COPASI CTrajectoryTask from the SEDML simulation
@@ -638,6 +640,67 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 void
 SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
 {
+  // merge nested subtasks if needed (as that is really the only way
+  // COPASI can handle them. So if we have
+  //
+  // repeatedTask1: subtask simulationTask1
+  // repeatedTask2: subtask repeatedTask1
+  // repeatedTask3: subtask repeatedTask2
+  // repeatedTask4: subtask repeatedTask3
+  //
+  // we move all the ranges changes from 3 to 4, then from 2 to 4, then 1 to 4
+  // that way we preserve the order of scan items.
+
+  bool keepRunning = true;
+
+  while (keepRunning)
+    {
+      keepRunning = false;
+
+      for (unsigned int i = 0; i < mpSEDMLDocument->getNumTasks(); ++i)
+        {
+          auto * task = dynamic_cast<SedRepeatedTask*>(mpSEDMLDocument->getTask(i));
+
+          if (task == NULL)
+            continue;
+
+          if (task->getNumSubTasks() != 1)
+            continue; // can't handle these in any way
+
+          std::string subTaskId = task->getSubTask(0)->getTask();
+          auto * subTask = dynamic_cast< SedRepeatedTask * >(mpSEDMLDocument->getTask(subTaskId));
+
+          if (subTask == NULL)
+            continue; // not a nested subtask, so nothing to be done here
+
+          // ok so we have a nested repeated task, so move all things from sub task here
+          auto * subTaskRanges = subTask->getListOfRanges();
+
+          while (subTaskRanges->size() > 0)
+            {
+              task->getListOfRanges()->appendAndOwn(subTaskRanges->remove(0));
+            }
+
+          // changes
+          auto * subTaskChanges = subTask->getListOfTaskChanges();
+
+          while (subTaskChanges->size() > 0)
+            {
+              task->getListOfTaskChanges()->appendAndOwn(subTaskChanges->remove(0));
+            }
+
+          // finally set subTaskId to the one from the subTask and repeat
+          task->getSubTask(0)->setTask(subTask->getSubTask(0)->getTask());
+
+          // and delete the subTask
+          mpSEDMLDocument->removeTask(subTaskId);
+          keepRunning = true;
+          break;
+
+        }
+
+    }
+
 
   for (unsigned int i = 0; i < mpSEDMLDocument->getNumTasks(); ++i)
     {
@@ -686,6 +749,13 @@ SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
                 for (unsigned int j = 0; j < repeat->getNumTaskChanges(); ++j)
                   {
                     SedSetValue* sv = repeat->getTaskChange(j);
+
+                    if (sv->isSetRange())
+                      {
+                        range = repeat->getRange(sv->getRange());
+                        urange = dynamic_cast< SedUniformRange * >(range);
+                        vrange = dynamic_cast< SedVectorRange * >(range);
+                      }
 
                     if (SBML_formulaToString(sv->getMath()) != sv->getRange())
                       {

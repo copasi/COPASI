@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -77,6 +77,19 @@ bool CLinkMatrix::build(const CMatrix< C_FLOAT64 > & matrix, size_t maxRank)
 
       for (i = 0; i < NumRows; i++)
         mRowPivots[i] = i;
+    }
+  else if (maxRank == 0)
+    {
+      C_INT32 i;
+      mRowPivots.resize(NumRows);
+
+      for (i = 0; i < NumRows; i++)
+        mRowPivots[i] = i;
+
+      mIndependent = 0;
+
+      // Resize mL
+      resize(NumRows - mIndependent, mIndependent);
     }
   else
     {

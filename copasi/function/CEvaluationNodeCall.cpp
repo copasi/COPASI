@@ -36,25 +36,29 @@
 #include "copasi/utilities/CUnitValidator.h"
 #include "copasi/core/CRootContainer.h"
 
-CEvaluationNodeCall::CEvaluationNodeCall():
-  CEvaluationNode(MainType::CALL, SubType::INVALID, ""),
-  mpFunction(NULL),
-  mpExpression(NULL),
-  mCallNodes(),
-  mpCallParameters(NULL),
-  mQuotesRequired(false),
-  mRegisteredFunctionCN()
-{mPrecedence = PRECEDENCE_NUMBER;}
+CEvaluationNodeCall::CEvaluationNodeCall()
+  : CEvaluationNode(MainType::CALL, SubType::INVALID, "")
+  , mpFunction(NULL)
+  , mpExpression(NULL)
+  , mCallNodes()
+  , mpCallParameters(NULL)
+  , mQuotesRequired(false)
+  , mRegisteredFunctionCN()
+  , mCompiledSubType(SubType::INVALID)
+{
+  mPrecedence = PRECEDENCE_NUMBER;
+}
 
 CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
-    const Data & data):
-  CEvaluationNode(MainType::CALL, subType, data),
-  mpFunction(NULL),
-  mpExpression(NULL),
-  mCallNodes(),
-  mpCallParameters(NULL),
-  mQuotesRequired(false),
-  mRegisteredFunctionCN()
+    const Data & data)
+  : CEvaluationNode(MainType::CALL, subType, data)
+  , mpFunction(NULL)
+  , mpExpression(NULL)
+  , mCallNodes()
+  , mpCallParameters(NULL)
+  , mQuotesRequired(false)
+  , mRegisteredFunctionCN()
+  , mCompiledSubType(SubType::INVALID)
 {
   setData(data);
   mData = unQuote(mData);
@@ -84,15 +88,18 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
   mPrecedence = PRECEDENCE_FUNCTION;
 }
 
-CEvaluationNodeCall::CEvaluationNodeCall(const CEvaluationNodeCall & src):
-  CEvaluationNode(src),
-  mpFunction(src.mpFunction),
-  mpExpression(src.mpExpression),
-  mCallNodes(src.mCallNodes),
-  mpCallParameters(NULL),
-  mQuotesRequired(src.mQuotesRequired),
-  mRegisteredFunctionCN(src.mRegisteredFunctionCN)
-{mpCallParameters = buildParameters(mCallNodes);}
+CEvaluationNodeCall::CEvaluationNodeCall(const CEvaluationNodeCall & src)
+  : CEvaluationNode(src)
+  , mpFunction(src.mpFunction)
+  , mpExpression(src.mpExpression)
+  , mCallNodes(src.mCallNodes)
+  , mpCallParameters(NULL)
+  , mQuotesRequired(src.mQuotesRequired)
+  , mRegisteredFunctionCN(src.mRegisteredFunctionCN)
+  , mCompiledSubType(src.mCompiledSubType)
+{
+  mpCallParameters = buildParameters(mCallNodes);
+}
 
 CEvaluationNodeCall::~CEvaluationNodeCall()
 {
@@ -101,7 +108,7 @@ CEvaluationNodeCall::~CEvaluationNodeCall()
 
 void CEvaluationNodeCall::calculate()
 {
-  switch (mSubType)
+  switch (mCompiledSubType)
     {
       case SubType::FUNCTION:
         mValue = mpFunction->calcValue(*mpCallParameters);
@@ -129,7 +136,9 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
       pObjectInterface = const_cast< CObjectInterface * >(CRootContainer::getRoot()->getObject(mRegisteredFunctionCN));
     }
 
-  switch (mSubType)
+  mCompiledSubType = mSubType;
+
+  switch (mCompiledSubType)
     {
       case SubType::FUNCTION:
 
@@ -145,7 +154,7 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
         if (!mpFunction)
           {
-            mSubType = SubType::DEFAULT;
+            mCompiledSubType = SubType::INVALID;
             return CIssue(CIssue::eSeverity::Error, CIssue::eKind::CFunctionNotFound);
           }
 
@@ -194,14 +203,14 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
             if (!mpFunction)
               {
-                mSubType = SubType::DEFAULT;
+                mCompiledSubType = SubType::DEFAULT;
                 return CIssue(CIssue::eSeverity::Error, CIssue::eKind::CFunctionNotFound);
               }
 
             mRegisteredFunctionCN = mpFunction->getCN();
 
             mMainType = MainType::CALL;
-            mSubType = SubType::FUNCTION;
+            mCompiledSubType = SubType::FUNCTION;
 
             issue = compile(pTree);
           }
@@ -314,7 +323,7 @@ std::string CEvaluationNodeCall::getInfix(const std::vector< std::string > & chi
       Infix = quote(Data, "-+^*/%(){},\t\r\n") + "(";
     }
 
-  switch (mSubType)
+  switch (mCompiledSubType)
     {
       case SubType::FUNCTION:
       case SubType::DEFAULT:
@@ -355,7 +364,7 @@ std::string CEvaluationNodeCall::getDisplayString(const std::vector< std::string
       DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
     }
 
-  switch (mSubType)
+  switch (mCompiledSubType)
     {
       case SubType::FUNCTION:
       {
@@ -402,7 +411,7 @@ std::string CEvaluationNodeCall::getCCodeString(const std::vector< std::string >
       DisplayString = quote(Data, "-+^*/%(){},\t\r\n") + "(";
     }
 
-  switch (mSubType)
+  switch (mCompiledSubType)
     {
       case SubType::FUNCTION:
       {
@@ -606,7 +615,7 @@ CEvaluationNodeCall::verifyParameters(const std::vector<CEvaluationNode *> & vec
 
 const CFunction * CEvaluationNodeCall::getCalledTree() const
 {
-  switch (mSubType)
+  switch (mCompiledSubType)
     {
       case SubType::FUNCTION:
       case SubType::EXPRESSION:
@@ -629,7 +638,7 @@ std::string CEvaluationNodeCall::getMMLString(const std::vector< std::string > &
   std::vector< std::string >::const_iterator it = children.begin();
   std::vector< std::string >::const_iterator end = children.end();
 
-  switch (mSubType)
+  switch (mCompiledSubType)
     {
       case SubType::FUNCTION:
       {
@@ -713,7 +722,7 @@ CValidatedUnit CEvaluationNodeCall::getUnit(const CMathContainer & math,
 {
   CEvaluationTree * pTree = NULL;
 
-  switch (mSubType)
+  switch (mCompiledSubType)
     {
       case SubType::FUNCTION:
         pTree = mpFunction;
@@ -741,7 +750,7 @@ CValidatedUnit CEvaluationNodeCall::setUnit(const CMathContainer & container,
 {
   CEvaluationTree * pTree = NULL;
 
-  switch (mSubType)
+  switch (mCompiledSubType)
     {
       case SubType::FUNCTION:
         pTree = mpFunction;

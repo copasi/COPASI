@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,6 +33,7 @@ class CCompartment;
 class CMetab;
 class CProcessReport;
 class CPlotSpecification;
+class CScanProblem;
 
 class CModelValue;
 class CReaction;
@@ -137,6 +138,13 @@ public:
     const std::string & taskId,
     size_t i,
     size_t j);
+
+
+  bool exportNthScanItem(CScanProblem * pProblem,
+                         size_t n,
+                         SedRepeatedTask * task,
+                         CDataModel & dataModel,
+                         const std::string & modelId);
 
   /**
    * Creates the Tasks for SEDML.

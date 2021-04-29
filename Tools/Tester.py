@@ -1,16 +1,3 @@
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/Tools/Tester.py,v $ 
-#   $Revision: 1.6 $ 
-#   $Name:  $ 
-#   $Author: pwilly $ 
-#   $Date: 2008/11/03 11:57:40 $ 
-# End CVS Header 
-
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-# and The University of Manchester. 
-# All rights reserved. 
-
 #! /usr/bin/env python
 
 # Tester, a python script for automatically testing CopasiSE

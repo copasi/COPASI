@@ -50,17 +50,13 @@ public:
                        const CFlags< Flag > & flag = CFlags< Flag >::None):
     CDataObject(name, pParent, "Reference", flag | CDataObject::Reference | CDataObject::NonUniqueName),
     mpReference(&reference)
-  {
-    assert(pParent != NULL);
-  }
+  {}
 
   CDataObjectReference(const CDataObjectReference< referenceType > & src,
                        const CDataContainer * pParent):
     CDataObject(src, pParent),
     mpReference(src.mpReference)
-  {
-    assert(pParent != NULL);
-  }
+  {}
 
   virtual ~CDataObjectReference() {}
 

@@ -26,6 +26,10 @@
 #include "copasi/model/CModel.h"
 #include "copasi/function/CExpression.h"
 #include "copasi/utilities/utility.h"
+
+// Uncomment next line track any NaN value in calculations
+// #define TRACK_NAN
+
 // static
 C_FLOAT64 CMathObject::InvalidValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
@@ -148,7 +152,7 @@ void CMathObject::relocate(CMathContainer * pContainer,
 CCommonName CMathObject::getCN() const
 {
   if (mpDataObject == NULL)
-    return CCommonName("");
+    return CCommonName("CMathObject: no data equivalence.");
 
   return mpDataObject->getCN();
 }
@@ -347,7 +351,7 @@ void CMathObject::calculateValue()
 
   (this->*mpCalculate)();
 
-#ifdef COPASI_DEBUG_TRACE
+#ifdef TRACK_NAN
 
   // Check for NaN
   if (std::isnan(*mpValue) && mpExpression->getInfix() != "")
@@ -355,7 +359,7 @@ void CMathObject::calculateValue()
       std::cout << "NaN Value for: " << getCN() << std::endl;
     }
 
-#endif // COPASI_DEBUG_TRACE
+#endif // TRACK_NAN
 
   // For an extensive transient value of a dependent species we have 2
   // possible assignments depending on the context.
@@ -1641,10 +1645,10 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
         std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > CalculationVector;
         CalculationVector.push_back(std::make_pair(1.0, (C_FLOAT64 *) container.getMathObject(pSpecies->getValueReference())->getValuePointer()));
 
-        const std::set< std::pair< const CReaction *, C_FLOAT64 > > & Stoicheometry = container.getModel().getReactionsPerSpecies(pSpecies);
+        const std::set< std::pair< const CReaction *, C_FLOAT64 > > & Stoichiometry = container.getModel().getReactionsPerSpecies(pSpecies);
 
-        std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoicheometry.begin();
-        std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator endStoi = Stoicheometry.end();
+        std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoichiometry.begin();
+        std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator endStoi = Stoichiometry.end();
 
         for (; itStoi != endStoi; ++itStoi)
           {
@@ -1785,14 +1789,14 @@ bool CMathObject::createConvertedExpression(const CExpression * pExpression,
 
   if (pExpression->getValidity().getHighestSeverity() != CIssue::eSeverity::Error)
     {
-      bool ReplaceDiscontinousNodes =
+      bool ReplaceDiscontinuosNodes =
         !mIsInitialValue &&
         mValueType != CMath::ValueType::Discontinuous &&
         mValueType != CMath::ValueType::EventAssignment &&
         mValueType != CMath::ValueType::EventPriority &&
         mValueType != CMath::ValueType::EventDelay;
 
-      mpExpression = new CMathExpression(*pExpression, container, ReplaceDiscontinousNodes);
+      mpExpression = new CMathExpression(*pExpression, container, ReplaceDiscontinuosNodes);
     }
 
   compileExpression();
@@ -1968,10 +1972,10 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
 
   bool First = true;
   std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > CalculationVector;
-  const std::set< std::pair< const CReaction *, C_FLOAT64 > > & Stoicheometry = container.getModel().getReactionsPerSpecies(pSpecies);
+  const std::set< std::pair< const CReaction *, C_FLOAT64 > > & Stoichiometry = container.getModel().getReactionsPerSpecies(pSpecies);
 
-  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoicheometry.begin();
-  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator endStoi = Stoicheometry.end();
+  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoichiometry.begin();
+  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator endStoi = Stoichiometry.end();
 
   for (; itStoi != endStoi; ++itStoi)
     {
@@ -2150,10 +2154,10 @@ bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies
 
   bool First = true;
   std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > CalculationVector;
-  const std::set< std::pair< const CReaction *, C_FLOAT64 > > & Stoicheometry = container.getModel().getReactionsPerSpecies(pSpecies);
+  const std::set< std::pair< const CReaction *, C_FLOAT64 > > & Stoichiometry = container.getModel().getReactionsPerSpecies(pSpecies);
 
-  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoicheometry.begin();
-  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator endStoi = Stoicheometry.end();
+  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoichiometry.begin();
+  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator endStoi = Stoichiometry.end();
 
   for (; itStoi != endStoi; ++itStoi)
     {

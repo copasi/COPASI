@@ -1,4 +1,9 @@
 #!/bin/bash
+# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -52,8 +57,8 @@ chmod 777 share/copasi/examples
 
 # Copy icons
 mkdir -p share/copasi/icons
-cp ${SOURCE}/copasi/CopasiUI/icons/Copasi.ico share/copasi/icons
-cp ${SOURCE}/copasi/CopasiUI/icons/CopasiDoc.ico share/copasi/icons
+cp ${SOURCE}/copasi/UI/icons/Copasi.ico share/copasi/icons
+cp ${SOURCE}/copasi/UI/icons/CopasiDoc.ico share/copasi/icons
 chmod 644 share/copasi/icons/*
 
 # Copy wizard resource
