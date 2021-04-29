@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -55,7 +55,6 @@
 #include "copasi/resourcesUI/CQIconResource.h"
 
 #include "CQElementProperties.h"
-
 
 class QConservedSpeciesAnimation : public CQCopasiAnimation
 {
@@ -293,11 +292,11 @@ class QCustomTimeCourseAnimation : public CQCopasiAnimation
     pdelete(mpDataHandler);
   }
 
-  double getMax(const std::vector< std::vector< C_FLOAT64 > > & data, int index = C_INVALID_INDEX)
+  double getMax(const std::vector< std::vector< C_FLOAT64 > > & data, int index = -1)
   {
     double max = 0;
 
-    if (index != C_INVALID_INDEX)
+    if (index != -1)
       {
         for (size_t i = 0; i < data.size(); ++i)
           {
@@ -328,7 +327,7 @@ class QCustomTimeCourseAnimation : public CQCopasiAnimation
           return i;
       }
 
-    return C_INVALID_INDEX;
+    return -1;
   }
 
   virtual void getScales(std::vector< qreal >& scales, int step)
@@ -376,7 +375,7 @@ class QCustomTimeCourseAnimation : public CQCopasiAnimation
 
     // select elements to record
 
-for (auto & entry : entries)
+    for (auto & entry : entries)
       {
         mEntries.push_back(entry);
         mpDataHandler->addDuringName(entry.getDataCN());
@@ -391,7 +390,6 @@ for (auto & entry : entries)
     task.restore();
 
     mNumSteps = mpDataHandler->getDuringData().size();
-
   }
 
   virtual void initialize(const CDataModel & dataModel)
@@ -429,10 +427,7 @@ for (auto & entry : entries)
         }
     }
 
-
     updateEntries(entries);
-
-
   }
 
 protected:
