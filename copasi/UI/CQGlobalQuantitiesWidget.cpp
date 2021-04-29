@@ -53,13 +53,13 @@ CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget *parent, const char *
   mpTypeDelegate = new CQComboDelegate(this, mpGlobalQuantityDM->getTypes());
   mpTblGlobalQuantities->setItemDelegateForColumn(COL_TYPE_GQ, mpTypeDelegate);
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   mpTblGlobalQuantities->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 #endif
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
       mpTblGlobalQuantities->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
       mpTblGlobalQuantities->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);

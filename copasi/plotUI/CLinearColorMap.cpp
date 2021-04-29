@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,11 +26,10 @@ CLinearColorMap::CLinearColorMap(const QColor &from, const QColor &to, QwtColorM
   , mpLower(NULL)
   , mpUpper(NULL)
 {
-
 }
 
 CLinearColorMap::CLinearColorMap(const CLinearColorMap &other)
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   : QwtLinearColorMap(other.mFrom, other.mTo, other.format())
 #else
   : QwtLinearColorMap(other)
@@ -56,7 +60,6 @@ CLinearColorMap::CLinearColorMap(const CLinearColorMap &other)
 
       addColorStop(value, other.color(QwtDoubleInterval(0, 1), value));
     }
-
 }
 
 CLinearColorMap::~CLinearColorMap()
@@ -69,7 +72,7 @@ CLinearColorMap &CLinearColorMap::operator=(const CLinearColorMap &rhs)
 {
   if (&rhs == this) return *this;
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 
 #else
   QwtLinearColorMap::operator =(rhs);

@@ -189,7 +189,7 @@ void CQDifferentialEquations::savePDF(const QString& outfilename)
   QPainter painter;
   printer.setOutputFormat(QPrinter::PdfFormat);
   printer.setOutputFileName(outfilename);
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
   printer.setPaperSize(QSizeF(size.width(), size.height()), QPrinter::Point);
 #else
   printer.setPageSize(QPageSize(QSizeF(size.width(), size.height()), QPageSize::Point));

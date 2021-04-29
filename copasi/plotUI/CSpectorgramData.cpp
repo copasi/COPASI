@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,7 +51,7 @@ CSpectorgramData::CSpectorgramData(const CVector<double> &x,
                                    bool logZ,
                                    double limitZ,
                                    bool bilinear)
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   : QwtRasterData()
 #else
   : QwtRasterData(QwtDoubleRect(0, 0, 100, 100))
@@ -80,7 +80,7 @@ CSpectorgramData::CSpectorgramData(const CVector<double> &x,
 }
 
 CSpectorgramData::CSpectorgramData(const CSpectorgramData& other)
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   : QwtRasterData()
 #else
   : QwtRasterData(other)
@@ -369,7 +369,7 @@ CSpectorgramData::setSize(const size_t &size)
 
   initializeMatrix();
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   boundingRect();
   setInterval(Qt::XAxis, QwtInterval(mMinX, mMaxX));
   setInterval(Qt::YAxis, QwtInterval(mMinY, mMaxY));

@@ -54,13 +54,13 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget *parent, const char *name)
   mpTypeDelegate = new CQComboDelegate(this, mpCompartmentDM->getTypes());
   mpTblCompartments->setItemDelegateForColumn(COL_TYPE_COMPARTMENTS, mpTypeDelegate);
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   mpTblCompartments->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 #endif
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
       mpTblCompartments->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
       mpTblCompartments->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);

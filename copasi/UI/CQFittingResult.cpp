@@ -551,7 +551,7 @@ void CQFittingResult::slotSave(void)
       if (!fileName.endsWith(".txt") &&
           !fileName.endsWith(".")) fileName += ".txt";
 
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
       fileName = fileName.remove(QRegExp("\\.$"));
 #else
       fileName = fileName.remove(QRegularExpression("\\.$"));

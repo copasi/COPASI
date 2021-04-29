@@ -67,13 +67,13 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget *parent)
   mpProxyModel->setFilterKeyColumn(-1);
   mpProxyModel->setSourceModel(mpLayoutsDM);
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   mpTblLayouts->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 #endif
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
       mpTblLayouts->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
       mpTblLayouts->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);

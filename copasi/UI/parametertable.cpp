@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -281,7 +281,7 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
 
   QTableWidgetItem *pItem = NULL;
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   QPalette Palette = QGuiApplication::palette();
 #else
   QPalette Palette = QApplication::palette();

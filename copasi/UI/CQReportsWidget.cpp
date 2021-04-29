@@ -49,7 +49,7 @@ CQReportsWidget::CQReportsWidget(QWidget *parent, const char *name)
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   mpTblReports->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
   mpTblReports->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);

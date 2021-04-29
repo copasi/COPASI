@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -30,12 +30,11 @@ CQDependencyWidget::CQDependencyWidget(QWidget *parent, const char *name, Qt::Wi
 {
   setupUi(this);
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   mpTable->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
 #endif
 
   mResizeTableToRows = CRootContainer::getConfiguration()->resizeToContents();
-
 }
 
 CQDependencyWidget::~CQDependencyWidget()
@@ -65,9 +64,9 @@ getNameForType(CDependencyType type)
       case REACTION: return "Reaction";
 
       case EVENT: return "Event";
-  
+
       default:
-       break;
+        break;
     }
 
   return "";
@@ -184,7 +183,7 @@ void
 CQDependencyWidget::setDependencyType(CDependencyType type)
 {
   mType = type;
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   mpTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
   mpTable->verticalHeader()->setResizeMode(mType == REACTION ?

@@ -228,7 +228,6 @@ void CQLayoutView::slotLayoutChanged(int index)
 
   emit layoutChanged();
   emit renderInformationChanged();
-
 }
 
 CQLayoutView::CQLayoutView(QWidget*parent)
@@ -352,7 +351,7 @@ void CQLayoutView::slotFitOnScreen()
 void CQLayoutView::slotResetZoom()
 {
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
   resetMatrix();
 #else
   resetTransform();
@@ -396,7 +395,7 @@ void CQLayoutView::wheelEvent(QWheelEvent* event)
       QApplication::keyboardModifiers() == Qt::MetaModifier ||
       QApplication::keyboardModifiers() == Qt::ShiftModifier)
     {
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
       int delta = event->delta();
 #else
       int delta = event->angleDelta().y();

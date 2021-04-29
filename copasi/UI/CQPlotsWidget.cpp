@@ -51,13 +51,13 @@ CQPlotsWidget::CQPlotsWidget(QWidget *parent, const char *name)
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   mpTblPlots->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 #endif
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
       mpTblPlots->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
       mpTblPlots->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);

@@ -47,7 +47,7 @@ CQParameterGroupView::CQParameterGroupView(QWidget* parent):
   mpSortFilterDM = new QSortFilterProxyModel(this);
   mpSortFilterDM->setFilterKeyColumn(0);
   mpSortFilterDM->setFilterRole(Qt::UserRole + 1);
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
   mpSortFilterDM->setFilterRegExp(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters() ? "" : "basic");
 #else
   mpSortFilterDM->setFilterRegularExpression(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters() ? "" : "basic");
@@ -109,7 +109,7 @@ void CQParameterGroupView::clearGroups()
 
 void CQParameterGroupView::slotPreferenceUpdated()
 {
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
   mpSortFilterDM->setFilterRegExp(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters() ? "" : "basic");
 #else
   mpSortFilterDM->setFilterRegularExpression(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters() ? "" : "basic");

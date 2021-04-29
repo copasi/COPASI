@@ -37,7 +37,7 @@ protected:
 };
 #else
 
-#if QT_VERSION >= 0x050000 && !defined(WIN32) && !defined(QT_USE_TEXTBROWSER)
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) && !defined(WIN32) && !defined(QT_USE_TEXTBROWSER)
 // for whatever reason this fails to compile on centos 7 with qt 5.6.1
 #ifndef QWEBKITWIDGETS_EXPORT
 #define QWEBKITWIDGETS_EXPORT Q_DECL_IMPORT

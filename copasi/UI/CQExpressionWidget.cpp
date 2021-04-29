@@ -28,7 +28,7 @@
 #include <QComboBox>
 //Added by qt3to4:
 #include <QKeyEvent>
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include <QGuiApplication>
 #else
 #include <QApplication>
@@ -72,7 +72,7 @@ CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget * ew)
   : QSyntaxHighlighter(ew)
   , mObjectDisplayPattern(CQExpressionWidget::DisplayPattern)
 {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   QPalette Palette = QGuiApplication::palette();
 #else
   QPalette Palette = QApplication::palette();
@@ -232,7 +232,7 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
   mpExpressionHighlighter = new CQExpressionHighlighter(this);
   int h, s, v;
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   QPalette Palette = QGuiApplication::palette();
 #else
   QPalette Palette = QApplication::palette();

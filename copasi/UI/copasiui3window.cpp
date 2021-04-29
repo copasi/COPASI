@@ -40,7 +40,7 @@
 #include <QtCore/QDateTime>
 
 #include <QByteArray>
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -2594,7 +2594,7 @@ void CopasiUI3Window::slotFrameworkChanged(int index)
 
 void CopasiUI3Window::slotCapture()
 {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   QPixmap pixmap = mpListView->getCurrentWidget()->grab();
 #else
   QPixmap pixmap = QPixmap::grabWidget(mpListView->getCurrentWidget());
@@ -3829,7 +3829,7 @@ void CopasiUI3Window::removeReportTargets()
   auto& taskList = *mpDataModel->getTaskList();
   std::stringstream str;
 
-for (auto & task : taskList)
+  for (auto & task : taskList)
     {
       std::string target = task.getReport().getTarget();
 
@@ -3951,7 +3951,7 @@ void CopasiUI3Window::performNextAction()
             for (int i = 0; i < 5; ++i)
               {
                 qApp->processEvents();
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
                 QThread::msleep(100);
 #endif
               }
@@ -3995,7 +3995,7 @@ void CopasiUI3Window::performNextAction()
       for (int i = 0; i < 3; ++i)
         {
           qApp->processEvents();
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
           QThread::msleep(100);
 #endif
         }
@@ -4006,7 +4006,7 @@ void CopasiUI3Window::performNextAction()
 
 void CopasiUI3Window::slotHandleCopasiScheme(const QUrl& url)
 {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 
   if (url.scheme() != "copasi")
     return;
@@ -4051,7 +4051,7 @@ void CopasiUI3Window::slotHandleCopasiScheme(const QUrl& url)
 
 void CopasiUI3Window::slotCheckForUpdate()
 {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 
   // if the datamodel is already performing an action (loading / importing)
   // we need to delay checking for updates
@@ -4097,7 +4097,7 @@ bool getVersionFromFile(const std::string& fileName, CVersion & latest)
 
   latest = CVersion::VERSION;
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   QFile file(fileName.c_str());
 
   if (!file.open(QIODevice::ReadOnly))

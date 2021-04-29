@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,7 +45,7 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget *parent, const char *name) :
 {
   setupUi(this);
   mpReactionMatrix->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   mpReactionMatrix->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
   mpReactionMatrix->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
@@ -65,7 +65,7 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget *parent, const char *name) :
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
       mpReactionMatrix->resizeColumnsToContents();
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
       mpSpeciesMatrix->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
       mpSpeciesMatrix->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
@@ -89,7 +89,7 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget *parent, const char *name) :
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
       mpSpeciesMatrix->resizeColumnsToContents();
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
       mpNetReactions->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
       mpNetReactions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);

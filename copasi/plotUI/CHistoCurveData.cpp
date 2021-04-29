@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,7 +16,7 @@
 #include <copasi/plotUI/CHistoCurveData.h>
 
 CHistoCurveData::CHistoCurveData():
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   QwtSeriesData<QPointF>(),
 #else
   QwtData(),
@@ -39,7 +39,7 @@ CHistoCurveData::CHistoCurveData():
 CHistoCurveData::CHistoCurveData(const CVector< C_FLOAT64 > & x,
                                  size_t size,
                                  const C_FLOAT64 & increment):
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   QwtSeriesData<QPointF>(),
 #else
   QwtData(),
@@ -64,7 +64,7 @@ CHistoCurveData::CHistoCurveData(const CVector< C_FLOAT64 > & x,
 CHistoCurveData::~CHistoCurveData()
 {}
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 QwtSeriesData<QPointF>* CHistoCurveData::copy() const
 {
   CHistoCurveData * pCopy = new CHistoCurveData();

@@ -54,7 +54,7 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
   setModal(modal);
   setAttribute(Qt::WA_DeleteOnClose);
   ObjectBrowserDialogLayout = new QGridLayout(this);
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
   ObjectBrowserDialogLayout->setMargin(11);
 #else
   ObjectBrowserDialogLayout->setContentsMargins(11, 11, 11, 11);

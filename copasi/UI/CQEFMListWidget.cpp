@@ -35,11 +35,11 @@ CQEFMListWidget::CQEFMListWidget(QWidget *parent, const char *name) :
   setupUi(this);
   mpEFMTable->verticalHeader()->hide();
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   mpEFMTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 #endif
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   mpEFMTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
   mpEFMTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);

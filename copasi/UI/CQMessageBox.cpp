@@ -74,7 +74,7 @@ CQMessageBox::CQMessageBox(Icon icon, const QString &title, const QString &text,
   mpPage1->setObjectName(QString::fromUtf8("mpPage1"));
 
   mpVerticalLayoutPage1 = new QVBoxLayout(mpPage1);
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
   mpVerticalLayoutPage1->setMargin(2);
 #else
   mpVerticalLayoutPage1->setContentsMargins(2, 2, 2, 2);
@@ -430,7 +430,7 @@ void CQMessageBox::setFilteredText(const QString & text)
       mpPage2->setObjectName(QString::fromUtf8("mpPage2"));
 
       mpVerticalLayoutPage2 = new QVBoxLayout(mpPage2);
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
       mpVerticalLayoutPage2->setMargin(2);
 #else
       mpVerticalLayoutPage2->setContentsMargins(2, 2, 2, 2);

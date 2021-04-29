@@ -228,7 +228,7 @@ void CQExpressionMmlStackedWidget::savePDF(const QString& outfilename)
   printer.setOutputFileName(outfilename);
   painter.setRenderHints(
     QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
   printer.setPaperSize(QSizeF(size.width(), size.height()), QPrinter::Point);
 #else
   printer.setPageSize(QPageSize(QSizeF(size.width(), size.height()), QPageSize::Point));

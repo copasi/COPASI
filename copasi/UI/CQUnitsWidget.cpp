@@ -46,13 +46,13 @@ CQUnitsWidget::CQUnitsWidget(QWidget *parent, const char *name)
   mpProxyModel->setFilterKeyColumn(-1);
   mpProxyModel->sort(COL_NAME_UNITS);
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   mpTblUnits->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 #endif
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
       mpTblUnits->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
       mpTblUnits->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);

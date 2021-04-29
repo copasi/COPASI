@@ -31,9 +31,8 @@
 //
 // Modifications made to the original are
 #include <QStyle>
-#if QT_VERSION >= 0x040000
 #include <QStyleOption>
-#endif
+
 #include "scrollbar.h"
 
 #include <cmath>
@@ -130,12 +129,8 @@ void ScrollBar::moveSlider(double min, double max)
   if (steps <= 0)
     steps = 1;
 
-#if QT_VERSION < 0x040000
-  setSteps(steps, sliderTicks);
-#else
   setSingleStep(steps);
   setPageStep(sliderTicks);
-#endif
 
   int tick;
   tick = mapToTick(min + (max - min) / 2);
@@ -143,12 +138,7 @@ void ScrollBar::moveSlider(double min, double max)
   if (isInverted())
     tick = d_baseTicks - tick;
 
-#if QT_VERSION < 0x040000
-  directSetValue(tick);
-  rangeChange();
-#else
   setSliderPosition(tick);
-#endif
   blockSignals(false);
 }
 
@@ -227,11 +217,8 @@ void ScrollBar::catchSliderMoved(int value)
 
 int ScrollBar::extent() const
 {
-#if QT_VERSION < 0x040000
-  return style().pixelMetric(QStyle::PM_ScrollBarExtent, this);
-#else
   QStyleOptionSlider opt;
-#if QT_VERSION < 0x060000
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
   opt.init(this);
 #endif
   opt.subControls = QStyle::SC_None;
@@ -249,7 +236,6 @@ int ScrollBar::extent() const
     opt.state |= QStyle::State_Horizontal;
 
   return style()->pixelMetric(QStyle::PM_ScrollBarExtent, &opt, this);
-#endif
 }
 
 void ScrollBar::setLogScale(bool l)

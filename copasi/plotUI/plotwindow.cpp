@@ -50,12 +50,12 @@
 #include <qwt_plot.h>
 #include <qwt_scale_engine.h>
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 #include <qwt_plot_renderer.h>
 #include <qwt_text.h>
 #endif
 
-#if QWT_VERSION < 0x060000
+#if QWT_VERSION < QT_VERSION_CHECK(6,0,0)
 // taken from qwt examples/bode
 class PrintFilter: public QwtPlotPrintFilter
 {
@@ -229,7 +229,7 @@ void PlotWindow::toggleLogX(bool logX)
 
   if (logX)
     {
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
       mpPlot->setAxisScaleEngine(QwtPlot::xBottom, new QwtLogScaleEngine());
 #else
       mpPlot->setAxisScaleEngine(QwtPlot::xBottom, new QwtLog10ScaleEngine());
@@ -253,7 +253,7 @@ void PlotWindow::toggleLogY(bool logY)
 
   if (logY)
     {
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
       mpPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine());
 #else
       mpPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine());
@@ -300,7 +300,7 @@ void PlotWindow::saveToFile(const QString &fileName) const
       pixmap.fill();
       QPainter painter(&pixmap);
       painter.begin(&pixmap);
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
       QwtPlotRenderer renderer;
       renderer.render(mpPlot, &painter, rect);
 #else
@@ -315,7 +315,7 @@ void PlotWindow::saveToFile(const QString &fileName) const
       generator.setFileName(fileName);
       QPainter painter(&generator);
       painter.begin(&generator);
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
       QwtPlotRenderer renderer;
       renderer.render(mpPlot, &painter, rect);
 #else
@@ -330,7 +330,7 @@ void PlotWindow::saveToFile(const QString &fileName) const
       printer.setOutputFormat(QPrinter::PdfFormat);
       QPainter painter(&printer);
       painter.begin(&printer);
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
       QwtPlotRenderer renderer;
       renderer.render(mpPlot, &painter, rect);
 #else
@@ -388,14 +388,16 @@ void PlotWindow::printPlot()
     }
 
   printer.setCreator("COPASI");
-#if QT_VERSION < 0x060000
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
   printer.setOrientation(QPrinter::Landscape);
+#elif QT_VERSION < QT_VERSION_CHECK(6,0,0)
+  printer.setPageOrientation(QPageLayout::Landscape);
 #endif
   QPrintDialog dialog(&printer);
 
   if (dialog.exec())
     {
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
       QwtPlotRenderer renderer;
       renderer.renderTo(mpPlot, printer);
 #else

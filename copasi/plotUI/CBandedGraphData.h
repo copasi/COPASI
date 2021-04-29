@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -30,7 +30,7 @@
 #include <qwt_plot.h>
 #include <qwt_painter.h>
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 #include <qwt_compat.h>
 #else
 #include <qwt_data.h>
@@ -49,7 +49,7 @@
 #include "copasi/core/CMatrix.h"
 
 class CBandedGraphData :
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   public QwtSeriesData<QPointF>
 #else
   public QwtData
@@ -64,7 +64,7 @@ public:
                    size_t size);
   virtual ~CBandedGraphData();
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   virtual QwtSeriesData<QPointF> *copy() const;
   virtual QPointF sample(size_t i) const;
 #else

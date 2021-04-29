@@ -49,7 +49,7 @@ CQUpdatesWidget::CQUpdatesWidget(QWidget* parent, const char* name, Qt::WindowFl
   setWindowTitle("CQUpdatesWidget");
 
   mWidgetLayout = new QGridLayout(this);
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
   mWidgetLayout->setMargin(11);
 #else
   mWidgetLayout->setContentsMargins(11, 11, 11, 11);

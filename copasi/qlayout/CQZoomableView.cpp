@@ -109,7 +109,7 @@ void CQZoomableView::slotFitOnScreen()
 void CQZoomableView::slotResetZoom()
 {
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
   resetMatrix();
 #else
   resetTransform();
@@ -134,7 +134,7 @@ void CQZoomableView::wheelEvent(QWheelEvent* event)
       QApplication::keyboardModifiers() == Qt::MetaModifier ||
       QApplication::keyboardModifiers() == Qt::ShiftModifier)
     {
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
       int delta = event->delta();
 # else
       int delta = event->angleDelta().y();

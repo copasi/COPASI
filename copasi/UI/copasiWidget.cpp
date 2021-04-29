@@ -102,7 +102,7 @@ void CopasiWidget::setFilterExpression(CQSortFilterProxyModel * model, bool empt
 
   if (empty)
     {
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
       model->setFilterRegExp(QRegExp());
 #else
       model->setFilterRegularExpression(QRegularExpression());
@@ -110,7 +110,7 @@ void CopasiWidget::setFilterExpression(CQSortFilterProxyModel * model, bool empt
       return;
     }
 
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
   QRegExp regExp(Filter, Qt::CaseInsensitive, QRegExp::RegExp);
   model->setFilterRegExp(regExp);
 #else

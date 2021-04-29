@@ -30,8 +30,7 @@
 #include <qwt_plot.h>
 #include <qwt_painter.h>
 
-
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 #  include <qwt_compat.h>
 #else
 #include <qwt_data.h>

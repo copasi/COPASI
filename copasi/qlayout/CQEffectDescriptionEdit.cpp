@@ -26,10 +26,9 @@
 #include <copasi/core/CDataVector.h>
 #include <copasi/CopasiDataModel/CDataModel.h>
 
-
 #include "copasi/UI/qtUtilities.h"
 
-#if QT_VERSION < 0x040800
+#if QT_VERSION < QT_VERSION_CHECK(4,8,0)
 #include <QPainter>
 #endif
 
@@ -53,7 +52,7 @@ void setColor(QLabel *widget, const QColor& color)
   widget->setPalette(palette);
   QImage image(widget->rect().size(), QImage::Format_ARGB32);
 
-#if QT_VERSION >= 0x040800
+#if QT_VERSION >= QT_VERSION_CHECK(4,8,0)
   image.fill(color);
 #else
   QPainter painter(&image);
@@ -78,7 +77,6 @@ void CQEffectDescriptionEdit::initFrom(const CQEffectDescription* other, bool mu
     txtDataObject->setText("");
   else
     txtDataObject->setText(other->getDataCN().c_str());
-
 
   txtScaleStart->setText(convertToQString(other->getScaleStart()));
   txtScaleEnd->setText(convertToQString(other->getScaleEnd()));
@@ -182,7 +180,6 @@ void CQEffectDescriptionEdit::slotSelectDataObject()
     return;
 
   const CDataObject * pObject = dynamic_cast< const CDataObject * >((*pModelList)[0].getObjectFromCN(txtDataObject->text().toStdString()));
-
 
   pObject =
     CCopasiSelectionDialog::getObjectSingle(

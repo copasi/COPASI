@@ -84,7 +84,7 @@ CQCheckModelWindow::CQCheckModelWindow(CopasiUI3Window * pMainWindow)
 #endif // not Darwin
 
   mpSelection = new QComboBox(this);
-#if QT_VERSION < 6
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
   mpSelection->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
 #endif
   mpSelection->setSizePolicy(QSizePolicy::Policy::MinimumExpanding, QSizePolicy::Policy::Fixed);

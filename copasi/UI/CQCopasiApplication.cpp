@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -13,8 +13,6 @@
 // of Manchester.
 // All rights reserved.
 
-
-
 #include <QFileOpenEvent>
 #include <QtCore/QString>
 
@@ -27,7 +25,7 @@
 #include <iostream>
 #endif
 
-#if (defined(WIN32) && QT_VERSION < 0x050000)
+#if (defined(WIN32) && QT_VERSION < QT_VERSION_CHECK(5,0,0))
 
 #include <QWindowsVistaStyle>
 
@@ -64,7 +62,7 @@ CQCopasiApplication::CQCopasiApplication(int & argc, char ** argv):
   mFile(),
   mStarting(true)
 {
-#if (defined(WIN32) && QT_VERSION < 0x050000)
+#if (defined(WIN32) && QT_VERSION < QT_VERSION_CHECK(5,0,0))
 
   if (IsWindows8())
     setStyle(new QWindowsVistaStyle);
@@ -98,7 +96,6 @@ bool CQCopasiApplication::event(QEvent * pEvent)
 
             if (mFile.isEmpty())
               mFile = static_cast<QFileOpenEvent *>(pEvent)->url().toString();
-
           }
         else
           {
