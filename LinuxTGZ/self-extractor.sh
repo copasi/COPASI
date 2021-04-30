@@ -103,7 +103,7 @@ MimeType=application/xml;x-scheme-handler/copasi;application/x-copasi
 Name=COPASI
 NoDisplay=false
 Type=Application
-Categories=Science;Utility" '> '"${DESKTOP_DIR}"/COPASI.dektop
+Categories=Science;Utility" '> '"${DESKTOP_DIR}"/COPASI.desktop
 
 echo "[Desktop Entry]
 Encoding=UTF-8
@@ -114,7 +114,7 @@ MimeType=application/xml;x-scheme-handler/copasi;application/x-copasi
 Name=COPASI
 NoDisplay=false
 Type=Application
-Categories=Science;Utility" > "${DESKTOP_DIR}"/COPASI.dektop
+Categories=Science;Utility" > "${DESKTOP_DIR}"/COPASI.desktop
 
 xdg-settings set default-url-scheme-handler copasi COPASI.desktop
 
