@@ -1830,7 +1830,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
   bool loadedModel = false;
 
-  if (haveCopasi || content->isFormat("copasi"))
+  if (haveCopasi || (content != NULL && content->isFormat("copasi")))
     {
       loadedModel = this->loadModel(destinationDir + "/" + content->getLocation(), pProgressReport, deleteOldData);
 
