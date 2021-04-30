@@ -4251,6 +4251,20 @@ void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
 
       mSaveAsRequired = true;
     }
+  else
+    {
+      std::stringstream str;
+      str << "COPASI failed to download the file from " << std::endl
+          << std::endl
+          << mpDataModelGUI->getLastDownloadUrl() << std::endl
+          << std::endl
+          << CCopasiMessage::getAllMessageText();
+
+      CQMessageBox::critical(this, "Download Failed",
+                             str.str().c_str(),
+                             QMessageBox::Ok | QMessageBox::Default,
+                             QMessageBox::NoButton);
+    }
 }
 
 #ifdef COPASI_Versioning
