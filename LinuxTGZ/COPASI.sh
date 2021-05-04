@@ -85,7 +85,7 @@ chmod 777 share/copasi/examples
 
 # Copy icons
 echo cp "${SOURCE}"/copasi/UI/icons/Copasi??-Alpha.xpm share/copasi/icons
-cp "${SOURCE}"/copasi/iUI/icons/Copasi??-Alpha.xpm share/copasi/icons
+cp "${SOURCE}"/copasi/UI/icons/Copasi??-Alpha.xpm share/copasi/icons
 echo cp "${SOURCE}"/copasi/UI/icons/CopasiDoc??-Alpha.xpm share/copasi/icons
 cp "${SOURCE}"/copasi/UI/icons/CopasiDoc??-Alpha.xpm share/copasi/icons
 chmod 644 share/copasi/icons/*
