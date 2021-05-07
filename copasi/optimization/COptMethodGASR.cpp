@@ -211,7 +211,7 @@ bool COptMethodGASR::replicate()
 
   // check if there is one left over and just copy it
   if (mPopulationSize % 2 > 0)
-    *mIndividuals[2 * mPopulationSize - 1] = *mIndividuals[mPopulationSize - 1];
+    *mIndividuals[2 * mPopulationSize - 1] = *mIndividuals[mpPermutation->next()];
 
   // mutate the offspring
   for (i = mPopulationSize; i < 2 * mPopulationSize && Continue; i++)
