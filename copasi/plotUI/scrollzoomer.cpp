@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,11 +34,16 @@
 #include <qwt_plot_canvas.h>
 #include <qwt_plot_layout.h>
 #include <qwt_scale_engine.h>
+#include <qwt_text.h>
 //Added by qt3to4:
 #include <QResizeEvent>
 #include <QtCore/QChildEvent>
 #include "scrollbar.h"
 #include "scrollzoomer.h"
+
+#include <QStack>
+#include <QVector>
+#include <QRect>
 
 #if QWT_VERSION > 0x060000
 LogPlotZoomer::LogPlotZoomer(QWidget *canvas) :
@@ -53,13 +63,13 @@ QwtText LogPlotZoomer::trackerText(const QwtDoublePoint &pos) const
   switch (rubberBand())
     {
       case HLineRubberBand:
-        return QString().sprintf("%.4g", pos.y());
+        return QString("%1.4g").arg(pos.y());
 
       case VLineRubberBand:
-        return QString().sprintf("%.4g", pos.x());
+        return QString("%1.4g").arg(pos.x());
 
       default:
-        return QString().sprintf("%.4g, %.4g", pos.x(), pos.y());
+        return QString("%1.4g %2.4g").arg(pos.x()).arg(pos.y());
     }
 
   return QwtText(); // make some dumb compilers happy
@@ -85,7 +95,7 @@ void LogPlotZoomer::move(double x, double y)
   if (x != zoomRect().left() || y != zoomRect().top())
     {
       //zoomStack()[zoomRectIndex()].moveTo(x, y);
-      QwtDoubleRect & rect = const_cast<QwtDoubleRect &>(zoomStack()[zoomRectIndex()]);
+      QwtDoubleRect & rect = const_cast< QwtDoubleRect & >(zoomStack()[zoomRectIndex()]);
 
       //handle x axis
       const int xAxis = QwtPlotZoomer::xAxis();

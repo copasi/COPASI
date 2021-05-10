@@ -1,0 +1,212 @@
+#! /bin/bash
+#
+# copasispeedtests - a script to run a battery of speed tests for COPASI
+# By Pedro Mendes, December 2020
+#
+# USAGE: run this script in the folder containing all the test .cps files
+#
+# CONFIGURATION
+# Set all the environment variables below to suit your system.
+# All .cps files tested need to be in the same directory as this script
+#
+# VERSIONS contains all the CopasiSE versions to test;
+# it needs to specify the entire pathnames of each one.
+VERSIONS="/usr/local/COPASI-4.16.104-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.24.197-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.25.207-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.26.213-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.27.217-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.28.226-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.29.228-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.30.237-Linux-64bit/bin/CopasiSE"
+
+# LOADS contains all the .cps and .xml files that will test loading 
+# or importing functions (and which don't output to report files)
+LOADS="BCR_load.cps
+EGFR_sbml.xml
+IP3CaTissue_gepasi.gps"
+
+# TASKS contains all the .cps files that run a specific simulation or 
+# analysis task. Do not include those that test loading/importing 
+TASKS="Pollution_lsoda.cps
+EGFR_gillespie.cps
+multistate_gillespie.cps
+multistate_gb.cps
+Vilar2002_tauleap.cps
+Vilar2002_adaptivetauleap.cps
+HuangFerrel_hybrid-lsoda.cps
+Dacheaux2017_hybrid-rk45.cps
+ERBB-RAS-AKT_ss.cps
+Schoeberl_ss.cps
+Translation_ss.cps
+BIOMOD70_efm.cps
+Ecoli_efm.cps
+Ecoli_mca.cps
+Decroly_lyap.cps
+CoopSF4_001_tssa-ildm.cps
+CoopSF4_001_tssa-csp.cps
+3enzyme_lna.cps
+HuangFerrel_lna.cps
+JumboSF001_lna.cps
+3enzyme_nl2sol.cps
+3enzyme_steepest.cps
+3enzyme_lm.cps
+3enzyme_tn.cps
+3enzyme_nm.cps
+3enzyme_praxis.cps
+3enzyme_ga.cps
+3enzyme_gasr.cps
+3enzyme_ps.cps
+3enzyme_sres.cps
+3enzyme_hj.cps
+3enzyme_ss.cps
+3enzyme_ep.cps
+3enzyme_da.cps
+3enzyme_rs.cps
+KinMMFit_sa.cps
+Colville_opt-tn.cps
+Colville_opt-sd.cps
+Colville_opt-praxis.cps
+Colville_opt-gasr.cps
+Rosenbrock10_opt-lm.cps
+Rosenbrock10_opt-nm.cps
+Rosenbrock10_opt-hj.cps
+Rosenbrock10_opt-ss.cps
+Weierstrass_opt-de.cps
+Weierstrass_opt-ep.cps
+Weierstrass_opt-sres.cps
+Weierstrass_opt-sa.cps
+SchafferF7-10_opt-rs.cps
+SchafferF7-10_opt-ga.cps
+SchafferF7-10_opt-ps.cps"
+
+# RADAUVERSIONS are versions that work for the RADAU5 tasks
+RADAUVERSIONS="/usr/local/COPASI-4.26.213-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.27.217-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.28.226-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.29.228-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.30.237-Linux-64bit/bin/CopasiSE"
+
+# RADAUTASKS contains .cps files that test the RADAU5 solver
+RADAUTASKS="Pollution_radau5.cps"
+
+# SDEVERSIONS are versions that work for the SDE tasks
+SDEVERSIONS="/usr/local/COPASI-4.28.226-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.29.228-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.30.237-Linux-64bit/bin/CopasiSE"
+
+# SDETASKS contains .cps files that test the RI5 SDE solver
+SDETASKS="HuangFerrel_sde.cps"
+
+# HRKVERSIONS are versions that work for the hybrid-RK solver
+HRKVERSIONS="/usr/local/COPASI-4.16.104-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.25.207-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.26.213-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.27.217-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.28.226-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.29.228-Linux-64bit/bin/CopasiSE
+/usr/local/COPASI-4.30.237-Linux-64bit/bin/CopasiSE"
+
+# HRKTASKS contains .cps files that test the hybrid-RK solver
+HRKTASKS="HuangFerrel_hybrid-rk.cps"
+
+# END OF CONFIGURATION
+
+# Display list of versions to profile
+if [ -f versions ]; then
+	rm versions
+fi
+
+for f in $VERSIONS
+do
+	$f 2>/dev/null | head -n 1 >> versions
+done
+
+echo
+echo "Getting ready to profile the following versions:"
+cat versions
+echo
+rm versions
+
+# Profile all the loading type files
+echo "Profiling loading files"
+for f in $LOADS
+do
+	OUT="${f:0:-4}.out"
+	printf "$f "
+	for v in $VERSIONS
+	do
+		if [[ $f = *.?ps ]]; then 
+		      printf "."
+		      $v 2>/dev/null | head -n 1 >> $OUT
+		      /usr/bin/time -f "%e" -a -o $OUT $v --nologo $f
+		elif [[ $f = *.xml ]]; then
+		      printf "."
+		      $v 2>/dev/null | head -n 1 >> $OUT
+		      /usr/bin/time -f "%e" -a -o $OUT $v --nologo -i $f
+		      TMPF="${f:0:-4}.cps"
+		      rm $TMPF
+		fi
+	done
+	printf "\n"
+done
+echo
+
+# Profile tasks
+echo "Profiling tasks"
+for f in $TASKS
+do
+	printf "$f "
+	for v in $VERSIONS
+	do
+		printf "."
+		$v --nologo 2>/dev/null $f
+	done
+	printf "\n"
+done
+echo
+
+# Profile radau tasks
+echo "Profiling RADAU5 tasks"
+for f in $RADAUTASKS
+do
+	printf "$f "
+	for v in $RADAUVERSIONS
+	do
+		printf "."
+		$v --nologo 2>/dev/null $f
+	done
+	printf "\n"
+done
+echo
+
+# Profile sde tasks
+echo "Profiling SDE tasks"
+for f in $SDETASKS
+do
+	printf "$f "
+	for v in $SDEVERSIONS
+	do
+		printf "."
+		$v --nologo 2>/dev/null $f
+	done
+	printf "\n"
+done
+echo
+
+# Profile sde tasks
+echo "Profiling hybrid-RK tasks"
+for f in $HRKTASKS
+do
+	printf "$f "
+	for v in $HRKVERSIONS
+	do
+		printf "."
+		$v --nologo 2>/dev/null $f
+	done
+	printf "\n"
+done
+echo
+
+# Done!
+printf "\n All tests done.\n"

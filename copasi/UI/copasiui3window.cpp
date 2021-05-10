@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -134,7 +134,7 @@
 
 #ifdef USE_JIT
 #include "copasi/math/CJitCompiler.h"
-#endif 
+#endif
 
 // static
 CopasiUI3Window *CopasiUI3Window::pMainWindow = NULL;
@@ -3139,11 +3139,11 @@ void CopasiUI3Window::dropEvent(QDropEvent *event)
   if (fileName.isEmpty())
     return;
 
-  if (isProbablySBML(fileName))
-    slotImportSBML(fileName);
-
-  else if (isProbablySEDML(fileName))
+  if (isProbablySEDML(fileName))
     slotImportSEDML(fileName);
+
+  else if (isProbablySBML(fileName))
+    slotImportSBML(fileName);
 
   else
     slotFileOpen(fileName);
@@ -3828,7 +3828,7 @@ void CopasiUI3Window::removeReportTargets()
   auto& taskList = *mpDataModel->getTaskList();
   std::stringstream str;
 
-  for (auto & task : taskList)
+for (auto & task : taskList)
     {
       std::string target = task.getReport().getTarget();
 
@@ -4233,6 +4233,11 @@ void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
           mpDataModelGUI->setIgnoreNextFile(true);
           slotImportCombine(tempFileName);
         }
+      else if (isProbablySEDML(tempFileName))
+        {
+          mpDataModelGUI->setIgnoreNextFile(true);
+          slotImportSBML(tempFileName);
+        }
       else if (isProbablySBML(tempFileName))
         {
           mpDataModelGUI->setIgnoreNextFile(true);
@@ -4245,6 +4250,20 @@ void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
         }
 
       mSaveAsRequired = true;
+    }
+  else
+    {
+      std::stringstream str;
+      str << "COPASI failed to download the file from " << std::endl
+          << std::endl
+          << mpDataModelGUI->getLastDownloadUrl() << std::endl
+          << std::endl
+          << CCopasiMessage::getAllMessageText();
+
+      CQMessageBox::critical(this, "Download Failed",
+                             str.str().c_str(),
+                             QMessageBox::Ok | QMessageBox::Default,
+                             QMessageBox::NoButton);
     }
 }
 

@@ -63,7 +63,7 @@ CXMLHandler * TaskHandler::processStart(const XML_Char * pszName,
         Scheduled = mpParser->toBool(mpParser->getAttributeValue("scheduled", papszAttrs, "false"));
         UpdateModel = mpParser->toBool(mpParser->getAttributeValue("updateModel", papszAttrs, "false"));
 
-        mpData->pCurrentTask = CTaskFactory::createTask(Type, mpData->pTaskList);
+        mpData->pCurrentTask = CTaskFactory::create(Type, mpData->pTaskList);
 
         if (mpData->pCurrentTask != NULL)
           {

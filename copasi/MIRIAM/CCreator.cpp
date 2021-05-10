@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,10 +20,10 @@
 
 #include "copasi/copasi.h"
 
-#include "CRDFGraph.h"
-#include "CCreator.h"
-#include "CRDFLiteral.h"
-#include "CModelMIRIAMInfo.h"
+#include "copasi/MIRIAM/CRDFGraph.h"
+#include "copasi/MIRIAM/CCreator.h"
+#include "copasi/MIRIAM/CRDFLiteral.h"
+#include "copasi/MIRIAM/CModelMIRIAMInfo.h"
 
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"

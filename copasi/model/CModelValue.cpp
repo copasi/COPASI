@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -753,9 +753,12 @@ void CModelEntity::setRate(const C_FLOAT64 & rate)
 
 //  ******************
 
-void CModelEntity::setStatus(const CModelEntity::Status & status)
+bool CModelEntity::setStatus(const CModelEntity::Status & status)
 {
-  if (mStatus != status)
+  bool success = (status != Status::__SIZE);
+
+  if (success
+      && mStatus != status)
     {
       if (mpModel != NULL)
         mpModel->setCompileFlag(true);
@@ -766,16 +769,15 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
       if (mStatus == Status::ASSIGNMENT)
         pdelete(mpInitialExpression);
 
-      mStatus = status;
-
       if (mpModel != NULL)
         mpModel->setCompileFlag(true);
 
       CDataModel* pDataModel = NULL;
 
-      switch (mStatus)
+      switch (status)
         {
           case Status::ASSIGNMENT:
+            mStatus = status;
 
             if (mpExpression == NULL)
               mpExpression = new CExpression("Expression", this);
@@ -792,6 +794,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
             break;
 
           case Status::ODE:
+            mStatus = status;
 
             if (mpExpression == NULL)
               mpExpression = new CExpression("Expression", this);
@@ -800,18 +803,31 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
             break;
 
           case Status::REACTIONS:
-            pdelete(mpExpression);
+            success = (getObjectType() == "Metabolite");
+
+            if (success)
+              {
+                mStatus = status;
+                pdelete(mpExpression);
+              }
 
             mUsed = true;
             break;
 
           case Status::TIME:
-            pdelete(mpExpression);
+            success = (getObjectType() == "Model");
+
+            if (success)
+              {
+                mStatus = status;
+                pdelete(mpExpression);
+              }
 
             mUsed = true;
             break;
 
           case Status::FIXED:
+            mStatus = status;
             pdelete(mpExpression);
 
             mRate = 0.0;
@@ -820,9 +836,12 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
             break;
 
           case Status::__SIZE:
+            success = false;
             break;
         }
     }
+
+  return success;
 }
 
 // virtual

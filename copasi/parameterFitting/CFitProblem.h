@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -178,7 +178,6 @@ public:
    * if scale is true, the cov matrix will be scaled to unity diagonal elements
    */
   bool calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd, bool scale);
-
 
   /**
    * Calculate the statistics for the problem
@@ -492,11 +491,6 @@ private:
   unsigned C_INT32 mThresholdCounter;
 
   /**
-   * Copy of the trajectory problem so that we can restore the defaults
-   */
-  CTrajectoryProblem * mpTrajectoryProblem;
-
-  /**
    * The initial state of the model prior to any modification
    */
   CVector< C_FLOAT64 > mCompleteInitialState;
@@ -591,17 +585,10 @@ private:
    */
   bool * mpCreateParameterSets;
 
-  /**
-   * The original value of the trajectory update flag
-   */
-  bool mTrajectoryUpdate;
-
   /** A flag indicating whether or not to use time sens task */
   bool* mpUseTimeSens;
 
   CTimeSensTask* mpTimeSens;
-
-  CTimeSensProblem* mpTimeSensProblem;
 
   CMatrix< C_FLOAT64 > mJacTimeSens;
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,9 +36,11 @@ public:
   typedef NativeJIT::Function< C_FLOAT64 >::FunctionType Function;
   typedef NativeJIT::NodeBase Node;
 
-  static bool & JitEnabled();
+  static bool JitEnabled();
 
   CJitCompiler();
+
+  CJitCompiler(const CJitCompiler & src);
 
   virtual ~CJitCompiler();
 

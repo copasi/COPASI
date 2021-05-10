@@ -1,4 +1,9 @@
 #!/bin/bash
+# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -25,6 +30,8 @@ echo mkdir share
 mkdir share
 echo mkdir share/copasi
 mkdir share/copasi
+echo mkdir share/copasi/applications
+mkdir share/copasi/applications
 echo mkdir share/copasi/config
 mkdir share/copasi/config
 echo mkdir share/copasi/doc
@@ -77,11 +84,16 @@ chmod 444 share/copasi/examples/*
 chmod 777 share/copasi/examples
 
 # Copy icons
-echo cp "${SOURCE}"/copasi/CopasiUI/icons/Copasi??-Alpha.xpm share/copasi/icons
-cp "${SOURCE}"/copasi/CopasiUI/icons/Copasi??-Alpha.xpm share/copasi/icons
-echo cp "${SOURCE}"/copasi/CopasiUI/icons/CopasiDoc??-Alpha.xpm share/copasi/icons
-cp "${SOURCE}"/copasi/CopasiUI/icons/CopasiDoc??-Alpha.xpm share/copasi/icons
+echo cp "${SOURCE}"/copasi/UI/icons/Copasi??-Alpha.xpm share/copasi/icons
+cp "${SOURCE}"/copasi/UI/icons/Copasi??-Alpha.xpm share/copasi/icons
+echo cp "${SOURCE}"/copasi/UI/icons/CopasiDoc??-Alpha.xpm share/copasi/icons
+cp "${SOURCE}"/copasi/UI/icons/CopasiDoc??-Alpha.xpm share/copasi/icons
 chmod 644 share/copasi/icons/*
+
+# Copy desktop utilities
+echo cp "${SOURCE}"/LinuxTGZ/applications/* share/copasi/applications
+cp "${SOURCE}"/LinuxTGZ/applications/* share/copasi/applications
+chmod 644 share/copasi/applications/*
 
 # Copy wizard resource
 echo cp "${SOURCE}"/copasi/wizard/help_html/*.html share/copasi/doc/html
@@ -100,11 +112,19 @@ echo cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libQt/ {print $3}'` share
 cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libQt/ {print $3}'` share/copasi/lib
 chmod 644 share/copasi/lib/libQt*
 
-
 echo
 popd
 
 echo tar -chvzf ${PACKAGE_NAME}.tar.gz ${PACKAGE_NAME}
 tar -chzvf ${PACKAGE_NAME}.tar.gz ${PACKAGE_NAME}
+
+echo sed -e 's/%PACKAGE_NAME%/'${PACKAGE_NAME}'/g' -e 's/%VERSION%/'${MyAppVersion}'/g' ${SOURCE}/LinuxTGZ/self-extractor.sh '> '${PACKAGE_NAME}.sh
+sed -e 's/%PACKAGE_NAME%/'${PACKAGE_NAME}'/g' -e 's/%VERSION%/'${MyAppVersion}'/g' ${SOURCE}/LinuxTGZ/self-extractor.sh > ${PACKAGE_NAME}.sh
+
+echo cat ${PACKAGE_NAME}.tar.gz '>> '${PACKAGE_NAME}.sh
+cat ${PACKAGE_NAME}.tar.gz >> ${PACKAGE_NAME}.sh
+
+echo chmod a+x ${PACKAGE_NAME}.sh
+chmod a+x ${PACKAGE_NAME}.sh
 
 popd

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -38,7 +38,7 @@
 COptMethodEP::COptMethodEP(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
-  COptPopulationMethod(pParent, methodType, taskType),
+  COptPopulationMethod(pParent, methodType, taskType, false),
   mBestIndex(C_INVALID_INDEX),
   mLosses(0),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
@@ -101,7 +101,7 @@ bool COptMethodEP::optimise()
     {
       // and store that value
       mBestValue = mValues[mBestIndex];
-      Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -145,7 +145,7 @@ bool COptMethodEP::optimise()
           Stalled = 0;
           mBestValue = mValues[mBestIndex];
 
-          Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+          Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();
@@ -194,7 +194,7 @@ bool COptMethodEP::initialize()
 
   if (!COptPopulationMethod::initialize()) return false;
 
-  mVariableSize = mpOptItem->size();
+  mVariableSize = mProblemContext.master()->getOptItemList().size();
 
   mIndividuals.resize(2 * mPopulationSize);
 
@@ -231,13 +231,13 @@ bool COptMethodEP::evaluate(const CVector< C_FLOAT64 > & /* individual */)
   // since the parameters are created within the bounds.
 
   // evaluate the fitness
-  Continue = mpOptProblem->calculate();
+  Continue = mProblemContext.master()->calculate();
 
   // check whether the functional constraints are fulfilled
-  if (!mpOptProblem->checkFunctionalConstraints())
+  if (!mProblemContext.master()->checkFunctionalConstraints())
     mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
   else
-    mEvaluationValue = mpOptProblem->getCalculateValue();
+    mEvaluationValue = mProblemContext.master()->getCalculateValue();
 
   return Continue;
 }
@@ -263,7 +263,7 @@ bool COptMethodEP::creation()
   for (i = 0; i < mVariableSize; i++)
     {
       C_FLOAT64 & mut = (*mIndividuals[0])[i];
-      COptItem & OptItem = *(*mpOptItem)[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
 
       mut = OptItem.getStartValue();
 
@@ -303,7 +303,7 @@ bool COptMethodEP::creation()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mContainerVariables[i] = mut;
+      *mProblemContext.master()->getContainerVariables()[i] = mut;
 
       // Set the variance for this parameter.
       (*mVariance[0])[i] = fabs(mut) * 0.5;
@@ -328,7 +328,7 @@ bool COptMethodEP::creation()
       for (j = 0; j < mVariableSize; j++)
         {
           C_FLOAT64 & mut = (*mIndividuals[i])[j];
-          COptItem & OptItem = *(*mpOptItem)[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
 
           // calculate lower and upper bounds
           mn = *OptItem.getLowerBoundValue();
@@ -344,16 +344,16 @@ bool COptMethodEP::creation()
                   la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                   if (la < 1.8 || !(mn > 0.0)) // linear
-                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                    mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
                   else
-                    mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
+                    mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mRandomContext.master()->getRandomCC());
                 }
               else if (mx > 0) // 0 is in the interval (mn, mx)
                 {
                   la = log10(mx) + log10(-mn);
 
                   if (la < 3.6) // linear
-                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                    mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
                   else
                     {
                       C_FLOAT64 mean = (mx + mn) * 0.5;
@@ -361,7 +361,7 @@ bool COptMethodEP::creation()
 
                       do
                         {
-                          mut = mpRandom->getRandomNormal(mean, sigma);
+                          mut = mRandomContext.master()->getRandomNormal(mean, sigma);
                         }
                       while ((mut < mn) || (mut > mx));
                     }
@@ -376,9 +376,9 @@ bool COptMethodEP::creation()
                   la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                   if (la < 1.8 || !(mn > 0.0)) // linear
-                    mut = - (mn + mpRandom->getRandomCC() * (mx - mn));
+                    mut = - (mn + mRandomContext.master()->getRandomCC() * (mx - mn));
                   else
-                    mut = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
+                    mut = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mRandomContext.master()->getRandomCC());
                 }
             }
 
@@ -419,7 +419,7 @@ bool COptMethodEP::creation()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mContainerVariables[j] = mut;
+          *mProblemContext.master()->getContainerVariables()[j] = mut;
 
           // Set the variance for this parameter.
           (*mVariance[i])[j] = fabs(mut) * 0.5;
@@ -451,7 +451,7 @@ bool COptMethodEP::select()
         // get random opponent
         do
           {
-            opp = mpRandom->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
+            opp = mRandomContext.master()->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
           }
         while (i == opp);
 
@@ -541,22 +541,22 @@ bool COptMethodEP::mutate(size_t i)
   CVector<C_FLOAT64> & Individual = *mIndividuals[i];
   CVector<C_FLOAT64> & Variance = *mVariance[i];
 
-  v1 = mpRandom->getRandomNormal01();
+  v1 = mRandomContext.master()->getRandomNormal01();
 
   // update the variances
   for (j = 0; j < mVariableSize; j++)
     {
       C_FLOAT64 & mut = Individual[j];
-      COptItem & OptItem = *(*mpOptItem)[j];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
 
       try
         {
           // update the parameter for the variances
           Variance[j] =
-            std::max(Variance[j] * exp(tau1 * v1 + tau2 * mpRandom->getRandomNormal01()), 1e-8);
+            std::max(Variance[j] * exp(tau1 * v1 + tau2 * mRandomContext.master()->getRandomNormal01()), 1e-8);
 
           // calculate the mutated parameter
-          mut += Variance[j] * mpRandom->getRandomNormal01();
+          mut += Variance[j] * mRandomContext.master()->getRandomNormal01();
         }
 
       catch (...)
@@ -578,7 +578,7 @@ bool COptMethodEP::mutate(size_t i)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mContainerVariables[j] = mut;
+      *mProblemContext.master()->getContainerVariables()[j] = mut;
     }
 
   // calculate its fitness

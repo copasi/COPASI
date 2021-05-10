@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -318,15 +318,19 @@ bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews
   // Assure that the pointer is still valid;
   mpAnnotation = CAnnotation::castObject(mpObject);
 
-
   if (action == ListViews::DELETE && objectType == ListViews::ObjectType::MODEL)
     {
+      // We can no longer trust that the info still exists
+      mpCreatorDM->setMIRIAMInfo(NULL);
+      mpReferenceDM->setMIRIAMInfo(NULL);
+      mpBiologicalDescriptionDM->setMIRIAMInfo(NULL);
+      mpModifiedDM->setMIRIAMInfo(NULL);
+
       mpMIRIAMInfo = NULL;
       mObjectCN = CCommonName("");
 
-      return leaveProtected();
+      return true;
     }
-
 
   if (!mIgnoreUpdates &&
       cn == mObjectCN)
@@ -338,8 +342,12 @@ bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews
       else
         {
           // We can no longer trust that the info still exists
+          mpCreatorDM->setMIRIAMInfo(NULL);
+          mpReferenceDM->setMIRIAMInfo(NULL);
+          mpBiologicalDescriptionDM->setMIRIAMInfo(NULL);
+          mpModifiedDM->setMIRIAMInfo(NULL);
+
           mpMIRIAMInfo = NULL;
-          return leaveProtected();
         }
     }
 
@@ -622,4 +630,10 @@ void CQMiriamWidget::slotCopyEvent()
 void CQMiriamWidget::slotBtnCopy()
 {
   mObjectCNToCopy = mObjectCN;
+}
+
+// virtual
+void CQMiriamWidget::slotBtnAddMe()
+{
+  mpCreatorDM->appendDefaultCreator();
 }

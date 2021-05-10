@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -62,6 +62,60 @@ public:
     std::stringstream str; 
     obj->print(&str);
     return str.str();
+  }
+  
+  bool getBoolValue()
+  {
+    CDataObject* obj = dynamic_cast<CDataObject*>($self);
+    if (obj == NULL || obj->getValuePointer() == NULL || obj->hasFlag(CDataObject::ValueBool))
+      return false;
+    return *static_cast<bool*>(obj->getValuePointer());
+  }
+  
+  bool setBoolValue(bool value)
+  {
+    CDataObject* obj = dynamic_cast<CDataObject*>($self);
+    if (obj == NULL || obj->getValuePointer() == NULL || obj->hasFlag(CDataObject::ValueBool))
+      return false;
+
+    *(bool*)obj->getValuePointer() = value;
+    return true;
+  }
+  
+  int getIntValue()
+  {
+    CDataObject* obj = dynamic_cast<CDataObject*>($self);
+    if (obj == NULL || obj->getValuePointer() == NULL || obj->hasFlag(CDataObject::ValueInt))
+      return 0;
+    return *static_cast<C_INT32*>(obj->getValuePointer());
+  }
+  
+  bool setIntValue(int value)
+  {
+    CDataObject* obj = dynamic_cast<CDataObject*>($self);
+    if (obj == NULL || obj->getValuePointer() == NULL || obj->hasFlag(CDataObject::ValueInt))
+      return false;
+
+    *(C_INT32*)obj->getValuePointer() = value;
+    return true;
+  }
+  
+  double getDblValue()
+  {
+    CDataObject* obj = dynamic_cast<CDataObject*>($self);
+    if (obj == NULL || obj->getValuePointer() == NULL || obj->hasFlag(CDataObject::ValueDbl))
+      return std::numeric_limits<double>::quiet_NaN();
+    return *static_cast<double*>(obj->getValuePointer());
+  }
+  
+  bool setDblValue(double value)
+  {
+    CDataObject* obj = dynamic_cast<CDataObject*>($self);
+    if (obj == NULL || obj->getValuePointer() == NULL || obj->hasFlag(CDataObject::ValueDbl))
+      return false;
+
+    *(C_FLOAT64*)obj->getValuePointer() = value;
+    return true;
   }
 
 }

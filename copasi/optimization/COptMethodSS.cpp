@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,11 +36,12 @@
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/utilities/CSort.h"
 #include "copasi/core/CDataObjectReference.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 COptMethodSS::COptMethodSS(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
-  COptPopulationMethod(pParent, methodType, taskType),
+  COptPopulationMethod(pParent, methodType, taskType, false),
   mPool(0),
   mPoolVal(0),
   mPoolSize(0),
@@ -127,15 +128,16 @@ bool COptMethodSS::initialize()
 
   if (mPopulationSize % 2 != 0) mPopulationSize++;
 
-  CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(mpOptProblem);
+  CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(mProblemContext.master());
 
   if (pFitProblem != NULL)
     {
       // this is a least squares problem (param estimation)
       // let's use our favorite lsq method
-      mpLocalMinimizer = static_cast< COptMethod * >(CCopasiMethod::createMethod(getObjectParent(),
+      mpLocalMinimizer = static_cast< COptMethod * >(CMethodFactory::create(getType(),
                          CTaskEnum::Method::LevenbergMarquardt,
-                         getType()));
+                         getObjectParent()));
+
       // the intermediate local minimizations use a rather relaxed tolerance
       mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-003);
       // TODO: not sure if we should let this one go that long...
@@ -145,9 +147,10 @@ bool COptMethodSS::initialize()
     {
       // this is a generic optimisation problem
       // let's use Hooke and Jeeves
-      mpLocalMinimizer = static_cast< COptMethod * >(CCopasiMethod::createMethod(getObjectParent(),
+      mpLocalMinimizer = static_cast< COptMethod * >(CMethodFactory::create(getType(),
                          CTaskEnum::Method::HookeJeeves,
-                         getType()));
+                         getObjectParent()));
+
       // with a rather relaxed tolerance (1e-3) for intermediate minimizations
       mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-003);
       mpLocalMinimizer->setValue("Iteration Limit", (C_INT32) 50);
@@ -163,7 +166,7 @@ bool COptMethodSS::initialize()
   else
     {
       // this is a generic optimisation problem
-      mpOptProblemLocal = new COptProblem(*mpOptProblem, getObjectParent());
+      mpOptProblemLocal = new COptProblem(*mProblemContext.master(), getObjectParent());
     }
 
   // the local optimization method should not have a callback
@@ -254,8 +257,6 @@ bool COptMethodSS::cleanup()
 {
   size_t i;
 
-  pdelete(mpRandom);
-
   pdelete(mpOptProblemLocal);
 
   pdelete(mpLocalMinimizer);
@@ -294,12 +295,12 @@ bool COptMethodSS::localmin(CVector< C_FLOAT64 > & solution, C_FLOAT64 & fval)
     }
 
   // reset the function counter of the local minimizer
-  mpOptProblemLocal->resetEvaluations();
+  mpOptProblemLocal->resetCounters();
 
   // run it
   Running &= mpLocalMinimizer->optimise();
   // add the function evaluations taken in local to the global problem
-  mpOptProblem->incrementEvaluations(mpOptProblemLocal->getFunctionEvaluations());
+  mProblemContext.master()->incrementCounters(mpOptProblemLocal->getCounters());
   // pass the results on to the calling parameters
   fval = mpOptProblemLocal->getSolutionValue();
 
@@ -320,13 +321,13 @@ bool COptMethodSS::evaluate(const CVector< C_FLOAT64 > & /* individual */)
   // since the parameters are created within the bounds.
 
   // evaluate the fitness
-  Running &= mpOptProblem->calculate();
+  Running &= mProblemContext.master()->calculate();
 
   // check whether the functional constraints are fulfilled
-  if (!mpOptProblem->checkFunctionalConstraints())
+  if (!mProblemContext.master()->checkFunctionalConstraints())
     mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
   else
-    mEvaluationValue = mpOptProblem->getCalculateValue();
+    mEvaluationValue = mProblemContext.master()->getCalculateValue();
 
   return Running;
 }
@@ -340,7 +341,7 @@ bool COptMethodSS::randomize(C_INT32 i)
   for (C_INT32 j = 0; j < (C_INT32)mVariableSize; ++j)
     {
       // get pointers to appropriate elements (easier reading of code)
-      COptItem & OptItem = *(*mpOptItem)[j];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
       C_FLOAT64 & Sol = (*mIndividuals[i])[j];
       // calculate lower and upper bounds for this variable
       mn = *OptItem.getLowerBoundValue();
@@ -353,14 +354,14 @@ bool COptMethodSS::randomize(C_INT32 i)
 
           // determine if linear or log scale
           if ((mn < 0.0) || (mx <= 0.0))
-            Sol = mn + mpRandom->getRandomCC() * (mx - mn);
+            Sol = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
           else
             {
               if (la < 1.8)
-                Sol = mn + mpRandom->getRandomCC() * (mx - mn);
+                Sol = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
               else
                 Sol = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()))
-                          + la * mpRandom->getRandomCC());
+                          + la * mRandomContext.master()->getRandomCC());
             }
         }
       catch (...)
@@ -383,7 +384,7 @@ bool COptMethodSS::randomize(C_INT32 i)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mContainerVariables[j] = Sol;
+      *mProblemContext.master()->getContainerVariables()[j] = Sol;
     }
 
   // calculate its fitness
@@ -411,7 +412,7 @@ bool COptMethodSS::creation(void)
       for (j = 0; j < (C_INT32)mVariableSize; ++j)
         {
           // get pointers to appropriate elements (easier reading of code)
-          COptItem & OptItem = *(*mpOptItem)[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
           C_FLOAT64 & Sol = (*mPool[i])[j];
           // calculate lower and upper bounds for this variable
           mn = *OptItem.getLowerBoundValue();
@@ -424,14 +425,14 @@ bool COptMethodSS::creation(void)
 
               // determine if linear or log scale
               if ((mn < 0.0) || (mx <= 0.0))
-                Sol = mn + (mpRandom->getRandomCC() + (C_FLOAT64) i) * (mx - mn) * 0.25;
+                Sol = mn + (mRandomContext.master()->getRandomCC() + (C_FLOAT64) i) * (mx - mn) * 0.25;
               else
                 {
                   if (la < 1.8)
-                    Sol = mn + (mpRandom->getRandomCC() + (C_FLOAT64) i) * (mx - mn) * 0.25;
+                    Sol = mn + (mRandomContext.master()->getRandomCC() + (C_FLOAT64) i) * (mx - mn) * 0.25;
                   else
                     Sol = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()))
-                              + la * 0.25 * (mpRandom->getRandomCC() + (C_FLOAT64) i));
+                              + la * 0.25 * (mRandomContext.master()->getRandomCC() + (C_FLOAT64) i));
                 }
             }
           catch (...)
@@ -454,7 +455,7 @@ bool COptMethodSS::creation(void)
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mContainerVariables[j] = Sol;
+          *mProblemContext.master()->getContainerVariables()[j] = Sol;
         }
 
       // calculate its fitness
@@ -465,7 +466,7 @@ bool COptMethodSS::creation(void)
   // next we add the initial guess from the user
   for (j = 0; j < (C_INT32)mVariableSize; ++j)
     {
-      COptItem & OptItem = *(*mpOptItem)[j];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
       C_FLOAT64 & Sol = (*mPool[i])[j];
 
       // get the vector of initial value
@@ -485,7 +486,7 @@ bool COptMethodSS::creation(void)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mContainerVariables[j] = Sol;
+      *mProblemContext.master()->getContainerVariables()[j] = Sol;
     }
 
   // calculate its fitness
@@ -499,7 +500,7 @@ bool COptMethodSS::creation(void)
       for (j = 0; j < (C_INT32)mVariableSize; ++j)
         {
           // get pointers to appropriate elements (easier reading of code)
-          COptItem & OptItem = *(*mpOptItem)[j];
+          COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
           C_FLOAT64 & Sol = (*mPool[i])[j];
           // calculate lower and upper bounds for this variable
           mn = *OptItem.getLowerBoundValue();
@@ -516,7 +517,7 @@ bool COptMethodSS::creation(void)
               if (k > 0) mProb[k] += mProb[k - 1];
             }
 
-          a = mpRandom->getRandomCC();
+          a = mRandomContext.master()->getRandomCC();
 
           for (k = 0; k < 4; k++)
             {
@@ -530,14 +531,14 @@ bool COptMethodSS::creation(void)
 
                       // determine if linear or log scale
                       if ((mn < 0.0) || (mx <= 0.0))
-                        Sol = mn + (mpRandom->getRandomCC() + (C_FLOAT64) k) * (mx - mn) * 0.25;
+                        Sol = mn + (mRandomContext.master()->getRandomCC() + (C_FLOAT64) k) * (mx - mn) * 0.25;
                       else
                         {
                           if (la < 1.8)
-                            Sol = mn + (mpRandom->getRandomCC() + (C_FLOAT64) k) * (mx - mn) * 0.25;
+                            Sol = mn + (mRandomContext.master()->getRandomCC() + (C_FLOAT64) k) * (mx - mn) * 0.25;
                           else
                             Sol = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()))
-                                      + la * 0.25 * (mpRandom->getRandomCC() + (C_FLOAT64) k));
+                                      + la * 0.25 * (mRandomContext.master()->getRandomCC() + (C_FLOAT64) k));
                         }
                     }
                   catch (...)
@@ -560,7 +561,7 @@ bool COptMethodSS::creation(void)
 
                   // We need to set the value here so that further checks take
                   // account of the value.
-                  *mContainerVariables[j] = Sol;
+                  *mProblemContext.master()->getContainerVariables()[j] = Sol;
                   // increase the frequency
                   (*mFreq[j])[k] += 1;
                   break;
@@ -856,7 +857,7 @@ bool COptMethodSS::combination(void)
               for (k = 0; k < (C_INT32)mVariableSize; ++k)
                 {
                   // get the bounds of this parameter
-                  COptItem & OptItem = *(*mpOptItem)[k];
+                  COptItem & OptItem = *mProblemContext.master()->getOptItemList()[k];
                   mn = *OptItem.getLowerBoundValue();
                   mx = *OptItem.getUpperBoundValue();
 
@@ -901,7 +902,7 @@ bool COptMethodSS::combination(void)
                             break;
                         }
 
-                      xnew[k] = c1 + (c2 - c1) * mpRandom->getRandomCC();
+                      xnew[k] = c1 + (c2 - c1) * mRandomContext.master()->getRandomCC();
                     }
                   catch (...)
                     {
@@ -911,7 +912,7 @@ bool COptMethodSS::combination(void)
 
                   // We need to set the value here so that further checks take
                   // account of the value.
-                  *mContainerVariables[k] = xnew[k];
+                  *mProblemContext.master()->getContainerVariables()[k] = xnew[k];
                 }
 
               // calculate the child's fitness
@@ -948,9 +949,9 @@ bool COptMethodSS::combination(void)
               for (k = 0; k < (C_INT32)mVariableSize; ++k)
                 {
                   dd = (xpr[k] - (*mChild[i])[k]) * lambda;
-                  xnew[k] = (*mChild[i])[k] + dd * mpRandom->getRandomCC();
+                  xnew[k] = (*mChild[i])[k] + dd * mRandomContext.master()->getRandomCC();
                   // get the bounds of this parameter
-                  COptItem & OptItem = *(*mpOptItem)[k];
+                  const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[k];
 
                   // put it on the bounds if it had exceeded them
                   switch (OptItem.checkConstraint(xnew[k]))
@@ -966,7 +967,7 @@ bool COptMethodSS::combination(void)
 
                   // We need to set the value here so that further checks take
                   // account of the value.
-                  *mContainerVariables[k] = xnew[k];
+                  *mProblemContext.master()->getContainerVariables()[k] = xnew[k];
                 }
 
               // calculate the child's fitness
@@ -1074,7 +1075,7 @@ bool COptMethodSS::optimise()
   // store that value
   mBestValue = mValues[0];
   // set it upstream
-  Running &= mpOptProblem->setSolution(mBestValue, *mIndividuals[0]);
+  Running &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0]);
   // We found a new best value let's report it.
   mpParentTask->output(COutputInterface::DURING);
 
@@ -1189,7 +1190,7 @@ bool COptMethodSS::optimise()
 
           // and store that value
           mBestValue = mValues[0];
-          Running &= mpOptProblem->setSolution(mBestValue, *mIndividuals[0]);
+          Running &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0]);
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
         }
@@ -1204,7 +1205,7 @@ bool COptMethodSS::optimise()
   // end of loop for iterations
 
   // the best ever might not be what is on position 0, so bring it back
-  *mIndividuals[0] = mpOptProblem->getSolutionVariables();
+  *mIndividuals[0] = mProblemContext.master()->getSolutionVariables();
 
   // now let's do a final local minimisation with a tighter tolerance
 
@@ -1219,7 +1220,7 @@ bool COptMethodSS::optimise()
     {
       // and store that value
       mBestValue = mValues[0];
-      Running &= mpOptProblem->setSolution(mBestValue, *mIndividuals[0]);
+      Running &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0]);
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
     }

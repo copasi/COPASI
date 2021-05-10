@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,10 +32,12 @@
 
 #include "copasi/copasi.h"
 
-#include "CCopasiTask.h"
-#include "CCopasiProblem.h"
-#include "CCopasiMethod.h"
-#include "CTaskFactory.h"
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/utilities/CCopasiMethod.h"
+#include "copasi/utilities/CTaskFactory.h"
+#include "copasi/utilities/CProblemFactory.h"
+#include "copasi/utilities/CMethodFactory.h"
 #include "copasi/report/CReport.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/output/COutputHandler.h"
@@ -51,7 +53,7 @@
 // static
 CCopasiTask * CCopasiTask::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
-  CCopasiTask * pNew = CTaskFactory::createTask(CTaskEnum::TaskName.toEnum(data.getProperty(CData::TASK_TYPE).toString()), NO_PARENT);
+  CCopasiTask * pNew = CTaskFactory::create(CTaskEnum::TaskName.toEnum(data.getProperty(CData::TASK_TYPE).toString()), NO_PARENT);
 
   if (pNew != NULL)
     {
@@ -189,13 +191,13 @@ void CCopasiTask::createUndoData(CUndoData & undoData,
         {
           // Method data needs to be put into pre and post processing data as we have a simultaneous remove and insert of methods
           CUndoData MethodUndoData;
-          CCopasiMethod * pTmpMethod = createMethod(CTaskEnum::MethodName.toEnum(oldData.getProperty(CData::METHOD_TYPE).toString()));
+          CCopasiMethod * pTmpMethod = CMethodFactory::create(getType(), CTaskEnum::MethodName.toEnum(oldData.getProperty(CData::METHOD_TYPE).toString()), this);
           pTmpMethod->createUndoData(MethodUndoData, CUndoData::Type::CHANGE, oldData.getProperty(CData::METHOD).toData(), CCore::Framework::ParticleNumbers);
           undoData.addPreProcessData(MethodUndoData);
           delete pTmpMethod;
 
           MethodUndoData.clear();
-          pTmpMethod = createMethod(mpMethod->getSubType());
+          pTmpMethod = CMethodFactory::create(getType(), mpMethod->getSubType(), this);
           mpMethod->createUndoData(MethodUndoData, CUndoData::Type::CHANGE, pTmpMethod->toData(), CCore::Framework::ParticleNumbers);
           undoData.addPostProcessData(MethodUndoData);
           delete pTmpMethod;
@@ -272,6 +274,8 @@ CCopasiTask::CCopasiTask(const CDataContainer * pParent,
   , mpOutputHandler(NULL)
   , mOutputCounter(0)
 {
+  mpProblem = CProblemFactory::create(taskType, this);
+
   initObjects();
 }
 
@@ -296,6 +300,9 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
   , mpOutputHandler(NULL)
   , mOutputCounter(0)
 {
+  mpProblem = CProblemFactory::copy(src.mpProblem, this);
+  mpMethod = CMethodFactory::copy(src.mpMethod, this);
+
   initObjects();
 }
 
@@ -355,6 +362,8 @@ void CCopasiTask::setIgnoreProblemData(const bool & ignoreProblemData)
 
 void CCopasiTask::setMathContainer(CMathContainer * pContainer)
 {
+  mpContainer = pContainer;
+
   if (mpProblem != NULL)
     {
       mpProblem->setMathContainer(pContainer);
@@ -365,11 +374,7 @@ void CCopasiTask::setMathContainer(CMathContainer * pContainer)
       mpMethod->setMathContainer(pContainer);
     }
 
-  if (pContainer != mpContainer)
-    {
-      mpContainer = pContainer;
-      signalMathContainerChanged();
-    }
+  signalMathContainerChanged();
 }
 
 // virtual
@@ -539,7 +544,7 @@ bool CCopasiTask::setMethodType(const CTaskEnum::Method & type)
   if (mpMethod->getSubType() == type) return true;
 
   pdelete(mpMethod);
-  mpMethod = createMethod(type);
+  mpMethod = CMethodFactory::create(getType(), type, this);
 
   signalMethodChanged();
 
@@ -549,16 +554,6 @@ bool CCopasiTask::setMethodType(const CTaskEnum::Method & type)
 // virtual
 void CCopasiTask::signalMethodChanged()
 {}
-
-CCopasiMethod * CCopasiTask::createMethod(const CTaskEnum::Method & type) const
-{
-  CCopasiMethod * pMethod = CCopasiMethod::createMethod(this, type, mType);
-  const_cast< CCopasiTask * >(this)->add(pMethod, true);
-
-  pMethod->setMathContainer(mpContainer);
-
-  return pMethod;
-}
 
 CCopasiMethod * CCopasiTask::getMethod() {return mpMethod;}
 

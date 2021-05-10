@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -43,7 +43,7 @@
 COptMethodHookeJeeves::COptMethodHookeJeeves(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType)
+  COptMethod(pParent, methodType, taskType, false)
 {
   assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 50);
   assertParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-005);
@@ -95,7 +95,7 @@ bool COptMethodHookeJeeves::optimise()
   for (i = 0; i < mVariableSize; i++)
     {
       C_FLOAT64 & mut = mIndividual[i];
-      COptItem & OptItem = *(*mpOptItem)[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
 
       mut = OptItem.getStartValue();
 
@@ -115,7 +115,7 @@ bool COptMethodHookeJeeves::optimise()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mContainerVariables[i] = mut;
+      *mProblemContext.master()->getContainerVariables()[i] = mut;
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -125,7 +125,7 @@ bool COptMethodHookeJeeves::optimise()
 
   // The first value is also the best
   mBestValue = mEvaluationValue;
-  mpOptProblem->setSolution(mBestValue, mIndividual);
+  mProblemContext.master()->setSolution(mBestValue, mIndividual);
   mpParentTask->output(COutputInterface::DURING);
 
   if (!mContinue)
@@ -174,7 +174,7 @@ bool COptMethodHookeJeeves::optimise()
         {
           // We found a better value
           mBestValue = newf;
-          mpOptProblem->setSolution(mBestValue, mNew);
+          mProblemContext.master()->setSolution(mBestValue, mNew);
           mpParentTask->output(COutputInterface::DURING);
 
           iadj = 0;
@@ -182,7 +182,7 @@ bool COptMethodHookeJeeves::optimise()
           for (i = 0; i < mVariableSize; i++)
             {
               C_FLOAT64 & mut = mNew[i];
-              COptItem & OptItem = *(*mpOptItem)[i];
+              const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
 
               /* firstly, arrange the sign of mDelta[] */
               if (mut <= mBefore[i])
@@ -209,7 +209,7 @@ bool COptMethodHookeJeeves::optimise()
 
               // We need to set the value here so that further checks take
               // account of the value.
-              *mContainerVariables[i] = mut;
+              *mProblemContext.master()->getContainerVariables()[i] = mut;
             }
 
           newf = bestNearby();
@@ -238,6 +238,8 @@ bool COptMethodHookeJeeves::optimise()
           for (i = 0; i < mVariableSize; i++)
             mDelta[i] *= mRho;
         }
+
+      mpParentTask->output(COutputInterface::MONITORING);
     }
 
   if (mLogVerbosity > 0)
@@ -283,7 +285,7 @@ bool COptMethodHookeJeeves::initialize()
                           mIteration,
                           & mIterationLimit);
 
-  mVariableSize = mpOptItem->size();
+  mVariableSize = mProblemContext.master()->getOptItemList().size();
 
   mIndividual.resize(mVariableSize);
   mBefore.resize(mVariableSize);
@@ -306,20 +308,20 @@ bool COptMethodHookeJeeves::evaluate()
   // since the parameters are created within the bounds.
 
   // evaluate the fitness
-  if (!mpOptProblem->checkParametricConstraints())
+  if (!mProblemContext.master()->checkParametricConstraints())
     {
       mEvaluationValue = std::numeric_limits< C_FLOAT64 >::max();
       return mContinue;
     }
 
-  mContinue &= mpOptProblem->calculate();
+  mContinue &= mProblemContext.master()->calculate();
 
   // check whether the functional constraints are fulfilled
-  if (!mpOptProblem->checkFunctionalConstraints())
+  if (!mProblemContext.master()->checkFunctionalConstraints())
     mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
   else
     // get the value of the objective function
-    mEvaluationValue = mpOptProblem->getCalculateValue();
+    mEvaluationValue = mProblemContext.master()->getCalculateValue();
 
   return mContinue;
 }
@@ -333,12 +335,12 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
   mIndividual = mNew;
 
   for (i = 0; i < mVariableSize; i++)
-    *mContainerVariables[i] = mIndividual[i];
+    *mProblemContext.master()->getContainerVariables()[i] = mIndividual[i];
 
   for (i = 0; i < mVariableSize; i++)
     {
       C_FLOAT64 & mut = mIndividual[i];
-      COptItem & OptItem = *(*mpOptItem)[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
       mut = mNew[i] + mDelta[i];
 
       // force it to be within the bounds
@@ -355,7 +357,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mContainerVariables[i] = mut;
+      *mProblemContext.master()->getContainerVariables()[i] = mut;
 
       if (!evaluate()) break;
 
@@ -380,7 +382,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mContainerVariables[i] = mut;
+          *mProblemContext.master()->getContainerVariables()[i] = mut;
 
           if (!evaluate()) break;
 
@@ -389,7 +391,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
           else
             {
               mut = mNew[i];
-              *mContainerVariables[i] = mut;
+              *mProblemContext.master()->getContainerVariables()[i] = mut;
             }
         }
     }
@@ -402,6 +404,26 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 unsigned C_INT32 COptMethodHookeJeeves::getMaxLogVerbosity() const
 {
   return 0;
+}
+
+C_FLOAT64 COptMethodHookeJeeves::getBestValue() const
+{
+  return mBestValue;
+}
+
+C_FLOAT64 COptMethodHookeJeeves::getCurrentValue() const
+{
+  return mBestValue;
+}
+
+const CVector< C_FLOAT64 > * COptMethodHookeJeeves::getBestParameters() const
+{
+  return &mNew;
+}
+
+const CVector< C_FLOAT64 > * COptMethodHookeJeeves::getCurrentParameters() const
+{
+  return &mNew;
 }
 
 /* Find a point X where the nonlinear function f(X) has a local    */

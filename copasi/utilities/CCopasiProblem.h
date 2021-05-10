@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -79,6 +79,11 @@ public:
   virtual ~CCopasiProblem();
 
   /**
+   * copy
+   */
+  CCopasiProblem * copy() const;
+
+  /**
    * Retrieve the type of the problem
    * @return  const string & type
    */
@@ -113,7 +118,6 @@ public:
    * resets the currently set callback by calling setCallBack(NULL)
    */
   virtual void clearCallBack();
-
 
   /**
    * Do all necessary initialization so that calls to calculate will

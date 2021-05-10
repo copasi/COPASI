@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -637,7 +637,7 @@ std::tm * CUndoData::getUTCTime() const
   return gmtime(&mTime);
 }
 
-const size_t CUndoData::getAuthorID() const
+const size_t & CUndoData::getAuthorID() const
 {
   return mAuthorID;
 }
@@ -838,7 +838,7 @@ bool CUndoData::insert(const CDataModel & dataModel, const bool & apply, CUndoDa
       success &= pObject->applyData(Data, changes);
     }
 
-  changes.add( {CUndoData::Type::INSERT, Data.getProperty(CData::OBJECT_TYPE).toString(), "", CCommonName::fromData(Data)});
+  changes.add({CUndoData::Type::INSERT, Data.getProperty(CData::OBJECT_TYPE).toString(), "", CCommonName::fromData(Data)});
 
   success &= executePostProcessData(dataModel, apply, changes, execute);
 
@@ -857,7 +857,7 @@ bool CUndoData::remove(const CDataModel & dataModel, const bool & apply, CUndoDa
 
   bool success = executePreProcessData(dataModel, apply, changes, execute);
 
-  changes.add( {CUndoData::Type::REMOVE, Data.getProperty(CData::OBJECT_TYPE).toString(), CCommonName::fromData(Data), ""});
+  changes.add({CUndoData::Type::REMOVE, Data.getProperty(CData::OBJECT_TYPE).toString(), CCommonName::fromData(Data), ""});
 
   if (execute)
     {
@@ -906,7 +906,7 @@ bool CUndoData::change(const CDataModel & dataModel, const bool & apply, CUndoDa
       success &= pObject->applyData(NewData, changes);
     }
 
-  changes.add( {CUndoData::Type::CHANGE, NewData.getProperty(CData::OBJECT_TYPE).toString(), CCommonName::fromData(OldData), CCommonName::fromData(NewData)});
+  changes.add({CUndoData::Type::CHANGE, NewData.getProperty(CData::OBJECT_TYPE).toString(), CCommonName::fromData(OldData), CCommonName::fromData(NewData)});
   success &= executePostProcessData(dataModel, apply, changes, execute);
 
   return success;

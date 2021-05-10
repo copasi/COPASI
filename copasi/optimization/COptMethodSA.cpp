@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,7 +46,7 @@
 COptMethodSA::COptMethodSA(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType)
-  : COptMethod(pParent, methodType, taskType)
+  : COptMethod(pParent, methodType, taskType, false)
   , mTemperature(1.0)
   , mhTemperature(C_INVALID_INDEX)
   , mCoolingFactor(0.85)
@@ -127,7 +127,7 @@ bool COptMethodSA::optimise()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *(*mpOptItem)[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
 
       switch (OptItem.checkConstraint(OptItem.getStartValue()))
         {
@@ -146,7 +146,7 @@ bool COptMethodSA::optimise()
             break;
         }
 
-      *mContainerVariables[i] = (mCurrent[i]);
+      *mProblemContext.master()->getContainerVariables()[i] = (mCurrent[i]);
 
       // The step must not contain any zeroes
       mStep[i] = std::max(fabs(mCurrent[i]), 1.0);
@@ -161,7 +161,7 @@ bool COptMethodSA::optimise()
     {
       // and store that value
       mBestValue = mEvaluationValue;
-      mContinue &= mpOptProblem->setSolution(mBestValue, mCurrent);
+      mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -197,13 +197,13 @@ bool COptMethodSA::optimise()
                   New = mCurrent[h] + xc;
 
                   // Set the new parameter value
-                  *mContainerVariables[h] = (New);
+                  *mProblemContext.master()->getContainerVariables()[h] = (New);
 
                   // Check all parametric constraints
-                  if (!mpOptProblem->checkParametricConstraints())
+                  if (!mProblemContext.master()->checkParametricConstraints())
                     {
                       // Undo since not accepted
-                      *mContainerVariables[h] = (mCurrent[h]);
+                      *mProblemContext.master()->getContainerVariables()[h] = (mCurrent[h]);
                       continue;
                     }
 
@@ -211,10 +211,10 @@ bool COptMethodSA::optimise()
                   evaluate();
 
                   // Check all functional constraints
-                  if (!mpOptProblem->checkFunctionalConstraints())
+                  if (!mProblemContext.master()->checkFunctionalConstraints())
                     {
                       // Undo since not accepted
-                      *mContainerVariables[h] = (mCurrent[h]);
+                      *mProblemContext.master()->getContainerVariables()[h] = (mCurrent[h]);
                       continue;
                     }
 
@@ -232,7 +232,7 @@ bool COptMethodSA::optimise()
                         {
                           // and store that value
                           mBestValue = mEvaluationValue;
-                          mContinue &= mpOptProblem->setSolution(mBestValue, mCurrent);
+                          mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent);
 
                           // We found a new best value lets report it.
                           mpParentTask->output(COutputInterface::DURING);
@@ -253,7 +253,7 @@ bool COptMethodSA::optimise()
                         }
                       else
                         // Undo since not accepted
-                        *mContainerVariables[h] = (mCurrent[h]);
+                        *mProblemContext.master()->getContainerVariables()[h] = (mCurrent[h]);
                     }
                 }
             }
@@ -322,10 +322,10 @@ bool COptMethodSA::optimise()
         {
           i++;
 
-          mCurrent = mpOptProblem->getSolutionVariables();
+          mCurrent = mProblemContext.master()->getSolutionVariables();
 
           for (a = 0; a < mVariableSize; a++)
-            *mContainerVariables[a] = mCurrent[a];
+            *mProblemContext.master()->getContainerVariables()[a] = mCurrent[a];
 
           mCurrentValue = mBestValue;
         }
@@ -348,6 +348,8 @@ bool COptMethodSA::optimise()
 
       if (mpCallBack)
         mContinue &= mpCallBack->progressItem(mhTemperature);
+
+      mpParentTask->output(COutputInterface::MONITORING);
     }
   while (!ready && mContinue);
 
@@ -378,12 +380,12 @@ const C_FLOAT64 & COptMethodSA::evaluate()
   // We do not need to check whether the parametric constraints are fulfilled
   // since the parameters are created within the bounds.
 
-  mContinue &= mpOptProblem->calculate();
-  mEvaluationValue = mpOptProblem->getCalculateValue();
+  mContinue &= mProblemContext.master()->calculate();
+  mEvaluationValue = mProblemContext.master()->getCalculateValue();
 
   // When we leave the either functional domain
   // we set the objective value +Inf
-  if (!mpOptProblem->checkFunctionalConstraints())
+  if (!mProblemContext.master()->checkFunctionalConstraints())
     mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
 
   return mEvaluationValue;
@@ -419,7 +421,7 @@ bool COptMethodSA::initialize()
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
   mContinue = true;
 
-  mVariableSize = mpOptItem->size();
+  mVariableSize = mProblemContext.master()->getOptItemList().size();
 
   mCurrent.resize(mVariableSize);
   mStep.resize(mVariableSize);
@@ -431,4 +433,24 @@ bool COptMethodSA::initialize()
 unsigned C_INT32 COptMethodSA::getMaxLogVerbosity() const
 {
   return 1;
+}
+
+C_FLOAT64 COptMethodSA::getBestValue() const
+{
+  return mBestValue;
+}
+
+C_FLOAT64 COptMethodSA::getCurrentValue() const
+{
+  return mCurrentValue;
+}
+
+const CVector< C_FLOAT64 > * COptMethodSA::getBestParameters() const
+{
+  return &mCurrent;
+}
+
+const CVector< C_FLOAT64 > * COptMethodSA::getCurrentParameters() const
+{
+  return &mCurrent;
 }

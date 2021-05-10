@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,7 +35,7 @@
 COptMethodPraxis::COptMethodPraxis(const CDataContainer * pParent,
                                    const CTaskEnum::Method & methodType,
                                    const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType),
+  COptMethod(pParent, methodType, taskType, false),
   mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction)),
   mpCPraxis(new CPraxis())
 {
@@ -87,7 +87,7 @@ bool COptMethodPraxis::optimise()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *(*mpOptItem)[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
       mCurrent[i] = OptItem.getStartValue();
 
       //force it to be within the bounds
@@ -105,7 +105,7 @@ bool COptMethodPraxis::optimise()
         }
 
       //set the value
-      *mContainerVariables[i] = (mCurrent[i]);
+      *mProblemContext.master()->getContainerVariables()[i] = (mCurrent[i]);
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -114,10 +114,11 @@ bool COptMethodPraxis::optimise()
   // Report the first value as the current best
   mBestValue = evaluate();
   mBest = mCurrent;
-  mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+  mContinue = mProblemContext.master()->setSolution(mBestValue, mBest);
 
   // We found a new best value lets report it.
   mpParentTask->output(COutputInterface::DURING);
+  mpParentTask->output(COutputInterface::MONITORING);
 
   //estimate the machine epsilon
   d1 = 1.0;
@@ -157,7 +158,7 @@ bool COptMethodPraxis::initialize()
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
   mIteration = 0;
 
-  mVariableSize = (C_INT) mpOptItem->size();
+  mVariableSize = (C_INT) mProblemContext.master()->getOptItemList().size();
   mCurrent.resize(mVariableSize);
   mBest.resize(mVariableSize);
 
@@ -177,7 +178,7 @@ const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
   C_INT i;
 
   for (i = 0; i < *n; i++)
-    *mContainerVariables[i] = (x[i]);
+    *mProblemContext.master()->getContainerVariables()[i] = (x[i]);
 
   //carry out the function evaluation
   evaluate();
@@ -190,11 +191,13 @@ const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
         mBest[i] = x[i];
 
       mBestValue = mEvaluationValue;
-      mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+      mContinue = mProblemContext.master()->setSolution(mBestValue, mBest);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
     }
+
+  mpParentTask->output(COutputInterface::MONITORING);
 
   if (!mContinue)
     throw bool(mContinue);
@@ -207,15 +210,15 @@ const C_FLOAT64 & COptMethodPraxis::evaluate()
   // We do not need to check whether the parametric constraints are fulfilled
   // since the parameters are created within the bounds.
 
-  mContinue = mpOptProblem->calculate();
-  mEvaluationValue = mpOptProblem->getCalculateValue();
+  mContinue = mProblemContext.master()->calculate();
+  mEvaluationValue = mProblemContext.master()->getCalculateValue();
 
   // when we leave the either the parameter or functional domain
   // we penalize the objective value by forcing it to be larger
   // than the best value recorded so far.
   if (mEvaluationValue < mBestValue &&
-      (!mpOptProblem->checkParametricConstraints() ||
-       !mpOptProblem->checkFunctionalConstraints()))
+      (!mProblemContext.master()->checkParametricConstraints() ||
+       !mProblemContext.master()->checkFunctionalConstraints()))
     mEvaluationValue = mBestValue + mBestValue - mEvaluationValue;
 
   return mEvaluationValue;
@@ -224,4 +227,24 @@ const C_FLOAT64 & COptMethodPraxis::evaluate()
 unsigned C_INT32 COptMethodPraxis::getMaxLogVerbosity() const
 {
   return 0;
+}
+
+C_FLOAT64 COptMethodPraxis::getBestValue() const
+{
+  return mBestValue;
+}
+
+C_FLOAT64 COptMethodPraxis::getCurrentValue() const
+{
+  return mEvaluationValue;
+}
+
+const CVector< C_FLOAT64 > * COptMethodPraxis::getBestParameters() const
+{
+  return &mBest;
+}
+
+const CVector< C_FLOAT64 > * COptMethodPraxis::getCurrentParameters() const
+{
+  return &mCurrent;
 }

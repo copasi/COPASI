@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,15 +22,16 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include "copasi/utilities/CTaskFactory.h"
 #include <cmath>
 
 #include "copasi/copasi.h"
 
-#include "CFitProblem.h"
-#include "CFitItem.h"
-#include "CFitTask.h"
-#include "CExperimentSet.h"
-#include "CExperiment.h"
+#include "copasi/parameterFitting/CFitProblem.h"
+#include "copasi/parameterFitting/CFitItem.h"
+#include "copasi/parameterFitting/CFitTask.h"
+#include "copasi/parameterFitting/CExperimentSet.h"
+#include "copasi/parameterFitting/CExperiment.h"
 
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
@@ -56,132 +57,125 @@
 
 //  Default constructor
 CFitProblem::CFitProblem(const CTaskEnum::Task & type,
-                         const CDataContainer * pParent) :
-  COptProblem(type, pParent),
-  mpParmSteadyStateCN(NULL),
-  mpParmTimeCourseCN(NULL),
-  mpExperimentSet(NULL),
-  mpSteadyState(NULL),
-  mpTrajectory(NULL),
-  mExperimentValues(0, 0),
-  mExperimentConstraints(0, 0),
-  mExperimentDependentValues(0),
-  mpCrossValidationSet(NULL),
-  mCrossValidationValues(0, 0),
-  mCrossValidationConstraints(0, 0),
-  mCrossValidationDependentValues(0),
-  mCrossValidationSolutionValue(mWorstValue),
-  mCrossValidationRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-  mCrossValidationSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-  mCrossValidationObjective(mWorstValue),
-  mThresholdCounter(0),
-  mpTrajectoryProblem(NULL),
-  mCompleteInitialState(),
-  mpInitialStateTime(NULL),
-  mResiduals(0),
-  mRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-  mSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-  mParameterSD(0),
-  mDeltaResidualDeltaParameter(0, 0),
-  mpDeltaResidualDeltaParameterInterface(NULL),
-  mpDeltaResidualDeltaParameterMatrix(NULL),
-  mDeltaResidualDeltaParameterScaled(0, 0),
-  mpDeltaResidualDeltaParameterScaledInterface(NULL),
-  mpDeltaResidualDeltaParameterScaledMatrix(NULL),
-  mFisher(0, 0),
-  mpFisherMatrixInterface(NULL),
-  mpFisherMatrix(NULL),
-  mFisherEigenvalues(0, 0),
-  mpFisherEigenvaluesMatrixInterface(NULL),
-  mpFisherEigenvaluesMatrix(NULL),
-  mFisherEigenvectors(0, 0),
-  mpFisherEigenvectorsMatrixInterface(NULL),
-  mpFisherEigenvectorsMatrix(NULL),
-  mFisherScaled(0, 0),
-  mpFisherScaledMatrixInterface(NULL),
-  mpFisherScaledMatrix(NULL),
-  mFisherScaledEigenvalues(0, 0),
-  mpFisherScaledEigenvaluesMatrixInterface(NULL),
-  mpFisherScaledEigenvaluesMatrix(NULL),
-  mFisherScaledEigenvectors(0, 0),
-  mpFisherScaledEigenvectorsMatrixInterface(NULL),
-  mpFisherScaledEigenvectorsMatrix(NULL),
-  mCorrelation(0, 0),
-  mpCorrelationMatrixInterface(NULL),
-  mpCorrelationMatrix(NULL),
-  mpCreateParameterSets(NULL),
-  mTrajectoryUpdate(false),
-  mpUseTimeSens(NULL),
-  mpTimeSens(NULL),
-  mpTimeSensProblem(NULL),
-  mJacTimeSens(),
-  mpParmTimeSensCN(NULL)
-
+                         const CDataContainer * pParent)
+  : COptProblem(type, pParent)
+  , mpParmSteadyStateCN(NULL)
+  , mpParmTimeCourseCN(NULL)
+  , mpExperimentSet(NULL)
+  , mpSteadyState(NULL)
+  , mpTrajectory(NULL)
+  , mExperimentValues(0, 0)
+  , mExperimentConstraints(0, 0)
+  , mExperimentDependentValues(0)
+  , mpCrossValidationSet(NULL)
+  , mCrossValidationValues(0, 0)
+  , mCrossValidationConstraints(0, 0)
+  , mCrossValidationDependentValues(0)
+  , mCrossValidationSolutionValue(mWorstValue)
+  , mCrossValidationRMS(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mCrossValidationSD(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mCrossValidationObjective(mWorstValue)
+  , mThresholdCounter(0)
+  , mCompleteInitialState()
+  , mpInitialStateTime(NULL)
+  , mResiduals(0)
+  , mRMS(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mSD(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mParameterSD(0)
+  , mDeltaResidualDeltaParameter(0, 0)
+  , mpDeltaResidualDeltaParameterInterface(NULL)
+  , mpDeltaResidualDeltaParameterMatrix(NULL)
+  , mDeltaResidualDeltaParameterScaled(0, 0)
+  , mpDeltaResidualDeltaParameterScaledInterface(NULL)
+  , mpDeltaResidualDeltaParameterScaledMatrix(NULL)
+  , mFisher(0, 0)
+  , mpFisherMatrixInterface(NULL)
+  , mpFisherMatrix(NULL)
+  , mFisherEigenvalues(0, 0)
+  , mpFisherEigenvaluesMatrixInterface(NULL)
+  , mpFisherEigenvaluesMatrix(NULL)
+  , mFisherEigenvectors(0, 0)
+  , mpFisherEigenvectorsMatrixInterface(NULL)
+  , mpFisherEigenvectorsMatrix(NULL)
+  , mFisherScaled(0, 0)
+  , mpFisherScaledMatrixInterface(NULL)
+  , mpFisherScaledMatrix(NULL)
+  , mFisherScaledEigenvalues(0, 0)
+  , mpFisherScaledEigenvaluesMatrixInterface(NULL)
+  , mpFisherScaledEigenvaluesMatrix(NULL)
+  , mFisherScaledEigenvectors(0, 0)
+  , mpFisherScaledEigenvectorsMatrixInterface(NULL)
+  , mpFisherScaledEigenvectorsMatrix(NULL)
+  , mCorrelation(0, 0)
+  , mpCorrelationMatrixInterface(NULL)
+  , mpCorrelationMatrix(NULL)
+  , mpCreateParameterSets(NULL)
+  , mpUseTimeSens(NULL)
+  , mpTimeSens(NULL)
+  , mJacTimeSens()
+  , mpParmTimeSensCN(NULL)
 {
   initObjects();
   initializeParameter();
 }
 
 // copy constructor
-CFitProblem::CFitProblem(const CFitProblem& src,
-                         const CDataContainer * pParent) :
-  COptProblem(src, pParent),
-  mpParmSteadyStateCN(NULL),
-  mpParmTimeCourseCN(NULL),
-  mpExperimentSet(NULL),
-  mpSteadyState(NULL),
-  mpTrajectory(NULL),
-  mExperimentValues(0, 0),
-  mExperimentConstraints(0, 0),
-  mExperimentDependentValues(src.mExperimentDependentValues),
-  mpCrossValidationSet(NULL),
-  mCrossValidationValues(0, 0),
-  mCrossValidationConstraints(0, 0),
-  mCrossValidationDependentValues(src.mCrossValidationDependentValues),
-  mCrossValidationSolutionValue(mWorstValue),
-  mCrossValidationRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-  mCrossValidationSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-  mCrossValidationObjective(mWorstValue),
-  mThresholdCounter(0),
-  mpTrajectoryProblem(NULL),
-  mResiduals(src.mResiduals),
-  mRMS(src.mRMS),
-  mSD(src.mSD),
-  mParameterSD(src.mParameterSD),
-  mDeltaResidualDeltaParameter(src.mDeltaResidualDeltaParameter),
-  mpDeltaResidualDeltaParameterInterface(NULL),
-  mpDeltaResidualDeltaParameterMatrix(NULL),
-  mDeltaResidualDeltaParameterScaled(src.mDeltaResidualDeltaParameter),
-  mpDeltaResidualDeltaParameterScaledInterface(NULL),
-  mpDeltaResidualDeltaParameterScaledMatrix(NULL),
-  mFisher(src.mFisher),
-  mpFisherMatrixInterface(NULL),
-  mpFisherMatrix(NULL),
-  mFisherEigenvalues(src.mFisherEigenvalues),
-  mpFisherEigenvaluesMatrixInterface(NULL),
-  mpFisherEigenvaluesMatrix(NULL),
-  mFisherEigenvectors(src.mFisherEigenvectors),
-  mpFisherEigenvectorsMatrixInterface(NULL),
-  mpFisherEigenvectorsMatrix(NULL),
-  mFisherScaled(src.mFisherScaled),
-  mpFisherScaledMatrixInterface(NULL),
-  mpFisherScaledMatrix(NULL),
-  mFisherScaledEigenvalues(src.mFisherScaledEigenvalues),
-  mpFisherScaledEigenvaluesMatrixInterface(NULL),
-  mpFisherScaledEigenvaluesMatrix(NULL),
-  mFisherScaledEigenvectors(src.mFisherScaledEigenvectors),
-  mpFisherScaledEigenvectorsMatrixInterface(NULL),
-  mpFisherScaledEigenvectorsMatrix(NULL),
-  mCorrelation(src.mCorrelation),
-  mpCorrelationMatrixInterface(NULL),
-  mpCorrelationMatrix(NULL),
-  mpCreateParameterSets(NULL),
-  mTrajectoryUpdate(false),
-  mpUseTimeSens(NULL),
-  mpTimeSens(NULL),
-  mpTimeSensProblem(NULL),
-  mJacTimeSens(),
-  mpParmTimeSensCN(NULL)
+CFitProblem::CFitProblem(const CFitProblem & src,
+                         const CDataContainer * pParent)
+  : COptProblem(src, pParent)
+  , mpParmSteadyStateCN(NULL)
+  , mpParmTimeCourseCN(NULL)
+  , mpExperimentSet(NULL)
+  , mpSteadyState(NULL)
+  , mpTrajectory(NULL)
+  , mExperimentValues(0, 0)
+  , mExperimentConstraints(0, 0)
+  , mExperimentDependentValues(src.mExperimentDependentValues)
+  , mpCrossValidationSet(NULL)
+  , mCrossValidationValues(0, 0)
+  , mCrossValidationConstraints(0, 0)
+  , mCrossValidationDependentValues(src.mCrossValidationDependentValues)
+  , mCrossValidationSolutionValue(mWorstValue)
+  , mCrossValidationRMS(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mCrossValidationSD(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mCrossValidationObjective(mWorstValue)
+  , mThresholdCounter(0)
+  , mResiduals(src.mResiduals)
+  , mRMS(src.mRMS)
+  , mSD(src.mSD)
+  , mParameterSD(src.mParameterSD)
+  , mDeltaResidualDeltaParameter(src.mDeltaResidualDeltaParameter)
+  , mpDeltaResidualDeltaParameterInterface(NULL)
+  , mpDeltaResidualDeltaParameterMatrix(NULL)
+  , mDeltaResidualDeltaParameterScaled(src.mDeltaResidualDeltaParameter)
+  , mpDeltaResidualDeltaParameterScaledInterface(NULL)
+  , mpDeltaResidualDeltaParameterScaledMatrix(NULL)
+  , mFisher(src.mFisher)
+  , mpFisherMatrixInterface(NULL)
+  , mpFisherMatrix(NULL)
+  , mFisherEigenvalues(src.mFisherEigenvalues)
+  , mpFisherEigenvaluesMatrixInterface(NULL)
+  , mpFisherEigenvaluesMatrix(NULL)
+  , mFisherEigenvectors(src.mFisherEigenvectors)
+  , mpFisherEigenvectorsMatrixInterface(NULL)
+  , mpFisherEigenvectorsMatrix(NULL)
+  , mFisherScaled(src.mFisherScaled)
+  , mpFisherScaledMatrixInterface(NULL)
+  , mpFisherScaledMatrix(NULL)
+  , mFisherScaledEigenvalues(src.mFisherScaledEigenvalues)
+  , mpFisherScaledEigenvaluesMatrixInterface(NULL)
+  , mpFisherScaledEigenvaluesMatrix(NULL)
+  , mFisherScaledEigenvectors(src.mFisherScaledEigenvectors)
+  , mpFisherScaledEigenvectorsMatrixInterface(NULL)
+  , mpFisherScaledEigenvectorsMatrix(NULL)
+  , mCorrelation(src.mCorrelation)
+  , mpCorrelationMatrixInterface(NULL)
+  , mpCorrelationMatrix(NULL)
+  , mpCreateParameterSets(NULL)
+  , mpUseTimeSens(NULL)
+  , mpTimeSens(NULL)
+  , mJacTimeSens()
+  , mpParmTimeSensCN(NULL)
 {
   initObjects();
   initializeParameter();
@@ -190,7 +184,6 @@ CFitProblem::CFitProblem(const CFitProblem& src,
 // Destructor
 CFitProblem::~CFitProblem()
 {
-  pdelete(mpTrajectoryProblem);
   pdelete(mpDeltaResidualDeltaParameterInterface);
   pdelete(mpDeltaResidualDeltaParameterMatrix);
   pdelete(mpDeltaResidualDeltaParameterScaledInterface);
@@ -209,8 +202,6 @@ CFitProblem::~CFitProblem()
   pdelete(mpFisherScaledEigenvectorsMatrix);
   pdelete(mpCorrelationMatrixInterface);
   pdelete(mpCorrelationMatrix);
-
-  pdelete(mpTimeSensProblem);
 }
 
 void CFitProblem::initObjects()
@@ -292,7 +283,7 @@ void CFitProblem::initObjects()
 void CFitProblem::initializeParameter()
 {
   removeParameter("Subtask");
-  mpParmSubtaskCN = NULL;
+  mpParmSubTaskCN = NULL;
   removeParameter("ObjectiveExpression");
   mpParmObjectiveExpression = NULL;
   *mpParmMaximize = false;
@@ -506,61 +497,47 @@ bool CFitProblem::initialize()
         success = false;
     }
 
-  CDataModel * pDataModel = getObjectDataModel();
-  assert(pDataModel != NULL);
+  CObjectInterface::ContainerList ListOfContainer;
+
+  ListOfContainer.push_back(getObjectAncestor("Vector"));
+
+  pdelete(mpSteadyState);
 
   // We only need to initialize the steady-state task if steady-state data is present.
   if (mpExperimentSet->hasDataForTaskType(CTaskEnum::Task::steadyState))
     {
-      mpSteadyState =
-        dynamic_cast<CSteadyStateTask *>(const_cast<CDataObject *>(CObjectInterface::DataObject(getObjectFromCN(*mpParmSteadyStateCN))));
+      mpSteadyState = dynamic_cast< CSteadyStateTask * >(CTaskFactory::copy(dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmSteadyStateCN)), this));
 
       if (mpSteadyState == NULL)
         {
-          mpSteadyState =
-            static_cast<CSteadyStateTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));
+          *mpParmSteadyStateCN = setSubtaskType(CTaskEnum::Task::steadyState);
+          mpSteadyState = dynamic_cast< CSteadyStateTask * >(CTaskFactory::copy(dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmSteadyStateCN)), this));
         }
 
       if (mpSteadyState == NULL) fatalError();
 
-      *mpParmSteadyStateCN = mpSteadyState->getCN();
+      mpSteadyState->setMathContainer(mpContainer);
       mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
     }
-  else
-    {
-      mpSteadyState = NULL;
-    }
 
-  pdelete(mpTrajectoryProblem);
+  pdelete(mpTrajectory);
 
   // We only need to initialize the trajectory task if time course data is present.
   if (mpExperimentSet->hasDataForTaskType(CTaskEnum::Task::timeCourse))
     {
-      mpTrajectory =
-        dynamic_cast<CTrajectoryTask *>(const_cast<CDataObject *>(CObjectInterface::DataObject(getObjectFromCN(*mpParmTimeCourseCN))));
+      mpTrajectory = dynamic_cast< CTrajectoryTask * >(CTaskFactory::copy(dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmTimeCourseCN)), this));
 
       if (mpTrajectory == NULL)
         {
-          mpTrajectory =
-            static_cast<CTrajectoryTask *>(&pDataModel->getTaskList()->operator[]("Time-Course"));
+          *mpParmTimeCourseCN = setSubtaskType(CTaskEnum::Task::timeCourse);
+          mpTrajectory = dynamic_cast< CTrajectoryTask * >(CTaskFactory::copy(dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmTimeCourseCN)), this));
         }
 
       if (mpTrajectory == NULL) fatalError();
 
-      *mpParmTimeCourseCN = mpTrajectory->getCN();
-
-      // do not update initial values when running fit
-      mTrajectoryUpdate = mpTrajectory->isUpdateModel();
+      mpTrajectory->setMathContainer(mpContainer);
       mpTrajectory->setUpdateModel(false);
-
       mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-
-      mpTrajectoryProblem =
-        new CTrajectoryProblem(*static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem()), NO_PARENT);
-    }
-  else
-    {
-      mpTrajectory = NULL;
     }
 
   mCompleteInitialState = mpContainer->getCompleteInitialState();
@@ -842,29 +819,23 @@ bool CFitProblem::initialize()
 
   setResidualsRequired(false);
 
-  pdelete(mpTimeSensProblem);
+  pdelete(mpTimeSens);
 
   if (mpExperimentSet->hasDataForTaskType(CTaskEnum::Task::timeCourse) && *mpUseTimeSens)
     {
-
-      mpTimeSens =
-        dynamic_cast<CTimeSensTask*>(const_cast<CDataObject*>(CObjectInterface::DataObject(getObjectFromCN(*mpParmTimeSensCN))));
+      mpTimeSens = dynamic_cast< CTimeSensTask * >(CTaskFactory::copy(dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmTimeSensCN)), this));
 
       if (mpTimeSens == NULL)
         {
-          mpTimeSens =
-            static_cast<CTimeSensTask*>(&pDataModel->getTaskList()->operator[]("Time-Course Sensitivities"));
+          *mpParmTimeSensCN = setSubtaskType(CTaskEnum::Task::timeSens);
+          mpTimeSens = dynamic_cast< CTimeSensTask * >(CTaskFactory::copy(dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmTimeSensCN)), this));
         }
 
       if (mpTimeSens == NULL) fatalError();
 
-      *mpParmTimeCourseCN = mpTimeSens->getCN();
-
       // do not update initial values when running fit
+      mpTimeSens->setMathContainer(mpContainer);
       mpTimeSens->setUpdateModel(false);
-
-      mpTimeSensProblem =
-        new CTimeSensProblem(*static_cast<CTimeSensProblem*>(mpTimeSens->getProblem()), NO_PARENT);
 
       CTimeSensProblem* pProblem = static_cast<CTimeSensProblem*>(mpTimeSens->getProblem());
       pProblem->clearParameterCNs();
@@ -885,7 +856,6 @@ bool CFitProblem::initialize()
         }
 
       mpTimeSens->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-
       mJacTimeSens.resize(mSolutionVariables.size(), mpExperimentSet->getDataPointCount());
     }
   else
@@ -899,12 +869,12 @@ bool CFitProblem::checkFunctionalConstraints()
   std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
   std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
 
-  mConstraintCounter++;
+  mCounters.ConstraintCounter++;
 
   for (; it != end; ++it)
     if (static_cast<CFitConstraint *>(*it)->getConstraintViolation() > 0.0)
       {
-        mFailedConstraintCounter++;
+        mCounters.FailedConstraintCounter++;
         return false;
       }
 
@@ -948,7 +918,7 @@ void CFitProblem::createParameterSet(const std::string & Name)
 
 bool CFitProblem::calculate()
 {
-  mCounter += 1;
+  mCounters.Counter++;
   bool Continue = true;
 
   size_t i, imax = mpExperimentSet->getExperimentCount();
@@ -1036,7 +1006,7 @@ bool CFitProblem::calculate()
 
                     if (!Continue)
                       {
-                        mFailedCounterException++;
+                        mCounters.FailedCounterException++;
                         mCalculateValue = mWorstValue;
                         break;
                       }
@@ -1216,7 +1186,7 @@ bool CFitProblem::calculate()
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();
 
-      mFailedCounterException++;
+      mCounters.FailedCounterException++;
       mCalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
@@ -1226,7 +1196,7 @@ bool CFitProblem::calculate()
 
   catch (...)
     {
-      mFailedCounterException++;
+      mCounters.FailedCounterException++;
       mCalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
@@ -1236,11 +1206,12 @@ bool CFitProblem::calculate()
 
   if (std::isnan(mCalculateValue))
     {
-      mFailedCounterNaN++;
+      mCounters.FailedCounterNaN++;
       mCalculateValue = mWorstValue;
     }
 
-  if (mpCallBack) return mpCallBack->progressItem(mhCounter);
+  if (mpCallBack)
+    return mpCallBack->progressItem(mhCounter);
 
   return true;
 }
@@ -1260,27 +1231,17 @@ bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
   if (mpTrajectory != NULL)
     {
       success &= mpTrajectory->restore();
-      mpTrajectory->setUpdateModel(mTrajectoryUpdate);
-
-      if (mpTrajectoryProblem)
-        *mpTrajectory->getProblem() = *mpTrajectoryProblem;
     }
 
   if (mpTimeSens)
     {
       success &= mpTimeSens->restore();
-
-      if (mpTimeSensProblem)
-        *mpTimeSens->getProblem() = *mpTimeSensProblem;
     }
 
   if (mpSteadyState != NULL)
     success &= mpSteadyState->restore();
 
   success &= COptProblem::restore(updateModel);
-
-  pdelete(mpTrajectoryProblem);
-  pdelete(mpTimeSensProblem);
 
   if (updateModel && pExp != NULL)
     {
@@ -1420,11 +1381,11 @@ void CFitProblem::printResult(std::ostream * ostream) const
 
   CCopasiTimeVariable CPUTime = const_cast<CFitProblem *>(this)->mCPUTime.getElapsedTime();
 
-  os << "Function Evaluations:\t" << mCounter << std::endl;
+  os << "Function Evaluations:\t" << mCounters.Counter << std::endl;
   os << "CPU Time [s]:\t"
      << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
      << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
-  os << "Evaluations/Second [1/s]:\t" << mCounter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << std::endl;
+  os << "Evaluations/Second [1/s]:\t" << mCounters.Counter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << std::endl;
   os << std::endl;
 
   std::vector< COptItem * >::const_iterator itItem =
@@ -2315,7 +2276,16 @@ bool CFitProblem::setSolution(const C_FLOAT64 & value,
   bool Continue = COptProblem::setSolution(value, variables);
 
   if (Continue && mpCrossValidationSet->getExperimentCount() > 0)
-    Continue = calculateCrossValidation();
+    {
+      C_FLOAT64 **ppIt = mContainerVariables.begin();
+      C_FLOAT64 **ppEnd = mContainerVariables.end();
+      C_FLOAT64 *pSolution = mSolutionVariables.begin();
+
+      for (; ppIt != ppEnd; ++ppIt, ++pSolution)
+        **ppIt = *pSolution;
+
+      Continue = calculateCrossValidation();
+    }
 
   return Continue;
 }
@@ -2337,7 +2307,7 @@ const C_FLOAT64 & CFitProblem::getCrossValidationSD() const
 
 bool CFitProblem::calculateCrossValidation()
 {
-  mCounter += 1;
+  mCounters.Counter++;
   bool Continue = true;
 
   size_t i, imax = mpCrossValidationSet->getExperimentCount();
@@ -2550,7 +2520,7 @@ bool CFitProblem::calculateCrossValidation()
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();
 
-      mFailedCounterException++;
+      mCounters.FailedCounterException++;
       CalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
@@ -2560,7 +2530,7 @@ bool CFitProblem::calculateCrossValidation()
 
   catch (...)
     {
-      mFailedCounterException++;
+      mCounters.FailedCounterException++;
       CalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
@@ -2570,7 +2540,7 @@ bool CFitProblem::calculateCrossValidation()
 
   if (std::isnan(CalculateValue))
     {
-      mFailedCounterNaN++;
+      mCounters.FailedCounterNaN++;
       CalculateValue = mWorstValue;
     }
 

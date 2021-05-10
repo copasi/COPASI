@@ -66,16 +66,6 @@ protected:
 
 public:
   /**
-   * Convenience method to create and actual instance
-   * @param const CDataContainer * pParent
-   * @param const CTaskEnum::Method & methodType
-   * @param const CTaskEnum::Task & taskType
-   */
-  static CCopasiMethod * createMethod(const CDataContainer * pParent,
-                                      const CTaskEnum::Method & methodType,
-                                      const CTaskEnum::Task & taskType);
-
-  /**
    * Copy constructor
    * @param const CCopasiMethodr & src
    * @param const CDataContainer * pParent (default: NULL)

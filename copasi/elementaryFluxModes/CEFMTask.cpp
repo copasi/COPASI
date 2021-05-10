@@ -49,26 +49,19 @@
 #include "copasi/model/CMetabNameInterface.h"
 #include "copasi/model/CChemEqInterface.h"
 #include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 CEFMTask::CEFMTask(const CDataContainer * pParent,
                    const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
-  mpProblem = new CEFMProblem(this);
-  mpMethod = createMethod(CTaskEnum::Method::EFMAlgorithm);
-
-  this->add(mpMethod, true);
+  mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::EFMAlgorithm, this);
 }
 
 CEFMTask::CEFMTask(const CEFMTask & src,
                    const CDataContainer * pParent):
   CCopasiTask(src, pParent)
-{
-  mpProblem = new CCopasiProblem(*static_cast< CEFMProblem * >(src.mpProblem), this);
-  mpMethod = createMethod(src.mpMethod->getSubType());
-
-  this->add(mpMethod, true);
-}
+{}
 
 CEFMTask::~CEFMTask()
 {}

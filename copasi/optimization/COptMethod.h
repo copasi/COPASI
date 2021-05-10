@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -42,13 +42,16 @@
 
 #include <string>
 
+#include "copasi/OpenMP/CPointerMathContext.h"
 #include "copasi/utilities/CCopasiMethod.h"
-#include "COptLog.h"
+#include "copasi/optimization/COptLog.h"
 
 class COptProblem;
 class COptItem;
 class COptTask;
 template < class CType > class CVector;
+
+typedef CPointerMathContext< COptProblem > COptProblemContext;
 
 // YOHE: this is an abstract class that contains many virtual functions
 // without definitions
@@ -64,26 +67,28 @@ public:
 
   //data member
 protected:
-  /** @dia:route 0,2; h,36.4,4.15,33.95,4.15,23.0576 */
-  COptProblem * mpOptProblem;        // pointer to remote problem
-
+  /**
+   * The parent task
+   */
   COptTask * mpParentTask;
 
   /**
-   * A vector of pointers to the update methods for the optimization parameters
+   * Boolean indicating whether this method con use parallel execution.
    */
-  CVectorCore< C_FLOAT64 * > mContainerVariables;
+  bool mParallel;
 
   /**
-   * A vector of pointers to the optimization parameter
+   * A thread specific math container
    */
-  const std::vector< COptItem * > * mpOptItem;
+  CMathContext mMathContext;
 
   /**
-   * A vector of pointers to the functional constraints
+   * A thread specific problem
    */
+  COptProblemContext mProblemContext;
 
-  const std::vector< COptItem * > * mpOptContraints;
+  /**
+   * A best objective value found
 
   /**
    * Define the current verbosity for the log
@@ -107,11 +112,13 @@ public:
    * Specific constructor
    * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType
-   * @param const CTaskEnum::Task & taskType (default: optimization)
+   * @param const CTaskEnum::Task & taskType
+   * @param const bool & parallel
    */
   COptMethod(const CDataContainer * pParent,
              const CTaskEnum::Method & methodType,
-             const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
+             const CTaskEnum::Task & taskType,
+             const bool & parallel);
 
   /**
    * Copy constructor
@@ -162,7 +169,49 @@ public:
    */
   const COptLog &getMethodLog() const;
 
+  /**
+   * @return the objective value
+   */
+  virtual C_FLOAT64 getBestValue() const;
+
+  /**
+   * @return the objective value
+   */
+  virtual C_FLOAT64 getCurrentValue() const;
+
+  /**
+   * @return a the best parameters found
+   */
+  virtual const CVector< C_FLOAT64 > * getBestParameters() const;
+
+  /**
+   * @return a the current guess for parameters
+   */
+  virtual const CVector< C_FLOAT64 > * getCurrentParameters() const;
+
+
 protected:
+  /**
+   * Calculate the objective value for the provided parameter set
+   * @param COptProblem * pProblem
+   * @param const CVectorCore< C_FLOAT64 > & parameters
+   * @return std::pair< C_FLOAT64 objectiveValue, bool continue >
+   */
+  static std::pair< C_FLOAT64, bool > objectiveValue(COptProblem * pProblem, const CVectorCore< C_FLOAT64 > & parameters);
+
+  /**
+   * Reflect the objective value if it is outside the parametric or functional domain
+   * @param COptProblem * pProblem
+   * @param const C_FLOAT64 & bestValue
+   * @param C_FLOAT64 & objectiveValue
+   */
+  static void reflect(COptProblem * pProblem, const C_FLOAT64 & bestValue, C_FLOAT64 & objectiveValue);
+
+  /**
+   * Signal that the math container has changed
+   */
+  virtual void signalMathContainerChanged();
+
   /**
    * Cleanup arrays and pointers.
    * @return bool success

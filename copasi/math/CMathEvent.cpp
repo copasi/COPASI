@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -64,9 +64,6 @@ void CMathEvent::CAssignment::copy(const CMathEvent::CAssignment & src,
   assert(&src != this);
   *this = src;
 }
-
-void CMathEvent::CAssignment::moved()
-{}
 
 void CMathEvent::CAssignment::relocate(const CMathContainer * pContainer,
                                        const std::vector< CMath::sRelocate > & relocations)
@@ -290,9 +287,6 @@ void CMathEvent::CTrigger::CRootProcessor::copy(const CMathEvent::CTrigger::CRoo
   *this = src;
 }
 
-void CMathEvent::CTrigger::CRootProcessor::moved()
-{}
-
 void CMathEvent::CTrigger::CRootProcessor::relocate(const CMathContainer * pContainer,
     const std::vector< CMath::sRelocate > & relocations)
 {
@@ -453,20 +447,6 @@ void CMathEvent::CTrigger::copy(const CMathEvent::CTrigger & src,
   for (; pRoot != pRootEnd; ++pRoot, ++pRootSrc)
     {
       pRoot->copy(*pRootSrc, container);
-    }
-}
-
-/**
- * Indicate that the model has moved
- */
-void CMathEvent::CTrigger::moved()
-{
-  CRootProcessor * pRoot = mRoots.array();
-  CRootProcessor * pRootEnd = pRoot + mRoots.size();
-
-  for (; pRoot != pRootEnd; ++pRoot)
-    {
-      pRoot->moved();
     }
 }
 
@@ -1219,19 +1199,6 @@ void CMathEvent::copy(const CMathEvent & src, CMathContainer & container)
   for (; pAssignment != pAssignmentEnd; ++pAssignment, ++pAssignmentSrc)
     {
       pAssignment->copy(*pAssignmentSrc, container);
-    }
-}
-
-void CMathEvent::moved()
-{
-  mTrigger.moved();
-
-  CAssignment * pAssignment = mAssignments.array();
-  CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
-
-  for (; pAssignment != pAssignmentEnd; ++pAssignment)
-    {
-      pAssignment->moved();
     }
 }
 

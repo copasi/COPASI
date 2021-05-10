@@ -39,6 +39,7 @@
 #include "copasi/utilities/CCallback.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/analytics/CStatistics.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 CAnalyticsTask::CAnalyticsTask(const CDataContainer * pParent,
                                const CTaskEnum::Task & type):
@@ -72,10 +73,8 @@ CAnalyticsTask::CAnalyticsTask(const CDataContainer * pParent,
   mFreq(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
   mAverageFreq(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
 {
+  mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::deterministic, this);
   initObjects();
-  mpProblem = new CAnalyticsProblem(this);
-  mpMethod = createMethod(CTaskEnum::deterministic);
-  this->add(mpMethod, true);
 }
 
 CAnalyticsTask::CAnalyticsTask(const CAnalyticsTask & src,
@@ -111,15 +110,6 @@ CAnalyticsTask::CAnalyticsTask(const CAnalyticsTask & src,
   mAverageFreq(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
 {
   initObjects();
-  mpProblem =
-    new CAnalyticsProblem(*static_cast< CAnalyticsProblem * >(src.mpProblem), this);
-
-  mpMethod = createMethod(src.mpMethod->getSubType());
-  * mpMethod = * src.mpMethod;
-
-  mpMethod->elevateChildren();
-
-  this->add(mpMethod, true);
 }
 
 CAnalyticsTask::~CAnalyticsTask()

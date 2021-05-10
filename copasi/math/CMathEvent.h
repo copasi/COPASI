@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,11 +57,6 @@ public:
      * @param CMathContainer & container
      */
     void copy(const CAssignment & src, CMathContainer & container);
-
-    /**
-     * Indicate that the model has moved
-     */
-    void moved();
 
     /**
      * The objects and values are relocated
@@ -159,11 +154,6 @@ public:
       void copy(const CRootProcessor & src, CMathContainer & container);
 
       /**
-       * Indicate that the model has moved
-       */
-      void moved();
-
-      /**
        * The objects and values are relocated
        * @param const CMathContainer * pContainer
        * @param const std::vector< CMath::sRelocate > & relocations
@@ -230,11 +220,6 @@ public:
      * @param CMathContainer & container
      */
     void copy(const CTrigger & src, CMathContainer & container);
-
-    /**
-     * Indicate that the model has moved
-     */
-    void moved();
 
     /**
      * The objects and values are relocated
@@ -355,11 +340,6 @@ public:
    * @param CMathContainer & container
     */
   void copy(const CMathEvent & src, CMathContainer & container);
-
-  /**
-   * Indicate that the object has moved
-   */
-  void moved();
 
   /**
    * The objects and values are relocated

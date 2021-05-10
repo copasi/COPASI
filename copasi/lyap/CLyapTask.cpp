@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -43,6 +43,8 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/core/CDataTimer.h"
+#include "copasi/utilities/CProblemFactory.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 #define XXXX_Reporting
 
@@ -52,24 +54,39 @@
 #define LYAP_NUM_REF 10
 
 CLyapTask::CLyapTask(const CDataContainer * pParent,
-                     const CTaskEnum::Task & type):
-  CCopasiTask(pParent, type),
-  mpLyapProblem(NULL),
-  mpLyapMethod(NULL),
-  mLocalExponents(),
-  mExponents(),
-  mSumOfExponents(0.0),
-  mSumOfLocalExponents(0.0),
-  mIntervalDivergence(0.0),
-  mAverageDivergence(0.0),
-  mResultAvailable(false),
-  mResultHasDivergence(false),
-  mModelVariablesInResult(0)
+                     const CTaskEnum::Task & type)
+  : CCopasiTask(pParent, type)
+  , mpLyapProblem(NULL)
+  , mpLyapMethod(NULL)
+  , mLocalExponents()
+  , mExponents()
+  , mSumOfExponents(0.0)
+  , mSumOfLocalExponents(0.0)
+  , mIntervalDivergence(0.0)
+  , mAverageDivergence(0.0)
+  , mResultAvailable(false)
+  , mResultHasDivergence(false)
+  , mModelVariablesInResult(0)
 {
-  mpProblem = new CLyapProblem(this);
-  mpMethod = createMethod(CTaskEnum::Method::lyapWolf);
-  this->add(mpMethod, true);
+  mpMethod = CMethodFactory::create(CTaskEnum::Task::lyap, CTaskEnum::Method::lyapWolf, this);
+  initObjects();
+}
 
+CLyapTask::CLyapTask(const CLyapTask & src,
+                     const CDataContainer * pParent)
+  : CCopasiTask(src, pParent)
+  , mpLyapProblem(NULL)
+  , mpLyapMethod(NULL)
+  , mLocalExponents()
+  , mExponents()
+  , mSumOfExponents(0.0)
+  , mSumOfLocalExponents(0.0)
+  , mIntervalDivergence(0.0)
+  , mAverageDivergence(0.0)
+  , mResultAvailable(false)
+  , mResultHasDivergence(false)
+  , mModelVariablesInResult(0)
+{
   initObjects();
 }
 

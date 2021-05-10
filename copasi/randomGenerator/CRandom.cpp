@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -93,6 +93,11 @@ CRandom * CRandom::createGenerator(CRandom::Type type,
     }
 
   return RandomGenerator;
+}
+
+CRandom * CRandom::copy()
+{
+  return createGenerator(mType, getRandomU());
 }
 
 CRandom::CRandom():

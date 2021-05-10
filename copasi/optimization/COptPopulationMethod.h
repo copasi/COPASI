@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -11,10 +16,10 @@
 #ifndef COPASI_COptPopulationMethod_H
 #define COPASI_COptPopulationMethod_H
 
-#include <copasi/optimization/COptMethod.h>
+#include "copasi/optimization/COptMethod.h"
 #include "copasi/core/CVector.h"
-
-class CRandom;
+#include "copasi/OpenMP/CProblemContext.h"
+#include "copasi/OpenMP/CRandomContext.h"
 
 class COptPopulationMethod :
   public COptMethod
@@ -26,14 +31,16 @@ private:
   COptPopulationMethod();
 public:
   /**
-  * Specific constructor
-  * @param const CDataContainer * pParent
-  * @param const CTaskEnum::Method & methodType
-  * @param const CTaskEnum::Task & taskType (default: optimization)
-  */
+   * Specific constructor
+   * @param const CDataContainer * pParent
+   * @param const CTaskEnum::Method & methodType
+   * @param const CTaskEnum::Task & taskType
+   * @param const bool & parallel
+   */
   COptPopulationMethod(const CDataContainer * pParent,
                        const CTaskEnum::Method & methodType,
-                       const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
+                       const CTaskEnum::Task & taskType,
+                       const bool & parallel);
 
   /**
   * Copy constructor
@@ -129,7 +136,7 @@ protected:
   /**
    * a pointer to the random number generator.
    */
-  CRandom * mpRandom{NULL};
+  CRandomContext  mRandomContext;
 };
 
 #endif // COPASI_COptPopulationMethod_H

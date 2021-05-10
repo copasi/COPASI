@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -30,6 +30,7 @@
 #include <limits>
 #include <cmath>
 #include <algorithm>
+#include <chrono>
 
 #include "copasi/copasi.h"
 
@@ -499,10 +500,12 @@ CIssue CModel::compile()
   unsigned C_INT32 CompileStep = 0;
   size_t hCompileStep;
 
+  // std::chr::time_point<std::chrono::steady_clock> // Start = std::chrono::steady_clock::now();
+
   if (mpCompileHandler)
     {
       mpCompileHandler->setName("Compiling model...");
-      unsigned C_INT32 totalSteps = 7;
+      unsigned C_INT32 totalSteps = 12;
       hCompileStep = mpCompileHandler->addItem("Compile Process",
                      CompileStep,
                      &totalSteps);
@@ -517,6 +520,10 @@ CIssue CModel::compile()
     }
 
   buildStoi();
+
+  // std::cout << "CModel::compile(buildStoi): duration = '" << std::chrono::nanoseconds(std::chrono::steady_clock::now() - Start).count()  << "' ns." << std::endl;
+  // Start = std::chrono::steady_clock::now();
+
   CompileStep = 1;
 
   if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
@@ -526,6 +533,10 @@ CIssue CModel::compile()
     }
 
   buildLinkZero();
+
+  // std::cout << "CModel::compile(buildLinkZero): duration = '" << std::chrono::nanoseconds(std::chrono::steady_clock::now() - Start).count()  << "' ns." << std::endl;
+  // Start = std::chrono::steady_clock::now();
+
   CompileStep = 2;
 
   if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
@@ -535,6 +546,10 @@ CIssue CModel::compile()
     }
 
   buildRedStoi();
+
+  // std::cout << "CModel::compile(buildRedStoi): duration = '" << std::chrono::nanoseconds(std::chrono::steady_clock::now() - Start).count()  << "' ns." << std::endl;
+  // Start = std::chrono::steady_clock::now();
+
   CompileStep = 3;
 
   if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
@@ -544,6 +559,10 @@ CIssue CModel::compile()
     }
 
   buildMoieties();
+
+  // std::cout << "CModel::compile(buildMoieties): duration = '" << std::chrono::nanoseconds(std::chrono::steady_clock::now() - Start).count()  << "' ns." << std::endl;
+  // Start = std::chrono::steady_clock::now();
+
   CompileStep = 4;
 
   if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
@@ -553,15 +572,11 @@ CIssue CModel::compile()
     }
 
   buildStateTemplate();
+
+  // std::cout << "CModel::compile(buildStateTemplate): duration = '" << std::chrono::nanoseconds(std::chrono::steady_clock::now() - Start).count()  << "' ns." << std::endl;
+  // Start = std::chrono::steady_clock::now();
+
   CompileStep = 5;
-
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
-    {
-      firstWorstIssue = CIssue::Error;
-      goto finish;
-    }
-
-  CompileStep = 6;
 
   if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
     {
@@ -571,7 +586,16 @@ CIssue CModel::compile()
 
   buildUserOrder();
 
-  if (mpCompileHandler) mpCompileHandler->finishItem(hCompileStep);
+  // std::cout << "CModel::compile(buildUserOrder): duration = '" << std::chrono::nanoseconds(std::chrono::steady_clock::now() - Start).count()  << "' ns." << std::endl;
+  // Start = std::chrono::steady_clock::now();
+
+  CompileStep = 6;
+
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+    {
+      firstWorstIssue = CIssue::Error;
+      goto finish;
+    }
 
   //update annotations
   updateMatrixAnnotations();
@@ -590,12 +614,57 @@ CIssue CModel::compile()
 
   // writeDependenciesToDotFile();
 
+  CompileStep = 7;
+
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+    {
+      firstWorstIssue = CIssue::Error;
+      goto finish;
+    }
+
+  // std::cout << "CModel::compile(updateMatrixAnnotations): duration = '" << std::chrono::nanoseconds(std::chrono::steady_clock::now() - Start).count()  << "' ns." << std::endl;
+  // Start = std::chrono::steady_clock::now();
+
   buildDependencyGraphs();
 
+  CompileStep = 8;
+
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+    {
+      firstWorstIssue = CIssue::Error;
+      goto finish;
+    }
+
+  // std::cout << "CModel::compile(buildDependencyGraphs): duration = '" << std::chrono::nanoseconds(std::chrono::steady_clock::now() - Start).count()  << "' ns." << std::endl;
+  // Start = std::chrono::steady_clock::now();
+
   mpMathContainer->compile();
+
+  CompileStep = 9;
+
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+    {
+      firstWorstIssue = CIssue::Error;
+      goto finish;
+    }
+
+  // std::cout << "CModel::compile(mpMathContainer->compile): duration = '" << std::chrono::nanoseconds(std::chrono::steady_clock::now() - Start).count()  << "' ns." << std::endl;
+  // Start = std::chrono::steady_clock::now();
+
   mpMathContainer->fetchInitialState();
   mpMathContainer->updateInitialValues(CCore::Framework::ParticleNumbers);
   mpMathContainer->pushInitialState();
+
+  CompileStep = 10;
+
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+    {
+      firstWorstIssue = CIssue::Error;
+      goto finish;
+    }
+
+  // std::cout << "CModel::compile(mpMathContainer->updateInitialValues): duration = '" << std::chrono::nanoseconds(std::chrono::steady_clock::now() - Start).count()  << "' ns." << std::endl;
+  // Start = std::chrono::steady_clock::now();
 
   mIsAutonomous = mpMathContainer->isAutonomous();
 
@@ -609,11 +678,30 @@ CIssue CModel::compile()
       }
   }
 
+  CompileStep = 11;
+
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+    {
+      firstWorstIssue = CIssue::Error;
+      goto finish;
+    }
+
+  // std::cout << "CModel::compile(itSpecies->compileIsInitialValueChangeAllowed): duration = '" << std::chrono::nanoseconds(std::chrono::steady_clock::now() - Start).count()  << "' ns." << std::endl;
+  // Start = std::chrono::steady_clock::now();
   // CMathContainer CopyModel(MathModel);
 
   // Update the parameter set
   mParameterSet.createFromModel();
 
+  CompileStep = 12;
+
+  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+    {
+      firstWorstIssue = CIssue::Error;
+      goto finish;
+    }
+
+  // std::cout << "CModel::compile(mParameterSet.createFromModel): duration = '" << std::chrono::nanoseconds(std::chrono::steady_clock::now() - Start).count()  << "' ns." << std::endl;
 finish:
 
   // Since we have applied the pivot to the stoichiometry matrix and the species
@@ -627,6 +715,8 @@ finish:
     }
 
   mCompileIsNecessary = !firstWorstIssue;
+
+  if (mpCompileHandler) mpCompileHandler->finishItem(hCompileStep);
 
   return firstWorstIssue;
 }
@@ -1567,6 +1657,7 @@ void CModel::stateToIntialState()
   mpMathContainer->setInitialState(mpMathContainer->getState(false));
   mpMathContainer->updateInitialValues(CCore::Framework::ParticleNumbers);
   mpMathContainer->pushInitialState();
+  refreshActiveParameterSet();
 }
 
 // virtual
@@ -3353,6 +3444,8 @@ CIssue CModel::compileEvents()
 
 void CModel::updateInitialValues(std::set< const CDataObject * > & changedObjects)
 {
+  bool success = compileIfNecessary(NULL);
+
   CCore::CUpdateSequence UpdateSequence = buildInitialRefreshSequence(changedObjects);
 
   mpMathContainer->fetchInitialState();

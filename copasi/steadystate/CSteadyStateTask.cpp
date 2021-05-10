@@ -43,6 +43,7 @@
 #include "copasi/model/CMetabNameInterface.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/report/CReport.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 #include <sstream>
 
@@ -59,9 +60,7 @@ CSteadyStateTask::CSteadyStateTask(const CDataContainer * pParent,
   mEigenValues("Eigenvalues of Jacobian", this),
   mEigenValuesX("Eigenvalues of reduced system Jacobian", this)
 {
-  mpProblem = new CSteadyStateProblem(this);
-
-  mpMethod = createMethod(CTaskEnum::Method::Newton);
+  mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::Newton, this);
 
   initObjects();
 }
@@ -77,12 +76,6 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
   mEigenValues(src.mEigenValues, this),
   mEigenValuesX(src.mEigenValuesX, this)
 {
-  mpProblem =
-    new CSteadyStateProblem(*(CSteadyStateProblem *) src.mpProblem, this);
-
-  mpMethod = createMethod(src.mpMethod->getSubType());
-  *mpMethod = *src.mpMethod;
-
   initObjects();
 }
 

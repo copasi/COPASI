@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,6 +22,7 @@
 #include <QPixmap>
 #include <QPicture>
 #include <QtSvg/QSvgGenerator>
+#include <QMutexLocker>
 
 #include "CQOptPopulation.h"
 
@@ -35,6 +36,8 @@
 #include "copasi/optimization/COptTask.h"
 #include "copasi/optimization/COptProblem.h"
 #include "copasi/optimization/COptItem.h"
+
+#include "copasi/utilities/CVersion.h"
 
 #ifdef DEBUG_UI
 #include <QtCore/QtDebug>
@@ -63,6 +66,36 @@ public:
 };
 #endif
 
+#include <QGraphicsEllipseItem>
+class CQEllipseItem : public QGraphicsEllipseItem
+{
+public:
+  explicit CQEllipseItem(qreal x, qreal y, qreal w, qreal h, QGraphicsItem* parent = nullptr)
+    : QGraphicsEllipseItem(x, y, w, h, parent)
+  {
+
+  }
+
+  ~CQEllipseItem()
+  {
+
+  }
+
+protected:
+  virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem* option, QWidget * widget = nullptr)
+  {
+    double scaleValue = scale();
+    double m11 = painter->transform().m11();
+
+    painter->save();
+    painter->scale(scaleValue, scaleValue);
+
+    QGraphicsEllipseItem::paint(painter, option, widget);
+
+    painter->restore();
+  }
+};
+
 //-----------------------------------------------------------------------------
 CQOptPopulation::CQOptPopulation(COutputHandler * pHandler, CopasiUI3Window * pMainWindow):
   CWindowInterface(),
@@ -74,8 +107,12 @@ CQOptPopulation::CQOptPopulation(COutputHandler * pHandler, CopasiUI3Window * pM
   mCounter(0),
   mDataInitialized(false),
   mGraphInitialized(false),
+  mDidAllocate(false),
+  mInUpdate(false),
   initializing(false),
-  mNumParameters(0)
+  mNumParameters(0),
+  mDiameter(0.05),
+  mMutex()
 {
   this->resize(640, 480);
   this->setWindowTitle("Population Visualization");
@@ -95,6 +132,9 @@ CQOptPopulation::CQOptPopulation(COutputHandler * pHandler, CopasiUI3Window * pM
 
   mpGV->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
 
+  mpLabel = new QLabel(this);
+  connect(this, SIGNAL(setDebugText(QString)), mpLabel, SLOT(setText(QString)));
+  statusBar()->addPermanentWidget(mpLabel);
 
   createActions();
   createMenus();
@@ -115,13 +155,20 @@ CQOptPopulation::CQOptPopulation(COutputHandler * pHandler, CopasiUI3Window * pM
 void CQOptPopulation::createMenus()
 {
   QMenu *fileMenu = menuBar()->addMenu("&File");
+  fileMenu->addAction(mpaSaveToFile);
+  fileMenu->addSeparator();
   fileMenu->addAction(mpaCloseWindow);
-//  fileMenu->addAction(mpaSaveImage);
 
   QMenu *viewMenu = menuBar()->addMenu("&View");
 //  viewMenu->addAction(mpaShowAll);
 //  viewMenu->addSeparator();
   static_cast<CQZoomableView*>(mpGV)->fillZoomMenu(viewMenu);
+  viewMenu->addSeparator();
+  viewMenu->addAction(mpaRefresh);
+  viewMenu->addSeparator();
+  viewMenu->addAction(mpaDecreaseCircle);
+  viewMenu->addAction(mpaResetCircle);
+  viewMenu->addAction(mpaIncreaseCircle);
 
   // add a place holder menu, to be filled by the main window
   mpWindowMenu = menuBar()->addMenu("&Window");
@@ -138,10 +185,32 @@ void CQOptPopulation::createActions()
   //mpaToggleLogX->setToolTip("Toggle x-axis logscale.");
   //connect(mpaToggleLogX, SIGNAL(toggled(bool)), this, SLOT(toggleLogX(bool)));
 
+
+  mpaSaveToFile = new QAction("Save Image", this);
+  mpaSaveToFile->setShortcut(Qt::CTRL + Qt::Key_S);
+  mpaSaveToFile->setToolTip("Save as Image");
+  connect(mpaSaveToFile, SIGNAL(triggered()), this, SLOT(slotSaveImage()));
+
   mpaCloseWindow = new QAction("Close", this);
   mpaCloseWindow->setObjectName("close");
   mpaCloseWindow->setShortcut(Qt::CTRL + Qt::Key_W);
   connect(mpaCloseWindow, SIGNAL(triggered()), this, SLOT(slotCloseWindow()));
+
+  mpaRefresh = new QAction("Repaint (Full refresh)", this);
+  connect(mpaRefresh, SIGNAL(triggered()), this, SLOT(slotFullRefresh()));
+  mpaResetCircle = new QAction("Reset Circle", this);
+  connect(mpaResetCircle, SIGNAL(triggered()), this, SLOT(slotResizeCircle()));
+  mpaDecreaseCircle = new QAction("Decrease Circle", this);
+  connect(mpaDecreaseCircle, SIGNAL(triggered()), this, SLOT(slotResizeCircle()));
+  mpaIncreaseCircle = new QAction("Increase Circle", this);
+  connect(mpaIncreaseCircle, SIGNAL(triggered()), this, SLOT(slotResizeCircle()));
+}
+
+void CQOptPopulation::setCircle(qreal diameter)
+{
+  mDiameter = diameter;
+  mGraphInitialized = false;
+  mDataInitialized = false;
 }
 
 void CQOptPopulation::createToolBar()
@@ -180,6 +249,43 @@ void CQOptPopulation::setMethod(COptMethod* pMethod)
 
 void CQOptPopulation::saveToFile(const QString& fileName) const
 {
+  QString fileType = QFileInfo(fileName).suffix();
+
+  if (fileType == "pdf")
+    {
+      QPrinter printer(QPrinter::HighResolution);
+      printer.setOutputFormat(QPrinter::PdfFormat);
+      printer.setOutputFileName(fileName);
+      QPainter painter(&printer);
+      painter.setRenderHints(
+        QPainter::Antialiasing | QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
+      mpGS->render(&painter, QRect(), mpGS->itemsBoundingRect());
+      painter.end();
+    }
+  else if (fileType == "svg")
+    {
+      QRectF rect = mpGS->itemsBoundingRect();
+      QSvgGenerator generator;
+      generator.setDescription(QString("Exported using COPASI: %1").arg(CVersion::VERSION.getVersion().c_str()));
+      generator.setFileName(fileName);
+      generator.setViewBox(rect);
+      generator.setSize(QSize(rect.width(), rect.height()));
+      QPainter painter;
+      painter.begin(&generator);
+      mpGS->render(&painter);
+      painter.end();
+    }
+  else
+    {
+      const int scale = 2;
+      QImage image(QSize(width() * scale, height() * scale), QImage::Format_ARGB32);
+      QPainter painter(&image);
+      painter.setRenderHints(
+        QPainter::Antialiasing | QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
+      mpGS->render(&painter, image.rect(), mpGS->itemsBoundingRect());
+      painter.end();
+      image.save(fileName);
+    }
 }
 
 
@@ -188,6 +294,16 @@ void CQOptPopulation::slotSaveData()
 {
 }
 
+void CQOptPopulation::slotSaveImage()
+{
+  QString fileName = CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                     "untitled.pdf", "PDF Files (*.pdf);;PNG Files (*.png);;SVG Files (*.svg)", "Save as Image", new QString);
+
+  if (fileName.isEmpty())
+    return;
+
+  saveToFile(fileName);
+}
 
 //-----------------------------------------------------------------------------
 
@@ -207,6 +323,17 @@ bool CQOptPopulation::compile(CObjectInterface::ContainerList listOfContainer)
   mObjects.clear();
   mGraphInitialized = false;
   bool success = true;
+
+  mDidAllocate = false;
+
+  if (!mpPopulationMethod)
+    {
+      mPopulation = std::vector< CVector< C_FLOAT64 > * > {};
+      mObjectiveValues = std::vector< C_FLOAT64 >();
+      mDidAllocate = true;
+    }
+
+  mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime();
 
   return success;
 };
@@ -232,16 +359,63 @@ void CQOptPopulation::slotCloseWindow()
   QWidget::close();
 }
 
+
+void CQOptPopulation::slotFullRefresh()
+{
+  mGraphInitialized = false;
+  emit updateSignal();
+}
+
+void CQOptPopulation::slotResizeCircle()
+{
+  QObject * pSender = sender();
+
+  if (pSender == mpaResetCircle)
+    setCircle(0.05);
+
+  if (pSender == mpaDecreaseCircle)
+    setCircle(mDiameter / 2.0);
+
+  if (pSender == mpaIncreaseCircle)
+    setCircle(mDiameter * 2.0);
+}
+
 void CQOptPopulation::closeEvent(QCloseEvent *closeEvent)
 {
   mpMainWindow->removeWindow(this);
   mpHandler->removeInterface(this);
 }
 
-
-void CQOptPopulation::output(const Activity & activity)
+std::vector< C_FLOAT64 > to_std_vector(const CVector<C_FLOAT64>& other)
 {
-  if (activity != COutputInterface::Activity(0x08))
+  std::vector< C_FLOAT64 > result(other.begin(), other.end());
+  return result;
+}
+
+void CQOptPopulation::output(const Activity& activity)
+{
+
+  if (activity == COutputInterface::Activity(COutputInterface::BEFORE))
+    {
+      if (mDidAllocate)
+        {
+for (auto * item : mPopulation)
+            delete item;
+
+          mPopulation.clear();
+          mObjectiveValues.clear();
+        }
+
+      if (!mpPopulationMethod)
+        {
+          mPopulation = std::vector< CVector< C_FLOAT64 >* > {};
+          mObjectiveValues = std::vector< C_FLOAT64 >();
+          mDidAllocate = true;
+        }
+
+    }
+
+  if (activity != COutputInterface::Activity(COutputInterface::MONITORING))
     return;
 
   if (!mDataInitialized)
@@ -284,24 +458,130 @@ void CQOptPopulation::output(const Activity & activity)
       mDataInitialized = true;
     }
 
-  //copy the data
-  mPopulation = mpPopulationMethod->getPopulation();
-  mObjectiveValues = mpPopulationMethod->getObjectiveValues();
+  QMutexLocker lock(&mMutex);
 
+  //copy the data
+  if (mpPopulationMethod)
+    {
+      mPopulation = mpPopulationMethod->getPopulation();
+      mObjectiveValues = to_std_vector(mpPopulationMethod->getObjectiveValues());
+    }
+  else
+    {
+      const auto* current = mpSourceMethod->getCurrentParameters();
+
+      if (current != NULL)
+        {
+          double lastObjective = mObjectiveValues.empty() ? std::numeric_limits< double >::infinity() : mObjectiveValues.back();
+
+          if (lastObjective != mpSourceMethod->getCurrentValue())
+            {
+              mPopulation.push_back(new CVector< C_FLOAT64 >(*current));
+              mObjectiveValues.push_back(mpSourceMethod->getCurrentValue());
+            }
+
+          if (mPopulation.size() > mMaxIterations)
+            {
+              mPopulation.erase(mPopulation.begin());
+              mObjectiveValues.erase(mObjectiveValues.begin());
+            }
+        }
+    }
+
+  unsigned C_INT32 i;
+
+  //Color scaling
+  double tmp_min = std::numeric_limits<double>::infinity();
+
+  mCS.startAutomaticParameterCalculation();
+
+  for (i = 0; i < mPopulation.size(); ++i)
+    {
+      double current = mObjectiveValues[i];
+      mCS.passValue(current);
+
+      if (current < tmp_min)
+        {
+          tmp_min = current;
+          mMinIndex = i;
+        }
+    }
+
+  mCS.finishAutomaticParameterCalculation();
 
   mCounter++;
 
+  emit setDebugText(QString("min: %1, total: %2").arg(tmp_min).arg(mPopulation.size()));
   emit updateSignal();
 
 }
 
 
+
+void updateItem(QGraphicsEllipseItem * gie, double x, double y, QColor color, bool isBest, bool isOnBorder)
+{
+  if (!gie)
+    return;
+
+  gie->setX(x);
+  gie->setY(y);
+  gie->setBrush(color);
+
+  //highlight parameters on the border of the allowed space
+  if (isBest)
+    {
+      gie->setPen(QPen(QColor(0, 200, 0, 200), 0.01));
+      gie->setZValue(1.0);
+    }
+  else
+    {
+      gie->setPen(QPen(isOnBorder ? QColor(200, 0, 0, 200) : QColor(0, 0, 0, 40), 0));
+      gie->setZValue(0.0);
+    }
+
+  gie->setVisible(true);
+}
+
+QString vec_to_string(CVector<C_FLOAT64>* pVec)
+{
+  if (!pVec)
+    return "null";
+
+  if (pVec->size() == 0)
+    return "empty";
+
+  QString result = QString::number(pVec->operator[](0));
+
+  for (int i = 1; i < pVec->size(); ++i)
+    {
+      result.append(QString(", %1").arg(pVec->operator[](i)));
+    }
+
+  return result;
+}
+
+
 void CQOptPopulation::update()
 {
+
+  if (CCopasiTimeVariable::getCurrentWallTime() < mNextPlotTime)
+    return;
+
+  if (mpSourceMethod == NULL)
+    return;
+
+  QMutexLocker lock(&mMutex);
+  mInUpdate = true;
   setUpdatesEnabled(false);
+
+  size_t numMembers = mPopulation.size();
 
   if (!mGraphInitialized)
     {
+
+      if (!mpPopulationMethod)
+        numMembers = mMaxIterations;
+
       mpGS->clear();
 
       QGraphicsRectItem* rect = mpGS->addRect(-0, -0, 1, 1, QPen(Qt::black, 0));
@@ -314,6 +594,7 @@ void CQOptPopulation::update()
       mXIndex.resize(numProjections);
       mYIndex.resize(numProjections);
       mGraphicItems.resize(numProjections + 1); //extra space for the combined view
+      mLineItems.resize(numProjections + 1); //extra space for the combined view
 
       //if there's more than 2 parameters, create the combined view
       if (mNumParameters > 2)
@@ -321,15 +602,25 @@ void CQOptPopulation::update()
           QGraphicsRectItem* rect = mpGS->addRect(-2.2, 0, 2.1, 2.1, QPen(Qt::black, 0));
           rect->setBrush(QColor(230, 230, 250));
 
-          mGraphicItems[numProjections].resize(mPopulation.size());
+          mGraphicItems[numProjections].resize(numMembers);
+          mLineItems[numProjections].resize(numMembers);
+
           unsigned C_INT32 i;
 
-          for (i = 0; i < mPopulation.size(); ++i)
+          for (i = 0; i < numMembers; ++i)
             {
-              QGraphicsEllipseItem* ei = mpGS->addEllipse(-2.2, 0, 0.05, 0.05, QPen(Qt::black, 0));
+              //QGraphicsEllipseItem* ei = mpGS->addEllipse(-2.2, 0, 0.05, 0.05, QPen(Qt::black, 0));
+              QGraphicsEllipseItem * ei = mpGS->addEllipse(-2.2, 0, mDiameter, mDiameter, QPen(Qt::black, 0));
+              //QGraphicsEllipseItem * ei = new CQEllipseItem(-2.2, 0, mDiameter, mDiameter);
+              //mpGS->addItem(ei);
               mGraphicItems[numProjections][i] = ei;
               ei->setBrush(QColor(10, 100, 10));
               ei->setPen(QPen(QColor(0, 0, 0), 0));
+              ei->setVisible(false);
+
+              QGraphicsLineItem * line = mpGS->addLine(0.0, 0.0, 0.01, 0.01, QPen(Qt::gray, 0, Qt::DotLine));
+              mLineItems[numProjections][i] = line;
+              line->setVisible(false);
             }
 
         }
@@ -345,21 +636,32 @@ void CQOptPopulation::update()
           QGraphicsRectItem* rect = mpGS->addRect(mShiftX[j], mShiftY[j], 1, 1, QPen(Qt::black, 0));
           rect->setBrush(QColor(240, 240, 240));
 
-          mGraphicItems[j].resize(mPopulation.size());
+          mGraphicItems[j].resize(numMembers);
+          mLineItems[j].resize(numMembers);
 
           unsigned C_INT32 i;
 
-          for (i = 0; i < mPopulation.size(); ++i)
+          for (i = 0; i < numMembers; ++i)
             {
 
-              QGraphicsEllipseItem* ei = mpGS->addEllipse(mShiftX[j], mShiftY[j], 0.05, 0.05, QPen(Qt::black, 0));
+              //QGraphicsEllipseItem* ei = mpGS->addEllipse(mShiftX[j], mShiftY[j], 0.05, 0.05, QPen(Qt::black, 0));
+              QGraphicsEllipseItem * ei = mpGS->addEllipse(mShiftX[j], mShiftY[j], mDiameter, mDiameter, QPen(Qt::black, 0));
+              //QGraphicsEllipseItem * ei = new CQEllipseItem(mShiftX[j], mShiftY[j], mDiameter, mDiameter);
+              //mpGS->addItem(ei);
               mGraphicItems[j][i] = ei;
               ei->setBrush(QColor(10, 100, 10));
               ei->setPen(QPen(QColor(0, 0, 0), 0));
+              ei->setVisible(false);
+
+              QGraphicsLineItem * line = mpGS->addLine(0.0, 0.0, 0.01, 0.01, QPen(Qt::gray, 0, Qt::DotLine));
+              mLineItems[j][i] = line;
+              line->setVisible(false);
             }
         }
 
       static_cast<CQZoomableView*>(mpGV)->slotFitOnScreen();
+
+      numMembers = mPopulation.size();
 
       mGraphInitialized = true;
     }
@@ -367,26 +669,15 @@ void CQOptPopulation::update()
   //--------------------------------
 
   unsigned C_INT32 i;
+  CCopasiTimeVariable Delta = CCopasiTimeVariable::getCurrentWallTime();
 
-  //Color scaling
-  double tmp_min = 1e300;
-  C_INT32 min_index = 0;
-  CColorScaleAuto cs;
-  cs.startAutomaticParameterCalculation();
+  std::vector< double > last_values;
+  //std::vector< std::vector< double > > last_values;
+  //last_values.resize(numMembers);
 
-  for (i = 0; i < mPopulation.size(); ++i)
-    {
-      cs.passValue(mObjectiveValues[i]);
+  QPointF last_point;
 
-      if (mObjectiveValues[i] < tmp_min)
-        { tmp_min = mObjectiveValues[i]; min_index = i;}
-    }
-
-  cs.finishAutomaticParameterCalculation();
-  //std::cout << std::endl;
-
-
-  for (i = 0; i < mPopulation.size(); ++i)
+  for (i = 0; i < numMembers; ++i)
     {
 
       //first scale the parameters to a unit box
@@ -395,12 +686,14 @@ void CQOptPopulation::update()
       double p0 = 0; double p1 = 0; C_INT32 count = 0;
       C_INT32 j;
 
+      CVector< C_FLOAT64 >* current = mPopulation[i];
+
       for (j = 0; j < mNumParameters; ++j)
         {
           if (mIsLog[j])
-            scaled_values[j] = (log(mPopulation[i]->operator[](j)) - log(mRangeMin[j])) / (log(mRangeMax[j]) - log(mRangeMin[j])) ;
+            scaled_values[j] = (log(current->operator[](j)) - log(mRangeMin[j])) / (log(mRangeMax[j]) - log(mRangeMin[j]));
           else
-            scaled_values[j] = (mPopulation[i]->operator[](j) - mRangeMin[j]) / (mRangeMax[j] - mRangeMin[j]);
+            scaled_values[j] = (current->operator[](j) - mRangeMin[j]) / (mRangeMax[j] - mRangeMin[j]);
 
           if (scaled_values[j] < 0.01 || scaled_values[j] > 0.99)
             isOnBorder = true;
@@ -422,55 +715,64 @@ void CQOptPopulation::update()
 
       if (mNumParameters > 2)
         {
+
+          if (!mpPopulationMethod && i > 1)
+            {
+              QGraphicsLineItem * line = dynamic_cast< QGraphicsLineItem * >(mLineItems[mShiftX.size()][i]);
+              line->setLine(-2.2 + last_point.x(), last_point.y(),
+                            -2.2 + (p0 / count + 1) * 1.05,
+                            (p1 / count + 1) * 1.05);
+              line->setVisible(true);
+            }
+
           QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[mShiftX.size()][i]);
 
           if (gie)
-            {
-              gie->setX((p0 / count + 1) * 1.05  - 0.025);
-              gie->setY((p1 / count + 1) * 1.05  - 0.025);
-              gie->setBrush(cs.getColor(mObjectiveValues[i]));
+            gie->setToolTip(QString("obj: %1, (%2)").arg(mObjectiveValues[i]).arg(vec_to_string(current)));
 
-              //highlight parameters on the border of the allowed space
-              if (i == min_index)
-                {
-                  gie->setPen(QPen(QColor(0, 200, 0, 200), 0.01));
-                  gie->setZValue(1.0);
-                }
-              else
-                {
-                  gie->setPen(QPen(isOnBorder ? QColor(200, 0, 0, 200) : QColor(0, 0, 0, 40), 0));
-                  gie->setZValue(0.0);
-                }
-            }
+          updateItem(gie,
+                     (p0 / count + 1) * 1.05 - mDiameter / 2.0,
+                     (p1 / count + 1) * 1.05 - mDiameter / 2.0,
+                     mCS.getColor(mObjectiveValues[i]),
+                     i == mMinIndex,
+                     isOnBorder);
+
+          last_point.setX((p0 / count + 1) * 1.05);
+          last_point.setY((p1 / count + 1) * 1.05);
+
         }
 
       for (j = 0; j < (int)mShiftX.size(); ++j) //loop over the different projections
         {
+          if (!mpPopulationMethod && i > 1)
+            {
+              QGraphicsLineItem * line = dynamic_cast< QGraphicsLineItem  * >(mLineItems[j][i]);
+              line->setLine(mShiftX[j] + last_values[mXIndex[j]], mShiftY[j]  + last_values[mYIndex[j]],
+                            mShiftX[j] + scaled_values[mXIndex[j]], mShiftY[j] + scaled_values[mYIndex[j]]);
+              line->setVisible(true);
+            }
+
           QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[j][i]);
 
-          if (gie)
-            {
-              gie->setX(scaled_values[mXIndex[j]] - 0.025);
-              gie->setY(scaled_values[mYIndex[j]] - 0.025);
-              gie->setBrush(cs.getColor(mObjectiveValues[i]));
+          updateItem(gie,
+                     scaled_values[mXIndex[j]] - mDiameter / 2.0,
+                     scaled_values[mYIndex[j]] - mDiameter / 2.0,
+                     mCS.getColor(mObjectiveValues[i]),
+                     i == mMinIndex,
+                     isOnBorder);
 
-              //highlight parameters on the border of the allowed space
-              if (i == min_index)
-                {
-                  gie->setPen(QPen(QColor(0, 200, 0, 200), 0.01));
-                  gie->setZValue(1.0);
-                }
-              else
-                {
-                  gie->setPen(QPen(isOnBorder ? QColor(200, 0, 0, 200) : QColor(0, 0, 0, 40), 0));
-                  gie->setZValue(0.0);
-                }
-            }
+          if (gie) gie->setToolTip(QString("obj: %1, (%2)").arg(mObjectiveValues[i]).arg(vec_to_string(current)));
         }
+
+      last_values = scaled_values;
     }
 
   setUpdatesEnabled(true);
+  mInUpdate = false;
   QWidget * viewport = mpGV->viewport();
   viewport->update();
+
+  Delta = CCopasiTimeVariable::getCurrentWallTime() - Delta;
+  mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + 3 * Delta.getMicroSeconds();
 }
 

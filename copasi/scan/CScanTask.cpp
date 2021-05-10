@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,18 +51,18 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/crosssection/CCrossSectionTask.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 CScanTask::CScanTask(const CDataContainer * pParent,
                      const CTaskEnum::Task & type):
   CCopasiTask(pParent, type),
   mProgress(0),
   mhProgress(C_INVALID_INDEX),
-  mpSubtask(NULL),
+  mpSubTask(NULL),
   mOutputInSubtask(false),
   mUseInitialValues(true)
 {
-  mpProblem = new CScanProblem(this);
-  mpMethod = createMethod(CTaskEnum::Method::scanMethod);
+  mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::scanMethod, this);
   static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
 
@@ -71,12 +71,10 @@ CScanTask::CScanTask(const CScanTask & src,
   CCopasiTask(src, pParent),
   mProgress(0),
   mhProgress(C_INVALID_INDEX),
-  mpSubtask(NULL),
+  mpSubTask(NULL),
   mOutputInSubtask(false),
   mUseInitialValues(true)
 {
-  mpProblem = new CScanProblem(*(CScanProblem *) src.mpProblem, this);
-  mpMethod = createMethod(CTaskEnum::Method::scanMethod);
   static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
 
@@ -128,7 +126,7 @@ bool CScanTask::process(const bool & useInitialValues)
 
   bool success = true;
 
-  CCrossSectionTask* task = dynamic_cast<CCrossSectionTask*>(mpSubtask);
+  CCrossSectionTask* task = dynamic_cast<CCrossSectionTask*>(mpSubTask);
 
   if (task != NULL)
     task->createEvent();
@@ -157,8 +155,8 @@ bool CScanTask::process(const bool & useInitialValues)
                                        mProgress,
                                        &totalSteps);
 
-      if (mpSubtask)
-        mpSubtask->setCallBack(mpCallBack);
+      if (mpSubTask)
+        mpSubTask->setCallBack(mpCallBack);
     }
 
   // init output handler (plotting)
@@ -175,8 +173,8 @@ bool CScanTask::process(const bool & useInitialValues)
   //if (mpOutputHandler) mpOutputHandler->finish();
   output(COutputInterface::AFTER);
 
-  if (mpSubtask)
-    mpSubtask->setCallBack(NULL);
+  if (mpSubTask)
+    mpSubTask->setCallBack(NULL);
 
   return success;
 }
@@ -195,15 +193,15 @@ const CTaskEnum::Method * CScanTask::getValidMethods() const
 
 bool CScanTask::processCallback()
 {
-  bool success = mpSubtask->process(mUseInitialValues);
+  bool success = mpSubTask->process(mUseInitialValues);
 
   //do output
   if (success && !mOutputInSubtask)
     output(COutputInterface::DURING);
 
-  if (mpSubtask->isUpdateModel())
+  if (mpSubTask->isUpdateModel())
     {
-      COptProblem* problem = dynamic_cast<COptProblem*>(mpSubtask->getProblem());
+      COptProblem* problem = dynamic_cast<COptProblem*>(mpSubTask->getProblem());
 
       if (problem != NULL)
         {
@@ -245,76 +243,76 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
   switch (type)
     {
       case CTaskEnum::Task::steadyState:
-        mpSubtask = dynamic_cast<CCopasiTask*>
+        mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Steady-State"));
         break;
 
       case CTaskEnum::Task::timeCourse:
-        mpSubtask = dynamic_cast<CCopasiTask*>
+        mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Time-Course"));
         break;
 
       case CTaskEnum::Task::mca:
-        mpSubtask = dynamic_cast<CCopasiTask*>
+        mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Metabolic Control Analysis"));
         break;
 
       case CTaskEnum::Task::lyap:
-        mpSubtask = dynamic_cast<CCopasiTask*>
+        mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
         break;
 
       case CTaskEnum::Task::optimization:
-        mpSubtask = dynamic_cast<CCopasiTask*>
+        mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Optimization"));
         break;
 
       case CTaskEnum::Task::parameterFitting:
-        mpSubtask = dynamic_cast<CCopasiTask*>
+        mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Parameter Estimation"));
         break;
 
       case CTaskEnum::Task::sens:
-        mpSubtask = dynamic_cast<CCopasiTask*>
+        mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Sensitivities"));
         break;
 
       case CTaskEnum::Task::lna:
-        mpSubtask = dynamic_cast<CCopasiTask*>
+        mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Linear Noise Approximation"));
         break;
 
       case CTaskEnum::Task::tssAnalysis :
-        mpSubtask = dynamic_cast<CCopasiTask*>
+        mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[](CTaskEnum::TaskName[CTaskEnum::Task::tssAnalysis]));
         break;
 
       case CTaskEnum::Task::crosssection:
-        mpSubtask = dynamic_cast<CCopasiTask*>
+        mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Cross Section"));
         break;
 
       case CTaskEnum::Task::timeSens:
-        mpSubtask = dynamic_cast<CCopasiTask*>
+        mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[](CTaskEnum::TaskName[CTaskEnum::Task::timeSens]));
         break;
 
       default:
-        mpSubtask = NULL;
+        mpSubTask = NULL;
     }
 
   mOutputInSubtask = pProblem->getValue< bool >("Output in subtask");
   mUseInitialValues = !pProblem->getContinueFromCurrentState();
 
-  if (!mpSubtask) return false;
+  if (!mpSubTask) return false;
 
-  mpSubtask->setMathContainer(mpContainer); //TODO
-  mpSubtask->setCallBack(NULL);
+  mpSubTask->setMathContainer(mpContainer); //TODO
+  mpSubTask->setCallBack(NULL);
 
   if (mOutputInSubtask)
-    return mpSubtask->initialize(OUTPUT_DURING, pOutputHandler, pOstream);
+    return mpSubTask->initialize(OUTPUT_DURING, pOutputHandler, pOstream);
   else
-    return mpSubtask->initialize(NO_OUTPUT, pOutputHandler, pOstream);
+    return mpSubTask->initialize(NO_OUTPUT, pOutputHandler, pOstream);
 
   return true;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,6 +29,7 @@ CQBaseDataModel::CQBaseDataModel(QObject *parent, CDataModel * pDataModel)
   , mFramework(0)
   , mFetched(0)
   , mFetchLimit(50)
+  , mFetchDisabled(false)
 {
   if (mpDataModel == NULL)
     {
@@ -69,8 +70,13 @@ bool CQBaseDataModel::removeRow(int position)
 
 bool CQBaseDataModel::clear()
 {
+  mFetchDisabled = true;
+
   resetCache();
-  return removeRows(0, rowCount() - 1);
+  bool success = removeRows(0, size());
+
+  mFetchDisabled = false;
+  return success;
 }
 
 // virtual
@@ -155,7 +161,7 @@ void CQBaseDataModel::endResetModel()
 
 bool CQBaseDataModel::canFetchMore(const QModelIndex & parent) const
 {
-  if (parent.isValid())
+  if (mFetchDisabled || parent.isValid())
     return false;
 
   return mFetched < size();
@@ -163,7 +169,7 @@ bool CQBaseDataModel::canFetchMore(const QModelIndex & parent) const
 
 void CQBaseDataModel::fetchMore(const QModelIndex & parent)
 {
-  if (parent.isValid())
+  if (mFetchDisabled || parent.isValid())
     return;
 
   int ToBeFetched = std::min(mFetchLimit, size() - mFetched);

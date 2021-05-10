@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -63,6 +63,7 @@
 #include "copasi/parameterFitting/CFitTask.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/commandline/CConfigurationFile.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 /*
  *  Constructs a TaskWidget which is a child of 'parent', with the
@@ -297,7 +298,7 @@ bool TaskWidget::commonBeforeRunTask()
         {
           CopasiUI3Window* pWindow = CopasiUI3Window::getMainWindow();
           CQOptPopulation* pPopWidget = pWindow->getPopulationDisplay();
-          COptPopulationMethod* pMethod = dynamic_cast<COptPopulationMethod*>(mpTask->getMethod());
+          COptMethod * pMethod = dynamic_cast< COptMethod * >(mpTask->getMethod());
           pPopWidget->setMethod(pMethod);
 
           if (pMethod != NULL)
@@ -323,7 +324,7 @@ bool TaskWidget::commonAfterRunTask()
         {
           CopasiUI3Window* pWindow = CopasiUI3Window::getMainWindow();
           CQOptPopulation* pPopWidget = pWindow->getPopulationDisplay();
-          COptPopulationMethod* pMethod = dynamic_cast<COptPopulationMethod*>(mpTask->getMethod());
+          COptMethod * pMethod = dynamic_cast< COptMethod * >(mpTask->getMethod());
           pPopWidget->setMethod(NULL);
 
           if (pMethod != NULL)
@@ -572,7 +573,7 @@ CCopasiMethod * TaskWidget::createMethod(const CTaskEnum::Method & type)
 
   if (mpTask != NULL)
     {
-      pMethod = mpTask->createMethod(type);
+      pMethod = CMethodFactory::create(mpTask->getType(), type, mpTask);
     }
 
   return pMethod;

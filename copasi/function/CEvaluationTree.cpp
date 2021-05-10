@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -173,34 +173,32 @@ bool CEvaluationTree::applyData(const CData & data, CUndoData::CChangeSet & chan
 
 CEvaluationTree::CEvaluationTree(const std::string & name,
                                  const CDataContainer * pParent,
-                                 const CEvaluationTree::Type & type):
-  CDataContainer(name, pParent, "Function"),
-  mType(type),
-  mInfix(),
-  mErrorPosition(std::string::npos),
-  mpNodeList(NULL),
-  mpRootNode(NULL),
-  mpRootValue(NULL),
-  mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-  mCalculationSequence(),
-  mppEnd(NULL)
+                                 const CEvaluationTree::Type & type)
+  : CDataContainer(name, pParent, "Function")
+  , mType(type)
+  , mInfix()
+  , mErrorPosition(std::string::npos)
+  , mpNodeList(NULL)
+  , mpRootNode(NULL)
+  , mpRootValue(NULL)
+  , mValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mCalculationSequence()
 {
   initObjects();
   setInfix("");
 }
 
 CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
-                                 const CDataContainer * pParent):
-  CDataContainer(src, pParent),
-  mType(src.mType),
-  mInfix(),
-  mErrorPosition(std::string::npos),
-  mpNodeList(NULL),
-  mpRootNode(NULL),
-  mpRootValue(NULL),
-  mValue(src.mValue),
-  mCalculationSequence(),
-  mppEnd(NULL)
+                                 const CDataContainer * pParent)
+  : CDataContainer(src, pParent)
+  , mType(src.mType)
+  , mInfix()
+  , mErrorPosition(std::string::npos)
+  , mpNodeList(NULL)
+  , mpRootNode(NULL)
+  , mpRootValue(NULL)
+  , mValue(src.mValue)
+  , mCalculationSequence()
 {
   initObjects();
   setInfix(src.mInfix);
@@ -357,29 +355,30 @@ void CEvaluationTree::buildCalculationSequence()
   CNodeIterator < CEvaluationNode > itNode(mpRootNode);
   std::vector< CEvaluationNode * > CalculationSequence;
 
-  while (itNode.next() != itNode.end())
-    {
-      switch (itNode->mainType())
-        {
-          case CEvaluationNode::MainType::NUMBER:
-          case CEvaluationNode::MainType::CONSTANT:
-          case CEvaluationNode::MainType::OBJECT:
-          case CEvaluationNode::MainType::UNIT:
-            break;
+  if (mpRootNode)
+    while (itNode.next() != itNode.end())
+      {
+        switch (itNode->mainType())
+          {
+            case CEvaluationNode::MainType::NUMBER:
+            case CEvaluationNode::MainType::CONSTANT:
+            case CEvaluationNode::MainType::OBJECT:
+            case CEvaluationNode::MainType::UNIT:
+              break;
 
-          default:
-            CalculationSequence.push_back(*itNode);
-            break;
-        }
-    }
+            default:
+              CalculationSequence.push_back(*itNode);
+              break;
+          }
+      }
 
   mCalculationSequence.resize(CalculationSequence.size());
   CEvaluationNode ** ppIt = mCalculationSequence.begin();
-  mppEnd = mCalculationSequence.end();
+  CEvaluationNode ** ppEnd = mCalculationSequence.end();
 
   std::vector< CEvaluationNode * >::const_iterator it = CalculationSequence.begin();
 
-  for (; ppIt != mppEnd; ++ppIt, ++it)
+  for (; ppIt != ppEnd; ++ppIt, ++it)
     {
       *ppIt = *it;
     }
@@ -487,8 +486,9 @@ void CEvaluationTree::calculate()
       if (mpRootNode != NULL)
         {
           CEvaluationNode ** ppIt = mCalculationSequence.begin();
+          CEvaluationNode ** ppEnd = mCalculationSequence.end();
 
-          for (; ppIt != mppEnd; ++ppIt)
+          for (; ppIt != ppEnd; ++ppIt)
             {
               (*ppIt)->calculate();
             }
@@ -937,4 +937,9 @@ bool CEvaluationTree::containsCN(const DataObjectSet& elements) const
     }
 
   return false;
+}
+
+size_t CEvaluationTree::size() const
+{
+  return mCalculationSequence.size();
 }

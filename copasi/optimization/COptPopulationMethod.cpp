@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,6 +16,7 @@
 #include "copasi/copasi.h"
 
 #include "copasi/optimization/COptPopulationMethod.h"
+#include "copasi/optimization/COptProblem.h"
 #include "copasi/randomGenerator/CRandom.h"
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/core/CDataObject.h"
@@ -23,8 +24,9 @@
 
 COptPopulationMethod::COptPopulationMethod(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
-    const CTaskEnum::Task & taskType /*= CTaskEnum::optimization*/)
-  : COptMethod(pParent, methodType, taskType)
+    const CTaskEnum::Task & taskType,
+    const bool & parallel)
+  : COptMethod(pParent, methodType, taskType, parallel)
   , mPopulationSize(0)
   , mGenerations(0)
   , mCurrentGeneration(0)
@@ -32,7 +34,7 @@ COptPopulationMethod::COptPopulationMethod(const CDataContainer * pParent,
   , mVariableSize(0)
   , mIndividuals()
   , mValues()
-  , mpRandom(NULL)
+  , mRandomContext(parallel)
 {
   initObjects();
 }
@@ -47,7 +49,7 @@ COptPopulationMethod::COptPopulationMethod(const COptPopulationMethod & src,
   , mVariableSize(0)
   , mIndividuals()
   , mValues()
-  , mpRandom(NULL)
+  , mRandomContext(src.mParallel)
 {
   initObjects();
 }
@@ -94,19 +96,20 @@ COptPopulationMethod::initialize()
   else
     mPopulationSize = 0;
 
-  pdelete(mpRandom);
+  CRandom * pRandom = NULL;
 
   if (getParameter("Random Number Generator") != NULL && getParameter("Seed") != NULL)
     {
-      mpRandom = CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                                          getValue< unsigned C_INT32 >("Seed"));
+      pRandom = CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
+                                         getValue< unsigned C_INT32 >("Seed"));
     }
   else
     {
-      mpRandom = CRandom::createGenerator();
+      pRandom = CRandom::createGenerator();
     }
 
-  mVariableSize = mpOptItem->size();
+  mRandomContext.setMaster(pRandom);
+  mVariableSize = mProblemContext.master()->getOptItemList().size();
 
   return true;
 }
@@ -116,12 +119,13 @@ COptPopulationMethod::cleanup()
 {
   size_t i;
 
-  pdelete(mpRandom);
-
   for (i = 0; i < mIndividuals.size(); i++)
     pdelete(mIndividuals[i]);
 
   mIndividuals.clear();
+
+  pdelete(mRandomContext.master());
+
   return true;
 }
 

@@ -35,6 +35,7 @@
 #include "copasi/utilities/CCopasiException.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 #define XXXX_Reporting
 
@@ -74,10 +75,7 @@ CTimeSensTask::CTimeSensTask(const CDataContainer * pParent,
   mpLess(&fl),
   mProceed(true)
 {
-  mpProblem = new CTimeSensProblem(this);
-  mpMethod = createMethod(CTaskEnum::Method::timeSensLsoda);
-  this->add(mpMethod, true);
-
+  mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::timeSensLsoda, this);
   mUpdateMoieties = static_cast< CTimeSensMethod * >(mpMethod)->integrateReducedModel();
 
   signalMathContainerChanged();
@@ -99,16 +97,6 @@ CTimeSensTask::CTimeSensTask(const CTimeSensTask & src,
   mpLess(src.mpLess),
   mProceed(src.mProceed)
 {
-  mpProblem =
-    new CTimeSensProblem(*static_cast< CTimeSensProblem * >(src.mpProblem), this);
-
-  mpMethod = createMethod(src.mpMethod->getSubType());
-  * mpMethod = * src.mpMethod;
-
-  mpMethod->elevateChildren();
-
-  this->add(mpMethod, true);
-
   mUpdateMoieties = static_cast< CTimeSensMethod * >(mpMethod)->integrateReducedModel();
 
   signalMathContainerChanged();

@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,6 +7,8 @@
 #include "copasi/math/CMathExpression.h"
 #include "copasi/utilities/CNodeIterator.h"
 #include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/commandline/CConfigurationFile.h"
+#include "copasi/core/CRootContainer.h"
 
 #include <cpu_features/cpuinfo_x86.h>
 
@@ -14,14 +16,14 @@
 bool * CJitCompiler::pSSE4support = NULL;
 
 // static
-bool & CJitCompiler::JitEnabled()
+bool CJitCompiler::JitEnabled()
 {
   if (pSSE4support == NULL)
     {
       pSSE4support = new bool(cpu_features::GetX86Info().features.sse4_2);
     }
 
-  return *pSSE4support;
+  return *pSSE4support && !CRootContainer::getConfiguration()->getDisableJIT();
 }
 
 // static
@@ -43,10 +45,18 @@ CJitCompiler::CJitCompiler()
   , mExecutionBufferSize(8192)
   , mFunctionBufferSize(8192)
 {
-  if (pSSE4support == NULL)
-    {
-      pSSE4support = new bool(cpu_features::GetX86Info().features.sse4_2);
-    }
+  JitEnabled();
+}
+
+CJitCompiler::CJitCompiler(const CJitCompiler & src)
+  : mpAllocator(NULL)
+  , mpExecutionBuffer(NULL)
+  , mpExpression(NULL)
+  , mExpressions()
+  , mExecutionBufferSize(src.mExecutionBufferSize)
+  , mFunctionBufferSize(src.mFunctionBufferSize)
+{
+  JitEnabled();
 }
 
 // virtual
@@ -370,7 +380,7 @@ void CJitCompiler::release()
 
 void CJitCompiler::registerExpression(CJitExpression * pExpression)
 {
-  if (*pSSE4support)
+  if (JitEnabled())
     mExpressions.insert(pExpression);
 }
 

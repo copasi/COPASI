@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,19 +34,20 @@
 
 #include "copasi/copasi.h"
 
-#include "CTSSAMethod.h"
-#include "CTSSAProblem.h"
-#include "CILDMMethod.h"
-#include "CILDMModifiedMethod.h"
-#include "CCSPMethod.h"
+#include "copasi/tssanalysis/CTSSAMethod.h"
+#include "copasi/tssanalysis/CTSSAProblem.h"
+#include "copasi/tssanalysis/CILDMMethod.h"
+#include "copasi/tssanalysis/CILDMModifiedMethod.h"
+#include "copasi/tssanalysis/CCSPMethod.h"
+#include "copasi/tssanalysis/CTSSAProblem.h"
 
-#include "CTSSAProblem.h"
 #include "copasi/math/CMathContainer.h"
 #include "copasi/model/CCompartment.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/model/CModel.h"
 #include "copasi/trajectory/CLsodaMethod.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 #include "copasi/lapack/lapackwrap.h"        // CLAPACK
 #include "copasi/lapack/blaswrap.h"           // BLAS
@@ -294,7 +295,7 @@ void CTSSAMethod::initializeParameter()
 {
   if (mpLsodaMethod == NULL)
     {
-      mpLsodaMethod = static_cast< CLsodaMethod *>(createMethod(this, CTaskEnum::Method::deterministic, getType()));
+      mpLsodaMethod = static_cast< CLsodaMethod *>(CMethodFactory::create(getType(), CTaskEnum::Method::deterministic, this));
 
       mpLsodaMethod->setValue("Integrate Reduced Model", true);
       mpLsodaMethod->setValue("Relative Tolerance", (C_FLOAT64) 1.0e-6);

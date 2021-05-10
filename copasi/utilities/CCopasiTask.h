@@ -373,14 +373,6 @@ public:
   bool setMethodType(const CTaskEnum::Method & type);
 
   /**
-   * Create a method of the specified type to solve the task.
-   * It is the duty of the caller to release the CCopasiMethod.
-   * @param const CTaskEnum::Method & type
-   * @return CCopasiMethod *
-   */
-  CCopasiMethod * createMethod(const CTaskEnum::Method & type) const;
-
-  /**
    * Retrieve the method
    */
   CCopasiMethod * getMethod();

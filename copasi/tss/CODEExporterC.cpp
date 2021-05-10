@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1067,7 +1067,7 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
 
           if (name.empty())
             {
-              std::string message = "Could not export C code, since one of the arguments could not be resolved. Please consider filing a bug with the COPASI tracker: http://www.copasi.org/tracker";
+              std::string message = "Could not export C code, since one of the arguments could not be resolved. Please consider filing a bug with the COPASI tracker: http://tracker..copasi.org";
               CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
             }
 

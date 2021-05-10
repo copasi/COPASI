@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,7 +32,8 @@
 
 #include "copasi/copasi.h"
 
-#include "CCopasiProblem.h"
+#include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/utilities/CProblemFactory.h"
 
 #include "copasi/model/CMetab.h"
 #include "copasi/model/CModel.h"
@@ -69,10 +70,10 @@ CCopasiProblem::CCopasiProblem(const CCopasiProblem & src,
   CCopasiParameterGroup(src, pParent),
   mType(src.mType),
   mpContainer(src.mpContainer),
-  mpCallBack(src.mpCallBack),
+  mpCallBack(NULL),
   mpReport(src.mpReport)
 {
-  const CCopasiTask * pTask = dynamic_cast< const CCopasiTask * >(pParent);
+  const CCopasiTask * pTask = dynamic_cast< const CCopasiTask * >(getObjectParent());
 
   if (pTask != NULL)
     {
@@ -82,15 +83,17 @@ CCopasiProblem::CCopasiProblem(const CCopasiProblem & src,
 
 CCopasiProblem::~CCopasiProblem() {}
 
+CCopasiProblem * CCopasiProblem::copy() const
+{
+  return CProblemFactory::copy(this, this);
+}
+
 const CTaskEnum::Task & CCopasiProblem::getType() const {return mType;}
 
 void CCopasiProblem::setMathContainer(CMathContainer * pContainer)
 {
-  if (pContainer != mpContainer)
-    {
-      mpContainer = pContainer;
-      signalMathContainerChanged();
-    }
+  mpContainer = pContainer;
+  signalMathContainerChanged();
 }
 
 // virtual

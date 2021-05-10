@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,6 +28,7 @@
 #include "copasi/utilities/CCopasiTask.h"
 #include "copasi/utilities/CCopasiMethod.h"
 #include "copasi/utilities/utility.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
   QWidget(parent, f),
@@ -243,7 +244,7 @@ void CQTaskMethodWidget::setActiveMethod(const CTaskEnum::Method & Type)
 
   if (mpActiveMethod == NULL)
     {
-      mpActiveMethod = mpTask->createMethod(Type);
+      mpActiveMethod = CMethodFactory::create(mpTask->getType(), Type, mpTask);
       mpTask->remove(mpActiveMethod);
       addToHistory(mpActiveMethod);
     }

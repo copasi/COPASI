@@ -429,8 +429,3 @@ void CQGlobalQuantityDM::insertNewRows(int position, int rows, int column, const
 
   endInsertRows();
 }
-
-bool CQGlobalQuantityDM::clear()
-{
-  return removeRows(0, mpGlobalQuantities->size(), QModelIndex());
-}

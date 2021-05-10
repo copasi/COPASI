@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,7 +37,7 @@
 COptMethodCoranaWalk::COptMethodCoranaWalk(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType)
-  : COptMethod(pParent, methodType, taskType)
+  : COptMethod(pParent, methodType, taskType, false)
   , mTemperature(1.0)
   , mhIterations(C_INVALID_INDEX)
   , mIterations(100)
@@ -113,7 +113,7 @@ bool COptMethodCoranaWalk::optimise()
     }
 
   if (minstep > std::numeric_limits< C_FLOAT64 >::epsilon())
-    minstep /= i;
+    minstep /= mVariableSize;
   else
     minstep = 100 * std::numeric_limits< C_FLOAT64 >::epsilon();
 
@@ -126,7 +126,7 @@ bool COptMethodCoranaWalk::optimise()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *(*mpOptItem)[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
 
       switch (OptItem.checkConstraint(OptItem.getStartValue()))
         {
@@ -145,7 +145,7 @@ bool COptMethodCoranaWalk::optimise()
             break;
         }
 
-      *mContainerVariables[i] = mCurrent[i];
+      *mProblemContext.master()->getContainerVariables()[i] = mCurrent[i];
 
       // The step must not contain any zeroes
       mStep[i] = std::max(fabs(mCurrent[i]), minstep);
@@ -163,10 +163,11 @@ bool COptMethodCoranaWalk::optimise()
     {
       // and store that value
       mBestValue = mEvaluationValue;
-      mContinue &= mpOptProblem->setSolution(mBestValue, mCurrent);
+      mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
+      mpParentTask->output(COutputInterface::MONITORING);
 
       if (mpCallBack)
         mContinue &= mpCallBack->progressItem(mhIterations);
@@ -187,13 +188,13 @@ bool COptMethodCoranaWalk::optimise()
               New = mCurrent[h] + xc;
 
               // Set the new parameter value
-              *mContainerVariables[h] = New;
+              *mProblemContext.master()->getContainerVariables()[h] = New;
 
               // Check all parametric constraints
-              if (!mpOptProblem->checkParametricConstraints())
+              if (!mProblemContext.master()->checkParametricConstraints())
                 {
                   // Undo since not accepted
-                  *mContainerVariables[h] = mCurrent[h];
+                  *mProblemContext.master()->getContainerVariables()[h] = mCurrent[h];
                   continue;
                 }
 
@@ -206,10 +207,10 @@ bool COptMethodCoranaWalk::optimise()
                 mContinue &= mpCallBack->progressItem(mhIterations);
 
               // Check all functional constraints
-              if (!mpOptProblem->checkFunctionalConstraints())
+              if (!mProblemContext.master()->checkFunctionalConstraints())
                 {
                   // Undo since not accepted
-                  *mContainerVariables[h] = mCurrent[h];
+                  *mProblemContext.master()->getContainerVariables()[h] = mCurrent[h];
 
                   continue;
                 }
@@ -228,7 +229,7 @@ bool COptMethodCoranaWalk::optimise()
                     {
                       // and store that value
                       mBestValue = mEvaluationValue;
-                      mContinue &= mpOptProblem->setSolution(mBestValue, mCurrent);
+                      mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent);
 
                       // We found a new best value lets report it.
                       mpParentTask->output(COutputInterface::DURING);
@@ -249,8 +250,10 @@ bool COptMethodCoranaWalk::optimise()
                     }
                   else
                     // Undo since not accepted
-                    *mContainerVariables[h] = mCurrent[h];
+                    *mProblemContext.master()->getContainerVariables()[h] = mCurrent[h];
                 }
+
+              mpParentTask->output(COutputInterface::MONITORING);
 
               // check if it is time to stop
               if (mCurrentIteration == mIterations) processing = false;
@@ -274,16 +277,17 @@ bool COptMethodCoranaWalk::optimise()
 
       if (processing)
         {
-          mCurrent = mpOptProblem->getSolutionVariables();
+          mCurrent = mProblemContext.master()->getSolutionVariables();
 
           for (a = 0; a < mVariableSize; a++)
-            *mContainerVariables[a] = mCurrent[a];
+            *mProblemContext.master()->getContainerVariables()[a] = mCurrent[a];
 
           mCurrentValue = mBestValue;
         }
 
       if (mpCallBack)
         mContinue &= mpCallBack->progressItem(mhIterations);
+
     }
   while (processing && mContinue);
 
@@ -309,12 +313,12 @@ const C_FLOAT64 & COptMethodCoranaWalk::evaluate()
   // We do not need to check whether the parametric constraints are fulfilled
   // since the parameters are created within the bounds.
 
-  mContinue &= mpOptProblem->calculate();
-  mEvaluationValue = mpOptProblem->getCalculateValue();
+  mContinue &= mProblemContext.master()->calculate();
+  mEvaluationValue = mProblemContext.master()->getCalculateValue();
 
   // When we leave the either functional domain
   // we set the objective value +Inf
-  if (!mpOptProblem->checkFunctionalConstraints())
+  if (!mProblemContext.master()->checkFunctionalConstraints())
     mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
 
   return mEvaluationValue;
@@ -342,7 +346,7 @@ bool COptMethodCoranaWalk::initialize()
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
   mContinue = true;
 
-  mVariableSize = mpOptItem->size();
+  mVariableSize = mProblemContext.master()->getOptItemList().size();
 
   mCurrent.resize(mVariableSize);
   mStep.resize(mVariableSize);
@@ -354,4 +358,24 @@ bool COptMethodCoranaWalk::initialize()
 unsigned C_INT32 COptMethodCoranaWalk::getMaxLogVerbosity() const
 {
   return 0;
+}
+
+C_FLOAT64 COptMethodCoranaWalk::getBestValue() const
+{
+  return mBestValue;
+}
+
+C_FLOAT64 COptMethodCoranaWalk::getCurrentValue() const
+{
+  return mBestValue;
+}
+
+const CVector< C_FLOAT64 > * COptMethodCoranaWalk::getBestParameters() const
+{
+  return &mCurrent;
+}
+
+const CVector< C_FLOAT64 > * COptMethodCoranaWalk::getCurrentParameters() const
+{
+  return &mCurrent;
 }

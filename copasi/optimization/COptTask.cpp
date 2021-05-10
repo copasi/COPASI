@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,6 +39,7 @@
 
 #include "copasi/model/CModel.h"
 #include "copasi/model/CState.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 // static
 const CTaskEnum::Method COptTask::ValidMethods[]  =
@@ -69,20 +70,18 @@ COptTask::COptTask(const CDataContainer * pParent,
                    const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
-  mpProblem = new COptProblem(type, this);
-  mpMethod = createMethod(CTaskEnum::Method::RandomSearch);
-
-  ((COptMethod *) mpMethod)->setProblem((COptProblem *) mpProblem);
+  if (getType() == CTaskEnum::Task::optimization)
+    {
+      mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::RandomSearch, this);
+      static_cast< COptMethod * >(mpMethod)->setProblem(static_cast< COptProblem * >(mpProblem));
+    }
 }
 
 COptTask::COptTask(const COptTask & src,
                    const CDataContainer * pParent):
   CCopasiTask(src, pParent)
 {
-  mpProblem = new COptProblem(*(COptProblem *) src.mpProblem, this);
-  mpMethod = createMethod(src.mpMethod->getSubType());
-  //  mpMethod->setObjectParent(this);
-  ((COptMethod *) mpMethod)->setProblem((COptProblem *) mpProblem);
+  static_cast< COptMethod * >(mpMethod)->setProblem(static_cast< COptProblem * >(mpProblem));
 }
 
 COptTask::~COptTask()
@@ -143,7 +142,7 @@ bool COptTask::process(const bool & useInitialValues)
   pProblem->randomizeStartValues();
   pProblem->rememberStartValues();
 
-  if (useInitialValues) pProblem->resetEvaluations();
+  if (useInitialValues) pProblem->resetCounters();
 
   output(COutputInterface::BEFORE);
 

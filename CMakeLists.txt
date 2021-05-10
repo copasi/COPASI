@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -28,7 +28,8 @@
 ###############################################################################
 
 # we need at least cmake 2.8 for the FindLAPACK functions
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 2.8.12)
+
 if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
 endif(POLICY CMP0048)
@@ -309,6 +310,15 @@ if (ENABLE_JIT)
   include_directories(BEFORE ${CPUFEATURE_INCLUDE_DIR})
 endif (ENABLE_JIT)
 
+option(ENABLE_OMP "Enable the OpenMP support" OFF)
+
+if (ENABLE_OMP)
+  set(USE_OMP 1)
+
+  find_package (OpenMP REQUIRED)
+  include_directories(BEFORE ${OpenMP_INCLUDE_PATH})
+endif(ENABLE_OMP)
+
 # TODO find raptor
 
 # TODO raptor should be restricted to a version which is at least
@@ -424,13 +434,11 @@ if (WIN32 AND NOT CYGWIN)
 endif()
 
 if(BUILD_GUI)
+  set(OpenGL_GL_PREFERENCE LEGACY)
+
   if (UNIX AND NOT APPLE)
     FIND_LIBRARY(OPENGL_gl_LIBRARY NAMES GL PATHS /usr/lib/x86_64-linux-gnu/mesa)
   endif (UNIX AND NOT APPLE)
-
-  if(POLICY CMP0072)
-    cmake_policy(SET CMP0072 OLD)
-  endif(POLICY CMP0072)
 
   find_package(OpenGL REQUIRED)
 
@@ -902,6 +910,9 @@ message(STATUS "-----------------------------------------------------------
    cpu_features lib     = ${CPUFEATURES_LIBRARY}
    cpu_features include = ${CPUFEATURES_INCLUDE_DIR}
 
+   OpenMP CXX Flags     = ${OpenMP_CXX_FLAGS}
+   OpenMP Libs          = ${OpenMP_C_LIB_NAMES}
+
  Options:
 
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
@@ -918,6 +929,7 @@ message(STATUS "-----------------------------------------------------------
    Analytics Task           = ${ENABLE_ANALYTICS}
    Time Sensitivities task  = ${ENABLE_TIME_SENS}
    JIT Compilation          = ${ENABLE_JIT}
+   OpenMP                   = ${ENABLE_OMP}
    Additional Defines       = ${DirDefs}
 
   Language Bindings:

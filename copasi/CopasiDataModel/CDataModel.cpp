@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -64,6 +64,8 @@
 
 #include "copasi/model/CModelExpansion.h"
 #include "copasi/model/CModelParameter.h"
+
+#include "copasi/MIRIAM/CModelMIRIAMInfo.h"
 
 #ifdef COPASI_Versioning
 #  include "copasi/versioning/CModelVersionHierarchy.h"
@@ -431,7 +433,7 @@ bool CDataModel::addModel(const std::string & fileName, CProcessReport * pProces
         }
     }
 
-  C_INT32 numDatamodels = CRootContainer::getDatamodelList()->size();
+  C_INT32 numDatamodels = (C_INT32) CRootContainer::getDatamodelList()->size();
   CModel * pModel = NULL;
   CModel * pMergeModel = NULL;
 
@@ -470,7 +472,7 @@ bool CDataModel::loadModelParameterSets(const std::string & fileName,
     {
     }
 
-  size_t numDatamodels = CRootContainer::getDatamodelList()->size();
+  C_INT32 numDatamodels = (C_INT32) CRootContainer::getDatamodelList()->size();
 
   if (numDatamodels == 0)
     return false;
@@ -491,9 +493,9 @@ bool CDataModel::loadModelParameterSets(const std::string & fileName,
   CDataVectorN< CModelParameterSet > & loadedSet = parameterSetModel->getModelParameterSets();
   CCommonName loadedModelCn = parameterSetModel->getCN();
 
-  for (CModelParameterSet & set : loadedSet)
+for (CModelParameterSet & set : loadedSet)
     {
-      for (CModelParameter * current : dynamic_cast< CModelParameterGroup & >(set))
+for (CModelParameter * current : dynamic_cast< CModelParameterGroup & >(set))
         {
           replaceCnInGroup(current, loadedModelCn, thisModelsCn);
         }
@@ -536,7 +538,7 @@ void CDataModel::replaceCnInGroup(CModelParameter * pParam,
   if (!group)
     return;
 
-  for (CModelParameter * element : *group)
+for (CModelParameter * element : *group)
     {
       CModelParameterGroup * inside = dynamic_cast< CModelParameterGroup * >(element);
 
@@ -1729,9 +1731,21 @@ bool CDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, 
       archive.addFile(str, "./sedml/simulation.xml", KnownFormats::lookupFormat("sedml"), !includeCOPASI);
     }
 
-  archive.writeToFile(fileName);
+  try
+    {
+      archive.writeToFile(fileName);
+    }
+  catch (const std::exception &ex)
+    {
+      std::stringstream str;
+      str << "Couldn't export combine archive due to: "
+          << ex.what();
 
-  return false;
+      CCopasiMessage(CCopasiMessage::ERROR, str.str().c_str());
+      return false;
+    }
+
+  return true;
 }
 
 bool CDataModel::openCombineArchive(const std::string & fileName,
@@ -1770,31 +1784,59 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
   // read the master file
   const CaContent * content = archive.getMasterFile();
+  bool haveCopasi = false;
+  std::stringstream messageStream;
 
   // if we don't have one, or we have one we don't understand look for copasi file
-  if (content == NULL || (content->getFormat() != KnownFormats::lookupFormat("sbml") && content->getFormat() != KnownFormats::lookupFormat("copasi") && content->getFormat() != KnownFormats::lookupFormat("sedml")))
-    content = archive.getEntryByFormat("copasi");
+  if (content == NULL ||
+      (content->getFormat() != KnownFormats::lookupFormat("sbml") &&
+       content->getFormat() != KnownFormats::lookupFormat("copasi") &&
+       content->getFormat() != KnownFormats::lookupFormat("sedml")))
+    {
+      content = archive.getEntryByFormat("copasi");
+      haveCopasi = content != NULL;
+
+      if (!haveCopasi)
+        {
+          for (int i = 0; i < archive.getNumEntries(); ++i)
+            {
+              const CaContent * entry = archive.getEntry(i);
+
+              if (entry->getFormat().substr(entry->getFormat().length() - 4) == "/xml" && entry->getLocation().find(".cps") != std::string::npos)
+                {
+                  content = entry;
+                  haveCopasi = true;
+                }
+            }
+        }
+    }
+
 
   // otherwise look for an sedml file
-  if (content == NULL)
-    content = archive.getEntryByFormat("sedml");
+  const CaContent * sedml_content =
+    content != NULL && content->getFormat() == KnownFormats::lookupFormat("sedml") ?
+    content : archive.getEntryByFormat("sedml");
 
   // otherwise look for an sbml file
-  if (content == NULL)
-    content = archive.getEntryByFormat("sbml");
+  const CaContent * sbml_content =
+    content != NULL && content->getFormat() == KnownFormats::lookupFormat("sbml") ?
+    content : archive.getEntryByFormat("sbml");
 
-  if (content == NULL)
+  if (content == NULL && sbml_content == NULL && sedml_content == NULL)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "COMBINE archive without COPASI, SBML or SED-ML files.");
       return false;
     }
 
-  if (content->isFormat("copasi"))
-    {
-      result = this->loadModel(destinationDir + "/" + content->getLocation(), pProgressReport, deleteOldData);
+  bool loadedModel = false;
 
-      if (result)
+  if (haveCopasi || (content != NULL && content->isFormat("copasi")))
+    {
+      loadedModel = this->loadModel(destinationDir + "/" + content->getLocation(), pProgressReport, deleteOldData);
+
+      if (loadedModel)
         {
+          result = true;
           // figure out whether the file needs experimental data
           CFitProblem * pProblem = dynamic_cast< CFitProblem * >((*getTaskList())[static_cast< size_t >(CTaskEnum::Task::parameterFitting)].getProblem());
           CExperimentSet & experiments = pProblem->getExperimentSet();
@@ -1855,23 +1897,47 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
                 }
             }
         }
+      else
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, "COMBINE archive import: failed to load COPASI file from archive.");
+          messageStream << CCopasiMessage::getAllMessageText();
+        }
     }
-  else if (content->isFormat("sedml"))
+
+  if (loadedModel == false && sedml_content != NULL)
     {
-      result = this->importSEDML(destinationDir + "/" + content->getLocation(), pProgressReport, deleteOldData);
+      try
+        {
+          loadedModel = this->importSEDML(destinationDir + "/" + sedml_content->getLocation(), pProgressReport, deleteOldData);
+        }
+      catch (const CCopasiException &)
+        {
+          // error is reported to log already
+          CCopasiMessage(CCopasiMessage::ERROR, "COMBINE archive import: failed to load SED-ML file from archive.");
+          messageStream << CCopasiMessage::getAllMessageText();
+          loadedModel = false;
+        }
+
       this->mData.mSEDMLFileName = "";
       this->mData.mSBMLFileName = "";
     }
-  else if (content->isFormat("sbml"))
+
+  if (loadedModel == false && sbml_content != NULL)
     {
-      result = this->importSBML(destinationDir + "/" + content->getLocation(), pProgressReport, deleteOldData);
+      loadedModel = this->importSBML(destinationDir + "/" + sbml_content->getLocation(), pProgressReport, deleteOldData);
       this->mData.mSBMLFileName = "";
     }
+
+  std::string additionalMessages = messageStream.str();
+
+  if (!additionalMessages.empty())
+    CCopasiMessage(CCopasiMessage::ERROR, additionalMessages.c_str());
+
 
   this->mData.mSaveFileName = "";
   this->changed();
 
-  return result;
+  return loadedModel;
 }
 
 // SEDML
@@ -2266,7 +2332,7 @@ const CDataVectorN< CCopasiTask > * CDataModel::getTaskList() const
 CCopasiTask * CDataModel::addTask(const CTaskEnum::Task & taskType)
 {
   CCopasiTask * pTask = NULL;
-  pTask = CTaskFactory::createTask(taskType, mData.pTaskList);
+  pTask = CTaskFactory::create(taskType, mData.pTaskList);
 
   return pTask;
 }
@@ -2382,7 +2448,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::parameterFitting:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2411,7 +2477,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::lyap:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2428,7 +2494,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::mca:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2445,7 +2511,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::lna:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2462,7 +2528,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::sens:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2479,7 +2545,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::tssAnalysis:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2837,6 +2903,12 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
     {
       mData.pModel = new CModel(this);
     }
+
+  CMIRIAMInfo MIRIAM;
+  MIRIAM.load(mData.pModel);
+  MIRIAM.addDefaultCreator();
+  MIRIAM.addDefaultCreatedDT();
+  MIRIAM.save();
 
   if (mData.pListOfLayouts == NULL)
     {

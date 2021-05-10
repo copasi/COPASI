@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -52,7 +52,7 @@
 %ignore CDataModel::addReport(const CCopasiTask::Type & taskType);
 %ignore CDataModel::getPlotDefinitionList();
 %ignore CDataModel::getGUI();
-%ignore CDataModel::getConfiguration();
+//%ignore CDataModel::getConfiguration();
 %ignore CDataModel::isChanged() const;
 %ignore CDataModel::changed(const bool & changed = true);
 %ignore CDataModel::getCurrentSBMLDocument();
@@ -80,19 +80,19 @@
 %ignore CDataModel::ObjectFromName(std::vector<CDataContainer * > const &,CCommonName const &) const;
 %ignore CDataModel::getReportDefinitionList() const;
 
-%catches(CCopasiException) CDataModel::newModel();
-%catches(CCopasiException) CDataModel::newModel(CProcessReport* pProcessReport,const bool& deleteOldData);
-%catches(CCopasiException) CDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler = NULL,const bool& deleteOldData = true);
-%catches(CCopasiException) CDataModel::importSBML(const std::string&,CProcessReport*,const bool& deleteOldData = true);
-%catches(CCopasiException) CDataModel::importSBMLFromString(const std::string&,CProcessReport*,const bool& deleteOldData = true);
-%catches(CCopasiException) CDataModel::openCombineArchive(const std::string& fileName, CProcessReport* pProgressReport = NULL, const bool & deleteOldData = true);
-%catches(CCopasiException) CDataModel::importSEDML(const std::string & fileName, CProcessReport* pImportHandler = NULL, const bool & deleteOldData = true);
-%catches(CCopasiException) CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText, CProcessReport* pImportHandler = NULL, const bool & deleteOldData = true);
-%catches(CCopasiException, SBMLConstructorException) CDataModel::exportSBMLToString(CProcessReport* pExportHandler , int sbmlLevel,int sbmlVersion);
-%catches(CCopasiException, SBMLConstructorException) CDataModel::exportSBML(const std::string& fileName, bool overwriteFile=false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler = NULL);
-%catches(CCopasiException, SBMLConstructorException) CDataModel::exportSEDMLToString(CProcessReport* pExportHandler, int sedmlLevel, int sedmlVersion, const std::string& modelLocation = "model.xml");
-%catches(CCopasiException, SBMLConstructorException) CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile = false, int sedmlLevel = 1, int sedmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
-%catches(CCopasiException, SBMLConstructorException) CDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI = true, bool includeSBML = true, bool includeData = true, bool includeSEDML = false, bool overwriteFile = false, CProcessReport* pProgressReport = NULL);
+%catches(CCopasiException, ...) CDataModel::newModel();
+%catches(CCopasiException, ...) CDataModel::newModel(CProcessReport* pProcessReport,const bool& deleteOldData);
+%catches(CCopasiException, ...) CDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler = NULL,const bool& deleteOldData = true);
+%catches(CCopasiException, ...) CDataModel::importSBML(const std::string&,CProcessReport*,const bool& deleteOldData = true);
+%catches(CCopasiException, ...) CDataModel::importSBMLFromString(const std::string&,CProcessReport*,const bool& deleteOldData = true);
+%catches(CCopasiException, ...) CDataModel::openCombineArchive(const std::string& fileName, CProcessReport* pProgressReport = NULL, const bool & deleteOldData = true);
+%catches(CCopasiException, ...) CDataModel::importSEDML(const std::string & fileName, CProcessReport* pImportHandler = NULL, const bool & deleteOldData = true);
+%catches(CCopasiException, ...) CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText, CProcessReport* pImportHandler = NULL, const bool & deleteOldData = true);
+%catches(CCopasiException, SBMLConstructorException, ...) CDataModel::exportSBMLToString(CProcessReport* pExportHandler , int sbmlLevel,int sbmlVersion);
+%catches(CCopasiException, SBMLConstructorException, ...) CDataModel::exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
+%catches(CCopasiException, SBMLConstructorException, ...) CDataModel::exportSEDMLToString(CProcessReport* pExportHandler, int sbmlLevel, int sbmlVersion);
+%catches(CCopasiException, SBMLConstructorException, ...) CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile = false, int sedmlLevel = 1, int sedmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
+%catches(CCopasiException, SBMLConstructorException, std::exception, ...) CDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI = true, bool includeSBML = true, bool includeData = true, bool includeSEDML = false, bool overwriteFile = false, CProcessReport* pProgressReport = NULL);
 
 #if SWIGPYTHON
 %exception importSBML {
@@ -165,7 +165,14 @@
     /* this is for backwards compatibility. */
     std::string exportSBMLToString()
     {
-        return $self->exportSBMLToString(NULL,2,1);
+      try
+      {
+        return $self->exportSBMLToString(NULL,3,1);
+      }
+      catch (...)
+      {
+        return "";
+      }
     }
 
     std::string exportMathModelToString(const std::string& filter)

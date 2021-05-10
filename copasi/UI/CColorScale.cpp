@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -134,6 +134,7 @@ void CColorScaleSimple::startAutomaticParameterCalculation()
 {
   mMin = std::numeric_limits< C_FLOAT64 >::max();
   mMax = -std::numeric_limits< C_FLOAT64 >::max();
+  mLog = false;
 }
 
 //virtual
@@ -197,7 +198,7 @@ QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number) const
   //scale to 0..1
   C_FLOAT64 tmp;
 
-  if (mLog)
+  if (mLog && number > 0.0)
     tmp = (log(number) - log(mMin)) / (log(mMax) - log(mMin));
   else
     tmp = (number - mMin) / (mMax - mMin);
@@ -241,7 +242,9 @@ void CColorScaleAuto::startAutomaticParameterCalculation()
 void CColorScaleAuto::passValue(const C_FLOAT64 & number)
 {
   CColorScaleSimple::passValue(number);
-  mData.push_back(number);
+
+  if (std::find(mData.begin(), mData.end(), number) == mData.end())
+    mData.push_back(number);
 }
 
 //virtual
@@ -260,6 +263,14 @@ void CColorScaleAuto::finishAutomaticParameterCalculation()
   if (mMin > 0 && mMax > 0 && mMax / mMin > 100)
     {
       mLog = true;
+    }
+
+
+  if (mMin == mMax)
+    {
+      mMin -= 1e-5;
+      mMax += 1e-5;
+      mLog = false;
     }
 }
 

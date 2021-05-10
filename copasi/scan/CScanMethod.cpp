@@ -400,17 +400,31 @@ void CScanItemRandom::ensureParameterGroupHasAllElements(CCopasiParameterGroup* 
 
 CScanMethod::CScanMethod(const CDataContainer * pParent,
                          const CTaskEnum::Method & methodType,
-                         const CTaskEnum::Task & taskType):
-  CCopasiMethod(pParent, methodType, taskType),
-  mpProblem(NULL),
-  mpTask(NULL),
-  mpRandomGenerator(NULL),
-  mTotalSteps(1),
-  mLastNestingItem(C_INVALID_INDEX),
-  mContinueFromCurrentState(false),
-  mFailCounter(0)
+                         const CTaskEnum::Task & taskType)
+  : CCopasiMethod(pParent, methodType, taskType)
+  , mpProblem(NULL)
+  , mpTask(NULL)
+  , mpRandomGenerator(NULL)
+  , mTotalSteps(1)
+  , mLastNestingItem(C_INVALID_INDEX)
+  , mContinueFromCurrentState(false)
+  , mFailCounter(0)
 {
-  mpRandomGenerator = CRandom::createGenerator(CRandom::r250);
+  mpRandomGenerator = CRandom::createGenerator();
+}
+
+CScanMethod::CScanMethod(const CScanMethod & src,
+                         const CDataContainer * pParent)
+  : CCopasiMethod(src, pParent)
+  , mpProblem(NULL)
+  , mpTask(NULL)
+  , mpRandomGenerator(NULL)
+  , mTotalSteps(1)
+  , mLastNestingItem(C_INVALID_INDEX)
+  , mContinueFromCurrentState(false)
+  , mFailCounter(0)
+{
+  mpRandomGenerator = CRandom::createGenerator();
 }
 
 CScanMethod::~CScanMethod()

@@ -45,11 +45,6 @@ int CQParameterSetsDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
   return mFetched;
 }
 
-bool CQParameterSetsDM::clear()
-{
-  return removeRows(0, mpListOfParameterSets->size(), QModelIndex());
-}
-
 void CQParameterSetsDM::resetCacheProtected()
 {
   if (mpDataModel == NULL || mpDataModel->getModel() == NULL)

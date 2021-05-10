@@ -381,8 +381,3 @@ void CQReactionDM::insertNewRows(int position, int rows, int column, const QVari
 
   endInsertRows();
 }
-
-bool CQReactionDM::clear()
-{
-  return removeRows(0, mpReactions->size(), QModelIndex());
-}

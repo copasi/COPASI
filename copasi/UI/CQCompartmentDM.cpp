@@ -432,8 +432,3 @@ void CQCompartmentDM::insertNewRows(int position, int rows, int column, const QV
 
   endInsertRows();
 }
-
-bool CQCompartmentDM::clear()
-{
-  return removeRows(0, mpCompartments->size(), QModelIndex());
-}

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -114,6 +114,15 @@ public:
    * of its progress by the callback function set with SetCallback.
    */
   virtual bool optimise();
+
+
+  virtual C_FLOAT64 getBestValue() const;
+
+  virtual C_FLOAT64 getCurrentValue() const;
+
+  virtual const CVector< C_FLOAT64 > * getBestParameters() const;
+
+  virtual const CVector< C_FLOAT64 > * getCurrentParameters() const;
 };
 
 #endif  // COPASI_COptMethodStatistics

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,7 +34,7 @@
 COptMethodDE::COptMethodDE(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
-  COptPopulationMethod(pParent, methodType, taskType),
+  COptPopulationMethod(pParent, methodType, taskType, false),
   mpPermutation(NULL),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
   mMutationVarians(0.1),
@@ -76,13 +76,13 @@ bool COptMethodDE::evaluate(const CVector< C_FLOAT64 > & /* individual */)
   // since the parameters are created within the bounds.
 
   // evaluate the fitness
-  Continue &= mpOptProblem->calculate();
+  Continue &= mProblemContext.master()->calculate();
 
   // check whether the functional constraints are fulfilled
-  if (!mpOptProblem->checkFunctionalConstraints())
+  if (!mProblemContext.master()->checkFunctionalConstraints())
     mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
   else
-    mEvaluationValue = mpOptProblem->getCalculateValue();
+    mEvaluationValue = mProblemContext.master()->getCalculateValue();
 
   return Continue;
 }
@@ -108,7 +108,7 @@ bool COptMethodDE::replicate()
       // MUTATE CURRENT GENERATION
       for (j = 0; j < mVariableSize; j++)
         {
-          COptItem & OptItem = *(*mpOptItem)[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
           C_FLOAT64 & mut = (*mIndividuals[i])[j];
 
           mut = (*mIndividuals[c])[j] + 2 * ((*mIndividuals[a])[j] - (*mIndividuals[b])[j]);
@@ -127,7 +127,7 @@ bool COptMethodDE::replicate()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mContainerVariables[j] = mut;
+          *mProblemContext.master()->getContainerVariables()[j] = mut;
         }
 
       Continue &= evaluate(*mIndividuals[i]);
@@ -140,15 +140,15 @@ bool COptMethodDE::replicate()
       for (j = 0; j < mVariableSize; j++)
         {
 
-          COptItem & OptItem = *(*mpOptItem)[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
           C_FLOAT64 & mut = (*mIndividuals[i])[j];
 
-          size_t r = mpRandom->getRandomU(mPopulationSize - 1);
+          size_t r = mRandomContext.master()->getRandomU(mPopulationSize - 1);
 
           if (r < 0.6 * mPopulationSize)
             {
               mut = (*mIndividuals[i - mPopulationSize])[j] *
-                    mpRandom->getRandomNormal(1, mMutationVarians);
+                    mRandomContext.master()->getRandomNormal(1, mMutationVarians);
             }
 
           else
@@ -166,7 +166,7 @@ bool COptMethodDE::replicate()
                 break;
             }
 
-          *mContainerVariables[j] = mut;
+          *mProblemContext.master()->getContainerVariables()[j] = mut;
         }
 
       Continue &= evaluate(*mIndividuals[i]);
@@ -190,13 +190,13 @@ bool COptMethodDE::replicate()
         {
           for (j = 0; j < mVariableSize; j++)
             {
-              COptItem & OptItem = *(*mpOptItem)[j];
+              const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
               C_FLOAT64 & mut = (*mIndividuals[i - 2 * mPopulationSize])[j];
 
-              size_t r = mpRandom->getRandomU(mPopulationSize - 1);
+              size_t r = mRandomContext.master()->getRandomU(mPopulationSize - 1);
 
               if (r < 0.6 * mPopulationSize)
-                mut *= mpRandom->getRandomNormal(1, mMutationVarians);
+                mut *= mRandomContext.master()->getRandomNormal(1, mMutationVarians);
 
               // force it to be within the bounds
               switch (OptItem.checkConstraint(mut))
@@ -210,7 +210,7 @@ bool COptMethodDE::replicate()
                     break;
                 }
 
-              *mContainerVariables[j] = mut;
+              *mProblemContext.master()->getContainerVariables()[j] = mut;
             }
 
           Continue &= evaluate(*mIndividuals[i - 2 * mPopulationSize]);
@@ -269,7 +269,7 @@ bool COptMethodDE::creation(size_t first, size_t last)
         for (j = 0; j < mVariableSize; j++)
           {
             // calculate lower and upper bounds
-            COptItem & OptItem = *(*mpOptItem)[j];
+            const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
             mn = *OptItem.getLowerBoundValue();
             mx = *OptItem.getUpperBoundValue();
 
@@ -279,15 +279,15 @@ bool COptMethodDE::creation(size_t first, size_t last)
               {
                 // determine if linear or log scale
                 if ((mn < 0.0) || (mx <= 0.0))
-                  mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                  mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
                 else
                   {
                     la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
 
                     if (la < 1.8)
-                      mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                      mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
                     else
-                      mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mpRandom->getRandomCC());
+                      mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mRandomContext.master()->getRandomCC());
                   }
               }
 
@@ -310,7 +310,7 @@ bool COptMethodDE::creation(size_t first, size_t last)
 
             // We need to set the value here so that further checks take
             // account of the value.
-            *mContainerVariables[j] = mut;
+            *mProblemContext.master()->getContainerVariables()[j] = mut;
           }
 
       // calculate its fitness
@@ -348,7 +348,7 @@ bool COptMethodDE::initialize()
       setValue("Population Size", mPopulationSize);
     }
 
-  mpPermutation = new CPermutation(mpRandom, mPopulationSize);
+  mpPermutation = new CPermutation(mRandomContext.master(), mPopulationSize);
 
   mIndividuals.resize(3 * mPopulationSize);
 
@@ -413,7 +413,7 @@ bool COptMethodDE::optimise()
   for (i = 0; i < mVariableSize; i++)
     {
       C_FLOAT64 & mut = (*mIndividuals[0])[i];
-      COptItem & OptItem = *(*mpOptItem)[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
 
       mut = OptItem.getStartValue();
 
@@ -433,7 +433,7 @@ bool COptMethodDE::optimise()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mContainerVariables[i] = mut;
+      *mProblemContext.master()->getContainerVariables()[i] = mut;
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -446,7 +446,7 @@ bool COptMethodDE::optimise()
     {
       // and store that value
       mBestValue = mValues[0];
-      Continue &= mpOptProblem->setSolution(mBestValue, *mIndividuals[0]);
+      Continue &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -462,7 +462,7 @@ bool COptMethodDE::optimise()
     {
       // and store that value
       mBestValue = mValues[mBestIndex];
-      Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -519,7 +519,7 @@ bool COptMethodDE::optimise()
           Stalled = 0;
           mBestValue = mValues[mBestIndex];
 
-          Continue &= mpOptProblem->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+          Continue &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();

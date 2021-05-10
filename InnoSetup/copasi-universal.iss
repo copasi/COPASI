@@ -211,6 +211,10 @@ Root: HKCR; SubKey: .cps; ValueType: string; ValueData: COPASI.document; Flags: 
 Root: HKCR; SubKey: COPASI.document; ValueType: string; ValueData: COPASI File; Flags: uninsdeletekey; Check: IsAdminUser
 Root: HKCR; SubKey: COPASI.document\Shell\Open\Command; ValueType: string; ValueData: """{app}\bin\CopasiUI.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminUser
 Root: HKCR; Subkey: COPASI.document\DefaultIcon; ValueType: string; ValueData: {app}\share\copasi\icons\CopasiDoc.ico,-1; Flags: uninsdeletevalue; Check: IsAdminUser
+Root: HKCR; Subkey: COPASI; ValueType: string; ValueData: "URL: COPASI Protocol"; Flags: uninsdeletevalue; Check: IsAdminUser
+Root: HKCR; Subkey: COPASI; ValueType: string; ValueName: "URL Protocol"; ValueData: ""; Flags: uninsdeletevalue; Check: IsAdminUser
+Root: HKCR; Subkey: COPASI\DefaultIcon; ValueType: string; ValueData: {app}\share\copasi\icons\CopasiDoc.ico,-1; Flags: uninsdeletevalue; Check: IsAdminUser
+Root: HKCR; Subkey: COPASI\Shell\Open\Command; ValueType: string; ValueData: """{app}\bin\CopasiUI.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminUser
 Root: HKLM; Subkey: SYSTEM\CurrentControlSet\Control\Session Manager\Environment; ValueType: string; ValueName: COPASIDIR; ValueData: {app}; Check: IsAdminUser
 Root: HKLM; Subkey: SYSTEM\CurrentControlSet\Control\Session Manager\Environment; ValueType: expandsz; ValueName: Path; ValueData: "%COPASIDIR%\bin;{olddata}"; Check: UpdateSystemPath
 Root: HKLM; Subkey: Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers; ValueType: string; ValueName: "{app}\bin\CopasiUI.exe"; ValueData: "~ WIN7RTM"; Flags: uninsdeletevalue; Check: IsAdminUserAndWindows8
@@ -218,6 +222,10 @@ Root: HKCU; SubKey: Software\Classes\.cps; ValueType: string; ValueData: COPASI.
 Root: HKCU; SubKey: Software\Classes\COPASI.document; ValueType: string; ValueData: COPASI File; Flags: uninsdeletekey; Check: IsRegularUser
 Root: HKCU; SubKey: Software\Classes\COPASI.document\Shell\Open\Command; ValueType: string; ValueData: """{app}\bin\CopasiUI.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsRegularUser
 Root: HKCU; Subkey: Software\Classes\COPASI.document\DefaultIcon; ValueType: string; ValueData: {app}\share\copasi\icons\CopasiDoc.ico,-1; Flags: uninsdeletevalue; Check: IsRegularUser
+Root: HKCU; Subkey: Software\Classes\COPASI; ValueType: string; ValueData: "URL: COPASI Protocol"; Flags: uninsdeletevalue; Check: IsRegularUser
+Root: HKCU; Subkey: Software\Classes\COPASI; ValueType: string; ValueName: "URL Protocol"; ValueData: ""; Flags: uninsdeletevalue; Check: IsRegularUser
+Root: HKCU; Subkey: Software\Classes\COPASI\DefaultIcon; ValueType: string; ValueData: {app}\share\copasi\icons\CopasiDoc.ico,-1; Flags: uninsdeletevalue; Check: IsRegularUser
+Root: HKCU; Subkey: Software\Classes\COPASI\Shell\Open\Command; ValueType: string; ValueData: """{app}\bin\CopasiUI.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsRegularUser
 Root: HKCU; Subkey: Environment; ValueType: string; ValueName: COPASIDIR; ValueData: {app}; Check: IsRegularUser
 Root: HKCU; Subkey: Environment; ValueType: expandsz; ValueName: Path; ValueData: "%COPASIDIR%\bin;{olddata}"; Check: UpdateUserPath
 Root: HKCU; Subkey: Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers; ValueType: string; ValueName: "{app}\bin\CopasiUI.exe"; ValueData: "~ WIN7RTM"; Flags: uninsdeletevalue; Check: IsRegularUserAndWindows8

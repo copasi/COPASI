@@ -75,7 +75,7 @@
    <item row="1" column="1">
     <widget class="QCheckBox" name="mpFireAtInitialTime">
      <property name="text">
-      <string> Fire at intial Time if Trigger true</string>
+      <string> Fire at initial Time if Trigger true</string>
      </property>
     </widget>
    </item>

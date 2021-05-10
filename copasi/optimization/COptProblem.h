@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -67,6 +67,34 @@ public:
    * The methods which can be selected for performing this task.
    */
   static const CTaskEnum::Task ValidSubtasks[];
+
+  struct sCounter
+  {
+    /**
+    * Counter of evaluations
+    */
+    unsigned C_INT32 Counter{0};
+
+    /**
+    * Counter of failed evaluations (throwing Exception)
+    */
+    unsigned C_INT32 FailedCounterException{0};
+
+    /**
+    * Counter of failed evaluations (result NaN)
+    */
+    unsigned C_INT32 FailedCounterNaN{0};
+
+    /**
+    * Counter of constraint checks
+    */
+    unsigned C_INT32 ConstraintCounter{0};
+
+    /**
+    * Counter of failed constraint checks
+    */
+    unsigned C_INT32 FailedConstraintCounter{0};
+  };
 
   /**
    * Default constructor
@@ -175,11 +203,19 @@ public:
   const std::vector< COptItem * > & getConstraintList() const;
 
   /**
+   * Set parameters for which calculations and checks will be performed
+   * @param const CVectorCore< C_FLOAT64 > & parameters
+   */
+  void setParameters(const CVectorCore< C_FLOAT64 > & parameters);
+
+// private:
+  /**
    * Retrieve the update methods for the variables for calculation.
    * @return const std::vector< UpdateMethod * > & updateMethods
    */
   CVectorCore< C_FLOAT64 * > & getContainerVariables() const;
 
+public:
   /**
    * Retrieve the result of a calculation
    */
@@ -262,9 +298,9 @@ public:
   /**
    * Set subtask type
    * @param const CTaskEnum::Task & subtaskType
-   * @return success
+   * @return CCommonName
    */
-  bool setSubtaskType(const CTaskEnum::Task & subtaskType);
+  CCommonName setSubtaskType(const CTaskEnum::Task & subtaskType);
 
   /**
    * Retrieve the subtask type
@@ -325,15 +361,21 @@ public:
   const unsigned C_INT32 & getFunctionEvaluations() const;
 
   /**
-   * Adds increment to the function evaluation counter
-   * @param unsigned C_INT32 increment
+   * Adds increment to the internal counters
+   * @param const sCounter & increment
    */
-  void incrementEvaluations(unsigned C_INT32 increment);
+  void incrementCounters(const sCounter & increment);
 
   /**
-   * Resets the function evaluation counter
+   * Retrieve the internal counterc
+   * @return const sCounter & counterc
    */
-  void resetEvaluations();
+  const sCounter & getCounters() const;
+
+  /**
+   * Resets the internal counter
+   */
+  void resetCounters();
 
   /**
    * Retrieve the counter of failed Evaluations (Exception)
@@ -408,12 +450,7 @@ protected:
   /**
    * A pointer to the value of the CCopasiParameter holding the CN for the subtask
    */
-  std::string * mpParmSubtaskCN;
-
-  /**
-   * A pointer to the value of the CCopasiParameter holding the ObjectiveFunctionKey
-   */
-  // std::string * mpParmObjectiveFunctionKey;
+  std::string * mpParmSubTaskCN;
 
   /**
    * A pointer to the value of the CCopasiParameter holding the infix expression
@@ -459,7 +496,7 @@ protected:
   /**
    * Pointer to the subtask to be used in the optimization
    */
-  mutable CCopasiTask * mpSubtask;
+  mutable CCopasiTask * mpSubTask;
 
   /**
    * The objective function which should be minimized or maximized.
@@ -509,35 +546,12 @@ protected:
    */
   mutable CVector< C_FLOAT64 * > mContainerVariables;
 
+  sCounter mCounters;
+
   /**
    * A vector of solution results
    */
   C_FLOAT64 mSolutionValue;
-
-  /**
-   * Counter of evaluations
-   */
-  unsigned C_INT32 mCounter;
-
-  /**
-   * Counter of failed evaluations (throwing Exception)
-   */
-  unsigned C_INT32 mFailedCounterException;
-
-  /**
-   * Counter of failed evaluations (result NaN)
-   */
-  unsigned C_INT32 mFailedCounterNaN;
-
-  /**
-   * Counter of constraint checks
-   */
-  unsigned C_INT32 mConstraintCounter;
-
-  /**
-   * Counter of failed constraint checks
-   */
-  unsigned C_INT32 mFailedConstraintCounter;
 
   /**
    * A CPU Timer

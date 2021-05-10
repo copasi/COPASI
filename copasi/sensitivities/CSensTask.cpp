@@ -36,6 +36,7 @@
 #include "copasi/math/CMathContainer.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/report/CReport.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 #define XXXX_Reporting
 
@@ -43,21 +44,13 @@ CSensTask::CSensTask(const CDataContainer * pParent,
                      const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
-  mpProblem = new CSensProblem(this);
-
-  mpMethod = createMethod(CTaskEnum::Method::sensMethod);
+  mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::sensMethod, this);
 }
 
 CSensTask::CSensTask(const CSensTask & src,
                      const CDataContainer * pParent):
   CCopasiTask(src, pParent)
-{
-  mpProblem =
-    new CSensProblem(*(CSensProblem *) src.mpProblem, this);
-
-  mpMethod = createMethod(src.mpMethod->getSubType());
-  this->add(mpMethod, true);
-}
+{}
 
 CSensTask::~CSensTask()
 {}

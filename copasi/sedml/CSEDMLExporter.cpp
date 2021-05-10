@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -202,6 +202,116 @@ void CSEDMLExporter::createSEDMLDocument(CDataModel& dataModel, std::string mode
   createTasks(dataModel,  modelRef);
 }
 
+
+/**
+ * exports the nth scan item, to the given task.
+ * @return boolean indicating success or failure
+ */
+bool CSEDMLExporter::exportNthScanItem(CScanProblem * pProblem,
+                                       size_t n,
+                                       SedRepeatedTask * task,
+                                       CDataModel & dataModel,
+                                       const std::string & modelId)
+{
+  CCopasiParameterGroup * current = pProblem->getScanItem(n);
+  CScanProblem::Type type = (CScanProblem::Type)(current->getParameter("Type")->getValue< unsigned C_INT32 >());
+
+  // ignore random items
+  if (type == CScanProblem::SCAN_RANDOM)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: This version of COPASI cannot export random scan items, they will be ignored.");
+      return false;
+    }
+
+  int numSteps = (current->getParameter("Number of steps")->getValue< unsigned C_INT32 >());
+
+  // handle repeats
+  if (type == CScanProblem::SCAN_REPEAT)
+    {
+      SedUniformRange * range = task->createUniformRange();
+      SEDML_SET_ID(range, SEDMLUtils::getNextId("range", task->getNumRanges()));
+      range->setStart(0);
+      range->setEnd(numSteps);
+      range->setNumberOfPoints(numSteps);
+      range->setType("linear");
+
+      task->setRangeId(range->getId());
+
+      return true;
+    }
+
+  // handle scans
+  if (type == CScanProblem::SCAN_LINEAR)
+    {
+      double min = (current->getParameter("Minimum")->getValue< C_FLOAT64 >());
+      double max = (current->getParameter("Maximum")->getValue< C_FLOAT64 >());
+      bool log = (current->getParameter("log")->getValue< bool >());
+      std::string values = current->getParameter("Values") != NULL ? current->getParameter("Values")->getValue< std::string >() : std::string("");
+
+      std::string rangeId = SEDMLUtils::getNextId("range", task->getNumRanges());
+
+      if (current->getParameter("Use Values") != NULL && current->getParameter("Use Values")->getValue< bool >() && !values.empty())
+        {
+          SedVectorRange * range = task->createVectorRange();
+          SEDML_SET_ID(range, rangeId);
+          rangeId = range->getId();
+          std::vector< std::string > elems;
+          ResultParser::split(values, std::string(",; |\n\t\r"), elems);
+
+for (std::string & number : elems)
+            {
+              range->addValue(ResultParser::saveToDouble(number));
+            }
+        }
+      else
+        {
+          SedUniformRange * range = task->createUniformRange();
+          SEDML_SET_ID(range, rangeId);
+          rangeId = range->getId();
+          range->setStart(min);
+          range->setEnd(max);
+          range->setNumberOfPoints(numSteps);
+          range->setType(log ? "log" : "linear");
+        }
+
+      const CRegisteredCommonName & cn = (current->getParameter("Object")->getValue< CCommonName >());
+      const CDataObject * pObject = static_cast< const CDataObject * >(dataModel.getObject(cn));
+
+      if (pObject == NULL)
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: This version of COPASI cannot export the selected scan object, it will be ignored.");
+          return false;
+        }
+
+      std::string xpath = SEDMLUtils::getXPathForObject(*pObject);
+
+      if (xpath.empty())
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: This version of COPASI cannot export the selected scan object, it will be ignored.");
+          return false;
+        }
+
+      SedSetValue * change = task->createTaskChange();
+      change->setModelReference(modelId);
+
+      if (xpath == SEDML_TIME_URN)
+        {
+          change->setSymbol(xpath);
+        }
+      else
+        {
+          change->setTarget(xpath);
+        }
+
+      change->setRange(rangeId);
+      change->setMath(SBML_parseFormula(rangeId.c_str()));
+      task->setRangeId(rangeId);
+      return true;
+    }
+
+  return false;
+}
+
 /**
  * Creates the simulations for SEDML.
  */
@@ -209,7 +319,7 @@ std::string
 CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelId)
 {
   // need L1V2 to export repeated tasks
-  if (mpSEDMLDocument->getVersion() != 2)
+  if (mpSEDMLDocument->getVersion() < 2)
     return "";
 
   CScanTask* pTask =  dynamic_cast<CScanTask*>(&dataModel.getTaskList()->operator[]("Scan"));
@@ -218,7 +328,7 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelI
     return "";
 
   CScanProblem* pProblem = dynamic_cast<CScanProblem*>(pTask->getProblem());
-  size_t numItems = pProblem->getNumberOfScanItems();
+  int numItems = (int)pProblem->getNumberOfScanItems();
 
   if (numItems == 0)
     return "";
@@ -246,114 +356,38 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelI
   SEDML_SET_ID(task, taskId);
   task->setResetModel(!pProblem->getContinueFromCurrentState());
 
-  // create ranges / changes
-  for (size_t i = 0; i < numItems; ++i)
-    {
-      CCopasiParameterGroup* current = pProblem->getScanItem(i);
-      CScanProblem::Type type = (CScanProblem::Type)(current->getParameter("Type")->getValue< unsigned C_INT32 >());
-
-      // ignore random items
-      if (type == CScanProblem::SCAN_RANDOM)
-        {
-          CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: This version of COPASI cannot export random scan items, they will be ignored.");
-          continue;
-        }
-
-      int numSteps = (current->getParameter("Number of steps")->getValue< unsigned C_INT32 >());
-
-      // handle repeats
-      if (type == CScanProblem::SCAN_REPEAT)
-        {
-          SedUniformRange *range = task->createUniformRange();
-          SEDML_SET_ID(range, SEDMLUtils::getNextId("range", task->getNumRanges()));
-          range->setStart(0);
-          range->setEnd(numSteps);
-          range->setNumberOfPoints(numSteps);
-          range->setType("linear");
-
-          if (task->isSetRangeId())
-            task->setRangeId(range->getId());
-
-          continue;
-        }
-
-      // handle scans
-      if (type == CScanProblem::SCAN_LINEAR)
-        {
-          double min = (current->getParameter("Minimum")->getValue< C_FLOAT64 >());
-          double max = (current->getParameter("Maximum")->getValue< C_FLOAT64 >());
-          bool log = (current->getParameter("log")->getValue< bool >());
-          std::string values = current->getParameter("Values") != NULL ? current->getParameter("Values")->getValue<std::string>() : std::string("");
-
-          std::string rangeId = SEDMLUtils::getNextId("range", task->getNumRanges());
-
-          if (current->getParameter("Use Values") != NULL && current->getParameter("Use Values")->getValue< bool >() && !values.empty())
-            {
-              SedVectorRange* range = task->createVectorRange();
-              SEDML_SET_ID(range, rangeId);
-              std::vector<std::string> elems;
-              ResultParser::split(values, std::string(",; |\n\t\r"), elems);
-
-for (std::string & number : elems)
-                {
-                  range->addValue(ResultParser::saveToDouble(number));
-                }
-
-            }
-          else
-            {
-              SedUniformRange* range = task->createUniformRange();
-              SEDML_SET_ID(range, rangeId);
-              range->setStart(min);
-              range->setEnd(max);
-              range->setNumberOfPoints(numSteps);
-              range->setType(log ? "log" : "linear");
-            }
-
-
-          const CRegisteredCommonName& cn = (current->getParameter("Object")->getValue< CCommonName >());
-          const CDataObject* pObject = static_cast<const CDataObject*>(dataModel.getObject(cn));
-
-          if (pObject == NULL)
-            {
-              CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: This version of COPASI cannot export the selected scan object, it will be ignored.");
-              continue;
-            }
-
-          std::string xpath = SEDMLUtils::getXPathForObject(*pObject);
-
-          if (xpath.empty())
-            {
-              CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: This version of COPASI cannot export the selected scan object, it will be ignored.");
-              continue;
-            }
-
-          SedSetValue *change = task->createTaskChange();
-          change->setModelReference(modelId);
-
-          if (xpath == SEDML_TIME_URN)
-            {
-              change->setSymbol(xpath);
-            }
-          else
-            {
-              change->setTarget(xpath);
-            }
-
-          change->setRange(rangeId);
-          change->setMath(SBML_parseFormula(rangeId.c_str()));
-
-          continue;
-        }
-    }
-
-  if (!task->isSetRangeId() && task->getNumRanges() > 0)
-    task->setRangeId(task->getRange(0)->getId());
-
   // create subtask
-  SedSubTask* subTask = task->createSubTask();
+  SedSubTask * subTask = task->createSubTask();
   subTask->setOrder(1);
   subTask->setTask(subTaskId);
+
+  // create first range
+  bool result = exportNthScanItem(pProblem, numItems - 1, task, dataModel, modelId);
+
+  std::string lastTaskId = task->getId();
+
+  // create remaining ranges / changes as new repeated task
+  for (int i = numItems - 2; i >= 0 ; --i)
+    {
+
+      task = mpSEDMLDocument->createRepeatedTask();
+      std::string nestedId = SEDMLUtils::getNextId("task", mpSEDMLDocument->getNumTasks());
+      SEDML_SET_ID(task, nestedId);
+      task->setResetModel(!pProblem->getContinueFromCurrentState());
+
+      // create subtask
+      SedSubTask * subTask = task->createSubTask();
+      subTask->setOrder(1);
+      subTask->setTask(lastTaskId);
+
+      // export range
+      exportNthScanItem(pProblem, i, task, dataModel, modelId);
+
+      // update last task id for nesting
+      lastTaskId = task->getId();
+    }
+
+
 
   return taskId;
 }
@@ -374,7 +408,7 @@ std::string CSEDMLExporter::createTimeCourseTask(CDataModel& dataModel, const st
   double stepSize = tProblem->getStepSize();
   int stepNumber = (int)tProblem->getStepNumber();
   mpTimecourse->setOutputStartTime(outputStartTime);
-  mpTimecourse->setOutputEndTime(stepNumber * stepSize);
+  mpTimecourse->setOutputEndTime(tProblem->getDuration());
 
   if (outputStartTime > 0)
     {
@@ -563,6 +597,12 @@ void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
 
                   targetXPathStringX = SEDMLUtils::getXPathAndName(xAxis, typeX,
                                        pModel, dataModel);
+
+                  if (targetXPathStringX.empty())
+                    {
+                      CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export report '%s' variable '%s', as no xpath expression for it could be generated.", name.c_str(), object->getObjectDisplayName().c_str());
+                      continue;
+                    }
                 }
 
               if (object->getCN() == pTime->getCN())

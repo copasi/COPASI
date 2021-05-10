@@ -8,9 +8,6 @@
 # of Connecticut School of Medicine. 
 # All rights reserved. 
 
-
-
-
 # Locate library providing crossguid
 # This module defines:
 # CROSSGUID_INCLUDE_DIR, where to find the headers
@@ -74,7 +71,7 @@ if (NOT CROSSGUID_FOUND)
   
   if (CROSSGUID_LIBRARY AND UNIX AND NOT APPLE)
     #set(CROSSGUID_LIBRARY ${CROSSGUID_LIBRARY} -luuid)
-    find_package(Libuuid REQUIRED)
+    find_package(LIBUUID REQUIRED)
     set(CROSSGUID_LIBRARY ${CROSSGUID_LIBRARY} ${LIBUUID_LIBRARY})
   endif ()
   

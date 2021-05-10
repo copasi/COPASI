@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,7 +20,7 @@
 COptMethodNL2SOL::COptMethodNL2SOL(const CDataContainer * pParent,
                                    const CTaskEnum::Method & methodType,
                                    const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType),
+  COptMethod(pParent, methodType, taskType, false),
   v(NULL),
   iv(NULL),
   mIterations(150),
@@ -84,11 +84,11 @@ bool COptMethodNL2SOL::optimise()
   doublereal urparam[1];
 
   // generate the bound arrays
-  bool pointInParameterDomain;
+  bool pointInParameterDomain = true;
 
   for (j = 0; j < mVariableSize; j++)
     {
-      const COptItem & OptItem = *(*mpOptItem)[j];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
       mCurrent[j] = OptItem.getStartValue();
 
       switch (OptItem.checkConstraint(mCurrent[j]))
@@ -111,7 +111,7 @@ bool COptMethodNL2SOL::optimise()
       bounds[2 * j + 1] = *OptItem.getUpperBoundValue();
 
       // set the value
-      *mContainerVariables[j] = (mCurrent[j]);
+      *mProblemContext.master()->getContainerVariables()[j] = (mCurrent[j]);
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -124,10 +124,11 @@ bool COptMethodNL2SOL::optimise()
     {
       // and store that value
       mBestValue = mEvaluationValue;
-      mContinue &= mpOptProblem->setSolution(mBestValue, mBest);
+      mContinue &= mProblemContext.master()->setSolution(mBestValue, mBest);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
+      mpParentTask->output(COutputInterface::MONITORING);
     }
 
   try
@@ -164,7 +165,7 @@ bool COptMethodNL2SOL::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mVariableSize = (C_INT) mpOptItem->size();
+  mVariableSize = (C_INT) mProblemContext.master()->getOptItemList().size();
   mCurrent.resize(mVariableSize);
   mBest.resize(mVariableSize);
 
@@ -173,7 +174,7 @@ bool COptMethodNL2SOL::initialize()
 
   mIterations = getValue< unsigned C_INT32 >("Iteration Limit");
 
-  CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(mpOptProblem);
+  CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(mProblemContext.master());
 
   if (pFitProblem != NULL)// if (false)
     {
@@ -221,15 +222,15 @@ const C_FLOAT64 & COptMethodNL2SOL::evaluate()
 {
   // We do not need to check whether the parametric constraints are fulfilled
   // since the parameters are created within the bounds.
-  mContinue = mpOptProblem->calculate();
-  mEvaluationValue = mpOptProblem->getCalculateValue();
+  mContinue = mProblemContext.master()->calculate();
+  mEvaluationValue = mProblemContext.master()->getCalculateValue();
 
   // when we leave the either the parameter or functional domain
   // we penalize the objective value by forcing it to be larger
   // than the best value recorded so far.
   if (mEvaluationValue < mBestValue &&
-      (!mpOptProblem->checkParametricConstraints() ||
-       !mpOptProblem->checkFunctionalConstraints()))
+      (!mProblemContext.master()->checkParametricConstraints() ||
+       !mProblemContext.master()->checkFunctionalConstraints()))
     mEvaluationValue = mBestValue + mBestValue - mEvaluationValue;
 
   return mEvaluationValue;
@@ -240,6 +241,26 @@ unsigned C_INT32 COptMethodNL2SOL::getMaxLogVerbosity() const
   return 1;
 }
 
+C_FLOAT64 COptMethodNL2SOL::getBestValue() const
+{
+  return mBestValue;
+}
+
+C_FLOAT64 COptMethodNL2SOL::getCurrentValue() const
+{
+  return mEvaluationValue;
+}
+
+const CVector< C_FLOAT64 > * COptMethodNL2SOL::getBestParameters() const
+{
+  return &mBest;
+}
+
+const CVector< C_FLOAT64 > * COptMethodNL2SOL::getCurrentParameters() const
+{
+  return &mCurrent;
+}
+
 C_INT COptMethodNL2SOL::calcr(integer *n, integer *p, doublereal *x, integer *nf, doublereal *resid,
                               integer *uiparm, doublereal *urparm, U_fp ufparm)
 {
@@ -247,7 +268,7 @@ C_INT COptMethodNL2SOL::calcr(integer *n, integer *p, doublereal *x, integer *nf
 
   // set the parameter values
   for (i = 0; i < *p; i++)
-    *(mContainerVariables[i]) = x[i];
+    *(mProblemContext.master()->getContainerVariables()[i]) = x[i];
 
   //urparm[0] = (*f)(resid );
 
@@ -260,15 +281,17 @@ C_INT COptMethodNL2SOL::calcr(integer *n, integer *p, doublereal *x, integer *nf
       mBest = mCurrent;
       mBestValue  = mEvaluationValue;
 
-      mContinue = mpOptProblem->setSolution(mBestValue, mBest);
+      mContinue = mProblemContext.master()->setSolution(mBestValue, mBest);
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
     }
 
+  mpParentTask->output(COutputInterface::MONITORING);
+
   if (resid != NULL)
     {
       const CVector< C_FLOAT64 > Residuals =
-        static_cast<CFitProblem *>(mpOptProblem)->getResiduals();
+        static_cast<CFitProblem *>(mProblemContext.master())->getResiduals();
 
       for (i = 0; i < *n; i++) resid[i] = Residuals[i];
     }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,31 +28,27 @@
 
 #include "copasi/model/CModel.h"
 #include "copasi/model/CState.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 const unsigned int COscillationTask::ValidMethods[] =
 {
-  CCopasiMethod::oscillationIntegrate,
-  CCopasiMethod::unset
+  CTaskEnum::Method::oscillationIntegrate,
+  CTaskEnum::Method::unset
 };
 
 COscillationTask::COscillationTask(const CTaskEnum::Task & type,
                                    const CDataContainer * pParent):
-  CCopasiTask(type, pParent)
+  CCopasiTask(pParent, type)
 {
-  mpProblem = new COscillationProblem(type, this);
-  mpMethod = COscillationMethod::createMethod();
-  this->add(mpMethod, true);
-  ((COscillationMethod *) mpMethod)->setProblem((COscillationProblem *) mpProblem);
+  mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::oscillationIntegrate, this);
+  static_cast< COscillationMethod * >(mpMethod)->setProblem(static_cast< COscillationProblem * >(mpProblem));
 }
 
 COscillationTask::COscillationTask(const COscillationTask & src,
                                    const CDataContainer * pParent):
   CCopasiTask(src, pParent)
 {
-  mpProblem = new COscillationProblem(*(COscillationProblem *) src.mpProblem, this);
-  mpMethod = COscillationMethod::createMethod(src.mpMethod->getSubType());
-  this->add(mpMethod, true);
-  ((COscillationMethod *) mpMethod)->setProblem((COscillationProblem *) mpProblem);
+  static_cast< COscillationMethod * >(mpMethod)->setProblem(static_cast< COscillationProblem * >(mpProblem));
 }
 
 COscillationTask::~COscillationTask()
