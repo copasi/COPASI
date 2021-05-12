@@ -493,6 +493,9 @@ void CQMiriamWidget::showEvent(QShowEvent *event)
 
   mMessageType = -1;
   mMessage = "";
+
+  if (event != NULL)
+    enterProtected();
 }
 
 const CMIRIAMInfo &CQMiriamWidget::getMIRIAMInfo() const
