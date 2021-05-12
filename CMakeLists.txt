@@ -202,6 +202,7 @@ if (UNIX)
 endif()
 
 include(CTest)
+add_subdirectory(tests)
 
 if (BUILD_TESTS)
 find_path(CPPUNIT_INCLUDE_DIR cppunit/Test.h )

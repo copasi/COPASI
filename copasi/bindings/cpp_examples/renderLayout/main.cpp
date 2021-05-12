@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,9 +26,7 @@
 #include <copasi/layout/CListOfLayouts.h>
 #include <copasi/qlayout/CQLayoutScene.h>
 
-
 using namespace std;
-
 
 void renderCurrentLayout(CLayout* pLayout, CDataModel* pDataModel, const std::string& outputFilename, const std::string& format = "pdf")
 {
@@ -64,7 +67,7 @@ int main(int argc, char** argv)
 
       if (filename.find(".cps") != std::string::npos || filename.find(".gps") != std::string::npos)
         {
-          if (!pDataModel->loadModel(filename, NULL))
+          if (!pDataModel->loadFromFile(filename))
             throw "model couldn't be loaded";
         }
       else
@@ -94,14 +97,11 @@ int main(int argc, char** argv)
                                      path + std::string("/") + baseName + std::string("_") + current.getObjectName() + std::string(".") + format;
           renderCurrentLayout(&current, pDataModel, currentName, format);
         }
-
-
     }
   catch (...)
     {
       std::cout << "Exception occurred: " << std::endl
                 << CCopasiMessage::getAllMessageText() << std::endl;
-
     }
 
   // clean up the library

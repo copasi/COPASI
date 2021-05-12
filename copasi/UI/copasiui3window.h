@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -132,12 +132,6 @@ public:
   void exportSBMLToString(std::string & SBML);
 
   // SEDML
-  /**
-  * This is used to import an SEDML file from a std::string in the GUI
-  * it does all the necessary GUI stuff like asking to save the old
-  * document, displaying messages, etc.
-  */
-  //void importSEDMLFromString(const std::string & sedmlDocumentText);
 
   void exportSEDMLToString(std::string & SEDML);
 

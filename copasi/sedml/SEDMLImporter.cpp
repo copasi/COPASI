@@ -570,7 +570,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
           case LIBSEDML_SEV_FATAL:
 
-            // treat unknown as fatal
+          // treat unknown as fatal
           default:
 
             if (pSEDMLError->getErrorId() == 10804)
@@ -696,16 +696,12 @@ SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
           mpSEDMLDocument->removeTask(subTaskId);
           keepRunning = true;
           break;
-
         }
-
     }
-
 
   for (unsigned int i = 0; i < mpSEDMLDocument->getNumTasks(); ++i)
     {
       auto * task = mpSEDMLDocument->getTask(i);
-
 
       switch (task->getTypeCode())
         {
@@ -789,7 +785,6 @@ SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
                         group->setValue< bool >("log", (!urange->isSetType() ||
                                                         urange->getType().empty() ||
                                                         urange->getType() == "linear") ? false : true);
-
                       }
 
                     if (vrange != NULL)
@@ -798,7 +793,7 @@ SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
                         std::stringstream str;
                         std::vector<double> vals = vrange->getValues();
 
-for (double val : vals)
+                        for (double val : vals)
                           str << val << " ";
 
                         group->setValue< std::string >("Values", str.str());
@@ -955,9 +950,12 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
 
   if (CDirEntry::exist(modelSource))
     FileName = modelSource;
+  else if (!pDataModel->getSEDMLFileName().empty())
+    FileName = CDirEntry::dirName(pDataModel->getSEDMLFileName()) + CDirEntry::Separator + modelSource;
+  else if (!pDataModel->getReferenceDirectory().empty())
+    FileName = pDataModel->getReferenceDirectory() + CDirEntry::Separator + modelSource;
   else
-    FileName = CDirEntry::dirName(pDataModel->getSEDMLFileName())
-               + CDirEntry::Separator + modelSource;
+    FileName = modelSource;
 
   std::ifstream file(CLocaleString::fromUtf8(FileName).c_str());
 
