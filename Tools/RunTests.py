@@ -16,7 +16,7 @@ import glob		   # for making file lists from directory
 import string	   # for handling string
 import time
 import NumDiff
-#import shutil
+import shutil
 
 
 # ----------
@@ -135,7 +135,8 @@ def testDir(dir, binFile, source_dir, outDir):
     target = os.path.join(outDir, os.path.basename(name))
     if os.path.exists(target):
         os.remove(target)
-    os.renames(name, target);
+    shutil.copy(name, target)
+    os.remove(name)
     computedResults.append(target)
 
   if len(computedResults) == 0: 
@@ -149,25 +150,25 @@ def testDir(dir, binFile, source_dir, outDir):
     basename = os.path.basename(name)
     refDir = ''
     if testName not in source_dir:
-      refDir = string.replace(source_dir, 'Tests', os.path.join('References', testName ))
+      refDir = source_dir.replace('Tests', os.path.join('References', testName ))
     else:
-      refDir = string.replace(source_dir, 'Tests', 'References')
+      refDir = source_dir.replace('Tests', 'References')
     if not os.path.exists(refDir): 
         print ("... no reference data for test! missing dir: {0}".format(refDir))
-        sys.exit(1);
+        sys.exit(1)
 
     # between 'results' and 'result'
     if basename.find('results') != -1:
-      cmpFile = string.replace(name, '_results.txt', '_diff.txt')
+      cmpFile = name.replace('_results.txt', '_diff.txt')
     else:
-      cmpFile = string.replace(name, '_result.txt', '_diff.txt')
+      cmpFile = name.replace('_result.txt', '_diff.txt')
 
     for refName in glob.glob(refDir + '/*.txt'):
       different = NumDiff.runTest(refName, name, cmpFile, report, testName)
       if different: 
         print(" ... Different ")
       else:
-        print (" ... OK");
+        print (" ... OK")
 
 
 # --- Run as main ---
