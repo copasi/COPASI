@@ -37,37 +37,37 @@ TEST_CASE("Load model", "[COPASI]")
   std::stringstream FileContent;
 
   {
+    FileContent.str("");
     std::ifstream File(getTestFile("test-data/brusselator.gps"));
     FileContent << File.rdbuf();
   }
   REQUIRE(pDataModel->loadFromString(FileContent.str()) == true);
-  FileContent.str("");
 
   {
+    FileContent.str("");
     std::ifstream File(getTestFile("test-data/brusselator.cps"));
     FileContent << File.rdbuf();
   }
-  REQUIRE(pDataModel->loadFromString(FileContent.str(), CDirEntry::dirName("test-data/brusselator.cps")) == true);
-  FileContent.str("");
+  REQUIRE(pDataModel->loadFromString(FileContent.str(), CDirEntry::dirName(getTestFile("test-data/brusselator.cps"))) == true);
 
   {
+    FileContent.str("");
     std::ifstream File(getTestFile("test-data/brusselator.xml"));
     FileContent << File.rdbuf();
   }
   REQUIRE(pDataModel->loadFromString(FileContent.str()) == true);
-  FileContent.str("");
 
   {
+    FileContent.str("");
     std::ifstream File(getTestFile("test-data/brusselator.sedml"));
     FileContent << File.rdbuf();
   }
-  REQUIRE(pDataModel->loadFromString(FileContent.str(), CDirEntry::dirName("test-data/brusselator.sedml")) == true);
-  FileContent.str("");
+  REQUIRE(pDataModel->loadFromString(FileContent.str(), CDirEntry::dirName(getTestFile("test-data/brusselator.sedml"))) == true);
 
   {
+    FileContent.str("");
     std::ifstream File(getTestFile("test-data/brusselator.omex"));
     FileContent << File.rdbuf();
   }
   REQUIRE(pDataModel->loadFromString(FileContent.str()) == true);
-  FileContent.str("");
 }
