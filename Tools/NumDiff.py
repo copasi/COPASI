@@ -61,11 +61,11 @@ def takeImportantThings_python(ename, aname, dname):
   dataFile2 = [] 
   for line in difflib.unified_diff(a, b):
     #print line
-    if string.find(line, '-') == 0:
+    if line.find('-') == 0:
       dataFile1.append(line)
     
     # '+' at the first character represents the line coming from the second file
-    if string.find(line, '+') == 0:
+    if line.find('+') == 0:
       dataFile2.append(line)
 
   #print '\n\nData from file 1 = ', dataFile1
@@ -82,7 +82,7 @@ def takeImportantThings_python(ename, aname, dname):
 
       # '-' represents the data coming from the first file
       if re.match('-', data):
-        txt = string.replace(data, '-', '', 1)
+        txt = data.replace('-', '', 1)
       else:
         txt = data              
 
@@ -101,7 +101,7 @@ def takeImportantThings_python(ename, aname, dname):
 
       # '+' represents the data coming from the second file
       if re.match('\+', newData):
-        txt = string.replace(newData, '+', '', 1)
+        txt = newData.replace('+', '', 1)
       else:
         txt = newData
 
@@ -221,8 +221,8 @@ def calcError(listValue0, listValue1, ref):
   # len(listValue0) = len(listValue1)
   for ij in range(0, len(listValue1)):
 
-    value0 = string.atof(listValue0[ij])
-    value1 = string.atof(listValue1[ij])
+    value0 = float(listValue0[ij])
+    value1 = float(listValue1[ij])
 
     if max(abs(value0), abs(value1)) == 0.0:
       absolute = 0.0; relative = 0.0
