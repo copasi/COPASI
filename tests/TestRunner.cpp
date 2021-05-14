@@ -3,16 +3,6 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// BEGIN: Copyright
-// END: Copyright
-
-// BEGIN: License
-// Licensed under the Artistic License 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//   https://opensource.org/licenses/Artistic-2.0
-// END: License
-
 /**
  * Main Entry point for all tests (defines catch main, and only one
  * test file can do it). This file is there to include utility
