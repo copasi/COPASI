@@ -217,6 +217,15 @@ public:
                     CProcessReport* pProcessReport = NULL,
                     const bool & deleteOldData = true);
 
+  bool loadModel(std::istream & in,
+                 const std::string & pwd,
+                 CProcessReport* pProcessReport,
+                 const bool & deleteOldData = true);
+
+  bool loadModel(const std::string & fileName,
+                 CProcessReport* pProcessReport,
+                 const bool & deleteOldData = true);
+
   /**
    * Loads the model contained in the specified file and adds it to the
    * current one
@@ -427,15 +436,6 @@ public:
 #endif // COPASI_Versioning
 
 protected:
-  bool loadModel(std::istream & in,
-                 const std::string & pwd,
-                 CProcessReport* pProcessReport,
-                 const bool & deleteOldData = true);
-
-  bool loadModel(const std::string & fileName,
-                 CProcessReport* pProcessReport,
-                 const bool & deleteOldData = true);
-
   void pushData();
   void popData();
   void commonAfterLoad(CProcessReport* pProcessReport,
