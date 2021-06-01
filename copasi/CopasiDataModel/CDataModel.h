@@ -262,11 +262,12 @@ public:
   bool importSBML(const std::string & fileName,
                   CProcessReport* pImportHandler = NULL,
                   const bool & deleteOldData = true);
-
+#ifndef SWIG
   bool importSBML(std::istream & content,
                   const std::string & pwd,
                   CProcessReport* pImportHandler = NULL,
                   const bool & deleteOldData = true);
+#endif
 
   std::string exportSBMLToString(CProcessReport* pExportHandler, int sbmlLevel, int sbmlVersion);
 
