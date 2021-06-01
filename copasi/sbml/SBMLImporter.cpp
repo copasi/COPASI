@@ -9959,9 +9959,8 @@ const CDataObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CM
 
   // check if the object is a local or global parameter
   pObject = CObjectInterface::DataObject(pModel->getObjectFromCN(name));
-  assert(pObject != NULL);
 
-  if (pObject->hasFlag(CDataObject::Reference))
+  if (pObject != NULL && pObject->hasFlag(CDataObject::Reference))
     {
       pObject = pObject->getObjectParent();
     }
