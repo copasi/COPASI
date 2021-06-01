@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1407,7 +1407,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
 
               //assert(pos!=copasi2sbmlmap.end());
               // check if it is a CMetab, a CModelValue or a CCompartment
-              if (dynamic_cast<CMetab*>(object))
+              if (dynamic_cast<CMetab*>(object) && pos != copasi2sbmlmap.end())
                 {
                   Species* pSpecies = dynamic_cast<Species*>(pos->second);
                   id = pSpecies->getId();
@@ -1506,7 +1506,11 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
               else if (dynamic_cast<CModelValue*>(object))
                 {
                   // usage = "PARAMETER"
-                  id = dynamic_cast<Parameter*>(pos->second)->getId();
+                  if (pos != copasi2sbmlmap.end())
+                    id = dynamic_cast< Parameter * >(pos->second)->getId();
+                  else
+                    id = dynamic_cast< CModelValue * >(object)->getSBMLId();
+
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::SubType::DEFAULT, id);
 
                   if (replacementMap.find(id) == replacementMap.end())
@@ -1516,7 +1520,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                       replacementMap[id] = std::make_pair(object, pFunParam);
                     }
                 }
-              else if (dynamic_cast<CCompartment*>(object))
+              else if (dynamic_cast< CCompartment * >(object) && pos != copasi2sbmlmap.end())
                 {
                   // usage = "VOLUME"
                   id = dynamic_cast<Compartment*>(pos->second)->getId();
