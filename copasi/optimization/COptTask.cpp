@@ -93,9 +93,10 @@ bool COptTask::setCallBack(CProcessReport * pCallBack)
 {
   bool success = CCopasiTask::setCallBack(pCallBack);
 
-  if (!mpProblem->setCallBack(pCallBack)) success = false;
-
-  if (!mpMethod->setCallBack(pCallBack)) success = false;
+  if (mpProblem != NULL)
+    {
+      success &=  mpProblem->setCallBack(pCallBack);
+    }
 
   return success;
 }
