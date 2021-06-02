@@ -388,14 +388,16 @@ CMathContainer * CCopasiTask::getMathContainer() const
 
 bool CCopasiTask::setCallBack(CProcessReport * pCallBack)
 {
+  bool success = true;
+
   if (mpMethod != NULL)
     {
-      mpMethod->setCallBack(pCallBack);
+      success &= mpMethod->setCallBack(pCallBack);
     }
 
   mpCallBack = pCallBack;
 
-  return true;
+  return success;
 }
 
 CProcessReport * CCopasiTask::getCallBack() const

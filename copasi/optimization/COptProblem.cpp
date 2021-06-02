@@ -278,9 +278,14 @@ void COptProblem::reset()
 
 bool COptProblem::setCallBack(CProcessReport * pCallBack)
 {
-  CCopasiProblem::setCallBack(pCallBack);
+  bool success = CCopasiProblem::setCallBack(pCallBack);
 
-  if (pCallBack)
+  if (mpSubTask != NULL)
+    {
+      success &= mpSubTask->setCallBack(mpCallBack);
+    }
+
+  if (mpCallBack)
     {
       reset();
 
@@ -292,6 +297,11 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
       mhCounter =
         mpCallBack->addItem("Function Evaluations",
                             mCounters.Counter);
+    }
+  else
+    {
+      mhSolutionValue = C_INVALID_INDEX;
+      mhCounter = C_INVALID_INDEX;
     }
 
   return true;

@@ -475,7 +475,24 @@ bool CFitProblem::elevateChildren()
 
 bool CFitProblem::setCallBack(CProcessReport * pCallBack)
 {
-  return COptProblem::setCallBack(pCallBack);
+  bool success =  COptProblem::setCallBack(pCallBack);
+
+  if (mpSteadyState != NULL)
+    {
+      success &= mpSteadyState->setCallBack(mpCallBack);
+    }
+
+  if (mpTrajectory != NULL)
+    {
+      success &= mpTrajectory->setCallBack(mpCallBack);
+    }
+
+  if (mpTimeSens != NULL)
+    {
+      success &= mpTimeSens->setCallBack(mpCallBack);
+    }
+
+  return success;
 }
 
 bool CFitProblem::initialize()
@@ -518,6 +535,7 @@ bool CFitProblem::initialize()
 
       mpSteadyState->setMathContainer(mpContainer);
       mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+      mpSteadyState->setCallBack(mpCallBack);
     }
 
   pdelete(mpTrajectory);
@@ -851,12 +869,13 @@ bool CFitProblem::initialize()
       pProblem->clearTargetCNs();
       const CVector< const CObjectInterface* >& dependents = mpExperimentSet->getDependentObjects();
 
-for (auto dep : dependents)
+      for (auto dep : dependents)
         {
           pProblem->addTargetCN(dep->getCN());
         }
 
       mpTimeSens->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+      mpTimeSens->setCallBack(mpCallBack);
       mJacTimeSens.resize(mSolutionVariables.size(), mpExperimentSet->getDataPointCount());
     }
   else
@@ -987,7 +1006,7 @@ bool CFitProblem::calculate()
                   for (size_t k = 0; k < reverseCnMap.size(); ++k)
                     {
                       std::string dependenCn = reverseCnMap[k];
-                      indexMap[std::make_pair(dependenCn, paramCn)] = static_cast<CTimeSensProblem*>(mpTimeSens->getProblem())->getTargetsResultAnnotated()->cnToIndex( {dependenCn, paramCn });
+                      indexMap[std::make_pair(dependenCn, paramCn)] = static_cast<CTimeSensProblem*>(mpTimeSens->getProblem())->getTargetsResultAnnotated()->cnToIndex({dependenCn, paramCn });
                     }
                 }
             }
