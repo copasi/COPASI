@@ -1291,8 +1291,8 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         node->addChild(sibling->toAST(pDataModel));
       }
       break;
-      // :TODO: Bug 894: Implement me.
-      //fatalError();
+        // :TODO: Bug 894: Implement me.
+        //fatalError();
       break;
     }
 
@@ -1499,10 +1499,11 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
         break;
 
       case SubType::LOG:
-        data = "ln";
+        data = "log";
         break;
 
       case SubType::LOG10:
+        data = "log10";
         break;
 
       case SubType::EXP:
