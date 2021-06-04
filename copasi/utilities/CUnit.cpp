@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -822,14 +822,20 @@ void CUnit::buildExpression()
               numerator << "*";
             }
 
-          if (fabs(1.0 - pow(it->multiplier, it->exponent) * pow(10.0, it->scale * it->exponent)) > 100 * std::numeric_limits< double >::epsilon())
+          if (CRootContainer::getUnitList()->containsSymbol(it->symbol))
+            {
+              if (fabs(1.0 - pow(it->multiplier, it->exponent)) > 100 * std::numeric_limits< double >::epsilon())
+                {
+                  numerator << pow(it->multiplier, it->exponent) << "*";
+                  NumeratorCount++;
+                }
+
+              numerator << CBaseUnit::prefixFromScale(it->scale) << CRootContainer::quoteUnitDefSymbol(it->symbol);
+            }
+          else if (fabs(1.0 - pow(it->multiplier, it->exponent) * pow(10.0, it->scale * it->exponent)) > 100 * std::numeric_limits< double >::epsilon())
             {
               numerator << pow(it->multiplier, it->exponent) * pow(10.0, it->scale * it->exponent) << "*" << CRootContainer::quoteUnitDefSymbol(it->symbol);
               NumeratorCount++;
-            }
-          else if (CRootContainer::getUnitList()->containsSymbol(it->symbol))
-            {
-              numerator << CBaseUnit::prefixFromScale(it->scale) << CRootContainer::quoteUnitDefSymbol(it->symbol);
             }
           else
             {
@@ -850,14 +856,20 @@ void CUnit::buildExpression()
               denominator << "*";
             }
 
-          if (fabs(1.0 - pow(it->multiplier, -it->exponent) * pow(10.0, it->scale * -it->exponent)) > 100 * std::numeric_limits< double >::epsilon())
+          if (CRootContainer::getUnitList()->containsSymbol(it->symbol))
+            {
+              if (fabs(1.0 - pow(it->multiplier, -it->exponent)) > 100 * std::numeric_limits< double >::epsilon())
+                {
+                  denominator << pow(it->multiplier, -it->exponent) << "*";
+                  DenominatorCount++;
+                }
+
+              denominator << CBaseUnit::prefixFromScale(it->scale) << CRootContainer::quoteUnitDefSymbol(it->symbol);
+            }
+          else if (fabs(1.0 - pow(it->multiplier, -it->exponent) * pow(10.0, it->scale * -it->exponent)) > 100 * std::numeric_limits< double >::epsilon())
             {
               denominator << pow(it->multiplier, -it->exponent) * pow(10.0, it->scale * -it->exponent) << "*" << CRootContainer::quoteUnitDefSymbol(it->symbol);
               DenominatorCount++;
-            }
-          else if (CRootContainer::getUnitList()->containsSymbol(it->symbol))
-            {
-              denominator << CBaseUnit::prefixFromScale(it->scale) << CRootContainer::quoteUnitDefSymbol(it->symbol);
             }
           else
             {
