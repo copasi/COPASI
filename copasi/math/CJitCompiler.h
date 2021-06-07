@@ -33,13 +33,24 @@ class CEvaluationNodeLogical;
 class CJitCompiler
 {
 public:
-  typedef NativeJIT::Function< C_FLOAT64 >::FunctionType Function;
-  typedef NativeJIT::NodeBase Node;
-
   static bool JitEnabled();
 
   static void SetJitBufferSize(const size_t size);
   static const size_t & GetJitBufferSize();
+
+private:
+  /**
+   * A pointer to a bool indicating whether the CPU supports the sse4.2 instruction set
+   * required for JIT compilation
+   */
+  static bool * pSSE4support;
+
+  static size_t InitalBufferSize;
+
+#ifdef USE_JIT
+public:
+  typedef NativeJIT::Function< C_FLOAT64 >::FunctionType Function;
+  typedef NativeJIT::NodeBase Node;
 
   CJitCompiler();
 
@@ -69,14 +80,6 @@ private:
 
   typedef bool (*B2B)(bool, bool);
   typedef bool (*B2F)(C_FLOAT64, C_FLOAT64);
-
-  /**
-   * A pointer to a bool indicating whether the CPU supports the sse4.2 instruction set
-   * required for JIT compilation
-   */
-  static bool * pSSE4support;
-
-  static size_t InitalBufferSize;
 
   static std::string where(std::runtime_error & err);
 
@@ -140,6 +143,7 @@ private:
    * Execution buffer size
    */
   size_t mFunctionBufferSize;
+#endif
 };
 
 #endif // COPASI_CJitCompiler
