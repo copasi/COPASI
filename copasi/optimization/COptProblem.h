@@ -494,6 +494,11 @@ protected:
   std::vector<COptItem *> * mpConstraintItems;
 
   /**
+   * Pointer to the source of the subtask to be used in the optimization
+   */
+  CCopasiTask * mpSubTaskSrc;
+
+  /**
    * Pointer to the subtask to be used in the optimization
    */
   mutable CCopasiTask * mpSubTask;

@@ -285,6 +285,14 @@ public:
    */
   size_t size() const;
 
+  /**
+   * Map object nodes which are children of the src container to children of the target container
+   * @param const CDataContainer * pSrc
+   * @param const CDataContainer * pTarget
+   * @return bool success;
+   */
+  bool mapObjectNodes(const CDataContainer * pSrc, const CDataContainer * pTarget);
+
 protected:
   /**
    * Parse the description

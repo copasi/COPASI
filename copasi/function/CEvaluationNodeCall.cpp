@@ -626,6 +626,19 @@ const CFunction * CEvaluationNodeCall::getCalledTree() const
     }
 }
 
+CFunction * CEvaluationNodeCall::getCalledTree()
+{
+  switch (mSubType)
+    {
+      case SubType::FUNCTION:
+      case SubType::EXPRESSION:
+        return CRootContainer::getFunctionList()->findFunction(mData);
+
+      default:
+        return NULL;
+    }
+}
+
 #include "copasi/utilities/copasimathml.h"
 
 // virtual
