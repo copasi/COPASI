@@ -27,6 +27,21 @@ bool CJitCompiler::JitEnabled()
 }
 
 // static
+size_t CJitCompiler::InitalBufferSize = 8192;
+
+// static
+void CJitCompiler::SetJitBufferSize(const size_t size)
+{
+  InitalBufferSize = size;
+}
+
+// static
+const size_t & CJitCompiler::GetJitBufferSize()
+{
+  return InitalBufferSize;
+}
+
+// static
 std::string CJitCompiler::where(std::runtime_error & e)
 {
   std::string where = e.what();
@@ -42,8 +57,8 @@ CJitCompiler::CJitCompiler()
   , mpExecutionBuffer(NULL)
   , mpExpression(NULL)
   , mExpressions()
-  , mExecutionBufferSize(8192)
-  , mFunctionBufferSize(8192)
+  , mExecutionBufferSize(InitalBufferSize)
+  , mFunctionBufferSize(InitalBufferSize)
 {
   JitEnabled();
 }

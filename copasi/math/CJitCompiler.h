@@ -38,6 +38,9 @@ public:
 
   static bool JitEnabled();
 
+  static void SetJitBufferSize(const size_t size);
+  static const size_t & GetJitBufferSize();
+
   CJitCompiler();
 
   CJitCompiler(const CJitCompiler & src);
@@ -72,6 +75,8 @@ private:
    * required for JIT compilation
    */
   static bool * pSSE4support;
+
+  static size_t InitalBufferSize;
 
   static std::string where(std::runtime_error & err);
 
