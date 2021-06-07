@@ -1758,8 +1758,13 @@ void CMathObject::compileExpression()
 {
   // Reset the prerequisites
   mPrerequisites.clear();
+  mpCalculate = NULL;
 
-  if (mpExpression == NULL) return;
+  if (mpExpression == NULL
+      || mpExpression->getValidity().getFirstWorstIssue().isError())
+    {
+      return;
+    }
 
   if (mIsInitialValue)
     {
