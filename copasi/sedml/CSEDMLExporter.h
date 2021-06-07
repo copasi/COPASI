@@ -29,28 +29,8 @@
 #include <unordered_set>
 
 class CTrajectoryTask;
-class CCompartment;
-class CMetab;
-class CProcessReport;
-class CPlotSpecification;
 class CScanProblem;
-
-class CModelValue;
-class CReaction;
-class CModelEntity;
-class SBMLIncompatibility;
 class CCopasiTask;
-
-LIBSBML_CPP_NAMESPACE_BEGIN
-class Event;
-class KineticLaw;
-class Model;
-class Parameter;
-class Rule;
-class SBase;
-class SBMLDocument;
-class XMLNode;
-LIBSBML_CPP_NAMESPACE_END
 
 class CSEDMLExporter
 {
@@ -64,65 +44,140 @@ protected:
 
   std::unordered_set< std::string > mGeneratedIds;
 
+  bool mExportExecutableTasksOnly;
+  bool mExportActivePlotsOnly;
+  bool mExportSpecificPlots;
+
+  std::string mModelId;
+
 public:
+
+  /**
+   * constructs a new exporter element
+   */
   CSEDMLExporter();
+
+  /**
+   * destructor
+   */
   ~CSEDMLExporter();
 
-  SedDocument* getSEDMLDocument() {return this->mpSEDMLDocument;};
+  /**
+   * @return the currently constructed SED-ML document
+   */
+  LIBSEDML_CPP_NAMESPACE::SedDocument * getSEDMLDocument();
+
+  /**
+   * @return the current SED-ML document as string
+   */
+  std::string writeSedMLToString() const;
+
+  /**
+   * writes the current SED-ML document to the given filename
+   *
+   * @param filename the file name to write to
+   *
+   * @return boolean indicating success / failure
+   */
+  bool writeSedMLToFile(const std::string& filename) const;
 
   /**
    * Export the model and Task to SEDML.
    * The SEDML document is returned as a string the model is not exported, instead the
    * provided modelLocation will be referenced.
+   *
+   * @param dataModel the copasi model to export
+   * @param modelLocation the location where the SBML file was exported to
+   * @param sedmlLevel the SED-ML Level
+   * @param sedmlVersion the SED-ML version
+   *
+   * @return the SED-ML document as string
    */
-  const std::string exportModelAndTasksToString(CDataModel& dataModel,
-      const std::string &modelLocation,
-      unsigned int sedmlLevel, unsigned int sedmlVersion);
+  std::string exportModelAndTasksToString(CDataModel& dataModel,
+                                          const std::string &modelLocation,
+                                          unsigned int sedmlLevel, unsigned int sedmlVersion);
 
   /**
-   * Export the model and Task to SEDML.
-   * The SEDML document is written to the file given by SEDMLFilename and reference SBML model is written to SBMLFilename .
-   * If the export fails, false is returned.
+   * Sets the SED-ML Level and Version used to export
    */
-  bool exportModelAndTasks(CDataModel& dataModel, const std::string& SEDMLFilename, const std::string& SBMLFilename, unsigned int sedmlLevel = 1, unsigned int sedmlVersion = 1, bool overwrite = false);
+  void setLevelAndVersion(unsigned int sedmlLevel, unsigned int sedmlVersion);
 
   /**
-   * Creates an SEDMLDocument and SBMLDocument from the given CDataModelObject.
-   * It checks if an SEDMLDocument and SBMLDocument already exists from an import and if
-   * this is the case, the old document is copied.
-   * If none exists a new one is created.
-   * Copying the old one makes sure that if something goes wrong during
-   * export, the original model is still consistent.
+   * Export the model and Task to SEDML. This legacy version requires
+   * that the SBML document is passed as string and is kept only for
+   * compatibility reasons.
+   *
+   * @param dataModel the copasi model to export
+   * @param sedmlFilename the filename to write the SED-ML document to
+   * @param sbmlDocument the sbml document as string
+   * @param sedmlLevel the the SED-ML level (defaults to 1)
+   * @param sedmlVersion the SED-ML version (defaults to 2)
+   * @param overwrite boolean indicating whether the file should be overwritten
+   *                  (defaults to false)
+   *
+   * @return success / failure. If the export fails, false is returned.
    */
-  void createSEDMLDocument(CDataModel& dataModel, std::string modelRef);
+  bool exportModelAndTasks(CDataModel& dataModel,
+                           const std::string& sedmlFilename,
+                           const std::string& sbmlDocument,
+                           unsigned int sedmlLevel = 1,
+                           unsigned int sedmlVersion = 1,
+                           bool overwrite = false);
 
   /**
-   * Creates the timecourse task for the given model id and returns its id.
+   * Creates an SED-ML document from the given data model. It assumes that
+   * the SBML model has been exported to the given model location
+   *
+   * @param dataModel the data model to export
+   * @param modelRef the location of the SBML model
+   *
+   * @return the created SED-ML document
    */
-  std::string createTimeCourseTask(CDataModel& dataModel, const  std::string & modelId);
+  LIBSEDML_CPP_NAMESPACE::SedDocument* createSEDMLDocument
+  (CDataModel & dataModel, std::string modelRef);
 
   /**
-   * Creates the steady state task for the given model id and returns its id.
+   * resets the internal map of created elements
+   * (will be called automatically by createSEDMLDocument() )
    */
-  std::string createSteadyStateTask(CDataModel& dataModel, const  std::string & modelId);
+  void clearMaps();
 
   /**
-   * Creates a scan task for the given model id if the dataModel contains a number of scan items
+   * Creates the time course task and returns its id.
+   */
+  std::string createTimeCourseTask(CDataModel& dataModel);
+
+  /**
+   * Creates the steady state task and returns its id.
+   */
+  std::string createSteadyStateTask(CDataModel& dataModel);
+
+  /**
+   * Creates a scan task if the dataModel contains a number of scan items
    * and returns its id.
    *
-   * @return the id of the task, if craeted, otherwise an empty string.
+   * @return the id of the task, if created, otherwise an empty string.
    */
-  std::string createScanTask(CDataModel& dataModel, const  std::string & modelId);
+  std::string createScanTask(CDataModel& dataModel);
 
   /**
-   * Creates the models for SEDML.
+   * Creates a SED-ML model for the given model reference. This function
+   * is supposed to be executed before exporting tasks, as it will
+   * generate the model id that will be used for further exports.
+   *
+   * @return the model id created
    */
-  void createModels(CDataModel& dataModel, std::string &modelRef);
+  std::string createModel(CDataModel & dataModel, const std::string & modelRef);
 
   /**
-   * Creates the Tasks for SEDML.
+   * Creates the SED-ML Tasks for the data model, assuming the
+   * model has already been created.
+   *
+   * Before executing this method the model should have been created using
+   * createModel, or the model id should have been set with setModelId.
+   *
    */
-  void createTasks(CDataModel& dataModel, std::string & modelRef);
+  void createTasks(CDataModel& dataModel);
 
   /**
    * Creates the data generators for SEDML.
@@ -131,25 +186,70 @@ public:
                             std::string & taskId,
                             CCopasiTask* task = NULL);
 
+  /**
+   * exports the nth scan item, to the given task.
+   * @return boolean indicating success or failure
+   */
+  bool exportNthScanItem(CScanProblem * pProblem,
+                         size_t n,
+                         SedRepeatedTask * task,
+                         CDataModel & dataModel);
+
+
+  /**
+   * @return whether only executable tasks should be exported
+   */
+  bool getExportExecutableTasksOnly() const;
+
+  /**
+   * Specify whether only executable tasks should be exported
+   */
+  void setExportExecutableTasksOnly(bool val);
+
+  /**
+   * @return whether only active plots should be exported
+   */
+  bool getExportActivePlotsOnly() const;
+
+  /**
+   * Specify whether only active plots should be exported
+   */
+  void setExportActivePlotsOnly(bool val);
+
+  /**
+   * @return whether only plots should be exported that apply to the
+   *         specific task
+   */
+  bool getExportSpecificPlots() const;
+
+  /**
+   * Specify whether plots should be exported only if they apply to the
+   * specific task
+   */
+  void setExportSpecificPlots(bool val);
+
+  /**
+   * @returns the SBML model id used
+   */
+  const std::string& getModelId() const;
+
+  /**
+   * specifies the SBML model id to be used
+   */
+  void setModelId(const std::string& val);
+
+protected:
+
+  /**
+   * Helper function for creating data generators. They will just reference
+   * the element with given SBML id, and target xpath expression.
+   */
   SedDataGenerator * createDataGenerator(
-    SedDocument * mpSEDMLDocument,
     const std::string & sbmlId,
     const std::string & targetXPathString,
     const std::string & taskId,
     size_t i,
     size_t j);
-
-
-  bool exportNthScanItem(CScanProblem * pProblem,
-                         size_t n,
-                         SedRepeatedTask * task,
-                         CDataModel & dataModel,
-                         const std::string & modelId);
-
-  /**
-   * Creates the Tasks for SEDML.
-   */
-  //void createReports(CDataModel &dataModel);
 };
 
 #endif /* CSEDMLEXPORTER_H_ */
