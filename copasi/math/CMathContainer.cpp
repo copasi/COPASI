@@ -1729,6 +1729,12 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
             const CObjectInterface * pObject =
               getObject(static_cast< const CEvaluationNodeObject *>(*itNode)->getObjectCN());
 
+            // If we have a data object and it does not match the nodes object we must not use it.
+            if (DataObject(pObject) != static_cast< const CEvaluationNodeObject *>(*itNode)->getObjectInterfacePtr())
+              {
+                pObject = static_cast< const CEvaluationNodeObject *>(*itNode)->getObjectInterfacePtr();
+              }
+
             // Create a converted node
             pCopy = createNodeFromObject(pObject);
           }

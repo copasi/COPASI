@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -256,6 +256,58 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
     return CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);
 }
 
+bool CEvaluationNodeObject::mapObject(const std::string srcCN, const CDataContainer * pTarget)
+{
+  size_t Length = srcCN.length();
+
+  if (mRegisteredObjectCN.compare(0, Length, srcCN) != 0)
+    return true;
+
+  mpValue == NULL;
+  mpObject = pTarget->getObject(mRegisteredObjectCN.substr(Length + 1));
+
+  const CDataObject * pDataObject = CObjectInterface::DataObject(mpObject);
+
+  if (pDataObject != NULL)
+    {
+      // We may have some container objects for which the value is an included
+      // reference. For the math model to work this needs to be corrected.
+      const CObjectInterface * pObject = pDataObject->getValueObject();
+
+      if (!pObject)
+        {
+          mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+          mpValue = &mValue;
+
+          return false;
+        }
+
+      if (mpObject != pObject && pObject != NULL)
+        {
+          mpObject = pObject;
+        }
+
+      if (pDataObject->hasFlag(CDataObject::ValueDbl))
+        {
+          mpValue = (C_FLOAT64 *) mpObject->getValuePointer();
+        }
+    }
+  else if (mpObject != NULL)
+    {
+      mpValue = (C_FLOAT64 *) mpObject->getValuePointer();
+    }
+
+  if (mpValue == NULL)
+    {
+      mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+      mpValue = &mValue;
+
+      return false;
+    }
+
+  return true;
+}
+
 const CEvaluationNode::Data & CEvaluationNodeObject::getData() const
 {
   switch (mSubType)
@@ -507,7 +559,7 @@ void CEvaluationNodeObject::setObjectValuePtr(C_FLOAT64 * pObjectValue)
 #include "copasi/utilities/copasimathml.h"
 
 // virtual
-std::string CEvaluationNodeObject::getMMLString(const std::vector< std::string > & /* children */ ,
+std::string CEvaluationNodeObject::getMMLString(const std::vector< std::string > & /* children */,
     bool /* expand */,
     const std::vector< std::vector< std::string > > & /* variables */) const
 {

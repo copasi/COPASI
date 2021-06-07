@@ -943,3 +943,63 @@ size_t CEvaluationTree::size() const
 {
   return mCalculationSequence.size();
 }
+
+bool CEvaluationTree::mapObjectNodes(const CDataContainer * pSrc, const CDataContainer * pTarget)
+{
+  if (pSrc == NULL || pTarget == NULL)
+    return false;
+
+  if (mpNodeList == NULL)
+    return true;
+
+  mPrerequisits.clear();
+  mCalculationSequence.resize(0);
+
+  bool success = true;
+  std::string SrcCN = pSrc->getCN();
+
+  std::vector< CEvaluationNode * >::iterator it = mpNodeList->begin();
+  std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
+
+  for (; it != end; ++it)
+    {
+      switch ((*it)->mainType() | (*it)->subType())
+        {
+          case (CEvaluationNode::MainType::OBJECT | CEvaluationNode::SubType::CN):
+            success &= static_cast<CEvaluationNodeObject*>(*it)->mapObject(SrcCN, pTarget);
+            mPrerequisits.insert(static_cast<CEvaluationNodeObject*>(*it)->getObjectInterfacePtr());
+
+            break;
+
+          case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::FUNCTION):
+          case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::EXPRESSION):
+            if (static_cast<CEvaluationNodeCall *>(*it)->getCalledTree() != NULL)
+              {
+                CFunction * pCalled = static_cast< CEvaluationNodeCall * >(*it)->getCalledTree();
+
+                success &= pCalled->mapObjectNodes(pSrc, pTarget);
+                mPrerequisits.insert(pCalled->getPrerequisites().begin(), pCalled->getPrerequisites().end());
+              }
+            else
+              {
+                success = false;
+              }
+
+            break;
+        }
+    }
+
+  mpRootValue = mpRootNode->getValuePointer();
+
+  if (success)
+    {
+      mValue = *mpRootValue;
+      buildCalculationSequence();
+    }
+  else
+    {
+      mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+    }
+
+  return success;
+}
