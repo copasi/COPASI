@@ -463,20 +463,99 @@ CSEDMLExporter::createTimeCourseTask(CDataModel& dataModel)
     }
 
   // set the correct KISAO Term
-  SedAlgorithm* alg = mpTimecourse->createAlgorithm();
+  SedAlgorithm * alg = mpTimecourse->createAlgorithm();
+  const CCopasiMethod * pMethod = pTask->getMethod();
 
-  if (pTask->getMethod()->getObjectName().find("Stochastic") != std::string::npos)
-    alg->setKisaoID("KISAO:0000241");
-  else
-    alg->setKisaoID("KISAO:0000019");
+  exportAlgorithm(alg, pMethod);
 
-  mpTimecourseTask = this->mpSEDMLDocument->createTask();
+  mpTimecourseTask = mpSEDMLDocument->createTask();
   std::string taskId = SEDMLUtils::getNextId("task", mpSEDMLDocument->getNumTasks());
   SEDML_SET_ID(mpTimecourseTask, taskId);
   mpTimecourseTask->setSimulationReference(mpTimecourse->getId());
   mpTimecourseTask->setModelReference(mModelId);
 
   return taskId;
+}
+
+
+void
+CSEDMLExporter::exportAlgorithm(SedAlgorithm * alg,
+                                const CCopasiMethod * pMethod)
+{
+  if (pMethod == NULL)
+    return;
+
+  alg->setName(pMethod->getObjectName());
+
+  switch (pMethod->getSubType())
+    {
+      case CTaskEnum::Method::deterministic:
+        alg->setKisaoID("KISAO:0000560");
+        break;
+
+      case CTaskEnum::Method::RADAU5:
+        alg->setKisaoID("KISAO:0000304");
+        break;
+
+      case CTaskEnum::Method::LSODA2:
+        alg->setKisaoID("KISAO:0000560");
+        break;
+
+      case CTaskEnum::Method::directMethod:
+        alg->setKisaoID("KISAO:0000029");
+        break;
+
+      case CTaskEnum::Method::stochastic:
+        alg->setKisaoID("KISAO:0000027");
+        break;
+
+      case CTaskEnum::Method::tauLeap:
+        alg->setKisaoID("KISAO:0000039");
+        break;
+
+      case CTaskEnum::Method::adaptiveSA:
+        alg->setKisaoID("KISAO:0000048");
+        break;
+
+      case CTaskEnum::Method::hybrid:
+        alg->setKisaoID("KISAO:0000561");
+        break;
+
+      case CTaskEnum::Method::hybridLSODA:
+        alg->setKisaoID("KISAO:0000562");
+        break;
+
+      case CTaskEnum::Method::hybridODE45:
+        alg->setKisaoID("KISAO:0000563");
+        break;
+
+      case CTaskEnum::Method::stochasticRunkeKuttaRI5:
+        alg->setKisaoID("KISAO:0000566");
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::WARNING, "No KIASO term for the method. %s defaulting to KISAO:0000019", pMethod->getObjectName().c_str());
+        alg->setKisaoID("KISAO:0000019");
+        break;
+    }
+
+for (const auto & entry : PARAMETER_KISAO_MAP)
+    {
+      const CCopasiParameter * pParameter = pMethod->getParameter(entry.first);
+
+      if (pParameter)
+        {
+          SedAlgorithmParameter * pSedParam = alg->createAlgorithmParameter();
+          pSedParam->setKisaoID(entry.second);
+          pSedParam->setName(entry.first);
+          pSedParam->setValue(getParameterValueAsString(pParameter));
+        }
+    }
+
+  /*if (pMethod->getObjectName().find("Stochastic") != std::string::npos)
+    alg->setKisaoID("KISAO:0000241");
+  else
+    alg->setKisaoID("KISAO:0000019");*/
 }
 
 /**
@@ -577,6 +656,47 @@ CSEDMLExporter::createDataGenerator(
     }
 
   return pPDGen;
+}
+
+
+std::string
+CSEDMLExporter::getParameterValueAsString(const CCopasiParameter * pParameter)
+{
+  if (pParameter == NULL)
+    return "";
+
+  std::ostringstream str;
+
+  switch (pParameter->getType())
+    {
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
+        str << pParameter->getValue< C_FLOAT64 >();
+        break;
+
+      case CCopasiParameter::Type::INT:
+        str << pParameter->getValue< C_INT32 >();
+        break;
+
+      case CCopasiParameter::Type::UINT:
+        str << pParameter->getValue< unsigned C_INT32 >();
+        break;
+
+      case CCopasiParameter::Type::BOOL:
+        str << pParameter->getValue< bool >() ? "true" : "false";
+        break;
+
+      case CCopasiParameter::Type::STRING:
+      case CCopasiParameter::Type::CN:
+        str << pParameter->getValue< std::string >();
+        break;
+
+      default:
+        // ignore for now
+        break;
+    }
+
+  return str.str();
 }
 
 /**
@@ -872,3 +992,22 @@ bool CSEDMLExporter::writeSedMLToFile(const std::string & filename) const
 
   return writer.writeSedMLToFile(mpSEDMLDocument, filename);
 }
+
+
+std::map< std::string, std::string > CSEDMLExporter::PARAMETER_KISAO_MAP =
+{
+  {"Relative Tolerance", "KISAO:0000209"},
+  {"Absolute Tolerance", "KISAO:0000211"},
+  {"Integrate Reduced Model", "KISAO:0000216"},
+  {"Max Internal Steps", "KISAO:0000415"},
+  {"Max Internal Step Size", "KISAO:0000467"},
+  {"Random Seed", "KISAO:0000488"},
+  {"Epsilon", "KISAO:0000228"},
+  {"Lower Limit", "KISAO:0000203"},
+  {"Partitioning Interval", "KISAO:0000205"},
+  {"Initial Step Size", "KISAO:0000559"},
+  {"Runge Kutta Stepsize", "KISAO:0000483"},
+  {"Internal Steps Size", "KISAO:0000483"},
+  {"Tolerance for Root Finder", "KISAO:0000565"},
+  {"Force Physical Correctness", "KISAO:0000567"},
+};

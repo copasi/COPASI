@@ -27,10 +27,12 @@
 
 #include <string>
 #include <unordered_set>
+#include <map>
 
 class CTrajectoryTask;
 class CScanProblem;
 class CCopasiTask;
+class CCopasiMethod;
 
 class CSEDMLExporter
 {
@@ -148,6 +150,11 @@ public:
   std::string createTimeCourseTask(CDataModel& dataModel);
 
   /**
+   * specifies the most specific KISAO terms for the given method
+   */
+  void exportAlgorithm(SedAlgorithm * alg, const CCopasiMethod * pMethod);
+
+  /**
    * Creates the steady state task and returns its id.
    */
   std::string createSteadyStateTask(CDataModel& dataModel);
@@ -255,6 +262,16 @@ protected:
     const std::string & taskId,
     size_t i,
     size_t j);
+
+  /**
+   * A utility function returning the value of the copasi parameter
+   * as a std::string.
+   */
+  static std::string getParameterValueAsString(const CCopasiParameter * pParameter);
+
+private:
+
+  static std::map< std::string, std::string > PARAMETER_KISAO_MAP;
 };
 
 #endif /* CSEDMLEXPORTER_H_ */
