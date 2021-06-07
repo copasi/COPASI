@@ -346,6 +346,12 @@ void CSEDMLExporter::setModelId(const std::string & val)
   mModelId = val;
 }
 
+void CSEDMLExporter::freeSedMLDocument()
+{
+  clearMaps();
+  pdelete(mpSEDMLDocument);
+}
+
 /**
  * Creates the simulations for SEDML.
  */
@@ -523,7 +529,7 @@ void CSEDMLExporter::createTasks(CDataModel & dataModel)
   CCopasiTask *pTask = &dataModel.getTaskList()->operator[]("Time-Course");
   std::string taskId;
 
-  if (!mExportActivePlotsOnly || pTask->isScheduled())
+  if (!mExportExecutableTasksOnly || pTask->isScheduled())
     {
       taskId = createTimeCourseTask(dataModel);
       createDataGenerators(dataModel, taskId, pTask);
@@ -532,7 +538,7 @@ void CSEDMLExporter::createTasks(CDataModel & dataModel)
   // export Scan Task
   pTask = &dataModel.getTaskList()->operator[]("Scan");
 
-  if (!mExportActivePlotsOnly || pTask->isScheduled())
+  if (!mExportExecutableTasksOnly || pTask->isScheduled())
     {
       taskId = createScanTask(dataModel);
 

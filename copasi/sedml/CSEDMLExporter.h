@@ -234,9 +234,14 @@ public:
   const std::string& getModelId() const;
 
   /**
-   * specifies the SBML model id to be used
+   * specifies the SBML model id to be used by the task export.
    */
   void setModelId(const std::string& val);
+
+  /**
+   * frees the SED-ML document, and resets maps
+   */
+  void freeSedMLDocument();
 
 protected:
 
