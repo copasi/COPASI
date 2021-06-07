@@ -18,12 +18,17 @@ bool * CJitCompiler::pSSE4support = NULL;
 // static
 bool CJitCompiler::JitEnabled()
 {
+#ifdef USE_JIT
+
   if (pSSE4support == NULL)
     {
       pSSE4support = new bool(cpu_features::GetX86Info().features.sse4_2);
     }
 
   return *pSSE4support && !CRootContainer::getConfiguration()->getDisableJIT();
+#else
+  return false;
+#endif // USE_JIT
 }
 
 // static
@@ -40,6 +45,8 @@ const size_t & CJitCompiler::GetJitBufferSize()
 {
   return InitalBufferSize;
 }
+
+#ifdef USE_JIT
 
 // static
 std::string CJitCompiler::where(std::runtime_error & e)
@@ -889,3 +896,4 @@ CJitCompiler::Node * CJitCompiler::compile(const CEvaluationNodeLogical * pNode,
 
   return pNodeJIT;
 }
+#endif // USE_JIT
