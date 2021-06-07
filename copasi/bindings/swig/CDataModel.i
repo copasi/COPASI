@@ -12,6 +12,12 @@
 
 #include "copasi/CopasiDataModel/CDataModel.h"
 
+#include "copasi/sbml/SBMLImporter.h"
+#include "copasi/sbml/CSBMLExporter.h"
+#include "copasi/sedml/SEDMLImporter.h"
+#include "copasi/sedml/CSEDMLExporter.h"
+#include "copasi/sedml/SEDMLUtils.h"
+
 %}
 
 #include <string>
@@ -98,6 +104,12 @@
 %warnfilter(813) CDataModel;
 
 %include "copasi/CopasiDataModel/CDataModel.h"
+%include "copasi/sbml/SBMLImporter.h"
+%include "copasi/sbml/CSBMLExporter.h"
+%include "copasi/sedml/SEDMLImporter.h"
+%include "copasi/sedml/CSEDMLExporter.h"
+%include "copasi/sedml/SEDMLUtils.h"
+
 
 %rename(newModel) CDataModel::newModel;
 

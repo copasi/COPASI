@@ -69,31 +69,29 @@
     element->setId(pVarId);\
   }
 
-const std::string CSEDMLExporter::exportModelAndTasksToString(CDataModel& dataModel,
+std::string CSEDMLExporter::exportModelAndTasksToString(CDataModel& dataModel,
     const std::string &modelLocation,
     unsigned int sedmlLevel,
     unsigned int sedmlVersion)
 {
-  this->mSEDMLLevel = sedmlLevel;
-  this->mSEDMLVersion = sedmlVersion;
-  this->createSEDMLDocument(dataModel, modelLocation);
-  CSBMLExporter exporter;
-  SedWriter* writer = new SedWriter();
+  setLevelAndVersion(sedmlLevel, sedmlVersion);
 
-  writer->setProgramName("COPASI");
-  writer->setProgramVersion(CVersion::VERSION.getVersion());
+  createSEDMLDocument(dataModel, modelLocation);
 
-  char* d = writer->writeToString(this->mpSEDMLDocument);
-  std::string returnValue = d;
-
-  if (d) free(d);
-
-  pdelete(writer);
-
-  return returnValue;
+  return writeSedMLToString();
 }
 
-std::string createUniqueModelFileName(const std::string& dir, const std::string& baseName, const std::string& extension = ".xml")
+
+void CSEDMLExporter::setLevelAndVersion(unsigned int sedmlLevel, unsigned int sedmlVersion)
+{
+  this->mSEDMLLevel = sedmlLevel;
+  this->mSEDMLVersion = sedmlVersion;
+}
+
+std::string
+createUniqueModelFileName(const std::string& dir,
+                          const std::string& baseName,
+                          const std::string& extension = ".xml")
 {
   int count = 1;
   std::string current = baseName + extension;
@@ -111,15 +109,18 @@ std::string createUniqueModelFileName(const std::string& dir, const std::string&
 
 /**
  * Export the model and Task to SEDML.
- * The SEDML document is written to the file given by SEDMLFilename and reference SBML model is written to SBMLFilename .
+ * The SEDML document is written to the file given by SEDMLFilename and
+ * reference SBML model is written to SBMLFilename .
  * If the export fails, false is returned.
  */
-bool CSEDMLExporter::exportModelAndTasks(CDataModel& dataModel,
-    const std::string& filename,
-    const std::string& sbmlDocument,
-    unsigned int sedmlLevel,
-    unsigned int sedmlVersion,
-    bool overwrite)
+bool
+CSEDMLExporter::exportModelAndTasks(
+  CDataModel& dataModel,
+  const std::string& filename,
+  const std::string& sbmlDocument,
+  unsigned int sedmlLevel,
+  unsigned int sedmlVersion,
+  bool overwrite)
 {
   bool success = true;
   /* create a string that represents the SBMLDocument */
@@ -145,9 +146,8 @@ bool CSEDMLExporter::exportModelAndTasks(CDataModel& dataModel,
   sbmlOutFile << sbmlDocument;
   sbmlOutFile.close();
 
-  std::string str = this->exportModelAndTasksToString(dataModel, sedmlModelSource, sedmlLevel, sedmlVersion);
+  std::string str = exportModelAndTasksToString(dataModel, sedmlModelSource, sedmlLevel, sedmlVersion);
 
-  //std::cout<<str<<std::endl; //only for debuging
 
   if (!str.empty())
     {
@@ -177,41 +177,29 @@ bool CSEDMLExporter::exportModelAndTasks(CDataModel& dataModel,
   return success;
 }
 
-void CSEDMLExporter::createSEDMLDocument(CDataModel& dataModel, std::string modelRef)
+LIBSEDML_CPP_NAMESPACE::SedDocument *
+CSEDMLExporter::createSEDMLDocument(CDataModel& dataModel, std::string modelRef)
 {
-  const SedDocument* pOldSEDMLDocument = NULL; //dataModel.getCurrentSEDMLDocument();
-  const CModel* pModel = dataModel.getModel();
-  COutputDefinitionVector *plotDef = dataModel.getPlotDefinitionList();
-  assert(plotDef != NULL); //need to emit a message
-  assert(pModel != NULL);
+  clearMaps();
 
-  if (pOldSEDMLDocument == NULL)
-    {
-      this->mpSEDMLDocument = new SedDocument(mSEDMLLevel, mSEDMLVersion);
-    }
-  else
-    {
-      this->mpSEDMLDocument = dynamic_cast<SedDocument*>(pOldSEDMLDocument->clone());
-    }
+  mpSEDMLDocument = new SedDocument(mSEDMLLevel, mSEDMLVersion);
 
-  if (this->mpSEDMLDocument == NULL) fatalError();
+  createModel(dataModel, modelRef);
+  createTasks(dataModel);
 
-  mGeneratedIds.clear();
-
-  createModels(dataModel, modelRef);
-  createTasks(dataModel,  modelRef);
+  return mpSEDMLDocument;
 }
 
 
-/**
- * exports the nth scan item, to the given task.
- * @return boolean indicating success or failure
- */
+void CSEDMLExporter::clearMaps()
+{
+  mGeneratedIds.clear();
+}
+
 bool CSEDMLExporter::exportNthScanItem(CScanProblem * pProblem,
                                        size_t n,
                                        SedRepeatedTask * task,
-                                       CDataModel & dataModel,
-                                       const std::string & modelId)
+                                       CDataModel & dataModel)
 {
   CCopasiParameterGroup * current = pProblem->getScanItem(n);
   CScanProblem::Type type = (CScanProblem::Type)(current->getParameter("Type")->getValue< unsigned C_INT32 >());
@@ -292,7 +280,7 @@ for (std::string & number : elems)
         }
 
       SedSetValue * change = task->createTaskChange();
-      change->setModelReference(modelId);
+      change->setModelReference(mModelId);
 
       if (xpath == SEDML_TIME_URN)
         {
@@ -312,11 +300,57 @@ for (std::string & number : elems)
   return false;
 }
 
+
+bool CSEDMLExporter::getExportExecutableTasksOnly() const
+{
+  return mExportExecutableTasksOnly;
+}
+
+
+void CSEDMLExporter::setExportExecutableTasksOnly(bool val)
+{
+  mExportExecutableTasksOnly = val;
+}
+
+
+bool CSEDMLExporter::getExportActivePlotsOnly() const
+{
+  return mExportActivePlotsOnly;
+}
+
+
+void CSEDMLExporter::setExportActivePlotsOnly(bool val)
+{
+  mExportActivePlotsOnly = val;
+}
+
+bool CSEDMLExporter::getExportSpecificPlots() const
+{
+  return mExportSpecificPlots;
+}
+
+
+void CSEDMLExporter::setExportSpecificPlots(bool val)
+{
+  mExportSpecificPlots = val;
+}
+
+
+const std::string & CSEDMLExporter::getModelId() const
+{
+  return mModelId;
+}
+
+void CSEDMLExporter::setModelId(const std::string & val)
+{
+  mModelId = val;
+}
+
 /**
  * Creates the simulations for SEDML.
  */
 std::string
-CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelId)
+CSEDMLExporter::createScanTask(CDataModel& dataModel)
 {
   // need L1V2 to export repeated tasks
   if (mpSEDMLDocument->getVersion() < 2)
@@ -344,7 +378,7 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelI
 
   if (pProblem->getSubtask() == CTaskEnum::Task::steadyState)
     {
-      subTaskId = createSteadyStateTask(dataModel, modelId);
+      subTaskId = createSteadyStateTask(dataModel);
     }
   else
     {
@@ -362,7 +396,7 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelI
   subTask->setTask(subTaskId);
 
   // create first range
-  bool result = exportNthScanItem(pProblem, numItems - 1, task, dataModel, modelId);
+  bool result = exportNthScanItem(pProblem, numItems - 1, task, dataModel);
 
   std::string lastTaskId = task->getId();
 
@@ -381,13 +415,11 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelI
       subTask->setTask(lastTaskId);
 
       // export range
-      exportNthScanItem(pProblem, i, task, dataModel, modelId);
+      exportNthScanItem(pProblem, i, task, dataModel);
 
       // update last task id for nesting
       lastTaskId = task->getId();
     }
-
-
 
   return taskId;
 }
@@ -395,13 +427,15 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelI
 /**
  * Creates the simulations for SEDML.
  */
-std::string CSEDMLExporter::createTimeCourseTask(CDataModel& dataModel, const std::string & modelId)
+std::string
+CSEDMLExporter::createTimeCourseTask(CDataModel& dataModel)
 {
   CCopasiTask* pTask = &dataModel.getTaskList()->operator[]("Time-Course");
   CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(pTask->getProblem());
 
-  mpTimecourse = this->mpSEDMLDocument->createUniformTimeCourse();
+  mpTimecourse = mpSEDMLDocument->createUniformTimeCourse();
   SEDML_SET_ID(mpTimecourse, SEDMLUtils::getNextId("sim", mpSEDMLDocument->getNumSimulations()));
+
   //presently SEDML only supports time course
   mpTimecourse->setInitialTime(0.0);
   double outputStartTime = tProblem->getOutputStartTime();
@@ -434,7 +468,7 @@ std::string CSEDMLExporter::createTimeCourseTask(CDataModel& dataModel, const st
   std::string taskId = SEDMLUtils::getNextId("task", mpSEDMLDocument->getNumTasks());
   SEDML_SET_ID(mpTimecourseTask, taskId);
   mpTimecourseTask->setSimulationReference(mpTimecourse->getId());
-  mpTimecourseTask->setModelReference(modelId);
+  mpTimecourseTask->setModelReference(mModelId);
 
   return taskId;
 }
@@ -442,9 +476,9 @@ std::string CSEDMLExporter::createTimeCourseTask(CDataModel& dataModel, const st
 /**
  * Creates the simulations for SEDML.
  */
-std::string CSEDMLExporter::createSteadyStateTask(CDataModel& dataModel, const std::string & modelId)
+std::string CSEDMLExporter::createSteadyStateTask(CDataModel& dataModel)
 {
-  SedSteadyState *steady  = this->mpSEDMLDocument->createSteadyState();
+  SedSteadyState *steady  = mpSEDMLDocument->createSteadyState();
   SEDML_SET_ID(steady, SEDMLUtils::getNextId("steady", mpSEDMLDocument->getNumSimulations()));
   //presently SEDML only supports time course
   CCopasiTask* pTask = &dataModel.getTaskList()->operator[]("Steady-State");
@@ -458,7 +492,7 @@ std::string CSEDMLExporter::createSteadyStateTask(CDataModel& dataModel, const s
   std::string taskId = SEDMLUtils::getNextId("task", mpSEDMLDocument->getNumTasks());
   SEDML_SET_ID(task, taskId);
   task->setSimulationReference(steady->getId());
-  task->setModelReference(modelId);
+  task->setModelReference(mModelId);
 
   return taskId;
 }
@@ -466,33 +500,49 @@ std::string CSEDMLExporter::createSteadyStateTask(CDataModel& dataModel, const s
 /**
  * Creates the models for SEDML.
  */
-void CSEDMLExporter::createModels(CDataModel& dataModel, std::string & modelRef)
+std::string
+CSEDMLExporter::createModel(CDataModel& dataModel, const std::string & modelRef)
 {
   SedModel *model = this->mpSEDMLDocument->createModel();
   SEDML_SET_ID(model, CDirEntry::baseName(modelRef));
   model->setSource(modelRef);
   model->setLanguage("urn:sedml:language:sbml");
+
+  setModelId(model->getId());
+
+  return model->getId();
 }
 
 /**
  * Creates the Tasks for SEDML. This will always create a task running a time course
  * simulation. If the parameter scan has been specified, it will be exported as well.
  */
-void CSEDMLExporter::createTasks(CDataModel& dataModel, std::string & modelRef)
+void CSEDMLExporter::createTasks(CDataModel & dataModel)
 {
-  std::string modelId = CDirEntry::baseName(modelRef);
   // create time course task
-  std::string taskId = createTimeCourseTask(dataModel, modelId);
-  createDataGenerators(dataModel, taskId, &dataModel.getTaskList()->operator[]("Time-Course"));
+  CCopasiTask *pTask = &dataModel.getTaskList()->operator[]("Time-Course");
+  std::string taskId;
 
-  taskId = createScanTask(dataModel, modelId);
+  if (!mExportActivePlotsOnly || pTask->isScheduled())
+    {
+      taskId = createTimeCourseTask(dataModel);
+      createDataGenerators(dataModel, taskId, pTask);
+    }
 
-  if (!taskId.empty())
-    createDataGenerators(dataModel, taskId, &dataModel.getTaskList()->operator[]("Scan"));
+  // export Scan Task
+  pTask = &dataModel.getTaskList()->operator[]("Scan");
+
+  if (!mExportActivePlotsOnly || pTask->isScheduled())
+    {
+      taskId = createScanTask(dataModel);
+
+      if (!taskId.empty())
+        createDataGenerators(dataModel, taskId, pTask);
+    }
 }
 
-SedDataGenerator * CSEDMLExporter::createDataGenerator(
-  SedDocument* mpSEDMLDocument,
+SedDataGenerator *
+CSEDMLExporter::createDataGenerator(
   const std::string &sbmlId,
   const std::string &targetXPathString,
   const std::string& taskId,
@@ -526,9 +576,10 @@ SedDataGenerator * CSEDMLExporter::createDataGenerator(
 /**
  * Creates the data generators for SEDML.
  */
-void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
-    std::string & taskId,
-    CCopasiTask* task)
+void
+CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
+                                     std::string & taskId,
+                                     CCopasiTask* task)
 {
   const CModel* pModel = dataModel.getModel();
   std::vector<std::string> stringsContainer; //split string container
@@ -609,7 +660,6 @@ void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
                 pPDGen = pTimeDGenp;
               else
                 pPDGen = createDataGenerator(
-                           this->mpSEDMLDocument,
                            xAxis,
                            targetXPathStringX,
                            taskId,
@@ -650,7 +700,11 @@ void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
     {
       const CPlotSpecification* pPlot = &dataModel.getPlotDefinitionList()->operator[](i);
 
-      if (!pPlot->isActive()) continue; // ignore deactivated plots
+      if (mExportActivePlotsOnly && !pPlot->isActive())
+        continue; // ignore deactivated plots
+
+      if (mExportSpecificPlots && !pPlot->appliesTo(task))
+        continue; // ignore plots that don't apply to this task
 
       pPSedPlot = this->mpSEDMLDocument->createPlot2D();
       std::string plotName = pPlot->getObjectName();
@@ -728,7 +782,6 @@ void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
             }
 
           pPDGen = createDataGenerator(
-                     this->mpSEDMLDocument,
                      sbmlId,
                      targetXPathString,
                      taskId,
@@ -757,7 +810,6 @@ void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
                                                pModel, dataModel);
 
               pPDGen = createDataGenerator(
-                         this->mpSEDMLDocument,
                          xAxis,
                          targetXPathStringX,
                          taskId,
@@ -777,6 +829,10 @@ CSEDMLExporter::CSEDMLExporter()
   , mpTimecourse(NULL)
   , mpTimecourseTask(NULL)
   , mGeneratedIds()
+  , mExportExecutableTasksOnly(false)
+  , mExportActivePlotsOnly(true)
+  , mExportSpecificPlots(false)
+  , mModelId()
 {
 
 }
@@ -784,4 +840,29 @@ CSEDMLExporter::CSEDMLExporter()
 CSEDMLExporter::~CSEDMLExporter()
 {
 
+}
+
+LIBSEDML_CPP_NAMESPACE::SedDocument * CSEDMLExporter::getSEDMLDocument()
+{
+  return mpSEDMLDocument;
+}
+
+std::string CSEDMLExporter::writeSedMLToString() const
+{
+  SedWriter writer;
+
+  writer.setProgramName("COPASI");
+  writer.setProgramVersion(CVersion::VERSION.getVersion());
+
+  return writer.writeSedMLToStdString(mpSEDMLDocument);
+}
+
+bool CSEDMLExporter::writeSedMLToFile(const std::string & filename) const
+{
+  SedWriter writer;
+
+  writer.setProgramName("COPASI");
+  writer.setProgramVersion(CVersion::VERSION.getVersion());
+
+  return writer.writeSedMLToFile(mpSEDMLDocument, filename);
 }
