@@ -42,7 +42,8 @@ set (SWIG_ENUM_FIX_FILES
         "${BIN_DIRECTORY}/java-files/org/COPASI/CModel.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CUndoData.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CNewtonMethod.java"
-		"${BIN_DIRECTORY}/java-files/org/COPASI/CCopasiTimer.java"
+				"${BIN_DIRECTORY}/java-files/org/COPASI/CCopasiTimer.java"
+				"${BIN_DIRECTORY}/java-files/org/COPASI/CDataModel.java"
      )
 
 foreach(broken_file ${SWIG_ENUM_FIX_FILES})
