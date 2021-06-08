@@ -8,8 +8,10 @@
 
 #include <set>
 
+#ifdef USE_JIT
 #include <NativeJIT/CodeGen/ExecutionBuffer.h>
 #include <NativeJIT/Function.h>
+#endif
 
 #ifdef ERROR
 #  undef ERROR
