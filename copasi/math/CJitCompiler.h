@@ -8,6 +8,8 @@
 
 #include <set>
 
+#include "copasi/config.h"
+
 #ifdef USE_JIT
 #include <NativeJIT/CodeGen/ExecutionBuffer.h>
 #include <NativeJIT/Function.h>
@@ -20,6 +22,7 @@
 #ifdef max
 #  undef max
 #endif
+
 #include "copasi/core/CCore.h"
 
 class CJitExpression;
