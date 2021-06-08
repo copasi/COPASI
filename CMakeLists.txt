@@ -234,7 +234,7 @@ mark_as_advanced(ENABLE_COPASI_DEBUG_TRACE)
 endif()
 
 # another option to create the COPASI SE library directly from the files, instead of first building an
-# object library (necessary sometimes as the object library messes up debugging on VS2013)
+# object library (necessary sometimes as the object library messes up debugging on VS2013-2019)
 option(DISABLE_CORE_OBJECT_LIBRARY "Disable creation of libCOPASISE-core object library and just create libCOPASISE-static" OFF)
 mark_as_advanced(DISABLE_CORE_OBJECT_LIBRARY)
 
@@ -844,13 +844,6 @@ add_subdirectory(hyb-test-suite)
 endif()
 
 endif (BUILD_HYB_TESTS)
-
-option(BUILD_CATCH_TESTS "Compile catch 2 unit tests." OFF)
-if (BUILD_CATCH_TESTS)
-  if (EXISTS ${CMAKE_SOURCE_DIR}/catch-unit-tests)
-  add_subdirectory(catch-unit-tests)
-  endif()
-endif(BUILD_CATCH_TESTS)
 
 # also install additional files and examples
 file(GLOB_RECURSE WIZARD_HELP_FILES "${PROJECT_SOURCE_DIR}/copasi/wizard/help_html" copasi/wizard/help_html/*.html)

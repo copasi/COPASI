@@ -190,7 +190,7 @@ class CMakeBuild(build_ext):
         ]
 
         global DEP_DIR
-        if DEP_DIR and not self.dry_run:
+        if not DEP_DIR and not self.dry_run:
             print("compiling dependencies")
             dep_suffix = sysconfig.get_platform()
             dep_inst_dir = os.path.join(cwd, 'install_dependencies_' + dep_suffix)
