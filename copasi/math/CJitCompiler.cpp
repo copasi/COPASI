@@ -10,7 +10,9 @@
 #include "copasi/commandline/CConfigurationFile.h"
 #include "copasi/core/CRootContainer.h"
 
+#ifdef USE_JIT
 #include <cpu_features/cpuinfo_x86.h>
+#endif
 
 // static
 bool * CJitCompiler::pSSE4support = NULL;
