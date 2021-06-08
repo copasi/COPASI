@@ -539,15 +539,15 @@ CSEDMLExporter::exportAlgorithm(SedAlgorithm * alg,
         break;
     }
 
-for (const auto & entry : PARAMETER_KISAO_MAP)
+for (const auto & entry : SEDMLUtils::PARAMETER_KISAO_MAP)
     {
-      const CCopasiParameter * pParameter = pMethod->getParameter(entry.first);
+      const CCopasiParameter * pParameter = pMethod->getParameter(entry.second);
 
       if (pParameter)
         {
           SedAlgorithmParameter * pSedParam = alg->createAlgorithmParameter();
-          pSedParam->setKisaoID(entry.second);
-          pSedParam->setName(entry.first);
+          pSedParam->setKisaoID(entry.first);
+          pSedParam->setName(entry.second);
           pSedParam->setValue(getParameterValueAsString(pParameter));
         }
     }
@@ -992,22 +992,3 @@ bool CSEDMLExporter::writeSedMLToFile(const std::string & filename) const
 
   return writer.writeSedMLToFile(mpSEDMLDocument, filename);
 }
-
-
-std::map< std::string, std::string > CSEDMLExporter::PARAMETER_KISAO_MAP =
-{
-  {"Relative Tolerance", "KISAO:0000209"},
-  {"Absolute Tolerance", "KISAO:0000211"},
-  {"Integrate Reduced Model", "KISAO:0000216"},
-  {"Max Internal Steps", "KISAO:0000415"},
-  {"Max Internal Step Size", "KISAO:0000467"},
-  {"Random Seed", "KISAO:0000488"},
-  {"Epsilon", "KISAO:0000228"},
-  {"Lower Limit", "KISAO:0000203"},
-  {"Partitioning Interval", "KISAO:0000205"},
-  {"Initial Step Size", "KISAO:0000559"},
-  {"Runge Kutta Stepsize", "KISAO:0000483"},
-  {"Internal Steps Size", "KISAO:0000483"},
-  {"Tolerance for Root Finder", "KISAO:0000565"},
-  {"Force Physical Correctness", "KISAO:0000567"},
-};

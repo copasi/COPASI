@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -548,3 +548,23 @@ SEDMLUtils::~SEDMLUtils()
 {
   // TODO Auto-generated destructor stub
 }
+
+
+
+std::map< std::string, std::string > SEDMLUtils::PARAMETER_KISAO_MAP =
+{
+  {"KISAO:0000209", "Relative Tolerance"},
+  {"KISAO:0000211", "Absolute Tolerance"},
+  {"KISAO:0000216", "Integrate Reduced Model"},
+  {"KISAO:0000415", "Max Internal Steps"},
+  {"KISAO:0000467", "Max Internal Step Size"},
+  {"KISAO:0000488", "Random Seed", },
+  {"KISAO:0000228", "Epsilon"},
+  {"KISAO:0000203", "Lower Limit"},
+  {"KISAO:0000205", "Partitioning Interval"},
+  {"KISAO:0000559", "Initial Step Size"},
+  {"KISAO:0000483", "Runge Kutta Stepsize"},
+  {"KISAO:0000483", "Internal Steps Size"},
+  {"KISAO:0000565", "Tolerance for Root Finder"},
+  {"KISAO:0000567", "Force Physical Correctness"},
+};
