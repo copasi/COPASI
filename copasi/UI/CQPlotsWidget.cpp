@@ -195,7 +195,7 @@ bool CQPlotsWidget::enterProtected()
   mpTblPlots->setModel(NULL);
   mpTblPlots->setModel(mpProxyModel);
   connect(mpTblPlots->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
+          this, SLOT(slotSelectionChanged()));
 
   updateDeleteBtns();
   mpTblPlots->horizontalHeader()->restoreState(State);
