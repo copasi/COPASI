@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -14,7 +14,6 @@ extern std::string getTestFile(const std::string & fileName);
 TEST_CASE("1: importing sbml files", "[copasi,sbml]")
 {
 
-  CRootContainer::init(0, NULL, false);
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != NULL);
 
@@ -141,6 +140,62 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
 
   }
 
-
-  CRootContainer::destroy();
+  CRootContainer::removeDatamodel(dm);
 }
+
+
+//#include <filesystem>
+//#include <copasi/utilities/CCopasiException.h>
+//
+//namespace fs = std::filesystem;
+//
+//TEST_CASE("2: importing biomodel files", "[copasi,sbml]")
+//{
+//  auto * dm = CRootContainer::addDatamodel();
+//  REQUIRE(dm != NULL);
+//
+//  bool skip = true;
+//
+//  for (auto itEntry = fs::recursive_directory_iterator("/Development/temp-biomodels/original/");
+//       itEntry != fs::recursive_directory_iterator();
+//       ++itEntry)
+//    {
+//      const auto currentPath = itEntry->path();
+//      const auto filenameStr = currentPath.filename().string();
+//      if (filenameStr.find(".xml") == std::string::npos)
+//        continue;
+//
+//      if (skip && filenameStr.find("385") == std::string::npos)
+//        continue;
+//
+//      skip = false;
+//
+//
+//      try
+//        {
+//          bool result = dm->importSBML(currentPath.string(), NULL);
+//          std::cout << std::setw(itEntry.depth() * 3) << "";
+//          std::cout << "sbml:  " << filenameStr << ": " << result << '\n';
+//        }
+//      catch (CCopasiException & ex)
+//        {
+//          std::cerr << "exception: " << ex.getMessage().getText() << '\n';
+//        }
+//      catch (...)
+//        {
+//          std::cerr << "unknown exception!\n";
+//        }
+//
+//      // remove unused functions
+//      dm->newModel(NULL, true);
+//
+//      auto & functions = CRootContainer::getFunctionList()->loadedFunctions();
+//      for (int Index = functions.size() - 1; Index >= 0 ; --Index)
+//      {
+//          if (!functions[Index].isReadOnly())
+//          CRootContainer::getFunctionList()->removeFunction(functions[Index].getKey());
+//      }
+//
+//    }
+//
+//}
