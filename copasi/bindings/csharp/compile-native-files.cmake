@@ -75,6 +75,7 @@ set (SWIG_ENUM_FIX_FILES
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CUndoData.cs"
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CNewtonMethod.cs"
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CCopasiTimer.cs"
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CDataModel.cs"
      )
 
 
