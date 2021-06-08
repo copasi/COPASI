@@ -269,9 +269,6 @@ protected:
    */
   static std::string getParameterValueAsString(const CCopasiParameter * pParameter);
 
-private:
-
-  static std::map< std::string, std::string > PARAMETER_KISAO_MAP;
 };
 
 #endif /* CSEDMLEXPORTER_H_ */
