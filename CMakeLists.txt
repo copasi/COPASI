@@ -202,7 +202,6 @@ if (UNIX)
 endif()
 
 include(CTest)
-add_subdirectory(tests)
 
 if (BUILD_TESTS)
 find_path(CPPUNIT_INCLUDE_DIR cppunit/Test.h )
@@ -807,6 +806,8 @@ include(CPack)
 
 add_subdirectory(copasi)
 
+add_subdirectory(tests)
+
 if(BUILD_SEMANTIC_TESTSUITE)
 add_subdirectory(semantic-test-suite)
 endif (BUILD_SEMANTIC_TESTSUITE)
@@ -842,7 +843,6 @@ if(BUILD_HYB_TESTS)
 if (EXISTS ${CMAKE_SOURCE_DIR}/hyb-test-suite)
 add_subdirectory(hyb-test-suite)
 endif()
-
 endif (BUILD_HYB_TESTS)
 
 # also install additional files and examples
