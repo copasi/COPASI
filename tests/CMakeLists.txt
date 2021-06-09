@@ -13,6 +13,8 @@
 #   https://opensource.org/licenses/Artistic-2.0 
 # END: License 
 
+project (TESTS VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
+
 file(GLOB CPP_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp )
 file(GLOB H_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h )
 

@@ -303,7 +303,7 @@ if (ENABLE_JIT)
   find_package(NATIVEJIT REQUIRED)
 
   include_directories(BEFORE ${NATIVEJIT_INCLUDE_DIR})
-  set(CMAKE_CXX_FLAGS "${NATIVEJIT_COMPILE_OPTIONS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${NATIVEJIT_COMPILE_OPTIONS}")
   set(USE_JIT 1)
 
   find_package(CPUFEATURES REQUIRED)
@@ -380,7 +380,7 @@ if(UNIX)
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
       option(CLANG_USE_STDLIB "Use libstdc++ rather than libc++" OFF)
       if (CLANG_USE_STDLIB)
-        SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++" )
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++" )
       endif()
     endif()
 
@@ -806,7 +806,9 @@ include(CPack)
 
 add_subdirectory(copasi)
 
+if(BUILD_TESTS)
 add_subdirectory(tests)
+endif (BUILD_TESTS)
 
 if(BUILD_SEMANTIC_TESTSUITE)
 add_subdirectory(semantic-test-suite)
@@ -914,12 +916,13 @@ message(STATUS "-----------------------------------------------------------
 
    NativeJIT lib        = ${NATIVEJIT_LIBRARY}
    NativeJIT include    = ${NATIVEJIT_INCLUDE_DIR}
-
+   NativeJIT CXX Flags  = ${NATIVEJIT_COMPILE_OPTIONS}
+   
    cpu_features lib     = ${CPUFEATURES_LIBRARY}
    cpu_features include = ${CPUFEATURES_INCLUDE_DIR}
 
-   OpenMP CXX Flags     = ${OpenMP_CXX_FLAGS}
    OpenMP Libs          = ${OpenMP_C_LIB_NAMES}
+   OpenMP CXX Flags     = ${OpenMP_CXX_FLAGS}
 
  Options:
 
@@ -938,6 +941,8 @@ message(STATUS "-----------------------------------------------------------
    Time Sensitivities task  = ${ENABLE_TIME_SENS}
    JIT Compilation          = ${ENABLE_JIT}
    OpenMP                   = ${ENABLE_OMP}
+
+   CXX Flags                = ${CMAKE_CXX_FLAGS} 
    Additional Defines       = ${DirDefs}
 
   Language Bindings:
