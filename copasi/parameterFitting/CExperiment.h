@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -358,13 +358,10 @@ public:
 
   /**
    * This method is used for output to fill the fitted points
-   * with the values of the index data record. If index exceedds the
+   * with the values of the index data record. If index exceeds the
    * number of data records all values are set to NaN.
-   * If includeSimulation = false the entries for the simulation results
-   * are set to NaN. (This means the simulated time series is not plotted and
-   * can be output using a different mechanism)
    */
-  void updateFittedPointValues(const size_t & index, bool includeSimulation);
+  void updateFittedPointValues(const size_t & index);
 
   /**
    * Fill the fitted points with values from the extended time series
