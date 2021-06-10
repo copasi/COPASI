@@ -4,18 +4,22 @@
 # of Connecticut School of Medicine. 
 # All rights reserved. 
 
+# The values below are updated by the build process
+VERSION=%VERSION%
+PACKAGE_NAME=%PACKAGE_NAME%
+
 echo ""
-echo "COPASI %VERSION% Self Extracting Installer"
+echo "COPASI ${VERSION} Self Extracting Installer"
 echo ""
 
 show_help() {
-    echo "Install COPASI %VERSION%"
+    echo "Install COPASI ${VERSION}"
     echo "  Usage: $(basename $0) [-t tmp_dir] [-i install_dir] [-d desktop_dir]"
-    echo "Only extract COPASI %VERSION% to destination (default: $(pwd))"
+    echo "Only extract COPASI ${VERSION} to destination (default: $(pwd))"
     echo "  Usage: $(basename $0) -e [destination]"
 }
 
-prompt() {
+prompt_for_dir() {
     RESULT="$(echo $3 | sed -e 's?^~?'"${HOME}"'?')"
     while :
     do
@@ -24,11 +28,11 @@ prompt() {
             [ -d "${RESULT}" ] && [ -w "${RESULT}" ] && break
         fi
         
-        read -e -i "$1" -p "$2: " RESULT
+        read -e -i "$1" -p "$2 " RESULT
         RESULT="$(echo ${RESULT} | sed -e 's?^~?'"${HOME}"'?')"
     done
 
-    echo RESULT: \"${RESULT}\"
+    echo "$2 \"${RESULT}\""
 }
 
 EXTRACT_DIR=
@@ -69,7 +73,7 @@ ARCHIVE=$(awk '/^__ARCHIVE_BELOW__/ {print NR + 1; exit 0; }' "$0")
 
 # We have an extract directory and will only extract to it
 if [ _"${EXTRACT_DIR}" != _ ]; then
-    prompt "${EXTRACT_DIR}" "Extract directory: " "${EXTRACT_DIR}"
+    prompt_for_dir "${EXTRACT_DIR}" "Extract directory:" "${EXTRACT_DIR}"
     EXTRACT_DIR="$(readlink -f ${RESULT})"
     
     echo tail -n+$ARCHIVE "$0" '| 'tar -xzv -C "${EXTRACT_DIR}"
@@ -77,7 +81,7 @@ if [ _"${EXTRACT_DIR}" != _ ]; then
     exit 0
 fi
 
-prompt "${TMP-${TEMP-/tmp}}" "Temp directory: " "${TMP_DIR}"
+prompt_for_dir "${TMP-${TEMP-/tmp}}" "Temp directory:" "${TMP_DIR}"
 TMP_DIR="$(readlink -f ${RESULT})"
 
 EXTRACT_DIR=$(mktemp -d "${TMP_DIR}"/copasi.XXXXXX)
@@ -85,26 +89,35 @@ EXTRACT_DIR=$(mktemp -d "${TMP_DIR}"/copasi.XXXXXX)
 echo tail -n+$ARCHIVE "$0" '| 'tar -xzv -C "${EXTRACT_DIR}"
 tail -n+$ARCHIVE "$0" | tar -xzv -C "${EXTRACT_DIR}"
 
-prompt "/opt/COPASI/%VERSION%" "Installation directory: " "${INSTALL_DIR}"
+prompt_for_dir "/opt/COPASI/${VERSION}" "Installation directory:" "${INSTALL_DIR}"
 INSTALL_DIR="$(readlink -f ${RESULT})"
 
-echo cp -r "${EXTRACT_DIR}"/%PACKAGE_NAME%/'*' "${INSTALL_DIR}"
-cp -r "${EXTRACT_DIR}"/%PACKAGE_NAME%/* "${INSTALL_DIR}"
+echo cp -r "${EXTRACT_DIR}"/${PACKAGE_NAME}/'*' "${INSTALL_DIR}"
+cp -r "${EXTRACT_DIR}"/${PACKAGE_NAME}/* "${INSTALL_DIR}"
 
-prompt "~/.local/share/applications" "Desktop file location: " "${DESKTOP_DIR}"
+prompt_for_dir "~/.local/share/applications" "Desktop file location:" "${DESKTOP_DIR}"
 DESKTOP_DIR="$(readlink -f ${RESULT})"
 
-echo "[Desktop Entry]
-Encoding=UTF-8
-Version=1.0
-Exec=${INSTALL_DIR}/bin/CopasiUI %u
-Icon=${INSTALL_DIR}/share/copasi/icons/Copasi48-Alpha.xpm
-MimeType=application/xml;x-scheme-handler/copasi;application/x-copasi
-Name=COPASI
-GenericName=Biochemical simulation
-NoDisplay=false
-Type=Application
-Categories=Science;Utility" '> '"${DESKTOP_DIR}"/COPASI.desktop
+NAME=COPASI
+DESKTOP_NAME=COPASI
+
+if [ -e "${DESKTOP_DIR}"/COPASI.desktop ]; then
+    echo COPASI desktop file exist!
+    echo You may overwrite it or create a version specific file.
+
+    while :
+    do
+        read -e -i "n" -p 'Create version specific desktopn file [y|n]: ' RESULT
+
+        [ _${RESULT} = _n ] && break
+        [ _${RESULT} = _y ] && break
+    done
+
+    if [ _${RESULT} = _y ]; then
+        NAME="COPASI ${VERSION}"
+        DESKTOP_NAME="COPASI-${VERSION}"
+    fi
+fi
 
 echo "[Desktop Entry]
 Encoding=UTF-8
@@ -112,13 +125,25 @@ Version=1.0
 Exec=${INSTALL_DIR}/bin/CopasiUI %u
 Icon=${INSTALL_DIR}/share/copasi/icons/Copasi48-Alpha.xpm
 MimeType=application/xml;x-scheme-handler/copasi;application/x-copasi
-Name=COPASI
+Name=${NAME}
 GenericName=Biochemical simulation
 NoDisplay=false
 Type=Application
-Categories=Science;Utility" > "${DESKTOP_DIR}"/COPASI.desktop
+Categories=Science;Utility" '> '$"{DESKTOP_DIR}/${DESKTOP_NAME}".desktop
 
-xdg-settings set default-url-scheme-handler copasi COPASI.desktop
+echo "[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Exec=${INSTALL_DIR}/bin/CopasiUI %u
+Icon=${INSTALL_DIR}/share/copasi/icons/Copasi48-Alpha.xpm
+MimeType=application/xml;x-scheme-handler/copasi;application/x-copasi
+Name=${NAME}
+GenericName=Biochemical simulation
+NoDisplay=false
+Type=Application
+Categories=Science;Utility" > "${DESKTOP_DIR}/${DESKTOP_NAME}".desktop
+
+xdg-settings set default-url-scheme-handler copasi "${DESKTOP_NAME}".desktop
 
 rm -rf "${EXTRACT_DIR}"
 
