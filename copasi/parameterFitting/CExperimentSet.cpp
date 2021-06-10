@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -288,35 +288,40 @@ bool CExperimentSet::calculateStatistics()
     }
 
   // This is the time to call the output handler to plot the fitted points.
-  for (it = mpExperiments->begin() + mNonExperiments, imax = 0; it != end; ++it)
-    imax = std::max(imax, (*it)->getDependentData().numRows());
+  size_t j, jmax;
+
+  imax = 0;
+
+  for (it = mpExperiments->begin() + mNonExperiments; it != end; ++it)
+    {
+      imax = std::max(imax, (*it)->getDependentData().numRows());
+    }
 
   CCopasiTask * pParentTask = dynamic_cast< CCopasiTask *>(getObjectAncestor("Task"));
   assert(pParentTask != NULL);
 
-  for (i = 0; i < imax; i++)
+  for (i = 0, j = 0; i < imax; i++)
     {
       for (it = mpExperiments->begin() + mNonExperiments; it != end; ++it)
-        (*it)->updateFittedPointValues(i, (*it)->getExperimentType() != CTaskEnum::Task::timeCourse); //false means without simulated data
+        (*it)->updateFittedPointValues(i);
 
       pParentTask->output(COutputInterface::AFTER);
-    }
 
-  //now the extended time series
-  for (it = mpExperiments->begin() + mNonExperiments, imax = 0; it != end; ++it)
-    imax = std::max(imax, (*it)->extendedTimeSeriesSize());
+      // TODO the 3 below relies on the fact that currently the number of intermittend point is CFitProblem::numIntermediateSteps
+      jmax = std::min(j + 3, (imax - 1) * 3);
 
-  for (i = 0; i < imax; i++)
-    {
-      for (it = mpExperiments->begin() + mNonExperiments; it != end; ++it)
+      for (; j < jmax; j++)
         {
-          if ((*it)->getExperimentType() == CTaskEnum::Task::timeCourse)
+          for (it = mpExperiments->begin() + mNonExperiments; it != end; ++it)
             {
-              (*it)->updateFittedPointValuesFromExtendedTimeSeries(i);
+              if ((*it)->getExperimentType() == CTaskEnum::Task::timeCourse)
+                {
+                  (*it)->updateFittedPointValuesFromExtendedTimeSeries(j);
+                }
             }
-        }
 
-      pParentTask->output(COutputInterface::AFTER);
+          pParentTask->output(COutputInterface::AFTER);
+        }
     }
 
   return true;
@@ -339,7 +344,6 @@ const CVector< C_FLOAT64 > & CExperimentSet::getDependentErrorMeanSD() const
 
 const CVector< size_t > & CExperimentSet::getDependentDataCount() const
 {return mDependentDataCount;}
-
 
 size_t CExperimentSet::getExperimentCount() const
 {return size() - mNonExperiments;}
