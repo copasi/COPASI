@@ -129,7 +129,7 @@ Name=${NAME}
 GenericName=Biochemical simulation
 NoDisplay=false
 Type=Application
-Categories=Science;Utility" '> '$"{DESKTOP_DIR}/${DESKTOP_NAME}".desktop
+Categories=Science;Utility" '> '"${DESKTOP_DIR}/${DESKTOP_NAME}".desktop
 
 echo "[Desktop Entry]
 Encoding=UTF-8
