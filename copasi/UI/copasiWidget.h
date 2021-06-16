@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -44,6 +44,7 @@ class ListViews;
 class CDataModel;
 class CQBaseDataModel;
 class CDataObject;
+class CQSortFilterProxyModel;
 
 #include "copasi/core/CCore.h"
 #include "copasi/core/CRegisteredCommonName.h"
@@ -80,6 +81,8 @@ public:
    * @return data model of this widget (or NULL if it does not have one)
    */
   virtual CQBaseDataModel* getCqDataModel();
+
+  static void setFilterExpression(CQSortFilterProxyModel * model, bool empty, QString Filter);
 
 protected:
   virtual bool enterProtected();

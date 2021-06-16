@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -112,10 +112,16 @@ const bool & CPlotSpecification::isActive() const
 
 bool CPlotSpecification::appliesTo(const CObjectInterface::ContainerList & list) const
 {
-  if (mTaskTypes.empty() || list.empty())
-    return true;  // no task types defined, assume plot applies (consistent with old behavior)
+  if (list.empty())
+    return true; // no task types defined, assume plot applies (consistent with old behavior)
 
-  const CCopasiTask* pTask = dynamic_cast<const CCopasiTask*>(list.front());
+  return appliesTo(dynamic_cast< const CCopasiTask * >(list.front()));
+}
+
+bool CPlotSpecification::appliesTo(const CCopasiTask * pTask) const
+{
+  if (mTaskTypes.empty())
+    return true; // no task types defined, assume plot applies (consistent with old behavior)
 
   if (pTask == NULL)
     return true; // no task found to compare again, plot applies

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -109,7 +109,11 @@ void CQZoomableView::slotFitOnScreen()
 void CQZoomableView::slotResetZoom()
 {
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
   resetMatrix();
+#else
+  resetTransform();
+#endif
   ensureVisible(scene()->itemsBoundingRect());
   update();
 }
@@ -130,7 +134,13 @@ void CQZoomableView::wheelEvent(QWheelEvent* event)
       QApplication::keyboardModifiers() == Qt::MetaModifier ||
       QApplication::keyboardModifiers() == Qt::ShiftModifier)
     {
-      if (event->delta() > 0)
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
+      int delta = event->delta();
+# else
+      int delta = event->angleDelta().y();
+#endif
+
+      if (delta > 0)
         {
           // Zoom in
           slotZoomIn();

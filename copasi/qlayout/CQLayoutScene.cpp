@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -97,7 +97,7 @@ void CQLayoutScene::saveToFile(const std::string& fileName, const std::string& f
       printer.setOutputFileName(fileName.c_str());
       QPainter painter(&printer);
       painter.setRenderHints(
-        QPainter::Antialiasing | QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
+        QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
       render(&painter, QRect(), itemsBoundingRect());
       painter.end();
     }
@@ -121,7 +121,7 @@ void CQLayoutScene::saveToFile(const std::string& fileName, const std::string& f
       QImage image(QSize(width()*scale, height()*scale), QImage::Format_ARGB32);
       QPainter painter(&image);
       painter.setRenderHints(
-        QPainter::Antialiasing | QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
+        QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
       render(&painter, image.rect(), itemsBoundingRect());
       painter.end();
       image.save(fileName.c_str(), fileType.c_str());

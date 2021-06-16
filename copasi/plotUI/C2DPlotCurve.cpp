@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,7 @@ C2DPlotCurve::C2DPlotCurve(QMutex *pMutex, const CPlotItem::Type &type, const CO
 
 void C2DPlotCurve::setDataSize(const size_t & size)
 {
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 
   switch (mCurveType)
     {
@@ -78,7 +78,7 @@ void C2DPlotCurve::setDataSize(const size_t & size)
 
 void C2DPlotCurve::reallocatedData(const CVector< double > * pX, const CVector< double > * pY, const CVector< double > * pY2)
 {
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 
   switch (mCurveType)
     {
@@ -143,7 +143,7 @@ const COutputInterface::Activity & C2DPlotCurve::getActivity() const
   return mActivity;
 }
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 
 //draw the several curves, separated by NaNs.
 void C2DPlotCurve::myDrawLines(QPainter *painter,

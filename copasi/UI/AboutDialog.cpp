@@ -89,12 +89,12 @@ const char *AboutDialog::text =
 AboutDialog::AboutDialog(QWidget *parent,
                          const QString &text,
                          const int &width,
-                         const int &heigth):
+                         const int &height):
   QDialog(parent),
   textEdit(NULL),
   mainLayout(NULL)
 {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   QPalette Palette = QGuiApplication::palette();
 #else
   QPalette Palette = QApplication::palette();
@@ -117,8 +117,13 @@ AboutDialog::AboutDialog(QWidget *parent,
   textEdit->setPalette(Palette);
 
   QFontMetrics FontMetrics = this->fontMetrics();
+#if QT_VERSION >= QT_VERSION_CHECK(5,11,0)
+  int w = width * (FontMetrics.horizontalAdvance('W') + FontMetrics.horizontalAdvance('I')) / 2;
+#else
   int w = width * (FontMetrics.width('W') + FontMetrics.width('I')) / 2;
-  int h = heigth * FontMetrics.lineSpacing();
+#endif
+
+  int h = height * FontMetrics.lineSpacing();
   this->textEdit->setFixedSize(w, h);
   this->textEdit->setReadOnly(true);
   this->textEdit->setText(text);

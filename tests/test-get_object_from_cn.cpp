@@ -1,10 +1,5 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
 
@@ -32,7 +27,6 @@ bool verify_cn(const CDataModel* dm, const std::string& cn)
 TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
 {
 
-  CRootContainer::init(0, NULL, false);
   auto* dm = CRootContainer::addDatamodel();
   REQUIRE(dm != NULL);
 
@@ -89,5 +83,5 @@ TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
 
   }
 
-  CRootContainer::destroy();
+  CRootContainer::removeDatamodel(dm);
 }

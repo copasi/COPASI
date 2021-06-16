@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
   try
     {
       // load the model without progress report
-      result = pDataModel->loadModel(filename, NULL);
+      result = pDataModel->loadFromFile(filename);
     }
   catch (...)
     {
@@ -70,7 +70,6 @@ int main(int argc, char** argv)
   // save to ensure that the model is right
   pDataModel->saveModel("temp.cps", NULL, true);
 
-
   // run the task
   try
     {
@@ -91,7 +90,6 @@ int main(int argc, char** argv)
       CRootContainer::destroy();
       return 1;
     }
-
 
   // clean up the library
   CRootContainer::destroy();

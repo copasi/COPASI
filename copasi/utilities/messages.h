@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -405,6 +405,7 @@ const MESSAGES Messages[] =
   {MCLyap + 3, "CLyapMethod (3): Only %d exponents can be calculated for this model because the model has only %d independent variables."},
   {MCLyap + 4, "CLyapMethod (4): Transient time is larger than overall time."},
   {MCLyap + 5, "CLyapMethod (5): Orthonormalization interval is larger than overall time."},
+  {MCLyap + 6, "CLyapMethod (6): Internal step size exceeded."},
 
   // CODEExporter
   {MCODEExporter + 1, "CODEExporter (1): Length of exporting line exceeds 1000 characters."},

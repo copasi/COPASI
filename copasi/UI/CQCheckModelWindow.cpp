@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -84,7 +84,9 @@ CQCheckModelWindow::CQCheckModelWindow(CopasiUI3Window * pMainWindow)
 #endif // not Darwin
 
   mpSelection = new QComboBox(this);
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
   mpSelection->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
+#endif
   mpSelection->setSizePolicy(QSizePolicy::Policy::MinimumExpanding, QSizePolicy::Policy::Fixed);
   connect(mpSelection, SIGNAL(currentIndexChanged(int)), this, SLOT(displayResult()));
 

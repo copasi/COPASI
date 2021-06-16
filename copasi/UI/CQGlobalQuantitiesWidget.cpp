@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,13 +53,13 @@ CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget *parent, const char *
   mpTypeDelegate = new CQComboDelegate(this, mpGlobalQuantityDM->getTypes());
   mpTblGlobalQuantities->setItemDelegateForColumn(COL_TYPE_GQ, mpTypeDelegate);
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   mpTblGlobalQuantities->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 #endif
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
       mpTblGlobalQuantities->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
       mpTblGlobalQuantities->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
@@ -292,14 +292,7 @@ void CQGlobalQuantitiesWidget::slotFilterChanged()
 {
   QString Filter = mpLEFilter->text();
 
-  if (Filter.isEmpty())
-    {
-      mpProxyModel->setFilterRegExp(QRegExp());
-      return;
-    }
-
-  QRegExp regExp(Filter + "|New Quantity", Qt::CaseInsensitive, QRegExp::RegExp);
-  mpProxyModel->setFilterRegExp(regExp);
+  setFilterExpression(mpProxyModel, Filter.isEmpty(), Filter + "|New Quantity");
 
   while (mpProxyModel->canFetchMore(QModelIndex()))
     mpProxyModel->fetchMore(QModelIndex());

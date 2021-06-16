@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -208,7 +208,6 @@ int main(int argc, char *argv[])
       if (COptions::isSet("ReparameterizeModel") && !COptions::compareValue("ReparameterizeModel", std::string("")))
         COptions::getValue("ReparameterizeModel", iniFileName);
 
-
       if (needImport)
         {
           if (importSBML)
@@ -318,7 +317,7 @@ int main(int argc, char *argv[])
 
           for (; it != end; ++it)
             {
-              if (!pDataModel->loadModel(*it, NULL))
+              if (!pDataModel->loadFromFile(*it, NULL))
                 {
                   std::cerr << "File: " << *it << std::endl;
                   std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
@@ -433,7 +432,7 @@ int runScheduledTasks(CProcessReport * pProcessReport)
         }
 
       // mark all other potential tasks as not scheduled
-for (CCopasiTask & task : TaskList)
+      for (CCopasiTask & task : TaskList)
         {
           task.setScheduled(false);
         }
@@ -445,8 +444,7 @@ for (CCopasiTask & task : TaskList)
         toBeScheduled.setUpdateModel(true);
     }
 
-
-for (CCopasiTask & task : TaskList)
+  for (CCopasiTask & task : TaskList)
     if (task.isScheduled())
       {
         task.setCallBack(pProcessReport);
@@ -457,7 +455,6 @@ for (CCopasiTask & task : TaskList)
           {
             task.getReport().setTarget(ReportFileName);
           }
-
 
         try
           {
@@ -527,7 +524,6 @@ int exportParametersToIniFile()
   fs.close();
 
   return retcode;
-
 }
 
 int exportCurrentModel()

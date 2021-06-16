@@ -475,7 +475,24 @@ bool CFitProblem::elevateChildren()
 
 bool CFitProblem::setCallBack(CProcessReport * pCallBack)
 {
-  return COptProblem::setCallBack(pCallBack);
+  bool success =  COptProblem::setCallBack(pCallBack);
+
+  if (mpSteadyState != NULL)
+    {
+      success &= mpSteadyState->setCallBack(mpCallBack);
+    }
+
+  if (mpTrajectory != NULL)
+    {
+      success &= mpTrajectory->setCallBack(mpCallBack);
+    }
+
+  if (mpTimeSens != NULL)
+    {
+      success &= mpTimeSens->setCallBack(mpCallBack);
+    }
+
+  return success;
 }
 
 bool CFitProblem::initialize()
@@ -518,6 +535,7 @@ bool CFitProblem::initialize()
 
       mpSteadyState->setMathContainer(mpContainer);
       mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+      mpSteadyState->setCallBack(mpCallBack);
     }
 
   pdelete(mpTrajectory);
@@ -538,10 +556,11 @@ bool CFitProblem::initialize()
       mpTrajectory->setMathContainer(mpContainer);
       mpTrajectory->setUpdateModel(false);
       mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+      mpTrajectory->setCallBack(mpCallBack);
     }
 
   mCompleteInitialState = mpContainer->getCompleteInitialState();
-  mpInitialStateTime = mpContainer->getInitialState().array() + mpContainer->getCountFixedEventTargets();
+  mpInitialStateTime = mpContainer->getInitialState().array() + mpContainer->getCountFixed() + mpContainer->getCountFixedEventTargets();
 
   success &= mpExperimentSet->compile(mpContainer);
 
@@ -856,6 +875,7 @@ bool CFitProblem::initialize()
         }
 
       mpTimeSens->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+      mpTimeSens->setCallBack(mpCallBack);
       mJacTimeSens.resize(mSolutionVariables.size(), mpExperimentSet->getDataPointCount());
     }
   else
@@ -923,7 +943,7 @@ bool CFitProblem::calculate()
 
   size_t i, imax = mpExperimentSet->getExperimentCount();
   size_t j;
-  size_t kmax;
+  int kmax;
   mCalculateValue = 0.0;
 
   CExperiment * pExp = NULL;
@@ -1043,7 +1063,7 @@ bool CFitProblem::calculate()
                     //calculate a reasonable number of intermediate points
                     numIntermediateSteps = 4; //TODO
                     //resize the storage for the extended time series
-                    pExp->initExtendedTimeSeries(numIntermediateSteps * (kmax > 0 ? kmax - 1 : 0) + 1);
+                    pExp->initExtendedTimeSeries(numIntermediateSteps * std::max(kmax - 1, 0));
                   }
 
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
@@ -1125,8 +1145,6 @@ bool CFitProblem::calculate()
                     if (mStoreResults)
                       {
                         mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
-                        //additionally also store the the simulation result for the extended time series
-                        pExp->storeExtendedTimeSeriesData(pExp->getTimeData()[j]);
                       }
                     else
                       {

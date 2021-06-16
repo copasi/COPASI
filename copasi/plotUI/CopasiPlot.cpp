@@ -29,7 +29,7 @@
 
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 #include <qwt_legend_data.h>
 #include <qwt_legend_label.h>
 #include <qwt_plot_canvas.h>
@@ -71,7 +71,7 @@
 
 #include <QApplication>
 
-#if QT_VERSION > 0x060000
+#if QT_VERSION > QT_VERSION_CHECK(6,0,0)
 #include <QRegularExpression>
 #endif
 
@@ -117,7 +117,7 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
 {
   QwtLegend *legend = new QwtLegend(this);
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   legend->setDefaultItemMode(QwtLegendData::Checkable);
   ((QwtPlotCanvas*)canvas())->setPaintAttribute(QwtPlotCanvas::Opaque, true);
 
@@ -150,7 +150,7 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
 
   //  setTitle(FROM_UTF8(plotspec->getTitle()));
 
-#if QWT_VERSION < 0x060000
+#if QWT_VERSION < QT_VERSION_CHECK(6,0,0)
   connect(this, SIGNAL(legendChecked(QwtPlotItem *, bool)),
           SLOT(showCurve(QwtPlotItem *, bool)));
 #endif
@@ -167,7 +167,7 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
   connect(this, SIGNAL(replotSignal()), this, SLOT(replot()));
 }
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 void CopasiPlot::legendChecked(const QVariant &itemInfo, bool on)
 {
   QwtPlotItem *plotItem = infoToItem(itemInfo);
@@ -205,7 +205,7 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
 
   std::string colorMap = *const_cast< CPlotItem * >(plotItem)->assertParameter("colorMap", CCopasiParameter::Type::STRING, std::string("Default"));
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   pSpectogram->setRenderThreadCount(0);
 
   if (colorMap == "Grayscale")
@@ -282,8 +282,10 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
   else
     {
       // have explicit list of numbers to plot
-#if QT_VERSION < 0x060000
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
       QStringList list = contours.split(QRegExp(",| |;"), QString::SkipEmptyParts);
+#elif QT_VERSION < QT_VERSION_CHECK(6,0,0)
+      QStringList list = contours.split(QRegExp(",| |;"), Qt::SkipEmptyParts);
 #else
       QStringList list = contours.split(QRegularExpression(",| |;"), Qt::SkipEmptyParts);
 #endif
@@ -321,7 +323,7 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
   setAxisTitle(yLeft, FROM_UTF8(pObj != NULL ? pObj->getObjectDisplayName() : "Not found"));
   enableAxis(yLeft);
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   setAxisScaleEngine(xTop,
                      logZ ? (QwtScaleEngine *)new QwtLogScaleEngine() : (QwtScaleEngine *)new QwtLinearScaleEngine());
 #else
@@ -460,7 +462,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
               || linetype == 3)  //line+symbols
             {
               pCurve->setStyle(QwtPlotCurve::Lines);
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
               pCurve->setLegendAttribute(QwtPlotCurve::LegendShowLine);
 #endif
 
@@ -512,7 +514,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
               switch (symbolsubtype) //symbol type
                 {
                   case 1:
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
                     pCurve->setSymbol(new QwtSymbol(QwtSymbol::Cross, QBrush(), QPen(QBrush(color), 2), QSize(7, 7)));
                     pCurve->setLegendAttribute(QwtPlotCurve::LegendShowSymbol);
 #else
@@ -521,7 +523,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
                     break;
 
                   case 2:
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
                     pCurve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse, QBrush(), QPen(QBrush(color), 1), QSize(8, 8)));
                     pCurve->setLegendAttribute(QwtPlotCurve::LegendShowSymbol);
 #else
@@ -531,7 +533,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
                   case 0:
                   default:
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
                     pCurve->setSymbol(new QwtSymbol(QwtSymbol::Cross, QBrush(color), QPen(QBrush(color), 1), QSize(5, 5)));
                     pCurve->setLegendAttribute(QwtPlotCurve::LegendShowSymbol);
 #else
@@ -564,7 +566,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
     }
 
   if (plotspec->isLogX())
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
     setAxisScaleEngine(xBottom, new QwtLogScaleEngine());
 
 #else
@@ -576,7 +578,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   setAxisAutoScale(xBottom);
 
   if (plotspec->isLogY())
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
     setAxisScaleEngine(yLeft, new QwtLogScaleEngine());
 
 #else
@@ -751,7 +753,7 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
       switch ((*itCurves)->getType())
         {
           case CPlotItem::curve2d:
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
             (*itCurves)->setData(new C2DCurveData(*data[mDataIndex[k][0].second],
                                                   *data[mDataIndex[k][1].second],
                                                   0));
@@ -763,7 +765,7 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
             break;
 
           case CPlotItem::bandedGraph:
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
             (*itCurves)->setData(new CBandedGraphData(*data[mDataIndex[k][0].second],
                                  *data[mDataIndex[k][1].second],
                                  *data[mDataIndex[k][2].second],
@@ -777,7 +779,7 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
             break;
 
           case CPlotItem::histoItem1d:
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
             (*itCurves)->setData(new CHistoCurveData(*data[mDataIndex[k][0].second],
                                  0,
                                  mCurves[k]->getIncrement()));
@@ -807,7 +809,7 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
       switch ((*itSpectrograms)->getType())
         {
           case CPlotItem::spectogram:
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
             (*itSpectrograms)->setData(
               new CSpectorgramData(
                 *data[mDataIndex[k][0].second],
@@ -970,7 +972,7 @@ void CopasiPlot::updateCurves(const size_t & activity)
       if ((size_t)(*itSpectograms)->getActivity() == activity)
         {
           (*itSpectograms)->setDataSize(mDataSize[activity]);
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
           QwtScaleWidget *topAxis = axisWidget(QwtPlot::xTop);
           const QwtInterval zInterval = (*itSpectograms)->data()->interval(Qt::ZAxis);
           topAxis->setColorBarEnabled(true);
@@ -1342,7 +1344,7 @@ bool CopasiPlot::saveData(const std::string & filename)
 
           fs << mSaveHistogramObjects[HistogramIndex] << std::endl;
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
           CHistoCurveData * pData = static_cast< CHistoCurveData * >((*itCurves)->data());
 #else
           CHistoCurveData * pData = static_cast< CHistoCurveData * >(&(*itCurves)->data());
@@ -1367,7 +1369,7 @@ void CopasiPlot::showCurve(QwtPlotItem *item, bool on)
 {
   item->setVisible(on);
   item->setItemAttribute(QwtPlotItem::AutoScale, on);
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   QwtLegend *lgd = qobject_cast<QwtLegend *>(legend());
   QList<QWidget *> legendWidgets =
     lgd->legendWidgets(itemToInfo(item));
@@ -1402,7 +1404,7 @@ void CopasiPlot::setCurvesVisibility(const bool & visibility)
     {
       it->second->setVisible(visibility);
       it->second->setItemAttribute(QwtPlotItem::AutoScale, visibility);
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
       QwtLegend *lgd = qobject_cast<QwtLegend *>(legend());
       QList<QWidget *> legendWidgets =
         lgd->legendWidgets(itemToInfo(it->second));

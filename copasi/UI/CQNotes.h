@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,8 +17,8 @@
 #define COPASI_CQNotes
 
 #include <QWidget>
-#include <QtCore/QVariant>
-#include <QtXml/QXmlDefaultHandler>
+#include <QVariant>
+#include <QXmlDefaultHandler>
 
 #if defined(QT5_USE_WEBENGINE) && !defined(QT_USE_TEXTBROWSER)
 # include <QWebEnginePage>
@@ -37,7 +37,7 @@ protected:
 };
 #else
 
-#if QT_VERSION >= 0x050000 && !defined(WIN32) && !defined(QT_USE_TEXTBROWSER)
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) && !defined(WIN32) && !defined(QT_USE_TEXTBROWSER)
 // for whatever reason this fails to compile on centos 7 with qt 5.6.1
 #ifndef QWEBKITWIDGETS_EXPORT
 #define QWEBKITWIDGETS_EXPORT Q_DECL_IMPORT

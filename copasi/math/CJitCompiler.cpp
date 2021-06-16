@@ -10,7 +10,9 @@
 #include "copasi/commandline/CConfigurationFile.h"
 #include "copasi/core/CRootContainer.h"
 
+#ifdef USE_JIT
 #include <cpu_features/cpuinfo_x86.h>
+#endif
 
 // static
 bool * CJitCompiler::pSSE4support = NULL;
@@ -18,13 +20,35 @@ bool * CJitCompiler::pSSE4support = NULL;
 // static
 bool CJitCompiler::JitEnabled()
 {
+#ifdef USE_JIT
+
   if (pSSE4support == NULL)
     {
       pSSE4support = new bool(cpu_features::GetX86Info().features.sse4_2);
     }
 
   return *pSSE4support && !CRootContainer::getConfiguration()->getDisableJIT();
+#else
+  return false;
+#endif // USE_JIT
 }
+
+// static
+size_t CJitCompiler::InitalBufferSize = 8192;
+
+// static
+void CJitCompiler::SetJitBufferSize(const size_t size)
+{
+  InitalBufferSize = size;
+}
+
+// static
+const size_t & CJitCompiler::GetJitBufferSize()
+{
+  return InitalBufferSize;
+}
+
+#ifdef USE_JIT
 
 // static
 std::string CJitCompiler::where(std::runtime_error & e)
@@ -42,8 +66,8 @@ CJitCompiler::CJitCompiler()
   , mpExecutionBuffer(NULL)
   , mpExpression(NULL)
   , mExpressions()
-  , mExecutionBufferSize(8192)
-  , mFunctionBufferSize(8192)
+  , mExecutionBufferSize(InitalBufferSize)
+  , mFunctionBufferSize(InitalBufferSize)
 {
   JitEnabled();
 }
@@ -874,3 +898,4 @@ CJitCompiler::Node * CJitCompiler::compile(const CEvaluationNodeLogical * pNode,
 
   return pNodeJIT;
 }
+#endif // USE_JIT

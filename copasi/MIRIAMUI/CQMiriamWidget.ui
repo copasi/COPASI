@@ -442,4 +442,14 @@
    </hints>
   </connection>
  </connections>
+  <slots>
+    <slot>slotBtnDeleteClicked()</slot>
+    <slot>slotBtnClearClicked()</slot>
+    <slot>slotBtnBrowseReference(QModelIndex)</slot>
+    <slot>slotBtnBrowseDescription(QModelIndex)</slot>
+    <slot>slotCreatedDTChanged(QDateTime)</slot>
+    <slot>dataChanged(QModelIndex,QModelIndex)</slot>
+    <slot>slotCopyEvent()</slot>
+    <slot>slotBtnCopy()</slot>
+  </slots>
 </ui>

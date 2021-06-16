@@ -354,7 +354,7 @@ void CExperiment::updateFittedPoints()
       }
 }
 
-void CExperiment::updateFittedPointValues(const size_t & index, bool includeSimulation)
+void CExperiment::updateFittedPointValues(const size_t & index)
 {
   CDataVector< CFittingPoint >::iterator it = mFittingPoints.begin();
   CDataVector< CFittingPoint >::iterator end = mFittingPoints.end();
@@ -395,7 +395,7 @@ void CExperiment::updateFittedPointValues(const size_t & index, bool includeSimu
 
       it->setValues(Independent,
                     *pDataDependent,
-                    includeSimulation ? *pDataDependentCalculated : std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                    *pDataDependentCalculated,
                     Residual);
     }
 

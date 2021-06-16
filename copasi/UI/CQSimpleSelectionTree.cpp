@@ -670,12 +670,20 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
     {
       if (task && task->updateMatrices())
         {
+          const CDataObject * pObject = static_cast< const CDataObject * >(task->getObject(std::string("Reference=Average divergence")));
+
+          if (filter(classes, pObject))
+            {
+              pItem = new QTreeWidgetItem(this->mpResultLyapunovSubtree, QStringList(FROM_UTF8(pObject->getObjectName())));
+              treeItems[pItem] = pObject;
+            }
+
           for (int i = 0; i < 4; ++i)
             {
               std::ostringstream sss;
               sss << "Exponent " << i + 1;
 
-              const CDataObject * pObject = static_cast< const CDataObject * >(task->getObject("Reference=" + sss.str()));
+              pObject = static_cast< const CDataObject * >(task->getObject("Reference=" + sss.str()));
 
               if (filter(classes, pObject))
                 {

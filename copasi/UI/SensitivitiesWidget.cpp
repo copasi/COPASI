@@ -177,7 +177,7 @@ bool SensitivitiesWidget::runTask()
 {
   if (FunctionChooser->getCurrentObjectList() != CObjectLists::SINGLE_OBJECT)
     {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
       FunctionLineEdit->setText("[Please Choose Object.] --->");
 #else
       FunctionLineEdit->setText(QApplication::translate("SensitivitiesWidget", "[Please Choose Object.] --->", 0, QApplication::UnicodeUTF8));

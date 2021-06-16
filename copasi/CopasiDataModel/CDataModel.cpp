@@ -78,6 +78,84 @@
 #include <copasi/shinyExport/uiShiny.c>
 #include <copasi/shinyExport/serverShiny.c>
 
+// static
+const CEnumAnnotation< std::string, CDataModel::ContentType >
+CDataModel::ContentTypeNames({"COPASI",
+                              "GEPASI",
+                              "SBML",
+                              "SED-ML",
+                              "OMEX"
+                             });
+
+// static
+CDataModel::ContentType CDataModel::contentType(std::istream & content)
+{
+  std::string Line;
+  size_t LinesRead = 0;
+  unsigned C_INT32 isZip;
+
+  content.read(reinterpret_cast< char * >(&isZip), 4);
+  content.seekg(0);
+
+  if (content.fail())
+    return ContentType::__SIZE;
+
+  if (isZip == 0x04034b50)
+    return ContentType::OMEX;
+
+  std::getline(content, Line);
+  ++LinesRead;
+
+  if (content.fail())
+    return ContentType::__SIZE;
+
+  if (!Line.compare(0, 8, "Version="))
+    {
+      content.seekg(0);
+      CReadConfig GEPASI(content);
+
+      std::string Version;
+
+      if (GEPASI.getVariable("Version", "string", &Version) == 0
+          && Version < "4")
+        {
+          content.seekg(0);
+          return ContentType::GEPASI;
+        }
+
+      return ContentType::__SIZE;
+    }
+
+  while (LinesRead <= 10)
+    {
+      if (Line.find("<sedML") != std::string::npos
+          || Line.find(":sedML") != std::string::npos)
+        {
+          content.seekg(0);
+          return ContentType::SEDML;
+        }
+
+      if (Line.find("<sbml") != std::string::npos
+          || Line.find(":sbml") != std::string::npos)
+        {
+          content.seekg(0);
+          return ContentType::SBML;
+        }
+
+      if (Line.find("<COPASI") != std::string::npos
+          || Line.find(":COPASI") != std::string::npos)
+        {
+          content.seekg(0);
+          return ContentType::COPASI;
+        }
+
+      std::getline(content, Line);
+      ++LinesRead;
+    }
+
+  return ContentType::__SIZE;
+}
+
 CDataModel::CDataModel(const bool withGUI)
   : CDataContainer("Root", NULL, "CN", CDataObject::DataModel)
   , COutputHandler()
@@ -174,6 +252,150 @@ CDataModel::~CDataModel()
     }
 
   mTempFolders.clear();
+}
+
+bool CDataModel::loadFromString(const std::string & content,
+                                std::string referenceDir,
+                                CProcessReport * pProcessReport,
+                                const bool & deleteOldData)
+{
+  if (referenceDir.empty())
+    {
+      COptions::getValue("PWD", referenceDir);
+    }
+
+  std::istringstream Content(content);
+
+  switch (CDataModel::contentType(Content))
+    {
+      case ContentType::COPASI:
+        return loadModel(Content, referenceDir, pProcessReport, deleteOldData);
+        break;
+
+      case ContentType::GEPASI:
+        return loadModel(Content, referenceDir, pProcessReport, deleteOldData);
+        break;
+
+      case ContentType::SBML:
+        mData.mReferenceDir = referenceDir;
+        return importSBMLFromString(content, pProcessReport, deleteOldData);
+        break;
+
+      case ContentType::SEDML:
+        return importSEDMLFromString(content, referenceDir, pProcessReport, deleteOldData);
+        break;
+
+      case ContentType::OMEX:
+      {
+        std::string TmpDir;
+        COptions::getValue("Tmp", TmpDir);
+
+        std::string TmpFileName = CDirEntry::createTmpName(TmpDir, ".omex");
+        std::ofstream(TmpFileName) << content;
+
+        bool success = openCombineArchive(TmpFileName, pProcessReport, deleteOldData);
+
+        CDirEntry::remove(TmpFileName);
+
+        return success;
+      }
+
+      break;
+
+      case ContentType::__SIZE:
+        CCopasiMessage Message(CCopasiMessage::ERROR,
+                               "Content not supported for string '%s'.",
+                               content.substr(0, 512).c_str());
+        break;
+    }
+
+  return false;
+}
+
+bool CDataModel::loadFromFile(const std::string & fileName,
+                              CProcessReport * pProcessReport,
+                              const bool & deleteOldData)
+{
+  std::string FileName = fileName;
+  std::string PWD;
+  COptions::getValue("PWD", PWD);
+
+  if (CDirEntry::isRelativePath(FileName) && !CDirEntry::makePathAbsolute(FileName, PWD))
+    FileName = CDirEntry::fileName(FileName);
+
+  PWD = CDirEntry::dirName(FileName);
+
+#ifdef WIN32
+  std::ifstream File(CLocaleString::fromUtf8(FileName).c_str(), std::ios_base::binary);
+#else
+  std::ifstream File(CLocaleString::fromUtf8(FileName).c_str());
+#endif
+
+  if (File.fail())
+    {
+      CCopasiMessage Message(CCopasiMessage::ERROR,
+                             "File error when opening '%s'.",
+                             FileName.c_str());
+      return false;
+    }
+
+  bool success = false;
+
+  switch (CDataModel::contentType(File))
+    {
+      case ContentType::COPASI:
+        success = loadModel(File, PWD, pProcessReport, deleteOldData);
+
+        if (success)
+          {
+            mData.mSaveFileName = CDirEntry::normalize(FileName);
+            mData.mReferenceDir = CDirEntry::dirName(mData.mSaveFileName);
+          }
+
+        break;
+
+      case ContentType::GEPASI:
+        success = loadModel(File, PWD, pProcessReport, deleteOldData);
+
+        if (success)
+          {
+            mData.mSaveFileName = CDirEntry::dirName(FileName)
+                                  + CDirEntry::Separator
+                                  + CDirEntry::baseName(FileName);
+
+            std::string Suffix = CDirEntry::suffix(FileName);
+
+            if (strcasecmp(Suffix.c_str(), ".gps") != 0)
+              mData.mSaveFileName += Suffix;
+
+            mData.mSaveFileName += ".cps";
+
+            mData.mSaveFileName = CDirEntry::normalize(mData.mSaveFileName);
+            mData.mReferenceDir = CDirEntry::dirName(mData.mSaveFileName);
+          }
+
+        break;
+
+      case ContentType::SBML:
+        success = importSBML(FileName, pProcessReport, deleteOldData);
+        break;
+
+      case ContentType::SEDML:
+        success = importSEDML(FileName, pProcessReport, deleteOldData);
+        break;
+
+      case ContentType::OMEX:
+        success = openCombineArchive(FileName, pProcessReport, deleteOldData);
+        break;
+
+      case ContentType::__SIZE:
+        CCopasiMessage Message(CCopasiMessage::ERROR,
+                               "Content not supported for file '%s'.",
+                               FileName.c_str());
+        break;
+    }
+
+  return success;
 }
 
 bool CDataModel::loadModel(std::istream & in,
@@ -493,9 +715,9 @@ bool CDataModel::loadModelParameterSets(const std::string & fileName,
   CDataVectorN< CModelParameterSet > & loadedSet = parameterSetModel->getModelParameterSets();
   CCommonName loadedModelCn = parameterSetModel->getCN();
 
-for (CModelParameterSet & set : loadedSet)
+  for (CModelParameterSet & set : loadedSet)
     {
-for (CModelParameter * current : dynamic_cast< CModelParameterGroup & >(set))
+      for (CModelParameter * current : dynamic_cast< CModelParameterGroup & >(set))
         {
           replaceCnInGroup(current, loadedModelCn, thisModelsCn);
         }
@@ -538,7 +760,7 @@ void CDataModel::replaceCnInGroup(CModelParameter * pParam,
   if (!group)
     return;
 
-for (CModelParameter * element : *group)
+  for (CModelParameter * element : *group)
     {
       CModelParameterGroup * inside = dynamic_cast< CModelParameterGroup * >(element);
 
@@ -964,8 +1186,6 @@ bool CDataModel::importSBML(const std::string & fileName,
 
   if (CDirEntry::isRelativePath(FileName) && !CDirEntry::makePathAbsolute(FileName, PWD))
     FileName = CDirEntry::fileName(FileName);
-
-  std::ifstream File(CLocaleString::fromUtf8(FileName).c_str());
 
   SBMLImporter importer;
   // Right now we always import the COPASI MIRIAM annotation if it is there.
@@ -1811,7 +2031,6 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
         }
     }
 
-
   // otherwise look for an sedml file
   const CaContent * sedml_content =
     content != NULL && content->getFormat() == KnownFormats::lookupFormat("sedml") ?
@@ -1933,7 +2152,6 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
   if (!additionalMessages.empty())
     CCopasiMessage(CCopasiMessage::ERROR, additionalMessages.c_str());
 
-
   this->mData.mSaveFileName = "";
   this->changed();
 
@@ -1942,6 +2160,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
 // SEDML
 bool CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText,
+                                       std::string referenceDir,
                                        CProcessReport * pImportHandler,
                                        const bool & deleteOldData)
 {
@@ -1949,6 +2168,7 @@ bool CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText,
   CRegisteredCommonName::setEnabled(false);
 
   pushData();
+  mData.mReferenceDir = referenceDir;
 
   CCopasiMessage::clearDeque();
 
@@ -2197,7 +2417,11 @@ std::string CDataModel::exportSEDMLToString(CProcessReport * pExportHandler,
   return str;
 }
 
-bool CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile, int sedmlLevel, int sedmlVersion, bool /*exportIncomplete*/, bool exportCOPASIMIRIAM, CProcessReport * pExportHandler)
+bool
+CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile,
+                        int sedmlLevel, int sedmlVersion,
+                        bool /*exportIncomplete*/, bool exportCOPASIMIRIAM,
+                        CProcessReport * pExportHandler)
 {
   CCopasiMessage::clearDeque();
 
@@ -2254,15 +2478,11 @@ bool CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile, i
     }
 
   CSEDMLExporter exporter;
-  // exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
-  SedDocument * pOrigSEDMLDocument = NULL;
 
-  //exporter.setExportHandler(pExportHandler);
-  //  const std::string& SBMLFileName = "";
+  SedDocument * pOrigSEDMLDocument = NULL;
 
   std::string sbmlDocument = exportSBMLToString(pExportHandler, 3, 1);
 
-  // std::cout<<sbmlDocument<<std::endl; //for debuging
   if (sbmlDocument == "")
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, "No support for exporting SEDML without SBML model");
@@ -2448,7 +2668,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::parameterFitting:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2477,7 +2697,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::lyap:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2494,7 +2714,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::mca:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2511,7 +2731,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::lna:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2528,7 +2748,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::sens:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2545,7 +2765,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::tssAnalysis:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,10 +26,9 @@
 #include <copasi/core/CDataVector.h>
 #include <copasi/CopasiDataModel/CDataModel.h>
 
-
 #include "copasi/UI/qtUtilities.h"
 
-#if QT_VERSION < 0x040800
+#if QT_VERSION < QT_VERSION_CHECK(4,8,0)
 #include <QPainter>
 #endif
 
@@ -48,13 +47,12 @@ void setColor(QLabel *widget, const QColor& color)
 {
   QPalette palette(color);
   palette.setColor(QPalette::Base, color);
-  palette.setColor(QPalette::Background, color);
   palette.setColor(QPalette::Window, color);
-  palette.setColor(QPalette::Foreground, color);
+  palette.setColor(QPalette::WindowText, color);
   widget->setPalette(palette);
   QImage image(widget->rect().size(), QImage::Format_ARGB32);
 
-#if QT_VERSION >= 0x040800
+#if QT_VERSION >= QT_VERSION_CHECK(4,8,0)
   image.fill(color);
 #else
   QPainter painter(&image);
@@ -80,7 +78,6 @@ void CQEffectDescriptionEdit::initFrom(const CQEffectDescription* other, bool mu
   else
     txtDataObject->setText(other->getDataCN().c_str());
 
-
   txtScaleStart->setText(convertToQString(other->getScaleStart()));
   txtScaleEnd->setText(convertToQString(other->getScaleEnd()));
 
@@ -103,8 +100,8 @@ void CQEffectDescriptionEdit::initFrom(const CQEffectDescription* other, bool mu
 
 void CQEffectDescriptionEdit::saveTo(CQEffectDescription* other, bool multiple)
 {
-  other->setStartColor(txtColorStart->palette().color(QPalette::Background));
-  other->setEndColor(txtColorEnd->palette().color(QPalette::Background));
+  other->setStartColor(txtColorStart->palette().color(QPalette::Window));
+  other->setEndColor(txtColorEnd->palette().color(QPalette::Window));
   other->setScaleStart(txtScaleStart->text().toDouble());
   other->setScaleEnd(txtScaleEnd->text().toDouble());
 
@@ -126,8 +123,8 @@ CQEffectDescription* CQEffectDescriptionEdit::toDescription() const
 {
   CQEffectDescription *result = new CQEffectDescription(txtObjectName->text().toStdString());
 
-  result->setStartColor(txtColorStart->palette().color(QPalette::Background));
-  result->setEndColor(txtColorEnd->palette().color(QPalette::Background));
+  result->setStartColor(txtColorStart->palette().color(QPalette::Window));
+  result->setEndColor(txtColorEnd->palette().color(QPalette::Window));
   result->setScaleStart(txtScaleStart->text().toDouble());
   result->setScaleEnd(txtScaleEnd->text().toDouble());
 
@@ -184,7 +181,6 @@ void CQEffectDescriptionEdit::slotSelectDataObject()
 
   const CDataObject * pObject = dynamic_cast< const CDataObject * >((*pModelList)[0].getObjectFromCN(txtDataObject->text().toStdString()));
 
-
   pObject =
     CCopasiSelectionDialog::getObjectSingle(
       (dynamic_cast< CQCopasiApplication * >(qApp))
@@ -198,10 +194,10 @@ void CQEffectDescriptionEdit::slotSelectDataObject()
 
 void CQEffectDescriptionEdit::slotSelectColorEnd()
 {
-  setColor(txtColorEnd, QColorDialog::getColor(txtColorEnd->palette().color(QPalette::Background), this));
+  setColor(txtColorEnd, QColorDialog::getColor(txtColorEnd->palette().color(QPalette::Window), this));
 }
 
 void CQEffectDescriptionEdit::slotSelectColorStart()
 {
-  setColor(txtColorStart, QColorDialog::getColor(txtColorStart->palette().color(QPalette::Background), this));
+  setColor(txtColorStart, QColorDialog::getColor(txtColorStart->palette().color(QPalette::Window), this));
 }

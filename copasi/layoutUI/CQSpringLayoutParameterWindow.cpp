@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,7 +21,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
-CQSpringLayoutParameterWindow::CQSpringLayoutParameterWindow(const QString &title, QWidget *parent , Qt::WindowFlags flags)
+CQSpringLayoutParameterWindow::CQSpringLayoutParameterWindow(const QString &title, QWidget *parent, Qt::WindowFlags flags)
   : QDockWidget(title, parent, flags)
 {
   QWidget* pParaWidget = new QWidget(this);
@@ -33,7 +33,7 @@ CQSpringLayoutParameterWindow::CQSpringLayoutParameterWindow(const QString &titl
     {
       QLabel* label = new QLabel(mLayoutParameters.names[i].c_str());
       pLayout->addWidget(label);
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
       QwtSlider* slider = new QwtSlider(Qt::Horizontal,  pParaWidget);
       slider->setScalePosition(QwtSlider::LeadingScale);
 
@@ -94,7 +94,7 @@ void CQSpringLayoutParameterWindow::slotLayoutSliderChanged()
   for (i = 0; i < mLayoutSliders.size(); ++i)
     {
       if (mLayoutParameters.isLog[i])
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
         mLayoutParameters.values[i] = pow(10, log10(mLayoutSliders[i]->value()));
 
 #else

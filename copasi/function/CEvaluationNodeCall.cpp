@@ -323,7 +323,7 @@ std::string CEvaluationNodeCall::getInfix(const std::vector< std::string > & chi
       Infix = quote(Data, "-+^*/%(){},\t\r\n") + "(";
     }
 
-  switch (mCompiledSubType)
+  switch (mSubType)
     {
       case SubType::FUNCTION:
       case SubType::DEFAULT:
@@ -364,7 +364,7 @@ std::string CEvaluationNodeCall::getDisplayString(const std::vector< std::string
       DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
     }
 
-  switch (mCompiledSubType)
+  switch (mSubType)
     {
       case SubType::FUNCTION:
       {
@@ -411,7 +411,7 @@ std::string CEvaluationNodeCall::getCCodeString(const std::vector< std::string >
       DisplayString = quote(Data, "-+^*/%(){},\t\r\n") + "(";
     }
 
-  switch (mCompiledSubType)
+  switch (mSubType)
     {
       case SubType::FUNCTION:
       {
@@ -615,7 +615,20 @@ CEvaluationNodeCall::verifyParameters(const std::vector<CEvaluationNode *> & vec
 
 const CFunction * CEvaluationNodeCall::getCalledTree() const
 {
-  switch (mCompiledSubType)
+  switch (mSubType)
+    {
+      case SubType::FUNCTION:
+      case SubType::EXPRESSION:
+        return CRootContainer::getFunctionList()->findFunction(mData);
+
+      default:
+        return NULL;
+    }
+}
+
+CFunction * CEvaluationNodeCall::getCalledTree()
+{
+  switch (mSubType)
     {
       case SubType::FUNCTION:
       case SubType::EXPRESSION:
@@ -638,7 +651,7 @@ std::string CEvaluationNodeCall::getMMLString(const std::vector< std::string > &
   std::vector< std::string >::const_iterator it = children.begin();
   std::vector< std::string >::const_iterator end = children.end();
 
-  switch (mCompiledSubType)
+  switch (mSubType)
     {
       case SubType::FUNCTION:
       {
@@ -722,7 +735,7 @@ CValidatedUnit CEvaluationNodeCall::getUnit(const CMathContainer & math,
 {
   CEvaluationTree * pTree = NULL;
 
-  switch (mCompiledSubType)
+  switch (mSubType)
     {
       case SubType::FUNCTION:
         pTree = mpFunction;
@@ -750,7 +763,7 @@ CValidatedUnit CEvaluationNodeCall::setUnit(const CMathContainer & container,
 {
   CEvaluationTree * pTree = NULL;
 
-  switch (mCompiledSubType)
+  switch (mSubType)
     {
       case SubType::FUNCTION:
         pTree = mpFunction;

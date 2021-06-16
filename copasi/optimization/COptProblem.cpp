@@ -81,73 +81,75 @@ C_FLOAT64 COptProblem::MissingValue;
 
 //  Default constructor
 COptProblem::COptProblem(const CTaskEnum::Task & type,
-                         const CDataContainer * pParent):
-  CCopasiProblem(type, pParent),
-  mWorstValue(0.0),
-  mpParmSubTaskCN(NULL),
-  mpParmObjectiveExpression(NULL),
-  mpParmMaximize(NULL),
-  mpParmRandomizeStartValues(NULL),
-  mpParmCalculateStatistics(NULL),
-  mpGrpItems(NULL),
-  mpGrpConstraints(NULL),
-  mpOptItems(NULL),
-  mpConstraintItems(NULL),
-  mpSubTask(NULL),
-  mpObjectiveExpression(NULL),
-  mpMathObjectiveExpression(NULL),
-  mInitialRefreshSequence(),
-  mUpdateObjectiveFunction(),
-  mUpdateConstraints(),
-  mCalculateValue(0),
-  mSolutionVariables(),
-  mOriginalVariables(),
-  mContainerVariables(),
-  mSolutionValue(0),
-  mCounters(),
-  mCPUTime(CCopasiTimer::Type::PROCESS, this),
-  mhSolutionValue(C_INVALID_INDEX),
-  mhCounter(C_INVALID_INDEX),
-  mStoreResults(false),
-  mHaveStatistics(false),
-  mGradient(0)
+                         const CDataContainer * pParent)
+  : CCopasiProblem(type, pParent)
+  , mWorstValue(0.0)
+  , mpParmSubTaskCN(NULL)
+  , mpParmObjectiveExpression(NULL)
+  , mpParmMaximize(NULL)
+  , mpParmRandomizeStartValues(NULL)
+  , mpParmCalculateStatistics(NULL)
+  , mpGrpItems(NULL)
+  , mpGrpConstraints(NULL)
+  , mpOptItems(NULL)
+  , mpConstraintItems(NULL)
+  , mpSubTaskSrc(NULL)
+  , mpSubTask(NULL)
+  , mpObjectiveExpression(NULL)
+  , mpMathObjectiveExpression(NULL)
+  , mInitialRefreshSequence()
+  , mUpdateObjectiveFunction()
+  , mUpdateConstraints()
+  , mCalculateValue(0)
+  , mSolutionVariables()
+  , mOriginalVariables()
+  , mContainerVariables()
+  , mSolutionValue(0)
+  , mCounters()
+  , mCPUTime(CCopasiTimer::Type::PROCESS, this)
+  , mhSolutionValue(C_INVALID_INDEX)
+  , mhCounter(C_INVALID_INDEX)
+  , mStoreResults(false)
+  , mHaveStatistics(false)
+  , mGradient(0)
 {
   initializeParameter();
   initObjects();
 }
 
 // copy constructor
-COptProblem::COptProblem(const COptProblem& src,
-                         const CDataContainer * pParent):
-  CCopasiProblem(src, pParent),
-  mWorstValue(src.mWorstValue),
-  mpParmSubTaskCN(NULL),
-  mpParmObjectiveExpression(NULL),
-  mpParmMaximize(NULL),
-  mpParmRandomizeStartValues(NULL),
-  mpParmCalculateStatistics(NULL),
-  mpGrpItems(NULL),
-  mpGrpConstraints(NULL),
-  mpOptItems(NULL),
-  mpConstraintItems(NULL),
-  mpSubTask(NULL),
-  mpObjectiveExpression(NULL),
-  mpMathObjectiveExpression(NULL),
-  mInitialRefreshSequence(),
-  mUpdateObjectiveFunction(),
-  mUpdateConstraints(),
-  mCalculateValue(src.mCalculateValue),
-  mSolutionVariables(src.mSolutionVariables),
-  mOriginalVariables(src.mOriginalVariables),
-  mContainerVariables(src.mContainerVariables),
-  mSolutionValue(src.mSolutionValue),
-  mCounters(),
-  mCPUTime(CCopasiTimer::Type::PROCESS, this),
-  mhSolutionValue(C_INVALID_INDEX),
-  mhCounter(C_INVALID_INDEX),
-  mStoreResults(src.mStoreResults),
-  mHaveStatistics(src.mHaveStatistics),
-  mGradient(src.mGradient)
+COptProblem::COptProblem(const COptProblem & src,
+                         const CDataContainer * pParent)
+  : CCopasiProblem(src, pParent)
+  , mWorstValue(src.mWorstValue)
+  , mpParmSubTaskCN(NULL)
+  , mpParmObjectiveExpression(NULL)
+  , mpParmMaximize(NULL)
+  , mpParmRandomizeStartValues(NULL)
+  , mpParmCalculateStatistics(NULL)
+  , mpGrpItems(NULL)
+  , mpGrpConstraints(NULL)
+  , mpOptItems(NULL)
+  , mpConstraintItems(NULL)
+  , mpSubTaskSrc(NULL)
+  , mpSubTask(NULL)
+  , mpObjectiveExpression(NULL)
+  , mpMathObjectiveExpression(NULL)
+  , mInitialRefreshSequence()
+  , mUpdateObjectiveFunction()
+  , mUpdateConstraints()
+  , mCalculateValue(src.mCalculateValue)
+  , mSolutionVariables(src.mSolutionVariables)
+  , mOriginalVariables(src.mOriginalVariables)
+  , mContainerVariables(src.mContainerVariables)
+  , mSolutionValue(src.mSolutionValue)
+  , mCounters()
+  , mCPUTime(CCopasiTimer::Type::PROCESS, this)
+  , mhSolutionValue(C_INVALID_INDEX)
+  , mhCounter(C_INVALID_INDEX)
+  , mStoreResults(src.mStoreResults)
+  , mHaveStatistics(src.mHaveStatistics)
+  , mGradient(src.mGradient)
 {
   initializeParameter();
   initObjects();
@@ -278,9 +280,14 @@ void COptProblem::reset()
 
 bool COptProblem::setCallBack(CProcessReport * pCallBack)
 {
-  CCopasiProblem::setCallBack(pCallBack);
+  bool success = CCopasiProblem::setCallBack(pCallBack);
 
-  if (pCallBack)
+  if (mpSubTask != NULL)
+    {
+      success &= mpSubTask->setCallBack(mpCallBack);
+    }
+
+  if (mpCallBack)
     {
       reset();
 
@@ -292,6 +299,11 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
       mhCounter =
         mpCallBack->addItem("Function Evaluations",
                             mCounters.Counter);
+    }
+  else
+    {
+      mhSolutionValue = C_INVALID_INDEX;
+      mhCounter = C_INVALID_INDEX;
     }
 
   return true;
@@ -306,8 +318,6 @@ void COptProblem::initObjects()
 
 bool COptProblem::initializeSubtaskBeforeOutput()
 {
-  pdelete(mpSubTask);
-
   // We have a CFitProblem for which it is OK not to have a subtask.
   if (mpParmSubTaskCN == NULL)
     return true;
@@ -315,7 +325,10 @@ bool COptProblem::initializeSubtaskBeforeOutput()
   CObjectInterface::ContainerList ListOfContainer;
   ListOfContainer.push_back(getObjectAncestor("Vector"));
 
-  mpSubTask = CTaskFactory::copy(dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmSubTaskCN)), this);
+  mpSubTaskSrc = dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmSubTaskCN));
+
+  pdelete(mpSubTask);
+  mpSubTask = CTaskFactory::copy(mpSubTaskSrc, this);
 
   try
     {
@@ -328,9 +341,11 @@ bool COptProblem::initializeSubtaskBeforeOutput()
     }
 
   catch (...)
-    {}
+    {
+      return false;
+    }
 
-  return false;
+  return true;
 }
 
 bool COptProblem::initialize()
@@ -365,8 +380,8 @@ bool COptProblem::initialize()
       if (!mpReport->getStream()) mpReport = NULL;
     }
 
-  if (mpSubTask != NULL)
-    ContainerList.push_back(mpSubTask);
+  if (mpSubTaskSrc != NULL)
+    ContainerList.push_back(mpSubTaskSrc);
 
   size_t i;
   size_t Size = mpOptItems->size();
@@ -430,9 +445,11 @@ bool COptProblem::initialize()
   mCPUTime.start();
 
   // TODO CRITICAL PARRELIZATION Add the objective expression to the math container
+  // The objective function refers result of the src subtask we need to map to them to results of the copy.
   if (mpObjectiveExpression == NULL ||
       mpObjectiveExpression->getInfix() == "" ||
-      !mpObjectiveExpression->compile(ContainerList))
+      !mpObjectiveExpression->compile(ContainerList) ||
+      !mpObjectiveExpression->mapObjectNodes(mpSubTaskSrc, mpSubTask))
     {
       mUpdateObjectiveFunction.clear();
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);

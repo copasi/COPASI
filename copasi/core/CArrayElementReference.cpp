@@ -1,10 +1,5 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
 
@@ -73,9 +68,9 @@ CArrayElementReference::CArrayElementReference(const std::vector< std::string > 
     const CFlags< Flag > & flag)
   : CDataObject("Value", pParent, "ElementReference",
                 flag | CDataObject::Reference | CDataObject::NonUniqueName | CDataObject::ValueDbl),
-  //    mpReference(NULL),
-  mIndex(index.begin(), index.end()),
-  mIgnoreUpdateObjectName(false)
+    //    mpReference(NULL),
+    mIndex(index.begin(), index.end()),
+    mIgnoreUpdateObjectName(false)
 {
   assert(pParent != NULL);
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -80,6 +80,14 @@ public:
    * @return CIssue issue;
    */
   virtual CIssue compile(const CEvaluationTree * pTree);
+
+  /**
+   * Map object whose CN starts with srcSN to children of the target container
+   * @param const std::string srcCN
+   * @param const CDataContainer * pTarget
+   * @return bool success;
+   */
+  bool mapObject(const std::string srcCN, const CDataContainer * pTarget);
 
   /**
    * Retrieve the value of the node.

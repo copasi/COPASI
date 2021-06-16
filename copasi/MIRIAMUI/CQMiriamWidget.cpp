@@ -110,7 +110,7 @@ CQMiriamWidget::CQMiriamWidget(QWidget *parent, const char *name)
       (*itPDM)->setSourceModel(*itDM);
       (*it)->setModel(*itPDM);
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
       (*it)->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
       (*it)->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
@@ -493,6 +493,9 @@ void CQMiriamWidget::showEvent(QShowEvent *event)
 
   mMessageType = -1;
   mMessage = "";
+
+  if (event != NULL)
+    enterProtected();
 }
 
 const CMIRIAMInfo &CQMiriamWidget::getMIRIAMInfo() const

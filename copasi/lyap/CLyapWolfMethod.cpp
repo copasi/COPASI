@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -117,27 +117,32 @@ double CLyapWolfMethod::step(const double & deltaT)
   C_INT DSize = (C_INT) mDWork.size();
   C_INT ISize = (C_INT) mIWork.size();
 
-  mLSODA(&EvalF , //  1. evaluate F
-         &mData.dim , //  2. number of variables
+  mLSODA(&EvalF,  //  1. evaluate F
+         &mData.dim,  //  2. number of variables
          mVariables.array(), //  3. the array of current concentrations
-         mpContainerStateTime , //  4. the current time
-         &EndTime , //  5. the final time
-         &two , //  6. vector absolute error, scalar relative error
-         &mRtol , //  7. relative tolerance array
-         mAtol.array() , //  8. absolute tolerance array
-         &mState , //  9. output by overshoot & interpolation
-         &mLsodaStatus , // 10. the state control variable
-         &one , // 11. futher options (one)
-         mDWork.array() , // 12. the double work array
-         &DSize , // 13. the double work array size
-         mIWork.array() , // 14. the int work array
-         &ISize , // 15. the int work array size
-         NULL , // 16. evaluate J (not given)
+         mpContainerStateTime,  //  4. the current time
+         &EndTime,  //  5. the final time
+         &two,  //  6. vector absolute error, scalar relative error
+         &mRtol,  //  7. relative tolerance array
+         mAtol.array(),  //  8. absolute tolerance array
+         &mTask,  //  9. output by overshoot & interpolation
+         &mLsodaStatus,  // 10. the state control variable
+         &one,  // 11. futher options (one)
+         mDWork.array(),  // 12. the double work array
+         &DSize,  // 13. the double work array size
+         mIWork.array(),  // 14. the int work array
+         &ISize,  // 15. the int work array size
+         NULL,  // 16. evaluate J (not given)
          &mJType);           // 17. the type of Jacobian calculate (2)
 
-  if (mLsodaStatus == -1) mLsodaStatus = 2;
+  if (mLsodaStatus == -1)
+    {
+      ++mFailedSteps;
+      mLsodaStatus = 2;
+    }
 
-  if ((mLsodaStatus != 1) && (mLsodaStatus != 2) && (mLsodaStatus != -1))
+  if (mLsodaStatus < 0
+      && fabs(EndTime - *mpContainerStateTime) > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() * EndTime)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 6, mErrorMsg.str().c_str());
     }
@@ -149,7 +154,7 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
 {
   /* Reset lsoda */
   mLsodaStatus = 1;
-  mState = 1;
+  mTask = 1;
   mJType = 2;
   mErrorMsg.str("");
   mLSODA.setOstream(mErrorMsg);
@@ -236,7 +241,9 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   mIWork.resize(20 + mData.dim);
   mIWork[4] = mIWork[6] = mIWork[9] = 0;
 
-  mIWork[5] = getValue< unsigned C_INT32 >("Max Internal Steps");
+  mFailedSteps = 0;
+  mStepLimit = getValue< unsigned C_INT32 >("Max Internal Steps");
+  mIWork[5] = mStepLimit;
   mIWork[7] = 12;
   mIWork[8] = 5;
 
@@ -344,6 +351,9 @@ bool CLyapWolfMethod::calculate()
 
           if (*mpContainerStateTime > CompareTime) break;
 
+          if (mFailedSteps * 10 >= mStepLimit)
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCLyap + 6);
+
           /* Here we will do conditional event processing */
 
           /* Currently this is correct since no events are processed. */
@@ -379,6 +389,9 @@ bool CLyapWolfMethod::calculate()
   do
     {
       realStepSize = step(stepSize);
+
+      if (mFailedSteps * 10 >= mStepLimit)
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCLyap + 6);
 
       orthonormalize();
       mLsodaStatus = 1; //the state has changed, we need to restart lsoda

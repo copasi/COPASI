@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -54,7 +54,12 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
   setModal(modal);
   setAttribute(Qt::WA_DeleteOnClose);
   ObjectBrowserDialogLayout = new QGridLayout(this);
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
   ObjectBrowserDialogLayout->setMargin(11);
+#else
+  ObjectBrowserDialogLayout->setContentsMargins(11, 11, 11, 11);
+#endif
+
   ObjectBrowserDialogLayout->setSpacing(6);
   ObjectBrowserDialogLayout->setObjectName(QString::fromUtf8("ObjectBrowserDialogLayout"));
 

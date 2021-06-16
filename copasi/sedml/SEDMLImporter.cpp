@@ -150,13 +150,7 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
           {
             const SedAlgorithm* alg = tc->getAlgorithm();
 
-            if (alg->isSetKisaoID())
-              {
-                if (alg->getKisaoID() == SEDML_KISAO_STOCHASTIC)
-                  {
-                    tTask->setMethodType(CTaskEnum::Method::stochastic);
-                  }
-              }
+            applyAlgorithm(tTask, alg);
           }
 
         break;
@@ -196,6 +190,121 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
         CCopasiMessage(CCopasiMessage::EXCEPTION, "SEDMLImporter Error: encountered unknown simulation.");
         break;
     }
+}
+
+CTaskEnum::Method getMethodType(const std::string & kisaoId)
+{
+  static std::map< std::string, CTaskEnum::Method > methodMap =
+  {
+    {"KISAO:0000560", CTaskEnum::Method::deterministic},
+    {"KISAO:0000304", CTaskEnum::Method::RADAU5},
+    {"KISAO:0000029", CTaskEnum::Method::directMethod},
+    {"KISAO:0000027", CTaskEnum::Method::stochastic},
+    {"KISAO:0000039", CTaskEnum::Method::tauLeap},
+    {"KISAO:0000048", CTaskEnum::Method::adaptiveSA},
+    {"KISAO:0000561", CTaskEnum::Method::hybrid},
+    {"KISAO:0000562", CTaskEnum::Method::hybridLSODA},
+    {"KISAO:0000563", CTaskEnum::Method::hybridODE45},
+    {"KISAO:0000566", CTaskEnum::Method::stochasticRunkeKuttaRI5},
+
+  };
+
+  auto it = methodMap.find(kisaoId);
+
+  if (it != methodMap.end())
+    {
+      return it->second;
+    }
+
+  // old behavior for stochastic
+  if (kisaoId == SEDML_KISAO_STOCHASTIC)
+    return CTaskEnum::Method::stochastic;
+
+  // warn and default to LSODA
+  CCopasiMessage(CCopasiMessage::WARNING,
+                 "The requested Algorithm %s is not directly supported by COPASI, defaulting to LSODA.",
+                 kisaoId.c_str());
+
+  return CTaskEnum::Method::deterministic;
+}
+
+void SEDMLImporter::applyAlgorithm(CTrajectoryTask * tTask, const SedAlgorithm * alg)
+{
+  if (tTask == NULL || alg == NULL || !alg->isSetKisaoID())
+    return;
+
+  // set method type
+  tTask->setMethodType(getMethodType(alg->getKisaoID()));
+
+  CCopasiMethod * pMethod = tTask->getMethod();
+
+  // apply parameters
+  for (unsigned int i = 0; i < alg->getNumAlgorithmParameters(); ++i)
+    {
+      auto * param = alg->getAlgorithmParameter(i);
+
+      if (param == NULL || !param->isSetKisaoID() || !param->isSetValue())
+        continue;
+
+      auto it = SEDMLUtils::PARAMETER_KISAO_MAP.find(param->getKisaoID());
+
+      if (it == SEDMLUtils::PARAMETER_KISAO_MAP.end())
+        continue;
+
+      CCopasiParameter * pParameter = pMethod->getParameter(it->second);
+
+      if (pParameter == NULL)
+        continue;
+
+      std::string paramValue = param->getValue();
+      std::stringstream str(paramValue);
+
+      switch (pParameter->getType())
+        {
+          case CCopasiParameter::Type::DOUBLE:
+          case CCopasiParameter::Type::UDOUBLE:
+          {
+            C_FLOAT64 value;
+            str >> value;
+            pParameter->setValue< C_FLOAT64 >(value);
+            break;
+          }
+
+          case CCopasiParameter::Type::INT:
+          {
+            C_INT32 value;
+            str >> value;
+            pParameter->setValue< C_INT32 >(value);
+            break;
+          }
+
+          case CCopasiParameter::Type::UINT:
+          {
+            unsigned C_INT32 value;
+            str >> value;
+            pParameter->setValue< unsigned C_INT32 >(value);
+            break;
+          }
+
+          case CCopasiParameter::Type::BOOL:
+          {
+            pParameter->setValue< bool >(
+              paramValue == "1" ||
+              paramValue == "true" ||
+              paramValue == "yes");
+            break;
+          }
+
+          case CCopasiParameter::Type::STRING:
+          case CCopasiParameter::Type::CN:
+            pParameter->setValue< std::string >(paramValue);
+            break;
+
+          default:
+            break;
+        }
+    }
+
 }
 
 bool isTC(const SedTask* task)
@@ -696,16 +805,12 @@ SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
           mpSEDMLDocument->removeTask(subTaskId);
           keepRunning = true;
           break;
-
         }
-
     }
-
 
   for (unsigned int i = 0; i < mpSEDMLDocument->getNumTasks(); ++i)
     {
       auto * task = mpSEDMLDocument->getTask(i);
-
 
       switch (task->getTypeCode())
         {
@@ -789,7 +894,6 @@ SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
                         group->setValue< bool >("log", (!urange->isSetType() ||
                                                         urange->getType().empty() ||
                                                         urange->getType() == "linear") ? false : true);
-
                       }
 
                     if (vrange != NULL)
@@ -955,9 +1059,12 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
 
   if (CDirEntry::exist(modelSource))
     FileName = modelSource;
+  else if (!pDataModel->getSEDMLFileName().empty())
+    FileName = CDirEntry::dirName(pDataModel->getSEDMLFileName()) + CDirEntry::Separator + modelSource;
+  else if (!pDataModel->getReferenceDirectory().empty())
+    FileName = pDataModel->getReferenceDirectory() + CDirEntry::Separator + modelSource;
   else
-    FileName = CDirEntry::dirName(pDataModel->getSEDMLFileName())
-               + CDirEntry::Separator + modelSource;
+    FileName = modelSource;
 
   std::ifstream file(CLocaleString::fromUtf8(FileName).c_str());
 

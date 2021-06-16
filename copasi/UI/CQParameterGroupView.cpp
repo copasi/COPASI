@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,7 +47,11 @@ CQParameterGroupView::CQParameterGroupView(QWidget* parent):
   mpSortFilterDM = new QSortFilterProxyModel(this);
   mpSortFilterDM->setFilterKeyColumn(0);
   mpSortFilterDM->setFilterRole(Qt::UserRole + 1);
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
   mpSortFilterDM->setFilterRegExp(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters() ? "" : "basic");
+#else
+  mpSortFilterDM->setFilterRegularExpression(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters() ? "" : "basic");
+#endif
   mpSortFilterDM->setSourceModel(mpParameterGroupDM);
   mpSortFilterDM->setSortRole(Qt::UserRole + 2);
   mpSortFilterDM->sort(0, Qt::DescendingOrder);
@@ -105,7 +109,11 @@ void CQParameterGroupView::clearGroups()
 
 void CQParameterGroupView::slotPreferenceUpdated()
 {
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
   mpSortFilterDM->setFilterRegExp(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters() ? "" : "basic");
+#else
+  mpSortFilterDM->setFilterRegularExpression(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters() ? "" : "basic");
+#endif
 }
 
 void CQParameterGroupView::slotCreateComboBox(const QModelIndex & index)

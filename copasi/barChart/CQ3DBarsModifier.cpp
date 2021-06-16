@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,7 +28,9 @@
 #include <QPointer>
 #include <QPropertyAnimation>
 
+#ifdef WITH_DATAVISUALIZATION_NAMESPACES
 using namespace QtDataVisualization;
+#endif
 
 #include <QtDataVisualization/qcategory3daxis.h>
 #include <QtDataVisualization/qvalue3daxis.h>
@@ -45,8 +47,6 @@ using namespace QtDataVisualization;
 #include <copasi/UI/CQArrayAnnotationsWidget.h>
 
 #include <copasi/UI/qtUtilities.h>
-
-using namespace QtDataVisualization;
 
 CQ3DBarsModifier::CQ3DBarsModifier(CQArrayAnnotationsWidget* widget, Q3DBars *bargraph)
   : m_graph(bargraph),
@@ -635,8 +635,8 @@ void CQ3DBarsModifier::setReflection(bool enabled)
 
 
 
-CQCustomInputHandler::CQCustomInputHandler(QAbstract3DGraph *graph, QObject *parent)
-  : QTouch3DInputHandler(parent)
+CQCustomInputHandler::CQCustomInputHandler(DATAVIS_NS_PREFIX QAbstract3DGraph * graph, QObject * parent)
+  : DATAVIS_NS_PREFIX QTouch3DInputHandler(parent)
   , m_graph(graph)
   , m_axisX(NULL)
   , m_axisY(NULL)

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -81,6 +81,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QFile>
 
 #include <copasi/UI/CQCopasiApplication.h>
 
@@ -271,7 +272,7 @@ void DataModelGUI::loadModelRun()
   try
     {
       assert(mpDataModel != NULL);
-      mSuccess = mpDataModel->loadModel(mFileName, mpProgressBar, false);
+      mSuccess = mpDataModel->loadFromFile(mFileName, mpProgressBar, false);
     }
 
   catch (...)
@@ -1202,46 +1203,6 @@ void DataModelGUI::exportCombineFinished()
   threadFinished();
 }
 
-void DataModelGUI::importSEDMLFromString(const std::string & sedmlDocumentText)
-{
-  mpProgressBar = CProgressBar::create();
-
-  mSuccess = true;
-  mSEDMLImportString = sedmlDocumentText;
-
-  mpThread = new CQThread(this, &DataModelGUI::importSEDMLFromStringRun);
-  connect(mpThread, SIGNAL(finished()), this, SLOT(importSEDMLFromStringFinished()));
-  mpThread->start();
-}
-
-void DataModelGUI::importSEDMLFromStringRun()
-{
-  try
-    {
-      assert(mpDataModel != NULL);
-      mSuccess = mpDataModel->importSEDMLFromString(mSEDMLImportString, mpProgressBar, false);
-    }
-
-  catch (...)
-    {
-      mSuccess = false;
-    }
-}
-
-void DataModelGUI::importSEDMLFromStringFinished()
-{
-  mSEDMLImportString = "";
-
-  if (mSuccess)
-    {
-      mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
-      linkDataModelToGUI();
-    }
-
-  disconnect(mpThread, SIGNAL(finished()), this, SLOT(importSEDMLFromStringFinished()));
-
-  threadFinished();
-}
 void DataModelGUI::importSEDML(const std::string & fileName)
 {
   mpProgressBar = CProgressBar::create();

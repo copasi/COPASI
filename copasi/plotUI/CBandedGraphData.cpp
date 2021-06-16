@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,7 +17,7 @@
 
 //********************  CBandedGraphData  *********************************
 CBandedGraphData::CBandedGraphData():
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   QwtSeriesData<QPointF>(),
 #else
   QwtData(),
@@ -38,7 +38,7 @@ CBandedGraphData::CBandedGraphData(const CVector< double > & x,
                                    const CVector< double > & y1,
                                    const CVector< double > & y2,
                                    size_t size):
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   QwtSeriesData<QPointF>(),
 #else
   QwtData(),
@@ -62,7 +62,7 @@ CBandedGraphData::CBandedGraphData(const CVector< double > & x,
 CBandedGraphData::~CBandedGraphData()
 {}
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 QwtSeriesData<QPointF> *
 CBandedGraphData::copy() const
 {

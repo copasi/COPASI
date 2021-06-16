@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,7 +39,11 @@
 #include <copasi/commandline/CConfigurationFile.h>
 #include "copasi/core/CRootContainer.h"
 
+#include <copasi/layout/CCopasiSpringLayout.h>
+
+#if WITH_LEGACY_OPENGL
 #include "copasi/layoutUI/CQNewMainWindow.h"
+#endif
 
 #ifndef DISABLE_QT_LAYOUT_RENDERING
 # include <copasi/qlayout/CQAnimationWindow.h>
@@ -63,13 +67,13 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget *parent)
   mpProxyModel->setFilterKeyColumn(-1);
   mpProxyModel->setSourceModel(mpLayoutsDM);
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   mpTblLayouts->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 #endif
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
       mpTblLayouts->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
       mpTblLayouts->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
@@ -281,7 +285,6 @@ void CQLayoutsWidget::slotBtnNewClicked()
   mpLayoutsDM->insertRows(mpLayoutsDM->rowCount(), 1);
   dataChanged(QModelIndex(), QModelIndex());
   LayoutWindow *window = createLayoutWindow(pListOfLayouts->size() - 1, pLayout);
-  CQNewMainWindow *pWin = dynamic_cast<CQNewMainWindow *>(window);
 #ifndef DISABLE_QT_LAYOUT_RENDERING
   CQAnimationWindow *pAnim = dynamic_cast<CQAnimationWindow *>(window);
 
@@ -293,20 +296,24 @@ void CQLayoutsWidget::slotBtnNewClicked()
     }
   else
 #endif //DISABLE_QT_LAYOUT_RENDERING
-    if (pWin != NULL)
-      {
-        pWin->updateRenderer();
-        pWin->setMode();
-        // show the new layout
-        pWin->show();
-        pWin->redrawNow();
-        // now we create the spring layout
-        pWin->slotRunSpringLayout();
-      }
-    else
-      {
-        delete pLayout;
-      }
+#if WITH_LEGACY_OPENGL
+    CQNewMainWindow * pWin = dynamic_cast< CQNewMainWindow * >(window);
+
+  if (pWin != NULL)
+    {
+      pWin->updateRenderer();
+      pWin->setMode();
+      // show the new layout
+      pWin->show();
+      pWin->redrawNow();
+      // now we create the spring layout
+      pWin->slotRunSpringLayout();
+    }
+  else
+#endif // WITH_LEGACY_OPENGL
+    {
+      delete pLayout;
+    }
 }
 
 // virtual
@@ -364,14 +371,7 @@ void CQLayoutsWidget::slotFilterChanged()
 {
   QString Filter = mpLEFilter->text();
 
-  if (Filter.isEmpty())
-    {
-      mpProxyModel->setFilterRegExp(QRegExp());
-      return;
-    }
-
-  QRegExp regExp(Filter, Qt::CaseInsensitive, QRegExp::RegExp);
-  mpProxyModel->setFilterRegExp(regExp);
+  setFilterExpression(mpProxyModel, Filter.isEmpty(), Filter);
 
   while (mpProxyModel->canFetchMore(QModelIndex()))
     mpProxyModel->fetchMore(QModelIndex());
@@ -387,6 +387,7 @@ CQLayoutsWidget::LayoutWindow *CQLayoutsWidget::createLayoutWindow(int row, CLay
 
   LayoutWindow *pWin = NULL;
 #ifndef DISABLE_QT_LAYOUT_RENDERING
+#  if WITH_LEGACY_OPENGL
 
   if (CRootContainer::getConfiguration()->useOpenGL())
     {
@@ -394,6 +395,7 @@ CQLayoutsWidget::LayoutWindow *CQLayoutsWidget::createLayoutWindow(int row, CLay
       (static_cast<CQNewMainWindow *>(pWin))->slotLayoutChanged(row);
     }
   else
+#endif
     {
       pWin = new CQAnimationWindow(pLayout, mpDataModel);
     }
@@ -439,6 +441,7 @@ void CQLayoutsWidget::slotShowLayout(const QModelIndex &index)
 
       if (pLayoutWindow != NULL)
         {
+#if WITH_LEGACY_OPENGL
           CQNewMainWindow *cqWin = dynamic_cast<CQNewMainWindow *>(pLayoutWindow);
 
           if (cqWin != NULL)
@@ -446,6 +449,8 @@ void CQLayoutsWidget::slotShowLayout(const QModelIndex &index)
               cqWin ->slotLayoutChanged(row);
               cqWin ->setMode();
             }
+
+#endif
 
           pLayoutWindow->show();
           pLayoutWindow->showNormal();

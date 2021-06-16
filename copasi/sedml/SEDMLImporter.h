@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -92,6 +97,15 @@ public:
    */
   void updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
                                      std::map<CDataObject*, SedBase*>& copasi2sedmlmap);
+
+  /**
+   * Updates the task / method settings from algorithm
+   *
+   * @param tTask, the time course task to update
+   * @param alg the algorithm including algorithm parameters
+   *
+   */
+  void applyAlgorithm(CTrajectoryTask * tTask, const SedAlgorithm * alg);
 
   /**
    * Imports the first viable SBML model

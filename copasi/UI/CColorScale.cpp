@@ -19,8 +19,9 @@
 // All rights reserved.
 
 #include <cmath>
+#include <QtCore/qglobal.h>
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include <QGuiApplication>
 #else
 #include <QApplication>
@@ -37,7 +38,7 @@ CColorScale::CColorScale()
   , mLargeNumbers()
   , mNaN(85, 85, 135)
 {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   QPalette Palette = QGuiApplication::palette();
 #else
   QPalette Palette = QApplication::palette();
@@ -264,7 +265,6 @@ void CColorScaleAuto::finishAutomaticParameterCalculation()
     {
       mLog = true;
     }
-
 
   if (mMin == mMax)
     {

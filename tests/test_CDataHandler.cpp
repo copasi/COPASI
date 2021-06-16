@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,7 +12,6 @@ extern std::string getTestFile(const std::string & fileName);
 
 TEST_CASE("1: load model, simulate, collect data", "[copasi, datahandler]")
 {
-  CRootContainer::init(0, NULL, false);
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != NULL);
 
@@ -53,6 +52,5 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi, datahandler]")
     REQUIRE(data[0].size() == 7);
 
   }
-
-  CRootContainer::destroy();
+  CRootContainer::removeDatamodel(dm);
 }

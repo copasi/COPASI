@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the </comment>
 <comment> University of Virginia, University of Heidelberg, and University </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -794,4 +794,28 @@
    </hints>
   </connection>
  </connections>
+  <slots>
+    <slot>slotCheckLowerInf(bool)</slot>
+    <slot>slotCheckUpperInf(bool)</slot>
+    <slot>slotLowerEdit()</slot>
+    <slot>slotUpperEdit()</slot>
+    <slot>slotParamEdit()</slot>
+    <slot>slotExperiments()</slot>
+    <slot>slotExperimentChanged()</slot>
+    <slot>slotDelete()</slot>
+    <slot>slotCopy()</slot>
+    <slot>slotUp()</slot>
+    <slot>slotDown()</slot>
+    <slot>slotDuplicatePerExperiment()</slot>
+    <slot>slotNew()</slot>
+    <slot>slotSelectionChanged()</slot>
+    <slot>slotLowerLostFocus()</slot>
+    <slot>slotUpperLostFocus()</slot>
+    <slot>slotReset()</slot>
+    <slot>slotStartLostFocus()</slot>
+    <slot>slotCrossValidations()</slot>
+    <slot>slotCrossValidationChanged()</slot>
+    <slot>slotCheckAllCrossValidations(bool)</slot>
+    <slot>slotCheckAllExperiments(bool)</slot>
+  </slots>
 </ui>

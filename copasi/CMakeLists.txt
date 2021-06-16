@@ -443,8 +443,11 @@ if(BUILD_GUI)
   set(COPASI_UI_FORMS)
 
   include(MIRIAMUI/CMakeLists.txt)
+  
   include(barChart/CMakeLists.txt)
+  
   include(layoutUI/CMakeLists.txt)
+  
   include(qlayout/CMakeLists.txt)
   include(plotUI/CMakeLists.txt)
   include(tex/CMakeLists.txt)
@@ -476,6 +479,46 @@ if(BUILD_GUI)
   set(HEADERS_UI_MOC)
   set(HEADERS_UI_FORMS)
   set(GUI_INCLUDE_DIRS)
+
+  if (Qt6_FOUND)
+  include(CMakeParseArguments)
+  # qt5_wrap_ui(outfiles inputfile ... )
+
+  MACRO(COPASI_QT6_WRAP_UI outfiles)
+    set(options)
+    set(oneValueArgs SUBDIR)
+    set(multiValueArgs OPTIONS)    
+
+    cmake_parse_arguments(_WRAP_UI "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  #get_cmake_property(_vars VARIABLES)
+  #foreach(_name ${_vars})
+  #  message("${_name}: ${${_name}})")
+  #endforeach()
+
+    if (NOT Qt6Widgets_UIC_EXECUTABLE)
+    set (Qt6Widgets_UIC_EXECUTABLE C:/Qt/Qt6/6.0.2/msvc2019_64/bin/uic.exe)
+    endif()
+
+    set(ui_files ${_WRAP_UI_UNPARSED_ARGUMENTS})
+    set(ui_options ${_WRAP_UI_OPTIONS})
+    set(ui_subdir ${_WRAP_UI_SUBDIR})
+
+    foreach(it ${ui_files})
+        get_filename_component(outfile ${it} NAME_WE)
+        get_filename_component(infile ${it} ABSOLUTE)
+        set(outfile ${CMAKE_CURRENT_BINARY_DIR}/${ui_subdir}/ui_${outfile}.h)
+        add_custom_command(OUTPUT ${outfile}
+          COMMAND ${Qt6Widgets_UIC_EXECUTABLE}
+          ARGS ${ui_options} -o ${outfile} ${infile}
+          MAIN_DEPENDENCY ${infile} VERBATIM)
+        list(APPEND ${outfiles} ${outfile})
+    endforeach()
+    
+    set(${outfiles} ${${outfiles}} PARENT_SCOPE)
+  ENDMACRO()
+endif()
+
 
   if (Qt5_FOUND)
     include(CMakeParseArguments)
@@ -553,6 +596,22 @@ if(BUILD_GUI)
       endif()
       
       set(HEADERS_UI_FORMS ${HEADERS_UI_FORMS} ${TEMP_UI_FORMS})
+    elseif (Qt6_FOUND)
+    
+    if (TEMP_UI_MOC_OPTIONS)
+      qt6_wrap_cpp(TEMP_UI_MOC ${HEADERS_${suffix}} OPTIONS ${TEMP_UI_MOC_OPTIONS})
+    else()
+      qt6_wrap_cpp(TEMP_UI_MOC ${dir} ${HEADERS_${suffix}})
+    endif(TEMP_UI_MOC_OPTIONS)
+  
+    set(HEADERS_UI_MOC ${HEADERS_UI_MOC} ${TEMP_UI_MOC})
+  
+    if(FORMS_${suffix})
+      #message(STATUS "uic'ing files for subdir: ${dir}")
+      COPASI_QT6_WRAP_UI(TEMP_UI_FORMS SUBDIR "${dir}" ${FORMS_${suffix}})
+    endif()
+  
+  set(HEADERS_UI_FORMS ${HEADERS_UI_FORMS} ${TEMP_UI_FORMS})
     else (Qt5_FOUND)
       if (TEMP_UI_MOC_OPTIONS)
         qt4_wrap_cpp(TEMP_UI_MOC ${HEADERS_${suffix}} OPTIONS ${TEMP_UI_MOC_OPTIONS})
@@ -596,10 +655,17 @@ if(BUILD_GUI)
   add_library(libCOPASIUI STATIC ${COPASI_UI_SOURCES} ${COPASI_UI_HEADERS} ${HEADERS_UI_FORMS} ${COPASI_RCC_SOURCES} ${HEADERS_UI_MOC})
 
   QT_BIND_TO_TARGET(libCOPASIUI)
-  target_link_libraries(libCOPASIUI libCOPASISE-static ${SBW_LIBRARY} ${QWT_LIBRARY} ${QWTPLOT3D_LIBRARY} ${MML_LIBRARY})
+  SET(UI_LIBS ${SBW_LIBRARY} ${QWT_LIBRARY} ${MML_LIBRARY})
+  if (NOT QT5_USE_DATAVISUALIZATION)
+    SET(UI_LIBS ${UI_LIBS} ${QWTPLOT3D_LIBRARY})
+  endif()
   if (${CMAKE_VERSION} VERSION_GREATER "2.8.11")
     target_include_directories(libCOPASIUI PUBLIC ${GUI_INCLUDE_DIRS})
+    target_link_libraries(libCOPASIUI libCOPASISE-static ${UI_LIBS})
+  else()
+    target_link_libraries(libCOPASIUI libCOPASISE-static ${UI_LIBS})
   endif()
+  
   
   if (OPENGL_glu_LIBRARY AND OPENGL_gl_LIBRARY)
   # need to specify the dependencies on the gl libraries on some linux systems

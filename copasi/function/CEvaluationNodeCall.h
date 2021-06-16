@@ -200,6 +200,12 @@ public:
   const CFunction * getCalledTree() const;
 
   /**
+   * Retrieve the tree which is called from this node
+   * @return CFunction * calledTree
+   */
+  CFunction * getCalledTree();
+
+  /**
    * Build the MathML string
    * @param const std::vector< std::string > & children
    * @param bool expand = true

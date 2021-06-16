@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -13,7 +18,7 @@
 
 #include <qwt_color_map.h>
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 #include <qwt_compat.h>
 #endif
 
@@ -44,8 +49,6 @@ protected:
   QColor mTo;
   CLinearColorMap *mpLower;
   CLinearColorMap *mpUpper;
-
 };
-
 
 #endif // CLINEARCOLORMAP_H

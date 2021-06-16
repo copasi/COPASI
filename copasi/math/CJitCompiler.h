@@ -8,8 +8,12 @@
 
 #include <set>
 
+#include "copasi/config.h"
+
+#ifdef USE_JIT
 #include <NativeJIT/CodeGen/ExecutionBuffer.h>
 #include <NativeJIT/Function.h>
+#endif
 
 #ifdef ERROR
 #  undef ERROR
@@ -18,6 +22,7 @@
 #ifdef max
 #  undef max
 #endif
+
 #include "copasi/core/CCore.h"
 
 class CJitExpression;
@@ -33,10 +38,24 @@ class CEvaluationNodeLogical;
 class CJitCompiler
 {
 public:
+  static bool JitEnabled();
+
+  static void SetJitBufferSize(const size_t size);
+  static const size_t & GetJitBufferSize();
+
+private:
+  /**
+   * A pointer to a bool indicating whether the CPU supports the sse4.2 instruction set
+   * required for JIT compilation
+   */
+  static bool * pSSE4support;
+
+  static size_t InitalBufferSize;
+
+#ifdef USE_JIT
+public:
   typedef NativeJIT::Function< C_FLOAT64 >::FunctionType Function;
   typedef NativeJIT::NodeBase Node;
-
-  static bool JitEnabled();
 
   CJitCompiler();
 
@@ -66,12 +85,6 @@ private:
 
   typedef bool (*B2B)(bool, bool);
   typedef bool (*B2F)(C_FLOAT64, C_FLOAT64);
-
-  /**
-   * A pointer to a bool indicating whether the CPU supports the sse4.2 instruction set
-   * required for JIT compilation
-   */
-  static bool * pSSE4support;
 
   static std::string where(std::runtime_error & err);
 
@@ -135,6 +148,7 @@ private:
    * Execution buffer size
    */
   size_t mFunctionBufferSize;
+#endif
 };
 
 #endif // COPASI_CJitCompiler

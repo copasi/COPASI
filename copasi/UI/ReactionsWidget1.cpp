@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -398,7 +398,7 @@ void ReactionsWidget1::FillWidgetFromRI()
   mpCmbRateLaw->insertItems(0, comboEntries);
 
   // Initialize scaling compartment combobox
-  QMap<QString, QString> Compartments;
+  QMultiMap<QString, QString> Compartments;
 
   const CModel * pModel = static_cast< const CModel * >(mpObject->getObjectAncestor("Model"));
 

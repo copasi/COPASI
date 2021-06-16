@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -141,6 +141,28 @@ private:
 
   // Operations
 public:
+  enum struct ContentType
+  {
+    COPASI,
+    GEPASI,
+    SBML,
+    SEDML,
+    OMEX,
+    __SIZE
+  };
+
+  /**
+   * String representation of the valid model types.
+   */
+  static const CEnumAnnotation< std::string, ContentType > ContentTypeNames;
+
+  /**
+   * Determine the content type of the given content stream
+   * @param std::istream content
+   * @return ContentType contentType
+   */
+  static ContentType contentType(std::istream & content);
+
   /**
    * Static method to create a CDataObject based on the provided data
    * @param const CData & data
@@ -172,6 +194,28 @@ public:
              const CDataContainer * pParent);
 
   virtual ~CDataModel();
+
+  /**
+   * Load the model from the content which may be any supported type
+   * @param const std::string & content
+   * @param std::string referenceDir = pwd()
+   * @param CProcessReport* pProcessReport = NULL
+   * @param const bool & deleteOldData = true
+   */
+  bool loadFromString(const std::string & content,
+                      std::string referenceDir = "",
+                      CProcessReport* pProcessReport = NULL,
+                      const bool & deleteOldData = true);
+
+  /**
+   * Load the model from the file which may be any supported type
+   * @param const std::string & fileName
+   * @param CProcessReport* pProcessReport = NULL
+   * @param const bool & deleteOldData = true
+   */
+  bool loadFromFile(const std::string & fileName,
+                    CProcessReport* pProcessReport = NULL,
+                    const bool & deleteOldData = true);
 
   bool loadModel(std::istream & in,
                  const std::string & pwd,
@@ -326,6 +370,7 @@ public:
 
   // SEDML
   bool importSEDMLFromString(const std::string & sedmlDocumentText,
+                             std::string referenceDir = "",
                              CProcessReport* pImportHandler = NULL,
                              const bool & deleteOldData = true);
 

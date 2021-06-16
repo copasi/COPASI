@@ -233,7 +233,7 @@ mark_as_advanced(ENABLE_COPASI_DEBUG_TRACE)
 endif()
 
 # another option to create the COPASI SE library directly from the files, instead of first building an
-# object library (necessary sometimes as the object library messes up debugging on VS2013)
+# object library (necessary sometimes as the object library messes up debugging on VS2013-2019)
 option(DISABLE_CORE_OBJECT_LIBRARY "Disable creation of libCOPASISE-core object library and just create libCOPASISE-static" OFF)
 mark_as_advanced(DISABLE_CORE_OBJECT_LIBRARY)
 
@@ -303,7 +303,7 @@ if (ENABLE_JIT)
   find_package(NATIVEJIT REQUIRED)
 
   include_directories(BEFORE ${NATIVEJIT_INCLUDE_DIR})
-  set(CMAKE_CXX_FLAGS "${NATIVEJIT_COMPILE_OPTIONS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${NATIVEJIT_COMPILE_OPTIONS}")
   set(USE_JIT 1)
 
   find_package(CPUFEATURES REQUIRED)
@@ -380,7 +380,7 @@ if(UNIX)
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
       option(CLANG_USE_STDLIB "Use libstdc++ rather than libc++" OFF)
       if (CLANG_USE_STDLIB)
-        SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++" )
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++" )
       endif()
     endif()
 
@@ -451,16 +451,27 @@ if(BUILD_GUI)
   endif()
   
   if (${SELECT_QT} MATCHES "Qt5" OR
+      ${SELECT_QT} MATCHES "Qt6" OR
       ${SELECT_QT} MATCHES "Any")
     # then narrow down the precise modules we need
     option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit for notes" OFF)
     option(QT5_USE_DATAVISUALIZATION "Use Qt5DataVisualization instead of the deprecated QwtPlot3D" ON)
+    if (${QT5_USE_DATAVISUALIZATION})
+    option(WITH_DATAVISUALIZATION_NAMESPACES "The DataVisualization modeule uses c++ namespaces" ON)
+    endif()
+    option(WITH_LEGACY_OPENGL "Use Legacy OpenGL visualization" OFF)
     
     set (ADDITIONAL_QT5_MODULES)
     if (QT5_USE_DATAVISUALIZATION)
     set (ADDITIONAL_QT5_MODULES ${ADDITIONAL_QT5_MODULES} DataVisualization)
     endif()
     
+    if(${SELECT_QT} MATCHES "Qt6")
+    # for xml sax parser and qregex
+    set (ADDITIONAL_QT5_MODULES ${ADDITIONAL_QT5_MODULES} Core5Compat)
+    endif()
+    
+
     if (QT_USE_TEXTBROWSER)
       QT_FIND_MODULES( Concurrent
                        Core
@@ -517,7 +528,10 @@ if(BUILD_GUI)
   # check for qwt, TODO check if the version is OK
   find_package(QWT REQUIRED)
   # check for qwtplot3d
+  
+  if (NOT QT5_USE_DATAVISUALIZATION)
   find_package(QWTPLOT3D REQUIRED)
+  endif()
 
   # if the MML widget is available, we need to enable "HAVE_MML"
 
@@ -792,6 +806,10 @@ include(CPack)
 
 add_subdirectory(copasi)
 
+if(BUILD_TESTS)
+add_subdirectory(tests)
+endif (BUILD_TESTS)
+
 if(BUILD_SEMANTIC_TESTSUITE)
 add_subdirectory(semantic-test-suite)
 endif (BUILD_SEMANTIC_TESTSUITE)
@@ -827,15 +845,7 @@ if(BUILD_HYB_TESTS)
 if (EXISTS ${CMAKE_SOURCE_DIR}/hyb-test-suite)
 add_subdirectory(hyb-test-suite)
 endif()
-
 endif (BUILD_HYB_TESTS)
-
-option(BUILD_CATCH_TESTS "Compile catch 2 unit tests." OFF)
-if (BUILD_CATCH_TESTS)
-  if (EXISTS ${CMAKE_SOURCE_DIR}/catch-unit-tests)
-  add_subdirectory(catch-unit-tests)
-  endif()
-endif(BUILD_CATCH_TESTS)
 
 # also install additional files and examples
 file(GLOB_RECURSE WIZARD_HELP_FILES "${PROJECT_SOURCE_DIR}/copasi/wizard/help_html" copasi/wizard/help_html/*.html)
@@ -906,12 +916,13 @@ message(STATUS "-----------------------------------------------------------
 
    NativeJIT lib        = ${NATIVEJIT_LIBRARY}
    NativeJIT include    = ${NATIVEJIT_INCLUDE_DIR}
-
+   NativeJIT CXX Flags  = ${NATIVEJIT_COMPILE_OPTIONS}
+   
    cpu_features lib     = ${CPUFEATURES_LIBRARY}
    cpu_features include = ${CPUFEATURES_INCLUDE_DIR}
 
-   OpenMP CXX Flags     = ${OpenMP_CXX_FLAGS}
    OpenMP Libs          = ${OpenMP_C_LIB_NAMES}
+   OpenMP CXX Flags     = ${OpenMP_CXX_FLAGS}
 
  Options:
 
@@ -930,6 +941,8 @@ message(STATUS "-----------------------------------------------------------
    Time Sensitivities task  = ${ENABLE_TIME_SENS}
    JIT Compilation          = ${ENABLE_JIT}
    OpenMP                   = ${ENABLE_OMP}
+
+   CXX Flags                = ${CMAKE_CXX_FLAGS} 
    Additional Defines       = ${DirDefs}
 
   Language Bindings:

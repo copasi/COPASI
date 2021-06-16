@@ -12,6 +12,12 @@
 
 #include "copasi/CopasiDataModel/CDataModel.h"
 
+#include "copasi/sbml/SBMLImporter.h"
+#include "copasi/sbml/CSBMLExporter.h"
+#include "copasi/sedml/SEDMLImporter.h"
+#include "copasi/sedml/CSEDMLExporter.h"
+#include "copasi/sedml/SEDMLUtils.h"
+
 %}
 
 #include <string>
@@ -80,35 +86,30 @@
 %ignore CDataModel::ObjectFromName(std::vector<CDataContainer * > const &,CCommonName const &) const;
 %ignore CDataModel::getReportDefinitionList() const;
 
-%catches(CCopasiException, ...) CDataModel::newModel();
-%catches(CCopasiException, ...) CDataModel::newModel(CProcessReport* pProcessReport,const bool& deleteOldData);
-%catches(CCopasiException, ...) CDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler = NULL,const bool& deleteOldData = true);
-%catches(CCopasiException, ...) CDataModel::importSBML(const std::string&,CProcessReport*,const bool& deleteOldData = true);
-%catches(CCopasiException, ...) CDataModel::importSBMLFromString(const std::string&,CProcessReport*,const bool& deleteOldData = true);
-%catches(CCopasiException, ...) CDataModel::openCombineArchive(const std::string& fileName, CProcessReport* pProgressReport = NULL, const bool & deleteOldData = true);
-%catches(CCopasiException, ...) CDataModel::importSEDML(const std::string & fileName, CProcessReport* pImportHandler = NULL, const bool & deleteOldData = true);
-%catches(CCopasiException, ...) CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText, CProcessReport* pImportHandler = NULL, const bool & deleteOldData = true);
-%catches(CCopasiException, SBMLConstructorException, ...) CDataModel::exportSBMLToString(CProcessReport* pExportHandler , int sbmlLevel,int sbmlVersion);
-%catches(CCopasiException, SBMLConstructorException, ...) CDataModel::exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
-%catches(CCopasiException, SBMLConstructorException, ...) CDataModel::exportSEDMLToString(CProcessReport* pExportHandler, int sbmlLevel, int sbmlVersion);
-%catches(CCopasiException, SBMLConstructorException, ...) CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile = false, int sedmlLevel = 1, int sedmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
-%catches(CCopasiException, SBMLConstructorException, std::exception, ...) CDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI = true, bool includeSBML = true, bool includeData = true, bool includeSEDML = false, bool overwriteFile = false, CProcessReport* pProgressReport = NULL);
-
-#if SWIGPYTHON
-%exception importSBML {
-   try {
-      $action
-   } catch (...) {
-      PyErr_SetString(PyExc_IndexError, "Unknown exception");
-      return NULL;
-   }
-}
-#endif // SWIGPYTHON
+%catches(CCopasiException, ...) CDataModel::newModel;
+%catches(CCopasiException, ...) CDataModel::newModel;
+%catches(CCopasiException, ...) CDataModel::importSBMLFromString;
+%catches(CCopasiException, ...) CDataModel::importSBML;
+%catches(CCopasiException, ...) CDataModel::importSBMLFromString;
+%catches(CCopasiException, ...) CDataModel::openCombineArchive;
+%catches(CCopasiException, ...) CDataModel::importSEDML;
+%catches(CCopasiException, ...) CDataModel::importSEDMLFromString;
+%catches(CCopasiException, SBMLConstructorException, ...) CDataModel::exportSBMLToString;
+%catches(CCopasiException, SBMLConstructorException, ...) CDataModel::exportSBML;
+%catches(CCopasiException, SBMLConstructorException, ...) CDataModel::exportSEDMLToString;
+%catches(CCopasiException, SBMLConstructorException, ...) CDataModel::exportSEDML;
+%catches(CCopasiException, SBMLConstructorException, std::exception, ...) CDataModel::exportCombineArchive;
 
 // suppress warnings on multiple inheritance
 %warnfilter(813) CDataModel;
 
 %include "copasi/CopasiDataModel/CDataModel.h"
+%include "copasi/sbml/SBMLImporter.h"
+%include "copasi/sbml/CSBMLExporter.h"
+%include "copasi/sedml/SEDMLImporter.h"
+%include "copasi/sedml/CSEDMLExporter.h"
+%include "copasi/sedml/SEDMLUtils.h"
+
 
 %rename(newModel) CDataModel::newModel;
 

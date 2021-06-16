@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -62,7 +62,6 @@ void changeParameters(CDataModel* pDataModel, const std::string& parameterSet)
   pDataModel->getModel()->compileIfNecessary(NULL);
 }
 
-
 int main(int argc, char** argv)
 {
   // initialize the backend library
@@ -89,7 +88,7 @@ int main(int argc, char** argv)
   try
     {
       // load the model without progress report
-      result = pDataModel->loadModel(filename, NULL);
+      result = pDataModel->loadFromFile(filename);
     }
   catch (...)
     {

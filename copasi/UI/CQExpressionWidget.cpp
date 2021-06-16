@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,7 +28,7 @@
 #include <QComboBox>
 //Added by qt3to4:
 #include <QKeyEvent>
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include <QGuiApplication>
 #else
 #include <QApplication>
@@ -72,13 +72,13 @@ CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget * ew)
   : QSyntaxHighlighter(ew)
   , mObjectDisplayPattern(CQExpressionWidget::DisplayPattern)
 {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   QPalette Palette = QGuiApplication::palette();
 #else
   QPalette Palette = QApplication::palette();
 #endif
-  QColor Foreground = Palette.color(QPalette::Active, QPalette::Foreground);
-  QColor Background = Palette.color(QPalette::Active, QPalette::Background);
+  QColor Foreground = Palette.color(QPalette::Active, QPalette::WindowText);
+  QColor Background = Palette.color(QPalette::Active, QPalette::Window);
 
   if (Foreground.redF() + Foreground.greenF() + Foreground.blueF() < Background.redF() + Background.greenF() + Background.blueF())
     {
@@ -232,7 +232,7 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
   mpExpressionHighlighter = new CQExpressionHighlighter(this);
   int h, s, v;
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   QPalette Palette = QGuiApplication::palette();
 #else
   QPalette Palette = QApplication::palette();

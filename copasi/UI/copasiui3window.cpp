@@ -40,7 +40,7 @@
 #include <QtCore/QDateTime>
 
 #include <QByteArray>
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -49,6 +49,7 @@
 #endif
 #include <QRegExp>
 #include <QDesktopServices>
+#include <QActionGroup>
 
 #include <vector>
 #include <sstream>
@@ -132,9 +133,7 @@
 #include "copasi/UI/CQDependencyDialog.h"
 #include "qtUtilities.h"
 
-#ifdef USE_JIT
 #include "copasi/math/CJitCompiler.h"
-#endif
 
 // static
 CopasiUI3Window *CopasiUI3Window::pMainWindow = NULL;
@@ -426,7 +425,7 @@ void CopasiUI3Window::createActions()
   mpaSave->setShortcut(Qt::CTRL + Qt::Key_S);
   mpaSaveAs = new QAction(CQIconResource::icon(CQIconResource::fileSaveas), "Save &As...", this);
   connect(mpaSaveAs, SIGNAL(triggered()), this, SLOT(slotFileSaveAs()));
-  mpaSaveAs->setShortcut(Qt::SHIFT + Qt::CTRL + Qt::Key_S);
+  mpaSaveAs->setShortcut(QKeySequence(Qt::SHIFT, Qt::CTRL, Qt::Key_S));
   mpaImportSBML = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "&Import SBML...", this);
   connect(mpaImportSBML, SIGNAL(triggered()), this, SLOT(slotImportSBML()));
   mpaImportSBML->setShortcut(Qt::CTRL + Qt::Key_I);
@@ -497,10 +496,10 @@ void CopasiUI3Window::createActions()
   //     QAction* mpaObjectBrowser;
 
   mpaAddModel = new QAction(CQIconResource::icon(CQIconResource::fileAdd), "&Add to model...", this);
-  mpaAddModel->setShortcut(Qt::SHIFT + Qt::CTRL + Qt::Key_A);
+  mpaAddModel->setShortcut(QKeySequence(Qt::SHIFT, Qt::CTRL, Qt::Key_A));
   connect(mpaAddModel, SIGNAL(triggered()), this, SLOT(slotAddFileOpen()));
   mpaMergeModels = new QAction("&Merge added model...", this);
-  mpaMergeModels->setShortcut(Qt::SHIFT + Qt::CTRL + Qt::Key_M);
+  mpaMergeModels->setShortcut(QKeySequence(Qt::SHIFT, Qt::CTRL, Qt::Key_M));
   connect(mpaMergeModels, SIGNAL(triggered()), this, SLOT(slotMergeModels()));
 
   mpaCloseAllWindows = new QAction("Close all windows below:", this);
@@ -1526,13 +1525,8 @@ void CopasiUI3Window::about()
     .arg(LIBSBML_DOTTED_VERSION)
     .arg(QWT_VERSION_STR)
     .arg(QT_VERSION_STR)
-    .arg(
-#ifdef USE_JIT
-      CJitCompiler::JitEnabled() ? "enabled" : "disabled"
-#else
-      "disabled"
-#endif
-    );
+    .arg(CJitCompiler::JitEnabled() ? "enabled" : "disabled");
+
   AboutDialog *aboutDialog = new AboutDialog(this, text, 76, 30);
   aboutDialog->setWindowTitle(FixedTitle);
   aboutDialog->exec();
@@ -2593,7 +2587,7 @@ void CopasiUI3Window::slotFrameworkChanged(int index)
 
 void CopasiUI3Window::slotCapture()
 {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   QPixmap pixmap = mpListView->getCurrentWidget()->grab();
 #else
   QPixmap pixmap = QPixmap::grabWidget(mpListView->getCurrentWidget());
@@ -3828,7 +3822,7 @@ void CopasiUI3Window::removeReportTargets()
   auto& taskList = *mpDataModel->getTaskList();
   std::stringstream str;
 
-for (auto & task : taskList)
+  for (auto & task : taskList)
     {
       std::string target = task.getReport().getTarget();
 
@@ -3950,7 +3944,7 @@ void CopasiUI3Window::performNextAction()
             for (int i = 0; i < 5; ++i)
               {
                 qApp->processEvents();
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
                 QThread::msleep(100);
 #endif
               }
@@ -3994,7 +3988,7 @@ void CopasiUI3Window::performNextAction()
       for (int i = 0; i < 3; ++i)
         {
           qApp->processEvents();
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
           QThread::msleep(100);
 #endif
         }
@@ -4005,7 +3999,7 @@ void CopasiUI3Window::performNextAction()
 
 void CopasiUI3Window::slotHandleCopasiScheme(const QUrl& url)
 {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 
   if (url.scheme() != "copasi")
     return;
@@ -4050,7 +4044,7 @@ void CopasiUI3Window::slotHandleCopasiScheme(const QUrl& url)
 
 void CopasiUI3Window::slotCheckForUpdate()
 {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 
   // if the datamodel is already performing an action (loading / importing)
   // we need to delay checking for updates
@@ -4096,7 +4090,7 @@ bool getVersionFromFile(const std::string& fileName, CVersion & latest)
 
   latest = CVersion::VERSION;
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   QFile file(fileName.c_str());
 
   if (!file.open(QIODevice::ReadOnly))

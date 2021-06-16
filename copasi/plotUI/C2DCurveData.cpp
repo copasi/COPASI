@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,7 +16,7 @@
 #include <copasi/plotUI/C2DCurveData.h>
 
 C2DCurveData::C2DCurveData():
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   QwtSeriesData<QPointF>(),
 #else
   QwtData(),
@@ -34,7 +34,7 @@ C2DCurveData::C2DCurveData():
 {}
 
 C2DCurveData::C2DCurveData(const CVector< C_FLOAT64 > & x, const CVector< C_FLOAT64 > & y, size_t size):
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   QwtSeriesData<QPointF>(),
 #else
   QwtData(),
@@ -56,7 +56,7 @@ C2DCurveData::C2DCurveData(const CVector< C_FLOAT64 > & x, const CVector< C_FLOA
 C2DCurveData::~C2DCurveData()
 {}
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 QwtSeriesData<QPointF> * C2DCurveData::copy() const
 {
   C2DCurveData * pCopy = new C2DCurveData();

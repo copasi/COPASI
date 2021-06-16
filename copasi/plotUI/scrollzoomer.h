@@ -35,15 +35,11 @@
 
 #include <QtCore/qglobal.h>
 
-#if QT_VERSION < 0x040000
-# include <q3scrollview.h>
-#endif
-
 #include <qwt_plot_zoomer.h>
 //Added by qt3to4:
 #include <QtCore/QEvent>
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 #  include <qwt_compat.h>
 #endif
 
@@ -56,13 +52,13 @@ class LogPlotZoomer: public QwtPlotZoomer
 
 public:
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   LogPlotZoomer(QWidget *canvas);
 #else
   LogPlotZoomer(QwtPlotCanvas *canvas);
 #endif
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 public slots:
   virtual void moveTo(const QPointF &pos);
 #else
@@ -71,7 +67,7 @@ public slots:
 #endif
 
 protected:
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   virtual QwtText trackerTextF(const QwtDoublePoint &pos) const;
 #else
   virtual QwtText trackerText(const QwtDoublePoint &pos) const;
@@ -88,7 +84,7 @@ public:
     OppositeToScale
   };
 
-#if QWT_VERSION > 0x060000
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
   ScrollZoomer(QWidget *);
 #else
   ScrollZoomer(QwtPlotCanvas *);
@@ -98,19 +94,11 @@ public:
   ScrollBar *horizontalScrollBar() const;
   ScrollBar *verticalScrollBar() const;
 
-#if QT_VERSION < 0x040000
-  void setHScrollBarMode(Q3ScrollView::ScrollBarMode);
-  void setVScrollBarMode(Q3ScrollView::ScrollBarMode);
-
-  Q3ScrollView::ScrollBarMode vScrollBarMode() const;
-  Q3ScrollView::ScrollBarMode hScrollBarMode() const;
-#else
   void setHScrollBarMode(Qt::ScrollBarPolicy);
   void setVScrollBarMode(Qt::ScrollBarPolicy);
 
   Qt::ScrollBarPolicy vScrollBarMode() const;
   Qt::ScrollBarPolicy hScrollBarMode() const;
-#endif
 
   void setHScrollBarPosition(ScrollBarPosition);
   void setVScrollBarPosition(ScrollBarPosition);
