@@ -1956,8 +1956,8 @@ bool CMathObject::createExtensiveODERateExpression(const CMetab * pSpecies,
     }
 
   CExpression E("ExtensiveODERateExpression", &container);
-
   success &= E.setInfix(Infix.str());
+  success &= E.compile();
 
   pdelete(mpExpression);
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
@@ -2128,6 +2128,7 @@ bool CMathObject::createExtensiveNoiseExpression(const CMetab * pSpecies,
 
       CExpression E("ExtensiveNoiseExpression", &container);
       success &= E.setInfix(Infix);
+      success &= E.compile();
 
       mpExpression = new CMathExpression(E, container, !mIsInitialValue);
     }
