@@ -210,7 +210,7 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
             mRegisteredFunctionCN = mpFunction->getCN();
 
             mMainType = MainType::CALL;
-            mCompiledSubType = SubType::FUNCTION;
+            mSubType = SubType::FUNCTION; // need to set subtype, otherwise it is an infinite loop
 
             issue = compile(pTree);
           }
