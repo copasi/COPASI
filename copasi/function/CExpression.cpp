@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -159,7 +159,18 @@ const CObjectInterface * CExpression::getNodeObject(const CCommonName & CN) cons
 {
   if (mpListOfContainer != NULL)
     {
-      return CObjectInterface::GetObjectFromCN(*mpListOfContainer, CN);
+      const CObjectInterface * pObject = CObjectInterface::GetObjectFromCN(*mpListOfContainer, CN);
+
+      if (pObject != NULL)
+        return pObject;
+
+      CObjectInterface::ContainerList::const_iterator it = mpListOfContainer->begin();
+      CObjectInterface::ContainerList::const_iterator end = mpListOfContainer->end();
+
+      for (; pObject ==  NULL && it != end; ++it)
+        pObject = (*it)->getObject(CN);
+
+      return pObject;
     }
   else
     {
