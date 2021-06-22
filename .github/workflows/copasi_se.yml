@@ -32,7 +32,7 @@ jobs:
       run: |
         cmake --version
         curl -L https://github.com/copasi/copasi-dependencies/releases/download/Version-4.31.243/${{ matrix.platform }}.zip -o ${{ matrix.platform }}.zip
-        unzip ${{ matrix.platform }}.zip -d dependencies
+        unzip -n -qq ${{ matrix.platform }}.zip -d dependencies
 
     - name: Patch dependencies (windows)
       shell: bash
@@ -40,8 +40,7 @@ jobs:
       working-directory: ${{github.workspace}}/dependencies/lib/cmake
       run: |
         sed -i 's|D:/a/copasi-dependencies/copasi-dependencies/install/|${_IMPORT_PREFIX}/|g'  *.cmake
-        choco -y install wget
-
+        
     - name: Patch dependencies (ubuntu)
       shell: bash
       if: matrix.platform == 'ubuntu-latest'
@@ -74,7 +73,7 @@ jobs:
       shell: bash
       working-directory: ${{github.workspace}}
       run: |
-        wget http://bqfrank.spdns.org/Files/test-suite.zip
+        curl -L http://bqfrank.spdns.org/Files/test-suite.zip  -o test-suite.zip
         unzip -n -qq test-suite.zip
 
     - name: Configure COPASI
