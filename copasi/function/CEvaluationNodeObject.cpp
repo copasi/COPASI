@@ -211,37 +211,40 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 
       case SubType::AVOGADRO:
       {
-        CDataModel * pDataModel = pTree->getObjectDataModel();
+        mpObject = pTree->getNodeObject(mData.substr(1, mData.length() - 2));
 
-        // Expression
-        if (pDataModel != NULL)
+        if (mpObject != NULL)
           {
-            if (pDataModel->getModel() != NULL)
-              {
-                mpObject = pTree->getNodeObject(pDataModel->getModel()->getCN() + "," + mRegisteredObjectCN);
-              }
-
-            if (mpObject != NULL)
-              {
-                mpValue = (C_FLOAT64 *) mpObject->getValuePointer();
-              }
-
-            if (mpValue == NULL)
-              {
-                mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-                mpValue = &mValue;
-
-                if (mpObject == NULL)
-                  return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
-
-                return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueNotFound);
-              }
+            mpValue = (C_FLOAT64 *) mpObject->getValuePointer();
           }
-        // Function
         else
           {
-            mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+            // Fall back to behavior before fix of Bug 3026 for GUI where the proper context is not provided.
+            CDataModel * pDataModel = pTree->getObjectDataModel();
+
+            if (pDataModel != NULL)
+              {
+                if (pDataModel->getModel() != NULL)
+                  {
+                    mpObject = pTree->getNodeObject(pDataModel->getModel()->getCN() + "," + mRegisteredObjectCN);
+
+                    if (mpObject != NULL)
+                      {
+                        mpValue = (C_FLOAT64 *) mpObject->getValuePointer();
+                      }
+                  }
+              }
+          }
+
+        if (mpValue == NULL)
+          {
+            mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
             mpValue = &mValue;
+
+            if (mpObject == NULL)
+              return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
+
+            return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueNotFound);
           }
       }
       break;

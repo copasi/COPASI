@@ -211,6 +211,7 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
             mMainType = MainType::CALL;
             mSubType = SubType::FUNCTION; // need to set subtype, otherwise it is an infinite loop
+            mCompiledSubType = SubType::FUNCTION; // need to set compiled subtype so that calculate() works
 
             issue = compile(pTree);
           }
