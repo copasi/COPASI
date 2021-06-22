@@ -69,10 +69,17 @@ jobs:
       working-directory: ${{github.workspace}}
       run: ./gitTools/UpdateCopasiVersion
 
+    - name: Download SBML Test Suite cases
+      shell: bash
+      working-directory: ${{github.workspace}}
+      run: |
+        wget http://bqfrank.spdns.org/Files/test-suite.zip
+        7z x -aos test-suite.zip
+
     - name: Configure COPASI
       shell: bash
       run: |
-        cmake -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCOPASI_INSTALL_C_API=ON -DBUILD_GUI=OFF -DCOPASI_DEPENDENCY_DIR=./dependencies/ -DCMAKE_INSTALL_PREFIX=./install/ -S .  -B ./build_copasi
+        cmake -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCOPASI_INSTALL_C_API=ON -DBUILD_TESTS=ON -DBUILD_GUI=OFF -DCOPASI_DEPENDENCY_DIR=./dependencies/ -DCMAKE_INSTALL_PREFIX=./install/  -DBUILD_SBML_TESTSUITE:BOOL=ON -DSBML_TESTSUITE_CASES_DIR:PATH=$PWD/test-suite -S .  -B ./build_copasi
 
     - name: Build COPASI
       shell: bash
