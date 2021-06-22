@@ -40,6 +40,7 @@ jobs:
       working-directory: ${{github.workspace}}/dependencies/lib/cmake
       run: |
         sed -i 's|D:/a/copasi-dependencies/copasi-dependencies/install/|${_IMPORT_PREFIX}/|g'  *.cmake
+        choco -y install wget
 
     - name: Patch dependencies (ubuntu)
       shell: bash
