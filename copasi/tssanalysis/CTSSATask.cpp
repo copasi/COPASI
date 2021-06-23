@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -302,7 +302,7 @@ bool CTSSATask::process(const bool & useInitialValues)
   return true;
 }
 
-void CTSSATask::processStart(const bool & useInitialValues)
+bool CTSSATask::processStart(const bool & useInitialValues)
 {
   if (useInitialValues)
     {
@@ -312,7 +312,7 @@ void CTSSATask::processStart(const bool & useInitialValues)
   mContainerState.initialize(mpContainer->getState(mUpdateMoieties));
   mpTSSAMethod->start();
 
-  return;
+  return true;
 }
 
 bool CTSSATask::processStep(const C_FLOAT64 & nextTime)

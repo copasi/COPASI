@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -145,8 +145,9 @@ public:
   /**
    * Starts the process of integration by calling CTSSAMethod::start
    * @param const bool & useInitialValues
+   * @return bool success
    */
-  void processStart(const bool & useInitialValues);
+  bool processStart(const bool & useInitialValues);
 
   /**
    * Integrates one step

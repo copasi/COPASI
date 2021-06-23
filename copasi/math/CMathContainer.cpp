@@ -2917,13 +2917,13 @@ void CMathContainer::analyzeRoots()
   CObjectInterface::ObjectSet TimeValue;
   TimeValue.insert(getMathObject(mState.array() + mSize.nFixedEventTargets));
 
-  CObjectInterface::ObjectSet ContinousStateValues;
+  CObjectInterface::ObjectSet ContinuousStateValues;
   const CMathObject * pStateObject = getMathObject(mState.array() + mSize.nFixedEventTargets);
   const CMathObject * pStateObjectEnd = getMathObject(mState.array() + mState.size());
 
   for (; pStateObject != pStateObjectEnd; ++pStateObject)
     {
-      ContinousStateValues.insert(pStateObject);
+      ContinuousStateValues.insert(pStateObject);
     }
 
   size_t RootCount = 0;
@@ -2944,7 +2944,7 @@ void CMathContainer::analyzeRoots()
       Requested.insert(pRoot);
       CCore::CUpdateSequence UpdateSequence;
 
-      mTransientDependencies.getUpdateSequence(UpdateSequence, CCore::SimulationContext::Default, ContinousStateValues, Requested);
+      mTransientDependencies.getUpdateSequence(UpdateSequence, CCore::SimulationContext::Default, ContinuousStateValues, Requested);
       *pIsDiscrete = UpdateSequence.empty();
 
       mTransientDependencies.getUpdateSequence(UpdateSequence, CCore::SimulationContext::Default, TimeValue, Requested);
