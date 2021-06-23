@@ -2148,7 +2148,16 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
           pObjectNode->mainType() != CEvaluationNode::MainType::OBJECT) continue;
 
       const CDataObject* pObject = CObjectInterface::DataObject(dataModel.getObjectFromCN(pObjectNode->getObjectCN()));
-      assert(pObject);
+
+      if (pObject == NULL) // the above fails to resolve imported avogadro references
+        pObject = CObjectInterface::DataObject(dataModel.getModel()->getObject(pObjectNode->getObjectCN()));
+
+      if (!pObject)
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, "Could not resolve the CN '%s'", pObjectNode->getObjectCN().c_str());
+          continue;
+        }
+
 
       if (pObject->hasFlag(CDataObject::Reference))
         {

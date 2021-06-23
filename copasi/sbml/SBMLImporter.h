@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -462,7 +462,7 @@ protected:
    * their name replaced by the common name of this model.
    * Starting with SBML Level 3 this also applies to the avogadro number.
    */
-  void replaceTimeAndAvogadroNodeNames(ASTNode* pNode);
+  void replaceTimeAndAvogadroNodeNames(ASTNode* pNode, bool replaceAvogadro = false);
 
   /**
    * COPASI can not handle the delay function yet, so if it is used in some expression, we

@@ -105,6 +105,8 @@
 #include <copasi/MIRIAM/CBiologicalDescription.h>
 #include <copasi/MIRIAM/CModelMIRIAMInfo.h>
 
+#define SBML_AVOGADRO 6.02214179e23
+
 #if LIBSBML_HAS_PACKAGE_COMP
 
 #include <sbml/util/PrefixTransformer.h>
@@ -298,7 +300,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
   // for SBML L3 files the default units are defined on the model
   if (this->mLevel > 2)
     {
-      this->mpCopasiModel->setAvogadro(6.02214179e23, CCore::Framework::Concentration);
+      this->mpCopasiModel->setAvogadro(SBML_AVOGADRO, CCore::Framework::Concentration);
       this->mAvogadroSet = true;
 
       // we make copies of the unit definitions so that we do not have to remember
@@ -2734,7 +2736,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
 
           ConverterASTNode* node = new ConverterASTNode(*kLawMath);
-          this->preprocessNode(node, pSBMLModel, copasi2sbmlmap, sbmlReaction);
+          preprocessNode(node, pSBMLModel, copasi2sbmlmap, sbmlReaction);
 
           if (node == NULL)
             {
@@ -4945,7 +4947,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
     }
 
   this->replaceCallNodeNames(pNode);
-  this->replaceTimeAndAvogadroNodeNames(pNode);
+  this->replaceTimeAndAvogadroNodeNames(pNode, pSBMLReaction != NULL);
 
   if (pSBMLReaction != NULL && !this->mSubstanceOnlySpecies.empty())
     {
@@ -5154,7 +5156,7 @@ bool SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pASTNode)
   return result;
 }
 
-void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pASTNode)
+void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pASTNode, bool replaceAvogadro)
 {
   CNodeIterator< ASTNode > itNode(pASTNode);
 
@@ -5171,7 +5173,17 @@ void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pASTNode)
         }
       else if (itNode->getType() == AST_NAME_AVOGADRO)
         {
-          itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Avogadro Constant"))->getCN().c_str());
+          if (replaceAvogadro)
+            {
+              // COPASI does not support avogadro in function definitions
+              // instead use the value for now
+              itNode->setType(AST_REAL);
+              itNode->setValue(SBML_AVOGADRO);
+            }
+          else
+            {
+              itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Avogadro Constant"))->getCN().c_str());
+            }
         }
     }
 }
