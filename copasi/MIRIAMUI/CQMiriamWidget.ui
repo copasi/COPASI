@@ -451,5 +451,6 @@
     <slot>dataChanged(QModelIndex,QModelIndex)</slot>
     <slot>slotCopyEvent()</slot>
     <slot>slotBtnCopy()</slot>
+    <slot>slotBtnAddMe()</slot>
   </slots>
 </ui>
