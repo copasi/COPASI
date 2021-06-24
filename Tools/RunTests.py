@@ -60,7 +60,7 @@ def check(args):
   listOutputDirs = []
   # Create and fill listOutputDirs by replacing the directory of inputDir with more proper one   
   for dir in listInputDirs:
-    listOutputDirs.append( os.path.join( string.replace(dir, 'Tests', os.path.join('Results', args[1])) ))
+    listOutputDirs.append( os.path.join( dir.replace('Tests', os.path.join('Results', args[1])) ))
 
   # Check the existence of output directory; create it if necessary
   for outputDir in listOutputDirs:

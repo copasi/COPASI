@@ -2560,7 +2560,9 @@ void CSBMLExporter::isExpressionSBMLCompatible(const CEvaluationTree& expr
 {
   checkForUnsupportedObjectReferences(expr, dataModel, sbmlLevel, sbmlVersion, result, idMap, initialExpression, initialMap);
   std::set<CEvaluationNode::SubType> unsupportedFunctionTypes = CSBMLExporter::createUnsupportedFunctionTypeSet(sbmlLevel);
-  checkForUnsupportedFunctionCalls(*expr.getRoot(), unsupportedFunctionTypes, result, objectDescription);
+
+  if (expr.getRoot() != NULL)
+    checkForUnsupportedFunctionCalls(*expr.getRoot(), unsupportedFunctionTypes, result, objectDescription);
 }
 
 /**

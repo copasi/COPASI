@@ -497,7 +497,10 @@ if(BUILD_GUI)
   #endforeach()
 
     if (NOT Qt6Widgets_UIC_EXECUTABLE)
-    set (Qt6Widgets_UIC_EXECUTABLE C:/Qt/Qt6/6.0.2/msvc2019_64/bin/uic.exe)
+      find_program(Qt6Widgets_UIC_EXECUTABLE
+               NAMES uic uic.exe 
+               DOC "Path to the uic executable"
+               PATHS ${Qt6Widgets_DIR}/../../../bin)
     endif()
 
     set(ui_files ${_WRAP_UI_UNPARSED_ARGUMENTS})

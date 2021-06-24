@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -233,7 +233,8 @@ bool CTrajectoryTask::processTrajectory(const bool& useInitialValues)
   //*****
   mProceed = true;
 
-  processStart(useInitialValues);
+  if (!processStart(useInitialValues))
+    return false;
 
   //*****
 
@@ -530,8 +531,10 @@ bool CTrajectoryTask::processValues(const bool& useInitialValues)
   return true;
 }
 
-void CTrajectoryTask::processStart(const bool & useInitialValues)
+bool CTrajectoryTask::processStart(const bool & useInitialValues)
 {
+  bool success = true;
+
   mContainerState.initialize(mpContainer->getState(mUpdateMoieties));
   mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
 
@@ -543,6 +546,7 @@ void CTrajectoryTask::processStart(const bool & useInitialValues)
               !mpSteadyState->process(true))
             {
               CCopasiMessage(CCopasiMessage::ERROR, "Steady state could not be reached.");
+              success = false;
             }
 
           * mpContainerStateTime = 0;
@@ -555,7 +559,7 @@ void CTrajectoryTask::processStart(const bool & useInitialValues)
 
   mpTrajectoryMethod->start();
 
-  return;
+  return success;
 }
 
 bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime, const bool & final)
