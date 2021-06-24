@@ -59,7 +59,7 @@ std::list< std::pair< std::string, CUnit > > sortSymbols(const std::set< std::st
 }
 
 // static
-C_FLOAT64 CUnit::Avogadro(6.022140857e23); // http://physics.nist.gov/cgi-bin/cuu/Value?na (Thu Feb 11 09:57:27 EST 2016)
+C_FLOAT64 CUnit::Avogadro(6.02214076e23); // http://physics.nist.gov/cgi-bin/cuu/Value?na (Thu June 24 09:12:27 EST 2021)
 
 const char * CUnit::VolumeUnitNames[] =
 {"dimensionless", "m\xc2\xb3", "l", "ml", "\xc2\xb5l", "nl", "pl", "fl", NULL};
