@@ -1130,6 +1130,40 @@ const CCore::CUpdateSequence & CMathContainer::getTransientDataValueSequence() c
   return mTransientDataObjectSequence;
 }
 
+void CMathContainer::removeDataObject(const CDataObject * pObject)
+{
+  DataObjectSet Descendants;
+  Descendants.insert(pObject);
+
+  if (pObject->hasFlag(CDataObject::Flag::Container))
+    dynamic_cast< const CDataContainer * >(pObject)->getDescendants(Descendants);
+
+  std::set< const CDataObject * >::const_iterator it = Descendants.begin();
+  std::set< const CDataObject * >::const_iterator end = Descendants.end();
+
+  for (; it != end; ++it)
+    {
+      CMathObject * pObject = getMathObject(*it);
+
+      if (pObject == NULL)
+        continue;
+
+      mInitialDependencies.removeObject(pObject);
+      mTransientDependencies.removeObject(pObject);
+      pObject->setDataObject(NULL);
+
+      CMathObject * pInitialObject = getInitialValueObject(pObject);
+
+      if (pInitialObject == pObject
+          || pInitialObject == NULL)
+        continue;
+
+      mInitialDependencies.removeObject(pInitialObject);
+      mTransientDependencies.removeObject(pInitialObject);
+      pInitialObject->setDataObject(NULL);
+    }
+}
+
 void CMathContainer::updateHistoryValues(const bool & useMoieties)
 {
   CMathHistoryCore * pHistory = (useMoieties) ? &mHistoryReduced : &mHistory;
