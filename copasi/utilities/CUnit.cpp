@@ -929,8 +929,8 @@ void CUnit::buildExpression()
       mExpression += "/" + denominator.str();
     }
 
-  stringReplace(mExpression, "^2", "\xc2\xb2");
-  stringReplace(mExpression, "^3", "\xc2\xb3");
+  replaceExponentInExpression(mExpression, 2);
+  replaceExponentInExpression(mExpression, 3);
   stringReplace(mExpression, "0.001*m\xc2\xb3", "l");
 }
 
@@ -1045,4 +1045,41 @@ std::ostream &operator<<(std::ostream &os, const CUnit & o)
     }
 
   return os;
+}
+
+// static
+void CUnit::replaceExponentInExpression(std::string & expression, const size_t & exponent)
+{
+  std::string Exponent;
+  std::string Replacement;
+
+  switch (exponent)
+    {
+      case 2:
+        Exponent = "^2";
+        Replacement = "\xc2\xb2";
+        break;
+
+      case 3:
+        Exponent = "^3";
+        Replacement = "\xc2\xb3";
+        break;
+
+      default:
+        return;
+    }
+
+  std::string::size_type pos = expression.find(Exponent, 0);
+
+  while (pos != std::string::npos)
+    {
+      pos += 2;
+
+      if (expression.find_first_of("0123456789", pos) != pos)
+        expression.replace(pos - 2, Exponent.length(), Replacement, 0, std::string::npos);
+
+      pos = expression.find(Exponent, pos);
+    }
+
+  return;
 }
