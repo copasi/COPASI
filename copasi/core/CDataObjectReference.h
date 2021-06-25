@@ -81,6 +81,13 @@ public:
         return str.str();
       }
 
+    // Special treatment for Avogadro Constant
+    if (getObjectName() == "Avogadro Constant"
+        && getObjectParent()
+        && (getObjectParent()->getObjectType() == "Model"
+            || getObjectParent()->getObjectType() == "FunctionDB"))
+      return getObjectName();
+
     // Special treatment of species children
     if (getObjectParent() && getObjectParent()->getObjectType() == "Metabolite")
       {

@@ -2464,7 +2464,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
               if (stoi != stoi)
                 stoi = 1.0;
             }
-
         }
 
       std::map<std::string, CMetab*>::iterator pos;
@@ -3456,7 +3455,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_FATAL:
 
-                // treat unknown as fatal
+              // treat unknown as fatal
               default:
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
@@ -4947,7 +4946,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
     }
 
   this->replaceCallNodeNames(pNode);
-  this->replaceTimeAndAvogadroNodeNames(pNode, pSBMLReaction != NULL);
+  this->replaceTimeAndAvogadroNodeNames(pNode);
 
   if (pSBMLReaction != NULL && !this->mSubstanceOnlySpecies.empty())
     {
@@ -5156,7 +5155,7 @@ bool SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pASTNode)
   return result;
 }
 
-void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pASTNode, bool replaceAvogadro)
+void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pASTNode)
 {
   CNodeIterator< ASTNode > itNode(pASTNode);
 
@@ -5173,17 +5172,7 @@ void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pASTNode, bool repla
         }
       else if (itNode->getType() == AST_NAME_AVOGADRO)
         {
-          if (replaceAvogadro)
-            {
-              // COPASI does not support avogadro in function definitions
-              // instead use the value for now
-              itNode->setType(AST_REAL);
-              itNode->setValue(SBML_AVOGADRO);
-            }
-          else
-            {
-              itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Avogadro Constant"))->getCN().c_str());
-            }
+          itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Avogadro Constant"))->getCN().c_str());
         }
     }
 }

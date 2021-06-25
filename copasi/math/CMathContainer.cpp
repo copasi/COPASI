@@ -1755,8 +1755,13 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
       // We need to replace variables, expand called trees, and handle discrete nodes.
       switch (itNode->mainType() | itNode->subType())
         {
-          // Handle object nodes which are of type CN and AVOGADRO
+          // Handle object nodes which are of type AVOGADRO
           case (CEvaluationNode::MainType::OBJECT | CEvaluationNode::SubType::AVOGADRO):
+            // Create a converted node
+            pCopy = createNodeFromObject(mpAvogadro);
+            break;
+
+          // Handle object nodes which are of type CN
           case (CEvaluationNode::MainType::OBJECT | CEvaluationNode::SubType::CN):
           {
             // We need to map the object to a math object if possible.

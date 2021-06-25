@@ -166,6 +166,15 @@ CIssue CFunction::setInfix(const std::string & infix)
       switch ((*it)->mainType())
         {
           case CEvaluationNode::MainType::OBJECT:
+            if ((*it)->subType() != CEvaluationNode::SubType::AVOGADRO)
+              {
+                issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
+                mValidity.add(issue);
+                return firstWorstIssue &= issue;
+              }
+
+            break;
+
           case CEvaluationNode::MainType::DELAY:
             issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
             mValidity.add(issue);
