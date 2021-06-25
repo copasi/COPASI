@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -107,7 +107,7 @@ CEvaluationNodeOperator::CEvaluationNodeOperator(const CEvaluationNodeOperator &
 
 CEvaluationNodeOperator::~CEvaluationNodeOperator() {}
 
-CIssue CEvaluationNodeOperator::compile(const CEvaluationTree * /* pTree */)
+CIssue CEvaluationNodeOperator::compile()
 {
   mpLeftNode = static_cast<CEvaluationNode *>(getChild());
 
@@ -185,7 +185,7 @@ void CEvaluationNodeOperator::s_invalid()
 // virtual
 std::string CEvaluationNodeOperator::getInfix(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeOperator *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeOperator *>(this)->compile())
     {
       Data Infix;
 
@@ -220,7 +220,7 @@ std::string CEvaluationNodeOperator::getInfix(const std::vector< std::string > &
 // virtual
 std::string CEvaluationNodeOperator::getDisplayString(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeOperator *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeOperator *>(this)->compile())
     {
       Data DisplayString;
 
@@ -255,7 +255,7 @@ std::string CEvaluationNodeOperator::getDisplayString(const std::vector< std::st
 // virtual
 std::string CEvaluationNodeOperator::getCCodeString(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeOperator *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeOperator *>(this)->compile())
     {
       Data DisplayString;
       SubType subType = (SubType)this->subType();
@@ -308,7 +308,7 @@ std::string CEvaluationNodeOperator::getCCodeString(const std::vector< std::stri
 // virtual
 std::string CEvaluationNodeOperator::getBerkeleyMadonnaString(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeOperator *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeOperator *>(this)->compile())
     {
       std::string mdata = "";
 
@@ -340,7 +340,7 @@ std::string CEvaluationNodeOperator::getBerkeleyMadonnaString(const std::vector<
 // virtual
 std::string CEvaluationNodeOperator::getXPPString(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeOperator *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeOperator *>(this)->compile())
     {
       Data DisplayString;
       SubType subType = (SubType)this->subType();

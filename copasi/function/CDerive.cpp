@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -374,7 +374,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataO
 
             CEvaluationNode * minusNode = subtract(tmpNode1, tmpNode2);
 
-            minusNode->compile(NULL);
+            minusNode->compile();
 
             //denominator
             CEvaluationNode * powerNode = power(copyBranch_var2obj(pENO->getRight(), mEnv),
@@ -472,13 +472,13 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataO
           //In this context, the concentration is expanded as "amount of substance/volume"
           std::string tmpstr = tmpObj->getObjectParent() ? "<" + tmpObj->getObjectParent()->getCN() + ",Reference=ParticleNumber>" : "<>";
           CEvaluationNodeObject* amount = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, tmpstr);
-          amount->compile(mpTree);
+          amount->compile();
 
           tmpstr = tmpObj->getObjectAncestor("Compartment") ? "<" + tmpObj->getObjectAncestor("Compartment")->getCN() + ",Reference=Volume>"  : "<>";
           CEvaluationNodeObject* volume = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, tmpstr);
-          volume->compile(mpTree);
+          volume->compile();
           CEvaluationNodeObject* volume2 = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, tmpstr); //we need this node twice
-          volume2->compile(mpTree);
+          volume2->compile();
 
           CEvaluationNode* damount = deriveBranch(amount, pObject);
           CEvaluationNode* dvolume = deriveBranch(volume, pObject);
@@ -531,7 +531,7 @@ void CDerive::compileTree(CEvaluationNode* node)
 {
   if (!node) return;
 
-  node->compile(mpTree);
+  node->compile();
 
   CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(node->getChild());
 

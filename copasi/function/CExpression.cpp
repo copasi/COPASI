@@ -78,9 +78,9 @@ CIssue CExpression::setInfix(const std::string & infix)
     return firstWorstIssue;
 
   // Check whether the expression has the expected type.
-  if (mpRootNode != NULL)
+  if (getRoot() != NULL)
     {
-      if (mIsBoolean && !mpRootNode->isBoolean())
+      if (mIsBoolean && !getRoot()->isBoolean())
         {
           issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::ExpressionDataTypeInvalid);
           mValidity.add(issue);
@@ -89,7 +89,7 @@ CIssue CExpression::setInfix(const std::string & infix)
 
       // We wrap a boolean expression in an if construct for
       // non-boolean expressions
-      if (!mIsBoolean && mpRootNode->isBoolean())
+      if (!mIsBoolean && getRoot()->isBoolean())
         {
           std::string Infix = "if(" + infix + ", 1, 0)";
           issue = CEvaluationTree::setInfix(Infix);
@@ -129,10 +129,10 @@ CIssue CExpression::compile(CObjectInterface::ContainerList listOfContainer)
   CIssue issue = compileNodes();
   mValidity.add(issue);
 
-  if (mpRootNode)
+  if (getRoot() != NULL)
     {
-      mDisplayString = mpRootNode->buildDisplayString();
-      mInfix = mpRootNode->buildInfix();
+      mDisplayString = getRoot()->buildDisplayString();
+      mInfix = getRoot()->buildInfix();
     }
   else
     {
@@ -172,10 +172,8 @@ const CObjectInterface * CExpression::getNodeObject(const CCommonName & CN) cons
 
       return pObject;
     }
-  else
-    {
-      return getObjectFromCN(CN);
-    }
+
+  return CEvaluationTree::getNodeObject(CN);
 }
 
 const CObjectInterface::ContainerList & CExpression::getListOfContainer() const
@@ -183,9 +181,9 @@ const CObjectInterface::ContainerList & CExpression::getListOfContainer() const
 
 bool CExpression::updateInfix()
 {
-  if (mpRootNode != NULL)
+  if (getRoot() != NULL)
     {
-      mInfix = mpRootNode->buildInfix();
+      mInfix = getRoot()->buildInfix();
     }
 
   return true;
@@ -198,8 +196,8 @@ std::string CExpression::getCCodeString() const
 {
   std::string str1;
 
-  if (mpRootNode)
-    str1 = mpRootNode->buildCCodeString();
+  if (getRoot())
+    str1 = getRoot()->buildCCodeString();
   else
     str1 = "";
 
@@ -210,8 +208,8 @@ std::string CExpression::getBerkeleyMadonnaString() const
 {
   std::string str1;
 
-  if (mpRootNode)
-    str1 = mpRootNode->buildBerkeleyMadonnaString();
+  if (getRoot())
+    str1 = getRoot()->buildBerkeleyMadonnaString();
   else
     str1 = "";
 
@@ -222,8 +220,8 @@ std::string CExpression::getXPPString() const
 {
   std::string str1;
 
-  if (mpRootNode)
-    str1 = mpRootNode->buildXPPString();
+  if (getRoot())
+    str1 = getRoot()->buildXPPString();
   else
     str1 = "";
 
@@ -234,7 +232,7 @@ std::string CExpression::getXPPString() const
 
 void CExpression::writeMathML(std::ostream & out, bool fullExpand, size_t l) const
 {
-  if (mpRootNode)
+  if (getRoot() != NULL)
     {
       //create empty environment. Variable nodes should not occur in an expression
       std::vector<std::vector<std::string> > env;
@@ -243,7 +241,7 @@ void CExpression::writeMathML(std::ostream & out, bool fullExpand, size_t l) con
 
       if (flag) out << SPC(l) << "<mfenced>" << std::endl;
 
-      out << mpRootNode->buildMMLString(fullExpand, env);
+      out << getRoot()->buildMMLString(fullExpand, env);
 
       if (flag) out << SPC(l) << "</mfenced>" << std::endl;
     }

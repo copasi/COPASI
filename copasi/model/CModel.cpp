@@ -2267,7 +2267,7 @@ bool CModel::removeMetabolite(const CMetab* pMetabolite,
       Deleted.insert(pMetabolite);
       removeDependentModelObjects(Deleted);
 
-      // the metabolite might have been deleted above, need to reaquire the pointer
+      // the metabolite might have been deleted above, need to aquire the pointer
       pMetabolite =
         dynamic_cast< CMetab * >(CRootContainer::getKeyFactory()->get(key));
     }
@@ -2275,9 +2275,9 @@ bool CModel::removeMetabolite(const CMetab* pMetabolite,
   if (pMetabolite != NULL)
     {
       /* Assure that all references are removed */
-      mMetabolites.remove((CMetab *)pMetabolite);
-      mMetabolitesX.remove((CMetab *)pMetabolite);
-
+      mMetabolites.remove(const_cast< CMetab * >(pMetabolite));
+      mMetabolitesX.remove(const_cast< CMetab * >(pMetabolite));
+      removeDataObject(pMetabolite);
       pdelete(pMetabolite);
     }
 
@@ -2344,6 +2344,7 @@ bool CModel::removeCompartment(const CCompartment * pCompartment,
   if (index == C_INVALID_INDEX)
     return false;
 
+  removeDataObject(pCompartment);
   mCompartments.CDataVector< CCompartment >::remove(index);
 
   mCompileIsNecessary = true;
@@ -2403,6 +2404,7 @@ bool CModel::removeReaction(const CReaction * pReaction,
   if (index == C_INVALID_INDEX)
     return false;
 
+  removeDataObject(pReaction);
   mSteps.CDataVector< CReaction >::remove(index);
 
   clearMoieties();
@@ -2466,23 +2468,42 @@ void CModel::removeDependentModelObjects(const CDataObject::ObjectSet & deletedO
   std::set<const CDataObject*>::const_iterator it, end;
 
   for (it = Reactions.begin(), end = Reactions.end(); it != end; ++it)
-    removeReaction((*it)->getKey(), false);
+    {
+      removeDataObject(*it);
+      removeReaction((*it)->getKey(), false);
+    }
 
   for (it = Metabolites.begin(), end = Metabolites.end(); it != end; ++it)
-    removeMetabolite((*it)->getKey(), false);
+    {
+      removeDataObject(*it);
+      removeMetabolite((*it)->getKey(), false);
+    }
 
   for (it = Compartments.begin(), end = Compartments.end(); it != end; ++it)
-    removeCompartment((*it)->getKey(), false);
+    {
+      removeDataObject(*it);
+      removeCompartment((*it)->getKey(), false);
+    }
 
   for (it = Values.begin(), end = Values.end(); it != end; ++it)
-    removeModelValue((*it)->getKey(), false);
+    {
+      removeDataObject(*it);
+      removeModelValue((*it)->getKey(), false);
+    }
 
   // Event Assignments mut be deleted before events as else we may have an invalid pointer
   for (it = EventAssignments.begin(), end = EventAssignments.end(); it != end; ++it)
-    if (*it) delete *it;
+    if (*it)
+      {
+        removeDataObject(*it);
+        delete *it;
+      }
 
   for (it = Events.begin(), end = Events.end(); it != end; ++it)
-    removeEvent((*it)->getKey(), false);
+    {
+      removeDataObject(*it);
+      removeEvent((*it)->getKey(), false);
+    }
 
   return;
 }
@@ -2521,6 +2542,7 @@ bool CModel::removeModelValue(const CModelValue * pModelValue,
   if (index == C_INVALID_INDEX)
     return false;
 
+  removeDataObject(pModelValue);
   mValues.CDataVector< CModelValue >::remove(index);
 
   mCompileIsNecessary = true;
@@ -2574,6 +2596,7 @@ bool CModel::removeEvent(const CEvent * pEvent,
   if (index == C_INVALID_INDEX)
     return false;
 
+  removeDataObject(pEvent);
   mEvents.CDataVector< CEvent >::remove(index);
 
   clearMoieties();
@@ -3163,6 +3186,12 @@ void CModel::replaceInExpressions(const std::string & oldStr,
 }
 //**********************************************************************
 
+void CModel::removeDataObject(const CDataObject * pObject)
+{
+  mStructuralDependencies.removeObject(pObject);
+  mpMathContainer->removeDataObject(pObject);
+}
+
 void CModel::initObjects()
 {
   mpModel = this;
@@ -3650,7 +3679,7 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
           std::string tmpstr = tmpObj ? "<" + tmpObj->getCN() + ">" : "<>";
           CEvaluationNodeObject* tmpENO = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, tmpstr);
           env[i] = tmpENO;
-          tmpENO->compile(derivExp); //this uses derivExp as a dummy expression (so that the node has a context for the compile()
+          tmpENO->compile(); //this uses derivExp as a dummy expression (so that the node has a context for the compile()
         }
 
       CDerive derive(env, derivExp, simplify);

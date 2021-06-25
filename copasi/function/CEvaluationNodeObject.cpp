@@ -119,18 +119,27 @@ CEvaluationNodeObject::CEvaluationNodeObject(const CEvaluationNodeObject & src):
 
 CEvaluationNodeObject::~CEvaluationNodeObject() {}
 
-CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
+CIssue CEvaluationNodeObject::compile()
 {
-  assert(pTree != NULL);
 
   mpObject = NULL;
   mpValue = NULL;
+
+  mpTree = getTree();
 
   switch (mSubType)
     {
       case SubType::CN:
       {
-        mpObject = pTree->getNodeObject(mRegisteredObjectCN);
+        if (mpTree == NULL)
+          {
+            mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+            mpValue = &mValue;
+
+            return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
+          }
+
+        mpObject = mpTree->getNodeObject(mRegisteredObjectCN);
 
         const CDataObject * pDataObject = CObjectInterface::DataObject(mpObject);
 
@@ -184,9 +193,9 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
         // We need to convert the data into a pointer
         mpValue = (const C_FLOAT64 *) stringToPointer(mData);
 
-        if (pTree != NULL)
+        if (mpTree != NULL)
           {
-            CMathContainer * pContainer = dynamic_cast< CMathContainer * >(pTree->getObjectAncestor("CMathContainer"));
+            CMathContainer * pContainer = dynamic_cast< CMathContainer * >(mpTree->getObjectAncestor("CMathContainer"));
 
             if (pContainer != NULL)
               {
@@ -201,7 +210,7 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 
         if (mpValue == NULL)
           {
-            mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+            mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
             mpValue = &mValue;
 
             return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueNotFound);
@@ -210,8 +219,15 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
         break;
 
       case SubType::AVOGADRO:
-      {
-        mpObject = pTree->getNodeObject(mData.substr(1, mData.length() - 2));
+        if (mpTree == NULL)
+          {
+            mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+            mpValue = &mValue;
+
+            return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
+          }
+
+        mpObject = mpTree->getNodeObject(mData.substr(1, mData.length() - 2));
 
         if (mpObject != NULL)
           {
@@ -220,13 +236,13 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
         else
           {
             // Fall back to behavior before fix of Bug 3026 for GUI where the proper context is not provided.
-            CDataModel * pDataModel = pTree->getObjectDataModel();
+            CDataModel * pDataModel = mpTree->getObjectDataModel();
 
             if (pDataModel != NULL)
               {
                 if (pDataModel->getModel() != NULL)
                   {
-                    mpObject = pTree->getNodeObject(pDataModel->getModel()->getCN() + "," + mRegisteredObjectCN);
+                    mpObject = mpTree->getNodeObject(pDataModel->getModel()->getCN() + "," + mRegisteredObjectCN);
 
                     if (mpObject != NULL)
                       {
@@ -246,8 +262,8 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 
             return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueNotFound);
           }
-      }
-      break;
+
+        break;
 
       case SubType::INVALID:
         break;

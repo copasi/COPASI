@@ -124,7 +124,7 @@ void CEvaluationNodeCall::calculate()
     }
 }
 
-CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
+CIssue CEvaluationNodeCall::compile()
 {
   CIssue issue = CIssue::Success;
   clearParameters(mpCallParameters, mCallNodes);
@@ -213,7 +213,7 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
             mSubType = SubType::FUNCTION; // need to set subtype, otherwise it is an infinite loop
             mCompiledSubType = SubType::FUNCTION; // need to set compiled subtype so that calculate() works
 
-            issue = compile(pTree);
+            issue = compile();
           }
         else
           {

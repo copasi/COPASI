@@ -316,7 +316,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const CEvaluationNodeFunction &
 
 CEvaluationNodeFunction::~CEvaluationNodeFunction() {}
 
-CIssue CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
+CIssue CEvaluationNodeFunction::compile()
 {
   bool success = true;
 
@@ -374,7 +374,7 @@ CIssue CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
 // virtual
 std::string CEvaluationNodeFunction::getInfix(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeFunction *>(this)->compile())
     switch (mSubType)
       {
         case SubType::MINUS:
@@ -404,7 +404,7 @@ std::string CEvaluationNodeFunction::getInfix(const std::vector< std::string > &
 // virtual
 std::string CEvaluationNodeFunction::getDisplayString(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeFunction *>(this)->compile())
     switch (mSubType)
       {
         case SubType::MINUS:
@@ -434,7 +434,7 @@ std::string CEvaluationNodeFunction::getDisplayString(const std::vector< std::st
 // virtual
 std::string CEvaluationNodeFunction::getCCodeString(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeFunction *>(this)->compile())
     {
       std::string data = "";
 
@@ -640,7 +640,7 @@ std::string CEvaluationNodeFunction::getBerkeleyMadonnaString(const std::vector<
 {
   std::string data = "";
 
-  if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeFunction *>(this)->compile())
     {
       data = mData;
 
@@ -732,7 +732,7 @@ std::string CEvaluationNodeFunction::getXPPString(const std::vector< std::string
 {
   std::string data = "";
 
-  if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeFunction *>(this)->compile())
     {
       data = mData;
 

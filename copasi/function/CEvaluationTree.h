@@ -270,7 +270,7 @@ public:
 
   /**
    * Check whether tree may introduce discontinuities.
-   * @return bool hasDiscontinity
+   * @return bool hasDiscontinuity
    */
   bool hasDiscontinuity() const;
 
@@ -360,10 +360,13 @@ protected:
    */
   std::vector< CEvaluationNode * > * mpNodeList;
 
+private:
   /**
    * The root node of the tree.
    */
   CEvaluationNode * mpRootNode;
+
+protected:
   const C_FLOAT64 * mpRootValue;
 
   /**

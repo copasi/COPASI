@@ -166,7 +166,7 @@ public:
   virtual ~CMathContainer();
 
   /**
-   * Check whether 2 container would genereate equivialent results
+   * Check whether 2 container would genereate equivalent results
    */
   bool operator == (const CMathContainer & rhs);
 
@@ -760,6 +760,12 @@ public:
   const CCore::CUpdateSequence & getTransientDataValueSequence() const;
 
   /**
+   * Remove a data object from the math container
+   * @param const CDataObject * pObject;
+   */
+  void removeDataObject(const CDataObject * pObject);
+
+  /**
    * Copy a node and all its children. Nodes are converted to suite the math container,
    * i.e., objects nodes point to math object or numbers, function calls are expanded
    * and discrete nodes are replaced by object node pointing to newly created math objects,
@@ -825,12 +831,12 @@ public:
 
   /**
    * Add an entity to the container
-   * const const CMath::Entity< CDataObject > & dataOjects
+   * const const CMath::Entity< CDataObject > & dataObjects
    * const const CMath::SimulationType & simulationType
    * const const std::string & infix
    * @return CMath::Entity< CMathObject > mathObjects
    */
-  CMath::Entity< CMathObject > addAnalysisObject(const CMath::Entity< CDataObject > & dataOjects,
+  CMath::Entity< CMathObject > addAnalysisObject(const CMath::Entity< CDataObject > & dataObjects,
       const CMath::SimulationType & simulationType,
       const std::string & infix);
 

@@ -79,7 +79,7 @@ public:
    * @param const CEvaluationTree * pTree
    * @return CIssue issue;
    */
-  virtual CIssue compile(const CEvaluationTree * pTree);
+  virtual CIssue compile() override;
 
   /**
    * Map object whose CN starts with srcSN to children of the target container

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,34 +29,35 @@
 
 #include "sbml/math/ASTNode.h"
 
-CEvaluationNodeVariable::CEvaluationNodeVariable():
-  CEvaluationNode(MainType::VARIABLE, SubType::INVALID, ""),
-  mpTree(NULL),
-  mIndex(C_INVALID_INDEX)
-{mPrecedence = PRECEDENCE_NUMBER;}
+CEvaluationNodeVariable::CEvaluationNodeVariable()
+  : CEvaluationNode(MainType::VARIABLE, SubType::INVALID, "")
+  , mIndex(C_INVALID_INDEX)
+{
+  mPrecedence = PRECEDENCE_NUMBER;
+}
 
 CEvaluationNodeVariable::CEvaluationNodeVariable(const SubType & subType,
-    const Data & data):
-  CEvaluationNode(MainType::VARIABLE, subType, data),
-  mpTree(NULL),
-  mIndex(C_INVALID_INDEX)
-{mPrecedence = PRECEDENCE_NUMBER;}
+    const Data & data)
+  : CEvaluationNode(MainType::VARIABLE, subType, data)
+  , mIndex(C_INVALID_INDEX)
+{
+  mPrecedence = PRECEDENCE_NUMBER;
+}
 
 CEvaluationNodeVariable::CEvaluationNodeVariable(const CEvaluationNodeVariable & src):
   CEvaluationNode(src),
-  mpTree(src.mpTree),
   mIndex(src.mIndex)
 {}
 
 CEvaluationNodeVariable::~CEvaluationNodeVariable() {}
 
-CIssue CEvaluationNodeVariable::compile(const CEvaluationTree * pTree)
+CIssue CEvaluationNodeVariable::compile()
 {
-  mpTree = pTree;
+  mpTree = getTree();
 
-  if (!pTree) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
+  if (!mpTree) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
 
-  mIndex = pTree->getVariableIndex(mData);
+  mIndex = mpTree->getVariableIndex(mData);
 
   if (mIndex == C_INVALID_INDEX)
     return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableNotfound);
