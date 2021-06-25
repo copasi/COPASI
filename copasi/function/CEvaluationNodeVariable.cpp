@@ -53,11 +53,11 @@ CEvaluationNodeVariable::~CEvaluationNodeVariable() {}
 
 CIssue CEvaluationNodeVariable::compile()
 {
-  const CEvaluationTree * pTree = getTree();
+  mpTree = getTree();
 
-  if (!pTree) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
+  if (!mpTree) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
 
-  mIndex = pTree->getVariableIndex(mData);
+  mIndex = mpTree->getVariableIndex(mData);
 
   if (mIndex == C_INVALID_INDEX)
     return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableNotfound);

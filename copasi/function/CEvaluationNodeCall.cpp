@@ -126,7 +126,6 @@ void CEvaluationNodeCall::calculate()
 
 CIssue CEvaluationNodeCall::compile()
 {
-  const CEvaluationTree * pTree = getTree();
   CIssue issue = CIssue::Success;
   clearParameters(mpCallParameters, mCallNodes);
 
