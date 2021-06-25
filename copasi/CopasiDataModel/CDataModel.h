@@ -60,15 +60,29 @@ template <class CType> class CDataVectorN;
 
 class CDataModel: public CDataContainer, public COutputHandler
 {
-  enum struct FileType
+  // Operations
+public:
+  enum struct ContentType
   {
-    CopasiML = 0,
+    COPASI,
+    GEPASI,
     SBML,
     SEDML,
-    Gepasi,
-    unset,
+    OMEX,
     __SIZE
   };
+
+  /**
+   * String representation of the valid model types.
+   */
+  static const CEnumAnnotation< std::string, ContentType > ContentTypeNames;
+
+  /**
+   * Determine the content type of the given content stream
+   * @param std::istream content
+   * @return ContentType contentType
+   */
+  static ContentType contentType(std::istream & content);
 
 private:
   class CContent
@@ -94,7 +108,7 @@ private:
     bool mWithGUI;
     CUndoStack * mpUndoStack;
     std::string mSaveFileName;
-    FileType mFileType;
+    ContentType mContentType;
     bool mChanged;
     bool mAutoSaveNeeded;
 
@@ -141,28 +155,6 @@ private:
 
   // Operations
 public:
-  enum struct ContentType
-  {
-    COPASI,
-    GEPASI,
-    SBML,
-    SEDML,
-    OMEX,
-    __SIZE
-  };
-
-  /**
-   * String representation of the valid model types.
-   */
-  static const CEnumAnnotation< std::string, ContentType > ContentTypeNames;
-
-  /**
-   * Determine the content type of the given content stream
-   * @param std::istream content
-   * @return ContentType contentType
-   */
-  static ContentType contentType(std::istream & content);
-
   /**
    * Static method to create a CDataObject based on the provided data
    * @param const CData & data
@@ -326,6 +318,7 @@ public:
   CUndoStack * getUndoStack();
   CModel * getModel();
   const CModel * getModel() const;
+  const ContentType & getContentType() const;
   CDataVectorN< CCopasiTask > * getTaskList();
   const CDataVectorN< CCopasiTask > * getTaskList() const;
   CCopasiTask * addTask(const CTaskEnum::Task & taskType);

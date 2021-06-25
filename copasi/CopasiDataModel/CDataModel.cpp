@@ -435,7 +435,7 @@ bool CDataModel::loadModel(std::istream & in,
         }
 
       newModel(NULL, deleteOldData);
-      mData.mFileType = FileType::Gepasi;
+      mData.mContentType = ContentType::GEPASI;
       mData.mReferenceDir = pwd;
 
       if (mData.pModel->load(inbuf))
@@ -452,7 +452,7 @@ bool CDataModel::loadModel(std::istream & in,
   else if (Line.find("<COPASI") != std::string::npos)
     {
       pushData();
-      mData.mFileType = FileType::CopasiML;
+      mData.mContentType = ContentType::COPASI;
       mData.mReferenceDir = pwd;
 
       CCopasiXML XML;
@@ -592,15 +592,15 @@ bool CDataModel::loadModel(const std::string & fileName,
       return false;
     }
 
-  switch (mData.mFileType)
+  switch (mData.mContentType)
     {
-      case FileType::CopasiML:
+      case ContentType::COPASI:
         mData.mSaveFileName = CDirEntry::normalize(FileName);
         // we have to store the reference directory
         mData.mReferenceDir = CDirEntry::dirName(mData.mSaveFileName);
         break;
 
-      case FileType::Gepasi:
+      case ContentType::GEPASI:
         mData.mSaveFileName = CDirEntry::dirName(FileName)
                               + CDirEntry::Separator
                               + CDirEntry::baseName(FileName);
@@ -1163,7 +1163,7 @@ bool CDataModel::importSBMLFromString(const std::string & sbmlDocumentText,
 
   mData.pCurrentSBMLDocument = pSBMLDocument;
   mData.mCopasi2SBMLMap = Copasi2SBMLMap;
-  mData.mFileType = FileType::SBML;
+  mData.mContentType = ContentType::SBML;
 
   commonAfterLoad(pImportHandler, deleteOldData);
 
@@ -1255,7 +1255,7 @@ bool CDataModel::importSBML(const std::string & fileName,
 
   mData.pCurrentSBMLDocument = pSBMLDocument;
   mData.mCopasi2SBMLMap = Copasi2SBMLMap;
-  mData.mFileType = FileType::SBML;
+  mData.mContentType = ContentType::SBML;
 
   commonAfterLoad(pImportHandler, deleteOldData);
 
@@ -2228,7 +2228,7 @@ bool CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText,
 
   mData.pCurrentSEDMLDocument = pSEDMLDocument;
   mData.mCopasi2SEDMLMap = Copasi2SEDMLMap;
-  mData.mFileType = FileType::SEDML;
+  mData.mContentType = ContentType::SEDML;
 
   commonAfterLoad(pImportHandler, deleteOldData);
 
@@ -2328,7 +2328,7 @@ bool CDataModel::importSEDML(const std::string & fileName,
 
   mData.pCurrentSEDMLDocument = pSEDMLDocument;
   mData.mCopasi2SEDMLMap = Copasi2SEDMLMap;
-  mData.mFileType = FileType::SEDML;
+  mData.mContentType = ContentType::SEDML;
 
   mData.mSaveFileName = CDirEntry::dirName(FileName)
                         + CDirEntry::Separator
@@ -2515,6 +2515,14 @@ void CDataModel::deleteOldData()
 const CModel * CDataModel::getModel() const
 {
   return mData.pModel;
+}
+
+const CDataModel::ContentType & CDataModel::getContentType() const
+{
+  if (mData.isValid())
+    return mData.mContentType;
+
+  return mOldData.mContentType;
 }
 
 CUndoStack * CDataModel::getUndoStack()
@@ -3004,7 +3012,7 @@ CDataModel::CContent::CContent(const bool & withGUI)
   , mWithGUI(withGUI)
   , mpUndoStack(NULL)
   , mSaveFileName()
-  , mFileType(FileType::unset)
+  , mContentType(ContentType::__SIZE)
   , mChanged(false)
   , mAutoSaveNeeded(false)
   , mSBMLFileName("")
@@ -3030,7 +3038,7 @@ CDataModel::CContent::CContent(const CContent & src)
   , mWithGUI(src.mWithGUI)
   , mpUndoStack(src.mpUndoStack)
   , mSaveFileName(src.mSaveFileName)
-  , mFileType(src.mFileType)
+  , mContentType(src.mContentType)
   , mChanged(src.mChanged)
   , mAutoSaveNeeded(src.mAutoSaveNeeded)
   , mSBMLFileName(src.mSBMLFileName)
@@ -3062,7 +3070,7 @@ CDataModel::CContent & CDataModel::CContent::operator=(const CContent & rhs)
       mWithGUI = rhs.mWithGUI;
       mpUndoStack = rhs.mpUndoStack;
       mSaveFileName = rhs.mSaveFileName;
-      mFileType = rhs.mFileType;
+      mContentType = rhs.mContentType;
       mChanged = rhs.mChanged;
       mAutoSaveNeeded = rhs.mAutoSaveNeeded;
       mSBMLFileName = rhs.mSBMLFileName;
