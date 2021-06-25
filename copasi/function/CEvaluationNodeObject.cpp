@@ -119,10 +119,8 @@ CEvaluationNodeObject::CEvaluationNodeObject(const CEvaluationNodeObject & src):
 
 CEvaluationNodeObject::~CEvaluationNodeObject() {}
 
-CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
+CIssue CEvaluationNodeObject::compile()
 {
-  assert(pTree != NULL);
-
   mpObject = NULL;
   mpValue = NULL;
 
@@ -130,6 +128,16 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
     {
       case SubType::CN:
       {
+        const CEvaluationTree * pTree = getTree();
+
+        if (pTree == NULL)
+          {
+            mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+            mpValue = &mValue;
+
+            return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
+          }
+
         mpObject = pTree->getNodeObject(mRegisteredObjectCN);
 
         const CDataObject * pDataObject = CObjectInterface::DataObject(mpObject);
@@ -181,8 +189,10 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
       break;
 
       case SubType::POINTER:
+      {
         // We need to convert the data into a pointer
         mpValue = (const C_FLOAT64 *) stringToPointer(mData);
+        const CEvaluationTree * pTree = getTree();
 
         if (pTree != NULL)
           {
@@ -201,16 +211,26 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 
         if (mpValue == NULL)
           {
-            mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+            mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
             mpValue = &mValue;
 
             return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueNotFound);
           }
-
-        break;
+      }
+      break;
 
       case SubType::AVOGADRO:
       {
+        const CEvaluationTree * pTree = getTree();
+
+        if (pTree == NULL)
+          {
+            mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+            mpValue = &mValue;
+
+            return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
+          }
+
         mpObject = pTree->getNodeObject(mData.substr(1, mData.length() - 2));
 
         if (mpObject != NULL)

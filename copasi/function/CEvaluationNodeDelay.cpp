@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -70,7 +70,7 @@ CEvaluationNodeDelay::CEvaluationNodeDelay(const CEvaluationNodeDelay & src):
 
 CEvaluationNodeDelay::~CEvaluationNodeDelay() {}
 
-CIssue CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
+CIssue CEvaluationNodeDelay::compile()
 {
   switch (mSubType)
     {
@@ -105,7 +105,7 @@ CIssue CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
 // virtual
 std::string CEvaluationNodeDelay::getInfix(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeDelay*>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeDelay*>(this)->compile())
     {
       switch (mSubType)
         {
@@ -200,8 +200,8 @@ CValidatedUnit CEvaluationNodeDelay::getUnit(const CMathContainer & container,
 
 // virtual
 CValidatedUnit CEvaluationNodeDelay::setUnit(const CMathContainer & container,
-    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
-    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+    const std::map < CEvaluationNode *, CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode *, CValidatedUnit > & targetUnits) const
 {
   CValidatedUnit Delay(CEvaluationNode::setUnit(container, currentUnits, targetUnits));
 
@@ -228,7 +228,7 @@ CEvaluationNode * CEvaluationNodeDelay::fromAST(const ASTNode * pASTNode, const 
       pConvertedNode->addChild(children[i]);
     }
 
-  pConvertedNode->compile(NULL);
+  pConvertedNode->compile();
   return pConvertedNode;
 }
 

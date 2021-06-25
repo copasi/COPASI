@@ -3679,7 +3679,7 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
           std::string tmpstr = tmpObj ? "<" + tmpObj->getCN() + ">" : "<>";
           CEvaluationNodeObject* tmpENO = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, tmpstr);
           env[i] = tmpENO;
-          tmpENO->compile(derivExp); //this uses derivExp as a dummy expression (so that the node has a context for the compile()
+          tmpENO->compile(); //this uses derivExp as a dummy expression (so that the node has a context for the compile()
         }
 
       CDerive derive(env, derivExp, simplify);

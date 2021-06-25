@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -81,7 +81,7 @@ void CEvaluationNodeChoice::calculate()
   mValue = (*mpIfValue > 0.5) ? *mpTrueValue : *mpFalseValue;
 }
 
-CIssue CEvaluationNodeChoice::compile(const CEvaluationTree * /* pTree */)
+CIssue CEvaluationNodeChoice::compile()
 {
   mpIfNode = static_cast<CEvaluationNode *>(getChild());
 
@@ -117,7 +117,7 @@ CIssue CEvaluationNodeChoice::compile(const CEvaluationTree * /* pTree */)
 // virtual
 std::string CEvaluationNodeChoice::getInfix(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeChoice *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeChoice *>(this)->compile())
     return mData + "(" + children[0] + "," + children[1] + "," + children[2] + ")";
   else
     return "@";
@@ -126,7 +126,7 @@ std::string CEvaluationNodeChoice::getInfix(const std::vector< std::string > & c
 // virtual
 std::string CEvaluationNodeChoice::getDisplayString(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeChoice *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeChoice *>(this)->compile())
     return mData + "(" + children[0] + "," + children[1] + "," + children[2] + ")";
   else
     return "@";
@@ -135,7 +135,7 @@ std::string CEvaluationNodeChoice::getDisplayString(const std::vector< std::stri
 // virtual
 std::string CEvaluationNodeChoice::getCCodeString(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeChoice *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeChoice *>(this)->compile())
     return "(" + children[0] + " ? " + children[1] + " : " + children[2] + ")";
   else
     return "@";
@@ -144,7 +144,7 @@ std::string CEvaluationNodeChoice::getCCodeString(const std::vector< std::string
 // virtual
 std::string CEvaluationNodeChoice::getBerkeleyMadonnaString(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeChoice *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeChoice *>(this)->compile())
     return "(if " + children[0] + " then " + children[1] + " else " + children[2] + ")";
   else
     return "@";
@@ -153,7 +153,7 @@ std::string CEvaluationNodeChoice::getBerkeleyMadonnaString(const std::vector< s
 // virtual
 std::string CEvaluationNodeChoice::getXPPString(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeChoice *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeChoice *>(this)->compile())
     return "if(" + children[0] + ")then(" + children[1] + ")else(" + children[2] + ")";
   else
     return "@"; //TODO
@@ -282,7 +282,7 @@ std::string CEvaluationNodeChoice::getMMLString(const std::vector< std::string >
 {
   std::ostringstream out;
 
-  if (const_cast<CEvaluationNodeChoice *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeChoice *>(this)->compile())
     {
       out << "<mrow>" << std::endl;
       out << "<mo> {</mo>" << std::endl;

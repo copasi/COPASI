@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -99,7 +99,7 @@ CEvaluationNodeLogical::CEvaluationNodeLogical(const CEvaluationNodeLogical & sr
 
 CEvaluationNodeLogical::~CEvaluationNodeLogical() {}
 
-CIssue CEvaluationNodeLogical::compile(const CEvaluationTree * /* pTree */)
+CIssue CEvaluationNodeLogical::compile()
 {
   mpLeftNode = static_cast<CEvaluationNode *>(getChild());
 
@@ -153,7 +153,7 @@ CIssue CEvaluationNodeLogical::compile(const CEvaluationTree * /* pTree */)
 // virtual
 std::string CEvaluationNodeLogical::getInfix(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeLogical *>(this)->compile())
     {
       Data Infix;
 
@@ -178,7 +178,7 @@ std::string CEvaluationNodeLogical::getInfix(const std::vector< std::string > & 
 // virtual
 std::string CEvaluationNodeLogical::getDisplayString(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeLogical *>(this)->compile())
     {
       Data DisplayString;
 
@@ -203,7 +203,7 @@ std::string CEvaluationNodeLogical::getDisplayString(const std::vector< std::str
 // virtual
 std::string CEvaluationNodeLogical::getCCodeString(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeLogical *>(this)->compile())
     {
       Data DisplayString;
       Data data;
@@ -281,7 +281,7 @@ std::string CEvaluationNodeLogical::getCCodeString(const std::vector< std::strin
 // virtual
 std::string CEvaluationNodeLogical::getBerkeleyMadonnaString(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeLogical *>(this)->compile())
     {
       Data DisplayString;
       Data data;
@@ -296,8 +296,8 @@ std::string CEvaluationNodeLogical::getBerkeleyMadonnaString(const std::vector< 
             data = "OR";
             break;
 
-            /* case S_XOR:
-               break; */
+          /* case S_XOR:
+             break; */
           case SubType::EQ:
             data = "=";
             break;
@@ -348,7 +348,7 @@ std::string CEvaluationNodeLogical::getBerkeleyMadonnaString(const std::vector< 
 // virtual
 std::string CEvaluationNodeLogical::getXPPString(const std::vector< std::string > & children) const
 {
-  if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeLogical *>(this)->compile())
     {
       Data DisplayString;
       Data data;
@@ -449,8 +449,8 @@ CValidatedUnit CEvaluationNodeLogical::getUnit(const CMathContainer & /* contain
 
 // virtual
 CValidatedUnit CEvaluationNodeLogical::setUnit(const CMathContainer & container,
-    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
-    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+    const std::map < CEvaluationNode *, CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode *, CValidatedUnit > & targetUnits) const
 {
   CValidatedUnit Result(CEvaluationNode::setUnit(container, currentUnits, targetUnits));
 
@@ -698,7 +698,7 @@ std::string CEvaluationNodeLogical::getMMLString(const std::vector< std::string 
 {
   std::ostringstream out;
 
-  if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+  if (const_cast<CEvaluationNodeLogical *>(this)->compile())
     {
       std::string data = "";
       bool flag = false;

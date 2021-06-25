@@ -77,7 +77,7 @@ public:
    * @param const CEvaluationTree * pTree
    * @return CIssue issue;
    */
-  virtual CIssue compile(const CEvaluationTree * pTree);
+  virtual CIssue compile() override;
 
   /**
    * Set the type the result of the node
