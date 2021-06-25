@@ -83,4 +83,6 @@ add_test(
          -P "${CMAKE_CURRENT_SOURCE_DIR}/run_suite.cmake"
 )
 set_tests_properties(test_sbml_testsuite PROPERTIES PASS_REGULAR_EXPRESSION "All passed|RandomEventExecution")
+set_tests_properties(test_sbml_testsuite PROPERTIES FAIL_REGULAR_EXPRESSION "Exceptions .* occured for:")
+
 endif()
