@@ -516,8 +516,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
             saveState(mLastRootState, ROOT);
             break;
 
-          // The break statement is intentionally missing since we
-          // have to continue to check the root masking state.
+            // The break statement is intentionally missing since we
+            // have to continue to check the root masking state.
           default:
 
             // We made a successful step and therefore invalidate the last root state
@@ -597,7 +597,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
         }
     }
 
-  // *mpContainerStateTime = mTime;
+  *mpContainerStateTime = mTime;
 
   return Status;
 }
