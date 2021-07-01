@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -199,7 +199,15 @@ bool CReactionInterface::loadMappingAndValues()
 
           for (jt = it->begin(), jEnd = it->end(); jt != jEnd; ++jt)
             {
-              metabName = CMetabNameInterface::getDisplayName(mpModel, *dynamic_cast< const CMetab * >(*jt), true);
+              const CMetab * pMetab = dynamic_cast< const CMetab * >(*jt);
+
+              if (pMetab == NULL)
+                {
+                  success = false;
+                  continue;
+                }
+
+              metabName = CMetabNameInterface::getDisplayName(mpModel, *pMetab, true);
 
               if (metabName.empty())
                 {
