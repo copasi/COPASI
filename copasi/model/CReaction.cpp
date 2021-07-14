@@ -1391,7 +1391,9 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
   CEvaluationNodeVariable* pVariableNode = NULL;
   std::string objectCN = objectNode->getData();
 
-  CDataObject* object = const_cast< CDataObject * >(CObjectInterface::DataObject(getObjectFromCN(CCommonName(objectCN.substr(1, objectCN.size() - 2)))));
+  CDataObject * object = resolveCN(getFirstCModelOrDefault(copasi2sbmlmap),
+                                   CCommonName(objectCN.substr(1, objectCN.size() - 2)));
+
   std::string id;
 
   // if the object if of type reference
@@ -1405,7 +1407,6 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
             {
               std::map<const CDataObject*, SBase*>::iterator pos = copasi2sbmlmap.find(object);
 
-              //assert(pos!=copasi2sbmlmap.end());
               // check if it is a CMetab, a CModelValue or a CCompartment
               if (dynamic_cast<CMetab*>(object) && pos != copasi2sbmlmap.end())
                 {
@@ -1594,6 +1595,25 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
     }
 
   return pVariableNode;
+}
+
+const CModel * CReaction::getFirstCModelOrDefault(std::map< const CDataObject *, SBase * > & copasi2sbmlmap)
+{
+
+for (auto & pair : copasi2sbmlmap)
+    {
+      const CModel * pModel = dynamic_cast<const CModel*>(pair.first->getObjectAncestor("Model"));
+
+      if (pModel != NULL)
+        return pModel;
+    }
+
+  auto * pDM = getObjectDataModel();
+
+  if (pDM)
+    return pDM->getModel();
+
+  return NULL;
 }
 
 CEvaluationNode* CReaction::objects2variables(const CEvaluationNode* pNode, std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> >& replacementMap, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
@@ -1790,7 +1810,31 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
   return pTmpFunction;
 }
 
-CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
+CDataObject * CReaction::resolveCN(const CModel * pModel, CCommonName cn)
+{
+  if (!pModel)
+    return NULL;
+
+  std::string Type = cn.getObjectType();
+  std::string Name = cn.getObjectName();
+
+  if (Type == "CN" && Name == "Root")
+    cn = cn.getRemainder();
+
+  Type = cn.getObjectType();
+
+  if (Type == "Model")
+    cn = cn.getRemainder();
+
+  const auto* pInterface = pModel->getObject(cn);
+
+  if (pInterface)
+    return const_cast< CDataObject * >(CObjectInterface::DataObject(pInterface));
+
+  return NULL;
+}
+
+CEvaluationNode * CReaction::variables2objects(CEvaluationNode * expression)
 {
   CEvaluationNode* pTmpNode = NULL;
   CEvaluationNode* pChildNode = NULL;

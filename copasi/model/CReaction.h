@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -624,6 +624,19 @@ private:
   CEvaluationNodeVariable* object2variable(const CEvaluationNodeObject* objectNode,
       std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> >& replacementMap,
       std::map<const CDataObject*, SBase*>& copasi2sbmlmap);
+
+  /**
+   * @returns the first non-null CModel from the map or the default one
+   */
+  const CModel* getFirstCModelOrDefault(std::map< const CDataObject *, SBase * > & copasi2sbmlmap);
+
+  /**
+   * @param pModel the model in which to resolve the cn
+   * @param cn the common name, primary parts before model will be dropped
+   *
+   * @return the data object for the given cn
+   */
+  CDataObject * resolveCN(const CModel* pModel, CCommonName cn);
 
   /**
    * Replaces all variable nodes in a function tree by object nodes.
