@@ -278,15 +278,50 @@ TEST_CASE("importing an SBML file multiple times", "[copasi,sbml]")
 }
 
 
+TEST_CASE("importing an SBML file and delete used function definition", "[copasi,sbml]")
+{
+
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != NULL);
+
+  std::string test_file = getTestFile("test-data/BIOMD0000000055_urn.xml");
+
+  REQUIRE(dm->importSBML(test_file) == true);
+
+  auto * pFunDB = CRootContainer::getFunctionList();
+
+  for (size_t i = pFunDB->loadedFunctions().size() - 1; i >= 0; --i)
+    {
+      auto & pFun = pFunDB->loadedFunctions()[i];
+
+      if (!pFun.isReadOnly())
+        {
+          pFunDB->removeFunction(i);
+        }
+    }
+
+  std::string copasi_model = dm->saveModelToString();
+
+  std::string sbml_model = dm->exportSBMLToString(NULL, 3, 1);
+
+  CRootContainer::removeDatamodel(dm);
+}
+
+
+
 //#include <filesystem>
 //#include <copasi/utilities/CCopasiException.h>
 //
 //namespace fs = std::filesystem;
 //
+//#include <copasi/math/CJitCompiler.h>
+//
 //TEST_CASE("2: importing biomodel files", "[copasi,sbml]")
 //{
 //  auto * dm = CRootContainer::addDatamodel();
 //  REQUIRE(dm != NULL);
+//
+//  CJitCompiler::SetJitBufferSize(128000);
 //
 //  bool skip = true;
 //
@@ -299,8 +334,11 @@ TEST_CASE("importing an SBML file multiple times", "[copasi,sbml]")
 //      if (filenameStr.find(".xml") == std::string::npos)
 //        continue;
 //
-//      if (skip && filenameStr.find("385") == std::string::npos)
+//      if (filenameStr.find("SED") != std::string::npos)
 //        continue;
+//
+//      //if (skip && filenameStr.find("385") == std::string::npos)
+//      //  continue;
 //
 //      skip = false;
 //
