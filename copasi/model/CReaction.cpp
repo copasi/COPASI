@@ -979,6 +979,8 @@ CIssue CReaction::compileFunctionParameters(std::set< const CDataObject * > & de
 
   bool success = true;
 
+  CModel * pModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
+
   for (i = 0; i < imax && success; ++i)
     {
       paramName = getFunctionParameters()[i]->getObjectName();
@@ -991,7 +993,8 @@ CIssue CReaction::compileFunctionParameters(std::set< const CDataObject * > & de
 
           for (j = 0; j < jmax; ++j)
             {
-              pObject = DataObject(getObjectFromCN(mParameterIndexToCNs[i][j]));
+              pObject = pModel != NULL ? resolveCN(pModel, mParameterIndexToCNs[i][j]) :
+                        DataObject(getObjectFromCN(mParameterIndexToCNs[i][j]));
 
               if (pObject != NULL)
                 {
@@ -1011,7 +1014,8 @@ CIssue CReaction::compileFunctionParameters(std::set< const CDataObject * > & de
         }
       else
         {
-          pObject = DataObject(getObjectFromCN(mParameterIndexToCNs[i][0]));
+          pObject = pModel != NULL ? resolveCN(pModel, mParameterIndexToCNs[i][0]) :
+                    DataObject(getObjectFromCN(mParameterIndexToCNs[i][0]));
 
           if (pObject != NULL)
             {
