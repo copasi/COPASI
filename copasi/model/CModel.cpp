@@ -2550,6 +2550,26 @@ bool CModel::removeModelValue(const CModelValue * pModelValue,
   return true;
 }
 
+bool CModel::removeFunction(const CFunction * pFunction,
+                            const bool & recursive)
+{
+  if (pFunction == NULL)
+    return false;
+
+  if (recursive)
+    {
+      ObjectSet Deleted;
+      Deleted.insert(pFunction);
+      removeDependentModelObjects(Deleted);
+    }
+
+  removeDataObject(pFunction);
+
+  mCompileIsNecessary = true;
+
+  return true;
+}
+
 CEvent* CModel::createEvent(const std::string & name)
 {
   if (mEvents.getIndex(name) != C_INVALID_INDEX)
@@ -3188,6 +3208,8 @@ void CModel::replaceInExpressions(const std::string & oldStr,
 
 void CModel::removeDataObject(const CDataObject * pObject)
 {
+  std::cout << pObject->getCN() << std::endl;
+
   mStructuralDependencies.removeObject(pObject);
   mpMathContainer->removeDataObject(pObject);
 }

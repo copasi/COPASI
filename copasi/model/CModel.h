@@ -1026,6 +1026,9 @@ public:
   bool removeModelValue(const size_t index,
                         const bool & recursive = true);
 
+  bool removeFunction(const CFunction * pFunction,
+                      const bool & recursive = true);
+
   //*************************
 
   /**
