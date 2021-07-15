@@ -290,7 +290,7 @@ TEST_CASE("importing an SBML file and delete used function definition", "[copasi
 
   auto * pFunDB = CRootContainer::getFunctionList();
 
-  for (size_t i = pFunDB->loadedFunctions().size() - 1; i >= 0; --i)
+  for (int i = ((int)pFunDB->loadedFunctions().size()) - 1; i >= 0; --i)
     {
       auto & pFun = pFunDB->loadedFunctions()[i];
 

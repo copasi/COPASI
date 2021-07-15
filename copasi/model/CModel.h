@@ -1446,6 +1446,8 @@ public:
   void changeUnitExpressionSymbols(std::string oldSymbol, std::string newSymbol);
 
   std::map< std::string, CUnit > getUsedUnits() const;
+
+  friend class CFunctionDB;
 };
 
 #endif // CModel
