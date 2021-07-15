@@ -1136,19 +1136,19 @@ void CModel::buildMoieties()
 
 void CModel::clearSbmlIds()
 {
-  for (auto & comp : getCompartments())
+for (auto & comp : getCompartments())
     comp.setSBMLId("");
 
-  for (auto & metab : getMetabolites())
+for (auto & metab : getMetabolites())
     metab.setSBMLId("");
 
-  for (auto & param : getModelValues())
+for (auto & param : getModelValues())
     param.setSBMLId("");
 
-  for (auto & reaction : getReactions())
+for (auto & reaction : getReactions())
     reaction.setSBMLId("");
 
-  for (auto & c_event : getEvents())
+for (auto & c_event : getEvents())
     c_event.setSBMLId("");
 }
 
@@ -2664,7 +2664,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-#pragma region   //find_experiment
+  #pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2714,7 +2714,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-#pragma endregion //find_experiment
+  #pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::Task::timeCourse)
     {
@@ -3208,8 +3208,6 @@ void CModel::replaceInExpressions(const std::string & oldStr,
 
 void CModel::removeDataObject(const CDataObject * pObject)
 {
-  std::cout << pObject->getCN() << std::endl;
-
   mStructuralDependencies.removeObject(pObject);
   mpMathContainer->removeDataObject(pObject);
 }
@@ -3424,7 +3422,7 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
                 TreesWithDiscontinuities.push_back((*ppEntity)->getNoiseExpressionPtr());
               }
 
-          // Intentionally no break statement!
+            // Intentionally no break statement!
 
           case Status::ASSIGNMENT:
 
