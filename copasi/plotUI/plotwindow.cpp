@@ -354,7 +354,7 @@ void PlotWindow::printAsImage()
                        QString(), "PNG Files (*.png);;SVG Files (*.svg)", "Save to");
       */
       fileName = CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                 "untitled.pdf", "PDF Files (*.pdf);;PNG Files (*.png);;SVG Files (*.svg)", "Save Plot as Image", new QString);
+                 CopasiFileDialog::getDefaultFileName(".pdf"), "PDF Files (*.pdf);;PNG Files (*.png);;SVG Files (*.svg)", "Save Plot as Image", new QString);
 
       if (fileName.isEmpty()) return;
 
@@ -414,7 +414,7 @@ void PlotWindow::slotSaveData()
   while (Answer == QMessageBox::No)
     {
       fileName =
-        CopasiFileDialog::getSaveFileName(this, "Save File Dialog", "untitled.txt", "TEXT Files (*.txt)", "Save Plot Data to");
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog", CopasiFileDialog::getDefaultFileName(".txt"), "TEXT Files (*.txt)", "Save Plot Data to");
 
       if (fileName.isNull()) return;
 

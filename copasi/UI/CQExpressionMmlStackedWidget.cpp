@@ -184,7 +184,7 @@ void CQExpressionMmlStackedWidget::slotSaveExpression()
       outfilename =
         CopasiFileDialog::getSaveFileName(this,
                                           "Save File Dialog",
-                                          "untitled.mml",
+                                          CopasiFileDialog::getDefaultFileName(".mml"),
                                           "MathML (*.mml);;TeX (*.tex);;PDF files (*.pdf);;PNG (*.png)",
 //                                          "Save Expression to Disk", new QString);
                                           "Save Expression to Disk", &filter);

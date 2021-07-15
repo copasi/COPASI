@@ -542,7 +542,7 @@ void CQFittingResult::slotSave(void)
       fileName =
         CopasiFileDialog::getSaveFileName(this,
                                           "Save File Dialog",
-                                          "untitled.txt",
+                                          CopasiFileDialog::getDefaultFileName(".txt"),
                                           "TEXT Files (*.txt)",
                                           "Save to");
 

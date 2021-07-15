@@ -568,7 +568,7 @@ void CopasiUI3Window::slotFunctionDBSave(QString dbFile)
         {
           dbFile =
             CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                              "untitled.cpk", "COPASI Function DB (*.cpk)",
+                                              CopasiFileDialog::getDefaultFileName(".cpk"), "COPASI Function DB (*.cpk)",
                                               "Choose a file");
 
           if (dbFile.isEmpty()) return;
@@ -620,7 +620,7 @@ CopasiUI3Window::slotParameterSetsSave(QString dbFile)
         {
           dbFile =
             CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                              "untitled.cpmp", "COPASI Parameter Sets (*.cpmp)",
+                                              CopasiFileDialog::getDefaultFileName(".cpmp"), "COPASI Parameter Sets (*.cpmp)",
                                               "Choose a file");
 
           if (dbFile.isEmpty()) return;
@@ -812,7 +812,7 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
   C_INT32 Answer = QMessageBox::No;
   QString tmp;
 
-  if (str.isEmpty()) str = "untitled.cps";
+  if (str.isEmpty()) str = CopasiFileDialog::getDefaultFileName(".cps");
 
 #ifdef DEBUG_UI
   qDebug() << "Filename on slotFileSaveAs = " << str;
@@ -1808,19 +1808,7 @@ void CopasiUI3Window::slotExportSBML()
 
   while (Answer == QMessageBox::No)
     {
-      QString Default = QString();
       assert(mpDataModel != NULL);
-
-      if (mpDataModel->getFileName() != "")
-        Default
-          = FROM_UTF8(CDirEntry::dirName(mpDataModel->getFileName())
-                      + CDirEntry::Separator
-                      + CDirEntry::baseName(mpDataModel->getFileName())
-                      + ".xml");
-      else
-        {
-          Default = "untitled.xml";
-        }
 
       // if there already is an SBML model, we present the user with the Level
       // and Version of that document as the selected Level and Version to
@@ -1832,7 +1820,7 @@ void CopasiUI3Window::slotExportSBML()
         }
 
       std::pair<QString, std::pair<unsigned C_INT32, unsigned C_INT32> > nameAndVersion =
-        CQSBMLFileDialog::getSaveFileName(this, "Export SBML Dialog", Default,
+        CQSBMLFileDialog::getSaveFileName(this, "Export SBML Dialog", CopasiFileDialog::getDefaultFileName(".xml"),
                                           "Choose a filename and SBML version for SBML export.",
                                           sbmlLevel,
                                           sbmlVersion);
@@ -1874,19 +1862,9 @@ void CopasiUI3Window::slotExportMathModel()
 
   while (Answer == QMessageBox::No)
     {
-      QString Default = QString();
-
-      if (mpDataModel->getFileName() != "")
-        Default
-          = FROM_UTF8(CDirEntry::dirName(mpDataModel->getFileName())
-                      + CDirEntry::Separator
-                      + CDirEntry::baseName(mpDataModel->getFileName()));
-      else
-        Default = "untitled.c";
-
       tmp =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          Default,
+                                          CopasiFileDialog::getDefaultFileName(".c"),
                                           "C Files (*.c);;Berkeley Madonna Files (*.mmd);;XPPAUT (*.ode)",
                                           "Choose an export format", userFilter);
 
@@ -2598,7 +2576,7 @@ void CopasiUI3Window::slotCapture()
   while (Answer == QMessageBox::No)
     {
       fileName = CopasiFileDialog::getSaveFileName(this,
-                 "Save File Dialog", "untitled.png", "PNG Files (*.png)", "Save Capture as PNG file");
+                 "Save File Dialog", CopasiFileDialog::getDefaultFileName(".png"), "PNG Files (*.png)", "Save Capture as PNG file");
 
       if (fileName.isEmpty()) return;
 
@@ -3396,20 +3374,6 @@ void CopasiUI3Window::slotExportSEDML()
 
   while (Answer == QMessageBox::No)
     {
-      QString Default = QString();
-      assert(CRootContainer::getDatamodelList()->size() > 0);
-
-      if (mpDataModel->getFileName() != "")
-        Default
-          = FROM_UTF8(CDirEntry::dirName(mpDataModel->getFileName())
-                      + CDirEntry::Separator
-                      + CDirEntry::baseName(mpDataModel->getFileName())
-                      + ".sedml");
-      else
-        {
-          Default = "untitled.sedml";
-        }
-
       // if there already is an SBML model, we present the user with the Level
       // and Version of that document as the selected Level and Version to
       // export to.
@@ -3420,7 +3384,7 @@ void CopasiUI3Window::slotExportSEDML()
         }
 
       std::pair<QString, std::pair<unsigned C_INT32, unsigned C_INT32> > nameAndVersion =
-        CQSEDMLFileDialog::getSaveFileName(this, "Export SED-ML Dialog", Default,
+        CQSEDMLFileDialog::getSaveFileName(this, "Export SED-ML Dialog", CopasiFileDialog::getDefaultFileName(".sedml"),
                                            "Choose a filename and SED-ML version for SED-ML export.",
                                            sedmlLevel,
                                            sedmlVersion);
@@ -3566,7 +3530,7 @@ void CopasiUI3Window::slotExportShiny(QString str)
   C_INT32 Answer = QMessageBox::No;
   QString tmp;
 
-  if (str.isEmpty()) str = "untitled.zip";
+  if (str.isEmpty()) str = CopasiFileDialog::getDefaultFileName(".zip");
 
 #ifdef DEBUG_UI
   qDebug() << "Filename on slotFileSaveAs = " << str;
@@ -3611,7 +3575,7 @@ void CopasiUI3Window::slotExportCombine(QString str)
   C_INT32 Answer = QMessageBox::No;
   QString tmp;
 
-  if (str.isEmpty()) str = "untitled.omex";
+  if (str.isEmpty()) str = CopasiFileDialog::getDefaultFileName(".omex");
 
 #ifdef DEBUG_UI
   qDebug() << "Filename on slotFileSaveAs = " << str;

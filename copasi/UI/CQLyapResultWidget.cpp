@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -180,7 +180,7 @@ void CQLyapResultWidget::saveToFile()
     {
       fileName =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          "untitled.txt", "TEXT Files (*.txt)", "Save to");
+                                          CopasiFileDialog::getDefaultFileName(".txt"), "TEXT Files (*.txt)", "Save to");
 
       if (fileName.isEmpty()) return;
 

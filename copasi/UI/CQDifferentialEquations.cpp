@@ -230,7 +230,7 @@ void CQDifferentialEquations::slotSave()
       outfilename =
         CopasiFileDialog::getSaveFileName(this,
                                           "Save File Dialog",
-                                          "untitled.mml",
+                                          CopasiFileDialog::getDefaultFileName(".mml"),
                                           "MathML (*.mml);;TeX (*.tex);;PDF (*.pdf);;PNG (*.png)",
                                           "Save Formula to Disk", &filter);
 

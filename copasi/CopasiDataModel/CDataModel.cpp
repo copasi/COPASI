@@ -2922,6 +2922,16 @@ void CDataModel::setFileName(const std::string & fileName)
   mData.mSaveFileName = fileName;
 }
 
+std::string CDataModel::getDefaultFileName(const std::string & suffix) const
+{
+  std::string Default("untitled");
+
+  if (!mData.mSaveFileName.empty())
+    Default = CDirEntry::dirName(mData.mSaveFileName) + CDirEntry::Separator + CDirEntry::baseName(mData.mSaveFileName);
+
+  return Default + suffix;
+}
+
 bool CDataModel::isChanged() const
 {
   return mData.mChanged;

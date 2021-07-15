@@ -287,7 +287,7 @@ void CQOptPopulation::slotSaveData()
 void CQOptPopulation::slotSaveImage()
 {
   QString fileName = CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                     "untitled.pdf", "PDF Files (*.pdf);;PNG Files (*.png);;SVG Files (*.svg)", "Save as Image", new QString);
+                     CopasiFileDialog::getDefaultFileName(".pdf"), "PDF Files (*.pdf);;PNG Files (*.png);;SVG Files (*.svg)", "Save as Image", new QString);
 
   if (fileName.isEmpty())
     return;

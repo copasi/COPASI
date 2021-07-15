@@ -349,6 +349,8 @@ public:
   const std::string & getFileName() const;
   void  setFileName(const std::string& fileName);
 
+  std::string getDefaultFileName(const std::string & suffix) const;
+
   bool isChanged() const;
   void changed(const bool & changed = true);
 
