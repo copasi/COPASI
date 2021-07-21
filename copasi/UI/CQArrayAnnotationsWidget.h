@@ -68,9 +68,8 @@ class CQSortFilterProxyModel;
 #    define DATAVIS_NS_PREFIX
 #  endif
 
-
+#include <QMenu>
 class QWidget;
-class QMenu;
 class CQ3DBarsModifier;
 
 #else

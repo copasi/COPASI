@@ -199,7 +199,7 @@ for (auto it : coldescr)
 
           double value = (double)(*pData->array())[mSelectedCell];
 
-          if (std::isnan(value) || !finite(value))
+          if (std::isnan(value) || !std::isfinite(value))
             {
               value = 0;
             }
