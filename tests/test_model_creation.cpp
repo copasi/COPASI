@@ -38,3 +38,23 @@ TEST_CASE("create a reaction with numerically named species", "[copasi,creation]
 
   CRootContainer::removeDatamodel(dm);
 }
+
+
+TEST_CASE("create a new model with invalid value", "[copasi,creation]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != NULL);
+
+  REQUIRE(dm->newModel(NULL, true));
+
+  auto * model = dm->getModel();
+  REQUIRE(model != NULL);
+
+  auto* exp = new CExpression("expr", dm);
+  exp->setInfix("1,1");
+  exp->compile();
+  auto val = exp->calcValue();
+  pdelete(exp);
+
+  CRootContainer::removeDatamodel(dm);
+}
