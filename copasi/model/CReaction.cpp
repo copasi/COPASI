@@ -120,7 +120,7 @@ CData CReaction::toData() const
 
   if (!ParameterMapping.empty())
     {
-      Data.addProperty(CData::KINEITC_LAW_VARIABLE_MAPPING, ParameterMapping);
+      Data.addProperty(CData::KINETIC_LAW_VARIABLE_MAPPING, ParameterMapping);
     }
 
   Data.addProperty(CData::KINETIC_LAW_UNIT_TYPE, CReaction::KineticLawUnitTypeName[mKineticLawUnit]);
@@ -162,7 +162,7 @@ bool CReaction::applyData(const CData & data, CUndoData::CChangeSet & changes)
       setFunction(data.getProperty(CData::KINETIC_LAW).toString());
 
       // Note, this does not remove unused parameter mappings. However these are cleared when setting the function above.
-      const std::vector< CData > & ParameterMapping = OldData.getProperty(CData::KINEITC_LAW_VARIABLE_MAPPING).toDataVector();
+      const std::vector< CData > & ParameterMapping = OldData.getProperty(CData::KINETIC_LAW_VARIABLE_MAPPING).toDataVector();
 
       std::vector< CData >::const_iterator itMapping = ParameterMapping.begin();
       std::vector< CData >::const_iterator endMapping = ParameterMapping.end();
@@ -210,10 +210,10 @@ bool CReaction::applyData(const CData & data, CUndoData::CChangeSet & changes)
       compileModel = true;
     }
 
-  if (data.isSetProperty(CData::KINEITC_LAW_VARIABLE_MAPPING))
+  if (data.isSetProperty(CData::KINETIC_LAW_VARIABLE_MAPPING))
     {
       // Note, this does not remove unused parameter mappings. However these are cleared when setting the function above.
-      const std::vector< CData > & ParameterMapping = data.getProperty(CData::KINEITC_LAW_VARIABLE_MAPPING).toDataVector();
+      const std::vector< CData > & ParameterMapping = data.getProperty(CData::KINETIC_LAW_VARIABLE_MAPPING).toDataVector();
 
       std::vector< CData >::const_iterator itMapping = ParameterMapping.begin();
       std::vector< CData >::const_iterator endMapping = ParameterMapping.end();
@@ -347,7 +347,7 @@ void CReaction::createUndoData(CUndoData & undoData,
   CFunctionParameters::const_iterator itParameter = mpFunction->getVariables().begin();
   std::vector< std::vector< CRegisteredCommonName > >::const_iterator itCNs = mParameterIndexToCNs.begin();
   std::vector< std::vector< CRegisteredCommonName > >::const_iterator endCNs = mParameterIndexToCNs.end();
-  const std::vector< CData > & OldVariableMapping = oldData.getProperty(CData::KINEITC_LAW_VARIABLE_MAPPING).toDataVector();
+  const std::vector< CData > & OldVariableMapping = oldData.getProperty(CData::KINETIC_LAW_VARIABLE_MAPPING).toDataVector();
   std::vector< CData >::const_iterator itOldVariable = OldVariableMapping.begin();
   std::vector< CData >::const_iterator endOldVariable = OldVariableMapping.end();
   std::vector< CData > OldParameterMapping;
@@ -399,7 +399,7 @@ void CReaction::createUndoData(CUndoData & undoData,
       OldParameterMapping.push_back(*itOldVariable);
     }
 
-  undoData.addProperty(CData::KINEITC_LAW_VARIABLE_MAPPING, OldParameterMapping, NewParameterMapping);
+  undoData.addProperty(CData::KINETIC_LAW_VARIABLE_MAPPING, OldParameterMapping, NewParameterMapping);
   undoData.addProperty(CData::KINETIC_LAW_UNIT_TYPE, oldData.getProperty(CData::KINETIC_LAW_UNIT_TYPE), CReaction::KineticLawUnitTypeName[mKineticLawUnit]);
   undoData.addProperty(CData::SCALING_COMPARTMENT, oldData.getProperty(CData::SCALING_COMPARTMENT), mScalingCompartmentCN);
   undoData.addProperty(CData::ADD_NOISE, oldData.getProperty(CData::ADD_NOISE), mHasNoise);
@@ -1604,7 +1604,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
 const CModel * CReaction::getFirstCModelOrDefault(std::map< const CDataObject *, SBase * > & copasi2sbmlmap)
 {
 
-for (auto & pair : copasi2sbmlmap)
+  for (auto & pair : copasi2sbmlmap)
     {
       const CModel * pModel = dynamic_cast<const CModel*>(pair.first->getObjectAncestor("Model"));
 

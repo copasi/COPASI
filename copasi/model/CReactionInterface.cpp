@@ -490,7 +490,7 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
   size_t j, jmax;
   size_t i, imax = size();
   std::pair< std::string, std::string > Names;
-  const std::vector< CData > & OldVariableMapping = OldData.getProperty(CData::KINEITC_LAW_VARIABLE_MAPPING).toDataVector();
+  const std::vector< CData > & OldVariableMapping = OldData.getProperty(CData::KINETIC_LAW_VARIABLE_MAPPING).toDataVector();
   std::vector< CData >::const_iterator itOldVariable = OldVariableMapping.begin();
   std::vector< CData >::const_iterator endOldVariable = OldVariableMapping.end();
   std::vector< CData > OldParameterMapping;
@@ -666,7 +666,7 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
   // Old and new parameter data is sorted by object name
   UndoData.addProperty(CData::LOCAL_REACTION_PARAMETERS, OldReactionParameters, NewReactionParameters);
 
-  UndoData.addProperty(CData::KINEITC_LAW_VARIABLE_MAPPING, OldParameterMapping, NewParameterMapping);
+  UndoData.addProperty(CData::KINETIC_LAW_VARIABLE_MAPPING, OldParameterMapping, NewParameterMapping);
   UndoData.addProperty(CData::KINETIC_LAW_UNIT_TYPE, OldData.getProperty(CData::KINETIC_LAW_UNIT_TYPE), CReaction::KineticLawUnitTypeName[mKineticLawUnitType]);
   std::string ScalingCompartmentCN;
   size_t Index;
