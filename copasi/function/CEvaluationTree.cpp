@@ -486,7 +486,7 @@ void CEvaluationTree::calculate()
 {
   try
     {
-      if (mpRootNode != NULL)
+      if (mpRootNode != NULL && mValidity.getFirstWorstIssue().isSuccess())
         {
           CEvaluationNode ** ppIt = mCalculationSequence.begin();
           CEvaluationNode ** ppEnd = mCalculationSequence.end();
