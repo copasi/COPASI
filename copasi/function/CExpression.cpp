@@ -129,15 +129,11 @@ CIssue CExpression::compile(CObjectInterface::ContainerList listOfContainer)
   CIssue issue = compileNodes();
   mValidity.add(issue);
 
-  if (getRoot() != NULL)
+  if (getRoot() != NULL
+      && issue.isSuccess())
     {
       mDisplayString = getRoot()->buildDisplayString();
       mInfix = getRoot()->buildInfix();
-    }
-  else
-    {
-      mDisplayString = "";
-      mInfix = "";
     }
 
   mpListOfContainer = NULL;
