@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -61,16 +61,7 @@ public:
    * @param const size_t & handle
    * @param bool continue
    */
-  virtual bool progressItem(const size_t & handle);
-
-  /**
-   * Check whether processing shall proceed. If the return value is false
-   * the calling process must halt execution and return. This method is
-   * provided so that lengthy processing without advances in any of the
-   * reporting items can check whether continuation is requested.
-   * @param bool continue
-   */
-  virtual bool proceed();
+  virtual bool progressItem(const size_t & handle) override;
 
   /**
    * Reset item handle. This means that the value of the item has changed
@@ -80,7 +71,7 @@ public:
    * @param const size_t & handle
    * @param bool continue
    */
-  virtual bool resetItem(const size_t & handle);
+  virtual bool resetItem(const size_t & handle) override;
 
   /**
    * Indicate that all items are finished reporting. All item handles loose
@@ -88,7 +79,7 @@ public:
    * process must halt execution and return.
    * @param bool continue
    */
-  virtual bool finish();
+  virtual bool finish() override;
 
   /**
    * Indicate that item handle is finished reporting. The handle of that
@@ -97,7 +88,7 @@ public:
    * @param const size_t & handle
    * @param bool continue
    */
-  virtual bool finishItem(const size_t & handle);
+  virtual bool finishItem(const size_t & handle) override;
 
   /**
    * Set the name of the process.
@@ -148,17 +139,15 @@ signals:
 
 protected slots:
 
-  virtual void slotAddItem(const int handle);
+  void slotAddItem(const int handle);
+  void slotSetName(QString name);
+  void slotProgressAll();
+  void slotFinishItem(const int handle);
 
-  virtual void slotSetName(QString name);
-
-  virtual void slotProgressAll();
-
-  virtual void slotFinishItem(const int handle);
-
-  virtual void btnStopPressed();
-
-  virtual void btnContinuePressed();
+  virtual void btnStopPressed() override;
+  virtual void btnKillPressed() override;
+  virtual void btnPausePressed() override;
+  virtual void btnContinuePressed() override;
 };
 
 #endif

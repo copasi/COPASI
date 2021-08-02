@@ -168,7 +168,7 @@ bool CProgressBar::resetItem(const size_t & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
-  return (mProgressItemList[handle]->reset() && mProceed);
+  return (mProgressItemList[handle]->reset() && proceed());
 }
 
 bool CProgressBar::progressItem(const size_t & handle)
@@ -179,11 +179,11 @@ bool CProgressBar::progressItem(const size_t & handle)
   QDateTime currDateTime = QDateTime::currentDateTime();
 
   if (mNextEventProcessing >= currDateTime)
-    return mProceed;
+    return proceed();
 
   mNextEventProcessing = currDateTime.addSecs(1);
 
-  if (mPause)
+  if (mProccessingInstruction == ProccessingInstruction::Pause)
     {
       QMutexLocker Locker(&mMutex);
       mWaitPause.wait(&mMutex);
@@ -204,7 +204,7 @@ bool CProgressBar::progressItem(const size_t & handle)
       QCoreApplication::processEvents();
     }
 
-  return mProceed;
+  return proceed();
 }
 
 void CProgressBar::slotProgressAll()
@@ -216,7 +216,7 @@ void CProgressBar::slotProgressAll()
   for (hItem = 0; hItem < hmax; hItem++)
     {
       if (mProgressItemList[hItem])
-        mProceed &= mProgressItemList[hItem]->process();
+        mProgressItemList[hItem]->process();
     }
 
   mSlotFinished = true;
@@ -254,7 +254,7 @@ bool CProgressBar::finish()
   CProcessReport::finish();
   done(1);
 
-  return mProceed;
+  return proceed();
 }
 
 bool CProgressBar::finishItem(const size_t & handle)
@@ -279,7 +279,7 @@ bool CProgressBar::finishItem(const size_t & handle)
       QCoreApplication::processEvents();
     }
 
-  return mProceed;
+  return proceed();
 }
 
 void CProgressBar::slotFinishItem(const int handle)
@@ -303,11 +303,6 @@ void CProgressBar::slotFinishItem(const int handle)
 
   mSlotFinished = true;
   mWaitSlot.wakeAll();
-}
-
-bool CProgressBar::proceed()
-{
-  return mProceed;
 }
 
 // virtual
@@ -355,13 +350,30 @@ void CProgressBar::closeEvent(QCloseEvent *e)
 // virtual
 void CProgressBar::btnStopPressed()
 {
+  mProccessingInstruction = ProccessingInstruction::Stop;
   CQProgressDialog::btnStopPressed();
   mWaitPause.wakeAll();
 }
 
 // virtual
+void CProgressBar::btnKillPressed()
+{
+  mProccessingInstruction = ProccessingInstruction::Kill;
+  CQProgressDialog::btnKillPressed();
+  mWaitPause.wakeAll();
+}
+
+// virtual
+void CProgressBar::btnPausePressed()
+{
+  mProccessingInstruction = ProccessingInstruction::Pause;
+  CQProgressDialog::btnPausePressed();
+}
+
+// virtual
 void CProgressBar::btnContinuePressed()
 {
+  mProccessingInstruction = ProccessingInstruction::Continue;
   CQProgressDialog::btnContinuePressed();
   mWaitPause.wakeAll();
 }

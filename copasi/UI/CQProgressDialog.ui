@@ -50,12 +50,9 @@
   <property name="windowTitle">
    <string>COPASI Progress Dialog</string>
   </property>
-  <layout class="QVBoxLayout">
-   <property name="spacing">
-    <number>3</number>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="mpBtnPause">
        <property name="sizePolicy">
@@ -84,6 +81,19 @@
      </item>
      <item>
       <widget class="QPushButton" name="mpBtnStop">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mpBtnKill">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -206,11 +216,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>mpBtnKill</sender>
+   <signal>clicked()</signal>
+   <receiver>CQProgressDialog</receiver>
+   <slot>btnKillPressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>189</x>
+     <y>23</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>179</x>
+     <y>99</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
-  <slots>
-    <slot>btnStopPressed()</slot>
-    <slot>btnPausePressed()</slot>
-    <slot>btnContinuePressed()</slot>
-    <slot>timerShow()</slot>
-  </slots>
+ <slots>
+  <slot>btnStopPressed()</slot>
+  <slot>btnKillPressed()</slot>
+  <slot>btnPausePressed()</slot>
+  <slot>btnContinuePressed()</slot>
+  <slot>timerShow()</slot>
+ </slots>
 </ui>

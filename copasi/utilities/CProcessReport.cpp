@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -73,9 +73,11 @@ void * CProcessReportItem::getEndValuePointer()
 
 const bool & CProcessReportItem::hasEndValue() const {return mHasEndValue;}
 
-CProcessReport::CProcessReport(const unsigned int & maxTime):
-  mProcessReportItemList(1),
-  mpEndTime(NULL)
+CProcessReport::CProcessReport(const unsigned int & maxTime)
+  : mProccessingInstruction(ProccessingInstruction::Continue)
+  , mIgnoreStop(false)
+  , mProcessReportItemList(1)
+  , mpEndTime(NULL)
 {
   mProcessReportItemList[0] = NULL;
 
@@ -170,9 +172,12 @@ bool CProcessReport::progressItem(const size_t & handle)
 
 bool CProcessReport::proceed()
 {
-  if (mpEndTime == NULL) return true;
+  if (mpEndTime != NULL
+      && *mpEndTime < CCopasiTimeVariable::getCurrentWallTime())
+    return false;
 
-  return (CCopasiTimeVariable::getCurrentWallTime() < *mpEndTime);
+  return mProccessingInstruction == ProccessingInstruction::Continue
+         || (mIgnoreStop && mProccessingInstruction == ProccessingInstruction::Stop);
 }
 
 bool CProcessReport::reset()
@@ -220,4 +225,14 @@ bool CProcessReport::setName(const std::string & name)
 {
   mName = name;
   return true;
+}
+
+void CProcessReport::setIgnoreStop(const bool & ignoreStop)
+{
+  mIgnoreStop = ignoreStop;
+}
+
+const bool & CProcessReport::getIgnoreStop() const\
+{
+  return mIgnoreStop;
 }
