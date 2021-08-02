@@ -800,9 +800,16 @@ CJitCompiler::Node * CJitCompiler::compile(const CEvaluationNodeFunction * pNode
 
 CJitCompiler::Node * CJitCompiler::compile(const CEvaluationNodeChoice * pNode, const std::vector< CJitCompiler::Node * > & context)
 {
-  Node * pNodeJIT = &mpExpression->If(*static_cast< NativeJIT::Node< bool > * >(context[0]),
-                                      *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[1]),
-                                      *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[2]));
+  Node * pNodeJIT = NULL;
+
+  if (dynamic_cast< NativeJIT::Node< C_FLOAT64 > * >(context[1]) != NULL)
+    pNodeJIT = &mpExpression->If(*static_cast< NativeJIT::Node< bool > * >(context[0]),
+                                 *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[1]),
+                                 *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[2]));
+  else
+    pNodeJIT = &mpExpression->If(*static_cast< NativeJIT::Node< bool > * >(context[0]),
+                                 *static_cast< NativeJIT::Node< bool > * >(context[1]),
+                                 *static_cast< NativeJIT::Node< bool > * >(context[2]));
 
   return pNodeJIT;
 }
