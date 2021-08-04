@@ -67,6 +67,7 @@ CJitCompiler::CJitCompiler()
   , mpExpression(NULL)
   , mExpressions()
   , mExecutionBufferSize(InitalBufferSize)
+  , mInsufficentExecutionBuffer(false)
   , mFunctionBufferSize(InitalBufferSize)
 {
   JitEnabled();
@@ -78,6 +79,7 @@ CJitCompiler::CJitCompiler(const CJitCompiler & src)
   , mpExpression(NULL)
   , mExpressions()
   , mExecutionBufferSize(src.mExecutionBufferSize)
+  , mInsufficentExecutionBuffer(src.mInsufficentExecutionBuffer)
   , mFunctionBufferSize(src.mFunctionBufferSize)
 {
   JitEnabled();
@@ -103,8 +105,8 @@ bool CJitCompiler::compile()
 
       try
         {
-          for (; it != end && success; ++it)
-            success &= (*it)->compileJit();
+          for (; it != end && !mInsufficentExecutionBuffer; ++it)
+            (*it)->compileJit();
         }
 
       catch (std::runtime_error & e)
@@ -167,6 +169,7 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
             }
           else if (Where == "CodeBuffer.h")
             {
+              mInsufficentExecutionBuffer = true;
               break;
             }
 
@@ -247,7 +250,8 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
 
           if (pNode == NULL)
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCJitCompilation + 2, mathExpression.getInfix().c_str());
+              // CCopasiMessage(CCopasiMessage::WARNING, MCJitCompilation + 2, mathExpression.getInfix().c_str());
+              break;
             }
 
           if (itNode.parentContextPtr() != NULL)
@@ -271,6 +275,16 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCJitCompilation + 2, mathExpression.getInfix().c_str());
             }
+          else
+            {
+              if (mpExpression != NULL)
+                {
+                  delete mpExpression;
+                  mpExpression = NULL;
+                }
+
+              break;
+            }
         }
 
       catch (std::runtime_error & e)
@@ -285,6 +299,7 @@ CJitCompiler::Function CJitCompiler::compile(const CMathExpression & mathExpress
             }
           else if (Where == "CodeBuffer.h")
             {
+              mInsufficentExecutionBuffer = true;
               break;
             }
 
@@ -333,6 +348,8 @@ bool CJitCompiler::allocateExecutionBuffer(const size_t & size)
     {
       mpExecutionBuffer = NULL;
     }
+
+  mInsufficentExecutionBuffer = false;
 
   return mpExecutionBuffer != NULL;
 }
@@ -800,18 +817,38 @@ CJitCompiler::Node * CJitCompiler::compile(const CEvaluationNodeFunction * pNode
 
 CJitCompiler::Node * CJitCompiler::compile(const CEvaluationNodeChoice * pNode, const std::vector< CJitCompiler::Node * > & context)
 {
-  Node * pNodeJIT = NULL;
+  /**
+   * We have four different cases to consider:
+   * 1) condition is boolean, true and false value are boolean
+   * 2) condition is boolean, true and false value are double
+   * 3) condition is double, true and false value are boolean
+   * 4) condition is double, true and false value are double
+   */
 
-  if (dynamic_cast< NativeJIT::Node< C_FLOAT64 > * >(context[1]) != NULL)
-    pNodeJIT = &mpExpression->If(*static_cast< NativeJIT::Node< bool > * >(context[0]),
-                                 *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[1]),
-                                 *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[2]));
-  else
-    pNodeJIT = &mpExpression->If(*static_cast< NativeJIT::Node< bool > * >(context[0]),
-                                 *static_cast< NativeJIT::Node< bool > * >(context[1]),
-                                 *static_cast< NativeJIT::Node< bool > * >(context[2]));
+  if (dynamic_cast< NativeJIT::Node< bool > * >(context[0]) != NULL)
+    {
+      if (dynamic_cast< NativeJIT::Node< bool > * >(context[1]) != NULL)
+        return &mpExpression->IfNotZero(*static_cast< NativeJIT::Node< bool > * >(context[0]),
+                                        *static_cast< NativeJIT::Node< bool > * >(context[1]),
+                                        *static_cast< NativeJIT::Node< bool > * >(context[2]));
+      else if (dynamic_cast< NativeJIT::Node< C_FLOAT64 > * >(context[1]) != NULL)
+        return &mpExpression->IfNotZero(*static_cast< NativeJIT::Node< bool > * >(context[0]),
+                                        *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[1]),
+                                        *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[2]));
+    }
+  else if (dynamic_cast< NativeJIT::Node< C_FLOAT64 > * >(context[0]) != NULL)
+    {
+      if (dynamic_cast< NativeJIT::Node< bool > * >(context[1]) != NULL)
+        return &mpExpression->IfNotZero(*static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[0]),
+                                        *static_cast< NativeJIT::Node< bool > * >(context[1]),
+                                        *static_cast< NativeJIT::Node< bool > * >(context[2]));
+      else if (dynamic_cast< NativeJIT::Node< C_FLOAT64 > * >(context[1]) != NULL)
+        return &mpExpression->IfNotZero(*static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[0]),
+                                        *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[1]),
+                                        *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[2]));
+    }
 
-  return pNodeJIT;
+  return NULL;
 }
 
 CJitCompiler::Node * CJitCompiler::compile(const CEvaluationNodeLogical * pNode, const std::vector< CJitCompiler::Node * > & context)

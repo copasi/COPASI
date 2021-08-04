@@ -34,7 +34,6 @@ CMathExpression::CMathExpression() :
 #endif
   CEvaluationTree()
   , mPrerequisites()
-  , mpJitFunction(NULL)
 {}
 
 CMathExpression::CMathExpression(const std::string & name,
@@ -44,7 +43,6 @@ CMathExpression::CMathExpression(const std::string & name,
 #endif
   CEvaluationTree(name, &container, CEvaluationTree::MathExpression)
   , mPrerequisites()
-  , mpJitFunction(NULL)
 {}
 
 CMathExpression::CMathExpression(const CExpression & src,
@@ -55,7 +53,6 @@ CMathExpression::CMathExpression(const CExpression & src,
 #endif
   CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression)
   , mPrerequisites()
-  , mpJitFunction(NULL)
 {
   clearNodes();
 
@@ -74,7 +71,6 @@ CMathExpression::CMathExpression(const CFunction & src,
 #endif
   CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression)
   , mPrerequisites()
-  , mpJitFunction(NULL)
 {
   clearNodes();
 
@@ -207,9 +203,10 @@ void CMathExpression::relocate(const CMathContainer * pContainer,
 
 #ifdef USE_JIT
 // virtual
-bool CMathExpression::compileJit()
+void CMathExpression::compileJit()
 {
   CJitCompiler * pCompiler = getCompiler();
+  mpJitFunction = NULL;
 
   if (pCompiler != NULL)
     {
@@ -221,12 +218,12 @@ bool CMathExpression::compileJit()
           MaxLevel = itNode.level();
 
       if (MaxLevel > 5000)
-        return mFunction == NULL;
+        return;
 
-      mFunction = pCompiler->compile(*this);
+      mpJitFunction = pCompiler->compile(*this);
     }
 
-  return (pCompiler == NULL) || (mFunction != NULL);
+  return;
 }
 #endif
 
@@ -234,7 +231,7 @@ const C_FLOAT64 & CMathExpression::value()
 {
 #ifdef USE_JIT
 
-  if (mFunction != NULL)
+  if (mpJitFunction != NULL)
     mValue = calculateJit();
   else
     calculate();

@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,7 +7,7 @@
 
 CJitExpression::CJitExpression()
   : mpCompiler(NULL)
-  , mFunction(NULL)
+  , mpJitFunction(NULL)
 {}
 
 // virtual
@@ -19,7 +19,7 @@ CJitExpression::~CJitExpression()
 
 double CJitExpression::calculateJit()
 {
-  return (*mFunction)();
+  return (*mpJitFunction)();
 }
 
 void CJitExpression::setCompiler(CJitCompiler * pCompiler)
@@ -34,7 +34,7 @@ void CJitExpression::setCompiler(CJitCompiler * pCompiler)
       if (mpCompiler != NULL)
         mpCompiler->registerExpression(this);
 
-      mFunction = NULL;
+      mpJitFunction = NULL;
     }
 }
 
@@ -45,5 +45,5 @@ CJitCompiler * CJitExpression::getCompiler()
 
 void CJitExpression::release()
 {
-  mFunction = NULL;
+  mpJitFunction = NULL;
 }
