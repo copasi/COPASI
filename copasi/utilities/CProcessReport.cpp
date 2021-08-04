@@ -177,6 +177,7 @@ bool CProcessReport::proceed()
     return false;
 
   return mProccessingInstruction == ProccessingInstruction::Continue
+         || mProccessingInstruction == ProccessingInstruction::Pause
          || (mIgnoreStop && mProccessingInstruction == ProccessingInstruction::Stop);
 }
 
