@@ -148,7 +148,7 @@ public:
    * reporting items can check whether continuation is requested.
    * @param bool continue
    */
-  bool proceed();
+  virtual bool proceed();
 
   /**
    * Reset all item handle. This means that the values of the items have changed

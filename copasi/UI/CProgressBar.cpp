@@ -176,34 +176,6 @@ bool CProgressBar::progressItem(const size_t & handle)
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL)
     return false;
 
-  QDateTime currDateTime = QDateTime::currentDateTime();
-
-  if (mNextEventProcessing >= currDateTime)
-    return proceed();
-
-  mNextEventProcessing = currDateTime.addSecs(1);
-
-  if (mProccessingInstruction == ProccessingInstruction::Pause)
-    {
-      QMutexLocker Locker(&mMutex);
-      mWaitPause.wait(&mMutex);
-    }
-
-  if (!CopasiUI3Window::isMainThread())
-    {
-      if (mSlotFinished)
-        {
-          mSlotFinished = false;
-
-          emit signalProgressAll();
-        }
-    }
-  else
-    {
-      slotProgressAll();
-      QCoreApplication::processEvents();
-    }
-
   return proceed();
 }
 
@@ -222,6 +194,7 @@ void CProgressBar::slotProgressAll()
   mSlotFinished = true;
 }
 
+// virtual
 bool CProgressBar::finish()
 {
   // Assure that all signals have been properly handled before we delete
@@ -250,11 +223,9 @@ bool CProgressBar::finish()
     }
 
   CopasiUI3Window::getMainWindow()->disableSliders(false);
-
-  CProcessReport::finish();
   done(1);
 
-  return proceed();
+  return CProcessReport::finish();
 }
 
 bool CProgressBar::finishItem(const size_t & handle)
@@ -303,6 +274,40 @@ void CProgressBar::slotFinishItem(const int handle)
 
   mSlotFinished = true;
   mWaitSlot.wakeAll();
+}
+
+// virtual
+bool CProgressBar::proceed()
+{
+  if (mProccessingInstruction == ProccessingInstruction::Pause)
+    {
+      QMutexLocker Locker(&mMutex);
+      mWaitPause.wait(&mMutex);
+    }
+
+  QDateTime currDateTime = QDateTime::currentDateTime();
+
+  if (mNextEventProcessing < currDateTime)
+    {
+      mNextEventProcessing = currDateTime.addSecs(1);
+
+      if (!CopasiUI3Window::isMainThread())
+        {
+          if (mSlotFinished)
+            {
+              mSlotFinished = false;
+
+              emit signalProgressAll();
+            }
+        }
+      else
+        {
+          slotProgressAll();
+          QCoreApplication::processEvents();
+        }
+    }
+
+  return CProcessReport::proceed();
 }
 
 // virtual

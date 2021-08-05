@@ -91,6 +91,15 @@ public:
   virtual bool finishItem(const size_t & handle) override;
 
   /**
+   * Check whether processing shall proceed. If the return value is false
+   * the calling process must halt execution and return. This method is
+   * provided so that lengthy processing without advances in any of the
+   * reporting items can check whether continuation is requested.
+   * @param bool continue
+   */
+  virtual bool proceed() override;
+
+  /**
    * Set the name of the process.
    * @param const std::string & name
    * @return success
