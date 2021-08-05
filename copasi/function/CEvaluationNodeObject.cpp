@@ -282,7 +282,7 @@ bool CEvaluationNodeObject::mapObject(const std::string srcCN, const CDataContai
   if (mRegisteredObjectCN.compare(0, Length, srcCN) != 0)
     return true;
 
-  mpValue == NULL;
+  mpValue = NULL;
   mpObject = pTarget->getObject(mRegisteredObjectCN.substr(Length + 1));
 
   const CDataObject * pDataObject = CObjectInterface::DataObject(mpObject);
