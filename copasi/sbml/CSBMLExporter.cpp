@@ -464,7 +464,6 @@ void CSBMLExporter::createTimeUnit(const CDataModel& dataModel)
 
   // set it
   pSBMLModel->setTimeUnits(uDef->getId());
-
 }
 
 /**
@@ -2158,7 +2157,6 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
           continue;
         }
 
-
       if (pObject->hasFlag(CDataObject::Reference))
         {
           const CDataObject* pObjectParent = pObject->getObjectParent();
@@ -3256,6 +3254,7 @@ void addSymbolComponentToUnitDefinition(UnitDefinition* result, CUnit::SymbolCom
       multiplier *= 3600;
       symbol = "s";
       possibleUnit = "s";
+      use_d_prefix = false;
     }
   else if (symbol == "min" || possibleUnit == "min")
     {
@@ -6859,9 +6858,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqbiol_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqbiol_isDescribedBy:
+          //    break;
           case CRDFPredicate::bqbiol_isEncodedBy:
           case CRDFPredicate::copasi_isEncodedBy:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -6898,7 +6897,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
 
-            // This qualifier is supported in libsbml 4.1
+          // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -6960,9 +6959,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setModelQualifierType(BQM_HAS_INSTANCE);
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqmodel_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqmodel_isDescribedBy:
+          //    break;
           default:
             // there are many qualifiers that start e.g. with copasi_ which are
             // not handled
