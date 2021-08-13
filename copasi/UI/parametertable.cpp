@@ -503,7 +503,9 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
                         }
 
                       item((int) rowCounter, 2)->setText(FROM_UTF8((*metabNames)[j]));
-                      item((int) rowCounter, 4)->setText(FROM_UTF8(" " + Validator.getVariableUnits()[rowCounter].getExpression()));
+
+                      if (rowCounter < Validator.getVariableUnits().size())
+                        item((int) rowCounter, 4)->setText(FROM_UTF8(" " + Validator.getVariableUnits()[rowCounter].getExpression()));
                     }
                 }
             }

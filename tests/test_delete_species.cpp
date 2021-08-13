@@ -26,4 +26,6 @@ TEST_CASE("delete brusselator species", "[copasi]")
 
   while (model->getNumMetabs() > 0)
     REQUIRE(model->removeMetabolite(model->getMetabolites()[0].getKey()));
+
+  CRootContainer::removeDatamodel(dm);
 }

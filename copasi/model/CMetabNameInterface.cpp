@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -100,7 +100,7 @@ CMetabNameInterface::createUniqueDisplayName(const std::string & metabolite, con
 
   std::string Metabolite(metabolite);
 
-  if (quoted && (Metabolite.find(' ') != std::string::npos && Metabolite.find('"') == std::string::npos))
+  if (quoted && ((Metabolite.find(' ') != std::string::npos || isNumber(Metabolite)) && Metabolite.find('"') == std::string::npos))
     Metabolite = "\"" + Metabolite + "\"";
 
   return Metabolite + '{' + Compartment + '}';

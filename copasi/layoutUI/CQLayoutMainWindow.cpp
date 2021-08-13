@@ -474,7 +474,7 @@ void CQLayoutMainWindow::saveImage()
         {
           // ask for the filename
           // TODO use a nicer default filename
-          QString fileName = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", QString("untitled.png"), QString("PNG (*.png);;All files (*)"), QString("Choose a filename to save the image(s) under"));
+          QString fileName = CopasiFileDialog::getSaveFileName(this, "Save Image Dialog", CopasiFileDialog::getDefaultFileName(".png"), QString("PNG (*.png);;All files (*)"), QString("Choose a filename to save the image(s) under"));
 
           if (!fileName.isEmpty() && !fileName.isNull())
             {

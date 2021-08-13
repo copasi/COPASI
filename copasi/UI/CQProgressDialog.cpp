@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -62,9 +62,9 @@ bool CQProgressDialog::insertProgressItem(CQProgressItem * pItem)
 {
   if (mItemCount == 0) mpLine->show();
 
-  vboxLayout->removeItem(mpSpacer);
-  vboxLayout->addWidget(pItem);
-  vboxLayout->addItem(mpSpacer);
+  verticalLayout->removeItem(mpSpacer);
+  verticalLayout->addWidget(pItem);
+  verticalLayout->addItem(mpSpacer);
 
   pItem->show();
 
@@ -74,7 +74,7 @@ bool CQProgressDialog::insertProgressItem(CQProgressItem * pItem)
 
 bool CQProgressDialog::removeProgressItem(CQProgressItem * pItem)
 {
-  vboxLayout->removeWidget(pItem);
+  verticalLayout->removeWidget(pItem);
 
   mItemCount--;
 
@@ -88,17 +88,14 @@ void CQProgressDialog::init()
   mpBtnPause->setIcon(CQIconResource::icon(CQIconResource::playerPause));
   mpBtnContinue->setIcon(CQIconResource::icon(CQIconResource::playerStart));
   mpBtnStop->setIcon(CQIconResource::icon(CQIconResource::playerStop));
+  mpBtnKill->setIcon(CQIconResource::icon(CQIconResource::playerKill));
 
   mpLine->hide();
-  //  mpBtnPause->hide();
-  //  mpBtnContinue->hide();
 
   mpBtnContinue->setEnabled(false);
+  mpBtnKill->setEnabled(false);
 
   mItemCount = 0;
-
-  mPause = false;
-  mProceed = true;
 
   QTimer::singleShot(1500, this, SLOT(timerShow()));
 
@@ -120,28 +117,30 @@ void CQProgressDialog::reject()
 
 void CQProgressDialog::btnContinuePressed()
 {
-  mPause = false;
-
   mpBtnPause->setEnabled(true);
   mpBtnContinue->setEnabled(false);
 }
 
 void CQProgressDialog::btnPausePressed()
 {
-  mPause = true;
-
   mpBtnPause->setEnabled(false);
   mpBtnContinue->setEnabled(true);
 }
 
 void CQProgressDialog::btnStopPressed()
 {
-  mPause = false;
-  mProceed = false;
-
   mpBtnPause->setEnabled(false);
   mpBtnContinue->setEnabled(false);
   mpBtnStop->setEnabled(false);
+  mpBtnKill->setEnabled(true);
+}
+
+void CQProgressDialog::btnKillPressed()
+{
+  mpBtnPause->setEnabled(false);
+  mpBtnContinue->setEnabled(false);
+  mpBtnStop->setEnabled(false);
+  mpBtnKill->setEnabled(false);
 }
 
 void CQProgressDialog::timerShow()

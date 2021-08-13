@@ -177,7 +177,7 @@ void DataModelGUI::addModelFinished()
   if (mSuccess)
     {
       //notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, "");
-      addRecentCopasiFile(mFileName);
+      addRecentFile(mFileName);
       //linkDataModelToGUI();
     }
 
@@ -285,7 +285,7 @@ void DataModelGUI::loadModelFinished()
 {
   if (mSuccess)
     {
-      addRecentCopasiFile(mFileName);
+      addRecentFile(mFileName);
 
       mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
       linkDataModelToGUI();
@@ -327,7 +327,7 @@ void DataModelGUI::saveModelFinished()
 {
   if (mSuccess)
     {
-      addRecentCopasiFile(mFileName);
+      addRecentFile(mFileName);
     }
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(saveModelFinished()));
@@ -442,7 +442,7 @@ void DataModelGUI::importSBMLFinished()
   if (mSuccess)
     {
       this->importCellDesigner();
-      addRecentSBMLFile(mFileName);
+      addRecentFile(mFileName);
 
       mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
       linkDataModelToGUI();
@@ -545,7 +545,7 @@ void DataModelGUI::exportSBMLFinished()
 {
   if (mSuccess)
     {
-      addRecentSBMLFile(mFileName);
+      addRecentFile(mFileName);
     }
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
@@ -935,7 +935,7 @@ void DataModelGUI::setIgnoreNextFile(bool ignore)
   mIgnoreNextFile = ignore;
 }
 
-void DataModelGUI::addRecentCopasiFile(const std::string & file)
+void DataModelGUI::addRecentFile(const std::string & file)
 {
   if (mIgnoreNextFile)
     {
@@ -943,31 +943,22 @@ void DataModelGUI::addRecentCopasiFile(const std::string & file)
       return;
     }
 
-  CRootContainer::getConfiguration()->getRecentFiles().addFile(file);
-  CRootContainer::getConfiguration()->save();
-}
-
-void DataModelGUI::addRecentSBMLFile(const std::string & file)
-{
-  if (mIgnoreNextFile)
+  switch (mpDataModel->getContentType())
     {
-      mIgnoreNextFile = false;
-      return;
+      case CDataModel::ContentType::COPASI:
+      case CDataModel::ContentType::GEPASI:
+        CRootContainer::getConfiguration()->getRecentFiles().addFile(file);
+        break;
+
+      case CDataModel::ContentType::SBML:
+        CRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(file);
+        break;
+
+      case CDataModel::ContentType::SEDML:
+        CRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(file);
+        break;
     }
 
-  CRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(file);
-  CRootContainer::getConfiguration()->save();
-}
-
-void DataModelGUI::addRecentSEDMLFile(const std::string & file)
-{
-  if (mIgnoreNextFile)
-    {
-      mIgnoreNextFile = false;
-      return;
-    }
-
-  CRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(file);
   CRootContainer::getConfiguration()->save();
 }
 
@@ -1232,7 +1223,7 @@ void DataModelGUI::importSEDMLFinished()
 {
   if (mSuccess)
     {
-      addRecentSEDMLFile(mFileName);
+      addRecentFile(mFileName);
       mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
       linkDataModelToGUI();
     }
@@ -1263,7 +1254,7 @@ void DataModelGUI::exportSEDMLFinished()
 {
   if (mSuccess)
     {
-      addRecentSEDMLFile(mFileName);
+      addRecentFile(mFileName);
     }
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSEDMLFinished()));

@@ -1136,19 +1136,19 @@ void CModel::buildMoieties()
 
 void CModel::clearSbmlIds()
 {
-  for (auto & comp : getCompartments())
+for (auto & comp : getCompartments())
     comp.setSBMLId("");
 
-  for (auto & metab : getMetabolites())
+for (auto & metab : getMetabolites())
     metab.setSBMLId("");
 
-  for (auto & param : getModelValues())
+for (auto & param : getModelValues())
     param.setSBMLId("");
 
-  for (auto & reaction : getReactions())
+for (auto & reaction : getReactions())
     reaction.setSBMLId("");
 
-  for (auto & c_event : getEvents())
+for (auto & c_event : getEvents())
     c_event.setSBMLId("");
 }
 
@@ -2550,6 +2550,26 @@ bool CModel::removeModelValue(const CModelValue * pModelValue,
   return true;
 }
 
+bool CModel::removeFunction(const CFunction * pFunction,
+                            const bool & recursive)
+{
+  if (pFunction == NULL)
+    return false;
+
+  if (recursive)
+    {
+      ObjectSet Deleted;
+      Deleted.insert(pFunction);
+      removeDependentModelObjects(Deleted);
+    }
+
+  removeDataObject(pFunction);
+
+  mCompileIsNecessary = true;
+
+  return true;
+}
+
 CEvent* CModel::createEvent(const std::string & name)
 {
   if (mEvents.getIndex(name) != C_INVALID_INDEX)
@@ -2644,7 +2664,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-#pragma region   //find_experiment
+  #pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2694,7 +2714,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-#pragma endregion //find_experiment
+  #pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::Task::timeCourse)
     {
@@ -3402,7 +3422,7 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
                 TreesWithDiscontinuities.push_back((*ppEntity)->getNoiseExpressionPtr());
               }
 
-          // Intentionally no break statement!
+            // Intentionally no break statement!
 
           case Status::ASSIGNMENT:
 

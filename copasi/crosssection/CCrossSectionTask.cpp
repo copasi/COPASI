@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -221,8 +221,6 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
   output(COutputInterface::BEFORE);
 
-  mProceed = true;
-
   mProgressFactor = 100.0 / (MaxDuration + mpCrossSectionProblem->getOutputStartTime());
   mProgressValue = 0;
 
@@ -240,13 +238,15 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
   mNumCrossings = 0;
 
+  bool Proceed;
+
   try
     {
       do
         {
-          mProceed &= processStep(EndTime);
+          Proceed = processStep(EndTime);
         }
-      while ((*mpContainerStateTime < CompareEndTime) && mProceed);
+      while ((*mpContainerStateTime < CompareEndTime) && Proceed);
     }
 
   catch (int)
@@ -336,7 +336,6 @@ void CCrossSectionTask::eventCallBack(void * /* pData */, void * /* pCaller */)
       if (!mpCallBack->progressItem(mhProgress))
         {
           mState = FINISH;
-          mProceed = false;
         }
     }
 

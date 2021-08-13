@@ -1,0 +1,1639 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<!-- Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the -->
+<!-- University of Virginia, University of Heidelberg, and University -->
+<!-- of Connecticut School of Medicine. -->
+<!-- All rights reserved. -->
+
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" metaid="metaid_0000001" version="4">
+  <model id="Locke2005_CircadianClock" name="Locke2005 - Circadian Clock" metaid="metaid_0000002">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <div class="dc:title">Locke2005 - Circadian Clock</div>
+            <div class="dc:description">      <p>SBML model of the interlocked feedback loop network</p>
+                <p>The model describes the circuit depicted in Fig. 4 and reproduces the simulations in Figure 5A
+      and 5B. It provides initial conditions, parameter values and rules for the production rates of the 
+      following species: LHY mRNA (cLm), cytoplasmic LHY (cLc), nuclear LHY (cLn),
+      TOC1 mRNA (cTm), cytoplasmic TOC1 (cTc), nuclear TOC1 (cTn),X mRNA (cXm), 
+      cytoplasmic X (cXc), nuclear X (cXn), Y mRNA (cYm), cytoplasmic Y (cYc), 
+      nuclear Y (cYn), nuclear P (cPn). This model was successfully tested on MathSBML and SBML ODE Solver.</p>
+                <p>Fig 5B is not in the right phase. However, the data is correct relative to the light/dark bars at the top of the figure.</p>
+                </div>
+            <div class="dc:bibliographicCitation">      <p>This model is described in the article:</p>
+                <div class="bibo:title">        <a href="http://identifiers.org/pubmed/16729048" title="Access to this publication">Extension of a genetic network model by iterative experimentation and mathematical analysis.</a>
+                    </div>
+                <div class="bibo:authorList">Locke JC,  Southern MM,  Kozma-Bognár L,  Hibberd V,  Brown PE,  Turner MS,  Millar AJ</div>
+                <div class="bibo:Journal">Molecular Systems Biology [2005; 1: 2005.0013]</div>
+                <p>Abstract:</p>
+                <div class="bibo:abstract">        <p>Circadian clocks involve feedback loops that generate rhythmic expression of key genes. Molecular genetic studies in the higher plant Arabidopsis thaliana have revealed a complex clock network. The first part of the network to be identified, a transcriptional feedback loop comprising TIMING OF CAB EXPRESSION 1 (TOC1), LATE ELONGATED HYPOCOTYL (LHY) and CIRCADIAN CLOCK ASSOCIATED 1 (CCA1), fails to account for significant experimental data. We develop an extended model that is based upon a wider range of data and accurately predicts additional experimental results. The model comprises interlocking feedback loops comparable to those identified experimentally in other circadian systems. We propose that each loop receives input signals from light, and that each loop includes a hypothetical component that had not been explicitly identified. Analysis of the model predicted the properties of these components, including an acute light induction at dawn that is rapidly repressed by LHY and CCA1. We found this unexpected regulation in RNA levels of the evening-expressed gene GIGANTEA (GI), supporting our proposed network and making GI a strong candidate for this component.</p>
+                    </div>
+                </div>
+            <div class="dc:publisher">      <p>This model is hosted on        <a href="http://www.ebi.ac.uk/biomodels/">BioModels Database</a>
+            and identified by:        <a href="http://www.ebi.ac.uk/biomodels-main/BIOMD0000000055">BIOMD0000000055</a>
+            .        </p>
+                <p>To cite BioModels Database, please use:        <a href="http://identifiers.org/pubmed/20587024" title="Latest BioModels Database publication">BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models</a>
+            .        </p>
+                </div>
+            <div class="dc:license">      <p>To the extent possible under law, all copyright and related or neighbouring rights to this encoded model have been dedicated to the public domain worldwide. Please refer to        <a href="http://creativecommons.org/publicdomain/zero/1.0/" title="Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication">CC0 Public Domain Dedication</a>
+            for more information.        </p>
+                </div>
+            </body>
+      
+    </notes>
+    <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000002">
+	<dc:creator>
+	<rdf:Bag>
+	<rdf:li rdf:parseType="Resource">
+	<vCard:N rdf:parseType="Resource">
+	<vCard:Family>Dharuri</vCard:Family>
+	<vCard:Given>Harish</vCard:Given>
+	</vCard:N>
+	<vCard:EMAIL>hdharuri@cds.caltech.edu</vCard:EMAIL>
+	<vCard:ORG rdf:parseType="Resource">
+	<vCard:Orgname>California Institute of Technology</vCard:Orgname>
+	</vCard:ORG>
+	</rdf:li>
+	<rdf:li rdf:parseType="Resource">
+	<vCard:N rdf:parseType="Resource">
+	<vCard:Family>Millar</vCard:Family>
+	<vCard:Given>Andrew J</vCard:Given>
+	</vCard:N>
+	<vCard:EMAIL>andrew.millar@ed.ac.uk</vCard:EMAIL>
+	<vCard:ORG rdf:parseType="Resource">
+	<vCard:Orgname>nstitute of Molecular Plant Sciences, University of Edinburgh</vCard:Orgname>
+	</vCard:ORG>
+	</rdf:li>
+	</rdf:Bag>
+	</dc:creator>
+	<dcterms:created rdf:parseType="Resource">
+	<dcterms:W3CDTF>2006-05-02T08:15:42Z</dcterms:W3CDTF>
+	</dcterms:created>
+	<dcterms:modified rdf:parseType="Resource">
+	<dcterms:W3CDTF>2015-02-25T13:09:47Z</dcterms:W3CDTF>
+	</dcterms:modified>
+	<bqmodel:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:biomodels.db:MODEL0737170531"/>
+	</rdf:Bag>
+	</bqmodel:is>
+	<bqmodel:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:biomodels.db:BIOMD0000000055"/>
+	</rdf:Bag>
+	</bqmodel:is>
+	<bqmodel:isDescribedBy>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:pubmed:16729048"/>
+	</rdf:Bag>
+	</bqmodel:isDescribedBy>
+	<bqmodel:isDerivedFrom>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:pubmed:15784272"/>
+	</rdf:Bag>
+	</bqmodel:isDerivedFrom>
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0042752"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	<bqbiol:hasTaxon>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:taxonomy:3701"/>
+	</rdf:Bag>
+	</bqbiol:hasTaxon>
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:kegg.pathway:ath04710"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+      <listOfFunctionDefinitions>
+      <functionDefinition id="LD" metaid="metaid_0000003">
+        <notes>
+          <body xmlns="http://www.w3.org/1999/xhtml">
+                <p xmlns="http://www.w3.org/1999/xhtml">
+          Defines light value depending on time of day</p>
+                    <p xmlns="http://www.w3.org/1999/xhtml">
+          LD is a function of time of the day, LD=1 at time t=0 (dawn) and changes to LD=1 at time t=12(dusk) and remains at that value until dawn when it resumes it cycle.
+				The original publication made use of a combination of Function definition, rate rules and events to accomplish this while the 
+				the model here does the same thing without the use of Events. This makes it portable across simulators without compromising the published model 
+				in any way.</p>
+                    </body>
+          
+        </notes>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <lambda>
+            <bvar>
+              <ci> tod </ci>
+            </bvar>
+            <bvar>
+              <ci> length </ci>
+            </bvar>
+            <apply>
+              <ceiling/>
+              <apply>
+                <divide/>
+                <apply>
+                  <sin/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <pi/>
+                        <ci> tod </ci>
+                      </apply>
+                      <ci> length </ci>
+                    </apply>
+                    <cn> 0.001 </cn>
+                  </apply>
+                </apply>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+            </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfUnitDefinitions>
+      <unitDefinition id="substance" name="nM (default)" metaid="metaid_0000060">
+        <listOfUnits>
+          <unit scale="-9" metaid="_878435" kind="mole"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="time" name="hour (default)" metaid="metaid_0000004">
+        <listOfUnits>
+          <unit metaid="_878447" multiplier="3600" kind="second"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="compartment" metaid="metaid_0000005" sboTerm="SBO:0000290" size="1">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000005">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0005623"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+            </compartment>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="cLm" initialConcentration="0.539" name="LHY mRNA" metaid="metaid_0000006" sboTerm="SBO:0000278" compartment="compartment">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000006">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:chebi:CHEBI%3A33699"/>
+	<rdf:li rdf:resource="urn:miriam:kegg.compound:C00046"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species id="cLc" initialConcentration="0.015" name="LHY protein in cytoplasm" metaid="metaid_0000007" sboTerm="SBO:0000245" compartment="compartment">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000007">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:uniprot:O81713"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species id="cLn" initialConcentration="0.0855" name="LHY protein in nucleus" metaid="metaid_0000008" sboTerm="SBO:0000245" compartment="compartment">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000008">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:uniprot:O81713"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species id="cTm" initialConcentration="0.456" name="TOC1 mRNA" metaid="metaid_0000009" sboTerm="SBO:0000278" compartment="compartment">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000009">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:chebi:CHEBI%3A33699"/>
+	<rdf:li rdf:resource="urn:miriam:kegg.compound:C00046"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species id="cTc" initialConcentration="8.7" name="TOC1 protein in cytoplasm" metaid="metaid_0000010" sboTerm="SBO:0000245" compartment="compartment">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000010">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:uniprot:Q9LKL2"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species id="cTn" initialConcentration="0.4" name="TOC1 protein in nucleus" metaid="metaid_0000011" sboTerm="SBO:0000245" compartment="compartment">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000011">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:uniprot:Q9LKL2"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species id="cXm" initialConcentration="0.08" name="X mRNA" metaid="metaid_0000012" sboTerm="SBO:0000278" compartment="compartment">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000012">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:chebi:CHEBI%3A33699"/>
+	<rdf:li rdf:resource="urn:miriam:kegg.compound:C00046"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species id="cXc" initialConcentration="1.34" name="X protein in cytoplasm" metaid="metaid_0000013" sboTerm="SBO:0000245" compartment="compartment"/>
+      <species id="cXn" initialConcentration="0.4" name="X protein in nucleus" metaid="metaid_0000014" sboTerm="SBO:0000245" compartment="compartment">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000014">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0005667"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species id="cYm" initialConcentration="0.037" name="Y mRNA" metaid="metaid_0000015" sboTerm="SBO:0000278" compartment="compartment">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000015">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:chebi:CHEBI%3A33699"/>
+	<rdf:li rdf:resource="urn:miriam:kegg.compound:C00046"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species id="cYc" initialConcentration="0.004" name="Y protein in cytoplasm" metaid="metaid_0000016" sboTerm="SBO:0000245" compartment="compartment"/>
+      <species id="cYn" initialConcentration="0.013" name="Y protein in nucleus" metaid="metaid_0000017" sboTerm="SBO:0000245" compartment="compartment">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000017">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0005667"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species id="cPn" initialConcentration="0.835" name="light sensitive protein P" metaid="metaid_0000018" sboTerm="SBO:0000245" compartment="compartment"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="q1" metaid="metaid_0000055" value="2.4514" sboTerm="SBO:0000337"/>
+      <parameter id="n1" metaid="metaid_0000061" value="5.1694" sboTerm="SBO:0000186"/>
+      <parameter id="a" metaid="metaid_0000062" value="3.3064" sboTerm="SBO:0000190"/>
+      <parameter id="g1" metaid="metaid_0000063" value="0.876738488" sboTerm="SBO:0000363"/>
+      <parameter id="m1" metaid="metaid_0000064" value="1.5283" sboTerm="SBO:0000324"/>
+      <parameter id="k1" metaid="metaid_0000065" value="1.817" sboTerm="SBO:0000027"/>
+      <parameter id="p1" metaid="metaid_0000066" value="0.8295" sboTerm="SBO:0000153"/>
+      <parameter id="r1" metaid="metaid_0000067" value="16.8363" sboTerm="SBO:0000153"/>
+      <parameter id="r2" metaid="metaid_0000068" value="0.1687" sboTerm="SBO:0000156"/>
+      <parameter id="m2" metaid="metaid_0000069" value="20.44" sboTerm="SBO:0000324"/>
+      <parameter id="k2" metaid="metaid_0000070" value="1.5644" sboTerm="SBO:0000026"/>
+      <parameter id="m3" metaid="metaid_0000071" value="3.6888" sboTerm="SBO:0000324"/>
+      <parameter id="k3" metaid="metaid_0000072" value="1.2765" sboTerm="SBO:0000027"/>
+      <parameter id="n2" metaid="metaid_0000073" value="3.0087" sboTerm="SBO:0000186"/>
+      <parameter id="b" metaid="metaid_0000074" value="1.0258" sboTerm="SBO:0000190"/>
+      <parameter id="g2" metaid="metaid_0000075" value="0.036805783" sboTerm="SBO:0000363"/>
+      <parameter id="g3" metaid="metaid_0000076" value="0.26593318" sboTerm="SBO:0000261"/>
+      <parameter id="c" metaid="metaid_0000077" value="1.0258" sboTerm="SBO:0000190"/>
+      <parameter id="m4" metaid="metaid_0000078" value="3.8231" sboTerm="SBO:0000324"/>
+      <parameter id="k4" metaid="metaid_0000079" value="2.5734" sboTerm="SBO:0000027"/>
+      <parameter id="p2" metaid="metaid_0000080" value="4.324" sboTerm="SBO:0000153"/>
+      <parameter id="r3" metaid="metaid_0000081" value="0.3166" sboTerm="SBO:0000153"/>
+      <parameter id="r4" metaid="metaid_0000082" value="2.1509" sboTerm="SBO:0000156"/>
+      <parameter id="m5" metaid="metaid_0000083" value="0.0013" sboTerm="SBO:0000324"/>
+      <parameter id="m6" metaid="metaid_0000084" value="3.1741" sboTerm="SBO:0000324"/>
+      <parameter id="k5" metaid="metaid_0000085" value="2.7454" sboTerm="SBO:0000027"/>
+      <parameter id="m7" metaid="metaid_0000086" value="0.0492" sboTerm="SBO:0000324"/>
+      <parameter id="m8" metaid="metaid_0000087" value="4.0424" sboTerm="SBO:0000324"/>
+      <parameter id="k6" metaid="metaid_0000088" value="0.4033" sboTerm="SBO:0000027"/>
+      <parameter id="n3" metaid="metaid_0000089" value="0.2431" sboTerm="SBO:0000186"/>
+      <parameter id="d" metaid="metaid_0000090" value="1.4422" sboTerm="SBO:0000190"/>
+      <parameter id="g4" metaid="metaid_0000091" value="0.538811228" sboTerm="SBO:0000363"/>
+      <parameter id="m9" metaid="metaid_0000092" value="10.1132" sboTerm="SBO:0000324"/>
+      <parameter id="k7" metaid="metaid_0000093" value="6.5585" sboTerm="SBO:0000027"/>
+      <parameter id="p3" metaid="metaid_0000094" value="2.147" sboTerm="SBO:0000153"/>
+      <parameter id="r5" metaid="metaid_0000095" value="1.0352" sboTerm="SBO:0000153"/>
+      <parameter id="r6" metaid="metaid_0000096" value="3.3017" sboTerm="SBO:0000156"/>
+      <parameter id="m10" metaid="metaid_0000097" value="0.2179" sboTerm="SBO:0000324"/>
+      <parameter id="k8" metaid="metaid_0000098" value="0.6632" sboTerm="SBO:0000027"/>
+      <parameter id="m11" metaid="metaid_0000099" value="3.3442" sboTerm="SBO:0000324"/>
+      <parameter id="k9" metaid="metaid_0000100" value="17.1111" sboTerm="SBO:0000027"/>
+      <parameter id="q2" metaid="metaid_0000101" value="2.40178" sboTerm="SBO:0000337"/>
+      <parameter id="n4" metaid="metaid_0000102" value="0.0857" sboTerm="SBO:0000186"/>
+      <parameter id="n5" metaid="metaid_0000103" value="0.1649" sboTerm="SBO:0000186"/>
+      <parameter id="g5" metaid="metaid_0000104" value="1.17803247" sboTerm="SBO:0000261"/>
+      <parameter id="g6" metaid="metaid_0000105" value="0.064455137" sboTerm="SBO:0000261"/>
+      <parameter id="f" metaid="metaid_0000106" value="1.0237" sboTerm="SBO:0000190"/>
+      <parameter id="e" metaid="metaid_0000107" value="3.6064" sboTerm="SBO:0000190"/>
+      <parameter id="m12" metaid="metaid_0000108" value="4.297" sboTerm="SBO:0000324"/>
+      <parameter id="k10" metaid="metaid_0000109" value="1.7303" sboTerm="SBO:0000027"/>
+      <parameter id="p4" metaid="metaid_0000110" value="0.2485" sboTerm="SBO:0000153"/>
+      <parameter id="r7" metaid="metaid_0000111" value="2.2123" sboTerm="SBO:0000153"/>
+      <parameter id="r8" metaid="metaid_0000112" value="0.2002" sboTerm="SBO:0000158"/>
+      <parameter id="m13" metaid="metaid_0000113" value="0.1347" sboTerm="SBO:0000324"/>
+      <parameter id="k11" metaid="metaid_0000114" value="1.8258" sboTerm="SBO:0000027"/>
+      <parameter id="m14" metaid="metaid_0000115" value="0.6114" sboTerm="SBO:0000324"/>
+      <parameter id="k12" metaid="metaid_0000116" value="1.8066" sboTerm="SBO:0000027"/>
+      <parameter id="p5" metaid="metaid_0000117" value="0.5" sboTerm="SBO:0000153"/>
+      <parameter id="k13" metaid="metaid_0000118" value="1.2" sboTerm="SBO:0000027"/>
+      <parameter id="q3" metaid="metaid_0000119" value="1" sboTerm="SBO:0000337"/>
+      <parameter id="m15" metaid="metaid_0000120" value="1.2" sboTerm="SBO:0000324"/>
+      <parameter id="Lmax" metaid="metaid_0000121" value="1"/>
+      <parameter id="Lmin" metaid="metaid_0000122" value="0"/>
+      <parameter id="CP" metaid="metaid_0000123" value="24"/>
+      <parameter id="dayLength" metaid="metaid_0000124" value="12"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="one11" name="LHY transcription by light activation" metaid="metaid_0000020" reversible="false" sboTerm="SBO:0000183">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000020">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0009642"/>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006351"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfProducts>
+          <speciesReference species="cLm" metaid="_878459" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cPn" metaid="_878471" sboTerm="SBO:0000019"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_878483">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <ci> LD </ci>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> t </csymbol>
+                <ci> dayLength </ci>
+              </apply>
+              <ci> q1 </ci>
+              <ci> cPn </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="two11" name="Light independent LHY transcription" metaid="metaid_0000021" reversible="false" sboTerm="SBO:0000183">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000021">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006351"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfProducts>
+          <speciesReference species="cLm" metaid="_878495" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cXn" metaid="_878507" sboTerm="SBO:0000019"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_878519">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> n1 </ci>
+                  <apply>
+                    <power/>
+                    <ci> cXn </ci>
+                    <ci> a </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> g1 </ci>
+                    <ci> a </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> cXn </ci>
+                    <ci> a </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                  <listOfParameters>
+            <parameter id="Fch_0" metaid="_365384" value="8"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="three11" name="LHY mRNA degradation" metaid="metaid_0000022" reversible="false" sboTerm="SBO:0000179">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000022">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006402"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cLm" metaid="_878531" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <kineticLaw metaid="_878543">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> m1 </ci>
+                  <ci> cLm </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> k1 </ci>
+                  <ci> cLm </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="one12" name="LHY translation" metaid="metaid_0000023" reversible="false" sboTerm="SBO:0000184">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000023">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006412"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfProducts>
+          <speciesReference species="cLc" metaid="_878555" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cLm" metaid="_878567" sboTerm="SBO:0000019"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_878579">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> p1 </ci>
+              <ci> cLm </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="three12" name="LHY transport out of nucleus" metaid="metaid_0000025" reversible="false" sboTerm="SBO:0000185">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000025">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006886"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cLn" metaid="_878591" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="cLc" metaid="_878604" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <kineticLaw metaid="_878616">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> r2 </ci>
+              <ci> cLn </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="four12" name="Cytoplasmic LHY degradation" metaid="metaid_0000026" reversible="false" sboTerm="SBO:0000179">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000026">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0030163"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cLc" metaid="_878628" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <kineticLaw metaid="_878640">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> m2 </ci>
+                  <ci> cLc </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> k2 </ci>
+                  <ci> cLc </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                  <listOfParameters>
+            <parameter id="Fch_0" metaid="_365388" value="8"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="one13" name="LHY transport into nucleus" metaid="metaid_0000027" reversible="false" sboTerm="SBO:0000185">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000027">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006886"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cLc" metaid="_878652" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="cLn" metaid="_878664" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <kineticLaw metaid="_878676">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> r1 </ci>
+              <ci> cLc </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="three13" name="Nuclear LHY degradation" metaid="metaid_0000029" reversible="false" sboTerm="SBO:0000179">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000029">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0030163"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cLn" metaid="_878688" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <kineticLaw metaid="_878700">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> m3 </ci>
+                  <ci> cLn </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> k3 </ci>
+                  <ci> cLn </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="one14" name="TOC1 transcription" metaid="metaid_0000030" reversible="false" sboTerm="SBO:0000183">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000030">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006351"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfProducts>
+          <speciesReference species="cTm" metaid="_878712" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cYn" metaid="_878724" sboTerm="SBO:0000019"/>
+          <modifierSpeciesReference species="cLn" metaid="_878736" sboTerm="SBO:0000019"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_878748">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> n2 </ci>
+                  <apply>
+                    <power/>
+                    <ci> cYn </ci>
+                    <ci> b </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> g2 </ci>
+                    <ci> b </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> cYn </ci>
+                    <ci> b </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <power/>
+                  <ci> g3 </ci>
+                  <ci> c </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> g3 </ci>
+                    <ci> c </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> cLn </ci>
+                    <ci> c </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="two14" name="TOC mRNA degradation" metaid="metaid_0000031" reversible="false" sboTerm="SBO:0000179">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000031">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006402"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cTm" metaid="_878760" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <kineticLaw metaid="_878772">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> m4 </ci>
+                  <ci> cTm </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> k4 </ci>
+                  <ci> cTm </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="one15" name="TOC1 translation" metaid="metaid_0000032" reversible="false" sboTerm="SBO:0000184">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000032">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006412"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfProducts>
+          <speciesReference species="cTc" metaid="_878784" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cTm" metaid="_878796" sboTerm="SBO:0000019"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_878808">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> p2 </ci>
+              <ci> cTm </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="three15" name="TOC1 transport out of nucleus" metaid="metaid_0000034" reversible="false" sboTerm="SBO:0000185">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000034">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006886"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cTn" metaid="_878820" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="cTc" metaid="_878832" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <kineticLaw metaid="_878844">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> r4 </ci>
+              <ci> cTn </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="four15" name="Cytoplasmic TOC1 degradation" metaid="metaid_0000035" reversible="false" sboTerm="SBO:0000179">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000035">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0030163"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cTc" metaid="_878856" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <kineticLaw metaid="_878868">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <ci> LD </ci>
+                      <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> t </csymbol>
+                      <ci> dayLength </ci>
+                    </apply>
+                  </apply>
+                  <ci> m5 </ci>
+                </apply>
+                <ci> m6 </ci>
+              </apply>
+              <apply>
+                <divide/>
+                <ci> cTc </ci>
+                <apply>
+                  <plus/>
+                  <ci> k5 </ci>
+                  <ci> cTc </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="one16" name="TOC1 movement into nucleus" metaid="metaid_0000036" reversible="false" sboTerm="SBO:0000185">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000036">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006886"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cTc" metaid="_878880" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="cTn" metaid="_878893" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <kineticLaw metaid="_878905">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> r3 </ci>
+              <ci> cTc </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="three16" name="Nuclear TOC1 degradation" metaid="metaid_0000038" reversible="false" sboTerm="SBO:0000179">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000038">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0030163"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cTn" metaid="_878917" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <kineticLaw metaid="_878930">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <ci> LD </ci>
+                      <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> t </csymbol>
+                      <ci> dayLength </ci>
+                    </apply>
+                  </apply>
+                  <ci> m7 </ci>
+                </apply>
+                <ci> m8 </ci>
+              </apply>
+              <apply>
+                <divide/>
+                <ci> cTn </ci>
+                <apply>
+                  <plus/>
+                  <ci> k6 </ci>
+                  <ci> cTn </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="one17" name="Protein X transcription" metaid="metaid_0000039" reversible="false" sboTerm="SBO:0000183">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000039">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006351"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfProducts>
+          <speciesReference species="cXm" metaid="_878942" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cTn" metaid="_878954" sboTerm="SBO:0000019"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_878966">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> n3 </ci>
+                  <apply>
+                    <power/>
+                    <ci> cTn </ci>
+                    <ci> d </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> g4 </ci>
+                    <ci> d </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> cTn </ci>
+                    <ci> d </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="two17" name="Protein X degradation" metaid="metaid_0000040" reversible="false" sboTerm="SBO:0000179">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000040">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006402"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cXm" metaid="_878978" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <kineticLaw metaid="_878990">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> m9 </ci>
+                  <ci> cXm </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> k7 </ci>
+                  <ci> cXm </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="one18" name="Protein X translation" metaid="metaid_0000041" reversible="false" sboTerm="SBO:0000184">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000041">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006412"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfProducts>
+          <speciesReference species="cXc" metaid="_879002" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cXm" metaid="_879014" sboTerm="SBO:0000019"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_879026">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> p3 </ci>
+              <ci> cXm </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="three18" name="ProteinX movement out of nucleus" metaid="metaid_0000043" reversible="false" sboTerm="SBO:0000185">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000043">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006886"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cXn" metaid="_879038" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="cXc" metaid="_879050" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <kineticLaw metaid="_879062">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> r6 </ci>
+              <ci> cXn </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="four18" name="Cytoplasmic Protein X degradation" metaid="metaid_0000044" reversible="false" sboTerm="SBO:0000179">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000044">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0030163"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cXc" metaid="_879074" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <kineticLaw metaid="_879086">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> m10 </ci>
+                  <ci> cXc </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> k8 </ci>
+                  <ci> cXc </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="one19" name="Protein X movement into nucleus" metaid="metaid_0000045" reversible="false" sboTerm="SBO:0000185">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000045">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006886"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cXc" metaid="_879098" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="cXn" metaid="_879110" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <kineticLaw metaid="_879122">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> r5 </ci>
+              <ci> cXc </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="three19" name="Nuclear Protein X degradation" metaid="metaid_0000047" reversible="false" sboTerm="SBO:0000179">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000047">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0030163"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cXn" metaid="_879134" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <kineticLaw metaid="_879146">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> m11 </ci>
+                  <ci> cXn </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> k9 </ci>
+                  <ci> cXn </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="one20" name="Protein Y transcription" metaid="metaid_0000048" reversible="false" sboTerm="SBO:0000183">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000048">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006351"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfProducts>
+          <speciesReference species="cYm" metaid="_879158" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cPn" metaid="_879170" sboTerm="SBO:0000019"/>
+          <modifierSpeciesReference species="cTn" metaid="_879182" sboTerm="SBO:0000019"/>
+          <modifierSpeciesReference species="cLn" metaid="_879194" sboTerm="SBO:0000019"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_879206">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <ci> LD </ci>
+                    <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> t </csymbol>
+                    <ci> dayLength </ci>
+                  </apply>
+                  <ci> q2 </ci>
+                  <ci> cPn </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <plus/>
+                      <apply>
+                        <times/>
+                        <apply>
+                          <ci> LD </ci>
+                          <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> t </csymbol>
+                          <ci> dayLength </ci>
+                        </apply>
+                        <ci> n4 </ci>
+                      </apply>
+                      <ci> n5 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> g5 </ci>
+                      <ci> e </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <ci> g5 </ci>
+                      <ci> e </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> cTn </ci>
+                      <ci> e </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <power/>
+                  <ci> g6 </ci>
+                  <ci> f </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> g6 </ci>
+                    <ci> f </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> cLn </ci>
+                    <ci> f </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="two20" name="Protein Y mRNA degradation" metaid="metaid_0000049" reversible="false" sboTerm="SBO:0000179">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000049">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006402"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cYm" metaid="_879218" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <kineticLaw metaid="_879230">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> m12 </ci>
+                  <ci> cYm </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> k10 </ci>
+                  <ci> cYm </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="one21" name="Protein Y translation" metaid="metaid_0000050" reversible="false" sboTerm="SBO:0000184">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000050">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006412"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfProducts>
+          <speciesReference species="cYc" metaid="_879242" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="cYm" metaid="_879254" sboTerm="SBO:0000019"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_879267">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> p4 </ci>
+              <ci> cYm </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="three21" name="Protein Y out of nucleus" metaid="metaid_0000052" reversible="false" sboTerm="SBO:0000185">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000052">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006886"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cYn" metaid="_879278" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="cYc" metaid="_879290" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <kineticLaw metaid="_879302">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> r8 </ci>
+              <ci> cYn </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="four21" name="Cytoplasmic Protein Y degradation" metaid="metaid_0000053" reversible="false" sboTerm="SBO:0000179">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000053">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0030163"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cYc" metaid="_879314" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <kineticLaw metaid="_879326">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> m13 </ci>
+                  <ci> cYc </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> k11 </ci>
+                  <ci> cYc </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="one22" name="Protein Y into nucleus" metaid="metaid_0000054" reversible="false" sboTerm="SBO:0000185">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000054">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006886"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cYc" metaid="_879338" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="cYn" metaid="_879350" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <kineticLaw metaid="_879362">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> r7 </ci>
+              <ci> cYc </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="three22" name="Nuclear Protein Y degradation" metaid="metaid_0000056" reversible="false" sboTerm="SBO:0000179">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000056">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0030163"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cYn" metaid="_879374" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <kineticLaw metaid="_879386">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> m14 </ci>
+                  <ci> cYn </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> k12 </ci>
+                  <ci> cYn </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="one23" name="Light dependent production of Protein P" metaid="metaid_0000057" reversible="false" sboTerm="SBO:0000393">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000057">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0009642"/>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0006412"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfProducts>
+          <speciesReference species="cPn" metaid="_879398" sboTerm="SBO:0000011"/>
+        </listOfProducts>
+        <kineticLaw metaid="_879410">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <apply>
+                  <ci> LD </ci>
+                  <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> t </csymbol>
+                  <ci> dayLength </ci>
+                </apply>
+              </apply>
+              <ci> p5 </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="two23" name="Protein P degradation" metaid="metaid_0000058" reversible="false" sboTerm="SBO:0000179">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000058">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0030163"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cPn" metaid="_879422" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <kineticLaw metaid="_879434">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> m15 </ci>
+                  <ci> cPn </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> k13 </ci>
+                  <ci> cPn </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="three23" name="Light activated Protein P degradation" metaid="metaid_0000059" reversible="false" sboTerm="SBO:0000179">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+	<rdf:Description rdf:about="#metaid_0000059">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0045732"/>
+	<rdf:li rdf:resource="urn:miriam:go:GO%3A0009642"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference species="cPn" metaid="_879446" sboTerm="SBO:0000010"/>
+        </listOfReactants>
+        <kineticLaw metaid="_879458">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> compartment </ci>
+              <ci> q3 </ci>
+              <apply>
+                <ci> LD </ci>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> t </csymbol>
+                <ci> dayLength </ci>
+              </apply>
+              <ci> cPn </ci>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

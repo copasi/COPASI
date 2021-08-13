@@ -309,10 +309,11 @@ bool CFunctionDB::removeFunction(size_t index)
 {
   if (index == C_INVALID_INDEX) return false;
 
-  CDataObject::ObjectSet DeletedObjects;
-  DeletedObjects.insert(&mLoadedFunctions[index]);
+  CFunction * pFunction = &mLoadedFunctions[index];
 
   // We need to remove all dependent functions.
+  CDataObject::ObjectSet DeletedObjects;
+  DeletedObjects.insert(pFunction);
   CDataObject::DataObjectSet Functions;
 
   appendDependentFunctions(DeletedObjects, Functions);
@@ -322,7 +323,7 @@ bool CFunctionDB::removeFunction(size_t index)
 
   for (; itFunction != endFunction; ++itFunction)
     {
-      removeFunction((*itFunction)->getKey());
+      removeFunction(mLoadedFunctions.CDataVector<CFunction>::getIndex(*itFunction));
     }
 
   // We need to delete all dependent objects in all data models.
@@ -331,7 +332,7 @@ bool CFunctionDB::removeFunction(size_t index)
 
   for (; it != end; ++it)
     {
-      it->getModel()->removeDependentModelObjects(DeletedObjects);
+      it->getModel()->removeFunction(pFunction);
     }
 
   mLoadedFunctions.CDataVector<CFunction>::remove(index);

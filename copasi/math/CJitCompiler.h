@@ -116,7 +116,7 @@ private:
 
   inline NativeJIT::Node< C_FLOAT64 > & fromBool(NativeJIT::Node< bool > & boolean)
   {
-    return mpExpression->If(boolean, mpExpression->Immediate(1.0), mpExpression->Immediate(0.0));
+    return mpExpression->IfNotZero(boolean, mpExpression->Immediate(1.0), mpExpression->Immediate(0.0));
   }
 
   /**
@@ -143,6 +143,11 @@ private:
    * Execution buffer size
    */
   size_t mExecutionBufferSize;
+
+  /**
+   * Boolean value indicating that execution buffer is to small.
+   */
+  bool mInsufficentExecutionBuffer;
 
   /**
    * Execution buffer size

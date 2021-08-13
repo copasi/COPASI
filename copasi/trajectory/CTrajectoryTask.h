@@ -213,11 +213,5 @@ protected:
    * A pointer to less comparison
    */
   bool (*mpLess)(const C_FLOAT64 &, const C_FLOAT64 &);
-
-protected:
-  /**
-   * A Boolean flag indication whether to proceed with the integration
-   */
-  bool mProceed;
 };
 #endif // COPASI_CTrajectoryTask

@@ -149,6 +149,9 @@ bool COptTask::process(const bool & useInitialValues)
 
   bool success = pMethod->optimise();
 
+  if (mpCallBack != NULL)
+    mpCallBack->setIgnoreStop();
+
   pProblem->calculateStatistics();
 
   output(COutputInterface::AFTER);

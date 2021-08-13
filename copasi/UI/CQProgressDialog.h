@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,13 +40,10 @@ public:
   bool insertProgressItem(CQProgressItem * pItem);
   bool removeProgressItem(CQProgressItem * pItem);
 
-protected:
-  bool mProceed;
-  bool mPause;
-
 protected slots:
 
   virtual void btnStopPressed();
+  virtual void btnKillPressed();
   virtual void btnPausePressed();
   virtual void btnContinuePressed();
   void timerShow();

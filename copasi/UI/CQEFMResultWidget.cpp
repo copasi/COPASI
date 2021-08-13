@@ -225,7 +225,7 @@ void CQEFMResultWidget::slotSave()
     {
       fileName =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          "untitled.txt", "TEXT Files (*.txt)", "Save to");
+                                          CopasiFileDialog::getDefaultFileName(".txt"), "TEXT Files (*.txt)", "Save to");
 
       if (fileName.isEmpty()) return;
 

@@ -49,12 +49,21 @@ std::list< std::pair< std::string, CUnit > > sortSymbols(const std::set< std::st
       endList = SortedList.end();
 
       for (; itList != endList; ++itList)
-        if (itList->second.getUsedSymbols().count(*it)) break;
+        {
+          std::vector< std::string > Intersection;
+          std::set_intersection(itList->second.getUsedSymbols().begin(),
+                                itList->second.getUsedSymbols().end(),
+                                Unit.getUsedSymbols().begin(),
+                                Unit.getUsedSymbols().end(),
+                                std::inserter(Intersection, Intersection.begin()));
+
+          if (!Intersection.empty()
+              && itList->second.getUsedSymbols().size() < Unit.getUsedSymbols().size()) break;
+        }
 
       SortedList.insert(itList, std::make_pair(*it, Unit));
     }
 
-  SortedList.reverse();
   return SortedList;
 }
 
