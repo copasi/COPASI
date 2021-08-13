@@ -98,6 +98,31 @@ CProcessReport* SEDMLImporter::getImportHandlerAddr() const
   return mpImportHandler;
 }
 
+void SEDMLImporter::setSEDMLDocument(SedDocument * pDocument)
+{
+  mpSEDMLDocument = pDocument;
+}
+
+SedDocument* SEDMLImporter::getSEDMLDocument()
+{
+  return mpSEDMLDocument;
+}
+
+void SEDMLImporter::clearDocument()
+{
+  pdelete(mpSEDMLDocument);
+}
+
+void SEDMLImporter::setDataModel(CDataModel * pDataModel)
+{
+  mpDataModel = pDataModel;
+}
+
+CDataModel * SEDMLImporter::getDataModel()
+{
+  return mpDataModel;
+}
+
 void SEDMLImporter::clearCallBack()
 {
   setImportHandler(NULL);
@@ -115,6 +140,8 @@ const std::string SEDMLImporter::getArchiveFileName()
 void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
     std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
 {
+  if (sedmlsim == NULL)
+    return;
 
   switch (sedmlsim->getTypeCode())
     {
@@ -130,20 +157,12 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
         int numberOfPoints = tc->getNumberOfPoints();
         tProblem->setOutputStartTime(outputStartTime);
 
-        if (tc->getInitialTime() != outputStartTime)
-          {
-            // calculate number of steps between (timeStart, timeEnd)
-            //
-            double stepSize = (outputEndTime - outputStartTime) / numberOfPoints;
-            int additionalSteps = (int)ceil((outputStartTime - tc->getInitialTime()) / stepSize);
-            tProblem->setStepNumber(numberOfPoints + additionalSteps);
-            tProblem->setDuration(outputEndTime);
-          }
-        else
-          {
-            tProblem->setDuration(outputEndTime - outputStartTime);
-            tProblem->setStepNumber(numberOfPoints);
-          }
+        // set the models initial time to the initial time of the simulation
+        mpDataModel->getModel()->setInitialTime(tc->getInitialTime());
+        mpDataModel->getModel()->updateInitialValues(mpDataModel->getModel()->getInitialValueReference());
+
+        tProblem->setDuration(outputEndTime - outputStartTime);
+        tProblem->setStepNumber(numberOfPoints);
 
         // TODO read kisao terms
         if (tc->isSetAlgorithm())
@@ -352,7 +371,7 @@ bool isScan(const SedRepeatedTask* task)
 
   const SedDocument* doc = task->getSedDocument();
 
-  for (size_t i = 0; i < task->getNumSubTasks(); ++i)
+  for (unsigned int i = 0; i < task->getNumSubTasks(); ++i)
     {
       const SedSubTask* subTask = task->getSubTask(i);
       const SedTask * t = dynamic_cast< const SedTask * >(doc->getTask(subTask->getTask()));
@@ -368,7 +387,10 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
   SedDocument *pSEDMLDocument,
   std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
 {
-  size_t i, numOutput = pSEDMLDocument->getNumOutputs();
+  if (pLotList == NULL || pModel == NULL || pSEDMLDocument == NULL)
+    return;
+
+  unsigned int i, numOutput = pSEDMLDocument->getNumOutputs();
 
   std::map<const CDataObject*, SBase*>& copasiMap = pModel->getObjectDataModel()->getCopasi2SBMLMap();
 
@@ -403,7 +425,7 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
             bool isTimeCourse = false;
             bool isScanTask = false;
 
-            for (size_t i = 0; i < r->getNumDataSets(); ++i)
+            for (unsigned int i = 0; i < r->getNumDataSets(); ++i)
               {
                 SedDataSet* ds = r->getDataSet(i);
                 const SedDataGenerator* generator = pSEDMLDocument->getDataGenerator(ds->getDataReference());
@@ -420,7 +442,7 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
                 pBody->push_back(def->getSeparator().getCN());
 
                 if (!isTimeCourse && !isScanTask)
-                  for (size_t j = 0; j < generator->getNumVariables(); ++j)
+                  for (unsigned int j = 0; j < generator->getNumVariables(); ++j)
                     {
                       const auto* t = mpSEDMLDocument->getTask(generator->getVariable(j)->getTaskReference());
 
@@ -749,6 +771,10 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 void
 SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
 {
+
+  if (mpSEDMLDocument == NULL)
+    return;
+
   // merge nested subtasks if needed (as that is really the only way
   // COPASI can handle them. So if we have
   //
@@ -1008,6 +1034,9 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
     CListOfLayouts *& prLol,
     CDataModel* pDataModel)
 {
+  if (mpSEDMLDocument == NULL)
+    return NULL;
+
   std::string SBMLFileName, fileContent;
 
   unsigned int ii, iiMax = mpSEDMLDocument->getListOfModels()->size();

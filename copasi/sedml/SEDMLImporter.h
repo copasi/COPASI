@@ -154,10 +154,41 @@ public:
   CProcessReport* getImportHandlerAddr() const;
 
   /**
+   * sets the sed-ml document that will be used by the importer
+   *
+   * (the document will not be automatically deleted) manually call
+   * clearDocument to delete the existing document
+   */
+  void setSEDMLDocument(SedDocument *pDocument);
+
+  /**
+   * @return the current SED-ML document
+   */
+  SedDocument* getSEDMLDocument();
+
+  /**
+   * frees the current SED-ML document
+   */
+  void clearDocument();
+
+  /**
+   * sets the data model to be used by the importer
+   */
+  void setDataModel(CDataModel* pDataModel);
+
+  /**
+   * @return the current datamodel
+   */
+  CDataModel* getDataModel();
+
+  /**
    * clears the currently set progress handler
    */
   virtual void clearCallBack();
 
+  /**
+   * not implemented
+   */
   void restoreFunctionDB();
 };
 
