@@ -1,7 +1,7 @@
-// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
 #include "catch.hpp"
 
@@ -9,6 +9,7 @@ extern std::string getTestFile(const std::string & fileName);
 
 #include <copasi/CopasiTypes.h>
 #include <copasi/report/CDataHandler.h>
+#include <copasi/output/COutputHandler.h>
 
 TEST_CASE("1: load model, simulate, collect data", "[copasi, datahandler]")
 {
@@ -19,6 +20,13 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi, datahandler]")
   {
 
     REQUIRE(dm->loadModel(getTestFile("test-data/brusselator.cps"), NULL) == true);
+
+    // change the initial time
+    dm->getModel()->setInitialTime(20);
+    dm->getModel()->updateInitialValues(dm->getModel()->getInitialValueReference());
+    dm->getModel()->forceCompile(NULL);
+    dm->getModel()->applyInitialValues();
+
 
     CCopasiMessage::clearDeque();
 
@@ -41,7 +49,7 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi, datahandler]")
     handler.addDuringName( {"CN=Root,Model=The Brusselator,Vector=Reactions[R3],Reference=Flux"});
     handler.addDuringName( {"CN=Root,Model=The Brusselator,Vector=Reactions[R4],Reference=Flux"});
 
-    auto& task = (*dm->getTaskList())["Time-Course"];
+    auto& task = dynamic_cast<CTrajectoryTask&>( (*dm->getTaskList())["Time-Course"]);    
     REQUIRE(task.initialize(CCopasiTask::OUTPUT_DURING, &handler, NULL) == true);
     REQUIRE(task.process(true) == true);
     REQUIRE(task.restore());
@@ -50,6 +58,18 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi, datahandler]")
 
     REQUIRE(data.size() > 0);
     REQUIRE(data[0].size() == 7);
+
+    {
+      REQUIRE(task.initialize(CCopasiTask::ONLY_TIME_SERIES, dm, NULL) == true);
+      REQUIRE(task.process(true) == true);
+      REQUIRE(task.restore());
+
+      auto & ts = task.getTimeSeries();
+      REQUIRE(data.size() > 0);
+      REQUIRE(ts.getTitle(0) == "Time");
+      REQUIRE(ts.getData(0, 0) == data[0][0]);
+
+    }
 
   }
   CRootContainer::removeDatamodel(dm);
