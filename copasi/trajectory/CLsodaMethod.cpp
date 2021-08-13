@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -516,8 +516,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
             saveState(mLastRootState, ROOT);
             break;
 
-          // The break statement is intentionally missing since we
-          // have to continue to check the root masking state.
+            // The break statement is intentionally missing since we
+            // have to continue to check the root masking state.
           default:
 
             // We made a successful step and therefore invalidate the last root state

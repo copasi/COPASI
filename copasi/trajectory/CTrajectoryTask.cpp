@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -98,8 +98,7 @@ CTrajectoryTask::CTrajectoryTask(const CDataContainer * pParent,
   mpContainerStateTime(NULL),
   mOutputStartTime(0.0),
   mpLessOrEqual(&fle),
-  mpLess(&fl),
-  mProceed(true)
+  mpLess(&fl)
 {
   mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::deterministic, this);
   mUpdateMoieties = static_cast< CTrajectoryMethod * >(mpMethod)->integrateReducedModel();
@@ -120,8 +119,7 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
   mpContainerStateTime(NULL),
   mOutputStartTime(0.0),
   mpLessOrEqual(src.mpLessOrEqual),
-  mpLess(src.mpLess),
-  mProceed(src.mProceed)
+  mpLess(src.mpLess)
 {
   mUpdateMoieties = static_cast< CTrajectoryMethod * >(mpMethod)->integrateReducedModel();
 
@@ -231,9 +229,8 @@ bool CTrajectoryTask::process(const bool& useInitialValues)
 bool CTrajectoryTask::processTrajectory(const bool& useInitialValues)
 {
   //*****
-  mProceed = true;
-
-  processStart(useInitialValues);
+  if (!processStart(useInitialValues))
+    return false;
 
   //*****
 
@@ -391,8 +388,6 @@ bool CTrajectoryTask::processTrajectory(const bool& useInitialValues)
 bool CTrajectoryTask::processValues(const bool& useInitialValues)
 {
   //*****
-  mProceed = true;
-
   processStart(useInitialValues);
 
   //*****
@@ -530,8 +525,10 @@ bool CTrajectoryTask::processValues(const bool& useInitialValues)
   return true;
 }
 
-void CTrajectoryTask::processStart(const bool & useInitialValues)
+bool CTrajectoryTask::processStart(const bool & useInitialValues)
 {
+  bool success = true;
+
   mContainerState.initialize(mpContainer->getState(mUpdateMoieties));
   mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
 
@@ -543,6 +540,7 @@ void CTrajectoryTask::processStart(const bool & useInitialValues)
               !mpSteadyState->process(true))
             {
               CCopasiMessage(CCopasiMessage::ERROR, "Steady state could not be reached.");
+              success = false;
             }
 
           * mpContainerStateTime = 0;
@@ -555,7 +553,7 @@ void CTrajectoryTask::processStart(const bool & useInitialValues)
 
   mpTrajectoryMethod->start();
 
-  return;
+  return success;
 }
 
 bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime, const bool & final)
@@ -565,7 +563,9 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime, const bool & final)
   C_FLOAT64 Tolerance = 100.0 * (fabs(endTime) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
   C_FLOAT64 NextTime = endTime;
 
-  while (mProceed)
+  bool Proceed = true;
+
+  while (Proceed)
     {
       // TODO Provide a call back method for resolving simultaneous assignments.
       StateChange = mpContainer->processQueue(false);
@@ -698,10 +698,10 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime, const bool & final)
             break;
         }
 
-      mProceed = mpCallBack == NULL || mpCallBack->proceed();
+      Proceed = mpCallBack == NULL || mpCallBack->proceed();
     }
 
-  return mProceed;
+  return Proceed;
 }
 
 // virtual

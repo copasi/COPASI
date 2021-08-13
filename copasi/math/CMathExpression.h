@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -105,7 +105,7 @@ public:
   /**
    * Compile the Jit expression if we have a compiler at hand
    */
-  virtual bool compileJit() override;
+  virtual void compileJit() override;
 #endif
 
   /**
@@ -163,15 +163,6 @@ private:
    * The prerequisites for calculating the expression.
    */
   CObjectInterface::ObjectSet mPrerequisites;
-
-  /**
-   * Pointer to JIT compiled function returning a double
-   */
-#ifdef USE_JIT
-  CJitCompiler::Function * mpJitFunction;
-#else
-  void * mpJitFunction;
-#endif
 };
 
 #endif // COPASI_CMathExpression

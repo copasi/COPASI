@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,7 +68,7 @@ void CQTSSAResultSubWidget::saveDataToFile()
     {
       fileName =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          "untitled.txt", "Text Files (*.txt)", "Save to");
+                                          CopasiFileDialog::getDefaultFileName(".txt"), "Text Files (*.txt)", "Save to");
 
       if (fileName.isEmpty()) return;
 
@@ -129,7 +129,6 @@ void CQTSSAResultSubWidget::slotTableChanged()
       mpArrayWidget->setColorCoding(tcs);
       mpArrayWidget->setColorScalingAutomatic(true);
     }
-
 
   pTSSATask =
     dynamic_cast< CTSSATask * >(&mpDataModel->getTaskList()->operator[]("Time Scale Separation Analysis"));

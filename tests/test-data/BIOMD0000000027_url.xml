@@ -1,0 +1,485 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<!-- Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the -->
+<!-- University of Virginia, University of Heidelberg, and University -->
+<!-- of Connecticut School of Medicine. -->
+<!-- All rights reserved. -->
+
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" metaid="metaid_0000001" version="4">
+  <model id="Markevich2004_MAPK_orderedMM" metaid="metaid_0000002" name="Markevich2004 - MAPK double phosphorylation,  ordered Michaelis-Menton">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <div class="dc:title">Markevich2004 - MAPK double phosphorylation,
+ordered Michaelis-Menton</div>
+<div class="dc:description">The model corresponds to the schemas 1
+and 2 of Markevich et al 2004, as described in the figure 1 and
+modelled using Michaelis-Menten like kinetics. Phosphorylations and
+dephosphorylations follow distributive ordered kinetics. It
+reproduces figure 3 of the main article.</div>
+<div class="dc:bibliographicCitation">
+  <p>This model is described in the article:</p>
+  <div class="bibo:title">
+    <a href="http://identifiers.org/pubmed/14744999" title="Access to this publication">Signaling switches and
+    bistability arising from multisite phosphorylation in protein
+    kinase cascades.</a>
+  </div>
+  <div class="bibo:authorList">Markevich NI, Hoek JB, Kholodenko
+  BN.</div>
+  <div class="bibo:Journal">J. Cell Biol. 2004 Feb; 164(3):
+  353-359</div>
+  <p>Abstract:</p>
+  <div class="bibo:abstract">
+    <p>Mitogen-activated protein kinase (MAPK) cascades can operate
+    as bistable switches residing in either of two different stable
+    states. MAPK cascades are often embedded in positive feedback
+    loops, which are considered to be a prerequisite for bistable
+    behavior. Here we demonstrate that in the absence of any
+    imposed feedback regulation, bistability and hysteresis can
+    arise solely from a distributive kinetic mechanism of the
+    two-site MAPK phosphorylation and dephosphorylation.
+    Importantly, the reported kinetic properties of the kinase
+    (MEK) and phosphatase (MKP3) of extracellular signal-regulated
+    kinase (ERK) fulfill the essential requirements for generating
+    a bistable switch at a single MAPK cascade level. Likewise, a
+    cycle where multisite phosphorylations are performed by
+    different kinases, but dephosphorylation reactions are
+    catalyzed by the same phosphatase, can also exhibit bistability
+    and hysteresis. Hence, bistability induced by multisite
+    covalent modification may be a widespread mechanism of the
+    control of protein activity.</p>
+  </div>
+</div>
+<div class="dc:publisher">
+  <p>This model is hosted on 
+  <a href="http://www.ebi.ac.uk/biomodels/">BioModels Database</a>
+  and identified by: 
+  <a href="http://identifiers.org/biomodels.db/BIOMD0000000027">BIOMD0000000027</a>.</p>
+  <p>To cite BioModels Database, please use: 
+  <a href="http://identifiers.org/pubmed/20587024" title="Latest BioModels Database publication">BioModels Database:
+  An enhanced, curated and annotated resource for published
+  quantitative kinetic models</a>.</p>
+</div>
+<div class="dc:license">
+  <p>To the extent possible under law, all copyright and related or
+  neighbouring rights to this encoded model have been dedicated to
+  the public domain worldwide. Please refer to 
+  <a href="http://creativecommons.org/publicdomain/zero/1.0/" title="Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication">CC0
+  Public Domain Dedication</a> for more information.</p>
+</div>
+</body>
+    </notes>
+    <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+        <rdf:Description rdf:about="#metaid_0000002">
+	<dc:creator>
+	<rdf:Bag>
+	<rdf:li rdf:parseType="Resource">
+	<vCard:N rdf:parseType="Resource">
+	<vCard:Family>Le Novère</vCard:Family>
+	<vCard:Given>Nicolas</vCard:Given>
+	</vCard:N>
+	<vCard:EMAIL>lenov@ebi.ac.uk</vCard:EMAIL>
+	<vCard:ORG rdf:parseType="Resource">
+	<vCard:Orgname>EMBL-EBI</vCard:Orgname>
+	</vCard:ORG>
+	</rdf:li>
+	</rdf:Bag>
+	</dc:creator>
+	<dcterms:created rdf:parseType="Resource">
+	<dcterms:W3CDTF>2005-05-23T13:41:40Z</dcterms:W3CDTF>
+	</dcterms:created>
+	<dcterms:modified rdf:parseType="Resource">
+	<dcterms:W3CDTF>2015-06-01T13:12:49Z</dcterms:W3CDTF>
+	</dcterms:modified>
+	<bqmodel:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/biomodels.db/MODEL6618496308"/>
+	</rdf:Bag>
+	</bqmodel:is>
+	<bqmodel:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/biomodels.db/BIOMD0000000027"/>
+	</rdf:Bag>
+	</bqmodel:is>
+	<bqmodel:isDescribedBy>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/pubmed/14744999"/>
+	</rdf:Bag>
+	</bqmodel:isDescribedBy>
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/go/GO:0000165"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	<bqbiol:hasTaxon>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/taxonomy/8355"/>
+	</rdf:Bag>
+	</bqbiol:hasTaxon>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+      <listOfUnitDefinitions>
+      <unitDefinition id="substance" metaid="metaid_0000038" name="nanomole (default)">
+        <listOfUnits>
+          <unit kind="mole" metaid="_024814" scale="-9"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="uVol" metaid="metaid_0000028" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species compartment="uVol" id="M" initialAmount="500" metaid="metaid_0000029">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000029">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P26696"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="uVol" id="Mp" initialAmount="0" metaid="metaid_0000030">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000030">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P26696"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="uVol" id="Mpp" initialAmount="0" metaid="metaid_0000031">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000031">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P26696"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="uVol" constant="true" id="MAPKK" initialAmount="50" metaid="metaid_0000032">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000032">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/Q05116"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+      <species compartment="uVol" constant="true" id="MKP3" initialAmount="100" metaid="metaid_0000033">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000033">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/Q90W58"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+            </species>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="k1cat" metaid="metaid_0000019" value="0.01"/>
+      <parameter id="Km1" metaid="metaid_0000020" value="50"/>
+      <parameter id="k2cat" metaid="metaid_0000021" value="15"/>
+      <parameter id="Km2" metaid="metaid_0000022" value="500"/>
+      <parameter id="k3cat" metaid="metaid_0000023" value="0.084"/>
+      <parameter id="Km3" metaid="metaid_0000024" value="22"/>
+      <parameter id="k4cat" metaid="metaid_0000025" value="0.06"/>
+      <parameter id="Km4" metaid="metaid_0000026" value="18"/>
+      <parameter id="Km5" metaid="metaid_0000027" value="78"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="v1" metaid="metaid_0000043" name="phosphorylation of MAPK" reversible="false">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000043">
+              <bqbiol:isHomologTo>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/reactome/REACT_2247"/>
+	<rdf:li rdf:resource="http://identifiers.org/reactome/REACT_136"/>
+	</rdf:Bag>
+	</bqbiol:isHomologTo>
+	
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/ec-code/2.7.12.2"/>
+	<rdf:li rdf:resource="http://identifiers.org/go/GO:0004708"/>
+	<rdf:li rdf:resource="http://identifiers.org/go/GO:0006468"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference metaid="_024826" species="M"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_024838" species="Mp"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_024850" species="MAPKK"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_024862">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> uVol </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> k1cat </ci>
+                    <ci> MAPKK </ci>
+                    <ci> M </ci>
+                  </apply>
+                  <ci> Km1 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> M </ci>
+                    <ci> Km1 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> Mp </ci>
+                    <ci> Km2 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v2" metaid="metaid_0000044" name="phosphorylation of P-MAPK" reversible="false">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000044">
+              <bqbiol:isHomologTo>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/reactome/REACT_136"/>
+	<rdf:li rdf:resource="http://identifiers.org/reactome/REACT_2247"/>
+	</rdf:Bag>
+	</bqbiol:isHomologTo>
+	
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/ec-code/2.7.12.2"/>
+	<rdf:li rdf:resource="http://identifiers.org/go/GO:0004708"/>
+	<rdf:li rdf:resource="http://identifiers.org/go/GO:0000187"/>
+	<rdf:li rdf:resource="http://identifiers.org/go/GO:0006468"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference metaid="_024874" species="Mp"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_024886" species="Mpp"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_024898" species="MAPKK"/>
+          <modifierSpeciesReference metaid="_024910" species="M"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_024922">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> uVol </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> k2cat </ci>
+                    <ci> MAPKK </ci>
+                    <ci> Mp </ci>
+                  </apply>
+                  <ci> Km2 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> M </ci>
+                    <ci> Km1 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> Mp </ci>
+                    <ci> Km2 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v3" metaid="metaid_0000045" name="dephosphorylation of PP-MAPK" reversible="false">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000045">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/ec-code/3.1.3.16"/>
+	<rdf:li rdf:resource="http://identifiers.org/go/GO:0000188"/>
+	<rdf:li rdf:resource="http://identifiers.org/go/GO:0006470"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference metaid="_024934" species="Mpp"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_024946" species="Mp"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_024958" species="MKP3"/>
+          <modifierSpeciesReference metaid="_024970" species="M"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_024982">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> uVol </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> k3cat </ci>
+                    <ci> MKP3 </ci>
+                    <ci> Mpp </ci>
+                  </apply>
+                  <ci> Km3 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> Mpp </ci>
+                    <ci> Km3 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> Mp </ci>
+                    <ci> Km4 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> M </ci>
+                    <ci> Km5 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction id="v4" metaid="metaid_0000046" name="dephosphorylation of P-MAPK" reversible="false">
+        <annotation>
+	<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:bqmodel="http://biomodels.net/model-qualifiers/" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+            <rdf:Description rdf:about="#metaid_0000046">
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/ec-code/3.1.3.16"/>
+	<rdf:li rdf:resource="http://identifiers.org/go/GO:0006470"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+	</rdf:RDF>
+	</annotation>
+              <listOfReactants>
+          <speciesReference metaid="_024995" species="Mp"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference metaid="_025007" species="M"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference metaid="_025019" species="MKP3"/>
+          <modifierSpeciesReference metaid="_025031" species="Mpp"/>
+        </listOfModifiers>
+        <kineticLaw metaid="_025043">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> uVol </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> k4cat </ci>
+                    <ci> MKP3 </ci>
+                    <ci> Mp </ci>
+                  </apply>
+                  <ci> Km4 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> Mpp </ci>
+                    <ci> Km3 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> Mp </ci>
+                    <ci> Km4 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> M </ci>
+                    <ci> Km5 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

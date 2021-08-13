@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,7 @@ const CEnumAnnotation< std::string, CData::Property > CData::PropertyName(
   "Chemical Equation", // CHEMICAL_EQUATION
   "Kinetic Law", // KINETIC_LAW
   "Kinetic Law Unit Type", // KINETIC_LAW_UNIT_TYPE
-  "Kinetic Law Variable Mapping", // KINEITC_LAW_VARIABLE_MAPPING
+  "Kinetic Law Variable Mapping", // KINETIC_LAW_VARIABLE_MAPPING
   "Local Reaction Parameters", // LOCAL_REACTION_PARAMETERS
   "Scaling Compartment", // SCALING_COMPARTMENT
   "Object UUID", // OBJECT_UUID

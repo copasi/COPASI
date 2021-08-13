@@ -1109,12 +1109,16 @@ bool CFitProblem::calculate()
                         if (mpTimeSens)
                           {
                             static_cast<CTrajectoryProblem*>(mpTimeSens->getProblem())->setStepNumber(1);
-                            mpTimeSens->processStart(true);
+
+                            if (!mpTimeSens->processStart(true))
+                              throw CCopasiMessage(CCopasiMessage::getLastMessage());
                           }
                         else
                           {
                             static_cast<CTrajectoryProblem*>(mpTrajectory->getProblem())->setStepNumber(1);
-                            mpTrajectory->processStart(true);
+
+                            if (!mpTrajectory->processStart(true))
+                              throw CCopasiMessage(CCopasiMessage::getLastMessage());
                           }
 
                         C_FLOAT64 NextTime = pExp->getTimeData()[0];
@@ -2477,12 +2481,16 @@ bool CFitProblem::calculateCrossValidation()
                         if (mpTimeSens)
                           {
                             static_cast<CTrajectoryProblem*>(mpTimeSens->getProblem())->setStepNumber(1);
-                            mpTimeSens->processStart(true);
+
+                            if (!mpTimeSens->processStart(true))
+                              throw CCopasiMessage(CCopasiMessage::getLastMessage());
                           }
                         else
                           {
                             static_cast<CTrajectoryProblem*>(mpTrajectory->getProblem())->setStepNumber(1);
-                            mpTrajectory->processStart(true);
+
+                            if (!mpTrajectory->processStart(true))
+                              throw CCopasiMessage(CCopasiMessage::getLastMessage());
                           }
 
                         C_FLOAT64 NextTime = pExp->getTimeData()[0];

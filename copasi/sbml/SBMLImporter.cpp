@@ -105,6 +105,8 @@
 #include <copasi/MIRIAM/CBiologicalDescription.h>
 #include <copasi/MIRIAM/CModelMIRIAMInfo.h>
 
+#define SBML_AVOGADRO 6.02214179e23
+
 #if LIBSBML_HAS_PACKAGE_COMP
 
 #include <sbml/util/PrefixTransformer.h>
@@ -298,7 +300,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
   // for SBML L3 files the default units are defined on the model
   if (this->mLevel > 2)
     {
-      this->mpCopasiModel->setAvogadro(6.02214179e23, CCore::Framework::Concentration);
+      this->mpCopasiModel->setAvogadro(SBML_AVOGADRO, CCore::Framework::Concentration);
       this->mAvogadroSet = true;
 
       // we make copies of the unit definitions so that we do not have to remember
@@ -2462,7 +2464,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
               if (stoi != stoi)
                 stoi = 1.0;
             }
-
         }
 
       std::map<std::string, CMetab*>::iterator pos;
@@ -2734,7 +2735,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
 
           ConverterASTNode* node = new ConverterASTNode(*kLawMath);
-          this->preprocessNode(node, pSBMLModel, copasi2sbmlmap, sbmlReaction);
+          preprocessNode(node, pSBMLModel, copasi2sbmlmap, sbmlReaction);
 
           if (node == NULL)
             {
@@ -3454,7 +3455,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_FATAL:
 
-                // treat unknown as fatal
+              // treat unknown as fatal
               default:
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());

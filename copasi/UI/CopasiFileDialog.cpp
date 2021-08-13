@@ -26,14 +26,17 @@
 
 #include "copasi/copasi.h"
 
-#include "CopasiFileDialog.h"
-#include "qtUtilities.h"
-#include "CQMessageBox.h"
+#include "copasi/UI/CopasiFileDialog.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/UI/CQMessageBox.h"
+#include "copasi/UI/copasiui3window.h"
+#include "copasi/UI/listviews.h"
 
 #include "copasi/commandline/COptions.h"
+#include "copasi/commandline/CConfigurationFile.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/utilities/CDirEntry.h"
 #include "copasi/core/CRootContainer.h"
-#include "copasi/commandline/CConfigurationFile.h"
 
 #include <QRegExp>
 
@@ -175,4 +178,27 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
 #endif
 
   return newFile;
+}
+
+// static
+QString CopasiFileDialog::getDefaultFileName(const QString & suffix)
+{
+  QString Default = "untitled" + suffix;
+
+  CopasiUI3Window * pMainWindow = CopasiUI3Window::getMainWindow();
+
+  if (pMainWindow == NULL)
+    return Default;
+
+  ListViews * pMainWidget =  pMainWindow->getMainWidget();
+
+  if (pMainWidget == NULL)
+    return Default;
+
+  CDataModel * pDataModel = pMainWidget->getDataModel();
+
+  if (pDataModel == NULL)
+    return Default;
+
+  return FROM_UTF8(pDataModel->getDefaultFileName(TO_UTF8(suffix)));
 }

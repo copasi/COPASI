@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -321,7 +321,7 @@ protected:
    * Creates a map of each parameter of the function definition and its
    * corresponding parameter in the function call.
    */
-  std::map<std::string , ASTNode*> createBVarMap(const ASTNode* uDefFunction,
+  std::map<std::string, ASTNode*> createBVarMap(const ASTNode* uDefFunction,
       const ASTNode* function);
 
   /**
@@ -500,7 +500,6 @@ public:
    */
   std::string createUnitExpressionFor(const UnitDefinition * pSBMLUnit);
 
-
 protected:
   std::vector<CEvaluationNodeObject*>* isMassAction(const CEvaluationTree* pTree,
       const CChemEq& chemicalEquation,
@@ -541,8 +540,6 @@ protected:
    * If it returns false, the tree was not changed
    */
   bool divideByVolume(ASTNode* node, const std::string& compartmentSBMLId);
-
-
 
   CEvaluationNode* variables2objects(const CEvaluationNode* pOrigNode,
                                      const std::map<std::string, std::string>& replacementMap);
@@ -769,7 +766,6 @@ public:
    */
   virtual void clearCallBack();
 
-
   /**
    * Enhanced method to identify identical SBML unit definitions.
    * This method uses the areIdentical method from libSBML, but if the method
@@ -834,7 +830,6 @@ public:
    * Goes through all SBML reactions and collects the ids of all species references.
    */
   static void updateSBMLSpeciesReferenceIds(Model* pModel, std::map<std::string, double>& ids);
-
 };
 
 #endif // SBMLIMPORTER_H__

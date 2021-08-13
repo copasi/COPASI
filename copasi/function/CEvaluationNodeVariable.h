@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,7 +68,7 @@ public:
    * @param const CEvaluationTree * pTree
    * @return CIssue issue;
    */
-  virtual CIssue compile(const CEvaluationTree * pTree);
+  virtual CIssue compile() override;
 
   /**
    * Calculate the numerical result of the node. It is assumed that
@@ -125,11 +125,6 @@ public:
 
   //Attributes
 private:
-  /**
-   * Pointer to the evaluation tree.
-   */
-  const CEvaluationTree * mpTree;
-
   /**
    * Index of the variable used to retrieve its value from the tree.
    */

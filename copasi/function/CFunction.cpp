@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -166,6 +166,15 @@ CIssue CFunction::setInfix(const std::string & infix)
       switch ((*it)->mainType())
         {
           case CEvaluationNode::MainType::OBJECT:
+            if ((*it)->subType() != CEvaluationNode::SubType::AVOGADRO)
+              {
+                issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
+                mValidity.add(issue);
+                return firstWorstIssue &= issue;
+              }
+
+            break;
+
           case CEvaluationNode::MainType::DELAY:
             issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
             mValidity.add(issue);
@@ -443,13 +452,13 @@ std::string CFunction::writeMathML(const std::vector< std::vector< std::string >
 {
   std::ostringstream out;
 
-  if (expand && mpRootNode)
+  if (expand && getRoot() != NULL)
     {
       bool flag = false; //TODO include check if parentheses are necessary
 
       if (flag) out << "<mfenced>" << std::endl;
 
-      out << mpRootNode->buildMMLString(fullExpand, variables);
+      out << getRoot()->buildMMLString(fullExpand, variables);
 
       if (flag) out << "</mfenced>" << std::endl;
     }
@@ -519,8 +528,8 @@ CFunction * CFunction::createCopy() const
   //newFunction->mVariables = this->mVariables; //WRONG! only shallow copy!!
   newFunction->mReversible = this->mReversible;
 
-  if (this->mpRootNode)
-    newFunction->setRoot(this->mpRootNode->copyBranch());
+  if (getRoot() != NULL)
+    newFunction->setRoot(getRoot()->copyBranch());
 
   //newFunction->mInfix = newFunction->mpRoot->getInfix();
 
@@ -533,9 +542,9 @@ std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNo
     const std::string & name1,
     const std::string & name2) const
 {
-  if (!this->mpRootNode) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
+  if (getRoot() == NULL) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
 
-  if (this->mReversible != TriTrue) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
+  if (mReversible != TriTrue) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
 
   //create 2 new functions
   CFunction* newFunction1 = new CFunction();
@@ -550,13 +559,13 @@ std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNo
   std::vector<CFunctionAnalyzer::CValue> callParameters;
   CFunctionAnalyzer::constructCallParameters(this->getVariables(), callParameters, true);
   // find the split point
-  const CEvaluationNode* splitnode = this->mpRootNode->findTopMinus(callParameters);
+  const CEvaluationNode* splitnode = getRoot()->findTopMinus(callParameters);
 
   if (!splitnode) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
 
   //create the 2 split trees
-  CEvaluationNode* tmpRoots1 = this->mpRootNode->splitBranch(splitnode, true); //left side
-  CEvaluationNode* tmpRoots2 = this->mpRootNode->splitBranch(splitnode, false); //right side
+  CEvaluationNode* tmpRoots1 = getRoot()->splitBranch(splitnode, true); //left side
+  CEvaluationNode* tmpRoots2 = getRoot()->splitBranch(splitnode, false); //right side
 
   if (tmpRoots1)
     newFunction1->setRoot(tmpRoots1);

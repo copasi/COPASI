@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,7 +47,7 @@ const CEnumAnnotation< std::string, CQIconResource::IconID > CQIconResource::Bac
   "fileSave.png",
   "fileSaveas.png",
   "information.png",
-  "isToS.png",
+  "isToS_128.png",
   "locked.png",
   "miriam.png",
   "moveDown.png",
@@ -68,7 +68,7 @@ const CEnumAnnotation< std::string, CQIconResource::IconID > CQIconResource::Bac
   "renderMathML.png",
   "separator.png",
   "slider.png",
-  "sToIs.png",
+  "sToIs_128.png",
   "table.png",
   "tool.png",
   "unlocked.png",

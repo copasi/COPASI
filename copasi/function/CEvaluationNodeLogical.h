@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -113,7 +113,6 @@ public:
 
         default:
           break;
-
       }
   }
 
@@ -122,7 +121,7 @@ public:
    * @param const CEvaluationTree * pTree
    * @return CIssue issue;
    */
-  virtual CIssue compile(const CEvaluationTree * pTree);
+  virtual CIssue compile() override;
 
   /**
    * Retrieve the infix value of the node and its eventual child nodes.
@@ -175,8 +174,8 @@ public:
    * @return CUnit unit
    */
   virtual CValidatedUnit setUnit(const CMathContainer & container,
-                                 const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
-                                 std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const;
+                                 const std::map < CEvaluationNode *, CValidatedUnit > & currentUnits,
+                                 std::map < CEvaluationNode *, CValidatedUnit > & targetUnits) const;
 
   /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children

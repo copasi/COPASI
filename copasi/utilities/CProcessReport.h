@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,7 +40,6 @@ private:
   CProcessReportItem();
 
 public:
-
   /**
    * Specific constructor
    * @param const string & name
@@ -105,6 +104,15 @@ private:
 
 class CProcessReport
 {
+protected:
+  enum struct ProccessingInstruction
+  {
+    Continue,
+    Pause,
+    Stop,
+    Kill
+  };
+
   // Operations
 public:
   /**
@@ -227,7 +235,6 @@ public:
 
 protected:
 
-
 #ifndef SWIG
   /**
    * Add a process report item to to the list of reporting items.
@@ -269,8 +276,30 @@ public:
    */
   virtual bool setName(const std::string & name);
 
+  /**
+   * Set whether to ignore stop when determininning to proceed.
+   * @param const bool & ignoreStop (default: true)
+   */
+  void setIgnoreStop(const bool & ignoreStop = true);
+
+  /**
+   * Retrieve whether to ignore stop when determininning to proceed.
+   * @return const bool & ignoreStop
+   */
+  const bool & getIgnoreStop() const;
+
   // Attributes
 protected:
+  /**
+   * The current prossecing instructions
+   */
+  ProccessingInstruction mProccessingInstruction;
+
+  /**
+   * Flag indicating whether to continue proccessing after stop instruction
+   */
+  bool mIgnoreStop;
+
   /**
    * The list process report items.
    */

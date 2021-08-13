@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,7 +19,7 @@ public:
 
   double calculateJit();
 
-  virtual bool compileJit() = 0;
+  virtual void compileJit() = 0;
 
   void setCompiler(CJitCompiler * pCompiler);
 
@@ -31,7 +31,7 @@ private:
   CJitCompiler * mpCompiler;
 
 protected:
-  CJitCompiler::Function mFunction;
+  CJitCompiler::Function mpJitFunction;
 };
 
 #endif // COPASI_CJitExpression

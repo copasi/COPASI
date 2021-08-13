@@ -159,9 +159,7 @@ public:
    * stored in the recent file list (will reset after one load / import)
    */
   void setIgnoreNextFile(bool ignore);
-  void addRecentCopasiFile(const std::string& file);
-  void addRecentSBMLFile(const std::string& file);
-  void addRecentSEDMLFile(const std::string& file);
+  void addRecentFile(const std::string& file);
 
 protected:
 private:

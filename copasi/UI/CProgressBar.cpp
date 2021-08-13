@@ -168,7 +168,7 @@ bool CProgressBar::resetItem(const size_t & handle)
 {
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL) return false;
 
-  return (mProgressItemList[handle]->reset() && mProceed);
+  return (mProgressItemList[handle]->reset() && proceed());
 }
 
 bool CProgressBar::progressItem(const size_t & handle)
@@ -176,35 +176,7 @@ bool CProgressBar::progressItem(const size_t & handle)
   if (!isValidHandle(handle) || mProgressItemList[handle] == NULL)
     return false;
 
-  QDateTime currDateTime = QDateTime::currentDateTime();
-
-  if (mNextEventProcessing >= currDateTime)
-    return mProceed;
-
-  mNextEventProcessing = currDateTime.addSecs(1);
-
-  if (mPause)
-    {
-      QMutexLocker Locker(&mMutex);
-      mWaitPause.wait(&mMutex);
-    }
-
-  if (!CopasiUI3Window::isMainThread())
-    {
-      if (mSlotFinished)
-        {
-          mSlotFinished = false;
-
-          emit signalProgressAll();
-        }
-    }
-  else
-    {
-      slotProgressAll();
-      QCoreApplication::processEvents();
-    }
-
-  return mProceed;
+  return proceed();
 }
 
 void CProgressBar::slotProgressAll()
@@ -216,12 +188,13 @@ void CProgressBar::slotProgressAll()
   for (hItem = 0; hItem < hmax; hItem++)
     {
       if (mProgressItemList[hItem])
-        mProceed &= mProgressItemList[hItem]->process();
+        mProgressItemList[hItem]->process();
     }
 
   mSlotFinished = true;
 }
 
+// virtual
 bool CProgressBar::finish()
 {
   // Assure that all signals have been properly handled before we delete
@@ -250,11 +223,9 @@ bool CProgressBar::finish()
     }
 
   CopasiUI3Window::getMainWindow()->disableSliders(false);
-
-  CProcessReport::finish();
   done(1);
 
-  return mProceed;
+  return CProcessReport::finish();
 }
 
 bool CProgressBar::finishItem(const size_t & handle)
@@ -279,7 +250,7 @@ bool CProgressBar::finishItem(const size_t & handle)
       QCoreApplication::processEvents();
     }
 
-  return mProceed;
+  return proceed();
 }
 
 void CProgressBar::slotFinishItem(const int handle)
@@ -305,9 +276,38 @@ void CProgressBar::slotFinishItem(const int handle)
   mWaitSlot.wakeAll();
 }
 
+// virtual
 bool CProgressBar::proceed()
 {
-  return mProceed;
+  if (mProccessingInstruction == ProccessingInstruction::Pause)
+    {
+      QMutexLocker Locker(&mMutex);
+      mWaitPause.wait(&mMutex);
+    }
+
+  QDateTime currDateTime = QDateTime::currentDateTime();
+
+  if (mNextEventProcessing < currDateTime)
+    {
+      mNextEventProcessing = currDateTime.addSecs(1);
+
+      if (!CopasiUI3Window::isMainThread())
+        {
+          if (mSlotFinished)
+            {
+              mSlotFinished = false;
+
+              emit signalProgressAll();
+            }
+        }
+      else
+        {
+          slotProgressAll();
+          QCoreApplication::processEvents();
+        }
+    }
+
+  return CProcessReport::proceed();
 }
 
 // virtual
@@ -355,13 +355,30 @@ void CProgressBar::closeEvent(QCloseEvent *e)
 // virtual
 void CProgressBar::btnStopPressed()
 {
+  mProccessingInstruction = ProccessingInstruction::Stop;
   CQProgressDialog::btnStopPressed();
   mWaitPause.wakeAll();
 }
 
 // virtual
+void CProgressBar::btnKillPressed()
+{
+  mProccessingInstruction = ProccessingInstruction::Kill;
+  CQProgressDialog::btnKillPressed();
+  mWaitPause.wakeAll();
+}
+
+// virtual
+void CProgressBar::btnPausePressed()
+{
+  mProccessingInstruction = ProccessingInstruction::Pause;
+  CQProgressDialog::btnPausePressed();
+}
+
+// virtual
 void CProgressBar::btnContinuePressed()
 {
+  mProccessingInstruction = ProccessingInstruction::Continue;
   CQProgressDialog::btnContinuePressed();
   mWaitPause.wakeAll();
 }

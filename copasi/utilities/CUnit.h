@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -154,6 +154,7 @@ private:
 
   static C_INT32 getExponentOfSymbol(const std::pair< std::string, CUnit > & SymbolDef, CUnit & unit);
   static std::pair< C_INT32, C_INT32 > removeSymbolFromUnit(const CUnit & symbol, CUnit & unit);
+  static void replaceExponentInExpression(std::string & expression, const size_t & exponent);
 };
 
 #endif // CUNIT_H

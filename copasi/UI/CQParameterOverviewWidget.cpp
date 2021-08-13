@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -467,7 +467,7 @@ void CQParameterOverviewWidget::slotBtnSaveToFile()
     {
       fileName =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          "untitled.tsv", "Tab Separated Files (*.tsv);;Comma Separated Files (*.csv);;TEXT Files (*.txt);;INI Files (*.ini)", "Save as");
+                                          CopasiFileDialog::getDefaultFileName(".tsv"), "Tab Separated Files (*.tsv);;Comma Separated Files (*.csv);;TEXT Files (*.txt);;INI Files (*.ini)", "Save as");
 
       if (fileName.isEmpty()) return;
 

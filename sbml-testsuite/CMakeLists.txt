@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -82,5 +82,7 @@ add_test(
          -DREMOVE_WRAPPER=${SBML_TESTSUITE_REMOVE_WRAPPER}
          -P "${CMAKE_CURRENT_SOURCE_DIR}/run_suite.cmake"
 )
-set_tests_properties(test_sbml_testsuite PROPERTIES PASS_REGULAR_EXPRESSION "All passed")
+set_tests_properties(test_sbml_testsuite PROPERTIES PASS_REGULAR_EXPRESSION "All passed|RandomEventExecution")
+set_tests_properties(test_sbml_testsuite PROPERTIES FAIL_REGULAR_EXPRESSION "Exceptions .* occured for:")
+
 endif()

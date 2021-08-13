@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -390,73 +390,73 @@ CNormalItem* createItem(const CEvaluationNode* pNode)
         pItem = new CNormalItem(pNode->buildInfix(), CNormalItem::CONSTANT);
         break;
 
-        /*
-        case CEvaluationNode::T_OPERATOR:
-        if ((pNode->subType())==CEvaluationNode::S_POWER
-            || (pNode->subType())==CEvaluationNode::S_MODULUS)
-        {
-            // calling createItem will add the wrong pNode for the
-            // string into the lookup table
-            CNormalItem * child1 = createItem(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
-            CNormalItem * child2 = createItem(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling()));
+      /*
+      case CEvaluationNode::T_OPERATOR:
+      if ((pNode->subType())==CEvaluationNode::S_POWER
+          || (pNode->subType())==CEvaluationNode::S_MODULUS)
+      {
+          // calling createItem will add the wrong pNode for the
+          // string into the lookup table
+          CNormalItem * child1 = createItem(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
+          CNormalItem * child2 = createItem(dynamic_cast<const CEvaluationNode*>(pNode->getChild()->getSibling()));
 
-            std::stringstream tmp;
-            if ((child1->getType() == CNormalItem::VARIABLE) || (child1->getType() == CNormalItem::CONSTANT))
-                tmp << *child1;
-            else
-            {
-                tmp << "(" << *child1 << ")";
-            }
-            tmp << pNode->getData();
-            if ((child2->getType() == CNormalItem::VARIABLE) || (child2->getType() == CNormalItem::CONSTANT))
-                tmp << *child2;
-            else
-            {
-                tmp << "(" << *child2 << ")";
-            }
+          std::stringstream tmp;
+          if ((child1->getType() == CNormalItem::VARIABLE) || (child1->getType() == CNormalItem::CONSTANT))
+              tmp << *child1;
+          else
+          {
+              tmp << "(" << *child1 << ")";
+          }
+          tmp << pNode->getData();
+          if ((child2->getType() == CNormalItem::VARIABLE) || (child2->getType() == CNormalItem::CONSTANT))
+              tmp << *child2;
+          else
+          {
+              tmp << "(" << *child2 << ")";
+          }
 
-            pItem = new CNormalItem(tmp.str(), CNormalItem::FUNCTION);
-            std::string s=tmp.str();
-            std::map<std::string,const CEvaluationNode*>::const_iterator pos=str2eval.find(tmp.str());
-            if(pos==str2eval.end())
-            {
-                CEvaluationNode::SubType type=CEvaluationNode::S_POWER;
-                std::string s("^");
-                if(pNode->getData()=="%")
-                {
-                    type=CEvaluationNode::S_MODULUS;
-                    s="%";
-                }
-                CEvaluationNodeOperator* pNode=new CEvaluationNodeOperator(type,s);
-                // when the child pNode is converted, the wrongly added
-                // pNode from above is returned
+          pItem = new CNormalItem(tmp.str(), CNormalItem::FUNCTION);
+          std::string s=tmp.str();
+          std::map<std::string,const CEvaluationNode*>::const_iterator pos=str2eval.find(tmp.str());
+          if(pos==str2eval.end())
+          {
+              CEvaluationNode::SubType type=CEvaluationNode::S_POWER;
+              std::string s("^");
+              if(pNode->getData()=="%")
+              {
+                  type=CEvaluationNode::S_MODULUS;
+                  s="%";
+              }
+              CEvaluationNodeOperator* pNode=new CEvaluationNodeOperator(type,s);
+              // when the child pNode is converted, the wrongly added
+              // pNode from above is returned
 
-                pNode->addChild(convertToCEvaluationNode(*child1));
-                pNode->addChild(convertToCEvaluationNode(*child2));
-                //pNode->printRecursively(std::cerr);
-                str2eval[tmp.str()]=pNode;
-            }
-            delete child1;
-            delete child2;
-        }
-        else // can be called only by createItem('OPERATOR pNode')
-        {
-            CNormalFraction * normedNode = createFraction(pNode);
-            normedNode->simplify();
-            CEvaluationNode* pTmpNode=convertToCEvaluationNode(*normedNode);
-            std::stringstream tmp;
-            tmp << *normedNode;
-            pItem = new CNormalItem(tmp.str(), CNormalItem::FUNCTION);
-            std::map<std::string,const CEvaluationNode*>::const_iterator pos=str2eval.find(normedNode->toString());
-            if(pos==str2eval.end())
-            {
-                str2eval[tmp.str()]=pTmpNode;
-            }
+              pNode->addChild(convertToCEvaluationNode(*child1));
+              pNode->addChild(convertToCEvaluationNode(*child2));
+              //pNode->printRecursively(std::cerr);
+              str2eval[tmp.str()]=pNode;
+          }
+          delete child1;
+          delete child2;
+      }
+      else // can be called only by createItem('OPERATOR pNode')
+      {
+          CNormalFraction * normedNode = createFraction(pNode);
+          normedNode->simplify();
+          CEvaluationNode* pTmpNode=convertToCEvaluationNode(*normedNode);
+          std::stringstream tmp;
+          tmp << *normedNode;
+          pItem = new CNormalItem(tmp.str(), CNormalItem::FUNCTION);
+          std::map<std::string,const CEvaluationNode*>::const_iterator pos=str2eval.find(normedNode->toString());
+          if(pos==str2eval.end())
+          {
+              str2eval[tmp.str()]=pTmpNode;
+          }
 
-            delete normedNode;
-        }
-        break;
-        */
+          delete normedNode;
+      }
+      break;
+      */
       default:   //cases CALL, CHOICE, LOGICAL, OBJECT, VECTOR.  NUMBER should not occur!
         throw std::exception();
         break;
@@ -1871,12 +1871,12 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogicalItem& item)
     {
       case CNormalLogicalItem::TRUE:
         pLogicalNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::True, "TRUE");
-        pLogicalNode->compile(NULL);
+        pLogicalNode->compile();
         break;
 
       case CNormalLogicalItem::FALSE:
         pLogicalNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::False, "FALSE");
-        pLogicalNode->compile(NULL);
+        pLogicalNode->compile();
         break;
 
       case CNormalLogicalItem::EQ:
@@ -1929,7 +1929,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalLogicalItem& item)
             {
               pLogicalNode->addChild(pChild1);
               pLogicalNode->addChild(pChild2);
-              pLogicalNode->compile(NULL);
+              pLogicalNode->compile();
             }
         }
     }

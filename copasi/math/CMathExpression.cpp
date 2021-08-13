@@ -34,7 +34,6 @@ CMathExpression::CMathExpression() :
 #endif
   CEvaluationTree()
   , mPrerequisites()
-  , mpJitFunction(NULL)
 {}
 
 CMathExpression::CMathExpression(const std::string & name,
@@ -44,7 +43,6 @@ CMathExpression::CMathExpression(const std::string & name,
 #endif
   CEvaluationTree(name, &container, CEvaluationTree::MathExpression)
   , mPrerequisites()
-  , mpJitFunction(NULL)
 {}
 
 CMathExpression::CMathExpression(const CExpression & src,
@@ -55,12 +53,11 @@ CMathExpression::CMathExpression(const CExpression & src,
 #endif
   CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression)
   , mPrerequisites()
-  , mpJitFunction(NULL)
 {
   clearNodes();
 
   // Create a converted copy of the existing expression tree.
-  mpRootNode = container.copyBranch(src.getRoot(), replaceDiscontinuousNodes);
+  setRoot(container.copyBranch(src.getRoot(), replaceDiscontinuousNodes));
 
   compile();
 }
@@ -74,7 +71,6 @@ CMathExpression::CMathExpression(const CFunction & src,
 #endif
   CEvaluationTree(src.getObjectName(), &container, CEvaluationTree::MathExpression)
   , mPrerequisites()
-  , mpJitFunction(NULL)
 {
   clearNodes();
 
@@ -97,7 +93,7 @@ CMathExpression::CMathExpression(const CFunction & src,
           }
 
         // Create a converted copy of the existing expression tree.
-        mpRootNode = container.copyBranch(src.getRoot(), Variables, replaceDiscontinuousNodes);
+        setRoot(container.copyBranch(src.getRoot(), Variables, replaceDiscontinuousNodes));
 
         // Deleted the created variables
         CMath::Variables< CEvaluationNode * >::iterator itVar = Variables.begin();
@@ -119,7 +115,7 @@ CMathExpression::CMathExpression(const CFunction & src,
         // Handle the case we were have an invalid number of call parameters.
         if (callParameters.size() < 2)
           {
-            mpRootNode = NULL;
+            setRoot(NULL);
           }
         else
           {
@@ -133,12 +129,12 @@ CMathExpression::CMathExpression(const CFunction & src,
 
             if (callParameters.size() < 4)
               {
-                mpRootNode = pPart;
+                setRoot(pPart);
               }
             else
               {
-                mpRootNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MINUS, "-");
-                mpRootNode->addChild(pPart);
+                setRoot(new CEvaluationNodeOperator(CEvaluationNode::SubType::MINUS, "-"));
+                getRoot()->addChild(pPart);
 
                 pK = it->value;
                 ++it;
@@ -147,7 +143,7 @@ CMathExpression::CMathExpression(const CFunction & src,
 
                 pPart = createMassActionPart(pK, pSpecies);
 
-                mpRootNode->addChild(pPart);
+                getRoot()->addChild(pPart);
               }
           }
       }
@@ -201,15 +197,16 @@ void CMathExpression::relocate(const CMathContainer * pContainer,
         }
     }
 
-  mInfix = mpRootNode != NULL ? mpRootNode->buildInfix() : "";
+  mInfix = getRoot() != NULL ? getRoot()->buildInfix() : "";
   pContainer->relocateObjectSet(mPrerequisites, relocations);
 }
 
 #ifdef USE_JIT
 // virtual
-bool CMathExpression::compileJit()
+void CMathExpression::compileJit()
 {
   CJitCompiler * pCompiler = getCompiler();
+  mpJitFunction = NULL;
 
   if (pCompiler != NULL)
     {
@@ -221,12 +218,12 @@ bool CMathExpression::compileJit()
           MaxLevel = itNode.level();
 
       if (MaxLevel > 5000)
-        return mFunction == NULL;
+        return;
 
-      mFunction = pCompiler->compile(*this);
+      mpJitFunction = pCompiler->compile(*this);
     }
 
-  return (pCompiler == NULL) || (mFunction != NULL);
+  return;
 }
 #endif
 
@@ -234,7 +231,7 @@ const C_FLOAT64 & CMathExpression::value()
 {
 #ifdef USE_JIT
 
-  if (mFunction != NULL)
+  if (mpJitFunction != NULL)
     mValue = calculateJit();
   else
     calculate();
@@ -274,7 +271,7 @@ CIssue CMathExpression::compile()
 
   for (; it != end; ++it)
     {
-      issue = (*it)->compile(this);
+      issue = (*it)->compile();
 
       mValidity.add(issue);
       firstWorstIssue &= issue;
@@ -344,8 +341,8 @@ bool CMathExpression::convertToInitialExpression()
 
   if (changed)
     {
-      mInfix = mpRootNode->buildInfix();
-      mpRootValue = mpRootNode->getValuePointer();
+      mInfix = getRoot()->buildInfix();
+      mpRootValue = getRoot()->getValuePointer();
     }
 
   return true;

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -338,7 +338,22 @@ CEvaluationNode::CEvaluationNode(const CEvaluationNode & src):
 
 CEvaluationNode::~CEvaluationNode() {}
 
-CIssue CEvaluationNode::compile(const CEvaluationTree * /* pTree */)
+const CEvaluationTree * CEvaluationNode::getTree() const
+{
+  const CCopasiNode< Data > * pParent = this;
+
+  while (pParent->getParent() != NULL)
+    pParent = pParent->getParent();
+
+  return static_cast< const CEvaluationNode * >(pParent)->mpTree;
+}
+
+void CEvaluationNode::setTree(const CEvaluationTree * pTree)
+{
+  mpTree = pTree;
+}
+
+CIssue CEvaluationNode::compile()
 {return CIssue::Success;}
 
 // virtual
@@ -897,11 +912,11 @@ CValidatedUnit CEvaluationNode::getUnit(const CMathContainer & /* math */,
 
 // virtual
 CValidatedUnit CEvaluationNode::setUnit(const CMathContainer & /* container */,
-                                        const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
-                                        std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+                                        const std::map < CEvaluationNode *, CValidatedUnit > & currentUnits,
+                                        std::map < CEvaluationNode *, CValidatedUnit > & targetUnits) const
 {
-  std::map < CEvaluationNode * , CValidatedUnit >::const_iterator itTargetUnit = targetUnits.find(const_cast< CEvaluationNode * >(this));
-  std::map < CEvaluationNode * , CValidatedUnit >::const_iterator itCurrentUnit = currentUnits.find(const_cast< CEvaluationNode * >(this));
+  std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itTargetUnit = targetUnits.find(const_cast< CEvaluationNode * >(this));
+  std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itCurrentUnit = currentUnits.find(const_cast< CEvaluationNode * >(this));
 
   CValidatedUnit Result(CValidatedUnit::merge(itTargetUnit->second, itCurrentUnit->second));
 

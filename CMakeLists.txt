@@ -203,11 +203,6 @@ endif()
 
 include(CTest)
 
-if (BUILD_TESTS)
-find_path(CPPUNIT_INCLUDE_DIR cppunit/Test.h )
-find_library(CPPUNIT_LIBRARY NAMES cppunit)
-endif(BUILD_TESTS)
-
 set (DEFAULT_EXTUNIT ON)
 # set (DEFAULT_NONLIN OFF)
 set (DEFAULT_DEBUG_TRACING OFF)
@@ -624,6 +619,11 @@ option (BUILD_FRANKS_TESTSUITE "Build the program to run the Frank Bergmann's SB
 
 option (BUILD_TESTS "Compiles CPPUNIT Testrunners." OFF)
 mark_as_advanced(BUILD_TESTS)
+
+if (BUILD_TESTS)
+find_path(CPPUNIT_INCLUDE_DIR cppunit/Test.h )
+find_library(CPPUNIT_LIBRARY NAMES cppunit)
+endif(BUILD_TESTS)
 
 mark_as_advanced(BUILD_SEMANTIC_TESTSUITE)
 mark_as_advanced(BUILD_STEADY_STATE_RUNNER)

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,7 +33,7 @@ public:
     CHEMICAL_EQUATION,
     KINETIC_LAW,
     KINETIC_LAW_UNIT_TYPE,
-    KINEITC_LAW_VARIABLE_MAPPING,
+    KINETIC_LAW_VARIABLE_MAPPING,
     LOCAL_REACTION_PARAMETERS,
     SCALING_COMPARTMENT,
     OBJECT_UUID,

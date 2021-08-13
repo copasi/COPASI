@@ -144,15 +144,184 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
 }
 
 
+
+#include <copasi/report/CDataHandler.h>
+
+TEST_CASE("3: creating a new model testing avogadro", "[copasi,sbml]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != NULL);
+
+  dm->newModel(NULL, true);
+
+  auto * model = dm->getModel();
+  double avo_num = 6e23;
+  model->setAvogadro(avo_num, CCore::Framework::Concentration);
+  auto * mv = model->createModelValue("avo");
+
+  std::stringstream str;
+
+  str << "<"
+      << CObjectInterface::DataObject(model->getObject(CCommonName("Reference=Avogadro Constant")))->getValueObject()->getCN()
+      << ">";
+
+  mv->setInitialExpression(str.str());
+
+  mv->setStatus(CModelEntity::Status::ASSIGNMENT);
+  mv->setExpression(str.str());
+
+  model->compileIfNecessary(NULL);
+
+  // simulate
+  auto & task = (*dm->getTaskList())["Time-Course"];
+  CTrajectoryProblem * pProblem = static_cast< CTrajectoryProblem * >(task.getProblem());
+  pProblem->setStepNumber(2);
+
+  {
+    auto dh = CDataHandler();
+    dh.addDuringName(model->getModelValues()[0].getValueReference()->getCN());
+    task.initialize(CCopasiTask::OUTPUT_UI, &dh, NULL);
+    task.process(true);
+    task.restore();
+
+    REQUIRE(dh.getDuringData()[0][0] == avo_num);
+  }
+
+
+  {
+    avo_num = 7e23;
+    model->setAvogadro(avo_num, CCore::Framework::Concentration);
+    auto dh = CDataHandler();
+    dh.addDuringName(model->getModelValues()[0].getValueReference()->getCN());
+    task.initialize(CCopasiTask::OUTPUT_UI, &dh, NULL);
+    task.process(true);
+    task.restore();
+
+    REQUIRE(dh.getDuringData()[0][0] == avo_num);
+  }
+
+
+  CRootContainer::removeDatamodel(dm);
+}
+
+
+
+TEST_CASE("2: importing an sbml file and saving as COPASI file", "[copasi,sbml]")
+{
+
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != NULL);
+
+  std::string test_file = getTestFile("test-data/01776-sbml-l3v1.xml");
+
+  REQUIRE(dm->importSBML(test_file) == true);
+
+  // create model values for amounts:
+  auto * model = dm->getModel();
+
+for (auto & metab : model->getMetabolites())
+    {
+      std::stringstream str;
+      str << metab.getObjectName() << "_amount";
+      auto * mv = model->createModelValue(str.str());
+      REQUIRE(mv != NULL);
+      str.str("");
+      str
+          << "<"
+          << metab.getConcentrationReference()->getCN()
+          << "> * <"
+          << metab.getCompartment()->getValueReference()->getCN()
+          << ">";
+      mv->setStatus(CModelEntity::Status::ASSIGNMENT);
+      REQUIRE(mv->setExpression(str.str()).isSuccess());
+      REQUIRE(mv->compile().isSuccess());
+    }
+
+  // simulate
+  auto &task = (*dm->getTaskList())["Time-Course"];
+
+  auto dh = CDataHandler();
+  dh.addDuringName(model->getModelValues()[0].getValueReference()->getCN());
+
+  task.initialize(CCopasiTask::OUTPUT_UI, &dh, NULL);
+  task.process(true);
+  task.restore();
+
+  double val = dh.getDuringData()[0][0];
+
+  std::string copasi_model = dm->saveModelToString();
+
+  std::string sbml_model = dm->exportSBMLToString(NULL, 3, 1);
+
+  CRootContainer::removeDatamodel(dm);
+}
+
+
+TEST_CASE("importing an SBML file multiple times", "[copasi,sbml]")
+{
+
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != NULL);
+
+  std::string test_file = getTestFile("test-data/BIOMD0000000027_url.xml");
+
+  REQUIRE(dm->importSBML(test_file) == true);
+  REQUIRE(dm->importSBML(test_file) == true);
+  REQUIRE(dm->importSBML(test_file) == true);
+
+
+  std::string copasi_model = dm->saveModelToString();
+
+  std::string sbml_model = dm->exportSBMLToString(NULL, 3, 1);
+
+  CRootContainer::removeDatamodel(dm);
+}
+
+
+TEST_CASE("importing an SBML file and delete used function definition", "[copasi,sbml]")
+{
+
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != NULL);
+
+  std::string test_file = getTestFile("test-data/BIOMD0000000055_urn.xml");
+
+  REQUIRE(dm->importSBML(test_file) == true);
+
+  auto * pFunDB = CRootContainer::getFunctionList();
+
+  for (int i = ((int)pFunDB->loadedFunctions().size()) - 1; i >= 0; --i)
+    {
+      auto & pFun = pFunDB->loadedFunctions()[i];
+
+      if (!pFun.isReadOnly())
+        {
+          pFunDB->removeFunction(i);
+        }
+    }
+
+  std::string copasi_model = dm->saveModelToString();
+
+  std::string sbml_model = dm->exportSBMLToString(NULL, 3, 1);
+
+  CRootContainer::removeDatamodel(dm);
+}
+
+
+
 //#include <filesystem>
 //#include <copasi/utilities/CCopasiException.h>
 //
 //namespace fs = std::filesystem;
 //
+//#include <copasi/math/CJitCompiler.h>
+//
 //TEST_CASE("2: importing biomodel files", "[copasi,sbml]")
 //{
 //  auto * dm = CRootContainer::addDatamodel();
 //  REQUIRE(dm != NULL);
+//
+//  CJitCompiler::SetJitBufferSize(128000);
 //
 //  bool skip = true;
 //
@@ -165,8 +334,11 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
 //      if (filenameStr.find(".xml") == std::string::npos)
 //        continue;
 //
-//      if (skip && filenameStr.find("385") == std::string::npos)
+//      if (filenameStr.find("SED") != std::string::npos)
 //        continue;
+//
+//      //if (skip && filenameStr.find("385") == std::string::npos)
+//      //  continue;
 //
 //      skip = false;
 //

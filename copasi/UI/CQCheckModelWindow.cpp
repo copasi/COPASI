@@ -184,7 +184,7 @@ void CQCheckModelWindow::slotSaveAs()
   while (Answer == QMessageBox::No)
     {
       fileName = CopasiFileDialog::getSaveFileName(this,
-                 "Save File Dialog", "untitled.html", "HTML files (*.html)", "Save Report as HTML file");
+                 "Save File Dialog", CopasiFileDialog::getDefaultFileName(".html"), "HTML files (*.html)", "Save Report as HTML file");
 
       if (fileName.isEmpty()) return;
 

@@ -292,6 +292,8 @@ CIssue CEvaluationTree::parse()
     {
       mpNodeList = new std::vector< CEvaluationNode * >;
       mpRootNode = new CEvaluationNode();
+      mpRootNode->setTree(this);
+
       mpRootValue = mpRootNode->getValuePointer();
       mValue = *mpRootValue;
       mpNodeList->push_back(mpRootNode);
@@ -314,6 +316,7 @@ CIssue CEvaluationTree::parse()
 
   if (mpRootNode != NULL)
     {
+      mpRootNode->setTree(this);
       mpRootValue = mpRootNode->getValuePointer();
       mValue = *mpRootValue;
     }
@@ -355,7 +358,7 @@ void CEvaluationTree::buildCalculationSequence()
   CNodeIterator < CEvaluationNode > itNode(mpRootNode);
   std::vector< CEvaluationNode * > CalculationSequence;
 
-  if (mpRootNode)
+  if (mpRootNode != NULL)
     while (itNode.next() != itNode.end())
       {
         switch (itNode->mainType())
@@ -414,7 +417,7 @@ CIssue CEvaluationTree::compileNodes()
 
   while (itNode.next() != itNode.end())
     if (*itNode != NULL &&
-        !(nodeIssue = itNode->compile(this)))
+        !(nodeIssue = itNode->compile()))
       {
         mValidity.add(nodeIssue);
         firstWorstIssue &= nodeIssue;
@@ -483,7 +486,7 @@ void CEvaluationTree::calculate()
 {
   try
     {
-      if (mpRootNode != NULL)
+      if (mpRootNode != NULL && mValidity.getFirstWorstIssue().isSuccess())
         {
           CEvaluationNode ** ppIt = mCalculationSequence.begin();
           CEvaluationNode ** ppEnd = mCalculationSequence.end();
@@ -529,7 +532,7 @@ void CEvaluationTree::clearNodes()
 
   pdelete(mpNodeList);
 
-  mpRootNode = NULL;
+  setRoot(NULL);
   mpRootValue = NULL;
   mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }
@@ -543,6 +546,7 @@ bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
   clearNodes();
 
   mpRootNode = pRootNode;
+  mpRootNode->setTree(this);
 
   return updateTree();
 }
@@ -594,7 +598,10 @@ CIssue CEvaluationTree::updateTree()
 // virtual
 const CObjectInterface * CEvaluationTree::getNodeObject(const CCommonName & CN) const
 {
-  return NULL;
+  if (CN == "Reference=Avogadro Constant")
+    return CRootContainer::getFunctionList()->getObject(CN);
+
+  return getObjectFromCN(CN);
 }
 
 bool CEvaluationTree::setTree(const ASTNode& pRootNode, bool isFunction)
@@ -609,7 +616,7 @@ bool CEvaluationTree::setTree(const ASTNode& pRootNode, bool isFunction)
 
   while (itNode.next() != itNode.end())
     if (*itNode != NULL &&
-        itNode->compile(this) == CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueTypeMismatch))
+        itNode->compile() == CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueTypeMismatch))
       {
         // Attempt to convert child nodes to the appropriate type;
         CEvaluationNode::ValueType TargetType = itNode->getValueType();

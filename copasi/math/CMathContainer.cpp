@@ -1130,6 +1130,40 @@ const CCore::CUpdateSequence & CMathContainer::getTransientDataValueSequence() c
   return mTransientDataObjectSequence;
 }
 
+void CMathContainer::removeDataObject(const CDataObject * pObject)
+{
+  DataObjectSet Descendants;
+  Descendants.insert(pObject);
+
+  if (pObject->hasFlag(CDataObject::Flag::Container))
+    dynamic_cast< const CDataContainer * >(pObject)->getDescendants(Descendants);
+
+  std::set< const CDataObject * >::const_iterator it = Descendants.begin();
+  std::set< const CDataObject * >::const_iterator end = Descendants.end();
+
+  for (; it != end; ++it)
+    {
+      CMathObject * pObject = getMathObject(*it);
+
+      if (pObject == NULL)
+        continue;
+
+      mInitialDependencies.removeObject(pObject);
+      mTransientDependencies.removeObject(pObject);
+      pObject->setDataObject(NULL);
+
+      CMathObject * pInitialObject = getInitialValueObject(pObject);
+
+      if (pInitialObject == pObject
+          || pInitialObject == NULL)
+        continue;
+
+      mInitialDependencies.removeObject(pInitialObject);
+      mTransientDependencies.removeObject(pInitialObject);
+      pInitialObject->setDataObject(NULL);
+    }
+}
+
 void CMathContainer::updateHistoryValues(const bool & useMoieties)
 {
   CMathHistoryCore * pHistory = (useMoieties) ? &mHistoryReduced : &mHistory;
@@ -1721,8 +1755,13 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
       // We need to replace variables, expand called trees, and handle discrete nodes.
       switch (itNode->mainType() | itNode->subType())
         {
-          // Handle object nodes which are of type CN and AVOGADRO
+          // Handle object nodes which are of type AVOGADRO
           case (CEvaluationNode::MainType::OBJECT | CEvaluationNode::SubType::AVOGADRO):
+            // Create a converted node
+            pCopy = createNodeFromObject(mpAvogadro);
+            break;
+
+          // Handle object nodes which are of type CN
           case (CEvaluationNode::MainType::OBJECT | CEvaluationNode::SubType::CN):
           {
             // We need to map the object to a math object if possible.
@@ -2917,13 +2956,13 @@ void CMathContainer::analyzeRoots()
   CObjectInterface::ObjectSet TimeValue;
   TimeValue.insert(getMathObject(mState.array() + mSize.nFixedEventTargets));
 
-  CObjectInterface::ObjectSet ContinousStateValues;
+  CObjectInterface::ObjectSet ContinuousStateValues;
   const CMathObject * pStateObject = getMathObject(mState.array() + mSize.nFixedEventTargets);
   const CMathObject * pStateObjectEnd = getMathObject(mState.array() + mState.size());
 
   for (; pStateObject != pStateObjectEnd; ++pStateObject)
     {
-      ContinousStateValues.insert(pStateObject);
+      ContinuousStateValues.insert(pStateObject);
     }
 
   size_t RootCount = 0;
@@ -2944,7 +2983,7 @@ void CMathContainer::analyzeRoots()
       Requested.insert(pRoot);
       CCore::CUpdateSequence UpdateSequence;
 
-      mTransientDependencies.getUpdateSequence(UpdateSequence, CCore::SimulationContext::Default, ContinousStateValues, Requested);
+      mTransientDependencies.getUpdateSequence(UpdateSequence, CCore::SimulationContext::Default, ContinuousStateValues, Requested);
       *pIsDiscrete = UpdateSequence.empty();
 
       mTransientDependencies.getUpdateSequence(UpdateSequence, CCore::SimulationContext::Default, TimeValue, Requested);
