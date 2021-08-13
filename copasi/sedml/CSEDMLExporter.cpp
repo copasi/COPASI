@@ -443,7 +443,7 @@ CSEDMLExporter::createTimeCourseTask(CDataModel& dataModel)
   SEDML_SET_ID(mpTimecourse, SEDMLUtils::getNextId("sim", mpSEDMLDocument->getNumSimulations()));
 
   //presently SEDML only supports time course
-  mpTimecourse->setInitialTime(0.0);
+  mpTimecourse->setInitialTime(dataModel.getModel()->getInitialTime());
   double outputStartTime = tProblem->getOutputStartTime();
   double stepSize = tProblem->getStepSize();
   int stepNumber = (int)tProblem->getStepNumber();
