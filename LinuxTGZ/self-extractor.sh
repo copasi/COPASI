@@ -107,7 +107,7 @@ if [ -e "${DESKTOP_DIR}"/COPASI.desktop ]; then
 
     while :
     do
-        read -e -i "n" -p 'Create version specific desktopn file [y|n]: ' RESULT
+        read -e -i "n" -p 'Create version specific desktop file [y|n]: ' RESULT
 
         [ _${RESULT} = _n ] && break
         [ _${RESULT} = _y ] && break

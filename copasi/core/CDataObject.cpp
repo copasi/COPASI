@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -149,11 +149,16 @@ CCommonName CDataObject::getCN() const
     {
       std::stringstream tmp;
       tmp << mpObjectParent->getCN();
+      size_t Index;
 
-      if (mpObjectParent->hasFlag(NameVector))
-        tmp << "[" << CCommonName::escape(mObjectName) << "]";
-      else if (mpObjectParent->hasFlag(Vector))
-        tmp << "[" << mpObjectParent->getIndex(this) << "]";
+      if (mpObjectParent->hasFlag(Vector)
+          && (Index = mpObjectParent->getIndex(this)) != C_INVALID_INDEX)
+        {
+          if (mpObjectParent->hasFlag(NameVector))
+            tmp << "[" << CCommonName::escape(mObjectName) << "]";
+          else if (mpObjectParent->hasFlag(Vector))
+            tmp << "[" << mpObjectParent->getIndex(this) << "]";
+        }
       else
         tmp << "," << CCommonName::escape(mObjectType)
             << "=" << CCommonName::escape(mObjectName);
