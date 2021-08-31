@@ -252,6 +252,8 @@ CDataModel::~CDataModel()
     }
 
   mTempFolders.clear();
+
+  CRegisteredCommonName::setEnabled(true);
 }
 
 bool CDataModel::loadFromString(const std::string & content,
