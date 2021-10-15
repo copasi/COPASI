@@ -18,7 +18,6 @@ class CJitCompiler
 public:
   static bool JitEnabled();
 
-#ifdef USE_JIT
 private:
   /**
    * A pointer to a bool indicating whether the CPU supports the sse4.2 instruction set
@@ -46,8 +45,6 @@ protected:
    * A set of a compilet expression
    */
   std::set< CJitExpression * > mExpressions;
-
-#endif
 };
 
 #endif // COPASI_CJitCompiler

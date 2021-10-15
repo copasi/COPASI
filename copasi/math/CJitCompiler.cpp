@@ -13,10 +13,10 @@
 
 #ifdef USE_JIT
 #include <cpu_features/cpuinfo_x86.h>
+#endif
 
 // static
 bool * CJitCompiler::pSSE4support = NULL;
-#endif
 
 // static
 bool CJitCompiler::JitEnabled()
@@ -35,7 +35,11 @@ bool CJitCompiler::JitEnabled()
 // static
 CJitCompiler * CJitCompiler::create()
 {
+#ifdef USE_JIT
   return new CJitCompilerImplementation;
+#else
+  return NULL;
+#endif // USE_JIT
 }
 
 void CJitCompiler::registerExpression(CJitExpression * pExpression)
