@@ -31,11 +31,7 @@
 #include "copasi/math/CMathHistory.h"
 #include "copasi/math/CMathUpdateSequence.h"
 
-#ifdef USE_JIT
-# include "copasi/math/CJitCompiler.h"
-#else
 class CJitCompiler;
-#endif // USE_JIT
 
 #include "copasi/core/CVector.h"
 #include "copasi/model/CModelParameter.h"
@@ -1473,7 +1469,7 @@ private:
   /**
    * The JIT compiler of all math expressions.
    */
-  CJitCompiler mJITCompiler;
+  CJitCompiler *mpJITCompiler;
 #endif
 
   /**

@@ -15,10 +15,11 @@
 
 #include "copasi/copasi.h"
 
-#include "CMathContainer.h"
-#include "CMathExpression.h"
-#include "CMathEventQueue.h"
-#include "CMathUpdateSequence.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/math/CMathExpression.h"
+#include "copasi/math/CMathEventQueue.h"
+#include "copasi/math/CMathUpdateSequence.h"
+#include "copasi/math/CJitCompiler.h"
 
 #include "copasi/model/CModel.h"
 #include "copasi/model/CCompartment.h"
@@ -304,7 +305,7 @@ CMathContainer::CMathContainer()
   , mNumTotalRootsIgnored(0)
   , mValueChangeProhibited()
 #ifdef USE_JIT
-  , mJITCompiler()
+  , mpJITCompiler(CJitCompiler::create())
 #endif
   , mCompileTime()
 {
@@ -406,7 +407,7 @@ CMathContainer::CMathContainer(CModel & model)
   , mNumTotalRootsIgnored(0)
   , mValueChangeProhibited()
 #ifdef USE_JIT
-  , mJITCompiler()
+  , mpJITCompiler(CJitCompiler::create())
 #endif
   , mCompileTime()
 {
@@ -517,7 +518,7 @@ CMathContainer::CMathContainer(const CMathContainer & src)
   , mNumTotalRootsIgnored(src.mNumTotalRootsIgnored)
   , mValueChangeProhibited(src.mValueChangeProhibited)
 #ifdef USE_JIT
-  , mJITCompiler(src.mJITCompiler)
+  , mpJITCompiler(src.mpJITCompiler->copy())
 #endif
   , mCompileTime(src.mCompileTime)
 {
@@ -572,12 +573,12 @@ CMathContainer::CMathContainer(const CMathContainer & src)
 
   for (; pObject != pObjectEnd; ++pObject)
     {
-      pObject->setJITCompiler(mJITCompiler);
+      pObject->setJITCompiler(*mpJITCompiler);
     }
 
   try
     {
-      mJITCompiler.compile();
+      mpJITCompiler->compile();
     }
   catch (...)
     {}
@@ -1558,7 +1559,7 @@ void CMathContainer::compile()
 
   try
     {
-      mJITCompiler.compile();
+      mpJITCompiler->compile();
     }
   catch (...)
     {}
@@ -2309,7 +2310,7 @@ bool CMathContainer::compileObjects()
     {
 #ifdef USE_JIT
       success &=
-        pObject->compile(*this, mJITCompiler);
+        pObject->compile(*this, *mpJITCompiler);
 #else
       success &= pObject->compile(*this);
 #endif
@@ -4067,7 +4068,7 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
         }
 
 #ifdef USE_JIT
-      pObject->compile(*this, mJITCompiler);
+      pObject->compile(*this, *mpJITCompiler);
 #else
       pObject->compile(*this);
 #endif
@@ -4085,7 +4086,7 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
 
   try
     {
-      mJITCompiler.compile();
+      mpJITCompiler->compile();
     }
   catch (...)
     {}
@@ -4163,7 +4164,7 @@ bool CMathContainer::removeAnalysisObject(CMath::Entity< CMathObject > & mathObj
 
   try
     {
-      mJITCompiler.compile();
+      mpJITCompiler->compile();
     }
   catch (...)
     {}
@@ -4403,7 +4404,7 @@ CMathEvent * CMathContainer::addAnalysisEvent(const CEvent * pDataEvent)
 
   try
     {
-      mJITCompiler.compile();
+      mpJITCompiler->compile();
     }
   catch (...)
     {}
@@ -4656,7 +4657,7 @@ bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
 
   try
     {
-      mJITCompiler.compile();
+      mpJITCompiler->compile();
     }
   catch (...)
     {}

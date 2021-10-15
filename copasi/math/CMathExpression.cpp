@@ -15,8 +15,9 @@
 
 #include "copasi/copasi.h"
 
-#include "CMathExpression.h"
-#include "CMathContainer.h"
+#include "copasi/math/CMathExpression.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/math/CJitCompiler.h"
 
 #include "copasi/function/CExpression.h"
 #include "copasi/function/CFunction.h"

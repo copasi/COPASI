@@ -35,6 +35,9 @@ if (NOT ENABLE_JIT)
     ${CMAKE_CURRENT_SOURCE_DIR}/math/CJitExpression.cpp)
   list(REMOVE_ITEM HEADERS_MATH 
     ${CMAKE_CURRENT_SOURCE_DIR}/math/CJitExpression.h)
+else ()
+  set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/math/CJitCompiler.cpp PROPERTIES COMPILE_FLAGS ${NATIVEJIT_COMPILE_OPTIONS})
+  set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/math/CJitCompilerImplementation.cpp PROPERTIES COMPILE_FLAGS ${NATIVEJIT_COMPILE_OPTIONS})
 endif(NOT ENABLE_JIT)
 
 if (SOURCES_MATH)

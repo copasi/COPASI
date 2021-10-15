@@ -7,6 +7,7 @@
 #define COPASI_CJitExpression
 
 #include "copasi/math/CJitCompiler.h"
+class CJitCompiler;
 
 class CJitExpression
 {
