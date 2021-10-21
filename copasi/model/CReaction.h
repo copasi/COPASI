@@ -251,12 +251,7 @@ public:
 
   /**
    * Sets a parameter value
-   * if updateStatus==true the status is also updated to make sure
-   * the value is actually used (instead of a global value that may
-   * have been used before).
-   * if updateStatus==false only the value of the local parameter is
-   * set, even if it is not used
-   * @param const std::string & parameterName
+  * @param const std::string & parameterName
    * @param const C_FLOAT64 & value
    */
   void setParameterValue(const std::string & parameterName,
@@ -266,66 +261,6 @@ public:
    * Retrieves a parameter value
    */
   const C_FLOAT64 & getParameterValue(const std::string & parameterName) const;
-
-  /**
-   * Sets a parameter mapping for the indexed parameter.
-   * @param const size_t & index
-   * @param const std::string & key
-   */
-  // void setParameterMapping(const size_t & index, const std::string & key);
-
-  /**
-   * Add a parameter mapping for the indexed parameter.
-   * @param const size_t & index
-   * @param const std::string & key
-   */
-  // void addParameterMapping(const size_t & index, const std::string & key);
-
-  /**
-   * Sets a parameter mapping for the named parameter.
-   * @param const std::string & parameterName
-   * @param const std::string & key
-   * @return bool success
-   */
-  // bool setParameterMapping(const std::string & parameterName, const std::string & key);
-
-  /**
-   * Add a parameter mapping for the named parameter.
-   * @param const std::string & parameterName
-   * @param const std::string & key
-   */
-  // void addParameterMapping(const std::string & parameterName, const std::string & key);
-
-  /**
-   * Set the mapping for the name parameter which must be of type vector
-   * @param const std::string & parameterName
-   * @param const std::vector<std::string> & keys
-   */
-  // void setParameterMappingVector(const std::string & parameterName,
-  //                                const std::vector<std::string> & keys);
-
-  /**
-   * Clear the parameter mapping for the named parameter.
-   * @param const size_t & index
-   */
-  // void clearParameterMapping(const std::string & parameterName);
-
-  /**
-   * Clear the parameter mapping for the indexed parameter.
-   * @param const size_t & index
-   */
-  // void clearParameterMapping(const size_t & index);
-
-  /**
-   * Retrieve the mappings of kinetic function parameters.
-   */
-  // const std::vector< std::vector<std::string> > & getParameterMappings() const;
-
-  // std::vector< std::vector<std::string> > & getParameterMappings();
-
-  // const std::vector<std::string> & getParameterMapping(const size_t & index) const;
-
-  // const std::vector<std::string> & getParameterMapping(const std::string & parameterName) const;
 
   /**
    *  Gets the list of kinetic parameter objects of the reaction/function
@@ -710,10 +645,6 @@ public:
   const std::vector< CRegisteredCommonName > & getParameterCNs(const std::string & name) const;
 
   const std::vector< std::vector< CRegisteredCommonName > > & getParameterCNs() const;
-
-  //bool setParameterCNs(const size_t & index, const std::vector< CCommonName > CNs);
-
-  //bool setParameterCNs(const std::string & name, const std::vector< CCommonName > CNs);
 
   bool setParameterCNs(const size_t & index, const std::vector< CRegisteredCommonName >& CNs);
 

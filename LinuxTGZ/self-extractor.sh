@@ -143,7 +143,8 @@ NoDisplay=false
 Type=Application
 Categories=Science;Utility" > "${DESKTOP_DIR}/${DESKTOP_NAME}".desktop
 
-xdg-settings set default-url-scheme-handler copasi "${DESKTOP_NAME}".desktop
+update-desktop-database ~/.local/share/applications/
+xdg-mime install ${INSTALL_DIR}/share/copasi/COPASI-mime.xml
 
 rm -rf "${EXTRACT_DIR}"
 

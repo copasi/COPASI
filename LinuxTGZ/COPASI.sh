@@ -58,6 +58,11 @@ echo cp "${SOURCE}/copasi/ArtisticLicense.txt" share/copasi/LICENSE
 cp "${SOURCE}/copasi/ArtisticLicense.txt" share/copasi/LICENSE
 chmod 644 share/copasi/LICENSE
 
+# Copy mime info 
+echo cp "${SOURCE}/LinuxTGZ/COPASI-mime.xml" share/copasi/COPASI-mime.xml
+cp "${SOURCE}/LinuxTGZ/COPASI-mime.xml" share/copasi/COPASI-mime.xml
+chmod 644 share/copasi/COPASI-mime.xml
+
 # Copy CopasiUI startup script
 echo cp "${SOURCE}/LinuxTGZ/CopasiUI" bin
 cp "${SOURCE}/LinuxTGZ/CopasiUI" bin

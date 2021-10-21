@@ -141,6 +141,7 @@ template<> inline CDataObjectReference< unsigned C_INT32 >::CDataObjectReference
   assert(pParent != NULL);
 }
 
+#ifdef DATAVALUE_NEEDS_SIZE_T_MEMBERS
 template<> inline CDataObjectReference< size_t >::CDataObjectReference(const std::string & name,
     const CDataContainer * pParent,
     size_t & reference,
@@ -151,6 +152,7 @@ template<> inline CDataObjectReference< size_t >::CDataObjectReference(const std
 {
   assert(pParent != NULL);
 }
+#endif // DATAVALUE_NEEDS_SIZE_T_MEMBERS
 
 template<> inline CDataObjectReference< bool >::CDataObjectReference(const std::string & name,
     const CDataContainer * pParent,
