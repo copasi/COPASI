@@ -120,7 +120,7 @@ bool CJitCompilerImplementation::compile()
 // virtual
 CJitCompilerImplementation::Function CJitCompilerImplementation::compile(const CMathExpression & mathExpression)
 {
-  std::cout << "CJitCompilerImplementation::compile Infix: " << mathExpression.getInfix() << std::endl;
+  //std::cout << "CJitCompilerImplementation::compile Infix: " << mathExpression.getInfix() << std::endl;
 
   Function ReturnFunction = NULL;
 
