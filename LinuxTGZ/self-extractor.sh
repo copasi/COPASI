@@ -124,7 +124,7 @@ Encoding=UTF-8
 Version=1.0
 Exec=${INSTALL_DIR}/bin/CopasiUI %u
 Icon=${INSTALL_DIR}/share/copasi/icons/Copasi48-Alpha.xpm
-MimeType=application/xml;x-scheme-handler/copasi;application/x-copasi
+MimeType=x-scheme-handler/copasi;application/x-copasi
 Name=${NAME}
 GenericName=Biochemical simulation
 NoDisplay=false
@@ -136,15 +136,24 @@ Encoding=UTF-8
 Version=1.0
 Exec=${INSTALL_DIR}/bin/CopasiUI %u
 Icon=${INSTALL_DIR}/share/copasi/icons/Copasi48-Alpha.xpm
-MimeType=application/xml;x-scheme-handler/copasi;application/x-copasi
+MimeType=x-scheme-handler/copasi;application/x-copasi
 Name=${NAME}
 GenericName=Biochemical simulation
 NoDisplay=false
 Type=Application
 Categories=Science;Utility" > "${DESKTOP_DIR}/${DESKTOP_NAME}".desktop
 
-update-desktop-database ~/.local/share/applications/
-xdg-mime install ${INSTALL_DIR}/share/copasi/COPASI-mime.xml
+if command -v xdg-settings &> /dev/null ; then
+    xdg-settings set default-url-scheme-handler copasi "${DESKTOP_NAME}".desktop
+fi
+
+if command -v update-desktop-database &> /dev/null ; then
+    update-desktop-database ~/.local/share/applications/
+fi
+
+if command -v xdg-mime &> /dev/null ; then
+    xdg-mime install ${INSTALL_DIR}/share/copasi/COPASI-mime.xml
+fi
 
 rm -rf "${EXTRACT_DIR}"
 

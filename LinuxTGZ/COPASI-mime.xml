@@ -10,6 +10,5 @@
     <icon name="application-x-copasi" />
     <glob pattern="*.cps"/>
     <glob pattern="*.gps"/>
-    <glob pattern="*.xml"/>
   </mime-type>
 </mime-info>
