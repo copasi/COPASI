@@ -644,13 +644,98 @@ void CReaction::setReversible(bool reversible)
 const CFunction * CReaction::getFunction() const
 {return mpFunction;}
 
+CFunction * CReaction::createFunctionFromExpression(const std::string & infix)
+{
+  CFunction * pFunction = new CFunction;
+
+  if (!pFunction->setInfix(infix))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, infix.c_str());
+      delete pFunction;
+      return NULL;
+    }
+
+  CFunctionParameters & Variables = pFunction->getVariables();
+  CFunctionParameters::iterator it = Variables.begin();
+  CFunctionParameters::iterator end = Variables.end();
+
+  for (; it != end; ++it)
+    {
+      std::string Name = it->getObjectName();
+      const CMetab * pSpecies = NULL;
+
+      // Check whether we have a substrate with that name
+      CDataVector< CChemEqElement >::const_iterator itElement = mChemEq.getSubstrates().begin();
+      CDataVector< CChemEqElement >::const_iterator endElement = mChemEq.getSubstrates().end();
+
+      for (; itElement != endElement; ++itElement)
+        {
+          if ((pSpecies = itElement->getMetabolite()) != NULL
+              && pSpecies->getObjectDisplayName() == Name)
+            {
+              it->setUsage(CFunctionParameter::Role::SUBSTRATE);
+              break;
+            }
+        }
+
+      if (itElement != endElement)
+        continue;
+
+      // Check whether we have a product with that name
+      itElement = mChemEq.getProducts().begin();
+      endElement = mChemEq.getProducts().end();
+
+      for (; itElement != endElement; ++itElement)
+        {
+          if ((pSpecies = itElement->getMetabolite()) != NULL
+              && pSpecies->getObjectDisplayName() == Name)
+            {
+              it->setUsage(CFunctionParameter::Role::PRODUCT);
+              break;
+            }
+        }
+
+      if (itElement != endElement)
+        continue;
+
+      // Check whether we have a modifier with that name
+      itElement = mChemEq.getModifiers().begin();
+      endElement = mChemEq.getModifiers().end();
+
+      for (; itElement != endElement; ++itElement)
+        {
+          if ((pSpecies = itElement->getMetabolite()) != NULL
+              && pSpecies->getObjectDisplayName() == Name)
+            {
+              it->setUsage(CFunctionParameter::Role::MODIFIER);
+              break;
+            }
+        }
+
+      if (itElement != endElement)
+        continue;
+
+      // Mark it as a kinetic parameter
+      it->setUsage(CFunctionParameter::Role::PARAMETER);
+    }
+
+  pFunction->setObjectName("function_4_" + getObjectName());
+
+  CRootContainer::getFunctionList()->addAndAdaptName(pFunction);
+
+  return pFunction;
+}
+
 bool CReaction::setFunction(const std::string & functionName)
 {
   CFunction * pFunction =
-    dynamic_cast<CFunction *>(CRootContainer::getFunctionList()->findLoadFunction(functionName));
+    dynamic_cast< CFunction * >(CRootContainer::getFunctionList()->findLoadFunction(functionName));
 
   if (!pFunction)
-    CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
+      return false;
+    }
 
   return setFunction(pFunction);
 }

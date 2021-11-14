@@ -832,7 +832,12 @@ CReactionInterface::connectFromScratch(CFunctionParameter::Role role)
   if (!imax) return;
 
   // get the list of chem eq elements
-  std::vector<std::string> el = getExpandedMetabList(role);
+  std::vector<std::string> el;
+
+  if (dynamic_cast< const CMassAction * >(mpFunction) != NULL)
+    el = getExpandedMetabList(role);
+  else
+    el = mChemEqI.getListOfDisplayNames(role);
 
   // get the first parameter with the respective role
   CFunctionParameter::DataType Type;

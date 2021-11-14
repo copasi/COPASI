@@ -224,6 +224,13 @@ public:
                    const C_FLOAT64 & multiplicity = 1.0);
 
   /**
+   * Creates a kinetic function and sets it for the reaction
+   * @param const string & infix
+   * @return CFunction * pFunction
+   */
+  CFunction * createFunctionFromExpression(const std::string & infix);
+
+  /**
    * Sets the rate function of the reaction
    * @param const string & functionName
    * @return bool success
