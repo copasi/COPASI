@@ -662,6 +662,13 @@ CFunction * CReaction::createFunctionFromExpression(const std::string & infix)
   for (; it != end; ++it)
     {
       std::string Name = it->getObjectName();
+
+      if (Name == "Time")
+        {
+          it->setUsage(CFunctionParameter::Role::TIME);
+          continue;
+        }
+
       const CMetab * pSpecies = NULL;
 
       // Check whether we have a substrate with that name
@@ -669,16 +676,14 @@ CFunction * CReaction::createFunctionFromExpression(const std::string & infix)
       CDataVector< CChemEqElement >::const_iterator endElement = mChemEq.getSubstrates().end();
 
       for (; itElement != endElement; ++itElement)
-        {
-          if ((pSpecies = itElement->getMetabolite()) != NULL
-              && pSpecies->getObjectDisplayName() == Name)
-            {
-              it->setUsage(CFunctionParameter::Role::SUBSTRATE);
-              break;
-            }
-        }
+        if ((pSpecies = itElement->getMetabolite()) != NULL
+            && pSpecies->getObjectDisplayName() == Name)
+          {
+            it->setUsage(CFunctionParameter::Role::SUBSTRATE);
+            break;
+          }
 
-      if (itElement != endElement)
+      if (it->getUsage() != CFunctionParameter::Role::VARIABLE)
         continue;
 
       // Check whether we have a product with that name
@@ -686,16 +691,14 @@ CFunction * CReaction::createFunctionFromExpression(const std::string & infix)
       endElement = mChemEq.getProducts().end();
 
       for (; itElement != endElement; ++itElement)
-        {
-          if ((pSpecies = itElement->getMetabolite()) != NULL
-              && pSpecies->getObjectDisplayName() == Name)
-            {
-              it->setUsage(CFunctionParameter::Role::PRODUCT);
-              break;
-            }
-        }
+        if ((pSpecies = itElement->getMetabolite()) != NULL
+            && pSpecies->getObjectDisplayName() == Name)
+          {
+            it->setUsage(CFunctionParameter::Role::PRODUCT);
+            break;
+          }
 
-      if (itElement != endElement)
+      if (it->getUsage() != CFunctionParameter::Role::VARIABLE)
         continue;
 
       // Check whether we have a modifier with that name
@@ -703,16 +706,25 @@ CFunction * CReaction::createFunctionFromExpression(const std::string & infix)
       endElement = mChemEq.getModifiers().end();
 
       for (; itElement != endElement; ++itElement)
-        {
-          if ((pSpecies = itElement->getMetabolite()) != NULL
-              && pSpecies->getObjectDisplayName() == Name)
-            {
-              it->setUsage(CFunctionParameter::Role::MODIFIER);
-              break;
-            }
-        }
+        if ((pSpecies = itElement->getMetabolite()) != NULL
+            && pSpecies->getObjectDisplayName() == Name)
+          {
+            it->setUsage(CFunctionParameter::Role::MODIFIER);
+            break;
+          }
 
-      if (itElement != endElement)
+      if (it->getUsage() != CFunctionParameter::Role::VARIABLE)
+        continue;
+
+      // Check whether we have compartment with that name
+      for (const CCompartment * pCompartment : mChemEq.getCompartments())
+        if (pCompartment->getObjectName() == "Name")
+          {
+            it->setUsage(CFunctionParameter::Role::VOLUME);
+            break;
+          }
+
+      if (it->getUsage() != CFunctionParameter::Role::VARIABLE)
         continue;
 
       // Mark it as a kinetic parameter
