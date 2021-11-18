@@ -384,45 +384,6 @@ std::string SEDMLUtils::getSbmlId(const CDataObject& object)
   return std::string();
 }
 
-int SEDMLUtils::processArchive(const std::string & archiveFile,
-                               std::string &fileName, std::string &fileContent)
-{
-
-  int err = 0;
-  /*
-  const char * cArchive = archiveFile.c_str();
-
-    //Open the ZIP archive
-    zip *zip = zip_open(cArchive, 0, &err);
-
-    //Search for file using its given name
-    const char *nameOfFile = fileName.c_str();
-    struct zip_stat st;
-    zip_stat_init(&st);
-    zip_stat(zip, nameOfFile, 0, &st);
-
-    //Alloc memory for its uncompressed contents
-    char *fileCont = new char[st.size];
-
-    //Read the compressed file
-  zip_file *file = zip_fopen(zip, nameOfFile, 0);
-  zip_fread(file, fileCont, st.size);
-
-  std::ostringstream fileContentStream;
-  size_t i, iMax = st.size;
-  for(i = 0; i<iMax; ++i){
-    fileContentStream << fileCont[i];
-  }
-  fileContent = fileContentStream.str();
-
-  //close the file and archive
-  zip_fclose(file);
-  zip_close(zip);
-  */
-
-  return err;
-}
-
 //split: receives a char delimiter and string and a vector of strings that will contain the splited strings
 //this is presently a hack to parse the XPath based target attribute in SEDML. A better solution may be
 //necessary in the future.
@@ -456,6 +417,86 @@ SEDMLUtils::splitStrings(const std::string &xpath, char delim,
 
   if (!next.empty())
     xpathStrings.push_back(next);
+}
+
+int SEDMLUtils::lineTypeToSed(int linetype)
+{
+for (auto item : COPASI_LINE_STYLE_MAP)
+    {
+      if (item.first == linetype)
+        return item.second;
+    }
+
+  return 0;
+}
+
+int SEDMLUtils::lineTypeFromSed(int linetype)
+{
+for (auto item : COPASI_LINE_STYLE_MAP)
+    {
+      if (item.second == linetype)
+        return item.first;
+    }
+
+  return 0;
+}
+
+int SEDMLUtils::symbolToSed(int symbol)
+{
+for (auto item : COPASI_SYMBOL_MAP)
+    {
+      if (item.first == symbol)
+        return item.second;
+    }
+
+  return 0;
+}
+
+int SEDMLUtils::symbolFromSed(int symbol)
+{
+for (auto item : COPASI_SYMBOL_MAP)
+    {
+      if (item.second == symbol)
+        return item.first;
+    }
+
+  return 0;
+}
+
+std::string SEDMLUtils::argbToRgba(const std::string & argb, bool includeHash)
+{
+  if (argb.length() < 8)
+    return argb;
+
+  int offset = argb[0] == '#' ? 1 : 0;
+
+  std::string a = argb.substr(offset, 2);
+
+  std::string result = argb.substr(offset + 2) + a;
+
+  if (includeHash)
+    return std::string("#") + result;
+
+  return result;
+}
+
+std::string SEDMLUtils::rgbaToArgb(const std::string & rgba, bool includeHash)
+{
+  std::string::size_type len = rgba.length();
+
+  if (len < 8)
+    return rgba;
+
+  int offset = rgba[0] == '#' ? 1 : 0;
+
+  std::string a = rgba.substr(len - 2);
+
+  std::string result = a + rgba.substr(offset, len - 2 - offset);
+
+  if (includeHash)
+    return std::string("#") + result;
+
+  return result;
 }
 
 const CDataObject *
@@ -532,23 +573,34 @@ SEDMLUtils::getObjectForSbmlId(const CModel* pModel, const std::string& id, cons
   return NULL;
 }
 
-/*void SEDMLUtils::resmoveUnwantedChars(std::string & str, char chars[]) {
-  for (unsigned int i = 0; i < strlen(chars); ++i) {
-
-    str.erase(std::remove(str.begin(), str.end(), chars[i]), str.end());
-  }
-}
- */
-SEDMLUtils::SEDMLUtils()
+std::map< int, int > SEDMLUtils::COPASI_SYMBOL_MAP =
 {
-  // TODO Auto-generated constructor stub
-}
+  {(int)CPlotItem::SymbolType::Circle, SEDML_MARKERTYPE_CIRCLE},
+  {(int)CPlotItem::SymbolType::Diamond, SEDML_MARKERTYPE_DIAMOND},
+  {(int)CPlotItem::SymbolType::hDash, SEDML_MARKERTYPE_HDASH},
+  {(int)CPlotItem::SymbolType::None, SEDML_MARKERTYPE_NONE},
+  {(int) CPlotItem::SymbolType::Plus, SEDML_MARKERTYPE_PLUS},
+  {(int) CPlotItem::SymbolType::LargeCross, SEDML_MARKERTYPE_PLUS},
+  {(int) CPlotItem::SymbolType::SmallCross, SEDML_MARKERTYPE_PLUS},
+  {(int) CPlotItem::SymbolType::Square, SEDML_MARKERTYPE_SQUARE},
+  {(int)CPlotItem::SymbolType::Star, SEDML_MARKERTYPE_STAR},
+  {(int)CPlotItem::SymbolType::TriangleDown, SEDML_MARKERTYPE_TRIANGLEDOWN},
+  {(int)CPlotItem::SymbolType::TriangleLeft, SEDML_MARKERTYPE_TRIANGLELEFT},
+  {(int)CPlotItem::SymbolType::TriangleRight, SEDML_MARKERTYPE_TRIANGLERIGHT},
+  {(int)CPlotItem::SymbolType::TriangleUp, SEDML_MARKERTYPE_TRIANGLEUP},
+  {(int)CPlotItem::SymbolType::vDash, SEDML_MARKERTYPE_VDASH},
+  {(int)CPlotItem::SymbolType::xCross, SEDML_MARKERTYPE_XCROSS}
+};
 
-SEDMLUtils::~SEDMLUtils()
+std::map< int, int > SEDMLUtils::COPASI_LINE_STYLE_MAP =
 {
-  // TODO Auto-generated destructor stub
-}
-
+  {(int) CPlotItem::LineStyle::Dashed, SEDML_LINETYPE_DASH},
+  {(int) CPlotItem::LineStyle::DotDash, SEDML_LINETYPE_DASHDOT},
+  {(int) CPlotItem::LineStyle::DotDotDash, SEDML_LINETYPE_DASHDOTDOT},
+  {(int) CPlotItem::LineStyle::Dotted, SEDML_LINETYPE_DOT},
+  {(int) CPlotItem::LineStyle::None, SEDML_LINETYPE_NONE},
+  {(int) CPlotItem::LineStyle::Solid, SEDML_LINETYPE_SOLID},
+};
 
 
 std::map< std::string, std::string > SEDMLUtils::PARAMETER_KISAO_MAP =

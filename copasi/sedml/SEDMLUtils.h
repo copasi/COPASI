@@ -27,6 +27,9 @@
 
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CDataObject.h"
+#include "copasi/plot/CPlotItem.h"
+#include <sedml/common/SedmlEnumerations.h>
+
 
 #define SEDML_TIME_URN "urn:sedml:symbol:time"
 #define SEDML_KISAO_STOCHASTIC "KISAO:0000241"
@@ -37,14 +40,12 @@ LIBSEDML_CPP_NAMESPACE_BEGIN
 class SedDataGenerator;
 LIBSEDML_CPP_NAMESPACE_END
 
+/**
+ * Utility methods for SED-ML Import / Export
+ */
 class SEDMLUtils
 {
 public:
-  int processArchive(const std::string & archiveFile, std::string &fileName, std::string &fileContent);
-
-  //  void resmoveUnwantedChars(std::string & str, char chars[]);
-
-  SEDMLUtils();
 
   static const CDataObject* resolveXPath(const CModel *model,
                                          const std::string& xpath, bool initial = false);
@@ -109,11 +110,20 @@ public:
    */
   static void splitStrings(const std::string &xpath, char delim, std::vector<std::string> &stringsContainer);
 
-  virtual ~SEDMLUtils();
+  static int lineTypeToSed(int linetype);
+  static int lineTypeFromSed(int linetype);
+
+  static int symbolToSed(int symbol);
+  static int symbolFromSed(int symbol);
+
+  static std::string argbToRgba(const std::string & argb, bool includeHash = true);
+  static std::string rgbaToArgb(const std::string & rgba, bool includeHash = true);
 
 #ifndef SWIG
 
   static std::map< std::string, std::string > PARAMETER_KISAO_MAP;
+  static std::map< int, int > COPASI_SYMBOL_MAP;
+  static std::map< int, int > COPASI_LINE_STYLE_MAP;
 
 #endif
 

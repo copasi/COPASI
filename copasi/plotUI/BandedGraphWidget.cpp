@@ -228,7 +228,9 @@ void BandedGraphWidget::typeChanged(int type)
 {
   CPlotItem::LineType linetype = (CPlotItem::LineType) type;
 
-  if (linetype == CPlotItem::LineType::Lines || linetype == CPlotItem::LineType::LinesAndSymbols || linetype == CPlotItem::LineType::Points)
+  if (linetype == CPlotItem::LineType::Lines ||
+      linetype == CPlotItem::LineType::LinesAndSymbols ||
+      linetype == CPlotItem::LineType::Points)
     {
       mpBoxLineSubType->setEnabled(linetype != CPlotItem::LineType::Points);
       mpSpinBoxWidth->setEnabled(true);
@@ -240,7 +242,8 @@ void BandedGraphWidget::typeChanged(int type)
     }
 
   //symbol type
-  if (linetype == CPlotItem::LineType::Symbols || linetype == CPlotItem::LineType::LinesAndSymbols)
+  if (linetype == CPlotItem::LineType::Symbols ||
+      linetype == CPlotItem::LineType::LinesAndSymbols)
     {
       mpBoxSymbolSubType->setEnabled(true);
     }
