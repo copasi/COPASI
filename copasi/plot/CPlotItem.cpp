@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -77,6 +77,45 @@ const char* CPlotItem::XMLRecordingActivity[] =
   "before&during&after",
   NULL
 };
+
+const CEnumAnnotation< std::string, CPlotItem::LineType > CPlotItem::LineTypeNames(
+{
+  "Lines",
+  "Points",
+  "Symbols",
+  "Lines & Symbols",
+});
+
+
+const CEnumAnnotation< std::string, CPlotItem::LineStyle > CPlotItem::LineStyleNames(
+{
+  "Solid",
+  "Dotted",
+  "Dashed",
+  "Dot-Dash",
+  "Dot-Dot-Dash",
+  "None"
+});
+
+const CEnumAnnotation< std::string, CPlotItem::SymbolType > CPlotItem::SymbolNames(
+{
+  "small cross",
+  "large cross",
+  "circle",
+  "Square",
+  "Diamond",
+  "xCross",
+  "Plus",
+  "Star",
+  "TriangleUp",
+  "TriangleDown",
+  "TriangleLeft",
+  "TriangleRight",
+  "hDash",
+  "vDash",
+  "None"
+});
+
 
 // static
 CPlotItem * CPlotItem::fromData(const CData & data, CUndoObjectInterface * pParent)
