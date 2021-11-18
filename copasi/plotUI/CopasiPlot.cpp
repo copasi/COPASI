@@ -291,10 +291,10 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
 #endif
       QwtValueList contourLevels;
 
-      foreach (const QString & level, list)
-        {
-          contourLevels += level.toDouble();
-        }
+      foreach(const QString & level, list)
+      {
+        contourLevels += level.toDouble();
+      }
 
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
@@ -348,8 +348,21 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
   return pSpectogram;
 }
 
+void
+CopasiPlot::setSymbol(C2DPlotCurve * pCurve, QwtSymbol::Style symbol,
+                      QColor color, int size, float width)
+{
+#if QWT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+  pCurve->setSymbol(new QwtSymbol(symbol, QBrush(), QPen(QBrush(color), width), QSize(size, size)));
+  pCurve->setLegendAttribute(QwtPlotCurve::LegendShowSymbol);
+#else
+  pCurve->setSymbol(QwtSymbol(symbol, QBrush(), QPen(QBrush(color), 2), QSize(size, size)));
+#endif
+}
+
 bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 {
+
   mIgnoreUpdate = true;
   mpPlotSpecification = plotspec;
 
@@ -457,9 +470,10 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
           pCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
 
           unsigned C_INT32 linetype = itPlotItem->getValue< unsigned C_INT32 >("Line type");
+          CPlotItem::LineType lineType = (CPlotItem::LineType) linetype;
 
-          if (linetype == 0      //line
-              || linetype == 3)  //line+symbols
+          if (lineType == CPlotItem::LineType::Lines ||
+              lineType == CPlotItem::LineType::LinesAndSymbols)
             {
               pCurve->setStyle(QwtPlotCurve::Lines);
 #if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
@@ -467,80 +481,116 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 #endif
 
               unsigned C_INT32 linesubtype = itPlotItem->getValue< unsigned C_INT32 >("Line subtype");
+              CPlotItem::LineStyle lineStyle = (CPlotItem::LineStyle) linesubtype;
               C_FLOAT64 width = itPlotItem->getValue< C_FLOAT64 >("Line width");
 
-              switch (linesubtype) //symbol type
+              switch (lineStyle)
                 {
-                  case 1:
+                  case CPlotItem::LineStyle::Dotted:
                     pCurve->setPen(QPen(QBrush(color), width, Qt::DotLine, Qt::FlatCap));
                     break;
 
-                  case 2:
+                  case CPlotItem::LineStyle::Dashed:
                     pCurve->setPen(QPen(QBrush(color), width, Qt::DashLine));
                     break;
 
-                  case 3:
+                  case CPlotItem::LineStyle::DotDash:
                     pCurve->setPen(QPen(QBrush(color), width, Qt::DashDotLine));
                     break;
 
-                  case 4:
+                  case CPlotItem::LineStyle::DotDotDash:
                     pCurve->setPen(QPen(QBrush(color), width, Qt::DashDotDotLine));
                     break;
 
-                  case 0:
+                  case CPlotItem::LineStyle::None:
+                    pCurve->setStyle(QwtPlotCurve::NoCurve);
+                    break;
+
+                  case CPlotItem::LineStyle::Solid:
                   default:
                     pCurve->setPen(QPen(QBrush(color), width, Qt::SolidLine));
                     break;
                 }
             }
 
-          if (linetype == 1) //points
+          if (lineType == CPlotItem::LineType::Points)
             {
               C_FLOAT64 width = itPlotItem->getValue< C_FLOAT64 >("Line width");
               pCurve->setPen(QPen(color, width, Qt::SolidLine, Qt::RoundCap));
               pCurve->setStyle(QwtPlotCurve::Dots);
             }
 
-          if (linetype == 2) //only symbols
+          if (lineType == CPlotItem::LineType::Symbols)
             {
               pCurve->setStyle(QwtPlotCurve::NoCurve);
             }
 
-          if (linetype == 2      //symbols
-              || linetype == 3)  //line+symbols
+          if (lineType == CPlotItem::LineType::Symbols ||
+              lineType == CPlotItem::LineType::LinesAndSymbols) //line+symbols
             {
               unsigned C_INT32 symbolsubtype = itPlotItem->getValue< unsigned C_INT32 >("Symbol subtype");
+              CPlotItem::SymbolType symbolType = (CPlotItem::SymbolType) symbolsubtype;
 
-              switch (symbolsubtype) //symbol type
+              switch (symbolType) //symbol type
                 {
-                  case 1:
-#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-                    pCurve->setSymbol(new QwtSymbol(QwtSymbol::Cross, QBrush(), QPen(QBrush(color), 2), QSize(7, 7)));
-                    pCurve->setLegendAttribute(QwtPlotCurve::LegendShowSymbol);
-#else
-                    pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(), QPen(QBrush(color), 2), QSize(7, 7)));
-#endif
+                  case CPlotItem::SymbolType::LargeCross:
+                  case CPlotItem::SymbolType::Plus:
+                    setSymbol(pCurve, QwtSymbol::Cross, color, 7, 2);
+
                     break;
 
-                  case 2:
-#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-                    pCurve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse, QBrush(), QPen(QBrush(color), 1), QSize(8, 8)));
-                    pCurve->setLegendAttribute(QwtPlotCurve::LegendShowSymbol);
-#else
-                    pCurve->setSymbol(QwtSymbol(QwtSymbol::Ellipse, QBrush(), QPen(QBrush(color), 1), QSize(8, 8)));
-#endif
+                  case CPlotItem::SymbolType::Circle:
+                    setSymbol(pCurve, QwtSymbol::Ellipse, color, 8, 1);
                     break;
 
-                  case 0:
+                  case CPlotItem::SymbolType::Square:
+                    setSymbol(pCurve, QwtSymbol::Rect, color, 7, 2);
+                    break;
+
+                  case CPlotItem::SymbolType::Diamond:
+                    setSymbol(pCurve, QwtSymbol::Diamond, color, 7, 2);
+                    break;
+
+                  case CPlotItem::SymbolType::xCross:
+                    setSymbol(pCurve, QwtSymbol::XCross, color, 7, 2);
+                    break;
+
+                  case CPlotItem::SymbolType::Star:
+                    setSymbol(pCurve, QwtSymbol::Star2, color, 7, 2);
+                    break;
+
+                  case CPlotItem::SymbolType::TriangleUp:
+                    setSymbol(pCurve, QwtSymbol::UTriangle, color, 7, 2);
+                    break;
+
+                  case CPlotItem::SymbolType::TriangleDown:
+                    setSymbol(pCurve, QwtSymbol::DTriangle, color, 7, 2);
+                    break;
+
+                  case CPlotItem::SymbolType::TriangleLeft:
+                    setSymbol(pCurve, QwtSymbol::LTriangle, color, 7, 2);
+                    break;
+
+                  case CPlotItem::SymbolType::TriangleRight:
+                    setSymbol(pCurve, QwtSymbol::RTriangle, color, 7, 2);
+                    break;
+
+                  case CPlotItem::SymbolType::hDash:
+                    setSymbol(pCurve, QwtSymbol::HLine, color, 7, 2);
+                    break;
+
+                  case CPlotItem::SymbolType::vDash:
+                    setSymbol(pCurve, QwtSymbol::VLine, color, 7, 2);
+                    break;
+
+                  case CPlotItem::SymbolType::SmallCross:
                   default:
-#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-                    pCurve->setSymbol(new QwtSymbol(QwtSymbol::Cross, QBrush(color), QPen(QBrush(color), 1), QSize(5, 5)));
-                    pCurve->setLegendAttribute(QwtPlotCurve::LegendShowSymbol);
-#else
-                    pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(color), QPen(QBrush(color), 1), QSize(5, 5)));
-#endif
-
+                    setSymbol(pCurve, QwtSymbol::Cross, color, 5, 1);
                     break;
+
+                  case CPlotItem::SymbolType::None:
+                    break;
+
                 }
             }
         } //2d curves and banded graphs
