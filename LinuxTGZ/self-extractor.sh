@@ -95,7 +95,13 @@ INSTALL_DIR="$(readlink -f ${RESULT})"
 echo cp -r "${EXTRACT_DIR}"/${PACKAGE_NAME}/'*' "${INSTALL_DIR}"
 cp -r "${EXTRACT_DIR}"/${PACKAGE_NAME}/* "${INSTALL_DIR}"
 
-prompt_for_dir "~/.local/share/applications" "Desktop file location:" "${DESKTOP_DIR}"
+if [ -w "/usr/share/applications" ]; then 
+    DEFAULT_DESKTOP_DIR="/usr/share/applications"
+else
+    DEFAULT_DESKTOP_DIR="~/.local/share/applications"
+fi
+
+prompt_for_dir "${DEFAULT_DESKTOP_DIR}" "Desktop file location:" "${DESKTOP_DIR}"
 DESKTOP_DIR="$(readlink -f ${RESULT})"
 
 NAME=COPASI
@@ -148,7 +154,7 @@ if command -v xdg-settings &> /dev/null ; then
 fi
 
 if command -v update-desktop-database &> /dev/null ; then
-    update-desktop-database ~/.local/share/applications/
+    update-desktop-database /usr/share/applications ~/.local/share/applications/
 fi
 
 if command -v xdg-mime &> /dev/null ; then
