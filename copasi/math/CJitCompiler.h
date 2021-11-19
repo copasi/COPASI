@@ -26,9 +26,11 @@ private:
   static bool * pSSE4support;
 
 public:
-  typedef C_FLOAT64(*Function)();;
+  typedef C_FLOAT64(*Function)();
 
   static CJitCompiler * create();
+
+  virtual ~CJitCompiler();
 
   virtual CJitCompiler * copy() const = 0;
 

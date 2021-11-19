@@ -42,6 +42,10 @@ CJitCompiler * CJitCompiler::create()
 #endif // USE_JIT
 }
 
+// virtual
+CJitCompiler::~CJitCompiler()
+{}
+
 void CJitCompiler::registerExpression(CJitExpression * pExpression)
 {
   if (JitEnabled())
