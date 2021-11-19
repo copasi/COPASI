@@ -604,6 +604,10 @@ CMathContainer::~CMathContainer()
       deregisterUpdateSequence(*mUpdateSequences.begin());
     }
 
+#ifdef USE_JIT
+  pdelete(mpJITCompiler);
+#endif
+
   setObjectParent(NULL);
 }
 
