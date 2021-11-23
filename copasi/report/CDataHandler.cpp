@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -218,6 +218,22 @@ void CDataHandler::finish()
   storeDataAfter();
 }
 
+C_FLOAT64 getValue(const CObjectInterface* pInt)
+{
+  const CDataObject * pObj = dynamic_cast< const CDataObject * >(pInt);
+
+  if (pObj)
+    {
+      if (pObj->hasFlag(CDataObject::Flag::ValueInt))
+        return (C_FLOAT64)(*(C_INT32 *) pInt->getValuePointer());
+
+      if (pObj->hasFlag(CDataObject::Flag::ValueBool))
+        return (C_FLOAT64)(*(bool*) pInt->getValuePointer());
+    }
+
+  return *static_cast< C_FLOAT64 * >(pInt->getValuePointer());
+}
+
 void CDataHandler::storeDataBefore()
 {
   std::vector< CObjectInterface * >::iterator it = mBeforeObjectList.begin();
@@ -227,7 +243,7 @@ void CDataHandler::storeDataBefore()
     return;
 
   for (; it != end; ++it)
-    mBeforeData.push_back(*static_cast< C_FLOAT64 * >((*it)->getValuePointer()));
+    mBeforeData.push_back(getValue(*it));
 
 }
 
@@ -243,7 +259,7 @@ void CDataHandler::storeDataDuring()
 
   for (; it != end; ++it)
     {
-      row.push_back(*static_cast< C_FLOAT64 * >((*it)->getValuePointer()));
+      row.push_back(getValue(*it));
     }
 
   mDuringData.push_back(row);
@@ -259,7 +275,7 @@ void CDataHandler::storeDataAfter()
     return;
 
   for (; it != end; ++it)
-    mAfterData.push_back(*static_cast< C_FLOAT64 * >((*it)->getValuePointer()));
+    mAfterData.push_back(getValue(*it));
 
 }
 
@@ -308,10 +324,19 @@ bool CDataHandler::generateObjectsFromName(const CObjectInterface::ContainerList
           continue;
         }
 
-      auto * pDataRef = dynamic_cast< CDataObjectReference< C_FLOAT64 > * >(pObjectInterface);
+      auto * pObj = dynamic_cast< CDataObject * >(pObjectInterface);
+      bool isData = false;
+
+      if (pObj && pObj->getObjectType() == "Reference")
+        {
+          isData = pObj->hasFlag(CDataObject::Flag::ValueBool)
+                   || pObj->hasFlag(CDataObject::Flag::ValueInt)
+                   || pObj->hasFlag(CDataObject::Flag::ValueDbl);
+        }
+
       auto * pMathRef = dynamic_cast< CMathObject * >(pObjectInterface);
 
-      if (pDataRef == NULL && pMathRef == NULL)
+      if (!isData && pMathRef == NULL)
         {
           CCopasiMessage(CCopasiMessage::WARNING, "CDataHandler: This handler can only handle double value references. %s is not one.", (*nameVector)[i].c_str());
           result = false;
