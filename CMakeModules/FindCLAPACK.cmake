@@ -53,8 +53,20 @@ endif()
 
 if (BLAS_FOUND AND APPLE)
   add_definitions(-DHAVE_APPLE)
+
   if (NOT CLAPACK_INCLUDE_DIR)
-    set(CLAPACK_INCLUDE_DIR "${COPASI_SOURCE_DIR}")
+    # as it turns out the new OSX has different definitions for blas
+    # it is a bit hard to find the right directory, so lets try here
+    exec_program(xcode-select ARGS -print-path OUTPUT_VARIABLE CMAKE_XCODE_DEVELOPER_DIR)
+    find_path(CLAPACK_INCLUDE_DIR cblas.h
+    PATHS
+       ${CMAKE_XCODE_DEVELOPER_DIR}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework/Versions/Current/Frameworks/vecLib.framework/Headers/
+    )
+    if (NOT CLAPACK_INCLUDE_DIR)
+      # fallback
+      set(CLAPACK_INCLUDE_DIR "${COPASI_SOURCE_DIR}")
+    endif (NOT CLAPACK_INCLUDE_DIR)
+
   endif (NOT CLAPACK_INCLUDE_DIR)
 
 
