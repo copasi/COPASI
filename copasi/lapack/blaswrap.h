@@ -74,7 +74,11 @@ extern "C"
 # ifdef HAVE_BLAS_H
 #  include <blas.h>
 # else
+#ifdef HAVE_APPLE
+#include <cblas.h>
+#else
 #  include "copasi/lapack/blas.h"
+#endif
 # endif
 
 #ifdef USE_SUNPERF
