@@ -96,3 +96,18 @@ TEST_CASE("convert sedml types and colors", "[copasi,sedml]")
   REQUIRE(SEDMLUtils::symbolToSed((int) CPlotItem::SymbolType::SmallCross) == SEDML_MARKERTYPE_PLUS);
   REQUIRE(SEDMLUtils::symbolToSed((int) CPlotItem::SymbolType::Plus) == SEDML_MARKERTYPE_PLUS);
 }
+
+
+TEST_CASE("importing new curves and plots", "[copasi,sedml]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != NULL);
+
+  REQUIRE(dm->importSEDML(getTestFile("test-data/test_shaded_area_overlap_order.sedml")) == true);
+
+  auto* plots = dm->getPlotDefinitionList();
+  REQUIRE(plots->size() == 1);
+
+
+  CRootContainer::removeDatamodel(dm);
+}
