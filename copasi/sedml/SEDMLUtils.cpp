@@ -499,6 +499,31 @@ std::string SEDMLUtils::rgbaToArgb(const std::string & rgba, bool includeHash)
   return result;
 }
 
+int SEDMLUtils::getAlphaFromArgb(const std::string & argb)
+{
+  if (argb.length() < 8)
+    return 255;
+
+  int offset = argb[0] == '#' ? 1 : 0;
+
+  int result = std::stoi(argb.substr(offset, 2));
+
+  return result;
+}
+
+int SEDMLUtils::getAlphaFromRgba(const std::string & rgba)
+{
+  std::string::size_type len = rgba.length();
+
+  if (len < 8)
+    return 255;
+
+  int offset = rgba[0] == '#' ? 1 : 0;
+
+  int result = std::stoi(rgba.substr(len - 2));
+  return result;
+}
+
 const CDataObject *
 SEDMLUtils::getObjectForSbmlId(const CModel* pModel, const std::string& id, const std::string& SBMLType, bool initial/* = false*/)
 {

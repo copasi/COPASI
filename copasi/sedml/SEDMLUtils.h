@@ -119,6 +119,9 @@ public:
   static std::string argbToRgba(const std::string & argb, bool includeHash = true);
   static std::string rgbaToArgb(const std::string & rgba, bool includeHash = true);
 
+  static int getAlphaFromArgb(const std::string & argb);
+  static int getAlphaFromRgba(const std::string & rgba);
+
 #ifndef SWIG
 
   static std::map< std::string, std::string > PARAMETER_KISAO_MAP;
