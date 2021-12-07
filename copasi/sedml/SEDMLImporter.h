@@ -93,6 +93,59 @@ public:
     std::map<CDataObject*, SedBase*>& copasi2sedmlmap);
 
   /**
+   * adds the given SED-ML curve to the COPASI plot, if supported
+   *
+   * prior to calling this function, please ensure to have the
+   * the document and model set already.
+   *
+   * @param pCurve the SED-ML curve, that may include a style
+   * @param pPlot the COPASI plot specification to add the curve to
+   *
+   */
+  void addCurveToCopasiPlot(
+    LIBSEDML_CPP_NAMESPACE_QUALIFIER SedAbstractCurve* pCurve,
+    CPlotSpecification * pPlot);
+
+  /**
+  * adds the given SED-ML surface to the COPASI plot, if supported
+  *
+  * prior to calling this function, please ensure to have the
+  * the document and model set already.
+  *
+  * @param pSurface the SED-ML surface, that may include a style
+  * @param pPlot the COPASI plot specification to add the curve to
+  *
+  */
+  void addSurfaceToCopasiPlot(
+    LIBSEDML_CPP_NAMESPACE_QUALIFIER SedSurface * pSurface,
+    CPlotSpecification * pPlot);
+
+
+  /**
+   * applies the given style to a plot item
+   *
+   * prior to calling this function, please ensure to have the
+   * the document and model set already.
+   *
+   * @param pStyle the SED-ML Style to apply
+   * @param plItem the copasi plot item
+   *
+   */
+  void applyStyleToCopasiItem(
+    LIBSEDML_CPP_NAMESPACE_QUALIFIER SedStyle* pStyle,
+    CPlotItem* plItem);
+
+  /**
+   * imports the given report
+   *
+   * prior to calling this function, please ensure to have the
+   * the document and model set already.
+   *
+   * @param report the SED-ML report to import
+   */
+  void importReport(LIBSEDML_CPP_NAMESPACE_QUALIFIER SedReport * report);
+
+  /**
    * Updates COPASI tasks for a given SedML Simulation
    */
   void updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
