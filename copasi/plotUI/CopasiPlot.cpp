@@ -599,7 +599,12 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
         {
           //set fill color
           QColor c = color;
-          c.setAlpha(64);
+          int alpha = 64;
+
+          if (itPlotItem->getParameter("alpha"))
+            alpha = itPlotItem->getValue< C_INT32 >("alpha");
+
+          c.setAlpha(alpha);
           pCurve->setBrush(c);
         }
 
