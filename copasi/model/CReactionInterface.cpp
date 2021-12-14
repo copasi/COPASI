@@ -348,7 +348,7 @@ bool CReactionInterface::writeBackToReaction(CReaction * pReaction, bool compile
 
             if (mIsLocal[i])
               {
-                Objects.push_back(pRea->getParameters().getParameter(mIndexMap[i]->at(0)));
+                Objects.push_back(pRea->getParameters().getParameter(ParameterName));
               }
             else
               {
