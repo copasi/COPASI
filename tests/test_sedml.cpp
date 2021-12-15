@@ -54,7 +54,7 @@ TEST_CASE("exporting sedml file with non-zero initial time", "[copasi,sedml]")
   SEDMLImporter imp;
   imp.setSEDMLDocument(doc);
   imp.setDataModel(dm);
-  imp.updateCopasiTaskForSimulation(sim, dm->getCopasi2SEDMLMap());
+  imp.updateCopasiTaskForSimulation(sim);
 
   REQUIRE(problem->getDuration() == 10);
   REQUIRE(problem->getStepNumber() == 100);
