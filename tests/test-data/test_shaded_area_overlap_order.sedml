@@ -64,9 +64,9 @@
   <listOfOutputs>
     <plot2D id="plot_0" name="UniformTimecourse">
       <listOfCurves>
-        <curve id="plot_0__plot_0_0_0__plot_0_0_1" logX="false" style="purple_dash" xDataReference="plot_0_0_0" logY="false" yDataReference="plot_0_0_1" type="points"/>
-        <curve id="plot_0__plot_0_0_0__plot_0_1_1" logX="false" style="red_dash_dot" xDataReference="plot_0_0_0" logY="false" yDataReference="plot_0_1_1" type="points"/>
-        <curve id="plot_0__plot_0_0_0__plot_0_2_1" logX="false" style="green_line_orange_circles" xDataReference="plot_0_0_0" logY="false" yDataReference="plot_0_2_1" type="points"/>
+        <curve id="plot_0__plot_0_0_0__plot_0_0_1" order="2" logX="false" style="purple_dash" xDataReference="plot_0_0_0" logY="false" yDataReference="plot_0_0_1" type="points"/>
+        <curve id="plot_0__plot_0_0_0__plot_0_1_1" order="2" logX="false" style="red_dash_dot" xDataReference="plot_0_0_0" logY="false" yDataReference="plot_0_1_1" type="points"/>
+        <curve id="plot_0__plot_0_0_0__plot_0_2_1" order="2" logX="false" style="green_line_orange_circles" xDataReference="plot_0_0_0" logY="false" yDataReference="plot_0_2_1" type="points"/>
         <shadedArea id="S2_S3" order="1" style="blue_fill" xDataReference="plot_0_0_0" yDataReferenceFrom="plot_0_2_1" yDataReferenceTo="plot_0_1_1"/>
         <shadedArea id="S1_S2" order="0" style="purple_fill" xDataReference="plot_0_0_0" yDataReferenceFrom="plot_0_1_1" yDataReferenceTo="plot_0_0_1"/>
       </listOfCurves>
