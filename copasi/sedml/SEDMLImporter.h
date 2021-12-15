@@ -81,16 +81,15 @@ protected:
 
   std::map<CReportDefinition*, std::string> mReportMap;
 
+  // further symbols needed for updating content after import:
+  CDataModel::CContent mContent;
 public:
   SEDMLImporter();
   ~SEDMLImporter();
 
   const std::string getArchiveFileName();
 
-  void readListOfPlotsFromSedMLOutput(
-    COutputDefinitionVector *pPlotList, CModel* pModel,
-    SedDocument *pSedDocument,
-    std::map<CDataObject*, SedBase*>& copasi2sedmlmap);
+  void readListOfPlotsFromSedMLOutput();
 
   /**
    * adds the given SED-ML curve to the COPASI plot, if supported
@@ -148,8 +147,7 @@ public:
   /**
    * Updates COPASI tasks for a given SedML Simulation
    */
-  void updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
-                                     std::map<CDataObject*, SedBase*>& copasi2sedmlmap);
+  void updateCopasiTaskForSimulation(SedSimulation* sedmlsim);
 
   /**
    * Updates the task / method settings from algorithm
@@ -164,31 +162,20 @@ public:
    * Imports the first viable SBML model
    */
   CModel* importFirstSBMLModel(CProcessReport* pImportHandler,
-                               SBMLDocument *& pSBMLDocument,
-                               std::map<CDataObject*, SBase*>& copasi2sbmlmap,
-                               CListOfLayouts *& prLol,
                                CDataModel* pDataModel);
 
   /**
    * Import all tasks for the imported SBML model
    */
-  void importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap);
+  void importTasks();
 
   CModel* readSEDML(std::string filename, CProcessReport* pImportHandler,
-                    SBMLDocument *& pSBMLDocument, SedDocument*& pSedDocument,
-                    std::map<CDataObject*, SedBase*>& copasi2sedmlmap,
-                    std::map<CDataObject*, SBase*>& copasi2sbmlmap,
-                    CListOfLayouts *& prLol,
-                    COutputDefinitionVector * & plotList,
                     CDataModel* pDataModel);
 
   CModel* parseSEDML(const std::string& sedmlDocumentText, CProcessReport* pImportHandler,
-                     SBMLDocument *& pSBMLDocument, SedDocument *& pSEDMLDocument,
-                     std::map<CDataObject*, SedBase*>& copasi2sedmlmap,
-                     std::map<CDataObject*, SBase*>& copasi2sbmlmap,
-                     CListOfLayouts *& prLol,
-                     COutputDefinitionVector *& plotList,
-                     CDataModel* pDataModel);
+                     CDataModel * pDataModel);
+
+  void updateContent(CDataModel::CContent & data, CDataModel& dm);
 
   /**
    * This call deletes an existing COPASI model.
