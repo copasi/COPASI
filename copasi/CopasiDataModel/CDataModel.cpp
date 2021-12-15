@@ -2177,12 +2177,12 @@ bool CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText,
   // Later this will be settable by the user in the preferences dialog
   // importer.setImportCOPASIMIRIAM(true);
   importer.setImportHandler(pImportHandler);
-
+  //mCopasi2SBMLMap.clear();
   CModel * pModel = NULL;
 
   try
     {
-      pModel = importer.parseSEDML(sedmlDocumentText, this);
+      pModel = importer.parseSEDML(sedmlDocumentText, pImportHandler, this);
     }
 
   catch (CCopasiException & except)
@@ -2235,12 +2235,21 @@ bool CDataModel::importSEDML(const std::string & fileName,
 
   SEDMLImporter importer;
   // Later this will be settable by the user in the preferences dialog
+  // Later this will be settable by the user in the preferences dialog
   //   importer.setImportCOPASIMIRIAM(true);
   importer.setImportHandler(pImportHandler);
 
-  pushData();
-
   CModel * pModel = NULL;
+
+  SedDocument * pSEDMLDocument = NULL;
+  std::map< CDataObject *, SedBase * > Copasi2SEDMLMap;
+  std::map< CDataObject *, SBase * > Copasi2SBMLMap;
+
+  SBMLDocument * pSBMLDocument = NULL;
+  CListOfLayouts * pLol = NULL;
+  COutputDefinitionVector * pLotList = NULL;
+
+  pushData();
 
   try
     {
@@ -2248,7 +2257,7 @@ bool CDataModel::importSEDML(const std::string & fileName,
       mData.mSEDMLFileName = CDirEntry::normalize(FileName);
       mData.mReferenceDir = CDirEntry::dirName(mData.mSEDMLFileName);
 
-      pModel = importer.readSEDML(FileName, this);
+      pModel = importer.readSEDML(FileName, pImportHandler, this);
     }
 
   catch (CCopasiException & except)
