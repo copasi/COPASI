@@ -56,6 +56,9 @@ copasi/copasi.pro.user
 /copasi/bindings/python/examples/*.xml
 /copasi/bindings/python/examples/*.txt
 /copasi/bindings/python/examples/out*
+/copasi/bindings/python/unittests/*.cps
+/copasi/bindings/python/unittests/*.xml
+/copasi/bindings/python/unittests/*.txt
 /TestSuite/distribution/NF-kappaB-trajectory.txt
 /TestSuite/distribution/example3.txt
 /Tools/Build95/*
