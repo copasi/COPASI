@@ -21,12 +21,12 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
   {
     std::string test_file = getTestFile("test-data/unit_test.xml");
     auto* sbml_doc = readSBMLFromFile(test_file.c_str());
-    REQUIRE(sbml_doc != NULL);
+    REQUIRE(sbml_doc != nullptr);
     auto* sbml_mod = sbml_doc->getModel();
-    REQUIRE(sbml_mod != NULL);
+    REQUIRE(sbml_mod != nullptr);
 
     auto * unit = sbml_mod->getUnitDefinition("unit_1");
-    REQUIRE(unit != NULL);
+    REQUIRE(unit != nullptr);
 
     SBMLImporter importer;
 
@@ -35,12 +35,12 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
     REQUIRE(expression == "l/(nmol*s)");
 
     unit = sbml_mod->getUnitDefinition("unit_2");
-    REQUIRE(unit != NULL);
+    REQUIRE(unit != nullptr);
     expression = importer.createUnitExpressionFor(unit);
     REQUIRE(expression == "d");
 
     unit = sbml_mod->getUnitDefinition("unit_3");
-    REQUIRE(unit != NULL);
+    REQUIRE(unit != nullptr);
     expression = importer.createUnitExpressionFor(unit);
     REQUIRE((expression == "1/(#*d)" || expression == "1/(d*#)"));
 
@@ -54,12 +54,12 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
   {
     std::string test_file = getTestFile("test-data/volume_units.xml");
     auto * sbml_doc = readSBMLFromFile(test_file.c_str());
-    REQUIRE(sbml_doc != NULL);
+    REQUIRE(sbml_doc != nullptr);
     auto * sbml_mod = sbml_doc->getModel();
-    REQUIRE(sbml_mod != NULL);
+    REQUIRE(sbml_mod != nullptr);
 
     auto * unit = sbml_mod->getUnitDefinition("um3");
-    REQUIRE(unit != NULL);
+    REQUIRE(unit != nullptr);
 
     SBMLImporter importer;
 
@@ -80,7 +80,7 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
     sbml_doc = readSBMLFromString(sbml_text.c_str());
     sbml_mod = sbml_doc->getModel();
     unit = sbml_mod->getUnitDefinition("volume");
-    REQUIRE(unit != NULL);
+    REQUIRE(unit != nullptr);
 
     expression = importer.createUnitExpressionFor(unit);
     REQUIRE(model_units == expression);
@@ -92,14 +92,14 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
     REQUIRE(dm->newModel(NULL, true) == true);
 
     auto * mod = dm->getModel();
-    REQUIRE(mod != NULL);
+    REQUIRE(mod != nullptr);
     auto * p = mod->createModelValue("p1");
-    REQUIRE(p != NULL);
+    REQUIRE(p != nullptr);
     p->setValue(1);
     p->setUnitExpression("d");
 
     p = mod->createModelValue("p2");
-    REQUIRE(p != NULL);
+    REQUIRE(p != nullptr);
     p->setValue(1);
     p->setUnitExpression("1/(#*d)");
 
@@ -107,32 +107,32 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
     auto sbml = exp.exportModelToString(*dm, 2, 4);
 
     auto * doc = readSBMLFromString(sbml.c_str());
-    REQUIRE(doc != NULL);
+    REQUIRE(doc != nullptr);
     auto * sbml_mod = doc->getModel();
-    REQUIRE(sbml_mod != NULL);
+    REQUIRE(sbml_mod != nullptr);
 
     auto * unitdef = sbml_mod->getUnitDefinition("unit_0");
-    REQUIRE(unitdef != NULL);
+    REQUIRE(unitdef != nullptr);
     REQUIRE(unitdef->getNumUnits() == 1);
     auto * unit = unitdef->getUnit(0);
-    REQUIRE(unit != NULL);
+    REQUIRE(unit != nullptr);
     REQUIRE(unit->getScale() == 0);
     REQUIRE(unit->getMultiplier() == 86400);
     REQUIRE(unit->getExponent() == 1);
     REQUIRE(unit->getKind() == UNIT_KIND_SECOND);
 
     unitdef = sbml_mod->getUnitDefinition("unit_1");
-    REQUIRE(unitdef != NULL);
+    REQUIRE(unitdef != nullptr);
     REQUIRE(unitdef->getNumUnits() == 2);
     unit = unitdef->getUnit(0);
-    REQUIRE(unit != NULL);
+    REQUIRE(unit != nullptr);
     REQUIRE(unit->getScale() == 0);
     REQUIRE(unit->getMultiplier() == 86400);
     REQUIRE(unit->getExponent() == -1);
     REQUIRE(unit->getKind() == UNIT_KIND_SECOND);
 
     unit = unitdef->getUnit(1);
-    REQUIRE(unit != NULL);
+    REQUIRE(unit != nullptr);
     REQUIRE(unit->getScale() == 0);
     REQUIRE(unit->getMultiplier() == 1);
     REQUIRE(unit->getExponent() == -1);
@@ -150,7 +150,7 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
 TEST_CASE("3: creating a new model testing avogadro", "[copasi,sbml]")
 {
   auto * dm = CRootContainer::addDatamodel();
-  REQUIRE(dm != NULL);
+  REQUIRE(dm != nullptr);
 
   dm->newModel(NULL, true);
 
@@ -210,7 +210,7 @@ TEST_CASE("2: importing an sbml file and saving as COPASI file", "[copasi,sbml]"
 {
 
   auto * dm = CRootContainer::addDatamodel();
-  REQUIRE(dm != NULL);
+  REQUIRE(dm != nullptr);
 
   std::string test_file = getTestFile("test-data/01776-sbml-l3v1.xml");
 
@@ -261,7 +261,7 @@ TEST_CASE("importing an SBML file multiple times", "[copasi,sbml]")
 {
 
   auto * dm = CRootContainer::addDatamodel();
-  REQUIRE(dm != NULL);
+  REQUIRE(dm != nullptr);
 
   std::string test_file = getTestFile("test-data/BIOMD0000000027_url.xml");
 
@@ -282,7 +282,7 @@ TEST_CASE("importing an SBML file and delete used function definition", "[copasi
 {
 
   auto * dm = CRootContainer::addDatamodel();
-  REQUIRE(dm != NULL);
+  REQUIRE(dm != nullptr);
 
   std::string test_file = getTestFile("test-data/BIOMD0000000055_urn.xml");
 

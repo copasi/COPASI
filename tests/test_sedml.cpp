@@ -14,7 +14,7 @@ extern std::string getTestFile(const std::string & fileName);
 TEST_CASE("exporting sedml file with non-zero initial time", "[copasi,sedml]")
 {
   auto * dm = CRootContainer::addDatamodel();
-  REQUIRE(dm != NULL);
+  REQUIRE(dm != nullptr);
 
   dm->newModel(NULL, true);
 
@@ -29,7 +29,7 @@ TEST_CASE("exporting sedml file with non-zero initial time", "[copasi,sedml]")
   auto & task = dynamic_cast<CTrajectoryTask&>((*dm->getTaskList())["Time-Course"]);
   task.setScheduled(true);
   auto * problem = dynamic_cast< CTrajectoryProblem * >(task.getProblem());
-  REQUIRE(problem != NULL);
+  REQUIRE(problem != nullptr);
 
   problem->setDuration(10);
   problem->setStepNumber(100);
@@ -49,12 +49,13 @@ TEST_CASE("exporting sedml file with non-zero initial time", "[copasi,sedml]")
   REQUIRE(doc->getNumErrors(LIBSEDML_SEV_ERROR) == 0);
 
   auto * sim = dynamic_cast<SedUniformTimeCourse*>(doc->getSimulation(0));
-  REQUIRE(sim != NULL);
+  REQUIRE(sim != nullptr);
 
   SEDMLImporter imp;
-  imp.setSEDMLDocument(doc);
   imp.setDataModel(dm);
-  imp.updateCopasiTaskForSimulation(sim);
+  imp.setSEDMLDocument(doc);
+  imp.setCopasiModel(model);
+  imp.updateCopasiTaskForSimulation(sim, dm->getTaskList());
 
   REQUIRE(problem->getDuration() == 10);
   REQUIRE(problem->getStepNumber() == 100);
@@ -101,7 +102,7 @@ TEST_CASE("convert sedml types and colors", "[copasi,sedml]")
 TEST_CASE("importing new curves and plots", "[copasi,sedml]")
 {
   auto * dm = CRootContainer::addDatamodel();
-  REQUIRE(dm != NULL);
+  REQUIRE(dm != nullptr);
 
   REQUIRE(dm->importSEDML(getTestFile("test-data/test_shaded_area_overlap_order.sedml")) == true);
 

@@ -28,7 +28,7 @@ TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
 {
 
   auto* dm = CRootContainer::addDatamodel();
-  REQUIRE(dm != NULL);
+  REQUIRE(dm != nullptr);
 
   SECTION("brusselator example")
   {
@@ -61,9 +61,9 @@ TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
 
     // switch the sensitivity setup
     auto* task = dynamic_cast<CSensTask*>(&((*dm->getTaskList())["Sensitivities"]));
-    REQUIRE(task != NULL);
+    REQUIRE(task != nullptr);
     auto* prob = dynamic_cast<CSensProblem*>(task->getProblem());
-    REQUIRE(prob != NULL);
+    REQUIRE(prob != nullptr);
     REQUIRE(prob->getNumberOfVariables() == 2);
     prob->setTargetFunctions( { CObjectLists::NON_CONST_METAB_NUMBERS });
     prob->changeVariables(0, { CObjectLists::ALL_LOCAL_PARAMETER_VALUES });

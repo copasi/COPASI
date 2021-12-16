@@ -14,7 +14,7 @@ extern std::string getTestFile(const std::string & fileName);
 TEST_CASE("1: load model, simulate, collect data", "[copasi, datahandler]")
 {
   auto * dm = CRootContainer::addDatamodel();
-  REQUIRE(dm != NULL);
+  REQUIRE(dm != nullptr);
 
   SECTION("brusselator example")
   {
@@ -78,7 +78,7 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi, datahandler]")
 TEST_CASE("ensure that data handler with function evaluations can be compiled", "[copasi, datahandler]")
 {
   auto * dm = CRootContainer::addDatamodel();
-  REQUIRE(dm != NULL);
+  REQUIRE(dm != nullptr);
 
   REQUIRE(dm->loadModel(getTestFile("test-data/brusselator.cps"), NULL) == true);
 
