@@ -127,11 +127,29 @@ void SEDMLImporter::clearDocument()
 void SEDMLImporter::setDataModel(CDataModel * pDataModel)
 {
   mpDataModel = pDataModel;
+
+  mContent.mCopasi2SBMLMap.clear();
+  mContent.mCopasi2SEDMLMap.clear();
+
+  if (!pDataModel)
+    return;
+
+  if (!mpCopasiModel)
+    mpCopasiModel = pDataModel->getModel();
+
+  mContent.pTaskList = new CDataVectorN< CCopasiTask >("TaskList", pDataModel);
+  mContent.pReportDefinitionList = new CReportDefinitionVector("ReportDefinitions", pDataModel);
+  mContent.pPlotDefinitionList = new COutputDefinitionVector("OutputDefinitions", pDataModel);
 }
 
 CDataModel * SEDMLImporter::getDataModel()
 {
   return mpDataModel;
+}
+
+void SEDMLImporter::setCopasiModel(CModel * pModel)
+{
+  mpCopasiModel = pModel;
 }
 
 void SEDMLImporter::clearCallBack()
@@ -148,18 +166,24 @@ const std::string SEDMLImporter::getArchiveFileName()
  * Creates and returns a COPASI CTrajectoryTask from the SEDML simulation
  * given as argument.
  */
-void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim)
+void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation * sedmlsim,
+    CDataVectorN< CCopasiTask > * taskList)
 {
   if (sedmlsim == NULL)
     return;
+
+  if (taskList == NULL)
+    taskList = mContent.pTaskList;
 
   switch (sedmlsim->getTypeCode())
     {
       case SEDML_SIMULATION_UNIFORMTIMECOURSE:
       {
-        CTrajectoryTask * tTask = static_cast< CTrajectoryTask * >(&mContent.pTaskList->operator[]("Time-Course"));
+        if (taskList->getIndex("Time-Course") == C_INVALID_INDEX)
+          CTaskFactory::create(CTaskEnum::Task::timeCourse, taskList);
+
+        CTrajectoryTask * tTask = static_cast< CTrajectoryTask * >(&taskList->operator[]("Time-Course"));
         tTask->setScheduled(true);
-        tTask->setMathContainer(&mpCopasiModel->getMathContainer());
 
         CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(tTask->getProblem());
         SedUniformTimeCourse* tc = static_cast<SedUniformTimeCourse*>(sedmlsim);
@@ -169,8 +193,11 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim)
         tProblem->setOutputStartTime(outputStartTime);
 
         // set the models initial time to the initial time of the simulation
-        mpCopasiModel->setInitialTime(tc->getInitialTime());
-        mpCopasiModel->updateInitialValues(mpDataModel->getModel()->getInitialValueReference());
+        if (mpCopasiModel)
+          {
+            mpCopasiModel->setInitialTime(tc->getInitialTime());
+            mpCopasiModel->updateInitialValues(mpCopasiModel->getInitialValueReference());
+          }
 
         tProblem->setDuration(outputEndTime - outputStartTime);
         tProblem->setStepNumber(numberOfPoints);
@@ -188,10 +215,11 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim)
 
       case SEDML_SIMULATION_ONESTEP:
       {
+        if (taskList->getIndex("Time-Course") == C_INVALID_INDEX)
+          CTaskFactory::create(CTaskEnum::Task::timeCourse, taskList);
 
-        CTrajectoryTask * tTask = static_cast< CTrajectoryTask * >(&mContent.pTaskList->operator[]("Time-Course"));
+        CTrajectoryTask * tTask = static_cast< CTrajectoryTask * >(&taskList->operator[]("Time-Course"));
         tTask->setScheduled(true);
-        tTask->setMathContainer(&mpCopasiModel->getMathContainer());
 
         CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(tTask->getProblem());
         SedOneStep* step = static_cast<SedOneStep*>(sedmlsim);
@@ -207,9 +235,11 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim)
       case SEDML_SIMULATION_STEADYSTATE:
       {
         // nothing to be done for this one
-        CSteadyStateTask * tTask = static_cast< CSteadyStateTask * >(&mContent.pTaskList->operator[]("Steady-State"));
+        if (taskList->getIndex("Steady-State") == C_INVALID_INDEX)
+          CTaskFactory::create(CTaskEnum::Task::steadyState, taskList);
+
+        CSteadyStateTask * tTask = static_cast< CSteadyStateTask * >(&taskList->operator[]("Steady-State"));
         tTask->setScheduled(true);
-        tTask->setMathContainer(&mpCopasiModel->getMathContainer());
 
         // TODO read kisao terms
         //CCopasiProblem* tProblem = static_cast<CCopasiProblem*>(tTask->getProblem());
@@ -854,7 +884,6 @@ void SEDMLImporter::importReport(
  * Function reads an SEDML file with libsedml and converts it to a Copasi CModel
  */
 CModel* SEDMLImporter::readSEDML(std::string filename,
-                                 CProcessReport* pImportHandler,
                                  CDataModel* pDataModel)
 {
   // convert filename to the locale encoding
@@ -878,7 +907,7 @@ CModel* SEDMLImporter::readSEDML(std::string filename,
 
   pDataModel->setSEDMLFileName(filename);
 
-  return parseSEDML(stringStream.str(), pImportHandler,
+  return parseSEDML(stringStream.str(),
                     pDataModel);
 }
 /**
@@ -888,8 +917,7 @@ CModel* SEDMLImporter::readSEDML(std::string filename,
  */
 CModel*
 SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
-                          CProcessReport* pImportHandler,
-                          CDataModel* pDataModel)
+                          CDataModel * pDataModel)
 {
   mReportMap.clear();
   this->mUsedSEDMLIdsPopulated = false;
@@ -1051,20 +1079,12 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
     }
 
   // initialize data:
-
-  mContent.mCopasi2SBMLMap.clear();
-  mContent.mCopasi2SEDMLMap.clear();
-  mContent.pTaskList = new CDataVectorN< CCopasiTask >("TaskList", pDataModel);
-  CTaskFactory::create(CTaskEnum::Task::timeCourse, mContent.pTaskList);
-  CTaskFactory::create(CTaskEnum::Task::steadyState, mContent.pTaskList);
-  CTaskFactory::create(CTaskEnum::Task::scan, mContent.pTaskList);
-  mContent.pReportDefinitionList = new CReportDefinitionVector("ReportDefinitions", pDataModel);
-  mContent.pPlotDefinitionList = new COutputDefinitionVector("OutputDefinitions", pDataModel);
+  setDataModel(pDataModel);
 
   //delete reader;
   setSEDMLDocument(pSEDMLDocument);
 
-  importFirstSBMLModel(pImportHandler, pDataModel);
+  importFirstSBMLModel();
 
   readListOfPlotsFromSedMLOutput();
 
@@ -1110,12 +1130,14 @@ void SEDMLImporter::updateContent(CDataModel::CContent & data, CDataModel & dm)
 
 }
 
-void
-SEDMLImporter::importTasks()
+void SEDMLImporter::importTasks(CDataVectorN< CCopasiTask > * taskList)
 {
 
   if (mpSEDMLDocument == NULL)
     return;
+
+  if (taskList == NULL)
+    taskList = mContent.pTaskList;
 
   // merge nested subtasks if needed (as that is really the only way
   // COPASI can handle them. So if we have
@@ -1209,7 +1231,11 @@ SEDMLImporter::importTasks()
 
             SedUniformRange* urange = dynamic_cast<SedUniformRange*>(range);
             SedVectorRange* vrange = dynamic_cast<SedVectorRange*>(range);
-            CScanTask * tTask = static_cast< CScanTask * >(&mContent.pTaskList->operator[]("Scan"));
+
+            if (taskList->getIndex("Scan") == C_INVALID_INDEX)
+              CTaskFactory::create(CTaskEnum::Task::scan, taskList);
+
+            CScanTask * tTask = static_cast< CScanTask * >(&taskList->operator[]("Scan"));
             tTask->setScheduled(true);
             tTask->setMathContainer(NULL);
             CScanProblem *pProblem = static_cast<CScanProblem*>(tTask->getProblem());
@@ -1371,8 +1397,7 @@ bool applyAttributeChange(CModel* pCopasiModel, CModelParameterSet& set, const s
   return true;
 }
 
-CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
-    CDataModel* pDataModel)
+CModel* SEDMLImporter::importFirstSBMLModel()
 {
   if (mpSEDMLDocument == NULL)
     return NULL;
@@ -1424,10 +1449,10 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
 
   if (CDirEntry::exist(modelSource))
     FileName = modelSource;
-  else if (!pDataModel->getSEDMLFileName().empty())
-    FileName = CDirEntry::dirName(pDataModel->getSEDMLFileName()) + CDirEntry::Separator + modelSource;
-  else if (!pDataModel->getReferenceDirectory().empty())
-    FileName = pDataModel->getReferenceDirectory() + CDirEntry::Separator + modelSource;
+  else if (!mpDataModel->getSEDMLFileName().empty())
+    FileName = CDirEntry::dirName(mpDataModel->getSEDMLFileName()) + CDirEntry::Separator + modelSource;
+  else if (!mpDataModel->getReferenceDirectory().empty())
+    FileName = mpDataModel->getReferenceDirectory() + CDirEntry::Separator + modelSource;
   else
     FileName = modelSource;
 
@@ -1440,7 +1465,7 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
     }
 
   //set the SBML file name for later use
-  pDataModel->setSBMLFileName(FileName);
+  mpDataModel->setSBMLFileName(FileName);
   std::ostringstream sbmlStringStream;
   char c;
 
@@ -1458,7 +1483,7 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
   // Right now we always import the COPASI MIRIAM annotation if it is there.
   // Later this will be settable by the user in the preferences dialog
   importer.setImportCOPASIMIRIAM(true);
-  importer.setImportHandler(pImportHandler);
+  importer.setImportHandler(mpImportHandler);
 
   mpCopasiModel = NULL;
 
