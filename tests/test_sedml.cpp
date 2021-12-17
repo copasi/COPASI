@@ -112,3 +112,63 @@ TEST_CASE("importing new curves and plots", "[copasi,sedml]")
 
   CRootContainer::removeDatamodel(dm);
 }
+
+
+TEST_CASE("importing variables with terms", "[copasi,sedml]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != nullptr);
+
+  REQUIRE(dm->importSEDML(getTestFile("test-data/concentration_amount.sedml")) == true);
+
+  auto * plots = dm->getPlotDefinitionList();
+  REQUIRE(plots->size() == 3);
+
+  CRootContainer::removeDatamodel(dm);
+}
+
+TEST_CASE("generating variables with terms", "[copasi,sedml]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != nullptr);
+
+  REQUIRE(dm->loadModel(getTestFile("test-data/brusselator.cps"), NULL) == true);
+
+  auto * m = dm->getModel();
+
+  auto * pMV = m->createModelValue("g_mv", 1);
+
+  // export to sbml so we have sbml ids for everything
+  std::string sbml = dm->exportSBMLToString(NULL, 3, 1);
+
+  {
+    REQUIRE(VariableInfo(m).getSymbol() == SEDML_TIME_URN);
+    REQUIRE(VariableInfo(m->getValueReference()).getSymbol() == SEDML_TIME_URN);
+  }
+
+  {
+    REQUIRE(VariableInfo(&m->getCompartments()[0]).getXpath() == "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='compartment']");
+    REQUIRE(VariableInfo(m->getCompartments()[0].getRateReference()).getTerm() == SEDML_KISAO_RATE);
+  }
+
+  {
+    REQUIRE(VariableInfo(&m->getMetabolites()[0]).getXpath() == "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']");
+    REQUIRE(VariableInfo(m->getMetabolites()[0].getConcentrationReference()).getTerm() == SEDML_KISAO_CONCENTRATION);
+    REQUIRE(VariableInfo(m->getMetabolites()[0].getValueReference()).getTerm() == SEDML_KISAO_PARTICLENUMBER);
+    REQUIRE(VariableInfo(m->getMetabolites()[0].getConcentrationRateReference()).getTerm() == SEDML_KISAO_CONCENTRATION_RATE);
+    REQUIRE(VariableInfo(m->getMetabolites()[0].getRateReference()).getTerm() == SEDML_KISAO_PARTICLE_RATE);
+  }
+
+  {
+    REQUIRE(VariableInfo(&m->getModelValues()[0]).getXpath() == "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='g_mv']");
+    REQUIRE(VariableInfo(m->getModelValues()[0].getRateReference()).getTerm() == SEDML_KISAO_RATE);
+  }
+
+  {
+    REQUIRE(VariableInfo(&m->getReactions()[0]).getXpath() == "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R1']");
+    REQUIRE(VariableInfo(m->getReactions()[0].getFluxReference()).getTerm() == SEDML_KISAO_FLUX);
+    REQUIRE(VariableInfo(m->getReactions()[0].getParameterObjects("k1").at(0)).getXpath() == "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R1']/sbml:kineticLaw/sbml:listOfParameters/sbml:parameter[@id='k1']");
+  }
+
+  CRootContainer::removeDatamodel(dm);
+}

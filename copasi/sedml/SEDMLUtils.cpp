@@ -244,7 +244,7 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
 }
 
 const CDataObject*
-SEDMLUtils::resolveDatagenerator(const CModel *model, const SedDataGenerator* dataReference)
+SEDMLUtils::resolveDatagenerator(CModel *model, const SedDataGenerator* dataReference)
 {
   // for now one variable only
   if (dataReference == NULL || dataReference->getNumVariables() < 1) return NULL;
@@ -256,7 +256,7 @@ SEDMLUtils::resolveDatagenerator(const CModel *model, const SedDataGenerator* da
       return static_cast<const CDataObject *>(model->getObject(CCommonName("Reference=Time")));
     }
 
-  return resolveXPath(model, var->getTarget());
+  return resolveVariable(model, var);
 }
 
 std::string
@@ -313,6 +313,79 @@ SEDMLUtils::resolveXPath(const CModel *model,  const std::string& xpath,
   return result;
 }
 
+const CDataObject *
+SEDMLUtils::resolveVariable(CModel * model, const SedVariable * variable)
+{
+  if (!variable)
+    return NULL;
+
+  const CDataObject * obj = resolveXPath(model, variable->getTarget());
+
+  std::string term = variable->isSetTerm() ? variable->getTerm() : variable->getSymbol();
+
+
+  if (!term.empty())
+    {
+      if (obj->getObjectType() == "Reference")
+        obj = obj->getObjectParent();
+
+      const CMetab * pMetab = dynamic_cast< const CMetab * >(obj);
+      const CReaction * pReaction = dynamic_cast< const CReaction * >(obj);
+      const CModelEntity * pME = dynamic_cast< const CModelEntity * >(obj);
+
+      if (term == SEDML_KISAO_PARTICLENUMBER && pMetab)
+        return pMetab->getValueReference();
+
+      if (term == SEDML_KISAO_PARTICLE_RATE && pMetab)
+        return pMetab->getRateReference();
+
+      if (term == SEDML_KISAO_CONCENTRATION && pMetab)
+        return pMetab->getConcentrationReference();
+
+      if ((term == SEDML_KISAO_CONCENTRATION_RATE || term == SEDML_KISAO_RATEOFCHANGE) && pMetab)
+        return pMetab->getConcentrationRateReference();
+
+      if (term == SEDML_KISAO_RATE && pME)
+        return pME->getRateReference();
+
+      if (term == SEDML_KISAO_AMOUNT && pMetab)
+        {
+          CModelValue * pMV = createAmountMV(model, pMetab);
+
+          if (pMV != NULL)
+            return pMV->getValueReference();
+        }
+
+      CCopasiMessage(CCopasiMessage::WARNING,
+                     "Encountered unsupported KISAO term '%s' while resolving Variable.", term.c_str());
+    }
+
+  return obj;
+}
+
+CModelValue * SEDMLUtils::createAmountMV(CModel * pModel, const CMetab * pMetab)
+{
+  std::string name = pMetab->getObjectName() + " (amount)";
+  CModelValue * pMV = NULL;
+
+  if (pModel->getModelValues().getIndex(name) == C_INVALID_INDEX)
+    {
+      pMV = pModel->createModelValue(name);
+    }
+  else
+    {
+      pMV = &pModel->getModelValues()[name];
+    }
+
+  pMV->setStatus(CModelEntity::Status::ASSIGNMENT);
+  std::stringstream expr;
+  expr << "<" << pMetab->getConcentrationReference()->getCN() << "> * "
+       << "<" << pMetab->getCompartment()->getValueReference()->getCN() << ">";
+  pMV->setExpression(expr.str());
+
+  return pMV;
+}
+
 std::string&
 SEDMLUtils::removeCharactersFromString(std::string& str, const std::string& characters)
 {
@@ -332,6 +405,7 @@ SEDMLUtils::getXPathForObject(const CDataObject& object)
 
   if (!sbmlId.empty())
     {
+
       targetXPathString = getXPathForSbmlIdAndType(object.getObjectName(), sbmlId);
 
       if (!targetXPathString.empty())
@@ -359,6 +433,58 @@ std::string SEDMLUtils::getXPathForSbmlIdAndType(const std::string& type, const 
 
   if (type == "Value" || type == "InitialValue")
     return "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=\'" + sbmlId + "\']";
+
+  return std::string();
+}
+
+std::string SEDMLUtils::getXPathForObjectAndType(const CDataObject & object, const std::string & sbmlId)
+{
+  const CDataObject * pObject = object.getObjectType() == "Reference" ? object.getObjectParent() : &object;
+
+  if (pObject)
+    {
+      const CMetab * pMetab = dynamic_cast< const CMetab * >(pObject);
+
+      if (pMetab)
+        {
+          return "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=\'" + sbmlId + "\']";
+        }
+
+      const CModelValue * pMV = dynamic_cast< const CModelValue * >(pObject);
+
+      if (pMV)
+        {
+          return "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=\'" + sbmlId + "\']";
+        }
+
+      const CCompartment * pComp = dynamic_cast< const CCompartment * >(pObject);
+
+      if (pComp)
+        {
+          return "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id=\'" + sbmlId + "\']";
+        }
+
+      const CReaction * pRea = dynamic_cast< const CReaction * >(pObject);
+
+      if (pRea)
+        {
+          return "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id=\'" + sbmlId + "\']";
+        }
+
+      const CReaction * pParentReaction = dynamic_cast< const CReaction * >(pObject->getObjectAncestor("Reaction"));
+
+      if (pParentReaction)
+        {
+          std::stringstream xpath;
+          xpath << "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id=\'";
+          xpath << pParentReaction->getSBMLId();
+          xpath << "\']/sbml:kineticLaw/sbml:listOfParameters/sbml:parameter[@id=\'";
+          xpath << pObject->getObjectName();
+          xpath << "\']";
+          return xpath.str();
+        }
+    }
+
 
   return std::string();
 }
@@ -645,3 +771,132 @@ std::map< std::string, std::string > SEDMLUtils::PARAMETER_KISAO_MAP =
   {"KISAO:0000565", "Tolerance for Root Finder"},
   {"KISAO:0000567", "Force Physical Correctness"},
 };
+
+VariableInfo::VariableInfo(const CDataObject * pObject)
+  : mpObject(pObject)
+{
+  if (!pObject)
+    return;
+
+  bool isReference = pObject->getObjectType() == "Reference";
+  const CDataObject * pObj = isReference ? pObject->getObjectParent() : pObject;
+  const CDataObject * pRef = pObject;
+
+  if (!pObj)
+    return;
+
+  const CModelEntity * pME = dynamic_cast< const CModelEntity * >(pObj);
+  const CMetab * pMetab = dynamic_cast< const CMetab * >(pObj);
+  const CReaction * pReaction = dynamic_cast< const CReaction * >(pObj);
+
+  if (pME)
+    sbmlId = pME->getSBMLId();
+
+  if (pReaction)
+    sbmlId = pReaction->getSBMLId();
+
+  if (!isReference)
+    {
+      if (pMetab)
+        pRef = pMetab->getConcentrationReference();
+      else if (pME)
+        pRef = pME->getValueReference();
+    }
+
+  if (!pRef)
+    return;
+
+  name = pRef->getObjectDisplayName();
+  xpath = SEDMLUtils::getXPathForObjectAndType(*pRef, sbmlId);
+
+  std::string ref = pRef->getObjectName();
+
+  if (ref == "Time")
+    {
+      symbol = SEDML_TIME_URN;
+      term = SEDML_KISAO_TIME;
+    }
+  else if (ref == "Concentration" || ref == "InitialConcentration")
+    {
+      term = SEDML_KISAO_CONCENTRATION;
+    }
+  else if (ref == "ParticleNumber" || ref == "InitialParticleNumber")
+    {
+      term = SEDML_KISAO_PARTICLENUMBER;
+    }
+  else if (ref == "Flux")
+    {
+      term = SEDML_KISAO_FLUX;
+    }
+  else if (ref == "ParticleNumberRate")
+    {
+      term = SEDML_KISAO_PARTICLE_RATE;
+    }
+  else if (ref == "Rate")
+    {
+      if (pMetab)
+        term = SEDML_KISAO_CONCENTRATION_RATE;
+      else
+        term = SEDML_KISAO_RATE;
+    }
+
+}
+
+SedVariable*
+VariableInfo::addToDataGenerator(SedDataGenerator * pGenerator)
+{
+  SedVariable * pVar = pGenerator->createVariable();
+  pVar->setName(name);
+
+  if (pVar->getVersion() > 3)
+    pVar->setTerm(term);
+
+  pVar->setTarget(xpath);
+  pVar->setSymbol(symbol);
+  return pVar;
+}
+
+const std::string & VariableInfo::getName() const
+{
+  return name;
+}
+
+void VariableInfo::setName(const std::string & name_)
+{
+  name = name_;
+}
+
+const std::string & VariableInfo::getSymbol() const
+{
+  return symbol;
+}
+
+void VariableInfo::setSymbol(const std::string & symbol_)
+{
+  symbol = symbol_;
+}
+
+const std::string & VariableInfo::getXpath() const
+{
+  return xpath;
+}
+
+void VariableInfo::setXpath(const std::string & xpath_)
+{
+  xpath = xpath_;
+}
+
+const std::string & VariableInfo::getSbmlId() const
+{
+  return sbmlId;
+}
+
+const std::string & VariableInfo::getTerm() const
+{
+  return term;
+}
+
+void VariableInfo::setTerm(const std::string & term_)
+{
+  term = term_;
+}
