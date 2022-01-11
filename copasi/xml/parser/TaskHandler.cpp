@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -135,7 +135,7 @@ bool TaskHandler::processEnd(const XML_Char * pszName)
                     pProblem->setValue("ObjectiveExpression", Infix);
                   }
 
-                pProblem->remove(pParameter);
+                pdelete(pParameter);
               }
 
             std::map< std::string, CExpression * >::iterator it = mpData->mKey2ObjectiveFunction.begin();
