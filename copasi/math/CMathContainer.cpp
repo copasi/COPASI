@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -2740,6 +2740,7 @@ void CMathContainer::createApplyInitialValuesSequence()
                   break;
 
                 case CMath::SimulationType::Assignment:
+                  Changed.insert(pObject);
                   Requested.insert(pObject);
                   break;
 
@@ -2747,10 +2748,6 @@ void CMathContainer::createApplyInitialValuesSequence()
                   break;
               }
 
-            break;
-
-          // Delay values are always calculate in a separate step
-          case CMath::ValueType::DelayValue:
             break;
 
           // Everything else must be calculated.
@@ -2839,16 +2836,6 @@ void CMathContainer::createUpdateSimulationValuesSequence()
               }
 
             ReducedSimulationRequiredValues.insert(pObject);
-            break;
-
-          case CMath::SimulationType::Undefined:
-
-            if (pObject->getValueType() == CMath::ValueType::DelayValue)
-              {
-                mStateValues.insert(pObject);
-                mReducedStateValues.insert(pObject);
-              }
-
             break;
 
           default:
