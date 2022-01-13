@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -190,7 +190,7 @@ bool CDataContainer::appendDeletedDependentData(CUndoData & undoData) const
 CDataContainer::CDataContainer() :
   CDataObject(),
   mObjects()
-{addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
+{}
 
 CDataContainer::CDataContainer(const std::string & name,
                                const CDataContainer * pParent,
@@ -198,13 +198,13 @@ CDataContainer::CDataContainer(const std::string & name,
                                const CFlags< Flag > & flag):
   CDataObject(name, pParent, type, flag | CDataObject::Container),
   mObjects()
-{addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
+{}
 
 CDataContainer::CDataContainer(const CDataContainer & src,
                                const CDataContainer * pParent):
   CDataObject(src, pParent),
   mObjects()
-{addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
+{}
 
 CDataContainer::~CDataContainer()
 {
@@ -237,7 +237,9 @@ const CObjectInterface * CDataContainer::getObject(const CCommonName & cn) const
         return this;
     }
 
-  if (cn == "Property=DisplayName")
+  if (cn == "Reference=Name"
+      || cn == "Property=Name"
+      || cn == "Property=DisplayName")
     {
       return CDataObject::getObject(cn);
     }
