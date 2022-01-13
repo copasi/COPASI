@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -568,6 +568,7 @@ void CExperiment::initExtendedTimeSeries(size_t s)
 {
   mExtendedTimeSeriesSize = s;
   mExtendedTimeSeries.resize(s * (this->getDependentData().numCols() + 1)); //+1 for time
+  mExtendedTimeSeries = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
   mStorageIt = mExtendedTimeSeries.array();
 }
 
