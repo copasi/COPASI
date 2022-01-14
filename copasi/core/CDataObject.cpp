@@ -133,8 +133,17 @@ CDataObject::~CDataObject()
         (*it)->remove(this);
     }
 
-  pdelete(mpObjectDisplayName);
-  pdelete(mpObjectName)
+  if (mpObjectDisplayName != NULL)
+    {
+      mpObjectDisplayName->mpObjectParent = NULL;
+      delete mpObjectDisplayName;
+    }
+
+  if (mpObjectName != NULL)
+    {
+      mpObjectName->mpObjectParent = NULL;
+      delete mpObjectName;
+    }
 }
 
 void CDataObject::print(std::ostream * ostream) const {(*ostream) << (*this);}
@@ -190,6 +199,7 @@ const CObjectInterface * CDataObject::getObject(const CCommonName & cn) const
       if (mpObjectDisplayName == NULL)
         {
           mpObjectDisplayName = new CDataObjectReference< std::string >("DisplayName", NULL, mObjectDisplayName, DisplayName);
+          mpObjectDisplayName->mpObjectParent = static_cast< CDataContainer * >(const_cast< CDataObject * >(this));
         }
 
       mObjectDisplayName = getObjectDisplayName();
@@ -202,6 +212,7 @@ const CObjectInterface * CDataObject::getObject(const CCommonName & cn) const
       if (mpObjectName == NULL)
         {
           mpObjectName = new CDataObjectReference< std::string >("Name", NULL, *const_cast< std::string * >(&mObjectName));
+          mpObjectName->mpObjectParent = static_cast< CDataContainer * >(const_cast< CDataObject * >(this));
         }
 
       return mpObjectName;
