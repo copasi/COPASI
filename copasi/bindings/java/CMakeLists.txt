@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -63,7 +63,7 @@ if (NOT EXISTS "${Java_JAR_EXECUTABLE}")
 endif()
 
 
-set(JAVA_COMPATIBILITY "1.6" CACHE STRING
+set(JAVA_COMPATIBILITY "1.7" CACHE STRING
   "Specify the source and target compatibility for the libsbml Java bindings. Leave empty to remove the parameter altogether.")
 mark_as_advanced(JAVA_COMPATIBILITY)
 
