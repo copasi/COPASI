@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -13,46 +13,50 @@
 #include "copasi/odepack++/CInternalSolver.h"
 #include "dc_decsol.h"
 
-
 class CRadau5: public CInternalSolver
 {
 public:
   CRadau5();
   ~CRadau5();
 
-  integer operator()(integer *n,         //  Number of equations
-                     evalF fcn,          //  Evaluate f
-                     doublereal *x,     //  Initial X values
-                     doublereal *y,    //  Initial Y values
-                     doublereal *xend,  //  Final X value
-                     doublereal *h__,   //  Initial step size guess
-                     doublereal *rtol,  //  Relative error tolerance
-                     doublereal *atol,  //  Absolute error tolerance
-                     integer *itol,     //  Switch for atol and rtol
-                     U_fp jac,          //  External subroutine for partial derivatives
-                     integer *ijac,     //  Switch for Jacobian computation
-                     integer *mljac,    //  Switch for Jacobian structure
-                     integer *mujac,    //  Upper bandwidth of Jacobian
-                     U_fp mas,          //  For mass matrix
-                     integer *imas,     //  For mass matrix
-                     integer *mlmas,    //  For mass matrix
-                     integer *mumas,    //  For mass matrix
-                     U_fp solout,       //  Subroutine to compute external numerical computation
-                     integer *iout,     //  Switch for solout function
-                     doublereal *work,  //  Work array
-                     integer *lwork,    //  Length of work array
-                     integer *iwork,    //  integer working space
-                     integer *liwork,   //  Length of iwork
-                     doublereal *rpar,  //  Real parameter for working
-                     integer *ipar,     //  integer parameter for working
-                     integer *idid);    //  Output status
+  typedef void (*evalF)(const C_INT *, const double *, const double *, double *, double *, C_INT *);
+  typedef void (*evalJ)(const C_INT *, const double *, const double *, double *, const C_INT *, double *, const C_INT *);
+  // typedef void (*evalG)(const C_INT *, const double *, const double *, const C_INT *, double *);
+  typedef void (*evalM)(C_INT *, double *, int *, double *, C_INT *);
+  typedef void (*evalO)(C_INT *, double *, double *, double *, double *, C_INT *, C_INT *, double *, C_INT *, C_INT *);
+
+  C_INT operator()(C_INT * n,      //  Number of equations
+                   evalF fcn,      //  Evaluate f
+                   double * x,     //  Initial X values
+                   double * y,     //  Initial Y values
+                   double * xend,  //  Final X value
+                   double * h__,   //  Initial step size guess
+                   double * rtol,  //  Relative error tolerance
+                   double * atol,  //  Absolute error tolerance
+                   C_INT * itol,   //  Switch for atol and rtol
+                   evalJ jac,      //  External subroutine for partial derivatives
+                   C_INT * ijac,   //  Switch for Jacobian computation
+                   C_INT * mljac,  //  Switch for Jacobian structure
+                   C_INT * mujac,  //  Upper bandwidth of Jacobian
+                   evalM mas,      //  For mass matrix
+                   C_INT * imas,   //  For mass matrix
+                   C_INT * mlmas,  //  For mass matrix
+                   C_INT * mumas,  //  For mass matrix
+                   evalO solout,   //  Subroutine to compute external numerical computation
+                   C_INT * iout,   //  Switch for solout function
+                   double * work,  //  Work array
+                   C_INT * lwork,  //  Length of work array
+                   C_INT * iwork,  //  C_INT working space
+                   C_INT * liwork, //  Length of iwork
+                   double * rpar,  //  Real parameter for working
+                   C_INT * ipar,   //  C_INT parameter for working
+                   C_INT * idid);  //  Output status
 
 private:
 
-  static const integer mxstp0;
-  static const integer mxhnl0;
-  static const integer mord[2];
+  static const C_INT mxstp0;
+  static const C_INT mxhnl0;
+  static const C_INT mord[2];
 };
 
 #endif // ODEPACK_CRadau5
-
