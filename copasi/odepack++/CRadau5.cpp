@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,40 +24,40 @@
 #include "common.h"
 
 //#define pow_dd(__x, __y) pow(*__x, *__y)
-double d_sign(doublereal * a, doublereal * b);
-static doublereal pow_dd(doublereal *ap, doublereal *bp);
-static double pow_di(doublereal *ap, integer *bp);
+double d_sign(double * a, double * b);
+static double pow_dd(double *ap, double *bp);
+static double pow_di(double *ap, C_INT *bp);
 
 /* Common Block Declarations */
 
 struct
 {
-  integer nn, nn2, nn3, nn4;
-  doublereal xsol, hsol, c2m1, c1m1;
+  C_INT nn, nn2, nn3, nn4;
+  double xsol, hsol, c2m1, c1m1;
 } conra5_;
 
 #define conra5_1 conra5_
 
 struct
 {
-  integer mle, mue, mbjac, mbb, mdiag, mdiff, mbdiag;
+  C_INT mle, mue, mbjac, mbb, mdiag, mdiff, mbdiag;
 } linal_;
 
 #define linal_1 linal_
 
 /* Table of constant values */
 
-static integer c__9 = 9;
-static integer c__1 = 1;
-static integer c__5 = 5;
-static integer c__3 = 3;
-static doublereal c_b54 = .5;
-static doublereal c_b91 = 81.;
-static doublereal c_b92 = .33333333333333331;
-static doublereal c_b93 = 9.;
-static doublereal c_b103 = 1.;
-static doublereal c_b113 = .8;
-static doublereal c_b115 = .25;
+static C_INT c__9 = 9;
+static C_INT c__1 = 1;
+static C_INT c__5 = 5;
+static C_INT c__3 = 3;
+static double c_b54 = .5;
+static double c_b91 = 81.;
+static double c_b92 = .33333333333333331;
+static double c_b93 = 9.;
+static double c_b103 = 1.;
+static double c_b113 = .8;
+static double c_b115 = .25;
 
 CRadau5::CRadau5(): CInternalSolver()
 {
@@ -68,60 +68,60 @@ CRadau5::~CRadau5()
 }
 
 /* Subroutine */
-integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
-                            y, doublereal *xend, doublereal *h__, doublereal *rtol, doublereal *
-                            atol, integer *itol, U_fp jac, integer *ijac, integer *mljac, integer
-                            *mujac, U_fp mas, integer *imas, integer *mlmas, integer *mumas, U_fp
-                            solout, integer *iout, doublereal *work, integer *lwork, integer *
-                            iwork, integer *liwork, doublereal *rpar, integer *ipar, integer *
-                            idid)
+C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
+                          y, double *xend, double *h__, double *rtol, double *
+                          atol, C_INT *itol, CRadau5::evalJ jac, C_INT *ijac, C_INT *mljac, C_INT
+                          *mujac, CRadau5::evalM mas, C_INT *imas, C_INT *mlmas, C_INT *mumas, CRadau5::evalO
+                          solout, C_INT *iout, double *work, C_INT *lwork, C_INT *
+                          iwork, C_INT *liwork, double *rpar, C_INT *ipar, C_INT *
+                          idid)
 {
   /* System generated locals */
-  integer i__1;
-  doublereal d__1, d__2, d__3, d__4;
+  C_INT i__1;
+  double d__1, d__2, d__3, d__4;
 
   /* Local variables */
-  static integer i__, m1, m2, nm1, nit, iee1, ief1, lde1, ief2, ief3, iey0,
+  static C_INT i__, m1, m2, nm1, nit, iee1, ief1, lde1, ief2, ief3, iey0,
          iez1, iez2, iez3;
-  static doublereal facl;
-  static integer ndec, njac;
-  static doublereal facr, safe;
-  static integer ijob, nfcn;
+  static double facl;
+  static C_INT ndec, njac;
+  static double facr, safe;
+  static C_INT ijob, nfcn;
   static logical pred;
-  static doublereal hmax;
-  static integer nmax;
-  static doublereal thet, expm;
-  static integer nsol;
-  static doublereal quot;
-  static integer iee2i, iee2r, ieip1, ieip2, nind1, nind2, nind3;
-  static doublereal quot1, quot2;
-  static integer iejac, ldjac;
+  static double hmax;
+  static C_INT nmax;
+  static double thet, expm;
+  static C_INT nsol;
+  static double quot;
+  static C_INT iee2i, iee2r, ieip1, ieip2, nind1, nind2, nind3;
+  static double quot1, quot2;
+  static C_INT iejac, ldjac;
   static logical jband;
-  static integer iecon, iemas, ldmas, ieiph;
+  static C_INT iecon, iemas, ldmas, ieiph;
   static logical arret;
-  static doublereal fnewt;
-  static integer nstep;
-  static doublereal tolst;
-  static integer ldmas2, iescal, naccpt;
-  extern /* Subroutine */ int radcor_(integer *, U_fp, doublereal *,
-                                      doublereal *, doublereal *, doublereal *, doublereal *,
-                                      doublereal *, doublereal *, integer *, U_fp, integer *, integer *,
-                                      integer *, U_fp, integer *, integer *, U_fp, integer *, integer *
-                                      , integer *, doublereal *, doublereal *, doublereal *, doublereal
-                                      *, doublereal *, doublereal *, integer *, integer *, logical *,
-                                      integer *, integer *, integer *, logical *, doublereal *,
-                                      doublereal *, integer *, integer *, integer *, logical *, logical
-                                      *, integer *, integer *, integer *, doublereal *, doublereal *,
-                                      doublereal *, doublereal *, doublereal *, doublereal *,
-                                      doublereal *, doublereal *, doublereal *, doublereal *,
-                                      doublereal *, doublereal *, doublereal *, integer *, integer *,
-                                      integer *, doublereal *, integer *, integer *, integer *, integer
-                                      *, integer *, integer *, integer *, doublereal *, integer *);
-  static integer nrejct;
+  static double fnewt;
+  static C_INT nstep;
+  static double tolst;
+  static C_INT ldmas2, iescal, naccpt;
+  extern /* Subroutine */ int radcor_(C_INT *, CRadau5::evalF, double *,
+                                      double *, double *, double *, double *,
+                                      double *, double *, C_INT *, CRadau5::evalJ, C_INT *, C_INT *,
+                                      C_INT *, CRadau5::evalM, C_INT *, C_INT *, CRadau5::evalO, C_INT *, C_INT *
+                                      , C_INT *, double *, double *, double *, double
+                                      *, double *, double *, C_INT *, C_INT *, logical *,
+                                      C_INT *, C_INT *, C_INT *, logical *, double *,
+                                      double *, C_INT *, C_INT *, C_INT *, logical *, logical
+                                      *, C_INT *, C_INT *, C_INT *, double *, double *,
+                                      double *, double *, double *, double *,
+                                      double *, double *, double *, double *,
+                                      double *, double *, double *, C_INT *, C_INT *,
+                                      C_INT *, double *, C_INT *, C_INT *, C_INT *, C_INT
+                                      *, C_INT *, C_INT *, C_INT *, double *, C_INT *);
+  static C_INT nrejct;
   static logical implct;
-  static integer istore;
+  static C_INT istore;
   static logical startn;
-  static doublereal uround;
+  static double uround;
 
   /* Fortran I/O blocks */
   static cilist io___10 = {0, 6, 0, 0, 0 };
@@ -173,7 +173,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
   /*     FCN         NAME (EXTERNAL) OF SUBROUTINE COMPUTING THE */
   /*                 VALUE OF F(X,Y): */
   /*                    SUBROUTINE FCN(N,X,Y,F,RPAR,IPAR) */
-  /*                    doublereal PRECISION X,Y(N),F(N) */
+  /*                    double PRECISION X,Y(N),F(N) */
   /*                    F(1)=...   ETC. */
   /*                 RPAR, IPAR (SEE BELOW) */
 
@@ -206,7 +206,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
   /*                 A DUMMY SUBROUTINE IN THE CASE IJAC=0). */
   /*                 FOR IJAC=1, THIS SUBROUTINE MUST HAVE THE FORM */
   /*                    SUBROUTINE JAC(N,X,Y,DFY,LDFY,RPAR,IPAR) */
-  /*                    doublereal PRECISION X,Y(N),DFY(LDFY,N) */
+  /*                    double PRECISION X,Y(N),DFY(LDFY,N) */
   /*                    DFY(1,1)= ... */
   /*                 LDFY, THE COLUMN-LENGTH OF THE ARRAY, IS */
   /*                 FURNISHED BY THE CALLING PROGRAM. */
@@ -245,7 +245,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
   /*                 SUPPLY A DUMMY SUBROUTINE IN THIS CASE. */
   /*                 IF IMAS=1, THE SUBROUTINE MAS IS OF THE FORM */
   /*                    SUBROUTINE MAS(N,AM,LMAS,RPAR,IPAR) */
-  /*                    doublereal PRECISION AM(LMAS,N) */
+  /*                    double PRECISION AM(LMAS,N) */
   /*                    AM(1,1)= .... */
   /*                    IF (MLMAS.EQ.N) THE MASS-MATRIX IS STORED */
   /*                    AS FULL MATRIX LIKE */
@@ -279,7 +279,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
   /*                 IT MUST HAVE THE FORM */
   /*                    SUBROUTINE SOLOUT (NR,XOLD,X,Y,CONT,LRC,N, */
   /*                                       RPAR,IPAR,IRTRN) */
-  /*                    doublereal PRECISION X,Y(N),CONT(LRC) */
+  /*                    double PRECISION X,Y(N),CONT(LRC) */
   /*                    .... */
   /*                 SOLOUT FURNISHES THE SOLUTION "Y" AT THE NR-TH */
   /*                    GRID-POINT "X" (THEREBY THE INITIAL VALUE IS */
@@ -334,7 +334,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
 
   /*     LWORK       DECLARED LENGTH OF ARRAY "WORK". */
 
-  /*     IWORK       integer WORKING SPACE OF LENGTH "LIWORK". */
+  /*     IWORK       C_INT WORKING SPACE OF LENGTH "LIWORK". */
   /*                 IWORK(1),IWORK(2),...,IWORK(20) SERVE AS PARAMETERS */
   /*                 FOR THE CODE. FOR STANDARD USE, SET IWORK(1),.., */
   /*                 IWORK(20) TO ZERO BEFORE CALLING. */
@@ -343,7 +343,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
 
   /*     LIWORK      DECLARED LENGTH OF ARRAY "IWORK". */
 
-  /*     RPAR, IPAR  REAL AND integer PARAMETERS (OR PARAMETER ARRAYS) WHICH */
+  /*     RPAR, IPAR  REAL AND C_INT PARAMETERS (OR PARAMETER ARRAYS) WHICH */
   /*                 CAN BE USED FOR COMMUNICATION BETWEEN YOUR CALLING */
   /*                 PROGRAM AND THE FCN, JAC, MAS, SOLOUT SUBROUTINES. */
 
@@ -543,7 +543,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
 //            s_wsle(&io___10);
 //            do_lio(&c__9, &c__1, " COEFFICIENTS HAVE 20 DIGITS, UROUND=", (
 //                                                                           ftnlen)37);
-//            do_lio(&c__5, &c__1, (char *)&work[1], (ftnlen)sizeof(doublereal))
+//            do_lio(&c__5, &c__1, (char *)&work[1], (ftnlen)sizeof(double))
 //;
 //            e_wsle();
           arret = TRUE_;
@@ -579,7 +579,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
             {
 //                s_wsle(&io___15);
 //                do_lio(&c__9, &c__1, " TOLERANCES(", (ftnlen)12);
-//                do_lio(&c__3, &c__1, (char *)&i__, (ftnlen)sizeof(integer));
+//                do_lio(&c__3, &c__1, (char *)&i__, (ftnlen)sizeof(C_INT));
 //                do_lio(&c__9, &c__1, ") ARE TOO SMALL", (ftnlen)15);
 //                e_wsle();
               arret = TRUE_;
@@ -606,7 +606,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
         {
 //            s_wsle(&io___17);
 //            do_lio(&c__9, &c__1, " WRONG INPUT IWORK(2)=", (ftnlen)22);
-//            do_lio(&c__3, &c__1, (char *)&iwork[2], (ftnlen)sizeof(integer));
+//            do_lio(&c__3, &c__1, (char *)&iwork[2], (ftnlen)sizeof(C_INT));
 //            e_wsle();
           arret = TRUE_;
         }
@@ -625,7 +625,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
         {
 //            s_wsle(&io___19);
 //            do_lio(&c__9, &c__1, " CURIOUS INPUT IWORK(3)=", (ftnlen)24);
-//            do_lio(&c__3, &c__1, (char *)&iwork[3], (ftnlen)sizeof(integer));
+//            do_lio(&c__3, &c__1, (char *)&iwork[3], (ftnlen)sizeof(C_INT));
 //            e_wsle();
           arret = TRUE_;
         }
@@ -655,9 +655,9 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
     {
 //        s_wsle(&io___24);
 //        do_lio(&c__9, &c__1, " CURIOUS INPUT FOR IWORK(5,6,7)=", (ftnlen)32);
-//        do_lio(&c__3, &c__1, (char *)&nind1, (ftnlen)sizeof(integer));
-//        do_lio(&c__3, &c__1, (char *)&nind2, (ftnlen)sizeof(integer));
-//        do_lio(&c__3, &c__1, (char *)&nind3, (ftnlen)sizeof(integer));
+//        do_lio(&c__3, &c__1, (char *)&nind1, (ftnlen)sizeof(C_INT));
+//        do_lio(&c__3, &c__1, (char *)&nind2, (ftnlen)sizeof(C_INT));
+//        do_lio(&c__3, &c__1, (char *)&nind3, (ftnlen)sizeof(C_INT));
 //        e_wsle();
       arret = TRUE_;
     }
@@ -691,8 +691,8 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
     {
 //        s_wsle(&io___29);
 //        do_lio(&c__9, &c__1, " CURIOUS INPUT FOR IWORK(9,10)=", (ftnlen)31);
-//        do_lio(&c__3, &c__1, (char *)&m1, (ftnlen)sizeof(integer));
-//        do_lio(&c__3, &c__1, (char *)&m2, (ftnlen)sizeof(integer));
+//        do_lio(&c__3, &c__1, (char *)&m1, (ftnlen)sizeof(C_INT));
+//        do_lio(&c__3, &c__1, (char *)&m2, (ftnlen)sizeof(C_INT));
 //        e_wsle();
       arret = TRUE_;
     }
@@ -710,7 +710,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
         {
 //            s_wsle(&io___31);
 //            do_lio(&c__9, &c__1, " CURIOUS INPUT FOR WORK(2)=", (ftnlen)27);
-//            do_lio(&c__5, &c__1, (char *)&work[2], (ftnlen)sizeof(doublereal))
+//            do_lio(&c__5, &c__1, (char *)&work[2], (ftnlen)sizeof(double))
 //;
 //            e_wsle();
           arret = TRUE_;
@@ -730,7 +730,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
         {
 //            s_wsle(&io___33);
 //            do_lio(&c__9, &c__1, " CURIOUS INPUT FOR WORK(3)=", (ftnlen)27);
-//            do_lio(&c__5, &c__1, (char *)&work[3], (ftnlen)sizeof(doublereal))
+//            do_lio(&c__5, &c__1, (char *)&work[3], (ftnlen)sizeof(double))
 //;
 //            e_wsle();
           arret = TRUE_;
@@ -756,7 +756,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
         {
 //            s_wsle(&io___36);
 //            do_lio(&c__9, &c__1, " CURIOUS INPUT FOR WORK(4)=", (ftnlen)27);
-//            do_lio(&c__5, &c__1, (char *)&work[4], (ftnlen)sizeof(doublereal))
+//            do_lio(&c__5, &c__1, (char *)&work[4], (ftnlen)sizeof(double))
 //;
 //            e_wsle();
           arret = TRUE_;
@@ -786,8 +786,8 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
     {
 //        s_wsle(&io___39);
 //        do_lio(&c__9, &c__1, " CURIOUS INPUT FOR WORK(5,6)=", (ftnlen)29);
-//        do_lio(&c__5, &c__1, (char *)&quot1, (ftnlen)sizeof(doublereal));
-//        do_lio(&c__5, &c__1, (char *)&quot2, (ftnlen)sizeof(doublereal));
+//        do_lio(&c__5, &c__1, (char *)&quot1, (ftnlen)sizeof(double));
+//        do_lio(&c__5, &c__1, (char *)&quot2, (ftnlen)sizeof(double));
 //        e_wsle();
       arret = TRUE_;
     }
@@ -825,8 +825,8 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
     {
 //        s_wsle(&io___43);
 //        do_lio(&c__9, &c__1, " CURIOUS INPUT WORK(8,9)=", (ftnlen)25);
-//        do_lio(&c__5, &c__1, (char *)&work[8], (ftnlen)sizeof(doublereal));
-//        do_lio(&c__5, &c__1, (char *)&work[9], (ftnlen)sizeof(doublereal));
+//        do_lio(&c__5, &c__1, (char *)&work[8], (ftnlen)sizeof(double));
+//        do_lio(&c__5, &c__1, (char *)&work[9], (ftnlen)sizeof(double));
 //        e_wsle();
       arret = TRUE_;
     }
@@ -940,12 +940,12 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
 //        s_wsle(&io___68);
 //        do_lio(&c__9, &c__1, " INSUFFICIENT STORAGE FOR WORK, MIN. LWORK=", (
 //                                                                             ftnlen)43);
-//        do_lio(&c__3, &c__1, (char *)&istore, (ftnlen)sizeof(integer));
+//        do_lio(&c__3, &c__1, (char *)&istore, (ftnlen)sizeof(C_INT));
 //        e_wsle();
       arret = TRUE_;
     }
 
-  /* ------- ENTRY POINTS FOR integer WORKSPACE ----- */
+  /* ------- ENTRY POINTS FOR C_INT WORKSPACE ----- */
   ieip1 = 21;
   ieip2 = ieip1 + nm1;
   ieiph = ieip2 + nm1;
@@ -957,7 +957,7 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
 //        s_wsle(&io___72);
 //        do_lio(&c__9, &c__1, " INSUFF. STORAGE FOR IWORK, MIN. LIWORK=", (
 //                                                                          ftnlen)40);
-//        do_lio(&c__3, &c__1, (char *)&istore, (ftnlen)sizeof(integer));
+//        do_lio(&c__3, &c__1, (char *)&istore, (ftnlen)sizeof(C_INT));
 //        e_wsle();
       arret = TRUE_;
     }
@@ -970,8 +970,8 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
     }
 
   /* -------- CALL TO CORE INTEGRATOR ------------ */
-  radcor_(n, (U_fp)fcn, x, &y[1], xend, &hmax, h__, &rtol[1], &atol[1],
-          itol, (U_fp)jac, ijac, mljac, mujac, (U_fp)mas, mlmas, mumas, (U_fp)solout, iout, idid, &nmax, &uround, &safe, &thet, &fnewt, &quot1, &quot2, &nit, &ijob, &startn, &nind1, &nind2, &nind3, &
+  radcor_(n, fcn, x, &y[1], xend, &hmax, h__, &rtol[1], &atol[1],
+          itol, jac, ijac, mljac, mujac, mas, mlmas, mumas, solout, iout, idid, &nmax, &uround, &safe, &thet, &fnewt, &quot1, &quot2, &nit, &ijob, &startn, &nind1, &nind2, &nind3, &
           pred, &facl, &facr, &m1, &m2, &nm1, &implct, &jband, &ldjac, &
           lde1, &ldmas2, &work[iez1], &work[iez2], &work[iez3], &work[iey0],
           &work[iescal], &work[ief1], &work[ief2], &work[ief3], &work[iejac], &work[iee1], &work[iee2r], &work[iee2i], &work[iemas], &iwork[ieip1], &iwork[ieip2], &iwork[ieiph], &work[iecon], &nfcn, &
@@ -1014,94 +1014,94 @@ integer CRadau5::operator()(integer *n, evalF fcn, doublereal *x, doublereal *
 
 /* *********************************************************** */
 
-/* Subroutine */ int radcor_(integer *n, S_fp fcn, doublereal *x, doublereal *
-                             y, doublereal *xend, doublereal *hmax, doublereal *h__, doublereal *
-                             rtol, doublereal *atol, integer *itol, S_fp jac, integer *ijac,
-                             integer *mljac, integer *mujac, S_fp mas, integer *mlmas, integer *
-                             mumas, S_fp solout, integer *iout, integer *idid, integer *nmax,
-                             doublereal *uround, doublereal *safe, doublereal *thet, doublereal *
-                             fnewt, doublereal *quot1, doublereal *quot2, integer *nit, integer *
-                             ijob, logical *startn, integer *nind1, integer *nind2, integer *nind3,
-                             logical *pred, doublereal *facl, doublereal *facr, integer *m1,
-                             integer *m2, integer *nm1, logical *implct, logical *banded, integer *
-                             ldjac, integer *lde1, integer *ldmas, doublereal *z1, doublereal *z2,
-                             doublereal *z3, doublereal *y0, doublereal *scal, doublereal *f1,
-                             doublereal *f2, doublereal *f3, doublereal *fjac, doublereal *e1,
-                             doublereal *e2r, doublereal *e2i, doublereal *fmas, integer *ip1,
-                             integer *ip2, integer *iphes, doublereal *cont, integer *nfcn,
-                             integer *njac, integer *nstep, integer *naccpt, integer *nrejct,
-                             integer *ndec, integer *nsol, doublereal *rpar, integer *ipar)
+/* Subroutine */ int radcor_(C_INT *n, CRadau5::evalF fcn, double *x, double *
+                             y, double *xend, double *hmax, double *h__, double *
+                             rtol, double *atol, C_INT *itol, CRadau5::evalJ jac, C_INT *ijac,
+                             C_INT *mljac, C_INT *mujac, CRadau5::evalM mas, C_INT *mlmas, C_INT *
+                             mumas, CRadau5::evalO solout, C_INT *iout, C_INT *idid, C_INT *nmax,
+                             double *uround, double *safe, double *thet, double *
+                             fnewt, double *quot1, double *quot2, C_INT *nit, C_INT *
+                             ijob, logical *startn, C_INT *nind1, C_INT *nind2, C_INT *nind3,
+                             logical *pred, double *facl, double *facr, C_INT *m1,
+                             C_INT *m2, C_INT *nm1, logical *implct, logical *banded, C_INT *
+                             ldjac, C_INT *lde1, C_INT *ldmas, double *z1, double *z2,
+                             double *z3, double *y0, double *scal, double *f1,
+                             double *f2, double *f3, double *fjac, double *e1,
+                             double *e2r, double *e2i, double *fmas, C_INT *ip1,
+                             C_INT *ip2, C_INT *iphes, double *cont, C_INT *nfcn,
+                             C_INT *njac, C_INT *nstep, C_INT *naccpt, C_INT *nrejct,
+                             C_INT *ndec, C_INT *nsol, double *rpar, C_INT *ipar)
 {
   /* Format strings */
   static char fmt_979[] = "(\002 EXIT OF RADAU5 AT X=\002,e18.4)";
 
   /* System generated locals */
-  integer fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e1_dim1,
-          e1_offset, e2r_dim1, e2r_offset, e2i_dim1, e2i_offset, i__1, i__2,
-          i__3, i__4;
-  doublereal d__1, d__2, d__3, d__4;
+  C_INT fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e1_dim1,
+        e1_offset, e2r_dim1, e2r_offset, e2i_dim1, e2i_offset, i__1, i__2,
+        i__3, i__4;
+  double d__1, d__2, d__3, d__4;
 
   /* Local variables */
-  static integer i__, j, k, l;
-  static doublereal a1, a2, c1, c2, a3;
-  static integer j1, n2, n3;
-  static doublereal u1, ak;
-  static integer md;
-  static doublereal t11, t12, t13, t21, t22, t23, t31;
-  static integer mm;
-  static doublereal qt, dd1, dd2, dd3, ak1, ak2, ak3, f1i, f2i, f3i, c1q,
+  static C_INT i__, j, k, l;
+  static double a1, a2, c1, c2, a3;
+  static C_INT j1, n2, n3;
+  static double u1, ak;
+  static C_INT md;
+  static double t11, t12, t13, t21, t22, t23, t31;
+  static C_INT mm;
+  static double qt, dd1, dd2, dd3, ak1, ak2, ak3, f1i, f2i, f3i, c1q,
          c2q, c3q, z1i, z2i, z3i, sq6, fac, ti11, cno;
-  static integer lrc;
-  static doublereal ti12, ti13, ti21, ti22, ti23, ti31, ti32, ti33;
-  static integer ier;
-  static doublereal xph, thq, err, fac1, cfac, hacc, c1mc2, beta;
-  static integer lbeg;
-  static doublereal alph, hold;
-  static integer lend;
-  static doublereal delt, hnew;
+  static C_INT lrc;
+  static double ti12, ti13, ti21, ti22, ti23, ti31, ti32, ti33;
+  static C_INT ier;
+  static double xph, thq, err, fac1, cfac, hacc, c1mc2, beta;
+  static C_INT lbeg;
+  static double alph, hold;
+  static C_INT lend;
+  static double delt, hnew;
   static logical last;
-  static doublereal hopt, xold;
-  static integer newt;
-  static doublereal dyno, dyth, quot, hhfac, betan, alphn, denom, theta,
+  static double hopt, xold;
+  static C_INT newt;
+  static double dyno, dyth, quot, hhfac, betan, alphn, denom, theta,
          ysafe, hmaxn;
-  static integer nsing;
+  static C_INT nsing;
   static logical first;
-  static integer irtrn, nrsol, nsolu;
-  static doublereal qnewt, xosol, acont3;
+  static C_INT irtrn, nrsol, nsolu;
+  static double qnewt, xosol, acont3;
   static logical index1, index2, index3, caljac;
-  static doublereal faccon;
-  extern /* Subroutine */ int decomc_(integer *, doublereal *, integer *,
-                                      doublereal *, integer *, integer *, integer *, integer *, integer
-                                      *, integer *, doublereal *, doublereal *, doublereal *,
-                                      doublereal *, integer *, integer *, integer *, integer *);
+  static double faccon;
+  extern /* Subroutine */ int decomc_(C_INT *, double *, C_INT *,
+                                      double *, C_INT *, C_INT *, C_INT *, C_INT *, C_INT
+                                      *, C_INT *, double *, double *, double *,
+                                      double *, C_INT *, C_INT *, C_INT *, C_INT *);
   static logical calhes;
-  static doublereal erracc;
-  static integer mujacj;
-  extern /* Subroutine */ int decomr_(integer *, doublereal *, integer *,
-                                      doublereal *, integer *, integer *, integer *, integer *, integer
-                                      *, integer *, doublereal *, doublereal *, integer *, integer *,
-                                      integer *, integer *, logical *, integer *);
+  static double erracc;
+  static C_INT mujacj;
+  extern /* Subroutine */ int decomr_(C_INT *, double *, C_INT *,
+                                      double *, C_INT *, C_INT *, C_INT *, C_INT *, C_INT
+                                      *, C_INT *, double *, double *, C_INT *, C_INT *,
+                                      C_INT *, C_INT *, logical *, C_INT *);
   static logical reject;
-  static doublereal facgus;
-  static integer mujacp;
-  extern /* Subroutine */ int estrad_(integer *, doublereal *, integer *,
-                                      integer *, integer *, doublereal *, integer *, integer *, integer
-                                      *, doublereal *, doublereal *, doublereal *, doublereal *, S_fp,
-                                      integer *, doublereal *, doublereal *, integer *, doublereal *,
-                                      integer *, integer *, integer *, doublereal *, integer *,
-                                      doublereal *, doublereal *, doublereal *, doublereal *,
-                                      doublereal *, doublereal *, integer *, integer *, doublereal *,
-                                      doublereal *, logical *, logical *, doublereal *, doublereal *,
-                                      integer *);
-  static doublereal dynold, posneg;
-  extern /* Subroutine */ int slvrad_(integer *, doublereal *, integer *,
-                                      integer *, integer *, doublereal *, integer *, integer *, integer
-                                      *, integer *, integer *, integer *, doublereal *, doublereal *,
-                                      doublereal *, doublereal *, doublereal *, doublereal *, integer *,
-                                      doublereal *, doublereal *, doublereal *, doublereal *,
-                                      doublereal *, doublereal *, doublereal *, integer *, integer *,
-                                      integer *, integer *, integer *);
-  static doublereal thqold;
+  static double facgus;
+  static C_INT mujacp;
+  extern /* Subroutine */ int estrad_(C_INT *, double *, C_INT *,
+                                      C_INT *, C_INT *, double *, C_INT *, C_INT *, C_INT
+                                      *, double *, double *, double *, double *, S_fp,
+                                      C_INT *, double *, double *, C_INT *, double *,
+                                      C_INT *, C_INT *, C_INT *, double *, C_INT *,
+                                      double *, double *, double *, double *,
+                                      double *, double *, C_INT *, C_INT *, double *,
+                                      double *, logical *, logical *, double *, double *,
+                                      C_INT *);
+  static double dynold, posneg;
+  extern /* Subroutine */ int slvrad_(C_INT *, double *, C_INT *,
+                                      C_INT *, C_INT *, double *, C_INT *, C_INT *, C_INT
+                                      *, C_INT *, C_INT *, C_INT *, double *, double *,
+                                      double *, double *, double *, double *, C_INT *,
+                                      double *, double *, double *, double *,
+                                      double *, double *, double *, C_INT *, C_INT *,
+                                      C_INT *, C_INT *, C_INT *);
+  static double thqold;
 
   /* Fortran I/O blocks */
   static cilist io___176 = {0, 6, 0, fmt_979, 0 };
@@ -1865,31 +1865,31 @@ L78:
   /* --- FAIL EXIT */
 L176:
 //    s_wsfe(&io___176);
-//    do_fio(&c__1, (char *)&(*x), (ftnlen)sizeof(doublereal));
+//    do_fio(&c__1, (char *)&(*x), (ftnlen)sizeof(double));
 //    e_wsfe();
 //    s_wsle(&io___177);
 //    do_lio(&c__9, &c__1, " MATRIX IS REPEATEDLY SINGULAR, IER=", (ftnlen)36);
-//    do_lio(&c__3, &c__1, (char *)&ier, (ftnlen)sizeof(integer));
+//    do_lio(&c__3, &c__1, (char *)&ier, (ftnlen)sizeof(C_INT));
 //    e_wsle();
   *idid = -4;
   return 0;
 L177:
 //    s_wsfe(&io___178);
-//    do_fio(&c__1, (char *)&(*x), (ftnlen)sizeof(doublereal));
+//    do_fio(&c__1, (char *)&(*x), (ftnlen)sizeof(double));
 //    e_wsfe();
 //    s_wsle(&io___179);
 //    do_lio(&c__9, &c__1, " STEP SIZE T0O SMALL, H=", (ftnlen)24);
-//    do_lio(&c__5, &c__1, (char *)&(*h__), (ftnlen)sizeof(doublereal));
+//    do_lio(&c__5, &c__1, (char *)&(*h__), (ftnlen)sizeof(double));
 //    e_wsle();
   *idid = -3;
   return 0;
 L178:
 //    s_wsfe(&io___180);
-//    do_fio(&c__1, (char *)&(*x), (ftnlen)sizeof(doublereal));
+//    do_fio(&c__1, (char *)&(*x), (ftnlen)sizeof(double));
 //    e_wsfe();
 //    s_wsle(&io___181);
 //    do_lio(&c__9, &c__1, " MORE THAN NMAX =", (ftnlen)17);
-//    do_lio(&c__3, &c__1, (char *)&(*nmax), (ftnlen)sizeof(integer));
+//    do_lio(&c__3, &c__1, (char *)&(*nmax), (ftnlen)sizeof(C_INT));
 //    do_lio(&c__9, &c__1, "STEPS ARE NEEDED", (ftnlen)16);
 //    e_wsle();
   *idid = -2;
@@ -1897,7 +1897,7 @@ L178:
   /* --- EXIT CAUSED BY SOLOUT */
 L179:
 //    s_wsfe(&io___182);
-//    do_fio(&c__1, (char *)&(*x), (ftnlen)sizeof(doublereal));
+//    do_fio(&c__1, (char *)&(*x), (ftnlen)sizeof(double));
 //    e_wsfe();
   *idid = 2;
   return 0;
@@ -1907,13 +1907,13 @@ L179:
 
 /* *********************************************************** */
 
-doublereal contr5_(integer *i__, doublereal *x, doublereal *cont, integer *lrc)
+double contr5_(C_INT *i__, double *x, double *cont, C_INT *lrc)
 {
   /* System generated locals */
-  doublereal ret_val;
+  double ret_val;
 
   /* Local variables */
-  static doublereal s;
+  static double s;
 
   /* ---------------------------------------------------------- */
   /*     THIS FUNCTION CAN BE USED FOR CONINUOUS OUTPUT. IT PROVIDES AN */
@@ -1932,22 +1932,22 @@ doublereal contr5_(integer *i__, doublereal *x, doublereal *cont, integer *lrc)
   return ret_val;
 } /* contr5_ */
 
-double d_sign(doublereal *a, doublereal *b)
+double d_sign(double *a, double *b)
 {
   double x;
   x = (*a >= 0 ? *a : - *a);
   return (*b >= 0 ? x : -x);
 }
 
-static doublereal pow_dd(doublereal *ap, doublereal *bp)
+static double pow_dd(double *ap, double *bp)
 {
   return (pow(*ap, *bp));
 }
 
-double pow_di(doublereal *ap, integer *bp)
+double pow_di(double *ap, C_INT *bp)
 {
   double pow, x;
-  integer n;
+  C_INT n;
   unsigned long u;
 
   pow = 1;
