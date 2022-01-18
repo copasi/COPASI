@@ -30,7 +30,7 @@
 // #define DEBUG_FLOW 1
 
 // static
-void CRadau5Method::EvalM(C_INT *, double *, int *, double *, C_INT *) {}
+void CRadau5Method::EvalM(C_INT *, double *, C_INT *, double *, C_INT *) {}
 
 CRadau5Method::CRadau5Method(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
