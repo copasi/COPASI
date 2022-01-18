@@ -141,7 +141,7 @@ protected:
   C_INT ipar;
 
   /* dummy function -- to pass for mass and EvalJ*/
-  static void EvalM(C_INT *, double *, int *, double *, C_INT *);
+  static void EvalM(C_INT *, double *, C_INT *, double *, C_INT *);
 
 private:
   /**

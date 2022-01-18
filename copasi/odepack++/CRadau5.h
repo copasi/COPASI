@@ -22,7 +22,7 @@ public:
   typedef void (*evalF)(const C_INT *, const double *, const double *, double *, double *, C_INT *);
   typedef void (*evalJ)(const C_INT *, const double *, const double *, double *, const C_INT *, double *, const C_INT *);
   // typedef void (*evalG)(const C_INT *, const double *, const double *, const C_INT *, double *);
-  typedef void (*evalM)(C_INT *, double *, int *, double *, C_INT *);
+  typedef void (*evalM)(C_INT *, double *, C_INT *, double *, C_INT *);
   typedef void (*evalO)(C_INT *, double *, double *, double *, double *, C_INT *, C_INT *, double *, C_INT *, C_INT *);
 
   C_INT operator()(C_INT * n,      //  Number of equations
