@@ -11,7 +11,6 @@
 #define ODEPACK_CRadau5
 
 #include "copasi/odepack++/CInternalSolver.h"
-#include "dc_decsol.h"
 
 class CRadau5: public CInternalSolver
 {
@@ -58,5 +57,7 @@ private:
   static const C_INT mxhnl0;
   static const C_INT mord[2];
 };
+
+#include "dc_decsol.h"
 
 #endif // ODEPACK_CRadau5
