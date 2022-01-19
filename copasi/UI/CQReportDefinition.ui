@@ -698,7 +698,7 @@
   </connection>
   <connection>
    <sender>mpTaskBox</sender>
-   <signal>currentTextChanged(QString)</signal>
+   <signal>textActivated(QString)</signal>
    <receiver>CQReportDefinition</receiver>
    <slot>taskChanged(QString)</slot>
    <hints>
