@@ -87,7 +87,7 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
   static C_INT ndec, njac;
   static double facr, safe;
   static C_INT ijob, nfcn;
-  static logical pred;
+  static C_LOGICAL pred;
   static double hmax;
   static C_INT nmax;
   static double thet, expm;
@@ -96,9 +96,9 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
   static C_INT iee2i, iee2r, ieip1, ieip2, nind1, nind2, nind3;
   static double quot1, quot2;
   static C_INT iejac, ldjac;
-  static logical jband;
+  static C_LOGICAL jband;
   static C_INT iecon, iemas, ldmas, ieiph;
-  static logical arret;
+  static C_LOGICAL arret;
   static double fnewt;
   static C_INT nstep;
   static double tolst;
@@ -108,9 +108,9 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
                                       double *, double *, C_INT *, CRadau5::evalJ, C_INT *, C_INT *,
                                       C_INT *, CRadau5::evalM, C_INT *, C_INT *, CRadau5::evalO, C_INT *, C_INT *
                                       , C_INT *, double *, double *, double *, double
-                                      *, double *, double *, C_INT *, C_INT *, logical *,
-                                      C_INT *, C_INT *, C_INT *, logical *, double *,
-                                      double *, C_INT *, C_INT *, C_INT *, logical *, logical
+                                      *, double *, double *, C_INT *, C_INT *, C_LOGICAL *,
+                                      C_INT *, C_INT *, C_INT *, C_LOGICAL *, double *,
+                                      double *, C_INT *, C_INT *, C_INT *, C_LOGICAL *, C_LOGICAL
                                       *, C_INT *, C_INT *, C_INT *, double *, double *,
                                       double *, double *, double *, double *,
                                       double *, double *, double *, double *,
@@ -118,9 +118,9 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
                                       C_INT *, double *, C_INT *, C_INT *, C_INT *, C_INT
                                       *, C_INT *, C_INT *, C_INT *, double *, C_INT *);
   static C_INT nrejct;
-  static logical implct;
+  static C_LOGICAL implct;
   static C_INT istore;
-  static logical startn;
+  static C_LOGICAL startn;
   static double uround;
 
   /* Fortran I/O blocks */
@@ -1021,9 +1021,9 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
                              mumas, CRadau5::evalO solout, C_INT *iout, C_INT *idid, C_INT *nmax,
                              double *uround, double *safe, double *thet, double *
                              fnewt, double *quot1, double *quot2, C_INT *nit, C_INT *
-                             ijob, logical *startn, C_INT *nind1, C_INT *nind2, C_INT *nind3,
-                             logical *pred, double *facl, double *facr, C_INT *m1,
-                             C_INT *m2, C_INT *nm1, logical *implct, logical *banded, C_INT *
+                             ijob, C_LOGICAL *startn, C_INT *nind1, C_INT *nind2, C_INT *nind3,
+                             C_LOGICAL *pred, double *facl, double *facr, C_INT *m1,
+                             C_INT *m2, C_INT *nm1, C_LOGICAL *implct, C_LOGICAL *banded, C_INT *
                              ldjac, C_INT *lde1, C_INT *ldmas, double *z1, double *z2,
                              double *z3, double *y0, double *scal, double *f1,
                              double *f2, double *f3, double *fjac, double *e1,
@@ -1059,39 +1059,39 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
   static double alph, hold;
   static C_INT lend;
   static double delt, hnew;
-  static logical last;
+  static C_LOGICAL last;
   static double hopt, xold;
   static C_INT newt;
   static double dyno, dyth, quot, hhfac, betan, alphn, denom, theta,
          ysafe, hmaxn;
   static C_INT nsing;
-  static logical first;
+  static C_LOGICAL first;
   static C_INT irtrn, nrsol, nsolu;
   static double qnewt, xosol, acont3;
-  static logical index1, index2, index3, caljac;
+  static C_LOGICAL index1, index2, index3, caljac;
   static double faccon;
   extern /* Subroutine */ int decomc_(C_INT *, double *, C_INT *,
                                       double *, C_INT *, C_INT *, C_INT *, C_INT *, C_INT
                                       *, C_INT *, double *, double *, double *,
                                       double *, C_INT *, C_INT *, C_INT *, C_INT *);
-  static logical calhes;
+  static C_LOGICAL calhes;
   static double erracc;
   static C_INT mujacj;
   extern /* Subroutine */ int decomr_(C_INT *, double *, C_INT *,
                                       double *, C_INT *, C_INT *, C_INT *, C_INT *, C_INT
                                       *, C_INT *, double *, double *, C_INT *, C_INT *,
-                                      C_INT *, C_INT *, logical *, C_INT *);
-  static logical reject;
+                                      C_INT *, C_INT *, C_LOGICAL *, C_INT *);
+  static C_LOGICAL reject;
   static double facgus;
   static C_INT mujacp;
   extern /* Subroutine */ int estrad_(C_INT *, double *, C_INT *,
                                       C_INT *, C_INT *, double *, C_INT *, C_INT *, C_INT
-                                      *, double *, double *, double *, double *, S_fp,
+                                      *, double *, double *, double *, double *, CRadau5::evalF,
                                       C_INT *, double *, double *, C_INT *, double *,
                                       C_INT *, C_INT *, C_INT *, double *, C_INT *,
                                       double *, double *, double *, double *,
                                       double *, double *, C_INT *, C_INT *, double *,
-                                      double *, logical *, logical *, double *, double *,
+                                      double *, C_LOGICAL *, C_LOGICAL *, double *, double *,
                                       C_INT *);
   static double dynold, posneg;
   extern /* Subroutine */ int slvrad_(C_INT *, double *, C_INT *,
@@ -1651,7 +1651,7 @@ L40:
 
   /* --- ERROR ESTIMATION */
   estrad_(n, &fjac[fjac_offset], ldjac, mljac, mujac, &fmas[fmas_offset], ldmas, mlmas, mumas,
-          h__, &dd1, &dd2, &dd3, (S_fp)fcn, nfcn, &y0[1], &y[1], ijob, x, m1, m2, nm1, &e1[e1_offset],
+          h__, &dd1, &dd2, &dd3, fcn, nfcn, &y0[1], &y[1], ijob, x, m1, m2, nm1, &e1[e1_offset],
           lde1, &z1[1], &z2[1], &z3[1], &cont[1], &f1[1], &f2[1], &ip1[1], &iphes[1], &scal[1], &err,
           &first, &reject, &fac1, &rpar[1], &ipar[1]);
   /* --- COMPUTATION OF HNEW */
