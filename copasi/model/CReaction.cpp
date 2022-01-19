@@ -1590,9 +1590,11 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                                     }
                                   else
                                     {
-                                      delete pVariableNode;
-                                      pVariableNode = NULL;
-                                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 7, id.c_str(), this->getSBMLId().c_str());
+                                      // rather than just fail to load the model alltogether, mark as invalid but
+                                      // continue loading the model
+                                      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 7, id.c_str(), this->getSBMLId().c_str());
+                                      found = true;
+                                      usage = CFunctionParameter::Role::MODIFIER;
                                     }
                                 }
                             }
