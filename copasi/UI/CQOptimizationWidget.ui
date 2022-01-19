@@ -249,7 +249,7 @@
   </connection>
   <connection>
    <sender>mpBoxSubtask</sender>
-   <signal>currentTextChanged(QString)</signal>
+   <signal>textActivated(QString)</signal>
    <receiver>CQOptimizationWidget</receiver>
    <slot>slotSubtaskChanged(QString)</slot>
    <hints>
