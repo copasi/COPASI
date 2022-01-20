@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -70,7 +70,7 @@ public:
    * Calculate the numerical result of the node. It is assumed that
    * all child nodes are up to date.
    */
-  virtual void calculate();
+  virtual void calculate() override;
 
   /**
    * Compile a node;
@@ -84,7 +84,7 @@ public:
    * @param const ValueType & valueType
    * @return CIssue issue;
    */
-  virtual CIssue setValueType(const ValueType & valueType);
+  virtual CIssue setValueType(const ValueType & valueType) override;
 
   /**
    * Check whether node the calls any tree in the list
@@ -97,46 +97,46 @@ public:
    * Retrieve the infix value of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getInfix(const std::vector< std::string > & children) const;
+  virtual std::string getInfix(const std::vector< std::string > & children) const override;
 
   /**
    * Retrieve the value of the node.
    * @return const Data & value
    */
-  virtual const Data & getData() const;
+  virtual const Data & getData() const override;
 
   /**
    * Set the data of the Node.
    * @param const Data & data
    * @return bool success
    */
-  virtual bool setData(const Data & data);
+  virtual bool setData(const Data & data) override;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getDisplayString(const std::vector< std::string > & children) const;
+  virtual std::string getDisplayString(const std::vector< std::string > & children) const override;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes in C.
    * @return const Data & value
    */
-  virtual std::string getCCodeString(const std::vector< std::string > & children) const;
+  virtual std::string getCCodeString(const std::vector< std::string > & children) const override;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes
    * in Berkeley Madonna format.
    * @return const Data & value
    */
-  virtual std::string getBerkeleyMadonnaString(const std::vector< std::string > & children) const;
+  virtual std::string getBerkeleyMadonnaString(const std::vector< std::string > & children) const override;
 
   /**
    ** Retrieve the display string of the node and its eventual child nodes
    ** in XPPAUT format.
    ** @return const Data & value
    **/
-  virtual std::string getXPPString(const std::vector< std::string > & children) const;
+  virtual std::string getXPPString(const std::vector< std::string > & children) const override;
 
   /**
    * Figure out the appropriate CUnit to use, based on the child nodes.
@@ -146,7 +146,7 @@ public:
    * @return CValidatedUnit unit
    */
   virtual CValidatedUnit getUnit(const CMathContainer & container,
-                                 const std::vector< CValidatedUnit > & units) const;
+                                 const std::vector< CValidatedUnit > & units) const override;
 
   /**
    * Set the unit for the node and return the resulting unit. The child node units are
@@ -158,7 +158,7 @@ public:
    */
   virtual CValidatedUnit setUnit(const CMathContainer & container,
                                  const std::map < CEvaluationNode *, CValidatedUnit > & currentUnits,
-                                 std::map < CEvaluationNode *, CValidatedUnit > & targetUnits) const;
+                                 std::map < CEvaluationNode *, CValidatedUnit > & targetUnits) const override;
 
   /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children
@@ -172,7 +172,7 @@ public:
    * Create a new ASTNode corresponding to this choice node.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode* toAST(const CDataModel* pDataModel) const;
+  virtual ASTNode* toAST(const CDataModel* pDataModel) const override;
 
   /**
    * Add a child to a node.
@@ -184,14 +184,14 @@ public:
    * @return bool Success
    */
   virtual bool addChild(CCopasiNode< Data > * pChild,
-                        CCopasiNode< Data > * pAfter = NULL);
+                        CCopasiNode< Data > * pAfter = NULL) override;
 
   /**
    * Remove a child from a node.
    * @param CCopasiNode< Data > * pChild
    * @return bool Success
    */
-  virtual bool removeChild(CCopasiNode< Data > * pChild);
+  virtual bool removeChild(CCopasiNode< Data > * pChild) override;
 
   /**
    * Retrieve the tree which is called from this node
@@ -214,7 +214,7 @@ public:
    */
   virtual std::string getMMLString(const std::vector< std::string > & children,
                                    bool expand,
-                                   const std::vector< std::vector< std::string > > & variables) const;
+                                   const std::vector< std::vector< std::string > > & variables) const override;
 
   /**
    *  returns the vector of child nodes, corresponding to the arguments of a function call
@@ -231,7 +231,7 @@ public:
    * Check whether the result is Boolean
    * @return bool isBoolean
    */
-  virtual bool isBoolean() const;
+  virtual bool isBoolean() const override;
 
 private:
   /**

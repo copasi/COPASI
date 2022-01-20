@@ -1048,7 +1048,7 @@ public:
    * @return CUndoData undoData
    */
   virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & type,
+                              const CUndoData::Type & /* type */,
                               const CData & oldData = CData(),
                               const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const
   {
