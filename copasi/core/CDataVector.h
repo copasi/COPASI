@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -283,7 +283,7 @@ public:
    * @return CUndoData undoData
    */
   virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & type,
+                              const CUndoData::Type & /* type */,
                               const CData & oldData = CData(),
                               const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const
   {
@@ -584,7 +584,7 @@ public:
         {
           CDataContainer::remove(*it);
           (*it)->setObjectParent(NULL);
-          delete(*it);
+          delete (*it);
           *it = NULL;
         }
 
