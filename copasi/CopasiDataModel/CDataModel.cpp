@@ -2011,9 +2011,9 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
   // if we don't have one, or we have one we don't understand look for copasi file
   if (content == NULL ||
-      (content->getFormat() != KnownFormats::lookupFormat("sbml") &&
-       content->getFormat() != KnownFormats::lookupFormat("copasi") &&
-       content->getFormat() != KnownFormats::lookupFormat("sedml")))
+      (!content->isFormat("sbml") &&
+       !content->isFormat("copasi") &&
+       !content->isFormat("sedml")))
     {
       content = archive.getEntryByFormat("copasi");
       haveCopasi = content != NULL;
@@ -2035,12 +2035,12 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
   // otherwise look for an sedml file
   const CaContent * sedml_content =
-    content != NULL && content->getFormat() == KnownFormats::lookupFormat("sedml") ?
+    content != NULL && content->isFormat("sedml") ?
     content : archive.getEntryByFormat("sedml");
 
   // otherwise look for an sbml file
   const CaContent * sbml_content =
-    content != NULL && content->getFormat() == KnownFormats::lookupFormat("sbml") ?
+    content != NULL && content->isFormat("sbml") ?
     content : archive.getEntryByFormat("sbml");
 
   if (content == NULL && sbml_content == NULL && sedml_content == NULL)
