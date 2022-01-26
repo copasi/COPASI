@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -61,18 +61,6 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
   , mCompiledSubType(SubType::INVALID)
 {
   setData(data);
-  mData = unQuote(mData);
-
-  // We force quoting if the round trip unquote, quote does not recover the original input
-  if (isKeyword(mData))
-    {
-      mQuotesRequired = true;
-    }
-
-  if (mData != data && quote(mData) != data)
-    {
-      mQuotesRequired = true;
-    }
 
   switch (subType)
     {
@@ -315,14 +303,7 @@ std::string CEvaluationNodeCall::getInfix(const std::vector< std::string > & chi
   //We use getData instead of mData since getData also detects whether quoting is needed.
   const std::string & Data = getData();
 
-  if (mQuotesRequired)
-    {
-      Infix = "\"" + quote(Data, "-+^*/%(){},\t\r\n\"") + "\"(";
-    }
-  else
-    {
-      Infix = quote(Data, "-+^*/%(){},\t\r\n") + "(";
-    }
+  Infix = quote(Data, "-+^*/%(){},\t\r\n\\") + "(";
 
   switch (mSubType)
     {
@@ -356,14 +337,7 @@ std::string CEvaluationNodeCall::getDisplayString(const std::vector< std::string
 {
   std::string DisplayString;
 
-  if (mQuotesRequired)
-    {
-      DisplayString = "\"" + quote(mData, "-+^*/%(){},\t\r\n\"") + "\"(";
-    }
-  else
-    {
-      DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
-    }
+  DisplayString = quote(mData, "-+^*/%(){},\t\r\n") + "(";
 
   switch (mSubType)
     {
@@ -661,14 +635,7 @@ std::string CEvaluationNodeCall::getMMLString(const std::vector< std::string > &
           {
             out << "<mrow>" << std::endl;
 
-            std::string Data = getData();
-
-            if (mQuotesRequired)
-              {
-                Data = "\"" + quote(Data, "-+^*/%(){},\t\r\n\"") + "\"";
-              }
-
-            out << "<mi>" << CMathMl::fixName(Data) << "</mi>" << std::endl;
+            out << "<mi>" << CMathMl::fixName(quote(mData, "-+^*/%(){},\t\r\n")) << "</mi>" << std::endl;
             out << "<mrow>" << std::endl;
             out << "<mo>(</mo>" << std::endl;
             out << "<mrow>" << std::endl;
