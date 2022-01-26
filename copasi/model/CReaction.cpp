@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1116,6 +1116,7 @@ CIssue CReaction::compileFunctionParameters(std::set< const CDataObject * > & de
 
           if (pObject != NULL)
             {
+              // mMap will raise an issue if the object typedoes not match the parameter type
               Issue = mMap.setCallParameter(paramName, pObject);
               mValidity.add(Issue);
               mParameterIndexToObjects[i][0] = pObject;
@@ -1786,7 +1787,7 @@ CEvaluationNode* CReaction::objects2variables(const CEvaluationNode* pNode, std:
   return pResult;
 }
 
-CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & expression, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB)
+CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & expression, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   // walk the tree and replace all object nodes with variable nodes.
   CFunction* pTmpFunction = NULL;
@@ -1853,16 +1854,16 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
       std::ostringstream numberStream;
       CFunction * pExistingFunction = NULL;
 
-      while ((pExistingFunction = pFunctionDB->findFunction(functionName + appendix)) != NULL)
+      while ((pExistingFunction = CRootContainer::getFunctionList()->findFunction(functionName + appendix)) != NULL)
         {
           if (SBMLImporter::areEqualFunctions(pExistingFunction, pTmpFunction))
             {
-              setFunction(pExistingFunction);
-
               // The functions and their signature are equal however the role of the variables
               // might not be defined for the existing function if this is the first time it is used
               mpFunction->setReversible(pTmpFunction->isReversible());
               mpFunction->getVariables() = pTmpFunction->getVariables();
+
+              setFunction(pExistingFunction);
 
               pdelete(pTmpFunction);
 
@@ -1905,7 +1906,7 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
 
   // add to function database
   if (pTmpFunction != NULL &&
-      !pFunctionDB->add(pTmpFunction, true))
+      !CRootContainer::getFunctionList()->add(pTmpFunction, true))
     {
       CCopasiMessage(CCopasiMessage::ERROR_FILTERED, "Couldn't add expression for '%s' to the function database.", pTmpFunction->getObjectName().c_str());
     }

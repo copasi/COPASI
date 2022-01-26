@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -413,15 +413,19 @@ void CModelParameterSet::createFromModel()
             {
               pParameter->setSimulationType(CModelEntity::Status::ASSIGNMENT);
               const std::vector< const CDataObject * > & ModelValue = itReaction->getParameterObjects((*itParameter)->getObjectName());
+              const CModelValue * pModelValue = NULL;
 
-              if (ModelValue.size() != 1) fatalError();
-
-              const CModelValue * pModelValue = dynamic_cast< const CModelValue * >(ModelValue[0]);
-
-              if (pModelValue == NULL) fatalError();
-
-              pParameter->setValue(pModelValue->getInitialValue(), CCore::Framework::ParticleNumbers, false);
-              pParameter->setInitialExpression("<" + pModelValue->getInitialValueReference()->getCN() + ">");
+              if (ModelValue.size() == 1
+                  && (pModelValue = dynamic_cast< const CModelValue * >(ModelValue[0])) != NULL)
+                {
+                  pParameter->setValue(pModelValue->getInitialValue(), CCore::Framework::ParticleNumbers, false);
+                  pParameter->setInitialExpression("<" + pModelValue->getInitialValueReference()->getCN() + ">");
+                }
+              else
+                {
+                  pParameter->setValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN(), CCore::Framework::ParticleNumbers, false);
+                  pParameter->setInitialExpression("");
+                }
             }
         }
     }

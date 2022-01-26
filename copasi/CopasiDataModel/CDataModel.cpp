@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1117,8 +1117,7 @@ bool CDataModel::importSBMLFromString(const std::string & sbmlDocumentText,
 
   try
     {
-      pModel = importer.parseSBML(sbmlDocumentText, CRootContainer::getFunctionList(),
-                                  pSBMLDocument, Copasi2SBMLMap, pLol, this);
+      pModel = importer.parseSBML(sbmlDocumentText, pSBMLDocument, Copasi2SBMLMap, pLol, this);
     }
 
   catch (CCopasiException & except)
@@ -1210,8 +1209,7 @@ bool CDataModel::importSBML(const std::string & fileName,
       mData.mSBMLFileName = CDirEntry::normalize(FileName);
       mData.mReferenceDir = CDirEntry::dirName(mData.mSBMLFileName);
 
-      pModel = importer.readSBML(FileName, CRootContainer::getFunctionList(),
-                                 pSBMLDocument, Copasi2SBMLMap, pLol, this);
+      pModel = importer.readSBML(FileName, pSBMLDocument, Copasi2SBMLMap, pLol, this);
     }
 
   catch (CCopasiException & except)

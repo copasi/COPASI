@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -472,8 +472,7 @@ public:
    * and sets the mapping for the reaction.
    */
   CFunction * setFunctionFromExpressionTree(const CExpression & tree,
-      std::map<const CDataObject*, SBase*> & copasi2sbmlmap,
-      CFunctionDB* pFunctionDB);
+      std::map<const CDataObject*, SBase*> & copasi2sbmlmap);
 
   /**
    * Converts the function tree into the corresponding expression tree.
