@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -225,7 +225,6 @@ CTaskEnum::Method getMethodType(const std::string & kisaoId)
     {"KISAO:0000562", CTaskEnum::Method::hybridLSODA},
     {"KISAO:0000563", CTaskEnum::Method::hybridODE45},
     {"KISAO:0000566", CTaskEnum::Method::stochasticRunkeKuttaRI5},
-
   };
 
   auto it = methodMap.find(kisaoId);
@@ -323,7 +322,6 @@ void SEDMLImporter::applyAlgorithm(CTrajectoryTask * tTask, const SedAlgorithm *
             break;
         }
     }
-
 }
 
 bool isTC(const SedTask* task)
@@ -701,7 +699,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
           case LIBSEDML_SEV_FATAL:
 
-            // treat unknown as fatal
+          // treat unknown as fatal
           default:
 
             if (pSEDMLError->getErrorId() == 10804)
@@ -928,7 +926,7 @@ SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
                         std::stringstream str;
                         std::vector<double> vals = vrange->getValues();
 
-for (double val : vals)
+                        for (double val : vals)
                           str << val << " ";
 
                         group->setValue< std::string >("Values", str.str());
@@ -1131,7 +1129,7 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
   try
     {
       mpCopasiModel = importer.parseSBML(sbmlStringStream.str(),
-                                         CRootContainer::getFunctionList(), pSBMLDocument,
+                                         pSBMLDocument,
                                          Copasi2SBMLMap, prLol, mpDataModel);
     }
 
