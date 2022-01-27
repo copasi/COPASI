@@ -354,7 +354,7 @@ size_t INVALID_INDEX();
 %include <copasi/utilities/CopasiTime.h>
 %include <copasi/core/CDataTimer.h>
 
-%include <copasi/math/CJitCompilerImplementation.h>
+%include <copasi/math/CJitCompiler.h>
 
 %{
 
@@ -408,7 +408,7 @@ size_t INVALID_INDEX();
 #include <copasi/utilities/CopasiTime.h>
 #include <copasi/core/CDataTimer.h>
 
-#include <copasi/math/CJitCompilerImplementation.h>
+#include <copasi/math/CJitCompiler.h>
 
 %}
 

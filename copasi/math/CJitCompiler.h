@@ -32,7 +32,8 @@ public:
 
   virtual ~CJitCompiler();
 
-#ifdef USE_JIT
+#ifndef SWIG
+# ifdef USE_JIT
 
   virtual CJitCompiler * copy() const = 0;
 
@@ -40,7 +41,9 @@ public:
 
   virtual Function compile(const CMathExpression & mathExpression) = 0;
 
-#endif
+# endif // USE_JIT
+#endif // SWIG
+
   void registerExpression(CJitExpression * pExpression);
 
   void deregisterExpression(CJitExpression * pExpression);
