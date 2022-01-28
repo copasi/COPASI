@@ -60,8 +60,14 @@ if (BLAS_FOUND AND APPLE)
     exec_program(xcode-select ARGS -print-path OUTPUT_VARIABLE CMAKE_XCODE_DEVELOPER_DIR)
     find_path(CLAPACK_INCLUDE_DIR cblas.h
     PATHS
+       ${CMAKE_OSX_SYSROOT}/System/Library/Frameworks/Accelerate.framework/Versions/Current/Frameworks/vecLib.framework/Headers/
        ${CMAKE_XCODE_DEVELOPER_DIR}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework/Versions/Current/Frameworks/vecLib.framework/Headers/
     )
+
+    if (CLAPACK_INCLUDE_DIR)
+    add_definitions(-DHAVE_CBLAS_H)
+    endif()
+
     if (NOT CLAPACK_INCLUDE_DIR)
       # fallback
       set(CLAPACK_INCLUDE_DIR "${COPASI_SOURCE_DIR}")
