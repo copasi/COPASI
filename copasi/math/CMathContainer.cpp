@@ -13,6 +13,8 @@
 // of Manchester.
 // All rights reserved.
 
+#define JIT_IMPLEMENTATION
+
 #include "copasi/copasi.h"
 
 #include "copasi/math/CMathContainer.h"

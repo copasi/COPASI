@@ -18,9 +18,9 @@ class CJitCompiler
 public:
   static bool JitEnabled();
 
-protected: 
-  // hide constructor 
-  CJitCompiler(); 
+protected:
+  // hide constructor
+  CJitCompiler();
 
 private:
   /**
@@ -36,7 +36,7 @@ public:
 
   virtual ~CJitCompiler();
 
-#ifdef USE_JIT
+#if defined USE_JIT and defined JIT_IMPLEMENTATION
 
   virtual CJitCompiler * copy() const = 0;
 
