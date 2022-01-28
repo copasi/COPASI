@@ -8,7 +8,7 @@
 
 #include "copasi/math/CJitCompiler.h"
 
-#if defined USE_JIT and defined JIT_IMPLEMENTATION
+#if (defined USE_JIT) && defined (JIT_IMPLEMENTATION)
 # include <NativeJIT/CodeGen/ExecutionBuffer.h>
 # include <NativeJIT/Function.h>
 #endif
@@ -33,8 +33,6 @@ class CEvaluationNodeLogical;
 
 class CJitCompilerImplementation: public CJitCompiler
 {
-  friend CJitCompiler * CJitCompiler::create();
-
 public:
   static void SetJitBufferSize(const size_t size);
   static const size_t & GetJitBufferSize();
@@ -42,13 +40,12 @@ public:
 private:
   static size_t InitalBufferSize;
 
-#if defined USE_JIT and defined JIT_IMPLEMENTATION
-protected:
+#if (defined USE_JIT) && defined (JIT_IMPLEMENTATION)
+public:
   CJitCompilerImplementation();
 
   CJitCompilerImplementation(const CJitCompilerImplementation & src);
 
-public:
   virtual ~CJitCompilerImplementation();
 
   typedef NativeJIT::NodeBase Node;

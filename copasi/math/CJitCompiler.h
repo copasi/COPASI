@@ -40,7 +40,7 @@ public:
 
   void deregisterExpression(CJitExpression * pExpression);
 
-#if defined USE_JIT and defined JIT_IMPLEMENTATION
+#if (defined USE_JIT) && defined (JIT_IMPLEMENTATION)
 
   virtual CJitCompiler * copy() const = 0;
 
