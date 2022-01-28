@@ -1,4 +1,4 @@
-// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,7 +8,7 @@
 
 #include "copasi/math/CJitCompiler.h"
 
-#ifdef USE_JIT
+#if defined USE_JIT and defined JIT_IMPLEMENTATION
 #include <NativeJIT/CodeGen/ExecutionBuffer.h>
 #include <NativeJIT/Function.h>
 #endif
@@ -42,8 +42,10 @@ private:
 
 #ifdef USE_JIT
 public:
+#ifdef JIT_IMPLEMENTATION
   typedef NativeJIT::Function< C_FLOAT64 >::FunctionType Function;
   typedef NativeJIT::NodeBase Node;
+#endif
 
   CJitCompilerImplementation();
 
