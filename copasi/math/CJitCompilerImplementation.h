@@ -9,8 +9,8 @@
 #include "copasi/math/CJitCompiler.h"
 
 #if defined USE_JIT and defined JIT_IMPLEMENTATION
-#include <NativeJIT/CodeGen/ExecutionBuffer.h>
-#include <NativeJIT/Function.h>
+# include <NativeJIT/CodeGen/ExecutionBuffer.h>
+# include <NativeJIT/Function.h>
 #endif
 
 #ifdef ERROR
@@ -40,18 +40,15 @@ public:
 private:
   static size_t InitalBufferSize;
 
-#ifdef USE_JIT
 public:
-#ifdef JIT_IMPLEMENTATION
-  typedef NativeJIT::Function< C_FLOAT64 >::FunctionType Function;
-  typedef NativeJIT::NodeBase Node;
-#endif
-
   CJitCompilerImplementation();
 
   CJitCompilerImplementation(const CJitCompilerImplementation & src);
 
   virtual ~CJitCompilerImplementation();
+
+#if defined USE_JIT and defined JIT_IMPLEMENTATION
+  typedef NativeJIT::NodeBase Node;
 
   virtual CJitCompiler * copy() const;
 
@@ -136,7 +133,7 @@ private:
    * Execution buffer size
    */
   size_t mFunctionBufferSize;
-#endif
+#endif // defined USE_JIT and defined JIT_IMPLEMENTATION
 };
 
 #endif // COPASI_CJitCompilerImplementation

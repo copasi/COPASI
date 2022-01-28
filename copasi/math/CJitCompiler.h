@@ -36,6 +36,10 @@ public:
 
   virtual ~CJitCompiler();
 
+  void registerExpression(CJitExpression * pExpression);
+
+  void deregisterExpression(CJitExpression * pExpression);
+
 #if defined USE_JIT and defined JIT_IMPLEMENTATION
 
   virtual CJitCompiler * copy() const = 0;
@@ -44,14 +48,10 @@ public:
 
   virtual Function compile(const CMathExpression & mathExpression) = 0;
 
-#endif
-  void registerExpression(CJitExpression * pExpression);
-
-  void deregisterExpression(CJitExpression * pExpression);
-
+#endif // defined USE_JIT and defined JIT_IMPLEMENTATION
 protected:
   /**
-   * A set of a compilet expression
+   * A set of a compiled expression
    */
   std::set< CJitExpression * > mExpressions;
 };
