@@ -33,6 +33,8 @@ class CEvaluationNodeLogical;
 
 class CJitCompilerImplementation: public CJitCompiler
 {
+  friend CJitCompiler * CJitCompiler::create();
+
 public:
   static void SetJitBufferSize(const size_t size);
   static const size_t & GetJitBufferSize();
@@ -40,14 +42,15 @@ public:
 private:
   static size_t InitalBufferSize;
 
-public:
+#if defined USE_JIT and defined JIT_IMPLEMENTATION
+protected:
   CJitCompilerImplementation();
 
   CJitCompilerImplementation(const CJitCompilerImplementation & src);
 
+public:
   virtual ~CJitCompilerImplementation();
 
-#if defined USE_JIT and defined JIT_IMPLEMENTATION
   typedef NativeJIT::NodeBase Node;
 
   virtual CJitCompiler * copy() const;
