@@ -18,6 +18,10 @@ class CJitCompiler
 public:
   static bool JitEnabled();
 
+protected: 
+  // hide constructor 
+  CJitCompiler(); 
+
 private:
   /**
    * A pointer to a bool indicating whether the CPU supports the sse4.2 instruction set

@@ -18,6 +18,11 @@
 // static
 bool * CJitCompiler::pSSE4support = NULL;
 
+CJitCompiler::CJitCompiler()
+{
+  
+}
+
 // static
 bool CJitCompiler::JitEnabled()
 {
