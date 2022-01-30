@@ -1290,7 +1290,7 @@ public:
    */
   CType & operator[](const std::string & name)
   {
-    CDataContainer::objectMap::range Range = CDataContainer::getObjects().equal_range(name);
+    CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(name);
 
     CType * pType = NULL;
 
@@ -1315,7 +1315,7 @@ public:
    */
   const CType & operator[](const std::string &name) const
   {
-    CDataContainer::objectMap::range Range = CDataContainer::getObjects().equal_range(name);
+    CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(name);
 
     CType * pType = NULL;
 
@@ -1344,7 +1344,7 @@ public:
 
     if (!ElementName.empty())
       {
-        CDataContainer::objectMap::range Range = CDataContainer::getObjects().equal_range(ElementName);
+        CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(ElementName);
 
         for (; Range.first != Range.second; ++Range.first)
           {
@@ -1353,7 +1353,7 @@ public:
           }
       }
 
-    return CDataVector < CType >::getObject(name);
+    return CDataVector< CType >::getObject(name);
   }
 
   /**
@@ -1407,7 +1407,7 @@ private:
   virtual bool isInsertAllowed(const CType * src)
   {
     bool isInserAllowed = true;
-    CDataContainer::objectMap::range Range = CDataContainer::getObjects().equal_range(src->getObjectName());
+    CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(src->getObjectName());
 
     for (; Range.first != Range.second && isInserAllowed; ++Range.first)
       {
