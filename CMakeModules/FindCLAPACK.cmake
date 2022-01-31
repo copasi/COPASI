@@ -65,7 +65,7 @@ if (BLAS_FOUND AND APPLE)
     )
 
     if (CLAPACK_INCLUDE_DIR)
-    add_definitions(-DHAVE_CBLAS_H)
+      add_definitions(-DHAVE_CBLAS_H)
     endif()
 
     if (NOT CLAPACK_INCLUDE_DIR)
@@ -73,6 +73,10 @@ if (BLAS_FOUND AND APPLE)
       set(CLAPACK_INCLUDE_DIR "${COPASI_SOURCE_DIR}")
     endif (NOT CLAPACK_INCLUDE_DIR)
 
+  else()
+  
+    add_definitions(-DHAVE_CBLAS_H)
+    
   endif (NOT CLAPACK_INCLUDE_DIR)
 
 
