@@ -992,7 +992,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
           case LIBSEDML_SEV_FATAL:
 
-          // treat unknown as fatal
+            // treat unknown as fatal
           default:
 
             if (pSEDMLError->getErrorId() == 10804)
@@ -1269,7 +1269,7 @@ SEDMLImporter::importTasks()
                         std::stringstream str;
                         std::vector<double> vals = vrange->getValues();
 
-                        for (double val : vals)
+for (double val : vals)
                           str << val << " ";
 
                         group->setValue< std::string >("Values", str.str());
@@ -1463,7 +1463,7 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
   try
     {
       mpCopasiModel = importer.parseSBML(sbmlStringStream.str(),
-                                         CRootContainer::getFunctionList(), mContent.pCurrentSBMLDocument,
+                                         mContent.pCurrentSBMLDocument,
                                          mContent.mCopasi2SBMLMap, mContent.pListOfLayouts, mpDataModel);
     }
 
