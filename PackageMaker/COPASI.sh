@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -14,8 +14,17 @@
 # of Manchester. 
 # All rights reserved. 
 
-PACKAGE_MAKER=${COPASI_PACKAGE_MAKER:-"/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker"}
+while [ _"$1" != _ ]; do
+  case $1 in
+  --PackageMaker)
+    export PackageMaker=true
+    ;;
+  esac
+ 
+  shift
+done
 
+PACKAGE_MAKER=${COPASI_PACKAGE_MAKER:-"/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker"}
 PACKAGE_NAME="COPASI-${MyAppVersion}-Darwin"
 
 mkdir -p "${SETUP_DIR}/${PACKAGE_NAME}"
@@ -26,12 +35,6 @@ mkdir -p Applications/COPASI/
 # Copy CopasiUI
 echo cp -r "${BUILD_ROOT}/copasi/CopasiUI/CopasiUI.app" Applications/COPASI/
 cp -r "${BUILD_ROOT}/copasi/CopasiUI/CopasiUI.app" Applications/COPASI/
-
-# copy the Qt Framework into the image
-pushd Applications/COPASI
-echo macdeployqt CopasiUI.app
-macdeployqt CopasiUI.app
-popd
 
 echo mkdir -p Applications/COPASI/CopasiUI.app/Contents/Resources
 mkdir -p Applications/COPASI/CopasiUI.app/Contents/Resources
@@ -82,64 +85,75 @@ cp ${BUILD_ROOT}/copasi/CopasiSE/CopasiSE Applications/COPASI/
 strip Applications/COPASI/CopasiSE
 chmod 755 Applications/COPASI/CopasiSE
 
+if [ _${PackageMaker} == _true ]; then
+  # copy the Qt Framework into the image
+  pushd Applications/COPASI
+  echo macdeployqt CopasiUI.app
+  macdeployqt CopasiUI.app
+  popd
+fi
+
 popd
 
-pushd ${SETUP_DIR}
 
-mkdir copasi.pmdoc
+if [ _${PackageMaker} == _true ]; then
+  pushd ${SETUP_DIR}
 
-# Create the index.html file
-echo sed -e 's?%SOURCE%?'${SOURCE}'?g' \
-    -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
-    -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
-    -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
-  ${SOURCE}/PackageMaker/copasi.pmdoc/index.xml '>' copasi.pmdoc/index.xml
+  mkdir copasi.pmdoc
 
-sed -e 's?%SOURCE%?'${SOURCE}'?g' \
-    -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
-    -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
-    -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
-  ${SOURCE}/PackageMaker/copasi.pmdoc/index.xml > copasi.pmdoc/index.xml
+  # Create the index.html file
+  echo sed -e 's?%SOURCE%?'${SOURCE}'?g' \
+      -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
+      -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
+      -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
+    ${SOURCE}/PackageMaker/copasi.pmdoc/index.xml '>' copasi.pmdoc/index.xml
+
+  sed -e 's?%SOURCE%?'${SOURCE}'?g' \
+      -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
+      -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
+      -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
+    ${SOURCE}/PackageMaker/copasi.pmdoc/index.xml > copasi.pmdoc/index.xml
 
 # Create the copasi.xml file
-echo sed -e 's?%SOURCE%?'${SOURCE}'?g' \
-    -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
-    -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
-    -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
-  ${SOURCE}/PackageMaker/copasi.pmdoc/copasi.xml '>' copasi.pmdoc/copasi.xml
+  echo sed -e 's?%SOURCE%?'${SOURCE}'?g' \
+      -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
+      -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
+      -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
+    ${SOURCE}/PackageMaker/copasi.pmdoc/copasi.xml '>' copasi.pmdoc/copasi.xml
 
-sed -e 's?%SOURCE%?'${SOURCE}'?g' \
-    -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
-    -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
-    -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
-  ${SOURCE}/PackageMaker/copasi.pmdoc/copasi.xml > copasi.pmdoc/copasi.xml
+  sed -e 's?%SOURCE%?'${SOURCE}'?g' \
+      -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
+      -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
+      -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
+    ${SOURCE}/PackageMaker/copasi.pmdoc/copasi.xml > copasi.pmdoc/copasi.xml
 
-# Create the copasi-contents.xml file
-echo sed -e 's?%SOURCE%?'${SOURCE}'?g' \
-    -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
-    -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
-    -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
-  ${SOURCE}/PackageMaker/copasi.pmdoc/copasi-contents.xml '>' copasi.pmdoc/copasi-contents.xml
+  # Create the copasi-contents.xml file
+  echo sed -e 's?%SOURCE%?'${SOURCE}'?g' \
+      -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
+      -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
+      -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
+    ${SOURCE}/PackageMaker/copasi.pmdoc/copasi-contents.xml '>' copasi.pmdoc/copasi-contents.xml
 
-sed -e 's?%SOURCE%?'${SOURCE}'?g' \
-    -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
-    -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
-    -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
-  ${SOURCE}/PackageMaker/copasi.pmdoc/copasi-contents.xml > copasi.pmdoc/copasi-contents.xml
+  sed -e 's?%SOURCE%?'${SOURCE}'?g' \
+      -e 's?%SETUP_DIR%?'${SETUP_DIR}'?g' \
+      -e 's?%COPASI_VERSION%?'$major.$minor.$build'?g' \
+      -e 's?%PACKAGE_NAME%?'${PACKAGE_NAME}'?g' \
+    ${SOURCE}/PackageMaker/copasi.pmdoc/copasi-contents.xml > copasi.pmdoc/copasi-contents.xml
 
-# Run PackageMaker to create package
-echo "${PACKAGE_MAKER}" \
-  --doc "copasi.pmdoc" \
-  --out "${PACKAGE_NAME}.pkg" 
-"${PACKAGE_MAKER}" \
-  --doc "copasi.pmdoc" \
-  --out "${PACKAGE_NAME}.pkg"
+  # Run PackageMaker to create package
+  echo "${PACKAGE_MAKER}" \
+    --doc "copasi.pmdoc" \
+    --out "${PACKAGE_NAME}.pkg" 
+  "${PACKAGE_MAKER}" \
+    --doc "copasi.pmdoc" \
+    --out "${PACKAGE_NAME}.pkg"
 
-# Hide the pkg extension
-SetFile -a E "${PACKAGE_NAME}.pkg"
+  # Hide the pkg extension
+  SetFile -a E "${PACKAGE_NAME}.pkg"
 
-# Create a disk image
-echo hdiutil create -volname "${PACKAGE_NAME}" -srcfolder "${PACKAGE_NAME}.pkg" -ov -format UDZO "${PACKAGE_NAME}"
-hdiutil create -volname "${PACKAGE_NAME}" -srcfolder "${PACKAGE_NAME}.pkg" -ov -format UDZO "${PACKAGE_NAME}"
-popd
+  # Create a disk image
+  echo hdiutil create -volname "${PACKAGE_NAME}" -srcfolder "${PACKAGE_NAME}.pkg" -ov -format UDZO "${PACKAGE_NAME}"
+  hdiutil create -volname "${PACKAGE_NAME}" -srcfolder "${PACKAGE_NAME}.pkg" -ov -format UDZO "${PACKAGE_NAME}"
+  popd
+fi
 
