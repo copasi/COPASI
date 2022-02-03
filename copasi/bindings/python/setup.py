@@ -136,7 +136,7 @@ class CMakeBuild(build_ext):
           suffix = suffix[:suffix.rfind('/')]
         if '\\' in suffix:
           suffix = suffix[:suffix.rfind('\\')]
-          
+
         ext_dir = self.get_ext_fullpath(extension.name)
         makedirs(build_temp)
         target_lib_path = abspath(ext_dir)
@@ -163,7 +163,7 @@ class CMakeBuild(build_ext):
         cmake_args = [
             '-DCMAKE_BUILD_TYPE=' + config
         ]
-        
+
         if is_win: 
           cmake_args.append('-DWITH_STATIC_RUNTIME=ON')
 
@@ -171,7 +171,9 @@ class CMakeBuild(build_ext):
           'CMAKE_CXX_COMPILER', 
           'CMAKE_C_COMPILER', 
           'CMAKE_LINKER', 
-          'CMAKE_GENERATOR'
+          'CMAKE_GENERATOR',
+          'CMAKE_OSX_ARCHITECTURES',
+          'CMAKE_SYSTEM_PROCESSOR'
         ])
 
         if is_win_32:
@@ -199,12 +201,14 @@ class CMakeBuild(build_ext):
                dep_src_dir = DEP_SRC_DIR
                makedirs(dep_build_dir)
                os.chdir(dep_build_dir)
+               is_arm = 'ON' if '_64' in dep_suffix else 'OFF'
                self.spawn(['cmake', dep_src_dir] + cmake_args
                          + [
                              '-DCMAKE_INSTALL_PREFIX=' + dep_inst_dir,
                              '-DBUILD_UI_DEPS=OFF',
                              '-DBUILD_zlib=ON',
                              '-DBUILD_archive=OFF',
+                             '-DBUILD_NativeJIT=' + is_arm
                            ]
                          )
                self.spawn(['cmake', '--build', '.'] + build_args)
@@ -221,6 +225,7 @@ class CMakeBuild(build_ext):
         copasi_args = prepend_variables(copasi_args, [
           'SWIG_DIR',
           'SWIG_EXECUTABLE'
+          'ENABLE_JIT'
         ])
 
         if not is_win:
@@ -230,7 +235,7 @@ class CMakeBuild(build_ext):
           copasi_args.append('-DCMAKE_CXX_FLAGS=-fPIC')
 
         cmake_args = cmake_args + copasi_args
-        
+
         if DEP_DIR:
           cmake_args.append('-DCOPASI_DEPENDENCY_DIR=' + DEP_DIR)
           cmake_args.append('-DLIBEXPAT_INCLUDE_DIR=' + join(DEP_DIR, 'include'))
@@ -248,14 +253,14 @@ class CMakeBuild(build_ext):
         self.spawn(['cmake', SRC_DIR] + cmake_args)
         if not self.dry_run:
             self.spawn(['cmake', '--build', '.', '--target', 'binding_python_lib'] + build_args)
-        
+
             # at this point the build should be complete, and we have all the files 
             # neeed in the temp build_folder
-            
+
             init_py2 = None
             init_py3 = None
             dst_file = join(target_dir_path, '__init__.py')
-            
+
             for root, dirs, files in os.walk(".", topdown=False):
               for name in files:
                 # 1. find pyd and copy to target_lib_path
@@ -274,10 +279,10 @@ class CMakeBuild(build_ext):
 
             if init_py2 and exists(init_py2) and sys.version_info.major == 2:
                   shutil.copyfile(init_py2, dst_file)
-            
+
             if init_py3 and exists(init_py3) and sys.version_info.major == 3:
                   shutil.copyfile(init_py3, dst_file)
-        
+
         os.chdir(cwd)
 
 
