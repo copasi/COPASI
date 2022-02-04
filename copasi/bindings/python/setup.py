@@ -159,6 +159,7 @@ class CMakeBuild(build_ext):
         is_osx = platform.system() == 'Darwin'
         is_win = platform.system() == 'Windows'
         is_win_32 = is_win and ('win32' in name or 'win32' in build_temp)
+        enable_jit = 'ON' if ('_64' in suffix or 'amd64' in suffix) else 'OFF'
 
         cmake_args = [
             '-DCMAKE_BUILD_TYPE=' + config
@@ -201,14 +202,13 @@ class CMakeBuild(build_ext):
                dep_src_dir = DEP_SRC_DIR
                makedirs(dep_build_dir)
                os.chdir(dep_build_dir)
-               is_arm = 'ON' if '_64' in dep_suffix else 'OFF'
                self.spawn(['cmake', dep_src_dir] + cmake_args
                          + [
                              '-DCMAKE_INSTALL_PREFIX=' + dep_inst_dir,
                              '-DBUILD_UI_DEPS=OFF',
                              '-DBUILD_zlib=ON',
                              '-DBUILD_archive=OFF',
-                             '-DBUILD_NativeJIT=' + is_arm
+                             '-DBUILD_NativeJIT=' + enable_jit
                            ]
                          )
                self.spawn(['cmake', '--build', '.'] + build_args)
@@ -219,13 +219,13 @@ class CMakeBuild(build_ext):
             '-DBUILD_GUI=OFF',
             '-DENABLE_PYTHON=ON',
             '-DPYTHON_EXECUTABLE=' + sys.executable,
-            '-DPYTHON_INCLUDE_DIR=' + sysconfig.get_paths()['include']
+            '-DPYTHON_INCLUDE_DIR=' + sysconfig.get_paths()['include'],
+            '-DENABLE_JIT=' + enable_jit
         ]
 
         copasi_args = prepend_variables(copasi_args, [
           'SWIG_DIR',
           'SWIG_EXECUTABLE'
-          'ENABLE_JIT'
         ])
 
         if not is_win:
