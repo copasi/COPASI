@@ -33,8 +33,8 @@ pushd "${SETUP_DIR}/${PACKAGE_NAME}"
 mkdir -p Applications/COPASI/
 
 # Copy CopasiUI
-echo cp -r "${BUILD_ROOT}/copasi/CopasiUI/CopasiUI.app" Applications/COPASI/
-cp -r "${BUILD_ROOT}/copasi/CopasiUI/CopasiUI.app" Applications/COPASI/
+echo cp -r "${BINARY_DIR}/copasi/CopasiUI/CopasiUI.app" Applications/COPASI/
+cp -r "${BINARY_DIR}/copasi/CopasiUI/CopasiUI.app" Applications/COPASI/
 
 echo mkdir -p Applications/COPASI/CopasiUI.app/Contents/Resources
 mkdir -p Applications/COPASI/CopasiUI.app/Contents/Resources
@@ -80,8 +80,8 @@ chmod 664 Applications/COPASI/config/*
 chmod 777 Applications/COPASI/config
 
 # copy the commandline version if it exists
-echo cp ${BUILD_ROOT}/copasi/CopasiSE/CopasiSE Applications/COPASI/
-cp ${BUILD_ROOT}/copasi/CopasiSE/CopasiSE Applications/COPASI/
+echo cp ${BINARY_DIR}/copasi/CopasiSE/CopasiSE Applications/COPASI/
+cp ${BINARY_DIR}/copasi/CopasiSE/CopasiSE Applications/COPASI/
 strip Applications/COPASI/CopasiSE
 chmod 755 Applications/COPASI/CopasiSE
 

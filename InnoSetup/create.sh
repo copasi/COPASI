@@ -1,4 +1,9 @@
 #!/bin/bash
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -17,7 +22,7 @@ AWK=${COPASI_AWK:-gawk}
 SORT=${COPASI_SORT:-sort}
 PACKAGE=${COPASI_PACKAGE:-Windows}
 
-COMMON_ENVIRONMENT=${COPASI_COMMON_ENVIRONMENT:-"/home/shoops/environment"}
+COMMON_ENVIRONMENT=${BUILD_ROOT:-$HOME/build-system}
 SOURCE="$(dirname "$(dirname "$(readlink -f "$0")")")"
 SETUP_DIR=${COPASI_SETUP_DIR:-"${COMMON_ENVIRONMENT}/setup"}
 

@@ -1,4 +1,9 @@
 #!/bin/bash
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -44,13 +49,13 @@ cp "${SOURCE}"/copasi/ArtisticLicense.txt "${PYTHON_PACKAGE}"/LICENSE
 chmod 644 "${PYTHON_PACKAGE}"/LICENSE
 
 # Copy COPASI.py
-echo cp "${BUILD_ROOT}"/copasi/bindings/python/COPASI.py "${PYTHON_PACKAGE}"/__init__.py
-cp "${BUILD_ROOT}"/copasi/bindings/python/COPASI.py "${PYTHON_PACKAGE}"/__init__.py
+echo cp "${BINARY_DIR}"/copasi/bindings/python/COPASI.py "${PYTHON_PACKAGE}"/__init__.py
+cp "${BINARY_DIR}"/copasi/bindings/python/COPASI.py "${PYTHON_PACKAGE}"/__init__.py
 chmod 644 "${PYTHON_PACKAGE}"/__init__.py
 
 # Copy _COPASI.pyd
-echo cp "${BUILD_ROOT}"/copasi/bindings/python/_COPASI.pyd "${PYTHON_PACKAGE}"/_COPASI.pyd
-cp "${BUILD_ROOT}"/copasi/bindings/python/_COPASI.pyd "${PYTHON_PACKAGE}"/_COPASI.pyd
+echo cp "${BINARY_DIR}"/copasi/bindings/python/_COPASI.pyd "${PYTHON_PACKAGE}"/_COPASI.pyd
+cp "${BINARY_DIR}"/copasi/bindings/python/_COPASI.pyd "${PYTHON_PACKAGE}"/_COPASI.pyd
 chmod 644  "${PYTHON_PACKAGE}"/_COPASI.pyd
 
 # Copy examples

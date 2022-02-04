@@ -1,4 +1,9 @@
 #!/bin/bash
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -30,13 +35,13 @@ cp "${SOURCE}"/copasi/ArtisticLicense.txt LICENSE
 chmod 644 LICENSE
 
 # Copy copasicsP.dll
-echo cp "${BUILD_ROOT}"/copasi/bindings/csharp/copasicsP.dll  .
-cp "${BUILD_ROOT}"/copasi/bindings/csharp/copasicsP.dll .
+echo cp "${BINARY_DIR}"/copasi/bindings/csharp/copasicsP.dll  .
+cp "${BINARY_DIR}"/copasi/bindings/csharp/copasicsP.dll .
 chmod 644 copasicsP.dll
 
 # Copy copasics.dll
-echo cp "${BUILD_ROOT}"/copasi/bindings/csharp/copasics.dll  .
-cp "${BUILD_ROOT}"/copasi/bindings/csharp/copasics.dll .
+echo cp "${BINARY_DIR}"/copasi/bindings/csharp/copasics.dll  .
+cp "${BINARY_DIR}"/copasi/bindings/csharp/copasics.dll .
 chmod 644 copasics.dll
 
 # Copy examples
