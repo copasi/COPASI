@@ -31,7 +31,7 @@ jobs:
       shell: bash
       run: |
         cmake --version
-        curl -L https://github.com/copasi/copasi-dependencies/releases/download/Version-4.34.251/${{ matrix.platform }}.zip -o ${{ matrix.platform }}.zip
+        curl -L https://github.com/copasi/copasi-dependencies/releases/download/Version-4.35.252/${{ matrix.platform }}.zip -o ${{ matrix.platform }}.zip
         unzip -n -qq ${{ matrix.platform }}.zip -d dependencies
 
     - name: Patch dependencies (windows)
