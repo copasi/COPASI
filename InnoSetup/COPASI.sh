@@ -34,7 +34,7 @@ mkdir ${SETUP_DIR}/package
 pushd ${SETUP_DIR}/package
 
 # Create directory structure
-cp -r "${SETUP_DIR}/src/"* .
+tar -xvf ${BUILD_ROOT}/src/windows.tgz
 
 # Copy README
 cp ${SOURCE}/README.Win32 README.txt
