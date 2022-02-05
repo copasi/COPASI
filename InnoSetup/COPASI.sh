@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -72,17 +72,17 @@ cp ${SOURCE}/copasi/wizard/help_html/figures/*.png \
 chmod 644 share/copasi/doc/html/figures/*.png
 
 # 32 bit files
-cp "${BUILD_32_MD}/build/COPASI${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/32
+cp "${BUILD_32_MD}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/32
 chmod 755 bin/32/CopasiUI.exe
-cp "${BUILD_32_MT}/build/COPASI${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/32
+cp "${BUILD_32_MT}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/32
 chmod 755 bin/32/CopasiSE.exe
 cp ${SOURCE}/InnoSetup/qt.conf bin/32
 chmod 644 bin/32/qt.conf
 
 # 64 bit files
-cp "${BUILD_64_MD}/build/COPASI${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/64
+cp "${BUILD_64_MD}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/64
 chmod 755 bin/64/CopasiUI.exe
-cp "${BUILD_64_MT}/build/COPASI${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/64
+cp "${BUILD_64_MT}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/64
 chmod 755 bin/64/CopasiSE.exe
 cp ${SOURCE}/InnoSetup/qt.conf bin/64
 chmod 644 bin/64/qt.conf
