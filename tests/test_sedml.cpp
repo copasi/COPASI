@@ -1,4 +1,4 @@
-// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,6 +53,7 @@ TEST_CASE("exporting sedml file with non-zero initial time", "[copasi,sedml]")
 
   SEDMLImporter imp;
   imp.setDataModel(dm);
+  imp.initializeContent();
   imp.setSEDMLDocument(doc);
   imp.setCopasiModel(model);
   imp.updateCopasiTaskForSimulation(sim, dm->getTaskList());
@@ -104,11 +105,22 @@ TEST_CASE("importing new curves and plots", "[copasi,sedml]")
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != nullptr);
 
-  REQUIRE(dm->importSEDML(getTestFile("test-data/test_shaded_area_overlap_order.sedml")) == true);
+  REQUIRE(
+    dm->importSEDML(
+      getTestFile("test-data/test_shaded_area_overlap_order.sedml")
+    ) == true);
 
   auto* plots = dm->getPlotDefinitionList();
   REQUIRE(plots->size() == 1);
 
+  // test that we can export it again
+  std::string sedml = dm->exportSEDMLToString(NULL, 1, 4);
+
+  // export with sbml namespaces
+  CSEDMLExporter exp;
+  exp.setSBMLNamespaces(3, 1);
+  std::string sedmlwith_ns =
+    exp.exportModelAndTasksToString(*dm, "model.xml", 1, 4);
 
   CRootContainer::removeDatamodel(dm);
 }
