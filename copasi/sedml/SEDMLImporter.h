@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -147,7 +147,9 @@ public:
   /**
    * Updates COPASI tasks for a given SedML Simulation
    */
-  void updateCopasiTaskForSimulation(SedSimulation* sedmlsim);
+  void updateCopasiTaskForSimulation(
+    SedSimulation * sedmlsim,
+    CDataVectorN< CCopasiTask > * pTaskList = NULL);
 
   /**
    * Updates the task / method settings from algorithm
@@ -161,21 +163,34 @@ public:
   /**
    * Imports the first viable SBML model
    */
-  CModel* importFirstSBMLModel(CProcessReport* pImportHandler,
-                               CDataModel* pDataModel);
+  CModel* importFirstSBMLModel();
 
   /**
    * Import all tasks for the imported SBML model
    */
-  void importTasks();
+  void importTasks(CDataVectorN< CCopasiTask > * pTaskList = NULL);
 
-  CModel* readSEDML(std::string filename, CProcessReport* pImportHandler,
+  CModel* readSEDML(std::string filename,
                     CDataModel* pDataModel);
 
-  CModel* parseSEDML(const std::string& sedmlDocumentText, CProcessReport* pImportHandler,
+  CModel* parseSEDML(const std::string& sedmlDocumentText,
                      CDataModel * pDataModel);
 
-  void updateContent(CDataModel::CContent & data, CDataModel& dm);
+  /**
+   * Initializes the content element from the currently set DataModel
+   */
+  void initializeContent();
+
+  /**
+   * updates the provided content element with imported tasks / output elements
+   *
+   * This is an internal function to be called before commonAfterLoad.
+   *
+   * @param data the content element to update
+   * @param dm the data model to add elements to
+   *
+   */
+  void updateContent(CDataModel::CContent & data, CDataModel & dm);
 
   /**
    * This call deletes an existing COPASI model.
@@ -220,6 +235,14 @@ public:
    * @return the current datamodel
    */
   CDataModel* getDataModel();
+
+  /**
+   * Sets the copasi model to use (for time and object references)
+   *
+   * @param pModel the model
+   */
+  void setCopasiModel(CModel * pModel);
+
 
   /**
    * clears the currently set progress handler

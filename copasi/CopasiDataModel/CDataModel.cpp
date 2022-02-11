@@ -2182,7 +2182,7 @@ bool CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText,
 
   try
     {
-      pModel = importer.parseSEDML(sedmlDocumentText, pImportHandler, this);
+      pModel = importer.parseSEDML(sedmlDocumentText, this);
     }
 
   catch (CCopasiException & except)
@@ -2257,7 +2257,7 @@ bool CDataModel::importSEDML(const std::string & fileName,
       mData.mSEDMLFileName = CDirEntry::normalize(FileName);
       mData.mReferenceDir = CDirEntry::dirName(mData.mSEDMLFileName);
 
-      pModel = importer.readSEDML(FileName, pImportHandler, this);
+      pModel = importer.readSEDML(FileName, this);
     }
 
   catch (CCopasiException & except)
@@ -2438,6 +2438,8 @@ CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile,
   SedDocument * pOrigSEDMLDocument = NULL;
 
   std::string sbmlDocument = exportSBMLToString(pExportHandler, 3, 1);
+  // set namespaces to be written out on top of sbml document
+  exporter.setSBMLNamespaces(3, 1);
 
   if (sbmlDocument == "")
     {
