@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -722,16 +722,30 @@ C_FLOAT64 CNewtonMethod::targetFunctionRate()
   const C_FLOAT64 * pEnd = mdxdt.end();
   C_FLOAT64 * pCurrentState = mpX;
   const C_FLOAT64 * pAtol = mAtol.array();
+  C_FLOAT64 ** ppCompartmentVolume = mCompartmentVolumes.array();
 
-  for (; pIt != pEnd; ++pIt, ++pAtol, ++pCurrentState)
+  for (; pIt != pEnd; ++pIt, ++pCurrentState, ++pAtol, ++ppCompartmentVolume)
     {
       tmp = fabs(*pIt) / std::max(fabs(*pCurrentState), *pAtol);
+
+      if (std::isnan(tmp))
+        return std::numeric_limits< C_FLOAT64 >::infinity();
 
       if (tmp > MaxRate)
         MaxRate = tmp;
 
+      tmp = fabs(*pIt);
+
+      if (*ppCompartmentVolume != NULL)
+        {
+          tmp /= mpContainer->getQuantity2NumberFactor() * **ppCompartmentVolume;
+        }
+
       if (std::isnan(tmp))
         return std::numeric_limits< C_FLOAT64 >::infinity();
+
+      if (tmp > MaxRate)
+        MaxRate = tmp;
     }
 
   return MaxRate;

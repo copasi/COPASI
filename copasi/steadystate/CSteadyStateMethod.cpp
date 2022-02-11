@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -281,8 +281,9 @@ bool CSteadyStateMethod::initialize(const CSteadyStateProblem * pProblem)
   mContainerStateReduced.initialize(mpContainer->getState(true));
   mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
 
+  // We only need the tolerances for all ODE or reaction dependent objects
   CVector< C_FLOAT64 > Atol = mpContainer->initializeAtolVector(*mpSSResolution, false);
-  mAtol = CVectorCore< C_FLOAT64 >(Atol.size() - 1, Atol.begin() + 1);
+  mAtol = CVectorCore< C_FLOAT64 >(Atol.size() - mpContainer->getCountFixedEventTargets() - 1, Atol.begin() + mpContainer->getCountFixedEventTargets() + 1);
 
   return true;
 }
