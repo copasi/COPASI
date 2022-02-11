@@ -723,7 +723,7 @@ C_FLOAT64 CNewtonMethod::targetFunctionRate()
   C_FLOAT64 * pCurrentState = mpX;
   const C_FLOAT64 * pAtol = mAtol.array();
 
-  for (; pIt != pEnd; ++pIt, ++pAtol)
+  for (; pIt != pEnd; ++pIt, ++pAtol, ++pCurrentState)
     {
       tmp = fabs(*pIt) / std::max(fabs(*pCurrentState), *pAtol);
 
