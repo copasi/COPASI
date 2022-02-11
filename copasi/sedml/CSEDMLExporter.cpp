@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -184,6 +184,11 @@ CSEDMLExporter::createSEDMLDocument(CDataModel& dataModel, std::string modelRef)
 
   mpSEDMLDocument = new SedDocument(mSEDMLLevel, mSEDMLVersion);
 
+  if (mpSBMLNamespaces)
+    {
+      mpSEDMLDocument->getSedNamespaces()->addNamespaces(mpSBMLNamespaces);
+    }
+
   createModel(dataModel, modelRef);
   createTasks(dataModel);
 
@@ -352,6 +357,13 @@ void CSEDMLExporter::freeSedMLDocument()
   pdelete(mpSEDMLDocument);
 }
 
+void CSEDMLExporter::setSBMLNamespaces(int level, int version, const std::string & prefix)
+{
+  pdelete(mpSBMLNamespaces);
+  mpSBMLNamespaces = new XMLNamespaces();
+  mpSBMLNamespaces->add(SBMLNamespaces::getSBMLNamespaceURI(level, version), prefix);
+}
+
 /**
  * Creates the simulations for SEDML.
  */
@@ -442,19 +454,19 @@ CSEDMLExporter::createTimeCourseTask(CDataModel& dataModel)
   mpTimecourse = mpSEDMLDocument->createUniformTimeCourse();
   SEDML_SET_ID(mpTimecourse, SEDMLUtils::getNextId("sim", mpSEDMLDocument->getNumSimulations()));
 
-  //presently SEDML only supports time course
-  mpTimecourse->setInitialTime(dataModel.getModel()->getInitialTime());
-  double outputStartTime = tProblem->getOutputStartTime();
+  double initialTime = dataModel.getModel()->getInitialTime();
+  mpTimecourse->setInitialTime(initialTime);
+  double outputStartTime = initialTime + tProblem->getOutputStartTime();
   double stepSize = tProblem->getStepSize();
   int stepNumber = (int)tProblem->getStepNumber();
   mpTimecourse->setOutputStartTime(outputStartTime);
-  mpTimecourse->setOutputEndTime(tProblem->getDuration());
+  mpTimecourse->setOutputEndTime(initialTime + tProblem->getDuration());
 
-  if (outputStartTime > 0)
+  if ((outputStartTime - initialTime) > 0)
     {
       // adjust number of points, as the definition in COPASI includes the
       // interval (0, timeEnd), while in SED-ML it is (timeStart, timeEnd)
-      int initialSteps = (int)floor(outputStartTime / stepSize);
+      int initialSteps = (int)floor((outputStartTime - initialTime) / stepSize);
       mpTimecourse->setNumberOfPoints(stepNumber - initialSteps);
     }
   else
@@ -624,6 +636,12 @@ void CSEDMLExporter::createTasks(CDataModel & dataModel)
       if (!taskId.empty())
         createDataGenerators(dataModel, taskId, pTask);
     }
+}
+
+void CSEDMLExporter::setSBMLNamespaces(const XMLNamespaces & sbmlns)
+{
+  pdelete(mpSBMLNamespaces);
+  mpSBMLNamespaces = new XMLNamespaces(sbmlns);
 }
 
 SedDataGenerator *
@@ -921,7 +939,7 @@ CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
           SEDML_SET_ID(pCurve, "p" << i + 1 << "_curve_" << j + 1 << "_" << taskId);
           pCurve->setLogX(pPlot->isLogX());
           pCurve->setLogY(pPlot->isLogY());
-          pCurve->setName(yAxis);
+          pCurve->setName(pPlotItem->getObjectName());
           pCurve->setYDataReference(pPDGen->getId());
 
           if (xIsTime)
@@ -959,13 +977,14 @@ CSEDMLExporter::CSEDMLExporter()
   , mExportActivePlotsOnly(true)
   , mExportSpecificPlots(false)
   , mModelId()
+  , mpSBMLNamespaces(NULL)
 {
 
 }
 
 CSEDMLExporter::~CSEDMLExporter()
 {
-
+  pdelete(mpSBMLNamespaces);
 }
 
 LIBSEDML_CPP_NAMESPACE::SedDocument * CSEDMLExporter::getSEDMLDocument()
