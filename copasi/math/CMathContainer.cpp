@@ -3127,15 +3127,17 @@ void CMathContainer::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
 
 void CMathContainer::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                        const C_FLOAT64 & derivationFactor,
-                                       const bool & reduced)
+                                       const bool & reduced,
+                                       const bool & includeTime)
 {
-  size_t Dim = getState(reduced).size() - mSize.nFixedEventTargets - mSize.nTime;
-  jacobian.resize(Dim, Dim);
+  size_t Rows = getState(reduced).size() - mSize.nFixedEventTargets - 1;
+  size_t Columns = getState(reduced).size() - mSize.nFixedEventTargets - (includeTime ? 0 : 1);
+  jacobian.resize(Rows, Columns);
 
   C_FLOAT64 DerivationFactor = std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
 
-  C_FLOAT64 * pState = mState.array() + mSize.nFixedEventTargets + mSize.nTime;
-  const C_FLOAT64 * pRate = mRate.array() + mSize.nFixedEventTargets + mSize.nTime;
+  C_FLOAT64 * pState = mState.array() + mSize.nFixedEventTargets + (includeTime ? 0 : 1);
+  const C_FLOAT64 * pRate = mRate.array() + mSize.nFixedEventTargets + 1;
 
   size_t Col;
 
@@ -3144,17 +3146,17 @@ void CMathContainer::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
   C_FLOAT64 X2;
   C_FLOAT64 InvDelta;
 
-  CVector< C_FLOAT64 > Y1(Dim);
-  CVector< C_FLOAT64 > Y2(Dim);
+  CVector< C_FLOAT64 > Y1(Rows);
+  CVector< C_FLOAT64 > Y2(Rows);
 
   C_FLOAT64 * pY1;
   C_FLOAT64 * pY2;
 
   C_FLOAT64 * pX = pState;
-  C_FLOAT64 * pXEnd = pX + Dim;
+  C_FLOAT64 * pXEnd = pX + Columns;
 
   C_FLOAT64 * pJacobian;
-  C_FLOAT64 * pJacobianEnd = jacobian.array() + Dim * Dim;
+  C_FLOAT64 * pJacobianEnd = jacobian.array() + jacobian.size();
 
   for (Col = 0; pX != pXEnd; ++pX, ++Col)
     {
@@ -3180,11 +3182,11 @@ void CMathContainer::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
 
       *pX = X1;
       updateSimulatedValues(reduced);
-      memcpy(Y1.array(), pRate, Dim * sizeof(C_FLOAT64));
+      memcpy(Y1.array(), pRate, Rows * sizeof(C_FLOAT64));
 
       *pX = X2;
       updateSimulatedValues(reduced);
-      memcpy(Y2.array(), pRate, Dim * sizeof(C_FLOAT64));
+      memcpy(Y2.array(), pRate, Rows * sizeof(C_FLOAT64));
 
       *pX = Store;
 
@@ -3192,7 +3194,7 @@ void CMathContainer::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
       pY1 = Y1.array();
       pY2 = Y2.array();
 
-      for (; pJacobian < pJacobianEnd; pJacobian += Dim, ++pY1, ++pY2)
+      for (; pJacobian < pJacobianEnd; pJacobian += Columns, ++pY1, ++pY2)
         * pJacobian = (*pY2 - *pY1) * InvDelta;
     }
 

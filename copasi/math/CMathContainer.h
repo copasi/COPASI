@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -439,10 +439,12 @@ public:
    * @param CMatrix< C_FLOAT64 > & Jacobian
    * @param const C_FLOAT64 & derivationFactor,
    * @param const bool & reduced
+   * @param const bool & includeTime (default: false)
    */
   void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                          const C_FLOAT64 & derivationFactor,
-                         const bool & reduced);
+                         const bool & reduced,
+                         const bool & includeTime = false);
 
   /**
    * Calculates whether matrix elements in the Jacobian are identical
