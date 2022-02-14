@@ -753,7 +753,7 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
   CVector< C_FLOAT64 > Distance;
 
   CMatrix< C_FLOAT64 > JacobianWithTime;
-  mpContainer->calculateJacobian(JacobianWithTime, *mpDerivationFactor, false, true);
+  mpContainer->calculateJacobian(JacobianWithTime, *mpDerivationFactor, false, !mpContainer->isAutonomous());
 
   CLeastSquareSolution::ResultInfo Info = CLeastSquareSolution::solve(JacobianWithTime, mdxdt, mAtol, mCompartmentVolumes, mpContainer->getQuantity2NumberFactor(), Distance);
 
@@ -763,8 +763,7 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
     }
 
   // We look at all ODE determined entity and dependent species rates.
-  // The first value in the distance is measured in time we must treat it differently.
-  C_FLOAT64 * pDistance = Distance.begin() + 1;
+  C_FLOAT64 * pDistance = Distance.begin();
   C_FLOAT64 * pDistanceEnd = Distance.end();
   C_FLOAT64 * pCurrentState = mpX;
   const C_FLOAT64 * pAtol = mAtol.array();
@@ -773,6 +772,20 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
   C_FLOAT64 AbsoluteDistance = 0.0;
   C_FLOAT64 RelativeDistance = 0.0;
   C_FLOAT64 tmp;
+
+  // For non autonomous model the first value in the distance measures time and we must treat it differently.
+  if (!mpContainer->isAutonomous())
+    {
+      if (mTargetCriterion == eTargetCriterion::Distance)
+        {
+          mTargetCriterion = eTargetCriterion::Rate;
+          mTargetRate = CNewtonMethod::targetFunctionRate();
+          mTargetCriterion = eTargetCriterion::Distance;
+        }
+
+      AbsoluteDistance = RelativeDistance = *pDistance * *pDistance * mTargetRate * mTargetRate;
+      ++pDistance;
+    }
 
   for (; pDistance != pDistanceEnd; ++pDistance, ++pCurrentState, ++pAtol, ++ppCompartmentVolume)
     {
@@ -797,18 +810,6 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
     std::isnan(AbsoluteDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(AbsoluteDistance + Info.absoluteError * Info.absoluteError);
 
   C_FLOAT64 TargetValue = std::max(RelativeDistance, AbsoluteDistance);
-
-  if (fabs(Distance[0]) > std::numeric_limits< C_FLOAT64 >::epsilon() * TargetValue * TargetValue)
-    {
-      if (mTargetCriterion == eTargetCriterion::Distance)
-        {
-          mTargetCriterion = eTargetCriterion::Rate;
-          mTargetRate = CNewtonMethod::targetFunctionRate();
-          mTargetCriterion = eTargetCriterion::Distance;
-        }
-
-      TargetValue = sqrt(TargetValue * TargetValue + Distance[0] * Distance[0] * mTargetRate * mTargetRate);
-    }
 
   return TargetValue;
 }

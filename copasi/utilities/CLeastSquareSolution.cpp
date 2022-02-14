@@ -236,10 +236,6 @@ CLeastSquareSolution::ResultInfo CLeastSquareSolution::solve(const CMatrix< C_FL
 
   Info.rank = solve(aMatrix, bVector, xVector);
 
-  std::cout << aMatrix;
-  std::cout << xVector << std::endl;
-  std::cout << bVector << std::endl;
-
   if (Info.rank == 0)
     {
       Info.relativeError = std::numeric_limits< C_FLOAT64 >::infinity();
