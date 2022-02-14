@@ -69,7 +69,6 @@ CNewtonMethod::CNewtonMethod(const CDataContainer * pParent,
   , mH()
   , mXold()
   , mdxdt()
-  , mIpiv(NULL)
   , mpTrajectory(NULL)
   , mStartState()
   , mUpdateConcentrations()
@@ -98,7 +97,6 @@ CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
   , mH(src.mH)
   , mXold(src.mXold)
   , mdxdt()
-  , mIpiv(NULL)
   , mpTrajectory(NULL)
   , mStartState(src.mStartState)
   , mUpdateConcentrations(src.mUpdateConcentrations)
@@ -182,11 +180,6 @@ bool CNewtonMethod::elevateChildren()
 
 void CNewtonMethod::cleanup()
 {
-  if (mIpiv)
-    delete[] mIpiv;
-
-  mIpiv = NULL;
-
   pdelete(mpTrajectory);
 }
 
@@ -759,7 +752,10 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
 
   CVector< C_FLOAT64 > Distance;
 
-  CLeastSquareSolution::ResultInfo Info = CLeastSquareSolution::solve(*mpJacobian, mdxdt, mAtol, mCompartmentVolumes, mpContainer->getQuantity2NumberFactor(), Distance);
+  CMatrix< C_FLOAT64 > JacobianWithTime;
+  mpContainer->calculateJacobian(JacobianWithTime, *mpDerivationFactor, false, true);
+
+  CLeastSquareSolution::ResultInfo Info = CLeastSquareSolution::solve(JacobianWithTime, mdxdt, mAtol, mCompartmentVolumes, mpContainer->getQuantity2NumberFactor(), Distance);
 
   if (Info.rank == 0)
     {
@@ -767,8 +763,9 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
     }
 
   // We look at all ODE determined entity and dependent species rates.
-  C_FLOAT64 * pDistance = Distance.array();
-  C_FLOAT64 * pDistanceEnd = pDistance + Distance.size();
+  // The first value in the distance is measured in time we must treat it differently.
+  C_FLOAT64 * pDistance = Distance.begin() + 1;
+  C_FLOAT64 * pDistanceEnd = Distance.end();
   C_FLOAT64 * pCurrentState = mpX;
   const C_FLOAT64 * pAtol = mAtol.array();
   C_FLOAT64 ** ppCompartmentVolume = mCompartmentVolumes.array();
@@ -781,6 +778,7 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
     {
       // Prevent division by 0
       tmp = *pDistance / std::max(fabs(*pCurrentState), *pAtol);
+
       RelativeDistance += tmp * tmp;
 
       tmp = *pDistance;
@@ -799,6 +797,18 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
     std::isnan(AbsoluteDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(AbsoluteDistance + Info.absoluteError * Info.absoluteError);
 
   C_FLOAT64 TargetValue = std::max(RelativeDistance, AbsoluteDistance);
+
+  if (fabs(Distance[0]) > std::numeric_limits< C_FLOAT64 >::epsilon() * TargetValue * TargetValue)
+    {
+      if (mTargetCriterion == eTargetCriterion::Distance)
+        {
+          mTargetCriterion = eTargetCriterion::Rate;
+          mTargetRate = CNewtonMethod::targetFunctionRate();
+          mTargetCriterion = eTargetCriterion::Distance;
+        }
+
+      TargetValue = sqrt(TargetValue * TargetValue + Distance[0] * Distance[0] * mTargetRate * mTargetRate);
+    }
 
   return TargetValue;
 }
@@ -881,7 +891,6 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   mH.resize(mDimension);
   mXold.resize(mDimension);
   mdxdt.initialize(mDimension, mpContainer->getRate(false).array() + mpContainer->getCountFixedEventTargets() + 1);
-  mIpiv = new C_INT[mDimension];
 
   mCompartmentVolumes.resize(mDimension + mpContainer->getCountDependentSpecies());
   mCompartmentVolumes = NULL;
