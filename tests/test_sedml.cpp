@@ -122,6 +122,8 @@ TEST_CASE("importing new curves and plots", "[copasi,sedml]")
   std::string sedmlwith_ns =
     exp.exportModelAndTasksToString(*dm, "model.xml", 1, 4);
 
+  REQUIRE(sedmlwith_ns.find("http://www.sbml.org/sbml/level3/version1/core") != std::string::npos);
+
   CRootContainer::removeDatamodel(dm);
 }
 
@@ -138,6 +140,29 @@ TEST_CASE("importing variables with terms", "[copasi,sedml]")
 
   CRootContainer::removeDatamodel(dm);
 }
+
+TEST_CASE("export nested scan", "[copasi,sedml]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != nullptr);
+
+  REQUIRE(dm->loadModel(getTestFile("test-data/NestedScan.cps"), NULL) == true);
+
+  auto sedml = dm->exportSEDMLToString(NULL, 1, 4);
+
+  auto * doc = readSedMLFromString(sedml.c_str());
+
+  REQUIRE(doc->getNumErrors(LIBSEDML_SEV_ERROR) == 0);
+
+  REQUIRE(doc->getDataGenerator("Rtot_1_task3") == NULL);
+  REQUIRE(doc->getDataGenerator("Rtot_1_task5") != NULL);
+
+  delete doc;
+
+  CRootContainer::removeDatamodel(dm);
+}
+
+
 
 TEST_CASE("generating variables with terms", "[copasi,sedml]")
 {
