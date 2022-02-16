@@ -186,8 +186,9 @@ bool dgemm::eval(const C_FLOAT64 & alpha, const dgemm::Matrix & A, const dgemm::
   if (A.numCols() != B.size())
     return false;
 
-  if (beta == 0.0)
-    C.resize(A.numRows());
+  if (beta == 0.0
+      && dynamic_cast< CVector< C_FLOAT64 > * >(&C) != NULL)
+    static_cast< CVector< C_FLOAT64 > * >(&C)->resize(A.numRows());
   else if (A.numRows() != C.size())
     return false;
 
@@ -214,8 +215,9 @@ bool dgemm::eval(const C_FLOAT64 & alpha, const dgemm::Vector & A, const dgemm::
   if (A.size() != B.numRows())
     return false;
 
-  if (beta == 0.0)
-    C.resize(B.numCols());
+  if (beta == 0.0
+      && dynamic_cast< CVector< C_FLOAT64 > * >(&C) != NULL)
+    static_cast< CVector< C_FLOAT64 > * >(&C)->resize(B.numCols());
   else if (B.numCols() != C.size())
     return false;
 

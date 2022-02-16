@@ -73,7 +73,7 @@ public:
   /**
    * Destructor.
    */
-  ~CVectorCore()
+  virtual ~CVectorCore()
   {}
 
   /**
@@ -356,7 +356,7 @@ public:
   /**
    * Destructor.
    */
-  ~CVector()
+  virtual ~CVector()
   {
     if (CVectorCore< CType >::mpBuffer != NULL)
       delete [] CVectorCore< CType >::mpBuffer;

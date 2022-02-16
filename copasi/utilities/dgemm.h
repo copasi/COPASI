@@ -11,7 +11,7 @@
 
 struct dgemm
 {
-  typedef CVector< C_FLOAT64 > Vector;
+  typedef CVectorCore< C_FLOAT64 > Vector;
   typedef CMatrix< C_FLOAT64 > Matrix;
 
   /**
