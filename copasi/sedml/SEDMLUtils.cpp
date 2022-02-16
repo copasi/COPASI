@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -774,6 +774,7 @@ std::map< std::string, std::string > SEDMLUtils::PARAMETER_KISAO_MAP =
 
 VariableInfo::VariableInfo(const CDataObject * pObject)
   : mpObject(pObject)
+  , mIsValid(false)
 {
   if (!pObject)
     return;
@@ -840,10 +841,11 @@ VariableInfo::VariableInfo(const CDataObject * pObject)
         term = SEDML_KISAO_RATE;
     }
 
+  mIsValid = true;
 }
 
 SedVariable*
-VariableInfo::addToDataGenerator(SedDataGenerator * pGenerator)
+VariableInfo::addToDataGenerator(SedDataGenerator * pGenerator) const
 {
   SedVariable * pVar = pGenerator->createVariable();
   pVar->setName(name);
@@ -899,4 +901,9 @@ const std::string & VariableInfo::getTerm() const
 void VariableInfo::setTerm(const std::string & term_)
 {
   term = term_;
+}
+
+bool VariableInfo::isValid() const
+{
+  return mIsValid;
 }

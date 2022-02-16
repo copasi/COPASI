@@ -30,6 +30,8 @@
 #include <unordered_set>
 #include <map>
 
+#include <copasi/sedml/SEDMLUtils.h>
+
 class CTrajectoryTask;
 class CScanProblem;
 class CCopasiTask;
@@ -285,8 +287,7 @@ protected:
    * the element with given SBML id, and target xpath expression.
    */
   SedDataGenerator * createDataGenerator(
-    const std::string & sbmlId,
-    const std::string & targetXPathString,
+    const VariableInfo & info,
     const std::string & taskId,
     size_t i,
     size_t j);
