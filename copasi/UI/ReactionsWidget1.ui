@@ -552,7 +552,7 @@ Expression</string>
   </connection>
   <connection>
    <sender>mpComboBoxCompartment</sender>
-   <signal>currentTextChanged(QString)</signal>
+   <signal>currentIndexChanged(QString)</signal>
    <receiver>ReactionsWidget1</receiver>
    <slot>slotCompartmentSelectionChanged(QString)</slot>
    <hints>
@@ -568,7 +568,7 @@ Expression</string>
   </connection>
   <connection>
    <sender>mpCmbRateLaw</sender>
-   <signal>textActivated(QString)</signal>
+   <signal>activated(QString)</signal>
    <receiver>ReactionsWidget1</receiver>
    <slot>slotComboBoxSelectionChanged(QString)</slot>
    <hints>
