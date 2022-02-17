@@ -133,14 +133,12 @@ bool CTSSATask::initialize(const OutputFlag & of,
                            COutputHandler * pOutputHandler,
                            std::ostream * pOstream)
 {
-  assert(mpProblem && mpMethod);
-
-  mpTSSAProblem = dynamic_cast<CTSSAProblem *>(mpProblem);
-  assert(mpTSSAProblem);
-
-  mpTSSAMethod = dynamic_cast<CTSSAMethod *>(mpMethod);
-  assert(mpTSSAMethod);
-
+  mpTSSAProblem = dynamic_cast< CTSSAProblem * >(mpProblem);
+  mpTSSAMethod = dynamic_cast< CTSSAMethod * >(mpMethod);
+ 
+  if (!mpTSSAProblem || !mpTSSAMethod)
+    return false;
+ 
   mpTSSAMethod->setProblem(mpTSSAProblem);
   mpTSSAMethod->setMathContainer(mpContainer);
 
@@ -181,6 +179,13 @@ bool CTSSATask::initialize(const OutputFlag & of,
 
 bool CTSSATask::process(const bool & useInitialValues)
 {
+
+  mpTSSAProblem = dynamic_cast< CTSSAProblem * >(mpProblem);
+  mpTSSAMethod = dynamic_cast< CTSSAMethod * >(mpMethod);
+
+  if (!mpTSSAProblem || !mpTSSAMethod)
+    return false;
+
   //*****
 
   processStart(useInitialValues);
