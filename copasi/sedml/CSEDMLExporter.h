@@ -73,6 +73,8 @@ protected:
   CDataModel *mpDataModel;
   CCopasiTask *mpCurrentTask;
   std::string mCurrentTaskId;
+  SedPlot2D * mpCurrentPlot;
+  const CPlotSpecification * mpCurrentSpec;
 
 public:
 
@@ -215,6 +217,8 @@ public:
                             CCopasiTask* task = NULL);
 
   void exportNthPlot(const CPlotSpecification * pPlot, size_t n);
+
+  void exportPlotItem(const CPlotItem * pPlotItem, size_t i, size_t j);
 
   /**
    * Exports the report for the given report definition
