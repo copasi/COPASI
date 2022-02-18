@@ -1085,23 +1085,42 @@ std::string CSEDMLExporter::exportStyleForItem(const CPlotItem * pPlotItem)
   auto lineWidth = pPlotItem->getValue< C_FLOAT64 >("Line width");
   auto lineType = (CPlotItem::LineType) pPlotItem->getValue< unsigned C_INT32 >("Line type");
   auto symbolType = (CPlotItem::SymbolType) pPlotItem->getValue< unsigned C_INT32 >("Symbol subtype");
-  auto lineStyle = (CPlotItem::LineStyle)pPlotItem->getValue< unsigned C_INT32 >("Line subtype");
+  auto lineStyle = (CPlotItem::LineStyle) pPlotItem->getValue< unsigned C_INT32 >("Line subtype");
   auto color = pPlotItem->getValue< std::string >("Color");
+  auto rgba = SEDMLUtils::argbToRgba(color, false);
+  bool haveColor = !color.empty() && color != "auto";
 
   auto line = style->createLineStyle();
-  line->setType((LineType_t)SEDMLUtils::lineTypeToSed((int)lineType));
-  line->setThickness(lineWidth);
 
-  bool haveColor = color.empty() && color != "Auto";
+  if (lineType == CPlotItem::LineType::Points)
+    {
+      line->setType(SEDML_LINETYPE_NONE);
+      auto symbol = style->createMarkerStyle();
+      symbol->setType(SEDML_MARKERTYPE_CIRCLE);
+      symbol->setSize(0.1);
 
-  if (haveColor)
-    line->setColor(SEDMLUtils::argbToRgba(color, false));
+      if (haveColor)
+        symbol->setLineColor(rgba);
+    }
+  else
+    {
+      line->setType((LineType_t) SEDMLUtils::lineTypeToSed((int) lineStyle));
+      line->setThickness(lineWidth);
 
-  auto symbol = style->createMarkerStyle();
-  symbol->setType((MarkerType_t)SEDMLUtils::symbolToSed((int)symbolType));
+      if (haveColor)
+        line->setColor(rgba);
+    }
 
-  if (haveColor)
-    symbol->setLineColor(SEDMLUtils::argbToRgba(color, false));
+  if (lineType == CPlotItem::LineType::LinesAndSymbols || lineType == CPlotItem::LineType::Symbols)
+    {
+      auto symbol = style->createMarkerStyle();
+      symbol->setType((MarkerType_t) SEDMLUtils::symbolToSed((int) symbolType));
+      symbol->setSize(8);
+
+      if (haveColor)
+        symbol->setLineColor(rgba);
+    }
+
 
   if (pPlotItem->getType() == CPlotItem::bandedGraph && haveColor)
     {
