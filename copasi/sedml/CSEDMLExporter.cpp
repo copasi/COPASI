@@ -86,6 +86,7 @@ CSEDMLExporter::CSEDMLExporter()
   , mpDataModel(NULL)
   , mpCurrentTask(NULL)
   , mpCurrentPlot(NULL)
+  , mpCurrentPlot3D(NULL)
   , mpCurrentSpec(NULL)
 {
 }
@@ -710,7 +711,7 @@ CSEDMLExporter::createDataGenerator(
   SedDataGenerator *pPDGen = mpSEDMLDocument->createDataGenerator();
   SEDML_SET_ID(pPDGen, info.getSbmlId() << "_" << j + 1 << "_" << taskId);
 
-  pPDGen->setName(info.getSbmlId());
+  pPDGen->setName(info.getName());
 
   SedVariable * pPVar = info.addToDataGenerator(pPDGen);
   SEDML_SET_ID(pPVar, "p" << i + 1 << "_" << pPDGen->getName() << "_" << taskId);
@@ -899,6 +900,7 @@ CSEDMLExporter::exportNthPlot(const CPlotSpecification * pPlot,
 
   mpCurrentSpec = pPlot;
   mpCurrentPlot = mpSEDMLDocument->createPlot2D();
+  mpCurrentPlot3D = NULL;
 
   std::string plotName = pPlot->getObjectName();
   SEDMLUtils::removeCharactersFromString(plotName, "[]");
@@ -912,103 +914,146 @@ CSEDMLExporter::exportNthPlot(const CPlotSpecification * pPlot,
   for (j = 0; j < jmax; j++)
     {
       const CPlotItem * pPlotItem = &pPlot->getItems()[j];
-
       exportPlotItem(pPlotItem, i, j);
-
     }
+
+  if (mpCurrentPlot3D != NULL && mpCurrentPlot->getNumCurves() == 0)
+    {
+      // if the plot had only a contour remove the plot without curves
+      std::string id = mpCurrentPlot->getId();
+      delete mpSEDMLDocument->removeOutput(id);
+      mpCurrentPlot3D->setId(id);
+    }
+
 }
 
 
 void CSEDMLExporter::exportPlotItem(const CPlotItem * pPlotItem, size_t i, size_t j)
 {
-  const CDataObject *objectX, *objectY;
+  if (!pPlotItem || !mpCurrentSpec || !mpDataModel)
+    return;
 
-  if (!pPlotItem->getChannels().empty())
+  // first resolve all elements needed
+  std::vector< std::pair< const CDataObject *, VariableInfo > > resolvedElements;
+
+for (auto & channel : pPlotItem->getChannels())
     {
-      objectX = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(pPlotItem->getChannels()[0]));
-    }
-  else
-    {
-      CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s', as it has no data channel.", pPlotItem->getObjectName().c_str());
-      return;
-    }
+      const CDataObject * object = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(channel));
 
-  if (objectX == NULL)
-    {
-      CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as it cannot be resolved.", pPlotItem->getObjectName().c_str(), pPlotItem->getChannels()[0].c_str());
-      return;
-    }
-
-  bool xIsTime = objectX->getCN() == mTimeCN;
-
-  if (pPlotItem->getChannels().size() >= 2)
-    {
-      objectY = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(pPlotItem->getChannels()[1]));
-    }
-  else
-    {
-      CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s', as it has only 1 data channel.", pPlotItem->getObjectName().c_str());
-      return;
-    }
-
-  if (objectY == NULL)
-    {
-      CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as it cannot be resolved.", pPlotItem->getObjectName().c_str(), pPlotItem->getChannels()[1].c_str());
-      return;
-    }
-
-  const std::string & type = objectY->getObjectName();
-
-  std::string yAxis = objectY->getObjectDisplayName();
-
-  std::string sbmlId = SEDMLUtils::getSbmlId(*objectY);
-  std::string targetXPathString;
-
-  auto info = VariableInfo(objectY);
-
-  if (!info.isValid())
-    {
-      CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as no xpath expression for it could be generated.", pPlotItem->getObjectName().c_str(), pPlotItem->getChannels()[1].c_str());
-      return;
-    }
-
-  SedDataGenerator * pPDGen = createDataGenerator(
-                                info,
-                                mCurrentTaskId,
-                                i,
-                                j);
-
-  pPDGen->setName(yAxis);
-
-  SedCurve * pCurve = mpCurrentPlot->createCurve();
-  SEDML_SET_ID(pCurve, "p" << i + 1 << "_curve_" << j + 1 << "_" << mCurrentTaskId);
-  pCurve->setLogX(mpCurrentSpec->isLogX());
-  pCurve->setLogY(mpCurrentSpec->isLogY());
-  pCurve->setName(pPlotItem->getObjectName());
-  pCurve->setYDataReference(pPDGen->getId());
-
-  if (xIsTime)
-    {
-      pCurve->setXDataReference(mpCurrentTime->getId());
-    }
-  else
-    {
-      const std::string & typeX = objectX->getObjectName();
-      std::string xAxis = objectX->getObjectDisplayName();
-      info = VariableInfo(objectX);
-
-      if (!info.isValid())
+      if (!object)
         {
-          CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as no xpath expression for it could be generated.", pPlotItem->getObjectName().c_str(), pPlotItem->getChannels()[1].c_str());
+          CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as it cannot be resolved.", pPlotItem->getObjectName().c_str(), channel.c_str());
           return;
         }
 
-      pPDGen = createDataGenerator(
-                 info,
-                 mCurrentTaskId,
-                 i,
-                 j);
-      pCurve->setXDataReference(pPDGen->getId());
+      auto info = VariableInfo(object);
+
+      if (!info.isValid())
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as no xpath expression for it could be generated.", pPlotItem->getObjectName().c_str(), channel.c_str());
+          return;
+        }
+
+      resolvedElements.push_back(std::make_pair(object, info));
+    }
+
+  if (pPlotItem->getChannels().size() < 2)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s', as it has no data channels.", pPlotItem->getObjectName().c_str());
+      return;
+    }
+
+  switch (pPlotItem->getType())
+    {
+      case CPlotItem::curve2d:
+      {
+        SedCurve * pCurve = mpCurrentPlot->createCurve();
+        SEDML_SET_ID(pCurve, "p" << i + 1 << "_curve_" << j + 1 << "_" << mCurrentTaskId);
+        pCurve->setLogX(mpCurrentSpec->isLogX());
+        pCurve->setLogY(mpCurrentSpec->isLogY());
+        pCurve->setName(pPlotItem->getObjectName());
+
+
+        SedDataGenerator * pPDGenX = createDataGenerator(
+                                       resolvedElements[0].second,
+                                       mCurrentTaskId,
+                                       i,
+                                       j);
+        SedDataGenerator * pPDGenY = createDataGenerator(
+                                       resolvedElements[1].second,
+                                       mCurrentTaskId,
+                                       i,
+                                       j);
+
+        pCurve->setXDataReference(pPDGenY->getId());
+        pCurve->setYDataReference(pPDGenY->getId());
+      }
+      break;
+
+      case CPlotItem::bandedGraph:
+      {
+        SedShadedArea * pCurve = mpCurrentPlot->createShadedArea();
+        SEDML_SET_ID(pCurve, "p" << i + 1 << "_curve_" << j + 1 << "_" << mCurrentTaskId);
+        pCurve->setLogX(mpCurrentSpec->isLogX());
+        pCurve->setName(pPlotItem->getObjectName());
+
+        SedDataGenerator * pPDGenX = createDataGenerator(
+                                       resolvedElements[0].second,
+                                       mCurrentTaskId,
+                                       i,
+                                       j);
+        SedDataGenerator * pPDGenY1 = createDataGenerator(
+                                        resolvedElements[1].second,
+                                        mCurrentTaskId,
+                                        i,
+                                        j);
+
+        SedDataGenerator * pPDGenY2 = createDataGenerator(
+                                        resolvedElements[2].second,
+                                        mCurrentTaskId,
+                                        i,
+                                        j);
+
+        pCurve->setXDataReference(pPDGenX->getId());
+        pCurve->setYDataReferenceFrom(pPDGenY1->getId());
+        pCurve->setYDataReferenceTo(pPDGenY2->getId());
+      }
+      break;
+
+      case CPlotItem::spectogram:
+      {
+        // need 3d plot here
+        if (mpCurrentPlot3D == NULL)
+          {
+            mpCurrentPlot3D = mpSEDMLDocument->createPlot3D();
+            mpCurrentPlot3D->setId(mpCurrentPlot->getId() + "_3d");
+            mpCurrentPlot3D->setName(mpCurrentPlot->getName());
+            mGeneratedIds.insert(mpCurrentPlot->getId() + "_3d");
+          }
+
+        SedSurface * pCurve = mpCurrentPlot3D->createSurface();
+        pCurve->setType(SEDML_SURFACETYPE_CONTOUR);
+        pCurve->setName(pPlotItem->getObjectName());
+        pCurve->setLogX(mpCurrentSpec->isLogX());
+        pCurve->setLogY(mpCurrentSpec->isLogY());
+
+        SedDataGenerator * pDG = createDataGenerator(
+                                   resolvedElements[0].second, mCurrentTaskId, i, j
+                                 );
+        pCurve->setXDataReference(pDG->getId());
+        pDG = createDataGenerator(
+                resolvedElements[1].second, mCurrentTaskId, i, j);
+        pCurve->setYDataReference(pDG->getId());
+        pDG = createDataGenerator(
+                resolvedElements[2].second, mCurrentTaskId, i, j);
+        pCurve->setZDataReference(pDG->getId());
+
+      }
+      break;
+
+      default :
+        CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s', because it has an unsupported type.", pPlotItem->getObjectName().c_str());
+        return;
     }
 }
 

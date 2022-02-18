@@ -74,6 +74,7 @@ protected:
   CCopasiTask *mpCurrentTask;
   std::string mCurrentTaskId;
   SedPlot2D * mpCurrentPlot;
+  SedPlot3D * mpCurrentPlot3D;
   const CPlotSpecification * mpCurrentSpec;
 
 public:
