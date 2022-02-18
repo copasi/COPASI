@@ -907,3 +907,14 @@ bool VariableInfo::isValid() const
 {
   return mIsValid;
 }
+
+bool VariableInfo::operator<(const VariableInfo & other) const
+{
+  if (xpath != other.xpath)
+    return xpath < other.xpath;
+
+  if (term != other.term)
+    return term < other.term;
+
+  return symbol < other.symbol;
+}

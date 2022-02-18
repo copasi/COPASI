@@ -83,6 +83,8 @@ public:
 
   bool isValid() const;
 
+  bool operator< (const VariableInfo & other) const;
+
 };
 
 /**
