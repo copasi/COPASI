@@ -55,6 +55,7 @@
 #include "copasi/commandline/CLocaleString.h"
 
 #include <algorithm>
+#include <tuple>
 
 #define SEDML_SET_ID(element, arguments) \
   {\
@@ -88,6 +89,7 @@ CSEDMLExporter::CSEDMLExporter()
   , mpCurrentPlot(NULL)
   , mpCurrentPlot3D(NULL)
   , mpCurrentSpec(NULL)
+  , mStyleMap()
 {
 }
 
@@ -230,6 +232,7 @@ void CSEDMLExporter::clearMaps()
 {
   mGeneratedIds.clear();
   mDataGenerators.clear();
+  mStyleMap.clear();
 
   mpCurrentTime = NULL;
   mpCurrentPlot = NULL;
@@ -714,7 +717,7 @@ CSEDMLExporter::createDataGenerator(
   pPDGen->setName(info.getName());
 
   SedVariable * pPVar = info.addToDataGenerator(pPDGen);
-  SEDML_SET_ID(pPVar, "p" << i + 1 << "_" << pPDGen->getName() << "_" << taskId);
+  SEDML_SET_ID(pPVar, "p" << i + 1 << "_" << pPDGen->getId());
 
   pPVar->setTaskReference(taskId);
 
@@ -973,20 +976,22 @@ for (auto & channel : pPlotItem->getChannels())
         pCurve->setLogY(mpCurrentSpec->isLogY());
         pCurve->setName(pPlotItem->getObjectName());
 
+        SedDataGenerator * pDG = createDataGenerator(
+                                   resolvedElements[0].second,
+                                   mCurrentTaskId,
+                                   i,
+                                   j);
 
-        SedDataGenerator * pPDGenX = createDataGenerator(
-                                       resolvedElements[0].second,
-                                       mCurrentTaskId,
-                                       i,
-                                       j);
-        SedDataGenerator * pPDGenY = createDataGenerator(
-                                       resolvedElements[1].second,
-                                       mCurrentTaskId,
-                                       i,
-                                       j);
+        pCurve->setXDataReference(pDG->getId());
 
-        pCurve->setXDataReference(pPDGenY->getId());
-        pCurve->setYDataReference(pPDGenY->getId());
+        pDG = createDataGenerator(
+                resolvedElements[1].second,
+                mCurrentTaskId,
+                i,
+                j);
+
+        pCurve->setYDataReference(pDG->getId());
+        pCurve->setStyle(exportStyleForItem(pPlotItem));
       }
       break;
 
@@ -997,26 +1002,27 @@ for (auto & channel : pPlotItem->getChannels())
         pCurve->setLogX(mpCurrentSpec->isLogX());
         pCurve->setName(pPlotItem->getObjectName());
 
-        SedDataGenerator * pPDGenX = createDataGenerator(
-                                       resolvedElements[0].second,
-                                       mCurrentTaskId,
-                                       i,
-                                       j);
-        SedDataGenerator * pPDGenY1 = createDataGenerator(
-                                        resolvedElements[1].second,
-                                        mCurrentTaskId,
-                                        i,
-                                        j);
+        SedDataGenerator * pDG = createDataGenerator(
+                                   resolvedElements[0].second,
+                                   mCurrentTaskId,
+                                   i,
+                                   j);
+        pCurve->setXDataReference(pDG->getId());
 
-        SedDataGenerator * pPDGenY2 = createDataGenerator(
-                                        resolvedElements[2].second,
-                                        mCurrentTaskId,
-                                        i,
-                                        j);
+        pDG = createDataGenerator(
+                resolvedElements[1].second,
+                mCurrentTaskId,
+                i,
+                j);
+        pCurve->setYDataReferenceFrom(pDG->getId());
 
-        pCurve->setXDataReference(pPDGenX->getId());
-        pCurve->setYDataReferenceFrom(pPDGenY1->getId());
-        pCurve->setYDataReferenceTo(pPDGenY2->getId());
+        pDG = createDataGenerator(
+                resolvedElements[2].second,
+                mCurrentTaskId,
+                i,
+                j);
+        pCurve->setYDataReferenceTo(pDG->getId());
+        pCurve->setStyle(exportStyleForItem(pPlotItem));
       }
       break;
 
@@ -1041,13 +1047,16 @@ for (auto & channel : pPlotItem->getChannels())
                                    resolvedElements[0].second, mCurrentTaskId, i, j
                                  );
         pCurve->setXDataReference(pDG->getId());
+
         pDG = createDataGenerator(
                 resolvedElements[1].second, mCurrentTaskId, i, j);
         pCurve->setYDataReference(pDG->getId());
+
         pDG = createDataGenerator(
                 resolvedElements[2].second, mCurrentTaskId, i, j);
         pCurve->setZDataReference(pDG->getId());
 
+        pCurve->setStyle(exportStyleForItem(pPlotItem));
       }
       break;
 
@@ -1055,6 +1064,54 @@ for (auto & channel : pPlotItem->getChannels())
         CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s', because it has an unsupported type.", pPlotItem->getObjectName().c_str());
         return;
     }
+}
+
+std::string CSEDMLExporter::exportStyleForItem(const CPlotItem * pPlotItem)
+{
+  if (!pPlotItem || !mpSEDMLDocument || mSEDMLVersion < 4)
+    return "";
+
+  if (pPlotItem->getType() == CPlotItem::spectogram) // no styles for contours
+    return "";
+
+  auto it = mStyleMap.find(pPlotItem);
+
+  if (it != mStyleMap.end())
+    return it->second;
+
+  auto style = mpSEDMLDocument->createStyle();
+  SEDML_SET_ID(style, SEDMLUtils::getNextId("style", mpSEDMLDocument->getNumStyles()));
+
+  auto lineWidth = pPlotItem->getValue< C_FLOAT64 >("Line width");
+  auto lineType = (CPlotItem::LineType) pPlotItem->getValue< unsigned C_INT32 >("Line type");
+  auto symbolType = (CPlotItem::SymbolType) pPlotItem->getValue< unsigned C_INT32 >("Symbol subtype");
+  auto lineStyle = (CPlotItem::LineStyle)pPlotItem->getValue< unsigned C_INT32 >("Line subtype");
+  auto color = pPlotItem->getValue< std::string >("Color");
+
+  auto line = style->createLineStyle();
+  line->setType((LineType_t)SEDMLUtils::lineTypeToSed((int)lineType));
+  line->setThickness(lineWidth);
+
+  bool haveColor = color.empty() && color != "Auto";
+
+  if (haveColor)
+    line->setColor(SEDMLUtils::argbToRgba(color, false));
+
+  auto symbol = style->createMarkerStyle();
+  symbol->setType((MarkerType_t)SEDMLUtils::symbolToSed((int)symbolType));
+
+  if (haveColor)
+    symbol->setLineColor(SEDMLUtils::argbToRgba(color, false));
+
+  if (pPlotItem->getType() == CPlotItem::bandedGraph && haveColor)
+    {
+      auto fill = style->createFillStyle();
+      fill->setColor(SEDMLUtils::argbToRgba(color, false));
+    }
+
+  mStyleMap[pPlotItem] = style->getId();
+
+  return style->getId();
 }
 
 void CSEDMLExporter::setCurrentTime(std::string & taskId)
@@ -1122,4 +1179,28 @@ CDataModel* CSEDMLExporter::getDataModel()
 void CSEDMLExporter::setDataModel(CDataModel* pDataModel)
 {
   mpDataModel = pDataModel;
+}
+
+bool CSEDMLExporter::PlotItemStyleComparer::operator()(const CPlotItem* lhs, const CPlotItem* rhs) const
+{
+  return
+    std::tie(
+      lhs->getValue< C_FLOAT64 >("Line width"),
+      lhs->getValue< unsigned C_INT32 >("Line type"),
+      lhs->getValue< unsigned C_INT32 >("Symbol subtype"),
+      lhs->getValue< unsigned C_INT32 >("Line subtype"),
+      lhs->getValue< std::string >("Color")
+    )
+
+    <
+
+    std::tie
+    (
+      rhs->getValue< C_FLOAT64 >("Line width"),
+      rhs->getValue< unsigned C_INT32 >("Line type"),
+      rhs->getValue< unsigned C_INT32 >("Symbol subtype"),
+      rhs->getValue< unsigned C_INT32 >("Line subtype"),
+      rhs->getValue< std::string >("Color")
+    );
+
 }

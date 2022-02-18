@@ -50,6 +50,11 @@ protected:
     bool operator()(const TaskVarKey & lhs, const TaskVarKey & rhs) const;
   };
 
+  struct PlotItemStyleComparer
+  {
+    bool operator()(const CPlotItem * lhs, const CPlotItem* rhs) const;
+  };
+
   SedDocument* mpSEDMLDocument;
   unsigned int mSEDMLLevel;
   unsigned int mSEDMLVersion;
@@ -76,6 +81,8 @@ protected:
   SedPlot2D * mpCurrentPlot;
   SedPlot3D * mpCurrentPlot3D;
   const CPlotSpecification * mpCurrentSpec;
+
+  std::map< const CPlotItem*, std::string, PlotItemStyleComparer > mStyleMap;
 
 public:
 
@@ -220,6 +227,8 @@ public:
   void exportNthPlot(const CPlotSpecification * pPlot, size_t n);
 
   void exportPlotItem(const CPlotItem * pPlotItem, size_t i, size_t j);
+
+  std::string exportStyleForItem(const CPlotItem * pPlotItem);
 
   /**
    * Exports the report for the given report definition
