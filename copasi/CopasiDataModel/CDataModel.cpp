@@ -1790,7 +1790,16 @@ bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bo
   return false;
 }
 
-bool CDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, bool includeSBML, bool includeData, bool includeSEDML, bool overwriteFile, CProcessReport * pProgressReport)
+bool CDataModel::exportCombineArchive(
+  std::string fileName,
+  bool includeCOPASI,
+  bool includeSBML,
+  bool includeData,
+  bool includeSEDML,
+  bool overwriteFile,
+  CProcessReport * pProgressReport,
+  int sbmlLevel, int sbmlVersion,
+  int sedmlLevel, int sedmlVersion)
 {
   CCopasiMessage::clearDeque();
 
@@ -1936,7 +1945,7 @@ bool CDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, 
       try
         {
           std::stringstream str;
-          str << exportSBMLToString(pProgressReport, 2, 4);
+          str << exportSBMLToString(pProgressReport, sbmlLevel, sbmlVersion);
           archive.addFile(str, "./sbml/model.xml", KnownFormats::lookupFormat("sbml"), !includeCOPASI);
         }
       catch (...)
@@ -1947,7 +1956,10 @@ bool CDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, 
   if (includeSEDML)
     {
       std::stringstream str;
-      str << exportSEDMLToString(pProgressReport, 1, 2, "../sbml/model.xml");
+      XMLNamespaces namespaces;
+      namespaces.add(SBMLNamespaces::getSBMLNamespaceURI(sbmlLevel, sbmlVersion), "sbml");
+      str << exportSEDMLToString(pProgressReport, sedmlLevel, sedmlVersion, "../sbml/model.xml",
+                                 &namespaces);
       archive.addFile(str, "./sedml/simulation.xml", KnownFormats::lookupFormat("sedml"), !includeCOPASI);
     }
 
@@ -2333,7 +2345,8 @@ std::map< CDataObject *, SedBase * > & CDataModel::getCopasi2SEDMLMap()
 std::string CDataModel::exportSEDMLToString(CProcessReport * pExportHandler,
     int sedmlLevel,
     int sedmlVersion,
-    const std::string & modelLocation)
+    const std::string & modelLocation,
+    const XMLNamespaces * pAdditionalNamespaces)
 {
   CCopasiMessage::clearDeque();
   SedDocument * pOrigSEDMLDocument = NULL;
@@ -2361,6 +2374,10 @@ std::string CDataModel::exportSEDMLToString(CProcessReport * pExportHandler,
     }
 
   CSEDMLExporter exporter;
+
+  if (pAdditionalNamespaces)
+    exporter.setSBMLNamespaces(*pAdditionalNamespaces);
+
   std::string str = exporter.exportModelAndTasksToString(*this, modelLocation, sedmlLevel, sedmlVersion);
 
   // if we have saved the original SEDML model somewhere

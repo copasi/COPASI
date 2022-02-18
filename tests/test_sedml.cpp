@@ -164,6 +164,31 @@ TEST_CASE("export nested scan", "[copasi,sedml]")
 
 
 
+TEST_CASE("Export different plot styles", "[copasi,sedml]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != nullptr);
+
+  REQUIRE(dm->loadModel(getTestFile("test-data/brusselator.cps"), NULL) == true);
+
+  auto * m = dm->getModel();
+  REQUIRE(m != NULL);
+
+  // export sbml so we have sbml ids
+  std::string sbml = dm->exportSBMLToString(NULL, 3, 1);
+
+  // export sedml
+  std::string sedml = dm->exportSEDMLToString(NULL, 1, 4);
+
+  auto * doc = readSedMLFromString(sedml.c_str());
+
+  REQUIRE(doc->getNumErrors(LIBSEDML_SEV_ERROR) == 0);
+
+  delete doc;
+
+  CRootContainer::removeDatamodel(dm);
+}
+
 TEST_CASE("generating variables with terms", "[copasi,sedml]")
 {
   auto * dm = CRootContainer::addDatamodel();
