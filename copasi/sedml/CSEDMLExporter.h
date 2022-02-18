@@ -36,11 +36,20 @@ class CTrajectoryTask;
 class CScanProblem;
 class CCopasiTask;
 class CCopasiMethod;
+class CPlotSpecification;
 
 class CSEDMLExporter
 {
 
 protected:
+
+  typedef std::pair< std::string, VariableInfo > TaskVarKey;
+
+  struct KeyComparer
+  {
+    bool operator()(const TaskVarKey & lhs, const TaskVarKey & rhs) const;
+  };
+
   SedDocument* mpSEDMLDocument;
   unsigned int mSEDMLLevel;
   unsigned int mSEDMLVersion;
@@ -56,6 +65,14 @@ protected:
   std::string mModelId;
 
   LIBSBML_CPP_NAMESPACE::XMLNamespaces * mpSBMLNamespaces;
+
+  std::map< TaskVarKey, SedDataGenerator *, KeyComparer > mDataGenerators;
+  SedDataGenerator * mpCurrentTime;
+  CCommonName mTimeCN;
+
+  CDataModel *mpDataModel;
+  CCopasiTask *mpCurrentTask;
+  std::string mCurrentTaskId;
 
 public:
 
@@ -152,7 +169,7 @@ public:
   /**
    * Creates the time course task and returns its id.
    */
-  std::string createTimeCourseTask(CDataModel& dataModel);
+  std::string createTimeCourseTask();
 
   /**
    * specifies the most specific KISAO terms for the given method
@@ -162,7 +179,7 @@ public:
   /**
    * Creates the steady state task and returns its id.
    */
-  std::string createSteadyStateTask(CDataModel& dataModel);
+  std::string createSteadyStateTask();
 
   /**
    * Creates a scan task if the dataModel contains a number of scan items
@@ -170,7 +187,7 @@ public:
    *
    * @return the id of the task, if created, otherwise an empty string.
    */
-  std::string createScanTask(CDataModel& dataModel);
+  std::string createScanTask();
 
   /**
    * Creates a SED-ML model for the given model reference. This function
@@ -179,7 +196,7 @@ public:
    *
    * @return the model id created
    */
-  std::string createModel(CDataModel & dataModel, const std::string & modelRef);
+  std::string createModel(const std::string & modelRef);
 
   /**
    * Creates the SED-ML Tasks for the data model, assuming the
@@ -189,14 +206,25 @@ public:
    * createModel, or the model id should have been set with setModelId.
    *
    */
-  void createTasks(CDataModel& dataModel);
+  void createTasks();
 
   /**
    * Creates the data generators for SEDML.
    */
-  void createDataGenerators(CDataModel & dataModel,
-                            std::string & taskId,
+  void createDataGenerators(std::string & taskId,
                             CCopasiTask* task = NULL);
+
+  void exportNthPlot(const CPlotSpecification * pPlot, size_t n);
+
+  /**
+   * Exports the report for the given report definition
+   */
+  void exportReport(const CReportDefinition * def);
+
+  /**
+   * Initializes the data generator for model time and task
+   */
+  void setCurrentTime(std::string & taskId);
 
   /**
    * exports the nth scan item, to the given task.
@@ -204,8 +232,7 @@ public:
    */
   bool exportNthScanItem(CScanProblem * pProblem,
                          size_t n,
-                         SedRepeatedTask * task,
-                         CDataModel & dataModel);
+                         SedRepeatedTask * task);
 
 
   /**
@@ -279,6 +306,9 @@ public:
    */
   void setSBMLNamespaces(const LIBSBML_CPP_NAMESPACE:: XMLNamespaces & sbmlns);
 
+  void setDataModel(CDataModel * pDataModel);
+
+  CDataModel * getDataModel();
 
 protected:
 
