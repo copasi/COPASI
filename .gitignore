@@ -69,3 +69,4 @@ callgrind.out.*
 /build_*
 copasi/_*
 python_copasi.egg-info
+.~lock*

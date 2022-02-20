@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -56,7 +61,7 @@ private:
     CVector< C_FLOAT64 > DWork;
     CVector< C_INT > IWork;
     CVector< C_INT > RootsFound;
-    CVector< bool > RootMask;
+    CVector< C_INT > RootMask;
     eRootMasking RootMasking;
     CTrajectoryMethod::Status Status;
     CInternalSolver::State LsodaState;
@@ -176,7 +181,7 @@ private:
   /**
    * A mask which hides all roots being constant and zero.
    */
-  CVector< bool > mRootMask;
+  CVector< C_INT > mRootMask;
 
   /**
    * A which indicates whether roots change only discretely.

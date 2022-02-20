@@ -30,6 +30,7 @@
 #include "copasi/model/CObjectLists.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/utilities/CNodeIterator.h"
+#include "copasi/utilities/dgemm.h"
 #include "copasi/randomGenerator/CRandom.h"
 #include "copasi/lapack/blaswrap.h"
 
@@ -3022,22 +3023,8 @@ void CMathContainer::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivat
   CMatrix< C_FLOAT64 > Jacobian;
   calculateRootJacobian(Jacobian);
 
-  rootDerivatives.resize(Jacobian.numRows());
-  C_FLOAT64 * pDerivative = rootDerivatives.array();
-
-  //We only consider the continuous state variables
-  C_FLOAT64 * pRate = mRate.array() + mSize.nFixedEventTargets;
-
-  // Now multiply the the Jacobian with the rates
-  char T = 'N';
-  C_INT M = 1;
-  C_INT N = (C_INT) Jacobian.numRows();
-  C_INT K = (C_INT) Jacobian.numCols();
-  C_FLOAT64 Alpha = 1.0;
-  C_FLOAT64 Beta = 0.0;
-
-  dgemm_(&T, &T, &M, &N, &K, &Alpha, pRate, &M,
-         Jacobian.array(), &K, &Beta, pDerivative, &M);
+  CVectorCore< C_FLOAT64 > Rates(Jacobian.numCols(), mRate.array() + mSize.nFixedEventTargets);
+  dgemm::eval(1.0, Jacobian, Rates, 0.0, rootDerivatives);
 }
 
 void CMathContainer::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)

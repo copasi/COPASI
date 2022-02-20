@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -139,7 +139,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case SINGLE_OBJECT:
         break;
 
-        // Metabolites
+      // Metabolites
       case METABS:
 
         for (; itMetab != endMetab; ++itMetab)
@@ -286,7 +286,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
 
         break;
 
-        // reactions
+      // reactions
       case REACTIONS:
 
         for (; itReaction != endReaction; ++itReaction)
@@ -308,7 +308,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
 
         break;
 
-        // global quantities
+      // global quantities
       case GLOBAL_PARAMETERS:
 
         for (; itValue != endValue; ++itValue)
@@ -372,7 +372,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
 
         break;
 
-        // compartments
+      // compartments
       case COMPARTMENTS:
 
         for (; itComp != endComp; ++itComp)
@@ -570,8 +570,8 @@ bool CObjectLists::existsFixedMetab(const CModel* pModel)
 std::set< const CModelEntity * > CObjectLists::getEventTargets(const CModel* pModel)
 {
   std::set< const CModelEntity * > EventTargets;
-
-  CKeyFactory * pKeyFactory = CRootContainer::getKeyFactory();
+  CObjectInterface::ContainerList List;
+  List.push_back(pModel);
 
   CDataVectorN< CEvent >::const_iterator itEvent = pModel->getEvents().begin();
   CDataVectorN< CEvent >::const_iterator endEvent = pModel->getEvents().end();
@@ -586,7 +586,7 @@ std::set< const CModelEntity * > CObjectLists::getEventTargets(const CModel* pMo
       for (; itAssignment != endAssignment; ++itAssignment)
         {
           const CModelEntity * pModelEntity =
-            dynamic_cast< const CModelEntity * >(pKeyFactory->get(itAssignment->getObjectName()));
+            dynamic_cast< const CModelEntity * >(CDataObject::GetObjectFromCN(List, itAssignment->getTargetCN()));
 
           if (pModelEntity != NULL)
             {
