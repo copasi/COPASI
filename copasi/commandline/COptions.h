@@ -64,13 +64,13 @@ class COptions
 
     template< class CType > void getValue(CType & value) const
     {
-      if (this && mpValue) value = *(CType *) mpValue;
+      if (mpValue) value = *(CType *) mpValue;
       else value = CType();
     }
 
     template< class CType > bool compareValue(CType & value) const
     {
-      if (this && mpValue) return (value == *(CType *) mpValue);
+      if (mpValue) return (value == *(CType *) mpValue);
       else return false;
     }
   };

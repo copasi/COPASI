@@ -80,3 +80,4 @@ python_copasi.egg-info
 .idea
 /copasi-dependencies
 TestSuite/distribution/out.txt
+.~lock*

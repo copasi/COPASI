@@ -149,7 +149,7 @@ endif()
 #
 set(PYTHON_PACKAGE_INSTALL_DIR)
 if (UNIX OR CYGWIN) 
-  execute_process(COMMAND "${PYTHON_EXECUTABLE}" -c "import sys;import platform; sys.stdout.write(platform.python_version()[:3])"
+  execute_process(COMMAND "${PYTHON_EXECUTABLE}" -c "import sys; sys.stdout.write('{}.{}'.format(*sys.version_info[:2]))"
     OUTPUT_VARIABLE PYTHON_VERSION)
   set(PYTHON_PACKAGE_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION}/site-packages)
 else()

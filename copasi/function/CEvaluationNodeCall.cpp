@@ -718,6 +718,9 @@ CValidatedUnit CEvaluationNodeCall::getUnit(const CMathContainer & math,
         break;
     }
 
+  if (!pTree)
+    return CValidatedUnit();
+
   CUnitValidator Validator(math, *pTree);
   Validator.validateUnits(CValidatedUnit(CBaseUnit::undefined, false), units);
 
@@ -745,6 +748,9 @@ CValidatedUnit CEvaluationNodeCall::setUnit(const CMathContainer & container,
         return CValidatedUnit();
         break;
     }
+
+  if (!pTree)
+    return CValidatedUnit();
 
   // Retrieve the current units of the variables
   std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();

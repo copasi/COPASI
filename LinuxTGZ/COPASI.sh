@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -69,12 +69,12 @@ cp "${SOURCE}/LinuxTGZ/CopasiUI" bin
 chmod 755 bin/CopasiUI
 
 # Copy executables 
-echo cp "${BUILD_ROOT}/copasi/CopasiUI/CopasiUI"  share/copasi/lib
-cp "${BUILD_ROOT}/copasi/CopasiUI/CopasiUI"  share/copasi/lib
+echo cp "${BINARY_DIR}/copasi/CopasiUI/CopasiUI"  share/copasi/lib
+cp "${BINARY_DIR}/copasi/CopasiUI/CopasiUI"  share/copasi/lib
 chmod 755 share/copasi/lib/CopasiUI
 
-echo cp "${BUILD_ROOT}/copasi/CopasiSE/CopasiSE"  bin
-cp "${BUILD_ROOT}/copasi/CopasiSE/CopasiSE"  bin
+echo cp "${BINARY_DIR}/copasi/CopasiSE/CopasiSE"  bin
+cp "${BINARY_DIR}/copasi/CopasiSE/CopasiSE"  bin
 chmod 755 bin/CopasiSE
 
 # Copy configuration resources    
@@ -96,9 +96,9 @@ cp "${SOURCE}"/copasi/UI/icons/CopasiDoc??-Alpha.xpm share/copasi/icons
 chmod 644 share/copasi/icons/*
 
 # Copy desktop utilities
-echo cp "${SOURCE}"/LinuxTGZ/applications/* share/copasi/applications
-cp "${SOURCE}"/LinuxTGZ/applications/* share/copasi/applications
-chmod 644 share/copasi/applications/*
+# echo cp "${SOURCE}"/LinuxTGZ/applications/* share/copasi/applications
+# cp "${SOURCE}"/LinuxTGZ/applications/* share/copasi/applications
+# chmod 644 share/copasi/applications/*
 
 # Copy wizard resource
 echo cp "${SOURCE}"/copasi/wizard/help_html/*.html share/copasi/doc/html

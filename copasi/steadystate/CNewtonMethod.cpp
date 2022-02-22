@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -69,7 +69,6 @@ CNewtonMethod::CNewtonMethod(const CDataContainer * pParent,
   , mH()
   , mXold()
   , mdxdt()
-  , mIpiv(NULL)
   , mpTrajectory(NULL)
   , mStartState()
   , mUpdateConcentrations()
@@ -98,7 +97,6 @@ CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
   , mH(src.mH)
   , mXold(src.mXold)
   , mdxdt()
-  , mIpiv(NULL)
   , mpTrajectory(NULL)
   , mStartState(src.mStartState)
   , mUpdateConcentrations(src.mUpdateConcentrations)
@@ -182,11 +180,6 @@ bool CNewtonMethod::elevateChildren()
 
 void CNewtonMethod::cleanup()
 {
-  if (mIpiv)
-    delete[] mIpiv;
-
-  mIpiv = NULL;
-
   pdelete(mpTrajectory);
 }
 
@@ -722,16 +715,30 @@ C_FLOAT64 CNewtonMethod::targetFunctionRate()
   const C_FLOAT64 * pEnd = mdxdt.end();
   C_FLOAT64 * pCurrentState = mpX;
   const C_FLOAT64 * pAtol = mAtol.array();
+  C_FLOAT64 ** ppCompartmentVolume = mCompartmentVolumes.array();
 
-  for (; pIt != pEnd; ++pIt, ++pAtol)
+  for (; pIt != pEnd; ++pIt, ++pCurrentState, ++pAtol, ++ppCompartmentVolume)
     {
       tmp = fabs(*pIt) / std::max(fabs(*pCurrentState), *pAtol);
+
+      if (std::isnan(tmp))
+        return std::numeric_limits< C_FLOAT64 >::infinity();
 
       if (tmp > MaxRate)
         MaxRate = tmp;
 
+      tmp = fabs(*pIt);
+
+      if (*ppCompartmentVolume != NULL)
+        {
+          tmp /= mpContainer->getQuantity2NumberFactor() * **ppCompartmentVolume;
+        }
+
       if (std::isnan(tmp))
         return std::numeric_limits< C_FLOAT64 >::infinity();
+
+      if (tmp > MaxRate)
+        MaxRate = tmp;
     }
 
   return MaxRate;
@@ -745,7 +752,10 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
 
   CVector< C_FLOAT64 > Distance;
 
-  CLeastSquareSolution::ResultInfo Info = CLeastSquareSolution::solve(*mpJacobian, mdxdt, mAtol, mCompartmentVolumes, mpContainer->getQuantity2NumberFactor(), Distance);
+  CMatrix< C_FLOAT64 > JacobianWithTime;
+  mpContainer->calculateJacobian(JacobianWithTime, *mpDerivationFactor, false, !mpContainer->isAutonomous());
+
+  CLeastSquareSolution::ResultInfo Info = CLeastSquareSolution::solve(JacobianWithTime, mdxdt, mAtol, mCompartmentVolumes, mpContainer->getQuantity2NumberFactor(), Distance);
 
   if (Info.rank == 0)
     {
@@ -753,8 +763,8 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
     }
 
   // We look at all ODE determined entity and dependent species rates.
-  C_FLOAT64 * pDistance = Distance.array();
-  C_FLOAT64 * pDistanceEnd = pDistance + Distance.size();
+  C_FLOAT64 * pDistance = Distance.begin();
+  C_FLOAT64 * pDistanceEnd = Distance.end();
   C_FLOAT64 * pCurrentState = mpX;
   const C_FLOAT64 * pAtol = mAtol.array();
   C_FLOAT64 ** ppCompartmentVolume = mCompartmentVolumes.array();
@@ -763,10 +773,25 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
   C_FLOAT64 RelativeDistance = 0.0;
   C_FLOAT64 tmp;
 
+  // For non autonomous model the first value in the distance measures time and we must treat it differently.
+  if (!mpContainer->isAutonomous())
+    {
+      if (mTargetCriterion == eTargetCriterion::Distance)
+        {
+          mTargetCriterion = eTargetCriterion::Rate;
+          mTargetRate = CNewtonMethod::targetFunctionRate();
+          mTargetCriterion = eTargetCriterion::Distance;
+        }
+
+      AbsoluteDistance = RelativeDistance = *pDistance * *pDistance * mTargetRate * mTargetRate;
+      ++pDistance;
+    }
+
   for (; pDistance != pDistanceEnd; ++pDistance, ++pCurrentState, ++pAtol, ++ppCompartmentVolume)
     {
       // Prevent division by 0
       tmp = *pDistance / std::max(fabs(*pCurrentState), *pAtol);
+
       RelativeDistance += tmp * tmp;
 
       tmp = *pDistance;
@@ -867,7 +892,6 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   mH.resize(mDimension);
   mXold.resize(mDimension);
   mdxdt.initialize(mDimension, mpContainer->getRate(false).array() + mpContainer->getCountFixedEventTargets() + 1);
-  mIpiv = new C_INT[mDimension];
 
   mCompartmentVolumes.resize(mDimension + mpContainer->getCountDependentSpecies());
   mCompartmentVolumes = NULL;

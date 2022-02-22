@@ -84,7 +84,12 @@ CSensMethod::CSensMethod(const CSensMethod & src,
   mProgress(0),
   mCounter(0),
   mFailedCounter(0)
-{CONSTRUCTOR_TRACE;}
+{
+  mpDeltaFactor = assertParameter("Delta factor", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1e-3);
+  mpMinDelta = assertParameter("Delta minimum", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1e-12);
+  
+  CONSTRUCTOR_TRACE;
+}
 
 /**
  *  Destructor.

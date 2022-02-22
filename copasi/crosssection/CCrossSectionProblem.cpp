@@ -19,8 +19,8 @@
 
 #include "copasi/CopasiDataModel/CDataModel.h"
 
-CCrossSectionProblem::CCrossSectionProblem(const CDataContainer * pParent):
-  CTrajectoryProblem(pParent),
+CCrossSectionProblem::CCrossSectionProblem(const CDataContainer * pParent)
+  : CTrajectoryProblem(CTaskEnum::Task::crosssection, pParent),
   mpFlagLimitCrossings(NULL),
   mpCrossingsLimit(NULL),
   mpFlagLimitConvergence(NULL),
