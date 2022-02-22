@@ -69,7 +69,8 @@ if not SRC_DIR:
   else:
     raise ValueError("COPASI Source not specified or not present, define COPASI_SRC_DIR.")
 
-print ("Using COPASI from: {0}".format(SRC_DIR))
+print ("Using COPASI from:  {0}".format(SRC_DIR))
+print ("Using Dependencies: {0}".format(DEP_DIR))
 
 version_file_name = join(join(SRC_DIR, 'copasi'), 'CopasiVersion.h')
 print ("Using version file: {0}".format(version_file_name))
@@ -193,7 +194,7 @@ class CMakeBuild(build_ext):
         ]
 
         global DEP_DIR
-        if not DEP_DIR and not self.dry_run:
+        if exists(DEP_DIR) and not self.dry_run:
             print("compiling dependencies")
             dep_suffix = sysconfig.get_platform()
             dep_inst_dir = os.path.join(cwd, 'install_dependencies_' + dep_suffix)
