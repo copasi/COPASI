@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -34,7 +34,10 @@ find_package(PythonInterp REQUIRED)
 # specify that the same python library should be found 
 # as the one the selected interpreter uses
 set (Python_ADDITIONAL_VERSIONS ${PYTHON_VERSION_STRING})
-find_package(PythonLibs REQUIRED)
+if (NOT PYTHON_USE_DYNAMIC_LOOKUP)
+set (LIBS_REQUIRED REQUIRED)
+endif()
+find_package(PythonLibs ${LIBS_REQUIRED})
 
 ####################################################################
 #
