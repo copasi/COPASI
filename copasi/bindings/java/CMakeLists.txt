@@ -116,6 +116,7 @@ add_custom_command(
          -DLIBSEDML_CPP_NAMESPACE_USE
          -DLIBSEDML_CPP_NAMESPACE_BEGIN
          -DLIBSEDML_CPP_NAMESPACE_END
+         -DLIBSEDML_CPP_NAMESPACE_QUALIFIER
          -package org.COPASI
          ${SWIG_EXTRA_ARGS}
          -outdir ${CMAKE_CURRENT_BINARY_DIR}/java-files/org/COPASI
