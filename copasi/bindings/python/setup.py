@@ -56,7 +56,7 @@ def get_dir_if_exists(variable, default):
 global SRC_DIR
 SRC_DIR = get_dir_if_exists('COPASI_SRC_DIR', abspath('.'))
 global DEP_DIR
-DEP_DIR = get_dir_if_exists('COPASI_DEP_DIR', '../copasi_dependencies/')
+DEP_DIR = get_dir_if_exists('COPASI_DEP_DIR', '../copasi-dependencies/')
 DEP_SRC_DIR = get_dir_if_exists('COPASI_DEP_SRC', '../copasi-dependencies/')
 DEP_DIR32 = get_dir_if_exists('COPASI_DEP_DIR_32', '../win_copasi_dependencies_32/')
 DEP_DIR64 = get_dir_if_exists('COPASI_DEP_DIR_64', '../win_copasi_dependencies_64/')
@@ -194,7 +194,7 @@ class CMakeBuild(build_ext):
         ]
 
         global DEP_DIR
-        if exists(DEP_DIR) and not self.dry_run:
+        if DEP_DIR and exists(DEP_DIR) and not self.dry_run:
             print("compiling dependencies")
             dep_suffix = sysconfig.get_platform()
             dep_inst_dir = os.path.join(cwd, 'install_dependencies_' + dep_suffix)
