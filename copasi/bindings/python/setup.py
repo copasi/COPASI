@@ -161,6 +161,7 @@ class CMakeBuild(build_ext):
         is_win = platform.system() == 'Windows'
         is_win_32 = is_win and ('win32' in name or 'win32' in build_temp)
         enable_jit = 'ON' if ('_64' in suffix or 'amd64' in suffix) else 'OFF'
+        enable_clapack = 'OFF' if is_osx else 'ON'
 
         cmake_args = [
             '-DCMAKE_BUILD_TYPE=' + config
@@ -209,7 +210,8 @@ class CMakeBuild(build_ext):
                              '-DBUILD_UI_DEPS=OFF',
                              '-DBUILD_zlib=ON',
                              '-DBUILD_archive=OFF',
-                             '-DBUILD_NativeJIT=' + enable_jit
+                             '-DBUILD_NativeJIT=' + enable_jit,
+                             '-DBUILD_clapack=' + enable_clapack
                            ]
                          )
                self.spawn(['cmake', '--build', '.'] + build_args)
