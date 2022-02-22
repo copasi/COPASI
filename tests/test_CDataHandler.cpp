@@ -1,7 +1,7 @@
-// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
 #include "catch.hpp"
 
@@ -14,7 +14,7 @@ extern std::string getTestFile(const std::string & fileName);
 TEST_CASE("1: load model, simulate, collect data", "[copasi, datahandler]")
 {
   auto * dm = CRootContainer::addDatamodel();
-  REQUIRE(dm != NULL);
+  REQUIRE(dm != nullptr);
 
   SECTION("brusselator example")
   {
@@ -49,7 +49,7 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi, datahandler]")
     handler.addDuringName( {"CN=Root,Model=The Brusselator,Vector=Reactions[R3],Reference=Flux"});
     handler.addDuringName( {"CN=Root,Model=The Brusselator,Vector=Reactions[R4],Reference=Flux"});
 
-    auto& task = dynamic_cast<CTrajectoryTask&>( (*dm->getTaskList())["Time-Course"]);    
+    auto& task = dynamic_cast<CTrajectoryTask&>((*dm->getTaskList())["Time-Course"]);
     REQUIRE(task.initialize(CCopasiTask::OUTPUT_DURING, &handler, NULL) == true);
     REQUIRE(task.process(true) == true);
     REQUIRE(task.restore());
@@ -72,5 +72,57 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi, datahandler]")
     }
 
   }
+  CRootContainer::removeDatamodel(dm);
+}
+
+TEST_CASE("ensure that data handler with function evaluations can be compiled", "[copasi, datahandler]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != nullptr);
+
+  REQUIRE(dm->loadModel(getTestFile("test-data/brusselator.cps"), NULL) == true);
+
+  CDataHandler handler;
+  handler.addDuringName( {"CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations"});
+  handler.addDuringName( {"CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value"});
+
+  REQUIRE(handler.compile( {dm}) == true);
+
+  // lets try whether it works now
+
+  auto& task = (*dm->getTaskList())["Optimization"];
+  task.setMethodType(CTaskEnum::Method::LevenbergMarquardt);
+
+  auto * problem = dynamic_cast< COptProblem * >(task.getProblem());
+
+  {
+    auto & item = problem->addOptItem(
+    {"CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=InitialConcentration"});
+    item.setLowerBound( {"0.0001"});
+    item.setUpperBound( {"100"});
+    item.setStartValue(0.5);
+  }
+
+  {
+    auto & item = problem->addOptItem( {"CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[B],Reference=InitialConcentration"});
+    item.setLowerBound( {"0.0001"});
+    item.setUpperBound( {"100"});
+    item.setStartValue(3);
+  }
+
+  std::stringstream exp;
+  exp << "<"
+      << (dm->getModel()->getMetabolites()[0]).getConcentrationRateReference()->getCN()
+      << ">";
+
+  problem->setObjectiveFunction(exp.str());
+  problem->setRandomizeStartValues(false);
+  problem->setSubtaskType(CTaskEnum::Task::timeCourse);
+
+  REQUIRE(task.initialize(CCopasiTask::OUTPUT_DURING, &handler, NULL));
+  REQUIRE(task.process(true));
+
+  auto data = handler.getDuringData();
+  dm->saveModel("opt.cps", NULL, true);
   CRootContainer::removeDatamodel(dm);
 }

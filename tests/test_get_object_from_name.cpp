@@ -12,7 +12,7 @@ extern std::string getTestFile(const std::string & fileName);
 TEST_CASE("1: loading example files, and resolve name", "[copasi]")
 {
   auto * dm = CRootContainer::addDatamodel();
-  REQUIRE(dm != NULL);
+  REQUIRE(dm != nullptr);
 
   SECTION("brusselator example")
   {
@@ -25,60 +25,60 @@ TEST_CASE("1: loading example files, and resolve name", "[copasi]")
 
     // species
     auto * object = dm->findObjectByDisplayName("[X]");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
     object = dm->findObjectByDisplayName("X.ParticleNumber");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
     object = dm->findObjectByDisplayName("[X]_0");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
     object = dm->findObjectByDisplayName("X.InitialParticleNumber");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
     object = dm->findObjectByDisplayName("X.Rate");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
     object = dm->findObjectByDisplayName("X.ParticleNumberRate");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
 
     // compartments
     object = dm->findObjectByDisplayName("Compartments[compartment].InitialVolume");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
     object = dm->findObjectByDisplayName("Compartments[compartment].Volume");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
     object = dm->findObjectByDisplayName("Compartments[compartment].Rate");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
 
     // reactions
     object = dm->findObjectByDisplayName("(R1).k1");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
     object = dm->findObjectByDisplayName("(R1).Flux");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
     object = dm->findObjectByDisplayName("(R1).ParticleFlux");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
 
     // parameters
     object = dm->findObjectByDisplayName("Values[mv_1].InitialValue");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
     object = dm->findObjectByDisplayName("Values[mv_1]");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
     object = dm->findObjectByDisplayName("Values[mv_1].Rate");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
 
     // time
     object = dm->findObjectByDisplayName("Time");
-    REQUIRE(object != NULL);
+    REQUIRE(object != nullptr);
 
   }
 

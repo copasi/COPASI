@@ -459,7 +459,7 @@ Expression</string>
   </connection>
   <connection>
    <sender>mpComboBoxType</sender>
-   <signal>currentIndexChanged(const QString &amp;)</signal>
+   <signal>currentTextChanged(const QString &amp;)</signal>
    <receiver>CQSpeciesDetail</receiver>
    <slot>slotTypeChanged(const QString &amp;)</slot>
    <hints>

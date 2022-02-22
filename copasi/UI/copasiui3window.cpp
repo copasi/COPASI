@@ -3370,7 +3370,7 @@ void CopasiUI3Window::slotExportSEDML()
   QString tmp;
   bool exportIncomplete = false;
   int sedmlLevel = 1;
-  int sedmlVersion = 2;
+  int sedmlVersion = 4;
 
   while (Answer == QMessageBox::No)
     {
@@ -3786,7 +3786,7 @@ void CopasiUI3Window::removeReportTargets()
   auto& taskList = *mpDataModel->getTaskList();
   std::stringstream str;
 
-  for (auto & task : taskList)
+for (auto & task : taskList)
     {
       std::string target = task.getReport().getTarget();
 

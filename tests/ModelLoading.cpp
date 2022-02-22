@@ -27,7 +27,7 @@ extern std::string getTestFile(const std::string & fileName);
 TEST_CASE("Load model", "[COPASI]")
 {
   CDataModel * pDataModel = CRootContainer::addDatamodel();
-  REQUIRE(pDataModel != NULL);
+  REQUIRE(pDataModel != nullptr);
 
   // Loading from file
   REQUIRE(pDataModel->loadFromFile(getTestFile("test-data/brusselator.gps")) == true);
@@ -84,7 +84,7 @@ TEST_CASE("Load model", "[COPASI]")
 TEST_CASE("Update Model", "[COPASI]")
 {
   CDataModel * dm = CRootContainer::addDatamodel();
-  REQUIRE(dm != NULL);
+  REQUIRE(dm != nullptr);
 
   std::string test_file = getTestFile("test-data/Issue3050.cps");
 

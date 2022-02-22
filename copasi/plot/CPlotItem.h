@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -90,16 +90,74 @@ class CPlotItem : public CCopasiParameterGroup
 {
 public:
   /**
-   * Enumeration of the sub types of methods known to COPASI.
+   * Enumeration of the sub types of curve types known to COPASI.
    */
   enum Type
   {
-    unset = 0, curve2d, histoItem1d,            //for plot items
+    unset = 0,
+    curve2d,
+    histoItem1d,            //for plot items
     bandedGraph,
     surface,
-    plot2d, simWiz,   //for plot specifications
+    plot2d,
+    simWiz,   //for plot specifications
     spectogram
   };
+
+  enum class LineType
+  {
+    Lines = 0,
+    Points,
+    Symbols,
+    LinesAndSymbols,
+    __SIZE
+  };
+
+  static const CEnumAnnotation< std::string, LineType > LineTypeNames;
+
+  enum class LineStyle
+  {
+    Solid = 0,
+    Dotted,
+    Dashed,
+    DotDash,
+    DotDotDash,
+    None,
+    __SIZE
+  };
+
+  /**
+   * String literals for the GUI to display type names of line types known
+   * to COPASI.
+   */
+  static const CEnumAnnotation< std::string, LineStyle > LineStyleNames;
+
+  enum class SymbolType
+  {
+    SmallCross = 0,
+    LargeCross,
+    Circle,
+    Square,
+    Diamond,
+    xCross,
+    Plus,
+    Star,
+    TriangleUp,
+    TriangleDown,
+    TriangleLeft,
+    TriangleRight,
+    hDash,
+    vDash,
+    None,
+    __SIZE
+  };
+
+  /**
+   * String literals for the GUI to display type names of symbol known
+   * to COPASI.
+   */
+  static const CEnumAnnotation< std::string, SymbolType > SymbolNames;
+
 
   /**
    * String literals for the GUI to display plot item names of methods known

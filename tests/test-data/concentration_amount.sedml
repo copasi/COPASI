@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sedML xmlns="http://sed-ml.org/sed-ml/level1/version4" level="1" version="4">
+  <listOfModels>
+    <model id="model0" language="urn:sedml:language:sbml.level-3.version-1" source="case_02.xml"/>
+  </listOfModels>
+  <listOfSimulations>
+    <uniformTimeCourse id="sim0" initialTime="0" outputStartTime="0" outputEndTime="10" numberOfSteps="10">
+      <algorithm kisaoID="KISAO:0000019"/>
+    </uniformTimeCourse>
+  </listOfSimulations>
+  <listOfTasks>
+    <task id="task0" modelReference="model0" simulationReference="sim0"/>
+  </listOfTasks>
+  <listOfDataGenerators>
+    <dataGenerator id="plot_0_0_0" name="time">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> time </ci>
+      </math>
+      <listOfVariables>
+        <variable id="time" symbol="urn:sedml:symbol:time" taskReference="task0" modelReference="model0"/>
+      </listOfVariables>
+    </dataGenerator>
+    <dataGenerator id="plot_0_0_1" name="S1">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> S1 </ci>
+      </math>
+      <listOfVariables>
+        <variable id="S1" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;S1&apos;]" taskReference="task0" modelReference="model0"/>
+      </listOfVariables>
+    </dataGenerator>
+    <dataGenerator id="plot_0_1_1" name="S2">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> S2 </ci>
+      </math>
+      <listOfVariables>
+        <variable id="S2" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;S2&apos;]" taskReference="task0" modelReference="model0"/>
+      </listOfVariables>
+    </dataGenerator>
+    <dataGenerator id="S1_amt" name="S1">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> S1 </ci>
+      </math>
+      <listOfVariables>
+        <variable id="S1" term="KISAO:0000836" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;S1&apos;]" taskReference="task0" modelReference="model0"/>
+      </listOfVariables>
+    </dataGenerator>
+    <dataGenerator id="S2_amt" name="S2">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> S2 </ci>
+      </math>
+      <listOfVariables>
+        <variable id="S2" term="KISAO:0000836" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;S2&apos;]" taskReference="task0" modelReference="model0"/>
+      </listOfVariables>
+    </dataGenerator>
+    <dataGenerator id="S1_conc" name="S1">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> S1 </ci>
+      </math>
+      <listOfVariables>
+        <variable id="S1" term="KISAO:0000838" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;S1&apos;]" taskReference="task0" modelReference="model0"/>
+      </listOfVariables>
+    </dataGenerator>
+    <dataGenerator id="S2_conc" name="S2">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> S2 </ci>
+      </math>
+      <listOfVariables>
+        <variable id="S2" term="KISAO:0000838" target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;S2&apos;]" taskReference="task0" modelReference="model0"/>
+      </listOfVariables>
+    </dataGenerator>
+  </listOfDataGenerators>
+  <listOfOutputs>
+    <plot2D id="plot_0" name="UniformTimecourse default">
+      <listOfCurves>
+        <curve id="plot_0__plot_0_0_0__plot_0_0_1" logX="false" xDataReference="plot_0_0_0" logY="false" yDataReference="plot_0_0_1"/>
+        <curve id="plot_0__plot_0_0_0__plot_0_1_1" logX="false" xDataReference="plot_0_0_0" logY="false" yDataReference="plot_0_1_1"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_1" name="UniformTimecourse amounts">
+      <listOfCurves>
+        <curve id="plot_1__plot_0_0_0__plot_0_0_1" logX="false" xDataReference="plot_0_0_0" logY="false" yDataReference="S1_amt"/>
+        <curve id="plot_1__plot_0_0_0__plot_0_1_1" logX="false" xDataReference="plot_0_0_0" logY="false" yDataReference="S2_amt"/>
+      </listOfCurves>
+    </plot2D>
+    <plot2D id="plot_2" name="UniformTimecourse concentration">
+      <listOfCurves>
+        <curve id="plot_2__plot_0_0_0__plot_0_0_1" logX="false" xDataReference="plot_0_0_0" logY="false" yDataReference="S1_conc"/>
+        <curve id="plot_2__plot_0_0_0__plot_0_1_1" logX="false" xDataReference="plot_0_0_0" logY="false" yDataReference="S2_conc"/>
+      </listOfCurves>
+    </plot2D>
+  </listOfOutputs>
+</sedML>

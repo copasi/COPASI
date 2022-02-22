@@ -211,7 +211,16 @@ CPlotItem* CPlotSpecification::createItem(const std::string & name, CPlotItem::T
   return itm;
 }
 
-bool CPlotSpecification::createDefaultPlot(const CModel* model)
+bool CPlotSpecification::hasItem(const std::string & name)
+{
+for (auto & item : items)
+    if (item.getObjectName() == name)
+      return true;
+
+  return false;
+}
+
+bool CPlotSpecification::createDefaultPlot(const CModel * model)
 {
   mActive = true;
 

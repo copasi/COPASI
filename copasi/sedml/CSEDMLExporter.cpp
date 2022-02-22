@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -55,6 +55,7 @@
 #include "copasi/commandline/CLocaleString.h"
 
 #include <algorithm>
+#include <tuple>
 
 #define SEDML_SET_ID(element, arguments) \
   {\
@@ -68,6 +69,35 @@
     mGeneratedIds.insert(pVarId);\
     element->setId(pVarId);\
   }
+
+
+CSEDMLExporter::CSEDMLExporter()
+  : mpSEDMLDocument(NULL)
+  , mSEDMLLevel(1)
+  , mSEDMLVersion(4)
+  , mpTimecourse(NULL)
+  , mpTimecourseTask(NULL)
+  , mGeneratedIds()
+  , mExportExecutableTasksOnly(false)
+  , mExportActivePlotsOnly(true)
+  , mExportSpecificPlots(true)
+  , mModelId()
+  , mpSBMLNamespaces(NULL)
+  , mDataGenerators()
+  , mpDataModel(NULL)
+  , mpCurrentTask(NULL)
+  , mpCurrentPlot(NULL)
+  , mpCurrentPlot3D(NULL)
+  , mpCurrentSpec(NULL)
+  , mStyleMap()
+{
+}
+
+CSEDMLExporter::~CSEDMLExporter()
+{
+  pdelete(mpSBMLNamespaces);
+}
+
 
 std::string CSEDMLExporter::exportModelAndTasksToString(CDataModel& dataModel,
     const std::string &modelLocation,
@@ -184,8 +214,15 @@ CSEDMLExporter::createSEDMLDocument(CDataModel& dataModel, std::string modelRef)
 
   mpSEDMLDocument = new SedDocument(mSEDMLLevel, mSEDMLVersion);
 
-  createModel(dataModel, modelRef);
-  createTasks(dataModel);
+  if (mpSBMLNamespaces)
+    {
+      mpSEDMLDocument->getSedNamespaces()->addNamespaces(mpSBMLNamespaces);
+    }
+
+  setDataModel(&dataModel);
+
+  createModel(modelRef);
+  createTasks();
 
   return mpSEDMLDocument;
 }
@@ -194,13 +231,22 @@ CSEDMLExporter::createSEDMLDocument(CDataModel& dataModel, std::string modelRef)
 void CSEDMLExporter::clearMaps()
 {
   mGeneratedIds.clear();
+  mDataGenerators.clear();
+  mStyleMap.clear();
+
+  mpCurrentTime = NULL;
+  mpCurrentPlot = NULL;
+  mpCurrentTask = NULL;
+  mCurrentTaskId = "";
 }
 
 bool CSEDMLExporter::exportNthScanItem(CScanProblem * pProblem,
                                        size_t n,
-                                       SedRepeatedTask * task,
-                                       CDataModel & dataModel)
+                                       SedRepeatedTask * task)
 {
+  if (!mpDataModel || !pProblem)
+    return false;
+
   CCopasiParameterGroup * current = pProblem->getScanItem(n);
   CScanProblem::Type type = (CScanProblem::Type)(current->getParameter("Type")->getValue< unsigned C_INT32 >());
 
@@ -263,7 +309,7 @@ for (std::string & number : elems)
         }
 
       const CRegisteredCommonName & cn = (current->getParameter("Object")->getValue< CCommonName >());
-      const CDataObject * pObject = static_cast< const CDataObject * >(dataModel.getObject(cn));
+      const CDataObject * pObject = static_cast< const CDataObject * >(mpDataModel->getObject(cn));
 
       if (pObject == NULL)
         {
@@ -352,17 +398,27 @@ void CSEDMLExporter::freeSedMLDocument()
   pdelete(mpSEDMLDocument);
 }
 
+void CSEDMLExporter::setSBMLNamespaces(int level, int version, const std::string & prefix)
+{
+  pdelete(mpSBMLNamespaces);
+  mpSBMLNamespaces = new XMLNamespaces();
+  mpSBMLNamespaces->add(SBMLNamespaces::getSBMLNamespaceURI(level, version), prefix);
+}
+
 /**
  * Creates the simulations for SEDML.
  */
 std::string
-CSEDMLExporter::createScanTask(CDataModel& dataModel)
+CSEDMLExporter::createScanTask()
 {
+  if (!mpDataModel)
+    return "";
+
   // need L1V2 to export repeated tasks
   if (mpSEDMLDocument->getVersion() < 2)
     return "";
 
-  CScanTask* pTask =  dynamic_cast<CScanTask*>(&dataModel.getTaskList()->operator[]("Scan"));
+  CScanTask* pTask =  dynamic_cast<CScanTask*>(&mpDataModel->getTaskList()->operator[]("Scan"));
 
   if (pTask == NULL)
     return "";
@@ -384,7 +440,7 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel)
 
   if (pProblem->getSubtask() == CTaskEnum::Task::steadyState)
     {
-      subTaskId = createSteadyStateTask(dataModel);
+      subTaskId = createSteadyStateTask();
     }
   else
     {
@@ -402,7 +458,7 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel)
   subTask->setTask(subTaskId);
 
   // create first range
-  bool result = exportNthScanItem(pProblem, numItems - 1, task, dataModel);
+  bool result = exportNthScanItem(pProblem, numItems - 1, task);
 
   std::string lastTaskId = task->getId();
 
@@ -421,40 +477,43 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel)
       subTask->setTask(lastTaskId);
 
       // export range
-      exportNthScanItem(pProblem, i, task, dataModel);
+      exportNthScanItem(pProblem, i, task);
 
       // update last task id for nesting
       lastTaskId = task->getId();
     }
 
-  return taskId;
+  return lastTaskId;
 }
 
 /**
  * Creates the simulations for SEDML.
  */
 std::string
-CSEDMLExporter::createTimeCourseTask(CDataModel& dataModel)
+CSEDMLExporter::createTimeCourseTask()
 {
-  CCopasiTask* pTask = &dataModel.getTaskList()->operator[]("Time-Course");
+  if (!mpDataModel)
+    return "";
+
+  CCopasiTask* pTask = &mpDataModel->getTaskList()->operator[]("Time-Course");
   CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(pTask->getProblem());
 
   mpTimecourse = mpSEDMLDocument->createUniformTimeCourse();
   SEDML_SET_ID(mpTimecourse, SEDMLUtils::getNextId("sim", mpSEDMLDocument->getNumSimulations()));
 
-  //presently SEDML only supports time course
-  mpTimecourse->setInitialTime(dataModel.getModel()->getInitialTime());
-  double outputStartTime = tProblem->getOutputStartTime();
+  double initialTime = mpDataModel->getModel()->getInitialTime();
+  mpTimecourse->setInitialTime(initialTime);
+  double outputStartTime = initialTime + tProblem->getOutputStartTime();
   double stepSize = tProblem->getStepSize();
   int stepNumber = (int)tProblem->getStepNumber();
   mpTimecourse->setOutputStartTime(outputStartTime);
-  mpTimecourse->setOutputEndTime(tProblem->getDuration());
+  mpTimecourse->setOutputEndTime(initialTime + tProblem->getDuration());
 
-  if (outputStartTime > 0)
+  if ((outputStartTime - initialTime) > 0)
     {
       // adjust number of points, as the definition in COPASI includes the
       // interval (0, timeEnd), while in SED-ML it is (timeStart, timeEnd)
-      int initialSteps = (int)floor(outputStartTime / stepSize);
+      int initialSteps = (int)floor((outputStartTime - initialTime) / stepSize);
       mpTimecourse->setNumberOfPoints(stepNumber - initialSteps);
     }
   else
@@ -561,12 +620,15 @@ for (const auto & entry : SEDMLUtils::PARAMETER_KISAO_MAP)
 /**
  * Creates the simulations for SEDML.
  */
-std::string CSEDMLExporter::createSteadyStateTask(CDataModel& dataModel)
+std::string CSEDMLExporter::createSteadyStateTask()
 {
+  if (!mpDataModel || !mpSEDMLDocument)
+    return "";
+
   SedSteadyState *steady  = mpSEDMLDocument->createSteadyState();
   SEDML_SET_ID(steady, SEDMLUtils::getNextId("steady", mpSEDMLDocument->getNumSimulations()));
   //presently SEDML only supports time course
-  CCopasiTask* pTask = &dataModel.getTaskList()->operator[]("Steady-State");
+  CCopasiTask* pTask = &mpDataModel->getTaskList()->operator[]("Steady-State");
   CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(pTask->getProblem());
 
   // set the correct KISAO Term
@@ -586,7 +648,7 @@ std::string CSEDMLExporter::createSteadyStateTask(CDataModel& dataModel)
  * Creates the models for SEDML.
  */
 std::string
-CSEDMLExporter::createModel(CDataModel& dataModel, const std::string & modelRef)
+CSEDMLExporter::createModel(const std::string & modelRef)
 {
   SedModel *model = this->mpSEDMLDocument->createModel();
   SEDML_SET_ID(model, CDirEntry::baseName(modelRef));
@@ -602,58 +664,66 @@ CSEDMLExporter::createModel(CDataModel& dataModel, const std::string & modelRef)
  * Creates the Tasks for SEDML. This will always create a task running a time course
  * simulation. If the parameter scan has been specified, it will be exported as well.
  */
-void CSEDMLExporter::createTasks(CDataModel & dataModel)
+void CSEDMLExporter::createTasks()
 {
+  if (!mpDataModel)
+    return;
+
   // create time course task
-  CCopasiTask *pTask = &dataModel.getTaskList()->operator[]("Time-Course");
+  CCopasiTask *pTask = &mpDataModel->getTaskList()->operator[]("Time-Course");
   std::string taskId;
 
   if (!mExportExecutableTasksOnly || pTask->isScheduled())
     {
-      taskId = createTimeCourseTask(dataModel);
-      createDataGenerators(dataModel, taskId, pTask);
+      taskId = createTimeCourseTask();
+      createDataGenerators(taskId, pTask);
     }
 
   // export Scan Task
-  pTask = &dataModel.getTaskList()->operator[]("Scan");
+  pTask = &mpDataModel->getTaskList()->operator[]("Scan");
 
   if (!mExportExecutableTasksOnly || pTask->isScheduled())
     {
-      taskId = createScanTask(dataModel);
+      taskId = createScanTask();
 
       if (!taskId.empty())
-        createDataGenerators(dataModel, taskId, pTask);
+        createDataGenerators(taskId, pTask);
     }
 }
 
+void CSEDMLExporter::setSBMLNamespaces(const XMLNamespaces & sbmlns)
+{
+  pdelete(mpSBMLNamespaces);
+  mpSBMLNamespaces = new XMLNamespaces(sbmlns);
+}
+
+
 SedDataGenerator *
 CSEDMLExporter::createDataGenerator(
-  const std::string &sbmlId,
-  const std::string &targetXPathString,
+  const VariableInfo& info,
   const std::string& taskId,
   size_t i,
   size_t j)
 {
+  auto key = std::make_pair(taskId, info);
+  auto it = mDataGenerators.find(key);
+
+  if (it != mDataGenerators.end())
+    return it->second;
+
   SedDataGenerator *pPDGen = mpSEDMLDocument->createDataGenerator();
-  SEDML_SET_ID(pPDGen, sbmlId << "_" << j + 1 << "_" << taskId);
+  SEDML_SET_ID(pPDGen, info.getSbmlId() << "_" << j + 1 << "_" << taskId);
 
-  pPDGen->setName(sbmlId);
+  pPDGen->setName(info.getName());
 
-  SedVariable * pPVar = pPDGen->createVariable();
-  SEDML_SET_ID(pPVar, "p" << i + 1 << "_" << pPDGen->getName() << "_" << taskId);
+  SedVariable * pPVar = info.addToDataGenerator(pPDGen);
+  SEDML_SET_ID(pPVar, "p" << i + 1 << "_" << pPDGen->getId());
+
   pPVar->setTaskReference(taskId);
-  pPVar->setName(pPDGen->getName());
 
   pPDGen->setMath(SBML_parseFormula(pPVar->getId().c_str()));
 
-  if (targetXPathString == SEDML_TIME_URN)
-    {
-      pPVar->setSymbol(targetXPathString);
-    }
-  else
-    {
-      pPVar->setTarget(targetXPathString);
-    }
+  mDataGenerators[key] = pPDGen;
 
   return pPDGen;
 }
@@ -699,273 +769,392 @@ CSEDMLExporter::getParameterValueAsString(const CCopasiParameter * pParameter)
   return str.str();
 }
 
+
+void
+CSEDMLExporter::exportReport(const CReportDefinition * def)
+{
+  if (def == NULL || mpDataModel == NULL)
+    return;
+
+  SedDataGenerator * pPDGen;
+  SedReport * pReport = mpSEDMLDocument->createReport();
+  std::string name = def->getObjectName();
+  SEDMLUtils::removeCharactersFromString(name, "[]");
+  //
+  SEDML_SET_ID(pReport, "report"
+               << "_" << mCurrentTaskId);
+  pReport->setName(name);
+
+  std::vector< CRegisteredCommonName > header = *def->getHeaderAddr();
+  std::vector< CRegisteredCommonName > body =
+    def->isTable() ? *def->getTableAddr() : *def->getBodyAddr();
+
+  int dsCount = 0;
+
+  for (size_t i = 0; i < body.size(); ++i)
+    {
+      CRegisteredCommonName & current = body[i];
+
+      if (current == def->getSeparator().getCN())
+        continue;
+
+      const CDataObject * object = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(current));
+
+      if (object == NULL)
+        continue;
+
+      std::string xAxis = SEDMLUtils::getSbmlId(*object);
+      auto info = VariableInfo(object);
+
+      if (!info.isValid())
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export report '%s' variable '%s', as no xpath expression for it could be generated.", name.c_str(), object->getObjectDisplayName().c_str());
+        }
+
+      if (object->getCN() == mTimeCN)
+        pPDGen = mpCurrentTime;
+      else
+        pPDGen = createDataGenerator(
+                   info,
+                   mCurrentTaskId,
+                   i,
+                   0);
+
+      SedDataSet * pDS = pReport->createDataSet();
+      SEDML_SET_ID(pDS, "ds_" << ++dsCount << "_" << mCurrentTaskId);
+
+      if (def->isTable())
+        {
+          const CDataObject * headerObj = NULL;
+
+          if (header.size() > i)
+            headerObj = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(header[i]));
+          else
+            headerObj = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(body[i]));
+
+          if (headerObj != NULL)
+            pDS->setLabel(headerObj->getObjectDisplayName());
+          else
+            pDS->setLabel(xAxis);
+        }
+      else
+        pDS->setLabel(xAxis);
+
+      pDS->setDataReference(pPDGen->getId());
+    }
+
+}
+
 /**
  * Creates the data generators for SEDML.
  */
 void
-CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
-                                     std::string & taskId,
+CSEDMLExporter::createDataGenerators(std::string & taskId,
                                      CCopasiTask* task)
 {
-  const CModel* pModel = dataModel.getModel();
+  if (!mpDataModel || !task)
+    return;
+
+  mCurrentTaskId = taskId;
+  mpCurrentTask = task;
+
+  const CModel* pModel = mpDataModel->getModel();
   std::vector<std::string> stringsContainer; //split string container
 
   if (pModel == NULL)
     CCopasiMessage(CCopasiMessage::ERROR, "SED-ML: No model for this SED-ML document. An SBML model must exist for every SED-ML document.");
 
-  //create generator for special variable time
-  const CDataObject* pTime = static_cast<const CDataObject *>(dataModel.getModel()->getObject(CCommonName("Reference=Time")));
-  SedDataGenerator *pTimeDGenp = this->mpSEDMLDocument->createDataGenerator();
-  SEDML_SET_ID(pTimeDGenp, "time_" << taskId);
-  pTimeDGenp->setName(pTime->getObjectName());
-  SedVariable *pTimeVar = pTimeDGenp->createVariable();
-  SEDML_SET_ID(pTimeVar, "var_time_" << taskId);
-  pTimeVar->setTaskReference(taskId);
-  pTimeVar->setSymbol(SEDML_TIME_URN);
-  pTimeDGenp->setMath(SBML_parseFormula(pTimeVar->getId().c_str()));
-
-  size_t i, imax = dataModel.getPlotDefinitionList()->size();
-  SedDataGenerator *pPDGen;
+  size_t i, imax = mpDataModel->getPlotDefinitionList()->size();
 
   if (imax == 0 && (task == NULL || task->getReport().getTarget().empty()))
     CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: No plot/report definition for this SED-ML document.");
 
-  // export report
+  //create generator for special variable time
+  setCurrentTime(taskId);
+
+  // export report if we have one
   if (task != NULL && !task->getReport().getTarget().empty())
     {
       const CReportDefinition* def = task->getReport().getReportDefinition();
-
-      if (def != NULL)
-        {
-          SedReport* pReport = mpSEDMLDocument->createReport();
-          std::string name = def->getObjectName();
-          SEDMLUtils::removeCharactersFromString(name, "[]");
-          //
-          SEDML_SET_ID(pReport, "report" << "_" << taskId);
-          pReport->setName(name);
-
-          std::vector<CRegisteredCommonName> header = *def->getHeaderAddr();
-          std::vector<CRegisteredCommonName> body =
-            def->isTable() ? *def->getTableAddr() :
-            *def->getBodyAddr();
-
-          int dsCount = 0;
-
-          for (size_t i = 0; i < body.size(); ++i)
-            {
-              CRegisteredCommonName& current = body[i];
-
-              if (current == def->getSeparator().getCN()) continue;
-
-              const CDataObject *object = CObjectInterface::DataObject(dataModel.getObjectFromCN(current));
-
-              if (object == NULL) continue;
-
-              std::string xAxis = SEDMLUtils::getSbmlId(*object);
-              std::string targetXPathStringX;
-
-              if (!xAxis.empty())
-                targetXPathStringX = SEDMLUtils::getXPathForObject(*object);
-
-              if (targetXPathStringX.empty())
-                {
-                  const std::string& typeX = object->getObjectName();
-                  xAxis = object->getObjectDisplayName();
-
-                  targetXPathStringX = SEDMLUtils::getXPathAndName(xAxis, typeX,
-                                       pModel, dataModel);
-
-                  if (targetXPathStringX.empty())
-                    {
-                      CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export report '%s' variable '%s', as no xpath expression for it could be generated.", name.c_str(), object->getObjectDisplayName().c_str());
-                      continue;
-                    }
-                }
-
-              if (object->getCN() == pTime->getCN())
-                pPDGen = pTimeDGenp;
-              else
-                pPDGen = createDataGenerator(
-                           xAxis,
-                           targetXPathStringX,
-                           taskId,
-                           i,
-                           0
-                         );
-
-              SedDataSet* pDS = pReport->createDataSet();
-              SEDML_SET_ID(pDS, "ds_" << ++dsCount << "_" << taskId);
-
-              if (def->isTable())
-                {
-                  const CDataObject *headerObj = NULL;
-
-                  if (header.size() > i)
-                    headerObj = CObjectInterface::DataObject(dataModel.getObjectFromCN(header[i]));
-                  else
-                    headerObj = CObjectInterface::DataObject(dataModel.getObjectFromCN(body[i]));
-
-                  if (headerObj != NULL)
-                    pDS->setLabel(headerObj->getObjectDisplayName());
-                  else
-                    pDS->setLabel(xAxis);
-                }
-              else
-                pDS->setLabel(xAxis);
-
-              pDS->setDataReference(pPDGen->getId());
-            }
-        }
+      exportReport(def);
     }
 
   // export plots
-  SedPlot2D* pPSedPlot;
-  SedCurve* pCurve; // = pPSedPlot->createCurve();
-
   for (i = 0; i < imax; i++)
     {
-      const CPlotSpecification* pPlot = &dataModel.getPlotDefinitionList()->operator[](i);
-
-      if (mExportActivePlotsOnly && !pPlot->isActive())
-        continue; // ignore deactivated plots
-
-      if (mExportSpecificPlots && !pPlot->appliesTo(task))
-        continue; // ignore plots that don't apply to this task
-
-      pPSedPlot = this->mpSEDMLDocument->createPlot2D();
-      std::string plotName = pPlot->getObjectName();
-
-      SEDMLUtils::removeCharactersFromString(plotName, "[]");
-
-      SEDML_SET_ID(pPSedPlot, "plot_" << mpSEDMLDocument->getNumOutputs()
-                   << "_" << taskId);
-      pPSedPlot->setName(plotName);
-
-      size_t j, jmax = pPlot->getItems().size();
-
-      for (j = 0; j < jmax; j++)
-        {
-          const CPlotItem* pPlotItem = & pPlot->getItems()[j];
-
-          const CDataObject *objectX, *objectY;
-
-          if (!pPlotItem->getChannels().empty())
-            {
-              objectX = CObjectInterface::DataObject(dataModel.getObjectFromCN(pPlotItem->getChannels()[0]));
-            }
-          else
-            {
-              CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s', as it has no data channel.", pPlotItem->getObjectName().c_str());
-              continue;
-            }
-
-          if (objectX == NULL)
-            {
-              CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as it cannot be resolved.",  pPlotItem->getObjectName().c_str(), pPlotItem->getChannels()[0].c_str());
-              continue;
-            }
-
-          bool xIsTime = objectX->getCN() == pTime->getCN();
-
-          if (pPlotItem->getChannels().size() >= 2)
-            {
-              objectY = CObjectInterface::DataObject(dataModel.getObjectFromCN(pPlotItem->getChannels()[1]));
-            }
-          else
-            {
-              CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s', as it has only 1 data channel.", pPlotItem->getObjectName().c_str());
-              continue;
-            }
-
-          if (objectY == NULL)
-            {
-              CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as it cannot be resolved.",  pPlotItem->getObjectName().c_str(), pPlotItem->getChannels()[1].c_str());
-              continue;
-            }
-
-          const std::string& type = objectY->getObjectName();
-
-          std::string yAxis = objectY->getObjectDisplayName();
-
-          std::string sbmlId = SEDMLUtils::getSbmlId(*objectY);
-          std::string targetXPathString;
-
-          if (!sbmlId.empty())
-            targetXPathString = SEDMLUtils::getXPathForObject(*objectY);
-
-          if (targetXPathString.empty())
-            {
-              sbmlId = yAxis;
-
-              targetXPathString = SEDMLUtils::getXPathAndName(sbmlId, type,
-                                  pModel, dataModel);
-
-              if (targetXPathString.empty())
-                {
-                  CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as no xpath expression for it could be generated.", pPlotItem->getObjectName().c_str(), pPlotItem->getChannels()[1].c_str());
-                  continue;
-                }
-            }
-
-          pPDGen = createDataGenerator(
-                     sbmlId,
-                     targetXPathString,
-                     taskId,
-                     i,
-                     j
-                   );
-
-          pPDGen->setName(yAxis);
-
-          pCurve = pPSedPlot->createCurve();
-          SEDML_SET_ID(pCurve, "p" << i + 1 << "_curve_" << j + 1 << "_" << taskId);
-          pCurve->setLogX(pPlot->isLogX());
-          pCurve->setLogY(pPlot->isLogY());
-          pCurve->setName(yAxis);
-          pCurve->setYDataReference(pPDGen->getId());
-
-          if (xIsTime)
-            {
-              pCurve->setXDataReference(pTimeDGenp->getId());
-            }
-          else
-            {
-              const std::string& typeX = objectX->getObjectName();
-              std::string xAxis = objectX->getObjectDisplayName();
-              std::string targetXPathStringX = SEDMLUtils::getXPathAndName(xAxis, typeX,
-                                               pModel, dataModel);
-
-              pPDGen = createDataGenerator(
-                         xAxis,
-                         targetXPathStringX,
-                         taskId,
-                         i,
-                         j
-                       );
-              pCurve->setXDataReference(pPDGen->getId());
-            }
-        }
+      const CPlotSpecification* pPlot = &mpDataModel->getPlotDefinitionList()->operator[](i);
+      exportNthPlot(pPlot, i);
     }
 }
 
-CSEDMLExporter::CSEDMLExporter()
-  : mpSEDMLDocument(NULL)
-  , mSEDMLLevel(1)
-  , mSEDMLVersion(2)
-  , mpTimecourse(NULL)
-  , mpTimecourseTask(NULL)
-  , mGeneratedIds()
-  , mExportExecutableTasksOnly(false)
-  , mExportActivePlotsOnly(true)
-  , mExportSpecificPlots(false)
-  , mModelId()
+
+void
+CSEDMLExporter::exportNthPlot(const CPlotSpecification * pPlot,
+                              size_t i)
 {
+  if (!pPlot || !mpDataModel)
+    return;
+
+  if (mExportActivePlotsOnly && !pPlot->isActive())
+    return; // ignore deactivated plots
+
+  if (mExportSpecificPlots && !pPlot->appliesTo(mpCurrentTask))
+    return; // ignore plots that don't apply to this task
+
+  mpCurrentSpec = pPlot;
+  mpCurrentPlot = mpSEDMLDocument->createPlot2D();
+  mpCurrentPlot3D = NULL;
+
+  std::string plotName = pPlot->getObjectName();
+  SEDMLUtils::removeCharactersFromString(plotName, "[]");
+
+  SEDML_SET_ID(mpCurrentPlot, "plot_" << mpSEDMLDocument->getNumOutputs()
+               << "_" << mCurrentTaskId);
+  mpCurrentPlot->setName(plotName);
+
+  size_t j, jmax = pPlot->getItems().size();
+
+  for (j = 0; j < jmax; j++)
+    {
+      const CPlotItem * pPlotItem = &pPlot->getItems()[j];
+      exportPlotItem(pPlotItem, i, j);
+    }
+
+  if (mpCurrentPlot3D != NULL && mpCurrentPlot->getNumCurves() == 0)
+    {
+      // if the plot had only a contour remove the plot without curves
+      std::string id = mpCurrentPlot->getId();
+      delete mpSEDMLDocument->removeOutput(id);
+      mpCurrentPlot3D->setId(id);
+    }
 
 }
 
-CSEDMLExporter::~CSEDMLExporter()
-{
 
+void CSEDMLExporter::exportPlotItem(const CPlotItem * pPlotItem, size_t i, size_t j)
+{
+  if (!pPlotItem || !mpCurrentSpec || !mpDataModel)
+    return;
+
+  // first resolve all elements needed
+  std::vector< std::pair< const CDataObject *, VariableInfo > > resolvedElements;
+
+for (auto & channel : pPlotItem->getChannels())
+    {
+      const CDataObject * object = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(channel));
+
+      if (!object)
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as it cannot be resolved.", pPlotItem->getObjectName().c_str(), channel.c_str());
+          return;
+        }
+
+      auto info = VariableInfo(object);
+
+      if (!info.isValid())
+        {
+          CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s' variable '%s', as no xpath expression for it could be generated.", pPlotItem->getObjectName().c_str(), channel.c_str());
+          return;
+        }
+
+      resolvedElements.push_back(std::make_pair(object, info));
+    }
+
+  if (pPlotItem->getChannels().size() < 2)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s', as it has no data channels.", pPlotItem->getObjectName().c_str());
+      return;
+    }
+
+  switch (pPlotItem->getType())
+    {
+      case CPlotItem::curve2d:
+      {
+        SedCurve * pCurve = mpCurrentPlot->createCurve();
+        SEDML_SET_ID(pCurve, "p" << i + 1 << "_curve_" << j + 1 << "_" << mCurrentTaskId);
+        pCurve->setLogX(mpCurrentSpec->isLogX());
+        pCurve->setLogY(mpCurrentSpec->isLogY());
+        pCurve->setName(pPlotItem->getObjectName());
+
+        SedDataGenerator * pDG = createDataGenerator(
+                                   resolvedElements[0].second,
+                                   mCurrentTaskId,
+                                   i,
+                                   j);
+
+        pCurve->setXDataReference(pDG->getId());
+
+        pDG = createDataGenerator(
+                resolvedElements[1].second,
+                mCurrentTaskId,
+                i,
+                j);
+
+        pCurve->setYDataReference(pDG->getId());
+        pCurve->setStyle(exportStyleForItem(pPlotItem));
+      }
+      break;
+
+      case CPlotItem::bandedGraph:
+      {
+        SedShadedArea * pCurve = mpCurrentPlot->createShadedArea();
+        SEDML_SET_ID(pCurve, "p" << i + 1 << "_curve_" << j + 1 << "_" << mCurrentTaskId);
+        pCurve->setLogX(mpCurrentSpec->isLogX());
+        pCurve->setName(pPlotItem->getObjectName());
+
+        SedDataGenerator * pDG = createDataGenerator(
+                                   resolvedElements[0].second,
+                                   mCurrentTaskId,
+                                   i,
+                                   j);
+        pCurve->setXDataReference(pDG->getId());
+
+        pDG = createDataGenerator(
+                resolvedElements[1].second,
+                mCurrentTaskId,
+                i,
+                j);
+        pCurve->setYDataReferenceFrom(pDG->getId());
+
+        pDG = createDataGenerator(
+                resolvedElements[2].second,
+                mCurrentTaskId,
+                i,
+                j);
+        pCurve->setYDataReferenceTo(pDG->getId());
+        pCurve->setStyle(exportStyleForItem(pPlotItem));
+      }
+      break;
+
+      case CPlotItem::spectogram:
+      {
+        // need 3d plot here
+        if (mpCurrentPlot3D == NULL)
+          {
+            mpCurrentPlot3D = mpSEDMLDocument->createPlot3D();
+            mpCurrentPlot3D->setId(mpCurrentPlot->getId() + "_3d");
+            mpCurrentPlot3D->setName(mpCurrentPlot->getName());
+            mGeneratedIds.insert(mpCurrentPlot->getId() + "_3d");
+          }
+
+        SedSurface * pCurve = mpCurrentPlot3D->createSurface();
+        pCurve->setType(SEDML_SURFACETYPE_CONTOUR);
+        pCurve->setName(pPlotItem->getObjectName());
+        pCurve->setLogX(mpCurrentSpec->isLogX());
+        pCurve->setLogY(mpCurrentSpec->isLogY());
+
+        SedDataGenerator * pDG = createDataGenerator(
+                                   resolvedElements[0].second, mCurrentTaskId, i, j
+                                 );
+        pCurve->setXDataReference(pDG->getId());
+
+        pDG = createDataGenerator(
+                resolvedElements[1].second, mCurrentTaskId, i, j);
+        pCurve->setYDataReference(pDG->getId());
+
+        pDG = createDataGenerator(
+                resolvedElements[2].second, mCurrentTaskId, i, j);
+        pCurve->setZDataReference(pDG->getId());
+
+        pCurve->setStyle(exportStyleForItem(pPlotItem));
+      }
+      break;
+
+      default :
+        CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export plotItem '%s', because it has an unsupported type.", pPlotItem->getObjectName().c_str());
+        return;
+    }
+}
+
+std::string CSEDMLExporter::exportStyleForItem(const CPlotItem * pPlotItem)
+{
+  if (!pPlotItem || !mpSEDMLDocument || mSEDMLVersion < 4)
+    return "";
+
+  if (pPlotItem->getType() == CPlotItem::spectogram) // no styles for contours
+    return "";
+
+  auto it = mStyleMap.find(pPlotItem);
+
+  if (it != mStyleMap.end())
+    return it->second;
+
+  auto style = mpSEDMLDocument->createStyle();
+  SEDML_SET_ID(style, SEDMLUtils::getNextId("style", mpSEDMLDocument->getNumStyles()));
+
+  auto lineWidth = pPlotItem->getValue< C_FLOAT64 >("Line width");
+  auto lineType = (CPlotItem::LineType) pPlotItem->getValue< unsigned C_INT32 >("Line type");
+  auto symbolType = (CPlotItem::SymbolType) pPlotItem->getValue< unsigned C_INT32 >("Symbol subtype");
+  auto lineStyle = (CPlotItem::LineStyle) pPlotItem->getValue< unsigned C_INT32 >("Line subtype");
+  auto color = pPlotItem->getValue< std::string >("Color");
+  auto rgba = SEDMLUtils::argbToRgba(color, false);
+  bool haveColor = !color.empty() && color != "auto";
+
+  auto line = style->createLineStyle();
+
+  if (lineType == CPlotItem::LineType::Points)
+    {
+      line->setType(SEDML_LINETYPE_NONE);
+      auto symbol = style->createMarkerStyle();
+      symbol->setType(SEDML_MARKERTYPE_CIRCLE);
+      symbol->setSize(0.1);
+
+      if (haveColor)
+        symbol->setLineColor(rgba);
+    }
+  else
+    {
+      line->setType((LineType_t) SEDMLUtils::lineTypeToSed((int) lineStyle));
+      line->setThickness(lineWidth);
+
+      if (haveColor)
+        line->setColor(rgba);
+    }
+
+  if (lineType == CPlotItem::LineType::LinesAndSymbols || lineType == CPlotItem::LineType::Symbols)
+    {
+      auto symbol = style->createMarkerStyle();
+      symbol->setType((MarkerType_t) SEDMLUtils::symbolToSed((int) symbolType));
+      symbol->setSize(8);
+
+      if (haveColor)
+        symbol->setLineColor(rgba);
+    }
+
+
+  if (pPlotItem->getType() == CPlotItem::bandedGraph && haveColor)
+    {
+      auto fill = style->createFillStyle();
+      fill->setColor(SEDMLUtils::argbToRgba(color, false));
+    }
+
+  mStyleMap[pPlotItem] = style->getId();
+
+  return style->getId();
+}
+
+void CSEDMLExporter::setCurrentTime(std::string & taskId)
+{
+  if (!mpDataModel)
+    return;
+
+  const CDataObject * pTime = static_cast< const CDataObject * >(mpDataModel->getModel()->getObject(CCommonName("Reference=Time")));
+  mTimeCN = pTime->getCN();
+  auto it = mDataGenerators.find(std::make_pair(taskId, VariableInfo(pTime)));
+
+  if (it != mDataGenerators.end())
+    mpCurrentTime = it->second;
+  else
+    {
+      mpCurrentTime = this->mpSEDMLDocument->createDataGenerator();
+      SEDML_SET_ID(mpCurrentTime, "time_" << taskId);
+      mpCurrentTime->setName(pTime->getObjectName());
+      SedVariable * pTimeVar = mpCurrentTime->createVariable();
+      SEDML_SET_ID(pTimeVar, "var_time_" << taskId);
+      pTimeVar->setTaskReference(taskId);
+      pTimeVar->setSymbol(SEDML_TIME_URN);
+      mpCurrentTime->setMath(SBML_parseFormula(pTimeVar->getId().c_str()));
+    }
 }
 
 LIBSEDML_CPP_NAMESPACE::SedDocument * CSEDMLExporter::getSEDMLDocument()
@@ -991,4 +1180,46 @@ bool CSEDMLExporter::writeSedMLToFile(const std::string & filename) const
   writer.setProgramVersion(CVersion::VERSION.getVersion());
 
   return writer.writeSedMLToFile(mpSEDMLDocument, filename);
+}
+
+bool CSEDMLExporter::KeyComparer::operator()(const TaskVarKey & lhs, const TaskVarKey & rhs) const
+{
+  if (lhs.first != rhs.first)
+    return lhs.first < rhs.first;
+
+  return lhs.second < rhs.second;
+}
+
+CDataModel* CSEDMLExporter::getDataModel()
+{
+  return mpDataModel;
+}
+
+void CSEDMLExporter::setDataModel(CDataModel* pDataModel)
+{
+  mpDataModel = pDataModel;
+}
+
+bool CSEDMLExporter::PlotItemStyleComparer::operator()(const CPlotItem* lhs, const CPlotItem* rhs) const
+{
+  return
+    std::tie(
+      lhs->getValue< C_FLOAT64 >("Line width"),
+      lhs->getValue< unsigned C_INT32 >("Line type"),
+      lhs->getValue< unsigned C_INT32 >("Symbol subtype"),
+      lhs->getValue< unsigned C_INT32 >("Line subtype"),
+      lhs->getValue< std::string >("Color")
+    )
+
+    <
+
+    std::tie
+    (
+      rhs->getValue< C_FLOAT64 >("Line width"),
+      rhs->getValue< unsigned C_INT32 >("Line type"),
+      rhs->getValue< unsigned C_INT32 >("Symbol subtype"),
+      rhs->getValue< unsigned C_INT32 >("Line subtype"),
+      rhs->getValue< std::string >("Color")
+    );
+
 }
