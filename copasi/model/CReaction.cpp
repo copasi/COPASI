@@ -1488,6 +1488,33 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
   return os;
 }
 
+// static
+std::string CReaction::sanitizeSBMLId(const std::string & id)
+{
+  // Bug 3083: valid SBML Ids are valid COPASI Ids. However we allow importing invalid Ids
+  // ID       (\"([^\\\"]|\\.)*\"|[a-z_A-Z][a-z_A-Z0-9]*)
+  std::cout << id.find_first_of("_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") << ", " << id.find_first_not_of("_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") << std::endl;
+
+  if (id.find_first_of("_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != 0
+      || id.find_first_not_of("_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != std::string::npos)
+    return "\"" + id + "\"";
+
+  // We need to check that we have no reserved name.
+  static const char * Reserved[] =
+  {
+    "pi", "exponentiale", "true", "false", "infinity", "nan",
+    "PI", "EXPONENTIALE", "TRUE", "FALSE", "INFINITY", "NAN"
+  };
+
+  size_t j, jmax = 12;
+
+  for (j = 0; j < jmax; j++)
+    if (id == Reserved[j])
+      return "\"" + id + "\"";
+
+  return id;
+}
+
 CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject* objectNode, std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> >& replacementMap, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   CEvaluationNodeVariable* pVariableNode = NULL;
@@ -1513,22 +1540,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
               if (dynamic_cast<CMetab*>(object) && pos != copasi2sbmlmap.end())
                 {
                   Species* pSpecies = dynamic_cast<Species*>(pos->second);
-                  id = pSpecies->getId();
-
-                  // We need to check that we have no reserved name.
-                  const char *Reserved[] =
-                  {
-                    "pi", "exponentiale", "true", "false", "infinity", "nan",
-                    "PI", "EXPONENTIALE", "TRUE", "FALSE", "INFINITY", "NAN"
-                  };
-
-                  size_t j, jmax = 12;
-
-                  for (j = 0; j < jmax; j++)
-                    if (id == Reserved[j]) break;
-
-                  if (j != jmax)
-                    id = "\"" + id + "\"";
+                  id = sanitizeSBMLId(pSpecies->getId());
 
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::SubType::DEFAULT, id);
 
@@ -1612,9 +1624,9 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                 {
                   // usage = "PARAMETER"
                   if (pos != copasi2sbmlmap.end())
-                    id = dynamic_cast< Parameter * >(pos->second)->getId();
+                    id = sanitizeSBMLId(dynamic_cast< Parameter * >(pos->second)->getId());
                   else
-                    id = dynamic_cast< CModelValue * >(object)->getSBMLId();
+                    id = sanitizeSBMLId(dynamic_cast< CModelValue * >(object)->getSBMLId());
 
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::SubType::DEFAULT, id);
 
@@ -1628,7 +1640,8 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
               else if (dynamic_cast< CCompartment * >(object) && pos != copasi2sbmlmap.end())
                 {
                   // usage = "VOLUME"
-                  id = dynamic_cast<Compartment*>(pos->second)->getId();
+                  id = sanitizeSBMLId(dynamic_cast<Compartment*>(pos->second)->getId());
+
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::SubType::DEFAULT, id);
 
                   if (replacementMap.find(id) == replacementMap.end())

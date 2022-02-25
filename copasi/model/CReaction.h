@@ -547,6 +547,14 @@ private:
   void initializeParameterMapping();
 
   /**
+   * Convert SBML to a valid COPASI infix identifier
+   *
+   * @param const std::string & id
+   * @return std::string
+   */
+  static std::string sanitizeSBMLId(const std::string & id);
+
+  /**
    * Replaces all object nodes in an expression tree by variable nodes.
    * The usage term of the variable nodes is recorded in terms
    * of CFunctionParameters that are stored in the replacementMap.
