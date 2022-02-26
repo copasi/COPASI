@@ -753,7 +753,7 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
   CVector< C_FLOAT64 > Distance;
 
   CMatrix< C_FLOAT64 > JacobianWithTime;
-  mpContainer->calculateJacobian(JacobianWithTime, *mpDerivationFactor, false, !mpContainer->isAutonomous());
+  mpContainer->calculateJacobian(JacobianWithTime, *mpDerivationFactor, true, !mpContainer->isAutonomous());
 
   CLeastSquareSolution::ResultInfo Info = CLeastSquareSolution::solve(JacobianWithTime, mdxdt, mAtol, mCompartmentVolumes, mpContainer->getQuantity2NumberFactor(), Distance);
 
