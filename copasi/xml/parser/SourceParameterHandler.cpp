@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,24 +49,27 @@ CXMLHandler * SourceParameterHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case SourceParameter:
-        Reference =
-          mpParser->getAttributeValue("reference", papszAttrs);
-
-        pObject = mpData->mKeyMap.get(Reference);
-
-        if ((pParameter = dynamic_cast< CCopasiParameter * >(pObject)))
+        if (mpData->pFunctionVariable != NULL)
           {
-            // We need to assure that the parameter name for variables which are not
-            // of type vector match.
-            if (mpData->pFunctionVariable->getType() < CFunctionParameter::DataType::VINT32)
-              pParameter->setObjectName(mpData->pFunctionVariable->getObjectName());
+            Reference =
+              mpParser->getAttributeValue("reference", papszAttrs);
 
-            mpData->SourceParameterObjects[mpData->pFunctionVariable->getObjectName()].push_back(pParameter);
+            pObject = mpData->mKeyMap.get(Reference);
+
+            if ((pParameter = dynamic_cast< CCopasiParameter * >(pObject)))
+              {
+                // We need to assure that the parameter name for variables which are not
+                // of type vector match.
+                if (mpData->pFunctionVariable->getType() < CFunctionParameter::DataType::VINT32)
+                  pParameter->setObjectName(mpData->pFunctionVariable->getObjectName());
+
+                mpData->SourceParameterObjects[mpData->pFunctionVariable->getObjectName()].push_back(pParameter);
+              }
+            else if ((pME = dynamic_cast< CModelEntity * >(pObject)))
+              mpData->SourceParameterObjects[mpData->pFunctionVariable->getObjectName()].push_back(pME);
+            else
+              mpData->SourceParameterObjects[mpData->pFunctionVariable->getObjectName()].push_back(CFunctionParameterMap::pUnmappedObject);
           }
-        else if ((pME = dynamic_cast<CModelEntity*>(pObject)))
-          mpData->SourceParameterObjects[mpData->pFunctionVariable->getObjectName()].push_back(pME);
-        else
-          mpData->SourceParameterObjects[mpData->pFunctionVariable->getObjectName()].push_back(CFunctionParameterMap::pUnmappedObject);
 
         break;
 

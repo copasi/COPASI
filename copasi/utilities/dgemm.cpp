@@ -223,7 +223,7 @@ bool dgemm::eval(const C_FLOAT64 & alpha, const dgemm::Vector & A, const dgemm::
 
   char TRANS = 'N';
   C_INT M = (C_INT) B.numCols();
-  C_INT N = (C_INT) 1;
+  C_INT N = 1;
   C_INT K = (C_INT) A.size();
   C_INT LDA = std::max< C_INT >(1, M);
   C_INT LDB = std::max< C_INT >(1, K);
@@ -245,8 +245,8 @@ bool dgemm::eval(const C_FLOAT64 & alpha, const dgemm::Vector & A, const dgemm::
     return false;
 
   char TRANS = 'N';
-  C_INT M = (C_INT) 1;
-  C_INT N = (C_INT) 1;
+  C_INT M = 1;
+  C_INT N = 1;
   C_INT K = (C_INT) A.size();
   C_INT LDA = std::max< C_INT >(1, M);
   C_INT LDB = std::max< C_INT >(1, K);
