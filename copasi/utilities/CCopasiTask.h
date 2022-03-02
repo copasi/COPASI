@@ -445,6 +445,13 @@ protected:
    */
   virtual void signalMethodChanged();
 
+  /**
+   * Check whether the task definition is valid
+   *
+   * @return bool isValid
+   */
+  bool isTaskValid() const;
+
 private:
   void initObjects();
 

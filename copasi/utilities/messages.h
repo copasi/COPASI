@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -365,6 +365,7 @@ const MESSAGES Messages[] =
   {MCCopasiTask + 6, "CCopasiTask (6): Requested output object:\n '%s'\n not found. It will be ignored."},
   {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling output."},
   {MCCopasiTask + 8, "CCopasiTask (8): '%d' Function Evaluations out of '%d' failed."},
+  {MCCopasiTask + 9, "CCopasiTask (9): Recursive call to '%s' through tasks '%s'."},
 
   {
     MCSteadyState + 1, "CSteadyState (1): The model is explicitly time dependent. "

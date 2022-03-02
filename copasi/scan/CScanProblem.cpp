@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -81,6 +81,24 @@ void CScanProblem::initializeParameter()
 }
 
 //***********************************
+// virtual
+CCopasiTask * CScanProblem::getSubTask() const
+{
+  CDataModel* pDataModel = getObjectDataModel();
+  CTaskEnum::Task SubTaskType = getSubtask();
+
+  if (pDataModel != NULL)
+    {
+      CDataVectorN< CCopasiTask >::iterator it = pDataModel->getTaskList()->begin();
+      CDataVectorN< CCopasiTask >::iterator end = pDataModel->getTaskList()->end();
+
+      for (; it != end; ++it)
+        if (it->getType() == SubTaskType)
+          return &*it;
+    }
+
+  return NULL;
+}
 
 void CScanProblem::setSubtask(CTaskEnum::Task type)
 {
@@ -119,7 +137,6 @@ void CScanProblem::setContinueOnError(bool coe)
 {
   setValue("Continue on Error", coe);
 }
-
 
 //************************************
 
@@ -200,7 +217,6 @@ CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, siz
       tmp->addParameter("Use Values", CCopasiParameter::Type::BOOL, false);
     }
 
-
   if (type == SCAN_RANDOM)
     {
       tmp->addParameter("Distribution type", CCopasiParameter::Type::UINT, (unsigned C_INT32)0);
@@ -222,18 +238,10 @@ void CScanProblem::clearScanItems()
 
 bool CScanProblem::restore(const bool & updateModel)
 {
-  auto * dm = getObjectDataModel();
+  CCopasiTask * pSubTask = getSubTask();
 
-  if (dm == NULL)
-    return false;
-
-  auto& tasks = *dm->getTaskList();
-
-for (auto & task : tasks)
-    {
-      if (task.getType() == getSubtask())
-        return task.restore();
-    }
+  if (pSubTask != NULL)
+    return pSubTask->restore();
 
   return true;
 }

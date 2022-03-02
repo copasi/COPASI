@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,6 +34,7 @@
 #include "copasi/utilities/CReadConfig.h"
 #include "copasi/utilities/utility.h"
 #include "copasi/utilities/CLinkMatrix.h"
+#include "copasi/utilities/dgemm.h"
 
 #include "copasi/lapack/blaswrap.h"
 #include "copasi/lapack/lapackwrap.h"
@@ -322,21 +323,11 @@ bool CMCAMethod::calculateUnscaledConcentrationCC()
   // aux2 := RedStoi * aux1
   // DGEMM (TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC)
   // C := alpha A B + beta C
-  CMatrix<C_FLOAT64> aux2(mReducedStoichiometry.numRows(), aux1.numCols());
+  CMatrix<C_FLOAT64> aux2;
+  dgemm::eval(1.0, mReducedStoichiometry, aux1, 0.0, aux2);
 
-  char TRANSA = 'N';
-  char TRANSB = 'N';
   C_INT M = (C_INT) aux2.numCols(); /* LDA, LDC */
   C_INT N = (C_INT) aux2.numRows();
-  C_INT K = (C_INT) mReducedStoichiometry.numCols();
-  C_FLOAT64 Alpha = 1.0;
-  C_INT LDA = (C_INT) std::max< size_t >(1, aux1.numCols());
-  C_INT LDB = (C_INT) std::max< size_t >(1, mReducedStoichiometry.numCols());
-  C_FLOAT64 Beta = 0.0;
-  C_INT LDC = (C_INT) std::max< size_t >(1, aux2.numCols());
-
-  dgemm_(&TRANSA, &TRANSB, &M, &N, &K, &Alpha, aux1.array(), &LDA,
-         mReducedStoichiometry.array(), &LDB, &Beta, aux2.array(), &LDC);
 
   // Invert aux2
   C_INT info;
@@ -361,22 +352,8 @@ bool CMCAMethod::calculateUnscaledConcentrationCC()
   if (info != 0) return false;
 
   // aux1 := -1.0 * aux2 * RedStoi
-
+  dgemm::eval(-1.0, aux2, mReducedStoichiometry, 0.0, aux1);
   aux1.resize(aux2.numRows(), mReducedStoichiometry.numCols());
-
-  M = (C_INT) aux1.numCols();
-  N = (C_INT) aux1.numRows();
-  K = (C_INT) aux2.numCols();
-  Alpha = -1.0;
-  LDA = (C_INT) std::max< size_t >(1, mReducedStoichiometry.numCols());
-  LDB = (C_INT) std::max< size_t >(1, aux2.numCols());
-  Beta = 0.0;
-  LDC = (C_INT) std::max< size_t >(1, aux1.numCols());
-
-  // DGEMM (TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC)
-  // C := alpha A B + beta C
-  dgemm_(&TRANSA, &TRANSB, &M, &N, &K, &Alpha, mReducedStoichiometry.array(), &LDA,
-         aux2.array(), &LDB, &Beta, aux1.array(), &LDC);
 
   // mUnscaledConcCC := L * aux1
   mLinkZero.leftMultiply(aux1, mUnscaledConcCC);
@@ -403,21 +380,7 @@ bool CMCAMethod::calculateUnscaledFluxCC(const bool & status)
 
   if (status)
     {
-      char TRANSA = 'N';
-      char TRANSB = 'N';
-      M = (C_INT) mUnscaledFluxCC.numCols(); /* LDA, LDC */
-      C_INT N = (C_INT) mUnscaledFluxCC.numRows();
-      C_INT K = (C_INT) mUnscaledElasticities.numCols();
-
-      C_INT LDA = (C_INT) std::max< size_t >(1, mUnscaledConcCC.numCols());
-      C_INT LDB = (C_INT) std::max< size_t >(1, mUnscaledElasticities.numCols());
-      C_INT LDC = (C_INT) std::max< size_t >(1, mUnscaledFluxCC.numCols());
-
-      Alpha = 1.0;
-      Beta = 1.0;
-
-      dgemm_(&TRANSA, &TRANSB, &M, &N, &K, &Alpha, mUnscaledConcCC.array(), &LDA,
-             mUnscaledElasticities.array(), &LDB, &Beta, mUnscaledFluxCC.array(), &LDC);
+      dgemm::eval(1.0, mUnscaledElasticities, mUnscaledConcCC, 1.0, mUnscaledFluxCC);
     }
 
   return status;

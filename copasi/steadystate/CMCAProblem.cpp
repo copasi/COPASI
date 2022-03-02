@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -116,13 +116,13 @@ bool CMCAProblem::isSteadyStateRequested() const
   return (getValue< std::string >("Steady-State") != "");
 }
 
-CSteadyStateTask * CMCAProblem::getSubTask() const
+CCopasiTask * CMCAProblem::getSubTask() const
 {
-  CSteadyStateTask * pSubTask = NULL;
+  CCopasiTask * pSubTask = NULL;
 
   if (isSteadyStateRequested())
     {
-      pSubTask = dynamic_cast<CSteadyStateTask *>(CRootContainer::getKeyFactory()->get(getValue< std::string >("Steady-State")));
+      pSubTask = dynamic_cast< CCopasiTask * >(CRootContainer::getKeyFactory()->get(getValue< std::string >("Steady-State")));
 
       if (pSubTask == NULL)
         {
@@ -131,7 +131,7 @@ CSteadyStateTask * CMCAProblem::getSubTask() const
 
           if (pDataModel && pDataModel->getTaskList())
             {
-              pSubTask = dynamic_cast<CSteadyStateTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));
+              pSubTask = dynamic_cast< CCopasiTask * >(&pDataModel->getTaskList()->operator[]("Steady-State"));
             }
         }
     }

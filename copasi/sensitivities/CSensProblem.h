@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -86,9 +86,12 @@ public:
     TimeSeries,
     ParameterEstimation,
     Optimization,
-    CrossSection
+    CrossSection,
+    __SIZE
     //LyapunovExp
   };
+
+  static const CEnumAnnotation< CTaskEnum::Task, SubTaskType > SubTaskTypeToTask;
 
   static const std::string SubTaskName[];
 
@@ -117,6 +120,13 @@ public:
    *  Destructor.
    */
   virtual ~CSensProblem();
+
+  /**
+   * Retrieve the optional sub task
+   *
+   * @return CCopasiTask* * pSubTask
+   */
+  virtual CCopasiTask * getSubTask() const override;
 
   /**
    *   set the problem's SubTaskType:

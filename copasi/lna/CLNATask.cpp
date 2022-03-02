@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -102,7 +102,7 @@ bool CLNATask::initialize(const OutputFlag & of,
   //initialize reporting
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
-  CSteadyStateTask *pSubTask = pProblem->getSubTask();
+  CCopasiTask * pSubTask = pProblem->getSubTask();
 
   if (pSubTask)
     success &= pSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, mReport.getStream());
@@ -120,8 +120,7 @@ bool CLNATask::process(const bool & useInitialValues)
   CLNAMethod* pMethod = dynamic_cast<CLNAMethod *>(mpMethod);
   assert(pMethod);
 
-  CSteadyStateTask *pSubTask =
-    dynamic_cast<CLNAProblem *>(mpProblem)->getSubTask();
+  CSteadyStateTask * pSubTask = dynamic_cast< CSteadyStateTask * >(mpProblem->getSubTask());
 
   if (pSubTask)
     {
@@ -182,8 +181,7 @@ bool CLNATask::process(const bool & useInitialValues)
 // virtual
 bool CLNATask::setCallBack(CProcessReport * pCallBack)
 {
-  CSteadyStateTask *pSubTask =
-    dynamic_cast<CLNAProblem *>(mpProblem)->getSubTask();
+  CCopasiTask *pSubTask = mpProblem->getSubTask();
 
   if (pSubTask)
     {
