@@ -429,6 +429,12 @@ CIssue CEvaluationTree::compileNodes()
           }
       }
 
+  if (mpRootNode == NULL)
+    {
+      mValidity.add(CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid));
+      return mValidity.getFirstWorstIssue();
+    }
+
   // Compile may change the value pointer of the root node.
   mpRootValue = mpRootNode->getValuePointer();
   mValue = *mpRootValue;
