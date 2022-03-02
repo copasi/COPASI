@@ -1493,24 +1493,19 @@ std::string CReaction::sanitizeSBMLId(const std::string & id)
 {
   // Bug 3083: valid SBML Ids are valid COPASI Ids. However we allow importing invalid Ids
   // ID       (\"([^\\\"]|\\.)*\"|[a-z_A-Z][a-z_A-Z0-9]*)
-  std::cout << id.find_first_of("_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") << ", " << id.find_first_not_of("_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") << std::endl;
-
   if (id.find_first_of("_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != 0
       || id.find_first_not_of("_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != std::string::npos)
     return "\"" + id + "\"";
 
   // We need to check that we have no reserved name.
-  static const char * Reserved[] =
+  static const std::set< std::string > Reserved(
   {
     "pi", "exponentiale", "true", "false", "infinity", "nan",
     "PI", "EXPONENTIALE", "TRUE", "FALSE", "INFINITY", "NAN"
-  };
+  });
 
-  size_t j, jmax = 12;
-
-  for (j = 0; j < jmax; j++)
-    if (id == Reserved[j])
-      return "\"" + id + "\"";
+  if (Reserved.find(id) != Reserved.end())
+    return "\"" + id + "\"";
 
   return id;
 }
