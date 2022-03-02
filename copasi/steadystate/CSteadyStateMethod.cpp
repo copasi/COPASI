@@ -52,6 +52,7 @@ CSteadyStateMethod::CSteadyStateMethod(const CDataContainer * pParent,
   , mpProblem(NULL)
   , mpParentTask(NULL)
   , mSteadyState()
+  , mStartState()
   , mpJacobian(NULL)
   , mpSSResolution(NULL)
   , mpDerivationFactor(NULL)
@@ -76,6 +77,7 @@ CSteadyStateMethod::CSteadyStateMethod(const CSteadyStateMethod & src,
   , mpProblem(src.mpProblem)
   , mpParentTask(src.mpParentTask)
   , mSteadyState()
+  , mStartState(src.mStartState)
   , mpJacobian(src.mpJacobian)
   , mpSSResolution(NULL)
   , mpDerivationFactor(NULL)
@@ -144,6 +146,7 @@ CSteadyStateMethod::process(CVectorCore< C_FLOAT64 > & State,
   assert(mpParentTask);
 
   mSteadyState.initialize(State);
+  mStartState = mSteadyState;
   mpJacobian = & jacobianX;
   mpCallBack = handler;
 
@@ -163,10 +166,7 @@ CSteadyStateMethod::returnProcess(bool steadyStateFound)
 {
   if (!steadyStateFound)
     {
-      CVectorCore< C_FLOAT64 > InitialState;
-      InitialState.initialize(mpContainer->getInitialState());
-      mSteadyState = CVectorCore< C_FLOAT64 >(mSteadyState.size(), InitialState.array() + (InitialState.size() - mSteadyState.size()));
-
+      mSteadyState = mStartState;
       return CSteadyStateMethod::notFound;
     }
 
