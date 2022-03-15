@@ -20,12 +20,14 @@
 #include <copasi/CopasiDataModel/CDataModel.h>
 #include <copasi/utilities/CDirEntry.h>
 
+#include <copasi/CopasiTypes.h>
+
 extern std::string getTestFile(const std::string & fileName);
 
 TEST_CASE("Load model", "[COPASI]")
 {
   CDataModel * pDataModel = CRootContainer::addDatamodel();
-  REQUIRE(pDataModel != NULL);
+  REQUIRE(pDataModel != nullptr);
 
   // Loading from file
   REQUIRE(pDataModel->loadFromFile(getTestFile("test-data/brusselator.gps")) == true);
@@ -69,11 +71,67 @@ TEST_CASE("Load model", "[COPASI]")
     std::ifstream File(getTestFile("test-data/brusselator.omex"));
     FileContent << File.rdbuf();
   }
-  #ifndef WIN32 
+#ifndef WIN32
   // this test fails on Windows as the archive created is invalid
   // so skipping this test there for now
   REQUIRE(pDataModel->loadFromString(FileContent.str()) == true);
-  #endif
+#endif
 
   CRootContainer::removeDatamodel(pDataModel);
+}
+
+
+TEST_CASE("Update Model", "[COPASI]")
+{
+  CDataModel * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != nullptr);
+
+  std::string test_file = getTestFile("test-data/Issue3050.cps");
+
+  REQUIRE(dm->loadModel(test_file, NULL) == true);
+
+  auto * model = dm->getModel();
+  model->applyInitialValues();
+
+  auto& x = model->getModelValues()["x"];
+  auto & y = model->getModelValues()["y"];
+  REQUIRE(x.getInitialValue() == 1);
+  REQUIRE(y.getInitialValue() == 1);
+
+  auto & optimization = (*dm->getTaskList())["Optimization"];
+  REQUIRE(optimization.isUpdateModel());
+  // executing the optimization task should set x and y to the specified values
+
+  auto * optProblem = dynamic_cast< COptProblem * >(optimization.getProblem());
+  REQUIRE(optProblem->getOptItem(0).getStartValue() == 2);
+  REQUIRE(optProblem->getOptItem(1).getStartValue() == 2);
+
+  optimization.initialize(CCopasiTask::OUTPUT_SE, NULL, NULL);
+  optimization.process(true);
+  optimization.restore();
+
+  REQUIRE(x.getInitialValue() == 2);
+  REQUIRE(y.getInitialValue() == 2);
+
+  // reset the values again
+  x.setInitialValue(1);
+  y.setInitialValue(1);
+  model->updateInitialValues(CCore::Framework::Concentration);
+  model->applyInitialValues();
+
+  REQUIRE(x.getInitialValue() == 1);
+  REQUIRE(y.getInitialValue() == 1);
+
+  auto & scan = (*dm->getTaskList())["Scan"];
+  REQUIRE(scan.isUpdateModel());
+
+  scan.initialize(CCopasiTask::OUTPUT_SE, NULL, NULL);
+  scan.process(true);
+  scan.restore();
+
+  // now this should also be 2
+  REQUIRE(x.getInitialValue() == 2);
+  REQUIRE(y.getInitialValue() == 2);
+
+  CRootContainer::removeDatamodel(dm);
 }

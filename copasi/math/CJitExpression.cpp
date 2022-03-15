@@ -4,6 +4,7 @@
 // All rights reserved.
 
 #include "copasi/math/CJitExpression.h"
+#include "copasi/math/CJitCompiler.h"
 
 CJitExpression::CJitExpression()
   : mpCompiler(NULL)

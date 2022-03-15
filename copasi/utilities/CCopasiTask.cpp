@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -388,6 +388,9 @@ CMathContainer * CCopasiTask::getMathContainer() const
 
 bool CCopasiTask::setCallBack(CProcessReport * pCallBack)
 {
+  if (!isTaskValid())
+    return false;
+
   bool success = true;
 
   if (mpMethod != NULL)
@@ -415,12 +418,8 @@ COutputHandler* CCopasiTask::getOutputHandler() const
   return mpOutputHandler;
 }
 
-bool CCopasiTask::initialize(const OutputFlag & of,
-                             COutputHandler * pOutputHandler,
-                             std::ostream * pOstream)
+bool CCopasiTask::isTaskValid() const
 {
-  bool success = true;
-
   if (mpProblem == NULL)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 1, getObjectName().c_str());
@@ -438,6 +437,40 @@ bool CCopasiTask::initialize(const OutputFlag & of,
       CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 3, getObjectName().c_str());
       return false;
     }
+
+  std::set< CCopasiTask * > CalledTasks;
+  std::string Message;
+  CCopasiTask * pSubTask = const_cast< CCopasiTask * >(this);
+
+  while (pSubTask != NULL && CalledTasks.find(pSubTask) == CalledTasks.end())
+    {
+      CalledTasks.insert(pSubTask);
+
+      if (!Message.empty())
+        Message += " -> ";
+
+      Message += pSubTask->getObjectName();
+
+      pSubTask = pSubTask->getProblem()->getSubTask();
+    }
+
+  if (CalledTasks.find(pSubTask) != CalledTasks.end())
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 9, pSubTask->getObjectName().c_str(), Message.c_str());
+      return false;
+    }
+
+  return true;
+}
+
+bool CCopasiTask::initialize(const OutputFlag & of,
+                             COutputHandler * pOutputHandler,
+                             std::ostream * pOstream)
+{
+  if (!isTaskValid())
+    return false;
+
+  bool success = true;
 
   if (mpContainer != NULL)
     {

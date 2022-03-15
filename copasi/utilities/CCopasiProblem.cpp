@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -149,11 +149,16 @@ std::ostream &operator<<(std::ostream &os, const CCopasiProblem & o)
   return os;
 }
 
-bool
-CCopasiProblem::setModel(CModel* model)
+bool CCopasiProblem::setModel(CModel* model)
 {
   if (model == NULL) return false;
 
   setMathContainer(&model->getMathContainer());
   return true;
+}
+
+// virtual
+CCopasiTask * CCopasiProblem::getSubTask() const
+{
+  return NULL;
 }

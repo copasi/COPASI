@@ -123,10 +123,12 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
                                    COutputHandler * pOutputHandler,
                                    std::ostream * pOstream)
 {
-  assert(mpProblem && mpMethod);
+  if (!mpProblem || !mpMethod)
+    return false;
 
   mpCrossSectionProblem = dynamic_cast<CCrossSectionProblem *>(mpProblem);
-  assert(mpCrossSectionProblem);
+  if (!mpCrossSectionProblem)
+    return false;
 
   //init the ring buffer for the states
   mStatesRing.resize(RING_SIZE);
@@ -178,6 +180,10 @@ void CCrossSectionTask::removeEvent()
 
 bool CCrossSectionTask::process(const bool & useInitialValues)
 {
+  mpCrossSectionProblem = dynamic_cast< CCrossSectionProblem * >(mpProblem);
+  if (!mpCrossSectionProblem)
+    return false;
+
   processStart(useInitialValues);
 
   mPreviousCrossingTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();

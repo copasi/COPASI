@@ -1,4 +1,9 @@
 #!/bin/bash
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -30,18 +35,18 @@ cp "${SOURCE}"/copasi/ArtisticLicense.txt LICENSE
 chmod 644 LICENSE
 
 # Copy copasi.jar
-echo cp "${BUILD_ROOT}"/copasi/bindings/java/copasi.jar  .
-cp "${BUILD_ROOT}"/copasi/bindings/java/copasi.jar .
+echo cp "${BINARY_DIR}"/copasi/bindings/java/copasi.jar  .
+cp "${BINARY_DIR}"/copasi/bindings/java/copasi.jar .
 chmod 644 copasi.jar
 
 # Copy copasi_gui.jar
-echo cp "${BUILD_ROOT}"/copasi/bindings/java/copasi-gui.jar  .
-cp "${BUILD_ROOT}"/copasi/bindings/java/copasi-gui.jar .
+echo cp "${BINARY_DIR}"/copasi/bindings/java/copasi-gui.jar  .
+cp "${BINARY_DIR}"/copasi/bindings/java/copasi-gui.jar .
 chmod 644 copasi-gui.jar
 
 # Copy CopasiJava.dll
-echo "${BUILD_ROOT}"/cp copasi/bindings/java/CopasiJava.dll  .
-cp "${BUILD_ROOT}"/copasi/bindings/java/CopasiJava.dll .
+echo "${BINARY_DIR}"/cp copasi/bindings/java/CopasiJava.dll  .
+cp "${BINARY_DIR}"/copasi/bindings/java/CopasiJava.dll .
 chmod 644 CopasiJava.dll
 
 # Copy examples

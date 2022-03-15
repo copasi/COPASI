@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -54,7 +54,7 @@ public:
                       void (Renamer::*method)(const std::string & /* oldCN */,
                           const std::string & /* newCN */));
 
-    virtual ~ClassMemberRename();
+    virtual ~ClassMemberRename() {};
 
     // override operator "()"
     virtual void operator()(const std::string & oldCN,
@@ -153,10 +153,6 @@ CRegisteredCommonName::ClassMemberRename< Renamer >::ClassMemberRename(Renamer *
   RenameInterface(),
   mpRenamer(pRenamer),
   mpMethod(method) {}
-
-// virtual
-template <class Renamer>
-CRegisteredCommonName::ClassMemberRename< Renamer >::~ClassMemberRename() {}
 
 // override operator "()"
 // virtual

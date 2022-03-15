@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -195,47 +195,20 @@ bool COutputHandler::compileUpdateSequence(const CObjectInterface::ContainerList
 
 COutputInterface::COutputInterface() :
   mObjects()
-{
-
-}
+{}
 
 COutputInterface::COutputInterface(const COutputInterface & src) :
   mObjects(src.mObjects)
-{
-
-}
+{}
 
 COutputInterface::~COutputInterface()
-{
-
-}
-
-bool COutputInterface::compile(CObjectInterface::ContainerList /* listOfContainer */)
-{
-  return false;
-}
-
-void COutputInterface::output(const Activity & /* activity */)
-{
-
-}
-
-void COutputInterface::separate(const Activity & /* activity */)
-{
-
-}
-
-void COutputInterface::finish()
-{
-
-}
-
-void COutputInterface::close()
-{
-
-}
+{}
 
 const CObjectInterface::ObjectSet & COutputInterface::getObjects() const
 {
   return mObjects;
 }
+
+// virtual
+void COutputInterface::close()
+{}

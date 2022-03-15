@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,29 +27,81 @@
 
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CDataObject.h"
+#include "copasi/plot/CPlotItem.h"
+#include <sedml/common/SedmlEnumerations.h>
 
-#define SEDML_TIME_URN "urn:sedml:symbol:time"
-#define SEDML_KISAO_STOCHASTIC "KISAO:0000241"
+#define SEDML_TIME_URN                 "urn:sedml:symbol:time"
+#define SEDML_KISAO_TIME               "KISAO:0000832"
+#define SEDML_KISAO_STOCHASTIC         "KISAO:0000241"
+#define SEDML_KISAO_CONCENTRATION      "KISAO:0000838"
+#define SEDML_KISAO_AMOUNT             "KISAO:0000836"
+#define SEDML_KISAO_PARTICLENUMBER     "KISAO:0000837"
+#define SEDML_KISAO_RATEOFCHANGE       "KISAO:0000647"
+#define SEDML_KISAO_PARTICLE_RATE      "KISAO:0000653"
+#define SEDML_KISAO_CONCENTRATION_RATE "KISAO:0000652"
+#define SEDML_KISAO_RATE               "KISAO:0000655"
+#define SEDML_KISAO_FLUX               "KISAO:0000639"
+
 
 class CModel;
+class CMetab;
+class CModelValue;
+class CDataObject;
 
 LIBSEDML_CPP_NAMESPACE_BEGIN
 class SedDataGenerator;
+class SedVariable;
 LIBSEDML_CPP_NAMESPACE_END
 
+/**
+ * Utility class for writing SedVariables for objects
+ */
+class VariableInfo
+{
+  std::string name;
+  std::string term;
+  std::string symbol;
+  std::string xpath;
+  std::string sbmlId;
+  bool mIsValid;
+
+  const CDataObject * mpObject;
+
+public:
+  VariableInfo(const CDataObject* pObject);
+  SedVariable * addToDataGenerator(SedDataGenerator * pGenerator) const;
+
+  const std::string & getName() const;
+  void setName(const std::string & name);
+  const std::string & getSymbol() const;
+  void setSymbol(const std::string & symbol);
+  const std::string & getXpath() const;
+  void setXpath(const std::string & xpath);
+  const std::string & getSbmlId() const;
+  const std::string & getTerm() const;
+  void setTerm(const std::string & term);
+
+  bool isValid() const;
+
+  bool operator< (const VariableInfo & other) const;
+
+};
+
+/**
+ * Utility methods for SED-ML Import / Export
+ */
 class SEDMLUtils
 {
 public:
-  int processArchive(const std::string & archiveFile, std::string &fileName, std::string &fileContent);
-
-  //  void resmoveUnwantedChars(std::string & str, char chars[]);
-
-  SEDMLUtils();
 
   static const CDataObject* resolveXPath(const CModel *model,
                                          const std::string& xpath, bool initial = false);
 
-  static const CDataObject* resolveDatagenerator(const CModel *model, const SedDataGenerator* dataReference);
+  static const CDataObject * resolveVariable(CModel * model, const SedVariable * variable);
+
+  static CModelValue * createAmountMV(CModel * pModel, const CMetab * pMetab);
+
+  static const CDataObject* resolveDatagenerator(CModel *model, const SedDataGenerator* dataReference);
 
   static const CDataObject *getObjectForSbmlId(const CModel* pModel, const std::string& id, const std::string& SBMLType, bool initial = false);
 
@@ -93,6 +145,8 @@ public:
    */
   static std::string getXPathForSbmlIdAndType(const std::string& type, const std::string& sbmlId);
 
+  static std::string getXPathForObjectAndType(const CDataObject & object, const std::string & sbmlId);
+
   static std::string& removeCharactersFromString(std::string& str, const std::string& characters);
 
   /**
@@ -109,11 +163,23 @@ public:
    */
   static void splitStrings(const std::string &xpath, char delim, std::vector<std::string> &stringsContainer);
 
-  virtual ~SEDMLUtils();
+  static int lineTypeToSed(int linetype);
+  static int lineTypeFromSed(int linetype);
+
+  static int symbolToSed(int symbol);
+  static int symbolFromSed(int symbol);
+
+  static std::string argbToRgba(const std::string & argb, bool includeHash = true);
+  static std::string rgbaToArgb(const std::string & rgba, bool includeHash = true);
+
+  static int getAlphaFromArgb(const std::string & argb);
+  static int getAlphaFromRgba(const std::string & rgba);
 
 #ifndef SWIG
 
   static std::map< std::string, std::string > PARAMETER_KISAO_MAP;
+  static std::map< int, int > COPASI_SYMBOL_MAP;
+  static std::map< int, int > COPASI_LINE_STYLE_MAP;
 
 #endif
 

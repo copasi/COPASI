@@ -288,9 +288,15 @@ include_directories(BEFORE ${EXPAT_INCLUDE_DIR})
 
 set (ENABLE_JIT_DEFAULT OFF)
 
-if (CMAKE_SYSTEM_PROCESSOR STREQUAL x86_64)
+if (APPLE)
+  if (CMAKE_OSX_ARCHITECTURES STREQUAL arm64)
+    set (ENABLE_JIT_DEFAULT OFF)
+  else()
+    set (ENABLE_JIT_DEFAULT ON)
+  endif()
+else()
   set (ENABLE_JIT_DEFAULT ON)
-endif ()
+endif()
 
 option(ENABLE_JIT "Enable Just In Time compilation for math expressions" ${ENABLE_JIT_DEFAULT})
 
@@ -298,7 +304,6 @@ if (ENABLE_JIT)
   find_package(NATIVEJIT REQUIRED)
 
   include_directories(BEFORE ${NATIVEJIT_INCLUDE_DIR})
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${NATIVEJIT_COMPILE_OPTIONS}")
   set(USE_JIT 1)
 
   find_package(CPUFEATURES REQUIRED)

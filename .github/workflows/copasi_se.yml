@@ -31,7 +31,7 @@ jobs:
       shell: bash
       run: |
         cmake --version
-        curl -L https://github.com/copasi/copasi-dependencies/releases/download/Version-4.31.243/${{ matrix.platform }}.zip -o ${{ matrix.platform }}.zip
+        curl -L https://github.com/copasi/copasi-dependencies/releases/download/Version-4.35.252/${{ matrix.platform }}.zip -o ${{ matrix.platform }}.zip
         unzip -n -qq ${{ matrix.platform }}.zip -d dependencies
 
     - name: Patch dependencies (windows)
@@ -100,7 +100,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name:
-          cpsapi-${{ matrix.platform }}
+          copasi-se-${{ matrix.platform }}
         path: ${{github.workspace}}/install/*
         retention-days: 1
         if-no-files-found: error

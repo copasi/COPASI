@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,6 +32,7 @@ class SCopasiXMLGUI;
 LIBSBML_CPP_NAMESPACE_BEGIN
 class SBMLDocument;
 class SBase;
+class XMLNamespaces;
 LIBSBML_CPP_NAMESPACE_END
 class CProcessReport;
 class CConfigurationFile;
@@ -84,7 +85,7 @@ public:
    */
   static ContentType contentType(std::istream & content);
 
-private:
+
   class CContent
   {
   public:
@@ -283,13 +284,28 @@ public:
    */
   void copyExperimentalDataTo(const std::string& path);
 
+  /**
+   * Exports the current model as COMBINE archive
+   *
+   * @param fileName the archive filename to create
+   * @param includeCOPASI whether to include COPASI models (defaults to true)
+   * @param includeSBML whether to include SBML models (defaults to true)
+   * @param includeData whether to include experimental data files (if any)
+   * @param includeSEDML whether to include SEDML documents (defaults to false)
+   * @param overWriteFile whether to overwrite files if already present (false)
+   *
+   */
   bool exportCombineArchive(std::string fileName,
                             bool includeCOPASI = true,
                             bool includeSBML = true,
                             bool includeData = true,
                             bool includeSEDML = false,
                             bool overwriteFile = false,
-                            CProcessReport* pProgressReport = NULL);
+                            CProcessReport* pProgressReport = NULL,
+                            int sbmlLevel = 2,
+                            int sbmlVersion = 4,
+                            int sedmlLevel = 1,
+                            int sedmlVersion = 4);
 
   bool exportShinyArchive(std::string fileName,
                           bool includeCOPASI = true,
@@ -383,15 +399,32 @@ public:
    * @param sedmlVersion the version to export
    * @param modelLocation the location where the SBML file has been written,
    *                      defaults to 'model.xml'
+   * @param pAdditionalNamespaces additional namespaces to be added to the
+   *        SED-ML document
    *
    * @return the SED-ML string.
    */
   std::string exportSEDMLToString(CProcessReport* pExportHandler,
                                   int sedmlLevel, int sedmlVersion,
-                                  const std::string& modelLocation = "model.xml"
+                                  const std::string& modelLocation = "model.xml",
+                                  const XMLNamespaces* pAdditionalNamespaces = NULL
                                  );
 
-  bool exportSEDML(const std::string & fileName, bool overwriteFile = false, int sedmlLevel = 1, int sedmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
+  /**
+   * Exports the current model as SEDML document
+   *
+   * @param fileName the filename to create
+   * @param sedmlLevel the level of the SEDML to export (defaults to 1)
+   * @param sedmlVersion the version of SEDML to export (defaults to 4)
+   *
+   */
+  bool exportSEDML(const std::string & fileName,
+                   bool overwriteFile = false,
+                   int sedmlLevel = 1,
+                   int sedmlVersion = 4,
+                   bool exportIncomplete = false,
+                   bool exportCOPASIMIRIAM = true,
+                   CProcessReport* pExportHandler = NULL);
 
   SedDocument* getCurrentSEDMLDocument();
   bool setSEDMLFileName(const std::string & fileName);

@@ -1,4 +1,9 @@
 #!/bin/bash
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -17,7 +22,7 @@ AWK=${COPASI_AWK:-gawk}
 SORT=${COPASI_SORT:-sort}
 PACKAGE=${COPASI_PACKAGE:-Windows}
 
-COMMON_ENVIRONMENT=${COPASI_COMMON_ENVIRONMENT:-"${ENVIRONMENT}"}
+COMMON_ENVIRONMENT=${BUILD_ROOT:-$HOME/build-system}
 BUILD=${COPASI_BUILD:-"${COMMON_ENVIRONMENT}/package"}
 SOURCE="$(dirname "$(dirname "$0")")"
 SETUP_DIR=${COPASI_SETUP_DIR:-"${COMMON_ENVIRONMENT}/setup"}
@@ -48,19 +53,23 @@ mkdir -p "${SETUP_DIR}"
 
 case $1 in
   'COPASI')
-    . ${SOURCE}/PackageMaker/COPASI.sh
+    shift
+    . ${SOURCE}/PackageMaker/COPASI.sh $@
     ;;
 
   'Java-Bindings')
-    . ${SOURCE}/PackageMaker/Java-Bindings.sh
+    shift
+    . ${SOURCE}/PackageMaker/Java-Bindings.sh $@
     ;;
 
   'C#-Bindings')
-    . ${SOURCE}/PackageMaker/C#-Bindings.sh
+    shift
+    . ${SOURCE}/PackageMaker/C#-Bindings.sh $@
     ;;
 
   'Python-Bindings')
-    . ${SOURCE}/PackageMaker/Python-Bindings.sh
+    shift
+    . ${SOURCE}/PackageMaker/Python-Bindings.sh $@
     ;;
 esac
 

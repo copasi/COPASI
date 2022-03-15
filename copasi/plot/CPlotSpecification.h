@@ -95,6 +95,15 @@ public:
 
   CPlotItem* createItem(const std::string & name, CPlotItem::Type type);
 
+  /**
+   * Convenience function, whether a curve with given name already exists
+   * (otherwise it would be removed when creating a new one)
+   *
+   * @param name a name
+   * @return true, if a curve exists, false otherwise
+   */
+  bool hasItem(const std::string & name);
+
   bool createDefaultPlot(const CModel* model);
 
   void setActive(const bool & active);

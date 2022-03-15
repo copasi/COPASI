@@ -45,7 +45,7 @@
  *  Default constructor.
  */
 CTSSAProblem::CTSSAProblem(const CDataContainer * pParent):
-  CCopasiProblem(CTaskEnum::Task::timeCourse, pParent),
+  CCopasiProblem(CTaskEnum::Task::tssAnalysis, pParent),
   mpDuration(NULL),
   mpStepSize(NULL),
   mpStepNumber(NULL),

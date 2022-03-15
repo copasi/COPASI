@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,6 +28,9 @@
 
 // Uncomment this line below to get processing flow output.
 // #define DEBUG_FLOW 1
+
+// static
+void CRadau5Method::EvalM(C_INT *, double *, C_INT *, double *, C_INT *) {}
 
 CRadau5Method::CRadau5Method(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
@@ -220,9 +223,9 @@ CTrajectoryMethod::Status CRadau5Method::step(const double & deltaT,
     {
       mRADAU(&mData.dim, &EvalF, &mTime, mpY, &EndTime, &H,
              mRtol.array(), mpAtol, &ITOL,
-             (U_fp) EvalJ, &IJAC, &MLJAC, &MUJAC,
-             (U_fp) fcn, &IMAS, &MLMAS, &MUMAS,
-             (U_fp) solout, &IOUT, mDWork.array(), &LWORK,
+             EvalJ, &IJAC, &MLJAC, &MUJAC,
+             EvalM, &IMAS, &MLMAS, &MUMAS,
+             solout, &IOUT, mDWork.array(), &LWORK,
              mIWork.array(), &LIWORK, &rpar, &ipar, &idid);
 
       if (idid < 1)
@@ -399,7 +402,7 @@ void CRadau5Method::start()
   return;
 }
 
-void CRadau5Method::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
+void CRadau5Method::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot, C_FLOAT64 *, C_INT *)
 {
   static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);
 }
@@ -455,18 +458,19 @@ void CRadau5Method::evalR(const C_FLOAT64 * t, const C_FLOAT64 *  /* y */,
 
 // static
 void CRadau5Method::EvalJ(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y,
-                          const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
+                          C_FLOAT64 * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
 {static_cast<Data *>((void *) n)->pMethod->evalJ(t, y, ml, mu, pd, nRowPD);}
 
 // virtual
 void CRadau5Method::evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
-                          const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
+                          C_FLOAT64 * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
 {
   // TODO Implement me.
 }
 
 /* solout function to generate output after successfull computation for automatic step size */
-void CRadau5Method::solout(integer *nr, double *xold, double *x, double *y, double *cont, integer *lrc, integer *n, double *rpar, integer *ipar, integer *irtrn)
+void CRadau5Method::solout(C_INT * nr, double * xold, double * x, double * y, double * cont,
+                           C_INT * lrc, C_INT * n, double * rpar, C_INT * ipar, C_INT * irtrn)
 {
   if (*x != *xold && *(x + 1) != *rpar)
     {

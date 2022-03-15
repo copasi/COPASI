@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -72,6 +72,11 @@ protected:
    * A pointer to the steady state
    */
   CVectorCore< C_FLOAT64 > mSteadyState;
+
+  /**
+   * The state from where the method started
+   */
+  CVector< C_FLOAT64 > mStartState;
 
   /**
    * The jacobian of the steadystate

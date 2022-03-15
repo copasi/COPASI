@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -266,14 +266,14 @@ bool FunctionHandler::processEnd(const XML_Char * pszName)
                   }
               }
 
-            addFix(mKey , mpData->pFunction);
+            addFix(mKey, mpData->pFunction);
 
             std::map< size_t, std::string >::const_iterator it = mpData->mFunctionParameterKeyMap.begin();
             std::map< size_t, std::string >::const_iterator end = mpData->mFunctionParameterKeyMap.end();
 
-            for (; it != end; ++it)
+            for (size_t Index = 0; it != end; ++it, ++Index)
               {
-                addFix(it->second, mpData->pFunction->getVariables()[it->first]);
+                addFix(it->second, mpData->pFunction->getVariables()[Index]);
               }
           }
 
@@ -312,6 +312,11 @@ bool FunctionHandler::processEnd(const XML_Char * pszName)
       case MathML:
       case Text:
         mInfix = mpData->CharacterData;
+
+        if (mpData->mpExpression != NULL)
+          {
+            mpData->mpExpression->setInfix(mInfix);
+          }
 
         break;
 
@@ -363,16 +368,16 @@ CXMLHandler::sProcessLogic * FunctionHandler::getProcessLogic() const
 {
   static sProcessLogic Elements[] =
   {
-      {"BEFORE", BEFORE, BEFORE, {Function, HANDLER_COUNT}},
-      {"Function", Function, Function, {MiriamAnnotation, Comment, ListOfUnsupportedAnnotations, Expression, MathML, Text, HANDLER_COUNT}},
-      {"MiriamAnnotation", MiriamAnnotation, MiriamAnnotation, {Comment, ListOfUnsupportedAnnotations, Expression, MathML, Text, HANDLER_COUNT}},
-      {"Comment", Comment, Comment, {ListOfUnsupportedAnnotations, Expression, MathML, Text, HANDLER_COUNT}},
-      {"ListOfUnsupportedAnnotations", ListOfUnsupportedAnnotations, ListOfUnsupportedAnnotations, {Expression, MathML, Text, HANDLER_COUNT}},
-      {"Expression", Expression, CharacterData, {ListOfParameterDescriptions, AFTER, HANDLER_COUNT}},
-      {"MathML", MathML, CharacterData, {Text, ListOfParameterDescriptions, AFTER, HANDLER_COUNT}},
-      {"Text", Text, CharacterData, {ListOfParameterDescriptions, AFTER, HANDLER_COUNT}},
-      {"ListOfParameterDescriptions", ListOfParameterDescriptions, ListOfParameterDescriptions, {AFTER, HANDLER_COUNT}},
-      {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Function, HANDLER_COUNT}},
+    {"Function", Function, Function, {MiriamAnnotation, Comment, ListOfUnsupportedAnnotations, Expression, MathML, Text, HANDLER_COUNT}},
+    {"MiriamAnnotation", MiriamAnnotation, MiriamAnnotation, {Comment, ListOfUnsupportedAnnotations, Expression, MathML, Text, HANDLER_COUNT}},
+    {"Comment", Comment, Comment, {ListOfUnsupportedAnnotations, Expression, MathML, Text, HANDLER_COUNT}},
+    {"ListOfUnsupportedAnnotations", ListOfUnsupportedAnnotations, ListOfUnsupportedAnnotations, {Expression, MathML, Text, HANDLER_COUNT}},
+    {"Expression", Expression, CharacterData, {ListOfParameterDescriptions, AFTER, HANDLER_COUNT}},
+    {"MathML", MathML, CharacterData, {Text, ListOfParameterDescriptions, AFTER, HANDLER_COUNT}},
+    {"Text", Text, CharacterData, {ListOfParameterDescriptions, AFTER, HANDLER_COUNT}},
+    {"ListOfParameterDescriptions", ListOfParameterDescriptions, ListOfParameterDescriptions, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

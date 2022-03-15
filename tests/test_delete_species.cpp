@@ -21,7 +21,7 @@ TEST_CASE("delete brusselator species", "[copasi]")
   REQUIRE(dm->loadModel(fileName, NULL) == true);
 
   auto * model = dm->getModel();
-  REQUIRE(model != NULL);
+  REQUIRE(model != nullptr);
   REQUIRE(model->getNumMetabs() == 6);
 
   while (model->getNumMetabs() > 0)

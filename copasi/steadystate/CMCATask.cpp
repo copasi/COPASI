@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -111,7 +111,7 @@ bool CMCATask::initialize(const OutputFlag & of,
   //initialize reporting
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
-  CSteadyStateTask *pSubTask = pProblem->getSubTask();
+  CCopasiTask *pSubTask = pProblem->getSubTask();
 
   if (pSubTask)
     success &= pSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, mReport.getStream());
@@ -129,8 +129,7 @@ bool CMCATask::process(const bool & useInitialValues)
   assert(pMethod);
   //  pMethod->setModel(mpProblem->getModel());
 
-  CSteadyStateTask *pSubTask =
-    dynamic_cast<CMCAProblem *>(mpProblem)->getSubTask();
+  CSteadyStateTask * pSubTask = dynamic_cast< CSteadyStateTask * >(mpProblem->getSubTask());
 
   if (pSubTask)
     {
@@ -174,8 +173,7 @@ bool CMCATask::process(const bool & useInitialValues)
 // virtual
 bool CMCATask::setCallBack(CProcessReport * pCallBack)
 {
-  CSteadyStateTask *pSubTask =
-    dynamic_cast<CMCAProblem *>(mpProblem)->getSubTask();
+  CCopasiTask * pSubTask = mpProblem->getSubTask();
 
   if (pSubTask)
     {

@@ -73,6 +73,8 @@ extern "C"
 
 # ifdef HAVE_BLAS_H
 #  include <blas.h>
+# elif defined(HAVE_CBLAS_H)
+#  include <cblas.h>
 # else
 #  include "copasi/lapack/blas.h"
 # endif

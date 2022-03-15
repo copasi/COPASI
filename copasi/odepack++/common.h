@@ -1,30 +1,35 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/common.h,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2012/01/19 18:36:46 $
-   End CVS Header */
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
 //
 // This C++ code is based on an f2c conversion of the Fortran
 // library ODEPACK available at: http://www.netlib.org/odepack/
 
 #ifndef ODEPACK_common
 #define ODEPACK_common
+
+#include "copasi/core/CCore.h"
 
 typedef void (*evalF)(const C_INT*, const double*, const double*, double*);
 typedef void (*evalJ)(const C_INT*, const double*, const double*, const C_INT*,
@@ -37,10 +42,10 @@ union dls001
   struct
   {
     double rowns[209], ccmax, el0, h__, hmin, hmxi, hu, rc, tn,
-    uround;
+           uround;
     C_INT iownd[6], iowns[6], icf, ierpj, iersl, jcur, jstart, kflag, l,
-    lyh, lewt, lacor, lsavf, lwm, liwm, meth, miter, maxord,
-    maxcor, msbp, mxncf, n, nq, nst, nfe, nje, nqu;
+          lyh, lewt, lacor, lsavf, lwm, liwm, meth, miter, maxord,
+          maxcor, msbp, mxncf, n, nq, nst, nfe, nje, nqu;
   }
   _1;
   struct
@@ -52,21 +57,21 @@ union dls001
   struct
   {
     double conit, crate, el[13], elco[156] /* was [13][12] */,
-    hold, rmax, tesco[36] /* was [3][12] */, ccmax, el0, h__,
-    hmin, hmxi, hu, rc, tn, uround;
+           hold, rmax, tesco[36] /* was [3][12] */, ccmax, el0, h__,
+           hmin, hmxi, hu, rc, tn, uround;
     C_INT iownd[6], ialth, ipup, lmax, meo, nqnyh, nslp, icf, ierpj,
-    iersl, jcur, jstart, kflag, l, lyh, lewt, lacor, lsavf, lwm,
-    liwm, meth, miter, maxord, maxcor, msbp, mxncf, n, nq, nst,
-    nfe, nje, nqu;
+          iersl, jcur, jstart, kflag, l, lyh, lewt, lacor, lsavf, lwm,
+          liwm, meth, miter, maxord, maxcor, msbp, mxncf, n, nq, nst,
+          nfe, nje, nqu;
   }
   _3;
   struct
   {
     double rowns[209], ccmax, el0, h__, hmin, hmxi, hu, rc, tn, uround;
     C_INT init, mxstep, mxhnil, nhnil, nslast, nyh, iowns[6], icf, ierpj,
-    iersl, jcur, jstart, kflag, l, lyh, lewt, lacor, lsavf, lwm, liwm,
-    meth, miter, maxord, maxcor, msbp, mxncf, n, nq, nst, nfe, nje,
-    nqu;
+          iersl, jcur, jstart, kflag, l, lyh, lewt, lacor, lsavf, lwm, liwm,
+          meth, miter, maxord, maxcor, msbp, mxncf, n, nq, nst, nfe, nje,
+          nqu;
   }
   lsoda;
 };
@@ -160,9 +165,9 @@ public:
                                      C_INT *nyh, double *ewt, double *ftem,
                                      double *savf, double *wm, C_INT *iwm,
                                      evalF f, evalJ jac)):
-      PJAC(),
-      mpType(pType),
-      mpMethod(pMethod)
+    PJAC(),
+    mpType(pType),
+    mpMethod(pMethod)
   {}
 
   virtual ~PJACFunctor() {}
@@ -209,9 +214,9 @@ public:
   SLVSFunctor(CType * pType,
               C_INT(CType::*pMethod)(double *wm, C_INT *iwm, double *x,
                                      double *tem)):
-      SLVS(),
-      mpType(pType),
-      mpMethod(pMethod)
+    SLVS(),
+    mpType(pType),
+    mpMethod(pMethod)
   {}
 
   virtual ~SLVSFunctor() {}

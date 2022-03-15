@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,6 +31,11 @@
 
 #include "copasi/copasi.h"
 #include "CScanProblem.h"
+
+#include <copasi/CopasiDataModel/CDataModel.h>
+#include <copasi/utilities/CCopasiTask.h>
+#include <copasi/core/CDataVector.h>
+
 //#include "copasi/model/CModel.h"
 //#include "copasi/model/CState.h"
 
@@ -76,6 +81,24 @@ void CScanProblem::initializeParameter()
 }
 
 //***********************************
+// virtual
+CCopasiTask * CScanProblem::getSubTask() const
+{
+  CDataModel* pDataModel = getObjectDataModel();
+  CTaskEnum::Task SubTaskType = getSubtask();
+
+  if (pDataModel != NULL)
+    {
+      CDataVectorN< CCopasiTask >::iterator it = pDataModel->getTaskList()->begin();
+      CDataVectorN< CCopasiTask >::iterator end = pDataModel->getTaskList()->end();
+
+      for (; it != end; ++it)
+        if (it->getType() == SubTaskType)
+          return &*it;
+    }
+
+  return NULL;
+}
 
 void CScanProblem::setSubtask(CTaskEnum::Task type)
 {
@@ -114,7 +137,6 @@ void CScanProblem::setContinueOnError(bool coe)
 {
   setValue("Continue on Error", coe);
 }
-
 
 //************************************
 
@@ -195,7 +217,6 @@ CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, siz
       tmp->addParameter("Use Values", CCopasiParameter::Type::BOOL, false);
     }
 
-
   if (type == SCAN_RANDOM)
     {
       tmp->addParameter("Distribution type", CCopasiParameter::Type::UINT, (unsigned C_INT32)0);
@@ -213,6 +234,16 @@ CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, siz
 void CScanProblem::clearScanItems()
 {
   mpScanItems->clear();
+}
+
+bool CScanProblem::restore(const bool & updateModel)
+{
+  CCopasiTask * pSubTask = getSubTask();
+
+  if (pSubTask != NULL)
+    return pSubTask->restore();
+
+  return true;
 }
 
 void CScanProblem::fixBuild81()

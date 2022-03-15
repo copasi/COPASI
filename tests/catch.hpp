@@ -113,11 +113,11 @@
 
 #ifdef __cplusplus
 
-#  if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L || _MSVC_LANG >= 201103L
 #    define CATCH_CPP11_OR_GREATER
 #  endif
 
-#  if __cplusplus >= 201402L
+#  if __cplusplus >= 201402L || _MSVC_LANG >= 201402L
 #    define CATCH_CPP14_OR_GREATER
 #  endif
 

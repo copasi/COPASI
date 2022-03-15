@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -74,7 +74,7 @@ void CMathDependencyGraph::clear()
 
   for (; it != end; ++it)
     {
-      delete(it->second);
+      delete (it->second);
     }
 
   mObjects2Nodes.clear();
@@ -580,7 +580,7 @@ void CMathDependencyGraph::relocate(const CMathContainer * pContainer,
         }
       else
         {
-          ToBeRemoved.push_back(pObject);
+          ToBeRemoved.push_back(it->first);
         }
     }
 
