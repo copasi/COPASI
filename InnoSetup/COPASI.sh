@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -14,19 +14,22 @@
 # of Manchester. 
 # All rights reserved. 
 
+# Echo all bash commands to ease debugging
+set -x
 
 INNO_SETUP=${COPASI_INNO_SETUP:-"/cygdrive/c/Program Files (x86)/Inno Setup 5/ISCC.exe"}
 INNO_FILE=${COPASI_INNO_FILE:-"${SOURCE}/InnoSetup/copasi-universal.iss"}
 
 # Create the unique product code based on version and application name
-GUID=`md5sum << EOF
+GUID=$(md5sum << EOF
 #define MyAppName "COPASI"
 #define MyAppVersion "${MyAppVersion}"
 #define MyAppPublisher "copasi.org"
 #define MyAppURL "http://www.copasi.org/"
 #define MyAppExeName "bin\CopasiUI.exe"
-EOF` 
-GUID=`echo $GUID | sed 'y/abcdef/ABCDEF/'`
+EOF
+) 
+GUID=$(echo $GUID | sed 'y/abcdef/ABCDEF/')
 productcode=${GUID:0:8}-${GUID:8:4}-${GUID:12:4}-${GUID:16:4}-${GUID:20:12}
 
 [ -e ${SETUP_DIR}/package ] && rm -rf ${SETUP_DIR}/package
@@ -34,7 +37,7 @@ mkdir ${SETUP_DIR}/package
 pushd ${SETUP_DIR}/package
 
 # Create directory structure
-cp -r "${SETUP_DIR}/src/"* .
+tar -xvf ${BUILD_ROOT}/src/windows.tgz
 
 # Copy README
 cp ${SOURCE}/README.Win32 README.txt
@@ -72,29 +75,28 @@ cp ${SOURCE}/copasi/wizard/help_html/figures/*.png \
 chmod 644 share/copasi/doc/html/figures/*.png
 
 # 32 bit files
-cp "${BUILD_32_MD}/build/COPASI${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/32
+cp "${BUILD_32_MD}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/32
 chmod 755 bin/32/CopasiUI.exe
-cp "${BUILD_32_MT}/build/COPASI${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/32
+cp "${BUILD_32_MT}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/32
 chmod 755 bin/32/CopasiSE.exe
 cp ${SOURCE}/InnoSetup/qt.conf bin/32
 chmod 644 bin/32/qt.conf
 
 # 64 bit files
-cp "${BUILD_64_MD}/build/COPASI${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/64
+cp "${BUILD_64_MD}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/64
 chmod 755 bin/64/CopasiUI.exe
-cp "${BUILD_64_MT}/build/COPASI${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/64
+cp "${BUILD_64_MT}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/64
 chmod 755 bin/64/CopasiSE.exe
 cp ${SOURCE}/InnoSetup/qt.conf bin/64
 chmod 644 bin/64/qt.conf
 
-
 # Execute InnoSetup to create Installation package
 cd ${SOURCE}/InnoSetup
 
-workdir=`cygpath -wa .`
+workdir=$(cygpath -wa .)
 workdir=${workdir//\\/\\\\}
 
-stagedir=`cygpath -wa "${SETUP_DIR}/package"`
+stagedir=$(cygpath -wa "${SETUP_DIR}/package")
 stagedir=${stagedir//\\/\\\\}
 
 #   modify product code, product version, and package name

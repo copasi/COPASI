@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -44,6 +44,7 @@ set (SWIG_ENUM_FIX_FILES
         "${BIN_DIRECTORY}/java-files/org/COPASI/CNewtonMethod.java"
 				"${BIN_DIRECTORY}/java-files/org/COPASI/CCopasiTimer.java"
 				"${BIN_DIRECTORY}/java-files/org/COPASI/CDataModel.java"
+				"${BIN_DIRECTORY}/java-files/org/COPASI/CPlotItem.java"
      )
 
 foreach(broken_file ${SWIG_ENUM_FIX_FILES})
@@ -92,9 +93,14 @@ execute_process(
 	COMMAND "${Java_JAVAC_EXECUTABLE}"
 		 ${COMPATIBILITY_ARGS}
 		 -d java-files
-		 ${NATIVE_FILES}	
+		 ${NATIVE_FILES}
+	RESULT_VARIABLE VAR	
 	WORKING_DIRECTORY "${BIN_DIRECTORY}"
 )
+
+if (${VAR} EQUAL "1")
+  message( FATAL_ERROR "Failed to compile java files")
+endif()
 
 # enumerate class files
 file(GLOB_RECURSE CLASS_FILES RELATIVE ${BIN_DIRECTORY}/java-files ${BIN_DIRECTORY}/java-files/org/COPASI/*.class)

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -283,7 +283,7 @@ public:
    * @return CUndoData undoData
    */
   virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & type,
+                              const CUndoData::Type & /* type */,
                               const CData & oldData = CData(),
                               const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const
   {
@@ -584,7 +584,7 @@ public:
         {
           CDataContainer::remove(*it);
           (*it)->setObjectParent(NULL);
-          delete(*it);
+          delete (*it);
           *it = NULL;
         }
 
@@ -1048,7 +1048,7 @@ public:
    * @return CUndoData undoData
    */
   virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & type,
+                              const CUndoData::Type & /* type */,
                               const CData & oldData = CData(),
                               const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const
   {
@@ -1290,7 +1290,7 @@ public:
    */
   CType & operator[](const std::string & name)
   {
-    CDataContainer::objectMap::range Range = CDataContainer::getObjects().equal_range(name);
+    CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(name);
 
     CType * pType = NULL;
 
@@ -1315,7 +1315,7 @@ public:
    */
   const CType & operator[](const std::string &name) const
   {
-    CDataContainer::objectMap::range Range = CDataContainer::getObjects().equal_range(name);
+    CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(name);
 
     CType * pType = NULL;
 
@@ -1344,7 +1344,7 @@ public:
 
     if (!ElementName.empty())
       {
-        CDataContainer::objectMap::range Range = CDataContainer::getObjects().equal_range(ElementName);
+        CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(ElementName);
 
         for (; Range.first != Range.second; ++Range.first)
           {
@@ -1353,7 +1353,7 @@ public:
           }
       }
 
-    return CDataVector < CType >::getObject(name);
+    return CDataVector< CType >::getObject(name);
   }
 
   /**
@@ -1407,7 +1407,7 @@ private:
   virtual bool isInsertAllowed(const CType * src)
   {
     bool isInserAllowed = true;
-    CDataContainer::objectMap::range Range = CDataContainer::getObjects().equal_range(src->getObjectName());
+    CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(src->getObjectName());
 
     for (; Range.first != Range.second && isInserAllowed; ++Range.first)
       {

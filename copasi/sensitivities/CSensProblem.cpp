@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -140,6 +140,17 @@ std::vector< CDataObject * > CSensItem::getVariablesPointerList(CDataModel * pDa
 //}
 
 //************************ CSensProblem ***************************
+
+// static
+const CEnumAnnotation< CTaskEnum::Task, CSensProblem::SubTaskType > CSensProblem::SubTaskTypeToTask(
+{
+  CTaskEnum::Task::UnsetTask, // Evaluation
+  CTaskEnum::Task::steadyState, // SteadyState
+  CTaskEnum::Task::timeCourse, // TimeSeries
+  CTaskEnum::Task::parameterFitting, // ParameterEstimation
+  CTaskEnum::Task::optimization, // Optimization
+  CTaskEnum::Task::crosssection //  CrossSection
+});
 
 const std::string CSensProblem::SubTaskName[] =
 {
@@ -299,6 +310,24 @@ void CSensProblem::initializeParameter()
 CSensProblem::~CSensProblem()
 {
   DESTRUCTOR_TRACE;
+}
+
+// virtual
+CCopasiTask * CSensProblem::getSubTask() const
+{
+  CDataModel* pDataModel = getObjectDataModel();
+
+  if (pDataModel != NULL)
+    {
+      CDataVectorN< CCopasiTask >::iterator it = pDataModel->getTaskList()->begin();
+      CDataVectorN< CCopasiTask >::iterator end = pDataModel->getTaskList()->end();
+
+      for (; it != end; ++it)
+        if (it->getType() == SubTaskTypeToTask[*mpSubTaskType])
+          return &*it;
+    }
+
+  return NULL;
 }
 
 /**

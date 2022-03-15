@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -53,8 +53,30 @@ endif()
 
 if (BLAS_FOUND AND APPLE)
   add_definitions(-DHAVE_APPLE)
+
   if (NOT CLAPACK_INCLUDE_DIR)
-    set(CLAPACK_INCLUDE_DIR "${COPASI_SOURCE_DIR}")
+    # as it turns out the new OSX has different definitions for blas
+    # it is a bit hard to find the right directory, so lets try here
+    exec_program(xcode-select ARGS -print-path OUTPUT_VARIABLE CMAKE_XCODE_DEVELOPER_DIR)
+    find_path(CLAPACK_INCLUDE_DIR cblas.h
+    PATHS
+       ${CMAKE_OSX_SYSROOT}/System/Library/Frameworks/Accelerate.framework/Versions/Current/Frameworks/vecLib.framework/Headers/
+       ${CMAKE_XCODE_DEVELOPER_DIR}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework/Versions/Current/Frameworks/vecLib.framework/Headers/
+    )
+
+    if (CLAPACK_INCLUDE_DIR)
+      add_definitions(-DHAVE_CBLAS_H)
+    endif()
+
+    if (NOT CLAPACK_INCLUDE_DIR)
+      # fallback
+      set(CLAPACK_INCLUDE_DIR "${COPASI_SOURCE_DIR}")
+    endif (NOT CLAPACK_INCLUDE_DIR)
+
+  else()
+  
+    add_definitions(-DHAVE_CBLAS_H)
+    
   endif (NOT CLAPACK_INCLUDE_DIR)
 
 

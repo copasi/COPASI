@@ -1,4 +1,4 @@
-// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2021 - 2022 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -113,11 +113,11 @@
 
 #ifdef __cplusplus
 
-#  if __cplusplus >= 201103L
+#  if __cplusplus >= 201103L || _MSVC_LANG >= 201103L
 #    define CATCH_CPP11_OR_GREATER
 #  endif
 
-#  if __cplusplus >= 201402L
+#  if __cplusplus >= 201402L || _MSVC_LANG >= 201402L
 #    define CATCH_CPP14_OR_GREATER
 #  endif
 

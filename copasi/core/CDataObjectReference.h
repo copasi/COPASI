@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,10 +47,7 @@ public:
   CDataObjectReference(const std::string & name,
                        const CDataContainer * pParent,
                        referenceType & reference,
-                       const CFlags< Flag > & flag = CFlags< Flag >::None):
-    CDataObject(name, pParent, "Reference", flag | CDataObject::Reference | CDataObject::NonUniqueName),
-    mpReference(&reference)
-  {}
+                       const CFlags< Flag > & flag = CFlags< Flag >::None);
 
   CDataObjectReference(const CDataObjectReference< referenceType > & src,
                        const CDataContainer * pParent):
@@ -111,27 +108,43 @@ public:
   }
 };
 
-template<> inline CDataObjectReference< double >::CDataObjectReference(const std::string & name,
+template<> inline CDataObjectReference< C_FLOAT64 >::CDataObjectReference(const std::string & name,
     const CDataContainer * pParent,
-    double & reference,
+    C_FLOAT64 & reference,
     const CFlags< Flag > & flag) :
   CDataObject(name, pParent, "Reference",
               flag | CDataObject::Reference | CDataObject::NonUniqueName | CDataObject::ValueDbl),
   mpReference(&reference)
-{
-  assert(pParent != NULL);
-}
+{}
 
-template<> inline CDataObjectReference< int >::CDataObjectReference(const std::string & name,
+template<> inline CDataObjectReference< C_INT32 >::CDataObjectReference(const std::string & name,
     const CDataContainer * pParent,
-    int & reference,
+    C_INT32 & reference,
     const CFlags< Flag > & flag) :
   CDataObject(name, pParent, "Reference",
               flag | CDataObject::Reference | CDataObject::NonUniqueName | CDataObject::ValueInt),
   mpReference(&reference)
-{
-  assert(pParent != NULL);
-}
+{}
+
+template<> inline CDataObjectReference< unsigned C_INT32 >::CDataObjectReference(const std::string & name,
+    const CDataContainer * pParent,
+    unsigned C_INT32 & reference,
+    const CFlags< Flag > & flag) :
+  CDataObject(name, pParent, "Reference",
+              flag | CDataObject::Reference | CDataObject::NonUniqueName | CDataObject::ValueInt),
+  mpReference(&reference)
+{}
+
+#ifdef DATAVALUE_NEEDS_SIZE_T_MEMBERS
+template<> inline CDataObjectReference< size_t >::CDataObjectReference(const std::string & name,
+    const CDataContainer * pParent,
+    size_t & reference,
+    const CFlags< Flag > & flag) :
+  CDataObject(name, pParent, "Reference",
+              flag | CDataObject::Reference | CDataObject::NonUniqueName | CDataObject::ValueInt),
+  mpReference(&reference)
+{}
+#endif // DATAVALUE_NEEDS_SIZE_T_MEMBERS
 
 template<> inline CDataObjectReference< bool >::CDataObjectReference(const std::string & name,
     const CDataContainer * pParent,
@@ -140,9 +153,25 @@ template<> inline CDataObjectReference< bool >::CDataObjectReference(const std::
   CDataObject(name, pParent, "Reference",
               flag | CDataObject::Reference | CDataObject::NonUniqueName | CDataObject::ValueBool),
   mpReference(&reference)
-{
-  assert(pParent != NULL);
-}
+{}
+
+template<> inline CDataObjectReference< std::string >::CDataObjectReference(const std::string & name,
+    const CDataContainer * pParent,
+    std::string & reference,
+    const CFlags< Flag > & flag) :
+  CDataObject(name, pParent, "Reference",
+              flag | CDataObject::Reference | CDataObject::NonUniqueName | CDataObject::ValueString),
+  mpReference(&reference)
+{}
+
+template<> inline CDataObjectReference< CRegisteredCommonName >::CDataObjectReference(const std::string & name,
+    const CDataContainer * pParent,
+    CRegisteredCommonName & reference,
+    const CFlags< Flag > & flag) :
+  CDataObject(name, pParent, "Reference",
+              flag | CDataObject::Reference | CDataObject::NonUniqueName | CDataObject::ValueString),
+  mpReference(&reference)
+{}
 
 template <class CType> class CDataVectorReference: public CDataObject
 {
@@ -168,17 +197,13 @@ public:
     CDataObject(name, pParent, "Reference",
                 flag | CDataObject::Reference | CDataObject::NonUniqueName),
     mReference(reference)
-  {
-    assert(pParent != NULL);
-  }
+  {}
 
   CDataVectorReference(const CDataVectorReference< referenceType > & src,
                        const CDataContainer * pParent):
     CDataObject(src, pParent),
     mReference(src.mReference)
-  {
-    assert(pParent != NULL);
-  }
+  {}
 
   virtual ~CDataVectorReference() {}
 
@@ -233,17 +258,13 @@ public:
     CDataObject(name, pParent, "Reference",
                 flag | CDataObject::Reference | CDataObject::NonUniqueName),
     mReference(reference)
-  {
-    assert(pParent != NULL);
-  }
+  {}
 
   CDataMatrixReference(const CDataMatrixReference< referenceType > & src,
                        const CDataContainer * pParent):
     CDataObject(src, pParent),
     mReference(src.mReference)
-  {
-    assert(pParent != NULL);
-  }
+  {}
 
   virtual ~CDataMatrixReference() {}
 

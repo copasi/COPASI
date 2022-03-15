@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -246,6 +246,10 @@ void CExpression::writeMathML(std::ostream & out, bool fullExpand, size_t l) con
 // static
 CExpression * CExpression::createInitialExpression(const CExpression & expression, const CDataModel* pDataModel)
 {
+  // If the expresion is not valid we do not convert.
+  if (expression.getValidity().getFirstWorstIssue().isError())
+    return NULL;
+
   size_t Size = CCopasiMessage::size();
   CExpression * pInitialExpression = new CExpression(expression, expression.getObjectParent());
 

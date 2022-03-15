@@ -56,7 +56,7 @@ def get_dir_if_exists(variable, default):
 global SRC_DIR
 SRC_DIR = get_dir_if_exists('COPASI_SRC_DIR', abspath('.'))
 global DEP_DIR
-DEP_DIR = get_dir_if_exists('COPASI_DEP_DIR', '../copasi_dependencies/')
+DEP_DIR = get_dir_if_exists('COPASI_DEP_DIR', '../copasi-dependencies/')
 DEP_SRC_DIR = get_dir_if_exists('COPASI_DEP_SRC', '../copasi-dependencies/')
 DEP_DIR32 = get_dir_if_exists('COPASI_DEP_DIR_32', '../win_copasi_dependencies_32/')
 DEP_DIR64 = get_dir_if_exists('COPASI_DEP_DIR_64', '../win_copasi_dependencies_64/')
@@ -69,7 +69,8 @@ if not SRC_DIR:
   else:
     raise ValueError("COPASI Source not specified or not present, define COPASI_SRC_DIR.")
 
-print ("Using COPASI from: {0}".format(SRC_DIR))
+print ("Using COPASI from:  {0}".format(SRC_DIR))
+print ("Using Dependencies: {0}".format(DEP_DIR))
 
 version_file_name = join(join(SRC_DIR, 'copasi'), 'CopasiVersion.h')
 print ("Using version file: {0}".format(version_file_name))
@@ -136,7 +137,7 @@ class CMakeBuild(build_ext):
           suffix = suffix[:suffix.rfind('/')]
         if '\\' in suffix:
           suffix = suffix[:suffix.rfind('\\')]
-          
+
         ext_dir = self.get_ext_fullpath(extension.name)
         makedirs(build_temp)
         target_lib_path = abspath(ext_dir)
@@ -159,11 +160,13 @@ class CMakeBuild(build_ext):
         is_osx = platform.system() == 'Darwin'
         is_win = platform.system() == 'Windows'
         is_win_32 = is_win and ('win32' in name or 'win32' in build_temp)
+        enable_jit = 'ON' if ('_64' in suffix or 'amd64' in suffix) else 'OFF'
+        enable_clapack = 'OFF' if is_osx else 'ON'
 
         cmake_args = [
             '-DCMAKE_BUILD_TYPE=' + config
         ]
-        
+
         if is_win: 
           cmake_args.append('-DWITH_STATIC_RUNTIME=ON')
 
@@ -171,7 +174,9 @@ class CMakeBuild(build_ext):
           'CMAKE_CXX_COMPILER', 
           'CMAKE_C_COMPILER', 
           'CMAKE_LINKER', 
-          'CMAKE_GENERATOR'
+          'CMAKE_GENERATOR',
+          'CMAKE_OSX_ARCHITECTURES',
+          'CMAKE_SYSTEM_PROCESSOR'
         ])
 
         if is_win_32:
@@ -190,7 +195,7 @@ class CMakeBuild(build_ext):
         ]
 
         global DEP_DIR
-        if not DEP_DIR and not self.dry_run:
+        if DEP_DIR and exists(DEP_DIR) and not self.dry_run:
             print("compiling dependencies")
             dep_suffix = sysconfig.get_platform()
             dep_inst_dir = os.path.join(cwd, 'install_dependencies_' + dep_suffix)
@@ -205,6 +210,8 @@ class CMakeBuild(build_ext):
                              '-DBUILD_UI_DEPS=OFF',
                              '-DBUILD_zlib=ON',
                              '-DBUILD_archive=OFF',
+                             '-DBUILD_NativeJIT=' + enable_jit,
+                             '-DBUILD_clapack=' + enable_clapack
                            ]
                          )
                self.spawn(['cmake', '--build', '.'] + build_args)
@@ -215,7 +222,8 @@ class CMakeBuild(build_ext):
             '-DBUILD_GUI=OFF',
             '-DENABLE_PYTHON=ON',
             '-DPYTHON_EXECUTABLE=' + sys.executable,
-            '-DPYTHON_INCLUDE_DIR=' + sysconfig.get_paths()['include']
+            '-DPYTHON_INCLUDE_DIR=' + sysconfig.get_paths()['include'],
+            '-DENABLE_JIT=' + enable_jit
         ]
 
         copasi_args = prepend_variables(copasi_args, [
@@ -230,7 +238,7 @@ class CMakeBuild(build_ext):
           copasi_args.append('-DCMAKE_CXX_FLAGS=-fPIC')
 
         cmake_args = cmake_args + copasi_args
-        
+
         if DEP_DIR:
           cmake_args.append('-DCOPASI_DEPENDENCY_DIR=' + DEP_DIR)
           cmake_args.append('-DLIBEXPAT_INCLUDE_DIR=' + join(DEP_DIR, 'include'))
@@ -248,14 +256,14 @@ class CMakeBuild(build_ext):
         self.spawn(['cmake', SRC_DIR] + cmake_args)
         if not self.dry_run:
             self.spawn(['cmake', '--build', '.', '--target', 'binding_python_lib'] + build_args)
-        
+
             # at this point the build should be complete, and we have all the files 
             # neeed in the temp build_folder
-            
+
             init_py2 = None
             init_py3 = None
             dst_file = join(target_dir_path, '__init__.py')
-            
+
             for root, dirs, files in os.walk(".", topdown=False):
               for name in files:
                 # 1. find pyd and copy to target_lib_path
@@ -274,10 +282,10 @@ class CMakeBuild(build_ext):
 
             if init_py2 and exists(init_py2) and sys.version_info.major == 2:
                   shutil.copyfile(init_py2, dst_file)
-            
+
             if init_py3 and exists(init_py3) and sys.version_info.major == 3:
                   shutil.copyfile(init_py3, dst_file)
-        
+
         os.chdir(cwd)
 
 

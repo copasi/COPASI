@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -211,7 +211,16 @@ CPlotItem* CPlotSpecification::createItem(const std::string & name, CPlotItem::T
   return itm;
 }
 
-bool CPlotSpecification::createDefaultPlot(const CModel* model)
+bool CPlotSpecification::hasItem(const std::string & name)
+{
+  for (auto & item : items)
+    if (item.getObjectName() == name)
+      return true;
+
+  return false;
+}
+
+bool CPlotSpecification::createDefaultPlot(const CModel * model)
 {
   mActive = true;
 

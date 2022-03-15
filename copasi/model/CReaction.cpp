@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -644,13 +644,110 @@ void CReaction::setReversible(bool reversible)
 const CFunction * CReaction::getFunction() const
 {return mpFunction;}
 
+CFunction * CReaction::createFunctionFromExpression(const std::string & infix)
+{
+  CFunction * pFunction = new CFunction;
+
+  if (!pFunction->setInfix(infix))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, infix.c_str());
+      delete pFunction;
+      return NULL;
+    }
+
+  CFunctionParameters & Variables = pFunction->getVariables();
+  CFunctionParameters::iterator it = Variables.begin();
+  CFunctionParameters::iterator end = Variables.end();
+
+  for (; it != end; ++it)
+    {
+      std::string Name = it->getObjectName();
+
+      if (Name == "Time")
+        {
+          it->setUsage(CFunctionParameter::Role::TIME);
+          continue;
+        }
+
+      const CMetab * pSpecies = NULL;
+
+      // Check whether we have a substrate with that name
+      CDataVector< CChemEqElement >::const_iterator itElement = mChemEq.getSubstrates().begin();
+      CDataVector< CChemEqElement >::const_iterator endElement = mChemEq.getSubstrates().end();
+
+      for (; itElement != endElement; ++itElement)
+        if ((pSpecies = itElement->getMetabolite()) != NULL
+            && pSpecies->getObjectDisplayName() == Name)
+          {
+            it->setUsage(CFunctionParameter::Role::SUBSTRATE);
+            break;
+          }
+
+      if (it->getUsage() != CFunctionParameter::Role::VARIABLE)
+        continue;
+
+      // Check whether we have a product with that name
+      itElement = mChemEq.getProducts().begin();
+      endElement = mChemEq.getProducts().end();
+
+      for (; itElement != endElement; ++itElement)
+        if ((pSpecies = itElement->getMetabolite()) != NULL
+            && pSpecies->getObjectDisplayName() == Name)
+          {
+            it->setUsage(CFunctionParameter::Role::PRODUCT);
+            break;
+          }
+
+      if (it->getUsage() != CFunctionParameter::Role::VARIABLE)
+        continue;
+
+      // Check whether we have a modifier with that name
+      itElement = mChemEq.getModifiers().begin();
+      endElement = mChemEq.getModifiers().end();
+
+      for (; itElement != endElement; ++itElement)
+        if ((pSpecies = itElement->getMetabolite()) != NULL
+            && pSpecies->getObjectDisplayName() == Name)
+          {
+            it->setUsage(CFunctionParameter::Role::MODIFIER);
+            break;
+          }
+
+      if (it->getUsage() != CFunctionParameter::Role::VARIABLE)
+        continue;
+
+      // Check whether we have compartment with that name
+      for (const CCompartment * pCompartment : mChemEq.getCompartments())
+        if (pCompartment->getObjectName() == "Name")
+          {
+            it->setUsage(CFunctionParameter::Role::VOLUME);
+            break;
+          }
+
+      if (it->getUsage() != CFunctionParameter::Role::VARIABLE)
+        continue;
+
+      // Mark it as a kinetic parameter
+      it->setUsage(CFunctionParameter::Role::PARAMETER);
+    }
+
+  pFunction->setObjectName("function_4_" + getObjectName());
+
+  CRootContainer::getFunctionList()->addAndAdaptName(pFunction);
+
+  return pFunction;
+}
+
 bool CReaction::setFunction(const std::string & functionName)
 {
   CFunction * pFunction =
-    dynamic_cast<CFunction *>(CRootContainer::getFunctionList()->findLoadFunction(functionName));
+    dynamic_cast< CFunction * >(CRootContainer::getFunctionList()->findLoadFunction(functionName));
 
   if (!pFunction)
-    CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
+      return false;
+    }
 
   return setFunction(pFunction);
 }
@@ -1019,6 +1116,7 @@ CIssue CReaction::compileFunctionParameters(std::set< const CDataObject * > & de
 
           if (pObject != NULL)
             {
+              // mMap will raise an issue if the object typedoes not match the parameter type
               Issue = mMap.setCallParameter(paramName, pObject);
               mValidity.add(Issue);
               mParameterIndexToObjects[i][0] = pObject;
@@ -1390,6 +1488,28 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
   return os;
 }
 
+// static
+std::string CReaction::sanitizeSBMLId(const std::string & id)
+{
+  // Bug 3083: valid SBML Ids are valid COPASI Ids. However we allow importing invalid Ids
+  // ID       (\"([^\\\"]|\\.)*\"|[a-z_A-Z][a-z_A-Z0-9]*)
+  if (id.find_first_of("_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != 0
+      || id.find_first_not_of("_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != std::string::npos)
+    return "\"" + id + "\"";
+
+  // We need to check that we have no reserved name.
+  static const std::set< std::string > Reserved(
+  {
+    "pi", "exponentiale", "true", "false", "infinity", "nan",
+    "PI", "EXPONENTIALE", "TRUE", "FALSE", "INFINITY", "NAN"
+  });
+
+  if (Reserved.find(id) != Reserved.end())
+    return "\"" + id + "\"";
+
+  return id;
+}
+
 CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject* objectNode, std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> >& replacementMap, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   CEvaluationNodeVariable* pVariableNode = NULL;
@@ -1415,22 +1535,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
               if (dynamic_cast<CMetab*>(object) && pos != copasi2sbmlmap.end())
                 {
                   Species* pSpecies = dynamic_cast<Species*>(pos->second);
-                  id = pSpecies->getId();
-
-                  // We need to check that we have no reserved name.
-                  const char *Reserved[] =
-                  {
-                    "pi", "exponentiale", "true", "false", "infinity", "nan",
-                    "PI", "EXPONENTIALE", "TRUE", "FALSE", "INFINITY", "NAN"
-                  };
-
-                  size_t j, jmax = 12;
-
-                  for (j = 0; j < jmax; j++)
-                    if (id == Reserved[j]) break;
-
-                  if (j != jmax)
-                    id = "\"" + id + "\"";
+                  id = sanitizeSBMLId(pSpecies->getId());
 
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::SubType::DEFAULT, id);
 
@@ -1493,9 +1598,11 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                                     }
                                   else
                                     {
-                                      delete pVariableNode;
-                                      pVariableNode = NULL;
-                                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 7, id.c_str(), this->getSBMLId().c_str());
+                                      // rather than just fail to load the model alltogether, mark as invalid but
+                                      // continue loading the model
+                                      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 7, id.c_str(), this->getSBMLId().c_str());
+                                      found = true;
+                                      usage = CFunctionParameter::Role::MODIFIER;
                                     }
                                 }
                             }
@@ -1512,9 +1619,9 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                 {
                   // usage = "PARAMETER"
                   if (pos != copasi2sbmlmap.end())
-                    id = dynamic_cast< Parameter * >(pos->second)->getId();
+                    id = sanitizeSBMLId(dynamic_cast< Parameter * >(pos->second)->getId());
                   else
-                    id = dynamic_cast< CModelValue * >(object)->getSBMLId();
+                    id = sanitizeSBMLId(dynamic_cast< CModelValue * >(object)->getSBMLId());
 
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::SubType::DEFAULT, id);
 
@@ -1528,7 +1635,8 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
               else if (dynamic_cast< CCompartment * >(object) && pos != copasi2sbmlmap.end())
                 {
                   // usage = "VOLUME"
-                  id = dynamic_cast<Compartment*>(pos->second)->getId();
+                  id = sanitizeSBMLId(dynamic_cast<Compartment*>(pos->second)->getId());
+
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::SubType::DEFAULT, id);
 
                   if (replacementMap.find(id) == replacementMap.end())
@@ -1687,7 +1795,7 @@ CEvaluationNode* CReaction::objects2variables(const CEvaluationNode* pNode, std:
   return pResult;
 }
 
-CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & expression, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB)
+CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & expression, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   // walk the tree and replace all object nodes with variable nodes.
   CFunction* pTmpFunction = NULL;
@@ -1754,16 +1862,16 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
       std::ostringstream numberStream;
       CFunction * pExistingFunction = NULL;
 
-      while ((pExistingFunction = pFunctionDB->findFunction(functionName + appendix)) != NULL)
+      while ((pExistingFunction = CRootContainer::getFunctionList()->findFunction(functionName + appendix)) != NULL)
         {
           if (SBMLImporter::areEqualFunctions(pExistingFunction, pTmpFunction))
             {
-              setFunction(pExistingFunction);
-
               // The functions and their signature are equal however the role of the variables
               // might not be defined for the existing function if this is the first time it is used
               mpFunction->setReversible(pTmpFunction->isReversible());
               mpFunction->getVariables() = pTmpFunction->getVariables();
+
+              setFunction(pExistingFunction);
 
               pdelete(pTmpFunction);
 
@@ -1806,7 +1914,7 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
 
   // add to function database
   if (pTmpFunction != NULL &&
-      !pFunctionDB->add(pTmpFunction, true))
+      !CRootContainer::getFunctionList()->add(pTmpFunction, true))
     {
       CCopasiMessage(CCopasiMessage::ERROR_FILTERED, "Couldn't add expression for '%s' to the function database.", pTmpFunction->getObjectName().c_str());
     }

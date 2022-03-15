@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -252,6 +252,8 @@ CDataModel::~CDataModel()
     }
 
   mTempFolders.clear();
+
+  CRegisteredCommonName::setEnabled(true);
 }
 
 bool CDataModel::loadFromString(const std::string & content,
@@ -1115,8 +1117,7 @@ bool CDataModel::importSBMLFromString(const std::string & sbmlDocumentText,
 
   try
     {
-      pModel = importer.parseSBML(sbmlDocumentText, CRootContainer::getFunctionList(),
-                                  pSBMLDocument, Copasi2SBMLMap, pLol, this);
+      pModel = importer.parseSBML(sbmlDocumentText, pSBMLDocument, Copasi2SBMLMap, pLol, this);
     }
 
   catch (CCopasiException & except)
@@ -1208,8 +1209,7 @@ bool CDataModel::importSBML(const std::string & fileName,
       mData.mSBMLFileName = CDirEntry::normalize(FileName);
       mData.mReferenceDir = CDirEntry::dirName(mData.mSBMLFileName);
 
-      pModel = importer.readSBML(FileName, CRootContainer::getFunctionList(),
-                                 pSBMLDocument, Copasi2SBMLMap, pLol, this);
+      pModel = importer.readSBML(FileName, pSBMLDocument, Copasi2SBMLMap, pLol, this);
     }
 
   catch (CCopasiException & except)
@@ -1790,7 +1790,16 @@ bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bo
   return false;
 }
 
-bool CDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, bool includeSBML, bool includeData, bool includeSEDML, bool overwriteFile, CProcessReport * pProgressReport)
+bool CDataModel::exportCombineArchive(
+  std::string fileName,
+  bool includeCOPASI,
+  bool includeSBML,
+  bool includeData,
+  bool includeSEDML,
+  bool overwriteFile,
+  CProcessReport * pProgressReport,
+  int sbmlLevel, int sbmlVersion,
+  int sedmlLevel, int sedmlVersion)
 {
   CCopasiMessage::clearDeque();
 
@@ -1936,7 +1945,7 @@ bool CDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, 
       try
         {
           std::stringstream str;
-          str << exportSBMLToString(pProgressReport, 2, 4);
+          str << exportSBMLToString(pProgressReport, sbmlLevel, sbmlVersion);
           archive.addFile(str, "./sbml/model.xml", KnownFormats::lookupFormat("sbml"), !includeCOPASI);
         }
       catch (...)
@@ -1947,7 +1956,10 @@ bool CDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, 
   if (includeSEDML)
     {
       std::stringstream str;
-      str << exportSEDMLToString(pProgressReport, 1, 2, "../sbml/model.xml");
+      XMLNamespaces namespaces;
+      namespaces.add(SBMLNamespaces::getSBMLNamespaceURI(sbmlLevel, sbmlVersion), "sbml");
+      str << exportSEDMLToString(pProgressReport, sedmlLevel, sedmlVersion, "../sbml/model.xml",
+                                 &namespaces);
       archive.addFile(str, "./sedml/simulation.xml", KnownFormats::lookupFormat("sedml"), !includeCOPASI);
     }
 
@@ -2009,9 +2021,9 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
   // if we don't have one, or we have one we don't understand look for copasi file
   if (content == NULL ||
-      (content->getFormat() != KnownFormats::lookupFormat("sbml") &&
-       content->getFormat() != KnownFormats::lookupFormat("copasi") &&
-       content->getFormat() != KnownFormats::lookupFormat("sedml")))
+      (!content->isFormat("sbml") &&
+       !content->isFormat("copasi") &&
+       !content->isFormat("sedml")))
     {
       content = archive.getEntryByFormat("copasi");
       haveCopasi = content != NULL;
@@ -2033,12 +2045,12 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
   // otherwise look for an sedml file
   const CaContent * sedml_content =
-    content != NULL && content->getFormat() == KnownFormats::lookupFormat("sedml") ?
+    content != NULL && content->isFormat("sedml") ?
     content : archive.getEntryByFormat("sedml");
 
   // otherwise look for an sbml file
   const CaContent * sbml_content =
-    content != NULL && content->getFormat() == KnownFormats::lookupFormat("sbml") ?
+    content != NULL && content->isFormat("sbml") ?
     content : archive.getEntryByFormat("sbml");
 
   if (content == NULL && sbml_content == NULL && sedml_content == NULL)
@@ -2180,18 +2192,9 @@ bool CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText,
   //mCopasi2SBMLMap.clear();
   CModel * pModel = NULL;
 
-  SedDocument * pSEDMLDocument = NULL;
-  std::map< CDataObject *, SedBase * > Copasi2SEDMLMap;
-  std::map< CDataObject *, SBase * > Copasi2SBMLMap;
-
-  SBMLDocument * pSBMLDocument = NULL;
-  CListOfLayouts * pLol = NULL;
-  COutputDefinitionVector * pLotList = NULL; // = new COutputDefinitionVector("OutputDefinitions", this);
-
   try
     {
-      pModel = importer.parseSEDML(sedmlDocumentText, pImportHandler, pSBMLDocument, pSEDMLDocument,
-                                   Copasi2SEDMLMap, Copasi2SBMLMap, pLol, pLotList, this);
+      pModel = importer.parseSEDML(sedmlDocumentText, this);
     }
 
   catch (CCopasiException & except)
@@ -2214,21 +2217,7 @@ bool CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText,
       return false;
     }
 
-  if (pModel != NULL)
-    {
-      mData.pModel = pModel;
-      add(mData.pModel, true);
-    }
-
-  if (pLol != NULL)
-    {
-      mData.pListOfLayouts = pLol;
-      add(mData.pListOfLayouts, true);
-    }
-
-  mData.pCurrentSEDMLDocument = pSEDMLDocument;
-  mData.mCopasi2SEDMLMap = Copasi2SEDMLMap;
-  mData.mContentType = ContentType::SEDML;
+  importer.updateContent(mData, *this);
 
   commonAfterLoad(pImportHandler, deleteOldData);
 
@@ -2268,7 +2257,6 @@ bool CDataModel::importSEDML(const std::string & fileName,
   std::map< CDataObject *, SBase * > Copasi2SBMLMap;
 
   SBMLDocument * pSBMLDocument = NULL;
-  CTrajectoryTask * trajTask = NULL;
   CListOfLayouts * pLol = NULL;
   COutputDefinitionVector * pLotList = NULL;
 
@@ -2280,8 +2268,7 @@ bool CDataModel::importSEDML(const std::string & fileName,
       mData.mSEDMLFileName = CDirEntry::normalize(FileName);
       mData.mReferenceDir = CDirEntry::dirName(mData.mSEDMLFileName);
 
-      pModel = importer.readSEDML(FileName, pImportHandler, pSBMLDocument, pSEDMLDocument,
-                                  Copasi2SEDMLMap, Copasi2SBMLMap, pLol, pLotList, this);
+      pModel = importer.readSEDML(FileName, this);
     }
 
   catch (CCopasiException & except)
@@ -2304,31 +2291,9 @@ bool CDataModel::importSEDML(const std::string & fileName,
       return false;
     }
 
-  if (pModel != NULL)
-    {
-      mData.pModel = pModel;
-      add(mData.pModel, true);
-    }
-
-  if (pLol != NULL)
-    {
-      mData.pListOfLayouts = pLol;
-      add(mData.pListOfLayouts, true);
-    }
-
-  if (pLol != NULL)
-    {
-      mData.pPlotDefinitionList = pLotList;
-      add(mData.pPlotDefinitionList, true);
-    }
+  importer.updateContent(mData, *this);
 
   commonAfterLoad(pImportHandler, deleteOldData);
-  // common after load resets all tasks, so we need to reset them.
-  importer.importTasks(Copasi2SEDMLMap);
-
-  mData.pCurrentSEDMLDocument = pSEDMLDocument;
-  mData.mCopasi2SEDMLMap = Copasi2SEDMLMap;
-  mData.mContentType = ContentType::SEDML;
 
   mData.mSaveFileName = CDirEntry::dirName(FileName)
                         + CDirEntry::Separator
@@ -2341,11 +2306,13 @@ bool CDataModel::importSEDML(const std::string & fileName,
 
   mData.mSaveFileName += ".cps";
   mData.mSaveFileName = CDirEntry::normalize(mData.mSaveFileName);
+
   // store the reference directory
   mData.mReferenceDir = CDirEntry::dirName(mData.mSaveFileName);
   mData.mSEDMLFileName = CDirEntry::normalize(FileName);
 
   CRegisteredCommonName::setEnabled(true);
+
   return true;
 }
 
@@ -2377,7 +2344,8 @@ std::map< CDataObject *, SedBase * > & CDataModel::getCopasi2SEDMLMap()
 std::string CDataModel::exportSEDMLToString(CProcessReport * pExportHandler,
     int sedmlLevel,
     int sedmlVersion,
-    const std::string & modelLocation)
+    const std::string & modelLocation,
+    const XMLNamespaces * pAdditionalNamespaces)
 {
   CCopasiMessage::clearDeque();
   SedDocument * pOrigSEDMLDocument = NULL;
@@ -2405,6 +2373,10 @@ std::string CDataModel::exportSEDMLToString(CProcessReport * pExportHandler,
     }
 
   CSEDMLExporter exporter;
+
+  if (pAdditionalNamespaces)
+    exporter.setSBMLNamespaces(*pAdditionalNamespaces);
+
   std::string str = exporter.exportModelAndTasksToString(*this, modelLocation, sedmlLevel, sedmlVersion);
 
   // if we have saved the original SEDML model somewhere
@@ -2482,6 +2454,8 @@ CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile,
   SedDocument * pOrigSEDMLDocument = NULL;
 
   std::string sbmlDocument = exportSBMLToString(pExportHandler, 3, 1);
+  // set namespaces to be written out on top of sbml document
+  exporter.setSBMLNamespaces(3, 1);
 
   if (sbmlDocument == "")
     {
@@ -3267,6 +3241,11 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
     {
       try
         {
+          // need to update math container, since the one set automatically
+          // by the task factory might have set an invalid old one
+          if (mData.pModel)
+            it->setMathContainer(&mData.pModel->getMathContainer());
+
           // need initialize, so that all objects are created for the
           // object browser
           if (!mData.mWithGUI && !it->isScheduled())

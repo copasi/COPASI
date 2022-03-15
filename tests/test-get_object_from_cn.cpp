@@ -1,4 +1,4 @@
-// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -11,7 +11,7 @@ extern std::string getTestFile(const std::string& fileName);
 
 bool verify_cn(const CDataModel* dm, const std::string& cn)
 {
-  auto* ref = dm->getObject( { cn });
+  auto* ref = dm->getObject({cn });
 
   if (ref == NULL)
     return false;
@@ -28,7 +28,7 @@ TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
 {
 
   auto* dm = CRootContainer::addDatamodel();
-  REQUIRE(dm != NULL);
+  REQUIRE(dm != nullptr);
 
   SECTION("brusselator example")
   {
@@ -48,9 +48,7 @@ TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
     REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Array=Stoichiometry(ann)[X][(R1)]"));
     REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[0][0]"));
     REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[\\[X\\]][(R1).k1]"));
-
   }
-
 
   SECTION("simple_v3_event")
   {
@@ -61,13 +59,13 @@ TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
 
     // switch the sensitivity setup
     auto* task = dynamic_cast<CSensTask*>(&((*dm->getTaskList())["Sensitivities"]));
-    REQUIRE(task != NULL);
+    REQUIRE(task != nullptr);
     auto* prob = dynamic_cast<CSensProblem*>(task->getProblem());
-    REQUIRE(prob != NULL);
+    REQUIRE(prob != nullptr);
     REQUIRE(prob->getNumberOfVariables() == 2);
-    prob->setTargetFunctions( { CObjectLists::NON_CONST_METAB_NUMBERS });
-    prob->changeVariables(0, { CObjectLists::ALL_LOCAL_PARAMETER_VALUES });
-    prob->changeVariables(1, { CObjectLists::EMPTY_LIST });
+    prob->setTargetFunctions({CObjectLists::NON_CONST_METAB_NUMBERS });
+    prob->changeVariables(0, {CObjectLists::ALL_LOCAL_PARAMETER_VALUES });
+    prob->changeVariables(1, {CObjectLists::EMPTY_LIST });
     task->updateMatrices();
 
     auto* ref = dynamic_cast<const CArrayElementReference*>(dm->getObject(CCommonName("CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[A.ParticleNumber][(reaction).k1]")));
@@ -78,9 +76,6 @@ TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
     auto registeredCN = CRegisteredCommonName(cn);
     registeredCN.sanitizeObjectNames();
     REQUIRE(cn == registeredCN);
-
-
-
   }
 
   CRootContainer::removeDatamodel(dm);

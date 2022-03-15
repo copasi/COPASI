@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,64 +8,18 @@
 
 #include "copasi/lapack/lapackwrap.h"
 #include "copasi/lapack/blaswrap.h"
+#include "copasi/utilities/dgemm.h"
 
 // static
 size_t CLeastSquareSolution::solve(const CMatrix< C_FLOAT64 > & aMatrix,
-                                   const CVectorCore< const C_FLOAT64 > & bVector,
+                                   const CVectorCore< C_FLOAT64 > & bVector,
                                    CVector< C_FLOAT64 > & xVector)
 {
-  assert(bVector.size() == aMatrix.numCols());
+  xVector.resize(aMatrix.numCols());
+  xVector = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
-  xVector = * reinterpret_cast<const CVectorCore< C_FLOAT64 > * >(&bVector);
-
-  C_INT M = (C_INT) aMatrix.numCols();
-  C_INT N = (C_INT) aMatrix.numRows();
-
-  if (M == 0 || N == 0 || M != N)
-    {
-      xVector = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-
-      return 0;
-    }
-
-  C_INT LDA = std::max< C_INT >(1, M);
-  C_INT NRHS = 1;
-
-  // We need the transpose of the a;
-  CMatrix< C_FLOAT64 > AT(M, N);
-  const C_FLOAT64 * mpJ = aMatrix.array();
-  C_FLOAT64 * mpJTcolumn = AT.array();
-  C_FLOAT64 * mpJTcolumnEnd = mpJTcolumn + M;
-  C_FLOAT64 * mpJT = AT.array();
-  C_FLOAT64 * mpJTEnd = mpJT + AT.size();
-
-  for (; mpJTcolumn != mpJTcolumnEnd; ++mpJTcolumn)
-    {
-      mpJT = mpJTcolumn;
-
-      for (; mpJT < mpJTEnd; mpJT += M, ++mpJ)
-        {
-          if (std::isnan(*mpJ))
-            {
-              xVector = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-
-              return 0;
-            }
-
-          *mpJT = *mpJ;
-        }
-    }
-
-  CVector< C_INT > JPVT(M);
-  JPVT = 0;
-
-  C_FLOAT64 RCOND = 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon();
-
-  C_INT RANK = 0;
-
-  CVector< C_FLOAT64 > WORK(1);
-  C_INT LWORK = -1;
-  C_INT INFO;
+  if (bVector.size() != aMatrix.numRows())
+    return 0;
 
   /*
       SUBROUTINE DGELSY(M, N, NRHS, A, LDA, B, LDB, JPVT, RCOND, RANK,
@@ -204,35 +158,67 @@ size_t CLeastSquareSolution::solve(const CMatrix< C_FLOAT64 > & aMatrix,
    *  =====================================================================
    */
 
-  dgelsy_(&M, &N, &NRHS, AT.array(), &LDA, xVector.array(), &LDA, JPVT.array(), &RCOND, &RANK,
+  C_INT M = (C_INT) aMatrix.numRows();
+  C_INT N = (C_INT) aMatrix.numCols();
+  C_INT NRHS = 1;
+  C_INT LDA = std::max< C_INT >(1, M);
+  C_INT LDB = std::max(LDA, N);
+  CVector< C_INT > JPVT(LDB);
+  JPVT = 0;
+  C_FLOAT64 RCOND = 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon();
+  C_INT RANK = 0;
+  CVector< C_FLOAT64 > WORK(1);
+  C_INT LWORK = -1;
+  C_INT INFO;
+
+  // We need the transpose of the aMatrix;
+  CMatrix< C_FLOAT64 > AT(aMatrix.numCols(), aMatrix.numRows());
+  const C_FLOAT64 * mpJ = aMatrix.array();
+  C_FLOAT64 * mpJTcolumn = AT.array();
+  C_FLOAT64 * mpJTcolumnEnd = mpJTcolumn + AT.numCols();
+  C_FLOAT64 * mpJT = AT.array();
+  C_FLOAT64 * mpJTEnd = mpJT + AT.size();
+
+  for (; mpJTcolumn != mpJTcolumnEnd; ++mpJTcolumn)
+    {
+      mpJT = mpJTcolumn;
+
+      for (; mpJT < mpJTEnd; mpJT += AT.numCols(), ++mpJ)
+        {
+          if (std::isnan(*mpJ))
+            return 0;
+
+          *mpJT = *mpJ;
+        }
+    }
+
+  CVector< C_FLOAT64 > B(LDB);
+  B = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+  memcpy(B.begin(), bVector.begin(), bVector.size() * sizeof(C_FLOAT64));
+
+  dgelsy_(&M, &N, &NRHS, AT.array(), &LDA, B.array(), &LDB, JPVT.array(), &RCOND, &RANK,
           WORK.array(), &LWORK, &INFO);
 
   if (INFO < 0)
-    {
-      xVector = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-
-      return 0;
-    }
+    return 0;
 
   LWORK = (C_INT) WORK[0];
   WORK.resize(LWORK);
 
-  dgelsy_(&M, &N, &NRHS, AT.array(), &LDA, xVector.array(), &LDA, JPVT.array(), &RCOND, &RANK,
+  dgelsy_(&M, &N, &NRHS, AT.array(), &LDA, B.array(), &LDB, JPVT.array(), &RCOND, &RANK,
           WORK.array(), &LWORK, &INFO);
 
   if (INFO < 0)
-    {
-      xVector = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+    return 0;
 
-      return 0;
-    }
+  memcpy(xVector.begin(), B.begin(), xVector.size() * sizeof(C_FLOAT64));
 
   return RANK;
 }
 
 // static
 CLeastSquareSolution::ResultInfo CLeastSquareSolution::solve(const CMatrix< C_FLOAT64 > & aMatrix,
-    const CVectorCore< const C_FLOAT64 > & bVector,
+    const CVectorCore< C_FLOAT64 > & bVector,
     const CVectorCore< C_FLOAT64 > & absoluteTolerances,
     const CVector< C_FLOAT64 * > & compartmentVolumes,
     const C_FLOAT64 & quantity2NumberFactor,
@@ -255,16 +241,8 @@ CLeastSquareSolution::ResultInfo CLeastSquareSolution::solve(const CMatrix< C_FL
 
   // We need to check whether the || Ax - bVector || is sufficiently small.
   // Calculate Ax
-  char T = 'N';
-  C_INT N = (C_INT) aMatrix.numRows();
-  C_INT One = 1;
-  C_FLOAT64 Alpha = 1.0;
-  C_FLOAT64 Beta = 0.0;
-
-  CVector< C_FLOAT64 > Ax = * reinterpret_cast<const CVectorCore< C_FLOAT64 > * >(&bVector);
-
-  dgemm_(&T, &T, &One, &N, &N, &Alpha, xVector.array(), &One,
-         const_cast< C_FLOAT64 * >(aMatrix.array()), &N, &Beta, Ax.array(), &One);
+  CVector< C_FLOAT64 > Ax;
+  dgemm::eval(1.0, aMatrix, xVector, 0.0, Ax);
 
   // Calculate absolute and relative error
   C_FLOAT64 *pAx = Ax.begin();

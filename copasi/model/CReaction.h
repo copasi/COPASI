@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -224,6 +224,13 @@ public:
                    const C_FLOAT64 & multiplicity = 1.0);
 
   /**
+   * Creates a kinetic function and sets it for the reaction
+   * @param const string & infix
+   * @return CFunction * pFunction
+   */
+  CFunction * createFunctionFromExpression(const std::string & infix);
+
+  /**
    * Sets the rate function of the reaction
    * @param const string & functionName
    * @return bool success
@@ -251,12 +258,7 @@ public:
 
   /**
    * Sets a parameter value
-   * if updateStatus==true the status is also updated to make sure
-   * the value is actually used (instead of a global value that may
-   * have been used before).
-   * if updateStatus==false only the value of the local parameter is
-   * set, even if it is not used
-   * @param const std::string & parameterName
+  * @param const std::string & parameterName
    * @param const C_FLOAT64 & value
    */
   void setParameterValue(const std::string & parameterName,
@@ -266,66 +268,6 @@ public:
    * Retrieves a parameter value
    */
   const C_FLOAT64 & getParameterValue(const std::string & parameterName) const;
-
-  /**
-   * Sets a parameter mapping for the indexed parameter.
-   * @param const size_t & index
-   * @param const std::string & key
-   */
-  // void setParameterMapping(const size_t & index, const std::string & key);
-
-  /**
-   * Add a parameter mapping for the indexed parameter.
-   * @param const size_t & index
-   * @param const std::string & key
-   */
-  // void addParameterMapping(const size_t & index, const std::string & key);
-
-  /**
-   * Sets a parameter mapping for the named parameter.
-   * @param const std::string & parameterName
-   * @param const std::string & key
-   * @return bool success
-   */
-  // bool setParameterMapping(const std::string & parameterName, const std::string & key);
-
-  /**
-   * Add a parameter mapping for the named parameter.
-   * @param const std::string & parameterName
-   * @param const std::string & key
-   */
-  // void addParameterMapping(const std::string & parameterName, const std::string & key);
-
-  /**
-   * Set the mapping for the name parameter which must be of type vector
-   * @param const std::string & parameterName
-   * @param const std::vector<std::string> & keys
-   */
-  // void setParameterMappingVector(const std::string & parameterName,
-  //                                const std::vector<std::string> & keys);
-
-  /**
-   * Clear the parameter mapping for the named parameter.
-   * @param const size_t & index
-   */
-  // void clearParameterMapping(const std::string & parameterName);
-
-  /**
-   * Clear the parameter mapping for the indexed parameter.
-   * @param const size_t & index
-   */
-  // void clearParameterMapping(const size_t & index);
-
-  /**
-   * Retrieve the mappings of kinetic function parameters.
-   */
-  // const std::vector< std::vector<std::string> > & getParameterMappings() const;
-
-  // std::vector< std::vector<std::string> > & getParameterMappings();
-
-  // const std::vector<std::string> & getParameterMapping(const size_t & index) const;
-
-  // const std::vector<std::string> & getParameterMapping(const std::string & parameterName) const;
 
   /**
    *  Gets the list of kinetic parameter objects of the reaction/function
@@ -530,8 +472,7 @@ public:
    * and sets the mapping for the reaction.
    */
   CFunction * setFunctionFromExpressionTree(const CExpression & tree,
-      std::map<const CDataObject*, SBase*> & copasi2sbmlmap,
-      CFunctionDB* pFunctionDB);
+      std::map<const CDataObject*, SBase*> & copasi2sbmlmap);
 
   /**
    * Converts the function tree into the corresponding expression tree.
@@ -604,6 +545,14 @@ private:
    * Initializes the mMetabNameMap vectors to the right size.
    */
   void initializeParameterMapping();
+
+  /**
+   * Convert SBML to a valid COPASI infix identifier
+   *
+   * @param const std::string & id
+   * @return std::string
+   */
+  static std::string sanitizeSBMLId(const std::string & id);
 
   /**
    * Replaces all object nodes in an expression tree by variable nodes.
@@ -710,10 +659,6 @@ public:
   const std::vector< CRegisteredCommonName > & getParameterCNs(const std::string & name) const;
 
   const std::vector< std::vector< CRegisteredCommonName > > & getParameterCNs() const;
-
-  //bool setParameterCNs(const size_t & index, const std::vector< CCommonName > CNs);
-
-  //bool setParameterCNs(const std::string & name, const std::vector< CCommonName > CNs);
 
   bool setParameterCNs(const size_t & index, const std::vector< CRegisteredCommonName >& CNs);
 

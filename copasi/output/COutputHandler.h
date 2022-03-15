@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,24 +62,24 @@ public:
    * @param CObjectInterface::ContainerList listOfContainer
    * @return bool success
    */
-  virtual bool compile(CObjectInterface::ContainerList /* listOfContainer */);
+  virtual bool compile(CObjectInterface::ContainerList /* listOfContainer */) = 0;
 
   /**
    * Perform an output event for the current activity
    * @param const Activity & activity
    */
-  virtual void output(const Activity & /* activity */);
+  virtual void output(const Activity & /* activity */) = 0;
 
   /**
    * Introduce an additional separator into the output
    * @param const Activity & activity
    */
-  virtual void separate(const Activity & /* activity */);
+  virtual void separate(const Activity & /* activity */) = 0;
 
   /**
    * Finish the output
    */
-  virtual void finish();
+  virtual void finish() = 0;
 
   /**
    * Close the stream if applicable

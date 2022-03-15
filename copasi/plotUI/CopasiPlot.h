@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,6 +40,7 @@
 
 #include <qwt_plot.h>
 #include <qwt_painter.h>
+#include <qwt_symbol.h>
 
 #if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
 #include <qwt_compat.h>
@@ -90,6 +91,8 @@ public:
    * @param const CPlotSpecification* plotspec
    */
   bool initFromSpec(const CPlotSpecification* plotspec);
+
+  void setSymbol(C2DPlotCurve * pCurve, QwtSymbol::Style symbol, QColor color, int symbolSize, float penWidth);
 
   /**
    * @return the current plot specification

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,37 +29,39 @@
 #include "copasi/undo/CData.h"
 #include <copasi/utilities/utility.h>
 
-CDataObject::CDataObject():
-  CObjectInterface(),
-  CUndoObjectInterface(),
-  mObjectName("No Name"),
-  mObjectType("Unknown Type"),
-  mpObjectParent(NULL),
-  mObjectDisplayName(),
-  mpObjectDisplayName(NULL),
-  mObjectFlag(),
-  mReferencedValidities(),
-  mAggregateValidity(),
-  mReferences(),
-  mPrerequisits()
+CDataObject::CDataObject()
+  : CObjectInterface()
+  , CUndoObjectInterface()
+  , mObjectName("No Name")
+  , mObjectType("Unknown Type")
+  , mpObjectParent(NULL)
+  , mObjectDisplayName()
+  , mpObjectDisplayName(NULL)
+  , mpObjectName(NULL)
+  , mObjectFlag()
+  , mReferencedValidities()
+  , mAggregateValidity()
+  , mReferences()
+  , mPrerequisits()
 {}
 
 CDataObject::CDataObject(const std::string & name,
                          const CDataContainer * pParent,
                          const std::string & type,
-                         const CFlags< CDataObject::Flag > & flag):
-  CObjectInterface(),
-  CUndoObjectInterface(),
-  mObjectName(),
-  mObjectType(type),
-  mpObjectParent(const_cast<CDataContainer * >(pParent)),
-  mObjectDisplayName(),
-  mpObjectDisplayName(NULL),
-  mObjectFlag(flag),
-  mReferencedValidities(),
-  mAggregateValidity(),
-  mReferences(),
-  mPrerequisits()
+                         const CFlags< CDataObject::Flag > & flag)
+  : CObjectInterface()
+  , CUndoObjectInterface()
+  , mObjectName()
+  , mObjectType(type)
+  , mpObjectParent(const_cast< CDataContainer * >(pParent))
+  , mObjectDisplayName()
+  , mpObjectDisplayName(NULL)
+  , mpObjectName(NULL)
+  , mObjectFlag(flag)
+  , mReferencedValidities()
+  , mAggregateValidity()
+  , mReferences()
+  , mPrerequisits()
 {
   if (CRegisteredCommonName::isEnabled())
     {
@@ -82,19 +84,20 @@ CDataObject::CDataObject(const std::string & name,
 }
 
 CDataObject::CDataObject(const CDataObject & src,
-                         const CDataContainer * pParent):
-  CObjectInterface(src),
-  CUndoObjectInterface(src),
-  mObjectName(src.mObjectName),
-  mObjectType(src.mObjectType),
-  mpObjectParent(src.mpObjectParent),
-  mObjectDisplayName(),
-  mpObjectDisplayName(NULL),
-  mObjectFlag(src.mObjectFlag),
-  mReferencedValidities(),
-  mAggregateValidity(),
-  mReferences(),
-  mPrerequisits()
+                         const CDataContainer * pParent)
+  : CObjectInterface(src)
+  , CUndoObjectInterface(src)
+  , mObjectName(src.mObjectName)
+  , mObjectType(src.mObjectType)
+  , mpObjectParent(src.mpObjectParent)
+  , mObjectDisplayName()
+  , mpObjectDisplayName(NULL)
+  , mpObjectName(NULL)
+  , mObjectFlag(src.mObjectFlag)
+  , mReferencedValidities()
+  , mAggregateValidity()
+  , mReferences()
+  , mPrerequisits()
 {
   if (pParent != INHERIT_PARENT)
     {
@@ -130,7 +133,17 @@ CDataObject::~CDataObject()
         (*it)->remove(this);
     }
 
-  pdelete(mpObjectDisplayName);
+  if (mpObjectDisplayName != NULL)
+    {
+      mpObjectDisplayName->mpObjectParent = NULL;
+      delete mpObjectDisplayName;
+    }
+
+  if (mpObjectName != NULL)
+    {
+      mpObjectName->mpObjectParent = NULL;
+      delete mpObjectName;
+    }
 }
 
 void CDataObject::print(std::ostream * ostream) const {(*ostream) << (*this);}
@@ -149,11 +162,16 @@ CCommonName CDataObject::getCN() const
     {
       std::stringstream tmp;
       tmp << mpObjectParent->getCN();
+      size_t Index;
 
-      if (mpObjectParent->hasFlag(NameVector))
-        tmp << "[" << CCommonName::escape(mObjectName) << "]";
-      else if (mpObjectParent->hasFlag(Vector))
-        tmp << "[" << mpObjectParent->getIndex(this) << "]";
+      if (mpObjectParent->hasFlag(Vector)
+          && (Index = mpObjectParent->getIndex(this)) != C_INVALID_INDEX)
+        {
+          if (mpObjectParent->hasFlag(NameVector))
+            tmp << "[" << CCommonName::escape(mObjectName) << "]";
+          else if (mpObjectParent->hasFlag(Vector))
+            tmp << "[" << mpObjectParent->getIndex(this) << "]";
+        }
       else
         tmp << "," << CCommonName::escape(mObjectType)
             << "=" << CCommonName::escape(mObjectName);
@@ -181,11 +199,23 @@ const CObjectInterface * CDataObject::getObject(const CCommonName & cn) const
       if (mpObjectDisplayName == NULL)
         {
           mpObjectDisplayName = new CDataObjectReference< std::string >("DisplayName", NULL, mObjectDisplayName, DisplayName);
+          mpObjectDisplayName->mpObjectParent = static_cast< CDataContainer * >(const_cast< CDataObject * >(this));
         }
 
       mObjectDisplayName = getObjectDisplayName();
 
       return mpObjectDisplayName;
+    }
+  else if (cn == "Reference=Name"
+           || cn == "Property=Name")
+    {
+      if (mpObjectName == NULL)
+        {
+          mpObjectName = new CDataObjectReference< std::string >("Name", NULL, *const_cast< std::string * >(&mObjectName));
+          mpObjectName->mpObjectParent = static_cast< CDataContainer * >(const_cast< CDataObject * >(this));
+        }
+
+      return mpObjectName;
     }
 
   return NULL;

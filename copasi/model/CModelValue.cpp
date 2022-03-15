@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -284,8 +284,12 @@ CIssue CModelEntity::compile()
             pDataModel = getObjectDataModel();
             assert(pDataModel != NULL);
             mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
-            mpInitialExpression->setObjectName("InitialExpression");
-            add(mpInitialExpression, true);
+
+            if (mpInitialExpression != NULL)
+              {
+                mpInitialExpression->setObjectName("InitialExpression");
+                add(mpInitialExpression, true);
+              }
           }
 
         break;
@@ -785,8 +789,12 @@ bool CModelEntity::setStatus(const CModelEntity::Status & status)
             pdelete(mpInitialExpression);
             pDataModel = getObjectDataModel();
             mpInitialExpression = CExpression::createInitialExpression(*mpExpression, pDataModel);
-            mpInitialExpression->setObjectName("InitialExpression");
-            add(mpInitialExpression, true);
+
+            if (mpInitialExpression != NULL)
+              {
+                mpInitialExpression->setObjectName("InitialExpression");
+                add(mpInitialExpression, true);
+              }
 
             mRate = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -64,13 +64,13 @@ class COptions
 
     template< class CType > void getValue(CType & value) const
     {
-      if (this && mpValue) value = *(CType *) mpValue;
+      if (mpValue) value = *(CType *) mpValue;
       else value = CType();
     }
 
     template< class CType > bool compareValue(CType & value) const
     {
-      if (this && mpValue) return (value == *(CType *) mpValue);
+      if (mpValue) return (value == *(CType *) mpValue);
       else return false;
     }
   };

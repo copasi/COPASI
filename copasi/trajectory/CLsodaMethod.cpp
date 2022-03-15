@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -347,8 +347,9 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
 #ifdef DEBUG_FLOW
           std::cout << "mTime = " << mTime << ", EndTime = " << EndTime << ", mTask = " << mTask << ", mLsodaStatus = " << mLsodaStatus << ", mRootCounter = " << mRootCounter << std::endl;
           std::cout << "mRootsFound = " << mRootsFound << std::endl;
-          std::cout << "mDWork = " << mDWork << std::endl;
-          std::cout << "mIWork = " << mIWork << std::endl;
+          std::cout << "Roots = " << mpContainer->getRoots() << std::endl;
+          // std::cout << "mDWork = " << mDWork << std::endl;
+          // std::cout << "mIWork = " << mIWork << std::endl;
 #endif // DEBUG_FLOW
 
           if (mLsodaStatus == 3)
@@ -464,7 +465,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
 #endif // DEBUG_FLOW
 
             {
-              CVector< bool > CurrentMask = mRootMask;
+              CVector< C_INT > CurrentMask = mRootMask;
               setRootMaskType(ALL);
 
               if (CurrentMask == mRootMask)
@@ -483,6 +484,10 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
 
             // If mLsodaStatus == 3 we have found a root. This needs to be indicated to
             // the caller as it is not sufficient to rely on the fact that T < TOUT
+            if (!mPeekAheadMode)
+              {
+                saveState(mLastRootState, ROOT);
+              }
 
             if (mRootMasking != NONE)
               {
@@ -511,13 +516,10 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
                 mLsodaStatus = 2;
               }
 
+            mLastRootState.Status = ROOT;
             Status = ROOT;
-
-            saveState(mLastRootState, ROOT);
             break;
 
-            // The break statement is intentionally missing since we
-            // have to continue to check the root masking state.
           default:
 
             // We made a successful step and therefore invalidate the last root state
@@ -658,6 +660,7 @@ void CLsodaMethod::start()
       mDiscreteRoots.initialize(mpContainer->getRootIsDiscrete());
       mLastRootState.ContainerState.resize(mContainerState.size());
       mLastRootState.ContainerState = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+      mLastRootState.Status = FAILURE;
       mLastRootState.RootsFound.resize(mNumRoots);
       mLastRootState.RootsFound = 0;
 
@@ -731,17 +734,24 @@ void CLsodaMethod::evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
 
 void CLsodaMethod::maskRoots(CVectorCore< C_FLOAT64 > & rootValues)
 {
-  const bool *pMask = mRootMask.array();
-  const bool *pMaskEnd = pMask + mRootMask.size();
+  const C_INT *pMask = mRootMask.array();
+  const C_INT *pMaskEnd = pMask + mRootMask.size();
   C_FLOAT64 * pRoot = rootValues.array();
 
   for (; pMask != pMaskEnd; ++pMask, ++pRoot)
-    {
-      if (*pMask)
-        {
+    switch (*pMask)
+      {
+        case -1:
+          *pRoot = -1.0;
+          break;
+
+        case 1:
           *pRoot = 1.0;
-        }
-    }
+          break;
+
+        default:
+          break;
+      }
 }
 
 void CLsodaMethod::setRootMaskType(const CLsodaMethod::eRootMasking & maskType)
@@ -760,8 +770,8 @@ void CLsodaMethod::setRootMaskType(const CLsodaMethod::eRootMasking & maskType)
   mpContainer->updateRootValues(*mpReducedModel);
 
   const bool * pDiscrete = mDiscreteRoots.array();
-  bool * pMask = mRootMask.begin();
-  bool * pMaskEnd = mRootMask.end();
+  C_INT * pMask = mRootMask.begin();
+  C_INT * pMaskEnd = mRootMask.end();
   const C_FLOAT64 * pRootValue = mpContainer->getRoots().begin();
   mRootMasking = NONE;
 
@@ -778,7 +788,7 @@ void CLsodaMethod::setRootMaskType(const CLsodaMethod::eRootMasking & maskType)
             }
           else
             {
-              *pMask = false;
+              *pMask = 0;
             }
         }
     }
@@ -803,8 +813,8 @@ void CLsodaMethod::createRootMask()
   RootValues = mpContainer->getRoots();
   mpContainer->calculateRootDerivatives(RootDerivatives);
 
-  bool *pMask = mRootMask.begin();
-  bool *pMaskEnd = mRootMask.end();
+  C_INT * pMask = mRootMask.begin();
+  C_INT * pMaskEnd = mRootMask.end();
   C_INT * pRootFound = mRootsFound.begin();
   C_FLOAT64 * pRootValue = RootValues.begin();
   C_FLOAT64 * pRootDerivative = RootDerivatives.begin();
@@ -814,7 +824,7 @@ void CLsodaMethod::createRootMask()
     {
       *pMask = (fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::min() ||
 //                (fabs(*pRootDerivative) < *mpAbsoluteTolerance && !*pIsDiscrete) ||
-                (*pRootFound > 0 && *pRootDerivative * *pRootValue < 0 && fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::epsilon())) ? true : false;
+                (*pRootFound > 0 && *pRootDerivative * *pRootValue < 0 && fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::epsilon())) ? (*pRootValue < 0 ? -1 : 1) : 0;
     }
 
 #ifdef DEBUG_NUMERICS
@@ -839,8 +849,6 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
   // Save the current state
   State StartState;
   saveState(StartState, ROOT);
-
-  saveState(mLastRootState, ROOT);
 
   mPeekAheadMode = true;
   Status PeekAheadStatus = ROOT;
@@ -903,8 +911,8 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                 // to continue with the previous state.
 
                 // Remove masked roots from the result set
-                const bool *pMask = mRootMask.array();
-                const bool *pMaskEnd = pMask + mRootMask.size();
+                const C_INT * pMask = mRootMask.array();
+                const C_INT * pMaskEnd = pMask + mRootMask.size();
                 C_INT * pCombinedRoot = CombinedRootsFound.array();
 
                 PeekAheadStatus = NORMAL;
@@ -921,6 +929,8 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                         PeekAheadStatus = ROOT;
                       }
                   }
+
+                saveState(mLastRootState, ROOT);
               }
 
             break;
@@ -968,7 +978,6 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                 saveState(mLastRootState, ROOT);
 
                 // We can safely advance the start state to include the new roots.
-
                 saveState(StartState, ROOT);
 #ifdef DEBUG_NUMERICS
                 std::cout << "Combined Roots found: " << CombinedRootsFound << std::endl;

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2021 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -95,7 +95,13 @@ INSTALL_DIR="$(readlink -f ${RESULT})"
 echo cp -r "${EXTRACT_DIR}"/${PACKAGE_NAME}/'*' "${INSTALL_DIR}"
 cp -r "${EXTRACT_DIR}"/${PACKAGE_NAME}/* "${INSTALL_DIR}"
 
-prompt_for_dir "~/.local/share/applications" "Desktop file location:" "${DESKTOP_DIR}"
+if [ -w "/usr/share/applications" ]; then 
+    DEFAULT_DESKTOP_DIR="/usr/share/applications"
+else
+    DEFAULT_DESKTOP_DIR="~/.local/share/applications"
+fi
+
+prompt_for_dir "${DEFAULT_DESKTOP_DIR}" "Desktop file location:" "${DESKTOP_DIR}"
 DESKTOP_DIR="$(readlink -f ${RESULT})"
 
 NAME=COPASI
@@ -107,7 +113,7 @@ if [ -e "${DESKTOP_DIR}"/COPASI.desktop ]; then
 
     while :
     do
-        read -e -i "n" -p 'Create version specific desktopn file [y|n]: ' RESULT
+        read -e -i "n" -p 'Create version specific desktop file [y|n]: ' RESULT
 
         [ _${RESULT} = _n ] && break
         [ _${RESULT} = _y ] && break
@@ -124,7 +130,7 @@ Encoding=UTF-8
 Version=1.0
 Exec=${INSTALL_DIR}/bin/CopasiUI %u
 Icon=${INSTALL_DIR}/share/copasi/icons/Copasi48-Alpha.xpm
-MimeType=application/xml;x-scheme-handler/copasi;application/x-copasi
+MimeType=x-scheme-handler/copasi;application/x-copasi
 Name=${NAME}
 GenericName=Biochemical simulation
 NoDisplay=false
@@ -136,14 +142,24 @@ Encoding=UTF-8
 Version=1.0
 Exec=${INSTALL_DIR}/bin/CopasiUI %u
 Icon=${INSTALL_DIR}/share/copasi/icons/Copasi48-Alpha.xpm
-MimeType=application/xml;x-scheme-handler/copasi;application/x-copasi
+MimeType=x-scheme-handler/copasi;application/x-copasi
 Name=${NAME}
 GenericName=Biochemical simulation
 NoDisplay=false
 Type=Application
 Categories=Science;Utility" > "${DESKTOP_DIR}/${DESKTOP_NAME}".desktop
 
-xdg-settings set default-url-scheme-handler copasi "${DESKTOP_NAME}".desktop
+if command -v xdg-settings &> /dev/null ; then
+    xdg-settings set default-url-scheme-handler copasi "${DESKTOP_NAME}".desktop
+fi
+
+if command -v update-desktop-database &> /dev/null ; then
+    update-desktop-database /usr/share/applications ~/.local/share/applications/
+fi
+
+if command -v xdg-mime &> /dev/null ; then
+    xdg-mime install ${INSTALL_DIR}/share/copasi/COPASI-mime.xml
+fi
 
 rm -rf "${EXTRACT_DIR}"
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -2398,7 +2398,7 @@ L55:
 /* Subroutine */ int estrad_(integer *n, doublereal *fjac, integer *ldjac,
                              integer *mljac, integer *mujac, doublereal *fmas, integer *ldmas,
                              integer *mlmas, integer *mumas, doublereal *h__, doublereal *dd1,
-                             doublereal *dd2, doublereal *dd3, S_fp fcn, integer *nfcn, doublereal
+                             doublereal *dd2, doublereal *dd3, CRadau5::evalF fcn, integer *nfcn, doublereal
                              *y0, doublereal *y, integer *ijob, doublereal *x, integer *m1,
                              integer *m2, integer *nm1, doublereal *e1, integer *lde1, doublereal *
                              z1, doublereal *z2, doublereal *z3, doublereal *cont, doublereal *f1,

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -110,7 +110,8 @@ CCopasiTask * CTaskFactory::create(const CTaskEnum::Task & type, const CDataCont
         break;
     }
 
-  if (pTask != NULL)
+  if (pTask != NULL
+      && pParent != NULL)
     {
       const_cast< CDataContainer * >(pParent)->add(pTask, true);
     }

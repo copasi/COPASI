@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -429,6 +429,12 @@ CIssue CEvaluationTree::compileNodes()
           }
       }
 
+  if (mpRootNode == NULL)
+    {
+      mValidity.add(CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid));
+      return mValidity.getFirstWorstIssue();
+    }
+
   // Compile may change the value pointer of the root node.
   mpRootValue = mpRootNode->getValuePointer();
   mValue = *mpRootValue;
@@ -532,7 +538,7 @@ void CEvaluationTree::clearNodes()
 
   pdelete(mpNodeList);
 
-  setRoot(NULL);
+  mpRootNode = NULL;
   mpRootValue = NULL;
   mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }

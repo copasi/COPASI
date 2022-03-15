@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,9 +29,11 @@
 
 #include <QString>
 #include <QStringList>
+#include <QComboBox>
 
 #include <copasi/copasi.h>
 #include "copasi/utilities/CCopasiParameter.h"
+#include <copasi/core/CEnumAnnotation.h>
 
 class CCopasiParameterGroup;
 class CopasiWidget;
@@ -204,5 +206,24 @@ QString toTsvString(QAbstractItemModel* pModel, bool writeColumnHeaders = true, 
  * preferences
  */
 QString convertToQString(double number);
+
+/**
+ * Fills the given combobox with all annotations provided
+ */
+template < class T >
+void fillCombobox(QComboBox* pCombo, const CEnumAnnotation< std::string, T>& annotation)
+{
+  if (!pCombo)
+    return;
+
+  pCombo->clear();
+
+  auto it = annotation.begin();
+
+  for (; it != annotation.end(); ++it)
+    {
+      pCombo->addItem(FROM_UTF8(*it));
+    }
+}
 
 #endif // COPASI_qtUtilities

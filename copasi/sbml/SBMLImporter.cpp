@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -908,9 +908,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   unsigned int counter;
   size_t num;
 
-  CDataVectorN< CFunction >* functions = &(this->functionDB->loadedFunctions());
+  CDataVectorN< CFunction > & functions = CRootContainer::getFunctionList()->loadedFunctions();
 
-  num = (*functions).size();
+  num = functions.size();
 
   if (createProgressStepOrStop(5, num, "Importing function definitions..."))
     return NULL;
@@ -919,7 +919,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   for (counter = 0; counter < num; ++counter)
     {
-      CFunction* tree = &functions->operator[](counter);
+      CFunction* tree = &functions[counter];
 
       if (!tree->getSBMLId().empty())
         {
@@ -928,7 +928,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         }
     }
 
-  CFunctionDB* pTmpFunctionDB = this->importFunctionDefinitions(sbmlModel, copasi2sbmlmap);
+  this->importFunctionDefinitions(sbmlModel, copasi2sbmlmap);
 
   // try to find global parameters that represent Avogadro's number
   this->findAvogadroConstant(sbmlModel, this->mpCopasiModel->getQuantity2NumberFactor());
@@ -1252,7 +1252,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
               continue;
             }
 
-          this->createCReactionFromReaction(reaction, sbmlModel, this->mpCopasiModel, copasi2sbmlmap, pTmpFunctionDB);
+          this->createCReactionFromReaction(reaction, sbmlModel, this->mpCopasiModel, copasi2sbmlmap);
         }
       catch (...)
         {
@@ -1512,7 +1512,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
                               ))
     return NULL;
 
-  this->removeUnusedFunctions(pTmpFunctionDB, copasi2sbmlmap);
+  this->removeUnusedFunctions(copasi2sbmlmap);
 
   // remove the temporary avogadro parameter if one was created
   if (this->mAvogadroCreated == true)
@@ -1575,8 +1575,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
             }
         }
     }
-
-  delete pTmpFunctionDB;
 
   // create a warning if the delay function is used in the model
   if (this->mDelayFound)
@@ -1764,7 +1762,7 @@ void ensureAllArgsAreBeingUsedInFunctionDefinition(const FunctionDefinition* sbm
   free(formula);
 }
 
-CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB, Model* pSBMLModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
+CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, Model* pSBMLModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
 
   ensureAllArgsAreBeingUsedInFunctionDefinition(sbmlFunction);
@@ -1786,11 +1784,11 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
   // function definition
   // if we don't do this, two functions might have the same SBML id during
   // export which makes the exporter code so much more difficult
-  size_t i, iMax = this->functionDB->loadedFunctions().size();
+  size_t i, iMax = CRootContainer::getFunctionList()->loadedFunctions().size();
 
   for (i = 0; i < iMax; ++i)
     {
-      CFunction* pFun = &this->functionDB->loadedFunctions()[i];
+      CFunction* pFun = &CRootContainer::getFunctionList()->loadedFunctions()[i];
 
       if (pFun->getSBMLId() == sbmlId)
         {
@@ -1810,7 +1808,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
   std::string appendix;
   CFunction * pExistingFunction = NULL;
 
-  while ((pExistingFunction = functionDB->findFunction(functionName + appendix)))
+  while ((pExistingFunction = CRootContainer::getFunctionList()->findFunction(functionName + appendix)))
     {
       if (areEqualFunctions(pExistingFunction, pTmpFunction))
         {
@@ -1830,8 +1828,8 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
   if (pTmpFunction != pExistingFunction)
     {
       pTmpFunction->setObjectName(functionName + appendix);
-      functionDB->add(pTmpFunction, true);
-      pTmpFunctionDB->add(pTmpFunction, false);
+      CRootContainer::getFunctionList()->add(pTmpFunction, true);
+      mCreatedFunctions.insert(pTmpFunction->getObjectName());
     }
 
   if (pTmpFunction->getType() == CEvaluationTree::UserDefined)
@@ -2228,7 +2226,7 @@ void renameShadowingFluxReferences(KineticLaw* kLaw,
  * Reaction object.
  */
 CReaction*
-SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLModel, CModel* copasiModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
+SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLModel, CModel* copasiModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   if (sbmlReaction == NULL)
     {
@@ -2809,7 +2807,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
               KineticLawExpression.setRoot(pExpressionTreeRoot);
 
               // check if the expression is constant flux
-              const CDataObject* pParamObject = SBMLImporter::isConstantFlux(pExpressionTreeRoot, copasiModel, pTmpFunctionDB);
+              const CDataObject* pParamObject = SBMLImporter::isConstantFlux(pExpressionTreeRoot, copasiModel);
 
               if (pParamObject != NULL)
                 {
@@ -2829,7 +2827,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                       functionName = "Constant flux (irreversible)";
                     }
 
-                  CFunction* pCFFun = dynamic_cast<CFunction*>(this->functionDB->findFunction(functionName));
+                  CFunction* pCFFun = dynamic_cast< CFunction * >(CRootContainer::getFunctionList()->findFunction(functionName));
                   assert(pCFFun != NULL);
                   CEvaluationNodeCall* pCallNode = NULL;
 
@@ -2863,7 +2861,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                     {
                       // if yes, we check if it corresponds to an already existing function
                       std::string functionName = pExpressionTreeRoot->getData();
-                      CFunction* pImportedFunction = dynamic_cast<CFunction*>(functionDB->findFunction(functionName));
+                      CFunction* pImportedFunction = dynamic_cast< CFunction * >(CRootContainer::getFunctionList()->findFunction(functionName));
                       assert(pImportedFunction);
                       std::vector<CEvaluationNodeObject*>* v = NULL;
 
@@ -2885,11 +2883,11 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
                           if (copasiReaction->isReversible())
                             {
-                              pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (reversible)"));
+                              pFun = static_cast< CFunction * >(CRootContainer::getFunctionList()->findFunction("Mass action (reversible)"));
                             }
                           else
                             {
-                              pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (irreversible)"));
+                              pFun = static_cast< CFunction * >(CRootContainer::getFunctionList()->findFunction("Mass action (irreversible)"));
                             }
 
                           if (!pFun)
@@ -2954,7 +2952,8 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                               // (the default)
                               TmpTree2.setObjectName(functionName);
 
-                              CFunction * pNewFunction = copasiReaction->setFunctionFromExpressionTree(TmpTree2, copasi2sbmlmap, this->functionDB);
+                              size_t ExistingFunctions = CRootContainer::getFunctionList()->loadedFunctions().size();
+                              CFunction * pNewFunction = copasiReaction->setFunctionFromExpressionTree(TmpTree2, copasi2sbmlmap);
 
                               if (pNewFunction != NULL &&
                                   pNewFunction->getType() == CEvaluationTree::UserDefined)
@@ -2967,8 +2966,8 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                                       pNewFunction->setReversible(TriUnspecified);
                                     }
 
-                                  pTmpFunctionDB->add(pNewFunction, false);
-                                  mUsedFunctions.insert(pNewFunction->getObjectName());
+                                  if (CRootContainer::getFunctionList()->loadedFunctions().size() < ExistingFunctions)
+                                    mCreatedFunctions.insert(pNewFunction->getObjectName());
                                 }
                             }
                         }
@@ -2997,11 +2996,11 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
                           if (copasiReaction->isReversible())
                             {
-                              pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (reversible)"));
+                              pFun = static_cast<CFunction*>(CRootContainer::getFunctionList()->findFunction("Mass action (reversible)"));
                             }
                           else
                             {
-                              pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (irreversible)"));
+                              pFun = static_cast<CFunction*>(CRootContainer::getFunctionList()->findFunction("Mass action (irreversible)"));
                             }
 
                           if (!pFun)
@@ -3026,7 +3025,8 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                         }
                       else
                         {
-                          CFunction* pNonconstFun = copasiReaction->setFunctionFromExpressionTree(KineticLawExpression, copasi2sbmlmap, this->functionDB);
+                          size_t ExistingFunctions = CRootContainer::getFunctionList()->loadedFunctions().size();
+                          CFunction* pNonconstFun = copasiReaction->setFunctionFromExpressionTree(KineticLawExpression, copasi2sbmlmap);
 
                           if (pNonconstFun != NULL &&
                               pNonconstFun->getType() == CEvaluationTree::UserDefined)
@@ -3039,8 +3039,8 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                                   pNonconstFun->setReversible(TriUnspecified);
                                 }
 
-                              pTmpFunctionDB->add(pNonconstFun, false);
-                              mUsedFunctions.insert(pNonconstFun->getObjectName());
+                              if (CRootContainer::getFunctionList()->loadedFunctions().size() > ExistingFunctions)
+                                mCreatedFunctions.insert(pNonconstFun->getObjectName());
                             }
                         }
 
@@ -3168,7 +3168,6 @@ SBMLImporter::replaceBvars(const ASTNode* node, std::map<std::string, ASTNode*> 
 SBMLImporter::SBMLImporter():
   mIgnoredSBMLMessages(),
   speciesMap(),
-  functionDB(NULL),
   mIncompleteModel(false),
   mUnsupportedRuleFound(false),
   mUnsupportedRateRuleFound(false),
@@ -3179,7 +3178,7 @@ SBMLImporter::SBMLImporter():
   mOriginalLevel(0),
   mVersion(0),
   sbmlIdMap(),
-  mUsedFunctions(),
+  mCreatedFunctions(),
   mpDataModel(NULL),
   mpCopasiModel(NULL),
   mFunctionNameMapping(),
@@ -3222,7 +3221,6 @@ SBMLImporter::SBMLImporter():
   mpSbmlCallback(NULL)
 {
   this->speciesMap = std::map<std::string, CMetab*>();
-  this->functionDB = NULL;
   this->mIncompleteModel = false;
   this->mUnsupportedRuleFound = false;
   this->mUnsupportedRateRuleFound = false;
@@ -3314,7 +3312,6 @@ void SBMLImporter::replaceSubstanceOnlySpeciesNodes(ConverterASTNode* node, cons
  * Function reads an SBML file with libsbml and converts it to a Copasi CModel
  */
 CModel* SBMLImporter::readSBML(std::string filename,
-                               CFunctionDB* funDB,
                                SBMLDocument*& pSBMLDocument,
                                std::map<const CDataObject*, SBase*>& copasi2sbmlmap,
                                CListOfLayouts *& prLol,
@@ -3348,8 +3345,7 @@ CModel* SBMLImporter::readSBML(std::string filename,
 
   file.clear();
   file.close();
-  return this->parseSBML(stringStream.str(), funDB,
-                         pSBMLDocument, copasi2sbmlmap, prLol, pDataModel);
+  return this->parseSBML(stringStream.str(), pSBMLDocument, copasi2sbmlmap, prLol, pDataModel);
 }
 
 bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
@@ -3587,7 +3583,6 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
  */
 CModel*
 SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
-                        CFunctionDB* funDB,
                         SBMLDocument *& pSBMLDocument,
                         std::map<const CDataObject*, SBase*>& copasi2sbmlmap,
                         CListOfLayouts *& prLol,
@@ -3600,13 +3595,6 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 
   this->mpCopasiModel = NULL;
 
-  if (funDB == NULL)
-    {
-      finishImport();
-      fatalError();
-    }
-
-  this->functionDB = funDB;
   SBMLReader* reader = new SBMLReader();
 
   mGlobalStepCounter = 0;
@@ -4839,16 +4827,16 @@ void SBMLImporter::restoreFunctionDB()
     }
 
   // remove all the functions that were added during import
-  std::set<std::string>::iterator it2 = this->mUsedFunctions.begin();
-  std::set<std::string>::iterator endIt2 = this->mUsedFunctions.end();
+  std::set<std::string>::iterator it2 = this->mCreatedFunctions.begin();
+  std::set<std::string>::iterator endIt2 = this->mCreatedFunctions.end();
 
   while (it2 != endIt2)
     {
-      CEvaluationTree* pTree = this->functionDB->findFunction(*it2);
+      CEvaluationTree* pTree = CRootContainer::getFunctionList()->findFunction(*it2);
 
       if (pTree != NULL && pTree->getType() == CEvaluationTree::UserDefined)
         {
-          this->functionDB->removeFunction(pTree->getKey());
+          CRootContainer::getFunctionList()->removeFunction(pTree->getKey());
         }
 
       ++it2;
@@ -5214,7 +5202,7 @@ void SBMLImporter::replaceCallNodeNames(ASTNode* pASTNode)
             {
               std::string newName = pos->second;
               itNode->setName(newName.c_str());
-              this->mUsedFunctions.insert(newName);
+              this->mCreatedFunctions.insert(newName);
             }
         }
     }
@@ -5235,7 +5223,7 @@ CFunction* SBMLImporter::findCorrespondingFunction(const CExpression * pExpressi
   CFunction* pCorrespondingFunction = NULL;
 
   std::string Name = pExpression->getRoot()->getData();
-  pCorrespondingFunction = functionDB->findFunction(Name);
+  pCorrespondingFunction = CRootContainer::getFunctionList()->findFunction(Name);
 
   if (pCorrespondingFunction != NULL)
     {
@@ -5311,7 +5299,10 @@ bool SBMLImporter::areEqualFunctions(const CFunction* pFun, const CFunction* pFu
           const CFunctionParameter* pFunParam1 = funParams1[i];
           const CFunctionParameter* pFunParam2 = funParams2[i];
 
-          if (pFunParam1->getObjectName() != pFunParam2->getObjectName())
+          // Compare paramemeter types if assigned
+          if (pFunParam1->getObjectName() != pFunParam2->getObjectName()
+              || (pFunParam1->getUsage() != CFunctionParameter::Role::VARIABLE
+                  && pFunParam1->getUsage() != pFunParam2->getUsage()))
             {
               result = false;
               break;
@@ -6306,11 +6297,8 @@ void SBMLImporter::clearCallBack()
   setImportHandler(NULL);
 }
 
-bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
+bool SBMLImporter::removeUnusedFunctions(std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
-  if (pTmpFunctionDB == NULL)
-    return true;
-
   size_t i, iMax = this->mpCopasiModel->getReactions().size();
 
   std::set<std::string> functionNameSet;
@@ -6479,10 +6467,10 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<c
         }
     }
 
-  CFunctionDB* pFunctionDB = CRootContainer::getFunctionList();
+  CRootContainer::getFunctionList();
 
   if (createProgressStepOrStop(15,
-                               (unsigned C_INT32) pTmpFunctionDB->loadedFunctions().size(),
+                               (unsigned C_INT32) mCreatedFunctions.size(),
                                "Removing unused functions..."
                               ))
     return false;
@@ -6490,31 +6478,21 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<c
   // here we could have a dialog asking the user if unused functions should
   // be removed.
 
-  CDataVectorN < CFunction >::iterator it = pTmpFunctionDB->loadedFunctions().begin();
-  CDataVectorN < CFunction >::iterator end = pTmpFunctionDB->loadedFunctions().end();
+  std::set< std::string >::const_iterator it = mCreatedFunctions.begin();
+  std::set< std::string >::const_iterator end = mCreatedFunctions.end();
 
   for (; it != end; ++it)
     {
-      CEvaluationTree * pTree = it;
-
-      if (functionNameSet.find(pTree->getObjectName()) == functionNameSet.end())
+      if (functionNameSet.find(*it) == functionNameSet.end())
         {
-          mUsedFunctions.erase(pTree->getObjectName());
-
-          // We remove pTree from pFunctionDB which deletes pTree if pFunctionDB->loadedFunctions() owns it, thus we
-          // also have to remove it from pTmpFunctionDB->loadedFunctions()
-
-          if (pTree->getObjectParent() == &pFunctionDB->loadedFunctions())
-            {
-              it = NULL;
-            }
-
-          pFunctionDB->loadedFunctions().remove(pTree->getObjectName());
+          CFunction & Function = CRootContainer::getFunctionList()->loadedFunctions()[*it];
 
           // delete the entry from the copasi2sbmlmap.
-          std::map<const CDataObject*, SBase*>::iterator pos = copasi2sbmlmap.find(pTree);
+          std::map<const CDataObject*, SBase*>::iterator pos = copasi2sbmlmap.find(&Function);
           assert(pos != copasi2sbmlmap.end());
           copasi2sbmlmap.erase(pos);
+
+          CRootContainer::getFunctionList()->loadedFunctions().remove(*it);
         }
 
       ++mCurrentStepCounter;
@@ -9907,7 +9885,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CDataObject* pCOPASIOb
   return result;
 }
 
-const CDataObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CModel* pModel, CFunctionDB* pFunctionDB)
+const CDataObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CModel* pModel)
 {
   const CDataObject* pObject = NULL;
   CRegisteredCommonName name;
@@ -9923,12 +9901,7 @@ const CDataObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CM
             pRoot->getChild()->getSibling() == NULL &&
             dynamic_cast<const CEvaluationNode*>(pRoot->getChild())->mainType() == CEvaluationNode::MainType::OBJECT)
           {
-            const CEvaluationTree* pTree = pFunctionDB->findFunction(pRoot->getData());
-
-            // some functions will not be in the local list of function definitions
-            // but rather in the global list due to the way the import works.
-            if (pTree == NULL)
-              pTree = functionDB->findFunction(pRoot->getData());
+            const CEvaluationTree* pTree = CRootContainer::getFunctionList()->findFunction(pRoot->getData());
 
             // the function may only have one node which must be the
             // variable
@@ -10400,7 +10373,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
  * definition that is defined somewhere further down in the file.
  * So we have to import the function definitions in the correct order.
  */
-CFunctionDB* SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   std::map<const FunctionDefinition*, std::set<std::string> > directFunctionDependencies;
   unsigned int i = 0, iMax = pSBMLModel->getNumFunctionDefinitions();
@@ -10411,7 +10384,6 @@ CFunctionDB* SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map
       SBMLImporter::findDirectDependencies(pSBMLModel->getFunctionDefinition(i), directFunctionDependencies);
     }
 
-  CFunctionDB* pTmpFunctionDB = new CFunctionDB("FunctionDB", NULL);
   std::map<const FunctionDefinition*, std::set<std::string> >::iterator it = directFunctionDependencies.begin(), endit = directFunctionDependencies.end();
 
   while (it != endit)
@@ -10423,7 +10395,7 @@ CFunctionDB* SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map
 
           try
             {
-              pFun = this->createCFunctionFromFunctionDefinition(it->first, pTmpFunctionDB, pSBMLModel, copasi2sbmlmap);
+              pFun = this->createCFunctionFromFunctionDefinition(it->first, pSBMLModel, copasi2sbmlmap);
             }
           catch (...)
             {
@@ -10512,11 +10484,10 @@ CFunctionDB* SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map
 
       nameList = nameList.substr(0, nameList.size() - 2);
       // clean up the temporary function database
-      delete pTmpFunctionDB;
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 76, nameList.c_str());
     }
 
-  return pTmpFunctionDB;
+  return;
 }
 
 /**

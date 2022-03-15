@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -34,7 +34,10 @@ find_package(PythonInterp REQUIRED)
 # specify that the same python library should be found 
 # as the one the selected interpreter uses
 set (Python_ADDITIONAL_VERSIONS ${PYTHON_VERSION_STRING})
-find_package(PythonLibs REQUIRED)
+if (NOT PYTHON_USE_DYNAMIC_LOOKUP)
+set (LIBS_REQUIRED REQUIRED)
+endif()
+find_package(PythonLibs ${LIBS_REQUIRED})
 
 ####################################################################
 #
@@ -72,6 +75,7 @@ ADD_CUSTOM_COMMAND(
           -DLIBSEDML_CPP_NAMESPACE_USE
           -DLIBSEDML_CPP_NAMESPACE_BEGIN
           -DLIBSEDML_CPP_NAMESPACE_END
+          -DLIBSEDML_CPP_NAMESPACE_QUALIFIER
           ${SWIG_EXTRA_ARGS}
           -features autodoc,1
           -o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
@@ -149,7 +153,7 @@ endif()
 #
 set(PYTHON_PACKAGE_INSTALL_DIR)
 if (UNIX OR CYGWIN) 
-  execute_process(COMMAND "${PYTHON_EXECUTABLE}" -c "import sys;import platform; sys.stdout.write(platform.python_version()[:3])"
+  execute_process(COMMAND "${PYTHON_EXECUTABLE}" -c "import sys; sys.stdout.write('{}.{}'.format(*sys.version_info[:2]))"
     OUTPUT_VARIABLE PYTHON_VERSION)
   set(PYTHON_PACKAGE_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION}/site-packages)
 else()

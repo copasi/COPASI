@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!-- Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the -->
+<!-- University of Virginia, University of Heidelberg, and University -->
+<!-- of Connecticut School of Medicine. -->
+<!-- All rights reserved. -->
+
+<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+  <mime-type type="application/x-copasi">
+    <comment>COPASI files</comment> 
+    <icon name="application-x-copasi" />
+    <glob pattern="*.cps"/>
+    <glob pattern="*.gps"/>
+  </mime-type>
+</mime-info>

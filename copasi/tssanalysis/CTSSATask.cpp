@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -133,13 +133,11 @@ bool CTSSATask::initialize(const OutputFlag & of,
                            COutputHandler * pOutputHandler,
                            std::ostream * pOstream)
 {
-  assert(mpProblem && mpMethod);
+  mpTSSAProblem = dynamic_cast< CTSSAProblem * >(mpProblem);
+  mpTSSAMethod = dynamic_cast< CTSSAMethod * >(mpMethod);
 
-  mpTSSAProblem = dynamic_cast<CTSSAProblem *>(mpProblem);
-  assert(mpTSSAProblem);
-
-  mpTSSAMethod = dynamic_cast<CTSSAMethod *>(mpMethod);
-  assert(mpTSSAMethod);
+  if (!mpTSSAProblem || !mpTSSAMethod)
+    return false;
 
   mpTSSAMethod->setProblem(mpTSSAProblem);
   mpTSSAMethod->setMathContainer(mpContainer);
@@ -181,6 +179,13 @@ bool CTSSATask::initialize(const OutputFlag & of,
 
 bool CTSSATask::process(const bool & useInitialValues)
 {
+
+  mpTSSAProblem = dynamic_cast< CTSSAProblem * >(mpProblem);
+  mpTSSAMethod = dynamic_cast< CTSSAMethod * >(mpMethod);
+
+  if (!mpTSSAProblem || !mpTSSAMethod)
+    return false;
+
   //*****
 
   processStart(useInitialValues);

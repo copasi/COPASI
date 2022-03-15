@@ -1,4 +1,4 @@
-// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,7 +21,7 @@ TEST_CASE("delete brusselator species", "[copasi]")
   REQUIRE(dm->loadModel(fileName, NULL) == true);
 
   auto * model = dm->getModel();
-  REQUIRE(model != NULL);
+  REQUIRE(model != nullptr);
   REQUIRE(model->getNumMetabs() == 6);
 
   while (model->getNumMetabs() > 0)

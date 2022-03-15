@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -186,31 +186,18 @@ size_t CFunctionParameters::getNumberOfParametersByUsage(CFunctionParameter::Rol
 size_t CFunctionParameters::findParameterByName(const std::string & name,
     const CFunctionParameter ** ppFunctionParameter) const
 {
-  //std::string VectorName = name.substr(0, name.find_last_of('_'));
   std::string Name;
   size_t i, imax = mParameters.size();
 
-  for (i = 0; i < imax; i++)
-    {
-      Name = mParameters[i].getObjectName();
-
-      if (Name == name)
-        {
-          if (ppFunctionParameter != NULL)
-            {
-              *ppFunctionParameter = & mParameters[i];
-            }
-
-          return i;
-        }
-    }
+  size_t Index = mParameters.getIndex(name);
 
   if (ppFunctionParameter != NULL)
-    {
+    if (Index != C_INVALID_INDEX)
+      *ppFunctionParameter = &mParameters[Index];
+    else
       *ppFunctionParameter = NULL;
-    }
 
-  return C_INVALID_INDEX;
+  return Index;
 }
 
 bool CFunctionParameters::isVector(CFunctionParameter::Role role) const

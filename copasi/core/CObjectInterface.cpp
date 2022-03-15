@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -90,7 +90,7 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
       if (pos + ContainerName.length() == objName.length())
         pObject = *it;
       else
-        pObject = (*it)->getObject(objName.substr(pos + ContainerName.length() + 1));
+        pObject = (*it)->getObject(CCommonName(objName.substr(pos)).getRemainder());
     }
 
   // if not found check the data model if we have one and have not yet done so

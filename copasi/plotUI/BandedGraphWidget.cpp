@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -15,9 +15,12 @@
 
 #include "BandedGraphWidget.h"
 
+#include <QPainter>
+
 #include "copasi/UI/CCopasiSelectionDialog.h"
 #include "copasi/UI/qtUtilities.h"
 #include "CQPlotEditWidget.h"
+#include "CQPlotColors.h"
 
 #include "copasi/copasi.h"
 
@@ -53,6 +56,10 @@ BandedGraphWidget::BandedGraphWidget(QWidget* parent, const char* /* name */, Qt
 {
   setupUi(this);
 
+  fillCombobox(mpBoxType, CPlotItem::LineTypeNames);
+  fillCombobox(mpBoxLineSubType, CPlotItem::LineStyleNames);
+  fillCombobox(mpBoxSymbolSubType, CPlotItem::SymbolNames);
+
   mpBtnX->setIcon(CQIconResource::icon(CQIconResource::copasi));
   mpBtnYone->setIcon(CQIconResource::icon(CQIconResource::copasi));
   mpBtnYtwo->setIcon(CQIconResource::icon(CQIconResource::copasi));
@@ -83,6 +90,10 @@ BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * pCurve)
       mpCheckBefore->setChecked(false);
       mpCheckDuring->setChecked(true);
       mpCheckAfter->setChecked(false);
+
+      mpBoxType->setCurrentIndex(0);
+      mpBoxLineSubType->setCurrentIndex(0);
+      mpBoxColor->clear();
 
       return true;
     }
@@ -127,11 +138,118 @@ BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * pCurve)
   else
     mpEditYtwo->clear();
 
+  //Type
+  unsigned C_INT32 linetype = pCurve->getValue< unsigned C_INT32 >("Line type");
+  mpBoxType->setCurrentIndex(linetype);
+
+  typeChanged(linetype);
+
+  CPlotItem::LineType lineType = (CPlotItem::LineType) linetype;
+
+  //line subtype & width
+  if (lineType == CPlotItem::LineType::Lines || lineType == CPlotItem::LineType::LinesAndSymbols)
+    {
+      mpBoxLineSubType->setCurrentIndex(pCurve->getValue< unsigned C_INT32 >("Line subtype"));
+
+      //mpBoxWidth
+      mpSpinBoxWidth->setValue(pCurve->getValue< C_FLOAT64 >("Line width"));
+    }
+
+  // points
+  if (lineType == CPlotItem::LineType::Points)
+    {
+      mpSpinBoxWidth->setValue(pCurve->getValue< C_FLOAT64 >("Line width"));
+    }
+
+  //symbol type
+  if (lineType == CPlotItem::LineType::Symbols || lineType == CPlotItem::LineType::LinesAndSymbols)
+    {
+      mpBoxSymbolSubType->setCurrentIndex(pCurve->getValue< unsigned C_INT32 >("Symbol subtype"));
+    }
+
+  //color TODO
+  mpBoxColor->clear();
+  mpBoxColor->addItem("auto");
+  size_t i;
+
+  for (i = 0; i < CQPlotColors::getNumCopasiColors(); ++i)
+    {
+      QColor color = CQPlotColors::getColor("auto", i);
+      QPixmap pix(12, 12);
+      QPainter painter(&pix);
+
+      if (color.isValid())
+        {
+          painter.setPen(Qt::gray);
+          painter.setBrush(QBrush(color));
+          painter.drawRect(0, 0, 12, 12);
+        }
+
+      QIcon icon;
+      icon.addPixmap(pix);
+
+      mpBoxColor->addItem(icon, CQPlotColors::getCopasiColorStr(i).c_str());
+    }
+
+  std::string colorstr = pCurve->getValue< std::string >("Color");
+  int tmpindex;
+
+  if ((tmpindex = mpBoxColor->findText(colorstr.c_str())) != -1)
+    mpBoxColor->setCurrentIndex(tmpindex);
+  else
+    {
+      QColor color = QColor(colorstr.c_str());
+      QPixmap pix(12, 12);
+      QPainter painter(&pix);
+
+      if (color.isValid())
+        {
+          painter.setPen(Qt::gray);
+          painter.setBrush(QBrush(color));
+          painter.drawRect(0, 0, 12, 12);
+        }
+
+      QIcon icon;
+      icon.addPixmap(pix);
+
+      mpBoxColor->addItem(icon, colorstr.c_str());
+      mpBoxColor->setCurrentIndex(mpBoxColor->count() - 1);
+    }
+
   mpCheckBefore->setChecked(pCurve->getActivity() & COutputInterface::BEFORE);
   mpCheckDuring->setChecked(pCurve->getActivity() & COutputInterface::DURING);
   mpCheckAfter->setChecked(pCurve->getActivity() & COutputInterface::AFTER);
 
   return true;
+}
+
+void BandedGraphWidget::typeChanged(int type)
+{
+  CPlotItem::LineType linetype = (CPlotItem::LineType) type;
+
+  if (linetype == CPlotItem::LineType::Lines ||
+      linetype == CPlotItem::LineType::LinesAndSymbols ||
+      linetype == CPlotItem::LineType::Points)
+    {
+      mpBoxLineSubType->setEnabled(linetype != CPlotItem::LineType::Points);
+      mpSpinBoxWidth->setEnabled(true);
+    }
+  else
+    {
+      mpBoxLineSubType->setEnabled(linetype == CPlotItem::LineType::Points);
+      mpSpinBoxWidth->setEnabled(false);
+    }
+
+  //symbol type
+  if (linetype == CPlotItem::LineType::Symbols ||
+      linetype == CPlotItem::LineType::LinesAndSymbols)
+    {
+      mpBoxSymbolSubType->setEnabled(true);
+    }
+  else
+    {
+      mpBoxSymbolSubType->setEnabled(false);
+    }
 }
 
 bool
@@ -140,6 +258,11 @@ BandedGraphWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original 
   //curve->setType(CPlotItem::bandedGraph);
 
   std::string title = TO_UTF8(mpEditTitle->text());
+  unsigned C_INT32 lineType = (unsigned C_INT32) mpBoxType->currentIndex();
+  unsigned C_INT32 lineSubType = (unsigned C_INT32) mpBoxLineSubType->currentIndex();
+  unsigned C_INT32 symbolSubType = (unsigned C_INT32) mpBoxSymbolSubType->currentIndex();
+  C_FLOAT64 lineWidth = (C_FLOAT64) mpSpinBoxWidth->value();
+  std::string color = TO_UTF8(mpBoxColor->currentText());
 
   CCommonName xName = mpObjectX ? mpObjectX->getCN() : CCommonName("");
   CCommonName yName1 = mpObjectYone ? mpObjectYone->getCN() : CCommonName("");
@@ -170,6 +293,41 @@ BandedGraphWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original 
       changed = true;
       curve->setType(CPlotItem::bandedGraph);
       curve->getChannels().resize(3);
+    }
+
+  if (original == NULL
+      || original->getValue< unsigned C_INT32 >("Line type") != lineType)
+    {
+      changed = true;
+      curve->setValue("Line type", lineType);
+    }
+
+  if (original == NULL
+      || original->getValue< unsigned C_INT32 >("Line subtype") != lineSubType)
+    {
+      changed = true;
+      curve->setValue("Line subtype", lineSubType);
+    }
+
+  if (original == NULL
+      || original->getValue< unsigned C_INT32 >("Symbol subtype") != symbolSubType)
+    {
+      changed = true;
+      curve->setValue("Symbol subtype", symbolSubType);
+    }
+
+  if (original == NULL
+      || original->getValue< C_FLOAT64 >("Line width") != lineWidth)
+    {
+      changed = true;
+      curve->setValue("Line width", lineWidth);
+    }
+
+  if (original == NULL
+      || original->getValue< std::string >("Color") != color)
+    {
+      changed = true;
+      curve->setValue("Color", color);
     }
 
   if (original == NULL
