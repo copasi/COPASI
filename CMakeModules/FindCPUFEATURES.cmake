@@ -1,4 +1,4 @@
-# Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2020 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -24,7 +24,7 @@ find_package(CPUFEATURES CONFIG REQUIRED
 )
 
 if (NOT CPUFEATURES_FOUND)
-  message(STATUS "cpu_features Fallback $ENV{CPUFEATURES_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake")
+  message(VERBOSE "cpu_features Fallback $ENV{CPUFEATURES_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake")
   # Fallback if no CONFIG is found
 
   find_path(CPUFEATURES_INCLUDE_DIR cpu_features/cpuinfo_x86.h

@@ -84,7 +84,7 @@ get_target_property(COMBINE_INTERFACE_LINK_LIBRARIES ${COMBINE_LIBRARY_NAME} INT
     if (${index} GREATER 0)
       # found dependent library
       string(SUBSTRING "${library}" 0 ${index} DEPENDENT_NAME)
-      message(STATUS "Looking for dependent library: ${DEPENDENT_NAME}")
+      message(VERBOSE "Looking for dependent library: ${DEPENDENT_NAME}")
       find_package(${DEPENDENT_NAME})
     endif()
   

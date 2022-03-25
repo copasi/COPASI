@@ -33,7 +33,7 @@ else()
   set(LIBSEDML_LIBRARY_NAME libsedml)
 endif()
 
-message (STATUS "Looking for ${LIBSEDML_LIBRARY_NAME}")
+message (VERBOSE "Looking for ${LIBSEDML_LIBRARY_NAME}")
 
 find_package(${LIBSEDML_LIBRARY_NAME} CONFIG QUIET)
 

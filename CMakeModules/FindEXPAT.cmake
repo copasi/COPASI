@@ -77,7 +77,7 @@ if (NOT (EXPAT_INCLUDE_DIR AND EXPAT_LIBRARIES) OR NOT EXPAT_FOUND)
         find_package(PkgConfig)
         pkg_check_modules(PC_EXPAT QUIET expat)
 
-        message(STATUS "${PC_EXPAT_STATIC_LDFLAGS}")
+        message(VERBOSE "${PC_EXPAT_STATIC_LDFLAGS}")
 
         if (PC_EXPAT_FOUND)
             set(EXPAT_DEFINITIONS ${PC_EXPAT_CFLAGS_OTHER})
