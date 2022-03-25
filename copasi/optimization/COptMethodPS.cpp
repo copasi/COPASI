@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -104,7 +104,7 @@ C_FLOAT64 COptMethodPS::evaluate()
 
   // evaluate the fitness
   if (!pOptProblem->calculate())
-#pragma omp critical
+    #pragma omp critical
     mContinue = false;
 
   C_FLOAT64 EvaluationValue;
@@ -117,7 +117,7 @@ C_FLOAT64 COptMethodPS::evaluate()
 
   if (mProblemContext.isThread(&pOptProblem))
     {
-#pragma omp critical
+      #pragma omp critical
       mProblemContext.master()->incrementCounters(pOptProblem->getCounters());
 
       pOptProblem->resetCounters();
@@ -198,7 +198,7 @@ bool COptMethodPS::move(const size_t & index)
     {
       Improved = true;
 
-#pragma omp critical
+      #pragma omp critical
       {
         mImprovements[index] = EvaluationValue;
 
@@ -339,7 +339,7 @@ bool COptMethodPS::create(const size_t & index)
   mBestValues[index] = mValues[index] = evaluate();
   memcpy(mBestPositions[index], mIndividuals[index]->array(), sizeof(C_FLOAT64) * mVariableSize);
 
-#pragma omp critical
+  #pragma omp critical
 
   if (mBestValues[index] < mBestValue)
     {
@@ -545,8 +545,6 @@ C_FLOAT64 COptMethodPS::calcVariableVariance(const size_t & variable) const
 
 bool COptMethodPS::optimise()
 {
-  size_t i;
-
   if (!initialize())
     {
       if (mpCallBack)
@@ -620,7 +618,7 @@ bool COptMethodPS::optimise()
   // the others are random
   C_INT32 k, kmax = (C_INT32) mPopulationSize;
 
-#pragma omp parallel for
+  #pragma omp parallel for
 
   for (k = 1; k < kmax; k++)
     if (mContinue)
@@ -628,8 +626,6 @@ bool COptMethodPS::optimise()
 
   // create the informant list
   buildInformants();
-
-  bool Improved;
 
   size_t Stalled = 0;
 
@@ -642,7 +638,7 @@ bool COptMethodPS::optimise()
 
       C_INT32 k, kmax = (C_INT32) mPopulationSize;
 
-#pragma omp parallel for
+      #pragma omp parallel for
 
       for (k = 0; k < kmax; k++)
         if (mContinue)
