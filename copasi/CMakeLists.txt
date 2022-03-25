@@ -241,14 +241,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DI
 copy_if_different_and_remove(${CMAKE_CURRENT_BINARY_DIR}/config.h.tmp ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 set(COPASI_HEADERS ${COPASI_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
-#link_directories(${CMAKE_BINARY_DIR}/copasi)
-
-
-include_directories(
-  ${COPASI_INCLUDE_DIRS}
-  ${LAPACK_INCLUDE_DIR}
-)
-
 #need to include iconv dir
 if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
   if (EXISTS ${ICONV_INCLUDE_DIR})

@@ -338,6 +338,10 @@ endforeach()
 endif()
 
 SET(COPASI_INCLUDE_DIRS ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+include_directories(
+  ${COPASI_INCLUDE_DIRS}
+  ${LAPACK_INCLUDE_DIR}
+)
 
 find_package(LIBSEDML REQUIRED)
 
