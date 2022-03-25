@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -30,6 +30,7 @@ if (UNIX)
 else()
   set(COMBINE_LIBRARY_NAME libCombine-static)
 endif()
+
 find_package(${COMBINE_LIBRARY_NAME} CONFIG QUIET)
 
 if (NOT ${COMBINE_LIBRARY_NAME}_FOUND)
@@ -60,9 +61,34 @@ endif(NOT COMBINE_LIBRARY)
 
 get_target_property(COMBINE_INTERFACE_LINK_LIBRARIES ${COMBINE_LIBRARY_NAME} INTERFACE_LINK_LIBRARIES)
 
-if (COMBINE_INTERFACE_LINK_LIBRARIES)
-  set(COMBINE_LIBRARY ${COMBINE_LIBRARY} ${COMBINE_INTERFACE_LINK_LIBRARIES})
-endif (COMBINE_INTERFACE_LINK_LIBRARIES)
+  if (NOT COMBINE_INTERFACE_LINK_LIBRARIES)
+  get_target_property(COMBINE_INTERFACE_LINK_LIBRARIES ${COMBINE_LIBRARY_NAME} IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE)
+  endif()
+
+  if (NOT COMBINE_INTERFACE_LINK_LIBRARIES)
+  get_target_property(COMBINE_INTERFACE_LINK_LIBRARIES ${COMBINE_LIBRARY_NAME} IMPORTED_LINK_INTERFACE_LIBRARIES_DEBUG)
+  endif()
+
+  if (NOT COMBINE_INTERFACE_LINK_LIBRARIES)
+  get_target_property(COMBINE_INTERFACE_LINK_LIBRARIES ${COMBINE_LIBRARY_NAME} IMPORTED_LINK_INTERFACE_LIBRARIES_NOCONFIG)
+  endif()
+
+  if (COMBINE_INTERFACE_LINK_LIBRARIES)
+    set(COMBINE_LIBRARY ${COMBINE_LIBRARY} ${COMBINE_INTERFACE_LINK_LIBRARIES})
+  endif (COMBINE_INTERFACE_LINK_LIBRARIES)
+
+  foreach (library ${COMBINE_INTERFACE_LINK_LIBRARIES})
+  
+    string(FIND "${library}" "::" index)
+
+    if (${index} GREATER 0)
+      # found dependent library
+      string(SUBSTRING "${library}" 0 ${index} DEPENDENT_NAME)
+      message(STATUS "Looking for dependent library: ${DEPENDENT_NAME}")
+      find_package(${DEPENDENT_NAME})
+    endif()
+  
+  endforeach()
 
 else()
   # Fallback if no CONFIG is found
@@ -116,6 +142,13 @@ if (NOT COMBINE_LIBRARY)
     message(FATAL_ERROR "COMBINE library not found!")
 endif (NOT COMBINE_LIBRARY)
 
+if (NOT TARGET ${COMBINE_LIBRARY_NAME})
+add_library(${COMBINE_LIBRARY_NAME} UNKNOWN IMPORTED)
+set_target_properties(${COMBINE_LIBRARY_NAME} PROPERTIES
+  IMPORTED_LOCATION "${COMBINE_LIBRARY}"
+  INTERFACE_INCLUDE_DIRECTORIES "${COMBINE_INCLUDE_DIR}")
+endif()
+
 set(COMBINE_FOUND "NO")
 if(COMBINE_LIBRARY)
   if (COMBINE_INCLUDE_DIR)
@@ -163,7 +196,31 @@ if(COMBINE_LIBRARY)
   endif(COMBINE_INCLUDE_DIR)
 endif(COMBINE_LIBRARY)
 
-include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(LIBCOMBINE REQUIRED COMBINE_INCLUDE_DIR COMBINE_LIBRARY)
 
-mark_as_advanced(COMBINE_INCLUDE_DIR COMBINE_LIBRARY)
+if (COMBINE_INCLUDE_DIR AND EXISTS "${COMBINE_INCLUDE_DIR}/omex/common/libcombine-version.h")
+
+file(STRINGS "${COMBINE_INCLUDE_DIR}/omex/common/libcombine-version.h" combine_version_str
+REGEX "^#define[\t ]+LIBCOMBINE_DOTTED_VERSION[\t ]+\".*\"")
+
+string(REGEX REPLACE "^#define[\t ]+LIBCOMBINE_DOTTED_VERSION[\t ]+\"([^\"]*)\".*" "\\1"
+COMBINE_VERSION "${combine_version_str}")
+unset(combine_version_str)
+
+endif()
+
+
+# set static on the library on windows
+if ((WIN32 AND NOT CYGWIN) AND COMBINE_FOUND AND COMBINE_LIBRARY MATCHES "static")
+  set_target_properties(${COMBINE_LIBRARY_NAME} PROPERTIES 
+  INTERFACE_COMPILE_DEFINITIONS "LIBCOMBINE_STATIC=1"
+)
+
+endif()
+
+
+include(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(LIBCOMBINE 
+VERSION_VAR COMBINE_VERSION
+REQUIRED_VARS COMBINE_LIBRARY COMBINE_INCLUDE_DIR)
+
+mark_as_advanced(COMBINE_VERSION)

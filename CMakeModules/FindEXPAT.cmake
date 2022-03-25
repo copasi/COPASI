@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -88,6 +88,39 @@ if (NOT (EXPAT_INCLUDE_DIR AND EXPAT_LIBRARIES) OR NOT EXPAT_FOUND)
     mark_as_advanced(EXPAT_INCLUDE_DIR EXPAT_LIBRARY)
 
 endif () # Check for cached values
+
+
+if (EXPAT_INCLUDE_DIR AND EXISTS "${EXPAT_INCLUDE_DIR}/expat.h")
+file(STRINGS "${EXPAT_INCLUDE_DIR}/expat.h" expat_version_str
+     REGEX "^#[\t ]*define[\t ]+XML_(MAJOR|MINOR|MICRO)_VERSION[\t ]+[0-9]+$")
+
+unset(EXPAT_VERSION)
+foreach(VPART MAJOR MINOR MICRO)
+    foreach(VLINE ${expat_version_str})
+        if(VLINE MATCHES "^#[\t ]*define[\t ]+XML_${VPART}_VERSION[\t ]+([0-9]+)$")
+            set(EXPAT_VERSION_PART "${CMAKE_MATCH_1}")
+            if(EXPAT_VERSION)
+                string(APPEND EXPAT_VERSION ".${EXPAT_VERSION_PART}")
+            else()
+                set(EXPAT_VERSION "${EXPAT_VERSION_PART}")
+            endif()
+        endif()
+    endforeach()
+endforeach()
+endif ()
+
+
+# create an expat target to link against
+if(NOT TARGET EXPAT::EXPAT)
+  add_library(EXPAT::EXPAT UNKNOWN IMPORTED)
+  set_target_properties(EXPAT::EXPAT PROPERTIES
+    IMPORTED_LINK_INTERFACE_LANGUAGES "C"
+    IMPORTED_LOCATION "${EXPAT_LIBRARY}"
+    INTERFACE_INCLUDE_DIRECTORIES "${EXPAT_INCLUDE_DIR}")
+endif()
+
+
+
 
 include(FindPackageHandleStandardArgs)
 

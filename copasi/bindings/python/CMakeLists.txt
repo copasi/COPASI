@@ -105,7 +105,6 @@ add_custom_target(binding_python_swig ALL DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/py
 
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${COPASI_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 if (WIN32)

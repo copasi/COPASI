@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -92,8 +92,6 @@ include(xml/CMakeLists.txt)
 
 
 include(sedml/CMakeLists.txt)
-include_directories(${LIBSEDML_INCLUDE_DIR})
-
 
 if(ENABLE_VERSIONING)
   include(versioning/CMakeLists.txt)
@@ -248,10 +246,7 @@ set(COPASI_HEADERS ${COPASI_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 include_directories(
   ${COPASI_INCLUDE_DIRS}
-  ${RAPTOR_INCLUDE_DIR}
-  ${LIBEXPAT_INCLUDE_DIR}
   ${LAPACK_INCLUDE_DIR}
-  ${LIBSBML_INCLUDE_DIR}
 )
 
 #need to include iconv dir
@@ -273,7 +268,18 @@ if (APPLE AND CMAKE_GENERATOR STREQUAL "Xcode" OR DISABLE_CORE_OBJECT_LIBRARY)
 else()
   add_library (libCOPASISE-core OBJECT ${COPASI_SOURCES} ${COPASI_HEADERS})
   # target_compile_options(libCOPASISE-core PRIVATE -Werror -Wall -Wextra -Wsuggest-override)
-  
+  target_link_libraries(libCOPASISE-core
+    ${CROSSGUID_LIBRARY} 
+    RAPTOR::RAPTOR
+    ${LIBSBML_LIBRARY_NAME} 
+    ${LIBSEDML_LIBRARY_NAME}
+    ${COMBINE_LIBRARY_NAME}
+    EXPAT::EXPAT
+    ${CLAPACK_LIBRARIES} 
+    ${NATIVEJIT_LIBRARY} 
+    ${CPUFEATURES_LIBRARY}
+  )
+
   add_library (libCOPASISE-static STATIC $<TARGET_OBJECTS:libCOPASISE-core>)
 
   if (ENABLE_OMP)
@@ -281,7 +287,10 @@ else()
   endif (ENABLE_OMP)
 endif()
 
-set_target_properties (libCOPASISE-static PROPERTIES OUTPUT_NAME "COPASISE")
+set_target_properties (libCOPASISE-static PROPERTIES 
+    OUTPUT_NAME "COPASISE"
+    INCLUDE_DIRECTORIES "${COPASI_INCLUDE_DIRS}"
+    )
 
 target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY_NAME})
 target_link_libraries(libCOPASISE-static ${COMBINE_LIBRARY_NAME})
@@ -294,10 +303,9 @@ endif (APPLE)
 
 target_link_libraries(libCOPASISE-static 
   ${CROSSGUID_LIBRARY} 
-  ${RAPTOR_LIBRARY} 
+  RAPTOR::RAPTOR
   ${LIBSBML_LIBRARY_NAME} 
-  ${EXPAT_LIBRARIES} 
-  ${EXPAT_LIBRARY} 
+  EXPAT::EXPAT
   ${CLAPACK_LIBRARIES} 
   ${NATIVEJIT_LIBRARY} 
   ${CPUFEATURES_LIBRARY})
@@ -384,9 +392,9 @@ if(ENABLE_LIBCOPASISE_SHARED)
 
   set_target_properties (libCOPASISE-shared PROPERTIES OUTPUT_NAME "COPASISE")
 
-  target_link_libraries(libCOPASISE-shared ${LIBSEDML_LIBRARY})
+  target_link_libraries(libCOPASISE-shared ${LIBSEDML_LIBRARY_NAME})
 
-  target_link_libraries(libCOPASISE-shared ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${CLAPACK_LIBRARIES})
+  target_link_libraries(libCOPASISE-shared RAPTOR::RAPTOR ${LIBSBML_LIBRARY_NAME} EXPAT::EXPAT ${CLAPACK_LIBRARIES})
   
   if (ENABLE_OMP)
     target_link_libraries(libCOPASISE-shared OpenMP::OpenMP_CXX)
@@ -466,11 +474,6 @@ if(BUILD_GUI)
   if(ENABLE_PROVENANCE)
     include(Provenance/CMakeLists.txt)
   endif()
-
-  if (ENABLE_SBW_INTEGRATION)
-    include_directories(${SBW_INCLUDE_DIR})
-  endif(ENABLE_SBW_INTEGRATION)
-
 
   if (COPASI_UI_MOC_OPTIONS)
     message(STATUS "Mocing with options: ${COPASI_UI_MOC_OPTIONS}")
@@ -648,8 +651,6 @@ endif()
   include_directories(${QT_QTXML_INCLUDE_DIR})
   include_directories(${QT_QTSVG_INCLUDE_DIR})
 
-  include_directories(${LIBSEDML_INCLUDE_DIR})
-
   if (NOT ${CMAKE_VERSION} VERSION_GREATER "2.8.11")
     include_directories(${GUI_INCLUDE_DIRS})
   endif()
@@ -658,7 +659,7 @@ endif()
   add_library(libCOPASIUI STATIC ${COPASI_UI_SOURCES} ${COPASI_UI_HEADERS} ${HEADERS_UI_FORMS} ${COPASI_RCC_SOURCES} ${HEADERS_UI_MOC})
 
   QT_BIND_TO_TARGET(libCOPASIUI)
-  SET(UI_LIBS ${SBW_LIBRARY} ${QWT_LIBRARY} ${MML_LIBRARY})
+  SET(UI_LIBS ${QWT_LIBRARY} ${MML_LIBRARY})
   if (NOT QT5_USE_DATAVISUALIZATION)
     SET(UI_LIBS ${UI_LIBS} ${QWTPLOT3D_LIBRARY})
   endif()
@@ -682,7 +683,7 @@ endif()
   endif (NOT USING_INTEL)
   
   if (ENABLE_SBW_INTEGRATION)
-  target_link_libraries(libCOPASIUI ${SBW_LIBRARIES})
+  target_link_libraries(libCOPASIUI SBW::SBW)
   endif(ENABLE_SBW_INTEGRATION)
   
   # On some linux systems we do require a link against the pthread library

@@ -104,7 +104,6 @@ add_custom_target(binding_perl_swig ALL DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/perl
 #
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${COPASI_INCLUDE_DIRS})
 
 include_directories(BEFORE ${PERL_INCLUDE_PATH})
 

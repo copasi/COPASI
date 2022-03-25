@@ -28,7 +28,7 @@
 ###############################################################################
 
 # we need at least cmake 2.8 for the FindLAPACK functions
-cmake_minimum_required (VERSION 2.8.12)
+cmake_minimum_required (VERSION 2.8.12...3.19.1)
 
 if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
@@ -243,12 +243,7 @@ option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" OFF)
 option(ENABLE_COPASI_EXTUNIT "Extended Unit Support" ${DEFAULT_EXTUNIT})
 option(ENABLE_ANALYTICS "Enable Analytics Task" OFF)
 
-if (WIN32)
-  add_definitions(-DLIBCOMBINE_STATIC=1)
-endif()
-
 find_package(LIBCOMBINE REQUIRED)
-include_directories(BEFORE ${COMBINE_INCLUDE_DIR})
 
 option(COPASI_INSTALL_C_API "Enable this option to also install the COPASI C API" OFF)
 
@@ -284,7 +279,6 @@ find_package(CROSSGUID REQUIRED)
 include_directories(BEFORE ${CROSSGUID_INCLUDE_DIR})
 
 find_package(EXPAT REQUIRED)
-include_directories(BEFORE ${EXPAT_INCLUDE_DIR})
 
 set (ENABLE_JIT_DEFAULT OFF)
 
@@ -319,17 +313,11 @@ if (ENABLE_OMP)
   include_directories(BEFORE ${OpenMP_INCLUDE_PATH})
 endif(ENABLE_OMP)
 
-# TODO find raptor
-
 # TODO raptor should be restricted to a version which is at least
 # 1.4.18, but lower then 2.0
 find_package(RAPTOR REQUIRED)
-include_directories(BEFORE ${RAPTOR_INCLUDE_DIR})
 
-#TODO find libsbml, version should be 4.1 or 4.2
-# we need to make sure libsbml has the render extension
 find_package(LIBSBML REQUIRED)
-include_directories(BEFORE ${LIBSBML_INCLUDE_DIR})
 
 set(EXTRA_DEFS "" CACHE STRING
 "additional definitions to be used." )
@@ -351,12 +339,7 @@ endif()
 
 SET(COPASI_INCLUDE_DIRS ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 
-if (WIN32)
-add_definitions(-DLIBSEDML_STATIC)
-endif()
-
 find_package(LIBSEDML REQUIRED)
-include_directories(BEFORE ${LIBSEDML_INCLUDE_DIR})
 
 # actually iconv is only needed on BSD like systems
 find_package(ICONV)
@@ -426,11 +409,6 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
   add_definitions(-DFreeBSD)
   include_directories(/usr/local/include)
   link_directories(/usr/local/lib)
-endif()
-
-if (WIN32 AND NOT CYGWIN)
-  add_definitions(-DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
-  add_definitions(-DRAPTOR_STATIC)
 endif()
 
 if(BUILD_GUI)
@@ -545,8 +523,7 @@ if(BUILD_GUI)
   option(ENABLE_SBW_INTEGRATION "Enable SBW Integration" ON)
   if (ENABLE_SBW_INTEGRATION)
   find_package(SBW REQUIRED)
-  include_directories(${SBW_INCLUDE_DIR})
-
+  
   # set up definitions for SBW
   if(UNIX)
   if(APPLE)
@@ -712,6 +689,7 @@ if(MSVC OR USING_INTEL)
             endif(${flag_var} MATCHES "/MD")
         endforeach(flag_var)
     add_definitions( -D_MT)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     endif(WITH_STATIC_RUNTIME)
 
     # on VS enable multiprocessor build
@@ -868,6 +846,7 @@ install(FILES
         DESTINATION share/copasi/config)
 
 # set up variables for cpack
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS ON)
 include(InstallRequiredSystemLibraries)
 
 get_directory_property(DirDefs COMPILE_DEFINITIONS)
@@ -887,22 +866,25 @@ message(STATUS "-----------------------------------------------------------
    crossguid Libs       = ${CROSSGUID_LIBRARY}
    cross include        = ${CROSSGUID_INCLUDE_DIR}
 
+   Expat version        = ${EXPAT_VERSION}
    Expat Libs           = ${EXPAT_LIBRARY}
    Expat include        = ${EXPAT_INCLUDE_DIR}
 
+   Raptor version       = ${RAPTOR_VERSION}
    Raptor Libs          = ${RAPTOR_LIBRARY}
    Raptor include       = ${RAPTOR_INCLUDE_DIR}
 
+   libSBML version      = ${LIBSBML_VERSION}
    libSBML lib          = ${LIBSBML_LIBRARY}
    libSBML include      = ${LIBSBML_INCLUDE_DIR}
 
+   Qt version           = ${QT_VERSION}
    Qt lib               = ${QT_LIBRARIES}
    Qt include           = ${QT_INCLUDE_DIRS}
-   Qt version           = ${QT_VERSION}
       
+   QWT version          = ${QWT_VERSION_STRING} (0x${QWT_VERSION_NUMERIC})
    QWT lib              = ${QWT_LIBRARY}
    QWT include          = ${QWT_INCLUDE_DIR}
-   QWT version          = ${QWT_VERSION_STRING} (0x${QWT_VERSION_NUMERIC})
 
    qwtplot3d lib        = ${QWTPLOT3D_LIBRARY}
    qwtplot3d include    = ${QWTPLOT3D_INCLUDE_DIR}
@@ -910,12 +892,15 @@ message(STATUS "-----------------------------------------------------------
    qtmml lib            = ${MML_LIBRARY}
    qtmml include        = ${MML_INCLUDE_DIR}
 
+   SBW version          = ${SBW_VERSION}
    SBW lib              = ${SBW_LIBRARIES}
    SBW include          = ${SBW_INCLUDE_DIR}
 
+   libSEDML version     = ${LIBSEDML_VERSION}
    libSEDML lib         = ${LIBSEDML_LIBRARY}
    libSEDML include     = ${LIBSEDML_INCLUDE_DIR}
 
+   Combine version      = ${COMBINE_VERSION}
    Combine lib          = ${COMBINE_LIBRARY}
    Combine include      = ${COMBINE_INCLUDE_DIR}
 

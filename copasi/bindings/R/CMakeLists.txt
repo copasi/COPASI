@@ -202,7 +202,6 @@ add_custom_target(binding_r_swig ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/copasi_
 # Build native library
 #
 
-include_directories(${COPASI_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${R_INCLUDE_DIRS})
 
