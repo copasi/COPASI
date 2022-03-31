@@ -897,7 +897,7 @@ message(STATUS "-----------------------------------------------------------
    qtmml include        = ${MML_INCLUDE_DIR}
 
    SBW version          = ${SBW_VERSION}
-   SBW lib              = ${SBW_LIBRARIES}
+   SBW lib              = ${SBW_LIBRARY}
    SBW include          = ${SBW_INCLUDE_DIR}
 
    libSEDML version     = ${LIBSEDML_VERSION}

@@ -18,7 +18,7 @@
 # Once done this will define
 #
 #  EXPAT_FOUND       - system has Expat
-#  EXPAT_LIBRARIES   - Link these to use Expat
+#  EXPAT_LIBRARY   - Link these to use Expat
 #  EXPAT_INCLUDE_DIR - Include directory for using Expat
 #  EXPAT_DEFINITIONS - Compiler switches required for using Expat
 #
@@ -33,13 +33,14 @@ ENDMACRO ()
 
 
 # Check if we have cached results in case the last round was successful.
-if (NOT (EXPAT_INCLUDE_DIR AND EXPAT_LIBRARIES) OR NOT EXPAT_FOUND)
+if (NOT (EXPAT_INCLUDE_DIR AND EXPAT_LIBRARY) OR NOT EXPAT_FOUND)
 
     set(EXPAT_LDFLAGS)
 	
     find_path(EXPAT_INCLUDE_DIR expat.h
 	    PATHS $ENV{EXPAT_DIR}/include
 	          $ENV{EXPAT_DIR}
+              ${COPASI_DEPENDENCY_DIR}/include
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/include        # Fink
@@ -55,7 +56,7 @@ if (NOT (EXPAT_INCLUDE_DIR AND EXPAT_LIBRARIES) OR NOT EXPAT_FOUND)
 
     find_library(EXPAT_LIBRARY 
 	    NAMES expat
-	    PATHS $ENV{EXPAT_DIR}/lib
+	    PATHS $ENV{EXPAT_DIR}/${CMAKE_INSTALL_LIBDIR}
 	          $ENV{EXPAT_DIR}/lib-dbg
 	          $ENV{EXPAT_DIR}
               ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
@@ -118,9 +119,6 @@ if(NOT TARGET EXPAT::EXPAT)
     IMPORTED_LOCATION "${EXPAT_LIBRARY}"
     INTERFACE_INCLUDE_DIRECTORIES "${EXPAT_INCLUDE_DIR}")
 endif()
-
-
-
 
 include(FindPackageHandleStandardArgs)
 

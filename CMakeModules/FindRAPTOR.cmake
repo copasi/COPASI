@@ -17,7 +17,7 @@
 # Once done this will define
 #
 #  RAPTOR_FOUND       - system has Raptor
-#  RAPTOR_LIBRARIES   - Link these to use Raptor
+#  RAPTOR_LIBRARY   - Link these to use Raptor
 #  RAPTOR_INCLUDE_DIR - Include directory for using Raptor
 #  RAPTOR_DEFINITIONS - Compiler switches required for using Raptor
 #
@@ -41,13 +41,14 @@ ENDMACRO ()
 
 
 # Check if we have cached results in case the last round was successful.
-if (NOT (RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARIES) OR NOT RAPTOR_FOUND)
+if (NOT (RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARY) OR NOT RAPTOR_FOUND)
 
     set(RAPTOR_LDFLAGS)
 	
     find_path(RAPTOR_INCLUDE_DIR raptor.h
 	    PATHS $ENV{RAPTOR_DIR}/include
 	          $ENV{RAPTOR_DIR}
+              ${COPASI_DEPENDENCY_DIR}/include
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/include        # Fink
@@ -63,9 +64,10 @@ if (NOT (RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARIES) OR NOT RAPTOR_FOUND)
 
     find_library(RAPTOR_LIBRARY 
 	    NAMES raptor
-	    PATHS $ENV{RAPTOR_DIR}/lib
+	    PATHS $ENV{RAPTOR_DIR}/${CMAKE_INSTALL_LIBDIR}
 	          $ENV{RAPTOR_DIR}/lib-dbg
 	          $ENV{RAPTOR_DIR}
+              ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/lib        # Fink

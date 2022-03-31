@@ -18,7 +18,7 @@
 #
 #  SBW_FOUND - system has BZip2
 #  SBW_INCLUDE_DIR - the BZip2 include directory
-#  SBW_LIBRARIES - Link these to use BZip2
+#  SBW_LIBRARY - Link these to use BZip2
 
 find_path(SBW_INCLUDE_DIR SBW/SBW.h
     PATHS $ENV{SBW_DIR}/include
@@ -42,7 +42,7 @@ find_library(SBW_LIBRARY
           sbw 
           libSBW 
           libsbw
-    PATHS $ENV{SBW_DIR}/lib
+    PATHS $ENV{SBW_DIR}/${CMAKE_INSTALL_LIBDIR}
           $ENV{SBW_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
@@ -76,14 +76,14 @@ if (WIN32)
   )
 endif (WIN32)
 
-if (SBW_LIBRARIES AND SBW_LIBRARIES MATCHES "static")
+if (SBW_LIBRARY AND SBW_LIBRARY MATCHES "static")
   get_target_property(current_defs SBW::SBW INTERFACE_COMPILE_DEFINITIONS)
   set_target_properties(SBW::SBW PROPERTIES
     INTERFACE_COMPILE_DEFINITIONS "SBW_STATIC=1;${current_defs}"
   )
 endif()
 
-if (SBW_INCLUDE_DIR AND SBW_LIBRARIES)
+if (SBW_INCLUDE_DIR AND SBW_LIBRARY)
     set(TEST_FILE ${CMAKE_BINARY_DIR}/test_sbw_version.cpp)
     file(WRITE ${TEST_FILE} "
     #include <stdio.h>
@@ -115,12 +115,12 @@ endif()
 include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(SBW 
   VERSION_VAR SBW_VERSION
-  REQUIRED_VARS SBW_LIBRARIES SBW_INCLUDE_DIR)
+  REQUIRED_VARS SBW_LIBRARY SBW_INCLUDE_DIR)
 
-mark_as_advanced(SBW_INCLUDE_DIR SBW_LIBRARIES)
+mark_as_advanced(SBW_INCLUDE_DIR SBW_LIBRARY)
 
 set(SBW_FOUND "NO")
 
-if(SBW_LIBRARIES AND SBW_INCLUDE_DIR)
+if(SBW_LIBRARY AND SBW_INCLUDE_DIR)
         SET(SBW_FOUND "YES")
-endif(SBW_LIBRARIES AND SBW_INCLUDE_DIR)
+endif(SBW_LIBRARY AND SBW_INCLUDE_DIR)
