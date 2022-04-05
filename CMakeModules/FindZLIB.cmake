@@ -20,17 +20,18 @@ MACRO (FIND_ZLIB)
 
 ENDMACRO ()
 
-
+string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
+set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
 
 # Check if we have cached results in case the last round was successful.
-if (NOT (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARIES) OR NOT ZLIB_FOUND)
+if (NOT (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY) OR NOT ZLIB_FOUND)
 
     set(ZLIB_LDFLAGS)
 	
     find_path(ZLIB_INCLUDE_DIR zlib.h zlib/zlib.h
 	    PATHS $ENV{ZLIB_DIR}/include
 	          $ENV{ZLIB_DIR}
-            ${COPASI_DEPENDENCY_DIR}/include
+            ${${_PROJECT_DEPENDENCY_DIR}}/include
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/include        # Fink
@@ -49,8 +50,8 @@ if (NOT (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARIES) OR NOT ZLIB_FOUND)
 	    PATHS $ENV{ZLIB_DIR}/lib
 	          $ENV{ZLIB_DIR}/lib-dbg
 	          $ENV{ZLIB_DIR}
-            ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
-            ${COPASI_DEPENDENCY_DIR}
+            ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+            ${${_PROJECT_DEPENDENCY_DIR}}
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/lib        # Fink

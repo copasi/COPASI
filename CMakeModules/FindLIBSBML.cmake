@@ -35,6 +35,9 @@ message (VERBOSE "Looking for ${LIBSBML_LIBRARY_NAME}")
 
 find_package(${LIBSBML_LIBRARY_NAME} CONFIG QUIET)
 
+string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
+set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
+
 if (NOT ${LIBSBML_LIBRARY_NAME}_FOUND)
   find_package(${LIBSBML_LIBRARY_NAME} CONFIG QUIET
     PATHS /usr/lib/cmake
@@ -42,8 +45,8 @@ if (NOT ${LIBSBML_LIBRARY_NAME}_FOUND)
           /opt/lib/cmake
           /opt/local/lib/cmake
           /sw/lib/cmake
-          ${COPASI_DEPENDENCY_DIR}/lib/cmake
-          ${COPASI_DEPENDENCY_DIR}/lib64/cmake
+          ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
+          ${${_PROJECT_DEPENDENCY_DIR}}/lib64/cmake
           ${CONAN_LIB_DIRS_LIBSBML}/cmake
   )
 endif()
@@ -99,8 +102,8 @@ else()
 find_path(LIBSBML_INCLUDE_DIR sbml/SBase.h
     PATHS $ENV{LIBSBML_DIR}/include
           $ENV{LIBSBML_DIR}
-          ${COPASI_DEPENDENCY_DIR}
-          ${COPASI_DEPENDENCY_DIR}/include
+          ${${_PROJECT_DEPENDENCY_DIR}}
+          ${${_PROJECT_DEPENDENCY_DIR}}/include
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/include        # Fink
@@ -127,8 +130,8 @@ find_library(LIBSBML_LIBRARY
           libsbml
     PATHS $ENV{LIBSBML_DIR}/lib
           $ENV{LIBSBML_DIR}
-          ${COPASI_DEPENDENCY_DIR}
-          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}
+          ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
           ${CONAN_LIB_DIRS_LIBSBML}
           ~/Library/Frameworks
           /Library/Frameworks

@@ -37,6 +37,9 @@ message (VERBOSE "Looking for ${LIBSEDML_LIBRARY_NAME}")
 
 find_package(${LIBSEDML_LIBRARY_NAME} CONFIG QUIET)
 
+string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
+set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
+
 if (NOT ${LIBSEDML_LIBRARY_NAME}_FOUND)
   find_package(${LIBSEDML_LIBRARY_NAME} CONFIG QUIET
     PATHS /usr/lib/cmake
@@ -44,7 +47,7 @@ if (NOT ${LIBSEDML_LIBRARY_NAME}_FOUND)
           /opt/lib/cmake
           /opt/local/lib/cmake
           /sw/lib/cmake
-          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
+          ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}/cmake
           ${CONAN_LIB_DIRS_LIBSEDML}/cmake
   )
 endif()
@@ -62,8 +65,8 @@ else()
 find_path(LIBSEDML_INCLUDE_DIR sedml/SedBase.h
     PATHS $ENV{LIBSEDML_DIR}/include
           $ENV{LIBSEDML_DIR}
-           ${COPASI_DEPENDENCY_DIR}/include
-          ${COPASI_DEPENDENCY_DIR}
+           ${${_PROJECT_DEPENDENCY_DIR}}/include
+          ${${_PROJECT_DEPENDENCY_DIR}}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/include        # Fink
@@ -84,9 +87,9 @@ find_library(LIBSEDML_LIBRARY
           libsedml
     PATHS $ENV{LIBSEDML_DIR}/lib
           $ENV{LIBSEDML_DIR}
-          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
-          ${COPASI_DEPENDENCY_DIR}/lib
-          ${COPASI_DEPENDENCY_DIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/lib
+          ${${_PROJECT_DEPENDENCY_DIR}}
           ${CONAN_LIB_DIRS_LIBSEDML}
           ~/Library/Frameworks
           /Library/Frameworks
@@ -115,9 +118,9 @@ find_library(LIBNUML_LIBRARY
           libnuml
     PATHS $ENV{LIBSEDML_DIR}/lib
           $ENV{LIBSEDML_DIR}
-          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
-          ${COPASI_DEPENDENCY_DIR}/lib
-          ${COPASI_DEPENDENCY_DIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/lib
+          ${${_PROJECT_DEPENDENCY_DIR}}
           ${CONAN_LIB_DIRS_LIBNUML}
           ~/Library/Frameworks
           /Library/Frameworks

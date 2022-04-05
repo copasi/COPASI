@@ -33,14 +33,17 @@ endif()
 
 find_package(${COMBINE_LIBRARY_NAME} CONFIG QUIET)
 
+string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
+set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
+
 if (NOT ${COMBINE_LIBRARY_NAME}_FOUND)
   find_package(${COMBINE_LIBRARY_NAME} CONFIG QUIET
   CONFIGS ${COMBINE_LIBRARY_NAME}-config.cmake
   PATHS $ENV{COMBINE_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
-        ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}/cmake
         /usr/${CMAKE_INSTALL_LIBDIR}/cmake
         $ENV{COMBINE_DIR}/lib/cmake
-        ${COPASI_DEPENDENCY_DIR}/lib/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
         /usr/lib/cmake
         ${CONAN_LIB_DIRS_LIBCOMBINE}/cmake
   )
@@ -96,8 +99,8 @@ else()
   find_path(COMBINE_INCLUDE_DIR combine/combinearchive.h
     PATHS $ENV{COMBINE_DIR}/include
           $ENV{COMBINE_DIR}
-          ${COPASI_DEPENDENCY_DIR}/include
-          ${COPASI_DEPENDENCY_DIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/include
+          ${${_PROJECT_DEPENDENCY_DIR}}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/include        # Fink
@@ -119,9 +122,9 @@ else()
     NAMES ${COMBINE_LIBRARY_NAME}
     PATHS $ENV{COMBINE_DIR}/lib
           $ENV{COMBINE_DIR}
-          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
-          ${COPASI_DEPENDENCY_DIR}/lib
-          ${COPASI_DEPENDENCY_DIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/lib
+          ${${_PROJECT_DEPENDENCY_DIR}}
           ${CONAN_LIB_DIRS_LIBCOMBINE}
           ~/Library/Frameworks
           /Library/Frameworks

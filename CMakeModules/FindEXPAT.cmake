@@ -30,6 +30,8 @@ MACRO (FIND_EXPAT)
 
 ENDMACRO ()
 
+string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
+set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
 
 
 # Check if we have cached results in case the last round was successful.
@@ -40,7 +42,7 @@ if (NOT (EXPAT_INCLUDE_DIR AND EXPAT_LIBRARY) OR NOT EXPAT_FOUND)
     find_path(EXPAT_INCLUDE_DIR expat.h
 	    PATHS $ENV{EXPAT_DIR}/include
 	          $ENV{EXPAT_DIR}
-              ${COPASI_DEPENDENCY_DIR}/include
+              ${${_PROJECT_DEPENDENCY_DIR}}/include
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/include        # Fink
@@ -59,8 +61,8 @@ if (NOT (EXPAT_INCLUDE_DIR AND EXPAT_LIBRARY) OR NOT EXPAT_FOUND)
 	    PATHS $ENV{EXPAT_DIR}/${CMAKE_INSTALL_LIBDIR}
 	          $ENV{EXPAT_DIR}/lib-dbg
 	          $ENV{EXPAT_DIR}
-              ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
-              ${COPASI_DEPENDENCY_DIR}
+              ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+              ${${_PROJECT_DEPENDENCY_DIR}}
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/lib        # Fink
