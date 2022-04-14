@@ -1519,13 +1519,7 @@ void CopasiUI3Window::slotFilePrint()
 
 void CopasiUI3Window::about()
 {
-  QString text =
-    QString(AboutDialog::text)
-    .arg(FROM_UTF8(CVersion::VERSION.getVersion()))
-    .arg(LIBSBML_DOTTED_VERSION)
-    .arg(QWT_VERSION_STR)
-    .arg(QT_VERSION_STR)
-    .arg(CJitCompiler::JitEnabled() ? "enabled" : "disabled");
+  QString text = AboutDialog::getDefaultVersionText();
 
   AboutDialog *aboutDialog = new AboutDialog(this, text, 76, 30);
   aboutDialog->setWindowTitle(FixedTitle);
@@ -3786,7 +3780,7 @@ void CopasiUI3Window::removeReportTargets()
   auto& taskList = *mpDataModel->getTaskList();
   std::stringstream str;
 
-  for (auto & task : taskList)
+for (auto & task : taskList)
     {
       std::string target = task.getReport().getTarget();
 

@@ -904,9 +904,9 @@ message(STATUS "-----------------------------------------------------------
    libSEDML lib         = ${LIBSEDML_LIBRARY}
    libSEDML include     = ${LIBSEDML_INCLUDE_DIR}
 
-   Combine version      = ${COMBINE_VERSION}
-   Combine lib          = ${COMBINE_LIBRARY}
-   Combine include      = ${COMBINE_INCLUDE_DIR}
+   Combine version      = ${LIBCOMBINE_VERSION}
+   Combine lib          = ${LIBCOMBINE_LIBRARY}
+   Combine include      = ${LIBCOMBINE_INCLUDE_DIR}
 
    NativeJIT lib        = ${NATIVEJIT_LIBRARY}
    NativeJIT include    = ${NATIVEJIT_INCLUDE_DIR}
