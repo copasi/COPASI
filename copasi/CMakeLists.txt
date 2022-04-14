@@ -265,7 +265,7 @@ else()
     RAPTOR::RAPTOR
     ${LIBSBML_LIBRARY_NAME} 
     ${LIBSEDML_LIBRARY_NAME}
-    ${COMBINE_LIBRARY_NAME}
+    ${LIBCOMBINE_LIBRARY_NAME}
     EXPAT::EXPAT
     ${CLAPACK_LIBRARIES} 
     ${NATIVEJIT_LIBRARY} 
@@ -285,7 +285,7 @@ set_target_properties (libCOPASISE-static PROPERTIES
     )
 
 target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY_NAME})
-target_link_libraries(libCOPASISE-static ${COMBINE_LIBRARY_NAME})
+target_link_libraries(libCOPASISE-static ${LIBCOMBINE_LIBRARY_NAME})
 
 if (APPLE)
   FIND_LIBRARY(COREFOUNDATION_LIBRARY CoreFoundation REQUIRED)
