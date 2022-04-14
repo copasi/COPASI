@@ -38,6 +38,8 @@ MACRO (FIND_RAPTOR)
 
 ENDMACRO ()
 
+string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
+set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
 
 
 # Check if we have cached results in case the last round was successful.
@@ -48,7 +50,7 @@ if (NOT (RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARY) OR NOT RAPTOR_FOUND)
     find_path(RAPTOR_INCLUDE_DIR raptor.h
 	    PATHS $ENV{RAPTOR_DIR}/include
 	          $ENV{RAPTOR_DIR}
-              ${COPASI_DEPENDENCY_DIR}/include
+              ${${_PROJECT_DEPENDENCY_DIR}}/include
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/include        # Fink
@@ -67,7 +69,7 @@ if (NOT (RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARY) OR NOT RAPTOR_FOUND)
 	    PATHS $ENV{RAPTOR_DIR}/${CMAKE_INSTALL_LIBDIR}
 	          $ENV{RAPTOR_DIR}/lib-dbg
 	          $ENV{RAPTOR_DIR}
-              ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
+              ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/lib        # Fink
