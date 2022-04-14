@@ -291,6 +291,7 @@ if (APPLE)
   FIND_LIBRARY(COREFOUNDATION_LIBRARY CoreFoundation REQUIRED)
   MARK_AS_ADVANCED (COREFOUNDATION_LIBRARY)
   target_link_libraries(libCOPASISE-static ${COREFOUNDATION_LIBRARY})
+  target_include_directories(libCOPASISE-static PUBLIC ${CLAPACK_INCLUDE_DIR})
 endif (APPLE)
 
 target_link_libraries(libCOPASISE-static 
