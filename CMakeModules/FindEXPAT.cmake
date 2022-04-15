@@ -33,64 +33,44 @@ ENDMACRO ()
 string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
 set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
 
+find_path(EXPAT_INCLUDE_DIR expat.h
+    PATHS $ENV{EXPAT_DIR}/include
+            $ENV{EXPAT_DIR}
+            ${${_PROJECT_DEPENDENCY_DIR}}/include
+            ~/Library/Frameworks
+            /Library/Frameworks
+            /sw/include        # Fink
+            /opt/local/include # MacPorts
+            /opt/csw/include   # Blastwave
+            /opt/include
+            /usr/freeware/include
+            NO_DEFAULT_PATH)
 
-# Check if we have cached results in case the last round was successful.
-if (NOT (EXPAT_INCLUDE_DIR AND EXPAT_LIBRARY) OR NOT EXPAT_FOUND)
+if (NOT EXPAT_INCLUDE_DIR)
+    find_path(EXPAT_INCLUDE_DIR expat.h)
+endif ()
 
-    set(EXPAT_LDFLAGS)
-	
-    find_path(EXPAT_INCLUDE_DIR expat.h
-	    PATHS $ENV{EXPAT_DIR}/include
-	          $ENV{EXPAT_DIR}
-              ${${_PROJECT_DEPENDENCY_DIR}}/include
-	          ~/Library/Frameworks
-	          /Library/Frameworks
-	          /sw/include        # Fink
-	          /opt/local/include # MacPorts
-	          /opt/csw/include   # Blastwave
-	          /opt/include
-	          /usr/freeware/include
-             NO_DEFAULT_PATH)
+find_library(EXPAT_LIBRARY 
+    NAMES expat libexpat
+    PATHS $ENV{EXPAT_DIR}/${CMAKE_INSTALL_LIBDIR}
+            $ENV{EXPAT_DIR}/lib-dbg
+            $ENV{EXPAT_DIR}
+            ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+            ${${_PROJECT_DEPENDENCY_DIR}}
+            ~/Library/Frameworks
+            /Library/Frameworks
+            /sw/lib        # Fink
+            /opt/local/lib # MacPorts
+            /opt/csw/lib   # Blastwave
+            /opt/lib
+            /usr/freeware/lib64
+            NO_DEFAULT_PATH)
 
-    if (NOT EXPAT_INCLUDE_DIR)
-        find_path(EXPAT_INCLUDE_DIR expat.h)
-    endif ()
+if (NOT EXPAT_LIBRARY)
+    find_library(EXPAT_LIBRARY NAMES expat libexpat)
+endif ()
 
-    find_library(EXPAT_LIBRARY 
-	    NAMES expat
-	    PATHS $ENV{EXPAT_DIR}/${CMAKE_INSTALL_LIBDIR}
-	          $ENV{EXPAT_DIR}/lib-dbg
-	          $ENV{EXPAT_DIR}
-              ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
-              ${${_PROJECT_DEPENDENCY_DIR}}
-	          ~/Library/Frameworks
-	          /Library/Frameworks
-	          /sw/lib        # Fink
-	          /opt/local/lib # MacPorts
-	          /opt/csw/lib   # Blastwave
-	          /opt/lib
-	          /usr/freeware/lib64
-             NO_DEFAULT_PATH)
-
-    if (NOT EXPAT_LIBRARY)
-        find_library(EXPAT_LIBRARY NAMES expat)
-    endif ()
-
-    if (NOT WIN32)
-        find_package(PkgConfig)
-        pkg_check_modules(PC_EXPAT QUIET expat)
-
-        message(VERBOSE "${PC_EXPAT_STATIC_LDFLAGS}")
-
-        if (PC_EXPAT_FOUND)
-            set(EXPAT_DEFINITIONS ${PC_EXPAT_CFLAGS_OTHER})
-            set(EXPAT_VERSION ${PC_EXPAT_VERSION} CACHE STRING "Expat Version found" )
-        endif (PC_EXPAT_FOUND)
-    endif (NOT WIN32)
-    
-    mark_as_advanced(EXPAT_INCLUDE_DIR EXPAT_LIBRARY)
-
-endif () # Check for cached values
+mark_as_advanced(EXPAT_INCLUDE_DIR EXPAT_LIBRARY)
 
 
 if (EXPAT_INCLUDE_DIR AND EXISTS "${EXPAT_INCLUDE_DIR}/expat.h")
@@ -123,6 +103,53 @@ if(NOT TARGET EXPAT::EXPAT)
     IMPORTED_LINK_INTERFACE_LANGUAGES "C"
     IMPORTED_LOCATION "${EXPAT_LIBRARY}"
     INTERFACE_INCLUDE_DIRECTORIES "${EXPAT_INCLUDE_DIR}")
+endif()
+
+# figure out if we need XML_STATIC flag
+if (EXPAT_INCLUDE_DIR AND EXPAT_LIBRARY)
+  enable_language(C)  
+  set(EXPAT_EXPAT_CODE
+"
+#include <expat.h>
+#include <stdio.h>
+
+int 
+main(void)
+{
+    printf(XML_ExpatVersion());
+    return 0;
+}
+" 
+)
+
+set(CMAKE_REQUIRED_LIBRARIES_CACHE ${CMAKE_REQUIRED_LIBRARIES})
+set(CMAKE_REQUIRED_INCLUDES_CACHE ${CMAKE_REQUIRED_INCLUDES})
+set(CMAKE_REQUIRED_DEFINITIONS_CACHE ${CMAKE_REQUIRED_DEFINITIONS})
+
+set(EXPAT_EXPAT_TEST)
+set(CMAKE_REQUIRED_LIBRARIES "${EXPAT_LIBRARY}")
+set(CMAKE_REQUIRED_INCLUDES "${EXPAT_INCLUDE_DIR}")
+CHECK_C_SOURCE_COMPILES("${EXPAT_EXPAT_CODE}" EXPAT_EXPAT_TEST)
+
+if (NOT EXPAT_EXPAT_TEST)
+set(CMAKE_REQUIRED_LIBRARIES "${EXPAT_LIBRARY}")
+set(CMAKE_REQUIRED_INCLUDES "${EXPAT_INCLUDE_DIR}")
+set(CMAKE_REQUIRED_DEFINITIONS "-DXML_STATIC=1")
+
+CHECK_C_SOURCE_COMPILES("${EXPAT_EXPAT_CODE}" EXPAT_EXPAT_TEST2)
+if (EXPAT_EXPAT_TEST2)
+  set_target_properties(EXPAT::EXPAT PROPERTIES
+    INTERFACE_COMPILE_DEFINITIONS "XML_STATIC=1"
+    )
+else()
+  message(FATAL_ERROR "Unable to compile a test executable against expat")
+endif()
+
+endif()
+
+set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES_CACHE})
+set(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES_CACHE})
+set(CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS_CACHE})
 endif()
 
 include(FindPackageHandleStandardArgs)
