@@ -25,10 +25,7 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
-
-MACRO (FIND_EXPAT)
-
-ENDMACRO ()
+include(CheckCSourceCompiles)
 
 string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
 set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
