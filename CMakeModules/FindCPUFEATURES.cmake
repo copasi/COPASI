@@ -13,11 +13,14 @@
 # $CPUFEATURES_DIR is an environment variable that would
 # correspond to the ./configure --prefix=$CPUFEATURES_DIR
 
+string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
+set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
+
 find_package(CPUFEATURES CONFIG REQUIRED
   CONFIGS CpuFeaturesConfig.cmake
   PATHS $ENV{CPUFEATURES_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
-        ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
-        ${COPASI_DEPENDENCY_DIR}/lib/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
         /usr/${CMAKE_INSTALL_LIBDIR}/cmake
         ${CONAN_LIB_DIRS_CPUFEATURES}/cmake
   PATH_SUFFIXES CpuFeatures
@@ -30,8 +33,8 @@ if (NOT CPUFEATURES_FOUND)
   find_path(CPUFEATURES_INCLUDE_DIR cpu_features/cpuinfo_x86.h
     PATHS $ENV{CPUFEATURES_DIR}/include
           $ENV{CPUFEATURES_DIR}
-          ${COPASI_DEPENDENCY_DIR}/include
-          ${COPASI_DEPENDENCY_DIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/include
+          ${${_PROJECT_DEPENDENCY_DIR}}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/include        # Fink
@@ -49,9 +52,9 @@ if (NOT CPUFEATURES_FOUND)
     NAMES cpu_features
     PATHS $ENV{CPUFEATURES_DIR}/lib
           $ENV{CPUFEATURES_DIR}
-          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
-          ${COPASI_DEPENDENCY_DIR}/lib
-          ${COPASI_DEPENDENCY_DIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/lib
+          ${${_PROJECT_DEPENDENCY_DIR}}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/lib         # Fink

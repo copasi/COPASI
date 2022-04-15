@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -18,10 +18,13 @@
 # $CROSSGUID_DIR is an environment variable that would
 # correspond to the ./configure --prefix=$CROSSGUID_DIR
 
+string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
+set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
+
 find_package(crossguid CONFIG REQUIRED
   CONFIGS crossguid-config.cmake
   PATHS $ENV{CROSSGUID_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
-        ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}/cmake
         /usr/${CMAKE_INSTALL_LIBDIR}/cmake
         ${CONAN_LIB_DIRS_CROSSGUID}/cmake
   )
@@ -32,8 +35,8 @@ if (NOT CROSSGUID_FOUND)
   find_path(CROSSGUID_INCLUDE_DIR crossguid/guid.hpp
     PATHS $ENV{CROSSGUID_DIR}/include
           $ENV{CROSSGUID_DIR}
-          ${COPASI_DEPENDENCY_DIR}/include
-          ${COPASI_DEPENDENCY_DIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/include
+          ${${_PROJECT_DEPENDENCY_DIR}}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/include        # Fink
@@ -51,9 +54,9 @@ if (NOT CROSSGUID_FOUND)
     NAMES crossguid crossguid-dgb
     PATHS $ENV{CROSSGUID_DIR}/lib
           $ENV{CROSSGUID_DIR}
-          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
-          ${COPASI_DEPENDENCY_DIR}/lib
-          ${COPASI_DEPENDENCY_DIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/lib
+          ${${_PROJECT_DEPENDENCY_DIR}}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/lib         Fink

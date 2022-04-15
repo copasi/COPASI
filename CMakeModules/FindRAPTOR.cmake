@@ -33,14 +33,8 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
-
-MACRO (FIND_RAPTOR)
-
-ENDMACRO ()
-
 string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
 set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
-
 
 # Check if we have cached results in case the last round was successful.
 if (NOT (RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARY) OR NOT RAPTOR_FOUND)

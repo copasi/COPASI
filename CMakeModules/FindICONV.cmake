@@ -1,3 +1,8 @@
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -21,6 +26,8 @@
 include(CheckCCompilerFlag)
 include(CheckCSourceCompiles)
 
+string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
+set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
 
 IF (ICONV_INCLUDE_DIR AND ICONV_LIBRARIES)
   # Already in cache, be silent
@@ -32,7 +39,7 @@ FIND_PATH(ICONV_INCLUDE_DIR iconv.h
          /usr/include
          /usr/local/include
          /opt/local/include
-         ${COPASI_DEPENDENCY_DIR}/include
+         ${${_PROJECT_DEPENDENCY_DIR}}/include
 )
 
 FIND_LIBRARY(ICONV_LIBRARIES NAMES iconv libiconv
@@ -40,8 +47,8 @@ FIND_LIBRARY(ICONV_LIBRARIES NAMES iconv libiconv
          /usr/lib
          /usr/local/lib
          /opt/local/lib
-         ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
-         ${COPASI_DEPENDENCY_DIR}/lib
+         ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+         ${${_PROJECT_DEPENDENCY_DIR}}/lib
 )
  
 IF(ICONV_INCLUDE_DIR AND ICONV_LIBRARIES) 

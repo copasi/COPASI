@@ -13,11 +13,14 @@
 # $NATIVEJIT_DIR is an environment variable that would
 # correspond to the ./configure --prefix=$NATIVEJIT_DIR
 
+string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
+set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
+
 find_package(NATIVEJIT CONFIG REQUIRED
   CONFIGS nativejit-config.cmake
   PATHS $ENV{NATIVEJIT_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
-        ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
-        ${COPASI_DEPENDENCY_DIR}/lib/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
         /usr/${CMAKE_INSTALL_LIBDIR}/cmake
         ${CONAN_LIB_DIRS_NATIVEJIT}/cmake
   )
@@ -29,8 +32,8 @@ if (NOT NATIVEJIT_FOUND)
   find_path(NATIVEJIT_INCLUDE_DIR NativeJIT/ExpressionTree.h
     PATHS $ENV{NATIVEJIT_DIR}/include
           $ENV{NATIVEJIT_DIR}
-          ${COPASI_DEPENDENCY_DIR}/include
-          ${COPASI_DEPENDENCY_DIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/include
+          ${${_PROJECT_DEPENDENCY_DIR}}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/include        # Fink
@@ -48,9 +51,9 @@ if (NOT NATIVEJIT_FOUND)
     NAMES NativeJIT
     PATHS $ENV{NATIVEJIT_DIR}/lib
           $ENV{NATIVEJIT_DIR}
-          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
-          ${COPASI_DEPENDENCY_DIR}/lib
-          ${COPASI_DEPENDENCY_DIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/lib
+          ${${_PROJECT_DEPENDENCY_DIR}}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/lib         # Fink
@@ -73,9 +76,9 @@ if (NOT NATIVEJIT_FOUND)
       NAMES CodeGen
       PATHS $ENV{NATIVEJIT_DIR}/lib
             $ENV{NATIVEJIT_DIR}
-            ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
-            ${COPASI_DEPENDENCY_DIR}/lib
-            ${COPASI_DEPENDENCY_DIR}
+            ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+            ${${_PROJECT_DEPENDENCY_DIR}}/lib
+            ${${_PROJECT_DEPENDENCY_DIR}}
             ~/Library/Frameworks
             /Library/Frameworks
             /sw/lib         Fink
