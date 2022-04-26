@@ -243,16 +243,13 @@ class CMakeBuild(build_ext):
 
         if DEP_DIR:
           cmake_args.append('-DCOPASI_DEPENDENCY_DIR=' + DEP_DIR)
-          cmake_args.append('-DLIBEXPAT_INCLUDE_DIR=' + join(DEP_DIR, 'include'))
 
         if is_win_32:
           if DEP_DIR32:
             cmake_args.append('-DCOPASI_DEPENDENCY_DIR=' + DEP_DIR32)
-            cmake_args.append('-DLIBEXPAT_INCLUDE_DIR=' + join(DEP_DIR32, 'include'))
         elif is_win:
           if DEP_DIR64:
             cmake_args.append('-DCOPASI_DEPENDENCY_DIR=' + DEP_DIR64)
-            cmake_args.append('-DLIBEXPAT_INCLUDE_DIR=' + join(DEP_DIR64, 'include'))
 
         os.chdir(build_temp)
         self.spawn(['cmake', SRC_DIR] + cmake_args)
