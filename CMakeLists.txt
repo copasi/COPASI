@@ -243,21 +243,11 @@ option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" OFF)
 option(ENABLE_COPASI_EXTUNIT "Extended Unit Support" ${DEFAULT_EXTUNIT})
 option(ENABLE_ANALYTICS "Enable Analytics Task" OFF)
 
-find_package(LIBCOMBINE REQUIRED)
-
 option(COPASI_INSTALL_C_API "Enable this option to also install the COPASI C API" OFF)
 
 option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (CopasiUI)." ON)
 
 option(ENABLE_FLEX_BISON "Enable the use of flex and bison to create parsers." OFF)
-if (ENABLE_FLEX_BISON)
-  find_package(FLEX REQUIRED)
-  find_package(BISON REQUIRED) 
-  set(FLEX_BINARY ${FLEX_EXECUTABLE})
-  set(FLEX_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/flex.sh")
-  set(BISON_BINARY ${BISON_EXECUTABLE})
-  set(BISON_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/yacc.sh")
-endif (ENABLE_FLEX_BISON)
 
 option(ENABLE_GPROF "Enable compiling and linking for gprof analysis." OFF)
 if (ENABLE_GPROF)
@@ -265,20 +255,8 @@ if (ENABLE_GPROF)
   set(CMAKE_EXE_LINKER_FLAGS "-pg")
 endif (ENABLE_GPROF)
 
-if ( NOT CLAPACK_FOUND )
-  find_package(CLAPACK REQUIRED)
-endif ()
-
 
 option(CLAPACK_NO_BLASWRAP "If defined the NO_BLASWRAP compile option will be added" OFF)
-
-include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LAPACK_CFLAGS}")
-
-find_package(CROSSGUID REQUIRED)
-include_directories(BEFORE ${CROSSGUID_INCLUDE_DIR})
-
-find_package(EXPAT REQUIRED)
 
 set (ENABLE_JIT_DEFAULT OFF)
 
@@ -294,30 +272,7 @@ endif()
 
 option(ENABLE_JIT "Enable Just In Time compilation for math expressions" ${ENABLE_JIT_DEFAULT})
 
-if (ENABLE_JIT)
-  find_package(NATIVEJIT REQUIRED)
-
-  include_directories(BEFORE ${NATIVEJIT_INCLUDE_DIR})
-  set(USE_JIT 1)
-
-  find_package(CPUFEATURES REQUIRED)
-  include_directories(BEFORE ${CPUFEATURE_INCLUDE_DIR})
-endif (ENABLE_JIT)
-
 option(ENABLE_OMP "Enable the OpenMP support" OFF)
-
-if (ENABLE_OMP)
-  set(USE_OMP 1)
-
-  find_package (OpenMP REQUIRED)
-  include_directories(BEFORE ${OpenMP_INCLUDE_PATH})
-endif(ENABLE_OMP)
-
-# TODO raptor should be restricted to a version which is at least
-# 1.4.18, but lower then 2.0
-find_package(RAPTOR REQUIRED)
-
-find_package(LIBSBML REQUIRED)
 
 set(EXTRA_DEFS "" CACHE STRING
 "additional definitions to be used." )
@@ -343,10 +298,6 @@ include_directories(
   ${LAPACK_INCLUDE_DIR}
 )
 
-find_package(LIBSEDML REQUIRED)
-
-# actually iconv is only needed on BSD like systems
-find_package(ICONV)
 
 #platform specific defines
 
@@ -371,9 +322,10 @@ if(UNIX)
       endif()
     endif()
 
-
+    if (NOT CMAKE_OSX_ARCHITECTURES )
     set(CMAKE_OSX_ARCHITECTURES "${CMAKE_OSX_ARCHITECTURES}" CACHE STRING
       "A semicolon-separated list of build architectures to be used.")
+    endif()
     if(ENABLE_UNIVERSAL)
       # if universal binaries are requested and none defined so far
       # overwrite them with all three common architectures. If the user
@@ -414,6 +366,57 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
   include_directories(/usr/local/include)
   link_directories(/usr/local/lib)
 endif()
+
+# find packages now after all flag definitions have been made
+
+find_package(EXPAT REQUIRED)
+find_package(LIBSBML REQUIRED)
+find_package(LIBSEDML REQUIRED)
+find_package(LIBCOMBINE REQUIRED)
+
+if (ENABLE_FLEX_BISON)
+  find_package(FLEX REQUIRED)
+  find_package(BISON REQUIRED) 
+  set(FLEX_BINARY ${FLEX_EXECUTABLE})
+  set(FLEX_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/flex.sh")
+  set(BISON_BINARY ${BISON_EXECUTABLE})
+  set(BISON_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/yacc.sh")
+endif (ENABLE_FLEX_BISON)
+
+if ( NOT CLAPACK_FOUND )
+  find_package(CLAPACK REQUIRED)
+endif ()
+
+include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LAPACK_CFLAGS}")
+
+find_package(CROSSGUID REQUIRED)
+include_directories(BEFORE ${CROSSGUID_INCLUDE_DIR})
+
+if (ENABLE_JIT)
+  find_package(NATIVEJIT REQUIRED)
+
+  include_directories(BEFORE ${NATIVEJIT_INCLUDE_DIR})
+  set(USE_JIT 1)
+
+  find_package(CPUFEATURES REQUIRED)
+  include_directories(BEFORE ${CPUFEATURE_INCLUDE_DIR})
+endif (ENABLE_JIT)
+
+if (ENABLE_OMP)
+  set(USE_OMP 1)
+
+  find_package (OpenMP REQUIRED)
+  include_directories(BEFORE ${OpenMP_INCLUDE_PATH})
+endif(ENABLE_OMP)
+
+# TODO raptor should be restricted to a version which is at least
+# 1.4.18, but lower then 2.0
+find_package(RAPTOR REQUIRED)
+
+# actually iconv is only needed on BSD like systems
+find_package(ICONV)
+
 
 if(BUILD_GUI)
   set(OpenGL_GL_PREFERENCE LEGACY)
