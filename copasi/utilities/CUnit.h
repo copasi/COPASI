@@ -44,7 +44,7 @@ public:
   static C_FLOAT64 Avogadro;
 
   // Enum of unit types
-  enum struct UnitType {time = 0, quantity, volume, area, length};
+  enum UnitType {time = 0, quantity, volume, area, length};
 
   static std::string replaceSymbol(const std::string & expression,
                                    const std::string & oldSymbol,

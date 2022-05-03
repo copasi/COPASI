@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -48,13 +48,6 @@
 %template(ObjectStdVector) std::vector<CDataObject*>;
 typedef std::vector<CDataObject*> ObjectStdVector;
 
-%ignore CUnit::VolumeUnitNames;
-%ignore CUnit::AreaUnitNames;
-%ignore CUnit::LengthUnitNames;
-%ignore CUnit::TimeUnitNames;
-%ignore CUnit::QuantityUnitOldXMLNames;
-%ignore CUnit::QuantityUnitNames;
-%ignore CUnit::fromEnum;
 %ignore CUnit::getSymbolComponents;
 %ignore CUnit::SymbolComponent;
 %rename(mul)             CUnit::operator*;
@@ -67,12 +60,6 @@ typedef std::vector<CDataObject*> ObjectStdVector;
 %ignore CModel::load;
 %ignore CModel::compileIfNecessary(CProcessReport* pProcessReport);
 %ignore CModel::forceCompile(CProcessReport* pProcessReport);
-%ignore CModel::VolumeUnitNames;
-%ignore CModel::AreaUnitNames;
-%ignore CModel::LengthUnitNames;
-%ignore CModel::TimeUnitNames;
-%ignore CModel::QuantityUnitOldXMLNames;
-%ignore CModel::QuantityUnitNames;
 %ignore CModel::ModelTypeNames;
 %ignore CModel::appendDependentModelObjects;
 %ignore CModel::appendDependentReactions;
