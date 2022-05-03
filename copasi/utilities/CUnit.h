@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -44,41 +44,7 @@ public:
   static C_FLOAT64 Avogadro;
 
   // Enum of unit types
-  enum UnitType {time = 0, quantity, volume, area, length};
-
-  // Enum of valid volume units
-  enum VolumeUnit {dimensionlessVolume = 0, m3, l, ml, microl, nl, pl, fl};
-
-  // String representation of valid volume units
-  static const char * VolumeUnitNames[];
-
-  // Enum of valid area units
-  enum AreaUnit {dimensionlessArea = 0, m2, dm2, cm2, mm2, microm2, nm2, pm2, fm2};
-
-  // String representation of valid area units
-  static const char * AreaUnitNames[];
-
-  // Enum of valid length units
-  enum LengthUnit {dimensionlessLength = 0, m, dm, cm, mm, microm, nm, pm, fm};
-
-  // String representation of valid length units
-  static const char * LengthUnitNames[];
-
-  // Enum of valid time units
-  enum TimeUnit {dimensionlessTime = 0, d, h, min, s, ms, micros, ns, ps, fs, OldMinute};
-
-  // String representation of valid time units
-  static const char * TimeUnitNames[];
-
-  //  Enum of valid quantity units
-  enum QuantityUnit {dimensionlessQuantity = 0, Mol, mMol, microMol, nMol, pMol, fMol, number, OldXML};
-
-  // String representation of valid quantity units as used in old (up to Build 18)
-  // COPASI files
-  static const char * QuantityUnitOldXMLNames[];
-
-  // String representation of valid quantity units
-  static const char * QuantityUnitNames[];
+  enum struct UnitType {time = 0, quantity, volume, area, length};
 
   static std::string replaceSymbol(const std::string & expression,
                                    const std::string & oldSymbol,

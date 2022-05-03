@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -526,15 +526,6 @@ public:
   bool setVolumeUnit(const std::string & name);
 
   /**
-   * Set the unit for volumes. If COPASI recognizes
-   * the unit the conversion factors are set accordingly
-   * and true is returned.
-   * @param const CModel::VolumeUnit & unit
-   * @return bool success
-   */
-  bool setVolumeUnit(const CUnit::VolumeUnit & unitEnum);
-
-  /**
    * Get the current volume unit of the model
    * @return const CUnit & volumeunit
    */
@@ -547,24 +538,11 @@ public:
   std::string getVolumeUnitName() const;
 
   /**
-   * Get the unit for volumes
-   * @return CModel::VolumeUnit volumeUnit
-   */
-  CUnit::VolumeUnit getVolumeUnitEnum() const;
-
-  /**
    * Set the unit for areas.
    * @param const std::string & name
    * @return bool success
    */
   bool setAreaUnit(const std::string & name);
-
-  /**
-   * Set the unit for areas.
-   * @param const CModel::AreaUnit & unit
-   * @return bool success
-   */
-  bool setAreaUnit(const CUnit::AreaUnit & unitEnum);
 
   /**
    * Get the current area unit of the model
@@ -579,24 +557,11 @@ public:
   std::string getAreaUnitName() const;
 
   /**
-   * Get the unit for areas
-   * @return CModel::AreaUnit areaUnit
-   */
-  CUnit::AreaUnit getAreaUnitEnum() const;
-
-  /**
    * Set the unit for lengths.
    * @param const std::string & name
    * @return bool success
    */
   bool setLengthUnit(const std::string & name);
-
-  /**
-   * Set the unit for lengths.
-   * @param const CModel::LengthUnit & unit
-   * @return bool success
-   */
-  bool setLengthUnit(const CUnit::LengthUnit & unitEnum);
 
   /**
    * Get the current length unit of the model
@@ -611,12 +576,6 @@ public:
   std::string getLengthUnitName() const;
 
   /**
-   * Get the unit for lengths
-   * @return CModel::LengthUnit lengthUnit
-   */
-  CUnit::LengthUnit getLengthUnitEnum() const;
-
-  /**
    * Set the unit for time. If COPASI recognizes
    * the unit the conversion factors are set accordingly
    * and true is returned.
@@ -624,15 +583,6 @@ public:
    * @return bool success
    */
   bool setTimeUnit(const std::string & name);
-
-  /**
-   * Set the unit for time. If COPASI recognizes
-   * the unit the conversion factors are set accordingly
-   * and true is returned.
-   * @param const const CModel::TimeUnit & unit
-   * @return bool success
-   */
-  bool setTimeUnit(const CUnit::TimeUnit & unitEnum);
 
   /**
    * Get the current time unit of the model
@@ -647,12 +597,6 @@ public:
   std::string getTimeUnitName() const;
 
   /**
-   * Get the unit for time
-   * @return CModel::TimeUnit timeUnit
-   */
-  CUnit::TimeUnit getTimeUnitEnum() const;
-
-  /**
    * Set the unit for quantities. If COPASI recognizes
    * the unit the conversion factors are set accordingly
    * and true is returned.
@@ -660,16 +604,6 @@ public:
    * @return bool success
    */
   bool setQuantityUnit(const std::string & name,
-                       const CCore::Framework & frameWork);
-
-  /**
-   * Set the unit for quantities. If COPASI recognizes
-   * the unit the conversion factors are set accordingly
-   * and true is returned.
-   * @param const CModel::QuantityUnit & unit
-   * @return bool success
-   */
-  bool setQuantityUnit(const CUnit::QuantityUnit & unitEnum,
                        const CCore::Framework & frameWork);
 
   /**
@@ -683,13 +617,12 @@ public:
    * @return std::string quantityUnit
    */
   std::string getQuantityUnitName() const;
-  std::string getQuantityUnitOldXMLName() const;
 
   /**
    * Get the unit for quantities
    * @return CModel::QuantityUnit quantityUnit
    */
-  CUnit::QuantityUnit getQuantityUnitEnum() const;
+  // CUnit::QuantityUnit getQuantityUnitEnum() const;
 
   /**
    * Set the type of the model

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -218,7 +218,7 @@ std::vector< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & sym
                it->getSymbol() == "l") &&
               !it->CUnit::operator==(CBaseUnit::item))
             {
-              for (C_INT32 scale = -18; scale < 18; scale += 3)
+              for (C_INT32 scale = CBaseUnit::yocto; scale <= CBaseUnit::yotta; scale += 3)
                 {
                   CUnit Scale;
                   Scale.addComponent(CUnitComponent(CBaseUnit::dimensionless, 1.0, scale, 0));

@@ -352,31 +352,31 @@ protected:
    * Returns the copasi LengthUnit corresponding to the given SBML length
    *  UnitDefinition.
    */
-  std::pair<CUnit::LengthUnit, bool> handleLengthUnit(const UnitDefinition* uDef);
+  std::pair< std::string, bool > handleLengthUnit(const UnitDefinition* uDef);
 
   /**
    * Returns the copasi AreaUnit corresponding to the given SBML area
    *  UnitDefinition.
    */
-  std::pair<CUnit::AreaUnit, bool> handleAreaUnit(const UnitDefinition* uDef);
+  std::pair< std::string, bool > handleAreaUnit(const UnitDefinition* uDef);
 
   /**
    * Returns the copasi VolumeUnit corresponding to the given SBML Volume
    *  UnitDefinition.
    */
-  std::pair<CUnit::VolumeUnit, bool> handleVolumeUnit(const UnitDefinition* uDef);
+  std::pair< std::string, bool > handleVolumeUnit(const UnitDefinition* uDef);
 
   /**
    * Returns the COPASI QuantityUnit corresponding to the given SBML
    *  Substance UnitDefinition.
    */
-  std::pair<CUnit::QuantityUnit, bool> handleSubstanceUnit(const UnitDefinition* uDef);
+  std::pair< std::string, bool > handleSubstanceUnit(const UnitDefinition* uDef);
 
   /**
    * Returns the COPASI TimeUnit corresponding to the given SBML Time
    *  UnitDefinition.
    */
-  std::pair<CUnit::TimeUnit, bool> handleTimeUnit(const UnitDefinition* uDef);
+  std::pair< std::string, bool > handleTimeUnit(const UnitDefinition* uDef);
 
   /**
    * Replaces all occurrences of the log function with two arguments by

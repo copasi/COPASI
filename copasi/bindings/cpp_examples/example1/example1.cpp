@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -12,9 +17,6 @@
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
-
-
-
 
 /**
  * This is an example on how to build models with the COPASI backend API.
@@ -57,9 +59,9 @@ int main()
   // we want seconds as the time unit
   // microliter as the volume units
   // and nanomole as the substance units
-  pModel->setTimeUnit(CUnit::s);
-  pModel->setVolumeUnit(CUnit::microl);
-  pModel->setQuantityUnit(CUnit::nMol, CCore::Framework::ParticleNumbers);
+  pModel->setTimeUnit("s");
+  pModel->setVolumeUnit("ul");
+  pModel->setQuantityUnit("nmol", CCore::Framework::ParticleNumbers);
 
   // we have to keep a set of all the initial values that are changed during
   // the model building process
@@ -237,7 +239,7 @@ int main()
   pReaction->setParameterObject(0, pModelValue);
 
   // now we have to set the parameter mapping for the substrates
-  //pReaction->setParameterObjects("substrate", { pG6P, pADP });
+  //pReaction->setParameterObjects("substrate", {pG6P, pADP });
   pReaction->addParameterObject("substrate", pG6P);
   pReaction->addParameterObject("substrate", pADP);
 

@@ -679,7 +679,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
 
   if (pSubstanceUnits != NULL)
     {
-      std::pair<CUnit::QuantityUnit, bool> qUnit;
+      std::pair<std::string, bool> qUnit;
 
       try
         {
@@ -707,7 +707,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
           // the unit could not be handled, give an error message and
           // set the units to mole
           CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "substance", "Mole");
-          this->mpCopasiModel->setQuantityUnit(CUnit::Mol, CCore::Framework::Concentration);
+          this->mpCopasiModel->setQuantityUnit("mol", CCore::Framework::Concentration);
         }
       else
         {
@@ -851,11 +851,11 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->mpCopasiModel = new CModel(mpDataModel);
   copasi2sbmlmap[this->mpCopasiModel] = sbmlModel;
   mUnitExpressions = std::map<const UnitDefinition*, std::string>();
-  this->mpCopasiModel->setLengthUnit(CUnit::m);
-  this->mpCopasiModel->setAreaUnit(CUnit::m2);
-  this->mpCopasiModel->setVolumeUnit(CUnit::l);
-  this->mpCopasiModel->setTimeUnit(CUnit::s);
-  this->mpCopasiModel->setQuantityUnit(CUnit::Mol, CCore::Framework::Concentration);
+  this->mpCopasiModel->setLengthUnit("m");
+  this->mpCopasiModel->setAreaUnit("m^2");
+  this->mpCopasiModel->setVolumeUnit("l");
+  this->mpCopasiModel->setTimeUnit("s");
+  this->mpCopasiModel->setQuantityUnit("mol", CCore::Framework::Concentration);
   this->mpCopasiModel->setSBMLId(sbmlModel->getId());
 
   mCurrentStepHandle = C_INVALID_INDEX;
@@ -3690,11 +3690,11 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
  * Returns the copasi QuantityUnit corresponding to the given SBML
  *  Substance UnitDefinition.
  */
-std::pair<CUnit::QuantityUnit, bool>
+std::pair< std::string, bool >
 SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
 {
   bool result = false;
-  CUnit::QuantityUnit qUnit = CUnit::Mol;
+  std::string qUnit = "mol";
 
   if (uDef == NULL)
     {
@@ -3736,46 +3736,11 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
           if ((u->getExponent() == 1) &&
               areApproximatelyEqual(multiplier, 1.0) &&
               ((scale % 3) == 0) &&
-              (scale < 1) &&
-              (scale > -16))
+              (scale <= CBaseUnit::yotta) &&
+              (scale >= CBaseUnit::yocto))
             {
-              switch (scale)
-                {
-                  case 0:
-                    qUnit = CUnit::Mol;
-                    result = true;
-                    break;
-
-                  case - 3:
-                    qUnit = CUnit::mMol;
-                    result = true;
-                    break;
-
-                  case - 6:
-                    qUnit = CUnit::microMol;
-                    result = true;
-                    break;
-
-                  case - 9:
-                    qUnit = CUnit::nMol;
-                    result = true;
-                    break;
-
-                  case - 12:
-                    qUnit = CUnit::pMol;
-                    result = true;
-                    break;
-
-                  case - 15:
-                    qUnit = CUnit::fMol;
-                    result = true;
-                    break;
-
-                  default:
-                    //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                    result = false;
-                    break;
-                }
+              qUnit = CBaseUnit::prefixFromScale(scale) + "mol";
+              result = true;
             }
           else
             {
@@ -3812,7 +3777,7 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
               else
                 {
                   result = true;
-                  qUnit = CUnit::number;
+                  qUnit = "#";
                 }
             }
           else
@@ -3844,7 +3809,7 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
               scale == 0)
             {
               result = true;
-              qUnit = CUnit::dimensionlessQuantity;
+              qUnit = "1";
             }
           else
             {
@@ -3868,11 +3833,11 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
  * Returns the copasi TimeUnit corresponding to the given SBML Time
  *  UnitDefinition.
  */
-std::pair<CUnit::TimeUnit, bool>
+std::pair< std::string, bool >
 SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
 {
   bool result = false;
-  CUnit::TimeUnit tUnit = CUnit::s;
+  std::string tUnit = "s";
 
   if (uDef == NULL)
     {
@@ -3946,64 +3911,32 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
                 }
             }
 
-          if ((u->getExponent() == 1) && ((scale % 3) == 0) && (scale < 1) && (scale > -16))
+          if ((u->getExponent() == 1)
+              && ((scale % 3) == 0)
+              && (scale <= CBaseUnit::yotta)
+              && (scale >= CBaseUnit::yocto))
             {
               if (areApproximatelyEqual(multiplier, 1.0))
                 {
-                  switch (scale)
-                    {
-                      case 0:
-                        tUnit = CUnit::s;
-                        result = true;
-                        break;
-
-                      case - 3:
-                        tUnit = CUnit::ms;
-                        result = true;
-                        break;
-
-                      case - 6:
-                        tUnit = CUnit::micros;
-                        result = true;
-                        break;
-
-                      case - 9:
-                        tUnit = CUnit::ns;
-                        result = true;
-                        break;
-
-                      case - 12:
-                        tUnit = CUnit::ps;
-                        result = true;
-                        break;
-
-                      case - 15:
-                        tUnit = CUnit::fs;
-                        result = true;
-                        break;
-
-                      default:
-                        //DebugFile << "Error. This value should never have been reached for the scale of the time unit." << std::endl;
-                        result = false;
-                        break;
-                    }
+                  tUnit = CBaseUnit::prefixFromScale(scale) + "s";
+                  result = true;
                 }
               else if ((scale == 0) &&
                        areApproximatelyEqual(multiplier, 60.0))
                 {
-                  tUnit = CUnit::min;
+                  tUnit = "min";
                   result = true;
                 }
               else if ((scale == 0) &&
                        areApproximatelyEqual(multiplier, 3600.0))
                 {
-                  tUnit = CUnit::h;
+                  tUnit = "h";
                   result = true;
                 }
               else if ((scale == 0) &&
                        areApproximatelyEqual(multiplier, 86400.0))
                 {
-                  tUnit = CUnit::d;
+                  tUnit = "d";
                   result = true;
                 }
               else
@@ -4040,7 +3973,7 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
               scale == 0)
             {
               result = true;
-              tUnit = CUnit::dimensionlessTime;
+              tUnit = "1";
             }
           else
             {
@@ -4064,11 +3997,11 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
  * Returns the copasi LengthUnit corresponding to the given SBML length
  *  UnitDefinition.
  */
-std::pair<CUnit::LengthUnit, bool>
+std::pair< std::string, bool >
 SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
 {
   bool result = false;
-  CUnit::LengthUnit lUnit = CUnit::m;
+  std::string lUnit = "m";
 
   if (uDef == NULL)
     {
@@ -4106,57 +4039,18 @@ SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
             }
 
           if (areApproximatelyEqual(multiplier, 1.0) &&
-              ((scale % 3) == 0 || scale == -1 || scale == -2) &&
-              (scale < 1) &&
-              (scale > -16))
+              ((scale % 3) == 0 || scale == -1 || scale == -2)
+              && (scale <= CBaseUnit::yotta)
+              && (scale >= CBaseUnit::yocto))
             {
-              switch (scale)
-                {
-                  case 0:
-                    lUnit = CUnit::m;
-                    result = true;
-                    break;
+              if ((scale % 3) == 0)
+                lUnit = CBaseUnit::prefixFromScale(scale) + "m";
+              else if (scale == -1)
+                lUnit = "dm";
+              else
+                lUnit = "cm";
 
-                  case - 1:
-                    lUnit = CUnit::dm;
-                    result = true;
-                    break;
-
-                  case - 2:
-                    lUnit = CUnit::cm;
-                    result = true;
-                    break;
-
-                  case - 3:
-                    lUnit = CUnit::mm;
-                    result = true;
-                    break;
-
-                  case - 6:
-                    lUnit = CUnit::microm;
-                    result = true;
-                    break;
-
-                  case - 9:
-                    lUnit = CUnit::nm;
-                    result = true;
-                    break;
-
-                  case - 12:
-                    lUnit = CUnit::pm;
-                    result = true;
-                    break;
-
-                  case - 15:
-                    lUnit = CUnit::fm;
-                    result = true;
-                    break;
-
-                  default:
-                    //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                    result = false;
-                    break;
-                }
+              result = true;
             }
           else
             {
@@ -4187,7 +4081,7 @@ SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
               scale == 0)
             {
               result = true;
-              lUnit = CUnit::dimensionlessLength;
+              lUnit = "1";
             }
           else
             {
@@ -4211,11 +4105,11 @@ SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
  * Returns the copasi AreaUnit corresponding to the given SBML area
  *  UnitDefinition.
  */
-std::pair<CUnit::AreaUnit, bool>
+std::pair<std:: string, bool >
 SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
 {
   bool result = false;
-  CUnit::AreaUnit aUnit = CUnit::m2;
+  std::string aUnit = "m^2";
 
   if (uDef == NULL)
     {
@@ -4253,57 +4147,18 @@ SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
             }
 
           if (areApproximatelyEqual(multiplier, 1.0) &&
-              ((scale % 3) == 0 || scale == -1 || scale == -2) &&
-              (scale < 1) &&
-              (scale > -16))
+              ((scale % 3) == 0 || scale == -1 || scale == -2)
+              && (scale <= CBaseUnit::yotta)
+              && (scale >= CBaseUnit::yocto))
             {
-              switch (scale)
-                {
-                  case 0:
-                    aUnit = CUnit::m2;
-                    result = true;
-                    break;
+              if ((scale % 3) == 0)
+                aUnit = CBaseUnit::prefixFromScale(scale) + "m\xc2\xb2";
+              else if (scale == -1)
+                aUnit = "dm\xc2\xb2";
+              else
+                aUnit = "cm\xc2\xb2";
 
-                  case - 1:
-                    aUnit = CUnit::dm2;
-                    result = true;
-                    break;
-
-                  case - 2:
-                    aUnit = CUnit::cm2;
-                    result = true;
-                    break;
-
-                  case - 3:
-                    aUnit = CUnit::mm2;
-                    result = true;
-                    break;
-
-                  case - 6:
-                    aUnit = CUnit::microm2;
-                    result = true;
-                    break;
-
-                  case - 9:
-                    aUnit = CUnit::nm2;
-                    result = true;
-                    break;
-
-                  case - 12:
-                    aUnit = CUnit::pm2;
-                    result = true;
-                    break;
-
-                  case - 15:
-                    aUnit = CUnit::fm2;
-                    result = true;
-                    break;
-
-                  default:
-                    //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                    result = false;
-                    break;
-                }
+              result = true;
             }
           else
             {
@@ -4334,7 +4189,7 @@ SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
               scale == 0)
             {
               result = true;
-              aUnit = CUnit::dimensionlessArea;
+              aUnit = "1";
             }
           else
             {
@@ -4358,13 +4213,13 @@ SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
  * Returns the copasi VolumeUnit corresponding to the given SBML Volume
  *  UnitDefinition.
  */
-std::pair<CUnit::VolumeUnit, bool>
+std::pair< std::string, bool >
 SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
 {
   // simplify the Unitdefiniton first if this normalizes
   // the scale and the multiplier
   bool result = false;
-  CUnit::VolumeUnit vUnit = CUnit::l;
+  std::string vUnit = "l";
 
   if (uDef == NULL)
     {
@@ -4403,46 +4258,11 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
 
           if (areApproximatelyEqual(multiplier, 1.0) &&
               ((scale % 3) == 0) &&
-              (scale < 1) &&
-              (scale > -16))
+              (scale <= CBaseUnit::yotta) &&
+              (scale >= CBaseUnit::yocto))
             {
-              switch (scale)
-                {
-                  case 0:
-                    vUnit = CUnit::l;
-                    result = true;
-                    break;
-
-                  case - 3:
-                    vUnit = CUnit::ml;
-                    result = true;
-                    break;
-
-                  case - 6:
-                    vUnit = CUnit::microl;
-                    result = true;
-                    break;
-
-                  case - 9:
-                    vUnit = CUnit::nl;
-                    result = true;
-                    break;
-
-                  case - 12:
-                    vUnit = CUnit::pl;
-                    result = true;
-                    break;
-
-                  case - 15:
-                    vUnit = CUnit::fl;
-                    result = true;
-                    break;
-
-                  default:
-                    //DebugFile << "Error. This value should never have been reached for the scale of the liter unit." << std::endl;
-                    result = false;
-                    break;
-                }
+              vUnit = CBaseUnit::prefixFromScale(scale) + "l";
+              result = true;
             }
           else
             {
@@ -4471,7 +4291,7 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
           if (areApproximatelyEqual(multiplier, 1.0) &&
               (scale == 0))
             {
-              vUnit = CUnit::m3;
+              vUnit = "m^3";
               result = true;
             }
           else
@@ -4482,46 +4302,12 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
               if (pLitreUnit != NULL &&
                   pLitreUnit->getExponent() == 1 &&
                   (pLitreUnit->getScale() % 3 == 0) &&
-                  (pLitreUnit->getScale() < 1) &&
-                  (pLitreUnit->getScale() > -16) &&
+                  (pLitreUnit->getScale() <= CBaseUnit::yotta) &&
+                  (pLitreUnit->getScale() >= CBaseUnit::yocto) &&
                   areApproximatelyEqual(pLitreUnit->getMultiplier(), 1.0))
                 {
-                  switch (pLitreUnit->getScale())
-                    {
-                      case 0:
-                        vUnit = CUnit::l;
-                        result = true;
-                        break;
-
-                      case - 3:
-                        vUnit = CUnit::ml;
-                        result = true;
-                        break;
-
-                      case - 6:
-                        vUnit = CUnit::microl;
-                        result = true;
-                        break;
-
-                      case - 9:
-                        vUnit = CUnit::nl;
-                        result = true;
-                        break;
-
-                      case - 12:
-                        vUnit = CUnit::pl;
-                        result = true;
-                        break;
-
-                      case - 15:
-                        vUnit = CUnit::fl;
-                        result = true;
-                        break;
-
-                      default:
-                        result = false;
-                        break;
-                    }
+                  vUnit = CBaseUnit::prefixFromScale(scale) + "l";
+                  result = true;
                 }
               else
                 {
@@ -4555,7 +4341,7 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
               scale == 0)
             {
               result = true;
-              vUnit = CUnit::dimensionlessVolume;
+              vUnit = "1";
             }
           else
             {
@@ -4941,7 +4727,9 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
       this->multiplySubstanceOnlySpeciesByVolume(pNode);
     }
 
-  if (!this->mSubstanceOnlySpecies.empty() && this->mpCopasiModel->getQuantityUnitEnum() != CUnit::number && pSBMLReaction == NULL)
+  if (!this->mSubstanceOnlySpecies.empty()
+      && this->mpCopasiModel->getQuantityUnit() != "#"
+      && pSBMLReaction == NULL)
     {
       this->replaceAmountReferences(pNode, pSBMLModel, this->mpCopasiModel->getQuantity2NumberFactor(), copasi2sbmlmap);
     }
@@ -7609,7 +7397,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                 }
               else
                 {
-                  std::pair<CUnit::VolumeUnit, bool> result = this->handleVolumeUnit(pUdef1);
+                  std::pair< std::string, bool > result = this->handleVolumeUnit(pUdef1);
 
                   if (result.second == false)
                     {
@@ -7684,7 +7472,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                 }
               else
                 {
-                  std::pair<CUnit::AreaUnit, bool> result = this->handleAreaUnit(pUdef1);
+                  std::pair< std::string, bool > result = this->handleAreaUnit(pUdef1);
 
                   if (result.second == false)
                     {
@@ -7758,7 +7546,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                 }
               else
                 {
-                  std::pair<CUnit::LengthUnit, bool> result = this->handleLengthUnit(pUdef1);
+                  std::pair< std::string, bool > result = this->handleLengthUnit(pUdef1);
 
                   if (result.second == false)
                     {
@@ -7869,7 +7657,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // try to set the default volume unit to the unit defined by lastUnit
       const UnitDefinition* pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastVolumeUnit, pSBMLModel);
       assert(pUdef != NULL);
-      std::pair<CUnit::VolumeUnit, bool> volume = this->handleVolumeUnit(pUdef);
+      std::pair< std::string, bool > volume = this->handleVolumeUnit(pUdef);
 
       if (volume.second == true)
         {
@@ -7891,7 +7679,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // try to set the default area unit to the unit defined by lastAreaUnit
       const UnitDefinition* pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastAreaUnit, pSBMLModel);
       assert(pUdef != NULL);
-      std::pair<CUnit::AreaUnit, bool> area = this->handleAreaUnit(pUdef);
+      std::pair< std::string, bool > area = this->handleAreaUnit(pUdef);
 
       if (area.second == true)
         {
@@ -7913,7 +7701,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // try to set the default length unit to the unit defined by lastLengthUnit
       const UnitDefinition* pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastLengthUnit, pSBMLModel);
       assert(pUdef != NULL);
-      std::pair<CUnit::LengthUnit, bool> length = this->handleLengthUnit(pUdef);
+      std::pair< std::string, bool > length = this->handleLengthUnit(pUdef);
 
       if (length.second == true)
         {
@@ -7949,7 +7737,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // check if the default units have been used for any of the compartments
       // if so, the models has to use the defaults, otherwise we can just
       // choose one
-      std::pair<CUnit::LengthUnit, bool> length = std::pair<CUnit::LengthUnit, bool>(CUnit::dimensionlessLength, false);
+      std::pair< std::string, bool > length = std::pair< std::string, bool >("1", false);
       const UnitDefinition* pUdef = NULL;
 
       if (defaultLengthUsed)
@@ -7982,7 +7770,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           pUdef = NULL;
         }
 
-      std::pair<CUnit::AreaUnit, bool> area = std::pair<CUnit::AreaUnit, bool>(CUnit::dimensionlessArea, false);
+      std::pair< std::string, bool > area = std::pair< std::string, bool >("1", false);
 
       if (defaultAreaUsed)
         {
@@ -8014,7 +7802,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
           pUdef = NULL;
         }
 
-      std::pair<CUnit::VolumeUnit, bool> volume = std::pair<CUnit::VolumeUnit, bool>(CUnit::dimensionlessVolume, false);
+      std::pair< std::string, bool > volume = std::pair< std::string, bool >("1", false);
 
       if (defaultVolumeUsed)
         {
@@ -8135,7 +7923,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
           else
             {
-              std::pair<CUnit::QuantityUnit, bool> result = this->handleSubstanceUnit(pUdef1);
+              std::pair< std::string, bool > result = this->handleSubstanceUnit(pUdef1);
 
               if (result.second == false)
                 {
@@ -8202,7 +7990,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
               else
                 {
-                  std::pair<CUnit::QuantityUnit, bool> result = this->handleSubstanceUnit(pUdef1);
+                  std::pair< std::string, bool > result = this->handleSubstanceUnit(pUdef1);
 
                   if (result.second == false)
                     {
@@ -8255,7 +8043,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                 }
               else
                 {
-                  std::pair<CUnit::TimeUnit, bool> result = this->handleTimeUnit(pUdef1);
+                  std::pair< std::string, bool > result = this->handleTimeUnit(pUdef1);
 
                   if (result.second == false)
                     {
@@ -8430,7 +8218,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
           else
             {
-              std::pair<CUnit::TimeUnit, bool> result = this->handleTimeUnit(pUdef1);
+              std::pair< std::string, bool > result = this->handleTimeUnit(pUdef1);
 
               if (result.second == false)
                 {
@@ -8480,7 +8268,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       // try to set the default time units
       UnitDefinition* pUdef = getSBMLUnitDefinitionForId(lastTimeUnits, pSBMLModel);
       assert(pUdef != NULL);
-      std::pair<CUnit::TimeUnit, bool> time = this->handleTimeUnit(pUdef);
+      std::pair< std::string, bool > time = this->handleTimeUnit(pUdef);
       delete pUdef;
 
       if (time.second == true)

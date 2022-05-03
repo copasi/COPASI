@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -55,9 +60,9 @@ int main()
   assert(CRootContainer::getDatamodelList()->size() == 1);
   CModel* pModel = pDataModel->getModel();
   assert(pModel != NULL);
-  pModel->setVolumeUnit(CUnit::fl);
-  pModel->setTimeUnit(CUnit::s);
-  pModel->setQuantityUnit(CUnit::fMol, CCore::Framework::ParticleNumbers);
+  pModel->setVolumeUnit("fl");
+  pModel->setTimeUnit("s");
+  pModel->setQuantityUnit("fmol", CCore::Framework::ParticleNumbers);
   CModelValue* pFixedModelValue = pModel->createModelValue("F");
   assert(pFixedModelValue != NULL);
   pFixedModelValue->setStatus(CModelEntity::Status::FIXED);
