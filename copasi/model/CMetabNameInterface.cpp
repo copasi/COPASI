@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -266,7 +266,7 @@ CMetabNameInterface::unQuote(const std::string & displayName)
     {
       std::string compartment = Names.second;
 
-      if (compartment.find(' '))
+      if (compartment.find(' ') != std::string::npos)
         compartment = "\"" + compartment + "\"";
 
       Name += "{" + compartment + "}";
