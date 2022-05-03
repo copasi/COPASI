@@ -169,11 +169,6 @@ typedef std::vector<CDataObject*> ObjectStdVector;
      return self->setQuantityUnit(name, CCore::Framework::Concentration);
    }
    
-   bool setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
-   {
-     return self->setQuantityUnit(unitEnum, CCore::Framework::Concentration);
-   }
-   
    /**
     *  Get the number of compartments 
     *  @return C_INT32 getCompartments().size()
