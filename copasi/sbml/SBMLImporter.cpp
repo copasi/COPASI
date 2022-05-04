@@ -3451,7 +3451,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_FATAL:
 
-              // treat unknown as fatal
+                // treat unknown as fatal
               default:
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
@@ -3804,7 +3804,7 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
                 }
             }
 
-          if ((u->getExponent() == 1) &&
+          if (((u->getExponent() == 1)  || (u->getExponent() == 0))  &&
               areApproximatelyEqual(multiplier, 1.0) &&
               scale == 0)
             {
