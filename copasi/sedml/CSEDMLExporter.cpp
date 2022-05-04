@@ -788,7 +788,6 @@ CSEDMLExporter::exportReport(const CReportDefinition * def)
       if (object == NULL)
         continue;
 
-      std::string xAxis = SEDMLUtils::getSbmlId(*object);
       auto info = VariableInfo(object);
 
       if (!info.isValid())
@@ -820,10 +819,10 @@ CSEDMLExporter::exportReport(const CReportDefinition * def)
           if (headerObj != NULL)
             pDS->setLabel(headerObj->getObjectDisplayName());
           else
-            pDS->setLabel(xAxis);
+            pDS->setLabel(info.getName());
         }
       else
-        pDS->setLabel(xAxis);
+        pDS->setLabel(info.getName());
 
       pDS->setDataReference(pPDGen->getId());
     }
