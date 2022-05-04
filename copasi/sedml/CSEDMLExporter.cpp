@@ -287,7 +287,7 @@ bool CSEDMLExporter::exportNthScanItem(CScanProblem * pProblem,
           std::vector< std::string > elems;
           ResultParser::split(values, std::string(",; |\n\t\r"), elems);
 
-          for (std::string & number : elems)
+for (std::string & number : elems)
             {
               range->addValue(ResultParser::saveToDouble(number));
             }
@@ -586,7 +586,7 @@ CSEDMLExporter::exportAlgorithm(SedAlgorithm * alg,
         break;
     }
 
-  for (const auto & entry : SEDMLUtils::PARAMETER_KISAO_MAP)
+for (const auto & entry : SEDMLUtils::PARAMETER_KISAO_MAP)
     {
       const CCopasiParameter * pParameter = pMethod->getParameter(entry.second);
 
@@ -920,7 +920,7 @@ void CSEDMLExporter::exportPlotItem(const CPlotItem * pPlotItem, size_t i, size_
   // first resolve all elements needed
   std::vector< std::pair< const CDataObject *, VariableInfo > > resolvedElements;
 
-  for (auto & channel : pPlotItem->getChannels())
+for (auto & channel : pPlotItem->getChannels())
     {
       const CDataObject * object = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(channel));
 
@@ -1070,6 +1070,7 @@ std::string CSEDMLExporter::exportStyleForItem(const CPlotItem * pPlotItem)
   auto color = pPlotItem->getValue< std::string >("Color");
   auto rgba = SEDMLUtils::argbToRgba(color, false);
   bool haveColor = !color.empty() && color != "auto";
+  bool haveSymbols = lineType == CPlotItem::LineType::LinesAndSymbols || lineType == CPlotItem::LineType::Symbols;
 
   auto line = style->createLineStyle();
 
@@ -1092,14 +1093,19 @@ std::string CSEDMLExporter::exportStyleForItem(const CPlotItem * pPlotItem)
         line->setColor(rgba);
     }
 
-  if (lineType == CPlotItem::LineType::LinesAndSymbols || lineType == CPlotItem::LineType::Symbols)
+  auto symbol = style->createMarkerStyle();
+
+  if (haveSymbols)
     {
-      auto symbol = style->createMarkerStyle();
       symbol->setType((MarkerType_t) SEDMLUtils::symbolToSed((int) symbolType));
       symbol->setSize(8);
 
       if (haveColor)
         symbol->setLineColor(rgba);
+    }
+  else
+    {
+      symbol->setType(SEDML_MARKERTYPE_NONE);
     }
 
   if (pPlotItem->getType() == CPlotItem::bandedGraph && haveColor)
