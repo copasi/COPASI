@@ -492,7 +492,18 @@ CSEDMLExporter::createTimeCourseTask()
 
   double initialTime = mpDataModel->getModel()->getInitialTime();
   mpTimecourse->setInitialTime(initialTime);
-  double outputStartTime = initialTime + tProblem->getOutputStartTime();
+  bool Delayed;
+
+  if (tProblem->getStepSize() > 0.0)
+    Delayed = (tProblem->getOutputStartTime() - initialTime) > std::numeric_limits< C_FLOAT64 >::min();
+  else
+    Delayed = (initialTime - tProblem->getOutputStartTime()) > std::numeric_limits< C_FLOAT64 >::min();
+
+  double outputStartTime = initialTime;
+
+  if (Delayed)
+    outputStartTime += tProblem->getOutputStartTime();
+
   double stepSize = tProblem->getStepSize();
   int stepNumber = (int)tProblem->getStepNumber();
   mpTimecourse->setOutputStartTime(outputStartTime);
