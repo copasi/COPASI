@@ -854,7 +854,7 @@ VariableInfo::VariableInfo(const CDataObject * pObject)
         term = SEDML_KISAO_RATE;
     }
 
-  mIsValid = true;
+  mIsValid = (!xpath.empty()) || (!term.empty()) || (!symbol.empty());
 }
 
 SedVariable*
