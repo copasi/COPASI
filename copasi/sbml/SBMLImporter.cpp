@@ -3451,7 +3451,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_FATAL:
 
-                // treat unknown as fatal
+              // treat unknown as fatal
               default:
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
@@ -4289,32 +4289,18 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
             }
 
           if (areApproximatelyEqual(multiplier, 1.0) &&
-              (scale == 0))
+              ((scale % 3) == 0 || scale == -1 || scale == -2)
+              && (scale <= CBaseUnit::yotta)
+              && (scale >= CBaseUnit::yocto))
             {
-              vUnit = "m^3";
-              result = true;
-            }
-          else
-            {
-              // try to convert to liter
-              Unit* pLitreUnit = convertSBMLCubicmetresToLitres(u);
-
-              if (pLitreUnit != NULL &&
-                  pLitreUnit->getExponent() == 1 &&
-                  (pLitreUnit->getScale() % 3 == 0) &&
-                  (pLitreUnit->getScale() <= CBaseUnit::yotta) &&
-                  (pLitreUnit->getScale() >= CBaseUnit::yocto) &&
-                  areApproximatelyEqual(pLitreUnit->getMultiplier(), 1.0))
-                {
-                  vUnit = CBaseUnit::prefixFromScale(scale) + "l";
-                  result = true;
-                }
+              if ((scale % 3) == 0)
+                vUnit = CBaseUnit::prefixFromScale(scale) + "m\xc2\xb3";
+              else if (scale == -1)
+                vUnit = "dm\xc2\xb3";
               else
-                {
-                  result = false;
-                }
+                vUnit = "cm\xc2\xb3";
 
-              delete pLitreUnit;
+              result = true;
             }
         }
       else if ((u->getKind() == UNIT_KIND_DIMENSIONLESS))
@@ -8573,7 +8559,7 @@ Unit* SBMLImporter::convertSBMLCubicmetresToLitres(const Unit* pU)
           Unit::removeScale(pResult);
           pResult->setExponent(pResult->getExponent() / 3);
           pResult->setKind(UNIT_KIND_LITRE);
-          pResult->setMultiplier(pow(pResult->getMultiplier(), 3));
+          pResult->setMultiplier(pow(pResult->getMultiplier(), 3) * 1000.0);
           normalizeSBMLUnit(pResult);
         }
     }
