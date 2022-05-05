@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -225,6 +225,7 @@ bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessRe
                                          URI == "urn:miriam:doi" ||
                                          URI == "urn:miriam:pubmed" ||
                                          URI == "urn:miriam:isbn");
+      pMIRIAMResource->setMIRIAMNamespaceEmbeddedInPattern(dataType.getAttrValue("namespaceEmbeddedInPattern") == "True");
 
       pTmpCpyCMIRIAMResources->addParameter(pMIRIAMResource);
 
@@ -326,8 +327,9 @@ void CMIRIAMResources::createURIMap()
   for (; it != end; ++it)
     {
       pResource = static_cast< CMIRIAMResource * >(*it);
-      mURI2Resource[pResource->getMIRIAMURI() + ":"] = Index;
-      mURI2Resource[pResource->getIdentifiersOrgURL() + "/"] = Index;
+      mURI2Resource[pResource->getMIRIAMURI() + ":" ] = Index;
+      mURI2Resource[pResource->getIdentifiersOrgURL(true) + ":" ] = Index;
+      mURI2Resource[pResource->getIdentifiersOrgURL(false) + "/" ] = Index;
 
       const CCopasiParameterGroup * pDeprecated = &pResource->getMIRIAMDeprecated();
       CCopasiParameterGroup::index_iterator itDeprecated = pDeprecated->beginIndex();
@@ -369,20 +371,19 @@ size_t CMIRIAMResources::getMIRIAMResourceIndex(const std::string & uri) const
   else
     URI = uri;
 
-  std::map< std::string, size_t >::const_iterator it = mURI2Resource.lower_bound(URI);
-  std::map< std::string, size_t >::const_iterator end = mURI2Resource.upper_bound(URI);
+  std::pair< std::map< std::string, size_t >::const_iterator, std::map< std::string, size_t >::const_iterator > range = mURI2Resource.equal_range(URI);
 
-  if (it == mURI2Resource.begin())
+  if (range.first == mURI2Resource.begin())
     return index;
 
-  it--;
+  range.first--;
 
-  for (; it != end; ++it)
+  for (; range.first != range.second; ++range.first)
     {
       // Check whether the URI base of the candidate matches.
-      if (URI.compare(0, it->first.length(), it->first) == 0)
+      if (URI.compare(0, range.first->first.length(), range.first->first) == 0)
         {
-          index =  it->second;
+          index =  range.first->second;
           break;
         }
     }
@@ -431,31 +432,40 @@ CMIRIAMResources::~CMIRIAMResources()
 
 /////////////////////////////////////////////////////////////////////////////////////
 CMIRIAMResource::CMIRIAMResource(const std::string & name,
-                                 const CDataContainer * pParent) :
-  CCopasiParameterGroup(name, pParent),
-  mpDisplayName(NULL),
-  mpURI(NULL),
-  mpCitation(NULL),
-  mpDeprecated(NULL)
-{initializeParameter();}
+                                 const CDataContainer * pParent)
+  : CCopasiParameterGroup(name, pParent)
+  , mpDisplayName(NULL)
+  , mpURI(NULL)
+  , mpCitation(NULL)
+  , mpDeprecated(NULL)
+  , mpNamespaceEmbeddedInPattern(NULL)
+{
+  initializeParameter();
+}
 
 CMIRIAMResource::CMIRIAMResource(const CMIRIAMResource & src,
-                                 const CDataContainer * pParent):
-  CCopasiParameterGroup(src, pParent),
-  mpDisplayName(NULL),
-  mpURI(NULL),
-  mpCitation(NULL),
-  mpDeprecated(NULL)
-{initializeParameter();}
+                                 const CDataContainer * pParent)
+  : CCopasiParameterGroup(src, pParent)
+  , mpDisplayName(NULL)
+  , mpURI(NULL)
+  , mpCitation(NULL)
+  , mpDeprecated(NULL)
+  , mpNamespaceEmbeddedInPattern(NULL)
+{
+  initializeParameter();
+}
 
 CMIRIAMResource::CMIRIAMResource(const CCopasiParameterGroup & group,
-                                 const CDataContainer * pParent):
-  CCopasiParameterGroup(group, pParent),
-  mpDisplayName(NULL),
-  mpURI(NULL),
-  mpCitation(NULL),
-  mpDeprecated(NULL)
-{initializeParameter();}
+                                 const CDataContainer * pParent)
+  : CCopasiParameterGroup(group, pParent)
+  , mpDisplayName(NULL)
+  , mpURI(NULL)
+  , mpCitation(NULL)
+  , mpDeprecated(NULL)
+  , mpNamespaceEmbeddedInPattern(NULL)
+{
+  initializeParameter();
+}
 
 void CMIRIAMResource::initializeParameter()
 {
@@ -463,6 +473,7 @@ void CMIRIAMResource::initializeParameter()
   mpURI = assertParameter("URI", CCopasiParameter::Type::STRING, (std::string) "");
   mpPattern = assertParameter("Pattern", CCopasiParameter::Type::STRING, (std::string) "");
   mpCitation = assertParameter("Citation", CCopasiParameter::Type::BOOL, false);
+  mpNamespaceEmbeddedInPattern = assertParameter("NamespaceEmbeddedInPattern", CCopasiParameter::Type::BOOL, false);
   mpDeprecated = assertGroup("Deprecated");
 }
 
@@ -514,9 +525,24 @@ const std::string & CMIRIAMResource::getMIRIAMURI() const
   return *mpURI;
 }
 
-std::string CMIRIAMResource::getIdentifiersOrgURL() const
+std::string CMIRIAMResource::getIdentifiersOrgURL(const bool & compact) const
 {
-  return "http://identifiers.org/" + mpURI->substr(11);
+  if (!compact
+      || !*mpNamespaceEmbeddedInPattern)
+    return "http://identifiers.org/" + mpURI->substr(11);
+
+  return "http://identifiers.org/" + extractNamespaceFromPattern();
+}
+
+std::string CMIRIAMResource::extractNamespaceFromPattern() const
+{
+  if (*mpNamespaceEmbeddedInPattern)
+    {
+      std::string::size_type start = mpPattern->find('^') + 1;
+      return mpPattern->substr(start, mpPattern->find(':', start) - start);
+    }
+
+  return "";
 }
 
 void CMIRIAMResource::setMIRIAMPattern(const std::string & pattern)
@@ -539,6 +565,16 @@ const bool & CMIRIAMResource::getMIRIAMCitation() const
   return *mpCitation;
 }
 
+void CMIRIAMResource::setMIRIAMNamespaceEmbeddedInPattern(const bool & namespaceEmbeddedInPattern)
+{
+  *mpNamespaceEmbeddedInPattern = namespaceEmbeddedInPattern;
+}
+
+const bool & CMIRIAMResource::getMIRIAMNamespaceEmbeddedInPattern() const
+{
+  return *mpNamespaceEmbeddedInPattern;
+}
+
 void CMIRIAMResource::addDeprecatedURL(const std::string & URL)
 {
   mpDeprecated->addParameter("URL", CCopasiParameter::Type::STRING, URL);
@@ -547,4 +583,81 @@ void CMIRIAMResource::addDeprecatedURL(const std::string & URL)
 const CCopasiParameterGroup & CMIRIAMResource::getMIRIAMDeprecated() const
 {
   return *mpDeprecated;
+}
+
+std::string CMIRIAMResource::extractId(const std::string & uri) const
+{
+  std::string Id;
+  std::string URI;
+
+  if (uri.length() > 8 && uri.substr(0, 8) == "https://")
+    URI = "http://" + uri.substr(8);
+  else
+    URI = uri;
+
+  int offset;
+  const std::string & Tmp = getMIRIAMURI();
+
+  if (URI.substr(0, Tmp.length()) == Tmp &&
+      URI.length() > Tmp.length())
+    {
+      offset = (Tmp.at(Tmp.length() - 1) == '/') ? 0 : 1;
+      Id = URI.substr(Tmp.length() + offset);
+    }
+
+  if (Id == ""
+      && *mpNamespaceEmbeddedInPattern)
+    {
+      std::string Tmp = getIdentifiersOrgURL(true);
+
+      if (URI.substr(0, Tmp.length()) == Tmp &&
+          URI.length() > Tmp.length())
+        {
+          offset = (Tmp[Tmp.length() - 1] == '/') ? 0 : 1;
+          Id = extractNamespaceFromPattern() + ":" + URI.substr(Tmp.length() + offset);
+        }
+    }
+
+  if (Id == "")
+    {
+      std::string Tmp = getIdentifiersOrgURL(false);
+
+      if (URI.substr(0, Tmp.length()) == Tmp &&
+          URI.length() > Tmp.length())
+        {
+          offset = (Tmp[Tmp.length() - 1] == '/') ? 0 : 1;
+          Id = URI.substr(Tmp.length() + offset);
+        }
+    }
+
+  if (Id == "")
+    {
+      // We need to check for deprecated URIs
+      const CCopasiParameterGroup * pDeprecated = &getMIRIAMDeprecated();
+      CCopasiParameterGroup::index_iterator itDeprecated = pDeprecated->beginIndex();
+      CCopasiParameterGroup::index_iterator endDeprecated = pDeprecated->endIndex();
+
+      for (; itDeprecated != endDeprecated; ++itDeprecated)
+        {
+          const std::string & Tmp = (*itDeprecated)->getValue< std::string >();
+
+          if (URI.substr(0, Tmp.length()) == Tmp &&
+              URI.length() > Tmp.length())
+            {
+              offset = (Tmp[Tmp.length() - 1] == '/') ? 0 : 1;
+              Id = URI.substr(Tmp.length() + offset);
+              break;
+            }
+        }
+    }
+
+  return Id;
+}
+
+std::string CMIRIAMResource::createIdentifiersOrgURL(const std::string id) const
+{
+  if (*mpNamespaceEmbeddedInPattern)
+    return "http://identifiers.org/" + id;
+
+  return getIdentifiersOrgURL(false) + "/" + id;
 }
