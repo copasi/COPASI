@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,17 +68,19 @@ TEST_CASE("exporting sedml file with non-zero initial time", "[copasi,sedml]")
 
 TEST_CASE("convert sedml types and colors", "[copasi,sedml]")
 {
-  REQUIRE(SEDMLUtils::argbToRgba("112233") == "112233");
+  REQUIRE(SEDMLUtils::argbToRgba("112233") == "#112233");
   REQUIRE(SEDMLUtils::argbToRgba("#F0C800") == "#F0C800");
   REQUIRE(SEDMLUtils::argbToRgba("#FFF0C800") == "#F0C800FF");
   REQUIRE(SEDMLUtils::argbToRgba("FFF0C800") == "#F0C800FF");
   REQUIRE(SEDMLUtils::argbToRgba("FFF0C800", false) == "F0C800FF");
+  REQUIRE(SEDMLUtils::argbToRgba("#FF0000", false) == "FF0000");
 
-  REQUIRE(SEDMLUtils::rgbaToArgb("112233") == "112233");
+  REQUIRE(SEDMLUtils::rgbaToArgb("112233") == "#112233");
   REQUIRE(SEDMLUtils::rgbaToArgb("#F0C800") == "#F0C800");
   REQUIRE(SEDMLUtils::rgbaToArgb("#F0C800FF") == "#FFF0C800");
   REQUIRE(SEDMLUtils::rgbaToArgb("F0C800FF") == "#FFF0C800");
   REQUIRE(SEDMLUtils::rgbaToArgb("F0C800FF", false) == "FFF0C800");
+  REQUIRE(SEDMLUtils::rgbaToArgb("#FF0000", false) == "FF0000");
 
   REQUIRE(SEDMLUtils::lineTypeFromSed(SEDML_LINETYPE_SOLID) == (int) CPlotItem::LineStyle::Solid);
   REQUIRE(SEDMLUtils::lineTypeFromSed(SEDML_LINETYPE_DASH) == (int) CPlotItem::LineStyle::Dashed);
