@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -127,6 +127,7 @@ bool CCrossSectionTask::initialize(const OutputFlag & of,
     return false;
 
   mpCrossSectionProblem = dynamic_cast<CCrossSectionProblem *>(mpProblem);
+
   if (!mpCrossSectionProblem)
     return false;
 
@@ -181,6 +182,7 @@ void CCrossSectionTask::removeEvent()
 bool CCrossSectionTask::process(const bool & useInitialValues)
 {
   mpCrossSectionProblem = dynamic_cast< CCrossSectionProblem * >(mpProblem);
+
   if (!mpCrossSectionProblem)
     return false;
 

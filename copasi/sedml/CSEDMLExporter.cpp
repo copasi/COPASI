@@ -70,7 +70,6 @@
     element->setId(pVarId);\
   }
 
-
 CSEDMLExporter::CSEDMLExporter()
   : mpSEDMLDocument(NULL)
   , mSEDMLLevel(1)
@@ -98,7 +97,6 @@ CSEDMLExporter::~CSEDMLExporter()
   pdelete(mpSBMLNamespaces);
 }
 
-
 std::string CSEDMLExporter::exportModelAndTasksToString(CDataModel& dataModel,
     const std::string &modelLocation,
     unsigned int sedmlLevel,
@@ -110,7 +108,6 @@ std::string CSEDMLExporter::exportModelAndTasksToString(CDataModel& dataModel,
 
   return writeSedMLToString();
 }
-
 
 void CSEDMLExporter::setLevelAndVersion(unsigned int sedmlLevel, unsigned int sedmlVersion)
 {
@@ -178,7 +175,6 @@ CSEDMLExporter::exportModelAndTasks(
 
   std::string str = exportModelAndTasksToString(dataModel, sedmlModelSource, sedmlLevel, sedmlVersion);
 
-
   if (!str.empty())
     {
       /* check if the file already exists.
@@ -226,7 +222,6 @@ CSEDMLExporter::createSEDMLDocument(CDataModel& dataModel, std::string modelRef)
 
   return mpSEDMLDocument;
 }
-
 
 void CSEDMLExporter::clearMaps()
 {
@@ -346,24 +341,20 @@ for (std::string & number : elems)
   return false;
 }
 
-
 bool CSEDMLExporter::getExportExecutableTasksOnly() const
 {
   return mExportExecutableTasksOnly;
 }
-
 
 void CSEDMLExporter::setExportExecutableTasksOnly(bool val)
 {
   mExportExecutableTasksOnly = val;
 }
 
-
 bool CSEDMLExporter::getExportActivePlotsOnly() const
 {
   return mExportActivePlotsOnly;
 }
-
 
 void CSEDMLExporter::setExportActivePlotsOnly(bool val)
 {
@@ -375,12 +366,10 @@ bool CSEDMLExporter::getExportSpecificPlots() const
   return mExportSpecificPlots;
 }
 
-
 void CSEDMLExporter::setExportSpecificPlots(bool val)
 {
   mExportSpecificPlots = val;
 }
-
 
 const std::string & CSEDMLExporter::getModelId() const
 {
@@ -503,7 +492,18 @@ CSEDMLExporter::createTimeCourseTask()
 
   double initialTime = mpDataModel->getModel()->getInitialTime();
   mpTimecourse->setInitialTime(initialTime);
-  double outputStartTime = initialTime + tProblem->getOutputStartTime();
+  bool Delayed;
+
+  if (tProblem->getStepSize() > 0.0)
+    Delayed = (tProblem->getOutputStartTime() - initialTime) > std::numeric_limits< C_FLOAT64 >::min();
+  else
+    Delayed = (initialTime - tProblem->getOutputStartTime()) > std::numeric_limits< C_FLOAT64 >::min();
+
+  double outputStartTime = initialTime;
+
+  if (Delayed)
+    outputStartTime += tProblem->getOutputStartTime();
+
   double stepSize = tProblem->getStepSize();
   int stepNumber = (int)tProblem->getStepNumber();
   mpTimecourse->setOutputStartTime(outputStartTime);
@@ -535,7 +535,6 @@ CSEDMLExporter::createTimeCourseTask()
 
   return taskId;
 }
-
 
 void
 CSEDMLExporter::exportAlgorithm(SedAlgorithm * alg,
@@ -697,7 +696,6 @@ void CSEDMLExporter::setSBMLNamespaces(const XMLNamespaces & sbmlns)
   mpSBMLNamespaces = new XMLNamespaces(sbmlns);
 }
 
-
 SedDataGenerator *
 CSEDMLExporter::createDataGenerator(
   const VariableInfo& info,
@@ -727,7 +725,6 @@ CSEDMLExporter::createDataGenerator(
 
   return pPDGen;
 }
-
 
 std::string
 CSEDMLExporter::getParameterValueAsString(const CCopasiParameter * pParameter)
@@ -769,7 +766,6 @@ CSEDMLExporter::getParameterValueAsString(const CCopasiParameter * pParameter)
   return str.str();
 }
 
-
 void
 CSEDMLExporter::exportReport(const CReportDefinition * def)
 {
@@ -803,7 +799,6 @@ CSEDMLExporter::exportReport(const CReportDefinition * def)
       if (object == NULL)
         continue;
 
-      std::string xAxis = SEDMLUtils::getSbmlId(*object);
       auto info = VariableInfo(object);
 
       if (!info.isValid())
@@ -835,14 +830,13 @@ CSEDMLExporter::exportReport(const CReportDefinition * def)
           if (headerObj != NULL)
             pDS->setLabel(headerObj->getObjectDisplayName());
           else
-            pDS->setLabel(xAxis);
+            pDS->setLabel(info.getName());
         }
       else
-        pDS->setLabel(xAxis);
+        pDS->setLabel(info.getName());
 
       pDS->setDataReference(pPDGen->getId());
     }
-
 }
 
 /**
@@ -887,7 +881,6 @@ CSEDMLExporter::createDataGenerators(std::string & taskId,
     }
 }
 
-
 void
 CSEDMLExporter::exportNthPlot(const CPlotSpecification * pPlot,
                               size_t i)
@@ -927,9 +920,7 @@ CSEDMLExporter::exportNthPlot(const CPlotSpecification * pPlot,
       delete mpSEDMLDocument->removeOutput(id);
       mpCurrentPlot3D->setId(id);
     }
-
 }
-
 
 void CSEDMLExporter::exportPlotItem(const CPlotItem * pPlotItem, size_t i, size_t j)
 {
@@ -1089,6 +1080,7 @@ std::string CSEDMLExporter::exportStyleForItem(const CPlotItem * pPlotItem)
   auto color = pPlotItem->getValue< std::string >("Color");
   auto rgba = SEDMLUtils::argbToRgba(color, false);
   bool haveColor = !color.empty() && color != "auto";
+  bool haveSymbols = lineType == CPlotItem::LineType::LinesAndSymbols || lineType == CPlotItem::LineType::Symbols;
 
   auto line = style->createLineStyle();
 
@@ -1111,16 +1103,20 @@ std::string CSEDMLExporter::exportStyleForItem(const CPlotItem * pPlotItem)
         line->setColor(rgba);
     }
 
-  if (lineType == CPlotItem::LineType::LinesAndSymbols || lineType == CPlotItem::LineType::Symbols)
+  auto symbol = style->createMarkerStyle();
+
+  if (haveSymbols)
     {
-      auto symbol = style->createMarkerStyle();
       symbol->setType((MarkerType_t) SEDMLUtils::symbolToSed((int) symbolType));
       symbol->setSize(8);
 
       if (haveColor)
         symbol->setLineColor(rgba);
     }
-
+  else
+    {
+      symbol->setType(SEDML_MARKERTYPE_NONE);
+    }
 
   if (pPlotItem->getType() == CPlotItem::bandedGraph && haveColor)
     {
@@ -1221,5 +1217,4 @@ bool CSEDMLExporter::PlotItemStyleComparer::operator()(const CPlotItem* lhs, con
       rhs->getValue< unsigned C_INT32 >("Line subtype"),
       rhs->getValue< std::string >("Color")
     );
-
 }

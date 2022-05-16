@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -592,7 +592,7 @@ std::pair< std::string, std::string > CChemEqInterface::displayNameToNamePair(CF
   size_t Index = 0;
 
   for (; it != end; ++it, ++Index)
-    if (*it == displayName)
+    if (*it == displayName || *it == CMetabNameInterface::unQuote(displayName))
       {
         return std::make_pair(getListOfSpecies(role)[Index], getListOfCompartments(role)[Index]);
       }

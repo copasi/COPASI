@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -34,16 +34,11 @@ if (NOT BUILD_GUI)
   message(FATAL_ERROR "ViewCurrentUI requires a UI build. Please toggle BUILD_GUI." )
 endif()
 
-include_directories(${COPASI_INCLUDE_DIRS})
 
 SET(HEADERS ${HEADERS} worker.h arguments.h)
 qt4_wrap_cpp(MOC_HEADERS ${HEADERS})
 
 set(SOURCES ${SOURCES} ${MOC_HEADERS} main.cpp worker.cpp arguments.cpp)
-
-if (ENABLE_SBW_INTEGRATION)
-include_directories(${SBW_INCLUDE_DIR})
-endif()
 
 set(COPASI_UI_FLAGS)
 if(WIN32 AND NOT CYGWIN)

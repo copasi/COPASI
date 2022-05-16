@@ -66,20 +66,21 @@ TEST_CASE("exporting sedml file with non-zero initial time", "[copasi,sedml]")
   CRootContainer::removeDatamodel(dm);
 }
 
-
 TEST_CASE("convert sedml types and colors", "[copasi,sedml]")
 {
-  REQUIRE(SEDMLUtils::argbToRgba("112233") == "112233");
+  REQUIRE(SEDMLUtils::argbToRgba("112233") == "#112233");
   REQUIRE(SEDMLUtils::argbToRgba("#F0C800") == "#F0C800");
   REQUIRE(SEDMLUtils::argbToRgba("#FFF0C800") == "#F0C800FF");
   REQUIRE(SEDMLUtils::argbToRgba("FFF0C800") == "#F0C800FF");
   REQUIRE(SEDMLUtils::argbToRgba("FFF0C800", false) == "F0C800FF");
+  REQUIRE(SEDMLUtils::argbToRgba("#FF0000", false) == "FF0000");
 
-  REQUIRE(SEDMLUtils::rgbaToArgb("112233") == "112233");
+  REQUIRE(SEDMLUtils::rgbaToArgb("112233") == "#112233");
   REQUIRE(SEDMLUtils::rgbaToArgb("#F0C800") == "#F0C800");
   REQUIRE(SEDMLUtils::rgbaToArgb("#F0C800FF") == "#FFF0C800");
   REQUIRE(SEDMLUtils::rgbaToArgb("F0C800FF") == "#FFF0C800");
   REQUIRE(SEDMLUtils::rgbaToArgb("F0C800FF", false) == "FFF0C800");
+  REQUIRE(SEDMLUtils::rgbaToArgb("#FF0000", false) == "FF0000");
 
   REQUIRE(SEDMLUtils::lineTypeFromSed(SEDML_LINETYPE_SOLID) == (int) CPlotItem::LineStyle::Solid);
   REQUIRE(SEDMLUtils::lineTypeFromSed(SEDML_LINETYPE_DASH) == (int) CPlotItem::LineStyle::Dashed);
@@ -98,7 +99,6 @@ TEST_CASE("convert sedml types and colors", "[copasi,sedml]")
   REQUIRE(SEDMLUtils::symbolToSed((int) CPlotItem::SymbolType::SmallCross) == SEDML_MARKERTYPE_PLUS);
   REQUIRE(SEDMLUtils::symbolToSed((int) CPlotItem::SymbolType::Plus) == SEDML_MARKERTYPE_PLUS);
 }
-
 
 TEST_CASE("importing new curves and plots", "[copasi,sedml]")
 {
@@ -126,7 +126,6 @@ TEST_CASE("importing new curves and plots", "[copasi,sedml]")
 
   CRootContainer::removeDatamodel(dm);
 }
-
 
 TEST_CASE("importing variables with terms", "[copasi,sedml]")
 {
@@ -161,8 +160,6 @@ TEST_CASE("export nested scan", "[copasi,sedml]")
 
   CRootContainer::removeDatamodel(dm);
 }
-
-
 
 TEST_CASE("Export different plot styles", "[copasi,sedml]")
 {

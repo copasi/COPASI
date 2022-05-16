@@ -85,7 +85,6 @@ public:
    */
   static ContentType contentType(std::istream & content);
 
-
   class CContent
   {
   public:

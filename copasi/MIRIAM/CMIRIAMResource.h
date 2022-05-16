@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -108,9 +108,17 @@ public:
 
   /**
    * Retrieve the identifiers.org URL of the MIRIAM Resource.
+   * @param const bool & compact
    * @return std::string URL
    */
-  std::string getIdentifiersOrgURL() const;
+  std::string getIdentifiersOrgURL(const bool & compact) const;
+
+  /**
+   * Create the URL for the provided Id
+   * @param const std::string id
+   * @return std::string IdentifiersOrgURL
+   */
+  std::string  createIdentifiersOrgURL(const std::string id) const;
 
   /**
    * Set the Pattern of the MIRIAM Resource.
@@ -137,6 +145,18 @@ public:
   const bool & getMIRIAMCitation() const;
 
   /**
+   * Set whether the namespace is embedded in the pattern.
+   * @param const bool & isNamespaceEmbeddedInPattern
+   */
+  void setMIRIAMNamespaceEmbeddedInPattern(const bool & isNamespaceEmbeddedInPattern);
+
+  /**
+   * Retrieve whether the resource can be used as reference.
+   * @return const bool & isCitation
+   */
+  const bool & getMIRIAMNamespaceEmbeddedInPattern() const;
+
+  /**
    * Add a deprecated URL to the MIRIAM Resource
    * @param const std::string & URL
    */
@@ -148,12 +168,25 @@ public:
    */
   const CCopasiParameterGroup & getMIRIAMDeprecated() const;
 
+  /**
+   * Extract the ID from the given URI
+   * @param const std::string & uri
+   * @return std::string ID
+   */
+  std::string extractId(const std::string & uri) const;
+
 private:
   /**
    * Allocates all group parameters and assures that they are
    * properly initialized.
    */
   void initializeParameter();
+
+  /**
+   * Extract the embedded namespace from the pattern
+   * @return std::string namespace
+   */
+  std::string extractNamespaceFromPattern() const;
 
   //Attributes
   /**
@@ -175,6 +208,11 @@ private:
    * A pointer to a bool indication the the resource an be used as reference
    */
   bool * mpCitation;
+
+  /**
+   * A pointer to a bool indication the the resource an be used as reference
+   */
+  bool * mpNamespaceEmbeddedInPattern;
 
   /**
    * A parameter group holding all deprecated URIs

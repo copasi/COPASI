@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -35,15 +35,8 @@ endif(POLICY CMP0048)
 
 project (CopasiUI VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 
-include_directories(${COPASI_INCLUDE_DIRS})
 
 set(SOURCES ${SOURCES} main.cpp)
-
-if (ENABLE_SBW_INTEGRATION)
-include_directories(${SBW_INCLUDE_DIR})
-endif()
-
-include_directories(${COPASI_INCLUDE_DIRS})
 
 set(COPASI_UI_FLAGS)
 if(WIN32 AND NOT CYGWIN)
@@ -106,5 +99,6 @@ install(CODE "
 install(TARGETS CopasiUI DESTINATION .)
 endif()
 
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS ON)
 include(InstallRequiredSystemLibraries)
 

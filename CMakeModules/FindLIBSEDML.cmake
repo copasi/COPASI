@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -33,9 +33,12 @@ else()
   set(LIBSEDML_LIBRARY_NAME libsedml)
 endif()
 
-message (STATUS "Looking for ${LIBSEDML_LIBRARY_NAME}")
+message (VERBOSE "Looking for ${LIBSEDML_LIBRARY_NAME}")
 
 find_package(${LIBSEDML_LIBRARY_NAME} CONFIG QUIET)
+
+string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
+set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
 
 if (NOT ${LIBSEDML_LIBRARY_NAME}_FOUND)
   find_package(${LIBSEDML_LIBRARY_NAME} CONFIG QUIET
@@ -44,7 +47,7 @@ if (NOT ${LIBSEDML_LIBRARY_NAME}_FOUND)
           /opt/lib/cmake
           /opt/local/lib/cmake
           /sw/lib/cmake
-          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
+          ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}/cmake
           ${CONAN_LIB_DIRS_LIBSEDML}/cmake
   )
 endif()
@@ -62,8 +65,8 @@ else()
 find_path(LIBSEDML_INCLUDE_DIR sedml/SedBase.h
     PATHS $ENV{LIBSEDML_DIR}/include
           $ENV{LIBSEDML_DIR}
-           ${COPASI_DEPENDENCY_DIR}/include
-          ${COPASI_DEPENDENCY_DIR}
+           ${${_PROJECT_DEPENDENCY_DIR}}/include
+          ${${_PROJECT_DEPENDENCY_DIR}}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/include        # Fink
@@ -84,9 +87,9 @@ find_library(LIBSEDML_LIBRARY
           libsedml
     PATHS $ENV{LIBSEDML_DIR}/lib
           $ENV{LIBSEDML_DIR}
-          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
-          ${COPASI_DEPENDENCY_DIR}/lib
-          ${COPASI_DEPENDENCY_DIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/lib
+          ${${_PROJECT_DEPENDENCY_DIR}}
           ${CONAN_LIB_DIRS_LIBSEDML}
           ~/Library/Frameworks
           /Library/Frameworks
@@ -115,9 +118,9 @@ find_library(LIBNUML_LIBRARY
           libnuml
     PATHS $ENV{LIBSEDML_DIR}/lib
           $ENV{LIBSEDML_DIR}
-          ${COPASI_DEPENDENCY_DIR}/${CMAKE_INSTALL_LIBDIR}
-          ${COPASI_DEPENDENCY_DIR}/lib
-          ${COPASI_DEPENDENCY_DIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/lib
+          ${${_PROJECT_DEPENDENCY_DIR}}
           ${CONAN_LIB_DIRS_LIBNUML}
           ~/Library/Frameworks
           /Library/Frameworks
@@ -146,14 +149,46 @@ endif (NOT LIBSEDML_LIBRARY)
 
 set(LIBSEDML_FOUND "NO")
 if(LIBSEDML_LIBRARY)
-    if   (LIBSEDML_INCLUDE_DIR)
+    if (LIBSEDML_INCLUDE_DIR)
         SET(LIBSEDML_FOUND "YES")
+
+        if (EXISTS "${LIBSEDML_INCLUDE_DIR}/sedml/common/libsedml-version.h")
+
+        file(STRINGS "${LIBSEDML_INCLUDE_DIR}/sedml/common/libsedml-version.h" sedml_version_str
+        REGEX "^#define[\t ]+LIBSEDML_DOTTED_VERSION[\t ]+\".*\"")
+        
+        string(REGEX REPLACE "^#define[\t ]+LIBSEDML_DOTTED_VERSION[\t ]+\"([^\"]*)\".*" "\\1"
+        LIBSEDML_VERSION "${sedml_version_str}")
+        unset(sbml_version_str)
+        
+        
+        endif()
+        
+
     endif(LIBSEDML_INCLUDE_DIR)
 endif(LIBSEDML_LIBRARY)
+
+if (NOT TARGET ${LIBSEDML_LIBRARY_NAME})
+add_library(${LIBSEDML_LIBRARY_NAME} UNKNOWN IMPORTED)
+set_target_properties(${LIBSEDML_LIBRARY_NAME} PROPERTIES
+  IMPORTED_LOCATION "${LIBSEDML_LIBRARY}"
+  INTERFACE_INCLUDE_DIRECTORIES "${LIBSEDML_INCLUDE_DIR}")
+endif()
+
+# set static on the library on windows
+if ((WIN32 AND NOT CYGWIN) AND LIBSEDML_FOUND AND LIBSEDML_LIBRARY MATCHES "static")
+  set_target_properties(${LIBSEDML_LIBRARY_NAME} PROPERTIES 
+  INTERFACE_COMPILE_DEFINITIONS "LIBSEDML_STATIC=1"
+)
+
+endif()
+
 
 # handle the QUIETLY and REQUIRED arguments and set LIBSEDML_FOUND to TRUE if 
 # all listed variables are TRUE
 include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(LIBSEDML DEFAULT_MSG LIBSEDML_LIBRARY LIBSEDML_INCLUDE_DIR)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(LIBSEDML 
+  VERSION_VAR LIBSEDML_VERSION
+  REQUIRED_VARS LIBSEDML_LIBRARY LIBSEDML_INCLUDE_DIR)
 
 mark_as_advanced(LIBSEDML_INCLUDE_DIR LIBSEDML_LIBRARY LIBNUML_LIBRARY)

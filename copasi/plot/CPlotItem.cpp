@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -86,7 +86,6 @@ const CEnumAnnotation< std::string, CPlotItem::LineType > CPlotItem::LineTypeNam
   "Lines & Symbols",
 });
 
-
 const CEnumAnnotation< std::string, CPlotItem::LineStyle > CPlotItem::LineStyleNames(
 {
   "Solid",
@@ -115,7 +114,6 @@ const CEnumAnnotation< std::string, CPlotItem::SymbolType > CPlotItem::SymbolNam
   "vDash",
   "None"
 });
-
 
 // static
 CPlotItem * CPlotItem::fromData(const CData & data, CUndoObjectInterface * pParent)

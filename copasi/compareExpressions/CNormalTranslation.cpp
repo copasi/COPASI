@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1872,7 +1872,7 @@ CEvaluationNode* CNormalTranslation::newEvaluateNumbers(const CEvaluationNode* p
                     // splitProduct doesn't copy nodes
                     CNormalTranslation::splitProduct(*dfi, multiplications, divisions, false);
                     std::set<CEvaluationNode*> multiplicationNumberNodes;
-                    unsigned int i, iMax = multiplications.size();
+                    size_t i, iMax = multiplications.size();
                     CEvaluationNode* pNode = NULL;
 
                     for (i = 0; i < iMax; ++i)
@@ -2059,7 +2059,7 @@ CEvaluationNode* CNormalTranslation::newEvaluateNumbers(const CEvaluationNode* p
                     CNormalTranslation::splitSum(*dfi, additions, subtractions, false);
                     CNormalTranslation::swapNegativeNumbers(additions, subtractions);
                     std::set<CEvaluationNode*> additionNumberNodes;
-                    unsigned int i, iMax = additions.size();
+                    size_t i, iMax = additions.size();
                     CEvaluationNode* pNode = NULL;
 
                     for (i = 0; i < iMax; ++i)
@@ -2243,7 +2243,7 @@ CEvaluationNode* CNormalTranslation::newEvaluateNumbers(const CEvaluationNode* p
                     else
                       {
                         // delete all nodes in additions and subtractions
-                        unsigned int i, iMax = additions.size();
+                        size_t i, iMax = additions.size();
 
                         for (i = 0; i < iMax; ++i)
                           {
@@ -2835,7 +2835,7 @@ CEvaluationNode* CNormalTranslation::expandPowerNodes(const CEvaluationNode* pOr
           // replace all nodes in additions and subtractions by
           // pChild1^node so we can use the generic method to create the
           // multiplication chain
-          unsigned int i, iMax = additions.size();
+          size_t i, iMax = additions.size();
 
           for (i = 0; i < iMax; ++i)
             {
@@ -2942,7 +2942,7 @@ std::vector<product_match> CNormalTranslation::matchPowerBases(const std::vector
   const CNormalFraction* pBase2 = NULL;
   std::string base2String;
   CEvaluationNode *pExponent = NULL, *pAddNode = NULL;
-  unsigned int index = 0;
+  size_t index = 0;
   product_match match;
   // we store the order in which the base strings occur
   // so that we can return the result in approximately the same order
@@ -2995,7 +2995,7 @@ std::vector<product_match> CNormalTranslation::matchPowerBases(const std::vector
                       pAddNode->addChild(matchPos->second.pExponentNode);
                       pAddNode->addChild(pExponent);
                       matchPos->second.pExponentNode = pAddNode;
-                      matchPos->second.addition_indices.insert(index);
+                      matchPos->second.addition_indices.insert((unsigned int)index);
                     }
                   else
                     {
@@ -3023,7 +3023,7 @@ std::vector<product_match> CNormalTranslation::matchPowerBases(const std::vector
 
           match.pExponentNode = pExponent;
           match.addition_indices.clear();
-          match.addition_indices.insert(index);
+          match.addition_indices.insert((unsigned int) index);
           match.subtraction_indices.clear();
           infixMap.insert(std::pair<std::string, const CEvaluationNode*>(base2String, pBase));
           matchMap.insert(std::pair<const CEvaluationNode*, product_match>(pBase, match));
@@ -3085,7 +3085,7 @@ std::vector<product_match> CNormalTranslation::matchPowerBases(const std::vector
                       pAddNode->addChild(matchPos->second.pExponentNode);
                       pAddNode->addChild(pExponent);
                       matchPos->second.pExponentNode = pAddNode;
-                      matchPos->second.subtraction_indices.insert(index);
+                      matchPos->second.subtraction_indices.insert((unsigned int) index);
                     }
                   else
                     {
@@ -3124,7 +3124,7 @@ std::vector<product_match> CNormalTranslation::matchPowerBases(const std::vector
 
           match.addition_indices.clear();
           match.subtraction_indices.clear();
-          match.subtraction_indices.insert(index);
+          match.subtraction_indices.insert((unsigned int) index);
           infixMap.insert(std::pair<std::string, const CEvaluationNode*>(base2String, pBase));
           matchMap.insert(std::pair<const CEvaluationNode*, product_match>(pBase, match));
           orderList.push_back(pBase);
@@ -3768,7 +3768,7 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
       CEvaluationNode* pNode = CNormalTranslation::createOperatorChain(CEvaluationNode::SubType::PLUS, "+", constVect);
       // now check if we already have a base with the same infix in the
       // results
-      unsigned int i, iMax = result.size();
+      size_t i, iMax = result.size();
 
       for (i = 0; i < iMax; ++i)
         {
@@ -3817,7 +3817,7 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
 
   std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > tmp;
   // copy the result vector into the expected return data type
-  unsigned int i, iMax = result.size();
+  size_t i, iMax = result.size();
   // since we know how many item will end up in the vector we can already
   // reserve the space
   tmp.reserve(iMax);
@@ -3844,7 +3844,7 @@ CEvaluationNode* CNormalTranslation::expandProducts(const CEvaluationNode* pOrig
     {
       std::vector<const CEvaluationNode*> multiplications, divisions;
       CNormalTranslation::splitProduct(pOrig, multiplications, divisions, false);
-      unsigned int i, iMax = multiplications.size();
+      size_t i, iMax = multiplications.size();
       CEvaluationNode* pTmpResult;
 
       for (i = 0; i < iMax; ++i)
@@ -3939,11 +3939,11 @@ CEvaluationNode* CNormalTranslation::multiply(const CEvaluationNode* pNode1, con
   // and subtractions2 the results for the multiplication with the elements
   // of additions2 must be multiplied by -1
   std::vector<CEvaluationNode*> tmp;
-  unsigned int i, iMax = additions1.size();
+  size_t i, iMax = additions1.size();
 
   for (i = 0; i < iMax; ++i)
     {
-      unsigned int j, jMax = additions2.size();
+      size_t j, jMax = additions2.size();
 
       for (j = 0; j < jMax; ++j)
         {
@@ -3958,7 +3958,7 @@ CEvaluationNode* CNormalTranslation::multiply(const CEvaluationNode* pNode1, con
 
   for (i = 0; i < iMax; ++i)
     {
-      unsigned int j, jMax = subtractions2.size();
+      size_t j, jMax = subtractions2.size();
 
       for (j = 0; j < jMax; ++j)
         {
@@ -3980,7 +3980,7 @@ CEvaluationNode* CNormalTranslation::multiply(const CEvaluationNode* pNode1, con
 
   for (i = 0; i < iMax; ++i)
     {
-      unsigned int j, jMax = subtractions2.size();
+      size_t j, jMax = subtractions2.size();
 
       for (j = 0; j < jMax; ++j)
         {
@@ -3995,7 +3995,7 @@ CEvaluationNode* CNormalTranslation::multiply(const CEvaluationNode* pNode1, con
 
   for (i = 0; i < iMax; ++i)
     {
-      unsigned int j, jMax = additions2.size();
+      size_t j, jMax = additions2.size();
 
       for (j = 0; j < jMax; ++j)
         {
@@ -4105,9 +4105,9 @@ CEvaluationNode* CNormalTranslation::newCancel(const CEvaluationNode* pOrig)
                       {
                         std::vector<CEvaluationNode*> numeratorChain;
                         std::vector<CEvaluationNode*> denominatorChain;
-                        unsigned int iMax = collected.size();
+                        size_t i, iMax = collected.size();
 
-                        for (unsigned int i = 0; i < iMax; ++i)
+                        for (i = 0; i < iMax; ++i)
                           {
                             product_match& match = collected[i];
 
@@ -4285,13 +4285,13 @@ CEvaluationNode* CNormalTranslation::newCancel(const CEvaluationNode* pOrig)
                     if (collected.size() != (additions.size() + subtractions.size()))
                       {
                         std::vector<CEvaluationNode*> chain;
-                        unsigned int iMax = collected.size();
+                        size_t i, iMax = collected.size();
 
                         // now we have to create the result chain
                         // all elements with a negative factor are subtracted and all indices with a
                         // positive factor are added
                         // all nodes with a 0.0 factor are dropped
-                        for (unsigned int i = 0; i < iMax; ++i)
+                        for (i = 0; i < iMax; ++i)
                           {
                             summ_match& match = collected[i];
 
@@ -5574,7 +5574,7 @@ CEvaluationNode* CNormalTranslation::expandPowerBases(const CEvaluationNode* pRo
           CNormalTranslation::splitSum(pBase, additions, subtractions, false);
           CNormalTranslation::swapNegativeNumbers(additions, subtractions);
           std::pair<CEvaluationNode*, CEvaluationNode*> resultPair = CNormalTranslation::factorize(additions, subtractions);
-          unsigned int i, iMax = additions.size();
+          size_t i, iMax = additions.size();
 
           for (i = 0; i < iMax; ++i)
             {
@@ -5628,8 +5628,8 @@ std::pair<CEvaluationNode*, CEvaluationNode*> CNormalTranslation::factorize(cons
   assert(additions.size() > 0);
   // get all multipllications and divisions from the first entry in additions
   std::vector<const CEvaluationNode*> multiplications, divisions;
-  unsigned int i, iMax = additions.size();
-  unsigned int iiMax = iMax + subtractions.size();
+  size_t i, iMax = additions.size();
+  size_t iiMax = iMax + subtractions.size();
   std::vector<std::vector<const CEvaluationNode*> > multiplicationVectors, divisionVectors;
 
   for (i = 0; i < iiMax; ++i)
@@ -5816,8 +5816,8 @@ std::pair<CEvaluationNode*, CEvaluationNode*> CNormalTranslation::factorize(cons
 
   if (!(commonMultiplications.empty() && commonDivisions.empty()))
     {
-      unsigned int i, iMax = additions.size();
-      unsigned int iiMax = iMax + subtractions.size();
+      size_t i, iMax = additions.size();
+      size_t iiMax = iMax + subtractions.size();
       std::vector<CEvaluationNode*> newAdditions, newSubtractions;
 
       for (i = 0; i < iiMax; ++i)

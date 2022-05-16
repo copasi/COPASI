@@ -1,4 +1,4 @@
-// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,7 +22,6 @@ TEST_CASE("1: loading example files, and resolve name", "[copasi]")
     dm->getModel()->compileIfNecessary(NULL);
     dm->getModel()->applyInitialValues();
 
-
     // species
     auto * object = dm->findObjectByDisplayName("[X]");
     REQUIRE(object != nullptr);
@@ -42,7 +41,6 @@ TEST_CASE("1: loading example files, and resolve name", "[copasi]")
     object = dm->findObjectByDisplayName("X.ParticleNumberRate");
     REQUIRE(object != nullptr);
 
-
     // compartments
     object = dm->findObjectByDisplayName("Compartments[compartment].InitialVolume");
     REQUIRE(object != nullptr);
@@ -52,7 +50,6 @@ TEST_CASE("1: loading example files, and resolve name", "[copasi]")
 
     object = dm->findObjectByDisplayName("Compartments[compartment].Rate");
     REQUIRE(object != nullptr);
-
 
     // reactions
     object = dm->findObjectByDisplayName("(R1).k1");
@@ -64,7 +61,6 @@ TEST_CASE("1: loading example files, and resolve name", "[copasi]")
     object = dm->findObjectByDisplayName("(R1).ParticleFlux");
     REQUIRE(object != nullptr);
 
-
     // parameters
     object = dm->findObjectByDisplayName("Values[mv_1].InitialValue");
     REQUIRE(object != nullptr);
@@ -75,11 +71,9 @@ TEST_CASE("1: loading example files, and resolve name", "[copasi]")
     object = dm->findObjectByDisplayName("Values[mv_1].Rate");
     REQUIRE(object != nullptr);
 
-
     // time
     object = dm->findObjectByDisplayName("Time");
     REQUIRE(object != nullptr);
-
   }
 
   CRootContainer::removeDatamodel(dm);

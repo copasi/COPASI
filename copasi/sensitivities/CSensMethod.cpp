@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -87,7 +87,7 @@ CSensMethod::CSensMethod(const CSensMethod & src,
 {
   mpDeltaFactor = assertParameter("Delta factor", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1e-3);
   mpMinDelta = assertParameter("Delta minimum", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1e-12);
-  
+
   CONSTRUCTOR_TRACE;
 }
 
@@ -497,10 +497,10 @@ bool CSensMethod::initialize(CSensProblem* problem)
                     (&pDataModel->getTaskList()->operator[]("Time-Course"));
         break;
 
-        /*    case CSensProblem::LyapunovExp:
-              mpSubTask = dynamic_cast<CCopasiTask*>
-                          (&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
-              break;*/
+      /*    case CSensProblem::LyapunovExp:
+            mpSubTask = dynamic_cast<CCopasiTask*>
+                        (&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
+            break;*/
 
       case CSensProblem::ParameterEstimation:
         mpSubTask = dynamic_cast<CCopasiTask*>

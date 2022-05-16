@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -187,7 +187,7 @@ size_t CFunctionParameters::findParameterByName(const std::string & name,
     const CFunctionParameter ** ppFunctionParameter) const
 {
   std::string Name;
-  size_t i, imax = mParameters.size();
+  size_t imax = mParameters.size();
 
   size_t Index = mParameters.getIndex(name);
 

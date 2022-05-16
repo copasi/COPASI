@@ -111,7 +111,6 @@ void SEDMLImporter::setSEDMLDocument(SedDocument * pDocument)
 
   mOriginalLevel = mLevel = mpSEDMLDocument->getLevel();
   mVersion = mpSEDMLDocument->getVersion();
-
 }
 
 SedDocument* SEDMLImporter::getSEDMLDocument()
@@ -518,7 +517,6 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput()
     }
 }
 
-
 void
 SEDMLImporter::addCurveToCopasiPlot(
   LIBSEDML_CPP_NAMESPACE_QUALIFIER SedAbstractCurve * pCurve,
@@ -577,7 +575,6 @@ SEDMLImporter::addCurveToCopasiPlot(
 
             if (curve->isSetLogY() && curve->getLogY())
               pPl->setLogY(true);
-
           }
 
         break;
@@ -640,7 +637,6 @@ SEDMLImporter::addCurveToCopasiPlot(
         CCopasiMessage(CCopasiMessage::WARNING, "SEDMLImporter Error: No support for this curve: %s", SedTypeCode_toString(pCurve->getTypeCode()));
         break;
     }
-
 }
 
 void SEDMLImporter::addSurfaceToCopasiPlot(
@@ -698,7 +694,6 @@ void SEDMLImporter::addSurfaceToCopasiPlot(
             if (pSurface->getType() == SEDML_SURFACETYPE_CONTOUR)
               plItem->setValue< std::string >("contours", "10");
 
-
             applyStyleToCopasiItem(mpSEDMLDocument->getStyle(pSurface->getStyle()), plItem);
 
             if (pSurface->isSetLogX() && pSurface->getLogX())
@@ -706,7 +701,6 @@ void SEDMLImporter::addSurfaceToCopasiPlot(
 
             if (pSurface->isSetLogY() && pSurface->getLogY())
               pPlot->setLogY(true);
-
           }
 
         break;
@@ -716,7 +710,6 @@ void SEDMLImporter::addSurfaceToCopasiPlot(
         CCopasiMessage(CCopasiMessage::WARNING, "SEDMLImporter Error: No support for this surface: %s", SedTypeCode_toString(pSurface->getTypeCode()));
         break;
     }
-
 }
 
 void SEDMLImporter::applyStyleToCopasiItem(
@@ -756,7 +749,6 @@ void SEDMLImporter::applyStyleToCopasiItem(
 
       if (hasLine)
         plItem->setValue< unsigned C_INT32 >("Line type", (int)CPlotItem::LineType::Lines);
-
     }
 
   // apply markers
@@ -764,7 +756,7 @@ void SEDMLImporter::applyStyleToCopasiItem(
 
   if (marker)
     {
-      if (marker->isSetType())
+      if (marker->isSetType() && marker->getType() != SEDML_MARKERTYPE_NONE)
         {
           auto type = SEDMLUtils::symbolFromSed(marker->getType());
           plItem->setValue< unsigned C_INT32 >(
@@ -775,10 +767,8 @@ void SEDMLImporter::applyStyleToCopasiItem(
             plItem->setValue< unsigned C_INT32 >("Line type", (int) CPlotItem::LineType::LinesAndSymbols);
           else
             plItem->setValue< unsigned C_INT32 >("Line type", (int) CPlotItem::LineType::Symbols);
-
         }
     }
-
 
   // apply fill
   auto * fill = pStyle->getFillStyle();
@@ -795,8 +785,6 @@ void SEDMLImporter::applyStyleToCopasiItem(
           plItem->setValue("alpha", SEDMLUtils::getAlphaFromRgba(fill->getColor()));
         }
     }
-
-
 }
 
 void SEDMLImporter::importReport(
@@ -1010,7 +998,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
           case LIBSEDML_SEV_FATAL:
 
-          // treat unknown as fatal
+            // treat unknown as fatal
           default:
 
             if (pSEDMLError->getErrorId() == 10804)
@@ -1122,7 +1110,6 @@ void SEDMLImporter::updateContent(CDataModel::CContent & data, CDataModel & dm)
   data.pCurrentSEDMLDocument = mpSEDMLDocument;
   data.mCopasi2SEDMLMap = mContent.mCopasi2SEDMLMap;
   data.mContentType = CDataModel::ContentType::SEDML;
-
 }
 
 void SEDMLImporter::importTasks(CDataVectorN< CCopasiTask > * pTaskList)
@@ -1292,7 +1279,7 @@ void SEDMLImporter::importTasks(CDataVectorN< CCopasiTask > * pTaskList)
                         std::stringstream str;
                         std::vector<double> vals = vrange->getValues();
 
-                        for (double val : vals)
+for (double val : vals)
                           str << val << " ";
 
                         group->setValue< std::string >("Values", str.str());

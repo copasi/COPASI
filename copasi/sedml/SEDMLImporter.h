@@ -119,7 +119,6 @@ public:
     LIBSEDML_CPP_NAMESPACE_QUALIFIER SedSurface * pSurface,
     CPlotSpecification * pPlot);
 
-
   /**
    * applies the given style to a plot item
    *
@@ -242,7 +241,6 @@ public:
    * @param pModel the model
    */
   void setCopasiModel(CModel * pModel);
-
 
   /**
    * clears the currently set progress handler

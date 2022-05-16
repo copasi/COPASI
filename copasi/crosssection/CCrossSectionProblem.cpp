@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,18 +21,18 @@
 
 CCrossSectionProblem::CCrossSectionProblem(const CDataContainer * pParent)
   : CTrajectoryProblem(CTaskEnum::Task::crosssection, pParent),
-  mpFlagLimitCrossings(NULL),
-  mpCrossingsLimit(NULL),
-  mpFlagLimitConvergence(NULL),
-  mpConvergenceTolerance(NULL),
-  mpFlagLimitOutConvergence(NULL),
-  mpConvergenceOutTolerance(NULL),
-  mpFlagLimitOutCrossings(NULL),
-  mpOutCrossingsLimit(NULL),
-  mpFlagLimitOutTime(NULL),
-  mSingleObjectCN(NULL),
-  mpFlagPositiveDirection(NULL),
-  mpThreshold(NULL)
+    mpFlagLimitCrossings(NULL),
+    mpCrossingsLimit(NULL),
+    mpFlagLimitConvergence(NULL),
+    mpConvergenceTolerance(NULL),
+    mpFlagLimitOutConvergence(NULL),
+    mpConvergenceOutTolerance(NULL),
+    mpFlagLimitOutCrossings(NULL),
+    mpOutCrossingsLimit(NULL),
+    mpFlagLimitOutTime(NULL),
+    mSingleObjectCN(NULL),
+    mpFlagPositiveDirection(NULL),
+    mpThreshold(NULL)
 {
   initializeParameter();
   initObjects();

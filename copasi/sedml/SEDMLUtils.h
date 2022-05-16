@@ -42,7 +42,6 @@
 #define SEDML_KISAO_RATE               "KISAO:0000655"
 #define SEDML_KISAO_FLUX               "KISAO:0000639"
 
-
 class CModel;
 class CMetab;
 class CModelValue;
@@ -84,7 +83,6 @@ public:
   bool isValid() const;
 
   bool operator< (const VariableInfo & other) const;
-
 };
 
 /**
@@ -113,7 +111,6 @@ public:
    * @return the sbml id of the object (or its parent, in case of a reference) or the empty string if not set
    */
   static std::string getSbmlId(const CDataObject& object);
-
 
   /**
    * This function uses the Copasi2SBML map of the datamodel, to resolve the element with the
@@ -182,7 +179,6 @@ public:
   static std::map< int, int > COPASI_LINE_STYLE_MAP;
 
 #endif
-
 };
 
 #endif /* SEDMLUTILS_H_ */

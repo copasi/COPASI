@@ -185,8 +185,10 @@ class CMakeBuild(build_ext):
             cmake_args.append('win32')
 
         if is_osx: 
-          cmake_args.append('-DCLANG_USE_LIBCPP=ON')
-          cmake_args.append('-DCMAKE_OSX_DEPLOYMENT_TARGET=10.9')
+          if 'arm64' in suffix: 
+            cmake_args.append('-DCMAKE_OSX_ARCHITECTURES=arm64')
+          else:
+            cmake_args.append('-DCMAKE_OSX_ARCHITECTURES=x86_64')
 
         # example of build args
         build_args = [
@@ -241,16 +243,13 @@ class CMakeBuild(build_ext):
 
         if DEP_DIR:
           cmake_args.append('-DCOPASI_DEPENDENCY_DIR=' + DEP_DIR)
-          cmake_args.append('-DLIBEXPAT_INCLUDE_DIR=' + join(DEP_DIR, 'include'))
 
         if is_win_32:
           if DEP_DIR32:
             cmake_args.append('-DCOPASI_DEPENDENCY_DIR=' + DEP_DIR32)
-            cmake_args.append('-DLIBEXPAT_INCLUDE_DIR=' + join(DEP_DIR32, 'include'))
         elif is_win:
           if DEP_DIR64:
             cmake_args.append('-DCOPASI_DEPENDENCY_DIR=' + DEP_DIR64)
-            cmake_args.append('-DLIBEXPAT_INCLUDE_DIR=' + join(DEP_DIR64, 'include'))
 
         os.chdir(build_temp)
         self.spawn(['cmake', SRC_DIR] + cmake_args)

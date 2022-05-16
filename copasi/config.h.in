@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -58,3 +58,10 @@
 #cmakedefine WITH_DATAVISUALIZATION_NAMESPACES
 
 #cmakedefine QWT_VERSION @QWT_VERSION@
+
+#define COPASI_EXPAT_VERSION "@EXPAT_VERSION@"
+#define COPASI_RAPTOR_VERSION "@RAPTOR_VERSION@"
+#define COPASI_SBW_VERSION "@SBW_VERSION@"
+#define COPASI_LIBSEDML_VERSION "@LIBSEDML_VERSION@"
+#define COPASI_LIBSBML_VERSION "@LIBSBML_VERSION@"
+#define COPASI_LIBCOMBINE_VERSION "@LIBCOMBINE_VERSION@"

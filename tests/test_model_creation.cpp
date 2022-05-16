@@ -1,4 +1,4 @@
-// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,7 +8,6 @@
 extern std::string getTestFile(const std::string & fileName);
 
 #include <copasi/CopasiTypes.h>
-
 
 TEST_CASE("create a reaction with numerically named species", "[copasi,creation]")
 {
@@ -35,10 +34,8 @@ TEST_CASE("create a reaction with numerically named species", "[copasi,creation]
   REQUIRE(chem.getProducts()[0].getMultiplicity() == 3);
   REQUIRE(chem.getProducts()[0].getMetabolite()->getObjectName() == "3");
 
-
   CRootContainer::removeDatamodel(dm);
 }
-
 
 TEST_CASE("create a new model with invalid value", "[copasi,creation]")
 {
@@ -59,7 +56,6 @@ TEST_CASE("create a new model with invalid value", "[copasi,creation]")
   CRootContainer::removeDatamodel(dm);
 }
 
-
 TEST_CASE("create a model with inhibited reaciton", "[copasi,creation]")
 {
   auto * dm = CRootContainer::addDatamodel();
@@ -74,7 +70,7 @@ TEST_CASE("create a model with inhibited reaciton", "[copasi,creation]")
 
   auto & vars = pFunc->getVariables();
 
-for (auto & var : vars)
+  for (auto & var : vars)
     {
       if (var.getObjectName() == "A" || var.getObjectName() == "B")
         var.setUsage(CFunctionParameter::Role::SUBSTRATE);
@@ -91,7 +87,6 @@ for (auto & var : vars)
 
   auto * r = m->createReaction("R1");
   REQUIRE(r->setReactionScheme("S1 + S2 -> S3") == true);
-
 
   auto * info = new CReactionInterface();
   info->init(*r);
@@ -138,7 +133,6 @@ TEST_CASE("changing from global to local variable", "[copasi,creation]")
     REQUIRE(info.writeBackToReaction(r, true) == true);
     REQUIRE(info.isLocalValue(0) == false);
     REQUIRE(r->isLocalParameter(0) == false);
-
   }
 
   {
@@ -150,7 +144,6 @@ TEST_CASE("changing from global to local variable", "[copasi,creation]")
     REQUIRE(info.writeBackToReaction(r, true) == true);
     REQUIRE(r->isLocalParameter(0) == true);
   }
-
 
   CRootContainer::removeDatamodel(dm);
 }

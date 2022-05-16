@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -92,7 +92,6 @@ bool CDataHandler::addName(const CRegisteredCommonName & name, const Activity & 
     }
 }
 
-
 std::vector< CRegisteredCommonName > * CDataHandler::getNames(const Activity & activity)
 {
   switch (activity)
@@ -110,7 +109,6 @@ std::vector< CRegisteredCommonName > * CDataHandler::getNames(const Activity & a
         return NULL;
     }
 }
-
 
 void CDataHandler::clearNames(const Activity & activity)
 {
@@ -148,12 +146,10 @@ const std::vector< C_FLOAT64 > & CDataHandler::getAfterData() const
   return mAfterData;
 }
 
-
 bool CDataHandler::getSeparate() const
 {
   return mSeparate;
 }
-
 
 void CDataHandler::setSeparate(bool separate)
 {
@@ -169,7 +165,6 @@ void CDataHandler::cleanup()
   finish();
   close();
 }
-
 
 void CDataHandler::output(const Activity & activity)
 {
@@ -244,7 +239,6 @@ void CDataHandler::storeDataBefore()
 
   for (; it != end; ++it)
     mBeforeData.push_back(getValue(*it));
-
 }
 
 void CDataHandler::storeDataDuring()
@@ -263,7 +257,6 @@ void CDataHandler::storeDataDuring()
     }
 
   mDuringData.push_back(row);
-
 }
 
 void CDataHandler::storeDataAfter()
@@ -276,7 +269,6 @@ void CDataHandler::storeDataAfter()
 
   for (; it != end; ++it)
     mAfterData.push_back(getValue(*it));
-
 }
 
 // Compile the List of Report Objects
@@ -285,7 +277,6 @@ bool CDataHandler::compile(CObjectInterface::ContainerList listOfContainer)
 {
   bool success = true;
   COutputInterface::mObjects.clear();
-
 
   success &= generateObjectsFromName(listOfContainer, mBeforeObjectList,
                                      &mCNsBefore);
@@ -348,5 +339,4 @@ bool CDataHandler::generateObjectsFromName(const CObjectInterface::ContainerList
     }
 
   return result;
-
 }

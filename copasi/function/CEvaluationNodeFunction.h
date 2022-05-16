@@ -29,7 +29,8 @@
 #include <cmath>
 
 #if defined(WIN32)
-#if __cplusplus <= 199711L  // These are not part of ANSI C and Visual C++ misses them.
+#if __cplusplus <= 199711L // These are not part of ANSI C and Visual C++ misses them.
+#if _MSVC_LANG <= 201103L
 static inline double asinh(double value)
 {return log(value + sqrt(value * value + 1.0));}
 
@@ -41,6 +42,7 @@ static inline double atanh(double value)
 
 static inline double round(double value)
 {return  value < 0.0 ? -floor(-value + 0.5) : floor(value + 0.5);}
+#endif
 #endif // not c++11
 #endif // WIN32
 

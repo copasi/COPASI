@@ -114,7 +114,6 @@ add_custom_target(binding_octave_swig ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/co
 # Build native library
 #
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${COPASI_INCLUDE_DIRS})
 
 include_directories(${OCTAVE_INCLUDE_DIR})
 include_directories(${OCTAVE_INCLUDE_DIR}/octave)

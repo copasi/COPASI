@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -28,7 +28,7 @@
 ###############################################################################
 
 # we need at least cmake 2.8 for the FindLAPACK functions
-cmake_minimum_required (VERSION 2.8.12)
+cmake_minimum_required (VERSION 2.8.12...3.19.1)
 
 if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
@@ -243,26 +243,11 @@ option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" OFF)
 option(ENABLE_COPASI_EXTUNIT "Extended Unit Support" ${DEFAULT_EXTUNIT})
 option(ENABLE_ANALYTICS "Enable Analytics Task" OFF)
 
-if (WIN32)
-  add_definitions(-DLIBCOMBINE_STATIC=1)
-endif()
-
-find_package(LIBCOMBINE REQUIRED)
-include_directories(BEFORE ${COMBINE_INCLUDE_DIR})
-
 option(COPASI_INSTALL_C_API "Enable this option to also install the COPASI C API" OFF)
 
 option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (CopasiUI)." ON)
 
 option(ENABLE_FLEX_BISON "Enable the use of flex and bison to create parsers." OFF)
-if (ENABLE_FLEX_BISON)
-  find_package(FLEX REQUIRED)
-  find_package(BISON REQUIRED) 
-  set(FLEX_BINARY ${FLEX_EXECUTABLE})
-  set(FLEX_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/flex.sh")
-  set(BISON_BINARY ${BISON_EXECUTABLE})
-  set(BISON_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/yacc.sh")
-endif (ENABLE_FLEX_BISON)
 
 option(ENABLE_GPROF "Enable compiling and linking for gprof analysis." OFF)
 if (ENABLE_GPROF)
@@ -270,21 +255,8 @@ if (ENABLE_GPROF)
   set(CMAKE_EXE_LINKER_FLAGS "-pg")
 endif (ENABLE_GPROF)
 
-if ( NOT CLAPACK_FOUND )
-  find_package(CLAPACK REQUIRED)
-endif ()
-
 
 option(CLAPACK_NO_BLASWRAP "If defined the NO_BLASWRAP compile option will be added" OFF)
-
-include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LAPACK_CFLAGS}")
-
-find_package(CROSSGUID REQUIRED)
-include_directories(BEFORE ${CROSSGUID_INCLUDE_DIR})
-
-find_package(EXPAT REQUIRED)
-include_directories(BEFORE ${EXPAT_INCLUDE_DIR})
 
 set (ENABLE_JIT_DEFAULT OFF)
 
@@ -300,36 +272,7 @@ endif()
 
 option(ENABLE_JIT "Enable Just In Time compilation for math expressions" ${ENABLE_JIT_DEFAULT})
 
-if (ENABLE_JIT)
-  find_package(NATIVEJIT REQUIRED)
-
-  include_directories(BEFORE ${NATIVEJIT_INCLUDE_DIR})
-  set(USE_JIT 1)
-
-  find_package(CPUFEATURES REQUIRED)
-  include_directories(BEFORE ${CPUFEATURE_INCLUDE_DIR})
-endif (ENABLE_JIT)
-
 option(ENABLE_OMP "Enable the OpenMP support" OFF)
-
-if (ENABLE_OMP)
-  set(USE_OMP 1)
-
-  find_package (OpenMP REQUIRED)
-  include_directories(BEFORE ${OpenMP_INCLUDE_PATH})
-endif(ENABLE_OMP)
-
-# TODO find raptor
-
-# TODO raptor should be restricted to a version which is at least
-# 1.4.18, but lower then 2.0
-find_package(RAPTOR REQUIRED)
-include_directories(BEFORE ${RAPTOR_INCLUDE_DIR})
-
-#TODO find libsbml, version should be 4.1 or 4.2
-# we need to make sure libsbml has the render extension
-find_package(LIBSBML REQUIRED)
-include_directories(BEFORE ${LIBSBML_INCLUDE_DIR})
 
 set(EXTRA_DEFS "" CACHE STRING
 "additional definitions to be used." )
@@ -350,16 +293,11 @@ endforeach()
 endif()
 
 SET(COPASI_INCLUDE_DIRS ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+include_directories(
+  ${COPASI_INCLUDE_DIRS}
+  ${LAPACK_INCLUDE_DIR}
+)
 
-if (WIN32)
-add_definitions(-DLIBSEDML_STATIC)
-endif()
-
-find_package(LIBSEDML REQUIRED)
-include_directories(BEFORE ${LIBSEDML_INCLUDE_DIR})
-
-# actually iconv is only needed on BSD like systems
-find_package(ICONV)
 
 #platform specific defines
 
@@ -384,9 +322,10 @@ if(UNIX)
       endif()
     endif()
 
-
+    if (NOT CMAKE_OSX_ARCHITECTURES )
     set(CMAKE_OSX_ARCHITECTURES "${CMAKE_OSX_ARCHITECTURES}" CACHE STRING
       "A semicolon-separated list of build architectures to be used.")
+    endif()
     if(ENABLE_UNIVERSAL)
       # if universal binaries are requested and none defined so far
       # overwrite them with all three common architectures. If the user
@@ -428,10 +367,56 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
   link_directories(/usr/local/lib)
 endif()
 
-if (WIN32 AND NOT CYGWIN)
-  add_definitions(-DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
-  add_definitions(-DRAPTOR_STATIC)
-endif()
+# find packages now after all flag definitions have been made
+
+find_package(EXPAT REQUIRED)
+find_package(LIBSBML REQUIRED)
+find_package(LIBSEDML REQUIRED)
+find_package(LIBCOMBINE REQUIRED)
+
+if (ENABLE_FLEX_BISON)
+  find_package(FLEX REQUIRED)
+  find_package(BISON REQUIRED) 
+  set(FLEX_BINARY ${FLEX_EXECUTABLE})
+  set(FLEX_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/flex.sh")
+  set(BISON_BINARY ${BISON_EXECUTABLE})
+  set(BISON_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/yacc.sh")
+endif (ENABLE_FLEX_BISON)
+
+if ( NOT CLAPACK_FOUND )
+  find_package(CLAPACK REQUIRED)
+endif ()
+
+include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LAPACK_CFLAGS}")
+
+find_package(CROSSGUID REQUIRED)
+include_directories(BEFORE ${CROSSGUID_INCLUDE_DIR})
+
+if (ENABLE_JIT)
+  find_package(NATIVEJIT REQUIRED)
+
+  include_directories(BEFORE ${NATIVEJIT_INCLUDE_DIR})
+  set(USE_JIT 1)
+
+  find_package(CPUFEATURES REQUIRED)
+  include_directories(BEFORE ${CPUFEATURE_INCLUDE_DIR})
+endif (ENABLE_JIT)
+
+if (ENABLE_OMP)
+  set(USE_OMP 1)
+
+  find_package (OpenMP REQUIRED)
+  include_directories(BEFORE ${OpenMP_INCLUDE_PATH})
+endif(ENABLE_OMP)
+
+# TODO raptor should be restricted to a version which is at least
+# 1.4.18, but lower then 2.0
+find_package(RAPTOR REQUIRED)
+
+# actually iconv is only needed on BSD like systems
+find_package(ICONV)
+
 
 if(BUILD_GUI)
   set(OpenGL_GL_PREFERENCE LEGACY)
@@ -545,8 +530,7 @@ if(BUILD_GUI)
   option(ENABLE_SBW_INTEGRATION "Enable SBW Integration" ON)
   if (ENABLE_SBW_INTEGRATION)
   find_package(SBW REQUIRED)
-  include_directories(${SBW_INCLUDE_DIR})
-
+  
   # set up definitions for SBW
   if(UNIX)
   if(APPLE)
@@ -712,6 +696,7 @@ if(MSVC OR USING_INTEL)
             endif(${flag_var} MATCHES "/MD")
         endforeach(flag_var)
     add_definitions( -D_MT)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     endif(WITH_STATIC_RUNTIME)
 
     # on VS enable multiprocessor build
@@ -868,6 +853,7 @@ install(FILES
         DESTINATION share/copasi/config)
 
 # set up variables for cpack
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS ON)
 include(InstallRequiredSystemLibraries)
 
 get_directory_property(DirDefs COMPILE_DEFINITIONS)
@@ -887,22 +873,25 @@ message(STATUS "-----------------------------------------------------------
    crossguid Libs       = ${CROSSGUID_LIBRARY}
    cross include        = ${CROSSGUID_INCLUDE_DIR}
 
+   Expat version        = ${EXPAT_VERSION}
    Expat Libs           = ${EXPAT_LIBRARY}
    Expat include        = ${EXPAT_INCLUDE_DIR}
 
+   Raptor version       = ${RAPTOR_VERSION}
    Raptor Libs          = ${RAPTOR_LIBRARY}
    Raptor include       = ${RAPTOR_INCLUDE_DIR}
 
+   libSBML version      = ${LIBSBML_VERSION}
    libSBML lib          = ${LIBSBML_LIBRARY}
    libSBML include      = ${LIBSBML_INCLUDE_DIR}
 
+   Qt version           = ${QT_VERSION}
    Qt lib               = ${QT_LIBRARIES}
    Qt include           = ${QT_INCLUDE_DIRS}
-   Qt version           = ${QT_VERSION}
       
+   QWT version          = ${QWT_VERSION_STRING} (0x${QWT_VERSION_NUMERIC})
    QWT lib              = ${QWT_LIBRARY}
    QWT include          = ${QWT_INCLUDE_DIR}
-   QWT version          = ${QWT_VERSION_STRING} (0x${QWT_VERSION_NUMERIC})
 
    qwtplot3d lib        = ${QWTPLOT3D_LIBRARY}
    qwtplot3d include    = ${QWTPLOT3D_INCLUDE_DIR}
@@ -910,14 +899,17 @@ message(STATUS "-----------------------------------------------------------
    qtmml lib            = ${MML_LIBRARY}
    qtmml include        = ${MML_INCLUDE_DIR}
 
-   SBW lib              = ${SBW_LIBRARIES}
+   SBW version          = ${SBW_VERSION}
+   SBW lib              = ${SBW_LIBRARY}
    SBW include          = ${SBW_INCLUDE_DIR}
 
+   libSEDML version     = ${LIBSEDML_VERSION}
    libSEDML lib         = ${LIBSEDML_LIBRARY}
    libSEDML include     = ${LIBSEDML_INCLUDE_DIR}
 
-   Combine lib          = ${COMBINE_LIBRARY}
-   Combine include      = ${COMBINE_INCLUDE_DIR}
+   Combine version      = ${LIBCOMBINE_VERSION}
+   Combine lib          = ${LIBCOMBINE_LIBRARY}
+   Combine include      = ${LIBCOMBINE_INCLUDE_DIR}
 
    NativeJIT lib        = ${NATIVEJIT_LIBRARY}
    NativeJIT include    = ${NATIVEJIT_INCLUDE_DIR}

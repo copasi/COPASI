@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -495,93 +495,24 @@ void CSBMLExporter::createSubstanceUnit(const CDataModel& dataModel)
 {
   if (dataModel.getModel() == NULL || this->mpSBMLDocument == NULL || this->mpSBMLDocument->getModel() == NULL) return;
 
-  UnitDefinition uDef(this->mSBMLLevel, this->mSBMLVersion);
-  uDef.setName("substance");
-  uDef.setId("substance");
-  Unit unit(this->mSBMLLevel, this->mSBMLVersion);
-  INIT_DEFAULTS(unit);
+  Model * pSBMLModel = this->mpSBMLDocument->getModel();
+  UnitDefinition * uDef = pSBMLModel->removeUnitDefinition("substance");
 
-  switch (dataModel.getModel()->getQuantityUnitEnum())
-    {
-      case CUnit::Mol:
-        unit.setKind(UNIT_KIND_MOLE);
-        unit.setExponent(1);
-        unit.setScale(0);
-        break;
+  // drop existing unit
+  pdelete(uDef);
 
-      case CUnit::mMol:
-        unit.setKind(UNIT_KIND_MOLE);
-        unit.setExponent(1);
-        unit.setScale(-3);
-        break;
+  // create new one
+  uDef = createUnitDefinitionFor(CUnit(dataModel.getModel()->getQuantityUnit()));
+  uDef->setId("substance");
+  uDef->setName("substance");
 
-      case CUnit::microMol:
-        unit.setKind(UNIT_KIND_MOLE);
-        unit.setExponent(1);
-        unit.setScale(-6);
-        break;
-
-      case CUnit::nMol:
-        unit.setKind(UNIT_KIND_MOLE);
-        unit.setExponent(1);
-        unit.setScale(-9);
-        break;
-
-      case CUnit::pMol:
-        unit.setKind(UNIT_KIND_MOLE);
-        unit.setExponent(1);
-        unit.setScale(-12);
-        break;
-
-      case CUnit::fMol:
-        unit.setKind(UNIT_KIND_MOLE);
-        unit.setExponent(1);
-        unit.setScale(-15);
-        break;
-
-      case CUnit::number:
-        unit.setKind(UNIT_KIND_ITEM);
-        unit.setExponent(1);
-        unit.setScale(0);
-        break;
-
-      case CUnit::dimensionlessQuantity:
-        unit.setKind(UNIT_KIND_DIMENSIONLESS);
-        unit.setExponent(1);
-        unit.setScale(0);
-        break;
-
-      default:
-        CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi quantity unit.");
-        break;
-    }
-
-  unit.setMultiplier(1);
-  uDef.addUnit(&unit);
-  Model* pSBMLModel = this->mpSBMLDocument->getModel();
-  UnitDefinition* pUdef = pSBMLModel->getUnitDefinition("substance");
-
-  if (pUdef != NULL)
-    {
-      // check if it is the same unit as the existing one if there is one
-      // if yes, return, else replace the existing one
-      if (!SBMLImporter::areSBMLUnitDefinitionsIdentical(pUdef, &uDef))
-        {
-          (*pUdef) = uDef;
-        }
-    }
-  else
-    {
-      // set the unit definition
-      pSBMLModel->addUnitDefinition(&uDef);
-    }
-
-  pSBMLModel->setSubstanceUnits(uDef.getId());
+  // set it
+  pSBMLModel->setSubstanceUnits(uDef->getId());
 
   // here we also set the extent unit to the same unit as the substance unit
   // because COPASI does not know about different extent units
   if (this->mSBMLLevel > 2)
-    pSBMLModel->setExtentUnits(uDef.getId());
+    pSBMLModel->setExtentUnits(uDef->getId());
 }
 
 /**
@@ -6551,7 +6482,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                 {
                   // if the units are not set to particle numbers anyway,
                   // replace the node by the node times avogadros number
-                  if (dataModel.getModel()->getQuantityUnitEnum() != CUnit::number)
+                  if (dataModel.getModel()->getQuantityUnit() != "#")
                     {
                       createAvogadroIfNeeded(dataModel);
 

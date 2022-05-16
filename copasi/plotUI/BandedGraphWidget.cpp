@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -223,7 +223,6 @@ BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * pCurve)
   return true;
 }
 
-
 void BandedGraphWidget::typeChanged(int type)
 {
   CPlotItem::LineType linetype = (CPlotItem::LineType) type;
@@ -252,7 +251,6 @@ void BandedGraphWidget::typeChanged(int type)
       mpBoxSymbolSubType->setEnabled(false);
     }
 }
-
 
 bool
 BandedGraphWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original /*= NULL*/) const
@@ -296,7 +294,6 @@ BandedGraphWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original 
       curve->setType(CPlotItem::bandedGraph);
       curve->getChannels().resize(3);
     }
-
 
   if (original == NULL
       || original->getValue< unsigned C_INT32 >("Line type") != lineType)

@@ -195,10 +195,10 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
 
       removeCharactersFromString(displayName, "]");
 
-      sbmlId = findIdByNameAndType(copasi2sbmlmap, SBML_PARAMETER , displayName);
+      sbmlId = findIdByNameAndType(copasi2sbmlmap, SBML_PARAMETER, displayName);
 
       if (sbmlId.empty())
-        sbmlId = findIdByNameAndType(copasi2sbmlmap, SBML_LOCAL_PARAMETER , displayName);
+        sbmlId = findIdByNameAndType(copasi2sbmlmap, SBML_LOCAL_PARAMETER, displayName);
 
       if (!sbmlId.empty())
         {
@@ -322,7 +322,6 @@ SEDMLUtils::resolveVariable(CModel * model, const SedVariable * variable)
   const CDataObject * obj = resolveXPath(model, variable->getTarget());
 
   std::string term = variable->isSetTerm() ? variable->getTerm() : variable->getSymbol();
-
 
   if (!term.empty())
     {
@@ -485,7 +484,6 @@ std::string SEDMLUtils::getXPathForObjectAndType(const CDataObject & object, con
         }
     }
 
-
   return std::string();
 }
 
@@ -591,10 +589,18 @@ for (auto item : COPASI_SYMBOL_MAP)
 
 std::string SEDMLUtils::argbToRgba(const std::string & argb, bool includeHash)
 {
-  if (argb.length() < 8)
-    return argb;
-
   int offset = argb[0] == '#' ? 1 : 0;
+
+  if (argb.length() == 7 && offset == 1 && !includeHash)
+    return argb.substr(1);
+
+  if (argb.length() < 8)
+    {
+      if (includeHash && offset == 0)
+        return std::string("#") + argb;
+
+      return argb;
+    }
 
   std::string a = argb.substr(offset, 2);
 
@@ -610,10 +616,18 @@ std::string SEDMLUtils::rgbaToArgb(const std::string & rgba, bool includeHash)
 {
   std::string::size_type len = rgba.length();
 
-  if (len < 8)
-    return rgba;
+  if (len == 7 && rgba[0] == '#' && !includeHash)
+    return rgba.substr(1);
 
   int offset = rgba[0] == '#' ? 1 : 0;
+
+  if (len < 8)
+    {
+      if (includeHash && offset == 0)
+        return std::string("#") + rgba;
+
+      return rgba;
+    }
 
   std::string a = rgba.substr(len - 2);
 
@@ -753,7 +767,6 @@ std::map< int, int > SEDMLUtils::COPASI_LINE_STYLE_MAP =
   {(int) CPlotItem::LineStyle::Solid, SEDML_LINETYPE_SOLID},
 };
 
-
 std::map< std::string, std::string > SEDMLUtils::PARAMETER_KISAO_MAP =
 {
   {"KISAO:0000209", "Relative Tolerance"},
@@ -841,7 +854,7 @@ VariableInfo::VariableInfo(const CDataObject * pObject)
         term = SEDML_KISAO_RATE;
     }
 
-  mIsValid = true;
+  mIsValid = (!xpath.empty()) || (!term.empty()) || (!symbol.empty());
 }
 
 SedVariable*

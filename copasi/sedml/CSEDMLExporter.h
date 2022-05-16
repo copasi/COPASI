@@ -172,7 +172,7 @@ public:
 
   /**
    * resets the internal map of created elements
-   * (will be called automatically by createSEDMLDocument() )
+   * (will be called automatically by createSEDMLDocument())
    */
   void clearMaps();
 
@@ -248,7 +248,6 @@ public:
                          size_t n,
                          SedRepeatedTask * task);
 
-
   /**
    * @return whether only executable tasks should be exported
    */
@@ -296,7 +295,6 @@ public:
    */
   void freeSedMLDocument();
 
-
   /**
    * sets the sbml namespaces
    *
@@ -341,7 +339,6 @@ protected:
    * as a std::string.
    */
   static std::string getParameterValueAsString(const CCopasiParameter * pParameter);
-
 };
 
 #endif /* CSEDMLEXPORTER_H_ */

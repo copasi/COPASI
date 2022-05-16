@@ -1,4 +1,4 @@
-// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -9,7 +9,6 @@ extern std::string getTestFile(const std::string & fileName);
 
 #include <copasi/CopasiTypes.h>
 #include <sbml/SBMLTypes.h>
-
 
 TEST_CASE("1: importing sbml files", "[copasi,sbml]")
 {
@@ -44,11 +43,8 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
     expression = importer.createUnitExpressionFor(unit);
     REQUIRE((expression == "1/(#*d)" || expression == "1/(d*#)"));
 
-
     delete sbml_doc;
-
   }
-
 
   SECTION("volume units")
   {
@@ -137,13 +133,10 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
     REQUIRE(unit->getMultiplier() == 1);
     REQUIRE(unit->getExponent() == -1);
     REQUIRE(unit->getKind() == UNIT_KIND_ITEM);
-
   }
 
   CRootContainer::removeDatamodel(dm);
 }
-
-
 
 #include <copasi/report/CDataHandler.h>
 
@@ -187,7 +180,6 @@ TEST_CASE("3: creating a new model testing avogadro", "[copasi,sbml]")
     REQUIRE(dh.getDuringData()[0][0] == avo_num);
   }
 
-
   {
     avo_num = 7e23;
     model->setAvogadro(avo_num, CCore::Framework::Concentration);
@@ -200,11 +192,8 @@ TEST_CASE("3: creating a new model testing avogadro", "[copasi,sbml]")
     REQUIRE(dh.getDuringData()[0][0] == avo_num);
   }
 
-
   CRootContainer::removeDatamodel(dm);
 }
-
-
 
 TEST_CASE("2: importing an sbml file and saving as COPASI file", "[copasi,sbml]")
 {
@@ -219,7 +208,7 @@ TEST_CASE("2: importing an sbml file and saving as COPASI file", "[copasi,sbml]"
   // create model values for amounts:
   auto * model = dm->getModel();
 
-for (auto & metab : model->getMetabolites())
+  for (auto & metab : model->getMetabolites())
     {
       std::stringstream str;
       str << metab.getObjectName() << "_amount";
@@ -256,7 +245,6 @@ for (auto & metab : model->getMetabolites())
   CRootContainer::removeDatamodel(dm);
 }
 
-
 TEST_CASE("importing an SBML file multiple times", "[copasi,sbml]")
 {
 
@@ -269,14 +257,12 @@ TEST_CASE("importing an SBML file multiple times", "[copasi,sbml]")
   REQUIRE(dm->importSBML(test_file) == true);
   REQUIRE(dm->importSBML(test_file) == true);
 
-
   std::string copasi_model = dm->saveModelToString();
 
   std::string sbml_model = dm->exportSBMLToString(NULL, 3, 1);
 
   CRootContainer::removeDatamodel(dm);
 }
-
 
 TEST_CASE("importing an SBML file and delete used function definition", "[copasi,sbml]")
 {
@@ -306,8 +292,6 @@ TEST_CASE("importing an SBML file and delete used function definition", "[copasi
 
   CRootContainer::removeDatamodel(dm);
 }
-
-
 
 //#include <filesystem>
 //#include <copasi/utilities/CCopasiException.h>
@@ -348,15 +332,15 @@ TEST_CASE("importing an SBML file and delete used function definition", "[copasi
 //          bool result = dm->importSBML(currentPath.string(), NULL);
 //          std::cout << std::setw(itEntry.depth() * 3) << "";
 //          std::cout << "sbml:  " << filenameStr << ": " << result << '\n';
-//        }
+//}
 //      catch (CCopasiException & ex)
 //        {
 //          std::cerr << "exception: " << ex.getMessage().getText() << '\n';
-//        }
+//}
 //      catch (...)
 //        {
 //          std::cerr << "unknown exception!\n";
-//        }
+//}
 //
 //      // remove unused functions
 //      dm->newModel(NULL, true);
@@ -366,8 +350,8 @@ TEST_CASE("importing an SBML file and delete used function definition", "[copasi
 //      {
 //          if (!functions[Index].isReadOnly())
 //          CRootContainer::getFunctionList()->removeFunction(functions[Index].getKey());
-//      }
+//}
 //
-//    }
+//}
 //
 //}

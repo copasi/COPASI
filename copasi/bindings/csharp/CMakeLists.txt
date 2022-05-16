@@ -152,7 +152,6 @@ add_custom_target(binding_csharp_swig DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/csharp
 # 
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${COPASI_INCLUDE_DIRS})
 
 add_library(binding_csharp_native_lib SHARED ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp) 
 add_dependencies(binding_csharp_native_lib binding_csharp_swig)
