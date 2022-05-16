@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1136,19 +1136,19 @@ void CModel::buildMoieties()
 
 void CModel::clearSbmlIds()
 {
-for (auto & comp : getCompartments())
+  for (auto & comp : getCompartments())
     comp.setSBMLId("");
 
-for (auto & metab : getMetabolites())
+  for (auto & metab : getMetabolites())
     metab.setSBMLId("");
 
-for (auto & param : getModelValues())
+  for (auto & param : getModelValues())
     param.setSBMLId("");
 
-for (auto & reaction : getReactions())
+  for (auto & reaction : getReactions())
     reaction.setSBMLId("");
 
-for (auto & c_event : getEvents())
+  for (auto & c_event : getEvents())
     c_event.setSBMLId("");
 }
 
@@ -1676,11 +1676,6 @@ bool CModel::setVolumeUnit(const std::string & name)
   return true;
 }
 
-bool CModel::setVolumeUnit(const CUnit::VolumeUnit & unitEnum)
-{
-  return setVolumeUnit(CUnit::VolumeUnitNames[unitEnum]);
-}
-
 const std::string & CModel::getVolumeUnit() const
 {
   return mVolumeUnit;
@@ -1689,11 +1684,6 @@ const std::string & CModel::getVolumeUnit() const
 std::string CModel::getVolumeUnitName() const
 {
   return mVolumeUnit;
-}
-
-CUnit::VolumeUnit CModel::getVolumeUnitEnum() const
-{
-  return toEnum(mVolumeUnit.c_str(), CUnit::VolumeUnitNames, CUnit::ml);
 }
 
 //****
@@ -1708,11 +1698,6 @@ bool CModel::setAreaUnit(const std::string & name)
   return true;
 }
 
-bool CModel::setAreaUnit(const CUnit::AreaUnit & unitEnum)
-{
-  return setAreaUnit(CUnit::AreaUnitNames[unitEnum]);
-}
-
 const std::string & CModel::getAreaUnit() const
 {
   return mAreaUnit;
@@ -1721,11 +1706,6 @@ const std::string & CModel::getAreaUnit() const
 std::string CModel::getAreaUnitName() const
 {
   return mAreaUnit;
-}
-
-CUnit::AreaUnit CModel::getAreaUnitEnum() const
-{
-  return toEnum(mAreaUnit.c_str(), CUnit::AreaUnitNames, CUnit::m2);
 }
 
 //****
@@ -1739,11 +1719,6 @@ bool CModel::setLengthUnit(const std::string & name)
   return true;
 }
 
-bool CModel::setLengthUnit(const CUnit::LengthUnit & unitEnum)
-{
-  return setLengthUnit(CUnit::LengthUnitNames[unitEnum]);
-}
-
 const std::string & CModel::getLengthUnit() const
 {
   return mLengthUnit;
@@ -1752,11 +1727,6 @@ const std::string & CModel::getLengthUnit() const
 std::string CModel::getLengthUnitName() const
 {
   return mLengthUnit;
-}
-
-CUnit::LengthUnit CModel::getLengthUnitEnum() const
-{
-  return toEnum(mLengthUnit.c_str(), CUnit::LengthUnitNames, CUnit::m);
 }
 
 //****
@@ -1771,11 +1741,6 @@ bool CModel::setTimeUnit(const std::string & name)
   return true;
 }
 
-bool CModel::setTimeUnit(const CUnit::TimeUnit & unitEnum)
-{
-  return setTimeUnit(CUnit::TimeUnitNames[unitEnum]);
-}
-
 const std::string & CModel::getTimeUnit() const
 {
   return mTimeUnit;
@@ -1784,11 +1749,6 @@ const std::string & CModel::getTimeUnit() const
 std::string CModel::getTimeUnitName() const
 {
   return mTimeUnit;
-}
-
-CUnit::TimeUnit CModel::getTimeUnitEnum() const
-{
-  return toEnum(mTimeUnit.c_str(), CUnit::TimeUnitNames, CUnit::s);
 }
 
 //****
@@ -1823,13 +1783,6 @@ bool CModel::setQuantityUnit(const std::string & name,
   return true;
 }
 
-bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum,
-                             const CCore::Framework & frameWork)
-{
-  return setQuantityUnit(CUnit::QuantityUnitNames[unitEnum],
-                         frameWork);
-}
-
 const std::string CModel::getQuantityUnit() const
 {
   return mQuantityUnit;
@@ -1838,16 +1791,6 @@ const std::string CModel::getQuantityUnit() const
 std::string CModel::getQuantityUnitName() const
 {
   return mQuantityUnit;
-}
-
-std::string CModel::getQuantityUnitOldXMLName() const
-{
-  return mQuantityUnit;
-}
-
-CUnit::QuantityUnit CModel::getQuantityUnitEnum() const
-{
-  return toEnum(mQuantityUnit.c_str(), CUnit::QuantityUnitNames, CUnit::mMol);
 }
 
 void CModel::setModelType(const CModel::ModelType & modelType)
@@ -2664,7 +2607,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-  #pragma region   //find_experiment
+#pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2714,7 +2657,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-  #pragma endregion //find_experiment
+#pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::Task::timeCourse)
     {
@@ -3422,7 +3365,7 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
                 TreesWithDiscontinuities.push_back((*ppEntity)->getNoiseExpressionPtr());
               }
 
-            // Intentionally no break statement!
+          // Intentionally no break statement!
 
           case Status::ASSIGNMENT:
 

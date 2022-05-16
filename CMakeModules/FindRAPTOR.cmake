@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -17,7 +17,7 @@
 # Once done this will define
 #
 #  RAPTOR_FOUND       - system has Raptor
-#  RAPTOR_LIBRARIES   - Link these to use Raptor
+#  RAPTOR_LIBRARY   - Link these to use Raptor
 #  RAPTOR_INCLUDE_DIR - Include directory for using Raptor
 #  RAPTOR_DEFINITIONS - Compiler switches required for using Raptor
 #
@@ -33,21 +33,18 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
-
-MACRO (FIND_RAPTOR)
-
-ENDMACRO ()
-
-
+string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
+set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
 
 # Check if we have cached results in case the last round was successful.
-if (NOT (RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARIES) OR NOT RAPTOR_FOUND)
+if (NOT (RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARY) OR NOT RAPTOR_FOUND)
 
     set(RAPTOR_LDFLAGS)
 	
     find_path(RAPTOR_INCLUDE_DIR raptor.h
 	    PATHS $ENV{RAPTOR_DIR}/include
 	          $ENV{RAPTOR_DIR}
+              ${${_PROJECT_DEPENDENCY_DIR}}/include
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/include        # Fink
@@ -63,9 +60,10 @@ if (NOT (RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARIES) OR NOT RAPTOR_FOUND)
 
     find_library(RAPTOR_LIBRARY 
 	    NAMES raptor
-	    PATHS $ENV{RAPTOR_DIR}/lib
+	    PATHS $ENV{RAPTOR_DIR}/${CMAKE_INSTALL_LIBDIR}
 	          $ENV{RAPTOR_DIR}/lib-dbg
 	          $ENV{RAPTOR_DIR}
+              ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/lib        # Fink
@@ -99,6 +97,19 @@ if (NOT (RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARIES) OR NOT RAPTOR_FOUND)
 
 endif () # Check for cached values
 
+
+if (NOT RAPTOR_VERSION AND RAPTOR_INCLUDE_DIR AND EXISTS "${RAPTOR_INCLUDE_DIR}/win32_raptor_config.h")
+
+file(STRINGS "${RAPTOR_INCLUDE_DIR}/win32_raptor_config.h" raptor_version_str
+REGEX "^#define[\t ]+VERSION[\t ]+\".*\"")
+
+string(REGEX REPLACE "^#define[\t ]+VERSION[\t ]+\"([^\"]*)\".*" "\\1"
+RAPTOR_VERSION "${raptor_version_str}")
+unset(raptor_version_str)
+
+
+endif()
+
 include(FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args(
@@ -114,3 +125,15 @@ if (NOT RAPTOR_FOUND AND Raptor_FIND_VERSION_MAJOR EQUAL "2" AND NOT Raptor_FIND
         message( STATUS "You have raptor1 version ${PC_RAPTOR_VERSION} installed. Please update." )
     endif ()
 endif ()
+
+if(NOT TARGET RAPTOR::RAPTOR)
+  add_library(RAPTOR::RAPTOR UNKNOWN IMPORTED)
+  set_target_properties(RAPTOR::RAPTOR PROPERTIES
+    IMPORTED_LOCATION "${RAPTOR_LIBRARY}"
+    INTERFACE_INCLUDE_DIRECTORIES "${RAPTOR_INCLUDE_DIR}")
+endif()
+
+if ((WIN32 AND NOT CYGWIN) AND RAPTOR_FOUND)
+  set_target_properties(RAPTOR::RAPTOR PROPERTIES 
+  INTERFACE_COMPILE_DEFINITIONS "RAPTOR_STATIC")
+endif()

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -42,6 +42,13 @@
 #include "icons/copasi_beta_background.xpm"
 
 #include "copasi/copasi.h"
+#include "copasi/config.h"
+#include <copasi/UI/qtUtilities.h>
+#include <copasi/math/CJitCompiler.h>
+#include <copasi/utilities/CVersion.h>
+#ifdef QWT_VERSION
+#include <qwt_global.h>
+#endif
 
 const char *AboutDialog::text =
   "<h2>COPASI %1</h2>"
@@ -69,22 +76,39 @@ const char *AboutDialog::text =
   "</p><p>"
   "The following software and algorithms are being used by COPASI: "
   "<ul>"
-  "<li>Qt %4 GUI framework</li>"
+  "<li>Qt %2 GUI framework</li>"
   "<li>Qwt %3</li>"
   "<li>QwtPlot3D 0.2.7</li>"
-  "<li>Expat 2.0.1 XML parser</li>"
-  "<li>libSBML %2</li>"
-  "<li>raptor 1.4.21</li>"
-  "<li>Systems Biology Workbench 2.7.10</li>"
+  "<li>Expat %4 XML parser</li>"
+  "<li>libSBML %5</li>"
+  "<li>libSEDML %6</li>"
+  "<li>libCombine %7</li>"
+  "<li>raptor %8</li>"
+  "<li>Systems Biology Workbench %9</li>"
   "<li>CLAPACK 3.0, LAPACK 3.1.0, or Intel Math Kernel Library</li>"
   "<li>LSODA and LSODAR from ODEPACK</li>"
   "<li>Mersenne Twister random number generator, "
   "    Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura</li>"
-  "<li>NativeJIT just in time compiler (%5)</li>"
+  "<li>NativeJIT just in time compiler (%10)</li>"
   "<li>cpu_features to determine JIT support</li>"
   "</ul>"
   "</p>"
   ;
+
+QString AboutDialog::getDefaultVersionText()
+{
+  return QString(AboutDialog::text)
+         .arg(FROM_UTF8(CVersion::VERSION.getVersion()))            // 1
+         .arg(QT_VERSION_STR)                                       // 2
+         .arg(QWT_VERSION_STR)                                      // 3
+         .arg(COPASI_EXPAT_VERSION)                                 // 4
+         .arg(COPASI_LIBSBML_VERSION)                               // 5
+         .arg(COPASI_LIBSEDML_VERSION)                              // 6
+         .arg(COPASI_LIBCOMBINE_VERSION)                            // 7
+         .arg(COPASI_RAPTOR_VERSION)                                // 8
+         .arg(COPASI_SBW_VERSION)                                   // 9
+         .arg(CJitCompiler::JitEnabled() ? "enabled" : "disabled"); //10
+}
 
 AboutDialog::AboutDialog(QWidget *parent,
                          const QString &text,

@@ -133,7 +133,6 @@ add_custom_command(
 add_custom_target(binding_java_swig DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/java.i)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${COPASI_INCLUDE_DIRS})
 
 # if additional directories are set be sure to include them
 if (JNI_INCLUDE_DIRS)

@@ -1,3 +1,8 @@
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -111,13 +116,13 @@ if (NOT EXISTS ${LIBEXPAT_INCLUDE_DIR})
 set (LIBEXPAT_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "expat include directory" FORCE)
 endif()
 if (NOT EXISTS ${LIBEXPAT_LIBRARY})
-set (LIBEXPAT_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/expat.lib CACHE FILEPATH "expat library" FORCE)
+set (LIBEXPAT_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/libexpat.lib CACHE FILEPATH "expat library" FORCE)
 endif()
 if (NOT EXISTS ${EXPAT_INCLUDE_DIR})
 set (EXPAT_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "expat include directory" FORCE)
 endif()
 if (NOT EXISTS ${EXPAT_LIBRARY})
-set (EXPAT_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/expat.lib CACHE FILEPATH "expat library" FORCE)
+set (EXPAT_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/libexpat.lib CACHE FILEPATH "expat library" FORCE)
 endif()
 
 # mml

@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -35,7 +35,6 @@ endif(POLICY CMP0048)
 
 project (exportSedML VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 
-include_directories(${COPASI_INCLUDE_DIRS})
 
 set(SOURCES ${SOURCES} exportSedML.cpp)
 

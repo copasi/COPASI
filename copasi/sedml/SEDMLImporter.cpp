@@ -756,7 +756,7 @@ void SEDMLImporter::applyStyleToCopasiItem(
 
   if (marker)
     {
-      if (marker->isSetType())
+      if (marker->isSetType() && marker->getType() != SEDML_MARKERTYPE_NONE)
         {
           auto type = SEDMLUtils::symbolFromSed(marker->getType());
           plItem->setValue< unsigned C_INT32 >(
@@ -998,7 +998,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
           case LIBSEDML_SEV_FATAL:
 
-          // treat unknown as fatal
+            // treat unknown as fatal
           default:
 
             if (pSEDMLError->getErrorId() == 10804)
@@ -1279,7 +1279,7 @@ void SEDMLImporter::importTasks(CDataVectorN< CCopasiTask > * pTaskList)
                         std::stringstream str;
                         std::vector<double> vals = vrange->getValues();
 
-                        for (double val : vals)
+for (double val : vals)
                           str << val << " ";
 
                         group->setValue< std::string >("Values", str.str());

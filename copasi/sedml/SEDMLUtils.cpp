@@ -545,7 +545,7 @@ SEDMLUtils::splitStrings(const std::string &xpath, char delim,
 
 int SEDMLUtils::lineTypeToSed(int linetype)
 {
-  for (auto item : COPASI_LINE_STYLE_MAP)
+for (auto item : COPASI_LINE_STYLE_MAP)
     {
       if (item.first == linetype)
         return item.second;
@@ -556,7 +556,7 @@ int SEDMLUtils::lineTypeToSed(int linetype)
 
 int SEDMLUtils::lineTypeFromSed(int linetype)
 {
-  for (auto item : COPASI_LINE_STYLE_MAP)
+for (auto item : COPASI_LINE_STYLE_MAP)
     {
       if (item.second == linetype)
         return item.first;
@@ -567,7 +567,7 @@ int SEDMLUtils::lineTypeFromSed(int linetype)
 
 int SEDMLUtils::symbolToSed(int symbol)
 {
-  for (auto item : COPASI_SYMBOL_MAP)
+for (auto item : COPASI_SYMBOL_MAP)
     {
       if (item.first == symbol)
         return item.second;
@@ -578,7 +578,7 @@ int SEDMLUtils::symbolToSed(int symbol)
 
 int SEDMLUtils::symbolFromSed(int symbol)
 {
-  for (auto item : COPASI_SYMBOL_MAP)
+for (auto item : COPASI_SYMBOL_MAP)
     {
       if (item.second == symbol)
         return item.first;
@@ -589,10 +589,18 @@ int SEDMLUtils::symbolFromSed(int symbol)
 
 std::string SEDMLUtils::argbToRgba(const std::string & argb, bool includeHash)
 {
-  if (argb.length() < 8)
-    return argb;
-
   int offset = argb[0] == '#' ? 1 : 0;
+
+  if (argb.length() == 7 && offset == 1 && !includeHash)
+    return argb.substr(1);
+
+  if (argb.length() < 8)
+    {
+      if (includeHash && offset == 0)
+        return std::string("#") + argb;
+
+      return argb;
+    }
 
   std::string a = argb.substr(offset, 2);
 
@@ -608,10 +616,18 @@ std::string SEDMLUtils::rgbaToArgb(const std::string & rgba, bool includeHash)
 {
   std::string::size_type len = rgba.length();
 
-  if (len < 8)
-    return rgba;
+  if (len == 7 && rgba[0] == '#' && !includeHash)
+    return rgba.substr(1);
 
   int offset = rgba[0] == '#' ? 1 : 0;
+
+  if (len < 8)
+    {
+      if (includeHash && offset == 0)
+        return std::string("#") + rgba;
+
+      return rgba;
+    }
 
   std::string a = rgba.substr(len - 2);
 
@@ -838,7 +854,7 @@ VariableInfo::VariableInfo(const CDataObject * pObject)
         term = SEDML_KISAO_RATE;
     }
 
-  mIsValid = true;
+  mIsValid = (!xpath.empty()) || (!term.empty()) || (!symbol.empty());
 }
 
 SedVariable*

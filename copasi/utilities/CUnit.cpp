@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -69,27 +69,6 @@ std::list< std::pair< std::string, CUnit > > sortSymbols(const std::set< std::st
 
 // static
 C_FLOAT64 CUnit::Avogadro(6.02214076e23); // http://physics.nist.gov/cgi-bin/cuu/Value?na (Thu June 24 09:12:27 EST 2021)
-
-const char * CUnit::VolumeUnitNames[] =
-{"dimensionless", "m\xc2\xb3", "l", "ml", "\xc2\xb5l", "nl", "pl", "fl", NULL};
-
-const char * CUnit::AreaUnitNames[] =
-{"dimensionless", "m\xc2\xb2", "dm\xc2\xb2", "cm\xc2\xb2", "mm\xc2\xb2", "\xc2\xb5m\xc2\xb2", "nm\xc2\xb2", "pm\xc2\xb2", "fm\xc2\xb2", NULL};
-
-const char * CUnit::LengthUnitNames[] =
-{"dimensionless", "m", "dm", "cm", "mm", "\xc2\xb5m", "nm", "pm", "fm", NULL};
-
-const char * CUnit::TimeUnitNames[] =
-{"dimensionless", "d", "h", "min", "s", "ms", "\xc2\xb5s", "ns", "ps", "fs", NULL};
-
-// "mol" is the correct name, however in the COPASI XML files "Mol" is used
-// up to build 18
-
-const char * CUnit::QuantityUnitOldXMLNames[] =
-{"dimensionless", "Mol", "mMol", "\xc2\xb5Mol", "nMol", "pMol", "fMol", "#", NULL};
-
-const char * CUnit::QuantityUnitNames[] =
-{"dimensionless", "mol", "mmol", "\xc2\xb5mol", "nmol", "pmol", "fmol", "#", NULL};
 
 // static
 std::string CUnit::replaceSymbol(const std::string & expression,
@@ -951,7 +930,7 @@ bool CUnit::isUnitType(UnitType type) const
 
   switch (type)
     {
-      case time:
+      case UnitType::time:
         kind = CBaseUnit::second;
         exponent = 1;
 
@@ -962,7 +941,7 @@ bool CUnit::isUnitType(UnitType type) const
 
         break;
 
-      case quantity:
+      case UnitType::quantity:
         kind = CBaseUnit::item;
         exponent = 1;
 
@@ -975,7 +954,7 @@ bool CUnit::isUnitType(UnitType type) const
 
         break;
 
-      case volume:
+      case UnitType::volume:
         kind = CBaseUnit::meter;
         exponent = 3;
 
@@ -986,7 +965,7 @@ bool CUnit::isUnitType(UnitType type) const
 
         break;
 
-      case area:
+      case UnitType::area:
         kind = CBaseUnit::meter;
         exponent = 2;
 
@@ -997,7 +976,7 @@ bool CUnit::isUnitType(UnitType type) const
 
         break;
 
-      case length:
+      case UnitType::length:
         kind = CBaseUnit::meter;
         exponent = 1;
 
