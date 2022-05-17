@@ -349,7 +349,7 @@ void PlotWindow::printPlot()
   if (dialog.exec())
     {
       QPainter painter(&printer);
-      mpPlot->render(&painter, printer.pageRect());
+      mpPlot->render(&painter,QRect());
       //#ifdef COPASI_USE_QTCHARTS
 //      #else
 //#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)

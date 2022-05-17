@@ -1003,7 +1003,7 @@ bool CQCustomPlot::saveData(const std::string & filename)
 
           for (int i = 0; i < curve->dataCount(); ++i)
             {
-              auto * data = curve->data()->at(i);
+              auto data = curve->data()->at(i);
               fs << data->key << "\t" << data->value << "\n";
             }
         }
