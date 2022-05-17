@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -94,6 +94,17 @@
       MY_FUNNY_INDEX[1] = index2;
       return (*($self))[MY_FUNNY_INDEX];
    }
+
+   /** overload for easy access of 2d arrays */
+   virtual CArrayInterface::data_type get(int index1, int index2, int index3)
+   {  
+      CArrayInterface::index_type MY_FUNNY_INDEX(3);
+      MY_FUNNY_INDEX[0] = index1;
+      MY_FUNNY_INDEX[1] = index2;
+      MY_FUNNY_INDEX[2] = index3;
+      return (*($self))[MY_FUNNY_INDEX];
+   }
+
 
 };
 
