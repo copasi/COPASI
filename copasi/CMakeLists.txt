@@ -656,6 +656,11 @@ endif()
   if (NOT QT5_USE_DATAVISUALIZATION)
     SET(UI_LIBS ${UI_LIBS} ${QWTPLOT3D_LIBRARY})
   endif()
+  
+  if (COPASI_USE_QCUSTOMPLOT)
+    SET(UI_LIBS ${UI_LIBS} QCP::QCP)  
+  endif()
+  
   if (${CMAKE_VERSION} VERSION_GREATER "2.8.11")
     target_include_directories(libCOPASIUI PUBLIC ${GUI_INCLUDE_DIRS})
     target_link_libraries(libCOPASIUI libCOPASISE-static ${UI_LIBS})
