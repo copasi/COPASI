@@ -1,31 +1,12 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
 // the plot object for COPASI
 
-#ifndef COPASIPLOT_H
-#define COPASIPLOT_H
+#ifndef CHARTSPLOT_H
+#define CHARTSPLOT_H
 
 #include <string>
 #include <vector>
@@ -40,40 +21,31 @@
 
 #include <copasi/config.h>
 
-#if !defined(COPASI_USE_QTCHARTS) && !defined(COPASI_USE_QCUSTOMPLOT)
+#ifdef COPASI_USE_QTCHARTS
 
-#include <qwt_plot.h>
-#include <qwt_painter.h>
-#include <qwt_symbol.h>
+#  include <QtCharts/QChartView>
+#  include <QtCharts/QChart>
+#  include <QtCharts/QAbstractSeries>
+#  include <QtCharts/QAbstractAxis>
+#  include <QtCharts/QScatterSeries>
 
-#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-#include <qwt_compat.h>
-#else
-#include <qwt_data.h>
-#include <qwt_raster_data.h>
-#endif
+#  include "copasi/plot/CPlotItem.h"
 
-#include <qwt_plot_curve.h>
-#include <qwt_plot_spectrogram.h>
-
-#include "copasi/plot/CPlotItem.h"
-
-#include "copasi/core/CDataObject.h"
-#include "copasi/output/COutputHandler.h"
-#include "copasi/plotUI/CPlotInterface.h"
-#include "copasi/utilities/CopasiTime.h"
-#include "copasi/core/CVector.h"
-#include "copasi/core/CMatrix.h"
+#  include "copasi/core/CDataObject.h"
+#  include "copasi/output/COutputHandler.h"
+#  include "copasi/plotUI/CPlotInterface.h"
+#  include "copasi/utilities/CopasiTime.h"
+#  include "copasi/core/CVector.h"
+#  include "copasi/core/CMatrix.h"
 
 //*******************************************************
 
 class CPlotSpec2Vector;
 class CPlotSpecification;
-class QwtPlotZoomer;
-class C2DPlotCurve;
 class CPlotSpectogram;
 
-class CopasiPlot : public QwtPlot
+class ChartsPlot
+  : public QT_CHARTS_NAMESPACE::QChartView
   , public CPlotInterface
 {
   Q_OBJECT
@@ -82,7 +54,7 @@ private:
    * Default constructor which may never be called.
    * @param QWidget* parent (default: NULL)
    */
-  CopasiPlot(QWidget* parent = NULL);
+  ChartsPlot(QWidget * parent = NULL);
 
 public:
   /**
@@ -90,25 +62,29 @@ public:
    * @param const CPlotSpecification* plotspec
    * @param QWidget* parent (default: NULL)
    */
-  CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent = NULL);
+  ChartsPlot(const CPlotSpecification * plotspec, QWidget * parent = NULL);
 
   /**
    * Initialize the the plot from the specification
    * @param const CPlotSpecification* plotspec
    */
-  bool initFromSpec(const CPlotSpecification* plotspec);
+  virtual bool initFromSpec(const CPlotSpecification * plotspec);
 
-  void setSymbol(C2DPlotCurve * pCurve, QwtSymbol::Style symbol, QColor color, int symbolSize, float penWidth);
+  void setSymbol(QT_CHARTS_NAMESPACE::QAbstractSeries * pCurve, CPlotItem::SymbolType symbol, QColor color, int symbolSize, float penWidth);
+
+  virtual QString titleText() const;
+
+  virtual void update();
 
   /**
    * @return the current plot specification
    */
-  const CPlotSpecification* getPlotSpecification() const;
+  virtual const CPlotSpecification * getPlotSpecification() const;
 
   /**
    * Destructor
    */
-  virtual ~CopasiPlot();
+  virtual ~ChartsPlot();
 
   /**
    * compile the object list from name vector
@@ -140,26 +116,43 @@ public:
    * @param const std::string & filename
    * @return bool success
    */
-  bool saveData(const std::string & filename);
+  virtual bool saveData(const std::string & filename);
 
   /**
    * Shows or hide all curves depending on whether visibility is false or true
    * @param const bool & visibility
    */
-  void setCurvesVisibility(const bool & visibility);
+  virtual void setCurvesVisibility(const bool & visibility);
+
+  static QPointF getRange(const QT_CHARTS_NAMESPACE::QAbstractAxis * axis);
 
 public slots:
   virtual void replot();
-#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-  virtual void legendChecked(const QVariant &, bool on);
-#endif
+  void connectMarkers();
+  void disconnectMarkers();
+
+  void handleMarkerClicked();
+
+  virtual void toggleLogX(bool logX);
+  virtual void toggleLogY(bool logY);
+  virtual void render(QPainter *, QRect);
+  virtual void resetZoom();
+
+protected:
+  bool viewportEvent(QEvent * event);
+  void mousePressEvent(QMouseEvent * event);
+  void mouseMoveEvent(QMouseEvent * event);
+  void mouseReleaseEvent(QMouseEvent * event);
+  void keyPressEvent(QKeyEvent * event);
 
 private:
+  bool m_isTouching;
 
+private:
   /**
    * @return a spectogram for the given plot item.
    */
-  CPlotSpectogram* createSpectogram(const CPlotItem *plotItem);
+  CPlotSpectogram * createSpectogram(const CPlotItem * plotItem);
 
   /**
    * Tell the curves where the data is located. It must be called
@@ -191,21 +184,13 @@ private:
   void setAxisUnits(const C_INT32 & index,
                     const CObjectInterface * pObject);
 
-  virtual void toggleLogX(bool logX);
-  virtual void toggleLogY(bool logY);
-  virtual void resetZoom();
-
-  virtual QString titleText() const;
-
-  virtual void render(QPainter * painter, QRect rect);
-
 private slots:
   /**
    * Slot used to turn curves on and of through the legend buttons.
    * @param QwtPlotItem *item
    * @param bool on
    */
-  void showCurve(QwtPlotItem *item, bool on);
+  void showCurve(QT_CHARTS_NAMESPACE::QAbstractSeries * item, bool on);
 
 private:
   /**
@@ -237,7 +222,7 @@ private:
    * The order of 2d curve objects used when the data is saved.
    * The first object in each vector is the object for the X axis.
    */
-  std::vector< std::vector < std::string > > mSaveCurveObjects;
+  std::vector< std::vector< std::string > > mSaveCurveObjects;
   std::map< std::string, std::string > mCnNameMap;
 
   /**
@@ -253,7 +238,7 @@ private:
   /**
    * Map curve and channel to index pair indicating where the data is stored.
    */
-  std::vector< std::vector< std::pair < Activity, size_t > > > mDataIndex;
+  std::vector< std::vector< std::pair< Activity, size_t > > > mDataIndex;
 
   /**
    * Map activity and object to index indicating where data is stored within
@@ -264,12 +249,12 @@ private:
   /**
    * The list of curves
    */
-  CVector< C2DPlotCurve * > mCurves;
+  std::vector< QT_CHARTS_NAMESPACE::QAbstractSeries * > mCurves;
 
   /**
    * A map between a specification identified by its key and a curve
    */
-  std::map< std::string, C2DPlotCurve * > mCurveMap;
+  std::map< std::string, QT_CHARTS_NAMESPACE::QAbstractSeries * > mCurveMap;
 
   /**
    * The list of spectograms
@@ -279,7 +264,7 @@ private:
   /**
    * A map between a specification identified by its key and a curve
    */
-  std::map< std::string, CPlotSpectogram* > mSpectogramMap;
+  std::map< std::string, CPlotSpectogram * > mSpectogramMap;
 
   /**
    * Count of data lines recorded during activity BEFORE.
@@ -329,17 +314,31 @@ private:
    */
   bool mIgnoreUpdate;
 
-public:
-  /**
-   * Pointer to the zooming engine for the plot.
-   */
-  QwtPlotZoomer * mpZoomer;
-
 protected:
   bool mReplotFinished;
 
 signals:
   void replotSignal();
 };
-#endif // !defined(COPASI_USE_QTCHARTS) && !defined(COPASI_USE_QCUSTOMPLOT)
-#endif // COPASIPLOT_H
+
+QT_BEGIN_NAMESPACE
+class QGestureEvent;
+QT_END_NAMESPACE
+
+class CopasiChart : public QT_CHARTS_NAMESPACE::QChart
+{
+public:
+  explicit CopasiChart(QGraphicsItem * parent = nullptr, Qt::WindowFlags wFlags = {});
+  ~CopasiChart();
+
+protected:
+  bool sceneEvent(QEvent * event);
+
+private:
+  bool gestureEvent(QGestureEvent * event);
+
+private:
+};
+
+#endif // COPASI_USE_QTCHARTS
+#endif // CHARTSPLOT_H

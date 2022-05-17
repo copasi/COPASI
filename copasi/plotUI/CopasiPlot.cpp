@@ -71,6 +71,33 @@
 
 #include <QApplication>
 
+#if !defined(COPASI_USE_QTCHARTS) && !defined(COPASI_USE_QCUSTOMPLOT)
+
+#  include <qwt_plot.h>
+#  include <qwt_scale_engine.h>
+
+#  if QWT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+#    include <qwt_plot_renderer.h>
+#    include <qwt_text.h>
+#  endif
+
+#  if QWT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+// taken from qwt examples/bode
+class PrintFilter : public QwtPlotPrintFilter
+{
+public:
+  PrintFilter() {};
+
+  virtual QFont font(const QFont & f, Item, int) const
+  {
+    QFont f2 = f;
+    f2.setPointSize((int)(f.pointSize() * 0.75));
+    return f2;
+  }
+};
+#  endif
+
+
 #if QT_VERSION > QT_VERSION_CHECK(6,0,0)
 #include <QRegularExpression>
 #endif
@@ -291,10 +318,10 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
 #endif
       QwtValueList contourLevels;
 
-      foreach (const QString & level, list)
-        {
-          contourLevels += level.toDouble();
-        }
+      foreach(const QString & level, list)
+      {
+        contourLevels += level.toDouble();
+      }
 
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
@@ -1543,6 +1570,69 @@ void CopasiPlot::setAxisUnits(const C_INT32 & index,
   return;
 }
 
+void CopasiPlot::toggleLogX(bool logX)
+{
+  if (logX)
+    {
+
+#  if QWT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+      setAxisScaleEngine(QwtPlot::xBottom, new QwtLogScaleEngine());
+#  else
+      setAxisScaleEngine(QwtPlot::xBottom, new QwtLog10ScaleEngine());
+#  endif
+    }
+  else
+    {
+      setAxisScaleEngine(QwtPlot::xBottom, new QwtLinearScaleEngine());
+    }
+
+  setAxisAutoScale(QwtPlot::xBottom);
+  replot();
+  update();
+}
+
+void CopasiPlot::toggleLogY(bool logY)
+{
+  if (logY)
+    {
+#  if QWT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+      setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine());
+#  else
+      setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine());
+#  endif
+    }
+  else
+    {
+      setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
+    }
+
+  setAxisAutoScale(QwtPlot::yLeft);
+  //mpPlot->updateAxes();
+  replot();
+  update();
+}
+
+void CopasiPlot::resetZoom()
+{
+  if (mpZoomer)
+    mpZoomer->zoom(0);
+}
+
+QString CopasiPlot::titleText() const
+{
+  return title().text();
+}
+
+void CopasiPlot::render(QPainter * painter, QRect rect)
+{
+#  if QWT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+  QwtPlotRenderer renderer;
+  renderer.render(this, painter, rect);
+#  else
+  print(&painter, rect, PrintFilter());
+#  endif
+}
+
 // virtual
 void CopasiPlot::replot()
 {
@@ -1577,3 +1667,5 @@ void CopasiPlot::replot()
 
   mReplotFinished = true;
 }
+
+#endif // !defined(COPASI_USE_QTCHARTS) && !defined(COPASI_USE_QCUSTOMPLOT)

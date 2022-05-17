@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,7 +34,20 @@
 #include <QtSvg/QSvgGenerator>
 
 #include "plotwindow.h"
-#include "CopasiPlot.h"
+
+#ifdef COPASI_USE_QCUSTOMPLOT
+#  include "CQCustomPlot.h"
+#  define PLOT_CLASS CQCustomPlot
+#else
+#ifdef COPASI_USE_QTCHARTS
+#  include "ChartsPlot.h"
+#  define PLOT_CLASS ChartsPlot
+#else
+#  include "CopasiPlot.h"
+#  define PLOT_CLASS CopasiPlot
+#endif
+#endif
+
 #include "copasi/plot/CPlotSpecification.h"
 #include "COutputHandlerPlot.h"
 
@@ -45,30 +58,6 @@
 
 #ifdef DEBUG_UI
 #include <QtCore/QtDebug>
-#endif
-
-#include <qwt_plot.h>
-#include <qwt_scale_engine.h>
-
-#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-#include <qwt_plot_renderer.h>
-#include <qwt_text.h>
-#endif
-
-#if QWT_VERSION < QT_VERSION_CHECK(6,0,0)
-// taken from qwt examples/bode
-class PrintFilter: public QwtPlotPrintFilter
-{
-public:
-  PrintFilter() {};
-
-  virtual QFont font(const QFont &f, Item, int) const
-  {
-    QFont f2 = f;
-    f2.setPointSize((int)(f.pointSize() * 0.75));
-    return f2;
-  }
-};
 #endif
 
 //-----------------------------------------------------------------------------
@@ -100,8 +89,9 @@ PlotWindow::PlotWindow(COutputHandlerPlot *pHandler, const CPlotSpecification *p
   createActions();
   createMenus();
   createToolBar();
-  mpPlot = new CopasiPlot(ptrSpec, this);
-  setCentralWidget(mpPlot);
+  PLOT_CLASS * plot = new PLOT_CLASS(ptrSpec, this);
+  setCentralWidget(plot);
+  mpPlot = plot;
   initializing  = true;
   mpaToggleLogX->setChecked(ptrSpec->isLogX());
   mpaToggleLogY->setChecked(ptrSpec->isLogY());
@@ -116,6 +106,10 @@ PlotWindow::PlotWindow(COutputHandlerPlot *pHandler, const CPlotSpecification *p
     {
       mpaDeactivatePlot->setText("Activate");
     }
+
+  grabGesture(Qt::PanGesture);
+  grabGesture(Qt::PinchGesture);
+
 }
 
 void PlotWindow::createMenus()
@@ -227,23 +221,7 @@ void PlotWindow::toggleLogX(bool logX)
 {
   if (initializing) return;
 
-  if (logX)
-    {
-#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-      mpPlot->setAxisScaleEngine(QwtPlot::xBottom, new QwtLogScaleEngine());
-#else
-      mpPlot->setAxisScaleEngine(QwtPlot::xBottom, new QwtLog10ScaleEngine());
-#endif
-    }
-  else
-    {
-      mpPlot->setAxisScaleEngine(QwtPlot::xBottom, new QwtLinearScaleEngine());
-    }
-
-  mpPlot->setAxisAutoScale(QwtPlot::xBottom);
-  mpPlot->updateAxes();
-  mpPlot->replot();
-  mpPlot->update();
+  mpPlot->toggleLogX(logX);
 }
 
 // toggle log Y
@@ -251,23 +229,7 @@ void PlotWindow::toggleLogY(bool logY)
 {
   if (initializing) return;
 
-  if (logY)
-    {
-#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-      mpPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine());
-#else
-      mpPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine());
-#endif
-    }
-  else
-    {
-      mpPlot->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
-    }
-
-  mpPlot->setAxisAutoScale(QwtPlot::yLeft);
-  mpPlot->updateAxes();
-  mpPlot->replot();
-  mpPlot->update();
+  mpPlot->toggleLogY(logY);
 }
 
 //-----------------------------------------------------------------------------
@@ -300,12 +262,7 @@ void PlotWindow::saveToFile(const QString &fileName) const
       pixmap.fill();
       QPainter painter(&pixmap);
       painter.begin(&pixmap);
-#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-      QwtPlotRenderer renderer;
-      renderer.render(mpPlot, &painter, rect);
-#else
-      mpPlot->print(&painter, rect, PrintFilter());
-#endif
+      mpPlot->render(&painter, rect);
       painter.end();
       pixmap.save(fileName, "PNG");
     }
@@ -315,12 +272,7 @@ void PlotWindow::saveToFile(const QString &fileName) const
       generator.setFileName(fileName);
       QPainter painter(&generator);
       painter.begin(&generator);
-#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-      QwtPlotRenderer renderer;
-      renderer.render(mpPlot, &painter, rect);
-#else
-      mpPlot->print(&painter, rect, PrintFilter());
-#endif
+      mpPlot->render(&painter, rect);
       painter.end();
     }
   else if (fileName.endsWith(".pdf"))
@@ -330,12 +282,7 @@ void PlotWindow::saveToFile(const QString &fileName) const
       printer.setOutputFormat(QPrinter::PdfFormat);
       QPainter painter(&printer);
       painter.begin(&printer);
-#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-      QwtPlotRenderer renderer;
-      renderer.render(mpPlot, &painter, rect);
-#else
-      mpPlot->print(&painter, rect, PrintFilter());
-#endif
+      mpPlot->render(&painter, rect);
       painter.end();
     }
 }
@@ -353,8 +300,12 @@ void PlotWindow::printAsImage()
             fileName = CopasiFileDialog::getSaveFileNameAndFilter(filter, this, "Save File Dialog",
                        QString(), "PNG Files (*.png);;SVG Files (*.svg)", "Save to");
       */
-      fileName = CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                 CopasiFileDialog::getDefaultFileName(".pdf"), "PDF Files (*.pdf);;PNG Files (*.png);;SVG Files (*.svg)", "Save Plot as Image", new QString);
+      fileName = CopasiFileDialog::getSaveFileName(
+                   this,
+                   "Save File Dialog",
+                   CopasiFileDialog::getDefaultFileName(".pdf"),
+                   "PDF Files (*.pdf);;PNG Files (*.png);;SVG Files (*.svg)",
+                   "Save Plot as Image", new QString);
 
       if (fileName.isEmpty()) return;
 
@@ -378,7 +329,7 @@ void PlotWindow::printAsImage()
 void PlotWindow::printPlot()
 {
   QPrinter printer;
-  QString docName = mpPlot->title().text();
+  QString docName = mpPlot->titleText();
 
   if (docName.isEmpty())
     {
@@ -397,12 +348,17 @@ void PlotWindow::printPlot()
 
   if (dialog.exec())
     {
-#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-      QwtPlotRenderer renderer;
-      renderer.renderTo(mpPlot, printer);
-#else
-      mpPlot->print(printer, PrintFilter());
-#endif
+      QPainter painter(&printer);
+      mpPlot->render(&painter, printer.pageRect());
+      //#ifdef COPASI_USE_QTCHARTS
+//      #else
+//#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
+//      QwtPlotRenderer renderer;
+//      renderer.renderTo(mpPlot, printer);
+//#else
+//      mpPlot->print(printer, PrintFilter());
+//#endif
+//#endif
     }
 }
 
@@ -442,12 +398,10 @@ void PlotWindow::slotSaveData()
     }
 }
 
-#include "scrollzoomer.h"
-
 void PlotWindow::slotZoomOut()
 {
-  if (mpPlot && mpPlot->mpZoomer)
-    mpPlot->mpZoomer->zoom(0);
+  if (mpPlot)
+    mpPlot->resetZoom();
 }
 
 //-----------------------------------------------------------------------------
@@ -534,7 +488,7 @@ void PlotWindow::closeEvent(QCloseEvent *closeEvent)
   mpHandler->removeInterface(this);
 }
 
-CopasiPlot *PlotWindow::getPlot() const
+CPlotInterface *PlotWindow::getPlot() const
 {
   return mpPlot;
 }
