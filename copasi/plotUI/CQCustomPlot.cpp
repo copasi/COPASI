@@ -514,14 +514,18 @@ void CQCustomPlot::setSymbol(QCPAbstractPlottable * pPlotable, QCPScatterStyle::
   QCPCurve * pCurve = dynamic_cast< QCPCurve * >(pPlotable);
 
   if (pCurve)
-    pCurve->setScatterStyle(QCPScatterStyle(
-                              symbol, color, symbolSize));
+    {
+      pCurve->setScatterStyle(QCPScatterStyle(
+                                symbol, color, symbolSize));
+    }
 
   QCPGraph * pGraph = dynamic_cast< QCPGraph * >(pPlotable);
 
   if (pGraph)
-    pGraph->setScatterStyle(QCPScatterStyle(
-                              symbol, color, symbolSize));
+    {
+      pGraph->setScatterStyle(QCPScatterStyle(
+                                symbol, color, symbolSize));
+    }
 }
 
 QString CQCustomPlot::titleText() const
@@ -1152,8 +1156,12 @@ void CQCustomPlot::updateCurves(const size_t & activity)
           {
             auto & x = *data[mDataIndex[k][0].second];
             auto & y = *data[mDataIndex[k][1].second];
-            auto data_size = mDataSize[activity];
-            auto current_count = curve->dataCount();
+
+            int data_size = mDataSize[activity];
+            int current_count = curve->property("last_count").toInt();
+            // need to store the number of data points we added,
+            // so we wont replot them in case they are skipped
+            curve->setProperty("last_count", data_size);
 
             if (current_count != data_size)
               {
@@ -1163,7 +1171,15 @@ void CQCustomPlot::updateCurves(const size_t & activity)
                   {
                     double cur_x = x[i];
                     double cur_y = y[i];
-                    curve->addData(cur_x, cur_y);
+
+                    // only skip adding nans, if only one of them is nan
+                    // when both are nan, we want to use it to create a new
+                    // curve. if only one of them is, it is a missing
+                    // datapoint and if added we would not be able to connect
+                    // datapoints by lines
+
+                    if (qIsNaN(cur_x)  == qIsNaN(cur_y))
+                      curve->addData(cur_x, cur_y);
                   }
 
                 curve->rescaleAxes(true);
@@ -1190,7 +1206,6 @@ void CQCustomPlot::updateCurves(const size_t & activity)
                     double cur_x = x[i];
                     double cur_y = y[i];
                     double cur_y2 = y2[i];
-                    //if (!std::isnan(cur_x) && !std::isnan(cur_y))
                     {
                       graph->addData(cur_x, cur_y);
                       pY2->addData(cur_x, cur_y2);
@@ -1288,45 +1303,6 @@ void CQCustomPlot::updateCurves(const size_t & activity)
       rescaleAxes(true);
       QCustomPlot::replot();
     }
-
-  //k = 0;
-  /*CPlotSpectogram ** itSpectograms = mSpectograms.array();
-  CPlotSpectogram ** endSpectograms = itSpectograms + mSpectograms.size();
-
-  for (; itSpectograms != endSpectograms; ++itSpectograms, ++k)
-    {
-      if (*itSpectograms == NULL) continue;
-
-      if ((size_t)(*itSpectograms)->getActivity() == activity)
-        {
-          (*itSpectograms)->setDataSize(mDataSize[activity]);
-  #if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-          QwtScaleWidget *topAxis = axisWidget(QwtPlot::xTop);
-          const QwtInterval zInterval = (*itSpectograms)->data()->interval(Qt::ZAxis);
-          topAxis->setColorBarEnabled(true);
-
-          const QwtColorMap* currentMap = (*itSpectograms)->colorMap();
-          const CLinearColorMap* linearColormap = dynamic_cast<const CLinearColorMap*>(currentMap);
-
-          if (linearColormap != NULL)
-            topAxis->setColorMap(zInterval, new CLinearColorMap(*linearColormap));
-          else
-            topAxis->setColorMap(zInterval, const_cast<QwtColorMap*>(currentMap));
-
-          setAxisScale(QwtPlot::xTop, zInterval.minValue(), zInterval.maxValue());
-  #else
-
-          QwtScaleWidget *topAxis = axisWidget(QwtPlot::xTop);
-          topAxis->setColorBarEnabled(true);
-          topAxis->setColorMap((*itSpectograms)->data().range(),
-                               (*itSpectograms)->colorMap());
-          setAxisScale(QwtPlot::xTop,
-                       (*itSpectograms)->data().range().minValue(),
-                       (*itSpectograms)->data().range().maxValue());
-
-  #endif
-        }
-    }*/
 }
 
 void CQCustomPlot::resizeCurveData(const size_t & activity)
