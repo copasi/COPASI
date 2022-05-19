@@ -33,6 +33,7 @@
 #include <copasi/utilities/CUnitComponent.h>
 #include <copasi/utilities/CUnit.h>
 #include <copasi/utilities/CValidatedUnit.h>
+#include <copasi/utilities/CUnitValidator.h>
 #include "copasi/math/CMathObject.h"
 #include "copasi/math/CMathEvent.h"
 #include "copasi/math/CMathDependencyGraph.h"
@@ -140,9 +141,13 @@ typedef std::vector<CDataObject*> ObjectStdVector;
 %ignore CUnitComponent::setKind;
 %ignore operator=; 
 
+%template(CUnitStdVector) std::vector<CUnit>;
+%template(CValidatedUnitStdVector) std::vector<CValidatedUnit>;
+
 %include <copasi/utilities/CUnitComponent.h>
 %include <copasi/utilities/CUnit.h>
 %include <copasi/utilities/CValidatedUnit.h>
+%include <copasi/utilities/CUnitValidator.h>
 %include "copasi/math/CMathObject.h"
 %include "copasi/math/CMathEvent.h"
 %include "copasi/math/CMathDependencyGraph.h"
