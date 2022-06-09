@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,8 +7,6 @@
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
-
-
 
 #ifndef COPASI_CCore
 #define COPASI_CCore
@@ -23,6 +21,7 @@
 # define C_INT64 long long int
 # define LLONG_CONST(n) n ## LL
 # define C_INT32 int
+# define C_UINT32 unsigned int
 # define C_INT16 short
 # define C_FLOAT64 double
 # define C_FLOAT32 float
@@ -35,6 +34,7 @@
 # define C_INT64 __int64
 # define LLONG_CONST(n) n ## i64
 # define C_INT32 int
+# define C_UINT32 unsigned int
 # define C_INT16 short
 # define C_FLOAT64 double
 # define C_FLOAT32 float
@@ -55,6 +55,7 @@
 # define C_INT64 long long int
 # define LLONG_CONST(n) n ## LL
 # define C_INT32 int
+# define C_UINT32 unsigned int
 # define C_INT16 short
 # define C_FLOAT64 double
 # define C_FLOAT32 float
