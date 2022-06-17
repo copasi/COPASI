@@ -16,6 +16,12 @@
 
 PACKAGE_NAME="COPASI-${MyAppVersion}-Java-Bindings-${PACKAGE}"
 
+OS=`uname`
+EXT=so
+if [ $OS="Darwin" ]; then
+  EXT=jnilib
+fi
+
 echo mkdir -p "${SETUP_DIR}/${PACKAGE_NAME}"
 mkdir -p "${SETUP_DIR}/${PACKAGE_NAME}"
 
@@ -44,9 +50,9 @@ cp "${BINARY_DIR}"/copasi/bindings/java/copasi-gui.jar .
 chmod 644 copasi-gui.jar
 
 # Copy libCopasiJava.so
-echo cp "${BINARY_DIR}"/copasi/bindings/java/libCopasiJava.so  .
-cp "${BINARY_DIR}"/copasi/bindings/java/libCopasiJava.so .
-chmod 644 libCopasiJava.so
+echo cp "${BINARY_DIR}"/copasi/bindings/java/libCopasiJava.$EXT  .
+cp "${BINARY_DIR}"/copasi/bindings/java/libCopasiJava.$EXT .
+chmod 644 libCopasiJava.$EXT
 
 # Copy examples
 echo cp "${SOURCE}"/copasi/bindings/java/examples/*.java examples
