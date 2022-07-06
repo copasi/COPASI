@@ -586,7 +586,7 @@ bool COptProblem::calculate()
 
       mpContainer->applyUpdateSequence(mUpdateObjectiveFunction);
 
-      // TODO CRITICAL PARRELIZATION We need to point to the created container objective function
+      // Each thread has it's own container and thus objective expression
       mCalculateValue = *mpParmMaximize ? -mpMathObjectiveExpression->value() : mpMathObjectiveExpression->value();
     }
 
