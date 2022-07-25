@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -187,9 +187,9 @@ public:
    * @param const std::string * pEndValue = NULL
    * @return size_t handle
    */
-  virtual size_t addItem(const std::string & name,
-                         const std::string & value,
-                         const std::string * pEndValue = NULL);
+  size_t addItem(const std::string & name,
+                 const std::string & value,
+                 const std::string * pEndValue = NULL);
 
   /**
    * Add a process report item to to the list of reporting items.
@@ -233,9 +233,6 @@ public:
                  const C_FLOAT64 & value,
                  const C_FLOAT64 * pEndValue = NULL);
 
-protected:
-
-#ifndef SWIG
   /**
    * Add a process report item to to the list of reporting items.
    * The return value is the handle of the item and can be used to
@@ -252,9 +249,6 @@ protected:
                          const void * pValue,
                          const void * pEndValue = NULL);
 
-#endif
-
-public:
   /**
    * Indicate that item handle is finished reporting. The handle of that
    * item is no longer valid after the call. If the return value is false
@@ -277,13 +271,13 @@ public:
   virtual bool setName(const std::string & name);
 
   /**
-   * Set whether to ignore stop when determininning to proceed.
+   * Set whether to ignore stop when determining to proceed.
    * @param const bool & ignoreStop (default: true)
    */
   void setIgnoreStop(const bool & ignoreStop = true);
 
   /**
-   * Retrieve whether to ignore stop when determininning to proceed.
+   * Retrieve whether to ignore stop when determining to proceed.
    * @return const bool & ignoreStop
    */
   const bool & getIgnoreStop() const;
@@ -291,12 +285,12 @@ public:
   // Attributes
 protected:
   /**
-   * The current prossecing instructions
+   * The current processing instructions
    */
   ProccessingInstruction mProccessingInstruction;
 
   /**
-   * Flag indicating whether to continue proccessing after stop instruction
+   * Flag indicating whether to continue processing after stop instruction
    */
   bool mIgnoreStop;
 

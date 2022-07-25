@@ -23,24 +23,9 @@
 // All rights reserved. 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 %module(directors="1") COPASI
+
+%include "typemaps.i"
 
 %warnfilter(402) CCommonName;
 // cannot do anything about warnings due to multiple inheritance
@@ -77,7 +62,6 @@
 #if SWIGR
 %include "rtype.swg"
 %include "copasi_rtype.swg"
-%include "typemaps.i"
 %typemap("rtype") size_t, size_t *, size_t &, const size_t&      "integer";
 %typemap("rtype") bool, bool *, bool &, const bool&      "logical";
 #endif 
@@ -188,6 +172,66 @@ size_t INVALID_INDEX();
 %include "CCopasiParameter.i"
 // enable process report 
 %feature("director") CProcessReport;
+%extend CProcessReport
+{
+    static double getValue(const double* pValue)
+    {
+        if (pValue == NULL)
+            return 0.0;
+        return *pValue;
+    }
+
+    static int getValue(const int* pValue)
+    {
+        if (pValue == NULL)
+            return 0;
+        return *pValue;
+    }
+
+
+    static unsigned int getValue(const unsigned int* pValue)
+    {
+        if (pValue == NULL)
+            return 0;
+        return *pValue;
+    }
+
+    static std::string getValue(const std::string* pValue)
+    {
+        if (pValue == NULL)
+            return "";
+        return *pValue;
+    }
+
+    static std::string getStringValue(const void* pValue)
+    {
+        if (pValue == NULL)
+            return "";
+        return *static_cast<const std::string*>(pValue);
+    }
+
+    static double getDoubleValue(const void* pValue)
+    {
+        if (pValue == NULL)
+            return 0.0;
+        return *static_cast<const double*>(pValue);
+    }
+
+    static int getIntValue(const void* pValue)
+    {
+        if (pValue == NULL)
+            return 0;
+        return *static_cast<const int*>(pValue);
+    }
+
+    static unsigned int getUIntValue(const void* pValue)
+    {
+        if (pValue == NULL)
+            return 0;
+        return *static_cast<const unsigned int*>(pValue);
+    }
+}
+
 %include <copasi/utilities/CProcessReport.h>
 
 %include "CCopasiParameterGroup.i"
