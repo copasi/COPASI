@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,10 +34,19 @@
 
 COptMethodPraxis::COptMethodPraxis(const CDataContainer * pParent,
                                    const CTaskEnum::Method & methodType,
-                                   const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType, false),
-  mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction)),
-  mpCPraxis(new CPraxis())
+                                   const CTaskEnum::Task & taskType)
+  : COptMethod(pParent, methodType, taskType, false)
+  , mTolerance(1.e-005)
+  , mIteration(0)
+  , mhIteration()
+  , mVariableSize(0)
+  , mCurrent()
+  , mBest()
+  , mBestValue(std::numeric_limits< C_FLOAT64 >::infinity())
+  , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mContinue(true)
+  , mpPraxis(new FPraxisTemplate< COptMethodPraxis >(this, &COptMethodPraxis::evaluateFunction))
+  , mpCPraxis(new CPraxis())
 {
   assertParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-005);
 
@@ -45,11 +54,22 @@ COptMethodPraxis::COptMethodPraxis(const CDataContainer * pParent,
 }
 
 COptMethodPraxis::COptMethodPraxis(const COptMethodPraxis & src,
-                                   const CDataContainer * pParent):
-  COptMethod(src, pParent),
-  mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction)),
-  mpCPraxis(new CPraxis())
-{initObjects();}
+                                   const CDataContainer * pParent)
+  : COptMethod(src, pParent)
+  , mTolerance(1.e-005)
+  , mIteration(src.mIteration)
+  , mhIteration(src.mhIteration)
+  , mVariableSize(src.mVariableSize)
+  , mCurrent(src.mCurrent)
+  , mBest(src.mBest)
+  , mBestValue(src.mBestValue)
+  , mEvaluationValue(src.mEvaluationValue)
+  , mContinue(src.mContinue)
+  , mpPraxis(new FPraxisTemplate< COptMethodPraxis >(this, &COptMethodPraxis::evaluateFunction))
+  , mpCPraxis(new CPraxis())
+{
+  initObjects();
+}
 
 COptMethodPraxis::~COptMethodPraxis()
 {
@@ -161,6 +181,7 @@ bool COptMethodPraxis::initialize()
   mVariableSize = (C_INT) mProblemContext.master()->getOptItemList().size();
   mCurrent.resize(mVariableSize);
   mBest.resize(mVariableSize);
+  mBestValue = std::numeric_limits< C_FLOAT64 >::infinity();
 
   mContinue = true;
 
