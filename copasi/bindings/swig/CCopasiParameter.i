@@ -119,7 +119,7 @@
 
   CCommonName getCNValue()
   {
-    if (self->getType() != CCopasiParameter::Type::GROUP)
+    if (self->getType() != CCopasiParameter::Type::CN)
       return CCommonName();
 
     CCommonName val = self->getValue<CCommonName>();
