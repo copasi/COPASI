@@ -759,6 +759,13 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
   size_t IndependentCount = mDataIndependent.numCols();
   size_t DependentCount = mDataDependent.numCols();
 
+  if (IndependentCount == 0 && DependentCount == 0)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "Call CExperiment::read before CExperiment::compile.");
+      // the code below requires that the data has been read already.
+      return false;
+    }
+
   mDependentValues.resize(DependentCount);
   mDependentValues = 0x0;
 
