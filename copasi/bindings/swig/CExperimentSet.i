@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -33,5 +33,40 @@
 
 %include "copasi/parameterFitting/CExperimentSet.h"
 
+%extend CExperimentSet
+{
+    
+#ifdef SWIGPYTHON
 
+ size_t __len__() const
+ {
+    return self->getExperimentCount();
+ }
+
+ CExperiment* __getitem__(const std::string& name) 
+ {
+  try
+    {
+      return self->getExperiment(name);
+    }
+    catch(...)
+    {
+      return NULL;
+    }
+ }
+
+ CExperiment* __getitem__(unsigned int index) 
+ {
+    try
+    {
+        return self->getExperiment(index);
+    }
+    catch(...)
+    {
+      return NULL;
+    }
+ }
+
+#endif // SWIGPYTHON
+}
 
