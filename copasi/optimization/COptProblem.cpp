@@ -800,6 +800,9 @@ bool COptProblem::setObjectiveFunction(const std::string & infix)
 
 const std::string COptProblem::getObjectiveFunction()
 {
+  if (mpParmObjectiveExpression == NULL)
+    return "";
+
   if (mpObjectiveExpression != NULL)
     {
       mpObjectiveExpression->updateInfix();
