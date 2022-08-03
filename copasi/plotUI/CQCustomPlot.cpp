@@ -478,7 +478,7 @@ for (auto item : mHisto)
         {
           mHisto[graph] = new CHistoHelper(itPlotItem->getValue< C_FLOAT64 >("increment"));
           graph->setValueAxis(yAxis2);
-          graph->setLineStyle(QCPGraph::lsStepRight);
+          graph->setLineStyle(QCPGraph::lsStepLeft);
 
           needRight = true;
         }
@@ -1118,9 +1118,9 @@ void CQCustomPlot::mouseReleaseEvent(QMouseEvent * event)
 void CQCustomPlot::wheelEvent(QWheelEvent * event)
 {
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
-    QCPLayerable * element = layerableAt(event->position(), true);
+  QCPLayerable * element = layerableAt(event->position(), true);
 #else
-    QCPLayerable * element = layerableAt(event->pos(), true);
+  QCPLayerable * element = layerableAt(event->pos(), true);
 #endif
 
   if (dynamic_cast<QCPLegend*>(element) || dynamic_cast<QCPAbstractLegendItem*>(element))
