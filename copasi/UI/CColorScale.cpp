@@ -35,7 +35,7 @@ CColorScale::CColorScale()
   , mNaN(85, 85, 135)
 {
 
-  if (isDarkMode())
+  if (isLightMode())
     {
       mSmallNumbers = QColor(Qt::red);
       mLargeNumbers = QColor(Qt::green);

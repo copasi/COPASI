@@ -388,5 +388,10 @@ bool isDarkMode()
   auto foreground = Palette.color(QPalette::Active, QPalette::Text);
   auto background = Palette.color(QPalette::Active, QPalette::Base);
 
-  return (foreground.redF() + foreground.greenF() + foreground.blueF() < background.redF() + background.greenF() + background.blueF());
+  return (foreground.redF() + foreground.greenF() + foreground.blueF() > background.redF() + background.greenF() + background.blueF());
+}
+
+bool isLightMode()
+{
+    return !isDarkMode();
 }

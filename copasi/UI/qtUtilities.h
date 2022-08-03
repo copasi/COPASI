@@ -228,5 +228,6 @@ void fillCombobox(QComboBox* pCombo, const CEnumAnnotation< std::string, T>& ann
 
 
 bool isDarkMode();
+bool isLightMode();
 
 #endif // COPASI_qtUtilities
