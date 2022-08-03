@@ -54,7 +54,7 @@ class QwtPlotZoomer;
 class C2DPlotCurve;
 class CPlotSpectogram;
 
-class CopasiPlot : public QwtPlot
+class CQwtPlot : public QwtPlot
   , public CPlotInterface
 {
   Q_OBJECT
@@ -63,7 +63,7 @@ private:
    * Default constructor which may never be called.
    * @param QWidget* parent (default: NULL)
    */
-  CopasiPlot(QWidget* parent = NULL);
+  CQwtPlot(QWidget* parent = NULL);
 
 public:
   /**
@@ -71,7 +71,7 @@ public:
    * @param const CPlotSpecification* plotspec
    * @param QWidget* parent (default: NULL)
    */
-  CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent = NULL);
+  CQwtPlot(const CPlotSpecification* plotspec, QWidget* parent = NULL);
 
   /**
    * Initialize the the plot from the specification
@@ -89,7 +89,7 @@ public:
   /**
    * Destructor
    */
-  virtual ~CopasiPlot();
+  virtual ~CQwtPlot();
 
   /**
    * compile the object list from name vector

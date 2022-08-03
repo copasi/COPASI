@@ -44,7 +44,7 @@ class CPlotSpec2Vector;
 class CPlotSpecification;
 class CPlotSpectogram;
 
-class ChartsPlot
+class CQtChartsPlot
   : public QT_CHARTS_NAMESPACE::QChartView
   , public CPlotInterface
 {
@@ -54,7 +54,7 @@ private:
    * Default constructor which may never be called.
    * @param QWidget* parent (default: NULL)
    */
-  ChartsPlot(QWidget * parent = NULL);
+  CQtChartsPlot(QWidget * parent = NULL);
 
 public:
   /**
@@ -62,7 +62,7 @@ public:
    * @param const CPlotSpecification* plotspec
    * @param QWidget* parent (default: NULL)
    */
-  ChartsPlot(const CPlotSpecification * plotspec, QWidget * parent = NULL);
+  CQtChartsPlot(const CPlotSpecification * plotspec, QWidget * parent = NULL);
 
   /**
    * Initialize the the plot from the specification
@@ -84,7 +84,7 @@ public:
   /**
    * Destructor
    */
-  virtual ~ChartsPlot();
+  virtual ~CQtChartsPlot();
 
   /**
    * compile the object list from name vector

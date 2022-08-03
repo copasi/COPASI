@@ -18,7 +18,7 @@
 #ifdef COPASI_USE_QTCHARTS
 
 #  include "scrollzoomer.h"
-#  include "ChartsPlot.h"
+#  include "CQtChartsPlot.h"
 #  include "CQPlotColors.h"
 
 #  include "copasi/plot/CPlotSpecification.h"
@@ -57,9 +57,9 @@ QT_CHARTS_USE_NAMESPACE
 #  endif
 
 #  define ActivitySize 8
-C_FLOAT64 ChartsPlot::MissingValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+C_FLOAT64 CQtChartsPlot::MissingValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
-ChartsPlot::ChartsPlot(QWidget * parent)
+CQtChartsPlot::CQtChartsPlot(QWidget * parent)
   : QChartView(new CopasiChart(), parent)
   , mCurves(0)
   , mCurveMap()
@@ -79,7 +79,7 @@ ChartsPlot::ChartsPlot(QWidget * parent)
 {
 }
 
-ChartsPlot::ChartsPlot(const CPlotSpecification * plotspec, QWidget * parent)
+CQtChartsPlot::CQtChartsPlot(const CPlotSpecification * plotspec, QWidget * parent)
   : QChartView(new CopasiChart(), parent)
   , mCurves(0)
   , mCurveMap()
@@ -113,7 +113,7 @@ ChartsPlot::ChartsPlot(const CPlotSpecification * plotspec, QWidget * parent)
   setRenderHint(QPainter::Antialiasing);
 }
 
-void ChartsPlot::setSymbol(QT_CHARTS_NAMESPACE::QAbstractSeries * pCurve, CPlotItem::SymbolType symbol, QColor color, int size, float width)
+void CQtChartsPlot::setSymbol(QT_CHARTS_NAMESPACE::QAbstractSeries * pCurve, CPlotItem::SymbolType symbol, QColor color, int size, float width)
 {
   auto * c = dynamic_cast< QLineSeries * >(pCurve);
 
@@ -122,12 +122,12 @@ void ChartsPlot::setSymbol(QT_CHARTS_NAMESPACE::QAbstractSeries * pCurve, CPlotI
 
 }
 
-QString ChartsPlot::titleText() const
+QString CQtChartsPlot::titleText() const
 {
   return chart()->title();
 }
 
-bool ChartsPlot::initFromSpec(const CPlotSpecification * plotspec)
+bool CQtChartsPlot::initFromSpec(const CPlotSpecification * plotspec)
 {
 
   mIgnoreUpdate = true;
@@ -389,12 +389,12 @@ bool ChartsPlot::initFromSpec(const CPlotSpecification * plotspec)
 }
 
 const CPlotSpecification *
-ChartsPlot::getPlotSpecification() const
+CQtChartsPlot::getPlotSpecification() const
 {
   return mpPlotSpecification;
 }
 
-bool ChartsPlot::compile(CObjectInterface::ContainerList listOfContainer)
+bool CQtChartsPlot::compile(CObjectInterface::ContainerList listOfContainer)
 {
   clearBuffers();
 
@@ -533,7 +533,7 @@ bool ChartsPlot::compile(CObjectInterface::ContainerList listOfContainer)
   return true;
 }
 
-void ChartsPlot::output(const Activity & activity)
+void CQtChartsPlot::output(const Activity & activity)
 {
   size_t i, imax;
   C_INT32 ItemActivity;
@@ -572,7 +572,7 @@ void ChartsPlot::output(const Activity & activity)
   updatePlot();
 }
 
-void ChartsPlot::separate(const Activity & activity)
+void CQtChartsPlot::separate(const Activity & activity)
 {
   size_t i, imax;
   C_INT32 ItemActivity;
@@ -612,7 +612,7 @@ void ChartsPlot::separate(const Activity & activity)
   return;
 }
 
-void ChartsPlot::finish()
+void CQtChartsPlot::finish()
 {
 
   // We need to force a replot, i.e., the next mNextPlotTime should be in the past.
@@ -621,7 +621,7 @@ void ChartsPlot::finish()
   replot();
 }
 
-void ChartsPlot::updateCurves(const size_t & activity)
+void CQtChartsPlot::updateCurves(const size_t & activity)
 {
   if (activity == C_INVALID_INDEX)
     {
@@ -715,7 +715,7 @@ void ChartsPlot::updateCurves(const size_t & activity)
 
 }
 
-void ChartsPlot::resizeCurveData(const size_t & activity)
+void CQtChartsPlot::resizeCurveData(const size_t & activity)
 {
   std::vector< CVector< double > * > & data = mData[activity];
   std::vector< CVector< double > * >::iterator it = data.begin();
@@ -808,7 +808,7 @@ void ChartsPlot::resizeCurveData(const size_t & activity)
     }
 }
 
-void ChartsPlot::updatePlot()
+void CQtChartsPlot::updatePlot()
 {
   if (mReplotFinished)
     {
@@ -826,12 +826,12 @@ void ChartsPlot::updatePlot()
 
 //-----------------------------------------------------------------------------
 
-ChartsPlot::~ChartsPlot()
+CQtChartsPlot::~CQtChartsPlot()
 {
   clearBuffers();
 }
 
-bool ChartsPlot::saveData(const std::string & filename)
+bool CQtChartsPlot::saveData(const std::string & filename)
 {
   // No objects.
   if (!mObjects.size())
@@ -1074,7 +1074,7 @@ for (auto p : curve->points())
   return true;
 }
 
-void ChartsPlot::showCurve(QAbstractSeries * item, bool on)
+void CQtChartsPlot::showCurve(QAbstractSeries * item, bool on)
 {
   item->setVisible(on);
 
@@ -1082,7 +1082,7 @@ void ChartsPlot::showCurve(QAbstractSeries * item, bool on)
     replot();
 }
 
-void ChartsPlot::setCurvesVisibility(const bool & visibility)
+void CQtChartsPlot::setCurvesVisibility(const bool & visibility)
 {
   const auto markers = chart()->legend()->markers();
 
@@ -1100,7 +1100,7 @@ for (QLegendMarker * marker : markers)
     replot();
 }
 
-void ChartsPlot::clearBuffers()
+void CQtChartsPlot::clearBuffers()
 {
   mObjects.clear();
 
@@ -1139,8 +1139,8 @@ void ChartsPlot::clearBuffers()
   mHaveAfter = false;
 }
 
-void ChartsPlot::setAxisUnits(const C_INT32 & index,
-                              const CObjectInterface * pObjectInterface)
+void CQtChartsPlot::setAxisUnits(const C_INT32 & index,
+                                 const CObjectInterface * pObjectInterface)
 {
   const CDataObject * pObject = CObjectInterface::DataObject(pObjectInterface);
 
@@ -1166,7 +1166,7 @@ void ChartsPlot::setAxisUnits(const C_INT32 & index,
 }
 
 // virtual
-void ChartsPlot::replot()
+void CQtChartsPlot::replot()
 {
   if (mNextPlotTime < CCopasiTimeVariable::getCurrentWallTime())
     {
@@ -1199,12 +1199,12 @@ void ChartsPlot::replot()
   mReplotFinished = true;
 }
 
-void ChartsPlot::update()
+void CQtChartsPlot::update()
 {
   chart()->update();
 }
 
-QPointF ChartsPlot::getRange(const QAbstractAxis * axis)
+QPointF CQtChartsPlot::getRange(const QAbstractAxis * axis)
 {
   const QValueAxis * val = dynamic_cast< const QValueAxis * >(axis);
 
@@ -1223,7 +1223,7 @@ QPointF ChartsPlot::getRange(const QAbstractAxis * axis)
   return QPointF();
 }
 
-void ChartsPlot::connectMarkers()
+void CQtChartsPlot::connectMarkers()
 {
   // Connect all markers to handler
   const auto markers = chart()->legend()->markers();
@@ -1232,23 +1232,23 @@ for (QLegendMarker * marker : markers)
     {
       // Disconnect possible existing connection to avoid multiple connections
       QObject::disconnect(marker, &QLegendMarker::clicked,
-                          this, &ChartsPlot::handleMarkerClicked);
-      QObject::connect(marker, &QLegendMarker::clicked, this, &ChartsPlot::handleMarkerClicked);
+                          this, &CQtChartsPlot::handleMarkerClicked);
+      QObject::connect(marker, &QLegendMarker::clicked, this, &CQtChartsPlot::handleMarkerClicked);
     }
 }
 
-void ChartsPlot::disconnectMarkers()
+void CQtChartsPlot::disconnectMarkers()
 {
   const auto markers = chart()->legend()->markers();
 
 for (QLegendMarker * marker : markers)
     {
       QObject::disconnect(marker, &QLegendMarker::clicked,
-                          this, &ChartsPlot::handleMarkerClicked);
+                          this, &CQtChartsPlot::handleMarkerClicked);
     }
 }
 
-void ChartsPlot::handleMarkerClicked()
+void CQtChartsPlot::handleMarkerClicked()
 {
   QLegendMarker * marker = qobject_cast< QLegendMarker * >(sender());
   Q_ASSERT(marker);
@@ -1274,7 +1274,7 @@ void ChartsPlot::handleMarkerClicked()
     }
 }
 
-void ChartsPlot::toggleLogX(bool logX)
+void CQtChartsPlot::toggleLogX(bool logX)
 {
   QValueAxis * val = dynamic_cast< QValueAxis * >(chart()->axisX());
   QLogValueAxis * logVal = dynamic_cast< QLogValueAxis * >(chart()->axisX());
@@ -1308,7 +1308,7 @@ for (auto * series : chart()->series())
     }
 }
 
-void ChartsPlot::toggleLogY(bool logY)
+void CQtChartsPlot::toggleLogY(bool logY)
 {
   QValueAxis * val = dynamic_cast< QValueAxis * >(chart()->axisY());
   QLogValueAxis * logVal = dynamic_cast< QLogValueAxis * >(chart()->axisY());
@@ -1342,17 +1342,17 @@ for (auto * series : chart()->series())
     }
 }
 
-void ChartsPlot::render(QPainter * painter, QRect rect)
+void CQtChartsPlot::render(QPainter * painter, QRect rect)
 {
   QChartView::render(painter, rect);
 }
 
-void ChartsPlot::resetZoom()
+void CQtChartsPlot::resetZoom()
 {
   chart()->zoomReset();
 }
 
-bool ChartsPlot::viewportEvent(QEvent * event)
+bool CQtChartsPlot::viewportEvent(QEvent * event)
 {
   if (event->type() == QEvent::TouchBegin)
     {
@@ -1364,7 +1364,7 @@ bool ChartsPlot::viewportEvent(QEvent * event)
   return QChartView::viewportEvent(event);
 }
 
-void ChartsPlot::mousePressEvent(QMouseEvent * event)
+void CQtChartsPlot::mousePressEvent(QMouseEvent * event)
 {
   if (m_isTouching)
     return;
@@ -1372,7 +1372,7 @@ void ChartsPlot::mousePressEvent(QMouseEvent * event)
   QChartView::mousePressEvent(event);
 }
 
-void ChartsPlot::mouseMoveEvent(QMouseEvent * event)
+void CQtChartsPlot::mouseMoveEvent(QMouseEvent * event)
 {
   if (m_isTouching)
     return;
@@ -1380,7 +1380,7 @@ void ChartsPlot::mouseMoveEvent(QMouseEvent * event)
   QChartView::mouseMoveEvent(event);
 }
 
-void ChartsPlot::mouseReleaseEvent(QMouseEvent * event)
+void CQtChartsPlot::mouseReleaseEvent(QMouseEvent * event)
 {
   if (m_isTouching)
     m_isTouching = false;
@@ -1392,7 +1392,7 @@ void ChartsPlot::mouseReleaseEvent(QMouseEvent * event)
   QChartView::mouseReleaseEvent(event);
 }
 
-void ChartsPlot::keyPressEvent(QKeyEvent * event)
+void CQtChartsPlot::keyPressEvent(QKeyEvent * event)
 {
   switch (event->key())
     {

@@ -36,7 +36,7 @@
 #include "plotwindow.h"
 
 #ifdef COPASI_USE_QTCHARTS
-#  include "ChartsPlot.h"
+#  include "CQtChartsPlot.h"
 #endif
 
 #ifdef COPASI_USE_QCUSTOMPLOT
@@ -233,7 +233,7 @@ CPlotInterface * PlotWindow::createPlot(const CPlotSpecification * pPlotSpec)
 
   if (engine.contains("Chart"))
     {
-      return new ChartsPlot(pPlotSpec);
+      return new CQtChartsPlot(pPlotSpec);
     }
 
 #endif
@@ -264,7 +264,7 @@ CPlotInterface * PlotWindow::createPlot(const CPlotSpecification * pPlotSpec)
 
 #ifdef COPASI_USE_QWT
   // by default return Qwt if we have it
-  return new CopasiPlot(pPlotSpec);
+  return new CQwtPlot(pPlotSpec);
 #endif
   return nullptr;
 }
