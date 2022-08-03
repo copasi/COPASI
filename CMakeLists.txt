@@ -520,6 +520,9 @@ if(BUILD_GUI)
   #find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui QtXml QtWebKit QtNetwork)
   # check for qwt, TODO check if the version is OK
   find_package(QWT REQUIRED)
+  if (QWT_FOUND)
+    set(COPASI_USE_QWT ON)
+  endif()
   # check for qwtplot3d
   
   if (NOT QT5_USE_DATAVISUALIZATION)
@@ -731,10 +734,17 @@ if(MSVC OR USING_INTEL)
                 CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO)
 
                 if(${flag_var} MATCHES "/Zi")
-            STRING(REPLACE "/Zi"  "/Z7" "${flag_var}" "${${flag_var}}")
+                  STRING(REPLACE "/Zi"  "/Z7" "${flag_var}" "${${flag_var}}")
                 endif(${flag_var} MATCHES "/Zi")
 
             endforeach(flag_var)
+            
+            if (MSVC AND WIN32 AND NOT MSVC_VERSION VERSION_LESS 142 AND CMAKE_VERSION VERSION_GREATER 3.13)
+              # enable edit & continue for debug builds of msvc 
+              add_link_options($<$<CONFIG:Debug>:/INCREMENTAL>)
+              add_compile_options($<$<CONFIG:Debug>:/ZI>)
+
+            endif()
     endif()
 
 endif(MSVC OR USING_INTEL)
