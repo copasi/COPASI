@@ -460,7 +460,7 @@ bool CQtChartsPlot::compile(CObjectInterface::ContainerList listOfContainer)
                   itX = mSaveCurveObjects.end() - 1;
 
                   if (!isSpectogram)
-                    setAxisUnits(0, pObj);
+                    setAxisUnits(CPlotInterface::Axis::yAxis, pObj);
                 }
 
               if (pItem->getType() == CPlotItem::histoItem1d)
@@ -471,7 +471,7 @@ bool CQtChartsPlot::compile(CObjectInterface::ContainerList listOfContainer)
               itX->push_back(objectCN);
 
               if (!isSpectogram)
-                setAxisUnits(1, pObj);
+                setAxisUnits(CPlotInterface::Axis::yAxis, pObj);
             }
 
           Inserted = ActivityObjects[ItemActivity].insert(pObj);
@@ -1139,30 +1139,13 @@ void CQtChartsPlot::clearBuffers()
   mHaveAfter = false;
 }
 
-void CQtChartsPlot::setAxisUnits(const C_INT32 & index,
+void CQtChartsPlot::setAxisUnits(Axis axis,
                                  const CObjectInterface * pObjectInterface)
 {
-  const CDataObject * pObject = CObjectInterface::DataObject(pObjectInterface);
-
-  if (pObject == NULL)
-    return;
-
-  std::string Units = CUnit::prettyPrint(pObject->getUnits());
-
-  if (Units == "?")
-    {
-      Units.clear();
-    }
-
-  if (Units != "")
-    {
-      if (index == 0)
-        chart()->axisX()->setTitleText(FROM_UTF8(Units));
-      else
-        chart()->axisY()->setTitleText(FROM_UTF8(Units));
-    }
-
-  return;
+  if (axis ==  CPlotInterface::Axis::xAxis)
+    chart()->axisX()->setTitleText(getAxisText(axis, pObjectInterface));
+  else
+    chart()->axisY()->setTitleText(getAxisText(axis, pObjectInterface));
 }
 
 // virtual

@@ -1534,21 +1534,11 @@ void CQwtPlot::clearBuffers()
 void CQwtPlot::setAxisUnits(const C_INT32 & index,
                             const CObjectInterface * pObjectInterface)
 {
-  const CDataObject * pObject = CObjectInterface::DataObject(pObjectInterface);
-
-  if (pObject == NULL) return;
-
-  std::string Units = CUnit::prettyPrint(pObject->getUnits());
-
-  if (Units == "?")
-    {
-      Units.clear();
-    }
-
-  if (Units != "")
-    setAxisTitle(index, FROM_UTF8(Units));
-
-  return;
+  setAxisTitle(index,
+               getAxisText(
+                 index == xBottom ? CPlotInterface::Axis::xAxis : CPlotInterface::Axis::yAxis,
+                 pObjectInterface
+               ));
 }
 
 void CQwtPlot::toggleLogX(bool logX)

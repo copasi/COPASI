@@ -10,6 +10,7 @@
 #include <QPainter>
 #include <QRect>
 
+#include <string>
 #include "copasi/output/COutputHandler.h"
 #include "copasi/plot/CPlotSpecification.h"
 
@@ -17,6 +18,16 @@ class CPlotInterface : public COutputInterface
 {
 
 public:
+
+  enum struct Axis
+  {
+    xAxis = 0,
+    yAxis,
+    zAxis,
+    __SIZE
+  };
+
+  static const CEnumAnnotation< std::string, Axis > AxisNames;
 
   /**
    * Initialize the the plot from the specification
@@ -51,6 +62,8 @@ public:
   virtual QString titleText() const = 0;
 
   virtual void render(QPainter * painter, QRect rect) = 0;
+
+  QString getAxisText(Axis axis, const CObjectInterface * pObjectInterface);
 
 };
 

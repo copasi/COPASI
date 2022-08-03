@@ -10,7 +10,6 @@
 
 #  include "CQCustomPlot.h"
 
-#  include "ChartsPlot.h"
 #  include "CQPlotColors.h"
 
 #  include "copasi/plot/CPlotSpecification.h"
@@ -621,7 +620,7 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
                   itX = mSaveCurveObjects.end() - 1;
 
                   if (!isSpectogram)
-                    setAxisUnits(xAxis, pObj);
+                    setAxisUnits(CPlotInterface::Axis::xAxis, pObj);
                 }
 
               if (pItem->getType() == CPlotItem::histoItem1d)
@@ -632,7 +631,7 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
               itX->push_back(objectCN);
 
               if (!isSpectogram)
-                setAxisUnits(yAxis, pObj);
+                setAxisUnits(CPlotInterface::Axis::yAxis, pObj);
             }
 
           Inserted = ActivityObjects[ItemActivity].insert(pObj);
@@ -1457,24 +1456,12 @@ void CQCustomPlot::clearBuffers()
   mHaveAfter = false;
 }
 
-void CQCustomPlot::setAxisUnits(QCPAxis * axis, const CObjectInterface * pObjectInterface)
+void CQCustomPlot::setAxisUnits(Axis axis, const CObjectInterface * pObjectInterface)
 {
-  const CDataObject * pObject = CObjectInterface::DataObject(pObjectInterface);
-
-  if (pObject == NULL)
-    return;
-
-  std::string Units = CUnit::prettyPrint(pObject->getUnits());
-
-  if (Units == "?")
-    {
-      Units.clear();
-    }
-
-  if (Units != "")
-    {
-      axis->setLabel(FROM_UTF8(Units));
-    }
+  if (axis == CPlotInterface::Axis::xAxis)
+    xAxis->setLabel(getAxisText(axis, pObjectInterface));
+  else
+    yAxis->setLabel(getAxisText(axis, pObjectInterface));
 }
 
 void CQCustomPlot::legendClicked(QCPLegend * legend, QCPAbstractLegendItem * item, QMouseEvent * event)

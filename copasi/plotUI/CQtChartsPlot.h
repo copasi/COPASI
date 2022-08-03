@@ -181,7 +181,7 @@ private:
    * @param const C_INT32 & index
    * @param const CObjectInterface * pObject
    */
-  void setAxisUnits(const C_INT32 & index,
+  void setAxisUnits(Axis axis,
                     const CObjectInterface * pObject);
 
 private slots:

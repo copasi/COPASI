@@ -171,7 +171,7 @@ private:
    * @param const C_INT32 & index
    * @param const CObjectInterface * pObject
    */
-  void setAxisUnits(QCPAxis *axis,
+  void setAxisUnits(Axis axis,
                     const CObjectInterface * pObject);
 
 private slots:
