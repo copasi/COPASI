@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -44,7 +44,10 @@ void CPlotSpectogram::setDataSize(const size_t &size)
       case CPlotItem::spectogram:
       {
         QwtRasterData *pData = const_cast<QwtRasterData *>(data());
-        static_cast< CSpectorgramData * >(pData)->setSize(size);
+
+        if (pData)
+          static_cast< CSpectorgramData * >(pData)->setSize(size);
+
         break;
       }
 
@@ -61,7 +64,10 @@ void CPlotSpectogram::setDataSize(const size_t &size)
       case CPlotItem::spectogram:
       {
         QwtRasterData *pData = const_cast<QwtRasterData *>(&data());
-        static_cast<CSpectorgramData *>(pData)->setSize(size);
+
+        if (pData)
+          static_cast< CSpectorgramData * >(pData)->setSize(size);
+
         break;
       }
 
@@ -84,7 +90,10 @@ void CPlotSpectogram::reallocatedData(const CVector<double> *pX,
       case CPlotItem::spectogram:
       {
         QwtRasterData *pData = const_cast<QwtRasterData *>(data());
-        static_cast< CSpectorgramData * >(pData)->reallocated(pX, pY, pZ);
+
+        if (pData)
+          static_cast< CSpectorgramData * >(pData)->reallocated(pX, pY, pZ);
+
         break;
       }
 
@@ -100,7 +109,10 @@ void CPlotSpectogram::reallocatedData(const CVector<double> *pX,
       case CPlotItem::spectogram:
       {
         QwtRasterData *pData = const_cast<QwtRasterData *>(&data());
-        static_cast<CSpectorgramData *>(pData)->reallocated(pX, pY, pZ);
+
+        if (pData)
+          static_cast< CSpectorgramData * >(pData)->reallocated(pX, pY, pZ);
+
         break;
       }
 

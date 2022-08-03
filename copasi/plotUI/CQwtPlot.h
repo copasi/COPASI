@@ -3,8 +3,10 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-#ifndef CQCUSTOM_PLOT_H
-#define CQCUSTOM_PLOT_H
+// the plot object for COPASI
+
+#ifndef COPASIPLOT_H
+#define COPASIPLOT_H
 
 #include <string>
 #include <vector>
@@ -19,9 +21,21 @@
 
 #include <copasi/config.h>
 
-#ifdef COPASI_USE_QCUSTOMPLOT
+#ifdef COPASI_USE_QWT
 
-#include <qcustomplot.h>
+#include <qwt_plot.h>
+#include <qwt_painter.h>
+#include <qwt_symbol.h>
+
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
+#include <qwt_compat.h>
+#else
+#include <qwt_data.h>
+#include <qwt_raster_data.h>
+#endif
+
+#include <qwt_plot_curve.h>
+#include <qwt_plot_spectrogram.h>
 
 #include "copasi/plot/CPlotItem.h"
 
@@ -34,13 +48,13 @@
 
 //*******************************************************
 
-class CHistoHelper;
 class CPlotSpec2Vector;
 class CPlotSpecification;
+class QwtPlotZoomer;
+class C2DPlotCurve;
 class CPlotSpectogram;
 
-class CQCustomPlot
-  : public QCustomPlot
+class CopasiPlot : public QwtPlot
   , public CPlotInterface
 {
   Q_OBJECT
@@ -49,7 +63,7 @@ private:
    * Default constructor which may never be called.
    * @param QWidget* parent (default: NULL)
    */
-  CQCustomPlot(QWidget* parent = NULL);
+  CopasiPlot(QWidget* parent = NULL);
 
 public:
   /**
@@ -57,29 +71,25 @@ public:
    * @param const CPlotSpecification* plotspec
    * @param QWidget* parent (default: NULL)
    */
-  CQCustomPlot(const CPlotSpecification* plotspec, QWidget* parent = NULL);
+  CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent = NULL);
 
   /**
    * Initialize the the plot from the specification
    * @param const CPlotSpecification* plotspec
    */
-  virtual bool initFromSpec(const CPlotSpecification* plotspec);
+  bool initFromSpec(const CPlotSpecification* plotspec);
 
-  void setSymbol(QCPAbstractPlottable * pCurve, QCPScatterStyle::ScatterShape symbol, QColor color, int symbolSize, float penWidth);
-
-  virtual QString titleText() const;
-
-  virtual void update();
+  void setSymbol(C2DPlotCurve * pCurve, QwtSymbol::Style symbol, QColor color, int symbolSize, float penWidth);
 
   /**
    * @return the current plot specification
    */
-  virtual const CPlotSpecification* getPlotSpecification() const;
+  const CPlotSpecification* getPlotSpecification() const;
 
   /**
    * Destructor
    */
-  virtual ~CQCustomPlot();
+  virtual ~CopasiPlot();
 
   /**
    * compile the object list from name vector
@@ -111,38 +121,26 @@ public:
    * @param const std::string & filename
    * @return bool success
    */
-  virtual bool saveData(const std::string & filename);
+  bool saveData(const std::string & filename);
 
   /**
    * Shows or hide all curves depending on whether visibility is false or true
    * @param const bool & visibility
    */
-  virtual void setCurvesVisibility(const bool & visibility);
+  void setCurvesVisibility(const bool & visibility);
 
 public slots:
   virtual void replot();
-
-  virtual void toggleLogX(bool logX);
-  virtual void toggleLogY(bool logY);
-  virtual void render(QPainter *, QRect);
-  virtual void resetZoom();
-
-protected:
-  void toggleLog(QCPAxis * axis, bool useLog);
-  void mouseMoveEvent(QMouseEvent * event);
-  void mousePressEvent(QMouseEvent * event);
-  void mouseReleaseEvent(QMouseEvent * event);
-  void wheelEvent(QWheelEvent * event);
-  /*bool viewportEvent(QEvent * event);
-  void mousePressEvent(QMouseEvent * event);
-  void mouseMoveEvent(QMouseEvent * event);
-  void mouseReleaseEvent(QMouseEvent * event);
-  void keyPressEvent(QKeyEvent * event);*/
+#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
+  virtual void legendChecked(const QVariant &, bool on);
+#endif
 
 private:
-  bool m_isTouching = false;
 
-private:
+  /**
+   * @return a spectogram for the given plot item.
+   */
+  CPlotSpectogram* createSpectogram(const CPlotItem *plotItem);
 
   /**
    * Tell the curves where the data is located. It must be called
@@ -171,8 +169,16 @@ private:
    * @param const C_INT32 & index
    * @param const CObjectInterface * pObject
    */
-  void setAxisUnits(QCPAxis *axis,
+  void setAxisUnits(const C_INT32 & index,
                     const CObjectInterface * pObject);
+
+  virtual void toggleLogX(bool logX);
+  virtual void toggleLogY(bool logY);
+  virtual void resetZoom();
+
+  virtual QString titleText() const;
+
+  virtual void render(QPainter * painter, QRect rect);
 
 private slots:
   /**
@@ -180,11 +186,7 @@ private slots:
    * @param QwtPlotItem *item
    * @param bool on
    */
-  void showCurve(QCPAbstractPlottable * item, bool on);
-  void legendClicked(QCPLegend * legend, QCPAbstractLegendItem * item, QMouseEvent * event);
-  void displayToolTip(QCPAbstractPlottable * plottable,
-                      int dataIndex,
-                      QMouseEvent * event);
+  void showCurve(QwtPlotItem *item, bool on);
 
 private:
   /**
@@ -243,16 +245,22 @@ private:
   /**
    * The list of curves
    */
-  std::vector< QCPAbstractPlottable * > mCurves;
+  CVector< C2DPlotCurve * > mCurves;
 
   /**
    * A map between a specification identified by its key and a curve
    */
-  std::map< std::string, QCPAbstractPlottable * > mCurveMap;
+  std::map< std::string, C2DPlotCurve * > mCurveMap;
 
-  std::map< QCPAbstractPlottable *, QCPAbstractPlottable * > mY2Map;
+  /**
+   * The list of spectograms
+   */
+  CVector< CPlotSpectogram * > mSpectograms;
 
-  std::map< QCPAbstractPlottable *, CHistoHelper * > mHisto;
+  /**
+   * A map between a specification identified by its key and a curve
+   */
+  std::map< std::string, CPlotSpectogram* > mSpectogramMap;
 
   /**
    * Count of data lines recorded during activity BEFORE.
@@ -302,15 +310,17 @@ private:
    */
   bool mIgnoreUpdate;
 
+public:
+  /**
+   * Pointer to the zooming engine for the plot.
+   */
+  QwtPlotZoomer * mpZoomer;
+
 protected:
   bool mReplotFinished;
-  QCPTextElement * mpTitle;
-  QSharedPointer< QCPAxisTicker > mLogTicker;
-  QSharedPointer< QCPAxisTicker > mDefaultTicker;
 
 signals:
   void replotSignal();
 };
-
-#endif // COPASI_USE_QCUSTOMPLOT
-#endif // CQCUSTOM_PLOT_H
+#endif // COPASI_USE_QWT
+#endif // COPASIPLOT_H

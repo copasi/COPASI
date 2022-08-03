@@ -78,6 +78,8 @@ public:
 
   bool initFromSpec(const CPlotSpecification* ptrSpec);
 
+  static CPlotInterface * createPlot(const CPlotSpecification * pPlotSpec);
+
   CPlotInterface * getPlot() const;
 
   /**

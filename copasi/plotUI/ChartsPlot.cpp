@@ -665,6 +665,9 @@ void ChartsPlot::updateCurves(const size_t & activity)
 
       std::vector< CVector< double > * > & data = mData[curve_activity];
 
+      if (data.size() == 0)
+        continue;
+
       switch (curve_type)
         {
           case CPlotItem::curve2d:

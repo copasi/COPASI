@@ -35,17 +35,20 @@
 
 #include "plotwindow.h"
 
-#ifdef COPASI_USE_QCUSTOMPLOT
-#  include "CQCustomPlot.h"
-#  define PLOT_CLASS CQCustomPlot
-#else
 #ifdef COPASI_USE_QTCHARTS
 #  include "ChartsPlot.h"
-#  define PLOT_CLASS ChartsPlot
-#else
-#  include "CopasiPlot.h"
-#  define PLOT_CLASS CopasiPlot
 #endif
+
+#ifdef COPASI_USE_QCUSTOMPLOT
+#  include "CQCustomPlot.h"
+#endif
+
+#ifdef COPASI_USE_QWT
+#  include "CopasiPlot.h"
+#endif
+
+#ifdef WITH_QT5_VISUALIZATION
+#include "CQDataVizPlot.h"
 #endif
 
 #include "copasi/plot/CPlotSpecification.h"
@@ -61,24 +64,24 @@
 #endif
 
 //-----------------------------------------------------------------------------
-PlotWindow::PlotWindow(COutputHandlerPlot *pHandler, const CPlotSpecification *ptrSpec, CopasiUI3Window *pMainWindow):
-  CWindowInterface(),
-  mpPlot(NULL),
-  mpHandler(pHandler),
-  mpMainWindow(pMainWindow),
-  mpWindowMenu(NULL),
-  mpToolBar(NULL),
-  mpaCloseWindow(NULL),
-  mpaShowAll(NULL),
-  mpaHideAll(NULL),
-  mpaPrint(NULL),
-  mpaSaveImage(NULL),
-  mpaSaveData(NULL),
-  mpaZoomOut(NULL),
-  mpaToggleLogX(NULL),
-  mpaToggleLogY(NULL),
-  mpaDeactivatePlot(NULL),
-  initializing(false)
+PlotWindow::PlotWindow(COutputHandlerPlot *pHandler, const CPlotSpecification *ptrSpec, CopasiUI3Window *pMainWindow)
+  : CWindowInterface(),
+    mpPlot(NULL),
+    mpHandler(pHandler),
+    mpMainWindow(pMainWindow),
+    mpWindowMenu(NULL),
+    mpToolBar(NULL),
+    mpaCloseWindow(NULL),
+    mpaShowAll(NULL),
+    mpaHideAll(NULL),
+    mpaPrint(NULL),
+    mpaSaveImage(NULL),
+    mpaSaveData(NULL),
+    mpaZoomOut(NULL),
+    mpaToggleLogX(NULL),
+    mpaToggleLogY(NULL),
+    mpaDeactivatePlot(NULL),
+    initializing(false)
 {
   this->resize(640, 480);
   this->setWindowTitle(("COPASI Plot: " + ptrSpec->getTitle()).c_str());
@@ -89,9 +92,15 @@ PlotWindow::PlotWindow(COutputHandlerPlot *pHandler, const CPlotSpecification *p
   createActions();
   createMenus();
   createToolBar();
-  PLOT_CLASS * plot = new PLOT_CLASS(ptrSpec, this);
-  setCentralWidget(plot);
-  mpPlot = plot;
+
+  auto engine = getParameterValue(ptrSpec, "plot engine").toString();
+
+  if (engine.isEmpty())
+    engine = "QWT";
+
+  mpPlot = createPlot(ptrSpec);
+  setCentralWidget(dynamic_cast< QWidget * >(mpPlot));
+
   initializing  = true;
   mpaToggleLogX->setChecked(ptrSpec->isLogX());
   mpaToggleLogY->setChecked(ptrSpec->isLogY());
@@ -214,6 +223,50 @@ bool PlotWindow::initFromSpec(const CPlotSpecification *ptrSpec)
     }
 
   return result;
+}
+
+CPlotInterface * PlotWindow::createPlot(const CPlotSpecification * pPlotSpec)
+{
+  QString engine = getParameterValue(pPlotSpec, "plot engine").toString();
+
+#ifdef COPASI_USE_QTCHARTS
+
+  if (engine.contains("Chart"))
+    {
+      return new ChartsPlot(pPlotSpec);
+    }
+
+#endif
+
+#ifdef COPASI_USE_QCUSTOMPLOT
+
+  if (engine.contains("Custom"))
+    {
+      return new CQCustomPlot(pPlotSpec);
+    }
+
+#endif
+
+#ifdef WITH_QT5_VISUALIZATION
+
+  if (engine.contains("surface"))
+    {
+      return new CQDataVizPlot(pPlotSpec, nullptr, CQDataVizPlot::PlotMode::Surface);
+    }
+
+  if (engine.contains("scatter"))
+    {
+      return new CQDataVizPlot(pPlotSpec, nullptr, CQDataVizPlot::PlotMode::Scatter);
+    }
+
+#endif
+
+
+#ifdef COPASI_USE_QWT
+  // by default return Qwt if we have it
+  return new CopasiPlot(pPlotSpec);
+#endif
+  return nullptr;
 }
 
 // toggle log X
@@ -349,7 +402,7 @@ void PlotWindow::printPlot()
   if (dialog.exec())
     {
       QPainter painter(&printer);
-      mpPlot->render(&painter,QRect());
+      mpPlot->render(&painter, QRect());
       //#ifdef COPASI_USE_QTCHARTS
 //      #else
 //#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
@@ -429,13 +482,19 @@ bool PlotWindow::compile(CObjectInterface::ContainerList listOfContainer)
 };
 
 void PlotWindow::output(const Activity &activity)
-{if (mpPlot) mpPlot->output(activity);}
+{
+  if (mpPlot) mpPlot->output(activity);
+}
 
 void PlotWindow::separate(const Activity &activity)
-{if (mpPlot) mpPlot->separate(activity);};
+{
+  if (mpPlot) mpPlot->separate(activity);
+}
 
 void PlotWindow::finish()
-{if (mpPlot) mpPlot->finish();};
+{
+  if (mpPlot) mpPlot->finish();
+}
 
 const CObjectInterface::ObjectSet &PlotWindow::getObjects() const
 {

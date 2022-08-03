@@ -162,6 +162,8 @@ CQCustomPlot::CQCustomPlot(QWidget * parent)
   , mIgnoreUpdate(false)
   , mReplotFinished(false)
   , mpTitle(NULL)
+  , mLogTicker(NULL)
+  , mDefaultTicker(NULL)
 {
 }
 
@@ -181,6 +183,7 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
   , mIgnoreUpdate(false)
   , mReplotFinished(false)
   , mpTitle(NULL)
+  , mLogTicker(new QCPAxisTickerLog)
 {
   // Size the vectors to be able to store information for all activities.
   mData.resize(ActivitySize);
@@ -192,6 +195,7 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
   //setNoAntialiasingOnDrag(true);
   //setSelectionRectMode(QCP::srmZoom);
   setInteractions(QCP::iRangeDrag | QCP::iRangeZoom /*| QCP::iSelectPlottables*/);
+  mDefaultTicker = xAxis->ticker();
 
   // Initialize from the plot specification
   initFromSpec(plotspec);
@@ -1024,7 +1028,7 @@ bool CQCustomPlot::saveData(const std::string & filename)
 void CQCustomPlot::setCurvesVisibility(const bool & visibility)
 {
   for (int i = 0; i < this->plottableCount(); ++i)
-    plottable(i)->setVisible(visibility);
+    showCurve(plottable(i), visibility);
 
   QCustomPlot::replot();
 }
@@ -1062,18 +1066,22 @@ void CQCustomPlot::replot()
   mReplotFinished = true;
 }
 
+void CQCustomPlot::toggleLog(QCPAxis * axis, bool useLog)
+{
+  axis->setScaleType(useLog ? QCPAxis::stLogarithmic
+                     : QCPAxis::stLinear);
+  axis->setTicker(useLog ? mLogTicker : mDefaultTicker);
+  QCustomPlot::replot();
+}
+
 void CQCustomPlot::toggleLogX(bool logX)
 {
-  xAxis->setScaleType(logX ? QCPAxis::stLogarithmic
-                      : QCPAxis::stLinear);
-  QCustomPlot::replot();
+  toggleLog(xAxis, logX);
 }
 
 void CQCustomPlot::toggleLogY(bool logY)
 {
-  yAxis->setScaleType(logY ? QCPAxis::stLogarithmic
-                      : QCPAxis::stLinear);
-  QCustomPlot::replot();
+  toggleLog(yAxis, logY);
 }
 
 void CQCustomPlot::render(QPainter * painter, QRect rect)
@@ -1106,6 +1114,35 @@ void CQCustomPlot::mouseReleaseEvent(QMouseEvent * event)
 {
   m_isTouching = false;
   QCustomPlot::mouseReleaseEvent(event);
+}
+
+void CQCustomPlot::wheelEvent(QWheelEvent * event)
+{
+  QCPLayerable * element = layerableAt(event->pos(), true);
+
+  if (dynamic_cast<QCPLegend*>(element) || dynamic_cast<QCPAbstractLegendItem*>(element))
+    {
+      bool reorder = true;
+
+      if (event->angleDelta().y() > 0 && legend->wrap() < 8)
+        {
+          legend->setWrap(legend->wrap() + 1);
+        }
+      else if (legend->wrap() > 1)
+        {
+          legend->setWrap(legend->wrap() - 1);
+        }
+      else
+        reorder = false;
+
+      if (reorder)
+        {
+          legend->setFillOrder(legend->fillOrder(), true);
+          replot();
+        }
+    }
+
+  QCustomPlot::wheelEvent(event);
 }
 
 void CQCustomPlot::updateCurves(const size_t & activity)
@@ -1300,7 +1337,7 @@ void CQCustomPlot::updateCurves(const size_t & activity)
 
   if (data_changed)
     {
-      rescaleAxes(true);
+      //rescaleAxes(true);
       QCustomPlot::replot();
     }
 }
@@ -1446,14 +1483,8 @@ void CQCustomPlot::legendClicked(QCPLegend * legend, QCPAbstractLegendItem * ite
 
   if (plItem != NULL)
     {
-      plItem->plottable()->setVisible(!plItem->plottable()->visible());
-      plItem->setVisible(true);
-      auto pBuddy = mY2Map.find(plItem->plottable());
-
-      if (pBuddy != mY2Map.end())
-        (*pBuddy).second->setVisible(plItem->plottable()->visible());
-
-      rescaleAxes(true);
+      auto * pCurve = plItem->plottable();
+      showCurve(pCurve, !pCurve->visible());
       QCustomPlot::replot();
     }
 }
@@ -1507,12 +1538,27 @@ void CQCustomPlot::displayToolTip(QCPAbstractPlottable * plottable, int dataInde
   QToolTip::hideText();
 }
 
-void CQCustomPlot::showCurve(QCPLayerable * item, bool on)
+void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on)
 {
-  if (!item)
+  if (!pCurve)
     return;
 
-  item->setVisible(on);
+  auto * plItem = legend->itemWithPlottable(pCurve);
+  pCurve->setVisible(on);
+  plItem->setVisible(true);
+
+  QFont legendFont = plItem->font();
+  legendFont.setItalic(!on);
+  legendFont.setBold(on);
+  plItem->setFont(legendFont);
+  auto pBuddy = mY2Map.find(plItem->plottable());
+
+  if (pBuddy != mY2Map.end())
+    (*pBuddy).second->setVisible(plItem->plottable()->visible());
+
+  rescaleAxes(true);
+
+
 }
 
 #endif // COPASI_USE_QCUSTOMPLOT

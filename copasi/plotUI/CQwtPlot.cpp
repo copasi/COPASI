@@ -1,25 +1,6 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <QtCore/QString>
@@ -71,7 +52,7 @@
 
 #include <QApplication>
 
-#if !defined(COPASI_USE_QTCHARTS) && !defined(COPASI_USE_QCUSTOMPLOT)
+#ifdef COPASI_USE_QWT
 
 #  include <qwt_plot.h>
 #  include <qwt_scale_engine.h>
@@ -1668,4 +1649,4 @@ void CopasiPlot::replot()
   mReplotFinished = true;
 }
 
-#endif // !defined(COPASI_USE_QTCHARTS) && !defined(COPASI_USE_QCUSTOMPLOT)
+#endif // COPASI_USE_QWT
