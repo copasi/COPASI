@@ -30,7 +30,7 @@
 #include "copasi/copasi.h"
 
 #include "scrollzoomer.h"
-#include "CopasiPlot.h"
+#include "CQwtPlot.h"
 #include "CQPlotColors.h"
 
 #include "copasi/plot/CPlotSpecification.h"

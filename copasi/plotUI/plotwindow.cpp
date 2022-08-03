@@ -44,7 +44,7 @@
 #endif
 
 #ifdef COPASI_USE_QWT
-#  include "CopasiPlot.h"
+#  include "CQwtPlot.h"
 #endif
 
 #ifdef WITH_QT5_VISUALIZATION
