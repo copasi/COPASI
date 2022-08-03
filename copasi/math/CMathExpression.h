@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -119,7 +119,7 @@ public:
    * before this.
    * @return const CObjectInterface::ObjectSet & prerequisites
    */
-  virtual const CObjectInterface::ObjectSet & getPrerequisites() const;
+  virtual const CObjectInterface::ObjectSet & getPrerequisites() const override;
 
   /**
    * Compile the evaluation tree.
