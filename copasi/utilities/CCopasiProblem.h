@@ -107,12 +107,12 @@ public:
    * @param CProcessReport * pCallBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReport * pCallBack);
+  virtual bool setCallBack(CProcessReport callBack);
 
   /**
    * @return the currently set callback
    */
-  CProcessReport * getCallBack() const;
+  const CProcessReport & getCallBack() const;
 
   /**
    * resets the currently set callback by calling setCallBack(NULL)
@@ -197,7 +197,7 @@ protected:
   /**
    * a pointer to the callback
    */
-  CProcessReport * mpCallBack;
+  CProcessReport mProcessReport;
 
   /**
    * A pointer to the report

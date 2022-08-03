@@ -89,14 +89,14 @@ COptTask::~COptTask()
 
 void COptTask::cleanup() {}
 
-bool COptTask::setCallBack(CProcessReport * pCallBack)
+bool COptTask::setCallBack(CProcessReport callBack)
 {
-  bool success = CCopasiTask::setCallBack(pCallBack);
+  bool success = CCopasiTask::setCallBack(callBack);
 
   if (success &&
       mpProblem != NULL)
     {
-      success &=  mpProblem->setCallBack(pCallBack);
+      success &=  mpProblem->setCallBack(mProcessReport);
     }
 
   return success;
@@ -153,8 +153,8 @@ bool COptTask::process(const bool & useInitialValues)
 
   bool success = pMethod->optimise();
 
-  if (mpCallBack != NULL)
-    mpCallBack->setIgnoreStop();
+  if (mProcessReport)
+    mProcessReport.setIgnoreStop();
 
   pProblem->calculateStatistics();
 

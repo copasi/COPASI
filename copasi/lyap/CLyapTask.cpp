@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -194,13 +194,13 @@ bool CLyapTask::process(const bool & useInitialValues)
   //  bool flagProceed = true;
   mPercentage = 0;
 
-  if (mpCallBack)
+  if (mProcessReport)
     {
-      mpCallBack->setName("performing lyapunov exponent calculation...");
+      mProcessReport.setName("performing lyapunov exponent calculation...");
       C_FLOAT64 hundred = 100;
-      mhProcess = mpCallBack->addItem("Completion",
-                                      mPercentage,
-                                      &hundred);
+      mhProcess = mProcessReport.addItem("Completion",
+                                         mPercentage,
+                                         &hundred);
     }
 
   try
@@ -215,14 +215,14 @@ bool CLyapTask::process(const bool & useInitialValues)
       calculationsBeforeOutput();
       output(COutputInterface::DURING);
 
-      if (mpCallBack) mpCallBack->finishItem(mhProcess);
+      if (mProcessReport) mProcessReport.finishItem(mhProcess);
 
       output(COutputInterface::AFTER);
 
       throw CCopasiException(Exception.getMessage());
     }
 
-  if (mpCallBack) mpCallBack->finishItem(mhProcess);
+  if (mProcessReport) mProcessReport.finishItem(mhProcess);
 
   calculationsBeforeOutput();
   output(COutputInterface::AFTER);
@@ -257,9 +257,9 @@ bool CLyapTask::methodCallback(const C_FLOAT64 & percentage, bool onlyProgress)
 
   mPercentage = percentage;
 
-  if (mpCallBack)
+  if (mProcessReport)
     {
-      return mpCallBack->progressItem(mhProcess);
+      return mProcessReport.progressItem(mhProcess);
     }
 
   return true;

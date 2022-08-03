@@ -45,7 +45,7 @@ CCopasiProblem::CCopasiProblem():
   CCopasiParameterGroup("NoName", NULL, "Problem"),
   mType(CTaskEnum::Task::UnsetTask),
   mpContainer(NULL),
-  mpCallBack(NULL),
+  mProcessReport(),
   mpReport(NULL)
 {}
 
@@ -54,7 +54,7 @@ CCopasiProblem::CCopasiProblem(const CTaskEnum::Task & type,
   CCopasiParameterGroup(CTaskEnum::TaskName[type], pParent, "Problem"),
   mType(type),
   mpContainer(NULL),
-  mpCallBack(NULL),
+  mProcessReport(),
   mpReport(NULL)
 {
   const CCopasiTask * pTask = dynamic_cast< const CCopasiTask * >(pParent);
@@ -70,7 +70,7 @@ CCopasiProblem::CCopasiProblem(const CCopasiProblem & src,
   CCopasiParameterGroup(src, pParent),
   mType(src.mType),
   mpContainer(src.mpContainer),
-  mpCallBack(NULL),
+  mProcessReport(),
   mpReport(src.mpReport)
 {
   const CCopasiTask * pTask = dynamic_cast< const CCopasiTask * >(getObjectParent());
@@ -105,15 +105,15 @@ CMathContainer * CCopasiProblem::getMathContainer() const
   return mpContainer;
 }
 
-bool CCopasiProblem::setCallBack(CProcessReport * pCallBack)
+bool CCopasiProblem::setCallBack(CProcessReport callBack)
 {
-  mpCallBack = pCallBack;
+  mProcessReport = callBack;
   return true;
 }
 
-CProcessReport * CCopasiProblem::getCallBack() const
+const CProcessReport & CCopasiProblem::getCallBack() const
 {
-  return mpCallBack;
+  return mProcessReport;
 }
 
 void CCopasiProblem::clearCallBack()

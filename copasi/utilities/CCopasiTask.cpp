@@ -243,7 +243,7 @@ CCopasiTask::CCopasiTask()
   , mReport()
   , mInitialState()
   , mpContainer(NULL)
-  , mpCallBack(NULL)
+  , mProcessReport()
   , mpSliders(NULL)
   , mDoOutput(OUTPUT_SE)
   , mpOutputHandler(NULL)
@@ -268,7 +268,7 @@ CCopasiTask::CCopasiTask(const CDataContainer * pParent,
   , mReport()
   , mpContainer(NULL)
   , mInitialState()
-  , mpCallBack(NULL)
+  , mProcessReport()
   , mpSliders(NULL)
   , mDoOutput(OUTPUT_SE)
   , mpOutputHandler(NULL)
@@ -294,7 +294,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
   , mReport(src.mReport)
   , mpContainer(src.mpContainer)
   , mInitialState(src.mInitialState)
-  , mpCallBack(NULL)
+  , mProcessReport()
   , mpSliders(NULL)
   , mDoOutput(src.mDoOutput)
   , mpOutputHandler(NULL)
@@ -386,31 +386,33 @@ CMathContainer * CCopasiTask::getMathContainer() const
   return mpContainer;
 }
 
-bool CCopasiTask::setCallBack(CProcessReport * pCallBack)
+bool CCopasiTask::setCallBack(CProcessReport callBack)
 {
   if (!isTaskValid())
     return false;
+
+  // We automatically increase the level
+
+  mProcessReport = ++callBack;
 
   bool success = true;
 
   if (mpMethod != NULL)
     {
-      success &= mpMethod->setCallBack(pCallBack);
+      success &= mpMethod->setCallBack(mProcessReport);
     }
-
-  mpCallBack = pCallBack;
 
   return success;
 }
 
-CProcessReport * CCopasiTask::getCallBack() const
+const CProcessReport & CCopasiTask::getCallBack() const
 {
-  return mpCallBack;
+  return mProcessReport;
 }
 
 void CCopasiTask::clearCallBack()
 {
-  setCallBack(NULL);
+  setCallBack(CProcessReport());
 }
 
 COutputHandler* CCopasiTask::getOutputHandler() const

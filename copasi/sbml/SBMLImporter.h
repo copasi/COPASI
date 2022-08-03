@@ -87,7 +87,7 @@ protected:
   /**
    * the import handler
    */
-  CProcessReport* mpProgressHandler;
+  CProcessReport mProgressHandler;
 
   /**
    * the global import step handle
@@ -747,12 +747,12 @@ public:
   /**
    * sets a progress handler to inform about updates
    */
-  void setImportHandler(CProcessReport* pHandler);
+  void setImportHandler(CProcessReport handler);
 
   /**
    * @return the progress handler set
    */
-  CProcessReport* getImportHandlerAddr() const;
+  const CProcessReport & getProcessReport() const;
 
   /**
    * clears the currently set progress handler

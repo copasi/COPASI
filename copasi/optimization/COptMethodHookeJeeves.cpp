@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,8 +68,8 @@ bool COptMethodHookeJeeves::optimise()
 
   if (!initialize())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhIteration);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhIteration);
 
       return false;
     }
@@ -133,8 +133,8 @@ bool COptMethodHookeJeeves::optimise()
       if (mLogVerbosity > 0)
         mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user."));
 
-      if (mpCallBack)
-        mpCallBack->finishItem(mhIteration);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhIteration);
 
       cleanup();
       return true;
@@ -156,8 +156,8 @@ bool COptMethodHookeJeeves::optimise()
   while ((mIteration < mIterationLimit) && (steplength > mTolerance) && mContinue)
     {
       // signal another iteration to Gepasi
-      if (mpCallBack)
-        mContinue &= mpCallBack->progressItem(mhIteration);
+      if (mProcessReport)
+        mContinue &= mProcessReport.progressItem(mhIteration);
 
       mIteration++;
       iadj++;
@@ -255,8 +255,8 @@ bool COptMethodHookeJeeves::optimise()
                      std::to_string(mIterationLimit) + " iterations."));
     }
 
-  if (mpCallBack)
-    mpCallBack->finishItem(mhIteration);
+  if (mProcessReport)
+    mProcessReport.finishItem(mhIteration);
 
   cleanup();
   return true;
@@ -279,11 +279,11 @@ bool COptMethodHookeJeeves::initialize()
 
   mIteration = 0;
 
-  if (mpCallBack)
+  if (mProcessReport)
     mhIteration =
-      mpCallBack->addItem("Current Iteration",
-                          mIteration,
-                          & mIterationLimit);
+      mProcessReport.addItem("Current Iteration",
+                             mIteration,
+                             & mIterationLimit);
 
   mVariableSize = mProblemContext.master()->getOptItemList().size();
 

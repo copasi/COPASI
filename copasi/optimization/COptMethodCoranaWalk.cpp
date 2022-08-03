@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -90,8 +90,8 @@ bool COptMethodCoranaWalk::optimise()
 {
   if (!initialize())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mIterations);
+      if (mProcessReport)
+        mProcessReport.finishItem(mIterations);
 
       return false;
     }
@@ -169,8 +169,8 @@ bool COptMethodCoranaWalk::optimise()
       mpParentTask->output(COutputInterface::DURING);
       mpParentTask->output(COutputInterface::MONITORING);
 
-      if (mpCallBack)
-        mContinue &= mpCallBack->progressItem(mhIterations);
+      if (mProcessReport)
+        mContinue &= mProcessReport.progressItem(mhIterations);
     }
 
   mAccepted = 0;
@@ -203,8 +203,8 @@ bool COptMethodCoranaWalk::optimise()
               // count it
               mCurrentIteration++;
 
-              if (mpCallBack)
-                mContinue &= mpCallBack->progressItem(mhIterations);
+              if (mProcessReport)
+                mContinue &= mProcessReport.progressItem(mhIterations);
 
               // Check all functional constraints
               if (!mProblemContext.master()->checkFunctionalConstraints())
@@ -285,9 +285,8 @@ bool COptMethodCoranaWalk::optimise()
           mCurrentValue = mBestValue;
         }
 
-      if (mpCallBack)
-        mContinue &= mpCallBack->progressItem(mhIterations);
-
+      if (mProcessReport)
+        mContinue &= mProcessReport.progressItem(mhIterations);
     }
   while (processing && mContinue);
 
@@ -297,8 +296,8 @@ bool COptMethodCoranaWalk::optimise()
                    "Terminated after " + std::to_string(mCurrentIteration) + " of " +
                    std::to_string(mIterations) + " iterations."));
 
-  if (mpCallBack)
-    mpCallBack->finishItem(mhIterations);
+  if (mProcessReport)
+    mProcessReport.finishItem(mhIterations);
 
   return true;
 }
@@ -338,10 +337,10 @@ bool COptMethodCoranaWalk::initialize()
 
   mCurrentIteration = 0;
 
-  if (mpCallBack)
+  if (mProcessReport)
     mhIterations =
-      mpCallBack->addItem("Iterations",
-                          mCurrentIteration, &mIterations);
+      mProcessReport.addItem("Iterations",
+                             mCurrentIteration, &mIterations);
 
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
   mContinue = true;

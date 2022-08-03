@@ -278,27 +278,27 @@ void COptProblem::reset()
   mCounters = sCounter();
 }
 
-bool COptProblem::setCallBack(CProcessReport * pCallBack)
+bool COptProblem::setCallBack(CProcessReport callBack)
 {
-  bool success = CCopasiProblem::setCallBack(pCallBack);
+  bool success = CCopasiProblem::setCallBack(callBack);
 
   if (mpSubTask != NULL)
     {
-      success &= mpSubTask->setCallBack(mpCallBack);
+      success &= mpSubTask->setCallBack(mProcessReport);
     }
 
-  if (mpCallBack)
+  if (mProcessReport)
     {
       reset();
 
       // We need to reset mSolutionValue to correctly initialize the progress item.
       mhSolutionValue =
-        mpCallBack->addItem("Best Value",
-                            mSolutionValue);
+        mProcessReport.addItem("Best Value",
+                               mSolutionValue);
       // We need to reset mCounter to correctly initialize the progress item.
       mhCounter =
-        mpCallBack->addItem("Function Evaluations",
-                            mCounters.Counter);
+        mProcessReport.addItem("Function Evaluations",
+                               mCounters.Counter);
     }
   else
     {
@@ -623,8 +623,8 @@ bool COptProblem::calculate()
       mCalculateValue = std::numeric_limits< C_FLOAT64 >::infinity();
     }
 
-  if (mpCallBack)
-    return mpCallBack->progressItem(mhCounter);
+  if (mProcessReport)
+    return mProcessReport.progressItem(mhCounter);
 
   return true;
 }
@@ -730,8 +730,8 @@ bool COptProblem::setSolution(const C_FLOAT64 & value,
   if (value == -std::numeric_limits< C_FLOAT64 >::infinity())
     Continue = false;
 
-  if (mpCallBack)
-    Continue &= mpCallBack->progressItem(mhSolutionValue);
+  if (mProcessReport)
+    Continue &= mProcessReport.progressItem(mhSolutionValue);
 
   return Continue;
 }
@@ -924,8 +924,8 @@ void COptProblem::incrementCounters(const COptProblem::sCounter & increment)
   mCounters.ConstraintCounter += increment.ConstraintCounter;
   mCounters.FailedConstraintCounter += increment.FailedConstraintCounter;
 
-  if (mpCallBack)
-    mpCallBack->progressItem(mhCounter);
+  if (mProcessReport)
+    mProcessReport.progressItem(mhCounter);
 }
 
 void COptProblem::resetCounters()

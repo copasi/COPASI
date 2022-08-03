@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -65,7 +65,7 @@ int validate();
 int printUsage(const std::string& name);
 int exportSBML();
 int exportCurrentModel();
-int runScheduledTasks(CProcessReport * pProcessReport);
+int runScheduledTasks(CProcessReportInterface * pProcessReport);
 int saveCurrentModel();
 int exportParametersToIniFile();
 
@@ -77,7 +77,7 @@ std::string ScheduledTask;
 int main(int argc, char *argv[])
 {
   int retcode = 0;
-  CProcessReport * pProcessReport = NULL;
+  CProcessReportInterface * pProcessReport = NULL;
   int MaxTime = 0;
 
 #ifdef XXXX
@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
 
   if (MaxTime > 0)
     {
-      pProcessReport = new CProcessReport(MaxTime);
+      pProcessReport = new CProcessReportInterface(MaxTime);
     }
 
   try
@@ -412,7 +412,7 @@ int printUsage(const std::string& name)
   return 1;
 }
 
-int runScheduledTasks(CProcessReport * pProcessReport)
+int runScheduledTasks(CProcessReportInterface * pProcessReport)
 {
   int retcode = 0;
 

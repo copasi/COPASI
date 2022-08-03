@@ -36,6 +36,7 @@
 #include <string>
 
 #include "copasi/utilities/CTaskEnum.h"
+#include "copasi/utilities/CProcessReport.h"
 #include "copasi/output/COutputHandler.h"
 #include "copasi/core/CVector.h"
 
@@ -296,15 +297,15 @@ public:
 
   /**
    * Set the call back of the task
-   * @param CProcessReport * pCallBack
+   * @param CProcessReport & callBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReport * pCallBack);
+  virtual bool setCallBack(CProcessReport callBack);
 
   /**
    * @return the currently set callback
    */
-  CProcessReport * getCallBack() const;
+  const CProcessReport & getCallBack() const;
 
   /**
    * resets the currently set callback by calling setCallBack(NULL)
@@ -522,7 +523,7 @@ protected:
   /**
    * progress bar handler
    */
-  CProcessReport * mpCallBack;
+  CProcessReport mProcessReport;
 
   /**
    * Pointer to group of sliders associated with the task.

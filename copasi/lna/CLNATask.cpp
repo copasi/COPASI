@@ -129,7 +129,7 @@ bool CLNATask::process(const bool & useInitialValues)
       assert(pSSProblem);
       pSSProblem->setStabilityAnalysisRequested(stabilityAnalysisRequested);
 
-      pSubTask->setCallBack(mpCallBack);
+      pSubTask->setCallBack(mProcessReport);
       pSubTask->process(useInitialValues);
       CSteadyStateMethod::ReturnCode SSstatus = pSubTask->getResult();
       pMethod->setSteadyStateStatus(SSstatus);
@@ -179,16 +179,18 @@ bool CLNATask::process(const bool & useInitialValues)
 }
 
 // virtual
-bool CLNATask::setCallBack(CProcessReport * pCallBack)
+bool CLNATask::setCallBack(CProcessReport callBack)
 {
+  bool success = CCopasiTask::setCallBack(callBack);
+
   CCopasiTask *pSubTask = mpProblem->getSubTask();
 
-  if (pSubTask)
+  if (pSubTask != NULL)
     {
-      pSubTask->setCallBack(pCallBack);
+      success &= pSubTask->setCallBack(mProcessReport);
     }
 
-  return CCopasiTask::setCallBack(pCallBack);
+  return success;
 }
 
 // virtual

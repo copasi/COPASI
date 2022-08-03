@@ -238,7 +238,7 @@ CModel::CModel(CDataContainer* pParent):
   mQuantity2NumberFactor(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
   mpQuantity2NumberFactorReference(new CDataObjectReference< C_FLOAT64 >("Quantity Conversion Factor", this, mQuantity2NumberFactor, CDataObject::ValueDbl)),
   mNumber2QuantityFactor(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
-  mpCompileHandler(NULL),
+  mCompileHandler(),
   mReorderNeeded(false),
   mIsAutonomous(true),
   mBuildInitialSequence(true),
@@ -502,18 +502,18 @@ CIssue CModel::compile()
 
   // std::chr::time_point<std::chrono::steady_clock> // Start = std::chrono::steady_clock::now();
 
-  if (mpCompileHandler)
+  if (mCompileHandler)
     {
-      mpCompileHandler->setName("Compiling model...");
+      mCompileHandler.setName("Compiling model...");
       unsigned C_INT32 totalSteps = 12;
-      hCompileStep = mpCompileHandler->addItem("Compile Process",
-                     CompileStep,
-                     &totalSteps);
+      hCompileStep = mCompileHandler.addItem("Compile Process",
+                                             CompileStep,
+                                             &totalSteps);
     }
 
   CompileStep = 0;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+  if (mCompileHandler && !mCompileHandler.progressItem(hCompileStep))
     {
       firstWorstIssue = CIssue::Error;
       goto finish;
@@ -526,7 +526,7 @@ CIssue CModel::compile()
 
   CompileStep = 1;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+  if (mCompileHandler && !mCompileHandler.progressItem(hCompileStep))
     {
       firstWorstIssue = CIssue::Error;
       goto finish;
@@ -539,7 +539,7 @@ CIssue CModel::compile()
 
   CompileStep = 2;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+  if (mCompileHandler && !mCompileHandler.progressItem(hCompileStep))
     {
       firstWorstIssue = CIssue::Error;
       goto finish;
@@ -552,7 +552,7 @@ CIssue CModel::compile()
 
   CompileStep = 3;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+  if (mCompileHandler && !mCompileHandler.progressItem(hCompileStep))
     {
       firstWorstIssue = CIssue::Error;
       goto finish;
@@ -565,7 +565,7 @@ CIssue CModel::compile()
 
   CompileStep = 4;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+  if (mCompileHandler && !mCompileHandler.progressItem(hCompileStep))
     {
       firstWorstIssue = CIssue::Error;
       goto finish;
@@ -578,7 +578,7 @@ CIssue CModel::compile()
 
   CompileStep = 5;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+  if (mCompileHandler && !mCompileHandler.progressItem(hCompileStep))
     {
       firstWorstIssue = CIssue::Error;
       goto finish;
@@ -591,7 +591,7 @@ CIssue CModel::compile()
 
   CompileStep = 6;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+  if (mCompileHandler && !mCompileHandler.progressItem(hCompileStep))
     {
       firstWorstIssue = CIssue::Error;
       goto finish;
@@ -616,7 +616,7 @@ CIssue CModel::compile()
 
   CompileStep = 7;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+  if (mCompileHandler && !mCompileHandler.progressItem(hCompileStep))
     {
       firstWorstIssue = CIssue::Error;
       goto finish;
@@ -629,7 +629,7 @@ CIssue CModel::compile()
 
   CompileStep = 8;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+  if (mCompileHandler && !mCompileHandler.progressItem(hCompileStep))
     {
       firstWorstIssue = CIssue::Error;
       goto finish;
@@ -642,7 +642,7 @@ CIssue CModel::compile()
 
   CompileStep = 9;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+  if (mCompileHandler && !mCompileHandler.progressItem(hCompileStep))
     {
       firstWorstIssue = CIssue::Error;
       goto finish;
@@ -657,7 +657,7 @@ CIssue CModel::compile()
 
   CompileStep = 10;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+  if (mCompileHandler && !mCompileHandler.progressItem(hCompileStep))
     {
       firstWorstIssue = CIssue::Error;
       goto finish;
@@ -680,7 +680,7 @@ CIssue CModel::compile()
 
   CompileStep = 11;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+  if (mCompileHandler && !mCompileHandler.progressItem(hCompileStep))
     {
       firstWorstIssue = CIssue::Error;
       goto finish;
@@ -695,7 +695,7 @@ CIssue CModel::compile()
 
   CompileStep = 12;
 
-  if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
+  if (mCompileHandler && !mCompileHandler.progressItem(hCompileStep))
     {
       firstWorstIssue = CIssue::Error;
       goto finish;
@@ -716,7 +716,7 @@ finish:
 
   mCompileIsNecessary = !firstWorstIssue;
 
-  if (mpCompileHandler) mpCompileHandler->finishItem(hCompileStep);
+  if (mCompileHandler) mCompileHandler.finishItem(hCompileStep);
 
   return firstWorstIssue;
 }
@@ -804,13 +804,13 @@ const bool & CModel::isCompileNecessary() const
   return mCompileIsNecessary;
 }
 
-bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
+bool CModel::compileIfNecessary(CProcessReport processReport)
 {
   bool success = true;
 
   if (mCompileIsNecessary)
     {
-      mpCompileHandler = pProcessReport;
+      mCompileHandler = processReport;
 
       try
         {
@@ -822,16 +822,16 @@ bool CModel::compileIfNecessary(CProcessReport* pProcessReport)
           success = false;
         }
 
-      mpCompileHandler = NULL;
+      mCompileHandler = NULL;
     }
 
   return success;
 }
 
-bool CModel::forceCompile(CProcessReport* pProcessReport)
+bool CModel::forceCompile(CProcessReport processReport)
 {
   setCompileFlag();
-  return compileIfNecessary(pProcessReport);
+  return compileIfNecessary(processReport);
 }
 
 void CModel::buildStoi()
@@ -852,10 +852,10 @@ void CModel::buildStoi()
 
   size_t hProcess;
 
-  if (mpCompileHandler)
+  if (mCompileHandler)
     {
       i = 0;
-      hProcess = mpCompileHandler->addItem("Building Stoichiometry", i, &numCols);
+      hProcess = mCompileHandler.addItem("Building Stoichiometry", i, &numCols);
     }
 
   C_FLOAT64 * pCol, *pColEnd;
@@ -871,7 +871,7 @@ void CModel::buildStoi()
 
   for (; pCol < pColEnd; ++pCol, ++itStep, ++reactionNum)
     {
-      if (mpCompileHandler && !mpCompileHandler->progressItem(hProcess)) return;
+      if (mCompileHandler && !mCompileHandler.progressItem(hProcess)) return;
 
       // Since we are stepping through the reactions we can check whether
       // the kinetic functions are usable.
@@ -913,8 +913,8 @@ void CModel::buildStoi()
   DebugFile << mStoi << std::endl;
 #endif
 
-  if (mpCompileHandler)
-    mpCompileHandler->finishItem(hProcess);
+  if (mCompileHandler)
+    mCompileHandler.finishItem(hProcess);
 
   return;
 }

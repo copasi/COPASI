@@ -140,7 +140,7 @@ bool CSteadyStateMethod::elevateChildren()
 CSteadyStateMethod::ReturnCode
 CSteadyStateMethod::process(CVectorCore< C_FLOAT64 > & State,
                             CMatrix< C_FLOAT64 > & jacobianX,
-                            CProcessReport * handler)
+                            CProcessReport handler)
 {
   mpParentTask = dynamic_cast<CSteadyStateTask *>(getObjectParent());
   assert(mpParentTask);
@@ -148,7 +148,7 @@ CSteadyStateMethod::process(CVectorCore< C_FLOAT64 > & State,
   mSteadyState.initialize(State);
   mStartState = mSteadyState;
   mpJacobian = & jacobianX;
-  mpCallBack = handler;
+  mProcessReport = handler;
 
   return processInternal();
 }

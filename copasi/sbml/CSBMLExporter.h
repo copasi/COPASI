@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,7 +22,6 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-
 #ifndef CSBMLExporter_H__
 #define CSBMLExporter_H__
 
@@ -35,7 +34,8 @@
 
 #include "copasi/function/CEvaluationNodeFunction.h"
 #include <sbml/FunctionDefinition.h>
-#include "SBMLIncompatibility.h"
+#include "copasi/sbml/SBMLIncompatibility.h"
+#include "copasi/utilities/CProcessReport.h"
 
 class CAnnotation;
 class CChemEqElement;
@@ -100,7 +100,7 @@ protected:
   /**
    * the progress handler for the export
    */
-  CProcessReport* mpProgressHandler;
+  CProcessReport mProgressHandler;
   /**
    * the global import step handle
    */
@@ -138,18 +138,17 @@ public:
    *
    * @param pHandler the progress handler to be used, or NULL
    */
-  void setHandler(CProcessReport* pHandler);
+  void setHandler(CProcessReport handler);
 
   /**
    * @return the currently set callback handler
    */
-  CProcessReport * getCallBack() const;
+  const CProcessReport & getCallBack() const;
 
   /**
    * resets the currently set callback by calling setHandler(NULL)
    */
   virtual void clearCallBack();
-
 
   /**
    * This utility functions adds a new step to the progress dialog (if present)

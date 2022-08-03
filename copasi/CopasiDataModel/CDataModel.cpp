@@ -258,7 +258,7 @@ CDataModel::~CDataModel()
 
 bool CDataModel::loadFromString(const std::string & content,
                                 std::string referenceDir,
-                                CProcessReport * pProcessReport,
+                                CProcessReport processReport,
                                 const bool & deleteOldData)
 {
   if (referenceDir.empty())
@@ -271,20 +271,20 @@ bool CDataModel::loadFromString(const std::string & content,
   switch (CDataModel::contentType(Content))
     {
       case ContentType::COPASI:
-        return loadModel(Content, referenceDir, pProcessReport, deleteOldData);
+        return loadModel(Content, referenceDir, processReport, deleteOldData);
         break;
 
       case ContentType::GEPASI:
-        return loadModel(Content, referenceDir, pProcessReport, deleteOldData);
+        return loadModel(Content, referenceDir, processReport, deleteOldData);
         break;
 
       case ContentType::SBML:
         mData.mReferenceDir = referenceDir;
-        return importSBMLFromString(content, pProcessReport, deleteOldData);
+        return importSBMLFromString(content, processReport, deleteOldData);
         break;
 
       case ContentType::SEDML:
-        return importSEDMLFromString(content, referenceDir, pProcessReport, deleteOldData);
+        return importSEDMLFromString(content, referenceDir, processReport, deleteOldData);
         break;
 
       case ContentType::OMEX:
@@ -295,7 +295,7 @@ bool CDataModel::loadFromString(const std::string & content,
         std::string TmpFileName = CDirEntry::createTmpName(TmpDir, ".omex");
         std::ofstream(TmpFileName) << content;
 
-        bool success = openCombineArchive(TmpFileName, pProcessReport, deleteOldData);
+        bool success = openCombineArchive(TmpFileName, processReport, deleteOldData);
 
         CDirEntry::remove(TmpFileName);
 
@@ -315,7 +315,7 @@ bool CDataModel::loadFromString(const std::string & content,
 }
 
 bool CDataModel::loadFromFile(const std::string & fileName,
-                              CProcessReport * pProcessReport,
+                              CProcessReport processReport,
                               const bool & deleteOldData)
 {
   std::string FileName = fileName;
@@ -346,7 +346,7 @@ bool CDataModel::loadFromFile(const std::string & fileName,
   switch (CDataModel::contentType(File))
     {
       case ContentType::COPASI:
-        success = loadModel(File, PWD, pProcessReport, deleteOldData);
+        success = loadModel(File, PWD, processReport, deleteOldData);
 
         if (success)
           {
@@ -357,7 +357,7 @@ bool CDataModel::loadFromFile(const std::string & fileName,
         break;
 
       case ContentType::GEPASI:
-        success = loadModel(File, PWD, pProcessReport, deleteOldData);
+        success = loadModel(File, PWD, processReport, deleteOldData);
 
         if (success)
           {
@@ -379,15 +379,15 @@ bool CDataModel::loadFromFile(const std::string & fileName,
         break;
 
       case ContentType::SBML:
-        success = importSBML(FileName, pProcessReport, deleteOldData);
+        success = importSBML(FileName, processReport, deleteOldData);
         break;
 
       case ContentType::SEDML:
-        success = importSEDML(FileName, pProcessReport, deleteOldData);
+        success = importSEDML(FileName, processReport, deleteOldData);
         break;
 
       case ContentType::OMEX:
-        success = openCombineArchive(FileName, pProcessReport, deleteOldData);
+        success = openCombineArchive(FileName, processReport, deleteOldData);
         break;
 
       case ContentType::__SIZE:
@@ -402,7 +402,7 @@ bool CDataModel::loadFromFile(const std::string & fileName,
 
 bool CDataModel::loadModel(std::istream & in,
                            const std::string & pwd,
-                           CProcessReport * pProcessReport,
+                           CProcessReport processReport,
                            const bool & deleteOldData)
 {
   // During load no objects will be renamed;
@@ -555,14 +555,14 @@ bool CDataModel::loadModel(std::istream & in,
       return false;
     }
 
-  commonAfterLoad(pProcessReport, deleteOldData);
+  commonAfterLoad(processReport, deleteOldData);
 
   CRegisteredCommonName::setEnabled(true);
   return true;
 }
 
 bool CDataModel::loadModel(const std::string & fileName,
-                           CProcessReport * pProcessReport,
+                           CProcessReport processReport,
                            const bool & deleteOldData)
 {
   std::string PWD;
@@ -589,7 +589,7 @@ bool CDataModel::loadModel(const std::string & fileName,
       return false;
     }
 
-  if (!loadModel(File, PWD, pProcessReport, deleteOldData))
+  if (!loadModel(File, PWD, processReport, deleteOldData))
     {
       return false;
     }
@@ -629,7 +629,7 @@ bool CDataModel::loadModel(const std::string & fileName,
   return true;
 }
 
-bool CDataModel::addModel(const std::string & fileName, CProcessReport * pProcessReport)
+bool CDataModel::addModel(const std::string & fileName, CProcessReport processReport)
 {
   bool result = false;
 
@@ -639,7 +639,7 @@ bool CDataModel::addModel(const std::string & fileName, CProcessReport * pProces
     {
       try
         {
-          result = pMergeDM->importSBML(fileName, pProcessReport, false);
+          result = pMergeDM->importSBML(fileName, processReport, false);
         }
       catch (...)
         {
@@ -650,7 +650,7 @@ bool CDataModel::addModel(const std::string & fileName, CProcessReport * pProces
 
       try
         {
-          result = pMergeDM->loadModel(fileName, pProcessReport, false);
+          result = pMergeDM->loadModel(fileName, processReport, false);
         }
       catch (...)
         {
@@ -683,14 +683,14 @@ bool CDataModel::addModel(const std::string & fileName, CProcessReport * pProces
 }
 
 bool CDataModel::loadModelParameterSets(const std::string & fileName,
-                                        CProcessReport * pProcessReport)
+                                        CProcessReport processReport)
 {
   bool wasParameterSetLoaded = false;
   bool loaded = false;
 
   try
     {
-      loaded = CRootContainer::addDatamodel()->loadModel(fileName, pProcessReport, false);
+      loaded = CRootContainer::addDatamodel()->loadModel(fileName, processReport, false);
     }
   catch (...)
     {
@@ -889,7 +889,7 @@ void CDataModel::copyExperimentalDataTo(const std::string & path)
   }
 }
 
-bool CDataModel::saveModel(const std::string & fileName, CProcessReport * pProcessReport, bool overwriteFile, const bool & autoSave)
+bool CDataModel::saveModel(const std::string & fileName, CProcessReport processReport, bool overwriteFile, const bool & autoSave)
 {
   CCopasiMessage::clearDeque();
 
@@ -924,7 +924,7 @@ bool CDataModel::saveModel(const std::string & fileName, CProcessReport * pProce
     {
       // We do not care whether the model compiles or not
       // We just save as much as we can
-      mData.pModel->compileIfNecessary(pProcessReport);
+      mData.pModel->compileIfNecessary(processReport);
 
       // Assure that the parameter set reflects all changes made to the model.
       mData.pModel->getActiveModelParameterSet().refreshFromModel(false);
@@ -1003,7 +1003,7 @@ bool CDataModel::saveModel(const std::string & fileName, CProcessReport * pProce
   return true;
 }
 
-std::string CDataModel::saveModelToString(CProcessReport * pProcessReport)
+std::string CDataModel::saveModelToString(CProcessReport processReport)
 {
   CCopasiMessage::clearDeque();
 
@@ -1014,7 +1014,7 @@ std::string CDataModel::saveModelToString(CProcessReport * pProcessReport)
     {
       // We do not care whether the model compiles or not
       // We just save as much as we can
-      mData.pModel->compileIfNecessary(pProcessReport);
+      mData.pModel->compileIfNecessary(processReport);
 
       // Assure that the parameter set reflects all changes made to the model.
       mData.pModel->getActiveModelParameterSet().refreshFromModel(false);
@@ -1078,21 +1078,21 @@ bool CDataModel::autoSave()
   return true;
 }
 
-bool CDataModel::newModel(CProcessReport * pProcessReport,
+bool CDataModel::newModel(CProcessReport processReport,
                           const bool & deleteOldData)
 {
   //deal with the CModel
   pushData();
 
   CRegisteredCommonName::setEnabled(false);
-  commonAfterLoad(pProcessReport, deleteOldData);
+  commonAfterLoad(processReport, deleteOldData);
   CRegisteredCommonName::setEnabled(true);
 
   return true;
 }
 
 bool CDataModel::importSBMLFromString(const std::string & sbmlDocumentText,
-                                      CProcessReport * pImportHandler,
+                                      CProcessReport processReport,
                                       const bool & deleteOldData)
 {
   // During load no objects will be renamed;
@@ -1106,7 +1106,7 @@ bool CDataModel::importSBMLFromString(const std::string & sbmlDocumentText,
   // Right now we always import the COPASI MIRIAM annotation if it is there.
   // Later this will be configurable by the user in the preferences dialog
   importer.setImportCOPASIMIRIAM(true);
-  importer.setImportHandler(pImportHandler);
+  importer.setImportHandler(processReport);
   //mCopasi2SBMLMap.clear();
   CModel * pModel = NULL;
 
@@ -1166,14 +1166,14 @@ bool CDataModel::importSBMLFromString(const std::string & sbmlDocumentText,
   mData.mCopasi2SBMLMap = Copasi2SBMLMap;
   mData.mContentType = ContentType::SBML;
 
-  commonAfterLoad(pImportHandler, deleteOldData);
+  commonAfterLoad(processReport, deleteOldData);
 
   CRegisteredCommonName::setEnabled(true);
   return true;
 }
 
 bool CDataModel::importSBML(const std::string & fileName,
-                            CProcessReport * pImportHandler,
+                            CProcessReport processReport,
                             const bool & deleteOldData)
 {
   // During load no objects will be renamed;
@@ -1192,7 +1192,7 @@ bool CDataModel::importSBML(const std::string & fileName,
   // Right now we always import the COPASI MIRIAM annotation if it is there.
   // Later this will be settable by the user in the preferences dialog
   importer.setImportCOPASIMIRIAM(true);
-  importer.setImportHandler(pImportHandler);
+  importer.setImportHandler(processReport);
 
   CModel * pModel = NULL;
 
@@ -1257,7 +1257,7 @@ bool CDataModel::importSBML(const std::string & fileName,
   mData.mCopasi2SBMLMap = Copasi2SBMLMap;
   mData.mContentType = ContentType::SBML;
 
-  commonAfterLoad(pImportHandler, deleteOldData);
+  commonAfterLoad(processReport, deleteOldData);
 
   mData.mSaveFileName = CDirEntry::dirName(FileName)
                         + CDirEntry::Separator
@@ -1278,7 +1278,7 @@ bool CDataModel::importSBML(const std::string & fileName,
   return true;
 }
 
-std::string CDataModel::exportSBMLToString(CProcessReport * pExportHandler, int sbmlLevel, int sbmlVersion)
+std::string CDataModel::exportSBMLToString(CProcessReport exportHandler, int sbmlLevel, int sbmlVersion)
 {
   CCopasiMessage::clearDeque();
   SBMLDocument * pOrigSBMLDocument = NULL;
@@ -1297,7 +1297,7 @@ std::string CDataModel::exportSBMLToString(CProcessReport * pExportHandler, int 
 
   try
     {
-      if (!mData.pModel->compileIfNecessary(pExportHandler))
+      if (!mData.pModel->compileIfNecessary(exportHandler))
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
           return "";
@@ -1319,7 +1319,7 @@ std::string CDataModel::exportSBMLToString(CProcessReport * pExportHandler, int 
   // This should eventually be determined by a setting in the preferences
   // dialog.
   exporter.setExportCOPASIMIRIAM(true);
-  exporter.setHandler(pExportHandler);
+  exporter.setHandler(exportHandler);
   std::string str = exporter.exportModelToString(*this, sbmlLevel, sbmlVersion);
 
   // only get the new model if it is not a Level 1 model
@@ -1367,7 +1367,7 @@ bool CDataModel::exportSBML(const std::string & fileName,
                             int sbmlVersion,
                             bool /*exportIncomplete*/,
                             bool exportCOPASIMIRIAM,
-                            CProcessReport * pExportHandler)
+                            CProcessReport exportHandler)
 {
   CCopasiMessage::clearDeque();
 
@@ -1406,7 +1406,7 @@ bool CDataModel::exportSBML(const std::string & fileName,
 
   try
     {
-      if (!mData.pModel->compileIfNecessary(pExportHandler))
+      if (!mData.pModel->compileIfNecessary(exportHandler))
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(),
                          CCopasiMessage::getAllMessageText().c_str());
@@ -1426,7 +1426,7 @@ bool CDataModel::exportSBML(const std::string & fileName,
     }
 
   CSBMLExporter exporter;
-  exporter.setHandler(pExportHandler);
+  exporter.setHandler(exportHandler);
   exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
   SBMLDocument * pOrigSBMLDocument = NULL;
 
@@ -1439,7 +1439,7 @@ bool CDataModel::exportSBML(const std::string & fileName,
       this->mData.pCurrentSBMLDocument = NULL;
     }
 
-  //exporter.setExportHandler(pExportHandler);
+  //exporter.setExportHandler(exportHandler);
   if (!exporter.exportModel(*this, FileName, sbmlLevel, sbmlVersion, overwriteFile))
     return false;
 
@@ -1484,7 +1484,7 @@ bool CDataModel::exportSBML(const std::string & fileName,
 
 std::string
 CDataModel::exportMathModelToString(
-  CProcessReport * pProcessReport,
+  CProcessReport processReport,
   const std::string & filter)
 {
   CODEExporter * pExporter = NULL;
@@ -1509,7 +1509,7 @@ CDataModel::exportMathModelToString(
 
   try
     {
-      if (!mData.pModel->compileIfNecessary(pProcessReport))
+      if (!mData.pModel->compileIfNecessary(processReport))
         return "";
     }
 
@@ -1538,7 +1538,7 @@ CDataModel::exportMathModelToString(
   return os.str();
 }
 
-bool CDataModel::exportMathModel(const std::string & fileName, CProcessReport * pProcessReport, const std::string & filter, bool overwriteFile)
+bool CDataModel::exportMathModel(const std::string & fileName, CProcessReport processReport, const std::string & filter, bool overwriteFile)
 {
   CCopasiMessage::clearDeque();
 
@@ -1573,7 +1573,7 @@ bool CDataModel::exportMathModel(const std::string & fileName, CProcessReport * 
 
   try
     {
-      if (!mData.pModel->compileIfNecessary(pProcessReport))
+      if (!mData.pModel->compileIfNecessary(processReport))
         return false;
     }
 
@@ -1627,7 +1627,7 @@ bool CDataModel::exportMathModel(const std::string & fileName, CProcessReport * 
 
 void CDataModel::addCopasiFileToArchive(CombineArchive * archive,
                                         const std::string & targetName /*= "./copasi/model.cps"*/,
-                                        CProcessReport * pProgressReport /*= NULL*/
+                                        CProcessReport progressReport /*= NULL*/
                                        )
 {
   if (archive == NULL)
@@ -1636,7 +1636,7 @@ void CDataModel::addCopasiFileToArchive(CombineArchive * archive,
   try
     {
       std::stringstream str;
-      str << saveModelToString(pProgressReport);
+      str << saveModelToString(progressReport);
       archive->addFile(str, targetName, KnownFormats::lookupFormat("copasi"), true);
     }
   catch (...)
@@ -1644,7 +1644,7 @@ void CDataModel::addCopasiFileToArchive(CombineArchive * archive,
     }
 }
 
-bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bool includeData, bool overwriteFile, CProcessReport * pProgressReport)
+bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bool includeData, bool overwriteFile, CProcessReport progressReport)
 {
   CCopasiMessage::clearDeque();
 
@@ -1745,7 +1745,7 @@ bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bo
 
       if (includeCOPASI)
         {
-          addCopasiFileToArchive(&archive, "./" + fileBaseName + "/copasi/" + fileBaseName + ".cps", pProgressReport);
+          addCopasiFileToArchive(&archive, "./" + fileBaseName + "/copasi/" + fileBaseName + ".cps", progressReport);
         }
 
       // restore filenames
@@ -1797,7 +1797,7 @@ bool CDataModel::exportCombineArchive(
   bool includeData,
   bool includeSEDML,
   bool overwriteFile,
-  CProcessReport * pProgressReport,
+  CProcessReport progressReport,
   int sbmlLevel, int sbmlVersion,
   int sedmlLevel, int sedmlVersion)
 {
@@ -1897,7 +1897,7 @@ bool CDataModel::exportCombineArchive(
 
       if (includeCOPASI)
         {
-          addCopasiFileToArchive(&archive, "./copasi/model.cps", pProgressReport);
+          addCopasiFileToArchive(&archive, "./copasi/model.cps", progressReport);
         }
 
       // restore filenames
@@ -1937,7 +1937,7 @@ bool CDataModel::exportCombineArchive(
 
   if (includeCOPASI && !includeData)
     {
-      addCopasiFileToArchive(&archive, "./copasi/model.cps", pProgressReport);
+      addCopasiFileToArchive(&archive, "./copasi/model.cps", progressReport);
     }
 
   if (includeSBML)
@@ -1945,7 +1945,7 @@ bool CDataModel::exportCombineArchive(
       try
         {
           std::stringstream str;
-          str << exportSBMLToString(pProgressReport, sbmlLevel, sbmlVersion);
+          str << exportSBMLToString(progressReport, sbmlLevel, sbmlVersion);
           archive.addFile(str, "./sbml/model.xml", KnownFormats::lookupFormat("sbml"), !includeCOPASI);
         }
       catch (...)
@@ -1958,7 +1958,7 @@ bool CDataModel::exportCombineArchive(
       std::stringstream str;
       XMLNamespaces namespaces;
       namespaces.add(SBMLNamespaces::getSBMLNamespaceURI(sbmlLevel, sbmlVersion), "sbml");
-      str << exportSEDMLToString(pProgressReport, sedmlLevel, sedmlVersion, "../sbml/model.xml",
+      str << exportSEDMLToString(progressReport, sedmlLevel, sedmlVersion, "../sbml/model.xml",
                                  &namespaces);
       archive.addFile(str, "./sedml/simulation.xml", KnownFormats::lookupFormat("sedml"), !includeCOPASI);
     }
@@ -1981,7 +1981,7 @@ bool CDataModel::exportCombineArchive(
 }
 
 bool CDataModel::openCombineArchive(const std::string & fileName,
-                                    CProcessReport * pProgressReport,
+                                    CProcessReport progressReport,
                                     const bool & deleteOldData)
 {
   // TODO: figure out what to do with the archive, should we just extract all of it
@@ -2063,7 +2063,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
   if (haveCopasi || (content != NULL && content->isFormat("copasi")))
     {
-      loadedModel = this->loadModel(destinationDir + "/" + content->getLocation(), pProgressReport, deleteOldData);
+      loadedModel = this->loadModel(destinationDir + "/" + content->getLocation(), progressReport, deleteOldData);
 
       if (loadedModel)
         {
@@ -2139,7 +2139,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
     {
       try
         {
-          loadedModel = this->importSEDML(destinationDir + "/" + sedml_content->getLocation(), pProgressReport, deleteOldData);
+          loadedModel = this->importSEDML(destinationDir + "/" + sedml_content->getLocation(), progressReport, deleteOldData);
         }
       catch (const CCopasiException &)
         {
@@ -2155,7 +2155,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
   if (loadedModel == false && sbml_content != NULL)
     {
-      loadedModel = this->importSBML(destinationDir + "/" + sbml_content->getLocation(), pProgressReport, deleteOldData);
+      loadedModel = this->importSBML(destinationDir + "/" + sbml_content->getLocation(), progressReport, deleteOldData);
       this->mData.mSBMLFileName = "";
     }
 
@@ -2173,7 +2173,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 // SEDML
 bool CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText,
                                        std::string referenceDir,
-                                       CProcessReport * pImportHandler,
+                                       CProcessReport processReport,
                                        const bool & deleteOldData)
 {
   // During load no objects will be renamed;
@@ -2188,7 +2188,7 @@ bool CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText,
   // Right now we always import the COPASI MIRIAM annotation if it is there.
   // Later this will be settable by the user in the preferences dialog
   // importer.setImportCOPASIMIRIAM(true);
-  importer.setImportHandler(pImportHandler);
+  importer.setImportHandler(processReport);
   //mCopasi2SBMLMap.clear();
   CModel * pModel = NULL;
 
@@ -2219,14 +2219,14 @@ bool CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText,
 
   importer.updateContent(mData, *this);
 
-  commonAfterLoad(pImportHandler, deleteOldData);
+  commonAfterLoad(processReport, deleteOldData);
 
   CRegisteredCommonName::setEnabled(true);
   return true;
 }
 
 bool CDataModel::importSEDML(const std::string & fileName,
-                             CProcessReport * pImportHandler,
+                             CProcessReport processReport,
                              const bool & deleteOldData)
 {
   // During load no objects will be renamed;
@@ -2248,7 +2248,7 @@ bool CDataModel::importSEDML(const std::string & fileName,
   // Later this will be settable by the user in the preferences dialog
   // Later this will be settable by the user in the preferences dialog
   //   importer.setImportCOPASIMIRIAM(true);
-  importer.setImportHandler(pImportHandler);
+  importer.setImportHandler(processReport);
 
   CModel * pModel = NULL;
 
@@ -2293,7 +2293,7 @@ bool CDataModel::importSEDML(const std::string & fileName,
 
   importer.updateContent(mData, *this);
 
-  commonAfterLoad(pImportHandler, deleteOldData);
+  commonAfterLoad(processReport, deleteOldData);
 
   mData.mSaveFileName = CDirEntry::dirName(FileName)
                         + CDirEntry::Separator
@@ -2341,7 +2341,7 @@ std::map< CDataObject *, SedBase * > & CDataModel::getCopasi2SEDMLMap()
   return mData.mCopasi2SEDMLMap;
 }
 
-std::string CDataModel::exportSEDMLToString(CProcessReport * pExportHandler,
+std::string CDataModel::exportSEDMLToString(CProcessReport exportHandler,
     int sedmlLevel,
     int sedmlVersion,
     const std::string & modelLocation,
@@ -2355,7 +2355,7 @@ std::string CDataModel::exportSEDMLToString(CProcessReport * pExportHandler,
 
   try
     {
-      if (!mData.pModel->compileIfNecessary(pExportHandler))
+      if (!mData.pModel->compileIfNecessary(exportHandler))
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
           return "";
@@ -2393,7 +2393,7 @@ bool
 CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile,
                         int sedmlLevel, int sedmlVersion,
                         bool /*exportIncomplete*/, bool exportCOPASIMIRIAM,
-                        CProcessReport * pExportHandler)
+                        CProcessReport exportHandler)
 {
   CCopasiMessage::clearDeque();
 
@@ -2432,7 +2432,7 @@ CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile,
 
   try
     {
-      if (!mData.pModel->compileIfNecessary(pExportHandler))
+      if (!mData.pModel->compileIfNecessary(exportHandler))
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, failedCompile.c_str(), CCopasiMessage::getAllMessageText().c_str());
           return false;
@@ -2453,7 +2453,7 @@ CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile,
 
   SedDocument * pOrigSEDMLDocument = NULL;
 
-  std::string sbmlDocument = exportSBMLToString(pExportHandler, 3, 1);
+  std::string sbmlDocument = exportSBMLToString(exportHandler, 3, 1);
   // set namespaces to be written out on top of sbml document
   exporter.setSBMLNamespaces(3, 1);
 
@@ -3108,7 +3108,7 @@ void CDataModel::popData()
   mOldData = CContent(mOldData.mWithGUI);
 }
 
-void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
+void CDataModel::commonAfterLoad(CProcessReport processReport,
                                  const bool & deleteOldData)
 {
   if (mData.pModel == NULL)
@@ -3224,7 +3224,7 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
   if (mOldData.pCurrentSEDMLDocument == mData.pCurrentSEDMLDocument)
     mOldData.pCurrentSEDMLDocument = NULL;
 
-  if (mData.pModel->isCompileNecessary() && mData.pModel->compileIfNecessary(pProcessReport))
+  if (mData.pModel->isCompileNecessary() && mData.pModel->compileIfNecessary(processReport))
     {
       mData.pModel->getActiveModelParameterSet().updateModel();
     }
@@ -3272,7 +3272,7 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
 
   if (mData.pModel)
     {
-      bool status = mData.pModel->compileIfNecessary(pProcessReport);
+      bool status = mData.pModel->compileIfNecessary(processReport);
 
       if (!status)
         {

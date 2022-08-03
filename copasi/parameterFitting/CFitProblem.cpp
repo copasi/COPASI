@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -473,23 +473,23 @@ bool CFitProblem::elevateChildren()
   return true;
 }
 
-bool CFitProblem::setCallBack(CProcessReport * pCallBack)
+bool CFitProblem::setCallBack(CProcessReport callBack)
 {
-  bool success =  COptProblem::setCallBack(pCallBack);
+  bool success =  COptProblem::setCallBack(callBack);
 
   if (mpSteadyState != NULL)
     {
-      success &= mpSteadyState->setCallBack(mpCallBack);
+      success &= mpSteadyState->setCallBack(mProcessReport);
     }
 
   if (mpTrajectory != NULL)
     {
-      success &= mpTrajectory->setCallBack(mpCallBack);
+      success &= mpTrajectory->setCallBack(mProcessReport);
     }
 
   if (mpTimeSens != NULL)
     {
-      success &= mpTimeSens->setCallBack(mpCallBack);
+      success &= mpTimeSens->setCallBack(mProcessReport);
     }
 
   return success;
@@ -535,7 +535,7 @@ bool CFitProblem::initialize()
 
       mpSteadyState->setMathContainer(mpContainer);
       mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-      mpSteadyState->setCallBack(mpCallBack);
+      mpSteadyState->setCallBack(mProcessReport);
     }
 
   pdelete(mpTrajectory);
@@ -556,7 +556,7 @@ bool CFitProblem::initialize()
       mpTrajectory->setMathContainer(mpContainer);
       mpTrajectory->setUpdateModel(false);
       mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-      mpTrajectory->setCallBack(mpCallBack);
+      mpTrajectory->setCallBack(mProcessReport);
     }
 
   mCompleteInitialState = mpContainer->getCompleteInitialState();
@@ -875,7 +875,7 @@ bool CFitProblem::initialize()
         }
 
       mpTimeSens->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-      mpTimeSens->setCallBack(mpCallBack);
+      mpTimeSens->setCallBack(mProcessReport);
       mJacTimeSens.resize(mSolutionVariables.size(), mpExperimentSet->getDataPointCount());
     }
   else
@@ -1232,8 +1232,8 @@ bool CFitProblem::calculate()
       mCalculateValue = mWorstValue;
     }
 
-  if (mpCallBack)
-    return mpCallBack->progressItem(mhCounter);
+  if (mProcessReport)
+    return mProcessReport.progressItem(mhCounter);
 
   return true;
 }
@@ -2573,8 +2573,8 @@ bool CFitProblem::calculateCrossValidation()
   if (!checkFunctionalConstraints())
     CalculateValue = mWorstValue;
 
-  if (mpCallBack)
-    Continue &= mpCallBack->progressItem(mhCounter);
+  if (mProcessReport)
+    Continue &= mProcessReport.progressItem(mhCounter);
 
   C_FLOAT64 CurrentObjective =
     (1.0 - mpCrossValidationSet->getWeight()) * mSolutionValue

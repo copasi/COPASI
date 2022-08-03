@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -333,8 +333,8 @@ bool COptMethodDE::initialize()
 
   if (!COptPopulationMethod::initialize())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhGenerations);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhGenerations);
 
       return false;
     }
@@ -390,8 +390,8 @@ bool COptMethodDE::optimise()
 
   if (!initialize())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhGenerations);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhGenerations);
 
       return false;
     }
@@ -473,8 +473,8 @@ bool COptMethodDE::optimise()
       if (mLogVerbosity > 0)
         mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user after initial population creation."));
 
-      if (mpCallBack)
-        mpCallBack->finishItem(mhGenerations);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhGenerations);
 
       cleanup();
       return true;
@@ -526,8 +526,8 @@ bool COptMethodDE::optimise()
           mpParentTask->output(COutputInterface::DURING);
         }
 
-      if (mpCallBack)
-        Continue &= mpCallBack->progressItem(mhGenerations);
+      if (mProcessReport)
+        Continue &= mProcessReport.progressItem(mhGenerations);
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
@@ -539,8 +539,8 @@ bool COptMethodDE::optimise()
                    "Terminated after " + std::to_string(mCurrentGeneration - 1) + " of " +
                    std::to_string(mGenerations) + " generations."));
 
-  if (mpCallBack)
-    mpCallBack->finishItem(mhGenerations);
+  if (mProcessReport)
+    mProcessReport.finishItem(mhGenerations);
 
   cleanup();
 

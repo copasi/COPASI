@@ -165,7 +165,7 @@ public:
    */
   CSteadyStateMethod::ReturnCode process(CVectorCore< C_FLOAT64 > & State,
                                          CMatrix< C_FLOAT64 > & jacobianX,
-                                         CProcessReport * handler);
+                                         CProcessReport handler);
 
   /**
    * Check if the method is suitable for this problem

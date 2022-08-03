@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -99,8 +99,8 @@ bool COptMethodSS::initialize()
 
   if (!COptPopulationMethod::initialize())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhGenerations);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhGenerations);
 
       return false;
     }
@@ -110,11 +110,11 @@ bool COptMethodSS::initialize()
   // set current iteration to zero
   mCurrentGeneration = 0;
 
-  if (mpCallBack)
+  if (mProcessReport)
     mhGenerations =
-      mpCallBack->addItem("Current Iteration",
-                          mCurrentGeneration,
-                          & mGenerations);
+      mProcessReport.addItem("Current Iteration",
+                             mCurrentGeneration,
+                             & mGenerations);
 
   mCurrentGeneration++;
 
@@ -1060,8 +1060,8 @@ bool COptMethodSS::optimise()
   if (!initialize())
     {
       // initialisation failed, we exit
-      if (mpCallBack)
-        mpCallBack->finishItem(mhGenerations);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhGenerations);
 
       return false;
     }
@@ -1082,8 +1082,8 @@ bool COptMethodSS::optimise()
   // test if the user wants to stop, and do so if needed
   if (!Running)
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhGenerations);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhGenerations);
 
       cleanup();
       return true;
@@ -1195,8 +1195,8 @@ bool COptMethodSS::optimise()
           mpParentTask->output(COutputInterface::DURING);
         }
 
-      if (mpCallBack)
-        Running &= mpCallBack->progressItem(mhGenerations);
+      if (mProcessReport)
+        Running &= mProcessReport.progressItem(mhGenerations);
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
@@ -1225,8 +1225,8 @@ bool COptMethodSS::optimise()
       mpParentTask->output(COutputInterface::DURING);
     }
 
-  if (mpCallBack)
-    mpCallBack->finishItem(mhGenerations);
+  if (mProcessReport)
+    mProcessReport.finishItem(mhGenerations);
 
   cleanup();
   return true;

@@ -183,14 +183,13 @@ public:
 class SbmlProgressCallback : public Callback
 {
 public:
-  SbmlProgressCallback(CProcessReport* pProcess)
-    : mpProcess(pProcess)
-  {
-  }
+  SbmlProgressCallback(CProcessReport process)
+    : mProcess(process)
+  {}
 
   virtual int process(SBMLDocument* doc)
   {
-    if (mpProcess != NULL && !mpProcess->progress())
+    if (mProcess && !mProcess.progress())
       {
         CCopasiMessage(CCopasiMessage::WARNING, "The operation was interrupted.");
         return LIBSBML_OPERATION_FAILED;
@@ -200,7 +199,7 @@ public:
   }
 
 private:
-  CProcessReport *mpProcess;
+  CProcessReport mProcess;
 };
 
 #else
@@ -796,28 +795,28 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
 bool
 SBMLImporter::reportCurrentProgressOrStop()
 {
-  if (mpProgressHandler == NULL) return false;
+  if (mProgressHandler) return false;
 
-  return !mpProgressHandler->progressItem(mCurrentStepHandle);
+  return !mProgressHandler.progressItem(mCurrentStepHandle);
 }
 
 void
 SBMLImporter::finishCurrentStep()
 {
-  if (mpProgressHandler == NULL || mCurrentStepHandle == C_INVALID_INDEX)  return;
+  if (mProgressHandler || mCurrentStepHandle == C_INVALID_INDEX)  return;
 
-  mpProgressHandler->finishItem(mCurrentStepHandle);
+  mProgressHandler.finishItem(mCurrentStepHandle);
   mCurrentStepHandle = C_INVALID_INDEX;
 }
 
 void
 SBMLImporter::finishImport()
 {
-  if (mpProgressHandler == NULL)  return;
+  if (mProgressHandler)  return;
 
   finishCurrentStep();
 
-  mpProgressHandler->finishItem(mGlobalStepHandle);
+  mProgressHandler.finishItem(mGlobalStepHandle);
 }
 
 bool
@@ -825,18 +824,18 @@ SBMLImporter::createProgressStepOrStop(unsigned C_INT32 globalStep,
                                        unsigned C_INT32 currentTotal,
                                        const std::string& title)
 {
-  if (mpProgressHandler == NULL) return false;
+  if (mProgressHandler) return false;
 
   if (mCurrentStepHandle != C_INVALID_INDEX)
-    mpProgressHandler->finishItem(mCurrentStepHandle);
+    mProgressHandler.finishItem(mCurrentStepHandle);
 
   mGlobalStepCounter = globalStep;
 
-  if (!mpProgressHandler->progressItem(mGlobalStepHandle)) return true;
+  if (!mProgressHandler.progressItem(mGlobalStepHandle)) return true;
 
   mCurrentStepCounter = 0;
   mCurrentStepTotal = currentTotal;
-  mCurrentStepHandle = mpProgressHandler->addItem(title,
+  mCurrentStepHandle = mProgressHandler.addItem(title,
                        mCurrentStepCounter,
                        &mCurrentStepTotal);
 
@@ -1466,7 +1465,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
                               ))
     return NULL;
 
-  if (!mpCopasiModel->compileIfNecessary(mpProgressHandler))
+  if (!mpCopasiModel->compileIfNecessary(mProgressHandler))
     {
       CCopasiMessage Message(CCopasiMessage::ERROR,
                              "The SBML file could not be imported.");
@@ -3183,7 +3182,7 @@ SBMLImporter::SBMLImporter():
   mpCopasiModel(NULL),
   mFunctionNameMapping(),
   mDivisionByCompartmentReactions(),
-  mpProgressHandler(NULL),
+  mProgressHandler(),
   mGlobalStepHandle(C_INVALID_INDEX),
   mGlobalStepCounter(0),
   mGlobalStepTotal(0),
@@ -3227,7 +3226,7 @@ SBMLImporter::SBMLImporter():
   this->mUnsupportedAssignmentRuleFound = false;
   this->mUnitOnNumberFound = false;
   this->mAssignmentToSpeciesReferenceFound = false;
-  this->mpProgressHandler = NULL;
+  this->mProgressHandler = NULL;
   this->mDelayFound = false;
   this->mAvogadroCreated = false;
   // these data structures are used to handle the new conversion factores in
@@ -3599,17 +3598,17 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 
   mGlobalStepCounter = 0;
 
-  if (mpProgressHandler != NULL)
+  if (mProgressHandler)
     {
-      mpProgressHandler->setName("Importing SBML file...");
+      mProgressHandler.setName("Importing SBML file...");
       mGlobalStepTotal = 16;
-      mGlobalStepHandle = mpProgressHandler->addItem("Step",
+      mGlobalStepHandle = mProgressHandler.addItem("Step",
                           mGlobalStepCounter,
                           &mGlobalStepTotal);
 
       mCurrentStepCounter = 0;
       mCurrentStepTotal = 1;
-      mCurrentStepHandle = mpProgressHandler->addItem("Reading SBML file...",
+      mCurrentStepHandle = mProgressHandler.addItem("Reading SBML file...",
                            mCurrentStepCounter,
                            &mCurrentStepTotal);
     }
@@ -6040,9 +6039,9 @@ bool SBMLImporter::containsVolume(const ASTNode* pNode, const std::string& compa
   return result;
 }
 
-void SBMLImporter::setImportHandler(CProcessReport* pHandler)
+void SBMLImporter::setImportHandler(CProcessReport handler)
 {
-  mpProgressHandler = pHandler;
+  mProgressHandler = handler;
 
 #if LIBSBML_VERSION >= 51801
 
@@ -6052,18 +6051,18 @@ void SBMLImporter::setImportHandler(CProcessReport* pHandler)
       pdelete(mpSbmlCallback);
     }
 
-  if (pHandler)
+  if (handler)
     {
-      mpSbmlCallback = new SbmlProgressCallback(pHandler);
+      mpSbmlCallback = new SbmlProgressCallback(mProgressHandler);
       CallbackRegistry::addCallback(mpSbmlCallback);
     }
 
 #endif
 }
 
-CProcessReport* SBMLImporter::getImportHandlerAddr() const
+const CProcessReport & SBMLImporter::getProcessReport() const
 {
-  return mpProgressHandler;
+  return mProgressHandler;
 }
 
 void SBMLImporter::clearCallBack()

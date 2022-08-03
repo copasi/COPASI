@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,7 +45,7 @@ CCopasiMethod::CCopasiMethod(const CDataContainer * pParent,
   mTaskType(taskType),
   mSubType(methodType),
   mpContainer(NULL),
-  mpCallBack(NULL)
+  mProcessReport()
 {}
 
 CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
@@ -54,7 +54,7 @@ CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
   mTaskType(src.mTaskType),
   mSubType(src.mSubType),
   mpContainer(src.mpContainer),
-  mpCallBack(src.mpCallBack)
+  mProcessReport(src.mProcessReport)
 {}
 
 CCopasiMethod & CCopasiMethod::operator=(const CCopasiMethod & rhs)
@@ -67,7 +67,7 @@ CCopasiMethod & CCopasiMethod::operator=(const CCopasiMethod & rhs)
   mTaskType = rhs.mTaskType;
   mSubType = rhs.mSubType;
   mpContainer = rhs.mpContainer;
-  mpCallBack = rhs.mpCallBack;
+  mProcessReport = rhs.mProcessReport;
 
   return *this;
 }
@@ -89,15 +89,15 @@ CMathContainer * CCopasiMethod::getMathContainer() const
   return mpContainer;
 }
 
-bool CCopasiMethod::setCallBack(CProcessReport * pCallBack)
+bool CCopasiMethod::setCallBack(CProcessReport callBack)
 {
-  mpCallBack = pCallBack;
+  mProcessReport = callBack;
   return true;
 }
 
-CProcessReport * CCopasiMethod::getCallBack() const
+const CProcessReport & CCopasiMethod::getCallBack() const
 {
-  return mpCallBack;
+  return mProcessReport;
 }
 
 void CCopasiMethod::clearCallBack()

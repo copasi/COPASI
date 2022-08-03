@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -280,13 +280,13 @@ bool CAnalyticsTask::process(const bool & useInitialValues)
   mProgressFactor = 100.0 / (MaxDuration + mpAnalyticsProblem->getOutputStartTime());
   mProgressValue = 0;
 
-  if (mpCallBack != NULL)
+  if (mProcessReport)
     {
-      mpCallBack->setName("performing simulation...");
+      mProcessReport.setName("performing simulation...");
       mProgressMax = 100.0;
-      mhProgress = mpCallBack->addItem("Completion",
-                                       mProgressValue,
-                                       &mProgressMax);
+      mhProgress = mProcessReport.addItem("Completion",
+                                          mProgressValue,
+                                          &mProgressMax);
     }
 
   mState = TRANSIENT;
@@ -332,7 +332,7 @@ bool CAnalyticsTask::process(const bool & useInitialValues)
 
 void CAnalyticsTask::finish()
 {
-  if (mpCallBack != NULL) mpCallBack->finishItem(mhProgress);
+  if (mProcessReport) mProcessReport.finishItem(mhProgress);
 
   //ComputeRequestedStatistics
   if (mIndex >= 0) // If an object was selected...
@@ -462,11 +462,11 @@ void CAnalyticsTask::eventCallBack(void * /* pData */, void * /* pCaller */)
   //  std::cout << "event call back: " << type << std::endl;
 
   //do progress reporting
-  if (mpCallBack != NULL)
+  if (mProcessReport)
     {
       mProgressValue = (*mpContainerStateTime - mStartTime) * mProgressFactor;
 
-      if (!mpCallBack->progressItem(mhProgress))
+      if (!mProcessReport.progressItem(mhProgress))
         {
           mState = FINISH;
           mProceed = false;

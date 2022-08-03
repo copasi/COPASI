@@ -159,9 +159,9 @@ bool CSensMethod::do_target_calculation(size_t level,  CArray & result, bool /* 
   //progress bar
   ++mProgress;
 
-  if (mpCallBack)
+  if (mProcessReport)
     {
-      bool tmp = mpCallBack->progressItem(mProgressHandler);
+      bool tmp = mProcessReport.progressItem(mProgressHandler);
       return tmp;
     }
 
@@ -743,18 +743,18 @@ bool CSensMethod::process()
   // initialize progress bar for the case that the task was not initialized prior to setCallBack
   if (mpSubTask)
     {
-      mpSubTask->setCallBack(mpCallBack);
+      mpSubTask->setCallBack(mProcessReport);
       mpSubTask->setUpdateModel(false);
     }
 
-  if (mpCallBack)
+  if (mProcessReport)
     {
-      mpCallBack->setName("performing sensitivities calculation...");
+      mProcessReport.setName("performing sensitivities calculation...");
       unsigned C_INT32 max = (unsigned C_INT32) getNumberOfSubtaskCalculations();
       mProgress = 0;
-      mProgressHandler = mpCallBack->addItem("Completion",
-                                             mProgress,
-                                             &max);
+      mProgressHandler = mProcessReport.addItem("Completion",
+                         mProgress,
+                         &max);
     }
 
   if (!calculate_one_level(mLocalData.size() - 1, mpProblem->getResult())) return false;
@@ -763,7 +763,7 @@ bool CSensMethod::process()
 
   do_collapsing();
 
-  if (mpCallBack) mpCallBack->finishItem(mProgressHandler);
+  if (mProcessReport) mProcessReport.finishItem(mProgressHandler);
 
   if (mFailedCounter * 20 > mCounter) // > 5% failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 8, mFailedCounter, mCounter);
@@ -800,10 +800,12 @@ bool CSensMethod::isValidProblem(const CCopasiProblem * pProblem)
 }
 
 // virtual
-bool CSensMethod::setCallBack(CProcessReport * pCallBack)
+bool CSensMethod::setCallBack(CProcessReport callBack)
 {
-  if (mpSubTask)
-    mpSubTask->setCallBack(pCallBack);
+  bool success = CCopasiMethod::setCallBack(callBack);
 
-  return CCopasiMethod::setCallBack(pCallBack);
+  if (mpSubTask)
+    success &= mpSubTask->setCallBack(mProcessReport);
+
+  return success;
 }

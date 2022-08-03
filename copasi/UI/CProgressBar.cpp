@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -66,7 +66,7 @@ CProgressBar * CProgressBar::create(QWidget* parent, const char* name, Qt::Windo
 
 CProgressBar::CProgressBar(QWidget* parent, const char* name, Qt::WindowModality windowModality):
   CQProgressDialog(parent, name, windowModality, Qt::WindowMinimizeButtonHint),
-  CProcessReport(),
+  CProcessReportInterface(),
   mSlotFinished(true),
   mMutex(),
   mWaitSlot(),
@@ -109,7 +109,7 @@ size_t CProgressBar::addItem(const std::string & name,
                              const void * pEndValue)
 
 {
-  size_t hItem = CProcessReport::addItem(name, type, pValue, pEndValue);
+  size_t hItem = CProcessReportInterface::addItem(name, type, pValue, pEndValue);
 
   if (!CopasiUI3Window::isMainThread())
     {
@@ -225,7 +225,7 @@ bool CProgressBar::finish()
   CopasiUI3Window::getMainWindow()->disableSliders(false);
   done(1);
 
-  return CProcessReport::finish();
+  return CProcessReportInterface::finish();
 }
 
 bool CProgressBar::finishItem(const size_t & handle)
@@ -307,7 +307,7 @@ bool CProgressBar::proceed()
         }
     }
 
-  return CProcessReport::proceed();
+  return CProcessReportInterface::proceed();
 }
 
 // virtual
@@ -338,7 +338,7 @@ void CProgressBar::slotSetName(QString name)
   QMutexLocker Locker(&mMutex);
 
   setWindowTitle(name);
-  CProcessReport::setName(TO_UTF8(name));
+  CProcessReportInterface::setName(TO_UTF8(name));
 
   mSlotFinished = true;
   mWaitSlot.wakeAll();

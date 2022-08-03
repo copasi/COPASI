@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -184,8 +184,8 @@ bool COptMethodNelderMead::optimise()
 {
   if (!initialize())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhIteration);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhIteration);
 
       return false;
     }
@@ -543,8 +543,8 @@ First:
       ++mIteration;
 
       // signal another iteration
-      if (mpCallBack)
-        mContinue &= mpCallBack->progressItem(mhIteration);
+      if (mProcessReport)
+        mContinue &= mProcessReport.progressItem(mhIteration);
 
       mpParentTask->output(COutputInterface::MONITORING);
 
@@ -652,8 +652,8 @@ Finish:  /* end of procedure */
                    "Terminated after " + std::to_string(mIteration) + " of " + std::to_string(mIterationLimit) + " iterations."
                   ));
 
-  if (mpCallBack)
-    mpCallBack->finishItem(mhIteration);
+  if (mProcessReport)
+    mProcessReport.finishItem(mhIteration);
 
   return true;
 }
@@ -694,11 +694,11 @@ bool COptMethodNelderMead::initialize()
 
   mIteration = 0;
 
-  if (mpCallBack)
+  if (mProcessReport)
     mhIteration =
-      mpCallBack->addItem("Current Iteration",
-                          mIteration,
-                          & mIterationLimit);
+      mProcessReport.addItem("Current Iteration",
+                             mIteration,
+                             & mIterationLimit);
 
   mVariableSize = mProblemContext.master()->getOptItemList().size();
 

@@ -133,7 +133,7 @@ const unsigned C_INT32 & CMIRIAMResources::getMIRIAMLastUpdateDate() const
 const unsigned C_INT32 & CMIRIAMResources::getMIRIAMUpdateFrequency() const
 {return * mpUpdateFrequency;}
 
-bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessReport,
+bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport processReport,
     const std::string& filename)
 {
   bool success = true;
@@ -146,8 +146,8 @@ bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessRe
 
   size_t hUpdateStep;
 
-  if (pProcessReport)
-    hUpdateStep = pProcessReport->addItem("Parsing MIRIAM XML", processStep, &processSteps);
+  if (processReport)
+    hUpdateStep = processReport.addItem("Parsing MIRIAM XML", processStep, &processSteps);
 
   // parse file into memory
   XMLInputStream stream(filename.c_str());
@@ -158,21 +158,21 @@ bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessRe
 
   ++processStep;
 
-  if (pProcessReport)
+  if (processReport)
     {
-      if (!pProcessReport->progressItem(hUpdateStep))
+      if (!processReport.progressItem(hUpdateStep))
         return false;
 
-      pProcessReport->finishItem(hUpdateStep);
+      processReport.finishItem(hUpdateStep);
     }
 
   sizeNames = root.getNumChildren();
   processSteps = sizeNames + 2;
 
-  if (pProcessReport)
-    hUpdateStep = pProcessReport->addItem("Add Items", processStep, &processSteps);
+  if (processReport)
+    hUpdateStep = processReport.addItem("Add Items", processStep, &processSteps);
 
-  if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
+  if (processReport && !processReport.progressItem(hUpdateStep))
     return false;
 
   // read all datatype elements
@@ -231,13 +231,13 @@ bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessRe
 
       processStep++;
 
-      if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
+      if (processReport && !processReport.progressItem(hUpdateStep))
         return false;
     }
 
   processStep++;
 
-  if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
+  if (processReport && !processReport.progressItem(hUpdateStep))
     return false;
 
   if (success)
@@ -255,12 +255,12 @@ bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessRe
 
   processStep++;
 
-  if (pProcessReport)
+  if (processReport)
     {
-      if (!pProcessReport->progressItem(hUpdateStep))
+      if (!processReport.progressItem(hUpdateStep))
         return false;
 
-      pProcessReport->finishItem(hUpdateStep);
+      processReport.finishItem(hUpdateStep);
     }
 
   return success;

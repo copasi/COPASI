@@ -43,6 +43,7 @@
 #include "copasi/utilities/CLinkMatrix.h"
 #include "copasi/core/CDataContainer.h"
 #include "copasi/utilities/CUnit.h"
+#include "copasi/utilities/CProcessReport.h"
 
 #include "copasi/math/CMathDependencyGraph.h"
 
@@ -195,17 +196,17 @@ public:
 
   /**
    * Compile the model if necessary
-   * @param CProcessReport* pProcessReport
+   * @param CProcessReport processReport
    * @return bool success
    */
-  bool compileIfNecessary(CProcessReport* pProcessReport);
+  bool compileIfNecessary(CProcessReport processReport);
 
   /**
    * Force a compile the model.
-   * @param CProcessReport* pProcessReport
+   * @param CProcessReport processReport
    * @return bool success
    */
-  bool forceCompile(CProcessReport* pProcessReport);
+  bool forceCompile(CProcessReport processReport);
 
   bool buildDependencyGraphs();
 
@@ -1334,7 +1335,7 @@ private:
    * A pointer to the process report. If not NULL the compile progress is
    * reported to it.
    */
-  CProcessReport * mpCompileHandler;
+  CProcessReport mCompileHandler;
 
   /**
    * A flag indicating whether the state template has to be reordered

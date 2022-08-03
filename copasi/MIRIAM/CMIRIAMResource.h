@@ -306,7 +306,7 @@ public:
   * @param CProcessReport * pProcessReport
   * @return bool success
   */
-  bool updateMIRIAMResourcesFromFile(CProcessReport * pProcessReport,
+  bool updateMIRIAMResourcesFromFile(CProcessReport processReport,
                                      const std::string& filename);
 
   /**

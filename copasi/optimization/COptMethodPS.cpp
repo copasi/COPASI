@@ -104,7 +104,7 @@ C_FLOAT64 COptMethodPS::evaluate()
 
   // evaluate the fitness
   if (!pOptProblem->calculate())
-    #pragma omp critical
+#pragma omp critical
     mContinue = false;
 
   C_FLOAT64 EvaluationValue;
@@ -117,7 +117,7 @@ C_FLOAT64 COptMethodPS::evaluate()
 
   if (mProblemContext.isThread(&pOptProblem))
     {
-      #pragma omp critical
+#pragma omp critical
       mProblemContext.master()->incrementCounters(pOptProblem->getCounters());
 
       pOptProblem->resetCounters();
@@ -198,7 +198,7 @@ bool COptMethodPS::move(const size_t & index)
     {
       Improved = true;
 
-      #pragma omp critical
+#pragma omp critical
       {
         mImprovements[index] = EvaluationValue;
 
@@ -339,7 +339,7 @@ bool COptMethodPS::create(const size_t & index)
   mBestValues[index] = mValues[index] = evaluate();
   memcpy(mBestPositions[index], mIndividuals[index]->array(), sizeof(C_FLOAT64) * mVariableSize);
 
-  #pragma omp critical
+#pragma omp critical
 
   if (mBestValues[index] < mBestValue)
     {
@@ -369,11 +369,11 @@ bool COptMethodPS::initialize()
   mGenerations = getValue< unsigned C_INT32 >("Iteration Limit");
   mCurrentGeneration = 0;
 
-  if (mpCallBack)
+  if (mProcessReport)
     mhGenerations =
-      mpCallBack->addItem("Iteration Limit",
-                          mCurrentGeneration,
-                          & mGenerations);
+      mProcessReport.addItem("Iteration Limit",
+                             mCurrentGeneration,
+                             & mGenerations);
 
   mPopulationSize = getValue< unsigned C_INT32 >("Swarm Size");
 
@@ -547,8 +547,8 @@ bool COptMethodPS::optimise()
 {
   if (!initialize())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhGenerations);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhGenerations);
 
       return false;
     }
@@ -618,7 +618,7 @@ bool COptMethodPS::optimise()
   // the others are random
   C_INT32 k, kmax = (C_INT32) mPopulationSize;
 
-  #pragma omp parallel for
+#pragma omp parallel for
 
   for (k = 1; k < kmax; k++)
     if (mContinue)
@@ -638,7 +638,7 @@ bool COptMethodPS::optimise()
 
       C_INT32 k, kmax = (C_INT32) mPopulationSize;
 
-      #pragma omp parallel for
+#pragma omp parallel for
 
       for (k = 0; k < kmax; k++)
         if (mContinue)
@@ -687,15 +687,15 @@ bool COptMethodPS::optimise()
             Stalled = 0;
         }
 
-      if (mpCallBack)
-        mContinue &= mpCallBack->progressItem(mhGenerations);
+      if (mProcessReport)
+        mContinue &= mProcessReport.progressItem(mhGenerations);
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
     }
 
-  if (mpCallBack)
-    mpCallBack->finishItem(mhGenerations);
+  if (mProcessReport)
+    mProcessReport.finishItem(mhGenerations);
 
   if (mLogVerbosity > 0)
     mMethodLog.enterLogEntry(

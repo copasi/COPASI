@@ -129,7 +129,7 @@ public:
   * @param CProcessReport * pCallBack
   * @result bool success
   */
-  virtual bool setCallBack(CProcessReport * pCallBack);
+  virtual bool setCallBack(CProcessReport callBack) override;
 
   /**
    * Do all necessary initialization so that calls to calculate will
