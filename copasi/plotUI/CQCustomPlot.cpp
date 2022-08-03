@@ -1117,7 +1117,11 @@ void CQCustomPlot::mouseReleaseEvent(QMouseEvent * event)
 
 void CQCustomPlot::wheelEvent(QWheelEvent * event)
 {
-  QCPLayerable * element = layerableAt(event->pos(), true);
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+    QCPLayerable * element = layerableAt(event->position(), true);
+#else
+    QCPLayerable * element = layerableAt(event->pos(), true);
+#endif
 
   if (dynamic_cast<QCPLegend*>(element) || dynamic_cast<QCPAbstractLegendItem*>(element))
     {
