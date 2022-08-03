@@ -212,6 +212,10 @@ void PlotWindow::createToolBar()
 bool PlotWindow::initFromSpec(const CPlotSpecification *ptrSpec)
 {
   this->setWindowTitle(("COPASI Plot: " + ptrSpec->getTitle()).c_str());
+
+  if (!mpPlot)
+    return false;
+
   bool result = mpPlot->initFromSpec(ptrSpec);
 
   if (result)
@@ -272,7 +276,7 @@ CPlotInterface * PlotWindow::createPlot(const CPlotSpecification * pPlotSpec)
 // toggle log X
 void PlotWindow::toggleLogX(bool logX)
 {
-  if (initializing) return;
+  if (initializing || !mpPlot) return;
 
   mpPlot->toggleLogX(logX);
 }
@@ -280,7 +284,8 @@ void PlotWindow::toggleLogX(bool logX)
 // toggle log Y
 void PlotWindow::toggleLogY(bool logY)
 {
-  if (initializing) return;
+  if (initializing || !mpPlot)
+    return;
 
   mpPlot->toggleLogY(logY);
 }
@@ -306,6 +311,9 @@ void PlotWindow::toggleLogY(bool logY)
 //-----------------------------------------------------------------------------
 void PlotWindow::saveToFile(const QString &fileName) const
 {
+  if (!mpPlot)
+    return;
+
   QRect rect;
   rect.setSize(this->size());
 
@@ -342,6 +350,9 @@ void PlotWindow::saveToFile(const QString &fileName) const
 
 void PlotWindow::printAsImage()
 {
+  if (!mpPlot)
+    return;
+
   // take a name from QFileDialog
   C_INT32 Answer = QMessageBox::No;
   QString fileName, extensionName;
