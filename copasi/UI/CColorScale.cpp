@@ -23,6 +23,12 @@
 
 #include <QPalette>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+#include <QGuiApplication>
+#else
+#include <QApplication>
+#endif
+
 #include "copasi/UI/CColorScale.h"
 #include "copasi/UI/qtUtilities.h"
 
@@ -34,7 +40,14 @@ CColorScale::CColorScale()
   , mLargeNumbers()
   , mNaN(85, 85, 135)
 {
-
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+  QPalette Palette = QGuiApplication::palette();
+#else
+  QPalette Palette = QApplication::palette();
+#endif
+  mForeground = Palette.color(QPalette::Active, QPalette::Text);
+  mBackground = Palette.color(QPalette::Active, QPalette::Base);
+    
   if (isLightMode())
     {
       mSmallNumbers = QColor(Qt::red);
