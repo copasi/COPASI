@@ -6,6 +6,7 @@
 #include <QPropertyAnimation>
 
 #include "CQExtender.h"
+#include <copasi/UI/qtUtilities.h>
 
 // Extending content button.
 //
@@ -28,7 +29,9 @@ CQExtender::CQExtender(QWidget * parent, const QString & title, const int animat
   headerLine.setFrameShadow(QFrame::Sunken);
   headerLine.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 
-  contentArea.setStyleSheet("QScrollArea { background-color: white; border: none; }");
+  if (!isDarkMode())
+    contentArea.setStyleSheet("QScrollArea { background-color: white; border: none; }");
+
   contentArea.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   // start out collapsed
   contentArea.setMaximumHeight(0);

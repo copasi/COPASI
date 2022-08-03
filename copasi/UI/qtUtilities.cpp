@@ -27,6 +27,12 @@
 #include <QTextStream>
 #include <QAbstractItemView>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#  include <QGuiApplication>
+#else
+#  include <QApplication>
+#endif
+
 #include "copasi/copasi.h"
 #include <copasi/core/CRootContainer.h>
 #include <copasi/commandline/CConfigurationFile.h>
@@ -369,4 +375,18 @@ QString toTsvString(QAbstractItemView* pWidget,
 
   QAbstractItemModel* pModel = pWidget->model();
   return toTsvString(pModel, writeColumnHeaders, writeRowHeaders);
+}
+
+
+bool isDarkMode()
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+  QPalette Palette = QGuiApplication::palette();
+#else
+  QPalette Palette = QApplication::palette();
+#endif
+  auto foreground = Palette.color(QPalette::Active, QPalette::Text);
+  auto background = Palette.color(QPalette::Active, QPalette::Base);
+
+  return (foreground.redF() + foreground.greenF() + foreground.blueF() < background.redF() + background.greenF() + background.blueF());
 }
