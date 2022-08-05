@@ -73,7 +73,7 @@ void * CProcessReportItem::getEndValuePointer()
 
 const bool & CProcessReportItem::hasEndValue() const {return mHasEndValue;}
 
-CProcessReportInterface::CProcessReportInterface(const unsigned int & maxTime)
+CProcessReport::CProcessReport(const unsigned int & maxTime)
   : mProccessingInstruction(ProccessingInstruction::Continue)
   , mIgnoreStop(false)
   , mProcessReportItemList(1)
@@ -87,7 +87,7 @@ CProcessReportInterface::CProcessReportInterface(const unsigned int & maxTime)
     }
 }
 
-CProcessReportInterface::~CProcessReportInterface()
+CProcessReport::~CProcessReport()
 {
   size_t i, imax = mProcessReportItemList.size();
 
@@ -97,10 +97,10 @@ CProcessReportInterface::~CProcessReportInterface()
   pdelete(mpEndTime);
 }
 
-size_t CProcessReportInterface::addItem(const std::string & name,
-                                        const CCopasiParameter::Type & type,
-                                        const void * pValue,
-                                        const void * pEndValue)
+size_t CProcessReport::addItem(const std::string & name,
+                               const CCopasiParameter::Type & type,
+                               const void * pValue,
+                               const void * pEndValue)
 {
   size_t i, imax = mProcessReportItemList.size();
 
@@ -126,7 +126,35 @@ size_t CProcessReportInterface::addItem(const std::string & name,
   return handle;
 }
 
-bool CProcessReportInterface::progress()
+size_t CProcessReport::addItem(const std::string & name,
+                               const std::string & value,
+                               const std::string * pEndValue)
+{
+  return addItem(name, CCopasiParameter::Type::STRING, &value, pEndValue);
+}
+
+size_t CProcessReport::addItem(const std::string & name,
+                               const C_INT32 & value,
+                               const C_INT32 * pEndValue)
+{
+  return addItem(name, CCopasiParameter::Type::INT, &value, pEndValue);
+}
+
+size_t CProcessReport::addItem(const std::string & name,
+                               const unsigned C_INT32 & value,
+                               const unsigned C_INT32 * pEndValue)
+{
+  return addItem(name, CCopasiParameter::Type::UINT, &value, pEndValue);
+}
+
+size_t CProcessReport::addItem(const std::string & name,
+                               const C_FLOAT64 & value,
+                               const C_FLOAT64 * pEndValue)
+{
+  return addItem(name, CCopasiParameter::Type::DOUBLE, &value, pEndValue);
+}
+
+bool CProcessReport::progress()
 {
   bool success = true;
   size_t i, imax = mProcessReportItemList.size();
@@ -137,12 +165,12 @@ bool CProcessReportInterface::progress()
   return success && proceed();
 }
 
-bool CProcessReportInterface::progressItem(const size_t & handle)
+bool CProcessReport::progressItem(const size_t & handle)
 {
   return isValidHandle(handle) && proceed();
 }
 
-bool CProcessReportInterface::proceed()
+bool CProcessReport::proceed()
 {
   if (mpEndTime != NULL
       && *mpEndTime < CCopasiTimeVariable::getCurrentWallTime())
@@ -152,7 +180,7 @@ bool CProcessReportInterface::proceed()
          || (mIgnoreStop && mProccessingInstruction == ProccessingInstruction::Stop);
 }
 
-bool CProcessReportInterface::reset()
+bool CProcessReport::reset()
 {
   bool success = true;
   size_t i, imax = mProcessReportItemList.size();
@@ -163,12 +191,12 @@ bool CProcessReportInterface::reset()
   return success;
 }
 
-bool CProcessReportInterface::resetItem(const size_t & handle)
+bool CProcessReport::resetItem(const size_t & handle)
 {
   return isValidHandle(handle) && proceed();
 }
 
-bool CProcessReportInterface::finish()
+bool CProcessReport::finish()
 {
   bool success = true;
   size_t i, imax = mProcessReportItemList.size();
@@ -179,7 +207,7 @@ bool CProcessReportInterface::finish()
   return success;
 }
 
-bool CProcessReportInterface::finishItem(const size_t & handle)
+bool CProcessReport::finishItem(const size_t & handle)
 {
   if (!isValidHandle(handle)) return false;
 
@@ -187,52 +215,57 @@ bool CProcessReportInterface::finishItem(const size_t & handle)
   return true;
 }
 
-bool CProcessReportInterface::isValidHandle(const size_t handle) const
+bool CProcessReport::isValidHandle(const size_t handle) const
 {
   return (handle < mProcessReportItemList.size() &&
           mProcessReportItemList[handle] != NULL);
 }
 
-bool CProcessReportInterface::setName(const std::string & name)
+bool CProcessReport::setName(const std::string & name)
 {
   mName = name;
   return true;
 }
 
-void CProcessReportInterface::setIgnoreStop(const bool & ignoreStop)
+void CProcessReport::setIgnoreStop(const bool & ignoreStop)
 {
   mIgnoreStop = ignoreStop;
 }
 
-const bool & CProcessReportInterface::getIgnoreStop() const\
+const bool & CProcessReport::getIgnoreStop() const\
 {
   return mIgnoreStop;
 }
 
-CProcessReport::CProcessReport(CProcessReportInterface * pInterface)
+CProcessReportLevel::CProcessReportLevel(CProcessReport * pInterface)
   : mpInterface(pInterface)
   , mLevel(0)
   , mMaxDisplayLevel(2)
 {}
 
-CProcessReport::~CProcessReport()
+CProcessReportLevel::~CProcessReportLevel()
 {}
 
-CProcessReport::operator bool() const
+CProcessReportLevel::operator bool() const
 {
   return mpInterface != NULL;
 }
 
-CProcessReport CProcessReport::operator++()
+CProcessReport * CProcessReportLevel::toProcessReportPtr()
+{
+  return mLevel < mMaxDisplayLevel ? mpInterface : NULL;
+}
+
+CProcessReportLevel CProcessReportLevel::operator++()
 {
   ++mLevel;
 
   return *this;
 }
 
-size_t CProcessReport::addItem(const std::string & name,
-                               const std::string & value,
-                               const std::string * pEndValue)
+size_t CProcessReportLevel::addItem(const std::string & name,
+                                    const std::string & value,
+                                    const std::string * pEndValue)
 {
   if (mpInterface != NULL
       && mLevel < mMaxDisplayLevel)
@@ -241,9 +274,9 @@ size_t CProcessReport::addItem(const std::string & name,
   return C_INVALID_INDEX;
 }
 
-size_t CProcessReport::addItem(const std::string & name,
-                               const C_INT32 & value,
-                               const C_INT32 * pEndValue)
+size_t CProcessReportLevel::addItem(const std::string & name,
+                                    const C_INT32 & value,
+                                    const C_INT32 * pEndValue)
 {
   if (mpInterface != NULL
       && mLevel < mMaxDisplayLevel)
@@ -252,9 +285,9 @@ size_t CProcessReport::addItem(const std::string & name,
   return C_INVALID_INDEX;
 }
 
-size_t CProcessReport::addItem(const std::string & name,
-                               const unsigned C_INT32 & value,
-                               const unsigned C_INT32 * pEndValue)
+size_t CProcessReportLevel::addItem(const std::string & name,
+                                    const unsigned C_INT32 & value,
+                                    const unsigned C_INT32 * pEndValue)
 {
   if (mpInterface != NULL
       && mLevel < mMaxDisplayLevel)
@@ -263,9 +296,9 @@ size_t CProcessReport::addItem(const std::string & name,
   return C_INVALID_INDEX;
 }
 
-size_t CProcessReport::addItem(const std::string & name,
-                               const C_FLOAT64 & value,
-                               const C_FLOAT64 * pEndValue)
+size_t CProcessReportLevel::addItem(const std::string & name,
+                                    const C_FLOAT64 & value,
+                                    const C_FLOAT64 * pEndValue)
 {
   if (mpInterface != NULL
       && mLevel < mMaxDisplayLevel)
@@ -274,7 +307,7 @@ size_t CProcessReport::addItem(const std::string & name,
   return C_INVALID_INDEX;
 }
 
-bool CProcessReport::progress()
+bool CProcessReportLevel::progress()
 {
   if (mpInterface != NULL)
     return mpInterface->progress();
@@ -282,7 +315,7 @@ bool CProcessReport::progress()
   return proceed();
 }
 
-bool CProcessReport::progressItem(const size_t & handle)
+bool CProcessReportLevel::progressItem(const size_t & handle)
 {
   if (mpInterface != NULL
       && mLevel < mMaxDisplayLevel)
@@ -291,7 +324,7 @@ bool CProcessReport::progressItem(const size_t & handle)
   return proceed();
 }
 
-bool CProcessReport::resetItem(const size_t & handle)
+bool CProcessReportLevel::resetItem(const size_t & handle)
 {
   if (mpInterface != NULL
       && mLevel < mMaxDisplayLevel)
@@ -300,7 +333,7 @@ bool CProcessReport::resetItem(const size_t & handle)
   return proceed();
 }
 
-bool CProcessReport::finish()
+bool CProcessReportLevel::finish()
 {
   if (mpInterface != NULL)
     return mpInterface->finish();
@@ -308,7 +341,7 @@ bool CProcessReport::finish()
   return proceed();
 }
 
-bool CProcessReport::finishItem(const size_t & handle)
+bool CProcessReportLevel::finishItem(const size_t & handle)
 {
   if (mpInterface != NULL
       && mLevel < mMaxDisplayLevel)
@@ -317,7 +350,7 @@ bool CProcessReport::finishItem(const size_t & handle)
   return proceed();
 }
 
-bool CProcessReport::proceed()
+bool CProcessReportLevel::proceed()
 {
   if (mpInterface != NULL)
     return mpInterface->proceed();
@@ -325,7 +358,7 @@ bool CProcessReport::proceed()
   return true;
 }
 
-bool CProcessReport::setName(const std::string & name)
+bool CProcessReportLevel::setName(const std::string & name)
 {
   if (mpInterface != NULL)
     return mpInterface->setName(name);
@@ -333,7 +366,7 @@ bool CProcessReport::setName(const std::string & name)
   return false;
 }
 
-void CProcessReport::setIgnoreStop(const bool & ignoreStop)
+void CProcessReportLevel::setIgnoreStop(const bool & ignoreStop)
 {
   if (mpInterface != NULL)
     mpInterface->setIgnoreStop(ignoreStop);

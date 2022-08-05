@@ -331,14 +331,14 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
 #endif // USE_SBMLUNIT
 
 void
-CSBMLExporter::setHandler(CProcessReport  handler)
+CSBMLExporter::setHandler(CProcessReport * pProcessReport)
 {
-  mProgressHandler = handler;
+  mpProcessReport = pProcessReport;
 }
 
-const CProcessReport & CSBMLExporter::getCallBack() const
+const CProcessReport * CSBMLExporter::getCallBack() const
 {
-  return mProgressHandler;
+  return mpProcessReport;
 }
 
 void CSBMLExporter::clearCallBack()
@@ -349,28 +349,28 @@ void CSBMLExporter::clearCallBack()
 bool
 CSBMLExporter::reportCurrentProgressOrStop()
 {
-  if (!mProgressHandler) return false;
+  if (mpProcessReport == NULL) return false;
 
-  return !mProgressHandler.progressItem(mCurrentStepHandle);
+  return !mpProcessReport->progressItem(mCurrentStepHandle);
 }
 
 void
 CSBMLExporter::finishCurrentStep()
 {
-  if (!mProgressHandler || mCurrentStepHandle == C_INVALID_INDEX)  return;
+  if (mpProcessReport == NULL || mCurrentStepHandle == C_INVALID_INDEX)  return;
 
-  mProgressHandler.finishItem(mCurrentStepHandle);
+  mpProcessReport->finishItem(mCurrentStepHandle);
   mCurrentStepHandle = C_INVALID_INDEX;
 }
 
 void
 CSBMLExporter::finishExport()
 {
-  if (!mProgressHandler)  return;
+  if (mpProcessReport == NULL)  return;
 
   finishCurrentStep();
 
-  mProgressHandler.finishItem(mGlobalStepHandle);
+  mpProcessReport->finishItem(mGlobalStepHandle);
 }
 
 bool
@@ -378,18 +378,18 @@ CSBMLExporter::createProgressStepOrStop(unsigned C_INT32 globalStep,
                                         unsigned C_INT32 currentTotal,
                                         const std::string& title)
 {
-  if (!mProgressHandler) return false;
+  if (mpProcessReport == NULL) return false;
 
   if (mCurrentStepHandle != C_INVALID_INDEX)
-    mProgressHandler.finishItem(mCurrentStepHandle);
+    mpProcessReport->finishItem(mCurrentStepHandle);
 
   mGlobalStepCounter = globalStep;
 
-  if (!mProgressHandler.progressItem(mGlobalStepHandle)) return true;
+  if (!mpProcessReport->progressItem(mGlobalStepHandle)) return true;
 
   mCurrentStepCounter = 0;
   mCurrentStepTotal = currentTotal;
-  mCurrentStepHandle = mProgressHandler.addItem(title,
+  mCurrentStepHandle = mpProcessReport->addItem(title,
                        mCurrentStepCounter,
                        &mCurrentStepTotal);
 
@@ -408,7 +408,7 @@ CSBMLExporter::CSBMLExporter()
   , mDocumentDisowned(false)
   , mExportCOPASIMIRIAM(false)
   , mExportedFunctions(2, 1)
-  , mProgressHandler()
+  , mpProcessReport(NULL)
   , mGlobalStepHandle(C_INVALID_INDEX)
   , mGlobalStepCounter(0)
   , mGlobalStepTotal(0)
@@ -3416,13 +3416,13 @@ CSBMLExporter::exportModelToString(CDataModel& dataModel,
   this->mSBMLVersion = sbmlVersion;
   mHandledSBMLObjects.clear();
 
-  if (mProgressHandler)
+  if (mpProcessReport != NULL)
     {
       std::stringstream str;
       str << "Exporting SBML L" << sbmlLevel << "V" << sbmlVersion << "...";
-      mProgressHandler.setName(str.str());
+      mpProcessReport->setName(str.str());
       mGlobalStepTotal = 16;
-      mGlobalStepHandle = mProgressHandler.addItem("Step",
+      mGlobalStepHandle = mpProcessReport->addItem("Step",
                           mGlobalStepCounter,
                           &mGlobalStepTotal);
     }

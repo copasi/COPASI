@@ -57,10 +57,10 @@ public:
 
   /**
    * Set the call back of the problem
-   * @param CProcessReport * pCallBack
+   * @param CProcessReportLevel * pCallBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReport callBack) override;
+  virtual bool setCallBack(CProcessReportLevel callBack) override;
 
   /**
    * Do all necessary initialization so that calls to calculate will

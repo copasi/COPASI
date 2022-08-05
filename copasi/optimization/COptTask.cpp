@@ -89,7 +89,7 @@ COptTask::~COptTask()
 
 void COptTask::cleanup() {}
 
-bool COptTask::setCallBack(CProcessReport callBack)
+bool COptTask::setCallBack(CProcessReportLevel callBack)
 {
   bool success = CCopasiTask::setCallBack(callBack);
 

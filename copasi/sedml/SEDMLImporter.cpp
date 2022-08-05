@@ -89,14 +89,14 @@ C_FLOAT64 SEDMLImporter::round(const C_FLOAT64 & x)
     x < 0.0 ? -floor(-x + 0.5) : floor(x + 0.5);
 }
 
-void SEDMLImporter::setImportHandler(CProcessReport handler)
+void SEDMLImporter::setImportHandler(CProcessReport * pProcessReport)
 {
-  mImportHandler = handler;
+  mpProcessReport = pProcessReport;
 }
 
-const CProcessReport & SEDMLImporter::getProcessReport() const
+const CProcessReport * SEDMLImporter::getProcessReport() const
 {
-  return mImportHandler;
+  return mpProcessReport;
 }
 
 void SEDMLImporter::setSEDMLDocument(SedDocument * pDocument)
@@ -907,42 +907,42 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
   mImportStep = 0;
 
-  if (mImportHandler)
+  if (mpProcessReport != NULL)
     {
-      mImportHandler.setName("Importing SED-ML file...");
+      mpProcessReport->setName("Importing SED-ML file...");
       mTotalSteps = 11;
-      mhImportStep = mImportHandler.addItem("Step", mImportStep,
-                                            &mTotalSteps);
+      mhImportStep = mpProcessReport->addItem("Step", mImportStep,
+                                              &mTotalSteps);
     }
 
   unsigned C_INT32 step = 0, totalSteps = 0;
   size_t hStep = C_INVALID_INDEX;
 
-  if (mImportHandler)
+  if (mpProcessReport != NULL)
     {
       step = 0;
       totalSteps = 1;
-      hStep = mImportHandler.addItem("Reading SED-ML file...", step,
-                                     &totalSteps);
+      hStep = mpProcessReport->addItem("Reading SED-ML file...", step,
+                                       &totalSteps);
     }
 
   auto * pSEDMLDocument = reader.readSedMLFromString(sedmlDocumentText);
 
   assert(pSEDMLDocument != NULL);
 
-  if (mImportHandler)
-    mImportHandler.finishItem(hStep);
+  if (mpProcessReport != NULL)
+    mpProcessReport->finishItem(hStep);
 
-  if (mImportHandler)
+  if (mpProcessReport != NULL)
     {
       step = 0;
       totalSteps = 1;
-      hStep = mImportHandler.addItem("Checking consistency...", step,
-                                     &totalSteps);
+      hStep = mpProcessReport->addItem("Checking consistency...", step,
+                                       &totalSteps);
     }
 
-  if (mImportHandler)
-    mImportHandler.finishItem(hStep);
+  if (mpProcessReport != NULL)
+    mpProcessReport->finishItem(hStep);
 
   bool fatal = false;
   unsigned int i, iMax = pSEDMLDocument->getNumErrors();
@@ -1022,8 +1022,8 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
   if (fatal)
     {
-      if (mImportHandler)
-        mImportHandler.finishItem(mhImportStep);
+      if (mpProcessReport != NULL)
+        mpProcessReport->finishItem(mhImportStep);
 
       const XMLError * pSEDMLError = pSEDMLDocument->getError(fatal);
       std::stringstream str;
@@ -1048,8 +1048,8 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
     {
       CCopasiMessage Message(CCopasiMessage::ERROR, MCSEDML + 2);
 
-      if (mImportHandler)
-        mImportHandler.finishItem(mhImportStep);
+      if (mpProcessReport != NULL)
+        mpProcessReport->finishItem(mhImportStep);
 
       return NULL;
     }
@@ -1066,8 +1066,8 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
   importTasks();
 
-  if (mImportHandler)
-    mImportHandler.finishItem(mhImportStep);
+  if (mpProcessReport != NULL)
+    mpProcessReport->finishItem(mhImportStep);
 
   return mpCopasiModel;
 }
@@ -1465,7 +1465,7 @@ CModel* SEDMLImporter::importFirstSBMLModel()
   // Right now we always import the COPASI MIRIAM annotation if it is there.
   // Later this will be settable by the user in the preferences dialog
   importer.setImportCOPASIMIRIAM(true);
-  importer.setImportHandler(mImportHandler);
+  importer.setImportHandler(mpProcessReport);
 
   mpCopasiModel = NULL;
 
@@ -1539,7 +1539,7 @@ SEDMLImporter::SEDMLImporter():
   mpDataModel(NULL),
   mpCopasiModel(NULL),
   mpSEDMLDocument(NULL),
-  mImportHandler(NULL),
+  mpProcessReport(NULL),
   mImportStep(0),
   mhImportStep(C_INVALID_INDEX),
   mTotalSteps(0),

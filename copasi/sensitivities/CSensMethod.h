@@ -119,7 +119,7 @@ public:
    * @param CProcessReport * pCallBack
    * @result bool succes
    */
-  virtual bool setCallBack(CProcessReport callBack) override;
+  virtual bool setCallBack(CProcessReportLevel callBack) override;
 
   /**
    * estimate how many calls to the subtask are necessary. Works only after

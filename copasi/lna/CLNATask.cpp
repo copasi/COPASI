@@ -179,7 +179,7 @@ bool CLNATask::process(const bool & useInitialValues)
 }
 
 // virtual
-bool CLNATask::setCallBack(CProcessReport callBack)
+bool CLNATask::setCallBack(CProcessReportLevel callBack)
 {
   bool success = CCopasiTask::setCallBack(callBack);
 

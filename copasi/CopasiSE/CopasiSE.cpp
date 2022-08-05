@@ -65,7 +65,7 @@ int validate();
 int printUsage(const std::string& name);
 int exportSBML();
 int exportCurrentModel();
-int runScheduledTasks(CProcessReportInterface * pProcessReport);
+int runScheduledTasks(CProcessReport * pProcessReport);
 int saveCurrentModel();
 int exportParametersToIniFile();
 
@@ -77,7 +77,7 @@ std::string ScheduledTask;
 int main(int argc, char *argv[])
 {
   int retcode = 0;
-  CProcessReportInterface * pProcessReport = NULL;
+  CProcessReport * pProcessReport = NULL;
   int MaxTime = 0;
 
 #ifdef XXXX
@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
 
   if (MaxTime > 0)
     {
-      pProcessReport = new CProcessReportInterface(MaxTime);
+      pProcessReport = new CProcessReport(MaxTime);
     }
 
   try
@@ -412,7 +412,7 @@ int printUsage(const std::string& name)
   return 1;
 }
 
-int runScheduledTasks(CProcessReportInterface * pProcessReport)
+int runScheduledTasks(CProcessReport * pProcessReport)
 {
   int retcode = 0;
 

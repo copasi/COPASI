@@ -72,10 +72,10 @@ public:
 
   /**
    * Set the call back of the task
-   * @param CProcessReport * pCallBack
+   * @param CProcessReportLevel * pCallBack
    * @result bool succes
    */
-  virtual bool setCallBack(CProcessReport callBack) override;
+  virtual bool setCallBack(CProcessReportLevel callBack) override;
 
   /**
    * Initialize the task. If an ostream is given this ostream is used

@@ -48,7 +48,7 @@ bool CMoietiesMethod::process()
 {
   try
     {
-      const_cast< CModel * >(&mpContainer->getModel())->compileIfNecessary(mProcessReport);
+      const_cast< CModel * >(&mpContainer->getModel())->compileIfNecessary(mProcessReport.toProcessReportPtr());
     }
 
   catch (...)

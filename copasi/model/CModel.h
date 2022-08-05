@@ -48,7 +48,7 @@
 #include "copasi/math/CMathDependencyGraph.h"
 
 class CMathContainer;
-class CProcessReport;
+class CProcessReportLevel;
 class CDataArray;
 class CMathModel;
 class CExperiment;
@@ -196,17 +196,17 @@ public:
 
   /**
    * Compile the model if necessary
-   * @param CProcessReport processReport
+   * @param CProcessReport * pProcessReport
    * @return bool success
    */
-  bool compileIfNecessary(CProcessReport processReport);
+  bool compileIfNecessary(CProcessReport *pProcessReport);
 
   /**
    * Force a compile the model.
-   * @param CProcessReport processReport
+   * @param CProcessReport * pProcessReport
    * @return bool success
    */
-  bool forceCompile(CProcessReport processReport);
+  bool forceCompile(CProcessReport *pProcessReport);
 
   bool buildDependencyGraphs();
 
@@ -1335,7 +1335,7 @@ private:
    * A pointer to the process report. If not NULL the compile progress is
    * reported to it.
    */
-  CProcessReport mCompileHandler;
+  CProcessReport * mpProcessReport;
 
   /**
    * A flag indicating whether the state template has to be reordered

@@ -65,7 +65,7 @@ void CEFMProblem::initializeParameter()
 bool CEFMProblem::elevateChildren()
 {return true;}
 
-bool CEFMProblem::setCallBack(CProcessReport callBack)
+bool CEFMProblem::setCallBack(CProcessReportLevel callBack)
 {
   CCopasiProblem::setCallBack(callBack);
 

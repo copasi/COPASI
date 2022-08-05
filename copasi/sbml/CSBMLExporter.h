@@ -100,7 +100,7 @@ protected:
   /**
    * the progress handler for the export
    */
-  CProcessReport mProgressHandler;
+  CProcessReport * mpProcessReport;
   /**
    * the global import step handle
    */
@@ -138,12 +138,12 @@ public:
    *
    * @param pHandler the progress handler to be used, or NULL
    */
-  void setHandler(CProcessReport handler);
+  void setHandler(CProcessReport * pProcessReport);
 
   /**
    * @return the currently set callback handler
    */
-  const CProcessReport & getCallBack() const;
+  const CProcessReport * getCallBack() const;
 
   /**
    * resets the currently set callback by calling setHandler(NULL)

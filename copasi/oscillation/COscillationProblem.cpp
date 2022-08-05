@@ -69,7 +69,7 @@ bool COscillationProblem::elevateChildren()
   return true;
 }
 
-bool COscillationProblem::setCallBack(CProcessReport callBack)
+bool COscillationProblem::setCallBack(CProcessReportLevel callBack)
 {
   CCopasiProblem::setCallBack(pCallBack);
 

@@ -46,7 +46,7 @@
 class CCopasiProblem;
 class CCopasiMethod;
 class CCopasiParameterGroup;
-class CProcessReport;
+class CProcessReportLevel;
 
 class CCopasiTask : public CDataContainer
 {
@@ -300,12 +300,12 @@ public:
    * @param CProcessReport & callBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReport callBack);
+  virtual bool setCallBack(CProcessReportLevel callBack);
 
   /**
    * @return the currently set callback
    */
-  const CProcessReport & getCallBack() const;
+  const CProcessReportLevel & getCallBack() const;
 
   /**
    * resets the currently set callback by calling setCallBack(NULL)
@@ -523,7 +523,7 @@ protected:
   /**
    * progress bar handler
    */
-  CProcessReport mProcessReport;
+  CProcessReportLevel mProcessReport;
 
   /**
    * Pointer to group of sliders associated with the task.

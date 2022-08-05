@@ -89,13 +89,13 @@ CMathContainer * CCopasiMethod::getMathContainer() const
   return mpContainer;
 }
 
-bool CCopasiMethod::setCallBack(CProcessReport callBack)
+bool CCopasiMethod::setCallBack(CProcessReportLevel callBack)
 {
   mProcessReport = callBack;
   return true;
 }
 
-const CProcessReport & CCopasiMethod::getCallBack() const
+const CProcessReportLevel & CCopasiMethod::getCallBack() const
 {
   return mProcessReport;
 }

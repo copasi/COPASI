@@ -66,7 +66,7 @@ CProgressBar * CProgressBar::create(QWidget* parent, const char* name, Qt::Windo
 
 CProgressBar::CProgressBar(QWidget* parent, const char* name, Qt::WindowModality windowModality):
   CQProgressDialog(parent, name, windowModality, Qt::WindowMinimizeButtonHint),
-  CProcessReportInterface(),
+  CProcessReport(),
   mSlotFinished(true),
   mMutex(),
   mWaitSlot(),
@@ -109,7 +109,7 @@ size_t CProgressBar::addItem(const std::string & name,
                              const void * pEndValue)
 
 {
-  size_t hItem = CProcessReportInterface::addItem(name, type, pValue, pEndValue);
+  size_t hItem = CProcessReport::addItem(name, type, pValue, pEndValue);
 
   if (!CopasiUI3Window::isMainThread())
     {
@@ -225,7 +225,7 @@ bool CProgressBar::finish()
   CopasiUI3Window::getMainWindow()->disableSliders(false);
   done(1);
 
-  return CProcessReportInterface::finish();
+  return CProcessReport::finish();
 }
 
 bool CProgressBar::finishItem(const size_t & handle)
@@ -307,7 +307,7 @@ bool CProgressBar::proceed()
         }
     }
 
-  return CProcessReportInterface::proceed();
+  return CProcessReport::proceed();
 }
 
 // virtual
@@ -338,7 +338,7 @@ void CProgressBar::slotSetName(QString name)
   QMutexLocker Locker(&mMutex);
 
   setWindowTitle(name);
-  CProcessReportInterface::setName(TO_UTF8(name));
+  CProcessReport::setName(TO_UTF8(name));
 
   mSlotFinished = true;
   mWaitSlot.wakeAll();

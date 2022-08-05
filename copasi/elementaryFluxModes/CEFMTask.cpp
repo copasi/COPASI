@@ -66,7 +66,7 @@ CEFMTask::CEFMTask(const CEFMTask & src,
 CEFMTask::~CEFMTask()
 {}
 
-bool CEFMTask::setCallBack(CProcessReport callBack)
+bool CEFMTask::setCallBack(CProcessReportLevel callBack)
 {
   bool success = CCopasiTask::setCallBack(callBack);
 

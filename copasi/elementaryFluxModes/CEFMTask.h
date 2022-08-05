@@ -74,7 +74,7 @@ public:
    * @param CProcessReport * pCallBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReport callBack);
+  virtual bool setCallBack(CProcessReportLevel callBack);
 
   /**
    * Initialize the task. If an ostream is given this ostream is used

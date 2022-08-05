@@ -800,7 +800,7 @@ bool CSensMethod::isValidProblem(const CCopasiProblem * pProblem)
 }
 
 // virtual
-bool CSensMethod::setCallBack(CProcessReport callBack)
+bool CSensMethod::setCallBack(CProcessReportLevel callBack)
 {
   bool success = CCopasiMethod::setCallBack(callBack);
 

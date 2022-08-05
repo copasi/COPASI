@@ -386,7 +386,7 @@ CMathContainer * CCopasiTask::getMathContainer() const
   return mpContainer;
 }
 
-bool CCopasiTask::setCallBack(CProcessReport callBack)
+bool CCopasiTask::setCallBack(CProcessReportLevel callBack)
 {
   if (!isTaskValid())
     return false;
@@ -405,14 +405,14 @@ bool CCopasiTask::setCallBack(CProcessReport callBack)
   return success;
 }
 
-const CProcessReport & CCopasiTask::getCallBack() const
+const CProcessReportLevel & CCopasiTask::getCallBack() const
 {
   return mProcessReport;
 }
 
 void CCopasiTask::clearCallBack()
 {
-  setCallBack(CProcessReport());
+  setCallBack(CProcessReportLevel());
 }
 
 COutputHandler* CCopasiTask::getOutputHandler() const

@@ -41,7 +41,7 @@
 //#include "copasi/model/CState.h"
 
 class CMathContainer;
-class CProcessReport;
+class CProcessReportLevel;
 class CReport;
 
 class CCopasiProblem : public CCopasiParameterGroup
@@ -107,12 +107,12 @@ public:
    * @param CProcessReport * pCallBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReport callBack);
+  virtual bool setCallBack(CProcessReportLevel callBack);
 
   /**
    * @return the currently set callback
    */
-  const CProcessReport & getCallBack() const;
+  const CProcessReportLevel & getCallBack() const;
 
   /**
    * resets the currently set callback by calling setCallBack(NULL)
@@ -197,7 +197,7 @@ protected:
   /**
    * a pointer to the callback
    */
-  CProcessReport mProcessReport;
+  CProcessReportLevel mProcessReport;
 
   /**
    * A pointer to the report

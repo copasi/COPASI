@@ -153,7 +153,7 @@ bool CSSAMethod::initialize()
   return true;
 }
 
-bool CSSAMethod::process(CProcessReport *)
+bool CSSAMethod::process(CProcessReportLevel *)
 {
   return false;
 }

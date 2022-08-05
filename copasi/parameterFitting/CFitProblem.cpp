@@ -473,7 +473,7 @@ bool CFitProblem::elevateChildren()
   return true;
 }
 
-bool CFitProblem::setCallBack(CProcessReport callBack)
+bool CFitProblem::setCallBack(CProcessReportLevel callBack)
 {
   bool success =  COptProblem::setCallBack(callBack);
 

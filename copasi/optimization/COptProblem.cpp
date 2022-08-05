@@ -278,7 +278,7 @@ void COptProblem::reset()
   mCounters = sCounter();
 }
 
-bool COptProblem::setCallBack(CProcessReport callBack)
+bool COptProblem::setCallBack(CProcessReportLevel callBack)
 {
   bool success = CCopasiProblem::setCallBack(callBack);
 

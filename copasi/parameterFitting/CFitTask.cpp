@@ -84,7 +84,7 @@ CFitTask::~CFitTask()
 
 void CFitTask::cleanup() {}
 
-bool CFitTask::setCallBack(CProcessReport callBack)
+bool CFitTask::setCallBack(CProcessReportLevel callBack)
 {
   bool success = CCopasiTask::setCallBack(callBack);
 

@@ -105,13 +105,13 @@ CMathContainer * CCopasiProblem::getMathContainer() const
   return mpContainer;
 }
 
-bool CCopasiProblem::setCallBack(CProcessReport callBack)
+bool CCopasiProblem::setCallBack(CProcessReportLevel callBack)
 {
   mProcessReport = callBack;
   return true;
 }
 
-const CProcessReport & CCopasiProblem::getCallBack() const
+const CProcessReportLevel & CCopasiProblem::getCallBack() const
 {
   return mProcessReport;
 }

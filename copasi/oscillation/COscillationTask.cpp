@@ -56,7 +56,7 @@ COscillationTask::~COscillationTask()
 
 void COscillationTask::cleanup() {}
 
-bool COscillationTask::setCallBack(CProcessReport callBack)
+bool COscillationTask::setCallBack(CProcessReportLevel callBack)
 {
   bool success = CCopasiTask::setCallBack(pCallBack);
 

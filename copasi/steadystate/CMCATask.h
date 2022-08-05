@@ -124,7 +124,7 @@ public:
    * @param CProcessReport * pCallBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReport callBack) override;
+  virtual bool setCallBack(CProcessReportLevel callBack) override;
 
 #ifndef SWIG
   /**

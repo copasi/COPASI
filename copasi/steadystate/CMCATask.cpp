@@ -171,7 +171,7 @@ bool CMCATask::process(const bool & useInitialValues)
 }
 
 // virtual
-bool CMCATask::setCallBack(CProcessReport callBack)
+bool CMCATask::setCallBack(CProcessReportLevel callBack)
 {
   bool success = CCopasiTask::setCallBack(callBack);
 

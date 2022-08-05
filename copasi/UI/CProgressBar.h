@@ -41,7 +41,7 @@ class CQProgressItem;
  *  This is used to call the progress bar code
  *  We do not want to call GUI stuff directly from the CModel.
  */
-class CProgressBar : public CQProgressDialog, public CProcessReportInterface
+class CProgressBar : public CQProgressDialog, public CProcessReport
 {
   Q_OBJECT
 public:

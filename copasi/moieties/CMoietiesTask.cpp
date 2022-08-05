@@ -46,7 +46,7 @@ CMoietiesTask::~CMoietiesTask()
 {}
 
 // virtual
-bool CMoietiesTask::setCallBack(CProcessReport callBack)
+bool CMoietiesTask::setCallBack(CProcessReportLevel callBack)
 {
   bool success = CCopasiTask::setCallBack(callBack);
 

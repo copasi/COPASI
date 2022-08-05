@@ -69,7 +69,7 @@ protected:
 
   SedDocument* mpSEDMLDocument;
 
-  CProcessReport mImportHandler;
+  CProcessReport * mpProcessReport;
   unsigned C_INT32 mImportStep;
   size_t mhImportStep;
   unsigned C_INT32 mTotalSteps;
@@ -200,12 +200,12 @@ public:
   /**
    * sets a progress handler to inform about updates
    */
-  void setImportHandler(CProcessReport handler);
+  void setImportHandler(CProcessReport * pProcessReport);
 
   /**
    * @return the progress handler set
    */
-  const CProcessReport & getProcessReport() const;
+  const CProcessReport * getProcessReport() const;
 
   /**
    * sets the sed-ml document that will be used by the importer
