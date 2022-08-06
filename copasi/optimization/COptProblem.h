@@ -118,6 +118,16 @@ public:
   virtual ~COptProblem();
 
   /**
+   * Calculate the objects value.
+   */
+  virtual void calculateValue() override;
+
+  /**
+   * Retrieve a pointer to the value of the object
+   */
+  virtual void * getValuePointer() const override;
+
+  /**
    * This methods must be called to elevate subgroups to
    * derived objects. The default implementation does nothing.
    * @return bool success
@@ -182,6 +192,41 @@ public:
    * @result bool fulfilled
    */
   virtual bool checkFunctionalConstraints();
+
+  /**
+   * Check whether all item intervals are valid.
+   * @result bool valid
+   */
+  bool checkIntervals();
+
+  /**
+   * Adjust the start values so that we have valid intervals (>= 0) for all items
+   * @return bool adjusted
+   */
+  bool adjustStartValuesForIntervals();
+
+  /**
+   * Adjust the start values so that we have valid intervals (>= 0) for all items
+   * @param COptItem & optItem
+   * @return bool adjusted
+   */
+  bool adjustStartValue(COptItem & optItem);
+
+  /**
+   * Adjust the value so that all intervals are >= 0
+   * @param C_FLOAT64 * pValue
+   * @param  const C_FLOAT64 & min
+   * @param  const C_FLOAT64 & max
+   * @return C_FLOAT64 adjusted (NaN if not adjustable)
+   */
+  C_FLOAT64 adjustForIntervals(C_FLOAT64 * pValue, const C_FLOAT64 & min, const C_FLOAT64 & max);
+
+  /**
+   * Calculate the minimal interval size
+   * @param const C_FLOAT64 &  value
+   * @return C_FLOAT64 minInterval
+   */
+  C_FLOAT64 evalMaximizeIntervals(const C_FLOAT64 & value);
 
   /**
    * Calculate the statistics for the problem
@@ -539,6 +584,12 @@ protected:
   CCore::CUpdateSequence mUpdateConstraints;
 
   /**
+   * A vector of refresh methods which need to be called retrieve the values
+   * of constraints.
+   */
+  CCore::CUpdateSequence mUpdateIntervals;
+
+  /**
    * A vector of results for calculate
    */
   C_FLOAT64 mCalculateValue;
@@ -596,6 +647,26 @@ protected:
    * The gradient vector for the parameters
    */
   CVector< C_FLOAT64 > mGradient;
+
+  /**
+   * The value of the smallest interval
+   */
+  C_FLOAT64 mMinInterval;
+
+  /**
+   * A pointer to the value to be adjusted to create valid intervals
+   */
+  C_FLOAT64 * mpAdjust;
+
+  /**
+   * The set of COptItems which intervals are adjusted
+   */
+  std::set< COptItem * > mAdjustedItems;
+
+  /**
+   * Number of items influencing intervals
+   */
+  size_t mCountInfluencingIntervals;
 };
 
 #endif  // the end

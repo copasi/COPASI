@@ -395,16 +395,21 @@ bool COptMethodPS::initialize()
   size_t i;
 
   for (i = 0; i < mPopulationSize; ++i)
-    mIndividuals[i] = new CVector< C_FLOAT64 >(mVariableSize);
+    {
+      mIndividuals[i] = new CVector< C_FLOAT64 >(mVariableSize);
+      *mIndividuals[i] = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+    }
 
   mValues.resize(mPopulationSize);
   mValues = std::numeric_limits<double>::infinity();
 
   mVelocities.resize(mPopulationSize, mVariableSize);
+  mVelocities = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
   mBestValue = std::numeric_limits<double>::infinity();
   mBestValues.resize(mPopulationSize);
   mBestValues = std::numeric_limits<double>::infinity();
   mBestPositions.resize(mPopulationSize, mVariableSize);
+  mBestPositions = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
   mNumInformedMin = std::max<size_t>(mPopulationSize / 10, 5) - 1;
   mNumInformed = mNumInformedMin;
@@ -582,7 +587,7 @@ bool COptMethodPS::optimise()
       // force it to be within the bounds
       switch (OptItem.checkConstraint(*pIndividual))
         {
-          case - 1:
+          case -1:
             *pIndividual = *OptItem.getLowerBoundValue();
             pointInParameterDomain = false;
             break;

@@ -1,4 +1,14 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -58,6 +68,25 @@ public:
                        double * pRoot,
                        double * pRootValue,
                        double tolerance);
+
+  /**
+   * Brent minimum finding method.
+   * @param double left
+   * @param double right
+   * @param evalF function
+   * @param double * pMin
+   * @param double * pMinValue
+   * @param double tolerance
+   * @param int maxIterations
+   * @return bool success
+   */
+  static bool findMinimum(double left,
+                          double right,
+                          Eval * pFunction,
+                          double * pMin,
+                          double * pMinValue,
+                          double tolerance,
+                          int maxIterations);
 };
 
 #endif // COPASI_CBrent

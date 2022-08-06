@@ -25,7 +25,7 @@
 /**
  * COptTask class.
  *
- * This class implements a optimization task which is comprised of a
+ * This class implements a optimization task which is comprised
  * of a problem and a method.
  *
  */
@@ -45,9 +45,7 @@
 const CTaskEnum::Method COptTask::ValidMethods[]  =
 {
   CTaskEnum::Method::Statistics,
-#ifdef COPASI_DEBUG
   CTaskEnum::Method::CoranaWalk,
-#endif // COPASI_DEBUG
   CTaskEnum::Method::DifferentialEvolution,
   CTaskEnum::Method::SRES,
   CTaskEnum::Method::EvolutionaryProgram,

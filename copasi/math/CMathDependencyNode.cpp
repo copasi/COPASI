@@ -375,8 +375,8 @@ bool CMathDependencyNode::buildUpdateSequence(const CCore::SimulationContextFlag
                     pMathObject->isInitialValue() ||
                     pMathObject->isIntensiveProperty())
                   {
-                    // Only Math Objects with expressions can be updated.
-                    if (pMathObject != NULL &&
+                    // For math objects we can check whether they can be calculated all others are scheduled.
+                    if (pMathObject == NULL ||
                         pMathObject->canCalculateValue())
                       {
                         updateSequence.push_back(const_cast< CObjectInterface * >(itNode->getObject()));

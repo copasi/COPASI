@@ -215,6 +215,10 @@ const MESSAGES Messages[] =
   {MCOptimization + 7, "Optimization (7): No Task Type specified."},
   {MCOptimization + 8, "Optimization (8): '%d' Function Evaluations out of '%d' failed."},
   {MCOptimization + 9, "Optimization (9): '%d' Constraint Checks out of '%d' failed."},
+  {MCOptimization + 10, "Optimization (10): Object '%s' is not an initial value."},
+  {MCOptimization + 11, "Optimization (11): Object '%s' lower bound '%s' is not an initial value."},
+  {MCOptimization + 12, "Optimization (12): Object '%s' upper bound '%s' is not an initial value."},
+  {MCOptimization + 13, "Optimization (13): Failed to adjust start values to create valid intervals."},
 
   // SBML
   {MCSBML + 1, "SBML (1): SBML currently does not support initial times different from 0. This information will be lost in the exported file."},

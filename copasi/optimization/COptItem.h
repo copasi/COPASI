@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,6 +26,7 @@
 #define COPASI_COptItem
 
 #include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/math/CMathUpdateSequence.h"
 
 class CCommonName;
 class COptProblem;
@@ -45,6 +46,8 @@ protected:
   COptItem(const COptItem & src);
 
 public:
+  static bool sortByDependency(COptItem * pA, COptItem * pB);
+
   /**
    * Specific constructor
    * @param const CDataContainer * pParent
@@ -73,6 +76,16 @@ public:
    * Destructor
    */
   virtual ~COptItem();
+
+  /**
+   * Calculate the objects value.
+   */
+  virtual void calculateValue() override;
+
+  /**
+   * Retrieve a pointer to the value of the object
+   */
+  virtual void * getValuePointer() const override;
 
   /**
    * Set the object of the optimization item.
@@ -182,6 +195,24 @@ public:
   bool checkUpperBound(const C_FLOAT64 & value) const;
 
   /**
+   * Checks whether we have a valid interval.
+   * @return bool fulfills
+   */
+  bool checkInterval() const;
+
+  /**
+   * Checks whether we have a valid initial value item.
+   * @return bool fulfills
+   */
+  bool checkIsInitialValue() const;
+
+  /**
+   * Update the prerequisites to point to the optimization items controlling the boundary object
+   * @param const std::vector< COptItem * > & influencingIntervals
+   */
+  void updatePrerequisites(const std::vector< COptItem * > & influencingIntervals);
+
+  /**
    * Retrieve the value of the optimization object.
    * @return const C_FLOAT64 * objectValue
    */
@@ -241,6 +272,20 @@ public:
    * @return ostream & os
    */
   friend std::ostream &operator<<(std::ostream &os, const COptItem & o);
+
+  /**
+   * Check whether the item influences other intervals
+   * @return bool influencesIntervals
+   */
+  bool influencesIntervals() const;
+
+  void setIntervalUpdateSequence(const CCore::CUpdateSequence & updateSequence);
+
+  const CCore::CUpdateSequence & getIntervalUpdateSequence() const;
+
+  void addDependentItem(COptItem * pDependentItem);
+
+  const std::set< COptItem * > & getDependentItems() const;
 
 private:
   /**
@@ -329,6 +374,15 @@ protected:
    * The start value use for last calculation
    */
   C_FLOAT64 mLastStartValue;
+
+  /**
+   * A value indicating whether the interval is valid
+   */
+  C_FLOAT64 mInterval;
+
+  std::set< COptItem * > mDependentItems;
+
+  CCore::CUpdateSequence mUpdateInterval;
 };
 
 #endif // COPASI_COptItem

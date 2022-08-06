@@ -109,7 +109,7 @@ bool COptMethodCoranaWalk::optimise()
   // or 100*DBL_EPSILON if average is zero
   for (i = 0, minstep = 0.0; i < mVariableSize; i++)
     {
-      minstep += mCurrent[i];
+      minstep += fabs(mCurrent[i]);
     }
 
   if (minstep > std::numeric_limits< C_FLOAT64 >::epsilon())
