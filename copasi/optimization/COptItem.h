@@ -46,8 +46,6 @@ protected:
   COptItem(const COptItem & src);
 
 public:
-  static bool sortByDependency(COptItem * pA, COptItem * pB);
-
   /**
    * Specific constructor
    * @param const CDataContainer * pParent
