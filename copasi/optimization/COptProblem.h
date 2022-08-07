@@ -222,11 +222,11 @@ public:
   C_FLOAT64 adjustForIntervals(C_FLOAT64 * pValue, const C_FLOAT64 & min, const C_FLOAT64 & max);
 
   /**
-   * Calculate the minimal interval size
+   * Calculate the RMS of the interval size for items which have invalid intervals
    * @param const C_FLOAT64 &  value
    * @return C_FLOAT64 minInterval
    */
-  C_FLOAT64 evalMaximizeIntervals(const C_FLOAT64 & value);
+  C_FLOAT64 evalMinimizeIntervals(const C_FLOAT64 & value);
 
   /**
    * Calculate the statistics for the problem

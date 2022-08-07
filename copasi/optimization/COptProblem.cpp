@@ -475,9 +475,9 @@ bool COptProblem::initialize()
   CMathDependencyGraph IntervalDependencies(mpContainer);
   IntervalDependencies.addObject(this);
 
-  std::ofstream Boundaries("IntervalDependencies.dot");
-  IntervalDependencies.exportDOTFormat(Boundaries, "IntervalDependencies");
-  Boundaries.close();
+  // std::ofstream Boundaries("IntervalDependencies.dot");
+  // IntervalDependencies.exportDOTFormat(Boundaries, "IntervalDependencies");
+  // Boundaries.close();
 
   for (COptItem * pOptItem : *mpOptItems)
     if (pOptItem->getPrerequisites().size() > 0)
@@ -772,7 +772,7 @@ bool COptProblem::adjustStartValue(COptItem & optItem)
         }
       else
         {
-          std::cout << optItem.getObjectDisplayName() << ": " << optItem.getStartValue() << " -> " << *pContainerVariable << std::endl;
+          // std::cout << optItem.getObjectDisplayName() << ": " << optItem.getStartValue() << " -> " << *pContainerVariable << std::endl;
           optItem.setStartValue(*pContainerVariable);
         }
     }
@@ -804,7 +804,7 @@ C_FLOAT64 COptProblem::adjustForIntervals(C_FLOAT64 * pValue, const C_FLOAT64 & 
 
   mpAdjust = pValue;
 
-  CBrent::EvalTemplate< COptProblem > eval(this, & COptProblem::evalMaximizeIntervals);
+  CBrent::EvalTemplate< COptProblem > eval(this, & COptProblem::evalMinimizeIntervals);
   C_FLOAT64 Min = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
   C_FLOAT64 MinValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
@@ -816,7 +816,7 @@ C_FLOAT64 COptProblem::adjustForIntervals(C_FLOAT64 * pValue, const C_FLOAT64 & 
   return Min;
 }
 
-C_FLOAT64 COptProblem::evalMaximizeIntervals(const C_FLOAT64 & value)
+C_FLOAT64 COptProblem::evalMinimizeIntervals(const C_FLOAT64 & value)
 {
   static const double SQRT_EPSILON = sqrt(std::numeric_limits< double >::epsilon());
   *mpAdjust = value;
