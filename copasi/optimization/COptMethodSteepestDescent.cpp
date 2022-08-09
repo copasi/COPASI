@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -97,7 +97,7 @@ bool COptMethodSteepestDescent::optimise()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
 
       switch (OptItem.checkConstraint(OptItem.getStartValue()))
         {
@@ -116,7 +116,7 @@ bool COptMethodSteepestDescent::optimise()
             break;
         }
 
-      *mProblemContext.master()->getContainerVariables()[i] = mIndividual[i];
+      *mProblemContext.master()->getContainerVariables(true)[i] = mIndividual[i];
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -124,7 +124,7 @@ bool COptMethodSteepestDescent::optimise()
 
   fmx = mBestValue = evaluate();
 
-  mContinue = mProblemContext.master()->setSolution(mBestValue, mIndividual);
+  mContinue = mProblemContext.master()->setSolution(mBestValue, mIndividual, true);
 
   // We found a new best value lets report it.
   //if (mpReport) mpReport->printBody();
@@ -150,12 +150,12 @@ bool COptMethodSteepestDescent::optimise()
             {
               if (mGradient[i] > 0)
                 {
-                  tmp = *mProblemContext.master()->getOptItemList()[i]->getUpperBoundValue();
+                  tmp = *mProblemContext.master()->getOptItemList(true)[i]->getUpperBoundValue();
                 }
 
               else
                 {
-                  tmp = *mProblemContext.master()->getOptItemList()[i]->getLowerBoundValue();
+                  tmp = *mProblemContext.master()->getOptItemList(true)[i]->getLowerBoundValue();
                 }
 
               // calculate the size of the largest jump
@@ -219,7 +219,7 @@ bool COptMethodSteepestDescent::optimise()
         }
 
       for (i = 0; i < mVariableSize; i++)
-        mIndividual[i] = *mProblemContext.master()->getOptItemList()[i]->getObjectValue();
+        mIndividual[i] = *mProblemContext.master()->getOptItemList(true)[i]->getObjectValue();
 
       if (mLogVerbosity > 1)
         {
@@ -239,7 +239,7 @@ bool COptMethodSteepestDescent::optimise()
         {
           mBestValue = fmx;
 
-          mContinue = mProblemContext.master()->setSolution(mBestValue, mIndividual);
+          mContinue = mProblemContext.master()->setSolution(mBestValue, mIndividual, true);
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();
@@ -273,7 +273,7 @@ bool COptMethodSteepestDescent::initialize()
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
 
   mContinue = true;
-  mVariableSize = mProblemContext.master()->getOptItemList().size();
+  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
   mIndividual.resize(mVariableSize);
   mGradient.resize(mVariableSize);
 
@@ -292,7 +292,7 @@ bool COptMethodSteepestDescent::initialize()
 void COptMethodSteepestDescent::gradient()
 {
 
-  C_FLOAT64 **ppContainerVariable = mProblemContext.master()->getContainerVariables().array();
+  C_FLOAT64 **ppContainerVariable = mProblemContext.master()->getContainerVariables(true).array();
   C_FLOAT64 **ppContainerVariableEnd = ppContainerVariable + mVariableSize;
   C_FLOAT64 * pGradient = mGradient.array();
 
@@ -343,7 +343,7 @@ void COptMethodSteepestDescent::gradient()
 
 C_FLOAT64 COptMethodSteepestDescent::descentLine(const C_FLOAT64 & x)
 {
-  C_FLOAT64 **ppContainerVariable = mProblemContext.master()->getContainerVariables().array();
+  C_FLOAT64 **ppContainerVariable = mProblemContext.master()->getContainerVariables(true).array();
   C_FLOAT64 **ppContainerVariableEnd = ppContainerVariable + mVariableSize;
   C_FLOAT64 * pGradient = mGradient.array();
   C_FLOAT64 * pIndividual = mIndividual.array();

@@ -132,7 +132,7 @@ bool COptMethodGA::mutate(CVector< C_FLOAT64 > & individual)
   // mutate the parameters
   for (j = 0; j < mVariableSize; j++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
       C_FLOAT64 & mut = individual[j];
 
       // calculate the mutated parameter
@@ -152,7 +152,7 @@ bool COptMethodGA::mutate(CVector< C_FLOAT64 > & individual)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables()[j] = mut;
+      *mProblemContext.master()->getContainerVariables(true)[j] = mut;
     }
 
   return true;
@@ -358,7 +358,7 @@ bool COptMethodGA::creation(size_t first,
       for (j = 0; j < mVariableSize; j++)
         {
           // calculate lower and upper bounds
-          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
           mn = *OptItem.getLowerBoundValue();
           mx = *OptItem.getUpperBoundValue();
 
@@ -399,7 +399,7 @@ bool COptMethodGA::creation(size_t first,
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mProblemContext.master()->getContainerVariables()[j] = mut;
+          *mProblemContext.master()->getContainerVariables(true)[j] = mut;
         }
 
       // calculate its fitness
@@ -510,7 +510,7 @@ bool COptMethodGA::optimise()
   for (i = 0; i < mVariableSize; i++)
     {
       C_FLOAT64 & mut = (*mIndividuals[0])[i];
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
 
       mut = OptItem.getStartValue();
 
@@ -530,7 +530,7 @@ bool COptMethodGA::optimise()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables()[i] = mut;
+      *mProblemContext.master()->getContainerVariables(true)[i] = mut;
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -543,7 +543,7 @@ bool COptMethodGA::optimise()
     {
       // and store that value
       mBestValue = mValues[0];
-      Continue &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0]);
+      Continue &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0], true);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -564,7 +564,7 @@ bool COptMethodGA::optimise()
     {
       // and store that value
       mBestValue = mValues[mBestIndex];
-      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex], true);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -653,7 +653,7 @@ bool COptMethodGA::optimise()
           // keep best value
           mBestValue = mValues[mBestIndex];
           // pass the current best value upstream
-          Continue &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+          Continue &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex], true);
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
         }

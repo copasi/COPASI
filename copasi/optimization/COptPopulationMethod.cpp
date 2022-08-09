@@ -109,7 +109,7 @@ COptPopulationMethod::initialize()
     }
 
   mRandomContext.setMaster(pRandom);
-  mVariableSize = mProblemContext.master()->getOptItemList().size();
+  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
 
   return true;
 }

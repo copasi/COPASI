@@ -244,9 +244,10 @@ public:
 
   /**
    * Retrieve the list of optimization parameters.
+   * @param const bool & algorithmOrder (default: false)
    * @return const std::vector< COptItem * > & optItemList
    */
-  const std::vector< COptItem * > & getOptItemList() const;
+  const std::vector< COptItem * > & getOptItemList(const bool & algorithmOrder = false) const;
 
   /**
    * Retrieve the list of constraints.
@@ -263,9 +264,10 @@ public:
 // private:
   /**
    * Retrieve the update methods for the variables for calculation.
+   * @param const bool & algorithmOrder (default: false)
    * @return const std::vector< UpdateMethod * > & updateMethods
    */
-  CVectorCore< C_FLOAT64 * > & getContainerVariables() const;
+  CVectorCore< C_FLOAT64 * > & getContainerVariables(const bool & algorithmOrder = false) const;
 
 public:
   /**
@@ -275,8 +277,9 @@ public:
 
   /**
    * Retrieve the solution variables
+   * @param const bool & algorithmOrder (default: false)
    */
-  const CVector< C_FLOAT64 > & getSolutionVariables() const;
+  const CVector< C_FLOAT64 > & getSolutionVariables(const bool & algorithmOrder = false) const;
 
   /**
    * Retrieve the gradients for each solution variable.
@@ -288,10 +291,12 @@ public:
    * Set the solution.
    * @param const C_FLOAT64 & value
    * @param const CVector< C_FLOAT64 > & variables
+   * @param const bool & algorithmOrder (default: false)
    * @return bool continue;
    */
   virtual bool setSolution(const C_FLOAT64 & value,
-                           const CVector< C_FLOAT64 > & variables);
+                           const CVector< C_FLOAT64 > & variables,
+                           const bool & algorithmOrder = false);
 
   /**
    * Retrieve the result for the solution
@@ -667,6 +672,14 @@ protected:
    * Number of items influencing intervals
    */
   size_t mCountInfluencingIntervals;
+
+  std::map< COptItem *, size_t > mOptItem2Index;
+
+  std::vector< COptItem * > mOptItemAlgorithm;
+
+  mutable CVector < C_FLOAT64 * > mContainerVariablesAlgorithm;
+
+  CVector < C_FLOAT64 > mSolutionVariablesAlgorithm;
 };
 
 #endif  // the end

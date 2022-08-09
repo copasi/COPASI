@@ -286,7 +286,7 @@ bool COptMethodSS::localmin(CVector< C_FLOAT64 > & solution, C_FLOAT64 & fval)
   // first we set up the problem
   // (optmethod and optproblem already setup in initialization)
   // let's get the list of parameters
-  std::vector<COptItem *> optitem = mpOptProblemLocal->getOptItemList();
+  std::vector<COptItem *> optitem = mpOptProblemLocal->getOptItemList(true);
 
   // and set them to the values passed in solution
   for (i = 0; i < mVariableSize; i++)
@@ -306,7 +306,7 @@ bool COptMethodSS::localmin(CVector< C_FLOAT64 > & solution, C_FLOAT64 & fval)
 
   for (i = 0; i < mVariableSize; i++)
     {
-      solution[i] = mpOptProblemLocal->getSolutionVariables()[i];
+      solution[i] = mpOptProblemLocal->getSolutionVariables(true)[i];
     }
 
   return Running;
@@ -341,7 +341,7 @@ bool COptMethodSS::randomize(C_INT32 i)
   for (C_INT32 j = 0; j < (C_INT32)mVariableSize; ++j)
     {
       // get pointers to appropriate elements (easier reading of code)
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
       C_FLOAT64 & Sol = (*mIndividuals[i])[j];
       // calculate lower and upper bounds for this variable
       mn = *OptItem.getLowerBoundValue();
@@ -384,7 +384,7 @@ bool COptMethodSS::randomize(C_INT32 i)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables()[j] = Sol;
+      *mProblemContext.master()->getContainerVariables(true)[j] = Sol;
     }
 
   // calculate its fitness
@@ -412,7 +412,7 @@ bool COptMethodSS::creation(void)
       for (j = 0; j < (C_INT32)mVariableSize; ++j)
         {
           // get pointers to appropriate elements (easier reading of code)
-          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
           C_FLOAT64 & Sol = (*mPool[i])[j];
           // calculate lower and upper bounds for this variable
           mn = *OptItem.getLowerBoundValue();
@@ -455,7 +455,7 @@ bool COptMethodSS::creation(void)
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mProblemContext.master()->getContainerVariables()[j] = Sol;
+          *mProblemContext.master()->getContainerVariables(true)[j] = Sol;
         }
 
       // calculate its fitness
@@ -466,7 +466,7 @@ bool COptMethodSS::creation(void)
   // next we add the initial guess from the user
   for (j = 0; j < (C_INT32)mVariableSize; ++j)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
       C_FLOAT64 & Sol = (*mPool[i])[j];
 
       // get the vector of initial value
@@ -486,7 +486,7 @@ bool COptMethodSS::creation(void)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables()[j] = Sol;
+      *mProblemContext.master()->getContainerVariables(true)[j] = Sol;
     }
 
   // calculate its fitness
@@ -500,7 +500,7 @@ bool COptMethodSS::creation(void)
       for (j = 0; j < (C_INT32)mVariableSize; ++j)
         {
           // get pointers to appropriate elements (easier reading of code)
-          COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+          COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
           C_FLOAT64 & Sol = (*mPool[i])[j];
           // calculate lower and upper bounds for this variable
           mn = *OptItem.getLowerBoundValue();
@@ -561,7 +561,7 @@ bool COptMethodSS::creation(void)
 
                   // We need to set the value here so that further checks take
                   // account of the value.
-                  *mProblemContext.master()->getContainerVariables()[j] = Sol;
+                  *mProblemContext.master()->getContainerVariables(true)[j] = Sol;
                   // increase the frequency
                   (*mFreq[j])[k] += 1;
                   break;
@@ -857,7 +857,7 @@ bool COptMethodSS::combination(void)
               for (k = 0; k < (C_INT32)mVariableSize; ++k)
                 {
                   // get the bounds of this parameter
-                  COptItem & OptItem = *mProblemContext.master()->getOptItemList()[k];
+                  COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[k];
                   mn = *OptItem.getLowerBoundValue();
                   mx = *OptItem.getUpperBoundValue();
 
@@ -912,7 +912,7 @@ bool COptMethodSS::combination(void)
 
                   // We need to set the value here so that further checks take
                   // account of the value.
-                  *mProblemContext.master()->getContainerVariables()[k] = xnew[k];
+                  *mProblemContext.master()->getContainerVariables(true)[k] = xnew[k];
                 }
 
               // calculate the child's fitness
@@ -951,7 +951,7 @@ bool COptMethodSS::combination(void)
                   dd = (xpr[k] - (*mChild[i])[k]) * lambda;
                   xnew[k] = (*mChild[i])[k] + dd * mRandomContext.master()->getRandomCC();
                   // get the bounds of this parameter
-                  const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[k];
+                  const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[k];
 
                   // put it on the bounds if it had exceeded them
                   switch (OptItem.checkConstraint(xnew[k]))
@@ -967,7 +967,7 @@ bool COptMethodSS::combination(void)
 
                   // We need to set the value here so that further checks take
                   // account of the value.
-                  *mProblemContext.master()->getContainerVariables()[k] = xnew[k];
+                  *mProblemContext.master()->getContainerVariables(true)[k] = xnew[k];
                 }
 
               // calculate the child's fitness
@@ -1075,7 +1075,7 @@ bool COptMethodSS::optimise()
   // store that value
   mBestValue = mValues[0];
   // set it upstream
-  Running &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0]);
+  Running &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0], true);
   // We found a new best value let's report it.
   mpParentTask->output(COutputInterface::DURING);
 
@@ -1190,7 +1190,7 @@ bool COptMethodSS::optimise()
 
           // and store that value
           mBestValue = mValues[0];
-          Running &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0]);
+          Running &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0], true);
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
         }
@@ -1205,7 +1205,7 @@ bool COptMethodSS::optimise()
   // end of loop for iterations
 
   // the best ever might not be what is on position 0, so bring it back
-  *mIndividuals[0] = mProblemContext.master()->getSolutionVariables();
+  *mIndividuals[0] = mProblemContext.master()->getSolutionVariables(true);
 
   // now let's do a final local minimisation with a tighter tolerance
 
@@ -1220,7 +1220,7 @@ bool COptMethodSS::optimise()
     {
       // and store that value
       mBestValue = mValues[0];
-      Running &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0]);
+      Running &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0], true);
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
     }

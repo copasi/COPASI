@@ -88,7 +88,7 @@ bool COptMethodNL2SOL::optimise()
 
   for (j = 0; j < mVariableSize; j++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
       mCurrent[j] = OptItem.getStartValue();
 
       switch (OptItem.checkConstraint(mCurrent[j]))
@@ -111,7 +111,7 @@ bool COptMethodNL2SOL::optimise()
       bounds[2 * j + 1] = *OptItem.getUpperBoundValue();
 
       // set the value
-      *mProblemContext.master()->getContainerVariables()[j] = (mCurrent[j]);
+      *mProblemContext.master()->getContainerVariables(true)[j] = (mCurrent[j]);
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -124,7 +124,7 @@ bool COptMethodNL2SOL::optimise()
     {
       // and store that value
       mBestValue = mEvaluationValue;
-      mContinue &= mProblemContext.master()->setSolution(mBestValue, mBest);
+      mContinue &= mProblemContext.master()->setSolution(mBestValue, mBest, true);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -165,7 +165,7 @@ bool COptMethodNL2SOL::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mVariableSize = (C_INT) mProblemContext.master()->getOptItemList().size();
+  mVariableSize = (C_INT) mProblemContext.master()->getOptItemList(true).size();
   mCurrent.resize(mVariableSize);
   mBest.resize(mVariableSize);
 
@@ -268,7 +268,7 @@ C_INT COptMethodNL2SOL::calcr(integer *n, integer *p, doublereal *x, integer *nf
 
   // set the parameter values
   for (i = 0; i < *p; i++)
-    *(mProblemContext.master()->getContainerVariables()[i]) = x[i];
+    *(mProblemContext.master()->getContainerVariables(true)[i]) = x[i];
 
   //urparm[0] = (*f)(resid );
 
@@ -281,7 +281,7 @@ C_INT COptMethodNL2SOL::calcr(integer *n, integer *p, doublereal *x, integer *nf
       mBest = mCurrent;
       mBestValue  = mEvaluationValue;
 
-      mContinue = mProblemContext.master()->setSolution(mBestValue, mBest);
+      mContinue = mProblemContext.master()->setSolution(mBestValue, mBest, true);
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
     }

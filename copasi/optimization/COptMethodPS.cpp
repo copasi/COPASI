@@ -141,8 +141,8 @@ bool COptMethodPS::move(const size_t & index)
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[index];
   C_FLOAT64 * pBestPosition = mBestPositions[index];
-  std::vector< COptItem * >::const_iterator itOptItem = pProblem->getOptItemList().begin();
-  C_FLOAT64 ** ppContainerVariable = pProblem->getContainerVariables().array();
+  std::vector< COptItem * >::const_iterator itOptItem = pProblem->getOptItemList(true).begin();
+  C_FLOAT64 ** ppContainerVariable = pProblem->getContainerVariables(true).array();
 
   C_FLOAT64 * pBestInformantPosition = mBestPositions[index];
   C_FLOAT64 BestInformantValue = mBestValues[index];
@@ -208,7 +208,7 @@ bool COptMethodPS::move(const size_t & index)
             // and store that value
             mBestValue = EvaluationValue;
             mBestIndex = index;
-            mContinue &= mProblemContext.master()->setSolution(EvaluationValue, *mIndividuals[mBestIndex]);
+            mContinue &= mProblemContext.master()->setSolution(EvaluationValue, *mIndividuals[mBestIndex], true);
 
             // We found a new best value lets report it.
             mpParentTask->output(COutputInterface::DURING);
@@ -229,8 +229,8 @@ bool COptMethodPS::create(const size_t & index)
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[index];
   C_FLOAT64 * pBestPosition = mBestPositions[index];
-  std::vector< COptItem * >::const_iterator itOptItem = pProblem->getOptItemList().begin();
-  C_FLOAT64 ** ppContainerVariable = pProblem->getContainerVariables().array();
+  std::vector< COptItem * >::const_iterator itOptItem = pProblem->getOptItemList(true).begin();
+  C_FLOAT64 ** ppContainerVariable = pProblem->getContainerVariables(true).array();
 
   C_FLOAT64 mn, mx, la;
 
@@ -346,7 +346,7 @@ bool COptMethodPS::create(const size_t & index)
       // and store that value
       mBestIndex = index;
       mBestValue = mBestValues[mBestIndex];
-      mContinue &= mProblemContext.master()->setSolution(mBestValues[mBestIndex], *mIndividuals[mBestIndex]);
+      mContinue &= mProblemContext.master()->setSolution(mBestValues[mBestIndex], *mIndividuals[mBestIndex], true);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -562,8 +562,8 @@ bool COptMethodPS::optimise()
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[0];
   C_FLOAT64 * pBestPosition = mBestPositions[0];
-  std::vector< COptItem * >::const_iterator itOptItem = mProblemContext.master()->getOptItemList().begin();
-  C_FLOAT64 ** ppContainerVariable = mProblemContext.master()->getContainerVariables().array();
+  std::vector< COptItem * >::const_iterator itOptItem = mProblemContext.master()->getOptItemList(true).begin();
+  C_FLOAT64 ** ppContainerVariable = mProblemContext.master()->getContainerVariables(true).array();
 
   if (mLogVerbosity > 0)
     mMethodLog.enterLogEntry(
@@ -615,7 +615,7 @@ bool COptMethodPS::optimise()
 
   // and store that value
   mBestIndex = 0;
-  mContinue &= mProblemContext.master()->setSolution(mBestValues[mBestIndex], *mIndividuals[mBestIndex]);
+  mContinue &= mProblemContext.master()->setSolution(mBestValues[mBestIndex], *mIndividuals[mBestIndex], true);
 
   // We found a new best value lets report it.
   mpParentTask->output(COutputInterface::DURING);

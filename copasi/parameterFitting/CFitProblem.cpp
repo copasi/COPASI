@@ -605,14 +605,15 @@ bool CFitProblem::initialize()
   mCorrelation.resize(imax, imax);
   mpCorrelationMatrix->resize();
 
-  for (j = 0; it != end; ++it, j++)
+  for (j = 0; it != end; ++it, ++j)
     {
       pItem = dynamic_cast<CFitItem *>(*it);
 
       if (pItem == NULL)
         fatalError();
 
-      pItem->updateBounds(mpOptItems->begin());
+      // updateBounds relies on proper dependency ordering, i.e. we need algorithm order
+      pItem->updateBounds(mOptItemAlgorithm.begin());
       std::string Annotation = pItem->getObjectDisplayName();
 
       // We cannot directly change the container values as multiple parameters
@@ -663,6 +664,16 @@ bool CFitProblem::initialize()
       mpFisherScaledEigenvectorsMatrix->setAnnotationString(1, j, Annotation);
       mpCorrelationMatrix->setAnnotationString(0, j, Annotation);
       mpCorrelationMatrix->setAnnotationString(1, j, Annotation);
+    }
+
+  it = mOptItemAlgorithm.begin();
+  end = mOptItemAlgorithm.end();
+
+  for (j = 0; it != end; ++it, ++j)
+    {
+      // We cannot directly change the container values as multiple parameters
+      // may point to the same value.
+      mContainerVariablesAlgorithm[j] = const_cast<C_FLOAT64 *>(&static_cast<CFitItem *>(*it)->getLocalValue());
     }
 
   // Create a joined sequence of update methods for parameters and independent values.
@@ -2293,9 +2304,10 @@ CFitProblem::getCrossValidationSet()
 }
 
 bool CFitProblem::setSolution(const C_FLOAT64 & value,
-                              const CVector< C_FLOAT64 > & variables)
+                              const CVector< C_FLOAT64 > & variables,
+                              const bool & algorithmOrder)
 {
-  bool Continue = COptProblem::setSolution(value, variables);
+  bool Continue = COptProblem::setSolution(value, variables, algorithmOrder);
 
   if (Continue && mpCrossValidationSet->getExperimentCount() > 0)
     {

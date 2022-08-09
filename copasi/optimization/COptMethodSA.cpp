@@ -127,7 +127,7 @@ bool COptMethodSA::optimise()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
 
       switch (OptItem.checkConstraint(OptItem.getStartValue()))
         {
@@ -146,7 +146,7 @@ bool COptMethodSA::optimise()
             break;
         }
 
-      *mProblemContext.master()->getContainerVariables()[i] = (mCurrent[i]);
+      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
 
       // The step must not contain any zeroes
       mStep[i] = std::max(fabs(mCurrent[i]), 1.0);
@@ -161,7 +161,7 @@ bool COptMethodSA::optimise()
     {
       // and store that value
       mBestValue = mEvaluationValue;
-      mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent);
+      mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -197,13 +197,13 @@ bool COptMethodSA::optimise()
                   New = mCurrent[h] + xc;
 
                   // Set the new parameter value
-                  *mProblemContext.master()->getContainerVariables()[h] = (New);
+                  *mProblemContext.master()->getContainerVariables(true)[h] = (New);
 
                   // Check all parametric constraints
                   if (!mProblemContext.master()->checkParametricConstraints())
                     {
                       // Undo since not accepted
-                      *mProblemContext.master()->getContainerVariables()[h] = (mCurrent[h]);
+                      *mProblemContext.master()->getContainerVariables(true)[h] = (mCurrent[h]);
                       continue;
                     }
 
@@ -214,7 +214,7 @@ bool COptMethodSA::optimise()
                   if (!mProblemContext.master()->checkFunctionalConstraints())
                     {
                       // Undo since not accepted
-                      *mProblemContext.master()->getContainerVariables()[h] = (mCurrent[h]);
+                      *mProblemContext.master()->getContainerVariables(true)[h] = (mCurrent[h]);
                       continue;
                     }
 
@@ -232,7 +232,7 @@ bool COptMethodSA::optimise()
                         {
                           // and store that value
                           mBestValue = mEvaluationValue;
-                          mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent);
+                          mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
 
                           // We found a new best value lets report it.
                           mpParentTask->output(COutputInterface::DURING);
@@ -253,7 +253,7 @@ bool COptMethodSA::optimise()
                         }
                       else
                         // Undo since not accepted
-                        *mProblemContext.master()->getContainerVariables()[h] = (mCurrent[h]);
+                        *mProblemContext.master()->getContainerVariables(true)[h] = (mCurrent[h]);
                     }
                 }
             }
@@ -322,10 +322,10 @@ bool COptMethodSA::optimise()
         {
           i++;
 
-          mCurrent = mProblemContext.master()->getSolutionVariables();
+          mCurrent = mProblemContext.master()->getSolutionVariables(true);
 
           for (a = 0; a < mVariableSize; a++)
-            *mProblemContext.master()->getContainerVariables()[a] = mCurrent[a];
+            *mProblemContext.master()->getContainerVariables(true)[a] = mCurrent[a];
 
           mCurrentValue = mBestValue;
         }
@@ -421,7 +421,7 @@ bool COptMethodSA::initialize()
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
   mContinue = true;
 
-  mVariableSize = mProblemContext.master()->getOptItemList().size();
+  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
 
   mCurrent.resize(mVariableSize);
   mStep.resize(mVariableSize);

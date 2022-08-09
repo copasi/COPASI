@@ -293,10 +293,12 @@ public:
    * Set the solution.
    * @param const C_FLOAT64 & value
    * @param const CVector< C_FLOAT64 > & variables
+   * @param const bool & algorithmOrder (default: false)
    * @return bool continue;
    */
   virtual bool setSolution(const C_FLOAT64 & value,
-                           const CVector< C_FLOAT64 > & variables);
+                           const CVector< C_FLOAT64 > & variables,
+                           const bool & algorithmOrder = false) override;
 
   /**
    * Retrieve the result for the cross validation solution

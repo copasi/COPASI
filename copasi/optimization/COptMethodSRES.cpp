@@ -187,7 +187,7 @@ bool COptMethodSRES::mutate()
           C_FLOAT64 & mut = *pVariable;
           C_FLOAT64 Store = mut;
 
-          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
 
           size_t l = C_INVALID_INDEX;
 
@@ -217,7 +217,7 @@ bool COptMethodSRES::mutate()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mProblemContext.master()->getContainerVariables()[j] = (mut);
+          *mProblemContext.master()->getContainerVariables(true)[j] = (mut);
         }
 
       // calculate its fitness
@@ -325,7 +325,7 @@ bool COptMethodSRES::creation(size_t first)
       for (j = 0; pVariable != pVariableEnd; ++pVariable, ++pVariance, ++pMaxVariance, ++j)
         {
           C_FLOAT64 & mut = *pVariable;
-          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
 
           mut = OptItem.getStartValue();
 
@@ -365,7 +365,7 @@ bool COptMethodSRES::creation(size_t first)
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mProblemContext.master()->getContainerVariables()[j] = (mut);
+          *mProblemContext.master()->getContainerVariables(true)[j] = (mut);
 
           // Set the variance for this parameter.
           *pVariance = std::min(*OptItem.getUpperBoundValue() - mut, mut - *OptItem.getLowerBoundValue()) / sqrt(double(mVariableSize));
@@ -393,7 +393,7 @@ bool COptMethodSRES::creation(size_t first)
       for (j = 0; pVariable != pVariableEnd; ++pVariable, ++pVariance, ++pMaxVariance, ++j)
         {
           C_FLOAT64 & mut = *pVariable;
-          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
 
           // calculate lower and upper bounds
           mn = *OptItem.getLowerBoundValue();
@@ -484,7 +484,7 @@ bool COptMethodSRES::creation(size_t first)
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mProblemContext.master()->getContainerVariables()[j] = (mut);
+          *mProblemContext.master()->getContainerVariables(true)[j] = (mut);
 
           // Set the variance for this parameter.
           *pVariance = std::min(*OptItem.getUpperBoundValue() - mut, mut - *OptItem.getLowerBoundValue()) / sqrt(double(mVariableSize));
@@ -538,7 +538,7 @@ bool COptMethodSRES::initialize()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
 
       try
         {
@@ -598,8 +598,8 @@ C_FLOAT64 COptMethodSRES::phi(size_t indivNum)
   C_FLOAT64 phiVal = 0.0;
   C_FLOAT64 phiCalc;
 
-  std::vector< COptItem * >::const_iterator it = mProblemContext.master()->getOptItemList().begin();
-  std::vector< COptItem * >::const_iterator end = mProblemContext.master()->getOptItemList().end();
+  std::vector< COptItem * >::const_iterator it = mProblemContext.master()->getOptItemList(true).begin();
+  std::vector< COptItem * >::const_iterator end = mProblemContext.master()->getOptItemList(true).end();
   C_FLOAT64 * pValue = mIndividuals[indivNum]->array();
 
   for (; it != end; ++it, pValue++)
@@ -663,7 +663,7 @@ bool COptMethodSRES::optimise()
 
   // initialise the population
   Continue = creation(0);
-  mProblemContext.master()->setSolution(mValues[0], *mIndividuals[0]);
+  mProblemContext.master()->setSolution(mValues[0], *mIndividuals[0], true);
 
   // get the index of the fittest
   BestIndex = fittest();
@@ -672,7 +672,7 @@ bool COptMethodSRES::optimise()
     {
       // and store that value
       mBestValue = mValues[BestIndex];
-      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[BestIndex]);
+      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[BestIndex], true);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -781,7 +781,7 @@ bool COptMethodSRES::optimise()
 
           mBestValue = mValues[BestIndex];
 
-          Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[BestIndex]);
+          Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[BestIndex], true);
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);

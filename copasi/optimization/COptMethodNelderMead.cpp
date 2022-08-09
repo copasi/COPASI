@@ -237,7 +237,7 @@ bool COptMethodNelderMead::optimise()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
 
       switch (OptItem.checkConstraint(OptItem.getStartValue()))
         {
@@ -256,7 +256,7 @@ bool COptMethodNelderMead::optimise()
             break;
         }
 
-      *mProblemContext.master()->getContainerVariables()[i] = (mCurrent[i]);
+      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
 
       // set the magnitude of each parameter
       mStep[i] = (*OptItem.getUpperBoundValue() - *OptItem.getLowerBoundValue()) / mScale;
@@ -271,7 +271,7 @@ bool COptMethodNelderMead::optimise()
     {
       // and store that value
       mBestValue = mEvaluationValue;
-      mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent);
+      mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -299,7 +299,7 @@ First:
       mCurrent[j] += (mStep[j] * del);
 
       // Check constraint
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
 
       if (mCurrent[j] > *OptItem.getUpperBoundValue())
         mCurrent[j] = x - (mStep[j] * del);
@@ -309,14 +309,14 @@ First:
         mSimplex[i][j] = mCurrent[i];
 
       // Calculate the value for the corner
-      *mProblemContext.master()->getContainerVariables()[j] = (mCurrent[j]);
+      *mProblemContext.master()->getContainerVariables(true)[j] = (mCurrent[j]);
       mValue[j] = evaluate();
 
       if (mEvaluationValue < mBestValue)
         {
           // and store that value
           mBestValue = mEvaluationValue;
-          mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent);
+          mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
@@ -324,7 +324,7 @@ First:
 
       // Reset
       mCurrent[j] = x;
-      *mProblemContext.master()->getContainerVariables()[j] = (mCurrent[j]);
+      *mProblemContext.master()->getContainerVariables(true)[j] = (mCurrent[j]);
     }
 
   /* ---- Simplex construction complete; now do some work. ---- */
@@ -380,7 +380,7 @@ First:
           for (i = 0; i < mVariableSize; ++i)
             {
               mCurrent[i] = (1.0 + rcoeff) * mCentroid[i] - rcoeff * mSimplex[i][iWorst];
-              *mProblemContext.master()->getContainerVariables()[i] = (mCurrent[i]);
+              *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
 
               // enforce_bounds(&pstar[i], i);  /* make sure it is inside */
             }
@@ -401,7 +401,7 @@ First:
               if (mEvaluationValue < mBestValue)
                 {
                   mBestValue = mEvaluationValue;
-                  mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent);
+                  mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
 
                   // We found a new best value lets report it.
                   mpParentTask->output(COutputInterface::DURING);
@@ -411,7 +411,7 @@ First:
               for (i = 0; i < mVariableSize; ++i)
                 {
                   mCurrent[i] = ecoeff * mCurrent[i] + (1.0 - ecoeff) * mCentroid[i];
-                  *mProblemContext.master()->getContainerVariables()[i] = (mCurrent[i]);
+                  *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
 
                   // enforce_bounds(&p2star[i], i);  /* make sure it is inside */
                 }
@@ -433,7 +433,7 @@ First:
                   if (mEvaluationValue < mBestValue)
                     {
                       mBestValue = mEvaluationValue;
-                      mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent);
+                      mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
 
                       // We found a new best value lets report it.
                       mpParentTask->output(COutputInterface::DURING);
@@ -477,7 +477,7 @@ First:
                   for (i = 0; i < mVariableSize; ++i)
                     {
                       mCurrent[i] = ccoeff * mSimplex[i][iWorst] + (1.0 - ccoeff) * mCentroid[i];
-                      *mProblemContext.master()->getContainerVariables()[i] = (mCurrent[i]);
+                      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
 
                       // may not need to check boundaries since it is contraction
                       // enforce_bounds(&p2star[i], i);  /* make sure it is inside */
@@ -504,7 +504,7 @@ First:
                             {
                               mSimplex[i][j] = (mSimplex[i][j] + mSimplex[i][iBest]) * 0.5;
                               mCurrent[i] = mSimplex[i][j];
-                              *mProblemContext.master()->getContainerVariables()[i] = (mCurrent[i]);
+                              *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
 
                               //enforce_bounds(&xmin[i], i);  /* make sure it is inside */
                             }
@@ -516,7 +516,7 @@ First:
                               /* ---- retain extension ---- */
                               // and store that value
                               mBestValue = mEvaluationValue;
-                              mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent);
+                              mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
 
                               // We found a new best value lets report it.
                               mpParentTask->output(COutputInterface::DURING);
@@ -587,10 +587,10 @@ First:
 
   /* ---- Check around the currently selected point to see if it is a local minimum.  */
   small = fabs(mBestValue) * reltol + abstol;
-  mCurrent = mProblemContext.master()->getSolutionVariables();
+  mCurrent = mProblemContext.master()->getSolutionVariables(true);
 
   for (i = 0; i < mVariableSize; ++i)
-    *mProblemContext.master()->getContainerVariables()[i] = (mCurrent[i]);
+    *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
 
   for (i = 0; i < mVariableSize; ++i)
     {
@@ -598,21 +598,21 @@ First:
       C_FLOAT64 delta = mStep[i] * 1.0e-03;
 
       /* -- check along one direction -- */
-      *mProblemContext.master()->getContainerVariables()[i] = (mCurrent[i] + delta);
+      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i] + delta);
       evaluate();
 
       if ((mEvaluationValue - mBestValue) < -small)
         break;
 
       /* -- now check the other way -- */
-      *mProblemContext.master()->getContainerVariables()[i] = (mCurrent[i] - delta);
+      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i] - delta);
       evaluate();
 
       if ((mEvaluationValue - mBestValue) < -small)
         break;
 
       /* -- back to start -- */
-      *mProblemContext.master()->getContainerVariables()[i] = (mCurrent[i]);
+      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
     }
 
   ok = (i == mVariableSize);
@@ -700,7 +700,7 @@ bool COptMethodNelderMead::initialize()
                              mIteration,
                              & mIterationLimit);
 
-  mVariableSize = mProblemContext.master()->getOptItemList().size();
+  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
 
   mSimplex.resize(mVariableSize, mVariableSize + 1);
   mValue.resize(mVariableSize + 1);

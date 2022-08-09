@@ -116,6 +116,10 @@ COptProblem::COptProblem(const CTaskEnum::Task & type,
   , mGradient(0)
   , mMinInterval(std::numeric_limits< C_FLOAT64 >::infinity())
   , mCountInfluencingIntervals(0)
+  , mOptItem2Index()
+  , mOptItemAlgorithm()
+  , mContainerVariablesAlgorithm()
+  , mSolutionVariablesAlgorithm()
 {
   initializeParameter();
   initObjects();
@@ -157,6 +161,10 @@ COptProblem::COptProblem(const COptProblem & src,
   , mGradient(src.mGradient)
   , mMinInterval(src.mMinInterval)
   , mCountInfluencingIntervals(src.mCountInfluencingIntervals)
+  , mOptItem2Index()
+  , mOptItemAlgorithm()
+  , mContainerVariablesAlgorithm()
+  , mSolutionVariablesAlgorithm()
 {
   initializeParameter();
   initObjects();
@@ -404,12 +412,13 @@ bool COptProblem::initialize()
   if (mpSubTaskSrc != NULL)
     ContainerList.push_back(mpSubTaskSrc);
 
-  size_t i;
   size_t Size = mpOptItems->size();
 
+  mOptItem2Index.clear();
+
+  mContainerVariables.resize(Size);
   mSolutionVariables.resize(Size);
   mOriginalVariables.resize(Size);
-  mContainerVariables.resize(Size);
 
   mSolutionVariables = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mOriginalVariables = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -428,22 +437,33 @@ bool COptProblem::initialize()
 
   mPrerequisits.clear();
 
-  for (i = 0; it != end; ++it, i++)
-    {
-      success &= (*it)->compile(ContainerList);
+  size_t i = 0;
 
-      if ((*it)->getPrerequisites().size() > 0)
+  for (COptItem * pOptItem : *mpOptItems)
+    {
+      success &= pOptItem->compile(ContainerList);
+
+      if (pOptItem->getPrerequisites().size() > 0)
         {
-          IntervalObjects.insert((*it)->getPrerequisites().begin(), (*it)->getPrerequisites().end());
+          IntervalObjects.insert(pOptItem->getPrerequisites().begin(), pOptItem->getPrerequisites().end());
         }
 
-      if ((*it)->getObject() != NULL)
+      if (pOptItem->getObject() != NULL)
         {
-          if (!(*it)->checkIsInitialValue())
+          if (!pOptItem->checkIsInitialValue())
             return false;
 
           changedObjects.insert((*it)->getObject());
+          mContainerVariables[i] = (C_FLOAT64 *) pOptItem->getObject()->getValuePointer();
+          mOriginalVariables[i] = *mContainerVariables[i];
         }
+      else
+        {
+          mContainerVariables[i] = &MissingValue;
+          mOriginalVariables[i] = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+        }
+
+      mOptItem2Index[pOptItem] = i++;
     }
 
   std::vector< COptItem * > InfluencingIntervals;
@@ -502,7 +522,11 @@ bool COptProblem::initialize()
   mpContainer->getInitialDependencies().getUpdateSequence(mInitialRefreshSequence, CCore::SimulationContext::UpdateMoieties, changedObjects, mpContainer->getInitialStateObjects());
 
   // Sort OptItems so that the items influencing intervals appear first and before all its dependents
-  std::vector< COptItem * > Original = *mpOptItems;
+  mOptItemAlgorithm.clear();
+  mContainerVariablesAlgorithm.resize(Size);
+  mSolutionVariablesAlgorithm.resize(Size);
+  mSolutionVariablesAlgorithm = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
   it = mpOptItems->begin();
   IntervalObjects.clear();
 
@@ -510,8 +534,7 @@ bool COptProblem::initialize()
   for (COptItem * pOptItem : InfluencingIntervals)
     {
       IntervalObjects.insert(pOptItem);
-      *it = pOptItem;
-      ++it;
+      mOptItemAlgorithm.push_back(pOptItem);
     }
 
   // Influencing items with varying interval
@@ -520,8 +543,7 @@ bool COptProblem::initialize()
         && static_cast< COptItem * >(pOptItem)->influencesIntervals())
       {
         IntervalObjects.insert(pOptItem);
-        *it = static_cast<  COptItem * >(pOptItem);
-        ++it;
+        mOptItemAlgorithm.push_back(static_cast< COptItem * >(pOptItem));
       }
 
   // Items with varying interval
@@ -530,34 +552,26 @@ bool COptProblem::initialize()
         && !static_cast< COptItem * >(pOptItem)->influencesIntervals())
       {
         IntervalObjects.insert(pOptItem);
-        *it = static_cast<  COptItem * >(pOptItem);
-        ++it;
+        mOptItemAlgorithm.push_back(static_cast< COptItem * >(pOptItem));
       }
 
   // Items with fixed interval
-  for (COptItem * pOptItem : Original)
+  for (COptItem * pOptItem : *mpOptItems)
     if (IntervalObjects.find(pOptItem) == IntervalObjects.end())
       {
-        *it = pOptItem;
-        ++it;
+        mOptItemAlgorithm.push_back(pOptItem);
       }
 
-  assert(it == end);
+  assert(mOptItemAlgorithm.size() == mpOptItems->size());
 
   i = 0;
 
-  for (COptItem * pOptItem : *mpOptItems)
+  for (COptItem * pOptItem : mOptItemAlgorithm)
     {
       if (pOptItem->getObject() != NULL)
-        {
-          mContainerVariables[i] = (C_FLOAT64 *) pOptItem->getObject()->getValuePointer();
-          mOriginalVariables[i] = *mContainerVariables[i];
-        }
+        mContainerVariablesAlgorithm[i] = (C_FLOAT64 *) pOptItem->getObject()->getValuePointer();
       else
-        {
-          mContainerVariables[i] = &MissingValue;
-          mOriginalVariables[i] = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-        }
+        mContainerVariablesAlgorithm[i] = &MissingValue;
 
       ++i;
     }
@@ -718,9 +732,9 @@ bool COptProblem::adjustStartValuesForIntervals()
 
   CVector< C_FLOAT64 > InitialState = mpContainer->getCompleteInitialState();
 
-  std::vector< COptItem * >::iterator it = mpOptItems->begin();
+  std::vector< COptItem * >::iterator it = mOptItemAlgorithm.begin();
   std::vector< COptItem * >::iterator end = it + mCountInfluencingIntervals;
-  C_FLOAT64 ** ppContainerVariable = mContainerVariables.begin();
+  C_FLOAT64 ** ppContainerVariable = mContainerVariablesAlgorithm.begin();
 
   for (; it != end; ++it, ++ppContainerVariable)
     {
@@ -733,7 +747,7 @@ bool COptProblem::adjustStartValuesForIntervals()
   if (!success)
     {
       success = true;
-      it = mpOptItems->begin();
+      it = mOptItemAlgorithm.begin();
 
       for (; it != end; ++it)
         success &= adjustStartValue(**it);
@@ -991,20 +1005,38 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 const C_FLOAT64 & COptProblem::getCalculateValue() const
 {return mCalculateValue;}
 
-const CVector< C_FLOAT64 > & COptProblem::getSolutionVariables() const
-{return mSolutionVariables;}
+const CVector< C_FLOAT64 > & COptProblem::getSolutionVariables(const bool & algorithmOrder) const
+{
+  return algorithmOrder ? mSolutionVariablesAlgorithm : mSolutionVariables;
+}
 
 const CVector< C_FLOAT64 > & COptProblem::getVariableGradients() const
 {return mGradient;}
 
 bool COptProblem::setSolution(const C_FLOAT64 & value,
-                              const CVector< C_FLOAT64 > & variables)
+                              const CVector< C_FLOAT64 > & variables,
+                              const bool & algorithmOrder)
 {
   mSolutionValue = *mpParmMaximize ? -value : value;
 
   // The initialization call from SRES and GASR have NULL as variables
   if (variables.size() != 0)
-    mSolutionVariables = variables;
+    if (algorithmOrder)
+      {
+        mSolutionVariablesAlgorithm = variables;
+        C_FLOAT64 * pVariable = mSolutionVariablesAlgorithm.begin();
+
+        for (COptItem * pOptItem : mOptItemAlgorithm)
+          mSolutionVariables[mOptItem2Index[pOptItem]] = *pVariable++;
+      }
+    else
+      {
+        mSolutionVariables = variables;
+        C_FLOAT64 * pVariable = mSolutionVariablesAlgorithm.begin();
+
+        for (COptItem * pOptItem : mOptItemAlgorithm)
+          *pVariable++ = mSolutionVariables[mOptItem2Index[pOptItem]];
+      }
 
   bool Continue = true;
 
@@ -1046,8 +1078,10 @@ bool COptProblem::swapOptItem(const size_t & iFrom,
                               const size_t & iTo)
 {return mpGrpItems->swap(iFrom, iTo);}
 
-const std::vector< COptItem * > & COptProblem::getOptItemList() const
-{return *mpOptItems;}
+const std::vector< COptItem * > & COptProblem::getOptItemList(const bool & algorithmOrder) const
+{
+  return algorithmOrder ? mOptItemAlgorithm : *mpOptItems;
+}
 
 const std::vector< COptItem * > & COptProblem::getConstraintList() const
 {return *mpConstraintItems;}
@@ -1064,8 +1098,10 @@ void COptProblem::setParameters(const CVectorCore< C_FLOAT64 > & parameters)
     **ppVariable = *pParameter;
 }
 
-CVectorCore< C_FLOAT64 * > & COptProblem::getContainerVariables() const
-{return mContainerVariables;}
+CVectorCore< C_FLOAT64 * > & COptProblem::getContainerVariables(const bool & algorithmOrder) const
+{
+  return algorithmOrder ? mContainerVariablesAlgorithm : mContainerVariables;
+}
 
 bool COptProblem::setObjectiveFunction(const std::string & infix)
 {

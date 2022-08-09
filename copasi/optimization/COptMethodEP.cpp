@@ -101,7 +101,7 @@ bool COptMethodEP::optimise()
     {
       // and store that value
       mBestValue = mValues[mBestIndex];
-      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex], true);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -145,7 +145,7 @@ bool COptMethodEP::optimise()
           Stalled = 0;
           mBestValue = mValues[mBestIndex];
 
-          Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+          Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex], true);
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();
@@ -194,7 +194,7 @@ bool COptMethodEP::initialize()
 
   if (!COptPopulationMethod::initialize()) return false;
 
-  mVariableSize = mProblemContext.master()->getOptItemList().size();
+  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
 
   mIndividuals.resize(2 * mPopulationSize);
 
@@ -263,7 +263,7 @@ bool COptMethodEP::creation()
   for (i = 0; i < mVariableSize; i++)
     {
       C_FLOAT64 & mut = (*mIndividuals[0])[i];
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
 
       mut = OptItem.getStartValue();
 
@@ -303,7 +303,7 @@ bool COptMethodEP::creation()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables()[i] = mut;
+      *mProblemContext.master()->getContainerVariables(true)[i] = mut;
 
       // Set the variance for this parameter.
       (*mVariance[0])[i] = fabs(mut) * 0.5;
@@ -328,7 +328,7 @@ bool COptMethodEP::creation()
       for (j = 0; j < mVariableSize; j++)
         {
           C_FLOAT64 & mut = (*mIndividuals[i])[j];
-          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
 
           // calculate lower and upper bounds
           mn = *OptItem.getLowerBoundValue();
@@ -419,7 +419,7 @@ bool COptMethodEP::creation()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mProblemContext.master()->getContainerVariables()[j] = mut;
+          *mProblemContext.master()->getContainerVariables(true)[j] = mut;
 
           // Set the variance for this parameter.
           (*mVariance[i])[j] = fabs(mut) * 0.5;
@@ -547,7 +547,7 @@ bool COptMethodEP::mutate(size_t i)
   for (j = 0; j < mVariableSize; j++)
     {
       C_FLOAT64 & mut = Individual[j];
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
 
       try
         {
@@ -578,7 +578,7 @@ bool COptMethodEP::mutate(size_t i)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables()[j] = mut;
+      *mProblemContext.master()->getContainerVariables(true)[j] = mut;
     }
 
   // calculate its fitness
