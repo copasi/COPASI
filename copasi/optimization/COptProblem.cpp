@@ -577,10 +577,7 @@ bool COptProblem::initialize()
     }
 
   if (!adjustStartValuesForIntervals())
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 13);
-      return false;
-    }
+    CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 13);
 
   it = mpConstraintItems->begin();
   end = mpConstraintItems->end();
