@@ -29,6 +29,7 @@
 #include <QPixmap>
 #include <QPicture>
 #include <QPrintDialog>
+#include <QMenuBar>
 
 #include <QtSvg/QtSvg>
 #include <QtSvg/QSvgGenerator>
@@ -118,7 +119,6 @@ PlotWindow::PlotWindow(COutputHandlerPlot *pHandler, const CPlotSpecification *p
 
   grabGesture(Qt::PanGesture);
   grabGesture(Qt::PinchGesture);
-
 }
 
 void PlotWindow::createMenus()
@@ -264,7 +264,6 @@ CPlotInterface * PlotWindow::createPlot(const CPlotSpecification * pPlotSpec)
     }
 
 #endif
-
 
 #ifdef COPASI_USE_QWT
   // by default return Qwt if we have it
