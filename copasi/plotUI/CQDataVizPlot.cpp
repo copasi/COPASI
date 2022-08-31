@@ -10,6 +10,7 @@
 #ifdef WITH_QT5_VISUALIZATION
 
 #include "CQDataVizPlot.h"
+#  include "CQPlotColors.h"
 
 
 #  include "copasi/plot/CPlotSpecification.h"
@@ -254,6 +255,8 @@ bool CQDataVizPlot::initFromSpec(const CPlotSpecification * plotspec)
   if (!createGraph(mMode))
     return false;
 
+  mpGraph->setTitle(FROM_UTF8(mpPlotSpecification->getTitle()));
+
   itPlotItem = mpPlotSpecification->getItems().begin();
   pVisible = Visible.array();
 
@@ -268,17 +271,30 @@ bool CQDataVizPlot::initFromSpec(const CPlotSpecification * plotspec)
     {
       auto plotType = itPlotItem->getType();
 
-      if (plotType != CPlotItem::spectogram && plotType != CPlotItem::surface)
+      if (plotType != CPlotItem::spectogram && plotType != CPlotItem::surface && plotType != CPlotItem::bandedGraph)
         continue;
 
       // set up the curve
       QAbstract3DSeries * series = NULL;
+      QColor color;
+      bool haveColor = false;
+
+      if (itPlotItem->getType() == CPlotItem::bandedGraph)
+        {
+          std::string colorstr = itPlotItem->getValue< std::string >("Color");
+          color = CQPlotColors::getColor(colorstr, k);
+          haveColor = true;
+        }
 
       switch (mMode)
         {
           case CQDataVizPlot::PlotMode::Bars:
           {
             auto *s = new QBar3DSeries();
+
+            if (haveColor)
+              s->setBaseColor(color);
+
             qobject_cast< Q3DBars* >(mpGraph)->addSeries(s);
             series = s;
             break;
@@ -287,6 +303,10 @@ bool CQDataVizPlot::initFromSpec(const CPlotSpecification * plotspec)
           case CQDataVizPlot::PlotMode::Scatter:
           {
             auto * s = new QScatter3DSeries();
+
+            if (haveColor)
+              s->setBaseColor(color);
+
             qobject_cast< Q3DScatter * >(mpGraph)->addSeries(s);
             series = s;
             break;
@@ -295,6 +315,10 @@ bool CQDataVizPlot::initFromSpec(const CPlotSpecification * plotspec)
           case CQDataVizPlot::PlotMode::Surface:
           {
             auto * s = new QSurface3DSeries();
+
+            if (haveColor)
+              s->setBaseColor(color);
+
             qobject_cast< Q3DSurface * >(mpGraph)->addSeries(s);
             series = s;
             break;
@@ -388,8 +412,7 @@ bool CQDataVizPlot::compile(CObjectInterface::ContainerList listOfContainer)
                   mSaveCurveObjects.push_back(NewX);
                   itX = mSaveCurveObjects.end() - 1;
 
-                  if (!isSpectogram)
-                    setAxisUnits(0, pObj);
+                  setAxisUnits(CPlotInterface::Axis::xAxis, pObj);
                 }
 
               if (pItem->getType() == CPlotItem::histoItem1d)
@@ -399,8 +422,11 @@ bool CQDataVizPlot::compile(CObjectInterface::ContainerList listOfContainer)
             {
               itX->push_back(objectCN);
 
-              if (!isSpectogram)
-                setAxisUnits(1, pObj);
+              if (j == 1)
+                setAxisUnits(CPlotInterface::Axis::yAxis, pObj);
+
+              if (j == 2)
+                setAxisUnits(CPlotInterface::Axis::zAxis, pObj);
             }
 
           Inserted = ActivityObjects[ItemActivity].insert(pObj);
@@ -1053,8 +1079,23 @@ void CQDataVizPlot::clearBuffers()
   mHaveAfter = false;
 }
 
-void CQDataVizPlot::setAxisUnits(const C_INT32 & index, const CObjectInterface * pObject)
+void CQDataVizPlot::setAxisUnits(Axis axis, const CObjectInterface * pObject)
 {
+  if (axis == CPlotInterface::Axis::xAxis)
+    {
+      mpAxisX->setTitle(getAxisText(axis, pObject));
+      mpAxisX->setTitleVisible(!mpAxisX->title().isEmpty());
+    }
+  else if (axis == CPlotInterface::Axis::yAxis)
+    {
+      mpAxisZ->setTitle(getAxisText(axis, pObject));
+      mpAxisZ->setTitleVisible(!mpAxisZ->title().isEmpty());
+    }
+  else
+    {
+      mpAxisY->setTitle(getAxisText(axis, pObject));
+      mpAxisY->setTitleVisible(!mpAxisY->title().isEmpty());
+    }
 }
 
 void CQDataVizPlot::toggleLogX(bool logX)
@@ -1378,8 +1419,13 @@ CQDataVizPlot::createContextMenu()
   menu = new QMenu("Selection Mode", mpContextMenu);
   menu->addAction(new QAction("None", menu));
   menu->addAction(new QAction("Item", menu));
-  menu->addAction(new QAction("ItemAndRow", menu));
-  menu->addAction(new QAction("ItemAndColumn", menu));
+
+  if (mMode != PlotMode::Scatter)
+    {
+      menu->addAction(new QAction("ItemAndRow", menu));
+      menu->addAction(new QAction("ItemAndColumn", menu));
+    }
+
   mpContextMenu->addMenu(menu); // Selection Mode
 
   if (mMode == PlotMode::Scatter)
