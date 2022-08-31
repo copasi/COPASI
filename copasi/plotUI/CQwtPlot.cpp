@@ -472,6 +472,7 @@ bool CQwtPlot::initFromSpec(const CPlotSpecification* plotspec)
       showCurve(pCurve, *pVisible);
 
       if (pCurve->getType() == CPlotItem::curve2d
+          || pCurve->getType() == CPlotItem::histoItem1d
           || pCurve->getType() == CPlotItem::bandedGraph)
         {
           needLeft = true;

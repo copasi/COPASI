@@ -318,6 +318,7 @@ for (auto item : mHisto)
       showCurve(series, *pVisible);
 
       if (itPlotItem->getType() == CPlotItem::curve2d
+          || itPlotItem->getType() == CPlotItem::histoItem1d
           || itPlotItem->getType() == CPlotItem::bandedGraph)
         {
           needLeft = true;
