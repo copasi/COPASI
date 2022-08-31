@@ -391,6 +391,9 @@ void PlotWindow::printAsImage()
 
 void PlotWindow::printPlot()
 {
+  if (!mpPlot)
+    return;
+
   QPrinter printer;
   QString docName = mpPlot->titleText();
 
@@ -516,12 +519,18 @@ const CObjectInterface::ObjectSet &PlotWindow::getObjects() const
 
 void PlotWindow::slotSelectAll()
 {
+  if (!mpPlot)
+    return;
+
   // We show all curves in mpPlot
   mpPlot->setCurvesVisibility(true);
 }
 
 void PlotWindow::slotDeselectAll()
 {
+  if (!mpPlot)
+    return;
+
   // We hide all curves in mpPlot
   mpPlot->setCurvesVisibility(false);
 }
