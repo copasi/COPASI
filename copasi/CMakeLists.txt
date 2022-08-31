@@ -484,6 +484,23 @@ if(BUILD_GUI)
   include(CMakeParseArguments)
   # qt5_wrap_ui(outfiles inputfile ... )
 
+
+  if (NOT Qt6Widgets_UIC_EXECUTABLE OR NOT EXISTS "${Qt6Widgets_UIC_EXECUTABLE}")
+    find_program(Qt6Widgets_UIC_EXECUTABLE
+           NAMES uic uic.exe 
+           DOC "Path to the uic executable"
+           PATHS ${Qt6Widgets_DIR}/../../../bin/
+                 ${Qt6Widgets_DIR}/../../../share/qt/libexec/
+           )
+
+    if (NOT EXISTS "${Qt6Widgets_UIC_EXECUTABLE}")
+      message(FATAL_ERROR "Need UIC executable to compile GUI, it should be in: 
+          ${Qt6Widgets_DIR}/../../../bin
+          ${Qt6Widgets_DIR}/../../../share/qt/libexec
+          ")
+    endif()
+  endif()
+
   MACRO(COPASI_QT6_WRAP_UI outfiles)
     set(options)
     set(oneValueArgs SUBDIR)
@@ -495,13 +512,6 @@ if(BUILD_GUI)
   #foreach(_name ${_vars})
   #  message("${_name}: ${${_name}})")
   #endforeach()
-
-    if (NOT Qt6Widgets_UIC_EXECUTABLE)
-      find_program(Qt6Widgets_UIC_EXECUTABLE
-               NAMES uic uic.exe 
-               DOC "Path to the uic executable"
-               PATHS ${Qt6Widgets_DIR}/../../../bin)
-    endif()
 
     set(ui_files ${_WRAP_UI_UNPARSED_ARGUMENTS})
     set(ui_options ${_WRAP_UI_OPTIONS})
