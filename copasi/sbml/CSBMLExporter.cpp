@@ -1681,7 +1681,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CDataModel& data
       tree.setInfix(changedExpression);
       const CEvaluationNode* pOrigNode = tree.getRoot();
 
-      if (pOrigNode->mainType() == CEvaluationNode::MainType::INVALID)
+      if (pOrigNode == NULL || pOrigNode->mainType() == CEvaluationNode::MainType::INVALID)
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
         }
@@ -6789,9 +6789,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             break;
 
-          // IS DESCRIBED BY is handled in the references below
-          //case bqbiol_isDescribedBy:
-          //    break;
+            // IS DESCRIBED BY is handled in the references below
+            //case bqbiol_isDescribedBy:
+            //    break;
           case CRDFPredicate::bqbiol_isEncodedBy:
           case CRDFPredicate::copasi_isEncodedBy:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -6828,7 +6828,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
 
-          // This qualifier is supported in libsbml 4.1
+            // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -6890,9 +6890,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setModelQualifierType(BQM_HAS_INSTANCE);
             break;
 
-          // IS DESCRIBED BY is handled in the references below
-          //case bqmodel_isDescribedBy:
-          //    break;
+            // IS DESCRIBED BY is handled in the references below
+            //case bqmodel_isDescribedBy:
+            //    break;
           default:
             // there are many qualifiers that start e.g. with copasi_ which are
             // not handled
