@@ -576,6 +576,23 @@ void CQDataVizPlot::finish()
   replot();
 }
 
+std::set< double > resizeRange(std::set< double >& range, int maxRange = 256)
+{
+  if (range.size() < maxRange)
+    return range;
+
+  double ratio = range.size() / (double) maxRange;
+
+  std::set< double > result;
+
+  for (int i = 0; i < maxRange; ++i)
+    {
+      int pos = floor(i * ratio);
+      result.insert(*std::next(range.begin(), pos));
+    }
+
+  return result;
+}
 
 void CQDataVizPlot::updateCurves(const size_t & activity)
 {
@@ -722,8 +739,11 @@ void CQDataVizPlot::updateCurves(const size_t & activity)
                   dataMap[std::make_pair(cur_x, cur_z)] = QVector3D(cur_x, cur_y, cur_z);
                 }
 
+              x_range = resizeRange(x_range);
+              y_range = resizeRange(y_range);
+
               QSurfaceDataArray * dataArray = new QSurfaceDataArray();
-              dataArray->reserve(dataMap.size());
+              dataArray->reserve(x_range.size() * y_range.size());
 
 for (auto & cur_y : y_range)
                 {
