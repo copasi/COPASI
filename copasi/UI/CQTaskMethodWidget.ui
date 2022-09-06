@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+<comment> Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> University of Virginia, University of Heidelberg, and University </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
 <comment> Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
@@ -12,7 +22,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>155</width>
+    <width>274</width>
     <height>146</height>
    </rect>
   </property>
@@ -26,20 +36,20 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="mpLblMethod">
-     <property name="text">
-      <string>Method</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="1">
     <widget class="QComboBox" name="mpBoxMethod"/>
    </item>
-   <item row="0" column="2">
+   <item row="2" column="0">
+    <widget class="QLabel" name="mpLblParameter">
+     <property name="text">
+      <string>Parameter</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
     <spacer name="horizontalSpacer">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -52,20 +62,36 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="mpLblParameter">
+   <item row="0" column="0">
+    <widget class="QLabel" name="mpLblMethod">
      <property name="text">
-      <string>Parameter</string>
+      <string>Method</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item row="1" column="1" colspan="2">
+   <item row="2" column="1" colspan="3">
     <widget class="CQParameterGroupView" name="mpParameterView">
      <property name="editTriggers">
       <set>QAbstractItemView::AllEditTriggers</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QCheckBox" name="mpChkShowParameters">
+     <property name="toolTip">
+      <string>When checked, displays the method parameters</string>
+     </property>
+     <property name="text">
+      <string>Show Parameters</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="visible">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
@@ -79,5 +105,25 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>mpChkShowParameters</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>CQTaskMethodWidget</receiver>
+   <slot>showMethodParameters(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>193</x>
+     <y>18</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>136</x>
+     <y>72</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>showMethodParameters(bool)</slot>
+ </slots>
 </ui>

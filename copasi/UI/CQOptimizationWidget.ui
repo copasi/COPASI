@@ -50,7 +50,7 @@
   <property name="caption" stdset="0">
    <string>Optimization</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="1,4">
    <item>
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">

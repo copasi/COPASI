@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -41,8 +41,6 @@ public:
 
   void setValidMethods(const CTaskEnum::Method * validMethods);
 
-  void showMethodParameters(const bool & show);
-
   bool loadMethod();
 
   bool saveMethod();
@@ -53,10 +51,11 @@ public:
 
   void popMethod(CCopasiMethod * pMethod);
 
-protected slots:
+  void showMethodCheckbox(bool show);
 
-protected slots:
+public slots:
   void slotChangeMethod(int);
+  void showMethodParameters(bool show);
 
 protected:
   void addToHistory(CCopasiMethod * pMethod);
