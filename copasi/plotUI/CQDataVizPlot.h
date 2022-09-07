@@ -137,6 +137,15 @@ public:
    */
   virtual void setCurvesVisibility(const bool & visibility);
 
+
+  virtual void saveToFile(const QString & fileName, QRect & rect);
+
+  /**
+   * @return a string with supported file filters to save files
+   */
+  virtual QString getSaveFilters();
+
+
   //static QPointF getRange(const DATAVIS_NS_PREFIX QAbstractAxis * axis);
 
 public slots:

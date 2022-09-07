@@ -57,6 +57,11 @@ void CPlotInterface::saveToFile(const QString & fileName, QRect & rect)
     }
 }
 
+QString CPlotInterface::getSaveFilters()
+{
+  return "PDF Files (*.pdf);;PNG Files (*.png);;SVG Files (*.svg)";
+}
+
 QString CPlotInterface::getAxisText(Axis axis, const CObjectInterface * pObjectInterface)
 {
   auto * pPlotSpec = getPlotSpecification();

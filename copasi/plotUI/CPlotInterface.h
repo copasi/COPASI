@@ -65,6 +65,11 @@ public:
 
   virtual void saveToFile(const QString & fileName, QRect & rect);
 
+  /**
+   * @return a string with supported file filters to save files
+   */
+  virtual QString getSaveFilters();
+
   QString getAxisText(Axis axis, const CObjectInterface * pObjectInterface);
 
 };

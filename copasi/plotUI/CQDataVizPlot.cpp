@@ -1060,6 +1060,17 @@ void CQDataVizPlot::setCurvesVisibility(const bool & visibility)
 {
 }
 
+void CQDataVizPlot::saveToFile(const QString & fileName, QRect & rect)
+{
+  auto image = mpGraph->renderToImage(8);
+  image.save(fileName);
+}
+
+QString CQDataVizPlot::getSaveFilters()
+{
+  return "PNG Files (*.png)";
+}
+
 void CQDataVizPlot::clearBuffers()
 {
   mObjects.clear();

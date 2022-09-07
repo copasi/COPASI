@@ -335,8 +335,8 @@ void PlotWindow::printAsImage()
       fileName = CopasiFileDialog::getSaveFileName(
                    this,
                    "Save File Dialog",
-                   CopasiFileDialog::getDefaultFileName(".pdf"),
-                   "PDF Files (*.pdf);;PNG Files (*.png);;SVG Files (*.svg)",
+                   CopasiFileDialog::getDefaultFileName(""),
+                   mpPlot->getSaveFilters(),
                    "Save Plot as Image", new QString);
 
       if (fileName.isEmpty()) return;

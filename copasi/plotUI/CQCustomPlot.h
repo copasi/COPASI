@@ -176,6 +176,11 @@ private:
 
   virtual void saveToFile(const QString & fileName, QRect & rect);
 
+  /**
+   * @return a string with supported file filters to save files
+   */
+  virtual QString getSaveFilters();
+
 private slots:
   /**
    * Slot used to turn curves on and of through the legend buttons.

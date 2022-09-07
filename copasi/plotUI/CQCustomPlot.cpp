@@ -1486,6 +1486,11 @@ void CQCustomPlot::saveToFile(const QString & fileName, QRect & rect)
   CPlotInterface::saveToFile(fileName, rect);
 }
 
+QString CQCustomPlot::getSaveFilters()
+{
+  return "PDF Files (*.pdf);;PNG Files (*.png)";
+}
+
 void CQCustomPlot::legendClicked(QCPLegend * legend, QCPAbstractLegendItem * item, QMouseEvent * event)
 {
   auto * plItem = dynamic_cast< QCPPlottableLegendItem * >(item);
