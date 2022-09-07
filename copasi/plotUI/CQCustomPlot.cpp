@@ -1469,6 +1469,23 @@ void CQCustomPlot::setAxisUnits(Axis axis, const CObjectInterface * pObjectInter
     yAxis->setLabel(getAxisText(axis, pObjectInterface));
 }
 
+void CQCustomPlot::saveToFile(const QString & fileName, QRect & rect)
+{
+  if (fileName.endsWith(".png"))
+    {
+      savePng(fileName);
+      return;
+    }
+
+  if (fileName.endsWith(".pdf"))
+    {
+      savePdf(fileName);
+      return;
+    }
+
+  CPlotInterface::saveToFile(fileName, rect);
+}
+
 void CQCustomPlot::legendClicked(QCPLegend * legend, QCPAbstractLegendItem * item, QMouseEvent * event)
 {
   auto * plItem = dynamic_cast< QCPPlottableLegendItem * >(item);

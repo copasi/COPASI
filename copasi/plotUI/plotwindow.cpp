@@ -31,9 +31,6 @@
 #include <QPrintDialog>
 #include <QMenuBar>
 
-#include <QtSvg/QtSvg>
-#include <QtSvg/QSvgGenerator>
-
 #include "plotwindow.h"
 
 #ifdef COPASI_USE_QTCHARTS
@@ -316,35 +313,7 @@ void PlotWindow::saveToFile(const QString &fileName) const
   QRect rect;
   rect.setSize(this->size());
 
-  if (fileName.endsWith(".png"))
-    {
-      QPixmap pixmap(rect.width(), rect.height());
-      pixmap.fill();
-      QPainter painter(&pixmap);
-      painter.begin(&pixmap);
-      mpPlot->render(&painter, rect);
-      painter.end();
-      pixmap.save(fileName, "PNG");
-    }
-  else if (fileName.endsWith(".svg"))
-    {
-      QSvgGenerator generator;
-      generator.setFileName(fileName);
-      QPainter painter(&generator);
-      painter.begin(&generator);
-      mpPlot->render(&painter, rect);
-      painter.end();
-    }
-  else if (fileName.endsWith(".pdf"))
-    {
-      QPrinter printer;
-      printer.setOutputFileName(fileName);
-      printer.setOutputFormat(QPrinter::PdfFormat);
-      QPainter painter(&printer);
-      painter.begin(&printer);
-      mpPlot->render(&painter, rect);
-      painter.end();
-    }
+  mpPlot->saveToFile(fileName, rect);
 }
 
 void PlotWindow::printAsImage()

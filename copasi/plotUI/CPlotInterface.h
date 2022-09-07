@@ -63,6 +63,8 @@ public:
 
   virtual void render(QPainter * painter, QRect rect) = 0;
 
+  virtual void saveToFile(const QString & fileName, QRect & rect);
+
   QString getAxisText(Axis axis, const CObjectInterface * pObjectInterface);
 
 };

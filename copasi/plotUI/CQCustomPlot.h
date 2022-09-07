@@ -174,6 +174,8 @@ private:
   void setAxisUnits(Axis axis,
                     const CObjectInterface * pObject);
 
+  virtual void saveToFile(const QString & fileName, QRect & rect);
+
 private slots:
   /**
    * Slot used to turn curves on and of through the legend buttons.

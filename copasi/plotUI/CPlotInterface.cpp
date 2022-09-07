@@ -7,6 +7,14 @@
 #include <copasi/UI/qtUtilities.h>
 #include <copasi/utilities/CUnit.h>
 
+#include <QPrinter>
+#include <QPixmap>
+#include <QPicture>
+
+#include <QtSvg/QtSvg>
+#include <QtSvg/QSvgGenerator>
+
+
 // static
 const CEnumAnnotation< std::string, CPlotInterface::Axis > CPlotInterface::AxisNames(
 {
@@ -15,6 +23,39 @@ const CEnumAnnotation< std::string, CPlotInterface::Axis > CPlotInterface::AxisN
   "z axis"
 });
 
+
+void CPlotInterface::saveToFile(const QString & fileName, QRect & rect)
+{
+  if (fileName.endsWith(".png"))
+    {
+      QPixmap pixmap(rect.width(), rect.height());
+      pixmap.fill();
+      QPainter painter(&pixmap);
+      painter.begin(&pixmap);
+      render(&painter, rect);
+      painter.end();
+      pixmap.save(fileName, "PNG");
+    }
+  else if (fileName.endsWith(".svg"))
+    {
+      QSvgGenerator generator;
+      generator.setFileName(fileName);
+      QPainter painter(&generator);
+      painter.begin(&generator);
+      render(&painter, rect);
+      painter.end();
+    }
+  else if (fileName.endsWith(".pdf"))
+    {
+      QPrinter printer;
+      printer.setOutputFileName(fileName);
+      printer.setOutputFormat(QPrinter::PdfFormat);
+      QPainter painter(&printer);
+      painter.begin(&printer);
+      render(&painter, rect);
+      painter.end();
+    }
+}
 
 QString CPlotInterface::getAxisText(Axis axis, const CObjectInterface * pObjectInterface)
 {
