@@ -1683,7 +1683,8 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CDataModel& data
 
       if (pOrigNode == NULL || pOrigNode->mainType() == CEvaluationNode::MainType::INVALID)
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 70, "assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+          return;
         }
 
       // the next few lines replace references to species depending on whether
