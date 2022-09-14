@@ -88,6 +88,9 @@
 #include "copasi/copasi.h"
 #undef COPASI_MAIN
 
+#include <omex/common/libcombine-namespace.h>
+LIBCOMBINE_CPP_NAMESPACE_USE
+
 #include "local.cpp"
 
 #include <copasi/core/CCore.h>
