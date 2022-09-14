@@ -49,7 +49,10 @@ class SedDocument;
 LIBSEDML_CPP_NAMESPACE_END
 class CPlotItem;
 
+#include <omex/common/libcombine-namespace.h>
+LIBCOMBINE_CPP_NAMESPACE_BEGIN
 class CombineArchive;
+LIBCOMBINE_CPP_NAMESPACE_END
 
 // :TODO: remove
 class CMetabOld;
@@ -320,7 +323,7 @@ public:
    * @param targetName the name and path that the COPASI file should have in the archive
    * @param pProgressReport optional pointer to the progress report
    */
-  void addCopasiFileToArchive(CombineArchive *archive,
+  void addCopasiFileToArchive(LIBCOMBINE_CPP_NAMESPACE_QUALIFIER CombineArchive *archive,
                               const std::string& targetName = "./copasi/model.cps",
                               CProcessReport * pProgressReport = NULL
                              );

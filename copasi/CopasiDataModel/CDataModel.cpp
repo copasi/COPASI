@@ -78,6 +78,8 @@
 #include <copasi/shinyExport/uiShiny.c>
 #include <copasi/shinyExport/serverShiny.c>
 
+LIBCOMBINE_CPP_NAMESPACE_USE
+
 // static
 const CEnumAnnotation< std::string, CDataModel::ContentType >
 CDataModel::ContentTypeNames({"COPASI",
