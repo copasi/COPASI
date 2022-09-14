@@ -719,7 +719,7 @@ std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
   // following loops should run,
   // to ensure the multiplier is
   // from 1 up to 1000
-  while (multiplier >= (1.0 - 100 * std::numeric_limits< double >::epsilon()) * pow(1000, exponent) && scale < 15)
+  while (multiplier >= (1.0 - 100 * std::numeric_limits< double >::epsilon()) * pow(1000, exponent) && scale < 24)
     {
       multiplier /= pow(1000, exponent);
       scale += 3;
@@ -729,7 +729,7 @@ std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
     {
       multiplier = 1.0 / multiplier;
 
-      while (multiplier >= (1.0 - 100 * std::numeric_limits< double >::epsilon()) * pow(1000, exponent) && scale > -18)
+      while (multiplier >= (1.0 - 100 * std::numeric_limits< double >::epsilon()) * pow(1000, exponent) && scale > -24)
         {
           multiplier /= pow(1000, exponent);
           scale -= 3;
