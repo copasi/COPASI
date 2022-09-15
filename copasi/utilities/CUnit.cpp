@@ -246,6 +246,20 @@ const std::set< std::string > & CUnit::getUsedSymbols() const
   return mUsedSymbols;
 }
 
+void CUnit::filterUsedSymbols(const CUnitDefinitionDB & unitDefinitionDB)
+{
+  std::set< std::string > UsedSymbols = mUsedSymbols;
+  mUsedSymbols.clear();
+
+  for (const std::string & symbol : UsedSymbols)
+    {
+      if (unitDefinitionDB.containsSymbol(symbol))
+        mUsedSymbols.insert(symbol);
+    }
+
+  return;
+}
+
 bool CUnit::isDimensionless() const
 {
   // The first component is always dimensionless

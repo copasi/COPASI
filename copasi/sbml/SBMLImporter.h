@@ -161,7 +161,7 @@ protected:
   std::map<std::string, CCompartment*> mCompartmentMap;
   std::map<std::string, CModelValue*> mParameterFluxMap;
   std::set<const CDataObject*> mChangedObjects;
-  std::map<const UnitDefinition*, std::string> mUnitExpressions;
+  mutable std::map<const UnitDefinition*, std::string> mUnitExpressions;
 
   SbmlProgressCallback *mpSbmlCallback;
 
@@ -349,6 +349,16 @@ protected:
    */
 
   /**
+   * Validates whether SBML unit definition is derived from constraint.
+   * If valid the equivalent COPASI unit expression is returned otherwise an empty string;
+   *
+   * @param const UnitDefinition * pSBMLUnitDefinition
+   * @param const std::string & constraint
+   * @return std::string copasiUnitExpression
+   */
+  std::string validateUnit(const UnitDefinition * pSBMLUnitDefinition, const std::string & constraint) const;
+
+  /**
    * Returns the copasi LengthUnit corresponding to the given SBML length
    *  UnitDefinition.
    */
@@ -495,7 +505,7 @@ public:
    * @param pSBMLUnit the SBML unit
    * @return a string corresponding to the unit
    */
-  std::string createUnitExpressionFor(const UnitDefinition * pSBMLUnit);
+  std::string createUnitExpressionFor(const UnitDefinition * pSBMLUnit) const;
 
 protected:
   std::vector<CEvaluationNodeObject*>* isMassAction(const CEvaluationTree* pTree,

@@ -3686,6 +3686,17 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
   return this->mpCopasiModel;
 }
 
+std::string SBMLImporter::validateUnit(const UnitDefinition * pSBMLUnitDefinition, const std::string & constraint) const
+{
+  CUnit Unit(createUnitExpressionFor(pSBMLUnitDefinition));
+  CUnit Constraint(constraint);
+
+  if (Constraint.isEquivalent(Unit) || Unit.isDimensionless())
+    return Unit.getExpression();
+
+  return "";
+}
+
 /**
  * Returns the copasi QuantityUnit corresponding to the given SBML
  *  Substance UnitDefinition.
@@ -3693,140 +3704,12 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 std::pair< std::string, bool >
 SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
 {
-  bool result = false;
-  std::string qUnit = "mol";
+  std::string Unit = validateUnit(uDef, "#");
 
-  if (uDef == NULL)
-    {
-      //DebugFile << "Argument to handleSubstanceUnit is NULL pointer." << std::endl;
-      fatalError();
-    }
+  if (Unit.empty())
+    return std::make_pair("mol", false);
 
-  if (uDef->getNumUnits() == 1)
-    {
-      const Unit* u = uDef->getUnit(0);
-
-      if (u == NULL)
-        {
-          //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
-          fatalError();
-        }
-
-      if ((u->getKind() == UNIT_KIND_MOLE)
-          || u->getKind() == UNIT_KIND_AVOGADRO
-         )
-        {
-          double multiplier = u->getMultiplier();
-          int scale = u->getScale();
-
-          if (multiplier != 1)
-            {
-              // check if the multiplier is a multiple of 10
-              // so that we might be able to convert it to a scale that makes
-              // sense
-              double tmp = log10(multiplier);
-
-              if (areApproximatelyEqual(tmp, round(tmp)))
-                {
-                  scale += (int) round(tmp);
-                  multiplier = 1;
-                }
-            }
-
-          if ((u->getExponent() == 1) &&
-              areApproximatelyEqual(multiplier, 1.0) &&
-              ((scale % 3) == 0) &&
-              (scale <= CBaseUnit::yotta) &&
-              (scale >= CBaseUnit::yocto))
-            {
-              qUnit = CBaseUnit::prefixFromScale(scale) + "mol";
-              result = true;
-            }
-          else
-            {
-              result = false;
-            }
-        }
-      else if ((u->getKind() == UNIT_KIND_ITEM))
-        {
-          double multiplier = u->getMultiplier();
-          int scale = u->getScale();
-
-          if (multiplier != 1)
-            {
-              // check if the multiplier is a multiple of 10
-              // so that we might be able to convert it to a scale that makes
-              // sense
-              double tmp = log10(multiplier);
-
-              if (areApproximatelyEqual(tmp, round(tmp)))
-                {
-                  scale += (int)round(tmp);
-                  multiplier = 1;
-                }
-            }
-
-          if ((u->getExponent() == 1) &&
-              areApproximatelyEqual(multiplier, 1.0) &&
-              (scale == 0 || scale == 1))
-            {
-              if (u->getScale() == 1)
-                {
-                  CCopasiMessage Message(CCopasiMessage::ERROR, MCSBML + 30);
-                }
-              else
-                {
-                  result = true;
-                  qUnit = "#";
-                }
-            }
-          else
-            {
-              result = false;
-            }
-        }
-      else if ((u->getKind() == UNIT_KIND_DIMENSIONLESS))
-        {
-          double multiplier = u->getMultiplier();
-          int scale = u->getScale();
-
-          if (multiplier != 1)
-            {
-              // check if the multiplier is a multiple of 10
-              // so that we might be able to convert it to a scale that makes
-              // sense
-              double tmp = log10(multiplier);
-
-              if (areApproximatelyEqual(tmp, round(tmp)))
-                {
-                  scale += (int)round(tmp);
-                  multiplier = 1;
-                }
-            }
-
-          if (((u->getExponent() == 1)  || (u->getExponent() == 0))  &&
-              areApproximatelyEqual(multiplier, 1.0) &&
-              scale == 0)
-            {
-              result = true;
-              qUnit = "1";
-            }
-          else
-            {
-              result = false;
-            }
-        }
-      else
-        {
-          result = false;
-        }
-    }
-  else
-    {
-      result = false;
-    }
-
-  return std::make_pair(qUnit, result);
+  return std::make_pair(Unit, true);
 }
 
 /**
@@ -3836,161 +3719,12 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
 std::pair< std::string, bool >
 SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
 {
-  bool result = false;
-  std::string tUnit = "s";
+  std::string Unit = validateUnit(uDef, "s");
 
-  if (uDef == NULL)
-    {
-      //DebugFile << "Argument to handleTimeUnit is NULL pointer." << std::endl;
-      fatalError();
-    }
+  if (Unit.empty())
+    return std::make_pair("s", false);
 
-  if (uDef->getNumUnits() == 1)
-    {
-      const Unit* u = uDef->getUnit(0);
-
-      if (u == NULL)
-        {
-          //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
-          fatalError();
-        }
-
-      if ((u->getKind() == UNIT_KIND_SECOND))
-        {
-          double multiplier = u->getMultiplier();
-          int scale = u->getScale();
-
-          // this is more difficult, we have to check several possible
-          // combinations of scales and multipliers.
-          // Valid multipliers are 60, 3600 and 86400 which correspond to a
-          // minute an hour and a day each of those has to have a scale of 0
-          if (scale == 0)
-            {
-              // check if the multiplier is 1, 60, 3600 or 86400
-              // if not, try to make the multiplier 1
-              if (!areApproximatelyEqual(multiplier, 1.0) &&
-                  !areApproximatelyEqual(multiplier, 60.0) &&
-                  !areApproximatelyEqual(multiplier, 3600.0) &&
-                  !areApproximatelyEqual(multiplier, 86400.0))
-                {
-                  double tmp = log10(multiplier);
-
-                  if (!areApproximatelyEqual(tmp, round(tmp)))
-                    {
-                      result = false;
-                    }
-                  else
-                    {
-                      multiplier = 1;
-                      scale += (int)round(tmp);
-                    }
-                }
-            }
-          else
-            {
-              // the multiplier must be 1
-              if (!areApproximatelyEqual(multiplier, 1.0))
-                {
-                  // make the multiplier 1 and check if the scale is an integer,
-                  // if not, try to make the 0 and check if the multiplier becomes one
-                  // of the valid multipliers 1,60, 3600 or 86400
-                  double tmp = log10(multiplier);
-
-                  if (!areApproximatelyEqual(tmp, round(tmp)))
-                    {
-                      // try to make the scale 0
-                      multiplier *= pow(10.0, (double)scale);
-                      scale = 0;
-                    }
-                  else
-                    {
-                      // make the multiplier 1
-                      multiplier = 1;
-                      scale += (int) round(tmp);
-                    }
-                }
-            }
-
-          if ((u->getExponent() == 1)
-              && ((scale % 3) == 0)
-              && (scale <= CBaseUnit::yotta)
-              && (scale >= CBaseUnit::yocto))
-            {
-              if (areApproximatelyEqual(multiplier, 1.0))
-                {
-                  tUnit = CBaseUnit::prefixFromScale(scale) + "s";
-                  result = true;
-                }
-              else if ((scale == 0) &&
-                       areApproximatelyEqual(multiplier, 60.0))
-                {
-                  tUnit = "min";
-                  result = true;
-                }
-              else if ((scale == 0) &&
-                       areApproximatelyEqual(multiplier, 3600.0))
-                {
-                  tUnit = "h";
-                  result = true;
-                }
-              else if ((scale == 0) &&
-                       areApproximatelyEqual(multiplier, 86400.0))
-                {
-                  tUnit = "d";
-                  result = true;
-                }
-              else
-                {
-                  result = false;
-                }
-            }
-          else
-            {
-              result = false;
-            }
-        }
-      else if ((u->getKind() == UNIT_KIND_DIMENSIONLESS))
-        {
-          double multiplier = u->getMultiplier();
-          int scale = u->getScale();
-
-          if (multiplier != 1)
-            {
-              // check if the multiplier is a multiple of 10
-              // so that we might be able to convert it to a scale that makes
-              // sense
-              double tmp = log10(multiplier);
-
-              if (areApproximatelyEqual(tmp, round(tmp)))
-                {
-                  scale += (int)round(tmp);
-                  multiplier = 1;
-                }
-            }
-
-          if ((u->getExponent() == 1) &&
-              areApproximatelyEqual(multiplier, 1.0) &&
-              scale == 0)
-            {
-              result = true;
-              tUnit = "1";
-            }
-          else
-            {
-              result = false;
-            }
-        }
-      else
-        {
-          result = false;
-        }
-    }
-  else
-    {
-      result = false;
-    }
-
-  return std::make_pair(tUnit, result);
+  return std::make_pair(Unit, true);
 }
 
 /**
@@ -4000,105 +3734,12 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
 std::pair< std::string, bool >
 SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
 {
-  bool result = false;
-  std::string lUnit = "m";
+  std::string Unit = validateUnit(uDef, "m");
 
-  if (uDef == NULL)
-    {
-      //DebugFile << "Argument to handleLengthUnit is NULL pointer." << std::endl;
-      fatalError();
-    }
+  if (Unit.empty())
+    return std::make_pair("m", false);
 
-  if (uDef->getNumUnits() == 1)
-    {
-      const Unit* u = uDef->getUnit(0);
-
-      if (u == NULL)
-        {
-          //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "length", uDef->getId().c_str());
-        }
-
-      if ((u->getKind() == UNIT_KIND_METRE || u->getKind() == UNIT_KIND_METER) && u->getExponent() == 1)
-        {
-          double multiplier = u->getMultiplier();
-          int scale = u->getScale();
-
-          if (multiplier != 1)
-            {
-              // check if the multiplier is a multiple of 10
-              // so that we might be able to convert it to a scale that makes
-              // sense
-              double tmp = log10(multiplier);
-
-              if (areApproximatelyEqual(tmp, round(tmp)))
-                {
-                  scale += (int) round(tmp);
-                  multiplier = 1;
-                }
-            }
-
-          if (areApproximatelyEqual(multiplier, 1.0) &&
-              ((scale % 3) == 0 || scale == -1 || scale == -2)
-              && (scale <= CBaseUnit::yotta)
-              && (scale >= CBaseUnit::yocto))
-            {
-              if ((scale % 3) == 0)
-                lUnit = CBaseUnit::prefixFromScale(scale) + "m";
-              else if (scale == -1)
-                lUnit = "dm";
-              else
-                lUnit = "cm";
-
-              result = true;
-            }
-          else
-            {
-              result = false;
-            }
-        }
-      else if ((u->getKind() == UNIT_KIND_DIMENSIONLESS))
-        {
-          double multiplier = u->getMultiplier();
-          int scale = u->getScale();
-
-          if (multiplier != 1)
-            {
-              // check if the multiplier is a multiple of 10
-              // so that we might be able to convert it to a scale that makes
-              // sense
-              double tmp = log10(multiplier);
-
-              if (areApproximatelyEqual(tmp, round(tmp)))
-                {
-                  scale += (int)round(tmp);
-                  multiplier = 1;
-                }
-            }
-
-          if ((u->getExponent() == 1) &&
-              areApproximatelyEqual(multiplier, 1.0) &&
-              scale == 0)
-            {
-              result = true;
-              lUnit = "1";
-            }
-          else
-            {
-              result = false;
-            }
-        }
-      else
-        {
-          result = false;
-        }
-    }
-  else
-    {
-      result = false;
-    }
-
-  return std::make_pair(lUnit, result);
+  return std::make_pair(Unit, true);
 }
 
 /**
@@ -4108,105 +3749,12 @@ SBMLImporter::handleLengthUnit(const UnitDefinition* uDef)
 std::pair<std:: string, bool >
 SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
 {
-  bool result = false;
-  std::string aUnit = "m^2";
+  std::string Unit = validateUnit(uDef, "m^2");
 
-  if (uDef == NULL)
-    {
-      //DebugFile << "Argument to handleLengthUnit is NULL pointer." << std::endl;
-      fatalError();
-    }
+  if (Unit.empty())
+    return std::make_pair("m^2", false);
 
-  if (uDef->getNumUnits() == 1)
-    {
-      const Unit* u = uDef->getUnit(0);
-
-      if (u == NULL)
-        {
-          //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "area", uDef->getId().c_str());
-        }
-
-      if ((u->getKind() == UNIT_KIND_METRE || u->getKind() == UNIT_KIND_METER) && u->getExponent() == 2)
-        {
-          double multiplier = u->getMultiplier();
-          int scale = u->getScale();
-
-          if (multiplier != 1)
-            {
-              // check if the multiplier is a multiple of 10
-              // so that we might be able to convert it to a scale that makes
-              // sense
-              double tmp = log10(multiplier);
-
-              if (areApproximatelyEqual(tmp, round(tmp)))
-                {
-                  scale += (int) round(tmp);
-                  multiplier = 1;
-                }
-            }
-
-          if (areApproximatelyEqual(multiplier, 1.0) &&
-              ((scale % 3) == 0 || scale == -1 || scale == -2)
-              && (scale <= CBaseUnit::yotta)
-              && (scale >= CBaseUnit::yocto))
-            {
-              if ((scale % 3) == 0)
-                aUnit = CBaseUnit::prefixFromScale(scale) + "m\xc2\xb2";
-              else if (scale == -1)
-                aUnit = "dm\xc2\xb2";
-              else
-                aUnit = "cm\xc2\xb2";
-
-              result = true;
-            }
-          else
-            {
-              result = false;
-            }
-        }
-      else if ((u->getKind() == UNIT_KIND_DIMENSIONLESS))
-        {
-          double multiplier = u->getMultiplier();
-          int scale = u->getScale();
-
-          if (multiplier != 1)
-            {
-              // check if the multiplier is a multiple of 10
-              // so that we might be able to convert it to a scale that makes
-              // sense
-              double tmp = log10(multiplier);
-
-              if (areApproximatelyEqual(tmp, round(tmp)))
-                {
-                  scale += (int)round(tmp);
-                  multiplier = 1;
-                }
-            }
-
-          if ((u->getExponent() == 1) &&
-              areApproximatelyEqual(multiplier, 1.0) &&
-              scale == 0)
-            {
-              result = true;
-              aUnit = "1";
-            }
-          else
-            {
-              result = false;
-            }
-        }
-      else
-        {
-          result = false;
-        }
-    }
-  else
-    {
-      result = false;
-    }
-
-  return std::make_pair(aUnit, result);
+  return std::make_pair(Unit, true);
 }
 
 /**
@@ -4216,135 +3764,12 @@ SBMLImporter::handleAreaUnit(const UnitDefinition* uDef)
 std::pair< std::string, bool >
 SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
 {
-  // simplify the Unitdefiniton first if this normalizes
-  // the scale and the multiplier
-  bool result = false;
-  std::string vUnit = "l";
+  std::string Unit = validateUnit(uDef, "m^3");
 
-  if (uDef == NULL)
-    {
-      //DebugFile << "Argument to handleVolumeUnit is NULL pointer." << std::endl;
-      fatalError();
-    }
+  if (Unit.empty())
+    return std::make_pair("m^3", false);
 
-  if (uDef->getNumUnits() == 1)
-    {
-      const Unit* u = uDef->getUnit(0);
-
-      if (u == NULL)
-        {
-          //DebugFile << "Expected Unit, got NULL pointer." << std::endl;
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 54, "volume", uDef->getId().c_str());
-        }
-
-      if (((u->getKind() == UNIT_KIND_LITER) || (u->getKind() == UNIT_KIND_LITRE)) && u->getExponent() == 1)
-        {
-          double multiplier = u->getMultiplier();
-          int scale = u->getScale();
-
-          if (multiplier != 1)
-            {
-              // check if the multiplier is a multiple of 10
-              // so that we might be able to convert it to a scale that makes
-              // sense
-              double tmp = log10(multiplier);
-
-              if (areApproximatelyEqual(tmp, round(tmp)))
-                {
-                  scale += (int)round(tmp);
-                  multiplier = 1;
-                }
-            }
-
-          if (areApproximatelyEqual(multiplier, 1.0) &&
-              ((scale % 3) == 0) &&
-              (scale <= CBaseUnit::yotta) &&
-              (scale >= CBaseUnit::yocto))
-            {
-              vUnit = CBaseUnit::prefixFromScale(scale) + "l";
-              result = true;
-            }
-          else
-            {
-              result = false;
-            }
-        }
-      else if (((u->getKind() == UNIT_KIND_METER) || (u->getKind() == UNIT_KIND_METRE)) && u->getExponent() == 3)
-        {
-          double multiplier = u->getMultiplier();
-          int scale = u->getScale();
-
-          if (multiplier != 1)
-            {
-              // check if the multiplier is a multiple of 10
-              // so that we might be able to convert it to a scale that makes
-              // sense
-              double tmp = log10(multiplier);
-
-              if (areApproximatelyEqual(tmp, round(tmp)))
-                {
-                  scale += (int)round(tmp);
-                  multiplier = 1;
-                }
-            }
-
-          if (areApproximatelyEqual(multiplier, 1.0) &&
-              ((scale % 3) == 0 || scale == -1 || scale == -2)
-              && (scale <= CBaseUnit::yotta)
-              && (scale >= CBaseUnit::yocto))
-            {
-              if ((scale % 3) == 0)
-                vUnit = CBaseUnit::prefixFromScale(scale) + "m\xc2\xb3";
-              else if (scale == -1)
-                vUnit = "dm\xc2\xb3";
-              else
-                vUnit = "cm\xc2\xb3";
-
-              result = true;
-            }
-        }
-      else if ((u->getKind() == UNIT_KIND_DIMENSIONLESS))
-        {
-          double multiplier = u->getMultiplier();
-          int scale = u->getScale();
-
-          if (multiplier != 1)
-            {
-              // check if the multiplier is a multiple of 10
-              // so that we might be able to convert it to a scale that makes
-              // sense
-              double tmp = log10(multiplier);
-
-              if (areApproximatelyEqual(tmp, round(tmp)))
-                {
-                  scale += (int)round(tmp);
-                  multiplier = 1;
-                }
-            }
-
-          if ((u->getExponent() == 1) &&
-              areApproximatelyEqual(multiplier, 1.0) &&
-              scale == 0)
-            {
-              result = true;
-              vUnit = "1";
-            }
-          else
-            {
-              result = false;
-            }
-        }
-      else
-        {
-          result = false;
-        }
-    }
-  else
-    {
-      result = false;
-    }
-
-  return std::make_pair(vUnit, result);
+  return std::make_pair(Unit, true);
 }
 
 CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlParameter, CModel* copasiModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
@@ -8403,16 +7828,16 @@ std::string unitKindToString(UnitKind_t kind)
     }
 }
 
-std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUnit)
+std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUnit) const
 {
   if (pSBMLUnit == NULL)
     return "";
 
   // if we have an expression already for this unit, return it
-  std::string previousExpression = mUnitExpressions[pSBMLUnit];
+  std::map<const UnitDefinition*, std::string>::const_iterator found = mUnitExpressions.find(pSBMLUnit);
 
-  if (!previousExpression.empty())
-    return previousExpression;
+  if (found != mUnitExpressions.end())
+    return found->second;
 
   // otherwise
   CUnit copasiUnit("1");
@@ -8467,14 +7892,20 @@ std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUni
       copasiUnit = copasiUnit * tmp;
     }
 
-  // construct expression
+  copasiUnit.buildExpression();
+  std::string UnitExpression = copasiUnit.getExpression();
+
+  copasiUnit.filterUsedSymbols(*CRootContainer::getUnitList());
   copasiUnit.buildExpression();
 
+  if (utf8Length(copasiUnit.getExpression()) < utf8Length(UnitExpression))
+    UnitExpression = copasiUnit.getExpression();
+
   // store expression
-  mUnitExpressions[pSBMLUnit] = copasiUnit.getExpression();
+  mUnitExpressions[pSBMLUnit] = UnitExpression;
 
   // return expression
-  return copasiUnit.getExpression();
+  return UnitExpression;
 }
 
 /**
