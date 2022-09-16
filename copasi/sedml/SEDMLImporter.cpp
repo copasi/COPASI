@@ -998,7 +998,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
           case LIBSEDML_SEV_FATAL:
 
-          // treat unknown as fatal
+            // treat unknown as fatal
           default:
 
             if (pSEDMLError->getErrorId() == 10804)
@@ -1205,6 +1205,12 @@ void SEDMLImporter::importTasks(CDataVectorN< CCopasiTask > * pTaskList)
             SedRepeatedTask *repeat = static_cast<SedRepeatedTask*>(task);
             SedRange* range = repeat->getRange(repeat->getRangeId());
 
+            if (range == NULL && range->getTypeCode() == SEDML_RANGE_FUNCTIONALRANGE)
+              {
+                // try to replace simple functional range
+                range = convertSimpleFunctionalRange(dynamic_cast< SedFunctionalRange * >(range), repeat);
+              }
+
             if (range == NULL && range->getTypeCode() != SEDML_RANGE_FUNCTIONALRANGE)
               {
                 CCopasiMessage(CCopasiMessage::WARNING, "This version of COPASI only supports uniform ranges and value ranges.");
@@ -1220,7 +1226,10 @@ void SEDMLImporter::importTasks(CDataVectorN< CCopasiTask > * pTaskList)
             CScanTask * tTask = static_cast< CScanTask * >(&pTaskList->operator[]("Scan"));
             tTask->setScheduled(true);
             tTask->setMathContainer(NULL);
+
             CScanProblem *pProblem = static_cast<CScanProblem*>(tTask->getProblem());
+            // in case there are existing scan items, these need to be removed
+            pProblem->clearScanItems();
 
             if (urange != NULL && repeat->getNumTaskChanges() == 0)
               {
@@ -1237,6 +1246,13 @@ void SEDMLImporter::importTasks(CDataVectorN< CCopasiTask > * pTaskList)
                         range = repeat->getRange(sv->getRange());
                         urange = dynamic_cast< SedUniformRange * >(range);
                         vrange = dynamic_cast< SedVectorRange * >(range);
+
+                        auto * frange = dynamic_cast< SedFunctionalRange * >(range);
+
+                        // try to replace simple functional ranges
+                        if (frange)
+                          vrange = convertSimpleFunctionalRange(frange, repeat);
+
                       }
 
                     if (SBML_formulaToString(sv->getMath()) != sv->getRange())
@@ -1279,7 +1295,7 @@ void SEDMLImporter::importTasks(CDataVectorN< CCopasiTask > * pTaskList)
                         std::stringstream str;
                         std::vector<double> vals = vrange->getValues();
 
-                        for (double val : vals)
+for (double val : vals)
                           str << val << " ";
 
                         group->setValue< std::string >("Values", str.str());
@@ -1346,6 +1362,51 @@ void SEDMLImporter::importTasks(CDataVectorN< CCopasiTask > * pTaskList)
       report->setConfirmOverwrite(false);
       report->setAppend(false);
     }
+}
+
+
+SedVectorRange *
+SEDMLImporter::convertSimpleFunctionalRange(SedFunctionalRange * frange, SedRepeatedTask * repeat)
+{
+  if (frange && frange->getNumVariables() == 0)
+    {
+      auto * insideRange = repeat->getRange(frange->getRange());
+      auto * insideVRange = dynamic_cast< SedVectorRange * >(insideRange);
+
+      if (insideVRange)
+        {
+          // remove old range
+          repeat->removeRange(frange->getId());
+
+          // it is a simple range and can be replaced by another range.
+          auto * newRange = repeat->createVectorRange();
+          auto & oldValues = insideVRange->getValues();
+          std::vector< double > newValues;
+          std::map< std::string, double > knownValues;
+
+          for (unsigned int k = 0; k < frange->getNumParameters(); ++k)
+            {
+              auto * p = frange->getParameter(k);
+              knownValues[p->getId()] = p->getValue();
+            }
+
+for (auto value : oldValues)
+            {
+              knownValues[insideVRange->getId()] = value;
+              newValues.push_back(SBMLTransforms::evaluateASTNode(frange->getMath(), knownValues));
+            }
+
+          newRange->setValues(newValues);
+          newRange->setId(frange->getId());
+
+          pdelete(frange);
+          return newRange;
+        }
+    }
+
+  CCopasiMessage(CCopasiMessage::WARNING,
+                 "The repeated task uses a functional range, that cannot yet be supported.");
+  return NULL;
 }
 
 bool applyValueToParameterSet(CModelParameterSet& set, CDataObject *obj, double newValue)

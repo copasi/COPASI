@@ -40,6 +40,12 @@ LIBSBML_CPP_NAMESPACE_BEGIN
 class Model;
 LIBSBML_CPP_NAMESPACE_END
 
+LIBSEDML_CPP_NAMESPACE_BEGIN
+class SedVectorRange;
+class SedFunctionalRange;
+class SedRepeatedTask;
+LIBSEDML_CPP_NAMESPACE_END
+
 class CTrajectoryTask;
 class CCompartment;
 class CMetab;
@@ -168,6 +174,23 @@ public:
    * Import all tasks for the imported SBML model
    */
   void importTasks(CDataVectorN< CCopasiTask > * pTaskList = NULL);
+
+  /**
+   * Utility function trying to convert the given Functional Range into a Vector Range
+   *
+   * Only functional ranges that are simple transformation of another vector range are
+   * currently supported.
+   *
+   * @param frange the functional range to convert
+   * @param repeat the repeated task worked on
+   *
+   * @return the newly created VectorRange or NULL
+   */
+  static
+  LIBSEDML_CPP_NAMESPACE_QUALIFIER SedVectorRange *
+  convertSimpleFunctionalRange(
+    LIBSEDML_CPP_NAMESPACE_QUALIFIER SedFunctionalRange * frange,
+    LIBSEDML_CPP_NAMESPACE_QUALIFIER SedRepeatedTask * repeat);
 
   CModel* readSEDML(std::string filename,
                     CDataModel* pDataModel);
