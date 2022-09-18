@@ -952,7 +952,7 @@ const SBMLUnitSupport::SUnitInfo & SBMLUnitSupport::importUnit(const std::string
         break;
     }
 
-  return importUnit(pSBMLModel->getUnitDefinition(unitId), true);
+  return importUnit(pUnitDefinition, true);
 }
 
 const SBMLUnitSupport::SUnitInfo & SBMLUnitSupport::importUnit(const UnitDefinition * pUnitDefinition, const bool & allocated)
