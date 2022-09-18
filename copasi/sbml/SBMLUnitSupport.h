@@ -74,9 +74,7 @@ public:
   bool createUnitExpressionFor(SUnitInfo & unitInfo) const;
 
   void checkElementUnits(const Model* pSBMLModel,
-                         CModel* pCopasiModel,
-                         int level,
-                         int version);
+                         CModel* pCopasiModel);
 
   /**
    * Enhanced method to identify identical SBML unit definitions.
@@ -85,7 +83,7 @@ public:
    * Right now it check for example if two volumes, one given in litre and one
    * given in cubic meters are identical.
    */
-  static bool areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1, const UnitDefinition* pUdef2);
+  static bool areSBMLUnitDefinitionsIdentical(const SUnitInfo & unitInfo1, const SUnitInfo & unitInfo2);
 
   static std::string unitKindToString(UnitKind_t kind);
 
