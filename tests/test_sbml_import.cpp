@@ -8,6 +8,7 @@
 extern std::string getTestFile(const std::string & fileName);
 
 #include <copasi/CopasiTypes.h>
+#include <copasi/sbml/SBMLUnitSupport.h>
 #include <sbml/SBMLTypes.h>
 
 TEST_CASE("1: importing sbml files", "[copasi,sbml]")
@@ -24,24 +25,29 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
     auto* sbml_mod = sbml_doc->getModel();
     REQUIRE(sbml_mod != nullptr);
 
-    auto * unit = sbml_mod->getUnitDefinition("unit_1");
-    REQUIRE(unit != nullptr);
+    SBMLUnitSupport importer;
+    importer.setLevelAndVersion(sbml_doc->getLevel(), sbml_doc->getVersion());
 
-    SBMLImporter importer;
+    SBMLUnitSupport::SUnitInfo UnitInfo_1;
+    UnitInfo_1.pSBML = sbml_mod->getUnitDefinition("unit_1");
+    REQUIRE(UnitInfo_1.pSBML != nullptr);
 
-    std::string expression = importer.createUnitExpressionFor(unit);
+    REQUIRE(importer.createUnitExpressionFor(UnitInfo_1));
+    REQUIRE(UnitInfo_1.expression == "l/(nmol*s)");
 
-    REQUIRE(expression == "l/(nmol*s)");
+    SBMLUnitSupport::SUnitInfo UnitInfo_2;
+    UnitInfo_2.pSBML = sbml_mod->getUnitDefinition("unit_2");
+    REQUIRE(UnitInfo_2.pSBML != nullptr);
 
-    unit = sbml_mod->getUnitDefinition("unit_2");
-    REQUIRE(unit != nullptr);
-    expression = importer.createUnitExpressionFor(unit);
-    REQUIRE(expression == "d");
+    REQUIRE(importer.createUnitExpressionFor(UnitInfo_2));
+    REQUIRE(UnitInfo_2.expression == "d");
 
-    unit = sbml_mod->getUnitDefinition("unit_3");
-    REQUIRE(unit != nullptr);
-    expression = importer.createUnitExpressionFor(unit);
-    REQUIRE((expression == "1/(#*d)" || expression == "1/(d*#)"));
+    SBMLUnitSupport::SUnitInfo UnitInfo_3;
+    UnitInfo_3.pSBML = sbml_mod->getUnitDefinition("unit_3");
+    REQUIRE(UnitInfo_3.pSBML != nullptr);
+
+    REQUIRE(importer.createUnitExpressionFor(UnitInfo_3));
+    REQUIRE((UnitInfo_3.expression == "1/(#*d)" || UnitInfo_3.expression == "1/(d*#)"));
 
     delete sbml_doc;
   }
@@ -57,29 +63,36 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
     auto * unit = sbml_mod->getUnitDefinition("um3");
     REQUIRE(unit != nullptr);
 
-    SBMLImporter importer;
+    SBMLUnitSupport importer;
+    importer.setLevelAndVersion(sbml_doc->getLevel(), sbml_doc->getVersion());
 
-    std::string expression = importer.createUnitExpressionFor(unit);
+    SBMLUnitSupport::SUnitInfo UnitInfo_1;
+    UnitInfo_1.pSBML = sbml_mod->getUnitDefinition("um3");
+    REQUIRE(UnitInfo_1.pSBML != nullptr);
+
+    REQUIRE(importer.createUnitExpressionFor(UnitInfo_1));
+    REQUIRE(!UnitInfo_1.expression.empty());
+
     delete sbml_doc;
-
-    REQUIRE(!expression.empty());
 
     auto* dm = CRootContainer::addDatamodel();
     REQUIRE(dm->importSBML(test_file) == true);
     const auto* model = dm->getModel();
     std::string model_units = model->getVolumeUnit();
-    REQUIRE(model_units == expression);
+    REQUIRE(model_units == UnitInfo_1.expression);
 
     // now export
     auto sbml_text = dm->exportSBMLToString(NULL, 3, 1);
 
     sbml_doc = readSBMLFromString(sbml_text.c_str());
     sbml_mod = sbml_doc->getModel();
-    unit = sbml_mod->getUnitDefinition("volume");
-    REQUIRE(unit != nullptr);
 
-    expression = importer.createUnitExpressionFor(unit);
-    REQUIRE(model_units == expression);
+    SBMLUnitSupport::SUnitInfo UnitInfo_2;
+    UnitInfo_2.pSBML = sbml_mod->getUnitDefinition("volume");
+    REQUIRE(UnitInfo_2.pSBML != nullptr);
+
+    REQUIRE(importer.createUnitExpressionFor(UnitInfo_2));
+    REQUIRE(model_units == UnitInfo_2.expression);
     delete sbml_doc;
   }
 

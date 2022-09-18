@@ -440,19 +440,6 @@ protected:
                                         std::vector<SBMLIncompatibility>& result);
 
   /**
-   * Go through all species in the model and check if the corresponding species
-   * in the SBML model has the spatialSizeUnits attribute set.
-   * This attribute is not supported in SBML L2V3 and above, so we have to get
-   * rid of this attribute when we export to a level equal to or higher than
-   * L2V3.
-   * If the attribute has the same value as the compartments units, we can just
-   * delete it without changing the model, otherwise we have to give a
-   * corresponding warning.
-   */
-  static void check_for_spatial_size_units(const CDataModel& dataModel,
-      std::vector<SBMLIncompatibility>& result);
-
-  /**
    * Checks whether the model contains a metabolite that is defined by an ODE
    * expression and that is located in a variable volume. Since COPASI
    * interprets the expression differently from SBML, we can not correctly
