@@ -48,6 +48,7 @@
 %ignore CVector::operator=;
 %ignore CVectorCore::array() const;
 %ignore CVectorCore::array();
+%ignore CVector::size() const;
 %ignore CVector::resize;
 %ignore CVector::applyPivot;
 %ignore CVectorCore::CVectorCore(const unsigned C_INT32&, CType*);
@@ -89,7 +90,6 @@
     {
       return self->size();
     }
-
 }
 %enddef
 
@@ -116,6 +116,8 @@ typedef CVectorCore<size_t> SizeTVectorCore;
 typedef CVector<size_t> SizeTVector;
 typedef CVectorCore<CDataObject*> ObjectVectorCore;
 typedef CVector<CDataObject*> ObjectVector;
+typedef CVectorCore<const CDataObject*> ConstObjectVectorCore;
+typedef CVector<const CDataObject*> ConstObjectVector;
 
 %template(FloatVectorCore) CVectorCore<C_FLOAT64>;
 %template(FloatVector) CVector<C_FLOAT64>;
