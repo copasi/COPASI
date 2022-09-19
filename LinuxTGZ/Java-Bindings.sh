@@ -14,11 +14,14 @@
 # of Manchester. 
 # All rights reserved. 
 
+# set -o xtrace
+
 PACKAGE_NAME="COPASI-${MyAppVersion}-Java-Bindings-${PACKAGE}"
 
-OS=`uname`
+OS=$(uname)
 EXT=so
-if [ $OS="Darwin" ]; then
+
+if [ $OS = "Darwin" ]; then
   EXT=jnilib
 fi
 
