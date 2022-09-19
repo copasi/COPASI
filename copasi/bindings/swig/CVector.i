@@ -128,7 +128,7 @@ typedef CVector<CDataObject*> ObjectVector;
 %template(ObjectVectorCore) CVectorCore<CDataObject*>;
 %template(ObjectVector) CVector<CDataObject*>;
 ExtendCVectorPtr(CVector, CDataObject*);
-%template(ObjectVectorCore) CVectorCore<CDataObject*>;
+%template(ConstObjectVectorCore) CVectorCore<const CDataObject*>;
 %template(ConstObjectVector) CVector<const CDataObject*>;
 ExtendCVectorPtr(CVector, const CDataObject*);
 %template(ConstFunctionVector) CVector<const CFunction*>;
