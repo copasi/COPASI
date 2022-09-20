@@ -276,15 +276,6 @@ bool CQFittingWidget::loadTaskProtected()
   mpUseTimeSens->setChecked(pProblem->getUseTimeSens());
 
   mpParameters->load(mpDataModel, pProblem->getGroup("OptimizationItemList"), &mExperimentKeyMap, &mCrossValidationKeyMap);
-
-  if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::ERROR)
-    {
-      CQMessageBox::critical(this, "Error loading Parameter estimation task",
-                             CCopasiMessage::getAllMessageText().c_str(),
-                             QMessageBox::Ok | QMessageBox::Default,
-                             QMessageBox::NoButton);
-    }
-
   mpParameters->setExperimentSet(const_cast<const CExperimentSet *&>(mpExperimentSet));
   mpParameters->setCrossValidationSet(const_cast<const CCrossValidationSet *&>(mpCrossValidationSet));
 
