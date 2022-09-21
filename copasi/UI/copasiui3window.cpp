@@ -3366,7 +3366,7 @@ SedmlImportOptions CopasiUI3Window::getSedMLImportOptionsForArchive(const QStrin
   if (!archive.initializeFromArchive(TO_UTF8(fileName)))
     {
       CCopasiMessage(CCopasiMessage::ERROR, "Invalid COMBINE archive.");
-      return false;
+      return result;
     }
 
   // read the master file
