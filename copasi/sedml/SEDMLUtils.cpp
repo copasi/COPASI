@@ -34,11 +34,11 @@
 #include "copasi/core/CDataObject.h"
 
 std::string SEDMLUtils::findIdByNameAndType(
-  const std::map<const CDataObject*, SBase*>& map,
+  const std::map< const CDataObject *, SBase * > & map,
   int typeCode,
-  const std::string& name)
+  const std::string & name)
 {
-  std::map<const CDataObject*, SBase*>::const_iterator it = map.begin();
+  std::map< const CDataObject *, SBase * >::const_iterator it = map.begin();
 
   std::string::size_type compartmentStart = name.find("{");
 
@@ -54,8 +54,8 @@ std::string SEDMLUtils::findIdByNameAndType(
 
   while (it != map.end())
     {
-      SBase* current = it->second;
-      const CDataObject* object = it->first;
+      SBase * current = it->second;
+      const CDataObject * object = it->first;
       std::string displayName = object->getObjectDisplayName();
 
       if (((current->getTypeCode() & typeCode) != typeCode))
@@ -67,11 +67,11 @@ std::string SEDMLUtils::findIdByNameAndType(
       if (current->getName() == name)
         return current->getId();
 
-      if (typeCode == SBML_SPECIES  && compartmentStart != std::string::npos)
+      if (typeCode == SBML_SPECIES && compartmentStart != std::string::npos)
         {
           if (displayName == name)
             {
-              Species* species = static_cast<Species*>(current);
+              Species * species = static_cast< Species * >(current);
 
               if (species->getCompartment() == compId)
                 return species->getId();
@@ -85,15 +85,15 @@ std::string SEDMLUtils::findIdByNameAndType(
 }
 
 std::string
-SEDMLUtils::getXPathAndName(std::string& sbmlId,
-                            const std::string &type,
-                            const CModel *pModel,
-                            const CDataModel& dataModel)
+SEDMLUtils::getXPathAndName(std::string & sbmlId,
+                            const std::string & type,
+                            const CModel * pModel,
+                            const CDataModel & dataModel)
 {
-  std::vector<std::string> stringsContainer;
+  std::vector< std::string > stringsContainer;
   std::string targetXPathString;
-  const std::map<const CDataObject*, SBase*>& copasi2sbmlmap =
-    const_cast<CDataModel&>(dataModel).getCopasi2SBMLMap();
+  const std::map< const CDataObject *, SBase * > & copasi2sbmlmap =
+    const_cast< CDataModel & >(dataModel).getCopasi2SBMLMap();
   std::string displayName = sbmlId;
 
   if (copasi2sbmlmap.empty())
@@ -102,7 +102,7 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
       return "";
     }
 
-  std::map<CDataObject*, SBase*>::const_iterator pos;
+  std::map< CDataObject *, SBase * >::const_iterator pos;
 
   if (type == "Concentration" || type == "InitialConcentration")
     {
@@ -243,26 +243,27 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
   return targetXPathString;
 }
 
-const CDataObject*
-SEDMLUtils::resolveDatagenerator(CModel *model, const SedDataGenerator* dataReference)
+const CDataObject *
+SEDMLUtils::resolveDatagenerator(CModel * model, const SedDataGenerator * dataReference)
 {
   // for now one variable only
-  if (dataReference == NULL || dataReference->getNumVariables() < 1) return NULL;
+  if (dataReference == NULL || dataReference->getNumVariables() < 1)
+    return NULL;
 
-  const SedVariable* var = dataReference->getVariable(0);
+  const SedVariable * var = dataReference->getVariable(0);
 
   if (var->isSetSymbol() && var->getSymbol() == SEDML_TIME_URN)
     {
-      return static_cast<const CDataObject *>(model->getObject(CCommonName("Reference=Time")));
+      return static_cast< const CDataObject * >(model->getObject(CCommonName("Reference=Time")));
     }
 
   return resolveVariable(model, var);
 }
 
 std::string
-SEDMLUtils::translateTargetXpathInSBMLId(const std::string &xpath, std::string& SBMLType)
+SEDMLUtils::translateTargetXpathInSBMLId(const std::string & xpath, std::string & SBMLType)
 {
-  std::vector<std::string> xpathStrings;
+  std::vector< std::string > xpathStrings;
   std::string id, nextString;
 
   splitStrings(xpath, ':', xpathStrings);
@@ -282,13 +283,12 @@ SEDMLUtils::translateTargetXpathInSBMLId(const std::string &xpath, std::string& 
   return id;
 }
 
-const CDataObject*
-SEDMLUtils::resolveXPath(const CModel *model,  const std::string& xpath,
-                         bool initial /* = false*/)
+const CDataObject *
+SEDMLUtils::resolveXPath(const CModel * model, const std::string & xpath, bool initial /* = false*/)
 {
   std::string SBMLType;
   std::string id = translateTargetXpathInSBMLId(xpath, SBMLType);
-  const CDataObject* result = getObjectForSbmlId(model, id, SBMLType, initial);
+  const CDataObject * result = getObjectForSbmlId(model, id, SBMLType, initial);
 
   if (result == NULL)
     {
@@ -299,13 +299,13 @@ SEDMLUtils::resolveXPath(const CModel *model,  const std::string& xpath,
         {
           std::string reactionType;
           std::string reactionId = translateTargetXpathInSBMLId(xpath.substr(0, pos), reactionType);
-          const CDataObject* flux = getObjectForSbmlId(model, reactionId, reactionType);
+          const CDataObject * flux = getObjectForSbmlId(model, reactionId, reactionType);
 
           if (flux != NULL)
             {
-              const CDataObject* reactionObj = flux->getObjectParent();
+              const CDataObject * reactionObj = flux->getObjectParent();
               std::string cn = "ParameterGroup=Parameters,Parameter=" + id + ",Reference=Value";
-              return dynamic_cast<const CDataObject*>(reactionObj->getObject(cn));
+              return dynamic_cast< const CDataObject * >(reactionObj->getObject(cn));
             }
         }
     }
@@ -385,8 +385,8 @@ CModelValue * SEDMLUtils::createAmountMV(CModel * pModel, const CMetab * pMetab)
   return pMV;
 }
 
-std::string&
-SEDMLUtils::removeCharactersFromString(std::string& str, const std::string& characters)
+std::string &
+SEDMLUtils::removeCharactersFromString(std::string & str, const std::string & characters)
 {
   for (unsigned int ii = 0; ii < characters.length(); ++ii)
     {
@@ -397,7 +397,7 @@ SEDMLUtils::removeCharactersFromString(std::string& str, const std::string& char
 }
 
 std::string
-SEDMLUtils::getXPathForObject(const CDataObject& object)
+SEDMLUtils::getXPathForObject(const CDataObject & object)
 {
   std::string sbmlId = getSbmlId(object);
   std::string targetXPathString;
@@ -411,15 +411,15 @@ SEDMLUtils::getXPathForObject(const CDataObject& object)
         return targetXPathString;
     }
 
-  const std::string& type = object.getObjectName();
-  const CDataModel* dm = object.getObjectDataModel();
+  const std::string & type = object.getObjectName();
+  const CDataModel * dm = object.getObjectDataModel();
   std::string yAxis = object.getObjectDisplayName();
   targetXPathString = getXPathAndName(yAxis, type,
                                       dm->getModel(), *dm);
   return targetXPathString;
 }
 
-std::string SEDMLUtils::getXPathForSbmlIdAndType(const std::string& type, const std::string& sbmlId)
+std::string SEDMLUtils::getXPathForSbmlIdAndType(const std::string & type, const std::string & sbmlId)
 {
   if (type == "Concentration" || type == "InitialConcentration")
     return "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=\'" + sbmlId + "\']";
@@ -487,20 +487,21 @@ std::string SEDMLUtils::getXPathForObjectAndType(const CDataObject & object, con
   return std::string();
 }
 
-std::string SEDMLUtils::getNextId(const std::string& base, int count)
+std::string SEDMLUtils::getNextId(const std::string & base, int count)
 {
-  std::stringstream str; str << base << count;
+  std::stringstream str;
+  str << base << count;
   return str.str();
 }
 
-std::string SEDMLUtils::getSbmlId(const CDataObject& object)
+std::string SEDMLUtils::getSbmlId(const CDataObject & object)
 {
-  const CModelEntity* entity = dynamic_cast<const CModelEntity*>(&object);
+  const CModelEntity * entity = dynamic_cast< const CModelEntity * >(&object);
 
   if (entity != NULL)
     return entity->getSBMLId();
 
-  entity = dynamic_cast<const CModelEntity*>(object.getObjectParent());
+  entity = dynamic_cast< const CModelEntity * >(object.getObjectParent());
 
   if (entity != NULL)
     return entity->getSBMLId();
@@ -512,9 +513,7 @@ std::string SEDMLUtils::getSbmlId(const CDataObject& object)
 //this is presently a hack to parse the XPath based target attribute in SEDML. A better solution may be
 //necessary in the future.
 
-void
-SEDMLUtils::splitStrings(const std::string &xpath, char delim,
-                         std::vector<std::string> &xpathStrings)
+void SEDMLUtils::splitStrings(const std::string & xpath, char delim, std::vector< std::string > & xpathStrings)
 {
   std::string myPath = xpath;
   xpathStrings.clear();
@@ -665,10 +664,10 @@ int SEDMLUtils::getAlphaFromRgba(const std::string & rgba)
 }
 
 const CDataObject *
-SEDMLUtils::getObjectForSbmlId(const CModel* pModel, const std::string& id, const std::string& SBMLType, bool initial/* = false*/)
+SEDMLUtils::getObjectForSbmlId(const CModel * pModel, const std::string & id, const std::string & SBMLType, bool initial /* = false*/)
 {
   if (SBMLType == "Time")
-    return static_cast<const CDataObject *>(pModel->getObject(CCommonName("Reference=Time")));
+    return static_cast< const CDataObject * >(pModel->getObject(CCommonName("Reference=Time")));
 
   if (SBMLType == "species")
     {
@@ -740,21 +739,21 @@ SEDMLUtils::getObjectForSbmlId(const CModel* pModel, const std::string& id, cons
 
 std::map< int, int > SEDMLUtils::COPASI_SYMBOL_MAP =
 {
-  {(int)CPlotItem::SymbolType::Circle, SEDML_MARKERTYPE_CIRCLE},
-  {(int)CPlotItem::SymbolType::Diamond, SEDML_MARKERTYPE_DIAMOND},
-  {(int)CPlotItem::SymbolType::hDash, SEDML_MARKERTYPE_HDASH},
-  {(int)CPlotItem::SymbolType::None, SEDML_MARKERTYPE_NONE},
+  {(int) CPlotItem::SymbolType::Circle, SEDML_MARKERTYPE_CIRCLE},
+  {(int) CPlotItem::SymbolType::Diamond, SEDML_MARKERTYPE_DIAMOND},
+  {(int) CPlotItem::SymbolType::hDash, SEDML_MARKERTYPE_HDASH},
+  {(int) CPlotItem::SymbolType::None, SEDML_MARKERTYPE_NONE},
   {(int) CPlotItem::SymbolType::Plus, SEDML_MARKERTYPE_PLUS},
   {(int) CPlotItem::SymbolType::LargeCross, SEDML_MARKERTYPE_PLUS},
   {(int) CPlotItem::SymbolType::SmallCross, SEDML_MARKERTYPE_PLUS},
   {(int) CPlotItem::SymbolType::Square, SEDML_MARKERTYPE_SQUARE},
-  {(int)CPlotItem::SymbolType::Star, SEDML_MARKERTYPE_STAR},
-  {(int)CPlotItem::SymbolType::TriangleDown, SEDML_MARKERTYPE_TRIANGLEDOWN},
-  {(int)CPlotItem::SymbolType::TriangleLeft, SEDML_MARKERTYPE_TRIANGLELEFT},
-  {(int)CPlotItem::SymbolType::TriangleRight, SEDML_MARKERTYPE_TRIANGLERIGHT},
-  {(int)CPlotItem::SymbolType::TriangleUp, SEDML_MARKERTYPE_TRIANGLEUP},
-  {(int)CPlotItem::SymbolType::vDash, SEDML_MARKERTYPE_VDASH},
-  {(int)CPlotItem::SymbolType::xCross, SEDML_MARKERTYPE_XCROSS}
+  {(int) CPlotItem::SymbolType::Star, SEDML_MARKERTYPE_STAR},
+  {(int) CPlotItem::SymbolType::TriangleDown, SEDML_MARKERTYPE_TRIANGLEDOWN},
+  {(int) CPlotItem::SymbolType::TriangleLeft, SEDML_MARKERTYPE_TRIANGLELEFT},
+  {(int) CPlotItem::SymbolType::TriangleRight, SEDML_MARKERTYPE_TRIANGLERIGHT},
+  {(int) CPlotItem::SymbolType::TriangleUp, SEDML_MARKERTYPE_TRIANGLEUP},
+  {(int) CPlotItem::SymbolType::vDash, SEDML_MARKERTYPE_VDASH},
+  {(int) CPlotItem::SymbolType::xCross, SEDML_MARKERTYPE_XCROSS}
 };
 
 std::map< int, int > SEDMLUtils::COPASI_LINE_STYLE_MAP =
@@ -774,7 +773,10 @@ std::map< std::string, std::string > SEDMLUtils::PARAMETER_KISAO_MAP =
   {"KISAO:0000216", "Integrate Reduced Model"},
   {"KISAO:0000415", "Max Internal Steps"},
   {"KISAO:0000467", "Max Internal Step Size"},
-  {"KISAO:0000488", "Random Seed", },
+  {
+    "KISAO:0000488",
+    "Random Seed",
+  },
   {"KISAO:0000228", "Epsilon"},
   {"KISAO:0000203", "Lower Limit"},
   {"KISAO:0000205", "Partitioning Interval"},
@@ -857,7 +859,7 @@ VariableInfo::VariableInfo(const CDataObject * pObject)
   mIsValid = (!xpath.empty()) || (!term.empty()) || (!symbol.empty());
 }
 
-SedVariable*
+SedVariable *
 VariableInfo::addToDataGenerator(SedDataGenerator * pGenerator) const
 {
   SedVariable * pVar = pGenerator->createVariable();
@@ -930,4 +932,358 @@ bool VariableInfo::operator<(const VariableInfo & other) const
     return term < other.term;
 
   return symbol < other.symbol;
+}
+
+SedmlInfo::SedmlInfo(SedDocument * pDocument)
+  : mSupported(false)
+  , mComplex(false)
+  , mpDocument(pDocument)
+{
+  if (!pDocument)
+    return;
+
+
+  std::map< int, int > taskCount;
+
+  for (unsigned int i = 0; i < pDocument->getNumTasks(); ++i)
+    {
+      auto * current = pDocument->getTask(i);
+      mTaskMap[current->getId()] = getModelForTask(current);
+      taskCount[current->getTypeCode()] = taskCount[current->getTypeCode()] + 1;
+      mReports[current->getId()] = std::vector< std::pair< std::string, std::string > >();
+      mPlots[current->getId()] = std::vector< std::pair< std::string, std::string > >();
+      std::stringstream str;
+
+      if (current->isSetName())
+        str << current->getName() << " - ";
+
+      str << current->getId();
+
+      mTaskNames.push_back(std::make_pair(current->getId(), str.str()));
+      mComplex |= taskCount[current->getTypeCode()] > 1 || mTaskMap[current->getId()].size() > 1;
+    }
+
+  for (unsigned int i = 0; i < pDocument->getNumOutputs(); ++i)
+    {
+      auto * current = pDocument->getOutput(i);
+      mOutputMap[current->getId()] = getTasks(current);
+      mComplex |= mOutputMap[current->getId()].size() > 1;
+
+for (auto & taskId : mOutputMap[current->getId()])
+        {
+          std::stringstream str;
+
+          if (current->isSetName())
+            str << current->getName() << " - ";
+
+          str << current->getId();
+
+          if (current->getTypeCode() == SEDML_OUTPUT_REPORT)
+            mReports[taskId].push_back(std::make_pair(current->getId(), str.str()));
+          else
+            mPlots[taskId].push_back(std::make_pair(current->getId(), str.str()));
+        }
+    }
+}
+
+bool SedmlInfo::isSupported()
+{
+  return mSupported;
+}
+
+bool SedmlInfo::isComplex()
+{
+  return mComplex;
+}
+
+std::set< std::string > SedmlInfo::getModelForTask(SedAbstractTask * current)
+{
+  std::set< std::string > models;
+
+  if (!current)
+    return models;
+
+  if (current->getTypeCode() == SEDML_TASK)
+    {
+      auto * task = static_cast< SedTask * >(current);
+      models.insert(task->getModelReference());
+      mTaskMap[task->getId()] = models;
+    }
+  else if (current->getTypeCode() == SEDML_TASK_REPEATEDTASK)
+    {
+      auto * task = static_cast< SedRepeatedTask * >(current);
+
+      for (unsigned int j = 0; j < task->getNumSubTasks(); ++j)
+        {
+          addSets(models, getModelForTask(task->getSubTask(j)->getTask()));
+        }
+    }
+
+  return models;
+}
+
+std::set< std::string > SedmlInfo::getModelForTask(const std::string & taskId)
+{
+  if (!mpDocument)
+    return std::set< std::string >();
+
+  return getModelForTask(mpDocument->getTask(taskId));
+}
+
+std::set< std::string > SedmlInfo::getModelForDataGen(SedDataGenerator * dg)
+{
+  auto result = std::set< std::string >();
+
+  if (!dg)
+    return result;
+
+  for (unsigned int i = 0; i < dg->getNumVariables(); ++i)
+    {
+      auto * var = dg->getVariable(i);
+
+      if (!var)
+        continue;
+
+      if (var->isSetModelReference())
+        result.insert(var->getModelReference());
+
+      if (var->isSetTaskReference())
+        {
+          addSets(result, getModelForTask(var->getTaskReference()));
+        }
+    }
+
+  return result;
+}
+
+std::set< std::string > SedmlInfo::getTasks(const std::string & dgId)
+{
+  if (!mpDocument)
+    return std::set< std::string >();
+
+  return getTasks(mpDocument->getDataGenerator(dgId));
+}
+
+std::set< std::string > SedmlInfo::getTasks(SedDataGenerator * dg)
+{
+  auto result = std::set< std::string >();
+
+  if (!dg)
+    return result;
+
+  for (unsigned int i = 0; i < dg->getNumVariables(); ++i)
+    {
+      auto * var = dg->getVariable(i);
+
+      if (!var)
+        continue;
+
+      if (var->isSetTaskReference())
+        {
+          result.insert(var->getTaskReference());
+        }
+    }
+
+  return result;
+}
+
+std::set< std::string > SedmlInfo::getTasks(SedOutput * output)
+{
+  auto result = std::set< std::string >();
+
+  if (!output)
+    return result;
+
+  switch (output->getTypeCode())
+    {
+      case SEDML_OUTPUT_REPORT:
+      {
+        auto * current = static_cast< SedReport * >(output);
+
+        for (unsigned int i = 0; i < current->getNumDataSets(); ++i)
+          addSets(result, getTasks(current->getDataSet(i)->getDataReference()));
+      }
+      break;
+
+      case SEDML_OUTPUT_PLOT2D:
+      {
+        auto * current = static_cast< SedPlot2D * >(output);
+
+        for (unsigned int i = 0; i < current->getNumCurves(); ++i)
+          addSets(result, getTasks(current->getCurve(i)));
+      }
+      break;
+
+      case SEDML_OUTPUT_PLOT3D:
+      {
+        auto * current = static_cast< SedPlot3D * >(output);
+
+        for (unsigned int i = 0; i < current->getNumSurfaces(); ++i)
+          addSets(result, getTasks(current->getSurface(i)));
+      }
+      break;
+
+      default:
+      {
+        break;
+      }
+    }
+
+  return result;
+}
+
+std::set< std::string > SedmlInfo::getTasks(SedAbstractCurve * curve)
+{
+  auto result = std::set< std::string >();
+
+  if (!curve)
+    return result;
+
+  switch (curve->getTypeCode())
+    {
+      case SEDML_OUTPUT_CURVE:
+      {
+        auto * current = static_cast< SedCurve * >(curve);
+        addSets(result, getTasks(current->getXDataReference()));
+        addSets(result, getTasks(current->getYDataReference()));
+      }
+      break;
+
+      case SEDML_SHADEDAREA:
+      {
+        auto * current = static_cast< SedShadedArea * >(curve);
+        addSets(result, getTasks(current->getXDataReference()));
+        addSets(result, getTasks(current->getYDataReferenceFrom()));
+        addSets(result, getTasks(current->getYDataReferenceTo()));
+      }
+      break;
+
+      default:
+        break;
+    }
+
+  return result;
+}
+
+std::set< std::string > SedmlInfo::getTasks(SedSurface * surface)
+{
+  auto result = std::set< std::string >();
+
+  if (!surface)
+    return result;
+
+  addSets(result, getTasks(surface->getXDataReference()));
+  addSets(result, getTasks(surface->getYDataReference()));
+  addSets(result, getTasks(surface->getZDataReference()));
+
+  return result;
+}
+
+std::vector< std::pair< std::string, std::string > > SedmlInfo::getTaskNames()
+{
+  return mTaskNames;
+}
+
+std::string SedmlInfo::getFirstModel(const std::string & taskId)
+{
+  auto it = mTaskMap.find(taskId);
+
+  if (it == mTaskMap.end() || it->second.empty())
+    return std::string();
+
+  return *it->second.begin();
+}
+
+std::vector< std::pair< std::string, std::string > > SedmlInfo::getReportsForTask(const std::string & taskId)
+{
+  return mReports[taskId];
+}
+
+std::vector< std::pair< std::string, std::string > > SedmlInfo::getPlotsForTask(const std::string & taskId)
+{
+  return mPlots[taskId];
+}
+
+std::string SedmlInfo::getReportFileName(const std::string & reportId)
+{
+  return mFileNames[reportId];
+}
+
+void SedmlInfo::setReportFileName(const std::string & reportId, const std::string & fileName)
+{
+  mFileNames[reportId] = fileName;
+}
+
+std::string SedmlInfo::getFirstTaskWithOutput()
+{
+  if (mOutputMap.empty() || mOutputMap.begin()->second.empty())
+    return std::string();
+
+  return *mOutputMap.begin()->second.begin();
+}
+
+void SedmlInfo::addSets(std::set< std::string > & target, const std::set< std::string > & source)
+{
+  target.insert(source.begin(), source.end());
+}
+
+SedmlImportOptions::SedmlImportOptions(
+  const std::string & taskId,
+  const std::string & modelId,
+  const std::vector< std::string > & plots,
+  const std::string & reportId,
+  const std::string & reportFilename)
+  : mTaskId(taskId)
+  , mModelId(modelId)
+  , mPlots(plots)
+  , mReportId(reportId)
+  , mReportFile(reportFilename)
+{
+}
+
+SedmlImportOptions & SedmlImportOptions::operator=(const SedmlImportOptions & rhs)
+{
+  if (this != &rhs)
+    {
+      mTaskId = rhs.mTaskId;
+      mModelId = rhs.mModelId;
+      mPlots = rhs.mPlots;
+      mReportId = rhs.mReportId;
+      mReportFile = rhs.mReportFile;
+    }
+
+  return *this;
+}
+
+const std::string & SedmlImportOptions::getTaskId() const
+{
+  return mTaskId;
+}
+
+const std::string & SedmlImportOptions::getModelId() const
+{
+  return mModelId;
+}
+
+const std::string & SedmlImportOptions::getReportId() const
+{
+  return mReportId;
+}
+
+const std::string & SedmlImportOptions::getReportFile() const
+{
+  return mReportFile;
+}
+
+const std::vector< std::string > & SedmlImportOptions::getPlots() const
+{
+  return mPlots;
+}
+
+bool SedmlImportOptions::ignoreOutput(const std::string& outputId) const
+{
+  if (outputId == mReportId)
+    return false;
+
+  return std::find(mPlots.begin(), mPlots.end(), outputId) == mPlots.end();
 }

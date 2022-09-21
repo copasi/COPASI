@@ -124,6 +124,7 @@ DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel):
   , mSEDMLExportIncomplete(true)
   , mSEDMLExportCOPASIMIRIAM(true)
   , mIgnoreNextFile(false)
+  , mOptions()
 {
   mpOutputHandlerPlot = new COutputHandlerPlot();
   mpDataModel->addInterface(mpOutputHandlerPlot);
@@ -1194,12 +1195,13 @@ void DataModelGUI::exportCombineFinished()
   threadFinished();
 }
 
-void DataModelGUI::importSEDML(const std::string & fileName)
+void DataModelGUI::importSEDML(const std::string & fileName, const SedmlImportOptions * pOptions)
 {
   mpProgressBar = CProgressBar::create();
 
   mSuccess = true;
   mFileName = fileName;
+  mOptions = *pOptions;
   mpThread = new CQThread(this, &DataModelGUI::importSEDMLRun);
   connect(mpThread, SIGNAL(finished()), this, SLOT(importSEDMLFinished()));
   mpThread->start();
@@ -1210,7 +1212,7 @@ void DataModelGUI::importSEDMLRun()
   try
     {
       assert(mpDataModel != NULL);
-      mSuccess = mpDataModel->importSEDML(mFileName, mpProgressBar, false);
+      mSuccess = mpDataModel->importSEDML(mFileName, mpProgressBar, false, &mOptions);
     }
 
   catch (...)

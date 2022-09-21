@@ -93,6 +93,9 @@
 #include <copasi/UI/CWindowInterface.h>
 
 #include "CQSEDMLFileDialog.h"
+#include "CQSEDMLImportDialog.h"
+#include <copasi/sedml/SEDMLUtils.h>
+#include <sedml/SedReader.h>
 
 # include "copasi/undoUI/CQUndoDialog.h"
 # include "copasi/core/CCore.h"
@@ -3270,6 +3273,33 @@ void CopasiUI3Window::slotImportSEDML(QString file)
             }
         }
 
+
+      // check the SED-ML file, for whether it is complex, if so ask the user to choose what to import:
+
+      auto * doc = readSedMLFromFile(TO_UTF8(SEDMLFile));
+      SedmlInfo info(doc);
+      SedmlImportOptions options;
+      CQSEDMLImportDialog * dlg = NULL;
+
+      if (info.isComplex())
+        {
+          dlg = new CQSEDMLImportDialog(this);
+          dlg->loadSedML(info);
+          int result = dlg->exec();
+
+          if (result == QDialog::Rejected)
+            {
+              pdelete(doc);
+              return;
+            }
+
+          options = dlg->getOptions();
+        }
+
+      pdelete(doc);
+
+
+
 #ifdef COPASI_Provenance
       //Update Main Body Provenance
       //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel());
@@ -3288,7 +3318,7 @@ void CopasiUI3Window::slotImportSEDML(QString file)
       setCursor(Qt::WaitCursor);
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFinished(bool)));
       mNewFile = SEDMLFile;
-      mpDataModelGUI->importSEDML(TO_UTF8(SEDMLFile));
+      mpDataModelGUI->importSEDML(TO_UTF8(SEDMLFile), &options);
     }
 }
 

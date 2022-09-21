@@ -82,12 +82,12 @@ LIBCOMBINE_CPP_NAMESPACE_USE
 
 // static
 const CEnumAnnotation< std::string, CDataModel::ContentType >
-CDataModel::ContentTypeNames({"COPASI",
-                              "GEPASI",
-                              "SBML",
-                              "SED-ML",
-                              "OMEX"
-                             });
+CDataModel::ContentTypeNames( {"COPASI",
+  "GEPASI",
+  "SBML",
+  "SED-ML",
+  "OMEX"
+});
 
 // static
 CDataModel::ContentType CDataModel::contentType(std::istream & content)
@@ -719,9 +719,9 @@ bool CDataModel::loadModelParameterSets(const std::string & fileName,
   CDataVectorN< CModelParameterSet > & loadedSet = parameterSetModel->getModelParameterSets();
   CCommonName loadedModelCn = parameterSetModel->getCN();
 
-  for (CModelParameterSet & set : loadedSet)
+for (CModelParameterSet & set : loadedSet)
     {
-      for (CModelParameter * current : dynamic_cast< CModelParameterGroup & >(set))
+for (CModelParameter * current : dynamic_cast< CModelParameterGroup & >(set))
         {
           replaceCnInGroup(current, loadedModelCn, thisModelsCn);
         }
@@ -764,7 +764,7 @@ void CDataModel::replaceCnInGroup(CModelParameter * pParam,
   if (!group)
     return;
 
-  for (CModelParameter * element : *group)
+for (CModelParameter * element : *group)
     {
       CModelParameterGroup * inside = dynamic_cast< CModelParameterGroup * >(element);
 
@@ -2176,7 +2176,8 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 bool CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText,
                                        std::string referenceDir,
                                        CProcessReport * pProcessReport,
-                                       const bool & deleteOldData)
+                                       const bool & deleteOldData,
+                                       const SedmlImportOptions * pOptions)
 {
   // During load no objects will be renamed;
   CRegisteredCommonName::setEnabled(false);
@@ -2196,7 +2197,7 @@ bool CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText,
 
   try
     {
-      pModel = importer.parseSEDML(sedmlDocumentText, this);
+      pModel = importer.parseSEDML(sedmlDocumentText, this, pOptions);
     }
 
   catch (CCopasiException & except)
@@ -2229,7 +2230,8 @@ bool CDataModel::importSEDMLFromString(const std::string & sedmlDocumentText,
 
 bool CDataModel::importSEDML(const std::string & fileName,
                              CProcessReport * pProcessReport,
-                             const bool & deleteOldData)
+                             const bool & deleteOldData,
+                             const SedmlImportOptions * pOptions)
 {
   // During load no objects will be renamed;
   CRegisteredCommonName::setEnabled(false);
@@ -2270,7 +2272,7 @@ bool CDataModel::importSEDML(const std::string & fileName,
       mData.mSEDMLFileName = CDirEntry::normalize(FileName);
       mData.mReferenceDir = CDirEntry::dirName(mData.mSEDMLFileName);
 
-      pModel = importer.readSEDML(FileName, this);
+      pModel = importer.readSEDML(FileName, this, pOptions);
     }
 
   catch (CCopasiException & except)
@@ -2652,7 +2654,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::parameterFitting:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2681,7 +2683,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::lyap:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2698,7 +2700,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::mca:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2715,7 +2717,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::lna:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2732,7 +2734,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::sens:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2749,7 +2751,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::tssAnalysis:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);

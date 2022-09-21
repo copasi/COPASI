@@ -41,6 +41,7 @@ class Model;
 LIBSBML_CPP_NAMESPACE_END
 
 LIBSEDML_CPP_NAMESPACE_BEGIN
+class SedAbstractTask;
 class SedVectorRange;
 class SedFunctionalRange;
 class SedRepeatedTask;
@@ -54,6 +55,7 @@ class CPlotSpecification;
 class CReportDefinition;
 class COutputDefinitionVector;
 class CListOfLayouts;
+class SedmlImportOptions;
 
 class SEDMLImporter
 {
@@ -89,13 +91,16 @@ protected:
 
   // further symbols needed for updating content after import:
   CDataModel::CContent mContent;
+
+  const SedmlImportOptions * mpOptions;
+
 public:
   SEDMLImporter();
   ~SEDMLImporter();
 
   const std::string getArchiveFileName();
 
-  void readListOfPlotsFromSedMLOutput();
+  void importOutputs();
 
   /**
    * adds the given SED-ML curve to the COPASI plot, if supported
@@ -171,9 +176,29 @@ public:
   CModel* importFirstSBMLModel();
 
   /**
+   * Imports the SBML model for the given model id
+   */
+  CModel * importModel(const std::string & modelId);
+
+  std::string resolveModelFile(const std::string& modelSource);
+
+  /**
    * Import all tasks for the imported SBML model
    */
   void importTasks(CDataVectorN< CCopasiTask > * pTaskList = NULL);
+
+  /**
+   * Imports the specified SED-ML task
+   *
+   * @param task the task to import
+   * @param importModel if true, the model referenced from the task will be imported
+   * @param pTaskList optional task list to import into
+   *
+   */
+  void importTask(
+    LIBSEDML_CPP_NAMESPACE_QUALIFIER SedAbstractTask * task,
+    bool importModel = false,
+    CDataVectorN< CCopasiTask > * pTaskList = NULL);
 
   /**
    * Utility function trying to convert the given Functional Range into a Vector Range
@@ -193,10 +218,12 @@ public:
     LIBSEDML_CPP_NAMESPACE_QUALIFIER SedRepeatedTask * repeat);
 
   CModel* readSEDML(std::string filename,
-                    CDataModel* pDataModel);
+                    CDataModel* pDataModel,
+                    const SedmlImportOptions * pOptions = NULL);
 
   CModel* parseSEDML(const std::string& sedmlDocumentText,
-                     CDataModel * pDataModel);
+                     CDataModel * pDataModel,
+                     const SedmlImportOptions * pOptions = NULL);
 
   /**
    * Initializes the content element from the currently set DataModel
@@ -274,6 +301,23 @@ public:
    * not implemented
    */
   void restoreFunctionDB();
+
+private:
+  /**
+   *
+   * merge nested subtasks if needed (as that is really the only way
+   * COPASI can handle them. So if we have
+   *
+   * repeatedTask1: subtask simulationTask1
+   * repeatedTask2: subtask repeatedTask1
+   * repeatedTask3: subtask repeatedTask2
+   * repeatedTask4: subtask repeatedTask3
+   *
+   * we move all the ranges changes from 3 to 4, then from 2 to 4, then 1 to 4
+   * that way we preserve the order of scan items.
+   *
+   */
+  void mergeNestedSubtasks();
 };
 
 #endif /* SEDMLIMPORTER_H_ */

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,6 +46,7 @@ class CDataModel;
 #include "copasi/core/CCore.h"
 #include "copasi/core/CCommonName.h"
 #include "copasi/undo/CUndoStack.h"
+#include "copasi/sedml/SedmlImportOptions.h"
 
 class DataModelGUI: public QObject
 {
@@ -88,7 +89,7 @@ public:
   // SEDML
   void exportSEDML(const std::string & fileName, bool overwriteFile, int sedmlLevel, int sedmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM = true);
   void exportSEDMLToString(std::string & sedmlDocumentText);
-  void importSEDML(const std::string & fileName);
+  void importSEDML(const std::string & fileName, const SedmlImportOptions * pOptions = NULL);
 
   void importSEDMLRun();
   void exportSEDMLRun();
@@ -203,8 +204,10 @@ private:
   int mSEDMLVersion;
   bool mSEDMLExportIncomplete;
   bool mSEDMLExportCOPASIMIRIAM;
+  SedmlImportOptions mOptions;
 
   bool mIgnoreNextFile;
+
 };
 
 #endif

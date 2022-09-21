@@ -30,6 +30,8 @@ class COutputDefinitionVector;
 class CFunctionDB;
 class CFunction;
 class SCopasiXMLGUI;
+class SedmlImportOptions;
+
 LIBSBML_CPP_NAMESPACE_BEGIN
 class SBMLDocument;
 class SBase;
@@ -385,11 +387,13 @@ public:
   bool importSEDMLFromString(const std::string & sedmlDocumentText,
                              std::string referenceDir = "",
                              CProcessReport *pProcessReport = NULL,
-                             const bool & deleteOldData = true);
+                             const bool & deleteOldData = true,
+                             const SedmlImportOptions * pOptions = NULL);
 
   bool importSEDML(const std::string & fileName,
                    CProcessReport *pProcessReport = NULL,
-                   const bool & deleteOldData = true);
+                   const bool & deleteOldData = true,
+                   const SedmlImportOptions * pOptions = NULL);
 
   /**
    * exports the SED-ML with given level and version to a string. NOTE: the
