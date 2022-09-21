@@ -1114,6 +1114,26 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
   if (!newFile.isNull())
     {
+        
+        if (isArchive(newFile))
+          {
+            slotImportCombine(newFile);
+            return;
+          }
+
+        if (isProbablySEDML(newFile))
+          {
+            slotImportSEDML(newFile);
+            return;
+          }
+
+        if (isProbablySBML(newFile))
+          {
+            slotImportSBML(newFile);
+            return;
+          }
+        
+        
       assert(CRootContainer::getDatamodelList()->size() > 0);
 
       if (mpDataModelGUI &&
@@ -1144,24 +1164,6 @@ void CopasiUI3Window::slotFileOpen(QString file)
             }
         }
 
-
-      if (isArchive(newFile))
-        {
-          slotImportCombine(newFile);
-          return;
-        }
-
-      if (isProbablySEDML(newFile))
-        {
-          slotImportSEDML(newFile);
-          return;
-        }
-
-      if (isProbablySBML(newFile))
-        {
-          slotImportSBML(newFile);
-          return;
-        }
 
 #ifdef COPASI_Provenance
       // Update Main Body Provenace
