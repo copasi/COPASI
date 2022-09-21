@@ -331,7 +331,8 @@ public:
                               CProcessReport *pProcessReport = NULL);
 
   bool openCombineArchive(const std::string& fileName, CProcessReport *pProcessReport = NULL,
-                          const bool & deleteOldData = true);
+                          const bool & deleteOldData = true,
+                          const SedmlImportOptions * pOptions = NULL);
 
   void deleteOldData();
 

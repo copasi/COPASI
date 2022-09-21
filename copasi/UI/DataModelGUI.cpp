@@ -1115,12 +1115,18 @@ void DataModelGUI::exportShinyFinished()
   threadFinished();
 }
 
-void DataModelGUI::openCombineArchive(const std::string & fileName)
+void DataModelGUI::openCombineArchive(const std::string & fileName, const SedmlImportOptions * pOptions)
 {
   mpProgressBar = CProgressBar::create();
 
   mSuccess = true;
   mFileName = fileName;
+
+  if (pOptions)
+    mOptions = *pOptions;
+  else
+    mOptions = SedmlImportOptions();
+
   mpThread = new CQThread(this, &DataModelGUI::openCombineArchiveRun);
   connect(mpThread, SIGNAL(finished()), this, SLOT(importCombineFinished()));
   mpThread->start();
@@ -1144,7 +1150,7 @@ void DataModelGUI::openCombineArchiveRun()
   try
     {
       assert(mpDataModel != NULL);
-      mSuccess = mpDataModel->openCombineArchive(mFileName, mpProgressBar);
+      mSuccess = mpDataModel->openCombineArchive(mFileName, mpProgressBar, true, &mOptions);
     }
 
   catch (...)
@@ -1201,7 +1207,12 @@ void DataModelGUI::importSEDML(const std::string & fileName, const SedmlImportOp
 
   mSuccess = true;
   mFileName = fileName;
-  mOptions = *pOptions;
+
+  if (pOptions)
+    mOptions = *pOptions;
+  else
+    mOptions = SedmlImportOptions();
+
   mpThread = new CQThread(this, &DataModelGUI::importSEDMLRun);
   connect(mpThread, SIGNAL(finished()), this, SLOT(importSEDMLFinished()));
   mpThread->start();

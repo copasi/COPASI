@@ -1984,7 +1984,8 @@ bool CDataModel::exportCombineArchive(
 
 bool CDataModel::openCombineArchive(const std::string & fileName,
                                     CProcessReport * pProgressReport,
-                                    const bool & deleteOldData)
+                                    const bool & deleteOldData,
+                                    const SedmlImportOptions * pOptions)
 {
   // TODO: figure out what to do with the archive, should we just extract all of it
   //       at a certain location? if so when should it be deleted.
@@ -2141,7 +2142,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
     {
       try
         {
-          loadedModel = this->importSEDML(destinationDir + "/" + sedml_content->getLocation(), pProgressReport, deleteOldData);
+          loadedModel = this->importSEDML(destinationDir + "/" + sedml_content->getLocation(), pProgressReport, deleteOldData, pOptions);
         }
       catch (const CCopasiException &)
         {

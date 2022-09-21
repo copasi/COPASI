@@ -79,7 +79,7 @@ public:
   void exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
   void importCellDesigner();
 
-  void openCombineArchive(const std::string & fileName);
+  void openCombineArchive(const std::string & fileName, const SedmlImportOptions * pOptions = NULL);
   void exportCombineArchive(const std::string & fileName, bool overwriteFile = false);
   void exportShinyArchive(const std::string & fileName, bool overwriteFile = false);
   void openCombineArchiveRun();

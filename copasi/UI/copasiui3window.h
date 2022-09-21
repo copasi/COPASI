@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,6 +34,11 @@
 #include <QUrl>
 
 #include <copasi/config.h>
+#include <copasi/sedml/SedmlImportOptions.h>
+#include <sedml/common/libsedml-namespace.h>
+LIBSEDML_CPP_NAMESPACE_BEGIN
+class SedDocument;
+LIBSEDML_CPP_NAMESPACE_END
 
 #ifdef COPASI_SBW_INTEGRATION
 # include <QApplication>
@@ -137,9 +142,9 @@ public:
 
 // COMBINE Archive will take care of file management
   /*
-#ifdef COPASI_Provenance
+  #ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-#endif
+  #endif
   */
 
   CQOptPopulation* getPopulationDisplay();
@@ -283,6 +288,7 @@ protected slots:
   // SEDML
   void slotFileExamplesSEDMLFiles(QString file = QString());
   void slotImportSEDML(QString file = QString());
+
   void slotImportSEDMLFinished(bool success);
   void slotImportSEDMLFromStringFinished(bool success);
   void slotExportSEDML();
@@ -326,6 +332,40 @@ private:
   void updateTitle();
 
   void setApplicationFont();
+
+  /**
+   * retrieves the import options for SED-ML import
+   *
+   * @param fileName SED-ML file to check
+   * @param shouldCancelImport output parameter indicating whether the
+   *                      import should be aborted
+   *
+   * @return the import options
+   */
+  SedmlImportOptions getSedMLImportOptions(const QString& fileName, bool & shouldCancelImport);
+
+  /**
+   * retrieves the import options for SED-ML import
+   *
+   * @param pDoc SED-ML document to check
+   * @param shouldCancelImport output parameter indicating whether the
+   *                      import should be aborted
+   *
+   * @return the import options
+   */
+  SedmlImportOptions getSedMLImportOptions(SedDocument* pDoc, bool & shouldCancelImport);
+
+  /**
+   * retrieves the import options for SED-ML import for combine archives.
+   *
+   * @param fileName combine archive file to check
+   * @param shouldCancelImport output parameter indicating whether the
+   *                      import should be aborted
+   *
+   * @return the import options
+   */
+  SedmlImportOptions getSedMLImportOptionsForArchive(const QString & fileName, bool & shouldCancelImport);
+
 
   DataModelGUI* mpDataModelGUI; // to keep track of the data model..
   CDataModel* mpDataModel;
