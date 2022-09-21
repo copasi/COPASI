@@ -844,13 +844,19 @@ void SEDMLImporter::importReport(
   // assign report to scan task
   if (isScanTask)
     {
-      mReportMap[def] = "Scan";
+      mReportMap[def] = std::make_pair("Scan",
+                                       mpOptions != NULL && !mpOptions->getReportFile().empty() ? mpOptions->getReportFile() :
+                                       "Scan.txt"
+                                      );
     }
 
   // assign report to Timecourse task
   if (isTimeCourse)
     {
-      mReportMap[def] = "Time-Course";
+      mReportMap[def] = std::make_pair(
+                          "Time-Course",
+                          mpOptions != NULL && !mpOptions->getReportFile().empty() ? mpOptions->getReportFile() :
+                          "Time-Course.txt");
     }
 }
 
@@ -1075,6 +1081,7 @@ SEDMLImporter::parseSEDML(const std::string & sedmlDocumentText,
 
   importOutputs();
 
+  assignReportDefinitions();
 
 
   if (mpProcessReport != NULL)
@@ -1139,15 +1146,27 @@ void SEDMLImporter::importTasks(CDataVectorN< CCopasiTask > * pTaskList)
       importTask(task, pTaskList);
     }
 
-  std::map< CReportDefinition *, std::string >::const_iterator it = mReportMap.begin();
+}
+
+
+void SEDMLImporter::assignReportDefinitions(CDataVectorN< CCopasiTask > * pTaskList)
+{
+
+  if (pTaskList == NULL)
+    pTaskList = mContent.pTaskList;
+
+  auto it = mReportMap.begin();
 
   for (; it != mReportMap.end(); ++it)
     {
-      CReport * report = &pTaskList->operator[](it->second).getReport();
+      CReport * report = &pTaskList->operator[](it->second.first).getReport();
       report->setReportDefinition(it->first);
-      report->setTarget(it->second + ".txt");
+      report->setTarget(it->second.second);
       report->setConfirmOverwrite(false);
       report->setAppend(false);
+
+      if (mContent.pReportDefinitionList)
+        mContent.pReportDefinitionList->add(it->first, true);
     }
 }
 
@@ -1464,16 +1483,14 @@ CModel * SEDMLImporter::importFirstSBMLModel()
   if (mpSEDMLDocument == NULL)
     return NULL;
 
-  std::string SBMLFileName, fileContent;
+  unsigned int numModels = mpSEDMLDocument->getNumModels();
 
-  unsigned int ii, iiMax = mpSEDMLDocument->getListOfModels()->size();
-
-  if (iiMax < 1)
+  if (numModels < 1)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCSEDML + 2);
     }
 
-  if (iiMax > 1)
+  if (numModels > 1)
     {
       CCopasiMessage(CCopasiMessage::WARNING, "COPASI currently only supports the import of SED-ML models, that involve one model only. Only the simulations for the first model will be imported");
     }

@@ -87,7 +87,7 @@ protected:
 
   std::string mImportedModel;
 
-  std::map<CReportDefinition*, std::string> mReportMap;
+  std::map<CReportDefinition*, std::pair< std::string, std::string > > mReportMap;
 
   // further symbols needed for updating content after import:
   CDataModel::CContent mContent;
@@ -186,6 +186,8 @@ public:
    * Import all tasks for the imported SBML model
    */
   void importTasks(CDataVectorN< CCopasiTask > * pTaskList = NULL);
+
+  void assignReportDefinitions(CDataVectorN< CCopasiTask > * pTaskList = NULL);
 
   /**
    * Imports the specified SED-ML task

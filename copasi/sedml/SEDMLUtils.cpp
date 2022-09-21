@@ -1282,8 +1282,16 @@ const std::vector< std::string > & SedmlImportOptions::getPlots() const
 
 bool SedmlImportOptions::ignoreOutput(const std::string& outputId) const
 {
+  if (!isValid())
+    return false;
+
   if (outputId == mReportId)
     return false;
 
   return std::find(mPlots.begin(), mPlots.end(), outputId) == mPlots.end();
+}
+
+bool SedmlImportOptions::isValid() const
+{
+  return !mTaskId.empty() && !mModelId.empty();
 }

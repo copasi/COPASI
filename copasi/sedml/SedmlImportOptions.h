@@ -33,7 +33,7 @@ public:
   const std::string & getReportFile() const;
   const std::vector< std::string > & getPlots() const;
   bool ignoreOutput(const std::string & outputId) const;
-
+  bool isValid() const;
 };
 
 
