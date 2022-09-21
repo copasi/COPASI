@@ -1114,26 +1114,26 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
   if (!newFile.isNull())
     {
-        
-        if (isArchive(newFile))
-          {
-            slotImportCombine(newFile);
-            return;
-          }
 
-        if (isProbablySEDML(newFile))
-          {
-            slotImportSEDML(newFile);
-            return;
-          }
+      if (isArchive(newFile))
+        {
+          slotImportCombine(newFile);
+          return;
+        }
 
-        if (isProbablySBML(newFile))
-          {
-            slotImportSBML(newFile);
-            return;
-          }
-        
-        
+      if (isProbablySEDML(newFile))
+        {
+          slotImportSEDML(newFile);
+          return;
+        }
+
+      if (isProbablySBML(newFile))
+        {
+          slotImportSBML(newFile);
+          return;
+        }
+
+
       assert(CRootContainer::getDatamodelList()->size() > 0);
 
       if (mpDataModelGUI &&
@@ -3331,16 +3331,14 @@ SedmlImportOptions CopasiUI3Window::getSedMLImportOptions(const QString & fileNa
 
 SedmlImportOptions CopasiUI3Window::getSedMLImportOptions(SedDocument * pDoc, bool & shouldCancelImport)
 {
-
   shouldCancelImport = false;
 
   SedmlInfo info(pDoc);
   SedmlImportOptions options;
-  CQSEDMLImportDialog * dlg = NULL;
 
   if (info.isComplex())
     {
-      dlg = new CQSEDMLImportDialog(this);
+      CQSEDMLImportDialog * dlg = new CQSEDMLImportDialog(this);
       dlg->loadSedML(info);
       int result = dlg->exec();
 
