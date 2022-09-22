@@ -603,10 +603,17 @@ for (const auto & entry : SEDMLUtils::PARAMETER_KISAO_MAP)
 
       if (pParameter)
         {
+          auto value = getParameterValueAsString(pParameter);
+
+          // skip 0 maximum step size since there are tools
+          // that interpret that value literally.
+          if (entry.first == "KISAO:0000467" && value == "0")
+            continue;
+
           SedAlgorithmParameter * pSedParam = alg->createAlgorithmParameter();
           pSedParam->setKisaoID(entry.first);
           pSedParam->setName(entry.second);
-          pSedParam->setValue(getParameterValueAsString(pParameter));
+          pSedParam->setValue(value);
         }
     }
 
