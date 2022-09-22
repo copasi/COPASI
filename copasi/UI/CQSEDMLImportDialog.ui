@@ -22,6 +22,9 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::ExpandingFieldsGrow</enum>
+     </property>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
@@ -31,6 +34,12 @@
      </item>
      <item row="0" column="1">
       <widget class="QComboBox" name="cbmTaskSelect">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="statusTip">
         <string>Choose the task you want to import</string>
        </property>
@@ -62,6 +71,12 @@
      </item>
      <item row="2" column="1">
       <widget class="QComboBox" name="cbmReportSelect">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="toolTip">
         <string>Select Report to generate</string>
        </property>
