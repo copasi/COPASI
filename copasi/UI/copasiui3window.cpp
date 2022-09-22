@@ -167,6 +167,9 @@ bool CopasiUI3Window::isMainThread()
   return pMainWindow == NULL || pMainWindow->mpMainThread == QThread::currentThread();
 }
 
+#include <combine/util.h>
+#include <omex/common/libcombine-version.h>
+
 // static
 CopasiUI3Window *CopasiUI3Window::create()
 {
@@ -182,6 +185,13 @@ CopasiUI3Window *CopasiUI3Window::create()
     }
 
 #endif // COPASI_SBW_INTEGRATION
+
+#if LIBCOMBINE_VERSION > 218
+  std::string tmp;
+  COptions::getValue("Tmp", tmp);
+  Util::setDefaultTempDir(tmp);
+#endif
+    
   pMainWindow = pWindow;
   return pWindow;
 }
