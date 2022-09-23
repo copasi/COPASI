@@ -28,6 +28,10 @@
 
 #include <sedml/SedTypes.h>
 #include <sbml/SBMLTypes.h>
+#include <omex/common/libcombine-version.h>
+#include <omex/CaContent.h>
+#include <combine/combinearchive.h>
+#include <combine/util.h>
 
 #include "copasi/model/CModel.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
@@ -663,6 +667,16 @@ int SEDMLUtils::getAlphaFromRgba(const std::string & rgba)
   return result;
 }
 
+void SEDMLUtils::setLibCombineTempDir()
+{
+
+#if LIBCOMBINE_VERSION > 218
+  std::string tmp;
+  COptions::getValue("Tmp", tmp);
+  Util::setDefaultTempDir(tmp);
+#endif
+}
+
 const CDataObject *
 SEDMLUtils::getObjectForSbmlId(const CModel * pModel, const std::string & id, const std::string & SBMLType, bool initial /* = false*/)
 {
@@ -934,14 +948,15 @@ bool VariableInfo::operator<(const VariableInfo & other) const
   return symbol < other.symbol;
 }
 
-SedmlInfo::SedmlInfo(SedDocument * pDocument)
+SedmlInfo::SedmlInfo(SedDocument * pDocument, bool ownDocument)
   : mSupported(false)
   , mComplex(false)
+  , mOwnDocument(ownDocument)
   , mpDocument(pDocument)
+
 {
   if (!pDocument)
     return;
-
 
   std::map< int, int > taskCount;
 
@@ -984,6 +999,12 @@ for (auto & taskId : mOutputMap[current->getId()])
             mPlots[taskId].push_back(std::make_pair(current->getId(), str.str()));
         }
     }
+}
+
+SedmlInfo::~SedmlInfo()
+{
+  if (mOwnDocument)
+    pdelete(mpDocument);
 }
 
 bool SedmlInfo::isSupported()
@@ -1194,6 +1215,16 @@ std::string SedmlInfo::getFirstModel(const std::string & taskId)
   return *it->second.begin();
 }
 
+std::string SedmlInfo::getFirstReport(const std::string & taskId)
+{
+  auto it = mReports.find(taskId);
+
+  if (it == mReports.end() || it->second.empty())
+    return std::string();
+
+  return it->second.begin()->first;
+}
+
 std::vector< std::pair< std::string, std::string > > SedmlInfo::getReportsForTask(const std::string & taskId)
 {
   return mReports[taskId];
@@ -1225,6 +1256,19 @@ std::string SedmlInfo::getFirstTaskWithOutput()
 void SedmlInfo::addSets(std::set< std::string > & target, const std::set< std::string > & source)
 {
   target.insert(source.begin(), source.end());
+}
+
+SedmlInfo SedmlInfo::forArchive(const std::string & fileName)
+{
+  std::string sedml = SEDMLUtils::getSedMLStringForArchive(fileName);
+  SedDocument * doc = readSedMLFromString(sedml.c_str());
+  return SedmlInfo(doc, true);
+}
+
+SedmlInfo SedmlInfo::forFile(const std::string & fileName)
+{
+  SedDocument * doc = readSedMLFromFile(fileName.c_str());
+  return SedmlInfo(doc, true);
 }
 
 SedmlImportOptions::SedmlImportOptions(
@@ -1280,7 +1324,7 @@ const std::vector< std::string > & SedmlImportOptions::getPlots() const
   return mPlots;
 }
 
-bool SedmlImportOptions::ignoreOutput(const std::string& outputId) const
+bool SedmlImportOptions::ignoreOutput(const std::string & outputId) const
 {
   if (!isValid())
     return false;
@@ -1294,4 +1338,63 @@ bool SedmlImportOptions::ignoreOutput(const std::string& outputId) const
 bool SedmlImportOptions::isValid() const
 {
   return !mTaskId.empty() && !mModelId.empty();
+}
+
+std::string
+SEDMLUtils::getSedMLStringForArchive(const std::string & fileName)
+{
+  std::string result;
+
+  if (fileName.empty())
+    return result;
+
+  setLibCombineTempDir();
+  CombineArchive archive;
+
+  if (!archive.initializeFromArchive(fileName))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "Invalid COMBINE archive.");
+      return result;
+    }
+
+  // read the master file
+  const CaContent * content = archive.getMasterFile();
+  bool haveCopasi = false;
+  std::stringstream messageStream;
+
+  // if we don't have one, or we have one we don't understand look for copasi file
+  if (content == NULL || (!content->isFormat("sbml") && !content->isFormat("copasi") && !content->isFormat("sedml")))
+    {
+      content = archive.getEntryByFormat("copasi");
+      haveCopasi = content != NULL;
+
+      if (!haveCopasi)
+        {
+          for (int i = 0; i < archive.getNumEntries(); ++i)
+            {
+              const CaContent * entry = archive.getEntry(i);
+
+              if (entry->getFormat().substr(entry->getFormat().length() - 4) == "/xml" && entry->getLocation().find(".cps") != std::string::npos)
+                {
+                  content = entry;
+                  haveCopasi = true;
+                }
+            }
+        }
+    }
+
+  // if we have a COPASI file, we will load that in any case
+  if (haveCopasi)
+    return result;
+
+  // otherwise look for an SedML file
+  const CaContent * sedml_content =
+    content != NULL && content->isFormat("sedml") ? content : archive.getEntryByFormat("sedml");
+
+  // if we don't have a SedML-file in there, we don't need options
+  if (!sedml_content)
+    return result;
+
+  // otherwise extract just the SedML
+  return archive.extractEntryToString(sedml_content->getLocation());
 }

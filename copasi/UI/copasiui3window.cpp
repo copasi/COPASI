@@ -167,8 +167,6 @@ bool CopasiUI3Window::isMainThread()
   return pMainWindow == NULL || pMainWindow->mpMainThread == QThread::currentThread();
 }
 
-#include <combine/util.h>
-#include <omex/common/libcombine-version.h>
 
 // static
 CopasiUI3Window *CopasiUI3Window::create()
@@ -186,12 +184,6 @@ CopasiUI3Window *CopasiUI3Window::create()
 
 #endif // COPASI_SBW_INTEGRATION
 
-#if LIBCOMBINE_VERSION > 218
-  std::string tmp;
-  COptions::getValue("Tmp", tmp);
-  Util::setDefaultTempDir(tmp);
-#endif
-    
   pMainWindow = pWindow;
   return pWindow;
 }
@@ -3364,61 +3356,11 @@ SedmlImportOptions CopasiUI3Window::getSedMLImportOptions(SedDocument * pDoc, bo
   return options;
 }
 
-#include <combine/combinearchive.h>
-#include <omex/CaContent.h>
-
 SedmlImportOptions CopasiUI3Window::getSedMLImportOptionsForArchive(const QString & fileName, bool & shouldCancelImport)
 {
   SedmlImportOptions result;
 
-  CombineArchive archive;
-
-  if (!archive.initializeFromArchive(TO_UTF8(fileName)))
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, "Invalid COMBINE archive.");
-      return result;
-    }
-
-  // read the master file
-  const CaContent * content = archive.getMasterFile();
-  bool haveCopasi = false;
-  std::stringstream messageStream;
-
-  // if we don't have one, or we have one we don't understand look for copasi file
-  if (content == NULL || (!content->isFormat("sbml") && !content->isFormat("copasi") && !content->isFormat("sedml")))
-    {
-      content = archive.getEntryByFormat("copasi");
-      haveCopasi = content != NULL;
-
-      if (!haveCopasi)
-        {
-          for (int i = 0; i < archive.getNumEntries(); ++i)
-            {
-              const CaContent * entry = archive.getEntry(i);
-
-              if (entry->getFormat().substr(entry->getFormat().length() - 4) == "/xml" && entry->getLocation().find(".cps") != std::string::npos)
-                {
-                  content = entry;
-                  haveCopasi = true;
-                }
-            }
-        }
-    }
-
-  // if we have a COPASI file, we will load that in any case
-  if (haveCopasi)
-    return result;
-
-  // otherwise look for an SedML file
-  const CaContent * sedml_content =
-    content != NULL && content->isFormat("sedml") ? content : archive.getEntryByFormat("sedml");
-
-  // if we dont have a SedML-file in there, we don't need options
-  if (!sedml_content)
-    return result;
-
-  // otherwise extract just the SedML and retrieve options for it.
-  auto sedml_string = archive.extractEntryToString(sedml_content->getLocation());
+  auto sedml_string = SEDMLUtils::getSedMLStringForArchive(TO_UTF8(fileName));
   auto * doc = readSedMLFromString(sedml_string.c_str());
 
   result = getSedMLImportOptions(doc, shouldCancelImport);

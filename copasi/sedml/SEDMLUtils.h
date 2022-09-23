@@ -106,10 +106,12 @@ class SedmlInfo
   std::map< std::string, std::string > mFileNames;
   bool mSupported;
   bool mComplex;
+  bool mOwnDocument;
   SedDocument * mpDocument;
 
 public:
-  SedmlInfo(SedDocument * pDocument);
+  SedmlInfo(SedDocument * pDocument, bool ownDocument = false);
+  ~SedmlInfo();
 
   bool isSupported();
 
@@ -130,6 +132,7 @@ public:
   std::set< std::string > getTasks(SedSurface * surface);
   std::vector< std::pair< std::string, std::string > > getTaskNames();
   std::string getFirstModel(const std::string & taskId = "");
+  std::string getFirstReport(const std::string & taskId);
   std::vector< std::pair< std::string, std::string > > getReportsForTask(const std::string & taskId);
   std::vector< std::pair< std::string, std::string > > getPlotsForTask(const std::string & taskId);
 
@@ -139,6 +142,8 @@ public:
   std::string getFirstTaskWithOutput();
   static void addSets(std::set< std::string > & target, const std::set< std::string > & source);
 
+  static SedmlInfo forArchive(const std::string & fileName);
+  static SedmlInfo forFile(const std::string & fileName);
 };
 
 
@@ -148,6 +153,8 @@ public:
 class SEDMLUtils
 {
 public:
+
+  static std::string getSedMLStringForArchive(const std::string & fileName);
 
   static const CDataObject* resolveXPath(const CModel *model,
                                          const std::string& xpath, bool initial = false);
@@ -228,6 +235,12 @@ public:
 
   static int getAlphaFromArgb(const std::string & argb);
   static int getAlphaFromRgba(const std::string & rgba);
+
+
+  /**
+   * updates the libcombine temp directory to the COPASI temp path
+   */
+  static void setLibCombineTempDir();
 
 #ifndef SWIG
 
