@@ -56,13 +56,17 @@
 #include "copasi/utilities/CDirEntry.h"
 #include "copasi/utilities/CSparseMatrix.h"
 #include "copasi/utilities/CProcessReport.h"
+#include <copasi/sedml/SEDMLUtils.h>
 
+#define OPERATION_SUCCEDED 0
 #define OPERATION_FAILED 1
 #define NO_EXPORT_REQUESTED 2
+#define CONTINUE_IMPORT 3
 
 void writeLogo();
 int validate();
-int printUsage(const std::string& name);
+int main(int argc, char * argv[]);
+int printUsage(const std::string & name);
 int exportSBML();
 int exportCurrentModel();
 int runScheduledTasks(CProcessReport * pProcessReport);
@@ -71,8 +75,83 @@ int exportParametersToIniFile();
 
 CDataModel* pDataModel = NULL;
 bool Validate = false;
+bool Verbose;
 std::string ReportFileName;
 std::string ScheduledTask;
+std::string SedmlTask;
+bool PrintSedMLTasks;
+
+SedmlImportOptions getSedmlImportOptions(SedmlInfo& info, int& retcode)
+{
+  SedmlImportOptions options;
+
+  if (PrintSedMLTasks)
+    {
+      std::cout << "SED-ML Tasks:" << std::endl;
+
+for (auto & entry : info.getTaskNames())
+        {
+          std::cout << std::endl;
+          std::cout << "Id:\t" << entry.first << std::endl;
+          std::cout << "Name:\t" << entry.second << std::endl;
+        }
+
+      retcode = OPERATION_SUCCEDED;
+      return options;
+
+    }
+
+
+  if (SedmlTask.empty())
+    SedmlTask = info.getFirstTaskWithOutput();
+
+  if (info.getModelForTask(SedmlTask).empty())
+    {
+      std::cerr << "Invalid SED-ML task: " << SedmlTask << std::endl;
+      retcode = OPERATION_FAILED;
+      return options;
+    }
+
+  retcode = CONTINUE_IMPORT;
+
+  std::vector< std::string > plots;
+
+for (auto & entry : info.getPlotsForTask(SedmlTask))
+    plots.push_back(entry.first);
+
+  options = SedmlImportOptions(
+              SedmlTask, info.getFirstModel(SedmlTask),
+              plots,
+              info.getFirstReport(SedmlTask),
+              ReportFileName
+            );
+
+  if (Verbose)
+    {
+      std::cout << "Importing SED-ML with options: " << std::endl;
+      std::cout << "  task:   " << SedmlTask << std::endl;
+      std::cout << "  model:  " << options.getModelId() << std::endl;
+      std::cout << "  report: " << options.getReportId() << std::endl;
+      std::cout << "  file:   " << options.getReportFile() << std::endl;
+
+      std::cout << std::endl;
+    }
+
+  return options;
+}
+
+SedmlImportOptions getSedmlImportOptions(
+  const std::string& sedmlFile, int& retcode)
+{
+  return getSedmlImportOptions(SedmlInfo::forFile(sedmlFile), retcode);
+}
+
+SedmlImportOptions getSedmlImportOptionsForArchive(
+  const std::string & combineArchive,
+  int & retcode)
+{
+  return getSedmlImportOptions(SedmlInfo::forArchive(combineArchive), retcode);
+}
 
 int main(int argc, char *argv[])
 {
@@ -134,6 +213,9 @@ int main(int argc, char *argv[])
 
   COptions::getValue("ReportFile", ReportFileName);
   COptions::getValue("ScheduledTask", ScheduledTask);
+  COptions::getValue("SedmlTask", SedmlTask);
+  COptions::getValue("PrintSedMLTasks", PrintSedMLTasks);
+  COptions::getValue("Verbose", Verbose);
 
   if (License)
     {
@@ -232,7 +314,16 @@ int main(int argc, char *argv[])
               std::string ImportSEDML;
               COptions::getValue("ImportSEDML", ImportSEDML);
 
-              if (!pDataModel->importSEDML(ImportSEDML))
+              SedmlImportOptions options = getSedmlImportOptions(ImportSEDML, retcode);
+
+              if (retcode != CONTINUE_IMPORT)
+                {
+                  goto finish;
+                }
+
+              retcode = 0;
+
+              if (!pDataModel->importSEDML(ImportSEDML, NULL, true, &options))
                 {
                   std::cerr << "SED-ML Import File: " << ImportSEDML << std::endl;
                   std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
@@ -248,7 +339,16 @@ int main(int argc, char *argv[])
               std::string ImportCombineArchive;
               COptions::getValue("ImportCombineArchive", ImportCombineArchive);
 
-              if (!pDataModel->openCombineArchive(ImportCombineArchive))
+              SedmlImportOptions options = getSedmlImportOptionsForArchive(ImportCombineArchive, retcode);
+
+              if (retcode != CONTINUE_IMPORT)
+                {
+                  goto finish;
+                }
+
+              retcode = 0;
+
+              if (!pDataModel->openCombineArchive(ImportCombineArchive, NULL, true, &options))
                 {
                   std::cerr << "CombineArchive Import File: " << ImportCombineArchive << std::endl;
                   std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
@@ -432,7 +532,7 @@ int runScheduledTasks(CProcessReport * pProcessReport)
         }
 
       // mark all other potential tasks as not scheduled
-      for (CCopasiTask & task : TaskList)
+for (CCopasiTask & task : TaskList)
         {
           task.setScheduled(false);
         }
@@ -444,7 +544,7 @@ int runScheduledTasks(CProcessReport * pProcessReport)
         toBeScheduled.setUpdateModel(true);
     }
 
-  for (CCopasiTask & task : TaskList)
+for (CCopasiTask & task : TaskList)
     if (task.isScheduled())
       {
         task.setCallBack(pProcessReport);
@@ -637,6 +737,9 @@ int saveCurrentModel()
 
   std::string Save;
   COptions::getValue("Save", Save);
+
+  if (Save.empty())
+    return retcode;
 
   if (!pDataModel->saveModel(Save, NULL, true))
     {
