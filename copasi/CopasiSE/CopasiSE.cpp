@@ -143,14 +143,16 @@ for (auto & entry : info.getPlotsForTask(SedmlTask))
 SedmlImportOptions getSedmlImportOptions(
   const std::string& sedmlFile, int& retcode)
 {
-  return getSedmlImportOptions(SedmlInfo::forFile(sedmlFile), retcode);
+  auto info = SedmlInfo::forFile(sedmlFile);
+  return getSedmlImportOptions(info, retcode);
 }
 
 SedmlImportOptions getSedmlImportOptionsForArchive(
   const std::string & combineArchive,
   int & retcode)
 {
-  return getSedmlImportOptions(SedmlInfo::forArchive(combineArchive), retcode);
+  auto info = SedmlInfo::forArchive(combineArchive);
+  return getSedmlImportOptions(info, retcode);
 }
 
 int main(int argc, char *argv[])

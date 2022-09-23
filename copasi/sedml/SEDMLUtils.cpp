@@ -36,6 +36,7 @@
 #include "copasi/model/CModel.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CDataObject.h"
+#include <copasi/commandline/COptions.h>
 
 std::string SEDMLUtils::findIdByNameAndType(
   const std::map< const CDataObject *, SBase * > & map,
