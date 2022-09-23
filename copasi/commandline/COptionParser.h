@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -83,6 +83,7 @@ struct options
     License(false),
     MaxTime(0),
     NoLogo(false),
+    PrintSedMLTasks(false),
     SBMLSchema(SBMLSchema_L2V4),
     Validate(false),
     Verbose(false)
@@ -105,11 +106,13 @@ struct options
   bool     License;
   int     MaxTime;
   bool     NoLogo;
+  bool     PrintSedMLTasks;
   std::string     ReparameterizeModel;
   std::string     ReportFile;
   SBMLSchema_enum     SBMLSchema;
   std::string     Save;
   std::string     ScheduledTask;
+  std::string     SedmlTask;
   std::string     Tmp;
   bool     Validate;
   bool     Verbose;
@@ -140,11 +143,13 @@ struct option_locations
   size_type License;
   size_type MaxTime;
   size_type NoLogo;
+  size_type PrintSedMLTasks;
   size_type ReparameterizeModel;
   size_type ReportFile;
   size_type SBMLSchema;
   size_type Save;
   size_type ScheduledTask;
+  size_type SedmlTask;
   size_type Tmp;
   size_type Validate;
   size_type Verbose;
@@ -247,7 +252,9 @@ private:
     option_ReportFile,
     option_ScheduledTask,
     option_ReparameterizeModel,
-    option_ExportIni
+    option_ExportIni,
+    option_SedmlTask,
+    option_PrintSedMLTasks
   } openum_;
 
   enum parser_state { state_option, state_value, state_consume } state_;
