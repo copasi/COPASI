@@ -1253,8 +1253,8 @@ bool CFitProblem::restore(const bool & updateModel)
 {
   bool haveExperiment = mpExperimentSet != NULL &&
                         mpExperimentSet->size() > 0;
-  return restore(updateModel, haveExperiment ?
-                 mpExperimentSet->getExperiment(0) : NULL);
+  return restore(updateModel && mSolutionValue != mWorstValue,
+                 haveExperiment ? mpExperimentSet->getExperiment(0) : NULL);
 }
 
 bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
@@ -1263,16 +1263,16 @@ bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
 
   if (mpTrajectory != NULL)
     {
-      success &= mpTrajectory->restore();
+      success &= mpTrajectory->restore(updateModel);
     }
 
   if (mpTimeSens)
     {
-      success &= mpTimeSens->restore();
+      success &= mpTimeSens->restore(updateModel);
     }
 
   if (mpSteadyState != NULL)
-    success &= mpSteadyState->restore();
+    success &= mpSteadyState->restore(updateModel);
 
   success &= COptProblem::restore(updateModel);
 

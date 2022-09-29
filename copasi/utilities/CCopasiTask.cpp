@@ -521,7 +521,7 @@ bool CCopasiTask::initialize(const OutputFlag & of,
 bool CCopasiTask::process(const bool &)
 {return false;}
 
-bool CCopasiTask::restore()
+bool CCopasiTask::restore(const bool & updateModel)
 {
   setCallBack(NULL);
 
@@ -532,8 +532,9 @@ bool CCopasiTask::restore()
       mpContainer->updateTransientDataValues();
       mpContainer->pushAllTransientValues();
 
-      if (mUpdateModel &&
-          mpContainer->isStateValid())
+      if (updateModel
+          && mUpdateModel
+          && mpContainer->isStateValid())
         {
           mpContainer->updateSimulatedValues(false);
           mpContainer->setInitialState(mpContainer->getState(false));
@@ -553,7 +554,7 @@ bool CCopasiTask::restore()
       mpContainer->pushInitialState();
     }
 
-  mpProblem->restore(mUpdateModel);
+  mpProblem->restore(updateModel && mUpdateModel);
 
   return true;
 }

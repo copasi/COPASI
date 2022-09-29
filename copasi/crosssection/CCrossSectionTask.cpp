@@ -291,9 +291,9 @@ void CCrossSectionTask::finish()
   output(COutputInterface::AFTER);
 }
 
-bool CCrossSectionTask::restore()
+bool CCrossSectionTask::restore(const bool & updateModel)
 {
-  bool success = CCopasiTask::restore();
+  bool success = CCopasiTask::restore(updateModel);
 
   removeEvent();
 

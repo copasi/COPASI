@@ -345,8 +345,9 @@ public:
 
   /**
    * Perform necessary cleanup procedures
+   * @param const bool & updateModel (default: true)
    */
-  virtual bool restore();
+  virtual bool restore(const bool & updateModel = true);
 
 #ifndef SWIG
 

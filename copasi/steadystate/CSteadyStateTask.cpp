@@ -356,15 +356,16 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
   return (mResult != CSteadyStateMethod::notFound);
 }
 
-bool CSteadyStateTask::restore()
+bool CSteadyStateTask::restore(const bool & updateModel)
 {
   setCallBack(NULL);
 
   if (mpContainer != NULL)
     {
-      if (mUpdateModel &&
-          mResult != CSteadyStateMethod::notFound &&
-          mpContainer->isStateValid())
+      if (updateModel
+          && mUpdateModel
+          && mResult != CSteadyStateMethod::notFound
+          && mpContainer->isStateValid())
         {
           mpContainer->setState(mSteadyState);
           mpContainer->updateSimulatedValues(true);

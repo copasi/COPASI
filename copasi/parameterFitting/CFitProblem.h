@@ -100,7 +100,7 @@ public:
    * @param const bool & updateModel
    * @result bool success
    */
-  virtual bool restore(const bool & updateModel);
+  virtual bool restore(const bool & updateModel) override;
 
   bool restore(const bool& updateModel, CExperiment* pExp);
 

@@ -708,12 +708,7 @@ bool CSensMethod::restore(const bool & /* updateModel */)
   if (mpSubTask != NULL)
     {
       //the subtask should not change the initial state of the model
-      mpSubTask->setUpdateModel(false);
-
-      success &= mpSubTask->restore();
-
-      //restore the update model flag
-      mpSubTask->setUpdateModel(mStoreSubtasktUpdateFlag);
+      success &= mpSubTask->restore(false);
     }
 
   return success;

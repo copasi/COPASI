@@ -162,17 +162,17 @@ public:
   virtual bool calculate();
 
   /**
-   * Reset counters and objective value.
-   */
-  void reset();
-
-  /**
    * Do all necessary restore procedures so that the
-   * model and task are in the same state as before.
+   * model is in the same state as before
    * @param const bool & updateModel
    * @result bool success
    */
-  virtual bool restore(const bool & updateModel);
+  virtual bool restore(const bool & updateModel) override;
+
+  /**
+   * Reset counters and objective value.
+   */
+  void reset();
 
   /**
    * Retrieve the optional sub task
