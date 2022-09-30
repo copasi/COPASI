@@ -48,7 +48,6 @@
 %ignore CVector::operator=;
 %ignore CVectorCore::array() const;
 %ignore CVectorCore::array();
-%ignore CVector::size() const;
 %ignore CVector::resize;
 %ignore CVector::applyPivot;
 %ignore CVectorCore::CVectorCore(const unsigned C_INT32&, CType*);
