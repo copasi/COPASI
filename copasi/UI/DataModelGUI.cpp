@@ -123,8 +123,8 @@ DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel):
   , mSEDMLVersion(1)
   , mSEDMLExportIncomplete(true)
   , mSEDMLExportCOPASIMIRIAM(true)
-  , mIgnoreNextFile(false)
   , mOptions()
+  , mIgnoreNextFile(false)
 {
   mpOutputHandlerPlot = new COutputHandlerPlot();
   mpDataModel->addInterface(mpOutputHandlerPlot);
