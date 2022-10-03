@@ -85,7 +85,7 @@
       return (*self)[i];
     }
 
-    int size() const
+    size_t size() const
     {
       return self->size();
     }
