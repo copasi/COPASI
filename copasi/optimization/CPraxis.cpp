@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -71,28 +71,39 @@ CPraxis::~CPraxis()
 C_FLOAT64 CPraxis::praxis_(C_FLOAT64 *t0, C_FLOAT64 *machep, C_FLOAT64 *h0,
                            C_INT *n, C_INT *prin, C_FLOAT64 *x, FPraxis *f, C_FLOAT64 *fmin)
 {
+  C_INT __dim__ = *n;
+
+  q_1.v.resize(__dim__ * __dim__); // [__dim__ * __dim__] /* was [100][100] */,
+  q_1.q0.resize(__dim__); // [__dim__],
+  q_1.q1.resize(__dim__); // [__dim__],
+
   /* System generated locals */
   C_INT i__1, i__2, i__3;
   C_FLOAT64 ret_val, d__1;
 
   /* Local variables */
-  static C_FLOAT64 scbd;
-  static C_INT idim;
-  static bool illc;
-  static C_INT klmk;
-  static C_FLOAT64 d__[100], h__, ldfac;
-  static C_INT i__, j, k;
-  static C_FLOAT64 s, t, y[100], large, z__[100], small, value, f1;
-  static C_INT k2;
-  static C_FLOAT64 m2, m4, t2, df, dn;
-  static C_INT kl, ii;
-  static C_FLOAT64 sf;
-  static C_INT kt;
-  static C_FLOAT64 sl, vlarge;
-  static C_FLOAT64 vsmall;
-  static C_INT km1, im1;
-  static C_FLOAT64 dni, lds;
-  static C_INT ktm;
+  C_FLOAT64 scbd;
+  C_INT idim;
+  bool illc;
+  C_INT klmk;
+  CVector< C_FLOAT64 > d__(__dim__); // [__dim__]
+  C_FLOAT64 h__, ldfac;
+  C_INT i__, j, k;
+  C_FLOAT64 s, t;
+  CVector< C_FLOAT64 > y(__dim__); // [__dim__]
+  C_FLOAT64 large;
+  CVector< C_FLOAT64 > z__(__dim__); // [__dim__]
+  C_FLOAT64 small, value, f1;
+  C_INT k2;
+  C_FLOAT64 m2, m4, t2, df, dn;
+  C_INT kl, ii;
+  C_FLOAT64 sf;
+  C_INT kt;
+  C_FLOAT64 sl, vlarge;
+  C_FLOAT64 vsmall;
+  C_INT km1, im1;
+  C_FLOAT64 dni, lds;
+  C_INT ktm;
 
   C_FLOAT64 lastValue = std::numeric_limits<C_FLOAT64>::infinity();
 
@@ -214,11 +225,11 @@ C_FLOAT64 CPraxis::praxis_(C_FLOAT64 *t0, C_FLOAT64 *machep, C_FLOAT64 *h0,
       for (j = 1; j <= i__2; ++j)
         {
           /* L10: */
-          q_1.v[i__ + j * 100 - 101] = 0.;
+          q_1.v[i__ + j * __dim__ - __dim__ - 1] = 0.;
         }
 
       /* L20: */
-      q_1.v[i__ + i__ * 100 - 101] = 1.;
+      q_1.v[i__ + i__ * __dim__ - __dim__ - 1] = 1.;
     }
 
   d__[0] = 0.;
@@ -246,7 +257,7 @@ L40:
   /* .....MINIMIZE ALONG THE FIRST DIRECTION V(*,1). */
   /*     FX MUST BE PASSED TO MIN BY VALUE. */
   value = global_1.fx;
-  min_(n, &c__1, &c__2, d__, &s, &value, &c_false, f, &x[1], &t,
+  min_(n, &c__1, &c__2, d__.array(), &s, &value, &c_false, f, &x[1], &t,
        machep, &h__);
 
   if (s > 0.)
@@ -322,7 +333,7 @@ L80:
           for (j = 1; j <= i__3; ++j)
             {
               /* L85: */
-              x[j] += s * q_1.v[j + i__ * 100 - 101];
+              x[j] += s * q_1.v[j + i__ * __dim__ - __dim__ - 1];
             }
 
           /* L90: */
@@ -383,7 +394,7 @@ L110:
 
       if (k == 2 && *prin > 1)
         {
-          vcprnt_(&c__1, d__, n);
+          vcprnt_(&c__1, d__.array(), n);
         }
 
       /* .....MINIMIZE ALONG THE "CONJUGATE" DIRECTIONS V(*,1),...,V(*,K-1)
@@ -444,7 +455,7 @@ L110:
           for (j = 1; j <= i__3; ++j)
             {
               /* L135: */
-              q_1.v[j + (i__ + 1) * 100 - 101] = q_1.v[j + i__ * 100 - 101];
+              q_1.v[j + (i__ + 1) * __dim__ - __dim__ - 1] = q_1.v[j + i__ * __dim__ - __dim__ - 1];
             }
 
           /* L140: */
@@ -458,7 +469,7 @@ L141:
       for (i__ = 1; i__ <= i__2; ++i__)
         {
           /* L145: */
-          q_1.v[i__ + k * 100 - 101] = y[i__ - 1] / lds;
+          q_1.v[i__ + k * __dim__ - __dim__ - 1] = y[i__ - 1] / lds;
         }
 
       /* .....MINIMIZE ALONG THE NEW "CONJUGATE" DIRECTION V(*,K), WHICH IS */
@@ -479,7 +490,7 @@ L141:
       for (i__ = 1; i__ <= i__2; ++i__)
         {
           /* L150: */
-          q_1.v[i__ + k * 100 - 101] = -q_1.v[i__ + k * 100 - 101];
+          q_1.v[i__ + k * __dim__ - __dim__ - 1] = -q_1.v[i__ + k * __dim__ - __dim__ - 1];
         }
 
 L160:
@@ -551,7 +562,7 @@ L160:
 
   if (*prin > 3)
     {
-      maprnt_(&c__1, q_1.v, &idim, n);
+      maprnt_(&c__1, q_1.v.array(), &idim, n);
     }
 
   i__1 = *n;
@@ -564,7 +575,7 @@ L160:
       for (i__ = 1; i__ <= i__2; ++i__)
         {
           /* L180: */
-          q_1.v[i__ + j * 100 - 101] = s * q_1.v[i__ + j * 100 - 101];
+          q_1.v[i__ + j * __dim__ - __dim__ - 1] = s * q_1.v[i__ + j * __dim__ - __dim__ - 1];
         }
     }
 
@@ -586,7 +597,7 @@ L160:
       for (j = 1; j <= i__1; ++j)
         {
           /* L182: */
-          sl += q_1.v[i__ + j * 100 - 101] * q_1.v[i__ + j * 100 - 101];
+          sl += q_1.v[i__ + j * __dim__ - __dim__ - 1] * q_1.v[i__ + j * __dim__ - __dim__ - 1];
         }
 
       z__[i__ - 1] = sqrt(sl);
@@ -624,7 +635,7 @@ L189:
       for (j = 1; j <= i__1; ++j)
         {
           /* L190: */
-          q_1.v[i__ + j * 100 - 101] = sl * q_1.v[i__ + j * 100 - 101];
+          q_1.v[i__ + j * __dim__ - __dim__ - 1] = sl * q_1.v[i__ + j * __dim__ - __dim__ - 1];
         }
 
       /* L195: */
@@ -644,10 +655,10 @@ L200:
 
       for (j = 1; j <= i__1; ++j)
         {
-          s = q_1.v[i__ + j * 100 - 101];
-          q_1.v[i__ + j * 100 - 101] = q_1.v[j + i__ * 100 - 101];
+          s = q_1.v[i__ + j * __dim__ - __dim__ - 1];
+          q_1.v[i__ + j * __dim__ - __dim__ - 1] = q_1.v[j + i__ * __dim__ - __dim__ - 1];
           /* L210: */
-          q_1.v[j + i__ * 100 - 101] = s;
+          q_1.v[j + i__ * __dim__ - __dim__ - 1] = s;
         }
 
       /* L220: */
@@ -658,7 +669,7 @@ L200:
   /*     APPROXIMATING QUADRATIC FORM WITHOUT SQUARING THE CONDITION */
   /*     NUMBER..... */
 
-  minfit_(&idim, n, machep, &vsmall, q_1.v, d__);
+  minfit_(&idim, n, machep, &vsmall, q_1.v.array(), d__.array());
 
   /* .....UNSCALE THE AXES..... */
 
@@ -677,7 +688,7 @@ L200:
       for (j = 1; j <= i__1; ++j)
         {
           /* L225: */
-          q_1.v[i__ + j * 100 - 101] = s * q_1.v[i__ + j * 100 - 101];
+          q_1.v[i__ + j * __dim__ - __dim__ - 1] = s * q_1.v[i__ + j * __dim__ - __dim__ - 1];
         }
 
       /* L230: */
@@ -694,7 +705,7 @@ L200:
         {
           /* L235: */
           /* Computing 2nd power */
-          d__1 = q_1.v[j + i__ * 100 - 101];
+          d__1 = q_1.v[j + i__ * __dim__ - __dim__ - 1];
           s += d__1 * d__1;
         }
 
@@ -706,7 +717,7 @@ L200:
       for (j = 1; j <= i__1; ++j)
         {
           /* L240: */
-          q_1.v[j + i__ * 100 - 101] = s * q_1.v[j + i__ * 100 - 101];
+          q_1.v[j + i__ * __dim__ - __dim__ - 1] = s * q_1.v[j + i__ * __dim__ - __dim__ - 1];
         }
 
       /* L245: */
@@ -742,7 +753,7 @@ L270:
 
   /* .....SORT THE EIGENVALUES AND EIGENVECTORS..... */
 
-  sort_(&idim, n, d__, q_1.v);
+  sort_(&idim, n, d__.array(), q_1.v.array());
   global_1.dmin__ = d__[*n - 1];
 
   if (global_1.dmin__ < small)
@@ -759,17 +770,17 @@ L270:
 
   if (*prin > 1 && scbd > 1.)
     {
-      vcprnt_(&c__2, z__, n);
+      vcprnt_(&c__2, z__.array(), n);
     }
 
   if (*prin > 1)
     {
-      vcprnt_(&c__3, d__, n);
+      vcprnt_(&c__3, d__.array(), n);
     }
 
   if (*prin > 3)
     {
-      maprnt_(&c__2, q_1.v, &idim, n);
+      maprnt_(&c__2, q_1.v.array(), &idim, n);
     }
 
   /* .....THE MAIN LOOP ENDS HERE..... */
@@ -802,16 +813,20 @@ L400:
 /* Subroutine */ int CPraxis::minfit_(C_INT *m, C_INT *n, C_FLOAT64 *machep,
                                       C_FLOAT64 *tol, C_FLOAT64 *ab, C_FLOAT64 *q)
 {
+  C_INT __dim__ = *n;
+
   /* System generated locals */
   C_INT ab_dim1, ab_offset, i__1, i__2, i__3;
   C_FLOAT64 d__1, d__2;
 
   /* Local variables */
-  static C_FLOAT64 temp, c__, e[100], f, g, h__;
-  static C_INT i__, j, k, l;
-  static C_FLOAT64 s, x, y, z__;
-  static C_INT l2, ii, kk, kt, ll2, lp1;
-  static C_FLOAT64 eps;
+  C_FLOAT64 temp, c__;
+  CVector< C_FLOAT64 > e(__dim__); // [__dim__]
+  C_FLOAT64 f, g, h__;
+  C_INT i__, j, k, l;
+  C_FLOAT64 s, x, y, z__;
+  C_INT l2, ii, kk, kt, ll2, lp1;
+  C_FLOAT64 eps;
 
   /* ...AN IMPROVED VERSION OF MINFIT (SEE GOLUB AND REINSCH, 1969) */
   /*   RESTRICTED TO M=N,P=0. */
@@ -1332,16 +1347,17 @@ L200:
                                    d2, C_FLOAT64 *x1, C_FLOAT64 *f1, bool *fk, FPraxis *f, C_FLOAT64 *
                                    x, C_FLOAT64 *t, C_FLOAT64 *machep, C_FLOAT64 *h__)
 {
+  C_INT __dim__ = *n;
   /* System generated locals */
   C_INT i__1;
   C_FLOAT64 d__1, d__2;
 
   /* Local variables */
-  static C_FLOAT64 temp;
-  static C_INT i__, k;
-  static C_FLOAT64 s, small, d1, f0, f2, m2, m4, t2, x2, fm;
-  static bool dz;
-  static C_FLOAT64 xm, sf1, sx1;
+  C_FLOAT64 temp;
+  C_INT i__, k;
+  C_FLOAT64 s, small, d1, f0, f2, m2, m4, t2, x2, fm;
+  bool dz;
+  C_FLOAT64 xm, sf1, sx1;
 
   /* ...THE SUBROUTINE MIN MINIMIZES F FROM X IN THE DIRECTION V(*,J) UNLESS */
   /*   J IS LESS THAN 1, WHEN A QUADRATIC SEARCH IS MADE IN THE PLANE */
@@ -1584,7 +1600,7 @@ L17:
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L18: */
-      x[i__] += *x1 * q_1.v[i__ + *j * 100 - 101];
+      x[i__] += *x1 * q_1.v[i__ + *j * __dim__ - __dim__ - 1];
     }
 
   return 0;
@@ -1593,13 +1609,15 @@ L17:
 C_FLOAT64 CPraxis::flin_(C_INT *n, C_INT *j, C_FLOAT64 *l, FPraxis *f, C_FLOAT64 *x,
                          C_INT *nf)
 {
+  C_INT __dim__ = *n;
+
   /* System generated locals */
   C_INT i__1;
   C_FLOAT64 ret_val;
 
   /* Local variables */
-  static C_INT i__;
-  static C_FLOAT64 t[100];
+  C_INT i__;
+  CVector< C_FLOAT64 > t(__dim__); // [__dim__];
 
   /* ...FLIN IS THE FUNCTION OF ONE REAL VARIABLE L THAT IS MINIMIZED */
   /*   BY THE SUBROUTINE MIN... */
@@ -1618,7 +1636,7 @@ C_FLOAT64 CPraxis::flin_(C_INT *n, C_INT *j, C_FLOAT64 *l, FPraxis *f, C_FLOAT64
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L1: */
-      t[i__ - 1] = x[i__] + *l * q_1.v[i__ + *j * 100 - 101];
+      t[i__ - 1] = x[i__] + *l * q_1.v[i__ + *j * __dim__ - __dim__ - 1];
     }
 
   goto L4;
@@ -1639,7 +1657,7 @@ L2:
   /* ...THE FUNCTION EVALUATION COUNTER NF IS INCREMENTED... */
 L4:
   ++(*nf);
-  ret_val = (*f)(t, n);
+  ret_val = (*f)(t.array(), n);
   return ret_val;
 } /* flin_ */
 
@@ -1650,9 +1668,9 @@ L4:
   C_INT v_dim1, v_offset, i__1, i__2;
 
   /* Local variables */
-  static C_INT i__, j, k;
-  static C_FLOAT64 s;
-  static C_INT ip1, nm1;
+  C_INT i__, j, k;
+  C_FLOAT64 s;
+  C_INT ip1, nm1;
 
   /* ...SORTS THE ELEMENTS OF D(N) INTO DESCENDING ORDER AND MOVES THE */
   /*   CORRESPONDING COLUMNS OF V(N,N). */
@@ -1724,8 +1742,8 @@ L3:
   C_FLOAT64 d__1;
 
   /* Local variables */
-  static C_INT i__;
-  static C_FLOAT64 l, s, value;
+  C_INT i__;
+  C_FLOAT64 l, s, value;
   /* ...QUAD LOOKS FOR THE MINIMUM OF F ALONG A CURVE DEFINED BY Q0,Q1,X...
   */
   /* Parameter adjustments */

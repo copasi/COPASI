@@ -564,7 +564,7 @@ CMathContainer::CMathContainer(const CMathContainer & src)
 
   std::vector< CMath::sRelocate > Relocations = move(size);
 
-  // We must not call finishResize() as that would release the src values and obvjects;
+  // We must not call finishResize() as that would release the src values and objects;
   mOldValues.initialize(mValues);
   mOldObjects.initialize(mObjects);
 
@@ -2667,10 +2667,13 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
   std::map< C_FLOAT64 *, CDataObject * >::const_iterator endDataObject = mDataValue2DataObject.end();
 
   for (; itDataObject != endDataObject; ++itDataObject)
-    {
-      mInitialStateValueExtensive.insert(itDataObject->second);
-      mInitialStateValueIntensive.insert(itDataObject->second);
-    }
+
+    // Issue 3100: We must only add data objects which are part of the model
+    if (itDataObject->second->getObjectAncestor("Model") != NULL)
+      {
+        mInitialStateValueExtensive.insert(itDataObject->second);
+        mInitialStateValueIntensive.insert(itDataObject->second);
+      }
 
   // Build the update sequence
   // Bug 2773: It is OK for one of these to fail

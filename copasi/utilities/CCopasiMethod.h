@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,7 +39,7 @@
 #include "copasi/utilities/CCopasiTask.h"
 #include "copasi/utilities/CReadConfig.h"
 
-class CProcessReport;
+class CProcessReportLevel;
 class CMathContainer;
 
 class CCopasiMethod : public CCopasiParameterGroup
@@ -97,12 +97,12 @@ public:
    * @param CProcessReport * pCallBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReport * pCallBack);
+  virtual bool setCallBack(CProcessReportLevel callBack);
 
   /**
    * @return the currently set callback
    */
-  CProcessReport * getCallBack() const;
+  const CProcessReportLevel & getCallBack() const;
 
   /**
    * resets the currently set callback by calling setCallBack(NULL)
@@ -188,7 +188,7 @@ protected:
   /**
    * a pointer to the callback
    */
-  CProcessReport * mpCallBack;
+  CProcessReportLevel mProcessReport;
 };
 
 #endif // COPASI_CCopasiMethod

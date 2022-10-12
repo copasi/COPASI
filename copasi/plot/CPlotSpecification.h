@@ -124,6 +124,8 @@ public:
 
   void setLogX(bool l);
   void setLogY(bool l);
+
+  bool has3D() const;
 };
 
 #endif

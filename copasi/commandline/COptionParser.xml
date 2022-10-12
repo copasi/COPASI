@@ -1,7 +1,7 @@
 <!--
     This file demostrates how to specify options to clo++
 -->
-<!-- Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the -->
+<!-- Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the -->
 <!-- University of Virginia, University of Heidelberg, and University -->
 <!-- of Connecticut School of Medicine. -->
 <!-- All rights reserved. -->
@@ -399,6 +399,32 @@
       export the parameterization of the model as INI file for use with 
       the --reparameterize option.
     </comment>
+   </option>
+   <option id="SedmlTask"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           argname="string"
+           hidden="no">
+    <name>sedmlTask</name>
+    <comment>
+      for specifying the task id to import (and execute) when importing 
+      SED-ML or importing a COMBINE archive. For a list of all SED-ML
+      tasks use --printSedMLTasks
+    </comment>
+   </option>
+      <option id="PrintSedMLTasks"
+           type="flag"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           default="false"
+           hidden="no">
+     <name>printSedMLTasks</name>
+     <comment>
+      Only print the SED-ML tasks when importing SED-ML or COMBINE archives.
+     </comment>
    </option>
  </options>
 </cloxx>

@@ -26,6 +26,7 @@
 #include "copasi/core/CDataVector.h"
 
 class CUnitDefinition;
+class CUnitDefinitionDB;
 
 class CUnit
 {
@@ -88,6 +89,7 @@ public:
   std::string getExpression() const;
 
   const std::set< std::string > & getUsedSymbols() const;
+  void filterUsedSymbols(const CUnitDefinitionDB & unitDefinitiionDB);
 
   void replaceSymbol(const std::string & oldSymbol,
                      const std::string & newSymbol);

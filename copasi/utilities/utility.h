@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -234,5 +234,13 @@ bool containsTag(const std::string & filename, const std::string & tagname, int 
  * @return true, if the first 10 lines contain the sbml tag, false otherwise.
  */
 bool isProbablySBML(const std::string & filename);
+
+/**
+ * calculate the number of utf8 characters in a givent string
+ *
+ * @param const std::string & str
+ * @return size_t utf8Length
+ */
+size_t utf8Length(const std::string & str);
 
 #endif // COPASI_utilities

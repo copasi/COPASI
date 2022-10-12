@@ -178,7 +178,7 @@ void CPlotItem::setType(CPlotItem::Type type)
   mType = type;
 
   //create parameters
-  if (type == curve2d || type == bandedGraph)
+  if (type == curve2d || type == bandedGraph || type == histoItem1d)
     {
       assertParameter("Line type", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
       assertParameter("Line subtype", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);

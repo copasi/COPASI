@@ -103,7 +103,7 @@ void CUnitDefinitionDB::remove(const std::string & name)
   remove(&operator [](name));
 }
 
-bool CUnitDefinitionDB::containsSymbol(std::string symbol)
+bool CUnitDefinitionDB::containsSymbol(std::string symbol) const
 {
   return (symbol == "?" ||
           mSymbolToUnitDefinitions.count(symbol) > 0);

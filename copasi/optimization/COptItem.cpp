@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -44,61 +44,90 @@
 C_FLOAT64 NaN = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
 COptItem::COptItem(const CDataContainer * pParent,
-                   const std::string & name):
-  CCopasiParameterGroup(name, pParent),
-  mpParmObjectCN(NULL),
-  mpParmLowerBound(NULL),
-  mpParmUpperBound(NULL),
-  mpParmStartValue(NULL),
-  mpObject(NULL),
-  mpObjectValue(NULL),
-  mpLowerObject(NULL),
-  mpLowerBound(NULL),
-  mLowerBound(0.0),
-  mpUpperObject(NULL),
-  mpUpperBound(NULL),
-  mUpperBound(0.0),
-  mLastStartValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
-{initializeParameter();}
+                   const std::string & name)
+  : CCopasiParameterGroup(name, pParent)
+  , mpParmObjectCN(NULL)
+  , mpParmLowerBound(NULL)
+  , mpParmUpperBound(NULL)
+  , mpParmStartValue(NULL)
+  , mpObject(NULL)
+  , mpObjectValue(NULL)
+  , mpLowerObject(NULL)
+  , mpLowerBound(NULL)
+  , mLowerBound(0.0)
+  , mpUpperObject(NULL)
+  , mpUpperBound(NULL)
+  , mUpperBound(0.0)
+  , mLastStartValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mInterval(1.0)
+  , mDependentItems()
+  , mUpdateInterval()
+{
+  initializeParameter();
+}
 
 COptItem::COptItem(const COptItem & src,
-                   const CDataContainer * pParent):
-  CCopasiParameterGroup(src, (pParent != NULL) ? pParent : static_cast< const CDataContainer * >(src.getObjectDataModel())),
-  mpParmObjectCN(NULL),
-  mpParmLowerBound(NULL),
-  mpParmUpperBound(NULL),
-  mpParmStartValue(NULL),
-  mpObject(NULL),
-  mpObjectValue(NULL),
-  mpLowerObject(NULL),
-  mpLowerBound(NULL),
-  mLowerBound(0.0),
-  mpUpperObject(NULL),
-  mpUpperBound(NULL),
-  mUpperBound(0.0),
-  mLastStartValue(src.mLastStartValue)
-{initializeParameter();}
+                   const CDataContainer * pParent)
+  : CCopasiParameterGroup(src, (pParent != NULL) ? pParent : static_cast< const CDataContainer * >(src.getObjectDataModel()))
+  , mpParmObjectCN(NULL)
+  , mpParmLowerBound(NULL)
+  , mpParmUpperBound(NULL)
+  , mpParmStartValue(NULL)
+  , mpObject(NULL)
+  , mpObjectValue(NULL)
+  , mpLowerObject(NULL)
+  , mpLowerBound(NULL)
+  , mLowerBound(0.0)
+  , mpUpperObject(NULL)
+  , mpUpperBound(NULL)
+  , mUpperBound(0.0)
+  , mLastStartValue(src.mLastStartValue)
+  , mInterval(src.mInterval)
+  , mDependentItems(src.mDependentItems)
+  , mUpdateInterval(src.mUpdateInterval)
+{
+  initializeParameter();
+}
 
 COptItem::COptItem(const CCopasiParameterGroup & group,
-                   const CDataContainer * pParent):
-  CCopasiParameterGroup(group, (pParent != NULL) ? pParent : static_cast< const CDataContainer * >(group.getObjectDataModel())),
-  mpParmObjectCN(NULL),
-  mpParmLowerBound(NULL),
-  mpParmUpperBound(NULL),
-  mpParmStartValue(NULL),
-  mpObject(NULL),
-  mpObjectValue(NULL),
-  mpLowerObject(NULL),
-  mpLowerBound(NULL),
-  mLowerBound(0.0),
-  mpUpperObject(NULL),
-  mpUpperBound(NULL),
-  mUpperBound(0.0),
-  mLastStartValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
-{initializeParameter();}
+                   const CDataContainer * pParent)
+  : CCopasiParameterGroup(group, (pParent != NULL) ? pParent : static_cast< const CDataContainer * >(group.getObjectDataModel()))
+  , mpParmObjectCN(NULL)
+  , mpParmLowerBound(NULL)
+  , mpParmUpperBound(NULL)
+  , mpParmStartValue(NULL)
+  , mpObject(NULL)
+  , mpObjectValue(NULL)
+  , mpLowerObject(NULL)
+  , mpLowerBound(NULL)
+  , mLowerBound(0.0)
+  , mpUpperObject(NULL)
+  , mpUpperBound(NULL)
+  , mUpperBound(0.0)
+  , mLastStartValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mInterval(1.0)
+  , mDependentItems()
+  , mUpdateInterval()
+{
+  initializeParameter();
+}
 
 COptItem::~COptItem()
 {}
+
+// virtual
+void COptItem::calculateValue()
+{
+  // The size of the interval.
+  mInterval = *mpUpperBound - *mpLowerBound;
+  // std::cout << getObjectDisplayName() << ": " << mInterval << std::endl;
+}
+
+// virtual
+void * COptItem::getValuePointer() const
+{
+  return const_cast< C_FLOAT64 * >(&mInterval);
+}
 
 void COptItem::initializeParameter()
 {
@@ -332,6 +361,7 @@ bool COptItem::compile(CObjectInterface::ContainerList listOfContainer)
 {
   bool success = true;
   mPrerequisits.clear();
+  mDependentItems.clear();
 
   std::string Bound;
 
@@ -350,16 +380,12 @@ bool COptItem::compile(CObjectInterface::ContainerList listOfContainer)
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 1, mpParmObjectCN->c_str());
       success = false;
     }
-  else
-    {
-      mPrerequisits.insert(mpObject->getDataObject());
-    }
 
   if (compileLowerBound(listOfContainer))
     {
       if (mpLowerObject != NULL)
         {
-          mPrerequisits.insert(mpLowerObject->getDataObject());
+          mPrerequisits.insert(mpLowerObject);
         }
     }
   else
@@ -372,7 +398,7 @@ bool COptItem::compile(CObjectInterface::ContainerList listOfContainer)
     {
       if (mpUpperObject != NULL)
         {
-          mPrerequisits.insert(mpUpperObject->getDataObject());
+          mPrerequisits.insert(mpUpperObject);
         }
     }
   else
@@ -429,13 +455,65 @@ C_INT32 COptItem::checkConstraint(const C_FLOAT64 & value) const
 }
 
 bool COptItem::checkLowerBound(const C_FLOAT64 & value) const
-{return *mpLowerBound <= value;}
+{
+  return *mpLowerBound <= value;
+}
 
 bool COptItem::checkUpperBound(const C_FLOAT64 & value) const
-{return value <= *mpUpperBound;}
+{
+  return value <= *mpUpperBound;
+}
+
+bool COptItem::checkInterval() const
+{
+  return *mpLowerBound <= *mpUpperBound;
+}
+
+bool COptItem::checkIsInitialValue() const
+{
+  if (dynamic_cast< const CMathObject * >(mpObject)
+      && !static_cast< const CMathObject * >(mpObject)->isInitialValue())
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 10, mpObject->getObjectDisplayName().c_str());
+      return false;
+    }
+
+  if (dynamic_cast< const CMathObject * >(mpLowerObject)
+      && !static_cast< const CMathObject * >(mpLowerObject)->isInitialValue())
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 11, mpObject->getObjectDisplayName().c_str(), mpLowerObject->getObjectDisplayName().c_str());
+      return false;
+    }
+
+  if (dynamic_cast< const CMathObject * >(mpUpperObject)
+      && !static_cast< const CMathObject * >(mpUpperObject)->isInitialValue())
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 12, mpObject->getObjectDisplayName().c_str(), mpUpperObject->getObjectDisplayName().c_str());
+      return false;
+    }
+
+  return true;
+}
+
+void COptItem::updatePrerequisites(const std::vector< COptItem * > & influencingIntervals)
+{
+  ObjectSet Original = mPrerequisits;
+  mPrerequisits.clear();
+
+  std::vector< COptItem * >::const_iterator it = influencingIntervals.begin();
+  std::vector< COptItem * >::const_iterator end = influencingIntervals.end();
+
+  for (COptItem * pOptItem : influencingIntervals)
+    if (Original.find(pOptItem->getObject()) != Original.end())
+      {
+        mPrerequisits.insert(pOptItem);
+      }
+}
 
 const C_FLOAT64 * COptItem::getObjectValue() const
-{return mpObjectValue;}
+{
+  return mpObjectValue;
+}
 
 bool COptItem::compileLowerBound(const CObjectInterface::ContainerList & listOfContainer)
 {
@@ -513,4 +591,29 @@ std::ostream &operator<<(std::ostream &os, const COptItem & o)
   os << "; Start Value = " << o.getStartValue();
 
   return os;
+}
+
+bool COptItem::influencesIntervals() const
+{
+  return mDependentItems.size() > 0;
+}
+
+void COptItem::setIntervalUpdateSequence(const CCore::CUpdateSequence & updateSequence)
+{
+  mUpdateInterval = updateSequence;
+}
+
+const CCore::CUpdateSequence & COptItem::getIntervalUpdateSequence() const
+{
+  return mUpdateInterval;
+}
+
+void COptItem::addDependentItem(COptItem * pDependentItem)
+{
+  mDependentItems.insert(pDependentItem);
+}
+
+const std::set< COptItem * > & COptItem::getDependentItems() const
+{
+  return mDependentItems;
 }

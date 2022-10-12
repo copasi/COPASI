@@ -134,7 +134,7 @@ if (EXPAT_INCLUDE_DIR AND EXPAT_LIBRARY)
 int 
 main(void)
 {
-    printf(XML_ExpatVersion());
+    printf(\"%s\", XML_ExpatVersion());
     return 0;
 }
 " 

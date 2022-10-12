@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,14 +21,16 @@
 #include <cmath>
 #include <QtCore/qglobal.h>
 
+#include <QPalette>
+
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include <QGuiApplication>
 #else
 #include <QApplication>
 #endif
-#include <QPalette>
 
 #include "copasi/UI/CColorScale.h"
+#include "copasi/UI/qtUtilities.h"
 
 CColorScale::CColorScale()
   : mIsUsed(false)
@@ -45,8 +47,8 @@ CColorScale::CColorScale()
 #endif
   mForeground = Palette.color(QPalette::Active, QPalette::Text);
   mBackground = Palette.color(QPalette::Active, QPalette::Base);
-
-  if (mForeground.redF() + mForeground.greenF() + mForeground.blueF() < mBackground.redF() + mBackground.greenF() + mBackground.blueF())
+    
+  if (isLightMode())
     {
       mSmallNumbers = QColor(Qt::red);
       mLargeNumbers = QColor(Qt::green);

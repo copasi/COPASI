@@ -147,17 +147,17 @@ bool CScanTask::process(const bool & useInitialValues)
   // init progress bar
   mProgress = 0;
 
-  if (mpCallBack)
+  if (mProcessReport)
     {
-      mpCallBack->setName("performing parameter scan...");
+      mProcessReport.setName("performing parameter scan...");
 
       unsigned C_INT32 totalSteps = (unsigned C_INT32) pMethod->getTotalNumberOfSteps();
-      mhProgress = mpCallBack->addItem("Number of Steps",
-                                       mProgress,
-                                       &totalSteps);
+      mhProgress = mProcessReport.addItem("Number of Steps",
+                                          mProgress,
+                                          &totalSteps);
 
       if (mpSubTask)
-        mpSubTask->setCallBack(mpCallBack);
+        mpSubTask->setCallBack(mProcessReport);
     }
 
   // init output handler (plotting)
@@ -170,7 +170,7 @@ bool CScanTask::process(const bool & useInitialValues)
     task->removeEvent();
 
   //finishing progress bar and output
-  //if (mpCallBack) mpCallBack->finish();
+  //if (mCallBack) mCallBack.finish();
   //if (mpOutputHandler) mpOutputHandler->finish();
   output(COutputInterface::AFTER);
 
@@ -213,7 +213,7 @@ bool CScanTask::processCallback()
   //do progress bar
   ++mProgress;
 
-  if (mpCallBack) return mpCallBack->progressItem(mhProgress);
+  if (mProcessReport) return mProcessReport.progressItem(mhProgress);
 
   return true;
 }

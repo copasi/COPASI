@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -127,16 +127,11 @@ void CQSteadyStateResult::slotUpdateModel()
   if (mUpToDate &&
       mpTask != NULL)
     {
-      if (mpTask->isUpdateModel())
-        {
-          mpTask->restore();
-        }
-      else
-        {
-          mpTask->setUpdateModel(true);
-          mpTask->restore();
-          mpTask->setUpdateModel(false);
-        }
+      bool updateModel = mpTask->isUpdateModel();
+
+      mpTask->setUpdateModel(true);
+      mpTask->restore();
+      mpTask->setUpdateModel(updateModel);
 
       protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
     }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -184,11 +184,11 @@ bool CEFMAlgorithm::initialize()
   mStepProcess = 0;
   mMaxStep = (unsigned C_INT32) numCols;
 
-  if (mpCallBack)
+  if (mProcessReport)
     mhSteps =
-      mpCallBack->addItem("Current Step",
-                          mStepProcess,
-                          & mMaxStep);
+      mProcessReport.addItem("Current Step",
+                             mStepProcess,
+                             & mMaxStep);
 
   return true;
 }
@@ -197,8 +197,8 @@ bool CEFMAlgorithm::calculate()
 {
   if (!initialize())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhSteps);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhSteps);
 
       return false;
     }
@@ -229,8 +229,8 @@ void CEFMAlgorithm::calculateFluxModes()
           calculateNextTableau();
           mStepProcess++;
 
-          if (mpCallBack)
-            Continue &= mpCallBack->progressItem(mhSteps);
+          if (mProcessReport)
+            Continue &= mProcessReport.progressItem(mhSteps);
 
           static_cast<CCopasiTask *>(getObjectParent())->output(COutputInterface::DURING);
         }
@@ -243,8 +243,8 @@ void CEFMAlgorithm::calculateFluxModes()
       pdelete(mpCurrentTableau);
     }
 
-  if (mpCallBack)
-    Continue &= mpCallBack->finishItem(mhSteps);
+  if (mProcessReport)
+    Continue &= mProcessReport.finishItem(mhSteps);
 }
 
 void CEFMAlgorithm::calculateNextTableau()
@@ -270,11 +270,11 @@ void CEFMAlgorithm::calculateNextTableau()
   Counter = 0;
   MaxCounter = (unsigned C_INT32) mpCurrentTableau->size();
 
-  if (mpCallBack)
+  if (mProcessReport)
     hCounter =
-      mpCallBack->addItem("Current Line",
-                          Counter,
-                          & MaxCounter);
+      mProcessReport.addItem("Current Line",
+                             Counter,
+                             & MaxCounter);
 
   while (a != mpCurrentTableau->end() && Continue)
     if ((*a)->getMultiplier(mStep) == 0.0)
@@ -300,8 +300,8 @@ void CEFMAlgorithm::calculateNextTableau()
 
         Counter++;
 
-        if (mpCallBack)
-          Continue &= mpCallBack->progressItem(hCounter);
+        if (mProcessReport)
+          Continue &= mProcessReport.progressItem(hCounter);
       }
     else
       a++;
@@ -349,8 +349,8 @@ void CEFMAlgorithm::calculateNextTableau()
 
           b++;
 
-          if (mpCallBack)
-            Continue &= mpCallBack->proceed();
+          if (mProcessReport)
+            Continue &= mProcessReport.proceed();
         }
 
       // We no longer need a since all linear combinations have been build;
@@ -359,12 +359,12 @@ void CEFMAlgorithm::calculateNextTableau()
 
       Counter++;
 
-      if (mpCallBack)
-        Continue &= mpCallBack->progressItem(hCounter);
+      if (mProcessReport)
+        Continue &= mProcessReport.progressItem(hCounter);
     }
 
-  if (mpCallBack)
-    Continue &= mpCallBack->finishItem(hCounter);
+  if (mProcessReport)
+    Continue &= mProcessReport.finishItem(hCounter);
 
   /* Assign the next tableau to the current tableau and cleanup */
   pdelete(mpCurrentTableau);

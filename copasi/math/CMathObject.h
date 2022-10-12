@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -95,7 +95,7 @@ public:
    * before this.
    * @return const CObjectInterface::ObjectSet & prerequisites
    */
-  virtual const CObjectInterface::ObjectSet & getPrerequisites() const;
+  virtual const CObjectInterface::ObjectSet & getPrerequisites() const override;
 
   /**
    * Check whether a given object is a prerequisite for a context.
@@ -120,7 +120,7 @@ public:
   /**
    * Retrieve a pointer to the value of the object
    */
-  virtual void * getValuePointer() const;
+  virtual void * getValuePointer() const override;
 
   /**
    * Set the pointer to the data object

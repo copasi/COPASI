@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,6 +26,12 @@
 #include <QtCore/QFileInfo>
 #include <QTextStream>
 #include <QAbstractItemView>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#  include <QGuiApplication>
+#else
+#  include <QApplication>
+#endif
 
 #include "copasi/copasi.h"
 #include <copasi/core/CRootContainer.h>
@@ -63,7 +69,8 @@ bool updateGUI(C_INT32 objectType, C_INT32 action, const std::string & key /*= "
 
 QVariant getParameterValue(const CCopasiParameter * pParameter)
 {
-  if (pParameter == NULL) return false;
+  if (pParameter == NULL)
+    return QVariant();
 
   switch (pParameter->getType())
     {
@@ -368,4 +375,23 @@ QString toTsvString(QAbstractItemView* pWidget,
 
   QAbstractItemModel* pModel = pWidget->model();
   return toTsvString(pModel, writeColumnHeaders, writeRowHeaders);
+}
+
+
+bool isDarkMode()
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+  QPalette Palette = QGuiApplication::palette();
+#else
+  QPalette Palette = QApplication::palette();
+#endif
+  auto foreground = Palette.color(QPalette::Active, QPalette::Text);
+  auto background = Palette.color(QPalette::Active, QPalette::Base);
+
+  return (foreground.redF() + foreground.greenF() + foreground.blueF() > background.redF() + background.greenF() + background.blueF());
+}
+
+bool isLightMode()
+{
+    return !isDarkMode();
 }

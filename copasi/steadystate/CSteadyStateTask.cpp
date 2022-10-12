@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -263,7 +263,7 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
   //call the method
   mResult = pMethod->process(mSteadyState,
                              mJacobianReduced,
-                             mpCallBack);
+                             mProcessReport);
 
   // Reset the time for an autonomous model.
   if (mpContainer->isAutonomous())
@@ -356,15 +356,16 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
   return (mResult != CSteadyStateMethod::notFound);
 }
 
-bool CSteadyStateTask::restore()
+bool CSteadyStateTask::restore(const bool & updateModel)
 {
   setCallBack(NULL);
 
   if (mpContainer != NULL)
     {
-      if (mUpdateModel &&
-          mResult != CSteadyStateMethod::notFound &&
-          mpContainer->isStateValid())
+      if (updateModel
+          && mUpdateModel
+          && mResult != CSteadyStateMethod::notFound
+          && mpContainer->isStateValid())
         {
           mpContainer->setState(mSteadyState);
           mpContainer->updateSimulatedValues(true);

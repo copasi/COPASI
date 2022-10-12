@@ -183,6 +183,10 @@ endif(EXTRA_MOC_OPTIONS)
   if (QT_USE_TEXTBROWSER)
     set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DQT_USE_TEXTBROWSER=1)    
   endif()
+
+  if (COPASI_USE_QWT)
+  set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_USE_QWT=1)    
+  endif()
   
   if (ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING)
     set(COPASI_PARAMETERFITTING_RESIDUAL_SCALING 1)
@@ -480,6 +484,23 @@ if(BUILD_GUI)
   include(CMakeParseArguments)
   # qt5_wrap_ui(outfiles inputfile ... )
 
+
+  if (NOT Qt6Widgets_UIC_EXECUTABLE OR NOT EXISTS "${Qt6Widgets_UIC_EXECUTABLE}")
+    find_program(Qt6Widgets_UIC_EXECUTABLE
+           NAMES uic uic.exe 
+           DOC "Path to the uic executable"
+           PATHS ${Qt6Widgets_DIR}/../../../bin/
+                 ${Qt6Widgets_DIR}/../../../share/qt/libexec/
+           )
+
+    if (NOT EXISTS "${Qt6Widgets_UIC_EXECUTABLE}")
+      message(FATAL_ERROR "Need UIC executable to compile GUI, it should be in: 
+          ${Qt6Widgets_DIR}/../../../bin
+          ${Qt6Widgets_DIR}/../../../share/qt/libexec
+          ")
+    endif()
+  endif()
+
   MACRO(COPASI_QT6_WRAP_UI outfiles)
     set(options)
     set(oneValueArgs SUBDIR)
@@ -491,13 +512,6 @@ if(BUILD_GUI)
   #foreach(_name ${_vars})
   #  message("${_name}: ${${_name}})")
   #endforeach()
-
-    if (NOT Qt6Widgets_UIC_EXECUTABLE)
-      find_program(Qt6Widgets_UIC_EXECUTABLE
-               NAMES uic uic.exe 
-               DOC "Path to the uic executable"
-               PATHS ${Qt6Widgets_DIR}/../../../bin)
-    endif()
 
     set(ui_files ${_WRAP_UI_UNPARSED_ARGUMENTS})
     set(ui_options ${_WRAP_UI_OPTIONS})
@@ -656,6 +670,11 @@ endif()
   if (NOT QT5_USE_DATAVISUALIZATION)
     SET(UI_LIBS ${UI_LIBS} ${QWTPLOT3D_LIBRARY})
   endif()
+  
+  if (COPASI_USE_QCUSTOMPLOT)
+    SET(UI_LIBS ${UI_LIBS} QCP::QCP)  
+  endif()
+  
   if (${CMAKE_VERSION} VERSION_GREATER "2.8.11")
     target_include_directories(libCOPASIUI PUBLIC ${GUI_INCLUDE_DIRS})
     target_link_libraries(libCOPASIUI libCOPASISE-static ${UI_LIBS})

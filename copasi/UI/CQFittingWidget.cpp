@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -276,15 +276,6 @@ bool CQFittingWidget::loadTaskProtected()
   mpUseTimeSens->setChecked(pProblem->getUseTimeSens());
 
   mpParameters->load(mpDataModel, pProblem->getGroup("OptimizationItemList"), &mExperimentKeyMap, &mCrossValidationKeyMap);
-
-  if (CCopasiMessage::peekLastMessage().getType() == CCopasiMessage::ERROR)
-    {
-      CQMessageBox::critical(this, "Error loading Parameter estimation task",
-                             CCopasiMessage::getAllMessageText().c_str(),
-                             QMessageBox::Ok | QMessageBox::Default,
-                             QMessageBox::NoButton);
-    }
-
   mpParameters->setExperimentSet(const_cast<const CExperimentSet *&>(mpExperimentSet));
   mpParameters->setCrossValidationSet(const_cast<const CCrossValidationSet *&>(mpCrossValidationSet));
 
@@ -367,6 +358,7 @@ void CQFittingWidget::init()
 
   mpMethodWidget->setValidMethods(CFitTask::ValidMethods);
   mpMethodWidget->showMethodParameters(true);
+  mpMethodWidget->showMethodCheckbox(true);
   mpMethodWidget->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
   verticalLayout->addWidget(mpMethodWidget);
 

@@ -232,13 +232,13 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
   mProgressFactor = 100.0 / (MaxDuration + mpCrossSectionProblem->getOutputStartTime());
   mProgressValue = 0;
 
-  if (mpCallBack != NULL)
+  if (mProcessReport)
     {
-      mpCallBack->setName("performing simulation...");
+      mProcessReport.setName("performing simulation...");
       mProgressMax = 100.0;
-      mhProgress = mpCallBack->addItem("Completion",
-                                       mProgressValue,
-                                       &mProgressMax);
+      mhProgress = mProcessReport.addItem("Completion",
+                                          mProgressValue,
+                                          &mProgressMax);
     }
 
   mState = TRANSIENT;
@@ -286,14 +286,14 @@ bool CCrossSectionTask::process(const bool & useInitialValues)
 
 void CCrossSectionTask::finish()
 {
-  if (mpCallBack != NULL) mpCallBack->finishItem(mhProgress);
+  if (mProcessReport) mProcessReport.finishItem(mhProgress);
 
   output(COutputInterface::AFTER);
 }
 
-bool CCrossSectionTask::restore()
+bool CCrossSectionTask::restore(const bool & updateModel)
 {
-  bool success = CCopasiTask::restore();
+  bool success = CCopasiTask::restore(updateModel);
 
   removeEvent();
 
@@ -337,11 +337,11 @@ void CCrossSectionTask::eventCallBack(void * /* pData */, void * /* pCaller */)
   //  std::cout << "event call back: " << type << std::endl;
 
   //do progress reporting
-  if (mpCallBack != NULL)
+  if (mProcessReport)
     {
       mProgressValue = (*mpContainerStateTime - mStartTime) * mProgressFactor;
 
-      if (!mpCallBack->progressItem(mhProgress))
+      if (!mProcessReport.progressItem(mhProgress))
         {
           mState = FINISH;
         }

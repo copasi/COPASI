@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -73,9 +73,15 @@ const char const_usage[] =
   "  --maxTime seconds             The maximal time CopasiSE may run in\n"
   "                                seconds.\n"
   "  --nologo                      Surpresses the startup message.\n"
+  "  --printSedMLTasks             Only print the SED-ML tasks when importing\n"
+  "                                SED-ML or COMBINE archives.\n"
   "  --report-file file            Override report file name to be used except\n"
   "                                for the one defined in the scheduled task.\n"
   "  --scheduled-task taskName     Override the task marked as executable.\n"
+  "  --sedmlTask string            for specifying the task id to import (and\n"
+  "                                execute) when importing SED-ML or importing\n"
+  "                                a COMBINE archive. For a list of all SED-ML\n"
+  "                                tasks use --printSedMLTasks\n"
   "  --validate                    Only validate the given input file (COPASI,\n"
   "                                Gepasi, or SBML) without performing any\n"
   "                                calculations.\n"
@@ -268,6 +274,9 @@ void copasi::COptionParser::finalize(void)
           case option_NoLogo:
             throw option_error("missing value for 'nologo' option");
 
+          case option_PrintSedMLTasks:
+            throw option_error("missing value for 'printSedMLTasks' option");
+
           case option_ReparameterizeModel:
             throw option_error("missing value for 'reparameterize' option");
 
@@ -282,6 +291,9 @@ void copasi::COptionParser::finalize(void)
 
           case option_ScheduledTask:
             throw option_error("missing value for 'scheduled-task' option");
+
+          case option_SedmlTask:
+            throw option_error("missing value for 'sedmlTask' option");
 
           case option_Tmp:
             throw option_error("missing value for 'tmp' option");
@@ -743,6 +755,20 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
       options_.NoLogo = !options_.NoLogo;
       return;
     }
+  else if (strcmp(option, "printSedMLTasks") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'printSedMLTasks' option is only allowed on the command line");
+
+      if (locations_.PrintSedMLTasks)
+        {
+          throw option_error("the 'printSedMLTasks' option is only allowed once");
+        }
+
+      openum_ = option_PrintSedMLTasks;
+      locations_.PrintSedMLTasks = position;
+      options_.PrintSedMLTasks = !options_.PrintSedMLTasks;
+      return;
+    }
   else if (strcmp(option, "reparameterize") == 0)
     {
       if (source != source_cl) throw option_error("the 'reparameterize' option is only allowed on the command line");
@@ -796,6 +822,20 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
 
       openum_ = option_ScheduledTask;
       locations_.ScheduledTask = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "sedmlTask") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'sedmlTask' option is only allowed on the command line");
+
+      if (locations_.SedmlTask)
+        {
+          throw option_error("the 'sedmlTask' option is only allowed once");
+        }
+
+      openum_ = option_SedmlTask;
+      locations_.SedmlTask = position;
       state_ = state_value;
       return;
     }
@@ -968,6 +1008,9 @@ void copasi::COptionParser::parse_value(const char *value)
       case option_NoLogo:
         break;
 
+      case option_PrintSedMLTasks:
+        break;
+
       case option_ReparameterizeModel:
       {
         options_.ReparameterizeModel = value;
@@ -1039,6 +1082,12 @@ void copasi::COptionParser::parse_value(const char *value)
       case option_ScheduledTask:
       {
         options_.ScheduledTask = value;
+      }
+      break;
+
+      case option_SedmlTask:
+      {
+        options_.SedmlTask = value;
       }
       break;
 
@@ -1125,6 +1174,9 @@ const char* expand_long_name(const std::string &name)
   if (name_size <= 6 && name.compare(0, name_size, "nologo", name_size) == 0)
     matches.push_back("nologo");
 
+  if (name_size <= 15 && name.compare(0, name_size, "printSedMLTasks", name_size) == 0)
+    matches.push_back("printSedMLTasks");
+
   if (name_size <= 14 && name.compare(0, name_size, "reparameterize", name_size) == 0)
     matches.push_back("reparameterize");
 
@@ -1136,6 +1188,9 @@ const char* expand_long_name(const std::string &name)
 
   if (name_size <= 14 && name.compare(0, name_size, "scheduled-task", name_size) == 0)
     matches.push_back("scheduled-task");
+
+  if (name_size <= 9 && name.compare(0, name_size, "sedmlTask", name_size) == 0)
+    matches.push_back("sedmlTask");
 
   if (name_size <= 3 && name.compare(0, name_size, "tmp", name_size) == 0)
     matches.push_back("tmp");

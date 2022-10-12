@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -56,7 +56,7 @@ COscillationTask::~COscillationTask()
 
 void COscillationTask::cleanup() {}
 
-bool COscillationTask::setCallBack(CProcessReport * pCallBack)
+bool COscillationTask::setCallBack(CProcessReportLevel callBack)
 {
   bool success = CCopasiTask::setCallBack(pCallBack);
 

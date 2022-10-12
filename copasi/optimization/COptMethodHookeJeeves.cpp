@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,8 +68,8 @@ bool COptMethodHookeJeeves::optimise()
 
   if (!initialize())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhIteration);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhIteration);
 
       return false;
     }
@@ -95,7 +95,7 @@ bool COptMethodHookeJeeves::optimise()
   for (i = 0; i < mVariableSize; i++)
     {
       C_FLOAT64 & mut = mIndividual[i];
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
 
       mut = OptItem.getStartValue();
 
@@ -115,7 +115,7 @@ bool COptMethodHookeJeeves::optimise()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables()[i] = mut;
+      *mProblemContext.master()->getContainerVariables(true)[i] = mut;
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -125,7 +125,7 @@ bool COptMethodHookeJeeves::optimise()
 
   // The first value is also the best
   mBestValue = mEvaluationValue;
-  mProblemContext.master()->setSolution(mBestValue, mIndividual);
+  mProblemContext.master()->setSolution(mBestValue, mIndividual, true);
   mpParentTask->output(COutputInterface::DURING);
 
   if (!mContinue)
@@ -133,8 +133,8 @@ bool COptMethodHookeJeeves::optimise()
       if (mLogVerbosity > 0)
         mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user."));
 
-      if (mpCallBack)
-        mpCallBack->finishItem(mhIteration);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhIteration);
 
       cleanup();
       return true;
@@ -156,8 +156,8 @@ bool COptMethodHookeJeeves::optimise()
   while ((mIteration < mIterationLimit) && (steplength > mTolerance) && mContinue)
     {
       // signal another iteration to Gepasi
-      if (mpCallBack)
-        mContinue &= mpCallBack->progressItem(mhIteration);
+      if (mProcessReport)
+        mContinue &= mProcessReport.progressItem(mhIteration);
 
       mIteration++;
       iadj++;
@@ -174,7 +174,7 @@ bool COptMethodHookeJeeves::optimise()
         {
           // We found a better value
           mBestValue = newf;
-          mProblemContext.master()->setSolution(mBestValue, mNew);
+          mProblemContext.master()->setSolution(mBestValue, mNew, true);
           mpParentTask->output(COutputInterface::DURING);
 
           iadj = 0;
@@ -182,7 +182,7 @@ bool COptMethodHookeJeeves::optimise()
           for (i = 0; i < mVariableSize; i++)
             {
               C_FLOAT64 & mut = mNew[i];
-              const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
+              const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
 
               /* firstly, arrange the sign of mDelta[] */
               if (mut <= mBefore[i])
@@ -209,7 +209,7 @@ bool COptMethodHookeJeeves::optimise()
 
               // We need to set the value here so that further checks take
               // account of the value.
-              *mProblemContext.master()->getContainerVariables()[i] = mut;
+              *mProblemContext.master()->getContainerVariables(true)[i] = mut;
             }
 
           newf = bestNearby();
@@ -255,8 +255,8 @@ bool COptMethodHookeJeeves::optimise()
                      std::to_string(mIterationLimit) + " iterations."));
     }
 
-  if (mpCallBack)
-    mpCallBack->finishItem(mhIteration);
+  if (mProcessReport)
+    mProcessReport.finishItem(mhIteration);
 
   cleanup();
   return true;
@@ -279,13 +279,13 @@ bool COptMethodHookeJeeves::initialize()
 
   mIteration = 0;
 
-  if (mpCallBack)
+  if (mProcessReport)
     mhIteration =
-      mpCallBack->addItem("Current Iteration",
-                          mIteration,
-                          & mIterationLimit);
+      mProcessReport.addItem("Current Iteration",
+                             mIteration,
+                             & mIterationLimit);
 
-  mVariableSize = mProblemContext.master()->getOptItemList().size();
+  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
 
   mIndividual.resize(mVariableSize);
   mBefore.resize(mVariableSize);
@@ -335,12 +335,12 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
   mIndividual = mNew;
 
   for (i = 0; i < mVariableSize; i++)
-    *mProblemContext.master()->getContainerVariables()[i] = mIndividual[i];
+    *mProblemContext.master()->getContainerVariables(true)[i] = mIndividual[i];
 
   for (i = 0; i < mVariableSize; i++)
     {
       C_FLOAT64 & mut = mIndividual[i];
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
       mut = mNew[i] + mDelta[i];
 
       // force it to be within the bounds
@@ -357,7 +357,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables()[i] = mut;
+      *mProblemContext.master()->getContainerVariables(true)[i] = mut;
 
       if (!evaluate()) break;
 
@@ -382,7 +382,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mProblemContext.master()->getContainerVariables()[i] = mut;
+          *mProblemContext.master()->getContainerVariables(true)[i] = mut;
 
           if (!evaluate()) break;
 
@@ -391,7 +391,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
           else
             {
               mut = mNew[i];
-              *mProblemContext.master()->getContainerVariables()[i] = mut;
+              *mProblemContext.master()->getContainerVariables(true)[i] = mut;
             }
         }
     }

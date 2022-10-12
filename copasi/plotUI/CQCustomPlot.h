@@ -1,31 +1,10 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-// the plot object for COPASI
-
-#ifndef COPASIPLOT_H
-#define COPASIPLOT_H
+#ifndef CQCUSTOM_PLOT_H
+#define CQCUSTOM_PLOT_H
 
 #include <string>
 #include <vector>
@@ -38,37 +17,31 @@
 
 #include <QRectF>
 
-#include <qwt_plot.h>
-#include <qwt_painter.h>
-#include <qwt_symbol.h>
+#include <copasi/config.h>
 
-#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-#include <qwt_compat.h>
-#else
-#include <qwt_data.h>
-#include <qwt_raster_data.h>
-#endif
+#ifdef COPASI_USE_QCUSTOMPLOT
 
-#include <qwt_plot_curve.h>
-#include <qwt_plot_spectrogram.h>
+#include <qcustomplot.h>
 
 #include "copasi/plot/CPlotItem.h"
 
 #include "copasi/core/CDataObject.h"
 #include "copasi/output/COutputHandler.h"
+#include "copasi/plotUI/CPlotInterface.h"
 #include "copasi/utilities/CopasiTime.h"
 #include "copasi/core/CVector.h"
 #include "copasi/core/CMatrix.h"
 
 //*******************************************************
 
+class CHistoHelper;
 class CPlotSpec2Vector;
 class CPlotSpecification;
-class QwtPlotZoomer;
-class C2DPlotCurve;
 class CPlotSpectogram;
 
-class CopasiPlot : public QwtPlot, public COutputInterface
+class CQCustomPlot
+  : public QCustomPlot
+  , public CPlotInterface
 {
   Q_OBJECT
 private:
@@ -76,7 +49,7 @@ private:
    * Default constructor which may never be called.
    * @param QWidget* parent (default: NULL)
    */
-  CopasiPlot(QWidget* parent = NULL);
+  CQCustomPlot(QWidget* parent = NULL);
 
 public:
   /**
@@ -84,25 +57,29 @@ public:
    * @param const CPlotSpecification* plotspec
    * @param QWidget* parent (default: NULL)
    */
-  CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent = NULL);
+  CQCustomPlot(const CPlotSpecification* plotspec, QWidget* parent = NULL);
 
   /**
    * Initialize the the plot from the specification
    * @param const CPlotSpecification* plotspec
    */
-  bool initFromSpec(const CPlotSpecification* plotspec);
+  virtual bool initFromSpec(const CPlotSpecification* plotspec);
 
-  void setSymbol(C2DPlotCurve * pCurve, QwtSymbol::Style symbol, QColor color, int symbolSize, float penWidth);
+  void setSymbol(QCPAbstractPlottable * pCurve, QCPScatterStyle::ScatterShape symbol, QColor color, int symbolSize, float penWidth);
+
+  virtual QString titleText() const;
+
+  virtual void update();
 
   /**
    * @return the current plot specification
    */
-  const CPlotSpecification* getPlotSpecification() const;
+  virtual const CPlotSpecification* getPlotSpecification() const;
 
   /**
    * Destructor
    */
-  virtual ~CopasiPlot();
+  virtual ~CQCustomPlot();
 
   /**
    * compile the object list from name vector
@@ -134,26 +111,38 @@ public:
    * @param const std::string & filename
    * @return bool success
    */
-  bool saveData(const std::string & filename);
+  virtual bool saveData(const std::string & filename);
 
   /**
    * Shows or hide all curves depending on whether visibility is false or true
    * @param const bool & visibility
    */
-  void setCurvesVisibility(const bool & visibility);
+  virtual void setCurvesVisibility(const bool & visibility);
 
 public slots:
   virtual void replot();
-#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-  virtual void legendChecked(const QVariant &, bool on);
-#endif
+
+  virtual void toggleLogX(bool logX);
+  virtual void toggleLogY(bool logY);
+  virtual void render(QPainter *, QRect);
+  virtual void resetZoom();
+
+protected:
+  void toggleLog(QCPAxis * axis, bool useLog);
+  void mouseMoveEvent(QMouseEvent * event);
+  void mousePressEvent(QMouseEvent * event);
+  void mouseReleaseEvent(QMouseEvent * event);
+  void wheelEvent(QWheelEvent * event);
+  /*bool viewportEvent(QEvent * event);
+  void mousePressEvent(QMouseEvent * event);
+  void mouseMoveEvent(QMouseEvent * event);
+  void mouseReleaseEvent(QMouseEvent * event);
+  void keyPressEvent(QKeyEvent * event);*/
 
 private:
+  bool m_isTouching = false;
 
-  /**
-   * @return a spectogram for the given plot item.
-   */
-  CPlotSpectogram* createSpectogram(const CPlotItem *plotItem);
+private:
 
   /**
    * Tell the curves where the data is located. It must be called
@@ -182,8 +171,15 @@ private:
    * @param const C_INT32 & index
    * @param const CObjectInterface * pObject
    */
-  void setAxisUnits(const C_INT32 & index,
+  void setAxisUnits(Axis axis,
                     const CObjectInterface * pObject);
+
+  virtual void saveToFile(const QString & fileName, QRect & rect);
+
+  /**
+   * @return a string with supported file filters to save files
+   */
+  virtual QString getSaveFilters();
 
 private slots:
   /**
@@ -191,7 +187,11 @@ private slots:
    * @param QwtPlotItem *item
    * @param bool on
    */
-  void showCurve(QwtPlotItem *item, bool on);
+  void showCurve(QCPAbstractPlottable * item, bool on);
+  void legendClicked(QCPLegend * legend, QCPAbstractLegendItem * item, QMouseEvent * event);
+  void displayToolTip(QCPAbstractPlottable * plottable,
+                      int dataIndex,
+                      QMouseEvent * event);
 
 private:
   /**
@@ -250,22 +250,16 @@ private:
   /**
    * The list of curves
    */
-  CVector< C2DPlotCurve * > mCurves;
+  std::vector< QCPAbstractPlottable * > mCurves;
 
   /**
    * A map between a specification identified by its key and a curve
    */
-  std::map< std::string, C2DPlotCurve * > mCurveMap;
+  std::map< std::string, QCPAbstractPlottable * > mCurveMap;
 
-  /**
-   * The list of spectograms
-   */
-  CVector< CPlotSpectogram * > mSpectograms;
+  std::map< QCPAbstractPlottable *, QCPAbstractPlottable * > mY2Map;
 
-  /**
-   * A map between a specification identified by its key and a curve
-   */
-  std::map< std::string, CPlotSpectogram* > mSpectogramMap;
+  std::map< QCPAbstractPlottable *, CHistoHelper * > mHisto;
 
   /**
    * Count of data lines recorded during activity BEFORE.
@@ -315,17 +309,15 @@ private:
    */
   bool mIgnoreUpdate;
 
-public:
-  /**
-   * Pointer to the zooming engine for the plot.
-   */
-  QwtPlotZoomer * mpZoomer;
-
 protected:
   bool mReplotFinished;
+  QCPTextElement * mpTitle;
+  QSharedPointer< QCPAxisTicker > mLogTicker;
+  QSharedPointer< QCPAxisTicker > mDefaultTicker;
 
 signals:
   void replotSignal();
 };
 
-#endif // COPASIPLOT_H
+#endif // COPASI_USE_QCUSTOMPLOT
+#endif // CQCUSTOM_PLOT_H

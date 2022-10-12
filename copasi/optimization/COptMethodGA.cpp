@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -132,7 +132,7 @@ bool COptMethodGA::mutate(CVector< C_FLOAT64 > & individual)
   // mutate the parameters
   for (j = 0; j < mVariableSize; j++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
       C_FLOAT64 & mut = individual[j];
 
       // calculate the mutated parameter
@@ -152,7 +152,7 @@ bool COptMethodGA::mutate(CVector< C_FLOAT64 > & individual)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables()[j] = mut;
+      *mProblemContext.master()->getContainerVariables(true)[j] = mut;
     }
 
   return true;
@@ -358,7 +358,7 @@ bool COptMethodGA::creation(size_t first,
       for (j = 0; j < mVariableSize; j++)
         {
           // calculate lower and upper bounds
-          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
           mn = *OptItem.getLowerBoundValue();
           mx = *OptItem.getUpperBoundValue();
 
@@ -399,7 +399,7 @@ bool COptMethodGA::creation(size_t first,
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mProblemContext.master()->getContainerVariables()[j] = mut;
+          *mProblemContext.master()->getContainerVariables(true)[j] = mut;
         }
 
       // calculate its fitness
@@ -422,8 +422,8 @@ bool COptMethodGA::initialize()
 
   if (!COptPopulationMethod::initialize())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhGenerations);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhGenerations);
 
       return false;
     }
@@ -482,8 +482,8 @@ bool COptMethodGA::optimise()
   if (!initialize())
     {
       // initialisation failed, we exit
-      if (mpCallBack)
-        mpCallBack->finishItem(mhGenerations);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhGenerations);
 
       return false;
     }
@@ -510,7 +510,7 @@ bool COptMethodGA::optimise()
   for (i = 0; i < mVariableSize; i++)
     {
       C_FLOAT64 & mut = (*mIndividuals[0])[i];
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
 
       mut = OptItem.getStartValue();
 
@@ -530,7 +530,7 @@ bool COptMethodGA::optimise()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables()[i] = mut;
+      *mProblemContext.master()->getContainerVariables(true)[i] = mut;
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -543,7 +543,7 @@ bool COptMethodGA::optimise()
     {
       // and store that value
       mBestValue = mValues[0];
-      Continue &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0]);
+      Continue &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0], true);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -564,7 +564,7 @@ bool COptMethodGA::optimise()
     {
       // and store that value
       mBestValue = mValues[mBestIndex];
-      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex], true);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -576,8 +576,8 @@ bool COptMethodGA::optimise()
       if (mLogVerbosity > 0)
         mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user after initial population creation."));
 
-      if (mpCallBack)
-        mpCallBack->finishItem(mhGenerations);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhGenerations);
 
       cleanup();
       return true;
@@ -653,13 +653,13 @@ bool COptMethodGA::optimise()
           // keep best value
           mBestValue = mValues[mBestIndex];
           // pass the current best value upstream
-          Continue &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+          Continue &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex], true);
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
         }
 
-      if (mpCallBack)
-        Continue &= mpCallBack->progressItem(mhGenerations);
+      if (mProcessReport)
+        Continue &= mProcessReport.progressItem(mhGenerations);
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
@@ -675,8 +675,8 @@ bool COptMethodGA::optimise()
                    "Terminated after " + std::to_string(mCurrentGeneration - 1) + " of " +
                    std::to_string(mGenerations) + " generations."));
 
-  if (mpCallBack)
-    mpCallBack->finishItem(mhGenerations);
+  if (mProcessReport)
+    mProcessReport.finishItem(mhGenerations);
 
   cleanup();
   return true;

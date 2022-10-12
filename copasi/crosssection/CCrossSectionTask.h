@@ -93,7 +93,7 @@ public:
   /**
    * Perform necessary cleanup procedures
    */
-  virtual bool restore();
+  virtual bool restore(const bool & updateModel = true) override;
 
 #ifndef SWIG
   /**

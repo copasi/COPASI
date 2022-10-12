@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -7,31 +7,6 @@
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -140,6 +115,20 @@
  {
     return self->size();
  }
+
+ CDataObject* __getitem__(unsigned int index) 
+ {
+    try
+    {
+        return (CDataObject*)&((*self)[index]);
+    }
+    catch(...)
+    {
+      return NULL;
+    }
+
+ }
+
 #endif // SWIGPYTHON
 
 }
@@ -189,6 +178,34 @@
     }
   }
   
+#ifdef SWIGPYTHON 
+
+ CDataObject* __getitem__(const std::string& name) 
+ {
+  try
+    {
+      return (CDataObject*)&((*self)[name]);
+    }
+    catch(...)
+    {
+      return NULL;
+    }
+ }
+
+ CDataObject* __getitem__(unsigned int index) 
+ {
+    try
+    {
+        return (CDataObject*)&((*self)[index]);
+    }
+    catch(...)
+    {
+      return NULL;
+    }
+ }
+
+#endif // SWIGPYTHON
+
 }
 
 %rename(removeObject) CDataVector<CEvent>::remove(CDataObject* pObject);
@@ -402,4 +419,3 @@ typedef CDataVector<CReference> ReferenceVector;
 typedef CDataVector<CModification> ModificationVector;
 
 typedef std::vector<CObjectLists::ListType> ObjectListTypeStdVector;
-

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -143,17 +143,17 @@ bool CSSAMethod::initialize()
   mStep = 0;
   mMaxStep = numCols;
 
-  if (mpCallBack)
+  if (mProcessReport)
     mhSteps =
-      mpCallBack->addItem("Current Step",
-                          CCopasiParameter::Type::UINT,
-                          & mStep,
-                          & mMaxStep);
+      mProcessReport->addItem("Current Step",
+                              CCopasiParameter::Type::UINT,
+                              & mStep,
+                              & mMaxStep);
 
   return true;
 }
 
-bool CSSAMethod::process(CProcessReport *)
+bool CSSAMethod::process(CProcessReportLevel *)
 {
   return false;
 }
@@ -163,16 +163,16 @@ CSSAMethod::calculate()
 {
   if (!initialize())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhSteps);
+      if (mProcessReport)
+        mProcessReport->finishItem(mhSteps);
 
       return false;
     }
 
   if (!mpModel)
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhSteps);
+      if (mProcessReport)
+        mProcessReport->finishItem(mhSteps);
 
       return false;
     }
@@ -189,14 +189,14 @@ CSSAMethod::calculate()
 
   if (!testForMixingStability())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhSteps);
+      if (mProcessReport)
+        mProcessReport->finishItem(mhSteps);
 
       return false;
     }
 
-  if (mpCallBack)
-    mpCallBack->finishItem(mhSteps);
+  if (mProcessReport)
+    mProcessReport->finishItem(mhSteps);
 
   return true;
 }
@@ -349,7 +349,7 @@ CSSAMethod::decomposeJacobian()
       C_FLOAT64 dummy[m * n];
       dgemm_(&cN, &cN,
              &m, &n, &n, &alpha,
-             mTransposedKineticMatrix.array(), &m ,
+             mTransposedKineticMatrix.array(), &m,
              diagE.array(), &n,
              &beta, dummy, &m);
       dgemm_(&cN, &cN,

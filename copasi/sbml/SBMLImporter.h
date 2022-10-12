@@ -33,6 +33,7 @@
 
 #include "copasi/function/CFunctionDB.h"
 #include "copasi/sbml/StdException.h"
+#include "copasi/sbml/SBMLUnitSupport.h"
 #include "copasi/model/CModel.h"
 
 LIBSBML_CPP_NAMESPACE_BEGIN
@@ -45,7 +46,6 @@ class Parameter;
 class FunctionDefinition;
 class SBase;
 class Rule;
-class UnitDefinition;
 LIBSBML_CPP_NAMESPACE_END
 
 class CCompartment;
@@ -56,16 +56,13 @@ class CProcessReport;
 class CListOfLayouts;
 class SbmlProgressCallback;
 
-class SBMLImporter
+class SBMLImporter : public SBMLUnitSupport
 {
 protected:
-  static
-  C_FLOAT64 round(const C_FLOAT64 & x);
+  static C_FLOAT64 round(const C_FLOAT64 & x);
 
-  static
-  bool areApproximatelyEqual(const double & x, const double & y, const double & t = 1e-9);
+  static bool areApproximatelyEqual(const double & x, const double & y, const double & t = 1e-9);
 
-protected:
   std::set<unsigned int> mIgnoredSBMLMessages;
   std::map<std::string, CMetab*> speciesMap;
   bool mIncompleteModel;
@@ -74,9 +71,7 @@ protected:
   bool mUnsupportedAssignmentRuleFound;
   bool mUnitOnNumberFound;
   bool mAssignmentToSpeciesReferenceFound;
-  unsigned int mLevel;
   unsigned int mOriginalLevel;
-  unsigned int mVersion;
   std::map<CFunction*, std::string> sbmlIdMap;
   std::set<std::string> mCreatedFunctions;
   CDataModel * mpDataModel;
@@ -87,7 +82,7 @@ protected:
   /**
    * the import handler
    */
-  CProcessReport* mpProgressHandler;
+  CProcessReport * mpProcessReport;
 
   /**
    * the global import step handle
@@ -134,7 +129,6 @@ protected:
   std::map<std::string, std::string> mDelayNodeMap;
   std::set<std::string> mUsedSBMLIds;
   bool mUsedSBMLIdsPopulated;
-  bool mAvogadroSet;
   std::map<std::string, std::string> mKnownCustomUserDefinedFunctions;
   std::map<std::string, std::string> mKnownInitalValues;
 
@@ -161,7 +155,6 @@ protected:
   std::map<std::string, CCompartment*> mCompartmentMap;
   std::map<std::string, CModelValue*> mParameterFluxMap;
   std::set<const CDataObject*> mChangedObjects;
-  std::map<const UnitDefinition*, std::string> mUnitExpressions;
 
   SbmlProgressCallback *mpSbmlCallback;
 
@@ -202,12 +195,6 @@ protected:
    */
   CModel* createCModelFromSBMLDocument(SBMLDocument * doc,
                                        std::map<const CDataObject*, SBase*>& copasi2sbmlmap);
-
-  /**
-   * @brief imports the units from the given sbml model
-   * @param sbmlModel
-   */
-  void importUnitsFromSBMLDocument(Model* sbmlModel);
 
   /**
    * Creates and returns a COPASI CFunction from the SBML FunctionDefinition
@@ -349,36 +336,6 @@ protected:
    */
 
   /**
-   * Returns the copasi LengthUnit corresponding to the given SBML length
-   *  UnitDefinition.
-   */
-  std::pair< std::string, bool > handleLengthUnit(const UnitDefinition* uDef);
-
-  /**
-   * Returns the copasi AreaUnit corresponding to the given SBML area
-   *  UnitDefinition.
-   */
-  std::pair< std::string, bool > handleAreaUnit(const UnitDefinition* uDef);
-
-  /**
-   * Returns the copasi VolumeUnit corresponding to the given SBML Volume
-   *  UnitDefinition.
-   */
-  std::pair< std::string, bool > handleVolumeUnit(const UnitDefinition* uDef);
-
-  /**
-   * Returns the COPASI QuantityUnit corresponding to the given SBML
-   *  Substance UnitDefinition.
-   */
-  std::pair< std::string, bool > handleSubstanceUnit(const UnitDefinition* uDef);
-
-  /**
-   * Returns the COPASI TimeUnit corresponding to the given SBML Time
-   *  UnitDefinition.
-   */
-  std::pair< std::string, bool > handleTimeUnit(const UnitDefinition* uDef);
-
-  /**
    * Replaces all occurrences of the log function with two arguments by
    * a division of two separate calls to log.
    */
@@ -489,13 +446,6 @@ public:
    * Compares to CEvaluationNode based subtrees recursively.
    */
   static bool areEqualSubtrees(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2);
-
-  /**
-   * Converts the given SBML unit to a COPASI Unit
-   * @param pSBMLUnit the SBML unit
-   * @return a string corresponding to the unit
-   */
-  std::string createUnitExpressionFor(const UnitDefinition * pSBMLUnit);
 
 protected:
   std::vector<CEvaluationNodeObject*>* isMassAction(const CEvaluationTree* pTree,
@@ -609,23 +559,6 @@ protected:
    */
   bool setInitialValues(CModel* pModel,
                         const std::map<const CDataObject*, SBase*>& copasi2sbmlmap);
-
-  void checkElementUnits(const Model* pSBMLModel,
-                         CModel* pCopasiModel,
-                         int level,
-                         int version);
-
-  /**
-   * If the given UnitDefinition can be converted to a form of litre, the
-   * function return the UnitDefinition in litre, otherwise NULL is returned.
-   */
-  static Unit* convertSBMLCubicmetresToLitres(const Unit* pU);
-
-  /**
-   * This function normalizes the multiplier to be within the range 1.0 <=
-   * multiplier < 10.0.
-   */
-  static void normalizeSBMLUnit(Unit* pU);
 
   /**
    * Imports all initial assignments if there are any.
@@ -747,33 +680,17 @@ public:
   /**
    * sets a progress handler to inform about updates
    */
-  void setImportHandler(CProcessReport* pHandler);
+  void setImportHandler(CProcessReport * pProcessReport);
 
   /**
    * @return the progress handler set
    */
-  CProcessReport* getImportHandlerAddr() const;
+  const CProcessReport * getProcessReport() const;
 
   /**
    * clears the currently set progress handler
    */
   virtual void clearCallBack();
-
-  /**
-   * Enhanced method to identify identical SBML unit definitions.
-   * This method uses the areIdentical method from libSBML, but if the method
-   * return false, it does some extra checks.
-   * Right now it check for example if two volumes, one given in litre and one
-   * given in cubic meters are identical.
-   */
-  static bool areSBMLUnitDefinitionsIdentical(const UnitDefinition* pUdef1, const UnitDefinition* pUdef2);
-
-  /**
-   * This method takes the id of a unit as it can appear in an SBML file, and
-   * returns a new UnitDefinition object for that id.
-   */
-  static UnitDefinition* getSBMLUnitDefinitionForId(const std::string& unitId,
-      const Model* pSBMLModel);
 
   /**
    * Returns the flag that determines whether COPASI MIRIAM annotation is

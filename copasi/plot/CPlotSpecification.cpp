@@ -213,7 +213,7 @@ CPlotItem* CPlotSpecification::createItem(const std::string & name, CPlotItem::T
 
 bool CPlotSpecification::hasItem(const std::string & name)
 {
-  for (auto & item : items)
+for (auto & item : items)
     if (item.getObjectName() == name)
       return true;
 
@@ -248,4 +248,22 @@ bool CPlotSpecification::createDefaultPlot(const CModel * model)
     }
 
   return true; //TODO: really check;
+}
+
+bool CPlotSpecification::has3D() const
+{
+  bool bHas3D = false;
+
+for (auto & it : getItems())
+    {
+      auto plotType = it.getType();
+
+      if (plotType == CPlotItem::spectogram || plotType == CPlotItem::surface)
+        {
+          bHas3D = true;
+          break;
+        }
+    }
+
+  return bHas3D;
 }

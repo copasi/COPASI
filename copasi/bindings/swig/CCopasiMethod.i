@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -50,7 +50,14 @@
 %include "copasi/utilities/CTaskEnum.h"
 
 
-%extend CCopasiMethod{
+%extend CCopasiMethod
+{
+  
+  virtual bool setCallBack(CProcessReport *pHandler)
+  {
+    return self->setCallBack(CProcessReportLevel(pHandler));
+  }
+  
   static std::string getSubTypeName(const int& subType)
   {
     return CTaskEnum::MethodName[subType];

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -338,6 +338,10 @@ bool CLyapWolfMethod::calculate()
   C_FLOAT64 startTime = *mpContainerStateTime;
 
   bool flagProceed = true;
+
+  if (mProcessReport)
+    flagProceed = mProcessReport.proceed();
+
   C_FLOAT64 handlerFactor = 100.0 / (endTime - startTime);
 
   //** do the transient **
@@ -370,9 +374,16 @@ bool CLyapWolfMethod::calculate()
     {
     }
 
+  if (!flagProceed)
+    return false;
+
   //copy state to model and do output
   mpContainer->updateSimulatedValues(mReducedModel);
-  mpTask->methodCallback((*mpContainerStateTime - startTime) * handlerFactor, false);
+  flagProceed = mpTask->methodCallback((*mpContainerStateTime - startTime) * handlerFactor, false);
+
+  if (!flagProceed)
+    return false;
+
   //********
 
   orthonormalize();

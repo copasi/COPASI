@@ -36,6 +36,7 @@
 #include <string>
 
 #include "copasi/utilities/CTaskEnum.h"
+#include "copasi/utilities/CProcessReport.h"
 #include "copasi/output/COutputHandler.h"
 #include "copasi/core/CVector.h"
 
@@ -45,7 +46,7 @@
 class CCopasiProblem;
 class CCopasiMethod;
 class CCopasiParameterGroup;
-class CProcessReport;
+class CProcessReportLevel;
 
 class CCopasiTask : public CDataContainer
 {
@@ -296,15 +297,15 @@ public:
 
   /**
    * Set the call back of the task
-   * @param CProcessReport * pCallBack
+   * @param CProcessReport & callBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReport * pCallBack);
+  virtual bool setCallBack(CProcessReportLevel callBack);
 
   /**
    * @return the currently set callback
    */
-  CProcessReport * getCallBack() const;
+  const CProcessReportLevel & getCallBack() const;
 
   /**
    * resets the currently set callback by calling setCallBack(NULL)
@@ -344,8 +345,9 @@ public:
 
   /**
    * Perform necessary cleanup procedures
+   * @param const bool & updateModel (default: true)
    */
-  virtual bool restore();
+  virtual bool restore(const bool & updateModel = true);
 
 #ifndef SWIG
 
@@ -522,7 +524,7 @@ protected:
   /**
    * progress bar handler
    */
-  CProcessReport * mpCallBack;
+  CProcessReportLevel mProcessReport;
 
   /**
    * Pointer to group of sliders associated with the task.

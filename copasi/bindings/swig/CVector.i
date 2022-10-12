@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -74,18 +74,36 @@
 #endif // SWIGPYTHON
 }
 
-//%extend CVector
-//{
-//  virtual CType get(unsigned C_INT32 index)
-//  {
-//      return (*self)[index];
-//  }
-//
-//  virtual unsigned C_INT32 size() const
-//  {
-//    return self->size();
-//  }
-//}
+
+%define ExtendCVectorPtr(name, T)
+%extend name<T>
+{
+    T get(int i)
+    {
+      if (i >= self->size())
+        return NULL;
+      return (*self)[i];
+    }
+
+    size_t size() const
+    {
+      return self->size();
+    }
+}
+%enddef
+
+// %extend CVector
+// {
+//   virtual CType get(unsigned C_INT32 index) throw(std::out_of_range)
+//   {
+//       return (*self)[index];
+//   }
+
+//   virtual unsigned C_INT32 size() const
+//   {
+//     return self->size();
+//   }
+// }
 
 typedef CVectorCore<C_FLOAT64> FloatVectorCore;
 typedef CVector<C_FLOAT64> FloatVector;
@@ -97,6 +115,8 @@ typedef CVectorCore<size_t> SizeTVectorCore;
 typedef CVector<size_t> SizeTVector;
 typedef CVectorCore<CDataObject*> ObjectVectorCore;
 typedef CVector<CDataObject*> ObjectVector;
+typedef CVectorCore<const CDataObject*> ConstObjectVectorCore;
+typedef CVector<const CDataObject*> ConstObjectVector;
 
 %template(FloatVectorCore) CVectorCore<C_FLOAT64>;
 %template(FloatVector) CVector<C_FLOAT64>;
@@ -108,11 +128,13 @@ typedef CVector<CDataObject*> ObjectVector;
 %template(SizeTVector) CVector<size_t>;
 %template(ObjectVectorCore) CVectorCore<CDataObject*>;
 %template(ObjectVector) CVector<CDataObject*>;
-%template(ObjectVectorCore) CVectorCore<CDataObject*>;
+ExtendCVectorPtr(CVector, CDataObject*);
+%template(ConstObjectVectorCore) CVectorCore<const CDataObject*>;
 %template(ConstObjectVector) CVector<const CDataObject*>;
+ExtendCVectorPtr(CVector, const CDataObject*);
 %template(ConstFunctionVector) CVector<const CFunction*>;
+ExtendCVectorPtr(CVector, const CFunction*);
 %template(ConstFunctionVectorCore) CVectorCore<const CFunction*>;
 %template(ConstObjectInterfaceVector) CVector<const CObjectInterface*>;
 %template(ConstObjectInterfaceVectorCore) CVectorCore<const CObjectInterface*>;
-
-
+ExtendCVectorPtr(CVector, const CObjectInterface*);

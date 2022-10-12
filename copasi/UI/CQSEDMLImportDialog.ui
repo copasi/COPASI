@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> University of Virginia, University of Heidelberg, and University </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+ <comment> All rights reserved. </comment>
+ <class>CQSEDMLImportDialog</class>
+ <widget class="QDialog" name="CQSEDMLImportDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>500</width>
+    <height>350</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>SED-ML Import</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::ExpandingFieldsGrow</enum>
+     </property>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Task</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="cbmTaskSelect">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="statusTip">
+        <string>Choose the task you want to import</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Plots:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QListWidget" name="lstPlots">
+       <property name="toolTip">
+        <string>Select the plots you want to import</string>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::ExtendedSelection</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Report:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="cbmReportSelect">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Select Report to generate</string>
+       </property>
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Report file:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLineEdit" name="txtReportFilename">
+         <property name="toolTip">
+          <string>Filename under which to save the report</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="cmdBrowseReportFile">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Messages</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QListWidget" name="listWidget"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>CQSEDMLImportDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>288</x>
+     <y>344</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>258</x>
+     <y>182</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>CQSEDMLImportDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>288</x>
+     <y>344</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>258</x>
+     <y>182</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbmReportSelect</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>CQSEDMLImportDialog</receiver>
+   <slot>slotReportSelected(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>288</x>
+     <y>149</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>258</x>
+     <y>182</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbmTaskSelect</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>CQSEDMLImportDialog</receiver>
+   <slot>slotTaskSelected(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>288</x>
+     <y>18</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>258</x>
+     <y>182</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmdBrowseReportFile</sender>
+   <signal>clicked()</signal>
+   <receiver>CQSEDMLImportDialog</receiver>
+   <slot>slotBrowseReportfile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>495</x>
+     <y>176</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>258</x>
+     <y>182</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slotReportSelected(QString)</slot>
+  <slot>slotTaskSelected(QString)</slot>
+  <slot>slotBrowseReportfile()</slot>
+ </slots>
+</ui>

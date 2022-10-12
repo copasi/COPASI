@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
@@ -45,9 +50,9 @@ public class example1
      // we want seconds as the time unit
      // microliter as the volume units
      // and nanomole as the substance units
-     model.setTimeUnit(CUnit.s);
-     model.setVolumeUnit(CUnit.microl);
-     model.setQuantityUnit(CUnit.nMol);
+     model.setTimeUnit("s");
+     model.setVolumeUnit("ul");
+     model.setQuantityUnit("nmol");
 
      // we have to keep a set of all the initial values that are changed during
      // the model building process

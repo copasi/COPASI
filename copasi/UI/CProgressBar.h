@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -117,12 +117,12 @@ public:
    * @param const void * pEndValue = NULL
    * @return size_t handle
    */
-protected:
   virtual size_t addItem(const std::string & name,
                          const CCopasiParameter::Type & type,
                          const void * pValue,
                          const void * pEndValue = NULL);
 
+protected:
   virtual void closeEvent(QCloseEvent *e);
 
   bool mSlotFinished;

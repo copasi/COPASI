@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -133,11 +133,11 @@ bool CBitPatternTreeMethod::initialize()
   mProgressCounter = 0;
   mProgressCounterMax = (unsigned C_INT32) mpStepMatrix->getNumUnconvertedRows();
 
-  if (mpCallBack)
+  if (mProcessReport)
     mhProgressCounter =
-      mpCallBack->addItem("Current Step",
-                          mProgressCounter,
-                          & mProgressCounterMax);
+      mProcessReport.addItem("Current Step",
+                             mProgressCounter,
+                             & mProgressCounterMax);
 
   return true;
 }
@@ -148,8 +148,8 @@ bool CBitPatternTreeMethod::calculate()
 
   if (!initialize())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhProgressCounter);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhProgressCounter);
 
       return false;
     }
@@ -186,16 +186,16 @@ bool CBitPatternTreeMethod::calculate()
           mProgressCounter2 = 0;
           mProgressCounter2Max = (unsigned C_INT32)(PositiveTree.size() * NegativeTree.size());
 
-          if (mpCallBack)
+          if (mProcessReport)
             mhProgressCounter2 =
-              mpCallBack->addItem("Combinations",
-                                  mProgressCounter2,
-                                  & mProgressCounter2Max);
+              mProcessReport.addItem("Combinations",
+                                     mProgressCounter2,
+                                     & mProgressCounter2Max);
 
           combine(PositiveTree.getRoot(), NegativeTree.getRoot());
 
-          if (mpCallBack)
-            mpCallBack->finishItem(mhProgressCounter2);
+          if (mProcessReport)
+            mProcessReport.finishItem(mhProgressCounter2);
 
           Continue &= mContinueCombination;
 
@@ -218,8 +218,8 @@ bool CBitPatternTreeMethod::calculate()
 
       mProgressCounter = mProgressCounterMax - (unsigned C_INT32) mpStepMatrix->getNumUnconvertedRows();
 
-      if (mpCallBack)
-        Continue &= mpCallBack->progressItem(mhProgressCounter);
+      if (mProcessReport)
+        Continue &= mProcessReport.progressItem(mhProgressCounter);
     }
 
   if (Continue)
@@ -227,8 +227,8 @@ bool CBitPatternTreeMethod::calculate()
       buildFluxModes();
     }
 
-  if (mpCallBack)
-    Continue &= mpCallBack->finishItem(mhProgressCounter);
+  if (mProcessReport)
+    Continue &= mProcessReport.finishItem(mhProgressCounter);
 
   return true;
 }
@@ -236,9 +236,9 @@ bool CBitPatternTreeMethod::calculate()
 void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
                                     const CBitPatternTreeNode * pNegative)
 {
-  if (mContinueCombination && mpCallBack)
+  if (mContinueCombination && mProcessReport)
     {
-      mContinueCombination = mpCallBack->proceed();
+      mContinueCombination = mProcessReport.proceed();
     }
 
   if (!mContinueCombination)
@@ -311,8 +311,8 @@ void CBitPatternTreeMethod::combine(const CBitPatternTreeNode * pPositive,
 
       mProgressCounter2++;
 
-      if (mpCallBack)
-        mContinueCombination = mpCallBack->progressItem(mhProgressCounter2);
+      if (mProcessReport)
+        mContinueCombination = mProcessReport.progressItem(mhProgressCounter2);
     }
   else if (pPositiveColumn != NULL)
     {

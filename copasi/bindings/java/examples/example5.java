@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -39,9 +44,9 @@ public class example5
      // get the model from the datamodel
      CModel model = dataModel.getModel();
      assert model != null;
-     model.setVolumeUnit(CUnit.fl);
-     model.setTimeUnit(CUnit.s);
-     model.setQuantityUnit(CUnit.fMol);
+     model.setVolumeUnit("fl");
+     model.setTimeUnit("s");
+     model.setQuantityUnit("fmol");
      CModelValue fixedModelValue=model.createModelValue("F");
      assert fixedModelValue != null;
      fixedModelValue.setStatus(CModelEntity.Status_FIXED);

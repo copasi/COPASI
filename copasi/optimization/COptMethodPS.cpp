@@ -104,7 +104,7 @@ C_FLOAT64 COptMethodPS::evaluate()
 
   // evaluate the fitness
   if (!pOptProblem->calculate())
-    #pragma omp critical
+#pragma omp critical
     mContinue = false;
 
   C_FLOAT64 EvaluationValue;
@@ -117,7 +117,7 @@ C_FLOAT64 COptMethodPS::evaluate()
 
   if (mProblemContext.isThread(&pOptProblem))
     {
-      #pragma omp critical
+#pragma omp critical
       mProblemContext.master()->incrementCounters(pOptProblem->getCounters());
 
       pOptProblem->resetCounters();
@@ -141,8 +141,8 @@ bool COptMethodPS::move(const size_t & index)
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[index];
   C_FLOAT64 * pBestPosition = mBestPositions[index];
-  std::vector< COptItem * >::const_iterator itOptItem = pProblem->getOptItemList().begin();
-  C_FLOAT64 ** ppContainerVariable = pProblem->getContainerVariables().array();
+  std::vector< COptItem * >::const_iterator itOptItem = pProblem->getOptItemList(true).begin();
+  C_FLOAT64 ** ppContainerVariable = pProblem->getContainerVariables(true).array();
 
   C_FLOAT64 * pBestInformantPosition = mBestPositions[index];
   C_FLOAT64 BestInformantValue = mBestValues[index];
@@ -198,7 +198,7 @@ bool COptMethodPS::move(const size_t & index)
     {
       Improved = true;
 
-      #pragma omp critical
+#pragma omp critical
       {
         mImprovements[index] = EvaluationValue;
 
@@ -208,7 +208,7 @@ bool COptMethodPS::move(const size_t & index)
             // and store that value
             mBestValue = EvaluationValue;
             mBestIndex = index;
-            mContinue &= mProblemContext.master()->setSolution(EvaluationValue, *mIndividuals[mBestIndex]);
+            mContinue &= mProblemContext.master()->setSolution(EvaluationValue, *mIndividuals[mBestIndex], true);
 
             // We found a new best value lets report it.
             mpParentTask->output(COutputInterface::DURING);
@@ -229,8 +229,8 @@ bool COptMethodPS::create(const size_t & index)
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[index];
   C_FLOAT64 * pBestPosition = mBestPositions[index];
-  std::vector< COptItem * >::const_iterator itOptItem = pProblem->getOptItemList().begin();
-  C_FLOAT64 ** ppContainerVariable = pProblem->getContainerVariables().array();
+  std::vector< COptItem * >::const_iterator itOptItem = pProblem->getOptItemList(true).begin();
+  C_FLOAT64 ** ppContainerVariable = pProblem->getContainerVariables(true).array();
 
   C_FLOAT64 mn, mx, la;
 
@@ -339,14 +339,14 @@ bool COptMethodPS::create(const size_t & index)
   mBestValues[index] = mValues[index] = evaluate();
   memcpy(mBestPositions[index], mIndividuals[index]->array(), sizeof(C_FLOAT64) * mVariableSize);
 
-  #pragma omp critical
+#pragma omp critical
 
   if (mBestValues[index] < mBestValue)
     {
       // and store that value
       mBestIndex = index;
       mBestValue = mBestValues[mBestIndex];
-      mContinue &= mProblemContext.master()->setSolution(mBestValues[mBestIndex], *mIndividuals[mBestIndex]);
+      mContinue &= mProblemContext.master()->setSolution(mBestValues[mBestIndex], *mIndividuals[mBestIndex], true);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -369,11 +369,11 @@ bool COptMethodPS::initialize()
   mGenerations = getValue< unsigned C_INT32 >("Iteration Limit");
   mCurrentGeneration = 0;
 
-  if (mpCallBack)
+  if (mProcessReport)
     mhGenerations =
-      mpCallBack->addItem("Iteration Limit",
-                          mCurrentGeneration,
-                          & mGenerations);
+      mProcessReport.addItem("Iteration Limit",
+                             mCurrentGeneration,
+                             & mGenerations);
 
   mPopulationSize = getValue< unsigned C_INT32 >("Swarm Size");
 
@@ -395,16 +395,21 @@ bool COptMethodPS::initialize()
   size_t i;
 
   for (i = 0; i < mPopulationSize; ++i)
-    mIndividuals[i] = new CVector< C_FLOAT64 >(mVariableSize);
+    {
+      mIndividuals[i] = new CVector< C_FLOAT64 >(mVariableSize);
+      *mIndividuals[i] = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+    }
 
   mValues.resize(mPopulationSize);
   mValues = std::numeric_limits<double>::infinity();
 
   mVelocities.resize(mPopulationSize, mVariableSize);
+  mVelocities = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
   mBestValue = std::numeric_limits<double>::infinity();
   mBestValues.resize(mPopulationSize);
   mBestValues = std::numeric_limits<double>::infinity();
   mBestPositions.resize(mPopulationSize, mVariableSize);
+  mBestPositions = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
   mNumInformedMin = std::max<size_t>(mPopulationSize / 10, 5) - 1;
   mNumInformed = mNumInformedMin;
@@ -547,8 +552,8 @@ bool COptMethodPS::optimise()
 {
   if (!initialize())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhGenerations);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhGenerations);
 
       return false;
     }
@@ -557,8 +562,8 @@ bool COptMethodPS::optimise()
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[0];
   C_FLOAT64 * pBestPosition = mBestPositions[0];
-  std::vector< COptItem * >::const_iterator itOptItem = mProblemContext.master()->getOptItemList().begin();
-  C_FLOAT64 ** ppContainerVariable = mProblemContext.master()->getContainerVariables().array();
+  std::vector< COptItem * >::const_iterator itOptItem = mProblemContext.master()->getOptItemList(true).begin();
+  C_FLOAT64 ** ppContainerVariable = mProblemContext.master()->getContainerVariables(true).array();
 
   if (mLogVerbosity > 0)
     mMethodLog.enterLogEntry(
@@ -582,7 +587,7 @@ bool COptMethodPS::optimise()
       // force it to be within the bounds
       switch (OptItem.checkConstraint(*pIndividual))
         {
-          case - 1:
+          case -1:
             *pIndividual = *OptItem.getLowerBoundValue();
             pointInParameterDomain = false;
             break;
@@ -610,7 +615,7 @@ bool COptMethodPS::optimise()
 
   // and store that value
   mBestIndex = 0;
-  mContinue &= mProblemContext.master()->setSolution(mBestValues[mBestIndex], *mIndividuals[mBestIndex]);
+  mContinue &= mProblemContext.master()->setSolution(mBestValues[mBestIndex], *mIndividuals[mBestIndex], true);
 
   // We found a new best value lets report it.
   mpParentTask->output(COutputInterface::DURING);
@@ -618,7 +623,7 @@ bool COptMethodPS::optimise()
   // the others are random
   C_INT32 k, kmax = (C_INT32) mPopulationSize;
 
-  #pragma omp parallel for
+#pragma omp parallel for
 
   for (k = 1; k < kmax; k++)
     if (mContinue)
@@ -638,7 +643,7 @@ bool COptMethodPS::optimise()
 
       C_INT32 k, kmax = (C_INT32) mPopulationSize;
 
-      #pragma omp parallel for
+#pragma omp parallel for
 
       for (k = 0; k < kmax; k++)
         if (mContinue)
@@ -687,15 +692,15 @@ bool COptMethodPS::optimise()
             Stalled = 0;
         }
 
-      if (mpCallBack)
-        mContinue &= mpCallBack->progressItem(mhGenerations);
+      if (mProcessReport)
+        mContinue &= mProcessReport.progressItem(mhGenerations);
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
     }
 
-  if (mpCallBack)
-    mpCallBack->finishItem(mhGenerations);
+  if (mProcessReport)
+    mProcessReport.finishItem(mhGenerations);
 
   if (mLogVerbosity > 0)
     mMethodLog.enterLogEntry(

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -473,23 +473,23 @@ bool CFitProblem::elevateChildren()
   return true;
 }
 
-bool CFitProblem::setCallBack(CProcessReport * pCallBack)
+bool CFitProblem::setCallBack(CProcessReportLevel callBack)
 {
-  bool success =  COptProblem::setCallBack(pCallBack);
+  bool success =  COptProblem::setCallBack(callBack);
 
   if (mpSteadyState != NULL)
     {
-      success &= mpSteadyState->setCallBack(mpCallBack);
+      success &= mpSteadyState->setCallBack(mProcessReport);
     }
 
   if (mpTrajectory != NULL)
     {
-      success &= mpTrajectory->setCallBack(mpCallBack);
+      success &= mpTrajectory->setCallBack(mProcessReport);
     }
 
   if (mpTimeSens != NULL)
     {
-      success &= mpTimeSens->setCallBack(mpCallBack);
+      success &= mpTimeSens->setCallBack(mProcessReport);
     }
 
   return success;
@@ -535,7 +535,7 @@ bool CFitProblem::initialize()
 
       mpSteadyState->setMathContainer(mpContainer);
       mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-      mpSteadyState->setCallBack(mpCallBack);
+      mpSteadyState->setCallBack(mProcessReport);
     }
 
   pdelete(mpTrajectory);
@@ -556,7 +556,7 @@ bool CFitProblem::initialize()
       mpTrajectory->setMathContainer(mpContainer);
       mpTrajectory->setUpdateModel(false);
       mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-      mpTrajectory->setCallBack(mpCallBack);
+      mpTrajectory->setCallBack(mProcessReport);
     }
 
   mCompleteInitialState = mpContainer->getCompleteInitialState();
@@ -605,14 +605,15 @@ bool CFitProblem::initialize()
   mCorrelation.resize(imax, imax);
   mpCorrelationMatrix->resize();
 
-  for (j = 0; it != end; ++it, j++)
+  for (j = 0; it != end; ++it, ++j)
     {
       pItem = dynamic_cast<CFitItem *>(*it);
 
       if (pItem == NULL)
         fatalError();
 
-      pItem->updateBounds(mpOptItems->begin());
+      // updateBounds relies on proper dependency ordering, i.e. we need algorithm order
+      pItem->updateBounds(mOptItemAlgorithm.begin());
       std::string Annotation = pItem->getObjectDisplayName();
 
       // We cannot directly change the container values as multiple parameters
@@ -663,6 +664,16 @@ bool CFitProblem::initialize()
       mpFisherScaledEigenvectorsMatrix->setAnnotationString(1, j, Annotation);
       mpCorrelationMatrix->setAnnotationString(0, j, Annotation);
       mpCorrelationMatrix->setAnnotationString(1, j, Annotation);
+    }
+
+  it = mOptItemAlgorithm.begin();
+  end = mOptItemAlgorithm.end();
+
+  for (j = 0; it != end; ++it, ++j)
+    {
+      // We cannot directly change the container values as multiple parameters
+      // may point to the same value.
+      mContainerVariablesAlgorithm[j] = const_cast<C_FLOAT64 *>(&static_cast<CFitItem *>(*it)->getLocalValue());
     }
 
   // Create a joined sequence of update methods for parameters and independent values.
@@ -875,7 +886,7 @@ bool CFitProblem::initialize()
         }
 
       mpTimeSens->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
-      mpTimeSens->setCallBack(mpCallBack);
+      mpTimeSens->setCallBack(mProcessReport);
       mJacTimeSens.resize(mSolutionVariables.size(), mpExperimentSet->getDataPointCount());
     }
   else
@@ -1232,8 +1243,8 @@ bool CFitProblem::calculate()
       mCalculateValue = mWorstValue;
     }
 
-  if (mpCallBack)
-    return mpCallBack->progressItem(mhCounter);
+  if (mProcessReport)
+    return mProcessReport.progressItem(mhCounter);
 
   return true;
 }
@@ -1242,8 +1253,8 @@ bool CFitProblem::restore(const bool & updateModel)
 {
   bool haveExperiment = mpExperimentSet != NULL &&
                         mpExperimentSet->size() > 0;
-  return restore(updateModel, haveExperiment ?
-                 mpExperimentSet->getExperiment(0) : NULL);
+  return restore(updateModel && mSolutionValue != mWorstValue,
+                 haveExperiment ? mpExperimentSet->getExperiment(0) : NULL);
 }
 
 bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
@@ -1252,16 +1263,16 @@ bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
 
   if (mpTrajectory != NULL)
     {
-      success &= mpTrajectory->restore();
+      success &= mpTrajectory->restore(updateModel);
     }
 
   if (mpTimeSens)
     {
-      success &= mpTimeSens->restore();
+      success &= mpTimeSens->restore(updateModel);
     }
 
   if (mpSteadyState != NULL)
-    success &= mpSteadyState->restore();
+    success &= mpSteadyState->restore(updateModel);
 
   success &= COptProblem::restore(updateModel);
 
@@ -2293,9 +2304,10 @@ CFitProblem::getCrossValidationSet()
 }
 
 bool CFitProblem::setSolution(const C_FLOAT64 & value,
-                              const CVector< C_FLOAT64 > & variables)
+                              const CVector< C_FLOAT64 > & variables,
+                              const bool & algorithmOrder)
 {
-  bool Continue = COptProblem::setSolution(value, variables);
+  bool Continue = COptProblem::setSolution(value, variables, algorithmOrder);
 
   if (Continue && mpCrossValidationSet->getExperimentCount() > 0)
     {
@@ -2573,8 +2585,8 @@ bool CFitProblem::calculateCrossValidation()
   if (!checkFunctionalConstraints())
     CalculateValue = mWorstValue;
 
-  if (mpCallBack)
-    Continue &= mpCallBack->progressItem(mhCounter);
+  if (mProcessReport)
+    Continue &= mProcessReport.progressItem(mhCounter);
 
   C_FLOAT64 CurrentObjective =
     (1.0 - mpCrossValidationSet->getWeight()) * mSolutionValue

@@ -44,7 +44,7 @@
 class CSteadyStateProblem;
 class CSteadyStateTask;
 class CEigen;
-class CProcessReport;
+class CProcessReportLevel;
 
 class CSteadyStateMethod : public CCopasiMethod
 {
@@ -165,7 +165,7 @@ public:
    */
   CSteadyStateMethod::ReturnCode process(CVectorCore< C_FLOAT64 > & State,
                                          CMatrix< C_FLOAT64 > & jacobianX,
-                                         CProcessReport * handler);
+                                         CProcessReportLevel handler);
 
   /**
    * Check if the method is suitable for this problem

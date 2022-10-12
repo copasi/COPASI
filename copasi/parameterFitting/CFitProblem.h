@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -78,7 +78,7 @@ public:
    * @param CProcessReport * pCallBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReport * pCallBack);
+  virtual bool setCallBack(CProcessReportLevel callBack) override;
 
   /**
    * Do all necessary initialization so that calls to calculate will
@@ -100,7 +100,7 @@ public:
    * @param const bool & updateModel
    * @result bool success
    */
-  virtual bool restore(const bool & updateModel);
+  virtual bool restore(const bool & updateModel) override;
 
   bool restore(const bool& updateModel, CExperiment* pExp);
 
@@ -293,10 +293,12 @@ public:
    * Set the solution.
    * @param const C_FLOAT64 & value
    * @param const CVector< C_FLOAT64 > & variables
+   * @param const bool & algorithmOrder (default: false)
    * @return bool continue;
    */
   virtual bool setSolution(const C_FLOAT64 & value,
-                           const CVector< C_FLOAT64 > & variables);
+                           const CVector< C_FLOAT64 > & variables,
+                           const bool & algorithmOrder = false) override;
 
   /**
    * Retrieve the result for the cross validation solution
