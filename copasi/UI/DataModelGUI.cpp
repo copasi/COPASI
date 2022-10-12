@@ -123,6 +123,7 @@ DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel):
   , mSEDMLVersion(1)
   , mSEDMLExportIncomplete(true)
   , mSEDMLExportCOPASIMIRIAM(true)
+  , mOptions()
   , mIgnoreNextFile(false)
 {
   mpOutputHandlerPlot = new COutputHandlerPlot();
@@ -1114,12 +1115,18 @@ void DataModelGUI::exportShinyFinished()
   threadFinished();
 }
 
-void DataModelGUI::openCombineArchive(const std::string & fileName)
+void DataModelGUI::openCombineArchive(const std::string & fileName, const SedmlImportOptions * pOptions)
 {
   mpProgressBar = CProgressBar::create();
 
   mSuccess = true;
   mFileName = fileName;
+
+  if (pOptions)
+    mOptions = *pOptions;
+  else
+    mOptions = SedmlImportOptions();
+
   mpThread = new CQThread(this, &DataModelGUI::openCombineArchiveRun);
   connect(mpThread, SIGNAL(finished()), this, SLOT(importCombineFinished()));
   mpThread->start();
@@ -1143,7 +1150,7 @@ void DataModelGUI::openCombineArchiveRun()
   try
     {
       assert(mpDataModel != NULL);
-      mSuccess = mpDataModel->openCombineArchive(mFileName, mpProgressBar);
+      mSuccess = mpDataModel->openCombineArchive(mFileName, mpProgressBar, true, &mOptions);
     }
 
   catch (...)
@@ -1194,12 +1201,18 @@ void DataModelGUI::exportCombineFinished()
   threadFinished();
 }
 
-void DataModelGUI::importSEDML(const std::string & fileName)
+void DataModelGUI::importSEDML(const std::string & fileName, const SedmlImportOptions * pOptions)
 {
   mpProgressBar = CProgressBar::create();
 
   mSuccess = true;
   mFileName = fileName;
+
+  if (pOptions)
+    mOptions = *pOptions;
+  else
+    mOptions = SedmlImportOptions();
+
   mpThread = new CQThread(this, &DataModelGUI::importSEDMLRun);
   connect(mpThread, SIGNAL(finished()), this, SLOT(importSEDMLFinished()));
   mpThread->start();
@@ -1210,7 +1223,7 @@ void DataModelGUI::importSEDMLRun()
   try
     {
       assert(mpDataModel != NULL);
-      mSuccess = mpDataModel->importSEDML(mFileName, mpProgressBar, false);
+      mSuccess = mpDataModel->importSEDML(mFileName, mpProgressBar, false, &mOptions);
     }
 
   catch (...)

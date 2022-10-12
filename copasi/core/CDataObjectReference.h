@@ -57,7 +57,7 @@ public:
 
   virtual ~CDataObjectReference() {}
 
-  virtual void * getValuePointer() const {return mpReference;}
+  virtual void * getValuePointer() const override {return mpReference;}
 
   virtual const CDataObject * getValueObject() const {return this;}
 
@@ -219,7 +219,7 @@ public:
     return NULL;
   }
 
-  virtual void * getValuePointer() const {return &mReference;}
+  virtual void * getValuePointer() const override {return &mReference;}
 
   virtual const CDataObject * getValueObject() const {return this;}
 
@@ -282,7 +282,7 @@ public:
     return NULL;
   }
 
-  virtual void * getValuePointer() const {return &mReference;}
+  virtual void * getValuePointer() const override {return &mReference;}
   virtual const CDataObject * getValueObject() const {return this;}
 };
 #endif // COPASI_CDataObjectReference

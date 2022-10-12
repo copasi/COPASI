@@ -29,6 +29,7 @@
 #include "copasi/core/CDataObject.h"
 #include "copasi/plot/CPlotItem.h"
 #include <sedml/common/SedmlEnumerations.h>
+#include "SedmlImportOptions.h"
 
 #define SEDML_TIME_URN                 "urn:sedml:symbol:time"
 #define SEDML_KISAO_TIME               "KISAO:0000832"
@@ -50,6 +51,12 @@ class CDataObject;
 LIBSEDML_CPP_NAMESPACE_BEGIN
 class SedDataGenerator;
 class SedVariable;
+class SedDocument;
+class SedAbstractTask;
+class SedDataGenerator;
+class SedOutput;
+class SedAbstractCurve;
+class SedSurface;
 LIBSEDML_CPP_NAMESPACE_END
 
 /**
@@ -86,11 +93,68 @@ public:
 };
 
 /**
+ * Utility class describing the SEDML document
+ */
+class SedmlInfo
+{
+  std::map< std::string, std::set< std::string > > mOutputMap;
+  std::map< std::string, std::set< std::string > > mTaskMap;
+  std::vector< std::string > mMessages;
+  std::vector< std::pair< std::string, std::string > > mTaskNames;
+  std::map< std::string, std::vector< std::pair< std::string, std::string > > > mReports;
+  std::map< std::string, std::vector< std::pair< std::string, std::string > > > mPlots;
+  std::map< std::string, std::string > mFileNames;
+  bool mSupported;
+  bool mComplex;
+  bool mOwnDocument;
+  SedDocument * mpDocument;
+
+public:
+  SedmlInfo(SedDocument * pDocument, bool ownDocument = false);
+  ~SedmlInfo();
+
+  bool isSupported();
+
+  /**
+   * @return true, if the document is complex ( > 1 model, multiple
+             tasks of the same type ) requiring the user to choose
+             which one to import.
+   */
+  bool isComplex();
+
+  std::set< std::string > getModelForTask(SedAbstractTask * task);
+  std::set< std::string > getModelForTask(const std::string& taskId);
+  std::set< std::string > getModelForDataGen(SedDataGenerator * dg);
+  std::set< std::string > getTasks(const std::string & dgId);
+  std::set< std::string > getTasks(SedDataGenerator * dg);
+  std::set< std::string > getTasks(SedOutput * output);
+  std::set< std::string > getTasks(SedAbstractCurve * curve);
+  std::set< std::string > getTasks(SedSurface * surface);
+  std::vector< std::pair< std::string, std::string > > getTaskNames();
+  std::string getFirstModel(const std::string & taskId = "");
+  std::string getFirstReport(const std::string & taskId);
+  std::vector< std::pair< std::string, std::string > > getReportsForTask(const std::string & taskId);
+  std::vector< std::pair< std::string, std::string > > getPlotsForTask(const std::string & taskId);
+
+  std::string getReportFileName(const std::string & reportId);
+  void setReportFileName(const std::string & reportId, const std::string & fileName);
+
+  std::string getFirstTaskWithOutput();
+  static void addSets(std::set< std::string > & target, const std::set< std::string > & source);
+
+  static SedmlInfo forArchive(const std::string & fileName);
+  static SedmlInfo forFile(const std::string & fileName);
+};
+
+
+/**
  * Utility methods for SED-ML Import / Export
  */
 class SEDMLUtils
 {
 public:
+
+  static std::string getSedMLStringForArchive(const std::string & fileName);
 
   static const CDataObject* resolveXPath(const CModel *model,
                                          const std::string& xpath, bool initial = false);
@@ -171,6 +235,12 @@ public:
 
   static int getAlphaFromArgb(const std::string & argb);
   static int getAlphaFromRgba(const std::string & rgba);
+
+
+  /**
+   * updates the libcombine temp directory to the COPASI temp path
+   */
+  static void setLibCombineTempDir();
 
 #ifndef SWIG
 

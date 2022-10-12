@@ -33,6 +33,7 @@
 #include <copasi/utilities/CUnitComponent.h>
 #include <copasi/utilities/CUnit.h>
 #include <copasi/utilities/CValidatedUnit.h>
+#include <copasi/utilities/CUnitValidator.h>
 #include "copasi/math/CMathObject.h"
 #include "copasi/math/CMathEvent.h"
 #include "copasi/math/CMathDependencyGraph.h"
@@ -47,6 +48,10 @@
 
 %template(ObjectStdVector) std::vector<CDataObject*>;
 typedef std::vector<CDataObject*> ObjectStdVector;
+%template(StringUnitMap) std::map< std::string, CUnit >;
+typedef std::map< std::string, CUnit > StringUnitMap;
+%template(StringDoubleMap) std::map< std::string, double >;
+typedef std::map< std::string, double > StringDoubleMap;
 
 %ignore CUnit::getSymbolComponents;
 %ignore CUnit::SymbolComponent;
@@ -140,9 +145,13 @@ typedef std::vector<CDataObject*> ObjectStdVector;
 %ignore CUnitComponent::setKind;
 %ignore operator=; 
 
+%template(CUnitStdVector) std::vector<CUnit>;
+%template(CValidatedUnitStdVector) std::vector<CValidatedUnit>;
+
 %include <copasi/utilities/CUnitComponent.h>
 %include <copasi/utilities/CUnit.h>
 %include <copasi/utilities/CValidatedUnit.h>
+%include <copasi/utilities/CUnitValidator.h>
 %include "copasi/math/CMathObject.h"
 %include "copasi/math/CMathEvent.h"
 %include "copasi/math/CMathDependencyGraph.h"

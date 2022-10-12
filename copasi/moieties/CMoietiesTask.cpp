@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,13 +46,13 @@ CMoietiesTask::~CMoietiesTask()
 {}
 
 // virtual
-bool CMoietiesTask::setCallBack(CProcessReport * pCallBack)
+bool CMoietiesTask::setCallBack(CProcessReportLevel callBack)
 {
-  bool success = CCopasiTask::setCallBack(pCallBack);
+  bool success = CCopasiTask::setCallBack(callBack);
 
-  if (!mpProblem->setCallBack(pCallBack)) success = false;
+  if (!mpProblem->setCallBack(mProcessReport)) success = false;
 
-  if (!mpMethod->setCallBack(pCallBack)) success = false;
+  if (!mpMethod->setCallBack(mProcessReport)) success = false;
 
   return success;
 }

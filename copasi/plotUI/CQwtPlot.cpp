@@ -1,25 +1,6 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <QtCore/QString>
@@ -49,7 +30,7 @@
 #include "copasi/copasi.h"
 
 #include "scrollzoomer.h"
-#include "CopasiPlot.h"
+#include "CQwtPlot.h"
 #include "CQPlotColors.h"
 
 #include "copasi/plot/CPlotSpecification.h"
@@ -71,14 +52,41 @@
 
 #include <QApplication>
 
+#ifdef COPASI_USE_QWT
+
+#  include <qwt_plot.h>
+#  include <qwt_scale_engine.h>
+
+#  if QWT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+#    include <qwt_plot_renderer.h>
+#    include <qwt_text.h>
+#  endif
+
+#  if QWT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+// taken from qwt examples/bode
+class PrintFilter : public QwtPlotPrintFilter
+{
+public:
+  PrintFilter() {};
+
+  virtual QFont font(const QFont & f, Item, int) const
+  {
+    QFont f2 = f;
+    f2.setPointSize((int)(f.pointSize() * 0.75));
+    return f2;
+  }
+};
+#  endif
+
+
 #if QT_VERSION > QT_VERSION_CHECK(6,0,0)
 #include <QRegularExpression>
 #endif
 
 #define ActivitySize 8
-C_FLOAT64 CopasiPlot::MissingValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+C_FLOAT64 CQwtPlot::MissingValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-CopasiPlot::CopasiPlot(QWidget* parent):
+CQwtPlot::CQwtPlot(QWidget* parent):
   QwtPlot(parent),
   mCurves(0),
   mCurveMap(),
@@ -97,7 +105,7 @@ CopasiPlot::CopasiPlot(QWidget* parent):
   mReplotFinished(false)
 {}
 
-CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
+CQwtPlot::CQwtPlot(const CPlotSpecification* plotspec, QWidget* parent):
   QwtPlot(parent),
   mCurves(0),
   mCurveMap(),
@@ -168,7 +176,7 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
 }
 
 #if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
-void CopasiPlot::legendChecked(const QVariant &itemInfo, bool on)
+void CQwtPlot::legendChecked(const QVariant &itemInfo, bool on)
 {
   QwtPlotItem *plotItem = infoToItem(itemInfo);
 
@@ -178,7 +186,7 @@ void CopasiPlot::legendChecked(const QVariant &itemInfo, bool on)
 #endif
 
 CPlotSpectogram *
-CopasiPlot::createSpectogram(const CPlotItem *plotItem)
+CQwtPlot::createSpectogram(const CPlotItem *plotItem)
 {
   QString strLimitZ = FROM_UTF8(plotItem->getValue<std::string>("maxZ"));
   bool flag;
@@ -291,10 +299,10 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
 #endif
       QwtValueList contourLevels;
 
-      foreach (const QString & level, list)
-        {
-          contourLevels += level.toDouble();
-        }
+      foreach(const QString & level, list)
+      {
+        contourLevels += level.toDouble();
+      }
 
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
@@ -349,8 +357,8 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
 }
 
 void
-CopasiPlot::setSymbol(C2DPlotCurve * pCurve, QwtSymbol::Style symbol,
-                      QColor color, int size, float width)
+CQwtPlot::setSymbol(C2DPlotCurve * pCurve, QwtSymbol::Style symbol,
+                    QColor color, int size, float width)
 {
 #if QWT_VERSION > QT_VERSION_CHECK(6, 0, 0)
   pCurve->setSymbol(new QwtSymbol(symbol, QBrush(), QPen(QBrush(color), width), QSize(size, size)));
@@ -360,7 +368,7 @@ CopasiPlot::setSymbol(C2DPlotCurve * pCurve, QwtSymbol::Style symbol,
 #endif
 }
 
-bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
+bool CQwtPlot::initFromSpec(const CPlotSpecification* plotspec)
 {
 
   mIgnoreUpdate = true;
@@ -464,6 +472,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
       showCurve(pCurve, *pVisible);
 
       if (pCurve->getType() == CPlotItem::curve2d
+          || pCurve->getType() == CPlotItem::histoItem1d
           || pCurve->getType() == CPlotItem::bandedGraph)
         {
           needLeft = true;
@@ -658,12 +667,12 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 }
 
 const CPlotSpecification *
-CopasiPlot::getPlotSpecification() const
+CQwtPlot::getPlotSpecification() const
 {
   return mpPlotSpecification;
 }
 
-bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
+bool CQwtPlot::compile(CObjectInterface::ContainerList listOfContainer)
 {
   clearBuffers();
 
@@ -901,7 +910,7 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
   return true;
 }
 
-void CopasiPlot::output(const Activity & activity)
+void CQwtPlot::output(const Activity & activity)
 {
   size_t i, imax;
   C_INT32 ItemActivity;
@@ -937,7 +946,7 @@ void CopasiPlot::output(const Activity & activity)
   updatePlot();
 }
 
-void CopasiPlot::separate(const Activity & activity)
+void CQwtPlot::separate(const Activity & activity)
 {
   size_t i, imax;
   C_INT32 ItemActivity;
@@ -974,7 +983,7 @@ void CopasiPlot::separate(const Activity & activity)
   return;
 }
 
-void CopasiPlot::finish()
+void CQwtPlot::finish()
 {
 
   // We need to force a replot, i.e., the next mNextPlotTime should be in the past.
@@ -989,7 +998,7 @@ void CopasiPlot::finish()
     }
 }
 
-void CopasiPlot::updateCurves(const size_t & activity)
+void CQwtPlot::updateCurves(const size_t & activity)
 {
   if (activity == C_INVALID_INDEX)
     {
@@ -1055,7 +1064,7 @@ void CopasiPlot::updateCurves(const size_t & activity)
     }
 }
 
-void CopasiPlot::resizeCurveData(const size_t & activity)
+void CQwtPlot::resizeCurveData(const size_t & activity)
 {
   std::vector< CVector< double > * > & data = mData[activity];
   std::vector< CVector< double > * >::iterator it = data.begin();
@@ -1148,7 +1157,7 @@ void CopasiPlot::resizeCurveData(const size_t & activity)
     }
 }
 
-void CopasiPlot::updatePlot()
+void CQwtPlot::updatePlot()
 {
   if (mReplotFinished)
     {
@@ -1166,12 +1175,12 @@ void CopasiPlot::updatePlot()
 
 //-----------------------------------------------------------------------------
 
-CopasiPlot::~CopasiPlot()
+CQwtPlot::~CQwtPlot()
 {
   clearBuffers();
 }
 
-bool CopasiPlot::saveData(const std::string & filename)
+bool CQwtPlot::saveData(const std::string & filename)
 {
   // No objects.
   if (!mObjects.size()) return true;
@@ -1419,7 +1428,7 @@ bool CopasiPlot::saveData(const std::string & filename)
   return true;
 }
 
-void CopasiPlot::showCurve(QwtPlotItem *item, bool on)
+void CQwtPlot::showCurve(QwtPlotItem *item, bool on)
 {
   item->setVisible(on);
   item->setItemAttribute(QwtPlotItem::AutoScale, on);
@@ -1449,7 +1458,7 @@ void CopasiPlot::showCurve(QwtPlotItem *item, bool on)
     replot();
 }
 
-void CopasiPlot::setCurvesVisibility(const bool & visibility)
+void CQwtPlot::setCurvesVisibility(const bool & visibility)
 {
   std::map< std::string, C2DPlotCurve * >::iterator it = mCurveMap.begin();
   std::map< std::string, C2DPlotCurve * >::iterator end = mCurveMap.end();
@@ -1485,7 +1494,7 @@ void CopasiPlot::setCurvesVisibility(const bool & visibility)
     replot();
 }
 
-void CopasiPlot::clearBuffers()
+void CQwtPlot::clearBuffers()
 {
   mObjects.clear();
 
@@ -1523,28 +1532,81 @@ void CopasiPlot::clearBuffers()
   mHaveAfter = false;
 }
 
-void CopasiPlot::setAxisUnits(const C_INT32 & index,
-                              const CObjectInterface * pObjectInterface)
+void CQwtPlot::setAxisUnits(const C_INT32 & index,
+                            const CObjectInterface * pObjectInterface)
 {
-  const CDataObject * pObject = CObjectInterface::DataObject(pObjectInterface);
+  setAxisTitle(index,
+               getAxisText(
+                 index == xBottom ? CPlotInterface::Axis::xAxis : CPlotInterface::Axis::yAxis,
+                 pObjectInterface
+               ));
+}
 
-  if (pObject == NULL) return;
-
-  std::string Units = CUnit::prettyPrint(pObject->getUnits());
-
-  if (Units == "?")
+void CQwtPlot::toggleLogX(bool logX)
+{
+  if (logX)
     {
-      Units.clear();
+
+#  if QWT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+      setAxisScaleEngine(QwtPlot::xBottom, new QwtLogScaleEngine());
+#  else
+      setAxisScaleEngine(QwtPlot::xBottom, new QwtLog10ScaleEngine());
+#  endif
+    }
+  else
+    {
+      setAxisScaleEngine(QwtPlot::xBottom, new QwtLinearScaleEngine());
     }
 
-  if (Units != "")
-    setAxisTitle(index, FROM_UTF8(Units));
+  setAxisAutoScale(QwtPlot::xBottom);
+  replot();
+  update();
+}
 
-  return;
+void CQwtPlot::toggleLogY(bool logY)
+{
+  if (logY)
+    {
+#  if QWT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+      setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine());
+#  else
+      setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine());
+#  endif
+    }
+  else
+    {
+      setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
+    }
+
+  setAxisAutoScale(QwtPlot::yLeft);
+  //mpPlot->updateAxes();
+  replot();
+  update();
+}
+
+void CQwtPlot::resetZoom()
+{
+  if (mpZoomer)
+    mpZoomer->zoom(0);
+}
+
+QString CQwtPlot::titleText() const
+{
+  return title().text();
+}
+
+void CQwtPlot::render(QPainter * painter, QRect rect)
+{
+#  if QWT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+  QwtPlotRenderer renderer;
+  renderer.render(this, painter, rect);
+#  else
+  print(&painter, rect, PrintFilter());
+#  endif
 }
 
 // virtual
-void CopasiPlot::replot()
+void CQwtPlot::replot()
 {
   if (mNextPlotTime < CCopasiTimeVariable::getCurrentWallTime())
     {
@@ -1577,3 +1639,5 @@ void CopasiPlot::replot()
 
   mReplotFinished = true;
 }
+
+#endif // COPASI_USE_QWT

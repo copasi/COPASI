@@ -1,17 +1,24 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CPraxis.h,v $
-//   $Revision: 1.11 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/14 13:49:28 $
-// End CVS Header
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -19,6 +26,7 @@
 #define COPASI_CPraxis
 
 #include <limits>
+#include "copasi/core/CMatrix.h"
 
 class CRandom;
 
@@ -45,7 +53,7 @@ public:
   // constructor - takes pointer to an object and pointer to a member and stores
   // them in two private variables
   FPraxisTemplate(CType * pType,
-                  const C_FLOAT64 &(CType::*method)(C_FLOAT64 *, C_INT*))
+                  const C_FLOAT64 & (CType::*method)(C_FLOAT64 *, C_INT*))
   {
     mpType = pType;
     mMethod = method;
@@ -70,8 +78,10 @@ public:
 
   struct Q
   {
-    C_FLOAT64 v[10000] /* was [100][100] */, q0[100], q1[100], qa, qb, qc, qd0,
-    qd1, qf1;
+    CVector< C_FLOAT64 > v; // [__dim__ * __dim__] /* was [100][100] */,
+    CVector< C_FLOAT64 > q0; // [__dim__],
+    CVector< C_FLOAT64 > q1; // [__dim__],
+    C_FLOAT64 qa, qb, qc, qd0, qd1, qf1;
   };
 
   CPraxis();

@@ -78,10 +78,17 @@ endif (WIN32)
 
 if (SBW_LIBRARY AND SBW_LIBRARY MATCHES "static")
   get_target_property(current_defs SBW::SBW INTERFACE_COMPILE_DEFINITIONS)
-  set_target_properties(SBW::SBW PROPERTIES
-    INTERFACE_COMPILE_DEFINITIONS "SBW_STATIC=1;${current_defs}"
-  )
-endif()
+
+  if (NOT current_defs)
+    set_target_properties(SBW::SBW PROPERTIES
+      INTERFACE_COMPILE_DEFINITIONS "SBW_STATIC=1"
+    )
+  else ()
+    set_target_properties(SBW::SBW PROPERTIES
+      INTERFACE_COMPILE_DEFINITIONS ${current_defs}
+    )
+  endif ()
+endif ()
 
 if (SBW_INCLUDE_DIR AND SBW_LIBRARY)
     set(TEST_FILE ${CMAKE_BINARY_DIR}/test_sbw_version.cpp)

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,6 +23,7 @@
 #endif // COPASI_BANDED_GRAPH
 
 #include <copasi/plotUI/CQSpectogramWidget.h>
+#include <copasi/plotUI/CQAdvancedPlotSettings.h>
 
 #include "plotwindow.h"
 #include "copasi/plot/CPlotSpecification.h"
@@ -81,6 +82,9 @@ CQPlotSubwidget::CQPlotSubwidget(QWidget* parent, const char* name, Qt::WindowFl
     {
       mTaskNames << FROM_UTF8(*it);
     }
+
+  mpAdvancedSettings = new CQAdvancedPlotSettings();
+  extender->setContentLayout(*(mpAdvancedSettings->layout()));
 }
 
 CPlotItem *CQPlotSubwidget::updateItem(CPlotItem *item)
@@ -1034,6 +1038,8 @@ bool CQPlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
       selectPlotItem(NULL);
     }
 
+  mpAdvancedSettings->loadFromPlotSpec(pspec);
+
   return true; //TODO really check
 }
 
@@ -1059,6 +1065,8 @@ bool CQPlotSubwidget::saveToPlotSpec()
   pspec->setLogY(checkLogY->isChecked());
   // task types
   pspec->setTaskTypes(mTaskTypes);
+
+  mpAdvancedSettings->saveToPlotSpec(pspec);
 
   //curves
   CPlotItem *item;

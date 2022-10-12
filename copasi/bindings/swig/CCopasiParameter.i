@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -98,44 +98,64 @@
 
   std::vector<CCopasiParameter*> getGroupValue()
   {
+    if (self->getType() != CCopasiParameter::Type::GROUP)
+      return std::vector<CCopasiParameter*>();
+
     std::vector<CCopasiParameter*> val = self->getValue< std::vector<CCopasiParameter*> >();
     return val;
   }
 
   std::string getStringValue()
   {
+    if (self->getType() != CCopasiParameter::Type::STRING && 
+      self->getType() != CCopasiParameter::Type::KEY &&
+      self->getType() != CCopasiParameter::Type::FILE && 
+      self->getType() != CCopasiParameter::Type::EXPRESSION)
+      return "";
+
     std::string val = self->getValue<std::string>();
     return val;
   }
 
   CCommonName getCNValue()
   {
+    if (self->getType() != CCopasiParameter::Type::CN)
+      return CCommonName();
+
     CCommonName val = self->getValue<CCommonName>();
     return val;
   }
 
   std::string getKeyValue()
   {
+    if (self->getType() != CCopasiParameter::Type::STRING && 
+      self->getType() != CCopasiParameter::Type::KEY &&
+      self->getType() != CCopasiParameter::Type::FILE && 
+      self->getType() != CCopasiParameter::Type::EXPRESSION)
+      return "";
+
     std::string val = self->getValue<std::string>();
     return val;
   }
 
   std::string getFileValue()
   {
+    if (self->getType() != CCopasiParameter::Type::STRING && 
+      self->getType() != CCopasiParameter::Type::KEY &&
+      self->getType() != CCopasiParameter::Type::FILE && 
+      self->getType() != CCopasiParameter::Type::EXPRESSION)
+      return "";
+      
     std::string val = self->getValue<std::string>();
     return val;
   }
 
-  /**
-   * Returning a pointer to void in the bindings doesn't make sense I
-   * think. 
   void* getVoidValue()
   {
     void* val = self->getValue<void*>();
     return val;
   }
-  */
-
+  
   bool setDblValue(const C_FLOAT64& v)
   {
     return self->setValue(v);

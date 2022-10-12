@@ -232,13 +232,13 @@ bool CTSSATask::process(const bool & useInitialValues)
   C_FLOAT64 Percentage = 0;
   size_t hProcess;
 
-  if (mpCallBack)
+  if (mProcessReport)
     {
-      mpCallBack->setName("performing simulation...");
+      mProcessReport.setName("performing simulation...");
       C_FLOAT64 hundred = 100;
-      hProcess = mpCallBack->addItem("Completion",
-                                     Percentage,
-                                     &hundred);
+      hProcess = mProcessReport.addItem("Completion",
+                                        Percentage,
+                                        &hundred);
     }
 
   //if ((*LE)(outputStartTime, *mpContainerStateTime)) output(COutputInterface::DURING);
@@ -254,10 +254,10 @@ bool CTSSATask::process(const bool & useInitialValues)
 
           flagProceed &= processStep(NextTimeToReport);
 
-          if (mpCallBack)
+          if (mProcessReport)
             {
               Percentage = (*mpContainerStateTime - StartTime) * handlerFactor;
-              flagProceed &= mpCallBack->progressItem(hProcess);
+              flagProceed &= mProcessReport.progressItem(hProcess);
             }
 
           if ((*LE)(outputStartTime, *mpContainerStateTime))
@@ -277,7 +277,7 @@ bool CTSSATask::process(const bool & useInitialValues)
           output(COutputInterface::DURING);
         }
 
-      if (mpCallBack) mpCallBack->finishItem(hProcess);
+      if (mProcessReport) mProcessReport.finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
@@ -293,14 +293,14 @@ bool CTSSATask::process(const bool & useInitialValues)
           output(COutputInterface::DURING);
         }
 
-      if (mpCallBack) mpCallBack->finishItem(hProcess);
+      if (mProcessReport) mProcessReport.finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
       throw CCopasiException(Exception.getMessage());
     }
 
-  if (mpCallBack) mpCallBack->finishItem(hProcess);
+  if (mProcessReport) mProcessReport.finishItem(hProcess);
 
   output(COutputInterface::AFTER);
 

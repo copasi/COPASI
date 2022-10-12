@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,10 +34,19 @@
 
 COptMethodPraxis::COptMethodPraxis(const CDataContainer * pParent,
                                    const CTaskEnum::Method & methodType,
-                                   const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType, false),
-  mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction)),
-  mpCPraxis(new CPraxis())
+                                   const CTaskEnum::Task & taskType)
+  : COptMethod(pParent, methodType, taskType, false)
+  , mTolerance(1.e-005)
+  , mIteration(0)
+  , mhIteration()
+  , mVariableSize(0)
+  , mCurrent()
+  , mBest()
+  , mBestValue(std::numeric_limits< C_FLOAT64 >::infinity())
+  , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mContinue(true)
+  , mpPraxis(new FPraxisTemplate< COptMethodPraxis >(this, &COptMethodPraxis::evaluateFunction))
+  , mpCPraxis(new CPraxis())
 {
   assertParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-005);
 
@@ -45,11 +54,22 @@ COptMethodPraxis::COptMethodPraxis(const CDataContainer * pParent,
 }
 
 COptMethodPraxis::COptMethodPraxis(const COptMethodPraxis & src,
-                                   const CDataContainer * pParent):
-  COptMethod(src, pParent),
-  mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction)),
-  mpCPraxis(new CPraxis())
-{initObjects();}
+                                   const CDataContainer * pParent)
+  : COptMethod(src, pParent)
+  , mTolerance(1.e-005)
+  , mIteration(src.mIteration)
+  , mhIteration(src.mhIteration)
+  , mVariableSize(src.mVariableSize)
+  , mCurrent(src.mCurrent)
+  , mBest(src.mBest)
+  , mBestValue(src.mBestValue)
+  , mEvaluationValue(src.mEvaluationValue)
+  , mContinue(src.mContinue)
+  , mpPraxis(new FPraxisTemplate< COptMethodPraxis >(this, &COptMethodPraxis::evaluateFunction))
+  , mpCPraxis(new CPraxis())
+{
+  initObjects();
+}
 
 COptMethodPraxis::~COptMethodPraxis()
 {
@@ -87,7 +107,7 @@ bool COptMethodPraxis::optimise()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
       mCurrent[i] = OptItem.getStartValue();
 
       //force it to be within the bounds
@@ -105,7 +125,7 @@ bool COptMethodPraxis::optimise()
         }
 
       //set the value
-      *mProblemContext.master()->getContainerVariables()[i] = (mCurrent[i]);
+      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -114,7 +134,7 @@ bool COptMethodPraxis::optimise()
   // Report the first value as the current best
   mBestValue = evaluate();
   mBest = mCurrent;
-  mContinue = mProblemContext.master()->setSolution(mBestValue, mBest);
+  mContinue = mProblemContext.master()->setSolution(mBestValue, mBest, true);
 
   // We found a new best value lets report it.
   mpParentTask->output(COutputInterface::DURING);
@@ -158,9 +178,10 @@ bool COptMethodPraxis::initialize()
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
   mIteration = 0;
 
-  mVariableSize = (C_INT) mProblemContext.master()->getOptItemList().size();
+  mVariableSize = (C_INT) mProblemContext.master()->getOptItemList(true).size();
   mCurrent.resize(mVariableSize);
   mBest.resize(mVariableSize);
+  mBestValue = std::numeric_limits< C_FLOAT64 >::infinity();
 
   mContinue = true;
 
@@ -178,7 +199,7 @@ const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
   C_INT i;
 
   for (i = 0; i < *n; i++)
-    *mProblemContext.master()->getContainerVariables()[i] = (x[i]);
+    *mProblemContext.master()->getContainerVariables(true)[i] = (x[i]);
 
   //carry out the function evaluation
   evaluate();
@@ -191,7 +212,7 @@ const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
         mBest[i] = x[i];
 
       mBestValue = mEvaluationValue;
-      mContinue = mProblemContext.master()->setSolution(mBestValue, mBest);
+      mContinue = mProblemContext.master()->setSolution(mBestValue, mBest, true);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -292,13 +292,13 @@ bool CTrajectoryTask::processTrajectory(const bool& useInitialValues)
   C_FLOAT64 Percentage = 0;
   size_t hProcess = C_INVALID_INDEX;
 
-  if (mpCallBack != NULL)
+  if (mProcessReport)
     {
-      mpCallBack->setName("performing simulation...");
+      mProcessReport.setName("performing simulation...");
       C_FLOAT64 hundred = 100;
-      hProcess = mpCallBack->addItem("Completion",
-                                     Percentage,
-                                     &hundred);
+      hProcess = mProcessReport.addItem("Completion",
+                                        Percentage,
+                                        &hundred);
     }
 
   try
@@ -329,7 +329,7 @@ bool CTrajectoryTask::processTrajectory(const bool& useInitialValues)
           if (hProcess != C_INVALID_INDEX)
             {
               Percentage = (*mpContainerStateTime - StartTime) * handlerFactor;
-              flagProceed &= mpCallBack->progressItem(hProcess);
+              flagProceed &= mProcessReport.progressItem(hProcess);
             }
 
           if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
@@ -352,7 +352,7 @@ bool CTrajectoryTask::processTrajectory(const bool& useInitialValues)
           output(COutputInterface::DURING);
         }
 
-      if (hProcess != C_INVALID_INDEX) mpCallBack->finishItem(hProcess);
+      if (hProcess != C_INVALID_INDEX) mProcessReport.finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
@@ -371,14 +371,14 @@ bool CTrajectoryTask::processTrajectory(const bool& useInitialValues)
           output(COutputInterface::DURING);
         }
 
-      if (hProcess != C_INVALID_INDEX) mpCallBack->finishItem(hProcess);
+      if (hProcess != C_INVALID_INDEX) mProcessReport.finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
       throw CCopasiException(Exception.getMessage());
     }
 
-  if (hProcess != C_INVALID_INDEX) mpCallBack->finishItem(hProcess);
+  if (hProcess != C_INVALID_INDEX) mProcessReport.finishItem(hProcess);
 
   output(COutputInterface::AFTER);
 
@@ -431,13 +431,13 @@ bool CTrajectoryTask::processValues(const bool& useInitialValues)
   C_FLOAT64 Percentage = 0;
   size_t hProcess = C_INVALID_INDEX;
 
-  if (mpCallBack != NULL)
+  if (mProcessReport)
     {
-      mpCallBack->setName("performing simulation...");
+      mProcessReport.setName("performing simulation...");
       C_FLOAT64 hundred = 100;
-      hProcess = mpCallBack->addItem("Completion",
-                                     Percentage,
-                                     &hundred);
+      hProcess = mProcessReport.addItem("Completion",
+                                        Percentage,
+                                        &hundred);
     }
 
   try
@@ -469,7 +469,7 @@ bool CTrajectoryTask::processValues(const bool& useInitialValues)
           if (hProcess != C_INVALID_INDEX)
             {
               Percentage = (*mpContainerStateTime - StartTime) * handlerFactor;
-              flagProceed &= mpCallBack->progressItem(hProcess);
+              flagProceed &= mProcessReport.progressItem(hProcess);
             }
 
           if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
@@ -492,7 +492,7 @@ bool CTrajectoryTask::processValues(const bool& useInitialValues)
           output(COutputInterface::DURING);
         }
 
-      if (hProcess != C_INVALID_INDEX) mpCallBack->finishItem(hProcess);
+      if (hProcess != C_INVALID_INDEX) mProcessReport.finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
@@ -511,14 +511,14 @@ bool CTrajectoryTask::processValues(const bool& useInitialValues)
           output(COutputInterface::DURING);
         }
 
-      if (hProcess != C_INVALID_INDEX) mpCallBack->finishItem(hProcess);
+      if (hProcess != C_INVALID_INDEX) mProcessReport.finishItem(hProcess);
 
       output(COutputInterface::AFTER);
 
       throw CCopasiException(Exception.getMessage());
     }
 
-  if (hProcess != C_INVALID_INDEX) mpCallBack->finishItem(hProcess);
+  if (hProcess != C_INVALID_INDEX) mProcessReport.finishItem(hProcess);
 
   output(COutputInterface::AFTER);
 
@@ -698,7 +698,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime, const bool & final)
             break;
         }
 
-      Proceed = mpCallBack == NULL || mpCallBack->proceed();
+      Proceed = mProcessReport.proceed();
     }
 
   return Proceed;

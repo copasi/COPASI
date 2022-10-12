@@ -331,14 +331,14 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
 #endif // USE_SBMLUNIT
 
 void
-CSBMLExporter::setHandler(CProcessReport *pHandler)
+CSBMLExporter::setHandler(CProcessReport * pProcessReport)
 {
-  mpProgressHandler = pHandler;
+  mpProcessReport = pProcessReport;
 }
 
-CProcessReport * CSBMLExporter::getCallBack() const
+const CProcessReport * CSBMLExporter::getCallBack() const
 {
-  return mpProgressHandler;
+  return mpProcessReport;
 }
 
 void CSBMLExporter::clearCallBack()
@@ -349,28 +349,28 @@ void CSBMLExporter::clearCallBack()
 bool
 CSBMLExporter::reportCurrentProgressOrStop()
 {
-  if (!mpProgressHandler) return false;
+  if (mpProcessReport == NULL) return false;
 
-  return !mpProgressHandler->progressItem(mCurrentStepHandle);
+  return !mpProcessReport->progressItem(mCurrentStepHandle);
 }
 
 void
 CSBMLExporter::finishCurrentStep()
 {
-  if (!mpProgressHandler || mCurrentStepHandle == C_INVALID_INDEX)  return;
+  if (mpProcessReport == NULL || mCurrentStepHandle == C_INVALID_INDEX)  return;
 
-  mpProgressHandler->finishItem(mCurrentStepHandle);
+  mpProcessReport->finishItem(mCurrentStepHandle);
   mCurrentStepHandle = C_INVALID_INDEX;
 }
 
 void
 CSBMLExporter::finishExport()
 {
-  if (!mpProgressHandler)  return;
+  if (mpProcessReport == NULL)  return;
 
   finishCurrentStep();
 
-  mpProgressHandler->finishItem(mGlobalStepHandle);
+  mpProcessReport->finishItem(mGlobalStepHandle);
 }
 
 bool
@@ -378,18 +378,18 @@ CSBMLExporter::createProgressStepOrStop(unsigned C_INT32 globalStep,
                                         unsigned C_INT32 currentTotal,
                                         const std::string& title)
 {
-  if (!mpProgressHandler) return false;
+  if (mpProcessReport == NULL) return false;
 
   if (mCurrentStepHandle != C_INVALID_INDEX)
-    mpProgressHandler->finishItem(mCurrentStepHandle);
+    mpProcessReport->finishItem(mCurrentStepHandle);
 
   mGlobalStepCounter = globalStep;
 
-  if (!mpProgressHandler->progressItem(mGlobalStepHandle)) return true;
+  if (!mpProcessReport->progressItem(mGlobalStepHandle)) return true;
 
   mCurrentStepCounter = 0;
   mCurrentStepTotal = currentTotal;
-  mCurrentStepHandle = mpProgressHandler->addItem(title,
+  mCurrentStepHandle = mpProcessReport->addItem(title,
                        mCurrentStepCounter,
                        &mCurrentStepTotal);
 
@@ -408,7 +408,7 @@ CSBMLExporter::CSBMLExporter()
   , mDocumentDisowned(false)
   , mExportCOPASIMIRIAM(false)
   , mExportedFunctions(2, 1)
-  , mpProgressHandler(NULL)
+  , mpProcessReport(NULL)
   , mGlobalStepHandle(C_INVALID_INDEX)
   , mGlobalStepCounter(0)
   , mGlobalStepTotal(0)
@@ -716,7 +716,7 @@ CSBMLExporter::createMetabolites(CDataModel& dataModel)
 
   if (this->mSBMLLevel > 2 || (this->mSBMLLevel == 2 && this->mSBMLVersion >= 3))
     {
-      check_for_spatial_size_units(dataModel, this->mIncompatibilities);
+      SBMLUnitSupport::checkForSpatialSizeUnits(dataModel, this->mIncompatibilities);
     }
 
   CDataVector<CMetab>::const_iterator it = dataModel.getModel()->getMetabolites().begin(), endit = dataModel.getModel()->getMetabolites().end();
@@ -1681,9 +1681,10 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CDataModel& data
       tree.setInfix(changedExpression);
       const CEvaluationNode* pOrigNode = tree.getRoot();
 
-      if (pOrigNode->mainType() == CEvaluationNode::MainType::INVALID)
+      if (pOrigNode == NULL || pOrigNode->mainType() == CEvaluationNode::MainType::INVALID)
         {
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 70, "assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+          return;
         }
 
       // the next few lines replace references to species depending on whether
@@ -2301,145 +2302,7 @@ void CSBMLExporter::isModelSBMLL2V3Compatible(const CDataModel& dataModel, std::
   // if there is an SBML model, which means the model was imported from SBML,
   // we have to check for spatial size units on species in the SBML model
   // because those are not allowed in SBMLLl2V3 and above
-  check_for_spatial_size_units(dataModel, result);
-}
-
-/**
- * Go through all species in the model and check if the corresponding species
- * in the SBML model has the spatialSizeUnits attribute set.
- * This attribute is not supported in SBML L2V3 and above, so we have to get
- * rid of this attribute when we export to a level equal to or higher than
- * L2V3.
- * If the attribute has the same value as the compartments units, we can just
- * delete it without changing the model, otherwise we have to give a
- * corresponding warning.
- */
-void CSBMLExporter::check_for_spatial_size_units(const CDataModel& dataModel, std::vector<SBMLIncompatibility>& result)
-{
-  const SBMLDocument* pSBMLDocument = const_cast<const SBMLDocument*>(const_cast<CDataModel&>(dataModel).getCurrentSBMLDocument());
-
-  if (pSBMLDocument != NULL)
-    {
-      // check all species in the model if they have a spatial size attribute set
-      // and if it is identical to the unit of the compartment the species is in
-      const CModel* pModel = dataModel.getModel();
-
-      if (pModel != NULL)
-        {
-          CDataVector<CMetab>::const_iterator it = pModel->getMetabolites().begin(), endit = pModel->getMetabolites().end();
-          std::set<std::string> badSpecies;
-          const std::map<const CDataObject*, SBase*>& copasi2sbmlmap = const_cast<CDataModel&>(dataModel).getCopasi2SBMLMap();
-          std::map<const CDataObject*, SBase*>::const_iterator pos;
-          const Species* pSBMLSpecies = NULL;
-          std::string spatialSizeUnits;
-
-          while (it != endit)
-            {
-              pos = copasi2sbmlmap.find(it);
-
-              if (pos != copasi2sbmlmap.end())
-                {
-                  // check for the spatial size units attribute
-                  pSBMLSpecies = dynamic_cast<const Species*>(pos->second);
-                  assert(pSBMLSpecies != NULL);
-
-                  if (pSBMLSpecies == NULL) continue;
-
-                  if (pSBMLSpecies->isSetSpatialSizeUnits())
-                    {
-                      spatialSizeUnits = pSBMLSpecies->getSpatialSizeUnits();
-                      // check if the units are the same as the one on the species
-                      // compartment
-                      assert(pSBMLDocument->getModel() != NULL);
-                      const Compartment* pCompartment = pSBMLDocument->getModel()->getCompartment(pSBMLSpecies->getCompartment());
-                      assert(pCompartment != NULL);
-
-                      if (pCompartment != NULL)
-                        {
-                          UnitDefinition* pUDef1 = NULL;
-                          UnitDefinition* pUDef2 = NULL;
-
-                          if (pCompartment->isSetUnits())
-                            {
-                              assert(pSBMLDocument->getModel() != NULL);
-
-                              if (pSBMLDocument->getModel() != NULL)
-                                {
-                                  pUDef1 = SBMLImporter::getSBMLUnitDefinitionForId(pCompartment->getUnits(), pSBMLDocument->getModel());
-                                }
-                            }
-                          else
-                            {
-                              // the compartment has the default units associated with the
-                              // symbol length , area or volume depending on the spatial size
-                              // of the compartment
-                              assert(pSBMLDocument->getModel() != NULL);
-
-                              if (pSBMLDocument->getModel() != NULL)
-                                {
-                                  switch (pCompartment->getSpatialDimensions())
-                                    {
-                                      case 0:
-                                        // the species is not allowed to have a
-                                        // spatialDimensionsUnit attribute
-                                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 83, pSBMLSpecies->getId().c_str());
-                                        break;
-
-                                      case 1:
-                                        pUDef1 = SBMLImporter::getSBMLUnitDefinitionForId("length", pSBMLDocument->getModel());
-                                        break;
-
-                                      case 2:
-                                        pUDef1 = SBMLImporter::getSBMLUnitDefinitionForId("area", pSBMLDocument->getModel());
-                                        break;
-
-                                      case 3:
-                                        pUDef1 = SBMLImporter::getSBMLUnitDefinitionForId("volume", pSBMLDocument->getModel());
-                                        break;
-
-                                      default:
-                                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 82, pCompartment->getId().c_str());
-                                        break;
-                                    }
-                                }
-                            }
-
-                          if (pUDef1 != NULL && pUDef2 != NULL)
-                            {
-                              // compare the two unit definitions
-                              if (!SBMLImporter::areSBMLUnitDefinitionsIdentical(pUDef1, pUDef2))
-                                {
-                                  // add the species to bad species
-                                  badSpecies.insert(pSBMLSpecies->getId());
-                                }
-                            }
-
-                          // delete the unit definitions
-                          pdelete(pUDef1);
-                          pdelete(pUDef2);
-                        }
-                    }
-                }
-
-              ++it;
-            }
-
-          if (!badSpecies.empty())
-            {
-              // create the incompatibility message
-              std::ostringstream os;
-              std::set<std::string>::const_iterator sit = badSpecies.begin(), sendit = badSpecies.end();
-
-              while (sit != sendit)
-                {
-                  os << *sit << ", ";
-                  ++sit;
-                }
-
-              result.push_back(SBMLIncompatibility(2, os.str().substr(0, os.str().size() - 2).c_str()));
-            }
-        }
-    }
+  SBMLUnitSupport::checkForSpatialSizeUnits(dataModel, result);
 }
 
 /**
@@ -3416,13 +3279,13 @@ CSBMLExporter::exportModelToString(CDataModel& dataModel,
   this->mSBMLVersion = sbmlVersion;
   mHandledSBMLObjects.clear();
 
-  if (mpProgressHandler)
+  if (mpProcessReport != NULL)
     {
       std::stringstream str;
       str << "Exporting SBML L" << sbmlLevel << "V" << sbmlVersion << "...";
-      mpProgressHandler->setName(str.str());
+      mpProcessReport->setName(str.str());
       mGlobalStepTotal = 16;
-      mGlobalStepHandle = mpProgressHandler->addItem("Step",
+      mGlobalStepHandle = mpProcessReport->addItem("Step",
                           mGlobalStepCounter,
                           &mGlobalStepTotal);
     }

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,8 +31,8 @@
 #include "copasi/UI/CopasiFileDialog.h"
 #include "copasi/UI/CWindowInterface.h"
 #include "copasi/output/COutputHandler.h"
+#include "copasi/plotUI/CPlotInterface.h"
 
-class CopasiPlot;
 class CPlotSpecification;
 class CPlotSpec2Vector;
 class CDataContainer;
@@ -43,7 +48,7 @@ class PlotWindow : public CWindowInterface, public COutputInterface
 private:
 
   // points to the plot instance inside this window
-  CopasiPlot *mpPlot;
+  CPlotInterface *mpPlot;
   COutputHandlerPlot *mpHandler;
   CopasiUI3Window * mpMainWindow;
   QMenu* mpWindowMenu;
@@ -73,7 +78,9 @@ public:
 
   bool initFromSpec(const CPlotSpecification* ptrSpec);
 
-  CopasiPlot * getPlot() const;
+  static CPlotInterface * createPlot(const CPlotSpecification * pPlotSpec);
+
+  CPlotInterface * getPlot() const;
 
   /**
    *

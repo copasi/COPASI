@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -50,7 +50,7 @@ public:
    */
   //COscillationTask(const CTaskEnum::Task & type = CTaskEnum::oscillation,
   //                 const CDataContainer * pParent = NO_PARENT);
-  COscillationTask(const CTaskEnum::Task & type ,
+  COscillationTask(const CTaskEnum::Task & type,
                    const CDataContainer * pParent);
 
   /**
@@ -72,10 +72,10 @@ public:
 
   /**
    * Set the call back of the task
-   * @param CProcessReport * pCallBack
+   * @param CProcessReportLevel * pCallBack
    * @result bool succes
    */
-  virtual bool setCallBack(CProcessReport * pCallBack);
+  virtual bool setCallBack(CProcessReportLevel callBack) override;
 
   /**
    * Initialize the task. If an ostream is given this ostream is used

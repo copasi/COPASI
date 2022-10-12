@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -108,7 +108,7 @@ bool COptMethodDE::replicate()
       // MUTATE CURRENT GENERATION
       for (j = 0; j < mVariableSize; j++)
         {
-          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
           C_FLOAT64 & mut = (*mIndividuals[i])[j];
 
           mut = (*mIndividuals[c])[j] + 2 * ((*mIndividuals[a])[j] - (*mIndividuals[b])[j]);
@@ -127,7 +127,7 @@ bool COptMethodDE::replicate()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mProblemContext.master()->getContainerVariables()[j] = mut;
+          *mProblemContext.master()->getContainerVariables(true)[j] = mut;
         }
 
       Continue &= evaluate(*mIndividuals[i]);
@@ -140,7 +140,7 @@ bool COptMethodDE::replicate()
       for (j = 0; j < mVariableSize; j++)
         {
 
-          const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+          const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
           C_FLOAT64 & mut = (*mIndividuals[i])[j];
 
           size_t r = mRandomContext.master()->getRandomU(mPopulationSize - 1);
@@ -166,7 +166,7 @@ bool COptMethodDE::replicate()
                 break;
             }
 
-          *mProblemContext.master()->getContainerVariables()[j] = mut;
+          *mProblemContext.master()->getContainerVariables(true)[j] = mut;
         }
 
       Continue &= evaluate(*mIndividuals[i]);
@@ -190,7 +190,7 @@ bool COptMethodDE::replicate()
         {
           for (j = 0; j < mVariableSize; j++)
             {
-              const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+              const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
               C_FLOAT64 & mut = (*mIndividuals[i - 2 * mPopulationSize])[j];
 
               size_t r = mRandomContext.master()->getRandomU(mPopulationSize - 1);
@@ -210,7 +210,7 @@ bool COptMethodDE::replicate()
                     break;
                 }
 
-              *mProblemContext.master()->getContainerVariables()[j] = mut;
+              *mProblemContext.master()->getContainerVariables(true)[j] = mut;
             }
 
           Continue &= evaluate(*mIndividuals[i - 2 * mPopulationSize]);
@@ -269,7 +269,7 @@ bool COptMethodDE::creation(size_t first, size_t last)
         for (j = 0; j < mVariableSize; j++)
           {
             // calculate lower and upper bounds
-            const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[j];
+            const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
             mn = *OptItem.getLowerBoundValue();
             mx = *OptItem.getUpperBoundValue();
 
@@ -310,7 +310,7 @@ bool COptMethodDE::creation(size_t first, size_t last)
 
             // We need to set the value here so that further checks take
             // account of the value.
-            *mProblemContext.master()->getContainerVariables()[j] = mut;
+            *mProblemContext.master()->getContainerVariables(true)[j] = mut;
           }
 
       // calculate its fitness
@@ -333,8 +333,8 @@ bool COptMethodDE::initialize()
 
   if (!COptPopulationMethod::initialize())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhGenerations);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhGenerations);
 
       return false;
     }
@@ -390,8 +390,8 @@ bool COptMethodDE::optimise()
 
   if (!initialize())
     {
-      if (mpCallBack)
-        mpCallBack->finishItem(mhGenerations);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhGenerations);
 
       return false;
     }
@@ -413,7 +413,7 @@ bool COptMethodDE::optimise()
   for (i = 0; i < mVariableSize; i++)
     {
       C_FLOAT64 & mut = (*mIndividuals[0])[i];
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList()[i];
+      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
 
       mut = OptItem.getStartValue();
 
@@ -433,7 +433,7 @@ bool COptMethodDE::optimise()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables()[i] = mut;
+      *mProblemContext.master()->getContainerVariables(true)[i] = mut;
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -446,7 +446,7 @@ bool COptMethodDE::optimise()
     {
       // and store that value
       mBestValue = mValues[0];
-      Continue &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0]);
+      Continue &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0], true);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -462,7 +462,7 @@ bool COptMethodDE::optimise()
     {
       // and store that value
       mBestValue = mValues[mBestIndex];
-      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex], true);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -473,8 +473,8 @@ bool COptMethodDE::optimise()
       if (mLogVerbosity > 0)
         mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user after initial population creation."));
 
-      if (mpCallBack)
-        mpCallBack->finishItem(mhGenerations);
+      if (mProcessReport)
+        mProcessReport.finishItem(mhGenerations);
 
       cleanup();
       return true;
@@ -519,15 +519,15 @@ bool COptMethodDE::optimise()
           Stalled = 0;
           mBestValue = mValues[mBestIndex];
 
-          Continue &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex]);
+          Continue &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex], true);
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();
           mpParentTask->output(COutputInterface::DURING);
         }
 
-      if (mpCallBack)
-        Continue &= mpCallBack->progressItem(mhGenerations);
+      if (mProcessReport)
+        Continue &= mProcessReport.progressItem(mhGenerations);
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
@@ -539,8 +539,8 @@ bool COptMethodDE::optimise()
                    "Terminated after " + std::to_string(mCurrentGeneration - 1) + " of " +
                    std::to_string(mGenerations) + " generations."));
 
-  if (mpCallBack)
-    mpCallBack->finishItem(mhGenerations);
+  if (mProcessReport)
+    mProcessReport.finishItem(mhGenerations);
 
   cleanup();
 

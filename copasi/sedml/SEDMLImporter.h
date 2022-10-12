@@ -40,6 +40,13 @@ LIBSBML_CPP_NAMESPACE_BEGIN
 class Model;
 LIBSBML_CPP_NAMESPACE_END
 
+LIBSEDML_CPP_NAMESPACE_BEGIN
+class SedAbstractTask;
+class SedVectorRange;
+class SedFunctionalRange;
+class SedRepeatedTask;
+LIBSEDML_CPP_NAMESPACE_END
+
 class CTrajectoryTask;
 class CCompartment;
 class CMetab;
@@ -48,6 +55,7 @@ class CPlotSpecification;
 class CReportDefinition;
 class COutputDefinitionVector;
 class CListOfLayouts;
+class SedmlImportOptions;
 
 class SEDMLImporter
 {
@@ -69,7 +77,7 @@ protected:
 
   SedDocument* mpSEDMLDocument;
 
-  CProcessReport* mpImportHandler;
+  CProcessReport * mpProcessReport;
   unsigned C_INT32 mImportStep;
   size_t mhImportStep;
   unsigned C_INT32 mTotalSteps;
@@ -79,17 +87,20 @@ protected:
 
   std::string mImportedModel;
 
-  std::map<CReportDefinition*, std::string> mReportMap;
+  std::map<CReportDefinition*, std::pair< std::string, std::string > > mReportMap;
 
   // further symbols needed for updating content after import:
   CDataModel::CContent mContent;
+
+  const SedmlImportOptions * mpOptions;
+
 public:
   SEDMLImporter();
   ~SEDMLImporter();
 
   const std::string getArchiveFileName();
 
-  void readListOfPlotsFromSedMLOutput();
+  void importOutputs();
 
   /**
    * adds the given SED-ML curve to the COPASI plot, if supported
@@ -165,15 +176,56 @@ public:
   CModel* importFirstSBMLModel();
 
   /**
+   * Imports the SBML model for the given model id
+   */
+  CModel * importModel(const std::string & modelId);
+
+  std::string resolveModelFile(const std::string& modelSource);
+
+  /**
    * Import all tasks for the imported SBML model
    */
   void importTasks(CDataVectorN< CCopasiTask > * pTaskList = NULL);
 
+  void assignReportDefinitions(CDataVectorN< CCopasiTask > * pTaskList = NULL);
+
+  /**
+   * Imports the specified SED-ML task
+   *
+   * @param task the task to import
+   * @param importModel if true, the model referenced from the task will be imported
+   * @param pTaskList optional task list to import into
+   *
+   */
+  void importTask(
+    LIBSEDML_CPP_NAMESPACE_QUALIFIER SedAbstractTask * task,
+    bool importModel = false,
+    CDataVectorN< CCopasiTask > * pTaskList = NULL);
+
+  /**
+   * Utility function trying to convert the given Functional Range into a Vector Range
+   *
+   * Only functional ranges that are simple transformation of another vector range are
+   * currently supported.
+   *
+   * @param frange the functional range to convert
+   * @param repeat the repeated task worked on
+   *
+   * @return the newly created VectorRange or NULL
+   */
+  static
+  LIBSEDML_CPP_NAMESPACE_QUALIFIER SedVectorRange *
+  convertSimpleFunctionalRange(
+    LIBSEDML_CPP_NAMESPACE_QUALIFIER SedFunctionalRange * frange,
+    LIBSEDML_CPP_NAMESPACE_QUALIFIER SedRepeatedTask * repeat);
+
   CModel* readSEDML(std::string filename,
-                    CDataModel* pDataModel);
+                    CDataModel* pDataModel,
+                    const SedmlImportOptions * pOptions = NULL);
 
   CModel* parseSEDML(const std::string& sedmlDocumentText,
-                     CDataModel * pDataModel);
+                     CDataModel * pDataModel,
+                     const SedmlImportOptions * pOptions = NULL);
 
   /**
    * Initializes the content element from the currently set DataModel
@@ -200,12 +252,12 @@ public:
   /**
    * sets a progress handler to inform about updates
    */
-  void setImportHandler(CProcessReport* pHandler);
+  void setImportHandler(CProcessReport * pProcessReport);
 
   /**
    * @return the progress handler set
    */
-  CProcessReport* getImportHandlerAddr() const;
+  const CProcessReport * getProcessReport() const;
 
   /**
    * sets the sed-ml document that will be used by the importer
@@ -251,6 +303,23 @@ public:
    * not implemented
    */
   void restoreFunctionDB();
+
+private:
+  /**
+   *
+   * merge nested subtasks if needed (as that is really the only way
+   * COPASI can handle them. So if we have
+   *
+   * repeatedTask1: subtask simulationTask1
+   * repeatedTask2: subtask repeatedTask1
+   * repeatedTask3: subtask repeatedTask2
+   * repeatedTask4: subtask repeatedTask3
+   *
+   * we move all the ranges changes from 3 to 4, then from 2 to 4, then 1 to 4
+   * that way we preserve the order of scan items.
+   *
+   */
+  void mergeNestedSubtasks();
 };
 
 #endif /* SEDMLIMPORTER_H_ */

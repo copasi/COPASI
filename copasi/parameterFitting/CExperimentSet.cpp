@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -377,6 +377,9 @@ void CExperimentSet::removeExperiment(const size_t & index)
 
 CExperiment * CExperimentSet::getExperiment(const size_t & index)
 {
+  if (index >= mpExperiments->size())
+    return NULL;
+
   return (*mpExperiments)[index + mNonExperiments];
 }
 

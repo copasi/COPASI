@@ -127,14 +127,16 @@ int main(int argc, char *argv[])
       QDesktopServices::setUrlHandler("copasi", pWindow, "slotHandleCopasiScheme");
 
       a.exec();
+                
     }
 
 finish:
 
   try // To suppress any access violations during destruction works only under Windows
     {
-      pdelete(pWindow);
-      CRootContainer::destroy();
+        QDesktopServices::unsetUrlHandler("copasi");
+        pdelete(pWindow);
+        CRootContainer::destroy();
     }
   catch (...)
     {}

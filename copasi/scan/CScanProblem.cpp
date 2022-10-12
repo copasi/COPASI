@@ -241,7 +241,7 @@ bool CScanProblem::restore(const bool & updateModel)
   CCopasiTask * pSubTask = getSubTask();
 
   if (pSubTask != NULL)
-    return pSubTask->restore();
+    return pSubTask->restore(updateModel);
 
   return true;
 }

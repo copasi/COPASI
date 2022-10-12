@@ -177,7 +177,7 @@ public:
   /**
    * Retrieve a pointer to the value of the object
    */
-  virtual void * getValuePointer() const;
+  virtual void * getValuePointer() const override;
 
   /**
    * Retrieve a pointer to the data object

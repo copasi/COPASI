@@ -133,7 +133,7 @@ bool CMCATask::process(const bool & useInitialValues)
 
   if (pSubTask)
     {
-      pSubTask->setCallBack(mpCallBack);
+      pSubTask->setCallBack(mProcessReport);
 
       // We need to assure that the Jacobian is calculated!
       CSteadyStateProblem * pSteadyStateProblem = static_cast< CSteadyStateProblem * >(pSubTask->getProblem());
@@ -171,16 +171,18 @@ bool CMCATask::process(const bool & useInitialValues)
 }
 
 // virtual
-bool CMCATask::setCallBack(CProcessReport * pCallBack)
+bool CMCATask::setCallBack(CProcessReportLevel callBack)
 {
-  CCopasiTask * pSubTask = mpProblem->getSubTask();
+  bool success = CCopasiTask::setCallBack(callBack);
 
-  if (pSubTask)
+  CCopasiTask *pSubTask = mpProblem->getSubTask();
+
+  if (pSubTask != NULL)
     {
-      pSubTask->setCallBack(pCallBack);
+      success &= pSubTask->setCallBack(mProcessReport);
     }
 
-  return CCopasiTask::setCallBack(pCallBack);
+  return success;
 }
 
 // virtual

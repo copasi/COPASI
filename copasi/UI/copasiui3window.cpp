@@ -93,6 +93,9 @@
 #include <copasi/UI/CWindowInterface.h>
 
 #include "CQSEDMLFileDialog.h"
+#include "CQSEDMLImportDialog.h"
+#include <copasi/sedml/SEDMLUtils.h>
+#include <sedml/SedReader.h>
 
 # include "copasi/undoUI/CQUndoDialog.h"
 # include "copasi/core/CCore.h"
@@ -164,6 +167,7 @@ bool CopasiUI3Window::isMainThread()
   return pMainWindow == NULL || pMainWindow->mpMainThread == QThread::currentThread();
 }
 
+
 // static
 CopasiUI3Window *CopasiUI3Window::create()
 {
@@ -179,8 +183,51 @@ CopasiUI3Window *CopasiUI3Window::create()
     }
 
 #endif // COPASI_SBW_INTEGRATION
+
   pMainWindow = pWindow;
   return pWindow;
+}
+
+
+/**
+ * Utility function for guessing whether the file might
+ * be an SBML file. If so it should contain an SBML tag in the
+ * first couple of lines.
+ */
+bool isProbablySBML(QString & fileName)
+{
+  return isProbablySBML(std::string(TO_UTF8(fileName)));
+}
+
+/**
+ * Utility function for guessing whether the file might
+ * be an SEDML file. If so it should contain an SEDML tag in the
+ * first couple of lines.
+ */
+bool isProbablySEDML(QString & fileName)
+{
+  return containsTag(std::string(TO_UTF8(fileName)), "sedML", 5);
+}
+
+bool isArchive(const QString & fileName)
+{
+  bool result = false;
+  std::ifstream in;
+  in.open(fileName.toStdString().c_str(), std::ifstream::in);
+
+  char buffer[5];
+  in.read(buffer, 4);
+  buffer[4] = '\x00';
+
+  if (in.good())
+    {
+      result = result || (buffer[0] == 'P' && buffer[1] == 'K' && buffer[2] == '\x03' && buffer[3] == '\x04');
+      result = result || (buffer[0] == 'P' && buffer[1] == 'K' && buffer[2] == '\x05' && buffer[3] == '\x06');
+      result = result || (buffer[0] == 'P' && buffer[1] == 'K' && buffer[2] == '\x07' && buffer[3] == '\x08');
+    }
+
+  in.close();
+  return result;
 }
 
 /**
@@ -1069,6 +1116,26 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
   if (!newFile.isNull())
     {
+
+      if (isArchive(newFile))
+        {
+          slotImportCombine(newFile);
+          return;
+        }
+
+      if (isProbablySEDML(newFile))
+        {
+          slotImportSEDML(newFile);
+          return;
+        }
+
+      if (isProbablySBML(newFile))
+        {
+          slotImportSBML(newFile);
+          return;
+        }
+
+
       assert(CRootContainer::getDatamodelList()->size() > 0);
 
       if (mpDataModelGUI &&
@@ -1099,6 +1166,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
             }
         }
 
+
 #ifdef COPASI_Provenance
       // Update Main Body Provenace
       //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel());
@@ -1122,29 +1190,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
       mpDataModelGUI->loadModel(TO_UTF8(newFile));
     }
 }
-bool isArchive(const QString& fileName)
-{
-  bool result = false;
-  std::ifstream in;
-  in.open(fileName.toStdString().c_str(), std::ifstream::in);
 
-  char buffer[5];
-  in.read(buffer, 4);
-  buffer[4] = '\x00';
-
-  if (in.good())
-    {
-      result = result ||
-               (buffer[0] == 'P' && buffer[1] == 'K' && buffer[2] == '\x03' && buffer[3] == '\x04');
-      result = result ||
-               (buffer[0] == 'P' && buffer[1] == 'K' && buffer[2] == '\x05' && buffer[3] == '\x06');
-      result = result ||
-               (buffer[0] == 'P' && buffer[1] == 'K' && buffer[2] == '\x07' && buffer[3] == '\x08');
-    }
-
-  in.close();
-  return result;
-}
 
 void CopasiUI3Window::slotFileOpenFinished(bool success)
 {
@@ -3073,26 +3119,6 @@ void CopasiUI3Window::dragEnterEvent(QDragEnterEvent *event)
     event->acceptProposedAction();
 }
 
-/**
- * Utility function for guessing whether the file might
- * be an SBML file. If so it should contain an SBML tag in the
- * first couple of lines.
- */
-bool isProbablySBML(QString &fileName)
-{
-  return isProbablySBML(std::string(TO_UTF8(fileName)));
-}
-
-/**
- * Utility function for guessing whether the file might
- * be an SEDML file. If so it should contain an SEDML tag in the
- * first couple of lines.
- */
-bool isProbablySEDML(QString &fileName)
-{
-  return containsTag(std::string(TO_UTF8(fileName)), "sedML", 5);
-}
-
 void CopasiUI3Window::dropEvent(QDropEvent *event)
 {
   QList<QUrl> urls = event->mimeData()->urls();
@@ -3105,14 +3131,7 @@ void CopasiUI3Window::dropEvent(QDropEvent *event)
   if (fileName.isEmpty())
     return;
 
-  if (isProbablySEDML(fileName))
-    slotImportSEDML(fileName);
-
-  else if (isProbablySBML(fileName))
-    slotImportSBML(fileName);
-
-  else
-    slotFileOpen(fileName);
+  slotFileOpen(fileName);
 }
 /**
  * The slider dialog has to be disabled before
@@ -3270,6 +3289,17 @@ void CopasiUI3Window::slotImportSEDML(QString file)
             }
         }
 
+
+      // check the SED-ML file, for whether it is complex, if so ask the user to choose what to import:
+
+      bool shoudlReturn;
+      SedmlImportOptions options = getSedMLImportOptions(SEDMLFile, shoudlReturn);
+
+      if (shoudlReturn)
+        return;
+
+
+
 #ifdef COPASI_Provenance
       //Update Main Body Provenance
       //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel());
@@ -3288,8 +3318,54 @@ void CopasiUI3Window::slotImportSEDML(QString file)
       setCursor(Qt::WaitCursor);
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFinished(bool)));
       mNewFile = SEDMLFile;
-      mpDataModelGUI->importSEDML(TO_UTF8(SEDMLFile));
+      mpDataModelGUI->importSEDML(TO_UTF8(SEDMLFile), &options);
     }
+}
+
+
+SedmlImportOptions CopasiUI3Window::getSedMLImportOptions(const QString & fileName, bool & shouldCancelImport)
+{
+  auto * doc = readSedMLFromFile(TO_UTF8(fileName));
+  auto options = getSedMLImportOptions(doc, shouldCancelImport);
+  pdelete(doc);
+  return options;
+}
+
+SedmlImportOptions CopasiUI3Window::getSedMLImportOptions(SedDocument * pDoc, bool & shouldCancelImport)
+{
+  shouldCancelImport = false;
+
+  SedmlInfo info(pDoc);
+  SedmlImportOptions options;
+
+  if (info.isComplex())
+    {
+      CQSEDMLImportDialog * dlg = new CQSEDMLImportDialog(this);
+      dlg->loadSedML(info);
+      int result = dlg->exec();
+
+      if (result == QDialog::Rejected)
+        {
+          shouldCancelImport = true;
+          return options;
+        }
+
+      options = dlg->getOptions();
+    }
+
+  return options;
+}
+
+SedmlImportOptions CopasiUI3Window::getSedMLImportOptionsForArchive(const QString & fileName, bool & shouldCancelImport)
+{
+  SedmlImportOptions result;
+
+  auto sedml_string = SEDMLUtils::getSedMLStringForArchive(TO_UTF8(fileName));
+  auto * doc = readSedMLFromString(sedml_string.c_str());
+
+  result = getSedMLImportOptions(doc, shouldCancelImport);
+  pdelete(doc);
+  return result;
 }
 
 void CopasiUI3Window::refreshRecentSEDMLFileMenu()
@@ -3459,6 +3535,12 @@ void CopasiUI3Window::slotImportCombine(QString file)
             }
         }
 
+      bool shoudlReturn;
+      SedmlImportOptions options = getSedMLImportOptionsForArchive(combineArchiveFile, shoudlReturn);
+
+      if (shoudlReturn)
+        return;
+
 #ifdef COPASI_Provenance
       // Update Main Body Provenance
       //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel());
@@ -3477,7 +3559,7 @@ void CopasiUI3Window::slotImportCombine(QString file)
       setCursor(Qt::WaitCursor);
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportCombineFinished(bool)));
       mNewFile = combineArchiveFile;
-      mpDataModelGUI->openCombineArchive(TO_UTF8(combineArchiveFile));
+      mpDataModelGUI->openCombineArchive(TO_UTF8(combineArchiveFile), &options);
     }
 }
 void CopasiUI3Window::slotImportCombineFinished(bool success)

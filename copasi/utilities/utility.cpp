@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -805,4 +805,30 @@ bool containsTag(const std::string & filename, const std::string & tagname, int 
 bool isProbablySBML(const std::string & filename)
 {
   return containsTag(filename, "sbml");
+}
+
+size_t utf8Length(const std::string & str)
+{
+  size_t q;
+  int c, i, ix;
+
+  for (q = 0, i = 0, ix = str.length(); i < ix; i++, q++)
+    {
+      c = (unsigned char) str[i];
+
+      if (c >= 0 && c <= 127)
+        i += 0;
+      else if ((c & 0xE0) == 0xC0)
+        i += 1;
+      else if ((c & 0xF0) == 0xE0)
+        i += 2;
+      else if ((c & 0xF8) == 0xF0)
+        i += 3;
+      //else if (($c & 0xFC) == 0xF8) i+=4; // 111110bb //byte 5, unnecessary in 4 byte UTF-8
+      //else if (($c & 0xFE) == 0xFC) i+=5; // 1111110b //byte 6, unnecessary in 4 byte UTF-8
+      else
+        return 0; //invalid utf8
+    }
+
+  return q;
 }

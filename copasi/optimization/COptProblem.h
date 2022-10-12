@@ -118,6 +118,16 @@ public:
   virtual ~COptProblem();
 
   /**
+   * Calculate the objects value.
+   */
+  virtual void calculateValue() override;
+
+  /**
+   * Retrieve a pointer to the value of the object
+   */
+  virtual void * getValuePointer() const override;
+
+  /**
    * This methods must be called to elevate subgroups to
    * derived objects. The default implementation does nothing.
    * @return bool success
@@ -129,7 +139,7 @@ public:
   * @param CProcessReport * pCallBack
   * @result bool success
   */
-  virtual bool setCallBack(CProcessReport * pCallBack);
+  virtual bool setCallBack(CProcessReportLevel callBack) override;
 
   /**
    * Do all necessary initialization so that calls to calculate will
@@ -152,17 +162,17 @@ public:
   virtual bool calculate();
 
   /**
-   * Reset counters and objective value.
-   */
-  void reset();
-
-  /**
    * Do all necessary restore procedures so that the
-   * model and task are in the same state as before.
+   * model is in the same state as before
    * @param const bool & updateModel
    * @result bool success
    */
-  virtual bool restore(const bool & updateModel);
+  virtual bool restore(const bool & updateModel) override;
+
+  /**
+   * Reset counters and objective value.
+   */
+  void reset();
 
   /**
    * Retrieve the optional sub task
@@ -184,6 +194,41 @@ public:
   virtual bool checkFunctionalConstraints();
 
   /**
+   * Check whether all item intervals are valid.
+   * @result bool valid
+   */
+  bool checkIntervals();
+
+  /**
+   * Adjust the start values so that we have valid intervals (>= 0) for all items
+   * @return bool adjusted
+   */
+  bool adjustStartValuesForIntervals();
+
+  /**
+   * Adjust the start values so that we have valid intervals (>= 0) for all items
+   * @param COptItem & optItem
+   * @return bool adjusted
+   */
+  bool adjustStartValue(COptItem & optItem);
+
+  /**
+   * Adjust the value so that all intervals are >= 0
+   * @param C_FLOAT64 * pValue
+   * @param  const C_FLOAT64 & min
+   * @param  const C_FLOAT64 & max
+   * @return C_FLOAT64 adjusted (NaN if not adjustable)
+   */
+  C_FLOAT64 adjustForIntervals(C_FLOAT64 * pValue, const C_FLOAT64 & min, const C_FLOAT64 & max);
+
+  /**
+   * Calculate the RMS of the interval size for items which have invalid intervals
+   * @param const C_FLOAT64 &  value
+   * @return C_FLOAT64 minInterval
+   */
+  C_FLOAT64 evalMinimizeIntervals(const C_FLOAT64 & value);
+
+  /**
    * Calculate the statistics for the problem
    * @param const C_FLOAT64 & factor (Default: 1.0e-003)
    * @param const C_FLOAT64 & resolution (Default: 1.0e-009)
@@ -199,9 +244,10 @@ public:
 
   /**
    * Retrieve the list of optimization parameters.
+   * @param const bool & algorithmOrder (default: false)
    * @return const std::vector< COptItem * > & optItemList
    */
-  const std::vector< COptItem * > & getOptItemList() const;
+  const std::vector< COptItem * > & getOptItemList(const bool & algorithmOrder = false) const;
 
   /**
    * Retrieve the list of constraints.
@@ -218,9 +264,10 @@ public:
 // private:
   /**
    * Retrieve the update methods for the variables for calculation.
+   * @param const bool & algorithmOrder (default: false)
    * @return const std::vector< UpdateMethod * > & updateMethods
    */
-  CVectorCore< C_FLOAT64 * > & getContainerVariables() const;
+  CVectorCore< C_FLOAT64 * > & getContainerVariables(const bool & algorithmOrder = false) const;
 
 public:
   /**
@@ -230,8 +277,9 @@ public:
 
   /**
    * Retrieve the solution variables
+   * @param const bool & algorithmOrder (default: false)
    */
-  const CVector< C_FLOAT64 > & getSolutionVariables() const;
+  const CVector< C_FLOAT64 > & getSolutionVariables(const bool & algorithmOrder = false) const;
 
   /**
    * Retrieve the gradients for each solution variable.
@@ -243,10 +291,12 @@ public:
    * Set the solution.
    * @param const C_FLOAT64 & value
    * @param const CVector< C_FLOAT64 > & variables
+   * @param const bool & algorithmOrder (default: false)
    * @return bool continue;
    */
   virtual bool setSolution(const C_FLOAT64 & value,
-                           const CVector< C_FLOAT64 > & variables);
+                           const CVector< C_FLOAT64 > & variables,
+                           const bool & algorithmOrder = false);
 
   /**
    * Retrieve the result for the solution
@@ -539,6 +589,12 @@ protected:
   CCore::CUpdateSequence mUpdateConstraints;
 
   /**
+   * A vector of refresh methods which need to be called retrieve the values
+   * of constraints.
+   */
+  CCore::CUpdateSequence mUpdateIntervals;
+
+  /**
    * A vector of results for calculate
    */
   C_FLOAT64 mCalculateValue;
@@ -596,6 +652,34 @@ protected:
    * The gradient vector for the parameters
    */
   CVector< C_FLOAT64 > mGradient;
+
+  /**
+   * The value of the smallest interval
+   */
+  C_FLOAT64 mMinInterval;
+
+  /**
+   * A pointer to the value to be adjusted to create valid intervals
+   */
+  C_FLOAT64 * mpAdjust;
+
+  /**
+   * The set of COptItems which intervals are adjusted
+   */
+  std::set< COptItem * > mAdjustedItems;
+
+  /**
+   * Number of items influencing intervals
+   */
+  size_t mCountInfluencingIntervals;
+
+  std::map< COptItem *, size_t > mOptItem2Index;
+
+  std::vector< COptItem * > mOptItemAlgorithm;
+
+  mutable CVector < C_FLOAT64 * > mContainerVariablesAlgorithm;
+
+  CVector < C_FLOAT64 > mSolutionVariablesAlgorithm;
 };
 
 #endif  // the end

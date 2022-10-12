@@ -25,6 +25,7 @@
 #include "copasi/core/CDataContainer.h"
 #include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/optimization/COptItem.h"
 
 // Uncomment this line below to get debug print out.
 // #define DEBUG_OUTPUT 1
@@ -247,20 +248,25 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
           break;
         }
 
-      // We may have data objects which are ignored as they cannot be calculated
-      if ((*it)->getDataObject() == *it)
+      // Objects of class CCopasiTimer must always be calculated
+      if ((*it)->getDataObject() != NULL &&
+          (*it)->getDataObject()->getObjectType() == "Timer")
         {
-          // Objects of class CCopasiTimer must always be calculated
-          if ((*it)->getDataObject()->getObjectType() == "Timer")
-            {
-              UpdateSequence.push_back(const_cast< CObjectInterface * >(*it));
-            }
-
+          UpdateSequence.push_back(const_cast< CObjectInterface * >(*it));
           continue;
         }
 
 #ifdef DEBUG_OUTPUT
-      std::cout << *static_cast< const CMathObject * >(*it) << std::endl;
+
+      if ((*it)->getDataObject() == *it)
+        {
+          std::cout << (*it)->getCN() << std::endl;
+        }
+      else
+        {
+          std::cout << *static_cast< const CMathObject * >(*it) << std::endl;
+        }
+
 #endif // DEBUG_OUTPUT
 
       found = mObjects2Nodes.find(*it);
@@ -287,12 +293,6 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
 
   for (; it != end; ++it)
     {
-      // We may have data objects which are ignored as they are always up to date
-      if ((*it)->getDataObject() == *it)
-        {
-          continue;
-        }
-
       found = mObjects2Nodes.find(*it);
 
       if (found != notFound)
@@ -732,6 +732,9 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
 
   if (pEvent != NULL && pEvent != pDataObject->getObjectParent())
     return pEvent->getObjectName() + "::Assignment::" + pDataObject->getObjectParent()->getObjectName();
+
+  if (dynamic_cast< const COptItem * >(pDataObject))
+    return "OptItem::" + static_cast< const COptItem * >(pDataObject)->getObject()->getObjectDisplayName();
 
   return pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName();
 }

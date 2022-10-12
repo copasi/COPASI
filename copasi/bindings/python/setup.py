@@ -154,8 +154,11 @@ class CMakeBuild(build_ext):
         print ('suffix: {0}'.format(suffix))
         print ('cwd: {0}'.format(cwd))
 
-        # example of cmake args
-        config = 'Debug' if self.debug else 'Release'
+        # get config from environment or set default
+        config = os.getenv('CMAKE_BUILD_TYPE')
+        if not config:
+          config = 'Debug' if self.debug else 'Release'
+        
         print ('name: {0}, tmp: {1}'.format(name, build_temp))
         is_osx = platform.system() == 'Darwin'
         is_win = platform.system() == 'Windows'

@@ -441,14 +441,22 @@ if(BUILD_GUI)
     # then narrow down the precise modules we need
     option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit for notes" OFF)
     option(QT5_USE_DATAVISUALIZATION "Use Qt5DataVisualization instead of the deprecated QwtPlot3D" ON)
-    if (${QT5_USE_DATAVISUALIZATION})
+    if (QT5_USE_DATAVISUALIZATION)
     option(WITH_DATAVISUALIZATION_NAMESPACES "The DataVisualization modeule uses c++ namespaces" ON)
+    endif()
+    option(COPASI_USE_QTCHARTS "Use QtCharts instead of the Qwt" OFF)
+    option(COPASI_USE_QCUSTOMPLOT "Use QCustomPlot instead of the Qwt" OFF)
+    if (COPASI_USE_QCUSTOMPLOT)
+      find_package(QCP REQUIRED)
     endif()
     option(WITH_LEGACY_OPENGL "Use Legacy OpenGL visualization" OFF)
     
     set (ADDITIONAL_QT5_MODULES)
     if (QT5_USE_DATAVISUALIZATION)
     set (ADDITIONAL_QT5_MODULES ${ADDITIONAL_QT5_MODULES} DataVisualization)
+    endif()
+    if (COPASI_USE_QTCHARTS)
+    set (ADDITIONAL_QT5_MODULES ${ADDITIONAL_QT5_MODULES} Charts)
     endif()
     
     if(${SELECT_QT} MATCHES "Qt6")
@@ -512,6 +520,9 @@ if(BUILD_GUI)
   #find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui QtXml QtWebKit QtNetwork)
   # check for qwt, TODO check if the version is OK
   find_package(QWT REQUIRED)
+  if (QWT_FOUND)
+    set(COPASI_USE_QWT ON)
+  endif()
   # check for qwtplot3d
   
   if (NOT QT5_USE_DATAVISUALIZATION)
@@ -723,10 +734,17 @@ if(MSVC OR USING_INTEL)
                 CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO)
 
                 if(${flag_var} MATCHES "/Zi")
-            STRING(REPLACE "/Zi"  "/Z7" "${flag_var}" "${${flag_var}}")
+                  STRING(REPLACE "/Zi"  "/Z7" "${flag_var}" "${${flag_var}}")
                 endif(${flag_var} MATCHES "/Zi")
 
             endforeach(flag_var)
+            
+            if (MSVC AND WIN32 AND NOT MSVC_VERSION VERSION_LESS 142 AND CMAKE_VERSION VERSION_GREATER 3.13)
+              # enable edit & continue for debug builds of msvc 
+              add_link_options($<$<CONFIG:Debug>:/INCREMENTAL>)
+              add_compile_options($<$<CONFIG:Debug>:/ZI>)
+
+            endif()
     endif()
 
 endif(MSVC OR USING_INTEL)

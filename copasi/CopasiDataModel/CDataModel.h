@@ -18,6 +18,7 @@
 #include "copasi/core/CDataContainer.h"
 #include "copasi/output/COutputHandler.h"
 #include "copasi/utilities/CTaskEnum.h"
+#include "copasi/utilities/CProcessReport.h"
 #include "copasi/undo/CUndoStack.h"
 
 class CInfo;
@@ -29,6 +30,8 @@ class COutputDefinitionVector;
 class CFunctionDB;
 class CFunction;
 class SCopasiXMLGUI;
+class SedmlImportOptions;
+
 LIBSBML_CPP_NAMESPACE_BEGIN
 class SBMLDocument;
 class SBase;
@@ -49,7 +52,10 @@ class SedDocument;
 LIBSEDML_CPP_NAMESPACE_END
 class CPlotItem;
 
+#include <omex/common/libcombine-namespace.h>
+LIBCOMBINE_CPP_NAMESPACE_BEGIN
 class CombineArchive;
+LIBCOMBINE_CPP_NAMESPACE_END
 
 // :TODO: remove
 class CMetabOld;
@@ -191,31 +197,31 @@ public:
    * Load the model from the content which may be any supported type
    * @param const std::string & content
    * @param std::string referenceDir = pwd()
-   * @param CProcessReport* pProcessReport = NULL
+   * @param CProcessReport *pProcessReport = NULL
    * @param const bool & deleteOldData = true
    */
   bool loadFromString(const std::string & content,
                       std::string referenceDir = "",
-                      CProcessReport* pProcessReport = NULL,
+                      CProcessReport *pProcessReport = NULL,
                       const bool & deleteOldData = true);
 
   /**
    * Load the model from the file which may be any supported type
    * @param const std::string & fileName
-   * @param CProcessReport* pProcessReport = NULL
+   * @param CProcessReport *pProcessReport = NULL
    * @param const bool & deleteOldData = true
    */
   bool loadFromFile(const std::string & fileName,
-                    CProcessReport* pProcessReport = NULL,
+                    CProcessReport *pProcessReport = NULL,
                     const bool & deleteOldData = true);
 
   bool loadModel(std::istream & in,
                  const std::string & pwd,
-                 CProcessReport* pProcessReport,
+                 CProcessReport * pProcessReport,
                  const bool & deleteOldData = true);
 
   bool loadModel(const std::string & fileName,
-                 CProcessReport* pProcessReport,
+                 CProcessReport * pProcessReport,
                  const bool & deleteOldData = true);
 
   /**
@@ -228,40 +234,40 @@ public:
    * @return true, if a model was successfully added, false otherwise
    */
   bool addModel(const std::string & fileName,
-                CProcessReport* pProcessReport = NULL);
+                CProcessReport *pProcessReport = NULL);
 
   bool loadModelParameterSets(const std::string & fileName,
-                              CProcessReport* pProcessReport = NULL);
+                              CProcessReport *pProcessReport = NULL);
 
   bool saveModelParameterSets(const std::string & fileName);
 
   bool saveModel(const std::string & fileName,
-                 CProcessReport* pProcessReport,
+                 CProcessReport * pProcessReport,
                  bool overwriteFile = false,
                  const bool & autoSave = false);
 
-  std::string saveModelToString(CProcessReport* pProcessReport = NULL);
+  std::string saveModelToString(CProcessReport *pProcessReport = NULL);
 
   bool autoSave();
 
-  bool newModel(CProcessReport* pProcessReport,
+  bool newModel(CProcessReport * pProcessReport,
                 const bool & deleteOldData);
 
   bool importSBMLFromString(const std::string & sbmlDocumentText,
-                            CProcessReport* pImportHandler = NULL,
+                            CProcessReport *pProcessReport = NULL,
                             const bool & deleteOldData = true);
 
   bool importSBML(const std::string & fileName,
-                  CProcessReport* pImportHandler = NULL,
+                  CProcessReport *pProcessReport = NULL,
                   const bool & deleteOldData = true);
 
-  std::string exportSBMLToString(CProcessReport* pExportHandler, int sbmlLevel, int sbmlVersion);
+  std::string exportSBMLToString(CProcessReport * pProcessReport, int sbmlLevel, int sbmlVersion);
 
-  bool exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
+  bool exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport  * pProcessReport = NULL);
 
-  std::string exportMathModelToString(CProcessReport* pProcessReport, const std::string & filter);
+  std::string exportMathModelToString(CProcessReport * pProcessReport, const std::string & filter);
 
-  bool exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
+  bool exportMathModel(const std::string & fileName, CProcessReport * pProcessReport,
                        const std::string & filter, bool overwriteFile = false);
 
   /**
@@ -300,7 +306,7 @@ public:
                             bool includeData = true,
                             bool includeSEDML = false,
                             bool overwriteFile = false,
-                            CProcessReport* pProgressReport = NULL,
+                            CProcessReport *pProcessReport = NULL,
                             int sbmlLevel = 2,
                             int sbmlVersion = 4,
                             int sedmlLevel = 1,
@@ -310,7 +316,7 @@ public:
                           bool includeCOPASI = true,
                           bool includeData = true,
                           bool overwriteFile = false,
-                          CProcessReport* pProgressReport = NULL);
+                          CProcessReport *pProcessReport = NULL);
 
   /**
    * adds the current COPASI model to the archive with the given
@@ -320,13 +326,13 @@ public:
    * @param targetName the name and path that the COPASI file should have in the archive
    * @param pProgressReport optional pointer to the progress report
    */
-  void addCopasiFileToArchive(CombineArchive *archive,
+  void addCopasiFileToArchive(LIBCOMBINE_CPP_NAMESPACE_QUALIFIER CombineArchive *archive,
                               const std::string& targetName = "./copasi/model.cps",
-                              CProcessReport * pProgressReport = NULL
-                             );
+                              CProcessReport *pProcessReport = NULL);
 
-  bool openCombineArchive(const std::string& fileName, CProcessReport* pProgressReport = NULL,
-                          const bool & deleteOldData = true);
+  bool openCombineArchive(const std::string& fileName, CProcessReport *pProcessReport = NULL,
+                          const bool & deleteOldData = true,
+                          const SedmlImportOptions * pOptions = NULL);
 
   void deleteOldData();
 
@@ -381,12 +387,14 @@ public:
   // SEDML
   bool importSEDMLFromString(const std::string & sedmlDocumentText,
                              std::string referenceDir = "",
-                             CProcessReport* pImportHandler = NULL,
-                             const bool & deleteOldData = true);
+                             CProcessReport *pProcessReport = NULL,
+                             const bool & deleteOldData = true,
+                             const SedmlImportOptions * pOptions = NULL);
 
   bool importSEDML(const std::string & fileName,
-                   CProcessReport* pImportHandler = NULL,
-                   const bool & deleteOldData = true);
+                   CProcessReport *pProcessReport = NULL,
+                   const bool & deleteOldData = true,
+                   const SedmlImportOptions * pOptions = NULL);
 
   /**
    * exports the SED-ML with given level and version to a string. NOTE: the
@@ -403,7 +411,7 @@ public:
    *
    * @return the SED-ML string.
    */
-  std::string exportSEDMLToString(CProcessReport* pExportHandler,
+  std::string exportSEDMLToString(CProcessReport * pProcessReport,
                                   int sedmlLevel, int sedmlVersion,
                                   const std::string& modelLocation = "model.xml",
                                   const XMLNamespaces* pAdditionalNamespaces = NULL
@@ -423,7 +431,7 @@ public:
                    int sedmlVersion = 4,
                    bool exportIncomplete = false,
                    bool exportCOPASIMIRIAM = true,
-                   CProcessReport* pExportHandler = NULL);
+                   CProcessReport * pProcessReport = NULL);
 
   SedDocument* getCurrentSEDMLDocument();
   bool setSEDMLFileName(const std::string & fileName);
@@ -460,7 +468,7 @@ public:
 protected:
   void pushData();
   void popData();
-  void commonAfterLoad(CProcessReport* pProcessReport,
+  void commonAfterLoad(CProcessReport * pProcessReport,
                        const bool & deleteOldData);
 
   void replaceCnInGroup(CModelParameter* pParam,

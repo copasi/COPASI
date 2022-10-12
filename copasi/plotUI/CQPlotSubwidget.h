@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,6 +32,7 @@ class CQPlotEditWidget;
 class BandedGraphWidget;
 #endif
 
+class CQAdvancedPlotSettings;
 class CQSpectogramWidget;
 
 class CQPlotSubwidget : public CopasiWidget, public Ui::CQPlotSubwidget
@@ -52,6 +53,7 @@ private:
   CPlotItem::Type mType;
   std::string mTaskTypes;
   QStringList mTaskNames;
+  CQAdvancedPlotSettings *mpAdvancedSettings;
 
   CQPlotEditWidget *selectControl(CPlotItem::Type type);
 

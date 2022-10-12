@@ -146,7 +146,7 @@ bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessRe
 
   size_t hUpdateStep;
 
-  if (pProcessReport)
+  if (pProcessReport != NULL)
     hUpdateStep = pProcessReport->addItem("Parsing MIRIAM XML", processStep, &processSteps);
 
   // parse file into memory
@@ -158,7 +158,7 @@ bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessRe
 
   ++processStep;
 
-  if (pProcessReport)
+  if (pProcessReport != NULL)
     {
       if (!pProcessReport->progressItem(hUpdateStep))
         return false;
@@ -169,10 +169,10 @@ bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessRe
   sizeNames = root.getNumChildren();
   processSteps = sizeNames + 2;
 
-  if (pProcessReport)
+  if (pProcessReport != NULL)
     hUpdateStep = pProcessReport->addItem("Add Items", processStep, &processSteps);
 
-  if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
+  if (pProcessReport != NULL && !pProcessReport->progressItem(hUpdateStep))
     return false;
 
   // read all datatype elements
@@ -231,13 +231,13 @@ bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessRe
 
       processStep++;
 
-      if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
+      if (pProcessReport != NULL && !pProcessReport->progressItem(hUpdateStep))
         return false;
     }
 
   processStep++;
 
-  if (pProcessReport && !pProcessReport->progressItem(hUpdateStep))
+  if (pProcessReport != NULL && !pProcessReport->progressItem(hUpdateStep))
     return false;
 
   if (success)
@@ -255,7 +255,7 @@ bool CMIRIAMResources::updateMIRIAMResourcesFromFile(CProcessReport * pProcessRe
 
   processStep++;
 
-  if (pProcessReport)
+  if (pProcessReport != NULL)
     {
       if (!pProcessReport->progressItem(hUpdateStep))
         return false;

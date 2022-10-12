@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -139,7 +139,7 @@ public:
    * Retrieve the value of the optimization object.
    * @return const C_FLOAT64 * objectValue
    */
-  virtual const C_FLOAT64 * getObjectValue() const;
+  virtual const C_FLOAT64 * getObjectValue() const override;
 
   /**
    * Add an experiment to the list of affected experiments.
@@ -209,10 +209,10 @@ public:
 
   /**
    * Update bounds
-   * @param std::vector<COptItem * >::iterator it
+   * @param std::vector<COptItem * >::const_iterator it
    * @return bool success
    */
-  bool updateBounds(std::vector<COptItem * >::iterator it);
+  bool updateBounds(std::vector<COptItem * >::const_iterator it);
 
 private:
   /**

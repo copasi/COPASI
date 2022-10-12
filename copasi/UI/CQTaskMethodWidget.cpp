@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,8 +36,7 @@ CQTaskMethodWidget::CQTaskMethodWidget(QWidget* parent, Qt::WindowFlags f):
   mpMethod(NULL),
   mpActiveMethod(NULL),
   mMethodHistory(),
-  mShowMethods(false),
-  mShowMethodParameters(false)
+  mShowMethods(false)
 {
   setupUi(this);
 
@@ -113,7 +112,7 @@ void CQTaskMethodWidget::setValidMethods(const CTaskEnum::Method * validMethods)
     }
 }
 
-void CQTaskMethodWidget::showMethodParameters(const bool & show)
+void CQTaskMethodWidget::showMethodParameters(bool show)
 {
   mShowMethodParameters = show;
 
@@ -296,4 +295,9 @@ void CQTaskMethodWidget::popMethod(CCopasiMethod * pMethod)
 
   mpParameterView->expandAll();
   mpParameterView->resizeColumnToContents(0);
+}
+
+void CQTaskMethodWidget::showMethodCheckbox(bool show)
+{
+  mpChkShowParameters->setVisible(show);
 }

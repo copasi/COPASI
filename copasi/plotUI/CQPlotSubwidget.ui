@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the </comment>
 <comment> University of Virginia, University of Heidelberg, and University </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -163,6 +163,10 @@
     </widget>
    </item>
    <item row="8" column="0" colspan="4">
+    <widget class="CQExtender" name="extender">
+    </widget>
+   </item>
+   <item row="9" column="0" colspan="4">
     <widget class="Line" name="lineButton">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -248,7 +252,7 @@
      </item>
     </layout>
    </item>
-   <item row="9" column="0" colspan="4">
+   <item row="10" column="0" colspan="4">
     <layout class="QHBoxLayout" name="layoutButtons">
      <property name="sizeConstraint">
       <enum>QLayout::SetMinimumSize</enum>
@@ -362,6 +366,12 @@
    <class>CopasiWidget</class>
    <extends>QWidget</extends>
    <header>copasi/UI/copasiWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CQExtender</class>
+   <extends>QWidget</extends>
+   <header>copasi/plotUI/CQExtender.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
