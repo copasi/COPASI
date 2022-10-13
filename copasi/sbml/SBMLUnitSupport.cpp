@@ -1605,9 +1605,8 @@ bool SBMLUnitSupport::createUnitExpressionFor(SUnitInfo & unitInfo) const
       tmp.addComponent(
         CUnitComponent(
           CBaseUnit::dimensionless,
-          multiplier,
-          exponent == 0 ? current->getScale() :
-          current->getScale() * exponent));
+          exponent == 0 ? 1 : pow(multiplier, exponent),
+          exponent == 0 ? 0 : current->getScale() * exponent));
 
       tmp.buildExpression();
       tmp.compile();
