@@ -323,6 +323,8 @@ const MESSAGES Messages[] =
   {MCSBML + 100, "SBML (100): Model with conversion factors encountered. In order to calculate correct results with this model COPASI has changed the stoichiometries of all species with conversion factors. Exporting this model again will lead to a model with changed stoichiometries."},
   {MCSBML + 101, "SBML (101): Assignment rule for species reference \"%s\" imported. Please be aware that COPASI does not support stoichiometries that change over time. The imported expression has therefore been converted to a constant value."},
   {MCSBML + 102, "SBML (102): The SBML document you are trying to load uses SBML Level %d Version %d. This version is not yet supported by this version of COPASI, COPASI will attempt to read as much of the model as it can." },
+  {MCSBML + 103, "SBML (103): The SBML compartment \"%s\" with dimension %.1f has an incompatible unit \"%s\" using default unit."},
+  {MCSBML + 104, "SBML (104): The SBML %s \"%s\" has an invalid %s unit \"%s\" using default unit."},
 
   // SEDML To be completed
   {MCSEDML + 1, "SEDML (1): SEDML contains no simulation."},
