@@ -32,6 +32,7 @@
 #include <QtCore/QtDebug>
 
 #include "copasi/copasi.h"
+#include "qtUtilities.h"
 
 template <typename Type> class CQValidator : public QValidator
 {
@@ -53,6 +54,12 @@ public:
     mSavedColor.getHsv(&h, &s, &v);
 
     if (s < 20) s = 20;
+      
+    if (isDarkMode())
+    {
+        s = 128;
+        if (v < 128) v = 128;
+    }
 
     mAcceptableColor.setHsv(240, s, v);
     mErrorColor.setHsv(0, s, v);
