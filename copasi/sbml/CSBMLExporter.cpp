@@ -7048,7 +7048,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
 
                       for (j = 0; j < jMax; ++j)
                         {
-                          pCOPASIAnnotation->addChild(*Existing.getChild(j).clone());
+                          pCOPASIAnnotation->addChild(Existing.getChild(j));
                         }
                     }
                   else
