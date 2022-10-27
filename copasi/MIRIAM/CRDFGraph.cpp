@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -276,7 +276,7 @@ bool CRDFGraph::addTriplet(const CRDFTriplet & triplet)
     {
       mSubject2Triplet.insert(std::pair< CRDFNode * const, CRDFTriplet >(triplet.pSubject, triplet));
       mObject2Triplet.insert(std::pair< CRDFNode * const, CRDFTriplet >(triplet.pObject, triplet));
-      mPredicate2Triplet.insert(std::pair< const CRDFPredicate , CRDFTriplet >(triplet.Predicate, triplet));
+      mPredicate2Triplet.insert(std::pair< const CRDFPredicate, CRDFTriplet >(triplet.Predicate, triplet));
 
       // DebugFile << "Inserted: " << triplet;
     }
@@ -287,7 +287,7 @@ bool CRDFGraph::addTriplet(const CRDFTriplet & triplet)
 bool CRDFGraph::removeTriplet(CRDFNode * pSubject,
                               const CRDFPredicate & predicate,
                               CRDFNode * pObject)
-{ return pSubject->removeEdge(predicate, pObject);}
+{return pSubject->removeEdge(predicate, pObject);}
 
 bool
 CRDFGraph::removeTriplet(const CRDFTriplet & triplet)
@@ -443,6 +443,11 @@ CRDFNode * CRDFGraph::createAboutNode(const std::string & key)
     }
 
   return mpAbout;
+}
+
+bool CRDFGraph::empty() const
+{
+  return mTriplets.size() == 0;
 }
 
 const std::set< CRDFTriplet > & CRDFGraph::getTriplets() const

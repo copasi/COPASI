@@ -93,6 +93,7 @@
 #include "copasi/MIRIAM/CCreator.h"
 #include "copasi/MIRIAM/CModified.h"
 #include "copasi/MIRIAM/CRDFPredicate.h"
+#include "copasi/MIRIAM/CRDFParser.h"
 #include "copasi/layout/CListOfLayouts.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/utilities/CVersion.h"
@@ -6581,7 +6582,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
   CMIRIAMInfo miriamInfo;
   miriamInfo.load(dynamic_cast< CDataContainer * >(const_cast< CDataObject * >(pCOPASIObject)));
 
-  std::string miriamAnnotationString = pAnnotation->getMiriamAnnotation();
+  std::string miriamAnnotationString = miriamInfo.empty() ? "" : pAnnotation->getMiriamAnnotation();
 
   // first we clear the old CVTerms on the object
   pSBMLObject->unsetCVTerms();
@@ -6652,9 +6653,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqbiol_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqbiol_isDescribedBy:
+          //    break;
           case CRDFPredicate::bqbiol_isEncodedBy:
           case CRDFPredicate::copasi_isEncodedBy:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -6691,7 +6692,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
 
-            // This qualifier is supported in libsbml 4.1
+          // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -6753,9 +6754,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setModelQualifierType(BQM_HAS_INSTANCE);
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqmodel_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqmodel_isDescribedBy:
+          //    break;
           default:
             // there are many qualifiers that start e.g. with copasi_ which are
             // not handled
@@ -7036,7 +7037,25 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             {
               if (pAnnotation->getChild(i).getURI() == "http://www.copasi.org/static/sbml")
                 {
-                  pCOPASIAnnotation = pSBMLObject->getAnnotation()->getChild(i).clone();
+                  if (pAnnotation->getChild(i).getPrefix().empty())
+                    {
+                      pCOPASIAnnotation = XMLNode::convertStringToXMLNode("<copasi:COPASI xmlns:copasi=\"http://www.copasi.org/static/sbml\"></copasi:COPASI>");
+                      pCOPASIAnnotation->unsetEnd();
+
+                      // Copy existing children
+                      const XMLNode & Existing = pAnnotation->getChild(i);
+                      unsigned int j, jMax = Existing.getNumChildren();
+
+                      for (j = 0; j < jMax; ++j)
+                        {
+                          pCOPASIAnnotation->addChild(*Existing.getChild(j).clone());
+                        }
+                    }
+                  else
+                    {
+                      pCOPASIAnnotation = pSBMLObject->getAnnotation()->getChild(i).clone();
+                    }
+
                   COPASIAnnotationIndex = i;
                   unsigned int j, jMax = pCOPASIAnnotation->getNumChildren();
 
@@ -7090,7 +7109,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
 
               // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
               // in libsbml it creates a dummy node and in libsbml 4 it doesn't
-              pCOPASIAnnotation = XMLNode::convertStringToXMLNode("<COPASIRDF:COPASI xmlns:COPASIRDF=\"http://www.copasi.org/static/sbml\"></COPASIRDF:COPASI>");
+              pCOPASIAnnotation = XMLNode::convertStringToXMLNode("<copasi:COPASI xmlns:copasi=\"http://www.copasi.org/static/sbml\"></copasi:COPASI>");
               // calling unsetEnd is necessary for libsbml 3.1.1 and 3.2.0,
               // otherwise libsbml will write the opening COPASI element as a
               // closing element and add another closing element later on which is
