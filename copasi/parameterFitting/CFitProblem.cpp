@@ -613,7 +613,7 @@ bool CFitProblem::initialize()
         fatalError();
 
       // updateBounds relies on proper dependency ordering, i.e. we need algorithm order
-      pItem->updateBounds(mOptItemAlgorithm.begin());
+      pItem->updateBounds(mOptItemAlgorithm);
       std::string Annotation = pItem->getObjectDisplayName();
 
       // We cannot directly change the container values as multiple parameters
