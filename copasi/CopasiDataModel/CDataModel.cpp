@@ -1285,7 +1285,6 @@ bool CDataModel::importSBML(const std::string & fileName,
 
 std::string CDataModel::exportSBMLToString(CProcessReport * pProcessReport, int sbmlLevel, int sbmlVersion)
 {
-  CCopasiMessage::clearDeque();
   SBMLDocument * pOrigSBMLDocument = NULL;
 
   // if we export an L2 model to L3 or vice versa, we have to throw away any prior information
@@ -1799,6 +1798,31 @@ bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bo
   return false;
 }
 
+/**
+ * adds copasi message to stringstream, with optional title
+ */
+void addMessagesToStream(std::stringstream & msgs, CCopasiMessage::Type & highestError, const std::string & title)
+{
+  if (CCopasiMessage::size() == 0)
+    return;
+
+  auto curSev = CCopasiMessage::getHighestSeverity();
+
+  if (curSev > highestError)
+    highestError = curSev;
+
+  if (!title.empty())
+    msgs << std::endl
+         << std::endl
+         << title
+         << std::endl
+         << std::endl;
+
+  msgs << CCopasiMessage::getAllMessageText();
+
+  CCopasiMessage::clearDeque();
+}
+
 bool CDataModel::exportCombineArchive(
   std::string fileName,
   bool includeCOPASI,
@@ -1845,6 +1869,9 @@ bool CDataModel::exportCombineArchive(
   std::map< std::string, std::string > renamedExperiments;
   std::map< std::string, std::string >::iterator renameIt;
   CFitProblem * problem = NULL;
+
+  std::stringstream msgs;
+  CCopasiMessage::Type sev = CCopasiMessage::Type::RAW;
 
   if (includeData)
     {
@@ -1953,6 +1980,8 @@ bool CDataModel::exportCombineArchive(
       addCopasiFileToArchive(&archive, "./copasi/model.cps", pProgressReport);
     }
 
+  addMessagesToStream(msgs, sev, "Issues while creating COPASI file");
+
   if (includeSBML)
     {
       try
@@ -1966,6 +1995,8 @@ bool CDataModel::exportCombineArchive(
         }
     }
 
+  addMessagesToStream(msgs, sev, "Issues while creating SBML file");
+
   if (includeSEDML)
     {
       std::stringstream str;
@@ -1975,6 +2006,8 @@ bool CDataModel::exportCombineArchive(
                                  &namespaces);
       archive.addFile(str, "./sedml/simulation.xml", KnownFormats::lookupFormat("sedml"), true);
     }
+
+  addMessagesToStream(msgs, sev, "Issues while creating SED-ML file");
 
   try
     {
@@ -1989,6 +2022,10 @@ bool CDataModel::exportCombineArchive(
       CCopasiMessage(CCopasiMessage::ERROR, str.str().c_str());
       return false;
     }
+
+  // add stored messages
+  if (sev > CCopasiMessage::RAW)
+    CCopasiMessage(sev, msgs.str().c_str());
 
   return true;
 }
@@ -2367,7 +2404,6 @@ std::string CDataModel::exportSEDMLToString(CProcessReport * pProcessReport,
     const std::string & modelLocation,
     const XMLNamespaces * pAdditionalNamespaces)
 {
-  CCopasiMessage::clearDeque();
   SedDocument * pOrigSEDMLDocument = NULL;
 
   CCopasiMessage::clearDeque();
