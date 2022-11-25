@@ -116,7 +116,7 @@ public:
   bool isSupported();
 
   /**
-   * @return true, if the document is complex ( > 1 model, multiple
+   * @return true, if the document is complex (> 1 model, multiple
              tasks of the same type ) requiring the user to choose
              which one to import.
    */
@@ -136,6 +136,9 @@ public:
   std::vector< std::pair< std::string, std::string > > getReportsForTask(const std::string & taskId);
   std::vector< std::pair< std::string, std::string > > getPlotsForTask(const std::string & taskId);
 
+  bool hasOutputs(const std::string & taskId);
+  bool isRecursiveWithoutOutputs(SedAbstractTask * task);
+
   std::string getReportFileName(const std::string & reportId);
   void setReportFileName(const std::string & reportId, const std::string & fileName);
 
@@ -145,7 +148,6 @@ public:
   static SedmlInfo forArchive(const std::string & fileName);
   static SedmlInfo forFile(const std::string & fileName);
 };
-
 
 /**
  * Utility methods for SED-ML Import / Export
@@ -235,7 +237,6 @@ public:
 
   static int getAlphaFromArgb(const std::string & argb);
   static int getAlphaFromRgba(const std::string & rgba);
-
 
   /**
    * updates the libcombine temp directory to the COPASI temp path

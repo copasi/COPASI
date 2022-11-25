@@ -140,7 +140,7 @@ TEST_CASE("importing variables with terms", "[copasi,sedml]")
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("export nested scan", "[copasi,sedml]")
+TEST_CASE("export / import nested scan", "[copasi,sedml]")
 {
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != nullptr);
@@ -156,7 +156,24 @@ TEST_CASE("export nested scan", "[copasi,sedml]")
   REQUIRE(doc->getDataGenerator("Rtot_1_task3") == NULL);
   REQUIRE(doc->getDataGenerator("Rtot_1_task5") != NULL);
 
+  // the model has a timecourse, and a steady state scan with 3 variables, as such it should not be complex
+  REQUIRE(SedmlInfo(doc).isComplex() == false);
+
+  // if we had another time course then it should be complex
+  {
+    auto * task = doc->getTask(0)->clone();
+    task->setId("anotherTaks");
+    doc->getListOfTasks()->appendAndOwn(task);
+    REQUIRE(SedmlInfo(doc).isComplex() == true);
+  }
+
   delete doc;
+
+  // now import
+  SedmlImportOptions opts;
+  opts.setSkipModelImport(true);
+  dm->importSEDMLFromString(sedml, "", NULL, true, &opts);
+  REQUIRE(dynamic_cast< CScanProblem * >(dm->getTaskList()->operator[]("Scan").getProblem())->getNumberOfScanItems() == 3);
 
   CRootContainer::removeDatamodel(dm);
 }

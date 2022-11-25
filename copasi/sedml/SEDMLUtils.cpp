@@ -681,6 +681,9 @@ void SEDMLUtils::setLibCombineTempDir()
 const CDataObject *
 SEDMLUtils::getObjectForSbmlId(const CModel * pModel, const std::string & id, const std::string & SBMLType, bool initial /* = false*/)
 {
+  if (!pModel)
+    return NULL;
+
   if (SBMLType == "Time")
     return static_cast< const CDataObject * >(pModel->getObject(CCommonName("Reference=Time")));
 
@@ -959,25 +962,7 @@ SedmlInfo::SedmlInfo(SedDocument * pDocument, bool ownDocument)
   if (!pDocument)
     return;
 
-  std::map< int, int > taskCount;
-
-  for (unsigned int i = 0; i < pDocument->getNumTasks(); ++i)
-    {
-      auto * current = pDocument->getTask(i);
-      mTaskMap[current->getId()] = getModelForTask(current);
-      taskCount[current->getTypeCode()] = taskCount[current->getTypeCode()] + 1;
-      mReports[current->getId()] = std::vector< std::pair< std::string, std::string > >();
-      mPlots[current->getId()] = std::vector< std::pair< std::string, std::string > >();
-      std::stringstream str;
-
-      if (current->isSetName())
-        str << current->getName() << " - ";
-
-      str << current->getId();
-
-      mTaskNames.push_back(std::make_pair(current->getId(), str.str()));
-      mComplex |= taskCount[current->getTypeCode()] > 1 || mTaskMap[current->getId()].size() > 1;
-    }
+  std::map< std::pair< int, int>, int > taskCount;
 
   for (unsigned int i = 0; i < pDocument->getNumOutputs(); ++i)
     {
@@ -1000,6 +985,57 @@ SedmlInfo::SedmlInfo(SedDocument * pDocument, bool ownDocument)
             mPlots[taskId].push_back(std::make_pair(current->getId(), str.str()));
         }
     }
+
+  for (unsigned int i = 0; i < pDocument->getNumTasks(); ++i)
+    {
+      auto * current = pDocument->getTask(i);
+
+      if (isRecursiveWithoutOutputs(current))
+        continue;
+
+      mTaskMap[current->getId()] = getModelForTask(current);
+
+      int simType = SEDML_SIMULATION;
+
+      if (current->getTypeCode() == SEDML_TASK)
+        {
+          auto * simulation = pDocument->getSimulation(dynamic_cast< SedTask * >(current)->getSimulationReference());
+
+          if (simulation != NULL)
+            simType = simulation->getTypeCode();
+        }
+
+      auto currentKey = std::make_pair(current->getTypeCode(), simType);
+
+      taskCount[currentKey] = taskCount[currentKey] + 1;
+      std::stringstream str;
+
+      if (current->isSetName())
+        str << current->getName() << " - ";
+
+      str << current->getId();
+
+      mTaskNames.push_back(std::make_pair(current->getId(), str.str()));
+      mComplex |= taskCount[currentKey] > 1 || mTaskMap[current->getId()].size() > 1;
+    }
+}
+
+bool SedmlInfo::hasOutputs(const std::string & taskId)
+{
+  return !(mReports[taskId].empty() && mPlots[taskId].empty());
+}
+
+bool SedmlInfo::isRecursiveWithoutOutputs(SedAbstractTask * task)
+{
+  auto * repeat = dynamic_cast< SedRepeatedTask * >(task);
+
+  if (repeat == NULL)
+    return false;
+
+  if (hasOutputs(task->getId()))
+    return false;
+
+  return true;
 }
 
 SedmlInfo::~SedmlInfo()
@@ -1283,6 +1319,7 @@ SedmlImportOptions::SedmlImportOptions(
   , mPlots(plots)
   , mReportId(reportId)
   , mReportFile(reportFilename)
+  , mSkipModelImport(false)
 {
 }
 
@@ -1295,9 +1332,20 @@ SedmlImportOptions & SedmlImportOptions::operator=(const SedmlImportOptions & rh
       mPlots = rhs.mPlots;
       mReportId = rhs.mReportId;
       mReportFile = rhs.mReportFile;
+      mSkipModelImport = rhs.mSkipModelImport;
     }
 
   return *this;
+}
+
+void SedmlImportOptions::setSkipModelImport(bool skipModelLoading)
+{
+  mSkipModelImport = skipModelLoading;
+}
+
+bool SedmlImportOptions::skipModelImport() const
+{
+  return mSkipModelImport;
 }
 
 const std::string & SedmlImportOptions::getTaskId() const
