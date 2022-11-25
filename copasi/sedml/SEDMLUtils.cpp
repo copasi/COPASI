@@ -549,7 +549,7 @@ void SEDMLUtils::splitStrings(const std::string & xpath, char delim, std::vector
 
 int SEDMLUtils::lineTypeToSed(int linetype)
 {
-for (auto item : COPASI_LINE_STYLE_MAP)
+  for (auto item : COPASI_LINE_STYLE_MAP)
     {
       if (item.first == linetype)
         return item.second;
@@ -560,7 +560,7 @@ for (auto item : COPASI_LINE_STYLE_MAP)
 
 int SEDMLUtils::lineTypeFromSed(int linetype)
 {
-for (auto item : COPASI_LINE_STYLE_MAP)
+  for (auto item : COPASI_LINE_STYLE_MAP)
     {
       if (item.second == linetype)
         return item.first;
@@ -571,7 +571,7 @@ for (auto item : COPASI_LINE_STYLE_MAP)
 
 int SEDMLUtils::symbolToSed(int symbol)
 {
-for (auto item : COPASI_SYMBOL_MAP)
+  for (auto item : COPASI_SYMBOL_MAP)
     {
       if (item.first == symbol)
         return item.second;
@@ -582,7 +582,7 @@ for (auto item : COPASI_SYMBOL_MAP)
 
 int SEDMLUtils::symbolFromSed(int symbol)
 {
-for (auto item : COPASI_SYMBOL_MAP)
+  for (auto item : COPASI_SYMBOL_MAP)
     {
       if (item.second == symbol)
         return item.first;
@@ -985,7 +985,7 @@ SedmlInfo::SedmlInfo(SedDocument * pDocument, bool ownDocument)
       mOutputMap[current->getId()] = getTasks(current);
       mComplex |= mOutputMap[current->getId()].size() > 1;
 
-for (auto & taskId : mOutputMap[current->getId()])
+      for (auto & taskId : mOutputMap[current->getId()])
         {
           std::stringstream str;
 
@@ -1360,7 +1360,7 @@ SEDMLUtils::getSedMLStringForArchive(const std::string & fileName)
 
   // read the master file
   const CaContent * content = archive.getMasterFile();
-  bool haveCopasi = false;
+  bool haveCopasi = content != NULL && content->isFormat("copasi");
   std::stringstream messageStream;
 
   // if we don't have one, or we have one we don't understand look for copasi file
