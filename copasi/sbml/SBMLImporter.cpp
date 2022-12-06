@@ -230,8 +230,10 @@ bool SBMLImporter::areApproximatelyEqual(const double & x, const double & y, con
   return 2 * fabs(x - y) < Scale;
 }
 
-std::string getOriginalSBMLId(Parameter* parameter)
+std::string getOriginalSBMLId(Parameter* parameter, std::string& type)
 {
+  type = "";
+
   if (parameter == NULL) return "";
 
   if (!parameter->isSetAnnotation()) return "";
@@ -246,6 +248,7 @@ std::string getOriginalSBMLId(Parameter* parameter)
 
       if (current.getNamespaces().containsUri("http://copasi.org/initialValue"))
         {
+          type = current.getAttrValue("type");
           return current.getAttrValue("parent");
         }
     }
@@ -253,7 +256,7 @@ std::string getOriginalSBMLId(Parameter* parameter)
   return "";
 }
 
-std::string getInitialCNForSBase(SBase* sbase, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
+std::string getInitialCNForSBase(SBase* sbase, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, const std::string& type)
 {
   std::map<const CDataObject*, SBase*>::const_iterator it;
 
@@ -261,6 +264,14 @@ std::string getInitialCNForSBase(SBase* sbase, std::map<const CDataObject*, SBas
     {
       if (it->second != sbase)
         continue;
+
+      if (!type.empty())
+        {
+          auto obj = it->first->getObject(std::string("Reference=") + type);
+
+          if (obj)
+            return obj->getCN();
+        }
 
       const CMetab *metab = dynamic_cast<const CMetab*>(it->first);
 
@@ -572,7 +583,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
       try
         {
-          std::string sbmlId = getOriginalSBMLId(sbmlParameter);
+          std::string type;
+          std::string sbmlId = getOriginalSBMLId(sbmlParameter, type);
 
           // don't import parameter if it is one of our special ones instead get the cn to the target
           if (!sbmlId.empty())
@@ -581,7 +593,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
               if (species != NULL)
                 {
-                  mKnownInitalValues[sbmlParameter->getId()] = getInitialCNForSBase(species, copasi2sbmlmap);
+                  mKnownInitalValues[sbmlParameter->getId()] = getInitialCNForSBase(species, copasi2sbmlmap, type);
                   continue;
                 }
 
@@ -589,7 +601,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
               if (comp != NULL)
                 {
-                  mKnownInitalValues[sbmlParameter->getId()] = getInitialCNForSBase(comp, copasi2sbmlmap);
+                  mKnownInitalValues[sbmlParameter->getId()] = getInitialCNForSBase(comp, copasi2sbmlmap, type);
                   continue;
                 }
 
@@ -597,7 +609,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
               if (param != NULL)
                 {
-                  mKnownInitalValues[sbmlParameter->getId()] = getInitialCNForSBase(param, copasi2sbmlmap);
+                  mKnownInitalValues[sbmlParameter->getId()] = getInitialCNForSBase(param, copasi2sbmlmap, type);
                   continue;
                 }
             }

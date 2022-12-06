@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -148,11 +148,11 @@ int main(int argc, char** argv)
     }
 
   // get the optimization task
-  COptTask* pOptTask = dynamic_cast<COptTask*>(&(*pDataModel->getTaskList())[static_cast< size_t >(CTaskEnum::Task::optimization)]);
+  COptTask* pOptTask = dynamic_cast<COptTask*>(&(*pDataModel->getTaskList())[CTaskEnum::TaskName[CTaskEnum::Task::optimization]]);
   changeTaskIfScheduled(pOptTask);
 
   // get the fitTask
-  CFitTask* pFitTask = dynamic_cast<CFitTask*>(&(*pDataModel->getTaskList())[static_cast< size_t >(CTaskEnum::Task::parameterFitting)]);
+  CFitTask* pFitTask = dynamic_cast<CFitTask*>(&(*pDataModel->getTaskList())[CTaskEnum::TaskName[CTaskEnum::Task::parameterFitting]]);
 
   changeTaskIfScheduled(pFitTask);
 

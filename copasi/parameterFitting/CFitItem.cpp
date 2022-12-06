@@ -280,18 +280,19 @@ std::string CFitItem::getCrossValidations() const
   return CrossValidations;
 }
 
-bool CFitItem::updateBounds(std::vector<COptItem * >::const_iterator it)
+bool CFitItem::updateBounds(const std::vector<COptItem * > & items)
 {
   // TODO CRITICAL Bug 3108
-  while (*it != this)
+  std::vector<COptItem * >::const_iterator it = items.begin();
+  std::vector<COptItem * >::const_iterator end = items.end();
+
+  for (; it != end && *it != this; ++it)
     {
       if (mpLowerObject && (getLowerBound() == (*it)->getObjectCN()))
         mpLowerBound = &static_cast<CFitItem *>(*it)->getLocalValue();
 
       if (mpUpperObject && (getUpperBound() == (*it)->getObjectCN()))
         mpUpperBound = &static_cast<CFitItem *>(*it)->getLocalValue();
-
-      ++it;
     }
 
   return true;

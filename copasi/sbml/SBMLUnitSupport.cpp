@@ -19,9 +19,9 @@
 
 bool areApproximatelyEqual(double x, double y)
 {
-  double maxXYOne = std::max({1.0, std::fabs(x), std::fabs(y) });
+  double maxXYOne = std::max({1.0, std::fabs(x), std::fabs(y)});
 
-  return std::fabs(x - y) <= maxXYOne * std::numeric_limits<double>::epsilon();
+  return std::fabs(x - y) <= maxXYOne * std::numeric_limits< double >::epsilon();
 }
 
 // static
@@ -149,8 +149,8 @@ void SBMLUnitSupport::setLevelAndVersion(int level, int version)
   mVersion = version;
 }
 
-void SBMLUnitSupport::importUnitsFromSBMLDocument(Model* sbmlModel,
-    CModel* pCopasiModel)
+void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
+    CModel * pCopasiModel)
 {
   mpSubstanceUnit = nullptr;
   mpTimeUnit = nullptr;
@@ -169,7 +169,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model* sbmlModel,
       // we make copies of the unit definitions so that we do not have to remember
       // if we created them or not
       std::string units;
-      UnitDefinition* pUDef = NULL;
+      UnitDefinition * pUDef = NULL;
       Unit unit(sbmlModel->getLevel(), sbmlModel->getVersion());
       unit.initDefaults();
 
@@ -197,7 +197,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model* sbmlModel,
       if (sbmlModel->isSetTimeUnits())
         {
           units = sbmlModel->getTimeUnits();
-          mpTimeUnit = & importUnit(units, sbmlModel);
+          mpTimeUnit = &importUnit(units, sbmlModel);
 
           if (!mpTimeUnit->valid)
             {
@@ -286,7 +286,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model* sbmlModel,
 
           for (counter = 0; counter < sbmlModel->getNumUnitDefinitions(); counter++)
             {
-              UnitDefinition* uDef = sbmlModel->getUnitDefinition(counter);
+              UnitDefinition * uDef = sbmlModel->getUnitDefinition(counter);
               std::string unitId = uDef->getId();
 
               if (unitId == "substance")
@@ -327,7 +327,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model* sbmlModel,
       UnitDefinition * pUnitDefintion = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
       pUnitDefintion->setId("dummy_substance");
       pUnitDefintion->setName("dummy_substance");
-      Unit* pUnit = pUnitDefintion->createUnit();
+      Unit * pUnit = pUnitDefintion->createUnit();
       pUnit->setKind(UNIT_KIND_MOLE);
       pUnit->setExponent(1);
       pUnit->setMultiplier(1.0);
@@ -349,13 +349,13 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model* sbmlModel,
       UnitDefinition * pUnitDefintion = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
       pUnitDefintion->setId("dummy_time");
       pUnitDefintion->setName("dummy_time");
-      Unit* pUnit = pUnitDefintion->createUnit();
+      Unit * pUnit = pUnitDefintion->createUnit();
       pUnit->setKind(UNIT_KIND_SECOND);
       pUnit->setExponent(1);
       pUnit->setMultiplier(1.0);
       pUnit->setScale(0);
 
-      mpTimeUnit =  &importUnit(pUnitDefintion, true);
+      mpTimeUnit = &importUnit(pUnitDefintion, true);
     }
 
   if (mpVolumeUnit == nullptr
@@ -371,13 +371,13 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model* sbmlModel,
       UnitDefinition * pUnitDefintion = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
       pUnitDefintion->setId("dummy_volume");
       pUnitDefintion->setName("dummy_volume");
-      Unit* pUnit = pUnitDefintion->createUnit();
+      Unit * pUnit = pUnitDefintion->createUnit();
       pUnit->setKind(UNIT_KIND_LITRE);
       pUnit->setExponent(1);
       pUnit->setMultiplier(1.0);
       pUnit->setScale(0);
 
-      mpVolumeUnit =  &importUnit(pUnitDefintion, true);
+      mpVolumeUnit = &importUnit(pUnitDefintion, true);
     }
 
   if (mpAreaUnit == nullptr
@@ -393,7 +393,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model* sbmlModel,
       UnitDefinition * pUnitDefintion = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
       pUnitDefintion->setId("dummy_area");
       pUnitDefintion->setName("dummy_area");
-      Unit* pUnit = pUnitDefintion->createUnit();
+      Unit * pUnit = pUnitDefintion->createUnit();
       pUnit->setKind(UNIT_KIND_METRE);
       pUnit->setExponent(2);
       pUnit->setMultiplier(1.0);
@@ -415,7 +415,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model* sbmlModel,
       UnitDefinition * pUnitDefintion = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
       pUnitDefintion->setId("dummy_length");
       pUnitDefintion->setName("dummy_length");
-      Unit* pUnit = pUnitDefintion->createUnit();
+      Unit * pUnit = pUnitDefintion->createUnit();
       pUnit->setKind(UNIT_KIND_METRE);
       pUnit->setExponent(1);
       pUnit->setMultiplier(1.0);
@@ -818,6 +818,8 @@ const SBMLUnitSupport::SUnitInfo & SBMLUnitSupport::importUnit(const std::string
               break;
           }
 
+        break;
+
       case UNIT_KIND_MOLE:
         pUnitDefinition->setId("dummy_substance");
         pUnitDefinition->setName("dummy_substance");
@@ -1009,7 +1011,7 @@ bool SBMLUnitSupport::validateUnit(SBMLUnitSupport::SUnitInfo & unitInfo, const 
   return false;
 }
 
-void SBMLUnitSupport::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiModel)
+void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopasiModel)
 {
   unsigned int i, iMax = pSBMLModel->getNumCompartments();
   const SUnitInfo * pSubstanceUnit = nullptr;
@@ -1018,18 +1020,18 @@ void SBMLUnitSupport::checkElementUnits(const Model* pSBMLModel, CModel* pCopasi
   const SUnitInfo * pAreaUnit = nullptr;
   const SUnitInfo * pLengthUnit = nullptr;
   const SUnitInfo * pDimensionlessUnit = nullptr;
-  std::vector<std::string> nonDefaultCompartmentsVolume;
-  std::vector<std::string> nonDefaultCompartmentsArea;
-  std::vector<std::string> nonDefaultCompartmentsLength;
-  std::vector<std::string> nonDefaultCompartmentsDimensionless;
-  std::vector<std::string> nonDefaultSpecies;
-  std::vector<std::string> nonDefaultKineticTime;
-  std::vector<std::string> nonDefaultKineticSubstance;
-  std::vector<std::string> nonDefaultEventTime;
-  const Compartment* pCompartment;
-  const Species* pSpecies;
-  const Reaction* pReaction;
-  const KineticLaw* pKineticLaw;
+  std::vector< std::string > nonDefaultCompartmentsVolume;
+  std::vector< std::string > nonDefaultCompartmentsArea;
+  std::vector< std::string > nonDefaultCompartmentsLength;
+  std::vector< std::string > nonDefaultCompartmentsDimensionless;
+  std::vector< std::string > nonDefaultSpecies;
+  std::vector< std::string > nonDefaultKineticTime;
+  std::vector< std::string > nonDefaultKineticSubstance;
+  std::vector< std::string > nonDefaultEventTime;
+  const Compartment * pCompartment;
+  const Species * pSpecies;
+  const Reaction * pReaction;
+  const KineticLaw * pKineticLaw;
   std::string lastVolumeUnit;
   std::string lastAreaUnit;
   std::string lastLengthUnit;
@@ -1046,7 +1048,7 @@ void SBMLUnitSupport::checkElementUnits(const Model* pSBMLModel, CModel* pCopasi
     {
       pCompartment = pSBMLModel->getCompartment(i);
 
-      if (fabs(pCompartment->getSpatialDimensions() - 3.0) / 3.0 < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+      if (areApproximatelyEqual(pCompartment->getSpatialDimensionsAsDouble(), 3.0))
         {
           if (pCompartment->isSetUnits())
             {
@@ -1077,12 +1079,12 @@ void SBMLUnitSupport::checkElementUnits(const Model* pSBMLModel, CModel* pCopasi
                 }
               else
                 {
-                  // error message
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "units", "compartment", pCompartment->getId().c_str());
+                  // warning message
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 103, pCompartment->getId().c_str(), pCompartment->getSpatialDimensionsAsDouble(), UnitInfo.expression.c_str());
                 }
             }
         }
-      else if (fabs(pCompartment->getSpatialDimensions() - 2.0) / 2.0 < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+      else if (areApproximatelyEqual(pCompartment->getSpatialDimensionsAsDouble(), 2.0))
         {
           if (pCompartment->isSetUnits())
             {
@@ -1113,12 +1115,12 @@ void SBMLUnitSupport::checkElementUnits(const Model* pSBMLModel, CModel* pCopasi
                 }
               else
                 {
-                  // error message
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "units", "compartment", pCompartment->getId().c_str());
+                  // warning message
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 103, pCompartment->getId().c_str(), pCompartment->getSpatialDimensionsAsDouble(), UnitInfo.expression.c_str());
                 }
             }
         }
-      else if (fabs(pCompartment->getSpatialDimensions() - 1.0) / 1.0 < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+      else if (areApproximatelyEqual(pCompartment->getSpatialDimensionsAsDouble(), 1.0))
         {
           if (pCompartment->isSetUnits())
             {
@@ -1149,8 +1151,8 @@ void SBMLUnitSupport::checkElementUnits(const Model* pSBMLModel, CModel* pCopasi
                 }
               else
                 {
-                  // error message
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "units", "compartment", pCompartment->getId().c_str());
+                  // warning message
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 103, pCompartment->getId().c_str(), pCompartment->getSpatialDimensionsAsDouble(), UnitInfo.expression.c_str());
                 }
             }
         }
@@ -1173,8 +1175,8 @@ void SBMLUnitSupport::checkElementUnits(const Model* pSBMLModel, CModel* pCopasi
                 }
               else
                 {
-                  // error message
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "units", "compartment", pCompartment->getId().c_str());
+                  // warning message
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 103, pCompartment->getId().c_str(), pCompartment->getSpatialDimensionsAsDouble(), UnitInfo.expression.c_str());
                 }
             }
         }
@@ -1259,21 +1261,20 @@ void SBMLUnitSupport::checkElementUnits(const Model* pSBMLModel, CModel* pCopasi
 
               if (!UnitInfo.valid)
                 {
-                  // error message
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, spatialSizeUnits.c_str(), "spatialSizeUnits", "species", pSpecies->getId().c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 104, "species", pSpecies->getId().c_str(), "spatial size", spatialSizeUnits.c_str());
                 }
 
-              if (fabs(pCompartment->getSpatialDimensions() - 3.0) / 3.0 < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+              if (areApproximatelyEqual(pCompartment->getSpatialDimensionsAsDouble(), 3.0))
                 {
                   if (!areSBMLUnitDefinitionsIdentical(*pVolumeUnit, UnitInfo))
                     CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
                 }
-              else if (fabs(pCompartment->getSpatialDimensions() - 2.0) / 2.0 < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+              else if (areApproximatelyEqual(pCompartment->getSpatialDimensionsAsDouble(), 2.0))
                 {
                   if (!areSBMLUnitDefinitionsIdentical(*pAreaUnit, UnitInfo))
                     CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
                 }
-              else if (fabs(pCompartment->getSpatialDimensions() - 1.0) / 1.0 < 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+              else if (areApproximatelyEqual(pCompartment->getSpatialDimensionsAsDouble(), 1.0))
                 {
                   if (!areSBMLUnitDefinitionsIdentical(*pLengthUnit, UnitInfo))
                     CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
@@ -1316,8 +1317,7 @@ void SBMLUnitSupport::checkElementUnits(const Model* pSBMLModel, CModel* pCopasi
         }
     }
 
-  if (!inconsistentUnits &&
-      pSubstanceUnit != nullptr
+  if (!inconsistentUnits && pSubstanceUnit != nullptr
       && !nonDefaultSpecies.empty())
     {
       mpSubstanceUnit = pSubstanceUnit;
@@ -1388,7 +1388,7 @@ void SBMLUnitSupport::checkElementUnits(const Model* pSBMLModel, CModel* pCopasi
               else
                 {
                   // error message
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "substanceUnits", "kinetic law of the reaction", pReaction->getId().c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 104, "kinetic law of the reaction", pReaction->getId().c_str(), "substance", unitId.c_str());
                 }
             }
 
@@ -1422,14 +1422,13 @@ void SBMLUnitSupport::checkElementUnits(const Model* pSBMLModel, CModel* pCopasi
               else
                 {
                   // error message
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "timeUnits", "kinetic law of the reaction", pReaction->getId().c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 104, "kinetic law of the reaction", pReaction->getId().c_str(), "time", unitId.c_str());
                 }
             }
         }
     }
 
-  if (!inconsistentUnits &&
-      pSubstanceUnit != nullptr
+  if (!inconsistentUnits && pSubstanceUnit != nullptr
       && !nonDefaultKineticSubstance.empty())
     {
       mpSubstanceUnit = pSubstanceUnit;
@@ -1456,8 +1455,7 @@ void SBMLUnitSupport::checkElementUnits(const Model* pSBMLModel, CModel* pCopasi
       }
   }
 
-  if (!inconsistentTimeUnits &&
-      pTimeUnit != nullptr
+  if (!inconsistentTimeUnits && pTimeUnit != nullptr
       && !nonDefaultKineticTime.empty())
     {
       mpTimeUnit = pTimeUnit;
@@ -1484,7 +1482,7 @@ void SBMLUnitSupport::checkElementUnits(const Model* pSBMLModel, CModel* pCopasi
       }
   }
 
-  const Event* pEvent = NULL;
+  const Event * pEvent = NULL;
   inconsistentTimeUnits = false;
   iMax = pSBMLModel->getNumEvents();
 
@@ -1520,16 +1518,15 @@ void SBMLUnitSupport::checkElementUnits(const Model* pSBMLModel, CModel* pCopasi
                   inconsistentTimeUnits = true;
                 }
             }
-          else
+          else if (!unitId.empty())
             {
               // error message
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 55, unitId.c_str(), "time units", "the event", pEvent->getId().c_str());
+              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 104, "event", pEvent->getId().c_str(), "time", unitId.c_str());
             }
         }
     }
 
-  if (!inconsistentTimeUnits &&
-      pTimeUnit != nullptr
+  if (!inconsistentTimeUnits && pTimeUnit != nullptr
       && !nonDefaultEventTime.empty())
     {
       mpTimeUnit = pTimeUnit;
@@ -1605,9 +1602,8 @@ bool SBMLUnitSupport::createUnitExpressionFor(SUnitInfo & unitInfo) const
       tmp.addComponent(
         CUnitComponent(
           CBaseUnit::dimensionless,
-          multiplier,
-          exponent == 0 ? current->getScale() :
-          current->getScale() * exponent));
+          areApproximatelyEqual(exponent, 0.0) ? 1.0 : pow(multiplier, exponent),
+          areApproximatelyEqual(exponent, 0.0) ? 0.0 : current->getScale() * exponent));
 
       tmp.buildExpression();
       tmp.compile();
@@ -1646,9 +1642,9 @@ bool SBMLUnitSupport::areSBMLUnitDefinitionsIdentical(const SBMLUnitSupport::SUn
   if (unitInfo1.pSBML == unitInfo2.pSBML)
     return true;
 
-  UnitDefinition* pTmpUdef1 = UnitDefinition::convertToSI(unitInfo1.pSBML);
+  UnitDefinition * pTmpUdef1 = UnitDefinition::convertToSI(unitInfo1.pSBML);
   UnitDefinition::simplify(pTmpUdef1);
-  UnitDefinition* pTmpUdef2 = UnitDefinition::convertToSI(unitInfo2.pSBML);
+  UnitDefinition * pTmpUdef2 = UnitDefinition::convertToSI(unitInfo2.pSBML);
   UnitDefinition::simplify(pTmpUdef2);
 
   bool result = UnitDefinition::areIdentical(pTmpUdef1, pTmpUdef2);
@@ -1674,10 +1670,7 @@ bool SBMLUnitSupport::areSBMLUnitDefinitionsIdentical(const SBMLUnitSupport::SUn
               pU1 = pTmpUdef1->getUnit(i);
               pU2 = pTmpUdef2->getUnit(i);
 
-              if (pU1->getKind() != pU2->getKind() ||
-                  pU1->getExponent() != pU2->getExponent() ||
-                  pU1->getScale() != pU2->getScale() ||
-                  !areApproximatelyEqual(pU2->getMultiplier(), pU1->getMultiplier()))
+              if (pU1->getKind() != pU2->getKind() || pU1->getExponent() != pU2->getExponent() || pU1->getScale() != pU2->getScale() || !areApproximatelyEqual(pU2->getMultiplier(), pU1->getMultiplier()))
                 {
                   newResult = false;
                 }
@@ -1705,23 +1698,23 @@ bool SBMLUnitSupport::areSBMLUnitDefinitionsIdentical(const SBMLUnitSupport::SUn
  * corresponding warning.
  */
 // static
-void SBMLUnitSupport::checkForSpatialSizeUnits(const CDataModel& dataModel, std::vector<SBMLIncompatibility>& result)
+void SBMLUnitSupport::checkForSpatialSizeUnits(const CDataModel & dataModel, std::vector< SBMLIncompatibility > & result)
 {
-  const SBMLDocument* pSBMLDocument = const_cast<CDataModel&>(dataModel).getCurrentSBMLDocument();
+  const SBMLDocument * pSBMLDocument = const_cast< CDataModel & >(dataModel).getCurrentSBMLDocument();
 
   if (pSBMLDocument != NULL)
     {
       // check all species in the model if they have a spatial size attribute set
       // and if it is identical to the unit of the compartment the species is in
-      const CModel* pModel = dataModel.getModel();
+      const CModel * pModel = dataModel.getModel();
 
       if (pModel != NULL)
         {
-          CDataVector<CMetab>::const_iterator it = pModel->getMetabolites().begin(), endit = pModel->getMetabolites().end();
-          std::set<std::string> badSpecies;
-          const std::map<const CDataObject*, SBase*>& copasi2sbmlmap = const_cast<CDataModel&>(dataModel).getCopasi2SBMLMap();
-          std::map<const CDataObject*, SBase*>::const_iterator pos;
-          const Species* pSBMLSpecies = NULL;
+          CDataVector< CMetab >::const_iterator it = pModel->getMetabolites().begin(), endit = pModel->getMetabolites().end();
+          std::set< std::string > badSpecies;
+          const std::map< const CDataObject *, SBase * > & copasi2sbmlmap = const_cast< CDataModel & >(dataModel).getCopasi2SBMLMap();
+          std::map< const CDataObject *, SBase * >::const_iterator pos;
+          const Species * pSBMLSpecies = NULL;
           std::string spatialSizeUnits;
 
           SBMLUnitSupport UnitImporter;
@@ -1734,10 +1727,11 @@ void SBMLUnitSupport::checkForSpatialSizeUnits(const CDataModel& dataModel, std:
               if (pos != copasi2sbmlmap.end())
                 {
                   // check for the spatial size units attribute
-                  pSBMLSpecies = dynamic_cast<const Species*>(pos->second);
+                  pSBMLSpecies = dynamic_cast< const Species * >(pos->second);
                   assert(pSBMLSpecies != NULL);
 
-                  if (pSBMLSpecies == NULL) continue;
+                  if (pSBMLSpecies == NULL)
+                    continue;
 
                   if (pSBMLSpecies->isSetSpatialSizeUnits())
                     {
@@ -1746,7 +1740,7 @@ void SBMLUnitSupport::checkForSpatialSizeUnits(const CDataModel& dataModel, std:
 
                       // check if the units are the same as the one on the species
                       // compartment
-                      const Compartment* pCompartment = pSBMLDocument->getModel()->getCompartment(pSBMLSpecies->getCompartment());
+                      const Compartment * pCompartment = pSBMLDocument->getModel()->getCompartment(pSBMLSpecies->getCompartment());
                       const SBMLUnitSupport::SUnitInfo * pCompartmentUnitInfo = NULL;
 
                       if (pCompartment != NULL)
@@ -1774,7 +1768,7 @@ void SBMLUnitSupport::checkForSpatialSizeUnits(const CDataModel& dataModel, std:
                                       case 0:
                                         // the species is not allowed to have a
                                         // spatialDimensionsUnit attribute
-                                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 83, pSBMLSpecies->getId().c_str());
+                                        CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 83, pSBMLSpecies->getId().c_str());
                                         break;
 
                                       case 1:
@@ -1790,14 +1784,13 @@ void SBMLUnitSupport::checkForSpatialSizeUnits(const CDataModel& dataModel, std:
                                         break;
 
                                       default:
-                                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 82, pCompartment->getId().c_str());
+                                        CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 82, pCompartment->getId().c_str());
                                         break;
                                     }
                                 }
                             }
 
-                          if (pCompartmentUnitInfo->valid &&
-                              pSpeciesUnitInfo->valid)
+                          if (pCompartmentUnitInfo->valid && pSpeciesUnitInfo->valid)
                             {
                               // compare the two unit definitions
                               if (!UnitImporter.areSBMLUnitDefinitionsIdentical(*pCompartmentUnitInfo, *pSpeciesUnitInfo))
@@ -1817,7 +1810,7 @@ void SBMLUnitSupport::checkForSpatialSizeUnits(const CDataModel& dataModel, std:
             {
               // create the incompatibility message
               std::ostringstream os;
-              std::set<std::string>::const_iterator sit = badSpecies.begin(), sendit = badSpecies.end();
+              std::set< std::string >::const_iterator sit = badSpecies.begin(), sendit = badSpecies.end();
 
               while (sit != sendit)
                 {

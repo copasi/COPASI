@@ -93,6 +93,7 @@
 #include "copasi/MIRIAM/CCreator.h"
 #include "copasi/MIRIAM/CModified.h"
 #include "copasi/MIRIAM/CRDFPredicate.h"
+#include "copasi/MIRIAM/CRDFParser.h"
 #include "copasi/layout/CListOfLayouts.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/utilities/CVersion.h"
@@ -1730,7 +1731,8 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CDataModel& data
         {
           if (this->mIncompleteExport != true)
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "rule", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 60, "rule", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+              return;
             }
         }
     }
@@ -1741,7 +1743,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CDataModel& data
       if (!this->mIncompleteExport)
         {
           this->outputIncompatibilities();
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 60, "rule", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
+          CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 60, "rule", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
         }
     }
 }
@@ -2006,11 +2008,12 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(const CDataModel& dataMo
     }
 }
 
-std::string getAnnotationStringFor(const CDataObject* pObjectParent)
+std::string getAnnotationStringFor(const CDataObject * pObjectParent, const std::string & type)
 {
   std::stringstream str;
   str << "<initialValue xmlns='http://copasi.org/initialValue' ";
-  str << "parent='" << ((CModelEntity*)pObjectParent)->getSBMLId() <<  "' />";
+  str << "parent='" << ((CModelEntity *) pObjectParent)->getSBMLId() << "' ";
+  str << "type='" << type << "' />";
   return str.str();
 }
 
@@ -2037,7 +2040,7 @@ void addToInitialValueMap(std::map<const std::string, Parameter*>* initialMap
     }
 
   Parameter* initial = new Parameter(sbmlLevel, sbmlVersion);
-  initial->setAnnotation(getAnnotationStringFor(pObjectParent));
+  initial->setAnnotation(getAnnotationStringFor(pObjectParent, pObject->getObjectName()));
   initial->initDefaults();
   initial->setId(CSBMLExporter::createUniqueId(idMap, pObjectParent->getKey(), false));
   initial->setName("Initial for " + pObjectParent->getObjectName());
@@ -2048,6 +2051,40 @@ void addToInitialValueMap(std::map<const std::string, Parameter*>* initialMap
   idMap.insert(std::pair<const std::string, const SBase*>(initial->getId(), initial));
 
   (*initialMap) [cn] = initial;
+}
+
+/*
+ * Adds the initial particle number to the initialMap, and creates a new parameter
+ * and initial assignment for it.
+ */
+void addParticleNumberToInitialValueMap(std::map< const std::string, Parameter * > * initialMap,
+                                        std::map< std::string, const SBase * > & idMap,
+                                        const CMetab * pMetab, int sbmlLevel, int sbmlVersion)
+{
+  if (initialMap == NULL || pMetab == NULL || pMetab->getCompartment() == NULL)
+    return;
+
+  auto cn = pMetab->getInitialValueReference()->getCN();
+
+  if ((*initialMap)[cn] != NULL)
+    {
+      // already have the initial assignment no need to add another one
+      return;
+    }
+
+  auto * pDM = pMetab->getObjectDataModel();
+  auto factor = pDM->getModel()->getQuantity2NumberFactor();
+
+  Parameter * initial = new Parameter(sbmlLevel, sbmlVersion);
+  initial->setAnnotation(getAnnotationStringFor(pMetab, pMetab->getInitialValueReference()->getObjectName()));
+  initial->initDefaults();
+  initial->setId(CSBMLExporter::createUniqueId(idMap, pMetab->getKey(), false));
+  initial->setName("Initial for " + pMetab->getObjectName());
+  initial->setValue(pMetab->getInitialValue() * factor * pMetab->getCompartment()->getInitialValue());
+
+  idMap.insert(std::pair< const std::string, const SBase * >(initial->getId(), initial));
+
+  (*initialMap)[cn] = initial;
 }
 
 void CSBMLExporter::checkForUnsupportedObjectReferences(
@@ -2139,6 +2176,12 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
                     {
                       // add new parameter for the initial value
                       addToInitialValueMap(initialMap, idMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
+                    }
+                  else if (pObject->getObjectName() == "InitialParticleNumber"
+                           && initialMap != NULL
+                           && (sbmlLevel > 2 || (sbmlLevel == 2 && sbmlVersion > 1)))
+                    {
+                      addParticleNumberToInitialValueMap(initialMap, idMap, dynamic_cast< const CMetab * >(pObjectParent), sbmlLevel, sbmlVersion);
                     }
                   else if (pObject->getObjectName() != "Concentration"
                            && pObject->getObjectName() != "ParticleNumber"
@@ -3398,21 +3441,21 @@ CSBMLExporter::exportModelToString(CDataModel& dataModel,
  * Adds all created parameters to the model and sets them as initial assignments
  * to the originating elements.
  */
-void addInitialAssignmentsToModel(SBMLDocument* doc
-                                  , std::map<const std::string, Parameter*>& initialValueMap
-                                  , const CDataModel &dataModel)
+void
+CSBMLExporter::addInitialAssignmentsToModel(const CDataModel &dataModel)
 {
-  if (doc == NULL || doc->getModel() == NULL || initialValueMap.empty())
+  if (mpSBMLDocument == NULL || mpSBMLDocument->getModel() == NULL || mInitialValueMap.empty())
     return;
 
+  auto* model = mpSBMLDocument->getModel();
   std::map<const std::string, Parameter*>::const_iterator it;
 
-  for (it = initialValueMap.begin(); it != initialValueMap.end(); ++it)
+  for (it = mInitialValueMap.begin(); it != mInitialValueMap.end(); ++it)
     {
       Parameter* param = it->second;
       // add parameter to model
-      int result = doc->getModel()->addParameter(param);
-      doc->getModel()->getParameter(param->getId())->setUserData((void*)"1");
+      int result = model->addParameter(param);
+      model->getParameter(param->getId())->setUserData((void *) "1");
 
       const CDataObject *obj = static_cast<const CDataObject *>(dataModel.getObject(it->first));
       const std::string &sbmlId = (static_cast<const CModelEntity*>(obj->getObjectParent()))->getSBMLId();
@@ -3421,9 +3464,27 @@ void addInitialAssignmentsToModel(SBMLDocument* doc
       // to synchronize it with the original element.
       if (!sbmlId.empty())
         {
-          InitialAssignment* ia = doc->getModel()->createInitialAssignment();
+          bool isInitialParticleNumber = param->getAnnotationString().find("type=\"InitialParticleNumber\"") != std::string::npos;
+          auto * pMetab = dynamic_cast< const CMetab * >(obj->getObjectParent());
+          auto * pComp = pMetab == NULL ? NULL : pMetab->getCompartment();
+
+          if (isInitialParticleNumber && mAvogadroId.empty())
+            createAvogadroIfNeeded(dataModel);
+
+          InitialAssignment * ia = model->createInitialAssignment();
           ia->setSymbol(it->second->getId());
-          ia->setMath(SBML_parseFormula(sbmlId.c_str()));
+
+          if (isInitialParticleNumber && pMetab && pComp)
+            {
+              std::stringstream math;
+              math << sbmlId << " * "
+                   << mAvogadroId << " * "
+                   << pComp->getSBMLId();
+              ia->setMath(SBML_parseFormula(math.str().c_str()));
+            }
+          else
+            ia->setMath(SBML_parseFormula(sbmlId.c_str()));
+
           ia->setUserData((void*)"1");
         }
 
@@ -3840,7 +3901,7 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
     }
 
   // if initial assignments were used we will have to add them to the document
-  addInitialAssignmentsToModel(mpSBMLDocument, mInitialValueMap, dataModel);
+  addInitialAssignmentsToModel(dataModel);
   mInitialValueMap.clear();
 
   // delete all temporary function definitions
@@ -6531,10 +6592,10 @@ void CSBMLExporter::createAvogadroIfNeeded(const CDataModel & dataModel)
   this->mpAvogadro = const_cast<CModel*>(dataModel.getModel())->createModelValue("quantity to number factor", dataModel.getModel()->getQuantity2NumberFactor());
   Parameter* pSBMLAvogadro = this->mpSBMLDocument->getModel()->createParameter();
   pSBMLAvogadro->setName("quantity to number factor");
-  std::string sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, mpAvogadro->getObjectName(), false);
-  pSBMLAvogadro->setId(sbmlId);
-  const_cast<CModelValue*>(this->mpAvogadro)->setSBMLId(sbmlId);
-  this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLAvogadro));
+  mAvogadroId = CSBMLExporter::createUniqueId(this->mIdMap, mpAvogadro->getObjectName(), false);
+  pSBMLAvogadro->setId(mAvogadroId);
+  const_cast< CModelValue * >(this->mpAvogadro)->setSBMLId(mAvogadroId);
+  this->mIdMap.insert(std::pair< const std::string, const SBase * >(mAvogadroId, pSBMLAvogadro));
   pSBMLAvogadro->setConstant(true);
   pSBMLAvogadro->setValue(dataModel.getModel()->getQuantity2NumberFactor());
   this->mHandledSBMLObjects.insert(pSBMLAvogadro);
@@ -6581,7 +6642,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
   CMIRIAMInfo miriamInfo;
   miriamInfo.load(dynamic_cast< CDataContainer * >(const_cast< CDataObject * >(pCOPASIObject)));
 
-  std::string miriamAnnotationString = pAnnotation->getMiriamAnnotation();
+  std::string miriamAnnotationString = miriamInfo.empty() ? "" : pAnnotation->getMiriamAnnotation();
 
   // first we clear the old CVTerms on the object
   pSBMLObject->unsetCVTerms();
@@ -7036,7 +7097,25 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             {
               if (pAnnotation->getChild(i).getURI() == "http://www.copasi.org/static/sbml")
                 {
-                  pCOPASIAnnotation = pSBMLObject->getAnnotation()->getChild(i).clone();
+                  if (pAnnotation->getChild(i).getPrefix().empty())
+                    {
+                      pCOPASIAnnotation = XMLNode::convertStringToXMLNode("<copasi:COPASI xmlns:copasi=\"http://www.copasi.org/static/sbml\"></copasi:COPASI>");
+                      pCOPASIAnnotation->unsetEnd();
+
+                      // Copy existing children
+                      const XMLNode & Existing = pAnnotation->getChild(i);
+                      unsigned int j, jMax = Existing.getNumChildren();
+
+                      for (j = 0; j < jMax; ++j)
+                        {
+                          pCOPASIAnnotation->addChild(Existing.getChild(j));
+                        }
+                    }
+                  else
+                    {
+                      pCOPASIAnnotation = pSBMLObject->getAnnotation()->getChild(i).clone();
+                    }
+
                   COPASIAnnotationIndex = i;
                   unsigned int j, jMax = pCOPASIAnnotation->getNumChildren();
 
@@ -7090,7 +7169,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
 
               // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
               // in libsbml it creates a dummy node and in libsbml 4 it doesn't
-              pCOPASIAnnotation = XMLNode::convertStringToXMLNode("<COPASI xmlns=\"http://www.copasi.org/static/sbml\"></COPASI>");
+              pCOPASIAnnotation = XMLNode::convertStringToXMLNode("<copasi:COPASI xmlns:copasi=\"http://www.copasi.org/static/sbml\"></copasi:COPASI>");
               // calling unsetEnd is necessary for libsbml 3.1.1 and 3.2.0,
               // otherwise libsbml will write the opening COPASI element as a
               // closing element and add another closing element later on which is

@@ -83,6 +83,7 @@ protected:
   bool mIncompleteExport;
   bool mVariableVolumes;
   const CModelValue* mpAvogadro;
+  std::string mAvogadroId;
   bool mAvogadroCreated;
   std::map<std::string, const SBase*> mMetaIdMap;
   bool mMIRIAMWarning;
@@ -842,6 +843,8 @@ protected:
    * All other changes between SBML Level 1 Version 2 and Level 1 Version 1 should not be relevant here.
    */
   static void convert_to_l1v1(std::string& l1v2_string);
+
+  void addInitialAssignmentsToModel(const CDataModel & dataModel);
 };
 
 #endif // CSBLExporter_H__

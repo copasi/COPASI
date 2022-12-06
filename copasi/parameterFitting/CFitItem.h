@@ -209,10 +209,10 @@ public:
 
   /**
    * Update bounds
-   * @param std::vector<COptItem * >::const_iterator it
+   * @param const std::vector<COptItem * > & items
    * @return bool success
    */
-  bool updateBounds(std::vector<COptItem * >::const_iterator it);
+  bool updateBounds(const std::vector<COptItem * > & items);
 
 private:
   /**

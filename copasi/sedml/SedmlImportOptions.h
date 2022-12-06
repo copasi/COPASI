@@ -16,6 +16,7 @@ class SedmlImportOptions
   std::vector< std::string > mPlots;
   std::string mReportId;
   std::string mReportFile;
+  bool mSkipModelImport;
 
 public:
   SedmlImportOptions(
@@ -27,6 +28,9 @@ public:
 
   SedmlImportOptions & operator=(const SedmlImportOptions & rhs);
 
+  void setSkipModelImport(bool skipModelLoading);
+  bool skipModelImport() const;
+
   const std::string & getTaskId() const;
   const std::string & getModelId() const;
   const std::string & getReportId() const;
@@ -36,8 +40,4 @@ public:
   bool isValid() const;
 };
 
-
 #endif // SEDML_IMPORT_OPTIONS_H
-
-
-
