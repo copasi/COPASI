@@ -312,7 +312,7 @@ bool FunctionWidget1::loadParameterTable()
       Table1->setCellWidget((int) j, COL_USAGE, comboItem);
 
       // connection between comboItem and its parent, Table1
-      connect(comboItem, SIGNAL(activated(const QString &)), this, SLOT(slotTableValueChanged(const QString &)));
+      connect(comboItem, SIGNAL(currentTextChanged(const QString &)), this, SLOT(slotTableValueChanged(const QString &)));
       comboItem->setObjectName(QString::number(j));  // just need to save the row index
 
       //col. 2 (units)

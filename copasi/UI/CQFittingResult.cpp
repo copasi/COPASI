@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -220,7 +220,7 @@ bool CQFittingResult::enterProtected()
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpExperiments), true);
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpValues), true);
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpCorrelations), true);
-      mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpFisherInformationPage), true);
+      mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpFisherInformation), true);
 
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpCrossValidations), true);
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpCrossValidationValues), true);
@@ -230,7 +230,7 @@ bool CQFittingResult::enterProtected()
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpExperiments), false);
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpValues), false);
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpCorrelations), false);
-      mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpFisherInformationPage), false);
+      mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpFisherInformation), false);
 
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpCrossValidations), false);
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpCrossValidationValues), false);

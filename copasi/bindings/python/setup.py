@@ -21,6 +21,22 @@ def prepend_variables(args, variables):
         args.insert(0, '-D' + var + '=' +temp)
   return args
 
+def get_python_include():
+  path = sysconfig.get_paths()['include']
+  if exists(path): 
+    return path
+  # for whatever reason 2.7 on centos returns a wrong path here 
+  return sysconfig.get_config_vars()['INCLUDEPY']
+
+def get_win_python_lib():
+  vars = sysconfig.get_config_vars()
+  for k in ['prefix', 'installed_base', 'installed_platbase']:
+    if k not in vars:
+      continue
+    path = os.path.join(vars[k], 'libs', 'python' + vars['py_version_nodot'] + '.lib')
+    if os.path.exists(path):
+      return path
+  return None
 
 def get_lib_full_path(path, partial): 
   for file in os.listdir(path): 
@@ -227,7 +243,7 @@ class CMakeBuild(build_ext):
             '-DBUILD_GUI=OFF',
             '-DENABLE_PYTHON=ON',
             '-DPYTHON_EXECUTABLE=' + sys.executable,
-            '-DPYTHON_INCLUDE_DIR=' + sysconfig.get_paths()['include'],
+            '-DPYTHON_INCLUDE_DIR=' + get_python_include(),
             '-DENABLE_JIT=' + enable_jit
         ]
 
@@ -238,6 +254,10 @@ class CMakeBuild(build_ext):
 
         if not is_win:
           copasi_args.append('-DPYTHON_USE_DYNAMIC_LOOKUP=ON')
+        else:
+          lib_path = get_win_python_lib()
+          if lib_path is not None:
+            copasi_args.append('-DPYTHON_LIBRARY={0}'.format(lib_path))
 
         if not is_win and not is_osx:
           copasi_args.append('-DCMAKE_CXX_FLAGS=-fPIC')

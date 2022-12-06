@@ -1005,7 +1005,7 @@ SEDMLImporter::parseSEDML(const std::string & sedmlDocumentText,
 
           case LIBSEDML_SEV_FATAL:
 
-            // treat unknown as fatal
+          // treat unknown as fatal
           default:
 
             if (pSEDMLError->getErrorId() == 10804)
@@ -1064,15 +1064,22 @@ SEDMLImporter::parseSEDML(const std::string & sedmlDocumentText,
   // initialize data:
   initializeContent();
 
+  setSEDMLDocument(pSEDMLDocument);
+
   // merge subtasks if needed
   mergeNestedSubtasks();
 
-  setSEDMLDocument(pSEDMLDocument);
-
-  if (pOptions != NULL && !pOptions->getModelId().empty())
-    importModel(pOptions->getModelId());
+  if (pOptions == NULL || pOptions->skipModelImport() == false)
+    {
+      if (pOptions != NULL && !pOptions->getModelId().empty())
+        importModel(pOptions->getModelId());
+      else
+        importFirstSBMLModel();
+    }
   else
-    importFirstSBMLModel();
+    {
+      mpCopasiModel = pDataModel->getModel();
+    }
 
   if (pOptions != NULL && !pOptions->getTaskId().empty())
     importTask(mpSEDMLDocument->getTask(pOptions->getTaskId()), false);
@@ -1082,7 +1089,6 @@ SEDMLImporter::parseSEDML(const std::string & sedmlDocumentText,
   importOutputs();
 
   assignReportDefinitions();
-
 
   if (mpProcessReport != NULL)
     mpProcessReport->finishItem(mhImportStep);
@@ -1145,9 +1151,7 @@ void SEDMLImporter::importTasks(CDataVectorN< CCopasiTask > * pTaskList)
 
       importTask(task, pTaskList);
     }
-
 }
-
 
 void SEDMLImporter::assignReportDefinitions(CDataVectorN< CCopasiTask > * pTaskList)
 {
@@ -1292,7 +1296,7 @@ void SEDMLImporter::importTask(
                     std::stringstream str;
                     std::vector< double > vals = vrange->getValues();
 
-for (double val : vals)
+                    for (double val : vals)
                       str << val << " ";
 
                     group->setValue< std::string >("Values", str.str());
@@ -1428,7 +1432,7 @@ SEDMLImporter::convertSimpleFunctionalRange(SedFunctionalRange * frange, SedRepe
               knownValues[p->getId()] = p->getValue();
             }
 
-for (auto value : oldValues)
+          for (auto value : oldValues)
             {
               knownValues[insideVRange->getId()] = value;
               newValues.push_back(SBMLTransforms::evaluateASTNode(frange->getMath(), knownValues));
