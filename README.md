@@ -99,3 +99,27 @@ The packages available on this page are provided under the
 [Artistic License 2.0](http://copasi.org/Download/License/), 
 which is an [OSI](http://www.opensource.org/) approved license. This license 
 allows non-commercial and commercial use free of charge.
+
+## Git maintenance
+
+### Release branches:
+ - Naming: `Version-$major.$minor`
+
+#### Start release branch 
+To create a new release branch check out the starting branch which is normally develop:
+```
+git checkout develop
+git flow release start <name>
+git push origin
+```
+
+#### Finish release branch 
+To finish a release:
+```
+git checkout release/<name>
+git flow release finish <name>
+git push
+```
+
+#### Tagging snapshots
+In order to tag a 
