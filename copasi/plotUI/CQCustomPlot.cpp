@@ -18,6 +18,8 @@
 #  include "copasi/model/CModel.h"
 #  include "copasi/commandline/CLocaleString.h"
 #  include "copasi/CopasiDataModel/CDataModel.h"
+#  include "copasi/parameterFitting/CExperiment.h"
+#  include "copasi/parameterFitting/CExperimentSet.h"
 
 #  include <QApplication>
 
@@ -145,6 +147,10 @@ private:
 #  define ActivitySize 8
 C_FLOAT64 CQCustomPlot::MissingValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
+# define X_AXIS_INDEX 0
+# define X_AXIS_NAME 1
+#  define X_AXIS_VALUE 2
+
 CQCustomPlot::CQCustomPlot(QWidget * parent)
   : QCustomPlot(parent)
   , mCurves(0)
@@ -195,6 +201,42 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
   //setSelectionRectMode(QCP::srmZoom);
   setInteractions(QCP::iRangeDrag | QCP::iRangeZoom /*| QCP::iSelectPlottables*/);
   mDefaultTicker = xAxis->ticker();
+
+  mpContextMenu = new QMenu("Type");
+  mpContextMenu->addAction("Index")->setData(QVariant::fromValue(X_AXIS_INDEX));
+  mpContextMenu->addAction("Name")->setData(QVariant::fromValue(X_AXIS_NAME));
+  mpContextMenu->addSeparator();
+  //mpContextMenu->addAction("Value")->setData(QVariant::fromValue(X_AXIS_VALUE));
+
+  QObject::connect(
+    mpContextMenu, &QMenu::triggered,
+    [this](QAction * action)
+  {
+    auto type = action->data().toInt();
+    this->xAxis->setProperty("axis_label", action->data());
+    this->updateSteadyStateInfo(type);
+    this->mSelectedIndependent = "";
+
+    if (type == X_AXIS_VALUE)
+      {
+        this->mSelectedIndependent = action->text();
+      }
+
+    // reset data count on curves, so they will be reset
+for (auto * element : this->mCurves)
+      {
+        auto * curve = dynamic_cast< QCPCurve * >(element);
+
+        if (!curve)
+          continue;
+
+        curve->setData(QVector< qreal >(), QVector< qreal >());
+        curve->setProperty("last_count", 0);
+      }
+
+    this->replot(true);
+  });
+
 
   // Initialize from the plot specification
   initFromSpec(plotspec);
@@ -574,9 +616,12 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
 
   std::vector< std::vector< std::string > >::iterator itX;
 
+  CDataModel * pModel = NULL;
+
   for (i = 0; i < imax; ++i)
     {
       const CPlotItem * pItem = &mpPlotSpecification->getItems()[i];
+      auto pCurve = mCurveMap[pItem->CCopasiParameter::getKey()];
       bool isSpectogram = pItem->getType() == CPlotItem::spectogram;
       Activity ItemActivity = pItem->getActivity();
       DataIndex.first = ItemActivity;
@@ -584,6 +629,8 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
       // Loop over all channels
       jmax = pItem->getNumChannels();
       mDataIndex[i].resize(jmax);
+      QStringList objectCNs;
+      QStringList objectNames;
 
       for (j = 0; j < jmax; ++j)
         {
@@ -596,6 +643,23 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
               mObjects.insert(pObj);
               objectCN = pObj->getCN();
               mCnNameMap[objectCN] = pObj->getObjectDisplayName();
+
+              objectCNs << FROM_UTF8(objectCN);
+              objectNames << FROM_UTF8(pObj->getObjectDisplayName());
+              CExperiment * pExp = dynamic_cast< CExperiment * >(pObj->getDataObject()->getObjectAncestor("ParameterGroup"));
+
+              if (pExp && pExp->getExperimentType() == CTaskEnum::Task::steadyState)
+                {
+                  pModel = pExp->getObjectDataModel();
+
+                  if (pCurve)
+                    {
+                      pCurve->setProperty("experiment_cn", FROM_UTF8(pExp->getCN()));
+                      pCurve->setProperty("experiment_name", FROM_UTF8(pExp->getObjectDisplayName()));
+
+                    }
+                }
+
             }
           else
             CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6,
@@ -685,6 +749,35 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
               mDataIndex[i][j] = DataIndex;
             }
         }
+
+      if (pCurve)
+        {
+          pCurve->setProperty("object_cns", QVariant::fromValue(objectCNs));
+          pCurve->setProperty("object_names", QVariant::fromValue(objectNames));
+        }
+    }
+
+
+  // initialize steady state info
+  if (pModel != NULL)
+    {
+      mTextTicker = QSharedPointer< QCPAxisTickerText >(new QCPAxisTickerText);
+      QVector< double > ticks;
+      QVector< QString > labels;
+      mDependentNames.clear();
+      int count = 0;
+
+for (auto & name : getDependentObjectNames(*pModel))
+        {
+          mDependentNames << FROM_UTF8(name);
+          labels << FROM_UTF8(name);
+          ticks << ++count;
+        }
+
+      mTextTicker->addTicks(ticks, labels);
+
+      // independent
+      initializeIndependentData(*pModel);
     }
 
 
@@ -1035,6 +1128,11 @@ void CQCustomPlot::setCurvesVisibility(const bool & visibility)
 
 void CQCustomPlot::replot()
 {
+  replot(false);
+}
+
+void CQCustomPlot::replot(bool resetZoom)
+{
   if (mIgnoreUpdate)
     return;
 
@@ -1055,6 +1153,9 @@ void CQCustomPlot::replot()
         QMutexLocker Locker(&mMutex);
         updateCurves(C_INVALID_INDEX);
       }
+
+      if (resetZoom)
+        ensureCurvesVisible();
 
       QCustomPlot::replot();
 
@@ -1091,7 +1192,7 @@ void CQCustomPlot::render(QPainter * painter, QRect rect)
 
 void CQCustomPlot::resetZoom()
 {
-  rescaleAxes(true);
+  ensureCurvesVisible();
   QCustomPlot::replot();
 }
 
@@ -1113,6 +1214,30 @@ void CQCustomPlot::mousePressEvent(QMouseEvent * event)
 void CQCustomPlot::mouseReleaseEvent(QMouseEvent * event)
 {
   m_isTouching = false;
+
+#  if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+  QCPLayerable * element = layerableAt(event->position(), true);
+#  else
+  QCPLayerable * element = layerableAt(event->pos(), true);
+#  endif
+
+  if (event->button() == Qt::RightButton
+      && !mDependentNames.empty()
+      && dynamic_cast<QCPAxis*>(element))
+    {
+      while (mpContextMenu->actions().length() > 2)
+        mpContextMenu->removeAction(mpContextMenu->actions()[2]);
+
+for (auto & entry : mIndependentNames)
+        {
+          mpContextMenu->addAction(entry)->setData(X_AXIS_VALUE);
+        }
+
+      mpContextMenu->popup(mapToGlobal(event->pos()));
+
+      return;
+    }
+
   QCustomPlot::mouseReleaseEvent(event);
 }
 
@@ -1147,6 +1272,32 @@ void CQCustomPlot::wheelEvent(QWheelEvent * event)
     }
 
   QCustomPlot::wheelEvent(event);
+}
+
+double getDependentIndex(QCPCurve * curve, const QVector< QString >& dependentNames)
+{
+  if (!curve)
+    return 0;
+
+  QStringList names = curve->property("object_names").toStringList();
+
+  if (names.length() < 2)
+    return 0;
+
+  QString yName = names[1];
+
+
+  double result = 1;
+
+for (auto & item : dependentNames)
+    {
+      if (yName.startsWith(item))
+        return result;
+
+      result += 1;
+    }
+
+  return result;
 }
 
 void CQCustomPlot::updateCurves(const size_t & activity)
@@ -1204,23 +1355,85 @@ void CQCustomPlot::updateCurves(const size_t & activity)
             // so we wont replot them in case they are skipped
             curve->setProperty("last_count", data_size);
 
+            int steadyType = xAxis->property("axis_label").toInt();
+            QString experimentName = curve->property("experiment_name").toString();
+
             if (current_count != data_size)
               {
                 data_changed = true;
 
-                for (int i = current_count; i < data_size; ++i)
+                switch (steadyType)
                   {
-                    double cur_x = x[i];
-                    double cur_y = y[i];
+                    case X_AXIS_NAME:
+                      for (int i = current_count; i < data_size; ++i)
+                        {
+                          double cur_x = x[i];
+                          double cur_y = y[i];
 
-                    // only skip adding nans, if only one of them is nan
-                    // when both are nan, we want to use it to create a new
-                    // curve. if only one of them is, it is a missing
-                    // datapoint and if added we would not be able to connect
-                    // datapoints by lines
+                          cur_x = getDependentIndex(curve, mDependentNames);
 
-                    if (qIsNaN(cur_x)  == qIsNaN(cur_y))
-                      curve->addData(cur_x, cur_y);
+                          // only skip adding nans, if only one of them is nan
+                          // when both are nan, we want to use it to create a new
+                          // curve. if only one of them is, it is a missing
+                          // datapoint and if added we would not be able to connect
+                          // datapoints by lines
+
+                          if (qIsNaN(cur_x) == qIsNaN(cur_y))
+                            curve->addData(cur_x, cur_y);
+                        }
+
+                      break;
+
+                    case X_AXIS_VALUE:
+                    {
+                      auto key = std::make_pair(mSelectedIndependent, experimentName);
+
+                      if (mIndependentData.find(key) == mIndependentData.end())
+                        break;
+
+                      QVector< qreal > axisData = mIndependentData[key];
+
+                      if (axisData.empty())
+                        break;
+
+                      for (int i = current_count; i < data_size; ++i)
+                        {
+                          double cur_x = x[i];
+                          double cur_y = y[i];
+
+                          if (!qIsNaN(cur_x) && (int) cur_x < axisData.length())
+                            cur_x = axisData[(int) cur_x];
+
+                          // only skip adding nans, if only one of them is nan
+                          // when both are nan, we want to use it to create a new
+                          // curve. if only one of them is, it is a missing
+                          // datapoint and if added we would not be able to connect
+                          // datapoints by lines
+
+                          if (qIsNaN(cur_x) == qIsNaN(cur_y))
+                            curve->addData(cur_x, cur_y);
+                        }
+                    }
+                    break;
+
+                    case X_AXIS_INDEX:
+                    default:
+                      for (int i = current_count; i < data_size; ++i)
+                        {
+                          double cur_x = x[i];
+                          double cur_y = y[i];
+
+                          // only skip adding nans, if only one of them is nan
+                          // when both are nan, we want to use it to create a new
+                          // curve. if only one of them is, it is a missing
+                          // datapoint and if added we would not be able to connect
+                          // datapoints by lines
+
+                          if (qIsNaN(cur_x) == qIsNaN(cur_y))
+                            curve->addData(cur_x, cur_y);
+                        }
+
+                      break;
                   }
 
                 curve->rescaleAxes(true);
@@ -1491,6 +1704,111 @@ QString CQCustomPlot::getSaveFilters()
   return "PDF Files (*.pdf);;PNG Files (*.png)";
 }
 
+std::set< std::string >
+CQCustomPlot::getDependentObjectNames(const CDataModel & model)
+{
+  std::set< std::string > handledExperiments;
+  std::set< std::string > result;
+
+for (auto * curve : mCurves)
+    {
+      std::string experimentCN = TO_UTF8(curve->property("experiment_cn").toString());
+
+      if (experimentCN.empty())
+        continue;
+
+      if (handledExperiments.find(experimentCN) != handledExperiments.end())
+        continue;
+
+      handledExperiments.insert(experimentCN);
+      const CExperiment * pExperiment = dynamic_cast< const CExperiment * >(model.getObject(experimentCN));
+
+      if (!pExperiment)
+        continue;
+
+for (auto entry : pExperiment->getDependentObjectsMap())
+        {
+          const CDataObject * pObj = dynamic_cast< const CDataObject * >(
+                                       entry.first);
+
+          if (pObj == NULL)
+            continue;
+
+          result.insert(pObj->getObjectDisplayName());
+        }
+
+    }
+
+  return result;
+}
+
+void
+CQCustomPlot::initializeIndependentData(const CDataModel& model)
+{
+  mIndependentData.clear();
+  mIndependentNames.clear();
+
+  std::set< std::string > handledExperiments;
+  std::set< std::string > result;
+
+for (auto * curve : mCurves)
+    {
+      std::string experimentCN = TO_UTF8(curve->property("experiment_cn").toString());
+
+      if (experimentCN.empty())
+        continue;
+
+      if (handledExperiments.find(experimentCN) != handledExperiments.end())
+        continue;
+
+      handledExperiments.insert(experimentCN);
+      const CExperiment * pExperiment = dynamic_cast< const CExperiment * >(model.getObject(experimentCN));
+
+      if (!pExperiment)
+        continue;
+
+      auto & independentObjects = pExperiment->getIndependentObjects();
+      auto & matrix = pExperiment->getIndependentData();
+      QString experimentName = FROM_UTF8(pExperiment->getObjectDisplayName());
+      size_t numRows = matrix.numRows();
+      size_t numCols = matrix.numCols();
+
+      if (numCols == 0)
+        continue;
+
+      int c = 0;
+
+for (auto & obj : independentObjects)
+        {
+          QVector< qreal > axisData;
+          QString name = FROM_UTF8(obj->getObjectDisplayName());
+          mIndependentNames.insert(name);
+
+          for (size_t r = 0; r < numRows; ++r)
+            {
+              axisData << matrix(r, c);
+            }
+
+          ++c;
+          mIndependentData[std::make_pair(name, experimentName)] = axisData;
+        }
+    }
+}
+
+void CQCustomPlot::updateSteadyStateInfo(int type)
+{
+  auto& model = *CRootContainer::getDatamodelList()->begin();
+
+  if (type != X_AXIS_NAME && dynamic_cast< QCPAxisTickerText * >(xAxis->ticker().get()) != NULL)
+    xAxis->setTicker(mDefaultTicker);
+
+  if (type == X_AXIS_NAME)
+    {
+      xAxis->setTicker(mTextTicker);
+    }
+
+}
+
 void CQCustomPlot::legendClicked(QCPLegend * legend, QCPAbstractLegendItem * item, QMouseEvent * event)
 {
   auto * plItem = dynamic_cast< QCPPlottableLegendItem * >(item);
@@ -1552,6 +1870,15 @@ void CQCustomPlot::displayToolTip(QCPAbstractPlottable * plottable, int dataInde
   QToolTip::hideText();
 }
 
+void increaseRange(QCPAxis* axis, double lowerMultiplier = 0.95, double upperMultiplier = 1.05)
+{
+  if (!axis)
+    return;
+
+  QCPRange range = axis->range();
+  axis->setRange(range.lower * lowerMultiplier, range.upper * upperMultiplier);
+}
+
 void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on)
 {
   if (!pCurve)
@@ -1570,9 +1897,18 @@ void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on)
   if (pBuddy != mY2Map.end())
     (*pBuddy).second->setVisible(plItem->plottable()->visible());
 
+  ensureCurvesVisible();
+
+}
+
+
+void CQCustomPlot::ensureCurvesVisible()
+{
   rescaleAxes(true);
 
-
+  // increase axis a little bit, so that values at border are visible
+  increaseRange(xAxis);
+  increaseRange(yAxis, 1);
 }
 
 #endif // COPASI_USE_QCUSTOMPLOT

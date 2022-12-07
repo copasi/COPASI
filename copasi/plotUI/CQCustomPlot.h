@@ -39,6 +39,7 @@ class CPlotSpec2Vector;
 class CPlotSpecification;
 class CPlotSpectogram;
 
+
 class CQCustomPlot
   : public QCustomPlot
   , public CPlotInterface
@@ -121,6 +122,7 @@ public:
 
 public slots:
   virtual void replot();
+  virtual void replot(bool resetZoom);
 
   virtual void toggleLogX(bool logX);
   virtual void toggleLogY(bool logY);
@@ -180,6 +182,12 @@ private:
    * @return a string with supported file filters to save files
    */
   virtual QString getSaveFilters();
+
+  void updateSteadyStateInfo(int type);
+
+  std::set< std::string > getDependentObjectNames(const CDataModel & model);
+  void initializeIndependentData(const CDataModel & model);
+  void ensureCurvesVisible();
 
 private slots:
   /**
@@ -314,6 +322,12 @@ protected:
   QCPTextElement * mpTitle;
   QSharedPointer< QCPAxisTicker > mLogTicker;
   QSharedPointer< QCPAxisTicker > mDefaultTicker;
+  QSharedPointer< QCPAxisTickerText > mTextTicker;
+  QVector<QString> mDependentNames;
+  std::set< QString > mIndependentNames;
+  std::map< std::pair< QString, QString>, QVector< qreal > > mIndependentData;
+  QString mSelectedIndependent;
+  QMenu * mpContextMenu;
 
 signals:
   void replotSignal();
