@@ -152,6 +152,7 @@ C_FLOAT64 CQCustomPlot::MissingValue = std::numeric_limits< C_FLOAT64 >::quiet_N
 
 CQCustomPlot::CQCustomPlot(QWidget * parent)
   : QCustomPlot(parent)
+  , CPlotInterface()
   , mCurves(0)
   , mCurveMap()
   , mY2Map()
@@ -173,6 +174,7 @@ CQCustomPlot::CQCustomPlot(QWidget * parent)
 
 CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent)
   : QCustomPlot(parent)
+  , CPlotInterface()
   , mCurves(0)
   , mCurveMap()
   , mY2Map()

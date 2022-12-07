@@ -89,7 +89,7 @@ public:
    * @param const bool & useInitialValues
    * @return bool success
    */
-  virtual bool process(const bool & useInitialValues);
+  virtual bool process(const bool & useInitialValues) override;
 
   void createEvent();
   void removeEvent();
