@@ -30,9 +30,14 @@ public:
   static const CEnumAnnotation< std::string, Axis > AxisNames;
 
   /**
-   * Initialize the the plot from the specification
-   * @param const CPlotSpecification* plotspec
-   */
+  * Destructor
+  */
+  virtual ~CPlotInterface();
+
+  /**
+     * Initialize the the plot from the specification
+     * @param const CPlotSpecification* plotspec
+     */
   virtual bool initFromSpec(const CPlotSpecification* plotspec) = 0;
 
   /**
@@ -71,7 +76,6 @@ public:
   virtual QString getSaveFilters();
 
   QString getAxisText(Axis axis, const CObjectInterface * pObjectInterface);
-
 };
 
 #endif // COPASIPLOT_INTERFACE_H

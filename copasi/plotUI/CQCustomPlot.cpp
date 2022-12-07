@@ -3,7 +3,6 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-
 #include <copasi/config.h>
 
 #if defined(COPASI_USE_QCUSTOMPLOT)
@@ -223,7 +222,7 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
       }
 
     // reset data count on curves, so they will be reset
-for (auto * element : this->mCurves)
+    for (auto * element : this->mCurves)
       {
         auto * curve = dynamic_cast< QCPCurve * >(element);
 
@@ -236,7 +235,6 @@ for (auto * element : this->mCurves)
 
     this->replot(true);
   });
-
 
   // Initialize from the plot specification
   initFromSpec(plotspec);
@@ -281,7 +279,7 @@ bool CQCustomPlot::initFromSpec(const CPlotSpecification * plotspec)
     }
 
   // Remove unused curves if definition has changed
-for (auto item : mHisto)
+  for (auto item : mHisto)
     pdelete(item.second)
     mHisto.clear();
 
@@ -478,13 +476,13 @@ for (auto item : mHisto)
                     setSymbol(series, QCPScatterStyle::ssTriangleInverted, color, 7, 2);
                     break;
 
-                    //case CPlotItem::SymbolType::hDash:
-                    //  setSymbol(series, QwtSymbol::HLine, color, 7, 2);
-                    //  break;
+                  //case CPlotItem::SymbolType::hDash:
+                  //  setSymbol(series, QwtSymbol::HLine, color, 7, 2);
+                  //  break;
 
-                    //case CPlotItem::SymbolType::vDash:
-                    //  setSymbol(series, QwtSymbol::VLine, color, 7, 2);
-                    //  break;
+                  //case CPlotItem::SymbolType::vDash:
+                  //  setSymbol(series, QwtSymbol::VLine, color, 7, 2);
+                  //  break;
 
                   case CPlotItem::SymbolType::SmallCross:
                   default:
@@ -656,10 +654,8 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
                     {
                       pCurve->setProperty("experiment_cn", FROM_UTF8(pExp->getCN()));
                       pCurve->setProperty("experiment_name", FROM_UTF8(pExp->getObjectDisplayName()));
-
                     }
                 }
-
             }
           else
             CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6,
@@ -757,7 +753,6 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
         }
     }
 
-
   // initialize steady state info
   if (pModel != NULL)
     {
@@ -767,7 +762,7 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
       mDependentNames.clear();
       int count = 0;
 
-for (auto & name : getDependentObjectNames(*pModel))
+      for (auto & name : getDependentObjectNames(*pModel))
         {
           mDependentNames << FROM_UTF8(name);
           labels << FROM_UTF8(name);
@@ -779,7 +774,6 @@ for (auto & name : getDependentObjectNames(*pModel))
       // independent
       initializeIndependentData(*pModel);
     }
-
 
   mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime();
   mReplotFinished = true;
@@ -1228,7 +1222,7 @@ void CQCustomPlot::mouseReleaseEvent(QMouseEvent * event)
       while (mpContextMenu->actions().length() > 2)
         mpContextMenu->removeAction(mpContextMenu->actions()[2]);
 
-for (auto & entry : mIndependentNames)
+      for (auto & entry : mIndependentNames)
         {
           mpContextMenu->addAction(entry)->setData(X_AXIS_VALUE);
         }
@@ -1286,10 +1280,9 @@ double getDependentIndex(QCPCurve * curve, const QVector< QString >& dependentNa
 
   QString yName = names[1];
 
-
   double result = 1;
 
-for (auto & item : dependentNames)
+  for (auto & item : dependentNames)
     {
       if (yName.startsWith(item))
         return result;
@@ -1596,21 +1589,21 @@ void CQCustomPlot::resizeCurveData(const size_t & activity)
 
           switch ((*itCurves)->property("curve_type").toInt())
             {
-                //case CPlotItem::curve2d:
-                //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
-                //                               data[mDataIndex[k][1].second]);
-                //  break;
+              //case CPlotItem::curve2d:
+              //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
+              //                               data[mDataIndex[k][1].second]);
+              //  break;
 
-                //case CPlotItem::bandedGraph:
-                //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
-                //                               data[mDataIndex[k][1].second],
-                //                               data[mDataIndex[k][2].second]);
-                //  break;
+              //case CPlotItem::bandedGraph:
+              //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
+              //                               data[mDataIndex[k][1].second],
+              //                               data[mDataIndex[k][2].second]);
+              //  break;
 
-                //case CPlotItem::histoItem1d:
-                //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
-                //                               NULL);
-                //  break;
+              //case CPlotItem::histoItem1d:
+              //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
+              //                               NULL);
+              //  break;
 
               default:
                 //fatalError();
@@ -1710,7 +1703,7 @@ CQCustomPlot::getDependentObjectNames(const CDataModel & model)
   std::set< std::string > handledExperiments;
   std::set< std::string > result;
 
-for (auto * curve : mCurves)
+  for (auto * curve : mCurves)
     {
       std::string experimentCN = TO_UTF8(curve->property("experiment_cn").toString());
 
@@ -1726,7 +1719,7 @@ for (auto * curve : mCurves)
       if (!pExperiment)
         continue;
 
-for (auto entry : pExperiment->getDependentObjectsMap())
+      for (auto entry : pExperiment->getDependentObjectsMap())
         {
           const CDataObject * pObj = dynamic_cast< const CDataObject * >(
                                        entry.first);
@@ -1736,7 +1729,6 @@ for (auto entry : pExperiment->getDependentObjectsMap())
 
           result.insert(pObj->getObjectDisplayName());
         }
-
     }
 
   return result;
@@ -1751,7 +1743,7 @@ CQCustomPlot::initializeIndependentData(const CDataModel& model)
   std::set< std::string > handledExperiments;
   std::set< std::string > result;
 
-for (auto * curve : mCurves)
+  for (auto * curve : mCurves)
     {
       std::string experimentCN = TO_UTF8(curve->property("experiment_cn").toString());
 
@@ -1778,7 +1770,7 @@ for (auto * curve : mCurves)
 
       int c = 0;
 
-for (auto & obj : independentObjects)
+      for (auto & obj : independentObjects)
         {
           QVector< qreal > axisData;
           QString name = FROM_UTF8(obj->getObjectDisplayName());
@@ -1799,14 +1791,13 @@ void CQCustomPlot::updateSteadyStateInfo(int type)
 {
   auto& model = *CRootContainer::getDatamodelList()->begin();
 
-  if (type != X_AXIS_NAME && dynamic_cast< QCPAxisTickerText * >(xAxis->ticker().get()) != NULL)
+  if (type != X_AXIS_NAME && dynamic_cast< QCPAxisTickerText * >(xAxis->ticker().data()) != NULL)
     xAxis->setTicker(mDefaultTicker);
 
   if (type == X_AXIS_NAME)
     {
       xAxis->setTicker(mTextTicker);
     }
-
 }
 
 void CQCustomPlot::legendClicked(QCPLegend * legend, QCPAbstractLegendItem * item, QMouseEvent * event)
@@ -1898,9 +1889,7 @@ void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on)
     (*pBuddy).second->setVisible(plItem->plottable()->visible());
 
   ensureCurvesVisible();
-
 }
-
 
 void CQCustomPlot::ensureCurvesVisible()
 {
