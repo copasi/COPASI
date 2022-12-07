@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,6 +23,8 @@
 // All rights reserved.
 
 #include <sstream>
+#include <initializer_list>
+
 
 #include "COutputAssistant.h"
 #include "copasi/core/CDataObject.h"
@@ -280,6 +282,10 @@ bool COutputAssistant::initialize()
   tmp.second.description = "Curves of all dependent values of all experiments are created in one plot. For each dependent value the experimental data, the fitted curve, and the weighted error are shown.";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CTaskEnum::Task::parameterFitting;
+  tmp.second.options = {{"Measured Values", true, "Displays Measured Values"},
+    {"Fitted Values", true, "Displays Fitted Values"},
+    {"Weighted Errors", false, "Displays Weighted Errors"}
+  };
   mMap.insert(tmp);
 
   //fitting result plots
@@ -288,6 +294,10 @@ bool COutputAssistant::initialize()
   tmp.second.description = "For each experiment of the parameter estimation a plot is created. Each plot contains the experimental data, the fitted curve, and the weighted error for each dependent value.";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CTaskEnum::Task::parameterFitting;
+  tmp.second.options = {{"Measured Values", true, "Displays Measured Values"},
+    {"Fitted Values", true, "Displays Fitted Values"},
+    {"Weighted Errors", false, "Displays Weighted Errors"}
+  };
   mMap.insert(tmp);
 
   //fitting result plots
@@ -296,6 +306,10 @@ bool COutputAssistant::initialize()
   tmp.second.description = "For each dependent value of the parameter estimation a plot is created. Each plot contains the experimental data, the fitted curves, and the weighted errors for each experiment a dependent value occurs.";
   tmp.second.isPlot = true;
   tmp.second.mTaskType = CTaskEnum::Task::parameterFitting;
+  tmp.second.options = {{"Measured Values", true, "Displays Measured Values"},
+    {"Fitted Values", true, "Displays Fitted Values"},
+    {"Weighted Errors", false, "Displays Weighted Errors"}
+  };
   mMap.insert(tmp);
 
   //fitting result plots
@@ -680,7 +694,10 @@ bool COutputAssistant::initialize()
 }
 
 //static
-CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * task, CDataModel* pDataModel, bool activate)
+CDataObject*
+COutputAssistant::createDefaultOutput(
+  C_INT32 id, CCopasiTask * task, CDataModel* pDataModel, bool activate,
+  const std::vector< COutputOption > * pOptions)
 {
   if (task == NULL)
     {
@@ -724,6 +741,12 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
 
         unsigned C_INT32 colorcounter = 0;
 
+
+        bool needMeasured = isOptionEnabled(pOptions, "Measured Values", true);
+        bool needFitted = isOptionEnabled(pOptions, "Fitted Values", true);
+        bool needErrors = isOptionEnabled(pOptions, "Weighted Errors", false);
+
+
         for (i = 0; i < imax; i++)
           {
             const CExperiment * pExperiment = ExperimentSet.getExperiment(i);
@@ -749,41 +772,50 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
                 Name = pExperiment->getObjectName() + "," + Name;
 
                 //1
-                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Measured Value"))));
-                ChannelX.push_back(data2->getCN());
-                Names.push_back(Name + "(Measured Value)");
-                LineTypes.push_back(3); //symbols & lines
-                SymbolSubTypes.push_back(1); //fat cross
-                LineSubTypes.push_back(1); //dotted
-                Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
+                if (needMeasured)
+                  {
+                    data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Measured Value"))));
+                    ChannelX.push_back(data2->getCN());
+                    Names.push_back(Name + "(Measured Value)");
+                    LineTypes.push_back(3);      //symbols & lines
+                    SymbolSubTypes.push_back(1); //fat cross
+                    LineSubTypes.push_back(1);   //dotted
+                    Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
+                  }
 
                 //2
-                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Fitted Value"))));
-                ChannelX.push_back(data2->getCN());
-                Names.push_back(Name + "(Fitted Value)");
-
-                if (pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse)
+                if (needFitted)
                   {
-                    LineTypes.push_back(0); //curve
-                    SymbolSubTypes.push_back(0); //default, this value is not used
+                    data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Fitted Value"))));
+                    ChannelX.push_back(data2->getCN());
+                    Names.push_back(Name + "(Fitted Value)");
+
+                    if (pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse)
+                      {
+                        LineTypes.push_back(0);      //curve
+                        SymbolSubTypes.push_back(0); //default, this value is not used
+                      }
+                    else
+                      {
+                        LineTypes.push_back(2);      //symbols
+                        SymbolSubTypes.push_back((int)CPlotItem::SymbolType::Square); //TODO
+                      }
+
+                    LineSubTypes.push_back(0); //default, solid
+                    Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
                   }
-                else
+
+                if (needErrors)
                   {
-                    LineTypes.push_back(2); //symbols
-                    SymbolSubTypes.push_back(1); //TODO
+                    //3
+                    data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Weighted Error"))));
+                    ChannelX.push_back(data2->getCN());
+                    Names.push_back(Name + "(Weighted Error)");
+                    LineTypes.push_back(2);      //symbols
+                    SymbolSubTypes.push_back(2); //circles
+                    LineSubTypes.push_back(0);   //default, this value is not used
+                    Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
                   }
-
-                LineSubTypes.push_back(0); //default, solid
-                Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
-
-                //3
-                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Weighted Error"))));
-                ChannelX.push_back(data2->getCN());
-                Names.push_back(Name + "(Weighted Error)");
-                LineTypes.push_back(2); //symbols
-                SymbolSubTypes.push_back(2); //circles
-                LineSubTypes.push_back(0); //default, this value is not used
-                Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
 
                 ++colorcounter;
               }
@@ -947,6 +979,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
         for (i = 0; i < imax; i++)
           {
             const CExperiment * pExperiment = ExperimentSet.getExperiment(i);
+            bool isTimeCourse = pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse;
             const CDataVector< CFittingPoint > & FittingPoints = pExperiment->getFittingPoints();
 
             CDataVector< CFittingPoint >::const_iterator it = FittingPoints.begin();
@@ -957,11 +990,20 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
             data2 = static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Independent Value")));
             data1.clear();
 
+            bool needMeasured = isOptionEnabled(pOptions, "Measured Values", true);
+            bool needFitted = isOptionEnabled(pOptions, "Fitted Values", true);
+            bool needErrors = isOptionEnabled(pOptions, "Weighted Errors", false);
+
             for (; it != end; ++it)
               {
-                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Measured Value"))));
-                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Fitted Value"))));
-                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Weighted Error"))));
+                if (needMeasured)
+                  data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Measured Value"))));
+
+                if (needFitted)
+                  data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Fitted Value"))));
+
+                if (needErrors)
+                  data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Weighted Error"))));
               }
 
             pPlotSpecification =
@@ -976,7 +1018,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
 
                 unsigned C_INT32 LineType;
 
-                if (pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse)
+                if (isTimeCourse)
                   LineType = 0;
                 else
                   LineType = 2;
@@ -992,27 +1034,41 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
                     if (pObject != NULL)
                       Name = pObject->getObjectDisplayName();
 
-                    itItem->setTitle(Name + "(Measured Value)");
-                    itItem->setActivity(COutputInterface::AFTER);
-                    itItem->setValue("Line type", (unsigned C_INT32) 3); //symbols and lines
-                    itItem->setValue("Symbol subtype", (unsigned C_INT32) 1); //fat cross
-                    itItem->setValue("Line subtype", (unsigned C_INT32) 1); //dotted
-                    itItem->setValue("Color", CPlotColors::getCopasiColorStr(colorcounter));
-                    itItem++;
+                    if (needMeasured)
+                      {
+                        itItem->setTitle(Name + "(Measured Value)");
+                        itItem->setActivity(COutputInterface::AFTER);
+                        itItem->setValue("Line type", (unsigned C_INT32) 3);      //symbols and lines
+                        itItem->setValue("Symbol subtype", (unsigned C_INT32) 1); //fat cross
+                        itItem->setValue("Line subtype", (unsigned C_INT32) 1);   //dotted
+                        itItem->setValue("Color", CPlotColors::getCopasiColorStr(colorcounter));
+                        itItem++;
+                      }
 
-                    itItem->setTitle(Name + "(Fitted Value)");
-                    itItem->setActivity(COutputInterface::AFTER);
-                    itItem->setValue("Line type", (unsigned C_INT32) LineType);
-                    itItem->setValue("Symbol subtype", (unsigned C_INT32) 0);
-                    itItem->setValue("Color", CPlotColors::getCopasiColorStr(colorcounter));
-                    itItem++;
+                    if (needFitted)
+                      {
+                        itItem->setTitle(Name + "(Fitted Value)");
+                        itItem->setActivity(COutputInterface::AFTER);
+                        itItem->setValue("Line type", (unsigned C_INT32) LineType);
 
-                    itItem->setTitle(Name + "(Weighted Error)");
-                    itItem->setActivity(COutputInterface::AFTER);
-                    itItem->setValue("Line type", (unsigned C_INT32) 2);
-                    itItem->setValue("Symbol subtype", (unsigned C_INT32) 2);
-                    itItem->setValue("Color", CPlotColors::getCopasiColorStr(colorcounter));
-                    itItem++;
+                        if (isTimeCourse)
+                          itItem->setValue("Symbol subtype", (unsigned C_INT32) 0);
+                        else
+                          itItem->setValue("Symbol subtype", (unsigned C_INT32) CPlotItem::SymbolType::Square);
+
+                        itItem->setValue("Color", CPlotColors::getCopasiColorStr(colorcounter));
+                        itItem++;
+                      }
+
+                    if (needErrors)
+                      {
+                        itItem->setTitle(Name + "(Weighted Error)");
+                        itItem->setActivity(COutputInterface::AFTER);
+                        itItem->setValue("Line type", (unsigned C_INT32) 2);
+                        itItem->setValue("Symbol subtype", (unsigned C_INT32) 2);
+                        itItem->setValue("Color", CPlotColors::getCopasiColorStr(colorcounter));
+                        itItem++;
+                      }
 
                     ++colorcounter;
                   }
@@ -1040,9 +1096,15 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
         std::map< const CDataObject *, CPlotSpecification * > PlotSpecMap;
         std::map< const CDataObject *, CPlotSpecification * >::iterator Found;
 
+
+        bool needMeasured = isOptionEnabled(pOptions, "Measured Values", true);
+        bool needFitted = isOptionEnabled(pOptions, "Fitted Values", true);
+        bool needErrors = isOptionEnabled(pOptions, "Weighted Errors", false);
+
         for (i = 0; i < imax; i++)
           {
             const CExperiment * pExperiment = ExperimentSet.getExperiment(i);
+            bool isTimeCourse = pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse;
             const CDataVector< CFittingPoint > & FittingPoints = pExperiment->getFittingPoints();
 
             CDataVector< CFittingPoint >::const_iterator it = FittingPoints.begin();
@@ -1055,7 +1117,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
               it->getObject(CCommonName("Reference=Independent Value"))->getCN();
             unsigned C_INT32 LineType;
 
-            if (pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse)
+            if (isTimeCourse)
               LineType = 0;
             else
               LineType = 2;
@@ -1093,33 +1155,49 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
                     //first determine color for the current curves
                     size_t colorindex = (pPlotSpecification->getItems().size() / 3);
 
-                    CPlotItem * pItem =
-                      pPlotSpecification->createItem(Name + "(Measured Value)", CPlotItem::curve2d);
-                    pItem->setActivity(COutputInterface::AFTER);
-                    pItem->setValue("Line type", (unsigned C_INT32) 3); //symbols and lines
-                    pItem->setValue("Line subtype", (unsigned C_INT32) 1); //dotted
-                    pItem->setValue("Symbol subtype", (unsigned C_INT32) 1); //fat cross
-                    pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
-                    pItem->addChannel(ChannelX);
-                    pItem->addChannel(it->getObject(CCommonName("Reference=Measured Value"))->getCN());
+                    CPlotItem * pItem = NULL;
 
-                    pItem =
-                      pPlotSpecification->createItem(Name + "(Fitted Value)", CPlotItem::curve2d);
-                    pItem->setActivity(COutputInterface::AFTER);
-                    pItem->setValue("Line type", LineType);
-                    pItem->setValue("Symbol subtype", (unsigned C_INT32) 0);
-                    pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
-                    pItem->addChannel(ChannelX);
-                    pItem->addChannel(it->getObject(CCommonName("Reference=Fitted Value"))->getCN());
+                    if (needMeasured)
+                      {
+                        pItem =
+                          pPlotSpecification->createItem(Name + "(Measured Value)", CPlotItem::curve2d);
+                        pItem->setActivity(COutputInterface::AFTER);
+                        pItem->setValue("Line type", (unsigned C_INT32) 3);      //symbols and lines
+                        pItem->setValue("Line subtype", (unsigned C_INT32) 1);   //dotted
+                        pItem->setValue("Symbol subtype", (unsigned C_INT32) 1); //fat cross
+                        pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
+                        pItem->addChannel(ChannelX);
+                        pItem->addChannel(it->getObject(CCommonName("Reference=Measured Value"))->getCN());
+                      }
 
-                    pItem =
-                      pPlotSpecification->createItem(Name + "(Weighted Error)", CPlotItem::curve2d);
-                    pItem->setActivity(COutputInterface::AFTER);
-                    pItem->setValue("Line type", (unsigned C_INT32) 2);
-                    pItem->setValue("Symbol subtype", (unsigned C_INT32) 2);
-                    pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
-                    pItem->addChannel(ChannelX);
-                    pItem->addChannel(it->getObject(CCommonName("Reference=Weighted Error"))->getCN());
+                    if (needFitted)
+                      {
+                        pItem =
+                          pPlotSpecification->createItem(Name + "(Fitted Value)", CPlotItem::curve2d);
+                        pItem->setActivity(COutputInterface::AFTER);
+                        pItem->setValue("Line type", LineType);
+
+                        if (isTimeCourse)
+                          pItem->setValue("Symbol subtype", (unsigned C_INT32) 0);
+                        else
+                          pItem->setValue("Symbol subtype", (unsigned C_INT32) CPlotItem::SymbolType::Square);
+
+                        pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
+                        pItem->addChannel(ChannelX);
+                        pItem->addChannel(it->getObject(CCommonName("Reference=Fitted Value"))->getCN());
+                      }
+
+                    if (needErrors)
+                      {
+                        pItem =
+                          pPlotSpecification->createItem(Name + "(Weighted Error)", CPlotItem::curve2d);
+                        pItem->setActivity(COutputInterface::AFTER);
+                        pItem->setValue("Line type", (unsigned C_INT32) 2);
+                        pItem->setValue("Symbol subtype", (unsigned C_INT32) 2);
+                        pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
+                        pItem->addChannel(ChannelX);
+                        pItem->addChannel(it->getObject(CCommonName("Reference=Weighted Error"))->getCN());
+                      }
                   }
               }
           }
@@ -1628,8 +1706,29 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
 
   pPl->setLogX(logX);
   pPl->setLogY(logY);
+
+  // set default plot engine to customplot for new plots
+  pPl->assertParameter("plot engine", CCopasiParameter::Type::STRING, std::string("QCustomPlot"));
+
+
   return pPl;
 }
+bool
+COutputAssistant::isOptionEnabled(
+  const std::vector< COutputOption >* pOptions,
+  const std::string & name,
+  bool defaultValue /*= true*/)
+{
+  if (!pOptions)
+    return defaultValue;
+
+for (auto entry : *pOptions)
+    if (entry.name == name)
+      return entry.enabled;
+
+  return defaultValue;
+}
+
 
 //static
 CReportDefinition* COutputAssistant::createTable(const std::string & name,
