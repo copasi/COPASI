@@ -135,14 +135,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  virtual CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -156,7 +156,7 @@ public:
   virtual void createUndoData(CUndoData & undoData,
                               const CUndoData::Type & type,
                               const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
   /**
    * Default constructor
@@ -183,25 +183,25 @@ public:
    * Retrieve the units of the object.
    * @return std::string units
    */
-  virtual const std::string getUnits() const;
+  virtual const std::string getUnits() const override;
 
   /**
    * Retrieve the units of the child object.
    * @return const & CUnit units
    */
-  virtual std::string getChildObjectUnits(const CDataObject * pObject) const;
+  virtual std::string getChildObjectUnits(const CDataObject * pObject) const override;
 
   /**
    * Retrieve the object representing the value;
    */
-  virtual const CDataObject * getValueObject() const;
+  virtual const CDataObject * getValueObject() const override;
 
   /**
    * Retrieve a pointer to the value;
    */
   virtual void * getValuePointer() const override;
 
-  virtual std::string getObjectDisplayName() const;
+  virtual std::string getObjectDisplayName() const override;
 
   /**
    *  Cleanup
@@ -227,7 +227,7 @@ public:
    * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CDataContainer * pParent);
+  virtual bool setObjectParent(const CDataContainer * pParent) override;
 
   /**
    * moves the species to the compartment with the given name,
@@ -240,7 +240,7 @@ public:
    * Compile the model value.
    * @return CIssue firstWorstIssue
    */
-  virtual CIssue compile();
+  virtual CIssue compile() override;
 
   /**
    * Determine whether changing the initial concentration is allowed
@@ -256,7 +256,7 @@ public:
   /**
    * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
    */
-  virtual void calculate();
+  virtual void calculate() override;
 
   /**
    *

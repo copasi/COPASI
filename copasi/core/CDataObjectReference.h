@@ -59,12 +59,12 @@ public:
 
   virtual void * getValuePointer() const override {return mpReference;}
 
-  virtual const CDataObject * getValueObject() const {return this;}
+  virtual const CDataObject * getValueObject() const override {return this;}
 
-  virtual void print(std::ostream * ostream) const
+  virtual void print(std::ostream * ostream) const override
   {(*ostream) << *mpReference;};
 
-  virtual std::string getObjectDisplayName() const
+  virtual std::string getObjectDisplayName() const override
   {
     // Suppress "Value"
     if (getObjectParent() && getObjectName() == "Value")
@@ -221,7 +221,7 @@ public:
 
   virtual void * getValuePointer() const override {return &mReference;}
 
-  virtual const CDataObject * getValueObject() const {return this;}
+  virtual const CDataObject * getValueObject() const override {return this;}
 
   /**
    * This is the output method for any object. The default implementation
@@ -230,7 +230,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const
+  virtual void print(std::ostream * ostream) const override
   {*ostream << mReference;}
 };
 
@@ -283,6 +283,6 @@ public:
   }
 
   virtual void * getValuePointer() const override {return &mReference;}
-  virtual const CDataObject * getValueObject() const {return this;}
+  virtual const CDataObject * getValueObject() const override {return this;}
 };
 #endif // COPASI_CDataObjectReference

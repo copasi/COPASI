@@ -94,14 +94,14 @@ public:
    */
   virtual bool initialize(const OutputFlag & of,
                           COutputHandler * pOutputHandler,
-                          std::ostream * pOstream);
+                          std::ostream * pOstream) override;
 
   /**
    * Process the task with or without initializing to the initial state.
    * @param const bool & useInitialValues
    * @return bool success
    */
-  virtual bool process(const bool & useInitialValues);
+  virtual bool process(const bool & useInitialValues) override;
 
   /**
    * Fix files written with Version 4.10.55, which wrote the square root of user defined weights for the
@@ -114,7 +114,7 @@ public:
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  virtual const CTaskEnum::Method * getValidMethods() const;
+  virtual const CTaskEnum::Method * getValidMethods() const override;
 #endif
 };
 #endif // COPASI_CFitTask

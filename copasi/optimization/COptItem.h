@@ -108,7 +108,7 @@ public:
    * Retrieve the display name of the optimization item.
    * @return std::string displayName
    */
-  std::string getObjectDisplayName() const;
+  std::string getObjectDisplayName() const override;
 
   /**
    * Set the lower bound.

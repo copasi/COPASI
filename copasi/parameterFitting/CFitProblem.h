@@ -71,7 +71,7 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  virtual bool elevateChildren() override;
 
   /**
    * Set the call back of the problem
@@ -85,14 +85,14 @@ public:
    * be successful. This is called once from CCopasiTask::process()
    * @result bool success
    */
-  virtual bool initialize();
+  virtual bool initialize() override;
 
   /**
    * Do the calculation based on CalculateVariables and fill
    * CalculateResults with the results.
    * @result bool continue
    */
-  virtual bool calculate();
+  virtual bool calculate() override;
 
   /**
    * Do all necessary restore procedures so that the
@@ -108,7 +108,7 @@ public:
    * Check whether all functional constraints are fulfilled.
    * @result bool fulfilled
    */
-  virtual bool checkFunctionalConstraints();
+  virtual bool checkFunctionalConstraints() override;
 
   /**
    * This is the output method for any object. The default implementation
@@ -117,7 +117,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const;
+  virtual void print(std::ostream * ostream) const override;
 
   /**
    * Output stream operator
@@ -133,7 +133,7 @@ public:
    * default behavior one needs to reimplement the virtual printResult function.
    * @param std::ostream * ostream
    */
-  virtual void printResult(std::ostream * ostream) const;
+  virtual void printResult(std::ostream * ostream) const override;
 
   /**
    * Fetch a new initial state from the model.
@@ -185,7 +185,7 @@ public:
    * @param const C_FLOAT64 & resolution (Default: 1.0e-009)
    */
   virtual bool calculateStatistics(const C_FLOAT64 & factor = 1.0e-003,
-                                   const C_FLOAT64 & resolution = 1.0e-009);
+                                   const C_FLOAT64 & resolution = 1.0e-009) override;
 
   /**
    * Retrieve the root mean square of the objective value.
@@ -349,7 +349,7 @@ protected:
    * is in the same state as before or the new state if update is true.
    * @param const bool & update
    */
-  virtual void updateContainer(const bool & update);
+  virtual void updateContainer(const bool & update) override;
 
   /**
    * Create a parameter set with the given name and the current model values

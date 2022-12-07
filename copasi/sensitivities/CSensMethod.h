@@ -112,7 +112,7 @@ public:
    * Check if the method is suitable for this problem
    * @return bool suitability of the method
    */
-  virtual bool isValidProblem(const CCopasiProblem * pProblem);
+  virtual bool isValidProblem(const CCopasiProblem * pProblem) override;
 
   /**
    * Set the call back of the problem

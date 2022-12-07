@@ -124,7 +124,7 @@ public:
   /**
    * Compile the evaluation tree.
    */
-  virtual CIssue compile();
+  virtual CIssue compile() override;
 
   /**
    * Convert to a corresponding initial expression.
@@ -140,7 +140,7 @@ private:
    * @param CEvaluationNode* root node of the tree
    * @return bool success
    */
-  virtual bool setRoot(CEvaluationNode* pRootNode);
+  virtual bool setRoot(CEvaluationNode* pRootNode) override;
 
   /**
    * Create a node based on the given pointer to a data value

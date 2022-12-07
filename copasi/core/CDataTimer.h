@@ -60,7 +60,7 @@ public:
   /**
    * Calculate the objects value.
    */
-  virtual void calculateValue();
+  virtual void calculateValue() override;
 
   /**
    * Retrieve the elapsed time.
@@ -81,7 +81,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const;
+  virtual void print(std::ostream * ostream) const override;
 
   virtual void * getValuePointer() const override;
 
