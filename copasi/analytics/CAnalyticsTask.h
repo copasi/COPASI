@@ -82,7 +82,7 @@ public:
    */
   virtual bool initialize(const OutputFlag & of,
                           COutputHandler * pOutputHandler,
-                          std::ostream * pOstream);
+                          std::ostream * pOstream) override;
 
   /**
    * Process the task with or without initializing to the initial state.
@@ -103,7 +103,7 @@ public:
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  virtual const CTaskEnum::Method * getValidMethods() const;
+  virtual const CTaskEnum::Method * getValidMethods() const override;
 
 private:
   /**
