@@ -207,7 +207,6 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
   mpContextMenu->addAction("Index")->setData(QVariant::fromValue(X_AXIS_INDEX));
   mpContextMenu->addAction("Name")->setData(QVariant::fromValue(X_AXIS_NAME));
   mpContextMenu->addSeparator();
-  //mpContextMenu->addAction("Value")->setData(QVariant::fromValue(X_AXIS_VALUE));
 
   QObject::connect(
     mpContextMenu, &QMenu::triggered,
@@ -236,6 +235,167 @@ for (auto * element : this->mCurves)
       }
 
     this->replot(true);
+  });
+
+  mpLegendContextMenu = new QMenu("Legend");
+  auto* menu = mpLegendContextMenu->addMenu("Show");
+  menu->addAction("Show All");
+  menu->addAction("Show Row");
+  menu->addAction("Show Column");
+  menu = mpLegendContextMenu->addMenu("Hide");
+  menu->addAction("Hide All");
+  menu->addAction("Hide Row");
+  menu->addAction("Hide Column");
+  mpLegendContextMenu->addSeparator();
+  mpLegendContextMenu->addAction("Increase Columns");
+  mpLegendContextMenu->addAction("Decrease Columns");
+  mpLegendContextMenu->addAction("Reset Columns");
+
+  QObject::connect(
+    mpLegendContextMenu, &QMenu::triggered,
+    [this](QAction * action)
+  {
+    bool reorder = true;
+    auto * legend = this->legend;
+
+    if (action->text().contains("Columns"))
+      {
+
+        if (action->text() == "Increase Columns")
+          {
+            legend->setWrap(legend->wrap() + 1);
+          }
+        else if (action->text() == "Decrease Columns" && legend->wrap() > 1)
+          {
+            legend->setWrap(legend->wrap() - 1);
+          }
+        else if (action->text() == "Reset Columns" && legend->wrap() != 3)
+          {
+            legend->setWrap(3);
+          }
+        else
+          reorder = false;
+
+        if (reorder)
+          {
+            legend->setFillOrder(legend->fillOrder(), true);
+            this->replot();
+          }
+
+        return;
+      }
+
+    bool needReplot = false;
+
+    if (action->text() == "Show All")
+      setCurvesVisibility(true);
+    else if (action->text() == "Hide All")
+      setCurvesVisibility(false);
+    else if (action->text() == "Show Row" && mLegendRow != -1)
+      {
+        for (int index = 0; index < legend->itemCount(); ++index)
+          {
+            auto * item = dynamic_cast< QCPPlottableLegendItem * >(legend->item(index));
+
+            if (!item)
+              continue;
+
+            int row, col;
+            legend->indexToRowCol(index, row, col);
+
+            if (row != mLegendRow)
+              continue;
+
+            auto * pCurve = item->plottable();
+
+            if (!pCurve)
+              continue;
+
+            showCurve(pCurve, true);
+
+            needReplot = true;
+          }
+      }
+    else if (action->text() == "Show Column" && mLegendCol != -1)
+      {
+        for (int index = 0; index < legend->itemCount(); ++index)
+          {
+            auto * item = dynamic_cast< QCPPlottableLegendItem * >(legend->item(index));
+
+            if (!item)
+              continue;
+
+            int row, col;
+            legend->indexToRowCol(index, row, col);
+
+            if (col != mLegendCol)
+              continue;
+
+            auto * pCurve = item->plottable();
+
+            if (!pCurve)
+              continue;
+
+            showCurve(pCurve, true);
+
+            needReplot = true;
+          }
+      }
+    else if (action->text() == "Hide Row" && mLegendRow != -1)
+      {
+        for (int index = 0; index < legend->itemCount(); ++index)
+          {
+            auto * item = dynamic_cast< QCPPlottableLegendItem * >(legend->item(index));
+
+            if (!item)
+              continue;
+
+            int row, col;
+            legend->indexToRowCol(index, row, col);
+
+            if (row != mLegendRow)
+              continue;
+
+            auto * pCurve = item->plottable();
+
+            if (!pCurve)
+              continue;
+
+            showCurve(pCurve, false);
+
+            needReplot = true;
+
+          }
+      }
+    else if (action->text() == "Hide Column" && mLegendCol != -1)
+      {
+        for (int index = 0; index < legend->itemCount(); ++index)
+          {
+            auto * item = dynamic_cast< QCPPlottableLegendItem * >(legend->item(index));
+
+            if (!item)
+              continue;
+
+            int row, col;
+            legend->indexToRowCol(index, row, col);
+
+            if (col != mLegendCol)
+              continue;
+
+            auto * pCurve = item->plottable();
+
+            if (!pCurve)
+              continue;
+
+            showCurve(pCurve, false);
+
+            needReplot = true;
+          }
+      }
+
+    if (needReplot)
+      QCustomPlot::replot();
+
   });
 
   // Initialize from the plot specification
@@ -1811,11 +1971,33 @@ void CQCustomPlot::legendClicked(QCPLegend * legend, QCPAbstractLegendItem * ite
 {
   auto * plItem = dynamic_cast< QCPPlottableLegendItem * >(item);
 
-  if (plItem != NULL)
+  if (plItem != NULL && event->button() == Qt::LeftButton)
     {
       auto * pCurve = plItem->plottable();
       showCurve(pCurve, !pCurve->visible());
       QCustomPlot::replot();
+    }
+
+  if (event->button() == Qt::RightButton)
+    {
+      mLegendRow = -1;
+      mLegendCol = -1;
+
+      if (plItem)
+        {
+          for (int index = 0; index < legend->itemCount(); ++index)
+            {
+              if (legend->item(index) == plItem)
+                {
+                  legend->indexToRowCol(index, mLegendRow, mLegendCol);
+                  break;
+                }
+            }
+        }
+
+      mpLegendContextMenu->popup(mapToGlobal(event->pos()));
+
+
     }
 }
 

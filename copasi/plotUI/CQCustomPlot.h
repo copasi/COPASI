@@ -328,6 +328,9 @@ protected:
   std::map< std::pair< QString, QString>, QVector< qreal > > mIndependentData;
   QString mSelectedIndependent;
   QMenu * mpContextMenu;
+  QMenu * mpLegendContextMenu;
+  int mLegendRow;
+  int mLegendCol;
 
 signals:
   void replotSignal();
