@@ -331,6 +331,8 @@ protected:
   QMenu * mpLegendContextMenu;
   int mLegendRow;
   int mLegendCol;
+  CCopasiTimeVariable mLastWheelTime;
+  bool mWheelFinished {true};
 
 signals:
   void replotSignal();

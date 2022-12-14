@@ -1410,8 +1410,17 @@ void CQCustomPlot::wheelEvent(QWheelEvent * event)
   QCPLayerable * element = layerableAt(event->pos(), true);
 #endif
 
+  if (!mWheelFinished || (!mLastWheelTime.isZero() && (CCopasiTimeVariable::getCurrentWallTime() + 1000) < mLastWheelTime))
+    {
+      QCustomPlot::wheelEvent(event);
+      return;
+    }
+
   if (dynamic_cast<QCPLegend*>(element) || dynamic_cast<QCPAbstractLegendItem*>(element))
     {
+
+      mWheelFinished = false;
+
       bool reorder = true;
 
       if (event->angleDelta().y() > 0 && legend->wrap() < 8)
@@ -1430,6 +1439,10 @@ void CQCustomPlot::wheelEvent(QWheelEvent * event)
           legend->setFillOrder(legend->fillOrder(), true);
           replot();
         }
+
+      mLastWheelTime = CCopasiTimeVariable::getCurrentWallTime();
+      mWheelFinished = true;
+      return;
     }
 
   QCustomPlot::wheelEvent(event);
