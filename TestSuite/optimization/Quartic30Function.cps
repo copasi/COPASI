@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.18 (Build 136) (http://www.copasi.org) at 2016-12-14 18:34:25 UTC -->
+<!-- generated with COPASI 4.38 (Build 268) (http://www.copasi.org) at 2022-12-14T15:33:28Z -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
-<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="18" versionDevel="136" copasiSourcesModified="0">
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="38" versionDevel="268" copasiSourcesModified="0">
   <ListOfFunctions>
     <Function key="Function_6" name="Constant flux (irreversible)" type="PreDefined" reversible="false">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Function_6">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         v
       </Expression>
@@ -31,22 +39,39 @@ Reaction scheme where the products are created from the reactants and the change
         k1*PRODUCT&lt;substrate_i>
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_81" name="k1" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_79" name="substrate" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_80" name="k1" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_81" name="substrate" order="1" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
   </ListOfFunctions>
-  <Model key="Model_29" name="Quartic(30) function" simulationType="time" timeUnit="s" volumeUnit="ml" areaUnit="m²" lengthUnit="m" quantityUnit="mmol" type="deterministic" avogadroConstant="6.02214179e+23">
+  <Model key="Model_0" name="Quartic(30) function" simulationType="time" timeUnit="s" volumeUnit="ml" areaUnit="m²" lengthUnit="m" quantityUnit="mmol" type="deterministic" avogadroConstant="6.0221417899999999e+23">
     <MiriamAnnotation>
 <rdf:RDF
    xmlns:dcterms="http://purl.org/dc/terms/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Model_29">
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+  <rdf:Description rdf:about="#Model_0">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-03-28T02:47:52Z</dcterms:W3CDTF>
       </rdf:Description>
     </dcterms:created>
+    <dcterms:creator>
+      <rdf:Description>
+        <vCard:EMAIL>pmendes@uchc.edu</vCard:EMAIL>
+        <vCard:N>
+          <rdf:Description>
+            <vCard:Family>Mendes</vCard:Family>
+            <vCard:Given>Pedro</vCard:Given>
+          </rdf:Description>
+        </vCard:N>
+        <vCard:ORG>
+          <rdf:Description>
+            <vCard:Orgname>University of Connecticut School of Medicine</vCard:Orgname>
+          </rdf:Description>
+        </vCard:ORG>
+      </rdf:Description>
+    </dcterms:creator>
   </rdf:Description>
 </rdf:RDF>
 
@@ -63,17 +88,26 @@ Reaction scheme where the products are created from the reactants and the change
 <p>f(x<sub>1</sub>,...,x<sub>30</sub>)=SUM(i=1,30) (i*x<sup>4</sup>)+gauss(0,1)</p>
 <hr />
 <p>This is fourth order function padded with noise. The Gaussian noise makes sure than the function never returns the same value at the same point. Algorithms that do not well with this function will do poorly with noisy data. This version is defined in 30 dimensions.</p>
-<p>First defined by:  De Jong, K. A. (1975) <i>An analysis of the behavior of a class of genetic adaptive systems</i>. PhD Thesis, University of Michigan.</p></body>
+<p>First defined by:  De Jong, K. A. (1975) <i>An analysis of the behavior of a class of genetic adaptive systems</i>. PhD Thesis, University of Michigan.</p>
+<p style="font-size:small"><b>CC0 1.0 Universal</b>: To the extent possible under law, all copyright and related or neighbouring rights to this encoded model have been dedicated to the public domain worldwide. You can copy, modify, distribute and perform the work, even for commercial purposes, all without asking permission. Please refer to <a href="http://creativecommons.org/publicdomain/zero/1.0/" title="Creative Commons CC0">CC0 Public Domain Dedication</a> for more information.</p></body>
     </Comment>
     <ListOfCompartments>
-      <Compartment key="Compartment_5" name="compartment" simulationType="fixed" dimensionality="3">
+      <Compartment key="Compartment_1" name="compartment" simulationType="fixed" dimensionality="3" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Compartment_1">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </Compartment>
     </ListOfCompartments>
     <ListOfMetabolites>
-      <Metabolite key="Metabolite_4" name="dummy" simulationType="reactions" compartment="Compartment_5">
+      <Metabolite key="Metabolite_79" name="dummy" simulationType="reactions" compartment="Compartment_1" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Metabolite_4">
+  <rdf:Description rdf:about="#Metabolite_79">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-03-28T13:14:19Z</dcterms:W3CDTF>
@@ -85,10 +119,10 @@ Reaction scheme where the products are created from the reactants and the change
       </Metabolite>
     </ListOfMetabolites>
     <ListOfModelValues>
-      <ModelValue key="ModelValue_3" name="x1" simulationType="fixed">
+      <ModelValue key="ModelValue_17" name="x1" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_3">
+  <rdf:Description rdf:about="#ModelValue_17">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-03-28T02:48:47Z</dcterms:W3CDTF>
@@ -98,10 +132,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_13" name="x2" simulationType="fixed">
+      <ModelValue key="ModelValue_16" name="x2" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_13">
+  <rdf:Description rdf:about="#ModelValue_16">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-03-28T02:51:41Z</dcterms:W3CDTF>
@@ -111,10 +145,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_12" name="Quartic function" simulationType="assignment">
+      <ModelValue key="ModelValue_15" name="Quartic function" simulationType="assignment" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_12">
+  <rdf:Description rdf:about="#ModelValue_15">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-03-28T02:51:50Z</dcterms:W3CDTF>
@@ -127,14 +161,30 @@ Reaction scheme where the products are created from the reactants and the change
           &lt;CN=Root,Model=Quartic(30) function,Vector=Values[x1],Reference=InitialValue>^4+2*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x2],Reference=InitialValue>^4+3*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x3],Reference=InitialValue>^4+4*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x4],Reference=InitialValue>^4+5*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x5],Reference=InitialValue>^4+6*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x6],Reference=InitialValue>^4+7*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x7],Reference=InitialValue>^4+8*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x8],Reference=InitialValue>^4+9*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x9],Reference=InitialValue>^4+10*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x10],Reference=InitialValue>^4+11*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x11],Reference=InitialValue>^4+12*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x12],Reference=InitialValue>^4+13*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x13],Reference=InitialValue>^4+14*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x14],Reference=InitialValue>^4+15*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x15],Reference=InitialValue>^4+16*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x16],Reference=InitialValue>^4+17*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x17],Reference=InitialValue>^4+18*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x18],Reference=InitialValue>^4+19*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x19],Reference=InitialValue>^4+20*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x20],Reference=InitialValue>^4+21*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x21],Reference=InitialValue>^4+22*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x22],Reference=InitialValue>^4+23*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x23],Reference=InitialValue>^4+24*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x24],Reference=InitialValue>^4+25*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x25],Reference=InitialValue>^4+26*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x26],Reference=InitialValue>^4+27*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x27],Reference=InitialValue>^4+28*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x28],Reference=InitialValue>^4+29*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x29],Reference=InitialValue>^4+30*&lt;CN=Root,Model=Quartic(30) function,Vector=Values[x30],Reference=InitialValue>^4+uniform(0,1)
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_11" name="x3" simulationType="fixed">
+      <ModelValue key="ModelValue_14" name="x3" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_14">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_14" name="x4" simulationType="fixed">
+      <ModelValue key="ModelValue_13" name="x4" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_13">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_15" name="x5" simulationType="fixed">
+      <ModelValue key="ModelValue_12" name="x5" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_15">
+  <rdf:Description rdf:about="#ModelValue_12">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-10T00:56:42Z</dcterms:W3CDTF>
@@ -144,10 +194,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_16" name="x6" simulationType="fixed">
+      <ModelValue key="ModelValue_11" name="x6" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_16">
+  <rdf:Description rdf:about="#ModelValue_11">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-10T00:56:51Z</dcterms:W3CDTF>
@@ -157,10 +207,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_17" name="x7" simulationType="fixed">
+      <ModelValue key="ModelValue_8" name="x7" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_17">
+  <rdf:Description rdf:about="#ModelValue_8">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-10T00:56:56Z</dcterms:W3CDTF>
@@ -170,10 +220,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_25" name="x8" simulationType="fixed">
+      <ModelValue key="ModelValue_9" name="x8" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_25">
+  <rdf:Description rdf:about="#ModelValue_9">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-10T00:57:00Z</dcterms:W3CDTF>
@@ -183,10 +233,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_26" name="x9" simulationType="fixed">
+      <ModelValue key="ModelValue_2" name="x9" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_26">
+  <rdf:Description rdf:about="#ModelValue_2">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-10T00:57:04Z</dcterms:W3CDTF>
@@ -196,10 +246,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_27" name="x10" simulationType="fixed">
+      <ModelValue key="ModelValue_3" name="x10" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_27">
+  <rdf:Description rdf:about="#ModelValue_3">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-10T00:57:09Z</dcterms:W3CDTF>
@@ -209,14 +259,30 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_42" name="x11" simulationType="fixed">
+      <ModelValue key="ModelValue_18" name="x11" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_18">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_43" name="x12" simulationType="fixed">
+      <ModelValue key="ModelValue_47" name="x12" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_47">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_44" name="x13" simulationType="fixed">
+      <ModelValue key="ModelValue_46" name="x13" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_44">
+  <rdf:Description rdf:about="#ModelValue_46">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:52:07Z</dcterms:W3CDTF>
@@ -226,7 +292,7 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_45" name="x14" simulationType="fixed">
+      <ModelValue key="ModelValue_45" name="x14" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#ModelValue_45">
@@ -239,10 +305,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_46" name="x15" simulationType="fixed">
+      <ModelValue key="ModelValue_44" name="x15" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_46">
+  <rdf:Description rdf:about="#ModelValue_44">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:52:17Z</dcterms:W3CDTF>
@@ -252,10 +318,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_47" name="x16" simulationType="fixed">
+      <ModelValue key="ModelValue_43" name="x16" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_47">
+  <rdf:Description rdf:about="#ModelValue_43">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:52:21Z</dcterms:W3CDTF>
@@ -265,10 +331,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_48" name="x17" simulationType="fixed">
+      <ModelValue key="ModelValue_42" name="x17" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_48">
+  <rdf:Description rdf:about="#ModelValue_42">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:52:25Z</dcterms:W3CDTF>
@@ -278,10 +344,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_49" name="x18" simulationType="fixed">
+      <ModelValue key="ModelValue_41" name="x18" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_49">
+  <rdf:Description rdf:about="#ModelValue_41">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:52:29Z</dcterms:W3CDTF>
@@ -291,10 +357,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_50" name="x19" simulationType="fixed">
+      <ModelValue key="ModelValue_40" name="x19" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_50">
+  <rdf:Description rdf:about="#ModelValue_40">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:52:33Z</dcterms:W3CDTF>
@@ -304,10 +370,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_51" name="x20" simulationType="fixed">
+      <ModelValue key="ModelValue_39" name="x20" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_51">
+  <rdf:Description rdf:about="#ModelValue_39">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:52:36Z</dcterms:W3CDTF>
@@ -317,10 +383,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_52" name="x21" simulationType="fixed">
+      <ModelValue key="ModelValue_38" name="x21" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_52">
+  <rdf:Description rdf:about="#ModelValue_38">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:52:41Z</dcterms:W3CDTF>
@@ -330,10 +396,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_53" name="x22" simulationType="fixed">
+      <ModelValue key="ModelValue_37" name="x22" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_53">
+  <rdf:Description rdf:about="#ModelValue_37">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:52:45Z</dcterms:W3CDTF>
@@ -343,10 +409,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_54" name="x23" simulationType="fixed">
+      <ModelValue key="ModelValue_36" name="x23" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_54">
+  <rdf:Description rdf:about="#ModelValue_36">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:52:49Z</dcterms:W3CDTF>
@@ -356,10 +422,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_55" name="x24" simulationType="fixed">
+      <ModelValue key="ModelValue_35" name="x24" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_55">
+  <rdf:Description rdf:about="#ModelValue_35">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:52:52Z</dcterms:W3CDTF>
@@ -369,10 +435,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_56" name="x25" simulationType="fixed">
+      <ModelValue key="ModelValue_34" name="x25" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_56">
+  <rdf:Description rdf:about="#ModelValue_34">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:52:56Z</dcterms:W3CDTF>
@@ -382,10 +448,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_57" name="x26" simulationType="fixed">
+      <ModelValue key="ModelValue_33" name="x26" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_57">
+  <rdf:Description rdf:about="#ModelValue_33">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:52:59Z</dcterms:W3CDTF>
@@ -395,10 +461,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_58" name="x27" simulationType="fixed">
+      <ModelValue key="ModelValue_32" name="x27" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_58">
+  <rdf:Description rdf:about="#ModelValue_32">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:53:03Z</dcterms:W3CDTF>
@@ -408,10 +474,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_59" name="x28" simulationType="fixed">
+      <ModelValue key="ModelValue_31" name="x28" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_59">
+  <rdf:Description rdf:about="#ModelValue_31">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:53:09Z</dcterms:W3CDTF>
@@ -421,10 +487,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_60" name="x29" simulationType="fixed">
+      <ModelValue key="ModelValue_30" name="x29" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_60">
+  <rdf:Description rdf:about="#ModelValue_30">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:53:30Z</dcterms:W3CDTF>
@@ -434,10 +500,10 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_61" name="x30" simulationType="fixed">
+      <ModelValue key="ModelValue_27" name="x30" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_61">
+  <rdf:Description rdf:about="#ModelValue_27">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-21T16:53:35Z</dcterms:W3CDTF>
@@ -449,10 +515,10 @@ Reaction scheme where the products are created from the reactants and the change
       </ModelValue>
     </ListOfModelValues>
     <ListOfReactions>
-      <Reaction key="Reaction_2" name="reaction_1" reversible="false" fast="false">
+      <Reaction key="Reaction_185" name="reaction_1" reversible="false" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_2">
+  <rdf:Description rdf:about="#Reaction_185">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-03-28T13:15:26Z</dcterms:W3CDTF>
@@ -462,23 +528,23 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfProducts>
-          <Product metabolite="Metabolite_4" stoichiometry="1"/>
+          <Product metabolite="Metabolite_79" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4244" name="v" value="0.1"/>
+          <Constant key="Parameter_10718" name="v" value="0.1"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Quartic(30) function,Vector=Compartments[compartment]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_49">
-              <SourceParameter reference="Parameter_4244"/>
+              <SourceParameter reference="Parameter_10718"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
-      <Reaction key="Reaction_3" name="reaction" reversible="false" fast="false">
+      <Reaction key="Reaction_184" name="reaction" reversible="false" fast="false" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Reaction_3">
+  <rdf:Description rdf:about="#Reaction_184">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-03-28T13:15:59Z</dcterms:W3CDTF>
@@ -488,25 +554,33 @@ Reaction scheme where the products are created from the reactants and the change
 </rdf:RDF>
         </MiriamAnnotation>
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_4" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_79" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_3822" name="k1" value="0.1"/>
+          <Constant key="Parameter_11126" name="k1" value="0.1"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Quartic(30) function,Vector=Compartments[compartment]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_3822"/>
+            <CallParameter functionParameter="FunctionParameter_80">
+              <SourceParameter reference="Parameter_11126"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_4"/>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Metabolite_79"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
       </Reaction>
     </ListOfReactions>
-    <ListOfModelParameterSets activeSet="ModelParameterSet_1">
-      <ModelParameterSet key="ModelParameterSet_1" name="Initial State">
+    <ListOfModelParameterSets activeSet="ModelParameterSet_0">
+      <ModelParameterSet key="ModelParameterSet_0" name="Initial State">
+        <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelParameterSet_0">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
         <ModelParameterGroup cn="String=Initial Time" type="Group">
           <ModelParameter cn="CN=Root,Model=Quartic(30) function" value="0" type="Model" simulationType="time"/>
         </ModelParameterGroup>
@@ -514,12 +588,12 @@ Reaction scheme where the products are created from the reactants and the change
           <ModelParameter cn="CN=Root,Model=Quartic(30) function,Vector=Compartments[compartment]" value="1" type="Compartment" simulationType="fixed"/>
         </ModelParameterGroup>
         <ModelParameterGroup cn="String=Initial Species Values" type="Group">
-          <ModelParameter cn="CN=Root,Model=Quartic(30) function,Vector=Compartments[compartment],Vector=Metabolites[dummy]" value="6.022141790000002e+20" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Quartic(30) function,Vector=Compartments[compartment],Vector=Metabolites[dummy]" value="6.0221417900000018e+20" type="Species" simulationType="reactions"/>
         </ModelParameterGroup>
         <ModelParameterGroup cn="String=Initial Global Quantities" type="Group">
           <ModelParameter cn="CN=Root,Model=Quartic(30) function,Vector=Values[x1]" value="0" type="ModelValue" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Quartic(30) function,Vector=Values[x2]" value="0" type="ModelValue" simulationType="fixed"/>
-          <ModelParameter cn="CN=Root,Model=Quartic(30) function,Vector=Values[Quartic function]" value="0.1023643828229979" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Quartic(30) function,Vector=Values[Quartic function]" value="0.51622881053481251" type="ModelValue" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Quartic(30) function,Vector=Values[x3]" value="0" type="ModelValue" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Quartic(30) function,Vector=Values[x4]" value="0" type="ModelValue" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Quartic(30) function,Vector=Values[x5]" value="0" type="ModelValue" simulationType="fixed"/>
@@ -551,63 +625,63 @@ Reaction scheme where the products are created from the reactants and the change
         </ModelParameterGroup>
         <ModelParameterGroup cn="String=Kinetic Parameters" type="Group">
           <ModelParameterGroup cn="CN=Root,Model=Quartic(30) function,Vector=Reactions[reaction_1]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Quartic(30) function,Vector=Reactions[reaction_1],ParameterGroup=Parameters,Parameter=v" value="0.1" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Quartic(30) function,Vector=Reactions[reaction_1],ParameterGroup=Parameters,Parameter=v" value="0.10000000000000001" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Quartic(30) function,Vector=Reactions[reaction]" type="Reaction">
-            <ModelParameter cn="CN=Root,Model=Quartic(30) function,Vector=Reactions[reaction],ParameterGroup=Parameters,Parameter=k1" value="0.1" type="ReactionParameter" simulationType="fixed"/>
+            <ModelParameter cn="CN=Root,Model=Quartic(30) function,Vector=Reactions[reaction],ParameterGroup=Parameters,Parameter=k1" value="0.10000000000000001" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
         </ModelParameterGroup>
       </ModelParameterSet>
     </ListOfModelParameterSets>
     <StateTemplate>
-      <StateTemplateVariable objectReference="Model_29"/>
-      <StateTemplateVariable objectReference="Metabolite_4"/>
-      <StateTemplateVariable objectReference="ModelValue_12"/>
-      <StateTemplateVariable objectReference="Compartment_5"/>
-      <StateTemplateVariable objectReference="ModelValue_3"/>
-      <StateTemplateVariable objectReference="ModelValue_13"/>
-      <StateTemplateVariable objectReference="ModelValue_11"/>
-      <StateTemplateVariable objectReference="ModelValue_14"/>
+      <StateTemplateVariable objectReference="Model_0"/>
+      <StateTemplateVariable objectReference="Metabolite_79"/>
       <StateTemplateVariable objectReference="ModelValue_15"/>
-      <StateTemplateVariable objectReference="ModelValue_16"/>
+      <StateTemplateVariable objectReference="Compartment_1"/>
       <StateTemplateVariable objectReference="ModelValue_17"/>
-      <StateTemplateVariable objectReference="ModelValue_25"/>
-      <StateTemplateVariable objectReference="ModelValue_26"/>
-      <StateTemplateVariable objectReference="ModelValue_27"/>
-      <StateTemplateVariable objectReference="ModelValue_42"/>
-      <StateTemplateVariable objectReference="ModelValue_43"/>
-      <StateTemplateVariable objectReference="ModelValue_44"/>
-      <StateTemplateVariable objectReference="ModelValue_45"/>
-      <StateTemplateVariable objectReference="ModelValue_46"/>
+      <StateTemplateVariable objectReference="ModelValue_16"/>
+      <StateTemplateVariable objectReference="ModelValue_14"/>
+      <StateTemplateVariable objectReference="ModelValue_13"/>
+      <StateTemplateVariable objectReference="ModelValue_12"/>
+      <StateTemplateVariable objectReference="ModelValue_11"/>
+      <StateTemplateVariable objectReference="ModelValue_8"/>
+      <StateTemplateVariable objectReference="ModelValue_9"/>
+      <StateTemplateVariable objectReference="ModelValue_2"/>
+      <StateTemplateVariable objectReference="ModelValue_3"/>
+      <StateTemplateVariable objectReference="ModelValue_18"/>
       <StateTemplateVariable objectReference="ModelValue_47"/>
-      <StateTemplateVariable objectReference="ModelValue_48"/>
-      <StateTemplateVariable objectReference="ModelValue_49"/>
-      <StateTemplateVariable objectReference="ModelValue_50"/>
-      <StateTemplateVariable objectReference="ModelValue_51"/>
-      <StateTemplateVariable objectReference="ModelValue_52"/>
-      <StateTemplateVariable objectReference="ModelValue_53"/>
-      <StateTemplateVariable objectReference="ModelValue_54"/>
-      <StateTemplateVariable objectReference="ModelValue_55"/>
-      <StateTemplateVariable objectReference="ModelValue_56"/>
-      <StateTemplateVariable objectReference="ModelValue_57"/>
-      <StateTemplateVariable objectReference="ModelValue_58"/>
-      <StateTemplateVariable objectReference="ModelValue_59"/>
-      <StateTemplateVariable objectReference="ModelValue_60"/>
-      <StateTemplateVariable objectReference="ModelValue_61"/>
+      <StateTemplateVariable objectReference="ModelValue_46"/>
+      <StateTemplateVariable objectReference="ModelValue_45"/>
+      <StateTemplateVariable objectReference="ModelValue_44"/>
+      <StateTemplateVariable objectReference="ModelValue_43"/>
+      <StateTemplateVariable objectReference="ModelValue_42"/>
+      <StateTemplateVariable objectReference="ModelValue_41"/>
+      <StateTemplateVariable objectReference="ModelValue_40"/>
+      <StateTemplateVariable objectReference="ModelValue_39"/>
+      <StateTemplateVariable objectReference="ModelValue_38"/>
+      <StateTemplateVariable objectReference="ModelValue_37"/>
+      <StateTemplateVariable objectReference="ModelValue_36"/>
+      <StateTemplateVariable objectReference="ModelValue_35"/>
+      <StateTemplateVariable objectReference="ModelValue_34"/>
+      <StateTemplateVariable objectReference="ModelValue_33"/>
+      <StateTemplateVariable objectReference="ModelValue_32"/>
+      <StateTemplateVariable objectReference="ModelValue_31"/>
+      <StateTemplateVariable objectReference="ModelValue_30"/>
+      <StateTemplateVariable objectReference="ModelValue_27"/>
     </StateTemplate>
     <InitialState type="initialState">
-      0 6.022141790000002e+20 0.1023643828229979 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+      0 6.0221417900000018e+20 0.51622881053481251 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_26" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
-      <Report reference="Report_19" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_11" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+      <Report reference="Report_12" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
       </Problem>
       <Method name="Enhanced Newton" type="EnhancedNewton">
-        <Parameter name="Resolution" type="unsignedFloat" value="1e-09"/>
+        <Parameter name="Resolution" type="unsignedFloat" value="1.0000000000000001e-09"/>
         <Parameter name="Derivation Factor" type="unsignedFloat" value="0.001"/>
         <Parameter name="Use Newton" type="bool" value="1"/>
         <Parameter name="Use Integration" type="bool" value="1"/>
@@ -616,9 +690,11 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Iteration Limit" type="unsignedInteger" value="50"/>
         <Parameter name="Maximum duration for forward integration" type="unsignedFloat" value="1000000000"/>
         <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1000000"/>
+        <Parameter name="Target Criterion" type="string" value="Distance and Rate"/>
       </Method>
     </Task>
-    <Task key="Task_25" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
+    <Task key="Task_15" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
+      <Report reference="Report_0" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
@@ -628,16 +704,19 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="OutputStartTime" type="float" value="0"/>
         <Parameter name="Output Event" type="bool" value="0"/>
         <Parameter name="Start in Steady State" type="bool" value="0"/>
+        <Parameter name="Use Values" type="bool" value="0"/>
+        <Parameter name="Values" type="string" value=""/>
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
-        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="9.9999999999999995e-07"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="9.9999999999999998e-13"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+        <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_24" name="Scan" type="scan" scheduled="true" updateModel="false">
-      <Report reference="Report_18" target="Quartic30Function.txt" append="1" confirmOverwrite="0"/>
+    <Task key="Task_9" name="Scan" type="scan" scheduled="true" updateModel="false">
+      <Report reference="Report_23" target="Quartic30Function.txt" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="4"/>
         <ParameterGroup name="ScanItems">
@@ -649,19 +728,20 @@ Reaction scheme where the products are created from the reactants and the change
         </ParameterGroup>
         <Parameter name="Output in subtask" type="bool" value="0"/>
         <Parameter name="Adjust initial conditions" type="bool" value="1"/>
+        <Parameter name="Continue on Error" type="bool" value="0"/>
       </Problem>
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_23" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
-      <Report reference="Report_8" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_12" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
+      <Report reference="Report_9" target="" append="1" confirmOverwrite="1"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
       </Method>
     </Task>
-    <Task key="Task_22" name="Optimization" type="optimization" scheduled="false" updateModel="false">
-      <Report reference="Report_17" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_2" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+      <Report reference="Report_7" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="CN=Root,Vector=TaskList[Time-Course]"/>
         <ParameterText name="ObjectiveExpression" type="expression">
@@ -674,13 +754,13 @@ Reaction scheme where the products are created from the reactants and the change
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x1],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="-1.27286"/>
+            <Parameter name="StartValue" type="float" value="-1.2728600000000001"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x2],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="0.7549694149463833"/>
+            <Parameter name="StartValue" type="float" value="0.75496941494638325"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
@@ -692,43 +772,43 @@ Reaction scheme where the products are created from the reactants and the change
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x4],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="-0.8625213294249311"/>
+            <Parameter name="StartValue" type="float" value="-0.86252132942493109"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x5],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="0.7869881771847111"/>
+            <Parameter name="StartValue" type="float" value="0.78698817718471115"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x6],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="-0.4339573882040468"/>
+            <Parameter name="StartValue" type="float" value="-0.43395738820404678"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x7],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="-0.9847181563881967"/>
+            <Parameter name="StartValue" type="float" value="-0.98471815638819671"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x8],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="0.3500798825244604"/>
+            <Parameter name="StartValue" type="float" value="0.35007988252446037"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x9],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="-1.020426585017803"/>
+            <Parameter name="StartValue" type="float" value="-1.0204265850178029"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x10],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="-0.1693336603439723"/>
+            <Parameter name="StartValue" type="float" value="-0.16933366034397229"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
@@ -746,37 +826,37 @@ Reaction scheme where the products are created from the reactants and the change
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x13],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="-0.7472275834035192"/>
+            <Parameter name="StartValue" type="float" value="-0.74722758340351925"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x14],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="-0.07550152810185717"/>
+            <Parameter name="StartValue" type="float" value="-0.075501528101857174"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x15],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="-0.6629995493644382"/>
+            <Parameter name="StartValue" type="float" value="-0.66299954936443817"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x16],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="0.9717585533139668"/>
+            <Parameter name="StartValue" type="float" value="0.97175855331396677"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x17],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="-0.06206243963494495"/>
+            <Parameter name="StartValue" type="float" value="-0.062062439634944948"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x18],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="-0.9450522994215256"/>
+            <Parameter name="StartValue" type="float" value="-0.94505229942152558"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
@@ -788,37 +868,37 @@ Reaction scheme where the products are created from the reactants and the change
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x20],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="-0.7841484718360353"/>
+            <Parameter name="StartValue" type="float" value="-0.78414847183603531"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x21],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="0.291680169471465"/>
+            <Parameter name="StartValue" type="float" value="0.29168016947146502"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x22],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="1.006331653531252"/>
+            <Parameter name="StartValue" type="float" value="1.0063316535312521"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x23],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="-0.4426819006639258"/>
+            <Parameter name="StartValue" type="float" value="-0.44268190066392582"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x24],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="-0.8065898852438177"/>
+            <Parameter name="StartValue" type="float" value="-0.80658988524381769"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x25],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="0.9824229794047825"/>
+            <Parameter name="StartValue" type="float" value="0.98242297940478251"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
@@ -830,13 +910,13 @@ Reaction scheme where the products are created from the reactants and the change
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x27],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="-1.16964980957323"/>
+            <Parameter name="StartValue" type="float" value="-1.1696498095732299"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x28],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="0.087128"/>
+            <Parameter name="StartValue" type="float" value="0.087127999999999997"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
           <ParameterGroup name="OptimizationItem">
@@ -848,7 +928,7 @@ Reaction scheme where the products are created from the reactants and the change
           <ParameterGroup name="OptimizationItem">
             <Parameter name="LowerBound" type="cn" value="-1.28"/>
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=Quartic(30) function,Vector=Values[x30],Reference=InitialValue"/>
-            <Parameter name="StartValue" type="float" value="0.07583004804230997"/>
+            <Parameter name="StartValue" type="float" value="0.075830048042309972"/>
             <Parameter name="UpperBound" type="cn" value="1.28"/>
           </ParameterGroup>
         </ParameterGroup>
@@ -856,14 +936,17 @@ Reaction scheme where the products are created from the reactants and the change
         </ParameterGroup>
       </Problem>
       <Method name="Genetic Algorithm" type="GeneticAlgorithm">
+        <Parameter name="Log Verbosity" type="unsignedInteger" value="0"/>
         <Parameter name="Number of Generations" type="unsignedInteger" value="200"/>
         <Parameter name="Population Size" type="unsignedInteger" value="20"/>
         <Parameter name="Random Number Generator" type="unsignedInteger" value="1"/>
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
+        <Parameter name="Mutation Variance" type="float" value="0.10000000000000001"/>
+        <Parameter name="Stop after # Stalled Generations" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_21" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
-      <Report reference="Report_16" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_8" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+      <Report reference="Report_6" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
@@ -875,33 +958,37 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="Steady-State" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
         <Parameter name="Time-Course" type="cn" value="CN=Root,Vector=TaskList[Time-Course]"/>
         <Parameter name="Create Parameter Sets" type="bool" value="0"/>
+        <Parameter name="Use Time Sens" type="bool" value="0"/>
+        <Parameter name="Time-Sens" type="cn" value=""/>
         <ParameterGroup name="Experiment Set">
         </ParameterGroup>
         <ParameterGroup name="Validation Set">
-          <Parameter name="Threshold" type="unsignedInteger" value="5"/>
           <Parameter name="Weight" type="unsignedFloat" value="1"/>
+          <Parameter name="Threshold" type="unsignedInteger" value="5"/>
         </ParameterGroup>
       </Problem>
       <Method name="Evolutionary Programming" type="EvolutionaryProgram">
+        <Parameter name="Log Verbosity" type="unsignedInteger" value="0"/>
         <Parameter name="Number of Generations" type="unsignedInteger" value="200"/>
         <Parameter name="Population Size" type="unsignedInteger" value="20"/>
         <Parameter name="Random Number Generator" type="unsignedInteger" value="1"/>
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
+        <Parameter name="Stop after # Stalled Generations" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_20" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_15" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_7" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_5" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_26"/>
+        <Parameter name="Steady-State" type="key" value="Task_11"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
-        <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-09"/>
+        <Parameter name="Modulation Factor" type="unsignedFloat" value="1.0000000000000001e-09"/>
         <Parameter name="Use Reder" type="bool" value="1"/>
         <Parameter name="Use Smallbone" type="bool" value="1"/>
       </Method>
     </Task>
-    <Task key="Task_19" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
-      <Report reference="Report_14" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_6" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+      <Report reference="Report_4" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -910,13 +997,13 @@ Reaction scheme where the products are created from the reactants and the change
       <Method name="Wolf Method" type="WolfMethod">
         <Parameter name="Orthonormalization Interval" type="unsignedFloat" value="1"/>
         <Parameter name="Overall time" type="unsignedFloat" value="1000"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
-        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="9.9999999999999995e-07"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="9.9999999999999998e-13"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_18" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_13" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_5" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_3" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -925,11 +1012,11 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="OutputStartTime" type="float" value="0"/>
       </Problem>
       <Method name="ILDM (LSODA,Deuflhard)" type="TimeScaleSeparation(ILDM,Deuflhard)">
-        <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="1e-06"/>
+        <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="9.9999999999999995e-07"/>
       </Method>
     </Task>
-    <Task key="Task_17" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
-      <Report reference="Report_12" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_3" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
+      <Report reference="Report_2" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
         <ParameterGroup name="TargetFunctions">
@@ -949,16 +1036,17 @@ Reaction scheme where the products are created from the reactants and the change
       </Problem>
       <Method name="Sensitivities Method" type="SensitivitiesMethod">
         <Parameter name="Delta factor" type="unsignedFloat" value="0.001"/>
-        <Parameter name="Delta minimum" type="unsignedFloat" value="1e-12"/>
+        <Parameter name="Delta minimum" type="unsignedFloat" value="9.9999999999999998e-13"/>
       </Method>
     </Task>
-    <Task key="Task_16" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+    <Task key="Task_13" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+      <Report reference="Report_22" target="" append="1" confirmOverwrite="1"/>
       <Problem>
       </Problem>
       <Method name="Householder Reduction" type="Householder">
       </Method>
     </Task>
-    <Task key="Task_15" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
+    <Task key="Task_14" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
@@ -968,6 +1056,8 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="OutputStartTime" type="float" value="0"/>
         <Parameter name="Output Event" type="bool" value="0"/>
         <Parameter name="Start in Steady State" type="bool" value="0"/>
+        <Parameter name="Use Values" type="bool" value="0"/>
+        <Parameter name="Values" type="string" value=""/>
         <Parameter name="LimitCrossings" type="bool" value="0"/>
         <Parameter name="NumCrossingsLimit" type="unsignedInteger" value="0"/>
         <Parameter name="LimitOutTime" type="bool" value="0"/>
@@ -975,10 +1065,10 @@ Reaction scheme where the products are created from the reactants and the change
         <Parameter name="PositiveDirection" type="bool" value="1"/>
         <Parameter name="NumOutCrossingsLimit" type="unsignedInteger" value="0"/>
         <Parameter name="LimitUntilConvergence" type="bool" value="0"/>
-        <Parameter name="ConvergenceTolerance" type="float" value="1e-06"/>
+        <Parameter name="ConvergenceTolerance" type="float" value="9.9999999999999995e-07"/>
         <Parameter name="Threshold" type="float" value="0"/>
         <Parameter name="DelayOutputUntilConvergence" type="bool" value="0"/>
-        <Parameter name="OutputConvergenceTolerance" type="float" value="1e-06"/>
+        <Parameter name="OutputConvergenceTolerance" type="float" value="9.9999999999999995e-07"/>
         <ParameterText name="TriggerExpression" type="expression">
           
         </ParameterText>
@@ -986,22 +1076,48 @@ Reaction scheme where the products are created from the reactants and the change
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
-        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="9.9999999999999995e-07"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="9.9999999999999998e-13"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+        <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_27" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
-      <Report reference="Report_11" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_4" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
+      <Report reference="Report_1" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_26"/>
+        <Parameter name="Steady-State" type="key" value="Task_11"/>
       </Problem>
       <Method name="Linear Noise Approximation" type="LinearNoiseApproximation">
       </Method>
     </Task>
+    <Task key="Task_10" name="Time-Course Sensitivities" type="timeSensitivities" scheduled="false" updateModel="false">
+      <Problem>
+        <Parameter name="AutomaticStepSize" type="bool" value="0"/>
+        <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
+        <Parameter name="StepSize" type="float" value="0.01"/>
+        <Parameter name="Duration" type="float" value="1"/>
+        <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
+        <Parameter name="OutputStartTime" type="float" value="0"/>
+        <Parameter name="Output Event" type="bool" value="0"/>
+        <Parameter name="Start in Steady State" type="bool" value="0"/>
+        <Parameter name="Use Values" type="bool" value="0"/>
+        <Parameter name="Values" type="string" value=""/>
+        <ParameterGroup name="ListOfParameters">
+        </ParameterGroup>
+        <ParameterGroup name="ListOfTargets">
+        </ParameterGroup>
+      </Problem>
+      <Method name="LSODA Sensitivities" type="Sensitivities(LSODA)">
+        <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="9.9999999999999995e-07"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="9.9999999999999998e-13"/>
+        <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+        <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
+      </Method>
+    </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_18" name="Optimization profile" taskType="scan" separator="&#x09;" precision="12">
+    <Report key="Report_23" name="Optimization profile" taskType="scan" separator="&#x09;" precision="12">
       <Comment>
         This table outputs time and the target function of the optimization.
       </Comment>
@@ -1025,7 +1141,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations"/>
       </Body>
     </Report>
-    <Report key="Report_19" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_12" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1033,7 +1149,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_8" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+    <Report key="Report_9" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1041,7 +1157,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_17" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_7" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1065,7 +1181,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_16" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_6" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1089,7 +1205,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_15" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_5" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1101,7 +1217,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_14" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_4" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1113,7 +1229,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_13" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_3" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1125,7 +1241,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_12" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
+    <Report key="Report_2" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1137,7 +1253,7 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Sensitivities],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_11" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
+    <Report key="Report_1" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -1149,19 +1265,42 @@ Reaction scheme where the products are created from the reactants and the change
         <Object cn="CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"/>
       </Footer>
     </Report>
+    <Report key="Report_0" name="Time-Course" taskType="timeCourse" separator="&#x09;" precision="6">
+      <Comment>
+        Automatically generated report.
+      </Comment>
+      <Header>
+        <Object cn="CN=Root,Vector=TaskList[Time-Course],Object=Description"/>
+      </Header>
+      <Footer>
+        <Object cn="CN=Root,Vector=TaskList[Time-Course],Object=Result"/>
+      </Footer>
+    </Report>
+    <Report key="Report_22" name="Moieties" taskType="moieties" separator="&#x09;" precision="6">
+      <Comment>
+        Automatically generated report.
+      </Comment>
+      <Header>
+        <Object cn="CN=Root,Vector=TaskList[Moieties],Object=Description"/>
+      </Header>
+      <Footer>
+        <Object cn="String=&#x0a;"/>
+        <Object cn="CN=Root,Vector=TaskList[Moieties],Object=Result"/>
+      </Footer>
+    </Report>
   </ListOfReports>
   <ListOfPlots>
-    <PlotSpecification name="progress of optimization" type="Plot2D" active="1">
+    <PlotSpecification name="progress of optimization" type="Plot2D" active="1" taskTypes="">
       <Parameter name="log X" type="bool" value="0"/>
       <Parameter name="log Y" type="bool" value="1"/>
       <ListOfPlotItems>
         <PlotItem name="obj. func." type="Curve2D">
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line type" type="unsignedInteger" value="2"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
           <Parameter name="Symbol subtype" type="unsignedInteger" value="1"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations"/>
             <ChannelSpec cn="CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value"/>
@@ -1169,14 +1308,18 @@ Reaction scheme where the products are created from the reactants and the change
         </PlotItem>
       </ListOfPlotItems>
     </PlotSpecification>
-    <PlotSpecification name="histogram" type="Plot2D" active="0">
+    <PlotSpecification name="histogram" type="Plot2D" active="0" taskTypes="">
       <Parameter name="log X" type="bool" value="0"/>
       <Parameter name="log Y" type="bool" value="0"/>
       <ListOfPlotItems>
         <PlotItem name="Histogram: TaskList[Optimization].(Problem)Optimization.Best Value" type="Histogram1DItem">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="increment" type="float" value="0.10000000000000001"/>
           <Parameter name="Color" type="string" value="auto"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
-          <Parameter name="increment" type="float" value="0.1"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value"/>
           </ListOfChannels>
@@ -1187,14 +1330,82 @@ Reaction scheme where the products are created from the reactants and the change
   <GUI>
   </GUI>
   <ListOfUnitDefinitions>
-    <UnitDefinition key="Unit_0" name="meter" symbol="m">
+    <UnitDefinition key="Unit_1" name="meter" symbol="m">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_0">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         m
       </Expression>
     </UnitDefinition>
-    <UnitDefinition key="Unit_2" name="second" symbol="s">
+    <UnitDefinition key="Unit_5" name="second" symbol="s">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_4">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         s
+      </Expression>
+    </UnitDefinition>
+    <UnitDefinition key="Unit_13" name="Avogadro" symbol="Avogadro">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_12">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
+      <Expression>
+        Avogadro
+      </Expression>
+    </UnitDefinition>
+    <UnitDefinition key="Unit_17" name="item" symbol="#">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_16">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
+      <Expression>
+        #
+      </Expression>
+    </UnitDefinition>
+    <UnitDefinition key="Unit_35" name="liter" symbol="l">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_34">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
+      <Expression>
+        0.001*m^3
+      </Expression>
+    </UnitDefinition>
+    <UnitDefinition key="Unit_41" name="mole" symbol="mol">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_40">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
+      <Expression>
+        Avogadro*#
       </Expression>
     </UnitDefinition>
   </ListOfUnitDefinitions>
