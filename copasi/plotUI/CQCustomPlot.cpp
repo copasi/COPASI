@@ -1032,7 +1032,7 @@ void CQCustomPlot::finish()
   // We need to force a replot, i.e., the next mNextPlotTime should be in the past.
   mNextPlotTime = 0;
 
-  replot();
+  replot(true);
 }
 
 bool CQCustomPlot::saveData(const std::string & filename)
