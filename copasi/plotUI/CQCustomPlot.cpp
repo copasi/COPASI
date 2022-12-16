@@ -1410,38 +1410,34 @@ void CQCustomPlot::wheelEvent(QWheelEvent * event)
   QCPLayerable * element = layerableAt(event->pos(), true);
 #endif
 
-  if (!mWheelFinished || (!mLastWheelTime.isZero() && (CCopasiTimeVariable::getCurrentWallTime() + 1000) < mLastWheelTime))
+  double angleDelta = event->angleDelta().y();
+
+  // skip if we are only notified about the beginning of a wheel / track movement
+  // or if we just recently checked
+  if (qAbs(angleDelta) < 1e-3 ||
+      (!mNextWheelTime.isZero() && CCopasiTimeVariable::getCurrentWallTime() < mNextWheelTime))
     {
       QCustomPlot::wheelEvent(event);
       return;
     }
 
+  // delay next event
+  mNextWheelTime = CCopasiTimeVariable::getCurrentWallTime() + 1000 * 900;
+
   if (dynamic_cast<QCPLegend*>(element) || dynamic_cast<QCPAbstractLegendItem*>(element))
     {
 
-      mWheelFinished = false;
-
-      bool reorder = true;
-
-      if (event->angleDelta().y() > 0 && legend->wrap() < 8)
+      if (angleDelta > 0 && legend->wrap() < 8)
         {
           legend->setWrap(legend->wrap() + 1);
         }
-      else if (legend->wrap() > 1)
+      else if (angleDelta < 0 && legend->wrap() > 1)
         {
           legend->setWrap(legend->wrap() - 1);
         }
-      else
-        reorder = false;
 
-      if (reorder)
-        {
-          legend->setFillOrder(legend->fillOrder(), true);
-          replot();
-        }
-
-      mLastWheelTime = CCopasiTimeVariable::getCurrentWallTime();
-      mWheelFinished = true;
+      legend->setFillOrder(legend->fillOrder(), true);
+      QCustomPlot::replot();
       return;
     }
 
