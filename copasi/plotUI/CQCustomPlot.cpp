@@ -431,16 +431,23 @@ bool CQCustomPlot::initFromSpec(const CPlotSpecification * plotspec)
   CDataVector< CPlotItem >::const_iterator itPlotItem = mpPlotSpecification->getItems().begin();
   CDataVector< CPlotItem >::const_iterator endPlotItem = mpPlotSpecification->getItems().end();
 
-  CVector< bool > Visible(mpPlotSpecification->getItems().size());
-  Visible = true;
-  bool * pVisible = Visible.array();
+  std::map< QString, bool > visibleMap;
 
-  for (; itPlotItem != endPlotItem; ++itPlotItem, ++pVisible)
+  for (; itPlotItem != endPlotItem; ++itPlotItem)
     {
-      if ((found = mCurveMap.find(itPlotItem->CCopasiParameter::getKey())) != mCurveMap.end())
+      auto key = itPlotItem->CCopasiParameter::getKey();
+
+      if ((found = mCurveMap.find(key)) != mCurveMap.end())
         {
-          *pVisible = found->second->visible();
+          // take same visibility as we had
+          visibleMap[FROM_UTF8(key)] = found->second->visible();
         }
+      else
+        {
+          // set new items to visible
+          visibleMap[FROM_UTF8(key)] = true;
+        }
+
     }
 
   // Remove unused curves if definition has changed
@@ -454,14 +461,13 @@ for (auto item : mHisto)
   mY2Map.clear();
 
   itPlotItem = mpPlotSpecification->getItems().begin();
-  pVisible = Visible.array();
   auto ppCurve = mCurves.begin();
 
   unsigned long int k = 0;
   bool needLeft = false;
   bool needRight = false;
 
-  for (; itPlotItem != endPlotItem; ++itPlotItem, ++pVisible, ++ppCurve, ++k)
+  for (; itPlotItem != endPlotItem; ++itPlotItem, ++ppCurve, ++k)
     {
       if (itPlotItem->getType() == CPlotItem::spectogram)
         {
@@ -520,7 +526,7 @@ for (auto item : mHisto)
 
       series->setPen(color);
 
-      showCurve(series, *pVisible);
+      showCurve(series, visibleMap[series->property("copasi_key").toString()]);
 
       if (itPlotItem->getType() == CPlotItem::curve2d
           || itPlotItem->getType() == CPlotItem::histoItem1d
