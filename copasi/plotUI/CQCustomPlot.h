@@ -332,6 +332,7 @@ protected:
   int mLegendRow;
   int mLegendCol;
   CCopasiTimeVariable mNextWheelTime;
+  QCPLayoutGrid * mpSubLayout;
 
 signals:
   void replotSignal();

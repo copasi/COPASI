@@ -169,6 +169,7 @@ CQCustomPlot::CQCustomPlot(QWidget * parent)
   , mpTitle(NULL)
   , mLogTicker(NULL)
   , mDefaultTicker(NULL)
+  , mpSubLayout(NULL)
 {
 }
 
@@ -190,6 +191,8 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
   , mReplotFinished(false)
   , mpTitle(NULL)
   , mLogTicker(new QCPAxisTickerLog)
+  , mDefaultTicker(NULL)
+  , mpSubLayout(NULL)
 {
   // Size the vectors to be able to store information for all activities.
   mData.resize(ActivitySize);
@@ -705,12 +708,15 @@ for (auto item : mHisto)
   legend->setFillOrder(QCPLegend::foColumnsFirst, true);
   legend->setBorderPen(QPen(Qt::NoPen));
 
-  QCPLayoutGrid * subLayout = new QCPLayoutGrid;
-  subLayout->setMargins(QMargins(5, 0, 5, 5));
-  subLayout->addElement(0, 0, legend);
-  int count = plotLayout()->rowCount();
-  plotLayout()->addElement(count, 0, subLayout);
-  plotLayout()->setRowStretchFactor(count, 0.01);
+  if (!mpSubLayout)
+    {
+      mpSubLayout = new QCPLayoutGrid;
+      mpSubLayout->setMargins(QMargins(5, 0, 5, 5));
+      mpSubLayout->addElement(0, 0, legend);
+      int count = plotLayout()->rowCount();
+      plotLayout()->addElement(count, 0, mpSubLayout);
+      plotLayout()->setRowStretchFactor(count, 0.01);
+    }
 
   mIgnoreUpdate = false;
 
