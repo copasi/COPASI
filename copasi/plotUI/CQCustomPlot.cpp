@@ -440,12 +440,12 @@ bool CQCustomPlot::initFromSpec(const CPlotSpecification * plotspec)
       if ((found = mCurveMap.find(key)) != mCurveMap.end())
         {
           // take same visibility as we had
-          visibleMap[FROM_UTF8(key)] = found->second->visible();
+          visibleMap[FROM_UTF8(itPlotItem->getTitle())] = found->second->visible();
         }
       else
         {
           // set new items to visible
-          visibleMap[FROM_UTF8(key)] = true;
+          visibleMap[FROM_UTF8(itPlotItem->getTitle())] = true;
         }
 
     }
@@ -526,7 +526,7 @@ for (auto item : mHisto)
 
       series->setPen(color);
 
-      showCurve(series, visibleMap[series->property("copasi_key").toString()]);
+      showCurve(series, visibleMap[series->name()]);
 
       if (itPlotItem->getType() == CPlotItem::curve2d
           || itPlotItem->getType() == CPlotItem::histoItem1d
