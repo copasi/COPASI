@@ -64,6 +64,7 @@ private:
   QAction *mpaToggleLogX;
   QAction *mpaToggleLogY;
   QAction *mpaDeactivatePlot;
+  QAction *mpaEditPlot;
 
   bool initializing;
 
@@ -168,6 +169,11 @@ private slots:
    * Deactivate the plot
    */
   void slotDeactivatePlot();
+
+  /**
+   * Edit the plot specification
+   */
+  void slotEditPlot();
 
 protected:
   virtual void closeEvent(QCloseEvent *closeEvent);
