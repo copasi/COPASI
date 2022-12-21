@@ -101,7 +101,6 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget *parent):
   mpTimeSubtree = new QTreeWidgetItem(this, QStringList("Time"));
 
   connect(this, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(slotItemDoubleClicked(QTreeWidgetItem *, int)));
-  connect(this, SIGNAL(itemClicked(QTreeWidgetItem *, int)), this, SLOT(slotItemClicked(QTreeWidgetItem *, int)));
 
   setContextMenuPolicy(Qt::CustomContextMenu);
   connect(this, &QWidget::customContextMenuRequested, this, &CQSimpleSelectionTree::slotCustomContextMenuRequested);
