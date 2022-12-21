@@ -70,7 +70,7 @@ TEST_CASE("create a model with inhibited reaciton", "[copasi,creation]")
 
   auto & vars = pFunc->getVariables();
 
-  for (auto & var : vars)
+for (auto & var : vars)
     {
       if (var.getObjectName() == "A" || var.getObjectName() == "B")
         var.setUsage(CFunctionParameter::Role::SUBSTRATE);
@@ -144,6 +144,76 @@ TEST_CASE("changing from global to local variable", "[copasi,creation]")
     REQUIRE(info.writeBackToReaction(r, true) == true);
     REQUIRE(r->isLocalParameter(0) == true);
   }
+
+  CRootContainer::removeDatamodel(dm);
+}
+
+
+TEST_CASE("changing initial concentrations", "[copasi,manipulation]")
+{
+
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != nullptr);
+  REQUIRE(dm->loadModel(getTestFile("test-data/brusselator.cps"), NULL) == true);
+
+  // add species
+  auto * model = dm->getModel();
+  auto * pMetab = model->createMetabolite("speciesB", "compartment");
+
+  // change initial concentration
+for (auto & metab : model->getMetabolites())
+    {
+      if (metab.getObjectDisplayName() != "speciesB")
+        continue;
+
+      model->updateInitialValues(metab.getInitialConcentrationReference());
+      metab.setInitialConcentration(0.4);
+      model->updateInitialValues(metab.getInitialConcentrationReference());
+    }
+
+
+  // retrieve metab again
+for (auto & metab : model->getMetabolites())
+    {
+      if (metab.getObjectDisplayName() != "speciesB")
+        continue;
+
+      REQUIRE(metab.getInitialConcentration() == 0.4);
+
+    }
+
+
+  CRootContainer::removeDatamodel(dm);
+
+}
+
+TEST_CASE("generating expressions", "[copasi,manipulation]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != nullptr);
+  REQUIRE(dm->loadModel(getTestFile("test-data/brusselator.cps"), NULL) == true);
+
+  auto * model = dm->getModel();
+
+  {
+    CExpressionGenerator gen("Species", "Transient Concentrations", "Sum");
+    auto expression = gen.generateExpressionFor(model);
+    REQUIRE(expression == "{[X]} + {[Y]} + {[A]} + {[B]} + {[D]} + {[E]}");
+
+    gen.setOperation("Product");
+    expression = gen.generateExpressionFor(model);
+    REQUIRE(expression == "{[X]} * {[Y]} * {[A]} * {[B]} * {[D]} * {[E]}");
+
+    gen.setOperation("Sum of Squares");
+    expression = gen.generateExpressionFor(model);
+    REQUIRE(expression == "{[X]}^2 + {[Y]}^2 + {[A]}^2 + {[B]}^2 + {[D]}^2 + {[E]}^2");
+
+    gen.setOperation("Sum of Absolutes");
+    expression = gen.generateExpressionFor(model);
+    REQUIRE(expression == "ABS({[X]}) + ABS({[Y]}) + ABS({[A]}) + ABS({[B]}) + ABS({[D]}) + ABS({[E]})");
+
+  }
+
 
   CRootContainer::removeDatamodel(dm);
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -157,10 +157,16 @@ void CCopasiSelectionDialog::enableExpertMode(bool enable)
     }
 }
 
+void CCopasiSelectionDialog::setAllowExpressions(bool allowExpressions)
+{
+  mpSelectionWidget->setAllowExpressions(allowExpressions);
+}
+
 const CDataObject *
 CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
                                         const CQSimpleSelectionTree::ObjectClasses & classes,
-                                        const CDataObject * pCurrentObject)
+                                        const CDataObject * pCurrentObject,
+                                        bool allowExpressions)
 {
   std::vector< const CDataObject * > Selection;
 
@@ -172,6 +178,7 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
   pDialog->setFilter(classes);
   pDialog->setSingleSelection(true);
   pDialog->setOutputVector(&Selection);
+  pDialog->setAllowExpressions(allowExpressions);
 
   int Result = pDialog->exec();
 

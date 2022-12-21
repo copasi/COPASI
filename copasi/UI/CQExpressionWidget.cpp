@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,6 +53,7 @@
 #include "qtUtilities.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/commandline/CConfigurationFile.h"
+#include "copasi/utilities/CExpressionGenerator.h"
 
 #define DEBUG_UI
 
@@ -766,10 +767,20 @@ bool CQExpressionWidget::isValid()
 void CQExpressionWidget::slotSelectObject()
 {
   const CDataObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, mObjectClasses);
+    CCopasiSelectionDialog::getObjectSingle(this, mObjectClasses, NULL, true);
 
   if (pObject)
     {
+      auto* pExpressionGenerator = dynamic_cast< const CExpressionGenerator * >(pObject);
+
+      if (pExpressionGenerator)
+        {
+          CDataModel * pDataModel = ListViews::dataModel(parent());
+          insertPlainText(FROM_UTF8(pExpressionGenerator->generateExpressionFor(pDataModel->getModel())));
+          delete const_cast< CExpressionGenerator * >(pExpressionGenerator);
+          return;
+        }
+
       // Check whether the object is valid
       if (!CQSimpleSelectionTree::filter(mObjectClasses, pObject))
         {

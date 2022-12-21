@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -54,6 +54,7 @@ public:
   void setSingleSelection(bool singleSelection);
   bool isSingleSelection() const;
   void setExpertMode(bool expertMode);
+  void setAllowExpressions(bool allowExpressions);
   bool expertMode() const;
   void commit();
 
