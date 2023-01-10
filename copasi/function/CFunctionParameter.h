@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,8 +35,8 @@
 #include <string>
 #include <iostream>
 
-#include "copasi/utilities/CReadConfig.h"
 #include "copasi/core/CDataContainer.h"
+#include "copasi/utilities/CReadConfig.h"
 
 /** @dia:pos 15.1888,24.6765 */
 class CFunctionParameter : public CDataContainer
