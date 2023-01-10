@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1147,6 +1147,10 @@ COutputAssistant::createDefaultOutput(
                       }
 
                     pPlotSpecification->addTaskType(CTaskEnum::Task::parameterFitting);
+
+                    // set default plot engine to customplot for new plots
+                    pPlotSpecification->assertParameter("plot engine", CCopasiParameter::Type::STRING, std::string("QCustomPlot"));
+
                     PlotSpecMap[pObject] = pPlotSpecification;
                   }
 
@@ -1782,6 +1786,7 @@ void COutputAssistant::add2DDataArrayToVector(std::vector<const CDataObject *> &
 
   for (size_t i = 0; i < nrows; ++i)
     for (size_t j = 0; j < ncols; ++j)
-      pVector.push_back(static_cast<const CDataObject *>(pArray->addElementReference(i, j)));
+      pVector.push_back(static_cast<const CDataObject *>(
+                          pArray->addElementReference((C_INT32) i, (C_INT32) j)));
 
 }
