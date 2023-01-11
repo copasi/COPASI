@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -9,7 +9,8 @@
 
 #include <copasi/model/CModel.h>
 
-std::map< std::string, std::tuple< std::string, std::string, std::string, std::string, std::string > > CExpressionGenerator::mOperations =
+// static
+std::map< std::string, CExpressionGenerator::sOperation > CExpressionGenerator::mOperations =
 {
   {"Sum", {" + ", "", "", "", ""}},
   {"Sum of Squares", {" + ", "", "", "", "^2"}},
@@ -17,6 +18,7 @@ std::map< std::string, std::tuple< std::string, std::string, std::string, std::s
   {"Product", {" * ", "", "", "", ""}},
 };
 
+// static
 std::vector< std::string > CExpressionGenerator::mSupportedTypes =
 {
   "Global Quantities",
@@ -25,7 +27,7 @@ std::vector< std::string > CExpressionGenerator::mSupportedTypes =
   "Compartments",
 };
 
-
+// static
 std::string CExpressionGenerator::escapeDisplayName(const CDataObject * pObject)
 {
   std::string name = pObject->getObjectDisplayName();
@@ -51,14 +53,13 @@ CExpressionGenerator::CExpressionGenerator(
   , mSelection(selection)
   , mOperation(operation)
 {
-
 }
 
 std::vector< std::string > CExpressionGenerator::getSupportedOperations()
 {
   std::vector< std::string > result;
 
-for (auto & entry : mOperations)
+  for (auto & entry : mOperations)
     result.push_back(entry.first);
 
   return result;
@@ -78,7 +79,7 @@ std::vector< const CDataObject * > CExpressionGenerator::getObjectsForSelection(
 
   if (mType == "Species")
     {
-for (auto & metab : pModel->getMetabolites())
+      for (auto & metab : pModel->getMetabolites())
         {
           if (mSelection == "Rates (Particle Numbers)")
             result.push_back(metab.getRateReference());
@@ -102,7 +103,7 @@ for (auto & metab : pModel->getMetabolites())
 
   if (mType == "Global Quantities")
     {
-for (auto & mv : pModel->getModelValues())
+      for (auto & mv : pModel->getModelValues())
         {
           if (mSelection == "Rates")
             result.push_back(mv.getRateReference());
@@ -117,7 +118,7 @@ for (auto & mv : pModel->getModelValues())
 
   if (mType == "Compartments")
     {
-for (auto & comp : pModel->getCompartments())
+      for (auto & comp : pModel->getCompartments())
         {
           if (mSelection == "Rates")
             result.push_back(comp.getRateReference());
@@ -132,7 +133,7 @@ for (auto & comp : pModel->getCompartments())
 
   if (mType == "Reactions")
     {
-for (auto & reaction : pModel->getReactions())
+      for (auto & reaction : pModel->getReactions())
         {
           if (mSelection == "Fluxes (Particle Numbers)")
             result.push_back(reaction.getParticleFluxReference());
@@ -157,44 +158,38 @@ std::string CExpressionGenerator::generateExpressionFor(const CModel * pModel, b
   if (selection.empty())
     return std::string();
 
-  std::string join, surroundStart, surroundEnd, entryStart, entryEnd;
-  std::tie(join, surroundStart, surroundEnd, entryStart, entryEnd) = operation;
-
   auto entry = *selection.begin();
 
   std::stringstream result;
-  result << surroundStart;
+  result << operation.surroundStart;
 
-  result << entryStart;
+  result << operation.entryStart;
 
   if (useCn)
     result << "<" << entry->getCN() << ">";
   else
     result << "{" << escapeDisplayName(entry) << "}";
 
-  result << entryEnd;
+  result << operation.entryEnd;
 
   for (int i = 1; i < selection.size(); ++i)
     {
       entry = selection[i];
 
-      result << join;
-      result << entryStart;
+      result << operation.join;
+      result << operation.entryStart;
 
       if (useCn)
         result << "<" << entry->getCN() << ">";
       else
         result << "{" << escapeDisplayName(entry) << "}";
 
-      result << entryEnd;
-
+      result << operation.entryEnd;
     }
 
-  result << surroundEnd;
+  result << operation.surroundEnd;
 
   return result.str();
-
-
 }
 
 void CExpressionGenerator::setType(const std::string & type)

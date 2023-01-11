@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,13 +16,23 @@ class CModel;
 
 class CExpressionGenerator : public CDataObject
 {
+public:
+  struct sOperation
+  {
+    std::string join;
+    std::string surroundStart;
+    std::string surroundEnd;
+    std::string entryStart;
+    std::string entryEnd;
+  };
+
 private:
   std::string mType;
   std::string mSelection;
   std::string mOperation;
 
   static std::vector< std::string > mSupportedTypes;
-  static std::map< std::string, std::tuple< std::string, std::string, std::string, std::string, std::string > > mOperations;
+  static std::map< std::string, sOperation > mOperations;
 
   static std::string escapeDisplayName(const CDataObject * pObject);
 
