@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -167,7 +167,6 @@ bool CopasiUI3Window::isMainThread()
   return pMainWindow == NULL || pMainWindow->mpMainThread == QThread::currentThread();
 }
 
-
 // static
 CopasiUI3Window *CopasiUI3Window::create()
 {
@@ -187,7 +186,6 @@ CopasiUI3Window *CopasiUI3Window::create()
   pMainWindow = pWindow;
   return pWindow;
 }
-
 
 /**
  * Utility function for guessing whether the file might
@@ -1135,7 +1133,6 @@ void CopasiUI3Window::slotFileOpen(QString file)
           return;
         }
 
-
       assert(CRootContainer::getDatamodelList()->size() > 0);
 
       if (mpDataModelGUI &&
@@ -1166,7 +1163,6 @@ void CopasiUI3Window::slotFileOpen(QString file)
             }
         }
 
-
 #ifdef COPASI_Provenance
       // Update Main Body Provenace
       //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel());
@@ -1190,7 +1186,6 @@ void CopasiUI3Window::slotFileOpen(QString file)
       mpDataModelGUI->loadModel(TO_UTF8(newFile));
     }
 }
-
 
 void CopasiUI3Window::slotFileOpenFinished(bool success)
 {
@@ -3289,7 +3284,6 @@ void CopasiUI3Window::slotImportSEDML(QString file)
             }
         }
 
-
       // check the SED-ML file, for whether it is complex, if so ask the user to choose what to import:
 
       bool shoudlReturn;
@@ -3297,8 +3291,6 @@ void CopasiUI3Window::slotImportSEDML(QString file)
 
       if (shoudlReturn)
         return;
-
-
 
 #ifdef COPASI_Provenance
       //Update Main Body Provenance
@@ -3321,7 +3313,6 @@ void CopasiUI3Window::slotImportSEDML(QString file)
       mpDataModelGUI->importSEDML(TO_UTF8(SEDMLFile), &options);
     }
 }
-
 
 SedmlImportOptions CopasiUI3Window::getSedMLImportOptions(const QString & fileName, bool & shouldCancelImport)
 {
@@ -3661,7 +3652,7 @@ void CopasiUI3Window::slotExportCombine(QString str)
     {
       tmp =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          str, "Combine Archvie Files (*.omex;*.sbex;*.sedx)",
+                                          str, "Combine Archvie Files (*.omex *.sbex *.sedx)",
                                           "Choose a filename to save under");
 
       if (tmp.isEmpty()) return;
@@ -3862,7 +3853,7 @@ void CopasiUI3Window::removeReportTargets()
   auto& taskList = *mpDataModel->getTaskList();
   std::stringstream str;
 
-for (auto & task : taskList)
+  for (auto & task : taskList)
     {
       std::string target = task.getReport().getTarget();
 
