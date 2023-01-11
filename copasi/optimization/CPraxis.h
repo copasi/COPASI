@@ -26,6 +26,7 @@
 #define COPASI_CPraxis
 
 #include <limits>
+#include "copasi/copasi.h"
 
 class CRandom;
 
@@ -34,9 +35,9 @@ class FPraxis
 public:
   virtual ~FPraxis() {};
 
-  virtual const double & operator()(double * /* value */, int & /* n */)
+  virtual const C_FLOAT64 & operator()(C_FLOAT64 * /* value */, C_INT32 & /* n */)
   {
-    static double NaN = std::numeric_limits< double >::quiet_NaN();
+    static C_FLOAT64 NaN = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
     return NaN;
   }
 };
@@ -45,14 +46,14 @@ template < class CType >
 class FPraxisTemplate : public FPraxis
 {
 private:
-  const double & (CType::*mMethod)(double *, int &); // pointer to member function
-  CType * mpType;                                    // pointer to object
+  const C_FLOAT64 & (CType::*mMethod)(C_FLOAT64 *, C_INT32 &); // pointer to member function
+  CType * mpType;                                              // pointer to object
 
 public:
   // constructor - takes pointer to an object and pointer to a member and stores
   // them in two private variables
   FPraxisTemplate(CType * pType,
-                  const double & (CType::*method)(double *, int &))
+                  const C_FLOAT64 & (CType::*method)(C_FLOAT64 *, C_INT32 &))
   {
     mpType = pType;
     mMethod = method;
@@ -61,7 +62,7 @@ public:
   virtual ~FPraxisTemplate() {};
 
   // override operator "()"
-  virtual const double & operator()(double * value, int & n)
+  virtual const C_FLOAT64 & operator()(C_FLOAT64 * value, C_INT32 & n)
   {
     return (*mpType.*mMethod)(value, n);
   }; // execute member function
@@ -74,107 +75,107 @@ public:
 
   ~CPraxis();
 
-  double operator()(double t0,
-                    double h0,
-                    int n,
-                    int prin,
-                    double x[],
-                    FPraxis * f);
+  C_FLOAT64 operator()(C_FLOAT64 t0,
+                       C_FLOAT64 h0,
+                       C_INT32 n,
+                       C_INT32 prin,
+                       C_FLOAT64 x[],
+                       FPraxis * f);
 
 private:
-  double flin(int n,
-              int j,
-              double l,
-              FPraxis * f,
-              double x[],
-              int & nf,
-              double v[],
-              double q0[],
-              double q1[],
-              double & qd0,
-              double & qd1,
-              double & qa,
-              double & qb,
-              double & qc);
+  C_FLOAT64 flin(C_INT32 n,
+                 C_INT32 j,
+                 C_FLOAT64 l,
+                 FPraxis * f,
+                 C_FLOAT64 x[],
+                 C_INT32 & nf,
+                 C_FLOAT64 v[],
+                 C_FLOAT64 q0[],
+                 C_FLOAT64 q1[],
+                 C_FLOAT64 & qd0,
+                 C_FLOAT64 & qd1,
+                 C_FLOAT64 & qa,
+                 C_FLOAT64 & qb,
+                 C_FLOAT64 & qc);
 
-  void minfit(int n,
-              double tol,
-              double a[],
-              double q[]);
+  void minfit(C_INT32 n,
+              C_FLOAT64 tol,
+              C_FLOAT64 a[],
+              C_FLOAT64 q[]);
 
-  void minny(int n,
-             int j,
-             int nits,
-             double & d2,
-             double & x1,
-             double & f1,
+  void minny(C_INT32 n,
+             C_INT32 j,
+             C_INT32 nits,
+             C_FLOAT64 & d2,
+             C_FLOAT64 & x1,
+             C_FLOAT64 & f1,
              bool fk,
              FPraxis * f,
-             double x[],
-             double t,
-             double h,
-             double v[],
-             double q0[],
-             double q1[],
-             int & nl,
-             int & nf,
-             double dmin,
-             double ldt,
-             double & fx,
-             double & qa,
-             double & qb,
-             double & qc,
-             double & qd0,
-             double & qd1);
+             C_FLOAT64 x[],
+             C_FLOAT64 t,
+             C_FLOAT64 h,
+             C_FLOAT64 v[],
+             C_FLOAT64 q0[],
+             C_FLOAT64 q1[],
+             C_INT32 & nl,
+             C_INT32 & nf,
+             C_FLOAT64 dmin,
+             C_FLOAT64 ldt,
+             C_FLOAT64 & fx,
+             C_FLOAT64 & qa,
+             C_FLOAT64 & qb,
+             C_FLOAT64 & qc,
+             C_FLOAT64 & qd0,
+             C_FLOAT64 & qd1);
 
-  void print2(int n,
-              double x[],
-              int prin,
-              double fx,
-              int nf,
-              int nl);
+  void prC_INT322(C_INT32 n,
+                  C_FLOAT64 x[],
+                  C_INT32 prin,
+                  C_FLOAT64 fx,
+                  C_INT32 nf,
+                  C_INT32 nl);
 
-  void quad(int n,
+  void quad(C_INT32 n,
             FPraxis * f,
-            double x[],
-            double t,
-            double h,
-            double v[],
-            double q0[],
-            double q1[],
-            int & nl,
-            int & nf,
-            double dmin,
-            double ldt,
-            double & fx,
-            double & qf1,
-            double & qa,
-            double & qb,
-            double & qc,
-            double & qd0,
-            double & qd1);
+            C_FLOAT64 x[],
+            C_FLOAT64 t,
+            C_FLOAT64 h,
+            C_FLOAT64 v[],
+            C_FLOAT64 q0[],
+            C_FLOAT64 q1[],
+            C_INT32 & nl,
+            C_INT32 & nf,
+            C_FLOAT64 dmin,
+            C_FLOAT64 ldt,
+            C_FLOAT64 & fx,
+            C_FLOAT64 & qf1,
+            C_FLOAT64 & qa,
+            C_FLOAT64 & qb,
+            C_FLOAT64 & qc,
+            C_FLOAT64 & qd0,
+            C_FLOAT64 & qd1);
 
-  double r8_hypot(double x, double y);
+  C_FLOAT64 r8_hypot(C_FLOAT64 x, C_FLOAT64 y);
 
-  double r8_uniform_01(int & seed);
+  C_FLOAT64 r8_uniform_01(C_INT32 & seed);
 
-  void r8mat_print(int m, int n, double a[], std::string title);
+  void r8mat_prC_INT32(C_INT32 m, C_INT32 n, C_FLOAT64 a[], std::string title);
 
-  void r8mat_print_some(int m, int n, double a[], int ilo, int jlo, int ihi, int jhi, std::string title);
+  void r8mat_prC_INT32_some(C_INT32 m, C_INT32 n, C_FLOAT64 a[], C_INT32 ilo, C_INT32 jlo, C_INT32 ihi, C_INT32 jhi, std::string title);
 
-  void r8mat_transpose_in_place(int n, double a[]);
+  void r8mat_transpose_in_place(C_INT32 n, C_FLOAT64 a[]);
 
-  void r8vec_copy(int n, double a1[], double a2[]);
+  void r8vec_copy(C_INT32 n, C_FLOAT64 a1[], C_FLOAT64 a2[]);
 
-  double r8vec_max(int n, double r8vec[]);
+  C_FLOAT64 r8vec_max(C_INT32 n, C_FLOAT64 r8vec[]);
 
-  double r8vec_min(int n, double r8vec[]);
+  C_FLOAT64 r8vec_min(C_INT32 n, C_FLOAT64 r8vec[]);
 
-  double r8vec_norm(int n, double a[]);
+  C_FLOAT64 r8vec_norm(C_INT32 n, C_FLOAT64 a[]);
 
-  void r8vec_print(int n, double a[], std::string title);
+  void r8vec_prC_INT32(C_INT32 n, C_FLOAT64 a[], std::string title);
 
-  void svsort(int n, double d[], double v[]);
+  void svsort(C_INT32 n, C_FLOAT64 d[], C_FLOAT64 v[]);
 
   void timestamp();
 

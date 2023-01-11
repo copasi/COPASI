@@ -94,8 +94,8 @@ bool COptMethodPraxis::optimise()
       )
     );
 
-  C_INT i;
-  C_INT prin = 0;
+  C_INT32 i;
+  C_INT32 prin = 0;
   C_FLOAT64 tmp = 0.0;
   C_FLOAT64 machep, stepmx, d1, d2;
 
@@ -177,7 +177,7 @@ bool COptMethodPraxis::initialize()
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
   mIteration = 0;
 
-  mVariableSize = (C_INT) mProblemContext.master()->getOptItemList(true).size();
+  mVariableSize = (C_INT32) mProblemContext.master()->getOptItemList(true).size();
   mCurrent.resize(mVariableSize);
   mBest.resize(mVariableSize);
   mBestValue = std::numeric_limits< C_FLOAT64 >::infinity();
@@ -193,9 +193,9 @@ bool COptMethodPraxis::cleanup()
 }
 
 // evaluate the value of the objective function
-const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT & n)
+const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT32 & n)
 {
-  C_INT i;
+  C_INT32 i;
 
   for (i = 0; i < n; i++)
     *mProblemContext.master()->getContainerVariables(true)[i] = (x[i]);

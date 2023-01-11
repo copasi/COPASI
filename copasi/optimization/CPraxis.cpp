@@ -48,7 +48,7 @@ CPraxis::~CPraxis()
 
 //****************************************************************************80
 
-double CPraxis::flin(int n, int jsearch, double l, FPraxis * f, double x[], int & nf, double v[], double q0[], double q1[], double & qd0, double & qd1, double & qa, double & qb, double & qc)
+C_FLOAT64 CPraxis::flin(C_INT32 n, C_INT32 jsearch, C_FLOAT64 l, FPraxis * f, C_FLOAT64 x[], C_INT32 & nf, C_FLOAT64 v[], C_FLOAT64 q0[], C_FLOAT64 q1[], C_FLOAT64 & qd0, C_FLOAT64 & qd1, C_FLOAT64 & qa, C_FLOAT64 & qb, C_FLOAT64 & qc)
 
 //****************************************************************************80
 //
@@ -80,49 +80,49 @@ double CPraxis::flin(int n, int jsearch, double l, FPraxis * f, double x[], int 
 //    Richard Brent,
 //    Algorithms for Minimization with Derivatives,
 //    Prentice Hall, 1973,
-//    Reprinted by Dover, 2002.
+//    ReprC_INT32ed by Dover, 2002.
 //
 //  Parameters:
 //
-//    Input, int N, the number of variables.
+//    Input, C_INT32 N, the number of variables.
 //
-//    Input, int JSEARCH, indicates the kind of search.
+//    Input, C_INT32 JSEARCH, indicates the kind of search.
 //    If JSEARCH is a legal column index, linear search along V(*,JSEARCH).
 //    If JSEARCH is -1, then the search is parabolic, based on X, Q0 and Q1.
 //
-//    Input, double L, is the parameter determining the particular
-//    point at which F is to be evaluated.
+//    Input, C_FLOAT64 L, is the parameter determining the particular
+//    poC_INT32 at which F is to be evaluated.
 //    For a linear search, L is the step size.
 //    For a quadratic search, L is a parameter which specifies
-//    a point in the plane of X, Q0 and Q1.
+//    a poC_INT32 in the plane of X, Q0 and Q1.
 //
-//    Input, double F (double X[], int N ), the function to be minimized.
+//    Input, C_FLOAT64 F (C_FLOAT64 X[], C_INT32 N ), the function to be minimized.
 //
-//    Input, double X[N], the base point of the search.
+//    Input, C_FLOAT64 X[N], the base poC_INT32 of the search.
 //
-//    Input/output, int &NF, the function evaluation counter.
+//    Input/output, C_INT32 &NF, the function evaluation counter.
 //
-//    Input, double V[N,N], a matrix whose columns constitute
+//    Input, C_FLOAT64 V[N,N], a matrix whose columns constitute
 //    search directions.
 //
-//    Input, double Q0[N], Q1[N], two auxiliary points used to
+//    Input, C_FLOAT64 Q0[N], Q1[N], two auxiliary poC_INT32s used to
 //    determine the plane when a quadratic search is performed.
 //
-//    Input, double &QD0, &QD1, values needed to compute the
+//    Input, C_FLOAT64 &QD0, &QD1, values needed to compute the
 //    coefficients QA, QB, QC.
 //
-//    Output, double &QA, &QB, &QC, coefficients used to combine
+//    Output, C_FLOAT64 &QA, &QB, &QC, coefficients used to combine
 //    Q0, X, and A1 if a quadratic search is used.
 //
-//    Output, double FLIN, the value of the function at the
-//    minimizing point.
+//    Output, C_FLOAT64 FLIN, the value of the function at the
+//    minimizing poC_INT32.
 //
 {
-  int i;
-  double * t;
-  double value;
+  C_INT32 i;
+  C_FLOAT64 * t;
+  C_FLOAT64 value;
 
-  t = new double[n];
+  t = new C_FLOAT64[n];
 
   //
   //  The search is linear.
@@ -165,7 +165,7 @@ double CPraxis::flin(int n, int jsearch, double l, FPraxis * f, double x[], int 
 
 //****************************************************************************80
 
-void CPraxis::minfit(int n, double tol, double a[], double q[])
+void CPraxis::minfit(C_INT32 n, C_FLOAT64 tol, C_FLOAT64 a[], C_FLOAT64 q[])
 
 //****************************************************************************80
 //
@@ -200,7 +200,7 @@ void CPraxis::minfit(int n, double tol, double a[], double q[])
 //    Richard Brent,
 //    Algorithms for Minimization with Derivatives,
 //    Prentice Hall, 1973,
-//    Reprinted by Dover, 2002.
+//    ReprC_INT32ed by Dover, 2002.
 //
 //    James Wilkinson, Christian Reinsch,
 //    Handbook for Automatic Computation,
@@ -217,40 +217,40 @@ void CPraxis::minfit(int n, double tol, double a[], double q[])
 //
 //  Parameters:
 //
-//    Input, int N, the order of the matrix A.
+//    Input, C_INT32 N, the order of the matrix A.
 //
-//    Input, double TOL, a tolerance which determines when a vector
+//    Input, C_FLOAT64 TOL, a tolerance which determines when a vector
 //    (a column or part of a column of the matrix) may be considered
 //    "essentially" equal to zero.
 //
-//    Input/output, double A[N,N].  On input, an N by N array whose
+//    Input/output, C_FLOAT64 A[N,N].  On input, an N by N array whose
 //    singular value decomposition is desired.  On output, the
 //    SVD orthogonal matrix factor V.
 //
-//    Input/output, double Q[N], the singular values.
+//    Input/output, C_FLOAT64 Q[N], the singular values.
 //
 {
-  double c;
-  double * e;
-  double eps;
-  double f;
-  double g;
-  double h;
-  int i;
-  int ii;
-  int j;
-  int jj;
-  int k;
-  int kt;
-  const int kt_max = 30;
-  int l;
-  int l2;
-  double s;
-  int skip;
-  double temp;
-  double x;
-  double y;
-  double z;
+  C_FLOAT64 c;
+  C_FLOAT64 * e;
+  C_FLOAT64 eps;
+  C_FLOAT64 f;
+  C_FLOAT64 g;
+  C_FLOAT64 h;
+  C_INT32 i;
+  C_INT32 ii;
+  C_INT32 j;
+  C_INT32 jj;
+  C_INT32 k;
+  C_INT32 kt;
+  const C_INT32 kt_max = 30;
+  C_INT32 l;
+  C_INT32 l2;
+  C_FLOAT64 s;
+  C_INT32 skip;
+  C_FLOAT64 temp;
+  C_FLOAT64 x;
+  C_FLOAT64 y;
+  C_FLOAT64 z;
 
   //
   //  Householder's reduction to bidiagonal form.
@@ -262,7 +262,7 @@ void CPraxis::minfit(int n, double tol, double a[], double q[])
       return;
     }
 
-  e = new double[n];
+  e = new C_FLOAT64[n];
 
   eps = DBL_EPSILON;
   g = 0.0;
@@ -610,30 +610,30 @@ void CPraxis::minfit(int n, double tol, double a[], double q[])
 }
 //****************************************************************************80
 
-void CPraxis::minny(int n,
-                    int jsearch,
-                    int nits,
-                    double & d2,
-                    double & x1,
-                    double & f1,
+void CPraxis::minny(C_INT32 n,
+                    C_INT32 jsearch,
+                    C_INT32 nits,
+                    C_FLOAT64 & d2,
+                    C_FLOAT64 & x1,
+                    C_FLOAT64 & f1,
                     bool fk,
                     FPraxis * f,
-                    double x[],
-                    double t,
-                    double h,
-                    double v[],
-                    double q0[],
-                    double q1[],
-                    int & nl,
-                    int & nf,
-                    double dmin,
-                    double ldt,
-                    double & fx,
-                    double & qa,
-                    double & qb,
-                    double & qc,
-                    double & qd0,
-                    double & qd1)
+                    C_FLOAT64 x[],
+                    C_FLOAT64 t,
+                    C_FLOAT64 h,
+                    C_FLOAT64 v[],
+                    C_FLOAT64 q0[],
+                    C_FLOAT64 q1[],
+                    C_INT32 & nl,
+                    C_INT32 & nf,
+                    C_FLOAT64 dmin,
+                    C_FLOAT64 ldt,
+                    C_FLOAT64 & fx,
+                    C_FLOAT64 & qa,
+                    C_FLOAT64 & qb,
+                    C_FLOAT64 & qc,
+                    C_FLOAT64 & qd0,
+                    C_FLOAT64 & qd1)
 
 //****************************************************************************80
 //
@@ -667,81 +667,81 @@ void CPraxis::minny(int n,
 //    Richard Brent,
 //    Algorithms for Minimization with Derivatives,
 //    Prentice Hall, 1973,
-//    Reprinted by Dover, 2002.
+//    ReprC_INT32ed by Dover, 2002.
 //
 //  Parameters:
 //
-//    Input, int N, the number of variables.
+//    Input, C_INT32 N, the number of variables.
 //
-//    Input, int JSEARCH, indicates the kind of search.
+//    Input, C_INT32 JSEARCH, indicates the kind of search.
 //    If J is a legal columnindex, linear search in the direction of V(*,JSEARCH).
 //    Otherwise, the search is parabolic, based on X, Q0 and Q1.
 //
-//    Input, int NITS, the maximum number of times the interval
+//    Input, C_INT32 NITS, the maximum number of times the C_INT32erval
 //    may be halved to retry the calculation.
 //
-//    Input/output, double &D2, is either zero, or an approximation to
+//    Input/output, C_FLOAT64 &D2, is either zero, or an approximation to
 //    the value of (1/2) times the second derivative of F.
 //
-//    Input/output, double &X1, on entry, an estimate of the
+//    Input/output, C_FLOAT64 &X1, on entry, an estimate of the
 //    distance from X to the minimum along V(*,JSEARCH), or a curve.
 //    On output, the distance between X and the minimizer that was found.
 //
-//    Input/output, double &F1, ?
+//    Input/output, C_FLOAT64 &F1, ?
 //
 //    Input, bool FK; if FK is TRUE, then on input F1 contains
 //    the value FLIN(X1).
 //
-//    Input, double F (double X[], int N ), is the name of the function to
+//    Input, C_FLOAT64 F (C_FLOAT64 X[], C_INT32 N ), is the name of the function to
 //    be minimized.
 //
-//    Input/output, double X[N], ?
+//    Input/output, C_FLOAT64 X[N], ?
 //
-//    Input, double T, ?
+//    Input, C_FLOAT64 T, ?
 //
-//    Input, double H, ?
+//    Input, C_FLOAT64 H, ?
 //
-//    Input, double V[N,N], a matrix whose columns are direction
+//    Input, C_FLOAT64 V[N,N], a matrix whose columns are direction
 //    vectors along which the function may be minimized.
 //
-//    ?, double Q0[N], ?
+//    ?, C_FLOAT64 Q0[N], ?
 //
-//    ?, double Q1[N], ?
+//    ?, C_FLOAT64 Q1[N], ?
 //
-//    Input/output, int &NL, the number of linear searches.
+//    Input/output, C_INT32 &NL, the number of linear searches.
 //
-//    Input/output, int &NF, the number of function evaluations.
+//    Input/output, C_INT32 &NF, the number of function evaluations.
 //
-//    Input, double DMIN, an estimate for the smallest eigenvalue.
+//    Input, C_FLOAT64 DMIN, an estimate for the smallest eigenvalue.
 //
-//    Input, double LDT, the length of the step.
+//    Input, C_FLOAT64 LDT, the length of the step.
 //
-//    Input/output, double &FX, the value of F(X,N).
+//    Input/output, C_FLOAT64 &FX, the value of F(X,N).
 //
-//    Input/output, double &QA, &QB, &QC;
+//    Input/output, C_FLOAT64 &QA, &QB, &QC;
 //
-//    Input/output, double &QD0, &QD1, ?.
+//    Input/output, C_FLOAT64 &QD0, &QD1, ?.
 //
 {
-  double d1;
-  int dz;
-  double f0;
-  double f2;
-  double fm;
-  int i;
-  int k;
-  double m2;
-  double m4;
-  double machep;
-  int ok;
-  double s;
-  double sf1;
-  double small;
-  double sx1;
-  double t2;
-  double temp;
-  double x2;
-  double xm;
+  C_FLOAT64 d1;
+  C_INT32 dz;
+  C_FLOAT64 f0;
+  C_FLOAT64 f2;
+  C_FLOAT64 fm;
+  C_INT32 i;
+  C_INT32 k;
+  C_FLOAT64 m2;
+  C_FLOAT64 m4;
+  C_FLOAT64 machep;
+  C_INT32 ok;
+  C_FLOAT64 s;
+  C_FLOAT64 sf1;
+  C_FLOAT64 small;
+  C_FLOAT64 sx1;
+  C_FLOAT64 t2;
+  C_FLOAT64 temp;
+  C_FLOAT64 x2;
+  C_FLOAT64 xm;
 
   machep = DBL_EPSILON;
   small = machep * machep;
@@ -807,7 +807,7 @@ void CPraxis::minny(int n,
     }
 
   //
-  //  Evaluate FLIN at another point and estimate the second derivative.
+  //  Evaluate FLIN at another poC_INT32 and estimate the second derivative.
   //
   for (;;)
     {
@@ -958,7 +958,7 @@ void CPraxis::minny(int n,
 }
 //****************************************************************************80
 
-double CPraxis::operator()(double t0, double h0, int n, int prin, double x[], FPraxis * f)
+C_FLOAT64 CPraxis::operator()(C_FLOAT64 t0, C_FLOAT64 h0, C_INT32 n, C_INT32 prin, C_FLOAT64 x[], FPraxis * f)
 
 //****************************************************************************80
 //
@@ -1004,118 +1004,118 @@ double CPraxis::operator()(double t0, double h0, int n, int prin, double x[], FP
 //    Richard Brent,
 //    Algorithms for Minimization with Derivatives,
 //    Prentice Hall, 1973,
-//    Reprinted by Dover, 2002.
+//    ReprC_INT32ed by Dover, 2002.
 //
 //  Parameters:
 //
-//    Input, double T0, is a tolerance.  PRAXIS attempts to return
+//    Input, C_FLOAT64 T0, is a tolerance.  PRAXIS attempts to return
 //    praxis = (*f)(x) such that if X0 is the true local minimum near X, then
 //    norm (x - x0 ) < T0 + sqrt (EPSILON ) * norm (X ),
 //    where EPSILON is the machine precision for X.
 //
-//    Input, double H0, is the maximum step size.  H0 should be
+//    Input, C_FLOAT64 H0, is the maximum step size.  H0 should be
 //    set to about the maximum distance from the initial guess to the minimum.
 //    If H0 is set too large or too small, the initial rate of
 //    convergence may be slow.
 //
-//    Input, int N, the number of variables.
+//    Input, C_INT32 N, the number of variables.
 //
-//    Input, int PRIN, controls printing intermediate results.
-//    0, nothing is printed.
-//    1, F is printed after every n+1 or n+2 linear minimizations.
-//       final X is printed, but intermediate X is printed only
+//    Input, C_INT32 PRIN, controls prC_INT32ing C_INT32ermediate results.
+//    0, nothing is prC_INT32ed.
+//    1, F is prC_INT32ed after every n+1 or n+2 linear minimizations.
+//       final X is prC_INT32ed, but C_INT32ermediate X is prC_INT32ed only
 //       if N is at most 4.
 //    2, the scale factors and the principal values of the approximating
-//       quadratic form are also printed.
-//    3, X is also printed after every few linear minimizations.
+//       quadratic form are also prC_INT32ed.
+//    3, X is also prC_INT32ed after every few linear minimizations.
 //    4, the principal vectors of the approximating quadratic form are
-//       also printed.
+//       also prC_INT32ed.
 //
-//    Input/output, double X[N], is an array containing on entry a
-//    guess of the point of minimum, on return the estimated point of minimum.
+//    Input/output, C_FLOAT64 X[N], is an array containing on entry a
+//    guess of the poC_INT32 of minimum, on return the estimated poC_INT32 of minimum.
 //
-//    Input, double F (double X[], int N ), is the name of the function to be
+//    Input, C_FLOAT64 F (C_FLOAT64 X[], C_INT32 N ), is the name of the function to be
 //    minimized.
 //
-//    Output, double PRAXIS, the function value at the minimizer.
+//    Output, C_FLOAT64 PRAXIS, the function value at the minimizer.
 //
 //  Local parameters:
 //
-//    Local, double DMIN, an estimate for the smallest eigenvalue.
+//    Local, C_FLOAT64 DMIN, an estimate for the smallest eigenvalue.
 //
-//    Local, double FX, the value of F(X,N).
+//    Local, C_FLOAT64 FX, the value of F(X,N).
 //
 //    Local, bool ILLC, is TRUE if the system is ill-conditioned.
 //
-//    Local, double LDT, the length of the step.
+//    Local, C_FLOAT64 LDT, the length of the step.
 //
-//    Local, int NF, the number of function evaluations.
+//    Local, C_INT32 NF, the number of function evaluations.
 //
-//    Local, int NL, the number of linear searches.
+//    Local, C_INT32 NL, the number of linear searches.
 //
 {
-  double * d;
-  double d2;
-  double df;
-  double dmin;
-  double dn;
-  double dni;
-  double f1;
+  C_FLOAT64 * d;
+  C_FLOAT64 d2;
+  C_FLOAT64 df;
+  C_FLOAT64 dmin;
+  C_FLOAT64 dn;
+  C_FLOAT64 dni;
+  C_FLOAT64 f1;
   bool fk;
-  double fx;
-  double h;
-  int i;
+  C_FLOAT64 fx;
+  C_FLOAT64 h;
+  C_INT32 i;
   bool illc;
-  int j;
-  int jsearch;
-  int k;
-  int k2;
-  int kl;
-  int kt;
-  int ktm;
-  double large;
-  double ldfac;
-  double lds;
-  double ldt;
-  double m2;
-  double m4;
-  double machep;
-  int nits;
-  int nl;
-  int nf;
-  double * q0;
-  double * q1;
-  double qa;
-  double qb;
-  double qc;
-  double qd0;
-  double qd1;
-  double qf1;
-  double r;
-  double s;
-  double scbd;
-  int seed;
-  double sf;
-  double sl;
-  double small;
-  double t;
-  double temp;
-  double t2;
-  double * v;
-  double value;
-  double vlarge;
-  double vsmall;
-  double * y;
-  double * z;
+  C_INT32 j;
+  C_INT32 jsearch;
+  C_INT32 k;
+  C_INT32 k2;
+  C_INT32 kl;
+  C_INT32 kt;
+  C_INT32 ktm;
+  C_FLOAT64 large;
+  C_FLOAT64 ldfac;
+  C_FLOAT64 lds;
+  C_FLOAT64 ldt;
+  C_FLOAT64 m2;
+  C_FLOAT64 m4;
+  C_FLOAT64 machep;
+  C_INT32 nits;
+  C_INT32 nl;
+  C_INT32 nf;
+  C_FLOAT64 * q0;
+  C_FLOAT64 * q1;
+  C_FLOAT64 qa;
+  C_FLOAT64 qb;
+  C_FLOAT64 qc;
+  C_FLOAT64 qd0;
+  C_FLOAT64 qd1;
+  C_FLOAT64 qf1;
+  C_FLOAT64 r;
+  C_FLOAT64 s;
+  C_FLOAT64 scbd;
+  C_INT32 seed;
+  C_FLOAT64 sf;
+  C_FLOAT64 sl;
+  C_FLOAT64 small;
+  C_FLOAT64 t;
+  C_FLOAT64 temp;
+  C_FLOAT64 t2;
+  C_FLOAT64 * v;
+  C_FLOAT64 value;
+  C_FLOAT64 vlarge;
+  C_FLOAT64 vsmall;
+  C_FLOAT64 * y;
+  C_FLOAT64 * z;
   //
   //  Allocation.
   //
-  d = new double[n];
-  q0 = new double[n];
-  q1 = new double[n];
-  v = new double[n * n];
-  y = new double[n];
-  z = new double[n];
+  d = new C_FLOAT64[n];
+  q0 = new C_FLOAT64[n];
+  q1 = new C_FLOAT64[n];
+  v = new C_FLOAT64[n * n];
+  y = new C_FLOAT64[n];
+  z = new C_FLOAT64[n];
   //
   //  Initialization.
   //
@@ -1192,7 +1192,7 @@ double CPraxis::operator()(double t0, double h0, int n, int prin, double x[], FP
 
   if (0 < prin)
     {
-      print2(n, x, prin, fx, nf, nl);
+      prC_INT322(n, x, prin, fx, nf, nl);
     }
 
   //
@@ -1327,7 +1327,7 @@ double CPraxis::operator()(double t0, double h0, int n, int prin, double x[], FP
 
           if (k == 2 && 1 < prin)
             {
-              r8vec_print(n, d, "  The second difference array:");
+              r8vec_prC_INT32(n, d, "  The second difference array:");
             }
 
           //
@@ -1416,7 +1416,7 @@ double CPraxis::operator()(double t0, double h0, int n, int prin, double x[], FP
 
           if (0 < prin)
             {
-              print2(n, x, prin, fx, nf, nl);
+              prC_INT322(n, x, prin, fx, nf, nl);
             }
 
           t2 = r8vec_norm(n, x);
@@ -1438,7 +1438,7 @@ double CPraxis::operator()(double t0, double h0, int n, int prin, double x[], FP
             {
               if (0 < prin)
                 {
-                  r8vec_print(n, x, "  X:");
+                  r8vec_prC_INT32(n, x, "  X:");
                 }
 
               delete[] d;
@@ -1469,7 +1469,7 @@ double CPraxis::operator()(double t0, double h0, int n, int prin, double x[], FP
 
       if (3 < prin)
         {
-          r8mat_print(n, n, v, "  The new direction vectors:");
+          r8mat_prC_INT32(n, n, v, "  The new direction vectors:");
         }
 
       for (j = 0; j < n; j++)
@@ -1610,15 +1610,15 @@ double CPraxis::operator()(double t0, double h0, int n, int prin, double x[], FP
         {
           if (1.0 < scbd)
             {
-              r8vec_print(n, z, "  The scale factors:");
+              r8vec_prC_INT32(n, z, "  The scale factors:");
             }
 
-          r8vec_print(n, d, "  Principal values of the quadratic form:");
+          r8vec_prC_INT32(n, d, "  Principal values of the quadratic form:");
         }
 
       if (3 < prin)
         {
-          r8mat_print(n, n, v, "  The principal axes:");
+          r8mat_prC_INT32(n, n, v, "  The principal axes:");
         }
 
       //
@@ -1628,7 +1628,7 @@ double CPraxis::operator()(double t0, double h0, int n, int prin, double x[], FP
 
   if (0 < prin)
     {
-      r8vec_print(n, x, "  X:");
+      r8vec_prC_INT32(n, x, "  X:");
     }
 
   //
@@ -1645,13 +1645,13 @@ double CPraxis::operator()(double t0, double h0, int n, int prin, double x[], FP
 }
 //****************************************************************************80
 
-void CPraxis::print2(int n, double x[], int prin, double fx, int nf, int nl)
+void CPraxis::prC_INT322(C_INT32 n, C_FLOAT64 x[], C_INT32 prin, C_FLOAT64 fx, C_INT32 nf, C_INT32 nl)
 
 //****************************************************************************80
 //
 //  Purpose:
 //
-//    PRINT2 prints certain data about the progress of the iteration.
+//    PRINT2 prC_INT32s certain data about the progress of the iteration.
 //
 //  Licensing:
 //
@@ -1671,30 +1671,30 @@ void CPraxis::print2(int n, double x[], int prin, double fx, int nf, int nl)
 //    Richard Brent,
 //    Algorithms for Minimization with Derivatives,
 //    Prentice Hall, 1973,
-//    Reprinted by Dover, 2002.
+//    ReprC_INT32ed by Dover, 2002.
 //
 //  Parameters:
 //
-//    Input, int N, the number of variables.
+//    Input, C_INT32 N, the number of variables.
 //
-//    Input, double X[N], the current estimate of the minimizer.
+//    Input, C_FLOAT64 X[N], the current estimate of the minimizer.
 //
-//    Input, int PRIN, the user-specifed print level.
-//    0, nothing is printed.
-//    1, F is printed after every n+1 or n+2 linear minimizations.
-//       final X is printed, but intermediate X is printed only
+//    Input, C_INT32 PRIN, the user-specifed prC_INT32 level.
+//    0, nothing is prC_INT32ed.
+//    1, F is prC_INT32ed after every n+1 or n+2 linear minimizations.
+//       final X is prC_INT32ed, but C_INT32ermediate X is prC_INT32ed only
 //       if N is at most 4.
 //    2, the scale factors and the principal values of the approximating
-//       quadratic form are also printed.
-//    3, X is also printed after every few linear minimizations.
+//       quadratic form are also prC_INT32ed.
+//    3, X is also prC_INT32ed after every few linear minimizations.
 //    4, the principal vectors of the approximating quadratic form are
-//       also printed.
+//       also prC_INT32ed.
 //
-//    Input, double FX, the smallest value of F(X) found so far.
+//    Input, C_FLOAT64 FX, the smallest value of F(X) found so far.
 //
-//    Input, int NF, the number of function evaluations.
+//    Input, C_INT32 NF, the number of function evaluations.
 //
-//    Input, int NL, the number of linear searches.
+//    Input, C_INT32 NL, the number of linear searches.
 //
 {
   std::cout << "\n";
@@ -1704,14 +1704,14 @@ void CPraxis::print2(int n, double x[], int prin, double fx, int nf, int nl)
 
   if (n <= 4 || 2 < prin)
     {
-      r8vec_print(n, x, "  X:");
+      r8vec_prC_INT32(n, x, "  X:");
     }
 
   return;
 }
 //****************************************************************************80
 
-void CPraxis::quad(int n, FPraxis * f, double x[], double t, double h, double v[], double q0[], double q1[], int & nl, int & nf, double dmin, double ldt, double & fx, double & qf1, double & qa, double & qb, double & qc, double & qd0, double & qd1)
+void CPraxis::quad(C_INT32 n, FPraxis * f, C_FLOAT64 x[], C_FLOAT64 t, C_FLOAT64 h, C_FLOAT64 v[], C_FLOAT64 q0[], C_FLOAT64 q1[], C_INT32 & nl, C_INT32 & nf, C_FLOAT64 dmin, C_FLOAT64 ldt, C_FLOAT64 & fx, C_FLOAT64 & qf1, C_FLOAT64 & qa, C_FLOAT64 & qb, C_FLOAT64 & qc, C_FLOAT64 & qd0, C_FLOAT64 & qd1)
 
 //****************************************************************************80
 //
@@ -1742,47 +1742,47 @@ void CPraxis::quad(int n, FPraxis * f, double x[], double t, double h, double v[
 //    Richard Brent,
 //    Algorithms for Minimization with Derivatives,
 //    Prentice Hall, 1973,
-//    Reprinted by Dover, 2002.
+//    ReprC_INT32ed by Dover, 2002.
 //
 //  Parameters:
 //
-//    Input, int N, the number of variables.
+//    Input, C_INT32 N, the number of variables.
 //
-//    Input, double F (double X[], int N ), the name of the function to
+//    Input, C_FLOAT64 F (C_FLOAT64 X[], C_INT32 N ), the name of the function to
 //    be minimized.
 //
-//    Input/output, double X[N], ?
+//    Input/output, C_FLOAT64 X[N], ?
 //
-//    Input, double T, ?
+//    Input, C_FLOAT64 T, ?
 //
-//    Input, double H, ?
+//    Input, C_FLOAT64 H, ?
 //
-//    Input, double V[N,N], the matrix of search directions.
+//    Input, C_FLOAT64 V[N,N], the matrix of search directions.
 //
-//    Input/output, double Q0[N], Q1[N], two auxiliary points used to define
+//    Input/output, C_FLOAT64 Q0[N], Q1[N], two auxiliary poC_INT32s used to define
 //    a curve through X.
 //
-//    Input/output, int &NL, the number of linear searches.
+//    Input/output, C_INT32 &NL, the number of linear searches.
 //
-//    Input/output, int &NF, the number of function evaluations.
+//    Input/output, C_INT32 &NF, the number of function evaluations.
 //
-//    Input, double DMIN, an estimate for the smallest eigenvalue.
+//    Input, C_FLOAT64 DMIN, an estimate for the smallest eigenvalue.
 //
-//    Input, double LDT, the length of the step.
+//    Input, C_FLOAT64 LDT, the length of the step.
 //
-//    Input/output, double &FX, the value of F(X,N).
+//    Input/output, C_FLOAT64 &FX, the value of F(X,N).
 //
-//    Input/output, double &QF1, &QA, &QB, &QC, &QD0, &QD1 ?
+//    Input/output, C_FLOAT64 &QF1, &QA, &QB, &QC, &QD0, &QD1 ?
 //
 {
   bool fk;
-  int i;
-  int jsearch;
-  double l;
-  int nits;
-  double s;
-  double temp;
-  double value;
+  C_INT32 i;
+  C_INT32 jsearch;
+  C_FLOAT64 l;
+  C_INT32 nits;
+  C_FLOAT64 s;
+  C_FLOAT64 temp;
+  C_FLOAT64 value;
 
   temp = fx;
   fx = qf1;
@@ -1842,7 +1842,7 @@ void CPraxis::quad(int n, FPraxis * f, double x[], double t, double h, double v[
 }
 //****************************************************************************80
 
-double CPraxis::r8_hypot(double x, double y)
+C_FLOAT64 CPraxis::r8_hypot(C_FLOAT64 x, C_FLOAT64 y)
 
 //****************************************************************************80
 //
@@ -1864,14 +1864,14 @@ double CPraxis::r8_hypot(double x, double y)
 //
 //  Parameters:
 //
-//    Input, double X, Y, the arguments.
+//    Input, C_FLOAT64 X, Y, the arguments.
 //
-//    Output, double R8_HYPOT, the value of sqrt (X^2 + Y^2 ).
+//    Output, C_FLOAT64 R8_HYPOT, the value of sqrt (X^2 + Y^2 ).
 //
 {
-  double a;
-  double b;
-  double value;
+  C_FLOAT64 a;
+  C_FLOAT64 b;
+  C_FLOAT64 value;
 
   if (fabs(x) < fabs(y))
     {
@@ -1900,7 +1900,7 @@ double CPraxis::r8_hypot(double x, double y)
 }
 //****************************************************************************80
 
-double CPraxis::r8_uniform_01(int & seed)
+C_FLOAT64 CPraxis::r8_uniform_01(C_INT32 & seed)
 
 //****************************************************************************80
 //
@@ -1915,7 +1915,7 @@ double CPraxis::r8_uniform_01(int & seed)
 //      seed = (16807 * seed ) mod (2^31 - 1)
 //      u = seed / (2^31 - 1)
 //
-//    The integer arithmetic never requires more than 32 bits,
+//    The C_INT32eger arithmetic never requires more than 32 bits,
 //    including a sign bit.
 //
 //    If the initial seed is 12345, then the first three computations are
@@ -1970,16 +1970,16 @@ double CPraxis::r8_uniform_01(int & seed)
 //
 //  Parameters:
 //
-//    Input/output, int &SEED, the "seed" value.  Normally, this
+//    Input/output, C_INT32 &SEED, the "seed" value.  Normally, this
 //    value should not be 0.  On output, SEED has been updated.
 //
-//    Output, double R8_UNIFORM_01, a new pseudorandom variate,
+//    Output, C_FLOAT64 R8_UNIFORM_01, a new pseudorandom variate,
 //    strictly between 0 and 1.
 //
 {
-  const int i4_huge = 2147483647;
-  int k;
-  double r;
+  const C_INT32 i4_huge = 2147483647;
+  C_INT32 k;
+  C_FLOAT64 r;
 
   if (seed == 0)
     {
@@ -1998,19 +1998,19 @@ double CPraxis::r8_uniform_01(int & seed)
       seed = seed + i4_huge;
     }
 
-  r = (double)(seed) * 4.656612875E-10;
+  r = (C_FLOAT64)(seed) * 4.656612875E-10;
 
   return r;
 }
 //****************************************************************************80
 
-void CPraxis::r8mat_print(int m, int n, double a[], std::string title)
+void CPraxis::r8mat_prC_INT32(C_INT32 m, C_INT32 n, C_FLOAT64 a[], std::string title)
 
 //****************************************************************************80
 //
 //  Purpose:
 //
-//    R8MAT_PRINT prints an R8MAT.
+//    R8MAT_PRINT prC_INT32s an R8MAT.
 //
 //  Discussion:
 //
@@ -2033,28 +2033,28 @@ void CPraxis::r8mat_print(int m, int n, double a[], std::string title)
 //
 //  Parameters:
 //
-//    Input, int M, the number of rows in A.
+//    Input, C_INT32 M, the number of rows in A.
 //
-//    Input, int N, the number of columns in A.
+//    Input, C_INT32 N, the number of columns in A.
 //
-//    Input, double A[M*N], the M by N matrix.
+//    Input, C_FLOAT64 A[M*N], the M by N matrix.
 //
 //    Input, std::string TITLE, a title.
 //
 {
-  r8mat_print_some(m, n, a, 1, 1, m, n, title);
+  r8mat_prC_INT32_some(m, n, a, 1, 1, m, n, title);
 
   return;
 }
 //****************************************************************************80
 
-void CPraxis::r8mat_print_some(int m, int n, double a[], int ilo, int jlo, int ihi, int jhi, std::string title)
+void CPraxis::r8mat_prC_INT32_some(C_INT32 m, C_INT32 n, C_FLOAT64 a[], C_INT32 ilo, C_INT32 jlo, C_INT32 ihi, C_INT32 jhi, std::string title)
 
 //****************************************************************************80
 //
 //  Purpose:
 //
-//    R8MAT_PRINT_SOME prints some of an R8MAT.
+//    R8MAT_PRINT_SOME prC_INT32s some of an R8MAT.
 //
 //  Discussion:
 //
@@ -2075,28 +2075,28 @@ void CPraxis::r8mat_print_some(int m, int n, double a[], int ilo, int jlo, int i
 //
 //  Parameters:
 //
-//    Input, int M, the number of rows of the matrix.
+//    Input, C_INT32 M, the number of rows of the matrix.
 //    M must be positive.
 //
-//    Input, int N, the number of columns of the matrix.
+//    Input, C_INT32 N, the number of columns of the matrix.
 //    N must be positive.
 //
-//    Input, double A[M*N], the matrix.
+//    Input, C_FLOAT64 A[M*N], the matrix.
 //
-//    Input, int ILO, JLO, IHI, JHI, designate the first row and
-//    column, and the last row and column to be printed.
+//    Input, C_INT32 ILO, JLO, IHI, JHI, designate the first row and
+//    column, and the last row and column to be prC_INT32ed.
 //
 //    Input, std::string TITLE, a title.
 //
 {
 #define INCX 5
 
-  int i;
-  int i2hi;
-  int i2lo;
-  int j;
-  int j2hi;
-  int j2lo;
+  C_INT32 i;
+  C_INT32 i2hi;
+  C_INT32 i2lo;
+  C_INT32 j;
+  C_INT32 j2hi;
+  C_INT32 j2lo;
 
   std::cout << "\n";
   std::cout << title << "\n";
@@ -2109,7 +2109,7 @@ void CPraxis::r8mat_print_some(int m, int n, double a[], int ilo, int jlo, int i
     }
 
   //
-  //  Print the columns of the matrix, in strips of 5.
+  //  PrC_INT32 the columns of the matrix, in strips of 5.
   //
   for (j2lo = jlo; j2lo <= jhi; j2lo = j2lo + INCX)
     {
@@ -2166,7 +2166,7 @@ void CPraxis::r8mat_print_some(int m, int n, double a[], int ilo, int jlo, int i
       for (i = i2lo; i <= i2hi; i++)
         {
           //
-          //  Print out (up to) 5 entries in row I, that lie in the current strip.
+          //  PrC_INT32 out (up to) 5 entries in row I, that lie in the current strip.
           //
           std::cout << std::setw(5) << i - 1 << ": ";
 
@@ -2184,7 +2184,7 @@ void CPraxis::r8mat_print_some(int m, int n, double a[], int ilo, int jlo, int i
 }
 //****************************************************************************80
 
-void CPraxis::r8mat_transpose_in_place(int n, double a[])
+void CPraxis::r8mat_transpose_in_place(C_INT32 n, C_FLOAT64 a[])
 
 //****************************************************************************80
 //
@@ -2211,14 +2211,14 @@ void CPraxis::r8mat_transpose_in_place(int n, double a[])
 //
 //  Parameters:
 //
-//    Input, int N, the number of rows and columns of the matrix A.
+//    Input, C_INT32 N, the number of rows and columns of the matrix A.
 //
-//    Input/output, double A[N*N], the matrix to be transposed.
+//    Input/output, C_FLOAT64 A[N*N], the matrix to be transposed.
 //
 {
-  int i;
-  int j;
-  double t;
+  C_INT32 i;
+  C_INT32 j;
+  C_FLOAT64 t;
 
   for (j = 0; j < n; j++)
     {
@@ -2234,7 +2234,7 @@ void CPraxis::r8mat_transpose_in_place(int n, double a[])
 }
 //****************************************************************************80
 
-void CPraxis::r8vec_copy(int n, double a1[], double a2[])
+void CPraxis::r8vec_copy(C_INT32 n, C_FLOAT64 a1[], C_FLOAT64 a2[])
 
 //****************************************************************************80
 //
@@ -2260,14 +2260,14 @@ void CPraxis::r8vec_copy(int n, double a1[], double a2[])
 //
 //  Parameters:
 //
-//    Input, int N, the number of entries in the vectors.
+//    Input, C_INT32 N, the number of entries in the vectors.
 //
-//    Input, double A1[N], the vector to be copied.
+//    Input, C_FLOAT64 A1[N], the vector to be copied.
 //
-//    Output, double A2[N], the copy of A1.
+//    Output, C_FLOAT64 A2[N], the copy of A1.
 //
 {
-  int i;
+  C_INT32 i;
 
   for (i = 0; i < n; i++)
     {
@@ -2278,7 +2278,7 @@ void CPraxis::r8vec_copy(int n, double a1[], double a2[])
 }
 //****************************************************************************80
 
-double CPraxis::r8vec_max(int n, double r8vec[])
+C_FLOAT64 CPraxis::r8vec_max(C_INT32 n, C_FLOAT64 r8vec[])
 
 //****************************************************************************80
 //
@@ -2304,16 +2304,16 @@ double CPraxis::r8vec_max(int n, double r8vec[])
 //
 //  Parameters:
 //
-//    Input, int N, the number of entries in the array.
+//    Input, C_INT32 N, the number of entries in the array.
 //
-//    Input, double R8VEC[N], a pointer to the first entry of the array.
+//    Input, C_FLOAT64 R8VEC[N], a poC_INT32er to the first entry of the array.
 //
-//    Output, double R8VEC_MAX, the value of the maximum element.  This
+//    Output, C_FLOAT64 R8VEC_MAX, the value of the maximum element.  This
 //    is set to 0.0 if N <= 0.
 //
 {
-  int i;
-  double value;
+  C_INT32 i;
+  C_FLOAT64 value;
 
   value = r8vec[0];
 
@@ -2329,7 +2329,7 @@ double CPraxis::r8vec_max(int n, double r8vec[])
 }
 //****************************************************************************80
 
-double CPraxis::r8vec_min(int n, double r8vec[])
+C_FLOAT64 CPraxis::r8vec_min(C_INT32 n, C_FLOAT64 r8vec[])
 
 //****************************************************************************80
 //
@@ -2355,15 +2355,15 @@ double CPraxis::r8vec_min(int n, double r8vec[])
 //
 //  Parameters:
 //
-//    Input, int N, the number of entries in the array.
+//    Input, C_INT32 N, the number of entries in the array.
 //
-//    Input, double R8VEC[N], the array to be checked.
+//    Input, C_FLOAT64 R8VEC[N], the array to be checked.
 //
-//    Output, double R8VEC_MIN, the value of the minimum element.
+//    Output, C_FLOAT64 R8VEC_MIN, the value of the minimum element.
 //
 {
-  int i;
-  double value;
+  C_INT32 i;
+  C_FLOAT64 value;
 
   value = r8vec[0];
 
@@ -2379,7 +2379,7 @@ double CPraxis::r8vec_min(int n, double r8vec[])
 }
 //****************************************************************************80
 
-double CPraxis::r8vec_norm(int n, double a[])
+C_FLOAT64 CPraxis::r8vec_norm(C_INT32 n, C_FLOAT64 a[])
 
 //****************************************************************************80
 //
@@ -2409,15 +2409,15 @@ double CPraxis::r8vec_norm(int n, double a[])
 //
 //  Parameters:
 //
-//    Input, int N, the number of entries in A.
+//    Input, C_INT32 N, the number of entries in A.
 //
-//    Input, double A[N], the vector whose L2 norm is desired.
+//    Input, C_FLOAT64 A[N], the vector whose L2 norm is desired.
 //
-//    Output, double R8VEC_NORM, the L2 norm of A.
+//    Output, C_FLOAT64 R8VEC_NORM, the L2 norm of A.
 //
 {
-  int i;
-  double v;
+  C_INT32 i;
+  C_FLOAT64 v;
 
   v = 0.0;
 
@@ -2432,13 +2432,13 @@ double CPraxis::r8vec_norm(int n, double a[])
 }
 //****************************************************************************80
 
-void CPraxis::r8vec_print(int n, double a[], std::string title)
+void CPraxis::r8vec_prC_INT32(C_INT32 n, C_FLOAT64 a[], std::string title)
 
 //****************************************************************************80
 //
 //  Purpose:
 //
-//    R8VEC_PRINT prints an R8VEC.
+//    R8VEC_PRINT prC_INT32s an R8VEC.
 //
 //  Discussion:
 //
@@ -2458,14 +2458,14 @@ void CPraxis::r8vec_print(int n, double a[], std::string title)
 //
 //  Parameters:
 //
-//    Input, int N, the number of components of the vector.
+//    Input, C_INT32 N, the number of components of the vector.
 //
-//    Input, double A[N], the vector to be printed.
+//    Input, C_FLOAT64 A[N], the vector to be prC_INT32ed.
 //
 //    Input, std::string TITLE, a title.
 //
 {
-  int i;
+  C_INT32 i;
 
   std::cout << "\n";
   std::cout << title << "\n";
@@ -2481,7 +2481,7 @@ void CPraxis::r8vec_print(int n, double a[], std::string title)
 }
 //****************************************************************************80
 
-void CPraxis::svsort(int n, double d[], double v[])
+void CPraxis::svsort(C_INT32 n, C_FLOAT64 d[], C_FLOAT64 v[])
 
 //****************************************************************************80
 //
@@ -2514,26 +2514,26 @@ void CPraxis::svsort(int n, double d[], double v[])
 //    Richard Brent,
 //    Algorithms for Minimization with Derivatives,
 //    Prentice Hall, 1973,
-//    Reprinted by Dover, 2002.
+//    ReprC_INT32ed by Dover, 2002.
 //
 //  Parameters:
 //
-//    Input, int N, the length of D, and the order of V.
+//    Input, C_INT32 N, the length of D, and the order of V.
 //
-//    Input/output, double D[N], the vector to be sorted.
+//    Input/output, C_FLOAT64 D[N], the vector to be sorted.
 //    On output, the entries of D are in descending order.
 //
-//    Input/output, double V[N,N], an N by N array to be adjusted
+//    Input/output, C_FLOAT64 V[N,N], an N by N array to be adjusted
 //    as D is sorted.  In particular, if the value that was in D(I) on input is
 //    moved to D(J) on output, then the input column V(*,I) is moved to
 //    the output column V(*,J).
 //
 {
-  int i;
-  int j1;
-  int j2;
-  int j3;
-  double t;
+  C_INT32 i;
+  C_INT32 j1;
+  C_INT32 j2;
+  C_INT32 j3;
+  C_FLOAT64 t;
 
   for (j1 = 0; j1 < n - 1; j1++)
     {
@@ -2579,7 +2579,7 @@ void timestamp()
 //
 //  Purpose:
 //
-//    TIMESTAMP prints the current YMDHMS date as a time stamp.
+//    TIMESTAMP prC_INT32s the current YMDHMS date as a time stamp.
 //
 //  Example:
 //

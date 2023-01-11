@@ -129,7 +129,7 @@ private:
   /**
    * number of parameters
    */
-  C_INT mVariableSize;
+  C_INT32 mVariableSize;
 
   /**
    * The current solution guess
@@ -166,7 +166,7 @@ private:
    */
   CPraxis mPraxis;
 
-  const C_FLOAT64 & evaluateFunction(C_FLOAT64 *, C_INT &);
+  const C_FLOAT64 & evaluateFunction(C_FLOAT64 *, C_INT32 &);
 
   /**
    * Evaluate the objective function
