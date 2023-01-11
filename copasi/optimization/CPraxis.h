@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,7 +26,6 @@
 #define COPASI_CPraxis
 
 #include <limits>
-#include "copasi/core/CMatrix.h"
 
 class CRandom;
 
@@ -35,25 +34,25 @@ class FPraxis
 public:
   virtual ~FPraxis() {};
 
-  virtual const C_FLOAT64 & operator()(C_FLOAT64 * C_UNUSED(value), C_INT * C_UNUSED(n))
+  virtual const double & operator()(double * /* value */, int & /* n */)
   {
-    static C_FLOAT64 NaN = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+    static double NaN = std::numeric_limits< double >::quiet_NaN();
     return NaN;
   }
 };
 
-template <class CType> class FPraxisTemplate : public FPraxis
+template < class CType >
+class FPraxisTemplate : public FPraxis
 {
 private:
-  const C_FLOAT64 &(CType::*mMethod)(C_FLOAT64 *, C_INT *);  // pointer to member function
-  CType * mpType;                                            // pointer to object
+  const double & (CType::*mMethod)(double *, int &); // pointer to member function
+  CType * mpType;                                    // pointer to object
 
 public:
-
   // constructor - takes pointer to an object and pointer to a member and stores
   // them in two private variables
   FPraxisTemplate(CType * pType,
-                  const C_FLOAT64 & (CType::*method)(C_FLOAT64 *, C_INT*))
+                  const double & (CType::*method)(double *, int &))
   {
     mpType = pType;
     mMethod = method;
@@ -62,55 +61,125 @@ public:
   virtual ~FPraxisTemplate() {};
 
   // override operator "()"
-  virtual const C_FLOAT64 & operator()(C_FLOAT64 *value, C_INT *n)
-  {return (*mpType.*mMethod)(value, n);}    ;              // execute member function
+  virtual const double & operator()(double * value, int & n)
+  {
+    return (*mpType.*mMethod)(value, n);
+  }; // execute member function
 };
 
 class CPraxis
 {
 public:
-
-  struct Global
-  {
-    C_FLOAT64 fx, ldt, dmin__;
-    C_INT nf, nl;
-  };
-
-  struct Q
-  {
-    CVector< C_FLOAT64 > v; // [__dim__ * __dim__] /* was [100][100] */,
-    CVector< C_FLOAT64 > q0; // [__dim__],
-    CVector< C_FLOAT64 > q1; // [__dim__],
-    C_FLOAT64 qa, qb, qc, qd0, qd1, qf1;
-  };
-
   CPraxis();
+
   ~CPraxis();
+
+  double operator()(double t0,
+                    double h0,
+                    int n,
+                    int prin,
+                    double x[],
+                    FPraxis * f);
+
+private:
+  double flin(int n,
+              int j,
+              double l,
+              FPraxis * f,
+              double x[],
+              int & nf,
+              double v[],
+              double q0[],
+              double q1[],
+              double & qd0,
+              double & qd1,
+              double & qa,
+              double & qb,
+              double & qc);
+
+  void minfit(int n,
+              double tol,
+              double a[],
+              double q[]);
+
+  void minny(int n,
+             int j,
+             int nits,
+             double & d2,
+             double & x1,
+             double & f1,
+             bool fk,
+             FPraxis * f,
+             double x[],
+             double t,
+             double h,
+             double v[],
+             double q0[],
+             double q1[],
+             int & nl,
+             int & nf,
+             double dmin,
+             double ldt,
+             double & fx,
+             double & qa,
+             double & qb,
+             double & qc,
+             double & qd0,
+             double & qd1);
+
+  void print2(int n,
+              double x[],
+              int prin,
+              double fx,
+              int nf,
+              int nl);
+
+  void quad(int n,
+            FPraxis * f,
+            double x[],
+            double t,
+            double h,
+            double v[],
+            double q0[],
+            double q1[],
+            int & nl,
+            int & nf,
+            double dmin,
+            double ldt,
+            double & fx,
+            double & qf1,
+            double & qa,
+            double & qb,
+            double & qc,
+            double & qd0,
+            double & qd1);
+
+  double r8_hypot(double x, double y);
+
+  double r8_uniform_01(int & seed);
+
+  void r8mat_print(int m, int n, double a[], std::string title);
+
+  void r8mat_print_some(int m, int n, double a[], int ilo, int jlo, int ihi, int jhi, std::string title);
+
+  void r8mat_transpose_in_place(int n, double a[]);
+
+  void r8vec_copy(int n, double a1[], double a2[]);
+
+  double r8vec_max(int n, double r8vec[]);
+
+  double r8vec_min(int n, double r8vec[]);
+
+  double r8vec_norm(int n, double a[]);
+
+  void r8vec_print(int n, double a[], std::string title);
+
+  void svsort(int n, double d[], double v[]);
+
+  void timestamp();
 
 private:
   CRandom * mpRandom;
-
-  Global global_1;
-  Q q_1;
-
-public:
-
-  C_FLOAT64 praxis_(C_FLOAT64 *t0,
-                    C_FLOAT64 *machep,
-                    C_FLOAT64 *h0,
-                    C_INT *n,
-                    C_INT *prin,
-                    C_FLOAT64 *x,
-                    FPraxis *f, // Functor for function under investigation
-                    C_FLOAT64 *fmin);
-
-  int min_(C_INT *, C_INT *, C_INT *,
-           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, bool *, FPraxis *f,
-           C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
-  C_FLOAT64 flin_(C_INT *, C_INT *, C_FLOAT64 *, FPraxis *, C_FLOAT64 *, C_INT *);
-  int quad_(C_INT *, FPraxis *f, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
-  int print_(C_INT *n, C_FLOAT64 *x, C_INT *prin, C_FLOAT64 *fmin);
-  int minfit_(C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
 };
 
 #endif // COPASI_CPraxis

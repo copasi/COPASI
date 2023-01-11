@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,7 +46,7 @@ COptMethodPraxis::COptMethodPraxis(const CDataContainer * pParent,
   , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
   , mContinue(true)
   , mpPraxis(new FPraxisTemplate< COptMethodPraxis >(this, &COptMethodPraxis::evaluateFunction))
-  , mpCPraxis(new CPraxis())
+  , mPraxis()
 {
   assertParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-005);
 
@@ -66,7 +66,7 @@ COptMethodPraxis::COptMethodPraxis(const COptMethodPraxis & src,
   , mEvaluationValue(src.mEvaluationValue)
   , mContinue(src.mContinue)
   , mpPraxis(new FPraxisTemplate< COptMethodPraxis >(this, &COptMethodPraxis::evaluateFunction))
-  , mpCPraxis(new CPraxis())
+  , mPraxis()
 {
   initObjects();
 }
@@ -74,7 +74,6 @@ COptMethodPraxis::COptMethodPraxis(const COptMethodPraxis & src,
 COptMethodPraxis::~COptMethodPraxis()
 {
   pdelete(mpPraxis);
-  pdelete(mpCPraxis);
   cleanup();
 }
 
@@ -155,10 +154,10 @@ bool COptMethodPraxis::optimise()
   //estimate the maximum step size
   stepmx = 0.6;
 
-  //carry out the minimisation
+  // carry out the minimisation
   try
     {
-      mpCPraxis->praxis_(&mTolerance, &machep, &stepmx, &mVariableSize, &prin, mCurrent.array(), mpPraxis, &tmp);
+      tmp = mPraxis(mTolerance, stepmx, mVariableSize, prin, mCurrent.array(), mpPraxis);
     }
   catch (bool)
     {}
@@ -194,11 +193,11 @@ bool COptMethodPraxis::cleanup()
 }
 
 // evaluate the value of the objective function
-const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
+const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT & n)
 {
   C_INT i;
 
-  for (i = 0; i < *n; i++)
+  for (i = 0; i < n; i++)
     *mProblemContext.master()->getContainerVariables(true)[i] = (x[i]);
 
   //carry out the function evaluation
@@ -208,7 +207,7 @@ const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT *n)
     {
       // We found a new best value lets report it.
       // and store that value
-      for (i = 0; i < *n; i++)
+      for (i = 0; i < n; i++)
         mBest[i] = x[i];
 
       mBestValue = mEvaluationValue;
