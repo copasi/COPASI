@@ -1735,7 +1735,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
   if (file == "")
     SBMLFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                        QString(), "XML Files (*.xml);;All Files (*)",
+                                        QString(), "SBML Files (*.xml *.sbml);;All Files (*)",
                                         "Choose a file");
   else
     SBMLFile = file;
@@ -3652,7 +3652,7 @@ void CopasiUI3Window::slotExportCombine(QString str)
     {
       tmp =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          str, "Combine Archvie Files (*.omex *.sbex *.sedx)",
+                                          str, "Combine Archive Files (*.omex *.sbex *.sedx)",
                                           "Choose a filename to save under");
 
       if (tmp.isEmpty()) return;
@@ -3853,7 +3853,7 @@ void CopasiUI3Window::removeReportTargets()
   auto& taskList = *mpDataModel->getTaskList();
   std::stringstream str;
 
-  for (auto & task : taskList)
+for (auto & task : taskList)
     {
       std::string target = task.getReport().getTarget();
 
