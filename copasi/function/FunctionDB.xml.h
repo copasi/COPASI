@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -586,6 +591,31 @@ static char FunctionDBxml[] =
   "    <ParameterDescription key=\"FunctionParameter_257\" name=\"B\" order=\"2\" role=\"substrate\"/>\n"
   "    <ParameterDescription key=\"FunctionParameter_258\" name=\"Kma\" order=\"3\" role=\"constant\"/>\n"
   "    <ParameterDescription key=\"FunctionParameter_259\" name=\"Kmb\" order=\"4\" role=\"constant\"/>\n"
+  "  </ListOfParameterDescriptions>\n"
+  "</Function>\n"
+  "<Function key=\"Function_38\" name=\"Arrhenius Bimolecular (irr)\" type=\"PreDefined\" reversible=\"false\">\n"
+  "  <Expression>\n"
+  "    A*exp(Ea/(R*T))*S1*S2\n"
+  "  </Expression>\n"
+  "  <ListOfParameterDescriptions>\n"
+  "    <ParameterDescription key=\"FunctionParameter_264\" name=\"A\" order=\"0\" role=\"constant\"/>\n"
+  "    <ParameterDescription key=\"FunctionParameter_299\" name=\"Ea\" order=\"1\" role=\"constant\"/>\n"
+  "    <ParameterDescription key=\"FunctionParameter_261\" name=\"R\" order=\"2\" role=\"constant\"/>\n"
+  "    <ParameterDescription key=\"FunctionParameter_284\" name=\"T\" order=\"3\" role=\"constant\"/>\n"
+  "    <ParameterDescription key=\"FunctionParameter_292\" name=\"S1\" order=\"4\" role=\"substrate\"/>\n"
+  "    <ParameterDescription key=\"FunctionParameter_301\" name=\"S2\" order=\"5\" role=\"substrate\"/>\n"
+  "  </ListOfParameterDescriptions>\n"
+  "</Function>\n"
+  "<Function key=\"Function_43\" name=\"Arrhenius Unimolecular (irr)\" type=\"PreDefined\" reversible=\"false\">\n"
+  "  <Expression>\n"
+  "    A*exp(Ea/(R*T))*S\n"
+  "  </Expression>\n"
+  "  <ListOfParameterDescriptions>\n"
+  "    <ParameterDescription key=\"FunctionParameter_266\" name=\"A\" order=\"0\" role=\"constant\"/>\n"
+  "    <ParameterDescription key=\"FunctionParameter_276\" name=\"Ea\" order=\"1\" role=\"constant\"/>\n"
+  "    <ParameterDescription key=\"FunctionParameter_290\" name=\"R\" order=\"2\" role=\"constant\"/>\n"
+  "    <ParameterDescription key=\"FunctionParameter_285\" name=\"T\" order=\"3\" role=\"constant\"/>\n"
+  "    <ParameterDescription key=\"FunctionParameter_293\" name=\"S\" order=\"4\" role=\"substrate\"/>\n"
   "  </ListOfParameterDescriptions>\n"
   "</Function>\n"
   "</ListOfFunctions>\n"
