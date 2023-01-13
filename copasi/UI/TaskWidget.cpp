@@ -78,7 +78,6 @@ TaskWidget::TaskWidget(QWidget * parent, const char * name, Qt::WindowFlags fl)
   , mpSpacer1(NULL)
   , mpSpacer2(NULL)
   , mpTask(NULL)
-  , mpMethod(NULL)
   , mChanged(false)
   , mIgnoreProblemData(false)
 {
@@ -109,14 +108,6 @@ TaskWidget::~TaskWidget()
 void TaskWidget::revertBtnClicked()
 {
   if (!mpTask) return;
-
-  CCopasiMethod* pMethod = mpTask->getMethod();
-
-  if (pMethod != mpMethod)
-    {
-      pdelete(mpMethod);
-      mpMethod = pMethod;
-    }
 
   loadTask();
 }
@@ -231,7 +222,6 @@ bool TaskWidget::saveMethod()
   if (mpMethodWidget != NULL)
     {
       mChanged &= mpMethodWidget->saveMethod();
-      mpMethod = mpTask->getMethod();
     }
 
   return true;
@@ -561,8 +551,6 @@ bool TaskWidget::enterProtected()
 
   // :TODO: We need a message here.
   if (!mpTask) return false;
-
-  mpMethod = mpTask->getMethod();
 
   return loadTask();
 }
