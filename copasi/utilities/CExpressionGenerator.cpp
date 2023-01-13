@@ -10,13 +10,24 @@
 #include <copasi/model/CModel.h>
 
 // static
-std::map< std::string, CExpressionGenerator::sOperation > CExpressionGenerator::mOperations =
+const CEnumAnnotation< std::string, CExpressionGenerator::Operation > CExpressionGenerator::OperationNames(
 {
-  {"Sum", {" + ", "", "", "", ""}},
-  {"Sum of Squares", {" + ", "", "", "", "^2"}},
-  {"Sum of Absolutes", {" + ", "", "", "ABS(", ")"}},
-  {"Product", {" * ", "", "", "", ""}},
-};
+  "Sum",
+  "Sum of Squares",
+  "Sum of Absolutes",
+  "Product"
+}
+);
+
+// static
+const CEnumAnnotation< CExpressionGenerator::sOperation, CExpressionGenerator::Operation > CExpressionGenerator::OperationParts(
+{
+  sOperation(" + ", "", "", "", ""),
+  sOperation(" + ", "", "", "", "^2"),
+  sOperation(" + ", "", "", "ABS(", ")"),
+  sOperation(" * ", "", "", "", "")
+}
+);
 
 // static
 std::vector< std::string > CExpressionGenerator::mSupportedTypes =
@@ -51,18 +62,13 @@ CExpressionGenerator::CExpressionGenerator(
   : CDataObject("ExpressionGenerator")
   , mType(type)
   , mSelection(selection)
-  , mOperation(operation)
-{
-}
+  , mOperation(OperationNames.toEnum(operation))
+{}
 
+// static
 std::vector< std::string > CExpressionGenerator::getSupportedOperations()
 {
-  std::vector< std::string > result;
-
-  for (auto & entry : mOperations)
-    result.push_back(entry.first);
-
-  return result;
+  return OperationNames.annotations();
 }
 
 bool CExpressionGenerator::isTypeSupported(const std::string & type)
@@ -148,46 +154,49 @@ std::vector< const CDataObject * > CExpressionGenerator::getObjectsForSelection(
 
 std::string CExpressionGenerator::generateExpressionFor(const CModel * pModel, bool useCn) const
 {
-  auto operation = mOperations[ mOperation];
-
   if (!pModel)
     return std::string();
 
-  auto selection = getObjectsForSelection(pModel);
+  return generate(mOperation, getObjectsForSelection(pModel), useCn);
+}
 
-  if (selection.empty())
+std::string CExpressionGenerator::generate(Operation operation, const std::vector< const CDataObject * > & objects, bool useCn)
+{
+  const sOperation & parts = OperationParts[operation];
+
+  if (objects.empty())
     return std::string();
 
-  auto entry = *selection.begin();
+  const CDataObject * entry = *objects.begin();
 
   std::stringstream result;
-  result << operation.surroundStart;
+  result << parts.surroundStart;
 
-  result << operation.entryStart;
+  result << parts.entryStart;
 
   if (useCn)
     result << "<" << entry->getCN() << ">";
   else
     result << "{" << escapeDisplayName(entry) << "}";
 
-  result << operation.entryEnd;
+  result << parts.entryEnd;
 
-  for (int i = 1; i < selection.size(); ++i)
+  for (int i = 1; i < objects.size(); ++i)
     {
-      entry = selection[i];
+      entry = objects[i];
 
-      result << operation.join;
-      result << operation.entryStart;
+      result << parts.join;
+      result << parts.entryStart;
 
       if (useCn)
         result << "<" << entry->getCN() << ">";
       else
         result << "{" << escapeDisplayName(entry) << "}";
 
-      result << operation.entryEnd;
+      result << parts.entryEnd;
     }
 
-  result << operation.surroundEnd;
+  result << parts.surroundEnd;
 
   return result.str();
 }
@@ -204,5 +213,5 @@ void CExpressionGenerator::setSelection(const std::string & selection)
 
 void CExpressionGenerator::setOperation(const std::string & operation)
 {
-  mOperation = operation;
+  mOperation = OperationNames.toEnum(operation);
 }
