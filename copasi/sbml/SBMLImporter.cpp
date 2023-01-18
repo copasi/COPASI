@@ -7129,7 +7129,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
 
   // import the delay
   bool haveDelay = pEvent->isSetDelay() && pEvent->getDelay()->isSetMath();
-  pCOPASIEvent->setDelayAssignment(pEvent->getUseValuesFromTriggerTime() && haveDelay);
+  pCOPASIEvent->setDelayAssignment(pEvent->getUseValuesFromTriggerTime());
 
   if (haveDelay)
     {
