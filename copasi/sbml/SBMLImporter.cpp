@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7128,35 +7128,12 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
     }
 
   // import the delay
-  // check for useValuesFromTriggerTime
-  if ((this->mLevel == 2 && this->mVersion >= 4) || this->mLevel > 2)
-    {
-      // it has exactly the same meaning as the delayAssignment flag in
-      // COPASI, just a different name
-      if (pEvent->getUseValuesFromTriggerTime() == true)
-        {
-          pCOPASIEvent->setDelayAssignment(true);
-        }
-      else
-        {
-          pCOPASIEvent->setDelayAssignment(false);
-        }
-    }
-  else
-    {
-      // SBML version prior to L2V4 didn't have the flag and the default
-      // behavior was the same as if the flag was set to true
-      pCOPASIEvent->setDelayAssignment(true);
-    }
+  bool haveDelay = pEvent->isSetDelay() && pEvent->getDelay()->isSetMath();
+  pCOPASIEvent->setDelayAssignment(pEvent->getUseValuesFromTriggerTime());
 
-  if (pEvent->isSetDelay() && pEvent->getDelay()->isSetMath())
+  if (haveDelay)
     {
       const Delay* pDelay = pEvent->getDelay();
-
-      if (!pDelay->isSetMath())
-        {
-          fatalError();
-        }
 
       pMath = pDelay->getMath();
       assert(pMath != NULL);
@@ -7178,12 +7155,6 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
       delete pTmpNode;
       pCOPASIEvent->setDelayExpressionPtr(pExpression);
     }
-  else if (pCOPASIEvent->getDelayAssignment())
-    {
-      pCOPASIEvent->setDelayExpression("0");
-    }
-
-  // the check if the time units are correct has already been made elsewhere
 
   // import all assignments
   std::map<std::string, const CDataObject*> id2copasiMap;

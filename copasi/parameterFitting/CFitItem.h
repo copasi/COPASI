@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -77,13 +77,13 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  virtual bool elevateChildren() override;
 
   /**
    * Check the validity of the optimization item.
    * @return bool isValid
    */
-  virtual bool isValid() const;
+  virtual bool isValid() const override;
 
   /**
    * Check whether the group describes a valid optimization item.
@@ -99,21 +99,21 @@ public:
    * @return bool success
    */
   virtual bool compile(CObjectInterface::ContainerList listOfContainer =
-                         CDataContainer::EmptyList);
+                         CDataContainer::EmptyList) override;
 
   /**
    * This functions check whether the current value is within the limits
    * of the optimization item.
    * @return C_INT32 result (-1: to small, 0: within boundaries, 1 to large)
    */
-  virtual C_INT32 checkConstraint() const;
+  virtual C_INT32 checkConstraint() const override;
 
   /**
    * Retrieve the magnitude of the constraint violation
    * This is always a positive number
    * @return C_FLOAT64 constraintViolation;
    */
-  virtual C_FLOAT64 getConstraintViolation() const;
+  virtual C_FLOAT64 getConstraintViolation() const override;
 
   /**
    * Output stream operator

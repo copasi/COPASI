@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,10 +21,6 @@
 // Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-
-
-
 
 #include <QPushButton>
 #include <QCheckBox>
@@ -50,7 +46,7 @@
 #include "CQMatrixDialog.h"
 #include "CQMessageBox.h"
 
-CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * name , bool modal):
+CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent, const char * name, bool modal):
   QDialog(parent),
   mpModeCheckBox(NULL),
   mpButtonBox(NULL),
@@ -157,10 +153,16 @@ void CCopasiSelectionDialog::enableExpertMode(bool enable)
     }
 }
 
+void CCopasiSelectionDialog::setAllowExpressions(bool allowExpressions)
+{
+  mpSelectionWidget->setAllowExpressions(allowExpressions);
+}
+
 const CDataObject *
 CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
                                         const CQSimpleSelectionTree::ObjectClasses & classes,
-                                        const CDataObject * pCurrentObject)
+                                        const CDataObject * pCurrentObject,
+                                        bool allowExpressions)
 {
   std::vector< const CDataObject * > Selection;
 
@@ -172,6 +174,7 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
   pDialog->setFilter(classes);
   pDialog->setSingleSelection(true);
   pDialog->setOutputVector(&Selection);
+  pDialog->setAllowExpressions(allowExpressions);
 
   int Result = pDialog->exec();
 

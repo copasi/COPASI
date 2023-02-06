@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -60,14 +60,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  virtual CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * create an element reference with a given index. The index
@@ -87,22 +87,22 @@ public:
    */
   virtual void * getValuePointer() const override;
 
-  virtual const CDataObject * getValueObject() const {return this;}
+  virtual const CDataObject * getValueObject() const override {return this;}
 
   /**
    *
    */
-  virtual void print(std::ostream * ostream) const;
+  virtual void print(std::ostream * ostream) const override;
 
   /**
    * generate a display name.
    */
-  virtual std::string getObjectDisplayName() const;
+  virtual std::string getObjectDisplayName() const override;
 
   /**
    *
    */
-  virtual CCommonName getCN() const;
+  virtual CCommonName getCN() const override;
 };
 
 #endif

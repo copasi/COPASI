@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -38,6 +38,15 @@ class CDataObject;
 class CDataModel;
 class CDataArray;
 
+class COutputOption
+{
+public:
+
+  std::string name;
+  bool enabled;
+  std::string description;
+};
+
 class CDefaultOutputDescription
 {
 public:
@@ -47,7 +56,8 @@ public:
     description(""),
     isPlot(true),
     mTaskType(CTaskEnum::Task::steadyState),
-    mSecondaryTask(CTaskEnum::Task::UnsetTask)
+    mSecondaryTask(CTaskEnum::Task::UnsetTask),
+    options()
   {}
 
   //C_INT32 id;
@@ -56,6 +66,7 @@ public:
   bool isPlot;
   CTaskEnum::Task mTaskType;
   CTaskEnum::Task mSecondaryTask;
+  std::vector<COutputOption> options;
 };
 
 class COutputAssistant
@@ -109,7 +120,6 @@ public:
   static
   C_INT32 findItemByName(const std::string& name, bool isPlot = true);
 
-
   /**
    *  create a plot or report from template with index id.
    *  returns a pointer to the plot or report definition (or NULL)
@@ -117,7 +127,7 @@ public:
    *  the current report for the task (possibly replacing an already set report)
    */
   static
-  CDataObject* createDefaultOutput(C_INT32 id, CCopasiTask * task, CDataModel* pDataModel, bool activate = true);
+  CDataObject* createDefaultOutput(C_INT32 id, CCopasiTask * task, CDataModel* pDataModel, bool activate = true, const std::vector<COutputOption>* pOptions = NULL);
 
 private:           //************************************
 
@@ -129,6 +139,10 @@ private:           //************************************
   //this method creates the lists of output descriptions
   static
   bool initialize();
+
+  static bool isOptionEnabled(const std::vector< COutputOption > * pOptions,
+                              const std::string& name,
+                              bool defaultValue = true);
 
   static
   CPlotSpecification* createPlot(const std::string & name,

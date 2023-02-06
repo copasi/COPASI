@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,10 +21,6 @@
 // Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-
-
-
 
 #include <iostream>
 
@@ -167,6 +163,11 @@ void CCopasiSelectionWidget::setExpertMode(bool expertMode)
       this->mpSimpleTree->setOutputVector(this->mpOutputVector);
       this->setCurrentWidget(this->mpSimpleTree);
     }
+}
+
+void CCopasiSelectionWidget::setAllowExpressions(bool allowExpressions)
+{
+  mpSimpleTree->setAllowExpressions(allowExpressions);
 }
 
 bool CCopasiSelectionWidget::expertMode() const

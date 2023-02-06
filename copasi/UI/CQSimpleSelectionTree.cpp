@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -13,6 +13,8 @@
 // of Manchester.
 // All rights reserved.
 
+#include <QMenu>
+
 #include "copasi/copasi.h"
 
 #include "CQSimpleSelectionTree.h"
@@ -21,6 +23,7 @@
 #include "copasi/model/CReaction.h"
 #include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CExpressionGenerator.h"
 #include "copasi/core/CDataObject.h"
 #include "copasi/core/CDataContainer.h"
 #include "copasi/core/CDataTimer.h"
@@ -38,8 +41,11 @@
 #include "copasi/tssanalysis/CCSPMethod.h"
 #include "copasi/tssanalysis/CTSSATask.h"
 
-CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget *parent):
-  QTreeWidget(parent), mpOutputVector(NULL)
+CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget *parent)
+  : QTreeWidget(parent)
+  , mpOutputVector(NULL)
+  , mpExpressionGenerator(NULL)
+  , mAllowExpressions(false)
 {
   setSelectionMode(QAbstractItemView::ExtendedSelection);
   setSortingEnabled(true);
@@ -98,6 +104,9 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget *parent):
   mpTimeSubtree = new QTreeWidgetItem(this, QStringList("Time"));
 
   connect(this, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(slotItemDoubleClicked(QTreeWidgetItem *, int)));
+
+  setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(this, &QWidget::customContextMenuRequested, this, &CQSimpleSelectionTree::slotCustomContextMenuRequested);
 }
 
 /// Destructor
@@ -1009,10 +1018,62 @@ void CQSimpleSelectionTree::slotItemDoubleClicked(QTreeWidgetItem * item, int co
     emit selectionCommitted();
 }
 
+void CQSimpleSelectionTree::slotExpressionOperationClicked(QAction* action)
+{
+  mpExpressionGenerator = new CExpressionGenerator(
+    TO_UTF8(action->property("expression_type").toString()),
+    TO_UTF8(action->property("object_selection").toString()),
+    TO_UTF8(action->text()));
+  emit selectionCommitted();
+}
+
+void CQSimpleSelectionTree::slotCustomContextMenuRequested(const QPoint & pos)
+{
+  if (!mAllowExpressions)
+    return;
+
+  auto * item = this->itemAt(pos);
+
+  if (item == NULL)
+    return;
+
+  auto * parent = item->parent();
+
+  if (parent == NULL)
+    return;
+
+  std::string parentsName = TO_UTF8(parent->text(0));
+
+  if (parentsName != "Compartments" && parentsName != "Species" && parentsName != "Reactions" && parentsName != "Global Quantities")
+    return;
+
+  std::string name = TO_UTF8(item->text(0));
+
+  QMenu * menu = new QMenu(this);
+
+  menu->setProperty("name", item->text(0));
+
+  for (auto & entry : CExpressionGenerator::getSupportedOperations())
+    {
+      auto * action = menu->addAction(FROM_UTF8(entry));
+      action->setProperty("expression_type", parent->text(0));
+      action->setProperty("object_selection", item->text(0));
+    }
+
+  menu->popup(this->mapToGlobal(pos));
+  connect(menu, &QMenu::triggered, this, &CQSimpleSelectionTree::slotExpressionOperationClicked);
+}
+
 std::vector<const CDataObject * > *CQSimpleSelectionTree::getTreeSelection()
 {
   std::vector<const CDataObject * > *selection = new std::vector<const CDataObject * >();
   std::map< std::string, const CDataObject * > SelectionMap;
+
+  if (mAllowExpressions && mpExpressionGenerator != NULL)
+    {
+      selection->push_back(mpExpressionGenerator);
+      return selection;
+    }
 
   if (selectedItems().isEmpty())
     return selection;
@@ -1205,6 +1266,11 @@ void CQSimpleSelectionTree::setOutputVector(std::vector< const CDataObject * > *
     {
       selectObjects(mpOutputVector);
     }
+}
+
+void CQSimpleSelectionTree::setAllowExpressions(bool allowExpressions)
+{
+  mAllowExpressions = allowExpressions;
 }
 
 // static

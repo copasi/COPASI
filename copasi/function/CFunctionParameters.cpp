@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -145,6 +145,11 @@ CFunctionParameters::const_name_iterator CFunctionParameters::begin_name() const
 CFunctionParameters::const_name_iterator CFunctionParameters::end_name() const
 {
   return mParameters.endName();
+}
+
+CDataVectorNS< CFunctionParameter > & CFunctionParameters::getParameters()
+{
+  return mParameters;
 }
 
 size_t CFunctionParameters::size() const {return mParameters.size();}

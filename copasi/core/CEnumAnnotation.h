@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,6 +12,7 @@
 #define COPASI_CEnumAnnotation
 
 #include <array>
+#include <vector>
 #include <map>
 
 template < class Type, class Enum > class CEnumAnnotation
@@ -104,6 +105,16 @@ public:
       return enumDefault;
 
     return toEnum(Type(pAnnotation), enumDefault);
+  }
+
+  std::vector< Type > annotations() const
+  {
+    std::vector< Type > Annotations;
+
+    for (const std::pair< Type, Enum > & a : mMap)
+      Annotations.push_back(a.first);
+
+    return Annotations;
   }
 
 private:

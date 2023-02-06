@@ -12,7 +12,7 @@ means to visualize data in customizable plots, histograms and animations of
 network diagrams. 
 ([list of features](http://copasi.org/Support/Features/)). 
 
-Follow us on [Twitter](https://twitter.com/COPASI_software). 
+Follow us on [Mastodon](https://fosstodon.org/@copasi). 
 
 ### Download COPASI
 Precompiled versions of COPASI are available for all operating systems on the 
@@ -122,4 +122,8 @@ git push
 ```
 
 #### Tagging snapshots
-In order to tag a 
+In order to tag the latest commit in the current branch as a snapshot execute:
+```
+gitTools/UpdateCopasiVersion --registerBuild
+```
+The above command will automatically select the next tag of the format: `Build-N` and push the tag to the upstream repository.

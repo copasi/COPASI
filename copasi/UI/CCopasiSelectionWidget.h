@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,10 +21,6 @@
 // Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-
-
-
 
 #ifndef CCopasiSelectionWidget_H__
 #define CCopasiSelectionWidget_H__
@@ -54,6 +50,7 @@ public:
   void setSingleSelection(bool singleSelection);
   bool isSingleSelection() const;
   void setExpertMode(bool expertMode);
+  void setAllowExpressions(bool allowExpressions);
   bool expertMode() const;
   void commit();
 

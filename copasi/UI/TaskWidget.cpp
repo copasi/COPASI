@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -78,7 +78,6 @@ TaskWidget::TaskWidget(QWidget * parent, const char * name, Qt::WindowFlags fl)
   , mpSpacer1(NULL)
   , mpSpacer2(NULL)
   , mpTask(NULL)
-  , mpMethod(NULL)
   , mChanged(false)
   , mIgnoreProblemData(false)
 {
@@ -109,14 +108,6 @@ TaskWidget::~TaskWidget()
 void TaskWidget::revertBtnClicked()
 {
   if (!mpTask) return;
-
-  CCopasiMethod* pMethod = mpTask->getMethod();
-
-  if (pMethod != mpMethod)
-    {
-      pdelete(mpMethod);
-      mpMethod = pMethod;
-    }
 
   loadTask();
 }
@@ -560,8 +551,6 @@ bool TaskWidget::enterProtected()
 
   // :TODO: We need a message here.
   if (!mpTask) return false;
-
-  mpMethod = mpTask->getMethod();
 
   return loadTask();
 }

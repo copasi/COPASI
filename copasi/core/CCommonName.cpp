@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -55,19 +55,28 @@ std::string CCommonName::compartmentNameFromCN(const CCommonName & cn)
   return ObjectName;
 }
 
+void CCommonName::fixSpelling()
+{
+  if (!compare("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Simulation Counter"))
+    assign("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations");
+  else if (!compare("CN=Root,CN=Information,Timer=Current Date/Dime"))
+    assign("CN=Root,CN=Information,Timer=Current Date/Time");
+}
+
 CCommonName::CCommonName():
   string()
 {}
 
+CCommonName::CCommonName(const char * name):
+  string(name)
+{
+  fixSpelling();
+}
+
 CCommonName::CCommonName(const std::string & name):
   string(name)
 {
-  if (name ==
-      "CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Simulation Counter")
-    assign("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations");
-
-  if (name == "CN=Root,CN=Information,Timer=Current Date/Dime")
-    assign("CN=Root,CN=Information,Timer=Current Date/Time");
+  fixSpelling();
 }
 
 CCommonName::CCommonName(const CCommonName & src):

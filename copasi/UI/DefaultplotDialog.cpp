@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -60,7 +60,18 @@ void DefaultPlotDialog::slotCreate()
   CDataModel* pDataModel = ListViews::dataModel(parent());
   assert(pDataModel != NULL);
 
-  CDataObject* result = COutputAssistant::createDefaultOutput(mIndex, mpTask, pDataModel);
+  auto options = std::vector< COutputOption >();
+
+  for (int i = 0; i < optionsLayout->count(); ++i)
+    {
+      QCheckBox * checkBox = qobject_cast< QCheckBox * >(optionsLayout->itemAt(i)->widget());
+
+      if (!checkBox) continue;
+
+      options.push_back({TO_UTF8(checkBox->text()), checkBox->isChecked(), TO_UTF8(checkBox->toolTip())});
+    }
+
+  CDataObject* result = COutputAssistant::createDefaultOutput(mIndex, mpTask, pDataModel, true, &options);
 
   if (result != NULL)
     {
@@ -129,8 +140,31 @@ void DefaultPlotDialog::slotSelect()
   if (i >= 0)
     {
       mIndex = mList[i];
-      lineEditTitle->setText(FROM_UTF8(COutputAssistant::getItemName(mIndex)));
-      textEdit->setText(FROM_UTF8(COutputAssistant::getItem(mIndex).description));
+
+      auto item = COutputAssistant::getItem(mIndex);
+
+      lineEditTitle->setText(FROM_UTF8(item.name));
+      textEdit->setText(FROM_UTF8(item.description));
+
+      blockSignals(true);
+
+      while (QLayoutItem * pItem = optionsLayout->takeAt(0))
+        {
+          if (pItem->widget())
+            pItem->widget()->deleteLater();
+
+          delete pItem;
+        }
+
+      for (auto option : item.options)
+        {
+          auto * checkBox = new QCheckBox(FROM_UTF8(option.name));
+          checkBox->setChecked(option.enabled);
+          checkBox->setToolTip(FROM_UTF8(option.description));
+          optionsLayout->addWidget(checkBox);
+        }
+
+      blockSignals(false);
 
       createButton->setEnabled(!lineEditTitle->text().startsWith("-- "));
     }

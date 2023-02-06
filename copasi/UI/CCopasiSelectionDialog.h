@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,11 +68,13 @@ public:
   void setValidObjects(const std::vector< const CDataObject * > & objectList);
   void setSingleSelection(bool singleSelectionMode);
   void enableExpertMode(bool enable);
+  void setAllowExpressions(bool allowExpressions);
 
   static
   const CDataObject * getObjectSingle(QWidget * pParent,
                                       const CQSimpleSelectionTree::ObjectClasses & classes,
-                                      const CDataObject * pCurrentObject = NULL);
+                                      const CDataObject * pCurrentObject = NULL,
+                                      bool allowExpressions = false);
   static
   std::vector< const CDataObject * > getObjectVector(QWidget * pParent,
       const CQSimpleSelectionTree::ObjectClasses & classes,

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -146,14 +146,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  virtual CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -167,7 +167,7 @@ public:
   virtual void createUndoData(CUndoData & undoData,
                               const CUndoData::Type & type,
                               const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
   /**
    * Copy constructor
@@ -196,7 +196,7 @@ public:
    */
   virtual ~CCopasiParameter();
 
-  virtual bool setObjectParent(const CDataContainer * pParent);
+  virtual bool setObjectParent(const CDataContainer * pParent) override;
 
   /**
    * Assignment operator
@@ -209,7 +209,7 @@ public:
    * Return the key of this model
    * @return string key
    */
-  virtual const std::string & getKey() const;
+  virtual const std::string & getKey() const override;
 
   /**
    * Set the value of the parameter
@@ -400,7 +400,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const;
+  virtual void print(std::ostream * ostream) const override;
 
   /**
    * Output stream operator
@@ -424,7 +424,7 @@ public:
    * For the CN mechanism to work properly it has to pretend to be the model.
    * @return CCommonName
    */
-  virtual CCommonName getCN() const;
+  virtual CCommonName getCN() const override;
 
   virtual void * getValuePointer() const override;
 
@@ -433,7 +433,7 @@ public:
    *  Overload display name. Special treatment for reaction parameters
    *  to provide a shorter display.
    */
-  virtual std::string getObjectDisplayName() const;
+  virtual std::string getObjectDisplayName() const override;
 
   virtual void setUserInterfaceFlag(const UserInterfaceFlag & flag);
 

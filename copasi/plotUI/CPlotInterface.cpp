@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -14,7 +14,6 @@
 #include <QtSvg/QtSvg>
 #include <QtSvg/QSvgGenerator>
 
-
 // static
 const CEnumAnnotation< std::string, CPlotInterface::Axis > CPlotInterface::AxisNames(
 {
@@ -23,6 +22,9 @@ const CEnumAnnotation< std::string, CPlotInterface::Axis > CPlotInterface::AxisN
   "z axis"
 });
 
+// virtual
+CPlotInterface::~CPlotInterface()
+{}
 
 void CPlotInterface::saveToFile(const QString & fileName, QRect & rect)
 {

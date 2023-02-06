@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -66,14 +66,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  virtual CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -87,7 +87,7 @@ public:
   virtual void createUndoData(CUndoData & undoData,
                               const CUndoData::Type & type,
                               const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
   /**
    * Append all required dependent undo data
@@ -106,9 +106,9 @@ public:
 
   virtual ~CDataContainer();
 
-  virtual const CObjectInterface * getObject(const CCommonName & cn) const;
+  virtual const CObjectInterface * getObject(const CCommonName & cn) const override;
 
-  virtual const CDataObject * getValueObject() const;
+  virtual const CDataObject * getValueObject() const override;
 
   virtual const objectMap & getObjects() const;
   virtual objectMap & getObjects();
@@ -128,7 +128,7 @@ public:
    * Retrieve the units of the object.
    * @return std::string units
    */
-  virtual const std::string getUnits() const;
+  virtual const std::string getUnits() const override;
 
   /**
    * Retrieve the units of the child object.
@@ -144,7 +144,7 @@ public:
    * @param const CData & data
    * @return CUndoObjectInterface * pUndoObject
    */
-  virtual CUndoObjectInterface * insert(const CData & data);
+  virtual CUndoObjectInterface * insert(const CData & data) override;
 
   /**
    * Retrieve all descendant objects (optionally recursive)

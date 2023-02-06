@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -185,7 +185,11 @@ endif(EXTRA_MOC_OPTIONS)
   endif()
 
   if (COPASI_USE_QWT)
-  set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_USE_QWT=1)    
+    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_USE_QWT=1)    
+  endif()
+  
+  if (COPASI_USE_QCUSTOMPLOT)
+    set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_USE_QCUSTOMPLOT=1)    
   endif()
   
   if (ENABLE_COPASI_PARAMETERFITTING_RESIDUAL_SCALING)

@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -236,7 +236,8 @@ CJitCompilerImplementation::Function CJitCompilerImplementation::compile(const C
               break;
             }
 
-          if (pNode == NULL)
+          if (pNode == NULL
+              && itNode->mainType() != CEvaluationNode::MainType::UNIT)
             {
               // CCopasiMessage(CCopasiMessage::WARNING, MCJitCompilation + 2, mathExpression.getInfix().c_str());
               break;
@@ -442,7 +443,13 @@ CJitCompilerImplementation::Node * CJitCompilerImplementation::compile(const CEv
       break;
 
       case CEvaluationNode::SubType::MULTIPLY:
-        pNodeJIT = &mpExpression->Mul(*static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[0]), *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[1]));
+
+        if (pNode->getRight() != NULL
+            && pNode->getRight()->mainType() == CEvaluationNode::MainType::UNIT)
+          pNodeJIT = context[0];
+        else
+          pNodeJIT = &mpExpression->Mul(*static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[0]), *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[1]));
+
         break;
 
       case CEvaluationNode::SubType::DIVIDE:
