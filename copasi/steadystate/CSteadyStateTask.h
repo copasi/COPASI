@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -132,7 +132,7 @@ public:
    * For now we assume that this functionality is also performed when
    * initialize() is called.
    */
-  virtual bool updateMatrices();
+  virtual bool updateMatrices() override;
 
   /**
    * Initialize the task. If an ostream is given this ostream is used
@@ -145,14 +145,14 @@ public:
    */
   virtual bool initialize(const OutputFlag & of,
                           COutputHandler * pOutputHandler,
-                          std::ostream * pOstream);
+                          std::ostream * pOstream) override;
 
   /**
    * Process the task with or without initializing to the initial state.
    * @param const bool & useInitialValues
    * @return bool success
    */
-  virtual bool process(const bool & useInitialValues);
+  virtual bool process(const bool & useInitialValues) override;
 
   /**
    * Perform necessary cleanup procedures
@@ -166,7 +166,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const;
+  virtual void print(std::ostream * ostream) const override;
 
 #ifndef SWIG
 
@@ -174,7 +174,7 @@ public:
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  virtual const CTaskEnum::Method * getValidMethods() const;
+  virtual const CTaskEnum::Method * getValidMethods() const override;
 #endif
 
   /**

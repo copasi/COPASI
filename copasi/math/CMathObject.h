@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -73,7 +73,7 @@ public:
    * Retrieve the CN of the object
    * @return CCommonName
    */
-  virtual CCommonName getCN() const;
+  virtual CCommonName getCN() const override;
 
   /**
    * Retrieve the display name of the object
@@ -81,14 +81,14 @@ public:
    * @param bool richtext (default: false)
    * @return std::string objectDisplayName
    */
-  virtual std::string getObjectDisplayName() const;
+  virtual std::string getObjectDisplayName() const override;
 
   /**
    * Retrieve a descendant object by its CN.
    * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  virtual const CObjectInterface * getObject(const CCommonName & cn) const;
+  virtual const CObjectInterface * getObject(const CCommonName & cn) const override;
 
   /**
    * Retrieve the prerequisites, i.e., the objects which need to be evaluated
@@ -106,7 +106,7 @@ public:
    */
   virtual bool isPrerequisiteForContext(const CObjectInterface * pObject,
                                         const CCore::SimulationContextFlag & context,
-                                        const CObjectInterface::ObjectSet & changedObjects) const;
+                                        const CObjectInterface::ObjectSet & changedObjects) const override;
 
   /**
    * This is the output method for any object. The default implementation
@@ -115,7 +115,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const;
+  virtual void print(std::ostream * ostream) const override;
 
   /**
    * Retrieve a pointer to the value of the object
@@ -132,24 +132,24 @@ public:
    * Retrieve a pointer to the data object
    * @return const CDataObject * dataObject
    */
-  virtual const CDataObject * getDataObject() const;
+  virtual const CDataObject * getDataObject() const override;
 
   /**
    * Get the aggregation of any issues associated with this object
    * @return const CValidity & validity
    */
-  virtual const CValidity & getValidity() const;
+  virtual const CValidity & getValidity() const override;
 
   /**
    * This method is called whenever the validity object changes.
    * @param const CValidity & changedValidity
    */
-  void validityChanged(const CValidity & changedValidity);
+  void validityChanged(const CValidity & changedValidity) override;
 
   /**
    * Calculate the objects value
    */
-  virtual void calculateValue();
+  virtual void calculateValue() override;
 
   /**
    * Retrieve the value of the object;

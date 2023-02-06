@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -112,7 +112,7 @@ public:
    * Check if the method is suitable for this problem
    * @return bool suitability of the method
    */
-  virtual bool isValidProblem(const CCopasiProblem * pProblem);
+  virtual bool isValidProblem(const CCopasiProblem * pProblem) override;
 
   /**
    * Set the call back of the problem

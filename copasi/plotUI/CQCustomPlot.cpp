@@ -1,8 +1,7 @@
-// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
-
 
 #include <copasi/config.h>
 
@@ -18,6 +17,8 @@
 #  include "copasi/model/CModel.h"
 #  include "copasi/commandline/CLocaleString.h"
 #  include "copasi/CopasiDataModel/CDataModel.h"
+#  include "copasi/parameterFitting/CExperiment.h"
+#  include "copasi/parameterFitting/CExperimentSet.h"
 
 #  include <QApplication>
 
@@ -145,8 +146,13 @@ private:
 #  define ActivitySize 8
 C_FLOAT64 CQCustomPlot::MissingValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
+# define X_AXIS_INDEX 0
+# define X_AXIS_NAME 1
+#  define X_AXIS_VALUE 2
+
 CQCustomPlot::CQCustomPlot(QWidget * parent)
   : QCustomPlot(parent)
+  , CPlotInterface()
   , mCurves(0)
   , mCurveMap()
   , mY2Map()
@@ -163,11 +169,13 @@ CQCustomPlot::CQCustomPlot(QWidget * parent)
   , mpTitle(NULL)
   , mLogTicker(NULL)
   , mDefaultTicker(NULL)
+  , mpSubLayout(NULL)
 {
 }
 
 CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent)
   : QCustomPlot(parent)
+  , CPlotInterface()
   , mCurves(0)
   , mCurveMap()
   , mY2Map()
@@ -183,6 +191,8 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
   , mReplotFinished(false)
   , mpTitle(NULL)
   , mLogTicker(new QCPAxisTickerLog)
+  , mDefaultTicker(NULL)
+  , mpSubLayout(NULL)
 {
   // Size the vectors to be able to store information for all activities.
   mData.resize(ActivitySize);
@@ -195,6 +205,199 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
   //setSelectionRectMode(QCP::srmZoom);
   setInteractions(QCP::iRangeDrag | QCP::iRangeZoom /*| QCP::iSelectPlottables*/);
   mDefaultTicker = xAxis->ticker();
+
+  mpContextMenu = new QMenu("Type");
+  mpContextMenu->addAction("Index")->setData(QVariant::fromValue(X_AXIS_INDEX));
+  mpContextMenu->addAction("Name")->setData(QVariant::fromValue(X_AXIS_NAME));
+  mpContextMenu->addSeparator();
+
+  QObject::connect(
+    mpContextMenu, &QMenu::triggered,
+    [this](QAction * action)
+  {
+    auto type = action->data().toInt();
+    this->xAxis->setProperty("axis_label", action->data());
+    this->updateSteadyStateInfo(type);
+    this->mSelectedIndependent = "";
+
+    if (type == X_AXIS_VALUE)
+      {
+        this->mSelectedIndependent = action->text();
+      }
+
+    // reset data count on curves, so they will be reset
+    for (auto * element : this->mCurves)
+      {
+        auto * curve = dynamic_cast< QCPCurve * >(element);
+
+        if (!curve)
+          continue;
+
+        curve->setData(QVector< qreal >(), QVector< qreal >());
+        curve->setProperty("last_count", 0);
+      }
+
+    this->replot(true);
+  });
+
+  mpLegendContextMenu = new QMenu("Legend");
+  auto* menu = mpLegendContextMenu->addMenu("Show");
+  menu->addAction("Show All");
+  menu->addAction("Show Row");
+  menu->addAction("Show Column");
+  menu = mpLegendContextMenu->addMenu("Hide");
+  menu->addAction("Hide All");
+  menu->addAction("Hide Row");
+  menu->addAction("Hide Column");
+  mpLegendContextMenu->addSeparator();
+  mpLegendContextMenu->addAction("Increase Columns");
+  mpLegendContextMenu->addAction("Decrease Columns");
+  mpLegendContextMenu->addAction("Reset Columns");
+
+  QObject::connect(
+    mpLegendContextMenu, &QMenu::triggered,
+    [this](QAction * action)
+  {
+    bool reorder = true;
+    auto * legend = this->legend;
+
+    if (action->text().contains("Columns"))
+      {
+
+        if (action->text() == "Increase Columns")
+          {
+            legend->setWrap(legend->wrap() + 1);
+          }
+        else if (action->text() == "Decrease Columns" && legend->wrap() > 1)
+          {
+            legend->setWrap(legend->wrap() - 1);
+          }
+        else if (action->text() == "Reset Columns" && legend->wrap() != 3)
+          {
+            legend->setWrap(3);
+          }
+        else
+          reorder = false;
+
+        if (reorder)
+          {
+            legend->setFillOrder(legend->fillOrder(), true);
+            this->replot();
+          }
+
+        return;
+      }
+
+    bool needReplot = false;
+
+    if (action->text() == "Show All")
+      setCurvesVisibility(true);
+    else if (action->text() == "Hide All")
+      setCurvesVisibility(false);
+    else if (action->text() == "Show Row" && mLegendRow != -1)
+      {
+        for (int index = 0; index < legend->itemCount(); ++index)
+          {
+            auto * item = dynamic_cast< QCPPlottableLegendItem * >(legend->item(index));
+
+            if (!item)
+              continue;
+
+            int row, col;
+            legend->indexToRowCol(index, row, col);
+
+            if (row != mLegendRow)
+              continue;
+
+            auto * pCurve = item->plottable();
+
+            if (!pCurve)
+              continue;
+
+            showCurve(pCurve, true);
+
+            needReplot = true;
+          }
+      }
+    else if (action->text() == "Show Column" && mLegendCol != -1)
+      {
+        for (int index = 0; index < legend->itemCount(); ++index)
+          {
+            auto * item = dynamic_cast< QCPPlottableLegendItem * >(legend->item(index));
+
+            if (!item)
+              continue;
+
+            int row, col;
+            legend->indexToRowCol(index, row, col);
+
+            if (col != mLegendCol)
+              continue;
+
+            auto * pCurve = item->plottable();
+
+            if (!pCurve)
+              continue;
+
+            showCurve(pCurve, true);
+
+            needReplot = true;
+          }
+      }
+    else if (action->text() == "Hide Row" && mLegendRow != -1)
+      {
+        for (int index = 0; index < legend->itemCount(); ++index)
+          {
+            auto * item = dynamic_cast< QCPPlottableLegendItem * >(legend->item(index));
+
+            if (!item)
+              continue;
+
+            int row, col;
+            legend->indexToRowCol(index, row, col);
+
+            if (row != mLegendRow)
+              continue;
+
+            auto * pCurve = item->plottable();
+
+            if (!pCurve)
+              continue;
+
+            showCurve(pCurve, false);
+
+            needReplot = true;
+          }
+      }
+    else if (action->text() == "Hide Column" && mLegendCol != -1)
+      {
+        for (int index = 0; index < legend->itemCount(); ++index)
+          {
+            auto * item = dynamic_cast< QCPPlottableLegendItem * >(legend->item(index));
+
+            if (!item)
+              continue;
+
+            int row, col;
+            legend->indexToRowCol(index, row, col);
+
+            if (col != mLegendCol)
+              continue;
+
+            auto * pCurve = item->plottable();
+
+            if (!pCurve)
+              continue;
+
+            showCurve(pCurve, false);
+
+            needReplot = true;
+          }
+      }
+
+    if (needReplot)
+      QCustomPlot::replot();
+  });
 
   // Initialize from the plot specification
   initFromSpec(plotspec);
@@ -226,20 +429,26 @@ bool CQCustomPlot::initFromSpec(const CPlotSpecification * plotspec)
   CDataVector< CPlotItem >::const_iterator itPlotItem = mpPlotSpecification->getItems().begin();
   CDataVector< CPlotItem >::const_iterator endPlotItem = mpPlotSpecification->getItems().end();
 
-  CVector< bool > Visible(mpPlotSpecification->getItems().size());
-  Visible = true;
-  bool * pVisible = Visible.array();
+  std::map< QString, bool > visibleMap;
 
-  for (; itPlotItem != endPlotItem; ++itPlotItem, ++pVisible)
+  for (; itPlotItem != endPlotItem; ++itPlotItem)
     {
-      if ((found = mCurveMap.find(itPlotItem->CCopasiParameter::getKey())) != mCurveMap.end())
+      auto key = itPlotItem->CCopasiParameter::getKey();
+
+      if ((found = mCurveMap.find(key)) != mCurveMap.end())
         {
-          *pVisible = found->second->visible();
+          // take same visibility as we had
+          visibleMap[FROM_UTF8(itPlotItem->getTitle())] = found->second->visible();
+        }
+      else
+        {
+          // set new items to visible
+          visibleMap[FROM_UTF8(itPlotItem->getTitle())] = true;
         }
     }
 
   // Remove unused curves if definition has changed
-for (auto item : mHisto)
+  for (auto item : mHisto)
     pdelete(item.second)
     mHisto.clear();
 
@@ -249,14 +458,13 @@ for (auto item : mHisto)
   mY2Map.clear();
 
   itPlotItem = mpPlotSpecification->getItems().begin();
-  pVisible = Visible.array();
   auto ppCurve = mCurves.begin();
 
   unsigned long int k = 0;
   bool needLeft = false;
   bool needRight = false;
 
-  for (; itPlotItem != endPlotItem; ++itPlotItem, ++pVisible, ++ppCurve, ++k)
+  for (; itPlotItem != endPlotItem; ++itPlotItem, ++ppCurve, ++k)
     {
       if (itPlotItem->getType() == CPlotItem::spectogram)
         {
@@ -315,7 +523,7 @@ for (auto item : mHisto)
 
       series->setPen(color);
 
-      showCurve(series, *pVisible);
+      showCurve(series, visibleMap[series->name()]);
 
       if (itPlotItem->getType() == CPlotItem::curve2d
           || itPlotItem->getType() == CPlotItem::histoItem1d
@@ -326,11 +534,13 @@ for (auto item : mHisto)
           unsigned C_INT32 linetype = itPlotItem->getValue< unsigned C_INT32 >("Line type");
           CPlotItem::LineType lineType = (CPlotItem::LineType) linetype;
 
+          C_FLOAT64 width = 1.0;
+
           if (lineType == CPlotItem::LineType::Lines || lineType == CPlotItem::LineType::LinesAndSymbols)
             {
               unsigned C_INT32 linesubtype = itPlotItem->getValue< unsigned C_INT32 >("Line subtype");
               CPlotItem::LineStyle lineStyle = (CPlotItem::LineStyle) linesubtype;
-              C_FLOAT64 width = itPlotItem->getValue< C_FLOAT64 >("Line width");
+              width = itPlotItem->getValue< C_FLOAT64 >("Line width");
 
               switch (lineStyle)
                 {
@@ -368,7 +578,7 @@ for (auto item : mHisto)
 
           if (lineType == CPlotItem::LineType::Points)
             {
-              C_FLOAT64 width = itPlotItem->getValue< C_FLOAT64 >("Line width");
+              width = itPlotItem->getValue< C_FLOAT64 >("Line width");
               series->setPen(QPen(color, width, Qt::SolidLine, Qt::RoundCap));
 
               if (curve)
@@ -402,51 +612,51 @@ for (auto item : mHisto)
                 {
                   case CPlotItem::SymbolType::LargeCross:
                   case CPlotItem::SymbolType::Plus:
-                    setSymbol(series, QCPScatterStyle::ssPlus, color, 7, 2);
+                    setSymbol(series, QCPScatterStyle::ssPlus, color, 7 * width, 2 * width);
 
                     break;
 
                   case CPlotItem::SymbolType::Circle:
-                    setSymbol(series, QCPScatterStyle::ssCircle, color, 8, 1);
+                    setSymbol(series, QCPScatterStyle::ssCircle, color, 8 * width, 1 * width);
                     break;
 
                   case CPlotItem::SymbolType::Square:
-                    setSymbol(series, QCPScatterStyle::ssSquare, color, 7, 2);
+                    setSymbol(series, QCPScatterStyle::ssSquare, color, 7 * width, 2 * width);
                     break;
 
                   case CPlotItem::SymbolType::Diamond:
-                    setSymbol(series, QCPScatterStyle::ssDiamond, color, 7, 2);
+                    setSymbol(series, QCPScatterStyle::ssDiamond, color, 7 * width, 2 * width);
                     break;
 
                   case CPlotItem::SymbolType::xCross:
-                    setSymbol(series, QCPScatterStyle::ssCross, color, 7, 2);
+                    setSymbol(series, QCPScatterStyle::ssCross, color, 7 * width, 2 * width);
                     break;
 
                   case CPlotItem::SymbolType::Star:
-                    setSymbol(series, QCPScatterStyle::ssStar, color, 7, 2);
+                    setSymbol(series, QCPScatterStyle::ssStar, color, 7 * width, 2 * width);
                     break;
 
                   case CPlotItem::SymbolType::TriangleLeft:
                   case CPlotItem::SymbolType::TriangleUp:
-                    setSymbol(series, QCPScatterStyle::ssTriangle, color, 7, 2);
+                    setSymbol(series, QCPScatterStyle::ssTriangle, color, 7 * width, 2 * width);
                     break;
 
                   case CPlotItem::SymbolType::TriangleRight:
                   case CPlotItem::SymbolType::TriangleDown:
-                    setSymbol(series, QCPScatterStyle::ssTriangleInverted, color, 7, 2);
+                    setSymbol(series, QCPScatterStyle::ssTriangleInverted, color, 7 * width, 2 * width);
                     break;
 
-                    //case CPlotItem::SymbolType::hDash:
-                    //  setSymbol(series, QwtSymbol::HLine, color, 7, 2);
-                    //  break;
+                  //case CPlotItem::SymbolType::hDash:
+                  //  setSymbol(series, QwtSymbol::HLine, color, 7, 2);
+                  //  break;
 
-                    //case CPlotItem::SymbolType::vDash:
-                    //  setSymbol(series, QwtSymbol::VLine, color, 7, 2);
-                    //  break;
+                  //case CPlotItem::SymbolType::vDash:
+                  //  setSymbol(series, QwtSymbol::VLine, color, 7, 2);
+                  //  break;
 
                   case CPlotItem::SymbolType::SmallCross:
                   default:
-                    setSymbol(series, QCPScatterStyle::ssCross, color, 5, 1);
+                    setSymbol(series, QCPScatterStyle::ssCross, color, 5 * width, 1 * width);
                     break;
 
                   case CPlotItem::SymbolType::None:
@@ -501,12 +711,15 @@ for (auto item : mHisto)
   legend->setFillOrder(QCPLegend::foColumnsFirst, true);
   legend->setBorderPen(QPen(Qt::NoPen));
 
-  QCPLayoutGrid * subLayout = new QCPLayoutGrid;
-  subLayout->setMargins(QMargins(5, 0, 5, 5));
-  subLayout->addElement(0, 0, legend);
-  int count = plotLayout()->rowCount();
-  plotLayout()->addElement(count, 0, subLayout);
-  plotLayout()->setRowStretchFactor(count, 0.01);
+  if (!mpSubLayout)
+    {
+      mpSubLayout = new QCPLayoutGrid;
+      mpSubLayout->setMargins(QMargins(5, 0, 5, 5));
+      mpSubLayout->addElement(0, 0, legend);
+      int count = plotLayout()->rowCount();
+      plotLayout()->addElement(count, 0, mpSubLayout);
+      plotLayout()->setRowStretchFactor(count, 0.01);
+    }
 
   mIgnoreUpdate = false;
 
@@ -517,18 +730,20 @@ void CQCustomPlot::setSymbol(QCPAbstractPlottable * pPlotable, QCPScatterStyle::
 {
   QCPCurve * pCurve = dynamic_cast< QCPCurve * >(pPlotable);
 
+  auto style = QCPScatterStyle(symbol, color, symbolSize);
+
   if (pCurve)
     {
-      pCurve->setScatterStyle(QCPScatterStyle(
-                                symbol, color, symbolSize));
+      style.setPen(QPen(pCurve->pen().color(), penWidth));
+      pCurve->setScatterStyle(style);
     }
 
   QCPGraph * pGraph = dynamic_cast< QCPGraph * >(pPlotable);
 
   if (pGraph)
     {
-      pGraph->setScatterStyle(QCPScatterStyle(
-                                symbol, color, symbolSize));
+      style.setPen(QPen(pGraph->pen().color(), penWidth));
+      pGraph->setScatterStyle(style);
     }
 }
 
@@ -574,9 +789,12 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
 
   std::vector< std::vector< std::string > >::iterator itX;
 
+  CDataModel * pModel = NULL;
+
   for (i = 0; i < imax; ++i)
     {
       const CPlotItem * pItem = &mpPlotSpecification->getItems()[i];
+      auto pCurve = mCurveMap[pItem->CCopasiParameter::getKey()];
       bool isSpectogram = pItem->getType() == CPlotItem::spectogram;
       Activity ItemActivity = pItem->getActivity();
       DataIndex.first = ItemActivity;
@@ -584,6 +802,8 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
       // Loop over all channels
       jmax = pItem->getNumChannels();
       mDataIndex[i].resize(jmax);
+      QStringList objectCNs;
+      QStringList objectNames;
 
       for (j = 0; j < jmax; ++j)
         {
@@ -596,6 +816,21 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
               mObjects.insert(pObj);
               objectCN = pObj->getCN();
               mCnNameMap[objectCN] = pObj->getObjectDisplayName();
+
+              objectCNs << FROM_UTF8(objectCN);
+              objectNames << FROM_UTF8(pObj->getObjectDisplayName());
+              CExperiment * pExp = dynamic_cast< CExperiment * >(pObj->getDataObject()->getObjectAncestor("ParameterGroup"));
+
+              if (pExp && pExp->getExperimentType() == CTaskEnum::Task::steadyState)
+                {
+                  pModel = pExp->getObjectDataModel();
+
+                  if (pCurve)
+                    {
+                      pCurve->setProperty("experiment_cn", FROM_UTF8(pExp->getCN()));
+                      pCurve->setProperty("experiment_name", FROM_UTF8(pExp->getObjectDisplayName()));
+                    }
+                }
             }
           else
             CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6,
@@ -685,8 +920,35 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
               mDataIndex[i][j] = DataIndex;
             }
         }
+
+      if (pCurve)
+        {
+          pCurve->setProperty("object_cns", QVariant::fromValue(objectCNs));
+          pCurve->setProperty("object_names", QVariant::fromValue(objectNames));
+        }
     }
 
+  // initialize steady state info
+  if (pModel != NULL)
+    {
+      mTextTicker = QSharedPointer< QCPAxisTickerText >(new QCPAxisTickerText);
+      QVector< double > ticks;
+      QVector< QString > labels;
+      mDependentNames.clear();
+      int count = 0;
+
+      for (auto & name : getDependentObjectNames(*pModel))
+        {
+          mDependentNames << FROM_UTF8(name);
+          labels << FROM_UTF8(name);
+          ticks << ++count;
+        }
+
+      mTextTicker->addTicks(ticks, labels);
+
+      // independent
+      initializeIndependentData(*pModel);
+    }
 
   mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime();
   mReplotFinished = true;
@@ -778,7 +1040,7 @@ void CQCustomPlot::finish()
   // We need to force a replot, i.e., the next mNextPlotTime should be in the past.
   mNextPlotTime = 0;
 
-  replot();
+  replot(true);
 }
 
 bool CQCustomPlot::saveData(const std::string & filename)
@@ -1035,6 +1297,11 @@ void CQCustomPlot::setCurvesVisibility(const bool & visibility)
 
 void CQCustomPlot::replot()
 {
+  replot(false);
+}
+
+void CQCustomPlot::replot(bool resetZoom)
+{
   if (mIgnoreUpdate)
     return;
 
@@ -1055,6 +1322,9 @@ void CQCustomPlot::replot()
         QMutexLocker Locker(&mMutex);
         updateCurves(C_INVALID_INDEX);
       }
+
+      if (resetZoom)
+        ensureCurvesVisible();
 
       QCustomPlot::replot();
 
@@ -1091,7 +1361,7 @@ void CQCustomPlot::render(QPainter * painter, QRect rect)
 
 void CQCustomPlot::resetZoom()
 {
-  rescaleAxes(true);
+  ensureCurvesVisible();
   QCustomPlot::replot();
 }
 
@@ -1113,6 +1383,30 @@ void CQCustomPlot::mousePressEvent(QMouseEvent * event)
 void CQCustomPlot::mouseReleaseEvent(QMouseEvent * event)
 {
   m_isTouching = false;
+
+#  if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+  QCPLayerable * element = layerableAt(event->position(), true);
+#  else
+  QCPLayerable * element = layerableAt(event->pos(), true);
+#  endif
+
+  if (event->button() == Qt::RightButton
+      && !mDependentNames.empty()
+      && dynamic_cast<QCPAxis*>(element))
+    {
+      while (mpContextMenu->actions().length() > 2)
+        mpContextMenu->removeAction(mpContextMenu->actions()[2]);
+
+      for (auto & entry : mIndependentNames)
+        {
+          mpContextMenu->addAction(entry)->setData(X_AXIS_VALUE);
+        }
+
+      mpContextMenu->popup(mapToGlobal(event->pos()));
+
+      return;
+    }
+
   QCustomPlot::mouseReleaseEvent(event);
 }
 
@@ -1124,29 +1418,63 @@ void CQCustomPlot::wheelEvent(QWheelEvent * event)
   QCPLayerable * element = layerableAt(event->pos(), true);
 #endif
 
+  double angleDelta = event->angleDelta().y();
+
+  // skip if we are only notified about the beginning of a wheel / track movement
+  // or if we just recently checked
+  if (qAbs(angleDelta) < 1e-3 ||
+      (!mNextWheelTime.isZero() && CCopasiTimeVariable::getCurrentWallTime() < mNextWheelTime))
+    {
+      QCustomPlot::wheelEvent(event);
+      return;
+    }
+
+  // delay next event
+  mNextWheelTime = CCopasiTimeVariable::getCurrentWallTime() + 1000 * 900;
+
   if (dynamic_cast<QCPLegend*>(element) || dynamic_cast<QCPAbstractLegendItem*>(element))
     {
-      bool reorder = true;
 
-      if (event->angleDelta().y() > 0 && legend->wrap() < 8)
+      if (angleDelta > 0 && legend->wrap() < 8)
         {
           legend->setWrap(legend->wrap() + 1);
         }
-      else if (legend->wrap() > 1)
+      else if (angleDelta < 0 && legend->wrap() > 1)
         {
           legend->setWrap(legend->wrap() - 1);
         }
-      else
-        reorder = false;
 
-      if (reorder)
-        {
-          legend->setFillOrder(legend->fillOrder(), true);
-          replot();
-        }
+      legend->setFillOrder(legend->fillOrder(), true);
+      QCustomPlot::replot();
+      return;
     }
 
   QCustomPlot::wheelEvent(event);
+}
+
+double getDependentIndex(QCPCurve * curve, const QVector< QString >& dependentNames)
+{
+  if (!curve)
+    return 0;
+
+  QStringList names = curve->property("object_names").toStringList();
+
+  if (names.length() < 2)
+    return 0;
+
+  QString yName = names[1];
+
+  double result = 1;
+
+  for (auto & item : dependentNames)
+    {
+      if (yName.startsWith(item))
+        return result;
+
+      result += 1;
+    }
+
+  return result;
 }
 
 void CQCustomPlot::updateCurves(const size_t & activity)
@@ -1204,23 +1532,85 @@ void CQCustomPlot::updateCurves(const size_t & activity)
             // so we wont replot them in case they are skipped
             curve->setProperty("last_count", data_size);
 
+            int steadyType = xAxis->property("axis_label").toInt();
+            QString experimentName = curve->property("experiment_name").toString();
+
             if (current_count != data_size)
               {
                 data_changed = true;
 
-                for (int i = current_count; i < data_size; ++i)
+                switch (steadyType)
                   {
-                    double cur_x = x[i];
-                    double cur_y = y[i];
+                    case X_AXIS_NAME:
+                      for (int i = current_count; i < data_size; ++i)
+                        {
+                          double cur_x = x[i];
+                          double cur_y = y[i];
 
-                    // only skip adding nans, if only one of them is nan
-                    // when both are nan, we want to use it to create a new
-                    // curve. if only one of them is, it is a missing
-                    // datapoint and if added we would not be able to connect
-                    // datapoints by lines
+                          cur_x = getDependentIndex(curve, mDependentNames);
 
-                    if (qIsNaN(cur_x)  == qIsNaN(cur_y))
-                      curve->addData(cur_x, cur_y);
+                          // only skip adding nans, if only one of them is nan
+                          // when both are nan, we want to use it to create a new
+                          // curve. if only one of them is, it is a missing
+                          // datapoint and if added we would not be able to connect
+                          // datapoints by lines
+
+                          if (qIsNaN(cur_x) == qIsNaN(cur_y))
+                            curve->addData(cur_x, cur_y);
+                        }
+
+                      break;
+
+                    case X_AXIS_VALUE:
+                    {
+                      auto key = std::make_pair(mSelectedIndependent, experimentName);
+
+                      if (mIndependentData.find(key) == mIndependentData.end())
+                        break;
+
+                      QVector< qreal > axisData = mIndependentData[key];
+
+                      if (axisData.empty())
+                        break;
+
+                      for (int i = current_count; i < data_size; ++i)
+                        {
+                          double cur_x = x[i];
+                          double cur_y = y[i];
+
+                          if (!qIsNaN(cur_x) && (int) cur_x < axisData.length())
+                            cur_x = axisData[(int) cur_x];
+
+                          // only skip adding nans, if only one of them is nan
+                          // when both are nan, we want to use it to create a new
+                          // curve. if only one of them is, it is a missing
+                          // datapoint and if added we would not be able to connect
+                          // datapoints by lines
+
+                          if (qIsNaN(cur_x) == qIsNaN(cur_y))
+                            curve->addData(cur_x, cur_y);
+                        }
+                    }
+                    break;
+
+                    case X_AXIS_INDEX:
+                    default:
+                      for (int i = current_count; i < data_size; ++i)
+                        {
+                          double cur_x = x[i];
+                          double cur_y = y[i];
+
+                          // only skip adding nans, if only one of them is nan
+                          // when both are nan, we want to use it to create a new
+                          // curve. if only one of them is, it is a missing
+                          // datapoint and if added we would not be able to connect
+                          // datapoints by lines
+
+                          if (qIsNaN(cur_x) == qIsNaN(cur_y))
+                            curve->addData(cur_x, cur_y);
+                        }
+
+                      break;
                   }
 
                 curve->rescaleAxes(true);
@@ -1383,21 +1773,21 @@ void CQCustomPlot::resizeCurveData(const size_t & activity)
 
           switch ((*itCurves)->property("curve_type").toInt())
             {
-                //case CPlotItem::curve2d:
-                //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
-                //                               data[mDataIndex[k][1].second]);
-                //  break;
+              //case CPlotItem::curve2d:
+              //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
+              //                               data[mDataIndex[k][1].second]);
+              //  break;
 
-                //case CPlotItem::bandedGraph:
-                //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
-                //                               data[mDataIndex[k][1].second],
-                //                               data[mDataIndex[k][2].second]);
-                //  break;
+              //case CPlotItem::bandedGraph:
+              //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
+              //                               data[mDataIndex[k][1].second],
+              //                               data[mDataIndex[k][2].second]);
+              //  break;
 
-                //case CPlotItem::histoItem1d:
-                //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
-                //                               NULL);
-                //  break;
+              //case CPlotItem::histoItem1d:
+              //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
+              //                               NULL);
+              //  break;
 
               default:
                 //fatalError();
@@ -1491,15 +1881,138 @@ QString CQCustomPlot::getSaveFilters()
   return "PDF Files (*.pdf);;PNG Files (*.png)";
 }
 
+std::set< std::string >
+CQCustomPlot::getDependentObjectNames(const CDataModel & model)
+{
+  std::set< std::string > handledExperiments;
+  std::set< std::string > result;
+
+  for (auto * curve : mCurves)
+    {
+      std::string experimentCN = TO_UTF8(curve->property("experiment_cn").toString());
+
+      if (experimentCN.empty())
+        continue;
+
+      if (handledExperiments.find(experimentCN) != handledExperiments.end())
+        continue;
+
+      handledExperiments.insert(experimentCN);
+      const CExperiment * pExperiment = dynamic_cast< const CExperiment * >(model.getObject(experimentCN));
+
+      if (!pExperiment)
+        continue;
+
+      for (auto entry : pExperiment->getDependentObjectsMap())
+        {
+          const CDataObject * pObj = dynamic_cast< const CDataObject * >(
+                                       entry.first);
+
+          if (pObj == NULL)
+            continue;
+
+          result.insert(pObj->getObjectDisplayName());
+        }
+    }
+
+  return result;
+}
+
+void
+CQCustomPlot::initializeIndependentData(const CDataModel& model)
+{
+  mIndependentData.clear();
+  mIndependentNames.clear();
+
+  std::set< std::string > handledExperiments;
+  std::set< std::string > result;
+
+  for (auto * curve : mCurves)
+    {
+      std::string experimentCN = TO_UTF8(curve->property("experiment_cn").toString());
+
+      if (experimentCN.empty())
+        continue;
+
+      if (handledExperiments.find(experimentCN) != handledExperiments.end())
+        continue;
+
+      handledExperiments.insert(experimentCN);
+      const CExperiment * pExperiment = dynamic_cast< const CExperiment * >(model.getObject(experimentCN));
+
+      if (!pExperiment)
+        continue;
+
+      auto & independentObjects = pExperiment->getIndependentObjects();
+      auto & matrix = pExperiment->getIndependentData();
+      QString experimentName = FROM_UTF8(pExperiment->getObjectDisplayName());
+      size_t numRows = matrix.numRows();
+      size_t numCols = matrix.numCols();
+
+      if (numCols == 0)
+        continue;
+
+      int c = 0;
+
+      for (auto & obj : independentObjects)
+        {
+          QVector< qreal > axisData;
+          QString name = FROM_UTF8(obj->getObjectDisplayName());
+          mIndependentNames.insert(name);
+
+          for (size_t r = 0; r < numRows; ++r)
+            {
+              axisData << matrix(r, c);
+            }
+
+          ++c;
+          mIndependentData[std::make_pair(name, experimentName)] = axisData;
+        }
+    }
+}
+
+void CQCustomPlot::updateSteadyStateInfo(int type)
+{
+  auto& model = *CRootContainer::getDatamodelList()->begin();
+
+  if (type != X_AXIS_NAME && dynamic_cast< QCPAxisTickerText * >(xAxis->ticker().data()) != NULL)
+    xAxis->setTicker(mDefaultTicker);
+
+  if (type == X_AXIS_NAME)
+    {
+      xAxis->setTicker(mTextTicker);
+    }
+}
+
 void CQCustomPlot::legendClicked(QCPLegend * legend, QCPAbstractLegendItem * item, QMouseEvent * event)
 {
   auto * plItem = dynamic_cast< QCPPlottableLegendItem * >(item);
 
-  if (plItem != NULL)
+  if (plItem != NULL && event->button() == Qt::LeftButton)
     {
       auto * pCurve = plItem->plottable();
       showCurve(pCurve, !pCurve->visible());
       QCustomPlot::replot();
+    }
+
+  if (event->button() == Qt::RightButton)
+    {
+      mLegendRow = -1;
+      mLegendCol = -1;
+
+      if (plItem)
+        {
+          for (int index = 0; index < legend->itemCount(); ++index)
+            {
+              if (legend->item(index) == plItem)
+                {
+                  legend->indexToRowCol(index, mLegendRow, mLegendCol);
+                  break;
+                }
+            }
+        }
+
+      mpLegendContextMenu->popup(mapToGlobal(event->pos()));
     }
 }
 
@@ -1552,6 +2065,15 @@ void CQCustomPlot::displayToolTip(QCPAbstractPlottable * plottable, int dataInde
   QToolTip::hideText();
 }
 
+void increaseRange(QCPAxis* axis, double lowerMultiplier = 0.95, double upperMultiplier = 1.05)
+{
+  if (!axis)
+    return;
+
+  QCPRange range = axis->range();
+  axis->setRange(range.lower * lowerMultiplier, range.upper * upperMultiplier);
+}
+
 void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on)
 {
   if (!pCurve)
@@ -1570,9 +2092,16 @@ void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on)
   if (pBuddy != mY2Map.end())
     (*pBuddy).second->setVisible(plItem->plottable()->visible());
 
+  ensureCurvesVisible();
+}
+
+void CQCustomPlot::ensureCurvesVisible()
+{
   rescaleAxes(true);
 
-
+  // increase axis a little bit, so that values at border are visible
+  increaseRange(xAxis);
+  increaseRange(yAxis, 1);
 }
 
 #endif // COPASI_USE_QCUSTOMPLOT

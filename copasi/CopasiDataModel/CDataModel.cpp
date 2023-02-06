@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -3280,7 +3280,7 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
   if (mOldData.pCurrentSEDMLDocument == mData.pCurrentSEDMLDocument)
     mOldData.pCurrentSEDMLDocument = NULL;
 
-  if (mData.pModel->isCompileNecessary() && mData.pModel->compileIfNecessary(pProcessReport))
+  if (mData.pModel && mData.pModel->compileIfNecessary(pProcessReport))
     {
       mData.pModel->getActiveModelParameterSet().updateModel();
     }
@@ -3300,7 +3300,10 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
           // need to update math container, since the one set automatically
           // by the task factory might have set an invalid old one
           if (mData.pModel)
-            it->setMathContainer(&mData.pModel->getMathContainer());
+            {
+              mData.pModel->compileIfNecessary(pProcessReport);
+              it->setMathContainer(&mData.pModel->getMathContainer());
+            }
 
           // need initialize, so that all objects are created for the
           // object browser

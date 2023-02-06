@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,40 +22,17 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-/* praxis.f -- translated by f2c (version 19970805).
-   You must link the resulting object file with the libraries:
- -lf2c -lm   (in that order)
- */
-
+#include <cfloat>
 #include <cmath>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <iomanip>
+#include <iostream>
 
-#include "copasi/copasi.h"
-
-#include "CPraxis.h"
+#include "copasi/optimization/CPraxis.h"
 
 #include "copasi/randomGenerator/CRandom.h"
-
-int maprnt_(C_INT *, C_FLOAT64 *, C_INT *, C_INT *);
-int vcprnt_(C_INT *, C_FLOAT64 *, C_INT *);
-int sort_(C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *);
-
-/* Common Block Declarations */
-
-#define TRUE_ (1)
-#define FALSE_ (0)
-#define dmax(a1,a2) ((a1 > a2) ? a1 : a2)
-#define dmin(a1,a2) ((a1 < a2) ? a1 : a2)
-
-/* Table of constant values */
-
-static C_INT c__1 = 1;
-static C_INT c__2 = 2;
-static bool c_false = FALSE_;
-static C_INT c__4 = 4;
-static bool c_true = TRUE_;
-static C_INT c__3 = 3;
-static C_INT c__0 = 0;
 
 CPraxis::CPraxis():
   mpRandom(NULL)
@@ -65,1937 +42,2579 @@ CPraxis::CPraxis():
 
 CPraxis::~CPraxis()
 {
-  pdelete(mpRandom);
+  if (mpRandom != NULL)
+    delete mpRandom;
 }
 
-C_FLOAT64 CPraxis::praxis_(C_FLOAT64 *t0, C_FLOAT64 *machep, C_FLOAT64 *h0,
-                           C_INT *n, C_INT *prin, C_FLOAT64 *x, FPraxis *f, C_FLOAT64 *fmin)
+//****************************************************************************80
+
+C_FLOAT64 CPraxis::flin(C_INT32 n, C_INT32 jsearch, C_FLOAT64 l, FPraxis * f, C_FLOAT64 x[], C_INT32 & nf, C_FLOAT64 v[], C_FLOAT64 q0[], C_FLOAT64 q1[], C_FLOAT64 & qd0, C_FLOAT64 & qd1, C_FLOAT64 & qa, C_FLOAT64 & qb, C_FLOAT64 & qc)
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    FLIN is the function of one variable to be minimized by MINNY.
+//
+//  Discussion:
+//
+//    F(X) is a scalar function of a vector argument X.
+//
+//    A minimizer of F(X) is sought along a line or parabola.
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    04 August 2016
+//
+//  Author:
+//
+//    Original FORTRAN77 version by Richard Brent.
+//    C++ version by John Burkardt.
+//
+//  Reference:
+//
+//    Richard Brent,
+//    Algorithms for Minimization with Derivatives,
+//    Prentice Hall, 1973,
+//    ReprC_INT32ed by Dover, 2002.
+//
+//  Parameters:
+//
+//    Input, C_INT32 N, the number of variables.
+//
+//    Input, C_INT32 JSEARCH, indicates the kind of search.
+//    If JSEARCH is a legal column index, linear search along V(*,JSEARCH).
+//    If JSEARCH is -1, then the search is parabolic, based on X, Q0 and Q1.
+//
+//    Input, C_FLOAT64 L, is the parameter determining the particular
+//    poC_INT32 at which F is to be evaluated.
+//    For a linear search, L is the step size.
+//    For a quadratic search, L is a parameter which specifies
+//    a poC_INT32 in the plane of X, Q0 and Q1.
+//
+//    Input, C_FLOAT64 F (C_FLOAT64 X[], C_INT32 N ), the function to be minimized.
+//
+//    Input, C_FLOAT64 X[N], the base poC_INT32 of the search.
+//
+//    Input/output, C_INT32 &NF, the function evaluation counter.
+//
+//    Input, C_FLOAT64 V[N,N], a matrix whose columns constitute
+//    search directions.
+//
+//    Input, C_FLOAT64 Q0[N], Q1[N], two auxiliary poC_INT32s used to
+//    determine the plane when a quadratic search is performed.
+//
+//    Input, C_FLOAT64 &QD0, &QD1, values needed to compute the
+//    coefficients QA, QB, QC.
+//
+//    Output, C_FLOAT64 &QA, &QB, &QC, coefficients used to combine
+//    Q0, X, and A1 if a quadratic search is used.
+//
+//    Output, C_FLOAT64 FLIN, the value of the function at the
+//    minimizing poC_INT32.
+//
 {
-  C_INT __dim__ = *n;
+  C_INT32 i;
+  C_FLOAT64 * t;
+  C_FLOAT64 value;
 
-  q_1.v.resize(__dim__ * __dim__); // [__dim__ * __dim__] /* was [100][100] */,
-  q_1.q0.resize(__dim__); // [__dim__],
-  q_1.q1.resize(__dim__); // [__dim__],
+  t = new C_FLOAT64[n];
 
-  /* System generated locals */
-  C_INT i__1, i__2, i__3;
-  C_FLOAT64 ret_val, d__1;
-
-  /* Local variables */
-  C_FLOAT64 scbd;
-  C_INT idim;
-  bool illc;
-  C_INT klmk;
-  CVector< C_FLOAT64 > d__(__dim__); // [__dim__]
-  C_FLOAT64 h__, ldfac;
-  C_INT i__, j, k;
-  C_FLOAT64 s, t;
-  CVector< C_FLOAT64 > y(__dim__); // [__dim__]
-  C_FLOAT64 large;
-  CVector< C_FLOAT64 > z__(__dim__); // [__dim__]
-  C_FLOAT64 small, value, f1;
-  C_INT k2;
-  C_FLOAT64 m2, m4, t2, df, dn;
-  C_INT kl, ii;
-  C_FLOAT64 sf;
-  C_INT kt;
-  C_FLOAT64 sl, vlarge;
-  C_FLOAT64 vsmall;
-  C_INT km1, im1;
-  C_FLOAT64 dni, lds;
-  C_INT ktm;
-
-  C_FLOAT64 lastValue = std::numeric_limits<C_FLOAT64>::infinity();
-
-  /*                             LAST MODIFIED 3/1/73 */
-
-  /*     PRAXIS RETURNS THE MINIMUM OF THE FUNCTION F(X,N) OF N VARIABLES */
-  /*     USING THE PRINCIPAL AXIS METHOD.  THE GRADIENT OF THE FUNCTION IS */
-  /*     NOT REQUIRED. */
-
-  /*     FOR A DESCRIPTION OF THE ALGORITHM, SEE CHAPTER SEVEN OF */
-  /*     "ALGORITHMS FOR FINDING ZEROS AND EXTREMA OF FUNCTIONS WITHOUT */
-  /*     CALCULATING DERIVATIVES" BY RICHARD P BRENT. */
-
-  /*     THE PARAMETERS ARE: */
-  /*     T0       IS A TOLERANCE.  PRAXIS ATTEMPTS TO RETURN PRAXIS=F(X) */
-  /*              SUCH THAT IF X0 IS THE TRUE LOCAL MINIMUM NEAR X, THEN */
-  /*              NORM(X-X0) < T0 + SQUAREROOT(MACHEP)*NORM(X). */
-  /*     MACHEP   IS THE MACHINE PRECISION, THE SMALLEST NUMBER SUCH THAT */
-  /*              1 + MACHEP > 1.  MACHEP SHOULD BE 16.**-13 (ABOUT */
-  /*              2.22D-16) FOR REAL*8 ARITHMETIC ON THE IBM 360. */
-  /*     H0       IS THE MAXIMUM STEP SIZE.  H0 SHOULD BE SET TO ABOUT THE */
-  /*              MAXIMUM DISTANCE FROM THE INITIAL GUESS TO THE MINIMUM. */
-  /*              (IF H0 IS SET TOO LARGE OR TOO SMALL, THE INITIAL RATE OF */
-  /*              CONVERGENCE MAY BE SLOW.) */
-  /*     N        (AT LEAST TWO) IS THE NUMBER OF VARIABLES UPON WHICH */
-  /*              THE FUNCTION DEPENDS. */
-  /*     PRIN     CONTROLS THE PRINTING OF INTERMEDIATE RESULTS. */
-  /*              IF PRIN=0, NOTHING IS PRINTED. */
-  /*              IF PRIN=1, F IS PRINTED AFTER EVERY N+1 OR N+2 LINEAR */
-  /*              MINIMIZATIONS.  FINAL X IS PRINTED, BUT INTERMEDIATE X IS */
-  /*              PRINTED ONLY IF N IS AT MOST 4. */
-  /*              IF PRIN=2, THE SCALE FACTORS AND THE PRINCIPAL VALUES OF */
-  /*              THE APPROXIMATING QUADRATIC FORM ARE ALSO PRINTED. */
-  /*              IF PRIN=3, X IS ALSO PRINTED AFTER EVERY FEW LINEAR */
-  /*              MINIMIZATIONS. */
-  /*              IF PRIN=4, THE PRINCIPAL VECTORS OF THE APPROXIMATING */
-  /*              QUADRATIC FORM ARE ALSO PRINTED. */
-  /*     X        IS AN ARRAY CONTAINING ON ENTRY A GUESS OF THE POINT OF */
-  /*              MINIMUM, ON RETURN THE ESTIMATED POINT OF MINIMUM. */
-  /*     F(X,N)   IS THE FUNCTION TO BE MINIMIZED.  F SHOULD BE A REAL*8 */
-  /*              FUNCTION DECLARED EXTERNAL IN THE CALLING PROGRAM. */
-  /*     FMIN     IS AN ESTIMATE OF THE MINIMUM, USED ONLY IN PRINTING */
-  /*              INTERMEDIATE RESULTS. */
-  /*     THE APPROXIMATING QUADRATIC FORM IS */
-  /*              Q(X') = F(X,N) + (1/2) * (X'-X)-TRANSPOSE * A * (X'-X) */
-  /*     WHERE X IS THE BEST ESTIMATE OF THE MINIMUM AND A IS */
-  /*              INVERSE(V-TRANSPOSE) * D * INVERSE(V) */
-  /*     (V(*,*) IS THE MATRIX OF SEARCH DIRECTIONS; D(*) IS THE ARRAY */
-  /*     OF SECOND DIFFERENCES).  IF F HAS CONTINUOUS SECOND DERIVATIVES */
-  /*     NEAR X0, A WILL TEND TO THE HESSIAN OF F AT X0 AS X APPROACHES X0. */
-
-  /*     IT IS ASSUMED THAT ON FLOATING-POINT UNDERFLOW THE RESULT IS SET */
-  /*     TO ZERO. */
-  /*     THE USER SHOULD OBSERVE THE COMMENT ON HEURISTIC NUMBERS AFTER */
-  /*     THE INITIALIZATION OF MACHINE DEPENDENT NUMBERS. */
-
-  /* .....IF N>20 OR IF N<20 AND YOU NEED MORE SPACE, CHANGE '20' TO THE */
-  /*     LARGEST VALUE OF N IN THE NEXT CARD, IN THE CARD 'IDIM=20', AND */
-  /*     IN THE DIMENSION STATEMENTS IN SUBROUTINES MINFIT,MIN,FLIN,QUAD. */
-
-  /* .....INITIALIZATION..... */
-  /*     MACHINE DEPENDENT NUMBERS: */
-
-  /* Parameter adjustments */
-  --x;
-
-  /* Function Body */
-  small = *machep * *machep;
-  vsmall = small * small;
-  large = 1. / small;
-  vlarge = 1. / vsmall;
-  m2 = sqrt(*machep);
-  m4 = sqrt(m2);
-
-  /*     HEURISTIC NUMBERS: */
-  /*     IF THE AXES MAY BE BADLY SCALED (WHICH IS TO BE AVOIDED IF */
-  /*     POSSIBLE), THEN SET SCBD=10.  OTHERWISE SET SCBD=1. */
-  /*     IF THE PROBLEM IS KNOWN TO BE ILL-CONDITIONED, SET ILLC=TRUE. */
-  /*     OTHERWISE SET ILLC=FALSE. */
-  /*     KTM IS THE NUMBER OF ITERATIONS WITHOUT IMPROVEMENT BEFORE THE */
-  /*     ALGORITHM TERMINATES.  KTM=4 IS VERY CAUTIOUS; USUALLY KTM=1 */
-  /*     IS SATISFACTORY. */
-
-  scbd = 1.;
-  illc = FALSE_;
-  ktm = 1;
-
-  ldfac = .01;
-
-  if (illc)
+  //
+  //  The search is linear.
+  //
+  if (0 <= jsearch)
     {
-      ldfac = .1;
+      for (i = 0; i < n; i++)
+        {
+          t[i] = x[i] + l * v[i + jsearch * n];
+        }
     }
-
-  kt = 0;
-  global_1.nl = 0;
-  global_1.nf = 1;
-  global_1.fx = (*f)(&x[1], n);
-  q_1.qf1 = global_1.fx;
-  t = small + fabs(*t0);
-  t2 = t;
-  global_1.dmin__ = small;
-  h__ = *h0;
-
-  if (h__ < t * 100)
+  //
+  //  The search is along a parabolic space curve.
+  //
+  else
     {
-      h__ = t * 100;
-    }
+      qa = l * (l - qd1) / (qd0 + qd1) / qd0;
+      qb = -(l + qd0) * (l - qd1) / qd1 / qd0;
+      qc = (l + qd0) * l / qd1 / (qd0 + qd1);
 
-  global_1.ldt = h__;
-  /* .....THE FIRST SET OF SEARCH DIRECTIONS V IS THE IDENTITY MATRIX.....
-  */
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      i__2 = *n;
-
-      for (j = 1; j <= i__2; ++j)
+      for (i = 0; i < n; i++)
         {
-          /* L10: */
-          q_1.v[i__ + j * __dim__ - __dim__ - 1] = 0.;
-        }
-
-      /* L20: */
-      q_1.v[i__ + i__ * __dim__ - __dim__ - 1] = 1.;
-    }
-
-  d__[0] = 0.;
-  q_1.qd0 = 0.;
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      q_1.q0[i__ - 1] = x[i__];
-      /* L30: */
-      q_1.q1[i__ - 1] = x[i__];
-    }
-
-  if (*prin > 0)
-    {
-      print_(n, &x[1], prin, fmin);
-    }
-
-  /* .....THE MAIN LOOP STARTS HERE..... */
-L40:
-  sf = d__[0];
-  d__[0] = 0.;
-  s = 0.;
-
-  /* .....MINIMIZE ALONG THE FIRST DIRECTION V(*,1). */
-  /*     FX MUST BE PASSED TO MIN BY VALUE. */
-  value = global_1.fx;
-  min_(n, &c__1, &c__2, d__.array(), &s, &value, &c_false, f, &x[1], &t,
-       machep, &h__);
-
-  if (s > 0.)
-    {
-      goto L50;
-    }
-
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      /* L45: */
-      q_1.v[i__ - 1] = -q_1.v[i__ - 1];
-    }
-
-L50:
-
-  if (sf > d__[0] * .9 && sf * .9 < d__[0])
-    {
-      goto L70;
-    }
-
-  i__1 = *n;
-
-  for (i__ = 2; i__ <= i__1; ++i__)
-    {
-      /* L60: */
-      d__[i__ - 1] = 0.;
-    }
-
-  /* .....THE INNER LOOP STARTS HERE..... */
-L70:
-  i__1 = *n;
-
-  for (k = 2; k <= i__1; ++k)
-    {
-      i__2 = *n;
-
-      for (i__ = 1; i__ <= i__2; ++i__)
-        {
-          /* L75: */
-          y[i__ - 1] = x[i__];
-        }
-
-      sf = global_1.fx;
-
-      if (kt > 0)
-        {
-          illc = TRUE_;
-        }
-
-L80:
-      kl = k;
-      df = 0.;
-
-      /* .....A RANDOM STEP FOLLOWS (TO AVOID RESOLUTION VALLEYS). */
-      /*     PRAXIS ASSUMES THAT RANDOM RETURNS A RANDOM NUMBER UNIFORMLY */
-      /*     DISTRIBUTED IN (0,1). */
-
-      if (! illc)
-        {
-          goto L95;
-        }
-
-      i__2 = *n;
-
-      for (i__ = 1; i__ <= i__2; ++i__)
-        {
-          s = (global_1.ldt * .1 + t2 * pow(10.0, (C_FLOAT64)kt)) * (mpRandom->getRandomCC() - 0.5);
-          z__[i__ - 1] = s;
-          i__3 = *n;
-
-          for (j = 1; j <= i__3; ++j)
-            {
-              /* L85: */
-              x[j] += s * q_1.v[j + i__ * __dim__ - __dim__ - 1];
-            }
-
-          /* L90: */
-        }
-
-      global_1.fx = (*f)(&x[1], n);
-      ++global_1.nf;
-
-      /* .....MINIMIZE ALONG THE "NON-CONJUGATE" DIRECTIONS V(*,K),...,V(*,N
-      ) */
-
-L95:
-      i__2 = *n;
-
-      for (k2 = k; k2 <= i__2; ++k2)
-        {
-          sl = global_1.fx;
-          s = 0.;
-          value = global_1.fx;
-          min_(n, &k2, &c__2, &d__[k2 - 1], &s, &value, &c_false, f, &
-               x[1], &t, machep, &h__);
-
-          if (illc)
-            {
-              goto L97;
-            }
-
-          s = sl - global_1.fx;
-          goto L99;
-L97:
-          /* Computing 2nd power */
-          d__1 = s + z__[k2 - 1];
-          s = d__[k2 - 1] * (d__1 * d__1);
-L99:
-
-          if (df > s)
-            {
-              goto L105;
-            }
-
-          df = s;
-          kl = k2;
-L105:
-          ;
-        }
-
-      if (illc || df >= (d__1 = *machep * 100 * global_1.fx, fabs(d__1)))
-        {
-          goto L110;
-        }
-
-      /* .....IF THERE WAS NOT MUCH IMPROVEMENT ON THE FIRST TRY, SET */
-      /*     ILLC=TRUE AND START THE INNER LOOP AGAIN..... */
-
-      illc = TRUE_;
-      goto L80;
-L110:
-
-      if (k == 2 && *prin > 1)
-        {
-          vcprnt_(&c__1, d__.array(), n);
-        }
-
-      /* .....MINIMIZE ALONG THE "CONJUGATE" DIRECTIONS V(*,1),...,V(*,K-1)
-      */
-
-      km1 = k - 1;
-      i__2 = km1;
-
-      for (k2 = 1; k2 <= i__2; ++k2)
-        {
-          s = 0.;
-          value = global_1.fx;
-          min_(n, &k2, &c__2, &d__[k2 - 1], &s, &value, &c_false, f, &
-               x[1], &t, machep, &h__);
-          /* L120: */
-        }
-
-      f1 = global_1.fx;
-      global_1.fx = sf;
-      lds = 0.;
-      i__2 = *n;
-
-      for (i__ = 1; i__ <= i__2; ++i__)
-        {
-          sl = x[i__];
-          x[i__] = y[i__ - 1];
-          sl -= y[i__ - 1];
-          y[i__ - 1] = sl;
-          /* L130: */
-          lds += sl * sl;
-        }
-
-      lds = sqrt(lds);
-
-      if (lds <= small)
-        {
-          goto L160;
-        }
-
-      /* .....DISCARD DIRECTION V(*,KL). */
-      /*     IF NO RANDOM STEP WAS TAKEN, V(*,KL) IS THE "NON-CONJUGATE" */
-      /*     DIRECTION ALONG WHICH THE GREATEST IMPROVEMENT WAS MADE..... */
-
-      klmk = kl - k;
-
-      if (klmk < 1)
-        {
-          goto L141;
-        }
-
-      i__2 = klmk;
-
-      for (ii = 1; ii <= i__2; ++ii)
-        {
-          i__ = kl - ii;
-          i__3 = *n;
-
-          for (j = 1; j <= i__3; ++j)
-            {
-              /* L135: */
-              q_1.v[j + (i__ + 1) * __dim__ - __dim__ - 1] = q_1.v[j + i__ * __dim__ - __dim__ - 1];
-            }
-
-          /* L140: */
-          d__[i__] = d__[i__ - 1];
-        }
-
-L141:
-      d__[k - 1] = 0.;
-      i__2 = *n;
-
-      for (i__ = 1; i__ <= i__2; ++i__)
-        {
-          /* L145: */
-          q_1.v[i__ + k * __dim__ - __dim__ - 1] = y[i__ - 1] / lds;
-        }
-
-      /* .....MINIMIZE ALONG THE NEW "CONJUGATE" DIRECTION V(*,K), WHICH IS */
-      /*     THE NORMALIZED VECTOR:  (NEW X) - (0LD X)..... */
-
-      value = f1;
-      min_(n, &k, &c__4, &d__[k - 1], &lds, &value, &c_true, f, &x[1],
-           &t, machep, &h__);
-
-      if (lds > 0.)
-        {
-          goto L160;
-        }
-
-      lds = -lds;
-      i__2 = *n;
-
-      for (i__ = 1; i__ <= i__2; ++i__)
-        {
-          /* L150: */
-          q_1.v[i__ + k * __dim__ - __dim__ - 1] = -q_1.v[i__ + k * __dim__ - __dim__ - 1];
-        }
-
-L160:
-      global_1.ldt = ldfac * global_1.ldt;
-
-      if (global_1.ldt < lds)
-        {
-          global_1.ldt = lds;
-        }
-
-      if (*prin > 0)
-        {
-          print_(n, &x[1], prin, fmin);
-        }
-
-      t2 = 0.;
-      i__2 = *n;
-
-      for (i__ = 1; i__ <= i__2; ++i__)
-        {
-          /* L165: */
-          /* Computing 2nd power */
-          d__1 = x[i__];
-          t2 += d__1 * d__1;
-        }
-
-      t2 = m2 * sqrt(t2) + t;
-
-      /* .....SEE WHETHER THE LENGTH OF THE STEP TAKEN SINCE STARTING THE */
-      /*     INNER LOOP EXCEEDS HALF THE TOLERANCE..... */
-
-      if (global_1.ldt > t2 * .5f)
-        {
-          kt = -1;
-        }
-
-      ++kt;
-
-      if (kt > ktm)
-        {
-          goto L400;
-        }
-
-      /* L170: */
-    }
-
-  /* added manually by Pedro Mendes 11/11/1998 */
-  // if(callback != 0/*NULL*/) callback(global_1.fx);
-  /* .....THE INNER LOOP ENDS HERE. */
-
-  /*     TRY QUADRATIC EXTRAPOLATION IN CASE WE ARE IN A CURVED VALLEY. */
-
-  /* L171: */
-  quad_(n, f, &x[1], &t, machep, &h__);
-  dn = 0.;
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      d__[i__ - 1] = 1. / sqrt(d__[i__ - 1]);
-
-      if (dn < d__[i__ - 1])
-        {
-          dn = d__[i__ - 1];
-        }
-
-      /* L175: */
-    }
-
-  if (*prin > 3)
-    {
-      maprnt_(&c__1, q_1.v.array(), &idim, n);
-    }
-
-  i__1 = *n;
-
-  for (j = 1; j <= i__1; ++j)
-    {
-      s = d__[j - 1] / dn;
-      i__2 = *n;
-
-      for (i__ = 1; i__ <= i__2; ++i__)
-        {
-          /* L180: */
-          q_1.v[i__ + j * __dim__ - __dim__ - 1] = s * q_1.v[i__ + j * __dim__ - __dim__ - 1];
+          t[i] = qa * q0[i] + qb * x[i] + qc * q1[i];
         }
     }
 
-  /* .....SCALE THE AXES TO TRY TO REDUCE THE CONDITION NUMBER..... */
+  //
+  //  The function evaluation counter NF is incremented.
+  //
+  nf = nf + 1;
+  //
+  //  Evaluate the function.
+  //
+  value = (*f)(t, n);
 
-  if (scbd <= 1.)
-    {
-      goto L200;
-    }
+  delete[] t;
 
-  s = vlarge;
-  i__2 = *n;
+  return value;
+}
 
-  for (i__ = 1; i__ <= i__2; ++i__)
-    {
-      sl = 0.;
-      i__1 = *n;
+//****************************************************************************80
 
-      for (j = 1; j <= i__1; ++j)
-        {
-          /* L182: */
-          sl += q_1.v[i__ + j * __dim__ - __dim__ - 1] * q_1.v[i__ + j * __dim__ - __dim__ - 1];
-        }
+void CPraxis::minfit(C_INT32 n, C_FLOAT64 tol, C_FLOAT64 a[], C_FLOAT64 q[])
 
-      z__[i__ - 1] = sqrt(sl);
-
-      if (z__[i__ - 1] < m4)
-        {
-          z__[i__ - 1] = m4;
-        }
-
-      if (s > z__[i__ - 1])
-        {
-          s = z__[i__ - 1];
-        }
-
-      /* L185: */
-    }
-
-  i__2 = *n;
-
-  for (i__ = 1; i__ <= i__2; ++i__)
-    {
-      sl = s / z__[i__ - 1];
-      z__[i__ - 1] = 1. / sl;
-
-      if (z__[i__ - 1] <= scbd)
-        {
-          goto L189;
-        }
-
-      sl = 1. / scbd;
-      z__[i__ - 1] = scbd;
-L189:
-      i__1 = *n;
-
-      for (j = 1; j <= i__1; ++j)
-        {
-          /* L190: */
-          q_1.v[i__ + j * __dim__ - __dim__ - 1] = sl * q_1.v[i__ + j * __dim__ - __dim__ - 1];
-        }
-
-      /* L195: */
-    }
-
-  /* .....CALCULATE A NEW SET OF ORTHOGONAL DIRECTIONS BEFORE REPEATING */
-  /*     THE MAIN LOOP. */
-  /*     FIRST TRANSPOSE V FOR MINFIT: */
-
-L200:
-  i__2 = *n;
-
-  for (i__ = 2; i__ <= i__2; ++i__)
-    {
-      im1 = i__ - 1;
-      i__1 = im1;
-
-      for (j = 1; j <= i__1; ++j)
-        {
-          s = q_1.v[i__ + j * __dim__ - __dim__ - 1];
-          q_1.v[i__ + j * __dim__ - __dim__ - 1] = q_1.v[j + i__ * __dim__ - __dim__ - 1];
-          /* L210: */
-          q_1.v[j + i__ * __dim__ - __dim__ - 1] = s;
-        }
-
-      /* L220: */
-    }
-
-  /* .....CALL MINFIT TO FIND THE SINGULAR VALUE DECOMPOSITION OF V. */
-  /*     THIS GIVES THE PRINCIPAL VALUES AND PRINCIPAL DIRECTIONS OF THE */
-  /*     APPROXIMATING QUADRATIC FORM WITHOUT SQUARING THE CONDITION */
-  /*     NUMBER..... */
-
-  minfit_(&idim, n, machep, &vsmall, q_1.v.array(), d__.array());
-
-  /* .....UNSCALE THE AXES..... */
-
-  if (scbd <= 1.)
-    {
-      goto L250;
-    }
-
-  i__2 = *n;
-
-  for (i__ = 1; i__ <= i__2; ++i__)
-    {
-      s = z__[i__ - 1];
-      i__1 = *n;
-
-      for (j = 1; j <= i__1; ++j)
-        {
-          /* L225: */
-          q_1.v[i__ + j * __dim__ - __dim__ - 1] = s * q_1.v[i__ + j * __dim__ - __dim__ - 1];
-        }
-
-      /* L230: */
-    }
-
-  i__2 = *n;
-
-  for (i__ = 1; i__ <= i__2; ++i__)
-    {
-      s = 0.;
-      i__1 = *n;
-
-      for (j = 1; j <= i__1; ++j)
-        {
-          /* L235: */
-          /* Computing 2nd power */
-          d__1 = q_1.v[j + i__ * __dim__ - __dim__ - 1];
-          s += d__1 * d__1;
-        }
-
-      s = sqrt(s);
-      d__[i__ - 1] = s * d__[i__ - 1];
-      s = 1 / s;
-      i__1 = *n;
-
-      for (j = 1; j <= i__1; ++j)
-        {
-          /* L240: */
-          q_1.v[j + i__ * __dim__ - __dim__ - 1] = s * q_1.v[j + i__ * __dim__ - __dim__ - 1];
-        }
-
-      /* L245: */
-    }
-
-L250:
-  i__2 = *n;
-
-  for (i__ = 1; i__ <= i__2; ++i__)
-    {
-      dni = dn * d__[i__ - 1];
-
-      if (dni > large)
-        {
-          goto L265;
-        }
-
-      if (dni < small)
-        {
-          goto L260;
-        }
-
-      d__[i__ - 1] = 1 / (dni * dni);
-      goto L270;
-L260:
-      d__[i__ - 1] = vlarge;
-      goto L270;
-L265:
-      d__[i__ - 1] = vsmall;
-L270:
-      ;
-    }
-
-  /* .....SORT THE EIGENVALUES AND EIGENVECTORS..... */
-
-  sort_(&idim, n, d__.array(), q_1.v.array());
-  global_1.dmin__ = d__[*n - 1];
-
-  if (global_1.dmin__ < small)
-    {
-      global_1.dmin__ = small;
-    }
-
-  illc = FALSE_;
-
-  if (m2 * d__[0] > global_1.dmin__)
-    {
-      illc = TRUE_;
-    }
-
-  if (*prin > 1 && scbd > 1.)
-    {
-      vcprnt_(&c__2, z__.array(), n);
-    }
-
-  if (*prin > 1)
-    {
-      vcprnt_(&c__3, d__.array(), n);
-    }
-
-  if (*prin > 3)
-    {
-      maprnt_(&c__2, q_1.v.array(), &idim, n);
-    }
-
-  /* .....THE MAIN LOOP ENDS HERE..... */
-
-  /* added manually by Pedro Mendes 29/1/1998 */
-  /* if(callback != 0) callback(global_1.fx);*/
-
-  // We need a stopping condition for 1 dimensional problems.
-  // We compare the values between the last and current steps.
-  if (*n > 1 ||
-      global_1.fx < lastValue)
-    {
-      lastValue = global_1.fx;
-      goto L40;
-    }
-
-  /* .....RETURN..... */
-
-L400:
-
-  if (*prin > 0)
-    {
-      vcprnt_(&c__4, &x[1], n);
-    }
-
-  ret_val = global_1.fx;
-  return ret_val;
-} /* praxis_ */
-
-/* Subroutine */ int CPraxis::minfit_(C_INT *m, C_INT *n, C_FLOAT64 *machep,
-                                      C_FLOAT64 *tol, C_FLOAT64 *ab, C_FLOAT64 *q)
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    MINFIT computes the singular value decomposition of an N by N array.
+//
+//  Discussion:
+//
+//    This is an improved version of the EISPACK routine MINFIT
+//    restricted to the case M = N and P = 0.
+//
+//    The singular values of the array A are returned in Q.  A is
+//    overwritten with the orthogonal matrix V such that U * diag(Q) = A * V,
+//    where U is another orthogonal matrix.
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    04 August 2016
+//
+//  Author:
+//
+//    Original FORTRAN77 version by Richard Brent.
+//    C++ version by John Burkardt.
+//
+//  Reference:
+//
+//    Richard Brent,
+//    Algorithms for Minimization with Derivatives,
+//    Prentice Hall, 1973,
+//    ReprC_INT32ed by Dover, 2002.
+//
+//    James Wilkinson, Christian Reinsch,
+//    Handbook for Automatic Computation,
+//    Volume II, Linear Algebra, Part 2,
+//    Springer Verlag, 1971.
+//
+//    Brian Smith, James Boyle, Jack Dongarra, Burton Garbow, Yasuhiko Ikebe,
+//    Virginia Klema, Cleve Moler,
+//    Matrix Eigensystem Routines, EISPACK Guide,
+//    Lecture Notes in Computer Science, Volume 6,
+//    Springer Verlag, 1976,
+//    ISBN13: 978-3540075462,
+//    LC: QA193.M37.
+//
+//  Parameters:
+//
+//    Input, C_INT32 N, the order of the matrix A.
+//
+//    Input, C_FLOAT64 TOL, a tolerance which determines when a vector
+//    (a column or part of a column of the matrix) may be considered
+//    "essentially" equal to zero.
+//
+//    Input/output, C_FLOAT64 A[N,N].  On input, an N by N array whose
+//    singular value decomposition is desired.  On output, the
+//    SVD orthogonal matrix factor V.
+//
+//    Input/output, C_FLOAT64 Q[N], the singular values.
+//
 {
-  C_INT __dim__ = *n;
-
-  /* System generated locals */
-  C_INT ab_dim1, ab_offset, i__1, i__2, i__3;
-  C_FLOAT64 d__1, d__2;
-
-  /* Local variables */
-  C_FLOAT64 temp, c__;
-  CVector< C_FLOAT64 > e(__dim__); // [__dim__]
-  C_FLOAT64 f, g, h__;
-  C_INT i__, j, k, l;
-  C_FLOAT64 s, x, y, z__;
-  C_INT l2, ii, kk, kt, ll2, lp1;
+  C_FLOAT64 c;
+  C_FLOAT64 * e;
   C_FLOAT64 eps;
-
-  /* ...AN IMPROVED VERSION OF MINFIT (SEE GOLUB AND REINSCH, 1969) */
-  /*   RESTRICTED TO M=N,P=0. */
-  /*   THE SINGULAR VALUES OF THE ARRAY AB ARE RETURNED IN Q AND AB IS */
-  /*   OVERWRITTEN WITH THE ORTHOGONAL MATRIX V SUCH THAT U.DIAG(Q) = AB.V,
-  */
-  /*   WHERE U IS ANOTHER ORTHOGONAL MATRIX. */
-  /* ...HOUSEHOLDER'S REDUCTION TO BIDIAGONAL FORM... */
-  /* Parameter adjustments */
-  --q;
-  ab_dim1 = *m;
-  ab_offset = ab_dim1 + 1;
-  ab -= ab_offset;
-
-  /* Function Body */
-  if (*n == 1)
-    {
-      goto L200;
-    }
-
-  eps = *machep;
-  g = 0.;
-  x = 0.;
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      e[i__ - 1] = g;
-      s = 0.;
-      l = i__ + 1;
-      i__2 = *n;
-
-      for (j = i__; j <= i__2; ++j)
-        {
-          /* L1: */
-          /* Computing 2nd power */
-          d__1 = ab[j + i__ * ab_dim1];
-          s += d__1 * d__1;
-        }
-
-      g = 0.;
-
-      if (s < *tol)
-        {
-          goto L4;
-        }
-
-      f = ab[i__ + i__ * ab_dim1];
-      g = sqrt(s);
-
-      if (f >= 0.)
-        {
-          g = -g;
-        }
-
-      h__ = f * g - s;
-      ab[i__ + i__ * ab_dim1] = f - g;
-
-      if (l > *n)
-        {
-          goto L4;
-        }
-
-      i__2 = *n;
-
-      for (j = l; j <= i__2; ++j)
-        {
-          f = 0.;
-          i__3 = *n;
-
-          for (k = i__; k <= i__3; ++k)
-            {
-              /* L2: */
-              f += ab[k + i__ * ab_dim1] * ab[k + j * ab_dim1];
-            }
-
-          f /= h__;
-          i__3 = *n;
-
-          for (k = i__; k <= i__3; ++k)
-            {
-              /* L3: */
-              ab[k + j * ab_dim1] += f * ab[k + i__ * ab_dim1];
-            }
-        }
-
-L4:
-      q[i__] = g;
-      s = 0.;
-
-      if (i__ == *n)
-        {
-          goto L6;
-        }
-
-      i__3 = *n;
-
-      for (j = l; j <= i__3; ++j)
-        {
-          /* L5: */
-          s += ab[i__ + j * ab_dim1] * ab[i__ + j * ab_dim1];
-        }
-
-L6:
-      g = 0.;
-
-      if (s < *tol)
-        {
-          goto L10;
-        }
-
-      if (i__ == *n)
-        {
-          goto L16;
-        }
-
-      f = ab[i__ + (i__ + 1) * ab_dim1];
-L16:
-      g = sqrt(s);
-
-      if (f >= 0.)
-        {
-          g = -g;
-        }
-
-      h__ = f * g - s;
-
-      if (i__ == *n)
-        {
-          goto L10;
-        }
-
-      ab[i__ + (i__ + 1) * ab_dim1] = f - g;
-      i__3 = *n;
-
-      for (j = l; j <= i__3; ++j)
-        {
-          /* L7: */
-          e[j - 1] = ab[i__ + j * ab_dim1] / h__;
-        }
-
-      i__3 = *n;
-
-      for (j = l; j <= i__3; ++j)
-        {
-          s = 0.;
-          i__2 = *n;
-
-          for (k = l; k <= i__2; ++k)
-            {
-              /* L8: */
-              s += ab[j + k * ab_dim1] * ab[i__ + k * ab_dim1];
-            }
-
-          i__2 = *n;
-
-          for (k = l; k <= i__2; ++k)
-            {
-              /* L9: */
-              ab[j + k * ab_dim1] += s * e[k - 1];
-            }
-        }
-
-L10:
-      y = (d__1 = q[i__], fabs(d__1)) + (d__2 = e[i__ - 1], fabs(d__2));
-
-      /* L11: */
-      if (y > x)
-        {
-          x = y;
-        }
-    }
-
-  /* ...ACCUMULATION OF RIGHT-HAND TRANSFORMATIONS... */
-  ab[*n + *n * ab_dim1] = 1.;
-  g = e[*n - 1];
-  l = *n;
-  i__1 = *n;
-
-  for (ii = 2; ii <= i__1; ++ii)
-    {
-      i__ = *n - ii + 1;
-
-      if (g == 0.)
-        {
-          goto L23;
-        }
-
-      h__ = ab[i__ + (i__ + 1) * ab_dim1] * g;
-      i__2 = *n;
-
-      for (j = l; j <= i__2; ++j)
-        {
-          /* L20: */
-          ab[j + i__ * ab_dim1] = ab[i__ + j * ab_dim1] / h__;
-        }
-
-      i__2 = *n;
-
-      for (j = l; j <= i__2; ++j)
-        {
-          s = 0.;
-          i__3 = *n;
-
-          for (k = l; k <= i__3; ++k)
-            {
-              /* L21: */
-              s += ab[i__ + k * ab_dim1] * ab[k + j * ab_dim1];
-            }
-
-          i__3 = *n;
-
-          for (k = l; k <= i__3; ++k)
-            {
-              /* L22: */
-              ab[k + j * ab_dim1] += s * ab[k + i__ * ab_dim1];
-            }
-        }
-
-L23:
-      i__3 = *n;
-
-      for (j = l; j <= i__3; ++j)
-        {
-          ab[i__ + j * ab_dim1] = 0.;
-          /* L24: */
-          ab[j + i__ * ab_dim1] = 0.;
-        }
-
-      ab[i__ + i__ * ab_dim1] = 1.;
-      g = e[i__ - 1];
-      /* L25: */
-      l = i__;
-    }
-
-  /* ...DIAGONALIZATION OF THE BIDIAGONAL FORM... */
-  /* L100: */
-  eps *= x;
-  i__1 = *n;
-
-  for (kk = 1; kk <= i__1; ++kk)
-    {
-      k = *n - kk + 1;
-      kt = 0;
-L101:
-      ++kt;
-
-      if (kt <= 30)
-        {
-          goto L102;
-        }
-
-      e[k - 1] = 0.;
-      /* printf("QR FAILED\n"); */
-L102:
-      i__3 = k;
-
-      for (ll2 = 1; ll2 <= i__3; ++ll2)
-        {
-          l2 = k - ll2 + 1;
-          l = l2;
-
-          if ((d__1 = e[l - 1], fabs(d__1)) <= eps)
-            {
-              goto L120;
-            }
-
-          if (l == 1)
-            {
-              goto L103;
-            }
-
-          if ((d__1 = q[l - 1], fabs(d__1)) <= eps)
-            {
-              goto L110;
-            }
-
-L103:
-          ;
-        }
-
-      /* ...CANCELLATION OF E(L) IF L>1... */
-L110:
-      c__ = 0.;
-      s = 1.;
-      i__3 = k;
-
-      for (i__ = l; i__ <= i__3; ++i__)
-        {
-          f = s * e[i__ - 1];
-          e[i__ - 1] = c__ * e[i__ - 1];
-
-          if (fabs(f) <= eps)
-            {
-              goto L120;
-            }
-
-          g = q[i__];
-
-          /* ...Q(I) = H = DSQRT(G*G + F*F)... */
-          if (fabs(f) < fabs(g))
-            {
-              goto L113;
-            }
-
-          if (f != 0.)
-            {
-              goto L112;
-            }
-          else
-            {
-              goto L111;
-            }
-
-L111:
-          h__ = 0.;
-          goto L114;
-L112:
-          /* Computing 2nd power */
-          d__1 = g / f;
-          h__ = fabs(f) * sqrt(d__1 * d__1 + 1);
-          goto L114;
-L113:
-          /* Computing 2nd power */
-          d__1 = f / g;
-          h__ = fabs(g) * sqrt(d__1 * d__1 + 1);
-L114:
-          q[i__] = h__;
-
-          if (h__ != 0.)
-            {
-              goto L115;
-            }
-
-          g = 1.;
-          h__ = 1.;
-L115:
-          c__ = g / h__;
-          /* L116: */
-          s = -f / h__;
-        }
-
-      /* ...TEST FOR CONVERGENCE... */
-L120:
-      z__ = q[k];
-
-      if (l == k)
-        {
-          goto L140;
-        }
-
-      /* ...SHIFT FROM BOTTOM 2*2 MINOR... */
-      x = q[l];
-      y = q[k - 1];
-      g = e[k - 2];
-      h__ = e[k - 1];
-      f = ((y - z__) * (y + z__) + (g - h__) * (g + h__)) / (h__ * 2 * y);
-      g = sqrt(f * f + 1.);
-      temp = f - g;
-
-      if (f >= 0.)
-        {
-          temp = f + g;
-        }
-
-      f = ((x - z__) * (x + z__) + h__ * (y / temp - h__)) / x;
-      /* ...NEXT QR TRANSFORMATION... */
-      c__ = 1.;
-      s = 1.;
-      lp1 = l + 1;
-
-      if (lp1 > k)
-        {
-          goto L133;
-        }
-
-      i__3 = k;
-
-      for (i__ = lp1; i__ <= i__3; ++i__)
-        {
-          g = e[i__ - 1];
-          y = q[i__];
-          h__ = s * g;
-          g *= c__;
-
-          if (fabs(f) < fabs(h__))
-            {
-              goto L123;
-            }
-
-          if (f != 0.)
-            {
-              goto L122;
-            }
-          else
-            {
-              goto L121;
-            }
-
-L121:
-          z__ = 0.;
-          goto L124;
-L122:
-          /* Computing 2nd power */
-          d__1 = h__ / f;
-          z__ = fabs(f) * sqrt(d__1 * d__1 + 1);
-          goto L124;
-L123:
-          /* Computing 2nd power */
-          d__1 = f / h__;
-          z__ = fabs(h__) * sqrt(d__1 * d__1 + 1);
-L124:
-          e[i__ - 2] = z__;
-
-          if (z__ != 0.)
-            {
-              goto L125;
-            }
-
-          f = 1.;
-          z__ = 1.;
-L125:
-          c__ = f / z__;
-          s = h__ / z__;
-          f = x * c__ + g * s;
-          g = -x * s + g * c__;
-          h__ = y * s;
-          y *= c__;
-          i__2 = *n;
-
-          for (j = 1; j <= i__2; ++j)
-            {
-              x = ab[j + (i__ - 1) * ab_dim1];
-              z__ = ab[j + i__ * ab_dim1];
-              ab[j + (i__ - 1) * ab_dim1] = x * c__ + z__ * s;
-              /* L126: */
-              ab[j + i__ * ab_dim1] = -x * s + z__ * c__;
-            }
-
-          if (fabs(f) < fabs(h__))
-            {
-              goto L129;
-            }
-
-          if (f != 0.)
-            {
-              goto L128;
-            }
-          else
-            {
-              goto L127;
-            }
-
-L127:
-          z__ = 0.;
-          goto L130;
-L128:
-          /* Computing 2nd power */
-          d__1 = h__ / f;
-          z__ = fabs(f) * sqrt(d__1 * d__1 + 1);
-          goto L130;
-L129:
-          /* Computing 2nd power */
-          d__1 = f / h__;
-          z__ = fabs(h__) * sqrt(d__1 * d__1 + 1);
-L130:
-          q[i__ - 1] = z__;
-
-          if (z__ != 0.)
-            {
-              goto L131;
-            }
-
-          f = 1.;
-          z__ = 1.;
-L131:
-          c__ = f / z__;
-          s = h__ / z__;
-          f = c__ * g + s * y;
-          /* L132: */
-          x = -s * g + c__ * y;
-        }
-
-L133:
-      e[l - 1] = 0.;
-      e[k - 1] = f;
-      q[k] = x;
-      goto L101;
-      /* ...CONVERGENCE:  Q(K) IS MADE NON-NEGATIVE... */
-L140:
-
-      if (z__ >= 0.)
-        {
-          goto L150;
-        }
-
-      q[k] = -z__;
-      i__3 = *n;
-
-      for (j = 1; j <= i__3; ++j)
-        {
-          /* L141: */
-          ab[j + k * ab_dim1] = -ab[j + k * ab_dim1];
-        }
-
-L150:
-      ;
-    }
-
-  return 0;
-L200:
-  q[1] = ab[ab_dim1 + 1];
-  ab[ab_dim1 + 1] = 1.;
-  return 0;
-} /* minfit_ */
-
-/* Subroutine */ int CPraxis::min_(C_INT *n, C_INT *j, C_INT *nits, C_FLOAT64 *
-                                   d2, C_FLOAT64 *x1, C_FLOAT64 *f1, bool *fk, FPraxis *f, C_FLOAT64 *
-                                   x, C_FLOAT64 *t, C_FLOAT64 *machep, C_FLOAT64 *h__)
-{
-  C_INT __dim__ = *n;
-  /* System generated locals */
-  C_INT i__1;
-  C_FLOAT64 d__1, d__2;
-
-  /* Local variables */
+  C_FLOAT64 f;
+  C_FLOAT64 g;
+  C_FLOAT64 h;
+  C_INT32 i;
+  C_INT32 ii;
+  C_INT32 j;
+  C_INT32 jj;
+  C_INT32 k;
+  C_INT32 kt;
+  const C_INT32 kt_max = 30;
+  C_INT32 l;
+  C_INT32 l2;
+  C_FLOAT64 s;
+  C_INT32 skip;
   C_FLOAT64 temp;
-  C_INT i__, k;
-  C_FLOAT64 s, small, d1, f0, f2, m2, m4, t2, x2, fm;
-  bool dz;
-  C_FLOAT64 xm, sf1, sx1;
+  C_FLOAT64 x;
+  C_FLOAT64 y;
+  C_FLOAT64 z;
 
-  /* ...THE SUBROUTINE MIN MINIMIZES F FROM X IN THE DIRECTION V(*,J) UNLESS */
-  /*   J IS LESS THAN 1, WHEN A QUADRATIC SEARCH IS MADE IN THE PLANE */
-  /*   DEFINED BY Q0,Q1,X. */
-  /*   D2 IS EITHER ZERO OR AN APPROXIMATION TO HALF F". */
-  /*   ON ENTRY, X1 IS AN ESTIMATE OF THE DISTANCE FROM X TO THE MINIMUM */
-  /*   ALONG V(*,J) (OR, IF J=0, A CURVE).  ON RETURN, X1 IS THE DISTANCE */
-  /*   FOUND. */
-  /*   IF FK=.TRUE., THEN F1 IS FLIN(X1).  OTHERWISE X1 AND F1 ARE IGNORED */
-  /*   ON ENTRY UNLESS FINAL FX IS GREATER THAN F1. */
-  /*   NITS CONTROLS THE NUMBER OF TIMES AN ATTEMPT WILL BE MADE TO HALVE */
-  /*   THE INTERVAL. */
-  /* Parameter adjustments */
-  --x;
-
-  /* Function Body */
-  /* Computing 2nd power */
-  d__1 = *machep;
-  small = d__1 * d__1;
-  m2 = sqrt(*machep);
-  m4 = sqrt(m2);
-  sf1 = *f1;
-  sx1 = *x1;
-  k = 0;
-  xm = 0.;
-  fm = global_1.fx;
-  f0 = global_1.fx;
-  dz = *d2 < *machep;
-  /* ...FIND THE STEP SIZE... */
-  s = 0.;
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
+  //
+  //  Householder's reduction to bidiagonal form.
+  //
+  if (n == 1)
     {
-      /* L1: */
-      /* Computing 2nd power */
-      d__1 = x[i__];
-      s += d__1 * d__1;
+      q[0] = a[0 + 0 * n];
+      a[0 + 0 * n] = 1.0;
+      return;
     }
 
-  s = sqrt(s);
-  temp = *d2;
+  e = new C_FLOAT64[n];
+
+  eps = DBL_EPSILON;
+  g = 0.0;
+  x = 0.0;
+
+  for (i = 1; i <= n; i++)
+    {
+      e[i - 1] = g;
+      l = i + 1;
+
+      s = 0.0;
+
+      for (ii = i; ii <= n; ii++)
+        {
+          s = s + a[ii - 1 + (i - 1) * n] * a[ii - 1 + (i - 1) * n];
+        }
+
+      g = 0.0;
+
+      if (tol <= s)
+        {
+          f = a[i - 1 + (i - 1) * n];
+
+          g = sqrt(s);
+
+          if (0.0 <= f)
+            {
+              g = -g;
+            }
+
+          h = f * g - s;
+          a[i - 1 + (i - 1) * n] = f - g;
+
+          for (j = l; j <= n; j++)
+            {
+              f = 0.0;
+
+              for (ii = i; ii <= n; ii++)
+                {
+                  f = f + a[ii - 1 + (i - 1) * n] * a[ii - 1 + (j - 1) * n];
+                }
+
+              f = f / h;
+
+              for (ii = i; ii <= n; ii++)
+                {
+                  a[ii - 1 + (j - 1) * n] = a[ii - 1 + (j - 1) * n] + f * a[ii - 1 + (i - 1) * n];
+                }
+            }
+        }
+
+      q[i - 1] = g;
+
+      s = 0.0;
+
+      for (j = l; j <= n; j++)
+        {
+          s = s + a[i - 1 + (j - 1) * n] * a[i - 1 + (j - 1) * n];
+        }
+
+      g = 0.0;
+
+      if (tol <= s)
+        {
+          if (i < n)
+            {
+              f = a[i - 1 + i * n];
+            }
+
+          g = sqrt(s);
+
+          if (0.0 <= f)
+            {
+              g = -g;
+            }
+
+          h = f * g - s;
+
+          if (i < n)
+            {
+              a[i - 1 + i * n] = f - g;
+
+              for (jj = l; jj <= n; jj++)
+                {
+                  e[jj - 1] = a[i - 1 + (jj - 1) * n] / h;
+                }
+
+              for (j = l; j <= n; j++)
+                {
+                  s = 0.0;
+
+                  for (jj = l; jj <= n; jj++)
+                    {
+                      s = s + a[j - 1 + (jj - 1) * n] * a[i - 1 + (jj - 1) * n];
+                    }
+
+                  for (jj = l; jj <= n; jj++)
+                    {
+                      a[j - 1 + (jj - 1) * n] = a[j - 1 + (jj - 1) * n] + s * e[jj - 1];
+                    }
+                }
+            }
+        }
+
+      y = fabs(q[i - 1]) + fabs(e[i - 1]);
+
+      x = fmax(x, y);
+    }
+
+  //
+  //  Accumulation of right-hand transformations.
+  //
+  a[n - 1 + (n - 1) * n] = 1.0;
+  g = e[n - 1];
+  l = n;
+
+  for (i = n - 1; 1 <= i; i--)
+    {
+      if (g != 0.0)
+        {
+          h = a[i - 1 + i * n] * g;
+
+          for (ii = l; ii <= n; ii++)
+            {
+              a[ii - 1 + (i - 1) * n] = a[i - 1 + (ii - 1) * n] / h;
+            }
+
+          for (j = l; j <= n; j++)
+            {
+              s = 0.0;
+
+              for (jj = l; jj <= n; jj++)
+                {
+                  s = s + a[i - 1 + (jj - 1) * n] * a[jj - 1 + (j - 1) * n];
+                }
+
+              for (ii = l; ii <= n; ii++)
+                {
+                  a[ii - 1 + (j - 1) * n] = a[ii - 1 + (j - 1) * n] + s * a[ii - 1 + (i - 1) * n];
+                }
+            }
+        }
+
+      for (jj = l; jj <= n; jj++)
+        {
+          a[i - 1 + (jj - 1) * n] = 0.0;
+        }
+
+      for (ii = l; ii <= n; ii++)
+        {
+          a[ii - 1 + (i - 1) * n] = 0.0;
+        }
+
+      a[i - 1 + (i - 1) * n] = 1.0;
+
+      g = e[i - 1];
+
+      l = i;
+    }
+
+  //
+  //  Diagonalization of the bidiagonal form.
+  //
+  eps = eps * x;
+
+  for (k = n; 1 <= k; k--)
+    {
+      kt = 0;
+
+      for (;;)
+        {
+          kt = kt + 1;
+
+          if (kt_max < kt)
+            {
+              e[k - 1] = 0.0;
+              std::cerr << "\n";
+              std::cerr << "MINFIT - Fatal error!\n";
+              std::cerr << "  The QR algorithm failed to converge.\n";
+              exit(1);
+            }
+
+          skip = 0;
+
+          for (l2 = k; 1 <= l2; l2--)
+            {
+              l = l2;
+
+              if (fabs(e[l - 1]) <= eps)
+                {
+                  skip = 1;
+                  break;
+                }
+
+              if (1 < l)
+                {
+                  if (fabs(q[l - 2]) <= eps)
+                    {
+                      break;
+                    }
+                }
+            }
+
+          //
+          //  Cancellation of E(L) if 1 < L.
+          //
+          if (!skip)
+            {
+              c = 0.0;
+              s = 1.0;
+
+              for (i = l; i <= k; i++)
+                {
+                  f = s * e[i - 1];
+                  e[i - 1] = c * e[i - 1];
+
+                  if (fabs(f) <= eps)
+                    {
+                      break;
+                    }
+
+                  g = q[i - 1];
+                  //
+                  //  q(i) = h = sqrt(g*g + f*f).
+                  //
+                  h = r8_hypot(f, g);
+
+                  q[i - 1] = h;
+
+                  if (h == 0.0)
+                    {
+                      g = 1.0;
+                      h = 1.0;
+                    }
+
+                  c = g / h;
+                  s = -f / h;
+                }
+            }
+
+          //
+          //  Test for convergence for this index K.
+          //
+          z = q[k - 1];
+
+          if (l == k)
+            {
+              if (z < 0.0)
+                {
+                  q[k - 1] = -z;
+
+                  for (i = 1; i <= n; i++)
+                    {
+                      a[i - 1 + (k - 1) * n] = -a[i - 1 + (k - 1) * n];
+                    }
+                }
+
+              break;
+            }
+
+          //
+          //  Shift from bottom 2*2 minor.
+          //
+          x = q[l - 1];
+          y = q[k - 2];
+          g = e[k - 2];
+          h = e[k - 1];
+          f = ((y - z) * (y + z) + (g - h) * (g + h)) / (2.0 * h * y);
+
+          g = r8_hypot(f, 1.0);
+
+          if (f < 0.0)
+            {
+              temp = f - g;
+            }
+          else
+            {
+              temp = f + g;
+            }
+
+          f = ((x - z) * (x + z) + h * (y / temp - h)) / x;
+          //
+          //  Next QR transformation.
+          //
+          c = 1.0;
+          s = 1.0;
+
+          for (i = l + 1; i <= k; i++)
+            {
+              g = e[i - 1];
+              y = q[i - 1];
+              h = s * g;
+              g = g * c;
+
+              z = r8_hypot(f, h);
+
+              e[i - 2] = z;
+
+              if (z == 0.0)
+                {
+                  f = 1.0;
+                  z = 1.0;
+                }
+
+              c = f / z;
+              s = h / z;
+              f = x * c + g * s;
+              g = -x * s + g * c;
+              h = y * s;
+              y = y * c;
+
+              for (j = 1; j <= n; j++)
+                {
+                  x = a[j - 1 + (i - 2) * n];
+                  z = a[j - 1 + (i - 1) * n];
+                  a[j - 1 + (i - 2) * n] = x * c + z * s;
+                  a[j - 1 + (i - 1) * n] = -x * s + z * c;
+                }
+
+              z = r8_hypot(f, h);
+
+              q[i - 2] = z;
+
+              if (z == 0.0)
+                {
+                  f = 1.0;
+                  z = 1.0;
+                }
+
+              c = f / z;
+              s = h / z;
+              f = c * g + s * y;
+              x = -s * g + c * y;
+            }
+
+          e[l - 1] = 0.0;
+          e[k - 1] = f;
+          q[k - 1] = x;
+        }
+    }
+
+  delete[] e;
+
+  return;
+}
+//****************************************************************************80
+
+void CPraxis::minny(C_INT32 n,
+                    C_INT32 jsearch,
+                    C_INT32 nits,
+                    C_FLOAT64 & d2,
+                    C_FLOAT64 & x1,
+                    C_FLOAT64 & f1,
+                    bool fk,
+                    FPraxis * f,
+                    C_FLOAT64 x[],
+                    C_FLOAT64 t,
+                    C_FLOAT64 h,
+                    C_FLOAT64 v[],
+                    C_FLOAT64 q0[],
+                    C_FLOAT64 q1[],
+                    C_INT32 & nl,
+                    C_INT32 & nf,
+                    C_FLOAT64 dmin,
+                    C_FLOAT64 ldt,
+                    C_FLOAT64 & fx,
+                    C_FLOAT64 & qa,
+                    C_FLOAT64 & qb,
+                    C_FLOAT64 & qc,
+                    C_FLOAT64 & qd0,
+                    C_FLOAT64 & qd1)
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    MINNY minimizes a scalar function of N variables along a line.
+//
+//  Discussion:
+//
+//    MINNY minimizes F along the line from X in the direction V(*,JSEARCH)
+//    or else using a quadratic search in the plane defined by Q0, Q1 and X.
+//
+//    If FK = true, then F1 is FLIN(X1).  Otherwise X1 and F1 are ignored
+//    on entry unless final FX is greater than F1.
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    04 August 2016
+//
+//  Author:
+//
+//    Original FORTRAN77 version by Richard Brent.
+//    C++ version by John Burkardt.
+//
+//  Reference:
+//
+//    Richard Brent,
+//    Algorithms for Minimization with Derivatives,
+//    Prentice Hall, 1973,
+//    ReprC_INT32ed by Dover, 2002.
+//
+//  Parameters:
+//
+//    Input, C_INT32 N, the number of variables.
+//
+//    Input, C_INT32 JSEARCH, indicates the kind of search.
+//    If J is a legal columnindex, linear search in the direction of V(*,JSEARCH).
+//    Otherwise, the search is parabolic, based on X, Q0 and Q1.
+//
+//    Input, C_INT32 NITS, the maximum number of times the C_INT32erval
+//    may be halved to retry the calculation.
+//
+//    Input/output, C_FLOAT64 &D2, is either zero, or an approximation to
+//    the value of (1/2) times the second derivative of F.
+//
+//    Input/output, C_FLOAT64 &X1, on entry, an estimate of the
+//    distance from X to the minimum along V(*,JSEARCH), or a curve.
+//    On output, the distance between X and the minimizer that was found.
+//
+//    Input/output, C_FLOAT64 &F1, ?
+//
+//    Input, bool FK; if FK is TRUE, then on input F1 contains
+//    the value FLIN(X1).
+//
+//    Input, C_FLOAT64 F (C_FLOAT64 X[], C_INT32 N ), is the name of the function to
+//    be minimized.
+//
+//    Input/output, C_FLOAT64 X[N], ?
+//
+//    Input, C_FLOAT64 T, ?
+//
+//    Input, C_FLOAT64 H, ?
+//
+//    Input, C_FLOAT64 V[N,N], a matrix whose columns are direction
+//    vectors along which the function may be minimized.
+//
+//    ?, C_FLOAT64 Q0[N], ?
+//
+//    ?, C_FLOAT64 Q1[N], ?
+//
+//    Input/output, C_INT32 &NL, the number of linear searches.
+//
+//    Input/output, C_INT32 &NF, the number of function evaluations.
+//
+//    Input, C_FLOAT64 DMIN, an estimate for the smallest eigenvalue.
+//
+//    Input, C_FLOAT64 LDT, the length of the step.
+//
+//    Input/output, C_FLOAT64 &FX, the value of F(X,N).
+//
+//    Input/output, C_FLOAT64 &QA, &QB, &QC;
+//
+//    Input/output, C_FLOAT64 &QD0, &QD1, ?.
+//
+{
+  C_FLOAT64 d1;
+  C_INT32 dz;
+  C_FLOAT64 f0;
+  C_FLOAT64 f2;
+  C_FLOAT64 fm;
+  C_INT32 i;
+  C_INT32 k;
+  C_FLOAT64 m2;
+  C_FLOAT64 m4;
+  C_FLOAT64 machep;
+  C_INT32 ok;
+  C_FLOAT64 s;
+  C_FLOAT64 sf1;
+  C_FLOAT64 small;
+  C_FLOAT64 sx1;
+  C_FLOAT64 t2;
+  C_FLOAT64 temp;
+  C_FLOAT64 x2;
+  C_FLOAT64 xm;
+
+  machep = DBL_EPSILON;
+  small = machep * machep;
+  m2 = sqrt(machep);
+  m4 = sqrt(m2);
+  sf1 = f1;
+  sx1 = x1;
+  k = 0;
+  xm = 0.0;
+  fm = fx;
+  f0 = fx;
+  dz = (d2 < machep);
+  //
+  //  Find the step size.
+  //
+  s = r8vec_norm(n, x);
 
   if (dz)
     {
-      temp = global_1.dmin__;
+      temp = dmin;
+    }
+  else
+    {
+      temp = d2;
     }
 
-  t2 = m4 * sqrt(fabs(global_1.fx) / temp + s * global_1.ldt) + m2 *
-       global_1.ldt;
-  s = m4 * s + *t;
+  t2 = m4 * sqrt(fabs(fx) / temp + s * ldt) + m2 * ldt;
+  s = m4 * s + t;
 
-  if (dz && t2 > s)
+  if (dz && s < t2)
     {
       t2 = s;
     }
 
-  t2 = dmax(t2, small);
-  /* Computing MIN */
-  d__1 = t2, d__2 = *h__ * .01;
-  t2 = dmin(d__1, d__2);
+  t2 = fmax(t2, small);
+  t2 = fmin(t2, 0.01 * h);
 
-  if (!(*fk) || *f1 > fm)
+  if (fk && f1 <= fm)
     {
-      goto L2;
+      xm = x1;
+      fm = f1;
     }
 
-  xm = *x1;
-  fm = *f1;
-L2:
-
-  if (*fk && fabs(*x1) >= t2)
+  if ((!fk) || fabs(x1) < t2)
     {
-      goto L3;
+      if (0.0 <= x1)
+        {
+          temp = 1.0;
+        }
+      else
+        {
+          temp = -1.0;
+        }
+
+      x1 = temp * t2;
+      f1 = flin(n, jsearch, x1, f, x, nf, v, q0, q1, qd0, qd1, qa, qb, qc);
     }
 
-  temp = 1.;
-
-  if (*x1 < 0.)
+  if (f1 <= fm)
     {
-      temp = -1.;
+      xm = x1;
+      fm = f1;
     }
 
-  *x1 = temp * t2;
-  *f1 = flin_(n, j, x1, f, &x[1], &global_1.nf);
-L3:
-
-  if (*f1 > fm)
+  //
+  //  Evaluate FLIN at another poC_INT32 and estimate the second derivative.
+  //
+  for (;;)
     {
-      goto L4;
+      if (dz)
+        {
+          if (f1 <= f0)
+            {
+              x2 = 2.0 * x1;
+            }
+          else
+            {
+              x2 = -x1;
+            }
+
+          f2 = flin(n, jsearch, x2, f, x, nf, v, q0, q1, qd0, qd1, qa, qb, qc);
+
+          if (f2 <= fm)
+            {
+              xm = x2;
+              fm = f2;
+            }
+
+          d2 = (x2 * (f1 - f0) - x1 * (f2 - f0))
+               / ((x1 * x2) * (x1 - x2));
+        }
+
+      //
+      //  Estimate the first derivative at 0.
+      //
+      d1 = (f1 - f0) / x1 - x1 * d2;
+      dz = 1;
+
+      //
+      //  Predict the minimum.
+      //
+      if (d2 <= small)
+        {
+          if (0.0 <= d1)
+            {
+              x2 = -h;
+            }
+          else
+            {
+              x2 = h;
+            }
+        }
+      else
+        {
+          x2 = (-0.5 * d1) / d2;
+        }
+
+      if (h < fabs(x2))
+        {
+          if (x2 <= 0.0)
+            {
+              x2 = -h;
+            }
+          else
+            {
+              x2 = h;
+            }
+        }
+
+      //
+      //  Evaluate F at the predicted minimum.
+      //
+      ok = 1;
+
+      for (;;)
+        {
+          f2 = flin(n, jsearch, x2, f, x, nf, v, q0, q1, qd0, qd1, qa, qb, qc);
+
+          if (nits <= k || f2 <= f0)
+            {
+              break;
+            }
+
+          k = k + 1;
+
+          if (f0 < f1 && 0.0 < x1 * x2)
+            {
+              ok = 0;
+              break;
+            }
+
+          x2 = 0.5 * x2;
+        }
+
+      if (ok)
+        {
+          break;
+        }
     }
 
-  xm = *x1;
-  fm = *f1;
-L4:
+  //
+  //  Increment the one-dimensional search counter.
+  //
+  nl = nl + 1;
 
-  if (! dz)
+  if (fm < f2)
     {
-      goto L6;
-    }
-
-  /* ...EVALUATE FLIN AT ANOTHER POINT AND ESTIMATE THE SECOND DERIVATIVE...
-   */
-  x2 = -(*x1);
-
-  if (f0 >= *f1)
-    {
-      x2 = *x1 * 2.;
-    }
-
-  f2 = flin_(n, j, &x2, f, &x[1], &global_1.nf);
-
-  if (f2 > fm)
-    {
-      goto L5;
-    }
-
-  xm = x2;
-  fm = f2;
-L5:
-  *d2 = (x2 * (*f1 - f0) - *x1 * (f2 - f0)) / (*x1 * x2 * (*x1 - x2));
-  /* ...ESTIMATE THE FIRST DERIVATIVE AT 0... */
-L6:
-  d1 = (*f1 - f0) / *x1 - *x1 * *d2;
-  dz = TRUE_;
-
-  /* ...PREDICT THE MINIMUM... */
-  if (*d2 > small)
-    {
-      goto L7;
-    }
-
-  x2 = *h__;
-
-  if (d1 >= 0.)
-    {
-      x2 = -x2;
-    }
-
-  goto L8;
-L7:
-  x2 = d1 * -.5 / *d2;
-L8:
-
-  if (fabs(x2) <= *h__)
-    {
-      goto L11;
-    }
-
-  if (x2 <= 0.)
-    {
-      goto L9;
+      x2 = xm;
     }
   else
     {
-      goto L10;
+      fm = f2;
     }
 
-L9:
-  x2 = -(*h__);
-  goto L11;
-L10:
-  x2 = *h__;
-  /* ...EVALUATE F AT THE PREDICTED MINIMUM... */
-L11:
-  f2 = flin_(n, j, &x2, f, &x[1], &global_1.nf);
-
-  if (k >= *nits || f2 <= f0)
+  //
+  //  Get a new estimate of the second derivative.
+  //
+  if (small < fabs(x2 * (x2 - x1)))
     {
-      goto L12;
+      d2 = (x2 * (f1 - f0) - x1 * (fm - f0))
+           / ((x1 * x2) * (x1 - x2));
     }
-
-  /* ...NO SUCCESS, SO TRY AGAIN... */
-  ++k;
-
-  if (f0 < *f1 && *x1 * x2 > 0.)
+  else
     {
-      goto L4;
-    }
-
-  x2 *= .5;
-  goto L11;
-  /* ...INCREMENT THE ONE-DIMENSIONAL SEARCH COUNTER... */
-L12:
-  ++global_1.nl;
-
-  if (f2 <= fm)
-    {
-      goto L13;
-    }
-
-  x2 = xm;
-  goto L14;
-L13:
-  fm = f2;
-  /* ...GET A NEW ESTIMATE OF THE SECOND DERIVATIVE... */
-L14:
-
-  if ((d__1 = x2 * (x2 - *x1), fabs(d__1)) <= small)
-    {
-      goto L15;
-    }
-
-  *d2 = (x2 * (*f1 - f0) - *x1 * (fm - f0)) / (*x1 * x2 * (*x1 - x2));
-  goto L16;
-L15:
-
-  if (k > 0)
-    {
-      *d2 = 0.;
-    }
-
-L16:
-
-  if (*d2 <= small)
-    {
-      *d2 = small;
-    }
-
-  *x1 = x2;
-  global_1.fx = fm;
-
-  if (sf1 >= global_1.fx)
-    {
-      goto L17;
-    }
-
-  global_1.fx = sf1;
-  *x1 = sx1;
-  /* ...UPDATE X FOR LINEAR BUT NOT PARABOLIC SEARCH... */
-L17:
-
-  if (*j == 0)
-    {
-      return 0;
-    }
-
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      /* L18: */
-      x[i__] += *x1 * q_1.v[i__ + *j * __dim__ - __dim__ - 1];
-    }
-
-  return 0;
-} /* min_ */
-
-C_FLOAT64 CPraxis::flin_(C_INT *n, C_INT *j, C_FLOAT64 *l, FPraxis *f, C_FLOAT64 *x,
-                         C_INT *nf)
-{
-  C_INT __dim__ = *n;
-
-  /* System generated locals */
-  C_INT i__1;
-  C_FLOAT64 ret_val;
-
-  /* Local variables */
-  C_INT i__;
-  CVector< C_FLOAT64 > t(__dim__); // [__dim__];
-
-  /* ...FLIN IS THE FUNCTION OF ONE REAL VARIABLE L THAT IS MINIMIZED */
-  /*   BY THE SUBROUTINE MIN... */
-  /* Parameter adjustments */
-  --x;
-
-  /* Function Body */
-  if (*j == 0)
-    {
-      goto L2;
-    }
-
-  /* ...THE SEARCH IS LINEAR... */
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      /* L1: */
-      t[i__ - 1] = x[i__] + *l * q_1.v[i__ + *j * __dim__ - __dim__ - 1];
-    }
-
-  goto L4;
-  /* ...THE SEARCH IS ALONG A PARABOLIC SPACE CURVE... */
-L2:
-  q_1.qa = *l * (*l - q_1.qd1) / (q_1.qd0 * (q_1.qd0 + q_1.qd1));
-  q_1.qb = (*l + q_1.qd0) * (q_1.qd1 - *l) / (q_1.qd0 * q_1.qd1);
-  q_1.qc = *l * (*l + q_1.qd0) / (q_1.qd1 * (q_1.qd0 + q_1.qd1));
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      /* L3: */
-      t[i__ - 1] = q_1.qa * q_1.q0[i__ - 1] + q_1.qb * x[i__] + q_1.qc *
-                   q_1.q1[i__ - 1];
-    }
-
-  /* ...THE FUNCTION EVALUATION COUNTER NF IS INCREMENTED... */
-L4:
-  ++(*nf);
-  ret_val = (*f)(t.array(), n);
-  return ret_val;
-} /* flin_ */
-
-/* Subroutine */ int sort_(C_INT *m, C_INT *n, C_FLOAT64 *d__,
-                           C_FLOAT64 *v)
-{
-  /* System generated locals */
-  C_INT v_dim1, v_offset, i__1, i__2;
-
-  /* Local variables */
-  C_INT i__, j, k;
-  C_FLOAT64 s;
-  C_INT ip1, nm1;
-
-  /* ...SORTS THE ELEMENTS OF D(N) INTO DESCENDING ORDER AND MOVES THE */
-  /*   CORRESPONDING COLUMNS OF V(N,N). */
-  /*   M IS THE ROW DIMENSION OF V AS DECLARED IN THE CALLING PROGRAM. */
-  /* Parameter adjustments */
-  v_dim1 = *m;
-  v_offset = v_dim1 + 1;
-  v -= v_offset;
-  --d__;
-
-  /* Function Body */
-  if (*n == 1)
-    {
-      return 0;
-    }
-
-  nm1 = *n - 1;
-  i__1 = nm1;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      k = i__;
-      s = d__[i__];
-      ip1 = i__ + 1;
-      i__2 = *n;
-
-      for (j = ip1; j <= i__2; ++j)
+      if (0 < k)
         {
-          if (d__[j] <= s)
+          d2 = 0.0;
+        }
+    }
+
+  d2 = fmax(d2, small);
+
+  x1 = x2;
+  fx = fm;
+
+  if (sf1 < fx)
+    {
+      fx = sf1;
+      x1 = sx1;
+    }
+
+  //
+  //  Update X for linear search.
+  //
+  if (0 <= jsearch)
+    {
+      for (i = 0; i < n; i++)
+        {
+          x[i] = x[i] + x1 * v[i + jsearch * n];
+        }
+    }
+
+  return;
+}
+//****************************************************************************80
+
+C_FLOAT64 CPraxis::operator()(C_FLOAT64 t0, C_FLOAT64 h0, C_INT32 n, C_INT32 prin, C_FLOAT64 x[], FPraxis * f)
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    PRAXIS seeks an N-dimensional minimizer X of a scalar function F(X).
+//
+//  Discussion:
+//
+//    PRAXIS returns the minimum of the function F(X,N) of N variables
+//    using the principal axis method.  The gradient of the function is
+//    not required.
+//
+//    The approximating quadratic form is
+//
+//      Q(x") = F(x,n) + (1/2) * (x"-x)" * A * (x"-x)
+//
+//    where X is the best estimate of the minimum and
+//
+//      A = inverse(V") * D * inverse(V)
+//
+//    V(*,*) is the matrix of search directions;
+//    D(*) is the array of second differences.
+//
+//    If F(X) has continuous second derivatives near X0, then A will tend
+//    to the hessian of F at X0 as X approaches X0.
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    04 August 2016
+//
+//  Author:
+//
+//    Original FORTRAN77 version by Richard Brent.
+//    C++ version by John Burkardt.
+//
+//  Reference:
+//
+//    Richard Brent,
+//    Algorithms for Minimization with Derivatives,
+//    Prentice Hall, 1973,
+//    ReprC_INT32ed by Dover, 2002.
+//
+//  Parameters:
+//
+//    Input, C_FLOAT64 T0, is a tolerance.  PRAXIS attempts to return
+//    praxis = (*f)(x) such that if X0 is the true local minimum near X, then
+//    norm (x - x0 ) < T0 + sqrt (EPSILON ) * norm (X ),
+//    where EPSILON is the machine precision for X.
+//
+//    Input, C_FLOAT64 H0, is the maximum step size.  H0 should be
+//    set to about the maximum distance from the initial guess to the minimum.
+//    If H0 is set too large or too small, the initial rate of
+//    convergence may be slow.
+//
+//    Input, C_INT32 N, the number of variables.
+//
+//    Input, C_INT32 PRIN, controls prC_INT32ing C_INT32ermediate results.
+//    0, nothing is prC_INT32ed.
+//    1, F is prC_INT32ed after every n+1 or n+2 linear minimizations.
+//       final X is prC_INT32ed, but C_INT32ermediate X is prC_INT32ed only
+//       if N is at most 4.
+//    2, the scale factors and the principal values of the approximating
+//       quadratic form are also prC_INT32ed.
+//    3, X is also prC_INT32ed after every few linear minimizations.
+//    4, the principal vectors of the approximating quadratic form are
+//       also prC_INT32ed.
+//
+//    Input/output, C_FLOAT64 X[N], is an array containing on entry a
+//    guess of the poC_INT32 of minimum, on return the estimated poC_INT32 of minimum.
+//
+//    Input, C_FLOAT64 F (C_FLOAT64 X[], C_INT32 N ), is the name of the function to be
+//    minimized.
+//
+//    Output, C_FLOAT64 PRAXIS, the function value at the minimizer.
+//
+//  Local parameters:
+//
+//    Local, C_FLOAT64 DMIN, an estimate for the smallest eigenvalue.
+//
+//    Local, C_FLOAT64 FX, the value of F(X,N).
+//
+//    Local, bool ILLC, is TRUE if the system is ill-conditioned.
+//
+//    Local, C_FLOAT64 LDT, the length of the step.
+//
+//    Local, C_INT32 NF, the number of function evaluations.
+//
+//    Local, C_INT32 NL, the number of linear searches.
+//
+{
+  C_FLOAT64 * d;
+  C_FLOAT64 d2;
+  C_FLOAT64 df;
+  C_FLOAT64 dmin;
+  C_FLOAT64 dn;
+  C_FLOAT64 dni;
+  C_FLOAT64 f1;
+  bool fk;
+  C_FLOAT64 fx;
+  C_FLOAT64 h;
+  C_INT32 i;
+  bool illc;
+  C_INT32 j;
+  C_INT32 jsearch;
+  C_INT32 k;
+  C_INT32 k2;
+  C_INT32 kl;
+  C_INT32 kt;
+  C_INT32 ktm;
+  C_FLOAT64 large;
+  C_FLOAT64 ldfac;
+  C_FLOAT64 lds;
+  C_FLOAT64 ldt;
+  C_FLOAT64 m2;
+  C_FLOAT64 m4;
+  C_FLOAT64 machep;
+  C_INT32 nits;
+  C_INT32 nl;
+  C_INT32 nf;
+  C_FLOAT64 * q0;
+  C_FLOAT64 * q1;
+  C_FLOAT64 qa;
+  C_FLOAT64 qb;
+  C_FLOAT64 qc;
+  C_FLOAT64 qd0;
+  C_FLOAT64 qd1;
+  C_FLOAT64 qf1;
+  C_FLOAT64 r;
+  C_FLOAT64 s;
+  C_FLOAT64 scbd;
+  C_INT32 seed;
+  C_FLOAT64 sf;
+  C_FLOAT64 sl;
+  C_FLOAT64 small;
+  C_FLOAT64 t;
+  C_FLOAT64 temp;
+  C_FLOAT64 t2;
+  C_FLOAT64 * v;
+  C_FLOAT64 value;
+  C_FLOAT64 vlarge;
+  C_FLOAT64 vsmall;
+  C_FLOAT64 * y;
+  C_FLOAT64 * z;
+  //
+  //  Allocation.
+  //
+  d = new C_FLOAT64[n];
+  q0 = new C_FLOAT64[n];
+  q1 = new C_FLOAT64[n];
+  v = new C_FLOAT64[n * n];
+  y = new C_FLOAT64[n];
+  z = new C_FLOAT64[n];
+  //
+  //  Initialization.
+  //
+  machep = DBL_EPSILON;
+  small = machep * machep;
+  vsmall = small * small;
+  large = 1.0 / small;
+  vlarge = 1.0 / vsmall;
+  m2 = sqrt(machep);
+  m4 = sqrt(m2);
+  seed = 123456789;
+  //
+  //  Heuristic numbers:
+  //
+  //  If the axes may be badly scaled (which is to be avoided if
+  //  possible), then set SCBD = 10.  Otherwise set SCBD = 1.
+  //
+  //  If the problem is known to be ill-conditioned, initialize ILLC = true.
+  //
+  //  KTM is the number of iterations without improvement before the
+  //  algorithm terminates.  KTM = 4 is very cautious; usually KTM = 1
+  //  is satisfactory.
+  //
+  scbd = 1.0;
+  illc = false;
+  ktm = 1;
+
+  if (illc)
+    {
+      ldfac = 0.1;
+    }
+  else
+    {
+      ldfac = 0.01;
+    }
+
+  kt = 0;
+  nl = 0;
+  nf = 1;
+  fx = (*f)(x, n);
+  qf1 = fx;
+  t = small + fabs(t0);
+  t2 = t;
+  dmin = small;
+  h = h0;
+  h = fmax(h, 100.0 * t);
+  ldt = h;
+
+  //
+  //  The initial set of search directions V is the identity matrix.
+  //
+  for (j = 0; j < n; j++)
+    {
+      for (i = 0; i < n; i++)
+        {
+          v[i + j * n] = 0.0;
+        }
+
+      v[j + j * n] = 1.0;
+    }
+
+  for (i = 0; i < n; i++)
+    {
+      d[i] = 0.0;
+    }
+
+  qa = 0.0;
+  qb = 0.0;
+  qc = 0.0;
+  qd0 = 0.0;
+  qd1 = 0.0;
+  r8vec_copy(n, x, q0);
+  r8vec_copy(n, x, q1);
+
+  if (0 < prin)
+    {
+      prC_INT322(n, x, prin, fx, nf, nl);
+    }
+
+  //
+  //  The main loop starts here.
+  //
+  for (;;)
+    {
+      sf = d[0];
+      d[0] = 0.0;
+      //
+      //  Minimize along the first direction V(*,1).
+      //
+      jsearch = 0;
+      nits = 2;
+      d2 = d[0];
+      s = 0.0;
+      value = fx;
+      fk = false;
+
+      minny(n, jsearch, nits, d2, s, value, fk, f, x, t,
+            h, v, q0, q1, nl, nf, dmin, ldt, fx, qa, qb, qc, qd0, qd1);
+
+      d[0] = d2;
+
+      if (s <= 0.0)
+        {
+          for (i = 0; i < n; i++)
             {
-              goto L1;
+              v[i + 0 * n] = -v[i + 0 * n];
+            }
+        }
+
+      if (sf <= 0.9 * d[0] || d[0] <= 0.9 * sf)
+        {
+          for (i = 1; i < n; i++)
+            {
+              d[i] = 0.0;
+            }
+        }
+
+      //
+      //  The inner loop starts here.
+      //
+      for (k = 2; k <= n; k++)
+        {
+          r8vec_copy(n, x, y);
+
+          sf = fx;
+
+          if (0 < kt)
+            {
+              illc = true;
             }
 
-          k = j;
-          s = d__[j];
-L1:
-          ;
+          for (;;)
+            {
+              kl = k;
+              df = 0.0;
+
+              //
+              //  A random step follows, to avoid resolution valleys.
+              //
+              if (illc)
+                {
+                  for (j = 0; j < n; j++)
+                    {
+                      r = mpRandom->getRandomCC();
+                      s = (0.1 * ldt + t2 * pow(10.0, kt)) * (r - 0.5);
+                      z[j] = s;
+
+                      for (i = 0; i < n; i++)
+                        {
+                          x[i] = x[i] + s * v[i + j * n];
+                        }
+                    }
+
+                  fx = (*f)(x, n);
+                  nf = nf + 1;
+                }
+
+              //
+              //  Minimize along the "non-conjugate" directions V(*,K),...,V(*,N).
+              //
+              for (k2 = k; k2 <= n; k2++)
+                {
+                  sl = fx;
+
+                  jsearch = k2 - 1;
+                  nits = 2;
+                  d2 = d[k2 - 1];
+                  s = 0.0;
+                  value = fx;
+                  fk = false;
+
+                  minny(n, jsearch, nits, d2, s, value, fk, f, x, t,
+                        h, v, q0, q1, nl, nf, dmin, ldt, fx, qa, qb, qc, qd0, qd1);
+
+                  d[k2 - 1] = d2;
+
+                  if (illc)
+                    {
+                      s = d[k2 - 1] * pow(s + z[k2 - 1], 2);
+                    }
+                  else
+                    {
+                      s = sl - fx;
+                    }
+
+                  if (df <= s)
+                    {
+                      df = s;
+                      kl = k2;
+                    }
+                }
+
+              //
+              //  If there was not much improvement on the first try, set
+              //  ILLC = true and start the inner loop again.
+              //
+              if (illc)
+                {
+                  break;
+                }
+
+              if (fabs(100.0 * machep * fx) <= df)
+                {
+                  break;
+                }
+
+              illc = true;
+            }
+
+          if (k == 2 && 1 < prin)
+            {
+              r8vec_prC_INT32(n, d, "  The second difference array:");
+            }
+
+          //
+          //  Minimize along the "conjugate" directions V(*,1),...,V(*,K-1).
+          //
+          for (k2 = 1; k2 < k; k2++)
+            {
+              jsearch = k2 - 1;
+              nits = 2;
+              d2 = d[k2 - 1];
+              s = 0.0;
+              value = fx;
+              fk = false;
+
+              minny(n, jsearch, nits, d2, s, value, fk, f, x, t,
+                    h, v, q0, q1, nl, nf, dmin, ldt, fx, qa, qb, qc, qd0, qd1);
+
+              d[k2 - 1] = d2;
+            }
+
+          f1 = fx;
+          fx = sf;
+
+          for (i = 0; i < n; i++)
+            {
+              temp = x[i];
+              x[i] = y[i];
+              y[i] = temp - y[i];
+            }
+
+          lds = r8vec_norm(n, y);
+
+          //
+          //  Discard direction V(*,kl).
+          //
+          //  If no random step was taken, V(*,KL) is the "non-conjugate"
+          //  direction along which the greatest improvement was made.
+          //
+          if (small < lds)
+            {
+              for (j = kl - 1; k <= j; j--)
+                {
+                  for (i = 1; i <= n; i++)
+                    {
+                      v[i - 1 + j * n] = v[i - 1 + (j - 1) * n];
+                    }
+
+                  d[j] = d[j - 1];
+                }
+
+              d[k - 1] = 0.0;
+
+              for (i = 1; i <= n; i++)
+                {
+                  v[i - 1 + (k - 1) * n] = y[i - 1] / lds;
+                }
+
+              //
+              //  Minimize along the new "conjugate" direction V(*,k), which is
+              //  the normalized vector:  (new x) - (old x).
+              //
+              jsearch = k - 1;
+              nits = 4;
+              d2 = d[k - 1];
+              value = f1;
+              fk = true;
+
+              minny(n, jsearch, nits, d2, lds, value, fk, f, x, t,
+                    h, v, q0, q1, nl, nf, dmin, ldt, fx, qa, qb, qc, qd0, qd1);
+
+              d[k - 1] = d2;
+
+              if (lds <= 0.0)
+                {
+                  lds = -lds;
+
+                  for (i = 1; i <= n; i++)
+                    {
+                      v[i - 1 + (k - 1) * n] = -v[i - 1 + (k - 1) * n];
+                    }
+                }
+            }
+
+          ldt = ldfac * ldt;
+          ldt = fmax(ldt, lds);
+
+          if (0 < prin)
+            {
+              prC_INT322(n, x, prin, fx, nf, nl);
+            }
+
+          t2 = r8vec_norm(n, x);
+
+          t2 = m2 * t2 + t;
+
+          //
+          //  See whether the length of the step taken since starting the
+          //  inner loop exceeds half the tolerance.
+          //
+          if (0.5 * t2 < ldt)
+            {
+              kt = -1;
+            }
+
+          kt = kt + 1;
+
+          if (ktm < kt)
+            {
+              if (0 < prin)
+                {
+                  r8vec_prC_INT32(n, x, "  X:");
+                }
+
+              delete[] d;
+              delete[] q0;
+              delete[] q1;
+              delete[] v;
+              delete[] y;
+              delete[] z;
+
+              return fx;
+            }
         }
 
-      if (k <= i__)
+      //
+      //  The inner loop ends here.
+      //
+      //  Try quadratic extrapolation in case we are in a curved valley.
+      //
+      quad(n, f, x, t, h, v, q0, q1, nl, nf, dmin, ldt, fx, qf1,
+           qa, qb, qc, qd0, qd1);
+
+      for (j = 0; j < n; j++)
         {
-          goto L3;
+          d[j] = 1.0 / sqrt(d[j]);
         }
 
-      d__[k] = d__[i__];
-      d__[i__] = s;
-      i__2 = *n;
+      dn = r8vec_max(n, d);
 
-      for (j = 1; j <= i__2; ++j)
+      if (3 < prin)
         {
-          s = v[j + i__ * v_dim1];
-          v[j + i__ * v_dim1] = v[j + k * v_dim1];
-          /* L2: */
-          v[j + k * v_dim1] = s;
+          r8mat_prC_INT32(n, n, v, "  The new direction vectors:");
         }
 
-L3:
-      ;
-    }
-
-  return 0;
-} /* sort_ */
-
-/* Subroutine */ int CPraxis::quad_(C_INT *n, FPraxis *f, C_FLOAT64 *x, C_FLOAT64 *t,
-                                    C_FLOAT64 *machep, C_FLOAT64 *h__)
-{
-  /* System generated locals */
-  C_INT i__1;
-  C_FLOAT64 d__1;
-
-  /* Local variables */
-  C_INT i__;
-  C_FLOAT64 l, s, value;
-  /* ...QUAD LOOKS FOR THE MINIMUM OF F ALONG A CURVE DEFINED BY Q0,Q1,X...
-  */
-  /* Parameter adjustments */
-  --x;
-
-  /* Function Body */
-  s = global_1.fx;
-  global_1.fx = q_1.qf1;
-  q_1.qf1 = s;
-  q_1.qd1 = 0.;
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      s = x[i__];
-      l = q_1.q1[i__ - 1];
-      x[i__] = l;
-      q_1.q1[i__ - 1] = s;
-      /* L1: */
-      /* Computing 2nd power */
-      d__1 = s - l;
-      q_1.qd1 += d__1 * d__1;
-    }
-
-  q_1.qd1 = sqrt(q_1.qd1);
-  l = q_1.qd1;
-  s = 0.;
-
-  if (q_1.qd0 <= 0. || q_1.qd1 <= 0. || global_1.nl < *n * 3 * *n)
-    {
-      goto L2;
-    }
-
-  value = q_1.qf1;
-  min_(n, &c__0, &c__2, &s, &l, &value, &c_true, f, &x[1], t, machep,
-       h__);
-  q_1.qa = l * (l - q_1.qd1) / (q_1.qd0 * (q_1.qd0 + q_1.qd1));
-  q_1.qb = (l + q_1.qd0) * (q_1.qd1 - l) / (q_1.qd0 * q_1.qd1);
-  q_1.qc = l * (l + q_1.qd0) / (q_1.qd1 * (q_1.qd0 + q_1.qd1));
-  goto L3;
-L2:
-  global_1.fx = q_1.qf1;
-  q_1.qa = 0.;
-  q_1.qb = q_1.qa;
-  q_1.qc = 1.;
-L3:
-  q_1.qd0 = q_1.qd1;
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      s = q_1.q0[i__ - 1];
-      q_1.q0[i__ - 1] = x[i__];
-      /* L4: */
-      x[i__] = q_1.qa * s + q_1.qb * x[i__] + q_1.qc * q_1.q1[i__ - 1];
-    }
-
-  return 0;
-} /* quad_ */
-
-/* Subroutine */ int vcprnt_(C_INT *option, C_FLOAT64 *v, C_INT *n)
-{
-  /* System generated locals */
-  C_INT i__1;
-
-  /* Local variables */
-  C_INT i;
-
-  /* Parameter adjustments */
-  --v;
-
-  /* Function Body */
-  switch ((int)*option)
-    {
-      case 1: goto L1;
-
-      case 2: goto L2;
-
-      case 3: goto L3;
-
-      case 4: goto L4;
-    }
-
-L1:
-  printf("THE SECOND DIFFERENCE ARRAY D[*] IS :\n");
-  i__1 = *n;
-
-  for (i = 1; i <= i__1; ++i)
-    {
-      printf("%g\n", v[i]);
-    }
-
-  return 0;
-L2:
-  printf("THE SCALE FACTORS ARE:\n");
-  i__1 = *n;
-
-  for (i = 1; i <= i__1; ++i)
-    {
-      printf("%g\n", v[i]);
-    }
-
-  return 0;
-L3:
-  printf("THE APPROXIMATING QUADRATIC FORM HAS THE PRINCEPAL VALUES:\n");
-  i__1 = *n;
-
-  for (i = 1; i <= i__1; ++i)
-    {
-      printf("%g\n", v[i]);
-    }
-
-  return 0;
-L4:
-  printf("x is:\n");
-  i__1 = *n;
-
-  for (i = 1; i <= i__1; ++i)
-    {
-      printf("%g\n", v[i]);
-    }
-
-  return 0;
-} /* vcprnt_ */
-
-/* Subroutine */ int CPraxis::print_(C_INT * /* n */, C_FLOAT64 * /* x */, C_INT * /* prin */,
-                                     C_FLOAT64 * /* fmin */)
-{
-#ifdef XXXX
-  /* System generated locals */
-  C_INT i__1;
-  C_FLOAT64 d__1;
-
-  /* Local variables */
-  C_INT i;
-  C_FLOAT64 ln = 0.0;
-
-  /* Parameter adjustments */
-  --x;
-
-  /* Function Body */
-  printf("AFTER ");
-  printf("%d", global_1.nl);
-  printf(" LINEAR SEARCHES, THE FUNCTION HAS BEEN EVALUATED ");
-  printf("%d TIMES.\n", global_1.nf);
-  printf("THE SMALLEST VALUE FOUND IS F(X) = ");
-  printf("%g\n", global_1.fx);
-
-  if (global_1.fx <= *fmin)
-    {
-      goto L1;
-    }
-
-  d__1 = global_1.fx - *fmin;
-  //   ln = d_lg10(&d__1);
-  printf("log (f(x)) - ");
-  printf("%g", *fmin);
-  printf(" = ");
-  printf("%g\n", ln);
-  goto L2;
-L1:
-  printf("LOG (F(x)) -- ");
-  printf("%g", *fmin);
-  printf(" IS UNDERFINED\n");
-L2:
-
-  if (*n > 4 && *prin <= 2)
-    {
-      return 0;
-    }
-
-  i__1 = *n;
-
-  for (i = 1; i <= i__1; ++i)
-    {
-      printf("x is:");
-      printf("%g\n", x[i]);
-    }
-
-#endif // XXXX
-
-  return 0;
-} /* print_ */
-
-/* Subroutine */ int maprnt_(C_INT * /* option */, C_FLOAT64 * /* v */, C_INT * /* m */,
-                             C_INT * /* n */)
-{
-#ifdef XXXX
-  /* System generated locals */
-  C_INT v_dim1, v_offset, i__1, i__2;
-
-  /* Local variables */
-  C_INT i, j, low, upp;
-
-  /* ...THE SUBROUTINE MAPRNT PRINTS THE COLUMNS OF THE NXN MATRIX V */
-  /*   WITH A HEADING AS SPECIFIED BY OPTION. */
-  /*   M IS THE ROW DIMENSION OF V AS DECLARED IN THE CALLING PROGRAM... */
-  /* Parameter adjustments */
-  v_dim1 = *m;
-  v_offset = v_dim1 + 1;
-  v -= v_offset;
-
-  /* Function Body */
-  low = 1;
-  upp = 5;
-
-  switch ((int)*option)
-    {
-      case 1: goto L1;
-
-      case 2: goto L2;
-    }
-
-L1:
-  printf("HE NEW DIRECTIONS ARE:\n");
-  goto L3;
-L2:
-  printf("AND THE PRINCIPAL AXES:\n");
-L3:
-
-  if (*n < upp)
-    {
-      upp = *n;
-    }
-
-  i__1 = *n;
-
-  for (i = 1; i <= i__1; ++i)
-    {
-      /* L4: */
-      printf("%3d", i);
-      i__2 = upp;
-
-      for (j = low; j <= i__2; ++j)
+      for (j = 0; j < n; j++)
         {
-          printf("  %12g", v[i * v_dim1 + j]);
+          for (i = 0; i < n; i++)
+            {
+              v[i + j * n] = (d[j] / dn) * v[i + j * n];
+            }
         }
 
-      printf("\n");
+      //
+      //  Scale the axes to try to reduce the condition number.
+      //
+      if (1.0 < scbd)
+        {
+          for (i = 0; i < n; i++)
+            {
+              s = 0.0;
+
+              for (j = 0; j < n; j++)
+                {
+                  s = s + v[i + j * n] * v[i + j * n];
+                }
+
+              s = sqrt(s);
+              z[i] = fmax(m4, s);
+            }
+
+          s = r8vec_min(n, z);
+
+          for (i = 0; i < n; i++)
+            {
+              sl = s / z[i];
+              z[i] = 1.0 / sl;
+
+              if (scbd < z[i])
+                {
+                  sl = 1.0 / scbd;
+                  z[i] = scbd;
+                }
+
+              for (j = 0; j < n; j++)
+                {
+                  v[i + j * n] = sl * v[i + j * n];
+                }
+            }
+        }
+
+      //
+      //  Calculate a new set of orthogonal directions before repeating
+      //  the main loop.
+      //
+      //  Transpose V for MINFIT:
+      //
+      r8mat_transpose_in_place(n, v);
+      //
+      //  MINFIT finds the singular value decomposition of V.
+      //
+      //  This gives the principal values and principal directions of the
+      //  approximating quadratic form without squaring the condition number.
+      //
+      minfit(n, vsmall, v, d);
+
+      //
+      //  Unscale the axes.
+      //
+      if (1.0 < scbd)
+        {
+          for (i = 0; i < n; i++)
+            {
+              for (j = 0; j < n; j++)
+                {
+                  v[i + j * n] = z[i] * v[i + j * n];
+                }
+            }
+
+          for (j = 0; j < n; j++)
+            {
+              s = 0.0;
+
+              for (i = 0; i < n; i++)
+                {
+                  s = s + v[i + j * n] * v[i + j * n];
+                }
+
+              s = sqrt(s);
+
+              d[j] = s * d[j];
+
+              for (i = 0; i < n; i++)
+                {
+                  v[i + j * n] = v[i + j * n] / s;
+                }
+            }
+        }
+
+      for (i = 0; i < n; i++)
+        {
+          dni = dn * d[i];
+
+          if (large < dni)
+            {
+              d[i] = vsmall;
+            }
+          else if (dni < small)
+            {
+              d[i] = vlarge;
+            }
+          else
+            {
+              d[i] = 1.0 / dni / dni;
+            }
+        }
+
+      //
+      //  Sort the eigenvalues and eigenvectors.
+      //
+      svsort(n, d, v);
+      //
+      //  Determine the smallest eigenvalue.
+      //
+      dmin = fmax(d[n - 1], small);
+
+      //
+      //  The ratio of the smallest to largest eigenvalue determines whether
+      //  the system is ill conditioned.
+      //
+      if (dmin < m2 * d[0])
+        {
+          illc = true;
+        }
+      else
+        {
+          illc = false;
+        }
+
+      if (1 < prin)
+        {
+          if (1.0 < scbd)
+            {
+              r8vec_prC_INT32(n, z, "  The scale factors:");
+            }
+
+          r8vec_prC_INT32(n, d, "  Principal values of the quadratic form:");
+        }
+
+      if (3 < prin)
+        {
+          r8mat_prC_INT32(n, n, v, "  The principal axes:");
+        }
+
+      //
+      //  The main loop ends here.
+      //
     }
 
-  low += 5;
-
-  if (*n < low)
+  if (0 < prin)
     {
-      return 0;
+      r8vec_prC_INT32(n, x, "  X:");
     }
 
-  upp += 5;
-  goto L3;
+  //
+  //  Free memory.
+  //
+  delete[] d;
+  delete[] q0;
+  delete[] q1;
+  delete[] v;
+  delete[] y;
+  delete[] z;
 
-#endif // XXXX
+  return fx;
+}
+//****************************************************************************80
 
-  return 0;
-} /* maprnt_ */
+void CPraxis::prC_INT322(C_INT32 n, C_FLOAT64 x[], C_INT32 prin, C_FLOAT64 fx, C_INT32 nf, C_INT32 nl)
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    PRINT2 prC_INT32s certain data about the progress of the iteration.
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    04 August 2016
+//
+//  Author:
+//
+//    Original FORTRAN77 version by Richard Brent.
+//    C++ version by John Burkardt.
+//
+//  Reference:
+//
+//    Richard Brent,
+//    Algorithms for Minimization with Derivatives,
+//    Prentice Hall, 1973,
+//    ReprC_INT32ed by Dover, 2002.
+//
+//  Parameters:
+//
+//    Input, C_INT32 N, the number of variables.
+//
+//    Input, C_FLOAT64 X[N], the current estimate of the minimizer.
+//
+//    Input, C_INT32 PRIN, the user-specifed prC_INT32 level.
+//    0, nothing is prC_INT32ed.
+//    1, F is prC_INT32ed after every n+1 or n+2 linear minimizations.
+//       final X is prC_INT32ed, but C_INT32ermediate X is prC_INT32ed only
+//       if N is at most 4.
+//    2, the scale factors and the principal values of the approximating
+//       quadratic form are also prC_INT32ed.
+//    3, X is also prC_INT32ed after every few linear minimizations.
+//    4, the principal vectors of the approximating quadratic form are
+//       also prC_INT32ed.
+//
+//    Input, C_FLOAT64 FX, the smallest value of F(X) found so far.
+//
+//    Input, C_INT32 NF, the number of function evaluations.
+//
+//    Input, C_INT32 NL, the number of linear searches.
+//
+{
+  std::cout << "\n";
+  std::cout << "  Linear searches = " << nl << "\n";
+  std::cout << "  Function evaluations " << nf << "\n";
+  std::cout << "  Function value FX = " << fx << "\n";
+
+  if (n <= 4 || 2 < prin)
+    {
+      r8vec_prC_INT32(n, x, "  X:");
+    }
+
+  return;
+}
+//****************************************************************************80
+
+void CPraxis::quad(C_INT32 n, FPraxis * f, C_FLOAT64 x[], C_FLOAT64 t, C_FLOAT64 h, C_FLOAT64 v[], C_FLOAT64 q0[], C_FLOAT64 q1[], C_INT32 & nl, C_INT32 & nf, C_FLOAT64 dmin, C_FLOAT64 ldt, C_FLOAT64 & fx, C_FLOAT64 & qf1, C_FLOAT64 & qa, C_FLOAT64 & qb, C_FLOAT64 & qc, C_FLOAT64 & qd0, C_FLOAT64 & qd1)
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    QUAD seeks to minimize the scalar function F along a particular curve.
+//
+//  Discussion:
+//
+//    The minimizer to be sought is required to lie on a curve defined
+//    by Q0, Q1 and X.
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    04 August 2016
+//
+//  Author:
+//
+//    Original FORTRAN77 version by Richard Brent.
+//    C++ version by John Burkardt.
+//
+//  Reference:
+//
+//    Richard Brent,
+//    Algorithms for Minimization with Derivatives,
+//    Prentice Hall, 1973,
+//    ReprC_INT32ed by Dover, 2002.
+//
+//  Parameters:
+//
+//    Input, C_INT32 N, the number of variables.
+//
+//    Input, C_FLOAT64 F (C_FLOAT64 X[], C_INT32 N ), the name of the function to
+//    be minimized.
+//
+//    Input/output, C_FLOAT64 X[N], ?
+//
+//    Input, C_FLOAT64 T, ?
+//
+//    Input, C_FLOAT64 H, ?
+//
+//    Input, C_FLOAT64 V[N,N], the matrix of search directions.
+//
+//    Input/output, C_FLOAT64 Q0[N], Q1[N], two auxiliary poC_INT32s used to define
+//    a curve through X.
+//
+//    Input/output, C_INT32 &NL, the number of linear searches.
+//
+//    Input/output, C_INT32 &NF, the number of function evaluations.
+//
+//    Input, C_FLOAT64 DMIN, an estimate for the smallest eigenvalue.
+//
+//    Input, C_FLOAT64 LDT, the length of the step.
+//
+//    Input/output, C_FLOAT64 &FX, the value of F(X,N).
+//
+//    Input/output, C_FLOAT64 &QF1, &QA, &QB, &QC, &QD0, &QD1 ?
+//
+{
+  bool fk;
+  C_INT32 i;
+  C_INT32 jsearch;
+  C_FLOAT64 l;
+  C_INT32 nits;
+  C_FLOAT64 s;
+  C_FLOAT64 temp;
+  C_FLOAT64 value;
+
+  temp = fx;
+  fx = qf1;
+  qf1 = temp;
+
+  for (i = 0; i < n; i++)
+    {
+      temp = x[i];
+      x[i] = q1[i];
+      q1[i] = temp;
+    }
+
+  qd1 = 0.0;
+
+  for (i = 0; i < n; i++)
+    {
+      qd1 = qd1 + (x[i] - q1[i]) * (x[i] - q1[i]);
+    }
+
+  qd1 = sqrt(qd1);
+
+  if (qd0 <= 0.0 || qd1 <= 0.0 || nl < 3 * n * n)
+    {
+      fx = qf1;
+      qa = 0.0;
+      qb = 0.0;
+      qc = 1.0;
+      s = 0.0;
+    }
+  else
+    {
+      jsearch = -1;
+      nits = 2;
+      s = 0.0;
+      l = qd1;
+      value = qf1;
+      fk = true;
+
+      minny(n, jsearch, nits, s, l, value, fk, f, x, t,
+            h, v, q0, q1, nl, nf, dmin, ldt, fx, qa, qb, qc, qd0, qd1);
+
+      qa = l * (l - qd1) / (qd0 + qd1) / qd0;
+      qb = -(l + qd0) * (l - qd1) / qd1 / qd0;
+      qc = (l + qd0) * l / qd1 / (qd0 + qd1);
+    }
+
+  qd0 = qd1;
+
+  for (i = 0; i < n; i++)
+    {
+      s = q0[i];
+      q0[i] = x[i];
+      x[i] = qa * s + qb * x[i] + qc * q1[i];
+    }
+
+  return;
+}
+//****************************************************************************80
+
+C_FLOAT64 CPraxis::r8_hypot(C_FLOAT64 x, C_FLOAT64 y)
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    R8_HYPOT returns the value of sqrt (X^2 + Y^2 ).
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    26 March 2012
+//
+//  Author:
+//
+//    John Burkardt
+//
+//  Parameters:
+//
+//    Input, C_FLOAT64 X, Y, the arguments.
+//
+//    Output, C_FLOAT64 R8_HYPOT, the value of sqrt (X^2 + Y^2 ).
+//
+{
+  C_FLOAT64 a;
+  C_FLOAT64 b;
+  C_FLOAT64 value;
+
+  if (fabs(x) < fabs(y))
+    {
+      a = fabs(y);
+      b = fabs(x);
+    }
+  else
+    {
+      a = fabs(x);
+      b = fabs(y);
+    }
+
+  //
+  //  A contains the larger value.
+  //
+  if (a == 0.0)
+    {
+      value = 0.0;
+    }
+  else
+    {
+      value = a * sqrt(1.0 + (b / a) * (b / a));
+    }
+
+  return value;
+}
+//****************************************************************************80
+
+C_FLOAT64 CPraxis::r8_uniform_01(C_INT32 & seed)
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    R8_UNIFORM_01 returns a unit pseudorandom R8.
+//
+//  Discussion:
+//
+//    This routine implements the recursion
+//
+//      seed = (16807 * seed ) mod (2^31 - 1)
+//      u = seed / (2^31 - 1)
+//
+//    The C_INT32eger arithmetic never requires more than 32 bits,
+//    including a sign bit.
+//
+//    If the initial seed is 12345, then the first three computations are
+//
+//      Input     Output      R8_UNIFORM_01
+//      SEED      SEED
+//
+//         12345   207482415  0.096616
+//     207482415  1790989824  0.833995
+//    1790989824  2035175616  0.947702
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    09 April 2012
+//
+//  Author:
+//
+//    John Burkardt
+//
+//  Reference:
+//
+//    Paul Bratley, Bennett Fox, Linus Schrage,
+//    A Guide to Simulation,
+//    Second Edition,
+//    Springer, 1987,
+//    ISBN: 0387964673,
+//    LC: QA76.9.C65.B73.
+//
+//    Bennett Fox,
+//    Algorithm 647:
+//    Implementation and Relative Efficiency of Quasirandom
+//    Sequence Generators,
+//    ACM Transactions on Mathematical Software,
+//    Volume 12, Number 4, December 1986, pages 362-376.
+//
+//    Pierre L'Ecuyer,
+//    Random Number Generation,
+//    in Handbook of Simulation,
+//    edited by Jerry Banks,
+//    Wiley, 1998,
+//    ISBN: 0471134031,
+//    LC: T57.62.H37.
+//
+//    Peter Lewis, Allen Goodman, James Miller,
+//    A Pseudo-Random Number Generator for the System/360,
+//    IBM Systems Journal,
+//    Volume 8, Number 2, 1969, pages 136-143.
+//
+//  Parameters:
+//
+//    Input/output, C_INT32 &SEED, the "seed" value.  Normally, this
+//    value should not be 0.  On output, SEED has been updated.
+//
+//    Output, C_FLOAT64 R8_UNIFORM_01, a new pseudorandom variate,
+//    strictly between 0 and 1.
+//
+{
+  const C_INT32 i4_huge = 2147483647;
+  C_INT32 k;
+  C_FLOAT64 r;
+
+  if (seed == 0)
+    {
+      std::cerr << "\n";
+      std::cerr << "R8_UNIFORM_01 - Fatal error!\n";
+      std::cerr << "  Input value of SEED = 0.\n";
+      exit(1);
+    }
+
+  k = seed / 127773;
+
+  seed = 16807 * (seed - k * 127773) - k * 2836;
+
+  if (seed < 0)
+    {
+      seed = seed + i4_huge;
+    }
+
+  r = (C_FLOAT64)(seed) * 4.656612875E-10;
+
+  return r;
+}
+//****************************************************************************80
+
+void CPraxis::r8mat_prC_INT32(C_INT32 m, C_INT32 n, C_FLOAT64 a[], std::string title)
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    R8MAT_PRINT prC_INT32s an R8MAT.
+//
+//  Discussion:
+//
+//    An R8MAT is a doubly dimensioned array of R8 values, stored as a vector
+//    in column-major order.
+//
+//    Entry A(I,J) is stored as A[I+J*M]
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    10 September 2009
+//
+//  Author:
+//
+//    John Burkardt
+//
+//  Parameters:
+//
+//    Input, C_INT32 M, the number of rows in A.
+//
+//    Input, C_INT32 N, the number of columns in A.
+//
+//    Input, C_FLOAT64 A[M*N], the M by N matrix.
+//
+//    Input, std::string TITLE, a title.
+//
+{
+  r8mat_prC_INT32_some(m, n, a, 1, 1, m, n, title);
+
+  return;
+}
+//****************************************************************************80
+
+void CPraxis::r8mat_prC_INT32_some(C_INT32 m, C_INT32 n, C_FLOAT64 a[], C_INT32 ilo, C_INT32 jlo, C_INT32 ihi, C_INT32 jhi, std::string title)
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    R8MAT_PRINT_SOME prC_INT32s some of an R8MAT.
+//
+//  Discussion:
+//
+//    An R8MAT is a doubly dimensioned array of R8 values, stored as a vector
+//    in column-major order.
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    26 June 2013
+//
+//  Author:
+//
+//    John Burkardt
+//
+//  Parameters:
+//
+//    Input, C_INT32 M, the number of rows of the matrix.
+//    M must be positive.
+//
+//    Input, C_INT32 N, the number of columns of the matrix.
+//    N must be positive.
+//
+//    Input, C_FLOAT64 A[M*N], the matrix.
+//
+//    Input, C_INT32 ILO, JLO, IHI, JHI, designate the first row and
+//    column, and the last row and column to be prC_INT32ed.
+//
+//    Input, std::string TITLE, a title.
+//
+{
+#define INCX 5
+
+  C_INT32 i;
+  C_INT32 i2hi;
+  C_INT32 i2lo;
+  C_INT32 j;
+  C_INT32 j2hi;
+  C_INT32 j2lo;
+
+  std::cout << "\n";
+  std::cout << title << "\n";
+
+  if (m <= 0 || n <= 0)
+    {
+      std::cout << "\n";
+      std::cout << "  (None)\n";
+      return;
+    }
+
+  //
+  //  PrC_INT32 the columns of the matrix, in strips of 5.
+  //
+  for (j2lo = jlo; j2lo <= jhi; j2lo = j2lo + INCX)
+    {
+      j2hi = j2lo + INCX - 1;
+
+      if (n < j2hi)
+        {
+          j2hi = n;
+        }
+
+      if (jhi < j2hi)
+        {
+          j2hi = jhi;
+        }
+
+      std::cout << "\n";
+      //
+      //  For each column J in the current range...
+      //
+      //  Write the header.
+      //
+      std::cout << "  Col:    ";
+
+      for (j = j2lo; j <= j2hi; j++)
+        {
+          std::cout << std::setw(7) << j - 1 << "       ";
+        }
+
+      std::cout << "\n";
+      std::cout << "  Row\n";
+      std::cout << "\n";
+
+      //
+      //  Determine the range of the rows in this strip.
+      //
+      if (1 < ilo)
+        {
+          i2lo = ilo;
+        }
+      else
+        {
+          i2lo = 1;
+        }
+
+      if (ihi < m)
+        {
+          i2hi = ihi;
+        }
+      else
+        {
+          i2hi = m;
+        }
+
+      for (i = i2lo; i <= i2hi; i++)
+        {
+          //
+          //  PrC_INT32 out (up to) 5 entries in row I, that lie in the current strip.
+          //
+          std::cout << std::setw(5) << i - 1 << ": ";
+
+          for (j = j2lo; j <= j2hi; j++)
+            {
+              std::cout << std::setw(12) << a[i - 1 + (j - 1) * m] << "  ";
+            }
+
+          std::cout << "\n";
+        }
+    }
+
+  return;
+#undef INCX
+}
+//****************************************************************************80
+
+void CPraxis::r8mat_transpose_in_place(C_INT32 n, C_FLOAT64 a[])
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    R8MAT_TRANSPOSE_IN_PLACE transposes a square R8MAT in place.
+//
+//  Discussion:
+//
+//    An R8MAT is a doubly dimensioned array of R8 values, stored as a vector
+//    in column-major order.
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    26 June 2008
+//
+//  Author:
+//
+//    John Burkardt
+//
+//  Parameters:
+//
+//    Input, C_INT32 N, the number of rows and columns of the matrix A.
+//
+//    Input/output, C_FLOAT64 A[N*N], the matrix to be transposed.
+//
+{
+  C_INT32 i;
+  C_INT32 j;
+  C_FLOAT64 t;
+
+  for (j = 0; j < n; j++)
+    {
+      for (i = 0; i < j; i++)
+        {
+          t = a[i + j * n];
+          a[i + j * n] = a[j + i * n];
+          a[j + i * n] = t;
+        }
+    }
+
+  return;
+}
+//****************************************************************************80
+
+void CPraxis::r8vec_copy(C_INT32 n, C_FLOAT64 a1[], C_FLOAT64 a2[])
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    R8VEC_COPY copies an R8VEC.
+//
+//  Discussion:
+//
+//    An R8VEC is a vector of R8's.
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    03 July 2005
+//
+//  Author:
+//
+//    John Burkardt
+//
+//  Parameters:
+//
+//    Input, C_INT32 N, the number of entries in the vectors.
+//
+//    Input, C_FLOAT64 A1[N], the vector to be copied.
+//
+//    Output, C_FLOAT64 A2[N], the copy of A1.
+//
+{
+  C_INT32 i;
+
+  for (i = 0; i < n; i++)
+    {
+      a2[i] = a1[i];
+    }
+
+  return;
+}
+//****************************************************************************80
+
+C_FLOAT64 CPraxis::r8vec_max(C_INT32 n, C_FLOAT64 r8vec[])
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    R8VEC_MAX returns the value of the maximum element in an R8VEC.
+//
+//  Discussion:
+//
+//    An R8VEC is a vector of R8's.
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    22 August 2010
+//
+//  Author:
+//
+//    John Burkardt
+//
+//  Parameters:
+//
+//    Input, C_INT32 N, the number of entries in the array.
+//
+//    Input, C_FLOAT64 R8VEC[N], a poC_INT32er to the first entry of the array.
+//
+//    Output, C_FLOAT64 R8VEC_MAX, the value of the maximum element.  This
+//    is set to 0.0 if N <= 0.
+//
+{
+  C_INT32 i;
+  C_FLOAT64 value;
+
+  value = r8vec[0];
+
+  for (i = 1; i < n; i++)
+    {
+      if (value < r8vec[i])
+        {
+          value = r8vec[i];
+        }
+    }
+
+  return value;
+}
+//****************************************************************************80
+
+C_FLOAT64 CPraxis::r8vec_min(C_INT32 n, C_FLOAT64 r8vec[])
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    R8VEC_MIN returns the value of the minimum element in an R8VEC.
+//
+//  Discussion:
+//
+//    An R8VEC is a vector of R8's.
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    02 July 2005
+//
+//  Author:
+//
+//    John Burkardt
+//
+//  Parameters:
+//
+//    Input, C_INT32 N, the number of entries in the array.
+//
+//    Input, C_FLOAT64 R8VEC[N], the array to be checked.
+//
+//    Output, C_FLOAT64 R8VEC_MIN, the value of the minimum element.
+//
+{
+  C_INT32 i;
+  C_FLOAT64 value;
+
+  value = r8vec[0];
+
+  for (i = 1; i < n; i++)
+    {
+      if (r8vec[i] < value)
+        {
+          value = r8vec[i];
+        }
+    }
+
+  return value;
+}
+//****************************************************************************80
+
+C_FLOAT64 CPraxis::r8vec_norm(C_INT32 n, C_FLOAT64 a[])
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    R8VEC_NORM returns the L2 norm of an R8VEC.
+//
+//  Discussion:
+//
+//    An R8VEC is a vector of R8's.
+//
+//    The vector L2 norm is defined as:
+//
+//      R8VEC_NORM = sqrt (sum (1 <= I <= N ) A(I)^2 ).
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    01 March 2003
+//
+//  Author:
+//
+//    John Burkardt
+//
+//  Parameters:
+//
+//    Input, C_INT32 N, the number of entries in A.
+//
+//    Input, C_FLOAT64 A[N], the vector whose L2 norm is desired.
+//
+//    Output, C_FLOAT64 R8VEC_NORM, the L2 norm of A.
+//
+{
+  C_INT32 i;
+  C_FLOAT64 v;
+
+  v = 0.0;
+
+  for (i = 0; i < n; i++)
+    {
+      v = v + a[i] * a[i];
+    }
+
+  v = sqrt(v);
+
+  return v;
+}
+//****************************************************************************80
+
+void CPraxis::r8vec_prC_INT32(C_INT32 n, C_FLOAT64 a[], std::string title)
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    R8VEC_PRINT prC_INT32s an R8VEC.
+//
+//  Discussion:
+//
+//    An R8VEC is a vector of R8's.
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    16 August 2004
+//
+//  Author:
+//
+//    John Burkardt
+//
+//  Parameters:
+//
+//    Input, C_INT32 N, the number of components of the vector.
+//
+//    Input, C_FLOAT64 A[N], the vector to be prC_INT32ed.
+//
+//    Input, std::string TITLE, a title.
+//
+{
+  C_INT32 i;
+
+  std::cout << "\n";
+  std::cout << title << "\n";
+  std::cout << "\n";
+
+  for (i = 0; i < n; i++)
+    {
+      std::cout << "  " << std::setw(8) << i
+                << ": " << std::setw(14) << a[i] << "\n";
+    }
+
+  return;
+}
+//****************************************************************************80
+
+void CPraxis::svsort(C_INT32 n, C_FLOAT64 d[], C_FLOAT64 v[])
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    SVSORT descending sorts D and adjusts the corresponding columns of V.
+//
+//  Discussion:
+//
+//    A simple bubble sort is used on D.
+//
+//    In our application, D contains singular values, and the columns of V are
+//    the corresponding right singular vectors.
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    04 August 2016
+//
+//  Author:
+//
+//    Original FORTRAN77 version by Richard Brent.
+//    C++ version by John Burkardt.
+//
+//  Reference:
+//
+//    Richard Brent,
+//    Algorithms for Minimization with Derivatives,
+//    Prentice Hall, 1973,
+//    ReprC_INT32ed by Dover, 2002.
+//
+//  Parameters:
+//
+//    Input, C_INT32 N, the length of D, and the order of V.
+//
+//    Input/output, C_FLOAT64 D[N], the vector to be sorted.
+//    On output, the entries of D are in descending order.
+//
+//    Input/output, C_FLOAT64 V[N,N], an N by N array to be adjusted
+//    as D is sorted.  In particular, if the value that was in D(I) on input is
+//    moved to D(J) on output, then the input column V(*,I) is moved to
+//    the output column V(*,J).
+//
+{
+  C_INT32 i;
+  C_INT32 j1;
+  C_INT32 j2;
+  C_INT32 j3;
+  C_FLOAT64 t;
+
+  for (j1 = 0; j1 < n - 1; j1++)
+    {
+      //
+      //  Find J3, the index of the largest entry in D[J1:N-1].
+      //  MAXLOC apparently requires its output to be an array.
+      //
+      j3 = j1;
+
+      for (j2 = j1 + 1; j2 < n; j2++)
+        {
+          if (d[j3] < d[j2])
+            {
+              j3 = j2;
+            }
+        }
+
+      //
+      //  If J1 != J3, swap D[J1] and D[J3], and columns J1 and J3 of V.
+      //
+      if (j1 != j3)
+        {
+          t = d[j1];
+          d[j1] = d[j3];
+          d[j3] = t;
+
+          for (i = 0; i < n; i++)
+            {
+              t = v[i + j1 * n];
+              v[i + j1 * n] = v[i + j3 * n];
+              v[i + j3 * n] = t;
+            }
+        }
+    }
+
+  return;
+}
+//****************************************************************************80
+
+void timestamp()
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    TIMESTAMP prC_INT32s the current YMDHMS date as a time stamp.
+//
+//  Example:
+//
+//    31 May 2001 09:45:54 AM
+//
+//  Licensing:
+//
+//    This code is distributed under the GNU LGPL license.
+//
+//  Modified:
+//
+//    08 July 2009
+//
+//  Author:
+//
+//    John Burkardt
+//
+//  Parameters:
+//
+//    None
+//
+{
+#define TIME_SIZE 40
+
+  static char time_buffer[TIME_SIZE];
+  const struct std::tm * tm_ptr;
+  std::time_t now;
+
+  now = std::time(NULL);
+  tm_ptr = std::localtime(&now);
+
+  std::strftime(time_buffer, TIME_SIZE, "%d %B %Y %I:%M:%S %p", tm_ptr);
+
+  std::cout << time_buffer << "\n";
+
+  return;
+#undef TIME_SIZE
+}

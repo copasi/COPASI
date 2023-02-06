@@ -122,4 +122,8 @@ git push
 ```
 
 #### Tagging snapshots
-In order to tag a 
+In order to tag the latest commit in the current branch as a snapshot execute:
+```
+gitTools/UpdateCopasiVersion --registerBuild
+```
+The above command will automatically select the next tag of the format: `Build-N` and push the tag to the upstream repository.

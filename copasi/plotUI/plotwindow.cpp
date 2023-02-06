@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -30,6 +30,8 @@
 #include <QPicture>
 #include <QPrintDialog>
 #include <QMenuBar>
+
+#include <copasi/UI/listviews.h>
 
 #include "plotwindow.h"
 
@@ -133,6 +135,9 @@ void PlotWindow::createMenus()
   viewMenu->addAction(mpaToggleLogX);
   viewMenu->addAction(mpaToggleLogY);
   viewMenu->addSeparator();
+  viewMenu->addAction(mpaEditPlot);
+  viewMenu->addAction(mpaDeactivatePlot);
+  viewMenu->addSeparator();
   viewMenu->addAction(mpaZoomOut);
   // add a place holder menu, to be filled by the main window
   mpWindowMenu = menuBar()->addMenu("&Window");
@@ -181,8 +186,13 @@ void PlotWindow::createActions()
   mpaCloseWindow->setShortcut(Qt::CTRL + Qt::Key_W);
   connect(mpaCloseWindow, SIGNAL(triggered()), this, SLOT(slotCloseWindow()));
   mpaDeactivatePlot = new QAction("Deactivate", this);
+  mpaDeactivatePlot->setToolTip("Disables / Enables the plot. When enabled it will automatically appear / update upon running the task.");
   mpaDeactivatePlot->setObjectName("deactivate");
   connect(mpaDeactivatePlot, SIGNAL(triggered()), this, SLOT(slotDeactivatePlot()));
+  mpaEditPlot = new QAction("Edit", this);
+  mpaEditPlot->setToolTip("Edits the plot specification");
+  mpaEditPlot->setObjectName("edit");
+  connect(mpaEditPlot, SIGNAL(triggered()), this, SLOT(slotEditPlot()));
 }
 
 void PlotWindow::createToolBar()
@@ -527,6 +537,19 @@ void PlotWindow::slotDeactivatePlot()
     {
       mpaDeactivatePlot->setText("Activate");
     }
+}
+
+void PlotWindow::slotEditPlot()
+{
+  if (mpPlot == NULL)
+    return;
+
+  CPlotSpecification * spec = const_cast< CPlotSpecification * >(mpPlot->getPlotSpecification());
+
+  if (spec == NULL)
+    return;
+
+  CopasiUI3Window::getMainWindow()->getMainWidget()->switchToOtherWidget(ListViews::WidgetType::NotFound, spec->getCN());
 }
 
 void PlotWindow::closeEvent(QCloseEvent *closeEvent)
