@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -326,10 +326,6 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
 
   return id;
 }
-
-#ifdef USE_SBMLUNIT
-# include "copasi/sbmlunit/CSBMLunitInterface.h"
-#endif // USE_SBMLUNIT
 
 void
 CSBMLExporter::setHandler(CProcessReport * pProcessReport)
@@ -3338,62 +3334,6 @@ CSBMLExporter::exportModelToString(CDataModel& dataModel,
 
   if (!exportLayout(sbmlLevel, dataModel))
     return "";
-
-#ifdef USE_SBMLUNIT
-
-  if (this->mpSBMLDocument != NULL)
-    {
-      if (createProgressStepOrStop(13,
-                                   1,
-                                   "Infering units..."))
-        {
-          finishExport();
-          return "";
-        }
-
-      CSBMLunitInterface uif(this->mpSBMLDocument->getModel(), true);
-      uif.determineUnits();
-
-      // check if there were conflicts
-      if (uif.getStatistics().all[5] == 0)
-        {
-          // check if there are unresolved parameter units left
-          if ((uif.getStatistics().local[0] != 0 || uif.getStatistics().global[0] != 0) && uif.getStatistics().numbers[0] != 0)
-            {
-              // try with heuristics
-              CSBMLunitInterface uif2(this->mpSBMLDocument->getModel(), true);
-              uif2.setAssumeDimensionlessOne(true);
-              uif2.determineUnits();
-
-              // check again if there have been conflicts
-              if (uif2.getStatistics().all[5] == 0)
-                {
-                  // done use result from uif2
-                  // there were no conflicts, so we write the units that could be determined
-                  uif2.writeBackToModel();
-                  std::cerr << "undetermined: " << uif2.getStatistics().global[0] +  uif2.getStatistics().local[0] << std::endl;
-                }
-              else
-                {
-                  // TODO create appropriate warning
-                  std::cerr << "Warning. " << uif2.getStatistics().all[5] << " conflicts found." << std::endl;
-                }
-            }
-          else
-            {
-              // no conflicts, so we can write the parameters that could be determined to the model
-              uif.writeBackToModel();
-              std::cerr << "undetermined: " << uif.getStatistics().global[0] +  uif.getStatistics().local[0] << std::endl;
-            }
-        }
-      else
-        {
-          // TODO create a warning
-          std::cerr << "Warning. " << uif.getStatistics().all[5] << " conflicts found." << std::endl;
-        }
-    }
-
-#endif // USE_SBMLUNIT
 
   // export the model to a string
   if (this->mpSBMLDocument == NULL) return std::string();

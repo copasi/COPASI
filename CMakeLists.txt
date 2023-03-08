@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -590,9 +590,6 @@ if (ENABLE_CSHARP OR ENABLE_JAVA OR ENABLE_PYTHON OR ENABLE_PERL OR ENABLE_OCTAV
   
 endif ()
 
-option (ENABLE_USE_SBMLUNIT "Enables extended unit support." OFF)
-mark_as_advanced(ENABLE_USE_SBMLUNIT)
-
 option (ENABLE_TIME_SENS "Enables Time Sensitivities task in UI." ON)
 mark_as_advanced(ENABLE_TIME_SENS)
 
@@ -943,7 +940,6 @@ message(STATUS "-----------------------------------------------------------
 
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
    SBW integration          = ${ENABLE_SBW_INTEGRATION}
-   SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ON
    SEDML support            = ON
    Combine Archive support  = ON
