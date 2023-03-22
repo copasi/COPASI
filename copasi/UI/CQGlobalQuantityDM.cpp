@@ -358,7 +358,6 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex & 
       pObj->createUndoData(UndoData, CUndoData::Type::REMOVE);
       ListViews::addUndoMetaData(this, UndoData);
 
-
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
@@ -378,8 +377,8 @@ bool CQGlobalQuantityDM::removeRows(QModelIndexList rows, const QModelIndex& ind
   QModelIndexList::const_iterator i;
 
   for (i = rows.begin(); i != rows.end(); ++i)
-    if (i->isValid() && !isDefaultRow(*i) &&
-        &mpGlobalQuantities->operator[](i->row()) != NULL)
+    if (i->isValid()
+        && !isDefaultRow(*i))
       {
         ModelValues.append(&mpGlobalQuantities->operator[](i->row()));
       }

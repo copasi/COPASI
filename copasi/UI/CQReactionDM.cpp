@@ -322,8 +322,8 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex& index)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (i->isValid() && !isDefaultRow(*i) &&
-          &mpReactions->operator[](i->row()) != NULL)
+      if (i->isValid()
+          && !isDefaultRow(*i))
         Reactions.append(&mpReactions->operator[](i->row()));
     }
 

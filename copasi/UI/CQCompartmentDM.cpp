@@ -379,8 +379,8 @@ bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex& index)
   QModelIndexList::const_iterator i;
 
   for (i = rows.begin(); i != rows.end(); ++i)
-    if (i->isValid() && !isDefaultRow(*i) &&
-        &mpCompartments->operator[](i->row()) != NULL)
+    if (i->isValid()
+        && !isDefaultRow(*i))
       {
         Compartments.append(&mpCompartments->operator[](i->row()));
       }

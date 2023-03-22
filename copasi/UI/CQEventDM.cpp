@@ -315,8 +315,8 @@ bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex& index)
   QModelIndexList::const_iterator i;
 
   for (i = rows.begin(); i != rows.end(); ++i)
-    if (i->isValid() && !isDefaultRow(*i) &&
-        &mpEvents->operator[](i->row()) != NULL)
+    if (i->isValid()
+        && !isDefaultRow(*i))
       {
         Events.append(&mpEvents->operator[](i->row()));
       }

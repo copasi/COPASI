@@ -590,8 +590,8 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex & parent)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (i->isValid() && !isDefaultRow(*i) &&
-          &mpMetabolites->operator[](i->row()) != NULL)
+      if (i->isValid()
+          && !isDefaultRow(*i))
         Species.append(&mpMetabolites->operator[](i->row()));
     }
 
