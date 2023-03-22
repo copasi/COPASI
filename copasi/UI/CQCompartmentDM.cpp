@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -333,27 +333,32 @@ bool CQCompartmentDM::removeRows(int position, int rows, const QModelIndex & par
 
   beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
-  std::vector< const CCompartment * > ToBeDeleted;
+  std::vector< CCommonName > ToBeDeleted;
   ToBeDeleted.resize(rows);
 
-  std::vector< const CCompartment * >::iterator it = ToBeDeleted.begin();
-  std::vector< const CCompartment * >::iterator end = ToBeDeleted.end();
+  std::vector< CCommonName >::iterator it = ToBeDeleted.begin();
+  std::vector< CCommonName >::iterator end = ToBeDeleted.end();
 
   CDataVector< CCompartment >::const_iterator itRow = mpCompartments->begin() + position;
 
   for (; it != end; ++it, ++itRow)
     {
-      *it = &*itRow;
+      *it = itRow->getCN();
     }
 
   for (it = ToBeDeleted.begin(); it != end; ++it)
     {
-      CUndoData UndoData;
-      (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-      ListViews::addUndoMetaData(this, UndoData);
-
       if (mFetched > 0)
         --mFetched;
+
+      const CCompartment * pObj = dynamic_cast< const CCompartment * >(mpDataModel->getObject(*it));
+
+      if (!pObj)
+        continue;
+
+      CUndoData UndoData;
+      pObj->createUndoData(UndoData, CUndoData::Type::REMOVE);
+      ListViews::addUndoMetaData(this, UndoData);
 
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
