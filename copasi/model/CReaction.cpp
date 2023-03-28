@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -717,7 +717,7 @@ CFunction * CReaction::createFunctionFromExpression(const std::string & infix)
         continue;
 
       // Check whether we have compartment with that name
-      for (const CCompartment * pCompartment : mChemEq.getCompartments())
+for (const CCompartment * pCompartment : mChemEq.getCompartments())
         if (pCompartment->getObjectName() == "Name")
           {
             it->setUsage(CFunctionParameter::Role::VOLUME);
@@ -1712,7 +1712,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
 const CModel * CReaction::getFirstCModelOrDefault(std::map< const CDataObject *, SBase * > & copasi2sbmlmap)
 {
 
-  for (auto & pair : copasi2sbmlmap)
+for (auto & pair : copasi2sbmlmap)
     {
       const CModel * pModel = dynamic_cast<const CModel*>(pair.first->getObjectAncestor("Model"));
 
@@ -1866,12 +1866,13 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
         {
           if (SBMLImporter::areEqualFunctions(pExistingFunction, pTmpFunction))
             {
+
+              setFunction(pExistingFunction);
+
               // The functions and their signature are equal however the role of the variables
               // might not be defined for the existing function if this is the first time it is used
               mpFunction->setReversible(pTmpFunction->isReversible());
               mpFunction->getVariables() = pTmpFunction->getVariables();
-
-              setFunction(pExistingFunction);
 
               pdelete(pTmpFunction);
 
