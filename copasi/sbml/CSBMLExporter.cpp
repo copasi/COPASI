@@ -6961,7 +6961,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
         {
           if (pSBMLObject->setModelHistory(&modelHistory) != LIBSBML_OPERATION_SUCCESS)
             {
-#if LIBSBML_VERSION >= 50200
+#if LIBSBML_VERSION >= 52000
 
               // setting the history failed, probably since we have an incomplete object.
               // so instead we just set the dates
