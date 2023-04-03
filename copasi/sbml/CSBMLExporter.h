@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -95,9 +95,6 @@ protected:
   ListOfFunctionDefinitions mExportedFunctions;
   std::map<const FunctionDefinition*, const CDataObject*> mFunctionMap;
   std::map<const std::string, Parameter*> mInitialValueMap;
-  bool mHaveModelHistoryAuthorWarning;
-  bool mHaveModelHistoryCreationDateWarning;
-  bool mHaveModelHistoryModificationDateWarning;
   /**
    * the progress handler for the export
    */

@@ -3434,11 +3434,6 @@ CSBMLExporter::addInitialAssignmentsToModel(const CDataModel &dataModel)
 
 bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
 {
-  // reset warnings for missing entries in modelhistory
-  mHaveModelHistoryAuthorWarning = false;
-  mHaveModelHistoryCreationDateWarning = false;
-  mHaveModelHistoryModificationDateWarning = false;
-
   const SBMLDocument* pOldSBMLDocument = dataModel.getCurrentSBMLDocument();
   const CModel* pModel = dataModel.getModel();
 
@@ -6653,9 +6648,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             break;
 
-          // IS DESCRIBED BY is handled in the references below
-          //case bqbiol_isDescribedBy:
-          //    break;
+            // IS DESCRIBED BY is handled in the references below
+            //case bqbiol_isDescribedBy:
+            //    break;
           case CRDFPredicate::bqbiol_isEncodedBy:
           case CRDFPredicate::copasi_isEncodedBy:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -6692,7 +6687,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
 
-          // This qualifier is supported in libsbml 4.1
+            // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -6754,9 +6749,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setModelQualifierType(BQM_HAS_INSTANCE);
             break;
 
-          // IS DESCRIBED BY is handled in the references below
-          //case bqmodel_isDescribedBy:
-          //    break;
+            // IS DESCRIBED BY is handled in the references below
+            //case bqmodel_isDescribedBy:
+            //    break;
           default:
             // there are many qualifiers that start e.g. with copasi_ which are
             // not handled
@@ -6885,7 +6880,6 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
   const CModel* pModel = dynamic_cast<const CModel*>(pCOPASIObject);
 
   if ((pModel != NULL && this->mSBMLLevel < 3)
-      // actually this preprocessor directive is not really necessary, but better safe then sorry
       || this->mSBMLLevel > 2
      )
     {
@@ -6918,11 +6912,6 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
           modelHistory.addCreator(&modelCreator);
         }
 
-      if (modelHistory.getNumCreators() < 1 && !mHaveModelHistoryAuthorWarning)
-        {
-          mHaveModelHistoryAuthorWarning = true;
-          CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no author has been defined.");
-        }
 
       // now set the creation date
       std::string creationDateString = miriamInfo.getCreatedDT();
@@ -6934,87 +6923,64 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
           modified = true;
         }
 
-      if (!modelHistory.isSetCreatedDate() && !mHaveModelHistoryCreationDateWarning)
-        {
-          mHaveModelHistoryCreationDateWarning = true;
-          CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no creation date has been defined.");
-        }
-
-      // Since SBML can have only one modification time, and we can have several,
-      // we have to take the last one
       const CDataVector <CModification> & modifications = miriamInfo.getModifications();
       iMax = modifications.size();
 
-      if (iMax != 0)
+      for (i = 0; i < iMax; ++i)
         {
           modified = true;
-          const CModification* pModification = &modifications[0];
-          assert(pModification != NULL);
-          std::string lastDateString = pModification->getDate();
+          const CModification* pModification = &modifications[i];
 
-          for (i = 1; i < iMax; ++i)
-            {
-              pModification = &modifications[i];
-              assert(pModification != NULL);
-              std::string dateString = pModification->getDate();
+          if (!pModification)
+            continue;
 
-              // since the date string is in W3CDTF format, a normal string
-              // compare should be enough to find out which date is more recent
-              if (dateString > lastDateString)
-                {
-                  lastDateString = dateString;
-                }
-            }
+          std::string dateString = pModification->getDate();
 
-          Date modifiedDate(lastDateString);
-          modelHistory.setModifiedDate(&modifiedDate);
+          if (dateString.empty())
+            continue;
+
+          Date modifiedDate(dateString);
+          modelHistory.addModifiedDate(&modifiedDate);
         }
-      else if (modelHistory.isSetCreatedDate())
+
+      if (iMax == 0 && modelHistory.isSetCreatedDate())
         {
           // a model history is only valid if it has a modifiedData
           modelHistory.setModifiedDate(modelHistory.getCreatedDate());
         }
 
-      if (!modelHistory.isSetModifiedDate() && mHaveModelHistoryModificationDateWarning)
+      // make sure the element has a meta id
+      if (!pSBMLObject->isSetMetaId())
         {
-          mHaveModelHistoryModificationDateWarning = true;
-          CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no modification date has been defined.");
+          std::string metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI", true, "");
+          metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLObject));
+          pSBMLObject->setMetaId(metaId);
         }
 
-      if (this->mSBMLLevel > 2)
+      if (modified == true)
         {
-          // set the model history on the sbml object
-
-          // make sure the model has a meta id
-          if (!pSBMLObject->isSetMetaId())
+          if (pSBMLObject->setModelHistory(&modelHistory) != LIBSBML_OPERATION_SUCCESS)
             {
-              std::string metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI", true, "");
-              metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLObject));
-              pSBMLObject->setMetaId(metaId);
-            }
+#if LIBSBML_VERSION >= 50200
 
-          if (modified == true)
-            {
-              pSBMLObject->setModelHistory(&modelHistory);
-            }
-        }
-      else
-        {
-          // set the model history on the model
-          Model* pSBMLModel = dynamic_cast<Model*>(pSBMLObject);
-          assert(pSBMLModel != NULL);
+              // setting the history failed, probably since we have an incomplete object.
+              // so instead we just set the dates
+              if (modelHistory.isSetCreatedDate())
+                pSBMLObject->setCreatedDate(modelHistory.getCreatedDate());
 
-          // make sure the model has a meta id
-          if (!pSBMLModel->isSetMetaId())
-            {
-              std::string metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI", true, "");
-              metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLModel));
-              pSBMLModel->setMetaId(metaId);
-            }
+              // if we have already modified dates on the object remove, and add all current ones
+              if (pSBMLObject->isSetModifiedDate())
+                {
+                  List_freeItems(pSBMLObject->getModelHistory()->getListModifiedDates(), Date_free, Date_t);
+                }
 
-          if (modified == true)
-            {
-              pSBMLModel->setModelHistory(&modelHistory);
+              // then add all modified dates from current element
+              for (unsigned int i = 0; i < modelHistory.getNumModifiedDates(); ++i)
+                {
+                  pSBMLObject->addModifiedDate(modelHistory.getModifiedDate(i));
+                }
+
+#endif // LIBSBML_VERSION >= 50200
             }
         }
     }
