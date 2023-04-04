@@ -6968,11 +6968,8 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
               if (modelHistory.isSetCreatedDate())
                 pSBMLObject->setCreatedDate(modelHistory.getCreatedDate());
 
-              // if we have already modified dates on the object remove, and add all current ones
-              if (pSBMLObject->isSetModifiedDate())
-                {
-                  List_freeItems(pSBMLObject->getModelHistory()->getListModifiedDates(), Date_free, Date_t);
-                }
+              // if we have already modified dates on the object remove
+              pSBMLObject->unsetModifiedDates();
 
               // then add all modified dates from current element
               for (unsigned int i = 0; i < modelHistory.getNumModifiedDates(); ++i)
@@ -6980,7 +6977,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
                   pSBMLObject->addModifiedDate(modelHistory.getModifiedDate(i));
                 }
 
-#endif // LIBSBML_VERSION >= 50200
+#endif // LIBSBML_VERSION >= 52000
             }
         }
     }
