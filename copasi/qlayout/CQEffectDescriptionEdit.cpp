@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -65,6 +65,9 @@ void setColor(QLabel *widget, const QColor& color)
 
 void CQEffectDescriptionEdit::initFrom(const CQEffectDescription* other, bool multiple)
 {
+  if (other == NULL)
+    return;
+
   setColor(txtColorEnd, other->getEndColor());
   setColor(txtColorStart, other->getStartColor());
 
@@ -100,6 +103,9 @@ void CQEffectDescriptionEdit::initFrom(const CQEffectDescription* other, bool mu
 
 void CQEffectDescriptionEdit::saveTo(CQEffectDescription* other, bool multiple)
 {
+  if (other == NULL)
+    return;
+
   other->setStartColor(txtColorStart->palette().color(QPalette::Window));
   other->setEndColor(txtColorEnd->palette().color(QPalette::Window));
   other->setScaleStart(txtScaleStart->text().toDouble());
