@@ -1159,10 +1159,17 @@ void SEDMLImporter::assignReportDefinitions(CDataVectorN< CCopasiTask > * pTaskL
   if (pTaskList == NULL)
     pTaskList = mContent.pTaskList;
 
+  if (pTaskList->empty())
+    return;
+
   auto it = mReportMap.begin();
 
   for (; it != mReportMap.end(); ++it)
     {
+      // skip if the task is not in the task list
+      if (pTaskList->getIndex(it->second.first) == C_INVALID_INDEX)
+        continue;
+
       CReport * report = &pTaskList->operator[](it->second.first).getReport();
       report->setReportDefinition(it->first);
       report->setTarget(it->second.second);
@@ -1215,7 +1222,7 @@ void SEDMLImporter::importTask(
             range = convertSimpleFunctionalRange(dynamic_cast< SedFunctionalRange * >(range), repeat);
           }
 
-        if (range != NULL && range->getTypeCode() != SEDML_RANGE_FUNCTIONALRANGE)
+        if (range != NULL && range->getTypeCode() != SEDML_RANGE_UNIFORMRANGE && range->getTypeCode() != SEDML_RANGE_VECTORRANGE)
           {
             CCopasiMessage(CCopasiMessage::WARNING, "This version of COPASI only supports uniform ranges and value ranges.");
             return;
