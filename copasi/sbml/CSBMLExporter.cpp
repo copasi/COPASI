@@ -5851,7 +5851,7 @@ void CSBMLExporter::checkForPiecewiseFunctions(const CEvaluationNode& node, std:
  */
 void CSBMLExporter::removeUnusedObjects()
 {
-  if (this->mpSBMLDocument != NULL || this->mpSBMLDocument->getModel() == NULL)
+  if (this->mpSBMLDocument != NULL && this->mpSBMLDocument->getModel() != NULL)
     {
       // we need to reverse the COPASI2SBMLMap so that we can remove objects
       // from the map if we delete them
