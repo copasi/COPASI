@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1005,7 +1005,7 @@ SEDMLImporter::parseSEDML(const std::string & sedmlDocumentText,
 
           case LIBSEDML_SEV_FATAL:
 
-          // treat unknown as fatal
+            // treat unknown as fatal
           default:
 
             if (pSEDMLError->getErrorId() == 10804)
@@ -1209,13 +1209,13 @@ void SEDMLImporter::importTask(
         SedRepeatedTask * repeat = static_cast< SedRepeatedTask * >(task);
         SedRange * range = repeat->getRange(repeat->getRangeId());
 
-        if (range == NULL && range->getTypeCode() == SEDML_RANGE_FUNCTIONALRANGE)
+        if (range != NULL && range->getTypeCode() == SEDML_RANGE_FUNCTIONALRANGE)
           {
             // try to replace simple functional range
             range = convertSimpleFunctionalRange(dynamic_cast< SedFunctionalRange * >(range), repeat);
           }
 
-        if (range == NULL && range->getTypeCode() != SEDML_RANGE_FUNCTIONALRANGE)
+        if (range != NULL && range->getTypeCode() != SEDML_RANGE_FUNCTIONALRANGE)
           {
             CCopasiMessage(CCopasiMessage::WARNING, "This version of COPASI only supports uniform ranges and value ranges.");
             return;
@@ -1296,7 +1296,7 @@ void SEDMLImporter::importTask(
                     std::stringstream str;
                     std::vector< double > vals = vrange->getValues();
 
-                    for (double val : vals)
+for (double val : vals)
                       str << val << " ";
 
                     group->setValue< std::string >("Values", str.str());
@@ -1432,7 +1432,7 @@ SEDMLImporter::convertSimpleFunctionalRange(SedFunctionalRange * frange, SedRepe
               knownValues[p->getId()] = p->getValue();
             }
 
-          for (auto value : oldValues)
+for (auto value : oldValues)
             {
               knownValues[insideVRange->getId()] = value;
               newValues.push_back(SBMLTransforms::evaluateASTNode(frange->getMath(), knownValues));
