@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -40,12 +40,16 @@ if (NOT ${LIBCOMBINE_LIBRARY_NAME}_FOUND)
   find_package(${LIBCOMBINE_LIBRARY_NAME} CONFIG QUIET
   CONFIGS ${LIBCOMBINE_LIBRARY_NAME}-config.cmake
   PATHS $ENV{LIBCOMBINE_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
+        $ENV{LIBCOMBINE_DIR}/lib/cmake
         ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/lib64/cmake
         /usr/${CMAKE_INSTALL_LIBDIR}/cmake
         $ENV{LIBCOMBINE_DIR}/lib/cmake
         ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
         /usr/lib/cmake
         ${CONAN_LIB_DIRS_LIBCOMBINE}/cmake
+        CMAKE_FIND_ROOT_PATH_BOTH
   )
 endif()
 
@@ -89,6 +93,21 @@ get_target_property(LIBCOMBINE_INTERFACE_LINK_LIBRARIES ${LIBCOMBINE_LIBRARY_NAM
       string(SUBSTRING "${library}" 0 ${index} DEPENDENT_NAME)
       message(VERBOSE "Looking for dependent library: ${DEPENDENT_NAME}")
       find_package(${DEPENDENT_NAME})
+      if (NOT ${DEPENDENT_NAME}_FOUND)
+      find_package(${DEPENDENT_NAME} CONFIG QUIET
+      PATHS $ENV{LIBCOMBINE_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
+        $ENV{LIBCOMBINE_DIR}/lib/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/lib64/cmake
+        /usr/${CMAKE_INSTALL_LIBDIR}/cmake
+        $ENV{LIBCOMBINE_DIR}/lib/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
+        /usr/lib/cmake
+        ${CONAN_LIB_DIRS_LIBCOMBINE}/cmake
+        CMAKE_FIND_ROOT_PATH_BOTH
+      )
+      endif()
     endif()
   
   endforeach()
@@ -101,6 +120,15 @@ else()
           $ENV{LIBCOMBINE_DIR}
           ${${_PROJECT_DEPENDENCY_DIR}}/include
           ${${_PROJECT_DEPENDENCY_DIR}}
+          
+    NO_DEFAULT_PATH)
+
+  if (NOT LIBCOMBINE_INCLUDE_DIR)
+    find_path(LIBCOMBINE_INCLUDE_DIR combine/combinearchive.h
+          $ENV{LIBCOMBINE_DIR}/include
+          $ENV{LIBCOMBINE_DIR}
+          ${${_PROJECT_DEPENDENCY_DIR}}/include
+          ${${_PROJECT_DEPENDENCY_DIR}}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/include        # Fink
@@ -108,14 +136,11 @@ else()
           /opt/csw/include   # Blastwave
           /opt/include
           /usr/freeware/include
-    NO_DEFAULT_PATH)
-
-  if (NOT LIBCOMBINE_INCLUDE_DIR)
-    message(FATAL_ERROR "LIBCOMBINE include dir not found not found!")
+          CMAKE_FIND_ROOT_PATH_BOTH)
   endif (NOT LIBCOMBINE_INCLUDE_DIR)
 
   if (NOT LIBCOMBINE_INCLUDE_DIR)
-    find_path(LIBCOMBINE_INCLUDE_DIR combine/combinearchive.h)
+    message(FATAL_ERROR "LIBCOMBINE include dir not found not found!")
   endif (NOT LIBCOMBINE_INCLUDE_DIR)
 
   find_library(LIBCOMBINE_LIBRARY 
@@ -133,11 +158,26 @@ else()
           /opt/csw/lib    Blastwave
           /opt/lib
           /usr/freeware/lib64
+          CMAKE_FIND_ROOT_PATH_BOTH
     NO_DEFAULT_PATH)
     
   if (NOT LIBCOMBINE_LIBRARY)
     find_library(LIBCOMBINE_LIBRARY 
-        NAMES ${LIBCOMBINE_LIBRARY_NAME})
+        NAMES ${LIBCOMBINE_LIBRARY_NAME}
+        PATHS $ENV{LIBCOMBINE_DIR}/lib
+        $ENV{LIBCOMBINE_DIR}
+        ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+        ${${_PROJECT_DEPENDENCY_DIR}}/lib
+        ${${_PROJECT_DEPENDENCY_DIR}}
+        ${CONAN_LIB_DIRS_LIBCOMBINE}
+        ~/Library/Frameworks
+        /Library/Frameworks
+        /sw/lib         Fink
+        /opt/local/lib  MacPorts
+        /opt/csw/lib    Blastwave
+        /opt/lib
+        /usr/freeware/lib64
+        CMAKE_FIND_ROOT_PATH_BOTH)
   endif (NOT LIBCOMBINE_LIBRARY)
 endif(${LIBCOMBINE_LIBRARY_NAME}_FOUND)
 

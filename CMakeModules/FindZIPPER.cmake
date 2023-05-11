@@ -29,6 +29,7 @@ find_library(ZIPPER_LIBRARY
           $ENV{ZIPPER_DIR}/lib
           /usr/lib
           /usr/local/lib
+          CMAKE_FIND_ROOT_PATH_BOTH
     DOC "The file name of the ZIPPER library."
 )
 
